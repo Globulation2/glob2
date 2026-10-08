@@ -1,0 +1,10 @@
+{
+  "commit": "a4cf15104d437b2d4ef86aa60c200e4b3c30f458",
+  "hashes": {
+    "artifacts/resource-growth/remaining/seed-rule/baseline": "d58e5eca67066a40727dc3f6a6a4841f9293c98db2c1a74925bf6903f2e6c1d2",
+    "artifacts/resource-growth/remaining/seed-rule/candidate": "7f15c3fb507e3b1058ceda02c523b927d2ad8225cdc509ad2a23b1f495b47b10",
+    "artifacts/resource-growth/remaining/seed-rule/ResourceGrowth.cpp": "4b302dbbfe27646be40625b5cf865d59a0aa7e0a3867c5e32556342d6c35f10e",
+    "docs/.work/seed-rule-harness.cpp": "cbca0f10321ec0f7fe68a55a0d6bc1dbe7cbd6a0de3b2dddb4791da3582f2ccf"
+  },
+  "note": "Ignored prototype: material255 seed marker is NOT supported by shipping save/replay formats; no adoption or performance claim."
+}

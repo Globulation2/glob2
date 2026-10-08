@@ -1,0 +1,1100 @@
+{
+  "method": "20 matched seeds per cell. 30000 paired percentile bootstrap samples (RNG714), ratio of mean NEW stock, not final stocks. Pointwise95% CIs. Two-sided exact sign tests with Holm across15 primary growth contrasts. Spread comparisons exploratory. Dry-map percentage estimates unstable because few events. Owner repeats are verification, not extra samples.",
+  "results": [
+    {
+      "layout": "grass-control",
+      "paper_rate_fraction": 1.0,
+      "width": 64,
+      "height": 64,
+      "baseline": {
+        "initial_stock": 768,
+        "initial_deposits": 256,
+        "food_added": 1301.75,
+        "paper_added": 1299.05,
+        "deposits_added": 522.85,
+        "total_added": 2600.8,
+        "stock_units_per_tick": 5.0796875,
+        "proposals": 2680.2,
+        "sampled": 35122.95,
+        "checkpoint_total_stock": {
+          "64": 936.6,
+          "128": 1141.8,
+          "192": 1375.45,
+          "256": 1652.3,
+          "320": 1980.65,
+          "384": 2388.65,
+          "448": 2835,
+          "512": 3368.8
+        }
+      },
+      "candidate": {
+        "initial_stock": 768,
+        "initial_deposits": 256,
+        "food_added": 1301.75,
+        "paper_added": 1299.05,
+        "deposits_added": 522.85,
+        "total_added": 2600.8,
+        "stock_units_per_tick": 5.0796875,
+        "proposals": 2138.6,
+        "sampled": 35122.95,
+        "checkpoint_total_stock": {
+          "64": 936.6,
+          "128": 1141.8,
+          "192": 1375.45,
+          "256": 1652.3,
+          "320": 1980.65,
+          "384": 2388.65,
+          "448": 2835,
+          "512": 3368.8
+        }
+      },
+      "growth_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "spread_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20
+      }
+    },
+    {
+      "layout": "grass-control",
+      "paper_rate_fraction": 0.25,
+      "width": 64,
+      "height": 64,
+      "baseline": {
+        "initial_stock": 768,
+        "initial_deposits": 256,
+        "food_added": 1191.75,
+        "paper_added": 297.1,
+        "deposits_added": 415.75,
+        "total_added": 1488.85,
+        "stock_units_per_tick": 2.90791015625,
+        "proposals": 1533.9,
+        "sampled": 35153.25,
+        "checkpoint_total_stock": {
+          "64": 873.5,
+          "128": 1001,
+          "192": 1140.45,
+          "256": 1313.6,
+          "320": 1502.3,
+          "384": 1729.4,
+          "448": 1973.2,
+          "512": 2256.85
+        }
+      },
+      "candidate": {
+        "initial_stock": 768,
+        "initial_deposits": 256,
+        "food_added": 1206.75,
+        "paper_added": 640.9,
+        "deposits_added": 449.2,
+        "total_added": 1847.65,
+        "stock_units_per_tick": 3.60869140625,
+        "proposals": 1439.55,
+        "sampled": 35128.4,
+        "checkpoint_total_stock": {
+          "64": 894,
+          "128": 1049.1,
+          "192": 1223.45,
+          "256": 1431.55,
+          "320": 1671,
+          "384": 1952.1,
+          "448": 2255.75,
+          "512": 2615.65
+        }
+      },
+      "growth_difference": {
+        "percent": 24.099136917755317,
+        "ci95_percent": [
+          21.284771815275793,
+          27.00349011135117
+        ],
+        "absolute_units": 358.8,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 8.045700541190627,
+        "ci95_percent": [
+          5.009587727708542,
+          11.19951040391678
+        ],
+        "absolute_units": 33.45,
+        "sign_p": 0.000728607177734375,
+        "positive_pairs": 17,
+        "negative_pairs": 2,
+        "ties": 1
+      }
+    },
+    {
+      "layout": "grass-control",
+      "paper_rate_fraction": 0.0,
+      "width": 64,
+      "height": 64,
+      "baseline": {
+        "initial_stock": 768,
+        "initial_deposits": 256,
+        "food_added": 1166.7,
+        "paper_added": 0,
+        "deposits_added": 391.15,
+        "total_added": 1166.7,
+        "stock_units_per_tick": 2.2787109375,
+        "proposals": 1199.75,
+        "sampled": 35137.25,
+        "checkpoint_total_stock": {
+          "64": 851.55,
+          "128": 953.8,
+          "192": 1066.95,
+          "256": 1196.75,
+          "320": 1344.3,
+          "384": 1522.5,
+          "448": 1714.95,
+          "512": 1934.7
+        }
+      },
+      "candidate": {
+        "initial_stock": 768,
+        "initial_deposits": 256,
+        "food_added": 1214.1,
+        "paper_added": 440.35,
+        "deposits_added": 438.65,
+        "total_added": 1654.45,
+        "stock_units_per_tick": 3.23134765625,
+        "proposals": 1250.75,
+        "sampled": 35121.85,
+        "checkpoint_total_stock": {
+          "64": 883.45,
+          "128": 1026.45,
+          "192": 1184.5,
+          "256": 1369,
+          "320": 1580.05,
+          "384": 1834.6,
+          "448": 2108.2,
+          "512": 2422.45
+        }
+      },
+      "growth_difference": {
+        "percent": 41.80594840147425,
+        "ci95_percent": [
+          40.62099164049715,
+          43.10823311748382
+        ],
+        "absolute_units": 487.75,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 12.143678895564358,
+        "ci95_percent": [
+          10.614454797280292,
+          13.619709412507897
+        ],
+        "absolute_units": 47.5,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0
+      }
+    },
+    {
+      "layout": "river",
+      "paper_rate_fraction": 1.0,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 2784,
+        "initial_deposits": 928,
+        "food_added": 224.15,
+        "paper_added": 224.15,
+        "deposits_added": 87.4,
+        "total_added": 448.3,
+        "stock_units_per_tick": 0.8755859375,
+        "proposals": 457.6,
+        "sampled": 137926.5,
+        "checkpoint_total_stock": {
+          "64": 2828,
+          "128": 2882.7,
+          "192": 2937,
+          "256": 2992.5,
+          "320": 3043.2,
+          "384": 3106.1,
+          "448": 3165.4,
+          "512": 3232.3
+        }
+      },
+      "candidate": {
+        "initial_stock": 2784,
+        "initial_deposits": 928,
+        "food_added": 224.15,
+        "paper_added": 224.15,
+        "deposits_added": 87.4,
+        "total_added": 448.3,
+        "stock_units_per_tick": 0.8755859375,
+        "proposals": 368.4,
+        "sampled": 137926.5,
+        "checkpoint_total_stock": {
+          "64": 2828,
+          "128": 2882.7,
+          "192": 2937,
+          "256": 2992.5,
+          "320": 3043.2,
+          "384": 3106.1,
+          "448": 3165.4,
+          "512": 3232.3
+        }
+      },
+      "growth_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "spread_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20
+      }
+    },
+    {
+      "layout": "river",
+      "paper_rate_fraction": 0.25,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 2784,
+        "initial_deposits": 928,
+        "food_added": 220.9,
+        "paper_added": 54.25,
+        "deposits_added": 82.85,
+        "total_added": 275.15,
+        "stock_units_per_tick": 0.53740234375,
+        "proposals": 280.75,
+        "sampled": 137942.05,
+        "checkpoint_total_stock": {
+          "64": 2810.7,
+          "128": 2843.75,
+          "192": 2876.5,
+          "256": 2911.8,
+          "320": 2943.15,
+          "384": 2981.9,
+          "448": 3017.55,
+          "512": 3059.15
+        }
+      },
+      "candidate": {
+        "initial_stock": 2784,
+        "initial_deposits": 928,
+        "food_added": 224.95,
+        "paper_added": 120.05,
+        "deposits_added": 85.55,
+        "total_added": 345,
+        "stock_units_per_tick": 0.673828125,
+        "proposals": 264.35,
+        "sampled": 137934.45,
+        "checkpoint_total_stock": {
+          "64": 2817.15,
+          "128": 2859.15,
+          "192": 2898.8,
+          "256": 2942.15,
+          "320": 2982.5,
+          "384": 3031.35,
+          "448": 3075.15,
+          "512": 3129
+        }
+      },
+      "growth_difference": {
+        "percent": 25.386153007450485,
+        "ci95_percent": [
+          22.9897463572585,
+          27.53118121790168
+        ],
+        "absolute_units": 69.85,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 3.2589016294508166,
+        "ci95_percent": [
+          0.23980815347721673,
+          6.19195046439629
+        ],
+        "absolute_units": 2.7,
+        "sign_p": 0.063568115234375,
+        "positive_pairs": 14,
+        "negative_pairs": 5,
+        "ties": 1
+      }
+    },
+    {
+      "layout": "river",
+      "paper_rate_fraction": 0.0,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 2784,
+        "initial_deposits": 928,
+        "food_added": 223.65,
+        "paper_added": 0,
+        "deposits_added": 83.75,
+        "total_added": 223.65,
+        "stock_units_per_tick": 0.43681640625,
+        "proposals": 228.15,
+        "sampled": 137929.6,
+        "checkpoint_total_stock": {
+          "64": 2806,
+          "128": 2833.4,
+          "192": 2860.55,
+          "256": 2888.25,
+          "320": 2913.5,
+          "384": 2945.15,
+          "448": 2974.6,
+          "512": 3007.65
+        }
+      },
+      "candidate": {
+        "initial_stock": 2784,
+        "initial_deposits": 928,
+        "food_added": 223.9,
+        "paper_added": 85.25,
+        "deposits_added": 85.2,
+        "total_added": 309.15,
+        "stock_units_per_tick": 0.60380859375,
+        "proposals": 228.45,
+        "sampled": 137928.9,
+        "checkpoint_total_stock": {
+          "64": 2814.05,
+          "128": 2851.8,
+          "192": 2889,
+          "256": 2927.4,
+          "320": 2962.55,
+          "384": 3006.25,
+          "448": 3046.8,
+          "512": 3093.15
+        }
+      },
+      "growth_difference": {
+        "percent": 38.229376257545276,
+        "ci95_percent": [
+          37.01226309921961,
+          39.47730398899587
+        ],
+        "absolute_units": 85.5,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 1.7313432835820874,
+        "ci95_percent": [
+          1.00819155639571,
+          2.514619883040936
+        ],
+        "absolute_units": 1.45,
+        "sign_p": 0.0001220703125,
+        "positive_pairs": 14,
+        "negative_pairs": 0,
+        "ties": 6
+      }
+    },
+    {
+      "layout": "islands",
+      "paper_rate_fraction": 1.0,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 1008,
+        "initial_deposits": 336,
+        "food_added": 233.75,
+        "paper_added": 233.75,
+        "deposits_added": 80.95,
+        "total_added": 467.5,
+        "stock_units_per_tick": 0.9130859375,
+        "proposals": 478,
+        "sampled": 137943.4,
+        "checkpoint_total_stock": {
+          "64": 1054.3,
+          "128": 1107.6,
+          "192": 1159.9,
+          "256": 1220.1,
+          "320": 1280.7,
+          "384": 1344,
+          "448": 1408.1,
+          "512": 1475.5
+        }
+      },
+      "candidate": {
+        "initial_stock": 1008,
+        "initial_deposits": 336,
+        "food_added": 233.75,
+        "paper_added": 233.75,
+        "deposits_added": 80.95,
+        "total_added": 467.5,
+        "stock_units_per_tick": 0.9130859375,
+        "proposals": 394.95,
+        "sampled": 137943.4,
+        "checkpoint_total_stock": {
+          "64": 1054.3,
+          "128": 1107.6,
+          "192": 1159.9,
+          "256": 1220.1,
+          "320": 1280.7,
+          "384": 1344,
+          "448": 1408.1,
+          "512": 1475.5
+        }
+      },
+      "growth_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "spread_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20
+      }
+    },
+    {
+      "layout": "islands",
+      "paper_rate_fraction": 0.25,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 1008,
+        "initial_deposits": 336,
+        "food_added": 236.15,
+        "paper_added": 56.95,
+        "deposits_added": 76.45,
+        "total_added": 293.1,
+        "stock_units_per_tick": 0.5724609375,
+        "proposals": 299.6,
+        "sampled": 137929.1,
+        "checkpoint_total_stock": {
+          "64": 1035.45,
+          "128": 1068.65,
+          "192": 1101.55,
+          "256": 1140.05,
+          "320": 1177.5,
+          "384": 1216.8,
+          "448": 1256.4,
+          "512": 1301.1
+        }
+      },
+      "candidate": {
+        "initial_stock": 1008,
+        "initial_deposits": 336,
+        "food_added": 233.25,
+        "paper_added": 115.05,
+        "deposits_added": 76.6,
+        "total_added": 348.3,
+        "stock_units_per_tick": 0.6802734375,
+        "proposals": 278.3,
+        "sampled": 137932.55,
+        "checkpoint_total_stock": {
+          "64": 1040.75,
+          "128": 1081.15,
+          "192": 1120.5,
+          "256": 1165,
+          "320": 1207.95,
+          "384": 1256.35,
+          "448": 1304.4,
+          "512": 1356.3
+        }
+      },
+      "growth_difference": {
+        "percent": 18.8331627430911,
+        "ci95_percent": [
+          17.086601034540294,
+          20.567500881212553
+        ],
+        "absolute_units": 55.2,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 0.19620667102682177,
+        "ci95_percent": [
+          -2.009073233959824,
+          2.4326101249178222
+        ],
+        "absolute_units": 0.15,
+        "sign_p": 1,
+        "positive_pairs": 8,
+        "negative_pairs": 7,
+        "ties": 5
+      }
+    },
+    {
+      "layout": "islands",
+      "paper_rate_fraction": 0.0,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 1008,
+        "initial_deposits": 336,
+        "food_added": 235,
+        "paper_added": 0,
+        "deposits_added": 73.75,
+        "total_added": 235,
+        "stock_units_per_tick": 0.458984375,
+        "proposals": 240.25,
+        "sampled": 137951.2,
+        "checkpoint_total_stock": {
+          "64": 1031.15,
+          "128": 1057.85,
+          "192": 1084.2,
+          "256": 1114.1,
+          "320": 1144.7,
+          "384": 1176.55,
+          "448": 1208.85,
+          "512": 1243
+        }
+      },
+      "candidate": {
+        "initial_stock": 1008,
+        "initial_deposits": 336,
+        "food_added": 235.35,
+        "paper_added": 76.1,
+        "deposits_added": 76.1,
+        "total_added": 311.45,
+        "stock_units_per_tick": 0.60830078125,
+        "proposals": 240.6,
+        "sampled": 137950.95,
+        "checkpoint_total_stock": {
+          "64": 1038.4,
+          "128": 1073.6,
+          "192": 1108.15,
+          "256": 1147.9,
+          "320": 1188.3,
+          "384": 1231.65,
+          "448": 1274.65,
+          "512": 1319.45
+        }
+      },
+      "growth_difference": {
+        "percent": 32.53191489361702,
+        "ci95_percent": [
+          31.314842261274613,
+          33.77617653681604
+        ],
+        "absolute_units": 76.45,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 3.186440677966096,
+        "ci95_percent": [
+          2.219140083217752,
+          4.207119741100329
+        ],
+        "absolute_units": 2.35,
+        "sign_p": 3.0517578125e-05,
+        "positive_pairs": 16,
+        "negative_pairs": 0,
+        "ties": 4
+      }
+    },
+    {
+      "layout": "dry",
+      "paper_rate_fraction": 1.0,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 2033.4,
+        "initial_deposits": 677.8,
+        "food_added": 4.3,
+        "paper_added": 4.3,
+        "deposits_added": 1.9,
+        "total_added": 8.6,
+        "stock_units_per_tick": 0.016796875,
+        "proposals": 8.6,
+        "sampled": 137961.9,
+        "checkpoint_total_stock": {
+          "64": 2034.6,
+          "128": 2035.4,
+          "192": 2036.5,
+          "256": 2037.7,
+          "320": 2039,
+          "384": 2040.4,
+          "448": 2040.9,
+          "512": 2042
+        }
+      },
+      "candidate": {
+        "initial_stock": 2033.4,
+        "initial_deposits": 677.8,
+        "food_added": 4.3,
+        "paper_added": 4.3,
+        "deposits_added": 1.9,
+        "total_added": 8.6,
+        "stock_units_per_tick": 0.016796875,
+        "proposals": 6.7,
+        "sampled": 137961.9,
+        "checkpoint_total_stock": {
+          "64": 2034.6,
+          "128": 2035.4,
+          "192": 2036.5,
+          "256": 2037.7,
+          "320": 2039,
+          "384": 2040.4,
+          "448": 2040.9,
+          "512": 2042
+        }
+      },
+      "growth_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "spread_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20
+      }
+    },
+    {
+      "layout": "dry",
+      "paper_rate_fraction": 0.25,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 2033.4,
+        "initial_deposits": 677.8,
+        "food_added": 4.3,
+        "paper_added": 1.1,
+        "deposits_added": 1.9,
+        "total_added": 5.4,
+        "stock_units_per_tick": 0.010546875,
+        "proposals": 5.4,
+        "sampled": 137963.15,
+        "checkpoint_total_stock": {
+          "64": 2034.15,
+          "128": 2034.7,
+          "192": 2035.3,
+          "256": 2036.15,
+          "320": 2036.9,
+          "384": 2037.8,
+          "448": 2038.2,
+          "512": 2038.8
+        }
+      },
+      "candidate": {
+        "initial_stock": 2033.4,
+        "initial_deposits": 677.8,
+        "food_added": 4.3,
+        "paper_added": 2.3,
+        "deposits_added": 1.9,
+        "total_added": 6.6,
+        "stock_units_per_tick": 0.012890625,
+        "proposals": 4.7,
+        "sampled": 137962.25,
+        "checkpoint_total_stock": {
+          "64": 2034.3,
+          "128": 2034.9,
+          "192": 2035.65,
+          "256": 2036.65,
+          "320": 2037.75,
+          "384": 2038.8,
+          "448": 2039.2,
+          "512": 2040
+        }
+      },
+      "growth_difference": {
+        "percent": 22.222222222222232,
+        "ci95_percent": [
+          15.740740740740744,
+          30.208333333333325
+        ],
+        "absolute_units": 1.2,
+        "sign_p": 6.103515625e-05,
+        "positive_pairs": 15,
+        "negative_pairs": 0,
+        "ties": 5,
+        "holm_p": 0.0003662109375
+      },
+      "spread_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20
+      }
+    },
+    {
+      "layout": "dry",
+      "paper_rate_fraction": 0.0,
+      "width": 128,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 2033.4,
+        "initial_deposits": 677.8,
+        "food_added": 4.3,
+        "paper_added": 0,
+        "deposits_added": 1.9,
+        "total_added": 4.3,
+        "stock_units_per_tick": 0.0083984375,
+        "proposals": 4.3,
+        "sampled": 137961.9,
+        "checkpoint_total_stock": {
+          "64": 2034,
+          "128": 2034.4,
+          "192": 2034.95,
+          "256": 2035.55,
+          "320": 2036.2,
+          "384": 2036.9,
+          "448": 2037.15,
+          "512": 2037.7
+        }
+      },
+      "candidate": {
+        "initial_stock": 2033.4,
+        "initial_deposits": 677.8,
+        "food_added": 4.3,
+        "paper_added": 1.9,
+        "deposits_added": 1.9,
+        "total_added": 6.2,
+        "stock_units_per_tick": 0.012109375,
+        "proposals": 4.3,
+        "sampled": 137961.9,
+        "checkpoint_total_stock": {
+          "64": 2034.25,
+          "128": 2034.8,
+          "192": 2035.5,
+          "256": 2036.4,
+          "320": 2037.5,
+          "384": 2038.55,
+          "448": 2038.85,
+          "512": 2039.6
+        }
+      },
+      "growth_difference": {
+        "percent": 44.18604651162789,
+        "ci95_percent": [
+          35.71428571428572,
+          55.0561797752809
+        ],
+        "absolute_units": 1.9,
+        "sign_p": 7.62939453125e-06,
+        "positive_pairs": 18,
+        "negative_pairs": 0,
+        "ties": 2,
+        "holm_p": 5.340576171875e-05
+      },
+      "spread_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20
+      }
+    },
+    {
+      "layout": "mixed",
+      "paper_rate_fraction": 1.0,
+      "width": 256,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 4581.6,
+        "initial_deposits": 1527.2,
+        "food_added": 411.1,
+        "paper_added": 411.1,
+        "deposits_added": 152.2,
+        "total_added": 822.2,
+        "stock_units_per_tick": 1.605859375,
+        "proposals": 839.9,
+        "sampled": 273274.6,
+        "checkpoint_total_stock": {
+          "64": 4662.5,
+          "128": 4762.9,
+          "192": 4858.2,
+          "256": 4957.2,
+          "320": 5054.4,
+          "384": 5170.7,
+          "448": 5278.3,
+          "512": 5403.8
+        }
+      },
+      "candidate": {
+        "initial_stock": 4581.6,
+        "initial_deposits": 1527.2,
+        "food_added": 411.1,
+        "paper_added": 411.1,
+        "deposits_added": 152.2,
+        "total_added": 822.2,
+        "stock_units_per_tick": 1.605859375,
+        "proposals": 683.8,
+        "sampled": 273274.6,
+        "checkpoint_total_stock": {
+          "64": 4662.5,
+          "128": 4762.9,
+          "192": 4858.2,
+          "256": 4957.2,
+          "320": 5054.4,
+          "384": 5170.7,
+          "448": 5278.3,
+          "512": 5403.8
+        }
+      },
+      "growth_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20,
+        "holm_p": 1
+      },
+      "spread_difference": {
+        "percent": 0.0,
+        "ci95_percent": [
+          0.0,
+          0.0
+        ],
+        "absolute_units": 0,
+        "sign_p": 1,
+        "positive_pairs": 0,
+        "negative_pairs": 0,
+        "ties": 20
+      }
+    },
+    {
+      "layout": "mixed",
+      "paper_rate_fraction": 0.25,
+      "width": 256,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 4581.6,
+        "initial_deposits": 1527.2,
+        "food_added": 409.3,
+        "paper_added": 103.5,
+        "deposits_added": 142.6,
+        "total_added": 512.8,
+        "stock_units_per_tick": 1.0015625,
+        "proposals": 526,
+        "sampled": 273274,
+        "checkpoint_total_stock": {
+          "64": 4632.6,
+          "128": 4695.65,
+          "192": 4757.3,
+          "256": 4819.75,
+          "320": 4883.85,
+          "384": 4952.4,
+          "448": 5017.85,
+          "512": 5094.4
+        }
+      },
+      "candidate": {
+        "initial_stock": 4581.6,
+        "initial_deposits": 1527.2,
+        "food_added": 412.45,
+        "paper_added": 216.8,
+        "deposits_added": 148.4,
+        "total_added": 629.25,
+        "stock_units_per_tick": 1.22900390625,
+        "proposals": 493.05,
+        "sampled": 273262.5,
+        "checkpoint_total_stock": {
+          "64": 4641.4,
+          "128": 4719.5,
+          "192": 4794.25,
+          "256": 4868.85,
+          "320": 4948.1,
+          "384": 5036.1,
+          "448": 5118.1,
+          "512": 5210.85
+        }
+      },
+      "growth_difference": {
+        "percent": 22.70865834633384,
+        "ci95_percent": [
+          20.518867924528305,
+          24.9578080015884
+        ],
+        "absolute_units": 116.45,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 4.067321178120609,
+        "ci95_percent": [
+          1.8342391304347894,
+          6.606170598911065
+        ],
+        "absolute_units": 5.8,
+        "sign_p": 0.001312255859375,
+        "positive_pairs": 16,
+        "negative_pairs": 2,
+        "ties": 2
+      }
+    },
+    {
+      "layout": "mixed",
+      "paper_rate_fraction": 0.0,
+      "width": 256,
+      "height": 128,
+      "baseline": {
+        "initial_stock": 4581.6,
+        "initial_deposits": 1527.2,
+        "food_added": 411.7,
+        "paper_added": 0,
+        "deposits_added": 140.6,
+        "total_added": 411.7,
+        "stock_units_per_tick": 0.8041015625,
+        "proposals": 420.1,
+        "sampled": 273268.6,
+        "checkpoint_total_stock": {
+          "64": 4622.05,
+          "128": 4672.2,
+          "192": 4720,
+          "256": 4768.8,
+          "320": 4818.1,
+          "384": 4877.3,
+          "448": 4930.7,
+          "512": 4993.3
+        }
+      },
+      "candidate": {
+        "initial_stock": 4581.6,
+        "initial_deposits": 1527.2,
+        "food_added": 410.75,
+        "paper_added": 144.3,
+        "deposits_added": 144.25,
+        "total_added": 555.05,
+        "stock_units_per_tick": 1.08408203125,
+        "proposals": 419.4,
+        "sampled": 273267.25,
+        "checkpoint_total_stock": {
+          "64": 4635.7,
+          "128": 4702.25,
+          "192": 4767.45,
+          "256": 4833.3,
+          "320": 4900.2,
+          "384": 4980,
+          "448": 5052.3,
+          "512": 5136.65
+        }
+      },
+      "growth_difference": {
+        "percent": 34.81904299247025,
+        "ci95_percent": [
+          33.82526564344745,
+          35.79752367079387
+        ],
+        "absolute_units": 143.35,
+        "sign_p": 1.9073486328125e-06,
+        "positive_pairs": 20,
+        "negative_pairs": 0,
+        "ties": 0,
+        "holm_p": 2.86102294921875e-05
+      },
+      "spread_difference": {
+        "percent": 2.596017069701273,
+        "ci95_percent": [
+          1.9051042415528352,
+          3.2592592592592506
+        ],
+        "absolute_units": 3.65,
+        "sign_p": 0.00014495849609375,
+        "positive_pairs": 17,
+        "negative_pairs": 1,
+        "ties": 2
+      }
+    }
+  ]
+}

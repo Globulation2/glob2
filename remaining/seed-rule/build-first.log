@@ -1,0 +1,22 @@
+/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/seed-rule-harness.cpp: In function ‘ResourceId {anonymous}::setupSeedWorld(Map&, const std::string&, unsigned int, unsigned int)’:
+/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/seed-rule-harness.cpp:31:32: error: invalid conversion from ‘int’ to ‘TerrainType’ [-fpermissive]
+   31 |         map.setCellTerrain(x,y,terrain);
+      |                                ^~~~~~~
+      |                                |
+      |                                int
+In file included from src/game/Game.h:13,
+                 from test/support/EngineFixtures.h:9,
+                 from /home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/seed-rule-harness.cpp:2:
+/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/src/map/Map.h:594:55: note: initializing argument 3 of ‘void Map::setCellTerrain(int, int, TerrainType)’
+  594 |         void setCellTerrain(int x, int y, TerrainType type) { setCellTerrain(coordToIndex(x,y), type); }
+      |                                           ~~~~~~~~~~~~^~~~
+/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/seed-rule-harness.cpp: In function ‘void DOCTEST_ANON_FUNC_7()’:
+/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/seed-rule-harness.cpp:133:47: warning: narrowing conversion of ‘resourceIndex(((ResourceId)id))’ from ‘unsigned int’ to ‘Uint16’ {aka ‘short unsigned int’} [-Wnarrowing]
+  133 |     batch.proposals={{Uint32(at),resourceIndex(id),255,1}};
+      |                                  ~~~~~~~~~~~~~^~~~
+/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/seed-rule-harness.cpp:138:47: warning: narrowing conversion of ‘resourceIndex(((ResourceId)id))’ from ‘unsigned int’ to ‘Uint16’ {aka ‘short unsigned int’} [-Wnarrowing]
+  138 |     batch.proposals={{Uint32(at),resourceIndex(id),Uint8(materialIndex(MaterialId::Food)),1}};
+      |                                  ~~~~~~~~~~~~~^~~~
+/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/docs/.work/seed-rule-harness.cpp:144:47: warning: narrowing conversion of ‘resourceIndex(((ResourceId)id))’ from ‘unsigned int’ to ‘Uint16’ {aka ‘short unsigned int’} [-Wnarrowing]
+  144 |     batch.proposals={{Uint32(at),resourceIndex(id),255,1}};
+      |                                  ~~~~~~~~~~~~~^~~~

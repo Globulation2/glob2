@@ -1,3 +1,5 @@
+[One-per-material seed-rule prototype on varied terrain](./seed-rule/README.md): current snapshot growth vs experimental guaranteed seeding. Shipping behavior unchanged.
+
 [Delay ablation: 1, 2, 3, 4, 8, 12 and 16 ticks](./delay-ablation/README.md), including paired intervals and terminal-queue diagnostics.
 
 Follow-up: [player-free statistics and independent review](./player-free-review.md). New master `0507700f1` adds vertex terrain and remains unintegrated; the historical comparisons below retain their frozen revisions.
