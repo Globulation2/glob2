@@ -243,7 +243,8 @@ compliant contribution to relax tightly bent necks.
 Source scale changes apply as local dilation. Gaussian weights are recomputed as the components move, with midpoint steps
 instead of independently snapping vertices to a folded implicit surface. Normals
 come from the actual connected triangles and are averaged across welded paint
-seams. Source centers, scales, cameras and gait samples are retained; silhouettes
+seams. Warriors also apply one nonshrinking fairing pair to the welded torso
+shell to relax closely bent swimming poses; limb rings and caps remain fixed. Source centers, scales, cameras and gait samples are retained; silhouettes
 and motion still need visual review because this approximates the legacy
 metaballs.
 

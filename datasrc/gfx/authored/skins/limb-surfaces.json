@@ -81,6 +81,7 @@
     "paintChart": {
       "file": "datasrc/gfx/authored/skins/limb-paint-charts.json",
       "model": "warrior"
-    }
+    },
+    "torsoFairing": 1
   }
 }

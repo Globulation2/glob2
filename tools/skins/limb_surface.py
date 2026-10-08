@@ -227,6 +227,36 @@ class LimbSurface:
         axes = self.definition.get("clipBodyAxes", {}).get(clip, self.definition["bodyAxes"])
         return np.column_stack([rotation[:, abs(i) - 1] * (1 if i > 0 else -1) for i in axes])
 
+    def fair(self, positions):
+        """Relax strained torso triangles with nonshrinking welded fairing.
+
+        The limb rings and caps remain fixed. A shrink/expand pair smooths the
+        shared torso shell without shrinking its volume or splitting UV seams.
+        """
+        iterations = self.definition.get("torsoFairing", 0)
+        if not iterations:
+            return positions
+        if not hasattr(self, "fairing_graph"):
+            adjacency = [set() for _ in self.welds]
+            for a, b, c in self.welds[self.triangles]:
+                for x, y in ((a, b), (b, c), (c, a)):
+                    adjacency[x].add(y)
+                    adjacency[y].add(x)
+            rows = np.array([v for v, neighbours in enumerate(adjacency) for _ in neighbours])
+            columns = np.array([k for neighbours in adjacency for k in sorted(neighbours)])
+            degree = np.bincount(rows, minlength=len(self.welds))[:, None]
+            mask = (self.regions == -1)[:, None] * (degree > 0)
+            self.fairing_graph = rows, columns, degree, mask
+        rows, columns, degree, mask = self.fairing_graph
+        result = positions.copy()
+        for _ in range(iterations):
+            for rate in (0.5, -0.53):
+                total = np.zeros_like(result)
+                np.add.at(total, rows, result[columns])
+                result += rate * (total / np.maximum(degree, 1) - result) * mask
+                result = result[self.welds]
+        return result
+
     def normals(self, positions):
         """Shade the actual connected geometry, including welded paint seams."""
         triangles = self.triangles
@@ -271,4 +301,4 @@ class Tracker:
                 # body-space sample when float authoring noise is below 0.0002.
                 self.samples[(clip, phase)] = (centers.copy(), scales.copy(), local)
 
-        return origin + local @ basis.T
+        return self.surface.fair(origin + local @ basis.T)
