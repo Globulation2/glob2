@@ -159,3 +159,33 @@ test('studio follows the shared system and saved themes, including open dialogs'
     animations: 'disabled',
   });
 });
+
+test('color palette stays in the toolbox and supports drag, keyboard and hex entry', async ({
+  page,
+}, info) => {
+  await page.goto('/skins');
+  await expect(page.getByLabel('Skin name')).toBeEnabled();
+  const expand = page.getByRole('button', { name: 'Expand toolbox' });
+  if (await expand.isVisible()) await expand.click();
+  await page.getByLabel('Choose paint color', { exact: true }).click();
+  const palette = page.locator('.skin-toolbox .skin-color-picker').first();
+  const plane = palette.getByRole('slider', { name: 'Paint color saturation and brightness' });
+  const hex = palette.getByLabel('Paint color', { exact: true });
+  await plane.scrollIntoViewIfNeeded();
+  const box = await boxFor(plane);
+  await page.mouse.move(box.x + box.width * 0.1, box.y + box.height * 0.2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.4, { steps: 5 });
+  await page.mouse.up();
+  await expect(hex).not.toHaveValue('#ed9252');
+  await hex.fill('#8e52cc');
+  await hex.press('Tab');
+  await expect(hex).toHaveValue('#8e52cc');
+  await plane.focus();
+  await plane.press('ArrowDown');
+  await expect(hex).not.toHaveValue('#8e52cc');
+  await expect(page.locator('input[type="color"]')).toHaveCount(0);
+  expect(await palette.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+  await plane.scrollIntoViewIfNeeded();
+  await page.screenshot({ path: info.outputPath('studio-color-picker.png') });
+});

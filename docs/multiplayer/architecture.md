@@ -344,6 +344,12 @@ selection use focused dialogs; the collection is a separate screen and the Shop
 opens from it. The workspace and dialogs use the web application’s shared Meadow
 and Night colony themes, following the device setting or saved preference. The
 sidebar's theme control preserves paint and editing state.
+Paint, building and pattern colors use an editor-owned palette that expands in
+place, with a saturation/brightness area, hue slider, preset swatches and hex
+entry. Colors update immediately without opening an operating-system dialog.
+Arrow keys adjust saturation horizontally and brightness vertically in the color
+area; Shift increases the step. The existing model eyedropper also updates the
+paint palette.
 
 Glob meshes share paint coordinates across matching front/back and top/bottom
 surfaces, including limb pairs exchanged by their flipping gait. Brush coverage
