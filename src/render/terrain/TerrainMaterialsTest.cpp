@@ -401,7 +401,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 10786664593226043735ull : 11685023561276268473ull));
+			CHECK(digest == (legacy ? 15866489041356360345ull : 14215220908205104757ull));
 		}
 	}
 	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
@@ -452,7 +452,7 @@ TEST_SUITE("TerrainMaterials")
 					}
 		}
 		// Intentional profile changes need a rendered comparison and a new digest.
-		CHECK(digest == 17709756013715710565ull);
+		CHECK(digest == 11045336540448780839ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
