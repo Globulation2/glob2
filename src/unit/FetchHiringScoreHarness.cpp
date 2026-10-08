@@ -26,6 +26,24 @@
 class FetchHiringScoreHarness
 {
 public:
+    static std::vector<Unit*> candidates(Building* building)
+    {
+        Building::BringMaterialsCandidate candidates[Unit::MAX_COUNT];
+        const int count=building->gatherBringMaterialsCandidates(candidates, WHEAT);
+        std::vector<Unit*> units;
+        for (int i=0; i<count; ++i) units.push_back(candidates[i].unit);
+        return units;
+    }
+    static int unavailable(Building* building)
+        { return building->unitsFailingRequirements[Building::UnitNotAvailable]; }
+    static Unit* carrying(Building* building)
+    {
+        int targets[MaterialSlotCount], served[MaterialSlotCount];
+        building->fetchApportionment(targets, served);
+        Building::BringMaterialsSelection selection{-1, 0x7fffffff, nullptr};
+        building->selectUnitCarryingWantedMaterial(targets, served, selection);
+        return selection.choosen;
+    }
 	static bool consider(Building* building, Unit* unit, int resource, int* dist)
 		{ return building->considerUnitForMaterial(unit, resource, dist); }
 };
@@ -166,6 +184,40 @@ static void theScoreEstimatesTheWholeTrip()
 
 TEST_SUITE("FetchHiringScore")
 {
+    TEST_CASE("carrying candidates preserve sparse slot ties and all purpose writes")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+        auto* team = world.game.teams[0];
+        auto* inn = world.addBuilding("inn", 8, 8, 0, 0);
+        REQUIRE(inn);
+        inn->materials[WHEAT] = 0;
+        // Identical positions and hunger deliberately tie the candidates.
+        // Attach in reverse order to exercise sorted traversal rather than insertion order.
+        for (int slot : {Unit::MAX_COUNT-1, 3})
+        {
+            auto* unit = new Unit(6, 8, slot, WORKER, team, 0);
+            team->myUnits[slot] = unit;
+            team->attachUnit(slot);
+            unit->performance[HARVEST] = 10;
+            unit->activity = Unit::ACT_RANDOM;
+            unit->medical = Unit::MED_FREE;
+            unit->carriedMaterial = WHEAT;
+            unit->destinationPurpose = -1;
+        }
+        CHECK(FetchHiringScoreHarness::carrying(inn) == team->myUnits[3]);
+        CHECK(team->myUnits[3]->destinationPurpose == WHEAT);
+        CHECK(team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose == WHEAT);
+        REQUIRE(world.game.map.incResourceByIndex(16, 8, WHEAT, 0));
+        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3], team->myUnits[Unit::MAX_COUNT-1]});
+        team->myUnits[Unit::MAX_COUNT-1]->activity = Unit::ACT_FILLING;
+        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3]});
+        CHECK(FetchHiringScoreHarness::unavailable(inn) == 1);
+        FetchHiringScoreHarness::candidates(inn);
+        CHECK(FetchHiringScoreHarness::unavailable(inn) == 1);
+
+    }
+
 	TEST_CASE("a unit is judged on the walk to the resource")
 	{
 		glob2test::HeadlessGlobals globals;
