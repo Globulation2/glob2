@@ -787,19 +787,11 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeUint32(building->gradientGeneration[sw], "generation");
 				stream->writeLeaveSection();
 			}
-			stream->writeEnterSection("roundTrip");
+			stream->writeEnterSection("gradientUse");
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
 				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
-				for (int r=0; r<MaterialSlotCount; ++r)
-				{
-					stream->writeEnterSection(r);
-					saveGradient(stream, building->roundTripGradient[r][sw], size);
-					stream->writeUint32(building->roundTripGradientStep[r][sw], "step");
-					stream->writeUint32(building->roundTripGradientUsedStep[r][sw], "usedStep");
-					stream->writeLeaveSection();
-				}
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -966,8 +958,22 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					? stream->readUint32("generation") : topologyGeneration;
 				stream->readLeaveSection();
 			}
-			if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			if (versionMinor >= FILE_FORMAT_VERSION_GREEDY_FETCHING)
 			{
+				stream->readEnterSection("gradientUse");
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				{
+					stream->readEnterSection(sw);
+					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
+					stream->readLeaveSection();
+				}
+				stream->readLeaveSection();
+			}
+			else if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			{
+				// Formats 95-146 also carry the retired round-trip fields beside each
+				// walking field's last-use step. Read and discard them; resource
+				// fetching never consults one now.
 				stream->readEnterSection("roundTrip");
 				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 				{
@@ -976,9 +982,11 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					for (int r=0; r<MaterialSlotCount; ++r)
 					{
 						stream->readEnterSection(r);
-						loadGradient(stream, building->roundTripGradient[r][sw], size, packed);
-						building->roundTripGradientStep[r][sw]=stream->readUint32("step");
-						building->roundTripGradientUsedStep[r][sw]=stream->readUint32("usedStep");
+						Uint16 *retired=nullptr;
+						loadGradient(stream, retired, size, packed);
+						delete[] retired;
+						stream->readUint32("step");
+						stream->readUint32("usedStep");
 						stream->readLeaveSection();
 					}
 					stream->readLeaveSection();

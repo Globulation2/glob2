@@ -24,11 +24,6 @@
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-			roundTripGradient[r][i]=NULL;
-	}
 	freeGradients();
 	load(stream, types, owner, versionMinor);
 }
@@ -128,11 +123,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		inUpgrade[i]=LS_UNKNOWN;
 
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-			roundTripGradient[r][i]=NULL;
-	}
 	freeGradients();
 
 	verbose=false;
@@ -182,21 +172,6 @@ void Building::resetPathfindGradients()
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
 	}
-	resetRoundTripGradients();
-}
-
-void Building::resetRoundTripGradients()
-{
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-		{
-			owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][i]);
-			roundTripGradient[r][i] = NULL;
-			roundTripGradientStep[r][i] = 0;
-			roundTripGradientUsedStep[r][i] = 0;
-		}
-	}
 }
 
 void Building::freeIdleGradients()
@@ -213,15 +188,6 @@ void Building::freeIdleGradients()
 			globalGradient[c] = NULL;
 		}
 	}
-	for (int c=0; c<SWIM_CLASS_COUNT; c++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+IDLE_TICKS<now)
-			{
-				owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][c]);
-				roundTripGradient[r][c] = NULL;
-			}
-	}
 }
 
 void Building::freeGradients()
@@ -235,16 +201,6 @@ void Building::freeGradients()
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
-	}
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-		{
-			delete[] roundTripGradient[r][i];
-			roundTripGradient[r][i] = NULL;
-			roundTripGradientStep[r][i] = 0;
-			roundTripGradientUsedStep[r][i] = 0;
-		}
 	}
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{

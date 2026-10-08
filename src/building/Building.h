@@ -119,7 +119,6 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	void freeGradients();
 	// Drop the pathfinding gradients (call after the building moves or its range changes).
 	void resetPathfindGradients();
-	void resetRoundTripGradients();
 	// Request a rebuild on use once the refresh throttle permits (map changed nearby).
 	void dirtyGradients();
 
@@ -488,9 +487,9 @@ private:
 		Unit* choosen;
 	};
 
-	/// Lets src/unit/RoundTripHungerGateHarness.cpp reach considerUnitForMaterial
+	/// Lets src/unit/FetchHiringScoreHarness.cpp reach considerUnitForMaterial
 	/// without exposing it to game callers, as GameGUI does for its own harness.
-	friend class RoundTripHungerGateHarness;
+	friend class FetchHiringScoreHarness;
 
 	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,
 	/// high enough level, and close enough to reach this building before going
@@ -587,15 +586,8 @@ public:
 	// All swimming classes share passability, but keep separate weighted fields.
 	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.
 	Uint32 globalGradientUsedStep[BUILDING_GRADIENT_COUNT];
-	//! Round-trip gradients per material and swim class (see Map::roundTripGradient),
-	//! NULL until a unit fetching that material for this building asks for one, freed again
-	//! by freeIdleGradients when unused for a while. Their last rebuild and last
-	//! use, in steps.
-	Uint16 *roundTripGradient[MaterialSlotCount][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientStep[MaterialSlotCount][SWIM_CLASS_COUNT];
-	Uint32 roundTripGradientUsedStep[MaterialSlotCount][SWIM_CLASS_COUNT];
-	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
-	//! buildings with fetchers need one, and each is a full map of Uint16.
+	//! Drop the building's gradients nobody asked for lately. Each is a full map
+	//! of Uint16.
 	void freeIdleGradients();
 	BuildingRoute resolveRoute(BuildingRoute route) const;
 	int routeSlot(int swimClass, BuildingRoute route) const

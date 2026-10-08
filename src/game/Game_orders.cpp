@@ -432,7 +432,6 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				for (int swim=0; swim<BUILDING_GRADIENT_COUNT; ++swim)
 					if (building->gradientGeneration[swim] == oldGeneration)
 						building->gradientGeneration[swim] = map.topologyGeneration;
-				if (ownTeam) building->resetRoundTripGradients();
 			}
 		}
 	if (walkingChanged)

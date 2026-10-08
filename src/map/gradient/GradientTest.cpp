@@ -290,8 +290,8 @@ void GradientTest::testSeedBelowGoalPropagates()
 
 void GradientTest::testSeedsBeyondBucketWindow()
 {
-	// Seeds may start at any cost, as the round-trip gradients seed resource
-	// tiles with their distance to a building. Walls along x=2 and y=2 cut
+	// Seeds may start at any cost, as resource gradients seed a market with
+	// its pickup penalty. Walls along x=2 and y=2 cut
 	// the torus into one 7x7 rectangle with the goal in the corner (3,3) and
 	// a seed at cost 60 in the opposite corner (1,1), 84 from the goal.
 	GrassMap map;

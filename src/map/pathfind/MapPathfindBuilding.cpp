@@ -13,26 +13,12 @@
 
 
 
-// Building pathfinding (buildingGradient, buildingAvailable, roundTripGradient,
-// roundTripDistance, pathfindBuilding)
+// Building pathfinding (buildingGradient, buildingAvailable, pathfindBuilding)
 
 namespace {
 
 // A unit that cannot make progress forces a rebuild at most this often (~5 s).
 constexpr Uint32 STUCK_REBUILD_TICKS = 128;
-// A round-trip gradient follows its two parents with at most this delay (the
-// resource gradient stays authoritative for reachability, so staleness only
-// costs a detour). Building::freeIdleGradients drops unused ones.
-// This timer is the only thing that refreshes the child: a topology generation
-// bump rebuilds the parent walking field on its next use, but does not
-// propagate to the round-trip fields derived from it, so for up to this many
-// ticks a fetcher can be priced against the ground as it was before the
-// change. It still cannot walk into a wall - directionByGradient re-tests live
-// passability on every candidate step - so the cost is a detour, and the
-// alternative (stamping the parent's generation on the child) would rebuild
-// every live child on every structural change, which measured far worse than
-// the detour it removes.
-constexpr Uint32 ROUND_TRIP_REFRESH_TICKS = 120;
 
 
 } // namespace
@@ -102,42 +88,6 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 	Uint16 g=buildingGradientValue(building, swimClass, coordToIndex(x, y), route);
 	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
 		g=buildingGradientValue(building, swimClass, coordToIndex(x+tabClose[d][0], y+tabClose[d][1]), route);
-	if (g<=GRADIENT_UNREACHABLE)
-		return false;
-	*dist=gradientTiles(g);
-	return true;
-}
-
-
-const Uint16 *Map::roundTripGradientSlot(Building *building, int resourceType, int swimClass)
-{
-	if (!prepareBuildingGradient(building, swimClass, BuildingRoute::Footprint))
-		return NULL;
-	Uint32 now=game->stepCounter;
-	Uint16 *&gradient=building->roundTripGradient[resourceType][swimClass];
-	building->roundTripGradientUsedStep[resourceType][swimClass]=now;
-	if (gradient!=NULL && building->roundTripGradientStep[resourceType][swimClass]+ROUND_TRIP_REFRESH_TICKS>now)
-		return gradient;
-	if (gradient==NULL)
-		gradient=acquireBuildingGradientBuffer();
-	updateRoundTripGradientSlot(building, resourceType, swimClass);
-	return gradient;
-}
-
-bool Map::roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist)
-{
-	PERF_SCOPE_TIME(PathBuilding);
-	// Only gradients a fetcher keeps alive: hiring looks at every needed
-	// resource of every building, far more than ever get fetched.
-	const Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
-	if (gradient==NULL)
-		return false;
-	// It may be a few ticks older than the resource gradient the callers walk
-	// by; never report a resource that one says is gone.
-	if (!materialAvailableSlot(building->owner->teamNumber, resourceType, swimClass, x, y, false, building))
-		return false;
-	building->roundTripGradientUsedStep[resourceType][swimClass]=game->stepCounter;
-	Uint16 g=gradient[coordToIndex(x, y)];
 	if (g<=GRADIENT_UNREACHABLE)
 		return false;
 	*dist=gradientTiles(g);

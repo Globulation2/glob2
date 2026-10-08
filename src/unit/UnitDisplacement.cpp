@@ -202,9 +202,7 @@ void Unit::handleDisplacement(void)
 								const int need=needs[r];
 								if (need<=0) continue;
 								int distance;
-								bool available=map->roundTripDistanceSlot(attachedBuilding,r,swimClass(),posX,posY,&distance);
-								if (available) distance=(distance+1)/2;
-								else available=map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								const bool available=map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
 								if (!available || (distance<<1)>=timeLeft) continue;
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }

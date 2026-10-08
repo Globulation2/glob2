@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 146
+#define VERSION_MINOR 147
+// version 147 removes round-trip resource fetching: workers always fetch greedily, and
+//             saves drop the round-trip fields that earlier formats carry and the loader discards.
 // version 146 stores terrain once per map vertex.
 // version 145 embeds immutable custom building artwork; older save readers remain supported.
 // version 144 embeds custom terrain/resource artwork and set attribution in maps and saves.

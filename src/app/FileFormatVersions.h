@@ -90,6 +90,7 @@ static constexpr int FILE_FORMAT_VERSION_PENDING_CONSTRUCTION = 90;
 static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
 
 //! A building's round-trip fields and gradient use stamps join the cached routing fields.
+//! The round-trip fields are read and discarded from FILE_FORMAT_VERSION_GREEDY_FETCHING on.
 static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
 
 //! The map's topology generation and each cached field's generation stamp
@@ -232,3 +233,7 @@ static constexpr int FILE_FORMAT_VERSION_BUILDING_ARTWORK = 145;
 //! per-cell terrain IDs, converted to vertices on load. The two shore types are
 //! retired and the catalogue IDs behind TRAIL move down by two.
 static constexpr int FILE_FORMAT_VERSION_VERTEX_TERRAIN = 146;
+
+//! Resource fetching is greedy only: buildings save their walking fields' last-use
+//! steps without the retired round-trip fields that formats 95-146 carried.
+static constexpr int FILE_FORMAT_VERSION_GREEDY_FETCHING = 147;

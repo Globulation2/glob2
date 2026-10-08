@@ -186,9 +186,7 @@ namespace
 			return false;
 		if (u->carriedMaterial >= 0)
 			return u->carriedMaterial == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
-		if (map->roundTripDistanceSlot(b, resource, swimClass, u->posX, u->posY, cost))
-			return true;
-		// No round-trip field for this class yet: the plain distances, as hiring uses them.
+		// Fetch and carry: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
 		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
 			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
