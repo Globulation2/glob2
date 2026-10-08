@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScoredSettlements.h"
 #include "Game.h"
@@ -22,7 +23,8 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 	context.telemetry.measure("starts.scored.proposals", proposals.size());
 	for (size_t k = 0; k < proposals.size(); ++k)
 	{
-		if (int(proposals[k].size()) != context.request.nbTeams)
+		::MapGeneration::generationCheckpoint();
+		if (int(proposals.at(k).size()) != context.request.nbTeams)
 		{
 			context.telemetry.choice("starts.scored.outcome", "incomplete proposal", int(k));
 			continue;
@@ -35,7 +37,7 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 		trial.map.setGame(&trial);
 		GenerationContext probe(initial);
 		syncRandEngine() = engine.initial;
-		if (!build(trial, probe, proposals[k]))
+		if (!build(trial, probe, proposals.at(k)))
 		{
 			result.failure =
 				probe.detail.empty() ? "Settlement construction failed." : probe.detail;
@@ -60,7 +62,7 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 		{
 			bestScore = quality.score;
 			result.selected = int(k);
-			result.sites = proposals[k];
+			result.sites = proposals.at(k);
 			result.quality = quality;
 		}
 	}

@@ -6,7 +6,7 @@ import re
 import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, prepare_directory, PACKAGE_VERSION
-from javascript import javascript_objects, numeric_guard
+from javascript import javascript_objects, numeric_guard, strict_numeric_source, guarded_numeric_source
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import web_assets
@@ -158,12 +158,12 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     objects = []
     for f in files:
-        local = strict if f.startswith('src/scripting/javascript/') or f == 'src/ai/javascript/AIJavaScript.cpp' else env
+        local = strict if strict_numeric_source(f) else env
         if f == 'src/app/Glob2.cpp':
             local = local.Clone()
             local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
         objects.append(local.Object(str(output / 'obj' / (f + '.o')), f))
-    numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp'])
+    numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
     objects += javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
     env.Requires(objects, ports)
     env.Depends(objects, str(config))

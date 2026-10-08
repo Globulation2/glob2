@@ -378,3 +378,11 @@ accepts components 0–255 and defaults to `0,192,255`. Missing values, extra to
 overflow and invalid dimensions are errors. A separately supplied saved game must
 represent the field's geography; automatic [Maxima field captures](../ai/telemetry.md#maxima-placement-fields)
 retain their own matching Scene for PNG output.
+
+## Custom generator packages
+
+Use the repeatable `--generator-package PATH` launch option with a portable JSON
+package or authoring directory. Select its namespaced ID in `--generate-map`,
+`--headless` or catalog output. `--export-generator-package FILE` with
+`--generate-map` saves the exact package used for that run. See
+[JavaScript generators](JAVASCRIPT.md) for the manifest and authoring API.

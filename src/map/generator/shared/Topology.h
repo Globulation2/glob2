@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include <vector>
 namespace MapGeneration
 {
@@ -40,12 +41,18 @@ struct DisjointSets
 	explicit DisjointSets(int n) : parent(size_t(n))
 	{
 		for (int i = 0; i < n; ++i)
-			parent[i] = i;
+		{
+			::MapGeneration::generationCheckpoint();
+			parent.at(i) = i;
+		}
 	}
 	int find(int a)
 	{
-		while (parent[a] != a)
-			a = parent[a] = parent[parent[a]];
+		while (parent.at(a) != a)
+		{
+			::MapGeneration::generationCheckpoint();
+			a = parent.at(a) = parent.at(parent.at(a));
+		}
 		return a;
 	}
 	/// Joins the two sets; false when they were one already.
@@ -55,7 +62,7 @@ struct DisjointSets
 		b = find(b);
 		if (a == b)
 			return false;
-		parent[a] = b;
+		parent.at(a) = b;
 		return true;
 	}
 	bool joined(int a, int b) { return find(a) == find(b); }

@@ -149,7 +149,7 @@ GenerationRequest fromLegacyDescriptor(const D &d, std::uint32_t seed)
 	r.hDec = d.hDec;
 	r.nbTeams = d.nbTeams;
 	r.nbWorkers = d.nbWorkers;
-	if (!GeneratorRegistry::builtins().find(d.method))
+	if (!GeneratorRegistry::active().find(d.method))
 		return r;
 	for (const auto &c : D::controls(d.method))
 	{
@@ -178,12 +178,14 @@ GenerationRequest fromLegacyDescriptor(const D &d, std::uint32_t seed)
 D toLegacyDescriptor(const GenerationRequest &r)
 {
 	D d;
-	d.setMethodDefaults(static_cast<D::Method>(r.method));
+	const bool custom = !r.definition().packageHash.empty();
+	d.setMethodDefaults(static_cast<D::Method>(custom ? GenerationRequest::eUNIFORM : r.method));
 	d.terrainType = r.terrainType;
 	for (const auto &c : D::sharedControls())
 		c.set(d, c.get(r));
-	for (const auto &c : D::controls(d.method))
-		c.set(d, c.get(r));
+	if (!custom)
+		for (const auto &c : D::controls(d.method))
+			c.set(d, c.get(r));
 	std::copy(r.resourceAmounts.begin(), r.resourceAmounts.end(), d.resource);
 	return d;
 }

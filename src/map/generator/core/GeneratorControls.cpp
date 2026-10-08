@@ -166,29 +166,40 @@ GenerationRequest::GenerationRequest()
 }
 void GenerationRequest::setMethodDefaults(int id)
 {
-	setMethodDefaults(id, GeneratorRegistry::builtins());
+	setMethodDefaults(id, GeneratorRegistry::activeSnapshot());
 }
 void GenerationRequest::setMethodDefaults(int id, const GeneratorRegistry &registry)
 {
+	setMethodDefaults(id, &registry == &GeneratorRegistry::builtins()
+							  ? GeneratorRegistry::builtinsSnapshot()
+							  : std::make_shared<const GeneratorRegistry>(registry));
+}
+void GenerationRequest::setMethodDefaults(int id, std::shared_ptr<const GeneratorRegistry> snapshot)
+{
+	if (!snapshot)
+		throw std::invalid_argument("Missing generator catalog");
+	const auto &selected = snapshot->at(id);
+	std::map<std::string, int> defaults;
+	for (const auto &c : selected.controls)
+		defaults.emplace(c.id, c.defaultValue);
 	method = id;
-	options.clear();
-	for (const auto &c : registry.at(id).controls)
-		c.set(*this, c.defaultValue);
+	catalog = std::move(snapshot);
+	options = std::move(defaults);
 }
 const std::vector<GeneratorControl> &GenerationRequest::controls(int id)
 {
-	return GeneratorRegistry::builtins().at(id).controls;
+	return GeneratorRegistry::active().at(id).controls;
 }
 const char *GenerationRequest::methodName(int id)
 {
-	return GeneratorRegistry::builtins().at(id).nameKey;
+	return GeneratorRegistry::active().at(id).nameKey;
 }
 bool GenerationRequest::randomizeControls(std::uint32_t seed, int attempts,
 										  ParameterDomain sampling)
 {
 	// A stream of its own: this is lobby randomness, nothing the simulation ever sees.
 	std::mt19937 rng(seed);
-	const GeneratorDefinition &definition = GeneratorRegistry::builtins().at(method);
+	const GeneratorDefinition &definition = this->definition();
 	for (int attempt = 0; attempt < attempts; ++attempt)
 	{
 		GenerationRequest draft = *this;
@@ -225,7 +236,7 @@ const GeneratorControl &GenerationRequest::control(int method, const std::string
 }
 bool GenerationRequest::hasTerrainWeight() const
 {
-	return hasTerrainWeight(controls(method));
+	return hasTerrainWeight(definition().controls);
 }
 bool GenerationRequest::hasTerrainWeight(const std::vector<Control> &definitions) const
 {
@@ -241,10 +252,18 @@ bool GenerationRequest::hasTerrainWeight(const std::vector<Control> &definitions
 }
 void GenerationHistory::select(GenerationRequest &current, int id)
 {
-	select(current, id, GeneratorRegistry::builtins());
+	select(current, id, GeneratorRegistry::activeSnapshot());
 }
 void GenerationHistory::select(GenerationRequest &current, int id,
 							   const GeneratorRegistry &registry)
+{
+	select(current, id,
+		   &registry == &GeneratorRegistry::builtins()
+			   ? GeneratorRegistry::builtinsSnapshot()
+			   : std::make_shared<const GeneratorRegistry>(registry));
+}
+void GenerationHistory::select(GenerationRequest &current, int id,
+							   std::shared_ptr<const GeneratorRegistry> registry)
 {
 	if (id == current.method)
 		return;
@@ -254,11 +273,30 @@ void GenerationHistory::select(GenerationRequest &current, int id,
 	if (it != settings.end())
 		next = it->second;
 	else
-		next.setMethodDefaults(id, registry);
+		next.setMethodDefaults(id, std::move(registry));
 	// carry the size as is: an editor map of 32 stays 32 when the landscape changes
 	for (const auto &c : sharedGeneratorControls())
 		editorSizeControl(c).set(next, c.get(current));
 	next.terrainType = current.terrainType;
 	next.seed = current.seed;
 	current = next;
+}
+
+std::shared_ptr<const GeneratorRegistry> GenerationRequest::catalogSnapshot() const
+{
+	return catalog ? catalog : GeneratorRegistry::activeSnapshot();
+}
+const GeneratorDefinition &GenerationRequest::definition() const
+{
+	return (catalog ? *catalog : GeneratorRegistry::active()).at(method);
+}
+const GeneratorControl &GenerationRequest::control(const std::string &id) const
+{
+	for (const auto &c : sharedControls())
+		if (c.id == id)
+			return c;
+	for (const auto &c : definition().controls)
+		if (c.id == id)
+			return c;
+	throw std::invalid_argument("Unknown generator control: " + id);
 }

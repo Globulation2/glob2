@@ -36,7 +36,9 @@ OpenLibm compatibility aliases are removed so no system math symbol is exported.
 QuickJS also uses a fixed context hash seed, a deterministic 256-frame recursion
 limit, and lexical rejection of BigInt and async/await. Native operations charge
 linearly for receiver/argument container sizes before execution. Profile restrictions
-are host/runtime policy; never link quickjs-libc or expose the CLI's OS modules.
+are host/runtime policy. The map-generator host explicitly enables package-local
+static imports; dynamic imports, async/await and imports in existing AI/scenario
+hosts remain disabled. Never link quickjs-libc or expose the CLI's OS modules.
 The host installs only base, JSON and Map/Set intrinsics (Promise/Eval internals
 support module evaluation but their user globals and constructors are disabled).
 

@@ -23,6 +23,7 @@
 #include "GenerationService.h"
 #include "GenerationValidation.h"
 #include "GeneratorRegistry.h"
+#include "GeneratorPackage.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Race.h"
@@ -66,7 +67,7 @@ std::uint32_t number(const std::string &text)
 }
 int method(const std::string &name)
 {
-	const auto &registry = GeneratorRegistry::builtins();
+	const auto &registry = GeneratorRegistry::active();
 	for (int id : registry.methods())
 		if (name == registry.at(id).id || name == std::to_string(id))
 			return id;
@@ -100,14 +101,14 @@ void configure(GenerationRequest &request, const MapSettings &settings)
 		if (value == values.end())
 			throw std::runtime_error("Invalid value for " + entry.first + ": " + entry.second +
 									 "; use --list-map-generators " +
-									 GeneratorRegistry::builtins().at(request.method).id);
+									 GeneratorRegistry::active().at(request.method).id);
 		c->set(request, *value);
 	}
 	// Relationship validation runs in GenerationService so failures retain JSON diagnostics.
 }
 void catalog(const std::string &name)
 {
-	const auto &registry = GeneratorRegistry::builtins();
+	const auto &registry = GeneratorRegistry::active();
 	const auto methods = name.empty() ? registry.methods() : std::vector<int>{method(name)};
 	for (int id : methods)
 	{
@@ -254,6 +255,9 @@ void printMapCommandHelp()
 		   "    [--image-seam-width 0..16] (default: map short side / 32, clamped 2..12)\n"
 		   "  --generate-map <generator> --map-image image.png [other outputs/settings]\n"
 		   "  --list-map-generators [generator]  List IDs, or settings and allowed values\n"
+		   "  --generator-package PATH  Load a custom generator package or development directory\n"
+		   "  --export-generator-package FILE  Export the selected custom package with a generated "
+		   "map\n"
 		   "Preview scale: --preview-scale 2|4|8 (default 2, relative to retained thumbnail "
 		   "pixels).\n"
 		   "Or --preview-size 128..4096 (explicit longest side; cannot combine with scale).\n"
@@ -457,7 +461,8 @@ int runMapCommand(int argc, char **argv)
 		const bool importing = mode == "--import-map-image";
 		const bool exporting = mode == "--export-map-image";
 		const bool writesMap = generate || importing;
-		std::string output, preview, config, json, mapImage, renderField, fieldColor;
+		std::string output, preview, config, json, mapImage, renderField, fieldColor,
+			generatorExport;
 		int renderPixels = MapRender::DefaultPixels;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
@@ -489,6 +494,8 @@ int runMapCommand(int argc, char **argv)
 				renderField = value;
 			else if (arg == "--field-color" && render)
 				fieldColor = value;
+			else if (arg == "--export-generator-package" && generate)
+				generatorExport = value;
 			else if (arg == "--json" && !render)
 				json = value;
 			else if (arg == "--preview" && writesMap)
@@ -541,8 +548,8 @@ int runMapCommand(int argc, char **argv)
 		if (sizeSpecified && scaleSpecified)
 			throw std::runtime_error("Choose --preview-size or --preview-scale, not both");
 		// Compare the actual gzip destination as well as the user-supplied name.
-		std::vector<std::string> paths{output,     writesMap ? preview : "", config, json, mapImage,
-									   renderField};
+		std::vector<std::string> paths{
+			output, writesMap ? preview : "", config, json, mapImage, renderField, generatorExport};
 		if (!generate)
 		{
 			paths.push_back(argv[2]);
@@ -561,6 +568,20 @@ int runMapCommand(int argc, char **argv)
 		{
 			request.setMethodDefaults(method(argv[2]));
 			request.seed = 1;
+			if (!generatorExport.empty())
+			{
+				const auto &definition = request.definition();
+				if (!definition.apiVersion || !definition.owner)
+					throw std::runtime_error("Package export requires a custom generator");
+				auto package = std::static_pointer_cast<const MapGeneration::JavaScript::Package>(
+					definition.owner);
+				parentDirectory(generatorExport);
+				std::ofstream file(generatorExport, std::ios::binary);
+				file << package->canonical;
+				file.close();
+				if (!file)
+					throw std::runtime_error("Cannot export generator package");
+			}
 			if (!config.empty())
 			{
 				std::ifstream in(config);

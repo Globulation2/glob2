@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Raster.h"
 #include <algorithm>
@@ -97,11 +98,17 @@ std::vector<unsigned char> resampleMajority(const std::vector<unsigned char> &so
 						  {
 							  std::fill(std::begin(counts), std::end(counts), 0);
 							  for (unsigned char c : cells)
+							  {
+								  ::MapGeneration::generationCheckpoint();
 								  ++counts[c & mask];
+							  }
 							  int best = 0;
 							  for (int v = 1; v < 256; ++v)
+							  {
+								  ::MapGeneration::generationCheckpoint();
 								  if (counts[v] > counts[best])
 									  best = v;
+							  }
 							  return (unsigned char)best;
 						  });
 }
@@ -113,8 +120,11 @@ std::vector<unsigned char> resampleAny(const std::vector<unsigned char> &source,
 						  [&](const std::vector<unsigned char> &cells)
 						  {
 							  for (unsigned char c : cells)
+							  {
+								  ::MapGeneration::generationCheckpoint();
 								  if (c & flag)
 									  return (unsigned char)1;
+							  }
 							  return (unsigned char)0;
 						  });
 }

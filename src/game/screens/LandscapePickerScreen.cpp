@@ -92,8 +92,7 @@ void LandscapePickerScreen::recomputeIncompatible()
 		const auto &entry = entries[i];
 		if (entry.method < 0)
 			continue;
-		if (const auto *definition = GeneratorRegistry::builtins().find(entry.method))
-			incompatible[i] = validateGenerationRequest(entry.request, *definition);
+		incompatible[i] = validateGenerationRequest(entry.request, entry.request.definition());
 	}
 }
 

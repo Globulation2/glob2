@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <map>
 #include <string>
+#include <memory>
+struct GeneratorDefinition;
 class GeneratorRegistry;
 struct GenerationRequest
 {
@@ -37,6 +39,12 @@ struct GenerationRequest
 	using ControlGroup = ::ControlGroup;
 	GenerationRequest();
 	int method = eUNIFORM; // stable registry ID, never a selection index
+	// Owns the selected catalog, including package-backed labels and callbacks. Publication
+	// changes future selections; this request keeps its original package revision.
+	std::shared_ptr<const GeneratorRegistry> catalog;
+	std::shared_ptr<const GeneratorRegistry> catalogSnapshot() const;
+	const GeneratorDefinition &definition() const;
+	const Control &control(const std::string &id) const;
 	int wDec = 0, hDec = 0, nbTeams = 0, nbWorkers = 0;
 	TerrainType terrainType = GRASS;
 	std::uint32_t seed = 0;
@@ -45,6 +53,8 @@ struct GenerationRequest
 	std::array<int, MaterialSlotCount> resourceAmounts{};
 	int option(const std::string &id) const { return options.at(id); }
 	void setMethodDefaults(int method);
+	// Retain a catalog once; reference overloads deliberately copy non-static registries.
+	void setMethodDefaults(int method, std::shared_ptr<const GeneratorRegistry> catalog);
 	void setMethodDefaults(int method, const GeneratorRegistry &registry);
 	bool hasTerrainWeight() const;
 	bool hasTerrainWeight(const std::vector<Control> &definitions) const;
@@ -72,5 +82,7 @@ class GenerationHistory
 
   public:
 	void select(GenerationRequest &current, int method);
+	void select(GenerationRequest &current, int method,
+				std::shared_ptr<const GeneratorRegistry> catalog);
 	void select(GenerationRequest &current, int method, const GeneratorRegistry &registry);
 };

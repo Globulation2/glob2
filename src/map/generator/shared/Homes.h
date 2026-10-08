@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Drawing.h"
 #include "FertilityField.h"
 #include "GenerationContext.h"
@@ -68,10 +70,11 @@ ShapePoint stampRoundHome(const Torus &t, ShapePoint centre, double axis, const 
 	ShapePoint first = centre;
 	for (int p = 0; p < std::clamp(ponds, 0, 2) && pond; ++p)
 	{
-		const double px =
-			centre.x + offsets[p][0] * std::cos(axis) - offsets[p][1] * std::sin(axis);
-		const double py =
-			centre.y + offsets[p][0] * std::sin(axis) + offsets[p][1] * std::cos(axis);
+		::MapGeneration::generationCheckpoint();
+		const double px = centre.x + offsets[p][0] * ::MapGeneration::Numeric::cos(axis) -
+						  offsets[p][1] * ::MapGeneration::Numeric::sin(axis);
+		const double py = centre.y + offsets[p][0] * ::MapGeneration::Numeric::sin(axis) +
+						  offsets[p][1] * ::MapGeneration::Numeric::cos(axis);
 		if (p == 0)
 			first = {px, py};
 		fillShape(pondMask, t, px, py, *pond, axis);
@@ -85,7 +88,8 @@ inline MapGeneratorPoint homeSwarmSite(ShapePoint centre, double axis, double ra
 {
 	const ShapePoint p =
 		polarPoint(centre.x, centre.y, std::min(0.3 * radius, kHomeSwarmReach), axis + kPi);
-	return MapGeneratorPoint(int(std::lround(p.x)) - 2, int(std::lround(p.y)) - 2);
+	return MapGeneratorPoint(int(::MapGeneration::Numeric::lround(p.x)) - 2,
+							 int(::MapGeneration::Numeric::lround(p.y)) - 2);
 }
 
 /// A round home's starter kit, round `kitCentre` (stampRoundHome's result): a wheat patch and a wood
@@ -95,7 +99,8 @@ template <typename Eligible>
 void plantHomeKit(Map &map, const Torus &t, GenerationContext &context, ShapePoint kitCentre,
 				  double axis, double homeRadius, int wheat, int wood, Eligible eligible)
 {
-	const KitFrame frame{int(std::lround(kitCentre.x)), int(std::lround(kitCentre.y)), axis};
+	const KitFrame frame{int(::MapGeneration::Numeric::lround(kitCentre.x)),
+						 int(::MapGeneration::Numeric::lround(kitCentre.y)), axis};
 	const double reach = homePondRadius(homeRadius) * 1.2 + 3;
 	const Kit kit{frame.at(-0.4 * reach, -reach, 12),
 				  frame.at(-0.4 * reach, reach, 12),
@@ -118,8 +123,11 @@ inline std::vector<ShapePoint> stampRoundHomes(const Torus &t, const std::vector
 {
 	std::vector<ShapePoint> kits;
 	for (size_t k = 0; k < sites.size(); ++k)
-		kits.push_back(stampRoundHome(t, sites[k], axis, home, radius, ponds, pond, pondMask,
-									  [&](int i) { homeOf[i] = int(k); }));
+	{
+		::MapGeneration::generationCheckpoint();
+		kits.push_back(stampRoundHome(t, sites.at(k), axis, home, radius, ponds, pond, pondMask,
+									  [&](int i) { homeOf.at(i) = int(k); }));
+	}
 	return kits;
 }
 
@@ -131,7 +139,8 @@ void plantOpenHomeKit(Map &map, const Torus &t, GenerationContext &context, Shap
 					  double axis, double homeRadius, int wheat, int wood, int quarry,
 					  Eligible eligible)
 {
-	const KitFrame frame{int(std::lround(kitCentre.x)), int(std::lround(kitCentre.y)), axis};
+	const KitFrame frame{int(::MapGeneration::Numeric::lround(kitCentre.x)),
+						 int(::MapGeneration::Numeric::lround(kitCentre.y)), axis};
 	const double reach = homePondRadius(homeRadius) * 1.2 + 3;
 	const Kit kit{frame.at(-0.4 * reach, -reach, 12),
 				  frame.at(-0.4 * reach, reach, 12),
@@ -199,7 +208,8 @@ inline MapGeneratorPoint teardropHomeSwarm(ShapePoint centre, double heading, co
 										   const TeardropHome &home)
 {
 	const ShapePoint p = polarPoint(centre.x, centre.y, home.swarmAt(shape), heading);
-	return MapGeneratorPoint(int(std::lround(p.x)) - 2, int(std::lround(p.y)) - 2);
+	return MapGeneratorPoint(int(::MapGeneration::Numeric::lround(p.x)) - 2,
+							 int(::MapGeneration::Numeric::lround(p.y)) - 2);
 }
 
 /// A teardrop home's starter kit: `wheat` and `wood` tiles seeded on the tail just past the collar,
@@ -208,7 +218,8 @@ inline MapGeneratorPoint teardropHomeSwarm(ShapePoint centre, double heading, co
 inline Kit teardropHomeKit(ShapePoint centre, double heading, const Teardrop &shape,
 						   const TeardropHome &home, int wheat, int wood, int quarry)
 {
-	const KitFrame frame{int(std::lround(centre.x)), int(std::lround(centre.y)), heading};
+	const KitFrame frame{int(::MapGeneration::Numeric::lround(centre.x)),
+						 int(::MapGeneration::Numeric::lround(centre.y)), heading};
 	const double kitAlong = home.collarAt(shape) + home.collarWidth / 2 + home.kitPastCollar;
 	const double kitAcross = home.kitAcrossShare * shape.width / 2;
 	return {frame.at(kitAlong, -kitAcross, home.kitReach),
@@ -242,12 +253,18 @@ inline RegionHome regionHome(const Torus &t, const std::vector<unsigned char> &r
 	const std::vector<int> steps = stepsFrom(t, tileMask(t, door), region);
 	std::vector<unsigned char> blocked(region.size(), 0);
 	for (size_t i = 0; i < region.size(); ++i)
-		blocked[i] = !region[i] || (keepClear && (*keepClear)[i]);
+	{
+		::MapGeneration::generationCheckpoint();
+		blocked.at(i) = !region.at(i) || (keepClear && (*keepClear).at(i));
+	}
 	std::vector<int> room = stepsFrom(t, blocked);
 	std::vector<int> depthIn(steps);
 	for (size_t i = 0; i < region.size(); ++i)
-		if (!region[i])
-			depthIn[i] = -1;
+	{
+		::MapGeneration::generationCheckpoint();
+		if (!region.at(i))
+			depthIn.at(i) = -1;
+	}
 	home.site = siteAtDepth(depthIn, room, depth, minimumRoom, spread);
 	if (home.site < 0)
 		return home;
@@ -256,12 +273,13 @@ inline RegionHome regionHome(const Torus &t, const std::vector<unsigned char> &r
 	double ox = 0, oy = 0;
 	for (int d : door)
 	{
+		::MapGeneration::generationCheckpoint();
 		ox += t.offsetX(sx, d % t.w);
 		oy += t.offsetY(sy, d / t.w);
 	}
 	ox /= double(door.size());
 	oy /= double(door.size());
-	home.axis = (ox == 0 && oy == 0) ? 0 : std::atan2(-oy, -ox);
+	home.axis = (ox == 0 && oy == 0) ? 0 : ::MapGeneration::Numeric::atan2(-oy, -ox);
 	home.swarm = MapGeneratorPoint(sx - 2, sy - 2);
 	home.kitCentre = polarPoint(sx, sy, kHomeSwarmReach, home.axis);
 	return home;
@@ -298,20 +316,24 @@ void furnishGround(
 	std::vector<std::pair<double, int>> farm;
 	std::vector<float> levels;
 	for (int i = 0; i < n; ++i)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (eligible(i))
 		{
 			ground.push_back(i);
 			if (fertility.at(i % t.w, i / t.w) > 0)
 				levels.push_back(patchAt(i));
 		}
+	}
 	float cut = 0;
 	if (!levels.empty())
 	{
 		std::nth_element(levels.begin(), levels.begin() + levels.size() * 45 / 100, levels.end());
-		cut = levels[levels.size() * 45 / 100];
+		cut = levels.at(levels.size() * 45 / 100);
 	}
 	for (int i : ground)
 	{
+		::MapGeneration::generationCheckpoint();
 		const std::uint32_t f = fertility.at(i % t.w, i / t.w);
 		if (f > 0 && patchAt(i) >= cut)
 			farm.push_back({-double(f), i});
@@ -319,7 +341,10 @@ void furnishGround(
 	std::stable_sort(farm.begin(), farm.end());
 	std::vector<int> chosen;
 	for (const auto &entry : farm)
+	{
+		::MapGeneration::generationCheckpoint();
 		chosen.push_back(entry.second);
+	}
 	const GroundAmounts amounts = amountsFor(int(ground.size()));
 	plantFields(map, t, chosen, amounts.wheat, amounts.wood, splitAt);
 	const auto clumpGround = [&](int i) { return eligible(i) && clumpsAllowed(i); };
@@ -349,8 +374,14 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 	const int sx = site % t.w, sy = site / t.w;
 	int wheat = 0;
 	for (int dy = -reach; dy <= reach; ++dy)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dx = -reach; dx <= reach; ++dx)
+		{
+			::MapGeneration::generationCheckpoint();
 			wheat += map.materialAmountAt(t.at(sx + dx, sy + dy), MaterialId::Food) > 0;
+		}
+	}
 	WheatTopUp result;
 	const int missing = wanted - wheat;
 	if (missing <= 0)
@@ -362,17 +393,26 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 	{
 		std::vector<std::pair<int, int>> standing;
 		for (int dy = -reach; dy <= reach; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -reach; dx <= reach; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int i = t.at(sx + dx, sy + dy);
 				const int type = map.getResource(i % t.w, i / t.w).type;
-				if (nearby(i) && ambient[i] && type != NO_RES_TYPE && !map.materialAmountAt(i, MaterialId::Food) && map.resourcePropertiesByIndex(type).clearable)
+				if (nearby(i) && ambient.at(i) && type != NO_RES_TYPE &&
+					!map.materialAmountAt(i, MaterialId::Food) &&
+					map.resourcePropertiesByIndex(type).clearable)
 					standing.push_back({dx * dx + dy * dy, i});
 			}
+		}
 		std::sort(standing.begin(), standing.end());
 		const size_t clear = std::min(standing.size(), size_t(missing - topped.tiles));
 		for (size_t c = 0; c < clear; ++c)
-			map.setNoResource(standing[c].second % t.w, standing[c].second / t.w, 0);
+		{
+			::MapGeneration::generationCheckpoint();
+			map.setNoResource(standing.at(c).second % t.w, standing.at(c).second / t.w, 0);
+		}
 		topped.tiles += growPatchesNear(map, t, sx, sy, reach, WHEAT, missing - topped.tiles, nearby).tiles;
 		result.clearedAmbient = true;
 	}

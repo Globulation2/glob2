@@ -372,3 +372,10 @@ names for the historical `wheat_distance` and `resource_amount` fields. The olde
 names and `wheat_tiles`/`wood_tiles`/`stone_tiles`/`algae_tiles` remain compatibility
 aliases for existing analysis tools; they describe material sources, not fixed
 resource identities.
+
+Custom JavaScript generation also records `generation.package_hash` (canonical
+package SHA-256), `api_version` and `toolkit_version`. Native generators have an
+empty package hash and zero script versions. `script_failed` and `budget_exceeded`
+are structured outcomes for script exceptions and resource limits. Export the
+package alongside a report to retain the source behind its hash. Loaded maps
+still have no inferred generator provenance.

@@ -4,6 +4,11 @@ The map editor, custom-game lobby and study tools share generator control defini
 including labels, ranges, steps and defaults. Uniform terrain is editor-only.
 Normal lobby generation rolls a fresh random map; the preview snapshot is the map launched.
 
+## Custom JavaScript generators
+
+[JavaScript generator authoring](JAVASCRIPT.md) covers local packages, Settings import/export,
+the native toolkit bridge, example ports, execution limits and reproducibility.
+
 ## Savannah
 
 [Savannah design and validation](SAVANNAH.md) documents the open grassland generator,

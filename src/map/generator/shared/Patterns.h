@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Drawing.h"
 #include "Grid.h"
 #include <cmath>
@@ -87,19 +89,20 @@ std::vector<StrokePoint> traceStreamline(const Torus &t, ShapePoint start, Headi
 {
 	const auto wrapped = [&](double v, int n)
 	{
-		double r = std::fmod(v, double(n));
+		double r = ::MapGeneration::Numeric::fmod(v, double(n));
 		return r < 0 ? r + n : r;
 	};
 	std::vector<StrokePoint> path{{start.x, start.y, halfWidth}};
 	double x = start.x, y = start.y;
 	for (int i = 0; i < steps; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double h0 = headingAt(wrapped(x, t.w), wrapped(y, t.h));
-		const double mx = x + 0.5 * stepLength * std::cos(h0),
-					 my = y + 0.5 * stepLength * std::sin(h0);
+		const double mx = x + 0.5 * stepLength * ::MapGeneration::Numeric::cos(h0),
+					 my = y + 0.5 * stepLength * ::MapGeneration::Numeric::sin(h0);
 		const double h = headingAt(wrapped(mx, t.w), wrapped(my, t.h));
-		x += stepLength * std::cos(h);
-		y += stepLength * std::sin(h);
+		x += stepLength * ::MapGeneration::Numeric::cos(h);
+		y += stepLength * ::MapGeneration::Numeric::sin(h);
 		path.push_back({x, y, halfWidth});
 	}
 	return path;

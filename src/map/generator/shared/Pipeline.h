@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "GenerationContext.h"
 #include "Material.h"
 #include "Geometry.h"
@@ -81,6 +82,7 @@ int resolveDesignChoice(const GenerationRequest &r, const char *key, int randomV
 	const auto domain = GenerationRequest::control(r.method, key).searchValues();
 	for (int value : domain)
 	{
+		::MapGeneration::generationCheckpoint();
 		GenerationRequest concrete = r;
 		concrete.options[key] = value;
 		GenerationContext probe(concrete);
@@ -118,8 +120,11 @@ bool settleColonies(Game &game, GenerationContext &context, const char *stream, 
 					Anchor anchor)
 {
 	for (int team = 0; team < context.request.nbTeams; ++team)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (!placeSettlement(game, context, team, homeMask(team), anchor(team), stream))
 			return false;
+	}
 	return true;
 }
 

@@ -44,6 +44,7 @@
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
+#include "GeneratorPackage.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
@@ -155,7 +156,7 @@ int Glob2::runTestMapGeneration()
 		GenerationRequest descriptor;
 		
 		using D = GenerationRequest;
-		const auto methods=GeneratorRegistry::builtins().methods(false);
+		const auto methods = GeneratorRegistry::active().methods(false);
 		auto method=methods[syncRand()%methods.size()];
 		descriptor.setMethodDefaults(method);
 		auto controls = D::sharedControls();
@@ -483,6 +484,29 @@ public:
 
 int Glob2::run(int argc, char *argv[])
 {
+	// Freeze explicitly supplied local packages before dispatching any CLI mode.
+	std::vector<char *> filtered{argv[0]};
+	Online::MemoryStorage generatorStorage;
+	MapGeneration::JavaScript::Library generatorLibrary(generatorStorage);
+	bool suppliedGenerators = false;
+	for (int i = 1; i < argc; ++i)
+	{
+		if (std::string(argv[i]) == "--generator-package")
+		{
+			if (++i >= argc)
+				throw std::invalid_argument("--generator-package requires a package or directory");
+			generatorLibrary.put(MapGeneration::JavaScript::Package::load(argv[i])->canonical);
+			suppliedGenerators = true;
+		}
+		else
+			filtered.push_back(argv[i]);
+	}
+	if (suppliedGenerators)
+		generatorLibrary.publish();
+	argc = int(filtered.size());
+	filtered.push_back(nullptr);
+	argv = filtered.data();
+
 	const int skinCommand = runRenderSkin(argc, argv);
 	if (skinCommand >= 0) return skinCommand;
 	// --generate-map has a native file/report interface and a structured job interface.
@@ -509,6 +533,19 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer->parseArgs(argc, argv);
     globalContainer->deferAssetLoading = !globalContainer->runNoX && !globalContainer->runTestGames && !globalContainer->runTestMapGeneration;
 	globalContainer->load();
+	if (!suppliedGenerators)
+	{
+		try
+		{
+			auto storage = Online::makeUserDirectoryStorage();
+			MapGeneration::JavaScript::Library(*storage).publish();
+		}
+		catch (const std::exception &error)
+		{
+			fprintf(stderr, "Custom generators: %s\n", error.what());
+		}
+	}
+
 	if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty())
 	{
 		if (globalContainer->runNoX)
@@ -629,7 +666,7 @@ int main(int argc, char *argv[])
 #if defined(__APPLE__) && !defined(GLOB2_MOBILE)
 	// Content tools resolve input and output paths relative to the caller.
 	if (!(argc > 1 &&
-		  (isMapCommand(argv[1]) || std::string(argv[1]) == "--check-script" ||
+		  (isMapCommand(argv[1]) || std::string(argv[1]) == "--generator-package" || std::string(argv[1]) == "--check-script" ||
 		   std::string(argv[1]) == "--check-ai" || std::string(argv[1]) == "--check-ai-json" || std::string(argv[1]) == "--attach-map-script" ||
 		   std::string(argv[1]) == "--compose-buildings")))
 	{

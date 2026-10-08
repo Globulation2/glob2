@@ -1077,3 +1077,8 @@ to the native document picker and streams Android exports, avoiding a full video
 copy in game memory. Execution suspension preserves timestamp gaps; background
 execution and hardware/thermal qualification require physical device testing.
 See [gameplay footage](../features/gameplay-recording.md).
+
+For focused custom-generator review, install the example packages in a disposable
+profile and set `GLOB2_GALLERY_GENERATORS_ONLY=1` when running `mobile-gallery`.
+This captures the package list, the scripted editor selection and a generated
+local-game preview using `examples:swamp`.

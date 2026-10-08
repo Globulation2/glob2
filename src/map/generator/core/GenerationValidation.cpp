@@ -1,3 +1,4 @@
+#include "GenerationResult.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PerformanceTelemetry.h>
 #include "GenerationValidation.h"
@@ -39,7 +40,8 @@ std::string validateGenerationRequest(const GenerationRequest &r, const Generato
 			return "Invalid legacy resource amount";
 	if (!r.hasTerrainWeight(d.controls))
 		return "Give at least one terrain type a nonzero weight.";
-	return d.validateRequest ? d.validateRequest(r) : std::string{};
+	try { return d.validateRequest ? d.validateRequest(r) : std::string{}; }
+    catch(const ScriptGenerationFailure &error) { return error.what(); }
 }
 std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 								   const GeneratorDefinition &d)

@@ -71,6 +71,12 @@ struct CustomGameSetup
 			colonies[i].alliance = i;
 		colonies[0].controller = Human;
 	}
+	// Online descriptors can name only server-provided native generators. Local drafts
+	// retain the installed catalog, while each selected request owns its revision.
+	static std::shared_ptr<const GeneratorRegistry> landscapeCatalog(bool forRoom)
+	{
+		return forRoom ? GeneratorRegistry::builtinsSnapshot() : GeneratorRegistry::activeSnapshot();
+	}
 	int controllerCount() const
 	{
 		int n = 0;
@@ -192,7 +198,9 @@ struct CustomGameSetup
 			return "Invalid colony count.";
 		if (random)
 		{
-			const auto *definition = GeneratorRegistry::builtins().find(generator.method);
+			const auto *definition =
+				(generator.catalog ? *generator.catalog : GeneratorRegistry::active())
+					.find(generator.method);
 			if (!definition)
 				return "Unknown generator";
 			auto request = generator;

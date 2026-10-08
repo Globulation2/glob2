@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BalancedStarts.h"
 #include "StartingLayout.h"
@@ -26,18 +27,22 @@ SeparatedSites selectSeparatedSites(const Torus &t, const std::vector<int> &cand
 	}
 	for (size_t first = 0; first < std::min<size_t>(maximumAttempts, candidates.size()); ++first)
 	{
+		::MapGeneration::generationCheckpoint();
 		++result.attempts;
 		std::vector<int> chosen{int(first)};
 		while (chosen.size() < size_t(count))
 		{
+			::MapGeneration::generationCheckpoint();
 			int winner = -1, score = -1;
 			for (size_t i = 0; i < candidates.size(); ++i)
 			{
-				const int p = candidates[i];
+				::MapGeneration::generationCheckpoint();
+				const int p = candidates.at(i);
 				int nearest = INT_MAX;
 				for (int index : chosen)
 				{
-					const int h = candidates[index];
+					::MapGeneration::generationCheckpoint();
+					const int h = candidates.at(index);
 					nearest = std::min(nearest, t.chebyshev(p % t.w, p / t.w, h % t.w, h / t.w));
 				}
 				if (nearest >= minimumSeparation && nearest > score)
@@ -85,22 +90,33 @@ std::vector<std::int16_t> distanceToMaterial(Map &map, const std::vector<std::ui
 	const Torus t(map);
 	std::vector<unsigned char> beside(size_t(t.size()), 0);
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (!map.materialAmountAt(map.coordToIndex(x,y),material))
 				continue;
 			for (int dy = -1; dy <= 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					const int np = t.at(x + dx, y + dy);
-					if (hard[np])
-						beside[np] = 1;
+					if (hard.at(np))
+						beside.at(np) = 1;
 				}
+			}
 		}
+	}
 	const std::vector<int> steps = stepsFrom(t, beside, hard);
 	std::vector<std::int16_t> dist(steps.size());
 	for (size_t i = 0; i < steps.size(); ++i)
-		dist[i] = std::int16_t(steps[i]);
+	{
+		::MapGeneration::generationCheckpoint();
+		dist.at(i) = std::int16_t(steps.at(i));
+	}
 	return dist;
 }
 } // namespace
@@ -171,28 +187,35 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 		{
 			int nx = map.normalizeX(tx), ny = map.normalizeY(ty);
 			int np = ny * w + nx;
-			if (visited[np] == visitStamp)
+			if (visited.at(np) == visitStamp)
 				return;
-			visited[np] = visitStamp;
-			queueTile[qTail] = np;
-			queueDist[qTail] = d;
+			visited.at(np) = visitStamp;
+			queueTile.at(qTail) = np;
+			queueDist.at(qTail) = d;
 			++qTail;
 		};
 		// Workers spawn on the row above the swarm, so that is where a gathering trip starts.
 		for (int i = 0; i < std::max(1, context.request.nbWorkers); ++i)
+		{
+			::MapGeneration::generationCheckpoint();
 			push(bx + layout.workerX(i), by + layout.workerY(i), 0);
+		}
 		int wood = -1, wheat = -1;
 		while (qHead < qTail && (wood < 0 || wheat < 0))
 		{
-			int p = queueTile[qHead];
-			int d = queueDist[qHead];
+			::MapGeneration::generationCheckpoint();
+			int p = queueTile.at(qHead);
+			int d = queueDist.at(qHead);
 			++qHead;
 			if (d >= limit)
 				continue;
 			int x = p % w, y = p / w;
 			for (int dy = -1; dy <= 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					if (dx == 0 && dy == 0)
 						continue;
 					int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
@@ -204,9 +227,10 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 						if (wheat < 0 && map.materialAmountAt(index,MaterialId::Food)>0)
 							wheat = d + 1;
 					}
-					if (!blocked(nx, ny) && hard[ny * w + nx])
+					if (!blocked(nx, ny) && hard.at(ny * w + nx))
 						push(nx, ny, d + 1);
 				}
+			}
 		}
 		if (wood < 0 || wheat < 0)
 			return -1;
@@ -215,17 +239,21 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 
 	std::vector<std::pair<int, int>> sites; // (score, tile index)
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (!map.isFreeForBuilding(x, y, swarm->width, swarm->height))
 				continue;
 			const int p = y * w + x;
-			if (woodDist[p] < 0 || foodSourceDistance[p] < 0)
+			if (woodDist.at(p) < 0 || foodSourceDistance.at(p) < 0)
 				continue;
 			// The bare-map distance can only understate what the built colony will walk, so it
 			// is a sound cheap filter: it shortlists sites worth the exact simulation above.
-			sites.push_back({std::max(woodDist[p], foodSourceDistance[p]), p});
+			sites.push_back({std::max(woodDist.at(p), foodSourceDistance.at(p)), p});
 		}
+	}
 	context.telemetry.measure("starts.balanced.candidate_sites", int(sites.size()));
 	if ((int)sites.size() < nbTeams)
 		return fail("insufficient resource reachable sites");
@@ -239,7 +267,10 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 		std::vector<std::pair<int, int>> thinned;
 		thinned.reserve(cap);
 		for (size_t i = 0; i < cap; ++i)
-			thinned.push_back(sites[i * sites.size() / cap]);
+		{
+			::MapGeneration::generationCheckpoint();
+			thinned.push_back(sites.at(i * sites.size() / cap));
+		}
 		sites.swap(thinned);
 	}
 
@@ -251,6 +282,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 		exact.reserve(sites.size());
 		for (const auto &s : sites)
 		{
+			::MapGeneration::generationCheckpoint();
 			// 32 steps: the wood range of the start guarantee, the farthest a start's resources are
 			// allowed to be.
 			const int built = scoreAsBuilt(s.second % w, s.second / w, 32);
@@ -272,27 +304,32 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	int bestSpread = -1;
 	for (size_t i = 0; i < sites.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (bestSpread == 0)
 			break;
 		std::vector<int> picked;
 		for (size_t j = i; j < sites.size(); ++j)
 		{
-			if (bestSpread >= 0 && sites[j].first - sites[i].first >= bestSpread)
+			::MapGeneration::generationCheckpoint();
+			if (bestSpread >= 0 && sites.at(j).first - sites.at(i).first >= bestSpread)
 				break; // this window is already no better than what we hold
-			const int px = sites[j].second % w, py = sites[j].second / w;
+			const int px = sites.at(j).second % w, py = sites.at(j).second / w;
 			bool farEnough = true;
 			for (int q : picked)
+			{
+				::MapGeneration::generationCheckpoint();
 				if (map.warpDistSquare(px, py, q % w, q / w) < minDistSquare)
 				{
 					farEnough = false;
 					break;
 				}
+			}
 			if (!farEnough)
 				continue;
-			picked.push_back(sites[j].second);
+			picked.push_back(sites.at(j).second);
 			if ((int)picked.size() == nbTeams)
 			{
-				bestSpread = sites[j].first - sites[i].first;
+				bestSpread = sites.at(j).first - sites.at(i).first;
 				best = picked;
 				break;
 			}
@@ -305,8 +342,9 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	context.telemetry.choice("starts.balanced.outcome", "selected");
 	for (int team = 0; team < nbTeams; ++team)
 	{
-		context.bootX[team] = best[team] % w;
-		context.bootY[team] = best[team] / w;
+		::MapGeneration::generationCheckpoint();
+		context.bootX[team] = best.at(team) % w;
+		context.bootY[team] = best.at(team) / w;
 	}
 	return true;
 }

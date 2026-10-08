@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
@@ -22,7 +23,8 @@ void adjustHeightmapFromPoints(Map &map, std::vector<MapGeneratorPoint> &points,
 {
 	for (unsigned int i = 0; i < points.size(); ++i)
 	{
-		heightmap[points[i].y * map.getW() + points[i].x] += value;
+		::MapGeneration::generationCheckpoint();
+		heightmap.at(points.at(i).y * map.getW() + points.at(i).x) += value;
 	}
 }
 
@@ -42,9 +44,11 @@ void adjustHeightmapFromPerlinNoise(Map &map, GenerationContext &context, std::v
 	// memory instead of striding by a full row on every step.
 	for (int y = 0; y < map.getH(); ++y)
 	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < map.getW(); ++x)
 		{
-			heights[y * map.getW() + x] += noise.uiLevel(x, y, spread * 2) - spread;
+			::MapGeneration::generationCheckpoint();
+			heights.at(y * map.getW() + x) += noise.uiLevel(x, y, spread * 2) - spread;
 		}
 	}
 }
@@ -60,14 +64,23 @@ void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 	const Torus t(map);
 	std::vector<unsigned char> source(size_t(t.size()), 0), open(size_t(t.size()), 1);
 	for (const MapGeneratorPoint &p : sources)
-		source[t.at(p.x, p.y)] = 1;
+	{
+		::MapGeneration::generationCheckpoint();
+		source.at(t.at(p.x, p.y)) = 1;
+	}
 	for (const MapGeneratorPoint &p : obstacles)
-		open[t.at(p.x, p.y)] = 0;
+	{
+		::MapGeneration::generationCheckpoint();
+		open.at(t.at(p.x, p.y)) = 0;
+	}
 	const std::vector<int> steps = stepsFrom(t, source, open);
 	// The historical encoding: a source reads 1, each ring one more, obstacles -1, unreached 0.
 	heightmap.assign(steps.size(), 0);
 	for (size_t i = 0; i < steps.size(); ++i)
-		heightmap[i] = !open[i] ? -1 : steps[i] < 0 ? 0 : steps[i] + 1;
+	{
+		::MapGeneration::generationCheckpoint();
+		heightmap.at(i) = !open.at(i) ? -1 : steps.at(i) < 0 ? 0 : steps.at(i) + 1;
+	}
 }
 
 // The mean of a distance field over one area's tiles (0 for an empty area). divideUpPlayerLands
@@ -81,11 +94,13 @@ int computeAverageDistance(Map &map, std::vector<int> &grid, int areaN,
 	// y outside x, matching grid/heightmap's row-major layout - gives the exact same total.
 	for (int y = 0; y < map.getH(); ++y)
 	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < map.getW(); ++x)
 		{
-			if (grid[y * map.getW() + x] == areaN)
+			::MapGeneration::generationCheckpoint();
+			if (grid.at(y * map.getW() + x) == areaN)
 			{
-				total += heightmap[y * map.getW() + x];
+				total += heightmap.at(y * map.getW() + x);
 				count += 1;
 			}
 		}

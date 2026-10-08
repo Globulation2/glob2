@@ -374,7 +374,7 @@ std::string generatorTitle(const std::string &generatorId)
 		return {};
 	try
 	{
-		const int method = GeneratorRegistry::builtins().idOf(generatorId);
+		const int method = GeneratorRegistry::active().idOf(generatorId);
 		return tr(GenerationRequest::methodName(method));
 	}
 	catch (const std::exception &)

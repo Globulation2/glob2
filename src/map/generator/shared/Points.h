@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationNumeric.h"
 #include "Grid.h"
 #include <algorithm>
 #include <cmath>
@@ -119,12 +120,12 @@ struct Grain
 		return tiles * tiles * length2() * stretchPercent * stretchPercent;
 	}
 	/// The heading of the direction, radians.
-	double heading() const { return std::atan2(double(dy), double(dx)); }
+	double heading() const { return ::MapGeneration::Numeric::atan2(double(dy), double(dx)); }
 	/// distance2 as a plain distance in tiles across the grain.
 	double distance(int offX, int offY) const
 	{
-		return std::sqrt(double(distance2(offX, offY)) /
-						 (double(length2()) * stretchPercent * stretchPercent));
+		return ::MapGeneration::Numeric::sqrt(
+			double(distance2(offX, offY)) / (double(length2()) * stretchPercent * stretchPercent));
 	}
 	/// The squared distance under the grain between two tiles of a torus, the short way round
 	/// under the grain: on a torus a tile has four nearest images, and the one nearest in map tiles
@@ -153,8 +154,9 @@ struct Grain
 	}
 	double distance(const Torus &t, int ax, int ay, int bx, int by) const
 	{
-		return std::sqrt(double(distance2(t, ax, ay, bx, by)) /
-						 (double(length2()) * stretchPercent * stretchPercent));
+		return ::MapGeneration::Numeric::sqrt(
+			double(distance2(t, ax, ay, bx, by)) /
+			(double(length2()) * stretchPercent * stretchPercent));
 	}
 };
 

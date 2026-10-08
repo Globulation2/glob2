@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Grid.h"
 #include <array>
 #include <climits>
@@ -76,22 +77,30 @@ std::vector<unsigned char> labelBorders(const Torus &t, const std::vector<int> &
 {
 	std::vector<unsigned char> wall(t.size(), 0);
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = y * t.w + x;
-			if (labels[i] < 0)
+			if (labels.at(i) < 0)
 				continue;
-			for (int dy = -1; dy <= 1 && !wall[i]; ++dy)
+			for (int dy = -1; dy <= 1 && !wall.at(i); ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					const int j = t.at(x + dx, y + dy);
-					if (labels[j] >= 0 && labels[j] < labels[i] && !open(i, j))
+					if (labels.at(j) >= 0 && labels.at(j) < labels.at(i) && !open(i, j))
 					{
-						wall[i] = 1;
+						wall.at(i) = 1;
 						break;
 					}
 				}
+			}
 		}
+	}
 	return wall;
 }
 
@@ -196,22 +205,30 @@ RegionLeak firstRegionLeak(const Torus &t, const std::vector<unsigned char> &rea
 						   const std::vector<int> &labels, Allowed allowed)
 {
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = y * t.w + x;
-			if (!reached[i] || labels[i] < 0)
+			if (!reached.at(i) || labels.at(i) < 0)
 				continue;
 			for (int dy = 0; dy <= 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					if (dy == 0 && dx <= 0)
 						continue;
 					const int j = t.at(x + dx, y + dy);
-					if (reached[j] && labels[j] >= 0 && labels[j] != labels[i] &&
-						!allowed(labels[i], labels[j]))
+					if (reached.at(j) && labels.at(j) >= 0 && labels.at(j) != labels.at(i) &&
+						!allowed(labels.at(i), labels.at(j)))
 						return {i, j};
 				}
+			}
 		}
+	}
 	return {};
 }
 

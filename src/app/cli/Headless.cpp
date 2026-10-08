@@ -849,8 +849,11 @@ int runHeadlessCommand(int argc,char **argv)
 		}
 		else
 		{
-			int method=integer(one(options,"--generator"),0,INT32_MAX);
-			if(!GeneratorRegistry::builtins().find(method))throw std::invalid_argument("unknown generator");
+			const auto generator=one(options,"--generator");
+            int method=generator.find_first_not_of("0123456789")==std::string::npos
+                ? int(integer(generator,0,INT32_MAX)) : GeneratorRegistry::active().idOf(generator);
+			if (!GeneratorRegistry::active().find(method))
+				throw std::invalid_argument("unknown generator");
 			integer(one(options,"--map-seed"),0,UINT32_MAX);
 			std::vector<std::string> args={"study",std::to_string(method),one(options,"--map-seed"),one(options,"--profile","glob2-tournament"),"tuning","quality","result="+(output/"result.json").string()};
 			if (options.count("--building-catalog")) args.push_back("building-catalog="+one(options,"--building-catalog"));

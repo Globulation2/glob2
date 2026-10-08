@@ -26,6 +26,9 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/map/generator/javascript/ScriptGeneratorTest.cpp',
+    '#src/map/generator/javascript/ToolkitBindingTest.cpp',
+    '#src/map/generator/javascript/FertilityBindingTest.cpp',
     ('#src/map/MapSetTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/unit/render/ColonySkinPreviewTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/audio/MusicSetTest.cpp',

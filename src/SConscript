@@ -40,11 +40,11 @@ source_files += [node.abspath for node in js_library]
 # Host numeric conversion must use the same strict boundary as the interpreter.
 strict = local.Clone()
 strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
+from javascript import numeric_guard, strict_numeric_source, guarded_numeric_source
 strict_sources = [source for source in source_files
-                  if isinstance(source, str) and source.endswith('.cpp') and (source.startswith('scripting/javascript/') or source == 'ai/javascript/AIJavaScript.cpp')]
-from javascript import numeric_guard
+                  if isinstance(source, str) and strict_numeric_source(source)]
 strict_objects = dict(zip(strict_sources, [strict.Object(source)[0] for source in strict_sources]))
-numeric_guard(strict, list(strict_objects.values()))
+numeric_guard(strict, [obj for source, obj in strict_objects.items() if guarded_numeric_source(source)])
 # Resolve these sources explicitly so Program does not compile them with generic flags.
 program_sources = [strict_objects.get(source, source) for source in source_files]
 

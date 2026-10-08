@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Solve.h"
 namespace MapGeneration
@@ -26,15 +28,21 @@ double Objective::total() const
 {
 	double sum = 0;
 	for (const auto &term : *this)
+	{
+		::MapGeneration::generationCheckpoint();
 		sum += term.weighted();
+	}
 	return finiteCost(sum);
 }
 
 std::optional<double> Objective::findResidual(std::string_view name) const
 {
 	for (const auto &term : *this)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (term.name == name)
 			return term.residual;
+	}
 	return std::nullopt;
 }
 
@@ -56,16 +64,18 @@ bool accept(double rise, double heat, GenerationContext &context, const char *st
 	// The draw is an integer one so the decision is exactly reproducible from the seed: a bounded
 	// draw over a power of two, compared against the Metropolis probability scaled to it.
 	constexpr std::uint32_t kDraws = 1 << 20;
-	return double(context.bounded(stream, kDraws)) < std::exp(-rise / heat) * double(kDraws);
+	return double(context.bounded(stream, kDraws)) <
+		   ::MapGeneration::Numeric::exp(-rise / heat) * double(kDraws);
 }
 
 double imbalance(const std::vector<double> &shares)
 {
 	if (shares.size() < 2)
 		return 0;
-	double least = shares[0], most = shares[0], total = 0;
+	double least = shares.at(0), most = shares.at(0), total = 0;
 	for (const double share : shares)
 	{
+		::MapGeneration::generationCheckpoint();
 		least = std::min(least, share);
 		most = std::max(most, share);
 		total += share;
@@ -111,14 +121,20 @@ void Brief::choose(std::vector<const char *> optional, int least, int most)
 		return;
 	context.telemetry.measure(map + ".brief.emphases.count", int(chosen.size()));
 	for (const char *name : chosen)
+	{
+		::MapGeneration::generationCheckpoint();
 		context.telemetry.choice(map + ".brief.emphases", name);
+	}
 }
 
 bool Brief::on(const char *name) const
 {
 	for (const char *have : chosen)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (std::string_view(have) == name)
 			return true;
+	}
 	return false;
 }
 
@@ -131,6 +147,7 @@ void reportObjective(GenerationTelemetry &telemetry, const std::string &key,
 		return;
 	for (const auto &term : objective)
 	{
+		::MapGeneration::generationCheckpoint();
 		telemetry.measure(key + "." + std::string(term.name) + ".residual", term.residual);
 		telemetry.measure(key + "." + std::string(term.name) + ".weighted", term.weighted());
 	}

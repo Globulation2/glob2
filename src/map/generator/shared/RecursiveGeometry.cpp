@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "RecursiveGeometry.h"
 #include <algorithm>
@@ -35,8 +37,9 @@ RegionTree partitionRegions(RegionBounds bounds, int divisions, int maximumDepth
 	result.regions.push_back({0, -1, 0, bounds, {}});
 	for (size_t head = 0; head < result.regions.size(); ++head)
 	{
+		::MapGeneration::generationCheckpoint();
 		// Copy before appending: vector growth must not invalidate the parent being subdivided.
-		const RecursiveRegion region = result.regions[head];
+		const RecursiveRegion region = result.regions.at(head);
 		RegionStop reason = stop ? stop(region) : RegionStop::None;
 		if (reason == RegionStop::None && region.depth >= maximumDepth)
 			reason = RegionStop::Depth;
@@ -49,23 +52,28 @@ RegionTree partitionRegions(RegionBounds bounds, int divisions, int maximumDepth
 			reason = RegionStop::Limit;
 			result.failure = "Recursive partition exceeds the node limit.";
 		}
-		result.regions[head].stop = reason;
+		result.regions.at(head).stop = reason;
 		if (reason != RegionStop::None)
 			continue;
 		int xs[4], ys[4];
 		for (int k = 0; k <= divisions; ++k)
 		{
+			::MapGeneration::generationCheckpoint();
 			xs[k] = region.bounds.x0 + region.bounds.width() * k / divisions;
 			ys[k] = region.bounds.y0 + region.bounds.height() * k / divisions;
 		}
 		for (int y = 0; y < divisions; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = 0; x < divisions; ++x)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int id = int(result.regions.size());
-				result.regions[head].children.push_back(id);
+				result.regions.at(head).children.push_back(id);
 				result.regions.push_back(
 					{id, region.id, region.depth + 1, {xs[x], ys[y], xs[x + 1], ys[y + 1]}, {}});
 			}
+		}
 		result.actualDepth = std::max(result.actualDepth, region.depth + 1);
 	}
 	return result;
@@ -82,7 +90,10 @@ HilbertPath hilbertPath(RegionBounds bounds, int maximumOrder, int minimumSpacin
 	}
 	int order = maximumOrder;
 	while (order > 0 && std::min(bounds.width(), bounds.height()) / (1 << order) < minimumSpacing)
+	{
+		::MapGeneration::generationCheckpoint();
 		--order;
+	}
 	result.actualOrder = order;
 	result.stop = order < maximumOrder ? RegionStop::Spacing : RegionStop::Depth;
 	if (!order)
@@ -105,9 +116,11 @@ HilbertPath hilbertPath(RegionBounds bounds, int maximumOrder, int minimumSpacin
 	std::vector<int> owners;
 	for (int d = 0; d < side * side; ++d)
 	{
+		::MapGeneration::generationCheckpoint();
 		int x = 0, y = 0, digits = d;
 		for (int scale = 1; scale < side; scale *= 2)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int rx = (digits / 2) & 1, ry = (digits ^ rx) & 1;
 			if (!ry)
 			{
@@ -126,6 +139,7 @@ HilbertPath hilbertPath(RegionBounds bounds, int maximumOrder, int minimumSpacin
 			x = side - 1 - x;
 		for (int turn = 0; turn < (orientation & 3); ++turn)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int oldX = x;
 			x = side - 1 - y;
 			y = oldX;
@@ -136,27 +150,35 @@ HilbertPath hilbertPath(RegionBounds bounds, int maximumOrder, int minimumSpacin
 		// Descend the tree instead of scanning every leaf for every point (quadratic
 		// at high order). floor is important for valid unwrapped negative coordinates.
 		int owner = 0;
-		while (!result.tree.regions[owner].terminal())
-			for (int child : result.tree.regions[owner].children)
-				if (result.tree.regions[child].bounds.contains(int(std::floor(p.x)),
-															   int(std::floor(p.y))))
+		while (!result.tree.regions.at(owner).terminal())
+		{
+			::MapGeneration::generationCheckpoint();
+			for (int child : result.tree.regions.at(owner).children)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (result.tree.regions.at(child).bounds.contains(
+						int(::MapGeneration::Numeric::floor(p.x)),
+						int(::MapGeneration::Numeric::floor(p.y))))
 				{
 					owner = child;
 					break;
 				}
+			}
+		}
 		owners.push_back(owner);
 		if (d == 0)
 			continue;
 		// Segment hierarchy is its endpoints' lowest common ancestor. This preserves the
 		// distinction between a local fold and a join across a major recursive district.
-		int a = owners[d - 1], b = owner;
+		int a = owners.at(d - 1), b = owner;
 		while (a != b)
 		{
-			a = result.tree.regions[a].parent;
-			b = result.tree.regions[b].parent;
+			::MapGeneration::generationCheckpoint();
+			a = result.tree.regions.at(a).parent;
+			b = result.tree.regions.at(b).parent;
 		}
 		result.segments.push_back(
-			{d - 1, result.tree.regions[a].depth, a, result.points[d - 1], p});
+			{d - 1, result.tree.regions.at(a).depth, a, result.points.at(d - 1), p});
 	}
 	return result;
 }
