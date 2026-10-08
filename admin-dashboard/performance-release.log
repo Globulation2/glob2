@@ -1,0 +1,6 @@
+{"path":"reports","rows":10000,"samples":20,"medianMs":63,"p95Ms":118}
+{"path":"content?hidden=all","rows":10000,"samples":20,"medianMs":20,"p95Ms":24}
+{"path":"audit","rows":10000,"samples":20,"medianMs":7,"p95Ms":9}
+{"path":"analytics","rows":10000,"samples":20,"medianMs":5,"p95Ms":7}
+{"path":"finances","rows":10000,"samples":20,"medianMs":5,"p95Ms":8}
+{"path":"operations","rows":10000,"samples":20,"medianMs":11,"p95Ms":21}

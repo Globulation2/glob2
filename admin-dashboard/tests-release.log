@@ -1,0 +1,16 @@
+
+> test
+> vitest run --maxWorkers=4
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/1153/glob2/platform
+
+
+ Test Files  133 passed | 3 skipped (136)
+      Tests  969 passed | 13 skipped (982)
+   Start at  13:12:53
+   Duration  112.88s (tests 73%, import 20%, environment 5%, transform 2%)
+
+    Isolate  136 workers spawned · ~305ms startup each (spawn + environment, per file)
+             at least ~10.05s faster with isolate: false — reuses workers across files instead of one per file
+

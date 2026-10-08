@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/admin-phase-validation/glob2/platform
+
+
+ Test Files  5 passed (5)
+      Tests  31 passed (31)
+   Start at  13:11:49
+   Duration  12.35s (tests 79%, import 14%, transform 7%)
+
