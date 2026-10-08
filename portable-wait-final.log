@@ -1,0 +1,12 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "63995c5d5f74cef07325f3861b2618aadce9acba", "sourceStatus": ["?? build-software-terrain/"], "sourceTreeSha256": "fa4e4e0a165505db09a8f7b88f5e70c9df52f751099605fcad4a42baf67e231c"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+nox::gui.game.checkSum() = 98bdc70f
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 1262 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
