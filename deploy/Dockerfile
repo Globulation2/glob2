@@ -122,6 +122,8 @@ COPY examples/javascript /app/examples/javascript
 COPY libgag/shaders /app/libgag/shaders
 # The navigation shares the game's Tabler icon sources (src/icons.tsx).
 COPY datasrc/icons/tabler /app/datasrc/icons/tabler
+# Colony Studio's set editor imports the shared resource registry (sets/model.ts).
+COPY data/resources/registry.json /app/data/resources/registry.json
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \

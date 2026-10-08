@@ -234,6 +234,7 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
     CHECK(scene.panels.building.showLevel);
     // Presentation is explicit even when upgrades are experiment-gated.
     market->type->presentation.showLevel=false;
+    g.snapshots().invalidateCatalog(); // The fixture edits the type table directly.
     CHECK_FALSE(glob2test::sceneOf(g,Game::ViewState{.selectedBuilding=market}).panels.building.showLevel);
 }
 
