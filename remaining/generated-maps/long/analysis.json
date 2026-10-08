@@ -1,0 +1,368 @@
+{
+  "replicates": "20 independent generation seeds paired across variants per generator; owner/shared are not separate statistical replicates",
+  "method": "100000 paired seed-bootstrap draws; ratio of mean final stocks, percentile95% intervals (not multiplicity-adjusted). Two-sided exact paired sign tests with Holm correction over12 map/resource comparisons. Sign test concerns directional consistency, not mean effect.",
+  "scope": "4096tick no-harvesting ecology on default generated terrain; delay8. No timing inference or latest-master executable comparison. Terminal flush is diagnostic, not ordinary play.",
+  "generation_failures": [],
+  "results": [
+    {
+      "generator": "crater-lakes",
+      "side": 256,
+      "material": "wheat",
+      "pairs": 20,
+      "initial_mean": 5171.3,
+      "reference_final_mean": 12414.6,
+      "delayed_final_mean": 12474.3,
+      "difference_mean": 59.7,
+      "difference_percent": 0.4808854091150838,
+      "paired_bootstrap_95_percent": [
+        0.13786308249139623,
+        0.8492405166111716
+      ],
+      "growth_bootstrap_95_percent": [
+        0.23586027827433576,
+        1.4559972227043971
+      ],
+      "reference_growth_mean": 7243.3,
+      "delayed_growth_mean": 7302.999999999999,
+      "growth_difference_percent": 0.8242099595488162,
+      "terminal_flush_final_mean": 12486.2,
+      "reference_tiles_mean": 3008.25,
+      "delayed_tiles_mean": 3028.9,
+      "lower": 5,
+      "higher": 15,
+      "ties": 0,
+      "sign_p": 0.04138946533203125,
+      "holm_sign_p": 0.496673583984375
+    },
+    {
+      "generator": "crater-lakes",
+      "side": 256,
+      "material": "wood",
+      "pairs": 20,
+      "initial_mean": 5186.9,
+      "reference_final_mean": 23222.3,
+      "delayed_final_mean": 23100.25,
+      "difference_mean": -122.05,
+      "difference_percent": -0.5255724023890851,
+      "paired_bootstrap_95_percent": [
+        -1.2647904897975737,
+        0.2078091106290758
+      ],
+      "growth_bootstrap_95_percent": [
+        -1.6238115374647033,
+        0.268409576410944
+      ],
+      "reference_growth_mean": 18035.4,
+      "delayed_growth_mean": 17913.35,
+      "growth_difference_percent": -0.67672466371691,
+      "terminal_flush_final_mean": 23132.2,
+      "reference_tiles_mean": 5268.55,
+      "delayed_tiles_mean": 5250.3,
+      "lower": 12,
+      "higher": 8,
+      "ties": 0,
+      "sign_p": 0.5034446716308594,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "crater-lakes",
+      "side": 256,
+      "material": "algae",
+      "pairs": 20,
+      "initial_mean": 6344.45,
+      "reference_final_mean": 7438,
+      "delayed_final_mean": 7444.75,
+      "difference_mean": 6.75,
+      "difference_percent": 0.09075020166711134,
+      "paired_bootstrap_95_percent": [
+        -0.1449294810719426,
+        0.3417469458048439
+      ],
+      "growth_bootstrap_95_percent": [
+        -0.9678188319427905,
+        2.3961117861482473
+      ],
+      "reference_growth_mean": 1093.5500000000002,
+      "delayed_growth_mean": 1100.3000000000002,
+      "growth_difference_percent": 0.6172557267614565,
+      "terminal_flush_final_mean": 7446.9,
+      "reference_tiles_mean": 2600.15,
+      "delayed_tiles_mean": 2601.95,
+      "lower": 10,
+      "higher": 10,
+      "ties": 0,
+      "sign_p": 1,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "islands",
+      "side": 256,
+      "material": "wheat",
+      "pairs": 20,
+      "initial_mean": 11135.3,
+      "reference_final_mean": 16796.05,
+      "delayed_final_mean": 16789.3,
+      "difference_mean": -6.75,
+      "difference_percent": -0.0401880203976579,
+      "paired_bootstrap_95_percent": [
+        -0.18885064065786716,
+        0.12015776439293635
+      ],
+      "growth_bootstrap_95_percent": [
+        -0.5588812010331123,
+        0.35780557750531017
+      ],
+      "reference_growth_mean": 5660.75,
+      "delayed_growth_mean": 5654.0,
+      "growth_difference_percent": -0.11924214989179616,
+      "terminal_flush_final_mean": 16796.25,
+      "reference_tiles_mean": 4511.1,
+      "delayed_tiles_mean": 4514.45,
+      "lower": 14,
+      "higher": 6,
+      "ties": 0,
+      "sign_p": 0.11531829833984375,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "islands",
+      "side": 256,
+      "material": "wood",
+      "pairs": 20,
+      "initial_mean": 10794.85,
+      "reference_final_mean": 19254.1,
+      "delayed_final_mean": 19242.95,
+      "difference_mean": -11.15,
+      "difference_percent": -0.05790974389869863,
+      "paired_bootstrap_95_percent": [
+        -0.2237634020716417,
+        0.10357917851353537
+      ],
+      "growth_bootstrap_95_percent": [
+        -0.5110385525566863,
+        0.23415228093590645
+      ],
+      "reference_growth_mean": 8459.249999999998,
+      "delayed_growth_mean": 8448.1,
+      "growth_difference_percent": -0.13180837544699564,
+      "terminal_flush_final_mean": 19248.15,
+      "reference_tiles_mean": 4526.35,
+      "delayed_tiles_mean": 4525.55,
+      "lower": 12,
+      "higher": 8,
+      "ties": 0,
+      "sign_p": 0.5034446716308594,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "islands",
+      "side": 256,
+      "material": "algae",
+      "pairs": 20,
+      "initial_mean": 10941.4,
+      "reference_final_mean": 11723.95,
+      "delayed_final_mean": 11730.95,
+      "difference_mean": 7,
+      "difference_percent": 0.059706839418449675,
+      "paired_bootstrap_95_percent": [
+        -0.08976698692026996,
+        0.20498936375943355
+      ],
+      "growth_bootstrap_95_percent": [
+        -1.2369751995612743,
+        3.4467188440698404
+      ],
+      "reference_growth_mean": 782.5500000000011,
+      "delayed_growth_mean": 789.5500000000011,
+      "growth_difference_percent": 0.8945115328093944,
+      "terminal_flush_final_mean": 11732.55,
+      "reference_tiles_mean": 4387.9,
+      "delayed_tiles_mean": 4391.15,
+      "lower": 9,
+      "higher": 11,
+      "ties": 0,
+      "sign_p": 0.8238029479980469,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "river",
+      "side": 128,
+      "material": "wheat",
+      "pairs": 20,
+      "initial_mean": 2242.7,
+      "reference_final_mean": 3360.6,
+      "delayed_final_mean": 3344.4,
+      "difference_mean": -16.2,
+      "difference_percent": -0.48205677557578985,
+      "paired_bootstrap_95_percent": [
+        -0.9997819790076967,
+        0.04684194620732107
+      ],
+      "growth_bootstrap_95_percent": [
+        -3.2778932778932734,
+        0.13712232256843926
+      ],
+      "reference_growth_mean": 1117.9,
+      "delayed_growth_mean": 1101.7000000000003,
+      "growth_difference_percent": -1.4491457196529223,
+      "terminal_flush_final_mean": 3345.7,
+      "reference_tiles_mean": 966.85,
+      "delayed_tiles_mean": 960.45,
+      "lower": 14,
+      "higher": 6,
+      "ties": 0,
+      "sign_p": 0.11531829833984375,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "river",
+      "side": 128,
+      "material": "wood",
+      "pairs": 20,
+      "initial_mean": 2193.9,
+      "reference_final_mean": 4248.95,
+      "delayed_final_mean": 4250,
+      "difference_mean": 1.05,
+      "difference_percent": 0.02471198766753613,
+      "paired_bootstrap_95_percent": [
+        -1.0139259393226907,
+        1.2360838244924732
+      ],
+      "growth_bootstrap_95_percent": [
+        -2.095612311722328,
+        2.6229111164930874
+      ],
+      "reference_growth_mean": 2055.0499999999997,
+      "delayed_growth_mean": 2056.1,
+      "growth_difference_percent": 0.05109364735651489,
+      "terminal_flush_final_mean": 4252,
+      "reference_tiles_mean": 1104.5,
+      "delayed_tiles_mean": 1104.1,
+      "lower": 12,
+      "higher": 5,
+      "ties": 3,
+      "sign_p": 0.143463134765625,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "river",
+      "side": 128,
+      "material": "algae",
+      "pairs": 20,
+      "initial_mean": 2385.65,
+      "reference_final_mean": 2637.3,
+      "delayed_final_mean": 2638.7,
+      "difference_mean": 1.4,
+      "difference_percent": 0.053084594092434045,
+      "paired_bootstrap_95_percent": [
+        -0.29175784099197966,
+        0.4257771828052981
+      ],
+      "growth_bootstrap_95_percent": [
+        -3.1831335262505145,
+        4.3092043092043175
+      ],
+      "reference_growth_mean": 251.6500000000001,
+      "delayed_growth_mean": 253.04999999999973,
+      "growth_difference_percent": 0.5563282336578546,
+      "terminal_flush_final_mean": 2639.25,
+      "reference_tiles_mean": 970.65,
+      "delayed_tiles_mean": 971.1,
+      "lower": 11,
+      "higher": 9,
+      "ties": 0,
+      "sign_p": 0.8238029479980469,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "swamp",
+      "side": 128,
+      "material": "wheat",
+      "pairs": 20,
+      "initial_mean": 1838.25,
+      "reference_final_mean": 3818.9,
+      "delayed_final_mean": 3852.9,
+      "difference_mean": 34,
+      "difference_percent": 0.8903087276440846,
+      "paired_bootstrap_95_percent": [
+        0.19436345966958868,
+        1.5455664209816034
+      ],
+      "growth_bootstrap_95_percent": [
+        0.3777881281374462,
+        2.9660693861990106
+      ],
+      "reference_growth_mean": 1980.65,
+      "delayed_growth_mean": 2014.65,
+      "growth_difference_percent": 1.7166081841819558,
+      "terminal_flush_final_mean": 3855.7,
+      "reference_tiles_mean": 940.85,
+      "delayed_tiles_mean": 949.95,
+      "lower": 5,
+      "higher": 15,
+      "ties": 0,
+      "sign_p": 0.04138946533203125,
+      "holm_sign_p": 0.496673583984375
+    },
+    {
+      "generator": "swamp",
+      "side": 128,
+      "material": "wood",
+      "pairs": 20,
+      "initial_mean": 2002.8,
+      "reference_final_mean": 6867.5,
+      "delayed_final_mean": 6828.05,
+      "difference_mean": -39.45,
+      "difference_percent": -0.5744448489261034,
+      "paired_bootstrap_95_percent": [
+        -1.5645951091586618,
+        0.443300024871629
+      ],
+      "growth_bootstrap_95_percent": [
+        -2.1994106090373333,
+        0.6270211814618065
+      ],
+      "reference_growth_mean": 4864.7,
+      "delayed_growth_mean": 4825.25,
+      "growth_difference_percent": -0.8109441486628177,
+      "terminal_flush_final_mean": 6835.75,
+      "reference_tiles_mean": 1550,
+      "delayed_tiles_mean": 1544.35,
+      "lower": 13,
+      "higher": 7,
+      "ties": 0,
+      "sign_p": 0.26317596435546875,
+      "holm_sign_p": 1
+    },
+    {
+      "generator": "swamp",
+      "side": 128,
+      "material": "algae",
+      "pairs": 20,
+      "initial_mean": 2468.1,
+      "reference_final_mean": 3452.1,
+      "delayed_final_mean": 3445.1,
+      "difference_mean": -7,
+      "difference_percent": -0.20277512238926487,
+      "paired_bootstrap_95_percent": [
+        -0.6009205591544498,
+        0.23318911784115937
+      ],
+      "growth_bootstrap_95_percent": [
+        -2.0414412575278096,
+        0.8565310492505418
+      ],
+      "reference_growth_mean": 984.0,
+      "delayed_growth_mean": 977.0,
+      "growth_difference_percent": -0.7113821138211351,
+      "terminal_flush_final_mean": 3447.5,
+      "reference_tiles_mean": 1028.6,
+      "delayed_tiles_mean": 1026.2,
+      "lower": 13,
+      "higher": 7,
+      "ties": 0,
+      "sign_p": 0.26317596435546875,
+      "holm_sign_p": 1
+    }
+  ]
+}

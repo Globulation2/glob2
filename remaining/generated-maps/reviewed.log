@@ -1,0 +1,4 @@
+PASS ResourceGrowthBenchmark/generated landscapes preserve player-free growth accounting (1.8s)
+
+1 passed, 0 failed, 0 skipped (1.8s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/remaining/generated-maps/reviewed.xml (1 cases)
