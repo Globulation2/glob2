@@ -480,13 +480,15 @@ unsupported combinations remain reported failures rather than being filtered out
   first, then a format that size admits, then AIs and a generator, all from
   `sample_seed`. `sizes` defaults to 64x64 (duels only, since four colonies do not
   fit every generator there), 128x128 and 256x256; an entry's optional `formats`
-  list restricts it. `formats` defaults to 1v1, 2v2 and ffa, `ais` to every active
+  list restricts its formats, and its optional `generators` list its generator pool.
+  `formats` defaults to 1v1, 2v2 and ffa, `ais` to every active
   AI, `generators` to every playable generator and `ticks` to 18048. The planner
   pins the `aiOrderDelay` rule to 8 and adds `gradient-stats` to
   `outputs.telemetry` (which publishes scheduled building fields at lazy depth, so
   rows record what readers needed), and workers then require `gradient-stats.csv`
   in each game's artifacts. Preflight the generator list against the sizes and colony
-  counts, and publish exclusions. `reanalyze` is not the analysis here; read the
+  counts (two colonies for duels, four for 2v2 and ffa), give each size the
+  generators that passed there, and publish exclusions. `reanalyze` is not the analysis here; read the
   results with `tools/gradient_depth_fit.py dataset RESULTS`.
 
 Engine-declared winners are authoritative under every policy. Capped games rank

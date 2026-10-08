@@ -483,6 +483,14 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(manifest['jobs'],again['jobs'])
         with self.assertRaises(ValueError):
             Planner('gradient_depth',{'id':'depth','formats':['2v2'],'sizes':[{'width':6,'height':6,'formats':['1v1']}]},[bundle]).plan()
+        # A size's generator list restricts that size's pool only, and stays out of the map parameters.
+        sizes=[{'width':6,'height':6,'formats':['1v1'],'generators':[21]},{'width':7,'height':7}]
+        games=[j for j in Planner('gradient_depth',{'id':'depth','sample_games':40,'sizes':sizes},[bundle]).plan()['jobs'] if j['type']=='game']
+        self.assertEqual({j['config']['generator'] for j in games if j['config']['params']['width']==6},{21})
+        self.assertEqual({j['config']['generator'] for j in games if j['config']['params']['width']==7},{15,21})
+        self.assertTrue(all('generators' not in j['config']['params'] for j in games))
+        with self.assertRaises(ValueError):
+            Planner('gradient_depth',{'id':'depth','sizes':[{'width':6,'height':6,'generators':[99]}]},[bundle]).plan()
 
     def test_planning_balance_and_ablations(self):
         from tools.tournaments.experiments import Planner
