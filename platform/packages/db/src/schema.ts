@@ -1326,6 +1326,23 @@ export interface Database {
     applied: Generated<boolean>;
     created_at: Generated<Date>;
   };
+  building_studio_draft_history: {
+    thread_id: string;
+    revision: string;
+    title: string;
+    archive: Buffer;
+    created_at: Generated<Date>;
+  };
+  terrain_studio_draft_history: {
+    thread_id: string;
+    revision: number;
+    document: Json<SetPackage>;
+    hash: Nullable<string>;
+    report: Nullable<Json<ValidateSetResult>>;
+    sim_version: Nullable<string>;
+    status: Nullable<string>;
+    created_at: Generated<Date>;
+  };
   terrain_wallets: HiveWalletsTable;
   terrain_ledger: HiveLedgerTable;
   terrain_calls: HiveCallsTable;

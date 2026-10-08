@@ -40,8 +40,9 @@ std::unique_ptr<InputStream> Engine::openGameInput(const std::string& filename, 
     try
     {
         auto stream = openOwnedGameStream(filename);
-        if (!stream->isValid() || !map.load(stream.get()) || !players.load(stream.get(), map.getVersionMinor()))
-            return {};
+        if (!stream->isValid() || !map.load(stream.get())) return {};
+        map.resolveGrowthLayout(stream.get());
+        if (!players.load(stream.get(), map.loadingVersion(), map.historicalGrowthLayout ? map.getVersionMinor() : 0)) return {};
         map.setMapName(glob2FilenameToName(filename));
         stream->seekFromStart(0);
         return stream;
@@ -109,7 +110,8 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 		if (verbose)
 			std::cout << "Engine::loadGameHeader : loading map " << filename << std::endl;
 		bool headerValid = mapHeader.load(stream.get());
-		bool validMapSelected = gameHeader.load(stream.get(), mapHeader.getVersionMinor());
+		if (headerValid) mapHeader.resolveGrowthLayout(stream.get());
+		bool validMapSelected = headerValid && gameHeader.load(stream.get(), mapHeader.loadingVersion(), mapHeader.historicalGrowthLayout ? mapHeader.getVersionMinor() : 0);
 		if (!headerValid || !validMapSelected)
 		{
 			std::cerr << "Engine::loadGameHeader : invalid game header for map " << filename << std::endl;

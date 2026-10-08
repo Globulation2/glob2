@@ -290,6 +290,17 @@ const typedColumns: ColumnLists = {
     'applied',
     'created_at',
   ],
+  building_studio_draft_history: ['thread_id', 'revision', 'title', 'archive', 'created_at'],
+  terrain_studio_draft_history: [
+    'thread_id',
+    'revision',
+    'document',
+    'hash',
+    'report',
+    'sim_version',
+    'status',
+    'created_at',
+  ],
   asset_sets: [
     'id',
     'owner_account_id',
@@ -1395,6 +1406,7 @@ describe('migrations', () => {
         '0051_terrain_studio',
         '0052_building_studio',
         '0053_admin_console',
+        '0053_studio_draft_history',
         '0054_admin_analytics',
         '0055_admin_finances',
       ]);
@@ -1613,6 +1625,7 @@ describe('migrations', () => {
         ['0051_terrain_studio', 'Success'],
         ['0052_building_studio', 'Success'],
         ['0053_admin_console', 'Success'],
+        ['0053_studio_draft_history', 'Success'],
         ['0054_admin_analytics', 'Success'],
         ['0055_admin_finances', 'Success'],
       ]);
@@ -1758,6 +1771,7 @@ describe('migrations', () => {
         ['0051_terrain_studio', 'Success'],
         ['0052_building_studio', 'Success'],
         ['0053_admin_console', 'Success'],
+        ['0053_studio_draft_history', 'Success'],
         ['0054_admin_analytics', 'Success'],
         ['0055_admin_finances', 'Success'],
       ]);

@@ -125,3 +125,46 @@ it('rejects reused IDs with altered content and stale base revisions', async () 
     studio.submit(f.account, f.thread, { ...f.input, id: randomUUID(), expectedRevision: 7 }, cfg),
   ).rejects.toThrow('changed');
 });
+it('retains saved drafts through generation and revision-safe undo without changing charges', async () => {
+  const f = await fixture();
+  const before = await database.db
+    .selectFrom('set_drafts')
+    .selectAll()
+    .where('id', '=', f.pack.versionId)
+    .executeTakeFirstOrThrow();
+  const changed = {
+    ...f.pack,
+    title: 'Generated marsh',
+    description: 'Generated description',
+    tags: ['marsh'],
+  };
+  await studio.reserveBuild(f.row);
+  await studio.finish(f.row, await delivery(changed));
+  expect((await studio.get(f.account, f.thread)).draftHistory?.map((d) => d.revision)).toContain(
+    before.revision,
+  );
+  expect(await studio.draftBackup(f.account, f.thread, before.revision)).toEqual(before.document);
+  await expect(studio.draftBackup(randomUUID(), f.thread, before.revision)).rejects.toThrow();
+  await expect(
+    studio.restoreDraft(f.account, f.thread, before.revision, before.revision),
+  ).rejects.toThrow('Draft changed');
+  const balance = await studio.credits.balance(f.account);
+  await studio.restoreDraft(f.account, f.thread, before.revision, before.revision + 1);
+  const after = await database.db
+    .selectFrom('set_drafts')
+    .selectAll()
+    .where('id', '=', f.pack.versionId)
+    .executeTakeFirstOrThrow();
+  expect(after.document).toEqual(before.document);
+  const set = await database.db
+    .selectFrom('asset_sets')
+    .select(['title', 'description', 'tags'])
+    .where('id', '=', f.pack.setId)
+    .executeTakeFirstOrThrow();
+  expect(set).toEqual({ title: f.pack.title, description: f.pack.description, tags: f.pack.tags });
+  expect(after.revision).toBe(before.revision + 2);
+  expect((await studio.get(f.account, f.thread)).draftHistory?.map((d) => d.revision)).toContain(
+    before.revision + 1,
+  );
+  expect(await studio.credits.balance(f.account)).toEqual(balance);
+});

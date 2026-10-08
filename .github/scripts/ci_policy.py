@@ -39,7 +39,7 @@ TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/',
 TEST_ROOTS = ('src/', 'libgag/', 'libusl/', 'natsort/', 'mobile/')
 SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
-THREAD_FILES = {'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
+THREAD_FILES = {'src/map/ResourceGrowth.cpp', 'src/map/ResourceGrowth.h', 'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
                 'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
                 'libgag/src/PerformanceTelemetry.cpp', 'libgag/src/AssetLoader.cpp',
                 'libgag/include/AssetLoader.h', 'libgag/src/SpriteLoad.cpp',

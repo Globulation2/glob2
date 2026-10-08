@@ -524,6 +524,7 @@ void Map::clearGradientBufferPool()
 void Map::configureCompute(unsigned threads, unsigned experiments)
 {
 	finishGradientPipeline();
+	finishResourceGrowth();
 	compute.configure(threads);
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
@@ -532,6 +533,10 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 
 void Map::clear()
 {
+	loadedHistoricalGrowthVersion = 0;
+	loadedLegacyGrowth144 = false;
+	loadedLegacyGrowth145 = false;
+	gradientRuntime->growth.reset();
 	markAllChanges();
 	clearPlaneRegistry();
     bumpStaticMaterialSourceGeneration();

@@ -349,9 +349,9 @@ TEST_CASE("a lane keeps submission order: a lane job due before a live earlier o
 TEST_CASE("the slot count covers every producer's horizon")
 {
 	static_assert(ComputeExecutor::Slots >= (ComputeExecutor::AIHorizon + 1) + (ComputeExecutor::GradientHorizon + 1)
-		+ (ComputeExecutor::BuildingHorizon + 1));
+		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1));
 	static_assert(ComputeExecutor::boundaryDue(7) < ComputeExecutor::advanceDue(7) && ComputeExecutor::advanceDue(7) < ComputeExecutor::boundaryDue(8));
-	CHECK(ComputeExecutor::Slots == 48);
+	CHECK(ComputeExecutor::Slots == 65);
 }
 }
 
@@ -561,5 +561,6 @@ TEST_CASE("resumable presentation yields without advancing or retaining canceled
     CHECK(work->status()==ComputeExecutor::Presentation::Status::Canceled);
     CHECK(visited.size()==4);
 }
+
 
 }

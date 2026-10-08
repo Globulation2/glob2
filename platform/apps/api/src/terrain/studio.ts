@@ -285,6 +285,40 @@ export async function terrainStudioRoutes(app: FastifyInstance) {
       );
     }),
   );
+  app.get('/api/v1/terrain-studio/threads/:id/drafts/:revision/file', async (request, reply) =>
+    guarded(async () => {
+      const params = body(
+        Strict({ id: Uuid, revision: Type.String({ pattern: '^[0-9]+$' }) }),
+        request.params,
+      );
+      const saved = await studio.draftBackup(
+        (await accountOf(request)).id,
+        params.id,
+        Number(params.revision),
+      );
+      return reply
+        .header('content-type', 'application/json')
+        .header('cache-control', 'private, no-store')
+        .header('content-disposition', 'attachment; filename="saved-draft.json"')
+        .send(saved);
+    }),
+  );
+  app.post('/api/v1/terrain-studio/threads/:id/drafts/:revision/restore', async (request) =>
+    guarded(async () => {
+      const params = body(
+          Strict({ id: Uuid, revision: Type.String({ pattern: '^[0-9]+$' }) }),
+          request.params,
+        ),
+        input = body(TerrainStudioAdopt, request.body);
+      await studio.restoreDraft(
+        (await accountOf(request)).id,
+        params.id,
+        Number(params.revision),
+        input.expectedRevision,
+      );
+      return { ok: true };
+    }),
+  );
   app.post('/api/v1/terrain-studio/threads/:id/requests/:requestId/adopt', async (request) =>
     guarded(async () => {
       const params = body(Strict({ id: Uuid, requestId: Uuid }), request.params),

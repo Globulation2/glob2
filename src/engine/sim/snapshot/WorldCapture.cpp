@@ -192,11 +192,13 @@ Handle capture(const Game& game,
         static_assert(std::is_same_v<Element, std::remove_const_t<typename decltype(source)::element_type>>);
         reserve(destination, source.size()); destination.resize(source.size());
         if (!source.empty()) std::memcpy(destination.data(), source.data(), source.size_bytes());
+        if (storage) storage->bytesCopied += source.size_bytes();
     };
 	// Map arrays: a buffer that already mirrors this world copies only the
-	// chunks whose live stamp moved since its last fill; anything else (a new
-	// buffer, another world, a resize) copies everything. Arrays sharing one
-	// tracker are refreshed from the same dirty set.
+	// chunks whose live stamp moved since its last fill, unless most are dirty.
+	// Dense changes use contiguous copies to avoid strided row-copy overhead.
+	// New buffers, world changes and resizes also copy everything. Arrays
+	// sharing one tracker are refreshed from the same dirty set.
 	const auto identity = game.map.identity();
 	const auto& geometry = game.map.chunks();
 	const auto cellCount = game.map.cellCount();
@@ -215,7 +217,11 @@ Handle capture(const Game& game,
 	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
 		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
 			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
-		if (everything)
+		std::size_t dirty = 0;
+		if (!everything)
+			for (std::size_t chunk = 0; chunk < live.chunks.size(); ++chunk)
+				dirty += stamps.chunks[chunk] != live.chunks[chunk];
+		if (everything || dirty > live.chunks.size() / 2)
 		{
 			copyRange(std::size_t(0), cellCount);
 			if (storage && stamps.chunks.capacity() < live.chunks.size()) ++storage->allocations;

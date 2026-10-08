@@ -30,6 +30,12 @@ function open() {
   );
 }
 beforeEach(() => {
+  HTMLDialogElement.prototype.showModal = function () {
+    this.open = true;
+  };
+  HTMLDialogElement.prototype.close = function () {
+    this.open = false;
+  };
   draft = null;
   validate = undefined;
   vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
@@ -142,6 +148,7 @@ it('waits for new-draft validation before replacing the workspace route', async 
   finish!();
   await screen.findByText('Checks passed');
   await waitFor(() => expect(window.location.pathname).toBe('/sets/drafts/' + ID));
+  fireEvent.click(screen.getByRole('button', { name: 'Review & publish' }));
   await waitFor(() =>
     expect(
       (screen.getByRole('button', { name: 'Publish this release' }) as HTMLButtonElement).disabled,

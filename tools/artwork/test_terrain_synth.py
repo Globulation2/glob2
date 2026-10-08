@@ -22,6 +22,7 @@ from material_tiles import (  # noqa: E402
     color_distance,
     interior_grain,
     join_error,
+    luma,
     mean_color,
     pixel_sha256,
     reference_tiles,
@@ -110,8 +111,18 @@ class TerrainSynth(unittest.TestCase):
                         self.assertEqual(tile.mode, "RGBA")
                     self.assertEqual(len({tile.tobytes() for tile in tiles}), synth.VARIANTS)
 
+    def grid_block(self, name, phase=0):
+        """A grid material's variants assembled into their positional block."""
+        grid, tiles = synth.RECIPES[name].grid, self.tiles(name, phase)
+        block = Image.new("RGBA", (grid * TILE, grid * TILE))
+        for variant, tile in enumerate(tiles):
+            block.paste(tile, ((variant % grid) * TILE, (variant // grid) * TILE))
+        return block
+
     def test_tileability(self):
         for name in synth.SYNTH_ORDER:
+            if synth.RECIPES[name].grid:
+                continue  # covered by test_grid_materials_continue_across_every_cell_edge
             tiles = self.tiles(name)
             grain = statistics.fmean(interior_grain(tile) for tile in tiles)
             seam = statistics.fmean(wrap_seam_error(tile) for tile in tiles)
@@ -234,7 +245,7 @@ class TerrainSynth(unittest.TestCase):
     def test_periodic_materials_share_their_outer_ring_and_wrap(self):
         """Periodic variants join any variant: identical outer ring, and each
         tile continues itself across its own edges (no hard seam)."""
-        periodic = [n for n in synth.SYNTH_ORDER if synth.RECIPES[n].periodic]
+        periodic = [n for n in synth.SYNTH_ORDER if synth.RECIPES[n].periodic and not synth.RECIPES[n].grid]
         self.assertEqual(sorted(periodic), ["flower_meadow", "gravel", "marsh"])
         for name in periodic:
             tiles = [t.convert("RGB") for t in self.tiles(name)]
@@ -243,6 +254,49 @@ class TerrainSynth(unittest.TestCase):
             for tile in tiles[1:]:
                 with self.subTest(material=name):
                     self.assertEqual(ring(tile), ring(tiles[0]))
+
+    def test_grid_materials_continue_across_every_cell_edge(self):
+        """Each grid variant joins its block neighbours, and the block wraps:
+        the luma step across every cell edge is no larger than the steps just
+        beside it inside the cells."""
+        grid = [n for n in synth.SYNTH_ORDER if synth.RECIPES[n].grid]
+        self.assertEqual(sorted(grid), ["deep_water", "water"])
+        for name in grid:
+            recipe = synth.RECIPES[name]
+            self.assertTrue(recipe.periodic)
+            self.assertEqual(recipe.grid ** 2, synth.VARIANTS)
+            for phase in range(recipe.phases):
+                block = self.grid_block(name, phase).convert("RGB")
+                size = block.width
+                pixels = block.load()
+                lum = [[luma(*pixels[x, y]) for x in range(size)] for y in range(size)]
+                columns = [statistics.fmean(abs(lum[y][x] - lum[y][(x + 1) % size]) for y in range(size))
+                           for x in range(size)]
+                rows = [statistics.fmean(abs(lum[y][x] - lum[(y + 1) % size][x]) for x in range(size))
+                        for y in range(size)]
+                for steps in (columns, rows):
+                    for edge in range(TILE - 1, size, TILE):
+                        beside = statistics.fmean((steps[edge - 1], steps[(edge + 1) % size]))
+                        with self.subTest(material=name, phase=phase, edge=edge):
+                            self.assertLessEqual(steps[edge], 1.25 * beside + 0.25)
+
+    def test_water_waves_travel_in_small_steps_around_the_loop(self):
+        # No wave term moves more than a quarter wavelength per phase (aliasing
+        # would read as flicker), and every term closes the loop exactly.
+        for kx, ky, cycles, _ in synth.WAVE_SWELL + synth.WAVE_CHOP:
+            self.assertLessEqual(cycles / synth.WAVE_PHASES, 0.25, (kx, ky))
+        self.assertEqual(synth.WAVE_SIZE % synth.WAVE_PHASES, 0)
+        for name in ("water", "deep_water"):
+            recipe = synth.RECIPES[name]
+            self.assertEqual(recipe.phases, synth.WAVE_PHASES)
+            blocks = [self.grid_block(name, phase) for phase in range(recipe.phases)]
+            self.assertEqual(len({b.tobytes() for b in blocks}), recipe.phases)
+            for current, following in zip(blocks, blocks[1:] + blocks[:1]):
+                a, b = current.convert("RGB").getdata(), following.convert("RGB").getdata()
+                diffs = [abs(p - q) for pa, pb in zip(a, b) for p, q in zip(pa, pb)]
+                with self.subTest(material=name):
+                    self.assertGreater(statistics.fmean(diffs), 0.3)
+                    self.assertLess(statistics.fmean(diffs), 6)
 
     def test_catalog_fragment_is_well_formed(self):
         fragment = synth.catalog_fragment(self.results)
@@ -253,7 +307,10 @@ class TerrainSynth(unittest.TestCase):
             self.assertEqual(len(block["variants"]), 16)
             self.assertNotIn("ocean", block)
             if synth.RECIPES[block["key"]].phases > 1:
-                self.assertEqual((block["animation_frames"], block["animation_stride"]), (4, 16))
+                self.assertEqual((block["animation_frames"], block["animation_stride"]),
+                                 (synth.RECIPES[block["key"]].phases, 16))
+            if synth.RECIPES[block["key"]].grid:
+                self.assertEqual((block["edges"], block["variant_grid"]), ("periodic", 4))
         pairs = {tuple(sorted((p["a"], p["b"]))) for p in fragment["pair_treatments"]}
         self.assertEqual(len(pairs), len(fragment["pair_treatments"]))
         for p in fragment["pair_treatments"]:

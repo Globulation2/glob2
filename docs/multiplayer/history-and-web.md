@@ -89,6 +89,57 @@ whose relay sent no summary.
 that is not routed to the API or the browser client, and lays out for phone
 width (320 px up).
 
+### AI workspaces
+
+Maps, music, colony AI, buildings and terrain share React primitives in
+`apps/web/src/components/studio/`. Explicit route metadata selects the compact
+workspace shell and the shared navigation preference. The shell fits the visual
+viewport, with independent conversation and artifact scrolling and a reachable
+composer. The split defaults to 40% chat, has an 8px keyboard-adjustable separator,
+minimum pane widths of 320/360px, and account-scoped width presets. Available
+workspace widths below 760px use Chat/Preview tabs; viewport widths below 600px
+use drawer navigation. New results show request-bound Ready/Needs attention cues
+until Preview is opened, without switching the active phone pane. Responsive
+layout changes preserve the focused pane. Navigation expansion is account-scoped.
+
+Enter sends a prompt and Shift+Enter inserts a line break; IME composition does
+not submit. Session storage preserves account/project drafts and frozen retry
+payloads, while manual editors retain their existing recovery copies. Storage
+failure leaves in-memory editing available. Account/project changes remount private
+workspace state. The map/music durable event and history merging logic is shared;
+building, terrain and colony transports keep their different contracts.
+
+Inspection does not change the edit target. Historical building/terrain editing
+uses revision-checked adoption; replaced manual drafts are retained privately in
+`building_studio_draft_history` / `terrain_studio_draft_history`, including their
+original archive or definition and version-bound validation. Restoring a saved
+draft preserves the replaced draft again, creates a new current revision and
+never changes charges. Backups are owner-only, included in account exports and
+deleted with project history. Each account has a separate 64 MiB draft-history
+limit per studio; generation cannot silently discard history to make room.
+Historical colony AI editing uses restoration.
+Map/music edits preserve parent versions; accepting a delivery advances the edit
+target without unpinning inspection, and Undo returns the target to its previous
+parent, including parents outside the loaded history page. Deliveries completed
+while away are recognized on return; discussion does not replace the previous
+generated edit’s Undo. Apply migration `0053_studio_draft_history.sql` and additive backend
+support before deploying the updated client. Building/terrain generated-edit Undo is
+an optimistic restore bound to the delivered draft revision, without removing
+history or refunding charges. Newer work disables that undo. Source acceptance
+in Colony AI remains distinct from engine compatibility checks and playtests.
+Manual building/set editors are embedded and remain available at their standalone
+routes. Release side panels require a final Publish action and retain domain
+validation, licensing and visibility rules. Wallets and billing remain separate.
+Asset discussion spends no credits, but existing admission rules require one
+available credit in that studio to chat or build; zero-balance controls open the
+credit panel and preserve the unsent prompt.
+
+The shared controls use pinned Tabler icons, theme tokens, labelled logs, native
+modal focus handling with Tab/Shift+Tab boundary trapping, manual-activation
+keyboard tabs, concise terminal-response announcements, reduced motion and
+forced-colors styling. Monaco follows the selected theme. Keep browser, keyboard,
+screen-reader and phone-keyboard checks alongside automated accessibility tests.
+
 ### Look
 
 The app keeps the game's sprites (globs, buildings, flags, resources), wordmark,
