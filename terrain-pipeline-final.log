@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/ai-terrain-worker/test/pipeline.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  7 passed | 1 skipped (8)
+   Start at  08:56:29
+   Duration  5.46s (tests 70%, import 17%, transform 13%)
+
