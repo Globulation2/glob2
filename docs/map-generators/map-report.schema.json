@@ -415,9 +415,7 @@
       },
       "required": [
         "grass",
-        "grass_sand_border",
         "sand",
-        "sand_water_border",
         "water",
         "unknown"
       ],

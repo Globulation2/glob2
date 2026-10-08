@@ -673,8 +673,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
         const auto material = map.vertexTerrainAt(size_t(p));
         const auto &properties = map.terrainPropertiesAt(p);
         ++terrain[material];
-		const int um = map.getUMTerrain(p % t.w, p / t.w);
-		++underlying[um >= 0 && um <= 2 ? um : 3];
+		// The classic grass/sand/water view of the same vertex.
+		++underlying[material <= GRASS ? unsigned(material) : 3u];
 		water[p] = properties.swimmable;
         land[p] = properties.walkable;
 		const auto &r = map.getResource(p);

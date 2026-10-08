@@ -756,7 +756,7 @@ int runMapStudy(int argc, char **argv)
 			const auto sources = map.materialMaskAt(y * map.getW() + x);
 			for (unsigned material = 0; material < MaterialCount; ++material)
 				if (sources & (MaterialMask(1) << material)) ++materialSources[material];
-			switch (map.getUMTerrain(x, y))
+			switch (map.vertexTerrainAt(x, y))
 			{
 			case GRASS:
 				++umGrass;
@@ -766,6 +766,8 @@ int runMapStudy(int argc, char **argv)
 				break;
 			case WATER:
 				++umWater;
+				break;
+			default:
 				break;
 			}
 			hash ^= map.vertexTerrainAt(x, y);
@@ -777,7 +779,7 @@ int runMapStudy(int argc, char **argv)
 				map.getW() * map.getH(), grass, sand, water, shore, free, fit4, umGrass, umSand,
 				umWater, seconds, (unsigned long long)hash);
 	for (int type = 0; type < int(materialCounts.size()); ++type)
-		if (!map.terrainUsesLegacyCorners(static_cast<TerrainType>(type)) && materialCounts[type])
+		if (type != GRASS && type != SAND && type != WATER && materialCounts[type])
 			std::printf("STUDY_TERRAIN,%s,%d\n", map.terrainPresentation(TerrainType(type)).name,
 						materialCounts[type]);
 	if (tuning)
