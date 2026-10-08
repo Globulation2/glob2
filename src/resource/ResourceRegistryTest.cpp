@@ -37,11 +37,12 @@ TEST_SUITE("ResourceRegistry")
     TEST_CASE("stock catalog separates map identities from the twelve fixed materials")
     {
         const auto registry = stock();
-        REQUIRE(registry->size() == MaterialCount);
+        REQUIRE(registry->size() == 24);
         CHECK(registry->key(static_cast<ResourceId>(0)) == "trees");
         CHECK(registry->key(static_cast<ResourceId>(1)) == "wheat");
         CHECK(registry->key(static_cast<ResourceId>(6)) == "orange-tree");
-        for (unsigned i = 0; i < MaterialCount; ++i)
+        // The eight legacy deposits keep their slots, one material each, and stay ungated.
+        for (unsigned i = 0; i < 8; ++i)
         {
             const auto id = static_cast<ResourceId>(i);
             const auto material = static_cast<MaterialId>(i);
@@ -49,12 +50,93 @@ TEST_SUITE("ResourceRegistry")
             CHECK(registry->properties(id).primaryMaterial == material);
             CHECK(registry->yields(id)[i].capacity > 0);
             CHECK(registry->yields(id)[i].initial == 1);
-            CHECK(registry->requiredExperiment(id).empty() == (i < 8));
+            CHECK(registry->requiredExperiment(id).empty());
+        }
+        // Every later built-in deposit is gated by a declared experiment.
+        for (unsigned i = 8; i < registry->size(); ++i)
+            CHECK_FALSE(registry->requiredExperiment(static_cast<ResourceId>(i)).empty());
+        const std::pair<const char*, MaterialId> foundation[] = {
+            {"gold-ore", MaterialId::Gold}, {"iron-ore", MaterialId::Metal}, {"silica", MaterialId::Glass}, {"cotton", MaterialId::Fabric}};
+        for (const auto& [key, material] : foundation)
+        {
+            REQUIRE(registry->find(key));
+            const auto id = *registry->find(key);
+            CHECK(registry->properties(id).materialMask == materialBit(material));
+            CHECK(registry->requiredExperiment(id) == "foundation-resources");
         }
         CHECK(registry->yields(*registry->find("trees"))[0].destroysDeposit);
         CHECK(registry->yields(*registry->find("rocks"))[3].consumption == ResourceConsumption::Infinite);
         CHECK(registry->properties(*registry->find("wheat")).growthRate == ResourceRateScale / 3);
         CHECK(registry->properties(*registry->find("algae")).ecology == ResourceEcology::Shore);
+    }
+
+    TEST_CASE("landscape resources reuse existing rules behind their editor experiment")
+    {
+        const auto registry = stock();
+        const char* keys[] = {"jungle-trees", "pine-trees", "dead-trees", "ruins", "camp-site", "ancient-debris",
+            "scrub", "tall-grass", "maize", "potatoes", "rice", "fish"};
+        for (const auto* key : keys)
+        {
+            REQUIRE(registry->find(key));
+            CHECK(registry->requiredExperiment(*registry->find(key)) == "landscape-resources");
+        }
+        const auto props = [&](const char* key) { return registry->properties(*registry->find(key)); };
+        const auto yield = [&](const char* key, MaterialId m) { return registry->yields(*registry->find(key))[materialIndex(m)]; };
+        // Finite deposits never grow and start full.
+        for (const auto* key : {"dead-trees", "ruins", "camp-site", "ancient-debris"})
+        {
+            CHECK(props(key).growthRate == 0);
+            CHECK(props(key).spreadRate == 0);
+            CHECK_FALSE(props(key).persistsWhenEmpty);
+        }
+        CHECK(yield("dead-trees", MaterialId::Wood).initial == 3);
+        CHECK(props("ruins").materialMask == (materialBit(MaterialId::Wood) | materialBit(MaterialId::Stone) | materialBit(MaterialId::Metal)));
+        CHECK(props("camp-site").materialMask == (materialBit(MaterialId::Wood) | materialBit(MaterialId::Food) | materialBit(MaterialId::Fabric)));
+        CHECK(props("ancient-debris").materialMask == (materialBit(MaterialId::Stone) | materialBit(MaterialId::Gold) | materialBit(MaterialId::Metal)));
+        CHECK(yield("ruins", MaterialId::Stone).initial == 3);
+        // Undergrowth is walkable but must be cleared before building.
+        for (const auto* key : {"scrub", "tall-grass"})
+        {
+            CHECK_FALSE(props(key).blocksGround);
+            CHECK(props(key).blocksBuilding);
+            CHECK(props(key).clearable);
+        }
+        // New crops are farmable food on land; fish are aquatic food.
+        for (const auto* key : {"maize", "potatoes", "rice"})
+        {
+            CHECK(props(key).farmable);
+            CHECK(props(key).primaryMaterial == MaterialId::Food);
+            CHECK(props(key).habitatMask == ResourceLand);
+        }
+        CHECK(props("potatoes").ecology == ResourceEcology::Uniform);
+        CHECK(props("rice").ecology == ResourceEcology::Shore);
+        CHECK(props("fish").habitatMask == ResourceAquatic);
+        CHECK(props("fish").primaryMaterial == MaterialId::Food);
+        CHECK_FALSE(props("fish").farmable);
+    }
+
+    TEST_CASE("landscape artwork maps every stock level to painted frames")
+    {
+        const auto registry = stock();
+        const auto& fish = registry->presentation(*registry->find("fish"));
+        CHECK(fish.animationFrames == 12);
+        // Each fish level is twelve consecutive frames advanced every three ticks.
+        CHECK(fish.frame(1, 0, 0, 0) == 0);
+        CHECK(fish.frame(1, 0, 0, 3) == 1);
+        CHECK(fish.frame(1, 0, 0, 3 * 11) == 11);
+        CHECK(fish.frame(1, 0, 0, 3 * 12) == 0);
+        CHECK(fish.frame(5, 7, 9, 3 * 5) == 4 * 12 + 5);
+        // Trees pick one of two looks per position; both are the stage's frame.
+        const auto& jungle = registry->presentation(*registry->find("jungle-trees"));
+        for (int x = 0; x < 16; ++x)
+        {
+            const auto frame = jungle.frame(5, x, 3, 0);
+            CHECK((frame == 4 || frame == 9));
+        }
+        // Scavenge sites shrink with their total stock.
+        const auto& ruins = registry->presentation(*registry->find("ruins"));
+        CHECK(ruins.frame(6, 0, 0, 0) == 5);
+        CHECK(ruins.frame(1, 0, 0, 0) == 0);
     }
 
     TEST_CASE("source mutability follows every definition and destructive secondary yield")
@@ -169,7 +251,7 @@ TEST_SUITE("ResourceRegistry")
         const auto backward = original->importJson(source(additions));
         CHECK(forward->serialize() == backward->serialize());
         CHECK(forward->size() == original->size() + 300);
-        CHECK(original->size() == 12);
+        CHECK(original->size() == 24);
         for (unsigned i = 0; i < original->size(); ++i)
             CHECK(forward->find(original->key(static_cast<ResourceId>(i))) == static_cast<ResourceId>(i));
         CHECK(forward->valid(300));

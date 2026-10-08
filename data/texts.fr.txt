@@ -5604,6 +5604,30 @@ Minerai de fer
 Silice
 [Cotton]
 Coton
+[Jungle trees]
+Arbres de jungle
+[Pine trees]
+Pins
+[Dead trees]
+Arbres morts
+[Ruins]
+Ruines
+[Camp-site]
+Campement
+[Ancient debris]
+Débris anciens
+[Scrub]
+Broussailles
+[Tall grass]
+Hautes herbes
+[Maize]
+Maïs
+[Potatoes]
+Pommes de terre
+[Rice]
+Riz
+[Fish]
+Poissons
 [Reroll terrain look]
 Tirer à nouveau l’apparence du terrain
 [boulders]

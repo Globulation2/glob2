@@ -5604,6 +5604,30 @@ Ruda żelaza
 Krzemionka
 [Cotton]
 Bawełna
+[Jungle trees]
+Drzewa dżungli
+[Pine trees]
+Sosny
+[Dead trees]
+Martwe drzewa
+[Ruins]
+Ruiny
+[Camp-site]
+Obozowisko
+[Ancient debris]
+Starożytne szczątki
+[Scrub]
+Zarośla
+[Tall grass]
+Wysoka trawa
+[Maize]
+Kukurydza
+[Potatoes]
+Ziemniaki
+[Rice]
+Ryż
+[Fish]
+Ryby
 [Reroll terrain look]
 Wylosuj ponownie wygląd terenu
 [boulders]

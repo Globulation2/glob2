@@ -5604,6 +5604,30 @@ AI 遥测
 硅砂
 [Cotton]
 棉花
+[Jungle trees]
+丛林树木
+[Pine trees]
+松树
+[Dead trees]
+枯树
+[Ruins]
+废墟
+[Camp-site]
+营地
+[Ancient debris]
+古代残骸
+[Scrub]
+灌木丛
+[Tall grass]
+高草
+[Maize]
+玉米
+[Potatoes]
+土豆
+[Rice]
+水稻
+[Fish]
+鱼
 [Reroll terrain look]
 重新随机生成地形外观
 [boulders]

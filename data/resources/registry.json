@@ -5,6 +5,11 @@
       "key": "foundation-resources",
       "label": "Foundation resources",
       "help": "Makes gold ore, iron ore, silica and cotton available in the map editor. Existing maps and building costs are unchanged."
+    },
+    {
+      "key": "landscape-resources",
+      "label": "Landscape resources",
+      "help": "Makes jungle, pine and dead trees, ruins, camp-sites, ancient debris, scrub, tall grass, maize, potatoes, rice and fish available in the map editor. They use existing materials and rules; existing maps are unchanged."
     }
   ],
   "resources": [
@@ -1130,6 +1135,1263 @@
         ],
         "animationFrames": 1,
         "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "jungle-trees",
+      "properties": {
+        "primaryMaterial": "wood",
+        "growthRate": 294912,
+        "spreadRate": 196608,
+        "ecology": "land",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": true,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "wood": {
+          "capacity": 5,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "all",
+          "destroysDeposit": true,
+          "placementMaximum": 4
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Jungle trees",
+        "sprite": "data/gfx/resource-jungle-trees",
+        "minimap": [
+          40,
+          140,
+          100
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              },
+              {
+                "frame": 6,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              },
+              {
+                "frame": 7,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              },
+              {
+                "frame": 8,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              },
+              {
+                "frame": 9,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "pine-trees",
+      "properties": {
+        "primaryMaterial": "wood",
+        "growthRate": 131072,
+        "spreadRate": 131072,
+        "ecology": "land",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": true,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "wood": {
+          "capacity": 5,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "all",
+          "destroysDeposit": true,
+          "placementMaximum": 4
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Pine trees",
+        "sprite": "data/gfx/resource-pine-trees",
+        "minimap": [
+          30,
+          100,
+          110
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              },
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              },
+              {
+                "frame": 6,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              },
+              {
+                "frame": 7,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              },
+              {
+                "frame": 8,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              },
+              {
+                "frame": 9,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "dead-trees",
+      "properties": {
+        "primaryMaterial": "wood",
+        "growthRate": 0,
+        "spreadRate": 0,
+        "ecology": "none",
+        "habitatMask": 9,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": false,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": false,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "wood": {
+          "capacity": 3,
+          "initial": 3,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Dead trees",
+        "sprite": "data/gfx/resource-dead-trees",
+        "minimap": [
+          140,
+          128,
+          140
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "ruins",
+      "properties": {
+        "primaryMaterial": "stone",
+        "growthRate": 0,
+        "spreadRate": 0,
+        "ecology": "none",
+        "habitatMask": 9,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": false,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": false,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "wood": {
+          "capacity": 2,
+          "initial": 2,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        },
+        "stone": {
+          "capacity": 3,
+          "initial": 3,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        },
+        "metal": {
+          "capacity": 1,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Ruins",
+        "sprite": "data/gfx/resource-ruins",
+        "minimap": [
+          160,
+          144,
+          196
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 6,
+            "variants": [
+              {
+                "frame": 5,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "camp-site",
+      "properties": {
+        "primaryMaterial": "food",
+        "growthRate": 0,
+        "spreadRate": 0,
+        "ecology": "none",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": false,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": false,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "wood": {
+          "capacity": 2,
+          "initial": 2,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        },
+        "food": {
+          "capacity": 2,
+          "initial": 2,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        },
+        "fabric": {
+          "capacity": 1,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Camp-site",
+        "sprite": "data/gfx/resource-camp-site",
+        "minimap": [
+          232,
+          150,
+          170
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "ancient-debris",
+      "properties": {
+        "primaryMaterial": "stone",
+        "growthRate": 0,
+        "spreadRate": 0,
+        "ecology": "none",
+        "habitatMask": 9,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": false,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": false,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "stone": {
+          "capacity": 2,
+          "initial": 2,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        },
+        "gold": {
+          "capacity": 1,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        },
+        "metal": {
+          "capacity": 2,
+          "initial": 2,
+          "seedReserve": 1,
+          "growthRate": 0,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 0
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Ancient debris",
+        "sprite": "data/gfx/resource-ancient-debris",
+        "minimap": [
+          88,
+          62,
+          140
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "scrub",
+      "properties": {
+        "primaryMaterial": "wood",
+        "growthRate": 98304,
+        "spreadRate": 65536,
+        "ecology": "land",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": false,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": true,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "wood": {
+          "capacity": 2,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 2
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Scrub",
+        "sprite": "data/gfx/resource-scrub",
+        "minimap": [
+          100,
+          130,
+          50
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "tall-grass",
+      "properties": {
+        "primaryMaterial": "wood",
+        "growthRate": 196608,
+        "spreadRate": 131072,
+        "ecology": "land",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": false,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": true,
+        "clearConsumption": "all",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "wood": {
+          "capacity": 1,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "all",
+          "destroysDeposit": true,
+          "placementMaximum": 0
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Tall grass",
+        "sprite": "data/gfx/resource-tall-grass",
+        "minimap": [
+          150,
+          200,
+          90
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "maize",
+      "properties": {
+        "primaryMaterial": "food",
+        "growthRate": 98304,
+        "spreadRate": 196608,
+        "ecology": "land",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": true,
+        "smoothPlacement": true,
+        "clearConsumption": "one",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "food": {
+          "capacity": 4,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 3
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Maize",
+        "sprite": "data/gfx/resource-maize",
+        "minimap": [
+          230,
+          196,
+          60
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "potatoes",
+      "properties": {
+        "primaryMaterial": "food",
+        "growthRate": 49152,
+        "spreadRate": 131072,
+        "ecology": "uniform",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": true,
+        "smoothPlacement": true,
+        "clearConsumption": "one",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "food": {
+          "capacity": 5,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 4
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Potatoes",
+        "sprite": "data/gfx/resource-potatoes",
+        "minimap": [
+          90,
+          160,
+          80
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "rice",
+      "properties": {
+        "primaryMaterial": "food",
+        "growthRate": 98304,
+        "spreadRate": 196608,
+        "ecology": "shore",
+        "habitatMask": 1,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": true,
+        "smoothPlacement": true,
+        "clearConsumption": "one",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "food": {
+          "capacity": 5,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 4
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Rice",
+        "sprite": "data/gfx/resource-rice",
+        "minimap": [
+          150,
+          210,
+          90
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 1,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 2,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 3,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 4,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 1,
+        "animationTicks": 1,
+        "animationStride": 1
+      }
+    },
+    {
+      "key": "fish",
+      "properties": {
+        "primaryMaterial": "food",
+        "growthRate": 196608,
+        "spreadRate": 131072,
+        "ecology": "land",
+        "habitatMask": 2,
+        "stockBranchDivisor": 8,
+        "stockDependentGrowth": true,
+        "blocksGround": true,
+        "blocksAir": false,
+        "blocksBuilding": true,
+        "clearable": true,
+        "visibleToHarvest": false,
+        "persistsWhenEmpty": false,
+        "farmable": false,
+        "smoothPlacement": true,
+        "clearConsumption": "one",
+        "requiresGrowthTerrain": true,
+        "requiresPermanentDepositsTerrain": false
+      },
+      "yields": {
+        "food": {
+          "capacity": 5,
+          "initial": 1,
+          "seedReserve": 1,
+          "growthRate": 196608,
+          "consumption": "one",
+          "destroysDeposit": false,
+          "placementMaximum": 4
+        }
+      },
+      "requiredExperiment": "landscape-resources",
+      "presentation": {
+        "name": "Fish",
+        "sprite": "data/gfx/resource-fish",
+        "minimap": [
+          240,
+          150,
+          90
+        ],
+        "levels": [
+          {
+            "stock": 0,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 1,
+            "variants": [
+              {
+                "frame": 0,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 2,
+            "variants": [
+              {
+                "frame": 12,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 3,
+            "variants": [
+              {
+                "frame": 24,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 4,
+            "variants": [
+              {
+                "frame": 36,
+                "weight": 1
+              }
+            ]
+          },
+          {
+            "stock": 5,
+            "variants": [
+              {
+                "frame": 48,
+                "weight": 1
+              }
+            ]
+          }
+        ],
+        "animationFrames": 12,
+        "animationTicks": 3,
         "animationStride": 1
       }
     }

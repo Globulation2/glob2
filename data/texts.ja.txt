@@ -5604,6 +5604,30 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 珪砂
 [Cotton]
 綿花
+[Jungle trees]
+ジャングルの木
+[Pine trees]
+松の木
+[Dead trees]
+枯れ木
+[Ruins]
+遺跡
+[Camp-site]
+野営地
+[Ancient debris]
+古代の残骸
+[Scrub]
+低木の茂み
+[Tall grass]
+背の高い草
+[Maize]
+トウモロコシ
+[Potatoes]
+ジャガイモ
+[Rice]
+稲
+[Fish]
+魚
 [Reroll terrain look]
 地形の外観を再抽選
 [boulders]

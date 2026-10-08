@@ -5604,6 +5604,30 @@ Eisenerz
 Quarzsand
 [Cotton]
 Baumwolle
+[Jungle trees]
+Dschungelbäume
+[Pine trees]
+Kiefern
+[Dead trees]
+Tote Bäume
+[Ruins]
+Ruinen
+[Camp-site]
+Lagerplatz
+[Ancient debris]
+Uralte Trümmer
+[Scrub]
+Gestrüpp
+[Tall grass]
+Hohes Gras
+[Maize]
+Mais
+[Potatoes]
+Kartoffeln
+[Rice]
+Reis
+[Fish]
+Fische
 [Reroll terrain look]
 Geländeaussehen neu auswürfeln
 [boulders]

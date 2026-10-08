@@ -5604,6 +5604,30 @@ Järnmalm
 Kvartssand
 [Cotton]
 Bomull
+[Jungle trees]
+Djungelträd
+[Pine trees]
+Tallar
+[Dead trees]
+Döda träd
+[Ruins]
+Ruiner
+[Camp-site]
+Lägerplats
+[Ancient debris]
+Uråldriga lämningar
+[Scrub]
+Snår
+[Tall grass]
+Högt gräs
+[Maize]
+Majs
+[Potatoes]
+Potatis
+[Rice]
+Ris
+[Fish]
+Fisk
 [Reroll terrain look]
 Slumpa terrängens utseende igen
 [boulders]

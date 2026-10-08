@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "72b5a43b6b83d6c8446e8515ec121d6970fd6c3bce9c9bfdf5dfc4852d544116"
+      "sha256": "02b533c8ff20c0600b5cb0b7255008daa1d8e34659f682a563014b12192dee80"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "5e588668c59cdf781df70b0707d3adf1fea3e53836fed5804719de0ad63975d7"
+      "sha256": "6de448dcf46ff3f774c8bd2c3e23922c8810682ad020461dc3727a31f3ab8845"
     },
     {
       "runtime": "README.md",
@@ -20175,6 +20175,586 @@
       "runtime": "resource-cotton0.png",
       "source": "procedural-materials/resource-cotton0.png",
       "sha256": "39215c84af822cfc7a021e3314809fb3dd8357db3c1bf8e0c65707fa66b26a42"
+    },
+    {
+      "runtime": "resource-jungle-trees0.png",
+      "source": "procedural-materials/resource-jungle-trees0.png",
+      "sha256": "ba344e4c6cb438c5e89d239d86bbf1d366e0a1b697c016d5160b3bdde1034525"
+    },
+    {
+      "runtime": "resource-jungle-trees1.png",
+      "source": "procedural-materials/resource-jungle-trees1.png",
+      "sha256": "d256035168ff2f51d4106d5115a1d0cbf2ef4804c619db54700f56b78b79f464"
+    },
+    {
+      "runtime": "resource-jungle-trees2.png",
+      "source": "procedural-materials/resource-jungle-trees2.png",
+      "sha256": "2efc39f3204acadc322b991fd87fe16e3fa718f47e80590a0578938f647467ed"
+    },
+    {
+      "runtime": "resource-jungle-trees3.png",
+      "source": "procedural-materials/resource-jungle-trees3.png",
+      "sha256": "63e902b67376a657d28c5b0892f923940e9a67b3e07cad0263d273f345163d0d"
+    },
+    {
+      "runtime": "resource-jungle-trees4.png",
+      "source": "procedural-materials/resource-jungle-trees4.png",
+      "sha256": "4e7b15304c5da8e48b855dd7b0d64d3fa5419fec9a9cb05797b7d17c450bf1ec"
+    },
+    {
+      "runtime": "resource-jungle-trees5.png",
+      "source": "procedural-materials/resource-jungle-trees5.png",
+      "sha256": "8d46076bafec99667086e39728e48819ad473dfead276dce5c590287c21ed804"
+    },
+    {
+      "runtime": "resource-jungle-trees6.png",
+      "source": "procedural-materials/resource-jungle-trees6.png",
+      "sha256": "275573bf66a00cee30f43aa0c9558c6fd5fc494e3ce011563ef07708c2393802"
+    },
+    {
+      "runtime": "resource-jungle-trees7.png",
+      "source": "procedural-materials/resource-jungle-trees7.png",
+      "sha256": "94625f9ae5a9e4477af0bdc1198013dc108604a707cb671e0abd08168f08071a"
+    },
+    {
+      "runtime": "resource-jungle-trees8.png",
+      "source": "procedural-materials/resource-jungle-trees8.png",
+      "sha256": "df7483b31741e707cebf12e297ed0d156b49f8bb8c2a504c9e186246628eabaf"
+    },
+    {
+      "runtime": "resource-jungle-trees9.png",
+      "source": "procedural-materials/resource-jungle-trees9.png",
+      "sha256": "1b60e7efb78aab7583a20f31c16f800651540b322a986c87c192b92a9ee1de13"
+    },
+    {
+      "runtime": "resource-pine-trees0.png",
+      "source": "procedural-materials/resource-pine-trees0.png",
+      "sha256": "f66f2da40b95d40733f0e1c4fc4cfc650ab60b54304b6bb9b0bd5f2d576b652c"
+    },
+    {
+      "runtime": "resource-pine-trees1.png",
+      "source": "procedural-materials/resource-pine-trees1.png",
+      "sha256": "fcabf9176a815b90025ce62f34d8fb420a37d43998df63a2d971ae71f36675ca"
+    },
+    {
+      "runtime": "resource-pine-trees2.png",
+      "source": "procedural-materials/resource-pine-trees2.png",
+      "sha256": "49efd853fb9eecde0efe438909d1795b726b39d1721b6289fb705ed58ae036d6"
+    },
+    {
+      "runtime": "resource-pine-trees3.png",
+      "source": "procedural-materials/resource-pine-trees3.png",
+      "sha256": "d020f4971f5791ea983ed5ec3b6771f5b2d7ff9052b05d3227feeef8686ad0df"
+    },
+    {
+      "runtime": "resource-pine-trees4.png",
+      "source": "procedural-materials/resource-pine-trees4.png",
+      "sha256": "802f5056c6a5bbfb4d65daa7b3b320b070091a23170b8d3a5ed177ba76bcdd7e"
+    },
+    {
+      "runtime": "resource-pine-trees5.png",
+      "source": "procedural-materials/resource-pine-trees5.png",
+      "sha256": "11abc80e6205f4ff889e12c8c1fdeefa5e09ee27c26562c329e62c1ad775af75"
+    },
+    {
+      "runtime": "resource-pine-trees6.png",
+      "source": "procedural-materials/resource-pine-trees6.png",
+      "sha256": "d71944983db346f369f5629238c520b5952e95d6549eb23ac8bb64f6a5069eb7"
+    },
+    {
+      "runtime": "resource-pine-trees7.png",
+      "source": "procedural-materials/resource-pine-trees7.png",
+      "sha256": "046d2e825e6f2fb9ca79ca3f8a5de90c00a1e7ca6f528a9683390db9ee0402e6"
+    },
+    {
+      "runtime": "resource-pine-trees8.png",
+      "source": "procedural-materials/resource-pine-trees8.png",
+      "sha256": "88493ca7fda3c4d0ac4f6e8c2c04aa274a9043a14217b483c3afd9f102d4193b"
+    },
+    {
+      "runtime": "resource-pine-trees9.png",
+      "source": "procedural-materials/resource-pine-trees9.png",
+      "sha256": "a2987dc39ea33a143d06af0790805b3a6aa9f9d6a48847f9e2ba7bb260347f8e"
+    },
+    {
+      "runtime": "resource-dead-trees0.png",
+      "source": "procedural-materials/resource-dead-trees0.png",
+      "sha256": "d1dc330ca74076f6b43b12779957ab4e6815522fca50f8e9d719d630e5a8b303"
+    },
+    {
+      "runtime": "resource-dead-trees1.png",
+      "source": "procedural-materials/resource-dead-trees1.png",
+      "sha256": "0bdf3414b6c19d68c6641e8210b1f6886c42949547f9e737dd8626eadd5359e1"
+    },
+    {
+      "runtime": "resource-dead-trees2.png",
+      "source": "procedural-materials/resource-dead-trees2.png",
+      "sha256": "5b8ddd709107323ed5042a3dc0abd0f3ea3f80baef8ac6e882428f154cd94380"
+    },
+    {
+      "runtime": "resource-ruins0.png",
+      "source": "procedural-materials/resource-ruins0.png",
+      "sha256": "e1376670d8b44162ed6b8389d6a9804db471851790bed4ca3e6554af4a489089"
+    },
+    {
+      "runtime": "resource-ruins1.png",
+      "source": "procedural-materials/resource-ruins1.png",
+      "sha256": "8c23c0c3587b12c5688e45ebd0470d2b6f2190567cf17ad19bacfd7afb37b6a0"
+    },
+    {
+      "runtime": "resource-ruins2.png",
+      "source": "procedural-materials/resource-ruins2.png",
+      "sha256": "8184840a1ec3daab68d850fd7e0835f685629c3c5eac1a0e8a31a121437f362b"
+    },
+    {
+      "runtime": "resource-ruins3.png",
+      "source": "procedural-materials/resource-ruins3.png",
+      "sha256": "76da56725965915684b6d6e1ed24b644270a4420b24ed014cde55c98907a1652"
+    },
+    {
+      "runtime": "resource-ruins4.png",
+      "source": "procedural-materials/resource-ruins4.png",
+      "sha256": "3ed682843252e01eb720611b3a76eace02ea63bdeca50c68803f9ecec65a0094"
+    },
+    {
+      "runtime": "resource-ruins5.png",
+      "source": "procedural-materials/resource-ruins5.png",
+      "sha256": "b4687097ba3993d89fc2152f267ba3503403ea4c2af75256d196e3308ad20b47"
+    },
+    {
+      "runtime": "resource-camp-site0.png",
+      "source": "procedural-materials/resource-camp-site0.png",
+      "sha256": "86afe8f0461806d4665119b36ca49b05548ce0cd7a8941931b6296cbac9c6c7b"
+    },
+    {
+      "runtime": "resource-camp-site1.png",
+      "source": "procedural-materials/resource-camp-site1.png",
+      "sha256": "ab1bd4479ca6b28853e45dbfbfa420d6d0b46bf4f249b5697944c0baa5d684fe"
+    },
+    {
+      "runtime": "resource-camp-site2.png",
+      "source": "procedural-materials/resource-camp-site2.png",
+      "sha256": "6a71de36d9abc10c5e0c877a89c3efdec1b82d57fc98d1b6e174205bde533cfe"
+    },
+    {
+      "runtime": "resource-camp-site3.png",
+      "source": "procedural-materials/resource-camp-site3.png",
+      "sha256": "f5b60a9aac7b31d6e3157a48d2b623f7af81c888e8e54ba406a2f61a1c6b6e9c"
+    },
+    {
+      "runtime": "resource-camp-site4.png",
+      "source": "procedural-materials/resource-camp-site4.png",
+      "sha256": "7606b1a2ffd7dc3dd6b8446b25ce106af6050d834a6c44b43d675a5f1cea2a69"
+    },
+    {
+      "runtime": "resource-ancient-debris0.png",
+      "source": "procedural-materials/resource-ancient-debris0.png",
+      "sha256": "e3c860b48f48e8c9a6ed21f43c8c5a478600ab90a41e3463c6c307eba2598c7c"
+    },
+    {
+      "runtime": "resource-ancient-debris1.png",
+      "source": "procedural-materials/resource-ancient-debris1.png",
+      "sha256": "9a6f6a0fafe66734d39e17c057a72c736a95be9b0c81d1dddc519cc499d73880"
+    },
+    {
+      "runtime": "resource-ancient-debris2.png",
+      "source": "procedural-materials/resource-ancient-debris2.png",
+      "sha256": "abbddcd04608dc839d1ef94f817db8865662bd684f7699301a23db04ec446a57"
+    },
+    {
+      "runtime": "resource-ancient-debris3.png",
+      "source": "procedural-materials/resource-ancient-debris3.png",
+      "sha256": "fea808dec05da1b7c828d7285c5383ddd5b0f464e6e0f242766c36ea8913d6ab"
+    },
+    {
+      "runtime": "resource-ancient-debris4.png",
+      "source": "procedural-materials/resource-ancient-debris4.png",
+      "sha256": "495a10675a2e5d44828876e4d1f18e3507203b12d36d51072df2f6454366b92e"
+    },
+    {
+      "runtime": "resource-scrub0.png",
+      "source": "procedural-materials/resource-scrub0.png",
+      "sha256": "11724cdc11ed50f0af5c8c8edfcd814a0d0111f61c571b1548bd8c2155ea611f"
+    },
+    {
+      "runtime": "resource-scrub1.png",
+      "source": "procedural-materials/resource-scrub1.png",
+      "sha256": "09e94dcc2f5fd06e5a2e87db881d8ff11ff7ca43b5aba71bd1e5f38282399931"
+    },
+    {
+      "runtime": "resource-tall-grass0.png",
+      "source": "procedural-materials/resource-tall-grass0.png",
+      "sha256": "f62edb872795f603506a373ac97f1109ead64f72b894be03c14da7f0594086e5"
+    },
+    {
+      "runtime": "resource-maize0.png",
+      "source": "procedural-materials/resource-maize0.png",
+      "sha256": "94becb3ab8e909a5bc518beb584fe25cdfea61f2fed003e149df1314b2a378b8"
+    },
+    {
+      "runtime": "resource-maize1.png",
+      "source": "procedural-materials/resource-maize1.png",
+      "sha256": "7ce566d184ee494c5b1f79b18fd0d5637413e9949f875f3e812451d5389814ac"
+    },
+    {
+      "runtime": "resource-maize2.png",
+      "source": "procedural-materials/resource-maize2.png",
+      "sha256": "464040b79bf58097780fb44db508609f2fd49495275e5ffe0edb2905d4f50b71"
+    },
+    {
+      "runtime": "resource-maize3.png",
+      "source": "procedural-materials/resource-maize3.png",
+      "sha256": "1071007cfde05be56360907e27970c6c92b2b3e4fd2d72d1ce577031fa122390"
+    },
+    {
+      "runtime": "resource-potatoes0.png",
+      "source": "procedural-materials/resource-potatoes0.png",
+      "sha256": "3cc2760148a0a61d254eefc28a74abd8a7654ccd695affd74fcea9889c9562d3"
+    },
+    {
+      "runtime": "resource-potatoes1.png",
+      "source": "procedural-materials/resource-potatoes1.png",
+      "sha256": "d1688c3248f894ec175783be0e21cf5960bca2b8815c6c53b5987334e815299d"
+    },
+    {
+      "runtime": "resource-potatoes2.png",
+      "source": "procedural-materials/resource-potatoes2.png",
+      "sha256": "7a6d2db9ef56982929742d18c059d0a1e30896f13e6650e73d5ebf4dd47e824e"
+    },
+    {
+      "runtime": "resource-potatoes3.png",
+      "source": "procedural-materials/resource-potatoes3.png",
+      "sha256": "4d65a49f60183859de888b81d7cef360c831301d2a601f786b1a1fb1566a1989"
+    },
+    {
+      "runtime": "resource-potatoes4.png",
+      "source": "procedural-materials/resource-potatoes4.png",
+      "sha256": "477a1e4d4402cb154ff04862bc6bb56fe29ab0aeb7036c0a8785402a4e0ae804"
+    },
+    {
+      "runtime": "resource-rice0.png",
+      "source": "procedural-materials/resource-rice0.png",
+      "sha256": "2005a90a2219b34efd7cbfd1846d06ce524ae152c52660cb92711b8c8682cbcf"
+    },
+    {
+      "runtime": "resource-rice1.png",
+      "source": "procedural-materials/resource-rice1.png",
+      "sha256": "47fdd9ec9772e79d2f0f7ab549d6f2a4e692846ce1945d63f08cd32fd708e43e"
+    },
+    {
+      "runtime": "resource-rice2.png",
+      "source": "procedural-materials/resource-rice2.png",
+      "sha256": "c6ecc7a179f88e7161ef79de57cb393d1458fd65ca522783a659322dc2a4f402"
+    },
+    {
+      "runtime": "resource-rice3.png",
+      "source": "procedural-materials/resource-rice3.png",
+      "sha256": "6bd762a9af10026ba05eb1365b9e784384067179422bdccd1a1cb8a2e5c620f2"
+    },
+    {
+      "runtime": "resource-rice4.png",
+      "source": "procedural-materials/resource-rice4.png",
+      "sha256": "e9dcaf209ee89bca9d77954eb484798f1dcfb4f71f942f3c9ca788e7ccabd76f"
+    },
+    {
+      "runtime": "resource-fish0.png",
+      "source": "procedural-materials/resource-fish0.png",
+      "sha256": "45432de90baa8d37cd30f81ea4143ddf569b2bd1afb810feaa23c8ff73787750"
+    },
+    {
+      "runtime": "resource-fish1.png",
+      "source": "procedural-materials/resource-fish1.png",
+      "sha256": "cd6673bb80d9c7fd4a44d8f5c0b59270362b601ec69bde3c3ce2b2fa56ff8635"
+    },
+    {
+      "runtime": "resource-fish2.png",
+      "source": "procedural-materials/resource-fish2.png",
+      "sha256": "7e3bcfe4005521eeed53f8449a1d0873d51b4d0e7b3fc42437a16a4a6072b773"
+    },
+    {
+      "runtime": "resource-fish3.png",
+      "source": "procedural-materials/resource-fish3.png",
+      "sha256": "ef597e10dec3b7b66f6daba53afe0750113ce2e754352cd33e4360546d0e93ce"
+    },
+    {
+      "runtime": "resource-fish4.png",
+      "source": "procedural-materials/resource-fish4.png",
+      "sha256": "86f13368374f3c1e166c37cdb98b750ede82d83d5ef178d71a0f81bd91e4cab4"
+    },
+    {
+      "runtime": "resource-fish5.png",
+      "source": "procedural-materials/resource-fish5.png",
+      "sha256": "c1c30499502fcc133398a91e6ebf5385b67f79d383accc533b76f3b3e65c6e9b"
+    },
+    {
+      "runtime": "resource-fish6.png",
+      "source": "procedural-materials/resource-fish6.png",
+      "sha256": "177f636be541588ffa0c97b179a2b0ba7fcd776401ad2141a052bd5c66ae2810"
+    },
+    {
+      "runtime": "resource-fish7.png",
+      "source": "procedural-materials/resource-fish7.png",
+      "sha256": "5ac7081e0e35ddd9d463b79b4108167599854345b8bfd225dc4255769bac8f04"
+    },
+    {
+      "runtime": "resource-fish8.png",
+      "source": "procedural-materials/resource-fish8.png",
+      "sha256": "8d11fb3af41eca10af678a6f425f20a0dfd0f6eeb0646b21f3d2846419fbaddc"
+    },
+    {
+      "runtime": "resource-fish9.png",
+      "source": "procedural-materials/resource-fish9.png",
+      "sha256": "ad3aca651d25f06b7a61d0405e8dd4616ba1a9bf7f16abb88301b5b87a4a9689"
+    },
+    {
+      "runtime": "resource-fish10.png",
+      "source": "procedural-materials/resource-fish10.png",
+      "sha256": "a38a7b1f25401c024287db948f80a618f13c1c41710c6d91a402f0708546d53d"
+    },
+    {
+      "runtime": "resource-fish11.png",
+      "source": "procedural-materials/resource-fish11.png",
+      "sha256": "4a8b46bb96e3166faa1032c526ab0f519407a4cd323d993911c92cab4ec91d65"
+    },
+    {
+      "runtime": "resource-fish12.png",
+      "source": "procedural-materials/resource-fish12.png",
+      "sha256": "8786bf520758db4af575283b21d0877aa36a78f6eeaf00ffe5d24db7fa2f88f3"
+    },
+    {
+      "runtime": "resource-fish13.png",
+      "source": "procedural-materials/resource-fish13.png",
+      "sha256": "8cbda2d421c5f59072934b4b1c0085986a87c82b11b99e7fd41d9e645f871ef8"
+    },
+    {
+      "runtime": "resource-fish14.png",
+      "source": "procedural-materials/resource-fish14.png",
+      "sha256": "5aa0a46259117a9ee7314c8f801be1a4000ce318de38ee3377d487c5cefc2408"
+    },
+    {
+      "runtime": "resource-fish15.png",
+      "source": "procedural-materials/resource-fish15.png",
+      "sha256": "b443c0e80cb91538107799fd28b602c2860c783a7faea5fb390a0b612b10355b"
+    },
+    {
+      "runtime": "resource-fish16.png",
+      "source": "procedural-materials/resource-fish16.png",
+      "sha256": "cf5db8897d8c20651f3604bb4b9d121908367734ec5156700d81034842bf3302"
+    },
+    {
+      "runtime": "resource-fish17.png",
+      "source": "procedural-materials/resource-fish17.png",
+      "sha256": "f00221542e3c099fb64b880d16eeb6ea5bd4ebe5c7f53982a74fbc4e91623bf6"
+    },
+    {
+      "runtime": "resource-fish18.png",
+      "source": "procedural-materials/resource-fish18.png",
+      "sha256": "9441b403cb4c2f75b6c25cdaf84d85d710b18190a9afcb949e686e17d0d27fbe"
+    },
+    {
+      "runtime": "resource-fish19.png",
+      "source": "procedural-materials/resource-fish19.png",
+      "sha256": "df068d874dc747420c8874c93d61012de133e52c59cee2fbae44768b1aac66c0"
+    },
+    {
+      "runtime": "resource-fish20.png",
+      "source": "procedural-materials/resource-fish20.png",
+      "sha256": "e703f999181ef75f5c0cbe7e23e63339926bda65f82c695aad4b4330a1009365"
+    },
+    {
+      "runtime": "resource-fish21.png",
+      "source": "procedural-materials/resource-fish21.png",
+      "sha256": "4268e434990e899b8e06816c9bca8e89339c8f625f9386a1afc3ab060c5ba1e9"
+    },
+    {
+      "runtime": "resource-fish22.png",
+      "source": "procedural-materials/resource-fish22.png",
+      "sha256": "9eabd7e7fddfdf8cdb16a4465ec12cf3b667dd264de41f99d4c6dfbe2b8454d3"
+    },
+    {
+      "runtime": "resource-fish23.png",
+      "source": "procedural-materials/resource-fish23.png",
+      "sha256": "d451bda003af5190b8cf6d83b82385ede1b4f30b5e5d8a8210e9a75c5a54be0d"
+    },
+    {
+      "runtime": "resource-fish24.png",
+      "source": "procedural-materials/resource-fish24.png",
+      "sha256": "66bdc943211a4e867e299e0bf264998ccb991d497082353d7a7225eeef749e9a"
+    },
+    {
+      "runtime": "resource-fish25.png",
+      "source": "procedural-materials/resource-fish25.png",
+      "sha256": "b4347042c001084b315127a09a212ba44cc27bbb6c599d6570dae24c07731c14"
+    },
+    {
+      "runtime": "resource-fish26.png",
+      "source": "procedural-materials/resource-fish26.png",
+      "sha256": "d8dff1c7321c8643d13b5fc3db69912a0456cd4ed914913a24bdbea1b57976fb"
+    },
+    {
+      "runtime": "resource-fish27.png",
+      "source": "procedural-materials/resource-fish27.png",
+      "sha256": "2565769c597ae3070c9cf61e34a637d528a676b9896c99177443cbe5b8fa982c"
+    },
+    {
+      "runtime": "resource-fish28.png",
+      "source": "procedural-materials/resource-fish28.png",
+      "sha256": "286d6892d978b126cc97339fbcf1446a157bdd1c1da6cb68d1309f2d7f2aa427"
+    },
+    {
+      "runtime": "resource-fish29.png",
+      "source": "procedural-materials/resource-fish29.png",
+      "sha256": "946c9470d49a5f381c4c899b12ded006f373de52a5f88e744c7182857177b93b"
+    },
+    {
+      "runtime": "resource-fish30.png",
+      "source": "procedural-materials/resource-fish30.png",
+      "sha256": "1bc0a59a365a9812bc9539f65e6a416e1a43b3f3082fe3570796b99ba1c1cb21"
+    },
+    {
+      "runtime": "resource-fish31.png",
+      "source": "procedural-materials/resource-fish31.png",
+      "sha256": "492925db26b9e0cff07650852f5ccfaf45c2cdae552c28bf78332dac4d9a897b"
+    },
+    {
+      "runtime": "resource-fish32.png",
+      "source": "procedural-materials/resource-fish32.png",
+      "sha256": "eca8536d283224f5b4da814d9653c957fc6be18f977893f2782692db295bacfd"
+    },
+    {
+      "runtime": "resource-fish33.png",
+      "source": "procedural-materials/resource-fish33.png",
+      "sha256": "fcf827c0acad83d30d887497a2e3f6dbdeb7e33d02a94aa0559f5aea7f4e84aa"
+    },
+    {
+      "runtime": "resource-fish34.png",
+      "source": "procedural-materials/resource-fish34.png",
+      "sha256": "17f8ec99305e7614a5b64e6d868b0623cd01f46ac17a579ede9574d58bb66d55"
+    },
+    {
+      "runtime": "resource-fish35.png",
+      "source": "procedural-materials/resource-fish35.png",
+      "sha256": "b487f00ae950a4b7ae3483b22af23b892e69108f34f86e633b9f867190cfc9af"
+    },
+    {
+      "runtime": "resource-fish36.png",
+      "source": "procedural-materials/resource-fish36.png",
+      "sha256": "fe908ee1ec2dd966c7325695a555747d20e658176673b0f8a95cd192eb811e12"
+    },
+    {
+      "runtime": "resource-fish37.png",
+      "source": "procedural-materials/resource-fish37.png",
+      "sha256": "8059973d99e337470840779a508e642f263c30254ed44bc5e35193dac40e3f31"
+    },
+    {
+      "runtime": "resource-fish38.png",
+      "source": "procedural-materials/resource-fish38.png",
+      "sha256": "387918b9011dcaf88513e9f6a5d8dc0c96333aea0c8b5b1bf02ed6de4636fc1a"
+    },
+    {
+      "runtime": "resource-fish39.png",
+      "source": "procedural-materials/resource-fish39.png",
+      "sha256": "451db00c23ecc94198976309a6a0541bbc2bb11b9136f261dd0783da74a667f3"
+    },
+    {
+      "runtime": "resource-fish40.png",
+      "source": "procedural-materials/resource-fish40.png",
+      "sha256": "6264e7e8322cab1bcbefc85b10e5f38e76fd9b396d208909a39e80a45ba46d7c"
+    },
+    {
+      "runtime": "resource-fish41.png",
+      "source": "procedural-materials/resource-fish41.png",
+      "sha256": "6efa18a04d0009a1c7a972b85ded2e750d77e878511644a74f5bda1abc680d0f"
+    },
+    {
+      "runtime": "resource-fish42.png",
+      "source": "procedural-materials/resource-fish42.png",
+      "sha256": "d4106a589f78665e6d642ca201b166c3aacd21244a8f5b5a52235362d6cee75a"
+    },
+    {
+      "runtime": "resource-fish43.png",
+      "source": "procedural-materials/resource-fish43.png",
+      "sha256": "a5ac1d8eb61818bcc278d67c1a9c073c075e5bd53250d09380b6fe950d563ee3"
+    },
+    {
+      "runtime": "resource-fish44.png",
+      "source": "procedural-materials/resource-fish44.png",
+      "sha256": "266ae60497e811166f8d8bc5ab26c8975b45e0b38300b7300f47f89e5e4d6590"
+    },
+    {
+      "runtime": "resource-fish45.png",
+      "source": "procedural-materials/resource-fish45.png",
+      "sha256": "012761c019a84a3c2174664dc1f18b5137e8325eb65c17ca961fffe448a59c0c"
+    },
+    {
+      "runtime": "resource-fish46.png",
+      "source": "procedural-materials/resource-fish46.png",
+      "sha256": "a8687fd970980354fd39f24def2bab241cf7471df50f890b2403a45b91b89ded"
+    },
+    {
+      "runtime": "resource-fish47.png",
+      "source": "procedural-materials/resource-fish47.png",
+      "sha256": "74643a0aa101dad386377e51c07b78497f6051009c688c4b3579987201e5ed5d"
+    },
+    {
+      "runtime": "resource-fish48.png",
+      "source": "procedural-materials/resource-fish48.png",
+      "sha256": "aa7dbd8fda3b1c98b697571a0dd21be3925de39c686db5bea19008cd5b65a08c"
+    },
+    {
+      "runtime": "resource-fish49.png",
+      "source": "procedural-materials/resource-fish49.png",
+      "sha256": "9a0798032e502334f491ba7e4788d850478b001cdc6f98b754588022f4823593"
+    },
+    {
+      "runtime": "resource-fish50.png",
+      "source": "procedural-materials/resource-fish50.png",
+      "sha256": "ef52469482d0736e4a8980d40eb01baf411dac372844087f1e7b4b28dcff76d5"
+    },
+    {
+      "runtime": "resource-fish51.png",
+      "source": "procedural-materials/resource-fish51.png",
+      "sha256": "1403b12fc9c955ff6fa1a38b3e59d39aa4e6db8da363cab0ddf55b288c02dd32"
+    },
+    {
+      "runtime": "resource-fish52.png",
+      "source": "procedural-materials/resource-fish52.png",
+      "sha256": "1715f750ff8f60e119473bf3d1c885afb942b7011380feed1bfab2b478f25a4b"
+    },
+    {
+      "runtime": "resource-fish53.png",
+      "source": "procedural-materials/resource-fish53.png",
+      "sha256": "8927de0d26aa3d819296f44c0eb55d17298070c0bd3c42a228e102602bb1b2d3"
+    },
+    {
+      "runtime": "resource-fish54.png",
+      "source": "procedural-materials/resource-fish54.png",
+      "sha256": "bd64d37c014f1e63ca8d7532a30eb3978f2e3c303b09af5b4313ddf7935f1653"
+    },
+    {
+      "runtime": "resource-fish55.png",
+      "source": "procedural-materials/resource-fish55.png",
+      "sha256": "95718e82d1202fc8497fac989da8099ae8a50f0ff100b9694f773e15629d1527"
+    },
+    {
+      "runtime": "resource-fish56.png",
+      "source": "procedural-materials/resource-fish56.png",
+      "sha256": "1444c6a32718b4e2b0dae4b06c3c652faa63b27203e3e765945bf8e18d814138"
+    },
+    {
+      "runtime": "resource-fish57.png",
+      "source": "procedural-materials/resource-fish57.png",
+      "sha256": "134dd1835f89285ce13429cf1cef01cb2722b0b089302ca5962ef75605278576"
+    },
+    {
+      "runtime": "resource-fish58.png",
+      "source": "procedural-materials/resource-fish58.png",
+      "sha256": "61357e67ad511fdbbb3e5dc9bd3916e7745b568e51db0e29752b337cc8c46e98"
+    },
+    {
+      "runtime": "resource-fish59.png",
+      "source": "procedural-materials/resource-fish59.png",
+      "sha256": "a3ffd3d482dd7130820eabfc6a541e950967e4b9b32639ed3efe9a29e49d43c1"
     }
   ]
 }
