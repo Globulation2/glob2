@@ -1,0 +1,6 @@
+test_match_verification_preserves_trace_across_compute_sizes (test_cli_smoke.CliSmoke.test_match_verification_preserves_trace_across_compute_sizes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 44.945s
+
+OK

@@ -1,0 +1,7 @@
+Verification for PR968
+Commit c1ccc1bf1434a56968f2e5f0b1d4e95e18c39ffe; base aebdf42218266233561ab4a1cbe589972d4e131a, fetched again before final validation (unchanged).
+Linux x86_64, Python3, GCC15.2 native debug CLI built at e5bf091b with local SDL3 prefix. Only Python comparison changes; binary predates subsequent hiring/palette changes and is used to test the comparison against real verifier output, not claim final-master simulation validation.
+Command: GLOB2_CLI_BINARY="$PWD/build/native-coverage-torus/src/glob2" PYTHONPATH=test python3 -m unittest test_cli_smoke.CliSmoke.test_match_verification_preserves_trace_across_compute_sizes -v
+LF checkout: PASS44.945s. Converted golden file LF to CRLF temporarily, repeated identical command: PASS32.586s. Original golden restored byte-for-byte afterward. Both tests run actual --verify-match at 1,2,4,8,auto compute sizes and compare every checksum plus result JSON and compute metadata. No mocked executable.
+Failure evidence: original Windows job113536365198, run37841825703. ActualLF and goldenCRLF differ in raw bytes. Full failed log retained compressed.
+Scope/limits: newline comparison portability only. No engine, fixture values, save/replay/network or SIM_REVISION changes. Native Windows not rerun locally; full master CI will verify that environment. No new cross-platform simulation equivalence claim.

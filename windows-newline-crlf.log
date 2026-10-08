@@ -1,0 +1,7 @@
+Simulated Git CRLF checkout; running real CLI at compute sizes 1,2,4,8,auto
+test_match_verification_preserves_trace_across_compute_sizes (test_cli_smoke.CliSmoke.test_match_verification_preserves_trace_across_compute_sizes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 32.586s
+
+OK
