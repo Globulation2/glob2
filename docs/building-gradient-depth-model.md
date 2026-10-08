@@ -25,25 +25,29 @@ on the same game.
 ## What the model is
 
 A quantile table. Each field lifetime is assigned to a cell by the selected keys.
-The predicted depth is the median (quantile 0.5) of the actual depth that cell's
-lifetimes needed, clamped to [32, 65535] cost units (10 per land tile). A cell with
-fewer than 40 training lifetimes backs off to the shorter key prefix. The empty
-prefix always exists.
+The predicted depth is a quantile of the actual depth that cell's lifetimes
+needed, clamped to [32, 65535] cost units (10 per land tile). The quantile is the
+*operating point*. A cell with fewer than 40 training lifetimes backs off to the
+shorter key prefix. The empty prefix always exists.
 
-The selected keys, in the order selection added them, with the held-out owner
-saving at the CPU budget after each one:
+Keys were selected by owner saving at a field extra-CPU budget of 1.25. Below are
+the selected keys in the order selection added them, with the held-out owner
+saving at that budget after each one:
 
 | Keys | Owner saving at 1.25x CPU |
 | --- | ---: |
-| none (one global median) | 0.338 |
+| none (one global quantile) | 0.338 |
 | + `previous`: log2 bucket of the field's previous settled depth / 80 | 0.542 |
 | + `type`: building type | 0.590 |
 | + `progress`: material-delivery quartile on construction sites | 0.619 |
 
 The next candidate, `swim`, added 0.007, which is below the 0.01 threshold, so
-selection stopped there. The table is in
-`src/map/gradient/BuildingGradientDepthPolicy.h` (361 integer rules, most specific
-first, plus a constexpr lookup). The summary it is generated from is in
+selection stopped there. The key choice does not depend much on the budget: the
+same three keys lead at every quantile in the screen.
+
+The table is in `src/map/gradient/BuildingGradientDepthPolicy.h`: 361 integer rules,
+most specific first, each holding one depth per operating point, plus one constexpr
+lookup, `target(query, point)`. The summary it is generated from is in
 `tools/gradient_depth_model.json`.
 
 A field's own history is by far the best predictor: whatever kept a building's
@@ -85,27 +89,83 @@ Key sets are compared by owner saving at an extra-CPU budget of 1.25. For each
 candidate, the quantile is swept over 0.3–0.95 and the saving is interpolated to
 the budget, so that a key cannot look better just by predicting deeper.
 
-### Evaluation
+## Operating points
 
-The selected model, held out by game:
+The budget that matters is whole-process CPU, not field-search CPU: the
+scheduled pipeline must stay at or below 1.15x process CPU. Search work is a small
+share of the process, so a deep operating point costs little.
 
-| Map | Lifetimes | Hit rate | Coverage | Extra CPU | Owner saving |
+**Measuring the share.** `gradient.building_resume`, the lazy search extensions
+including those nested in round trips, was divided by `benchmark_run_cpu_ns`. The
+runs used the flag off, `--benchmark-warmup 0`, and `run_with_benchmark_cpuset.py`
+with cores 0-7 reserved.
+
+| Scenario | Ticks | Process CPU | Search share | Search + initialization |
+| --- | ---: | ---: | ---: | ---: |
+| busy window (Oazis checkpoint, ticks 16000-18048) | 2,048 | 18.7 s | **0.067** | 0.126 |
+| busy Oazis seed 19, whole game | 18,048 | 77.5 s | 0.064 | 0.121 |
+| mixed (generator 26, seed 19) | 18,048 | 6.7 s | 0.015 | 0.025 |
+| small (64x64 duel, seed 1) | 18,048 | 2.7 s | 0.015 | 0.026 |
+
+Only the search scales with depth; initialization (`gradient.building`) is paid once
+per rebuild whatever the depth. Process CPU at operating point q is therefore
+estimated as 1 + share x (field extra CPU - 1). The estimate uses the busy-window
+share for Oazis and for the pooled figures, and the mixed/small share for the
+tournament.
+
+**The curve.** Held out by game (`evaluate --curve`), keys previous, type and
+progress:
+
+| Point | Scenario | Hit rate | Coverage | Field CPU | Owner saving | Process CPU (est.) |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| p50 | all | 0.518 | 0.470 | 1.242 | 0.608 | 1.016 |
+| p50 | busy Oazis | 0.477 | 0.448 | 1.210 | 0.602 | 1.014 |
+| p70 | all | 0.712 | 0.791 | 1.410 | 0.787 | 1.028 |
+| p70 | busy Oazis | 0.682 | 0.724 | 1.373 | 0.793 | 1.025 |
+| **p80** | all | 0.806 | 0.866 | 1.547 | 0.865 | 1.037 |
+| **p80** | busy Oazis | 0.794 | 0.825 | 1.509 | 0.881 | 1.034 |
+| p85 | all | 0.854 | 0.894 | 1.634 | 0.898 | 1.042 |
+| p85 | busy Oazis | 0.854 | 0.870 | 1.592 | 0.915 | 1.040 |
+| **p90** | all | 0.900 | 0.923 | 1.841 | 0.940 | 1.056 |
+| **p90** | busy Oazis | 0.912 | 0.905 | 1.807 | 0.960 | 1.054 |
+| **p95** | all | 0.949 | 0.951 | 2.033 | 0.974 | 1.069 |
+| **p95** | busy Oazis | 0.969 | 0.960 | 2.012 | 0.993 | 1.068 |
+| eager | all | 1.000 | 1.000 | 2.405 | 1.000 | 1.094 |
+| eager | busy Oazis | 1.000 | 1.000 | 2.427 | 1.000 | 1.096 |
+
+The p60 rows and the tournament breakdown are in the `evaluate --curve` output. On
+the tournament alone, p90 saves 0.908 at 1.895x field CPU.
+
+Every point up to eager stays well under 1.15x estimated process CPU. That makes
+owner saving, not CPU, the binding constraint. It also means a point well above the
+median is needed to leave a margin over the scheduled pipeline's 60% owner-drop
+acceptance bar: p50 saves only 0.61 of the search.
+
+**How the default is chosen.**
+- The header carries three points, `p80`, `p90` and `p95`. They span 0.88 to 0.99
+  owner saving on busy Oazis at an estimated 1.03x to 1.07x process CPU.
+- The committed default is `p90` (`DEFAULT_POINT`), a provisional middle choice.
+- The scheduled pipeline's timing runs pick the winner among the three by measured
+  owner wall and process CPU. Building with
+  `-DGLOB2_BUILDING_GRADIENT_DEPTH_POINT=<index>` swaps the point without
+  regenerating anything. Whatever wins becomes the default via
+  `fit --operating-point Q --points ...`, and this section records the measurement
+  that chose it.
+
+### The default, by map size
+
+`p90`, held out by game:
+
+| Map | Lifetimes | Hit rate | Coverage | Field CPU | Owner saving |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| 64x64 | 24,996 | 0.699 | 0.757 | 1.285 | 0.901 |
-| 128x128 | 99,667 | 0.549 | 0.487 | 1.203 | 0.708 |
-| 256x256 | 198,254 | 0.479 | 0.431 | 1.246 | 0.591 |
-| all | 322,917 | 0.518 | 0.470 | 1.242 | 0.608 |
+| 64x64 | 24,996 | 0.992 | 0.999 | 1.501 | 0.998 |
+| 128x128 | 99,667 | 0.947 | 0.976 | 1.569 | 0.985 |
+| 256x256 | 198,254 | 0.865 | 0.884 | 1.882 | 0.933 |
+| all | 322,917 | 0.900 | 0.923 | 1.842 | 0.940 |
 
-Other rules on the same lifetimes, scored on all of them rather than held out:
-
-| Rule | Extra CPU | Owner saving |
-| --- | ---: | ---: |
-| this table | 1.240 | 0.610 |
-| `max(32, previous * 5/4)`, the scheduled pipeline's provisional rule | 1.281 | 0.547 |
-| full depth (eager) | 2.405 | 1.000 |
-
-On busy Oazis alone, the table gives 1.278 extra CPU and 0.602 saving, against
-1.341 and 0.539 for the provisional rule.
+The provisional pipeline rule, `max(32, previous * 5/4)`, scored on all lifetimes
+rather than held out, saves 0.547 at 1.281x field CPU. Eager saves everything at
+2.405x.
 
 ## What does not predict depth
 
@@ -133,10 +193,14 @@ python3 -m tools.tournaments run RESULTS --hosts hosts.json
 python3 tools/gradient_depth_fit.py dataset RESULTS RUNS --output dataset.json.gz
 # What each key buys alone and in forward selection, held out by game.
 python3 tools/gradient_depth_fit.py screen dataset.json.gz --jobs 14
-# Select, fit, and regenerate the summary and BuildingGradientDepthPolicy.h.
-python3 tools/gradient_depth_fit.py fit dataset.json.gz --jobs 14
-# The committed model's metrics, overall and per map size.
+# Select keys, or name them, and regenerate the summary and the header with its
+# operating points; --operating-point is the committed default.
+python3 tools/gradient_depth_fit.py fit dataset.json.gz --jobs 14 \
+  --keys previous type progress --operating-point 0.9 --points 0.8 0.95
+# The committed default's metrics, overall and per map size.
 python3 tools/gradient_depth_fit.py evaluate dataset.json.gz
+# Owner saving against field and estimated process CPU, per operating point.
+python3 tools/gradient_depth_fit.py evaluate dataset.json.gz --curve [--share busy_oazis=0.067]
 ```
 
 It needs only the Python standard library; `--jobs` parallelises the screen by
@@ -159,8 +223,9 @@ synthetic data.
 - `previous` needs the depth the field's last lifetime settled, which the scheduled
   pipeline keeps as an owner-only hint. A field built for the first time uses the
   `-1` (no history) row.
-- The quantile and budget are choices: a higher quantile moves more work off the
-  owner at more total CPU. `fit --budget` and `fit --keys ... --quantile` expose them.
+- The process-CPU column is an estimate: a measured search share times the
+  histogram-based field ratio. Each operating point's real cost is measured by the
+  scheduled pipeline's timing runs.
 
 ## Related
 

@@ -164,15 +164,26 @@ class Header(unittest.TestCase):
     def summary(self):
         lives = [life(a, type=('inn', 'swarm')[i % 2], game=f'g{i % 7}') for i, a in
                  enumerate(random.Random(3).choices(range(100, 3000), k=400))]
-        return F.summarise(lives, {f'g{i}': {} for i in range(7)}, ['type'], False, 0.8)
+        return F.summarise(lives, {f'g{i}': {} for i in range(7)}, ['type'], False, 0.8, [0.5, 0.95])
 
     def test_the_header_carries_one_rule_per_supported_cell(self):
         summary = self.summary()
         text = F.emit_header(summary)
         table = F.table_from_summary(summary)
         self.assertEqual(text.count('\t{1, {0}, "'), len([c for c in table if c]))
-        self.assertIn('\t{0, {0}, "", ', text)
+        self.assertIn('\t{0, {0}, "", {', text)
         self.assertNotIn('.', ''.join(l for l in text.splitlines() if l.startswith('\t{')))  # integers only
+
+    def test_operating_points_are_ordered_and_the_default_is_named(self):
+        summary = self.summary()
+        self.assertEqual([p['name'] for p in summary['points']], ['p50', 'p80', 'p95'])
+        self.assertEqual(summary['default'], 'p80')
+        text = F.emit_header(summary)
+        self.assertIn('inline constexpr int DEFAULT_POINT = 1; // p80', text)
+        self.assertIn('POINT_QUANTILE_PERMILLE[POINT_COUNT] = {500, 800, 950}', text)
+        low, mid, high = (F.table_from_summary(summary, q) for q in (0.5, 0.8, 0.95))
+        self.assertEqual(set(low), set(high))  # the same cells at every point
+        self.assertTrue(all(low[c] <= mid[c] <= high[c] for c in low))
 
     def test_the_committed_header_is_what_the_summary_produces(self):
         # Regenerating must be a no-op, so the checked-in header can be trusted
@@ -186,6 +197,7 @@ class Header(unittest.TestCase):
     @unittest.skipUnless(shutil.which('c++'), 'needs a C++ compiler')
     def test_the_engine_lookup_agrees_with_the_fitter(self):
         summary = json.loads(F.SUMMARY.read_text())
+        points = F.summary_points(summary)
         table = F.table_from_summary(summary)
         rng = random.Random(5)
         kinds = sorted({c[summary['keys'].index('type')] for c in table if 'type' in summary['keys']
@@ -198,13 +210,18 @@ class Header(unittest.TestCase):
                                 progress=rng.randrange(-1, 4), w=size, h=size, units=rng.randrange(0, 300),
                                 buildings=rng.randrange(0, 80),
                                 previous=rng.choice((None, rng.randrange(0, 4000)))))
-        expected = [F.predict(table, summary['keys'], summary['per_size'], q) for q in queries]
+        expected = [F.predict(F.table_from_summary(summary, point['quantile']), summary['keys'],
+                              summary['per_size'], q) for point in points for q in queries]
+        # The default target() is the committed default point.
+        expected += [F.predict(table, summary['keys'], summary['per_size'], q) for q in queries]
         source = ['#include "BuildingGradientDepthPolicy.h"', '#include <cstdio>', 'int main() {',
                   'using namespace BuildingGradientDepth;']
-        for q in queries:
+        calls = [(index, q) for index in range(len(points)) for q in queries] + [(None, q) for q in queries]
+        for index, q in calls:
+            point = '' if index is None else f', {index}'
             source.append(f'std::printf("%d\\n", target(Query{{{q.route}, {q.swim}, "{q.type}", {q.level}, {q.site}, '
                           f'{q.construction}, {q.progress}, {q.w}, {q.h}, {q.units}, {q.buildings}, '
-                          f'{-1 if q.previous is None else q.previous}}}));')
+                          f'{-1 if q.previous is None else q.previous}}}{point}));')
         source.append('}')
         with tempfile.TemporaryDirectory() as directory:
             program = Path(directory) / 'lookup'
@@ -223,11 +240,19 @@ class CommandLine(unittest.TestCase):
             base = Path(directory)
             with redirect_stdout(io.StringIO()):
                 F.main(['dataset', str(base), '--output', str(base / 'd.json.gz')])
-                F.main(['fit', str(base / 'd.json.gz'), '--keys', 'type', '--header', str(base / 'p.h'),
-                        '--summary', str(base / 's.json')])
+                F.main(['fit', str(base / 'd.json.gz'), '--keys', 'type', '--operating-point', '0.8',
+                        '--points', '0.5', '0.95', '--header', str(base / 'p.h'), '--summary', str(base / 's.json')])
+                F.main(['evaluate', str(base / 'd.json.gz'), '--summary', str(base / 's.json'), '--curve',
+                        '--share', 'tournament=0.1', '--report', str(base / 'curve.json')])
                 out = io.StringIO()
                 with redirect_stdout(out):
                     F.main(['evaluate', str(base / 'd.json.gz'), '--summary', str(base / 's.json')])
+            rows = json.loads((base / 'curve.json').read_text())['curve']
+            self.assertEqual([r['point'] for r in rows if r['scenario'] == 'all'],
+                             ['p50', 'p60', 'p70', 'p80', 'p85', 'p90', 'p95', 'eager'])
+            eager = next(r for r in rows if r['point'] == 'eager' and r['scenario'] == 'tournament')
+            self.assertEqual(eager['owner_saving'], 1.0)
+            self.assertAlmostEqual(eager['process_cpu_ratio'], round(1 + 0.1 * (eager['extra_cpu'] - 1), 4))
             report = json.loads(out.getvalue())
             self.assertEqual(set(report['in_sample_by_size']), {'64x64', '128x128', '256x256'})
             for metric in ('hit_rate', 'query_weighted_coverage', 'extra_cpu', 'owner_saving'):

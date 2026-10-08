@@ -322,7 +322,14 @@ def fold_of(game, folds):
     return int(hashlib.sha1(game.encode()).hexdigest(), 16) % folds
 
 
-QUANTILES = (0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95)
+QUANTILES = (0.3, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95)
+# Operating points the evaluate curve reports, plus eager (full depth).
+CURVE = (0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95)
+# Search (gradient.building_resume) share of process CPU, measured with the flag
+# off on reserved cores (docs/building-gradient-depth-model.md#operating-points).
+# Search work scales with popped entries, so a field extra-CPU ratio r costs
+# about 1 + share * (r - 1) of process CPU.
+SEARCH_SHARE = {'busy_oazis': 0.067, 'tournament': 0.015, 'all': 0.067}
 DEFAULT_BUDGET = 1.25
 
 
@@ -430,20 +437,28 @@ def screen(lifetimes, budget=DEFAULT_BUDGET, candidates=None, max_keys=MAX_KEYS,
 
 # Summary and header ---------------------------------------------------------
 
-def summarise(lifetimes, games, keys, per_size, q):
+def point_name(q):
+    return f'p{round(q * 100):02d}'
+
+
+def summarise(lifetimes, games, keys, per_size, q, points=None):
     """Everything fit needs to regenerate the header, without the raw lifetimes:
-    each prefix cell's lifetime count and its target at every grid quantile."""
+    each prefix cell's lifetime count and its target at every grid quantile.
+    `points` are the operating points the header carries; `q` is the default."""
     cells = histograms(lifetimes, keys, per_size)
-    ladder = sorted(set(QUANTILES) | {q})
-    return {'version': 1, 'keys': keys, 'per_size': per_size, 'quantile': q, 'min_group': MIN_GROUP,
+    points = sorted(set(points or []) | {q})
+    ladder = sorted(set(QUANTILES) | set(CURVE) | set(points))
+    return {'version': 2, 'keys': keys, 'per_size': per_size, 'quantile': q,
+            'points': [{'name': point_name(v), 'quantile': v} for v in points], 'default': point_name(q),
+            'min_group': MIN_GROUP,
             'bucket': BUCKET, 'games': len(games), 'lifetimes': len(lifetimes),
             'cells': [{'cell': list(cell), 'count': sum(h.values()),
                        'quantiles': {str(level): quantile_value(h, level) for level in ladder}}
                       for cell, h in sorted(cells.items(), key=lambda item: (len(item[0]), [str(v) for v in item[0]]))]}
 
 
-def table_from_summary(summary):
-    level = str(summary['quantile'])
+def table_from_summary(summary, quantile=None):
+    level = str(summary['quantile'] if quantile is None else quantile)
     return {tuple(entry['cell']): entry['quantiles'][level] for entry in summary['cells']
             if entry['count'] >= summary['min_group'] or not entry['cell']}
 
@@ -452,10 +467,17 @@ def cpp_value(key, value):
     return f'"{value}"' if key == 'type' else str(int(value))
 
 
+def summary_points(summary):
+    return summary.get('points') or [{'name': point_name(summary['quantile']), 'quantile': summary['quantile']}]
+
+
 def emit_header(summary, provenance=()):
     keys, per_size = summary['keys'], summary['per_size']
-    table = table_from_summary(summary)
-    rules = sorted(table.items(), key=lambda item: (-len(item[0]), [str(v) for v in item[0]]))
+    points = summary_points(summary)
+    tables = [table_from_summary(summary, point['quantile']) for point in points]
+    default = next(i for i, point in enumerate(points)
+                   if point['name'] == summary.get('default', point_name(summary['quantile'])))
+    rules = sorted(tables[0], key=lambda cell: (-len(cell), [str(v) for v in cell]))
     width = max(1, len(keys))
     lines = [
         '// SPDX-License-Identifier: GPL-3.0-or-later',
@@ -526,6 +548,21 @@ def emit_header(summary, provenance=()):
         f'inline constexpr int KEY_COUNT = {len(keys)};',
         f'inline constexpr Key KEYS[{width}] = {{{", ".join("Key::" + CPP_KEY[k] for k in keys) or "Key::Route"}}};',
         '',
+        '/// Operating points: the same cells at different quantiles of the depth',
+        '/// their lifetimes needed. A higher quantile moves more search off the owner',
+        '/// for more total CPU. Define GLOB2_BUILDING_GRADIENT_DEPTH_POINT to an index',
+        '/// to choose another point at build time.',
+        f'inline constexpr int POINT_COUNT = {len(points)};',
+        f'inline constexpr std::string_view POINT_NAMES[POINT_COUNT] = {{{", ".join(chr(34) + p["name"] + chr(34) for p in points)}}};',
+        f'inline constexpr int POINT_QUANTILE_PERMILLE[POINT_COUNT] = {{{", ".join(str(round(p["quantile"] * 1000)) for p in points)}}};',
+        f'inline constexpr int DEFAULT_POINT = {default}; // {points[default]["name"]}',
+        '#ifdef GLOB2_BUILDING_GRADIENT_DEPTH_POINT',
+        'inline constexpr int ACTIVE_POINT = GLOB2_BUILDING_GRADIENT_DEPTH_POINT;',
+        '#else',
+        'inline constexpr int ACTIVE_POINT = DEFAULT_POINT;',
+        '#endif',
+        'static_assert(ACTIVE_POINT >= 0 && ACTIVE_POINT < POINT_COUNT);',
+        '',
         '/// Matches when the first `matched` selected keys equal `values` (and `type`',
         '/// when Type is among them). Rules are most specific first; the last one',
         '/// matches everything.',
@@ -534,15 +571,16 @@ def emit_header(summary, provenance=()):
         '\tint matched;',
         f'\tint values[{width}];',
         '\tstd::string_view type;',
-        '\tint value;',
+        '\tint depth[POINT_COUNT];',
         '};',
         '',
         'inline constexpr Rule RULES[] = {',
     ]
-    for cell, value in rules:
+    for cell in rules:
         ints = [0 if k == 'type' else int(v) for k, v in zip(keys, cell)] + [0] * (width - len(cell))
         kind = next((v for k, v in zip(keys, cell) if k == 'type'), '')
-        lines.append(f'\t{{{len(cell)}, {{{", ".join(map(str, ints))}}}, "{kind}", {value}}},')
+        depths = ', '.join(str(table[cell]) for table in tables)
+        lines.append(f'\t{{{len(cell)}, {{{", ".join(map(str, ints))}}}, "{kind}", {{{depths}}}}},')
     lines += [
         '};',
         '',
@@ -557,12 +595,12 @@ def emit_header(summary, provenance=()):
         '}',
         '',
         '/// The cost to settle up front. Never affects results, only who pays.',
-        'constexpr int target(const Query &q)',
+        'constexpr int target(const Query &q, int point = ACTIVE_POINT)',
         '{',
         '\tfor (const Rule &rule : RULES)',
         '\t\tif (matches(rule, q))',
         '\t\t{',
-        '\t\t\tlong long depth = rule.value;',
+        '\t\t\tlong long depth = rule.depth[point];',
         '\t\t\tif (PER_SIZE)',
         '\t\t\t\tdepth = depth * (q.width + q.height) / PER_SIZE_SCALE;',
         '\t\t\treturn int(depth < MIN_DEPTH ? MIN_DEPTH : depth > MAX_DEPTH ? MAX_DEPTH : depth);',
@@ -575,17 +613,55 @@ def emit_header(summary, provenance=()):
 
 
 def provenance(summary, report=None):
+    names = ', '.join(f'{p["name"]} (q {p["quantile"]})' for p in summary_points(summary))
     lines = [f'Fitted on {summary["games"]} games, {summary["lifetimes"]} field lifetimes;',
-             f'keys {", ".join(summary["keys"]) or "(none)"}, per_size {summary["per_size"]}, '
-             f'quantile {summary["quantile"]}.']
+             f'keys {", ".join(summary["keys"]) or "(none)"}, per_size {summary["per_size"]}.',
+             f'Operating points {names}; default {summary.get("default", point_name(summary["quantile"]))}.']
     if report:
-        lines.append(f'Held out by game: hit rate {report["hit_rate"]}, coverage {report["query_weighted_coverage"]}, '
+        lines.append(f'Default, held out by game: hit rate {report["hit_rate"]}, coverage {report["query_weighted_coverage"]}, '
                      f'extra CPU {report["extra_cpu"]}, owner saving {report["owner_saving"]}.')
     return lines
 
 
 def by_size(life):
     return f'{life.w}x{life.h}'
+
+
+def scenario_of(games):
+    """busy_oazis for the Oazis runs, tournament for everything else."""
+    names = {game: 'busy_oazis' if labels.get('map') == 'Oazis' else 'tournament' for game, labels in games.items()}
+    return lambda life: names.get(life.game, 'tournament')
+
+
+def curve(lifetimes, games, keys, per_size, shares=SEARCH_SHARE, quantiles=CURVE):
+    """Held-out owner saving against field extra CPU per operating point, plus eager."""
+    scenario = scenario_of(games)
+    held = cross_validate(lifetimes, keys, per_size, quantiles, by=scenario)
+    groups = defaultdict(list)
+    for life in lifetimes:
+        groups[scenario(life)].append(life)
+    rows = []
+    def row(point, name, m):
+        value = {'point': point, 'scenario': name, **{k: v for k, v in m.items() if k not in ('by', 'quantile')}}
+        if name in shares:
+            value['process_cpu_ratio'] = round(1 + shares[name] * (m['extra_cpu'] - 1), 4)
+        rows.append(value)
+    for q in quantiles:
+        row(point_name(q), 'all', held[q])
+        for name, m in held[q]['by'].items():
+            row(point_name(q), name, m)
+    row('eager', 'all', metrics([(l, MAX_DEPTH) for l in lifetimes]))
+    for name, members in sorted(groups.items()):
+        row('eager', name, metrics([(l, MAX_DEPTH) for l in members]))
+    return rows
+
+
+def print_curve(rows):
+    print(f'{"point":6s} {"scenario":11s} {"hit":>6s} {"cover":>6s} {"field_cpu":>9s} {"owner_save":>10s} {"process_cpu":>11s}')
+    for r in rows:
+        process = f'{r["process_cpu_ratio"]:.3f}' if 'process_cpu_ratio' in r else '-'
+        print(f'{r["point"]:6s} {r["scenario"]:11s} {r["hit_rate"]:6.3f} {r["query_weighted_coverage"]:6.3f} '
+              f'{r["extra_cpu"]:9.3f} {r["owner_saving"]:10.3f} {process:>11s}')
 
 
 # Commands -------------------------------------------------------------------
@@ -608,11 +684,17 @@ def main(argv=None):
                            help='screen: candidates; fit: skip selection and use these keys, in order')
         if name == 'fit':
             p.add_argument('--per-size', action='store_true')
-            p.add_argument('--quantile', type=float, help='with --keys: the quantile (default: best under budget)')
+            p.add_argument('--quantile', '--operating-point', dest='quantile', type=float,
+                           help='with --keys: the default operating point (default: best under budget)')
+            p.add_argument('--points', nargs='*', type=float, default=[],
+                           help='further operating points (quantiles) the header carries')
             p.add_argument('--header', type=Path, default=HEADER)
             p.add_argument('--summary', type=Path, default=SUMMARY)
         if name == 'evaluate':
             p.add_argument('--summary', type=Path, default=SUMMARY)
+            p.add_argument('--curve', action='store_true', help='owner saving vs CPU per operating point')
+            p.add_argument('--share', action='append', default=[], metavar='SCENARIO=SHARE',
+                           help='search share of process CPU (default: the measured SEARCH_SHARE)')
     args = parser.parse_args(argv)
 
     if args.command == 'dataset':
@@ -649,13 +731,23 @@ def main(argv=None):
         if quantile is None:
             raise SystemExit('no quantile meets the CPU budget')
         held_out = cross_validate(lifetimes, keys, per_size, quantile, by=by_size)
-        summary = summarise(lifetimes, games, keys, per_size, quantile)
+        summary = summarise(lifetimes, games, keys, per_size, quantile, args.points)
         summary['budget'] = args.budget
         summary['cross_validated'] = held_out
         args.summary.write_text(json.dumps(summary, indent=1) + '\n')
         args.header.write_text(emit_header(summary, provenance(summary, held_out)))
         report = {'keys': keys, 'per_size': per_size, 'quantile': quantile, 'cross_validated': held_out}
         print(json.dumps(report, indent=2))
+    elif args.curve:
+        summary = json.loads(args.summary.read_text())
+        shares = dict(SEARCH_SHARE)
+        for item in args.share:
+            name, value = item.split('=', 1)
+            shares[name] = float(value)
+        rows = curve(lifetimes, games, summary['keys'], summary['per_size'], shares,
+                     sorted(set(CURVE) | {p['quantile'] for p in summary_points(summary)}))
+        print_curve(rows)
+        report = {'keys': summary['keys'], 'shares': shares, 'curve': rows}
     else:
         summary = json.loads(args.summary.read_text())
         table = table_from_summary(summary)
