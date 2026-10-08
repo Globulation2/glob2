@@ -228,11 +228,18 @@ std::mutex catalogMutex;
 std::shared_ptr<const GeneratorRegistry> activeCatalog;
 
 } // namespace
+std::shared_ptr<const GeneratorRegistry> GeneratorRegistry::builtinsSnapshot()
+{
+	// Static native registrations require no ownership, but sharing their lifetime
+	// through the same API avoids copying the entire catalog into every request.
+	static const auto snapshot = std::shared_ptr<const GeneratorRegistry>(&builtins(), [](auto *) {});
+	return snapshot;
+}
 std::shared_ptr<const GeneratorRegistry> GeneratorRegistry::activeSnapshot()
 {
 	std::lock_guard lock(catalogMutex);
 	if (!activeCatalog)
-		activeCatalog = std::shared_ptr<const GeneratorRegistry>(&builtins(), [](auto *) {});
+		activeCatalog = builtinsSnapshot();
 	return activeCatalog;
 }
 const GeneratorRegistry &GeneratorRegistry::active()

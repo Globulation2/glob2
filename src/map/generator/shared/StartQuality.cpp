@@ -1,4 +1,5 @@
 #include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "StartQuality.h"
@@ -91,6 +92,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			return report;
 	} // nothing walked out of this colony; there is nothing to score
 
+	generationFertilityMapWork(map);
 	const Fertility::Field fertility = Fertility::forMap(map);
 
 	// scoreStarts already pays for this field on every roll; stamping it into the map's own

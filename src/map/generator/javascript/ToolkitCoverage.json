@@ -260,6 +260,20 @@
   },
   {
     "header": "Grid",
+    "symbol": "MapGeneration::Torus::Torus",
+    "signature": "void (int, int)",
+    "kind": "constructor",
+    "binding": "Torus"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::Torus",
+    "signature": "void (const Map &)",
+    "kind": "constructor",
+    "binding": "Torus"
+  },
+  {
+    "header": "Grid",
     "symbol": "MapGeneration::Torus",
     "kind": "record",
     "binding": "Torus"
@@ -458,6 +472,13 @@
   },
   {
     "header": "Geometry",
+    "symbol": "MapGeneration::Stretch::toFill",
+    "signature": "Stretch (int, int)",
+    "kind": "static-method",
+    "binding": "Stretch_toFill"
+  },
+  {
+    "header": "Geometry",
     "symbol": "MapGeneration::AxisFrame::at",
     "signature": "ShapePoint (double, double) const",
     "kind": "method",
@@ -492,6 +513,13 @@
   },
   {
     "header": "Geometry",
+    "symbol": "MapGeneration::ShapeTransform::ShapeTransform",
+    "signature": "void (ShapePoint, double, double)",
+    "kind": "constructor",
+    "binding": "ShapeTransform"
+  },
+  {
+    "header": "Geometry",
     "symbol": "MapGeneration::ShapeTransform",
     "kind": "record",
     "binding": "ShapeTransform"
@@ -509,6 +537,13 @@
     "signature": "double () const",
     "kind": "method",
     "binding": "RadialShape.maximumRadius"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RadialShape::RadialShape",
+    "signature": "void (double, double, GenerationContext &, const std::string &, double)",
+    "kind": "constructor",
+    "binding": "RadialShape"
   },
   {
     "header": "Geometry",
@@ -542,6 +577,13 @@
     "symbol": "MapGeneration::Teardrop",
     "kind": "record",
     "binding": "Teardrop"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Teardrop::fitting",
+    "signature": "Teardrop (double, double, double)",
+    "kind": "static-method",
+    "binding": "Teardrop_fitting"
   },
   {
     "header": "Drawing",
@@ -659,6 +701,13 @@
   },
   {
     "header": "Topology",
+    "symbol": "MapGeneration::DisjointSets::DisjointSets",
+    "signature": "void (int)",
+    "kind": "constructor",
+    "binding": "DisjointSets"
+  },
+  {
+    "header": "Topology",
     "symbol": "MapGeneration::DisjointSets",
     "kind": "record",
     "binding": "DisjointSets"
@@ -668,6 +717,27 @@
     "symbol": "MapGeneration::StepCosts",
     "kind": "record",
     "binding": "StepCosts"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::StepCosts::walking",
+    "signature": "StepCosts ()",
+    "kind": "static-method",
+    "binding": "StepCosts_walking"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::StepCosts::chopping",
+    "signature": "StepCosts (int)",
+    "kind": "static-method",
+    "binding": "StepCosts_chopping"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::StepCosts::swimming",
+    "signature": "StepCosts (int)",
+    "kind": "static-method",
+    "binding": "StepCosts_swimming"
   },
   {
     "header": "Contact",
@@ -813,6 +883,13 @@
     "symbol": "MapGeneration::SealedOval",
     "kind": "record",
     "binding": "SealedOval"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneratorPoint::MapGeneratorPoint",
+    "signature": "void (int, int)",
+    "kind": "constructor",
+    "binding": "MapGeneratorPoint"
   },
   {
     "header": "LegacyRegions",
@@ -1104,6 +1181,13 @@
   },
   {
     "header": "Noise",
+    "symbol": "GenerationNoise::GenerationNoise",
+    "signature": "void (unsigned int)",
+    "kind": "constructor",
+    "binding": "GenerationNoise"
+  },
+  {
+    "header": "Noise",
     "symbol": "GenerationNoise",
     "kind": "record",
     "binding": "GenerationNoise"
@@ -1170,6 +1254,13 @@
     "signature": "void (unsigned int, unsigned int, float)",
     "kind": "method",
     "binding": "HeightMap.makeCraters"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::HeightMap",
+    "signature": "void (unsigned int, unsigned int, std::mt19937 &)",
+    "kind": "constructor",
+    "binding": "HeightMap"
   },
   {
     "header": "HeightMap",
@@ -1247,6 +1338,13 @@
   },
   {
     "header": "LatticeNoise",
+    "symbol": "MapGeneration::PeriodicNoise::PeriodicNoise",
+    "signature": "void (int, int, double, std::mt19937 &)",
+    "kind": "constructor",
+    "binding": "PeriodicNoise"
+  },
+  {
+    "header": "LatticeNoise",
     "symbol": "MapGeneration::PeriodicNoise",
     "kind": "record",
     "binding": "PeriodicNoise"
@@ -1300,6 +1398,20 @@
     "symbol": "MapGeneration::AlgaeBand",
     "kind": "record",
     "binding": "AlgaeBand"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::AlgaeBand::anyWater",
+    "signature": "AlgaeBand (int)",
+    "kind": "static-method",
+    "binding": "AlgaeBand_anyWater"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::AlgaeBand::shallows",
+    "signature": "AlgaeBand (int, int, int)",
+    "kind": "static-method",
+    "binding": "AlgaeBand_shallows"
   },
   {
     "header": "Territories",
@@ -1621,6 +1733,13 @@
   },
   {
     "header": "Solve",
+    "symbol": "MapGeneration::Brief::Brief",
+    "signature": "void (GenerationContext &, std::string)",
+    "kind": "constructor",
+    "binding": "Brief"
+  },
+  {
+    "header": "Solve",
     "symbol": "MapGeneration::Brief",
     "kind": "record",
     "binding": "Brief"
@@ -1715,6 +1834,13 @@
   },
   {
     "header": "StartingLayout",
+    "symbol": "MapGeneration::StartingLayout::StartingLayout",
+    "signature": "void (int, int, int)",
+    "kind": "constructor",
+    "binding": "StartingLayout"
+  },
+  {
+    "header": "StartingLayout",
     "symbol": "MapGeneration::StartingLayout",
     "kind": "record",
     "binding": "StartingLayout"
@@ -1724,6 +1850,13 @@
     "symbol": "MapGeneration::HeightFieldOptions",
     "kind": "record",
     "binding": "HeightFieldOptions"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::HeightFieldOptions::fromRequest",
+    "signature": "HeightFieldOptions (const GenerationRequest &, bool)",
+    "kind": "static-method",
+    "binding": "HeightFieldOptions_fromRequest"
   },
   {
     "header": "Terrain",
@@ -1811,6 +1944,13 @@
     "signature": "void (Cell &, double) const",
     "kind": "method",
     "binding": "WedgeFrame.bend"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeFrame::WedgeFrame",
+    "signature": "void (const Torus &, double, int, Stretch)",
+    "kind": "constructor",
+    "binding": "WedgeFrame"
   },
   {
     "header": "Wedge",
@@ -4484,5 +4624,173 @@
     "symbol": "MapGeneration::placeArchipelagoStarts",
     "signature": "bool (Game &, GenerationContext &, int)",
     "binding": "placeArchipelagoStarts"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::kBridgeHalfWidth",
+    "kind": "constant",
+    "binding": "kBridgeHalfWidth"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::kFarmOpening",
+    "kind": "constant",
+    "binding": "kFarmOpening"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeSwarmReach",
+    "kind": "constant",
+    "binding": "kHomeSwarmReach"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomePondShare",
+    "kind": "constant",
+    "binding": "kHomePondShare"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeSmallestPond",
+    "kind": "constant",
+    "binding": "kHomeSmallestPond"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeLargestPond",
+    "kind": "constant",
+    "binding": "kHomeLargestPond"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomePondGap",
+    "kind": "constant",
+    "binding": "kHomePondGap"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeSwarmRoom",
+    "kind": "constant",
+    "binding": "kHomeSwarmRoom"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::kChannelSpoiledTiles",
+    "kind": "constant",
+    "binding": "kChannelSpoiledTiles"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::kPi",
+    "kind": "constant",
+    "binding": "kPi"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::DENSE_COLONY_BASE_LIMIT",
+    "kind": "constant",
+    "binding": "DENSE_COLONY_BASE_LIMIT"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::DENSE_COLONY_MAP_EXPONENT",
+    "kind": "constant",
+    "binding": "DENSE_COLONY_MAP_EXPONENT"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::kReachableAnywhere",
+    "kind": "constant",
+    "binding": "kReachableAnywhere"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::kTowerFootprint",
+    "kind": "constant",
+    "binding": "kTowerFootprint"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::kSwarmClearance",
+    "kind": "constant",
+    "binding": "kSwarmClearance"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::kBuildFootprint",
+    "kind": "constant",
+    "binding": "kBuildFootprint"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::kGrainHeadings",
+    "kind": "constant",
+    "binding": "kGrainHeadings"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::kAtlasRegionCount",
+    "kind": "constant",
+    "binding": "kAtlasRegionCount"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::kSubtile",
+    "kind": "constant",
+    "binding": "kSubtile"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::kCropProbeReach",
+    "kind": "constant",
+    "binding": "kCropProbeReach"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_INTERCEPT",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_INTERCEPT"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_BUILD_SITES_4X4_LOG",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_BUILD_SITES_4X4_LOG"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_FEATURE_COUNT",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_FEATURE_COUNT"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_GAMES",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_GAMES"
   }
 ]

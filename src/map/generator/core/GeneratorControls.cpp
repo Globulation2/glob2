@@ -166,20 +166,25 @@ GenerationRequest::GenerationRequest()
 }
 void GenerationRequest::setMethodDefaults(int id)
 {
-	setMethodDefaults(id, GeneratorRegistry::active());
+	setMethodDefaults(id, GeneratorRegistry::activeSnapshot());
 }
 void GenerationRequest::setMethodDefaults(int id, const GeneratorRegistry &registry)
 {
+	setMethodDefaults(id, &registry == &GeneratorRegistry::builtins()
+							  ? GeneratorRegistry::builtinsSnapshot()
+							  : std::make_shared<const GeneratorRegistry>(registry));
+}
+void GenerationRequest::setMethodDefaults(int id, std::shared_ptr<const GeneratorRegistry> snapshot)
+{
+	if (!snapshot)
+		throw std::invalid_argument("Missing generator catalog");
+	const auto &selected = snapshot->at(id);
+	std::map<std::string, int> defaults;
+	for (const auto &c : selected.controls)
+		defaults.emplace(c.id, c.defaultValue);
 	method = id;
-	if (&registry == &GeneratorRegistry::active())
-		catalog = GeneratorRegistry::activeSnapshot();
-	else if (&registry == &GeneratorRegistry::builtins())
-		catalog = std::shared_ptr<const GeneratorRegistry>(&registry, [](auto *) {});
-	else
-		catalog = std::make_shared<GeneratorRegistry>(registry);
-	options.clear();
-	for (const auto &c : registry.at(id).controls)
-		c.set(*this, c.defaultValue);
+	catalog = std::move(snapshot);
+	options = std::move(defaults);
 }
 const std::vector<GeneratorControl> &GenerationRequest::controls(int id)
 {
@@ -247,10 +252,18 @@ bool GenerationRequest::hasTerrainWeight(const std::vector<Control> &definitions
 }
 void GenerationHistory::select(GenerationRequest &current, int id)
 {
-	select(current, id, GeneratorRegistry::active());
+	select(current, id, GeneratorRegistry::activeSnapshot());
 }
 void GenerationHistory::select(GenerationRequest &current, int id,
 							   const GeneratorRegistry &registry)
+{
+	select(current, id,
+		   &registry == &GeneratorRegistry::builtins()
+			   ? GeneratorRegistry::builtinsSnapshot()
+			   : std::make_shared<const GeneratorRegistry>(registry));
+}
+void GenerationHistory::select(GenerationRequest &current, int id,
+							   std::shared_ptr<const GeneratorRegistry> registry)
 {
 	if (id == current.method)
 		return;
@@ -260,7 +273,7 @@ void GenerationHistory::select(GenerationRequest &current, int id,
 	if (it != settings.end())
 		next = it->second;
 	else
-		next.setMethodDefaults(id, registry);
+		next.setMethodDefaults(id, std::move(registry));
 	// carry the size as is: an editor map of 32 stays 32 when the landscape changes
 	for (const auto &c : sharedGeneratorControls())
 		editorSizeControl(c).set(next, c.get(current));
@@ -269,7 +282,21 @@ void GenerationHistory::select(GenerationRequest &current, int id,
 	current = next;
 }
 
+std::shared_ptr<const GeneratorRegistry> GenerationRequest::catalogSnapshot() const
+{
+	return catalog ? catalog : GeneratorRegistry::activeSnapshot();
+}
 const GeneratorDefinition &GenerationRequest::definition() const
 {
 	return (catalog ? *catalog : GeneratorRegistry::active()).at(method);
+}
+const GeneratorControl &GenerationRequest::control(const std::string &id) const
+{
+	for (const auto &c : sharedControls())
+		if (c.id == id)
+			return c;
+	for (const auto &c : definition().controls)
+		if (c.id == id)
+			return c;
+	throw std::invalid_argument("Unknown generator control: " + id);
 }

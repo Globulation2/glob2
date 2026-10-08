@@ -18,7 +18,7 @@ struct Package : std::enable_shared_from_this<Package>
 	std::vector<GeneratorControl> controls;
 	std::map<std::string, std::string> modules;
 	std::map<std::string, std::map<std::string, std::string>> translations;
-	// Stable storage for GeneratorControl's translated-text pointers.
+	// Control text pointers stay valid while a definition owns this package.
 	std::vector<std::shared_ptr<const std::string>> labels;
 	std::string canonical;
 	static std::shared_ptr<const Package> parse(const std::string &bytes);
@@ -28,14 +28,16 @@ struct Package : std::enable_shared_from_this<Package>
 class Library
 {
 	Online::OnlineStorage &storage;
-	std::map<std::string, std::shared_ptr<const Package>> packages;
-	std::string encode() const;
-	void decode(const std::string &);
+	using PackageMap = std::map<std::string, std::shared_ptr<const Package>>;
+	PackageMap packages;
+	static std::string encode(const PackageMap &);
+	static PackageMap decode(const std::string &);
+	void save(PackageMap candidate);
 
   public:
 	explicit Library(Online::OnlineStorage &);
 	const auto &entries() const { return packages; }
-	std::string checkpoint() const { return encode(); }
+	std::string checkpoint() const { return encode(packages); }
 	void rollback(const std::string &);
 	void put(const std::string &bytes, const std::string &replace = {});
 	void remove(const std::string &id);

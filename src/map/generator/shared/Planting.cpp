@@ -1,4 +1,5 @@
 #include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Planting.h"
@@ -130,8 +131,13 @@ namespace
 // stable while a planting pass changes resources without changing terrain.
 class AlgaeGrowth
 {
+static MapState::View checkedView(const Map& map)
+{
+	generationFertilityMapWork(map);
+	return map.stateView();
+}
 public:
-	AlgaeGrowth(const Map& map, const Torus&) : view(map.stateView()) {}
+	AlgaeGrowth(const Map& map, const Torus&) : view(checkedView(map)) {}
 	double at(int i) const
 	{
 		return double(MapState::resourceGrowthRate(view,i,ALGA))/Fertility::kRateScale;

@@ -67,10 +67,9 @@ struct CustomGamePreferences
 	}
 	std::string encode() const
 	{
-		// The wire format still describes the legacy fixed-field descriptor;
-		// the modular GenerationRequest converts through the compatibility
-		// adapter so the persisted format and its corruption-recovery bounds
-		// stay unchanged regardless of which generator module is selected.
+		// Keep the legacy descriptor fields and corruption-recovery bounds for old
+		// native preferences. Version 8 adds a custom string ID and stores every
+		// custom option separately; it never persists a session numeric handle.
 		auto legacy = toLegacyDescriptor(setup.generator);
 		const auto &selected = setup.generator.definition();
 		const bool custom = !selected.packageHash.empty();
@@ -256,15 +255,16 @@ struct CustomGamePreferences
 		{
 			try
 			{
-				method = GeneratorRegistry::active().idOf(customId);
-				s.generator.setMethodDefaults(method);
+				const auto catalog = GeneratorRegistry::activeSnapshot();
+				method = catalog->idOf(customId);
+				s.generator.setMethodDefaults(method, catalog);
 			}
 			catch (const std::exception &)
 			{
 				missingCustom = true; draft.missingGeneratorId=customId;
 			}
 		}
-		const auto &controls = GenerationRequest::controls(method);
+		const auto &controls = s.generator.definition().controls;
 		for (const auto &[id, value] : options) {
 			const auto c = std::find_if(controls.begin(), controls.end(),
 				[&](const GeneratorControl &control) { return control.id == id; });

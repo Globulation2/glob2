@@ -31,8 +31,9 @@ them to each study job; namespaced IDs and package inputs also work in tournamen
 In **Settings → Map generators**, import a portable package, explicitly replace an
 installed package of the same ID, export its frozen bytes, or remove it. This uses
 the normal desktop/mobile file picker and browser upload/download interfaces.
-Library changes become active after storage persistence succeeds. In-progress
-requests retain their original package snapshot. Packages appear in the local game
+Library changes become active after storage persistence succeeds. Publication affects
+future selections; existing requests, previews, resets and controls retain their
+selected catalog revision until a new landscape is selected. Packages appear in the local game
 landscape picker and the map editor; online server-controlled generation uses the
 native catalog. To share a scripted landscape online, generate and share its map.
 
@@ -58,7 +59,8 @@ IDs must be namespaced lowercase ASCII strings. Native numeric IDs are reserved;
 custom numeric handles exist only within a running session. Preferences store the
 string ID. Missing packages fall back to a native landscape. Optional manifest
 fields are `description`, `author`, `editorOnly` and `hasStartingColonies`. Editor-only
-blank terrain generators may omit colony placement. The engine still validates the
+blank terrain generators may omit colony placement; a package with
+`hasStartingColonies: false` must also declare `editorOnly: true`. The engine still validates the
 finished world.
 
 Controls use the native range/toggle/choice contracts, capped at 4096 legal values
@@ -119,9 +121,12 @@ factories, record fields, overloads and callback signatures. The generated
 native symbols and the explicit script equivalents of C++-only templates.
 Records with constructors use family factories. Simple records also accept object
 literals. Native vectors are checked buffer handles: `length`, `get`, `set`, `fill`,
-`clone` and `toArray`. APIs accepting vectors also accept JavaScript arrays. Native
-buffers passed into callbacks expire when that callback returns; clone data that
-must be retained. Call operators are exposed as `at`; objective iteration is
+`clone` and `toArray`. Value and read-only vector arguments also accept JavaScript
+arrays; mutable vector arguments require handles. Numeric buffer declarations carry
+a storage type so byte masks, integer indices and floating-point fields cannot be
+interchanged accidentally. Native buffers passed into callbacks expire when that callback returns; clone data that
+must be retained. Solver briefs and height maps constructed with a callback's
+temporary context or RNG also expire with that callback. Call operators are exposed as `at`; objective iteration is
 `terms()`. Pure toolkit operations are available during request checks, while world
 mutation is restricted to generation.
 
@@ -137,6 +142,16 @@ zero-based level and construction flag select another catalog type. `stage`, `me
 `Math.random()` uses its own named seeded stream. Stream names are part of the
 reproducibility contract; do not rename them without a generator revision.
 
+`FertilityField.Field()` creates an empty field. Before sampling it, call `rebuild`
+or `rebuildWeighted` with dimensions in `1..1024` and input buffers of exactly
+`width * height` elements. `gate` and `multiplyLocal` require masks of the field's
+size. `FertilityField.Path` selects the native convolution path. Rebuilds reserve
+their worst-case native work and scratch memory before entering the native method.
+Shared helpers accepting a fertility field also require it to be initialized.
+Mutable generator controls are checked before native operations: ranges need a
+positive step and a bounded legal domain, and power-of-two display values must be
+in `0..30`.
+
 The optional examples are separate packages. Swamp scripts its height-field pipeline.
 Forts and Even Ground retain native layout designers under `Blueprints`, while their
 scripts own the terrain, colonies and furnishing stages. They are examples of
@@ -148,7 +163,9 @@ Generation uses the vendored QuickJS interpreter and pinned numeric library.
 Script-driven shared helpers select pinned math; native generators keep their native
 math branch. No filesystem, network, clock, timers or game-order API is exposed.
 Each invocation has deterministic budgets of 1 billion interpreter operations and
-2 billion native toolkit loop checkpoints, a 512 KiB stack limit and bounded JS/native-handle memory.
+2 billion native toolkit loop checkpoints, a 512 KiB stack limit and a shared
+128 MiB budget for JavaScript and native handles. Native reservations are cumulative
+for the invocation; releasing a handle does not restore its allocation budget.
 Resource failures remain failures even if a script catches the exception. Treat
 packages as local authoring code and observe the native toolkit's parameter contracts.
 
@@ -158,9 +175,28 @@ an old revision. Package hashes cover canonical manifest and module bytes; a has
 alone cannot recover missing source. Map files store the generated world rather
 than generator code or a new serialized request format.
 
+## Maintaining the bridge
+
 Shipping builds use committed generated C++ adapters and need no libclang. Developers
-regenerate them with `tools/map-generators/generate_js_bindings.py` using libclang 18,
-its Python bindings and the configured SDL prefix. Pass `--check` to verify that
+install the pinned Python bindings from `requirements-dev.txt`, supply system
+libclang 18, and regenerate with `tools/map-generators/generate_js_bindings.py`
+and the configured SDL prefix. Pass `--check` to verify that
 committed outputs match the current toolkit. Changes to the toolkit require
 regenerating adapters, declarations and coverage, updating the API contract where
 needed, and verifying native/script generation and platform determinism.
+
+Type-check the positive and negative authoring examples with
+`tsc --strict --noEmit test/map_generator_toolkit_contract.ts`; they cover buffer
+mutability, callbacks, output references and the manually exposed methods/constants.
+
+The generator owns API classification and emits constructor ownership explicitly.
+`ToolkitBinding` owns conversion, callback leases and runtime limits; native
+helpers outside the instrumented toolkit need explicit bridge contracts before
+they are exposed. `ToolkitFertilityContracts.h` demonstrates shape validation,
+work reservation and allocation reservation before a native call. A successful
+native assertion in the game is not a substitute for validating script arguments.
+
+`tools/map-generators/instrument_toolkit_budget.py` reports missing loop checkpoints
+and unchecked vector indexing without modifying source. Use `--write` to apply its
+proposed edits, then review the diff. It does not infer scratch allocations or
+reference ownership; those contracts still require explicit review and regressions.

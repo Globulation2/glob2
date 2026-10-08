@@ -15,6 +15,8 @@ using Json = nlohmann::json;
 namespace
 {
 constexpr size_t PackageLimit = 4 * 1024 * 1024;
+constexpr size_t LibraryLimit = 64 * 1024 * 1024;
+constexpr size_t LibraryPackageLimit = 128;
 constexpr const char *LibraryPath = "generators/library.json";
 void require(bool condition, const std::string &message)
 {
@@ -48,47 +50,43 @@ std::string readFile(const std::filesystem::path &p)
 		throw std::runtime_error("Cannot read generator package: " + p.string());
 	return bytes;
 }
-} // namespace
-std::shared_ptr<const Package> Package::parse(const std::string &bytes)
+void parseMetadata(Package &p, const Json &m)
 {
-	require(bytes.size() <= PackageLimit, "Generator package exceeds 4 MiB");
-	Json root = Json::parse(bytes);
-	require(root.at("formatVersion").is_number_integer() && root.at("formatVersion") == 1,
-			"Unsupported generator package format");
-	const auto &m = root.at("manifest");
-	require(m.at("apiVersion").is_number_integer() && m.at("apiVersion") == ApiVersion,
-			"Unsupported generator API version");
-	auto p = std::make_shared<Package>();
-	p->id = m.at("id").get<std::string>();
-	require(p->id.size() <= 128 && p->id.find(':') != std::string::npos && p->id.front() != ':' &&
-				p->id.back() != ':' &&
-				p->id.find_first_not_of("abcdefghijklmnopqrstuvwxyz0123456789-_.:") ==
+	p.id = m.at("id").get<std::string>();
+	require(p.id.size() <= 128 && p.id.find(':') != std::string::npos && p.id.front() != ':' &&
+				p.id.back() != ':' &&
+				p.id.find_first_not_of("abcdefghijklmnopqrstuvwxyz0123456789-_.:") ==
 					std::string::npos,
 			"Generator ID must be namespaced, for example author:landscape");
-	p->name = m.at("name").get<std::string>();
-	require(!p->name.empty() && p->name.size() <= 256 && p->name.find('\0') == std::string::npos,
+	p.name = m.at("name").get<std::string>();
+	require(!p.name.empty() && p.name.size() <= 256 && p.name.find('\0') == std::string::npos,
 			"Invalid generator name");
-	p->description = m.value("description", "");
-	p->author = m.value("author", "");
-	require(p->description.size() <= 4096 && p->author.size() <= 256,
+	p.description = m.value("description", "");
+	p.author = m.value("author", "");
+	require(p.description.size() <= 4096 && p.author.size() <= 256,
 			"Generator metadata exceeds limit");
 	require(m.at("revision").is_number_integer(), "Generator revision must be an integer");
 	auto rev = m.at("revision").get<int64_t>();
 	require(rev > 0 && rev <= UINT32_MAX, "Invalid generator revision");
-	p->revision = unsigned(rev);
-	p->entry = m.value("entry", "generator.js");
-	p->editorOnly = m.value("editorOnly", false);
-	p->hasStartingColonies = m.value("hasStartingColonies", true);
-	p->tags = m.at("tags").get<std::vector<std::string>>();
-	require(p->tags.size() <= 32, "Too many generator tags");
-	for (const auto &tag : p->tags)
+	p.revision = unsigned(rev);
+	p.entry = m.value("entry", "generator.js");
+	p.editorOnly = m.value("editorOnly", false);
+	p.hasStartingColonies = m.value("hasStartingColonies", true);
+	require(p.hasStartingColonies || p.editorOnly,
+			"Generators without starting colonies must be editor-only");
+	p.tags = m.at("tags").get<std::vector<std::string>>();
+	require(p.tags.size() <= 32, "Too many generator tags");
+	for (const auto &tag : p.tags)
 		require(tag.size() <= 128 && tag.find(':') != std::string::npos, "Invalid catalog tag");
+}
+void parseControls(Package &p, const Json &m)
+{
 	auto label = [&](const std::string &value)
 	{
 		require(!value.empty() && value.size() <= 256 && value.find('\0') == std::string::npos,
 				"Invalid control label");
-		p->labels.push_back(std::make_shared<const std::string>(value));
-		return p->labels.back()->c_str();
+		p.labels.push_back(std::make_shared<const std::string>(value));
+		return p.labels.back()->c_str();
 	};
 	const auto cs = m.value("controls", Json::array());
 	require(cs.is_array() && cs.size() <= 64, "Invalid generator controls");
@@ -152,23 +150,28 @@ std::shared_ptr<const Package> Package::parse(const std::string &bytes)
 					"Control search domain exceeds limit");
 			c = c.withSearchValues(v.at("searchValues").get<std::vector<int>>());
 		}
-		p->controls.push_back(std::move(c));
+		p.controls.push_back(std::move(c));
 	}
-	require(root.at("modules").is_object() && root.at("modules").size() <= 128,
-			"Invalid generator modules");
-	for (auto it = root.at("modules").begin(); it != root.at("modules").end(); ++it)
+}
+void parseModules(Package &p, const Json &modules)
+{
+	require(modules.is_object() && modules.size() <= 128, "Invalid generator modules");
+	for (auto it = modules.begin(); it != modules.end(); ++it)
 	{
 		require(modulePath(it.key()) && it.value().is_string(),
 				"Invalid generator module path or source");
 		auto source = it.value().get<std::string>();
 		require(source.find('\0') == std::string::npos, "Generator source contains NUL");
-		p->modules.emplace(it.key(), std::move(source));
+		p.modules.emplace(it.key(), std::move(source));
 	}
-	require(modulePath(p->entry) && p->modules.contains(p->entry),
+	require(modulePath(p.entry) && p.modules.contains(p.entry),
 			"Generator entry module is missing");
-	p->translations = m.value("translations", decltype(p->translations){});
-	require(p->translations.size() <= 64, "Too many translation languages");
-	for (const auto &[language, entries] : p->translations)
+}
+void parseTranslations(Package &p, const Json &m)
+{
+	p.translations = m.value("translations", decltype(p.translations){});
+	require(p.translations.size() <= 64, "Too many translation languages");
+	for (const auto &[language, entries] : p.translations)
 	{
 		require(!language.empty() && language.size() <= 32 && entries.size() <= 256,
 				"Invalid translations");
@@ -178,9 +181,26 @@ std::shared_ptr<const Package> Package::parse(const std::string &bytes)
 						value.find('\0') == std::string::npos,
 					"Invalid translation text");
 	}
+}
+} // namespace
+std::shared_ptr<const Package> Package::parse(const std::string &bytes)
+{
+	require(bytes.size() <= PackageLimit, "Generator package exceeds 4 MiB");
+	Json root = Json::parse(bytes);
+	require(root.at("formatVersion").is_number_integer() && root.at("formatVersion") == 1,
+			"Unsupported generator package format");
+	const auto &m = root.at("manifest");
+	require(m.at("apiVersion").is_number_integer() && m.at("apiVersion") == ApiVersion,
+			"Unsupported generator API version");
+	auto p = std::make_shared<Package>();
+	parseMetadata(*p, m);
+	parseControls(*p, m);
+	parseModules(*p, root.at("modules"));
+	parseTranslations(*p, m);
 	p->canonical = root.dump();
 	p->hash = Online::Sha256::hex(p->canonical);
-	// Reuse the native registry's control and catalog contracts.
+	// First validate the data against the native catalog contracts. Only then
+	// initialize executable modules, without a world or random-number access.
 	auto probe = p->definition(1000000);
 	GeneratorRegistry validation({std::move(probe)});
 	inspect(*p);
@@ -255,35 +275,44 @@ Library::Library(Online::OnlineStorage &s) : storage(s)
 {
 	std::string bytes;
 	if (storage.read(LibraryPath, bytes))
-		decode(bytes);
+		packages = decode(bytes);
 }
-std::string Library::encode() const
+std::string Library::encode(const PackageMap &candidate)
 {
 	Json entries = Json::array();
-	for (const auto &[id, p] : packages)
+	for (const auto &[id, p] : candidate)
 		entries.push_back(Json::parse(p->canonical));
 	return Json{{"version", 1}, {"packages", entries}}.dump();
 }
-void Library::decode(const std::string &bytes)
+Library::PackageMap Library::decode(const std::string &bytes)
 {
-	require(bytes.size() <= 64 * 1024 * 1024, "Generator library exceeds limit");
+	require(bytes.size() <= LibraryLimit, "Generator library exceeds limit");
 	auto root = Json::parse(bytes);
-	require(root.at("version") == 1 && root.at("packages").is_array() &&
-				root.at("packages").size() <= 128,
+	require(root.at("version").is_number_integer() && root.at("version") == 1 &&
+				root.at("packages").is_array() && root.at("packages").size() <= LibraryPackageLimit,
 			"Invalid generator library");
-	std::map<std::string, std::shared_ptr<const Package>> loaded;
+	PackageMap loaded;
 	for (const auto &v : root.at("packages"))
 	{
 		auto p = Package::parse(v.dump());
 		require(loaded.emplace(p->id, p).second, "Duplicate generator ID");
 	}
-	packages = std::move(loaded);
+	return loaded;
+}
+void Library::save(PackageMap candidate)
+{
+	require(candidate.size() <= LibraryPackageLimit, "Generator library exceeds package limit");
+	const auto bytes = encode(candidate);
+	require(bytes.size() <= LibraryLimit, "Generator library exceeds limit");
+	// A false result or exception leaves both the active catalog and this library
+	// unchanged. OnlineStorage replaces its file only after a complete write.
+	if (!storage.write(LibraryPath, bytes))
+		throw std::runtime_error("Could not save generator library");
+	packages.swap(candidate);
 }
 void Library::rollback(const std::string &bytes)
 {
-	decode(bytes);
-	if (!storage.write(LibraryPath, bytes))
-		throw std::runtime_error("Could not restore generator library");
+	save(decode(bytes));
 }
 void Library::put(const std::string &bytes, const std::string &replace)
 {
@@ -291,30 +320,15 @@ void Library::put(const std::string &bytes, const std::string &replace)
 	require(replace.empty() ? !packages.contains(p->id)
 							: replace == p->id && packages.contains(replace),
 			"Duplicate generator ID or replacement identity mismatch");
-	auto before = packages;
-	packages[p->id] = p;
-	try
-	{
-		auto encoded = encode();
-		if (packages.size() > 128 || encoded.size() > 64 * 1024 * 1024 ||
-			!storage.write(LibraryPath, encoded))
-			throw std::runtime_error("Could not save generator library");
-	}
-	catch (...)
-	{
-		packages = std::move(before);
-		throw;
-	}
+	auto candidate = packages;
+	candidate[p->id] = p;
+	save(std::move(candidate));
 }
 void Library::remove(const std::string &id)
 {
-	auto before = packages;
-	require(packages.erase(id) != 0, "Unknown custom generator");
-	if (!storage.write(LibraryPath, encode()))
-	{
-		packages = std::move(before);
-		throw std::runtime_error("Could not save generator library");
-	}
+	auto candidate = packages;
+	require(candidate.erase(id) != 0, "Unknown custom generator");
+	save(std::move(candidate));
 }
 void Library::publish() const
 {

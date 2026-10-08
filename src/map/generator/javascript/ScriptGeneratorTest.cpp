@@ -5,6 +5,7 @@
 #include "EngineFixtures.h"
 #include "MapGeneratorFrameworkChecks.h"
 #include "CustomGamePreferences.h"
+#include "CustomGameRules.h"
 #include <nlohmann/json.hpp>
 
 namespace JSGen = MapGeneration::JavaScript;
@@ -77,6 +78,9 @@ TEST_CASE("Package identity controls modules and installation rollback" *
 	CHECK(old.definition().packageHash == oldHash);
 	auto j = Json::parse(source);
 	j["manifest"]["apiVersion"] = 2;
+	CHECK_THROWS(JSGen::Package::parse(j.dump()));
+	j = Json::parse(source);
+	j["manifest"]["hasStartingColonies"] = false;
 	CHECK_THROWS(JSGen::Package::parse(j.dump()));
 	j = Json::parse(source);
 	j["manifest"]["controls"] = {{{"id", "huge"},
@@ -419,4 +423,76 @@ TEST_CASE("Installed generator library writes to a fresh user profile [writes-pr
 	JSGen::Library loaded(*storage);
 	CHECK(loaded.entries().contains("test:generator"));
 	loaded.remove("test:generator");
+}
+
+TEST_CASE("Frozen selections retain defaults and rules after package removal" *
+		  doctest::test_suite("ScriptGenerator"))
+{
+	RestoreCatalog restore;
+	Online::MemoryStorage storage;
+	JSGen::Library library(storage);
+	auto source = Json::parse(package("export function generate(){}"));
+	source["manifest"]["controls"] = {{{"id", "layout"},
+									   {"label", "Layout"},
+									   {"minimum", 0},
+									   {"maximum", 10},
+									   {"default", 5},
+									   {"searchRange", {0, 10}}}};
+	library.put(source.dump());
+	library.publish();
+	const auto local = CustomGameSetup::landscapeCatalog(false);
+	const auto online = CustomGameSetup::landscapeCatalog(true);
+	const auto id = local->idOf("test:generator");
+	CHECK(online->find(id) == nullptr);
+	CHECK(online->entries().size() == GeneratorRegistry::builtins().entries().size());
+	CustomGameSetup setup;
+	setup.generator.setMethodDefaults(id, local);
+	setup.generator.control("layout").set(setup.generator, 9);
+	library.remove("test:generator");
+	library.publish();
+	GenerationRequest reset;
+	reset.setMethodDefaults(id, setup.generator.catalogSnapshot());
+	CHECK(reset.option("layout") == 5);
+	CHECK(reset.catalog == local);
+	CHECK(setup.generator.control("layout").get(setup.generator) == 9);
+	const auto *workers = CustomGameRules::find("workers");
+	REQUIRE(workers);
+	CHECK_NOTHROW(workers->set(setup, 3));
+	CHECK(workers->get(setup) == 3);
+	CHECK(CustomGameRules::minimum(*workers, setup) == 1);
+	CHECK(CustomGameRules::maximum(*workers, setup) == 8);
+	CHECK(CustomGameSetup::landscapeCatalog(false)->find(id) == nullptr);
+	CHECK(std::string(setup.generator.definition().id) == "test:generator");
+}
+
+TEST_CASE("Library mutations retain memory and disk when storage throws" *
+		  doctest::test_suite("ScriptGenerator"))
+{
+	struct ThrowingStorage : Online::MemoryStorage
+	{
+		bool throwWrites = false;
+		bool write(const std::string &path, const std::string &bytes) override
+		{
+			if (throwWrites)
+				throw std::runtime_error("Storage unavailable");
+			return MemoryStorage::write(path, bytes);
+		}
+	} storage;
+	JSGen::Library library(storage);
+	library.put(package("export function generate(){}"));
+	const auto initial = library.checkpoint();
+	library.put(package("export function generate(){return 'updated';}", 2), "test:generator");
+	const auto updated = library.checkpoint();
+	const auto files = storage.files;
+	storage.throwWrites = true;
+	CHECK_THROWS(library.remove("test:generator"));
+	CHECK(library.checkpoint() == updated);
+	CHECK_THROWS(library.rollback(initial));
+	CHECK(library.checkpoint() == updated);
+	CHECK_THROWS(library.put(package("export function generate(){}", 3), "test:generator"));
+	CHECK(library.checkpoint() == updated);
+	CHECK(storage.files == files);
+	storage.throwWrites = false;
+	library.rollback(initial);
+	CHECK(library.checkpoint() == initial);
 }

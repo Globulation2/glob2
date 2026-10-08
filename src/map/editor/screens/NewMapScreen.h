@@ -23,7 +23,10 @@ class NewMapScreen : public Glob2UI::Screen
 	};
 	GenerationRequest descriptor;
 
-	explicit NewMapScreen(const GeneratorRegistry &registry = GeneratorRegistry::active(),
+	explicit NewMapScreen(
+		std::shared_ptr<const GeneratorRegistry> registry = GeneratorRegistry::activeSnapshot(),
+		GAGGUI::ScreenStack *screens = nullptr);
+	explicit NewMapScreen(const GeneratorRegistry &registry,
 						  GAGGUI::ScreenStack *screens = nullptr);
 	~NewMapScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

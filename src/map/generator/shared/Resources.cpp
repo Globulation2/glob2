@@ -1,4 +1,5 @@
 #include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
@@ -397,6 +398,7 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 {
 	Map &map = game.map;
 	const int width = map.getW(), height = map.getH(), area = width * height;
+	generationFertilityMapWork(map);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	HeightMap noise(width, height, context.stream("scatter-noise"));
 	noise.makePlain(24);

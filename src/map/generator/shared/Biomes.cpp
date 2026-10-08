@@ -1,4 +1,5 @@
 #include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Biomes.h"
@@ -307,6 +308,7 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	}
 	const std::vector<unsigned char> inside = erode(t, ground, 1);
 	const auto eligible = [&](int i) { return inside.at(i) && clearGround(map, i % t.w, i / t.w); };
+	generationFertilityMapWork(map);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 12, context.stream(stream + "-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 6, context.stream(stream + "-split"));

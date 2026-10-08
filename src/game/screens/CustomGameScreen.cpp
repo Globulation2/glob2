@@ -189,6 +189,11 @@ void CustomGameScreen::useForRoom(const CustomGameSetup &draft, int tab)
 {
 	forRoom = true;
 	setup = draft;
+	const auto nativeCatalog = CustomGameSetup::landscapeCatalog(true);
+	if (!nativeCatalog->find(setup.generator.method))
+		setup.generator.setMethodDefaults(nativeCatalog->methods(false).front(), nativeCatalog);
+	else
+		setup.generator.catalog = nativeCatalog;
 	for (auto &colony : setup.colonies)
 		if (colony.ai == AI::JAVASCRIPT)
 		{
@@ -332,10 +337,11 @@ void CustomGameScreen::savePreferences()
 std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
 {
 	std::vector<std::pair<int, GenerationRequest>> entries;
-	for (int method : GeneratorRegistry::active().methods(false))
+	const auto catalog = CustomGameSetup::landscapeCatalog(forRoom);
+	for (int method : catalog->methods(false))
 	{
 		auto draft = setup;
-		draft.generatorHistory.select(draft.generator, method);
+		draft.generatorHistory.select(draft.generator, method, catalog);
 		draft.generator.nbTeams = setup.capacity;
 		entries.emplace_back(method, draft.generator);
 	}
@@ -352,8 +358,7 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 		if (method == setup.generator.method)
 			selected = int(shown.size());
 		LandscapePickerScreen::Entry entry{generatorName(request), request, method};
-		if (const auto *definition = GeneratorRegistry::active().find(method))
-			entry.tags = definition->tags;
+		entry.tags = request.definition().tags;
 		shown.push_back(std::move(entry));
 	}
 	auto picker = std::make_unique<LandscapePickerScreen>(
@@ -398,7 +403,10 @@ void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> s
 	// The parameters the picker rolled the map with come along, so the lobby shows the map it
 	// showed: the landscape's own, or a random set from "Randomize parameters".
 	if (shown && shown->method == method)
+	{
+		setup.generator.catalog = shown->catalogSnapshot();
 		setup.generator.options = shown->options;
+	}
 	chosenSeed = seed;
 	randomAttempts = 0;
 	++setup.mapRevision;
@@ -455,7 +463,7 @@ void CustomGameScreen::repeatCurrentMap()
 void CustomGameScreen::resetParameters()
 {
 	GenerationRequest reset;
-	reset.setMethodDefaults(setup.generator.method);
+	reset.setMethodDefaults(setup.generator.method, setup.generator.catalogSnapshot());
 	reset.nbWorkers = setup.generator.nbWorkers;
 	reset.terrainType = setup.generator.terrainType;
 	reset.seed = setup.generator.seed;
@@ -1195,7 +1203,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			fe::field(tr("Landscape"), fe::chooser("generator/landscape", generatorName(g),
 												   [this] { chooseLandscape(); })));
 		GenerationRequest defaults;
-		defaults.setMethodDefaults(g.method);
+		defaults.setMethodDefaults(g.method, g.catalogSnapshot());
 		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec && g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
 		left.push_back(fe::wrap({fe::button("generator/reset", tr("Reset to defaults"), [this] { resetParameters(); },
 											{.enabled = !atDefaults, .icon = fe::uiIcon(fe::UIIcon::Reset)}),

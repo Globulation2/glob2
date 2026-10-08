@@ -33,7 +33,7 @@ Element EditorMainMenu::build(const Presentation &p)
 void EditorMainMenu::newMap()
 {
 	screens.push(
-		std::make_unique<NewMapScreen>(GeneratorRegistry::active(), &screens),
+		std::make_unique<NewMapScreen>(GeneratorRegistry::activeSnapshot(), &screens),
 		[this](GAGGUI::Screen &screen, int result)
 		{
 			if (result != NewMapScreen::OK)

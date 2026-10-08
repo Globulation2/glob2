@@ -55,6 +55,7 @@ template <> struct Record<Layout>
 			   (e.footprint(v.homeOf) - sizeof(v.homeOf)) + (e.footprint(v.plot) - sizeof(v.plot)) +
 			   (e.footprint(v.uplands) - sizeof(v.uplands)) +
 			   (e.footprint(v.wall) - sizeof(v.wall)) + (e.footprint(v.roads) - sizeof(v.roads)) +
+			   (e.footprint(v.gates) - sizeof(v.gates)) +
 			   (e.footprint(v.buffer) - sizeof(v.buffer)) +
 			   (e.footprint(v.towns) - sizeof(v.towns)) + (e.footprint(v.homes) - sizeof(v.homes)) +
 			   (e.footprint(v.villages) - sizeof(v.villages)) +

@@ -11,6 +11,26 @@ struct SettingsScreen::CustomGeneratorState
 	std::unique_ptr<AH::FileSelection> picker;
 	std::unique_ptr<AH::Persistence> persistence;
 	std::string replace, before, notice;
+
+	// Disk replacement happens in Library; publication waits for host persistence
+	// (asynchronous IndexedDB synchronization on browsers). Both mutation paths use
+	// this transition so unavailable persistence restores the same checkpoint.
+	template <typename Mutation> void beginSave(Mutation mutation)
+	{
+		before = library.checkpoint();
+		mutation(library);
+		try
+		{
+			persistence = AH::persistStorage();
+			if (!persistence)
+				throw std::runtime_error("Generator storage persistence is unavailable");
+		}
+		catch (...)
+		{
+			library.rollback(before);
+			throw;
+		}
+	}
 };
 bool SettingsScreen::customGeneratorBusy() const
 {
@@ -29,14 +49,9 @@ void SettingsScreen::pollCustomGenerators()
 			if (picker->state() == AH::FileSelectionState::Selected)
 			{
 				auto file = picker->takeFile();
-				s.before = s.library.checkpoint();
-				s.library.put(std::string(file.bytes.begin(), file.bytes.end()), s.replace);
-				s.persistence = AH::persistStorage();
-				if (!s.persistence)
-				{
-					s.library.rollback(s.before);
-					throw std::runtime_error("Generator storage persistence is unavailable");
-				}
+				s.beginSave(
+					[&](JSGen::Library &library)
+					{ library.put(std::string(file.bytes.begin(), file.bytes.end()), s.replace); });
 				s.notice = tr("Saving generator library…");
 			}
 			else if (picker->state() == AH::FileSelectionState::Failed)
@@ -121,14 +136,7 @@ void SettingsScreen::buildCustomGenerators()
 				   try
 				   {
 					   auto &s = *customGenerators;
-					   s.before = s.library.checkpoint();
-					   s.library.remove(id);
-					   s.persistence = AH::persistStorage();
-					   if (!s.persistence)
-					   {
-						   s.library.rollback(s.before);
-						   throw std::runtime_error("Generator storage persistence is unavailable");
-					   }
+					   s.beginSave([&](JSGen::Library &library) { library.remove(id); });
 					   s.notice = tr("Saving generator library…");
 				   }
 				   catch (const std::exception &error)

@@ -5,12 +5,11 @@
 #include "Game.h"
 #include "Grid.h"
 #include "scripting/javascript/QuickJSOwnership.h"
-#include <any>
-#include <atomic>
 #include <cmath>
 #include <functional>
 #include <limits>
 #include <map>
+#include <memory>
 #include <optional>
 #include <typeindex>
 #include <type_traits>
@@ -99,6 +98,8 @@ template <class R, class... A> struct Function<std::function<R(A...)>> : std::tr
 };
 struct NativeBox
 {
+	// An owner keeps storage alive; a lease separately limits borrowed dependencies.
+	// Owning a class does not extend the lifetime of the context/RNG it refers to.
 	std::type_index type{typeid(void)};
 	std::shared_ptr<void> owner;
 	void *pointer = nullptr;
@@ -124,18 +125,23 @@ class Binding
 	bool exhausted = false;
 	unsigned conversionDepth = 0, callbackDepth = 0;
 	std::vector<std::shared_ptr<bool>> leases;
+	std::shared_ptr<bool> generationLease;
 	std::set<NativeBox *> boxes;
 	std::deque<std::string> strings;
 	std::map<std::string, JSValue> cachedDesigns;
 	std::map<std::type_index, JSValue> prototypes;
 	struct Operation
 	{
+		using Call = std::function<JSValue(JSValueConst, int, JSValueConst *)>;
 		std::string name;
-		std::function<JSValue(JSValueConst, int, JSValueConst *)> call;
+		// Registration may grow the vector while a call is running. Shared callable
+		// storage keeps that call stable without copying its captured payload.
+		std::shared_ptr<Call> call;
 	};
 	std::vector<Operation> operations;
 	std::map<std::string, std::vector<unsigned>> overloads;
 	static JSClassID nativeClass;
+	static constexpr size_t MaximumOperations = 30000;
 	Binding(const Package &, const GenerationRequest &, Game *, GenerationContext *, bool, bool);
 	~Binding();
 	template <class T> void preflight(std::string_view name, const T &value)
@@ -181,6 +187,39 @@ class Binding
 	static JSValue dispatch(JSContext *, JSValueConst, int, JSValueConst *, int, JSValue *);
 	static void finalize(JSRuntime *, JSValue);
 	NativeBox *box(JSValueConst value) const;
+	std::shared_ptr<bool> handleDependencyLease(JSValueConst value) const
+	{
+		auto b = box(value);
+		return b ? b->alive : std::shared_ptr<bool>{};
+	}
+	std::shared_ptr<bool> contextDependencyLease() const { return generationLease; }
+	// Callback arguments and classes borrowing them share this expiration boundary.
+	class CallbackScope
+	{
+		Binding &e;
+		Game *previousGame;
+		GenerationContext *previousGeneration;
+		bool previousReadonly;
+		std::shared_ptr<bool> previousGenerationLease;
+		std::shared_ptr<bool> lease;
+
+	  public:
+		explicit CallbackScope(Binding &);
+		~CallbackScope();
+		template <class T> void bindHost(T &value)
+		{
+			if constexpr (std::is_same_v<std::remove_cv_t<T>, Game>)
+			{
+				e.game = const_cast<Game *>(&value);
+				e.readonly = e.readonly || std::is_const_v<T>;
+			}
+			if constexpr (std::is_same_v<std::remove_cv_t<T>, GenerationContext>)
+			{
+				e.generation = const_cast<GenerationContext *>(&value);
+				e.generationLease = lease;
+			}
+		}
+	};
 	template <class T> void validateNative(const T &result)
 	{
 		if constexpr (std::is_same_v<T, Torus>)
@@ -242,17 +281,21 @@ class Binding
 			attach<U>(prototype);
 			found = prototypes.find(typeid(U));
 		}
-		auto value = JS_NewObjectProtoClass(ctx, found->second, nativeClass);
-		check(value);
-		auto b = new NativeBox{typeid(U),
-							   std::move(owner),
-							   const_cast<U *>(pointer),
-							   ro || std::is_const_v<T>,
-							   Vector<U>::value || Array<U>::value || Span<U>::value,
-							   std::move(alive)};
-		boxes.insert(b);
-		JS_SetOpaque(value, b);
-		return value;
+		allocate(sizeof(NativeBox) + 64); // Box and the tracking-set node.
+		Script::JSValueOwner value(ctx, JS_NewObjectProtoClass(ctx, found->second, nativeClass));
+		check(value.get());
+		auto b = std::make_unique<NativeBox>(NativeBox{
+			typeid(U), std::move(owner), const_cast<U *>(pointer), ro || std::is_const_v<T>,
+			Vector<U>::value || Array<U>::value || Span<U>::value, std::move(alive)});
+		boxes.insert(b.get());
+		JS_SetOpaque(value.get(), b.release());
+		return value.release();
+	}
+	template <class T>
+	JSValue dependentHandle(T *pointer, std::shared_ptr<void> owner,
+							std::shared_ptr<bool> dependencyLease)
+	{
+		return handle(pointer, std::move(owner), false, std::move(dependencyLease));
 	}
 	template <class T> JSValue borrowed(T &value)
 	{
@@ -285,9 +328,20 @@ class Binding
 		else if constexpr (Pair<U>::value)
 			bytes += footprint(value.first) - sizeof(value.first) + footprint(value.second) -
 					 sizeof(value.second);
+		else if constexpr (Function<U>::value)
+			// Toolkit-generated functions capture shared dependencies or a JS owner.
+			// Reserve the bounded callable/control-block allocation on copies.
+			bytes += value ? 128 : 0;
 		else if constexpr (requires { Record<U>::footprint(*this, value); })
 			return Record<U>::footprint(*this, value);
 		return bytes;
+	}
+	template <class T> T copyNative(const T &value)
+	{
+		// References borrow; by-value arguments and clones reserve before copying.
+		if constexpr (!std::is_trivially_copy_constructible_v<T>)
+			allocate(footprint(value));
+		return T(value);
 	}
 	template <class T> JSValue write(T &&value);
 	template <class T> T read(JSValueConst value);
@@ -418,6 +472,22 @@ class Binding
 		}
 		~Depth() { --e.conversionDepth; }
 	};
+
+  private:
+	void initializeRuntime();
+	void initializeNativeClass();
+	void initializeGlobals();
+	void initializeModules();
+	JSValue requestValue();
+	JSValue toolkitValue();
+	void installContextRandom(JSValueConst);
+	void installContextTelemetry(JSValueConst);
+	void installContextDesign(JSValueConst);
+	void installContextWorld(JSValueConst);
+	void installContextBuffers(JSValueConst);
+	void setProperty(JSValueConst object, const char *name, JSValue value);
+	unsigned registerOperation(std::string name,
+							   std::function<JSValue(JSValueConst, int, JSValueConst *)>);
 };
 // Default record adapter: opaque classes must be constructed through their factory.
 template <class T> struct Record
@@ -577,7 +647,11 @@ template <class T> JSValue Binding::write(T &&value)
 	else if constexpr (std::is_same_v<U, const char *> || std::is_same_v<U, char *>)
 		return value ? JS_NewString(ctx, value) : JS_NULL;
 	else if constexpr (Function<U>::value)
+	{
+		if (value)
+			allocate(footprint(value));
 		return Function<U>::write(*this, value);
+	}
 	else if constexpr (Optional<U>::value)
 		return value ? write(*value) : JS_NULL;
 	else if constexpr (Pair<U>::value)
@@ -616,7 +690,10 @@ template <class T> void Binding::attach(JSValueConst value)
 				auto i = read<unsigned>(a[0]);
 				if (i >= v.size())
 					throw TypeMismatch("Buffer index outside range");
-				return write(typename T::value_type(v[i]));
+				if constexpr (std::is_same_v<typename T::value_type, bool>)
+					return write(bool(v[i])); // vector<bool> returns a proxy, not a bool reference.
+				else
+					return write(copyNative(v[i]));
 			});
 		add(value, "set",
 			[this](JSValueConst self, int n, JSValueConst *a)
@@ -638,6 +715,9 @@ template <class T> void Binding::attach(JSValueConst value)
 				auto &v = native<T>(self, true);
 				auto x = read<typename T::value_type>(a[0]);
 				charge(v.size());
+				// read() reserves one converted value; fill copies its dynamic payload
+				// into every destination, including nested buffers and record fields.
+				allocate(uint64_t(v.size()) * (footprint(x) - sizeof(x)));
 				std::fill(v.begin(), v.end(), x);
 				return JS_UNDEFINED;
 			});
@@ -647,10 +727,14 @@ template <class T> void Binding::attach(JSValueConst value)
 				if constexpr (Span<T>::value)
 				{
 					auto &v = native<T>(self);
+					allocate(sizeof(std::vector<typename T::value_type>) +
+							 uint64_t(v.size()) * sizeof(typename T::value_type));
+					for (const auto &item : v)
+						allocate(footprint(item) - sizeof(item));
 					return write(std::vector<typename T::value_type>(v.begin(), v.end()));
 				}
 				else
-					return write(T(native<T>(self)));
+					return write(copyNative(native<T>(self)));
 			});
 		add(value, "toArray",
 			[this](JSValueConst self, int, JSValueConst *)
@@ -660,8 +744,15 @@ template <class T> void Binding::attach(JSValueConst value)
 				check(a.get());
 				charge(v.size());
 				for (unsigned i = 0; i < v.size(); ++i)
-					if (JS_SetPropertyUint32(ctx, a.get(), i, write(v[i])) < 0)
+				{
+					JSValue item;
+					if constexpr (std::is_same_v<typename T::value_type, bool>)
+						item = write(bool(v[i]));
+					else
+						item = write(v[i]);
+					if (JS_SetPropertyUint32(ctx, a.get(), i, item) < 0)
 						fail();
+				}
 				return a.release();
 			});
 	}
@@ -681,8 +772,14 @@ template <class T> void Binding::attach(JSValueConst value)
 			{
 				if (n)
 					throw TypeMismatch("keys()");
+				auto &source = native<T>(self);
+				using Key = typename Dictionary<T>::Key;
+				allocate(uint64_t(source.size()) * sizeof(Key));
+				for (const auto &[key, value] : source)
+					allocate(footprint(key) - sizeof(key));
 				std::vector<typename Dictionary<T>::Key> keys;
-				for (const auto &[k, v] : native<T>(self))
+				keys.reserve(source.size());
+				for (const auto &[k, v] : source)
 					keys.push_back(k);
 				return write(std::move(keys));
 			});
@@ -703,11 +800,12 @@ template <class T> void Binding::attach(JSValueConst value)
 template <class T> class Argument
 {
 	using U = std::remove_cvref_t<T>;
+	Binding &binding;
 	std::optional<U> storage;
 	U *pointer = nullptr;
 
   public:
-	Argument(Binding &e, JSValueConst v)
+	Argument(Binding &e, JSValueConst v) : binding(e)
 	{
 		if (auto b = e.box(v); b && b->type == typeid(U))
 			pointer = &e.native<U>(v, std::is_lvalue_reference_v<T> &&
@@ -720,7 +818,6 @@ template <class T> class Argument
 							  !std::is_const_v<std::remove_reference_t<T>> && Vector<U>::value)
 					throw TypeMismatch("Mutable vectors require a native buffer handle");
 				storage.emplace(e.read<U>(v));
-				pointer = &*storage;
 			}
 			else
 				throw TypeMismatch("Expected constructed toolkit handle");
@@ -728,10 +825,12 @@ template <class T> class Argument
 	}
 	decltype(auto) get()
 	{
+		// Resolve self-owned storage after moves, including tuple construction.
+		auto &value = storage ? *storage : *pointer;
 		if constexpr (std::is_lvalue_reference_v<T>)
-			return static_cast<T>(*pointer);
+			return static_cast<T>(value);
 		else
-			return U(*pointer);
+			return binding.copyNative(value);
 	}
 };
 template <class T> class Argument<T *>
@@ -753,13 +852,12 @@ template <class T> class Argument<T *>
 			{
 				storage.emplace(e.read<U>(v));
 				e.preflight("pointer", *storage);
-				pointer = &*storage;
 			}
 			else
 				pointer = &e.native<U>(v, !std::is_const_v<T>);
 		}
 	}
-	T *get() { return pointer; }
+	T *get() { return storage ? &*storage : pointer; }
 };
 template <class T, size_t N> class Argument<T[N]>
 {
@@ -807,48 +905,12 @@ std::function<R(A...)> Function<std::function<R(A...)>>::read(Binding &e, JSValu
 		return {};
 	if (!JS_IsFunction(e.ctx, value))
 		throw TypeMismatch("Expected synchronous callback");
+	e.allocate(sizeof(Script::JSValueOwner) + 64);
 	auto fn = std::make_shared<Script::JSValueOwner>(e.ctx, JS_DupValue(e.ctx, value));
 	return [&e, fn](A... args) -> R
 	{
-		if (++e.callbackDepth > 64)
-		{
-			--e.callbackDepth;
-			throw ResourceError("Native callback nesting exceeds 64");
-		}
-		auto previousGame = e.game;
-		auto previousGeneration = e.generation;
-		auto switchHost = [&e]<class T>(T &value)
-		{
-			if constexpr (std::is_same_v<std::remove_cv_t<T>, Game>)
-				e.game = const_cast<Game *>(&value);
-			if constexpr (std::is_same_v<std::remove_cv_t<T>, GenerationContext>)
-				e.generation = const_cast<GenerationContext *>(&value);
-		};
-		(switchHost(args), ...);
-		struct RestoreHost
-		{
-			Binding &e;
-			Game *g;
-			GenerationContext *c;
-			~RestoreHost()
-			{
-				e.game = g;
-				e.generation = c;
-			}
-		} restoreHost{e, previousGame, previousGeneration};
-		auto lease = std::make_shared<bool>(true);
-		e.leases.push_back(lease);
-		struct Exit
-		{
-			Binding &e;
-			std::shared_ptr<bool> lease;
-			~Exit()
-			{
-				*lease = false;
-				e.leases.pop_back();
-				--e.callbackDepth;
-			}
-		} exit{e, lease};
+		Binding::CallbackScope callback(e);
+		(callback.bindHost(args), ...);
 		e.charge();
 		auto convert = [&e]<class T>(T &&x)
 		{

@@ -18,12 +18,21 @@ using fe::Presentation;
 
 namespace
 {
-std::string tr(const char *label) { return fe::tr(std::string("[") + label + "]"); }
+std::string tr(const char *label)
+{
+	return fe::tr(std::string("[") + label + "]");
+}
 } // namespace
 
-NewMapScreen::NewMapScreen(const GeneratorRegistry &registry, GAGGUI::ScreenStack *screens) : registryOwner(std::make_shared<const GeneratorRegistry>(registry)), registry(*registryOwner), screens(screens)
+NewMapScreen::NewMapScreen(const GeneratorRegistry &registry, GAGGUI::ScreenStack *screens)
+	: NewMapScreen(std::make_shared<const GeneratorRegistry>(registry), screens)
 {
-	descriptor.setMethodDefaults(registry.methods().front(), registry);
+}
+NewMapScreen::NewMapScreen(std::shared_ptr<const GeneratorRegistry> catalog,
+						   GAGGUI::ScreenStack *screens)
+	: registryOwner(std::move(catalog)), registry(*registryOwner), screens(screens)
+{
+	descriptor.setMethodDefaults(registry.methods().front(), registryOwner);
 	preview = std::make_unique<MapPreview>();
 }
 
@@ -31,7 +40,7 @@ NewMapScreen::~NewMapScreen() = default;
 
 void NewMapScreen::chooseMethod(int method)
 {
-	history.select(descriptor, method, registry);
+	history.select(descriptor, method, registryOwner);
 	invalidatePreview();
 }
 
@@ -101,12 +110,14 @@ Element NewMapScreen::build(const Presentation &p)
 				GAGCore::FormattableString(tr("%0 / Browse")).arg(generatorName(descriptor)),
 				[this] { chooseLandscape(); })));
 	else
-		fields.push_back(fe::field(tr("Starting terrain"), fe::choice("terrain", {tr("water"), tr("sand"), tr("grass")}, descriptor.terrainType,
-																		[this](int i)
-																		{
-																			descriptor.terrainType = TerrainType(i);
-																			invalidatePreview();
-																		})));
+		fields.push_back(fe::field(tr("Starting terrain"),
+								   fe::choice("terrain", {tr("water"), tr("sand"), tr("grass")},
+											  descriptor.terrainType,
+											  [this](int i)
+											  {
+												  descriptor.terrainType = TerrainType(i);
+												  invalidatePreview();
+											  })));
 	if (screens)
 		fields.push_back(fe::button("newmap/buildings", "Building families",
 									[this]
@@ -124,7 +135,9 @@ Element NewMapScreen::build(const Presentation &p)
 									}));
 	fe::ButtonOptions toggleOptions;
 	toggleOptions.selected = parameters;
-	fields.push_back(fe::button("parameters", parameters ? tr("Hide parameters") : tr("Size and parameters"), [this] { parameters = !parameters; }, toggleOptions));
+	fields.push_back(fe::button(
+		"parameters", parameters ? tr("Hide parameters") : tr("Size and parameters"),
+		[this] { parameters = !parameters; }, toggleOptions));
 	if (parameters)
 	{
 		auto control = [&](const GenerationRequest::Control &c)
@@ -163,24 +176,28 @@ Element NewMapScreen::build(const Presentation &p)
 	if (!error.empty())
 		fields.push_back(fe::paragraph(error, {fe::FontRole::Support}));
 	auto form = fe::column(std::move(fields), {p.pt(8)});
-	auto previewElement = fe::column({fe::center(fe::mapPreview("preview", *preview, 300)),
-									  fe::caption(descriptor.seed ? tr("Selected landscape") : tr("Representative preview"))},
-									 {p.pt(4)});
+	auto previewElement = fe::column(
+		{fe::center(fe::mapPreview("preview", *preview, 300)),
+		 fe::caption(descriptor.seed ? tr("Selected landscape") : tr("Representative preview"))},
+		{p.pt(4)});
 	Element body = fe::adaptive(
 		[form, previewElement](const fe::LayoutContext &ctx, fe::Size available)
 		{
 			if (available.w < ctx.presentation.pt(640))
-				return fe::scroll("newmap/scroll", fe::column({previewElement, form}, {ctx.presentation.pt(12)}));
+				return fe::scroll("newmap/scroll",
+								  fe::column({previewElement, form}, {ctx.presentation.pt(12)}));
 			// Both columns scroll, so a short page never pushes the preview's caption into the actions.
-			return fe::row({fe::expanded(fe::scroll("newmap/scroll", form)),
-							fe::width(ctx.presentation.pt(320), fe::scroll("newmap/preview", previewElement))},
-						   {ctx.presentation.pt(16), fe::CrossAlign::Start});
+			return fe::row(
+				{fe::expanded(fe::scroll("newmap/scroll", form)),
+				 fe::width(ctx.presentation.pt(320), fe::scroll("newmap/preview", previewElement))},
+				{ctx.presentation.pt(16), fe::CrossAlign::Start});
 		});
-	return fe::page(tr("create map"), body,
-					fe::actions({{"create", tr("create map"), [this] { create(); }, true, SDLK_RETURN},
-								 {"cancel", tr("Cancel"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE}},
-								p),
-					p, 940);
+	return fe::page(
+		tr("create map"), body,
+		fe::actions({{"create", tr("create map"), [this] { create(); }, true, SDLK_RETURN},
+					 {"cancel", tr("Cancel"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE}},
+					p),
+		p, 940);
 }
 
 LandscapePickerScreen *NewMapScreen::chooseLandscape()
@@ -196,7 +213,7 @@ LandscapePickerScreen *NewMapScreen::chooseLandscape()
 		auto request = descriptor;
 		if (method != descriptor.method)
 		{
-			request.setMethodDefaults(method, registry);
+			request.setMethodDefaults(method, registryOwner);
 			request.wDec = descriptor.wDec;
 			request.hDec = descriptor.hDec;
 			request.nbTeams = descriptor.nbTeams;
@@ -205,7 +222,8 @@ LandscapePickerScreen *NewMapScreen::chooseLandscape()
 			selected = int(entries.size());
 		entries.push_back({generatorName(request), request, method, registry.at(method).tags});
 	}
-	auto picker = std::make_unique<LandscapePickerScreen>(tr("Choose a landscape"), std::move(entries), selected);
+	auto picker = std::make_unique<LandscapePickerScreen>(tr("Choose a landscape"),
+														  std::move(entries), selected);
 	auto *result = picker.get();
 	screens->push(std::move(picker),
 				  [this](GAGGUI::Screen &screen, int result)

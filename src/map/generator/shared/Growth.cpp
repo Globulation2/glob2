@@ -1,4 +1,5 @@
 #include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Growth.h"
 #include "Map.h"
@@ -128,6 +129,7 @@ Fertility::Field cropGrowthField(const TerrainSketch &sketch, const Torus &t)
 		}
 	}
 	Fertility::Field field;
+	generationFertilityRebuildWork(t.w, t.h);
 	field.rebuildWeighted(t.w,t.h,contribution,inhibition);
 	// The public sketch field measures potential before habitat gating, just
 	// like the ungated map field; local modifiers are applied for crop habitats.

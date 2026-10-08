@@ -15,6 +15,7 @@ class GeneratorRegistry
 	std::vector<int> methods(bool editor = true) const;
 	int selectionIndex(int id, bool editor = true) const;
 	static const GeneratorRegistry &builtins();
+	static std::shared_ptr<const GeneratorRegistry> builtinsSnapshot();
 	static std::shared_ptr<const GeneratorRegistry> activeSnapshot();
 	// Valid until the next active() call on this thread. Retain a snapshot for longer use.
 	static const GeneratorRegistry &active();
