@@ -1484,7 +1484,8 @@ pass `--output artifacts/released-compatibility` to
 `test/check_telemetry_simulation.py`. Fresh-load traces compare complete bytes;
 the legacy checkpoint comparison also checks complete bytes, including the
 aggregate checksum and every stored team/entity record. The current references
-record simulation revision 33's scheduled building gradients and greedy fetching;
+record simulation revision 34's delayed resource growth, scheduled building gradients
+and greedy fetching;
 historical version-123 references remain separate. CI retains these artifacts even when verification fails.
 
 The shared evidence comparator requires successful runs of the same clean source

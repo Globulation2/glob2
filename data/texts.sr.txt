@@ -5604,6 +5604,30 @@ FFmpeg није доступан, па је снимање искључено. �
 Кварцни песак
 [Cotton]
 Памук
+[Jungle trees]
+
+[Pine trees]
+
+[Dead trees]
+
+[Ruins]
+
+[Camp-site]
+
+[Ancient debris]
+
+[Scrub]
+
+[Tall grass]
+
+[Maize]
+
+[Potatoes]
+
+[Rice]
+
+[Fish]
+
 [Reroll terrain look]
 Поново насумично изабери изглед терена
 [boulders]

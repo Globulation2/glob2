@@ -188,7 +188,15 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
 
 		if (checksumSidecar)
+        {
 			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game);
+            // Explicit verification only: joins private growth and hashes every
+            // resource and pending proposal without slowing routine checksums.
+            if (!headlessOutput.empty())
+                std::ofstream(headlessOutput + "/world.checksums", std::ios::app)
+                    << gui.game.stepCounter << ' '
+                    << gui.game.checkSum(nullptr, nullptr, nullptr, true) << '\n';
+        }
 	}
 	// advanceStep inserts the local order. Measuring earlier leaves a stale
 	// waiting flag; replays filter null orders and cannot clear it by executing one.
@@ -203,7 +211,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 void Engine::executeOrdersAndStep(bool readyNow)
 {
 	// Defensive drain for paused/stalled/no-controller paths and direct callers.
-	gui.game.map.preparePendingGradient();
+	gui.game.map.preparePendingWorld();
 	if (readyNow)
 	{
 		// A turn session never reports a mismatch here: the relay arbitrates the

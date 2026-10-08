@@ -5604,6 +5604,30 @@ Jernmalm
 Kvartssand
 [Cotton]
 Bomuld
+[Jungle trees]
+Jungletræer
+[Pine trees]
+Fyrretræer
+[Dead trees]
+Døde træer
+[Ruins]
+Ruiner
+[Camp-site]
+Lejrplads
+[Ancient debris]
+Oldtidsrester
+[Scrub]
+Krat
+[Tall grass]
+Højt græs
+[Maize]
+Majs
+[Potatoes]
+Kartofler
+[Rice]
+Ris
+[Fish]
+Fisk
 [Reroll terrain look]
 Vælg terrænets udseende tilfældigt igen
 [boulders]

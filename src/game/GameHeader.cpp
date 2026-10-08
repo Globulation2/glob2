@@ -6,6 +6,10 @@
 #include "FileFormatVersions.h"
 #include "BuildingType.h"
 #include "BuildingArtwork.h"
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <array>
+#include <string_view>
 
 #include <algorithm>
 #include <ctime>
@@ -17,6 +21,59 @@ constexpr Uint32 MaxCatalogChunks = 32;
 // Artwork uses the same bounded byte transport as catalog JSON. Chunking also
 // keeps binary and text streams below their individual string-length limits.
 constexpr Uint32 MaxArtworkChunks = BuildingArtwork::MaxBytes / CatalogChunkBytes;
+
+// Format 145 was allocated independently by the released artwork engine and the
+// earlier compact-growth branch. Nonempty artwork has a fixed uppercase magic;
+// catalog experiment keys are lowercase. Empty artwork is followed by bounded
+// resource definitions and enabled keys. An older header reaches its GaBe game
+// signature (or EOF) before that extra field can be read. Probe without mutating
+// GameHeader; the normal readers still validate every selected payload.
+bool hasBuildingArtwork145(GAGCore::InputStream* stream)
+{
+    if (auto* text = dynamic_cast<GAGCore::TextInputStream*>(stream))
+        return text->hasField("buildingArtwork.chunks");
+    if (!dynamic_cast<GAGCore::BinaryInputStream*>(stream) || !stream->canSeek())
+        throw std::ios_base::failure("Cannot identify format-145 game header");
+    const auto start = stream->getPosition();
+    const auto word = [&]() {
+        const auto before = stream->getPosition();
+        const auto value = stream->readUint32("layoutProbe");
+        if (stream->getPosition() != before + 4) throw std::runtime_error("Truncated layout probe");
+        return value;
+    };
+    const auto skipText = [&](Uint32 limit) {
+        const auto count = word();
+        if (count > limit) throw std::runtime_error("Invalid layout probe length");
+        std::array<char, 4096> bytes{};
+        const auto before = stream->getPosition();
+        stream->read(bytes.data(), count, "layoutProbe");
+        if (stream->getPosition() != before + count) throw std::runtime_error("Truncated layout probe text");
+    };
+    bool artwork = false;
+    try {
+        const auto chunks = word();
+        if (chunks) {
+            const auto size = word();
+            std::array<char, 8> magic{};
+            const auto before = stream->getPosition();
+            stream->read(magic.data(), magic.size(), "layoutProbe");
+            artwork = chunks <= MaxArtworkChunks && size >= magic.size() && size <= CatalogChunkBytes &&
+                stream->getPosition() == before + magic.size() && std::string_view(magic.data(), magic.size()) == "G2BA0001";
+        } else {
+            const auto definitions = word();
+            if (definitions > ExperimentSet::MAX_STORED) throw std::runtime_error("Invalid layout probe count");
+            for (Uint32 i = 0; i < definitions; ++i) { skipText(128); skipText(512); skipText(4096); }
+            const auto enabled = word();
+            if (enabled > ExperimentSet::MAX_STORED) throw std::runtime_error("Invalid layout probe experiments");
+            for (Uint32 i = 0; i < enabled; ++i) skipText(128);
+            artwork = true;
+        }
+    } catch (const std::runtime_error&) {
+        artwork = false;
+    }
+    stream->seekFromStart(start);
+    return artwork;
+}
 
 std::string readCatalog(GAGCore::InputStream* stream, const char* section="buildingCatalog", Uint32 maxChunks=MaxCatalogChunks)
 {
@@ -173,7 +230,7 @@ void GameHeader::setDefaultAlliances(std::optional<int> humanColor, const std::v
 
 
 
-bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
+bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor, Sint32 historicalGrowthVersion)
 {
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
@@ -269,7 +326,8 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		setBuildingCatalogSnapshot(readCatalog(stream));
 	else
 		setBuildingCatalogSnapshot({});
-	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_ARTWORK)
+	if (historicalGrowthVersion != 146 && (versionMinor >= 146 ||
+        (versionMinor == FILE_FORMAT_VERSION_BUILDING_ARTWORK && hasBuildingArtwork145(stream))))
         setBuildingArtwork(readCatalog(stream,"buildingArtwork",MaxArtworkChunks));
     else setBuildingArtwork({});
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
@@ -409,7 +467,8 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 		setBuildingCatalogSnapshot(readCatalog(stream));
 	else
 		setBuildingCatalogSnapshot({});
-	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_ARTWORK)
+	if (versionMinor >= 146 ||
+        (versionMinor == FILE_FORMAT_VERSION_BUILDING_ARTWORK && hasBuildingArtwork145(stream)))
         setBuildingArtwork(readCatalog(stream,"buildingArtwork",MaxArtworkChunks));
     else setBuildingArtwork({});
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)

@@ -63,6 +63,8 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
     }
 }
 
+// Immediate reference path for tests and benchmarks. Production ticks use the
+// snapshot pipeline; calling both would apply growth twice.
 void Map::growResources(void)
 {
     if(game->gameHeader.isResourceGrowthDisabled()) return;
@@ -335,7 +337,7 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 {
 	preparePendingGradient();
 	PERF_SCOPE_TIME(Map);
-	growResources();
+	gradientRuntime->growth.publish(*this, stepCounter);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
 	game->animations->step();

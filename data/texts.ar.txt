@@ -5604,6 +5604,30 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 سيليكا
 [Cotton]
 قطن
+[Jungle trees]
+أشجار الغابة الاستوائية
+[Pine trees]
+أشجار الصنوبر
+[Dead trees]
+أشجار ميتة
+[Ruins]
+أطلال
+[Camp-site]
+مخيم
+[Ancient debris]
+حطام قديم
+[Scrub]
+شجيرات
+[Tall grass]
+عشب طويل
+[Maize]
+ذرة
+[Potatoes]
+بطاطس
+[Rice]
+أرز
+[Fish]
+أسماك
 [Reroll terrain look]
 إعادة اختيار مظهر التضاريس
 [boulders]
