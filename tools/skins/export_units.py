@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Stable-surface unit export. Run inside pinned Blender 3.6.23.
 
-Keep original sources untouched. Workers and warriors use authored torso sockets
-and separate limb paths, evaluated against each limb's own metaball field.
+Keep original sources untouched. Workers and warriors retain their authored paint topology while fitting one
+connected rest surface and carrying it through the named component motion.
 Explorer geometry retains the original stable-surface transfer. All glob paint
 charts fold front/back and top/bottom coordinates in body space. These surfaces
 approximate the legacy metaballs; visual review remains part of acceptance.
@@ -18,7 +18,7 @@ import struct
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from chart import chart
+from chart import chart, detail_chart
 from limb_surface import LimbSurface, Tracker
 
 import bpy
@@ -259,6 +259,10 @@ def export_model(output, model):
         manifest["surfaceDefinitionSha256"] = hashlib.sha256(
             definition_path.read_bytes()
         ).hexdigest()
+        manifest["surfaceDependencies"] = {
+            str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in [Path(__file__).with_name("connected_surface.py"), ROOT / surface.definition["paintChart"]["file"]]
+        }
         contract_path = output / (model + "-surface.json")
         contract_path.write_text(
             json.dumps(surface.contract(), separators=(",", ":")) + "\n"
@@ -286,6 +290,10 @@ def export_model(output, model):
             )
             surface.uv = chart(surface, tracker.positions)
             uvs = surface.uv
+            procedural_uv = detail_chart(surface, tracker.positions)
+        if surface:
+            detail_path = output / (model + "-" + clip + ".guv")
+            detail_path.write_bytes(struct.pack("<4sI", b"GUV1", len(procedural_uv)) + np.asarray(procedural_uv, dtype="<f4").tobytes())
         camera = np.linalg.inv(np.array(scene.camera.matrix_world))
         # Blender 2.34 orthographic size depended on camera depth and lens.
         # Modern import sets a different ortho_scale (and prints a warning).
@@ -302,7 +310,7 @@ def export_model(output, model):
                 sample_pose(scene, direction, phase, heading_origin)
                 matrices = influence_matrices(parts)
                 if surface:
-                    positions = tracker.evaluate(matrices, clip)
+                    positions = tracker.evaluate(matrices, clip, phase)
                 else:
                     positions = np.einsum(
                         "pvi,pv->vi",
@@ -355,6 +363,8 @@ def export_model(output, model):
             "cameraScale": scale,
             "sourceViewMatrix": model_view,
         }
+        if surface:
+            manifest["clips"][clip]["detailUV"] = {"file": detail_path.name, "sha256": hashlib.sha256(detail_path.read_bytes()).hexdigest()}
         print("Exported", path, flush=True)
     (output / (model + "-manifest.json")).write_text(
         json.dumps(manifest, indent=2) + "\n"

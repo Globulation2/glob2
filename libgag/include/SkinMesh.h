@@ -26,6 +26,9 @@ struct SkinMesh
 	std::uint64_t identity = 0; // fresh on every successful load
 	std::uint32_t vertices = 0, frames = 0, logicalSize = 0;
 	std::vector<float> uv;
+	// Optional GUV1 sidecar: procedural detail can use a clean unwrap while
+	// saved paint keeps the established atlas coordinates. Empty uses uv.
+	std::vector<float> detailUV;
 	std::vector<std::uint32_t> indices;
 	std::vector<float> poses; // GSK1 only: xyz, normal xyz; frame-major
 	// GSR1 and GSB1 meshes keep their immutable model and the chosen clip
@@ -47,6 +50,7 @@ struct SkinMesh
 						 const std::array<float, 9> &normals) const;
 	bool load(const std::string &path, std::string &error);
 	bool load(StreamBackend &input, std::string &error);
+	bool loadDetailUV(StreamBackend &input, std::string &error);
 };
 AssetLoader::Handle<SkinMesh> requestSkinMesh(AssetLoader &loader, const std::string &path);
 // Unit clips animate from fitted rigs: GSB1 blend shapes for workers and
