@@ -12,6 +12,7 @@ The independent read-only subagent reviewed the entire PR and cleanup, then sign
 
 ## Validation
 
+```json
 {
   "engine": {
     "passed": 602,
@@ -34,6 +35,7 @@ The independent read-only subagent reviewed the entire PR and cleanup, then sign
     "skipped": 20
   }
 }
+```
 
 The known ImageAssets native-SDL 16-bit decoding failure is independent of this change and already reproduced with master’s unchanged fixture without engine code; see the preceding final-master report. No other failure is accepted by this report.
 
