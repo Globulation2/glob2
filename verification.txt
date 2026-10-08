@@ -1,0 +1,7 @@
+PR969 verification
+Commit a0bc417a435403612230ac6b8f9a49bbee6568cf, base75f6f6036ddf9dbcf9c75a833de4c0cd530b3ae4; fetched unchanged before final verification.
+Clean ubuntu:22.04 Docker container, x86_64, GCC11, Python3.10. Installed LLVM18 via signed apt.llvm.org Jammy18 repository and clang==18.1.8 in a fresh venv. Ran the exact changed workflow install block (sudo removed for container root), then test/test_toolkit_instrumentation.py: all3 cases PASS, no skips. Full reproduction shell included.
+Command: docker run --rm -v "$PWD:/repo:ro" -w /work ubuntu:22.04 bash -c 'mkdir -p /work/test /work/tools/map-generators; cp /repo/test/test_toolkit_instrumentation.py /work/test/; cp /repo/tools/map-generators/instrument_toolkit_budget.py /work/tools/map-generators/; bash /repo/artifacts/ci-aggregate-check/jammy-libclang-check.sh'
+CI contracts: python3 -m unittest discover -s test/build_system -p 'test_ci_*.py':90 PASS.
+Original failure job113552560967 (masterb5c9):309 engine tests passed, apt could not locate libclang-18-dev, preventing tooling checks. Failure log preserved compressed.
+Scope: development-only dependency acquisition; retains LLVM18, existing Python binding pin and all checks. Jammy branch only; other OS branches unchanged. No simulation/save/replay/network changes, no SIM_REVISION bump. Full hosted matrix not rerun locally; package install and affected parser tests verified in actual Jammy. LLVM repository signatures remain required via scoped signed-by key.
