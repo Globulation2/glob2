@@ -196,7 +196,10 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   if (info.project.name === 'desktop')
     await expect(page.locator('.monaco-editor').first()).toBeVisible();
   else {
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
     await expect(
       page.getByRole('textbox', { name: 'AI JavaScript source', exact: true }),
     ).toBeVisible();
@@ -253,11 +256,21 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   expect(submissions).toHaveLength(2);
   expect(submissions[0]).toBe(submissions[1]);
   if (info.project.name === 'phone')
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await expect(
+      page.getByRole('tab', { name: 'Preview · Ready', exact: true }).first(),
+    ).toBeVisible();
+  if (info.project.name === 'phone')
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await expect(page.getByRole('button', { name: 'Publish', exact: true })).toBeDisabled();
   await page.getByRole('tab', { name: 'Changes', exact: true }).first().click();
   if (info.project.name === 'phone')
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await page.getByRole('button', { name: 'Run checks', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Publish', exact: true })).toBeEnabled();
   const testedRevision = revision;
@@ -317,7 +330,10 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect.poll(() => submissions.length).toBe(3);
   if (info.project.name === 'phone')
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await page.getByRole('button', { name: 'Run checks', exact: true }).click();
   await page.getByRole('button', { name: 'Stop game', exact: true }).click();
   await expect(page.locator('iframe')).toHaveCount(0);
@@ -355,12 +371,16 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   });
   await uncertainPrompt.fill('A second paid request must wait.');
   await uncertainPrompt.press('Enter');
-  await page.getByRole('button', { name: 'Send', exact: true }).click();
+  const unavailableSend = page.getByRole('button', { name: 'Send', exact: true });
+  await expect(unavailableSend).toHaveAttribute('aria-disabled', 'true');
+  await unavailableSend.focus();
+  await page.keyboard.press('Enter');
   await expect(page.getByRole('button', { name: 'Stop request' })).toHaveAttribute(
     'aria-disabled',
     'true',
   );
-  await page.getByRole('button', { name: 'Stop request' }).click();
+  await page.getByRole('button', { name: 'Stop request' }).focus();
+  await page.keyboard.press('Enter');
   expect(submissions).toHaveLength(3);
   expect(stoppedRequests).toEqual([]);
   if (info.project.name === 'phone')
@@ -380,7 +400,10 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
     ),
   ).toBeVisible();
   if (info.project.name === 'phone')
-    await page.getByRole('tab', { name: 'Preview', exact: true }).first().click();
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await expect(page.getByText(`Saved · revision ${restoredRevision}`).first()).toBeVisible();
   if (info.project.name === 'desktop')
     await expect(page.locator('.monaco-editor').first()).toBeVisible();
