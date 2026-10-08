@@ -1,0 +1,8 @@
+{
+  "master": "aee20ae527f9648d2f41791a2732f90605078439",
+  "files_checked": 2187,
+  "differences": [
+    "src/map/MapSetTest.cpp"
+  ],
+  "method": "git blob hashes of exact files vs pinned master tree; not parent-worktree index"
+}

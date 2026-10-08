@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="src/map/MapSetTest.cpp"><testcase classname="src/map/MapSetTest.cpp" name="generated master ecology exports identical growth inputs" time="27.4037" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,62 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C library SDL3... (cached) yes
+Checking for C library SDL3_ttf... (cached) yes
+Checking for C library SDL3_image... (cached) yes
+Checking for C library SDL3_net... (cached) yes
+Checking for C library speex... (cached) yes
+Checking for C++ header file speex/speex.h... (cached) yes
+Checking for C library opusfile... (cached) yes
+Checking for C++ header file opusfile.h... (cached) yes
+Checking for C library opus... (cached) yes
+Checking for C library ogg... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+Checking for C library GL... (cached) yes
+Checking for C++ header file GL/gl.h... (cached) yes
+Checking for C library GLU... (cached) yes
+Checking for C++ header file GL/glu.h... (cached) yes
+Checking for C library epoxy... (cached) yes
+Checking for C++ header file epoxy/gl.h... (cached) yes
+Checking for C library fribidi... (cached) yes
+Checking for C++ header file fribidi/fribidi.h... (cached) yes
+Checking for C library portaudio... (cached) no
+scons: done reading SConscript files.
+scons: Building targets ...
+Generating build/linux/client/release/include/glob2/TestBuildProvenance.h
+/usr/bin/ccache g++ -o build/linux/client/release/test/engine-src_map_ResourceGrowthBenchmark.o -c -std=gnu++20 -Wall -fPIC -O3 -s -fno-access-control -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-terrain-art2/build/linux/client/release/recording/prefix/include -I/tmp/glob2-sdl3/prefix/include -Ibuild/linux/client/release/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -I/tmp/glob2-sdl3/prefix/include/webp -Itest -Itest/support -Ilibgag/src -Ithird_party/quickjs-ng src/map/ResourceGrowthBenchmark.cpp
+/usr/bin/ccache g++ -o build/linux/client/release/test/engine-support_TestMain.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-terrain-art2/build/linux/client/release/recording/prefix/include -I/tmp/glob2-sdl3/prefix/include -Ibuild/linux/client/release/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -I/tmp/glob2-sdl3/prefix/include/webp -Itest -Itest/support -Ilibgag/src -Ithird_party/quickjs-ng test/support/TestMain.cpp
+In file included from test/support/Glob2Test.h:8,
+                 from test/support/EngineFixtures.h:6,
+                 from src/map/ResourceGrowthBenchmark.cpp:2:
+test/support/../third_party/doctest.h: In instantiation of 'doctest::detail::Expression_lhs<L>& doctest::detail::Expression_lhs<L>::operator&&(const R&) [with R = const char*; L = const char*&]':
+src/map/ResourceGrowthBenchmark.cpp:222:21:   required from here
+  222 |                 if (masterInputs) REQUIRE(selected && output);
+      |                                                       ^~~~~~
+test/support/../third_party/doctest.h:1390:42: error: static assertion failed: Expression Too Complex Please Rewrite As Binary Comparison!
+ 1390 |         static_assert(deferred_false<R>::value,                                                    \
+      |                                          ^~~~~
+test/support/../third_party/doctest.h:1539:9: note: in expansion of macro 'DOCTEST_FORBIT_EXPRESSION'
+ 1539 |         DOCTEST_FORBIT_EXPRESSION(Expression_lhs, &&)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+test/support/../third_party/doctest.h:1390:42: note: 'doctest::detail::types::false_type::value' evaluates to false
+ 1390 |         static_assert(deferred_false<R>::value,                                                    \
+      |                                          ^~~~~
+test/support/../third_party/doctest.h:1539:9: note: in expansion of macro 'DOCTEST_FORBIT_EXPRESSION'
+ 1539 |         DOCTEST_FORBIT_EXPRESSION(Expression_lhs, &&)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/map/ResourceGrowthBenchmark.cpp:11:
+libgag/include/StreamBackend.h: In member function 'virtual void GAGCore::FileStreamBackend::read(void*, size_t)':
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of 'size_t fread(void*, size_t, size_t, FILE*)' declared with attribute 'warn_unused_result' [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+scons: *** [build/linux/client/release/test/engine-src_map_ResourceGrowthBenchmark.o] Error 1
+scons: building terminated because of errors.

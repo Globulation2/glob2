@@ -1,0 +1,10 @@
+{
+  "completed_seeds": [
+    1,
+    2
+  ],
+  "reason": "Split large-map seeds into independent processes; retain completed seed groups and reproduce any interrupted partial seed",
+  "stopped_pids": [
+    2458441
+  ]
+}

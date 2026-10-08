@@ -1,0 +1,4 @@
+PASS ResourceGrowthBenchmark/generated landscapes preserve player-free growth accounting (10.4s)
+
+1 passed, 0 failed, 0 skipped (10.4s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/remaining/generated-delay/pilot.xml (1 cases)

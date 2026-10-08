@@ -1,0 +1,25 @@
+{
+  "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/master-src",
+  "environment": {
+    "LD_LIBRARY_PATH": "/tmp/glob2-sdl3/prefix/lib",
+    "GLOB2_GROWTH_GENERATED_CASE": "islands",
+    "GLOB2_GROWTH_GENERATED_TICKS": "4096",
+    "GLOB2_GROWTH_MASTER_OUTPUT": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/master/islands/results.json"
+  },
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--binary",
+    "engine",
+    "--no-display",
+    "-j1",
+    "--timeout",
+    "7200",
+    "--filter",
+    "*generated master ecology*",
+    "--junit",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/master/islands/junit.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/master/islands/test"
+  ]
+}

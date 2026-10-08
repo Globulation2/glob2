@@ -1,0 +1,28 @@
+{
+  "cwd": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2",
+  "environment": {
+    "LD_LIBRARY_PATH": "/tmp/glob2-sdl3/prefix/lib",
+    "GLOB2_GROWTH_GENERATED_CASE": "fjord-continent",
+    "GLOB2_GROWTH_GENERATED_TICKS": "4096",
+    "GLOB2_GROWTH_GENERATED_OUTPUT": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/branch/fjord-continent/results.json",
+    "GLOB2_GROWTH_GENERATED_DELAYS": "1,2,3,4,8,12,16",
+    "GLOB2_GROWTH_GENERATED_WIDE": "1",
+    "GLOB2_GROWTH_GENERATED_INPUT": "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/master"
+  },
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--binary",
+    "engine",
+    "--no-display",
+    "-j1",
+    "--timeout",
+    "7200",
+    "--filter",
+    "ResourceGrowthBenchmark/generated*",
+    "--junit",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/branch/fjord-continent/junit.xml",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/114f19f3-7248-4ab6-a516-3ff0849d0a96/glob2/artifacts/resource-growth/remaining/generated-delay/branch/fjord-continent/test"
+  ]
+}

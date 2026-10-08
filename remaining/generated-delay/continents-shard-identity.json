@@ -1,0 +1,182 @@
+{
+  "matched_overlap_rows": [
+    {
+      "seed": 2,
+      "delay": 1,
+      "variant": "owner",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 1,
+      "variant": "shared",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 2,
+      "variant": "owner",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 2,
+      "variant": "shared",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 3,
+      "variant": "owner",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 3,
+      "variant": "shared",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 4,
+      "variant": "owner",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 4,
+      "variant": "shared",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 8,
+      "variant": "owner",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 8,
+      "variant": "shared",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 12,
+      "variant": "owner",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 12,
+      "variant": "shared",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 16,
+      "variant": "owner",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 2,
+      "delay": 16,
+      "variant": "shared",
+      "original_initial_checksum": 146598116,
+      "shard_initial_checksum": 659877277
+    },
+    {
+      "seed": 3,
+      "delay": 1,
+      "variant": "owner",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    },
+    {
+      "seed": 3,
+      "delay": 1,
+      "variant": "shared",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    },
+    {
+      "seed": 3,
+      "delay": 2,
+      "variant": "owner",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    },
+    {
+      "seed": 3,
+      "delay": 2,
+      "variant": "shared",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    },
+    {
+      "seed": 3,
+      "delay": 3,
+      "variant": "owner",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    },
+    {
+      "seed": 3,
+      "delay": 3,
+      "variant": "shared",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    },
+    {
+      "seed": 3,
+      "delay": 4,
+      "variant": "owner",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    },
+    {
+      "seed": 3,
+      "delay": 4,
+      "variant": "shared",
+      "original_initial_checksum": 3386570885,
+      "shard_initial_checksum": 987545620
+    }
+  ],
+  "total_rows": 280,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "reason": "New harness only adds seed-range selection; All duplicated ecology outputs, checkpoints, statistics and pipeline counts match exactly. Initial whole-game checksums differ across separately imported processes; no cross-process full-state identity is claimed. Within each run owner/shared per-tick checksums pass."
+}

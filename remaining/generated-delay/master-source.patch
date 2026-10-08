@@ -1,0 +1,60 @@
+diff --git a/src/map/MapSetTest.cpp b/src/map/MapSetTest.cpp
+index 0b69edb47..48dbe28f5 100644
+--- a/src/map/MapSetTest.cpp
++++ b/src/map/MapSetTest.cpp
+@@ -278,3 +278,55 @@ TEST_CASE("swatches remain textured when alternating inspected map bundles [disp
+ }
+ 
+ }
++
++// Test-only exporter and whole-engine ecology driver, appended to a master test TU.
++#include "EngineFixtures.h"
++#include "GenerationService.h"
++#include <BinaryStream.h>
++#include <StreamBackend.h>
++#include <nlohmann/json.hpp>
++#include <filesystem>
++#include <fstream>
++#include <bit>
++#include <cstdlib>
++TEST_CASE("generated master ecology exports identical growth inputs")
++{
++ using Json=nlohmann::json;
++ glob2test::HeadlessGlobals globals;
++ const char *path=std::getenv("GLOB2_GROWTH_MASTER_OUTPUT"); REQUIRE(path);
++ const char *selected=std::getenv("GLOB2_GROWTH_GENERATED_CASE"); REQUIRE(selected);
++ const unsigned ticks=std::getenv("GLOB2_GROWTH_GENERATED_TICKS") ? std::stoul(std::getenv("GLOB2_GROWTH_GENERATED_TICKS")) : 4096;
++ const unsigned seeds=std::getenv("GLOB2_GROWTH_MASTER_SEEDS") ? std::stoul(std::getenv("GLOB2_GROWTH_MASTER_SEEDS")) : 20;
++ const auto directory=std::filesystem::path(path).parent_path();std::filesystem::create_directories(directory);
++ struct Landscape {const char *id;int w,h;};
++ const std::vector<Landscape> cases{{"river",7,7},{"swamp",7,7},{"crater-lakes",8,8},{"islands",8,8},{"rain-shadow",8,8},{"old-growth",8,8},{"braided-river",8,8},{"fjord-continent",9,8},{"stone-highlands",8,8},{"tidal-flats",8,8},{"canals",8,7},{"continents",9,9}};
++ Json report={{"ticks",ticks},{"samples",Json::array()},{"generation_failures",Json::array()}};
++ auto persist=[&](){std::ofstream file(path);file<<report.dump(2);REQUIRE(file.good());};
++ bool found=false;
++ for(const auto &landscape:cases) {
++  if(landscape.id!=std::string(selected))continue;found=true;
++  for(unsigned seed=1;seed<=seeds;++seed) {
++   GenerationRequest request;request.setMethodDefaults(GeneratorRegistry::builtins().idOf(landscape.id));request.wDec=landscape.w;request.hDec=landscape.h;request.nbTeams=2;request.seed=seed;
++   GameGUI gui;auto &game=gui.game;auto &map=game.map;
++   const auto result=GenerationService().generate(game,request);INFO(result.diagnostic());
++   if(!result){report["generation_failures"].push_back({{"seed",seed},{"generator",landscape.id},{"diagnostic",result.diagnostic()}});persist();continue;}
++   auto save=[&](const std::string &suffix){if(seed!=1)return;FILE *f=std::fopen((directory/(std::string(landscape.id)+suffix+".game")).c_str(),"wb");REQUIRE(f);GAGCore::BinaryOutputStream out(new GAGCore::FileStreamBackend(f));game.save(&out,false,"Master generated ecology");};
++   save("-original-colonies");
++   GameHeader header;header.setNumberOfPlayers(0);header.setRandomSeed(seed);game.setGameHeader(header,true);game.clearingUncontrolledTeams();game.syncRandom.seed(seed);
++   map.configureCompute(1,0);
++   auto scan=[&](){std::array<std::array<Uint64,MaterialCount>,2> values{};for(size_t i=0;i<map.cellCount();++i){const auto type=map.getResource(i).type;if(type==NO_RES_TYPE)continue;for(unsigned mask=map.resourcePropertiesByIndex(type).materialMask;mask;mask&=mask-1){const auto m=std::countr_zero(mask);values[0][m]+=map.materialAmountAtSlot(i,m);++values[1][m];}}return values;};
++   std::vector<unsigned> types;for(unsigned type=0;type<map.resourceRegistry().size();++type)if(map.resourcePropertiesByIndex(type).growthRate)types.push_back(type);
++   Json fixture={{"generator",result.generatorId},{"revision",result.revision},{"seed",seed},{"wDec",request.wDec},{"hDec",request.hDec},{"options",request.options},{"resource_registry",map.resourceRegistry().serialize()},{"vertices",Json::array()},{"resources",Json::array()},{"growth_queries",Json::array()},{"growth_types",types}};
++   for(size_t i=0;i<map.cellCount();++i){
++    const auto v=map.vertexTerrainAt(i);REQUIRE(v<=GRASS);fixture["vertices"].push_back(unsigned(v));
++    const auto r=map.getResource(i);if(r.type!=NO_RES_TYPE)fixture["resources"].push_back({i,r.type,r.variety,map.materialStocksAt(i)});
++    std::vector<Uint32> q(1+2*types.size());q[0]=map.canResourcesGrow(i%map.getW(),i/map.getW());for(unsigned t=0;t<types.size();++t){q[1+t]=map.terrainSupportsResourceAt(i,static_cast<ResourceId>(types[t]));q[1+types.size()+t]=map.resourceGrowthRateAt(i,types[t]);}fixture["growth_queries"].push_back(q);
++   }
++   fixture["initial"]=scan();{std::ofstream file(directory/("fixture-"+std::to_string(seed)+".json"));file<<fixture.dump();REQUIRE(file.good());}
++   save("-initial");const auto initial=scan();const auto baseline=game.teams[0]->stats.measurements;Json checkpoints=Json::array();
++   for(unsigned tick=1;tick<=ticks;++tick){game.syncStep(-1);const auto now=scan();const auto &a=game.teams[0]->stats.measurements;for(unsigned m=0;m<MaterialCount;++m){REQUIRE(now[0][m]-initial[0][m]==a.growthGlobal[1][m]-baseline.growthGlobal[1][m]);REQUIRE(now[1][m]-initial[1][m]==a.growthGlobal[0][m]-baseline.growthGlobal[0][m]);REQUIRE(a.growthGlobal[2][m]==baseline.growthGlobal[2][m]);for(unsigned k=0;k<3;++k)REQUIRE(a.growthGlobal[k][m]==game.teams[1]->stats.measurements.growthGlobal[k][m]);}if(tick%128==0)checkpoints.push_back({{"tick",tick},{"counts",now}});}
++   save("-final");report["samples"].push_back({{"generator",result.generatorId},{"revision",result.revision},{"seed",seed},{"width",map.getW()},{"height",map.getH()},{"initial",initial},{"final",scan()},{"checkpoints",checkpoints}});persist();
++  }
++ }
++ REQUIRE(found);REQUIRE(!report["samples"].empty());
++}

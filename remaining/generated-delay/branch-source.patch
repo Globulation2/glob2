@@ -1,0 +1,309 @@
+commit 3794e7b116ef3ade7b6e293d2f0554a6e589b9ec
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 8 10:20:46 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 8 10:20:46 2026 -0400
+
+    Ablate growth delays on imported current-master generated worlds
+
+diff --git a/docs/development/reference.md b/docs/development/reference.md
+index dfbdb5950..e5a9e4318 100644
+--- a/docs/development/reference.md
++++ b/docs/development/reference.md
+@@ -1384,6 +1384,29 @@ empty-colony inputs and endpoints beside the report. Results include per-materia
+ stocks, deposit counts, checkpoints and a separate terminal-queue flush. These are
+ no-player ecology measurements, not throughput or sustainable-harvesting tests.
+ 
++`GLOB2_GROWTH_GENERATED_DELAYS` selects a comma-separated list of delays from 1–16
++(default `8`). `GLOB2_GROWTH_GENERATED_WIDE=1` adds Rain Shadow, Old Growth, Braided
++River, Fjord Continent, Stone Highlands, Tidal Flats, Canals and Continents, including
++512² and rectangular maps. `GLOB2_GROWTH_GENERATED_CASE` selects one generator ID
++for independent process execution. `GLOB2_GROWTH_GENERATED_SEED_BEGIN` and
++`GLOB2_GROWTH_GENERATED_SEED_END` select an inclusive seed range for sharding
++large-map campaigns; default coverage is unchanged. Refused generation seeds are recorded rather
++than replaced; a selected case with no successful samples fails.
++
++For comparisons across incompatible save formats, `GLOB2_GROWTH_GENERATED_INPUT`
++selects a directory of exported master fixtures, one subdirectory per generator
++and `fixture-<seed>.json` per world. This mode requires case selection and an output
++path. It imports classic terrain vertices, the canonical resource catalog and
++exact deposit types, varieties and material stocks, then verifies habitat,
++growth permission and ecology rates at every cell for all exported renewable
++types. Mismatches fail before stepping. Owner/shared arms load identical native
++saves of that imported world; the retained immediate-growth pass is omitted in
++this mode. Master reference results must come from a separately pinned master
++executable using full simulation ticks, and every missing fixture must be
++reconciled against its generation-failure report. Report both delay-versus-delay
++and delay-versus-master comparisons: only the former isolates scheduling.
++
++
+ Proposal buffers are pooled for the full delay horizon. Initial reservation is
+ `max(128, cellCount / 16)` entries per buffer, approximately four proposals per
+ expected sampled cell. Completed batches raise the reservation to their observed
+diff --git a/src/map/ResourceGrowthBenchmark.cpp b/src/map/ResourceGrowthBenchmark.cpp
+index 44fc03d87..a4a0a8b8a 100644
+--- a/src/map/ResourceGrowthBenchmark.cpp
++++ b/src/map/ResourceGrowthBenchmark.cpp
+@@ -7,6 +7,7 @@
+ #include <cstdlib>
+ #include <filesystem>
+ #include <bit>
++#include <sstream>
+ #include <BinaryStream.h>
+ #include <StreamBackend.h>
+ #include "GenerationService.h"
+@@ -198,13 +199,40 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 	{
+ 		glob2test::HeadlessGlobals globals;
+ 		const char *output = std::getenv("GLOB2_GROWTH_GENERATED_OUTPUT");
+-		const unsigned seeds = output ? 20 : 1, delay = 8;
++		const unsigned seeds = output ? 20 : 1;
++		const char *firstSetting = std::getenv("GLOB2_GROWTH_GENERATED_SEED_BEGIN");
++		const char *lastSetting = std::getenv("GLOB2_GROWTH_GENERATED_SEED_END");
++		const unsigned firstSeed = firstSetting ? std::stoul(firstSetting) : 1;
++		const unsigned lastSeed = lastSetting ? std::stoul(lastSetting) : seeds;
++		REQUIRE(firstSeed >= 1);
++		REQUIRE(lastSeed >= firstSeed);
++		REQUIRE(lastSeed <= seeds);
++		std::vector<unsigned> delays{8};
++		if (const char *setting = std::getenv("GLOB2_GROWTH_GENERATED_DELAYS"))
++		{
++			delays.clear();
++			std::istringstream values(setting);
++			std::string value;
++			while (std::getline(values, value, ','))
++			{
++				const auto delay = std::stoul(value);
++				REQUIRE(delay >= 1);
++				REQUIRE(delay <= 16);
++				REQUIRE(std::find(delays.begin(), delays.end(), delay) == delays.end());
++				delays.push_back(delay);
++			}
++			REQUIRE(!delays.empty());
++		}
++		const bool wide = std::getenv("GLOB2_GROWTH_GENERATED_WIDE") != nullptr;
++		const char *selected = std::getenv("GLOB2_GROWTH_GENERATED_CASE");
++		const char *masterInputs = std::getenv("GLOB2_GROWTH_GENERATED_INPUT");
++		if (masterInputs) REQUIRE((selected && output));
+ 		const char *tickSetting = std::getenv("GLOB2_GROWTH_GENERATED_TICKS");
+ 		const unsigned ticks = tickSetting ? std::stoul(tickSetting) : (output ? 512 : 32);
+ 		REQUIRE(ticks >= 1);
+ 		REQUIRE(ticks <= 16384);
+ 		Json report = {{"kind", "generated-player-free-growth"}, {"ticks", ticks},
+-			{"delay", delay}, {"samples", Json::array()}, {"generation_failures", Json::array()}};
++			{"delays", delays}, {"samples", Json::array()}, {"generation_failures", Json::array()}};
+ 		const auto directory = output ? std::filesystem::path(output).parent_path() : std::filesystem::path();
+ 		if (output && !directory.empty()) std::filesystem::create_directories(directory);
+ 		auto persist = [&]()
+@@ -232,27 +260,109 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 		};
+ 		// Use the actual lobby generators and their default controls, never painted
+ 		// approximations. Only colony entities are removed for the no-harvesting arm.
+-		for (int method : {GenerationRequest::eRIVER, GenerationRequest::eSWAMP,
+-			GenerationRequest::eCRATERLAKES, GenerationRequest::eISLANDS})
+-			for (unsigned seed = 1; seed <= seeds; ++seed)
++		struct Landscape { const char *id; int wDec, hDec; };
++		std::vector<Landscape> landscapes{{"river", 7, 7}, {"swamp", 7, 7},
++			{"crater-lakes", 8, 8}, {"islands", 8, 8}};
++		if (wide)
++			for (const auto &landscape : std::vector<Landscape>{{"rain-shadow", 8, 8},
++				{"old-growth", 8, 8}, {"braided-river", 8, 8}, {"fjord-continent", 9, 8},
++				{"stone-highlands", 8, 8}, {"tidal-flats", 8, 8}, {"canals", 8, 7},
++				{"continents", 9, 9}})
++				landscapes.push_back(landscape);
++		bool matched = false;
++		for (const auto &landscape : landscapes)
++		{
++			if (selected && landscape.id != std::string(selected)) continue;
++			matched = true;
++			for (unsigned seed = firstSeed; seed <= lastSeed; ++seed)
+ 			{
+ 				GenerationRequest request;
+-				request.setMethodDefaults(method);
+-				request.wDec = request.hDec = method <= GenerationRequest::eRIVER ? 7 : 8;
++				request.setMethodDefaults(GeneratorRegistry::builtins().idOf(landscape.id));
++				request.wDec = landscape.wDec;
++				request.hDec = landscape.hDec;
+ 				request.nbTeams = 2;
+ 				request.seed = seed;
+ 				GameGUI generated;
+-				const auto result = GenerationService().generate(generated.game, request);
++				GenerationResult result;
++				Json fixture;
++				if (masterInputs)
++				{
++					const auto path = std::filesystem::path(masterInputs) / landscape.id /
++						("fixture-" + std::to_string(seed) + ".json");
++					if (!std::filesystem::exists(path))
++					{
++						report["generation_failures"].push_back({{"generator", landscape.id},
++							{"seed", seed}, {"diagnostic", "Master fixture unavailable"}});
++						persist();
++						continue;
++					}
++					std::ifstream file(path);
++					file >> fixture;
++					REQUIRE(fixture.at("generator") == landscape.id);
++					REQUIRE(fixture.at("seed") == seed);
++					REQUIRE(fixture.at("wDec") == request.wDec);
++					REQUIRE(fixture.at("hDec") == request.hDec);
++					result.generatorId = landscape.id;
++					result.revision = fixture.at("revision");
++					request.options = fixture.at("options").get<std::map<std::string, int>>();
++					auto &map = generated.game.map;
++					map.setSize(request.wDec, request.hDec, GRASS);
++					map.setGame(&generated.game);
++					for (unsigned team = 0; team < 2; ++team)
++					{
++						generated.game.addTeam();
++						generated.game.teams[team]->race.loadDefault();
++					}
++					map.installResourceDefinitions(fixture.at("resource_registry").get<std::string>());
++					REQUIRE(map.resourceRegistry().serialize() == fixture.at("resource_registry").get<std::string>());
++					REQUIRE(fixture.at("vertices").size() == map.cellCount());
++					for (size_t i = 0; i < map.cellCount(); ++i)
++					{
++						const unsigned vertex = fixture["vertices"][i];
++						REQUIRE(vertex <= GRASS);
++						map.setUMTerrain(i % map.getW(), i / map.getW(), TerrainType(vertex));
++					}
++					map.rebuildTerrain();
++					for (const auto &row : fixture.at("resources"))
++					{
++						const auto stocks = row[3].get<std::array<Uint16, MaterialCount>>();
++						map.replaceResource(row[0].get<size_t>(),
++							Resource{row[1].get<Uint16>(), row[2].get<Uint8>(), 0, 0}, &stocks);
++						const auto tile = row[0].get<size_t>();
++						REQUIRE(map.getResource(tile).type == row[1].get<Uint16>());
++						REQUIRE(map.getResource(tile).variety == row[2].get<Uint8>());
++						REQUIRE(map.materialStocksAt(tile) == stocks);
++					}
++					// A save-format translation is not enough: require identical growth
++					// permissions, habitat and ecology rates at EVERY cell before comparing.
++					const auto types = fixture.at("growth_types").get<std::vector<unsigned>>();
++					unsigned mismatches = 0;
++					for (size_t i = 0; i < map.cellCount(); ++i)
++					{
++						std::vector<Uint32> query(1 + 2 * types.size());
++						query[0] = map.canResourcesGrow(i % map.getW(), i / map.getW());
++						for (unsigned type = 0; type < types.size(); ++type)
++						{
++							query[1 + type] = map.terrainSupportsResourceAt(i, static_cast<ResourceId>(types[type]));
++							query[1 + types.size() + type] = map.resourceGrowthRateAt(i, types[type]);
++						}
++						mismatches += query != fixture["growth_queries"][i].get<std::vector<Uint32>>();
++					}
++					INFO("Master growth-input mismatches: ", mismatches);
++					REQUIRE(mismatches == 0);
++				}
++				else result = GenerationService().generate(generated.game, request);
+ 				INFO(result.diagnostic());
+-				if (!result)
++				if (!masterInputs && !result)
+ 				{
+-					report["generation_failures"].push_back({{"method", method}, {"seed", seed},
++					report["generation_failures"].push_back({{"generator", landscape.id}, {"seed", seed},
+ 						{"diagnostic", result.diagnostic()}});
+ 					persist();
+-					REQUIRE(bool(result)); // Do not silently substitute favourable seeds.
++					if (!wide) REQUIRE(bool(result));
++					continue; // Report refused seeds; never substitute favourable ones.
+ 				}
+ 				const auto name = result.generatorId + "-" + std::to_string(seed);
+-				if (seed == 1) artifact(name + "-original-colonies", serialize(generated.game));
++				if (seed == 1 && !masterInputs) artifact(name + "-original-colonies", serialize(generated.game));
+ 				GameHeader header;
+ 				header.setNumberOfPlayers(0);
+ 				header.setRandomSeed(seed);
+@@ -260,14 +370,23 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 				for (int t = 0; t < generated.game.teamsCount(); ++t)
+ 					generated.game.teams[t]->playersMask = 0;
+ 				generated.game.clearingUncontrolledTeams();
++				if (masterInputs) generated.game.syncRandom.seed(seed);
+ 				const auto startingBytes = serialize(generated.game);
+ 				if (seed == 1) artifact(name + "-initial", startingBytes);
+ 				std::vector<Uint32> checksums;
+ 				Json ownerStatistics;
+ 				Uint32 initialChecksum = 0;
+-				for (const std::string variant : {"immediate-reference", "owner", "shared"})
++				std::vector<std::pair<std::string, unsigned>> runs;
++				if (!masterInputs) runs.emplace_back("immediate-reference", 0);
++				for (unsigned delay : delays)
++				{
++					runs.emplace_back("owner", delay);
++					runs.emplace_back("shared", delay);
++				}
++				for (const auto &[variant, delay] : runs)
+ 				{
+-					INFO(name, " ", variant);
++					INFO(name, " ", variant, " delay=", delay);
++					if (variant == "owner") checksums.clear();
+ 					GameGUI gui;
+ 					auto &game = gui.game;
+ 					GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(
+@@ -281,11 +400,11 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 						for (int i = 0; i < Building::MAX_COUNT; ++i) REQUIRE(game.teams[t]->myBuildings[i] == nullptr);
+ 					}
+ 					const auto loadedChecksum = game.checkSum(nullptr, nullptr, nullptr, true);
+-					if (variant == "immediate-reference") initialChecksum = loadedChecksum;
++					if (variant == runs.front().first && delay == runs.front().second) initialChecksum = loadedChecksum;
+ 					else REQUIRE(loadedChecksum == initialChecksum);
+ 					auto &map = game.map;
+ 					map.configureCompute(variant == "shared" ? 4 : 1, 0);
+-					map.configureResourceGrowth(delay, variant == "shared");
++					map.configureResourceGrowth(delay ? delay : 8, variant == "shared");
+ 					auto scan = [&]()
+ 					{
+ 						std::array<std::array<Uint64, MaterialCount>, 2> counts{};
+@@ -304,8 +423,12 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 						return counts;
+ 					};
+ 					const auto initial = scan();
+-					for (auto material : {MaterialId::Food, MaterialId::Wood, MaterialId::Algae})
+-						REQUIRE(initial[0][materialIndex(material)] > 0);
++					if (masterInputs) REQUIRE(Json(initial) == fixture.at("initial"));
++					// Some real generators deliberately omit a material. Record that absence
++					// in wide experiments instead of injecting resources into the map.
++					if (!wide)
++						for (auto material : {MaterialId::Food, MaterialId::Wood, MaterialId::Algae})
++							REQUIRE(initial[0][materialIndex(material)] > 0);
+ 					const auto baseline = game.teams[0]->stats.measurements;
+ 					Json checkpoints = Json::array(), statistics;
+ 					for (unsigned tick = 1; tick <= ticks; ++tick)
+@@ -345,11 +468,11 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 					if (variant == "owner") ownerStatistics = statistics;
+ 					if (variant == "shared") REQUIRE(ownerStatistics == statistics);
+ 					Json sample = {{"generator", result.generatorId}, {"revision", result.revision},
+-						{"seed", seed}, {"side", map.getW()}, {"options", request.options},
+-						{"variant", variant}, {"initial_checksum", initialChecksum},
++						{"seed", seed}, {"width", map.getW()}, {"height", map.getH()}, {"options", request.options},
++						{"variant", variant}, {"delay", delay}, {"initial_checksum", initialChecksum},
+ 						{"initial", initial}, {"final", scan()}, {"statistics", statistics},
+ 						{"checkpoints", checkpoints}};
+-					if (seed == 1) artifact(name + "-" + variant, serialize(game));
++					if (seed == 1) artifact(name + "-" + variant + "-d" + std::to_string(delay), serialize(game));
+ 					if (variant != "immediate-reference")
+ 					{
+ 						const auto &m = map.resourceGrowthMetrics();
+@@ -359,12 +482,21 @@ TEST_SUITE("ResourceGrowthBenchmark")
+ 							{"tiles_added", m.tilesAdded}, {"pending", m.proposals - m.publishedProposals}};
+ 						map.gradientRuntime->growth.publish(map, game.stepCounter + delay);
+ 						sample["terminal_flush"] = scan();
++						// Reconcile the diagnostic tail too; it is never folded into normal checkpoints.
++						const auto flushed = scan();
++						const auto &after = game.teams[0]->stats.measurements;
++						for (unsigned material = 0; material < MaterialCount; ++material)
++							REQUIRE(flushed[0][material] - initial[0][material] ==
++								after.growthGlobal[1][material] - baseline.growthGlobal[1][material]);
+ 						REQUIRE(map.gradientRuntime->growth.count() == 0);
+ 					}
+ 					report["samples"].push_back(sample);
+ 					persist();
+ 				}
+ 			}
++		}
++		REQUIRE(matched);
++		if (output) REQUIRE(!report["samples"].empty());
+ 	}
+ 
+ 	TEST_CASE("identical live and snapshot kernel inputs [benchmark][resources]")

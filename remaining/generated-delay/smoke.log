@@ -1,0 +1,4 @@
+PASS ResourceGrowthBenchmark/generated landscapes preserve player-free growth accounting (6.3s)
+
+1 passed, 0 failed, 0 skipped (6.3s of test time)
+[run_tests] JUnit report: artifacts/resource-growth/remaining/generated-delay/smoke.xml (1 cases)
