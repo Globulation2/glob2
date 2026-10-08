@@ -157,7 +157,49 @@ water snapshots also add memory.
 `gradient.building` measures initialization and search setup.
 `gradient.building_resume` measures actual lazy extensions and completion, including
 those nested in saving. Sum these two scopes to compare building-field construction,
-but do not then add inclusive save timings to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
+but do not then add inclusive save timings to that total. Benchmark evidence belongs
+under `artifacts/`, not in this guide.
+
+`gradient.propagation.area` and `gradient.propagation.resource` wrap the
+`propagateGradient` calls of forbidden/guard/clear area fields and synchronous
+resource fields respectively, so that the shared `gradient.propagation` scope can be
+split by caller.
+Periodic pipeline fields propagate on workers and are not included.
+
+### Building field statistics
+
+`--telemetry gradient-stats` (environment `GLOB2_GRADIENT_STATS=1`) gives the map a
+diagnostic `BuildingGradientStats` (`src/map/gradient/BuildingGradientStats.h`). It only
+reads simulation state: checksums, RNG, saves and replays are identical with it on or
+off, and without it every hook is a null-pointer test. Each building walking-field
+lifetime ends with one row in `gradient-stats.csv` in the output directory: a rebuild
+(`reason` = `null`, `dirty`, `generation`, `clearing`, `stuck` or `other`), a `drop`
+(`Building::resetPathfindGradients`), an idle `evict` or the run's `end`. A row
+describes the lifetime that just ended (`age`, `prev_complete`, `prev_settled_cost`,
+`prev_settled_tiles`, `prev_popped`, `prev_queries` = resolve calls, `prev_extensions` =
+calls that expanded the search, and `popped_at_depth_0..31`, popped entries per 80-cost
+band of eight land tiles with the last band open-ended) together with how that
+lifetime began (`lifetime_reason`). The final columns are the
+inputs a depth prediction could read in O(1) when that lifetime started: map
+`width` and `height`, the building's `level`, `is_site`, `construction_state`
+(`none`, `new`, `upgrade`, `repair`), `progress` (the delivered/needed material
+quartile 0-3 on construction sites, empty otherwise), and its team's live
+`team_units` and `team_buildings`. They are empty when the start was not seen,
+for example for a field restored from a save.
+
+`result.json` then has a `building_gradient` object: `rebuilds` by reason,
+`dirty_with_generation` (dirty rebuilds whose topology generation had also moved),
+`events`, `popped_total`, `popped_unknown_lifetime`, `popped_by_lifetime_reason` and
+`clearing_goal_gone`.
+[The building-field depth model](../building-gradient-depth-model.md) is fitted
+from these rows.
+
+The statistics stay compiled into release builds and are gated at run time, as
+`team-timeline` is: tournament workers run ordinary release binaries. With the flag
+off, the hooks reduce to null-pointer tests and a few always-on search counters.
+Pinned to four reserved cores on an x86_64 host, busy Oazis (11 Maxima, seed 19)
+measured no difference beyond run-to-run noise (about 1%), at 4096 and at 12288
+ticks, between master, the branch with the flag off, and the branch with it on.
 
 ## Scheduled AI decisions and experimental map computation
 

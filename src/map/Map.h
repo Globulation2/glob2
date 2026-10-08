@@ -52,6 +52,7 @@ class Game;
 class SessionGame;
 class MapHeader;
 struct GradientRuntime;
+class BuildingGradientStats;
 
 //! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
 //! dx and dy are each in {-1, 0, +1}.
@@ -1122,6 +1123,8 @@ public:
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
 	void bumpTopologyGeneration() { topologyGeneration++; }
+	//! Diagnostics only (--telemetry gradient-stats); null otherwise.
+	std::unique_ptr<BuildingGradientStats> gradientStats;
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.

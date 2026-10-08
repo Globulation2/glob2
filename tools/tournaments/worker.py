@@ -434,6 +434,8 @@ def pack(root, identity):
             requested.append('game.replay')
         if 'checksums' in attempt['job']['outputs'].get('telemetry', []):
             requested.append('game.replay.checksums')
+        if 'gradient-stats' in attempt['job']['outputs'].get('telemetry', []):
+            requested.append('gradient-stats.csv')
         if 'terrain' in attempt['job']['outputs'].get('reports', []):
             requested.append('terrain.txt')
         if attempt['job']['outputs'].get('map'):

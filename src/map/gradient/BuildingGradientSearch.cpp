@@ -27,6 +27,8 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	currentCost = 0;
 	popped = 0;
 	pending = 0;
+	queries = extensions = 0;
+	poppedAtDepth.fill(0);
 	for (auto &bucket : buckets)
 		bucket.clear();
 	modifiedCosts = map.hasTerrainMovementModifiers();
@@ -76,8 +78,10 @@ bool BuildingGradientSearch::resolved(std::size_t target) const
 void BuildingGradientSearch::resolve(std::size_t target)
 {
 	assert(target <= cells);
+	++queries;
 	if (complete() || (target < cells && resolved(target)))
 		return;
+	++extensions;
 	PERF_SCOPE_TIME(BuildingGradientResume);
 	auto sweep = [&](auto weighted, EntrySteps waterSteps, auto waterAt)
 	{
@@ -85,6 +89,7 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		{
 			assert(currentCost <= COST_LIMIT);
 			popped += buckets[currentCost % BUCKETS].size;
+			poppedAtDepth[depthBin(currentCost)] += buckets[currentCost % BUCKETS].size;
 			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost,
 													COST_LIMIT, {widthMask + 1, heightMask + 1},
 													waterSteps, waterAt);
@@ -98,6 +103,7 @@ void BuildingGradientSearch::resolve(std::size_t target)
 			while (pending && (target == cells || !resolved(target)))
 			{
 				popped += custom->buckets[unsigned(currentCost) % N].size;
+				poppedAtDepth[depthBin(currentCost)] += custom->buckets[unsigned(currentCost) % N].size;
 				gradient_kernel::runtime_terrain::expandProfileBucket<N>(
 					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT,
 					{widthMask + 1, heightMask + 1}, profiles->movement,
@@ -142,6 +148,9 @@ void BuildingGradientSearch::clearForReuse()
 {
 	gradient = nullptr;
 	cells = pending = 0;
+	currentCost = 0;
+	popped = queries = extensions = 0;
+	poppedAtDepth.fill(0);
 	registry.reset();
 	profiles.reset();
 	water.reset();

@@ -10,6 +10,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
+#include "gradient/BuildingGradientStats.h"
 
 
 
@@ -32,19 +33,31 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 	Uint32 now=game->stepCounter;
 	building->globalGradientUsedStep[slot]=now;
 	bool rebuild=false;
+	using Reason = BuildingGradientStats::Reason;
+	Reason reason = Reason::Other;
 	if (gradient==NULL)
 	{
 		gradient=acquireBuildingGradientBuffer();
 		rebuild=true;
+		reason=Reason::Null;
 	}
 	else if ((building->dirtyGradient[slot] || building->gradientGeneration[slot]!=topologyGeneration)
 		&& lastUpdate+GRADIENT_DIRTY_REBUILD_TICKS<=now)
+	{
 		rebuild=true;
+		reason=building->dirtyGradient[slot] ? Reason::Dirty : Reason::Generation;
+	}
 	// A clearing flag's goals are resources, which grow and get cleared.
 	else if (building->resolveRoute(route) == BuildingRoute::Clearing && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
+	{
 		rebuild=true;
+		reason=Reason::Clearing;
+	}
 	if (rebuild)
+	{
+		if (gradientStats) gradientStats->setPendingReason(reason);
 		updateGlobalGradient(building, swimClass, route);
+	}
 	return !building->locked[building->routeAccess(swimClass, route)];
 }
 
@@ -117,6 +130,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	{
 		// Standing where one of the flag's resources was: it is gone, the gradient is stale.
 		building->dirtyGradient[slot]=true;
+		if (gradientStats) gradientStats->clearingGoalGone();
 		return false;
 	}
 	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true, route))
@@ -125,6 +139,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
 
 	// Stuck for a while: the gradient may be stale, rebuild it now.
+	if (gradientStats) gradientStats->setPendingReason(BuildingGradientStats::Reason::Stuck);
 	updateGlobalGradient(building, swimClass, route);
 	if (building->locked[building->routeAccess(swimClass, route)])
 		return false;

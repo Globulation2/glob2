@@ -20,6 +20,7 @@
 #include "Utilities.h"
 #include "Bullet.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientStats.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -165,8 +166,10 @@ void Building::dirtyGradients()
 void Building::resetPathfindGradients()
 {
 	dirtyGradients();
+	auto *stats = owner->game->map.gradientStats.get();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
+		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
@@ -183,6 +186,8 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
+			if (auto *stats = owner->game->map.gradientStats.get())
+				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;

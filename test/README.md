@@ -677,6 +677,13 @@ The `MapGradientInvalidation` suite (`python3 test/run_tests.py --filter
 brushes, including resource-only edits, clearing goals, other teams and previously
 stale caches. It also checks resource, terrain, building and immobility transitions,
 a depleted escape exit, unreachable pockets and the refresh budget across tick wrap.
+Its gradient-stats case checks the lifetime rows of `BuildingGradientStats` (cold,
+generation, drop, eviction and end rows with their previous-search figures), the CSV
+and JSON exports, and that the statistics leave fields unchanged. `python3 test/test_gradient_depth_fit.py` checks the
+[depth model](../docs/building-gradient-depth-model.md) fitter on synthetic rows,
+that regenerating `BuildingGradientDepthPolicy.h` from the committed summary is a
+no-op, and, when a C++ compiler is present, that the header's lookup agrees with the
+fitter.
 
 Forbidden edits preserve unaffected walking fields and pending searches; own-team
 harvest round trips and clearing destinations still invalidate. Escape fields have

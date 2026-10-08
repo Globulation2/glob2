@@ -19,6 +19,7 @@
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
+#include "gradient/BuildingGradientStats.h"
 #include "GameRuleOverrides.h"
 #include "Player.h"
 #include "TeamStat.h"
@@ -108,7 +109,7 @@ void isolateEnvironment()
 		"GLOB2_MAXIMA_FORMAT", "GLOB2_MAXIMA_OVERRIDES", "GLOB2_MAXIMA_TEAM_OVERRIDES",
 		"GLOB2_MAXIMA_PLAYER_OVERRIDES", "GLOB2_MAXIMA_TUNING", "GLOB2_NICOWAR_V3_OVERRIDES",
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
-		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS",
+		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS", "GLOB2_GRADIENT_STATS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR", "GLOB2_USER_DATA_DIR",
 		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
@@ -297,6 +298,7 @@ struct HeadlessRunner
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
+			else if(telemetry=="gradient-stats") setHeadlessEnvironment("GLOB2_GRADIENT_STATS", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
 		globals.load();
@@ -534,7 +536,18 @@ struct HeadlessRunner
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
 			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
-			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries
+			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries;
+		if (auto *stats = game.map.gradientStats.get())
+		{
+			// Diagnostics only: close the live field lifetimes and export them.
+			stats->finish(game);
+			result << ",\"building_gradient\":";
+			stats->writeJson(result);
+			std::ofstream csv(output/"gradient-stats.csv");
+			stats->writeCsv(csv);
+			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
+		}
+		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_experiments\":" << quote(computeExperiments)
 			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
@@ -701,7 +714,7 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

@@ -7,6 +7,7 @@
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "gradient/BuildingGradientStats.h"
 #include "Game.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Utilities.h"
@@ -44,6 +45,8 @@ const int tabClose[8][2]={
 
 Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleValue(MapAssetBundle::empty())
 {
+	if (BuildingGradientStats::enabledByEnvironment())
+		gradientStats = std::make_unique<BuildingGradientStats>();
     rebuildTerrainCounts();
 	topologyGeneration=1;
 	game=NULL;
