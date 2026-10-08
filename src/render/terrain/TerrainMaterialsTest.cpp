@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "LegacyTerrainFrames.h"
 #include "EngineFixtures.h"
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
@@ -354,35 +353,6 @@ TEST_SUITE("TerrainMaterials")
 			}
 			CHECK(pp == qq);
 		}
-	}
-	TEST_CASE("all legacy shore groups retain their corner orientation")
-	{
-		constexpr unsigned masks[] = {8, 4, 1, 2, 3, 12, 5, 10, 7, 11, 14, 13, 6, 9};
-		for (unsigned group = 0; group < 14; ++group)
-			for (unsigned variant = 0; variant < 8; ++variant)
-			{
-				const auto a = TerrainVisual::legacyCorners(16 + group * 8 + variant);
-				const auto b = TerrainVisual::legacyCorners(144 + group * 8 + variant);
-				for (int k = 0; k < 4; ++k)
-				{
-					CHECK(a[k] == ((masks[group] >> k & 1) ? 2 : 1));
-					CHECK(b[k] == (((masks[group] ^ (group >= 12 ? 15u : 0u)) >> k & 1) ? 1 : 0));
-				}
-			}
-	}
-	TEST_CASE("legacy decoder inverts the classic frame table for both shore profiles")
-	{
-		for (unsigned low : {0u, 1u})
-			for (unsigned mask = 0; mask < 16; ++mask)
-			{
-				std::array<unsigned, 4> corners{};
-				for (int k = 0; k < 4; ++k)
-					corners[k] = low + ((mask >> k) & 1);
-				const auto &range = legacyClassicFrames(TerrainType(corners[0]), TerrainType(corners[1]),
-														TerrainType(corners[2]), TerrainType(corners[3]));
-				for (unsigned variation = 0; variation < 16; ++variation)
-					CHECK(TerrainVisual::legacyCorners(range[0] + variation % range[1]) == corners);
-			}
 	}
 	TEST_CASE("prepared coverage preserves native and HD contour geometry")
 	{

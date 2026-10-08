@@ -188,8 +188,6 @@ void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world)
             presentMaterials |= resourceDefinitions->properties(static_cast<ResourceId>(cell.resource.type)).materialMask;
 }
 
-Uint16 SceneMap::getTerrain(int x, int y) const
-{ return legacyCellFrame(*registry, cellCorners(x, y), x & wMask, y & hMask); }
 TerrainType SceneMap::vertexTerrainAt(int x, int y) const
 { const auto i = coordToIndex(x,y); return snapshot ? (*snapshot->terrain->vertices)[i] : vertices[i]; }
 TerrainType SceneMap::terrainTypeAt(int x, int y) const

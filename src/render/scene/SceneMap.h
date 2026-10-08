@@ -69,8 +69,6 @@ class SceneMap
 	Uint32 terrainSeed() const { return terrainSeedValue; }
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
-	//! Transitional: the classic sprite frame drawing this cell, from its corners.
-	Uint16 getTerrain(int x, int y) const;
 	TerrainType vertexTerrainAt(int x, int y) const;
 	//! Corners of cell (x,y): top-left, top-right, bottom-left, bottom-right.
 	std::array<TerrainType, 4> cellCorners(int x, int y) const
@@ -81,9 +79,9 @@ class SceneMap
 	TerrainType terrainTypeAt(int x, int y) const;
 	const TerrainProperties &terrainPropertiesAt(int x, int y) const;
 	// Detailed materials use shipped appearance IDs; custom canonical IDs never
-	// index the renderer's fixed builtin binding table or legacy corner adapter.
+	// index the renderer's fixed builtin binding table.
 	TerrainType appearanceAt(int x, int y) const;
-	//! The corner terrain a whole-cell view (preview hues, minimap) shows.
+	//! The corner terrain a whole-cell summary of the cell shows.
 	TerrainType presentationTypeAt(int x, int y) const;
 	const Resource &getResource(int x, int y) const;
 	const Resource &getResource(size_t pos) const;
@@ -118,8 +116,6 @@ class SceneMap
 	Uint16 getGroundUnit(int x, int y) const;
 	Uint16 getAirUnit(int x, int y) const;
 	Uint16 getBuilding(int x, int y) const;
-	//! Transitional: the vertex terrain (formerly the undermap), as an int.
-	int getUMTerrain(int x, int y) const { return vertexTerrainAt(x, y); }
 	//! Map::isHardSpaceForBuilding: every tile of the rectangle permits buildings, without a
 	//! resource or a building.
 	bool isHardSpaceForBuilding(int x, int y, int w, int h) const;

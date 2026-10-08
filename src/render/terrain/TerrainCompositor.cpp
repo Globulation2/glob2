@@ -17,10 +17,9 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 	{
 		const auto found =
 			definitions.bindings.find(terrainPresentation(static_cast<TerrainType>(type)).name);
-		if (found != definitions.bindings.end())
-			terrainBindings[type] = found->second;
-		else if (!terrainUsesLegacyCorners(static_cast<TerrainType>(type)))
+		if (found == definitions.bindings.end())
 			throw std::runtime_error("Missing terrain material binding");
+		terrainBindings[type] = found->second;
 	}
 	for (const auto &m : definitions.materials)
 	{

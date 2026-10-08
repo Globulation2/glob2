@@ -9,6 +9,7 @@
 #include <fstream>
 #include "TerrainPresentation.h"
 #include "TerrainRegistry.h"
+#include "TerrainCornerPresentation.h"
 #include "terrain/TerrainCompositor.h"
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
@@ -1125,7 +1126,7 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(frame < 65536);
 			// Classic corner terrain exports through the undermap; whole-cell types
 			// export their registered colour.
-			if (terrainUsesLegacyCorners(type))
+			if (classicTerrain(type))
 				continue;
 			map.setCellTerrain(int(painted.size()) + 1, 1, type);
 			painted.push_back(type);

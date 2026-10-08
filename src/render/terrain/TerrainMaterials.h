@@ -86,8 +86,6 @@ class Catalog
 	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
-// Pure presentation adapter. Saved sprite numbers never become material handles.
-std::array<unsigned, 4> legacyCorners(unsigned frame);
 struct Recipe
 {
 	// Lattice samples at -8,8,24,40 logical pixels relative to a 32px cell.

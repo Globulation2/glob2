@@ -486,10 +486,10 @@ TEST_CASE("snapshot preparation matches legacy queries and survives later live m
         CHECK(actual.map.materialPresence() == legacy.map.materialPresence());
         for (int y=0; y<32; ++y) for (int x=0; x<32; ++x)
         {
-            CHECK(actual.map.getTerrain(x,y) == legacy.map.getTerrain(x,y));
+            CHECK(actual.map.cellCorners(x,y) == legacy.map.cellCorners(x,y));
             CHECK(actual.map.terrainTypeAt(x,y) == legacy.map.terrainTypeAt(x,y));
             CHECK(actual.map.appearanceAt(x,y) == legacy.map.appearanceAt(x,y));
-            CHECK(actual.map.getUMTerrain(x,y) == legacy.map.getUMTerrain(x,y));
+            CHECK(actual.map.vertexTerrainAt(x,y) == legacy.map.vertexTerrainAt(x,y));
             CHECK(actual.map.getGroundUnit(x,y) == legacy.map.getGroundUnit(x,y));
             CHECK(actual.map.getAirUnit(x,y) == legacy.map.getAirUnit(x,y));
             CHECK(actual.map.getBuilding(x,y) == legacy.map.getBuilding(x,y));
