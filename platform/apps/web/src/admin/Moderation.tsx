@@ -14,7 +14,7 @@ import { dateTime } from '../format.ts';
 import { PageControls, useAdminFilters, useFilterDraft } from './filters.tsx';
 import { libraryName } from './presentation.ts';
 
-const LIBRARIES = ['maps', 'ais', 'buildings', 'sets', 'skins', 'music'];
+const LIBRARIES = ['maps', 'ais', 'generators', 'buildings', 'sets', 'skins', 'music'];
 function LibraryFilter({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <label>

@@ -39,7 +39,7 @@ export type HandoffListener = (connection: RealtimeConnection, attemptId: string
 export type PlayListener = (message: PlayFanout) => void;
 /** An account's last socket on this replica went away (closed or signed out). */
 export type AccountGoneListener = (accountId: string) => void;
-/** An account gained a socket on this replica. */
+/** An account gained a socket or its remaining sockets' generator support changed. */
 export type AccountHereListener = (accountId: string) => void;
 /** The listener reconnected: re-send state to these accounts' sockets on this replica. */
 export type ResyncListener = (accountIds: string[]) => Promise<void>;
@@ -127,9 +127,15 @@ export class RealtimeHub {
   setAccount(connection: RealtimeConnection, accountId: string | undefined): void {
     for (const [id, set] of this.byAccount) {
       if (id === accountId) continue;
-      if (set.delete(connection) && set.size === 0) {
-        this.byAccount.delete(id);
-        this.onAccountGone?.(id);
+      const previousSupport = [...set].every((c) => c.generatorSharing);
+      if (set.delete(connection)) {
+        if (set.size === 0) {
+          this.byAccount.delete(id);
+          this.onAccountGone?.(id);
+        } else if (previousSupport !== [...set].every((c) => c.generatorSharing)) {
+          // Closing an older socket restores the remaining clients' support.
+          this.onAccountHere?.(id);
+        }
       }
     }
     if (accountId) {

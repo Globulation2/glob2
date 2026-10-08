@@ -41,6 +41,9 @@
           ],
           "description": "Kind of game client."
         },
+        "generatorSharing": {
+          "type": "boolean"
+        },
         "version": {
           "type": "string",
           "maxLength": 64

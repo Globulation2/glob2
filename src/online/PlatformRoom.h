@@ -119,6 +119,9 @@ class PlatformRoom final : public RoomBackend
 	/// premade map and the generator settings were left as they were (applySetup
 	/// then keeps the premade map and changes only rules and teams).
 	void useGeneratedMap(const CustomGameSetup &setup);
+	void useScriptGenerator(const std::string &descriptor);
+	std::optional<std::string> scriptGenerator() const;
+	void rerollScriptGenerator();
 	/// A premade map is being uploaded for the room.
 	bool uploadingMap() const { return uploading; }
 	/// The room plays a generated map (seed, size and generator apply).

@@ -1,3 +1,4 @@
+import { ScriptGeneratorDescriptor } from './generators.ts';
 import { MapSetCredits } from './sets.ts';
 import { ResourceExperimentDefinitions, BuildingCatalog } from './matchSetup.ts';
 // REST resource shapes for /api/v1. Accounts and auth are complete for M3;
@@ -266,6 +267,16 @@ export const AccountExport = Open(
         downloads: ExportRows,
       }),
     ),
+    generators: Type.Optional(
+      Open({
+        published: ExportRows,
+        likes: ExportRows,
+        favourites: ExportRows,
+        reports: ExportRows,
+        uploads: ExportRows,
+        downloads: ExportRows,
+      }),
+    ),
     ais: Type.Optional(
       Open({
         published: ExportRows,
@@ -380,6 +391,12 @@ export const RoomVisibility = Type.Union([Type.Literal('public'), Type.Literal('
 
 export const RoomMapSelection = Type.Union(
   [
+    Strict({
+      kind: Type.Literal('scripted'),
+      generator: ScriptGeneratorDescriptor,
+      hash: Type.Optional(Sha256Hex),
+      chosenSeed: Type.Optional(Type.Integer({ minimum: 0, maximum: 4294967295 })),
+    }),
     Strict({ kind: Type.Literal('catalog'), hash: Sha256Hex, mapId: Type.Optional(Uuid) }),
     Strict({
       kind: Type.Literal('upload'),
@@ -725,6 +742,13 @@ const ValidationState = Type.Union([
  * engine agent validated it. Rooms choose it as {kind: "catalog", hash}.
  */
 export const MapVersionInfo = Open({
+  generatorProvenance: Type.Optional(
+    Open({
+      verified: Type.Boolean(),
+      generator: ScriptGeneratorDescriptor,
+      chosenSeed: Type.Optional(Type.Integer({ minimum: 0, maximum: 4294967295 })),
+    }),
+  ),
   setCredits: Type.Optional(MapSetCredits),
   hash: Sha256Hex,
   size: Type.Integer({ minimum: 0 }),

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ValidateGeneratorPayload",
+  "title": "ValidateGeneratorPayload",
+  "type": "object",
+  "required": [
+    "blobHash",
+    "suite",
+    "example"
+  ],
+  "properties": {
+    "blobHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "suite": {
+      "type": "number",
+      "const": 1
+    },
+    "example": {
+      "type": "object",
+      "required": [
+        "seed",
+        "params",
+        "candidates",
+        "startingUnitLevel"
+      ],
+      "properties": {
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "params": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9_-]{1,64}$": {
+              "type": "integer"
+            }
+          },
+          "maxProperties": 72
+        },
+        "candidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 1
+        },
+        "startingUnitLevel": {
+          "type": "number",
+          "const": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

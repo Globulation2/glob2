@@ -97,7 +97,13 @@ export class PlayRealtime {
     hub.onResync = (accountIds) => this.resync(accountIds);
     hub.onAccountHere = (accountId) => {
       if (this.stopped) return;
-      this.background(rooms.markConnected(accountId), 'room presence');
+      this.background(
+        rooms.markConnected(
+          accountId,
+          hub.connectionsOf(accountId).every((c) => c.generatorSharing),
+        ),
+        'room presence',
+      );
     };
     hub.onAccountGone = (accountId) => {
       if (this.stopped) return;
@@ -198,7 +204,12 @@ export class PlayRealtime {
         if (!state || state.status === 'closed') return;
         for (const member of state.members) {
           if (this.options.hub.connectionsOf(member.accountId).length === 0) continue;
-          this.send(member.accountId, 'room.state', { room: state });
+          if (state.map?.kind === 'scripted') {
+            for (const c of this.options.hub.connectionsOf(member.accountId)) {
+              if (c.generatorSharing) c.sendEvent('room.state', { room: state });
+              else c.socket.close(4000, 'Update required: shared generator room');
+            }
+          } else this.send(member.accountId, 'room.state', { room: state });
           // A socket here means the member is connected, whatever another
           // replica concluded when one of its sockets closed.
           if (!member.connected) await rooms.markConnected(member.accountId);
@@ -338,7 +349,12 @@ export class PlayRealtime {
       'room.create': async (connection, raw) => {
         const params = raw as RealtimeParams<'room.create'>;
         const account = connection.requireAccount();
-        const room = await rooms.create(account, this.requireSim(connection), params);
+        const room = await rooms.create(
+          account,
+          this.requireSim(connection),
+          params,
+          connection.generatorSharing,
+        );
         return { room };
       },
 
@@ -353,7 +369,15 @@ export class PlayRealtime {
           }
         }
         try {
-          return { room: await rooms.join(account, sim, params.code, params.regions) };
+          return {
+            room: await rooms.join(
+              account,
+              sim,
+              params.code,
+              params.regions,
+              connection.generatorSharing,
+            ),
+          };
         } catch (error) {
           if ((error as { body?: { code?: string } }).body?.code === 'not_found') {
             for (const key of keys) await this.codeFailures.take(key);
@@ -550,6 +574,11 @@ export class PlayRealtime {
         const seated = await assignments.forAccount(params.matchId, account.id);
         if (!seated)
           throw apiError('not_found', 'You have no seat in a running match with that id.');
+        if (seated.setup.map.kind === 'scripted' && !connection.generatorSharing)
+          throw apiError(
+            'update_required',
+            'Update the game to reconnect to this shared generator match.',
+          );
         if (params.relayUnavailable) {
           const moved = await moveMatchToAnotherRelay(this.db, params.matchId);
           if (!moved.moved && moved.reason === 'no_relay') {

@@ -21,6 +21,8 @@
 // writes replays; everything else an Engine touches is its own.
 
 #include "EngineFixtures.h"
+#include "GeneratorPackage.h"
+#include "GenerationService.h"
 
 #include <chrono>
 #include <filesystem>
@@ -913,8 +915,71 @@ TEST_SUITE("TurnEngineHarness")
 			requireSameOutcomes(verified.result, liveTeams(*client));
 	}
 
+	GLOB2_TEST_CASE(
+		"shared scripted maps play and produce verified ordinary replays without installation",
+		"[network-sim][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		const auto directory = glob2test::artifactDir();
+		const auto mapFile = (directory / "shared.map").string();
+		Online::MatchSetup setup;
+		if (const char *given = std::getenv("GLOB2_SHARED_GENERATOR_SETUP"))
+		{
+			setup = Online::MatchSetup::parse(glob2test::readFile(given));
+			const char *world = std::getenv("GLOB2_SHARED_GENERATOR_MAP");
+			REQUIRE(world);
+			fs::copy_file(world, mapFile, fs::copy_options::overwrite_existing);
+		}
+		else
+		{
+			std::string packageHash;
+			{
+				const auto package =
+					MapGeneration::JavaScript::Package::parse(R"({"formatVersion":1,
+                    "manifest":{"id":"test:shared-generator","name":"Shared landscape","revision":1,"apiVersion":1,"tags":["terrain:natural"],"controls":[]},
+                    "modules":{"generator.js":"export function generate(c){const t=c.torus,terrain=c.mask(t.size(),2);c.toolkit.Sketch.writeVertices(terrain);c.addTeams();if(!c.toolkit.Pipeline.settleColonies('shared',team=>terrain,team=>({x:24+team*48,y:24})))return 'Cannot place colonies';c.toolkit.Pipeline.secureStartingCrops(t);}"}})");
+				GeneratorRegistry registry({package->definition(1000000)});
+				GenerationRequest request;
+				request.setMethodDefaults(1000000, registry);
+				request.wDec = 7;
+				request.hDec = 6;
+				request.nbTeams = 2;
+				request.seed = 19;
+				Game game(nullptr);
+				REQUIRE(GenerationService(registry).generate(game, request));
+				REQUIRE(globalContainer->fileManager->writeAtomically(
+					mapFile, [&](GAGCore::OutputStream &out)
+					{ game.save(&out, true, "Shared landscape"); }));
+				packageHash = package->hash;
+			}
+			setup = makeSetup(mapFile, 2, {}, 2026);
+			setup.map.kind = Online::MapSource::Kind::Scripted;
+			setup.map.chosenSeed = 19;
+			setup.map.scriptGenerator =
+				json({{"libraryId", "00000000-0000-4000-8000-000000000001"},
+					  {"versionId", "00000000-0000-4000-8000-000000000002"},
+					  {"fileHash", packageHash},
+					  {"packageHash", packageHash},
+					  {"generatorId", "test:shared-generator"},
+					  {"revision", 1},
+					  {"seed", 19},
+					  {"candidates", 1},
+					  {"startingUnitLevel", 0},
+					  {"params", {{"width", 7}, {"height", 6}, {"teams", 2}, {"workers", 4}}}})
+					.dump();
+		}
+		EngineMatch match(setup, mapFile, {{20 * MS}, {60 * MS, 30 * MS, 0.02}});
+		match.run(16 * SECOND);
+		const auto end = match.finish();
+		CHECK(match.requireIdenticalChecksums() == end + 1);
+		const auto verified = verifyRecord(match.record("shared-generator"), match, directory);
+		CHECK(verified.verdict.verdict == "verified");
+		for (const auto &client : match.clients)
+			requireSameOutcomes(verified.result, liveTeams(*client));
+	}
+
 	GLOB2_TEST_CASE("input delay and stalls of real engines per link profile",
-	                "[network-sim][benchmark][artifacts]")
+					"[network-sim][benchmark][artifacts]")
 	{
 		// Two real engines with an AI; the measured player's link varies, the other
 		// player is on a clean 15 ms link. Sim time, 5 ms frames; the bot clicks

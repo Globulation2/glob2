@@ -1,0 +1,15 @@
+{
+  "blobHash": "abababababababababababababababababababababababababababababababab",
+  "suite": 1,
+  "example": {
+    "seed": 19,
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 4,
+      "workers": 4
+    },
+    "candidates": 1,
+    "startingUnitLevel": 0
+  }
+}

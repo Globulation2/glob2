@@ -45,6 +45,7 @@ const SHA256 = /^[0-9a-f]{64}$/;
 /** Content types an agent may store (engine-agent blobs.ts CONTENT_TYPES). */
 const AGENT_CONTENT_TYPES = new Set([
   'application/x-glob2-map',
+  'application/x-glob2-generator',
   'application/x-glob2-save',
   'application/x-glob2-match-record',
   'application/x-glob2-replay',

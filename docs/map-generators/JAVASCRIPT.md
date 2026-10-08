@@ -34,8 +34,66 @@ the normal desktop/mobile file picker and browser upload/download interfaces.
 Library changes become active after storage persistence succeeds. Publication affects
 future selections; existing requests, previews, resets and controls retain their
 selected catalog revision until a new landscape is selected. Packages appear in the local game
-landscape picker and the map editor; online server-controlled generation uses the
-native catalog. To share a scripted landscape online, generate and share its map.
+landscape picker and the map editor. The online library also publishes exact releases
+for local installation and server-controlled generation in custom rooms.
+
+## Publish and discover online
+
+The online map library has **Maps** and **Generators** tabs. On the website, choose
+**Publish generator**, upload a portable JSON package, and supply one example seed
+and settings. Publication starts unlisted. Inspect the validation report before
+publishing: uploading alone never publishes a release. Public releases appear in
+search; unlisted releases are accessible by link; private releases are available
+only to their owner. Registered-account restrictions, likes, reporting and moderation
+follow the map library. Editor tools are labelled and cannot be selected in rooms.
+
+The first successful publication reserves the namespaced manifest ID permanently.
+New releases of that identity must increase the manifest revision; forks use a new
+ID. Published releases are immutable. Deleting a catalogue identity does not free
+its manifest ID or remove bytes needed by recorded matches.
+
+Workers inspect packages with the engine's authoritative parser. The downloadable
+file is the engine's canonical export; reports retain both its hash and the
+original upload hash. All uploaded-module inspection, generation and map reload
+run inside the existing Linux namespace sandbox. Workers advertise these jobs only
+after an isolated engine startup probe succeeds. Namespace/filesystem failures are
+retryable infrastructure errors; rejected packages, interpreter/toolkit budget
+failures, crashes and invalid worlds fail technical validation.
+
+The example must generate twice with identical decompressed world fingerprints
+and load as an ordinary saved map. Supplementary requests sample two other seeds,
+smaller/larger and rectangular maps, different colony counts, and each individual
+control extreme. Legitimate request refusals are shown explicitly. Editor-only
+packages receive terrain validation without starting-colony requirements. Reports
+bind package hash, engine simulation version, API/toolkit version and suite revision.
+Passing this bounded sample does not establish balance or support for every request.
+
+Processes are limited to 120 seconds, 2 GiB memory, 64 MiB files and 64 KiB captured
+output. A validation job has a 15-minute total deadline; samples are removed after
+inspection within the worker's dedicated scratch tmpfs (at most 4 GiB). The existing
+deterministic interpreter and toolkit limits remain unchanged. Upload/publication
+and custom-room generation have per-account rate limits. Releases receive new,
+separate evidence as new engine versions are served; old evidence remains visible.
+
+In the native **Generators** tab (also linked from **Settings → Map generators**),
+select an exact compatible release and install it. File and package hashes are
+checked, and durable-storage failure restores the previous library. An installed
+manifest ID requires explicit replacement confirmation. Release provenance is
+stored separately from package bytes. New publications do not automatically update
+an installed package; select and install the desired release explicitly.
+
+For a custom online room, select **Use in a room**, choose controls and reroll the
+seed. The room pins that exact release; publishing another revision does not change
+it. Settings changes clear readiness and replace pending generation. The server
+checks release visibility, moderation, playable status and engine validation before
+generation and again before starting. It never substitutes another release or a
+native generator. Joining players download the resulting ordinary map and do not
+need the generator installed. Match history retains the exact package, requested
+and chosen seed and settings. Sharing those generated map bytes links verified
+server provenance to the finished map version. A version upload may supply a
+`generator` query parameter containing a scripted descriptor; it remains an author
+claim unless the server independently recognizes the generated world bytes. Ranked matchmaking keeps native
+map generation. Older clients must update before joining scripted rooms.
 
 ## Manifest and portable format
 
@@ -200,3 +258,12 @@ native assertion in the game is not a substitute for validating script arguments
 and unchecked vector indexing without modifying source. Use `--write` to apply its
 proposed edits, then review the diff. It does not infer scratch allocations or
 reference ownership; those contracts still require explicit review and regressions.
+
+The `ScriptGenerator` suite's shared-world golden case compares two seeds on a
+128 × 64 world, then compares all simulation checksum components through 256 ticks
+after save/load. It retains the full trace as test evidence and compares its SHA-256
+with `test/fixtures/generators/shared-generator-trace.sha256`. The browser determinism
+suite checks the same reference in serial and threaded Chromium, Firefox and WebKit;
+it does not require a locally prepared native artifact. Regenerate this reference
+with the native test runner's `--update-fixtures` when an intentional simulation
+change updates these worlds, alongside the simulation-version compatibility work.

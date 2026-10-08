@@ -41,6 +41,10 @@
               },
               {
                 "type": "string",
+                "const": "generators"
+              },
+              {
+                "type": "string",
                 "const": "buildings"
               },
               {

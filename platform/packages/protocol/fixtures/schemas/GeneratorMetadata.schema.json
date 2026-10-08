@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorMetadata",
+  "title": "GeneratorMetadata",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "description",
+    "revision",
+    "apiVersion",
+    "toolkitVersion",
+    "editorOnly",
+    "tags",
+    "controls"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.:-]{1,128}$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "apiVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "toolkitVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "editorOnly": {
+      "type": "boolean"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "controls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "group",
+          "kind",
+          "default"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "range"
+              },
+              {
+                "type": "string",
+                "const": "toggle"
+              },
+              {
+                "type": "string",
+                "const": "choice"
+              }
+            ]
+          },
+          "minimum": {
+            "type": "integer"
+          },
+          "maximum": {
+            "type": "integer"
+          },
+          "step": {
+            "type": "integer"
+          },
+          "default": {
+            "type": "integer"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 4096
+          },
+          "powerOfTwo": {
+            "type": "boolean"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

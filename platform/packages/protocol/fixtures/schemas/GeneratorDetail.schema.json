@@ -1,0 +1,1016 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorDetail",
+  "title": "GeneratorDetail",
+  "type": "object",
+  "required": [
+    "generator",
+    "versions",
+    "viewer"
+  ],
+  "properties": {
+    "generator": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "tags",
+        "visibility",
+        "hidden",
+        "owner",
+        "createdAt",
+        "updatedAt",
+        "likes",
+        "downloads",
+        "latestVersion",
+        "liked",
+        "favourited"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "visibility": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "public"
+            },
+            {
+              "type": "string",
+              "const": "unlisted"
+            },
+            {
+              "type": "string",
+              "const": "private"
+            }
+          ]
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "hiddenReason": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "object",
+          "required": [
+            "id",
+            "displayName"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "displayName": {
+              "type": "string"
+            }
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+          "description": "RFC 3339 date-time."
+        },
+        "updatedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+          "description": "RFC 3339 date-time."
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "downloads": {
+          "type": "integer"
+        },
+        "latestVersion": {
+          "type": "object",
+          "required": [
+            "id",
+            "hash",
+            "packageHash",
+            "label",
+            "notes",
+            "profile",
+            "metadata",
+            "example",
+            "createdAt",
+            "downloads",
+            "downloadUrl",
+            "validations"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "hash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "packageHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "label": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            },
+            "profile": {
+              "type": "integer"
+            },
+            "metadata": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "description",
+                "revision",
+                "apiVersion",
+                "toolkitVersion",
+                "editorOnly",
+                "tags",
+                "controls"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_.:-]{1,128}$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4294967295
+                },
+                "apiVersion": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "toolkitVersion": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "editorOnly": {
+                  "type": "boolean"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "controls": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "label",
+                      "group",
+                      "kind",
+                      "default"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "group": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "range"
+                          },
+                          {
+                            "type": "string",
+                            "const": "toggle"
+                          },
+                          {
+                            "type": "string",
+                            "const": "choice"
+                          }
+                        ]
+                      },
+                      "minimum": {
+                        "type": "integer"
+                      },
+                      "maximum": {
+                        "type": "integer"
+                      },
+                      "step": {
+                        "type": "integer"
+                      },
+                      "default": {
+                        "type": "integer"
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        },
+                        "maxItems": 4096
+                      },
+                      "powerOfTwo": {
+                        "type": "boolean"
+                      },
+                      "choices": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "example": {
+              "type": "object",
+              "required": [
+                "seed",
+                "params",
+                "candidates",
+                "startingUnitLevel"
+              ],
+              "properties": {
+                "seed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4294967295
+                },
+                "params": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^[A-Za-z0-9_-]{1,64}$": {
+                      "type": "integer"
+                    }
+                  },
+                  "maxProperties": 72
+                },
+                "candidates": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5,
+                  "default": 1
+                },
+                "startingUnitLevel": {
+                  "type": "number",
+                  "const": 0
+                }
+              },
+              "additionalProperties": false
+            },
+            "createdAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+              "description": "RFC 3339 date-time."
+            },
+            "downloads": {
+              "type": "integer"
+            },
+            "downloadUrl": {
+              "type": "string"
+            },
+            "validations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sourceHash",
+                  "simVersion",
+                  "suite",
+                  "valid",
+                  "samples"
+                ],
+                "properties": {
+                  "sourceHash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                    "description": "Lowercase hexadecimal SHA-256 digest."
+                  },
+                  "simVersion": {
+                    "type": "string"
+                  },
+                  "suite": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "valid": {
+                    "type": "boolean"
+                  },
+                  "packageHash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                    "description": "Lowercase hexadecimal SHA-256 digest."
+                  },
+                  "fileHash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                    "description": "Lowercase hexadecimal SHA-256 digest."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name",
+                      "description",
+                      "revision",
+                      "apiVersion",
+                      "toolkitVersion",
+                      "editorOnly",
+                      "tags",
+                      "controls"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_.:-]{1,128}$"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "revision": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 4294967295
+                      },
+                      "apiVersion": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "toolkitVersion": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "editorOnly": {
+                        "type": "boolean"
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "controls": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "label",
+                            "group",
+                            "kind",
+                            "default"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "label": {
+                              "type": "string"
+                            },
+                            "group": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "const": "range"
+                                },
+                                {
+                                  "type": "string",
+                                  "const": "toggle"
+                                },
+                                {
+                                  "type": "string",
+                                  "const": "choice"
+                                }
+                              ]
+                            },
+                            "minimum": {
+                              "type": "integer"
+                            },
+                            "maximum": {
+                              "type": "integer"
+                            },
+                            "step": {
+                              "type": "integer"
+                            },
+                            "default": {
+                              "type": "integer"
+                            },
+                            "values": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer"
+                              },
+                              "maxItems": 4096
+                            },
+                            "powerOfTwo": {
+                              "type": "boolean"
+                            },
+                            "choices": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "samples": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "settings",
+                        "status"
+                      ],
+                      "properties": {
+                        "settings": {
+                          "type": "object",
+                          "required": [
+                            "seed",
+                            "params",
+                            "candidates",
+                            "startingUnitLevel"
+                          ],
+                          "properties": {
+                            "seed": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            },
+                            "params": {
+                              "type": "object",
+                              "patternProperties": {
+                                "^[A-Za-z0-9_-]{1,64}$": {
+                                  "type": "integer"
+                                }
+                              },
+                              "maxProperties": 72
+                            },
+                            "candidates": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 5,
+                              "default": 1
+                            },
+                            "startingUnitLevel": {
+                              "type": "number",
+                              "const": 0
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "status": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "passed"
+                            },
+                            {
+                              "type": "string",
+                              "const": "refused"
+                            },
+                            {
+                              "type": "string",
+                              "const": "failed"
+                            }
+                          ]
+                        },
+                        "message": {
+                          "type": "string",
+                          "maxLength": 2000
+                        },
+                        "fingerprint": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "maxItems": 160
+                  },
+                  "error": {
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "previewHash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$",
+                    "description": "Lowercase hexadecimal SHA-256 digest."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "liked": {
+          "type": "boolean"
+        },
+        "favourited": {
+          "type": "boolean"
+        }
+      }
+    },
+    "versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "hash",
+          "packageHash",
+          "label",
+          "notes",
+          "profile",
+          "metadata",
+          "example",
+          "createdAt",
+          "downloads",
+          "downloadUrl",
+          "validations"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Lowercase hexadecimal SHA-256 digest."
+          },
+          "packageHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Lowercase hexadecimal SHA-256 digest."
+          },
+          "label": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "integer"
+          },
+          "metadata": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "description",
+              "revision",
+              "apiVersion",
+              "toolkitVersion",
+              "editorOnly",
+              "tags",
+              "controls"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9_.:-]{1,128}$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4294967295
+              },
+              "apiVersion": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "toolkitVersion": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "editorOnly": {
+                "type": "boolean"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "controls": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "label",
+                    "group",
+                    "kind",
+                    "default"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "group": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "range"
+                        },
+                        {
+                          "type": "string",
+                          "const": "toggle"
+                        },
+                        {
+                          "type": "string",
+                          "const": "choice"
+                        }
+                      ]
+                    },
+                    "minimum": {
+                      "type": "integer"
+                    },
+                    "maximum": {
+                      "type": "integer"
+                    },
+                    "step": {
+                      "type": "integer"
+                    },
+                    "default": {
+                      "type": "integer"
+                    },
+                    "values": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "maxItems": 4096
+                    },
+                    "powerOfTwo": {
+                      "type": "boolean"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "example": {
+            "type": "object",
+            "required": [
+              "seed",
+              "params",
+              "candidates",
+              "startingUnitLevel"
+            ],
+            "properties": {
+              "seed": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4294967295
+              },
+              "params": {
+                "type": "object",
+                "patternProperties": {
+                  "^[A-Za-z0-9_-]{1,64}$": {
+                    "type": "integer"
+                  }
+                },
+                "maxProperties": 72
+              },
+              "candidates": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5,
+                "default": 1
+              },
+              "startingUnitLevel": {
+                "type": "number",
+                "const": 0
+              }
+            },
+            "additionalProperties": false
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "downloads": {
+            "type": "integer"
+          },
+          "downloadUrl": {
+            "type": "string"
+          },
+          "validations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "sourceHash",
+                "simVersion",
+                "suite",
+                "valid",
+                "samples"
+              ],
+              "properties": {
+                "sourceHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hexadecimal SHA-256 digest."
+                },
+                "simVersion": {
+                  "type": "string"
+                },
+                "suite": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "valid": {
+                  "type": "boolean"
+                },
+                "packageHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hexadecimal SHA-256 digest."
+                },
+                "fileHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hexadecimal SHA-256 digest."
+                },
+                "metadata": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "revision",
+                    "apiVersion",
+                    "toolkitVersion",
+                    "editorOnly",
+                    "tags",
+                    "controls"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_.:-]{1,128}$"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "revision": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 4294967295
+                    },
+                    "apiVersion": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "toolkitVersion": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "editorOnly": {
+                      "type": "boolean"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "controls": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "label",
+                          "group",
+                          "kind",
+                          "default"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "group": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "const": "range"
+                              },
+                              {
+                                "type": "string",
+                                "const": "toggle"
+                              },
+                              {
+                                "type": "string",
+                                "const": "choice"
+                              }
+                            ]
+                          },
+                          "minimum": {
+                            "type": "integer"
+                          },
+                          "maximum": {
+                            "type": "integer"
+                          },
+                          "step": {
+                            "type": "integer"
+                          },
+                          "default": {
+                            "type": "integer"
+                          },
+                          "values": {
+                            "type": "array",
+                            "items": {
+                              "type": "integer"
+                            },
+                            "maxItems": 4096
+                          },
+                          "powerOfTwo": {
+                            "type": "boolean"
+                          },
+                          "choices": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "samples": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "settings",
+                      "status"
+                    ],
+                    "properties": {
+                      "settings": {
+                        "type": "object",
+                        "required": [
+                          "seed",
+                          "params",
+                          "candidates",
+                          "startingUnitLevel"
+                        ],
+                        "properties": {
+                          "seed": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                          },
+                          "params": {
+                            "type": "object",
+                            "patternProperties": {
+                              "^[A-Za-z0-9_-]{1,64}$": {
+                                "type": "integer"
+                              }
+                            },
+                            "maxProperties": 72
+                          },
+                          "candidates": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 5,
+                            "default": 1
+                          },
+                          "startingUnitLevel": {
+                            "type": "number",
+                            "const": 0
+                          }
+                        },
+                        "additionalProperties": false
+                      },
+                      "status": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "passed"
+                          },
+                          {
+                            "type": "string",
+                            "const": "refused"
+                          },
+                          {
+                            "type": "string",
+                            "const": "failed"
+                          }
+                        ]
+                      },
+                      "message": {
+                        "type": "string",
+                        "maxLength": 2000
+                      },
+                      "fingerprint": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "maxItems": 160
+                },
+                "error": {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "previewHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hexadecimal SHA-256 digest."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "viewer": {
+      "type": "object",
+      "required": [
+        "owner",
+        "moderator"
+      ],
+      "properties": {
+        "owner": {
+          "type": "boolean"
+        },
+        "moderator": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

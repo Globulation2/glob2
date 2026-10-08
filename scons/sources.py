@@ -247,6 +247,7 @@ CLIENT_SOURCES = (
     'online/screens/QuickMatchScreen.cpp',
     'online/screens/OnlineProfileScreen.cpp',
     'online/screens/OnlineMapsScreen.cpp',
+    'online/screens/OnlineGeneratorsScreen.cpp',
     'online/screens/BuildingLibraryScreen.cpp',
     'net/lan/screens/LANMenuScreen.cpp',
     'game/screens/LandscapePickerScreen.cpp',

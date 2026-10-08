@@ -6,6 +6,7 @@ import { InstanceStats } from './history.ts';
 export const AdminLibrary = Type.Union([
   Type.Literal('maps'),
   Type.Literal('ais'),
+  Type.Literal('generators'),
   Type.Literal('buildings'),
   Type.Literal('sets'),
   Type.Literal('skins'),

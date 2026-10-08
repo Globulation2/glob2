@@ -1447,3 +1447,39 @@ likes, reports and download rows; account deletion removes those owned rows.
 
 Map validation also extracts bundled set attribution for shared-map version pages.
 Moderating or withdrawing a source set never invalidates a self-contained map.
+
+## JavaScript generator library
+
+`/api/v1/generators` provides catalogue, release, file, preview, social and reporting
+routes; owner-only `/api/v1/generator-uploads` stages packages and exposes validation
+results before atomic publication. Public/unlisted/private access and moderation
+follow maps. `generator_ids` permanently reserves a manifest ID at first successful
+publication, including after deletion or account deletion. Releases are immutable
+and require increasing manifest revisions. Canonical package bytes come from the
+engine parser rather than a second TypeScript canonicalizer.
+
+`validate-generator` and `generate-script-map` use the common Linux namespace
+launcher for package inspection, generation and saved-map reload. The worker probes
+the real isolated engine before advertising these capabilities. Validation evidence
+binds source and canonical hashes, example settings, simulation version and suite;
+the report includes API/toolkit versions, sampled settings, fingerprints and refusals.
+Maintenance revalidates retained releases for newly served engine versions and
+collects abandoned staging uploads without deleting historical release evidence.
+See [JavaScript generators](../map-generators/JAVASCRIPT.md#publish-and-discover-online)
+for the validation matrix, budgets and author workflow.
+
+Room selection and match setup use a separate `scripted` map source with an exact
+library/release identity, package and file hashes, namespaced ID/revision, request
+and resulting map hash/chosen seed. Native `generated` descriptors remain unchanged.
+The generation cache includes the complete descriptor and simulation version.
+Access checks run before every request or cache reuse and before match start.
+Generated blobs stay private; existing room/match membership authorizes downloads.
+Completed jobs refresh only rooms still waiting on that job. Match setup preserves
+release references and blob GC retains package/map bytes referenced by matches.
+Verified generated-map provenance is copied when those bytes become a shared map.
+
+`session.hello.client.generatorSharing` advertises support. Members without this
+capability receive `update_required` before creating/joining scripted rooms; hosts
+cannot convert rooms containing older members. Realtime delivery filters unsupported
+scripted contracts. Native browsing installs only exact releases, verifies both
+hashes and records provenance using the existing durable-storage rollback.

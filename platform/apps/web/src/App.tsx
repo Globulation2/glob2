@@ -1,3 +1,4 @@
+import { Generators, GeneratorPage, GeneratorPublish } from './pages/Generators.tsx';
 import { studioLocal } from './components/studio/storage.ts';
 import { Players } from './pages/Players.tsx';
 import './music/music.css';
@@ -168,6 +169,36 @@ export const ROUTES: Route[] = [
     section: 'ais',
     title: 'AI Studio',
     render: (p) => <AiStudio key={p['id']} id={p['id']} />,
+  },
+  {
+    pattern: '/generators',
+    section: 'maps',
+    title: 'Map generators',
+    render: () => <Generators />,
+  },
+  {
+    pattern: '/generators/mine',
+    section: 'maps',
+    title: 'My generators',
+    render: () => <Generators mine />,
+  },
+  {
+    pattern: '/generators/new',
+    section: 'maps',
+    title: 'Share a generator',
+    render: () => <GeneratorPublish />,
+  },
+  {
+    pattern: '/generators/:id/new',
+    section: 'maps',
+    title: 'Publish a release',
+    render: (p) => <GeneratorPublish id={p['id'] ?? ''} />,
+  },
+  {
+    pattern: '/generators/:id',
+    section: 'maps',
+    title: 'Map generator',
+    render: (p) => <GeneratorPage id={p['id'] ?? ''} />,
   },
   { pattern: '/ais', section: 'ais', title: 'AI Library', render: () => <Ais /> },
   { pattern: '/ais/mine', section: 'ais', title: 'My AIs', render: () => <Ais view="mine" /> },

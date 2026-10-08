@@ -18,6 +18,7 @@ export function libraryName(library: string) {
       {
         maps: 'Maps',
         ais: 'AIs',
+        generators: 'Generators',
         buildings: 'Buildings',
         sets: 'Terrain/resource sets',
         skins: 'Skins',

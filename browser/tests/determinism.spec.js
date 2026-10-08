@@ -374,3 +374,46 @@ for (const variant of ['serial', 'threaded']) {
     });
   }
 }
+
+for (const variant of ['serial', 'threaded']) {
+  test(`WebAssembly preserves shared generator worlds and save continuation (${variant})`, async ({page}, info) => {
+    test.setTimeout(300000);
+    const root=path.resolve(__dirname,'../..');
+    const output=path.join(root,'artifacts/generator-library/determinism',variant,info.project.name);
+    fs.mkdirSync(output,{recursive:true});
+    const progress=[];page.on('console',m=>progress.push(m.text()));
+    await openRuntimeHost(page, `<!doctype html><canvas id="canvas"></canvas><script>
+      var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
+        locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
+        print:m=>console.log(String(m)),printErr:m=>console.error(String(m)),
+        preRun:[()=>{FS.mkdirTree('/evidence/profile');ENV.GLOB2_TEST_SOURCE_ROOT='/';
+          ENV.GLOB2_USER_DATA_DIR='/evidence/profile';ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
+        async onRuntimeInitialized(){
+          try {window.result={exit:(await Module.start(['--test-suite=ScriptGenerator',
+            '--test-case=*Shared generated worlds*','--reporters=junit','--out=/evidence/tests.xml']))??0};}
+          catch(error){window.result={error:String(error)};}
+          const files={};function collect(dir){for(const name of FS.readdir(dir)){
+            if(name==='.'||name==='..'||name==='profile')continue;const file=dir+'/'+name;
+            if(FS.isDir(FS.stat(file).mode))collect(file);
+            else if(name.endsWith('.trace')||name.endsWith('.xml')||name==='build-provenance.json')files[file.slice('/evidence/'.length)]=FS.readFile(file,{encoding:'utf8'});
+          }}collect('/evidence');window.result.files=files;window.done=true;
+        }};
+    </script><script src="/${variant==='threaded'?'threaded/':''}script-tests.js"></script>`);
+    try {await page.waitForFunction(()=>window.done===true,null,{timeout:280000});}
+    finally {fs.writeFileSync(path.join(output,'run.log'),progress.join('\n'));}
+    const result=await page.evaluate(()=>window.result);
+    for(const [relative,contents] of Object.entries(result.files)){
+      const target=path.join(output,relative);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,contents);
+    }
+    expect(result.error).toBeUndefined();expect(result.exit).toBe(0);
+    expect(result.files['tests.xml']).toMatch(/failures="0"/);
+    const traces=Object.entries(result.files).filter(([name])=>name.endsWith('shared-generators.trace'));
+    expect(traces).toHaveLength(1);
+    const native=path.join(root,'artifacts/generator-library/native-shared-generators.trace');
+    const expected=fs.readFileSync(path.join(root,'test/fixtures/generators/shared-generator-trace.sha256'),'utf8').trim();
+    expect(crypto.createHash('sha256').update(traces[0][1]).digest('hex')).toBe(expected);
+    if(fs.existsSync(native))expect(traces[0][1]).toBe(fs.readFileSync(native,'utf8'));
+    fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({variant,browser:info.project.name,
+      browserVersion:page.context().browser().version(),traceHash:crypto.createHash('sha256').update(traces[0][1]).digest('hex')},null,2)+'\n');
+  });
+}

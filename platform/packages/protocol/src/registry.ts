@@ -1,3 +1,4 @@
+import { generatorSchemas } from './generators.ts';
 import { adminConsoleSchemas } from './adminConsole.ts';
 import {
   BuildingPackage,
@@ -39,6 +40,8 @@ import {
   ImportAiMapResult,
   EngineJob,
   EngineJobResult,
+  GenerateScriptMapPayload,
+  GenerateScriptMapResult,
   GenerateMapPayload,
   GenerateMapResult,
   RenderPreviewPayload,
@@ -224,6 +227,9 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   ...setSchemas,
   ...Object.fromEntries(Object.entries(aiSchemas).map(([name, schema]) => [name, { schema }])),
   ...Object.fromEntries(
+    Object.entries(generatorSchemas).map(([name, schema]) => [name, { schema }]),
+  ),
+  ...Object.fromEntries(
     Object.entries({
       ...musicStudioSchemas,
       ...terrainStudioSchemas,
@@ -329,6 +335,8 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
     },
   },
   EngineJobResult: { schema: EngineJobResult },
+  GenerateScriptMapPayload: { schema: GenerateScriptMapPayload },
+  GenerateScriptMapResult: { schema: GenerateScriptMapResult },
   GenerateMapPayload: { schema: GenerateMapPayload },
   GenerateMapResult: { schema: GenerateMapResult },
   ValidateMapPayload: { schema: ValidateMapPayload },

@@ -1,3 +1,4 @@
+import { ScriptGeneratorDescriptor, schemaIssues } from '@glob2/protocol';
 import { resolveReport } from '../admin/moderation.ts';
 // REST for the map catalog (/api/v1/maps) and its moderation
 // (/api/v1/admin/maps, /api/v1/admin/map-reports). Rules and views are in
@@ -357,7 +358,10 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
 
   // ----------------------------------------------------- owner: versions
 
-  app.post<{ Params: { id: string }; Querystring: { simVersion?: string; notes?: string } }>(
+  app.post<{
+    Params: { id: string };
+    Querystring: { simVersion?: string; notes?: string; generator?: string };
+  }>(
     '/api/v1/maps/:id/versions',
     {
       bodyLimit: services.config.uploadMaxBytes ?? 64 * 1024 * 1024,
@@ -385,6 +389,14 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
           throw apiError('unavailable', 'No engine agent can validate maps right now.');
       }
       const notes = (request.query.notes ?? '').slice(0, 2000);
+      let claimedGenerator: ScriptGeneratorDescriptor | undefined;
+      if (request.query.generator) {
+        try {
+          claimedGenerator = body(ScriptGeneratorDescriptor, JSON.parse(request.query.generator));
+        } catch {
+          throw apiError('bad_request', 'Invalid claimed generator provenance.');
+        }
+      }
       // The quota is taken before the file is unpacked, so a flood of
       // compressed files costs the sender, not the server.
       await enforce(uploads, viewer.account.id, reply, 'Too many uploads; wait a while.');
@@ -447,10 +459,30 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       const validateJobId = same?.validate_job_id ?? checked?.job_id ?? randomUUID();
       const reusePreview = same && same.preview_status !== 'failed';
       const previewJobId = reusePreview ? (same.preview_job_id ?? randomUUID()) : randomUUID();
+      const generated = await db
+        .selectFrom('generated_maps')
+        .select(['descriptor', 'chosen_seed'])
+        .where('map_hash', '=', stored.sha256)
+        .where('sim_version', '=', sim)
+        .where('status', '=', 'ready')
+        .executeTakeFirst();
+      const provenance =
+        generated && schemaIssues(ScriptGeneratorDescriptor, generated.descriptor).length === 0
+          ? {
+              verified: true,
+              generator: generated.descriptor,
+              ...(generated.chosen_seed !== null
+                ? { chosenSeed: Number(generated.chosen_seed) }
+                : {}),
+            }
+          : claimedGenerator
+            ? { verified: false, generator: claimedGenerator }
+            : undefined;
       const inserted = await db
         .insertInto('map_versions')
         .values({
           map_id: map.id,
+          ...(provenance ? { generator_provenance: JSON.stringify(provenance) } : {}),
           hash: stored.sha256,
           size: stored.size,
           sim_version: sim,

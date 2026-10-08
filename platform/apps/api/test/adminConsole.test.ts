@@ -72,7 +72,7 @@ it('guards reads and validates all library union contracts', async () => {
   }
   const reports = (await (await call('/api/v1/admin/reports')).json()) as AdminReportList;
   expect(schemaIssues(AdminReportList, reports)).toEqual([]);
-  expect(Object.keys(reports.counts)).toHaveLength(6);
+  expect(Object.keys(reports.counts)).toHaveLength(7);
   const content = (await (await call('/api/v1/admin/content')).json()) as AdminContentList;
   expect(schemaIssues(AdminContentList, content)).toEqual([]);
 });

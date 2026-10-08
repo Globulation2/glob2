@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorSample",
+  "title": "GeneratorSample",
+  "type": "object",
+  "required": [
+    "settings",
+    "status"
+  ],
+  "properties": {
+    "settings": {
+      "type": "object",
+      "required": [
+        "seed",
+        "params",
+        "candidates",
+        "startingUnitLevel"
+      ],
+      "properties": {
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "params": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9_-]{1,64}$": {
+              "type": "integer"
+            }
+          },
+          "maxProperties": 72
+        },
+        "candidates": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 1
+        },
+        "startingUnitLevel": {
+          "type": "number",
+          "const": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "passed"
+        },
+        {
+          "type": "string",
+          "const": "refused"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        }
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "fingerprint": {
+      "type": "string"
+    }
+  }
+}
