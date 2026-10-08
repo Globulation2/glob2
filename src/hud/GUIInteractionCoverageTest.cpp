@@ -452,6 +452,30 @@ TEST_SUITE("GUIInteractionCoverage")
         CHECK(gui.orderQueue.empty());
     }
 
+    TEST_CASE("initial camera survives waiting for the first presentation [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.width=640,.height=480});
+        glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& gui=w.gui;
+        gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=w.team;
+        w.team->startPosX=31; w.team->startPosY=31;
+        gui.adjustInitialViewport();
+        const int x=gui.viewportX, y=gui.viewportY;
+        PresentationFrame unavailable;
+        gui.setPublishedScene(&unavailable);
+        gui.updateCamera();
+        // The client scrolling loop copies these coordinates back even while
+        // asynchronous extraction has not supplied map dimensions yet.
+        CHECK(gui.camera.tileX()==x);
+        CHECK(gui.camera.tileY()==y);
+        gui.viewportX=gui.camera.tileX(); gui.viewportY=gui.camera.tileY();
+        gui.setPublishedScene(nullptr);
+        gui.prepareLocalPresentation();
+        gui.updateCamera();
+        CHECK(gui.viewportX==x);
+        CHECK(gui.viewportY==y);
+    }
+
     TEST_CASE("home keyboard action wraps the camera and script messages preserve history [display]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.width=640,.height=480});
