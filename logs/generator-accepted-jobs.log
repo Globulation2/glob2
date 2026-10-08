@@ -1,0 +1,4 @@
+generate_map completed
+game completed
+saved game resumed without package
+continuation and continuous checksums match {'continuationChecksum': 2283868378, 'continuousChecksum': 2283868378, 'throughTick': 1024, 'packageRequiredOnLoad': False}

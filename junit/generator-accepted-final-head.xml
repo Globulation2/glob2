@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="31" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom AI library identities and released preferences round trip" time="0.158236" status="run" />
+  <testcase classname="CustomGameSetup" name="preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]" time="30.4216" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="All named stream consumers share creation limits and accounting" time="0.017478" status="run" />
+  <testcase classname="ScriptGenerator" name="Boolean buffer proxies become JavaScript booleans" time="0.002136" status="run" />
+  <testcase classname="ScriptGenerator" name="By value copies reserve native payloads before allocation" time="0.002047" status="run" />
+  <testcase classname="ScriptGenerator" name="Conversion failures release intermediate QuickJS containers" time="0.00174" status="run" />
+  <testcase classname="ScriptGenerator" name="Custom preferences persist string identity and tolerate missing packages" time="0.002688" status="run" />
+  <testcase classname="ScriptGenerator" name="Every operation registration path shares the handle budget" time="0.028571" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding rejects incomplete fields and mismatched masks" time="0.010456" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding reserves native work and memory before rebuilding" time="0.050739" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen controls survive package replacement and catalogs are released" time="0.003143" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen selections retain defaults and rules after package removal" time="0.004513" status="run" />
+  <testcase classname="ScriptGenerator" name="Full toolkit records buffers geometry callbacks and solver" time="0.089226" status="run" />
+  <testcase classname="ScriptGenerator" name="Graph ownership optional callbacks and pointer outputs" time="0.054541" status="run" />
+  <testcase classname="ScriptGenerator" name="Installed generator library writes to a fresh user profile [writes-preferences]" time="0.041279" status="run" />
+  <testcase classname="ScriptGenerator" name="Library mutations retain memory and disk when storage throws" time="0.002455" status="run" />
+  <testcase classname="ScriptGenerator" name="Moved callback arguments retain their converted storage" time="0.001665" status="run" />
+  <testcase classname="ScriptGenerator" name="Native scratch tables respect the allocation budget" time="0.990388" status="run" />
+  <testcase classname="ScriptGenerator" name="Native work and interpreter resource failures are sticky" time="3.33615" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer fills are accounted and returned rows own their data" time="0.001519" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer get fill and set reserve before copying" time="0.002409" status="run" />
+  <testcase classname="ScriptGenerator" name="Optional JavaScript examples generate repeatable validated worlds [slow]" time="5.26215" status="run" />
+  <testcase classname="ScriptGenerator" name="Owned classes preserve borrowed context and RNG expiration" time="0.103605" status="run" />
+  <testcase classname="ScriptGenerator" name="Package identity controls modules and installation rollback" time="0.005021" status="run" />
+  <testcase classname="ScriptGenerator" name="Request immutability RNG streams and module isolation" time="0.007785" status="run" />
+  <testcase classname="ScriptGenerator" name="Script control mutations cannot bypass native domain contracts" time="0.009167" status="run" />
+  <testcase classname="ScriptGenerator" name="Script resource placement uses the world catalog and bounded brushes" time="0.061141" status="run" />
+  <testcase classname="ScriptGenerator" name="Script terrain and colonies go through engine world validation" time="0.31365" status="run" />
+  <testcase classname="ScriptGenerator" name="Site graphs share distance captures and account repeated graph copies" time="0.081684" status="run" />
+  <testcase classname="ScriptGenerator" name="Toolkit consumers reject empty fertility arguments" time="0.045548" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.49805" status="run" />
+  </testsuite></testsuites>

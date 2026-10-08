@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+examples:forts revision 1 seed 91 [complete]: 
+Preview: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/forts-512x256-4.png (512x256 tiles)
+Map: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/forts-512x256-4.map.gz
+Map report: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/forts-512x256-4.report.json

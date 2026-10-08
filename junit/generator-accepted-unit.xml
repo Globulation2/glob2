@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="71" failures="0" errors="0" skipped="0"><testsuite name="FertilityField"><testcase classname="FertilityField" name="TriangularWeightsMatchGrowResourcesRng" time="0" status="run" />
+    <testcase classname="FertilityField" name="ConvolutionMatchesDirectKernelWithoutSand" time="0.007427" status="run" />
+    <testcase classname="FertilityField" name="SandCorrectionPathMatchesDirectKernel" time="0.013601" status="run" />
+    <testcase classname="FertilityField" name="WaterSplatPathMatchesDirectKernel" time="0.013903" status="run" />
+    <testcase classname="FertilityField" name="AdaptivePathMatchesExplicitPaths" time="0.002345" status="run" />
+    <testcase classname="FertilityField" name="OpenWaterReachesFullScale" time="0.000107" status="run" />
+    <testcase classname="FertilityField" name="SandOppositeWaterRemovesCredit" time="0" status="run" />
+    <testcase classname="FertilityField" name="NonPowerOfTwoDimensionsWrap" time="0.005713" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesNonGrass" time="0.00399" status="run" />
+    <testcase classname="FertilityField" name="ForMapZeroesGrassNoDepositReaches" time="0.003167" status="run" />
+    <testcase classname="FertilityField" name="ForMapUngatedKeepsUnreachableGrass" time="0.003199" status="run" />
+    <testcase classname="FertilityField" name="UsefulExpansionCapacityFolds" time="0" status="run" />
+    <testcase classname="FertilityField" name="WithinPercentBand" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted ecology handles signed donors, inhibition and local growth" time="0.00014" status="run" />
+    <testcase classname="FertilityField" name="cached ecology changes after canonical terrain mutation" time="0.003126" status="run" />
+    <testcase classname="FertilityField" name="habitat and movement edits reuse exact ecology fields" time="0.003169" status="run" />
+    <testcase classname="FertilityField" name="ecology rebuilt inside a terrain batch survives its commit" time="0.003207" status="run" />
+    <testcase classname="FertilityField" name="future terrain ecology properties invalidate only their effective inputs" time="0.003117" status="run" />
+    <testcase classname="FertilityField" name="growth throughput includes multiple opportunities before occupancy" time="0" status="run" />
+    <testcase classname="FertilityField" name="weighted coupled land and shoreline kernels match independent probes" time="0.068785" status="run" />
+    <testcase classname="FertilityField" name="one-point wheat fertility retains exact positive growth potential" time="0.003094" status="run" />
+    <testcase classname="FertilityField" name="fractional growth rejects incomplete RNG bucket and preserves whole bonuses" time="0" status="run" />
+    <testcase classname="FertilityField" name="rational growth rates preserve exact mass across complete random buckets" time="0.001239" status="run" />
+  </testsuite><testsuite name="JavaScriptNumbers"><testcase classname="JavaScriptNumbers" name="JavaScript shared numeric corpus" time="0.073273" status="run" />
+    <testcase classname="JavaScriptNumbers" name="JavaScript shared saved global number corpus" time="0.005345" status="run" />
+  </testsuite><testsuite name="JavaScriptRuntime"><testcase classname="JavaScriptRuntime" name="JavaScript persistent value encoding and Unicode" time="0.002819" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript legacy draft callback argument" time="0.001969" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript pinned Math bits and numeric edges" time="0.002112" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript restricted capabilities and invalid values" time="0.026263" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript generated native work is bounded" time="0.12662" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript native tree bounds and parser depth" time="0.04732" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript fatal native allocation is sticky" time="0.000198" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript unavailable capabilities" time="0.000718" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript hypot ARM64 and x86-64 regression" time="0.000668" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript globals persist and restore without an explicit state object" time="0.00157" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript main restores aliases cycles undefined and numeric globals" time="0.002962" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript global object descriptors survive save and restore" time="0.002235" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript saved NaNs have canonical bits across architectures" time="0.002869" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript unsaveable global values fail explicitly" time="0.005907" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript persistent contexts can migrate between serial workers" time="0.001358" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript malformed automatic global snapshots are rejected" time="0.002787" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript profile two metadata and bundled export aliases" time="0.00674" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript managed properties coalesce and reject persistent handles" time="0.001476" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript metadata cannot mutate game globals" time="0.001977" status="run" />
+    <testcase classname="JavaScriptRuntime" name="JavaScript repository starter scripts staff capabilities and respect assignment caps" time="0.006434" status="run" />
+  </testsuite><testsuite name="JavaScriptTransactions"><testcase classname="JavaScriptTransactions" name="JavaScript caught host resource failures remain fatal" time="0.002868" status="run" />
+    <testcase classname="JavaScriptTransactions" name="JavaScript initialization rejects unsupported rounding mode" time="0" status="run" />
+    <testcase classname="JavaScriptTransactions" name="JavaScript rejected callbacks roll back global mutations" time="0.002491" status="run" />
+  </testsuite><testsuite name="ResourceRegistry"><testcase classname="ResourceRegistry" name="stock catalog separates map identities from the twelve fixed materials" time="0.00728" status="run" />
+    <testcase classname="ResourceRegistry" name="landscape resources reuse existing rules behind their editor experiment" time="0.005424" status="run" />
+    <testcase classname="ResourceRegistry" name="landscape artwork maps every stock level to painted frames" time="0.003412" status="run" />
+    <testcase classname="ResourceRegistry" name="source mutability follows every definition and destructive secondary yield" time="0.060825" status="run" />
+    <testcase classname="ResourceRegistry" name="legacy definitions are frozen while default catalogs pin historical identities" time="0.014501" status="run" />
+    <testcase classname="ResourceRegistry" name="resolved snapshot restores all material and presentation fields without installed files" time="0.000242" status="run" />
+    <testcase classname="ResourceRegistry" name="imports preserve existing IDs and append new identities deterministically beyond byte IDs" time="0.119931" status="run" />
+    <testcase classname="ResourceRegistry" name="malformed definitions fail without publishing partial imports" time="0.002908" status="run" />
+    <testcase classname="ResourceRegistry" name="artwork chooses by total stock and stable identity without simulation randomness" time="0.000527" status="run" />
+    <testcase classname="ResourceRegistry" name="catalog experiments retain their metadata in embedded snapshots" time="0.000273" status="run" />
+    <testcase classname="ResourceRegistry" name="fixed generated property combinations have canonical round trips" time="0.020259" status="run" />
+  </testsuite><testsuite name="SkinMaterialMap"><testcase classname="SkinMaterialMap" name="greyscale material maps decode to exact ids" time="0.013903" status="run" />
+  </testsuite><testsuite name="TerrainRegistry"><testcase classname="TerrainRegistry" name="imports preserve builtins and IDs and round trip resolved definitions" time="0.000887" status="run" />
+    <testcase classname="TerrainRegistry" name="appearance presets preserve snapshot names and resolved saved metadata" time="0.00039" status="run" />
+    <testcase classname="TerrainRegistry" name="farm material names support every material and import legacy crop slots" time="0.000861" status="run" />
+    <testcase classname="TerrainRegistry" name="invalid imports and saved registries are rejected without changing their owner" time="0.000908" status="run" />
+    <testcase classname="TerrainRegistry" name="catalogue groups share one profile, every paintable built-in is a preset and format-136 saved IDs remap behind the current built-ins" time="0.004369" status="run" />
+    <testcase classname="TerrainRegistry" name="large registries compile equivalent definitions into bounded movement profiles" time="1.48103" status="run" />
+    <testcase classname="TerrainRegistry" name="runtime SIMD propagation agrees with heap oracle across queue boundaries and thin grids" time="0.008184" status="run" />
+    <testcase classname="TerrainRegistry" name="many distinct hazard costs retain compact profile indices and exact propagation" time="0.008085" status="run" />
+    <testcase classname="TerrainRegistry" name="runtime searches reject undersized queues before changing the field" time="0.000181" status="run" />
+    <testcase classname="TerrainRegistry" name="unused large edge definitions preserve the 64 bucket path" time="0.00027" status="run" />
+    <testcase classname="TerrainRegistry" name="all legal speed factors preserve distinct cost collisions" time="0.025835" status="run" />
+  </testsuite></testsuites>

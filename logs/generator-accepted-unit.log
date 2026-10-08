@@ -1,0 +1,10 @@
+PASS glob2-unit-tests SkinMaterialMap (1 cases) (0.0s)
+PASS glob2-unit-tests JavaScriptTransactions (3 cases) (0.0s)
+PASS glob2-unit-tests JavaScriptNumbers (2 cases) (0.1s)
+PASS glob2-unit-tests FertilityField (23 cases) (0.2s)
+PASS glob2-unit-tests JavaScriptRuntime (20 cases) (0.3s)
+PASS glob2-unit-tests ResourceRegistry (11 cases) (0.3s)
+PASS glob2-unit-tests TerrainRegistry (11 cases) (1.6s)
+
+7 passed, 0 failed, 0 skipped (2.5s of test time)
+[run_tests] JUnit report: artifacts/generator-accepted-unit.xml (71 cases)

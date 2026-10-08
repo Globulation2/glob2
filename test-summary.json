@@ -1,0 +1,26 @@
+[
+  {
+    "file": "generator-accepted-golden-coverage.xml",
+    "cases": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  {
+    "file": "generator-accepted-final-head.xml",
+    "cases": 31,
+    "failed": 0,
+    "skipped": 0
+  },
+  {
+    "file": "generator-accepted-engine.xml",
+    "cases": 298,
+    "failed": 0,
+    "skipped": 13
+  },
+  {
+    "file": "generator-accepted-unit.xml",
+    "cases": 71,
+    "failed": 0,
+    "skipped": 0
+  }
+]

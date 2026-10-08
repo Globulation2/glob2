@@ -1,0 +1,13 @@
+{
+  "source": "a00af7fe1bdc70e233e547dee3fdd43434e96e60",
+  "base": "da57b459f1eb20b9b4a08d25eb502711dd81986b",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "python": "3.14.4",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "typescript": "Version 7.0.2",
+  "flags": "release=1 server=0 optimized_assets=0; generator -fno-fast-math -ffp-contract=off",
+  "sdl_prefix": "/tmp/glob2-terrain-sdl-patched/prefix",
+  "broadNativeSource": "681f6b85dfea219837d59327ce5cca49d37a8afd",
+  "latestMaster": "95d06cf863acb032923dcc460fc441b7b60709c7",
+  "nativeSourceUnchangedSinceBroadRun": true
+}

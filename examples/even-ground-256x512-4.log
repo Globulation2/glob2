@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+examples:even-ground revision 1 seed 91 [complete]: 
+Preview: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/even-ground-256x512-4.png (256x512 tiles)
+Map: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/even-ground-256x512-4.map.gz
+Map report: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/even-ground-256x512-4.report.json

@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+CAPTURE settings-generators 1280 800
+CAPTURE new-map-scripted 1280 800
+Map generation: examples:swamp revision 1 seed 91 [complete]: 
+CAPTURE setup-scripted 1280 800

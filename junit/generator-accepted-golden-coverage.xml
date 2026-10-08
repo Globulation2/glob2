@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="src/map/generator/MapGeneratorGoldenCoverageTest.cpp"><testcase classname="src/map/generator/MapGeneratorGoldenCoverageTest.cpp" name="generator golden coverage cannot borrow a foreign revision" time="0" status="run" />
+  </testsuite></testsuites>

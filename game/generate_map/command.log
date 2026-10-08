@@ -1,0 +1,21 @@
+Settings::load("preferences.txt") : error, can't open file.
+STUDY,1000000,91,1,65536,36103,3603,18518,7312,29522,23544,37984,7260,20292,0.114392,2215715992476805117
+TUNE,612,2,2,2,2764,3234,515,3966,1,2
+QUALITY,1,0.651540,0.651540,0.759413,1.486792,1.123102,2,0.008756
+COLONY,0,2,2,1310,823,250,133,0,3293.0,0.759413,0.325770
+COLONY,1,1,2,1155,612,193,133,0,3340.2,1.486792,0.674230
+REQUEST,examples:swamp,1,91,8,8,2,4
+OPTION,algae-amount,100
+OPTION,fruit,4
+OPTION,grass,60
+OPTION,hilltop-stone,0
+OPTION,repeat,0
+OPTION,smoothing,6
+OPTION,stone-amount,100
+OPTION,water,35
+OPTION,wheat-amount,100
+OPTION,wood-amount,100
+START,0,209,2
+START,1,118,50
+MAPFILE,0,/home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-headless-final/generate_map/output/map-r0.map.gz,729148,12365844732985307094
+ROTATIONS,2,1,0,1,1,1,1

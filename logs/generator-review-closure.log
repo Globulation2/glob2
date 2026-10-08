@@ -1,0 +1,7 @@
+PASS ScriptGenerator/Script control mutations cannot bypass native domain contracts (0.0s)
+PASS ScriptGenerator/Fertility binding reserves native work and memory before rebuilding (0.1s)
+PASS CustomGameSetup/custom AI library identities and released preferences round trip (0.2s)
+PASS CustomGameSetup/preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences] (31.1s)
+
+4 passed, 0 failed, 0 skipped (31.4s of test time)
+[run_tests] JUnit report: artifacts/generator-review-closure.xml (4 cases)

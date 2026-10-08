@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="298" failures="0" errors="0" skipped="13"><testsuite name="AISavePortability"><testcase classname="AISavePortability" name="runtime initialisation; area order serialisation and Maxima reserved telemetry" time="0.084851" status="run" />
+  </testsuite><testsuite name="AITargetTelemetrySave"><testcase classname="AITargetTelemetrySave" name="Cortex flag targets carry the team that owns each building" time="0.117858" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Cortex records its committed target until the offense stands down, across saves" time="0.233894" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="Numbi reports the highest-numbered enemy its attack searches" time="0.088931" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target fields are declared in schema version 2" time="0.214346" status="run" />
+  <testcase classname="AITargetTelemetrySave" name="target telemetry names only real enemies and leaves the simulation unchanged" time="14.5629" status="run" />
+  </testsuite><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="catalog local launch loads the exact cached version and rejects invalid maps [writes-preferences]" time="0.301711" status="run" />
+  <testcase classname="CustomGameSetup" name="custom AI library identities and released preferences round trip" time="0.173382" status="run" />
+  <testcase classname="CustomGameSetup" name="experiments from settings are baked into a new game; a save keeps them; campaigns never take them" time="0.646077" status="run" />
+  <testcase classname="CustomGameSetup" name="generated map snapshot launches from memory" time="0.410689" status="run" />
+  <testcase classname="CustomGameSetup" name="local building experiments are filtered by the destination catalog while saves retain theirs" time="0.117956" status="run" />
+  <testcase classname="CustomGameSetup" name="map previews retain embedded experimental catalogs through cache hits" time="0.424997" status="run" />
+  <testcase classname="CustomGameSetup" name="preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]" time="32.533" status="run" />
+  <testcase classname="CustomGameSetup" name="preview queue priority and restart" time="0.456734" status="run" />
+  <testcase classname="CustomGameSetup" name="landscape preview performance [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="landscape preview stays responsive [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="controller help is localized with the current player capacity [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="probability statistics fit sixteen colonies [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="AI profile captures [display][artifacts][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="player control widgets [display][artifacts][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="AI strategy profiles in English [display][artifacts][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="AI strategy profiles in English at the large layout [display:1024x768][artifacts][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="CustomGameSetup" name="preferences screen writes then reads back [display][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="EnteringUnitSave"><testcase classname="EnteringUnitSave" name="generated fixtures round-trip through binary saves [save-format]" time="3.76143" status="run" />
+  <testcase classname="EnteringUnitSave" name="the retained fixture loads [save-format]" time="0.080499" status="run" />
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Compact identity tables preserve unused slots and reject invalid entries" time="0.330148" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="0.461323" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="3.78702" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.226625" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0.000103" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.228636" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Resource catalog simulation change rejects released replays and enforces acceptance boundaries" time="0.212154" status="run" />
+  </testsuite><testsuite name="JavaScriptIntegration"><testcase classname="JavaScriptIntegration" name="JavaScript AI state RNG and disabled state survive continuation" time="0.238619" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript bound observations and order encoding remain isolated from live mutations" time="0.055433" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript building clearing materials retain full fixed slots and legacy view" time="0.082151" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom building descriptors and orders follow services" time="0.109055" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom library atomic updates and frozen source" time="0.017203" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript farm areas: experiments query, farmArea order and tile field" time="0.120087" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript large world observations respect work limits" time="0.210274" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript legacy empty resource memories discard unused stock bytes" time="0.05371" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript linked sources freeze once and removal retains external files" time="0.007752" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript managed controls use capabilities and independent bombing filter" time="0.101892" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript material metadata and remembered multi-yield sources survive both stream formats" time="0.064252" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript native spatial answers exclude hidden terrain resources and enemies" time="0.057676" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript observations visibility memory pagination and stale references" time="0.179177" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript ordered observations keep the first view of each logical tick" time="0.060365" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript orders execute and survive save load" time="0.250274" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript path diagonals retain the neutral strategic metric" time="0.055573" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript path fields use terrain travel costs and invalidate speed-only changes" time="0.060762" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript placement reserves footprints and explains impossible constraints" time="0.083747" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript profile two spatial cache and queued save continuity" time="0.056059" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript projected boundary preserves history and spatial resources without ecology fields" time="0.110474" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript queued edits preserve fairness cancellation and stale targets" time="0.084778" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript scenario effects commit atomically and resume" time="0.185087" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript services reject unsavable transactions without changing state" time="0.090309" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript solid attraction placement keeps both radius and footprint reservation" time="0.10003" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript telemetry scene permissions and replay diagnostic roundtrip" time="0.061334" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript terrain registry exposes immutable property capabilities in both profiles" time="0.061492" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript upgrade dispatch survives tracking record growth" time="0.059565" status="run" />
+  <testcase classname="JavaScriptIntegration" name="Online AI installs verify bytes and preserve provenance on rollback" time="0.008253" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="JavaScriptIntegration" name="JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="JavaScriptLifecycle"><testcase classname="JavaScriptLifecycle" name="Scripting building completion upgrade and repair preserve identity" time="0.336348" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting conversion allocates fresh identity in a reused destination slot" time="0.152098" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting conversion back never resurrects the original reference" time="0.140594" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting editor deletion and reuse never revive a reference" time="0.163932" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting identity survives conversion and save load" time="0.155971" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting level reset preserves generation counters" time="0.057405" status="run" />
+  <testcase classname="JavaScriptLifecycle" name="Scripting normal death invalidates lookup before cleanup and slot reuse" time="0.140839" status="run" />
+  </testsuite><testsuite name="JavaScriptPresentation"><testcase classname="JavaScriptPresentation" name="Failed prepared map replacements preserve active globals and language" time="0.062452" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript does not advance or display a retained SGSL timer" time="0.178098" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript leaves stored SGSL execution and victory conditions dormant" time="0.1879" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript load restores presentation without a callback or history entry" time="0.273679" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript presentation publishes only changed localized messages" time="0.201098" status="run" />
+  <testcase classname="JavaScriptPresentation" name="Leaving a JavaScript scenario resets choices before loading a legacy map" time="0.211428" status="run" />
+  <testcase classname="JavaScriptPresentation" name="Prepared SGSL exchanges rebind stories in both runtimes" time="0.058842" status="run" />
+  </testsuite><testsuite name="JavaScriptRealistic"><testcase classname="JavaScriptRealistic" name="JavaScript realistic economic planner and scenario survey" time="0.103211" status="run" />
+  </testsuite><testsuite name="JavaScriptSession"><testcase classname="JavaScriptSession" name="JavaScript deterministic scenario failure ends the engine session" time="0.238258" status="run" />
+  <testcase classname="JavaScriptSession" name="JavaScript fatal failure tears down a live engine session" time="0.269311" status="run" />
+  <testcase classname="JavaScriptSession" name="JavaScript initialization errors reach headless and UI load diagnostics" time="0.465759" status="run" />
+  </testsuite><testsuite name="JavaScriptSimulation"><testcase classname="JavaScriptSimulation" name="JavaScript conversion boundary resumes globals RNG references and complete tick records" time="2.17421" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript economic planners and map survey execute, resume and replay 256 ticks" time="9.54857" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript original fixture executes, resumes and replays 256 ticks" time="2.48291" status="run" />
+  <testcase classname="JavaScriptSimulation" name="JavaScript profile two actions fields telemetry and construction survive save resume and worker counts" time="2.78018" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="1.35669" status="run" />
+  </testsuite><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Bastion Keys contracts" time="1.9322" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Drowned Forest circulation uses the configured starting definition" time="1.42154" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Drowned Forest contracts [slow]" time="89.6216" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Explicit designs preserve topology across the runtime-resource RNG epoch" time="0.925015" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Faulted City contracts" time="16.0338" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Gauntlet shapes; request rejection and final-world corruption checks" time="4.85817" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Hungry Marches contracts" time="5.08049" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Last Treeline checks" time="17.2374" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Portage Lakes contracts [slow]" time="70.7629" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Random design defaults resolve reproducibly without changing explicit enums" time="2.96432" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Random designs match explicit generated worlds on rectangles [slow]" time="5.8662" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Who Ate the Map contracts" time="2.76611" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="contact costs follow custom deposit obstruction and removal properties" time="0.090001" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="editor and lobby defaults contract [slow][map-generators]" time="0.1819" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="resource habitat distinguishes terrain permission from growth and occupancy" time="0.05597" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="search domains preserve legal values and constrain deterministic rolls" time="0.200778" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="shared route and wall contracts use terrain capabilities" time="0.059347" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="starting layouts follow rectangular and overlay catalog footprints" time="0.310667" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="toolkit geometry; raster; resource and home contracts" time="2.18224" status="run" />
+  </testsuite><testsuite name="MapGeneratorRegistry"><testcase classname="MapGeneratorRegistry" name="catalog generation contracts [slow][map-generators]" time="287.05" status="run" />
+  <testcase classname="MapGeneratorRegistry" name="framework contracts [slow][map-generators]" time="0.409059" status="run" />
+  <testcase classname="MapGeneratorRegistry" name="landscape contracts [slow][map-generators]" time="0.53462" status="run" />
+  <testcase classname="MapGeneratorRegistry" name="stress rejection and registration contracts [slow][map-generators]" time="12.8328" status="run" />
+  <testcase classname="MapGeneratorRegistry" name="water algae distribution [slow][map-generators]" time="0.228339" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="forbidden edits invalidate exactly the affected fields and preserve the rest" time="4.62106" status="run" />
+  <testcase classname="MapGradientInvalidation" name="forbidden painting refreshes routes across passable resources" time="0.287618" status="run" />
+  <testcase classname="MapGradientInvalidation" name="gradient stats record field lifetimes without changing fields" time="0.167693" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.042368" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.042391" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.003876" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.047617" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.00027" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.04222" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="0.170212" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.051998" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.039796" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.055231" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.004256" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.041806" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.044117" status="run" />
+  </testsuite><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="both format 144 and 145 lineages and compact growth saves retain continuation [save-format]" time="3.61155" status="run" />
+  <testcase classname="ResourceGrowth" name="configured seeds preserve rates variety collisions and saved output" time="0.092701" status="run" />
+  <testcase classname="ResourceGrowth" name="engine preflight opens both historical growth and released vertex saves" time="0.478585" status="run" />
+  <testcase classname="ResourceGrowth" name="finishing the last deferred tick computes without publishing early" time="0.087068" status="run" />
+  <testcase classname="ResourceGrowth" name="format 144 and 145 packed growth headers cannot alias artwork lengths" time="0" status="run" />
+  <testcase classname="ResourceGrowth" name="frozen input outlives terrain and resource edits and wrapping remains valid" time="0.088726" status="run" />
+  <testcase classname="ResourceGrowth" name="kernel is immutable deterministic and responds to disabled growth and scarcity" time="0.090275" status="run" />
+  <testcase classname="ResourceGrowth" name="later completed work cannot publish ahead of an earlier batch" time="0.084778" status="run" />
+  <testcase classname="ResourceGrowth" name="legacy pending masks migrate and signed pending proposals validate on load" time="0.084088" status="run" />
+  <testcase classname="ResourceGrowth" name="light checksums leave zero-worker work deferred and world replacement discards it" time="0.087117" status="run" />
+  <testcase classname="ResourceGrowth" name="material deltas cap independently and create configured seed stocks" time="0.086231" status="run" />
+  <testcase classname="ResourceGrowth" name="pipeline waits at exact deadline and pause does not publish" time="0.088068" status="run" />
+  <testcase classname="ResourceGrowth" name="proposal capacity grows safely and is retained for reuse" time="0.089562" status="run" />
+  <testcase classname="ResourceGrowth" name="publication accounts for proposals rejected by a different world" time="0.132169" status="run" />
+  <testcase classname="ResourceGrowth" name="setting the delay leaves reservations and unfinished work untouched" time="0.086399" status="run" />
+  <testcase classname="ResourceGrowth" name="signed proposals use only current resource type and apply in order" time="0.088517" status="run" />
+  <testcase classname="ResourceGrowth" name="text save layout probes are relative and preserve section state" time="0.00014" status="run" />
+  <testcase classname="ResourceGrowth" name="typed proposal loading validates fields and preserves old queued units" time="0.087671" status="run" />
+  <testcase classname="ResourceGrowth" name="zero seed stocks use authoritative resource initialization" time="0.231406" status="run" />
+  <testcase classname="ResourceGrowth" name="zero-worker and shared deadlines match and pending work survives saving" time="0.48005" status="run" />
+  </testsuite><testsuite name="RuntimeBuildingOrderSaveLoad"><testcase classname="RuntimeBuildingOrderSaveLoad" name="Pre96StreamLeavesSentinel" time="0" status="run" />
+  <testcase classname="RuntimeBuildingOrderSaveLoad" name="RoundTripCurrentVersion" time="0" status="run" />
+  <testcase classname="RuntimeBuildingOrderSaveLoad" name="UnregisteredOrderRoundTrips" time="0" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="12.5717" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="All named stream consumers share creation limits and accounting" time="0.016828" status="run" />
+  <testcase classname="ScriptGenerator" name="Boolean buffer proxies become JavaScript booleans" time="0.002684" status="run" />
+  <testcase classname="ScriptGenerator" name="By value copies reserve native payloads before allocation" time="0.001577" status="run" />
+  <testcase classname="ScriptGenerator" name="Conversion failures release intermediate QuickJS containers" time="0.001637" status="run" />
+  <testcase classname="ScriptGenerator" name="Custom preferences persist string identity and tolerate missing packages" time="0.00254" status="run" />
+  <testcase classname="ScriptGenerator" name="Every operation registration path shares the handle budget" time="0.024641" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding rejects incomplete fields and mismatched masks" time="0.010556" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding reserves native work and memory before rebuilding" time="0.047182" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen controls survive package replacement and catalogs are released" time="0.00364" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen selections retain defaults and rules after package removal" time="0.003077" status="run" />
+  <testcase classname="ScriptGenerator" name="Full toolkit records buffers geometry callbacks and solver" time="0.082186" status="run" />
+  <testcase classname="ScriptGenerator" name="Graph ownership optional callbacks and pointer outputs" time="0.047162" status="run" />
+  <testcase classname="ScriptGenerator" name="Installed generator library writes to a fresh user profile [writes-preferences]" time="0.040786" status="run" />
+  <testcase classname="ScriptGenerator" name="Library mutations retain memory and disk when storage throws" time="0.002219" status="run" />
+  <testcase classname="ScriptGenerator" name="Moved callback arguments retain their converted storage" time="0.001521" status="run" />
+  <testcase classname="ScriptGenerator" name="Native scratch tables respect the allocation budget" time="0.993694" status="run" />
+  <testcase classname="ScriptGenerator" name="Native work and interpreter resource failures are sticky" time="3.35782" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer fills are accounted and returned rows own their data" time="0.002658" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer get fill and set reserve before copying" time="0.002725" status="run" />
+  <testcase classname="ScriptGenerator" name="Optional JavaScript examples generate repeatable validated worlds [slow]" time="4.99796" status="run" />
+  <testcase classname="ScriptGenerator" name="Owned classes preserve borrowed context and RNG expiration" time="0.104" status="run" />
+  <testcase classname="ScriptGenerator" name="Package identity controls modules and installation rollback" time="0.004164" status="run" />
+  <testcase classname="ScriptGenerator" name="Request immutability RNG streams and module isolation" time="0.006468" status="run" />
+  <testcase classname="ScriptGenerator" name="Script control mutations cannot bypass native domain contracts" time="0.008975" status="run" />
+  <testcase classname="ScriptGenerator" name="Script resource placement uses the world catalog and bounded brushes" time="0.064726" status="run" />
+  <testcase classname="ScriptGenerator" name="Script terrain and colonies go through engine world validation" time="0.300022" status="run" />
+  <testcase classname="ScriptGenerator" name="Site graphs share distance captures and account repeated graph copies" time="0.085247" status="run" />
+  <testcase classname="ScriptGenerator" name="Toolkit consumers reject empty fertility arguments" time="0.043587" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="7.0092" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="2.82679" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.316695" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="0.999131" status="run" />
+  <testcase classname="TeamStatsSave" name="Delayed observation telemetry saves remain readable" time="0.066567" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant reset accepts refreshed diagnostics and restored snapshots" time="0.879468" status="run" />
+  <testcase classname="TeamStatsSave" name="Sparse variant snapshot reset clears vanished types without clearing history" time="0.342273" status="run" />
+  <testcase classname="TeamStatsSave" name="clearing telemetry counts operations once by configured primary material" time="0.193587" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.061167" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.064988" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.058316" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.203754" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.088266" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.082319" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.098152" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.080466" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.059416" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="1.64357" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="15.7657" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="2.81538" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="0.950137" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="0.487062" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="1.44922" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="1.67132" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="5.26355" status="run" />
+  <testcase classname="TurnEngineHarness" name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" time="1.4909" status="run" />
+  <testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="1.82578" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="3.69478" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="0.918364" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="0.877438" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.570042" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="2.96233" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="2.40167" status="run" />
+  <testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="0.485871" status="run" />
+  </testsuite><testsuite name="UnitContinuation"><testcase classname="UnitContinuation" name="five checkpoints replay 256 ticks with matching state and RNG" time="0.732701" status="run" />
+  <testcase classname="UnitContinuation" name="hazard routes and idle escape preserve per-tick state across save load" time="0.492931" status="run" />
+  </testsuite><testsuite name="UntrustedFiles"><testcase classname="UntrustedFiles" name="AI tags collection counts and recursive predicates are bounded" time="0.08444" status="run" />
+  <testcase classname="UntrustedFiles" name="Cabino inn history accepts append positions and rejects invalid ring bounds" time="0.090147" status="run" />
+  <testcase classname="UntrustedFiles" name="complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]" time="0.250694" status="run" />
+  <testcase classname="UntrustedFiles" name="compressed file size is checked before allocation" time="0.000371" status="run" />
+  <testcase classname="UntrustedFiles" name="entity loaders reject malicious indices before using them [save-format]" time="0.052233" status="run" />
+  <testcase classname="UntrustedFiles" name="every native AI accepts its initial saved state" time="0.094097" status="run" />
+  <testcase classname="UntrustedFiles" name="invalid replay order references are ignored before indexing state" time="0.083356" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy create order reads only its twenty byte payload" time="0" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy saved instruction pointers must identify statement boundaries [save-format]" time="0.055293" status="run" />
+  <testcase classname="UntrustedFiles" name="map scripts cannot load local files" time="0.060848" status="run" />
+  <testcase classname="UntrustedFiles" name="network state rejects invalid slots before queue indexing" time="0.000333" status="run" />
+  <testcase classname="UntrustedFiles" name="terrain loaders reject invalid resources occupants and sector dimensions [save-format]" time="0.079092" status="run" />
+  <testcase classname="UntrustedFiles" name="untrusted names cannot escape the map output directory" time="0" status="run" />
+  <testcase classname="UntrustedFiles" name="voice payload bounds preserve recorder overshoot and reject excessive work" time="0" status="run" />
+  </testsuite><testsuite name="src/map/generator/MapGeneratorDefaultsTest.cpp"><testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;allotments&gt;" time="0.857085" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;amphitheatre&gt;" time="1.1774" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;anthill&gt;" time="1.28603" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;bajada&gt;" time="1.56943" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;bastionKeys&gt;" time="0.707759" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;braidedDelta&gt;" time="1.06105" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;braidedRiver&gt;" time="1.01372" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;breachableHighlands&gt;" time="0.989047" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;canals&gt;" time="1.14678" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;caravanserai&gt;" time="1.45811" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;carousel&gt;" time="1.76699" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;centralQuarry&gt;" time="2.14142" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;cityStates&gt;" time="1.57397" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;comb&gt;" time="1.27743" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;concreteIslands&gt;" time="1.26676" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;contestedCommons&gt;" time="1.39935" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;continents&gt;" time="2.05657" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;coral&gt;" time="0.789521" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;craterLakes&gt;" time="1.06629" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;drownedForest&gt;" time="2.98025" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;drumlinField&gt;" time="2.38486" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;emoji&gt;" time="0.77465" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;encircledKingdom&gt;" time="0.815202" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;evenGround&gt;" time="2.19077" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;everglades&gt;" time="1.1234" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;faultedCity&gt;" time="1.45449" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;fingerprint&gt;" time="1.35609" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;fjordContinent&gt;" time="1.21757" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;forts&gt;" time="1.71903" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;gauntlet&gt;" time="0.741049" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;glacis&gt;" time="1.79662" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;hedgerowCountry&gt;" time="1.18991" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;hiddenOasis&gt;" time="1.14772" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;hilbertRiver&gt;" time="1.21813" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;hills&gt;" time="1.06458" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;honeycombIsle&gt;" time="1.05665" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;hungryMarches&gt;" time="0.820955" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;islands&gt;" time="1.07669" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;isles&gt;" time="1.51789" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;karstTowers&gt;" time="1.08142" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;lastTreeline&gt;" time="0.900272" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;lavaShield&gt;" time="1.29055" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;locust&gt;" time="1.11094" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;marchland&gt;" time="1.12793" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;maze&gt;" time="0.797244" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;oldGrowth&gt;" time="1.45615" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;oldTown&gt;" time="1.88937" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;orchardCommons&gt;" time="0.901459" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;plantations&gt;" time="2.71029" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;polder&gt;" time="1.30074" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;portageLakes&gt;" time="10.9974" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;rainShadow&gt;" time="1.12386" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;riceTerraces&gt;" time="1.00612" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;ringWorld&gt;" time="0.926267" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;river&gt;" time="1.37226" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;ruggedArchipelago&gt;" time="0.871867" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;savannah&gt;" time="1.02275" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;shatteredCoast&gt;" time="1.04514" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;sierpinskiGardens&gt;" time="1.31153" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;spiderWeb&gt;" time="0.927504" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;stoneHighlands&gt;" time="1.28986" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;swamp&gt;" time="0.911653" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;switchbacks&gt;" time="1.9581" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;symmetricArena&gt;" time="1.36683" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;tidalFlats&gt;" time="1.75113" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;uniform&gt;" time="0.372833" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;watershed&gt;" time="1.32687" status="run" />
+  <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="default generation repeatability rectangles and rejection [slow][map-generators]&lt;whoAteTheMap&gt;" time="0.727244" status="run" />
+  </testsuite></testsuites>

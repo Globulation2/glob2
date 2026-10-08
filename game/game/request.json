@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "type": "game",
+  "build": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "inputs": {
+    "generator-package": {
+      "sha256": "94fd7bacc5a6ab1d52261dd4f5e0ffa1b75b8ca8e86ad7a696da93a115d24c62"
+    }
+  },
+  "seeds": {
+    "map": 91,
+    "game": 713
+  },
+  "config": {
+    "generator": "examples:swamp",
+    "params": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    },
+    "candidates": 0,
+    "players": [
+      "cortex",
+      "maxima"
+    ],
+    "ticks": 512
+  },
+  "outputs": {
+    "saves": [
+      "initial",
+      "final"
+    ],
+    "replay": true
+  },
+  "limits": {},
+  "labels": {},
+  "depends_on": [],
+  "id": "8b17af468fa541ab343b1a97d009c35a"
+}

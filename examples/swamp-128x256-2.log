@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+examples:swamp revision 1 seed 91 [complete]: 
+Preview: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/swamp-128x256-2.png (128x256 tiles)
+Map: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/swamp-128x256-2.map.gz
+Map report: /home/bradley/.codex/worktrees/2783/glob2/artifacts/generator-review-example-sweep/swamp-128x256-2.report.json
