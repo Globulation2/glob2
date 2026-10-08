@@ -1142,7 +1142,7 @@ jobs:
   web-test:
     name: browser tests (${{ matrix.name }})
     needs: [changes, web-build, web-native]
-    if: ${{ needs.changes.outputs.browser == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.browser == 'true' && needs.web-build.result == 'success' && needs.web-native.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
