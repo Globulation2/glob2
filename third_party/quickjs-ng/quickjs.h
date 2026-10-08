@@ -511,6 +511,8 @@ JS_EXTERN void JS_SetRuntimeInfo(JSRuntime *rt, const char *info);
 /* use 0 to disable memory limit */
 /* Glob2: sticky native resource failure, even when script catches the exception. */
 JS_EXTERN bool JS_Glob2HostFailure(JSRuntime *rt);
+/* Package-local static imports are enabled only by the generator host. */
+JS_EXTERN void JS_Glob2GeneratorImports(JSRuntime *rt, bool enabled);
 
 JS_EXTERN void JS_SetMemoryLimit(JSRuntime *rt, size_t limit);
 JS_EXTERN void JS_SetDumpFlags(JSRuntime *rt, uint64_t flags);

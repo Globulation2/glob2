@@ -547,16 +547,16 @@ int runMapStudy(int argc, char **argv)
 	{
 		using D = GenerationRequest;
 		std::puts("[");
-		const auto methods = GeneratorRegistry::builtins().methods();
+		const auto methods = GeneratorRegistry::active().methods();
 		for (int m : methods)
 		{
 			const int method = m;
 			std::printf("{\"method\":%d,\"id\":\"%s\",\"revision\":%u,\"editorOnly\":%s,"
-						"\"nameKey\":\"%s\",\"controls\":[",
-						m, GeneratorRegistry::builtins().at(m).id,
-						GeneratorRegistry::builtins().at(m).revision,
-						GeneratorRegistry::builtins().at(m).editorOnly ? "true" : "false",
-						D::methodName(method));
+						"\"nameKey\":%s,\"api_version\":%u,\"package_hash\":%s,\"controls\":[",
+						m, GeneratorRegistry::active().at(m).id,
+						GeneratorRegistry::active().at(m).revision,
+						GeneratorRegistry::active().at(m).editorOnly ? "true" : "false",
+						Headless::quote(D::methodName(method)).c_str(), GeneratorRegistry::active().at(m).apiVersion, Headless::quote(GeneratorRegistry::active().at(m).packageHash).c_str());
 			auto controls = D::sharedControls();
 			const auto &specific = D::controls(method);
 			controls.insert(controls.end(), specific.begin(), specific.end());
@@ -564,10 +564,10 @@ int runMapStudy(int argc, char **argv)
 			{
 				const auto &c = controls[i];
 				std::printf(
-					"%s{\"id\":\"%s\",\"label\":\"%s\",\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
+					"%s{\"id\":\"%s\",\"label\":%s,\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
 					"\"step\":%d,\"default\":%d,"
 					"\"group\":%d,\"powerOfTwo\":%s,\"values\":[",
-					i ? "," : "", c.id.c_str(), c.label,
+					i ? "," : "", c.id.c_str(), Headless::quote(c.label).c_str(),
 					c.isToggle() ? "toggle" : c.isChoice() ? "choice" : "range",
 					c.minimum, c.maximum, c.step, c.defaultValue, int(c.group),
 					c.powerOfTwo ? "true" : "false");
@@ -584,7 +584,7 @@ int runMapStudy(int argc, char **argv)
 				{
 					std::printf(",\"labels\":[");
 					for (size_t j = 0; j < domain.size(); ++j)
-						std::printf("%s\"%s\"", j ? "," : "", c.valueLabel(domain[j]));
+						std::printf("%s%s", j ? "," : "", Headless::quote(c.valueLabel(domain[j])).c_str());
 					std::printf("]");
 				}
 				std::printf("}");
@@ -616,7 +616,7 @@ int runMapStudy(int argc, char **argv)
 	Race::loadDefault();
 	Game game(nullptr);
 	GenerationRequest descriptor;
-	if (!GeneratorRegistry::builtins().find(method))
+	if (!GeneratorRegistry::active().find(method))
 		return 2;
 	descriptor.setMethodDefaults(method);
 	descriptor.seed = seed;
@@ -1189,6 +1189,10 @@ int runMapStudy(int argc, char **argv)
 			const auto status = resultJson.find("\"status\":\"completed\"");
 			if (status != std::string::npos) resultJson.replace(status, 20, "\"status\":\"artifact_failure\"");
 		}
+        if(!resultJson.empty()&&resultJson.back()=='}') {
+            resultJson.pop_back();
+            resultJson+=",\"package_hash\":"+Headless::quote(result.packageHash)+",\"api_version\":"+std::to_string(result.apiVersion)+",\"toolkit_version\":"+std::to_string(result.apiVersion?1:0)+"}";
+        }
 		Headless::writeJson(resultPath, resultJson);
 	}
 	return code;

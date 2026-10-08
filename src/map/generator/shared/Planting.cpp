@@ -1,3 +1,6 @@
+#include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Planting.h"
 #include "Morphology.h"
@@ -16,6 +19,7 @@ ResourceStock capResourceStock(Map &map, int type, int maximumAmount)
 	ResourceStock stock;
 	for (int i = 0; i < map.getW() * map.getH(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const auto &resource = map.getResource(i);
 		if (resource.type != type)
 			continue;
@@ -42,18 +46,24 @@ int plantFieldInteriors(Map &map, const Torus &t, const std::vector<int> &tiles,
 	std::vector<unsigned char> mask(t.size(), 0);
 	std::vector<int> candidates;
 	for (int i : tiles)
-		if (!mask[i] && clearGround(map, i % t.w, i / t.w) &&
+	{
+		::MapGeneration::generationCheckpoint();
+		if (!mask.at(i) && clearGround(map, i % t.w, i / t.w) &&
 			map.isResourceAllowed(i % t.w, i / t.w, type))
 		{
-			mask[i] = 1;
+			mask.at(i) = 1;
 			candidates.push_back(i);
 		}
+	}
 	const auto depth = clearance(t, mask);
-	std::sort(candidates.begin(), candidates.end(),
-			  [&](int a, int b) { return depth[a] != depth[b] ? depth[a] > depth[b] : a < b; });
+	std::sort(candidates.begin(), candidates.end(), [&](int a, int b)
+			  { return depth.at(a) != depth.at(b) ? depth.at(a) > depth.at(b) : a < b; });
 	const int count = std::min(wanted, int(candidates.size()));
 	for (int k = 0; k < count; ++k)
-		map.setResourceByIndex(candidates[k] % t.w, candidates[k] / t.w, type, 1);
+	{
+		::MapGeneration::generationCheckpoint();
+		map.setResourceByIndex(candidates.at(k) % t.w, candidates.at(k) / t.w, type, 1);
+	}
 	return count;
 }
 
@@ -62,9 +72,18 @@ std::vector<unsigned char> swarmSurroundings(const Torus &t, const GenerationCon
 {
 	std::vector<unsigned char> reserved(size_t(t.w) * t.h, 0);
 	for (int team = 0; team < context.request.nbTeams; ++team)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dy = -clearance; dy < 4 + clearance; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -clearance; dx < 4 + clearance; ++dx)
-				reserved[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
+			{
+				::MapGeneration::generationCheckpoint();
+				reserved.at(t.at(context.bootX[team] + dx, context.bootY[team] + dy)) = 1;
+			}
+		}
+	}
 	return reserved;
 }
 
@@ -72,13 +91,20 @@ void clearAroundSwarms(Map &map, const GenerationContext &context, const Torus &
 					   const std::vector<unsigned char> *keep)
 {
 	for (int team = 0; team < context.request.nbTeams; ++team)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dy = -kSwarmClearance; dy < 4 + kSwarmClearance; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -kSwarmClearance; dx < 4 + kSwarmClearance; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int x = t.x(context.bootX[team] + dx), y = t.y(context.bootY[team] + dy);
-				if (map.isResource(x, y) && !(keep && (*keep)[y * t.w + x]))
+				if (map.isResource(x, y) && !(keep && (*keep).at(y * t.w + x)))
 					map.setNoResource(x, y, 1);
 			}
+		}
+	}
 }
 
 int clearDeposits(Map &map, const Torus &t, const std::vector<unsigned char> &region,
@@ -87,8 +113,10 @@ int clearDeposits(Map &map, const Torus &t, const std::vector<unsigned char> &re
 	int cleared = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int x = i % t.w, y = i / t.w;
-		if (region[i] && map.isResource(x, y) && map.terrainPropertiesAt(x,y).walkable && !(keep && (*keep)[i]))
+		if (region.at(i) && map.isResource(x, y) && map.terrainPropertiesAt(x, y).walkable &&
+			!(keep && (*keep).at(i)))
 		{
 			map.setNoResource(x, y, 1);
 			++cleared;
@@ -103,8 +131,13 @@ namespace
 // stable while a planting pass changes resources without changing terrain.
 class AlgaeGrowth
 {
+static MapState::View checkedView(const Map& map)
+{
+	generationFertilityMapWork(map);
+	return map.stateView();
+}
 public:
-	AlgaeGrowth(const Map& map, const Torus&) : view(map.stateView()) {}
+	AlgaeGrowth(const Map& map, const Torus&) : view(checkedView(map)) {}
 	double at(int i) const
 	{
 		return double(MapState::resourceGrowthRate(view,i,ALGA))/Fertility::kRateScale;
@@ -119,7 +152,10 @@ std::vector<double> algaeGrowthChance(const Map &map, const Torus &t)
 	const AlgaeGrowth growth(map, t);
 	std::vector<double> chance(t.size(), 0.0);
 	for (int i = 0; i < t.size(); ++i)
-		chance[i] = growth.at(i);
+	{
+		::MapGeneration::generationCheckpoint();
+		chance.at(i) = growth.at(i);
+	}
 	return chance;
 }
 
@@ -136,22 +172,32 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 	if (band.nearestOffshore < 0)
 	{
 		for (int i = 0; i < n; ++i)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (map.isResourceAllowed(i % t.w, i / t.w, ALGA))
 				water.emplace_back(i % t.w, i / t.w);
+		}
 	}
 	else
 	{
 		std::vector<unsigned char> wet(n), dry(n);
 		for (int y = 0; y < t.h; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = 0; x < t.w; ++x)
 			{
-				wet[y * t.w + x] = map.isResourceAllowed(x,y,ALGA);
-				dry[y * t.w + x] = !map.isResourceAllowed(x,y,ALGA);
+				::MapGeneration::generationCheckpoint();
+				wet.at(y * t.w + x) = map.isResourceAllowed(x, y, ALGA);
+				dry.at(y * t.w + x) = !map.isResourceAllowed(x, y, ALGA);
 			}
+		}
 		const std::vector<int> offshore = stepsFrom(t, dry, wet);
 		for (int i = 0; i < n; ++i)
-			if (offshore[i] >= band.nearestOffshore && offshore[i] <= band.farthestOffshore)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (offshore.at(i) >= band.nearestOffshore && offshore.at(i) <= band.farthestOffshore)
 				water.emplace_back(i % t.w, i / t.w);
+		}
 	}
 	if (water.empty())
 		return;
@@ -161,8 +207,11 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 	if (band.bestShare <= 0 && !groupAt)
 	{
 		for (int clump = 0; clump < clumps; ++clump)
-			placeResourceClump(map, context, water[context.bounded(stream, water.size())], ALGA,
+		{
+			::MapGeneration::generationCheckpoint();
+			placeResourceClump(map, context, water.at(context.bounded(stream, water.size())), ALGA,
 							   band.clumpRadius);
+		}
 		return;
 	}
 	// Rank the band against the same cached growth field used by simulation.
@@ -170,21 +219,25 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 	std::vector<std::vector<std::pair<double, int>>> byGroup(groups);
 	for (const MapGeneratorPoint &p : water)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int i = p.y * t.w + p.x;
 		const int group = groupAt ? (*groupAt)(p.x, p.y) : 0;
 		if (group >= 0 && group < groups)
-			byGroup[group].push_back({band.bestShare > 0 ? -growth.at(i) : 0.0, i});
+			byGroup.at(group).push_back({band.bestShare > 0 ? -growth.at(i) : 0.0, i});
 	}
 	for (auto &group : byGroup)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (group.empty())
 			continue;
 		std::stable_sort(group.begin(), group.end());
 		if (band.bestShare > 0)
-			group.resize(std::max<size_t>(1, size_t(std::lround(group.size() * band.bestShare))));
+			group.resize(std::max<size_t>(
+				1, size_t(::MapGeneration::Numeric::lround(group.size() * band.bestShare))));
 		for (int clump = 0; clump < clumps / groups; ++clump)
 		{
-			const int i = group[context.bounded(stream, group.size())].second;
+			::MapGeneration::generationCheckpoint();
+			const int i = group.at(context.bounded(stream, group.size())).second;
 			placeResourceClump(map, context, {i % t.w, i / t.w}, ALGA, band.clumpRadius);
 		}
 	}
@@ -208,7 +261,7 @@ void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char 
 void seedAlgae(Map &map, GenerationContext &context, const Torus &t, const char *stream,
 			   int algaePercent, const AlgaeBand &band, const std::vector<int> &groupOf, int groups)
 {
-	const auto groupAt = [&](int x, int y) { return groupOf[y * t.w + x]; };
+	const auto groupAt = [&](int x, int y) { return groupOf.at(y * t.w + x); };
 	seedAlgaeIn(map, context, t, stream, algaePercent, band, std::max(1, groups), &groupAt);
 }
 
@@ -218,21 +271,31 @@ void stockIslands(Map &map, GenerationContext &context, const std::vector<Island
 	const int width = map.getW();
 	// The stock lottery may choose any of these deposits after the center.
 	constexpr int stockTypes[]={STONE,WHEAT,CHERRY,ORANGE,PRUNE};
-	const auto acceptsStock=[&](int x,int y) {
-		for (int resource : stockTypes) if (!map.terrainSupportsResourceAtByIndex(x,y,resource)) return false;
-        return true;
+	const auto acceptsStock = [&](int x, int y)
+	{
+		for (int resource : stockTypes)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (!map.terrainSupportsResourceAtByIndex(x, y, resource))
+				return false;
+		}
+		return true;
 	};
 	for (const Island &island : islands)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::vector<MapGeneratorPoint> grass;
 		for (int i : island.tiles)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (acceptsStock(i % width, i / width))
 				grass.emplace_back(i % width, i / width);
+		}
 		if (grass.empty())
 			continue;
 		MapGeneratorPoint centre(island.x, island.y);
 		if (!acceptsStock(centre.x, centre.y))
-			centre = grass[context.bounded(stream, grass.size())];
+			centre = grass.at(context.bounded(stream, grass.size()));
 		switch (context.bounded(stream, 3))
 		{
 		case 0:

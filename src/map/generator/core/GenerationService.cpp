@@ -29,7 +29,8 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	};
 	result.seed = request.seed;
 	result.stage = "validation";
-	const auto *definition = registry.find(request.method);
+	const auto *definition =
+		(useRequestCatalog && request.catalog ? *request.catalog : registry).find(request.method);
 	if (!definition)
 	{
 		result.error = GenerationError::InvalidRequest;
@@ -38,7 +39,21 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	}
 	result.generatorId = definition->id;
 	result.revision = definition->revision;
-	result.detail = validateGenerationRequest(request, *definition);
+	result.packageHash = definition->packageHash;
+	result.apiVersion = definition->apiVersion;
+	try
+	{
+		auto contract=*definition;
+        contract.validateRequest={};
+        result.detail=validateGenerationRequest(request,contract);
+        if(result.detail.empty() && definition->validateRequest)result.detail=definition->validateRequest(request);
+	}
+	catch (const ScriptGenerationFailure &error)
+	{
+		result.error = error.error;
+		result.detail = error.what();
+		return finish();
+	}
 	if (!result.detail.empty())
 	{
 		result.error = GenerationError::InvalidRequest;
@@ -69,6 +84,13 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	{
 		generated = definition->generate(game, context);
 	}
+	catch (const ScriptGenerationFailure &error)
+	{
+		result.error = error.error;
+		result.detail = error.what();
+		result.stage = context.stage;
+		return finish();
+	}
 	catch (const GenerationFailure &error)
 	{
 		context.detail = error.what();
@@ -91,7 +113,16 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	if (definition->validateWorld)
 	{
 		result.stage = "generator validation";
-		result.detail = definition->validateWorld(game, context);
+		try
+		{
+			result.detail = definition->validateWorld(game, context);
+		}
+		catch (const ScriptGenerationFailure &error)
+		{
+			result.error = error.error;
+			result.detail = error.what();
+			return finish();
+		}
 		if (!result.detail.empty())
 		{
 			result.error = GenerationError::InvalidWorld;

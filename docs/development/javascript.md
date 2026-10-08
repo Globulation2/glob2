@@ -216,6 +216,11 @@ and map regions, avoid storing whole observation snapshots, and compare `ctx.tic
 for scheduling. Exception messages are diagnostics, not stable API identifiers.
 There is no injected `console` or logging API in profile 1.
 
+Procedural map generators use a separate disposable host with the native shared
+toolkit and package-local modules. See [JavaScript map generators](../map-generators/JAVASCRIPT.md)
+for its manifest, authoring API and limits. The scenario and AI profiles below retain
+their existing restrictions.
+
 ## Runtime profile and determinism
 
 | Limit | Profile 1 |

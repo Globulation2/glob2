@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Geometry.h"
 #include "Grid.h"
 #include <algorithm>
@@ -29,7 +31,8 @@ struct StrokePoint
 /// The point `radius` tiles from (cx, cy) at `angle` radians.
 inline ShapePoint polarPoint(double cx, double cy, double radius, double angle)
 {
-	return {cx + radius * std::cos(angle), cy + radius * std::sin(angle)};
+	return {cx + radius * ::MapGeneration::Numeric::cos(angle),
+			cy + radius * ::MapGeneration::Numeric::sin(angle)};
 }
 
 /// Sets `value` on every tile whose centre lies within the path's half width of it: a tile at
@@ -61,13 +64,16 @@ int traceRay(std::vector<unsigned char> &mask, const Torus &t, ShapePoint from, 
 			 double length, Stop stop, unsigned char value = 1)
 {
 	int last = -1;
-	const double cx = std::cos(heading), sy = std::sin(heading);
+	const double cx = ::MapGeneration::Numeric::cos(heading),
+				 sy = ::MapGeneration::Numeric::sin(heading);
 	for (double d = 0; d <= length; d += 1.0)
 	{
-		const int i = t.at(int(std::lround(from.x + d * cx)), int(std::lround(from.y + d * sy)));
+		::MapGeneration::generationCheckpoint();
+		const int i = t.at(int(::MapGeneration::Numeric::lround(from.x + d * cx)),
+						   int(::MapGeneration::Numeric::lround(from.y + d * sy)));
 		if (stop(i))
 			break;
-		mask[i] = value;
+		mask.at(i) = value;
 		last = i;
 	}
 	return last;
@@ -195,6 +201,7 @@ int growBranches(std::vector<Branch> &tree, int parent, ShapePoint from, double 
 	int added = 0;
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
+		::MapGeneration::generationCheckpoint();
 		const Sprout sprout = queue[head];
 		const double tipHalfWidth =
 			std::max(style.minimumHalfWidth, sprout.halfWidth * style.widthRatio);
@@ -202,6 +209,7 @@ int growBranches(std::vector<Branch> &tree, int parent, ShapePoint from, double 
 		double turns[2], lengths[2];
 		for (int side = 0; side < 2; ++side)
 		{
+			::MapGeneration::generationCheckpoint();
 			const double turn = style.spread * (1 + (2 * roll() - 1) * style.spreadJitter);
 			const double stretch = 1 + (2 * roll() - 1) * style.lengthJitter;
 			turns[side] = (side ? 1 : -1) * turn;
@@ -209,25 +217,29 @@ int growBranches(std::vector<Branch> &tree, int parent, ShapePoint from, double 
 		}
 		for (const double share : {1.0, 0.5})
 		{
+			::MapGeneration::generationCheckpoint();
 			const double reach = sprout.length * share;
 			if (reach < style.minimumLength)
 				break;
-			const int segments = std::max(2, int(std::ceil(reach / 3)));
+			const int segments = std::max(2, int(::MapGeneration::Numeric::ceil(reach / 3)));
 			std::vector<StrokePoint> path = bentPath(sprout.from, sprout.heading, reach, bend,
 													 sprout.halfWidth, tipHalfWidth, segments);
 			if (!accept(path, sprout.parent))
 				continue;
-			const StrokePoint tip = path.back(), before = path[path.size() - 2];
+			const StrokePoint tip = path.back(), before = path.at(path.size() - 2);
 			const int self = int(tree.size());
 			const int depth = sprout.parent < 0 ? 0 : tree[sprout.parent].depth + 1;
 			const PathBounds bounds = pathBounds(path);
-			const double tipHeading = std::atan2(tip.y - before.y, tip.x - before.x);
+			const double tipHeading =
+				::MapGeneration::Numeric::atan2(tip.y - before.y, tip.x - before.x);
 			tree.push_back({std::move(path), sprout.parent, depth, bounds, tipHeading});
 			if (sprout.parent >= 0)
 				tree[sprout.parent].leaf = false;
 			++added;
 			if (sprout.forks > 0)
 				for (int side = 0; side < 2; ++side)
+				{
+					::MapGeneration::generationCheckpoint();
 					if (lengths[side] * share >= style.minimumLength)
 						queue.push_back({self,
 										 {tip.x, tip.y},
@@ -235,6 +247,7 @@ int growBranches(std::vector<Branch> &tree, int parent, ShapePoint from, double 
 										 lengths[side] * share,
 										 tipHalfWidth,
 										 sprout.forks - 1});
+				}
 			break;
 		}
 	}
@@ -251,17 +264,23 @@ template <typename Visit>
 void forEachTileInShape(const Torus &t, double cx, double cy, const RadialShape &shape, double turn,
 						Visit visit, const Stretch &stretch = {})
 {
-	const int reachX = int(std::ceil(shape.maximumRadius() * stretch.sx)) + 1;
-	const int reachY = int(std::ceil(shape.maximumRadius() * stretch.sy)) + 1;
-	const int x0 = int(std::lround(cx)), y0 = int(std::lround(cy));
+	const int reachX = int(::MapGeneration::Numeric::ceil(shape.maximumRadius() * stretch.sx)) + 1;
+	const int reachY = int(::MapGeneration::Numeric::ceil(shape.maximumRadius() * stretch.sy)) + 1;
+	const int x0 = int(::MapGeneration::Numeric::lround(cx)),
+			  y0 = int(::MapGeneration::Numeric::lround(cy));
 	for (int y = y0 - reachY; y <= y0 + reachY; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = x0 - reachX; x <= x0 + reachX; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const double dx = x - cx, dy = y - cy;
 			const ShapePoint round = stretch.undo(dx, dy);
-			if (std::hypot(round.x, round.y) < shape.radiusAt(std::atan2(round.y, round.x) - turn))
+			if (::MapGeneration::Numeric::hypot(round.x, round.y) <
+				shape.radiusAt(::MapGeneration::Numeric::atan2(round.y, round.x) - turn))
 				visit(t.at(x, y), dx, dy);
 		}
+	}
 }
 
 /// Sets `value` on every tile of a RadialShape centred at (cx, cy), turned by `turn`, stretched by
@@ -271,7 +290,7 @@ inline void fillShape(std::vector<unsigned char> &mask, const Torus &t, double c
 					  const Stretch &stretch = {})
 {
 	forEachTileInShape(
-		t, cx, cy, shape, turn, [&](int i, double, double) { mask[i] = value; }, stretch);
+		t, cx, cy, shape, turn, [&](int i, double, double) { mask.at(i) = value; }, stretch);
 }
 
 /// Visits every tile a Teardrop centred at (cx, cy) with its axis along `heading` (radians, head
@@ -282,17 +301,23 @@ template <typename Visit>
 void forEachTileInTeardrop(const Torus &t, double cx, double cy, double heading,
 						   const Teardrop &shape, Visit visit)
 {
-	const int reach = int(std::ceil(shape.length / 2)) + 1;
-	const int x0 = int(std::lround(cx)), y0 = int(std::lround(cy));
-	const double c = std::cos(heading), s = std::sin(heading);
+	const int reach = int(::MapGeneration::Numeric::ceil(shape.length / 2)) + 1;
+	const int x0 = int(::MapGeneration::Numeric::lround(cx)),
+			  y0 = int(::MapGeneration::Numeric::lround(cy));
+	const double c = ::MapGeneration::Numeric::cos(heading),
+				 s = ::MapGeneration::Numeric::sin(heading);
 	for (int y = y0 - reach; y <= y0 + reach; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = x0 - reach; x <= x0 + reach; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const double dx = x - cx, dy = y - cy;
 			const double along = dx * c + dy * s, across = -dx * s + dy * c;
 			if (shape.contains(along, across))
 				visit(t.at(x, y), along, across);
 		}
+	}
 }
 
 /// Sets `value` on every tile of a Teardrop centred at (cx, cy) along `heading`.
@@ -300,7 +325,7 @@ inline void fillTeardrop(std::vector<unsigned char> &mask, const Torus &t, doubl
 						 double heading, const Teardrop &shape, unsigned char value = 1)
 {
 	forEachTileInTeardrop(t, cx, cy, heading, shape,
-						  [&](int i, double, double) { mask[i] = value; });
+						  [&](int i, double, double) { mask.at(i) = value; });
 }
 
 /// Points along the arc `radius` tiles round (cx, cy) from angle `from` to angle `to` (radians,
@@ -309,14 +334,16 @@ inline void fillTeardrop(std::vector<unsigned char> &mask, const Torus &t, doubl
 inline std::vector<StrokePoint> arcPath(double cx, double cy, double radius, double from, double to,
 										double halfWidth, double step = 3)
 {
-	const int segments =
-		std::max(1, int(std::ceil(std::abs(to - from) * radius / std::max(0.5, step))));
+	const int segments = std::max(
+		1, int(::MapGeneration::Numeric::ceil(std::abs(to - from) * radius / std::max(0.5, step))));
 	std::vector<StrokePoint> path;
 	path.reserve(segments + 1);
 	for (int i = 0; i <= segments; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double a = from + (to - from) * i / segments;
-		path.push_back({cx + radius * std::cos(a), cy + radius * std::sin(a), halfWidth});
+		path.push_back({cx + radius * ::MapGeneration::Numeric::cos(a),
+						cy + radius * ::MapGeneration::Numeric::sin(a), halfWidth});
 	}
 	return path;
 }
@@ -345,24 +372,30 @@ template <typename Visit>
 void ringWithGates(const Torus &t, double cx, double cy, double radius, double halfWidth,
 				   const std::vector<double> &gates, double gateHalfWidth, Visit visit)
 {
-	const int reach = int(std::ceil(radius + halfWidth)) + 1;
-	const int x0 = int(std::lround(cx)), y0 = int(std::lround(cy));
+	const int reach = int(::MapGeneration::Numeric::ceil(radius + halfWidth)) + 1;
+	const int x0 = int(::MapGeneration::Numeric::lround(cx)),
+			  y0 = int(::MapGeneration::Numeric::lround(cy));
 	for (int y = y0 - reach; y <= y0 + reach; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = x0 - reach; x <= x0 + reach; ++x)
 		{
-			const double dx = x - cx, dy = y - cy, r = std::hypot(dx, dy);
+			::MapGeneration::generationCheckpoint();
+			const double dx = x - cx, dy = y - cy, r = ::MapGeneration::Numeric::hypot(dx, dy);
 			if (std::abs(r - radius) >= halfWidth)
 				continue;
-			const double angle = std::atan2(dy, dx);
+			const double angle = ::MapGeneration::Numeric::atan2(dy, dx);
 			int gate = -1;
 			for (size_t g = 0; g < gates.size() && gate < 0; ++g)
 			{
-				const double turn = std::remainder(angle - gates[g], 2 * kPi);
+				::MapGeneration::generationCheckpoint();
+				const double turn = std::remainder(angle - gates.at(g), 2 * kPi);
 				if (std::abs(turn) * r <= gateHalfWidth)
 					gate = int(g);
 			}
 			visit(t.at(x, y), gate);
 		}
+	}
 }
 
 /// A path laid out round (cx, cy) placed on the map by `stretch`: its points move, its half widths
@@ -374,6 +407,7 @@ inline std::vector<StrokePoint> stretchPath(const std::vector<StrokePoint> &path
 	placed.reserve(path.size());
 	for (const StrokePoint &p : path)
 	{
+		::MapGeneration::generationCheckpoint();
 		const ShapePoint q = stretch.apply(cx, cy, {p.x, p.y});
 		placed.push_back({q.x, q.y, p.halfWidth});
 	}
@@ -427,13 +461,14 @@ void traceSealedLap(std::vector<unsigned char> &mask, const Torus &t, bool along
 	std::vector<SubtilePoint> line;
 	for (int u = 0; u <= length; u += std::max(1, step))
 	{
-		const int v = int(std::lround(vAt(u)));
+		::MapGeneration::generationCheckpoint();
+		const int v = int(::MapGeneration::Numeric::lround(vAt(u)));
 		line.push_back(alongX ? subtileCentre(u, v) : subtileCentre(v, u));
 	}
 	if (line.size() < 2 || (length % std::max(1, step)) != 0)
 	{
 		// A step that does not divide the lap still needs the closing vertex at u = length.
-		const int v = int(std::lround(vAt(length)));
+		const int v = int(::MapGeneration::Numeric::lround(vAt(length)));
 		line.push_back(alongX ? subtileCentre(length, v) : subtileCentre(v, length));
 	}
 	traceSealedPath(mask, t, line, value, false);
@@ -456,9 +491,10 @@ void forEachTileInPolygon(const Torus &t, const std::vector<SubtilePoint> &outli
 	const size_t n = outline.size();
 	if (n < 3)
 		return;
-	long long top = outline[0].y, bottom = outline[0].y;
+	long long top = outline.at(0).y, bottom = outline.at(0).y;
 	for (const SubtilePoint &p : outline)
 	{
+		::MapGeneration::generationCheckpoint();
 		top = std::min(top, p.y);
 		bottom = std::max(bottom, p.y);
 	}
@@ -471,11 +507,13 @@ void forEachTileInPolygon(const Torus &t, const std::vector<SubtilePoint> &outli
 	std::vector<Crossing> crossings;
 	for (long long row = subtileTile(top); row <= subtileTile(bottom); ++row)
 	{
+		::MapGeneration::generationCheckpoint();
 		const long long yc = row * kSubtile + kSubtile / 2;
 		crossings.clear();
 		for (size_t k = 0; k < n; ++k)
 		{
-			SubtilePoint a = outline[k], b = outline[(k + 1) % n];
+			::MapGeneration::generationCheckpoint();
+			SubtilePoint a = outline.at(k), b = outline.at((k + 1) % n);
 			if (a.y == b.y)
 				continue;
 			if (a.y > b.y)
@@ -488,6 +526,7 @@ void forEachTileInPolygon(const Torus &t, const std::vector<SubtilePoint> &outli
 				  { return p.num * q.den < q.num * p.den; });
 		for (size_t k = 0; k + 1 < crossings.size(); k += 2)
 		{
+			::MapGeneration::generationCheckpoint();
 			// Tiles whose centre xc satisfies left <= xc < right, compared exactly.
 			const Crossing &left = crossings[k], &right = crossings[k + 1];
 			auto firstCentreAtOrAfter = [](const Crossing &c)
@@ -499,7 +538,10 @@ void forEachTileInPolygon(const Torus &t, const std::vector<SubtilePoint> &outli
 			};
 			const long long from = firstCentreAtOrAfter(left), to = firstCentreAtOrAfter(right);
 			for (long long column = from; column < to; ++column)
+			{
+				::MapGeneration::generationCheckpoint();
 				visit(t.at(int(column), int(row)));
+			}
 		}
 	}
 }

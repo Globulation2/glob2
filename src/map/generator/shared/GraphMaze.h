@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Drawing.h"
 #include "Points.h"
 #include "Tessellation.h"
@@ -30,7 +32,7 @@ struct CellGraph
 	int cellCount() const { return int(cellEdges.size()); }
 	int other(int edge, int cell) const
 	{
-		return edgeCells[edge][0] == cell ? edgeCells[edge][1] : edgeCells[edge][0];
+		return edgeCells.at(edge)[0] == cell ? edgeCells.at(edge)[1] : edgeCells.at(edge)[0];
 	}
 };
 
@@ -132,24 +134,30 @@ carveOpenEdges(std::vector<unsigned char> &mask, const Torus &t, const CellGraph
 	std::vector<unsigned char> line(mask.size(), 0);
 	for (size_t edge = 0; edge < open.size(); ++edge)
 	{
-		if (!open[edge])
+		::MapGeneration::generationCheckpoint();
+		if (!open.at(edge))
 			continue;
-		const int a = g.edgeCells[edge][0], b = g.edgeCells[edge][1];
+		const int a = g.edgeCells.at(edge)[0], b = g.edgeCells.at(edge)[1];
 		const std::vector<StrokePoint> path =
-			wanderingPath(t, points[a], points[b], halfWidth, wander, widthJitter, random);
+			wanderingPath(t, points.at(a), points.at(b), halfWidth, wander, widthJitter, random);
 		strokePath(line, t, path);
 		// Only the stroke's bounding circle need be looked at, and cleared for the next edge.
 		const PathBounds bounds = pathBounds(path);
-		const int reach = int(std::ceil(bounds.radius)) + 1;
-		const int x0 = int(std::lround(bounds.x)), y0 = int(std::lround(bounds.y));
+		const int reach = int(::MapGeneration::Numeric::ceil(bounds.radius)) + 1;
+		const int x0 = int(::MapGeneration::Numeric::lround(bounds.x)),
+				  y0 = int(::MapGeneration::Numeric::lround(bounds.y));
 		for (int y = y0 - reach; y <= y0 + reach; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = x0 - reach; x <= x0 + reach; ++x)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int i = t.at(x, y);
-				if (line[i] && eligible(i))
-					mask[i] = 1;
-				line[i] = 0;
+				if (line.at(i) && eligible(i))
+					mask.at(i) = 1;
+				line.at(i) = 0;
 			}
+		}
 		carved.push_back({a, b});
 	}
 	return carved;

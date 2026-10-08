@@ -87,10 +87,11 @@ void SettingsScreen::resetScroll()
 std::string SettingsScreen::categoryName(Category category) const
 {
 	const char *names[] = {
-		"Display & graphics", "Audio",  "Gameplay",    "Building defaults", "Controls",
-		"Language & player",  "Online", "Hive Mind",   "Recording",         "Experiments",
-		"Custom AIs"};
-	static_assert(std::size(names) == std::size_t(Category::CustomAIs) + 1, "a name for every settings category");
+		"Display & graphics", "Audio",         "Gameplay",  "Building defaults", "Controls",
+		"Language & player",  "Online",        "Hive Mind", "Recording",         "Experiments",
+		"Custom AIs",         "Map generators"};
+	static_assert(std::size(names) == std::size_t(Category::CustomGenerators) + 1,
+				  "a name for every settings category");
 	return tr(names[int(category)]);
 }
 
@@ -109,6 +110,8 @@ void SettingsScreen::buildRows()
 		buildHiveMind();
 	else if (current == Category::Recording)
 		buildRecording();
+	else if (current == Category::CustomGenerators)
+		buildCustomGenerators();
 	else if (current == Category::CustomAIs)
 		buildCustomAIs();
 	else
@@ -202,6 +205,7 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 		result.push_back(Category::Recording);
 	result.push_back(Category::Experiments);
 	result.push_back(Category::CustomAIs);
+	result.push_back(Category::CustomGenerators);
 	return result;
 }
 
@@ -280,7 +284,7 @@ void SettingsScreen::finishInteraction()
 
 void SettingsScreen::done()
 {
-	if (customAIBusy())
+	if (customAIBusy() || customGeneratorBusy())
 		return;
 	host().closePopup();
 	host().endEditing();
@@ -300,7 +304,7 @@ void SettingsScreen::done()
 
 void SettingsScreen::abandon()
 {
-	if (customAIBusy())
+	if (customAIBusy() || customGeneratorBusy())
 		return;
 	// Always closes in one click, whether or not anything is dirty or
 	// failed: every change is already live and auto-saved as it's made, so
@@ -319,7 +323,7 @@ void SettingsScreen::dismiss()
 	}
 	else if (modal == Modal::AILibrary)
 	{
-		if (customAIBusy())
+		if (customAIBusy() || customGeneratorBusy())
 			return;
 		closeCustomAILibrary();
 		modal = Modal::None;
@@ -386,6 +390,7 @@ void SettingsScreen::onTimer(Uint32 tick)
 {
 	lastTick = tick;
 	pollCustomAIs();
+	pollCustomGenerators();
 	if (current == Category::Online)
 		pollOnline();
 	if (current == Category::Recording && int(GAGCore::Recording::recorder().status().state) != recordingState)
@@ -499,11 +504,10 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			options.minHeight = 42;
 			// One icon per Category, in its order.
 			static constexpr UIIcon icons[] = {
-				UIIcon::Display,   UIIcon::Audio,       UIIcon::Gameplay,
-				UIIcon::Buildings, UIIcon::Controls,    UIIcon::Player,
-				UIIcon::Online,    UIIcon::Crown,       UIIcon::Display,
-				UIIcon::Experiments, UIIcon::Gameplay};
-			static_assert(std::size(icons) == std::size_t(Category::CustomAIs) + 1,
+				UIIcon::Display,  UIIcon::Audio,       UIIcon::Gameplay, UIIcon::Buildings,
+				UIIcon::Controls, UIIcon::Player,      UIIcon::Online,   UIIcon::Crown,
+				UIIcon::Display,  UIIcon::Experiments, UIIcon::Gameplay, UIIcon::Gameplay};
+			static_assert(std::size(icons) == std::size_t(Category::CustomGenerators) + 1,
 						  "an icon for every settings category");
 			options.icon = uiIcon(icons[int(category)]);
 			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),

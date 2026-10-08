@@ -150,11 +150,20 @@ class Planner:
                 raise ValueError(f'map size {size} admits none of the formats')
         # Size first, so every size gets an equal share of games whatever
         # formats it admits; then a format that size admits.
+        # A size's optional `generators` restricts the pool at that size, for
+        # generators a preflight found unable to generate there.
+        pools = []
+        for size in sizes:
+            pool = [m for m in methods if m in size['generators']] if 'generators' in size else methods
+            if not pool:
+                raise ValueError(f'map size {size} admits none of the generators')
+            pools.append(pool)
         for _ in range(count):
-            size = rng.choice(sizes)
+            index = rng.randrange(len(sizes))  # the same draw as rng.choice(sizes)
+            size = sizes[index]
             fmt = rng.choice([f for f in formats if f in size.get('formats', formats)])
-            params = {k: v for k, v in size.items() if k != 'formats'}
-            self.sampled_game(rng, rng.choice(self.builds), ais, methods, [params], [fmt])
+            params = {k: v for k, v in size.items() if k not in ('formats', 'generators')}
+            self.sampled_game(rng, rng.choice(self.builds), ais, pools[index], [params], [fmt])
 
     def game(self, generated, build, seed, players, rotation, fmt, variant='baseline', overrides=None, pair=None, held_out=False, alliances=None):
         config = self.config

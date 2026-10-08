@@ -24,6 +24,10 @@ class EngineJob:
 
     def validate(self, job):
         config, seeds = job['config'], job['seeds']
+        def valid_generator(value):
+            return type(value) is int or isinstance(value,str) and bool(value) and len(value)<=128
+        if isinstance(config.get('generator'),str) and ':' in config['generator'] and not any(k=='generator-package' or k.startswith('generator-package-') for k in job['inputs']):
+            raise ValueError('custom generation requires frozen generator package inputs')
         generation = {'generator', 'params', 'candidates'}
         allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules', 'win_probability_permille'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
@@ -39,8 +43,8 @@ class EngineJob:
             if sources != 1:
                 raise ValueError('game requires exactly one map, saved state or inline generator')
             if inline:
-                if type(config['generator']) is not int or 'map' not in seeds:
-                    raise ValueError('inline generation requires a map seed and integer generator')
+                if not valid_generator(config['generator']) or 'map' not in seeds:
+                    raise ValueError('inline generation requires a map seed and generator ID')
                 if not config.get('players') or 'game' not in seeds:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
@@ -57,8 +61,8 @@ class EngineJob:
             permille = config.get('win_probability_permille')
             if permille is not None and (type(permille) is not int or not (permille == 0 or 501 <= permille <= 1000)):
                 raise ValueError('win_probability_permille must be 0 (off) or between 501 and 1000')
-        elif 'map' not in seeds or type(config.get('generator')) is not int:
-            raise ValueError('generation requires map seed and integer generator')
+        elif 'map' not in seeds or not valid_generator(config.get('generator')):
+            raise ValueError('generation requires map seed and generator ID')
         if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack', 'result'}:
             raise ValueError('unknown requested output')
         if job['outputs'].get('result', 'full') not in ('full', 'outcome'):
@@ -71,6 +75,9 @@ class EngineJob:
                 '--run-game' if self.kind == 'game' else '--generate-map',
                 '--output-dir', str(out), '--profile', 'glob2-tournament-' + Path(attempt_dir).name]
         config, outputs = job['config'], job['outputs']
+        for key,path in sorted(inputs.items()):
+            if key=='generator-package' or key.startswith('generator-package-'):
+                args += ['--generator-package',str(path)]
         def add(key, value):
             args.extend([key, str(value)])
         if self.kind == 'game':

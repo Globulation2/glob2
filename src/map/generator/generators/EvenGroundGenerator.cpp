@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EvenGroundGenerator.h"
 #include "Contact.h"
@@ -207,7 +209,10 @@ int floorPowerOfTwo(int value)
 {
 	int power = 1;
 	while (power * 2 <= value)
+	{
+		::MapGeneration::generationCheckpoint();
 		power *= 2;
+	}
 	return power;
 }
 
@@ -255,21 +260,23 @@ void walkLand(const Torus &t, const std::vector<unsigned char> &land, int from,
 {
 	std::fill(steps.begin(), steps.end(), -1);
 	queue.clear();
-	steps[from] = 0;
+	steps.at(from) = 0;
 	queue.push_back(from);
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
-		const int i = queue[head], x = i % t.w, y = i / t.w;
+		::MapGeneration::generationCheckpoint();
+		const int i = queue.at(head), x = i % t.w, y = i / t.w;
 		// Read once. steps[i] cannot change under this loop - a cell is only ever written when it is
 		// still unvisited, and this one was dequeued - but the writes below are to the same array,
 		// so the compiler has to assume they may alias and reloads it four times otherwise.
-		const int next_step = steps[i] + 1;
+		const int next_step = steps.at(i) + 1;
 		for (const auto &step : kCardinalSteps)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int next = t.at(x + step[0], y + step[1]);
-			if (land[next] && steps[next] < 0)
+			if (land.at(next) && steps.at(next) < 0)
 			{
-				steps[next] = next_step;
+				steps.at(next) = next_step;
 				queue.push_back(next);
 			}
 		}
@@ -307,7 +314,10 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 {
 	const int teams = int(solved.home.size());
 	for (int k = 0; k < teams; ++k)
-		walkLand(t, s.land, solved.home[k], s.walk[k], s.queue);
+	{
+		::MapGeneration::generationCheckpoint();
+		walkLand(t, s.land, solved.home.at(k), s.walk.at(k), s.queue);
+	}
 
 	// Equal reachable land, equal building room at home, and equal exposure. The last of those is
 	// how much open ground lies on the ring a rival arrives across: a colony whose approach is
@@ -316,28 +326,33 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 	std::vector<double> reach(teams, 0.0), room(teams, 0.0), approach(teams, 0.0);
 	for (int k = 0; k < teams; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		// Walked once into locals: the three sums are doubles and the walk an int array, but the
 		// compiler cannot prove the vectors do not overlap, so written straight to reach[k] this
 		// reloads the step count and all three totals on every cell.
-		const std::vector<int> &walk = s.walk[k];
+		const std::vector<int> &walk = s.walk.at(k);
 		double reached = 0, roomy = 0, exposed = 0;
 		for (int i = 0; i < t.size(); ++i)
 		{
-			const int steps = walk[i];
+			::MapGeneration::generationCheckpoint();
+			const int steps = walk.at(i);
 			if (steps < 0)
 				continue;
-			reached += s.decay[steps];
-			roomy += steps <= kRoomWalk && solved.kind[i] == kOpen;
+			reached += s.decay.at(steps);
+			roomy += steps <= kRoomWalk && solved.kind.at(i) == kOpen;
 			exposed += steps == kApproachWalk;
 		}
-		reach[k] = reached;
-		room[k] = roomy;
-		approach[k] = exposed;
+		reach.at(k) = reached;
+		room.at(k) = roomy;
+		approach.at(k) = exposed;
 	}
 
 	s.severed = 0;
 	for (int k = 1; k < teams; ++k)
-		s.severed += s.walk[0][solved.home[k]] < 0;
+	{
+		::MapGeneration::generationCheckpoint();
+		s.severed += s.walk.at(0).at(solved.home.at(k)) < 0;
+	}
 
 	// The tightest way out of each colony: the widest walk it has to whichever other colony is
 	// easiest to reach, as a passage width in cells. That is the front the player will fight on.
@@ -351,13 +366,20 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 		std::vector<int> source(1);
 		for (int k = 0; k < teams; ++k)
 		{
+			::MapGeneration::generationCheckpoint();
 			for (int j = 0; j < teams; ++j)
-				s.others[solved.home[j]] = j != k;
-			source[0] = solved.home[k];
+			{
+				::MapGeneration::generationCheckpoint();
+				s.others.at(solved.home.at(j)) = j != k;
+			}
+			source.at(0) = solved.home.at(k);
 			const int clear = widestWalkClearance(t, s.land, s.room, source, s.others);
 			widthTotal += clear > 0 ? 2 * clear - 1 : 0;
 			for (int j = 0; j < teams; ++j)
-				s.others[solved.home[j]] = 0;
+			{
+				::MapGeneration::generationCheckpoint();
+				s.others.at(solved.home.at(j)) = 0;
+			}
 		}
 	}
 	s.passWidth = teams > 1 ? widthTotal / double(teams) : wantWidth;
@@ -366,12 +388,16 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 	int shore = 0, wet = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (s.land[i])
+		::MapGeneration::generationCheckpoint();
+		if (s.land.at(i))
 			continue;
 		++wet;
 		const int x = i % t.w, y = i / t.w;
 		for (const auto &step : kCardinalSteps)
-			shore += s.land[t.at(x + step[0], y + step[1])] != 0;
+		{
+			::MapGeneration::generationCheckpoint();
+			shore += s.land.at(t.at(x + step[0], y + step[1])) != 0;
+		}
 	}
 	s.shoreRatio = wet > 0 ? double(shore) / double(wet) : shoreWanted;
 
@@ -379,16 +405,25 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 	// about, so two lakes touching at a corner count as the two lakes the painted map will show.
 	s.wetMask.resize(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		s.wetMask[i] = !s.land[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		s.wetMask.at(i) = !s.land.at(i);
+	}
 	s.bodies = 0;
 	for (const int part : connectedRegions(s.wetMask, t.w, t.h, true, GridNeighbors::Cardinal))
+	{
+		::MapGeneration::generationCheckpoint();
 		s.bodies = std::max(s.bodies, part + 1);
+	}
 
 	s.reachSpread = imbalance(reach);
 	s.approachSpread = imbalance(approach);
 	s.roomShort = 0;
 	for (const double had : room)
+	{
+		::MapGeneration::generationCheckpoint();
 		s.roomShort += std::max(0.0, (roomWanted - had) / double(roomWanted));
+	}
 	s.roomShort /= double(teams);
 
 	s.cost = Objective()
@@ -431,11 +466,17 @@ struct ShapeSearch
 	{
 		s.land.assign(cells, 0);
 		for (int i = 0; i < cells; ++i)
-			s.land[i] = solved.kind[i] != kWater;
+		{
+			::MapGeneration::generationCheckpoint();
+			s.land.at(i) = solved.kind.at(i) != kWater;
+		}
 		s.walk.assign(teams, std::vector<int>(cells, -1));
 		s.decay.resize(cells + 1);
 		for (int step = 0; step <= cells; ++step)
-			s.decay[step] = std::exp(-double(step) / kCatchmentDecay);
+		{
+			::MapGeneration::generationCheckpoint();
+			s.decay.at(step) = ::MapGeneration::Numeric::exp(-double(step) / kCatchmentDecay);
+		}
 		// A tiny lattice cannot spare kRoomCells per colony; ask for what there is room to ask for.
 		roomWanted = std::max(2, std::min(kRoomCells, cells / std::max(1, 3 * teams)));
 	}
@@ -446,17 +487,21 @@ struct ShapeSearch
 		{
 			const int x = i % t.w, y = i / t.w;
 			for (const auto &step : kCardinalSteps)
-				if (!s.land[t.at(x + step[0], y + step[1])])
+			{
+				::MapGeneration::generationCheckpoint();
+				if (!s.land.at(t.at(x + step[0], y + step[1])))
 					return true;
+			}
 			return false;
 		};
 		wet = dry = -1;
 		for (int attempt = 0; attempt < 48 && (wet < 0 || dry < 0); ++attempt)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = int(context.bounded("even-ground-shape", std::uint32_t(cells)));
-			if (solved.pinned[i])
+			if (solved.pinned.at(i))
 				continue;
-			if (!s.land[i])
+			if (!s.land.at(i))
 			{
 				if (wet < 0)
 					wet = i;
@@ -466,11 +511,11 @@ struct ShapeSearch
 		}
 		if (wet < 0 || dry < 0)
 			return false;
-		wasDry = solved.kind[dry];
-		s.land[wet] = 1;
-		s.land[dry] = 0;
-		solved.kind[wet] = kOpen;
-		solved.kind[dry] = kWater;
+		wasDry = solved.kind.at(dry);
+		s.land.at(wet) = 1;
+		s.land.at(dry) = 0;
+		solved.kind.at(wet) = kOpen;
+		solved.kind.at(dry) = kWater;
 		return true;
 	}
 	double cost()
@@ -480,17 +525,20 @@ struct ShapeSearch
 	}
 	void undo()
 	{
-		s.land[wet] = 0;
-		s.land[dry] = 1;
-		solved.kind[wet] = kWater;
-		solved.kind[dry] = wasDry;
+		s.land.at(wet) = 0;
+		s.land.at(dry) = 1;
+		solved.kind.at(wet) = kWater;
+		solved.kind.at(dry) = wasDry;
 	}
 	void remember() { best = solved.kind; }
 	void recall() { solved.kind = best; syncLand(); }
 	void syncLand()
 	{
 		for (int i = 0; i < cells; ++i)
-			s.land[i] = solved.kind[i] != kWater;
+		{
+			::MapGeneration::generationCheckpoint();
+			s.land.at(i) = solved.kind.at(i) != kWater;
+		}
 	}
 };
 
@@ -528,8 +576,12 @@ double stockSpread(const Catchments &had, int teams)
 	std::vector<double> shares(teams);
 	for (int r = 0; r < kStockKinds; ++r)
 	{
+		::MapGeneration::generationCheckpoint();
 		for (int k = 0; k < teams; ++k)
-			shares[k] = had[k][r];
+		{
+			::MapGeneration::generationCheckpoint();
+			shares.at(k) = had.at(k)[r];
+		}
 		total += imbalance(shares);
 	}
 	return total / kStockKinds;
@@ -553,11 +605,13 @@ Objective stockObjective(const Catchments &had, int teams,
 	std::vector<double> shares(teams);
 	for (int r = 0; r < kStockKinds; ++r)
 	{
+		::MapGeneration::generationCheckpoint();
 		double least = -1;
 		for (int k = 0; k < teams; ++k)
 		{
-			shares[k] = had[k][r];
-			least = least < 0 ? shares[k] : std::min(least, shares[k]);
+			::MapGeneration::generationCheckpoint();
+			shares.at(k) = had.at(k)[r];
+			least = least < 0 ? shares.at(k) : std::min(least, shares.at(k));
 		}
 		spread += imbalance(shares);
 		level += std::max(0.0, least) / std::max(1, counts[r]);
@@ -588,11 +642,14 @@ class StockSearch
 		  had(teams, {0.0, 0.0, 0.0})
 	{
 		for (int i = 0; i < cells; ++i)
-			if (solved.kind[i] >= kWheat)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (solved.kind.at(i) >= kWheat)
 			{
-				++counts[solved.kind[i] - kWheat];
+				++counts[solved.kind.at(i) - kWheat];
 				++crops;
 			}
+		}
 		recompute();
 	}
 
@@ -603,12 +660,13 @@ class StockSearch
 		a = b = -1;
 		for (int attempt = 0; attempt < 32 && b < 0; ++attempt)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = int(context.bounded("even-ground-stock", std::uint32_t(cells)));
-			if (solved.pinned[i] || solved.kind[i] == kWater)
+			if (solved.pinned.at(i) || solved.kind.at(i) == kWater)
 				continue;
 			if (a < 0)
 				a = i;
-			else if (solved.kind[i] != solved.kind[a])
+			else if (solved.kind.at(i) != solved.kind.at(a))
 				b = i;
 		}
 		if (b < 0)
@@ -629,28 +687,40 @@ class StockSearch
 	{
 		for (int k = 0; k < teams; ++k)
 		{
-			had[k] = {0.0, 0.0, 0.0};
+			::MapGeneration::generationCheckpoint();
+			had.at(k) = {0.0, 0.0, 0.0};
 			for (int i = 0; i < cells; ++i)
-				if (solved.kind[i] >= kWheat)
-					had[k][solved.kind[i] - kWheat] += worth(k, i);
+			{
+				::MapGeneration::generationCheckpoint();
+				if (solved.kind.at(i) >= kWheat)
+					had.at(k)[solved.kind.at(i) - kWheat] += worth(k, i);
+			}
 		}
 		matched = 0;
 		for (int i = 0; i < cells; ++i)
-			if (solved.kind[i] >= kWheat)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (solved.kind.at(i) >= kWheat)
 				matched += matching(i);
+		}
 	}
 
   private:
 	double worth(int team, int cell) const
-	{ return walk[team][cell] < 0 ? 0.0 : decay[walk[team][cell]]; }
+	{
+		return walk.at(team).at(cell) < 0 ? 0.0 : decay.at(walk.at(team).at(cell));
+	}
 	int matching(int cell) const
 	{
-		if (solved.kind[cell] < kWheat)
+		if (solved.kind.at(cell) < kWheat)
 			return 0;
 		int same = 0;
 		const int x = cell % lattice.w, y = cell / lattice.w;
 		for (const auto &step : kCardinalSteps)
-			same += solved.kind[lattice.at(x + step[0], y + step[1])] == solved.kind[cell];
+		{
+			::MapGeneration::generationCheckpoint();
+			same += solved.kind.at(lattice.at(x + step[0], y + step[1])) == solved.kind.at(cell);
+		}
 		return same;
 	}
 	void swapStock(int one, int other)
@@ -659,16 +729,17 @@ class StockSearch
 		// match each other, so doubling their local deltas also accounts for their neighbours.
 
 		matched -= 2 * (matching(one) + matching(other));
-		const unsigned char kindOne = solved.kind[one], kindOther = solved.kind[other];
+		const unsigned char kindOne = solved.kind.at(one), kindOther = solved.kind.at(other);
 		for (int k = 0; k < teams; ++k)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (kindOne >= kWheat)
-				had[k][kindOne - kWheat] += worth(k, other) - worth(k, one);
+				had.at(k)[kindOne - kWheat] += worth(k, other) - worth(k, one);
 			if (kindOther >= kWheat)
-				had[k][kindOther - kWheat] += worth(k, one) - worth(k, other);
+				had.at(k)[kindOther - kWheat] += worth(k, one) - worth(k, other);
 		}
-		solved.kind[one] = kindOther;
-		solved.kind[other] = kindOne;
+		solved.kind.at(one) = kindOther;
+		solved.kind.at(other) = kindOne;
 		matched += 2 * (matching(one) + matching(other));
 	}
 	Solved &solved;
@@ -723,14 +794,16 @@ void pinHomes(Solved &solved)
 	solved.pinned.assign(solved.lat.size(), 0);
 	for (const int home : solved.home)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int x = home % t.w, y = home / t.w;
-		solved.pinned[home] = 1;
-		solved.kind[home] = kOpen;
+		solved.pinned.at(home) = 1;
+		solved.kind.at(home) = kOpen;
 		for (const auto &step : kCardinalSteps)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int next = t.at(x + step[0], y + step[1]);
-			solved.pinned[next] = 1;
-			solved.kind[next] = kOpen;
+			solved.pinned.at(next) = 1;
+			solved.kind.at(next) = kOpen;
 		}
 	}
 }
@@ -742,17 +815,24 @@ void floodToShare(Solved &solved, GenerationContext &context, int sharePercent)
 	const int cells = solved.lat.size();
 	std::vector<int> free;
 	for (int i = 0; i < cells; ++i)
-		if (!solved.pinned[i])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (!solved.pinned.at(i))
 			free.push_back(i);
+	}
 	const int wanted = int(std::int64_t(free.size()) * std::clamp(sharePercent, 0, 100) / 100);
 	if (wanted <= 0)
 		return;
 	const std::vector<int> noise =
 		fractalNoise(solved.lat.w, solved.lat.h, std::max(2, solved.lat.w / 4), 3,
 					 context.stream("even-ground-shape"));
-	std::stable_sort(free.begin(), free.end(), [&](int a, int b) { return noise[a] > noise[b]; });
+	std::stable_sort(free.begin(), free.end(),
+					 [&](int a, int b) { return noise.at(a) > noise.at(b); });
 	for (int k = 0; k < wanted; ++k)
-		solved.kind[free[k]] = kWater;
+	{
+		::MapGeneration::generationCheckpoint();
+		solved.kind.at(free.at(k)) = kWater;
+	}
 }
 
 /// The crops the amount sliders asked for, dealt over the land as a starting arrangement.
@@ -762,8 +842,11 @@ void stockToAmounts(Solved &solved, GenerationContext &context, const EvenGround
 	const int cells = solved.lat.size();
 	std::vector<int> free;
 	for (int i = 0; i < cells; ++i)
-		if (!solved.pinned[i] && solved.kind[i] != kWater)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (!solved.pinned.at(i) && solved.kind.at(i) != kWater)
 			free.push_back(i);
+	}
 	context.shuffle(free.begin(), free.end(), "even-ground-stock");
 
 	const std::int64_t land = std::int64_t(free.size());
@@ -774,6 +857,7 @@ void stockToAmounts(Solved &solved, GenerationContext &context, const EvenGround
 	const int ceiling = int(land * kStockedCeiling / 100);
 	while (wheat + wood + stone > ceiling)
 	{
+		::MapGeneration::generationCheckpoint();
 		int &most = wheat >= wood ? (wheat >= stone ? wheat : stone) : (wood >= stone ? wood : stone);
 		if (most <= 0)
 			break;
@@ -783,7 +867,10 @@ void stockToAmounts(Solved &solved, GenerationContext &context, const EvenGround
 	const auto deal = [&](int count, unsigned char kind)
 	{
 		for (int k = 0; k < count && at < free.size(); ++k, ++at)
-			solved.kind[free[at]] = kind;
+		{
+			::MapGeneration::generationCheckpoint();
+			solved.kind.at(free.at(at)) = kind;
+		}
 	};
 	deal(wheat, kWheat);
 	deal(wood, kWood);
@@ -803,14 +890,18 @@ std::vector<int> paintedCells(const Torus &t, const Lattice &lat, GenerationCont
 	std::vector<Site> centres;
 	centres.reserve(lat.size());
 	for (int cy = 0; cy < lat.h; ++cy)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int cx = 0; cx < lat.w; ++cx)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int jostle = int(lat.tiles * kCentreJostle);
 			const int dx = int(context.bounded("even-ground-warp", 2 * jostle + 1)) - jostle;
 			const int dy = int(context.bounded("even-ground-warp", 2 * jostle + 1)) - jostle;
 			centres.push_back({t.x(cx * lat.tiles + lat.tiles / 2 + dx),
 							   t.y(cy * lat.tiles + lat.tiles / 2 + dy)});
 		}
+	}
 	// Four octaves from three cells down: the long ones bend a border across several cells, the
 	// short ones ravel its edge.
 	const int period = std::max(8, lat.tiles * 3);
@@ -903,7 +994,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// is a kind of map, where a country balanced in every dimension at once is only ever the one.
 	brief.choose({"bodies", "pass", "fields", "approach"}, 1, 4);
 
-	floodToShare(solved, context, std::clamp(int(std::lround(o.water * wetness)), 0, 90));
+	floodToShare(solved, context,
+				 std::clamp(int(::MapGeneration::Numeric::lround(o.water * wetness)), 0, 90));
 
 	// Tight passes at 100, open country at 0, as a passage width in cells.
 	const double wantWidth = 1.0 + 6.0 * (1.0 - std::clamp(o.passes, 0, 100) / 100.0);
@@ -922,14 +1014,23 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// distance to every cell is fixed and a crop's move is worth two known terms.
 	std::vector<unsigned char> land(L.lat.size(), 0);
 	for (int i = 0; i < L.lat.size(); ++i)
-		land[i] = solved.kind[i] != kWater;
+	{
+		::MapGeneration::generationCheckpoint();
+		land.at(i) = solved.kind.at(i) != kWater;
+	}
 	std::vector<std::vector<int>> walk(teams, std::vector<int>(L.lat.size(), -1));
 	std::vector<int> queue;
 	for (int k = 0; k < teams; ++k)
-		walkLand(lattice, land, solved.home[k], walk[k], queue);
+	{
+		::MapGeneration::generationCheckpoint();
+		walkLand(lattice, land, solved.home.at(k), walk.at(k), queue);
+	}
 	std::vector<double> decay(L.lat.size() + 1);
 	for (int step = 0; step <= L.lat.size(); ++step)
-		decay[step] = std::exp(-double(step) / kCatchmentDecay);
+	{
+		::MapGeneration::generationCheckpoint();
+		decay.at(step) = ::MapGeneration::Numeric::exp(-double(step) / kCatchmentDecay);
+	}
 
 	// Balance buys search, not just weight. Weighting the shape pass alone left the slider with
 	// nothing measurable to do - fairness read 0.900, 0.896 and 0.912 at 0, 50 and 100, which is
@@ -952,23 +1053,33 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 
 	L.terrain.assign(L.t.size(), GRASS);
 	for (int i = 0; i < L.t.size(); ++i)
-		if (L.kind[L.cellOf[i]] == kWater)
-			L.terrain[i] = WATER;
+	{
+		::MapGeneration::generationCheckpoint();
+		if (L.kind.at(L.cellOf.at(i)) == kWater)
+			L.terrain.at(i) = WATER;
+	}
 	layBeaches(L.terrain, L.t);
 
 	// A colony's home ground is its pinned cells: its own cell and the four around it.
 	std::vector<int> ownerOf(L.lat.size(), -1);
 	for (int k = 0; k < teams; ++k)
 	{
-		const int x = solved.home[k] % lattice.w, y = solved.home[k] / lattice.w;
-		ownerOf[solved.home[k]] = k;
+		::MapGeneration::generationCheckpoint();
+		const int x = solved.home.at(k) % lattice.w, y = solved.home.at(k) / lattice.w;
+		ownerOf.at(solved.home.at(k)) = k;
 		for (const auto &step : kCardinalSteps)
-			if (int &owner = ownerOf[lattice.at(x + step[0], y + step[1])]; owner < 0)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (int &owner = ownerOf.at(lattice.at(x + step[0], y + step[1])); owner < 0)
 				owner = k;
+		}
 	}
 	L.homeOf.assign(L.t.size(), -1);
 	for (int i = 0; i < L.t.size(); ++i)
-		L.homeOf[i] = ownerOf[L.cellOf[i]];
+	{
+		::MapGeneration::generationCheckpoint();
+		L.homeOf.at(i) = ownerOf.at(L.cellOf.at(i));
+	}
 
 	context.telemetry.measure("even-ground.lattice.cells", L.lat.size());
 	context.telemetry.measure("even-ground.lattice.cell-tiles", L.lat.tiles);
@@ -1006,7 +1117,10 @@ bool generate(Game &game, GenerationContext &context)
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
+	{
+		::MapGeneration::generationCheckpoint();
 		game.addTeam();
+	}
 
 	context.stage = "even ground terrain";
 	writeVertices(map, L.terrain);
@@ -1016,12 +1130,16 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(size_t(t.size()), 0);
 		for (int i = 0; i < t.size(); ++i)
-			ground[i] = L.homeOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+		{
+			::MapGeneration::generationCheckpoint();
+			ground.at(i) =
+				L.homeOf.at(i) == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+		}
 		return ground;
 	};
 	const auto anchor = [&](int team)
 	{
-		const int cell = L.home[team];
+		const int cell = L.home.at(team);
 		return MapGeneratorPoint((cell % L.lat.w) * L.lat.tiles + L.lat.tiles / 2,
 								 (cell / L.lat.w) * L.lat.tiles + L.lat.tiles / 2);
 	};
@@ -1038,18 +1156,21 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<std::vector<int>> ground(kCellKinds);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const unsigned char kind = L.kind[L.cellOf[i]];
-		if (kind >= kWheat && !L.pinned[L.cellOf[i]] && !reserved[i] &&
+		::MapGeneration::generationCheckpoint();
+		const unsigned char kind = L.kind.at(L.cellOf.at(i));
+		if (kind >= kWheat && !L.pinned.at(L.cellOf.at(i)) && !reserved.at(i) &&
 			clearGround(map, i % t.w, i / t.w))
-			ground[kind].push_back(i);
+			ground.at(kind).push_back(i);
 	}
-	const auto level = [&](int i) { return grain[i]; };
-	context.telemetry.measure("even-ground.wheat.tiles",
-							  plantCoverShare(map, t, ground[kWheat], WHEAT, kWheatCover, level));
+	const auto level = [&](int i) { return grain.at(i); };
+	context.telemetry.measure(
+		"even-ground.wheat.tiles",
+		plantCoverShare(map, t, ground.at(kWheat), WHEAT, kWheatCover, level));
 	context.telemetry.measure("even-ground.wood.tiles",
-							  plantCoverShare(map, t, ground[kWood], WOOD, kWoodCover, level));
-	context.telemetry.measure("even-ground.stone.tiles",
-							  plantCoverShare(map, t, ground[kStone], STONE, kStoneCover, level));
+							  plantCoverShare(map, t, ground.at(kWood), WOOD, kWoodCover, level));
+	context.telemetry.measure(
+		"even-ground.stone.tiles",
+		plantCoverShare(map, t, ground.at(kStone), STONE, kStoneCover, level));
 	seedAlgae(map, context, t, "even-ground-algae", o.algae, AlgaeBand::shallows(1, 4).thriving(0.5));
 
 	context.stage = "even ground openings";
@@ -1133,3 +1254,5 @@ GeneratorDefinition evenGroundDefinition()
 		validateWorld,
 		{"terrain:natural", "feature:lakes", "style:wide-open", "fairness:solved-catchment"}};
 }
+
+#include "EvenGroundBlueprint.inc"

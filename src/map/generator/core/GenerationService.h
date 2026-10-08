@@ -8,13 +8,17 @@
 class Game;
 class GenerationService
 {
+	std::shared_ptr<const GeneratorRegistry> registryOwner;
 	const GeneratorRegistry &registry;
+	bool useRequestCatalog = false;
 
   public:
-	explicit GenerationService(const GeneratorRegistry &registry = GeneratorRegistry::builtins())
-		: registry(registry)
+	GenerationService()
+		: registryOwner(GeneratorRegistry::activeSnapshot()), registry(*registryOwner),
+		  useRequestCatalog(true)
 	{
 	}
+	explicit GenerationService(const GeneratorRegistry &registry) : registry(registry) {}
 	GenerationResult generate(Game &freshGame, const GenerationRequest &request,
 							  bool collectTelemetry = false) const;
 
@@ -28,9 +32,9 @@ class GenerationService
 	struct CandidateRoll
 	{
 		std::uint32_t seed = 0;
-		bool generated = false;  ///< false when that roll failed to produce a world at all
-		double score = 0;        ///< the roll's map score; meaningless when it failed
-		double seconds = 0;      ///< wall time this roll cost, generation only
+		bool generated = false; ///< false when that roll failed to produce a world at all
+		double score = 0;       ///< the roll's map score; meaningless when it failed
+		double seconds = 0;     ///< wall time this roll cost, generation only
 	};
 
 	/// Seed of the best-scoring of kSampledCandidates rolls derived from rootSeed, for callers

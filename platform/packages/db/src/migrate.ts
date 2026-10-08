@@ -46,6 +46,10 @@ export function createMigrator(db: AnyKysely, directory?: string): Migrator {
   return new Migrator({
     db,
     provider: new SqlFileMigrationProvider(directory),
+    // Independently deployed branches can introduce an additive migration whose
+    // name sorts before one already applied. Keep their recorded names intact;
+    // Kysely still rejects missing history and serializes pending migrations.
+    allowUnorderedMigrations: true,
     migrationTableName: 'platform_migrations',
     migrationLockTableName: 'platform_migrations_lock',
   });

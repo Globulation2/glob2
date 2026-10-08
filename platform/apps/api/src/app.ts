@@ -33,11 +33,20 @@ import {
   type SimVersion,
 } from '@glob2/protocol';
 import { HttpError, apiError } from './errors.ts';
-import { createIdentity, type Identity } from './identity.ts';
+import {
+  createIdentity,
+  authenticatedAccounts,
+  isAdministrativeRequest,
+  type Identity,
+} from './identity.ts';
 import type { ApiServices } from './services.ts';
 import { skinRoutes } from './skins/routes.ts';
 import { accountRoutes } from './routes/accounts.ts';
 import { adminRoutes } from './routes/admin.ts';
+import { adminConsoleRoutes } from './admin/routes.ts';
+import { operationsRoutes } from './admin/operations.ts';
+import { analyticsRoutes } from './admin/analytics.ts';
+import { financeRoutes } from './admin/finances.ts';
 import { authRoutes } from './routes/auth.ts';
 import { signinRoutes } from './routes/signin.ts';
 import { internalRoutes } from './routes/internal.ts';
@@ -120,6 +129,22 @@ export async function buildApp(
     requestIdHeader: 'x-request-id',
   });
   const identity = createIdentity(services);
+  await sql`UPDATE admin_analytics_settings SET collection=${services.config.instance.analytics?.collection !== false} WHERE id`.execute(
+    services.db,
+  );
+  app.addHook('onResponse', async (request, reply) => {
+    const account = authenticatedAccounts.get(request);
+    if (
+      account &&
+      reply.statusCode < 400 &&
+      request.url.startsWith('/api/v1/') &&
+      !isAdministrativeRequest(identity, request) &&
+      !request.url.endsWith('/reconcile')
+    )
+      await identity.activity
+        .record(account)
+        .catch((error) => services.logger.warn({ error }, 'activity collection failed'));
+  });
   app.decorate('services', services);
   app.decorate('identity', identity);
 
@@ -259,6 +284,10 @@ export async function buildApp(
   await terrainStudioRoutes(app);
   await buildingStudioRoutes(app);
   await adminRoutes(app, identity);
+  await adminConsoleRoutes(app, identity);
+  await operationsRoutes(app, identity);
+  await analyticsRoutes(app, identity);
+  await financeRoutes(app, identity);
   await pageAssetRoutes(app);
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);

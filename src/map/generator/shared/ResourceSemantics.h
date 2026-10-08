@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Map.h"
 
 namespace MapGeneration
@@ -14,14 +15,15 @@ inline bool permanentResourceBarrier(const Map& map, size_t index, bool forBuild
     if (properties.clearable) return false;
     bool infinite=false;
     for (unsigned material=0;material<MaterialCount;++material)
-    {
-        const auto& yield=map.resourceRegistry().yields(id)[material];
+	{
+		::MapGeneration::generationCheckpoint();
+		const auto& yield=map.resourceRegistry().yields(id)[material];
         if (!yield.capacity) continue;
         if ((yield.consumption==ResourceConsumption::All || yield.destroysDeposit)
             && (map.materialAmountAtSlot(index,material) || yield.growthRate)) return false;
         infinite |= yield.consumption==ResourceConsumption::Infinite
             && (map.materialAmountAtSlot(index,material) || yield.growthRate);
-    }
-    return properties.persistsWhenEmpty || infinite;
+	}
+	return properties.persistsWhenEmpty || infinite;
 }
 }

@@ -1409,6 +1409,12 @@ inline double startFitness(const std::vector<ColonyQuality> &colonies, std::size
 }}
 }} // namespace MapGeneration
 """
+    # The generated header is also reachable from JavaScript map generators.
+    import re
+    header=header.replace('#pragma once','#pragma once\n#include "GenerationNumeric.h"\n#include "GenerationWork.h"',1)
+    header=re.sub(r'std::(sqrt|log|log1p|exp|pow)\(',r'::MapGeneration::Numeric::\1(',header)
+    header=header.replace('colonies[index]','colonies.at(index)')
+    header=re.sub(r'(for \(const ColonyQuality &other : colonies\)\n)(\s*)([^\n]+;)',r'\1\2{ ::MapGeneration::generationCheckpoint(); \3 }',header)
     Path(path).write_text(header)
     return path
 

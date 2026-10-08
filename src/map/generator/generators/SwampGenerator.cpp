@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SwampGenerator.h"
 #include "Game.h"
@@ -61,7 +62,10 @@ GeneratorDefinition swampDefinition()
 		GeneratorControl{"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources, false}
 			.withSearchRange(2, 8)};
 	for (auto &c : heightFieldResourceControls())
+	{
+		::MapGeneration::generationCheckpoint();
 		controls.push_back(std::move(c));
+	}
 	controls.push_back(
 		GeneratorControl{"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true}
 			.withSearchRange(0, 1));

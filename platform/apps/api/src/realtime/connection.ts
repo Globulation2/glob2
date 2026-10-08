@@ -49,6 +49,7 @@ export class RealtimeConnection {
   familyId: string | undefined;
   readonly pendingAttempts = new Set<string>();
   onAccountChange: ((connection: RealtimeConnection) => void) | undefined;
+  onActivity: ((account: Account) => Promise<void>) | undefined;
 
   constructor(socket: WebSocket, ip: string, logger: Logger, limit: RateLimit) {
     this.socket = socket;
@@ -178,6 +179,7 @@ export class RealtimeConnection {
     }
     try {
       const result = await handler(this, request.params as Record<string, unknown>);
+      if (this.account) await this.onActivity?.(this.account);
       this.send({ type: 'response', id: request.id, ok: true, result });
     } catch (error) {
       if (error instanceof HttpError) {

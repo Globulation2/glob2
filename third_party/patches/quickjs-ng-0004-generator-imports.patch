@@ -1,0 +1,43 @@
+diff --git a/quickjs.c b/quickjs.c
+index 057705d6f..87982bb1f 100644
+--- a/quickjs.c
++++ b/quickjs.c
+@@ -337,6 +337,7 @@ typedef struct JSClass {
+ 
+ struct JSRuntime {
+     bool glob2_host_failure;
++    bool glob2_generator_imports;
+     unsigned glob2_native_depth;
+     JSMallocFunctions mf;
+     JSMallocState malloc_state;
+@@ -8567,6 +8568,7 @@ static int JS_ThrowTypeErrorReadOnly(JSContext *ctx, int flags, JSAtom atom)
+ }
+ 
+ bool JS_Glob2HostFailure(JSRuntime *rt) { return rt->glob2_host_failure; }
++void JS_Glob2GeneratorImports(JSRuntime *rt, bool enabled) { rt->glob2_generator_imports = enabled; }
+ 
+ JSValue JS_ThrowOutOfMemory(JSContext *ctx)
+ {
+@@ -33017,7 +33019,8 @@ static int add_import(JSParseState *s, JSModuleDef *m,
+ 
+ static __exception int js_parse_import(JSParseState *s)
+ {
+-    return js_parse_error(s, "Imports are disabled");
++    if (!s->ctx->rt->glob2_generator_imports)
++        return js_parse_error(s, "Imports are disabled");
+     JSContext *ctx = s->ctx;
+     JSModuleDef *m = s->cur_func->module;
+     JSAtom local_name, import_name, module_name;
+diff --git a/quickjs.h b/quickjs.h
+index 801fed47c..5849e39db 100644
+--- a/quickjs.h
++++ b/quickjs.h
+@@ -511,6 +511,8 @@ JS_EXTERN void JS_SetRuntimeInfo(JSRuntime *rt, const char *info);
+ /* use 0 to disable memory limit */
+ /* Glob2: sticky native resource failure, even when script catches the exception. */
+ JS_EXTERN bool JS_Glob2HostFailure(JSRuntime *rt);
++/* Package-local static imports are enabled only by the generator host. */
++JS_EXTERN void JS_Glob2GeneratorImports(JSRuntime *rt, bool enabled);
+ 
+ JS_EXTERN void JS_SetMemoryLimit(JSRuntime *rt, size_t limit);
+ JS_EXTERN void JS_SetDumpFlags(JSRuntime *rt, uint64_t flags);

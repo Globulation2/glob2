@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "GenerationRequest.h"
 struct GenerationContext;
 #include "Geometry.h"
@@ -321,14 +322,18 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 	std::vector<std::pair<int, int>> crops;
 	std::vector<int> rowRoom;
 	for (int i = 0; i < t.size(); ++i)
-		if (farm.row[i] >= 0 && farm.row[i] % 2 == 0 && fromWater[i] >= 0 && !farm.plot[i] &&
-			eligible(i) && map.terrainSupportsResourceAtByIndex(i % t.w,i / t.w,WHEAT))
+	{
+		::MapGeneration::generationCheckpoint();
+		if (farm.row.at(i) >= 0 && farm.row.at(i) % 2 == 0 && fromWater.at(i) >= 0 &&
+			!farm.plot.at(i) && eligible(i) &&
+			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT))
 		{
-			crops.push_back({fromWater[i], i});
-			if (farm.row[i] >= int(rowRoom.size()))
-				rowRoom.resize(farm.row[i] + 1, 0);
-			++rowRoom[farm.row[i]];
+			crops.push_back({fromWater.at(i), i});
+			if (farm.row.at(i) >= int(rowRoom.size()))
+				rowRoom.resize(farm.row.at(i) + 1, 0);
+			++rowRoom.at(farm.row.at(i));
 		}
+	}
 	std::stable_sort(crops.begin(), crops.end());
 	// The woodlot's row: the crop row with the most room, the first on a tie.
 	const int woodRow =
@@ -337,8 +342,9 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 	int planted = 0, woods = 0, wheats = 0;
 	for (const auto &entry : crops)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int i = entry.second;
-		if (woods < wood && farm.row[i] == woodRow)
+		if (woods < wood && farm.row.at(i) == woodRow)
 		{
 			map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
 			++woods;
@@ -347,6 +353,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 	}
 	for (const auto &entry : crops)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int i = entry.second;
 		if (wheats >= wheat)
 			break;

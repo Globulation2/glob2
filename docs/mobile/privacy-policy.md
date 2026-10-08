@@ -11,7 +11,7 @@ Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
 questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
-Last updated: 3 October 2026.
+Last updated: 8 October 2026.
 
 ## In short
 
@@ -23,8 +23,9 @@ Last updated: 3 October 2026.
   room chat, maps you upload, and technical data that protects the service.
 - Your display name, ratings, match history, match replays and the maps you publish are
   public.
-- The apps contain no advertising, analytics or crash-reporting services, nothing
-  tracks you across other apps or sites, and we do not sell your data.
+- We record minimal first-party activity for online accounts, described below. The
+  apps contain no advertising or third-party analytics or crash-reporting services;
+  nothing tracks you across other apps or sites, and we do not sell your data.
 - The game has no minimum age. Playing online as a guest needs no e-mail address,
   no real name and no account details at all.
 - You can download a copy of your data and delete your account yourself: in the
@@ -221,7 +222,7 @@ service are built to collect as little as possible from anyone, children include
   birthday and no account details: the game makes up a name such as `Guest-1234`.
   An account with a username and password needs no e-mail address either. Signing
   in with Google is optional.
-- There is no advertising, no analytics, no tracking across apps or sites, no
+- There is no advertising, no browser tracking, no tracking across apps or sites, no
   in-app purchases, and we never sell data or use it for marketing.
 - Online play does include room chat and in-game text chat with other players,
   and a registered account chooses its own display name, which is public. Parents
@@ -237,6 +238,29 @@ which kind of device it was used; we may ask for more to make sure the account i
 the child's before we delete it or send a copy. Uninstalling the app also removes
 the guest sign-in from the device, and an unused guest account that never played a
 match is deleted automatically after 90 days.
+
+## Online activity and operational reporting
+
+For an online account, we retain at most one activity marker per UTC day when a
+successful authenticated request or realtime action occurs. Each marker contains
+only the account ID, day and whether the account is a guest or registered.
+Anonymous visits, health checks, service credentials and admin dashboard polling
+are excluded. There are no browser trackers or acquisition funnels.
+
+Identifiable activity markers are retained for 90 days. Account data exports
+include retained markers; deleting an account removes them. Anonymous daily
+operational totals are retained for 24 months and cannot be traced back to an
+account. Administrators use these totals to understand signups, online activity,
+matches, library publication/download counts and studio reliability. Downloads
+follow each library's existing counting rules and are not unique visitors.
+
+Administrators also see verified payment and refund amounts, currencies and
+payment mode, product credit flows, and provider usage with estimated costs when
+usage and monetary rates are available. These records contain no card details,
+credentials, private studio prompts or generated source. Financial records
+already retained for purchase reconciliation remain subject to the retention
+rules in the payment sections above. Uncertain or unavailable facts are labeled;
+we do not infer historical activity from last-seen timestamps.
 
 ## Your rights
 

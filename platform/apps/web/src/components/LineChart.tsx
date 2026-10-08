@@ -22,6 +22,23 @@ interface Props {
   dots?: boolean;
   /** Whole-number y values (counts, ratings): ticks on whole steps only. */
   integer?: boolean;
+  /** Fixed reporting range, so sparse observations do not shrink the time axis. */
+  xDomain?: readonly [number, number];
+  /** Split lines across missing observations instead of implying continuous data. */
+  maxGap?: number;
+  xLabel?: string;
+  yLabel?: string;
+}
+
+export function splitPoints(points: Series['points'], maxGap = Infinity) {
+  const segments: Series['points'][] = [];
+  for (const point of points) {
+    const segment = segments.at(-1);
+    const previous = segment?.at(-1);
+    if (!segment || (previous && point.x - previous.x > maxGap)) segments.push([point]);
+    else segment.push(point);
+  }
+  return segments;
 }
 
 const PAD = { left: 44, right: 12, top: 10, bottom: 24 };
@@ -56,6 +73,10 @@ export function LineChart({
   zeroBased = true,
   dots = false,
   integer = true,
+  xDomain,
+  maxGap,
+  xLabel = 'x',
+  yLabel,
 }: Props) {
   const id = useId();
   const box = useRef<HTMLElement>(null);
@@ -79,8 +100,8 @@ export function LineChart({
     const xs = series.flatMap((s) => s.points.map((p) => p.x));
     const ys = series.flatMap((s) => s.points.map((p) => p.y));
     if (xs.length === 0) return undefined;
-    const xMin = Math.min(...xs);
-    const xMax = Math.max(...xs);
+    const xMin = xDomain?.[0] ?? Math.min(...xs);
+    const xMax = xDomain?.[1] ?? Math.max(...xs);
     let yMin = zeroBased ? Math.min(0, ...ys) : Math.min(...ys);
     let yMax = Math.max(...ys);
     if (yMax === yMin) {
@@ -95,7 +116,12 @@ export function LineChart({
       yMax += span * 0.05;
     }
     const yTicks = niceTicks(yMin, yMax, 4, integer);
-    const xTicks = niceTicks(xMin, xMax, Math.max(2, Math.floor(WIDTH / 120)));
+    const tickCount = Math.max(2, Math.floor(WIDTH / 120));
+    // Fixed ranges always label their boundaries; epoch-based nice ticks can
+    // leave a phone chart with one arbitrary date and no visible range.
+    const xTicks = xDomain
+      ? Array.from({ length: tickCount }, (_, i) => xMin + ((xMax - xMin) * i) / (tickCount - 1))
+      : niceTicks(xMin, xMax, tickCount);
     const sx = (x: number) =>
       PAD.left +
       (xMax === xMin ? 0.5 : (x - xMin) / (xMax - xMin)) * (WIDTH - PAD.left - PAD.right);
@@ -103,7 +129,7 @@ export function LineChart({
       PAD.top + (1 - (y - yMin) / (yMax - yMin)) * (height - PAD.top - PAD.bottom);
     const allX = [...new Set(xs)].sort((a, b) => a - b);
     return { sx, sy, yTicks, xTicks, allX, xMin, xMax };
-  }, [series, height, zeroBased, integer, WIDTH]);
+  }, [series, height, zeroBased, integer, WIDTH, xDomain]);
 
   if (!geometry) return <div className="chart empty">No data yet.</div>;
   const { sx, sy, yTicks, xTicks, allX } = geometry;
@@ -134,6 +160,7 @@ export function LineChart({
     <figure className="chart" ref={box} aria-labelledby={`${id}-title`} style={{ margin: 0 }}>
       <figcaption id={`${id}-title`} style={{ margin: '0 2px 6px' }}>
         {title}
+        {yLabel ? ` · ${yLabel}` : ''}
       </figcaption>
       <svg
         viewBox={`0 0 ${WIDTH} ${height}`}
@@ -166,23 +193,37 @@ export function LineChart({
             y1={height - PAD.bottom}
             y2={height - PAD.bottom}
           />
-          {xTicks.map((x) => (
-            <text key={`x${x}`} x={sx(x)} y={height - 6} textAnchor="middle">
+          {xTicks.map((x, index) => (
+            <text
+              key={`x${x}`}
+              x={sx(x)}
+              y={height - 6}
+              textAnchor={
+                xDomain && index === 0
+                  ? 'start'
+                  : xDomain && index === xTicks.length - 1
+                    ? 'end'
+                    : 'middle'
+              }
+            >
               {xFormat(x)}
             </text>
           ))}
         </g>
         {series.map((s) => (
           <g key={s.name}>
-            <polyline
-              fill="none"
-              stroke={s.color}
-              strokeWidth={2.5}
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeDasharray={s.dashed ? '5 4' : undefined}
-              points={s.points.map((p) => `${sx(p.x)},${sy(p.y)}`).join(' ')}
-            />
+            {splitPoints(s.points, maxGap).map((segment, index) => (
+              <polyline
+                key={index}
+                fill="none"
+                stroke={s.color}
+                strokeWidth={2.5}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                strokeDasharray={s.dashed ? '5 4' : undefined}
+                points={segment.map((p) => `${sx(p.x)},${sy(p.y)}`).join(' ')}
+              />
+            ))}
             {dots &&
               s.points.map((p) => (
                 <circle
@@ -255,7 +296,7 @@ export function LineChart({
           <caption>{title}</caption>
           <thead>
             <tr>
-              <th>x</th>
+              <th>{xLabel}</th>
               {series.map((s) => (
                 <th key={s.name}>{s.name}</th>
               ))}

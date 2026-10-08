@@ -1,0 +1,4796 @@
+[
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::rebuild",
+    "signature": "void (int, int, const std::vector<std::uint8_t> &, const std::vector<std::uint8_t> &, Path)",
+    "kind": "method",
+    "binding": "Field.rebuild"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::gate",
+    "signature": "void (const std::vector<std::uint8_t> &)",
+    "kind": "method",
+    "binding": "Field.gate"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::at",
+    "signature": "std::uint32_t (int, int) const",
+    "kind": "method",
+    "binding": "Field.at"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::values",
+    "signature": "const std::vector<std::uint32_t> &() const",
+    "kind": "method",
+    "binding": "Field.values"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::capacity",
+    "signature": "std::size_t () const",
+    "kind": "method",
+    "binding": "Field.capacity"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::getW",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Field.getW"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::getH",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Field.getH"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::pathUsed",
+    "signature": "Path () const",
+    "kind": "method",
+    "binding": "Field.pathUsed"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::waterCount",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Field.waterCount"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::sandCount",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Field.sandCount"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::rebuildWeighted",
+    "signature": "void (int, int, const std::vector<std::int16_t> &, const std::vector<std::uint16_t> &, Path)",
+    "kind": "method",
+    "binding": "Field.rebuildWeighted"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field::multiplyLocal",
+    "signature": "void (const std::vector<std::uint16_t> &)",
+    "kind": "method",
+    "binding": "Field.multiplyLocal"
+  },
+  {
+    "header": "FertilityField",
+    "symbol": "Fertility::Field",
+    "kind": "record",
+    "binding": "Field"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::withSearchRange",
+    "signature": "GeneratorControl (int, int) const",
+    "kind": "method",
+    "binding": "GeneratorControl.withSearchRange"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::withSearchValues",
+    "signature": "GeneratorControl (std::vector<int>) const",
+    "kind": "method",
+    "binding": "GeneratorControl.withSearchValues"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::searchValues",
+    "signature": "std::vector<int> () const",
+    "kind": "method",
+    "binding": "GeneratorControl.searchValues"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::validSearchDomain",
+    "signature": "bool () const",
+    "kind": "method",
+    "binding": "GeneratorControl.validSearchDomain"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::isToggle",
+    "signature": "bool () const",
+    "kind": "method",
+    "binding": "GeneratorControl.isToggle"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::isChoice",
+    "signature": "bool () const",
+    "kind": "method",
+    "binding": "GeneratorControl.isChoice"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::valueLabel",
+    "signature": "const char *(int) const",
+    "kind": "method",
+    "binding": "GeneratorControl.valueLabel"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::values",
+    "signature": "std::vector<int> () const",
+    "kind": "method",
+    "binding": "GeneratorControl.values"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::indexOf",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "GeneratorControl.indexOf"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::valueAt",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "GeneratorControl.valueAt"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::displayValue",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "GeneratorControl.displayValue"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::normalize",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "GeneratorControl.normalize"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::get",
+    "signature": "int (const GenerationRequest &) const",
+    "kind": "method",
+    "binding": "GeneratorControl.get"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::set",
+    "equivalent": "Request controls are frozen; use manifest defaults or construct a derived script design"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::get",
+    "signature": "int (const MapGenerationDescriptor &) const",
+    "equivalent": "Legacy serialized descriptors use the frozen context request"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl::set",
+    "equivalent": "Request controls are frozen; use manifest defaults or construct a derived script design"
+  },
+  {
+    "header": "GeneratorControls",
+    "symbol": "GeneratorControl",
+    "kind": "record",
+    "binding": "GeneratorControl"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::size",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Torus.size"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::x",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "Torus.x"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::y",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "Torus.y"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::at",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Torus.at"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::offsetX",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Torus.offsetX"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::offsetY",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Torus.offsetY"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::dist2",
+    "signature": "int (int, int, int, int) const",
+    "kind": "method",
+    "binding": "Torus.dist2"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::chebyshev",
+    "signature": "int (int, int, int, int) const",
+    "kind": "method",
+    "binding": "Torus.chebyshev"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::Torus",
+    "signature": "void (int, int)",
+    "kind": "constructor",
+    "binding": "Torus"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::Torus",
+    "signature": "void (const Map &)",
+    "kind": "constructor",
+    "binding": "Torus"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus",
+    "kind": "record",
+    "binding": "Torus"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::length",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Axes.length"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::breadth",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Axes.breadth"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::u",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Axes.u"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::v",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Axes.v"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::stepU",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Axes.stepU"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::at",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Axes.at"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::uOf",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "Axes.uOf"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::vOf",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "Axes.vOf"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::mapX",
+    "signature": "double (double, double) const",
+    "kind": "method",
+    "binding": "Axes.mapX"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::mapY",
+    "signature": "double (double, double) const",
+    "kind": "method",
+    "binding": "Axes.mapY"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes::heading",
+    "signature": "double (double, double) const",
+    "kind": "method",
+    "binding": "Axes.heading"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Axes",
+    "kind": "record",
+    "binding": "Axes"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Flood",
+    "kind": "record",
+    "binding": "Flood"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Reach",
+    "kind": "record",
+    "binding": "Reach"
+  },
+  {
+    "header": "BalancedStarts",
+    "symbol": "MapGeneration::SeparatedSites",
+    "kind": "record",
+    "binding": "SeparatedSites"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::Island",
+    "kind": "record",
+    "binding": "Island"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::IslandPlacement",
+    "kind": "record",
+    "binding": "IslandPlacement"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::BiomeKit",
+    "kind": "record",
+    "binding": "BiomeKit"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::BiomeTerrain",
+    "kind": "record",
+    "binding": "BiomeTerrain"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RegionBounds::width",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "RegionBounds.width"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RegionBounds::height",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "RegionBounds.height"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RegionBounds::contains",
+    "signature": "bool (int, int) const",
+    "kind": "method",
+    "binding": "RegionBounds.contains"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RegionBounds",
+    "kind": "record",
+    "binding": "RegionBounds"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::ShapePoint",
+    "kind": "record",
+    "binding": "ShapePoint"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Stretch::apply",
+    "signature": "ShapePoint (double, double, ShapePoint) const",
+    "kind": "method",
+    "binding": "Stretch.apply"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Stretch::undo",
+    "signature": "ShapePoint (double, double) const",
+    "kind": "method",
+    "binding": "Stretch.undo"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Stretch::heading",
+    "signature": "double (double) const",
+    "kind": "method",
+    "binding": "Stretch.heading"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Stretch::longest",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "Stretch.longest"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Stretch",
+    "kind": "record",
+    "binding": "Stretch"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Stretch::toFill",
+    "signature": "Stretch (int, int)",
+    "kind": "static-method",
+    "binding": "Stretch_toFill"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::AxisFrame::at",
+    "signature": "ShapePoint (double, double) const",
+    "kind": "method",
+    "binding": "AxisFrame.at"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::AxisFrame::project",
+    "signature": "ShapePoint (double, double) const",
+    "kind": "method",
+    "binding": "AxisFrame.project"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::AxisFrame",
+    "kind": "record",
+    "binding": "AxisFrame"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::ShapeTransform::toMap",
+    "signature": "ShapePoint (ShapePoint) const",
+    "kind": "method",
+    "binding": "ShapeTransform.toMap"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::ShapeTransform::toShape",
+    "signature": "ShapePoint (ShapePoint) const",
+    "kind": "method",
+    "binding": "ShapeTransform.toShape"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::ShapeTransform::ShapeTransform",
+    "signature": "void (ShapePoint, double, double)",
+    "kind": "constructor",
+    "binding": "ShapeTransform"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::ShapeTransform",
+    "kind": "record",
+    "binding": "ShapeTransform"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RadialShape::radiusAt",
+    "signature": "double (double) const",
+    "kind": "method",
+    "binding": "RadialShape.radiusAt"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RadialShape::maximumRadius",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "RadialShape.maximumRadius"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RadialShape::RadialShape",
+    "signature": "void (double, double, GenerationContext &, const std::string &, double)",
+    "kind": "constructor",
+    "binding": "RadialShape"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::RadialShape",
+    "kind": "record",
+    "binding": "RadialShape"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Teardrop::halfWidthAt",
+    "signature": "double (double) const",
+    "kind": "method",
+    "binding": "Teardrop.halfWidthAt"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Teardrop::contains",
+    "signature": "bool (double, double) const",
+    "kind": "method",
+    "binding": "Teardrop.contains"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Teardrop::reach",
+    "signature": "double (double) const",
+    "kind": "method",
+    "binding": "Teardrop.reach"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Teardrop",
+    "kind": "record",
+    "binding": "Teardrop"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::Teardrop::fitting",
+    "signature": "Teardrop (double, double, double)",
+    "kind": "static-method",
+    "binding": "Teardrop_fitting"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::StrokePoint",
+    "kind": "record",
+    "binding": "StrokePoint"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::DownhillStyle",
+    "kind": "record",
+    "binding": "DownhillStyle"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::PathBounds",
+    "kind": "record",
+    "binding": "PathBounds"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::Branch",
+    "kind": "record",
+    "binding": "Branch"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::ForkStyle",
+    "kind": "record",
+    "binding": "ForkStyle"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::Zigzag",
+    "kind": "record",
+    "binding": "Zigzag"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::SubtilePoint::operator==",
+    "signature": "bool (const SubtilePoint &) const",
+    "kind": "method",
+    "binding": "SubtilePoint.equals"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::SubtilePoint",
+    "kind": "record",
+    "binding": "SubtilePoint"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::SandFord::offsets",
+    "signature": "void (const Torus &, double, double, double &, double &) const",
+    "kind": "method",
+    "binding": "SandFord.offsets"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::SandFord::covers",
+    "signature": "bool (const Torus &, double, double, double, double) const",
+    "kind": "method",
+    "binding": "SandFord.covers"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::SandFord",
+    "kind": "record",
+    "binding": "SandFord"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::ChannelCrossing",
+    "kind": "record",
+    "binding": "ChannelCrossing"
+  },
+  {
+    "header": "ClearingLandscape",
+    "symbol": "MapGeneration::ClearingLandscapeOptions",
+    "kind": "record",
+    "binding": "ClearingLandscapeOptions"
+  },
+  {
+    "header": "ClearingLandscape",
+    "symbol": "MapGeneration::ClearingLandscape",
+    "kind": "record",
+    "binding": "ClearingLandscape"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::ComponentLabels",
+    "kind": "record",
+    "binding": "ComponentLabels"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::DisjointSets::find",
+    "signature": "int (int)",
+    "kind": "method",
+    "binding": "DisjointSets.find"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::DisjointSets::unite",
+    "signature": "bool (int, int)",
+    "kind": "method",
+    "binding": "DisjointSets.unite"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::DisjointSets::joined",
+    "signature": "bool (int, int)",
+    "kind": "method",
+    "binding": "DisjointSets.joined"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::DisjointSets::DisjointSets",
+    "signature": "void (int)",
+    "kind": "constructor",
+    "binding": "DisjointSets"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::DisjointSets",
+    "kind": "record",
+    "binding": "DisjointSets"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::StepCosts",
+    "kind": "record",
+    "binding": "StepCosts"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::StepCosts::walking",
+    "signature": "StepCosts ()",
+    "kind": "static-method",
+    "binding": "StepCosts_walking"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::StepCosts::chopping",
+    "signature": "StepCosts (int)",
+    "kind": "static-method",
+    "binding": "StepCosts_chopping"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::StepCosts::swimming",
+    "signature": "StepCosts (int)",
+    "kind": "static-method",
+    "binding": "StepCosts_swimming"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::ContactReport::nearestRival",
+    "signature": "std::vector<int> () const",
+    "kind": "method",
+    "binding": "ContactReport.nearestRival"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::ContactReport::spread",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "ContactReport.spread"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::ContactReport",
+    "kind": "record",
+    "binding": "ContactReport"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::StartQualityScale",
+    "kind": "record",
+    "binding": "StartQualityScale"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::ColonyQuality",
+    "kind": "record",
+    "binding": "ColonyQuality"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::ColonyQuality::DistanceBand",
+    "kind": "record",
+    "binding": "DistanceBand"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::ColonyQuality::MaterialAccess",
+    "kind": "record",
+    "binding": "MaterialAccess"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::StartQualityReport",
+    "kind": "record",
+    "binding": "StartQualityReport"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FairnessModelTerm",
+    "kind": "record",
+    "binding": "FairnessModelTerm"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::ShoreField",
+    "kind": "record",
+    "binding": "ShoreField"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::FarmRows::period",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "FarmRows.period"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::FarmRows",
+    "kind": "record",
+    "binding": "FarmRows"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::Farm",
+    "kind": "record",
+    "binding": "Farm"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::ContourWobble::at",
+    "signature": "double (double) const",
+    "kind": "method",
+    "binding": "ContourWobble.at"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::ContourWobble",
+    "kind": "record",
+    "binding": "ContourWobble"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::ContourFarmStyle::outerRadius",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "ContourFarmStyle.outerRadius"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::ContourFarmStyle::reach",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "ContourFarmStyle.reach"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::ContourFarmStyle",
+    "kind": "record",
+    "binding": "ContourFarmStyle"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::ContourFarm",
+    "kind": "record",
+    "binding": "ContourFarm"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::FarmPlot",
+    "kind": "record",
+    "binding": "FarmPlot"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::FarmBridges::crosses",
+    "signature": "bool (bool) const",
+    "kind": "method",
+    "binding": "FarmBridges.crosses"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::FarmBridges",
+    "kind": "record",
+    "binding": "FarmBridges"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::SealedOval",
+    "kind": "record",
+    "binding": "SealedOval"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneratorPoint::MapGeneratorPoint",
+    "signature": "void (int, int)",
+    "kind": "constructor",
+    "binding": "MapGeneratorPoint"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneratorPoint",
+    "kind": "record",
+    "binding": "MapGeneratorPoint"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::ResourceDensities",
+    "kind": "record",
+    "binding": "ResourceDensities"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::ResourceFrontage",
+    "kind": "record",
+    "binding": "ResourceFrontage"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Site",
+    "kind": "record",
+    "binding": "Site"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::NearestSites",
+    "kind": "record",
+    "binding": "NearestSites"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::RankedSite",
+    "kind": "record",
+    "binding": "RankedSite"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::along",
+    "signature": "std::int64_t (int, int) const",
+    "kind": "method",
+    "binding": "Grain.along"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::across",
+    "signature": "std::int64_t (int, int) const",
+    "kind": "method",
+    "binding": "Grain.across"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::length2",
+    "signature": "std::int64_t () const",
+    "kind": "method",
+    "binding": "Grain.length2"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::distance2",
+    "signature": "std::int64_t (int, int) const",
+    "kind": "method",
+    "binding": "Grain.distance2"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::metric2",
+    "signature": "std::int64_t (std::int64_t) const",
+    "kind": "method",
+    "binding": "Grain.metric2"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::heading",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "Grain.heading"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::distance",
+    "signature": "double (int, int) const",
+    "kind": "method",
+    "binding": "Grain.distance"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::distance2",
+    "signature": "std::int64_t (const Torus &, int, int, int, int) const",
+    "kind": "method",
+    "binding": "Grain.distance2"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain::distance",
+    "signature": "double (const Torus &, int, int, int, int) const",
+    "kind": "method",
+    "binding": "Grain.distance"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::Grain",
+    "kind": "record",
+    "binding": "Grain"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::cellCount",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Tessellation.cellCount"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::cellAt",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Tessellation.cellAt"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::other",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Tessellation.other"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::imageNear",
+    "signature": "SubtilePoint (SubtilePoint, SubtilePoint) const",
+    "kind": "method",
+    "binding": "Tessellation.imageNear"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::outline",
+    "signature": "std::vector<SubtilePoint> (int) const",
+    "kind": "method",
+    "binding": "Tessellation.outline"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::edgeEnds",
+    "signature": "std::pair<SubtilePoint, SubtilePoint> (int, int) const",
+    "kind": "method",
+    "binding": "Tessellation.edgeEnds"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::centreAcross",
+    "signature": "SubtilePoint (int, int) const",
+    "kind": "method",
+    "binding": "Tessellation.centreAcross"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::centreTileX",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "Tessellation.centreTileX"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::centreTileY",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "Tessellation.centreTileY"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::neighbours",
+    "signature": "RegionGraph () const",
+    "kind": "method",
+    "binding": "Tessellation.neighbours"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::distance2",
+    "signature": "long long (int, int) const",
+    "kind": "method",
+    "binding": "Tessellation.distance2"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::transform",
+    "signature": "int (int, int, int, bool, bool) const",
+    "kind": "method",
+    "binding": "Tessellation.transform"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation",
+    "kind": "record",
+    "binding": "Tessellation"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::Cell",
+    "kind": "record",
+    "binding": "Cell"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::Tessellation::Edge",
+    "kind": "record",
+    "binding": "Edge"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::CellGraph::cellCount",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "CellGraph.cellCount"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::CellGraph::other",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "CellGraph.other"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::CellGraph",
+    "kind": "record",
+    "binding": "CellGraph"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::DryStartPonds",
+    "kind": "record",
+    "binding": "DryStartPonds"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::DryStartWatering",
+    "kind": "record",
+    "binding": "DryStartWatering"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::reseed",
+    "signature": "void (unsigned int)",
+    "kind": "method",
+    "binding": "GenerationNoise.reseed"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::Noise1d",
+    "signature": "float (float *)",
+    "kind": "method",
+    "binding": "GenerationNoise.Noise1d"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::Noise2d",
+    "signature": "float (float *)",
+    "kind": "method",
+    "binding": "GenerationNoise.Noise2d"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::Noise3d",
+    "signature": "float (float *)",
+    "kind": "method",
+    "binding": "GenerationNoise.Noise3d"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::Noise",
+    "signature": "float (float)",
+    "kind": "method",
+    "binding": "GenerationNoise.Noise"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::Noise",
+    "signature": "float (float, float)",
+    "kind": "method",
+    "binding": "GenerationNoise.Noise"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::Noise",
+    "signature": "float (float, float, float)",
+    "kind": "method",
+    "binding": "GenerationNoise.Noise"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise::GenerationNoise",
+    "signature": "void (unsigned int)",
+    "kind": "constructor",
+    "binding": "GenerationNoise"
+  },
+  {
+    "header": "Noise",
+    "symbol": "GenerationNoise",
+    "kind": "record",
+    "binding": "GenerationNoise"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::uiLevel",
+    "signature": "unsigned int (unsigned int, unsigned int)",
+    "kind": "method",
+    "binding": "HeightMap.uiLevel"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::uiLevel",
+    "signature": "unsigned int (unsigned int, unsigned int, unsigned int)",
+    "kind": "method",
+    "binding": "HeightMap.uiLevel"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::operator()",
+    "signature": "float (unsigned int)",
+    "kind": "method",
+    "binding": "HeightMap.at"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::operator()",
+    "signature": "float (const unsigned int, const unsigned int)",
+    "kind": "method",
+    "binding": "HeightMap.at"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::makePlain",
+    "signature": "void (float)",
+    "kind": "method",
+    "binding": "HeightMap.makePlain"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::makeSwamp",
+    "signature": "void (float)",
+    "kind": "method",
+    "binding": "HeightMap.makeSwamp"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::makeIslands",
+    "signature": "void (unsigned int, float)",
+    "kind": "method",
+    "binding": "HeightMap.makeIslands"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::makeRiver",
+    "signature": "void (unsigned int, float, bool)",
+    "kind": "method",
+    "binding": "HeightMap.makeRiver"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::makeCraters",
+    "signature": "void (unsigned int, unsigned int, float)",
+    "kind": "method",
+    "binding": "HeightMap.makeCraters"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap::HeightMap",
+    "signature": "void (unsigned int, unsigned int, std::mt19937 &)",
+    "kind": "constructor",
+    "binding": "HeightMap"
+  },
+  {
+    "header": "HeightMap",
+    "symbol": "HeightMap",
+    "kind": "record",
+    "binding": "HeightMap"
+  },
+  {
+    "header": "RecursiveGeometry",
+    "symbol": "MapGeneration::RecursiveRegion::terminal",
+    "signature": "bool () const",
+    "kind": "method",
+    "binding": "RecursiveRegion.terminal"
+  },
+  {
+    "header": "RecursiveGeometry",
+    "symbol": "MapGeneration::RecursiveRegion",
+    "kind": "record",
+    "binding": "RecursiveRegion"
+  },
+  {
+    "header": "RecursiveGeometry",
+    "symbol": "MapGeneration::RegionTree",
+    "kind": "record",
+    "binding": "RegionTree"
+  },
+  {
+    "header": "RecursiveGeometry",
+    "symbol": "MapGeneration::RecursiveSegment",
+    "kind": "record",
+    "binding": "RecursiveSegment"
+  },
+  {
+    "header": "RecursiveGeometry",
+    "symbol": "MapGeneration::HilbertPath",
+    "kind": "record",
+    "binding": "HilbertPath"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::RegionEdge",
+    "kind": "record",
+    "binding": "RegionEdge"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::CrossingCandidate",
+    "kind": "record",
+    "binding": "CrossingCandidate"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::CrossingProposals",
+    "kind": "record",
+    "binding": "CrossingProposals"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::CrossingGraph",
+    "kind": "record",
+    "binding": "CrossingGraph"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::CrossingSelection",
+    "kind": "record",
+    "binding": "CrossingSelection"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::PeriodicNoise::at",
+    "signature": "double (double, double) const",
+    "kind": "method",
+    "binding": "PeriodicNoise.at"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::PeriodicNoise::PeriodicNoise",
+    "signature": "void (int, int, double, std::mt19937 &)",
+    "kind": "constructor",
+    "binding": "PeriodicNoise"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::PeriodicNoise",
+    "kind": "record",
+    "binding": "PeriodicNoise"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::ResourceStock",
+    "kind": "record",
+    "binding": "ResourceStock"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::PatchBudgetResult",
+    "kind": "record",
+    "binding": "PatchBudgetResult"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::KitSeed",
+    "kind": "record",
+    "binding": "KitSeed"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::Kit",
+    "kind": "record",
+    "binding": "Kit"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::KitFrame::at",
+    "signature": "KitSeed (double, double, int) const",
+    "kind": "method",
+    "binding": "KitFrame.at"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::KitFrame",
+    "kind": "record",
+    "binding": "KitFrame"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::AlgaeBand::thriving",
+    "signature": "AlgaeBand (double) const",
+    "kind": "method",
+    "binding": "AlgaeBand.thriving"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::AlgaeBand",
+    "kind": "record",
+    "binding": "AlgaeBand"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::AlgaeBand::anyWater",
+    "signature": "AlgaeBand (int)",
+    "kind": "static-method",
+    "binding": "AlgaeBand_anyWater"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::AlgaeBand::shallows",
+    "signature": "AlgaeBand (int, int, int)",
+    "kind": "static-method",
+    "binding": "AlgaeBand_shallows"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::Territories::smallest",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Territories.smallest"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::Territories::largest",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Territories.largest"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::Territories",
+    "kind": "record",
+    "binding": "Territories"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::TeardropHome::swarmAt",
+    "signature": "double (const Teardrop &) const",
+    "kind": "method",
+    "binding": "TeardropHome.swarmAt"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::TeardropHome::collarAt",
+    "signature": "double (const Teardrop &) const",
+    "kind": "method",
+    "binding": "TeardropHome.collarAt"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::TeardropHome::groundAt",
+    "signature": "int (const Teardrop &, double) const",
+    "kind": "method",
+    "binding": "TeardropHome.groundAt"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::TeardropHome",
+    "kind": "record",
+    "binding": "TeardropHome"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::RegionHome",
+    "kind": "record",
+    "binding": "RegionHome"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::GroundAmounts",
+    "kind": "record",
+    "binding": "GroundAmounts"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::WheatTopUp",
+    "kind": "record",
+    "binding": "WheatTopUp"
+  },
+  {
+    "header": "Landmass",
+    "symbol": "MapGeneration::CoastCleaning",
+    "kind": "record",
+    "binding": "CoastCleaning"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::Isometry",
+    "kind": "record",
+    "binding": "Isometry"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::Symmetry::order",
+    "signature": "int () const",
+    "kind": "method",
+    "binding": "Symmetry.order"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::Symmetry::tile",
+    "signature": "int (int, int, int) const",
+    "kind": "method",
+    "binding": "Symmetry.tile"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::Symmetry::corner",
+    "signature": "int (int, int, int) const",
+    "kind": "method",
+    "binding": "Symmetry.corner"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::Symmetry::anchor",
+    "signature": "std::pair<int, int> (int, int, int, int, int) const",
+    "kind": "method",
+    "binding": "Symmetry.anchor"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::Symmetry::orbitKey",
+    "signature": "int (int, int) const",
+    "kind": "method",
+    "binding": "Symmetry.orbitKey"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::Symmetry",
+    "kind": "record",
+    "binding": "Symmetry"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::LatticeSites",
+    "kind": "record",
+    "binding": "LatticeSites"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::TuringStyle",
+    "kind": "record",
+    "binding": "TuringStyle"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::StripeStyle",
+    "kind": "record",
+    "binding": "StripeStyle"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::ResourceAmounts::scaled",
+    "signature": "bool () const",
+    "kind": "method",
+    "binding": "ResourceAmounts.scaled"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::ResourceAmounts",
+    "kind": "record",
+    "binding": "ResourceAmounts"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::MaterialAccessRule",
+    "kind": "record",
+    "binding": "MaterialAccessRule"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::ColonyWalk",
+    "kind": "record",
+    "binding": "ColonyWalk"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::CropsInReach::missing",
+    "signature": "std::string () const",
+    "kind": "method",
+    "binding": "CropsInReach.missing"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::CropsInReach",
+    "kind": "record",
+    "binding": "CropsInReach"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::RasterFit::cellsOf",
+    "signature": "Cells (int, int) const",
+    "kind": "method",
+    "binding": "RasterFit.cellsOf"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::RasterFit::covers",
+    "signature": "bool (int, int) const",
+    "kind": "method",
+    "binding": "RasterFit.covers"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::RasterFit",
+    "kind": "record",
+    "binding": "RasterFit"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::RasterFit::Cells::empty",
+    "signature": "bool () const",
+    "kind": "method",
+    "binding": "Cells.empty"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::RasterFit::Cells",
+    "kind": "record",
+    "binding": "Cells"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Anneal::validate",
+    "signature": "void () const",
+    "kind": "method",
+    "binding": "Anneal.validate"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Anneal::heat",
+    "signature": "double (int) const",
+    "kind": "method",
+    "binding": "Anneal.heat"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Anneal",
+    "kind": "record",
+    "binding": "Anneal"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::SolveReport",
+    "kind": "record",
+    "binding": "SolveReport"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::add",
+    "signature": "Objective &(std::string_view, double, double)",
+    "kind": "method",
+    "binding": "Objective.add"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::total",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "Objective.total"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::residual",
+    "signature": "double (std::string_view) const",
+    "kind": "method",
+    "binding": "Objective.residual"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::findResidual",
+    "signature": "std::optional<double> (std::string_view) const",
+    "kind": "method",
+    "binding": "Objective.findResidual"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::begin",
+    "equivalent": "Objective.terms() returns the same ordered terms"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::end",
+    "equivalent": "Objective.terms() returns the same ordered terms"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective",
+    "kind": "record",
+    "binding": "Objective"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::Term::weighted",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "Term.weighted"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Objective::Term",
+    "kind": "record",
+    "binding": "Term"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Brief::target",
+    "signature": "double (const char *, double, double)",
+    "kind": "method",
+    "binding": "Brief.target"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Brief::choose",
+    "signature": "void (std::vector<const char *>, int, int)",
+    "kind": "method",
+    "binding": "Brief.choose"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Brief::on",
+    "signature": "bool (const char *) const",
+    "kind": "method",
+    "binding": "Brief.on"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Brief::weight",
+    "signature": "double (const char *, double) const",
+    "kind": "method",
+    "binding": "Brief.weight"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Brief::Brief",
+    "signature": "void (GenerationContext &, std::string)",
+    "kind": "constructor",
+    "binding": "Brief"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::Brief",
+    "kind": "record",
+    "binding": "Brief"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::RiverStyle",
+    "kind": "record",
+    "binding": "RiverStyle"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::River",
+    "kind": "record",
+    "binding": "River"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::RiverChoice",
+    "kind": "record",
+    "binding": "RiverChoice"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::RiverFord",
+    "kind": "record",
+    "binding": "RiverFord"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::FordConnections::connected",
+    "signature": "bool () const",
+    "kind": "method",
+    "binding": "FordConnections.connected"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::FordConnections",
+    "kind": "record",
+    "binding": "FordConnections"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::BuildingGrid",
+    "kind": "record",
+    "binding": "BuildingGrid"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::BuildingArrangement",
+    "kind": "record",
+    "binding": "BuildingArrangement"
+  },
+  {
+    "header": "ScoredSettlements",
+    "symbol": "MapGeneration::ScoredSettlementChoice",
+    "kind": "record",
+    "binding": "ScoredSettlementChoice"
+  },
+  {
+    "header": "StartDiagnostics",
+    "symbol": "MapGeneration::ColonyDiagnostics",
+    "kind": "record",
+    "binding": "ColonyDiagnostics"
+  },
+  {
+    "header": "StartDiagnostics",
+    "symbol": "MapGeneration::StartDiagnosticsReport",
+    "kind": "record",
+    "binding": "StartDiagnosticsReport"
+  },
+  {
+    "header": "StartingLayout",
+    "symbol": "MapGeneration::StartingLayout::workerX",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "StartingLayout.workerX"
+  },
+  {
+    "header": "StartingLayout",
+    "symbol": "MapGeneration::StartingLayout::workerY",
+    "signature": "int (int) const",
+    "kind": "method",
+    "binding": "StartingLayout.workerY"
+  },
+  {
+    "header": "StartingLayout",
+    "symbol": "MapGeneration::StartingLayout::clears",
+    "signature": "bool (int, int) const",
+    "kind": "method",
+    "binding": "StartingLayout.clears"
+  },
+  {
+    "header": "StartingLayout",
+    "symbol": "MapGeneration::StartingLayout::StartingLayout",
+    "signature": "void (int, int, int)",
+    "kind": "constructor",
+    "binding": "StartingLayout"
+  },
+  {
+    "header": "StartingLayout",
+    "symbol": "MapGeneration::StartingLayout",
+    "kind": "record",
+    "binding": "StartingLayout"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::HeightFieldOptions",
+    "kind": "record",
+    "binding": "HeightFieldOptions"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::HeightFieldOptions::fromRequest",
+    "signature": "HeightFieldOptions (const GenerationRequest &, bool)",
+    "kind": "static-method",
+    "binding": "HeightFieldOptions_fromRequest"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::HeightFieldTiling",
+    "kind": "record",
+    "binding": "HeightFieldTiling"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::HeightFieldLevels",
+    "kind": "record",
+    "binding": "HeightFieldLevels"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::TowerPlan",
+    "kind": "record",
+    "binding": "TowerPlan"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::TowerRequest",
+    "kind": "record",
+    "binding": "TowerRequest"
+  },
+  {
+    "header": "WalkBandStarts",
+    "symbol": "MapGeneration::WalkBandRequest",
+    "kind": "record",
+    "binding": "WalkBandRequest"
+  },
+  {
+    "header": "WalkBandStarts",
+    "symbol": "MapGeneration::WalkBandStarts",
+    "kind": "record",
+    "binding": "WalkBandStarts"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::DesignedStone",
+    "kind": "record",
+    "binding": "DesignedStone"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::TileGate",
+    "kind": "record",
+    "binding": "TileGate"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::GatePartitionCheck",
+    "kind": "record",
+    "binding": "GatePartitionCheck"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::WalkSpread::tooUneven",
+    "signature": "bool (int) const",
+    "kind": "method",
+    "binding": "WalkSpread.tooUneven"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::WalkSpread",
+    "kind": "record",
+    "binding": "WalkSpread"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::RegionLeak",
+    "kind": "record",
+    "binding": "RegionLeak"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeFrame::cell",
+    "signature": "Cell (int, int) const",
+    "kind": "method",
+    "binding": "WedgeFrame.cell"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeFrame::bend",
+    "signature": "void (Cell &, double) const",
+    "kind": "method",
+    "binding": "WedgeFrame.bend"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeFrame::WedgeFrame",
+    "signature": "void (const Torus &, double, int, Stretch)",
+    "kind": "constructor",
+    "binding": "WedgeFrame"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeFrame",
+    "kind": "record",
+    "binding": "WedgeFrame"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeFrame::Cell",
+    "kind": "record",
+    "binding": "Cell"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::Blob::reach",
+    "signature": "double () const",
+    "kind": "method",
+    "binding": "Blob.reach"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::Blob::holds",
+    "signature": "bool (double, double) const",
+    "kind": "method",
+    "binding": "Blob.holds"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::Blob",
+    "kind": "record",
+    "binding": "Blob"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeField::operator()",
+    "signature": "double (int) const",
+    "kind": "method",
+    "binding": "WedgeField.at"
+  },
+  {
+    "header": "Wedge",
+    "symbol": "MapGeneration::WedgeField",
+    "kind": "record",
+    "binding": "WedgeField"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::AtlasRegion",
+    "kind": "record",
+    "binding": "AtlasRegion"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::PlayerLandResources",
+    "kind": "record",
+    "binding": "PlayerLandResources"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::axesFor",
+    "signature": "Axes (int, int)",
+    "binding": "axesFor"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::floodFrom",
+    "signature": "Flood (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, int)",
+    "binding": "floodFrom"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::reachFrom",
+    "signature": "Reach (const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, int)",
+    "binding": "reachFrom"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::stepsFrom",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "stepsFrom"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::stepsFrom",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &)",
+    "binding": "stepsFrom"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::tileMask",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<int> &)",
+    "binding": "tileMask"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::unitTilesByTeam",
+    "signature": "std::vector<std::vector<int>> (const Map &, int)",
+    "binding": "unitTilesByTeam"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::walkableTiles",
+    "signature": "std::vector<unsigned char> (const Map &)",
+    "binding": "walkableTiles"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::groundUnitTiles",
+    "signature": "std::vector<unsigned char> (const Map &)",
+    "binding": "groundUnitTiles"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::groundUnitTiles",
+    "signature": "std::vector<unsigned char> (const Map &, bool)",
+    "binding": "groundUnitTiles"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::firstColonyCutOff",
+    "signature": "int (const std::vector<int> &, const std::vector<std::vector<int>> &, int)",
+    "binding": "firstColonyCutOff"
+  },
+  {
+    "header": "BalancedStarts",
+    "symbol": "MapGeneration::selectSeparatedSites",
+    "signature": "SeparatedSites (const Torus &, const std::vector<int> &, int, int, int)",
+    "binding": "selectSeparatedSites"
+  },
+  {
+    "header": "BalancedStarts",
+    "symbol": "MapGeneration::chooseBalancedStarts",
+    "signature": "bool (Game &, GenerationContext &, int)",
+    "binding": "chooseBalancedStarts"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::layBeaches",
+    "signature": "void (TerrainSketch &, const Torus &)",
+    "binding": "layBeaches"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::writeVertices",
+    "signature": "void (Map &, const TerrainSketch &)",
+    "binding": "writeVertices"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::paintTile",
+    "signature": "void (Map &, int, int, TerrainType)",
+    "binding": "paintTile"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::countTiles",
+    "signature": "int (const TerrainSketch &, TerrainType)",
+    "binding": "countTiles"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::tileCorners",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &)",
+    "binding": "tileCorners"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::pureTiles",
+    "signature": "std::vector<unsigned char> (const TerrainSketch &, const Torus &, TerrainType)",
+    "binding": "pureTiles"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::pureTiles",
+    "signature": "std::vector<unsigned char> (const Map &, TerrainType)",
+    "binding": "pureTiles"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::sprinkleSand",
+    "signature": "void (TerrainSketch &, const Torus &, const std::vector<unsigned char> &, double, int, NoiseAt)",
+    "binding": "sprinkleSand"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::keepRoadInland",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "keepRoadInland"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::roadTiles",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &)",
+    "binding": "roadTiles"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::growWater",
+    "signature": "int (const Torus &, std::vector<unsigned char> &, int, int, Eligible, Key, std::vector<int> &, int)",
+    "binding": "growWater"
+  },
+  {
+    "header": "Sketch",
+    "symbol": "MapGeneration::raiseIslands",
+    "signature": "std::vector<Island> (TerrainSketch &, const Torus &, GenerationContext &, const IslandPlacement &)",
+    "binding": "raiseIslands"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::fertilePlain",
+    "signature": "BiomeKit ()",
+    "binding": "fertilePlain"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::stoneFortress",
+    "signature": "BiomeKit ()",
+    "binding": "stoneFortress"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::orchardIsland",
+    "signature": "BiomeKit ()",
+    "binding": "orchardIsland"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::forest",
+    "signature": "BiomeKit ()",
+    "binding": "forest"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::farmland",
+    "signature": "BiomeKit ()",
+    "binding": "farmland"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::woodland",
+    "signature": "BiomeKit ()",
+    "binding": "woodland"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::savanna",
+    "signature": "BiomeKit ()",
+    "binding": "savanna"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::barrens",
+    "signature": "BiomeKit ()",
+    "binding": "barrens"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::highland",
+    "signature": "BiomeKit ()",
+    "binding": "highland"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::scaledBiome",
+    "signature": "BiomeKit (const BiomeKit &, const ResourceAmounts &)",
+    "binding": "scaledBiome"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::biomeWorth",
+    "signature": "double (const BiomeKit &)",
+    "binding": "biomeWorth"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::sketchBiome",
+    "signature": "BiomeTerrain (TerrainSketch &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const BiomeKit &, GenerationContext &, const std::string &)",
+    "binding": "sketchBiome"
+  },
+  {
+    "header": "Biomes",
+    "symbol": "MapGeneration::furnishBiome",
+    "signature": "void (Map &, const Torus &, GenerationContext &, const std::vector<unsigned char> &, const BiomeTerrain &, const BiomeKit &, const std::vector<unsigned char> &, const std::string &, const std::vector<unsigned char> *)",
+    "binding": "furnishBiome"
+  },
+  {
+    "header": "Centrepieces",
+    "symbol": "MapGeneration::pondDesignName",
+    "signature": "const char *(PondDesign)",
+    "binding": "pondDesignName"
+  },
+  {
+    "header": "Centrepieces",
+    "symbol": "MapGeneration::pondDesignMinimumRadius",
+    "signature": "int (PondDesign)",
+    "binding": "pondDesignMinimumRadius"
+  },
+  {
+    "header": "Centrepieces",
+    "symbol": "MapGeneration::pondDesignAt",
+    "signature": "char (PondDesign, int, int, int, int)",
+    "binding": "pondDesignAt"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::stampShape",
+    "signature": "void (std::vector<int> &, int, int, int, const ShapeTransform &, const RadialShape &, bool)",
+    "binding": "stampShape"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::stampRoughDisc",
+    "signature": "void (std::vector<int> &, int, int, int, int, int, double, double, GenerationContext &, const std::string &, double)",
+    "binding": "stampRoughDisc"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::fillRectangle",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, RegionBounds, unsigned char)",
+    "binding": "fillRectangle"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::polarPoint",
+    "signature": "ShapePoint (double, double, double, double)",
+    "binding": "polarPoint"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::strokePath",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, const std::vector<StrokePoint> &, unsigned char, bool)",
+    "binding": "strokePath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::strokeIntersectsMask",
+    "signature": "bool (const Torus &, const std::vector<StrokePoint> &, const std::vector<unsigned char> &)",
+    "binding": "strokeIntersectsMask"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::tracePath",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, const std::vector<StrokePoint> &, unsigned char)",
+    "binding": "tracePath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::traceRay",
+    "signature": "int (std::vector<unsigned char> &, const Torus &, ShapePoint, double, double, Stop, unsigned char)",
+    "binding": "traceRay"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::downhillPath",
+    "signature": "std::vector<StrokePoint> (ShapePoint, double, double, double, double, double, std::mt19937 &, const DownhillStyle &, const Stretch &)",
+    "binding": "downhillPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::bezierPath",
+    "signature": "std::vector<StrokePoint> (ShapePoint, ShapePoint, ShapePoint, double, double, int)",
+    "binding": "bezierPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::bentPath",
+    "signature": "std::vector<StrokePoint> (ShapePoint, double, double, double, double, double, int)",
+    "binding": "bentPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::splinePath",
+    "signature": "std::vector<StrokePoint> (const std::vector<ShapePoint> &, double)",
+    "binding": "splinePath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::wanderingPath",
+    "signature": "std::vector<StrokePoint> (const Torus &, ShapePoint, ShapePoint, double, double, double, std::mt19937 &)",
+    "binding": "wanderingPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::carveCorridor",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, ShapePoint, ShapePoint, double, double, double, std::mt19937 &, unsigned char)",
+    "binding": "carveCorridor"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::pathClearance",
+    "signature": "double (const std::vector<StrokePoint> &, const std::vector<StrokePoint> &, double)",
+    "binding": "pathClearance"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::pathBounds",
+    "signature": "PathBounds (const std::vector<StrokePoint> &)",
+    "binding": "pathBounds"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::growBranches",
+    "signature": "int (std::vector<Branch> &, int, ShapePoint, double, double, double, int, const ForkStyle &, Roll &, Accept &)",
+    "binding": "growBranches"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::forEachTileInShape",
+    "signature": "void (const Torus &, double, double, const RadialShape &, double, Visit, const Stretch &)",
+    "binding": "forEachTileInShape"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::fillShape",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, double, double, const RadialShape &, double, unsigned char, const Stretch &)",
+    "binding": "fillShape"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::forEachTileInTeardrop",
+    "signature": "void (const Torus &, double, double, double, const Teardrop &, Visit)",
+    "binding": "forEachTileInTeardrop"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::fillTeardrop",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, double, double, double, const Teardrop &, unsigned char)",
+    "binding": "fillTeardrop"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::arcPath",
+    "signature": "std::vector<StrokePoint> (double, double, double, double, double, double, double)",
+    "binding": "arcPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::zigzagPath",
+    "signature": "Zigzag (const AxisFrame &, double, double, double, int, double, double, double)",
+    "binding": "zigzagPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::ringWithGates",
+    "signature": "void (const Torus &, double, double, double, double, const std::vector<double> &, double, Visit)",
+    "binding": "ringWithGates"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::stretchPath",
+    "signature": "std::vector<StrokePoint> (const std::vector<StrokePoint> &, double, double, const Stretch &)",
+    "binding": "stretchPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::subtileCentre",
+    "signature": "SubtilePoint (int, int)",
+    "binding": "subtileCentre"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::subtileTile",
+    "signature": "long long (long long)",
+    "binding": "subtileTile"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::sealedSegmentTiles",
+    "signature": "std::vector<std::pair<long long, long long>> (SubtilePoint, SubtilePoint)",
+    "binding": "sealedSegmentTiles"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::traceSealedPath",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, const std::vector<SubtilePoint> &, unsigned char, bool)",
+    "binding": "traceSealedPath"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::traceSealedLap",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, bool, int, VAt, unsigned char)",
+    "binding": "traceSealedLap"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::forEachTileInPolygon",
+    "signature": "void (const Torus &, const std::vector<SubtilePoint> &, Visit)",
+    "binding": "forEachTileInPolygon"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::fillPolygon",
+    "signature": "void (std::vector<unsigned char> &, const Torus &, const std::vector<SubtilePoint> &, unsigned char)",
+    "binding": "fillPolygon"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::bankToBank",
+    "signature": "int (int)",
+    "binding": "bankToBank"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::widestChannelTowersCross",
+    "signature": "int (int, int)",
+    "binding": "widestChannelTowersCross"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::narrowestChannelTowersMiss",
+    "signature": "int (int)",
+    "binding": "narrowestChannelTowersMiss"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::beachTiles",
+    "signature": "std::vector<unsigned char> (const TerrainSketch &, const Torus &)",
+    "binding": "beachTiles"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::beachTiles",
+    "signature": "std::vector<unsigned char> (const Map &, const Torus &)",
+    "binding": "beachTiles"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::bridgeAcross",
+    "signature": "int (TerrainSketch &, const Torus &, ShapePoint, ShapePoint, double)",
+    "binding": "bridgeAcross"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::straitsBetweenCells",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<int> &, int)",
+    "binding": "straitsBetweenCells"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::crossingsPerLabel",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, int)",
+    "binding": "crossingsPerLabel"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::stampFord",
+    "signature": "void (TerrainSketch &, const Torus &, const SandFord &)",
+    "binding": "stampFord"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::fordAlong",
+    "signature": "SandFord (const Torus &, const std::vector<ShapePoint> &, const std::vector<double> &, int, bool, double, double)",
+    "binding": "fordAlong"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::fordFault",
+    "signature": "std::string (const Torus &, const SandFord &, Water, double)",
+    "binding": "fordFault"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::fordWalkabilityFault",
+    "signature": "std::string (const Map &, const Torus &, const SandFord &)",
+    "binding": "fordWalkabilityFault"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::fordLandingWalkable",
+    "signature": "bool (const Map &, const Torus &, const SandFord &, int)",
+    "binding": "fordLandingWalkable"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::channelCoreFault",
+    "signature": "std::string (const Torus &, const std::vector<ShapePoint> &, Skip, Water)",
+    "binding": "channelCoreFault"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::channelCrossings",
+    "signature": "std::vector<ChannelCrossing> (const Torus &, const std::vector<ShapePoint> &, const std::vector<double> &, const std::vector<int> &, double, int, bool, Clear)",
+    "binding": "channelCrossings"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::ChannelDetail::wrapIndex",
+    "signature": "int (int, int)",
+    "binding": "wrapIndex"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::ChannelDetail::centred",
+    "signature": "double (double, double)",
+    "binding": "centred"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::ChannelDetail::tangentAt",
+    "signature": "ShapePoint (const Torus &, const std::vector<ShapePoint> &, int, bool)",
+    "binding": "tangentAt"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::ChannelDetail::tileOf",
+    "signature": "int (const Torus &, double, double)",
+    "binding": "tileOf"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::ChannelDetail::where",
+    "signature": "std::string (const Torus &, double, double)",
+    "binding": "where"
+  },
+  {
+    "header": "ClearingLandscape",
+    "symbol": "MapGeneration::clearingLandscape",
+    "signature": "ClearingLandscape (const GenerationRequest &, GenerationContext &, const ClearingLandscapeOptions &)",
+    "binding": "clearingLandscape"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::graphDistances",
+    "signature": "std::vector<int> (const RegionGraph &, const std::vector<int> &)",
+    "binding": "graphDistances"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::connectedRegions",
+    "signature": "std::vector<int> (const std::vector<unsigned char> &, int, int, bool, GridNeighbors)",
+    "binding": "connectedRegions"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::labelComponents",
+    "signature": "ComponentLabels (const std::vector<int> &, const std::vector<int> &)",
+    "binding": "labelComponents"
+  },
+  {
+    "header": "Topology",
+    "symbol": "MapGeneration::regionAdjacency",
+    "signature": "RegionGraph (const std::vector<int> &, int, int, const std::vector<int> &, bool)",
+    "binding": "regionAdjacency"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::stepCost",
+    "signature": "int (const Map &, int, int, const StepCosts &)",
+    "binding": "stepCost"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::costsFrom",
+    "signature": "std::vector<int> (const Map &, const Torus &, const std::vector<int> &, const StepCosts &, GridNeighbors)",
+    "binding": "costsFrom"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::contactMatrix",
+    "signature": "ContactReport (const Map &, int, const StepCosts &)",
+    "binding": "contactMatrix"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::costsToTarget",
+    "signature": "std::vector<int> (const Map &, int, const std::vector<unsigned char> &, const StepCosts &)",
+    "binding": "costsToTarget"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::costSpread",
+    "signature": "int (const std::vector<int> &)",
+    "binding": "costSpread"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::unevenCosts",
+    "signature": "std::string (const std::vector<int> &, int, const std::string &)",
+    "binding": "unevenCosts"
+  },
+  {
+    "header": "Contact",
+    "symbol": "MapGeneration::equalCostSites",
+    "signature": "std::vector<int> (const std::vector<std::vector<int>> &, const std::vector<unsigned char> &, int, int)",
+    "binding": "equalCostSites"
+  },
+  {
+    "header": "DesignCache",
+    "symbol": "MapGeneration::cachedDesign",
+    "signature": "Layout (const GenerationRequest &, GenerationContext &, Layout (*)(const GenerationRequest &, GenerationContext &))",
+    "equivalent": "ctx.cachedDesign: invocation-local JavaScript design cache"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::winProbabilities",
+    "signature": "std::vector<double> (const std::vector<double> &)",
+    "binding": "winProbabilities"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::mapFairness",
+    "signature": "double (const std::vector<double> &)",
+    "binding": "mapFairness"
+  },
+  {
+    "header": "StartQuality",
+    "symbol": "MapGeneration::scoreStarts",
+    "signature": "StartQualityReport (Game &, int, const StartQualityScale &)",
+    "binding": "scoreStarts"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::fairnessModelTerms",
+    "signature": "const FairnessModelTerm *()",
+    "binding": "fairnessModelTerms"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::fairnessModelMeasurement",
+    "signature": "double (const std::vector<ColonyQuality> &, std::size_t, int)",
+    "binding": "fairnessModelMeasurement"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::fairnessModelContribution",
+    "signature": "double (const std::vector<ColonyQuality> &, std::size_t, int)",
+    "binding": "fairnessModelContribution"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::startFitness",
+    "signature": "double (const std::vector<ColonyQuality> &, std::size_t)",
+    "binding": "startFitness"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::layShoreFields",
+    "signature": "std::vector<ShoreField> (TerrainSketch &, const Torus &, const std::vector<unsigned char> &, std::vector<int> &, int, bool)",
+    "binding": "layShoreFields"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::plantShoreFields",
+    "signature": "int (Map &, const Torus &, const std::vector<ShoreField> &, const Fertility::Field &, int)",
+    "binding": "plantShoreFields"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::stampContainedPlot",
+    "signature": "std::vector<int> (TerrainSketch &, const Torus &, const std::vector<int> &, int)",
+    "binding": "stampContainedPlot"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::plantContainedPlot",
+    "signature": "int (Map &, const Torus &, const std::vector<int> &, const Fertility::Field &, int, int, bool)",
+    "binding": "plantContainedPlot"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::containedPlotsMismatch",
+    "signature": "std::string (const Map &, const Torus &, const std::vector<int> &, const Fertility::Field *, const std::vector<unsigned char> *)",
+    "binding": "containedPlotsMismatch"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::bestFarmRows",
+    "signature": "FarmRows (double)",
+    "binding": "bestFarmRows"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::farmYield",
+    "signature": "double (double)",
+    "binding": "farmYield"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::contourNominal",
+    "signature": "double (const ContourFarmStyle &, size_t, double, double)",
+    "binding": "contourNominal"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::layContourFarm",
+    "signature": "ContourFarm (TerrainSketch &, const Torus &, const std::vector<ShapePoint> &, const ContourFarmStyle &)",
+    "binding": "layContourFarm"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::waterCrossingsControl",
+    "signature": "GeneratorControl ()",
+    "binding": "waterCrossingsControl"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::cropCrossingsControl",
+    "signature": "GeneratorControl ()",
+    "binding": "cropCrossingsControl"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::layFarm",
+    "signature": "Farm (TerrainSketch &, const Torus &, const std::vector<unsigned char> &, double, ShapePoint, int, const FarmRows &, const FarmPlot *, const FarmBridges &, bool, std::vector<int> *)",
+    "binding": "layFarm"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::stampFarmPlot",
+    "signature": "void (TerrainSketch &, const Torus &, Farm &, int, int, const FarmPlot &)",
+    "binding": "stampFarmPlot"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::growFarmFields",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<ShapePoint> &, const std::vector<int> &, const std::vector<ShapePoint> &, int, double, const std::vector<double> &, int)",
+    "binding": "growFarmFields"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::farmReachable",
+    "signature": "double (const Map &, const Torus &, const Farm &, const std::vector<int> &)",
+    "binding": "farmReachable"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::clearFarmPlots",
+    "signature": "void (Map &, const Torus &, const std::vector<Farm> &)",
+    "binding": "clearFarmPlots"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::plantFarm",
+    "signature": "int (Map &, const Torus &, const Farm &, int, int, Eligible)",
+    "binding": "plantFarm"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::stampSealedOval",
+    "signature": "std::vector<unsigned char> (TerrainSketch &, const Torus &, const std::vector<unsigned char> &, const SealedOval &, const std::vector<int> &)",
+    "binding": "stampSealedOval"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::plantSealedGarden",
+    "signature": "std::pair<int, int> (Map &, const Torus &, GenerationContext &, const std::vector<unsigned char> &, int, int, const std::string &, const std::string &)",
+    "binding": "plantSealedGarden"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::trimFieldsBeyondWater",
+    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, const Fertility::Field &, int, int, const std::vector<int> &)",
+    "binding": "trimFieldsBeyondWater"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::frayFieldEdges",
+    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, int, const std::vector<int> &)",
+    "binding": "frayFieldEdges"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::removeCropSlivers",
+    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &)",
+    "binding": "removeCropSlivers"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::divideUpArea",
+    "signature": "bool (Map &, GenerationContext &, std::vector<int> &, int, std::vector<int> &, std::vector<int> &)",
+    "binding": "divideUpArea"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::createOval",
+    "signature": "void (Map &, std::vector<int> &, int, int, int, int, int)",
+    "binding": "createOval"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::splitUpPoints",
+    "signature": "int (Map &, GenerationContext &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &, std::vector<int> &, PointSearch, int)",
+    "binding": "splitUpPoints"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::splitUpArea",
+    "signature": "void (Map &, GenerationContext &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &, std::vector<int> &, std::vector<int> &, bool)",
+    "binding": "splitUpArea"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::getAllPoints",
+    "signature": "void (Map &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &)",
+    "binding": "getAllPoints"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::getAllOtherPoints",
+    "signature": "void (Map &, std::vector<int> &, int, std::vector<MapGeneratorPoint> &)",
+    "binding": "getAllOtherPoints"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::getAllPointsLine",
+    "signature": "void (Map &, int, int, int, int, std::vector<MapGeneratorPoint> &)",
+    "binding": "getAllPointsLine"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::findBorderPoints",
+    "signature": "void (Map &, std::vector<int> &, std::vector<MapGeneratorPoint> &)",
+    "binding": "findBorderPoints"
+  },
+  {
+    "header": "LegacyRegions",
+    "symbol": "MapGeneration::chooseRandomPoints",
+    "signature": "void (Map &, GenerationContext &, std::vector<MapGeneratorPoint> &, int)",
+    "binding": "chooseRandomPoints"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::scaledCount",
+    "signature": "std::int64_t (std::int64_t, int)",
+    "binding": "scaledCount"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::scaledShare",
+    "signature": "double (double, int)",
+    "binding": "scaledShare"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::scaledRadius",
+    "signature": "int (int, int)",
+    "binding": "scaledRadius"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::fillInResource",
+    "signature": "void (Map &, GenerationContext &, std::vector<MapGeneratorPoint> &, int, int)",
+    "binding": "fillInResource"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::placeResourceClump",
+    "signature": "int (Map &, GenerationContext &, MapGeneratorPoint, int, int, const std::vector<unsigned char> *)",
+    "binding": "placeResourceClump"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::placeResourceClumpInArea",
+    "signature": "int (Map &, GenerationContext &, const std::vector<MapGeneratorPoint> &, int, int, const std::vector<unsigned char> *)",
+    "binding": "placeResourceClumpInArea"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::setScaledResource",
+    "signature": "void (Map &, int, int, int, int, int)",
+    "binding": "setScaledResource"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::scatterResources",
+    "signature": "void (Game &, GenerationContext &, const ResourceDensities &)",
+    "binding": "scatterResources"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::guaranteeStartingResources",
+    "signature": "void (Game &, GenerationContext &, int, int, int, const std::vector<unsigned char> *, const std::vector<unsigned char> *)",
+    "binding": "guaranteeStartingResources"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::openCrampedStarts",
+    "signature": "void (Game &, GenerationContext &, int, int, const std::vector<unsigned char> *)",
+    "binding": "openCrampedStarts"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::resourceFrontages",
+    "signature": "std::map<int, ResourceFrontage> (const Map &, const Flood &, int, const Fertility::Field *)",
+    "binding": "resourceFrontages"
+  },
+  {
+    "header": "Resources",
+    "symbol": "MapGeneration::materialFrontages",
+    "signature": "std::map<MaterialId, ResourceFrontage> (const Map &, const Flood &, int, bool)",
+    "binding": "materialFrontages"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::nearestTwoSites",
+    "signature": "NearestSites (const Torus &, const std::vector<Site> &, int, int)",
+    "binding": "nearestTwoSites"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::spreadRankedSites",
+    "signature": "std::vector<int> (const Torus &, const std::vector<RankedSite> &, int, int, size_t)",
+    "binding": "spreadRankedSites"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::spreadPoints",
+    "signature": "std::vector<Site> (const Torus &, int, GenerationContext &, const std::string &, int, int)",
+    "binding": "spreadPoints"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::nearestSiteLabels",
+    "signature": "std::vector<int> (const Torus &, const std::vector<Site> &, int, GenerationContext &, const std::string &, int, int)",
+    "binding": "nearestSiteLabels"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::nearestSiteLabels",
+    "signature": "std::vector<int> (const Torus &, const std::vector<Site> &, int, const std::vector<int> &, const std::vector<int> &, int)",
+    "binding": "nearestSiteLabels"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::relaxPoints",
+    "signature": "std::vector<Site> (const Torus &, std::vector<Site>, int)",
+    "binding": "relaxPoints"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::grainHeading",
+    "signature": "Grain (int, int)",
+    "binding": "grainHeading"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::grainForChoice",
+    "signature": "Grain (int, int, GenerationContext &, const std::string &)",
+    "binding": "grainForChoice"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::widestGrainHeading",
+    "signature": "int (const Torus &, const std::vector<Site> &, int)",
+    "binding": "widestGrainHeading"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::spreadPoints",
+    "signature": "std::vector<Site> (const Torus &, int, const Grain &, GenerationContext &, const std::string &, const std::vector<Site> &, int, int, int)",
+    "binding": "spreadPoints"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::nearestSiteDistances",
+    "signature": "std::vector<double> (const Torus &, const std::vector<Site> &, const Grain &)",
+    "binding": "nearestSiteDistances"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::nearestSiteLabels",
+    "signature": "std::vector<int> (const Torus &, const std::vector<Site> &, int, const Grain &, int)",
+    "binding": "nearestSiteLabels"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::relaxPoints",
+    "signature": "std::vector<Site> (const Torus &, std::vector<Site>, const Grain &, int, int, int, int)",
+    "binding": "relaxPoints"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::packLandforms",
+    "signature": "std::vector<double> (const Torus &, const std::vector<Site> &, const Grain &, const std::vector<double> &, double, double, double)",
+    "binding": "packLandforms"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::farthestSites",
+    "signature": "std::vector<int> (const Torus &, const std::vector<Site> &, const std::vector<int> &, const std::vector<unsigned char> &, int)",
+    "binding": "farthestSites"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::siteNeighbours",
+    "signature": "std::vector<std::vector<int>> (const Torus &, const std::vector<int> &, int)",
+    "binding": "siteNeighbours"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::farthestSites",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, int, GenerationContext &, const std::string &, int, const std::function<bool (int)> *, int *)",
+    "binding": "farthestSites"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::closestWalk",
+    "signature": "int (const Torus &, const std::vector<int> &, const std::vector<unsigned char> &)",
+    "binding": "closestWalk"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::recentreSites",
+    "signature": "std::vector<int> (const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<int> &)",
+    "binding": "recentreSites"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::squareTessellation",
+    "signature": "Tessellation (int, int, int)",
+    "binding": "squareTessellation"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::hexTessellation",
+    "signature": "Tessellation (int, int, int)",
+    "binding": "hexTessellation"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::shortestEdgeSteps",
+    "signature": "int (const Tessellation &)",
+    "binding": "shortestEdgeSteps"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::centreClearance",
+    "signature": "int (const Tessellation &)",
+    "binding": "centreClearance"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::warpLimit",
+    "signature": "int (const Tessellation &)",
+    "binding": "warpLimit"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::warpCorners",
+    "signature": "void (Tessellation &, int, const std::vector<unsigned char> &, int, int, GenerationContext &, const std::string &)",
+    "binding": "warpCorners"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::rasterizeBoundaries",
+    "signature": "std::vector<unsigned char> (const Tessellation &, const std::vector<unsigned char> &, int)",
+    "binding": "rasterizeBoundaries"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::relaxWarpOutside",
+    "signature": "int (Tessellation &, const std::vector<SubtilePoint> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, int, int)",
+    "binding": "relaxWarpOutside"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::labelTiles",
+    "signature": "std::vector<int> (const Tessellation &)",
+    "binding": "labelTiles"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::cellCrossing",
+    "signature": "std::vector<StrokePoint> (const Tessellation &, int, double, double)",
+    "binding": "cellCrossing"
+  },
+  {
+    "header": "Tessellation",
+    "symbol": "MapGeneration::tilePoint",
+    "signature": "ShapePoint (SubtilePoint)",
+    "binding": "tilePoint"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::cellGraph",
+    "signature": "CellGraph (const Tessellation &)",
+    "binding": "cellGraph"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::cellGraph",
+    "signature": "CellGraph (const Torus &, const std::vector<Site> &, const std::vector<std::vector<int>> &)",
+    "binding": "cellGraph"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::pocketsFit",
+    "signature": "bool (const CellGraph &, const std::vector<unsigned char> &)",
+    "binding": "pocketsFit"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::spreadPockets",
+    "signature": "std::vector<int> (const CellGraph &, int)",
+    "binding": "spreadPockets"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::farthestCells",
+    "signature": "std::vector<int> (const CellGraph &, int, const std::vector<unsigned char> &)",
+    "binding": "farthestCells"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::claimNeighbourCells",
+    "signature": "std::vector<std::vector<int>> (const CellGraph &, const std::vector<int> &, int, const std::vector<unsigned char> &)",
+    "binding": "claimNeighbourCells"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::closedEdges",
+    "signature": "std::vector<int> (const CellGraph &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "closedEdges"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::edgeDetours",
+    "signature": "std::vector<int> (const CellGraph &, const std::vector<unsigned char> &, const std::vector<int> &)",
+    "binding": "edgeDetours"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::carveSpanningTree",
+    "signature": "bool (const CellGraph &, GenerationContext &, const std::string &, const std::vector<unsigned char> &, std::vector<unsigned char> &)",
+    "binding": "carveSpanningTree"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::carveNearTree",
+    "signature": "bool (const CellGraph &, GenerationContext &, const std::string &, const std::vector<unsigned char> &, int, std::vector<unsigned char> &)",
+    "binding": "carveNearTree"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::openPocketDoors",
+    "signature": "std::vector<int> (const CellGraph &, GenerationContext &, const std::string &, const std::vector<int> &, const std::vector<unsigned char> &, std::vector<unsigned char> &)",
+    "binding": "openPocketDoors"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::openLoops",
+    "signature": "void (const CellGraph &, GenerationContext &, const std::string &, const std::vector<unsigned char> &, int, std::vector<unsigned char> &)",
+    "binding": "openLoops"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::carveOpenEdges",
+    "signature": "std::vector<std::array<int, 2>> (std::vector<unsigned char> &, const Torus &, const CellGraph &, const std::vector<ShapePoint> &, const std::vector<unsigned char> &, double, double, double, std::mt19937 &, Eligible)",
+    "binding": "carveOpenEdges"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::deadEnds",
+    "signature": "std::vector<int> (const CellGraph &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, std::vector<int> &)",
+    "binding": "deadEnds"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::pocketsFit",
+    "signature": "bool (const Tessellation &, const std::vector<unsigned char> &)",
+    "binding": "pocketsFit"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::spreadPockets",
+    "signature": "std::vector<int> (const Tessellation &, int)",
+    "binding": "spreadPockets"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::carveSpanningTree",
+    "signature": "bool (const Tessellation &, GenerationContext &, const std::string &, const std::vector<unsigned char> &, std::vector<unsigned char> &)",
+    "binding": "carveSpanningTree"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::openPocketDoors",
+    "signature": "std::vector<int> (const Tessellation &, GenerationContext &, const std::string &, const std::vector<int> &, const std::vector<unsigned char> &, std::vector<unsigned char> &)",
+    "binding": "openPocketDoors"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::openLoops",
+    "signature": "void (const Tessellation &, GenerationContext &, const std::string &, const std::vector<unsigned char> &, int, std::vector<unsigned char> &)",
+    "binding": "openLoops"
+  },
+  {
+    "header": "GraphMaze",
+    "symbol": "MapGeneration::deadEnds",
+    "signature": "std::vector<int> (const Tessellation &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, std::vector<int> &)",
+    "binding": "deadEnds"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::cropSeedsIn",
+    "signature": "int (const Map &, const std::vector<unsigned char> &)",
+    "binding": "cropSeedsIn"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::cropSpreadEnvelope",
+    "signature": "Flood (const Map &, const Fertility::Field *)",
+    "binding": "cropSpreadEnvelope"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::fertileCropEnvelope",
+    "signature": "std::vector<unsigned char> (const Map &, const Fertility::Field &)",
+    "binding": "fertileCropEnvelope"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::cropGrowthField",
+    "signature": "Fertility::Field (const TerrainSketch &, const Torus &)",
+    "binding": "cropGrowthField"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::wateredShare",
+    "signature": "double (const Fertility::Field &, const std::vector<unsigned char> &, std::uint32_t)",
+    "binding": "wateredShare"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::wetTiles",
+    "signature": "int (const Fertility::Field &, const std::vector<unsigned char> &)",
+    "binding": "wetTiles"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::dryZone",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &)",
+    "binding": "dryZone"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::drainWithin",
+    "signature": "int (TerrainSketch &, const std::vector<unsigned char> &)",
+    "binding": "drainWithin"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::meanFertilityAround",
+    "signature": "std::uint32_t (const Fertility::Field &, const Torus &, int, int)",
+    "binding": "meanFertilityAround"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::meanFertilityField",
+    "signature": "std::vector<std::uint32_t> (const Fertility::Field &, const Torus &, int)",
+    "binding": "meanFertilityField"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::digPond",
+    "signature": "int (TerrainSketch &, const Torus &, int, int, int, int, Eligible, NoiseAt, std::vector<int> &, int)",
+    "binding": "digPond"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::waterDrySite",
+    "signature": "DryStartWatering (TerrainSketch &, const Torus &, int, int, std::uint32_t, const DryStartPonds &, Eligible, NoiseAt, std::vector<int> &, int)",
+    "binding": "waterDrySite"
+  },
+  {
+    "header": "RecursiveGeometry",
+    "symbol": "MapGeneration::partitionRegions",
+    "signature": "RegionTree (RegionBounds, int, int, int, const std::function<RegionStop (const RecursiveRegion &)> &, int)",
+    "binding": "partitionRegions"
+  },
+  {
+    "header": "RecursiveGeometry",
+    "symbol": "MapGeneration::hilbertPath",
+    "signature": "HilbertPath (RegionBounds, int, int, int)",
+    "binding": "hilbertPath"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::transverseCrossings",
+    "signature": "CrossingProposals (const std::vector<RecursiveSegment> &, const std::vector<double> &, double, double)",
+    "binding": "transverseCrossings"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::crossingEndpointGraph",
+    "signature": "CrossingGraph (const Torus &, const std::vector<unsigned char> &, std::vector<CrossingCandidate> &)",
+    "binding": "crossingEndpointGraph"
+  },
+  {
+    "header": "HierarchicalCrossings",
+    "symbol": "MapGeneration::selectCrossings",
+    "signature": "CrossingSelection (const Torus &, int, const std::vector<RegionEdge> &, const std::vector<int> &, const std::vector<CrossingCandidate> &, int, int, int, std::uint32_t, const std::function<bool (const CrossingCandidate &, const CrossingCandidate &)> &)",
+    "binding": "selectCrossings"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::periodicNoise",
+    "signature": "std::vector<int> (int, int, int, std::mt19937 &)",
+    "binding": "periodicNoise"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::fractalNoise",
+    "signature": "std::vector<int> (int, int, int, int, std::mt19937 &)",
+    "binding": "fractalNoise"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::torusNoise",
+    "signature": "std::vector<float> (int, int, std::mt19937 &)",
+    "binding": "torusNoise"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::percentile",
+    "signature": "int (std::vector<int>, int)",
+    "binding": "percentile"
+  },
+  {
+    "header": "LatticeNoise",
+    "symbol": "MapGeneration::noisyShare",
+    "signature": "std::vector<unsigned char> (const std::vector<unsigned char> &, const std::vector<int> &, int)",
+    "binding": "noisyShare"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::clearGround",
+    "signature": "bool (const Map &, int, int)",
+    "binding": "clearGround"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::capResourceStock",
+    "signature": "ResourceStock (Map &, int, int)",
+    "binding": "capResourceStock"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantFieldInteriors",
+    "signature": "int (Map &, const Torus &, const std::vector<int> &, int, int)",
+    "binding": "plantFieldInteriors"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::growPatch",
+    "signature": "int (Map &, const Torus &, int, int, int, Eligible)",
+    "binding": "growPatch"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::seedNear",
+    "signature": "int (const Torus &, int, int, int, Eligible)",
+    "binding": "seedNear"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::growPatchesNear",
+    "signature": "PatchBudgetResult (Map &, const Torus &, int, int, int, int, int, Eligible)",
+    "binding": "growPatchesNear"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::seedForPatchCapacity",
+    "signature": "int (const Torus &, int, int, int, int, Eligible, Priority)",
+    "binding": "seedForPatchCapacity"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantPatchNear",
+    "signature": "int (Map &, const Torus &, const KitSeed &, int, int, Eligible)",
+    "binding": "plantPatchNear"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantKit",
+    "signature": "void (Map &, const Torus &, GenerationContext &, const Kit &, Eligible)",
+    "binding": "plantKit"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantSplitKit",
+    "signature": "void (Map &, const Torus &, GenerationContext &, const Kit &, CropsEligible, StoneEligible)",
+    "binding": "plantSplitKit"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantFields",
+    "signature": "void (Map &, const Torus &, std::vector<int>, int, int, SplitKey)",
+    "binding": "plantFields"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantCover",
+    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, int, Eligible)",
+    "binding": "plantCover"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantCoverShare",
+    "signature": "int (Map &, const Torus &, const std::vector<int> &, int, int, LevelAt)",
+    "binding": "plantCoverShare"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantRound",
+    "signature": "int (Map &, const Torus &, GenerationContext &, double, double, double, const std::vector<double> &, int, int, int, Eligible)",
+    "binding": "plantRound"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::plantOrchard",
+    "signature": "int (Map &, const Torus &, GenerationContext &, double, double, double, const std::vector<double> &, double, int, int, Eligible)",
+    "binding": "plantOrchard"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::scatterClumps",
+    "signature": "int (GenerationContext &, const Torus &, const std::vector<int> &, int, const char *, Eligible, Place, int)",
+    "binding": "scatterClumps"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::swarmSurroundings",
+    "signature": "std::vector<unsigned char> (const Torus &, const GenerationContext &, int)",
+    "binding": "swarmSurroundings"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::clearAroundSwarms",
+    "signature": "void (Map &, const GenerationContext &, const Torus &, const std::vector<unsigned char> *)",
+    "binding": "clearAroundSwarms"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::clearDeposits",
+    "signature": "int (Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> *)",
+    "binding": "clearDeposits"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::algaeGrowthChance",
+    "signature": "std::vector<double> (const Map &, const Torus &)",
+    "binding": "algaeGrowthChance"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::seedAlgae",
+    "signature": "void (Map &, GenerationContext &, const Torus &, const char *, int, const AlgaeBand &, const WedgeFrame *)",
+    "binding": "seedAlgae"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::seedAlgae",
+    "signature": "void (Map &, GenerationContext &, const Torus &, const char *, int, const AlgaeBand &, const std::vector<int> &, int)",
+    "binding": "seedAlgae"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::stockIslands",
+    "signature": "void (Map &, GenerationContext &, const std::vector<Island> &, const char *)",
+    "binding": "stockIslands"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::dilate",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "dilate"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::erode",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "erode"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::openMask",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "openMask"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::closeMask",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "closeMask"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::distanceSquaredTo",
+    "signature": "std::vector<std::int64_t> (const Torus &, const std::vector<unsigned char> &)",
+    "binding": "distanceSquaredTo"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::dilateRound",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, double)",
+    "binding": "dilateRound"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::clearance",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &)",
+    "binding": "clearance"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::roomiestTile",
+    "signature": "int (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, int, int)",
+    "binding": "roomiestTile"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::dropSmallRegions",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int, GridNeighbors)",
+    "binding": "dropSmallRegions"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::widestWalkClearance",
+    "signature": "int (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, const std::vector<unsigned char> &)",
+    "binding": "widestWalkClearance"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::widestWalkClearance",
+    "signature": "int (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, const std::vector<int> &, const std::vector<unsigned char> &)",
+    "binding": "widestWalkClearance"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::narrowestPassage",
+    "signature": "int (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, const std::vector<unsigned char> &)",
+    "binding": "narrowestPassage"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::slivers",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "slivers"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::bridgeDiagonals",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &)",
+    "binding": "bridgeDiagonals"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::windowCount",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "windowCount"
+  },
+  {
+    "header": "Morphology",
+    "symbol": "MapGeneration::windowMinimum",
+    "signature": "std::vector<int> (const Torus &, const std::vector<int> &, int)",
+    "binding": "windowMinimum"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::growTerritories",
+    "signature": "Territories (const Torus &, const std::vector<unsigned char> &, const std::vector<std::vector<int>> &, Cost, const std::vector<double> *)",
+    "binding": "growTerritories"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::balancedTerritories",
+    "signature": "Territories (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, double, int, double)",
+    "binding": "balancedTerritories"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::smoothLabels",
+    "signature": "void (const Torus &, std::vector<int> &, int, const std::vector<unsigned char> &, int, double)",
+    "binding": "smoothLabels"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::separateTerritories",
+    "signature": "void (const Torus &, std::vector<int> &, int)",
+    "binding": "separateTerritories"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::fillToNearest",
+    "signature": "std::vector<unsigned char> (const Torus &, std::vector<int> &, const std::vector<unsigned char> &, int)",
+    "binding": "fillToNearest"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::strandedGround",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<int> &, const std::vector<unsigned char> &)",
+    "binding": "strandedGround"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::growFarLake",
+    "signature": "int (const Torus &, std::vector<unsigned char> &, const std::vector<int> &, const std::vector<int> &, int, int, NoiseAt, std::vector<int> &, int)",
+    "binding": "growFarLake"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::growLakeBeside",
+    "signature": "int (const Torus &, std::vector<unsigned char> &, const std::vector<int> &, const std::vector<int> &, int, int, int, double, int, int, int, NoiseAt, std::vector<int> &, int)",
+    "binding": "growLakeBeside"
+  },
+  {
+    "header": "Territories",
+    "symbol": "MapGeneration::siteAtDepth",
+    "signature": "int (const std::vector<int> &, const std::vector<int> &, int, int, int)",
+    "binding": "siteAtDepth"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::homePondRadius",
+    "signature": "double (double)",
+    "binding": "homePondRadius"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::homeHasRoom",
+    "signature": "bool (double)",
+    "binding": "homeHasRoom"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::stampRoundHome",
+    "signature": "ShapePoint (const Torus &, ShapePoint, double, const RadialShape &, double, int, const RadialShape *, std::vector<unsigned char> &, Visit)",
+    "binding": "stampRoundHome"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::homeSwarmSite",
+    "signature": "MapGeneratorPoint (ShapePoint, double, double)",
+    "binding": "homeSwarmSite"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::plantHomeKit",
+    "signature": "void (Map &, const Torus &, GenerationContext &, ShapePoint, double, double, int, int, Eligible)",
+    "binding": "plantHomeKit"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::stampRoundHomes",
+    "signature": "std::vector<ShapePoint> (const Torus &, const std::vector<ShapePoint> &, double, const RadialShape &, double, int, const RadialShape *, std::vector<unsigned char> &, std::vector<int> &)",
+    "binding": "stampRoundHomes"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::plantOpenHomeKit",
+    "signature": "void (Map &, const Torus &, GenerationContext &, ShapePoint, double, double, int, int, int, Eligible)",
+    "binding": "plantOpenHomeKit"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::stampTeardropHome",
+    "signature": "void (const Torus &, ShapePoint, double, const Teardrop &, const TeardropHome &, Visit)",
+    "binding": "stampTeardropHome"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::teardropHomeSwarm",
+    "signature": "MapGeneratorPoint (ShapePoint, double, const Teardrop &, const TeardropHome &)",
+    "binding": "teardropHomeSwarm"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::teardropHomeKit",
+    "signature": "Kit (ShapePoint, double, const Teardrop &, const TeardropHome &, int, int, int)",
+    "binding": "teardropHomeKit"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::regionHome",
+    "signature": "RegionHome (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, int, int, int, const std::vector<unsigned char> *)",
+    "binding": "regionHome"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::furnishGround",
+    "signature": "void (Map &, const Torus &, GenerationContext &, const Fertility::Field &, Eligible, PatchAt, SplitAt, AmountsFor, const char *, const char *, ClumpsAllowed)",
+    "binding": "furnishGround"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::topUpWheatNearby",
+    "signature": "WheatTopUp (Map &, const Torus &, int, int, int, const std::vector<unsigned char> &, Room)",
+    "binding": "topUpWheatNearby"
+  },
+  {
+    "header": "Landmass",
+    "symbol": "MapGeneration::cleanLandmass",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, const CoastCleaning &)",
+    "binding": "cleanLandmass"
+  },
+  {
+    "header": "Landmass",
+    "symbol": "MapGeneration::largestRegion",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, GridNeighbors)",
+    "binding": "largestRegion"
+  },
+  {
+    "header": "Landmass",
+    "symbol": "MapGeneration::inheritLabels",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, unsigned char)",
+    "binding": "inheritLabels"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::pointSymmetry",
+    "signature": "Symmetry (int, int, int)",
+    "binding": "pointSymmetry"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::translationSymmetry",
+    "signature": "Symmetry (int, int, int, long long *)",
+    "binding": "translationSymmetry"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::latticePeriod",
+    "signature": "int (const Symmetry &)",
+    "binding": "latticePeriod"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::latticeSites",
+    "signature": "LatticeSites (int, int, int, double, double)",
+    "binding": "latticeSites"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::jitterSites",
+    "signature": "int (const Torus &, std::vector<ShapePoint> &, GenerationContext &, const std::string &, int, double)",
+    "binding": "jitterSites"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::roomyLatticeSites",
+    "signature": "LatticeSites (int, int, int, double, double, int)",
+    "binding": "roomyLatticeSites"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::stampOrbits",
+    "signature": "std::vector<unsigned char> (const Symmetry &, const std::vector<unsigned char> &, bool)",
+    "binding": "stampOrbits"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::orbitSum",
+    "signature": "std::vector<int> (const Symmetry &, const std::vector<int> &, bool)",
+    "binding": "orbitSum"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::orbitNoise",
+    "signature": "std::vector<int> (GenerationContext &, const Symmetry &, const std::string &, float, bool)",
+    "binding": "orbitNoise"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::topShare",
+    "signature": "std::vector<unsigned char> (const std::vector<int> &, const std::vector<unsigned char> &, double, bool)",
+    "binding": "topShare"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::equaliseDeposits",
+    "signature": "bool (Map &, const Symmetry &, std::string &)",
+    "binding": "equaliseDeposits"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::orbitMismatch",
+    "signature": "std::string (const Game &, const Symmetry &, int, std::vector<std::vector<int>> *)",
+    "binding": "orbitMismatch"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::nearestSiteDistance",
+    "signature": "double (const Torus &, const std::vector<ShapePoint> &)",
+    "binding": "nearestSiteDistance"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::turnStencilVertex",
+    "signature": "std::pair<int, int> (int, int, int)",
+    "binding": "turnStencilVertex"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::turnStencilTile",
+    "signature": "std::pair<int, int> (int, int, int)",
+    "binding": "turnStencilTile"
+  },
+  {
+    "header": "Orbits",
+    "symbol": "MapGeneration::turnStencilPoint",
+    "signature": "ShapePoint (int, ShapePoint)",
+    "binding": "turnStencilPoint"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::runsAndGaps",
+    "signature": "std::vector<unsigned char> (int, int, int, int, int, GenerationContext &, const char *)",
+    "binding": "runsAndGaps"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::turingPattern",
+    "signature": "std::vector<int> (const Torus &, const TuringStyle &, std::mt19937 &)",
+    "binding": "turingPattern"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::stripePhase",
+    "signature": "std::vector<int> (const Torus &, const StripeStyle &, std::mt19937 &)",
+    "binding": "stripePhase"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::alongStripes",
+    "signature": "StripeStyle (const Torus &, const StripeStyle &)",
+    "binding": "alongStripes"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::stripeSpacing",
+    "signature": "double (const Torus &, const StripeStyle &)",
+    "binding": "stripeSpacing"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::stripeHeading",
+    "signature": "double (const Torus &, const StripeStyle &)",
+    "binding": "stripeHeading"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::stripeNormal",
+    "signature": "double (const Torus &, const StripeStyle &)",
+    "binding": "stripeNormal"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::stripeDistance",
+    "signature": "int (int)",
+    "binding": "stripeDistance"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::upwindSteps",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &, int, int, int)",
+    "binding": "upwindSteps"
+  },
+  {
+    "header": "Patterns",
+    "symbol": "MapGeneration::traceStreamline",
+    "signature": "std::vector<StrokePoint> (const Torus &, ShapePoint, HeadingAt, int, double, double)",
+    "binding": "traceStreamline"
+  },
+  {
+    "header": "Settlements",
+    "symbol": "MapGeneration::placeSettlement",
+    "signature": "bool (Game &, GenerationContext &, int, const std::vector<unsigned char> &, MapGeneratorPoint, const std::string &)",
+    "binding": "placeSettlement"
+  },
+  {
+    "header": "Settlements",
+    "symbol": "MapGeneration::placeBuilding",
+    "signature": "int (Game &, int, const char *, int, double, double, int, const std::vector<unsigned char> &)",
+    "binding": "placeBuilding"
+  },
+  {
+    "header": "Settlements",
+    "symbol": "MapGeneration::countBuildings",
+    "signature": "int (const Game &, int, const char *)",
+    "binding": "countBuildings"
+  },
+  {
+    "header": "Settlements",
+    "symbol": "MapGeneration::placeTower",
+    "signature": "int (Game &, int, int, double, double, int, const std::vector<unsigned char> &, bool, const std::vector<MapGeneratorPoint> &, bool)",
+    "binding": "placeTower"
+  },
+  {
+    "header": "Settlements",
+    "symbol": "MapGeneration::placeStartingBuilding",
+    "signature": "int (Game &, int, const char *, int, double, double, int, const std::vector<unsigned char> &, const std::vector<int> &)",
+    "binding": "placeStartingBuilding"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::denseColonySizeFailure",
+    "signature": "std::string (const GenerationRequest &)",
+    "binding": "denseColonySizeFailure"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::dealStarts",
+    "signature": "void (GenerationContext &, Sites &, const char *)",
+    "equivalent": "ctx.shuffle: JavaScript arrays and native buffers"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::designFailure",
+    "signature": "std::string (const GenerationRequest &)",
+    "equivalent": "call the script design function in validateRequest"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::resolveDesignChoice",
+    "signature": "int (const GenerationRequest &, const char *, int, const char *)",
+    "equivalent": "ctx.resolveDesignChoice: feasible options from a script callback"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::homeGrassMask",
+    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<int> &, int)",
+    "binding": "homeGrassMask"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::homePondMissing",
+    "signature": "std::string (const Map &, const Torus &, const std::vector<ShapePoint> &, int, const char *, const char *)",
+    "binding": "homePondMissing"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::settleColonies",
+    "signature": "bool (Game &, GenerationContext &, const char *, HomeMask, Anchor)",
+    "binding": "settleColonies"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::secureStartingCrops",
+    "signature": "void (Game &, GenerationContext &, const Torus &, int, int, int, const std::vector<unsigned char> *, const std::vector<unsigned char> *)",
+    "binding": "secureStartingCrops"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::openStartsBuriedByResources",
+    "signature": "void (Game &, GenerationContext &, int, int, int, const std::vector<unsigned char> *)",
+    "binding": "openStartsBuriedByResources"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::reopenCrampedStarts",
+    "signature": "bool (Game &, GenerationContext &, const ResourceAmounts &, int, int, int, const std::vector<unsigned char> *)",
+    "binding": "reopenCrampedStarts"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::settleRoundColonies",
+    "signature": "bool (Game &, GenerationContext &, const char *, const std::vector<int> &, const std::vector<ShapePoint> &, double)",
+    "binding": "settleRoundColonies"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::designMismatch",
+    "signature": "std::string (const Layout &, const Map &, const char *)",
+    "equivalent": "validateWorld compares its script layout against finished-world queries"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::startingAccessFailure",
+    "signature": "std::string (const Map &, int, const std::vector<MaterialAccessRule> &, int, int)",
+    "binding": "startingAccessFailure"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::startingFloorFailure",
+    "signature": "std::string (const Map &, int, int, int)",
+    "binding": "startingFloorFailure"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::coloniesApart",
+    "signature": "std::string (const Map &, int, const std::string &)",
+    "binding": "coloniesApart"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::walkFromFirstColony",
+    "signature": "ColonyWalk (const Map &, int, const std::string &, const std::string &)",
+    "binding": "walkFromFirstColony"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::cropsBesideReach",
+    "signature": "CropsInReach (const Map &, const std::vector<int> &)",
+    "binding": "cropsBesideReach"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::fitRaster",
+    "signature": "RasterFit (int, int, int, int, int, bool)",
+    "binding": "fitRaster"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::resampleRaster",
+    "signature": "std::vector<unsigned char> (const std::vector<unsigned char> &, const RasterFit &, const Torus &, unsigned char, Reduce)",
+    "binding": "resampleRaster"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::resampleMajority",
+    "signature": "std::vector<unsigned char> (const std::vector<unsigned char> &, const RasterFit &, const Torus &, unsigned char, unsigned char)",
+    "binding": "resampleMajority"
+  },
+  {
+    "header": "Raster",
+    "symbol": "MapGeneration::resampleAny",
+    "signature": "std::vector<unsigned char> (const std::vector<unsigned char> &, const RasterFit &, const Torus &, unsigned char)",
+    "binding": "resampleAny"
+  },
+  {
+    "header": "ResourceSemantics",
+    "symbol": "MapGeneration::permanentResourceBarrier",
+    "signature": "bool (const Map &, size_t, bool)",
+    "binding": "permanentResourceBarrier"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::accept",
+    "signature": "bool (double, double, GenerationContext &, const char *)",
+    "binding": "accept"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::finiteCost",
+    "signature": "double (double)",
+    "binding": "finiteCost"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::anneal",
+    "signature": "SolveReport (const Anneal &, GenerationContext &, Propose, Cost, Undo, Remember, Recall)",
+    "binding": "anneal"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::anneal",
+    "signature": "SolveReport (const Anneal &, GenerationContext &, State &)",
+    "equivalent": "state overload is equivalent to anneal with explicit callbacks"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::reportObjective",
+    "signature": "void (GenerationTelemetry &, const std::string &, const Objective &)",
+    "binding": "reportObjective"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::imbalance",
+    "signature": "double (const std::vector<double> &)",
+    "binding": "imbalance"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::spread",
+    "signature": "int (const std::vector<int> &)",
+    "binding": "spread"
+  },
+  {
+    "header": "Solve",
+    "symbol": "MapGeneration::reportSolve",
+    "signature": "void (GenerationTelemetry &, const std::string &, const SolveReport &)",
+    "binding": "reportSolve"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::drawRiver",
+    "signature": "River (const Torus &, GenerationContext &, const std::string &, bool, double, const RiverStyle &)",
+    "binding": "drawRiver"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::riverWater",
+    "signature": "std::vector<unsigned char> (const Torus &, const River &)",
+    "binding": "riverWater"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::bestRiverAcross",
+    "signature": "RiverChoice (const Torus &, GenerationContext &, const std::string &, bool, int, const RiverStyle &, Rate)",
+    "binding": "bestRiverAcross"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::fordSites",
+    "signature": "std::vector<RiverFord> (const Torus &, const River &, const std::vector<unsigned char> &, const std::vector<int> &, double, int)",
+    "binding": "fordSites"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::fordsToRejoin",
+    "signature": "FordConnections (const std::vector<RiverFord> &, int)",
+    "binding": "fordsToRejoin"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::fordsSpreadAlong",
+    "signature": "std::vector<int> (const std::vector<RiverFord> &, std::vector<int>, int, int)",
+    "binding": "fordsSpreadAlong"
+  },
+  {
+    "header": "Rivers",
+    "symbol": "MapGeneration::layFord",
+    "signature": "void (TerrainSketch &, const Torus &, const River &, int, double, double)",
+    "binding": "layFord"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::cheapestWalk",
+    "signature": "std::vector<int> (const Torus &, GridNeighbors, const std::vector<int> &, const std::vector<unsigned char> &, StepCost)",
+    "binding": "cheapestWalk"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::cheapestRoute",
+    "signature": "std::vector<int> (const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "cheapestRoute"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::reserveSandRoute",
+    "signature": "std::vector<int> (TerrainSketch &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, int, const std::vector<int> *, GridNeighbors, const std::vector<unsigned char> *)",
+    "binding": "reserveSandRoute"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::openRoad",
+    "signature": "bool (Map &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> *)",
+    "binding": "openRoad"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::connectColonies",
+    "signature": "int (Map &, int, const std::vector<unsigned char> *, std::string &)",
+    "binding": "connectColonies"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::clearRoute",
+    "signature": "int (Map &, const Torus &, const std::vector<int> &, int, const std::vector<unsigned char> *)",
+    "binding": "clearRoute"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::openColonyRoutes",
+    "signature": "bool (Map &, const GenerationContext &, const Torus &, const StepCosts &, int, const std::vector<unsigned char> *)",
+    "binding": "openColonyRoutes"
+  },
+  {
+    "header": "Roads",
+    "symbol": "MapGeneration::openTrail",
+    "signature": "bool (Map &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<int> *, int, int)",
+    "binding": "openTrail"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::buildableTiles",
+    "signature": "std::vector<unsigned char> (const Map &)",
+    "binding": "buildableTiles"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::buildAnchors",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "buildAnchors"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::buildSites",
+    "signature": "int (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, int)",
+    "binding": "buildSites"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::growUntilSites",
+    "signature": "int (const Torus &, std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, int, int, Key, int)",
+    "binding": "growUntilSites"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::potentialBuildingTiles",
+    "signature": "std::vector<unsigned char> (const Map &)",
+    "binding": "potentialBuildingTiles"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::arrangeBuildingGrid",
+    "signature": "BuildingArrangement (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const BuildingGrid &, const std::vector<int> &)",
+    "binding": "arrangeBuildingGrid"
+  },
+  {
+    "header": "Routes",
+    "symbol": "MapGeneration::midpointAcross",
+    "signature": "ShapePoint (const Torus &, ShapePoint, ShapePoint)",
+    "binding": "midpointAcross"
+  },
+  {
+    "header": "Routes",
+    "symbol": "MapGeneration::siteDistance",
+    "signature": "double (const Torus &, ShapePoint, ShapePoint)",
+    "binding": "siteDistance"
+  },
+  {
+    "header": "Routes",
+    "symbol": "MapGeneration::nearestPairs",
+    "signature": "std::vector<std::pair<int, int>> (const Torus &, const std::vector<ShapePoint> &, int)",
+    "binding": "nearestPairs"
+  },
+  {
+    "header": "Routes",
+    "symbol": "MapGeneration::waypointsAlong",
+    "signature": "std::vector<ShapePoint> (const Torus &, ShapePoint, ShapePoint, double, double, double)",
+    "binding": "waypointsAlong"
+  },
+  {
+    "header": "Routes",
+    "symbol": "MapGeneration::headingAcross",
+    "signature": "double (const Torus &, ShapePoint, ShapePoint)",
+    "binding": "headingAcross"
+  },
+  {
+    "header": "Routes",
+    "symbol": "MapGeneration::quarterTurn",
+    "signature": "int (double)",
+    "binding": "quarterTurn"
+  },
+  {
+    "header": "ScoredSettlements",
+    "symbol": "MapGeneration::chooseScoredSettlements",
+    "signature": "ScoredSettlementChoice (GenerationContext &, const std::vector<std::vector<int>> &, const SettlementBuilder &, const SettlementCheck &)",
+    "binding": "chooseScoredSettlements"
+  },
+  {
+    "header": "StartDiagnostics",
+    "symbol": "MapGeneration::diagnoseStarts",
+    "signature": "StartDiagnosticsReport (Game &, int, const StartQualityScale &)",
+    "binding": "diagnoseStarts"
+  },
+  {
+    "header": "StartDiagnostics",
+    "symbol": "MapGeneration::removeResourceNear",
+    "signature": "int (Game &, int, int, int)",
+    "binding": "removeResourceNear"
+  },
+  {
+    "header": "StartingLayout",
+    "symbol": "MapGeneration::touchesStartingFootprint",
+    "signature": "bool (int, int, int, int, int, int, int, int)",
+    "binding": "touchesStartingFootprint"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::heightFieldResourceControls",
+    "signature": "std::vector<GeneratorControl> ()",
+    "binding": "heightFieldResourceControls"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::heightFieldTiling",
+    "signature": "HeightFieldTiling (int, int, int)",
+    "binding": "heightFieldTiling"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::classifyHeightField",
+    "signature": "HeightFieldLevels (HeightMap &, const HeightFieldTiling &, const HeightFieldOptions &)",
+    "binding": "classifyHeightField"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::paintHeightFieldTerrain",
+    "signature": "void (Map &, HeightMap &, const HeightFieldTiling &, const HeightFieldLevels &)",
+    "binding": "paintHeightFieldTerrain"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::paintHeightFieldResources",
+    "signature": "void (Map &, HeightMap &, const HeightFieldTiling &, const HeightFieldLevels &, const HeightFieldOptions &)",
+    "binding": "paintHeightFieldResources"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::chooseHeightFieldStarts",
+    "signature": "bool (Game &, GenerationContext &)",
+    "binding": "chooseHeightFieldStarts"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::plantHeightFieldGroves",
+    "signature": "bool (Map &, GenerationContext &, const HeightFieldTiling &, int)",
+    "binding": "plantHeightFieldGroves"
+  },
+  {
+    "header": "Terrain",
+    "symbol": "MapGeneration::generateHeightField",
+    "signature": "bool (Game &, GenerationContext &, const HeightFieldOptions &, const HeightFieldBuilder &)",
+    "binding": "generateHeightField"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::startingTowerRequest",
+    "signature": "TowerRequest (int, int, int, int)",
+    "binding": "startingTowerRequest"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::chooseTowerSites",
+    "signature": "TowerPlan (const Torus &, const std::vector<int> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, int, const TowerRequest &)",
+    "binding": "chooseTowerSites"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::dropBlockingSites",
+    "signature": "int (const Torus &, TowerPlan &, const std::vector<unsigned char> &, const std::vector<std::vector<int>> &, const std::vector<std::vector<unsigned char>> &)",
+    "binding": "dropBlockingSites"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::evenTowerPlan",
+    "signature": "int (TowerPlan &)",
+    "binding": "evenTowerPlan"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::roomyGround",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<unsigned char> &, int)",
+    "binding": "roomyGround"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::settleStartingTowers",
+    "signature": "bool (Game &, GenerationContext &, TowerPlan &, int, bool, const std::vector<unsigned char> *)",
+    "binding": "settleStartingTowers"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::raiseTowers",
+    "signature": "bool (Game &, const TowerPlan &, int)",
+    "binding": "raiseTowers"
+  },
+  {
+    "header": "Towers",
+    "symbol": "MapGeneration::towerFootprints",
+    "signature": "std::vector<unsigned char> (const Torus &, const TowerPlan &)",
+    "binding": "towerFootprints"
+  },
+  {
+    "header": "WalkBandStarts",
+    "symbol": "MapGeneration::spreadInWalkBand",
+    "signature": "WalkBandStarts (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<int> &, const std::vector<int> &, const Fertility::Field &, int, double, double, GenerationContext &, const std::string &, std::string_view, const WalkBandRequest &)",
+    "binding": "spreadInWalkBand"
+  },
+  {
+    "header": "WalkBandStarts",
+    "symbol": "MapGeneration::firstWalkTerritories",
+    "signature": "std::vector<int> (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, int)",
+    "binding": "firstWalkTerritories"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::seaMargin",
+    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "seaMargin"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::seaVertices",
+    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &)",
+    "binding": "seaVertices"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::seaEntry",
+    "signature": "int (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "seaEntry"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::sealCoasts",
+    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "sealCoasts"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::islandSeaMargin",
+    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "islandSeaMargin"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::sealedIslandStone",
+    "signature": "std::vector<unsigned char> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "sealedIslandStone"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::labelBorders",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<int> &)",
+    "binding": "labelBorders"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::labelBorders",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<int> &, int)",
+    "binding": "labelBorders"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::labelBorders",
+    "signature": "std::vector<unsigned char> (const Torus &, const std::vector<int> &, Open)",
+    "binding": "labelBorders"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::designedStone",
+    "signature": "DesignedStone (const Map &, const Torus &, const std::vector<unsigned char> &)",
+    "binding": "designedStone"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::reachesWithShut",
+    "signature": "std::vector<int> (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "reachesWithShut"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::pieceLeak",
+    "signature": "int (const Map &, const Torus &, const std::vector<int> &, const std::vector<unsigned char> &)",
+    "binding": "pieceLeak"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::checkGatePartition",
+    "signature": "GatePartitionCheck (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, const std::vector<TileGate> &)",
+    "binding": "checkGatePartition"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::colonyLeak",
+    "signature": "std::array<int, 2> (const Map &, const Torus &, int, const std::vector<unsigned char> &)",
+    "binding": "colonyLeak"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::towerReach",
+    "signature": "int (const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &)",
+    "binding": "towerReach"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::walkSpread",
+    "signature": "WalkSpread (const Map &, const Torus &, const std::vector<std::vector<int>> &, const std::vector<int> &)",
+    "binding": "walkSpread"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::firstRegionLeak",
+    "signature": "RegionLeak (const Torus &, const std::vector<unsigned char> &, const std::vector<int> &, Allowed)",
+    "binding": "firstRegionLeak"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::wallStanding",
+    "signature": "std::string (const Map &, const Torus &, const std::vector<unsigned char> &, const std::vector<unsigned char> &, const char *)",
+    "binding": "wallStanding"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::atlasClass",
+    "signature": "LandClass (unsigned char)",
+    "binding": "atlasClass"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::atlasRiver",
+    "signature": "bool (unsigned char)",
+    "binding": "atlasRiver"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::atlasLand",
+    "signature": "bool (unsigned char)",
+    "binding": "atlasLand"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::atlasRegion",
+    "signature": "const AtlasRegion *(const char *)",
+    "binding": "atlasRegion"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::decodeAtlas",
+    "signature": "std::vector<unsigned char> (const AtlasRegion &)",
+    "binding": "decodeAtlas"
+  },
+  {
+    "header": "LegacyDistances",
+    "symbol": "MapGeneration::adjustHeightmapFromPoints",
+    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, std::vector<int> &, int)",
+    "binding": "adjustHeightmapFromPoints"
+  },
+  {
+    "header": "LegacyDistances",
+    "symbol": "MapGeneration::adjustHeightmapFromPerlinNoise",
+    "signature": "void (Map &, GenerationContext &, std::vector<int> &, int)",
+    "binding": "adjustHeightmapFromPerlinNoise"
+  },
+  {
+    "header": "LegacyDistances",
+    "symbol": "MapGeneration::computeDistances",
+    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, std::vector<MapGeneratorPoint> &, std::vector<int> &)",
+    "binding": "computeDistances"
+  },
+  {
+    "header": "LegacyDistances",
+    "symbol": "MapGeneration::computeAverageDistance",
+    "signature": "int (Map &, std::vector<int> &, int, const std::vector<int> &)",
+    "binding": "computeAverageDistance"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::divideUpPlayerLands",
+    "signature": "bool (Game &, GenerationContext &, std::vector<int> &, std::vector<int> &, int &, const PlayerLandResources &)",
+    "binding": "divideUpPlayerLands"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::chooseFreeForBuildingSquares",
+    "signature": "void (Game &, std::vector<MapGeneratorPoint> &, BuildingType *, int)",
+    "binding": "chooseFreeForBuildingSquares"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::chooseFreeForGroundUnits",
+    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, int)",
+    "binding": "chooseFreeForGroundUnits"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::chooseTouchingBuilding",
+    "signature": "void (Map &, std::vector<MapGeneratorPoint> &, Building *)",
+    "binding": "chooseTouchingBuilding"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::addBuilding",
+    "signature": "Building *(Game &, int, int, int, int, int, bool)",
+    "binding": "addBuilding"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::placeStarts",
+    "signature": "bool (Game &, GenerationContext &)",
+    "binding": "placeStarts"
+  },
+  {
+    "header": "LegacyStartingPositions",
+    "symbol": "MapGeneration::placeArchipelagoStarts",
+    "signature": "bool (Game &, GenerationContext &, int)",
+    "binding": "placeArchipelagoStarts"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::kBridgeHalfWidth",
+    "kind": "constant",
+    "binding": "kBridgeHalfWidth"
+  },
+  {
+    "header": "Farmland",
+    "symbol": "MapGeneration::kFarmOpening",
+    "kind": "constant",
+    "binding": "kFarmOpening"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeSwarmReach",
+    "kind": "constant",
+    "binding": "kHomeSwarmReach"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomePondShare",
+    "kind": "constant",
+    "binding": "kHomePondShare"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeSmallestPond",
+    "kind": "constant",
+    "binding": "kHomeSmallestPond"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeLargestPond",
+    "kind": "constant",
+    "binding": "kHomeLargestPond"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomePondGap",
+    "kind": "constant",
+    "binding": "kHomePondGap"
+  },
+  {
+    "header": "Homes",
+    "symbol": "MapGeneration::kHomeSwarmRoom",
+    "kind": "constant",
+    "binding": "kHomeSwarmRoom"
+  },
+  {
+    "header": "Channels",
+    "symbol": "MapGeneration::kChannelSpoiledTiles",
+    "kind": "constant",
+    "binding": "kChannelSpoiledTiles"
+  },
+  {
+    "header": "Geometry",
+    "symbol": "MapGeneration::kPi",
+    "kind": "constant",
+    "binding": "kPi"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::DENSE_COLONY_BASE_LIMIT",
+    "kind": "constant",
+    "binding": "DENSE_COLONY_BASE_LIMIT"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::DENSE_COLONY_MAP_EXPONENT",
+    "kind": "constant",
+    "binding": "DENSE_COLONY_MAP_EXPONENT"
+  },
+  {
+    "header": "Pipeline",
+    "symbol": "MapGeneration::kReachableAnywhere",
+    "kind": "constant",
+    "binding": "kReachableAnywhere"
+  },
+  {
+    "header": "Walls",
+    "symbol": "MapGeneration::kTowerFootprint",
+    "kind": "constant",
+    "binding": "kTowerFootprint"
+  },
+  {
+    "header": "Planting",
+    "symbol": "MapGeneration::kSwarmClearance",
+    "kind": "constant",
+    "binding": "kSwarmClearance"
+  },
+  {
+    "header": "Room",
+    "symbol": "MapGeneration::kBuildFootprint",
+    "kind": "constant",
+    "binding": "kBuildFootprint"
+  },
+  {
+    "header": "Points",
+    "symbol": "MapGeneration::kGrainHeadings",
+    "kind": "constant",
+    "binding": "kGrainHeadings"
+  },
+  {
+    "header": "WorldAtlas",
+    "symbol": "MapGeneration::kAtlasRegionCount",
+    "kind": "constant",
+    "binding": "kAtlasRegionCount"
+  },
+  {
+    "header": "Drawing",
+    "symbol": "MapGeneration::kSubtile",
+    "kind": "constant",
+    "binding": "kSubtile"
+  },
+  {
+    "header": "Growth",
+    "symbol": "MapGeneration::kCropProbeReach",
+    "kind": "constant",
+    "binding": "kCropProbeReach"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_INTERCEPT",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_INTERCEPT"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_BUILD_SITES_4X4_LOG",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_BUILD_SITES_4X4_LOG"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_FEATURE_COUNT",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_FEATURE_COUNT"
+  },
+  {
+    "header": "FairnessModel",
+    "symbol": "MapGeneration::FAIRNESS_MODEL_GAMES",
+    "kind": "constant",
+    "binding": "FAIRNESS_MODEL_GAMES"
+  }
+]

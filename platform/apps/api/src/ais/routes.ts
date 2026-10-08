@@ -1,3 +1,4 @@
+import { resolveReport } from '../admin/moderation.ts';
 import { sql } from 'kysely';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import type { Account } from '@glob2/db';
@@ -463,20 +464,23 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
   app.post<{ Params: { id: string } }>('/api/v1/admin/ai-reports/:id/resolve', async (r) => {
     const a = (await requireRole(identity, r, 'moderator')).account,
       input = body(ResolveMapReportRequest, r.body);
+    await resolveReport(
+      db,
+      'ais',
+      uuid(r.params.id),
+      {
+        resolution: input.status,
+        reason: input.hideReason ?? input.note ?? 'Reviewed through AI moderation',
+        hide: input.hideMap,
+      },
+      a.id,
+      { action: 'ai.report.' + input.status, targetType: 'ai', reportTarget: false },
+    );
     const row = await db
-      .updateTable('ai_reports')
-      .set({ status: input.status, resolution_note: input.note ?? null })
-      .where('id', '=', uuid(r.params.id))
-      .returningAll()
-      .executeTakeFirst();
-    if (!row) throw apiError('not_found', 'No such report.');
-    if (input.hideMap)
-      await db
-        .updateTable('ais')
-        .set({ hidden: true, hidden_reason: input.hideReason ?? input.note ?? row.reason })
-        .where('id', '=', row.ai_id)
-        .execute();
-    await audit(a, 'ai.report.' + input.status, row.ai_id, { report: row.id });
+      .selectFrom('ai_reports')
+      .selectAll()
+      .where('id', '=', r.params.id)
+      .executeTakeFirstOrThrow();
     return row;
   });
 }

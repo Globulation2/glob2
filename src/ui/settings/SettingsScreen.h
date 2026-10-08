@@ -31,7 +31,8 @@ class SettingsScreen : public Glob2UI::Screen
 		HiveMind,
 		Recording,
 		Experiments,
-		CustomAIs
+		CustomAIs,
+		CustomGenerators
 	};
 	enum class Kind
 	{
@@ -146,6 +147,11 @@ class SettingsScreen : public Glob2UI::Screen
 	void buildRecording();
 	// Rebuild the Recording tab when session state changes.
 	int recordingState = -1;
+	struct CustomGeneratorState;
+	std::shared_ptr<CustomGeneratorState> customGenerators;
+	void buildCustomGenerators();
+	void pollCustomGenerators();
+	bool customGeneratorBusy() const;
 	struct CustomAIState;
 	std::shared_ptr<CustomAIState> customAIs;
 	void buildCustomAIs();

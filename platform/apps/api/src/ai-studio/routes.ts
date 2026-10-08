@@ -418,7 +418,7 @@ export async function aiStudioRoutes(app: FastifyInstance) {
   );
   app.post(ROOT + '/reconcile', async (r) =>
     guard(async () => {
-      await requireRole(app.identity, r, 'admin');
+      const { account: actor } = await requireRole(app.identity, r, 'admin');
       const v = body(
         Strict({
           requestId: Uuid,
@@ -439,7 +439,12 @@ export async function aiStudioRoutes(app: FastifyInstance) {
         )
       ).rows[0];
       if (!row) throw apiError('not_found', 'No uncertain request.');
-      await credits.reconcile(row.account_id, row.id, v.usage, v.evidence);
+      await credits.reconcile(row.account_id, row.id, v.usage, v.evidence, {
+        actor: actor.id,
+        action: 'ai-studio.reconcile',
+        targetType: 'ai-studio-request',
+        targetId: row.id,
+      });
       await db.transaction().execute(async (tx) => {
         // Use the same project-before-request lock order as edits and deletion.
         await sql`SELECT id FROM ai_studio_projects WHERE id=${row.project_id} FOR UPDATE`.execute(

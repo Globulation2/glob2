@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Grid.h"
 #include "Map.h"
@@ -21,26 +22,30 @@ Reach reachFrom(const Torus &t, const std::vector<int> &sources, const std::vect
 	ordered.erase(std::unique(ordered.begin(), ordered.end()), ordered.end());
 	for (int tile : ordered)
 	{
-		dist[tile] = 0;
+		::MapGeneration::generationCheckpoint();
+		dist.at(tile) = 0;
 		reach.tiles.push_back(tile);
 	}
 	for (size_t head = 0; head < reach.tiles.size(); ++head)
 	{
-		const int tile = reach.tiles[head], here = dist[tile];
+		::MapGeneration::generationCheckpoint();
+		const int tile = reach.tiles.at(head), here = dist.at(tile);
 		if (here >= limit)
 			continue;
 		const int x = tile % t.w, y = tile / t.w, stepped = here + 1;
 		for (int dy = -1; dy <= 1; ++dy)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int row = t.y(y + dy) * t.w;
 			for (int dx = -1; dx <= 1; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				if (!dx && !dy)
 					continue;
 				const int n = row + t.x(x + dx);
-				if (dist[n] < 0 && open[n])
+				if (dist.at(n) < 0 && open.at(n))
 				{
-					dist[n] = stepped;
+					dist.at(n) = stepped;
 					reach.tiles.push_back(n);
 				}
 			}
@@ -49,8 +54,9 @@ Reach reachFrom(const Torus &t, const std::vector<int> &sources, const std::vect
 	reach.steps.reserve(reach.tiles.size());
 	for (int tile : reach.tiles)
 	{
-		reach.steps.push_back(dist[tile]);
-		dist[tile] = -1;
+		::MapGeneration::generationCheckpoint();
+		reach.steps.push_back(dist.at(tile));
+		dist.at(tile) = -1;
 	}
 	return reach;
 }
@@ -74,32 +80,38 @@ Flood floodImpl(const Torus &t, const std::vector<unsigned char> &source,
 	dist.assign(size_t(t.size()), -1);
 	queue.reserve(dist.size());
 	for (size_t i = 0; i < dist.size(); ++i)
-		if (source[i])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (source.at(i))
 		{
-			dist[i] = 0;
+			dist.at(i) = 0;
 			queue.push_back(int(i));
 		}
+	}
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
-		const int tile = queue[head], here = dist[tile];
+		::MapGeneration::generationCheckpoint();
+		const int tile = queue.at(head), here = dist.at(tile);
 		if (here >= limit)
 			continue;
 		const int x = tile % t.w, y = tile / t.w, stepped = here + 1;
 		for (int dy = -1; dy <= 1; ++dy)
 		{
+			::MapGeneration::generationCheckpoint();
 			// Every neighbour on this row shares one wrapped y; folding it in once here, instead
 			// of inside Torus::at for each of the three dx below, is exact - at() is y() * w + x().
 			const int row = t.y(y + dy) * t.w;
 			for (int dx = -1; dx <= 1; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				// (0, 0) is `tile` itself, already visited (dist[tile] = here >= 0), so it always
 				// fails the dist[n] < 0 test below; skipping it changes no result.
 				if (!dx && !dy)
 					continue;
 				const int n = row + t.x(x + dx);
-				if (dist[n] < 0 && (AllOpen || open[n]))
+				if (dist.at(n) < 0 && (AllOpen || open.at(n)))
 				{
-					dist[n] = stepped;
+					dist.at(n) = stepped;
 					queue.push_back(n);
 				}
 			}
@@ -132,7 +144,10 @@ std::vector<unsigned char> tileMask(const Torus &t, const std::vector<int> &tile
 {
 	std::vector<unsigned char> mask(size_t(t.size()), 0);
 	for (int i : tiles)
-		mask[i] = 1;
+	{
+		::MapGeneration::generationCheckpoint();
+		mask.at(i) = 1;
+	}
 	return mask;
 }
 
@@ -140,15 +155,19 @@ std::vector<std::vector<int>> unitTilesByTeam(const Map &map, int teams)
 {
 	std::vector<std::vector<int>> units(size_t(std::max(teams, 0)));
 	for (int y = 0; y < map.getH(); ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < map.getW(); ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const Uint16 gid = map.getGroundUnit(x, y);
 			if (gid == NOGUID)
 				continue;
 			const int team = Unit::GIDtoTeam(gid);
 			if (team >= 0 && team < teams)
-				units[team].push_back(y * map.getW() + x);
+				units.at(team).push_back(y * map.getW() + x);
 		}
+	}
 	return units;
 }
 
@@ -156,9 +175,16 @@ std::vector<unsigned char> walkableTiles(const Map &map)
 {
 	std::vector<unsigned char> open(size_t(map.getW()) * map.getH(), 0);
 	for (int y = 0; y < map.getH(); ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < map.getW(); ++x)
-			open[size_t(y) * map.getW() + x] =
-				map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+		{
+			::MapGeneration::generationCheckpoint();
+			open.at(size_t(y) * map.getW() + x) = map.terrainPropertiesAt(x, y).walkable &&
+												  !map.isResource(x, y) &&
+												  map.getBuilding(x, y) == NOGBID;
+		}
+	}
 	return open;
 }
 
@@ -170,8 +196,14 @@ std::vector<unsigned char> groundUnitTiles(const Map &map, bool canSwim)
 {
 	std::vector<unsigned char> hard(size_t(map.getW()) * map.getH(), 0);
 	for (int y = 0; y < map.getH(); ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < map.getW(); ++x)
-			hard[size_t(y) * map.getW() + x] = map.isHardSpaceForGroundUnit(x, y, canSwim, 0);
+		{
+			::MapGeneration::generationCheckpoint();
+			hard.at(size_t(y) * map.getW() + x) = map.isHardSpaceForGroundUnit(x, y, canSwim, 0);
+		}
+	}
 	return hard;
 }
 
@@ -180,9 +212,13 @@ int firstColonyCutOff(const std::vector<int> &steps, const std::vector<std::vect
 {
 	for (size_t team = size_t(std::max(first, 0)); team < units.size(); ++team)
 	{
+		::MapGeneration::generationCheckpoint();
 		bool arrived = false;
-		for (int i : units[team])
-			arrived = arrived || steps[i] >= 0;
+		for (int i : units.at(team))
+		{
+			::MapGeneration::generationCheckpoint();
+			arrived = arrived || steps.at(i) >= 0;
+		}
 		if (!arrived)
 			return int(team);
 	}

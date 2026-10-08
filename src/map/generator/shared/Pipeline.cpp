@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Pipeline.h"
 #include "Game.h"
@@ -25,6 +26,7 @@ std::string startingAccessFailure(const Map &map, int teams,
 	int range = buildingRange;
 	for (const auto &rule : rules)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (!validMaterial(materialIndex(rule.material)) || rule.range < 1 || !rule.name)
 			throw GenerationFailure("Invalid starting-access material rule");
 		range = std::max(range, rule.range);
@@ -34,36 +36,49 @@ std::string startingAccessFailure(const Map &map, int teams,
 	const auto passable = groundUnitTiles(map);
 	for (int k = 0; k < teams; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		const std::string colony = "Colony " + std::to_string(k) + " ";
-		if (workers[k].empty())
+		if (workers.at(k).empty())
 			return colony + "has no workers to reach its supplies.";
-		const auto reached = floodFrom(t, tileMask(t, workers[k]), passable, range);
+		const auto reached = floodFrom(t, tileMask(t, workers.at(k)), passable, range);
 		std::vector<int> distances(rules.size(), -1);
 		int sites = 0;
 		for (int i : reached.visited)
 		{
-			const int x = i % t.w, y = i / t.w, distance = reached.steps[i];
+			::MapGeneration::generationCheckpoint();
+			const int x = i % t.w, y = i / t.w, distance = reached.steps.at(i);
 			if (distance <= buildingRange && map.isFreeForBuilding(x, y, 4, 4))
 				++sites;
 			for (int dy = -1; dy <= 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					if (!dx && !dy)
 						continue;
 					const auto &resource = map.getResource(t.x(x + dx), t.y(y + dy));
 					if (!resource.amount)
 						continue;
 					for (size_t r = 0; r < rules.size(); ++r)
-						if (map.materialAmountAt(map.coordToIndex(x+dx,y+dy),rules[r].material)>0 &&
-							(distances[r] < 0 || distance + 1 < distances[r]))
-							distances[r] = distance + 1;
+					{
+						::MapGeneration::generationCheckpoint();
+						if (map.materialAmountAt(map.coordToIndex(x + dx, y + dy),
+												 rules.at(r).material) > 0 &&
+							(distances.at(r) < 0 || distance + 1 < distances.at(r)))
+							distances.at(r) = distance + 1;
+					}
 				}
+			}
 		}
 		for (size_t r = 0; r < rules.size(); ++r)
-			if (distances[r] < 0 || distances[r] > rules[r].range)
-				return colony + "cannot harvest " + rules[r].name + " within " +
-					   std::to_string(rules[r].range) + " steps (observed " +
-					   std::to_string(distances[r]) + "; -1 means unreachable).";
+		{
+			::MapGeneration::generationCheckpoint();
+			if (distances.at(r) < 0 || distances.at(r) > rules.at(r).range)
+				return colony + "cannot harvest " + rules.at(r).name + " within " +
+					   std::to_string(rules.at(r).range) + " steps (observed " +
+					   std::to_string(distances.at(r)) + "; -1 means unreachable).";
+		}
 		if (sites < minimumSites)
 			return colony + "has only " + std::to_string(sites) +
 				   " reachable 4x4 building origins; " + std::to_string(minimumSites) +
@@ -114,13 +129,13 @@ ColonyWalk walkFromFirstColony(const Map &map, int teams, const std::string &gro
 {
 	ColonyWalk walk;
 	walk.workers = unitTilesByTeam(map, teams);
-	if (teams < 1 || walk.workers[0].empty())
+	if (teams < 1 || walk.workers.at(0).empty())
 	{
 		walk.error = "Colony 0 has no workers to walk " + ground + ".";
 		return walk;
 	}
 	const Torus t(map);
-	walk.steps = stepsFrom(t, tileMask(t, walk.workers[0]), walkableTiles(map));
+	walk.steps = stepsFrom(t, tileMask(t, walk.workers.at(0)), walkableTiles(map));
 	if (const int cut = firstColonyCutOff(walk.steps, walk.workers); cut >= 0)
 		walk.error = "Colony " + std::to_string(cut) + " cannot walk to colony 0" +
 					 (route.empty() ? "" : " " + route) + ".";
@@ -139,8 +154,11 @@ CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
 	CropsInReach crops;
 	const int w = map.getW(), h = map.getH();
 	for (int y = 0; y < h && !(crops.food && crops.wood); ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const auto index = map.coordToIndex(x, y);
 			const bool food = map.materialAmountAt(index, MaterialId::Food) > 0;
 			const bool wood = map.materialAmountAt(index, MaterialId::Wood) > 0;
@@ -148,12 +166,19 @@ CropsInReach cropsBesideReach(const Map &map, const std::vector<int> &reach)
 				continue;
 			bool beside = false;
 			for (int dy = -1; dy <= 1 && !beside; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1 && !beside; ++dx)
+				{
+					::MapGeneration::generationCheckpoint();
 					beside =
-						reach[size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx)] >= 0;
+						reach.at(size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx)) >= 0;
+				}
+			}
 			crops.food |= food && beside;
 			crops.wood |= wood && beside;
 		}
+	}
 	return crops;
 }
 
@@ -164,15 +189,22 @@ std::string coloniesApart(const Map &map, int teams, const std::string &route)
 	const std::vector<unsigned char> ground = groundUnitTiles(map);
 	for (int a = 0; a < teams; ++a)
 	{
-		if (units[a].empty())
+		::MapGeneration::generationCheckpoint();
+		if (units.at(a).empty())
 			continue;
-		const std::vector<int> steps = stepsFrom(t, tileMask(t, units[a]), ground);
+		const std::vector<int> steps = stepsFrom(t, tileMask(t, units.at(a)), ground);
 		for (int b = 0; b < teams; ++b)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (b != a)
-				for (int tile : units[b])
-					if (steps[tile] >= 0)
+				for (int tile : units.at(b))
+				{
+					::MapGeneration::generationCheckpoint();
+					if (steps.at(tile) >= 0)
 						return "Colony " + std::to_string(a) + " can walk to colony " +
 							   std::to_string(b) + (route.empty() ? "" : " " + route) + ".";
+				}
+		}
 	}
 	return "";
 }
@@ -182,7 +214,10 @@ std::vector<unsigned char> homeGrassMask(const Map &map, const Torus &t,
 {
 	std::vector<unsigned char> ground(size_t(t.size()), 0);
 	for (int i = 0; i < t.size(); ++i)
-		ground[i] = homeOf[i] == team && map.terrainPropertiesAt(i).buildable;
+	{
+		::MapGeneration::generationCheckpoint();
+		ground.at(i) = homeOf.at(i) == team && map.terrainPropertiesAt(i).buildable;
+	}
 	return ground;
 }
 
@@ -193,7 +228,7 @@ bool settleRoundColonies(Game &game, GenerationContext &context, const char *str
 	const Torus t(game.map.getW(), game.map.getH());
 	return settleColonies(
 		game, context, stream, [&](int team) { return homeGrassMask(game.map, t, homeOf, team); },
-		[&](int team) { return homeSwarmSite(homes[team], 0.0, radius); });
+		[&](int team) { return homeSwarmSite(homes.at(team), 0.0, radius); });
 }
 
 std::string homePondMissing(const Map &map, const Torus &t, const std::vector<ShapePoint> &kits,
@@ -201,10 +236,19 @@ std::string homePondMissing(const Map &map, const Torus &t, const std::vector<Sh
 {
 	for (int k = 0; k < teams; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		bool pond = false;
 		for (int dy = -2; dy <= 2 && !pond; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -2; dx <= 2 && !pond; ++dx)
-				pond = map.terrainPropertiesAt(t.x(int(kits[k].x) + dx), t.y(int(kits[k].y) + dy)).fertilitySource;
+			{
+				::MapGeneration::generationCheckpoint();
+				pond = map.terrainPropertiesAt(t.x(int(kits.at(k).x) + dx),
+											   t.y(int(kits.at(k).y) + dy))
+						   .fertilitySource;
+			}
+		}
 		if (!pond)
 			return "Colony " + std::to_string(k) + "'s " + place + " has lost its " + water + ".";
 	}

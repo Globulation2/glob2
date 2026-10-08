@@ -5966,3 +5966,31 @@ Genera un nuovo aspetto casuale del terreno
 
 [set library artwork]
 
+[settings Map generators]
+Map generators
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Import a generator package, then select its landscape when creating a map or game.
+[settings Import map generator]
+Import map generator
+[settings No custom map generators installed.]
+No custom map generators installed.
+[settings Replace package]
+Replace package
+[settings Export package]
+Export package
+[settings Remove generator]
+Remove generator
+[settings Saving generator library…]
+Saving generator library…
+[settings Could not read generator package.]
+Could not read generator package.
+[settings Generator library saved.]
+Generator library saved.
+[settings Storage could not be saved. The previous library is retained.]
+Storage could not be saved. The previous library is retained.
+[settings Waiting for file selection or storage…]
+Waiting for file selection or storage…
+[settings File selection is unavailable.]
+File selection is unavailable.
+[settings Package export is unavailable.]
+Package export is unavailable.

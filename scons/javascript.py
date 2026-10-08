@@ -58,3 +58,15 @@ def numeric_guard(local, objects):
     for group in objects:
         local.AddPostAction(group, action)
         local.Depends(group, str(guard))
+
+
+def strict_numeric_source(source):
+    name = str(source).removeprefix('#').removeprefix('src/')
+    return (name.startswith(('scripting/javascript/', 'map/generator/'))
+            or name == 'ai/javascript/AIJavaScript.cpp') and name.endswith('.cpp')
+
+
+def guarded_numeric_source(source):
+    name = str(source).removeprefix('#').removeprefix('src/')
+    return (name.startswith('scripting/javascript/') or name == 'ai/javascript/AIJavaScript.cpp'
+            or name == 'map/generator/javascript/ToolkitBinding.cpp')

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Grid.h"
 #include <cstdint>
 #include <vector>
@@ -58,17 +59,27 @@ std::vector<unsigned char> resampleRaster(const std::vector<unsigned char> &sour
 	std::vector<unsigned char> result(size_t(t.size()), outside);
 	std::vector<unsigned char> cells;
 	for (int y = fit.top; y < fit.top + fit.height; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = fit.left; x < fit.left + fit.width; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const RasterFit::Cells box = fit.cellsOf(x, y);
 			if (box.empty())
 				continue;
 			cells.clear();
 			for (int sy = box.y0; sy < box.y1; ++sy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int sx = box.x0; sx < box.x1; ++sx)
-					cells.push_back(source[size_t(sy) * fit.sourceWidth + sx]);
-			result[t.at(x, y)] = reduce(cells);
+				{
+					::MapGeneration::generationCheckpoint();
+					cells.push_back(source.at(size_t(sy) * fit.sourceWidth + sx));
+				}
+			}
+			result.at(t.at(x, y)) = reduce(cells);
 		}
+	}
 	return result;
 }
 

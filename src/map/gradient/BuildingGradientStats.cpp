@@ -49,10 +49,14 @@ const char *BuildingGradientStats::name(Event event)
 	}
 }
 
-BuildingGradientStats::Context BuildingGradientStats::context(const Building &building)
+BuildingGradientStats::Context BuildingGradientStats::context(const Building &building, int slot)
 {
 	Context value;
 	value.known = true;
+	const Uint16 hint = building.settledCostHint[slot];
+	value.previousHint = hint == Building::UNKNOWN_SETTLED_COST ? -1 : hint;
+	if (const auto &search = building.globalGradientSearch[slot])
+		value.servingSettled = search->settledCost();
 	if (const BuildingType *type = building.type)
 	{
 		value.level = std::int16_t(type->level);
@@ -155,7 +159,9 @@ void BuildingGradientStats::fieldRebuilding(const Map &map, const Building &buil
 	rowList.push_back(row);
 	mapWidth = map.getW();
 	mapHeight = map.getH();
-	lifetimes[key(building, slot)] = {tick, reason, context(building)};
+	Context started = pendingContext.known ? pendingContext : context(building, slot);
+	pendingContext = {};
+	lifetimes[key(building, slot)] = {tick, reason, started};
 }
 
 void BuildingGradientStats::fieldReleased(const Building &building, int slot, Event event, std::uint32_t tick)
@@ -190,7 +196,8 @@ void BuildingGradientStats::writeCsv(std::ostream &out) const
 		   "prev_extensions";
 	for (int i = 0; i < DEPTH_BINS; ++i)
 		out << ",popped_at_depth_" << i;
-	out << ",width,height,level,is_site,construction_state,progress,team_units,team_buildings\n";
+	out << ",width,height,level,is_site,construction_state,progress,team_units,team_buildings,"
+		   "staged,previous_hint,serving_settled\n";
 	for (const auto &row : rowList)
 	{
 		out << row.tick << ',' << int(row.team) << ',' << row.gid << ',' << typeNames[row.type] << ','
@@ -202,7 +209,7 @@ void BuildingGradientStats::writeCsv(std::ostream &out) const
 			out << ",,,,,,,,";
 			for (int i = 0; i < DEPTH_BINS; ++i)
 				out << ',';
-			out << ',' << mapWidth << ',' << mapHeight << ",,,,,,\n";
+			out << ',' << mapWidth << ',' << mapHeight << ",,,,,,,,,\n";
 			continue;
 		}
 		out << row.age << ',' << int(row.prevSearch) << ',' << int(row.prevLocked) << ',' << int(row.prevComplete)
@@ -223,9 +230,11 @@ void BuildingGradientStats::writeCsv(std::ostream &out) const
 			if (row.context.progress >= 0)
 				out << int(row.context.progress);
 			out << ',' << row.context.units << ',' << row.context.buildings;
+			const Context &c = row.context;
+			out << ',' << int(c.staged) << ',' << c.previousHint << ',' << c.servingSettled;
 		}
 		else
-			out << ",,,,,,";
+			out << ",,,,,,,,,";
 		out << '\n';
 	}
 }

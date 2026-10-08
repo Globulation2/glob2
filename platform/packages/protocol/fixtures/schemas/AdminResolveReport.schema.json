@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminResolveReport",
+  "title": "AdminResolveReport",
+  "type": "object",
+  "required": [
+    "resolution",
+    "reason"
+  ],
+  "properties": {
+    "resolution": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "resolved"
+        },
+        {
+          "type": "string",
+          "const": "dismissed"
+        }
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "hide": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

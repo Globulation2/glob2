@@ -187,8 +187,13 @@ inputs a depth prediction could read in O(1) when that lifetime started: map
 `width` and `height`, the building's `level`, `is_site`, `construction_state`
 (`none`, `new`, `upgrade`, `repair`), `progress` (the delivered/needed material
 quartile 0-3 on construction sites, empty otherwise), and its team's live
-`team_units` and `team_buildings`. They are empty when the start was not seen,
-for example for a field restored from a save.
+`team_units` and `team_buildings`. The last three columns are the depth model's
+inputs at the moment the lifetime's depth was decided: `staged` is 1 when a
+scheduled refresh was staged for it (the context is then read at staging, not at
+publication), `previous_hint` is the depth the lifetime before it settled
+(`settledCostHint`) and `serving_settled` is how deep the field it replaced had
+been settled by then, each -1 when unknown. All are empty when the start was not
+seen, for example for a field restored from a save.
 
 `result.json` then has a `building_gradient` object: `rebuilds` by reason,
 `dirty_with_generation` (dirty rebuilds whose topology generation had also moved),

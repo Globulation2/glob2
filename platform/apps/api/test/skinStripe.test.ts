@@ -23,6 +23,9 @@ const session = {
   livemode: false,
   status: 'open',
   payment_status: 'unpaid',
+  amount_total: 500,
+  currency: 'usd',
+  created: 1720000000,
   url: 'https://checkout.stripe.com/c/pay/skin-fixture',
   client_reference_id: 'purchase-fixture',
   metadata: { purchaseId: 'purchase-fixture', accountId: 'account-fixture' },
@@ -54,8 +57,27 @@ beforeAll(async () => {
         has_more: false,
       };
     } else if (pathname === '/v1/checkout/sessions/cs_skin') value = session;
+    else if (pathname === '/v1/refunds')
+      value = {
+        object: 'list',
+        has_more: false,
+        data: [
+          {
+            id: 're_skin',
+            amount: charge.amount_refunded,
+            status: 'succeeded',
+            created: 1720000000,
+          },
+        ],
+      };
     else if (pathname === '/v1/disputes')
-      value = { object: 'list', has_more: false, data: [{ id: 'dp_skin', status: dispute }] };
+      value = {
+        object: 'list',
+        has_more: false,
+        data: [
+          { id: 'dp_skin', status: dispute, amount: 250, currency: 'usd', created: 1720000000 },
+        ],
+      };
     else {
       response.statusCode = 404;
       value = { error: { message: 'Unexpected mock Stripe endpoint' } };
@@ -156,4 +178,25 @@ it('recovers only matching checkout metadata through bounded stable pagination',
   await expect(
     payments.recover('purchase-fixture', 'account-fixture', createdAt, 'cs_other'),
   ).rejects.toThrow('did not advance');
+});
+
+it('retains partial refund and dispute money independently from entitlement state', async () => {
+  session.payment_status = 'paid';
+  charge.amount_refunded = 100;
+  charge.disputed = true;
+  dispute = 'needs_response';
+  const inspected = await payments.inspect(session.id);
+  expect(inspected.state).toBe('refunded');
+  expect(inspected.monetary).toMatchObject({
+    paid: 500,
+    refunded: 100,
+    disputed: true,
+    disputes: [{ id: 'dp_skin', amount: 250, active: true }],
+  });
+  dispute = 'won';
+  expect((await payments.inspect(session.id)).monetary).toMatchObject({
+    refunded: 100,
+    disputed: false,
+    disputes: [{ id: 'dp_skin', amount: 250, active: false }],
+  });
 });

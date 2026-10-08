@@ -219,6 +219,13 @@ export async function realtimeRoutes(
         burst: identity.limits.realtimeBurst,
       });
       connection.onAccountChange = (c) => hub.setAccount(c, c.account?.id);
+      connection.onActivity = (account) =>
+        identity.activity
+          .record(account)
+          .catch((error) => services.logger.warn({ error }, 'activity collection failed'));
+      socket.on('pong', () => {
+        if (connection.account) void connection.onActivity?.(connection.account);
+      });
       hub.add(connection);
       socket.on('message', (data, isBinary) => {
         if (isBinary) {

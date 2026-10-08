@@ -206,12 +206,24 @@ export class Credits {
   }
   /** Operator-only reconciliation preserves measured usage while respecting the
    * original spending cap. Any provider overrun is absorbed by the operator. */
-  async reconcile(account: string, id: string, usage: Usage, evidence: string) {
+  async reconcile(
+    account: string,
+    id: string,
+    usage: Usage,
+    evidence: string,
+    audit?: { actor: string; action: string; targetType: string; targetId: string },
+  ) {
     if (!evidence.trim() || evidence.length > 2000 || evidence.includes('\0'))
       throw new HiveError('bad_request', 'Reconciliation needs a bounded evidence explanation.');
-    return this.settleUsage(account, id, usage, evidence);
+    return this.settleUsage(account, id, usage, evidence, audit);
   }
-  private async settleUsage(account: string, id: string, usage: Usage, evidence?: string) {
+  private async settleUsage(
+    account: string,
+    id: string,
+    usage: Usage,
+    evidence?: string,
+    audit?: { actor: string; action: string; targetType: string; targetId: string },
+  ) {
     return this.db.transaction().execute(async (db) => {
       await this.wallet(db, account);
       const call = (
@@ -256,6 +268,10 @@ export class Credits {
       await sql`INSERT INTO ${this.table('ledger')}(id,account_id,amount,kind,details) VALUES(${`usage:${id}`},${account},${-charge},'usage',${JSON.stringify({ rate: call.rate, usage, ...(evidence ? { reconciliation: { evidence, measuredCharge, absorbedCredits: measuredCharge - charge } } : {}) })}::jsonb)`.execute(
         db,
       );
+      if (audit)
+        await sql`INSERT INTO admin_audit_log(actor_account_id,action,target_type,target_id,details) VALUES(${audit.actor},${audit.action},${audit.targetType},${audit.targetId},${JSON.stringify({ reason: evidence, from: { status: call.status, reserved: Number(call.reserved) }, to: { status: 'settled', charged: charge, reserved: 0 } })}::jsonb)`.execute(
+          db,
+        );
       return charge;
     });
   }

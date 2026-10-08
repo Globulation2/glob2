@@ -1,216 +1,206 @@
 # The building-field depth model
 
-How far a building's walking field should be settled up front.
+How far a scheduled building walking field is settled up front.
 
 A building walking field (`Building::globalGradient`) is a lazy multi-source
 search: it settles cost layers only as far as its readers ask. The scheduled
-building pipeline refreshes fields on workers instead, and a worker has to decide
-how deep to go before anyone has read anything. If it goes too deep, worker CPU is
-spent on layers nobody reads. If it stops too shallow, the owner settles the rest
-lazily when units read it. This model predicts that depth.
+building pipeline refreshes stale fields on workers instead, and a worker has to
+decide how deep to go before anyone has read the new field. If it goes too deep,
+worker CPU is spent on layers nobody reads. If it stops too shallow, the
+simulation owner settles the rest lazily when units read it. This model predicts
+that depth.
 
 ## The property that makes it safe
 
 **The depth only moves CPU between threads. It never changes a result.** Every
 reader resolves the cell it reads first (`BuildingGradientSearch::resolve`), and
 cells beyond the prepared depth are settled synchronously from the same frozen
-search, with values identical to a full build. A different table therefore changes
-who pays for the search, never what any unit sees. **Refitting needs no
+search, with values identical to a full build. A different depth therefore
+changes who pays for the search, never what any unit sees. **Refitting needs no
 `SIM_REVISION` bump**, and replays, saves and network games are unaffected.
 
-This is a design rule of the scheduled pipeline, verified by comparing per-tick
-checksums with `GLOB2_BUILDING_DEPTH=full`, `table` and `lazy` on the same game
-(`test/check_gradient_pipeline.py`).
+This is verified by comparing per-tick checksums of the same game under every
+operating point, `GLOB2_BUILDING_DEPTH=full` and `lazy`
+(`test/check_gradient_pipeline.py`, and the timing runs below).
 
-## What the model is
+## The model: a field's own past depths
 
-A quantile table. Each field lifetime is assigned to a cell by the selected keys.
-The predicted depth is a quantile of the actual depth that cell's lifetimes
-needed, clamped to [32, 65535] cost units (10 per land tile). The quantile is the
-*operating point*. A cell with fewer than 40 training lifetimes backs off to the
-shorter key prefix. The empty prefix always exists.
+When a stale field's refresh is staged, two depths of that same field are known
+in O(1):
 
-Keys were selected by owner saving at a field extra-CPU budget of 1.25. Below are
-the selected keys in the order selection added them, with the held-out owner
-saving at that budget after each one:
+- **serving**: how deep the field still serving had been settled so far, the
+  `settledCost()` of its search. It is the freshest sample of how far this
+  field's readers reach.
+- **previous**: the final settled depth of the lifetime it replaced,
+  `Building::settledCostHint`.
 
-| Keys | Owner saving at 1.25x CPU |
+With `m` the deeper of the two, the depth is
+
+```text
+depth = offset + (slope256 * m) >> 8      clamped to [32, 65535]
+depth = unknown                           when neither is known
+```
+
+Each operating point is three integers in the generated
+`src/map/gradient/BuildingGradientDepthPolicy.h`, and
+`Map::predictBuildingDepth` evaluates the expression above. Clearing and combat
+fields, whose goals move, still settle fully; fields without a usable old value
+are built synchronously and never reach the model.
+
+Nothing in the model names a building type, a team or a map, so new buildings
+need no refit. The fitted points settle a little beyond the deeper past depth:
+the default settles m plus about four tiles (offset 38, slope 257/256).
+
+A field with neither depth settles only its seeds. While a game plays, that
+happens to 0.001% of scheduled refreshes; after a save is loaded it happens to
+every field once, because the past depths are not saved. Fitting a depth for
+that case would send a burst of deep worker searches right after loading, for
+fields about which nothing is known; seeds only lets the readers decide, and
+the field has a history from its next refresh.
+
+## Choosing the constants
+
+The objective is the trade the scheduled pipeline makes. For a depth D and a
+lifetime that actually needed depth A:
+
+- **owner saving** is the lazy search work a build to D moves off the owner:
+  popped(min(D, A)) / popped(A);
+- **extra CPU** is the total search work relative to lazy:
+  popped(max(D, A)) / popped(A). Settling past a complete field's end costs
+  nothing; beyond a partial field's reach, the mean profile of complete fields of
+  the same map size estimates the cost.
+
+Each operating point maximises owner saving minus λ times extra CPU, summed over
+all training lifetimes. One λ for every field puts worker CPU where it moves the
+most owner work: a small λ settles deeper, a large one stays close to the past
+depth. The fitter searches integer `offset` and `slope256` on a grid and then
+refines them; the depth with no history is the best single constant for those
+lifetimes. Because the formula depends on a lifetime only through `m`, the fit
+groups lifetimes by `m` on a 16-cost grid and scores depths on the same grid.
+
+**Why a formula rather than a table.** Fit 2 was a quantile table keyed on the
+previous depth, the team's unit count and the building type. Candidate inputs
+were screened again on the first 354 games of the campaign below, as cells of a
+table, held out by game, at 1.25x extra CPU:
+
+| Inputs | Owner saving |
 | --- | ---: |
-| none (one global quantile) | 0.444 |
-| + `previous`: log2 bucket of the field's previous settled depth / 80 | 0.645 |
-| + `units`: log2 bucket of the team's live unit count | 0.659 |
-| + `type`: building type | 0.671 |
+| none (one global depth) | 0.497 |
+| building type | 0.505 |
+| type, level and construction site combined | 0.516 |
+| serving depth (quarter-octave buckets) | 0.876 |
+| serving and previous depth | 0.911 |
+| + any of type, level, site, team units, workers, game time | at most +0.0005 |
 
-The next candidate, `is_site`, added 0.004, which is below the 0.01 threshold, so
-selection stopped there.
+A field's own history carries almost all the predictable signal. On all 1,472
+games, the table over both depths was then compared with closed-form rules
+fitted on the same objective:
 
-The table is in `src/map/gradient/BuildingGradientDepthPolicy.h`: 336 integer rules,
-most specific first, each holding one depth per operating point, plus one constexpr
-lookup, `target(query, point)`. The summary it is generated from is in
-`tools/gradient_depth_model.json`.
+| Rule | Saving at 1.2x CPU | 1.25x | 1.3x |
+| --- | ---: | ---: | ---: |
+| a + k · serving | 0.875 | 0.887 | 0.899 |
+| **a + k · max(serving, previous)** | **0.914** | **0.926** | **0.934** |
+| a + k · max(serving, w · previous) | 0.914 | 0.926 | 0.934 |
+| a + k · max + c · min | 0.915 | 0.926 | 0.934 |
+| k · max^b | 0.914 | 0.925 | 0.933 |
+| bucket table (serving, previous) | 0.913 | 0.926 | 0.934 |
 
-A field's own history is by far the best predictor: whatever kept a building's
-units reading 30 tiles out last time usually does again. A larger team ranges
-farther from its buildings. Building type separates fields read near home from
-those read far away (flags, barracks).
-
-## When to refit, and the refits so far
-
-Refit whenever something changes how far units read building fields: fetching
-rules, hiring, AI placement, or the default AI order delay. Refitting moves only
-CPU, so it needs no `SIM_REVISION` bump. It is the same campaign and the same four
-commands each time (see [Running it](#running-it)).
-
-| Fit | Trigger | Keys | p90 field CPU | p90 owner saving |
-| --- | --- | --- | ---: | ---: |
-| 1 | first fit, on round-trip resource fetching | previous, type, progress | 1.841 | 0.940 |
-| **2** | **round-trip removal**: the engine fetches greedily | previous, units, type | 1.722 | 0.825 |
-
-Without round trips, fields are read far shallower than they would settle in full:
-eager costs 5.8x the lazy search instead of 2.4x. Site progress stopped mattering,
-because construction sites no longer pull round-trip fetchers from afar. The team's
-size took its place.
-
-The fit-1 table, scored on the greedy lifetimes, would have cost 4.09x field CPU
-at p90 for 0.944 saving. Fit 2 costs 1.72x for 0.825. Fit 1's keys refitted on the
-greedy data score almost the same as fit 2's (p90: 1.729x for 0.826), so fit 2's
-gain over the stale table comes from the refreshed quantiles, not from the new keys.
+Taking the deeper of the two past depths is what matters: weighted sums of the
+two lose about 3 points, and ignoring the previous depth about 4. Extra terms
+gain nothing measurable, so the model is the two-constant rule.
 
 ## Where the numbers come from
 
-Fit 2 has two sources, 69 games and 311,444 field lifetimes in all, played on a
-greedy-fetching build:
-
-- 64 games from the `gradient_depth` [tournament](tools/tournaments.md)
-  (`sample_seed` 1, the same draw as fit 1, 18,048 ticks, AI order delay 8). Each
-  game draws its map size
-  first (64, 128 or 256 tiles a side; 64 is duel-only) and then a format, AIs and
-  one of the 25 generators that generated at every size and colony count in a
-  preflight.
-- 5 busy Oazis games (11 Maxima, seeds 19, 23, 29, 31 and 37, 256x256), which
-  stand in for the late, crowded games that cost the most.
+Fit 3 is 1,472 games and 3,408,777 scheduled footprint lifetimes from a
+`gradient_depth` [tournament](tools/tournaments.md) (`sample_seed` 3, 18,048
+ticks, AI order delay 8, all eight AIs). Each game draws its map size first
+(64, 128 or 256 tiles a side; 64 is duel-only), then a format and a generator
+from those that generated at that size and colony count in a preflight: 25
+generators at 64, 49 at 128 and 66 at 256. The campaign planned 2,400 games and
+was stopped once the fit was stable; the remaining jobs were never run.
 
 `--telemetry gradient-stats` writes one row per lifetime (see
 [building field statistics](development/performance-telemetry.md#building-field-statistics)).
 With the statistics on, scheduled fields are published with only their seeds
-settled, so the depth a lifetime settled is the depth its readers needed, whatever
-table is committed. Fit 2 was collected before the pipeline became the default,
-from synchronous lazy fields.
-The row records the depth that lifetime actually settled, its popped entries per
-80-cost band, its resolve calls, and the O(1) owner inputs at the moment it began.
-Locked fields and fields without a search are excluded.
+settled, so the depth a lifetime settled is the depth its readers needed. The
+rows record the model's inputs as they stood when each lifetime's job was
+staged (`staged`, `previous_hint`, `serving_settled`), which is exactly what the
+engine reads; only staged footprint lifetimes are fitted.
 
-Metrics, computed with whole games held out (5 folds):
-
-- **owner saving** is the share of lazy search work a build to depth D moves off the
-  owner: Σ popped(min(D, actual)) / Σ popped(actual);
-- **extra CPU** is total search work relative to lazy: Σ popped(max(D, actual)) /
-  Σ popped(actual). Settling past a complete field's end costs nothing. Beyond a
-  partial field's reach, the mean profile of complete fields of the same route and
-  map size estimates the cost;
-- **hit rate** is the share of lifetimes with actual ≤ D, and **coverage** is the
-  same weighted by resolve calls.
-
-Key sets are compared by owner saving at an extra-CPU budget of 1.25. For each
-candidate, the quantile is swept over 0.3–0.95 and the saving is interpolated to
-the budget, so that a key cannot look better just by predicting deeper.
+Fit 2 keyed on the depth the previous lifetime finally settled, which the
+engine never has when it stages a job: by then that lifetime is still serving,
+and `settledCostHint` holds the one before it. On the first 354 games of this
+campaign, fit 2's table as the engine runs it saved 0.781 at 1.22x extra CPU
+(0.812 had its intended input been available).
 
 ## Operating points
 
-The budget that matters is whole-process CPU, not field-search CPU: the
-scheduled pipeline must stay at or below 1.15x process CPU. Search work is a small
-share of the process, so a deep operating point costs little.
+Held out by game (5 folds), as `evaluate --curve` reports them:
 
-**Measuring the share.** `gradient.building_resume`, the lazy search extensions,
-was divided by `benchmark_run_cpu_ns`, with the flag off and `--benchmark-warmup 0`.
-These fit-2 runs used a greedy build on an unpinned 8-core arm64 Mac, one run per
-scenario at 18,048 ticks.
+| λ | Hit rate | Coverage | Extra CPU | Owner saving |
+| ---: | ---: | ---: | ---: | ---: |
+| 0.05 | 0.988 | 0.984 | 1.725 | 0.966 |
+| 0.1 | 0.969 | 0.970 | 1.364 | 0.942 |
+| 0.2 | 0.937 | 0.954 | 1.241 | 0.925 |
+| 0.3 | 0.912 | 0.941 | 1.204 | 0.916 |
+| 0.5 | 0.860 | 0.912 | 1.166 | 0.902 |
+| 1.0 | 0.729 | 0.796 | 1.135 | 0.881 |
+| eager | 1.000 | 1.000 | 2.814 | 1.000 |
 
-| Scenario | Process CPU | Search share | Search + initialization |
+Hit rate is the share of lifetimes settled at least as deep as they needed;
+coverage weights it by resolve calls. A prediction just short of the needed
+depth misses but still saves almost all of the work, which is why owner saving
+stays high where the hit rate falls.
+
+Per map size at the default (λ 0.5): 64x64 saves 0.958 at 1.16x, 128x128 0.923
+at 1.18x, and 256x256 0.883 at 1.16x.
+
+The header carries λ 0.1, 0.2, 0.3 and 0.5 (`l0100` to `l0500`); the default
+is λ 0.5.
+`GLOB2_BUILDING_DEPTH=<name>` selects one at run time for timing, alongside
+`table` (the default point), `full` and `lazy`.
+
+**How the default was chosen.** By owner time on three late busy-Oazis
+checkpoints (11 Maxima, seed 19, ticks 8192, 12288 and 16384). Each run loads a
+checkpoint, warms up 2,048 ticks so every field has a history, and measures the
+next 2,048 ticks with four compute threads on eight pinned cores; two repeats,
+order rotated. The owner's lazy search, `gradient.building_resume`, in ms:
+
+| Depth | 8192 | 12288 | 16384 |
 | --- | ---: | ---: | ---: |
-| busy Oazis seed 19 | 33.5 s | **0.026** | 0.112 |
-| mixed (generator 26, seed 19) | 3.6 s | 0.006 | 0.019 |
-| small (64x64 duel, seed 1) | 1.6 s | 0.008 | 0.019 |
+| lazy (seeds only) | 400 | 811 | 1068 |
+| fit 2, p80 | 77 | 158 | 134 |
+| **λ 0.5** | **44** | **103** | **87** |
+| λ 0.3 | 43 | 95 | 92 |
+| λ 0.2 | 40 | 96 | 91 |
+| λ 0.1 | 38 | 91 | 77 |
+| full | 36 | 94 | 84 |
 
-With round trips, measured on reserved x86_64 cores, the busy share was 0.064 to
-0.067. Greedy fetching reads building fields far less, so the busy whole-game search
-share is now 0.026, while initialization (`gradient.building`, 0.086) still costs
-about as much as before.
+λ 0.5 already reaches what settling every field fully reaches; what remains is
+cold fields, which build synchronously and never reach the model. Deeper points
+spend more worker CPU for nothing measurable, so λ 0.5 is the default. Whole-loop
+owner time and process CPU varied by 30-50% between repeats on the shared host
+these runs used, too much to separate the points; a quiet host should repeat that
+comparison at the next refit. The per-tick checksums of all fourteen runs of each
+checkpoint were identical.
 
-Only the search scales with depth; initialization is paid once per rebuild whatever
-the depth. Process CPU at operating point q is therefore estimated as 1 + share x
-(field extra CPU - 1). The estimate uses the busy share for Oazis and for the
-pooled figures, and the mixed/small share (0.007) for the tournament.
+Search is a small share of process CPU in steady play (about 2.6% in busy late
+games and under 1% in typical ones, measured for fit 2), so by the histogram
+estimate the default costs well under 1% of process CPU over lazy fields. That
+estimate is not a measurement; the shared-host runs above could not confirm or
+refute it.
 
-**The curve.** Held out by game (`evaluate --curve`), keys previous, units and type:
+## When to refit
 
-| Point | Scenario | Hit rate | Coverage | Field CPU | Owner saving | Process CPU (est.) |
-| --- | --- | ---: | ---: | ---: | ---: | ---: |
-| p50 | all | 0.525 | 0.571 | 1.137 | 0.567 | 1.004 |
-| p50 | busy Oazis | 0.520 | 0.398 | 1.132 | 0.543 | 1.003 |
-| p70 | all | 0.714 | 0.762 | 1.270 | 0.686 | 1.007 |
-| p70 | busy Oazis | 0.715 | 0.616 | 1.263 | 0.664 | 1.007 |
-| **p80** | all | 0.807 | 0.851 | 1.398 | 0.747 | 1.010 |
-| **p80** | busy Oazis | 0.811 | 0.737 | 1.388 | 0.725 | 1.010 |
-| p85 | all | 0.854 | 0.888 | 1.515 | 0.781 | 1.013 |
-| p85 | busy Oazis | 0.861 | 0.808 | 1.509 | 0.763 | 1.013 |
-| **p90** | all | 0.898 | 0.919 | 1.722 | 0.825 | 1.019 |
-| **p90** | busy Oazis | 0.904 | 0.859 | 1.724 | 0.811 | 1.019 |
-| **p95** | all | 0.945 | 0.948 | 2.277 | 0.895 | 1.033 |
-| **p95** | busy Oazis | 0.952 | 0.917 | 2.335 | 0.894 | 1.035 |
-| eager | all | 1.000 | 1.000 | 5.766 | 1.000 | 1.124 |
-| eager | busy Oazis | 1.000 | 1.000 | 5.761 | 1.000 | 1.124 |
+Refit whenever something changes how far units read building fields: fetching
+rules, hiring, AI placement, the default AI order delay or the refresh
+scheduling. Refitting moves only CPU, so it needs no `SIM_REVISION` bump.
 
-The p60 rows and the tournament breakdown are in the `evaluate --curve` output.
-
-Every point up to p95 stays at or below about 1.035x estimated process CPU. That
-makes owner saving, not CPU, the binding constraint, and a point well above the
-median is needed: p50 saves only 0.57 of the search.
-
-**How the default was chosen.** The header carries three points, `p80`, `p90` and
-`p95`, and the committed default (`DEFAULT_POINT`) is **`p80`**, chosen by measured
-timing rather than by the estimates above. Each point was built with
-`-DGLOB2_BUILDING_GRADIENT_DEPTH_POINT=<index>` (which swaps the point without
-regenerating anything) and timed against `GLOB2_BUILDING_DEPTH=full` on late busy
-Oazis checkpoints (11 Maxima), building gradient delay 8, four compute workers, on a
-quiet x86_64 host. The table gives the drop in owner loop work relative to lazy
-synchronous fields on three checkpoints, and process CPU relative to lazy:
-
-| Depth | Loop-work drop | Process CPU |
-| --- | --- | --- |
-| **p80** | 41%, 53%, 45% | 1.01–1.06x |
-| p90 | 40%, 49%, 49% | 1.04–1.09x |
-| p95 | 38%, 46%, 44% | not recorded |
-| full | 33%, 43%, 38% | not recorded |
-
-`p80` saves as much owner time as `p90` within noise for less CPU, and the deeper
-points save less. A refit or a pipeline change should repeat this
-comparison and, if another point wins, regenerate with
-`fit --operating-point Q --points ...` and record the measurement here.
-
-### The default, by map size
-
-`p80`, held out by game:
-
-| Map | Lifetimes | Hit rate | Coverage | Field CPU | Owner saving |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| 64x64 | 23,595 | 0.872 | 0.899 | 1.544 | 0.956 |
-| 128x128 | 98,348 | 0.796 | 0.899 | 1.133 | 0.843 |
-| 256x256 | 189,501 | 0.805 | 0.791 | 1.457 | 0.719 |
-| all | 311,444 | 0.807 | 0.851 | 1.398 | 0.747 |
-
-## What does not predict depth
-
-Screened on its own, at the same budget, against 0.444 for no key at all:
-`previous` 0.645, `units` 0.488, `buildings` 0.480, `type` 0.457, `route` 0.447,
-`progress` 0.445, `is_site` 0.444, `level` 0.444, `construction` 0.444, `swim`
-0.443 and **`size` 0.441**.
-
-**Map size does not earn a place,** in either fit. The size-normalised target (depth
-per tile of width + height) scored 0.390 alone, worse than the raw depth. Larger
-maps do need deeper fields on average, but within a game the spread between
-buildings is far larger than the difference between map sizes, and `previous`
-already carries whatever the size implies.
+| Fit | Trigger | Model | Default |
+| --- | --- | --- | --- |
+| 1 | first fit, round-trip fetching | quantile table: previous, type, progress | p80 |
+| 2 | round-trip removal (greedy fetching) | quantile table: previous, units, type | p80 |
+| **3** | **staged inputs, larger campaign** | **a + k · max(serving, previous)** | **λ 0.5** |
 
 ## Running it
 
@@ -221,45 +211,33 @@ python3 -m tools.tournaments.gradient_depth plan depth.json --bundle BUNDLE --ou
 python3 -m tools.tournaments submit planned.json RESULTS --bundle BUNDLE
 python3 -m tools.tournaments run RESULTS --hosts hosts.json
 
-python3 tools/gradient_depth_fit.py dataset RESULTS RUNS --output dataset.json.gz
-# What each key buys alone and in forward selection, held out by game.
-python3 tools/gradient_depth_fit.py screen dataset.json.gz --jobs 14
-# Select keys, or name them, and regenerate the summary and the header with its
-# operating points; --operating-point is the committed default.
-python3 tools/gradient_depth_fit.py fit dataset.json.gz --jobs 14 \
-  --keys previous units type --operating-point 0.8 --points 0.9 0.95
-# The committed default's metrics, overall and per map size.
-python3 tools/gradient_depth_fit.py evaluate dataset.json.gz
-# Owner saving against field and estimated process CPU, per operating point.
-python3 tools/gradient_depth_fit.py evaluate dataset.json.gz --curve [--share busy_oazis=0.026]
+python3 tools/gradient_depth_fit.py dataset RESULTS RUNS --output dataset.npz --jobs 16
+# Fit the operating points and regenerate the summary and the header.
+python3 tools/gradient_depth_fit.py fit dataset.npz --operating-point 0.5 --points 0.1 0.2 0.3
+# The default's metrics, overall and per map size; and the held-out curve.
+python3 tools/gradient_depth_fit.py evaluate dataset.npz
+python3 tools/gradient_depth_fit.py evaluate dataset.npz --curve [--share busy_oazis=0.026]
 ```
 
-It needs only the Python standard library; `--jobs` parallelises the screen by
-fork. `test/test_gradient_depth_fit.py` asserts three things: regenerating the
-header from the committed summary is a no-op, the compiled C++ lookup agrees with
-the fitter on random queries, and the fitter recovers keys it was given in
-synthetic data.
+The dataset, fit and evaluate commands need numpy; on the fit-3 data each takes
+about a minute or less (`dataset` with `--jobs 16`) on one machine. Regenerating
+the header from the committed summary needs only the standard library.
+`test/test_gradient_depth_fit.py` checks that doing so is a no-op and that the
+C++ expression agrees with the fitter on random inputs; its fitting cases skip
+without numpy.
 
 ## Limits
 
 - It was fitted on AI games under AI order delay 8. Human players place and staff
   buildings differently, and nothing here has been checked against human play.
-- The depth a lazy field settled is the depth that lazy readers needed. A scheduled
-  field is read at the same places, but the extra-CPU and saving figures are
-  estimates from the depth histograms, not measured thread time (the operating
-  point itself was chosen by measured time). Beyond a partial field's reach the
-  work is extrapolated from complete fields.
-- Fit 2's search shares come from single unpinned runs on a Mac. They set only the
-  process-CPU estimate, not the table.
-- The tournament draw is 64 games across 25 generators, so per-generator behaviour
-  is not resolved. Large 256x256 games, busy Oazis in particular, carry most of
-  the lifetimes and most of the weight.
-- `previous` needs the depth the field's last lifetime settled, which the scheduled
-  pipeline keeps as an owner-only hint. A field built for the first time uses the
-  `-1` (no history) row.
-- The process-CPU column of the curve is an estimate: a measured search share times
-  the histogram-based field ratio. The measured costs are in
-  [Operating points](#operating-points).
+- The extra-CPU and saving figures come from the lifetimes' depth histograms,
+  not measured thread time; beyond a partial field's reach the work is
+  extrapolated from complete fields. The default was chosen by measured time.
+- The campaign has no busy 11-player games; large 256x256 games carry the most
+  work. The timing checkpoints are busy Oazis games.
+- A field whose readers suddenly reach much further than before (a burst of new
+  workers, a new wall forcing a detour) is under-predicted for one lifetime; the
+  owner settles the rest lazily, as it would without the model.
 
 ## Related
 
@@ -267,5 +245,3 @@ synthetic data.
   are the rows this is fitted on.
 - [Distributed tournaments](tools/tournaments.md) describe the `gradient_depth`
   campaign.
-- [The win probability model](win-probability-model.md) is fitted the same way:
-  dataset, screen, fit, then a generated header.

@@ -85,6 +85,32 @@ permanent docs.
   same change. CI fails when the committed `--verify-match` trace moves without a new
   sim version; see [Simulation version](docs/multiplayer/turn-protocol.md#simulation-version).
 
+## Dependencies
+
+Treat runtime and development dependencies differently.
+
+- **Runtime dependencies** are anything linked into, loaded by or shipped with the
+  game on any platform, or run by the relay or online platform services in
+  production: C/C++ libraries, `vcpkg.json` and pinned SDL/codec prefixes, browser
+  bundle packages, platform service packages and assets fetched at run time. Keep
+  this set small and prefer native code or libraries already in use. Adding,
+  replacing or upgrading one needs explicit maintainer approval called out in the
+  PR, with licence, size and platform coverage, and the usual compatibility checks.
+- **Development dependencies** serve only contributors and tooling: Python
+  scripts, tests, analysis and plotting, asset and music pipelines, CI helpers.
+  Add or upgrade them without approval, provided nothing at runtime imports, links
+  or ships them, and shipped output does not change unless the PR reviews that
+  change as usual. The minimize-dependencies preference is for the runtime core; in
+  tooling, prefer a well-known library (numpy, scipy, pandas, scikit-learn,
+  matplotlib, Pillow) over hand-written equivalents.
+
+Pin exact versions. General Python tooling installs from `requirements-dev.txt`;
+add new packages there, or in a focused requirements file that it includes.
+Hash-pinned isolated environments (`mobile/play-api-requirements.txt`) and
+large, hardware-specific extras (`tools/music/requirements-*.txt`) stay separate.
+A development dependency that starts to affect runtime becomes a runtime
+dependency and needs approval.
+
 ## Preserving feel
 
 Engine-correct changes can still change how the game feels to play: pacing, art

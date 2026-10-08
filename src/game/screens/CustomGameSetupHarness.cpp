@@ -246,10 +246,22 @@ struct CustomGameSetupHarness
 		checkExtraRules(restored.setup);
 		REQUIRE(restored.setup.mapRevision == 0);
 		REQUIRE(restored.landscapeSortOrder == 1);
-		// Format 5 retains custom AI identities but predates probability victory.
+		// Versions 1–7 predate the custom-generator identity row. Synthesized
+		// historical fixtures must omit it, rather than only changing the header.
+		const auto previousFormat = [&](int version)
 		{
 			auto old = encoded;
-			old.replace(0, std::string("glob2-custom-game 6").size(), "glob2-custom-game 5");
+			const auto identity = old.find("\ncustom-generator ");
+			REQUIRE(identity != std::string::npos);
+			const auto end = old.find('\n', identity + 1);
+			REQUIRE(end != std::string::npos);
+			old.erase(identity, end - identity);
+			old.replace(0, old.find('\n'), "glob2-custom-game " + std::to_string(version));
+			return old;
+		};
+		// Format 5 retains custom AI identities but predates probability victory.
+		{
+			auto old = previousFormat(5);
 			const auto at = old.find("probability ");
 			REQUIRE(at != std::string::npos);
 			old.erase(at, old.find('\n', at) - at + 1);
@@ -261,7 +273,7 @@ struct CustomGameSetupHarness
 		// Older formats omit library identities; their rules retain their defaults.
 		for (int version : {1, 2, 3, 4})
 		{
-			auto old = encoded;
+			auto old = previousFormat(version);
 			auto removeLine = [&](const std::string &prefix)
 			{
 				const auto at = old.find("\n" + prefix), eol = old.find('\n', at + 1);
@@ -273,8 +285,6 @@ struct CustomGameSetupHarness
 				removeLine("rules ");
 			if (version == 1)
 				removeLine("picker ");
-			old.replace(0, std::string("glob2-custom-game 6").size(),
-						"glob2-custom-game " + std::to_string(version));
 			// Reproduce the old twelve-record wire layout, including its draft capacity.
 			const auto coloniesAt = old.find("colonies 16\n");
 			REQUIRE(coloniesAt != std::string::npos);
@@ -319,8 +329,7 @@ struct CustomGameSetupHarness
 				 {"6", "Open book", "open-book"}, {"6", "Standard", "standard"},
 				 {"6", "Custom", "standard"}, {"7", "blitz", "blitz"}, {"7", "no-such-ruleset", "standard"}})
 		{
-			auto old = encoded;
-			old.replace(0, std::string("glob2-custom-game 7").size(), "glob2-custom-game " + version);
+			auto old = previousFormat(std::stoi(version));
 			const auto at = old.find("\"quick-clash\"");
 			REQUIRE(at != std::string::npos);
 			old.replace(at, std::string("\"quick-clash\"").size(), "\"" + label + "\"");
@@ -334,7 +343,7 @@ struct CustomGameSetupHarness
 			REQUIRE(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-				 {"glob2-custom-game 7", "glob2-custom-game 8"},
+				 {"glob2-custom-game 8", "glob2-custom-game 9"},
 				 {"rules 1 3", "rules 2 3"},
 				 {"rules 1 3", "rules 1 4"},
 				 {"2 3 90\nprobability", "2 4 90\nprobability"},

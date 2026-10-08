@@ -10,6 +10,7 @@ from tournaments.local import run_job, parallel_map
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/map-generator-validation'
 BINARY=native_binary()
+PACKAGES=[]
 FIELDS=['method','seed','success','tiles','grass_tiles','sand_tiles','water_tiles','shore','free','fit4','um_grass','um_sand','um_water','seconds','hash']
 EXTRA=['min_local_fit4','worst_wheat_distance','worst_wood_distance','viable_teams','wheat_tiles','wood_tiles','stone_tiles','algae_tiles','best_wheat_distance','best_wood_distance']
 PROFILES=set()
@@ -24,7 +25,7 @@ def sample(task):
     directory=OUT/'execution'/f'{config["id"]}-{seed}-{run_tag}'
     attempt,source=run_job(BINARY,ROOT,directory,'generate_map',
         config={'generator':config['method'],'params':params},seeds={'map':seed},timeout=12,
-        outputs={'reports':['terrain']} if 'dump' in config else {})
+        outputs={'reports':['terrain']} if 'dump' in config else {}, inputs={f'generator-package-{i}':p for i,p in enumerate(PACKAGES)})
     if 'dump' in config and attempt['category']=='success':
         with source.open_artifact(attempt,'terrain.txt') as stream:
             Path(config['dump']).write_text(stream.read())
@@ -61,11 +62,19 @@ def run(configs,count,start,label,workers=8):
     print(f'DONE {label}: {len(tasks)} attempts, {time.monotonic()-begun:.1f}s',flush=True)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--configs');p.add_argument('--binary',default=str(BINARY));p.add_argument('--output',default=str(OUT));p.add_argument('--count',type=int,default=32);p.add_argument('--start',type=int,default=10001);p.add_argument('--label',default='sweep');p.add_argument('--workers',type=int,default=8)
+    p=argparse.ArgumentParser();p.add_argument('--configs');p.add_argument('--generator-package',action='append',default=[]);p.add_argument('--binary',default=str(BINARY));p.add_argument('--output',default=str(OUT));p.add_argument('--count',type=int,default=32);p.add_argument('--start',type=int,default=10001);p.add_argument('--label',default='sweep');p.add_argument('--workers',type=int,default=8)
     a=p.parse_args();OUT=Path(a.output);OUT.mkdir(parents=True,exist_ok=True);BINARY=Path(a.binary).resolve()
+    import importlib.util
+    spec=importlib.util.spec_from_file_location('generator_package',ROOT/'tools/map-generators/package.py')
+    pack=importlib.util.module_from_spec(spec);spec.loader.exec_module(pack)
+    for i,path in enumerate(a.generator_package):
+        source=Path(path).resolve()
+        frozen=OUT/f'generator-package-{i}.json'
+        frozen.write_text(pack.pack(source) if source.is_dir() else source.read_text())
+        PACKAGES.append(frozen.resolve())
     if a.configs:
         c=json.loads(Path(a.configs).read_text())
     else:
-        catalog=json.loads(subprocess.check_output([BINARY,'--headless-catalog'],text=True))
-        c=[{'id':'modular-'+str(d['method']),'method':d['method'],'preset':True} for d in catalog['generators'] if not d.get('editorOnly',d['method']==0)]
+        catalog=json.loads(subprocess.check_output([BINARY,'--headless-catalog']+[v for p in PACKAGES for v in ['--generator-package',str(p)]],text=True))
+        c=[{'id':'modular-'+str(d['method']),'method':d['id'] if ':' in d['id'] else d['method'],'preset':True} for d in catalog['generators'] if not d.get('editorOnly',d['method']==0)]
     run(c,a.count,a.start,a.label,a.workers)

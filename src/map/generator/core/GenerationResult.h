@@ -16,11 +16,24 @@ enum class GenerationError
 	InvalidRequest,
 	NonEmptyTarget,
 	PlacementFailed,
-	InvalidWorld
+	InvalidWorld,
+	ScriptFailed,
+	BudgetExceeded
+};
+class ScriptGenerationFailure : public GenerationFailure
+{
+  public:
+	GenerationError error;
+	ScriptGenerationFailure(GenerationError error, const std::string &detail)
+		: GenerationFailure(detail), error(error)
+	{
+	}
 };
 struct GenerationResult
 {
 	std::string generatorId;
+	std::string packageHash;
+	unsigned apiVersion = 0;
 	unsigned revision = 0;
 	std::uint32_t seed = 0;
 	std::string stage;

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationNumeric.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -79,7 +80,8 @@ struct Axes
 	/// A frame heading (du along, dv across) as a map heading, in radians.
 	double heading(double du, double dv) const
 	{
-		return alongX ? std::atan2(dv, du) : std::atan2(du, dv);
+		return alongX ? ::MapGeneration::Numeric::atan2(dv, du)
+					  : ::MapGeneration::Numeric::atan2(du, dv);
 	}
 };
 inline Axes axesFor(int width, int height)

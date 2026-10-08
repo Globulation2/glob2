@@ -337,6 +337,7 @@ typedef struct JSClass {
 
 struct JSRuntime {
     bool glob2_host_failure;
+    bool glob2_generator_imports;
     unsigned glob2_native_depth;
     JSMallocFunctions mf;
     JSMallocState malloc_state;
@@ -8567,6 +8568,7 @@ static int JS_ThrowTypeErrorReadOnly(JSContext *ctx, int flags, JSAtom atom)
 }
 
 bool JS_Glob2HostFailure(JSRuntime *rt) { return rt->glob2_host_failure; }
+void JS_Glob2GeneratorImports(JSRuntime *rt, bool enabled) { rt->glob2_generator_imports = enabled; }
 
 JSValue JS_ThrowOutOfMemory(JSContext *ctx)
 {
@@ -33017,7 +33019,8 @@ static int add_import(JSParseState *s, JSModuleDef *m,
 
 static __exception int js_parse_import(JSParseState *s)
 {
-    return js_parse_error(s, "Imports are disabled");
+    if (!s->ctx->rt->glob2_generator_imports)
+        return js_parse_error(s, "Imports are disabled");
     JSContext *ctx = s->ctx;
     JSModuleDef *m = s->cur_func->module;
     JSAtom local_name, import_name, module_name;

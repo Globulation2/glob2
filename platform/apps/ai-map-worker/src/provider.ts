@@ -1,10 +1,17 @@
+import { recordAttemptUsage } from '@glob2/billing';
 import { randomUUID } from 'node:crypto';
 import { sql } from 'kysely';
 import type { Studio } from '@glob2/map-studio';
 import { emitState, type RequestRow } from '@glob2/map-studio';
 export class ProviderUncertain extends Error {}
 export class ProviderBudget extends Error {}
-export class ProviderRejected extends Error {}
+export class ProviderRejected extends Error {
+  readonly usage: unknown;
+  constructor(message: string, usage?: unknown) {
+    super(message);
+    this.usage = usage;
+  }
+}
 export interface ImageInput {
   hash: string;
   bytes: Uint8Array;
@@ -89,7 +96,7 @@ export class OpenAIMaps implements MapProvider {
       }),
     );
     if (output['status'] !== 'completed')
-      throw new ProviderRejected('AI discussion did not complete.');
+      throw new ProviderRejected('AI discussion did not complete.', output['usage']);
     const messages = output['output'] as { content?: { type: string; text?: string }[] }[];
     const text = messages
       .flatMap((m) => m.content ?? [])
@@ -97,7 +104,7 @@ export class OpenAIMaps implements MapProvider {
       .map((c) => c.text ?? '')
       .join('');
     if (!text.trim() || text.length > 16000)
-      throw new ProviderRejected('AI discussion returned no usable reply.');
+      throw new ProviderRejected('AI discussion returned no usable reply.', output['usage']);
     return { text, usage: output['usage'] ?? null, responseId: String(output['id'] ?? '') };
   }
   async image(model: string, prompt: string, images: ImageInput[]) {
@@ -116,10 +123,11 @@ export class OpenAIMaps implements MapProvider {
       );
     const output = await this.call('images/edits', form);
     const data = output['data'] as { b64_json?: string }[];
-    if (!data?.[0]?.b64_json) throw new ProviderRejected('Provider returned no map image.');
+    if (!data?.[0]?.b64_json)
+      throw new ProviderRejected('Provider returned no map image.', output['usage']);
     const bytes = Buffer.from(data[0].b64_json, 'base64');
     if (!bytes.length || bytes.length > 32 * 1024 * 1024)
-      throw new ProviderRejected('Provider image is invalid.');
+      throw new ProviderRejected('Provider image is invalid.', output['usage']);
     return { bytes, usage: output['usage'] ?? null };
   }
 }
@@ -181,6 +189,13 @@ export class Attempts {
     try {
       const output = await call();
       returned = true;
+      await recordAttemptUsage(
+        this.studio.db,
+        'maps',
+        row.id,
+        stage,
+        (output as { usage?: unknown }).usage,
+      );
       await this.studio.db.transaction().execute(async (db) => {
         const current = (
           await sql`SELECT id FROM studio_requests WHERE id=${row.id} AND lease=${row.lease} AND status='dispatched' FOR UPDATE`.execute(
@@ -203,6 +218,8 @@ export class Attempts {
       row.status = 'processing';
       return output;
     } catch (error) {
+      if (error instanceof ProviderRejected)
+        await recordAttemptUsage(this.studio.db, 'maps', row.id, stage, error.usage);
       const uncertain = returned || error instanceof ProviderUncertain;
       try {
         await sql`UPDATE studio_attempts SET status=${uncertain ? 'uncertain' : 'failed'} WHERE request_id=${row.id} AND stage=${stage} AND status='dispatched'`.execute(

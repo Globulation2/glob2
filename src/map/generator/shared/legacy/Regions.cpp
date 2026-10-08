@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
@@ -35,22 +37,35 @@ void collectPointsColumnOrder(int w, int h, Pred pred, std::vector<MapGeneratorP
 {
 	std::vector<int> countPerColumn(w, 0);
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (pred(x, y))
-				++countPerColumn[x];
+				++countPerColumn.at(x);
+		}
+	}
 	std::vector<int> cursor(w);
 	int total = 0;
 	for (int x = 0; x < w; ++x)
 	{
-		cursor[x] = total;
-		total += countPerColumn[x];
+		::MapGeneration::generationCheckpoint();
+		cursor.at(x) = total;
+		total += countPerColumn.at(x);
 	}
 	const size_t base = points.size();
 	points.resize(base + total, MapGeneratorPoint(0, 0));
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (pred(x, y))
-				points[base + cursor[x]++] = MapGeneratorPoint(x, y);
+				points.at(base + cursor.at(x)++) = MapGeneratorPoint(x, y);
+		}
+	}
 }
 } // namespace
 
@@ -65,6 +80,7 @@ bool divideUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	std::vector<int> splitWeights;
 	for (unsigned int i = 0; i < weights.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		points.push_back(MapGeneratorPoint(0, 0));
 		splitWeights.push_back(1);
 	}
@@ -86,15 +102,17 @@ void createOval(Map &map, std::vector<int> &grid, int areaN, int x, int y, int w
 	std::int64_t t2 = h2 * w2;
 	for (int px = -(width / 2); px < (width / 2); ++px)
 	{
+		::MapGeneration::generationCheckpoint();
 		int nx = map.normalizeX(x + px);
 		std::int64_t px2 = std::int64_t(px) * px * h2;
 		for (int py = -(height / 2); py < (height / 2); ++py)
 		{
+			::MapGeneration::generationCheckpoint();
 			int ny = map.normalizeY(y + py);
 			std::int64_t py2 = std::int64_t(py) * py * w2;
 			if (px2 + py2 < t2)
 			{
-				grid[ny * map.getW() + nx] = areaN;
+				grid.at(ny * map.getW() + nx) = areaN;
 			}
 		}
 	}
@@ -131,7 +149,8 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	{
 		const int w = map.getW();
 		collectPointsColumnOrder(
-			w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; }, startingPoints);
+			w, map.getH(), [&](int x, int y) { return grid.at(y * w + x) == areaN; },
+			startingPoints);
 	}
 
 	if (startingPoints.size() < points.size())
@@ -142,13 +161,14 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	std::vector<MapGeneratorPoint> obstacles;
 	getAllOtherPoints(map, grid, areaN, obstacles);
 	std::vector<MapGeneratorPoint> sources;
-	sources.push_back(startingPoints[n]);
+	sources.push_back(startingPoints.at(n));
 	std::vector<int> heights;
 	computeDistances(map, sources, obstacles, heights);
 	sources.clear();
 
 	for (unsigned int i = 0; i < points.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int w = map.getW(), h2 = map.getH();
 		// The original single pass tracked a running max and reset its candidate list on every
 		// strict increase; by construction that converges to exactly "every tile at the eventual
@@ -157,14 +177,20 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 		// identical order without carrying that reset logic through a stride-w memory access.
 		int max = 0;
 		for (int y = 0; y < h2; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = 0; x < w; ++x)
-				max = std::max(max, heights[y * w + x]);
+			{
+				::MapGeneration::generationCheckpoint();
+				max = std::max(max, heights.at(y * w + x));
+			}
+		}
 		std::vector<MapGeneratorPoint> possible;
 		collectPointsColumnOrder(
-			w, h2, [&](int x, int y) { return heights[y * w + x] >= max; }, possible);
+			w, h2, [&](int x, int y) { return heights.at(y * w + x) >= max; }, possible);
 		int n = context.stream("regions")() % possible.size();
-		points[i] = possible[n];
-		sources.push_back(points[i]);
+		points.at(i) = possible.at(n);
+		sources.push_back(points.at(i));
 		computeDistances(map, sources, obstacles, heights);
 	}
 	if (points.size() == 1)
@@ -194,38 +220,45 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			  second(first.size()), firstId(first.size()), secondId(first.size())
 		{
 			for (std::size_t t = 0; t < first.size(); ++t)
+			{
+				::MapGeneration::generationCheckpoint();
 				rebuild(t);
+			}
 		}
 		std::int64_t value(int x, int y, unsigned j) const
 		{
-			return std::int64_t(map.warpDistSquare(x, y, points[j].x, points[j].y)) * weights[j];
+			return std::int64_t(map.warpDistSquare(x, y, points.at(j).x, points.at(j).y)) *
+				   weights.at(j);
 		}
 		void rebuild(std::size_t t)
 		{
 			const int x = int(t % map.getW()), y = int(t / map.getW());
-			first[t] = second[t] = std::numeric_limits<int>::max();
-			firstId[t] = secondId[t] = -1;
+			first.at(t) = second.at(t) = std::numeric_limits<int>::max();
+			firstId.at(t) = secondId.at(t) = -1;
 			for (unsigned j = 0; j < points.size(); ++j)
+			{
+				::MapGeneration::generationCheckpoint();
 				offer(t, value(x, y, j), int(j));
+			}
 		}
 		void offer(std::size_t t, std::int64_t v, int id)
 		{
-			if (v < first[t])
+			if (v < first.at(t))
 			{
-				second[t] = first[t];
-				secondId[t] = firstId[t];
-				first[t] = v;
-				firstId[t] = id;
+				second.at(t) = first.at(t);
+				secondId.at(t) = firstId.at(t);
+				first.at(t) = v;
+				firstId.at(t) = id;
 			}
-			else if (v < second[t])
+			else if (v < second.at(t))
 			{
-				second[t] = v;
-				secondId[t] = id;
+				second.at(t) = v;
+				secondId.at(t) = id;
 			}
 		}
 		std::int64_t excluding(std::size_t t, int id) const
 		{
-			return firstId[t] == id ? second[t] : first[t];
+			return firstId.at(t) == id ? second.at(t) : first.at(t);
 		}
 		// Point id now stands at its new position: refresh every tile's pair.
 		void moved(int id)
@@ -233,25 +266,26 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			const int w = map.getW();
 			for (std::size_t t = 0; t < first.size(); ++t)
 			{
+				::MapGeneration::generationCheckpoint();
 				const std::int64_t v = value(int(t % w), int(t / w), id);
-				if (firstId[t] == id)
+				if (firstId.at(t) == id)
 				{
-					if (v <= second[t])
-						first[t] = v;
+					if (v <= second.at(t))
+						first.at(t) = v;
 					else
 						rebuild(t); // its successor is unknown
 				}
-				else if (secondId[t] == id)
+				else if (secondId.at(t) == id)
 				{
-					if (v < first[t])
+					if (v < first.at(t))
 					{
-						second[t] = first[t];
-						secondId[t] = firstId[t];
-						first[t] = v;
-						firstId[t] = id;
+						second.at(t) = first.at(t);
+						secondId.at(t) = firstId.at(t);
+						first.at(t) = v;
+						firstId.at(t) = id;
 					}
-					else if (v <= second[t])
-						second[t] = v;
+					else if (v <= second.at(t))
+						second.at(t) = v;
 					else
 						rebuild(t);
 				}
@@ -267,7 +301,10 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 		nearest = std::make_unique<NearestTwo>(map, points, weights);
 		occupants.assign(grid.size(), 0);
 		for (const auto &p : points)
-			++occupants[p.y * map.getW() + p.x];
+		{
+			::MapGeneration::generationCheckpoint();
+			++occupants.at(p.y * map.getW() + p.x);
+		}
 	}
 
 	bool cont = true;
@@ -275,16 +312,18 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	int passes = 0;
 	while (cont)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (++passes > maxPasses)
 			throw GenerationFailure("Point dispersion did not converge within its pass budget");
 		minDist = std::numeric_limits<int>::max();
 		bool changed = false;
 		for (unsigned int i = 0; i < points.size(); ++i)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (search == PointSearch::WholeRegion)
 			{
 				const int w = map.getW();
-				const std::size_t home = points[i].y * w + points[i].x;
+				const std::size_t home = points.at(i).y * w + points.at(i).x;
 				std::int64_t best = nearest->excluding(home, int(i));
 				minDist = std::min(best, minDist);
 				std::size_t bestTile = home;
@@ -292,7 +331,8 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 				// candidate wins an exact tie as before.
 				for (std::size_t t = 0; t < grid.size(); ++t)
 				{
-					if (t == home || grid[t] != areaN || occupants[t] != 0)
+					::MapGeneration::generationCheckpoint();
+					if (t == home || grid.at(t) != areaN || occupants.at(t) != 0)
 						continue;
 					const std::int64_t score = nearest->excluding(t, int(i));
 					if (score > best)
@@ -304,10 +344,10 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 				if (bestTile != home)
 				{
 					changed = true;
-					--occupants[home];
-					++occupants[bestTile];
-					points[i].x = int(bestTile % w);
-					points[i].y = int(bestTile / w);
+					--occupants.at(home);
+					++occupants.at(bestTile);
+					points.at(i).x = int(bestTile % w);
+					points.at(i).y = int(bestTile / w);
 					nearest->moved(int(i));
 				}
 				continue;
@@ -315,11 +355,13 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			std::int64_t best = std::numeric_limits<int>::max();
 			for (unsigned int j = 0; j < points.size(); ++j)
 			{
+				::MapGeneration::generationCheckpoint();
 				if (i == j)
 					continue;
-				std::int64_t dist = std::int64_t(map.warpDistSquare(points[i].x, points[i].y,
-																	points[j].x, points[j].y)) *
-									weights[j];
+				std::int64_t dist =
+					std::int64_t(map.warpDistSquare(points.at(i).x, points.at(i).y, points.at(j).x,
+													points.at(j).y)) *
+					weights.at(j);
 				best = std::min(dist, best);
 			}
 			minDist = std::min(best, minDist);
@@ -328,24 +370,25 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			int best_y = -1;
 			auto tryCandidate = [&](int nx, int ny)
 			{
-				if (nx == points[i].x && ny == points[i].y)
+				if (nx == points.at(i).x && ny == points.at(i).y)
 					return;
-				if (grid[ny * map.getW() + nx] != areaN)
+				if (grid.at(ny * map.getW() + nx) != areaN)
 					return;
 				std::int64_t score = std::numeric_limits<int>::max();
 				bool invalid = false;
 				for (unsigned int j = 0; j < points.size(); ++j)
 				{
+					::MapGeneration::generationCheckpoint();
 					if (i == j)
 						continue;
-					if (nx == points[j].x && ny == points[j].y)
+					if (nx == points.at(j).x && ny == points.at(j).y)
 					{
 						invalid = true;
 						break;
 					}
 					std::int64_t dist =
-						std::int64_t(map.warpDistSquare(nx, ny, points[j].x, points[j].y)) *
-						weights[j];
+						std::int64_t(map.warpDistSquare(nx, ny, points.at(j).x, points.at(j).y)) *
+						weights.at(j);
 					score = std::min(dist, score);
 				}
 				if (invalid)
@@ -359,15 +402,21 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			};
 			// PointSearch::Local's window is the 7x7 area right around the point itself.
 			for (int dx = -3; dx <= 3; ++dx)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dy = -3; dy <= 3; ++dy)
-					tryCandidate(map.normalizeX(points[i].x + dx),
-								 map.normalizeY(points[i].y + dy));
+				{
+					::MapGeneration::generationCheckpoint();
+					tryCandidate(map.normalizeX(points.at(i).x + dx),
+								 map.normalizeY(points.at(i).y + dy));
+				}
+			}
 			if (best_x != -1)
 			{
 				if (best != orig)
 					changed = true;
-				points[i].x = best_x;
-				points[i].y = best_y;
+				points.at(i).x = best_x;
+				points.at(i).y = best_y;
 			}
 		}
 		if (!changed)
@@ -378,9 +427,11 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 
 	for (unsigned int i = 0; i < points.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		for (unsigned int j = 0; j < points.size(); ++j)
 		{
-			if (i != j && points[i].x == points[j].x && points[i].y == points[j].y)
+			::MapGeneration::generationCheckpoint();
+			if (i != j && points.at(i).x == points.at(j).x && points.at(i).y == points.at(j).y)
 				return 0;
 		}
 	}
@@ -388,14 +439,15 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	// std::random_shuffle + boost::random_number_generator pairing.
 	for (size_t i = 1; i < points.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		size_t j = context.bounded("regions", i + 1);
 		if (i != j)
 		{
-			std::swap(points[i], points[j]);
-			std::swap(weights[i], weights[j]);
+			std::swap(points.at(i), points.at(j));
+			std::swap(weights.at(i), weights.at(j));
 		}
 	}
-	return int(std::sqrt(double(minDist)));
+	return int(::MapGeneration::Numeric::sqrt(double(minDist)));
 }
 
 // Grows a region from each point over area areaN until the area is used up, and labels each tile
@@ -430,9 +482,10 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 
 	for (unsigned int i = 0; i < points.size(); ++i)
 	{
-		grid[points[i].y * map.getW() + points[i].x] = i;
-		gradient[points[i].y << wDec | points[i].x] = 1;
-		squares[i].push_back(points[i].y << wDec | points[i].x);
+		::MapGeneration::generationCheckpoint();
+		grid.at(points.at(i).y * map.getW() + points.at(i).x) = i;
+		gradient.at(points.at(i).y << wDec | points.at(i).x) = 1;
+		squares.at(i).push_back(points.at(i).y << wDec | points.at(i).x);
 
 		current.push_back(1);
 		count.push_back(1);
@@ -441,16 +494,19 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 	bool cont = true;
 	while (cont)
 	{
+		::MapGeneration::generationCheckpoint();
 		bool found = false;
 		for (unsigned int p = 0; p < points.size(); ++p)
 		{
-			expansion[p] += weights[p];
-			if (!squares[p].empty())
+			::MapGeneration::generationCheckpoint();
+			expansion.at(p) += weights.at(p);
+			if (!squares.at(p).empty())
 				found = true;
-			while (expansion[p] > 0 && !squares[p].empty())
+			while (expansion.at(p) > 0 && !squares.at(p).empty())
 			{
-				Uint32 deltaAddrG = squares[p].back();
-				squares[p].pop_back();
+				::MapGeneration::generationCheckpoint();
+				Uint32 deltaAddrG = squares.at(p).back();
+				squares.at(p).pop_back();
 
 				size_t y = deltaAddrG >> wDec; // Calculate the coordinates of
 				size_t x = deltaAddrG & wMask; // the current field and of the
@@ -460,10 +516,10 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 				size_t xl = ((x - 1) & wMask); // the "last line" of the map, the
 				size_t xr = ((x + 1) & wMask); // next line is the line 0 again.
 
-				int t = grid[(y << wDec) | x];
+				int t = grid.at((y << wDec) | x);
 				assert(t < (int)points.size());
-				int g = gradient[(y << wDec) | x] + 1;
-				grid[(y << wDec) | x] = areaNumbers[t];
+				int g = gradient.at((y << wDec) | x) + 1;
+				grid.at((y << wDec) | x) = areaNumbers.at(t);
 
 				size_t deltaAddrC[8];
 				int *addr;
@@ -478,29 +534,30 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 				deltaAddrC[6] = (yd << wDec) | xl;
 				deltaAddrC[7] = (y << wDec) | xl;
 
-				if (g != current[p])
+				if (g != current.at(p))
 				{
-					current[p] = g;
-					count[p] = 0;
+					current.at(p) = g;
+					count.at(p) = 0;
 				}
 
 				for (int ci = 0; ci < 8; ci++) // Check for each of this fields if we
-				{                              // can improve its gradient value
-					addr = &gradient[deltaAddrC[ci]];
+				{
+					::MapGeneration::generationCheckpoint(); // can improve its gradient value
+					addr = &gradient.at(deltaAddrC[ci]);
 					side = *addr;
-					if (side == 0 && grid[deltaAddrC[ci]] == areaN)
+					if (side == 0 && grid.at(deltaAddrC[ci]) == areaN)
 					{
 						if (buildableOnly && !map.terrainPropertiesAt(deltaAddrC[ci]).buildable)
 							continue;
 						*addr = g;
-						grid[deltaAddrC[ci]] = t;
-						count[p] += 1;
-						expansion[p] -= 1;
+						grid.at(deltaAddrC[ci]) = t;
+						count.at(p) += 1;
+						expansion.at(p) -= 1;
 
-						Uint32 randLocation = context.stream("regions")() % count[p];
-						std::vector<int>::iterator i = squares[p].begin();
+						Uint32 randLocation = context.stream("regions")() % count.at(p);
+						std::vector<int>::iterator i = squares.at(p).begin();
 						std::advance(i, randLocation);
-						squares[p].insert(i, deltaAddrC[ci]);
+						squares.at(p).insert(i, deltaAddrC[ci]);
 					}
 				}
 			}
@@ -515,7 +572,7 @@ void getAllPoints(Map &map, std::vector<int> &grid, int areaN,
 {
 	const int w = map.getW();
 	collectPointsColumnOrder(
-		w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; }, points);
+		w, map.getH(), [&](int x, int y) { return grid.at(y * w + x) == areaN; }, points);
 }
 
 void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
@@ -523,7 +580,7 @@ void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
 {
 	const int w = map.getW();
 	collectPointsColumnOrder(
-		w, map.getH(), [&](int x, int y) { return grid[y * w + x] != areaN; }, points);
+		w, map.getH(), [&](int x, int y) { return grid.at(y * w + x) != areaN; }, points);
 }
 
 // The tiles of a straight line from (x1, y1) towards (x2, y2), the short way round the torus, as a
@@ -560,6 +617,7 @@ void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
 		int y = startY;
 		for (int x = startX; x != endX;)
 		{
+			::MapGeneration::generationCheckpoint();
 			px += 1;
 			points.push_back(MapGeneratorPoint(x, y));
 			if (std::abs(px * distY - py * distX) > std::abs(px * distY - (py + 1) * distX))
@@ -578,6 +636,7 @@ void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
 		int x = startX;
 		for (int y = startY; y != endY;)
 		{
+			::MapGeneration::generationCheckpoint();
 			py += 1;
 			points.push_back(MapGeneratorPoint(x, y));
 			if (std::abs(py * distX - px * distY) > std::abs(py * distX - (px + 1) * distY))
@@ -601,10 +660,16 @@ void findBorderPoints(Map &map, std::vector<int> &grid, std::vector<MapGenerator
 		[&](int x, int y)
 		{
 			for (int dx = -1; dx <= 1; ++dx)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dy = -1; dy <= 1; ++dy)
-					if (grid[map.normalizeY(y + dy) * w + map.normalizeX(x + dx)] !=
-						grid[y * w + x])
+				{
+					::MapGeneration::generationCheckpoint();
+					if (grid.at(map.normalizeY(y + dy) * w + map.normalizeX(x + dx)) !=
+						grid.at(y * w + x))
 						return true;
+				}
+			}
 			return false;
 		},
 		points);
@@ -618,6 +683,7 @@ void chooseRandomPoints(Map &map, GenerationContext &context,
 	n = std::min(int(points.size()), n);
 	for (int i = 0; i < n; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		int r = context.stream("regions")() % (points.size() - i);
 		std::iter_swap(points.begin() + i, points.begin() + i + r);
 	}

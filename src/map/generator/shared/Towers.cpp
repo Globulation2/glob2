@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Towers.h"
 #include "Morphology.h"
@@ -48,73 +49,101 @@ TowerPlan chooseTowerSites(const Torus &t, const std::vector<int> &owner,
 	std::vector<std::vector<std::pair<int, int>>> ranked(colonies);
 	std::vector<unsigned char> protectedInRange(n, 0);
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
-			const int i = y * t.w + x, k = owner[i];
+			::MapGeneration::generationCheckpoint();
+			const int i = y * t.w + x, k = owner.at(i);
 			if (k < 0 || k >= colonies)
 				continue;
 			bool fits = true;
 			for (int fy = 0; fy < 2 && fits; ++fy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int fx = 0; fx < 2 && fits; ++fx)
 				{
+					::MapGeneration::generationCheckpoint();
 					const int j = t.at(x + fx, y + fy);
-					fits = buildable[j] && owner[j] == k;
+					fits = buildable.at(j) && owner.at(j) == k;
 				}
+			}
 			if (fits && request.against)
 			{
 				bool touches = false;
 				for (int fy = -1; fy <= 2 && !touches; ++fy)
+				{
+					::MapGeneration::generationCheckpoint();
 					for (int fx = -1; fx <= 2 && !touches; ++fx)
+					{
+						::MapGeneration::generationCheckpoint();
 						touches = (fx < 0 || fx > 1 || fy < 0 || fy > 1) &&
-								  (*request.against)[t.at(x + fx, y + fy)];
+								  (*request.against).at(t.at(x + fx, y + fy));
+					}
+				}
 				fits = touches;
 			}
 			if (!fits)
 				continue;
 			int score = 0;
 			for (int dy = -r; dy <= r + 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -r; dx <= r + 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					const int j = t.at(x + dx, y + dy);
-					if (owner[j] >= 0 && owner[j] != k)
+					if (owner.at(j) >= 0 && owner.at(j) != k)
 					{
-						score += (target[j] != 0) * request.otherWeight;
-						if (keepOutOfRange[j])
-							protectedInRange[i] = 1;
+						score += (target.at(j) != 0) * request.otherWeight;
+						if (keepOutOfRange.at(j))
+							protectedInRange.at(i) = 1;
 					}
-					else if (owner[j] == k)
-						score += (target[j] != 0) * request.ownWeight;
+					else if (owner.at(j) == k)
+						score += (target.at(j) != 0) * request.ownWeight;
 				}
-			ranked[k].push_back({-score, i});
+			}
+			ranked.at(k).push_back({-score, i});
 		}
+	}
 	for (auto &list : ranked)
+	{
+		::MapGeneration::generationCheckpoint();
 		std::stable_sort(list.begin(), list.end());
+	}
 	const auto spaced = [&](const std::vector<int> &sites, int i)
 	{
 		for (int s : sites)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (t.chebyshev(s % t.w, s / t.w, i % t.w, i / t.w) < request.spacing)
 				return false;
+		}
 		return true;
 	};
 	// Towers, a colony at a time in turn. Two passes: first only sites that reach someone, then any.
 	std::vector<size_t> next(colonies, 0);
 	for (int pass = 0; pass < 2; ++pass)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::fill(next.begin(), next.end(), 0);
 		for (bool progress = true; progress;)
 		{
+			::MapGeneration::generationCheckpoint();
 			progress = false;
 			for (int k = 0; k < colonies; ++k)
 			{
-				if (int(plan.towers[k].size()) >= request.towers)
+				::MapGeneration::generationCheckpoint();
+				if (int(plan.towers.at(k).size()) >= request.towers)
 					continue;
-				while (next[k] < ranked[k].size())
+				while (next.at(k) < ranked.at(k).size())
 				{
-					const auto [negative, i] = ranked[k][next[k]++];
-					if ((pass == 0 && negative >= 0) || protectedInRange[i] ||
-						!spaced(plan.towers[k], i))
+					::MapGeneration::generationCheckpoint();
+					const auto [negative, i] = ranked.at(k).at(next.at(k)++);
+					if ((pass == 0 && negative >= 0) || protectedInRange.at(i) ||
+						!spaced(plan.towers.at(k), i))
 						continue;
-					plan.towers[k].push_back(i);
+					plan.towers.at(k).push_back(i);
 					progress = true;
 					break;
 				}
@@ -125,30 +154,42 @@ TowerPlan chooseTowerSites(const Torus &t, const std::vector<int> &owner,
 	// each other start empty, so the game does not open with them shooting each other down.
 	plan.stocked.assign(colonies, {});
 	for (int k = 0; k < colonies; ++k)
-		for (int i : plan.towers[k])
+	{
+		::MapGeneration::generationCheckpoint();
+		for (int i : plan.towers.at(k))
 		{
+			::MapGeneration::generationCheckpoint();
 			bool alone = true;
 			for (int other = 0; other < colonies && alone; ++other)
+			{
+				::MapGeneration::generationCheckpoint();
 				if (other != k)
-					for (int s : plan.towers[other])
+					for (int s : plan.towers.at(other))
+					{
+						::MapGeneration::generationCheckpoint();
 						if (footprintsInRange(t, i, s, r))
 						{
 							alone = false;
 							break;
 						}
-			plan.stocked[k].push_back(alone);
+					}
+			}
+			plan.stocked.at(k).push_back(alone);
 		}
+	}
 	// Pads: the best remaining sites, spaced from the colony's towers and pads.
 	for (int k = 0; k < colonies; ++k)
 	{
-		std::vector<int> taken = plan.towers[k];
-		for (const auto &[negative, i] : ranked[k])
+		::MapGeneration::generationCheckpoint();
+		std::vector<int> taken = plan.towers.at(k);
+		for (const auto &[negative, i] : ranked.at(k))
 		{
-			if (int(plan.pads[k].size()) >= request.pads)
+			::MapGeneration::generationCheckpoint();
+			if (int(plan.pads.at(k).size()) >= request.pads)
 				break;
 			if (!spaced(taken, i))
 				continue;
-			plan.pads[k].push_back(i);
+			plan.pads.at(k).push_back(i);
 			taken.push_back(i);
 		}
 	}
@@ -165,26 +206,36 @@ int dropBlockingSites(const Torus &t, TowerPlan &plan, const std::vector<unsigne
 		std::vector<unsigned char> walk = open;
 		const std::vector<unsigned char> footprints = towerFootprints(t, plan);
 		for (int i = 0; i < t.size(); ++i)
-			if (footprints[i])
-				walk[i] = 0;
-		const std::vector<int> steps = stepsFrom(t, tileMask(t, sources[k]), walk);
+		{
+			::MapGeneration::generationCheckpoint();
+			if (footprints.at(i))
+				walk.at(i) = 0;
+		}
+		const std::vector<int> steps = stepsFrom(t, tileMask(t, sources.at(k)), walk);
 		for (int i = 0; i < t.size(); ++i)
-			if (goals[k][i] && steps[i] >= 0)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (goals.at(k).at(i) && steps.at(i) >= 0)
 				return false;
+		}
 		return true;
 	};
 	for (size_t k = 0; k < plan.towers.size() && k < sources.size(); ++k)
-		while (blocked(k) && (!plan.pads[k].empty() || !plan.towers[k].empty()))
+	{
+		::MapGeneration::generationCheckpoint();
+		while (blocked(k) && (!plan.pads.at(k).empty() || !plan.towers.at(k).empty()))
 		{
-			if (!plan.pads[k].empty())
-				plan.pads[k].pop_back();
+			::MapGeneration::generationCheckpoint();
+			if (!plan.pads.at(k).empty())
+				plan.pads.at(k).pop_back();
 			else
 			{
-				plan.towers[k].pop_back();
-				plan.stocked[k].pop_back();
+				plan.towers.at(k).pop_back();
+				plan.stocked.at(k).pop_back();
 			}
 			++dropped;
 		}
+	}
 	return dropped;
 }
 
@@ -192,17 +243,19 @@ int evenTowerPlan(TowerPlan &plan)
 {
 	if (plan.towers.empty())
 		return 0;
-	size_t towers = plan.towers[0].size(), pads = plan.pads[0].size();
+	size_t towers = plan.towers.at(0).size(), pads = plan.pads.at(0).size();
 	for (size_t k = 0; k < plan.towers.size(); ++k)
 	{
-		towers = std::min(towers, plan.towers[k].size());
-		pads = std::min(pads, plan.pads[k].size());
+		::MapGeneration::generationCheckpoint();
+		towers = std::min(towers, plan.towers.at(k).size());
+		pads = std::min(pads, plan.pads.at(k).size());
 	}
 	for (size_t k = 0; k < plan.towers.size(); ++k)
 	{
-		plan.towers[k].resize(towers);
-		plan.stocked[k].resize(towers);
-		plan.pads[k].resize(pads);
+		::MapGeneration::generationCheckpoint();
+		plan.towers.at(k).resize(towers);
+		plan.stocked.at(k).resize(towers);
+		plan.pads.at(k).resize(pads);
 	}
 	return int(towers);
 }
@@ -222,8 +275,10 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 	if (context.telemetry.enabled())
 		for (size_t k = 0; k < plan.towers.size(); ++k)
 		{
-			context.telemetry.measure("towers.planned_towers", int(plan.towers[k].size()), int(k));
-			context.telemetry.measure("towers.planned_pads", int(plan.pads[k].size()), int(k));
+			::MapGeneration::generationCheckpoint();
+			context.telemetry.measure("towers.planned_towers", int(plan.towers.at(k).size()),
+									  int(k));
+			context.telemetry.measure("towers.planned_pads", int(plan.pads.at(k).size()), int(k));
 		}
 	if (goal)
 	{
@@ -232,22 +287,36 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 		std::vector<unsigned char> open(t.size(), 0);
 		for (int i = 0; i < t.size(); ++i)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int x = i % t.w, y = i / t.w;
-			open[i] =
-				map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+			open.at(i) = map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) &&
+						 map.getBuilding(x, y) == NOGBID;
 		}
 		std::vector<std::vector<int>> sources(teams);
 		for (int k = 0; k < teams; ++k)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dy = -1; dy <= 4; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 4; ++dx)
+				{
+					::MapGeneration::generationCheckpoint();
 					if (dx < 0 || dy < 0 || dx > 3 || dy > 3)
-						sources[k].push_back(t.at(context.bootX[k] + dx, context.bootY[k] + dy));
+						sources.at(k).push_back(t.at(context.bootX[k] + dx, context.bootY[k] + dy));
+				}
+			}
+		}
 		std::vector<std::vector<unsigned char>> goals(teams);
 		for (auto &g : goals)
 		{
+			::MapGeneration::generationCheckpoint();
 			g = *goal;
 			for (int i = 0; i < t.size(); ++i)
-				g[i] = g[i] && open[i];
+			{
+				::MapGeneration::generationCheckpoint();
+				g.at(i) = g.at(i) && open.at(i);
+			}
 		}
 		const int dropped = dropBlockingSites(t, plan, open, sources, goals);
 		context.telemetry.measure("towers.blocking_sites_dropped", dropped);
@@ -258,7 +327,10 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 	context.telemetry.measure("towers.equalized_towers_per_colony", towersPerColony);
 	if (context.telemetry.enabled())
 		for (size_t k = 0; k < plan.pads.size(); ++k)
-			context.telemetry.measure("towers.equalized_pads", int(plan.pads[k].size()), int(k));
+		{
+			::MapGeneration::generationCheckpoint();
+			context.telemetry.measure("towers.equalized_pads", int(plan.pads.at(k).size()), int(k));
+		}
 	if (towersPerColony < (everyColonyNeedsOne ? 1 : 0))
 	{
 		context.detail = "a colony has no room for its towers";
@@ -279,18 +351,28 @@ bool raiseTowers(Game &game, const TowerPlan &plan, int level)
 {
 	const Torus t(game.map);
 	for (size_t k = 0; k < plan.towers.size(); ++k)
-		for (size_t j = 0; j < plan.towers[k].size(); ++j)
+	{
+		::MapGeneration::generationCheckpoint();
+		for (size_t j = 0; j < plan.towers.at(k).size(); ++j)
 		{
-			const int site = plan.towers[k][j];
+			::MapGeneration::generationCheckpoint();
+			const int site = plan.towers.at(k).at(j);
 			std::vector<unsigned char> footprint(t.size(), 0);
 			for (int dy = 0; dy < 2; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = 0; dx < 2; ++dx)
-					footprint[t.at(site % t.w + dx, site / t.w + dy)] = 1;
+				{
+					::MapGeneration::generationCheckpoint();
+					footprint.at(t.at(site % t.w + dx, site / t.w + dy)) = 1;
+				}
+			}
 			// placeTower measures from the footprint's middle, so the site's middle finds it exactly.
 			if (placeTower(game, int(k), level, site % t.w + 1, site / t.w + 1, 1, footprint,
-						   plan.stocked[k][j] != 0) != site)
+						   plan.stocked.at(k).at(j) != 0) != site)
 				return false;
 		}
+	}
 	return true;
 }
 
@@ -298,11 +380,26 @@ std::vector<unsigned char> towerFootprints(const Torus &t, const TowerPlan &plan
 {
 	std::vector<unsigned char> tiles(t.size(), 0);
 	for (const auto *lists : {&plan.towers, &plan.pads})
+	{
+		::MapGeneration::generationCheckpoint();
 		for (const auto &sites : *lists)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int s : sites)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dy = 0; dy < 2; ++dy)
+				{
+					::MapGeneration::generationCheckpoint();
 					for (int dx = 0; dx < 2; ++dx)
-						tiles[t.at(s % t.w + dx, s / t.w + dy)] = 1;
+					{
+						::MapGeneration::generationCheckpoint();
+						tiles.at(t.at(s % t.w + dx, s / t.w + dy)) = 1;
+					}
+				}
+			}
+		}
+	}
 	return tiles;
 }
 } // namespace MapGeneration

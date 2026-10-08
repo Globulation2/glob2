@@ -2,6 +2,7 @@
 // sessions, moderation, realtime fan-out) from the API's injected services.
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Account } from '@glob2/db';
+import { AccountActivity } from '@glob2/core';
 import type { ApiServices } from './services.ts';
 import { AccountService } from './auth/accounts.ts';
 import { AdminService, hasRole, type Role } from './auth/admin.ts';
@@ -36,6 +37,7 @@ export interface SharedLimits {
 }
 
 export interface Identity {
+  activity: AccountActivity;
   keys: SigningKeys;
   accounts: AccountService;
   tokens: TokenService;
@@ -86,6 +88,7 @@ export function createIdentity(services: ApiServices): Identity {
   });
   const limits = config.instance.limits ?? {};
   return {
+    activity: new AccountActivity(db, config.instance.analytics?.collection !== false),
     keys,
     accounts,
     tokens,
@@ -226,6 +229,7 @@ export async function authenticate(
   const token = bearerToken(request);
   if (token) {
     const { account, claims } = await identity.tokens.verifyAccess(token);
+    authenticatedAccounts.set(request, account);
     return { account, via: 'bearer', familyId: claims.sid };
   }
   const cookie = request.cookies[sessionCookieName(identity)];
@@ -233,10 +237,34 @@ export async function authenticate(
     const account = await identity.webSessions.find(cookie);
     if (account) {
       requireSameOrigin(identity, request);
+      authenticatedAccounts.set(request, account);
       return { account, via: 'cookie' };
     }
   }
   return undefined;
+}
+
+export const authenticatedAccounts = new WeakMap<FastifyRequest, Account>();
+const administrativeRequests = new WeakSet<FastifyRequest>();
+
+/** Staff endpoints also live outside /admin; guards identify them structurally.
+ * Ancillary reads from the dashboard (such as the session lookup) are polling,
+ * while the same staff account using the game still counts as account activity. */
+export function isAdministrativeRequest(identity: Identity, request: FastifyRequest): boolean {
+  if (administrativeRequests.has(request) || request.url.startsWith('/api/v1/admin/')) return true;
+  const account = authenticatedAccounts.get(request),
+    referer = request.headers.referer;
+  if (!account || !hasRole(account, 'moderator') || request.method !== 'GET' || !referer)
+    return false;
+  try {
+    const url = new URL(referer);
+    return (
+      identity.allowedOrigins.has(url.origin) &&
+      (url.pathname === '/admin' || url.pathname.startsWith('/admin/'))
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function requireAccount(identity: Identity, request: FastifyRequest) {
@@ -248,5 +276,6 @@ export async function requireAccount(identity: Identity, request: FastifyRequest
 export async function requireRole(identity: Identity, request: FastifyRequest, role: Role) {
   const caller = await requireAccount(identity, request);
   if (!hasRole(caller.account, role)) throw apiError('forbidden', `Requires the ${role} role.`);
+  if (role !== 'user') administrativeRequests.add(request);
   return caller;
 }

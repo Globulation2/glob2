@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Channels.h"
 #include "Drawing.h"
 #include "Geometry.h"
@@ -88,6 +89,7 @@ RiverChoice bestRiverAcross(const Torus &t, GenerationContext &context, const st
 	const double across = vertical ? t.w : t.h;
 	for (int bed = 0; bed < beds; ++bed)
 	{
+		::MapGeneration::generationCheckpoint();
 		River candidate =
 			drawRiver(t, context, stream, vertical, across * (double(bed) + 0.5) / double(beds),
 					  style);

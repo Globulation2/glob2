@@ -410,6 +410,10 @@ const char *generationErrorName(GenerationError error)
 		return "placement_failed";
 	case GenerationError::InvalidWorld:
 		return "invalid_world";
+	case GenerationError::ScriptFailed:
+		return "script_failed";
+	case GenerationError::BudgetExceeded:
+		return "budget_exceeded";
 	}
 	return "unknown";
 }
@@ -421,7 +425,8 @@ J generationJson(const GenerationRequest *request, const GenerationResult *resul
 			 {"parameters", J()},
 			 {"telemetry", J()},
 			 {"reason", "Map/save files do not store the complete original generator request"}});
-	const auto *definition = GeneratorRegistry::builtins().find(request->method);
+	const auto *definition =
+		(request->catalog ? *request->catalog : GeneratorRegistry::active()).find(request->method);
 	std::vector<std::pair<std::string, J>> parameters, rawOptions;
 	for (const auto &entry : request->options)
 		rawOptions.push_back({entry.first, entry.second});
@@ -449,35 +454,39 @@ J generationJson(const GenerationRequest *request, const GenerationResult *resul
 	std::vector<J> legacyAmounts;
 	for (int n : request->resourceAmounts)
 		legacyAmounts.push_back(n);
-	return J::object(
-		{{"available", true},
-		 {"generator", result && !result->generatorId.empty() ? J(result->generatorId)
-					   : definition                           ? J(definition->id)
-															  : J()},
-		 {"legacy_id", request->method},
-		 {"revision", result       ? result->revision
-					  : definition ? definition->revision
-								   : 0},
-		 {"seed", request->seed},
-		 {"parameters", resolved ? J::object(parameters) : J()},
-		 {"raw_request", J::object({{"method", request->method},
-									{"width_exponent", request->wDec},
-									{"height_exponent", request->hDec},
-									{"teams", request->nbTeams},
-									{"workers", request->nbWorkers},
-									{"options", J::object(rawOptions)}})},
-		 {"legacy_terrain_type", int(request->terrainType)},
-		 {"legacy_resource_amounts", J::array(legacyAmounts)},
-		 {"telemetry", result ? telemetryJson(result->telemetry) : J()},
-		 {"outcome", result ? J::object({{"success", bool(*result)},
-										 {"stage", result->stage},
-										 {"error", generationErrorName(result->error)},
-										 {"detail", result->detail}})
-							: J()},
-		 {"selection_quality",
-		  result && *result && definition
-			  ? qualityJson(result->quality, {})
-			  : J()}});
+	return J::object({{"available", true},
+					  {"generator", result && !result->generatorId.empty() ? J(result->generatorId)
+									: definition                           ? J(definition->id)
+																		   : J()},
+					  {"legacy_id", request->method},
+					  {"revision", result       ? result->revision
+								   : definition ? definition->revision
+												: 0},
+					  {"seed", request->seed},
+					  {"package_hash", result       ? J(result->packageHash)
+									   : definition ? J(definition->packageHash)
+													: J()},
+					  {"api_version", result       ? result->apiVersion
+									  : definition ? definition->apiVersion
+												   : 0},
+					  {"toolkit_version", result && result->apiVersion ? 1 : 0},
+					  {"parameters", resolved ? J::object(parameters) : J()},
+					  {"raw_request", J::object({{"method", request->method},
+												 {"width_exponent", request->wDec},
+												 {"height_exponent", request->hDec},
+												 {"teams", request->nbTeams},
+												 {"workers", request->nbWorkers},
+												 {"options", J::object(rawOptions)}})},
+					  {"legacy_terrain_type", int(request->terrainType)},
+					  {"legacy_resource_amounts", J::array(legacyAmounts)},
+					  {"telemetry", result ? telemetryJson(result->telemetry) : J()},
+					  {"outcome", result ? J::object({{"success", bool(*result)},
+													  {"stage", result->stage},
+													  {"error", generationErrorName(result->error)},
+													  {"detail", result->detail}})
+										 : J()},
+					  {"selection_quality",
+					   result && *result && definition ? qualityJson(result->quality, {}) : J()}});
 }
 
 J movementReport(const Game &game, const StepCosts &costs,

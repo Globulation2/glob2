@@ -722,6 +722,7 @@ export class Studio {
           provenance: Record<string, unknown>;
         },
     error?: string,
+    recovery?: { actor: string; reason: string },
   ) {
     return this.db.transaction().execute(async (db) => {
       await this.lockWallet(db, row.account_id);
@@ -735,6 +736,8 @@ export class Studio {
           throw new Error('Expected a database row.');
         })();
       if (['ready', 'failed'].includes(current.status)) return;
+      if (recovery && current.status !== 'uncertain')
+        throw new HiveError('conflict', 'Only uncertain requests can be recovered.');
       if (current.lease !== row.lease)
         throw new HiveError('conflict', 'Studio worker lease expired.');
       let mapId: string | null = null,
@@ -776,6 +779,10 @@ export class Studio {
           db,
         );
       }
+      if (recovery)
+        await sql`INSERT INTO admin_audit_log(actor_account_id,action,target_type,target_id,details) VALUES(${recovery.actor},'map-studio.fail','map-studio-request',${row.id},${JSON.stringify({ reason: recovery.reason, from: { status: current.status, reserved: row.kind === 'generate' ? 1 : 0 }, to: { status: 'failed', reserved: 0, charged: 0 } })}::jsonb)`.execute(
+          db,
+        );
       await sql`UPDATE studio_requests SET status=${result ? 'ready' : 'failed'},charged=${!!charge},map_id=${mapId},map_hash=${mapHash},error=${error ?? null},completed_at=now(),lease_until=NULL WHERE id=${row.id}`.execute(
         db,
       );
