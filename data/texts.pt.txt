@@ -5604,6 +5604,30 @@ Minério de ferro
 Sílica
 [Cotton]
 Algodão
+[Jungle trees]
+Árvores da selva
+[Pine trees]
+Pinheiros
+[Dead trees]
+Árvores mortas
+[Ruins]
+Ruínas
+[Camp-site]
+Acampamento
+[Ancient debris]
+Destroços antigos
+[Scrub]
+Mato
+[Tall grass]
+Capim alto
+[Maize]
+Milho
+[Potatoes]
+Batatas
+[Rice]
+Arroz
+[Fish]
+Peixes
 [Reroll terrain look]
 Sortear novamente a aparência do terreno
 [boulders]

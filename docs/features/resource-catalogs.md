@@ -20,7 +20,9 @@ The installed definitions are `data/resources/registry.json`. Existing deposits
 are trees, wheat, papyrus, rocks, algae and cherry, orange and prune trees. Gold
 ore, iron ore, silica (a glass-yielding deposit, distinct from sand terrain) and
 cotton are supplied as an optional editor experiment; stock generators, building
-costs and service recipes do not use them. New material inventory rows appear
+costs and service recipes do not use them. A second editor experiment,
+`landscape-resources`, adds twelve map-making variants built only from existing
+materials and rules; see [Landscape resources](#landscape-resources). New material inventory rows appear
 only when a material is present in map sources, carried packets or inventory and
 the building uses that material.
 
@@ -199,6 +201,79 @@ python3 tools/artwork/package_runtime.py --check
 The tool needs NumPy, SciPy and Pillow, and it is deterministic, so an
 unchanged rerun reproduces the committed pixels. Only artwork changes; the
 registry, saves and simulation are unaffected.
+
+### Landscape resources
+
+The `landscape-resources` experiment gives map makers more variety without new
+mechanics: every entry is ordinary registry data over existing materials, and
+stock generators do not place them. Behaviour comes only from the fields above.
+
+| Key | Yields | Behaviour |
+| --- | --- | --- |
+| `jungle-trees` | wood | Like trees, faster growth; two looks per stage |
+| `pine-trees` | wood | Like trees, slower growth; two looks per stage |
+| `dead-trees` | wood 3 | No growth or spread; finite |
+| `ruins` | wood 4, metal 2 | Finite scavenge site |
+| `camp-site` | food 2, wood 2, fabric 1 | Finite scavenge site |
+| `ancient-debris` | metal 3, gold 2 | Finite scavenge site; same placement as the ore deposits |
+| `scrub` | wood 2 | Does not block walking; blocks building until cleared; slow spread |
+| `tall-grass` | wood 1 | Does not block walking; blocks building until cleared; spreads |
+| `maize` | food 4 | Farmable crop; faster growth, smaller stock |
+| `potatoes` | food 5 | Farmable crop; `uniform` ecology, so it grows steadily away from water |
+| `rice` | food 5 | Farmable crop; `shore` ecology, so it grows only near sandy coasts |
+| `fish` | food 5 | Aquatic; grows and spreads in shallow water (deep water never grows resources) |
+
+Scavenge sites start full, never grow and vanish once every yield is gone; their
+sprite shrinks with the total stock. Because no building consumes metal, gold or
+fabric yet, a site keeps its last pieces until a clearing area removes it.
+Two catalog-wide properties follow from the definitions rather than from placed
+deposits, so the set keeps them unchanged except where noted. Scavenge sites do
+not yield stone: a finite stone yield would make stone a mutable material source in
+every new map and give up its static-gradient cache. A material's habitat is the
+union of the habitats of every resource yielding it, and AI fertility, crop maps and
+generator checks read it; dead trees, camp-sites and ruins therefore need growth
+land like trees and wheat, and debris matches the ore deposits. Fish are the one
+deliberate exception: as an aquatic food they make water food habitat in every new
+map, which changes how the AIs read fertility.
+Farm areas replant the farmable crop next to each cell, so a maize or potato field
+keeps its crop; an empty field and a boundary with wheat use the lowest-ID crop,
+wheat. Fish are the first resource to use `animationFrames`: each stock level is
+twelve frames advanced every three ticks, so the animation pauses with the game.
+
+The sprites (`data/gfx/resource-<key><frame>.png`, with 4x HD frames) are painted
+by `tools/artwork/paint_landscape.py` in the classic pastel style: one frame per
+stock level, a second tree look five frames later, and twelve fish frames per
+level. Fish are tinted toward the water and translucent so they read as
+submerged. Preview, write and check as for the foundation deposits:
+
+```sh
+python3 tools/artwork/paint_landscape.py --sheet artifacts/landscape.png [names…]
+python3 tools/artwork/paint_landscape.py --sheet artifacts/water.png --ground terrain-water0 fish
+python3 tools/artwork/paint_landscape.py
+python3 tools/artwork/package_runtime.py --check
+```
+
+### Adding a built-in resource
+
+1. Add the entry to `data/resources/registry.json` with a `requiredExperiment`
+   (declare a new experiment in `experiments` if none fits). Only the eight legacy
+   resources are ungated. New keys sort after the legacy slots, so they can renumber
+   later gated resources in newly created maps; code must look resources up by key.
+   Keep stone a static source: a finite or growing stone yield anywhere in the
+   catalog makes stone mutable for every map (the `ResourceRegistry` suite checks this).
+   A new yield on a terrain where no existing resource yields that material widens
+   the material's habitat for every map, which is a simulation change.
+2. Paint its frames and HD frames with a deterministic tool under
+   `tools/artwork/`, run `package_runtime.py --check`, and credit the artwork in
+   `docs/assets/source-attribution.md`.
+3. Add `[<presentation name>]` to `data/texts.keys.txt` and every catalog listed in
+   `data/texts.list.txt` (blank when untranslated), and list it in
+   `data/texts.pending.txt` until every catalog translates it.
+4. Run the `ResourceRegistry`, `BrushCatalog`, `TerrainResources` and
+   `RuntimeResources` suites, `test/build_system/test_web_assets.py` and
+   `data/check_translations.py --strict`.
+5. Editing `registry.json` changes the simulation data hash and so the sim version
+   key; follow [Simulation version](../multiplayer/turn-protocol.md#simulation-version).
 
 ## Regression testing
 

@@ -5604,6 +5604,30 @@ Zlata ruda
 Kremen
 [Cotton]
 Bombaž
+[Jungle trees]
+
+[Pine trees]
+
+[Dead trees]
+
+[Ruins]
+
+[Camp-site]
+
+[Ancient debris]
+
+[Scrub]
+
+[Tall grass]
+
+[Maize]
+
+[Potatoes]
+
+[Rice]
+
+[Fish]
+
 [Reroll terrain look]
 Znova naključno izberi videz terena
 [boulders]

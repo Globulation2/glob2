@@ -124054,6 +124054,2790 @@
           "sha256": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
         }
       ]
+    },
+    {
+      "id": "resource-jungle-trees0",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees0.png",
+          "role": "base",
+          "sha256": "ba344e4c6cb438c5e89d239d86bbf1d366e0a1b697c016d5160b3bdde1034525",
+          "source_sha256": "ba344e4c6cb438c5e89d239d86bbf1d366e0a1b697c016d5160b3bdde1034525",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "5618ebde3dbf133857a4655bfe722099408185aae32b700f5ec823cef627cda1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees1",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees1.png",
+          "role": "base",
+          "sha256": "d256035168ff2f51d4106d5115a1d0cbf2ef4804c619db54700f56b78b79f464",
+          "source_sha256": "d256035168ff2f51d4106d5115a1d0cbf2ef4804c619db54700f56b78b79f464",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "24b6b467b530fcdee20b5c63eed5faa16843f1a1338b4b41eab927e4a5c5239c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees2",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees2.png",
+          "role": "base",
+          "sha256": "2efc39f3204acadc322b991fd87fe16e3fa718f47e80590a0578938f647467ed",
+          "source_sha256": "2efc39f3204acadc322b991fd87fe16e3fa718f47e80590a0578938f647467ed",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "b1ea04bba03433f824177af0f0477e0962173457c059213a844910d73a9f3702"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees3",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees3.png",
+          "role": "base",
+          "sha256": "63e902b67376a657d28c5b0892f923940e9a67b3e07cad0263d273f345163d0d",
+          "source_sha256": "63e902b67376a657d28c5b0892f923940e9a67b3e07cad0263d273f345163d0d",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "4a8754eeab8d1c39c0ce8aa9d342f0c3d96c6f8392be83b145346c44d2d69c12"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees4",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees4.png",
+          "role": "base",
+          "sha256": "4e7b15304c5da8e48b855dd7b0d64d3fa5419fec9a9cb05797b7d17c450bf1ec",
+          "source_sha256": "4e7b15304c5da8e48b855dd7b0d64d3fa5419fec9a9cb05797b7d17c450bf1ec",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "ad7f7bb75f914558a506ff089207cd45fd90d979bb0e3faf131ceacc02e5f4ff"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees5",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees5.png",
+          "role": "base",
+          "sha256": "8d46076bafec99667086e39728e48819ad473dfead276dce5c590287c21ed804",
+          "source_sha256": "8d46076bafec99667086e39728e48819ad473dfead276dce5c590287c21ed804",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "844c02bb7609475e05810550f8e3e60127b50f16ab4aac914cab9f4db11d8f01"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees6",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees6.png",
+          "role": "base",
+          "sha256": "275573bf66a00cee30f43aa0c9558c6fd5fc494e3ce011563ef07708c2393802",
+          "source_sha256": "275573bf66a00cee30f43aa0c9558c6fd5fc494e3ce011563ef07708c2393802",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "cd4b8608c5da7c117f37fc6e8fae5ae8270879c0430f4786c7f104b1efc6a73d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees7",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees7.png",
+          "role": "base",
+          "sha256": "94625f9ae5a9e4477af0bdc1198013dc108604a707cb671e0abd08168f08071a",
+          "source_sha256": "94625f9ae5a9e4477af0bdc1198013dc108604a707cb671e0abd08168f08071a",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "f8865f4685f6d31e7718ca6593c2c52d6f18a65c5d973d397d74892d01040f03"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees8",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees8.png",
+          "role": "base",
+          "sha256": "df7483b31741e707cebf12e297ed0d156b49f8bb8c2a504c9e186246628eabaf",
+          "source_sha256": "df7483b31741e707cebf12e297ed0d156b49f8bb8c2a504c9e186246628eabaf",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "e7ce5389a595b60f6010a76949e1b9d5fdeba13f3a88bd645a64787fc1cb132f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-jungle-trees9",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: jungle-trees",
+      "layers": [
+        {
+          "file": "resource-jungle-trees9.png",
+          "role": "base",
+          "sha256": "1b60e7efb78aab7583a20f31c16f800651540b322a986c87c192b92a9ee1de13",
+          "source_sha256": "1b60e7efb78aab7583a20f31c16f800651540b322a986c87c192b92a9ee1de13",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "e70538f35c6ba6229cf7b420bad97c6d16caaa91b4ec4295992dcf29312c2fc3"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees0",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees0.png",
+          "role": "base",
+          "sha256": "f66f2da40b95d40733f0e1c4fc4cfc650ab60b54304b6bb9b0bd5f2d576b652c",
+          "source_sha256": "f66f2da40b95d40733f0e1c4fc4cfc650ab60b54304b6bb9b0bd5f2d576b652c",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "e569d90f70dfe913e9772d344379876f3531b9db31b1d89334df24169c911d9c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees1",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees1.png",
+          "role": "base",
+          "sha256": "fcabf9176a815b90025ce62f34d8fb420a37d43998df63a2d971ae71f36675ca",
+          "source_sha256": "fcabf9176a815b90025ce62f34d8fb420a37d43998df63a2d971ae71f36675ca",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "dab948cdcdee5afa29dc907197e57deba73e3279796752c58bf24963e8a90ee0"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees2",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees2.png",
+          "role": "base",
+          "sha256": "49efd853fb9eecde0efe438909d1795b726b39d1721b6289fb705ed58ae036d6",
+          "source_sha256": "49efd853fb9eecde0efe438909d1795b726b39d1721b6289fb705ed58ae036d6",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "59917873b3e8e3d6dd82bb897368dec081da408104c61876eedecda4c1dfefaa"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees3",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees3.png",
+          "role": "base",
+          "sha256": "d020f4971f5791ea983ed5ec3b6771f5b2d7ff9052b05d3227feeef8686ad0df",
+          "source_sha256": "d020f4971f5791ea983ed5ec3b6771f5b2d7ff9052b05d3227feeef8686ad0df",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "44b2f5f93340f103c3e5cedba91dcf9ea73db4cb09aa0f298bcc9e7478010251"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees4",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees4.png",
+          "role": "base",
+          "sha256": "802f5056c6a5bbfb4d65daa7b3b320b070091a23170b8d3a5ed177ba76bcdd7e",
+          "source_sha256": "802f5056c6a5bbfb4d65daa7b3b320b070091a23170b8d3a5ed177ba76bcdd7e",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "5db15ff6049ccc82a2f2929ef86493cfcca80e4c65432df38db141e4a2e34611"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees5",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees5.png",
+          "role": "base",
+          "sha256": "11abc80e6205f4ff889e12c8c1fdeefa5e09ee27c26562c329e62c1ad775af75",
+          "source_sha256": "11abc80e6205f4ff889e12c8c1fdeefa5e09ee27c26562c329e62c1ad775af75",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "304a15c42c3003cbca7e95a5d2aff90554983398465c7703d4d6f87d687a9cd8"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees6",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees6.png",
+          "role": "base",
+          "sha256": "d71944983db346f369f5629238c520b5952e95d6549eb23ac8bb64f6a5069eb7",
+          "source_sha256": "d71944983db346f369f5629238c520b5952e95d6549eb23ac8bb64f6a5069eb7",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "e592087aa51f85295c9bae6b21e414f30e65fb8ebc910015b380e24a800afd60"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees7",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees7.png",
+          "role": "base",
+          "sha256": "046d2e825e6f2fb9ca79ca3f8a5de90c00a1e7ca6f528a9683390db9ee0402e6",
+          "source_sha256": "046d2e825e6f2fb9ca79ca3f8a5de90c00a1e7ca6f528a9683390db9ee0402e6",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "3bf62b2554979114a1efb7b536d2c4013fd98826fd2cd1d1a292b6298a594fe1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees8",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees8.png",
+          "role": "base",
+          "sha256": "88493ca7fda3c4d0ac4f6e8c2c04aa274a9043a14217b483c3afd9f102d4193b",
+          "source_sha256": "88493ca7fda3c4d0ac4f6e8c2c04aa274a9043a14217b483c3afd9f102d4193b",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "0820ee87d9d93d937594f488914e5e1739159797b8bc78530f97eaefb94ef3ce"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-pine-trees9",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: pine-trees",
+      "layers": [
+        {
+          "file": "resource-pine-trees9.png",
+          "role": "base",
+          "sha256": "a2987dc39ea33a143d06af0790805b3a6aa9f9d6a48847f9e2ba7bb260347f8e",
+          "source_sha256": "a2987dc39ea33a143d06af0790805b3a6aa9f9d6a48847f9e2ba7bb260347f8e",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "d6a54ab9dbc96d7fa188673f2a175f2d9d4fcd172e614070ebb614980412c498"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-dead-trees0",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: dead-trees",
+      "layers": [
+        {
+          "file": "resource-dead-trees0.png",
+          "role": "base",
+          "sha256": "d1dc330ca74076f6b43b12779957ab4e6815522fca50f8e9d719d630e5a8b303",
+          "source_sha256": "d1dc330ca74076f6b43b12779957ab4e6815522fca50f8e9d719d630e5a8b303",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "d5cacc4c278c0779841e94c3054c0a97f0ba1835941cccdb8029523b43cd25af"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-dead-trees1",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: dead-trees",
+      "layers": [
+        {
+          "file": "resource-dead-trees1.png",
+          "role": "base",
+          "sha256": "0bdf3414b6c19d68c6641e8210b1f6886c42949547f9e737dd8626eadd5359e1",
+          "source_sha256": "0bdf3414b6c19d68c6641e8210b1f6886c42949547f9e737dd8626eadd5359e1",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "a336a98d87438255da3e644306c0208bbaacf7f9cc9ebc51480201293f580d83"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-dead-trees2",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: dead-trees",
+      "layers": [
+        {
+          "file": "resource-dead-trees2.png",
+          "role": "base",
+          "sha256": "5b8ddd709107323ed5042a3dc0abd0f3ea3f80baef8ac6e882428f154cd94380",
+          "source_sha256": "5b8ddd709107323ed5042a3dc0abd0f3ea3f80baef8ac6e882428f154cd94380",
+          "logical_width": 40,
+          "logical_height": 44,
+          "original_sha256": "0015caeace3caaf4dbe0bfdbe52a7fd2b135d0049864191e1dcdda235dc81802"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ruins0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ruins",
+      "layers": [
+        {
+          "file": "resource-ruins0.png",
+          "role": "base",
+          "sha256": "e1376670d8b44162ed6b8389d6a9804db471851790bed4ca3e6554af4a489089",
+          "source_sha256": "e1376670d8b44162ed6b8389d6a9804db471851790bed4ca3e6554af4a489089",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "200d5bbc9a79a2b3fd730fa4e2dfce15ba873e87f6e971e210c0374b4b1f8973"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ruins1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ruins",
+      "layers": [
+        {
+          "file": "resource-ruins1.png",
+          "role": "base",
+          "sha256": "8c23c0c3587b12c5688e45ebd0470d2b6f2190567cf17ad19bacfd7afb37b6a0",
+          "source_sha256": "8c23c0c3587b12c5688e45ebd0470d2b6f2190567cf17ad19bacfd7afb37b6a0",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "2eada669f30dcac918cb309f58948ba62fcf89aa2a9c5f272d3471cdf7f032c3"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ruins2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ruins",
+      "layers": [
+        {
+          "file": "resource-ruins2.png",
+          "role": "base",
+          "sha256": "8184840a1ec3daab68d850fd7e0835f685629c3c5eac1a0e8a31a121437f362b",
+          "source_sha256": "8184840a1ec3daab68d850fd7e0835f685629c3c5eac1a0e8a31a121437f362b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "8b774120e9b2a2dddb23cded318c30b9ecdf03366a7f7afb3055d6ace5c0b527"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ruins3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ruins",
+      "layers": [
+        {
+          "file": "resource-ruins3.png",
+          "role": "base",
+          "sha256": "76da56725965915684b6d6e1ed24b644270a4420b24ed014cde55c98907a1652",
+          "source_sha256": "76da56725965915684b6d6e1ed24b644270a4420b24ed014cde55c98907a1652",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "2641d387c97ead365a74dd18bc816daa307e0e5e3a10203ad0949f868db47637"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ruins4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ruins",
+      "layers": [
+        {
+          "file": "resource-ruins4.png",
+          "role": "base",
+          "sha256": "3ed682843252e01eb720611b3a76eace02ea63bdeca50c68803f9ecec65a0094",
+          "source_sha256": "3ed682843252e01eb720611b3a76eace02ea63bdeca50c68803f9ecec65a0094",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1a6d7c45bdc61472c3c525fd020a701fe8a6e5b22cb8d965307f548832ef86c5"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ruins5",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ruins",
+      "layers": [
+        {
+          "file": "resource-ruins5.png",
+          "role": "base",
+          "sha256": "b4687097ba3993d89fc2152f267ba3503403ea4c2af75256d196e3308ad20b47",
+          "source_sha256": "b4687097ba3993d89fc2152f267ba3503403ea4c2af75256d196e3308ad20b47",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "d6a190a04c8bb54b561be75cb41fb2ddeb936e353e87cb5ae579915025ee1239"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-camp-site0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: camp-site",
+      "layers": [
+        {
+          "file": "resource-camp-site0.png",
+          "role": "base",
+          "sha256": "86afe8f0461806d4665119b36ca49b05548ce0cd7a8941931b6296cbac9c6c7b",
+          "source_sha256": "86afe8f0461806d4665119b36ca49b05548ce0cd7a8941931b6296cbac9c6c7b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "2ae87e689e61ae8392e4aaa4e2600fd59c585177e8f5142bc6477ec51a2f7c0f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-camp-site1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: camp-site",
+      "layers": [
+        {
+          "file": "resource-camp-site1.png",
+          "role": "base",
+          "sha256": "ab1bd4479ca6b28853e45dbfbfa420d6d0b46bf4f249b5697944c0baa5d684fe",
+          "source_sha256": "ab1bd4479ca6b28853e45dbfbfa420d6d0b46bf4f249b5697944c0baa5d684fe",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1b5fa9d7e403007d3e5371d49a59257148391ac6e3396f826fb142c20fbb2b4c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-camp-site2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: camp-site",
+      "layers": [
+        {
+          "file": "resource-camp-site2.png",
+          "role": "base",
+          "sha256": "6a71de36d9abc10c5e0c877a89c3efdec1b82d57fc98d1b6e174205bde533cfe",
+          "source_sha256": "6a71de36d9abc10c5e0c877a89c3efdec1b82d57fc98d1b6e174205bde533cfe",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "cee8815e9c247e4dd010d4ee6799c886ccfa4dc300f245784fe11bf97797e9bf"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-camp-site3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: camp-site",
+      "layers": [
+        {
+          "file": "resource-camp-site3.png",
+          "role": "base",
+          "sha256": "f5b60a9aac7b31d6e3157a48d2b623f7af81c888e8e54ba406a2f61a1c6b6e9c",
+          "source_sha256": "f5b60a9aac7b31d6e3157a48d2b623f7af81c888e8e54ba406a2f61a1c6b6e9c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "166d07f22820df919ba4bcd355197ab652169bbb6aa8ff1033aa8165fca9a726"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-camp-site4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: camp-site",
+      "layers": [
+        {
+          "file": "resource-camp-site4.png",
+          "role": "base",
+          "sha256": "7606b1a2ffd7dc3dd6b8446b25ce106af6050d834a6c44b43d675a5f1cea2a69",
+          "source_sha256": "7606b1a2ffd7dc3dd6b8446b25ce106af6050d834a6c44b43d675a5f1cea2a69",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "8cfd079d17364fb9bee3ee7035b43b28b74f603492c8400f040bbafa63934dd1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ancient-debris0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ancient-debris",
+      "layers": [
+        {
+          "file": "resource-ancient-debris0.png",
+          "role": "base",
+          "sha256": "e3c860b48f48e8c9a6ed21f43c8c5a478600ab90a41e3463c6c307eba2598c7c",
+          "source_sha256": "e3c860b48f48e8c9a6ed21f43c8c5a478600ab90a41e3463c6c307eba2598c7c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "48f6a27b7be120e9fa1f9710d49aa4e31a4c474e445727d10a51f1ee677179dd"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ancient-debris1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ancient-debris",
+      "layers": [
+        {
+          "file": "resource-ancient-debris1.png",
+          "role": "base",
+          "sha256": "9a6f6a0fafe66734d39e17c057a72c736a95be9b0c81d1dddc519cc499d73880",
+          "source_sha256": "9a6f6a0fafe66734d39e17c057a72c736a95be9b0c81d1dddc519cc499d73880",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "4b2b0daf5f30daf88623d70bf6b9dd6eaf4d159f8101d403dbbe87b423e3519d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ancient-debris2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ancient-debris",
+      "layers": [
+        {
+          "file": "resource-ancient-debris2.png",
+          "role": "base",
+          "sha256": "abbddcd04608dc839d1ef94f817db8865662bd684f7699301a23db04ec446a57",
+          "source_sha256": "abbddcd04608dc839d1ef94f817db8865662bd684f7699301a23db04ec446a57",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "69e8a3cecc5ac7298c45a71aa32a1a766200f876e8ae69cfe0dd85f21c38ca52"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ancient-debris3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ancient-debris",
+      "layers": [
+        {
+          "file": "resource-ancient-debris3.png",
+          "role": "base",
+          "sha256": "fea808dec05da1b7c828d7285c5383ddd5b0f464e6e0f242766c36ea8913d6ab",
+          "source_sha256": "fea808dec05da1b7c828d7285c5383ddd5b0f464e6e0f242766c36ea8913d6ab",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "0407c88c271cceb79cbfc40ca7d377d4e2c76f10c8c29059e8b4a2666dc6a5c7"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-ancient-debris4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: ancient-debris",
+      "layers": [
+        {
+          "file": "resource-ancient-debris4.png",
+          "role": "base",
+          "sha256": "495a10675a2e5d44828876e4d1f18e3507203b12d36d51072df2f6454366b92e",
+          "source_sha256": "495a10675a2e5d44828876e4d1f18e3507203b12d36d51072df2f6454366b92e",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "810ea6a997848024157eedb4a27d17926b75be7c530908a9086053b209c2c6d4"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-scrub0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: scrub",
+      "layers": [
+        {
+          "file": "resource-scrub0.png",
+          "role": "base",
+          "sha256": "11724cdc11ed50f0af5c8c8edfcd814a0d0111f61c571b1548bd8c2155ea611f",
+          "source_sha256": "11724cdc11ed50f0af5c8c8edfcd814a0d0111f61c571b1548bd8c2155ea611f",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "eff001a052d1a09f41892e7eef9f8ca05a3f3d9e126187b7c3344928ff784418"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-scrub1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: scrub",
+      "layers": [
+        {
+          "file": "resource-scrub1.png",
+          "role": "base",
+          "sha256": "09e94dcc2f5fd06e5a2e87db881d8ff11ff7ca43b5aba71bd1e5f38282399931",
+          "source_sha256": "09e94dcc2f5fd06e5a2e87db881d8ff11ff7ca43b5aba71bd1e5f38282399931",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "cee236201beb88db153072f4de9538690fdf79bce089512d759f08210e0449f4"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-tall-grass0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: tall-grass",
+      "layers": [
+        {
+          "file": "resource-tall-grass0.png",
+          "role": "base",
+          "sha256": "f62edb872795f603506a373ac97f1109ead64f72b894be03c14da7f0594086e5",
+          "source_sha256": "f62edb872795f603506a373ac97f1109ead64f72b894be03c14da7f0594086e5",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9a2577d2570a3f14d1b63a12fd172a9cf6fe152cc5c3b6a70a3e3cb750478f76"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-maize0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: maize",
+      "layers": [
+        {
+          "file": "resource-maize0.png",
+          "role": "base",
+          "sha256": "94becb3ab8e909a5bc518beb584fe25cdfea61f2fed003e149df1314b2a378b8",
+          "source_sha256": "94becb3ab8e909a5bc518beb584fe25cdfea61f2fed003e149df1314b2a378b8",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "407d6f5e8609680e6b50156d49db32ae42c4b24eff21030c10297f264f1c38a6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-maize1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: maize",
+      "layers": [
+        {
+          "file": "resource-maize1.png",
+          "role": "base",
+          "sha256": "7ce566d184ee494c5b1f79b18fd0d5637413e9949f875f3e812451d5389814ac",
+          "source_sha256": "7ce566d184ee494c5b1f79b18fd0d5637413e9949f875f3e812451d5389814ac",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "7e7575417e1108f7221bdb070b60969935050621e1913c8494c383c789573e22"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-maize2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: maize",
+      "layers": [
+        {
+          "file": "resource-maize2.png",
+          "role": "base",
+          "sha256": "464040b79bf58097780fb44db508609f2fd49495275e5ffe0edb2905d4f50b71",
+          "source_sha256": "464040b79bf58097780fb44db508609f2fd49495275e5ffe0edb2905d4f50b71",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9e5b37d6339243e3077e68f232b3e5ca7babfe8e80744c150ddeedebc44a77c8"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-maize3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: maize",
+      "layers": [
+        {
+          "file": "resource-maize3.png",
+          "role": "base",
+          "sha256": "1071007cfde05be56360907e27970c6c92b2b3e4fd2d72d1ce577031fa122390",
+          "source_sha256": "1071007cfde05be56360907e27970c6c92b2b3e4fd2d72d1ce577031fa122390",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "2b886b2383df0b7de2e54d9be2eba367f5acc009f481b52a5a8d2133359f4ce6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-potatoes0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: potatoes",
+      "layers": [
+        {
+          "file": "resource-potatoes0.png",
+          "role": "base",
+          "sha256": "3cc2760148a0a61d254eefc28a74abd8a7654ccd695affd74fcea9889c9562d3",
+          "source_sha256": "3cc2760148a0a61d254eefc28a74abd8a7654ccd695affd74fcea9889c9562d3",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "995bd93a45b67b2764badcee1581ea7539fb19038d93449032c212cfe709cd52"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-potatoes1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: potatoes",
+      "layers": [
+        {
+          "file": "resource-potatoes1.png",
+          "role": "base",
+          "sha256": "d1688c3248f894ec175783be0e21cf5960bca2b8815c6c53b5987334e815299d",
+          "source_sha256": "d1688c3248f894ec175783be0e21cf5960bca2b8815c6c53b5987334e815299d",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "bf14e704fa3485a2d6e718f1c4f811df6078b9544cfe2a6eb48da5908a56858d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-potatoes2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: potatoes",
+      "layers": [
+        {
+          "file": "resource-potatoes2.png",
+          "role": "base",
+          "sha256": "7a6d2db9ef56982929742d18c059d0a1e30896f13e6650e73d5ebf4dd47e824e",
+          "source_sha256": "7a6d2db9ef56982929742d18c059d0a1e30896f13e6650e73d5ebf4dd47e824e",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "72cd01e7c422ff126c1f67cf3c3a0f9d7a944c78b9386391b54ccaf8351a2bc7"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-potatoes3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: potatoes",
+      "layers": [
+        {
+          "file": "resource-potatoes3.png",
+          "role": "base",
+          "sha256": "4d65a49f60183859de888b81d7cef360c831301d2a601f786b1a1fb1566a1989",
+          "source_sha256": "4d65a49f60183859de888b81d7cef360c831301d2a601f786b1a1fb1566a1989",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "6a00119a59f6ac2bb443a45d3cc520c075e72a86220e7db4bde5548094a37e7e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-potatoes4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: potatoes",
+      "layers": [
+        {
+          "file": "resource-potatoes4.png",
+          "role": "base",
+          "sha256": "477a1e4d4402cb154ff04862bc6bb56fe29ab0aeb7036c0a8785402a4e0ae804",
+          "source_sha256": "477a1e4d4402cb154ff04862bc6bb56fe29ab0aeb7036c0a8785402a4e0ae804",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "6790ecca6e38a95e3ccce898c0dabec68154eb10fbc164ce373abb4ce1f4c44f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-rice0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: rice",
+      "layers": [
+        {
+          "file": "resource-rice0.png",
+          "role": "base",
+          "sha256": "2005a90a2219b34efd7cbfd1846d06ce524ae152c52660cb92711b8c8682cbcf",
+          "source_sha256": "2005a90a2219b34efd7cbfd1846d06ce524ae152c52660cb92711b8c8682cbcf",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "b639cf2944c1486ebcb409420ef382544c9f3bd48ca2dfeb8d4a2a5791d449b5"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-rice1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: rice",
+      "layers": [
+        {
+          "file": "resource-rice1.png",
+          "role": "base",
+          "sha256": "47fdd9ec9772e79d2f0f7ab549d6f2a4e692846ce1945d63f08cd32fd708e43e",
+          "source_sha256": "47fdd9ec9772e79d2f0f7ab549d6f2a4e692846ce1945d63f08cd32fd708e43e",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1fd6a7db88516a083c3c2a692d1ca28bd65253abf94b352a79737fdaa6f5867a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-rice2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: rice",
+      "layers": [
+        {
+          "file": "resource-rice2.png",
+          "role": "base",
+          "sha256": "c6ecc7a179f88e7161ef79de57cb393d1458fd65ca522783a659322dc2a4f402",
+          "source_sha256": "c6ecc7a179f88e7161ef79de57cb393d1458fd65ca522783a659322dc2a4f402",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "84962fbf8a790c9098123aad6586559fed25bdefeaeb04021190472382376cf1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-rice3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: rice",
+      "layers": [
+        {
+          "file": "resource-rice3.png",
+          "role": "base",
+          "sha256": "6bd762a9af10026ba05eb1365b9e784384067179422bdccd1a1cb8a2e5c620f2",
+          "source_sha256": "6bd762a9af10026ba05eb1365b9e784384067179422bdccd1a1cb8a2e5c620f2",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "46376f30fd858a37aa090809377cde9e0dd3b9d33cf027cf59794e7d9e67d49b"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-rice4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: rice",
+      "layers": [
+        {
+          "file": "resource-rice4.png",
+          "role": "base",
+          "sha256": "e9dcaf209ee89bca9d77954eb484798f1dcfb4f71f942f3c9ca788e7ccabd76f",
+          "source_sha256": "e9dcaf209ee89bca9d77954eb484798f1dcfb4f71f942f3c9ca788e7ccabd76f",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e56464982bffd4bdfa7210be9ed47410e7f0233bc6cc568bb6201cca2caabbe8"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish0.png",
+          "role": "base",
+          "sha256": "45432de90baa8d37cd30f81ea4143ddf569b2bd1afb810feaa23c8ff73787750",
+          "source_sha256": "45432de90baa8d37cd30f81ea4143ddf569b2bd1afb810feaa23c8ff73787750",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "208266ada95a3af1533561850701a5c8fad7f489fac4b828f35ec65fe7fda65a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish1.png",
+          "role": "base",
+          "sha256": "cd6673bb80d9c7fd4a44d8f5c0b59270362b601ec69bde3c3ce2b2fa56ff8635",
+          "source_sha256": "cd6673bb80d9c7fd4a44d8f5c0b59270362b601ec69bde3c3ce2b2fa56ff8635",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "01b50c54a1669be9616a73156880b6e218f1ff9794150d6b10bfccc9de2e5219"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish2.png",
+          "role": "base",
+          "sha256": "7e3bcfe4005521eeed53f8449a1d0873d51b4d0e7b3fc42437a16a4a6072b773",
+          "source_sha256": "7e3bcfe4005521eeed53f8449a1d0873d51b4d0e7b3fc42437a16a4a6072b773",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e525457538bd9085ce6e45a5f8689b9dba958a178f28093311d02e5f78f9de40"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish3.png",
+          "role": "base",
+          "sha256": "ef597e10dec3b7b66f6daba53afe0750113ce2e754352cd33e4360546d0e93ce",
+          "source_sha256": "ef597e10dec3b7b66f6daba53afe0750113ce2e754352cd33e4360546d0e93ce",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "cc5ce816ab332809a007e02292adb9b602dde5d91b08f5139f089e2c7f416c70"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish4.png",
+          "role": "base",
+          "sha256": "86f13368374f3c1e166c37cdb98b750ede82d83d5ef178d71a0f81bd91e4cab4",
+          "source_sha256": "86f13368374f3c1e166c37cdb98b750ede82d83d5ef178d71a0f81bd91e4cab4",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "7a9f3a6680ca5efcd65402f0a93719e9ef2794eb1397127cd8b9abe4b06eb89a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish5",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish5.png",
+          "role": "base",
+          "sha256": "c1c30499502fcc133398a91e6ebf5385b67f79d383accc533b76f3b3e65c6e9b",
+          "source_sha256": "c1c30499502fcc133398a91e6ebf5385b67f79d383accc533b76f3b3e65c6e9b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "c7c3ad1f938672e0dbd8a251a4f4144caefaa75da3089b6171ce761f1b07bad5"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish6",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish6.png",
+          "role": "base",
+          "sha256": "177f636be541588ffa0c97b179a2b0ba7fcd776401ad2141a052bd5c66ae2810",
+          "source_sha256": "177f636be541588ffa0c97b179a2b0ba7fcd776401ad2141a052bd5c66ae2810",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "520a25676f220e72fc9ea6a31a8ecb0af9bb69946a7d42a7244cd6f420c41b1b"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish7",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish7.png",
+          "role": "base",
+          "sha256": "5ac7081e0e35ddd9d463b79b4108167599854345b8bfd225dc4255769bac8f04",
+          "source_sha256": "5ac7081e0e35ddd9d463b79b4108167599854345b8bfd225dc4255769bac8f04",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1f1ca2f653873a5e6c8b911d93971588bc5fa485056ae9cb9566ee5032f00b5e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish8",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish8.png",
+          "role": "base",
+          "sha256": "8d11fb3af41eca10af678a6f425f20a0dfd0f6eeb0646b21f3d2846419fbaddc",
+          "source_sha256": "8d11fb3af41eca10af678a6f425f20a0dfd0f6eeb0646b21f3d2846419fbaddc",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "cb96e56c2f2dc88ca3a241e6dea640ee3f3fce7e1f38b7321c990cac6c6929c3"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish9",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish9.png",
+          "role": "base",
+          "sha256": "ad3aca651d25f06b7a61d0405e8dd4616ba1a9bf7f16abb88301b5b87a4a9689",
+          "source_sha256": "ad3aca651d25f06b7a61d0405e8dd4616ba1a9bf7f16abb88301b5b87a4a9689",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "34eef9ae00af11b6bb9fc572e2544f30afc15013da962965cbe93bcdfe4ea205"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish10",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish10.png",
+          "role": "base",
+          "sha256": "a38a7b1f25401c024287db948f80a618f13c1c41710c6d91a402f0708546d53d",
+          "source_sha256": "a38a7b1f25401c024287db948f80a618f13c1c41710c6d91a402f0708546d53d",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "94fc91eb1d9810a4b69b3a571000f5404c2089491c69e36f9ec6b0719edacb38"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish11",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish11.png",
+          "role": "base",
+          "sha256": "4a8b46bb96e3166faa1032c526ab0f519407a4cd323d993911c92cab4ec91d65",
+          "source_sha256": "4a8b46bb96e3166faa1032c526ab0f519407a4cd323d993911c92cab4ec91d65",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "223e5dbbf45a6fa15cbe7317fabfb141818c984a65a8044292e668049e5d105e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish12",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish12.png",
+          "role": "base",
+          "sha256": "8786bf520758db4af575283b21d0877aa36a78f6eeaf00ffe5d24db7fa2f88f3",
+          "source_sha256": "8786bf520758db4af575283b21d0877aa36a78f6eeaf00ffe5d24db7fa2f88f3",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "80cda33cd45c46e894245dc646835f28a1c1c8aa128ea234bd974305126199ba"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish13",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish13.png",
+          "role": "base",
+          "sha256": "8cbda2d421c5f59072934b4b1c0085986a87c82b11b99e7fd41d9e645f871ef8",
+          "source_sha256": "8cbda2d421c5f59072934b4b1c0085986a87c82b11b99e7fd41d9e645f871ef8",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "13279041c2839d3189a05c2e0a7e9cfae75d5f8be0541957dcee36ff4306e9a6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish14",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish14.png",
+          "role": "base",
+          "sha256": "5aa0a46259117a9ee7314c8f801be1a4000ce318de38ee3377d487c5cefc2408",
+          "source_sha256": "5aa0a46259117a9ee7314c8f801be1a4000ce318de38ee3377d487c5cefc2408",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "f5efce264bf1a7e7ce1eaf9a80d6f21a56fcc81053e0508de986f71ade039624"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish15",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish15.png",
+          "role": "base",
+          "sha256": "b443c0e80cb91538107799fd28b602c2860c783a7faea5fb390a0b612b10355b",
+          "source_sha256": "b443c0e80cb91538107799fd28b602c2860c783a7faea5fb390a0b612b10355b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "26a002d850bda85a952776563fe48a860fc1621e8a80bf7ca72f11f25fe01c45"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish16",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish16.png",
+          "role": "base",
+          "sha256": "cf5db8897d8c20651f3604bb4b9d121908367734ec5156700d81034842bf3302",
+          "source_sha256": "cf5db8897d8c20651f3604bb4b9d121908367734ec5156700d81034842bf3302",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "4801fe3b3bac91e9bd3bdce90088c74fb2c67080a066a98730ee745139c58d30"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish17",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish17.png",
+          "role": "base",
+          "sha256": "f00221542e3c099fb64b880d16eeb6ea5bd4ebe5c7f53982a74fbc4e91623bf6",
+          "source_sha256": "f00221542e3c099fb64b880d16eeb6ea5bd4ebe5c7f53982a74fbc4e91623bf6",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "432a59f3882da487617ea488c841781c030e196690222ca68f2761adeefd7f24"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish18",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish18.png",
+          "role": "base",
+          "sha256": "9441b403cb4c2f75b6c25cdaf84d85d710b18190a9afcb949e686e17d0d27fbe",
+          "source_sha256": "9441b403cb4c2f75b6c25cdaf84d85d710b18190a9afcb949e686e17d0d27fbe",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "0830a94e01726d7faa4ad9311e8520df4596f06344f076cc88c0a3ac84e79ea0"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish19",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish19.png",
+          "role": "base",
+          "sha256": "df068d874dc747420c8874c93d61012de133e52c59cee2fbae44768b1aac66c0",
+          "source_sha256": "df068d874dc747420c8874c93d61012de133e52c59cee2fbae44768b1aac66c0",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "f94ff14316933ba2cf7f23d3f93e50271109a23587f8abd8d514de8c16ead25c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish20",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish20.png",
+          "role": "base",
+          "sha256": "e703f999181ef75f5c0cbe7e23e63339926bda65f82c695aad4b4330a1009365",
+          "source_sha256": "e703f999181ef75f5c0cbe7e23e63339926bda65f82c695aad4b4330a1009365",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "d9381d1490762f5acaa777de9ac819cb5a8d9128b3db1e278b2bc215e8eed379"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish21",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish21.png",
+          "role": "base",
+          "sha256": "4268e434990e899b8e06816c9bca8e89339c8f625f9386a1afc3ab060c5ba1e9",
+          "source_sha256": "4268e434990e899b8e06816c9bca8e89339c8f625f9386a1afc3ab060c5ba1e9",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "5933ed01e1b68ee1aff47a6f089e32209586707afc2f47c9df10054dca40b19f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish22",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish22.png",
+          "role": "base",
+          "sha256": "9eabd7e7fddfdf8cdb16a4465ec12cf3b667dd264de41f99d4c6dfbe2b8454d3",
+          "source_sha256": "9eabd7e7fddfdf8cdb16a4465ec12cf3b667dd264de41f99d4c6dfbe2b8454d3",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "fef272580bad2595004f637b90419760a9936e6a98480107782ba6a4ac998055"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish23",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish23.png",
+          "role": "base",
+          "sha256": "d451bda003af5190b8cf6d83b82385ede1b4f30b5e5d8a8210e9a75c5a54be0d",
+          "source_sha256": "d451bda003af5190b8cf6d83b82385ede1b4f30b5e5d8a8210e9a75c5a54be0d",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "786b339d18914bc72d7ba52dcdbfbfa4450d1a5c2db51fb74a5827dfd0dee454"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish24",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish24.png",
+          "role": "base",
+          "sha256": "66bdc943211a4e867e299e0bf264998ccb991d497082353d7a7225eeef749e9a",
+          "source_sha256": "66bdc943211a4e867e299e0bf264998ccb991d497082353d7a7225eeef749e9a",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "25e3c1d24ba85475ba810e82cd3828efa826eb234b319f7ea807afc109653c3f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish25",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish25.png",
+          "role": "base",
+          "sha256": "b4347042c001084b315127a09a212ba44cc27bbb6c599d6570dae24c07731c14",
+          "source_sha256": "b4347042c001084b315127a09a212ba44cc27bbb6c599d6570dae24c07731c14",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "15047851be8dacc81dcec559ec96ffc9469444ddb28d91ba495526a3964de3cd"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish26",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish26.png",
+          "role": "base",
+          "sha256": "d8dff1c7321c8643d13b5fc3db69912a0456cd4ed914913a24bdbea1b57976fb",
+          "source_sha256": "d8dff1c7321c8643d13b5fc3db69912a0456cd4ed914913a24bdbea1b57976fb",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "c17d5c00003857a6606b8f5177898a6462e70cef782343f1af8b6b9aacc20464"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish27",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish27.png",
+          "role": "base",
+          "sha256": "2565769c597ae3070c9cf61e34a637d528a676b9896c99177443cbe5b8fa982c",
+          "source_sha256": "2565769c597ae3070c9cf61e34a637d528a676b9896c99177443cbe5b8fa982c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "0efa027ad51ca1a8cb69fc6b50d277ec42e0f39f40e31f4f61ef1943676ebc86"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish28",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish28.png",
+          "role": "base",
+          "sha256": "286d6892d978b126cc97339fbcf1446a157bdd1c1da6cb68d1309f2d7f2aa427",
+          "source_sha256": "286d6892d978b126cc97339fbcf1446a157bdd1c1da6cb68d1309f2d7f2aa427",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "a18fc1c8826625bee343e83f62e9556768642fc91d593eaf6e3d8b31442073d0"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish29",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish29.png",
+          "role": "base",
+          "sha256": "946c9470d49a5f381c4c899b12ded006f373de52a5f88e744c7182857177b93b",
+          "source_sha256": "946c9470d49a5f381c4c899b12ded006f373de52a5f88e744c7182857177b93b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "fdb89d2466f2b00843619d284e5445080beee31387f30291abec6af14be03d37"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish30",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish30.png",
+          "role": "base",
+          "sha256": "1bc0a59a365a9812bc9539f65e6a416e1a43b3f3082fe3570796b99ba1c1cb21",
+          "source_sha256": "1bc0a59a365a9812bc9539f65e6a416e1a43b3f3082fe3570796b99ba1c1cb21",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "79754f73c800ac63a22d4825d1b6464fb5866f5ce98ff2cf5474cb8b6dea18d8"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish31",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish31.png",
+          "role": "base",
+          "sha256": "492925db26b9e0cff07650852f5ccfaf45c2cdae552c28bf78332dac4d9a897b",
+          "source_sha256": "492925db26b9e0cff07650852f5ccfaf45c2cdae552c28bf78332dac4d9a897b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "7fd2c6c7cad229bb7579444c362cfe05b503852e22ccd3f61e8ceadfe9460f6d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish32",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish32.png",
+          "role": "base",
+          "sha256": "eca8536d283224f5b4da814d9653c957fc6be18f977893f2782692db295bacfd",
+          "source_sha256": "eca8536d283224f5b4da814d9653c957fc6be18f977893f2782692db295bacfd",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "4f3797d07f2fa1c9798a18584de7c3bb5645d81ae46b3700cb57bd4d049af86a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish33",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish33.png",
+          "role": "base",
+          "sha256": "fcf827c0acad83d30d887497a2e3f6dbdeb7e33d02a94aa0559f5aea7f4e84aa",
+          "source_sha256": "fcf827c0acad83d30d887497a2e3f6dbdeb7e33d02a94aa0559f5aea7f4e84aa",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e4cf03ca2a29566b1a2d034cfad80357147c0195018d0e095a44b662930ef10f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish34",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish34.png",
+          "role": "base",
+          "sha256": "17f8ec99305e7614a5b64e6d868b0623cd01f46ac17a579ede9574d58bb66d55",
+          "source_sha256": "17f8ec99305e7614a5b64e6d868b0623cd01f46ac17a579ede9574d58bb66d55",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "812962ee49fa250d3c954c8e2b1d9d910508645f7398976086fa1c76ddf5b466"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish35",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish35.png",
+          "role": "base",
+          "sha256": "b487f00ae950a4b7ae3483b22af23b892e69108f34f86e633b9f867190cfc9af",
+          "source_sha256": "b487f00ae950a4b7ae3483b22af23b892e69108f34f86e633b9f867190cfc9af",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "a93118b95c325fbf00c86b15d5e3e11af9ba0708affa962ea9798e2ca6033aaf"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish36",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish36.png",
+          "role": "base",
+          "sha256": "fe908ee1ec2dd966c7325695a555747d20e658176673b0f8a95cd192eb811e12",
+          "source_sha256": "fe908ee1ec2dd966c7325695a555747d20e658176673b0f8a95cd192eb811e12",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "bae1f0a4bcb57e067c836c70b3d231852095ad30777cc4788e06ec8b6d6a0354"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish37",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish37.png",
+          "role": "base",
+          "sha256": "8059973d99e337470840779a508e642f263c30254ed44bc5e35193dac40e3f31",
+          "source_sha256": "8059973d99e337470840779a508e642f263c30254ed44bc5e35193dac40e3f31",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e96cab905d364d46d12492c39b6a2e933cfe1eefe89b5a435a74dce35c6cf5c6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish38",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish38.png",
+          "role": "base",
+          "sha256": "387918b9011dcaf88513e9f6a5d8dc0c96333aea0c8b5b1bf02ed6de4636fc1a",
+          "source_sha256": "387918b9011dcaf88513e9f6a5d8dc0c96333aea0c8b5b1bf02ed6de4636fc1a",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "ef5b270e2b57e15df44bdf09b18712b9297e25e3286837a5fe8e6047ee2dcd3d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish39",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish39.png",
+          "role": "base",
+          "sha256": "451db00c23ecc94198976309a6a0541bbc2bb11b9136f261dd0783da74a667f3",
+          "source_sha256": "451db00c23ecc94198976309a6a0541bbc2bb11b9136f261dd0783da74a667f3",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "32f93eb1b1f8db9901203e8ea342c501822ca6c31ae236ffda378d1d2c7b3d26"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish40",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish40.png",
+          "role": "base",
+          "sha256": "6264e7e8322cab1bcbefc85b10e5f38e76fd9b396d208909a39e80a45ba46d7c",
+          "source_sha256": "6264e7e8322cab1bcbefc85b10e5f38e76fd9b396d208909a39e80a45ba46d7c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "260f54dc07e33164eed8918dbf44bcf172774294523b3a5dec31ea4bcf488d8e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish41",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish41.png",
+          "role": "base",
+          "sha256": "6efa18a04d0009a1c7a972b85ded2e750d77e878511644a74f5bda1abc680d0f",
+          "source_sha256": "6efa18a04d0009a1c7a972b85ded2e750d77e878511644a74f5bda1abc680d0f",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1d0c76b81487627a7dbc1ef6c06bcf4e2b2e1868685004ac6229f6b5fe7a1db5"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish42",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish42.png",
+          "role": "base",
+          "sha256": "d4106a589f78665e6d642ca201b166c3aacd21244a8f5b5a52235362d6cee75a",
+          "source_sha256": "d4106a589f78665e6d642ca201b166c3aacd21244a8f5b5a52235362d6cee75a",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "534229b0b73cde5fc2cc61b7f2e13f13a940a6aafbe59fec3db6150c6787c293"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish43",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish43.png",
+          "role": "base",
+          "sha256": "a5ac1d8eb61818bcc278d67c1a9c073c075e5bd53250d09380b6fe950d563ee3",
+          "source_sha256": "a5ac1d8eb61818bcc278d67c1a9c073c075e5bd53250d09380b6fe950d563ee3",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "5ac075998137d6f099569d69be26dd08a4f908c4bde27036be76b0f367554793"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish44",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish44.png",
+          "role": "base",
+          "sha256": "266ae60497e811166f8d8bc5ab26c8975b45e0b38300b7300f47f89e5e4d6590",
+          "source_sha256": "266ae60497e811166f8d8bc5ab26c8975b45e0b38300b7300f47f89e5e4d6590",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "3349c240b7452d1b9af8969e1276e97f8d785350c5c88480c52514c4a70254c2"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish45",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish45.png",
+          "role": "base",
+          "sha256": "012761c019a84a3c2174664dc1f18b5137e8325eb65c17ca961fffe448a59c0c",
+          "source_sha256": "012761c019a84a3c2174664dc1f18b5137e8325eb65c17ca961fffe448a59c0c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "65ea990cd088e744a24b212cdf25071336cb2c205244aa8a2ad9b569f648848c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish46",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish46.png",
+          "role": "base",
+          "sha256": "a8687fd970980354fd39f24def2bab241cf7471df50f890b2403a45b91b89ded",
+          "source_sha256": "a8687fd970980354fd39f24def2bab241cf7471df50f890b2403a45b91b89ded",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "8a8c861cf90064eae92547321eddbaeeb57d1793f5cd876b36044075d1f69983"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish47",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish47.png",
+          "role": "base",
+          "sha256": "74643a0aa101dad386377e51c07b78497f6051009c688c4b3579987201e5ed5d",
+          "source_sha256": "74643a0aa101dad386377e51c07b78497f6051009c688c4b3579987201e5ed5d",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "84f22fa5c0d10efcdf15e9a8b903690c3641baa94e301e50d31250dc772ab315"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish48",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish48.png",
+          "role": "base",
+          "sha256": "aa7dbd8fda3b1c98b697571a0dd21be3925de39c686db5bea19008cd5b65a08c",
+          "source_sha256": "aa7dbd8fda3b1c98b697571a0dd21be3925de39c686db5bea19008cd5b65a08c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "35388c69f075660bd33052a08c0e282afef65018bc65af118fe2eb49cf29c441"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish49",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish49.png",
+          "role": "base",
+          "sha256": "9a0798032e502334f491ba7e4788d850478b001cdc6f98b754588022f4823593",
+          "source_sha256": "9a0798032e502334f491ba7e4788d850478b001cdc6f98b754588022f4823593",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9cd55941cb100fb913df36e3700d7b401cdfc111f480f5904d8d28a347bbc176"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish50",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish50.png",
+          "role": "base",
+          "sha256": "ef52469482d0736e4a8980d40eb01baf411dac372844087f1e7b4b28dcff76d5",
+          "source_sha256": "ef52469482d0736e4a8980d40eb01baf411dac372844087f1e7b4b28dcff76d5",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9aa9b33ee848d48fcec3f3bdcdee4a659a6b8fd468969e16618f49aa520b6e35"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish51",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish51.png",
+          "role": "base",
+          "sha256": "1403b12fc9c955ff6fa1a38b3e59d39aa4e6db8da363cab0ddf55b288c02dd32",
+          "source_sha256": "1403b12fc9c955ff6fa1a38b3e59d39aa4e6db8da363cab0ddf55b288c02dd32",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1689b9fdc9afc8ae529b7184008fa89f214c55f99992d79ebc3d71ed39f62c45"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish52",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish52.png",
+          "role": "base",
+          "sha256": "1715f750ff8f60e119473bf3d1c885afb942b7011380feed1bfab2b478f25a4b",
+          "source_sha256": "1715f750ff8f60e119473bf3d1c885afb942b7011380feed1bfab2b478f25a4b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "25616068f6c330da8a63bbaf98fc2ad8d085995d1742327b6ee5eed08a3f9520"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish53",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish53.png",
+          "role": "base",
+          "sha256": "8927de0d26aa3d819296f44c0eb55d17298070c0bd3c42a228e102602bb1b2d3",
+          "source_sha256": "8927de0d26aa3d819296f44c0eb55d17298070c0bd3c42a228e102602bb1b2d3",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "f57a80b7489822209edae7e9912a53b759edd3606f5d42c5cbdfee503f08abd2"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish54",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish54.png",
+          "role": "base",
+          "sha256": "bd64d37c014f1e63ca8d7532a30eb3978f2e3c303b09af5b4313ddf7935f1653",
+          "source_sha256": "bd64d37c014f1e63ca8d7532a30eb3978f2e3c303b09af5b4313ddf7935f1653",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "053c2112b4ad9c086928a611fb02ca2fe8b89ded7f0bfda7908add29c5b3355c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish55",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish55.png",
+          "role": "base",
+          "sha256": "95718e82d1202fc8497fac989da8099ae8a50f0ff100b9694f773e15629d1527",
+          "source_sha256": "95718e82d1202fc8497fac989da8099ae8a50f0ff100b9694f773e15629d1527",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "8fed7b316464b484ff7f521deea666b976df89fe159f10e6395b0761f288a0c5"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish56",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish56.png",
+          "role": "base",
+          "sha256": "1444c6a32718b4e2b0dae4b06c3c652faa63b27203e3e765945bf8e18d814138",
+          "source_sha256": "1444c6a32718b4e2b0dae4b06c3c652faa63b27203e3e765945bf8e18d814138",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "91133a8a215561a3a1a7be82baed0c5990fea779de216b07c4cc175688c627ee"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish57",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish57.png",
+          "role": "base",
+          "sha256": "134dd1835f89285ce13429cf1cef01cb2722b0b089302ca5962ef75605278576",
+          "source_sha256": "134dd1835f89285ce13429cf1cef01cb2722b0b089302ca5962ef75605278576",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "ffb503061ff9c1b6b34cff55b6c65b548a6400ed74eaf25e5e34a529e21b0553"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish58",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish58.png",
+          "role": "base",
+          "sha256": "61357e67ad511fdbbb3e5dc9bd3916e7745b568e51db0e29752b337cc8c46e98",
+          "source_sha256": "61357e67ad511fdbbb3e5dc9bd3916e7745b568e51db0e29752b337cc8c46e98",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "c6a50be93c225da222c6a2f0b068512f4c3567ef7c849e04e026d9ebd7f2fcbb"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
+    },
+    {
+      "id": "resource-fish59",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "procedural resource painter v1: fish",
+      "layers": [
+        {
+          "file": "resource-fish59.png",
+          "role": "base",
+          "sha256": "a3ffd3d482dd7130820eabfc6a541e950967e4b9b32639ed3efe9a29e49d43c1",
+          "source_sha256": "a3ffd3d482dd7130820eabfc6a541e950967e4b9b32639ed3efe9a29e49d43c1",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9fd3a5a990a72d1f2bb00063b77113f881a9b6e3aa753e4e00c59810e572f2ec"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/paint_landscape.py",
+          "sha256": "863d17211de9913cb82d6416bd9ed3151ab25d022e701821f3ecf0e73869fe7f"
+        }
+      ]
     }
   ],
   "terrain_atlas": {

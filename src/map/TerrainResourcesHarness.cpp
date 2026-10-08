@@ -17,6 +17,8 @@
 #include "Race.h"
 #include "Unit.h"
 
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 #include <cstdio>
 #include <fstream>
 #include <sstream>
@@ -372,6 +374,179 @@ TEST_CASE("resource identities above byte range preserve compound stocks through
         { auto random=restored.game.bindRandom(); restored.game.syncStep(0); }
         CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
     }
+}
+
+TEST_CASE("landscape scavenge sites start full, deplete per material and vanish when empty")
+{
+    glob2test::HeadlessGlobals globals;
+    Map map;
+    map.setSize(4,4,GRASS);
+    const auto camp=map.resourceRegistry().find("camp-site");
+    REQUIRE(camp.has_value());
+    REQUIRE(map.incResourceByIndex(8,8,resourceIndex(*camp),0));
+    const auto at=map.coordToIndex(8,8);
+    CHECK(map.materialAmountAt(at,MaterialId::Food)==2);
+    CHECK(map.materialAmountAt(at,MaterialId::Wood)==2);
+    CHECK(map.materialAmountAt(at,MaterialId::Fabric)==1);
+    CHECK(map.getResource(at).amount==5);
+    // Taking food leaves the other yields for later trips.
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Food,1));
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Food,1));
+    CHECK_FALSE(map.takeHarvest(7,8,1,0,MaterialId::Food,1));
+    CHECK(map.getResource(at).type==resourceIndex(*camp));
+    CHECK(map.materialAmountAt(at,MaterialId::Wood)==2);
+    CHECK(map.getResource(at).amount==3);
+    // Finite sites never regrow.
+    CHECK_FALSE(map.growResourceStock(at));
+    CHECK(map.getResource(at).amount==3);
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Wood,1));
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Wood,1));
+    REQUIRE(map.takeHarvest(7,8,1,0,MaterialId::Fabric,1));
+    CHECK(map.getResource(at).type==NO_RES_TYPE);
+    CHECK_FALSE(map.hasMaterialSource(MaterialId::Fabric));
+}
+
+TEST_CASE("landscape dead trees, undergrowth and fish keep their habitats and obstruction")
+{
+    glob2test::HeadlessGlobals globals;
+    Map land;
+    land.setSize(4,4,GRASS);
+    const auto& registry=land.resourceRegistry();
+    const auto dead=*registry.find("dead-trees");
+    const auto scrub=*registry.find("scrub");
+    const auto fish=*registry.find("fish");
+    REQUIRE(land.incResourceByIndex(4,4,resourceIndex(dead),0));
+    const auto snag=land.coordToIndex(4,4);
+    CHECK(land.materialAmountAt(snag,MaterialId::Wood)==3);
+    CHECK_FALSE(land.growResourceStock(snag));
+    for (int n=0;n<3;++n) REQUIRE(land.takeHarvest(3,4,1,0,MaterialId::Wood,1));
+    CHECK(land.getResource(snag).type==NO_RES_TYPE);
+    // Scrub is walkable but still blocks building until cleared.
+    REQUIRE(land.incResourceByIndex(8,8,resourceIndex(scrub),0));
+    const auto bush=land.coordToIndex(8,8);
+    CHECK_FALSE(land.resourceBlocksGround(bush));
+    CHECK(land.resourceProperties(scrub).blocksBuilding);
+    CHECK_FALSE(land.terrainSupportsResourceAt(10,10,fish));
+    Map water;
+    water.setSize(4,4,WATER);
+    CHECK(water.terrainSupportsResourceAt(10,10,fish));
+    CHECK_FALSE(water.terrainSupportsResourceAt(10,10,scrub));
+    REQUIRE(water.incResourceByIndex(10,10,resourceIndex(fish),0));
+    CHECK(water.materialAmountAt(water.coordToIndex(10,10),MaterialId::Food)>=1);
+}
+
+TEST_CASE("a half-harvested scavenge site survives save and continues identically")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame original({.loadDefaultRace=true,.header=true,.seed=742});
+    auto& map=original.game.map;
+    const auto ruins=map.resourceRegistry().find("ruins");
+    REQUIRE(ruins.has_value());
+    REQUIRE(map.incResourceByIndex(12,12,resourceIndex(*ruins),0));
+    const auto at=map.coordToIndex(12,12);
+    REQUIRE(map.takeHarvest(11,12,1,0,MaterialId::Wood,1));
+    CHECK(map.materialAmountAt(at,MaterialId::Wood)==3);
+    CHECK(map.materialAmountAt(at,MaterialId::Metal)==2);
+    auto* bytes=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(bytes);
+    original.game.save(&output,false,"Landscape scavenge continuation");
+    output.flush();
+    auto* copy=new GAGCore::MemoryStreamBackend(*bytes);
+    copy->seekFromStart(0);
+    GAGCore::BinaryInputStream input(copy);
+    glob2test::HeadlessGame restored({.loadDefaultRace=true,.header=true});
+    REQUIRE(restored.game.load(&input));
+    auto& loaded=restored.game.map;
+    CHECK(loaded.getResource(at).type==resourceIndex(*ruins));
+    CHECK(loaded.materialStocksAt(at)==map.materialStocksAt(at));
+    for (int tick=0;tick<32;++tick)
+    {
+        { auto random=original.game.bindRandom(); original.game.syncStep(0); }
+        { auto random=restored.game.bindRandom(); restored.game.syncStep(0); }
+        CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
+    }
+    REQUIRE(loaded.takeHarvest(11,12,1,0,MaterialId::Metal,1));
+    CHECK(loaded.materialAmountAt(at,MaterialId::Metal)==1);
+}
+
+TEST_CASE("workers carry food from camp-sites to an inn and leave their other yields")
+{
+    glob2test::HeadlessGlobals globals({.seed=23});
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.discovered=true,.clearImmobile=true,
+        .loadDefaultRace=true,.header=true,.seed=23});
+    auto& g=world.game;
+    g.gameHeader.setResourceGrowthDisabled(true);
+    const auto camp=g.map.resourceRegistry().find("camp-site");
+    REQUIRE(camp.has_value());
+    auto* inn=world.addBuilding("inn",6,6,1);
+    REQUIRE(inn);
+    inn->maxUnitWorking=3;
+    inn->materials[WHEAT]=0;
+    const int sites[][2]={{16,8},{16,10},{16,12}};
+    for (const auto& site : sites) REQUIRE(g.map.incResourceByIndex(site[0],site[1],resourceIndex(*camp),0));
+    const auto stock=[&](MaterialId material) {
+        int total=0;
+        for (const auto& site : sites) total+=g.map.materialAmountAt(g.map.coordToIndex(site[0],site[1]),material);
+        return total;
+    };
+    REQUIRE(stock(MaterialId::Food)==6);
+    for (int i=0;i<3;++i) world.addUnit(WORKER,4+i,16,0,1);
+    inn->updateCallLists();
+    for (int tick=0;tick<3000 && inn->materials[WHEAT]<3;++tick)
+    {
+        for (int i=0;i<3;++i)
+        {
+            auto* unit=world.team->myUnits[i];
+            unit->hungry=Unit::HUNGRY_MAX;
+            unit->medical=Unit::MED_FREE;
+        }
+        world.step();
+    }
+    // Every meal in the inn came out of a camp-site; wood and fabric stay for later.
+    CHECK(inn->materials[WHEAT]>=3);
+    CHECK(stock(MaterialId::Food)==6-inn->materials[WHEAT]);
+    CHECK(stock(MaterialId::Wood)==6);
+    CHECK(stock(MaterialId::Fabric)==3);
+}
+
+TEST_CASE("landscape showcase map places every landscape resource [artifacts]")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.loadDefaultRace=true,.header=true,.seed=5});
+    auto& map=world.game.map;
+    // A lake with a sandy east shore in the lower-right corner of a grass map.
+    for (int y=36;y<62;++y)
+        for (int x=34;x<62;++x)
+            map.setVertexTerrain(x,y,x<56 ? WATER : SAND);
+    const auto& registry=map.resourceRegistry();
+    const char* land[]={"jungle-trees","pine-trees","dead-trees","ruins","camp-site","ancient-debris",
+        "scrub","tall-grass","maize","potatoes"};
+    const auto fill=[&](const char* key,int x0,int y0,int w,int h) {
+        const auto id=registry.find(key);
+        REQUIRE(id.has_value());
+        int placed=0;
+        for (int y=y0;y<y0+h;++y)
+            for (int x=x0;x<x0+w;++x)
+                if (map.incResourceByIndex(x,y,resourceIndex(*id),(x+y)%2))
+                {
+                    const auto at=map.coordToIndex(x,y);
+                    const auto& p=registry.properties(*id);
+                    // Growing resources are shown at full stock; scavenge sites start full.
+                    if (p.growthRate)
+                        map.setMaterialAmount(at,p.primaryMaterial,registry.yields(*id)[materialIndex(p.primaryMaterial)].capacity);
+                    ++placed;
+                }
+        CAPTURE(key);
+        CHECK(placed==w*h);
+    };
+    for (int i=0;i<10;++i) fill(land[i],2+(i%5)*6,2+(i/5)*8,4,4);
+    fill("rice",52,30,6,4);
+    fill("fish",38,40,10,8);
+    auto* bytes=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(bytes);
+    world.game.save(&output,true,"Landscape showcase");
+    output.flush();
+    glob2test::writeFile(glob2test::artifactDir()/"landscape-showcase.map",std::string(bytes->getBuffer(),bytes->getPosition()));
 }
 
 TEST_CASE("last finite source extinction and persistent source regrowth update material presence")

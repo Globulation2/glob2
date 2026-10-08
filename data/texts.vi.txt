@@ -5604,6 +5604,30 @@ Quặng sắt
 Cát thạch anh
 [Cotton]
 Bông
+[Jungle trees]
+Cây rừng nhiệt đới
+[Pine trees]
+Cây thông
+[Dead trees]
+Cây chết
+[Ruins]
+Tàn tích
+[Camp-site]
+Khu cắm trại
+[Ancient debris]
+Mảnh vỡ cổ
+[Scrub]
+Bụi rậm
+[Tall grass]
+Cỏ cao
+[Maize]
+Ngô
+[Potatoes]
+Khoai tây
+[Rice]
+Lúa
+[Fish]
+Cá
 [Reroll terrain look]
 Chọn lại ngẫu nhiên diện mạo địa hình
 [boulders]

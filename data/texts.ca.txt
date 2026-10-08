@@ -5604,6 +5604,30 @@ Mineral de ferro
 Sílice
 [Cotton]
 Cotó
+[Jungle trees]
+Arbres de jungla
+[Pine trees]
+Pins
+[Dead trees]
+Arbres morts
+[Ruins]
+Ruïnes
+[Camp-site]
+Campament
+[Ancient debris]
+Restes antigues
+[Scrub]
+Matollar
+[Tall grass]
+Herba alta
+[Maize]
+Blat de moro
+[Potatoes]
+Patates
+[Rice]
+Arròs
+[Fish]
+Peixos
 [Reroll terrain look]
 Torna a sortejar l’aspecte del terreny
 [boulders]

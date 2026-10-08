@@ -5604,6 +5604,30 @@ CPU %0%
 Πυριτία
 [Cotton]
 Βαμβάκι
+[Jungle trees]
+Δέντρα ζούγκλας
+[Pine trees]
+Πεύκα
+[Dead trees]
+Νεκρά δέντρα
+[Ruins]
+Ερείπια
+[Camp-site]
+Κατασκήνωση
+[Ancient debris]
+Αρχαία συντρίμμια
+[Scrub]
+Θάμνοι
+[Tall grass]
+Ψηλό χορτάρι
+[Maize]
+Καλαμπόκι
+[Potatoes]
+Πατάτες
+[Rice]
+Ρύζι
+[Fish]
+Ψάρια
 [Reroll terrain look]
 Νέα τυχαία εμφάνιση εδάφους
 [boulders]
