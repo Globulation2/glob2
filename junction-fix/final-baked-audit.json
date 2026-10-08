@@ -1,0 +1,44 @@
+{
+  "worker-walk": {
+    "sha256": "0e34bee54d15567b6a0fd0e024293e3097a94ad6343ccce1b79a572a6c83ef17",
+    "frames": 256,
+    "nonAdjacentIntersections": 0,
+    "minimumDoubleArea": 0.005541588165646725,
+    "maximumNormalError": 7.444363470226094e-06
+  },
+  "worker-swim": {
+    "sha256": "8cfcdf0ae4f6462637cf59720588a72ef33bed8113c911a14b9b3cb15f508c55",
+    "frames": 256,
+    "nonAdjacentIntersections": 0,
+    "minimumDoubleArea": 0.003407980412446485,
+    "maximumNormalError": 1.0489751958502144e-05
+  },
+  "worker-harvest": {
+    "sha256": "ce14b8e276b5356ae093ed8507deffe66fe6ef42ce0472fc07b6f56615e69b0a",
+    "frames": 256,
+    "nonAdjacentIntersections": 0,
+    "minimumDoubleArea": 0.0033568009032846134,
+    "maximumNormalError": 7.577784574305061e-06
+  },
+  "warrior-walk": {
+    "sha256": "a284a1de5163b6172d6b4344c1361e6c20fd6dda20b087c8ef44b08234a17130",
+    "frames": 256,
+    "nonAdjacentIntersections": 0,
+    "minimumDoubleArea": 0.011882438994310648,
+    "maximumNormalError": 8.30759400349532e-06
+  },
+  "warrior-swim": {
+    "sha256": "989e22f6965c83f10f3facd071d8863c21efe56d4bd3f5cbb7607b74e6aa5aa6",
+    "frames": 256,
+    "nonAdjacentIntersections": 0,
+    "minimumDoubleArea": 0.012227578591985451,
+    "maximumNormalError": 7.4894333404417845e-06
+  },
+  "warrior-fight": {
+    "sha256": "7e34666a64a82144b512c3b1104b44f3f5b3ae907e4512cccbdcd1ffab091f60",
+    "frames": 256,
+    "nonAdjacentIntersections": 0,
+    "minimumDoubleArea": 0.0036940859174194158,
+    "maximumNormalError": 1.0049816663212917e-05
+  }
+}

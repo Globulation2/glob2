@@ -1,0 +1,33 @@
+{
+  "testedCommit": "fa29ae9e006dd7825942bffa26b454ab844a452c",
+  "baseRevision": "52e4d3dc0440e12ff65494ad3eb1681e9c2c0af3",
+  "os": "macOS 26.6.2",
+  "architecture": "arm64",
+  "renderer": "Apple M3 / OpenGL 2.1 Metal - 90.5",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "blender": "3.6.23 (e467db79ca8c)",
+  "nativeFlags": "release=1 server=0, -O3 -g -std=gnu++20 -fPIC, HAVE_CONFIG_H, GL_SILENCE_DEPRECATION; test harness adds -fno-access-control",
+  "SDL3": "3.4.16, pinned repository prefix",
+  "node": "v24.19.0",
+  "python": "Python 3.12.14",
+  "packageLockSha256": "8383b0695d6fb3121e469231f9b7962452ca71bfdf36fc824d49a6395aa03aca",
+  "coverage": {
+    "bakedPoses": 1536,
+    "compressedPoses": 1536,
+    "nativeCases": 19,
+    "nativeAssertions": 2507630,
+    "studioDecoderProjectionRigShapeTests": 82,
+    "studioWorkspaceDocumentTests": 12,
+    "authoringFitTests": 7,
+    "assetContractTests": 4,
+    "surfaceContractTests": 4,
+    "materialContractTests": 6,
+    "motionInvariantTests": 2
+  },
+  "limits": [
+    "Existing SkinReadback host display comparison fails in previous and updated renderer: same 1813 failures; both logs retained.",
+    "Full game/asset packaging build, Windows/Linux/Android and compiled WebAssembly were not run. Native production-renderer objects were built and manually linked with the SCons dependencies; native GL and browser WebGL2 paths were exercised.",
+    "Simulation/save/network checksum suites omitted because the diff changes rendering and authoring only."
+  ],
+  "packaging": "Read-only web asset planner includes all six GUV files in the optional skins package."
+}

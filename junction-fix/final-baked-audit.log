@@ -1,0 +1,10 @@
+worker-walk all 256 poses passed
+worker-swim all 256 poses passed
+worker-harvest all 256 poses passed
+warrior-walk all 256 poses passed
+warrior-swim all 256 poses passed
+warrior-fight all 256 poses passed
+Blender 3.6.23 (hash e467db79ca8c built 2025-06-17 01:31:24)
+Device with name Apple M3 supports metal minimum requirements
+
+Blender quit

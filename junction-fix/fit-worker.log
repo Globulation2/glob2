@@ -1,0 +1,3 @@
+worker-walk: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.002 p95 0.003 max 0.010 normals median 0.1 p99 0.5 deg
+worker-swim: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.003 p95 0.005 max 0.029 normals median 0.1 p99 0.5 deg
+worker-harvest: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.002 p95 0.005 max 0.017 normals median 0.1 p99 0.7 deg

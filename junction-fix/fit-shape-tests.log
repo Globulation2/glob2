@@ -1,0 +1,24 @@
+test_assets_keep_paint_topology_and_describe_their_shapes (__main__.FittedShapesTest.test_assets_keep_paint_topology_and_describe_their_shapes) ... ok
+test_encoder_rejects_invalid_inputs (__main__.FittedShapesTest.test_encoder_rejects_invalid_inputs) ... ok
+test_encoder_reproduces_the_shared_decoder_fixture (__main__.FittedShapesTest.test_encoder_reproduces_the_shared_decoder_fixture) ... ok
+test_every_clip_reproduces_the_baked_frames (__main__.FittedShapesTest.test_every_clip_reproduces_the_baked_frames) ... ok
+test_installer_rejects_stale_sources_and_altered_bytes (__main__.FittedShapesTest.test_installer_rejects_stale_sources_and_altered_bytes) ... ok
+test_reference_evaluation_matches_the_baked_poses (__main__.FittedShapesTest.test_reference_evaluation_matches_the_baked_poses) ... ok
+test_regeneration_is_byte_identical_and_matches_the_installed_assets (__main__.FittedShapesTest.test_regeneration_is_byte_identical_and_matches_the_installed_assets) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 17.003s
+
+OK
+worker-walk: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.002 p95 0.003 max 0.010 normals median 0.1 p99 0.5 deg
+worker-swim: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.003 p95 0.005 max 0.029 normals median 0.1 p99 0.5 deg
+worker-harvest: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.002 p95 0.005 max 0.017 normals median 0.1 p99 0.7 deg
+warrior-walk: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.028 p95 0.051 max 0.315 normals median 0.4 p99 2.1 deg
+warrior-swim: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.013 p95 0.025 max 0.096 normals median 0.3 p99 2.1 deg
+warrior-fight: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.022 p95 0.040 max 0.339 normals median 0.4 p99 1.7 deg
+worker-walk: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.002 p95 0.003 max 0.010 normals median 0.1 p99 0.5 deg
+worker-swim: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.003 p95 0.005 max 0.029 normals median 0.1 p99 0.5 deg
+worker-harvest: 2898 vertices, 32+24 shapes, 1193164 bytes, rms 0.002 p95 0.005 max 0.017 normals median 0.1 p99 0.7 deg
+warrior-walk: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.028 p95 0.051 max 0.315 normals median 0.4 p99 2.1 deg
+warrior-swim: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.013 p95 0.025 max 0.096 normals median 0.3 p99 2.1 deg
+warrior-fight: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.022 p95 0.040 max 0.339 normals median 0.4 p99 1.7 deg

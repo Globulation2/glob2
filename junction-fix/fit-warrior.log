@@ -1,0 +1,3 @@
+warrior-walk: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.028 p95 0.051 max 0.315 normals median 0.4 p99 2.1 deg
+warrior-swim: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.013 p95 0.025 max 0.096 normals median 0.3 p99 2.1 deg
+warrior-fight: 2514 vertices, 32+24 shapes, 1042636 bytes, rms 0.022 p95 0.040 max 0.339 normals median 0.4 p99 1.7 deg
