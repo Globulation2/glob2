@@ -777,7 +777,9 @@ TEST_CASE("portable custom artwork loads and draws its exact native frame [displ
 	const auto pixel = [&](int x, int y)
 	{
 		Uint8 r, g, b, a;
-		REQUIRE(SDL_ReadSurfacePixel(frame, x, y, &r, &g, &b, &a));
+		// Native desktop frames use backing pixels; draw positions use logical units.
+		const int px = x * frame->w / gfx->getW(), py = y * frame->h / gfx->getH();
+		REQUIRE(SDL_ReadSurfacePixel(frame, px, py, &r, &g, &b, &a));
 		return std::array<Uint8, 3>{r, g, b};
 	};
 	CHECK(pixel(10, 10) == std::array<Uint8, 3>{17, 39, 71});
