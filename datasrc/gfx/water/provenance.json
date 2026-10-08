@@ -255,12 +255,12 @@
       }
     }
   },
-  "python": "3.14.7",
+  "python": "3.13.16",
   "pillow": "12.2.0",
   "platform": {
-    "system": "darwin",
-    "machine": "arm64",
-    "libc": null
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.39"
   },
   "runtime_sha256": {
     "data/gfx/terrain-water0.png": "f0cb851561569a4aed3b4fad570dfa60880cb444ab14b54672ce242e9c16211f",

@@ -255,12 +255,12 @@
       }
     }
   },
-  "python": "3.14.7",
+  "python": "3.13.16",
   "pillow": "12.2.0",
   "platform": {
-    "system": "darwin",
-    "machine": "arm64",
-    "libc": null
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.39"
   },
   "runtime_sha256": {
     "data/gfx/terrain-deep_water0.png": "e7efbe5e056fe7bf910fdc44995a160dd3b1ff0697172ce5f2225645733df3a6",

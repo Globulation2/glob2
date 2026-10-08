@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "7bcde1353e6c5ded00fb349e5091d326ac7a45777978f0337c2a40a728883aae",
+    "tools/artwork/terrain_synth.py": "e47ab1ffd5d4cf5c577ba95c33ee2e83ed796df91136a479b372c8603d21c395",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "chasm",
@@ -64,6 +64,7 @@
     ],
     "placeholder_only": false,
     "periodic": false,
+    "grid": 0,
     "note": ""
   },
   "seed": "fnv1a32(\"chasm:<variant>:<phase>\")",
@@ -149,12 +150,12 @@
       }
     }
   },
-  "python": "3.14.4",
+  "python": "3.13.16",
   "pillow": "12.2.0",
   "platform": {
     "system": "linux",
     "machine": "x86_64",
-    "libc": "glibc 2.43"
+    "libc": "glibc 2.39"
   },
   "runtime_sha256": {
     "data/gfx/terrain-chasm0.png": "e7c6aad8bd97f30418ecdffcde9e10ddc538c147f3946788955bc2e356b5604e",
