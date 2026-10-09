@@ -22,6 +22,7 @@
 #include "GameHints.h"
 #include "MapScript.h"
 #include "BuildingGuiState.h"
+#include "AreaEffects.h"
 #include "BuildingType.h"
 #include "sim/ClientEvents.h"
 #include "sim/EntityRef.h"
@@ -155,6 +156,7 @@ public:
 	// Frozen for the lifetime of this simulation. Entity type pointers always
 	// refer to this registry, never to the application's authoring defaults.
 	BuildingsTypes buildingsTypes;
+	BuildingAreaEffects::Runtime areaEffects;
 	const AIPlanning::BuildingCapabilityIndex& buildingCapabilities() const;
 	// Setup/load only: compile experiment gates and discard catalog-derived AI
 	// indexes before controllers observe the resolved game configuration.

@@ -141,7 +141,7 @@ void Sector::step(void)
 						game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 
 					Building *building = game->teams[team]->myBuildings[id];
-					const int damage = bullet->shootDamage > 0 ? std::max(BULLET_MIN_DAMAGE, bullet->shootDamage-building->type->armor) : 0;
+					const int damage = bullet->shootDamage > 0 ? std::max(BULLET_MIN_DAMAGE, bullet->shootDamage-building->getEffectiveArmor()) : 0;
 
 					game->teams[team]->pushGameEvent(GameEvent::buildingUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, building->typeNum));
 

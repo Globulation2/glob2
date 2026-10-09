@@ -41,6 +41,7 @@ struct View
 	const ResourceRegistry* resourceRegistry = nullptr;
 	const CellRuleTable* rules = nullptr;
 	const Fertility::GrowthCache* growth = nullptr;
+	std::span<const Uint16> areaFertility;
 	bool resourceGrowthDisabled = false;
 	int resourceScarcityLevel = 0;
 
@@ -134,7 +135,10 @@ inline std::uint32_t resourceGrowthRate(const View& v, std::size_t i, int resour
 	if (!v.growth || resourceType < 0 || !v.resourceRegistry->valid(unsigned(resourceType))
 		|| !v.terrainProperties(i).resourcesGrow || !terrainSupportsResource(v, i, static_cast<ResourceId>(resourceType))) return 0;
 	const auto& p = v.resourceProperties(resourceType);
-	return v.growth->rate(i, p.ecology, p.growthRate);
+	auto rate=v.growth->rate(i, p.ecology, p.growthRate);
+    if (p.ecology==ResourceEcology::Land && !v.areaFertility.empty())
+        rate=std::uint32_t(std::min<std::uint64_t>(std::uint64_t(rate)*v.areaFertility[i]/10000,4u*Fertility::kRateScale));
+    return rate;
 }
 inline std::uint32_t materialGrowthRate(const View& v, std::size_t i, int material)
 {

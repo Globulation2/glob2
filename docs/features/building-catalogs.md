@@ -527,5 +527,154 @@ release resources recheck visibility and moderation on every request.
 For command-line new maps, write the composed catalog snapshot to a JSON file
 and pass `--building-catalog` with `--building-artwork` to `--generate-map`.
 The latter accepts the verified `G2BA0001` bundle, which is embedded in the output.
-Format 145 and network protocol 62 separate clients using the new header layout;
-the save-support floor remains 58 and replay acceptance remains at 143.
+Format 145 and network protocol 62 introduced this artwork header layout.
+Current save format and replay acceptance are 150, with network protocol 68;
+the save-support floor remains 58.
+
+## Building area effects
+
+Completed physical building variants can define an optional `semantics.areaEffects`
+bundle. Existing catalogs omit this object and retain their canonical bytes and
+fingerprints. Area effects do not change the existing admission services: an inn
+can still feed occupants while its area effect feeds outdoor units.
+Omitted fields default to zero; zero disables that channel. Benefits use the
+emitter's alliance mask, always including its own team. Enemy effects use the
+existing attackability rules, including peaceful mode.
+
+```json
+"areaEffects": {
+  "radius": 8,
+  "cost": {"food": 1},
+  "healingQ8": 128,
+  "feedingQ8": 256,
+  "attackBuffBps": 1000,
+  "fertilityBuffBps": 2000
+}
+```
+
+Services pulse every 16 simulation ticks (0.64 seconds at normal speed). Their
+unsigned Q8 amounts are 0–65535 per pulse: 128 heals half an HP, 256 restores one hunger
+point, and `damageQ8` damages enemy units. Fractions accumulate separately on
+recipients; healing and feeding discard surplus fractions at their caps. Damage
+resolves before healing, including death. Units entering or inside buildings are
+excluded; exiting units become eligible after their attachment is released. Air
+and ground units are eligible. Feeding grants no fruit bonuses and follows the
+no-hunger rule; damage follows the no-permadeath rule.
+
+Positive percentage modifiers use `attackBuffBps`, `armorBuffBps`, and
+`fertilityBuffBps`; weaknesses use the corresponding `*WeaknessBps` names. One
+basis point is 0.01%, so 1000 gives 10%. Buffs allow 0–30000 and weaknesses
+0–10000. Each channel selects the strongest bonus and strongest weakness
+independently, then computes `10000 + bonus - weakness`, bounded to 0–40000.
+Attack and armor bonuses benefit allied units and buildings; combat weaknesses
+only affect enemy units. Armor scales before existing fruit penalties and retains
+magic's armor bypass. Existing combat minimum-damage rules still apply when an
+attack modifier reaches zero. Turret attack is captured when firing and target
+armor is read at impact. Building recipients use the northwestern central footprint tile:
+`position + (size - 1) / 2` on each axis.
+
+`radius` is 0–65535 tiles of square distance from the footprint, including the
+footprint at radius zero. Coverage wraps at map edges and visits a tile only once,
+even when the radius exceeds the map dimensions. Combat coverage updates each
+simulation tick. Fertility is a temporary multiplier on existing land-resource
+growth opportunities, capped by the existing four-opportunity limit. It does not
+change terrain, habitat permissions, aquatic growth, or zero-growth land.
+
+`cost` accepts 0–1,000,000 units per material and is paid atomically at each pulse,
+independent of recipient count. All
+emitters pay, including overlapping emitters whose effects are weaker. Shared
+inventory payments follow ascending building GID. Configure existing inventory
+capacities, replenishment permissions, and staffing to supply these materials.
+Insufficient unreserved materials disable the whole bundle until the next pulse;
+there is no partial payment or refund. Spending is counted as area upkeep.
+For local upkeep, configure matching storage capacities, `replenishMaterials`,
+and delivery workers. Shared upkeep uses the existing
+`semantics.market.sharedStock` inventory. Upkeep competes with other reservations
+through the same material-accounting rules as ordinary building services.
+Newly completed buildings wait for the next pulse. Construction, upgrades, and
+pending deletion suspend emission; repair retains the original completed
+building's bundle and footprint. Type and ownership changes invalidate funding. Relocation and
+diplomacy changes update coverage while retaining an otherwise valid paid interval.
+
+Coverage is reconciled before teams step and remains fixed for that tick. Changes
+during simulation take effect on the next tick. Growth jobs retain the modifier
+captured in their immutable input, including jobs published after an emitter
+stops. Saves preserve funding and service fractions; loading reconstructs fields
+without charging upkeep or applying services. Format 150 adds this state; earlier
+supported saves load with no area-effect funding.
+
+### Compute and memory
+
+The simulation maintains dense, team-major planes only for channels used by
+active emitters. Target lookups are constant time. Building lifecycle events mark
+16×16 chunks; rebuilding examines only emitters intersecting those chunks and
+correctly restores weaker coverage after removing a stronger emitter. Stable
+coverage does not visit emitters between upkeep pulses. The disabled catalog path
+allocates no coverage fields and consumes no extra random numbers.
+
+Seven optional two-byte planes per team cover healing, damage, feeding, unit
+attack/armor, and building attack/armor. One additional two-byte plane covers land
+growth. Maximum field payload is `tiles × (14 × teams + 2)` bytes: 226 MiB for a
+1024×1024 map with the current maximum of 16 teams. Chunk indexes, emitter records,
+scratch storage, and retained growth snapshots are additional. Fields remain
+allocated after their last emitter stops and are released when the world or
+catalog resets. Fertility snapshots reuse unchanged coverage and copy changed
+chunks when refilling pooled buffers.
+The same formula would require 296 MiB at 21 teams. On Linux x86-64, optional
+funding and fraction bookkeeping adds eight bytes to each authoritative building
+and unit record; heap object padding and allocator overhead are separate.
+
+Build `engine-tests` and run `BuildingAreaEffects/*` for reference coverage,
+services, combat, snapshot, and save-continuation checks. Run
+`BuildingAreaEffectsBenchmark/*` with `--tag benchmark` explicitly for CSV measurements of steady ticks,
+upkeep pulses, removal spikes, field payload, and field-buffer allocations. Use
+identical seeds and build inputs for comparisons. The performance goal is at most
+5% overhead with 128 stationary emitters; evaluate measurements on the intended
+workload rather than treating this as a guarantee for every map.
+The populated fixture accepts `GLOB2_TEST_AREA_BENCH_MODE=disabled` or `enabled`
+to run matched selections independently; leaving it unset runs both.
+
+The dense-field fixture measures coverage maintenance independently of unit
+updates. Reference Linux x86-64/GCC 15 release measurements for 1024×1024,
+16 teams, all channels, and overlapping radius-eight emitters were:
+
+| Emitters | Steady maintenance | Funding pulse | Diplomacy rebuild | Mass removal |
+| --- | --- | --- | --- | --- |
+| 32 | about 0.1 µs | 7 µs | 3.7 ms | 3.0 ms |
+| 128 | about 0.1 µs | 25 µs | 6.5 ms | 4.7 ms |
+| 512 | about 0.1 µs | 106 µs | 16.5 ms | 9.1 ms |
+
+Each nonempty row allocated the same 226 MiB field payload; initial allocation
+and publication took about 145–156 ms. The process high-water RSS reached about
+381 MiB across the fixture matrix, including map state and bookkeeping; it is
+not an isolated measurement of aura memory. An additional retained fertility
+snapshot at this map size needs about 2 MiB plus chunk stamps. No-field catalog
+runs allocated zero coverage buffers. The fixture asserts that stationary ticks
+and successful renewal pulses do not revisit emitters for coverage rebuilding
+or allocate new field buffers. Its allocation counter covers field/scratch
+buffers, not every allocation in the engine or chunk indexes.
+
+These are workload measurements, not whole-match overhead guarantees. Compare
+the populated-match fixture with the same original-commit workload and compiler
+on an otherwise idle machine for the acceptance targets; record steady ticks,
+pulse ticks, and rebuild spikes separately. Large radii or dense overlaps can
+make a rebuild expensive even though steady reads remain constant-time.
+
+A matched populated fixture with 256 workers on a 256×256 map measured the
+following median tick costs, using five alternating runs and five seeded repeats
+per emitter count on the same Linux/GCC release build:
+
+| Emitters | Disabled steady | Active steady | Active pulse |
+| --- | --- | --- | --- |
+| 0 | 140 µs | 131 µs | 140 µs |
+| 32 | 151 µs | 141 µs | 173 µs |
+| 128 | 159 µs | 161 µs | 209 µs |
+| 512 | 241 µs | 246 µs | 376 µs |
+
+Active coverage at 128 emitters added about 1% relative to the disabled framework
+in this fixture, which uses healthy, nonhungry workers and walls. Combat, enemy
+damage and active resource growth are outside this whole-match measurement;
+paid upkeep is covered by the separate field-maintenance fixture. These
+shared-host measurements contain timing noise; negative differences in the
+smaller rows do not establish speedups. The earlier original-engine comparison
+retained identical entity checksums and random state with effects disabled.

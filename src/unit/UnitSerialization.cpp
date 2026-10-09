@@ -64,6 +64,17 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	terrainHealthRemainder = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES ? stream->readSint32("terrainHealthRemainder") : 0;
 	if (terrainHealthRemainder <= -256 || terrainHealthRemainder >= 256) throw std::runtime_error("Invalid terrain exposure remainder");
 
+	areaServiceRemainders.fill(0);
+	areaLastPulseTick=Uint32(-1);
+	if (versionMinor>=FILE_FORMAT_VERSION_AREA_EFFECTS) {
+		areaLastPulseTick=stream->readUint32("areaLastPulseTick");
+		if (areaLastPulseTick!=Uint32(-1) && (areaLastPulseTick&15)) throw std::runtime_error("Invalid area pulse tick");
+		for (int i=0;i<3;++i) {
+			const auto remainder=stream->readUint16(("areaServiceRemainder"+std::to_string(i)).c_str());
+			if (remainder>=256) throw std::runtime_error("Invalid area service remainder");
+			areaServiceRemainders[i]=Uint8(remainder);
+		}
+	}
 	// states
 	needToRecheckMedical = (bool)stream->readUint32("needToRecheckMedical");
 	auto readState = [&](const char* name, Uint32 maximum) {
@@ -204,6 +215,8 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(insideTimeout, "insideTimeout");
 	stream->writeSint32(speed, "speed");
 	stream->writeSint32(terrainHealthRemainder, "terrainHealthRemainder");
+	stream->writeUint32(areaLastPulseTick,"areaLastPulseTick");
+	for (int i=0;i<3;++i) stream->writeUint16(areaServiceRemainders[i],("areaServiceRemainder"+std::to_string(i)).c_str());
 
 	// states
 	stream->writeUint32((Uint32)needToRecheckMedical, "needToRecheckMedical");
@@ -323,6 +336,8 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 {
 	Uint32 cs=(serviceResourcesReserved ? 0x73657276u : 0) ^ (Uint32(constructionLevel) << 20);
 
+	if(areaLastPulseTick!=Uint32(-1)) cs ^= areaLastPulseTick ^ 0x70756c73u;
+	cs ^= Uint32(areaServiceRemainders[0]) | (Uint32(areaServiceRemainders[1])<<8) | (Uint32(areaServiceRemainders[2])<<16);
 	cs^=typeNum;
 	if (checkSumsVector)
 		checkSumsVector->push_back(typeNum);// [0]

@@ -342,6 +342,9 @@ void Team::syncStep(void)
 	int nbUsefulUnitsAlone = 0;
 	bool hasFedOrFeedingUnit = false;
 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
+	// Select once per team. The usual loop has no aura branch per unit;
+	// pulse services still run immediately before that unit's normal update.
+	const auto stepUnits = [&]<bool areaPulse>() {
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *u = myUnits[i];
@@ -353,6 +356,7 @@ void Team::syncStep(void)
 				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->destinationPurpose==FEED && u->attachedBuilding && u->attachedBuilding->type->semantics.feeding.enabled))
 					nbUsefulUnitsAlone++;
 			}
+			if constexpr (areaPulse) u->applyAreaServices();
 			u->syncStep();
 			// Check after the step: admission lists and medical status can lag a meal.
 			if (!u->isDead && u->owner == this && u->typeNum != EXPLORER
@@ -370,6 +374,11 @@ void Team::syncStep(void)
 			}
 		}
 	}
+	};
+	if (game->areaEffects.enabled() && !(game->stepCounter & (BuildingAreaEffects::PulseTicks-1)))
+		stepUnits.template operator()<true>();
+	else
+		stepUnits.template operator()<false>();
 
 	unitTime.stop();
 	PerformanceTelemetry::Scope buildingTime(PerformanceTelemetry::Id::Buildings);

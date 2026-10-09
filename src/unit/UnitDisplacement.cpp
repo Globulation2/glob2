@@ -348,6 +348,7 @@ void Unit::handleDisplacement(void)
 					if (destinationPurpose==FEED)
 					{
 						hungry=HUNGRY_MAX;
+						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 						needToRecheckMedical=true;
 					}
@@ -358,6 +359,7 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->owner->stats.measurements.hpRestored +=
 							std::max(0, performance[HP] - hp);
 						hp=performance[HP];
+						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 						needToRecheckMedical=true;
 					}
 					// Restored units already inside exit safely without gaining a level.
@@ -499,6 +501,7 @@ void Unit::applyPartialInsideBenefit()
 	{
 		if (attachedBuilding->type->semantics.feeding.partial == BuildingPartialService::None) return;
 		hungry+=(Sint64(HUNGRY_MAX-hungry)*elapsed)/total;
+		if (hungry>=HUNGRY_MAX && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 		fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 	}
 	else
@@ -508,6 +511,7 @@ void Unit::applyPartialInsideBenefit()
 		const int restored = (Sint64(performance[HP] - hp) * elapsed) / total;
 		attachedBuilding->owner->stats.measurements.hpRestored += std::max(0, restored);
 		hp += restored;
+		if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 	}
 }
 

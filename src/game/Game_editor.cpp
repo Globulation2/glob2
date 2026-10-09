@@ -271,6 +271,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	else
 		map.setBuilding(x, y, w, h, gid);
 	team->myBuildings[id]=b;
+	areaEffects.changed(gid);
 	team->attachBuilding(id);
 	snapshots().invalidateBoundary();
 	return b;

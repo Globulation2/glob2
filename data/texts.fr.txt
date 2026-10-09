@@ -5994,3 +5994,5 @@ Waiting for file selection or storage…
 File selection is unavailable.
 [settings Package export is unavailable.]
 Package export is unavailable.
+[stat band area upkeep]
+Entretien de zone

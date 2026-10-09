@@ -1910,6 +1910,13 @@ runtime. The seeded combinations exercise mixed services, split recipes, shared
 stock, rectangular overlays and missing capabilities. Per-tick save continuation,
 resource conservation and retained custom-rule traces complement the focused
 `BuildingCatalog`, `BuildingServices` and `BuildingProductionCombat` suites.
+`BuildingAreaEffects` compares cached coverage with an independent evaluator and
+covers pulse services, combat, lifecycle transitions, growth snapshots and save
+continuation. `BuildingAreaEffectsBenchmark` is opt-in (`--tag benchmark --filter
+'BuildingAreaEffectsBenchmark/*'`); it separates stationary coverage, funding
+pulses, dirty rebuilds and memory across map/team sizes. Its populated-match
+fixture measures one team with healthy, nonhungry workers and walls, rather than
+combat or active resource growth.
 `AICustomCatalog` checks actual replacement-provider selection and split-production
 orders across the native controllers. These custom traces do not establish stock
 behavior parity.
