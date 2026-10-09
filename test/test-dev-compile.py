@@ -12,6 +12,8 @@ with tempfile.TemporaryDirectory(prefix='glob2-dev-compile-') as temporary:
     root = Path(temporary)
     (root / 'scons').mkdir()
     (root / 'scons/unity-sources.json').write_text(json.dumps(['code/a.cpp', 'code/b.cpp']))
+    (root / 'tools/javascript').mkdir(parents=True)
+    shutil.copy2(ROOT / 'tools/javascript/check-math-symbols.py', root / 'tools/javascript/check-math-symbols.py')
     (root / 'code').mkdir()
     (root / 'code/value.h').write_text('#pragma once\n#define VALUE 7\n')
     (root / 'code/a.cpp').write_text('#include "value.h"\n#include <vector>\nint a() { return std::vector<int>{VALUE}[0]; }\n')
@@ -32,6 +34,8 @@ configure(env, identity)
 ccache.enable(env)
 files = ['code/a.cpp','code/b.cpp','code/main.cpp']
 mapping = objects(env, files, lambda name: build+'/'+name+'.o')
+from javascript import numeric_guard
+numeric_guard(env, unique(mapping.values()))
 env.Default(env.Program(build+'/probe', unique(mapping.values())))
 env.Default(env.CompilationDatabase(build+'/compile_commands.json'))
 ''')

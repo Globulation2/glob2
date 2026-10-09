@@ -56,6 +56,27 @@ class DevelopmentBuildTests(unittest.TestCase):
         self.assertNotIn('linker=auto', result)
         self.assertEqual(result.count('-j3'), 1)
 
+    def test_benchmark_snapshot_retains_git_provenance_and_candidate_edits(self):
+        spec = importlib.util.spec_from_file_location('benchmark_command', ROOT / 'tools/benchmark_build.py')
+        command = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(command)
+        with tempfile.TemporaryDirectory() as task:
+            source, destination = Path(task) / 'source', Path(task) / 'snapshot'
+            source.mkdir()
+            destination.mkdir()
+            def git(*args):
+                return subprocess.check_output(['git', '-C', str(source), *args], stderr=subprocess.DEVNULL, text=True)
+            git('init')
+            (source / 'SConstruct').write_text('baseline')
+            git('add', 'SConstruct')
+            git('-c', 'user.name=Build fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '-m', 'fixture')
+            (source / 'SConstruct').write_text('candidate')
+            with patch.object(command, 'ROOT', source):
+                command.snapshot(destination)
+            self.assertEqual((destination / 'SConstruct').read_text(), 'candidate')
+            self.assertEqual(subprocess.check_output(['git', '-C', str(destination), 'rev-parse', 'HEAD'], text=True), git('rev-parse', 'HEAD'))
+            self.assertIn('M SConstruct', subprocess.check_output(['git', '-C', str(destination), 'status', '--porcelain'], text=True))
+
     def test_shared_install_reuses_content_and_relocates_metadata(self):
         with tempfile.TemporaryDirectory() as task, patch.dict(os.environ, {'GLOB2_DEV_HOME': task, 'GLOB2_DEV_MODE': 'shared'}):
             with patch.object(shared_dependencies, 'fingerprint', return_value={'version': 1}):

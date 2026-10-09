@@ -51,6 +51,13 @@ def cache_stats(environment):
 
 
 def snapshot(destination):
+    # Native harness registration reads Git provenance even when the requested
+    # target only provisions dependencies. Retain a lightweight repository,
+    # then overlay the candidate's working files without committing them.
+    subprocess.run(['git', 'clone', '--shared', '--quiet', '--no-checkout',
+                    str(ROOT), str(destination)], check=True)
+    subprocess.run(['git', 'reset', '--mixed', 'HEAD'], cwd=destination,
+                   stdout=subprocess.DEVNULL, check=True)
     files = subprocess.check_output(['git', 'ls-files', '-z'], cwd=ROOT).decode().split('\0')
     for name in filter(None, files):
         source, target = ROOT / name, destination / name
