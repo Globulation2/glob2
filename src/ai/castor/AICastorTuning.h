@@ -26,8 +26,8 @@
 // ---------------------------------------------------------------------------
 // Tick / time intervals
 //
-// All AICastor cadences are measured in 40 ms engine ticks
-// (GAME_TICKS_PER_SECOND = 25, see EngineTiming.h).
+// All AICastor cadences are measured in 33⅓ ms engine ticks
+// (GAME_TICKS_PER_SECOND = 30, see EngineTiming.h).
 // ---------------------------------------------------------------------------
 
 // Initial / post-upgrade cooldown (~1.3 s) before controlUpgrades fires

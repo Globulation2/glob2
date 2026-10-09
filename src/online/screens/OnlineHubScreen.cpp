@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
+#include "EngineTiming.h"
 #include "OnlineHubScreen.h"
 #include "CustomGamePreferences.h"
 #include "GlobalContainer.h"
@@ -109,7 +110,7 @@ RecentLine recentLine(const Json &match, const std::string &me)
 		line.title += " · " + formatted("[hub versus %0]", versus);
 	line.detail = match.value("mapTitle", "");
 	if (match.contains("durationTicks") && match["durationTicks"].is_number_integer())
-		line.detail += (line.detail.empty() ? "" : " · ") + durationText(match["durationTicks"].get<int>() / 25);
+		line.detail += (line.detail.empty() ? "" : " · ") + durationText(match["durationTicks"].get<int>() / GAME_TICKS_PER_SECOND);
 	if (!match.value("rated", false))
 		line.rating = tr("[hub unrated]");
 	line.verified = match.value("verification", "") == "verified";

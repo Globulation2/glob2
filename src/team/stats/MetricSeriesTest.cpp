@@ -184,7 +184,7 @@ TEST_SUITE("MetricSeries")
 		CHECK(Stats::timeStep(9 * 3600, 4) == 3 * 3600);
 		CHECK(Stats::timeStep(600, 0) == 600);
 		CHECK(Stats::secondsAt(0) == 0);
-		CHECK(Stats::secondsAt(1499) == 59);
+		CHECK(Stats::secondsAt(1799) == 59);
 		CHECK(Stats::secondsAt(Uint32(Stats::TICKS_PER_MINUTE)) == 60);
 	}
 }

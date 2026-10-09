@@ -29,7 +29,7 @@ scanout. No GPU queries, synchronization, or additional world scans are introduc
   between consecutive intervals; its mean is mean absolute interval change.
 - `budgets` records observations, overruns, accumulated/worst excess, and longest overrun
   streak. Work uses the current step budget; presentation uses the step budget multiplied by
-  render cadence. Normal-speed steps have a 40 ms budget. Headless/uncapped runs have no
+  render cadence. Normal-speed steps have a 33⅓ ms budget. Headless/uncapped runs have no
   budget classification. Mode/speed changes break interval chains and overrun streaks.
 - Save queue, hash, and write measurements describe background work (or the existing
   synchronous fallback if thread creation fails). They must not be added to main-thread work.

@@ -1845,6 +1845,24 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   admission still validates targets on the simulation owner. Exceptional editing,
   saving and diagnostic actions retain explicit owner access.
 
+### Simulation tick rate
+
+Normal speed is 30 simulation ticks per second, independently of render FPS.
+Per-tick movement, production, combat, hunger and AI rules retain their existing
+values, so normal play progresses 20% faster than the former 25 TPS clock.
+Speed presets scale relative to this new normal. Engine deadlines accumulate
+nanoseconds before rounding host waits to milliseconds; the relay advertises
+30,000 millihertz and clients use its negotiated interval. Game clocks,
+statistics rates and newly configured minute-based winning conditions use 30 TPS.
+Autosaves retain approximately one-minute real-time spacing, and camera panning
+retains its presentation cadence.
+
+Save bytes and the supported save/replay format floors are unchanged. Existing
+saves retain their tick counters, pending orders and timers and resume at the new
+pace; existing replays play their recorded ticks faster. The simulation revision
+separates online matches from older engines, including the changed conversion of
+new minute-based winning conditions to ticks.
+
 ### Target render FPS
 
 **Settings > Display & graphics > Advanced graphics > Target render FPS** sets a

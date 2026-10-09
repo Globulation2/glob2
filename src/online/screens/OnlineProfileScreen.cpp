@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "EngineTiming.h"
 #include "online/ReplayAppearance.h"
 #include "OnlineProfileScreen.h"
 #include "QuickMatch.h"
@@ -343,7 +344,7 @@ Element OnlineProfileScreen::matchRow(int index, const Presentation &p, bool pho
 		change = "\xE2\x80\x93";
 	std::string minutes;
 	if (match.durationTicks)
-		minutes = FormattableString(tr("[profile %0 min]")).arg(int(std::lround(*match.durationTicks / (25.0 * 60))));
+		minutes = FormattableString(tr("[profile %0 min]")).arg(int(std::lround(*match.durationTicks / (double(GAME_TICKS_PER_SECOND) * 60))));
 	const std::string when = match.endedAt ? ageText(*match.endedAt, data.now ? data.now : wallClockMs())
 							 : match.startedAt ? ageText(*match.startedAt, data.now ? data.now : wallClockMs())
 											   : std::string();

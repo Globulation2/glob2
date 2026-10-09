@@ -105,11 +105,11 @@ void MenuColony::update(Uint64 now, bool visible)
 {
 	if (!game || !visible) { pause(); return; }
 	if (!clockStarted) { lastTime = now; clockStarted = true; return; }
-	pending += std::min<Uint64>(now - lastTime, 2 * GAME_TICK_MS);
+	pending += std::min<Uint64>((now - lastTime) * 1000000ULL, 2 * GAME_TICK_NS);
 	lastTime = now;
 	ColonyContext context;
 	// At most two steps per menu frame; never accumulate hidden-time debt.
-	while (pending >= GAME_TICK_MS)
+	while (pending >= GAME_TICK_NS)
 	{
         const std::array<unsigned,1> actors{0};
         const bool admitted = presentation && presentation->readyToCapture();
@@ -124,7 +124,7 @@ void MenuColony::update(Uint64 now, bool visible)
         }
 		game->syncStep(0);
 		worldTickTime = SDL_GetTicks();
-		pending -= GAME_TICK_MS;
+		pending -= GAME_TICK_NS;
 	}
 }
 

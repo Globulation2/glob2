@@ -24,7 +24,7 @@ private:
 	Game::ViewState view;
 	std::unique_ptr<ScenePreparation> presentation;
 	Uint64 worldTickTime = 0;
-	Uint64 lastTime = 0, pending = 0;
+	Uint64 lastTime = 0, pending = 0; // pending is accumulated nanoseconds
 	bool clockStarted = false;
 	int centerX = 0, centerY = 0;
 };

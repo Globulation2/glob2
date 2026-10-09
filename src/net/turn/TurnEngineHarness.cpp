@@ -1691,7 +1691,7 @@ TEST_SUITE("TurnEngineHarness")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		auto setup = makeSetup(mapPath("FourSquares1"), 2, {"nicowar"}, 4242);
-		setup.pauseLimit = Online::PauseLimit{2, 4}; // per seat: two pauses, four seconds (100 ticks) in all
+		setup.pauseLimit = Online::PauseLimit{2, 4}; // per seat: two pauses, four seconds in all
 		EngineMatch m(setup, mapPath("FourSquares1"), {{15 * MS}, {40 * MS, 10 * MS}});
 		for (auto& c : m.clients)
 			c->orderRate = 0.04;
@@ -1726,7 +1726,7 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK(usedByFirst < 40);
 		CHECK(lock0.pauseTicksUsed(1) == 0);
 		// 2. Seat 0 pauses again and never resumes: the game resumes by itself when its
-		// 100 ticks are used up.
+		// four seconds of ticks are used up.
 		pause(0, true);
 		m.run(500 * MS);
 		CHECK(paused(0));
@@ -1735,7 +1735,7 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK_FALSE(paused(0));
 		CHECK_FALSE(paused(1));
 		CHECK(lock0.pausesUsed(0) == 2);
-		CHECK(lock0.pauseTicksUsed(0) == 100);
+		CHECK(lock0.pauseTicksUsed(0) == 4 * GAME_TICKS_PER_SECOND);
 		// 3. A third pause of seat 0 is refused everywhere.
 		pause(0, true);
 		m.run(1 * SECOND);
@@ -1748,7 +1748,7 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK(paused(0));
 		m.run(3500 * MS);
 		CHECK_FALSE(paused(0));
-		CHECK(lock0.pauseTicksUsed(1) == 100);
+		CHECK(lock0.pauseTicksUsed(1) == 4 * GAME_TICKS_PER_SECOND);
 		m.run(2 * SECOND);
 		const std::uint32_t end = m.finish();
 		CHECK(m.requireIdenticalChecksums() == end + 1);
@@ -1987,4 +1987,3 @@ TEST_SUITE("TurnEngineHarness")
 		glob2test::writeFile(directory / "timeline-records.txt", loud.output);
 	}
 }
-

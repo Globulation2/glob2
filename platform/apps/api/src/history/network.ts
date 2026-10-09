@@ -2,6 +2,7 @@
 // network summary (RelayNetworkSummary v1, match_participants.network since
 // 0009) condensed into a few numbers and a rough quality label.
 import {
+  TICKS_PER_SECOND,
   rateConnection,
   worstRating,
   type ConnectionRating,
@@ -10,7 +11,7 @@ import {
 } from '@glob2/protocol';
 
 /** GAME_TICKS_PER_SECOND at the default rate; reports carry their own rate. */
-const DEFAULT_TICK_RATE_MILLIHZ = 25000;
+const DEFAULT_TICK_RATE_MILLIHZ = TICKS_PER_SECOND * 1000;
 
 /**
  * Thresholds behind ParticipantNetwork.quality beyond ping and behind, which

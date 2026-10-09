@@ -25,7 +25,7 @@ opaque bytes. The only exceptions are the few order type ids in the
 
 MatchSetup's optional `rules.aiOrderDelay` is an integer from 0 through 8;
 omitting it means 0 for backward compatibility. New match defaults explicitly set
-it to 8 (320 ms at the normal 40 ms tick interval). This delays AI responses to
+it to 8 (about 267 ms at the normal 33⅓ ms tick interval). This delays AI responses to
 observed changes and allows decisions to overlap subsequent simulation ticks. The engine stores it in GameHeader and uses the same delay
 for every AI seat. A decision at tick `t` yields an order for `t + delay`, with
 due computation completed before delivery. This logical AI delay is independent
@@ -43,8 +43,8 @@ for save and lifecycle boundaries.
 
 ## Model
 
-- The relay owns the clock. Tick `t` starts `t × 40 ms` after the match starts
-  (25 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
+- The relay owns the clock. Tick `t` starts `t × 1000 / 30 ms` after the match starts
+  (30 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
 - **Load barrier.** Clients connect once they have loaded the game, so the match
   starts when every human seat has said `Hello`: until then the relay sends no bundle,
   answers `Welcome` with `relayTick` 0 and runs no grace. After
@@ -362,7 +362,7 @@ online relay sets its match timer to `nextBundleMicros()` ([relay](relay.md)).
 
 ## Timing model and per-client delay
 
-Let `P` be the tick period (40 ms) and `B` the bundle interval. The relay emits horizon
+Let `P` be the tick period (33⅓ ms) and `B` the bundle interval. The relay emits horizon
 `H` at time `(H − 1) × P` after match start, on a tick boundary.
 
 ### Input delay
@@ -420,7 +420,7 @@ oscillating:
   worse than a little extra delay.
 - **Down:** when `required < target` has held continuously for 5 s, the target falls
   by one tick, and the hold timer restarts. The target therefore drains back to
-  baseline at no more than one tick (40 ms) per 5 s once jitter subsides. Any update
+  baseline at no more than one tick (33⅓ ms) per 5 s once jitter subsides. Any update
   in which `required ≥ target` cancels the hold.
 
 ### Rate control
@@ -559,7 +559,7 @@ then show "reconnecting" instead of stalling silently.
 ## Desync arbitration
 
 Each client sends `ChecksumReport(t, checksum)` for every tick `t` with
-`t % checksumInterval == 0` (every 25 ticks, once per second). The reports travel out
+`t % checksumInterval == 0` (every 25 ticks, about every 0.83 seconds). The reports travel out
 of band and never block execution. For each tick, the relay arbitrates once every seat
 that is not left, reconnecting or resyncing has reported. If some reports are still
 missing 250 ticks after tick `t`, it arbitrates with what it has.

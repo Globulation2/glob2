@@ -113,7 +113,7 @@ To create a `.game` file with specific AI players: start the game with GUI, set 
 
 ### `-test-games-nox [count]`
 
-Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~60 minutes of game time at 25 ticks/sec), or after `GLOB2_TEST_MAX_TICKS` ticks when that environment variable is a positive integer; a game stopped at the cap reports `winner_team=-1`. The cap only decides when the driver stops the game, not how ticks are simulated. An optional `count` parameter controls how many games to run (default: infinite).
+Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~50 minutes of game time at 30 ticks/sec), or after `GLOB2_TEST_MAX_TICKS` ticks when that environment variable is a positive integer; a game stopped at the cap reports `winner_team=-1`. The cap only decides when the driver stops the game, not how ticks are simulated. An optional `count` parameter controls how many games to run (default: infinite).
 
 ```bash
 ./glob2 -test-games-nox 1    # run one game and exit

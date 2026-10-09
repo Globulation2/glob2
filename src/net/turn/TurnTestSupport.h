@@ -122,7 +122,7 @@ namespace turntest
 	inline constexpr std::uint64_t MS = 1000;
 	inline constexpr std::uint64_t SECOND = 1000 * MS;
 	inline constexpr std::uint64_t FRAME = 5 * MS;
-	inline constexpr std::uint64_t TICK_PERIOD = 40 * MS; ///< TurnSession's default tick period
+	inline constexpr std::uint64_t TICK_PERIOD = 1000000000ULL / DEFAULT_TICK_RATE_MILLIHZ;
 
 	struct LinkProfile
 	{
