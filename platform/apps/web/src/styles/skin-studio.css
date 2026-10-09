@@ -144,13 +144,13 @@
 .skin-save-status {
   font-size: 12px;
   color: var(--ink-2);
-  margin-right: auto;
+  margin-inline-end: auto;
   white-space: nowrap;
 }
 .skin-history {
   display: flex;
   border-right: 1px solid var(--line);
-  padding-right: 12px;
+  padding-inline-end: 12px;
   gap: 2px;
 }
 .skin-topbar nav {
@@ -454,7 +454,7 @@
   display: flex;
   gap: 4px;
   border-right: 1px solid var(--line);
-  padding-right: 12px;
+  padding-inline-end: 12px;
 }
 .skin-actions button {
   font-size: 12px;
@@ -554,7 +554,7 @@
   margin: 0 0 8px;
 }
 .skin-final-view label {
-  text-align: left;
+  text-align: start;
   display: block;
   font-size: 12px;
 }
@@ -578,7 +578,7 @@
   display: block;
   border-radius: 50%;
   color: var(--gold-ink);
-  text-align: right;
+  text-align: end;
   line-height: 38px;
 }
 .skin-muted {
@@ -666,7 +666,7 @@
   min-height: 0;
   scrollbar-color: var(--line) transparent;
   overflow: auto;
-  padding-right: 6px;
+  padding-inline-end: 6px;
 }
 .skin-pattern-grid {
   display: grid;
@@ -845,7 +845,7 @@
     display: none;
   }
   .skin-document-title {
-    margin-right: auto;
+    margin-inline-end: auto;
   }
   .skin-navigation {
     right: 14px;
@@ -906,7 +906,7 @@
     height: 72px;
   }
   .skin-history {
-    padding-right: 4px;
+    padding-inline-end: 4px;
   }
   .skin-models button {
     min-width: 72px;
@@ -919,7 +919,7 @@
     width: 95px !important;
   }
   .skin-actions {
-    padding-right: 6px;
+    padding-inline-end: 6px;
   }
 }
 @media (max-width: 599px) {
@@ -1160,7 +1160,7 @@
   .skin-pattern-controls {
     flex: 1;
     min-height: min(160px, 24dvh);
-    padding-right: 0;
+    padding-inline-end: 0;
   }
   .skin-pattern-grid button {
     flex-direction: row;
@@ -1256,7 +1256,7 @@
   display: block !important;
   width: 100%;
   padding: 0 !important;
-  text-align: left;
+  text-align: start;
   border: 0 !important;
   background: transparent !important;
 }
@@ -1289,7 +1289,7 @@
   width: 100%;
 }
 .skin-toolbox-menu {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .skin-toolbox-menu button {
   font-size: 12px;
@@ -1390,7 +1390,7 @@
   font-variant-numeric: tabular-nums;
 }
 .skin-color-chevron {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .skin-color-picker[open] .skin-color-chevron {
   transform: rotate(180deg);

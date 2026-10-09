@@ -1,3 +1,5 @@
+import { t } from '../../i18n.tsx';
+import { useLocale } from '../../i18n.tsx';
 import { useTheme } from '../../theme.tsx';
 import { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
@@ -42,7 +44,7 @@ export default function Editor({
   baseline,
   language = 'javascript',
   modelPath = 'file:///studio/ai.js',
-  label = 'AI JavaScript source',
+  label = t('AI JavaScript source'),
   declarations = noDeclarations,
   readOnly,
   onChange,
@@ -56,6 +58,7 @@ export default function Editor({
   readOnly: boolean;
   onChange: (text: string) => void;
 }) {
+  useLocale();
   const { theme } = useTheme();
   useEffect(() => {
     monaco.editor.setTheme(theme === 'dark' ? 'vs-dark' : 'vs');

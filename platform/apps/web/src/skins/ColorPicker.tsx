@@ -1,3 +1,4 @@
+import { t, useLocale } from '../i18n.tsx';
 import { useId, useState, type PointerEvent } from 'react';
 
 type HSV = { h: number; s: number; v: number };
@@ -70,6 +71,7 @@ export function ColorPicker({
   onChange: (color: string) => void;
   description?: string;
 }) {
+  useLocale();
   const id = useId();
   const [current, setCurrent] = useState(value);
   const [hsv, setHSV] = useState(() => fromHex(value));
@@ -99,14 +101,14 @@ export function ColorPicker({
   }
   return (
     <details className="skin-color-picker">
-      <summary aria-label={`Choose ${label.toLowerCase()}`}>
+      <summary aria-label={t('Choose {value0}', { value0: label.toLowerCase() })}>
         <span className="skin-color-chip" style={{ background: value }} />
         <span className="skin-color-caption">
           <strong>{label}</strong>
           <small>{value.toUpperCase()}</small>
         </span>
         <span aria-hidden="true" className="skin-color-chevron">
-          ⌄
+          {t('⌄')}
         </span>
       </summary>
       {description && <p className="skin-color-description">{description}</p>}
@@ -115,11 +117,14 @@ export function ColorPicker({
           className="skin-color-plane"
           role="slider"
           tabIndex={0}
-          aria-label={`${label} saturation and brightness`}
+          aria-label={t('{value0} saturation and brightness', { value0: label })}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(hsv.s * 100)}
-          aria-valuetext={`${Math.round(hsv.s * 100)}% saturation, ${Math.round(hsv.v * 100)}% brightness`}
+          aria-valuetext={t('{value0}% saturation, {value1}% brightness', {
+            value0: Math.round(hsv.s * 100),
+            value1: Math.round(hsv.v * 100),
+          })}
           aria-describedby={id}
           style={{ backgroundColor: `hsl(${hsv.h}, 100%, 50%)` }}
           onPointerDown={(event) => {
@@ -157,13 +162,13 @@ export function ColorPicker({
           />
         </div>
         <span id={id} className="skin-color-help">
-          ← → saturation · ↑ ↓ brightness
+          {t('← → saturation · ↑ ↓ brightness')}
         </span>
         <label className="skin-color-hue">
-          Hue
+          {t('Hue')}
           <input
             type="range"
-            aria-label={`${label} hue`}
+            aria-label={t('{value0} hue', { value0: label })}
             min={0}
             max={359}
             value={Math.round(hsv.h)}
@@ -171,7 +176,7 @@ export function ColorPicker({
           />
         </label>
         <label className="skin-color-hex">
-          Hex
+          {t('Hex')}
           <input
             aria-label={label}
             type="text"
@@ -200,7 +205,11 @@ export function ColorPicker({
             }}
           />
         </label>
-        <div className="skin-color-swatches" role="group" aria-label={`${label} swatches`}>
+        <div
+          className="skin-color-swatches"
+          role="group"
+          aria-label={t('{value0} swatches', { value0: label })}
+        >
           {SWATCHES.map((color) => (
             <button
               key={color}

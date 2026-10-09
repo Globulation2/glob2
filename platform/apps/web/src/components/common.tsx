@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 // Small shared pieces: loading/error states, match rows, player links, avatars, map images.
 import { useState, type CSSProperties, type ReactNode } from 'react';
 import type { MatchSummary, PublicAccount } from '@glob2/protocol';
@@ -35,6 +36,7 @@ export function TableWrap({
   stack?: boolean;
   children: ReactNode;
 }) {
+  useLocale();
   return (
     <div
       className={`table-wrap${stack ? ' stack' : ''}`}
@@ -48,18 +50,20 @@ export function TableWrap({
 }
 
 export function Loading() {
+  useLocale();
   return (
     <p className="loading" role="status">
-      <span className="glob-spin" aria-hidden="true" /> Loading…
+      <span className="glob-spin" aria-hidden="true" /> {t(' Loading…')}
     </p>
   );
 }
 
 export function ErrorNotice({ error }: { error: Error }) {
+  useLocale();
   const notFound = error instanceof ApiError && error.status === 404;
   return (
     <div className="notice error" role="alert">
-      {notFound ? 'Not found. It may have been removed, or the link is wrong.' : error.message}
+      {notFound ? t('Not found. It may have been removed, or the link is wrong.') : error.message}
     </div>
   );
 }
@@ -78,16 +82,21 @@ export function Loaded<T>({
   children: (data: T) => ReactNode;
   page?: string;
 }) {
+  useLocale();
   if (load.status === 'loading') return <Loading />;
   if (load.status === 'error') {
     if (!page) return <ErrorNotice error={load.error} />;
     const notFound = load.error instanceof ApiError && load.error.status === 404;
     return (
       <>
-        <h1>{notFound ? `${page} not found` : `Could not load this ${page.toLowerCase()}`}</h1>
+        <h1>
+          {notFound
+            ? t('{value0} not found', { value0: t(page) })
+            : t('Could not load this {value0}', { value0: t(page) })}
+        </h1>
         <ErrorNotice error={load.error} />
         <p>
-          <Link to="/">Go to the home page</Link>
+          <Link to="/">{t('Go to the home page')}</Link>
         </p>
       </>
     );
@@ -97,6 +106,7 @@ export function Loaded<T>({
 
 /** An empty list, with a bit of the game's world so it does not feel broken. */
 export function Empty({ children, art = 'clearingFlag' }: { children: ReactNode; art?: ArtName }) {
+  useLocale();
   return (
     <div className="list empty">
       <GameArt name={art} size={72} className="art" />
@@ -112,6 +122,7 @@ export function Avatar({
   account: Pick<PublicAccount, 'id' | 'displayName' | 'avatarUrl'>;
   size?: 'small' | 'large';
 }) {
+  useLocale();
   const [failed, setFailed] = useState<string>();
   const src = account.avatarUrl ?? `/api/v1/accounts/${account.id}/avatar`;
   return (
@@ -130,6 +141,7 @@ const AI_ICON_SIZES = { small: 18, medium: 30, large: 50 };
 
 /** An AI player's stand-in for an avatar. */
 export function AiMark({ size }: { size?: 'small' | 'large' }) {
+  useLocale();
   return (
     <span className={`avatar ai-avatar${size ? ` ${size}` : ''}`} aria-hidden="true">
       <Icon name="robot" size={AI_ICON_SIZES[size ?? 'medium']} />
@@ -138,36 +150,44 @@ export function AiMark({ size }: { size?: 'small' | 'large' }) {
 }
 
 export function PlayerLink({ account }: { account: Pick<PublicAccount, 'id' | 'displayName'> }) {
-  return <Link to={`/players/${account.id}`}>{account.displayName}</Link>;
+  useLocale();
+  return (
+    <Link to={`/players/${account.id}`}>
+      <bdi dir="auto">{account.displayName}</bdi>
+    </Link>
+  );
 }
 
 export function VerificationBadge({ match }: { match: MatchSummary }) {
+  useLocale();
   switch (match.verification) {
     case 'verified':
-      return <span className="badge ok">✓ verified</span>;
+      return <span className="badge ok">{t('✓ verified')}</span>;
     case 'pending':
-      return match.status === 'ended' ? <span className="badge">checking…</span> : null;
+      return match.status === 'ended' ? <span className="badge">{t('checking…')}</span> : null;
     case 'diverged':
-      return <span className="badge bad">diverged</span>;
+      return <span className="badge bad">{t('diverged')}</span>;
     case 'unverifiable':
-      return <span className="badge warn">unverifiable</span>;
+      return <span className="badge warn">{t('unverifiable')}</span>;
     case 'failed':
-      return <span className="badge warn">not checked</span>;
+      return <span className="badge warn">{t('not checked')}</span>;
     default:
       return null;
   }
 }
 
 export function StatusBadge({ match }: { match: MatchSummary }) {
-  if (match.status === 'running') return <span className="badge gold live">live</span>;
-  if (match.status === 'starting') return <span className="badge">starting</span>;
-  if (match.status === 'cancelled') return <span className="badge">cancelled</span>;
-  if (match.endReason === 'aborted') return <span className="badge warn">aborted</span>;
+  useLocale();
+  if (match.status === 'running') return <span className="badge gold live">{t('live')}</span>;
+  if (match.status === 'starting') return <span className="badge">{t('starting')}</span>;
+  if (match.status === 'cancelled') return <span className="badge">{t('cancelled')}</span>;
+  if (match.endReason === 'aborted') return <span className="badge warn">{t('aborted')}</span>;
   return null;
 }
 
 /** Team swatches of a match, in the colours the game gave the teams. */
 export function TeamSwatches({ match }: { match: MatchSummary }) {
+  useLocale();
   const teams = [...new Set(match.participants.map((p) => p.team))].sort((a, b) => a - b);
   const count = teamCountOf(match.participants);
   return (
@@ -189,6 +209,7 @@ export function MatchRow({
   accountId?: string;
   aiId?: string;
 }) {
+  useLocale();
   const { instance } = useSession();
   const mine = aiId
     ? match.participants.find((p) => p.kind === 'ai' && p.ai === aiId)
@@ -199,7 +220,12 @@ export function MatchRow({
   const opponents = mine ? others.filter((p) => p.team !== mine.team) : others;
   const vs = opponents.map(participantName).join(', ');
   const title = mine
-    ? `${allies.length ? `with ${allies.map(participantName).join(', ')} ` : ''}vs ${vs || 'nobody'}`
+    ? t('{value0}vs {value1}', {
+        value0: allies.length
+          ? t('with {value0} ', { value0: allies.map(participantName).join(', ') })
+          : '',
+        value1: vs || 'nobody',
+      })
     : match.participants.map(participantName).join(' vs ');
   const change = mine?.rating ? mine.rating.after - mine.rating.before : undefined;
   return (
@@ -209,11 +235,11 @@ export function MatchRow({
           {result.letter}
           <span className="sr-only">
             {result.letter === 'W'
-              ? ' (won)'
+              ? t(' (won)')
               : result.letter === 'L'
-                ? ' (lost)'
+                ? t(' (lost)')
                 : result.letter === 'D'
-                  ? ' (draw)'
+                  ? t(' (draw)')
                   : ''}
           </span>
         </span>
@@ -222,13 +248,19 @@ export function MatchRow({
       <div className="grow">
         <div className="ell title">{title}</div>
         <div className="caption ell">
-          {match.mapTitle ?? 'Custom map'} · {ago(match.endedAt ?? match.startedAt)}
+          <RichMessage
+            source={'{slot0} · {slot1}'}
+            slots={{
+              slot0: match.mapTitle ?? t('Custom map'),
+              slot1: ago(match.endedAt ?? match.startedAt),
+            }}
+          />
         </div>
       </div>
       <span className="caption hide-phone" style={{ width: 120 }}>
         {match.origin === 'queue'
           ? queueName(instance?.queues, match.queueId, match.queueName)
-          : 'Room'}
+          : t('Room')}
       </span>
       <span className="caption num hide-phone" style={{ width: 70 }}>
         {duration(match.durationTicks)}
@@ -250,13 +282,14 @@ export function MatchListView({
   matches,
   accountId,
   aiId,
-  empty = 'No matches yet.',
+  empty = t('No matches yet.'),
 }: {
   matches: MatchSummary[];
   accountId?: string;
   aiId?: string;
   empty?: string;
 }) {
+  useLocale();
   if (matches.length === 0) return <Empty art="warFlag">{empty}</Empty>;
   return (
     <div className="list">
@@ -281,6 +314,7 @@ export function MapImage({
   alt: string;
   size?: number;
 }) {
+  useLocale();
   const style = size ? { width: size, height: size } : undefined;
   return src ? (
     <img
@@ -294,6 +328,11 @@ export function MapImage({
       height={size ?? 384}
     />
   ) : (
-    <div className="mapimg none" role="img" aria-label={`${alt} (no preview)`} style={style} />
+    <div
+      className="mapimg none"
+      role="img"
+      aria-label={t('{value0} (no preview)', { value0: alt })}
+      style={style}
+    />
   );
 }

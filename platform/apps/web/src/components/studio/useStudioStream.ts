@@ -1,3 +1,4 @@
+import { t, message as sourceMessage } from '../../messages.ts';
 import { useEffect, useRef, useState } from 'react';
 import type { StudioEvent, MusicStudioEvent } from '@glob2/protocol';
 import { request } from '../../api.ts';
@@ -68,7 +69,7 @@ export function createStudioStream<
           })
           .catch(() => {
             if (abort.signal.aborted) return;
-            setConnection('Reconnecting to your saved project…');
+            setConnection(sourceMessage('Reconnecting to your saved project…'));
             clearTimeout(retry);
             retry = setTimeout(refreshSnapshot, 3000);
           });
@@ -77,7 +78,7 @@ export function createStudioStream<
         if (abort.signal.aborted) return;
         stream?.close();
         if (typeof EventSource === 'undefined') {
-          setConnection('Live updates are unavailable. Refreshing saved work…');
+          setConnection(sourceMessage('Live updates are unavailable. Refreshing saved work…'));
           retry = setTimeout(() => {
             refreshSnapshot();
             connect();
@@ -103,7 +104,9 @@ export function createStudioStream<
         };
         stream.onerror = () => {
           recovering = true;
-          setConnection('Connection interrupted. Reconnecting to your saved project…');
+          setConnection(
+            sourceMessage('Connection interrupted. Reconnecting to your saved project…'),
+          );
         };
         stream.onmessage = (event: MessageEvent<string>) => {
           let value: StudioEvent | MusicStudioEvent;
@@ -151,7 +154,7 @@ export function createStudioStream<
           connect();
         } catch {
           if (!abort.signal.aborted) {
-            setConnection('Reconnecting to your saved project…');
+            setConnection(sourceMessage('Reconnecting to your saved project…'));
             retry = setTimeout(() => void start(), 3000);
           }
         }
@@ -164,6 +167,6 @@ export function createStudioStream<
         clearTimeout(refresh);
       };
     }, [id]);
-    return { thread, setThread, connection, revision, celebrate };
+    return { thread, setThread, connection: t(connection), revision, celebrate };
   };
 }

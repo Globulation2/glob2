@@ -1,3 +1,5 @@
+import { displayMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { ReleaseDialog } from '../components/studio/Studio.tsx';
 import { Icon } from '../icons.tsx';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -41,6 +43,7 @@ function ObjectControls({
   onChange: (v: Entry) => void;
   idPrefix: string;
 }) {
+  useLocale();
   return (
     <div className="set-properties">
       {Object.entries(value).map(([key, v]) => (
@@ -65,7 +68,7 @@ function ObjectControls({
               value=""
               onChange={(e) => onChange({ ...value, [key]: e.target.value || null })}
             >
-              <option value="">None</option>
+              <option value="">{t('None')}</option>
               {MATERIALS.map((m) => (
                 <option key={m}>{m}</option>
               ))}
@@ -80,14 +83,15 @@ function ObjectControls({
           {key.endsWith('Q8') && (
             <small>
               {key.includes('Health')
-                ? 'Signed HP per exposed tick, divided by 256; negative values damage units.'
-                : 'Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.'}
+                ? t('Signed HP per exposed tick, divided by 256; negative values damage units.')
+                : t('Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.')}
             </small>
           )}
           {(key === 'growthRate' || key === 'spreadRate') && (
             <small>
-              Integer rate: 196608 means one growth opportunity or probability one. Zero disables
-              it.
+              {t(
+                'Integer rate: 196608 means one growth opportunity or probability one. Zero disables it.',
+              )}
             </small>
           )}
         </label>
@@ -104,14 +108,15 @@ function JsonControl({
   value: unknown;
   onChange: (v: unknown) => void;
 }) {
+  useLocale();
   const state = useContext(JsonEdits);
-  if (!state) throw Error('JSON controls require the set workspace.');
+  if (!state) throw Error(t('JSON controls require the set workspace.'));
   // Keep unfinished text in the workspace so switching entries cannot discard it.
   const edited = state.edits[id];
   return (
     <>
       <textarea
-        aria-label="Advanced properties JSON"
+        aria-label={t('Advanced properties JSON')}
         aria-invalid={!!edited?.error}
         value={
           edited && (edited.error || edited.value === JSON.stringify(value))
@@ -146,13 +151,14 @@ function Variants({
   frame: number;
   onChange: (v: unknown) => void;
 }) {
+  useLocale();
   const entries = Array.isArray(value) ? value.map(object) : [];
   return (
     <div className="set-variants">
       {entries.map((v, i) => (
         <div key={i}>
           <label>
-            Frame
+            {t('Frame')}
             <input
               type="number"
               min={0}
@@ -165,7 +171,7 @@ function Variants({
             />
           </label>
           <label>
-            Weight
+            {t('Weight')}
             <input
               type="number"
               min={1}
@@ -182,12 +188,12 @@ function Variants({
             disabled={entries.length === 1}
             onClick={() => onChange(entries.filter((_, j) => i !== j))}
           >
-            Remove variant
+            {t('Remove variant')}
           </button>
         </div>
       ))}
       <button type="button" onClick={() => onChange([...entries, { frame, weight: 1 }])}>
-        Add selected frame
+        {t('Add selected frame')}
       </button>
     </div>
   );
@@ -203,6 +209,7 @@ export function SetEditor({
   onSaved?: () => void;
   serverRevision?: number;
 }) {
+  useLocale();
   const [releaseOpen, setReleaseOpen] = useState(false);
   const { account } = useSession(),
     { navigate } = useRouter();
@@ -275,7 +282,7 @@ export function SetEditor({
     };
     window.addEventListener('beforeunload', warn);
     const navigate = (e: Event) => {
-      if (dirty && !window.confirm('Leave this set and discard unsaved changes?'))
+      if (dirty && !window.confirm(t('Leave this set and discard unsaved changes?')))
         e.preventDefault();
     };
     window.addEventListener('glob2-before-navigate', navigate);
@@ -303,9 +310,9 @@ export function SetEditor({
     }
   }
   async function save() {
-    if (!pack) throw Error('The workspace is still loading.');
+    if (!pack) throw Error(t('The workspace is still loading.'));
     if (Object.values(jsonEdits).some((edit) => edit.error))
-      throw Error('Correct the invalid JSON before saving.');
+      throw Error(t('Correct the invalid JSON before saving.'));
     const current = draft
       ? await request<SetDraft>('PUT', '/api/v1/set-drafts/' + draft.id, {
           body: { revision: draft.revision, package: pack },
@@ -319,12 +326,12 @@ export function SetEditor({
   if (!account)
     return (
       <section>
-        <h1>Create a set</h1>
-        <p>Sign in with a registered account to save and publish custom sets.</p>
-        <a href="/signin">Sign in</a>
+        <h1>{t('Create a set')}</h1>
+        <p>{t('Sign in with a registered account to save and publish custom sets.')}</p>
+        <a href="/signin">{t('Sign in')}</a>
       </section>
     );
-  if (!pack) return <p role={error ? 'alert' : 'status'}>{error || 'Loading workspace…'}</p>;
+  if (!pack) return <p role={error ? 'alert' : 'status'}>{error || t('Loading workspace…')}</p>;
   const entries = kind === 'terrain' ? pack.terrains : pack.resources,
     entry = entries[selected];
   const material = entry ? object(pack.assets.terrains[String(entry['key'])]) : {},
@@ -386,7 +393,12 @@ export function SetEditor({
       <section className="set-workspace">
         {draft && dirty && serverRevision !== undefined && serverRevision !== draft.revision && (
           <div role="alert">
-            <p>Another session saved revision {serverRevision}. Your local edits are preserved.</p>
+            <p>
+              <RichMessage
+                source={'Another session saved revision {slot0}. Your local edits are preserved.'}
+                slots={{ slot0: serverRevision }}
+              />
+            </p>
             <button
               onClick={() => {
                 const url = URL.createObjectURL(
@@ -401,7 +413,7 @@ export function SetEditor({
                 setTimeout(() => URL.revokeObjectURL(url), 1000);
               }}
             >
-              Download local changes
+              {t('Download local changes')}
             </button>
             <button
               onClick={() =>
@@ -415,7 +427,7 @@ export function SetEditor({
                 })
               }
             >
-              Discard manual edits and load saved revision
+              {t('Discard manual edits and load saved revision')}
             </button>
           </div>
         )}
@@ -423,31 +435,35 @@ export function SetEditor({
           <div>
             {draft && !published && !onDirtyChange && (
               <Link to={`/terrain-studio?draft=${draft.id}`} className="button">
-                Edit with AI
+                {t('Edit with AI')}
               </Link>
             )}
             {onDirtyChange ? <h2>{pack.title}</h2> : <h1>{pack.title}</h1>}
             <p>
-              {published
-                ? 'Published release'
-                : dirty
-                  ? 'Unsaved changes'
-                  : draft
-                    ? 'Draft saved'
-                    : 'New set'}{' '}
-              · Custom artwork and gameplay properties
+              <RichMessage
+                source={'{slot0} · Custom artwork and gameplay properties'}
+                slots={{
+                  slot0: published
+                    ? t('Published release')
+                    : dirty
+                      ? t('Unsaved changes')
+                      : draft
+                        ? t('Draft saved')
+                        : t('New set'),
+                }}
+              />
             </p>
           </div>
-          {!onDirtyChange && <Link to="/sets/mine">My sets</Link>}
+          {!onDirtyChange && <Link to="/sets/mine">{t('My sets')}</Link>}
         </header>
         {error && (
           <p className="notice" role="alert">
-            {error}
+            {displayMessage(error)}
           </p>
         )}
         <fieldset disabled={busy || published} className="set-metadata">
           <label>
-            Title
+            {t('Title')}
             <input
               maxLength={128}
               value={pack.title}
@@ -455,7 +471,7 @@ export function SetEditor({
             />
           </label>
           <label>
-            Description
+            {t('Description')}
             <textarea
               maxLength={2000}
               value={pack.description}
@@ -463,7 +479,7 @@ export function SetEditor({
             />
           </label>
           <label>
-            Tags
+            {t('Tags')}
             <input
               value={tagsText}
               onChange={(e) => {
@@ -483,7 +499,7 @@ export function SetEditor({
             />
           </label>
           <label>
-            License
+            {t('License')}
             <select
               value={pack.license}
               onChange={(e) =>
@@ -496,12 +512,12 @@ export function SetEditor({
                 })
               }
             >
-              <option value="CC-BY-4.0">CC BY 4.0 — credit required</option>
-              <option value="CC0-1.0">CC0 — public domain</option>
+              <option value="CC-BY-4.0">{t('CC BY 4.0 — credit required')}</option>
+              <option value="CC0-1.0">{t('CC0 — public domain')}</option>
             </select>
           </label>
           <label>
-            Creator credit
+            {t('Creator credit')}
             <input
               value={pack.credits[0]?.author ?? ''}
               onChange={(e) =>
@@ -520,7 +536,7 @@ export function SetEditor({
             />
           </label>
           <details>
-            <summary>Additional credits and source attribution</summary>
+            <summary>{t('Additional credits and source attribution')}</summary>
             <JsonControl
               id="credits"
               value={pack.credits}
@@ -553,7 +569,7 @@ export function SetEditor({
                   setSelected(0);
                 }}
               >
-                Terrain
+                {t('Terrain')}
               </button>
               <button
                 aria-pressed={kind === 'resource'}
@@ -562,11 +578,11 @@ export function SetEditor({
                   setSelected(0);
                 }}
               >
-                Resources
+                {t('Resources')}
               </button>
             </div>
             <label>
-              Start from a preset
+              {t('Start from a preset')}
               <select
                 value={kind === 'terrain' ? preset : resourcePreset}
                 onChange={(e) =>
@@ -581,7 +597,7 @@ export function SetEditor({
               </select>
             </label>
             <button disabled={busy || published} onClick={addEntry}>
-              Add {kind}
+              <RichMessage source={'Add {slot0}'} slots={{ slot0: kind }} />
             </button>
             <ul className="set-entry-list">
               {entries.map((e, i) => (
@@ -596,9 +612,14 @@ export function SetEditor({
           <div className="set-entry-editor">
             {entry ? (
               <fieldset disabled={busy || published}>
-                <legend>{kind === 'terrain' ? 'Terrain' : 'Resource'} properties</legend>
+                <legend>
+                  <RichMessage
+                    source={'{slot0} properties'}
+                    slots={{ slot0: kind === 'terrain' ? t('Terrain') : t('Resource') }}
+                  />
+                </legend>
                 <label>
-                  Name
+                  {t('Name')}
                   <input
                     value={String(kind === 'terrain' ? entry['name'] : presentation['name'])}
                     onChange={(e) =>
@@ -614,7 +635,7 @@ export function SetEditor({
                 {kind === 'terrain' ? (
                   <>
                     <label>
-                      Gameplay preset
+                      {t('Gameplay preset')}
                       <select
                         value={String(entry['base'])}
                         onChange={(e) => updateEntry({ ...entry, base: e.target.value })}
@@ -624,14 +645,14 @@ export function SetEditor({
                         ))}
                       </select>
                     </label>
-                    <p>Properties inherit this preset until you add an override.</p>
+                    <p>{t('Properties inherit this preset until you add an override.')}</p>
                     <ObjectControls
                       idPrefix={String(entry['key']) + '/properties'}
                       value={object(entry['properties'])}
                       onChange={(v) => updateEntry({ ...entry, properties: v })}
                     />
                     <label>
-                      Add a property override
+                      {t('Add a property override')}
                       <select
                         defaultValue=""
                         onChange={(e) => {
@@ -646,7 +667,7 @@ export function SetEditor({
                           e.target.value = '';
                         }}
                       >
-                        <option value="">Choose property…</option>
+                        <option value="">{t('Choose property…')}</option>
                         {Object.keys(TERRAIN_PROPERTIES)
                           .filter((k) => !(k in object(entry['properties'])))
                           .map((p) => (
@@ -657,9 +678,9 @@ export function SetEditor({
                       </select>
                     </label>
                     <details>
-                      <summary>Resource placement permissions</summary>
+                      <summary>{t('Resource placement permissions')}</summary>
                       <label>
-                        Allowed resource keys (null uses habitats)
+                        {t('Allowed resource keys (null uses habitats)')}
                         <JsonControl
                           id={String(entry['key']) + '/allowedResources'}
                           value={entry['allowedResourceKeys'] ?? null}
@@ -675,7 +696,7 @@ export function SetEditor({
                       value={object(entry['properties'])}
                       onChange={(v) => updateEntry({ ...entry, properties: v })}
                     />
-                    <h3>Material yields</h3>
+                    <h3>{t('Material yields')}</h3>
                     {MATERIALS.map((m) => {
                       const yields = object(entry['yields']),
                         enabled = m in yields;
@@ -717,9 +738,9 @@ export function SetEditor({
                     })}
                   </>
                 )}
-                <h3>Appearance</h3>
+                <h3>{t('Appearance')}</h3>
                 <label>
-                  Spritesheet
+                  {t('Spritesheet')}
                   <select
                     value={String(
                       kind === 'terrain'
@@ -748,16 +769,25 @@ export function SetEditor({
                     }}
                   >
                     <option value="" disabled={kind === 'resource'}>
-                      Choose uploaded sheet…
+                      {t('Choose uploaded sheet…')}
                     </option>
                     {kind === 'resource' &&
                       typeof presentation['sprite'] === 'string' &&
                       !presentation['sprite'].startsWith('data/sets/') && (
-                        <option value={presentation['sprite']}>Installed preset artwork</option>
+                        <option value={presentation['sprite']}>
+                          {t('Installed preset artwork')}
+                        </option>
                       )}
                     {pack.assets.sheets.map((s) => (
                       <option key={s.hash} value={'data/sets/' + s.hash}>
-                        {s.hash.slice(0, 10)} · {s.frameWidth}×{s.frameHeight}
+                        <RichMessage
+                          source={'{slot0} · {slot1}×{slot2}'}
+                          slots={{
+                            slot0: s.hash.slice(0, 10),
+                            slot1: s.frameWidth,
+                            slot2: s.frameHeight,
+                          }}
+                        />
                       </option>
                     ))}
                   </select>
@@ -765,7 +795,7 @@ export function SetEditor({
                 {kind === 'terrain' && !!material['sprite'] && (
                   <>
                     <label>
-                      Boundary style
+                      {t('Boundary style')}
                       <select
                         value={String(material['profile'] ?? 'soft')}
                         onChange={(e) => updateMaterial({ ...material, profile: e.target.value })}
@@ -790,7 +820,7 @@ export function SetEditor({
                       onChange={(v) => updateMaterial({ ...material, ...v })}
                     />
                     <details>
-                      <summary>Colors, seams and raised decor</summary>
+                      <summary>{t('Colors, seams and raised decor')}</summary>
                       <JsonControl
                         id={String(entry['key']) + '/material'}
                         value={material}
@@ -801,7 +831,7 @@ export function SetEditor({
                 )}
                 {kind === 'resource' && (
                   <>
-                    <h4>Stock levels</h4>
+                    <h4>{t('Stock levels')}</h4>
                     {(Array.isArray(presentation['levels']) ? presentation['levels'] : []).map(
                       (l: unknown, i: number) => {
                         const level = object(l),
@@ -809,7 +839,7 @@ export function SetEditor({
                         return (
                           <div key={i}>
                             <label>
-                              Minimum total stock
+                              {t('Minimum total stock')}
                               <input
                                 type="number"
                                 min={0}
@@ -854,7 +884,7 @@ export function SetEditor({
                                   })
                                 }
                               >
-                                Remove stock level
+                                {t('Remove stock level')}
                               </button>
                             )}
                           </div>
@@ -881,7 +911,7 @@ export function SetEditor({
                         });
                       }}
                     >
-                      Add stock level
+                      {t('Add stock level')}
                     </button>
                     <ObjectControls
                       idPrefix={String(entry['key']) + '/animation'}
@@ -914,22 +944,23 @@ export function SetEditor({
                     setSelected(0);
                   }}
                 >
-                  Remove entry
+                  {t('Remove entry')}
                 </button>
               </fieldset>
             ) : (
               <p>
-                Add a terrain or resource to begin. Built-in presets supply properties without
-                copying their artwork into your set.
+                {t(
+                  'Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.',
+                )}
               </p>
             )}
           </div>
           <aside>
-            <h2>Spritesheets</h2>
+            <h2>{t('Spritesheets')}</h2>
             <fieldset disabled={busy || published}>
               <div className="set-grid-size">
                 <label>
-                  Frame width
+                  {t('Frame width')}
                   <input
                     type="number"
                     min={1}
@@ -939,7 +970,7 @@ export function SetEditor({
                   />
                 </label>
                 <label>
-                  Frame height
+                  {t('Frame height')}
                   <input
                     type="number"
                     min={1}
@@ -950,12 +981,12 @@ export function SetEditor({
                 </label>
               </div>
               <p>
-                Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the
-                same PNG with new dimensions to replace its frame grid; then check its frame
-                mappings.
+                {t(
+                  'Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.',
+                )}
               </p>
               <label>
-                Upload PNG
+                {t('Upload PNG')}
                 <input
                   type="file"
                   accept="image/png"
@@ -983,7 +1014,7 @@ export function SetEditor({
               </label>
             </fieldset>
             <label>
-              Inspect sheet
+              {t('Inspect sheet')}
               <select
                 value={sheet}
                 onChange={(e) => {
@@ -991,7 +1022,7 @@ export function SetEditor({
                   setFrame(0);
                 }}
               >
-                <option value="">Choose sheet…</option>
+                <option value="">{t('Choose sheet…')}</option>
                 {pack.assets.sheets.map((s) => (
                   <option key={s.hash} value={s.hash}>
                     {s.hash.slice(0, 10)}
@@ -1003,7 +1034,7 @@ export function SetEditor({
               <div className="set-sheet">
                 <img
                   src={sheetUrl(activeSheet.png)}
-                  alt="Uploaded spritesheet; click a tile to select its frame"
+                  alt={t('Uploaded spritesheet; click a tile to select its frame')}
                   onClick={(e) => {
                     const img = e.currentTarget,
                       rect = img.getBoundingClientRect(),
@@ -1023,7 +1054,7 @@ export function SetEditor({
                   }}
                 />
                 <label>
-                  Selected frame
+                  {t('Selected frame')}
                   <input
                     type="number"
                     min={0}
@@ -1031,7 +1062,7 @@ export function SetEditor({
                     onChange={(e) => setFrame(Number(e.target.value))}
                   />
                 </label>
-                <small>Frames run left to right, then top to bottom.</small>
+                <small>{t('Frames run left to right, then top to bottom.')}</small>
                 <button
                   disabled={busy || published}
                   onClick={() => {
@@ -1059,7 +1090,7 @@ export function SetEditor({
                     setFrame(0);
                   }}
                 >
-                  Remove sheet
+                  {t('Remove sheet')}
                 </button>
               </div>
             )}
@@ -1067,10 +1098,11 @@ export function SetEditor({
         </div>
         <SetPreview pack={pack} />
         <footer className="set-validation">
-          <h2>Check & publish</h2>
+          <h2>{t('Check & publish')}</h2>
           <p>
-            Checks validate gameplay properties, image bounds, frame mappings and rendering using
-            the game engine. They do not establish map balance.
+            {t(
+              'Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.',
+            )}
           </p>
           <div className="set-actions">
             <button
@@ -1082,7 +1114,7 @@ export function SetEditor({
                 })
               }
             >
-              Save draft
+              {t('Save draft')}
             </button>
             <button
               disabled={busy || published || draft?.validation?.status === 'pending'}
@@ -1103,42 +1135,44 @@ export function SetEditor({
                 })
               }
             >
-              Run checks & preview
+              {t('Run checks & preview')}
             </button>
           </div>
           {draft?.validation && (
             <p role="status">
-              {dirty ? 'Checks apply to the last saved revision. ' : ''}
+              {dirty ? t('Checks apply to the last saved revision. ') : ''}
               {draft.validation.status === 'valid'
-                ? 'Checks passed'
+                ? t('Checks passed')
                 : draft.validation.status === 'pending'
-                  ? 'Checking your set…'
-                  : (draft.validation.report?.reason ?? draft.validation.error ?? 'Checks failed')}
+                  ? t('Checking your set…')
+                  : (draft.validation.report?.reason ??
+                    draft.validation.error ??
+                    t('Checks failed'))}
             </p>
           )}
           {draft?.validation?.report?.previewHash && (
             <img
               className="set-contact"
               src={`/api/v1/set-drafts/${draft.id}/preview?revision=${draft.revision}`}
-              alt="Game-engine preview of the checked set"
+              alt={t('Game-engine preview of the checked set')}
             />
           )}
           <button onClick={() => setReleaseOpen(true)}>
-            <Icon name="share" size={18} /> Review & publish
+            <Icon name="share" size={18} /> {t(' Review & publish')}
           </button>
-          {!checked && <p>Save and run checks on the current revision before publishing.</p>}
+          {!checked && <p>{t('Save and run checks on the current revision before publishing.')}</p>}
           <ReleaseDialog
             open={releaseOpen}
             onClose={() => setReleaseOpen(false)}
-            title={`Publish revision ${draft?.revision ?? 'unsaved'}`}
+            title={t('Publish revision {value0}', { value0: draft?.revision ?? 'unsaved' })}
           >
             <fieldset disabled={!checked || busy || published}>
               <label>
-                Release label
+                {t('Release label')}
                 <input value={label} maxLength={64} onChange={(e) => setLabel(e.target.value)} />
               </label>
               <label>
-                Release notes
+                {t('Release notes')}
                 <textarea
                   value={notes}
                   maxLength={2000}
@@ -1146,17 +1180,20 @@ export function SetEditor({
                 />
               </label>
               <label>
-                Visibility
+                {t('Visibility')}
                 <select value={visibility} onChange={(e) => setVisibility(e.target.value)}>
-                  <option value="public">Public library</option>
-                  <option value="unlisted">Anyone with the link</option>
-                  <option value="private">Only me</option>
+                  <option value="public">{t('Public library')}</option>
+                  <option value="unlisted">{t('Anyone with the link')}</option>
+                  <option value="private">{t('Only me')}</option>
                 </select>
               </label>
               <p>
-                Publishing allows reuse under {pack.license}, including embedding and editing this
-                content in shared maps. Confirm that the credits and reuse rights cover every
-                uploaded image.
+                <RichMessage
+                  source={
+                    'Publishing allows reuse under {slot0}, including embedding and editing this content in shared maps. Confirm that the credits and reuse rights cover every uploaded image.'
+                  }
+                  slots={{ slot0: pack.license }}
+                />
               </p>
               <button
                 onClick={() =>
@@ -1171,7 +1208,7 @@ export function SetEditor({
                   })
                 }
               >
-                Publish this release
+                {t('Publish this release')}
               </button>
             </fieldset>
           </ReleaseDialog>
@@ -1183,5 +1220,6 @@ export function SetEditor({
 
 /** Standalone route uses the same editor as Terrain Studio. */
 export function SetWorkspace(props: Parameters<typeof SetEditor>[0]) {
+  useLocale();
   return <SetEditor {...props} />;
 }

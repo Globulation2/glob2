@@ -1,3 +1,4 @@
+import { t, useLocale } from '../i18n.tsx';
 import { useId, useRef, useState } from 'react';
 import { MapImage } from './common.tsx';
 
@@ -12,6 +13,7 @@ export function MapPreview({
   /** Decorative pixels baked into the source, excluded from the wrapping texture. */
   frameInset?: number;
 }) {
+  useLocale();
   return src ? (
     <LoadedMapPreview key={src} src={src} alt={alt} frameInset={frameInset} />
   ) : (
@@ -30,6 +32,7 @@ function LoadedMapPreview({
   alt: string;
   frameInset: number;
 }) {
+  useLocale();
   const helpId = useId();
   const [image, setImage] = useState<{ width: number; height: number }>();
   const [failed, setFailed] = useState(false);
@@ -137,7 +140,7 @@ function LoadedMapPreview({
           )}
         {!image && (
           <div className="map-preview-status" role="status">
-            {failed ? 'This preview could not be loaded.' : 'Loading map preview…'}
+            {failed ? t('This preview could not be loaded.') : t('Loading map preview…')}
             {failed && (
               <button
                 onClick={() => {
@@ -145,14 +148,14 @@ function LoadedMapPreview({
                   setAttempt((n) => n + 1);
                 }}
               >
-                Retry preview
+                {t('Retry preview')}
               </button>
             )}
           </div>
         )}
       </div>
       <figcaption>
-        <span id={helpId}>Drag or use arrow keys to explore the wraparound map.</span>
+        <span id={helpId}>{t('Drag or use arrow keys to explore the wraparound map.')}</span>
         <button
           disabled={!image}
           onClick={() => {
@@ -160,7 +163,7 @@ function LoadedMapPreview({
             setOffset({ x: 0, y: 0 });
           }}
         >
-          Reset view
+          {t('Reset view')}
         </button>
       </figcaption>
     </figure>

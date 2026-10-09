@@ -114,7 +114,7 @@
 }
 .set-entry-list button {
   width: 100%;
-  text-align: left;
+  text-align: start;
 }
 .set-entry-list button[aria-pressed='true'],
 .set-tabs button[aria-pressed='true'] {

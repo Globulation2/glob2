@@ -275,7 +275,8 @@ export async function requireAccount(identity: Identity, request: FastifyRequest
 
 export async function requireRole(identity: Identity, request: FastifyRequest, role: Role) {
   const caller = await requireAccount(identity, request);
-  if (!hasRole(caller.account, role)) throw apiError('forbidden', `Requires the ${role} role.`);
+  if (!hasRole(caller.account, role))
+    throw apiError('forbidden', 'Requires the {p0} role.', undefined, { p0: String(role) });
   if (role !== 'user') administrativeRequests.add(request);
   return caller;
 }

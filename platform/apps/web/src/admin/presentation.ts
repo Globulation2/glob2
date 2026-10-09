@@ -1,3 +1,5 @@
+import { getLocale } from '../messages.ts';
+import { t } from '../messages.ts';
 import type { AdminAnalytics } from '@glob2/protocol';
 
 export const PRODUCT_NAMES: Readonly<Record<string, string>> = {
@@ -17,22 +19,24 @@ export function libraryName(library: string) {
   return (
     (
       {
-        maps: 'Maps',
+        maps: t('Maps'),
         ais: 'AIs',
-        generators: 'Generators',
-        buildings: 'Buildings',
+        generators: t('Generators'),
+        buildings: t('Buildings'),
         sets: 'Terrain/resource sets',
-        skins: 'Skins',
-        music: 'Music',
+        skins: t('Skins'),
+        music: t('Music'),
       } as Record<string, string>
     )[library] ?? library
   );
 }
 export function measureName(metric: string, dimension: string) {
   if (metric === 'accounts.created')
-    return dimension === 'guest' ? 'Guest accounts created' : 'Registered signups';
+    return dimension === 'guest' ? t('Guest accounts created') : t('Registered signups');
   if (metric === 'activity')
-    return dimension === 'guest' ? 'Guest active account-days' : 'Registered active account-days';
+    return dimension === 'guest'
+      ? t('Guest active account-days')
+      : t('Registered active account-days');
   if (metric.startsWith('matches.')) return 'Matches ' + metric.slice(8);
   if (metric === 'library.published') return libraryName(dimension) + ' publications';
   if (metric === 'library.downloads') return libraryName(dimension) + ' recorded downloads';
@@ -89,7 +93,7 @@ const ZERO_DECIMAL_CHARGES = new Set([
 ]);
 export function formatCash(amount: number, currency: string) {
   const digits = ZERO_DECIMAL_CHARGES.has(currency.toLowerCase()) ? 0 : 2;
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat(getLocale(), {
     style: 'currency',
     currency: currency.toUpperCase(),
     currencyDisplay: 'code',

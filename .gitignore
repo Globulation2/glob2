@@ -55,3 +55,6 @@ gha-creds-*.json
 # Generated website music decoder (tools/music/build_web.py).
 /platform/apps/web/public/music/decoder.js
 /platform/apps/web/public/music/decoder.wasm
+
+# Browser development copies of the canonical online translation catalogs.
+/browser/locales/

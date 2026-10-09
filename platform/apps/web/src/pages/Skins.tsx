@@ -1,3 +1,6 @@
+import { message as sourceMessage } from '../messages.ts';
+import { statusLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 /* DOM nodes are present during pointer events; model catalogs are nonempty. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
@@ -24,11 +27,13 @@ import { ColorPicker } from '../skins/ColorPicker.tsx';
 import { CopyPaintDialog } from '../skins/CopyPaintDialog.tsx';
 
 export function Skins() {
+  useLocale();
   const { account } = useSession();
   return <SkinStudio key={account?.id ?? 'local'} />;
 }
 type Dialog = 'patterns' | 'shop' | 'delete' | 'shapes' | 'copy' | null;
 function SkinStudio() {
+  useLocale();
   const { account } = useSession();
   const doc = useSkinDocument(account?.kind === 'registered' ? account.id : undefined),
     d = doc.data;
@@ -118,7 +123,7 @@ function SkinStudio() {
     catalog.reload();
     setLibrary(true);
   }
-  async function create(name = 'My colony', sourceSkinId?: string) {
+  async function create(name = t('My colony'), sourceSkinId?: string) {
     const result = await doc.newDesign(name, sourceSkinId);
     if (result) {
       setLibrary(false);
@@ -135,10 +140,10 @@ function SkinStudio() {
         if (!used) setLibrary(false);
         return;
       } else await request('PUT', '/api/v1/skins/equipped', { body: { versionId: skin } });
-      doc.setMessage('Used for your next match.');
+      doc.setMessage(sourceMessage('Used for your next match.'));
       catalog.reload();
     } catch (e) {
-      doc.setMessage(e instanceof Error ? e.message : 'Could not use this skin.');
+      doc.setMessage(e instanceof Error ? e : sourceMessage('Could not use this skin.'));
     } finally {
       setCollectionBusy(false);
     }
@@ -149,12 +154,12 @@ function SkinStudio() {
     try {
       await request('DELETE', `/api/v1/skins/designs/${deleting.skinId}`);
       doc.forgetDesign(deleting.skinId);
-      doc.setMessage('Skin deleted.');
+      doc.setMessage(sourceMessage('Skin deleted.'));
       setDeleting(null);
       setDialog(null);
       catalog.reload();
     } catch (e) {
-      doc.setMessage(e instanceof Error ? e.message : 'Could not delete this skin.');
+      doc.setMessage(e instanceof Error ? e : sourceMessage('Could not delete this skin.'));
     } finally {
       setCollectionBusy(false);
     }
@@ -258,7 +263,9 @@ function SkinStudio() {
           }}
           onUse={(skin) => void applySelection(skin)}
           onNew={() => void create()}
-          onDuplicate={(id, name) => void create(`${name.slice(0, 59)} copy`, id)}
+          onDuplicate={(id, name) =>
+            void create(t('{value0} copy', { value0: name.slice(0, 59) }), id)
+          }
           onDelete={(skin) => {
             setDeleting(skin);
             showDialog('delete');
@@ -273,7 +280,7 @@ function SkinStudio() {
             {account?.kind === 'registered' ? (
               <button
                 className="skin-icon-button"
-                aria-label="Back to My skins"
+                aria-label={t('Back to My skins')}
                 onClick={() => void leaveEditor()}
                 disabled={disabled}
               >
@@ -283,16 +290,16 @@ function SkinStudio() {
               <a
                 href="/"
                 className="skin-icon-button"
-                aria-label="Back to Globulation 2"
+                aria-label={t('Back to Globulation 2')}
                 onClick={() => doc.saveLocal()}
               >
                 <StudioIcon name="back" />
               </a>
             )}
             <div className="skin-document-title">
-              <span className="skin-eyebrow">COLONY STUDIO</span>
+              <span className="skin-eyebrow">{t('COLONY STUDIO')}</span>
               <input
-                aria-label="Skin name"
+                aria-label={t('Skin name')}
                 maxLength={64}
                 value={d.name}
                 disabled={disabled}
@@ -303,21 +310,21 @@ function SkinStudio() {
                 }}
               />
               <small className="skin-mobile-status" role="status">
-                {doc.status}
+                {statusLabel(doc.status)}
               </small>
             </div>
             <span className="skin-save-status" role="status">
-              {doc.status}
+              {statusLabel(doc.status)}
               {active && !applied
-                ? ' · Changes not applied'
+                ? t(' · Changes not applied')
                 : applied
-                  ? ' · Used for your next match'
+                  ? t(' · Used for your next match')
                   : ''}
             </span>
             <div className="skin-history">
               <button
                 className="skin-icon-button"
-                aria-label="Undo"
+                aria-label={t('Undo')}
                 disabled={disabled || !doc.canUndo}
                 onClick={() => doc.history(true)}
               >
@@ -325,17 +332,17 @@ function SkinStudio() {
               </button>
               <button
                 className="skin-icon-button"
-                aria-label="Redo"
+                aria-label={t('Redo')}
                 disabled={disabled || !doc.canRedo}
                 onClick={() => doc.history(false)}
               >
                 <StudioIcon name="redo" />
               </button>
             </div>
-            <nav aria-label="Studio">
+            <nav aria-label={t('Studio')}>
               {account?.kind !== 'registered' ? (
                 <a href="/signin" onClick={() => doc.saveLocal()}>
-                  Sign in to save
+                  {t('Sign in to save')}
                 </a>
               ) : collection && !collection.canUseCustom ? (
                 <a
@@ -345,7 +352,7 @@ function SkinStudio() {
                     showDialog('shop');
                   }}
                 >
-                  Unlock designer
+                  {t('Unlock designer')}
                 </a>
               ) : (
                 <button
@@ -353,12 +360,12 @@ function SkinStudio() {
                   disabled={disabled || doc.conflict || applied}
                   onClick={() => void doc.useInGame(catalog.reload)}
                 >
-                  {applied ? 'In use' : 'Use in game'}
+                  {applied ? t('In use') : t('Use in game')}
                 </button>
               )}
             </nav>
           </header>
-          <section className="skin-stage" aria-label="Skin designer">
+          <section className="skin-stage" aria-label={t('Skin designer')}>
             <MeshPreview
               {...common}
               camera={finalView ? { ...DEFAULT_CAMERA, game: true, angle: finalAngle } : camera}
@@ -394,7 +401,7 @@ function SkinStudio() {
               onEnd={(cancel) => doc.finish(cancel)}
               onPick={pick}
             />
-            <div className="skin-models skin-panel" role="group" aria-label="Model to paint">
+            <div className="skin-models skin-panel" role="group" aria-label={t('Model to paint')}>
               {MODELS.map((m) => (
                 <button
                   key={m.id}
@@ -410,26 +417,29 @@ function SkinStudio() {
             {model.id === 'swarm' && (
               <button className="skin-shape-button skin-panel" onClick={() => showDialog('shapes')}>
                 {SWARM_SHAPES[d.swarmMesh].name}
-                <span>Change shape ⌄</span>
+                <span>{t('Change shape ⌄')}</span>
               </button>
             )}
             {!finalView && (
               <aside
                 ref={toolbox}
                 className={`skin-toolbox skin-panel ${collapsed ? 'is-collapsed' : ''}`}
-                aria-label="Paint tools"
+                aria-label={t('Paint tools')}
                 style={position ? { left: position.x, top: position.y } : undefined}
               >
                 <div className="skin-toolbox-handle" {...handleProps}>
                   <span>
-                    ⠿ <span>TOOLBOX</span>
+                    <RichMessage
+                      source={'⠿ {slot0}'}
+                      slots={{ slot0: <span>{t('TOOLBOX')}</span> }}
+                    />
                   </span>
                   <details className="skin-toolbox-menu">
-                    <summary aria-label="Toolbox options">•••</summary>
-                    <button onClick={resetLayout}>Reset toolbox layout</button>
+                    <summary aria-label={t('Toolbox options')}>{t('•••')}</summary>
+                    <button onClick={resetLayout}>{t('Reset toolbox layout')}</button>
                   </details>
                   <button
-                    aria-label={collapsed ? 'Expand toolbox' : 'Collapse toolbox'}
+                    aria-label={collapsed ? t('Expand toolbox') : t('Collapse toolbox')}
                     onClick={() => setCollapsed(!collapsed)}
                   >
                     {collapsed ? '+' : '−'}
@@ -438,10 +448,10 @@ function SkinStudio() {
                 <div className="skin-tools">
                   {(
                     [
-                      ['brush', 'Brush', 'B'],
-                      ['erase', 'Eraser', 'E'],
-                      ['pick', 'Eyedropper', 'I'],
-                      ['orbit', 'Rotate', ''],
+                      ['brush', t('Brush'), 'B'],
+                      ['erase', t('Eraser'), 'E'],
+                      ['pick', t('Eyedropper'), 'I'],
+                      ['orbit', t('Rotate'), ''],
                     ] as const
                   ).map(([id, label, key]) => (
                     <button
@@ -456,24 +466,24 @@ function SkinStudio() {
                   ))}
                   <button onClick={() => showDialog('patterns')}>
                     <StudioIcon name="patterns" />
-                    <span>Patterns</span>
+                    <span>{t('Patterns')}</span>
                   </button>
                 </div>
                 {!collapsed && (
                   <div className="skin-tool-options">
-                    <div className="skin-segment" role="group" aria-label="Brush paints">
+                    <div className="skin-segment" role="group" aria-label={t('Brush paints')}>
                       <button aria-pressed={mode === 'colour'} onClick={() => setMode('colour')}>
-                        Color
+                        {t('Color')}
                       </button>
                       <button
                         aria-pressed={mode === 'material'}
                         onClick={() => setMode('material')}
                       >
-                        Material
+                        {t('Material')}
                       </button>
                     </div>
                     {mode === 'colour' ? (
-                      <ColorPicker label="Paint color" value={brush} onChange={setBrush} />
+                      <ColorPicker label={t('Paint color')} value={brush} onChange={setBrush} />
                     ) : (
                       <MaterialSwatches
                         color={d.building}
@@ -482,10 +492,11 @@ function SkinStudio() {
                       />
                     )}
                     <label>
-                      Brush size <span className="skin-value">{size}</span>
+                      {t('Brush size ')}
+                      <span className="skin-value">{size}</span>
                       <input
                         type="range"
-                        aria-label="Brush size"
+                        aria-label={t('Brush size ')}
                         min={4}
                         max={160}
                         value={size}
@@ -495,10 +506,16 @@ function SkinStudio() {
                     {mode === 'colour' && (
                       <>
                         <label>
-                          Opacity <span className="skin-value">{Math.round(opacity * 100)}%</span>
+                          {t('Opacity ')}
+                          <span className="skin-value">
+                            <RichMessage
+                              source={'{slot0}%'}
+                              slots={{ slot0: Math.round(opacity * 100) }}
+                            />
+                          </span>
                           <input
                             type="range"
-                            aria-label="Opacity"
+                            aria-label={t('Opacity ')}
                             min={0.05}
                             max={1}
                             step={0.05}
@@ -507,10 +524,16 @@ function SkinStudio() {
                           />
                         </label>
                         <label>
-                          Hardness <span className="skin-value">{Math.round(hardness * 100)}%</span>
+                          {t('Hardness ')}
+                          <span className="skin-value">
+                            <RichMessage
+                              source={'{slot0}%'}
+                              slots={{ slot0: Math.round(hardness * 100) }}
+                            />
+                          </span>
                           <input
                             type="range"
-                            aria-label="Hardness"
+                            aria-label={t('Hardness ')}
                             min={0}
                             max={1}
                             step={0.05}
@@ -526,20 +549,20 @@ function SkinStudio() {
                         checked={pressure}
                         onChange={(e) => setPressure(e.target.checked)}
                       />
-                      Pen pressure
+                      {t('Pen pressure')}
                     </label>
                     <details className="skin-buildings">
-                      <summary>Buildings</summary>
+                      <summary>{t('Buildings')}</summary>
                       <ColorPicker
-                        label="Building color"
+                        label={t('Building color')}
                         value={d.building}
                         onChange={(building) => doc.edit({ building })}
-                        description="Colors your buildings; painted units stay unchanged."
+                        description={t('Colors your buildings; painted units stay unchanged.')}
                       />
                       <svg
                         viewBox="0 0 120 80"
                         role="img"
-                        aria-label="Building color preview"
+                        aria-label={t('Building color preview')}
                         style={{ color: d.building, height: 48 }}
                       >
                         <path
@@ -548,13 +571,15 @@ function SkinStudio() {
                         />
                       </svg>
                     </details>
-                    <button onClick={() => showDialog('copy')}>Copy paint to other models…</button>
+                    <button onClick={() => showDialog('copy')}>
+                      {t('Copy paint to other models…')}
+                    </button>
                     <details>
-                      <summary>Paint repeats on matching surfaces</summary>
+                      <summary>{t('Paint repeats on matching surfaces')}</summary>
                       <p>
-                        Brush and eraser reach hidden surfaces underneath the cursor. Some
-                        front/back and top/bottom surfaces share paint. A stroke may appear on their
-                        matching side too, keeping the glob’s flips seamless.
+                        {t(
+                          'Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.',
+                        )}
                       </p>
                     </details>
                   </div>
@@ -562,20 +587,20 @@ function SkinStudio() {
               </aside>
             )}
             <div className="skin-navigation skin-panel">
-              <div className="skin-view-compass" aria-label="View orientation">
+              <div className="skin-view-compass" aria-label={t('View orientation')}>
                 <span
                   style={{
                     transform: `rotate(${-(finalView ? finalAngle : (camera.yaw * 180) / Math.PI)}deg)`,
                   }}
                 >
-                  ↑
+                  {t('↑')}
                 </span>
-                <small>{finalView ? 'FINAL VIEW' : 'VIEW'}</small>
+                <small>{finalView ? t('FINAL VIEW') : t('VIEW')}</small>
               </div>
               {!finalView && (
                 <>
                   <select
-                    aria-label="Camera view"
+                    aria-label={t('Camera view')}
                     value=""
                     onChange={(e) => {
                       if (e.target.value === 'zoom-in' || e.target.value === 'zoom-out') {
@@ -597,11 +622,11 @@ function SkinStudio() {
                     }}
                   >
                     <option value="" disabled>
-                      View…
+                      {t('View…')}
                     </option>
-                    <optgroup label="Inspection zoom">
-                      <option value="zoom-in">Zoom in (+)</option>
-                      <option value="zoom-out">Zoom out (−)</option>
+                    <optgroup label={t('Inspection zoom')}>
+                      <option value="zoom-in">{t('Zoom in (+)')}</option>
+                      <option value="zoom-out">{t('Zoom out (−)')}</option>
                     </optgroup>
                     {['front', 'back', 'left', 'right'].map((v) => (
                       <option key={v} value={v}>
@@ -611,16 +636,16 @@ function SkinStudio() {
                   </select>
                   <button
                     className="skin-icon-button"
-                    aria-label="Fit model"
-                    title="Fit model · F"
+                    aria-label={t('Fit model')}
+                    title={t('Fit model · F')}
                     onClick={() => setCamera(DEFAULT_CAMERA)}
                   >
                     <StudioIcon name="fit" />
                   </button>
                   <button
                     className="skin-icon-button"
-                    aria-label="Show game view"
-                    title="Game-size reference"
+                    aria-label={t('Show game view')}
+                    title={t('Game-size reference')}
                     aria-pressed={reference}
                     onClick={() => setReference(!reference)}
                   >
@@ -632,7 +657,12 @@ function SkinStudio() {
             {reference && !finalView && (
               <div className="skin-reference skin-panel">
                 <span className="skin-eyebrow">
-                  IN GAME · {model.id === 'swarm' ? `${d.swarmViewAngle}°` : 'CURRENT POSE'}
+                  <RichMessage
+                    source={'IN GAME · {slot0}'}
+                    slots={{
+                      slot0: model.id === 'swarm' ? `${d.swarmViewAngle}°` : t('CURRENT POSE'),
+                    }}
+                  />
                 </span>
                 <div
                   className="skin-game-size"
@@ -666,31 +696,34 @@ function SkinStudio() {
                     active={!dialog}
                   />
                 </div>
-                <small>Actual game size · 1×</small>
+                <small>{t('Actual game size · 1×')}</small>
               </div>
             )}
             {finalView ? (
               <div className="skin-final-view skin-panel">
-                <span className="skin-eyebrow">CHOOSE FINAL VIEW</span>
-                <h2>Your swarm, in the game</h2>
-                <p>Turn around the ring. Height and scale stay fixed.</p>
+                <span className="skin-eyebrow">{t('CHOOSE FINAL VIEW')}</span>
+                <h2>{t('Your swarm, in the game')}</h2>
+                <p>{t('Turn around the ring. Height and scale stay fixed.')}</p>
                 <div className="skin-camera-ring" aria-hidden="true">
-                  <span style={{ transform: `rotate(${finalAngle}deg)` }}>●</span>
+                  <span style={{ transform: `rotate(${finalAngle}deg)` }}>{t('●')}</span>
                 </div>
                 <label>
-                  Camera angle <span className="skin-value">{finalAngle}°</span>
+                  {t('Camera angle ')}
+                  <span className="skin-value">
+                    <RichMessage source={'{slot0}°'} slots={{ slot0: finalAngle }} />
+                  </span>
                   <input
                     type="range"
                     min={0}
                     max={359}
-                    aria-label="Camera angle"
+                    aria-label={t('Camera angle ')}
                     value={finalAngle}
                     onChange={(e) => setFinalAngle(Number(e.target.value))}
                   />
                 </label>
                 <div>
-                  <button onClick={() => setFinalAngle(0)}>Reset angle</button>
-                  <button onClick={() => setFinalView(false)}>Cancel</button>
+                  <button onClick={() => setFinalAngle(0)}>{t('Reset angle')}</button>
+                  <button onClick={() => setFinalView(false)}>{t('Cancel')}</button>
                   <button
                     className="skin-primary"
                     onClick={() => {
@@ -699,7 +732,7 @@ function SkinStudio() {
                       setReference(true);
                     }}
                   >
-                    Use this view
+                    {t('Use this view')}
                   </button>
                 </div>
               </div>
@@ -707,15 +740,20 @@ function SkinStudio() {
               <div className="skin-pose-strip skin-panel">
                 {model.id === 'swarm' ? (
                   <>
-                    <span className="skin-muted">Final game view · {d.swarmViewAngle}°</span>
+                    <span className="skin-muted">
+                      <RichMessage
+                        source={'Final game view · {slot0}°'}
+                        slots={{ slot0: d.swarmViewAngle }}
+                      />
+                    </span>
                     <button onClick={enterFinal}>
                       <StudioIcon name="view" />
-                      Choose final view
+                      {t('Choose final view')}
                     </button>
                   </>
                 ) : (
                   <>
-                    <div className="skin-actions" role="group" aria-label="Pose">
+                    <div className="skin-actions" role="group" aria-label={t('Pose')}>
                       {ACTIONS[model.id].map((a) => (
                         <button
                           key={a}
@@ -733,7 +771,7 @@ function SkinStudio() {
                     </div>
                     <button
                       className="skin-icon-button"
-                      aria-label={animate ? 'Pause animation' : 'Play animation'}
+                      aria-label={animate ? t('Pause animation') : t('Play animation')}
                       onClick={() => {
                         if (animate && scene.current) setPhase(scene.current.frame);
                         setAnimate(!animate);
@@ -742,9 +780,9 @@ function SkinStudio() {
                       <StudioIcon name={animate ? 'pause' : 'play'} />
                     </button>
                     <label className="skin-frame">
-                      <span>Pose</span>
+                      <span>{t('Pose')}</span>
                       <input
-                        aria-label="Frame"
+                        aria-label={t('Frame')}
                         type="range"
                         min={0}
                         max={31}
@@ -754,7 +792,9 @@ function SkinStudio() {
                           setPhase(Number(e.target.value));
                         }}
                       />
-                      <span className="skin-value">{phase + 1}/32</span>
+                      <span className="skin-value">
+                        <RichMessage source={'{slot0}/32'} slots={{ slot0: phase + 1 }} />
+                      </span>
                     </label>
                   </>
                 )}
@@ -762,16 +802,16 @@ function SkinStudio() {
             )}
             <div className="skin-stage-hint">
               {finalView
-                ? 'Drag to turn · fixed height and scale'
+                ? t('Drag to turn · fixed height and scale')
                 : tool === 'orbit'
-                  ? 'Drag to rotate and tilt · scroll or pinch to zoom'
-                  : 'Drag to paint · Rotate tool to turn · scroll or pinch to zoom'}
+                  ? t('Drag to rotate and tilt · scroll or pinch to zoom')
+                  : t('Drag to paint · Rotate tool to turn · scroll or pinch to zoom')}
             </div>
             {doc.message && (
-              <div className="skin-toast" role="status" aria-label="Designer status">
+              <div className="skin-toast" role="status" aria-label={t('Designer status')}>
                 {doc.message}
-                <button aria-label="Dismiss notification" onClick={() => doc.setMessage('')}>
-                  ×
+                <button aria-label={t('Dismiss notification')} onClick={() => doc.setMessage('')}>
+                  {t('×')}
                 </button>
               </div>
             )}
@@ -780,15 +820,15 @@ function SkinStudio() {
       )}
       {doc.conflict && !library && dismissedConflict === d.skinId && (
         <button className="skin-conflict-notice" onClick={() => setDismissedConflict(null)}>
-          Review account changes to resume saving
+          {t('Review account changes to resume saving')}
         </button>
       )}
       {doc.conflict && !library && dismissedConflict !== d.skinId && (
         <StudioDialog
-          title="Account changes"
+          title={t('Account changes')}
           onClose={() => setDismissedConflict(d.skinId ?? null)}
         >
-          <p>This skin changed on another device. Your work is safe in this browser.</p>
+          <p>{t('This skin changed on another device. Your work is safe in this browser.')}</p>
           {doc.message && <p role="status">{doc.message}</p>}
           <button
             disabled={disabled}
@@ -801,31 +841,35 @@ function SkinStudio() {
                     'This design is no longer available. Keep your changes as a new skin.',
                   );
                 })
-                .catch((e) =>
-                  doc.setMessage(e instanceof Error ? e.message : 'Could not load changes.'),
-                );
+                .catch((e) => doc.setMessage(e instanceof Error ? e : 'Could not load changes.'));
             }}
           >
-            Load account changes
+            {t('Load account changes')}
           </button>
           <button disabled={disabled} onClick={() => void doc.keepAsCopy().then(catalog.reload)}>
-            Keep mine as a new skin
+            {t('Keep mine as a new skin')}
           </button>
         </StudioDialog>
       )}
       {dialog === 'delete' && deleting && (
-        <StudioDialog title="Delete skin?" onClose={() => setDialog(null)}>
+        <StudioDialog title={t('Delete skin?')} onClose={() => setDialog(null)}>
           <p>
-            Delete {deleting.name}?
-            {collection?.activeSkinId === deleting.skinId
-              ? ' Your next match will use the default colony.'
-              : ''}
+            <RichMessage
+              source={'Delete {slot0}?{slot1}'}
+              slots={{
+                slot0: deleting.name,
+                slot1:
+                  collection?.activeSkinId === deleting.skinId
+                    ? t(' Your next match will use the default colony.')
+                    : '',
+              }}
+            />
           </p>
           <button disabled={disabled} onClick={() => setDialog(null)}>
-            Cancel
+            {t('Cancel')}
           </button>
           <button disabled={disabled} onClick={() => void deleteSkin()}>
-            Delete skin
+            {t('Delete skin')}
           </button>
         </StudioDialog>
       )}
@@ -847,7 +891,7 @@ function SkinStudio() {
         />
       )}
       {dialog === 'shop' && (
-        <StudioDialog title="Skin shop" onClose={() => setDialog(null)}>
+        <StudioDialog title={t('Skin shop')} onClose={() => setDialog(null)}>
           <SkinStore
             onChange={catalog.reload}
             beforeCheckout={async () => {
@@ -862,7 +906,7 @@ function SkinStudio() {
         </StudioDialog>
       )}
       {dialog === 'shapes' && (
-        <StudioDialog title="Swarm shape" onClose={() => setDialog(null)}>
+        <StudioDialog title={t('Swarm shape')} onClose={() => setDialog(null)}>
           <div className="skin-shape-grid">
             {SWARM_MESHES.map((shape) => (
               <button
@@ -877,7 +921,7 @@ function SkinStudio() {
             ))}
           </div>
           <p className="skin-muted">
-            Each shape shares the swarm paint area. Check the result after switching.
+            {t('Each shape shares the swarm paint area. Check the result after switching.')}
           </p>
         </StudioDialog>
       )}

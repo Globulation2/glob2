@@ -1,3 +1,6 @@
+import { statusLabel } from '../i18n.tsx';
+
+import { t as translate, useLocale, RichMessage } from '../i18n.tsx';
 import { aiHref } from '../playerLinks.ts';
 import { versionKey } from '../format.ts';
 import { MatchSkinLooks } from '../skins/Reporting.tsx';
@@ -60,10 +63,13 @@ function teamCount(detail: MatchDetail): number {
 
 function teamName(detail: MatchDetail, team: number): string {
   const members = detail.match.participants.filter((p) => p.team === team);
-  return members.length ? members.map(participantName).join(' + ') : `Team ${team + 1}`;
+  return members.length
+    ? members.map(participantName).join(' + ')
+    : translate('Team {value0}', { value0: team + 1 });
 }
 
 function TeamCards({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const count = teamCount(detail);
   const teams = [...new Set(detail.match.participants.map((p) => p.team))].sort((a, b) => a - b);
   if (teams.length < 2) return null;
@@ -82,12 +88,22 @@ function TeamCards({ detail }: { detail: MatchDetail }) {
           >
             {won && <GameArt name="clearingFlag" size={44} className="crown" />}
             <div className="outcome">
-              {outcome ? (won ? 'Winner' : outcome === 'draw' ? 'Draw' : outcome) : 'Team'}
+              {outcome
+                ? won
+                  ? translate('Winner')
+                  : outcome === 'draw'
+                    ? translate('Draw')
+                    : outcome
+                : translate('Team')}
             </div>
             <div style={{ fontWeight: 750, fontSize: 'var(--text-lg)' }}>
               {teamName(detail, team)}
             </div>
-            {stats && <div className="caption">Prestige {stats.prestige}</div>}
+            {stats && (
+              <div className="caption">
+                <RichMessage source={'Prestige {slot0}'} slots={{ slot0: stats.prestige }} />
+              </div>
+            )}
           </div>
         );
       })}
@@ -96,6 +112,7 @@ function TeamCards({ detail }: { detail: MatchDetail }) {
 }
 
 function Participants({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const count = teamCount(detail);
   const rows = [...detail.match.participants].sort((a, b) => a.team - b.team || a.seat - b.seat);
   const rejections = new Map(
@@ -103,14 +120,14 @@ function Participants({ detail }: { detail: MatchDetail }) {
   );
   const diverged = new Set(detail.verificationDetail?.divergedSeats ?? []);
   return (
-    <TableWrap label="Players and results">
+    <TableWrap label={translate('Players and results')}>
       <table className="data">
         <thead>
           <tr>
-            <th>Player</th>
-            <th>Result</th>
-            <th className="num">Rating</th>
-            <th className="num hide-phone">Change</th>
+            <th>{translate('Player')}</th>
+            <th>{translate('Result')}</th>
+            <th className="num">{translate('Rating')}</th>
+            <th className="num hide-phone">{translate('Change')}</th>
           </tr>
         </thead>
         <tbody>
@@ -121,32 +138,45 @@ function Participants({ detail }: { detail: MatchDetail }) {
                 <td>
                   <span className="sw" style={{ background: teamColor(p.team, count) }} />{' '}
                   {p.kind === 'human' && p.accountId ? (
-                    <Link to={`/players/${p.accountId}`}>{p.displayName}</Link>
+                    <Link to={`/players/${p.accountId}`}>
+                      <bdi dir="auto">{p.displayName}</bdi>
+                    </Link>
                   ) : p.kind === 'ai' ? (
                     <>
                       <Link to={aiHref(p.ai ?? 'none', versionKey(detail.match.simVersion))}>
                         {aiName(p.ai)}
                       </Link>{' '}
-                      <span className="badge">AI</span>
+                      <span className="badge">{translate('AI')}</span>
                     </>
                   ) : (
                     p.displayName
                   )}
                   {p.disconnects > 0 && (
                     <span className="caption">
-                      {' '}
-                      · {p.disconnects} disconnect{p.disconnects > 1 ? 's' : ''}
+                      <RichMessage
+                        source={' · {slot0} disconnects'}
+                        singular={' · {slot0} disconnect'}
+                        count={p.disconnects}
+                        slots={{ slot0: p.disconnects }}
+                      />
                     </span>
                   )}
-                  {diverged.has(p.seat) && <span className="badge bad"> diverged</span>}
-                  {rejections.has(p.seat) && <span className="badge warn"> refused orders</span>}
+                  {diverged.has(p.seat) && (
+                    <span className="badge bad"> {translate(' diverged')}</span>
+                  )}
+                  {rejections.has(p.seat) && (
+                    <span className="badge warn"> {translate(' refused orders')}</span>
+                  )}
                 </td>
-                <td>{p.outcome ?? '–'}</td>
+                <td>{p.outcome ? statusLabel(p.outcome) : '–'}</td>
                 <td className="num">
                   {r ? (
                     <>
-                      {rating(r.before)} → {rating(r.after)}
-                      {r.provisional && <span className="caption"> (provisional)</span>}
+                      {rating(r.before)} {translate(' → ')}
+                      {rating(r.after)}
+                      {r.provisional && (
+                        <span className="caption"> {translate(' (provisional)')}</span>
+                      )}
                     </>
                   ) : (
                     '–'
@@ -190,13 +220,24 @@ function Measured({
   metric: ConnectionMetric;
   spread?: { p50: number; p95: number };
 }) {
-  if (!spread) return <>–</>;
+  useLocale();
+  if (!spread) return <>{translate('–')}</>;
   return (
     <>
       {formatConnectionValue(metric, spread.p50)}
-      <span className="caption"> · {QUALITY_LABEL[rateConnection(metric, spread.p50)]}</span>
+      <span className="caption">
+        <RichMessage
+          source={' · {slot0}'}
+          slots={{ slot0: translate(QUALITY_LABEL[rateConnection(metric, spread.p50)]) }}
+        />
+      </span>
       <br />
-      <span className="caption">95%: {formatConnectionValue(metric, spread.p95)}</span>
+      <span className="caption">
+        <RichMessage
+          source={'95%: {slot0}'}
+          slots={{ slot0: formatConnectionValue(metric, spread.p95) }}
+        />
+      </span>
     </>
   );
 }
@@ -205,7 +246,11 @@ function Measured({
 function limits(metric: ConnectionMetric): string {
   const t = CONNECTION_METRICS[metric];
   const v = (ms: number) => formatConnectionValue(metric, ms).replace(/\.0 s$/, ' s');
-  return `${QUALITY_LABEL.good} under ${v(t.fairMs)}, ${QUALITY_LABEL.fair.toLowerCase()} under ${v(t.poorMs)}, ${QUALITY_LABEL.poor.toLowerCase()} from ${v(t.poorMs)}.`;
+  return translate('Good under {value0}, fair under {value1}, poor from {value2}.', {
+    value0: v(t.fairMs),
+    value1: v(t.poorMs),
+    value2: v(t.poorMs),
+  });
 }
 
 function seconds(ms: number): string {
@@ -215,28 +260,29 @@ function seconds(ms: number): string {
 
 /** Each human player's connection as the relay measured it (MatchDetail.network). */
 function Connection({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const rows = detail.network ?? [];
   if (rows.length === 0) return null;
   const player = (seat: number) => {
     const p = detail.match.participants.find((x) => x.seat === seat);
-    return p ? participantName(p) : `Seat ${seat + 1}`;
+    return p ? participantName(p) : translate('Seat {value0}', { value0: seat + 1 });
   };
   const count = teamCount(detail);
   const team = (seat: number) => detail.match.participants.find((x) => x.seat === seat)?.team;
   return (
     <section className="net-quality" data-testid="network">
-      <h2>Connection</h2>
-      <TableWrap label="Connection quality per player" stack>
+      <h2>{translate('Connection')}</h2>
+      <TableWrap label={translate('Connection quality per player')} stack>
         <table className="data">
           <thead>
             <tr>
-              <th>Player</th>
-              <th>Quality</th>
-              <th className="num">Ping</th>
-              <th className="num">Behind</th>
-              <th className="num">Disconnects</th>
-              <th className="num">Offline</th>
-              <th className="num">Delayed orders</th>
+              <th>{translate('Player')}</th>
+              <th>{translate('Quality')}</th>
+              <th className="num">{translate('Ping')}</th>
+              <th className="num">{translate('Behind')}</th>
+              <th className="num">{translate('Disconnects')}</th>
+              <th className="num">{translate('Offline')}</th>
+              <th className="num">{translate('Delayed orders')}</th>
             </tr>
           </thead>
           <tbody>
@@ -244,7 +290,7 @@ function Connection({ detail }: { detail: MatchDetail }) {
               const t = team(n.seat);
               return (
                 <tr key={n.seat} data-testid="network-row">
-                  <td data-label="Player" className="stack-head">
+                  <td data-label={translate('Player')} className="stack-head">
                     {t !== undefined && (
                       <>
                         <span className="sw" style={{ background: teamColor(t, count) }} />{' '}
@@ -254,34 +300,38 @@ function Connection({ detail }: { detail: MatchDetail }) {
                     {n.rejoins > 0 && (
                       <>
                         {' '}
-                        <span className="badge warn">resynced</span>
+                        <span className="badge warn">{translate('resynced')}</span>
                       </>
                     )}
                     {n.leftBy === 'grace' && (
                       <>
                         {' '}
-                        <span className="badge bad">dropped</span>
+                        <span className="badge bad">{translate('dropped')}</span>
                       </>
                     )}
                   </td>
-                  <td data-label="Quality">
-                    <span className={QUALITY_BADGE[n.quality]}>{QUALITY_LABEL[n.quality]}</span>
+                  <td data-label={translate('Quality')}>
+                    <span className={QUALITY_BADGE[n.quality]}>
+                      {translate(QUALITY_LABEL[n.quality])}
+                    </span>
                   </td>
-                  <td className="num" data-label="Ping">
+                  <td className="num" data-label={translate('Ping')}>
                     <Measured metric="ping" spread={n.rttMs} />
                   </td>
-                  <td className="num" data-label="Behind">
+                  <td className="num" data-label={translate('Behind')}>
                     <Measured metric="behind" spread={n.lagMs} />
                   </td>
-                  <td className="num" data-label="Disconnects">
+                  <td className="num" data-label={translate('Disconnects')}>
                     {n.disconnects}
                   </td>
-                  <td className="num" data-label="Offline">
+                  <td className="num" data-label={translate('Offline')}>
                     {seconds(n.offlineMs)}
                   </td>
-                  <td className="num" data-label="Delayed orders">
+                  <td className="num" data-label={translate('Delayed orders')}>
                     {n.ordersDeferred}
-                    <span className="caption"> / {n.ordersSequenced}</span>
+                    <span className="caption">
+                      <RichMessage source={' / {slot0}'} slots={{ slot0: n.ordersSequenced }} />
+                    </span>
                   </td>
                 </tr>
               );
@@ -290,17 +340,19 @@ function Connection({ detail }: { detail: MatchDetail }) {
         </table>
       </TableWrap>
       <p className="caption" data-testid="network-legend">
-        Measured by the relay; typical value first, then the 95th percentile. Ping: round trip
-        between the player and the relay. {limits('ping')} Behind: how far the player’s game ran
-        behind the match clock, their input delay included. {limits('behind')} Quality is the worst
-        of these and of reconnects, time offline and delayed orders. Offline: time disconnected
-        before reconnecting. Delayed orders: orders that ran a tick later than asked.
+        <RichMessage
+          source={
+            'Measured by the relay; typical value first, then the 95th percentile. Ping: round trip between the player and the relay. {slot0} Behind: how far the player’s game ran behind the match clock, their input delay included. {slot1} Quality is the worst of these and of reconnects, time offline and delayed orders. Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later than asked.'
+          }
+          slots={{ slot0: limits('ping'), slot1: limits('behind') }}
+        />
       </p>
     </section>
   );
 }
 
 function Timelines({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const { theme } = useTheme();
   const count = teamCount(detail);
   const teams = detail.teams.filter((t) => t.timeline.length > 0);
@@ -308,8 +360,8 @@ function Timelines({ detail }: { detail: MatchDetail }) {
     return (
       <p className="muted">
         {detail.match.verification === 'pending'
-          ? 'Charts appear once the server has replayed the match.'
-          : 'No timeline was recorded for this match.'}
+          ? translate('Charts appear once the server has replayed the match.')
+          : translate('No timeline was recorded for this match.')}
       </p>
     );
   }
@@ -327,14 +379,15 @@ function Timelines({ detail }: { detail: MatchDetail }) {
   );
   return (
     <div className="charts" data-testid="timelines">
-      {chart('Units', (p) => p.units)}
-      {chart('Buildings', (p) => p.buildings)}
-      {chart('Prestige', (p) => p.prestige)}
+      {chart(translate('Units'), (p) => p.units)}
+      {chart(translate('Buildings'), (p) => p.buildings)}
+      {chart(translate('Prestige '), (p) => p.prestige)}
     </div>
   );
 }
 
 function Economy({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const { theme } = useTheme();
   const curves = detail.economy ?? [];
   const [pick, setPick] = useState(0);
@@ -349,11 +402,11 @@ function Economy({ detail }: { detail: MatchDetail }) {
     <>
       <div className="toolbar" style={{ marginTop: 'var(--sp-6)' }}>
         <h2 className="grow" style={{ margin: 0 }}>
-          Economy against each player’s average
+          {translate('Economy against each player’s average')}
         </h2>
         {curves.length > 1 && (
           <select
-            aria-label="Player"
+            aria-label={translate('Player')}
             value={pick}
             onChange={(e) => setPick(Number(e.target.value))}
           >
@@ -367,17 +420,19 @@ function Economy({ detail }: { detail: MatchDetail }) {
         )}
       </div>
       <LineChart
-        title={`${name}: units in this match and on average over recent matches`}
+        title={translate('{value0}: units in this match and on average over recent matches', {
+          value0: name,
+        })}
         height={200}
         xFormat={tickTime}
         series={[
           {
-            name: 'This match',
+            name: translate('This match'),
             color: seriesInk(0, theme),
             points: curve.points.map((p) => ({ x: p.tick, y: p.units })),
           },
           {
-            name: `${name}’s average`,
+            name: translate('{value0}’s average', { value0: name }),
             color: seriesInk(1, theme),
             dashed: true,
             points: curve.points.map((p) => ({ x: p.tick, y: p.averageUnits })),
@@ -389,31 +444,37 @@ function Economy({ detail }: { detail: MatchDetail }) {
 }
 
 function Verification({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const v = detail.verificationDetail;
   const seatName = (seat: number) => {
     const p = detail.match.participants.find((x) => x.seat === seat);
-    return p ? participantName(p) : `Seat ${seat + 1}`;
+    return p ? participantName(p) : translate('Seat {value0}', { value0: seat + 1 });
   };
   return (
     <div className="card">
       <h2 className="card-title">
-        Verification <VerificationBadge match={detail.match} />
+        {translate('Verification ')}
+        <VerificationBadge match={detail.match} />
       </h2>
       <p style={{ margin: '0 0 6px' }}>{VERDICT_TEXT[detail.match.verification]}</p>
-      {v?.reason && <p className="caption">Reason: {v.reason}</p>}
+      {v?.reason && (
+        <p className="caption">
+          <RichMessage source={'Reason: {slot0}'} slots={{ slot0: v.reason }} />
+        </p>
+      )}
       {v?.ratingNote && <p className="caption">{v.ratingNote}</p>}
       {v?.orderRejections && v.orderRejections.length > 0 && (
         <>
           <div className="caption" style={{ marginTop: 6 }}>
-            Orders the server refused (a modified or broken client sends these)
+            {translate('Orders the server refused (a modified or broken client sends these)')}
           </div>
           <table className="data">
             <thead>
               <tr>
-                <th>Player</th>
-                <th className="num">Refused</th>
-                <th className="num">Late</th>
-                <th className="hide-phone">Reasons</th>
+                <th>{translate('Player')}</th>
+                <th className="num">{translate('Refused')}</th>
+                <th className="num">{translate('Late')}</th>
+                <th className="hide-phone">{translate('Reasons')}</th>
               </tr>
             </thead>
             <tbody>
@@ -427,7 +488,7 @@ function Verification({ detail }: { detail: MatchDetail }) {
                       .map(([k, n]) => `${k.replace(/_/g, ' ')} ×${n}`)
                       .join(', ')}
                     {r.firstRejectedTick !== undefined &&
-                      ` · first at ${tickTime(r.firstRejectedTick)}`}
+                      translate(' · first at {value0}', { value0: tickTime(r.firstRejectedTick) })}
                   </td>
                 </tr>
               ))}
@@ -440,27 +501,29 @@ function Verification({ detail }: { detail: MatchDetail }) {
 }
 
 function Replay({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const replay = detail.artifacts.find((a) => a.kind === 'replay');
   const record = detail.artifacts.find((a) => a.kind === 'record');
   return (
     <div className="card">
-      <h2 className="card-title">Replay</h2>
+      <h2 className="card-title">{translate('Replay')}</h2>
       {replay ? (
         <>
           <p className="caption" style={{ margin: '0 0 8px' }}>
-            The server’s verified replay. Open it in the game (Load game → Replays) or watch it
-            here.
+            {translate(
+              'The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.',
+            )}
           </p>
           <div className="toolbar" style={{ margin: 0 }}>
             <a className="btn primary" href={watchUrl(replay.url)} data-testid="watch">
-              Watch in browser
+              {translate('Watch in browser')}
             </a>
             <a className="btn" href={replay.url} download>
-              Download replay
+              {translate('Download replay')}
             </a>
             {record && (
               <a className="btn small" href={record.url} download>
-                Match record
+                {translate('Match record')}
               </a>
             )}
           </div>
@@ -468,8 +531,8 @@ function Replay({ detail }: { detail: MatchDetail }) {
       ) : (
         <p className="muted" style={{ margin: 0 }}>
           {detail.match.status === 'running'
-            ? 'This match is still being played.'
-            : 'The replay is available once the server has verified the match.'}
+            ? translate('This match is still being played.')
+            : translate('The replay is available once the server has verified the match.')}
         </p>
       )}
     </div>
@@ -508,6 +571,7 @@ export function statisticLabel(key: string): string {
 }
 
 function Statistics({ detail }: { detail: MatchDetail }) {
+  useLocale();
   const count = teamCount(detail);
   const present = new Set(detail.teams.flatMap((t) => Object.keys(t.statistics)));
   if (present.size === 0) return null;
@@ -528,16 +592,16 @@ function Statistics({ detail }: { detail: MatchDetail }) {
       .map((key) => ({ key, label: statisticLabel(key), yesNo: false })),
   ];
   const value = (row: { key: string; yesNo?: boolean }, v: number | undefined) =>
-    v === undefined ? '–' : row.yesNo ? (v ? 'Yes' : 'No') : v;
+    v === undefined ? '–' : row.yesNo ? (v ? translate('Yes') : 'No') : v;
   return (
     <>
-      <h2>Final statistics</h2>
-      <TableWrap label="Final statistics">
+      <h2>{translate('Final statistics')}</h2>
+      <TableWrap label={translate('Final statistics')}>
         <table className="data">
           <thead>
             <tr>
               <th>
-                <span className="sr-only">Statistic</span>
+                <span className="sr-only">{translate('Statistic')}</span>
               </th>
               {detail.teams.map((t) => (
                 <th key={t.team} className="num">
@@ -549,7 +613,7 @@ function Statistics({ detail }: { detail: MatchDetail }) {
           </thead>
           <tbody>
             <tr>
-              <td>Prestige</td>
+              <td>{translate('Prestige ')}</td>
               {detail.teams.map((t) => (
                 <td key={t.team} className="num">
                   {t.prestige}
@@ -558,7 +622,7 @@ function Statistics({ detail }: { detail: MatchDetail }) {
             </tr>
             {rows.map((row) => (
               <tr key={row.key}>
-                <td>{row.label}</td>
+                <td>{translate(row.label)}</td>
                 {detail.teams.map((t) => (
                   <td key={t.team} className="num">
                     {value(row, t.statistics[row.key])}
@@ -574,6 +638,7 @@ function Statistics({ detail }: { detail: MatchDetail }) {
 }
 
 export function Match({ id }: { id: string }) {
+  useLocale();
   const { instance } = useSession();
   const load = useLoad((signal) => api.match(id, signal), [id]);
   return (
@@ -581,7 +646,9 @@ export function Match({ id }: { id: string }) {
       {(detail) => {
         const m = detail.match;
         const kind =
-          m.origin === 'queue' ? queueName(instance?.queues, m.queueId, m.queueName) : 'Room match';
+          m.origin === 'queue'
+            ? queueName(instance?.queues, m.queueId, m.queueName)
+            : translate('Room match');
         const map = detail.map;
         return (
           <>
@@ -589,18 +656,25 @@ export function Match({ id }: { id: string }) {
               <GameArt name="warrior" size={72} className="head-art" />
               <div className="grow">
                 <h1 data-testid="match-title">
-                  {kind} · {map?.title ?? m.mapTitle ?? 'Custom map'}
+                  <RichMessage
+                    source={'{slot0} · {slot1}'}
+                    slots={{
+                      slot0: kind,
+                      slot1: map?.title ?? m.mapTitle ?? translate('Custom map'),
+                    }}
+                  />
                 </h1>
                 <div className="sub">
-                  {dateTime(m.endedAt ?? m.startedAt)} · {duration(m.durationTicks)}
-                  {m.rated ? ' · rated' : ' · unrated'}
+                  {dateTime(m.endedAt ?? m.startedAt)} {translate(' · ')}
+                  {duration(m.durationTicks)}
+                  {m.rated ? translate(' · rated') : translate(' · unrated')}
                   {map?.width && map.height ? ` · ${map.width}×${map.height}` : ''}{' '}
                   <StatusBadge match={m} /> <VerificationBadge match={m} />
                 </div>
               </div>
               {map?.mapId && (
                 <Link className="btn small" to={`/maps/${map.mapId}`}>
-                  Map page
+                  {translate('Map page')}
                 </Link>
               )}
             </div>
@@ -608,12 +682,12 @@ export function Match({ id }: { id: string }) {
             <Replay detail={detail} />
             <Participants detail={detail} />
             <MatchSkinLooks matchId={id} />
-            <h2>Timeline</h2>
+            <h2>{translate('Timeline')}</h2>
             <Timelines detail={detail} />
             <Economy detail={detail} />
             <Statistics detail={detail} />
             <details className="match-diagnostics">
-              <summary>Verification and connection details</summary>
+              <summary>{translate('Verification and connection details')}</summary>
               <Verification detail={detail} />
               <Connection detail={detail} />
             </details>

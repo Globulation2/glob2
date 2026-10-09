@@ -1,3 +1,6 @@
+import { displayMessage } from '../i18n.tsx';
+import { translateError } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import type { SetInfo, SetList, SetDraft, SetDraftSummary, SetPackage } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -7,6 +10,7 @@ import { newRelease } from './model.ts';
 import './sets.css';
 
 export function SetLibrary({ mine = false }: { mine?: boolean }) {
+  useLocale();
   const { account } = useSession();
   const [q, setQ] = useState(''),
     [sort, setSort] = useState('newest'),
@@ -43,34 +47,36 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
     <section className="set-library">
       <header className="set-heading">
         <div>
-          <h1>{mine ? 'My sets' : 'Terrain & resource sets'}</h1>
-          <p>Build a consistent world with custom terrain, resources, and artwork.</p>
+          <h1>{mine ? t('My sets') : t('Terrain & resource sets')}</h1>
+          <p>{t('Build a consistent world with custom terrain, resources, and artwork.')}</p>
         </div>
         <div>
-          <Link to={mine ? '/sets' : '/sets/mine'}>{mine ? 'Browse library' : 'My sets'}</Link>
+          <Link to={mine ? '/sets' : '/sets/mine'}>
+            {mine ? t('Browse library') : t('My sets')}
+          </Link>
           <Link className="button" to="/sets/new">
-            Create a set
+            {t('Create a set')}
           </Link>
           <Link className="button" to="/terrain-studio">
-            Create with AI
+            {t('Create with AI')}
           </Link>
         </div>
       </header>
-      {isModerator(account) && <Link to="/sets/reports">Moderation reports</Link>}
+      {isModerator(account) && <Link to="/sets/reports">{t('Moderation reports')}</Link>}
       <div className="set-filters">
         <label>
-          Search
+          {t('Search')}
           <input
             value={q}
             onChange={(e) => {
               setQ(e.target.value);
               setCursor('');
             }}
-            placeholder="Theme, title or creator"
+            placeholder={t('Theme, title or creator')}
           />
         </label>
         <label>
-          Contents
+          {t('Contents')}
           <select
             value={kind}
             onChange={(e) => {
@@ -78,14 +84,14 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
               setCursor('');
             }}
           >
-            <option value="">All sets</option>
-            <option value="terrain">Terrain</option>
-            <option value="resource">Resources</option>
-            <option value="both">Both</option>
+            <option value="">{t('All sets')}</option>
+            <option value="terrain">{t('Terrain')}</option>
+            <option value="resource">{t('Resources')}</option>
+            <option value="both">{t('Both')}</option>
           </select>
         </label>
         <label>
-          License
+          {t('License')}
           <select
             value={license}
             onChange={(e) => {
@@ -93,13 +99,13 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
               setCursor('');
             }}
           >
-            <option value="">All licenses</option>
-            <option value="CC0-1.0">CC0</option>
-            <option value="CC-BY-4.0">CC BY</option>
+            <option value="">{t('All licenses')}</option>
+            <option value="CC0-1.0">{t('CC0')}</option>
+            <option value="CC-BY-4.0">{t('CC BY')}</option>
           </select>
         </label>
         <label>
-          Sort
+          {t('Sort')}
           <select
             value={sort}
             onChange={(e) => {
@@ -114,16 +120,16 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
         </label>
       </div>
       {mine && (
-        <div className="set-drafts" aria-label="Your drafts">
-          <h2>Drafts</h2>
+        <div className="set-drafts" aria-label={t('Your drafts')}>
+          <h2>{t('Drafts')}</h2>
           {draftItems.map((d) => (
             <Link key={d.id} to={'/sets/drafts/' + d.id}>
-              {d.title} · Continue editing
+              <RichMessage source={'{slot0} · Continue editing'} slots={{ slot0: d.title }} />
             </Link>
           ))}
-          {drafts.status === 'loading' && <p role="status">Loading drafts…</p>}
-          {drafts.status === 'error' && <p role="alert">{drafts.error.message}</p>}
-          {drafts.status === 'ready' && !draftItems.length && <p>No unpublished drafts.</p>}
+          {drafts.status === 'loading' && <p role="status">{t('Loading drafts…')}</p>}
+          {drafts.status === 'error' && <p role="alert">{translateError(drafts.error)}</p>}
+          {drafts.status === 'ready' && !draftItems.length && <p>{t('No unpublished drafts.')}</p>}
           {drafts.status === 'ready' && drafts.data.nextCursor && (
             <button
               onClick={() => {
@@ -131,15 +137,15 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
                 setDraftCursor(drafts.data.nextCursor ?? '');
               }}
             >
-              Load more drafts
+              {t('Load more drafts')}
             </button>
           )}
         </div>
       )}
       {data.status === 'loading' ? (
-        <p role="status">Loading sets…</p>
+        <p role="status">{t('Loading sets…')}</p>
       ) : data.status === 'error' ? (
-        <p role="alert">{data.error.message}</p>
+        <p role="alert">{translateError(data.error)}</p>
       ) : (
         <>
           <div className="set-cards">
@@ -148,18 +154,19 @@ export function SetLibrary({ mine = false }: { mine?: boolean }) {
             ))}
           </div>
           {!data.data.items.length && (
-            <p>No sets found. Try another search or create the first one.</p>
+            <p>{t('No sets found. Try another search or create the first one.')}</p>
           )}
           {data.data.nextCursor && (
-            <button onClick={() => setCursor(data.data.nextCursor ?? '')}>Next page</button>
+            <button onClick={() => setCursor(data.data.nextCursor ?? '')}>{t('Next page')}</button>
           )}
-          {cursor && <button onClick={() => setCursor('')}>First page</button>}
+          {cursor && <button onClick={() => setCursor('')}>{t('First page')}</button>}
         </>
       )}
     </section>
   );
 }
 function SetCard({ set: s }: { set: SetInfo }) {
+  useLocale();
   const latest = s.versions[0];
   return (
     <article className="set-card">
@@ -171,16 +178,28 @@ function SetCard({ set: s }: { set: SetInfo }) {
       </Link>
       <p>{s.description}</p>
       <p>
-        By {s.owner.displayName} · {latest?.terrainCount ?? 0} terrains ·{' '}
-        {latest?.resourceCount ?? 0} resources
+        <RichMessage
+          source={'By {slot0} · {slot1} terrains · {slot2} resources'}
+          slots={{
+            slot0: s.owner.displayName,
+            slot1: latest?.terrainCount ?? 0,
+            slot2: latest?.resourceCount ?? 0,
+          }}
+          singular={'By {slot0} · {slot1} terrain · {slot2} resources'}
+          count={Number(latest?.terrainCount ?? 0)}
+        />
       </p>
       <small>
-        {s.likes} likes · {s.downloads} downloads · {latest?.license}
+        <RichMessage
+          source={'{slot0} likes · {slot1} downloads · {slot2}'}
+          slots={{ slot0: s.likes, slot1: s.downloads, slot2: latest?.license }}
+        />
       </small>
     </article>
   );
 }
 export function SetDetail({ id }: { id: string }) {
+  useLocale();
   const data = useLoad((signal) => request<SetInfo>('GET', '/api/v1/sets/' + id, { signal }), [id]);
   const { account } = useSession(),
     { navigate } = useRouter();
@@ -200,34 +219,40 @@ export function SetDetail({ id }: { id: string }) {
       setBusy(false);
     }
   }
-  if (data.status === 'loading') return <p role="status">Loading set…</p>;
-  if (data.status === 'error') return <p role="alert">{data.error.message}</p>;
+  if (data.status === 'loading') return <p role="status">{t('Loading set…')}</p>;
+  if (data.status === 'error') return <p role="alert">{translateError(data.error)}</p>;
   const s = data.data,
     latest = s.versions[0],
     own = account?.id === s.owner.id;
   return (
     <section className="set-detail">
-      <Link to="/sets">← Set library</Link>
+      <Link to="/sets">{t('← Set library')}</Link>
       <h1>{s.title}</h1>
-      <p>By {s.owner.displayName}</p>
+      <p>
+        <RichMessage source={'By {slot0}'} slots={{ slot0: s.owner.displayName }} />
+      </p>
       <p>{s.description}</p>
-      {s.hidden && <p role="alert">This set is hidden. {s.hiddenReason}</p>}
-      {error && <p role="alert">{error}</p>}
+      {s.hidden && (
+        <p role="alert">
+          <RichMessage source={'This set is hidden. {slot0}'} slots={{ slot0: s.hiddenReason }} />
+        </p>
+      )}
+      {error && <p role="alert">{displayMessage(error)}</p>}
       {latest && !s.hidden && (
         <img
           className="set-contact"
           src={`/api/v1/sets/${id}/versions/${latest.id}/preview`}
-          alt={`${s.title}: terrain and resource previews`}
+          alt={t('{value0}: terrain and resource previews', { value0: s.title })}
         />
       )}
       <div className="set-actions">
         {latest && !s.hidden && (
           <>
             <Link className="button" to={`/terrain-studio?version=${latest.id}`}>
-              Remix with AI
+              {t('Remix with AI')}
             </Link>
             <a className="button" href={`/api/v1/sets/${id}/versions/${latest.id}/file`}>
-              Download set
+              {t('Download set')}
             </a>
           </>
         )}
@@ -238,10 +263,13 @@ export function SetDetail({ id }: { id: string }) {
               void action(() => request(s.liked ? 'DELETE' : 'PUT', `/api/v1/sets/${id}/like`))
             }
           >
-            {s.liked ? 'Unlike' : 'Like'} · {s.likes}
+            <RichMessage
+              source={'{slot0} · {slot1}'}
+              slots={{ slot0: s.liked ? t('Unlike') : t('Like'), slot1: s.likes }}
+            />
           </button>
         )}
-        {account && !own && <button onClick={() => setReport(!report)}>Report</button>}
+        {account && !own && <button onClick={() => setReport(!report)}>{t('Report')}</button>}
         {own && latest && (
           <button
             disabled={busy}
@@ -258,7 +286,7 @@ export function SetDetail({ id }: { id: string }) {
               })
             }
           >
-            Create new release
+            {t('Create new release')}
           </button>
         )}
         {own && (
@@ -277,7 +305,7 @@ export function SetDetail({ id }: { id: string }) {
               )
             }
           >
-            {s.visibility === 'private' ? 'Make public' : 'Withdraw from library'}
+            {s.visibility === 'private' ? t('Make public') : t('Withdraw from library')}
           </button>
         )}
         {isModerator(account) && (
@@ -291,7 +319,7 @@ export function SetDetail({ id }: { id: string }) {
               )
             }
           >
-            {s.hidden ? 'Unhide' : 'Hide set'}
+            {s.hidden ? t('Unhide') : t('Hide set')}
           </button>
         )}
       </div>
@@ -309,23 +337,23 @@ export function SetDetail({ id }: { id: string }) {
           }}
         >
           <label>
-            Reason
+            {t('Reason')}
             <select name="reason">
-              <option value="copyright">Copyright</option>
-              <option value="offensive">Inappropriate content</option>
-              <option value="other">Other</option>
+              <option value="copyright">{t('Copyright')}</option>
+              <option value="offensive">{t('Inappropriate content')}</option>
+              <option value="other">{t('Other')}</option>
             </select>
           </label>
           <label>
-            Details
+            {t('Details')}
             <textarea name="details" maxLength={2000} required />
           </label>
-          <button disabled={busy}>Send report</button>
+          <button disabled={busy}>{t('Send report')}</button>
         </form>
       )}
       {latest && !s.hidden && (
-        <section aria-label="Set contents">
-          <h2>Contents & gameplay properties</h2>
+        <section aria-label={t('Set contents')}>
+          <h2>{t('Contents & gameplay properties')}</h2>
           {!contents ? (
             <button
               disabled={busy}
@@ -340,20 +368,33 @@ export function SetDetail({ id }: { id: string }) {
                 })
               }
             >
-              Inspect latest release
+              {t('Inspect latest release')}
             </button>
           ) : (
             [
-              ...contents.terrains.map((entry) => ({ entry, kind: 'Terrain' })),
-              ...contents.resources.map((entry) => ({ entry, kind: 'Resource' })),
+              ...contents.terrains.map((entry) => ({ entry, kind: t('Terrain') })),
+              ...contents.resources.map((entry) => ({ entry, kind: t('Resource') })),
             ].map(({ entry, kind }) => {
               const presentation = entry['presentation'] as Record<string, unknown> | undefined;
               return (
                 <details key={String(entry['key'])}>
                   <summary>
-                    {kind} · {String(entry['name'] ?? presentation?.['name'] ?? entry['key'])}
+                    <RichMessage
+                      source={'{slot0} · {slot1}'}
+                      slots={{
+                        slot0: kind,
+                        slot1: String(entry['name'] ?? presentation?.['name'] ?? entry['key']),
+                      }}
+                    />
                   </summary>
-                  {typeof entry['base'] === 'string' && <p>Gameplay preset: {entry['base']}</p>}
+                  {typeof entry['base'] === 'string' && (
+                    <p>
+                      <RichMessage
+                        source={'Gameplay preset: {slot0}'}
+                        slots={{ slot0: entry['base'] }}
+                      />
+                    </p>
+                  )}
                   <dl>
                     {Object.entries((entry['properties'] ?? {}) as Record<string, unknown>).map(
                       ([key, value]) => (
@@ -367,7 +408,7 @@ export function SetDetail({ id }: { id: string }) {
                     )}
                   </dl>
                   <details>
-                    <summary>Full definition and frame mappings</summary>
+                    <summary>{t('Full definition and frame mappings')}</summary>
                     <pre className="set-definition">
                       {JSON.stringify(
                         kind === 'Terrain'
@@ -387,29 +428,47 @@ export function SetDetail({ id }: { id: string }) {
           )}
         </section>
       )}
-      <h2>Use in a map</h2>
+      <h2>{t('Use in a map')}</h2>
       <p>
-        Open the map editor’s Set Library to import a release, or import this downloaded package.
-        Only custom content is included in shared maps. Each map keeps its own editable copy.
+        {t(
+          'Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.',
+        )}
       </p>
-      <h2>Releases & credits</h2>
+      <h2>{t('Releases & credits')}</h2>
       {s.versions.map((v) => (
         <article key={v.id}>
           <h3>{v.label}</h3>
           <p>{v.notes}</p>
           <p>
-            {v.terrainCount} terrains · {v.resourceCount} resources · {v.license}
+            <RichMessage
+              source={'{slot0} terrains · {slot1} resources · {slot2}'}
+              slots={{ slot0: v.terrainCount, slot1: v.resourceCount, slot2: v.license }}
+              singular={'{slot0} terrain · {slot1} resources · {slot2}'}
+              count={Number(v.terrainCount)}
+            />
           </p>
           <ul>
             {v.credits.map((c, i) => (
               <li key={i}>
-                {c.author} · {c.license}
-                {c.source && <span> · {c.source}</span>}
+                <RichMessage
+                  source={'{slot0} · {slot1}{slot2}'}
+                  slots={{
+                    slot0: c.author,
+                    slot1: c.license,
+                    slot2: c.source && (
+                      <span>
+                        {' '}
+                        {t(' · ')}
+                        {c.source}
+                      </span>
+                    ),
+                  }}
+                />
               </li>
             ))}
           </ul>
           {!s.hidden && (
-            <a href={`/api/v1/sets/${id}/versions/${v.id}/file`}>Download this release</a>
+            <a href={`/api/v1/sets/${id}/versions/${v.id}/file`}>{t('Download this release')}</a>
           )}
         </article>
       ))}
@@ -418,6 +477,7 @@ export function SetDetail({ id }: { id: string }) {
 }
 
 export function SetReports() {
+  useLocale();
   const { account } = useSession();
   const data = useLoad(
     (signal) =>
@@ -434,7 +494,7 @@ export function SetReports() {
   );
   const [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
-  if (!isModerator(account)) return <p>Moderator access is required.</p>;
+  if (!isModerator(account)) return <p>{t('Moderator access is required.')}</p>;
   async function resolve(id: string, status: string, hide: boolean) {
     setBusy(true);
     setError('');
@@ -443,7 +503,7 @@ export function SetReports() {
         body: {
           status,
           hideMap: hide,
-          hideReason: hide ? 'Hidden following moderator review' : undefined,
+          hideReason: hide ? t('Hidden following moderator review') : undefined,
         },
       });
       data.reload();
@@ -455,32 +515,35 @@ export function SetReports() {
   }
   return (
     <section>
-      <h1>Set reports</h1>
-      {error && <p role="alert">{error}</p>}
+      <h1>{t('Set reports')}</h1>
+      {error && <p role="alert">{displayMessage(error)}</p>}
       {data.status === 'loading' ? (
-        <p>Loading reports…</p>
+        <p>{t('Loading reports…')}</p>
       ) : data.status === 'error' ? (
-        <p role="alert">{data.error.message}</p>
+        <p role="alert">{translateError(data.error)}</p>
       ) : data.data.items.length === 0 ? (
-        <p>No open reports.</p>
+        <p>{t('No open reports.')}</p>
       ) : (
         data.data.items.map((r) => (
           <article key={r.id}>
             <h2>
-              <Link to={'/sets/' + r.set_id}>Review set</Link>
+              <Link to={'/sets/' + r.set_id}>{t('Review set')}</Link>
             </h2>
             <p>
-              {r.reason} · {r.created_at}
+              <RichMessage
+                source={'{slot0} · {slot1}'}
+                slots={{ slot0: r.reason, slot1: r.created_at }}
+              />
             </p>
             <p>{r.details}</p>
             <button disabled={busy} onClick={() => void resolve(r.id, 'resolved', true)}>
-              Hide set and resolve
+              {t('Hide set and resolve')}
             </button>
             <button disabled={busy} onClick={() => void resolve(r.id, 'resolved', false)}>
-              Resolve
+              {t('Resolve')}
             </button>
             <button disabled={busy} onClick={() => void resolve(r.id, 'dismissed', false)}>
-              Dismiss
+              {t('Dismiss')}
             </button>
           </article>
         ))

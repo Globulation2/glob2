@@ -5,6 +5,7 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
+import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
 import { api } from '../src/api.ts';
 import type { MatchSummary } from '@glob2/protocol';
 import { LineChart } from '../src/components/LineChart.tsx';
@@ -279,6 +280,33 @@ function open(path: string) {
 }
 
 describe('routing', () => {
+  it('keeps every navigation route when group labels change language', async () => {
+    const view = open('/nowhere');
+    const links = () =>
+      [...view.container.querySelectorAll('.app-sidebar .nav a')].map((link) =>
+        link.getAttribute('href'),
+      );
+    const before = links();
+    expect(before).toHaveLength(10);
+    expect(before).toContain('/maps');
+    registerCatalog('fr', { Play: 'Jouer', Create: 'Créer', Manage: 'Gérer', Maps: 'Cartes' });
+    try {
+      await act(() => setLocale('fr'));
+      expect(links()).toEqual(before);
+      expect(
+        view.container
+          .querySelector('.app-sidebar .nav a[href="/maps"]')
+          ?.getAttribute('aria-label'),
+      ).toBe('Cartes');
+      expect(
+        [...view.container.querySelectorAll('.app-sidebar .nav-group-label')].map(
+          (node) => node.textContent,
+        ),
+      ).toEqual(['Jouer', 'Créer']);
+    } finally {
+      await act(() => setLocale('en'));
+    }
+  });
   it('matches the deep links the game uses', () => {
     expect(matchPath('/players/:id', `/players/${ALICE}`)).toEqual({ id: ALICE });
     expect(matchPath('/leaderboard/:queueId', '/leaderboard/ranked-1v1')).toEqual({

@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useEffect, type CSSProperties } from 'react';
 import type { MusicRelease } from '@glob2/protocol';
 import {
@@ -8,6 +9,7 @@ import {
 export const MOODS = ['Calm', 'Building', 'Combat'];
 const MOOD_DESCRIPTIONS = ['Room to breathe', 'A colony takes shape', 'Into the fray'];
 export function MoodIcon({ mood }: { mood: number }) {
+  useLocale();
   return (
     <svg
       viewBox="0 0 24 24"
@@ -53,6 +55,7 @@ export function MusicPlayer({
   onPosition?: (seconds: number) => void;
   onSnapshot?: (snapshot: PlaybackSnapshot) => void;
 }) {
+  useLocale();
   const player = useMusicPlayback(
     release,
     { position: initialPosition, ...initialSettings },
@@ -69,7 +72,7 @@ export function MusicPlayer({
   return (
     <section
       className="music-player"
-      aria-label="Synchronized music player"
+      aria-label={t('Synchronized music player')}
       data-playing={player.status === 'playing'}
     >
       <div className="music-player-transport">
@@ -80,21 +83,26 @@ export function MusicPlayer({
         >
           <span aria-hidden="true">{player.status === 'playing' ? 'Ⅱ' : '▶'}</span>
           {player.status === 'loading'
-            ? 'Loading music…'
+            ? t('Loading music…')
             : player.status === 'playing'
-              ? 'Pause'
-              : 'Play'}
+              ? t('Pause')
+              : t('Play music')}
         </button>
         <div className="music-clock">
           <strong>{formatMusicTime(player.position)}</strong>
-          <span> / {formatMusicTime(player.duration)}</span>
-          <small>↻ Continuous loop</small>
+          <span>
+            <RichMessage
+              source={' / {slot0}'}
+              slots={{ slot0: formatMusicTime(player.duration) }}
+            />
+          </span>
+          <small>{t('↻ Continuous loop')}</small>
         </div>
         <div className="music-volume">
           <button
             className="ghost small"
             onClick={player.toggleMute}
-            aria-label={player.muted ? 'Unmute' : 'Mute'}
+            aria-label={player.muted ? t('Unmute') : t('Mute')}
             aria-pressed={player.muted}
           >
             <svg
@@ -120,7 +128,7 @@ export function MusicPlayer({
             </svg>
           </button>
           <label>
-            <span className="music-sr">Volume</span>
+            <span className="music-sr">{t('Volume')}</span>
             <input
               type="range"
               min="0"
@@ -135,33 +143,36 @@ export function MusicPlayer({
       {player.status === 'error' && (
         <div className="music-playback-error">
           <p role="alert">
-            <strong>Music couldn’t be loaded.</strong> Try again, or download the set to listen
-            locally.
+            <RichMessage
+              source={'{slot0} Try again, or download the set to listen locally.'}
+              slots={{ slot0: <strong>{t('Music couldn’t be loaded.')}</strong> }}
+            />
           </p>
-          <button onClick={player.retry}>Retry</button>
+          <button onClick={player.retry}>{t('Retry')}</button>
           <details>
-            <summary>Technical details</summary>
+            <summary>{t('Technical details')}</summary>
             <p>{player.error}</p>
           </details>
         </div>
       )}
       <p className="music-player-intro">
-        One soundtrack, three synchronized moods. Switch moods while listening to hear how the game
-        adapts.
+        {t(
+          'One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.',
+        )}
       </p>
-      <div className="music-moods" aria-label="Soundtrack mood">
+      <div className="music-moods" aria-label={t('Soundtrack mood')}>
         {MOODS.map((mood, i) => (
           <button
             key={mood}
             onClick={() => player.selectMood(i)}
             className={`mood-${i}`}
             aria-pressed={player.mode !== 'manual' && player.mood === i}
-            aria-label={`Crossfade to ${mood}`}
+            aria-label={t('Crossfade to {value0}', { value0: mood })}
           >
             <MoodIcon mood={i} />
             <span>
               <strong>{mood}</strong>
-              <small>{MOOD_DESCRIPTIONS[i]}</small>
+              <small>{t(MOOD_DESCRIPTIONS[i])}</small>
             </span>
             <span className="music-mood-mark" aria-hidden="true">
               {player.mode !== 'manual' && player.mood === i ? '✓' : ''}
@@ -171,10 +182,12 @@ export function MusicPlayer({
       </div>
       <div className="music-audible-status" role="status">
         {player.mode === 'manual'
-          ? 'Custom mood blend'
+          ? t('Custom mood blend')
           : transitioning
-            ? `Transitioning to ${MOODS[player.mood]}…`
-            : `${MOODS[player.mood]} ${player.status === 'playing' ? 'playing' : 'selected'}`}
+            ? t('Transitioning to {value0}…', { value0: t(MOODS[player.mood]) })
+            : player.status === 'playing'
+              ? t('{value0} playing', { value0: t(MOODS[player.mood]) })
+              : t('{value0} selected', { value0: t(MOODS[player.mood]) })}
       </div>
       <div className="music-timeline">
         <div className="music-waveform-labels" aria-hidden="true">
@@ -192,7 +205,7 @@ export function MusicPlayer({
               className={`mood-${i}`}
               viewBox={`0 0 ${Math.max(1, track.waveform.length)} 40`}
               preserveAspectRatio="none"
-              aria-label={`${MOODS[i]} waveform`}
+              aria-label={t('{value0} waveform', { value0: MOODS[i] })}
               style={{ opacity: 0.35 + (player.weights[i] ?? 0) * 0.65 }}
             >
               {track.waveform.map((peak, x) => (
@@ -210,7 +223,7 @@ export function MusicPlayer({
           <div className="music-playhead" aria-hidden="true" />
           <input
             className="music-waveform-seek"
-            aria-label="Playback position"
+            aria-label={t('Playback position')}
             aria-valuetext={formatMusicTime(player.position)}
             type="range"
             min="0"
@@ -222,32 +235,45 @@ export function MusicPlayer({
         </div>
       </div>
       <div className="music-timeline-caption">
-        <span>Drag the playhead to explore</span>
-        <span>{formatMusicTime(player.duration)} loop</span>
+        <span>{t('Drag the playhead to explore')}</span>
+        <span>
+          <RichMessage
+            source={'{slot0} loop'}
+            slots={{ slot0: formatMusicTime(player.duration) }}
+          />
+        </span>
       </div>
       <div className="music-game-preview">
         <div>
-          <strong>Hear it in the game</strong>
-          <p>Calm → Building → Combat → Calm · eight seconds per mood</p>
+          <strong>{t('Hear it in the game')}</strong>
+          <p>{t('Calm → Building → Combat → Calm · eight seconds per mood')}</p>
         </div>
         <button
           onClick={player.toggleAutomatic}
           disabled={player.status === 'loading'}
           aria-pressed={player.mode === 'automatic'}
         >
-          {player.mode === 'automatic' ? 'Stop transition preview' : 'Preview game transitions'}
+          {player.mode === 'automatic'
+            ? t('Stop transition preview')
+            : t('Preview game transitions')}
         </button>
       </div>
       {player.mode === 'automatic' && (
         <p className="music-preview-status" role="status">
-          Previewing game transitions · {MOODS[player.mood]} · game fade timing
+          <RichMessage
+            source={'Previewing game transitions · {slot0} · game fade timing'}
+            slots={{ slot0: t(MOODS[player.mood]) }}
+          />
         </p>
       )}
       <details className="music-advanced">
-        <summary>Advanced mixing</summary>
-        <p>Explore custom blends and fades. Restore game settings for the in-game transition.</p>
+        <summary>{t('Advanced mixing')}</summary>
+        <p>
+          {t('Explore custom blends and fades. Restore game settings for the in-game transition.')}
+        </p>
         <label>
-          Fade duration: {player.fade.toFixed(2)} seconds
+          {t('Fade duration: ')}
+          {player.fade.toFixed(2)} {t(' seconds')}
           <input
             type="range"
             min="0"
@@ -259,7 +285,7 @@ export function MusicPlayer({
           />
         </label>
         <label>
-          Manual blend · Calm → Building → Combat
+          {t('Manual blend · Calm → Building → Combat')}
           <input
             type="range"
             min="0"
@@ -273,12 +299,18 @@ export function MusicPlayer({
         <div className="music-mix-readout">
           {MOODS.map((mood, i) => (
             <span key={mood}>
-              {mood} <strong>{Math.round((player.weights[i] ?? 0) * 100)}%</strong>
+              {mood}{' '}
+              <strong>
+                <RichMessage
+                  source={'{slot0}%'}
+                  slots={{ slot0: Math.round((player.weights[i] ?? 0) * 100) }}
+                />
+              </strong>
             </span>
           ))}
         </div>
         <button disabled={!player.ready} onClick={player.restore}>
-          Restore game settings
+          {t('Restore game settings')}
         </button>
       </details>
     </section>

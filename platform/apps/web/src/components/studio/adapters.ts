@@ -1,3 +1,4 @@
+import { t } from '../../messages.ts';
 export type StudioRequestState =
   'queued' | 'running' | 'checking' | 'uncertain' | 'failed' | 'completed';
 /** Transport states remain distinct in their domain; the shell uses these presentation states. */
@@ -11,8 +12,8 @@ export function requestState(status: string): StudioRequestState {
 }
 export function cancellationReason(status: string): string | undefined {
   return status === 'uncertain'
-    ? 'The provider outcome must be reconciled before cancellation.'
+    ? t('The provider outcome must be reconciled before cancellation.')
     : status === 'dispatched'
-      ? 'Wait for the provider call to return before cancelling.'
+      ? t('Wait for the provider call to return before cancelling.')
       : undefined;
 }

@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { decodeGeneratorDraft, encodeGeneratorDraft } from '@glob2/protocol';
 import toolkit from '../../../../../../data/generators/toolkit.d.ts?raw';
@@ -15,6 +16,7 @@ export default function Editor({
   onChange: (source: string) => void;
   small?: boolean;
 }) {
+  useLocale();
   const [file, setFile] = useState<'script' | 'manifest'>('script');
   const d = decodeGeneratorDraft(source),
     b = baseline ? decodeGeneratorDraft(baseline) : undefined;
@@ -29,24 +31,30 @@ export default function Editor({
     )
       entry = manifest.entry;
   } catch (e) {
-    error = e instanceof Error ? e.message : 'Invalid manifest JSON.';
+    error = e instanceof Error ? e.message : t('Invalid manifest JSON.');
   }
   const toolkitPath = `file:///generator-studio/${entry.slice(0, entry.lastIndexOf('/') + 1)}toolkit.d.ts`;
   const declarations = useMemo(() => [{ path: toolkitPath, source: toolkit }], [toolkitPath]);
-  const label = file === 'script' ? 'Generator JavaScript source' : 'Generator manifest JSON';
+  const label = file === 'script' ? t('Generator JavaScript source') : t('Generator manifest JSON');
   const change = (text: string) => onChange(encodeGeneratorDraft({ ...d, [file]: text }));
   return (
     <>
       <div className="as-toolbar">
         <label>
-          File{' '}
+          {t('File')}{' '}
           <select value={file} onChange={(e) => setFile(e.target.value as typeof file)}>
-            <option value="script">JavaScript · {entry}</option>
-            <option value="manifest">Manifest</option>
+            <option value="script">
+              <RichMessage source={'JavaScript · {slot0}'} slots={{ slot0: entry }} />
+            </option>
+            <option value="manifest">{t('Manifest')}</option>
           </select>
         </label>
       </div>
-      {error && <p role="status">Manifest JSON: {error}</p>}
+      {error && (
+        <p role="status">
+          <RichMessage source={'Manifest JSON: {slot0}'} slots={{ slot0: error }} />
+        </p>
+      )}
       {small ? (
         <>
           <textarea
@@ -59,13 +67,13 @@ export default function Editor({
           />
           {b && (
             <details>
-              <summary>Compared revision</summary>
+              <summary>{t('Compared revision')}</summary>
               <pre>{b[file]}</pre>
             </details>
           )}
         </>
       ) : (
-        <Suspense fallback={<p>Loading code editor…</p>}>
+        <Suspense fallback={<p>{t('Loading code editor…')}</p>}>
           <CodeEditor
             key={file}
             source={d[file]}

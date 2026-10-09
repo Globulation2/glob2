@@ -25,7 +25,7 @@
   margin: 0;
 }
 .studio-header-actions {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -249,7 +249,7 @@
   display: none;
 }
 .studio-page .ms-projects {
-  padding-left: 12px;
+  padding-inline-start: 12px;
 }
 .studio-page > .ms-banner {
   max-height: 100px;
@@ -416,7 +416,7 @@
   }
   .studio-shell .studio-header,
   .studio-page > .ms-header {
-    padding-left: 52px;
+    padding-inline-start: 52px;
     flex-wrap: wrap;
   }
   .studio-header-actions {
@@ -425,7 +425,7 @@
   .studio-page .ms-projects {
     margin: 0;
     flex: 1;
-    padding-left: 0;
+    padding-inline-start: 0;
     border: 0;
   }
   .studio-page .ms-projects summary {

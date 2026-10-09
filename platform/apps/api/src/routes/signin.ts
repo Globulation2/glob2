@@ -26,7 +26,7 @@ import {
   type Identity,
 } from '../identity.ts';
 import { localSignIn } from './auth.ts';
-import { html, sendPage, type Html } from '../web/pages.ts';
+import { html, pageHtml, pageText, sendPage, type Html } from '../web/pages.ts';
 import { SharedLimit } from '../http/rateLimits.ts';
 
 type Attempt = Selectable<Database['signin_attempts']>;
@@ -76,7 +76,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     sendPage(
       reply,
       'Sign-in problem',
-      html`<div class="card" role="alert"><p>${message}</p></div>
+      pageHtml(reply)`<div class="card" role="alert"><p>${pageText(reply, message)}</p></div>
         <a class="button primary" href="/signin">Back to sign in</a>
         <a class="button" href="/">Go to ${identity.instanceName}</a>`,
       status,
@@ -122,9 +122,9 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     sendPage(
       reply,
       'Sign in to Globulation 2',
-      html`<div class="card">
+      pageHtml(reply)`<div class="card">
           <p>
-            Sign in to Globulation 2 ${platformName[attempt.client_platform]}? Your game shows this
+            Sign in to Globulation 2 ${pageText(reply, platformName[attempt.client_platform])}? Your game shows this
             code:
           </p>
           <p class="code"><strong>${displayCode(attempt.confirmation_code)}</strong></p>
@@ -153,7 +153,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       : `/signin?attempt=${id}`;
   };
 
-  const providerButtons = (attempt: Attempt | undefined) => {
+  const providerButtons = (reply: FastifyReply, attempt: Attempt | undefined) => {
     const query = attempt ? `?attempt=${encodeURIComponent(attempt.id)}` : '';
     const providers = identity.providers.list();
     providers.sort(
@@ -161,7 +161,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     );
     return providers.map(
       (provider, i) =>
-        html`<a
+        pageHtml(reply)`<a
           class="button${i === 0 ? ' primary' : ''}"
           href="/auth/${encodeURIComponent(provider.id)}/start${query}"
           >Continue with ${provider.displayName}</a
@@ -170,23 +170,26 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
   };
 
   /** One labelled input, with its problem (if any) tied to it by aria-describedby. */
-  const field = (options: {
-    id: string;
-    label: string;
-    name: string;
-    type?: string;
-    value?: string;
-    attrs: Html;
-    hint?: string;
-    error?: string;
-  }) => {
+  const field = (
+    reply: FastifyReply,
+    options: {
+      id: string;
+      label: string;
+      name: string;
+      type?: string;
+      value?: string;
+      attrs: Html;
+      hint?: string;
+      error?: string;
+    },
+  ) => {
     const described = [
       options.hint ? `${options.id}-hint` : '',
       options.error ? `${options.id}-error` : '',
     ]
       .filter(Boolean)
       .join(' ');
-    return html`<label for="${options.id}">${options.label}</label
+    return pageHtml(reply)`<label for="${options.id}">${pageText(reply, options.label)}</label
       ><input
         id="${options.id}"
         name="${options.name}"
@@ -195,9 +198,11 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         ${described ? html`aria-describedby="${described}"` : ''}
         ${options.error ? html`aria-invalid="true" autofocus` : ''}
         ${options.attrs}
-      />${options.hint ? html`<p class="hint" id="${options.id}-hint">${options.hint}</p>` : ''}${
+      />${options.hint ? pageHtml(reply)`<p class="hint" id="${options.id}-hint">${pageText(reply, options.hint)}</p>` : ''}${
         options.error
-          ? html`<p class="field-error" id="${options.id}-error">${options.error}</p>`
+          ? pageHtml(
+              reply,
+            )`<p class="field-error" id="${options.id}-error">${pageText(reply, options.error)}</p>`
           : ''
       }`;
   };
@@ -206,27 +211,33 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
    * Local accounts: a Sign in form and, when registration is open, a separate
    * Create account form (so password managers offer to generate a password).
    */
-  const localForms = (attempt: Attempt | undefined, state?: LocalFormState): Html | undefined => {
+  const localForms = (
+    reply: FastifyReply,
+    attempt: Attempt | undefined,
+    state?: LocalFormState,
+  ): Html | undefined => {
     if (!identity.localAuth.enabled) return undefined;
     const hidden = attempt
-      ? html`<input type="hidden" name="attempt" value="${attempt.id}" />`
+      ? pageHtml(reply)`<input type="hidden" name="attempt" value="${attempt.id}" />`
       : '';
     const mine = (action: LocalFormState['action']) =>
       state?.action === action ? state : undefined;
     const formError = (action: LocalFormState['action']) => {
       const s = mine(action);
       return s?.field === 'form'
-        ? html`<p class="field-error form-error" role="alert" id="${action}-error">${s.message}</p>`
+        ? pageHtml(
+            reply,
+          )`<p class="field-error form-error" role="alert" id="${action}-error">${pageText(reply, s.message)}</p>`
         : '';
     };
     const signin = mine('signin');
     const register = mine('register');
-    return html`<div class="card">
+    return pageHtml(reply)`<div class="card">
         <h2>Sign in</h2>
         <form method="post" action="/signin/local" novalidate>
           ${hidden}<input type="hidden" name="action" value="signin" />
           ${formError('signin')}
-          ${field({
+          ${field(reply, {
             id: 'signin-username',
             label: 'Username',
             name: 'username',
@@ -235,7 +246,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
             attrs: html`autocomplete="username" autocapitalize="none" spellcheck="false" required
             maxlength="32"`,
           })}
-          ${field({
+          ${field(reply, {
             id: 'signin-password',
             label: 'Password',
             name: 'password',
@@ -248,12 +259,12 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       </div>
       ${
         identity.localAuth.allowRegistration
-          ? html`<div class="card">
+          ? pageHtml(reply)`<div class="card">
               <h2>New here? Create an account</h2>
               <form method="post" action="/signin/local" novalidate>
                 ${hidden}<input type="hidden" name="action" value="register" />
                 ${formError('register')}
-                ${field({
+                ${field(reply, {
                   id: 'register-username',
                   label: 'Choose a username',
                   name: 'username',
@@ -263,12 +274,12 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
                   attrs: html`autocomplete="username" autocapitalize="none" spellcheck="false"
                   required minlength="3" maxlength="32" pattern="[A-Za-z0-9._\\-]{3,32}"`,
                 })}
-                ${field({
+                ${field(reply, {
                   id: 'register-password',
                   label: 'Choose a password',
                   name: 'password',
                   type: 'password',
-                  hint: `At least ${MIN_PASSWORD} characters.`,
+                  hint: pageText(reply, 'At least {p0} characters.', { p0: MIN_PASSWORD }),
                   error: register?.field === 'password' ? register.message : undefined,
                   attrs: html`autocomplete="new-password" required minlength="${MIN_PASSWORD}"
                   maxlength="${MAX_PASSWORD}"`,
@@ -291,47 +302,47 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       // Already signed in on this site: the game can take that account in one click.
       const continueAs =
         view.signedInAs && attempt.mode === 'signin'
-          ? html`<div class="card">
+          ? pageHtml(reply)`<div class="card">
               <form method="post" action="/signin/continue">
                 <input type="hidden" name="attempt" value="${attempt.id}" />
                 <button class="primary" type="submit">Continue as ${view.signedInAs}</button>
               </form>
             </div>`
           : '';
-      const providers = providerButtons(attempt);
+      const providers = providerButtons(reply, attempt);
       return sendPage(
         reply,
         'Sign in to Globulation 2',
-        html`${continueAs}
+        pageHtml(reply)`${continueAs}
           ${
             providers.length > 0
-              ? html`<div class="card">
+              ? pageHtml(reply)`<div class="card">
                   <p>Choose how to sign in to the game:</p>
                   ${providers}
                 </div>`
               : ''
           }
-          ${localForms(attempt, form)}
+          ${localForms(reply, attempt, form)}
           <form method="post" action="/signin/cancel">
             <input type="hidden" name="attempt" value="${attempt.id}" /><button>Cancel</button>
           </form>`,
         status,
       );
     }
-    const providers = providerButtons(undefined);
+    const providers = providerButtons(reply, undefined);
     return sendPage(
       reply,
       'Sign in',
-      html`${
-          view.signedInAs
-            ? html`<div class="card">
+      pageHtml(reply)`${
+        view.signedInAs
+          ? pageHtml(reply)`<div class="card">
                 <p>Signed in as <strong>${view.signedInAs}</strong>.</p>
                 <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
               </div>`
-            : ''
-        }
-        ${providers.length > 0 ? html`<div class="card">${providers}</div>` : ''}
-        ${localForms(undefined, form)}
+          : ''
+      }
+        ${providers.length > 0 ? pageHtml(reply)`<div class="card">${providers}</div>` : ''}
+        ${localForms(reply, undefined, form)}
         <p class="muted">
           No account needed to try it: <a href="/play/">play in your browser</a> as a guest, and
           sign in later to keep your games and rating.
@@ -425,7 +436,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     return sendPage(
       reply,
       'Sign-in cancelled',
-      html`<div class="card"><p>You can close this page.</p></div>`,
+      pageHtml(reply)`<div class="card"><p>You can close this page.</p></div>`,
     );
   });
 
@@ -434,9 +445,9 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     sendPage(
       reply,
       'Signed in',
-      html`<div class="card">
+      pageHtml(reply)`<div class="card">
         <p>
-          ${linked ? 'Your account is now linked' : 'You are signed in'} as
+          ${pageText(reply, linked ? 'Your account is now linked' : 'You are signed in')} as
           <strong>${displayName}</strong>.
         </p>
         <p>Go back to the game: it has signed you in. You can close this tab.</p>
@@ -487,7 +498,11 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         url = await provider.authorizationUrl({ ...values, redirectUri });
       } catch (error) {
         request.log.error({ err: error, provider: provider.id }, 'provider unavailable');
-        return errorPage(reply, `${provider.displayName} sign-in is unavailable right now.`, 503);
+        return errorPage(
+          reply,
+          pageText(reply, '{p0} sign-in is unavailable right now.', { p0: provider.displayName }),
+          503,
+        );
       }
       await db
         .insertInto('auth_flows')
@@ -561,7 +576,9 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         reply,
         reason === 'denied'
           ? 'Sign-in was cancelled.'
-          : `Signing in with ${provider.displayName} did not work. Please try again.`,
+          : pageText(reply, 'Signing in with {p0} did not work. Please try again.', {
+              p0: provider.displayName,
+            }),
       );
     }
     return finish(request, reply, attempt, providerIdentity, provider.displayName);
@@ -609,7 +626,11 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     } catch (error) {
       if (error instanceof HttpError) {
         if (attempt) await identity.handoff.fail(attempt.id, 'denied');
-        return errorPage(reply, error.body.message, error.statusCode);
+        return errorPage(
+          reply,
+          pageText(reply, error.body.messageKey ?? error.body.message, error.body.messageParams),
+          error.statusCode,
+        );
       }
       throw error;
     }
@@ -619,7 +640,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       return sendPage(
         reply,
         'Account already in use',
-        html`<div class="card">
+        pageHtml(reply)`<div class="card">
           <p>
             This ${providerName} sign-in already belongs to the player
             <strong>${outcome.conflict.account.displayName}</strong>, so it cannot be added to the
@@ -649,7 +670,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     return sendPage(
       reply,
       'Signed in',
-      html`<div class="card">
+      pageHtml(reply)`<div class="card">
         <p>You are signed in as <strong>${account.display_name}</strong>.</p>
         <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
       </div>`,
@@ -672,7 +693,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       return sendPage(
         reply,
         'Signed in',
-        html`<div class="card">
+        pageHtml(reply)`<div class="card">
           <p>
             The game will switch to <strong>${owner.display_name}</strong>. You can close this page.
           </p>
@@ -683,7 +704,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     return sendPage(
       reply,
       'Nothing changed',
-      html`<div class="card">
+      pageHtml(reply)`<div class="card">
         <p>Your game keeps its current account. You can close this page.</p>
       </div>`,
     );
@@ -722,7 +743,9 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         return again(
           'username',
           username.length < 3 || username.length > 32
-            ? `Usernames are 3 to 32 characters long; this one has ${username.length}.`
+            ? pageText(reply, 'Usernames are 3 to 32 characters long; this one has {p0}.', {
+                p0: username.length,
+              })
             : 'Usernames can only use letters, digits, dots, dashes and underscores (no spaces).',
           400,
         );
@@ -731,18 +754,32 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         return again(
           'password',
           password.length === 0
-            ? `Choose a password of at least ${MIN_PASSWORD} characters.`
-            : `This password is too short: it has ${password.length} characters, and passwords need at least ${MIN_PASSWORD}.`,
+            ? pageText(reply, 'Choose a password of at least {p0} characters.', {
+                p0: MIN_PASSWORD,
+              })
+            : pageText(
+                reply,
+                'This password is too short: it has {p0} characters, and passwords need at least {p1}.',
+                { p0: password.length, p1: MIN_PASSWORD },
+              ),
           400,
         );
       }
       if (password.length > MAX_PASSWORD)
-        return again('password', `Passwords can be at most ${MAX_PASSWORD} characters.`, 400);
+        return again(
+          'password',
+          pageText(reply, 'Passwords can be at most {p0} characters.', { p0: MAX_PASSWORD }),
+          400,
+        );
       const subject = normalizeUsername(username);
       if (await identity.accounts.localIdentity(subject)) {
         return again(
           'username',
-          `The username ${username} is taken. Choose another one, or sign in above if it is yours.`,
+          pageText(
+            reply,
+            'The username {p0} is taken. Choose another one, or sign in above if it is yours.',
+            { p0: username },
+          ),
           409,
         );
       }
@@ -757,7 +794,11 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     }
     if (password.length === 0) return again('password', 'Enter your password.', 400);
     if (!USERNAME.test(username) || password.length > MAX_PASSWORD) {
-      return again('username', `There is no account called ${username}.`, 401);
+      return again(
+        'username',
+        pageText(reply, 'There is no account called {p0}.', { p0: username }),
+        401,
+      );
     }
     const subject = normalizeUsername(username);
     // Usernames are public (and registration says when one is taken), so
@@ -765,9 +806,10 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     if (!(await identity.accounts.localIdentity(subject))) {
       return again(
         'username',
-        `There is no account called ${username}. Check the spelling${
-          identity.localAuth.allowRegistration ? ', or create an account below' : ''
-        }.`,
+        pageText(reply, 'There is no account called {p0}. Check the spelling{p1}.', {
+          p0: username,
+          p1: identity.localAuth.allowRegistration ? ', or create an account below' : '',
+        }),
         401,
       );
     }
@@ -777,7 +819,15 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       if (error instanceof HttpError) {
         return error.statusCode === 401 && error.body.message === 'Wrong username or password.'
           ? again('password', 'That password is not right for this username. Try again.', 401)
-          : again('form', error.body.message, error.statusCode);
+          : again(
+              'form',
+              pageText(
+                reply,
+                error.body.messageKey ?? error.body.message,
+                error.body.messageParams,
+              ),
+              error.statusCode,
+            );
       }
       throw error;
     }

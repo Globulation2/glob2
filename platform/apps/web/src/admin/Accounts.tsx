@@ -1,3 +1,5 @@
+import { statusLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState, type FormEvent } from 'react';
 import type { AdminAccount } from '@glob2/protocol';
 import { request, api } from '../api.ts';
@@ -14,6 +16,7 @@ const MUTES = [
 ];
 
 function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: boolean }) {
+  useLocale();
   const [account, setAccount] = useState(initial);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(initial.displayName);
@@ -44,13 +47,30 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
     <div className="it" style={{ display: 'block' }} data-testid="admin-account">
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div className="grow">
-          <PlayerLink account={account} /> <span className="badge">{account.kind}</span>{' '}
-          {account.role !== 'user' && <span className="badge gold">{account.role}</span>}{' '}
-          {account.status === 'banned' && <span className="badge bad">banned</span>}{' '}
-          {muted && <span className="badge warn">muted until {dateTime(account.mutedUntil)}</span>}
+          <PlayerLink account={account} />{' '}
+          <span className="badge">{statusLabel(account.kind)}</span>{' '}
+          {account.role !== 'user' && (
+            <span className="badge gold">{statusLabel(account.role)}</span>
+          )}{' '}
+          {account.status === 'banned' && <span className="badge bad">{t('banned')}</span>}{' '}
+          {muted && (
+            <span className="badge warn">
+              <RichMessage
+                source={'muted until {slot0}'}
+                slots={{ slot0: dateTime(account.mutedUntil) }}
+              />
+            </span>
+          )}
           <div className="caption">
-            joined {date(account.createdAt)} · last seen {dateTime(account.lastSeenAt)} ·{' '}
-            {account.identities.map((i) => i.provider).join(', ') || 'no sign-in methods'}
+            <RichMessage
+              source={'joined {slot0} · last seen {slot1} · {slot2}'}
+              slots={{
+                slot0: date(account.createdAt),
+                slot1: dateTime(account.lastSeenAt),
+                slot2:
+                  account.identities.map((i) => i.provider).join(', ') || t('no sign-in methods'),
+              }}
+            />
           </div>
         </div>
         <button
@@ -59,13 +79,13 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
           onClick={() => setOpen(!open)}
           aria-expanded={open}
         >
-          {account.status === 'deleted' ? 'Deleted' : open ? 'Close' : 'Moderate'}
+          {account.status === 'deleted' ? t('Deleted') : open ? t('Close') : t('Moderate')}
         </button>
       </div>
       {open && account.status !== 'deleted' && (
         <fieldset disabled={busy} className="card" style={{ marginTop: 8 }}>
           <label className="field">
-            Reason (recorded in the audit log)
+            {t('Reason (recorded in the audit log)')}
             <input value={reason} maxLength={500} onChange={(e) => setReason(e.target.value)} />
           </label>
           <form
@@ -76,7 +96,7 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
             }}
           >
             <input
-              aria-label="New display name"
+              aria-label={t('New display name')}
               value={name}
               maxLength={32}
               onChange={(e) => setName(e.target.value)}
@@ -86,10 +106,10 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
               type="submit"
               disabled={!name || name === account.displayName}
             >
-              Rename
+              {t('Rename')}
             </button>
           </form>
-          {!canRestrict && <p>Restrictions and deletion require a lower-role account.</p>}
+          {!canRestrict && <p>{t('Restrictions and deletion require a lower-role account.')}</p>}
           <div className="toolbar">
             {canRestrict &&
               MUTES.map((m) => (
@@ -100,7 +120,7 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
                     void act(() => api.adminMute(account.id, m.minutes, reason || undefined))
                   }
                 >
-                  Mute {m.name}
+                  <RichMessage source={'Mute {slot0}'} slots={{ slot0: m.name }} />
                 </button>
               ))}
             {muted && (
@@ -108,7 +128,7 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
                 className="small"
                 onClick={() => void act(() => api.adminMute(account.id, 0, reason || undefined))}
               >
-                Unmute
+                {t('Unmute')}
               </button>
             )}
           </div>
@@ -120,20 +140,24 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
                   const banned = account.status !== 'banned';
                   if (
                     !banned ||
-                    window.confirm(`Ban ${account.displayName}? This signs them out everywhere.`)
+                    window.confirm(
+                      t('Ban {value0}? This signs them out everywhere.', {
+                        value0: account.displayName,
+                      }),
+                    )
                   ) {
                     void act(() => api.adminBan(account.id, banned, reason || undefined));
                   }
                 }}
               >
-                {account.status === 'banned' ? 'Lift ban' : 'Ban'}
+                {account.status === 'banned' ? t('Lift ban') : t('Ban')}
               </button>
             </div>
           )}
           {isAdmin && actor?.id !== account.id && account.kind === 'registered' && (
             <div className="toolbar">
               <label>
-                Role{' '}
+                {t('Role')}{' '}
                 <select value={role} onChange={(e) => setRole(e.target.value as typeof role)}>
                   {['user', 'moderator', 'admin'].map((r) => (
                     <option key={r}>{r}</option>
@@ -150,19 +174,21 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
                   )
                 }
               >
-                Change role
+                {t('Change role')}
               </button>
             </div>
           )}
           {isAdmin && canRestrict && (
             <details>
-              <summary>Delete account</summary>
+              <summary>{t('Delete account')}</summary>
               <p>
-                Deletes sign-in identities, sessions, personal information and owned content. Match
-                history remains anonymized. This cannot be undone.
+                {t(
+                  'Deletes sign-in identities, sessions, personal information and owned content. Match history remains anonymized. This cannot be undone.',
+                )}
               </p>
               <label>
-                Type {account.displayName} to confirm{' '}
+                {t('Type ')}
+                <bdi dir="auto">{account.displayName}</bdi> {t(' to confirm')}{' '}
                 <input value={confirmation} onChange={(e) => setConfirmation(e.target.value)} />
               </label>
               <button
@@ -178,11 +204,11 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
                   })
                 }
               >
-                Delete account
+                {t('Delete account')}
               </button>
             </details>
           )}
-          {busy && <p role="status">Saving account changes…</p>}
+          {busy && <p role="status">{t('Saving account changes…')}</p>}
           {error && <ErrorNotice error={error} />}
         </fieldset>
       )}
@@ -191,6 +217,7 @@ function AccountRow({ initial, isAdmin }: { initial: AdminAccount; isAdmin: bool
 }
 
 export function Accounts({ isAdmin }: { isAdmin: boolean }) {
+  useLocale();
   const { values, set } = useAdminFilters();
   const [q, setQ] = useFilterDraft(values['q'] ?? '');
   const load = useLoad((signal) => api.adminAccounts(values, signal), [JSON.stringify(values)]);
@@ -205,18 +232,18 @@ export function Accounts({ isAdmin }: { isAdmin: boolean }) {
         }}
       >
         <input
-          aria-label="Search accounts"
-          placeholder="Name, account id or email"
+          aria-label={t('Search accounts')}
+          placeholder={t('Name, account id or email')}
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <button type="submit">{t('Search')}</button>
       </form>
       <Loaded load={load}>
         {(page) => (
           <>
             {page.items.length === 0 ? (
-              <Empty>No accounts match.</Empty>
+              <Empty>{t('No accounts match.')}</Empty>
             ) : (
               <div className="list">
                 {page.items.map((a) => (

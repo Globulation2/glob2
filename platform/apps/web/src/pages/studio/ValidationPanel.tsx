@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage, fixedCaption, statusLabel } from '../../i18n.tsx';
 import { Icon } from '../../icons.tsx';
 import type { Check } from './types.ts';
 export function ValidationPanel({
@@ -11,6 +12,7 @@ export function ValidationPanel({
   selected?: string;
   select: (check: Check) => void;
 }) {
+  useLocale();
   const failedCount = checks.filter((c) => c.status === 'failed').length;
   return (
     <details
@@ -32,20 +34,29 @@ export function ValidationPanel({
         </span>
         <strong>
           {checking
-            ? 'Checking your world…'
+            ? t('Checking your world…')
             : checks.every((c) => c.status === 'passed')
-              ? 'Playability checks passed'
+              ? t('Playability checks passed')
               : checks.some((c) => c.status === 'failed')
-                ? `${failedCount} ${failedCount === 1 ? 'check needs' : 'checks need'} attention`
-                : 'Playability checks'}
+                ? t('{value0} {value1} attention', {
+                    value0: failedCount,
+                    value1: failedCount === 1 ? t('check needs') : t('checks need'),
+                  })
+                : t('Playability checks')}
         </strong>
         <span>
-          {checks.filter((c) => c.status === 'passed').length} / {checks.length} passed
+          <RichMessage
+            source={'{slot0} / {slot1} passed'}
+            slots={{
+              slot0: checks.filter((c) => c.status === 'passed').length,
+              slot1: checks.length,
+            }}
+          />
         </span>
       </summary>
       {(checking || checks.some((c) => c.status === 'failed')) && (
         <p className="ms-active-check">
-          {checks.find((c) => c.status === 'running' || c.status === 'failed')?.label}
+          {fixedCaption(checks.find((c) => c.status === 'running' || c.status === 'failed')?.label)}
         </p>
       )}
       <ul>
@@ -64,14 +75,18 @@ export function ValidationPanel({
                   size={18}
                 />
               </span>
-              <strong>{c.label}</strong>
-              <span>{c.status.replace('-', ' ')}</span>
+              <strong>{fixedCaption(c.label)}</strong>
+              <span>{statusLabel(c.status)}</span>
             </button>
             {(selected === c.id || c.status === 'failed') && (
               <p>
-                {c.detail ?? 'No additional details were recorded.'}
-                {c.colony !== undefined && ` Colony ${c.colony + 1}.`}
-                {c.location && ` Location: ${c.location.x}, ${c.location.y}.`}
+                {c.detail ?? t('No additional details were recorded.')}
+                {c.colony !== undefined && t(' Colony {value0}.', { value0: c.colony + 1 })}
+                {c.location &&
+                  t(' Location: {value0}, {value1}.', {
+                    value0: c.location.x,
+                    value1: c.location.y,
+                  })}
               </p>
             )}
           </li>

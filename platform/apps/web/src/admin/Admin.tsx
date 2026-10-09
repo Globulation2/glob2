@@ -1,3 +1,5 @@
+import { statusLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { MusicReports } from '../music/Moderation.tsx';
 import { SkinReports } from '../skins/Moderation.tsx';
 import { Operations } from './Operations.tsx';
@@ -23,17 +25,21 @@ const TABS = [
 ];
 
 export function Admin({ tab }: { tab: string | undefined }) {
+  useLocale();
   const { account } = useSession();
   if (account === undefined) return null;
   if (!account) {
     return (
       <div className="notice">
-        <a href="/signin">Sign in</a> with a moderator account.
+        <RichMessage
+          source={'{slot0} with a moderator account.'}
+          slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+        />
       </div>
     );
   }
   if (!isModerator(account)) {
-    return <div className="notice error">This page is for moderators.</div>;
+    return <div className="notice error">{t('This page is for moderators.')}</div>;
   }
   const current =
     (['music', 'skins'].includes(tab ?? '') ? tab : TABS.find((t) => t.id === tab)?.id) ??
@@ -43,16 +49,18 @@ export function Admin({ tab }: { tab: string | undefined }) {
       <div className="page-head">
         <GameArt name="clearingFlag" size={72} className="head-art" />
         <div className="grow">
-          <h1>Administration</h1>
+          <h1>{t('Administration')}</h1>
           <p className="sub">
-            Signed in as {account.displayName} ({account.role}). Every administrative change is
-            recorded.
+            <RichMessage
+              source={'Signed in as {slot0} ({slot1}). Every administrative change is recorded.'}
+              slots={{ slot0: account.displayName, slot1: statusLabel(account.role) }}
+            />
           </p>
         </div>
       </div>
       <nav
         className="seg"
-        aria-label="Administration sections"
+        aria-label={t('Administration sections')}
         style={{ marginBottom: 'var(--sp-4)' }}
       >
         {TABS.filter(
@@ -76,11 +84,15 @@ export function Admin({ tab }: { tab: string | undefined }) {
       {current === 'content' && <Content />}
       {current === 'audit' && <Audit />}
       {current === 'overview' &&
-        (account.role === 'admin' ? <Overview /> : <p>Administrator access is required.</p>)}
+        (account.role === 'admin' ? <Overview /> : <p>{t('Administrator access is required.')}</p>)}
       {current === 'finances' &&
-        (account.role === 'admin' ? <Finances /> : <p>Administrator access is required.</p>)}
+        (account.role === 'admin' ? <Finances /> : <p>{t('Administrator access is required.')}</p>)}
       {current === 'operations' &&
-        (account.role === 'admin' ? <Operations /> : <p>Administrator access is required.</p>)}
+        (account.role === 'admin' ? (
+          <Operations />
+        ) : (
+          <p>{t('Administrator access is required.')}</p>
+        ))}
     </div>
   );
 }

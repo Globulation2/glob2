@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import { MeshPreview } from './MeshPreview.tsx';
 import { ACTIONS, DEFAULT_CAMERA } from './geometry.ts';
@@ -16,6 +17,7 @@ export function CopyPaintDialog({
   onClose: () => void;
   onApply: (data: SkinData) => void;
 }) {
+  useLocale();
   const [candidate] = useState(() => {
     const next = cloneSkin(data);
     for (const other of MODELS) {
@@ -32,10 +34,14 @@ export function CopyPaintDialog({
   });
   const [canvas] = useState(() => paintCanvas(candidate.colour));
   return (
-    <StudioDialog title="Copy paint to all models" onClose={onClose} wide>
+    <StudioDialog title={t('Copy paint to all models')} onClose={onClose} wide>
       <p>
-        Copies the {model.name.toLowerCase()} texture and materials. Different models wrap that
-        paint differently; inspect the results below.
+        <RichMessage
+          source={
+            'Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.'
+          }
+          slots={{ slot0: model.name.toLowerCase() }}
+        />
       </p>
       <div className="skin-copy-grid">
         {MODELS.map((m) => (
@@ -56,9 +62,9 @@ export function CopyPaintDialog({
         ))}
       </div>
       <footer>
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={onClose}>{t('Cancel')}</button>
         <button className="skin-primary" onClick={() => onApply(candidate)}>
-          Copy paint
+          {t('Copy paint')}
         </button>
       </footer>
     </StudioDialog>

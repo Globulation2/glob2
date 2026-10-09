@@ -1,3 +1,5 @@
+import { getLocale } from '../i18n.tsx';
+import { t, tp, useLocale, RichMessage } from '../i18n.tsx';
 // The app dashboard: a compact living colony with play and invite actions,
 // live numbers, recent public matches, popular maps and rankings.
 import { useState, type FormEvent } from 'react';
@@ -44,6 +46,7 @@ export function inviteCodeFrom(text: string): string | undefined {
 }
 
 function JoinWithCode() {
+  useLocale();
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
   const submit = (event: FormEvent) => {
@@ -59,7 +62,7 @@ function JoinWithCode() {
   return (
     <form className="join" onSubmit={submit} noValidate>
       <label>
-        Got an invite code?
+        {t('Got an invite code?')}
         <input
           name="code"
           value={code}
@@ -67,7 +70,7 @@ function JoinWithCode() {
             setCode(e.target.value);
             setError(false);
           }}
-          placeholder="Code or invite link"
+          placeholder={t('Code or invite link')}
           autoComplete="off"
           autoCapitalize="characters"
           spellCheck={false}
@@ -76,44 +79,52 @@ function JoinWithCode() {
           aria-describedby="join-hint"
         />
       </label>
-      <button type="submit">Join</button>
+      <button type="submit">{t('Join')}</button>
       <p id="join-hint" className={`hint${error ? ' error' : ' caption'}`} aria-live="polite">
         {error
-          ? 'Paste the invite link, or type its code (6 to 16 letters and digits).'
-          : 'Friends share a code or a link from their room.'}
+          ? t('Paste the invite link, or type its code (6 to 16 letters and digits).')
+          : t('Friends share a code or a link from their room.')}
       </p>
     </form>
   );
 }
 
 function LiveStats() {
+  useLocale();
   const load = useLoad((signal) => api.stats(signal), []);
   const stats: InstanceStats | undefined = load.status === 'ready' ? load.data : undefined;
   if (load.status === 'error') return null;
-  const value = (n: number | undefined) => (n === undefined ? '–' : n.toLocaleString());
+  const value = (n: number | undefined) => (n === undefined ? '–' : n.toLocaleString(getLocale()));
   const plural = (n: number | undefined, one: string, many: string) => (n === 1 ? one : many);
   return (
     <ul className="stats" data-testid="live-stats" aria-busy={!stats}>
       <li className="stat">
         <span className="glob-icon" aria-hidden="true" />
         <span className="v">{value(stats?.playersOnline)}</span>
-        <span className="k">{plural(stats?.playersOnline, 'player online', 'players online')}</span>
+        <span className="k">
+          {plural(stats?.playersOnline, t('player online'), t('players online'))}
+        </span>
       </li>
       <li className="stat">
         <GameArt name="warFlag" size={34} />
         <span className="v">{value(stats?.liveMatches)}</span>
-        <span className="k">{plural(stats?.liveMatches, 'match on now', 'matches on now')}</span>
+        <span className="k">
+          {plural(stats?.liveMatches, t('match on now'), t('matches on now'))}
+        </span>
       </li>
       <li className="stat">
         <GameArt name="swarm" size={34} />
         <span className="v">{value(stats?.matchesToday)}</span>
-        <span className="k">{plural(stats?.matchesToday, 'match today', 'matches today')}</span>
+        <span className="k">
+          {plural(stats?.matchesToday, t('match today'), t('matches today'))}
+        </span>
       </li>
     </ul>
   );
 }
 
 function Hero() {
+  useLocale();
   const { instance, instanceError, account } = useSession();
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -121,14 +132,19 @@ function Hero() {
       <div className="hero-inner">
         <div className="hero-card">
           <h1 id="hero-title">
-            {account ? `Welcome, ${account.displayName}` : 'Welcome to the colony'}
+            {account
+              ? t('Welcome, {value0}', { value0: account.displayName })
+              : t('Welcome to the colony')}
           </h1>
           <p className="lede">
-            Your next colony starts here. Play in your browser or join your friends.
+            {t('Your next colony starts here. Play in your browser or join your friends.')}
           </p>
           {instanceError && (
             <div className="notice error" role="alert">
-              The platform is unavailable: {instanceError.message}
+              <RichMessage
+                source={'The platform is unavailable: {slot0}'}
+                slots={{ slot0: instanceError.message }}
+              />
             </div>
           )}
           <div className="hero-actions">
@@ -136,7 +152,7 @@ function Hero() {
               <svg className="icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M8 5.5v13l10.5-6.5z" fill="currentColor" />
               </svg>
-              Play in browser
+              {t('Play in browser')}
             </a>
             <a className="btn big" href={DOWNLOAD_URL} rel="noopener">
               <svg className="icon" viewBox="0 0 24 24" aria-hidden="true" fill="none">
@@ -148,7 +164,7 @@ function Hero() {
                   strokeLinejoin="round"
                 />
               </svg>
-              Download
+              {t('Download')}
             </a>
           </div>
           <JoinWithCode />
@@ -156,8 +172,8 @@ function Hero() {
           {instance && (
             <p className="caption" style={{ margin: 'var(--sp-3) 0 0' }}>
               {instance.guestsAllowed
-                ? 'No account needed for rooms and casual games; sign in to be ranked.'
-                : 'Sign in to play on this server.'}
+                ? t('No account needed for rooms and casual games; sign in to be ranked.')
+                : t('Sign in to play on this server.')}
             </p>
           )}
         </div>
@@ -167,19 +183,20 @@ function Hero() {
 }
 
 function LadderTeaser({ queue }: { queue: QueueInfo }) {
+  useLocale();
   const load = useLoad((signal) => api.leaderboard(queue.id, { limit: 5 }, signal), [queue.id]);
   return (
     <div className="card" data-testid="ladder-teaser">
       <div className="card-head">
         <h3>{queue.name}</h3>
         <Link to={`/leaderboard/${queue.id}`} className="caption">
-          Full leaderboard
+          {t('Full leaderboard')}
         </Link>
       </div>
       <Loaded load={load}>
         {(page) =>
           page.entries.length === 0 ? (
-            <p className="muted">No rated players yet. The first wins will put you here.</p>
+            <p className="muted">{t('No rated players yet. The first wins will put you here.')}</p>
           ) : (
             <ol className="podium">
               {page.entries.map((e) => (
@@ -209,13 +226,14 @@ function LadderTeaser({ queue }: { queue: QueueInfo }) {
 }
 
 function FeaturedMaps() {
+  useLocale();
   const load = useLoad((signal) => api.maps({ sort: 'likes', limit: 4 }, signal), []);
   if (load.status !== 'ready' || load.data.items.length === 0) return null;
   return (
     <section aria-labelledby="maps-title">
       <div className="section-head">
-        <h2 id="maps-title">Maps players love</h2>
-        <Link to="/maps">Browse maps</Link>
+        <h2 id="maps-title">{t('Maps players love')}</h2>
+        <Link to="/maps">{t('Browse maps')}</Link>
       </div>
       <div className="map-grid" data-testid="featured-maps">
         {load.data.items.map((map: MapInfo) => {
@@ -225,8 +243,16 @@ function FeaturedMaps() {
               <MapImage src={v?.previewUrl} alt="" />
               <span className="name ell">{map.title}</span>
               <span className="caption ell">
-                {v?.teamCount ? `${v.teamCount} teams · ` : ''}by {map.owner.displayName} · ♥{' '}
-                {map.stats.likes}
+                <RichMessage
+                  source={'{slot0}by {slot1} · ♥ {slot2}'}
+                  slots={{
+                    slot0: v?.teamCount
+                      ? tp('{count} team · ', '{count} teams · ', v.teamCount)
+                      : '',
+                    slot1: map.owner.displayName,
+                    slot2: map.stats.likes,
+                  }}
+                />
               </span>
             </Link>
           );
@@ -237,20 +263,26 @@ function FeaturedMaps() {
 }
 
 function InstanceCard() {
+  useLocale();
   const { instance } = useSession();
   if (!instance) return null;
   return (
     <div className="card instance-card">
-      <h3>This instance</h3>
+      <h3>{t('This instance')}</h3>
       <dl>
-        <dt>Address</dt>
+        <dt>{t('Address')}</dt>
         <dd>{instance.origin}</dd>
-        <dt>Game versions</dt>
+        <dt>{t('Game versions')}</dt>
         <dd>
           {instance.supportedSimVersions.length === 0
-            ? 'No game servers are online right now.'
+            ? t('No game servers are online right now.')
             : instance.supportedSimVersions
-                .map((v) => `format ${v.versionMinor}, network ${v.netProtocol}`)
+                .map((v) =>
+                  t('format {value0}, network {value1}', {
+                    value0: v.versionMinor,
+                    value1: v.netProtocol,
+                  }),
+                )
                 .join('; ')}
         </dd>
       </dl>
@@ -259,6 +291,7 @@ function InstanceCard() {
 }
 
 export function Home() {
+  useLocale();
   const { instance } = useSession();
   const recent = useLoad((signal) => api.matches({ limit: 6 }, signal), []);
   const rated = instance?.queues.filter((q) => q.rated) ?? [];
@@ -268,8 +301,8 @@ export function Home() {
       <div className="home-body">
         <section aria-labelledby="recent-title">
           <div className="section-head">
-            <h2 id="recent-title">Recent matches</h2>
-            <Link to="/matches">All matches</Link>
+            <h2 id="recent-title">{t('Recent matches')}</h2>
+            <Link to="/matches">{t('All matches')}</Link>
           </div>
           <Loaded load={recent}>{(page) => <MatchListView matches={page.items} />}</Loaded>
         </section>
@@ -277,8 +310,8 @@ export function Home() {
         {rated.length > 0 && (
           <section aria-labelledby="ladders-title">
             <div className="section-head">
-              <h2 id="ladders-title">Leaderboards</h2>
-              <Link to="/leaderboard">All rankings</Link>
+              <h2 id="ladders-title">{t('Leaderboards')}</h2>
+              <Link to="/leaderboard">{t('All rankings')}</Link>
             </div>
             <div className="grid2">
               {rated.map((queue) => (
@@ -289,12 +322,13 @@ export function Home() {
         )}
         <div className="grid2" style={{ marginTop: 'var(--sp-6)' }}>
           <div className="card">
-            <h3>New to Globulation 2?</h3>
+            <h3>{t('New to Globulation 2?')}</h3>
             <p className="muted" style={{ margin: 0 }}>
-              Set the goals and your globs get to work. Feed your colony, train your units and
-              explore together.
+              {t(
+                'Set the goals and your globs get to work. Feed your colony, train your units and explore together.',
+              )}
             </p>
-            {websitePage('/learn/') && <a href={websitePage('/learn/')}>Player guides</a>}
+            {websitePage('/learn/') && <a href={websitePage('/learn/')}>{t('Player guides')}</a>}
           </div>
           <InstanceCard />
         </div>

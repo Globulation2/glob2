@@ -1,0 +1,40 @@
+{
+  "A generated room map needs params.teams between 1 and 12.": ["params.teams"],
+  "Canonical package SHA-256: {slot0}": ["SHA-256"],
+  "Choose a nonempty JavaScript file without NUL bytes.": ["NUL"],
+  "Choose a nonempty portable generator package without NUL bytes.": ["NUL"],
+  "Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.": [
+    "Ctrl+Enter"
+  ],
+  "Download SHA-256: {slot0}": ["SHA-256"],
+  "Give a bounded moderation reason without NUL characters.": ["NUL"],
+  "Invalid mapId.": ["mapId"],
+  "Send the file as the request body (Content-Type: application/octet-stream).": [
+    "Content-Type",
+    "application/octet-stream"
+  ],
+  "Sign in first (session.authenticate).": ["session.authenticate"],
+  "Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.": [
+    "gameSprite",
+    "miniSprite"
+  ],
+  "The JavaScript file must use UTF-8.": ["UTF-8"],
+  "The generator package must use UTF-8.": ["UTF-8"],
+  "Use {slot0} in gameSprite or miniSprite to select an uploaded sprite.": [
+    "gameSprite",
+    "miniSprite"
+  ],
+  "matchId differs from the path.": ["matchId"],
+  "record.sha256 differs from the uploaded record.": ["record.sha256"],
+  "simVersion (a sim version key) is required.": ["simVersion"],
+  "simVersion differs from the match setup.": ["simVersion"],
+  "simVersion must be a sim version key.": ["simVersion"],
+  "format must be map or save.": ["map", "save"],
+  "madeWith must be hand or generator.": ["madeWith", "hand", "generator"],
+  "owner must be \"me\" or an account id.": ["me"],
+  "participants must be all, humans or ai.": ["all", "humans", "ai"],
+  "provisional must be include or exclude.": ["include", "exclude"],
+  "status must be open, resolved, dismissed or all.": ["open", "resolved", "dismissed", "all"],
+  "public, max-age=604800": ["public, max-age=604800"],
+  "text/html; charset=utf-8": ["text/html; charset=utf-8"]
+}

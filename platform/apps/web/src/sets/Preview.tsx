@@ -1,7 +1,10 @@
+import { message as sourceMessage } from '../i18n.tsx';
+import { t, useLocale } from '../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { SetPackage } from '@glob2/protocol';
 /** The browser build runs the same bounded import and renderer as native validation. */
 export function SetPreview({ pack, gallery = false }: { pack: SetPackage; gallery?: boolean }) {
+  useLocale();
   const frame = useRef<HTMLIFrameElement>(null);
   const [phase, setPhase] = useState(0),
     [variant, setVariant] = useState(0);
@@ -11,7 +14,10 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
   useEffect(() => {
     if (!run) return;
     const timer = setTimeout(
-      () => setStatus('The preview engine did not finish. Check the game runtime and try again.'),
+      () =>
+        setStatus(
+          sourceMessage('The preview engine did not finish. Check the game runtime and try again.'),
+        ),
       90000,
     );
     let url = '';
@@ -55,7 +61,9 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
           url = URL.createObjectURL(new Blob([new Uint8Array(m.png)], { type: 'image/png' }));
           setImage(url);
           setStatus(
-            'Rendered by the browser game engine. Run publishing checks to validate the saved revision.',
+            sourceMessage(
+              'Rendered by the browser game engine. Run publishing checks to validate the saved revision.',
+            ),
           );
         } else setStatus(String(m.report?.reason ?? 'Preview failed.').slice(0, 2000));
       }
@@ -69,11 +77,11 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
   }, [run, gallery, phase, variant]);
   return (
     <div>
-      <h3>{gallery ? 'Scene and resource gallery' : 'Game preview'}</h3>
+      <h3>{gallery ? t('Scene and resource gallery') : t('Game preview')}</h3>
       {gallery && (
         <>
           <label>
-            Animation phase
+            {t('Animation phase')}
             <select
               value={phase}
               onChange={(e) => {
@@ -91,7 +99,7 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
             </select>
           </label>
           <label>
-            Variation
+            {t('Variation')}
             <select
               value={variant}
               onChange={(e) => {
@@ -118,14 +126,14 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
           setRun({ id: crypto.randomUUID(), source: JSON.stringify(pack) });
         }}
       >
-        Preview current changes
+        {t('Preview current changes')}
       </button>
       <p role="status">{status}</p>
       {run && (
         <iframe
           key={run.id}
           ref={frame}
-          title="Set preview engine"
+          title={t('Set preview engine')}
           tabIndex={-1}
           aria-hidden="true"
           src={`/play/set-preview.html?threads=serial&renderer=software&run=${run.id}&revision=1&gallery=${gallery ? 1 : 0}&phase=${phase}&variant=${variant}`}
@@ -136,7 +144,7 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
         <img
           className="set-contact"
           src={image}
-          alt="Current custom terrain and resource sprites rendered by the game"
+          alt={t('Current custom terrain and resource sprites rendered by the game')}
         />
       )}
     </div>

@@ -206,7 +206,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
       .locator('.music-technical')
       .getByText('A little warmth in the low mids. Listen under game effects.'),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'V1 ready' }).click();
+  await page.getByRole('button', { name: 'V1 Ready' }).click();
   await expect(page.getByRole('heading', { name: 'Version 1', exact: true })).toBeVisible();
   await page.getByRole('combobox', { name: 'Compare revision' }).selectOption(second);
   await expect(page.getByRole('heading', { name: 'Version 2 · comparing' })).toBeVisible();

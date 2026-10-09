@@ -1,3 +1,4 @@
+import { t } from '../messages.ts';
 export {
   TERRAIN_PRESETS,
   MATERIALS,
@@ -8,7 +9,7 @@ export {
   newRelease,
 } from '@glob2/protocol';
 export async function sheetFromFile(file: File, frameWidth: number, frameHeight: number) {
-  if (file.size > 12 * 1024 * 1024) throw Error('This PNG exceeds the sheet upload limit.');
+  if (file.size > 12 * 1024 * 1024) throw Error(t('This PNG exceeds the sheet upload limit.'));
   if (
     !Number.isInteger(frameWidth) ||
     !Number.isInteger(frameHeight) ||
@@ -17,10 +18,10 @@ export async function sheetFromFile(file: File, frameWidth: number, frameHeight:
     frameWidth > 64 ||
     frameHeight > 64
   )
-    throw Error('Frame dimensions must be whole numbers between 1 and 64.');
+    throw Error(t('Frame dimensions must be whole numbers between 1 and 64.'));
   const bytes = new Uint8Array(await file.arrayBuffer());
   if (bytes.length < 33 || [137, 80, 78, 71, 13, 10, 26, 10].some((v, i) => bytes[i] !== v))
-    throw Error('Choose a PNG spritesheet.');
+    throw Error(t('Choose a PNG spritesheet.'));
   const view = new DataView(bytes.buffer),
     width = view.getUint32(16),
     height = view.getUint32(20);
@@ -32,7 +33,7 @@ export async function sheetFromFile(file: File, frameWidth: number, frameHeight:
     width % frameWidth ||
     height % frameHeight
   )
-    throw Error('The sheet must be at most 2048×2048 and fit its frame grid exactly.');
+    throw Error(t('The sheet must be at most 2048×2048 and fit its frame grid exactly.'));
   const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (v) =>
     v.toString(16).padStart(2, '0'),
   ).join('');

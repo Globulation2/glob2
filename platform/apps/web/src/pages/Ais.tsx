@@ -1,3 +1,5 @@
+import { statusLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
   AI_TAGS,
@@ -22,6 +24,7 @@ const DOCS = 'https://github.com/Globulation2/glob2/blob/master/docs/development
 const STARTER = 'https://github.com/Globulation2/glob2-javascript-ai-starter-exampler';
 
 function Learn() {
+  useLocale();
   const toggle = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [dismissed, setDismissed] = useState(() => {
@@ -44,39 +47,44 @@ function Learn() {
   return (
     <section className="ai-learn">
       <button ref={toggle} className="small" aria-expanded={open} onClick={() => setOpen(!open)}>
-        How AIs work <span aria-hidden="true">{open ? '−' : '+'}</span>
+        <RichMessage
+          source={'How AIs work {slot0}'}
+          slots={{ slot0: <span aria-hidden="true">{open ? '−' : '+'}</span> }}
+        />
       </button>
       {!open && !dismissed && (
         <div className="ai-learn-summary">
           <p>
-            Install community AIs for local games. Versions work offline. Only run code from authors
-            you trust.
+            {t(
+              'Install community AIs for local games. Versions work offline. Only run code from authors you trust.',
+            )}
           </p>
           <button className="small" onClick={dismiss}>
-            Got it
+            {t('Got it')}
           </button>
         </div>
       )}
       {open && (
         <div className="ai-learn-body">
           <div>
-            <h2>A new mind for your colony</h2>
+            <h2>{t('A new mind for your colony')}</h2>
             <p>
-              Community-made JavaScript players control a colony through Glob2’s AI API. Download a
-              version, import it in Settings → Custom AIs, then choose it for a computer seat in a
-              local game. Installed versions work offline; saved games keep their original code.
+              {t(
+                'Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.',
+              )}
             </p>
             <p className="caption">
-              Compatibility checks exercise short games and save/resume. They do not certify safety
-              or playing strength. Only run code from authors you trust.
+              {t(
+                'Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.',
+              )}
             </p>
           </div>
-          <nav aria-label="AI authoring resources">
-            <a href={DOCS + 'javascript.md'}>Authoring guide ↗</a>
-            <a href={DOCS + 'javascript-api.md'}>JavaScript API reference ↗</a>
-            <a href={STARTER}>Start building an AI ↗</a>
+          <nav aria-label={t('AI authoring resources')}>
+            <a href={DOCS + 'javascript.md'}>{t('Authoring guide ↗')}</a>
+            <a href={DOCS + 'javascript-api.md'}>{t('JavaScript API reference ↗')}</a>
+            <a href={STARTER}>{t('Start building an AI ↗')}</a>
             <button className="small" onClick={dismiss}>
-              Got it
+              {t('Got it')}
             </button>
           </nav>
         </div>
@@ -85,8 +93,9 @@ function Learn() {
   );
 }
 function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[]) => void }) {
+  useLocale();
   return (
-    <div className="ai-tags" role="group" aria-label="AI tags">
+    <div className="ai-tags" role="group" aria-label={t('AI tags')}>
       {AI_TAGS.map((tag) => (
         <button
           type="button"
@@ -111,17 +120,18 @@ function Tags({ value, onChange }: { value: string[]; onChange: (tags: string[])
   );
 }
 export function AiChecklist({ report }: { report: AiValidationReport }) {
+  useLocale();
   return (
-    <ol className="ai-checklist" aria-label="Compatibility checks">
+    <ol className="ai-checklist" aria-label={t('Compatibility checks')}>
       {report.checks.map((c) => (
         <li key={c.id} data-status={c.status}>
           <span className={c.status === 'running' ? 'ai-spin' : ''} aria-hidden="true">
             {{ passed: '✓', failed: '×', skipped: '—', pending: '○', running: '◌' }[c.status]}
           </span>
           <div>
-            <strong>{AI_CHECK_LABELS[c.id]}</strong>
+            <strong>{t(AI_CHECK_LABELS[c.id])}</strong>
             <small>
-              {c.status}
+              {statusLabel(c.status)}
               {c.message ? ': ' + c.message : ''}
             </small>
           </div>
@@ -131,6 +141,7 @@ export function AiChecklist({ report }: { report: AiValidationReport }) {
   );
 }
 export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favourites' }) {
+  useLocale();
   const { account } = useSession();
   const { location, navigate } = useRouter();
   const browse = readAiBrowse(location.search);
@@ -189,23 +200,23 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
       <header className="page-head">
         <GameArt name="swarm" size={80} />
         <div className="grow">
-          <p className="caption">COMMUNITY · LOCAL PLAY</p>
-          <h1>AI Library</h1>
-          <p className="sub">Discover a new opponent. Find a new way to play.</p>
+          <p className="caption">{t('COMMUNITY · LOCAL PLAY')}</p>
+          <h1>{t('AI Library')}</h1>
+          <p className="sub">{t('Discover a new opponent. Find a new way to play.')}</p>
         </div>
         <Link className="btn" to="/ai-studio">
-          Build in AI Studio
+          {t('Build in AI Studio')}
         </Link>
         <Link className="btn primary" to="/ais/new">
-          Share your AI
+          {t('Share your AI')}
         </Link>
       </header>
-      <nav className="seg" aria-label="AI library views">
+      <nav className="seg" aria-label={t('AI library views')}>
         {(
           [
-            ['discover', '/ais', 'Discover'],
-            ['favourites', '/ais/favourites', 'Favourites'],
-            ['mine', '/ais/mine', 'My AIs'],
+            ['discover', '/ais', t('Discover')],
+            ['favourites', '/ais/favourites', t('Favourites')],
+            ['mine', '/ais/mine', t('My AIs')],
           ] as const
         ).map(([id, to, label]) => (
           <Link
@@ -221,7 +232,10 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
       <Learn />
       {!account && view !== 'discover' ? (
         <div className="notice">
-          <a href="/signin">Sign in</a> to see your library.
+          <RichMessage
+            source={'{slot0} to see your library.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+          />
         </div>
       ) : (
         <>
@@ -236,22 +250,22 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
             <input
               type="search"
               maxLength={128}
-              placeholder="Search names, descriptions, authors…"
-              aria-label="Search AIs"
+              placeholder={t('Search names, descriptions, authors…')}
+              aria-label={t('Search AIs')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
             <select
-              aria-label="Sort AIs"
+              aria-label={t('Sort AIs')}
               value={sort}
               onChange={(e) => {
                 updateBrowse({ sort: e.target.value, pages: 1 });
               }}
             >
-              <option value="likes">Most liked</option>
-              <option value="newest">Newest</option>
-              <option value="updated">Recently updated</option>
-              <option value="downloads">Most downloaded</option>
+              <option value="likes">{t('Most liked')}</option>
+              <option value="newest">{t('Newest')}</option>
+              <option value="updated">{t('Recently updated')}</option>
+              <option value="downloads">{t('Most downloaded')}</option>
             </select>
             <button
               type="button"
@@ -260,7 +274,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                 updateBrowse({ query: '', tags: [], sort: 'likes', pages: 1 });
               }}
             >
-              Reset filters
+              {t('Reset filters')}
             </button>
           </form>
           <Tags
@@ -269,7 +283,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
               updateBrowse({ tags: v, pages: 1 });
             }}
           />
-          {load.status === 'error' && <button onClick={load.reload}>Try again</button>}
+          {load.status === 'error' && <button onClick={load.reload}>{t('Try again')}</button>}
           <Loaded load={load}>
             {(data) =>
               data.items.length ? (
@@ -293,15 +307,25 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                           <span className="ai-monogram" aria-hidden="true">
                             {ai.name.slice(0, 2).toUpperCase()}
                           </span>
-                          <span className="badge">v{ai.latestVersion.label}</span>
+                          <span className="badge">
+                            <RichMessage
+                              source={'v{slot0}'}
+                              slots={{ slot0: ai.latestVersion.label }}
+                            />
+                          </span>
                         </div>
                         <h2>{ai.name}</h2>
                         <p className="caption">
-                          by {ai.owner.displayName}
-                          {ai.hidden ? ' · hidden' : ''}
+                          <RichMessage
+                            source={'by {slot0}{slot1}'}
+                            slots={{
+                              slot0: ai.owner.displayName,
+                              slot1: ai.hidden ? t(' · hidden') : '',
+                            }}
+                          />
                         </p>
                         <p className="ai-excerpt">
-                          {ai.description || 'A community-created colony controller.'}
+                          {ai.description || t('A community-created colony controller.')}
                         </p>
                         <div className="ai-tags">
                           {ai.tags.map((t) => (
@@ -311,9 +335,16 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                           ))}
                         </div>
                         <footer>
-                          <span>♥ {ai.likes} likes</span>
-                          <span>↓ {ai.downloads} downloads</span>
-                          {ai.favourited && <span aria-label="Favourited">★</span>}
+                          <span>
+                            <RichMessage source={'♥ {slot0} likes'} slots={{ slot0: ai.likes }} />
+                          </span>
+                          <span>
+                            <RichMessage
+                              source={'↓ {slot0} downloads'}
+                              slots={{ slot0: ai.downloads }}
+                            />
+                          </span>
+                          {ai.favourited && <span aria-label={t('Favourited')}>{t('★')}</span>}
                         </footer>
                       </Link>
                     ))}
@@ -333,19 +364,19 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
                             )
                       }
                     >
-                      {pages < 20 ? 'Show more' : 'Next results'}
+                      {pages < 20 ? t('Show more') : t('Next results')}
                     </button>
                   )}
                 </>
               ) : (
                 <Empty art="swarm">
                   {query || tags.length
-                    ? 'No AIs match these filters.'
+                    ? t('No AIs match these filters.')
                     : view === 'mine'
-                      ? 'Your first AI belongs here.'
+                      ? t('Your first AI belongs here.')
                       : view === 'favourites'
-                        ? 'Favourite an AI to keep it close.'
-                        : 'A new library is taking shape. Share the first AI.'}
+                        ? t('Favourite an AI to keep it close.')
+                        : t('A new library is taking shape. Share the first AI.')}
                 </Empty>
               )
             }
@@ -356,6 +387,7 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
   );
 }
 function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void }) {
+  useLocale();
   const { account } = useSession(),
     { navigate, location } = useRouter();
   const returnUrl = aiReturnUrl(location.search.get('return'));
@@ -389,12 +421,16 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
   return (
     <>
       <Link to={returnUrl}>
-        ←{' '}
-        {returnUrl.startsWith('/ais/favourites')
-          ? 'Favourites'
-          : returnUrl.startsWith('/ais/mine')
-            ? 'My AIs'
-            : 'AI Library'}
+        <RichMessage
+          source={'← {slot0}'}
+          slots={{
+            slot0: returnUrl.startsWith(t('/ais/favourites'))
+              ? t('Favourites')
+              : returnUrl.startsWith(t('/ais/mine'))
+                ? t('My AIs')
+                : t('AI Library'),
+          }}
+        />
       </Link>
       <header className="page-head">
         <span className="ai-monogram" aria-hidden="true">
@@ -403,16 +439,26 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
         <div className="grow">
           <h1>{ai.name}</h1>
           <p className="sub">
-            by {ai.owner.displayName} · updated {date(ai.updatedAt)}
+            <RichMessage
+              source={'by {slot0} · updated {slot1}'}
+              slots={{ slot0: ai.owner.displayName, slot1: date(ai.updatedAt) }}
+            />
           </p>
         </div>
         {detail.viewer.owner && (
           <Link className="btn primary" to={'/ais/' + ai.id + '/new'}>
-            Publish a version
+            {t('Publish a version')}
           </Link>
         )}
       </header>
-      {ai.hidden && <div className="notice warn">Hidden by a moderator: {ai.hiddenReason}</div>}
+      {ai.hidden && (
+        <div className="notice warn">
+          <RichMessage
+            source={'Hidden by a moderator: {slot0}'}
+            slots={{ slot0: ai.hiddenReason }}
+          />
+        </div>
+      )}
       <div className="ai-detail-grid">
         <section className="card">
           <div className="ai-tags">
@@ -425,11 +471,11 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
           <p className="ai-description">{ai.description}</p>
           <div className="tiles">
             <div className="tile">
-              <span className="caption">Likes</span>
+              <span className="caption">{t('Likes')}</span>
               <div className="v">{ai.likes}</div>
             </div>
             <div className="tile">
-              <span className="caption">All downloads</span>
+              <span className="caption">{t('All downloads')}</span>
               <div className="v">{ai.downloads}</div>
             </div>
           </div>
@@ -441,19 +487,19 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                   aria-pressed={ai.liked}
                   onClick={() => void run(() => aiApi.social(ai.id, 'like', !ai.liked))}
                 >
-                  {ai.liked ? '♥ Liked' : '♡ Like'}
+                  {ai.liked ? t('♥ Liked') : t('♡ Like')}
                 </button>
                 <button
                   disabled={busy}
                   aria-pressed={ai.favourited}
                   onClick={() => void run(() => aiApi.social(ai.id, 'favourite', !ai.favourited))}
                 >
-                  {ai.favourited ? '★ Favourited' : '☆ Favourite'}
+                  {ai.favourited ? t('★ Favourited') : t('☆ Favourite')}
                 </button>
               </>
             ) : (
               <a className="btn" href="/signin">
-                Sign in to like or favourite
+                {t('Sign in to like or favourite')}
               </a>
             )}
             {account && (
@@ -463,7 +509,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                 aria-controls="ai-report"
                 onClick={() => setReporting(!reporting)}
               >
-                Report
+                {t('Report')}
               </button>
             )}
             {detail.viewer.owner && (
@@ -473,7 +519,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                 aria-controls="ai-edit"
                 onClick={() => setEditing(!editing)}
               >
-                Edit details
+                {t('Edit details')}
               </button>
             )}
             {detail.viewer.moderator && (
@@ -484,14 +530,14 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                   if (reason !== null) void run(() => aiApi.hide(ai.id, !ai.hidden, reason));
                 }}
               >
-                {ai.hidden ? 'Unhide' : 'Hide'}
+                {ai.hidden ? t('Unhide') : t('Hide')}
               </button>
             )}
           </div>
           {reporting && (
             <form
               id="ai-report"
-              aria-label="Report AI"
+              aria-label={t('Report AI')}
               onSubmit={(e) => {
                 e.preventDefault();
                 void run(async () => {
@@ -502,7 +548,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               }}
             >
               <label className="field">
-                Reason
+                {t('Reason')}
                 <select autoFocus value={reason} onChange={(e) => setReason(e.target.value)}>
                   {['broken', 'offensive', 'copyright', 'other'].map((r) => (
                     <option key={r}>{r}</option>
@@ -510,7 +556,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                 </select>
               </label>
               <label className="field">
-                Details
+                {t('Details')}
                 <textarea
                   maxLength={2000}
                   value={reportText}
@@ -518,7 +564,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                 />
               </label>
               <div className="toolbar">
-                <button disabled={busy}>Send report</button>
+                <button disabled={busy}>{t('Send report')}</button>
                 <button
                   type="button"
                   disabled={busy}
@@ -527,7 +573,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                     reportButton.current?.focus();
                   }}
                 >
-                  Cancel report
+                  {t('Cancel report')}
                 </button>
               </div>
             </form>
@@ -535,7 +581,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
           {editing && (
             <form
               id="ai-edit"
-              aria-label="Edit AI details"
+              aria-label={t('Edit AI details')}
               onSubmit={(e) => {
                 e.preventDefault();
                 void run(async () => {
@@ -551,7 +597,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               }}
             >
               <label className="field">
-                Name
+                {t('Name')}
                 <input
                   autoFocus
                   required
@@ -561,7 +607,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                 />
               </label>
               <label className="field">
-                Description
+                {t('Description')}
                 <textarea
                   maxLength={4000}
                   value={description}
@@ -570,7 +616,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               </label>
               <Tags value={tags} onChange={setTags} />
               <label className="field">
-                Visibility
+                {t('Visibility')}
                 <select
                   value={visibility}
                   onChange={(e) => setVisibility(e.target.value as typeof visibility)}
@@ -582,7 +628,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               </label>
               <div className="toolbar">
                 <button className="primary" disabled={busy}>
-                  Save details
+                  {t('Save details')}
                 </button>
                 <button
                   type="button"
@@ -596,7 +642,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                     editButton.current?.focus();
                   }}
                 >
-                  Cancel editing
+                  {t('Cancel editing')}
                 </button>
                 <button
                   type="button"
@@ -610,7 +656,7 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
                       });
                   }}
                 >
-                  Delete AI
+                  {t('Delete AI')}
                 </button>
               </div>
             </form>
@@ -619,43 +665,52 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
         {v && (
           <section className="card">
             <label className="field">
-              Version
+              {t('Version')}
               <select value={v.id} onChange={(e) => setSelected(e.target.value)}>
                 {detail.versions.map((v) => (
                   <option key={v.id} value={v.id}>
-                    {v.label} · {date(v.createdAt)}
+                    <RichMessage
+                      source={'{slot0} · {slot1}'}
+                      slots={{ slot0: v.label, slot1: date(v.createdAt) }}
+                    />
                   </option>
                 ))}
               </select>
             </label>
-            <p>{v.notes || 'No release notes.'}</p>
+            <p>{v.notes || t('No release notes.')}</p>
             <p className="caption">
-              Profile {v.profile} · {v.downloads} downloads of this version
+              <RichMessage
+                source={'Profile {slot0} · {slot1} downloads of this version'}
+                slots={{ slot0: v.profile, slot1: v.downloads }}
+              />
             </p>
             <a className="btn primary" href={v.downloadUrl} download>
-              Download JavaScript (.js)
+              {t('Download JavaScript (.js)')}
             </a>
-            <p className="caption">Import in Settings → Custom AIs to use in local games.</p>
+            <p className="caption">{t('Import in Settings → Custom AIs to use in local games.')}</p>
             {detail.viewer.owner && (
               <Link className="btn" to={'/ai-studio?version=' + v.id}>
-                Edit in AI Studio
+                {t('Edit in AI Studio')}
               </Link>
             )}
             {v.validations.map((report) => (
               <details key={report.simVersion + '-' + report.suite} className="ai-validation">
                 <summary>
                   {passedAiReport(report)
-                    ? '✓ Passed compatibility checks'
-                    : '× Compatibility checks failed'}
+                    ? t('✓ Passed compatibility checks')
+                    : t('× Compatibility checks failed')}
                 </summary>
                 <p className="caption ai-hash">
-                  Engine {report.simVersion} · suite {report.suite}
+                  <RichMessage
+                    source={'Engine {slot0} · suite {slot1}'}
+                    slots={{ slot0: report.simVersion, slot1: report.suite }}
+                  />
                 </p>
                 <AiChecklist report={report} />
               </details>
             ))}
             <details className="ai-validation">
-              <summary>Source identity</summary>
+              <summary>{t('Source identity')}</summary>
               <code className="ai-hash">{v.hash}</code>
             </details>
           </section>
@@ -667,18 +722,20 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
   );
 }
 export function AiPage({ id }: { id: string }) {
+  useLocale();
   const load = useLoad((signal) => aiApi.detail(id, signal), [id]);
   return (
     <>
       <Loaded load={load} page="AI">
         {(detail) => <AiDetails key={id} detail={detail} reload={load.reload} />}
       </Loaded>
-      {load.status === 'error' && <button onClick={load.reload}>Try again</button>}
+      {load.status === 'error' && <button onClick={load.reload}>{t('Try again')}</button>}
     </>
   );
 }
 
 export function AiPublish({ id }: { id?: string }) {
+  useLocale();
   const { account } = useSession(),
     { navigate } = useRouter();
   const [name, setName] = useState(''),
@@ -730,9 +787,10 @@ export function AiPublish({ id }: { id?: string }) {
     setFileFailure('');
     let submitted = false;
     try {
-      if (!selected.name.toLowerCase().endsWith('.js')) throw Error('Choose one bundled .js file.');
-      if (!selected.size) throw Error('Choose a nonempty JavaScript file.');
-      if (selected.size > 128 * 1024) throw Error('The file must be no larger than 128 KiB.');
+      if (!selected.name.toLowerCase().endsWith('.js'))
+        throw Error(t('Choose one bundled .js file.'));
+      if (!selected.size) throw Error(t('Choose a nonempty JavaScript file.'));
+      if (selected.size > 128 * 1024) throw Error(t('The file must be no larger than 128 KiB.'));
       submitted = true;
       let u = await aiApi.upload(selected, c.signal);
       while (token === generation.current) {
@@ -802,22 +860,26 @@ export function AiPublish({ id }: { id?: string }) {
     <>
       <header className="page-head">
         <div>
-          <h1>{id ? 'Publish a new version' : 'Share your AI'}</h1>
+          <h1>{id ? t('Publish a new version') : t('Share your AI')}</h1>
           <p className="sub">
-            Give your colony controller a home. Every release keeps its own source and download
-            history.
+            {t(
+              'Give your colony controller a home. Every release keeps its own source and download history.',
+            )}
           </p>
         </div>
       </header>
       {!account ? (
         <div className="notice">
-          <a href="/signin">Sign in</a> to share an AI.
+          <RichMessage
+            source={'{slot0} to share an AI.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+          />
         </div>
       ) : (
         <form className="ai-publish-grid" onSubmit={(e) => void publish(e)}>
           <section className="card">
             <label className="ai-drop field">
-              Bundled JavaScript file
+              {t('Bundled JavaScript file')}
               <input
                 type="file"
                 accept=".js"
@@ -827,12 +889,14 @@ export function AiPublish({ id }: { id?: string }) {
                   if (f) void check(f);
                 }}
               />
-              <span className="caption">One .js file · up to 128 KiB · profiles 1 and 2</span>
+              <span className="caption">
+                {t('One .js file · up to 128 KiB · profiles 1 and 2')}
+              </span>
             </label>
             {!id && (
               <>
                 <label className="field">
-                  Name
+                  {t('Name')}
                   <input
                     required
                     maxLength={128}
@@ -841,7 +905,7 @@ export function AiPublish({ id }: { id?: string }) {
                   />
                 </label>
                 <label className="field">
-                  Description
+                  {t('Description')}
                   <textarea
                     maxLength={4000}
                     rows={5}
@@ -850,72 +914,80 @@ export function AiPublish({ id }: { id?: string }) {
                   />
                 </label>
                 <p className="caption">
-                  Choose up to five tags. These describe your strategy, not a tested strength
-                  rating.
+                  {t(
+                    'Choose up to five tags. These describe your strategy, not a tested strength rating.',
+                  )}
                 </p>
                 <Tags value={tags} onChange={setTags} />
                 <label className="field">
-                  Visibility
+                  {t('Visibility')}
                   <select
                     value={visibility}
                     onChange={(e) => setVisibility(e.target.value as typeof visibility)}
                   >
-                    <option value="public">Public — listed for everyone</option>
-                    <option value="unlisted">Unlisted — accessible by link</option>
-                    <option value="private">Private — only you</option>
+                    <option value="public">{t('Public — listed for everyone')}</option>
+                    <option value="unlisted">{t('Unlisted — accessible by link')}</option>
+                    <option value="private">{t('Private — only you')}</option>
                   </select>
                 </label>
               </>
             )}
             <label className="field">
-              Version label
+              {t('Version label')}
               <input
                 required
                 maxLength={64}
-                placeholder="1.0.0"
+                placeholder={t('1.0.0')}
                 value={version}
                 onChange={(e) => setVersion(e.target.value)}
               />
             </label>
             <label className="field">
-              Release notes
+              {t('Release notes')}
               <textarea maxLength={2000} value={notes} onChange={(e) => setNotes(e.target.value)} />
             </label>
             <button
               className="primary"
               disabled={busy || checking || upload?.status !== 'valid' || !passedAiReport(report)}
             >
-              {busy ? 'Publishing…' : 'Publish'}
+              {busy ? t('Publishing…') : t('Publish')}
             </button>
             <p className="caption">
-              Publishing preserves these exact source bytes. Changes require a new version.
+              {t('Publishing preserves these exact source bytes. Changes require a new version.')}
             </p>
           </section>
           <aside className="card ai-validation-panel">
-            <h2>Compatibility checklist</h2>
+            <h2>{t('Compatibility checklist')}</h2>
             <p role="status">
               {checking
-                ? `Checking your AI… ${passedChecks} of ${report.checks.length} checks passed.${runningCheck ? ' Running: ' + AI_CHECK_LABELS[runningCheck.id] + '.' : ''}`
+                ? t('Checking your AI… {value0} of {value1} checks passed.{value2}', {
+                    value0: passedChecks,
+                    value1: report.checks.length,
+                    value2: runningCheck
+                      ? ' Running: ' + AI_CHECK_LABELS[runningCheck.id] + '.'
+                      : '',
+                  })
                 : upload?.status === 'valid'
-                  ? 'Ready to publish'
+                  ? t('Ready to publish')
                   : upload?.status === 'invalid'
-                    ? 'Fix the failed checks and choose your updated file.'
+                    ? t('Fix the failed checks and choose your updated file.')
                     : upload?.status === 'error'
-                      ? 'Validation was interrupted. Your AI has not been published.'
+                      ? t('Validation was interrupted. Your AI has not been published.')
                       : fileFailure
-                        ? 'Choose an updated file to try again.'
-                        : 'Choose a file to begin.'}
+                        ? t('Choose an updated file to try again.')
+                        : t('Choose a file to begin.')}
             </p>
             <AiChecklist report={report} />
             {upload?.error && <p className="notice error">{upload.error}</p>}
             {file && !checking && (
               <button type="button" onClick={() => void check(file)}>
-                Check again
+                {t('Check again')}
               </button>
             )}
             <p className="caption">
-              Short seeded games check runtime behaviour, repeatability, and save/resume. Passing
-              does not certify safety or playing strength.
+              {t(
+                'Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.',
+              )}
             </p>
             {error && <ErrorNotice error={error} />}
           </aside>

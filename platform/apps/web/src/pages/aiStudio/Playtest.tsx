@@ -1,3 +1,5 @@
+import { message as sourceMessage } from '../../i18n.tsx';
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 export interface Run {
   runId: string;
@@ -13,12 +15,13 @@ export default function Playtest({
   run: Run;
   onResult: (text: string) => void;
 }) {
+  useLocale();
   const frame = useRef<HTMLIFrameElement>(null),
     callback = useRef(onResult);
   useEffect(() => {
     callback.current = onResult;
   }, [onResult]);
-  const [status, setStatus] = useState('Loading game…'),
+  const [status, setStatus] = useState(t('Loading game…')),
     [diagnostics, setDiagnostics] = useState<string[]>([]);
   useEffect(() => {
     const abort = new AbortController();
@@ -51,7 +54,7 @@ export default function Playtest({
       setStatus(
         type === 'error'
           ? 'Playtest failed: ' + String(value.text ?? value.result).slice(0, 2000)
-          : `Finished: ${String(value.result).slice(0, 2000)}`,
+          : t('Finished: {value0}', { value0: String(value.result).slice(0, 2000) }),
       );
       callback.current(text);
     };
@@ -82,14 +85,14 @@ export default function Playtest({
         // The runtime may reload itself to fall back from threads to serial mode.
         launching = true;
         done = false;
-        setStatus('Loading game…');
+        setStatus(sourceMessage('Loading game…'));
         waitForLaunch();
         try {
           const response = await fetch('/api/v1/ai-studio/test-map', {
             credentials: 'same-origin',
             signal: abort.signal,
           });
-          if (!response.ok) throw Error('Could not load test map.');
+          if (!response.ok) throw Error(t('Could not load test map.'));
           const map = await response.arrayBuffer();
           if (abort.signal.aborted) return;
           frame.current?.contentWindow?.postMessage(
@@ -105,7 +108,12 @@ export default function Playtest({
       }
       if (m.type === 'progress' && !done) {
         clearTimeout(timeout);
-        setStatus(`Revision ${run.revision} · tick ${Number(m.tick) || 0} · live`);
+        setStatus(
+          t('Revision {value0} · tick {value1} · live', {
+            value0: run.revision,
+            value1: Number(m.tick) || 0,
+          }),
+        );
       }
       if (m.type === 'diagnostic' && typeof m.text === 'string' && logs.length < 40) {
         logs.push(m.text.slice(0, 2000));
@@ -135,12 +143,17 @@ export default function Playtest({
       <p role="status">{status}</p>
       <iframe
         ref={frame}
-        title={`Live AI playtest revision ${run.revision}`}
+        title={t('Live AI playtest revision {value0}', { value0: run.revision })}
         src={`/play/studio.html?run=${run.runId}&revision=${run.revision}`}
         allow="cross-origin-isolated; fullscreen"
       />
       <details>
-        <summary>Runtime diagnostics ({diagnostics.length})</summary>
+        <summary>
+          <RichMessage
+            source={'Runtime diagnostics ({slot0})'}
+            slots={{ slot0: diagnostics.length }}
+          />
+        </summary>
         <pre>{diagnostics.join('\n')}</pre>
       </details>
     </div>

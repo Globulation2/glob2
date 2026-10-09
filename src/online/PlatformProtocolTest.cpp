@@ -38,6 +38,14 @@ TEST_SUITE("PlatformProtocol")
 		CHECK_EQ(failed.error.message, "No room.");
 		CHECK_EQ(failed.error.details["a"], 2);
 
+		auto localized = decodeServerMessage(
+			R"({"type":"response","id":"c5","ok":false,"error":{"code":"not_found","message":"No room.","messageKey":"Room {id} not found.","messageParams":{"id":"ABCDEF"},"details":{"a":2}}})");
+		REQUIRE(localized.kind == ServerMessage::Kind::Response);
+		CHECK_FALSE(localized.ok);
+		CHECK_EQ(localized.error.code, failed.error.code);
+		CHECK_EQ(localized.error.message, failed.error.message);
+		CHECK_EQ(localized.error.details, failed.error.details);
+
 		auto event = decodeServerMessage(
 			R"({"type":"event","event":"auth.handoff.failed","data":{"reason":"denied"},"extra":1})");
 		REQUIRE(event.kind == ServerMessage::Kind::Event);

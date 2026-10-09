@@ -1,3 +1,5 @@
+import { MessageError } from './i18n.tsx';
+import { t } from './i18n.tsx';
 import list_details from '../../../../datasrc/icons/tabler/list-details.svg?raw';
 import message from '../../../../datasrc/icons/tabler/message.svg?raw';
 import send from '../../../../datasrc/icons/tabler/send.svg?raw';
@@ -85,7 +87,7 @@ export const ICON_NAMES = Object.keys(SOURCES) as IconName[];
 const BODIES = Object.fromEntries(
   Object.entries(SOURCES).map(([name, svg]) => {
     const body = /<svg[^>]*>([\s\S]*)<\/svg>/.exec(svg)?.[1];
-    if (!body) throw new Error(`Unreadable icon source: ${name}`);
+    if (!body) throw new MessageError('Unreadable icon source: {value0}', { value0: name });
     return [name, body.trim()];
   }),
 ) as Record<IconName, string>;
@@ -104,7 +106,7 @@ export function Icon({
 }) {
   return (
     <svg
-      className={className ? `icon ${className}` : 'icon'}
+      className={className ? t('icon {value0}', { value0: className }) : 'icon'}
       width={size}
       height={size}
       viewBox="0 0 24 24"

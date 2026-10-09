@@ -1,3 +1,4 @@
+import { t, tp, useLocale } from '../i18n.tsx';
 import { useEffect, useId, useRef, useState } from 'react';
 import type { PlayerDirectory } from '@glob2/protocol';
 import { api } from '../api.ts';
@@ -7,6 +8,7 @@ import { Link, useRouter } from '../router.tsx';
 import { playerHref } from '../playerLinks.ts';
 
 function Highlight({ name, query }: { name: string; query: string }) {
+  useLocale();
   const at = name.toLowerCase().indexOf(query.trim().toLowerCase());
   return at < 0 || !query.trim() ? (
     <>{name}</>
@@ -19,6 +21,7 @@ function Highlight({ name, query }: { name: string; query: string }) {
   );
 }
 export function Players() {
+  useLocale();
   const { navigate } = useRouter();
   const [q, setQ] = useState('');
   const [kind, setKind] = useState('all');
@@ -77,21 +80,22 @@ export function Players() {
       <div className="page-head">
         <GameArt name="worker" size={72} className="head-art" />
         <div>
-          <h1>Players</h1>
+          <h1>{t('Players')}</h1>
           <p className="sub">
-            Meet the colonies. Find a player, explore their games, or get to know your next AI
-            opponent.
+            {t(
+              'Meet the colonies. Find a player, explore their games, or get to know your next AI opponent.',
+            )}
           </p>
         </div>
       </div>
       <div className="directory-search card">
-        <label htmlFor={`${listId}-search`}>Find a player</label>
+        <label htmlFor={`${listId}-search`}>{t('Find a player')}</label>
         <input
           ref={input}
           id={`${listId}-search`}
           className="player-search"
           type="search"
-          placeholder="Search players and AI opponents…"
+          placeholder={t('Search players and AI opponents…')}
           maxLength={64}
           autoComplete="off"
           role="combobox"
@@ -133,10 +137,10 @@ export function Players() {
             }
           }}
         />
-        <div className="seg" role="group" aria-label="Player types">
+        <div className="seg" role="group" aria-label={t('Player types')}>
           {[
-            ['all', 'All'],
-            ['humans', 'Humans'],
+            ['all', t('All')],
+            ['humans', t('Humans')],
             ['ai', 'AI'],
           ].map(([value, label]) => (
             <button
@@ -157,12 +161,12 @@ export function Players() {
       </div>
       <p className="caption" role="status">
         {busy
-          ? 'Finding players…'
+          ? t('Finding players…')
           : error
-            ? 'Search unavailable'
+            ? t('Search unavailable')
             : data?.items.length
-              ? `${data.items.length} ${data.items.length === 1 ? 'player' : 'players'} on this page`
-              : 'No players found. Try another name.'}
+              ? tp('{count} player on this page', '{count} players on this page', data.items.length)
+              : t('No players found. Try another name.')}
       </p>
       {error && (
         <>
@@ -173,14 +177,14 @@ export function Players() {
               setAttempt((n) => n + 1);
             }}
           >
-            Try again
+            {t('Try again')}
           </button>
         </>
       )}
       <div
         id={listId}
         role="listbox"
-        aria-label="Players"
+        aria-label={t('Players')}
         aria-busy={busy}
         className="player-grid"
         hidden={!expanded}
@@ -208,12 +212,12 @@ export function Players() {
                 </strong>
                 <div className="caption">
                   {player.kind === 'account'
-                    ? 'View profile and games'
-                    : 'Explore ratings and games'}
+                    ? t('View profile and games')
+                    : t('Explore ratings and games')}
                 </div>
               </div>
-              {player.kind === 'ai' && <span className="badge">AI</span>}
-              <span aria-hidden="true">→</span>
+              {player.kind === 'ai' && <span className="badge">{t('AI')}</span>}
+              <span aria-hidden="true">{t('→')}</span>
             </Link>
           );
         })}
@@ -227,7 +231,7 @@ export function Players() {
               input.current?.focus();
             }}
           >
-            Previous
+            {t('Previous')}
           </button>
         )}
         {data?.nextCursor && (
@@ -238,7 +242,7 @@ export function Players() {
               input.current?.focus();
             }}
           >
-            Next
+            {t('Next')}
           </button>
         )}
       </div>

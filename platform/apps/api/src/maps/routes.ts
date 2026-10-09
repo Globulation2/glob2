@@ -61,7 +61,11 @@ function intParam(value: string | undefined, name: string, min: number, max: num
   if (value === undefined || value === '') return undefined;
   const n = Number(value);
   if (!Number.isInteger(n) || n < min || n > max) {
-    throw apiError('bad_request', `${name} must be an integer from ${min} to ${max}.`);
+    throw apiError('bad_request', '{p0} must be an integer from {p1} to {p2}.', undefined, {
+      p0: String(name),
+      p1: String(min),
+      p2: String(max),
+    });
   }
   return n;
 }
@@ -218,7 +222,9 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
     }
     const sort = (query.sort ?? 'recent') as MapSort;
     if (!SORTS.includes(sort))
-      throw apiError('bad_request', `sort must be one of ${SORTS.join(', ')}.`);
+      throw apiError('bad_request', 'sort must be one of {p0}.', undefined, {
+        p0: String(SORTS.join(', ')),
+      });
     if (
       query.madeWith !== undefined &&
       query.madeWith !== 'hand' &&
@@ -429,7 +435,9 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       if (count.n >= CATALOG_RULES.maxVersionsPerMap) {
         throw apiError(
           'conflict',
-          `A map keeps at most ${CATALOG_RULES.maxVersionsPerMap} versions; delete old ones first.`,
+          'A map keeps at most {p0} versions; delete old ones first.',
+          undefined,
+          { p0: String(CATALOG_RULES.maxVersionsPerMap) },
         );
       }
 

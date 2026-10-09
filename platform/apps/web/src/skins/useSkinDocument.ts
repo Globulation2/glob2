@@ -1,3 +1,6 @@
+import { MessageError, translateError } from '../messages.ts';
+import { message as sourceMessage } from '../messages.ts';
+import { t } from '../messages.ts';
 /* Canvas contexts are checked by paintCanvas; dimensions are fixed. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
@@ -32,7 +35,7 @@ export function paintCanvas(colour?: Uint8ClampedArray) {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = ATLAS_SIZE;
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('Painting is unavailable in this browser.');
+  if (!ctx) throw new MessageError('Painting is unavailable in this browser.');
   if (colour)
     ctx.putImageData(new ImageData(new Uint8ClampedArray(colour), ATLAS_SIZE, ATLAS_SIZE), 0, 0);
   else {
@@ -46,7 +49,7 @@ async function readColour(src: string) {
   image.src = src;
   await image.decode();
   if (image.width !== ATLAS_SIZE || image.height !== ATLAS_SIZE)
-    throw new Error('Invalid skin dimensions.');
+    throw new MessageError('Invalid skin dimensions.');
   const canvas = paintCanvas();
   const ctx = canvas.getContext('2d')!;
   ctx.drawImage(image, 0, 0);
@@ -69,17 +72,17 @@ export function useSkinDocument(accountId: string | undefined) {
     redo = useRef<SkinData[]>([]),
     pending = useRef<SkinData | null>(null);
   const [revision, setRevision] = useState(0),
-    [status, setStatus] = useState('Opening studio…'),
+    [status, setStatus] = useState(sourceMessage('Opening studio…')),
     [hydrated, setHydrated] = useState(false);
   const [busy, setBusy] = useState(false),
-    [message, setMessage] = useState('');
+    [message, setMessage] = useState<string | Error>('');
   const draftRevision = useRef<string | null>(null),
     alive = useRef(true),
     documentGeneration = useRef(0),
     operationPending = useRef(false);
   function requireUnchanged(generation: number) {
     if (documentGeneration.current !== generation)
-      throw new Error(
+      throw new MessageError(
         'Your draft changed while the design was loading. Your changes were kept; try opening the design again.',
       );
   }
@@ -93,7 +96,7 @@ export function useSkinDocument(accountId: string | undefined) {
   function refresh() {
     documentGeneration.current++;
     dirty.current = true;
-    setStatus(accountId ? 'Saving…' : 'Sign in to save');
+    setStatus(accountId ? 'Saving…' : sourceMessage('Sign in to save'));
     setData({ ...current.current });
     setCounts([undo.current.length, redo.current.length]);
     canvas
@@ -175,7 +178,11 @@ export function useSkinDocument(accountId: string | undefined) {
         );
       return true;
     } catch {
-      setMessage('Browser recovery is unavailable. Keep this page open until changes are saved.');
+      setMessage(
+        sourceMessage(
+          'Browser recovery is unavailable. Keep this page open until changes are saved.',
+        ),
+      );
       return false;
     }
   }
@@ -210,7 +217,7 @@ export function useSkinDocument(accountId: string | undefined) {
         (!Number.isInteger(d.swarmViewAngle) || d.swarmViewAngle < 0 || d.swarmViewAngle > 359)) ||
       (d.skinId !== undefined && !/^[a-f0-9-]{36}$/.test(d.skinId))
     )
-      throw new Error('The saved draft could not be restored.');
+      throw new MessageError('The saved draft could not be restored.');
     const [colour, materials] = await Promise.all([
       readColour(d.image),
       decodeMaterials(d.material),
@@ -242,12 +249,13 @@ export function useSkinDocument(accountId: string | undefined) {
     void Promise.resolve()
       .then(() => restoreLocal(true, () => !cancelled && alive.current))
       .then(() => {
-        if (!cancelled) setStatus(accountId ? 'Choose a skin' : 'Sign in to save');
+        if (!cancelled)
+          setStatus(accountId ? sourceMessage('Choose a skin') : sourceMessage('Sign in to save'));
       })
       .catch((e: unknown) => {
         if (!cancelled) {
-          setMessage(e instanceof Error ? e.message : 'Draft recovery failed.');
-          setStatus('Draft recovery failed');
+          setMessage(e instanceof Error ? e : sourceMessage('Draft recovery failed.'));
+          setStatus(sourceMessage('Draft recovery failed'));
         }
       })
       .finally(() => {
@@ -301,10 +309,10 @@ export function useSkinDocument(accountId: string | undefined) {
       if (e instanceof ApiError && e.status === 409) {
         conflicted.current = true;
         setConflict(true);
-        setStatus('Account changes need review');
+        setStatus(sourceMessage('Account changes need review'));
       }
       if (alive.current)
-        setMessage(e instanceof Error ? e.message : 'The operation could not finish.');
+        setMessage(e instanceof Error ? e : sourceMessage('The operation could not finish.'));
       return false;
     } finally {
       operationPending.current = false;
@@ -328,7 +336,7 @@ export function useSkinDocument(accountId: string | undefined) {
       saveLocal();
       return;
     }
-    if (conflicted.current) throw new Error('Resolve the account changes before saving.');
+    if (conflicted.current) throw new MessageError('Resolve the account changes before saving.');
     if (saving.current) {
       await saving.current;
       return flush();
@@ -346,15 +354,19 @@ export function useSkinDocument(accountId: string | undefined) {
         });
         draftRevision.current = result.revision;
         dirty.current = documentGeneration.current !== generation;
-        setStatus(dirty.current ? 'Saving…' : 'Saved');
+        setStatus(dirty.current ? 'Saving…' : sourceMessage('Saved'));
         saveLocal();
       } catch (e) {
         if (e instanceof ApiError && e.status === 409) {
           conflicted.current = true;
           setConflict(true);
-          setStatus('Account changes need review');
+          setStatus(sourceMessage('Account changes need review'));
         } else {
-          setStatus(navigator.onLine ? 'Could not save · retrying' : 'Offline · changes pending');
+          setStatus(
+            navigator.onLine
+              ? sourceMessage('Could not save · retrying')
+              : sourceMessage('Offline · changes pending'),
+          );
         }
         saveLocal();
         throw e;
@@ -408,7 +420,7 @@ export function useSkinDocument(accountId: string | undefined) {
     refresh();
     dirty.current = false;
     activated.current = true;
-    setStatus('Saved');
+    setStatus(sourceMessage('Saved'));
     if (allowRecovery) {
       const raw = localStorage.getItem(`${storageKey}:${design.skinId}`);
       if (raw) {
@@ -437,7 +449,7 @@ export function useSkinDocument(accountId: string | undefined) {
           if (recovery.draftRevision !== design.revision) {
             conflicted.current = true;
             setConflict(true);
-            setStatus('Account changes need review');
+            setStatus(sourceMessage('Account changes need review'));
           }
         }
       }
@@ -451,7 +463,7 @@ export function useSkinDocument(accountId: string | undefined) {
       await loadDesign(design, !discardRecovery);
     });
   }
-  async function newDesign(name = 'My colony', sourceSkinId?: string, keepCurrent = false) {
+  async function newDesign(name = t('My colony'), sourceSkinId?: string, keepCurrent = false) {
     let result: SkinDesign | undefined;
     await run(async () => {
       if (saving.current) await saving.current.catch(() => undefined);
@@ -492,7 +504,7 @@ export function useSkinDocument(accountId: string | undefined) {
       refresh();
       await flush();
       if (local.skinId) localStorage.removeItem(`${storageKey}:${local.skinId}`);
-      setMessage('Your changes were saved as a new skin.');
+      setMessage(sourceMessage('Your changes were saved as a new skin.'));
     });
   }
   async function useInGame(onApplied: () => void) {
@@ -503,7 +515,7 @@ export function useSkinDocument(accountId: string | undefined) {
       await request('POST', `/api/v1/skins/designs/${id}/use`, {
         body: { revision: draftRevision.current },
       });
-      setMessage('Used for your next match.');
+      setMessage(sourceMessage('Used for your next match.'));
       onApplied();
     });
   }
@@ -525,7 +537,7 @@ export function useSkinDocument(accountId: string | undefined) {
       draftRevision.current = null;
       refresh();
       dirty.current = false;
-      setStatus('Choose a skin');
+      setStatus(sourceMessage('Choose a skin'));
     }
   }
   return {
@@ -536,7 +548,7 @@ export function useSkinDocument(accountId: string | undefined) {
     status,
     hydrated,
     busy,
-    message,
+    message: typeof message === 'string' ? t(message) : translateError(message),
     conflict,
     setMessage,
     paint,

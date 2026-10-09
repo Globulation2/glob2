@@ -1,3 +1,9 @@
+import { fixedCaption, artifactLabel } from '../i18n.tsx';
+import { statusLabel } from '../i18n.tsx';
+import { message as sourceMessage } from '../messages.ts';
+import { displayMessage } from '../i18n.tsx';
+import { getLocale } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { cancellationReason } from '../components/studio/adapters.ts';
 import { useRevisionUndo } from '../components/studio/useRevisionUndo.ts';
 import {
@@ -37,10 +43,12 @@ type Wallet = {
   packs: { id: string; credits: number; amount: number; currency: string }[];
 };
 export function TerrainStudio({ id }: { id?: string }) {
+  useLocale();
   const { account } = useSession();
   return <TerrainWorkspace key={`${account?.id ?? 'anonymous'}:${id ?? 'new'}`} id={id} />;
 }
 function TerrainWorkspace({ id }: { id?: string }) {
+  useLocale();
   const { account } = useSession(),
     { navigate, location } = useRouter();
   const [wallet, setWallet] = useState<Wallet>(),
@@ -48,7 +56,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
     [thread, setThread] = useState<TerrainStudioThread>(),
     [draft, setDraft] = useState<SetDraft>(),
     [progress, setProgress] = useState<TerrainStudioProgress>(),
-    [title, setTitle] = useState('New terrain set'),
+    [title, setTitle] = useState(t('New terrain set')),
     [error, setError] = useState(''),
     [connection, setConnection] = useState(''),
     [busy, setBusy] = useState(false),
@@ -158,7 +166,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
         setConnection('');
         update();
       };
-      stream.onerror = () => setConnection('Reconnecting to your saved project…');
+      stream.onerror = () => setConnection(sourceMessage('Reconnecting to your saved project…'));
       stream.addEventListener('reset', update);
     }
     const poll = setInterval(update, 10000);
@@ -193,7 +201,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
       await fn();
       await refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Request failed.');
+      setError(e instanceof Error ? e.message : t('Request failed.'));
     } finally {
       setBusy(false);
     }
@@ -288,39 +296,39 @@ function TerrainWorkspace({ id }: { id?: string }) {
   if (!account)
     return (
       <section>
-        <h1>AI Terrain Studio</h1>
-        <p>Describe a world. Create its terrain and resources.</p>
-        <a href="/signin">Sign in to create a set</a>
+        <h1>{t('AI Terrain Studio')}</h1>
+        <p>{t('Describe a world. Create its terrain and resources.')}</p>
+        <a href="/signin">{t('Sign in to create a set')}</a>
       </section>
     );
   return (
     <StudioShell className="terrain-studio">
-      <StudioHeader title={thread?.title ?? 'AI Terrain Studio'} icon="mountain">
+      <StudioHeader title={thread?.title ?? t('AI Terrain Studio')} icon="mountain">
         <Link to="/terrain-studio">
-          <Icon name="folder-open" size={18} /> Projects
+          <Icon name="folder-open" size={18} /> {t(' Projects')}
         </Link>
         <button onClick={() => setCreditsOpen(true)}>
-          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} Terrain credits
+          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} {t(' Terrain credits')}
         </button>
       </StudioHeader>
-      {error && <p role="alert">{error}</p>}
-      {connection && <p role="status">{connection}</p>}
+      {error && <p role="alert">{displayMessage(error)}</p>}
+      {connection && <p role="status">{t(connection)}</p>}
       {wallet && !wallet.enabled && (
         <p role="status">
-          Terrain Studio is disabled on this instance. Your saved projects remain available.
+          {t('Terrain Studio is disabled on this instance. Your saved projects remain available.')}
         </p>
       )}
       <ReleaseDialog
         open={creditsOpen}
         onClose={() => setCreditsOpen(false)}
-        title="Terrain credits"
+        title={t(' Terrain credits')}
       >
         <CreditPanel domain="Terrain" available={wallet?.available} reserved={wallet?.reserved}>
           {' '}
           <p>
-            Questions and brainstorming are free and require an available credit. A creation or
-            revision request starts one build of up to 12 entries. Failed generations return their
-            reservation.
+            {t(
+              'Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.',
+            )}
           </p>
           {wallet?.packs.map((p) => (
             <button
@@ -335,17 +343,25 @@ function TerrainWorkspace({ id }: { id?: string }) {
                 })
               }
             >
-              Buy {p.credits} credits ·{' '}
-              {new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(
-                p.amount / 100,
-              )}
+              <RichMessage
+                source={'Buy {slot0} credits · {slot1}'}
+                slots={{
+                  slot0: p.credits,
+                  slot1: new Intl.NumberFormat(getLocale(), {
+                    style: 'currency',
+                    currency: p.currency,
+                  }).format(p.amount / 100),
+                }}
+                singular={'Buy {slot0} credit · {slot1}'}
+                count={Number(p.credits)}
+              />
             </button>
           ))}
         </CreditPanel>
       </ReleaseDialog>
       {!id ? (
         <NewStudio
-          title="Your terrain"
+          title={t('Your terrain')}
           value={text}
           onChange={setText}
           onSend={() => void action(create)}
@@ -363,7 +379,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
           }
           pricing="Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery."
           projects={
-            <nav aria-label="Terrain projects">
+            <nav aria-label={t('Terrain projects')}>
               {projects.map((p) => (
                 <Link key={p.id} to={'/terrain-studio/' + p.id}>
                   {p.title}
@@ -373,7 +389,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
           }
           tools={
             <label>
-              Project title{' '}
+              {t('Project title')}{' '}
               <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={128} />
             </label>
           }
@@ -398,15 +414,15 @@ function TerrainWorkspace({ id }: { id?: string }) {
           }
           conversation={
             <aside className="ts-chat">
-              <h2>Design conversation</h2>
+              <h2>{t('Design conversation')}</h2>
               <ConversationPane
-                label="Terrain design conversation"
+                label={t('Terrain design conversation')}
                 count={thread?.messages.length ?? 0}
                 firstMessageId={thread?.messages[0]?.id}
               >
                 {thread?.messages.map((m) => (
                   <article key={m.id} className={'ts-message ' + m.role}>
-                    <strong>{m.role === 'user' ? 'You' : 'Terrain designer'}</strong>
+                    <strong>{m.role === 'user' ? t('You') : t('Terrain designer')}</strong>
                     <p>{m.text}</p>
                   </article>
                 ))}
@@ -418,9 +434,12 @@ function TerrainWorkspace({ id }: { id?: string }) {
                 }}
               >
                 <label>
-                  Describe your creation or ask a question
+                  {t('Describe your creation or ask a question')}
                   <p className="studio-edit-target">
-                    Editing current saved draft · {draft?.revision}
+                    <RichMessage
+                      source={'Editing current saved draft · {slot0}'}
+                      slots={{ slot0: draft?.revision }}
+                    />
                   </p>
                   <ChatInput
                     rows={5}
@@ -428,7 +447,9 @@ function TerrainWorkspace({ id }: { id?: string }) {
                     value={text}
                     disabled={retrying}
                     onChange={(e) => setText(e.target.value)}
-                    placeholder="Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food."
+                    placeholder={t(
+                      'Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.',
+                    )}
                     onSend={() => {
                       if (!busy && !pending && wallet?.enabled && text.trim() && draft && !dirty)
                         void action(send);
@@ -437,10 +458,10 @@ function TerrainWorkspace({ id }: { id?: string }) {
                 </label>
                 <details className="studio-attachments">
                   <summary>
-                    <Icon name="upload" size={18} /> Reference images
+                    <Icon name="upload" size={18} /> {t(' Reference images')}
                   </summary>{' '}
                   <label>
-                    Reference images
+                    {t(' Reference images')}
                     <input
                       type="file"
                       accept="image/png,image/jpeg,image/webp"
@@ -461,13 +482,14 @@ function TerrainWorkspace({ id }: { id?: string }) {
                     />
                   </label>
                   <small>
-                    Upload artwork you may use as a reference. Up to four selected images guide the
-                    visual style.
+                    {t(
+                      'Upload artwork you may use as a reference. Up to four selected images guide the visual style.',
+                    )}
                   </small>
                   <div className="ts-references">
                     {thread?.references.map((r) => (
                       <label key={r.hash}>
-                        <img src={r.url} alt={r.label} />
+                        <img src={r.url} alt={t(r.label)} />
                         <input
                           type="checkbox"
                           checked={selectedRefs.includes(r.hash)}
@@ -480,7 +502,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                             )
                           }
                         />
-                        Use reference
+                        {t('Use reference')}
                       </label>
                     ))}
                   </div>
@@ -492,7 +514,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                   }
                 >
                   <Icon name={retrying ? 'refresh' : 'send'} size={18} />{' '}
-                  {retrying ? 'Retry saved request' : 'Send'}
+                  {retrying ? t('Retry saved request') : t('Send')}
                 </button>
                 {retrying && (
                   <button
@@ -504,24 +526,27 @@ function TerrainWorkspace({ id }: { id?: string }) {
                       studioSession.removeItem(`terrain-studio-turn:${account.id}:${id}`);
                     }}
                   >
-                    Discard local retry
+                    {t('Discard local retry')}
                   </button>
                 )}
-                {dirty && <p>Save your manual edits before asking AI to revise the set.</p>}
+                {dirty && <p>{t('Save your manual edits before asking AI to revise the set.')}</p>}
                 <p className="studio-compose-help">
-                  Enter to send · Shift + Enter for a new line. Creation requests build
-                  automatically · 1 credit on delivery.
+                  {t(
+                    'Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.',
+                  )}
                 </p>
                 {!wallet?.available && (
-                  <p>An available Terrain credit is needed to chat or build.</p>
+                  <p>{t('An available Terrain credit is needed to chat or build.')}</p>
                 )}
               </form>
               {pending && (
                 <div role="status">
                   <p>
                     {pending.status === 'uncertain'
-                      ? 'The provider outcome needs reconciliation. No duplicate call will be sent.'
-                      : 'Working on your request…'}
+                      ? t(
+                          'The provider outcome needs reconciliation. No duplicate call will be sent.',
+                        )
+                      : t('Working on your request…')}
                   </p>
                   <button
                     disabled={busy || ['dispatched', 'uncertain'].includes(pending.status)}
@@ -537,7 +562,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                       })
                     }
                   >
-                    Cancel
+                    {t('Cancel')}
                   </button>
                   {cancellationReason(pending.status) && (
                     <p>{cancellationReason(pending.status)}</p>
@@ -550,13 +575,19 @@ function TerrainWorkspace({ id }: { id?: string }) {
             <>
               {dirty && (
                 <p role="status">
-                  Save your manual terrain edits in Edit before generating, restoring a version, or
-                  undoing.
+                  {t(
+                    'Save your manual terrain edits in Edit before generating, restoring a version, or undoing.',
+                  )}
                 </p>
               )}
               {undo.delivered !== undefined && (
                 <div className="studio-revisions" role="status">
-                  <span>Generated edits applied to revision {undo.delivered}.</span>
+                  <span>
+                    <RichMessage
+                      source={'Generated edits applied to revision {slot0}.'}
+                      slots={{ slot0: undo.delivered }}
+                    />
+                  </span>
                   <button
                     aria-disabled={!undo.canUndo || dirty || !!pending}
                     onClick={() => {
@@ -572,15 +603,15 @@ function TerrainWorkspace({ id }: { id?: string }) {
                       });
                     }}
                   >
-                    <Icon name="restore" size={18} /> Undo
+                    <Icon name="restore" size={18} /> {t(' Undo')}
                   </button>
                   {!undo.canUndo && (
-                    <span>A newer draft prevents undo. Use history to restore it.</span>
+                    <span>{t('A newer draft prevents undo. Use history to restore it.')}</span>
                   )}
                 </div>
               )}
               <StudioTabs
-                label="Artifact view"
+                label={t('Artifact view')}
                 panels={{
                   preview: 'studio-panel-artifact-view-preview',
                   edit: 'studio-panel-artifact-view-edit',
@@ -610,19 +641,21 @@ function TerrainWorkspace({ id }: { id?: string }) {
               >
                 {' '}
                 <div className="ts-preview">
-                  <h2>Your set</h2>
+                  <h2>{t('Your set')}</h2>
                   <RevisionControls
                     viewed={viewedRevision?.title ?? 'current saved draft'}
                     target="current saved draft"
                     follow={inspected ? () => setInspected('') : undefined}
                   />
-                  {inspected && !shownDraft && <p role="status">Loading the inspected version…</p>}
+                  {inspected && !shownDraft && (
+                    <p role="status">{t('Loading the inspected version…')}</p>
+                  )}
                   {viewedRevision && (
                     <ValidationSummary version={viewedRevision.title}>
                       <p>
                         {viewedRevision.report.valid
-                          ? 'Definition validation passed.'
-                          : 'Definition validation failed.'}
+                          ? t('Definition validation passed.')
+                          : t('Definition validation failed.')}
                       </p>
                     </ValidationSummary>
                   )}
@@ -631,8 +664,8 @@ function TerrainWorkspace({ id }: { id?: string }) {
                       <ol className="ts-stages">
                         {shownProgress.stages.map((s) => (
                           <li key={s.id} data-status={s.status}>
-                            <strong>{s.label}</strong>
-                            <span>{s.status}</span>
+                            <strong>{t(s.label)}</strong>
+                            <span>{statusLabel(s.status)}</span>
                             {s.detail && <small>{s.detail}</small>}
                           </li>
                         ))}
@@ -644,7 +677,14 @@ function TerrainWorkspace({ id }: { id?: string }) {
                       ))}
                       {shownProgress.checks.map((c) => (
                         <p key={c.id}>
-                          {c.label}: {c.status} · {c.detail}
+                          <RichMessage
+                            source={'{slot0}: {slot1} · {slot2}'}
+                            slots={{
+                              slot0: fixedCaption(c.label),
+                              slot1: statusLabel(c.status),
+                              slot2: c.detail,
+                            }}
+                          />
                         </p>
                       ))}
                     </>
@@ -657,20 +697,33 @@ function TerrainWorkspace({ id }: { id?: string }) {
                   {shownDraft && (
                     <>
                       <p>
-                        {shownDraft.package.terrains.length} terrains ·{' '}
-                        {shownDraft.package.resources.length} resources · revision{' '}
-                        {shownDraft.revision}
+                        <RichMessage
+                          source={'{slot0} terrains · {slot1} resources · revision {slot2}'}
+                          slots={{
+                            slot0: shownDraft.package.terrains.length,
+                            slot1: shownDraft.package.resources.length,
+                            slot2: shownDraft.revision,
+                          }}
+                          singular={'{slot0} terrain · {slot1} resources · revision {slot2}'}
+                          count={Number(shownDraft.package.terrains.length)}
+                        />
                       </p>
                       <p>
-                        Validated definitions are importable. Review gameplay on your own maps
-                        before relying on balance.
+                        {t(
+                          'Validated definitions are importable. Review gameplay on your own maps before relying on balance.',
+                        )}
                       </p>
                       {shownProgress?.artifacts
                         .filter((a) => a.kind === 'preview')
                         .map((a) => (
                           <figure key={a.id}>
-                            <img className="set-contact" src={a.url} alt={a.label} />
-                            <figcaption>{a.label} · saved generation preview</figcaption>
+                            <img className="set-contact" src={a.url} alt={artifactLabel(a)} />
+                            <figcaption>
+                              <RichMessage
+                                source={'{slot0} · saved generation preview'}
+                                slots={{ slot0: artifactLabel(a) }}
+                              />
+                            </figcaption>
                           </figure>
                         ))}
                       <SetPreview pack={shownDraft.package} gallery />
@@ -691,16 +744,20 @@ function TerrainWorkspace({ id }: { id?: string }) {
                                     <dt>{propertyLabel(k)}</dt>
                                     <dd>
                                       {typeof v === 'number' && k.endsWith('HealthQ8')
-                                        ? `${v / 256} HP per exposed tick`
+                                        ? t('{value0} HP per exposed tick', { value0: v / 256 })
                                         : typeof v === 'number' && k.endsWith('Q8')
                                           ? `${v / 256}×`
                                           : typeof v === 'number' &&
                                               ['growthRate', 'spreadRate'].includes(k)
-                                            ? `${(v / (k === 'growthRate' ? 65536 : 196608)).toFixed(2)}× wheat`
+                                            ? t('{value0}× wheat', {
+                                                value0: (
+                                                  v / (k === 'growthRate' ? 65536 : 196608)
+                                                ).toFixed(2),
+                                              })
                                             : typeof v === 'boolean'
                                               ? v
-                                                ? 'Yes'
-                                                : 'No'
+                                                ? t('Yes')
+                                                : t('No')
                                               : String(v)}
                                     </dd>
                                   </div>
@@ -715,13 +772,22 @@ function TerrainWorkspace({ id }: { id?: string }) {
                                     >,
                                   ).map(([material, yielding]) => (
                                     <li key={material}>
-                                      {propertyLabel(material)}: starts at {yielding.initial}, holds{' '}
-                                      {yielding.capacity};{' '}
-                                      {yielding.consumption === 'one'
-                                        ? 'one unit per harvest'
-                                        : yielding.consumption === 'infinite'
-                                          ? 'stock remains available after harvesting'
-                                          : 'the whole stock per harvest'}
+                                      <RichMessage
+                                        source={
+                                          '{slot0}: starts at {slot1}, holds {slot2}; {slot3}'
+                                        }
+                                        slots={{
+                                          slot0: propertyLabel(material),
+                                          slot1: yielding.initial,
+                                          slot2: yielding.capacity,
+                                          slot3:
+                                            yielding.consumption === 'one'
+                                              ? t('one unit per harvest')
+                                              : yielding.consumption === 'infinite'
+                                                ? t('stock remains available after harvesting')
+                                                : t('the whole stock per harvest'),
+                                        }}
+                                      />
                                     </li>
                                   ))}
                                 </ul>
@@ -731,7 +797,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                         )}
                       </div>
                       <button onClick={() => setView('edit')}>
-                        <Icon name="pencil" size={18} /> Edit & release settings
+                        <Icon name="pencil" size={18} /> {t(' Edit & release settings')}
                       </button>
                     </>
                   )}
@@ -764,14 +830,14 @@ function TerrainWorkspace({ id }: { id?: string }) {
                 aria-labelledby="studio-tab-artifact-view-history"
                 hidden={view !== 'history'}
               >
-                <section aria-label="Saved draft history">
-                  <h2>Previous saved drafts</h2>
+                <section aria-label={t('Saved draft history')}>
+                  <h2>{t('Previous saved drafts')}</h2>
                   {thread?.draftHistory?.map((d) => (
                     <article key={d.revision}>
                       <h3>{d.title}</h3>
-                      <p>Saved draft · validation remains version-specific.</p>
+                      <p>{t('Saved draft · validation remains version-specific.')}</p>
                       <a href={`${ROOT}/threads/${id}/drafts/${d.revision}/file`}>
-                        Download saved draft
+                        {t('Download saved draft')}
                       </a>
                       <button
                         disabled={busy || !!pending || dirty}
@@ -794,14 +860,14 @@ function TerrainWorkspace({ id }: { id?: string }) {
                           })
                         }
                       >
-                        Edit this saved draft
+                        {t('Edit this saved draft')}
                       </button>
                     </article>
                   ))}
                 </section>{' '}
                 {thread?.revisions.length !== 0 && (
                   <details>
-                    <summary>Generated revisions</summary>
+                    <summary>{t('Generated revisions')}</summary>
                     {thread?.revisions.map((r) => (
                       <article key={r.requestId}>
                         <h3>{r.title}</h3>
@@ -811,14 +877,19 @@ function TerrainWorkspace({ id }: { id?: string }) {
                             setView('preview');
                           }}
                         >
-                          Inspect this version
+                          {t('Inspect this version')}
                         </button>
                         <p>
-                          {r.applied ? 'Applied to the draft' : 'Saved candidate'} · based on
-                          revision {r.baseRevision}
+                          <RichMessage
+                            source={'{slot0} · based on revision {slot1}'}
+                            slots={{
+                              slot0: r.applied ? t('Applied to the draft') : t('Saved candidate'),
+                              slot1: r.baseRevision,
+                            }}
+                          />
                         </p>
                         <a href={`${ROOT}/threads/${id}/revisions/${r.requestId}/file`}>
-                          Download candidate
+                          {t('Download candidate')}
                         </a>
                         <CandidatePreview
                           url={`${ROOT}/threads/${id}/revisions/${r.requestId}/file`}
@@ -844,7 +915,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                               })
                             }
                           >
-                            Edit this version
+                            {t('Edit this version')}
                           </button>
                         )}
                       </article>
@@ -861,6 +932,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
 }
 
 function CandidatePreview({ url }: { url: string }) {
+  useLocale();
   const [pack, setPack] = useState<SetPackage>();
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -878,26 +950,26 @@ function CandidatePreview({ url }: { url: string }) {
             .finally(() => setBusy(false));
         }}
       >
-        Inspect candidate
+        {t('Inspect candidate')}
       </button>
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{displayMessage(error)}</p>}
     </>
   );
 }
 
 function propertyLabel(key: string) {
   const labels: Record<string, string> = {
-    groundSpeedQ8: 'Ground movement',
-    groundHealthQ8: 'Ground health change',
-    airHealthQ8: 'Air health change',
-    swimSpeedQ8: 'Swimming movement',
-    growthQ8: 'Resource growth',
-    growthRate: 'Growth rate',
-    spreadRate: 'Spread rate',
-    primaryMaterial: 'Main material',
-    farmable: 'Can be farmed',
-    passable: 'Units can cross',
-    buildable: 'Buildings allowed',
+    groundSpeedQ8: t('Ground movement'),
+    groundHealthQ8: t('Ground health change'),
+    airHealthQ8: t('Air health change'),
+    swimSpeedQ8: t('Swimming movement'),
+    growthQ8: t('Resource growth'),
+    growthRate: t('Growth rate'),
+    spreadRate: t('Spread rate'),
+    primaryMaterial: t('Main material'),
+    farmable: t('Can be farmed'),
+    passable: t('Units can cross'),
+    buildable: t('Buildings allowed'),
   };
   return (
     labels[key] ??

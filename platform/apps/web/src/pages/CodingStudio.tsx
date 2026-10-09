@@ -1,3 +1,7 @@
+import { statusLabel } from '../i18n.tsx';
+import { message as sourceMessage } from '../i18n.tsx';
+import { displayMessage } from '../i18n.tsx';
+import { t, tp, useLocale, RichMessage } from '../i18n.tsx';
 import { projectConversation } from '../components/studio/conversation.ts';
 import {
   StudioShell,
@@ -74,6 +78,7 @@ function download(source: string, generator = false) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 export function CodingStudio({ id, generator = false }: { id?: string; generator?: boolean }) {
+  useLocale();
   const { account } = useSession();
   return (
     <CodingWorkspace
@@ -84,6 +89,7 @@ export function CodingStudio({ id, generator = false }: { id?: string; generator
   );
 }
 function CodingWorkspace({ id, generator }: { id?: string; generator: boolean }) {
+  useLocale();
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -91,7 +97,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
   }, []);
   const route = generator ? 'generator-studio' : 'ai-studio';
   const ROOT = '/api/v1/' + route;
-  const creditName = generator ? 'Generator' : 'Colony AI';
+  const creditName = generator ? t('Generator') : t('Colony AI');
   const [settings, setSettings] = useState<GeneratorSettings>(defaultSettings);
   const [generatorRun, setGeneratorRun] = useState<GeneratorRun>();
   const hidePreview = useCallback(() => setGeneratorRun(undefined), []);
@@ -100,8 +106,8 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
   const [wallet, setWallet] = useState<StudioAccount>(),
     [projects, setProjects] = useState<StudioProject[]>([]);
   const [prompt, setPrompt] = useStudioValue(`${route}-prompt:${account?.id}:${id ?? 'new'}`, ''),
-    [title, setTitle] = useState(generator ? 'My landscape' : 'My Colony'),
-    [error, setError] = useState(''),
+    [title, setTitle] = useState(generator ? t('My landscape') : t('My Colony')),
+    [error, setError] = useState<string | Error>(''),
     [busy, setBusy] = useState(false);
   const [tab, setTab] = useState<'code' | 'changes' | 'playtest'>('code'),
     [selected, setSelected] = useState(0),
@@ -157,7 +163,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
   const serverTitle = useRef<string | undefined>(undefined);
   const comparisonRequest = useRef(0);
   const currentRevision = () => {
-    if (!known.current) throw Error('Project has not loaded.');
+    if (!known.current) throw Error(t('Project has not loaded.'));
     return known.current.revision;
   };
   const {
@@ -189,7 +195,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
           setBudget(pending.budget);
           setDiagnostics(pending.diagnostics ?? '');
           setError(
-            'A previous submission was not acknowledged. Sending it again safely retries the same request.',
+            sourceMessage(
+              'A previous submission was not acknowledged. Sending it again safely retries the same request.',
+            ),
           );
         } else studioSession.removeItem(recoveryKey + ':request');
       } catch {
@@ -247,7 +255,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
         else
           setProjects((await request<{ items: StudioProject[] }>('GET', ROOT + '/projects')).items);
       } catch (e) {
-        if (mounted) setError(String(e));
+        if (mounted) setError(e instanceof Error ? e : String(e));
       }
     })();
     return () => {
@@ -282,8 +290,8 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
             await loadWallet();
           } else if (checks.some((c) => c.status === 'pending')) await refreshChecks();
         })
-        .catch((e) => {
-          if (!stopped) setError('Reconnecting: ' + String(e));
+        .catch(() => {
+          if (!stopped) setError(sourceMessage('Reconnecting to your saved project…'));
         })
         .finally(() => {
           pending = false;
@@ -305,7 +313,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
     try {
       await fn();
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e instanceof Error ? e : String(e));
     } finally {
       setBusy(false);
     }
@@ -315,8 +323,8 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
       if (file && file.size > (generator ? 262144 : 131072))
         throw Error(
           generator
-            ? 'The generator package must fit the 256 KiB draft limit.'
-            : 'The single JavaScript file must be at most 128 KiB.',
+            ? t('The generator package must fit the 256 KiB draft limit.')
+            : t('The single JavaScript file must be at most 128 KiB.'),
         );
       const versionId = location.search.get('version');
       const p = await request<StudioProject>('POST', ROOT + '/projects', {
@@ -369,7 +377,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
         confirm &&
         n !== project?.revision &&
         !window.confirm(
-          'Restore this version as the current draft? The current version stays in history.',
+          t('Restore this version as the current draft? The current version stays in history.'),
         )
       )
         return;
@@ -456,7 +464,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
   );
   const fix = (text: string) => {
     setDiagnostics(text.slice(0, 16000));
-    setPrompt('Please fix the issues in the attached test diagnostics.');
+    setPrompt(t('Please fix the issues in the attached test diagnostics.'));
     setFocusChat((n) => n + 1);
     form.current?.focus();
   };
@@ -468,7 +476,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
         currentCheck.status !== 'valid' ||
         source !== project?.current.source
       )
-        throw Error('Run compatibility checks on the current saved revision first.');
+        throw Error(t('Run compatibility checks on the current saved revision first.'));
       const body = {
         uploadId: currentCheck.upload_id,
         name: title,
@@ -477,11 +485,14 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
         version: generator
           ? String((currentCheck.report as GeneratorValidationReport).metadata?.revision)
           : release,
-        notes: `Created in ${generator ? 'Generator' : 'AI'} Studio, revision ${project.revision}`,
+        notes: t('Created in {value0} Studio, revision {value1}', {
+          value0: generator ? t('Generator') : 'AI',
+          value1: project.revision,
+        }),
       };
       if (generator) {
         if (!currentCheck.expires_at || Date.parse(currentCheck.expires_at) <= now)
-          throw Error('The validation receipt expired. Run checks again.');
+          throw Error(t('The validation receipt expired. Run checks again.'));
         const manifestId = (currentCheck.report as GeneratorValidationReport).metadata?.id;
         let cursor: string | undefined, target: string | undefined;
         do {
@@ -496,55 +507,60 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
   if (!account)
     return (
       <div className="notice">
-        <h1>{generator ? 'Generator Studio' : 'AI Studio'}</h1>
+        <h1>{generator ? t('Generator Studio') : t('AI Studio')}</h1>
         <p>
           {generator
-            ? 'Create a map generator through conversation.'
-            : 'Create a colony AI through conversation.'}
+            ? t('Create a map generator through conversation.')
+            : t('Create a colony AI through conversation.')}
         </p>
         <a href="/signin" className="btn primary">
-          Sign in
+          {t('Sign in')}
         </a>
       </div>
     );
   return (
     <StudioShell className="as-page">
       <StudioHeader
-        title={project?.title ?? (generator ? 'Generator Studio' : 'AI Colony Studio')}
+        title={project?.title ?? (generator ? t('Generator Studio') : t('AI Colony Studio'))}
         icon="robot"
       >
         <Link to={'/' + route}>
-          <Icon name="folder-open" size={18} /> Projects
+          <Icon name="folder-open" size={18} /> {t(' Projects')}
         </Link>
         <span role="status">
-          {id ? `${saved} · revision ${project?.revision ?? '…'}` : 'Private project'}
+          {id
+            ? t('{value0} · revision {value1}', { value0: saved, value1: project?.revision ?? '…' })
+            : t('Private project')}
         </span>
         <button onClick={() => setCreditsOpen(true)}>
-          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} {creditName} credits
+          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} {creditName} {t(' credits')}
         </button>
       </StudioHeader>
       {project && !source.trim() && (
-        <p role="status">Draft is temporarily empty. Add source to save.</p>
+        <p role="status">{t('Draft is temporarily empty. Add source to save.')}</p>
       )}
       {wallet && !wallet.enabled && (
         <p role="status">
           {generator ? (
             <>
-              Generator Studio is disabled on this instance. Recover saved files through{' '}
-              <Link to="/account">account export</Link>.
+              {t('Generator Studio is disabled on this instance. Recover saved files through')}{' '}
+              <Link to="/account">{t('account export')}</Link>
+              {t('.')}
             </>
           ) : (
-            'Generation is unavailable. Saved code, export and local tools remain accessible.'
+            t('Generation is unavailable. Saved code, export and local tools remain accessible.')
           )}
         </p>
       )}
 
       {error && (
         <div role="alert" className="notice">
-          {error}
+          {displayMessage(error)}
           {conflict && (
             <>
-              <button onClick={() => download(source, generator)}>Download local edits</button>
+              <button onClick={() => download(source, generator)}>
+                {t('Download local edits')}
+              </button>
               <button
                 onClick={() =>
                   void action(async () => {
@@ -553,7 +569,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   })
                 }
               >
-                Reload saved revision
+                {t('Reload saved revision')}
               </button>
             </>
           )}
@@ -561,7 +577,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
       )}
       {!id ? (
         <NewStudio
-          title={generator ? 'Your landscape' : 'Your colony AI'}
+          title={generator ? t('Your landscape') : t('Your colony AI')}
           value={prompt}
           onChange={setPrompt}
           onSend={() => void create()}
@@ -571,13 +587,16 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
               : !wallet?.enabled
                 ? 'Generation is unavailable.'
                 : !wallet.available
-                  ? `An available ${creditName} credit is needed.`
+                  ? t('An available {value0} credit is needed.', { value0: creditName })
                   : undefined
           }
           onBlocked={
             !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
           }
-          pricing={`Coding requests use up to ${budget} ${creditName} credits. Manual editing and local playtests are free.`}
+          pricing={t(
+            'Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free.',
+            { value0: budget, value1: creditName },
+          )}
           projects={
             <>
               {' '}
@@ -585,7 +604,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                 {projects.map((p) => (
                   <Link className="card" key={p.id} to={'/' + route + '/' + p.id}>
                     <h2>{p.title}</h2>
-                    <p>Revision {p.revision}</p>
+                    <p>
+                      <RichMessage source={'Revision {slot0}'} slots={{ slot0: p.revision }} />
+                    </p>
                   </Link>
                 ))}
               </div>
@@ -595,9 +616,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
             <>
               {' '}
               <section className="card">
-                <h2>Start a project</h2>
+                <h2>{t('Start a project')}</h2>
                 <label>
-                  Project name{' '}
+                  {t('Project name')}{' '}
                   <input value={title} maxLength={128} onChange={(e) => setTitle(e.target.value)} />
                 </label>
                 <button
@@ -606,13 +627,13 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   onClick={() => void create()}
                 >
                   {location.search.has('version')
-                    ? 'Copy my library version'
-                    : 'Use working starter'}
+                    ? t('Copy my library version')
+                    : t('Use working starter')}
                 </button>
                 <label className="btn">
-                  {generator ? 'Import package' : 'Import .js'}
+                  {generator ? t('Import package') : t('Import .js')}
                   <input
-                    aria-label={generator ? 'Import generator package' : 'Import JavaScript'}
+                    aria-label={generator ? t('Import generator package') : t('Import JavaScript')}
                     type="file"
                     accept={generator ? '.json' : '.js'}
                     disabled={busy || !wallet?.enabled}
@@ -624,8 +645,14 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   />
                 </label>
                 <p>
-                  {generator ? 'One manifest and one JavaScript module.' : 'One JavaScript file.'}{' '}
-                  Manual editing and local playtests use no credits.
+                  <RichMessage
+                    source={'{slot0} Manual editing and local playtests use no credits.'}
+                    slots={{
+                      slot0: generator
+                        ? t('One manifest and one JavaScript module.')
+                        : t('One JavaScript file.'),
+                    }}
+                  />
                 </p>
               </section>
             </>
@@ -636,17 +663,22 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
           <>
             {published && (
               <p className="notice">
-                Published{' '}
-                <Link to={(generator ? '/generators/' : '/ais/') + published.id}>
-                  {published.name}
-                </Link>
-                .
+                <RichMessage
+                  source={'Published {slot0}.'}
+                  slots={{
+                    slot0: (
+                      <Link to={(generator ? '/generators/' : '/ais/') + published.id}>
+                        {published.name}
+                      </Link>
+                    ),
+                  }}
+                />
               </p>
             )}
             <ReleaseDialog
               open={publishing}
               onClose={() => setPublishing(false)}
-              title={`Publish revision ${releaseRevision}`}
+              title={t('Publish revision {value0}', { value0: releaseRevision })}
             >
               <form
                 className="card"
@@ -655,18 +687,29 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   void publish();
                 }}
               >
-                <h2>Publish revision {releaseRevision}</h2>
+                <h2>
+                  <RichMessage
+                    source={'Publish revision {slot0}'}
+                    slots={{ slot0: releaseRevision }}
+                  />
+                </h2>
                 {generator ? (
                   <p>
-                    Manifest release revision:{' '}
-                    {(currentCheck?.report as GeneratorValidationReport)?.metadata?.revision}.
-                    Publishing a new release requires a larger manifest revision.
+                    <RichMessage
+                      source={
+                        'Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.'
+                      }
+                      slots={{
+                        slot0: (currentCheck?.report as GeneratorValidationReport)?.metadata
+                          ?.revision,
+                      }}
+                    />
                   </p>
                 ) : (
                   <>
                     {' '}
                     <label>
-                      Version{' '}
+                      {t('Version')}{' '}
                       <input
                         required
                         value={release}
@@ -677,7 +720,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   </>
                 )}
                 <label>
-                  Description{' '}
+                  {t('Description')}{' '}
                   <textarea
                     value={description}
                     maxLength={4000}
@@ -685,26 +728,30 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   />
                 </label>
                 <label>
-                  Visibility{' '}
+                  {t('Visibility')}{' '}
                   <select
                     value={visibility}
                     onChange={(e) => setVisibility(e.target.value as typeof visibility)}
                   >
-                    <option value="private">Private</option>
-                    <option value="unlisted">Unlisted</option>
-                    <option value="public">Public</option>
+                    <option value="private">{t('Private')}</option>
+                    <option value="unlisted">{t('Unlisted')}</option>
+                    <option value="public">{t('Public')}</option>
                   </select>
                 </label>
                 <p>
-                  Destination: {generator ? 'Generator' : 'Colony AI'} library. Run checks before
-                  publication.
+                  <RichMessage
+                    source={'Destination: {slot0} library. Run checks before publication.'}
+                    slots={{ slot0: generator ? t('Generator') : t('Colony AI') }}
+                  />
                 </p>
                 {project.revision !== releaseRevision && (
                   <p role="alert">
-                    The current draft changed. Close this panel and review the new revision.
+                    {t('The current draft changed. Close this panel and review the new revision.')}
                   </p>
                 )}
-                <button disabled={busy || project.revision !== releaseRevision}>Publish</button>
+                <button disabled={busy || project.revision !== releaseRevision}>
+                  {t('Publish')}
+                </button>
               </form>{' '}
             </ReleaseDialog>
             {generatedUndo &&
@@ -714,8 +761,12 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
               ) && (
                 <div className="studio-revisions" role="status">
                   <span>
-                    Generated source accepted as revision {generatedUndo.base + 1}. Run engine
-                    checks before publication.
+                    <RichMessage
+                      source={
+                        'Generated source accepted as revision {slot0}. Run engine checks before publication.'
+                      }
+                      slots={{ slot0: generatedUndo.base + 1 }}
+                    />
                   </span>
                   <button
                     aria-disabled={
@@ -733,10 +784,12 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                       void restore(generatedUndo.base, false);
                     }}
                   >
-                    Undo
+                    {t('Undo')}
                   </button>
                   {project.revision !== generatedUndo.base + 1 && (
-                    <span>A newer revision prevents undo. Restore a version in Changes.</span>
+                    <span>
+                      {t('A newer revision prevents undo. Restore a version in Changes.')}
+                    </span>
                   )}
                 </div>
               )}
@@ -757,8 +810,10 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                       status: terminal.status === 'completed' ? 'ready' : 'failed',
                       text:
                         terminal.status === 'completed'
-                          ? `${creditName} response ready in Preview.`
-                          : `${creditName} request needs attention in Preview.`,
+                          ? t('{value0} response ready in Preview.', { value0: creditName })
+                          : t('{value0} request needs attention in Preview.', {
+                              value0: creditName,
+                            }),
                     }
                   : undefined
               }
@@ -766,7 +821,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                 <section
                   className="as-chat"
                   aria-label={
-                    generator ? 'Generator coding conversation' : 'AI coding conversation'
+                    generator ? t('Generator coding conversation') : t('AI coding conversation')
                   }
                 >
                   <ConversationPane
@@ -789,18 +844,24 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                       <div className="as-welcome">
                         <h2>
                           {generator
-                            ? 'What landscape will you create?'
-                            : 'What kind of colony will you build?'}
+                            ? t('What landscape will you create?')
+                            : t('What kind of colony will you build?')}
                         </h2>
                         <p>
                           {generator
-                            ? 'Try “a winding river with fertile banks” or ask how the current generator works.'
-                            : 'Try “focus on food before expansion” or ask how the current code works.'}
+                            ? t(
+                                'Try “a winding river with fertile banks” or ask how the current generator works.',
+                              )
+                            : t(
+                                'Try “focus on food before expansion” or ask how the current code works.',
+                              )}
                         </p>
                         <p>
                           {generator
-                            ? 'The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.'
-                            : 'The assistant edits your file. You decide when to test.'}
+                            ? t(
+                                'The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.',
+                              )
+                            : t('The assistant edits your file. You decide when to test.')}
                         </p>
                       </div>
                     )}
@@ -809,7 +870,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         <p className="as-user">{r.prompt}</p>
                         {r.diagnostics && (
                           <details>
-                            <summary>Attached diagnostics</summary>
+                            <summary>{t('Attached diagnostics')}</summary>
                             <pre>{r.diagnostics}</pre>
                           </details>
                         )}
@@ -825,8 +886,16 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         </p>
                         {r.error && <p role="status">{r.error}</p>}
                         <small>
-                          {r.status} ·{' '}
-                          {r.charged === null ? 'usage pending' : r.charged + ' credits'}
+                          <RichMessage
+                            source={'{slot0} · {slot1}'}
+                            slots={{
+                              slot0: statusLabel(r.status),
+                              slot1:
+                                r.charged === null
+                                  ? t('usage pending')
+                                  : tp('{count} credit', '{count} credits', r.charged),
+                            }}
+                          />
                         </small>
                       </article>
                     ))}
@@ -837,22 +906,25 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                     onSend={() => void send()}
                     inputRef={form}
                     maxLength={16000}
-                    label="Describe a change or ask a question"
+                    label={t('Describe a change or ask a question')}
                     placeholder={
                       generator
-                        ? 'Add islands and sheltered starting colonies…'
-                        : 'Make my colony more defensive…'
+                        ? t('Add islands and sheltered starting colonies…')
+                        : t('Make my colony more defensive…')
                     }
-                    target={`Editing saved revision ${project.revision}`}
+                    target={t('Editing saved revision {value0}', { value0: project.revision })}
                     disabledReason={
                       pending?.status === 'uncertain'
-                        ? `The provider outcome needs reconciliation. Your reserved ${creditName} credits remain held; new requests are paused. Manual editing and export remain available.`
+                        ? t(
+                            'The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.',
+                            { value0: creditName },
+                          )
                         : locked
                           ? 'Finish active work or resolve the revision conflict first.'
                           : !wallet?.enabled
                             ? 'Generation is unavailable.'
                             : !wallet.available
-                              ? `An available ${creditName} credit is needed.`
+                              ? t('An available {value0} credit is needed.', { value0: creditName })
                               : !Number.isInteger(budget) ||
                                   budget < 1 ||
                                   budget > wallet.maxRequestCredits
@@ -864,11 +936,14 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         ? () => setCreditsOpen(true)
                         : undefined
                     }
-                    pricing={`Coding requests use up to ${budget} ${creditName} credits. Source acceptance does not mean engine checks passed.`}
+                    pricing={t(
+                      'Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed.',
+                      { value0: budget, value1: creditName },
+                    )}
                     tools={
                       <>
                         <label>
-                          Request cap{' '}
+                          {t('Request cap')}{' '}
                           <input
                             type="number"
                             min={1}
@@ -879,9 +954,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         </label>
                         {diagnostics && (
                           <p>
-                            Test diagnostics attached.{' '}
+                            {t('Test diagnostics attached.')}{' '}
                             <button type="button" onClick={() => setDiagnostics('')}>
-                              Remove
+                              {t('Remove')}
                             </button>
                           </p>
                         )}
@@ -899,13 +974,14 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         })
                       }
                     >
-                      Stop request
+                      {t('Stop request')}
                     </button>
                   )}
                   {pending?.status === 'uncertain' && (
                     <p role="status">
-                      Cancellation is unavailable while the provider outcome and reserved credits
-                      are reconciled. You can keep editing the saved source or export it.
+                      {t(
+                        'Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.',
+                      )}
                     </p>
                   )}
                 </section>
@@ -915,7 +991,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   {' '}
                   <div className="as-toolbar">
                     <label>
-                      Project{' '}
+                      {t('Project')}{' '}
                       <input
                         value={title}
                         maxLength={128}
@@ -934,7 +1010,10 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                       />
                     </label>
                     <span role="status">
-                      {saved} · revision {project.revision}
+                      <RichMessage
+                        source={'{slot0} · revision {slot1}'}
+                        slots={{ slot0: saved, slot1: project.revision }}
+                      />
                     </span>
                     <button
                       disabled={locked}
@@ -954,15 +1033,15 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         })
                       }
                     >
-                      Run checks
+                      {t('Run checks')}
                     </button>
                     <button
                       disabled={locked}
                       onClick={() => void (generator ? generate() : play())}
                     >
-                      {generator ? 'Generate' : 'Playtest'}
+                      {generator ? t('Generate') : t('Playtest')}
                     </button>
-                    <button onClick={() => download(source, generator)}>Download</button>
+                    <button onClick={() => download(source, generator)}>{t('Download')}</button>
                     <button
                       disabled={
                         locked ||
@@ -978,11 +1057,11 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         setPublishing(!publishing);
                       }}
                     >
-                      Publish
+                      {t('Publish')}
                     </button>
                   </div>
                   <StudioTabs
-                    label="Workspace view"
+                    label={t('Workspace view')}
                     panels={{
                       code: 'studio-panel-workspace-view-code',
                       changes: 'studio-panel-workspace-view-changes',
@@ -1005,23 +1084,26 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                     ]}
                   />
                   <div className="as-toolbar">
-                    <strong>{generator ? 'Generator package' : 'ai.js'}</strong>
+                    <strong>{generator ? t('Generator package') : 'ai.js'}</strong>
                     <label>
-                      History{' '}
+                      {t('History')}{' '}
                       <select
                         value={selected}
                         onChange={(e) => void action(() => revision(Number(e.target.value)))}
                       >
-                        <option value={0}>Choose revision</option>
+                        <option value={0}>{t('Choose revision')}</option>
                         {project.revisions.map((r) => (
                           <option key={r.revision} value={r.revision}>
-                            r{r.revision} · {r.reason}
+                            <RichMessage
+                              source={'r{slot0} · {slot1}'}
+                              slots={{ slot0: r.revision, slot1: r.reason }}
+                            />
                           </option>
                         ))}
                       </select>
                     </label>
                     <button disabled={locked || !selected} onClick={() => void restore(selected)}>
-                      Restore
+                      {t('Restore')}
                     </button>
                     <button
                       disabled={locked || project.revisions.length < 2}
@@ -1029,15 +1111,15 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         void restore(project.revisions[1]?.revision ?? project.revision)
                       }
                     >
-                      Undo revision
+                      {t('Undo revision')}
                     </button>
                     <label className="btn">
-                      Import
+                      {t('Import')}
                       <input
                         aria-label={
                           generator
-                            ? 'Replace generator package'
-                            : 'Replace source with JavaScript file'
+                            ? t('Replace generator package')
+                            : t('Replace source with JavaScript file')
                         }
                         type="file"
                         accept={generator ? '.json' : '.js'}
@@ -1078,7 +1160,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                     hidden={tab !== 'code'}
                   >
                     {generator ? (
-                      <Suspense fallback={<p>Loading editor…</p>}>
+                      <Suspense fallback={<p>{t('Loading editor…')}</p>}>
                         <GeneratorEditor
                           source={source}
                           readOnly={locked}
@@ -1089,14 +1171,14 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                     ) : small ? (
                       <textarea
                         className="as-source"
-                        aria-label="AI JavaScript source"
+                        aria-label={t('AI JavaScript source')}
                         spellCheck={false}
                         readOnly={locked}
                         value={source}
                         onChange={(e) => change(e.target.value)}
                       />
                     ) : (
-                      <Suspense fallback={<p>Loading code editor…</p>}>
+                      <Suspense fallback={<p>{t('Loading code editor…')}</p>}>
                         <Editor
                           source={source}
                           readOnly={locked}
@@ -1115,7 +1197,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   >
                     {tab === 'changes' &&
                       (generator ? (
-                        <Suspense fallback={<p>Loading comparison…</p>}>
+                        <Suspense fallback={<p>{t('Loading comparison…')}</p>}>
                           <GeneratorEditor
                             source={source}
                             baseline={baseline}
@@ -1128,18 +1210,23 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         <>
                           <textarea
                             className="as-source"
-                            aria-label="Current AI JavaScript source"
+                            aria-label={t('Current AI JavaScript source')}
                             spellCheck={false}
                             readOnly
                             value={source}
                           />
                           <details>
-                            <summary>Compared revision {selected}</summary>
+                            <summary>
+                              <RichMessage
+                                source={'Compared revision {slot0}'}
+                                slots={{ slot0: selected }}
+                              />
+                            </summary>
                             <pre>{baseline}</pre>
                           </details>
                         </>
                       ) : (
-                        <Suspense fallback={<p>Loading revision comparison…</p>}>
+                        <Suspense fallback={<p>{t('Loading revision comparison…')}</p>}>
                           <Editor
                             source={source}
                             baseline={baseline}
@@ -1163,10 +1250,12 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                           onChange={setSettings}
                         />
                         <button disabled={locked} onClick={() => void generate()}>
-                          Generate
+                          {t('Generate')}
                         </button>
                         {generatorRun && (
-                          <button onClick={() => setGeneratorRun(undefined)}>Stop preview</button>
+                          <button onClick={() => setGeneratorRun(undefined)}>
+                            {t('Stop preview')}
+                          </button>
                         )}
                         {generatorRun ? (
                           <GeneratorPreview
@@ -1176,13 +1265,14 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                               setRunResult(text);
                               void request('POST', url + '/run-result', {
                                 body: { runId: generatorRun.runId, summary: text },
-                              }).catch((e) => setError(String(e)));
+                              }).catch((e) => setError(e instanceof Error ? e : String(e)));
                             }}
                           />
                         ) : (
                           <p>
-                            Generate a map to inspect its terrain and starting colonies, then watch
-                            AI colonies play.
+                            {t(
+                              'Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.',
+                            )}
                           </p>
                         )}
                       </>
@@ -1190,7 +1280,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                       <>
                         <div className="as-toolbar">
                           <label>
-                            Seed{' '}
+                            {t('Seed')}{' '}
                             <input
                               type="number"
                               min={0}
@@ -1200,14 +1290,14 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                             />
                           </label>
                           <label>
-                            Opponent{' '}
+                            {t('Opponent')}{' '}
                             <select value={opponent} onChange={(e) => setOpponent(e.target.value)}>
-                              <option value="numbi">Numbi</option>
-                              <option value="nicowar">Nicowar</option>
+                              <option value="numbi">{t('Numbi')}</option>
+                              <option value="nicowar">{t('Nicowar')}</option>
                             </select>
                           </label>
                           <button disabled={locked} onClick={() => void play()}>
-                            {run ? 'Run current revision' : 'Start live game'}
+                            {run ? t('Run current revision') : t('Start live game')}
                           </button>
                           {run && (
                             <>
@@ -1227,9 +1317,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                                   })
                                 }
                               >
-                                Restart same setup
+                                {t('Restart same setup')}
                               </button>
-                              <button onClick={() => setRun(undefined)}>Stop game</button>
+                              <button onClick={() => setRun(undefined)}>{t('Stop game')}</button>
                             </>
                           )}
                         </div>
@@ -1241,31 +1331,38 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                               setRunResult(text);
                               void request('POST', url + '/run-result', {
                                 body: { runId: run.runId, summary: text },
-                              }).catch((e) => setError(String(e)));
+                              }).catch((e) => setError(e instanceof Error ? e : String(e)));
                             }}
                           />
                         ) : (
                           <p className="as-welcome">
-                            Watch your AI against a built-in opponent on the fixed test map. The
-                            game runs on this computer and ends when you close it.
+                            {t(
+                              'Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.',
+                            )}
                           </p>
                         )}
                       </>
                     )}
                     {runResult && (
                       <button onClick={() => fix(runResult)}>
-                        {generator ? 'Send diagnostics to chat' : 'Fix this'}
+                        {generator ? t('Send diagnostics to chat') : t('Fix this')}
                       </button>
                     )}
                   </div>
                   {currentCheck && (
                     <details className="as-checks" open={currentCheck.status === 'invalid'}>
                       <summary>
-                        Revision {project.revision} checks: {currentCheck.status}
+                        <RichMessage
+                          source={'Revision {slot0} checks: {slot1}'}
+                          slots={{
+                            slot0: project.revision,
+                            slot1: statusLabel(currentCheck.status),
+                          }}
+                        />
                       </summary>
                       {generator ? (
                         <>
-                          <p>Technical checks do not establish balance or fun.</p>
+                          <p>{t('Technical checks do not establish balance or fun.')}</p>
                           <pre>{JSON.stringify(currentCheck.report, null, 2)}</pre>
                         </>
                       ) : (
@@ -1276,7 +1373,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         disabled={generator && currentCheck.status === 'pending'}
                         onClick={() => fix(JSON.stringify(currentCheck.report))}
                       >
-                        {generator ? 'Send diagnostics to chat' : 'Fix this'}
+                        {generator ? t('Send diagnostics to chat') : t('Fix this')}
                       </button>
                     </details>
                   )}
@@ -1286,18 +1383,34 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
             <ReleaseDialog
               open={creditsOpen}
               onClose={() => setCreditsOpen(false)}
-              title={creditName + ' credits'}
+              title={t('{value0} credits', { value0: creditName })}
             >
               {' '}
               <details>
                 <summary>
-                  {wallet?.available ?? 0} credits available · {wallet?.reserved ?? 0} reserved
+                  <RichMessage
+                    source={'{slot0} credits available · {slot1} reserved'}
+                    slots={{ slot0: wallet?.available ?? 0, slot1: wallet?.reserved ?? 0 }}
+                    singular={'{slot0} credit available · {slot1} reserved'}
+                    count={Number(wallet?.available ?? 0)}
+                  />
                 </summary>
                 <p>
-                  {wallet?.model} · per million tokens: {wallet?.rate?.input} input /{' '}
-                  {wallet?.rate?.cachedInput} cached / {wallet?.rate?.output} output credits.
+                  <RichMessage
+                    source={
+                      '{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.'
+                    }
+                    slots={{
+                      slot0: wallet?.model,
+                      slot1: wallet?.rate?.input,
+                      slot2: wallet?.rate?.cachedInput,
+                      slot3: wallet?.rate?.output,
+                    }}
+                  />
                 </p>
-                <p>Measured model usage is charged, including code that later fails tests.</p>
+                <p>
+                  {t('Measured model usage is charged, including code that later fails tests.')}
+                </p>
                 {wallet?.packs.map((p) => (
                   <button
                     key={p.id}
@@ -1327,14 +1440,23 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                       })
                     }
                   >
-                    {p.credits} credits · {(p.amount / 100).toFixed(2)} {p.currency.toUpperCase()}
+                    <RichMessage
+                      source={'{slot0} credits · {slot1}  {slot2}'}
+                      slots={{
+                        slot0: p.credits,
+                        slot1: (p.amount / 100).toFixed(2),
+                        slot2: p.currency.toUpperCase(),
+                      }}
+                      singular={'{slot0} credit · {slot1}  {slot2}'}
+                      count={Number(p.credits)}
+                    />
                   </button>
                 ))}
               </details>
             </ReleaseDialog>
 
             <details>
-              <summary>Project actions</summary>
+              <summary>{t('Project actions')}</summary>
               <button
                 disabled={locked}
                 onClick={() =>
@@ -1345,7 +1467,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   })
                 }
               >
-                Delete project
+                {t('Delete project')}
               </button>
             </details>
           </>
