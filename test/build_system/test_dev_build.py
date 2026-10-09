@@ -93,6 +93,21 @@ class DevelopmentBuildTests(unittest.TestCase):
                 self.assertEqual((repaired / 'lib/library.a').read_bytes(), b'library')
                 dev_store.finish()
 
+    def test_compatible_consumer_reuses_an_active_reader_installation(self):
+        with tempfile.TemporaryDirectory() as task, patch.dict(os.environ, {'GLOB2_DEV_HOME': task, 'GLOB2_DEV_MODE': 'shared'}), patch.object(shared_dependencies, 'fingerprint', return_value={'version': 1}):
+            prefix = shared_dependencies.ensure(fake_builder, Path(task) / 'one', Path(task) / 'work')
+            code = '''import sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+import shared_dependencies as shared
+shared.fingerprint = lambda builder, args: {'version': 1}
+def forbidden(*args, **kwargs):
+    raise RuntimeError('Compatible reader must not rebuild')
+print(shared.ensure(forbidden, Path(sys.argv[2])/'two', Path(sys.argv[2])/'work'))
+'''
+            result = subprocess.run([sys.executable, '-c', code, str(ROOT / 'scons'), task], capture_output=True, text=True, timeout=5, check=True)
+            self.assertEqual(result.stdout.strip(), str(prefix))
+
     def test_concurrent_consumers_publish_once(self):
         with tempfile.TemporaryDirectory() as task:
             environment = dict(os.environ, GLOB2_DEV_HOME=task, GLOB2_DEV_MODE='shared')
