@@ -2,6 +2,7 @@
 import importlib.util
 import json
 import os
+import re
 from pathlib import Path
 import sys
 import tempfile
@@ -37,6 +38,15 @@ class ReleaseWorkflowTests(unittest.TestCase):
             self.assertNotIn('environment:',build)
             self.assertNotIn('secrets.',build)
             self.assertIn('needs.credentials.outputs.commit',build)
+
+    def test_only_mobile_upload_callers_inherit_release_secrets(self):
+        text=(ROOT/'.github/workflows/github-release.yml').read_text()
+        for job in ('play-candidate', 'ios-candidate'):
+            block=re.split(r'\n  (?=\S)',text.split('  '+job+':\n',1)[1],maxsplit=1)[0]
+            self.assertIn('secrets: inherit',block)
+        for job in ('packages', 'android-packages'):
+            block=re.split(r'\n  (?=\S)',text.split('  '+job+':\n',1)[1],maxsplit=1)[0]
+            self.assertNotIn('secrets:',block)
 
     def test_only_qualified_promotion_makes_public_release_visible(self):
         staged=(ROOT/'.github/workflows/github-release.yml').read_text()
