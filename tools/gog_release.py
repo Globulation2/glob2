@@ -124,7 +124,9 @@ def verify_manifest(depot, platform):
     if platform == "linux":
         root = depot / "share/glob2"
     for asset in REQUIRED_ASSETS:
-        if not (root / asset).is_file():
+        if not (root / asset).is_file() and not (
+                asset.startswith("data/") and asset.endswith(".png") and
+                (root / Path(asset).with_suffix(".webp")).is_file()):
             raise ValueError(f"missing asset: {asset}")
     executable = {"windows": depot / "glob2.exe",
                   "linux": depot / "start.sh",
@@ -164,7 +166,8 @@ def write_source_offer(root, source_commit):
 
 
 def stage_windows(args):
-    stage_windows_files(ROOT, args.exe.resolve(), args.runtime.resolve(), args.output.resolve())
+    stage_windows_files(ROOT, args.exe.resolve(), args.runtime.resolve(), args.output.resolve(),
+                        args.sdl_runtime.resolve() if args.sdl_runtime else None)
     write_source_offer(args.output, args.source_commit)
     write_manifest(args.output, metadata(args, "windows"))
     verify_manifest(args.output, "windows")
@@ -200,7 +203,9 @@ def stage_linux(args):
                         'export LD_LIBRARY_PATH="$root/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"\n'
                         'exec "$root/bin/glob2" "$@"\n')
     launcher.chmod(0o755)
-    queue = [depot / "bin/glob2"]
+    # Resolve the installed binary's original RPATH before copying dependencies
+    # into the depot's flat lib directory used by the launcher.
+    queue = [executable]
     seen = set()
     while queue:
         binary = queue.pop()
@@ -212,9 +217,9 @@ def stage_linux(args):
             seen.add(name)
             target = depot / "lib" / name
             shutil.copy2(path, target)
-            queue.append(target)
-    if not any((depot / "lib").glob("libSDL2-*.so*")):
-        raise ValueError("SDL2 runtime was not bundled")
+            queue.append(path)
+    if not any((depot / "lib").glob("libSDL3.so*")):
+        raise ValueError("SDL3 runtime was not bundled")
     write_manifest(depot, metadata(args, "linux"))
     verify_manifest(depot, "linux")
 
@@ -249,6 +254,7 @@ def main():
         if platform == "windows":
             part.add_argument("--exe", type=Path, required=True)
             part.add_argument("--runtime", type=Path, required=True)
+            part.add_argument("--sdl-runtime", type=Path)
         elif platform == "linux":
             part.add_argument("--stage", type=Path, required=True)
         else:

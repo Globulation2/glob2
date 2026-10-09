@@ -1,5 +1,6 @@
 """Checks for GOG depot integrity and the public project contract."""
 
+import argparse
 import json
 import io
 import stat
@@ -12,7 +13,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from gog_pipeline import render, run_builder
-from gog_release import (REQUIRED_ASSETS, extract_archive, preflight,
+from gog_release import (REQUIRED_ASSETS, extract_archive, preflight, stage_linux,
                          verify_manifest, write_manifest, write_source_offer)
 
 
@@ -42,6 +43,57 @@ class GOGReleaseTests(unittest.TestCase):
         (self.depot / "unlisted").write_bytes(b"extra")
         with self.assertRaisesRegex(ValueError, "inventory"):
             verify_manifest(self.depot, "windows")
+
+    def test_verified_webp_artwork_can_replace_png(self):
+        png = self.depot / "data/gfx/ressource0.png"
+        png.with_suffix(".webp").write_bytes(b"exported artwork")
+        png.unlink()
+        write_manifest(self.depot, self.metadata)
+        self.assertEqual(verify_manifest(self.depot, "windows"), self.metadata)
+        png.with_suffix(".webp").unlink()
+        write_manifest(self.depot, self.metadata)
+        with self.assertRaisesRegex(ValueError, "missing asset"):
+            verify_manifest(self.depot, "windows")
+
+    def test_linux_bundles_sdl3_from_original_dependency_paths(self):
+        for sdl_name in ("libSDL3.so.0", "libSDL2-2.0.so.0"):
+            with self.subTest(runtime=sdl_name):
+                source = (self.root / sdl_name).resolve()
+                source.mkdir()
+                (source / "docs/assets").mkdir(parents=True)
+                (source / "COPYING").write_text("game license")
+                (source / "docs/assets/source-attribution.md").write_text("attribution")
+                install = source / "install"
+                binary = install / "usr/bin/glob2"
+                binary.parent.mkdir(parents=True)
+                binary.write_bytes(b"game")
+                for name in REQUIRED_ASSETS:
+                    asset = install / "usr/share/glob2" / name
+                    asset.parent.mkdir(parents=True, exist_ok=True)
+                    asset.write_bytes(b"asset")
+                private = install / "usr/lib/glob2"
+                private.mkdir(parents=True)
+                sdl = private / sdl_name
+                codec = private / "libopus.so.0"
+                sdl.write_bytes(b"sdl")
+                codec.write_bytes(b"opus")
+                dependency_paths = {
+                    binary: [(sdl_name, sdl), ("libc.so.6", source / "system-libc")],
+                    sdl: [(codec.name, codec)], codec: [],
+                }
+                args = argparse.Namespace(stage=install, output=source / "depot",
+                                          version="0.11.0.0", source_commit="a" * 40,
+                                          workflow_commit="b" * 40)
+                with patch("gog_release.ROOT", source), patch(
+                        "gog_release.dependencies", side_effect=lambda path: dependency_paths[path]):
+                    if sdl_name.startswith("libSDL2"):
+                        with self.assertRaisesRegex(ValueError, "SDL3 runtime"):
+                            stage_linux(args)
+                    else:
+                        stage_linux(args)
+                        self.assertEqual(verify_manifest(args.output, "linux")["version"], "0.11.0.0")
+                        self.assertEqual((args.output / "lib" / codec.name).read_bytes(), b"opus")
+                        self.assertFalse((args.output / "lib/libc.so.6").exists())
 
     def test_project_has_one_primary_task_and_no_credentials(self):
         project = render("windows", self.depot, self.root / "project.json",
