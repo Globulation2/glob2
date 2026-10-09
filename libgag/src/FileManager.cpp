@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <SDL3/SDL_endian.h>
+#include <SDL3/SDL_filesystem.h>
 #include <iostream>
 #include <valarray>
 #include <vector>
@@ -105,7 +106,9 @@ namespace GAGCore
 			std::cerr << "FileManager::FileManager : warning, can't get home directory by using getenv(\"HOME\")" << std::endl;
 		#endif
 #ifdef __APPLE__
-		addDir("./Contents/Resources");
+		// SDL resolves an app bundle's Resources directory independently of
+		// the caller's working directory, including for command-line tools.
+		if (const char* base = SDL_GetBasePath()) addDir(base);
 #endif
 		const char* assets = SDL_getenv_unsafe("GLOB2_ASSET_DIR");
 		if (assets && *assets) addDir(assets);

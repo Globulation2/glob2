@@ -1,32 +1,32 @@
 {
   "resource_epoch": 1,
-  "description": "Full map hashes after resource sprites stopped consuming simulation RNG. Topology hashes exclude stock quantities but include terrain, source identities and colony starts. Historical full hashes retain the pre-epoch reference. Rows require independently verified archived map comparisons. Since save format 146 terrain is stored per vertex, so topology hashes vertex terrain; the linux-x86_64 rows and portable topology were re-recorded then, and macOS rows await a macOS run.",
+  "description": "Full map hashes for resource epoch 1 at simulation revision 40, after placement stocks moved to map-owned ResourcePlacement RNG. Topology hashes exclude stock quantities but include vertex terrain, source identities and colony starts. Historical full and topology references are unchanged; all five topology checks passed on GCC 11 and GCC 13, with identical current full hashes. These five checks do not establish historical topology equivalence for every generator golden row. macOS full rows await a macOS run.",
   "platforms": {
     "linux-x86_64": {
       "canals": {
         "historical_full": 16622643961647829752,
         "topology": 6348996818089081022,
-        "full": 3860126852787330257
+        "full": 6840133876837962579
       },
       "caravanserai": {
         "historical_full": 6244602504248136250,
         "topology": 3089921906549973481,
-        "full": 5516374082483329031
+        "full": 3708140998014682865
       },
       "fingerprint": {
         "historical_full": 5648058033288605271,
         "topology": 13975002589605011184,
-        "full": 4849160931982160389
+        "full": 13107344764269446218
       },
       "honeycomb-isle": {
         "historical_full": 5908701397362810997,
         "topology": 10716426061597934434,
-        "full": 16498894964178795898
+        "full": 3103427619339799392
       },
       "maze": {
         "historical_full": 6132248727033081699,
         "topology": 8061784440331878678,
-        "full": 6969477568041698913
+        "full": 251410384669209409
       }
     }
   },
@@ -35,5 +35,6 @@
     "canals": 6348996818089081022,
     "caravanserai": 3089921906549973481,
     "honeycomb-isle": 10716426061597934434
-  }
+  },
+  "simulation_revision": 40
 }
