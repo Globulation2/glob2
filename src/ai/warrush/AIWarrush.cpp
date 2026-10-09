@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "AIRuleOrders.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2005 Eli Dupree
 
@@ -672,7 +673,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 							{
 								for(int y = 0; y < bt->height; y++)
 								{
-									guard_add_acc.applyBrush(BrushApplication((b->posX+x) % queries->getW(), (b->posY+y) % queries->getH(),AI_WARRUSH_GUARD_BRUSH_SIZE),observation->width,observation->height);
+									guard_add_acc.applyBrush(BrushApplication(powerOfTwoRemainder(b->posX+x, queries->getW()), powerOfTwoRemainder(b->posY+y, queries->getH()),AI_WARRUSH_GUARD_BRUSH_SIZE),observation->width,observation->height);
 								}
 							}
 						}

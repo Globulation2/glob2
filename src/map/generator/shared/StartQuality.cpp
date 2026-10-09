@@ -2,6 +2,7 @@
 #include "GenerationFertilityWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "StartQuality.h"
 #include "Material.h"
 #include "FairnessModel.h"
@@ -141,7 +142,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 					::MapGeneration::generationCheckpoint();
 					if (dist.at(p) <= band.walkingSteps)
 					{
-						const int x = p % w, y = p / w;
+						const int x = powerOfTwoRemainder(p, w), y = p / w;
 						++band.reachedTiles;
 						band.buildableTiles += map.isFreeForBuilding(x, y);
 						if (map.terrainSupportsMaterialAt(x,y,MaterialId::Food))
@@ -153,7 +154,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 				}
 			if (dist.at(p) < 0 || dist.at(p) > scale.catchmentSteps)
 				continue;
-			const int x = p % w, y = p / w;
+			const int x = powerOfTwoRemainder(p, w), y = p / w;
 			++colony.catchmentTiles;
 			colony.meanFertility += fertility.at(x, y);
 			if (map.terrainSupportsMaterialAt(x,y,MaterialId::Food))

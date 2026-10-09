@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 #include "GenerationFertilityWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Growth.h"
 #include "Map.h"
 #include "Morphology.h"
@@ -32,7 +33,7 @@ int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
 		::MapGeneration::generationCheckpoint();
 		if (region.at(i))
 		{
-			const int type = map.getResource(i % t.w, i / t.w).type;
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			seeds += spreadingCrop(map, type);
 		}
 	}
@@ -46,7 +47,7 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const int type = map.getResource(x, y).type;
 		seeds.at(i) = (spreadingCrop(map, type)) && (!fertility || fertility->at(x, y) > 0);
 		// A tile whose growth flag is off never takes a crop, so the envelope stops at it as
@@ -60,7 +61,7 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 		for (int i = 0; i < t.size(); ++i)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int type = map.getResource(i % t.w, i / t.w).type;
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			if ((spreadingCrop(map, type)) && result.steps.at(i) < 0)
 			{
 				result.steps.at(i) = 0;
@@ -78,11 +79,11 @@ std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if (spreadingCrop(map, type))
 		{
 			reached.at(i) = 1;
-			if (fertility.at(i % t.w, i / t.w) > 0) queue.push_back(i);
+			if (fertility.at(t.remainderX(i), i / t.w) > 0) queue.push_back(i);
 		}
 	}
 	for (size_t head = 0; head < queue.size(); ++head)
@@ -95,13 +96,13 @@ std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				const int q = t.at(i % t.w + dx, i / t.w + dy);
+				const int q = t.at(t.remainderX(i) + dx, i / t.w + dy);
 				if (reached.at(q) ||
-					!map.terrainSupportsMaterialAt(q % t.w, q / t.w, MaterialId::Food) ||
-					!map.canResourcesGrow(q % t.w, q / t.w))
+					!map.terrainSupportsMaterialAt(t.remainderX(q), q / t.w, MaterialId::Food) ||
+					!map.canResourcesGrow(t.remainderX(q), q / t.w))
 					continue;
 				reached.at(q) = 1;
-				if (fertility.at(q % t.w, q / t.w) > 0) queue.push_back(q);
+				if (fertility.at(t.remainderX(q), q / t.w) > 0) queue.push_back(q);
 			}
 		}
 	}
@@ -148,7 +149,7 @@ double wateredShare(const Fertility::Field &field, const std::vector<unsigned ch
 		if (region.at(i))
 		{
 			++tiles;
-			watered += field.at(int(i % w), int(i / w)) >= minimum;
+			watered += field.at(int(dimensionRemainder(i, w)), int(i / w)) >= minimum;
 		}
 	}
 	return tiles ? double(watered) / double(tiles) : 0.0;
@@ -161,7 +162,7 @@ int wetTiles(const Fertility::Field &field, const std::vector<unsigned char> &re
 	for (size_t i = 0; i < region.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		wet += region.at(i) && field.at(int(i % w), int(i / w)) > 0;
+		wet += region.at(i) && field.at(int(dimensionRemainder(i, w)), int(i / w)) > 0;
 	}
 	return wet;
 }
@@ -193,7 +194,7 @@ namespace MapGeneration
 std::uint32_t meanFertilityAround(const Fertility::Field &field, const Torus &t, int site,
 								  int radius)
 {
-	const int sx = site % t.w, sy = site / t.w;
+	const int sx = t.remainderX(site), sy = site / t.w;
 	std::uint64_t sum = 0;
 	for (int dy = -radius; dy <= radius; ++dy)
 	{

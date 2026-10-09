@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "PowerOfTwo.h"
 #include <algorithm>
 
 #include <FormatableString.h>
@@ -164,7 +165,7 @@ void GameGUI::drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, const Bui
 		const Sint32 stayRangeSquare = (1 + stayRange) * (1 + stayRange);
 		const int w = drawnScene().map.getW(), h = drawnScene().map.getH();
 		// Torus distance, exactly as Map::warpDist1d.
-		const auto warp = [](int a, int b, int size) { int d = std::abs(a - b) % size; return d > size / 2 ? size - d : d; };
+		const auto warp = [](int a, int b, int size) { int d = powerOfTwoRemainder(std::abs(a - b), size); return d > size / 2 ? size - d : d; };
 		for (const auto ref : selBuild->workingUnits)
 		{
             const auto* worker=drawnScene().entities.unit(ref.gid);

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "PowerOfTwo.h"
 #include "Material.h"
 #include "AITelemetryFields.h"
 #include "AINicowar.h"
@@ -195,8 +196,8 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
 		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(target)[Building::GIDtoID(*ebi)];
-		int bx = (b->posX + mi.get_width()) % mi.get_width();
-		int by = (b->posY + mi.get_height()) % mi.get_height();
+		int bx = dimensionRemainder(b->posX + mi.get_width(), mi.get_width());
+		int by = dimensionRemainder(b->posY + mi.get_height(), mi.get_height());
 		if(gradient.get_height(bx, by) == AI_NICOWAR_GRADIENT_UNREACHABLE)
 			buildings_to_attack.push_back(*ebi);
 	}
@@ -209,8 +210,8 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posX) % mi.get_width();
-	const int by=(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posY) % mi.get_height();
+	const int bx=dimensionRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posX, mi.get_width());
+	const int by=dimensionRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posY, mi.get_height());
 
 	AISharedRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
@@ -254,10 +255,10 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 	{
 		int nxpos = xpos;
 		int nypos = ypos;
-		int rx=(xpos+1+w) % w;
-		int lx=(xpos-1+w) % w;
-		int dy=(ypos+1+h) % h;
-		int uy=(ypos-1+h) % h;
+		int rx=powerOfTwoRemainder(xpos+1+w, w);
+		int lx=powerOfTwoRemainder(xpos-1+w, w);
+		int dy=powerOfTwoRemainder(ypos+1+h, h);
+		int uy=powerOfTwoRemainder(ypos-1+h, h);
 		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+AI_NICOWAR_PATHFIND_TOLERANCE;
 
 		if(lowest_entity == 0)

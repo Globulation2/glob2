@@ -422,7 +422,7 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "drumlin field resources";
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
-	const auto clear = [&](int i) { return !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto clear = [&](int i) { return !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	// Kits: the crops on the tail (past the collar, so they spread over the tail and never into
 	// the town) and the quarry on the head, each seed searching its own side of the collar only.
 	for (int k = 0; k < teams; ++k)
@@ -453,7 +453,7 @@ bool generate(Game &game, GenerationContext &context)
 	{ return (L.drumlinOf[i] >= teams || L.farmOf[i] >= 0) && clear(i); };
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
-		fertile += farmGround(i) && fertility.at(i % t.w, i / t.w) > 0;
+		fertile += farmGround(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, farmGround, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -501,13 +501,13 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		ground[i] = L.homeOf[i] >= 0 ? 2 * L.homeOf[i] : L.farmOf[i] >= 0 ? 2 * L.farmOf[i] + 1 : -1;
-		grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD)));
+		grass[i] = (map.canResourcesGrow(t.remainderX(i), i / t.w) && (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD)));
 	}
 	if (const RegionLeak leak = firstRegionLeak(t, grass, ground, [](int, int) { return false; });
 		leak.tile >= 0)
 		return "Colony " + std::to_string(ground[leak.tile] / 2) + "'s collar has a gap at (" +
-			   std::to_string(leak.tile % t.w) + ", " + std::to_string(leak.tile / t.w) + ").";
+			   std::to_string(t.remainderX(leak.tile)) + ", " + std::to_string(leak.tile / t.w) + ").";
 	// And with the eskers open, every colony can walk to every other.
 	return walkFromFirstColony(map, teams, "the drumlins", "along the eskers").error;
 }

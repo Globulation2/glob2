@@ -1,5 +1,6 @@
 /* Maxima private farming primitives. */
 
+#include "PowerOfTwo.h"
 #include "field/PriorityTraversal.h"
 #include "AIMaximaFarming.h"
 
@@ -25,7 +26,7 @@ namespace
 
 	int toroidalChebyshevDistance(int first, int second, int width, int height)
 	{
-		int dx=std::abs(first%width-second%width);
+		int dx=std::abs(dimensionRemainder(first, width)-dimensionRemainder(second, width));
 		int dy=std::abs(first/width-second/width);
 		dx=std::min(dx, width-dx);
 		dy=std::min(dy, height-dy);
@@ -85,8 +86,8 @@ bool hasAdjacentProtectedWheat(const std::vector<uint8_t>& protectedWheat,
 		{
 			if(!dx && !dy)
 				continue;
-			const int nx=(x+dx%width+width)%width;
-			const int ny=(y+dy%height+height)%height;
+			const int nx=dimensionRemainder(x+dimensionRemainder(dx, width)+width, width);
+			const int ny=dimensionRemainder(y+dimensionRemainder(dy, height)+height, height);
 			if(protectedWheat[ny*width+nx])
 				return true;
 		}
@@ -126,10 +127,10 @@ ReservationClearingSelection selectResourcePreservingCirculation(
 	for(int index:circulation)if(index>=0&&index<size&&allowed[index])
 	{
 		bool source=reachable[index]!=0;
-		const int x=index%width,y=index/width;
+		const int x=dimensionRemainder(index, width),y=index/width;
 		for(int dy=-1;dy<=1&&!source;++dy)for(int dx=-1;dx<=1&&!source;++dx)
 		{
-			const int next=((y+dy+height)%height)*width+(x+dx+width)%width;
+			const int next=(dimensionRemainder(y+dy+height, height))*width+dimensionRemainder(x+dx+width, width);
 			source=!footprintMask[next]&&reachable[next];
 		}
 		if(source)
@@ -139,15 +140,15 @@ ReservationClearingSelection selectResourcePreservingCirculation(
 	field::traversePriority(queue,{width,height},field::Surrounding,
 		[](const Entry& entry){return std::get<2>(entry);},
 		[&](const Entry& entry) {
-			const int index=std::get<2>(entry),x=index%width,y=index/width;
+			const int index=std::get<2>(entry),x=dimensionRemainder(index, width),y=index/width;
 			if(std::get<0>(entry)!=cost[index] || std::get<1>(entry)!=length[index])return field::Visit::Skip;
-			const int neighbors[4]={y*width+(x+width-1)%width,y*width+(x+1)%width,
-				((y+height-1)%height)*width+x,((y+1)%height)*width+x};
+			const int neighbors[4]={y*width+dimensionRemainder(x+width-1, width),y*width+dimensionRemainder(x+1, width),
+				(dimensionRemainder(y+height-1, height))*width+x,(dimensionRemainder(y+1, height))*width+x};
 			for(int next:neighbors)if(footprintMask[next]){entrance=index;break;}
 			return entrance>=0?field::Visit::Stop:field::Visit::Expand;
 		},[&](const Entry& entry,int px,int py) {
 			const int index=std::get<2>(entry);
-			const int next=((py+height)%height)*width+(px+width)%width;
+			const int next=(dimensionRemainder(py+height, height))*width+dimensionRemainder(px+width, width);
 			if(!allowed[next])return;
 			const uint64_t nextCost=cost[index]+resourceCost(next);
 			const int nextLength=length[index]+1;

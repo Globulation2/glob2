@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "SymmetricArenaGenerator.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -70,7 +71,7 @@ constexpr int kKitFarmland = 16, kKitStone = 4;
 
 int wrap(int v, int n)
 {
-	v %= n;
+	v = powerOfTwoRemainder(v, n);
 	return v < 0 ? v + n : v;
 }
 
@@ -226,7 +227,7 @@ std::vector<Home> homeCandidates(const Arena &a, Fit &fit)
 			{
 				const int c = a.symmetry.corner(e, u, v);
 				spacing =
-					std::min(spacing, torusDistance(w, h, p, cornerPoint(w, h, c % w, c / w)));
+					std::min(spacing, torusDistance(w, h, p, cornerPoint(w, h, powerOfTwoRemainder(c, w), c / w)));
 			}
 			if (spacing < kMinimumSpacing)
 				continue;
@@ -535,7 +536,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Arena &a, const
 		for (int i = 0; i < workers; ++i)
 		{
 			const int tile = s.tile(team, ring[size_t(i)].first, ring[size_t(i)].second);
-			if (!game.addUnit(tile % w, tile / w, team, WORKER, 0, 0, 0, 0))
+			if (!game.addUnit(powerOfTwoRemainder(tile, w), tile / w, team, WORKER, 0, 0, 0, 0))
 			{
 				context.detail = "Colony " + std::to_string(team) + ": worker placement failed";
 				return false;
@@ -695,9 +696,9 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 			for (int i : group)
 			{
 				value = std::max(value, orchardNoise[size_t(i)]);
-				radius2 = std::min(radius2, tileRadius2(w, h, i % w, i / w));
+				radius2 = std::min(radius2, tileRadius2(w, h, powerOfTwoRemainder(i, w), i / w));
 				for (int e = 0; e < s.order(); ++e)
-					key = std::min(key, s.tile(e, i % w, i / w));
+					key = std::min(key, s.tile(e, powerOfTwoRemainder(i, w), i / w));
 			}
 			Orbit &orbit = orbits[key];
 			orbit.key = key;
@@ -773,7 +774,7 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 		for (size_t i = 0; i < n; ++i)
 			if (kitGround[i] && kit[i] < 0)
 				nearest.emplace_back(
-					torusDistance(w, h, tilePoint(w, h, int(i % w), int(i / w)), target), int(i));
+					torusDistance(w, h, tilePoint(w, h, int(powerOfTwoRemainder(i, w)), int(i / w)), target), int(i));
 		std::sort(nearest.begin(), nearest.end());
 		static const int steps[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
 		std::vector<unsigned char> queued(n, 0);
@@ -788,7 +789,7 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
 			queued[size_t(candidate.second)] = 1;
 			for (size_t head = 0; head < queue.size() && placed < size; ++head, ++placed)
 			{
-				const int i = queue[head], x = i % w, y = i / w;
+				const int i = queue[head], x = powerOfTwoRemainder(i, w), y = i / w;
 				kit[size_t(i)] = type;
 				for (const auto &step : steps)
 				{

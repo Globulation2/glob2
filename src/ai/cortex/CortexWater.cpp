@@ -1,5 +1,6 @@
 #include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #include "Material.h"
@@ -412,7 +413,7 @@ namespace Cortex
 			if (chosen >= 0)
 			{
 				out.forwardRallyValid = 1;
-				out.forwardRallyX = chosen % w;
+				out.forwardRallyX = powerOfTwoRemainder(chosen, w);
 				out.forwardRallyY = chosen / w;
 			}
 			// DIAGNOSTIC (gated): the staging pick alongside the trigger inputs.
@@ -498,7 +499,7 @@ namespace Cortex
 		if (chosen < 0)
 			return out; // no reachable shore tile: cannot amphibious-assault this target.
 		out.landingValid = 1;
-		out.landingX = chosen % w;
+		out.landingX = powerOfTwoRemainder(chosen, w);
 		out.landingY = chosen / w;
 		return out;
 	}

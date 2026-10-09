@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "field/Grid.h"
+#include "PowerOfTwo.h"
 #include "FractalMapSupport.h"
 #include "Drawing.h"
 #include "BalancedStarts.h"
@@ -518,7 +520,7 @@ int gardenPaths(Layout &L, GenerationContext &context)
 	const auto inside = [&](int x, int y, const RegionBounds &b)
 	{
 		const int w = b.x1 - b.x0, h = b.y1 - b.y0;
-		return ((x - b.x0) % t.w + t.w) % t.w < w && ((y - b.y0) % t.h + t.h) % t.h < h;
+		return t.x(x - b.x0) < w && t.y(y - b.y0) < h;
 	};
 	std::vector<unsigned char> owned(size_t(t.size()), 0), path(size_t(t.size()), 0);
 	for (const auto &b : L.features)
@@ -537,7 +539,7 @@ int gardenPaths(Layout &L, GenerationContext &context)
 	{ return std::pair<int, int>{(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2}; };
 	const auto delta = [&](int from, int to, int size)
 	{
-		int d = ((to - from) % size + size) % size;
+		int d = field::Grid(size, 1).wrapX(to - from);
 		return d > size / 2 ? d - size : d;
 	};
 	// A centre-line tile of a route and the legs it belongs to: bit 1 horizontal, bit 2 vertical.
@@ -622,7 +624,7 @@ int gardenPaths(Layout &L, GenerationContext &context)
 		// feature, on the same line, and be open itself.
 		const Step &head = steps.front(), &tail = steps.back();
 		const int headPartner = partner(head, firstDx), tailPartner = partner(tail, lastDx);
-		const int hpx = headPartner % t.w, hpy = headPartner / t.w, tpx = tailPartner % t.w,
+		const int hpx = t.remainderX(headPartner), hpy = headPartner / t.w, tpx = t.remainderX(tailPartner),
 				  tpy = tailPartner / t.w;
 		if (!paveable(headPartner) || !paveable(tailPartner) ||
 			paveable(t.at(hpx - firstDx, hpy - firstDy)) || paveable(t.at(tpx + lastDx, tpy + lastDy)))
@@ -809,13 +811,13 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const int type = L.wheat[i] ? WHEAT : L.wood[i] ? WOOD : -1;
-		if (type < 0 || !map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, type))
+		if (type < 0 || !map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, type))
 			continue;
 		const int amount = type == WHEAT ? wheatAmount : woodAmount;
 		const int density =
 			L.reserved[i] ? std::min(100, 50 + amount / 6) : std::min(100, amount / 3);
 		if (int(context.bounded("fractal-farm-stock", 100)) < density)
-			map.setResourceByIndex(i % t.w, i / t.w, type, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, type, 1);
 	}
 	for (Home h : L.homes)
 	{
@@ -832,9 +834,9 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		if (!L.objectives[i] || L.reserved[i] || L.crossings[i] ||
-			!clearGround(map, i % t.w, i / t.w))
+			!clearGround(map, t.remainderX(i), i / t.w))
 			continue;
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (x % 8 >= 3 || y % 8 >= 3)
 			continue; // permanent gathering lanes between 3×3 patches
 		// All three fruits and nothing else. A court sits on the central island or beside a
@@ -862,7 +864,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		{
 			if (!nearShore[i] || L.wheatShore[i])
 				continue;
-			const int cx = i % t.w, cy = i / t.w;
+			const int cx = t.remainderX(i), cy = i / t.w;
 			bool clear = true;
 			for (int dy = -1; clear && dy <= 1; ++dy)
 				for (int dx = -1; clear && dx <= 1; ++dx)
@@ -874,7 +876,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				continue;
 			bool apart = true;
 			for (const int c : centres)
-				apart &= t.chebyshev(cx, cy, c % t.w, c / t.w) >= spacing;
+				apart &= t.chebyshev(cx, cy, t.remainderX(c), c / t.w) >= spacing;
 			if (apart)
 				centres.push_back(i);
 		}
@@ -883,7 +885,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					const int x = t.x(c % t.w + dx), y = t.y(c / t.w + dy);
+					const int x = t.x(t.remainderX(c) + dx), y = t.y(c / t.w + dy);
 					if (int(context.bounded("fractal-shore-wheat", 100)) >=
 						context.request.option("wheat-amount"))
 						continue;
@@ -906,7 +908,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	int ambientTiles = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (claimed(L, i))
 			continue;
 		// Only on dry ground, where the growth probe can never find water: a copse there
@@ -953,7 +955,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 				for (Home h : L.homes)
 					score = std::min(score, t.chebyshev(x, y, h.x, h.y));
 				for (int other : quarries)
-					score = std::min(score, t.chebyshev(x, y, other % t.w, other / t.w));
+					score = std::min(score, t.chebyshev(x, y, t.remainderX(other), other / t.w));
 				if (score > bestScore)
 				{
 					bestScore = score;
@@ -967,7 +969,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 	int quarryStone = 0;
 	for (const int site : quarries)
 	{
-		const int cx = site % t.w, cy = site / t.w;
+		const int cx = t.remainderX(site), cy = site / t.w;
 		for (int dy = -4; dy <= 4; ++dy)
 			for (int dx = -4; dx <= 4; ++dx)
 			{
@@ -993,7 +995,7 @@ bool furnishAndSettle(Game &game, GenerationContext &context, const Layout &L)
 		int nearest = INT_MAX;
 		for (const int site : quarries)
 			for (Home h : L.homes)
-				nearest = std::min(nearest, t.chebyshev(site % t.w, site / t.w, h.x, h.y));
+				nearest = std::min(nearest, t.chebyshev(t.remainderX(site), site / t.w, h.x, h.y));
 		context.telemetry.measure("fractal.quarries.nearest-home-distance", nearest);
 	}
 	seedAlgae(map, context, t, "fractal-algae", context.request.option("algae-amount"),
@@ -1176,8 +1178,8 @@ std::string validate(const Game &game, const GenerationContext &context, const L
 	}
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.crossings[i] && !map.terrainPropertiesAt(i % t.w, i / t.w).walkable)
-			return "A designed crossing was lost at (" + std::to_string(i % t.w) + "," +
+		if (L.crossings[i] && !map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable)
+			return "A designed crossing was lost at (" + std::to_string(t.remainderX(i)) + "," +
 				   std::to_string(i / t.w) + ") during terrain rasterization.";
 	}
 	return "";

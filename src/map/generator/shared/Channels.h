@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "field/Grid.h"
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 #include "Drawing.h"
@@ -154,7 +155,7 @@ namespace ChannelDetail
 {
 inline int wrapIndex(int value, int period)
 {
-	return ((value % period) + period) % period;
+	return field::Grid(period, 1).wrapX(value);
 }
 inline double centred(double delta, double period)
 {
@@ -180,7 +181,7 @@ inline int tileOf(const Torus &t, double x, double y)
 inline std::string where(const Torus &t, double x, double y)
 {
 	const int i = tileOf(t, x, y);
-	return " at (" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ")";
+	return " at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")";
 }
 } // namespace ChannelDetail
 
@@ -191,7 +192,7 @@ std::string fordFault(const Torus &t, const SandFord &f, Water water, double pro
 	const auto wet = [&](double x, double y)
 	{
 		const int i = tileOf(t, x, y);
-		return water(i % t.w, i / t.w);
+		return water(t.remainderX(i), i / t.w);
 	};
 	// Open water within a tile of a point: a thin or diagonal channel's water core need not cover
 	// any one exact tile once its shores are sanded.
@@ -252,7 +253,7 @@ std::string channelCoreFault(const Torus &t, const std::vector<ShapePoint> &cent
 			continue;
 		}
 		const int tile = tileOf(t, centreline.at(i).x, centreline.at(i).y);
-		const int x = tile % t.w, y = tile / t.w;
+		const int x = t.remainderX(tile), y = tile / t.w;
 		if (!water(x, y))
 			return "A channel silts up" + where(t, centreline.at(i).x, centreline.at(i).y) + ".";
 		if (previous && x != px && y != py && !water(x, py) && !water(px, y))

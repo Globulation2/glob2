@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "PowerOfTwo.h"
 #include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include <string>
@@ -52,10 +53,10 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
 		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] == NOGUID)
+		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
 		{
-			unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] = unit->gid;
-			modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, RADIUS, 1, locations);
+			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
+			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
 		}
 	}
 	for(int i=0; i<Building::MAX_COUNT; ++i)
@@ -67,11 +68,11 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		// onto a far tile the decrement scan below (which reads wrapped nx/ny) can
 		// never reach, so that square's count never clears and the same tile is
 		// chosen as a flag position twice — tripping the assert() below.
-		if(building && building->underAttackTimer && buildingGID[(building->posX+w)%w * h + (building->posY+h)%h] == NOGBID)
+		if(building && building->underAttackTimer && buildingGID[powerOfTwoRemainder(building->posX+w, w) * h + powerOfTwoRemainder(building->posY+h, h)] == NOGBID)
 		{
-			int nx = (building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w) %w;
-			int ny = (building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h) %h;
-			buildingGID[(building->posX+w)%w * h + (building->posY+h)%h] = building->gid;
+			int nx = powerOfTwoRemainder(building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w, w);
+			int ny = powerOfTwoRemainder(building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h, h);
+			buildingGID[powerOfTwoRemainder(building->posX+w, w) * h + powerOfTwoRemainder(building->posY+h, h)] = building->gid;
 			modify_points(counts, w, h, nx, ny, RADIUS, 1, locations);
 		}
 	}
@@ -106,7 +107,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		flagLocations.push_back(maxPos);
 		
 		int max_x = maxPos / h;
-		int max_y = maxPos % h;
+		int max_y = powerOfTwoRemainder(maxPos, h);
 
 		//For all units and buildings that are under attack and within the radius of the flag, 
 		//decrement the values surrounding them. At the same time, count the number of enemy
@@ -117,21 +118,21 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		// location
 		for(int px = -RADIUS-AI_NICOWAR_DEFENSE_BUILDING_OFFSET_MARGIN; px <= RADIUS+AI_NICOWAR_DEFENSE_BUILDING_OFFSET_MARGIN; ++px)
 		{
-			int nx = (max_x + px + w)%w;
+			int nx = powerOfTwoRemainder(max_x + px + w, w);
 			for(int py = -RADIUS-AI_NICOWAR_DEFENSE_BUILDING_OFFSET_MARGIN; py<=RADIUS+AI_NICOWAR_DEFENSE_BUILDING_OFFSET_MARGIN; ++py)
 			{
-				int ny = (max_y + py + h)%h;
+				int ny = powerOfTwoRemainder(max_y + py + h, h);
 				if(unitGID[nx * h + ny] != NOGUID)
 				{
 					const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
-					modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, RADIUS, -1, locations);
+					modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
 				{
 					const AIEngine::BuildingView* building = runtime.observation().buildingSlots(runtime.teamNumber())[Building::GIDtoID(buildingGID[nx * h + ny])];
-					int nx2 = (building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w) %w;
-					int ny2 = (building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h) %h;
+					int nx2 = powerOfTwoRemainder(building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w, w);
+					int ny2 = powerOfTwoRemainder(building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h, h);
 					modify_points(counts, w, h, nx2, ny2, RADIUS, -1, locations);
 					buildingGID[nx * h + ny] = NOGBID;
 				}
@@ -189,7 +190,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 				for(std::vector<int>::iterator j = flagLocations.begin(); j!=flagLocations.end(); ++j)
 				{
 					int flag_x = (*j) / h;
-					int flag_y = (*j) % h;
+					int flag_y = powerOfTwoRemainder(*j, h);
 					int d = runtime.observation().distanceSquared(flag_x, flag_y, b->posX, b->posY);
 					if(d < min_dist)
 					{
@@ -237,10 +238,10 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		    int enemy_count = 0;
 		    for(int px = -AI_NICOWAR_DEFENSE_REASSIGN_RADIUS; px <= AI_NICOWAR_DEFENSE_REASSIGN_RADIUS; ++px)
 		    {
-				int nx = (b->posX + px + w)%w;
+				int nx = powerOfTwoRemainder(b->posX + px + w, w);
 				for(int py = -AI_NICOWAR_DEFENSE_REASSIGN_RADIUS; py<=AI_NICOWAR_DEFENSE_REASSIGN_RADIUS; ++py)
 				{
-						int ny = (b->posY + py + h)%h;
+						int ny = powerOfTwoRemainder(b->posY + py + h, h);
 						Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx,ny)).groundUnit;
 						if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 						{
@@ -274,7 +275,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 	{
 		int enemy = enemyUnits[i - flagLocations.begin()];
 		int flag_x = *i / h;
-		int flag_y = *i % h;
+		int flag_y = powerOfTwoRemainder(*i, h);
 
 		//The main order for the war flag
 		BuildingOrder* bo_flag = new BuildingOrder(runtime, BuildingDemand::AttractWarriors, enemy);
@@ -298,10 +299,10 @@ void NewNicowar::modify_points(Uint16* counts, int w, int h, int x, int y, int d
 {
 	for(int px = -dist; px <= dist; ++px)
 	{
-		int nx = (x + px + w)%w;
+		int nx = powerOfTwoRemainder(x + px + w, w);
 		for(int py = -dist; py <= dist; ++py)
 		{
-			int ny = (y + py + h)%h;
+			int ny = powerOfTwoRemainder(y + py + h, h);
 			if(px * px + py * py <= dist * dist)
 			{
 				if(value>0)
@@ -391,10 +392,10 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 				yposs.pop();
 				for(int dx = -AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; dx<=AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; ++dx)
 				{
-					int nx = (top->posX + dx + w) % w;
+					int nx = powerOfTwoRemainder(top->posX + dx + w, w);
 					for(int dy = -AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; dy<=AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; ++dy)
 					{
-						int ny = (top->posY + dy + h) % h;
+						int ny = powerOfTwoRemainder(top->posY + dy + h, h);
 						if(runtime.observation().distanceSquared(group_x / group_size, group_y / group_size, nx, ny) < (AI_NICOWAR_EXPLORER_GROUP_COHESION_TILES * AI_NICOWAR_EXPLORER_GROUP_COHESION_TILES))
 						{
 							Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx,ny)).groundUnit;
@@ -416,8 +417,8 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 					}
 				}
 			}
-			group_x = (group_x / group_size + w)%w;
-			group_y = (group_y / group_size + h)%h;
+			group_x = powerOfTwoRemainder(group_x / group_size + w, w);
+			group_y = powerOfTwoRemainder(group_y / group_size + h, h);
 			
 			groups.push_back(std::make_tuple(group_size, group_x, group_y));
 		}

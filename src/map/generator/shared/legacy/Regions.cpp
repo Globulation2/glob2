@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
 #include "Regions.h"
@@ -232,7 +233,7 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 		}
 		void rebuild(std::size_t t)
 		{
-			const int x = int(t % map.getW()), y = int(t / map.getW());
+			const int x = int(dimensionRemainder(t, map.getW())), y = int(t / map.getW());
 			first.at(t) = second.at(t) = std::numeric_limits<int>::max();
 			firstId.at(t) = secondId.at(t) = -1;
 			for (unsigned j = 0; j < points.size(); ++j)
@@ -267,7 +268,7 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			for (std::size_t t = 0; t < first.size(); ++t)
 			{
 				::MapGeneration::generationCheckpoint();
-				const std::int64_t v = value(int(t % w), int(t / w), id);
+				const std::int64_t v = value(int(dimensionRemainder(t, w)), int(t / w), id);
 				if (firstId.at(t) == id)
 				{
 					if (v <= second.at(t))
@@ -346,7 +347,7 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 					changed = true;
 					--occupants.at(home);
 					++occupants.at(bestTile);
-					points.at(i).x = int(bestTile % w);
+					points.at(i).x = int(dimensionRemainder(bestTile, w));
 					points.at(i).y = int(bestTile / w);
 					nearest->moved(int(i));
 				}

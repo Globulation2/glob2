@@ -319,7 +319,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const double halfAngle = std::min(g.wedge / 2, 1.5);
 	for (int i = 0; i < n; ++i)
 	{
-		const WedgeFrame::Cell cell = wedges.cell(i % t.w, i / t.w);
+		const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
 		const ShapePoint p = L.frames[cell.k].project(cell.dx, cell.dy);
 		// Near the plateau, where the wedges narrow, a mountain keeps half the gap between mountains
 		// from its wedge's edge, so neighbours never touch.
@@ -394,7 +394,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 												  : L.homeOf[i];
 			// Chebyshev steps: two tiles between is the least the gap allows.
 			if (other >= 0 && other != k && !L.plateau[i] && steps[i] < kPieceGap - 1 &&
-				std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) >
+				std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w)) >
 					g.innerLeg + g.trailHalf)
 			{
 				L.failure = "Too many colonies for this map: the mountains crowd each other.";
@@ -523,7 +523,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		for (int dy = -1; dy <= 0 && L.road[i]; ++dy)
 			for (int dx = -1; dx <= 0; ++dx)
-				if (L.wall[t.at(i % t.w + dx, i / t.w + dy)])
+				if (L.wall[t.at(t.remainderX(i) + dx, i / t.w + dy)])
 					L.road[i] = 0;
 	L.roadTile = roadTiles(t, L.road);
 	context.telemetry.measure("switchbacks.trail.legs", g.legs);
@@ -583,7 +583,7 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Switch
 	const auto free = [&](int i)
 	{
 		return !L.roadTile[i] && !reserved[i] && !pads[i] && fromTrails[i] > kTrailClearance &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 	for (int k = 0; k < g.teams; ++k)
 	{
@@ -645,10 +645,10 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	// Against a wall on the side towards the middle of the map: rock within a couple of tiles that way.
 	const auto facesInwardWall = [&](int i)
 	{
-		const double dx = t.offsetX(i % t.w, int(L.cx)), dy = t.offsetY(i / t.w, int(L.cy));
+		const double dx = t.offsetX(t.remainderX(i), int(L.cx)), dy = t.offsetY(i / t.w, int(L.cy));
 		const double d = std::max(1.0, std::hypot(dx, dy));
 		for (int step = 1; step <= kWallHug; ++step)
-			if (L.stone[t.at(int(std::lround(i % t.w + dx / d * step)),
+			if (L.stone[t.at(int(std::lround(t.remainderX(i) + dx / d * step)),
 							 int(std::lround(i / t.w + dy / d * step)))])
 				return true;
 		return false;
@@ -657,7 +657,7 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	std::vector<unsigned char> buildable(n, 0), target(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		owner[i] = L.homeOf[i] >= 0 ? L.homeOf[i] : L.farmOf[i] >= 0 ? L.farmOf[i] : L.trailOf[i];
 		buildable[i] = L.trailOf[i] >= 0 && map.terrainPropertiesAt(x, y).buildable && !stone[i] && !L.roadTile[i] &&
 					   !reserved[i] && (fromCentre[i] < 0 || fromCentre[i] > kWalkway) &&
@@ -704,7 +704,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (stone[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "switchbacks colonies";
 	const auto home = [&](int team)
@@ -712,7 +712,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -727,7 +727,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> plateauHeart(n, 0);
 	for (int i = 0; i < n; ++i)
 		plateauHeart[i] = L.plateau[i] &&
-						  std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) <
+						  std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w)) <
 							  L.g.plateauPondR + 3;
 	if (!settleStartingTowers(game, context, towers, o.towers, false, &plateauHeart))
 		return false;
@@ -748,8 +748,8 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<std::vector<int>> workers = unitTilesByTeam(map, teams);
 	std::vector<unsigned char> heart(n, 0);
 	for (int i = 0; i < n; ++i)
-		heart[i] = L.plateau[i] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !stone[i] &&
-				   std::hypot(i % t.w - L.cx, i / t.w - L.cy) < L.g.plateauPondR + 3;
+		heart[i] = L.plateau[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable && !stone[i] &&
+				   std::hypot(t.remainderX(i) - L.cx, i / t.w - L.cy) < L.g.plateauPondR + 3;
 	for (int team = 0; team < teams; ++team)
 		if (!workers[team].empty() && !openRoad(map, t, workers[team], heart, &stone))
 		{
@@ -787,10 +787,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Geometry &g = L.g;
 	const int n = t.size(), teams = context.request.nbTeams;
 	const auto where = [&](int i)
-	{ return "(" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ")"; };
+	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
-		if (stone[i] && map.getResource(i % t.w, i / t.w).type != STONE)
+		if (stone[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
 			return "The stone at " + where(i) + " is missing.";
 	const ColonyWalk walk = walkFromFirstColony(map, teams, "the switchbacks", "");
 	if (!walk.error.empty())
@@ -831,7 +831,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		std::vector<unsigned char> homeGround(n, 0), plateauGround(n, 0), first(n, 0), last(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			const bool buildable = map.terrainPropertiesAt(x, y).buildable && !map.isResource(x, y) && !L.roadTile[i];
 			homeGround[i] = buildable && L.homeOf[i] == k;
 			plateauGround[i] = buildable && L.plateau[i];

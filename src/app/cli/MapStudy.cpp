@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Shared production map study operations and legacy argument adapter.
 #define SDL_MAIN_HANDLED
+#include "PowerOfTwo.h"
 #include <SDL3/SDL_main.h>
 #include "MapReport.h"
 #include "Material.h"
@@ -501,7 +502,7 @@ static bool writeOverlay(Game &game, int teams, const std::string &kind, const s
 	{
 		const Fertility::Field field = Fertility::forMap(map, false);
 		for (int i = 0; i < t.size(); ++i)
-			value[i] = int(std::min<std::uint32_t>(255, field.at(i % t.w, i / t.w) * 255 / 8000));
+			value[i] = int(std::min<std::uint32_t>(255, field.at(t.remainderX(i), i / t.w) * 255 / 8000));
 	}
 	else if (kind == "sites")
 	{
@@ -820,7 +821,7 @@ int runMapStudy(int argc, char **argv)
 				{
 					int p = q.front();
 					q.pop();
-					int x = p % map.getW(), y = p / map.getW();
+					int x = powerOfTwoRemainder(p, map.getW()), y = p / map.getW();
 					// Expansion space within 24 walking steps of a starting worker.
 					if (dist[p] <= 24 && footprint[p])
 						++local;

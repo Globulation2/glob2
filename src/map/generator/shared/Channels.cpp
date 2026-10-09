@@ -249,7 +249,7 @@ bool fordLandingWalkable(const Map &map, const Torus &t, const SandFord &f, int 
 		for (int dx = -1; dx <= 1; ++dx)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int x = t.x(at % t.w + dx), y = t.y(at / t.w + dy);
+			const int x = t.x(t.remainderX(at) + dx), y = t.y(at / t.w + dy);
 			if (map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) &&
 				map.getBuilding(x, y) == NOGBID)
 				return true;

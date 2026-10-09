@@ -16,7 +16,7 @@ namespace
 // Whether a tower on footprint `a` reaches any tile of footprint `b` (both top-left tiles).
 bool footprintsInRange(const Torus &t, int a, int b, int range)
 {
-	const int dx = t.offsetX(a % t.w, b % t.w), dy = t.offsetY(a / t.w, b / t.w);
+	const int dx = t.offsetX(t.remainderX(a), t.remainderX(b)), dy = t.offsetY(a / t.w, b / t.w);
 	// The footprints are two wide: a tile of b at dx..dx+1 is within range of a's 0..1 when the gap
 	// between the spans is at most the range.
 	const auto gap = [](int d) { return d > 0 ? std::max(0, d - 1) : std::max(0, -d - 1); };
@@ -116,7 +116,7 @@ TowerPlan chooseTowerSites(const Torus &t, const std::vector<int> &owner,
 		for (int s : sites)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (t.chebyshev(s % t.w, s / t.w, i % t.w, i / t.w) < request.spacing)
+			if (t.chebyshev(t.remainderX(s), s / t.w, t.remainderX(i), i / t.w) < request.spacing)
 				return false;
 		}
 		return true;
@@ -288,7 +288,7 @@ bool settleStartingTowers(Game &game, GenerationContext &context, TowerPlan &pla
 		for (int i = 0; i < t.size(); ++i)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			open.at(i) = map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) &&
 						 map.getBuilding(x, y) == NOGBID;
 		}
@@ -364,11 +364,11 @@ bool raiseTowers(Game &game, const TowerPlan &plan, int level)
 				for (int dx = 0; dx < 2; ++dx)
 				{
 					::MapGeneration::generationCheckpoint();
-					footprint.at(t.at(site % t.w + dx, site / t.w + dy)) = 1;
+					footprint.at(t.at(t.remainderX(site) + dx, site / t.w + dy)) = 1;
 				}
 			}
 			// placeTower measures from the footprint's middle, so the site's middle finds it exactly.
-			if (placeTower(game, int(k), level, site % t.w + 1, site / t.w + 1, 1, footprint,
+			if (placeTower(game, int(k), level, t.remainderX(site) + 1, site / t.w + 1, 1, footprint,
 						   plan.stocked.at(k).at(j) != 0) != site)
 				return false;
 		}
@@ -394,7 +394,7 @@ std::vector<unsigned char> towerFootprints(const Torus &t, const TowerPlan &plan
 					for (int dx = 0; dx < 2; ++dx)
 					{
 						::MapGeneration::generationCheckpoint();
-						tiles.at(t.at(s % t.w + dx, s / t.w + dy)) = 1;
+						tiles.at(t.at(t.remainderX(s) + dx, s / t.w + dy)) = 1;
 					}
 				}
 			}

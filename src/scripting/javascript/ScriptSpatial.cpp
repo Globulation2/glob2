@@ -1,5 +1,6 @@
 #include <set>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "ScriptSpatial.h"
 #include "TerrainProperties.h"
 #include "field/TerrainMovementCosts.h"
@@ -164,7 +165,7 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 			const auto& cell = cells[i];
 			if (!cell.known || cell.resource == NO_RES_TYPE || (harvestable &&
 				(cell.forbidden || (observations.world().state().resourceProperties(cell.resource).visibleToHarvest && !cell.visible)))) continue;
-			const auto amount = observations.materialStock(i % width, i / width, material);
+			const auto amount = observations.materialStock(powerOfTwoRemainder(i, width), i / width, material);
 			if (amount) out[i] = amountWeight ? amount : 1;
 		}
 	}
@@ -283,7 +284,7 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
             {
                 if(!dx&&!dy) continue;
-                const int to=index(from%width+dx,from/width+dy);
+                const int to=index(powerOfTwoRemainder(from, width)+dx,from/width+dy);
                 if(!field->passable[to]) continue;
                 const unsigned cardinal=field->entryCosts[from];
                 const int candidate=cost+cardinal;
@@ -299,7 +300,7 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 		for (std::size_t head = 0; head < frontier.size(); ++head)
 		{
 			const auto from = frontier[head];
-			int x = from % width, y = from / width;
+			int x = powerOfTwoRemainder(from, width), y = from / width;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
@@ -494,12 +495,12 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 			bool nearby = false;
 			for (const auto &old : result.items)
 				nearby |=
-					std::max(std::abs(displacement(i % width, int(old.get("x").number), width)),
+					std::max(std::abs(displacement(powerOfTwoRemainder(i, width), int(old.get("x").number), width)),
 							 std::abs(displacement(i / width, int(old.get("y").number), height))) <=
 					radius;
 			if (!nearby && int(result.items.size()) < limit)
 				result.items.push_back(Value::object()
-										   .set("x", i % width)
+										   .set("x", powerOfTwoRemainder(i, width))
 										   .set("y", i / width)
 										   .set("score", double(-negative)));
 			if (int(result.items.size()) >= limit)
@@ -535,7 +536,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
 						{
-							int to = index(f % width + dx, f / width + dy);
+							int to = index(powerOfTwoRemainder(f, width) + dx, f / width + dy);
 							if (labels[to] < 0 && open(to))
 							{
 								labels[to] = label;
@@ -546,7 +547,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 				if (!pointQuery)
 					components.items.push_back(Value::object()
 												   .set("id", label)
-												   .set("x", int(i) % width)
+												   .set("x", powerOfTwoRemainder(int(i), width))
 												   .set("y", int(i) / width)
 												   .set("tiles", unsigned(frontier.size())));
 				if (components.items.size() > 1024)
@@ -837,7 +838,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 									   .set("value", m.values[i])
 									   .set("weight", m.weight));
 		candidates.items.push_back(Value::object()
-									   .set("x", i % width)
+									   .set("x", powerOfTwoRemainder(i, width))
 									   .set("y", i / width)
 									   .set("score", double(-negative))
 									   .set("scores", scores));
@@ -845,7 +846,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 	result.set("candidates", candidates);
 	if (!best.empty())
 	{
-		int x = best[0].second % width, y = best[0].second / width;
+		int x = powerOfTwoRemainder(best[0].second, width), y = best[0].second / width;
 		Value order = Value::object()
 						  .set("type", "create")
 						  .set("buildingType", type)

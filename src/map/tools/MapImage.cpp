@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "field/Grid.h"
+#include "PowerOfTwo.h"
 #include "MapImage.h"
 #include "TerrainCornerPresentation.h"
 #include "TerrainPresentation.h"
@@ -152,10 +154,10 @@ bool inInteriorSeamStrip(int x, int y, int w, int h, int band)
 
 int resourceNeighborCount(const std::vector<int> &resources, int w, int h, int i, int type)
 {
-	const int x = i % w, y = i / w;
+	const int x = powerOfTwoRemainder(i, w), y = i / w;
 	int count = 0;
 	for (const auto &d : std::array<std::pair<int, int>, 4>{{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}})
-		count += resources[((y + d.second + h) % h) * w + (x + d.first + w) % w] == type;
+		count += resources[(powerOfTwoRemainder(y + d.second + h, h)) * w + powerOfTwoRemainder(x + d.first + w, w)] == type;
 	return count;
 }
 
@@ -183,7 +185,7 @@ void repairSeams(std::vector<Value> &terrain, int w, int h, int band,
 				continue;
 			for (int j = 0; j < 2 * band; ++j)
 			{
-				const int a = (extent - band + j) % extent, i = axis.index(a, b);
+				const int a = dimensionRemainder(extent - band + j, extent), i = axis.index(a, b);
 				if (protectedCells[i])
 					continue;
 				const int t = j < band ? j + 1 : j;
@@ -249,7 +251,7 @@ void repairResourceSeams(std::vector<int> &resources, Map &map, int band,
 			protectedPatches[i] = 1;
 	repairSeams(resources, w, h, band, protectedPatches, spreading);
 	const auto legal = [&](int i, int type) {
-		return type == NO_RES || map.isResourceAllowed(i % w, i / w, type);
+		return type == NO_RES || map.isResourceAllowed(powerOfTwoRemainder(i, w), i / w, type);
 	};
 	for (int i = 0; i < w * h; ++i)
 		if (!legal(i, resources[i]))
@@ -302,7 +304,7 @@ void repairResourceSeams(std::vector<int> &resources, Map &map, int band,
 			std::vector<int> candidates;
 			for (int i = 0; i < w * h; ++i)
 			{
-				const int x = i % w, y = i / w;
+				const int x = powerOfTwoRemainder(i, w), y = i / w;
 				if (buckets[i] == bucket && resources[i] == types[source] && !protectedPatches[i] &&
 					inInteriorSeamStrip(x, y, w, h, band))
 					candidates.push_back(i);
@@ -330,7 +332,7 @@ void repairResourceSeams(std::vector<int> &resources, Map &map, int band,
 			std::vector<int> candidates;
 			for (int i = 0; i < w * h; ++i)
 			{
-				const int x = i % w, y = i / w;
+				const int x = powerOfTwoRemainder(i, w), y = i / w;
 				if (buckets[i] != bucket || protectedPatches[i] ||
 					!inInteriorSeamStrip(x, y, w, h, band) || !legal(i, types[target]))
 					continue;
@@ -374,7 +376,7 @@ void repairResourceSeams(std::vector<int> &resources, Map &map, int band,
 
 int wrapCoord(int v, int extent)
 {
-	return (v % extent + extent) % extent;
+	return field::Grid(extent, 1).wrapX(v);
 }
 
 struct DecodedMapImage
@@ -432,7 +434,7 @@ std::vector<MapGeneratorPoint> findImageMarkers(const std::vector<int> &cells, i
 		if (cells[i] != marker || visited[i])
 			continue;
 		// Unwrap coordinates along the flood so a marker crossing the seam has a local centroid.
-		std::vector<MapGeneratorPoint> queue{{i % w, i / w}};
+		std::vector<MapGeneratorPoint> queue{{powerOfTwoRemainder(i, w), i / w}};
 		visited[i] = 1;
 		std::int64_t sumX = 0, sumY = 0;
 		for (size_t j = 0; j < queue.size(); ++j)
@@ -568,7 +570,7 @@ std::vector<int> collectImportedResources(Map &map, const std::vector<int> &cell
 	const auto paletteIds = paletteResourceIds(map);
 	for (int i = 0; i < w * h; ++i)
 	{
-		const int x = i % w;
+		const int x = powerOfTwoRemainder(i, w);
 		const int y = i / w;
 		const int type = paletteIds[cells[i]];
 		if (type == NO_RES || homes[i])
@@ -588,7 +590,7 @@ void applyImportedResources(Map &map, GenerationContext &context, const std::vec
 	const int w = map.getW(), h = map.getH();
 	for (int i = 0; i < w * h; ++i)
 	{
-		const int x = i % w;
+		const int x = powerOfTwoRemainder(i, w);
 		const int y = i / w;
 		const int type = resources[i];
 		if (type == NO_RES)

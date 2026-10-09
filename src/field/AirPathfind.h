@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "PowerOfTwo.h"
 #include "GradientConstants.h"
 #include <algorithm>
 #include <array>
@@ -45,7 +46,7 @@ public:
         else for (int sy=-1;sy<=1;++sy) for (int sx=-1;sx<=1;++sx)
         {
             if (!sx&&!sy) continue;
-            const int nx=(x+sx+w)%w,ny=(y+sy+h)%h;
+            const int nx=dimensionRemainder(x+sx+w, w),ny=dimensionRemainder(y+sy+h, h);
             if (passable(nx,ny)) seed(nx,ny);
         }
     }
@@ -60,7 +61,7 @@ public:
         else for(int sy=-1;sy<=1;++sy) for(int sx=-1;sx<=1;++sx)
         {
             if (!sx&&!sy) continue;
-            const int nx=(x+sx+width)%width,ny=(y+sy+height)%height;
+            const int nx=dimensionRemainder(x+sx+width, width),ny=dimensionRemainder(y+sy+height, height);
             if(passable(nx,ny)) goals[goalCount++]=nx*height+ny;
         }
         unsigned best=unreachable;
@@ -74,7 +75,7 @@ public:
             for(int sy=-1;sy<=1;++sy) for(int sx=-1;sx<=1;++sx)
             {
                 if(!sx&&!sy) continue;
-                const int ux=index/height+sx,uy=index%height+sy;
+                const int ux=index/height+sx,uy=dimensionRemainder(index, height)+sy;
                 const int nx=ux<0?width-1:ux==width?0:ux;
                 const int ny=uy<0?height-1:uy==height?0:uy;
                 const int next=nx*height+ny;
@@ -82,7 +83,7 @@ public:
                 // Reverse arcs u<-v cost entry(v), exactly the forward cost
                 // of u->v. Charging entry(u) here reverses speed preferences.
                 const unsigned cardinal=direction==AirDistanceDirection::ToDestination
-                    ? entryCost(index/height,index%height) : entryCost(nx,ny);
+                    ? entryCost(index/height,dimensionRemainder(index, height)) : entryCost(nx,ny);
                 const unsigned candidate=cost+(sx&&sy?cardinal*GRADIENT_DIAGONAL_STEP/GRADIENT_STEP:cardinal);
                 if(candidate<distance[next])
                 { distance[next]=candidate; frontier.emplace(candidate,next); }

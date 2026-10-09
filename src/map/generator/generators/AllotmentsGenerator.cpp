@@ -207,7 +207,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int offsetY = int(context.bounded("allotments-layout", std::uint32_t(t.h)));
 	L.homes = latticeSites(t.w, t.h, teams, offsetX, offsetY).sites;
 	for (ShapePoint &h : L.homes)
-		h = {double(int(std::lround(h.x)) % t.w), double(int(std::lround(h.y)) % t.h)};
+		h = {double(t.remainderX(int(std::lround(h.x)))), double(t.remainderY(int(std::lround(h.y))))};
 	dealStarts(context, L.homes);
 	// One facing for every colony, drawn once per map. A home stencil turned by different quarter
 	// turns covers identical tiles, but the AIs scan along the map's axes: with a facing per colony,
@@ -314,7 +314,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		{
 			if (!cornerInside(i, c))
 				continue;
-			const int dx = t.offsetX(cx, i % t.w), dy = t.offsetY(cy, i / t.w);
+			const int dx = t.offsetX(cx, t.remainderX(i)), dy = t.offsetY(cy, i / t.w);
 			const int u = (parcel.orientation ? dy : dx) + 1024 * band + bandOffset;
 			const int w = (parcel.orientation ? dx : dy) + 1024 * pitch + stripOffset;
 			// Along a band: a path, a row of plots, the ditch, a row of plots; across it, a path
@@ -370,7 +370,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				L.plotOf[start] = id;
 				for (size_t q = 0; q < patch.size(); ++q)
 				{
-					const int x = patch[q] % t.w, y = patch[q] / t.w;
+					const int x = t.remainderX(patch[q]), y = patch[q] / t.w;
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
 						{
@@ -468,13 +468,13 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<std::vector<int>> plotTiles(L.styles.size());
 	for (int i = 0; i < n; ++i)
 	{
-		if (L.plotOf[i] < 0 || reserved[i] || !clearGround(map, i % t.w, i / t.w))
+		if (L.plotOf[i] < 0 || reserved[i] || !clearGround(map, t.remainderX(i), i / t.w))
 			continue;
 		const int plot = L.plotOf[i];
 		const Style style = Style(L.styles[plot]);
 		const int resource = style == kWheat ? WHEAT : style == kWood ? WOOD :
 			style == kFruit ? CHERRY + plot % 3 : STONE;
-		if (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, resource))
+		if (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, resource))
 			plotTiles[plot].push_back(i);
 	}
 	std::array<int, 4> planted{};
@@ -495,7 +495,7 @@ bool generate(Game &game, GenerationContext &context)
 			const int count = std::min(int(tiles.size()),
 									   home ? share : int(scaledCount(share, style == kWheat ? o.wheat : o.wood)));
 			for (int j = 0; j < count; ++j)
-				map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, style == kWheat ? WHEAT : WOOD, 1);
+				map.setResourceByIndex(t.remainderX(tiles[j]), tiles[j] / t.w, style == kWheat ? WHEAT : WOOD, 1);
 			planted[style] += count;
 		}
 		else if (style == kFruit)
@@ -503,12 +503,12 @@ bool generate(Game &game, GenerationContext &context)
 			const int count = std::min(int(tiles.size()), home ? kFruitTiles : int(scaledCount(kFruitTiles, o.fruit)));
 			const int fruit = CHERRY + int(p % 3);
 			for (int j = 0; j < count; ++j)
-				map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, fruit, 1);
+				map.setResourceByIndex(t.remainderX(tiles[j]), tiles[j] / t.w, fruit, 1);
 			planted[kFruit] += count;
 		}
 		else if (int(context.bounded("allotments-sheds", 100)) < kShedPercent && (home || scaledCount(1, o.stone) > 0))
 		{
-			map.setResourceByIndex(tiles.back() % t.w, tiles.back() / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(tiles.back()), tiles.back() / t.w, STONE, 1);
 			++planted[kBare];
 		}
 	}
@@ -525,10 +525,10 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<int> ground;
 		for (int i = 0; i < n; ++i)
 			if (L.cellOf[i] == c && L.kind[i] == parcel.kind && L.homeOf[i] < 0 &&
-				(parcel.kind == kWoodlot ? map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) : (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
-					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
-					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
-					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE))) && clearGround(map, i % t.w, i / t.w) &&
+				(parcel.kind == kWoodlot ? map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD) : (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
+					map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, CHERRY) &&
+					map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ORANGE) &&
+					map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, PRUNE))) && clearGround(map, t.remainderX(i), i / t.w) &&
 					!reserved[i])
 				ground.push_back(i);
 		if (ground.empty())
@@ -540,7 +540,7 @@ bool generate(Game &game, GenerationContext &context)
 			const int count = std::min(int(ground.size()),
 									   int(scaledCount(int(ground.size()) * kWoodlotCoverPercent / 100, o.wood)));
 			for (int j = 0; j < count; ++j)
-				map.setResourceByIndex(ground[j] % t.w, ground[j] / t.w, WOOD, 1);
+				map.setResourceByIndex(t.remainderX(ground[j]), ground[j] / t.w, WOOD, 1);
 		}
 		else if (parcel.kind == kCommons)
 		{
@@ -551,10 +551,10 @@ bool generate(Game &game, GenerationContext &context)
 				if (scaledCount(1, o.fruit) > 0)
 					growPatch(map, t, seed, CHERRY + int(context.bounded("allotments-commons", 3)),
 							  int(scaledCount(5, o.fruit)),
-							  [&](int i) { return L.cellOf[i] == c && L.kind[i] == kCommons && clearGround(map, i % t.w, i / t.w); });
+							  [&](int i) { return L.cellOf[i] == c && L.kind[i] == kCommons && clearGround(map, t.remainderX(i), i / t.w); });
 			}
 			else if (scaledCount(1, o.stone) > 0)
-				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE, 1);
+				placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w), STONE, 1);
 		}
 	}
 	seedAlgae(map, context, t, "allotments-algae", o.algae, AlgaeBand::anyWater(40));
@@ -581,7 +581,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<int> queue;
 	const auto open = [&](int i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		return (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
 			map.terrainSupportsResourceAtByIndex(x, y, WOOD))) && !permanentResourceBarrier(map, i);
 	};
@@ -593,7 +593,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		}
 	for (size_t q = 0; q < queue.size(); ++q)
 	{
-		const int i = queue[q], x = i % t.w, y = i / t.w;
+		const int i = queue[q], x = t.remainderX(i), y = i / t.w;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
@@ -604,7 +604,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				{
 					if (L.plotOf[j] != label[i])
 					{
-						std::fprintf(stderr, "LEAK from %d,%d plot %d kind %d cell %d home %d -> %d,%d plot %d kind %d cell %d home %d lane %d\n", x, y, label[i], L.kind[i], L.cellOf[i], L.homeOf[i], j % t.w, j / t.w, L.plotOf[j], L.kind[j], L.cellOf[j], L.homeOf[j], L.lanes[j]);
+						std::fprintf(stderr, "LEAK from %d,%d plot %d kind %d cell %d home %d -> %d,%d plot %d kind %d cell %d home %d lane %d\n", x, y, label[i], L.kind[i], L.cellOf[i], L.homeOf[i], t.remainderX(j), j / t.w, L.plotOf[j], L.kind[j], L.cellOf[j], L.homeOf[j], L.lanes[j]);
 						return "A plot's crops can spread out of it.";
 					}
 					label[j] = label[i];

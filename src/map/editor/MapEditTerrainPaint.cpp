@@ -8,6 +8,7 @@
 // where they would meet. After a stroke only the resources, units and buildings
 // the new terrain disallows go.
 
+#include "PowerOfTwo.h"
 #include "BrushCoverage.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -164,11 +165,11 @@ void MapEdit::handleTerrainClick(int mx, int my)
 	// changed vertex: cells x-1..x and y-1..y of vertex (x,y). Work in the
 	// stamp's unwrapped frame so a stroke across the map edge stays one box.
 	const int width = map.getW(), height = map.getH();
-	auto unwrap = [](int value, int centre, int size) { return centre + ((value - centre) % size + size + size / 2) % size - size / 2; };
+	auto unwrap = [](int value, int centre, int size) { return centre + powerOfTwoRemainder(powerOfTwoRemainder(value - centre, size) + size + size / 2, size) - size / 2; };
 	int minX = mapX, maxX = mapX, minY = mapY, maxY = mapY;
 	for (const auto vertex : changed)
 	{
-		const int x = unwrap(int(vertex) % width, mapX, width), y = unwrap(int(vertex) / width, mapY, height);
+		const int x = unwrap(dimensionRemainder(int(vertex), width), mapX, width), y = unwrap(int(vertex) / width, mapY, height);
 		minX = std::min(minX, x); maxX = std::max(maxX, x);
 		minY = std::min(minY, y); maxY = std::max(maxY, y);
 	}
