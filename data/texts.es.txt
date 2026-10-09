@@ -6012,3 +6012,265 @@ Límite de tiempo alcanzado.
 Umbral de probabilidad de victoria alcanzado.
 [Destroy this building?]
 ¿Destruir este edificio?
+[touch tutorial 1.01.1]
+¡Bienvenido! Tú asignas tareas; los glóbulos las realizan solos.
+[touch tutorial 1.01.2]
+Arrastra una zona vacía del mapa para mover la vista.
+[touch tutorial 1.01.3]
+Pellizca con dos dedos para cambiar el zoom. Toca un objeto para inspeccionarlo; toca una zona vacía para cerrar su panel.
+[touch tutorial 1.01.4]
+Toca Continuar para leer la siguiente instrucción. Contrae esta tarjeta para ver más mapa.
+[touch tutorial 1.01.5]
+Abre Menú y elige Guardar para continuar luego. Carga la partida desde el menú principal.
+[touch tutorial 1.01.6]
+Abre Herramientas y luego el historial de mensajes para releer las instrucciones.
+[touch tutorial 1.02.1]
+Tu colonia empieza con una colmena y un obrero.
+[touch tutorial 1.03.1]
+Los obreros llevan trigo a la colmena para producir nuevos glóbulos.
+[touch tutorial 1.04.1]
+Toca un obrero para ver su salud, alimento y habilidades.
+[touch tutorial 1.05.1]
+El alimento disminuye con el tiempo. La barra azul bajo un glóbulo muestra su reserva.
+[touch tutorial 1.06.1]
+Los glóbulos comen en posadas. Toca una zona vacía para cerrar el panel.
+[touch tutorial 1.07.1]
+Abre Construcción y elige Posada. Arrastra la paleta para ver más opciones.
+[touch tutorial 1.07.2]
+Toca un lugar libre cerca del trigo para colocar la posada y luego OK. Cancelar descarta la vista previa.
+[touch tutorial 1.08.1]
+¡Bien! Observa a tus obreros realizar la tarea.
+[touch tutorial 1.09.1]
+Los obreros recogen madera para la posada. Espera a que termine la construcción.
+[touch tutorial 1.10.1]
+Un obrero lleva ahora trigo a la posada para alimentar a los glóbulos.
+[touch tutorial 1.11.1]
+La barra amarilla de la posada muestra sus reservas de trigo.
+[touch tutorial 1.12.1]
+Tú decides cuántos obreros necesita un edificio. Los obreros libres eligen tareas solos.
+[touch tutorial 1.13.1]
+Un obrero abastece la colmena y otro la posada. También descansan para comer.
+[touch tutorial 1.14.1]
+Toca la colmena. Cambia el objetivo de obreros con −/+ o arrastrando el control.
+[touch tutorial 1.15.1]
+Pon el objetivo de obreros en 0 tanto en la colmena como en la posada.
+[touch tutorial 1.16.1]
+Los obreros inactivos siguen comiendo. Una posada sin abastecimiento agotará el trigo.
+[touch tutorial 1.17.1]
+Sin alimento, los glóbulos pierden salud y pueden morir. Los hospitales curan a los heridos.
+[touch tutorial 1.18.1]
+Abre Construcción, elige Hospital y colócalo cerca de madera o de la colmena. Toca OK.
+[touch tutorial 1.19.1]
+Toca la obra del hospital y fija el objetivo de obreros en 2.
+[touch tutorial 1.20.1]
+El hospital está listo. Los glóbulos heridos irán solos.
+[touch tutorial 1.21.1]
+Las zonas oscuras están inexploradas. Los exploradores vuelan para revelarlas.
+[touch tutorial 1.22.1]
+Toca la colmena. Toca un botón de unidad del anillo de producción para cambiar su peso: 0, 1, 2, 3, 5 y 0.
+[touch tutorial 1.22.1 rows]
+Toca la colmena. Usa −/+ en las filas de producción de obreros, exploradores y guerreros para cambiar sus pesos.
+[touch tutorial 1.23.1]
+Pon Explorador en 1, Obrero y Guerrero en 0. La colmena producirá solo exploradores.
+[touch tutorial 1.24.1]
+Vuelve a fijar el objetivo de obreros de la colmena en 1.
+[touch tutorial 1.25.1]
+Fija el objetivo de obreros de la posada en 1 para mantener el trigo.
+[touch tutorial 1.26.1]
+Espera a que salga un explorador de la colmena.
+[touch tutorial 1.27.1]
+El explorador revela el mapa al volar. Sigue produciendo hasta tener dos.
+[touch tutorial 1.28.1]
+Pon Obrero en 1, Explorador y Guerrero en 0 para producir solo obreros.
+[touch tutorial 2.01.1]
+Hay piedra al este de tu base. La necesitarás para edificios y torres.
+[touch tutorial 2.02.1]
+Toca los árboles frutales cerca de la piedra para inspeccionarlos y vuelve a la colmena.
+[touch tutorial 2.03.1]
+Pon Obrero en 1, Explorador y Guerrero en 0 para producir solo obreros.
+[touch tutorial 2.04.1]
+Toca la colmena y fija 6 obreros para acelerar la producción.
+[touch tutorial 2.05.1]
+Deja que la colmena produzca hasta tener 8 obreros.
+[touch tutorial 2.06.1]
+Más obreros abastecen la colmena. Los nuevos glóbulos llegarán más rápido.
+[touch tutorial 2.07.1]
+Un obrero cuesta 5 unidades de trigo. Los edificios de alimento cerca del trigo reducen los viajes.
+[touch tutorial 2.08.1]
+Vuelve a fijar el objetivo de obreros de la colmena en 1.
+[touch tutorial 2.09.1]
+Construye otra posada justo al norte de la primera.
+[touch tutorial 2.10.1]
+Asigna hasta 3 obreros libres a la obra de la posada. Solo necesita 3 troncos.
+[touch tutorial 2.11.1]
+La posada terminada vuelve automáticamente a 1 obrero para el trigo.
+[touch tutorial 2.12.1]
+Las pistas entrenan a los glóbulos para correr más rápido.
+[touch tutorial 2.13.1]
+Abre Construcción y elige Circuito de entrenamiento. La vista previa muestra su espacio; necesita madera y piedra.
+[touch tutorial 2.14.1]
+Coloca los edificios grandes de entrenamiento en el centro, dejando espacio para mejoras.
+[touch tutorial 2.15.1]
+Coloca una pista al sur de la colmena, deja espacio alrededor y toca OK.
+[touch tutorial 2.16.1]
+Toca la obra de la pista y asigna entre 5 y 7 obreros libres.
+[touch tutorial 2.17.1]
+Una vez construida, la pista entrena glóbulos sin suministro continuo de recursos.
+[touch tutorial 2.18.1]
+Los glóbulos visitan solos los edificios de entrenamiento y luego vuelven al trabajo.
+[touch tutorial 2.19.1]
+Toca un glóbulo entrenado para inspeccionar sus habilidades mejoradas.
+[touch tutorial 2.20.1]
+Los obreros rápidos recogen antes los recursos, pero comen más. Abastece las posadas.
+[touch tutorial 2.21.1]
+El contador muestra obreros libres y totales. Úsalos sin pedir más de los disponibles.
+[touch tutorial 2.22.1]
+Los contadores vecinos muestran exploradores y guerreros. Revísalos antes de usar banderas.
+[touch tutorial 2.23.1]
+Cada posada de nivel 1 alimenta a 4 glóbulos a la vez. Dos pueden quedarse pequeñas.
+[touch tutorial 2.24.1]
+Amplía el suministro de alimento antes de que falten posadas.
+[touch tutorial 2.25.1]
+Construye 3 posadas más cerca del trigo. También puedes arrastrar una desde la paleta hasta un lugar válido.
+[touch tutorial 2.26.1]
+Termina las 3 posadas adicionales para continuar.
+[touch tutorial 2.27.1]
+La posada terminada vuelve automáticamente a 1 obrero para el trigo.
+[touch tutorial 2.28.1]
+Las piscinas enseñan a nadar y alcanzar recursos a través del agua.
+[touch tutorial 2.29.1]
+Elige Piscina en Construcción. Colócala cerca de madera al noreste de la base, dejando espacio para mejoras. Toca OK.
+[touch tutorial 2.29.2]
+Asigna obreros libres a la obra de la piscina para terminar antes.
+[touch tutorial 2.30.1]
+Elige Piscina en Construcción. Colócala cerca de madera al noreste de la base, dejando espacio para mejoras. Toca OK.
+[touch tutorial 2.30.2]
+Asigna obreros libres a la obra de la piscina para terminar antes.
+[touch tutorial 2.31.1]
+La piscina está lista. Los glóbulos irán a aprender a nadar.
+[touch tutorial 2.32.1]
+Una piscina de nivel 1 entrena a 2 glóbulos a la vez. Vuelven al trabajo después.
+[touch tutorial 2.33.1]
+Tus glóbulos entrenados ya nadan. Pronto tendrán que recoger algas.
+[touch tutorial 2.34.1]
+Abre Menú y elige Guardar para continuar luego. Carga la partida desde el menú principal.
+[touch tutorial 2.35.1]
+Las escuelas mejoran la recolección y enseñan a construir edificios mejorados.
+[touch tutorial 2.36.1]
+Una escuela necesita algas del agua. Los obreros deben aprender a nadar para recogerlas.
+[touch tutorial 2.37.1]
+Protege la escuela tierra adentro. Su entrenamiento es esencial para las mejoras.
+[touch tutorial 2.38.1]
+Construye una escuela detrás de la piscina o cerca de la pista y asigna obreros libres.
+[touch tutorial 2.39.1]
+Toca un edificio para ver qué glóbulos trabajan allí y adónde van.
+[touch tutorial 3.01.1]
+La colonia ya tiene alimento, curación y entrenamiento. Prepara ahora sus defensas.
+[touch tutorial 3.02.1]
+La colonia necesita guerreros para defenderse. Prodúcelos en la colmena.
+[touch tutorial 3.03.1]
+Toca la colmena. Toca un botón de unidad del anillo de producción para cambiar su peso: 0, 1, 2, 3, 5 y 0.
+[touch tutorial 3.03.1 rows]
+Toca la colmena. Usa −/+ en las filas de producción de obreros, exploradores y guerreros para cambiar sus pesos.
+[touch tutorial 3.03.2]
+Pon Guerrero en 2, Obrero en 1 y Explorador en 0 en la colmena.
+[touch tutorial 3.04.1]
+Así se producen 2 guerreros por obrero. Asigna más obreros libres para acelerar.
+[touch tutorial 3.05.1]
+Los guerreros se entrenan solos al nacer. Espera hasta tener al menos dos.
+[touch tutorial 3.06.1]
+Los guerreros también aprenden a correr y nadar. Los cuarteles mejoran fuerza y velocidad de ataque.
+[touch tutorial 3.07.1]
+La fuerza aumenta el daño por golpe; la velocidad aumenta la frecuencia de golpes.
+[touch tutorial 3.08.1]
+Abre Construcción y elige Cuartel. Colócalo cerca de madera y toca OK.
+[touch tutorial 3.09.1]
+Asigna obreros libres a la obra del cuartel sin superar los disponibles.
+[touch tutorial 3.10.1]
+El cuartel está listo. Tus guerreros pueden mejorar sus ataques.
+[touch tutorial 3.11.1]
+Los edificios mejorados atienden más glóbulos y enseñan habilidades superiores.
+[touch tutorial 3.12.1]
+Toca un edificio y elige Mejorar. Los niveles superiores necesitan obreros formados en la escuela.
+[touch tutorial 3.13.1]
+Las posadas aún tienen espacio. Conviene mejorar primero los edificios de entrenamiento.
+[touch tutorial 3.14.1]
+El hospital también tiene espacio. Considera mejorar primero un edificio de entrenamiento.
+[touch tutorial 3.15.1]
+Toca la pista y elige Mejorar. Espera a que salgan sus ocupantes antes de reconstruirse.
+[touch tutorial 3.16.1]
+Toca la pista y elige Mejorar. Espera a que salgan sus ocupantes antes de reconstruirse.
+[touch tutorial 3.17.1]
+Asigna obreros libres formados en la escuela a la mejora.
+[touch tutorial 3.18.1]
+Espera a que termine la mejora. Los niveles superiores llevan tiempo.
+[touch tutorial 3.19.1]
+La pista mejorada es más grande. Los edificios necesitan espacio libre para ampliarse.
+[touch tutorial 3.20.1]
+Mejora el cuartel y la piscina. Termina ambos para continuar.
+[touch tutorial 3.21.1]
+Los edificios superiores tienen más capacidad. Una posada de nivel 2 alimenta a 7 glóbulos a la vez.
+[touch tutorial 3.22.1]
+Hay enemigos cerca. Prepara las defensas.
+[touch tutorial 3.23.1]
+Las torres disparan a los enemigos. Los muros las protegen, pero deja una entrada para abastecer piedra.
+[touch tutorial 3.24.1]
+Usa dos torres con muros en tres lados. Deja abierto el lado de abastecimiento.
+[touch tutorial 3.25.1]
+Construye dos torres al este de la piscina, cerca del paso sobre los árboles frutales.
+[touch tutorial 3.26.1]
+Deja espacio para muros y un camino detrás de cada torre para los obreros con piedra.
+[touch tutorial 3.27.1]
+Asigna entre 2 y 3 obreros a cada torre según los disponibles.
+[touch tutorial 3.28.1]
+Elige Muro en Construcción y rodea tres lados de las torres. Mantén libre el acceso de suministro.
+[touch tutorial 3.29.1]
+Cada tramo de muro necesita solo una piedra. Los obreros los construirán al quedar libres.
+[touch tutorial 3.30.1]
+La piedra está lejos. Asigna más obreros libres si las torres necesitan suministro más rápido.
+[touch tutorial 4.01.1]
+La colonia está bien equipada. Los edificios pueden alcanzar nivel 3 para más capacidad y habilidades.
+[touch tutorial 4.02.1]
+Arrastra el mapa hacia el noroeste de la base para buscar al enemigo.
+[touch tutorial 4.03.1]
+La niebla de guerra oculta la actividad enemiga. Envía un explorador para verla.
+[touch tutorial 4.04.1]
+Abre Banderas para ver banderas y zonas. Asignan tareas a un área.
+[touch tutorial 4.05.1]
+Elige Bandera de exploración. Toca una posición y luego OK; puede estar en áreas inexploradas.
+[touch tutorial 4.06.1]
+Coloca una bandera de exploración sobre la supuesta base enemiga. Confirma con OK.
+[touch tutorial 4.07.1]
+Toca la bandera para ajustar su radio con −/+ o el control. Un explorador recorrerá esa zona.
+[touch tutorial 4.07.2]
+Comprueba que tienes un explorador; produce uno si hace falta. Toca Continuar cuando llegue.
+[touch tutorial 4.08.1]
+El enemigo reúne guerreros. Prepara una zona de guardia cerca de las torres.
+[touch tutorial 4.09.1]
+Abre Banderas y elige Zona de guardia. Pon el pincel en Pintar, no Borrar.
+[touch tutorial 4.10.1]
+Elige un pincel cuadrado grande en la barra de tamaños.
+[touch tutorial 4.11.1]
+Arrastra detrás de las torres para pintar la zona. Usa Desplazar para mover el mapa y Listo para salir.
+[touch tutorial 4.12.1]
+Los guerreros entran en la zona. Dales espacio, pero concéntrala cerca del paso.
+[touch tutorial 4.13.1]
+El enemigo se acerca. Vigila el paso.
+[touch tutorial 4.14.1]
+Tu colonia está bajo ataque. Guerreros y torres defienden el paso.
+[touch tutorial 4.15.1]
+¡Sobreviviste! Abre Banderas, elige Bandera de guerra y colócala sobre la colmena enemiga. Toca OK.
+[touch tutorial 4.16.1]
+Toca la bandera de guerra y asigna más de un guerrero con el control de unidades.
+[touch tutorial 4.16.2]
+Reduce el radio para centrar el ataque en la colmena. Arrastra tu bandera en el mapa para moverla.
+[touch tutorial 4.17.1]
+Tus guerreros atacan a través de las defensas hacia la colmena.
+[touch tutorial 4.18.1]
+Tus guerreros llegaron a la base enemiga. Mantén el ataque abastecido.
+[touch tutorial 4.19.1]
+¡Lo lograste! Ya puedes construir, abastecer, entrenar y dirigir una colonia. Prueba una nueva partida.
+[touch tutorial continue]
+Continuar
+[touch tutorial waiting]
+Esperando

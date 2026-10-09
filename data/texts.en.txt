@@ -6012,3 +6012,265 @@ Time limit reached.
 Win probability threshold reached.
 [Destroy this building?]
 Destroy this building?
+[touch tutorial 1.01.1]
+Welcome! You assign jobs; globules carry them out themselves.
+[touch tutorial 1.01.2]
+Drag empty map space to move the view.
+[touch tutorial 1.01.3]
+Pinch with two fingers to zoom. Tap an object to inspect it; tap empty map space to close its panel.
+[touch tutorial 1.01.4]
+Tap Continue to read the next instruction. Collapse this card when you need more map space.
+[touch tutorial 1.01.5]
+Open Menu and choose Save to continue later. Load your save from the main menu.
+[touch tutorial 1.01.6]
+Open Tools, then message history, to reread tutorial instructions.
+[touch tutorial 1.02.1]
+Your colony starts with a Swarm and a worker.
+[touch tutorial 1.03.1]
+Workers bring wheat to the Swarm so it can produce new globules.
+[touch tutorial 1.04.1]
+Tap a worker to inspect its health, food and abilities.
+[touch tutorial 1.05.1]
+Food decreases over time. The blue bar under a globule shows its food reserve.
+[touch tutorial 1.06.1]
+Globules eat at Inns. Tap empty map space to close the inspector.
+[touch tutorial 1.07.1]
+Open Build and choose Inn. Drag the palette to reveal more choices when needed.
+[touch tutorial 1.07.2]
+Tap a clear spot near wheat to position the Inn, then tap OK. Cancel abandons the preview.
+[touch tutorial 1.08.1]
+Good! Watch your workers carry out the task.
+[touch tutorial 1.09.1]
+Workers collect wood to build the Inn. Wait for construction to finish.
+[touch tutorial 1.10.1]
+A worker now brings wheat to the Inn so hungry globules can eat.
+[touch tutorial 1.11.1]
+The Inn's yellow bar shows its wheat stock.
+[touch tutorial 1.12.1]
+You set how many workers a building needs. Free workers choose jobs automatically.
+[touch tutorial 1.13.1]
+One worker supplies the Swarm and another supplies the Inn. Workers also take breaks to eat.
+[touch tutorial 1.14.1]
+Tap the Swarm. Change its worker target with −/+, or drag the worker control.
+[touch tutorial 1.15.1]
+Set the worker target to 0 at both the Swarm and the Inn.
+[touch tutorial 1.16.1]
+Idle workers still eat. An unsupplied Inn will eventually run out of wheat.
+[touch tutorial 1.17.1]
+Without food, globules lose health and can die. Hospitals heal injured globules.
+[touch tutorial 1.18.1]
+Open Build, choose Hospital, and place it near wood or centrally near the Swarm. Tap OK.
+[touch tutorial 1.19.1]
+Tap the Hospital site and set its worker target to 2.
+[touch tutorial 1.20.1]
+The Hospital is ready. Injured globules will visit it themselves.
+[touch tutorial 1.21.1]
+Dark map areas are unexplored. Explorers fly out to reveal them.
+[touch tutorial 1.22.1]
+Tap the Swarm. Tap a unit button on the production ring to cycle its weight: 0, 1, 2, 3, 5, then 0.
+[touch tutorial 1.22.1 rows]
+Tap the Swarm. Use −/+ on the worker, explorer and warrior production rows to change their weights.
+[touch tutorial 1.23.1]
+Set Explorer to 1, Worker to 0 and Warrior to 0. The Swarm will produce only explorers.
+[touch tutorial 1.24.1]
+Set the Swarm's worker target back to 1.
+[touch tutorial 1.25.1]
+Set the Inn's worker target to 1 so it stays supplied with wheat.
+[touch tutorial 1.26.1]
+Wait for an explorer to emerge from the Swarm.
+[touch tutorial 1.27.1]
+Your explorer reveals the map as it flies. Keep the Swarm producing until you have two explorers.
+[touch tutorial 1.28.1]
+Set Worker to 1, Explorer to 0 and Warrior to 0 to produce only workers.
+[touch tutorial 2.01.1]
+There is stone east of your base. You will need it for construction and towers.
+[touch tutorial 2.02.1]
+Tap the fruit trees near the stone to inspect their resources, then return to your Swarm.
+[touch tutorial 2.03.1]
+Set Worker to 1, Explorer to 0 and Warrior to 0 to produce only workers.
+[touch tutorial 2.04.1]
+Tap the Swarm and set its worker target to 6 to speed up production.
+[touch tutorial 2.05.1]
+Let the Swarm produce until your colony has 8 workers.
+[touch tutorial 2.06.1]
+More workers are supplying the Swarm. New globules should arrive faster.
+[touch tutorial 2.07.1]
+A worker costs 5 wheat. Keeping food buildings near wheat reduces travel and supply work.
+[touch tutorial 2.08.1]
+Set the Swarm's worker target back to 1.
+[touch tutorial 2.09.1]
+Build another Inn just north of the first one.
+[touch tutorial 2.10.1]
+Assign up to 3 free workers to the Inn site. It needs only 3 logs to finish.
+[touch tutorial 2.11.1]
+The finished Inn automatically returns its worker target to 1 for wheat supply.
+[touch tutorial 2.12.1]
+Racetracks train globules to run faster.
+[touch tutorial 2.13.1]
+Open Build and choose Racetrack. Its preview shows its footprint; it needs wood and stone.
+[touch tutorial 2.14.1]
+Place large training buildings centrally, with clear space around them for later upgrades.
+[touch tutorial 2.15.1]
+Place a Racetrack south of the Swarm, leave a gap around it, and tap OK.
+[touch tutorial 2.16.1]
+Tap the Racetrack site and assign 5–7 free workers to build it.
+[touch tutorial 2.17.1]
+Once built, the Racetrack trains globules without a continuing resource supply.
+[touch tutorial 2.18.1]
+Globules visit training buildings themselves. They return to work after learning.
+[touch tutorial 2.19.1]
+Tap a trained globule to inspect its improved abilities.
+[touch tutorial 2.20.1]
+Faster workers collect resources sooner, but they also consume food faster. Keep your Inns supplied.
+[touch tutorial 2.21.1]
+The worker counter shows free workers and the total. Use free workers without demanding more than you have.
+[touch tutorial 2.22.1]
+The neighboring counters show explorers and warriors. Check them before assigning flags.
+[touch tutorial 2.23.1]
+Each level 1 Inn feeds 4 globules at a time. Two Inns can become crowded as your colony grows.
+[touch tutorial 2.24.1]
+Expand your food supply before the colony outgrows its Inns.
+[touch tutorial 2.25.1]
+Build 3 more Inns near wheat. You can also drag an Inn from the palette onto a valid map spot to place it directly.
+[touch tutorial 2.26.1]
+Finish building 3 more Inns before continuing.
+[touch tutorial 2.27.1]
+The finished Inn automatically returns its worker target to 1 for wheat supply.
+[touch tutorial 2.28.1]
+Swimming Pools teach globules to swim and reach resources across water.
+[touch tutorial 2.29.1]
+Choose Swimming Pool in Build. Place it in a clearing near wood, northeast of the base, with room for upgrades. Tap OK.
+[touch tutorial 2.29.2]
+Assign free workers to the Swimming Pool site to finish it sooner.
+[touch tutorial 2.30.1]
+Choose Swimming Pool in Build. Place it in a clearing near wood, northeast of the base, with room for upgrades. Tap OK.
+[touch tutorial 2.30.2]
+Assign free workers to the Swimming Pool site to finish it sooner.
+[touch tutorial 2.31.1]
+Your Swimming Pool is ready. Globules will visit it to learn swimming.
+[touch tutorial 2.32.1]
+A level 1 Swimming Pool trains 2 globules at a time. They return to work after learning.
+[touch tutorial 2.33.1]
+Your trained globules can now swim. Soon they will need to gather algae.
+[touch tutorial 2.34.1]
+Open Menu and choose Save to continue later. Load your save from the main menu.
+[touch tutorial 2.35.1]
+Schools improve harvesting skills and teach workers to construct upgraded buildings.
+[touch tutorial 2.36.1]
+A School needs algae from water. Workers must learn swimming to collect it.
+[touch tutorial 2.37.1]
+Keep the School inland and protected. Its training is essential for upgrades.
+[touch tutorial 2.38.1]
+Build a School behind the Swimming Pool or near the Racetrack. Assign free workers to its site.
+[touch tutorial 2.39.1]
+Tap a building to see which globules work there and where they are going.
+[touch tutorial 3.01.1]
+Your colony now has food, healing and training. Next, prepare its defenses.
+[touch tutorial 3.02.1]
+Your colony needs warriors to defend it. Produce them at the Swarm.
+[touch tutorial 3.03.1]
+Tap the Swarm. Tap a unit button on the production ring to cycle its weight: 0, 1, 2, 3, 5, then 0.
+[touch tutorial 3.03.1 rows]
+Tap the Swarm. Use −/+ on the worker, explorer and warrior production rows to change their weights.
+[touch tutorial 3.03.2]
+Set Warrior to 2, Worker to 1 and Explorer to 0 at the Swarm.
+[touch tutorial 3.04.1]
+This produces 2 warriors for every worker. Assign more free workers to the Swarm for faster production.
+[touch tutorial 3.05.1]
+Warriors train themselves after emerging. Wait until you have at least two.
+[touch tutorial 3.06.1]
+Warriors learn running and swimming too. Barracks improve their attack strength and speed.
+[touch tutorial 3.07.1]
+Attack strength increases damage per hit; attack speed increases how often warriors hit.
+[touch tutorial 3.08.1]
+Open Build and choose Barracks. Place them near wood and tap OK.
+[touch tutorial 3.09.1]
+Assign free workers to the Barracks site. Avoid asking for more workers than your colony has available.
+[touch tutorial 3.10.1]
+The Barracks are ready. Your warriors can now improve their attacks.
+[touch tutorial 3.11.1]
+Upgraded buildings serve more globules and teach higher-level skills.
+[touch tutorial 3.12.1]
+Tap a building and choose Upgrade. School-trained workers are needed for higher-level construction.
+[touch tutorial 3.13.1]
+Your Inns have room for now. Training buildings are a better first upgrade here.
+[touch tutorial 3.14.1]
+The Hospital also has room. Consider upgrading a training building first.
+[touch tutorial 3.15.1]
+Tap the Racetrack and choose Upgrade. It waits for its occupants to leave before rebuilding.
+[touch tutorial 3.16.1]
+Tap the Racetrack and choose Upgrade. It waits for its occupants to leave before rebuilding.
+[touch tutorial 3.17.1]
+Assign free, School-trained workers to the upgrade site.
+[touch tutorial 3.18.1]
+Wait for the upgrade to finish. Higher-level construction takes time.
+[touch tutorial 3.19.1]
+The upgraded Racetrack is larger. Buildings need free space around them to expand.
+[touch tutorial 3.20.1]
+Upgrade the Barracks and the Swimming Pool. Finish both before continuing.
+[touch tutorial 3.21.1]
+Higher-level buildings have more capacity. A level 2 Inn feeds 7 globules at a time.
+[touch tutorial 3.22.1]
+Enemies are nearby. Prepare your defenses.
+[touch tutorial 3.23.1]
+Towers shoot enemies. Walls protect towers, but workers still need an entrance to supply stone.
+[touch tutorial 3.24.1]
+Use two towers and walls on three sides. Leave the supply side open.
+[touch tutorial 3.25.1]
+Build two Towers east of the Swimming Pool, near the passage above the fruit trees.
+[touch tutorial 3.26.1]
+Leave space for walls and a path for workers carrying stone behind each tower.
+[touch tutorial 3.27.1]
+Assign 2–3 workers to each tower, depending on how many workers are free.
+[touch tutorial 3.28.1]
+Choose Wall in Build and place sections around three sides of the towers. Keep the supply path open.
+[touch tutorial 3.29.1]
+Each wall section needs only one stone. Workers will build the sections as they become free.
+[touch tutorial 3.30.1]
+Stone is far away. Assign more free workers if your towers need faster resupply.
+[touch tutorial 4.01.1]
+Your colony is well equipped. Buildings can reach level 3 for still greater capacity and skills.
+[touch tutorial 4.02.1]
+Drag the map toward the northwest of your base to look for the enemy.
+[touch tutorial 4.03.1]
+Fog of war hides current enemy activity. Send an explorer to see what is happening.
+[touch tutorial 4.04.1]
+Open Flags to find flags and zones. They assign jobs to an area.
+[touch tutorial 4.05.1]
+Choose Exploration Flag. Like a building, tap a position and then OK; flags can also go in unexplored areas.
+[touch tutorial 4.06.1]
+Place an Exploration Flag over the suspected enemy base. Confirm with OK.
+[touch tutorial 4.07.1]
+Tap the flag to adjust its range with −/+ or the range control. An explorer will survey that area.
+[touch tutorial 4.07.2]
+Check that you have an explorer; produce one if needed. Tap Continue when it reaches the flag.
+[touch tutorial 4.08.1]
+The enemy is gathering warriors. Prepare a guard zone near your towers.
+[touch tutorial 4.09.1]
+Open Flags and choose Guard zone. Set the brush to Paint rather than Erase.
+[touch tutorial 4.10.1]
+Choose a large square brush size on the brush rail.
+[touch tutorial 4.11.1]
+Drag behind the towers to paint a guard zone. Use Pan to move the map and Done to leave painting.
+[touch tutorial 4.12.1]
+Warriors move into the guard zone. Make room for them, but keep the zone concentrated near the passage.
+[touch tutorial 4.13.1]
+The enemy is approaching. Watch the passage.
+[touch tutorial 4.14.1]
+Your colony is under attack. Your warriors and towers defend the passage.
+[touch tutorial 4.15.1]
+You survived! Open Flags, choose War Flag, and place it over the enemy Swarm. Tap OK.
+[touch tutorial 4.16.1]
+Tap the War Flag and assign more than one warrior with its worker control.
+[touch tutorial 4.16.2]
+Reduce the flag's range to focus the attack on the Swarm. Drag your flag on the map to move it when needed.
+[touch tutorial 4.17.1]
+Your warriors attack through the enemy defenses toward the Swarm.
+[touch tutorial 4.18.1]
+Your warriors have reached the enemy base. Keep the attack supplied.
+[touch tutorial 4.19.1]
+You did it! You can now build, supply, train and command a colony. Try a new game when you are ready.
+[touch tutorial continue]
+Continue
+[touch tutorial waiting]
+Waiting

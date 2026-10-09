@@ -175,6 +175,8 @@ CLIENT_SOURCES = (
     'hud/GameGUI.cpp',
     'hud/touch/GameGUITouch.cpp',
     'hud/touch/GameGUITouchView.cpp',
+    'hud/touch/TouchTutorial.cpp',
+    'hud/touch/GameGUITouchTutorial.cpp',
     'hud/touch/GameGUITouchPalette.cpp',
     'hud/touch/GameGUITouchPlacement.cpp',
     'hud/GameGUIBuildingActions.cpp',

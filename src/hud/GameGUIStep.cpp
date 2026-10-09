@@ -293,12 +293,15 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	// TODO: die with SGSL
 	// Check if the text being displayed has changed, and if it has, add it to the history box
 	const auto& legacyText=drawnScene().panels.hud.state().legacyScriptText;
-    const bool legacyShown=drawnScene().panels.hud.state().legacyScriptTextShown;
-	if(legacyShown && legacyText != previousSGSLText)
+    const auto adaptedText=touch && touch->usesHUD() ? touch->tutorialHistoryText(legacyText) : legacyText;
+    const auto historyIdentity=touch && touch->usesHUD() ? touch->tutorialHistoryIdentity(legacyText) : legacyText;
+    const bool legacyShown=drawnScene().panels.hud.state().legacyScriptTextShown ||
+        (touch && touch->usesHUD() && !adaptedText.empty());
+	if(legacyShown && historyIdentity != previousSGSLText)
 	{
-		publishMessageHistoryLines(legacyText, HistoryList::Chat,
+		publishMessageHistoryLines(adaptedText, HistoryList::Chat,
 			Color(255, 255, 255), kHistoryOnlyTimeoutMs, kScriptTextContinuationIndent);
-		previousSGSLText = legacyText;
+		previousSGSLText = historyIdentity;
 	}
 
 	// Check if the text being displayed has changed, and if it has, add it to the history box

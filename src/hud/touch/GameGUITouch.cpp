@@ -173,7 +173,7 @@ double GameGUITouch::tutorialMaximum() const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	return std::max(0.0, tutorialLines.size() * InGameTouchTheme::tutorialPitch() - tutorialRect().h / unit + 16 +
-							 (gui.swallowSpaceKey ? 48 : 0));
+							 tutorialFooterHeight() / unit + (tutorialMessage ? 28 : 0));
 }
 void GameGUITouch::clampScroll()
 {
@@ -391,6 +391,8 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		if (stats.sheet.contains(point))
 			return 48;
 	}
+	if (usesHUD() && !statsOpen && tutorialRect().contains(point))
+		return 7;
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION && controls().contains(point))
 		return 9;
 	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION &&
@@ -421,8 +423,6 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		}
 		else if (layout().panel.contains(point))
 			return 3;
-		if (tutorialRect().contains(point))
-			return 7;
 		return world().contains(point) ? 0 : 6;
 	}
 	if (point.x >= world().w)
@@ -472,6 +472,11 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	{
 		targets.push_back(readOnlyCloseRect());
 		return targets;
+	}
+	if (!tutorialLines.empty() && !tutorialCollapsed)
+	{
+		if (tutorialPage > 0) targets.push_back(tutorialBackRect());
+		if (tutorialFooterHeight() > 0) targets.push_back(tutorialNextRect());
 	}
 	const auto content = panelContent();
 	if (showsBuildPalette())
@@ -552,6 +557,19 @@ bool GameGUITouch::process(SDL_Event &event)
 	if (usesHUD() && event.type == SDL_EVENT_KEY_DOWN)
 	{
 		const auto key = event.key.key;
+		if (key == SDLK_SPACE && tutorialMessage && gui.swallowSpaceKey && !activeDialog())
+		{
+			if (!event.key.repeat)
+			{
+				if (tutorialCollapsed) tutorialCollapsed = false;
+				else
+				{
+					const auto next = tutorialNextRect();
+					tapTutorial({next.x + next.w / 2, next.y + next.h / 2});
+				}
+			}
+			return true;
+		}
 		if (key == SDLK_TAB)
 		{
 			const auto targets = keyboardTargets();
@@ -1195,6 +1213,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 {
 	if (activeDialog())
 		return;
+	if (usesHUD() && !statsOpen && !peekOpen && tutorialRect().contains(point))
+	{
+		tapTutorial(point);
+		return;
+	}
 	if (usesHUD() && statsOpen && !peekOpen)
 	{
 		const int region = interfaceRegion(point);
@@ -1297,35 +1320,6 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		{
 			preview.reset();
 			gui.clearSelection();
-		}
-		return;
-	}
-	if (usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText &&
-		tutorialRect().contains(point) && !layout().panel.contains(point))
-	{
-		if (tutorialCollapsed)
-		{
-			tutorialCollapsed = false;
-			return;
-		}
-		const auto tutorial = tutorialRect();
-		const double target = 48 * globalContainer->gfx->logicalUnitsPerPoint();
-		if (point.x >= tutorial.x + tutorial.w - target && point.y < tutorial.y + target)
-		{
-			tutorialCollapsed = true;
-			return;
-		}
-		if (point.y < tutorial.y + tutorial.h - 48 * globalContainer->gfx->logicalUnitsPerPoint())
-			return;
-		if (!gui.swallowSpaceKey)
-		{
-			return;
-		}
-		if (gui.swallowSpaceKey)
-		{
-			SDL_KeyboardEvent key{};
-			key.key = SDLK_SPACE;
-			gui.handleKey(key, true);
 		}
 		return;
 	}

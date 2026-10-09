@@ -828,7 +828,7 @@ void GameGUI::drawAll(int team)
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
 
 	}
-    if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
+    if (touch) { touch->drawControls();touch->drawTutorialHighlights();touch->drawKeyboardFocus(); }
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

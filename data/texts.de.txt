@@ -6012,3 +6012,265 @@ Zeitlimit erreicht.
 Schwellenwert der Siegwahrscheinlichkeit erreicht.
 [Destroy this building?]
 Dieses Gebäude zerstören?
+[touch tutorial 1.01.1]
+Willkommen! Du vergibst Aufgaben; die Globulen erledigen sie selbst.
+[touch tutorial 1.01.2]
+Ziehe über eine freie Kartenstelle, um die Ansicht zu verschieben.
+[touch tutorial 1.01.3]
+Zoome mit zwei Fingern. Tippe ein Objekt an, um es anzusehen; tippe auf eine freie Kartenstelle, um sein Fenster zu schließen.
+[touch tutorial 1.01.4]
+Tippe auf Weiter für die nächste Anweisung. Klappe diese Karte ein, wenn du mehr Kartenfläche brauchst.
+[touch tutorial 1.01.5]
+Öffne Menü und wähle Speichern. Lade den Spielstand später im Hauptmenü.
+[touch tutorial 1.01.6]
+Öffne Werkzeuge und dann den Nachrichtenverlauf, um Anweisungen erneut zu lesen.
+[touch tutorial 1.02.1]
+Deine Kolonie beginnt mit einem Stock und einem Arbeiter.
+[touch tutorial 1.03.1]
+Arbeiter bringen Weizen zum Stock, damit er neue Globulen erzeugt.
+[touch tutorial 1.04.1]
+Tippe einen Arbeiter an, um Gesundheit, Nahrung und Fähigkeiten anzusehen.
+[touch tutorial 1.05.1]
+Nahrung nimmt mit der Zeit ab. Der blaue Balken unter einer Globule zeigt ihren Vorrat.
+[touch tutorial 1.06.1]
+Globulen essen in Gasthöfen. Tippe auf eine freie Kartenstelle, um das Fenster zu schließen.
+[touch tutorial 1.07.1]
+Öffne Bauen und wähle Gasthof. Ziehe die Auswahl, um weitere Einträge zu sehen.
+[touch tutorial 1.07.2]
+Tippe auf einen freien Platz nahe Weizen und dann auf OK. Abbrechen verwirft die Vorschau.
+[touch tutorial 1.08.1]
+Gut! Beobachte deine Arbeiter bei der Aufgabe.
+[touch tutorial 1.09.1]
+Arbeiter sammeln Holz für den Gasthof. Warte, bis der Bau fertig ist.
+[touch tutorial 1.10.1]
+Ein Arbeiter bringt nun Weizen zum Gasthof, damit hungrige Globulen essen können.
+[touch tutorial 1.11.1]
+Der gelbe Balken des Gasthofs zeigt seinen Weizenvorrat.
+[touch tutorial 1.12.1]
+Du legst fest, wie viele Arbeiter ein Gebäude braucht. Freie Arbeiter wählen Aufgaben selbst.
+[touch tutorial 1.13.1]
+Ein Arbeiter versorgt den Stock, ein anderer den Gasthof. Arbeiter machen auch Essenspausen.
+[touch tutorial 1.14.1]
+Tippe den Stock an. Ändere das Arbeiterziel mit −/+ oder durch Ziehen am Regler.
+[touch tutorial 1.15.1]
+Setze das Arbeiterziel am Stock und am Gasthof auf 0.
+[touch tutorial 1.16.1]
+Auch untätige Arbeiter essen. Ein unversorgter Gasthof verliert seinen Weizenvorrat.
+[touch tutorial 1.17.1]
+Ohne Nahrung verlieren Globulen Gesundheit und können sterben. Krankenhäuser heilen Verletzte.
+[touch tutorial 1.18.1]
+Öffne Bauen, wähle Krankenhaus und platziere es nahe Holz oder zentral beim Stock. Tippe OK.
+[touch tutorial 1.19.1]
+Tippe die Krankenhausbaustelle an und setze das Arbeiterziel auf 2.
+[touch tutorial 1.20.1]
+Das Krankenhaus ist fertig. Verletzte Globulen besuchen es selbst.
+[touch tutorial 1.21.1]
+Dunkle Kartenflächen sind unerforscht. Entdecker fliegen hinaus, um sie aufzudecken.
+[touch tutorial 1.22.1]
+Tippe den Stock an. Tippe eine Einheit auf dem Produktionsring an, um ihr Gewicht zu wechseln: 0, 1, 2, 3, 5, dann 0.
+[touch tutorial 1.22.1 rows]
+Tippe den Stock an. Ändere die Gewichte mit −/+ in den Produktionszeilen für Arbeiter, Entdecker und Krieger.
+[touch tutorial 1.23.1]
+Setze Entdecker auf 1, Arbeiter und Krieger auf 0. Der Stock erzeugt nur Entdecker.
+[touch tutorial 1.24.1]
+Setze das Arbeiterziel des Stocks wieder auf 1.
+[touch tutorial 1.25.1]
+Setze das Arbeiterziel des Gasthofs auf 1, damit er Weizen erhält.
+[touch tutorial 1.26.1]
+Warte, bis ein Entdecker aus dem Stock kommt.
+[touch tutorial 1.27.1]
+Dein Entdecker deckt die Karte im Flug auf. Produziere weiter, bis du zwei hast.
+[touch tutorial 1.28.1]
+Setze Arbeiter auf 1, Entdecker und Krieger auf 0, um nur Arbeiter zu erzeugen.
+[touch tutorial 2.01.1]
+Östlich deiner Basis liegt Stein. Du brauchst ihn für Bauten und Türme.
+[touch tutorial 2.02.1]
+Tippe die Obstbäume beim Stein an, um ihre Ressourcen anzusehen. Kehre dann zum Stock zurück.
+[touch tutorial 2.03.1]
+Setze Arbeiter auf 1, Entdecker und Krieger auf 0, um nur Arbeiter zu erzeugen.
+[touch tutorial 2.04.1]
+Tippe den Stock an und setze das Arbeiterziel auf 6, um schneller zu produzieren.
+[touch tutorial 2.05.1]
+Lass den Stock produzieren, bis deine Kolonie 8 Arbeiter hat.
+[touch tutorial 2.06.1]
+Mehr Arbeiter versorgen den Stock. Neue Globulen sollten schneller entstehen.
+[touch tutorial 2.07.1]
+Ein Arbeiter kostet 5 Weizen. Nahrungsgebäude nahe Weizen verkürzen Transportwege.
+[touch tutorial 2.08.1]
+Setze das Arbeiterziel des Stocks wieder auf 1.
+[touch tutorial 2.09.1]
+Baue einen weiteren Gasthof direkt nördlich des ersten.
+[touch tutorial 2.10.1]
+Weise der Gasthofbaustelle bis zu 3 freie Arbeiter zu. Sie braucht nur 3 Holz.
+[touch tutorial 2.11.1]
+Der fertige Gasthof setzt sein Arbeiterziel automatisch auf 1 für die Weizenversorgung.
+[touch tutorial 2.12.1]
+Rennbahnen lehren Globulen, schneller zu laufen.
+[touch tutorial 2.13.1]
+Öffne Bauen und wähle Rennbahn. Die Vorschau zeigt ihren Platzbedarf; sie braucht Holz und Stein.
+[touch tutorial 2.14.1]
+Platziere große Trainingsgebäude zentral mit freiem Platz für spätere Ausbauten.
+[touch tutorial 2.15.1]
+Platziere eine Rennbahn südlich des Stocks, lass Platz ringsum und tippe OK.
+[touch tutorial 2.16.1]
+Tippe die Rennbahnbaustelle an und weise 5–7 freie Arbeiter zu.
+[touch tutorial 2.17.1]
+Nach dem Bau trainiert die Rennbahn Globulen ohne weitere Ressourcenlieferungen.
+[touch tutorial 2.18.1]
+Globulen besuchen Trainingsgebäude selbst. Danach kehren sie zur Arbeit zurück.
+[touch tutorial 2.19.1]
+Tippe eine trainierte Globule an, um ihre verbesserten Fähigkeiten anzusehen.
+[touch tutorial 2.20.1]
+Schnellere Arbeiter sammeln früher Ressourcen, verbrauchen aber schneller Nahrung. Versorge die Gasthöfe.
+[touch tutorial 2.21.1]
+Der Arbeiterzähler zeigt freie Arbeiter und die Gesamtzahl. Fordere nicht mehr an, als du hast.
+[touch tutorial 2.22.1]
+Die benachbarten Zähler zeigen Entdecker und Krieger. Prüfe sie vor dem Setzen von Flaggen.
+[touch tutorial 2.23.1]
+Ein Gasthof der Stufe 1 ernährt 4 Globulen gleichzeitig. Zwei Gasthöfe können bald überfüllt sein.
+[touch tutorial 2.24.1]
+Erweitere die Versorgung, bevor deine Kolonie zu groß für ihre Gasthöfe wird.
+[touch tutorial 2.25.1]
+Baue 3 weitere Gasthöfe nahe Weizen. Du kannst einen Gasthof auch aus der Auswahl auf einen gültigen Platz ziehen.
+[touch tutorial 2.26.1]
+Stelle 3 weitere Gasthöfe fertig, bevor es weitergeht.
+[touch tutorial 2.27.1]
+Der fertige Gasthof setzt sein Arbeiterziel automatisch auf 1 für die Weizenversorgung.
+[touch tutorial 2.28.1]
+Schwimmbäder lehren Globulen zu schwimmen und Ressourcen über Wasser zu erreichen.
+[touch tutorial 2.29.1]
+Wähle Schwimmbecken unter Bauen. Platziere es nahe Holz nordöstlich der Basis mit Platz für Ausbauten. Tippe OK.
+[touch tutorial 2.29.2]
+Weise der Schwimmbeckenbaustelle freie Arbeiter zu, um sie schneller fertigzustellen.
+[touch tutorial 2.30.1]
+Wähle Schwimmbecken unter Bauen. Platziere es nahe Holz nordöstlich der Basis mit Platz für Ausbauten. Tippe OK.
+[touch tutorial 2.30.2]
+Weise der Schwimmbeckenbaustelle freie Arbeiter zu, um sie schneller fertigzustellen.
+[touch tutorial 2.31.1]
+Dein Schwimmbecken ist fertig. Globulen lernen dort schwimmen.
+[touch tutorial 2.32.1]
+Ein Schwimmbecken der Stufe 1 trainiert 2 Globulen gleichzeitig. Danach kehren sie zur Arbeit zurück.
+[touch tutorial 2.33.1]
+Deine trainierten Globulen können nun schwimmen. Bald müssen sie Algen sammeln.
+[touch tutorial 2.34.1]
+Öffne Menü und wähle Speichern. Lade den Spielstand später im Hauptmenü.
+[touch tutorial 2.35.1]
+Schulen verbessern die Ernte und lehren Arbeiter, ausgebaute Gebäude zu errichten.
+[touch tutorial 2.36.1]
+Eine Schule braucht Algen aus dem Wasser. Arbeiter müssen dafür schwimmen lernen.
+[touch tutorial 2.37.1]
+Halte die Schule im Landesinneren geschützt. Ihr Training ist für Ausbauten entscheidend.
+[touch tutorial 2.38.1]
+Baue eine Schule hinter dem Schwimmbecken oder bei der Rennbahn. Weise freie Arbeiter zu.
+[touch tutorial 2.39.1]
+Tippe ein Gebäude an, um seine arbeitenden Globulen und ihre Wege zu sehen.
+[touch tutorial 3.01.1]
+Deine Kolonie hat Nahrung, Heilung und Training. Bereite nun ihre Verteidigung vor.
+[touch tutorial 3.02.1]
+Deine Kolonie braucht Krieger zur Verteidigung. Erzeuge sie im Stock.
+[touch tutorial 3.03.1]
+Tippe den Stock an. Tippe eine Einheit auf dem Produktionsring an, um ihr Gewicht zu wechseln: 0, 1, 2, 3, 5, dann 0.
+[touch tutorial 3.03.1 rows]
+Tippe den Stock an. Ändere die Gewichte mit −/+ in den Produktionszeilen für Arbeiter, Entdecker und Krieger.
+[touch tutorial 3.03.2]
+Setze im Stock Krieger auf 2, Arbeiter auf 1 und Entdecker auf 0.
+[touch tutorial 3.04.1]
+So entstehen 2 Krieger je Arbeiter. Weise dem Stock mehr freie Arbeiter zu, um schneller zu produzieren.
+[touch tutorial 3.05.1]
+Krieger trainieren nach ihrer Geburt selbst. Warte, bis du mindestens zwei hast.
+[touch tutorial 3.06.1]
+Krieger lernen auch Laufen und Schwimmen. Trainingslager verbessern Angriffsstärke und Angriffstempo.
+[touch tutorial 3.07.1]
+Angriffsstärke erhöht den Schaden je Treffer; Angriffstempo erhöht die Zahl der Treffer.
+[touch tutorial 3.08.1]
+Öffne Bauen und wähle Trainingslager. Platziere sie nahe Holz und tippe OK.
+[touch tutorial 3.09.1]
+Weise der Baustelle des Trainingslagers freie Arbeiter zu. Fordere nicht mehr an, als verfügbar sind.
+[touch tutorial 3.10.1]
+Das Trainingslager ist fertig. Deine Krieger können ihre Angriffe verbessern.
+[touch tutorial 3.11.1]
+Ausgebaute Gebäude bedienen mehr Globulen und lehren höhere Fähigkeiten.
+[touch tutorial 3.12.1]
+Tippe ein Gebäude an und wähle Verbessern. Höhere Bauten brauchen in der Schule trainierte Arbeiter.
+[touch tutorial 3.13.1]
+Deine Gasthöfe haben noch Platz. Trainingsgebäude sind hier der bessere erste Ausbau.
+[touch tutorial 3.14.1]
+Auch das Krankenhaus hat Platz. Erwäge zuerst den Ausbau eines Trainingsgebäudes.
+[touch tutorial 3.15.1]
+Tippe die Rennbahn an und wähle Verbessern. Sie wartet, bis alle Insassen hinausgegangen sind.
+[touch tutorial 3.16.1]
+Tippe die Rennbahn an und wähle Verbessern. Sie wartet, bis alle Insassen hinausgegangen sind.
+[touch tutorial 3.17.1]
+Weise der Ausbaustelle freie, in der Schule trainierte Arbeiter zu.
+[touch tutorial 3.18.1]
+Warte auf den fertigen Ausbau. Höhere Bauten brauchen Zeit.
+[touch tutorial 3.19.1]
+Die ausgebaute Rennbahn ist größer. Gebäude brauchen freien Platz zum Wachsen.
+[touch tutorial 3.20.1]
+Baue Trainingslager und Schwimmbecken aus. Stelle beide fertig, bevor es weitergeht.
+[touch tutorial 3.21.1]
+Höhere Gebäude haben mehr Kapazität. Ein Gasthof der Stufe 2 ernährt 7 Globulen gleichzeitig.
+[touch tutorial 3.22.1]
+Feinde sind in der Nähe. Bereite deine Verteidigung vor.
+[touch tutorial 3.23.1]
+Türme beschießen Feinde. Mauern schützen Türme, aber Arbeiter brauchen einen Zugang für Stein.
+[touch tutorial 3.24.1]
+Nutze zwei Türme mit Mauern an drei Seiten. Lass die Versorgungsseite offen.
+[touch tutorial 3.25.1]
+Baue zwei Türme östlich des Schwimmbeckens am Durchgang oberhalb der Obstbäume.
+[touch tutorial 3.26.1]
+Lass Platz für Mauern und einen Weg für steintragende Arbeiter hinter jedem Turm.
+[touch tutorial 3.27.1]
+Weise jedem Turm 2–3 Arbeiter zu, je nach verfügbaren Arbeitern.
+[touch tutorial 3.28.1]
+Wähle Mauer unter Bauen und umgib drei Seiten der Türme. Halte den Versorgungsweg frei.
+[touch tutorial 3.29.1]
+Jedes Mauerstück braucht nur einen Stein. Freie Arbeiter bauen die Abschnitte nacheinander.
+[touch tutorial 3.30.1]
+Stein liegt weit entfernt. Weise mehr freie Arbeiter zu, wenn Türme schneller Nachschub brauchen.
+[touch tutorial 4.01.1]
+Deine Kolonie ist gut ausgestattet. Gebäude können Stufe 3 für mehr Kapazität und Fähigkeiten erreichen.
+[touch tutorial 4.02.1]
+Ziehe die Ansicht nach Nordwesten deiner Basis, um den Feind zu suchen.
+[touch tutorial 4.03.1]
+Kriegsnebel verbirgt aktuelle Feindbewegungen. Schicke einen Entdecker hin.
+[touch tutorial 4.04.1]
+Öffne Flaggen für Flaggen und Zonen. Sie vergeben Aufgaben in einem Gebiet.
+[touch tutorial 4.05.1]
+Wähle Entdeckerflagge. Tippe einen Platz und dann OK an; Flaggen dürfen auch in unerforschte Gebiete.
+[touch tutorial 4.06.1]
+Platziere eine Entdeckerflagge über der vermuteten Feindbasis. Bestätige mit OK.
+[touch tutorial 4.07.1]
+Tippe die Flagge an und ändere ihren Radius mit −/+ oder dem Regler. Ein Entdecker untersucht das Gebiet.
+[touch tutorial 4.07.2]
+Prüfe, ob du einen Entdecker hast; erzeuge bei Bedarf einen. Tippe nach seiner Ankunft auf Weiter.
+[touch tutorial 4.08.1]
+Der Feind sammelt Krieger. Bereite eine Wachzone bei deinen Türmen vor.
+[touch tutorial 4.09.1]
+Öffne Flaggen und wähle Wachzone. Stelle den Pinsel auf Malen statt Löschen.
+[touch tutorial 4.10.1]
+Wähle einen großen quadratischen Pinsel auf der Größenleiste.
+[touch tutorial 4.11.1]
+Ziehe hinter den Türmen, um eine Wachzone zu malen. Nutze Verschieben für die Karte und Fertig zum Beenden.
+[touch tutorial 4.12.1]
+Krieger gehen in die Wachzone. Gib ihnen Platz, halte die Zone aber am Durchgang konzentriert.
+[touch tutorial 4.13.1]
+Der Feind nähert sich. Beobachte den Durchgang.
+[touch tutorial 4.14.1]
+Deine Kolonie wird angegriffen. Krieger und Türme verteidigen den Durchgang.
+[touch tutorial 4.15.1]
+Du hast überlebt! Öffne Flaggen, wähle Kriegsflagge und platziere sie über dem feindlichen Stock. Tippe OK.
+[touch tutorial 4.16.1]
+Tippe die Kriegsflagge an und weise mit ihrem Arbeiterregler mehr als einen Krieger zu.
+[touch tutorial 4.16.2]
+Verkleinere den Radius, um den Stock anzugreifen. Ziehe deine Flagge auf der Karte, um sie zu bewegen.
+[touch tutorial 4.17.1]
+Deine Krieger greifen durch die feindliche Verteidigung zum Stock an.
+[touch tutorial 4.18.1]
+Deine Krieger haben die Feindbasis erreicht. Halte den Angriff aufrecht.
+[touch tutorial 4.19.1]
+Geschafft! Du kannst nun eine Kolonie bauen, versorgen, trainieren und führen. Probiere ein neues Spiel.
+[touch tutorial continue]
+Weiter
+[touch tutorial waiting]
+Warten

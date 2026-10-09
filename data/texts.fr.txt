@@ -6012,3 +6012,265 @@ Limite de temps atteinte.
 Seuil de probabilité de victoire atteint.
 [Destroy this building?]
 Détruire ce bâtiment ?
+[touch tutorial 1.01.1]
+Bienvenue ! Vous attribuez les tâches ; les globules les accomplissent seuls.
+[touch tutorial 1.01.2]
+Faites glisser une zone vide de la carte pour déplacer la vue.
+[touch tutorial 1.01.3]
+Pincez avec deux doigts pour zoomer. Touchez un objet pour l'examiner ; touchez une zone vide pour fermer son panneau.
+[touch tutorial 1.01.4]
+Touchez Continuer pour lire la suite. Réduisez cette carte pour mieux voir la carte.
+[touch tutorial 1.01.5]
+Ouvrez Menu et choisissez Sauvegarder pour reprendre plus tard. Chargez la sauvegarde depuis le menu principal.
+[touch tutorial 1.01.6]
+Ouvrez Outils, puis l'historique des messages, pour relire les instructions.
+[touch tutorial 1.02.1]
+Votre colonie commence avec une ruche et une ouvrière.
+[touch tutorial 1.03.1]
+Les ouvrières apportent du blé à la ruche pour produire de nouveaux globules.
+[touch tutorial 1.04.1]
+Touchez une ouvrière pour examiner sa santé, sa nourriture et ses capacités.
+[touch tutorial 1.05.1]
+La nourriture diminue avec le temps. La barre bleue sous un globule indique sa réserve.
+[touch tutorial 1.06.1]
+Les globules mangent dans les auberges. Touchez une zone vide pour fermer le panneau.
+[touch tutorial 1.07.1]
+Ouvrez Construire et choisissez Auberge. Faites glisser la palette pour voir les autres choix.
+[touch tutorial 1.07.2]
+Touchez une zone libre près du blé pour placer l'auberge, puis OK. Annuler abandonne l'aperçu.
+[touch tutorial 1.08.1]
+Bien ! Observez vos ouvrières accomplir la tâche.
+[touch tutorial 1.09.1]
+Les ouvrières récoltent du bois pour bâtir l'auberge. Attendez la fin de la construction.
+[touch tutorial 1.10.1]
+Une ouvrière apporte maintenant du blé à l'auberge pour nourrir les globules.
+[touch tutorial 1.11.1]
+La barre jaune de l'auberge indique son stock de blé.
+[touch tutorial 1.12.1]
+Vous fixez le nombre d'ouvrières demandé par un bâtiment. Les ouvrières libres choisissent leurs tâches seules.
+[touch tutorial 1.13.1]
+Une ouvrière approvisionne la ruche, une autre l'auberge. Elles s'arrêtent aussi pour manger.
+[touch tutorial 1.14.1]
+Touchez la ruche. Réglez le nombre d'ouvrières avec −/+, ou faites glisser le contrôle.
+[touch tutorial 1.15.1]
+Réglez le nombre d'ouvrières à 0 pour la ruche et l'auberge.
+[touch tutorial 1.16.1]
+Les ouvrières inactives mangent aussi. Une auberge non approvisionnée finira sans blé.
+[touch tutorial 1.17.1]
+Sans nourriture, les globules perdent de la santé et peuvent mourir. Les hôpitaux les soignent.
+[touch tutorial 1.18.1]
+Ouvrez Construire, choisissez Hôpital et placez-le près du bois ou de la ruche. Touchez OK.
+[touch tutorial 1.19.1]
+Touchez le chantier de l'hôpital et demandez 2 ouvrières.
+[touch tutorial 1.20.1]
+L'hôpital est prêt. Les globules blessés s'y rendront seuls.
+[touch tutorial 1.21.1]
+Les zones noires sont inexplorées. Les exploratrices volent pour les révéler.
+[touch tutorial 1.22.1]
+Touchez la ruche. Touchez un bouton d'unité sur l'anneau de production pour changer son poids : 0, 1, 2, 3, 5, puis 0.
+[touch tutorial 1.22.1 rows]
+Touchez la ruche. Utilisez −/+ sur les lignes de production des ouvrières, exploratrices et guerrières pour régler leurs poids.
+[touch tutorial 1.23.1]
+Réglez Exploratrice à 1, Ouvrière et Guerrière à 0. La ruche ne produira que des exploratrices.
+[touch tutorial 1.24.1]
+Demandez de nouveau 1 ouvrière à la ruche.
+[touch tutorial 1.25.1]
+Demandez 1 ouvrière à l'auberge pour maintenir son stock de blé.
+[touch tutorial 1.26.1]
+Attendez qu'une exploratrice sorte de la ruche.
+[touch tutorial 1.27.1]
+Votre exploratrice révèle la carte en volant. Continuez jusqu'à en avoir deux.
+[touch tutorial 1.28.1]
+Réglez Ouvrière à 1, Exploratrice et Guerrière à 0 pour ne produire que des ouvrières.
+[touch tutorial 2.01.1]
+Il y a de la pierre à l'est de votre base. Elle servira aux constructions et aux tours.
+[touch tutorial 2.02.1]
+Touchez les arbres fruitiers près de la pierre pour examiner leurs ressources, puis revenez à la ruche.
+[touch tutorial 2.03.1]
+Réglez Ouvrière à 1, Exploratrice et Guerrière à 0 pour ne produire que des ouvrières.
+[touch tutorial 2.04.1]
+Touchez la ruche et demandez 6 ouvrières pour accélérer la production.
+[touch tutorial 2.05.1]
+Laissez la ruche produire jusqu'à avoir 8 ouvrières.
+[touch tutorial 2.06.1]
+Davantage d'ouvrières approvisionnent la ruche. Les nouveaux globules arriveront plus vite.
+[touch tutorial 2.07.1]
+Une ouvrière coûte 5 blés. Placer les bâtiments nourriciers près du blé réduit les trajets.
+[touch tutorial 2.08.1]
+Demandez de nouveau 1 ouvrière à la ruche.
+[touch tutorial 2.09.1]
+Construisez une autre auberge juste au nord de la première.
+[touch tutorial 2.10.1]
+Affectez jusqu'à 3 ouvrières libres au chantier de l'auberge. Il ne demande que 3 bois.
+[touch tutorial 2.11.1]
+L'auberge terminée redemande automatiquement 1 ouvrière pour le blé.
+[touch tutorial 2.12.1]
+Les pistes de course apprennent aux globules à courir plus vite.
+[touch tutorial 2.13.1]
+Ouvrez Construire et choisissez Piste de course. L'aperçu montre son emprise ; il faut du bois et de la pierre.
+[touch tutorial 2.14.1]
+Placez les grands bâtiments d'entraînement au centre, avec de l'espace libre pour les améliorations.
+[touch tutorial 2.15.1]
+Placez une piste de course au sud de la ruche, laissez de l'espace autour et touchez OK.
+[touch tutorial 2.16.1]
+Touchez le chantier de la piste et affectez 5 à 7 ouvrières libres.
+[touch tutorial 2.17.1]
+Une fois bâtie, la piste entraîne les globules sans apport continu de ressources.
+[touch tutorial 2.18.1]
+Les globules vont s'entraîner seuls. Ils reprennent le travail ensuite.
+[touch tutorial 2.19.1]
+Touchez un globule entraîné pour examiner ses capacités améliorées.
+[touch tutorial 2.20.1]
+Les ouvrières rapides récoltent plus vite, mais mangent davantage. Approvisionnez les auberges.
+[touch tutorial 2.21.1]
+Le compteur indique les ouvrières libres et le total. Utilisez-les sans demander plus que votre effectif.
+[touch tutorial 2.22.1]
+Les compteurs voisins indiquent les exploratrices et guerrières. Vérifiez-les avant de placer des drapeaux.
+[touch tutorial 2.23.1]
+Chaque auberge de niveau 1 nourrit 4 globules à la fois. Deux auberges peuvent devenir trop petites.
+[touch tutorial 2.24.1]
+Augmentez l'offre de nourriture avant que les auberges ne suffisent plus.
+[touch tutorial 2.25.1]
+Construisez 3 auberges près du blé. Vous pouvez aussi faire glisser une auberge de la palette sur un emplacement valide.
+[touch tutorial 2.26.1]
+Terminez les 3 auberges supplémentaires pour continuer.
+[touch tutorial 2.27.1]
+L'auberge terminée redemande automatiquement 1 ouvrière pour le blé.
+[touch tutorial 2.28.1]
+Les piscines apprennent aux globules à nager pour atteindre les ressources aquatiques.
+[touch tutorial 2.29.1]
+Choisissez Piscine dans Construire. Placez-la près du bois, au nord-est, avec de la place pour les améliorations. Touchez OK.
+[touch tutorial 2.29.2]
+Affectez des ouvrières libres au chantier de la piscine pour le terminer plus vite.
+[touch tutorial 2.30.1]
+Choisissez Piscine dans Construire. Placez-la près du bois, au nord-est, avec de la place pour les améliorations. Touchez OK.
+[touch tutorial 2.30.2]
+Affectez des ouvrières libres au chantier de la piscine pour le terminer plus vite.
+[touch tutorial 2.31.1]
+Votre piscine est prête. Les globules y apprendront à nager.
+[touch tutorial 2.32.1]
+Une piscine de niveau 1 entraîne 2 globules à la fois. Ils reprennent le travail ensuite.
+[touch tutorial 2.33.1]
+Vos globules entraînés savent nager. Ils devront bientôt récolter des algues.
+[touch tutorial 2.34.1]
+Ouvrez Menu et choisissez Sauvegarder pour reprendre plus tard. Chargez la sauvegarde depuis le menu principal.
+[touch tutorial 2.35.1]
+Les écoles améliorent la récolte et apprennent aux ouvrières à bâtir des bâtiments améliorés.
+[touch tutorial 2.36.1]
+Une école demande des algues aquatiques. Les ouvrières doivent savoir nager pour les récolter.
+[touch tutorial 2.37.1]
+Gardez l'école à l'intérieur et protégée. Son enseignement est essentiel aux améliorations.
+[touch tutorial 2.38.1]
+Construisez une école derrière la piscine ou près de la piste. Affectez des ouvrières libres au chantier.
+[touch tutorial 2.39.1]
+Touchez un bâtiment pour voir quels globules y travaillent et où ils vont.
+[touch tutorial 3.01.1]
+Votre colonie a nourriture, soins et entraînement. Préparez maintenant sa défense.
+[touch tutorial 3.02.1]
+Votre colonie a besoin de guerrières. Produisez-les dans la ruche.
+[touch tutorial 3.03.1]
+Touchez la ruche. Touchez un bouton d'unité sur l'anneau de production pour changer son poids : 0, 1, 2, 3, 5, puis 0.
+[touch tutorial 3.03.1 rows]
+Touchez la ruche. Utilisez −/+ sur les lignes de production des ouvrières, exploratrices et guerrières pour régler leurs poids.
+[touch tutorial 3.03.2]
+Réglez Guerrière à 2, Ouvrière à 1 et Exploratrice à 0 dans la ruche.
+[touch tutorial 3.04.1]
+Cela produit 2 guerrières par ouvrière. Affectez plus d'ouvrières libres à la ruche pour accélérer.
+[touch tutorial 3.05.1]
+Les guerrières s'entraînent seules après leur naissance. Attendez d'en avoir au moins deux.
+[touch tutorial 3.06.1]
+Les guerrières apprennent aussi à courir et nager. Les casernes améliorent leur force et vitesse d'attaque.
+[touch tutorial 3.07.1]
+La force augmente les dégâts par coup ; la vitesse augmente la fréquence des coups.
+[touch tutorial 3.08.1]
+Ouvrez Construire et choisissez Camp d'entraînement. Placez-le près du bois et touchez OK.
+[touch tutorial 3.09.1]
+Affectez des ouvrières libres au chantier du camp d'entraînement. Ne dépassez pas votre effectif disponible.
+[touch tutorial 3.10.1]
+Le camp d'entraînement est prêt. Vos guerrières peuvent améliorer leurs attaques.
+[touch tutorial 3.11.1]
+Les bâtiments améliorés accueillent plus de globules et enseignent des compétences supérieures.
+[touch tutorial 3.12.1]
+Touchez un bâtiment et choisissez Améliorer. Il faut des ouvrières instruites pour les constructions supérieures.
+[touch tutorial 3.13.1]
+Vos auberges ont encore de la place. Améliorez d'abord les bâtiments d'entraînement.
+[touch tutorial 3.14.1]
+L'hôpital a aussi de la place. Envisagez d'améliorer un bâtiment d'entraînement.
+[touch tutorial 3.15.1]
+Touchez la piste et choisissez Améliorer. Elle attend la sortie des occupants avant les travaux.
+[touch tutorial 3.16.1]
+Touchez la piste et choisissez Améliorer. Elle attend la sortie des occupants avant les travaux.
+[touch tutorial 3.17.1]
+Affectez des ouvrières libres instruites au chantier d'amélioration.
+[touch tutorial 3.18.1]
+Attendez la fin de l'amélioration. Les constructions supérieures prennent du temps.
+[touch tutorial 3.19.1]
+La piste améliorée est plus grande. Les bâtiments ont besoin d'espace libre pour s'agrandir.
+[touch tutorial 3.20.1]
+Améliorez la caserne et la piscine. Terminez les deux pour continuer.
+[touch tutorial 3.21.1]
+Les bâtiments supérieurs accueillent davantage. Une auberge de niveau 2 nourrit 7 globules à la fois.
+[touch tutorial 3.22.1]
+Les ennemis sont proches. Préparez votre défense.
+[touch tutorial 3.23.1]
+Les tours tirent sur les ennemis. Les murs les protègent, mais laissez un accès pour la pierre.
+[touch tutorial 3.24.1]
+Utilisez deux tours et des murs sur trois côtés. Laissez le côté du ravitaillement ouvert.
+[touch tutorial 3.25.1]
+Construisez deux tours à l'est de la piscine, près du passage au-dessus des arbres fruitiers.
+[touch tutorial 3.26.1]
+Laissez de la place pour les murs et un chemin pour les ouvrières derrière chaque tour.
+[touch tutorial 3.27.1]
+Affectez 2 à 3 ouvrières par tour selon l'effectif libre.
+[touch tutorial 3.28.1]
+Choisissez Mur dans Construire et entourez trois côtés des tours. Gardez le chemin d'approvisionnement libre.
+[touch tutorial 3.29.1]
+Chaque portion de mur ne demande qu'une pierre. Les ouvrières les construiront à mesure qu'elles se libèrent.
+[touch tutorial 3.30.1]
+La pierre est loin. Affectez plus d'ouvrières libres pour ravitailler les tours plus vite.
+[touch tutorial 4.01.1]
+Votre colonie est bien équipée. Les bâtiments peuvent atteindre le niveau 3 pour progresser davantage.
+[touch tutorial 4.02.1]
+Déplacez la vue vers le nord-ouest de votre base pour chercher l'ennemi.
+[touch tutorial 4.03.1]
+Le brouillard de guerre masque l'activité ennemie. Envoyez une exploratrice pour l'observer.
+[touch tutorial 4.04.1]
+Ouvrez Drapeaux pour trouver les drapeaux et zones. Ils attribuent des tâches à une région.
+[touch tutorial 4.05.1]
+Choisissez Drapeau d'exploration. Touchez un emplacement puis OK ; il peut être dans une zone inexplorée.
+[touch tutorial 4.06.1]
+Placez un drapeau d'exploration sur la base ennemie présumée. Confirmez avec OK.
+[touch tutorial 4.07.1]
+Touchez le drapeau pour régler son rayon avec −/+ ou le contrôle. Une exploratrice examinera la zone.
+[touch tutorial 4.07.2]
+Vérifiez que vous avez une exploratrice ; produisez-en une si nécessaire. Touchez Continuer à son arrivée.
+[touch tutorial 4.08.1]
+L'ennemi rassemble des guerrières. Préparez une zone de garde près des tours.
+[touch tutorial 4.09.1]
+Ouvrez Drapeaux et choisissez Zone de garde. Réglez le pinceau sur Peindre, pas Effacer.
+[touch tutorial 4.10.1]
+Choisissez un grand pinceau carré sur la barre des tailles.
+[touch tutorial 4.11.1]
+Faites glisser derrière les tours pour peindre la zone. Utilisez Déplacer pour bouger la carte et Terminé pour sortir.
+[touch tutorial 4.12.1]
+Les guerrières rejoignent la zone. Faites-leur de la place, mais concentrez la zone près du passage.
+[touch tutorial 4.13.1]
+L'ennemi approche. Surveillez le passage.
+[touch tutorial 4.14.1]
+Votre colonie est attaquée. Les guerrières et tours défendent le passage.
+[touch tutorial 4.15.1]
+Vous avez survécu ! Ouvrez Drapeaux, choisissez Drapeau de guerre et placez-le sur la ruche ennemie. Touchez OK.
+[touch tutorial 4.16.1]
+Touchez le drapeau de guerre et affectez plusieurs guerrières avec son contrôle d'effectif.
+[touch tutorial 4.16.2]
+Réduisez le rayon pour concentrer l'attaque sur la ruche. Déplacez le drapeau en le faisant glisser.
+[touch tutorial 4.17.1]
+Vos guerrières traversent les défenses ennemies vers la ruche.
+[touch tutorial 4.18.1]
+Vos guerrières ont atteint la base ennemie. Maintenez l'effort d'attaque.
+[touch tutorial 4.19.1]
+Bravo ! Vous savez bâtir, approvisionner, entraîner et commander une colonie. Essayez une nouvelle partie.
+[touch tutorial continue]
+Continuer
+[touch tutorial waiting]
+En attente

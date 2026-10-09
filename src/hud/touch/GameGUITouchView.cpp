@@ -280,8 +280,8 @@ void GameGUITouch::drawHUD()
 	}
 	if (!activeDialog())
 	{
-		drawTutorial();
 		drawPanel();
+		drawTutorial();
 	}
 	if (statsOpen && !activeDialog())
 		drawStats();
@@ -334,33 +334,68 @@ ViewRect GameGUITouch::tutorialRect() const
 	if (tutorialLines.empty())
 		return {};
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	auto rect = layout().world;
+	const auto ui = layout();
+	auto rect = ui.world;
 	rect.x += 8 * unit;
 	rect.y = minimapRect().y + minimapRect().h + 8 * unit;
 	rect.w = std::min(rect.w - 16 * unit, 560 * unit);
-	rect.h = std::max(0.0, layout().actions.y - rect.y);
-	rect.h = tutorialCollapsed ? 48 * unit
-							   : std::min(rect.h, (std::min<size_t>(3, tutorialLines.size()) *
-														   InGameTouchTheme::tutorialPitch() +
-													   16 + (gui.swallowSpaceKey ? 48 : 0)) *
-													  unit);
+	const double wanted = tutorialCollapsed ? 48 * unit :
+		(std::min<size_t>(3, tutorialLines.size()) * InGameTouchTheme::tutorialPitch() +
+		16 + (tutorialMessage ? 28 : 0)) * unit + tutorialFooterHeight();
+	rect.h = std::max(0.0, std::min(ui.actions.y - rect.y, wanted));
+	const auto panel = ui.panel;
+	if (tutorialMessage && (panelOpen || ui.persistentPanel) && panel.w > 0 && panel.h > 0 &&
+		rect.x < panel.x + panel.w && rect.x + rect.w > panel.x &&
+		rect.y < panel.y + panel.h && rect.y + rect.h > panel.y)
+	{
+		const double above = panel.y - rect.y - 8 * unit;
+		const double left = panel.x - rect.x - 8 * unit;
+		const double rightX = panel.x + panel.w + 8 * unit;
+		const double right = ui.safe.x + ui.safe.w - 8 * unit - rightX;
+		if (above >= wanted) rect.h = std::min(rect.h, above);
+		else if (std::max(left, right) >= 160 * unit)
+		{
+			if (right > left) { rect.x = rightX; rect.w = std::min(rect.w, right); }
+			else rect.w = std::min(rect.w, left);
+		}
+		// Extremely constrained screens keep the scrollable card above the
+		// inspector. Its collapse target releases space; input uses this same
+		// ordering so hidden controls cannot fire through the card.
+	}
+
 	return rect;
 }
 void GameGUITouch::prepareTutorial()
 {
-	std::string text = gui.drawnScene().panels.hud.state().legacyScriptText;
+	const auto &state = gui.drawnScene().panels.hud.state();
+	std::string original = state.legacyScriptTextShown ? state.legacyScriptText : std::string();
+	const auto *cursorMessage = tutorialCursorMessage();
+	const auto *message = gui.scriptText.empty()
+		? (original.empty() || TouchTutorial::matches(cursorMessage, original)
+			? cursorMessage : TouchTutorial::find(tutorialChapter, original)) : nullptr;
 	if (!gui.scriptText.empty())
 	{
-		if (!text.empty())
-			text += '\n';
-		text += gui.scriptText;
+		if (!original.empty()) original += '\n';
+		original += gui.scriptText;
 	}
+	if (original != tutorialOriginal || message != tutorialMessage)
+	{
+		tutorialOriginal = original;
+		tutorialMessage = message;
+		tutorialPage = 0;
+		tutorialAcknowledged = false;
+		tutorialCollapsed = false;
+		tutorialScroll = 0;
+		tutorialWidth = 0;
+	}
+	std::string text = message ? tutorialPageText(message->pages[tutorialPage]) : original;
+
 	const double width =
-		(std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0) - 64) /
+		(std::max(96.0, (tutorialRect().w > 0 ? tutorialRect().w / globalContainer->gfx->logicalUnitsPerPoint() :
+		std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0)) - 64)) /
 		InGameTouchTheme::textGrowth();
 	if (text == tutorialText && width == tutorialWidth)
 		return;
-	tutorialCollapsed = false;
 	tutorialText = text;
 	tutorialWidth = width;
 	tutorialLines.clear();
@@ -417,44 +452,52 @@ void GameGUITouch::drawTutorial()
 		drawPointLabel(rect, GAGCore::Toolkit::getStringTable()->getString("[Tutorial ▸]"));
 		return;
 	}
-	const double footerHeight = gui.swallowSpaceKey ? 48 * unit : 0;
-	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w - 48 * unit),
-				  int(std::max(0.0, rect.h - footerHeight))};
+	const double footerHeight = tutorialFooterHeight();
+	const double headingHeight = tutorialMessage ? 28 * unit : 0;
+	if (tutorialMessage)
+		drawPointLabel({rect.x + 8 * unit, rect.y, rect.w - 64 * unit, headingHeight},
+			std::to_string(tutorialPage + 1) + " / " + std::to_string(tutorialMessage->pages.size()), .85, true);
+	SDL_Rect clip{int(rect.x), int(rect.y + headingHeight), int(rect.w - 48 * unit),
+				  int(std::max(0.0, rect.h - footerHeight - headingHeight))};
 	// Lines are tutorialLine authored pixels apart and drawn at the text unit,
 	// so they sit tutorialPitch() points apart.
 	const double pitch = InGameTouchTheme::tutorialPitch();
 	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / pitch));
 	gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 8 * unit,
-						rect.y + (8 - tutorialScroll + first * pitch) * unit, &clip);
+						rect.y + headingHeight + (8 - tutorialScroll + first * pitch) * unit, &clip);
 	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / pitch) + 1);
 	for (size_t i = first; i < end; ++i)
 		gfx->drawString(0, int((i - first) * InGameTouchTheme::tutorialLine), globalContainer->standardFont,
 						tutorialLines[i]);
 	gfx->setUITransform();
 	gfx->setClipRect();
-	const double textHeight = std::max(1.0, rect.h - footerHeight),
+	const double textHeight = std::max(1.0, rect.h - footerHeight - headingHeight),
 				 content = tutorialLines.size() * pitch * unit;
 	if (content > textHeight)
 	{
 		gfx->drawFilledRect(int(rect.x + rect.w - 3 * unit),
-							int(rect.y + std::clamp(tutorialScroll * unit, 0.0, content - textHeight) * textHeight / content),
+							int(rect.y + headingHeight + std::clamp(tutorialScroll * unit, 0.0, content - textHeight) * textHeight / content),
 							std::max(1, int(2 * unit)), int(textHeight * textHeight / content),
 							Color(170, 185, 190));
 	}
 	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, 48 * unit}, "−", 1.2);
-	if (gui.swallowSpaceKey)
+	if (footerHeight > 0)
 	{
-		gfx->drawFilledRect(int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w),
-							int(48 * unit), InGameTouchTheme::selected());
-		SDL_Rect footer{int(rect.x), int(rect.y + rect.h - 48 * unit), int(rect.w), int(48 * unit)};
-		// 16 points below the footer's top at the authored size, centred as text grows.
-		gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 12 * unit,
-							rect.y + rect.h - (24 + 8 * InGameTouchTheme::textGrowth()) * unit, &footer);
-		gfx->drawString(0, 0, globalContainer->standardFont,
-						Toolkit::getStringTable()->getString("[ok]"));
-		gfx->setUITransform();
-		gfx->setClipRect();
+		const auto back = tutorialBackRect(), next = tutorialNextRect();
+		auto *strings = Toolkit::getStringTable();
+		if (back.w > 0)
+		{
+			gfx->drawFilledRect(int(back.x), int(back.y), int(back.w), int(back.h), InGameTouchTheme::field());
+			drawPointLabel(back, strings->getString("[Back]"), .9);
+		}
+		const bool available = !tutorialAcknowledged &&
+			((tutorialMessage && tutorialPage + 1 < tutorialMessage->pages.size()) || gui.swallowSpaceKey);
+		gfx->drawFilledRect(int(next.x), int(next.y), int(next.w), int(next.h),
+			available ? InGameTouchTheme::selected() : InGameTouchTheme::field());
+		drawPointLabel(next, strings->getString(tutorialMessage
+			? available ? "[touch tutorial continue]" : "[touch tutorial waiting]" : "[ok]"), .9);
 	}
+
 }
 
 const SceneBuildingPanel *GameGUITouch::allocationBuilding() const

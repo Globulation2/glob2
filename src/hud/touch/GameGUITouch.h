@@ -5,6 +5,7 @@
 #include <GestureScroll.h>
 #include "TouchInteractionSession.h"
 #include "TouchDial.h"
+#include "TouchTutorial.h"
 #include "BrushHUD.h"
 #include "MetricCatalog.h"
 #include <SDL3/SDL.h>
@@ -12,6 +13,7 @@
 #include <optional>
 #include <memory>
 #include <vector>
+#include <utility>
 namespace GAGGUI::ui
 {
 class UIDialog;
@@ -56,6 +58,11 @@ class GameGUITouch
 	void drawHUD();
 	void drawPanel();
 	bool hasPreview() const { return preview.has_value(); }
+	void setTutorialSource(std::string_view source);
+	void tutorialAcknowledgmentChanged(bool value);
+	std::string tutorialHistoryText(const std::string &original) const;
+	std::string tutorialHistoryIdentity(const std::string &original) const;
+	void drawTutorialHighlights();
 
   private:
 	friend class GameGUITouchHarness;
@@ -266,12 +273,26 @@ class GameGUITouch
 	bool swallowMouseRelease = false, ignoreTouchSequence = false;
 	double panelScroll = 144;
 	bool tutorialCollapsed = false;
+	int tutorialChapter = 0;
+	const TouchTutorial::Message *tutorialMessage = nullptr;
+	size_t tutorialPage = 0;
+	bool tutorialAcknowledged = false;
+	bool tutorialWasSwallowing = false;
+	std::string tutorialOriginal;
+	std::vector<std::pair<int, const TouchTutorial::Message *>> tutorialCursors;
+	const TouchTutorial::Message *tutorialCursorMessage() const;
 	std::string tutorialText;
 	std::vector<std::string> tutorialLines;
 	double tutorialWidth = 0, tutorialScroll = 0;
 	GAGCore::ViewRect tutorialRect() const;
 	void prepareTutorial();
 	void drawTutorial();
+	std::string tutorialPageText(const TouchTutorial::Page &page) const;
+	double tutorialFooterHeight() const;
+	GAGCore::ViewRect tutorialBackRect() const;
+	GAGCore::ViewRect tutorialNextRect() const;
+	bool tapTutorial(GAGCore::ViewPoint point);
+	std::vector<GAGCore::ViewRect> tutorialTargets() const;
 	GAGCore::MobileLayout layout() const;
 	// Edge-hugging controls the host is asked to keep free of system gestures;
 	// synchronised only when the set changes.

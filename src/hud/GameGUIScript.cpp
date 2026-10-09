@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "render/scene/BuildingCatalogView.h"
@@ -101,6 +102,12 @@ void GameGUI::setHighlight(int highlight, bool on)
 		highlights.erase(highlight);
 }
 
+void GameGUI::setSwallowSpaceKey(bool value)
+{
+	if (touch) touch->tutorialAcknowledgmentChanged(value);
+	swallowSpaceKey = value;
+}
+
 void GameGUI::showScriptText(const std::string &text)
 {
 	scriptText = text;
@@ -136,6 +143,8 @@ void GameGUI::setCampaignGame(Campaign &campaign, const std::string &missionName
 
 void GameGUI::startScriptClientChannel()
 {
+	// Before the simulation thread starts, cache only presentation recognition.
+	if (touch) touch->setTutorialSource(game.sgslScript.sourceCode);
 	const auto choices = [&](const auto& names, const auto& states) {
 		std::vector<ScriptClientChannel::Choice> result;
 		for (size_t i = 0; i < names.size(); ++i)

@@ -396,6 +396,7 @@ Handle capture(const Game& game,
         session->prestigeToReach=game.prestigeToReach;
         session->anyPlayerWaited=game.anyPlayerWaited; session->maskAwayPlayer=game.maskAwayPlayer;
         session->legacyScriptTextShown=game.legacyScriptActive() && game.sgslScript.isTextShown;
+        session->legacyScriptCursor=game.legacyScriptActive() ? game.sgslScript.presentationCursor() : -1;
         session->legacyScriptText=session->legacyScriptTextShown ? game.sgslScript.textShown : std::string();
         session->legacyScriptTimer=game.legacyScriptTimer();
         session->players.resize(game.gameHeader.getNumberOfPlayers());

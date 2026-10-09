@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "SGSL.h"
+#include "Engine.h"
+#include "Version.h"
+#include "touch/TouchTutorial.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <array>
@@ -47,6 +52,70 @@ std::string save(MapScriptSGSL& script, Game& game)
 
 TEST_SUITE("LegacyScriptCoverage")
 {
+    TEST_CASE("bundled touch tutorial aliases and translations preserve saved script execution")
+    {
+        glob2test::HeadlessGlobals globals({.loadStrings=true});
+        auto *strings=GAGCore::Toolkit::getStringTable();
+        REQUIRE(TouchTutorial::messages().size()==116);
+        for (const auto& message : TouchTutorial::messages())
+            for (const auto& page : message.pages)
+                for (const char *language : {"en","fr","de","es","nl","ru","ar"})
+                {
+                    REQUIRE(strings->hasLanguage(language));
+                    CHECK(strings->doesStringExist(page.key));
+                    CHECK_FALSE(strings->getStringInLang(page.key,strings->getLangCode(language)).empty());
+                    if (*page.rowsKey)
+                        CHECK_FALSE(strings->getStringInLang(page.rowsKey,strings->getLangCode(language)).empty());
+                }
+        for (int chapter=1; chapter<=4; ++chapter)
+        {
+            GameGUI gui(false);
+            auto header=Engine::loadMapHeader("campaigns/tutorial-part"+std::to_string(chapter)+".map");
+            GameHeader players;
+            players.setNumberOfPlayers(header.getNumberOfTeams());
+            for(int team=0;team<header.getNumberOfTeams();++team)
+                players.getBasePlayer(team)=BasePlayer(team,"Tutorial",team,team==0?BasePlayer::P_LOCAL:BasePlayer::P_AI);
+            const bool loaded=gui.loadFromHeaders(header,players,true,true);
+            // The unchanged reader rejects chapter three's pre-area-format
+            // objective bytes as an invalid SGSL area. Keep this coverage gap
+            // explicit; repairing map loading belongs in a compatibility change.
+            if (!loaded)
+            {
+                REQUIRE(chapter==3);
+                std::cerr << "SKIP chapter three save continuation: existing legacy map-loader rejection\n";
+            }
+            auto& script=gui.game.sgslScript;
+            REQUIRE(TouchTutorial::chapter(script.sourceCode)==chapter);
+            CHECK(TouchTutorial::chapter(script.sourceCode+"\n")==0);
+            CHECK(TouchTutorial::find(0,"unknown")==nullptr);
+            for (const auto& story : script.stories)
+                for (size_t n=0; n<story.line.size(); ++n)
+                    if (story.line[n].type==SGSLToken::S_SHOW)
+                        REQUIRE(TouchTutorial::find(chapter,story.line.at(n+1).msg)!=nullptr);
+            if (!loaded) continue;
+            script.syncStep(gui.game,gui,gui.clientRequests);
+            // Isolated script bytes use today's format, unlike the old map header.
+            gui.game.mapHeader.versionMinor=VERSION_MINOR;
+            const auto stored=save(script,gui.game);
+            MapScriptSGSL restored;
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(stored.data(),stored.size()));
+            input.seekFromStart(0);
+            REQUIRE(restored.load(&input,&gui.game));
+            CHECK(restored.sourceCode==script.sourceCode);
+            CHECK(restored.checkSum()==script.checkSum());
+            // Identical acknowledgments drive precisely the same old program.
+            for (int tick=0; tick<40; ++tick)
+            {
+                gui.setIsSpaceSet(tick%3==0);
+                script.syncStep(gui.game,gui,gui.clientRequests);
+                gui.setIsSpaceSet(tick%3==0);
+                restored.syncStep(gui.game,gui,gui.clientRequests);
+                CHECK(restored.checkSum()==script.checkSum());
+                CHECK(restored.textShown==script.textShown);
+                CHECK(restored.isTextShown==script.isTextShown);
+            }
+        }
+    }
     TEST_CASE("random legacy summons preserve story progress through full continuation")
     {
         glob2test::HeadlessGlobals globals;

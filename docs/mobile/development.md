@@ -236,6 +236,70 @@ Back gesture (`hostGestureExclusion`), resending only when the rectangle
 changes; Android honours at most about 200 dp of exclusion per edge, so check
 that a drag out of the rail places a building rather than navigating back.
 
+### Touch tutorial
+
+The four bundled tutorial scenarios retain their original SGSL execution and
+save state. The touch HUD recognizes the exact embedded script fingerprint at
+load time (also before starting the simulation thread), then resolves original
+messages through a client-only catalog. The standalone script revisions are
+recognized too. Unrecognized or edited scripts keep their original text, as does
+the classic mouse interface. There are no new simulation requests or saved fields.
+The published presentation cursor identifies repeated localized messages and
+rebuilds the current instruction after loading: SGSL saves omit displayed text.
+Cursor-to-message intervals are rebuilt from the compiled, recognized source
+before the simulation thread starts; drawing never reads the live script.
+
+The tutorial card displays short instruction pages with Back, Continue, a page
+counter and collapse control. Intermediate pages are local; only Continue on the
+last page sends the existing Space acknowledgment, and repeated taps cannot send
+it twice. Physical Space follows the same paging path in the touch HUD. Scenario
+waits have no acknowledgment: the instruction remains until the script changes
+it. Rotation preserves pagination and rewraps text; loading restarts at the first
+page of the current script message. The message-history recap includes the whole
+adapted instruction, once per original message, independently of pagination.
+
+Guidance targets use the toolbar, palette, brush, inspector-row and `dialRegions()`
+geometry used by drawing and input. Radial guidance follows the current worker,
+production and range lanes. Swarm production teaches tap-to-cycle weights
+0, 1, 2, 3, 5; the row fallback has separate wording for its −/+ controls.
+Closed palettes highlight their toolbar button; scroll-hidden choices highlight
+the palette viewport without moving it. Closed building inspectors highlight
+the corresponding visible world object, or the minimap when it is off-screen.
+Cards prefer space above or beside panels; when space is constrained they stay
+above the panel and their collapse control releases map space. Card input takes
+precedence over controls obscured by the card.
+
+Author instructions in `tools/tutorial/phrases.tsv` and assign pages to the stable
+chapter/message IDs in `tools/tutorial/lessons.json`. Each phrase has English,
+French, German, Spanish, Dutch, Russian and Arabic text. Regenerate the C++ alias
+catalog and native StringTable entries with:
+
+```sh
+python3 tools/tutorial/build_catalog.py
+python3 tools/tutorial/build_catalog.py --check
+```
+
+The check rejects missing languages, invalid targets, ambiguous aliases with
+different guidance, and stale generated outputs. Two old Spanish Swimming Pool
+messages have identical source text, so they intentionally share identical
+adapted pages but retain distinct IDs through the presentation cursor.
+The generator reads the shipped compressed maps as well as the
+standalone scripts: changing only a standalone script does not update a scenario.
+Keep maps and scripts unchanged for presentation-only edits.
+
+The `LegacyScriptCoverage` tutorial case checks aliases, localized keys and SGSL
+save continuation. The `GameGUITouch` tutorial case loads the shipped maps,
+checks local paging and acknowledgment, captures phone/tablet layouts, and verifies
+save/load recognition and raw-text fallback. Run these alongside the existing
+touch controls and presentation suites. The current legacy loader rejects chapter
+three's format-81 map, interpreting old objective data as an invalid SGSL area.
+The harness reports this omission; catalog aliases and translations are still
+checked for that chapter. Fixing the loader requires separate compatibility work.
+Device playtesting must still cover the
+complete course on Android and iOS, including both thumb preferences, radial/row
+inspectors, rotation, enlarged text and save/resume; display harness captures do
+not establish device coverage.
+
 ### Gameplay responsibilities and action flow
 
 - `GameGUITouch` composes explicit bounds, routes input ownership, presents the HUD,

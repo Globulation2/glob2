@@ -6012,3 +6012,265 @@ Tijdslimiet bereikt.
 Drempel voor de winstkans bereikt.
 [Destroy this building?]
 Dit gebouw vernietigen?
+[touch tutorial 1.01.1]
+Welkom! Jij geeft taken; de globules voeren ze zelf uit.
+[touch tutorial 1.01.2]
+Sleep over een lege plek op de kaart om het beeld te verplaatsen.
+[touch tutorial 1.01.3]
+Knijp met twee vingers om te zoomen. Tik op een object voor informatie; tik op een lege plek om het paneel te sluiten.
+[touch tutorial 1.01.4]
+Tik op Verder voor de volgende instructie. Klap dit kaartje in voor meer ruimte.
+[touch tutorial 1.01.5]
+Open Menu en kies Opslaan om later verder te gaan. Laad je spel vanuit het hoofdmenu.
+[touch tutorial 1.01.6]
+Open Gereedschap en daarna de berichtengeschiedenis om instructies terug te lezen.
+[touch tutorial 1.02.1]
+Je kolonie begint met een Zwerm en een werker.
+[touch tutorial 1.03.1]
+Werkers brengen graan naar de Zwerm om nieuwe globules te maken.
+[touch tutorial 1.04.1]
+Tik op een werker om gezondheid, voedsel en vaardigheden te bekijken.
+[touch tutorial 1.05.1]
+Voedsel neemt met de tijd af. De blauwe balk onder een globule toont zijn voorraad.
+[touch tutorial 1.06.1]
+Globules eten in Herbergen. Tik op een lege plek om het paneel te sluiten.
+[touch tutorial 1.07.1]
+Open Bouwen en kies Herberg. Sleep het palet om meer keuzes te zien.
+[touch tutorial 1.07.2]
+Tik op een vrije plek bij graan en daarna op OK. Annuleren verwijdert het voorbeeld.
+[touch tutorial 1.08.1]
+Goed! Kijk hoe je werkers de taak uitvoeren.
+[touch tutorial 1.09.1]
+Werkers verzamelen hout voor de Herberg. Wacht tot de bouw klaar is.
+[touch tutorial 1.10.1]
+Een werker brengt nu graan naar de Herberg voor hongerige globules.
+[touch tutorial 1.11.1]
+De gele balk van de Herberg toont de graanvoorraad.
+[touch tutorial 1.12.1]
+Jij bepaalt hoeveel werkers een gebouw nodig heeft. Vrije werkers kiezen zelf taken.
+[touch tutorial 1.13.1]
+Een werker bevoorraadt de Zwerm en een andere de Herberg. Ze nemen ook eetpauzes.
+[touch tutorial 1.14.1]
+Tik op de Zwerm. Verander het werkersdoel met −/+ of sleep de bediening.
+[touch tutorial 1.15.1]
+Zet het werkersdoel van de Zwerm en de Herberg op 0.
+[touch tutorial 1.16.1]
+Ook werkers zonder taak eten. Een Herberg zonder toevoer raakt zonder graan.
+[touch tutorial 1.17.1]
+Zonder voedsel verliezen globules gezondheid en kunnen ze sterven. Ziekenhuizen genezen gewonden.
+[touch tutorial 1.18.1]
+Open Bouwen, kies Ziekenhuis en plaats het bij hout of centraal bij de Zwerm. Tik op OK.
+[touch tutorial 1.19.1]
+Tik op de bouwplaats van het Ziekenhuis en stel 2 werkers in.
+[touch tutorial 1.20.1]
+Het Ziekenhuis is klaar. Gewonde globules gaan er zelf heen.
+[touch tutorial 1.21.1]
+Donkere gebieden zijn onverkend. Verkenners vliegen om ze zichtbaar te maken.
+[touch tutorial 1.22.1]
+Tik op de Zwerm. Tik op een eenheid in de productiering voor gewichten 0, 1, 2, 3, 5 en weer 0.
+[touch tutorial 1.22.1 rows]
+Tik op de Zwerm. Gebruik −/+ bij de productierijen van werkers, verkenners en krijgers om hun gewichten te wijzigen.
+[touch tutorial 1.23.1]
+Zet Verkenner op 1 en Werker en Krijger op 0. De Zwerm maakt alleen verkenners.
+[touch tutorial 1.24.1]
+Zet het werkersdoel van de Zwerm weer op 1.
+[touch tutorial 1.25.1]
+Stel 1 werker in voor de Herberg zodat er graan blijft komen.
+[touch tutorial 1.26.1]
+Wacht tot een verkenner uit de Zwerm komt.
+[touch tutorial 1.27.1]
+Je verkenner onthult de kaart tijdens het vliegen. Blijf produceren tot je er twee hebt.
+[touch tutorial 1.28.1]
+Zet Werker op 1 en Verkenner en Krijger op 0 om alleen werkers te maken.
+[touch tutorial 2.01.1]
+Ten oosten van je basis ligt steen. Je hebt het nodig voor gebouwen en Torens.
+[touch tutorial 2.02.1]
+Tik op de fruitbomen bij de steen voor informatie en ga terug naar de Zwerm.
+[touch tutorial 2.03.1]
+Zet Werker op 1 en Verkenner en Krijger op 0 om alleen werkers te maken.
+[touch tutorial 2.04.1]
+Tik op de Zwerm en stel 6 werkers in om sneller te produceren.
+[touch tutorial 2.05.1]
+Laat de Zwerm produceren tot je kolonie 8 werkers heeft.
+[touch tutorial 2.06.1]
+Meer werkers bevoorraden de Zwerm. Nieuwe globules komen nu sneller.
+[touch tutorial 2.07.1]
+Een werker kost 5 graan. Voedselgebouwen bij graan besparen reistijd en werk.
+[touch tutorial 2.08.1]
+Zet het werkersdoel van de Zwerm weer op 1.
+[touch tutorial 2.09.1]
+Bouw nog een Herberg net ten noorden van de eerste.
+[touch tutorial 2.10.1]
+Wijs maximaal 3 vrije werkers toe aan de Herberg. Er zijn maar 3 stukken hout nodig.
+[touch tutorial 2.11.1]
+De voltooide Herberg vraagt automatisch weer 1 werker voor graan.
+[touch tutorial 2.12.1]
+Racebanen leren globules sneller lopen.
+[touch tutorial 2.13.1]
+Open Bouwen en kies Racebaan. Het voorbeeld toont de omvang; er is hout en steen nodig.
+[touch tutorial 2.14.1]
+Plaats grote trainingsgebouwen centraal met ruimte eromheen voor verbeteringen.
+[touch tutorial 2.15.1]
+Plaats een Racebaan ten zuiden van de Zwerm, laat ruimte eromheen en tik op OK.
+[touch tutorial 2.16.1]
+Tik op de Racebaan in aanbouw en wijs 5–7 vrije werkers toe.
+[touch tutorial 2.17.1]
+Na de bouw traint de Racebaan globules zonder voortdurende toevoer van grondstoffen.
+[touch tutorial 2.18.1]
+Globules gaan zelf naar trainingsgebouwen en werken daarna verder.
+[touch tutorial 2.19.1]
+Tik op een getrainde globule om zijn verbeterde vaardigheden te bekijken.
+[touch tutorial 2.20.1]
+Snellere werkers verzamelen sneller maar eten ook sneller. Houd je Herbergen bevoorraad.
+[touch tutorial 2.21.1]
+De teller toont vrije werkers en het totaal. Vraag niet meer werkers dan je hebt.
+[touch tutorial 2.22.1]
+De andere tellers tonen verkenners en krijgers. Controleer ze voordat je vlaggen plaatst.
+[touch tutorial 2.23.1]
+Elke Herberg van niveau 1 voedt 4 globules tegelijk. Twee kunnen snel vol raken.
+[touch tutorial 2.24.1]
+Breid de voedselvoorziening uit voordat je te weinig Herbergen hebt.
+[touch tutorial 2.25.1]
+Bouw 3 extra Herbergen bij graan. Je kunt een Herberg ook uit het palet naar een geldige plek slepen.
+[touch tutorial 2.26.1]
+Voltooi nog 3 Herbergen om verder te gaan.
+[touch tutorial 2.27.1]
+De voltooide Herberg vraagt automatisch weer 1 werker voor graan.
+[touch tutorial 2.28.1]
+Zwembaden leren globules zwemmen en grondstoffen over water bereiken.
+[touch tutorial 2.29.1]
+Kies Zwembad bij Bouwen. Plaats het bij hout ten noordoosten van de basis met ruimte voor verbeteringen. Tik op OK.
+[touch tutorial 2.29.2]
+Wijs vrije werkers toe aan het Zwembad om het sneller te bouwen.
+[touch tutorial 2.30.1]
+Kies Zwembad bij Bouwen. Plaats het bij hout ten noordoosten van de basis met ruimte voor verbeteringen. Tik op OK.
+[touch tutorial 2.30.2]
+Wijs vrije werkers toe aan het Zwembad om het sneller te bouwen.
+[touch tutorial 2.31.1]
+Je Zwembad is klaar. Globules gaan er zwemmen leren.
+[touch tutorial 2.32.1]
+Een Zwembad van niveau 1 traint 2 globules tegelijk. Ze werken daarna verder.
+[touch tutorial 2.33.1]
+Je getrainde globules kunnen nu zwemmen. Binnenkort moeten ze algen verzamelen.
+[touch tutorial 2.34.1]
+Open Menu en kies Opslaan om later verder te gaan. Laad je spel vanuit het hoofdmenu.
+[touch tutorial 2.35.1]
+Scholen verbeteren oogsten en leren werkers verbeterde gebouwen bouwen.
+[touch tutorial 2.36.1]
+Een School heeft algen uit water nodig. Werkers moeten daarvoor leren zwemmen.
+[touch tutorial 2.37.1]
+Bescherm de School landinwaarts. De training is essentieel voor verbeteringen.
+[touch tutorial 2.38.1]
+Bouw een School achter het Zwembad of bij de Racebaan en wijs vrije werkers toe.
+[touch tutorial 2.39.1]
+Tik op een gebouw om te zien welke globules er werken en waar ze heen gaan.
+[touch tutorial 3.01.1]
+Je kolonie heeft voedsel, genezing en training. Bereid nu de verdediging voor.
+[touch tutorial 3.02.1]
+Je kolonie heeft krijgers nodig. Maak ze in de Zwerm.
+[touch tutorial 3.03.1]
+Tik op de Zwerm. Tik op een eenheid in de productiering voor gewichten 0, 1, 2, 3, 5 en weer 0.
+[touch tutorial 3.03.1 rows]
+Tik op de Zwerm. Gebruik −/+ bij de productierijen van werkers, verkenners en krijgers om hun gewichten te wijzigen.
+[touch tutorial 3.03.2]
+Zet in de Zwerm Krijger op 2, Werker op 1 en Verkenner op 0.
+[touch tutorial 3.04.1]
+Zo ontstaan 2 krijgers per werker. Wijs meer vrije werkers toe voor snellere productie.
+[touch tutorial 3.05.1]
+Krijgers trainen zichzelf na hun geboorte. Wacht tot je er minstens twee hebt.
+[touch tutorial 3.06.1]
+Krijgers leren ook rennen en zwemmen. Kazernes verbeteren aanvalskracht en aanvalssnelheid.
+[touch tutorial 3.07.1]
+Aanvalskracht verhoogt schade per klap; aanvalssnelheid verhoogt hoe vaak krijgers slaan.
+[touch tutorial 3.08.1]
+Open Bouwen en kies Kazerne. Plaats hem bij hout en tik op OK.
+[touch tutorial 3.09.1]
+Wijs vrije werkers toe aan de Kazerne zonder meer te vragen dan beschikbaar.
+[touch tutorial 3.10.1]
+De Kazerne is klaar. Je krijgers kunnen hun aanvallen verbeteren.
+[touch tutorial 3.11.1]
+Verbeterde gebouwen bedienen meer globules en leren hogere vaardigheden.
+[touch tutorial 3.12.1]
+Tik op een gebouw en kies Verbeteren. Hogere bouw vereist werkers die op School zijn getraind.
+[touch tutorial 3.13.1]
+Je Herbergen hebben nog ruimte. Verbeter hier eerst de trainingsgebouwen.
+[touch tutorial 3.14.1]
+Ook het Ziekenhuis heeft ruimte. Verbeter eerst een trainingsgebouw.
+[touch tutorial 3.15.1]
+Tik op de Racebaan en kies Verbeteren. De bouw wacht tot de bewoners vertrekken.
+[touch tutorial 3.16.1]
+Tik op de Racebaan en kies Verbeteren. De bouw wacht tot de bewoners vertrekken.
+[touch tutorial 3.17.1]
+Wijs vrije, op School getrainde werkers toe aan de verbetering.
+[touch tutorial 3.18.1]
+Wacht tot de verbetering klaar is. Hogere bouw kost tijd.
+[touch tutorial 3.19.1]
+De verbeterde Racebaan is groter. Gebouwen hebben vrije ruimte nodig om uit te breiden.
+[touch tutorial 3.20.1]
+Verbeter de Kazerne en het Zwembad. Voltooi beide om verder te gaan.
+[touch tutorial 3.21.1]
+Hogere gebouwen hebben meer capaciteit. Een Herberg van niveau 2 voedt 7 globules tegelijk.
+[touch tutorial 3.22.1]
+Er zijn vijanden dichtbij. Bereid je verdediging voor.
+[touch tutorial 3.23.1]
+Torens beschieten vijanden. Muren beschermen ze, maar laat een ingang voor de steenvoorraad.
+[touch tutorial 3.24.1]
+Gebruik twee Torens met muren aan drie kanten. Laat de toevoerkant open.
+[touch tutorial 3.25.1]
+Bouw twee Torens ten oosten van het Zwembad bij de doorgang boven de fruitbomen.
+[touch tutorial 3.26.1]
+Laat ruimte voor muren en een pad achter elke Toren voor werkers met steen.
+[touch tutorial 3.27.1]
+Wijs 2–3 werkers toe aan elke Toren, afhankelijk van de vrije werkers.
+[touch tutorial 3.28.1]
+Kies Muur bij Bouwen en omring drie kanten van de Torens. Houd het toevoerpad vrij.
+[touch tutorial 3.29.1]
+Elk muurstuk kost maar één steen. Werkers bouwen de stukken zodra ze vrij zijn.
+[touch tutorial 3.30.1]
+Steen ligt ver weg. Wijs meer vrije werkers toe als de Torens sneller voorraad nodig hebben.
+[touch tutorial 4.01.1]
+Je kolonie is goed uitgerust. Gebouwen kunnen niveau 3 bereiken voor meer capaciteit en vaardigheden.
+[touch tutorial 4.02.1]
+Sleep de kaart naar het noordwesten van je basis om de vijand te zoeken.
+[touch tutorial 4.03.1]
+Oorlogsmist verbergt vijandelijke activiteit. Stuur een verkenner om te kijken.
+[touch tutorial 4.04.1]
+Open Vlaggen voor vlaggen en zones. Ze geven taken voor een gebied.
+[touch tutorial 4.05.1]
+Kies Verkenningsvlag. Tik op een plek en daarna OK; vlaggen mogen ook in onverkende gebieden.
+[touch tutorial 4.06.1]
+Plaats een Verkenningsvlag boven de vermoedelijke vijandelijke basis. Bevestig met OK.
+[touch tutorial 4.07.1]
+Tik op de vlag om het bereik met −/+ of de bediening te veranderen. Een verkenner onderzoekt dat gebied.
+[touch tutorial 4.07.2]
+Controleer of je een verkenner hebt; maak er zo nodig een. Tik op Verder wanneer hij aankomt.
+[touch tutorial 4.08.1]
+De vijand verzamelt krijgers. Maak een wachtzone bij je Torens.
+[touch tutorial 4.09.1]
+Open Vlaggen en kies Wachtzone. Zet de kwast op Schilderen, niet Wissen.
+[touch tutorial 4.10.1]
+Kies een grote vierkante kwast op de groottebalk.
+[touch tutorial 4.11.1]
+Sleep achter de Torens om een wachtzone te schilderen. Gebruik Pannen om de kaart te bewegen en Klaar om te stoppen.
+[touch tutorial 4.12.1]
+Krijgers gaan naar de wachtzone. Geef ze ruimte maar houd de zone bij de doorgang.
+[touch tutorial 4.13.1]
+De vijand nadert. Let op de doorgang.
+[touch tutorial 4.14.1]
+Je kolonie wordt aangevallen. Krijgers en Torens verdedigen de doorgang.
+[touch tutorial 4.15.1]
+Je hebt overleefd! Open Vlaggen, kies Oorlogsvlag en plaats hem op de vijandelijke Zwerm. Tik op OK.
+[touch tutorial 4.16.1]
+Tik op de Oorlogsvlag en wijs meer dan één krijger toe met de werkersbediening.
+[touch tutorial 4.16.2]
+Verklein het bereik om de Zwerm aan te vallen. Sleep je vlag op de kaart om hem te verplaatsen.
+[touch tutorial 4.17.1]
+Je krijgers vallen door de vijandelijke verdediging aan richting de Zwerm.
+[touch tutorial 4.18.1]
+Je krijgers hebben de vijandelijke basis bereikt. Houd de aanval gaande.
+[touch tutorial 4.19.1]
+Gelukt! Je kunt nu een kolonie bouwen, bevoorraden, trainen en besturen. Probeer een nieuw spel.
+[touch tutorial continue]
+Verder
+[touch tutorial waiting]
+Wachten

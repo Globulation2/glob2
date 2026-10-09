@@ -32,6 +32,7 @@ struct Session
     Uint32 terrainSeed = 0;
     Uint16 fertilityMaximum = 0;
     bool legacyScriptTextShown = false;
+    int legacyScriptCursor = -1; // Presentation only; never saved or checksummed.
     std::string legacyScriptText;
     int legacyScriptTimer = 0;
 };

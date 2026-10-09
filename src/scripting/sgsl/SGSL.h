@@ -362,6 +362,9 @@ public:
 	
 	//! source code of the script
 	std::string sourceCode;
+	// Read during session initialization, before the simulation thread starts.
+	const std::vector<Story> &presentationStories() const { return stories; }
+	int presentationCursor() const { return stories.size() == 1 ? stories[0].lineSelector : -1; }
 
 private:
 	friend class Story;

@@ -96,6 +96,7 @@ GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ig
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
 		co_return false;
 	}
+	touch->setTutorialSource(game.sgslScript.sourceCode);
 	rebuildBuildingChoices();
 	defaultGameSaveName = game.mapHeader.getMapName();
 	if (game.mapHeader.getIsSavedGame())

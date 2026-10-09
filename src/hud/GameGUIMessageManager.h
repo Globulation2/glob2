@@ -59,6 +59,7 @@ public:
 	///Creates an InGameScrollableHistory, does not take ownership for it
 	InGameScrollableHistory* createScrollableHistoryScreen();
 private:
+	friend class GameGUITouchHarness;
 
 	std::list<InGameMessage> historyGame;
 	std::list<InGameMessage> historyChat;
@@ -85,5 +86,4 @@ protected:
 	/// The last known size of the history, to count for changes
 	size_t lastSize = 0;
 };
-
 

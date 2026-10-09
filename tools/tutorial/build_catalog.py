@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+"""Generate/check client-only tutorial aliases and native StringTable entries."""
+import argparse
+import gzip
+import json
+import re
+import struct
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+LANGUAGES = ('en', 'fr', 'de', 'es', 'nl', 'ru', 'ar')
+TARGETS = {'None', 'Menu', 'Build', 'Flags', 'Tools', 'History', 'Inspector',
+           'Workers', 'Production', 'Range', 'Upgrade', 'Statistics', 'Brush', 'Palette'}
+BEGIN = '[touch tutorial 1.01.1]'
+
+
+def fingerprint(data):
+    value = 14695981039346656037
+    for c in data:
+        value = ((value ^ c) * 1099511628211) & ((1 << 64) - 1)
+    return value
+
+
+def embedded(chapter):
+    data = gzip.decompress((ROOT / f'campaigns/tutorial-part{chapter}.map.gz').read_bytes())
+    # BinaryStream writes a big-endian byte count before the source text. Locate
+    # the unique authored header; validate the slice by parsing its show blocks.
+    start = data.index(b"# glob2's tutorial")
+    size = struct.unpack('>I', data[start - 4:start])[0]
+    assert 0 < size < len(data) - start
+    return data[start:start + size]
+
+
+def show_blocks(source):
+    blocks = []
+    for line in source.decode().splitlines():
+        match = re.fullmatch(r'show\("(.*)"(?:,\s*([a-z]+))?\)\s*', line)
+        if match:
+            text, language = match.groups()
+            if language is None:
+                blocks.append({})
+            language = language or 'en'
+            assert language not in blocks[-1], 'Duplicate language in show block'
+            blocks[-1][language] = text
+    return blocks
+
+
+def generate(check):
+    phrases = {}
+    for line in (ROOT / 'tools/tutorial/phrases.tsv').read_text().splitlines():
+        if not line or line.startswith('#'):
+            continue
+        cols = line.split('|')
+        assert len(cols) == 10, (cols[0], len(cols))
+        name, target, choice, *texts = cols
+        assert name not in phrases and target in TARGETS
+        assert all(t.strip() and '\n' not in t for t in texts)
+        if choice.startswith('zone:'):
+            assert choice in {'zone:0', 'zone:1', 'zone:2'}, choice
+        elif choice:
+            assert (ROOT / f'data/buildings/{choice}.json').exists(), choice
+        phrases[name] = (target, choice, dict(zip(LANGUAGES, texts)))
+    lessons = json.loads((ROOT / 'tools/tutorial/lessons.json').read_text())
+    assert [len(c) for c in lessons['chapters']] == [28, 39, 30, 19]
+    page_code, message_code, source_code = [], [], []
+    aliases, alias_text, translated = {}, {}, {lang: [] for lang in LANGUAGES}
+    alias_rows = set()
+    signatures = []
+    offset = 0
+    for chapter, entries in enumerate(lessons['chapters'], 1):
+        sources = [(ROOT / f'scripts/tutorial_part{chapter}.sgsl').read_bytes(), embedded(chapter)]
+        blocks = [show_blocks(s) for s in sources]
+        assert all(len(b) == len(entries) for b in blocks)
+        for source in sources:
+            source_code.append(f'    {{UINT64_C({fingerprint(source)}), {len(source)}, {chapter}}},')
+        for n, names in enumerate(entries, 1):
+            ident = f'{chapter}.{n:02}'
+            assert names
+            pages = []
+            signatures.append(tuple(names))
+            for p, name in enumerate(names, 1):
+                target, choice, texts = phrases[name]
+                key = f'[touch tutorial {ident}.{p}]'
+                rows_key = f'[touch tutorial {ident}.{p} rows]' if name == 'ratios' else ''
+                pages.append(f'    {{{json.dumps(key)}, {json.dumps(rows_key)}, Target::{target}, {json.dumps(choice)}}},')
+                for lang in LANGUAGES:
+                    translated[lang].extend((key, texts[lang]))
+                    if rows_key:
+                        translated[lang].extend((rows_key, phrases['ratiosRows'][2][lang]))
+            page_code.append(f'static const Page pages_{chapter}_{n}[] = {{\n' + '\n'.join(pages) + '\n};')
+            message_code.append(f'    {{"{ident}", {chapter}, pages_{chapter}_{n}}},')
+            assert set(blocks[0][n - 1]) == set(LANGUAGES), (ident, blocks[0][n - 1].keys())
+            for variant in blocks:
+                for text in variant[n - 1].values():
+                    data = text.encode()
+                    alias = (chapter, fingerprint(data), len(data))
+                    if alias in aliases:
+                        prev = aliases[alias]
+                        assert alias_text[alias] == text, 'Fingerprint collision'
+                        # An old Spanish Pool translation is reused by two show
+                        # blocks. Both intentionally supply identical guidance.
+                        assert signatures[prev] == tuple(names), (ident, prev, text[:80])
+                    else:
+                        aliases[alias] = offset + n - 1
+                        alias_text[alias] = text
+                    alias_rows.add((*alias, offset + n - 1))
+        offset += len(entries)
+    code = '// Generated by tools/tutorial/build_catalog.py; do not edit.\n' + '\n'.join(page_code)
+    code += '\nstatic const Message catalog[] = {\n' + '\n'.join(message_code) + '\n};\n'
+    code += 'static const Source sources[] = {\n' + '\n'.join(source_code) + '\n};\n'
+    code += 'static const Alias aliases[] = {\n'
+    code += '\n'.join(f'    {{UINT64_C({h}), {size}, {c}, {idx}}},' for c, h, size, idx in sorted(alias_rows)) + '\n};\n'
+    outputs = {ROOT / 'src/hud/touch/TouchTutorialCatalog.inc': code}
+    navigation = {
+        '[touch tutorial continue]': ['Continue', 'Continuer', 'Weiter', 'Continuar', 'Verder', 'Далее', 'متابعة'],
+        '[touch tutorial waiting]': ['Waiting', 'En attente', 'Warten', 'Esperando', 'Wachten', 'Ожидание', 'انتظار'],
+    }
+    for lang, lines in translated.items():
+        for key, values in navigation.items():
+            lines.extend((key, values[LANGUAGES.index(lang)]))
+        path = ROOT / f'data/texts.{lang}.txt'
+        old = path.read_text()
+        base = old.split('// BEGIN GENERATED TOUCH TUTORIAL')[0].split(BEGIN)[0].rstrip('\n') + '\n'
+        assert len(base.splitlines()) % 2 == 0, path
+        outputs[path] = base + '\n'.join(lines) + '\n'
+    keys = ROOT / 'data/texts.keys.txt'
+    base = keys.read_text().split(BEGIN)[0].rstrip('\n') + '\n'
+    outputs[keys] = base + '\n'.join(translated['en'][::2]) + '\n'
+    stale = []
+    for path, contents in outputs.items():
+        if not path.exists() or path.read_text() != contents:
+            stale.append(str(path.relative_to(ROOT)))
+            if not check:
+                path.write_text(contents)
+    if check and stale:
+        raise SystemExit('Stale tutorial outputs: ' + ', '.join(stale))
+    print(f'Validated {offset} messages, {len(aliases)} aliases, {len(source_code)} source revisions and {len(LANGUAGES)} languages.')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--check', action='store_true')
+    generate(parser.parse_args().check)

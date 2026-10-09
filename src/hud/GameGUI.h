@@ -167,7 +167,7 @@ public:
 		else
 			clientRequests.discardScriptSpace();
 	}
-	void setSwallowSpaceKey(bool value) override { swallowSpaceKey=value; }
+	void setSwallowSpaceKey(bool value) override;
 
 	void showScriptText(const std::string &text) override;
 	void setScriptPresentationText(std::string text, bool publishHistory = true) override;
