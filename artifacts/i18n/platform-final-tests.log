@@ -1,0 +1,130 @@
+
+> test
+> vitest run --maxWorkers=2
+
+
+ RUN  v5.0.3 /Users/bradley/glob2/platform
+
+ ❯ apps/engine-agent/test/aiValidation.test.ts (5 tests | 3 failed) 4ms
+   × keeps script-authored bwrap text as a compatibility diagnostic 3ms
+   × still treats an actual Bubblewrap failure as retryable infrastructure failure 0ms
+   × reports malformed UTF-8 as a failed file check with dependent checks skipped 0ms
+ ❯ apps/engine-agent/test/generatorValidation.test.ts (4 tests | 4 failed) 4ms
+   × isolates inspection, every repeated matrix run and saved-world inspection 3ms
+   × shows legitimate refusals but rejects invalid worlds and non-repeatable accepted requests 0ms
+   × separates malformed imports and budget rejection from retryable isolation failure 0ms
+   × checks file hashes before inspecting room packages 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/engine-agent/test/aiValidation.test.ts > keeps script-authored bwrap text as a compatibility diagnostic
+Error: AI validation requires Linux namespace isolation
+ ❯ Module.createAiValidator apps/engine-agent/src/aiValidation.ts:80:43
+     78|   sim: SimVersion,
+     79| ): Promise<AiValidator> {
+     80|   if (process.platform !== 'linux') throw Error('AI validation require…
+       |                                           ^
+     81|   // A filesystem quota is mandatory: per-file limits cannot bound tot…
+     82|   const scratchFs = await statfs(options.scratchRoot ?? tmpdir());
+ ❯ validator apps/engine-agent/test/aiValidation.test.ts:65:10
+ ❯ apps/engine-agent/test/aiValidation.test.ts:77:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  apps/engine-agent/test/aiValidation.test.ts > still treats an actual Bubblewrap failure as retryable infrastructure failure
+Error: AI validation requires Linux namespace isolation
+ ❯ Module.createAiValidator apps/engine-agent/src/aiValidation.ts:80:43
+     78|   sim: SimVersion,
+     79| ): Promise<AiValidator> {
+     80|   if (process.platform !== 'linux') throw Error('AI validation require…
+       |                                           ^
+     81|   // A filesystem quota is mandatory: per-file limits cannot bound tot…
+     82|   const scratchFs = await statfs(options.scratchRoot ?? tmpdir());
+ ❯ validator apps/engine-agent/test/aiValidation.test.ts:65:10
+ ❯ apps/engine-agent/test/aiValidation.test.ts:88:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  apps/engine-agent/test/aiValidation.test.ts > reports malformed UTF-8 as a failed file check with dependent checks skipped
+Error: AI validation requires Linux namespace isolation
+ ❯ Module.createAiValidator apps/engine-agent/src/aiValidation.ts:80:43
+     78|   sim: SimVersion,
+     79| ): Promise<AiValidator> {
+     80|   if (process.platform !== 'linux') throw Error('AI validation require…
+       |                                           ^
+     81|   // A filesystem quota is mandatory: per-file limits cannot bound tot…
+     82|   const scratchFs = await statfs(options.scratchRoot ?? tmpdir());
+ ❯ validator apps/engine-agent/test/aiValidation.test.ts:65:10
+ ❯ apps/engine-agent/test/aiValidation.test.ts:95:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  apps/engine-agent/test/generatorValidation.test.ts > isolates inspection, every repeated matrix run and saved-world inspection
+Error: Custom asset processing requires Linux namespace isolation
+ ❯ createAssetSandbox apps/engine-agent/src/setValidation.ts:24:11
+     22| ): Promise<(command: RunOptions, scratch: string) => Promise<RunResult…
+     23|   if (process.platform !== 'linux')
+     24|     throw Error('Custom asset processing requires Linux namespace isol…
+       |           ^
+     25|   const filesystem = await statfs(options.scratchRoot ?? tmpdir());
+     26|   if (filesystem.type !== 0x01021994 || filesystem.blocks * filesystem…
+ ❯ Module.createGeneratorExecutor apps/engine-agent/src/generatorValidation.ts:85:24
+ ❯ executor apps/engine-agent/test/generatorValidation.test.ts:131:10
+ ❯ apps/engine-agent/test/generatorValidation.test.ts:142:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  apps/engine-agent/test/generatorValidation.test.ts > shows legitimate refusals but rejects invalid worlds and non-repeatable accepted requests
+Error: Custom asset processing requires Linux namespace isolation
+ ❯ createAssetSandbox apps/engine-agent/src/setValidation.ts:24:11
+     22| ): Promise<(command: RunOptions, scratch: string) => Promise<RunResult…
+     23|   if (process.platform !== 'linux')
+     24|     throw Error('Custom asset processing requires Linux namespace isol…
+       |           ^
+     25|   const filesystem = await statfs(options.scratchRoot ?? tmpdir());
+     26|   if (filesystem.type !== 0x01021994 || filesystem.blocks * filesystem…
+ ❯ Module.createGeneratorExecutor apps/engine-agent/src/generatorValidation.ts:85:24
+ ❯ executor apps/engine-agent/test/generatorValidation.test.ts:131:10
+ ❯ apps/engine-agent/test/generatorValidation.test.ts:153:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  apps/engine-agent/test/generatorValidation.test.ts > separates malformed imports and budget rejection from retryable isolation failure
+Error: Custom asset processing requires Linux namespace isolation
+ ❯ createAssetSandbox apps/engine-agent/src/setValidation.ts:24:11
+     22| ): Promise<(command: RunOptions, scratch: string) => Promise<RunResult…
+     23|   if (process.platform !== 'linux')
+     24|     throw Error('Custom asset processing requires Linux namespace isol…
+       |           ^
+     25|   const filesystem = await statfs(options.scratchRoot ?? tmpdir());
+     26|   if (filesystem.type !== 0x01021994 || filesystem.blocks * filesystem…
+ ❯ Module.createGeneratorExecutor apps/engine-agent/src/generatorValidation.ts:85:24
+ ❯ executor apps/engine-agent/test/generatorValidation.test.ts:131:10
+ ❯ apps/engine-agent/test/generatorValidation.test.ts:171:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  apps/engine-agent/test/generatorValidation.test.ts > checks file hashes before inspecting room packages
+Error: Custom asset processing requires Linux namespace isolation
+ ❯ createAssetSandbox apps/engine-agent/src/setValidation.ts:24:11
+     22| ): Promise<(command: RunOptions, scratch: string) => Promise<RunResult…
+     23|   if (process.platform !== 'linux')
+     24|     throw Error('Custom asset processing requires Linux namespace isol…
+       |           ^
+     25|   const filesystem = await statfs(options.scratchRoot ?? tmpdir());
+     26|   if (filesystem.type !== 0x01021994 || filesystem.blocks * filesystem…
+ ❯ Module.createGeneratorExecutor apps/engine-agent/src/generatorValidation.ts:85:24
+ ❯ executor apps/engine-agent/test/generatorValidation.test.ts:131:10
+ ❯ apps/engine-agent/test/generatorValidation.test.ts:188:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  2 failed | 151 passed | 5 skipped (158)
+      Tests  7 failed | 1099 passed | 15 skipped (1121)
+   Start at  01:31:25
+   Duration  207.50s (tests 70%, import 25%, environment 3%, transform 1%)
+
+    Isolate  158 workers spawned · ~212ms startup each (spawn + environment, per file)
+             at least ~16.55s faster with isolate: false — reuses workers across files instead of one per file
+

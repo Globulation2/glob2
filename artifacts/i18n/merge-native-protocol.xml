@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="requests encode as the realtime envelope" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="responses and events decode; malformed frames are rejected" time="0.00015" status="run" />
+    <testcase classname="PlatformProtocol" name="RFC 3339 timestamps convert to epoch milliseconds" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="token lifetime comes from the JWT claims" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="refreshes are scheduled well before expiry" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="backoff grows exponentially to a cap, with bounded jitter" time="0" status="run" />
+    <testcase classname="PlatformProtocol" name="SHA-256 matches the FIPS 180-4 vectors" time="0.002904" status="run" />
+    <testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0" status="run" />
+  </testsuite></testsuites>

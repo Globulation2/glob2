@@ -1,0 +1,165 @@
+{
+  "catalogs": {
+    "ar": {
+      "messages": 2831,
+      "sha256": "dbb9b0a79ce3e4b5bfd4cc377d2835dbf812a7e701e8950858b78f50368102e3"
+    },
+    "ca": {
+      "messages": 2831,
+      "sha256": "91b7e1525c4f798cc8a6fce32fcb77efb24965591bcdb99123264235e7aca5f5"
+    },
+    "cs": {
+      "messages": 2831,
+      "sha256": "a9daa08f2c25934bae9ccdad95b96d9156a14428de52dd96f4ddf8ee7758be5e"
+    },
+    "da": {
+      "messages": 2831,
+      "sha256": "7f929d5f0531bf52993e8dd32cb16b8f8b6e44a792006c1c9dfc8d93b52d3b1d"
+    },
+    "de": {
+      "messages": 2831,
+      "sha256": "e99304b5742b79f55f6b8e45079a7748fa2a197c2a0d856a9249c3206e618604"
+    },
+    "el": {
+      "messages": 2831,
+      "sha256": "5376946b728e85d99e4e79872af5c2b671a800975326e19390848636edd066da"
+    },
+    "en": {
+      "messages": 2831,
+      "sha256": "9701f9486597a50b3c6b59c06a9ff983af3a496c84630d504782c09be12ec4b5"
+    },
+    "eo": {
+      "messages": 2831,
+      "sha256": "391ebe000a8825e23af62d1f957a4823f459a12c4b6139f7cacc3e502812fc5f"
+    },
+    "es": {
+      "messages": 2831,
+      "sha256": "b577c57c278efba7e9783859014858860ece184f66d13768deb9e2fba54aefb3"
+    },
+    "eu": {
+      "messages": 2831,
+      "sha256": "d8261971a92cf66cdde26e6e94586cd9b5e807da426493ef1b792693f1ed82de"
+    },
+    "fa": {
+      "messages": 2831,
+      "sha256": "99b9a6f6cb0bae8c5e67a834433165c7fd92f6756c291101b961f5983a42512c"
+    },
+    "fi": {
+      "messages": 2831,
+      "sha256": "e5ed109bb485a85e8fb8e38a2c4e3f9f00792b0342e2c35ba4c6f4f760d1366e"
+    },
+    "fr": {
+      "messages": 2831,
+      "sha256": "3313c9314c2ad41ddf9958d46a2c2e857474a2124ec08814281d311ff7964757"
+    },
+    "hu": {
+      "messages": 2831,
+      "sha256": "cd1bf0cc3ddd1d148c9c2b08c364b6e2133eddd2c455cca5df9cee8bb0f67159"
+    },
+    "id": {
+      "messages": 2831,
+      "sha256": "57722215c73affd5f4c2179e2d9578f3e706bb0dac8f4b3d5561c40faef4a4ad"
+    },
+    "it": {
+      "messages": 2831,
+      "sha256": "df72aa80a29f9243d2845fbdfb7cffe57ee59d6824d42337aec31ac82031b20a"
+    },
+    "ja": {
+      "messages": 2831,
+      "sha256": "c47ad2200b485ad99a88a1bcb346442b65209d2e7b59d72bfbb0157a3c386b6d"
+    },
+    "ko": {
+      "messages": 2831,
+      "sha256": "566dd3683d9f9dc8733a3da4164e30e236bbca02e94d98d512c6df40d1c2ac4b"
+    },
+    "nl": {
+      "messages": 2831,
+      "sha256": "db04a6730fbaa390b70c364f95787542a000d2cf44cc758e6cc4a1a6ba9fee05"
+    },
+    "pl": {
+      "messages": 2831,
+      "sha256": "f71c29b3044d25a965864d74ba944ebc5573afc8665fcf6a4b9a23d2d91b5821"
+    },
+    "pt-BR": {
+      "messages": 2831,
+      "sha256": "25cbd58af545d1afa023afb4814df600596b4a7e3a93e542dfd6638bef690183"
+    },
+    "pt-PT": {
+      "messages": 2831,
+      "sha256": "7374ea7792a881e007dc75efba86cea4e616fe57b3485f9276891b89b261d0de"
+    },
+    "ro": {
+      "messages": 2831,
+      "sha256": "0a171638754c3766bef6f73a5c32cec4b2665defa7b76251860d3bb5cf95a7bb"
+    },
+    "ru": {
+      "messages": 2831,
+      "sha256": "3987dc1b98cfa724ceed8f30ca7d248e23a5501fba530d5f6c886e336c380b23"
+    },
+    "sk": {
+      "messages": 2831,
+      "sha256": "6c14a2281a5978e33adcb7bade37b1494ba64e55ee869197964081b5c74b7c75"
+    },
+    "sl": {
+      "messages": 2831,
+      "sha256": "99c641350e8a2f79cb5dba4f6de99d1bd130bcfe839d05063eb812be96dfbf24"
+    },
+    "sr-Cyrl": {
+      "messages": 2831,
+      "sha256": "262b3304afc321a7c4488ee54bf7e57909da1cd5fc9ece8ebe7417ff716cb1d6"
+    },
+    "sv": {
+      "messages": 2831,
+      "sha256": "a8b66547af04c45169305e2dc6d13ab820b2b184d46a4fc3863468a818e09868"
+    },
+    "tr": {
+      "messages": 2831,
+      "sha256": "cc374390467509da28f9c88d1e852b17fff294fd24e3585038dcc663b414e44b"
+    },
+    "uk": {
+      "messages": 2831,
+      "sha256": "6941afe7eccee30a20dcd1ed69609194875dfd1a5103f78d2bc982edafa70c2d"
+    },
+    "vi": {
+      "messages": 2831,
+      "sha256": "7287c691c7e3cf27a45dfa58c41ed9a32fe23f6d335d941f872027eccc24eefb"
+    },
+    "zh-Hans": {
+      "messages": 2831,
+      "sha256": "c9f1a324b7990bac8abd93e3da021ecb464172ec75132eb25e8d37be72ac95ea"
+    },
+    "zh-Hant": {
+      "messages": 2831,
+      "sha256": "a19b694f80baed19c0e7567f731fa538de247d77a1ce89119bf29be60fc1992a"
+    }
+  },
+  "checks": {
+    "catalog_contracts": "33 languages, 2831 keys, 27 plural families; passed",
+    "shared_runtime_tests": "20 passed",
+    "browser_unit_tests": "81 passed",
+    "api_focused": "61 passed",
+    "platform_full": "1099 passed, 7 existing Linux namespace-isolation cases fail on macOS, 15 skipped (1121 total); --maxWorkers=2",
+    "lint": "Whole-platform ESLint and Prettier passed",
+    "typecheck": "Whole platform, web and E2E TypeScript passed",
+    "browser_packaging": "25 passed after exact inventory hardening",
+    "web_tests": "285 passed in 39 files"
+  },
+  "translation_review": "AI-assisted drafts reviewed and corrected by agents; not native-speaker certified",
+  "native_compatibility": "PlatformProtocol: all 8 cases passed; new additive localization metadata regression included",
+  "e2e": "All33 languages on desktop and phone: 68 passed; 4 Chinese cases rechecked after terminology corrections. 66 final screenshots saved.",
+  "base_revision": "8a66430be88d9bf7e8880c4ebe14c9d1af12d95e",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "node": "v24.19.0"
+  },
+  "native_commands": [
+    "scons -j8 release=1 server=0 unit-tests",
+    "python3 test/run_tests.py --binary unit --filter 'PlatformProtocol/*' --verbose --junit artifacts/i18n/native-protocol-final.xml"
+  ],
+  "production_build": "Passed on final catalogs",
+  "limitations": [
+    "Seven existing Linux namespace-isolation tests fail on macOS; 15 tests skipped in full platform run.",
+    "Translations are AI-assisted and agent-reviewed; native-speaker certification is outstanding."
+  ]
+}

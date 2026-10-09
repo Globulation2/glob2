@@ -1,0 +1,72 @@
+{
+  "tested_commit": "1efa5d508793c1789421e12a3a2e4c8b60cd8f60",
+  "base_revision": "e3a5b57498784192cae1a72d6d94b909e30df440",
+  "integration_state": "PR head includes clean merge of current master",
+  "original_translation_commit": "1c69efdfb4bda605498c11f2e28dcc453f8dfced",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "node": "v24.19.0",
+    "compiler": "Apple clang 21.0.0 (clang-2100.3.34.2)"
+  },
+  "dependencies_and_flags": "Existing npm lockfile dependencies; new esbuild 0.28.2 is development-only. Internal @glob2/i18n 0.1.0. Native Homebrew SDL3/codec prefixes and existing recording prefix; flags in build log. No external runtime dependency added.",
+  "integration_commands": [
+    {
+      "command": "cd platform && npm run i18n:check",
+      "result": "passed: 33 languages x 2831 keys, 27 plural families; source and generated runtime checks"
+    },
+    {
+      "command": "cd platform && npm exec -- vitest run packages/i18n/test packages/protocol/test apps/web/test/i18n.test.tsx --maxWorkers=1",
+      "result": "11 files, 65 tests passed"
+    },
+    {
+      "command": "node --test browser/unit/*.test.js",
+      "result": "81 passed"
+    },
+    {
+      "command": "python3 -m unittest discover -s test/build_system -p test_browser_package.py -v",
+      "result": "25 passed"
+    },
+    {
+      "command": "scons -j6 release=1 server=0 unit-tests",
+      "result": "passed"
+    },
+    {
+      "command": "python3 test/run_tests.py --binary unit --filter 'PlatformProtocol/*' --verbose --junit artifacts/i18n/merge-native-protocol.xml",
+      "result": "8 cases passed"
+    }
+  ],
+  "original_commands": [
+    {
+      "command": "cd platform && npm run lint",
+      "result": "passed"
+    },
+    {
+      "command": "cd platform && npm run typecheck",
+      "result": "platform/web/E2E passed"
+    },
+    {
+      "command": "cd platform && npm run build -w @glob2/web",
+      "result": "passed on final catalogs"
+    },
+    {
+      "command": "cd platform && TEST_DATABASE_URL=postgres://glob2:glob2@127.0.0.1:55432/postgres npm test -- --maxWorkers=2",
+      "result": "1099 passed, 7 existing Linux namespace tests failed on macOS, 15 skipped; 1121 total"
+    },
+    {
+      "command": "cd platform && npm exec -- vitest run apps/web/test --maxWorkers=1",
+      "result": "39 files, 285 passed"
+    },
+    {
+      "command": "cd platform && DATABASE_URL=postgres://glob2:glob2@127.0.0.1:55432/glob2 SCREENSHOT_DIR=../artifacts/i18n/screenshots npm exec -- playwright test -c apps/web/e2e/playwright.config.ts i18n.spec.ts",
+      "result": "68 desktop/phone cases passed; 4 Chinese cases rechecked after terminology-only corrections; 66 screenshots"
+    }
+  ],
+  "coverage_rationale": "Localization/runtime, schema addition and native decoder, web presentation/state retention, SSR errors/forms, browser loading and exact packaging inventory. Current-master overlap changes a separate browser harness inventory; refreshed packaging/launcher/protocol checks and rebuilt native unit binary on merge head. Platform source/dependencies unchanged by fetched master, so prior broader web/platform evidence retained.",
+  "omissions_and_limits": [
+    "Seven existing Linux namespace-isolation tests fail on macOS; 15 tests skipped in full platform run.",
+    "Translations are AI-assisted and agent-reviewed; native-speaker certification is outstanding.",
+    "No new WASM engine build or other-platform native rebuild: PR changes launcher/canonical asset staging only, with no simulation implementation changes. Original full-platform/browser screenshot runs precede the master integration; integration refresh is explicitly scoped above."
+  ],
+  "maintainer_acceptance": "genixpro explicitly authorized merge in the current chat on 2026-10-09."
+}

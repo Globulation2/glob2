@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /Users/bradley/glob2/platform
+
+
+ Test Files  3 passed (3)
+      Tests  20 passed (20)
+   Start at  01:26:30
+   Duration  617ms (tests 51%, import 30%, transform 17%, worker 1%)
+

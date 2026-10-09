@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 /Users/bradley/glob2/platform
+
+
+ Test Files  39 passed (39)
+      Tests  285 passed (285)
+   Start at  01:27:27
+   Duration  28.29s (tests 57%, environment 27%, import 12%, transform 4%)
+
+    Isolate  39 workers spawned · ~237ms startup each (spawn + environment, per file)
+             at least ~9.02s faster with isolate: false — reuses workers across files instead of one per file
+

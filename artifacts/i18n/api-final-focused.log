@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/pages.test.ts apps/api/test/errors.test.ts apps/api/test/identity.test.ts apps/api/test/rooms.test.ts apps/api/test/realtime.test.ts
+
+
+ RUN  v5.0.3 /Users/bradley/glob2/platform
+
+
+ Test Files  5 passed (5)
+      Tests  61 passed (61)
+   Start at  01:03:53
+   Duration  3.05s (tests 60%, import 24%, transform 16%)
+

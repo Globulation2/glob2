@@ -1,0 +1,6 @@
+
+> i18n:check
+> node packages/i18n/scripts/check.ts && node packages/i18n/scripts/build-browser.ts --check
+
+33 languages × 2831 messages: inventory, parameters and plural forms passed
+Built launcher runtime and 33 catalogs
