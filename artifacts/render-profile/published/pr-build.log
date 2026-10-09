@@ -1,0 +1,218 @@
+src/render/torus/TorusRenderBenchmark.cpp: In static member function ‘static int TorusRenderBenchmark::run(int, char**)’:
+src/render/torus/TorusRenderBenchmark.cpp:361:71: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+  361 |                     std::printf("STEADY_CACHE pending=%zu attempts=%llu promotions=%llu array_bytes=%zu geometry_bytes=%zu builds=%llu deferred=%llu\n",
+      |                                                                    ~~~^
+      |                                                                       |
+      |                                                                       long long unsigned int
+      |                                                                    %lu
+  362 |                         textures.pendingTextures, textures.warmAttempts, textures.warmPromotions,
+      |                                                   ~~~~~~~~~~~~~~~~~~~~~
+      |                                                            |
+      |                                                            long unsigned int
+src/render/torus/TorusRenderBenchmark.cpp:361:87: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘long unsigned int’ [-Wformat=]
+  361 |                     std::printf("STEADY_CACHE pending=%zu attempts=%llu promotions=%llu array_bytes=%zu geometry_bytes=%zu builds=%llu deferred=%llu\n",
+      |                                                                                    ~~~^
+      |                                                                                       |
+      |                                                                                       long long unsigned int
+      |                                                                                    %lu
+  362 |                         textures.pendingTextures, textures.warmAttempts, textures.warmPromotions,
+      |                                                                          ~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                                                   |
+      |                                                                                   long unsigned int
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/render/torus/TorusRenderBenchmark.cpp:18:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+In file included from src/ai/shared_runtime/Runtime.h:20,
+                 from src/ai/nicowar/AINicowar.h:6,
+                 from src/render/GameRender.cpp:8:
+src/ai/observation/ObservationQueries.h: In function ‘bool AIEngine::ObservationQueries::usefulBuilding(const AIEngine::AIWorldView&, int)’:
+src/ai/observation/ObservationQueries.h:128:17: warning: unused variable ‘completed’ [-Wunused-variable]
+  128 |     const auto& completed=world.catalog->at(placement.site ? placement.next : type);
+      |                 ^~~~~~~~~
+In file included from src/render/GameRender.cpp:18:
+src/building/hud/BuildingPresentation.h: In function ‘bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)’:
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
+src/render/GameRender.cpp: In static member function ‘static void Game::drawSceneMap(const PresentationFrame&, int, int, int, int, int, int, int, int, int, ViewState&, Uint32, std::set<short unsigned int>*, const BuildingGuiStateMap*, bool, int, bool)’:
+src/render/GameRender.cpp:218:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+  218 |     if (!preparedCapture)
+      |     ^~
+src/render/GameRender.cpp:220:9: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  220 |         const PresentationFrame* previous = view.scene;
+      |         ^~~~~
+In file included from src/ai/maxima/MaximaObservationBinding.h:3,
+                 from src/ai/maxima/AIMaximaRuntime.h:20,
+                 from src/ai/maxima/AIMaxima.h:22,
+                 from src/game/Game.cpp:8:
+src/ai/observation/ObservationQueries.h: In function ‘bool AIEngine::ObservationQueries::usefulBuilding(const AIEngine::AIWorldView&, int)’:
+src/ai/observation/ObservationQueries.h:128:17: warning: unused variable ‘completed’ [-Wunused-variable]
+  128 |     const auto& completed=world.catalog->at(placement.site ? placement.next : type);
+      |                 ^~~~~~~~~
+In file included from src/ai/maxima/AIMaximaPlacement.h:13,
+                 from src/ai/maxima/AIMaxima.h:26:
+src/ai/maxima/AIMaximaOperatingDemand.h: In function ‘std::array<int, 12> AIMaxima::productionPacketCeiling(const ProductionRecipeModel&, const int*)’:
+src/ai/maxima/AIMaximaOperatingDemand.h:25:36: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   25 |         for(int resource=0;resource<MaterialCount;++resource)
+      |                            ~~~~~~~~^~~~~~~~~~~~~~
+src/ai/maxima/AIMaximaOperatingDemand.h:32:41: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   32 |     if(cycle)for(int resource=0;resource<MaterialCount;++resource)
+      |                                 ~~~~~~~~^~~~~~~~~~~~~~
+src/ai/maxima/AIMaximaOperatingDemand.h: In function ‘AIMaxima::OperatingClaim AIMaxima::operatingClaim(const std::array<int, 12>&, const std::array<int, 12>&, int, const std::array<int, 12>&)’:
+src/ai/maxima/AIMaximaOperatingDemand.h:53:32: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   53 |     for(int resource=0;resource<MaterialCount;++resource) {
+      |                        ~~~~~~~~^~~~~~~~~~~~~~
+src/ai/maxima/AIMaximaOperatingDemand.h:62:32: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   62 |     for(int resource=0;resource<MaterialCount;++resource) {
+      |                        ~~~~~~~~^~~~~~~~~~~~~~
+src/ai/maxima/AIMaximaPlacement.h: In member function ‘MaterialMask AIMaximaPlacement::WorldTile::sources() const’:
+src/ai/maxima/AIMaximaPlacement.h:244:110: warning: comparison of integer expressions of different signedness: ‘const int16_t’ {aka ‘const short int’} and ‘const unsigned int’ [-Wsign-compare]
+  244 |     MaterialMask sources() const { return materialSources ? materialSources : materialType>=0 && materialType<MaterialCount ? MaterialMask(1u<<materialType) : 0; }
+      |                                                                                                  ~~~~~~~~~~~~^~~~~~~~~~~~~~
+src/game/Game.cpp: In member function ‘void Game::configureBuildingCatalog()’:
+src/game/Game.cpp:96:62: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   96 |                                 for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
+      |                                                      ~~~~~~~~^~~~~~~~~~~~~~
+In file included from libgag/include/TextStream.h:7,
+                 from src/game/Game.cpp:36:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+src/render/terrain/TerrainMaterials.cpp: In static member function ‘static TerrainVisual::Catalog TerrainVisual::Catalog::parse(const nlohmann::json_abi_v3_12_0::json&)’:
+src/render/terrain/TerrainMaterials.cpp:228:47: warning: comparison of integer expressions of different signedness: ‘unsigned int’ and ‘int’ [-Wsign-compare]
+  228 |                         require(v.totalWeight <= 1000000000 - w, "variant weight sum exceeds limit");
+      |                                 ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+src/app/GlobalContainer.cpp: In member function ‘void GlobalContainer::requestGameGraphics()’:
+src/app/GlobalContainer.cpp:359:5: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  359 |     for (const char *name : {"terrain", "cloud", "black", "shade", "ressource", "ressourcemini",
+      |     ^~~
+src/app/GlobalContainer.cpp:363:9: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  363 |         for (const auto &material : TerrainVisual::loadCatalog().materials)
+      |         ^~~
+src/map/Map.cpp: In member function ‘void Map::finishTerrainEdit()’:
+src/map/Map.cpp:461:65: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+  461 |                                 for (int resource = 0; resource < MaterialCount; ++resource)
+      |                                                        ~~~~~~~~~^~~~~~~~~~~~~~~
+src/map/Map.cpp: In member function ‘void Map::clear()’:
+src/map/Map.cpp:596:32: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+  596 |                 for (int r=0; r<MaterialCount; ++r)
+      |                               ~^~~~~~~~~~~~~~
+src/map/Map.cpp:641:32: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+  641 |                 for (int r=0; r<MaterialCount; r++)
+      |                               ~^~~~~~~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/map/io/MapThumbnail.cpp:6:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+src/map/MapAssetBundle.cpp: In member function ‘void MapAssetBundle::validate(const TerrainRegistry&, const ResourceRegistry&) const’:
+src/map/MapAssetBundle.cpp:182:103: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+  182 |                 if (variant.frame + (presentation.animationFrames - 1) * presentation.animationStride >= found->second.frames())
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/scripting/javascript/ScriptCompatibilityTest.cpp:10:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+src/map/MapSetTest.cpp: In function ‘Json {anonymous}::package()’:
+src/map/MapSetTest.cpp:32:5: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+   32 |     if(bits)encoded+=alphabet[(value<<(6-bits))&63]; SDL_CloseIO(io);
+      |     ^~
+src/map/MapSetTest.cpp:32:54: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   32 |     if(bits)encoded+=alphabet[(value<<(6-bits))&63]; SDL_CloseIO(io);
+      |                                                      ^~~~~~~~~~~
+In file included from libgag/include/TextStream.h:7,
+                 from src/map/MapSetTest.cpp:6:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/render/TerrainPresentationTest.cpp:23:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+In file included from src/hud/GameGUIInternal.h:15,
+                 from src/render/torus/TorusRenderIntegrationTest.cpp:20:
+src/building/hud/BuildingPresentation.h: In function ‘bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)’:
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
+In file included from src/ai/shared_runtime/Runtime.h:20,
+                 from src/team/TeamLimitTest.cpp:7:
+src/ai/observation/ObservationQueries.h: In function ‘bool AIEngine::ObservationQueries::usefulBuilding(const AIEngine::AIWorldView&, int)’:
+src/ai/observation/ObservationQueries.h:128:17: warning: unused variable ‘completed’ [-Wunused-variable]
+  128 |     const auto& completed=world.catalog->at(placement.site ? placement.next : type);
+      |                 ^~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/team/TeamLimitTest.cpp:22:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+In file included from src/hud/touch/GameGUITouchHarness.cpp:43:
+src/map/editor/MapEdit.h:35:9: warning: ‘RIGHT_MENU_WIDTH’ redefined
+   35 | #define RIGHT_MENU_WIDTH 160
+      |         ^~~~~~~~~~~~~~~~
+In file included from src/hud/touch/GameGUITouchHarness.cpp:21:
+src/hud/GameGUIInternal.h:84:9: note: this is the location of the previous definition
+   84 | #define RIGHT_MENU_WIDTH GAME_GUI_RIGHT_MENU_WIDTH
+      |         ^~~~~~~~~~~~~~~~
+src/map/editor/MapEdit.h:36:9: warning: ‘RIGHT_MENU_OFFSET’ redefined
+   36 | #define RIGHT_MENU_OFFSET (160-128)/2
+      |         ^~~~~~~~~~~~~~~~~
+src/hud/GameGUIInternal.h:86:9: note: this is the location of the previous definition
+   86 | #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
+      |         ^~~~~~~~~~~~~~~~~
+In file included from src/hud/GameGUIInternal.h:15:
+src/building/hud/BuildingPresentation.h: In function ‘bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)’:
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/map/preview/MapPreviewHarness.cpp:19:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/app/Glob2.cpp:56:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/game/screens/CustomGameSetupHarness.cpp:43:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+src/map/generator/MapGeneratorDefaultsTest.cpp:4:9: warning: ‘SDL_MAIN_HANDLED’ redefined
+    4 | #define SDL_MAIN_HANDLED
+      |         ^~~~~~~~~~~~~~~~
+<command-line>: note: this is the location of the previous definition
+In file included from libgag/include/BinaryStream.h:7,
+                 from src/map/generator/MapGeneratorDefaultsTest.cpp:10:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~

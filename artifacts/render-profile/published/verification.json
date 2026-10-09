@@ -1,0 +1,12 @@
+{
+  "tested_commit": "9e88c2a188bab41694d9d2b4bf541f0ac1196690",
+  "base_revision": "6a7812ac9bce079cc14bbcf80ce9889ceb559a92",
+  "tests": "71 passed, 0 failed, 0 skipped",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "os": "Linux 7.0.0-31-generic x86_64 GNU/Linux",
+  "build": "Execute native compile/archive/link commands from pr-build-plan.log using SCons production flags; reuse exported artwork verified against all current source/output hashes. Full asset export was not repeated.",
+  "test_command": "LD_LIBRARY_PATH=/tmp/glob2-terrain-sdl-patched/prefix/lib python3 test/run_tests.py --binary engine --filter 'TerrainPresentation/*' --filter 'TerrainMaterials/*' --filter 'SoftwareRenderer/*' --filter 'MapRenderResize/*' --filter 'TorusRender/*' --filter 'PortableRenderer/*' --artifacts artifacts/render-profile/pr-tests --junit artifacts/render-profile/pr-tests.xml -j4",
+  "engine_tests_sha256": "fa2b33408bb723b13c307bf2ec3ae5b54c1d97dfceb0797cb9ca84bd20e73e5c",
+  "profiling_limits": "results.json records pre-integration measurements at a1796e346, with final cache behavior including the desktop CPU reserve. It is not a new performance claim for 9e88c2a18. Mesa llvmpipe/Xvfb, 240 frames per case, paused presentation, completed HD loading. NVIDIA profiling stalled. Cold composition/newly exposed pages remain expensive. Final integration is covered by the 71 tests, not a refreshed timing run.",
+  "omissions": "No Windows/macOS/Android/browser hardware verification or fresh packaged-asset export. Presentation-only changes; no simulation, serialization, replay acceptance or network version changes."
+}
