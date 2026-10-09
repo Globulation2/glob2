@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+أكمل تسجيل الدخول في متصفحك. ستتابع اللعبة تلقائيًا عند الانتهاء.
 [hub browser did not open]
-
+لم يُفتح المتصفح. افتح صفحة تسجيل الدخول للمتابعة.
 [hub compare code %0]
-
+إذا طلبت الصفحة ذلك، تحقق من أنها تعرض %0.
 [hub code copied]
-
+تم نسخ الرمز
 [settings Finish in your browser. The game continues by itself.]
-
+أكمل العملية في متصفحك. ستتابع اللعبة تلقائيًا.
 [music set]
-
+مجموعة موسيقى
 [random music set]
-
+عشوائي في كل مباراة
 [playing music set %0]
-
+قيد التشغيل: %0
 [music set failed]
-
+تعذر تحميل مجموعة الموسيقى هذه.
 [settings Music set]
-
+مجموعة موسيقى
 [settings Random each match]
-
+اختر «عشوائي» لاختيار موسيقى تصويرية عند بداية كل مباراة.
 [settings Edge scrolling]
-
+التمرير عند الحواف
 [settings Edge scrolling in fullscreen]
-
+التمرير عند الحواف في وضع ملء الشاشة
 [settings Edge scrolling in windowed mode]
-
+التمرير عند الحواف في وضع النافذة
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+تحريك خرائط اللعبة والمحرر عند وصول الفأرة إلى حافة النافذة.
 [AI strategy]
 استراتيجية الذكاء الاصطناعي
 [start recording]
@@ -4625,9 +4625,9 @@ OpenGL غير متوفر في هذا الإصدار.
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 سجّل ألعابك كمقاطع فيديو MP4 مع الصوت. يتطلب التسجيل FFmpeg مع مُرمِّزي libx264 وAAC.
 [settings Record your games as MP4 videos with sound.]
-
+سجّل مبارياتك كفيديو MP4 مع الصوت.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+يستخدم التسجيل دقة العرض الكاملة بمعدل 30 إطارًا في الثانية.
 [settings FFmpeg is ready.]
 FFmpeg جاهز.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [Units can die]
 يمكن أن تموت الوحدات
 [Upgrades]
-
+الترقيات
 [No stockpile]
 لا شيء
 [No glass cannon]
@@ -5193,7 +5193,7 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 تموت الوحدات عند نفاد صحتها. عطّله لإيقافها عند نقطة صحة واحدة.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+ترتفع مستويات الوحدات في مباني التدريب ويمكن ترقية المباني. تظل الإصلاحات متاحة عند تعطيل هذا الخيار.
 [stat group work]
 وقت العمال
 [stat worker time]
@@ -5309,235 +5309,235 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [stat view by place]
 حسب المكان
 [AI Library]
-
+مكتبة الذكاء الاصطناعي
 [Authoring guide]
-
+دليل الإنشاء
 [Beginner-friendly]
-
+مناسب للمبتدئين
 [Defensive]
-
+دفاعي
 [Discover]
-
+استكشاف
 [Download & install]
-
+تنزيل وتثبيت
 [Downloading AI…]
-
+جارٍ تنزيل الذكاء الاصطناعي…
 [Expansion]
-
+توسعي
 [Experimental]
-
+تجريبي
 [Favourite]
-
+إضافة إلى المفضلة
 [Favourited]
-
+أُضيف إلى المفضلة
 [Favourites]
-
+المفضلة
 [Got it]
-
+فهمت
 [How AIs work]
-
+كيف تعمل برامج الذكاء الاصطناعي
 [Install selected version]
-
+تثبيت الإصدار المحدد
 [Installed]
-
+مثبّت
 [Invalid AI catalogue response]
-
+استجابة فهرس الذكاء الاصطناعي غير صالحة
 [JavaScript API reference]
-
+مرجع واجهة برمجة JavaScript
 [Like]
-
+إعجاب
 [Liked]
-
+أُعجب به
 [Loading AI library…]
-
+جارٍ تحميل مكتبة الذكاء الاصطناعي…
 [Most downloaded]
-
+الأكثر تنزيلًا
 [Most liked]
-
+الأكثر إعجابًا
 [Newest]
-
+الأحدث
 [No AIs match these filters.]
-
+لا توجد برامج ذكاء اصطناعي تطابق هذه المرشحات.
 [Not validated for this game version]
-
+لم يُتحقق منه لهذا الإصدار من اللعبة
 [Open AI Library]
-
+فتح مكتبة الذكاء الاصطناعي
 [Open AI page]
-
+فتح صفحة الذكاء الاصطناعي
 [Passed compatibility checks]
-
+اجتاز اختبارات التوافق
 [Recently updated]
-
+محدّث مؤخرًا
 [Rush]
-
+هجوم مبكر
 [Search]
-
+بحث
 [Share your AI]
-
+شارك برنامج الذكاء الاصطناعي الخاص بك
 [Show more]
-
+عرض المزيد
 [Sign in through Online settings to like and favourite AIs.]
-
+سجّل الدخول عبر إعدادات اللعب عبر الإنترنت للإعجاب ببرامج الذكاء الاصطناعي وإضافتها إلى المفضلة.
 [Starter project]
-
+مشروع ابتدائي
 [downloads of this version]
-
+تنزيلات هذا الإصدار
 [downloads]
-
+تنزيلات
 [Update available]
-
+يتوفر تحديث
 [Browse versions]
-
+تصفح الإصدارات
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+نزّل برنامج ذكاء اصطناعي، ثم اختره لمقعد الحاسوب في لعبة محلية. تعمل الإصدارات المثبّتة دون اتصال. تؤثر التحديثات في الألعاب اللاحقة؛ وتحتفظ الألعاب المحفوظة بشفرتها الأصلية.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+اختبارات التوافق لا تضمن الأمان أو قوة اللعب. لا تشغّل إلا شفرات مؤلفين تثق بهم.
 [Back to results]
-
+العودة إلى النتائج
 [music 2–5 minutes]
-
+من دقيقتين إلى 5 دقائق
 [music 5–15 minutes]
-
+من 5 إلى 15 دقيقة
 [music AI-generated]
-
+مولّد بالذكاء الاصطناعي
 [music All music]
-
+كل الموسيقى
 [music All open licences]
-
+كل التراخيص المفتوحة
 [music Any duration]
-
+أي مدة
 [music Audition each mood for eight seconds]
-
+استمع إلى كل جو موسيقي لمدة ثماني ثوانٍ
 [music Back]
-
+رجوع
 [music Browse]
-
+تصفح
 [music Building]
-
+تصاعد
 [music Calm]
-
+هدوء
 [music Calm → Building → Combat]
-
+هدوء ← تصاعد ← قتال
 [music Choose Building]
-
+اختيار موسيقى التصاعد
 [music Choose Calm]
-
+اختيار موسيقى الهدوء
 [music Choose Combat]
-
+اختيار موسيقى القتال
 [music Choose ZIP]
-
+اختيار ZIP
 [music Choose a music file.]
-
+اختر ملف موسيقى.
 [music Combat]
-
+قتال
 [music Could not open this music set.]
-
+تعذر فتح مجموعة الموسيقى هذه.
 [music Credits, downloads and reporting]
-
+أسماء المساهمين والتنزيلات والإبلاغ
 [music Downloading music…]
-
+جارٍ تنزيل الموسيقى…
 [music Export recovery files]
-
+تصدير ملفات الاسترداد
 [music Fade duration]
-
+مدة التلاشي
 [music File selection cancelled or failed.]
-
+أُلغي اختيار الملف أو فشل.
 [music Import ZIP]
-
+استيراد ZIP
 [music Import ZIP or three tracks]
-
+استيراد ZIP أو ثلاثة مقاطع
 [music Import music]
-
+استيراد موسيقى
 [music Import three tracks]
-
+استيراد ثلاثة مقاطع
 [music Includes AI-generated audio]
-
+يتضمن صوتًا مولّدًا بالذكاء الاصطناعي
 [music Install]
-
+تثبيت
 [music Install selected]
-
+تثبيت المحدد
 [music Installed]
-
+مثبّت
 [music Load more]
-
+تحميل المزيد
 [music Loading music…]
-
+جارٍ تحميل الموسيقى…
 [music Most downloaded]
-
+الأكثر تنزيلًا
 [music Most liked]
-
+الأكثر إعجابًا
 [music Music decoding failed.]
-
+فشل فك ترميز الموسيقى.
 [music Music download failed.]
-
+فشل تنزيل الموسيقى.
 [music Music installed.]
-
+تم تثبيت الموسيقى.
 [music Music installed. It is now available in Audio settings.]
-
+تم تثبيت الموسيقى. وهي متاحة الآن في إعدادات الصوت.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+لم تُحفظ الموسيقى بشكل دائم بعد. أعد محاولة الحفظ قبل المغادرة.
 [music Music library]
-
+مكتبة الموسيقى
 [music Music request failed.]
-
+فشل طلب الموسيقى.
 [music Newest]
-
+الأحدث
 [music No community music installed yet. Import files or browse the online library.]
-
+لم تُثبّت موسيقى من المجتمع بعد. استورد ملفات أو تصفح المكتبة عبر الإنترنت.
 [music No music found.]
-
+لم يُعثر على موسيقى.
 [music Not AI-generated]
-
+غير مولّد بالذكاء الاصطناعي
 [music Pause]
-
+إيقاف مؤقت
 [music Play]
-
+تشغيل
 [music Playback position]
-
+موضع التشغيل
 [music Preview]
-
+معاينة
 [music Ready to import.]
-
+جاهز للاستيراد.
 [music Remove]
-
+إزالة
 [music Reset to game behavior]
-
+استعادة سلوك اللعبة
 [music Retry saving]
-
+إعادة محاولة الحفظ
 [music Saved.]
-
+تم الحفظ.
 [music Saving music…]
-
+جارٍ حفظ الموسيقى…
 [music Search]
-
+بحث
 [music Search title, artist, description…]
-
+ابحث عن العنوان أو الفنان أو الوصف…
 [music Select for installation]
-
+اختيار للتثبيت
 [music Share music on the web]
-
+مشاركة الموسيقى على الويب
 [music Some catalogue entries could not be read.]
-
+تعذرت قراءة بعض عناصر الفهرس.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+تعذر حفظ بيانات التخزين. أعد المحاولة أو صدّر ملفاتك قبل المغادرة.
 [music Tag]
-
+وسم
 [music Test crossfades]
-
+اختبار التلاشي المتداخل
 [music Up to 2 minutes]
-
+حتى دقيقتين
 [music Use this music]
-
+استخدام هذه الموسيقى
 [music Validating music…]
-
+جارٍ التحقق من الموسيقى…
 [settings Music library · Browse, install and import]
-
+مكتبة الموسيقى · تصفح وتثبيت واستيراد
 [music Filters]
-
+مرشحات
 [music Leave without saving]
-
+المغادرة دون حفظ
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+استورد ملف ZIP الموسيقي المنزّل أو مقاطع Opus الثلاثة. تُقرأ البيانات الوصفية وصورة الغلاف من مقطع الهدوء؛ لا حاجة إلى ملفات إضافية.
 [settings Target render FPS]
 معدل الإطارات المستهدف للرسم
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [Reroll terrain look]
 إعادة اختيار مظهر التضاريس
 [boulders]
-
+صخور كبيرة
 [hedge]
-
+سياج نباتي
 [thicket]
-
+أجمة
 [ridge_rock]
-
+حيد صخري
 [outcrop]
-
+نتوء صخري
 [dirt]
-
+تراب
 [clay]
-
+طين صلصالي
 [gravel]
-
+حصى
 [flower_meadow]
-
+مرج زهور
 [mud]
-
+وحل
 [marsh]
-
+مستنقع
 [deep_snow]
-
+ثلج عميق
 [scree]
-
+منحدر ركام صخري
 [dirt_track]
-
+طريق ترابي
 [boardwalk]
-
+ممر خشبي
 [lava]
-
+حمم
 [ember_field]
-
+أرض جمر
 [loam]
-
+تربة طفالية
 [moss]
-
+طحلب
 [spring_meadow]
-
+مرج ربيعي
 [deep_water]
-
+مياه عميقة
 [dark_water]
-
+مياه داكنة
 [void_hole]
-
+حفرة
 [chasm]
-
+هاوية
 [terrain group water]
-
+ماء
 [terrain group sand]
-
+رمل
 [terrain group grass]
-
+عشب
 [terrain group ice]
-
+جليد
 [terrain group paths]
-
+مسارات
 [terrain group obstacles]
-
+عوائق
 [terrain group ridges]
-
+حيود
 [terrain group barren]
-
+أرض قاحلة
 [terrain group rough]
-
+أرض وعرة
 [terrain group lava]
-
+حمم
 [terrain group fertile]
-
+أرض خصبة
 [terrain group deep-water]
-
+مياه عميقة
 [terrain group void]
-
+فراغ
 [experiment obstacle-terrain]
-
+تضاريس العوائق
 [experiment obstacle-terrain help]
-
+تضيف الصخور الكبيرة والأسيجة النباتية والأجمات إلى محرر الخرائط. لا تعبرها الوحدات الأرضية وتصد المقذوفات؛ وتعبرها الوحدات الطائرة. لا يمكن وضع مبانٍ أو موارد عليها.
 [experiment ridge-terrain]
-
+تضاريس الحيود
 [experiment ridge-terrain help]
-
+تضيف الحيود والنتوءات الصخرية إلى محرر الخرائط. لا تعبرها الوحدات الأرضية، لكن الأبراج تطلق فوقها وتعبرها الوحدات الطائرة. لا يمكن وضع مبانٍ أو موارد عليها.
 [experiment barren-terrain]
-
+أرض قاحلة
 [experiment barren-terrain help]
-
+تضيف التراب والطين الصلصالي والحصى ومروج الزهور إلى محرر الخرائط. يمكن إقامة مبانٍ عليها، ولا ينمو شيء عليها أو بجوارها، ولا تُعد شاطئًا.
 [experiment rough-terrain]
-
+أرض وعرة
 [experiment rough-terrain help]
-
+تضيف الوحل والمستنقعات والثلج العميق ومنحدرات الركام الصخري إلى محرر الخرائط. تتحرك الوحدات الأرضية بنحو ثلثي سرعتها. لا يمكن وضع مبانٍ أو موارد عليها.
 [experiment path-terrain]
-
+تضاريس المسارات
 [experiment path-terrain help]
-
+تضيف الطرق الترابية والممرات الخشبية إلى محرر الخرائط. مثل الدروب، تتحرك الوحدات الأرضية بسرعة مضاعفة ويمكن إقامة مبانٍ، لكن لا ينمو شيء.
 [experiment lava-terrain]
-
+تضاريس الحمم
 [experiment lava-terrain help]
-
+تضيف الحمم وأراضي الجمر إلى محرر الخرائط. لا تدخلها الوحدات الأرضية؛ وتفقد الوحدات الطائرة صحتها سريعًا عند عبورها. تمر المقذوفات فوقها.
 [experiment fertile-terrain]
-
+أرض خصبة
 [experiment fertile-terrain help]
-
+تضيف التربة الطفالية والطحالب والمروج الربيعية إلى محرر الخرائط. تدعم المباني والمحاصيل وتروي الأرض المحيطة بقوة أكبر من الماء.
 [experiment deep-water-terrain]
-
+مياه عميقة
 [experiment deep-water-terrain help]
-
+تضيف المياه العميقة والداكنة إلى محرر الخرائط. يعبرها السباحون ببطء أكبر ولا تنمو فيها الطحالب، وتظل تروي الحقول المجاورة.
 [experiment void-terrain]
-
+تضاريس الفراغ
 [experiment void-terrain help]
-
+تضيف الحفر والهاويات إلى محرر الخرائط. لا يعبرها شيء، حتى الوحدات الطائرة، وتتوقف المقذوفات عند حافتها.
 [terrain group custom]
-
+مخصص
 [terrain group classic]
-
+أرض تقليدية
 [terrain rule walkable]
-
+يمكن المشي عليها
 [terrain rule swimmable]
-
+يمكن السباحة فيها
 [terrain rule impassable]
-
+لا يمكن عبورها
 [terrain rule no flying]
-
+لا يمكن الطيران فوقها
 [terrain rule buildable]
-
+يمكن البناء عليها
 [terrain rule speed %0]
-
+السرعة %0%
 [terrain rule crops grow]
-
+تنمو المحاصيل
 [terrain rule irrigates]
-
+تروي الأرض المجاورة
 [terrain rule stops nearby growth]
-
+توقف النمو المجاور
 [terrain rule blocks shots]
-
+تصد الطلقات
 [terrain rule hurts walkers]
-
+تؤذي الوحدات الماشية
 [terrain rule hurts fliers]
-
+تؤذي الوحدات الطائرة
 [terrain palette hint]
-
+اختر فرشاة. تشترك عناصر المجموعة في القواعد نفسها وتختلف في المظهر فقط.
 [terrain rule algae grow]
-
+تنمو الطحالب
 [terrain palette experiments hint]
-
+اختر فرشاة. تظهر مجموعات تضاريس إضافية بعد تفعيل تجاربها ضمن الإعدادات > التجارب.
 [brush valid on %0]
-
+يمكن وضعها على: %0
 [brush valid nowhere]
-
+لا يمكن وضعها على أي تضاريس في هذه الخريطة
 [brush requires experiment %0]
-
+تتطلب تجربة %0
 [brush resources custom]
-
+موارد مستوردة
 [brush section zones]
-
+مناطق
 [brush section areas]
-
+مساحات
 [brush section tools]
-
+أدوات
 [brush clearing area]
-
+منطقة إخلاء
 [editor unsaved title]
-
+تغييرات غير محفوظة
 [editor quit unsaved]
-
+هل تريد حفظ تغييرات هذه الخريطة قبل مغادرة المحرر؟
 [editor load unsaved]
-
+هل تريد حفظ تغييرات هذه الخريطة قبل فتح خريطة أخرى؟
 [editor save]
-
+حفظ…
 [editor discard]
-
+عدم الحفظ
 [editor share never saved]
-
+تُشارك الخرائط من ملفها المحفوظ. احفظ هذه الخريطة أولًا ثم شاركها.
 [editor share unsaved]
-
+لهذه الخريطة تغييرات لم تُحفظ بعد. ترفع المشاركة الملف المحفوظ.
 [editor save and share]
-
+حفظ ومشاركة…
 [editor share saved version]
-
+مشاركة النسخة المحفوظة
 [editor reroll confirm]
-
+هل تريد منح كل مربع تضاريس مظهرًا عشوائيًا جديدًا؟ تبقى أنواع التضاريس وأسلوب اللعب كما هي. لا يمكن التراجع عن ذلك.
 [editor reroll]
-
+إعادة اختيار المظهر
 [editor map saved]
-
+تم حفظ الخريطة
 [editor map shared]
-
+تمت مشاركة الخريطة عبر الإنترنت
 [editor save needs fertility]
-
+يتطلب الحفظ خريطة الخصوبة، لذا أُلغي الحفظ. اضغط موافق للمحاولة مجددًا.
 [editor fertility stale]
-
+خريطة الخصوبة قديمة · انقر لتحديثها
 [No definition files found in %0]
-
+لم يُعثر على ملفات تعريف في %0
 [From device…]
-
+من الجهاز…
 [replace existing file %0?]
-
+يوجد ملف باسم "%0" بالفعل. هل تريد استبداله؟
 [Replace]
-
+استبدال
 [Keep existing file]
-
+الاحتفاظ بالملف الحالي
 [editor menu save]
-
+حفظ الخريطة
 [editor menu load]
-
+فتح خريطة…
 [editor menu import terrain]
-
+استيراد تعريفات التضاريس…
 [editor menu import resources]
-
+استيراد تعريفات الموارد…
 [editor menu teams]
-
+الفرق…
 [editor menu scenario]
-
+السيناريو…
 [editor menu reroll]
-
+إعادة اختيار مظهر التضاريس…
 [editor menu file]
-
+ملف
 [editor menu map]
-
+خريطة
 [no resource growth areas]
-
+مناطق منع النمو
 [dock flags and units]
-
+الأعلام والوحدات
 [dock minimap]
-
+الخريطة المصغرة
 [dock search brushes]
-
+البحث عن فرش
 [dock brush shape %0]
-
+شكل الفرشاة %0
 [dock brush]
-
+فرشاة
 [dock brush paint]
-
+رسم
 [dock brush erase]
-
+مسح
 [dock enable for map]
-
+تفعيل لهذه الخريطة
 [dock enable experiment %0]
-
+تفعيل %0
 [dock enable experiment hint %0]
-
+يفعّل تجربة %0 لهذه الخريطة فقط.
 [dock area number]
-
+مساحة
 [dock building level]
-
+مستوى
 [dock unit level]
-
+مستوى الوحدة
 [dock no brushes match]
-
+لا توجد فرش تطابق البحث.
 [dock active team]
-
+الفريق النشط
 [dock team count %0]
-
+الفرق على هذه الخريطة: %0
 [dock add team]
-
+إضافة فريق
 [dock remove team]
-
+إزالة فريق
 [dock nothing selected]
-
+لم يُحدد شيء.
 [dock no properties]
-
+ليس لهذا العنصر خصائص قابلة للتعديل.
 [focus brush search]
-
+البحث عن فرش
 [switch to resources view]
-
+الانتقال إلى عرض الموارد
 [dock resources base]
-
+الموارد القياسية
 [dock fertility stale]
-
+خريطة الخصوبة قديمة.
 [dock fertility refresh]
-
+تحديث الخصوبة
 [Enabled %0 for this map]
-
+تم تفعيل %0 لهذه الخريطة
 [editor fertility tap refresh]
-
+خريطة الخصوبة قديمة: اضغط لتحديثها
 [editor menu import set]
-
+استيراد مجموعة تضاريس وموارد
 [editor menu set library]
-
+مكتبة المجموعات
 [set library loading]
-
+جارٍ تحميل المجموعات…
 [set library downloading]
-
+جارٍ تنزيل الإصدار المحدد…
 [set library connection error]
-
+تعذر تحميل المجموعات. تحقق من اتصالك وحاول مجددًا.
 [set library hash error]
-
+فشلت المجموعة المنزّلة في اختبار البصمة الرقمية.
 [set library package error]
-
+حزمة المجموعة غير صالحة.
 [set library listing error]
-
+قائمة المجموعة غير صالحة.
 [set library release error]
-
+إصدار المجموعة غير صالح.
 [set library selection help]
-
+حدد العناصر لاستيرادها. تُضمّن الموارد المخصصة المطلوبة تلقائيًا.
 [set library empty]
-
+لم يُعثر على مجموعات.
 [set library release help]
-
+اختر إصدارًا محددًا لفحصه واستيراده.
 [set library heading]
-
+مجموعات التضاريس والموارد
 [set library browse]
-
+تصفح المكتبة عبر الإنترنت
 [set library local]
-
+محتوى الخريطة وأسماء المساهمين والتعديلات المحلية
 [set library local help]
-
+عدّل نسخة المحتوى المحفوظة في هذه الخريطة. تبقى أسماء مساهمي الإصدار الأصلي مرفقة. لا تحدّث التغييرات الخرائط الأخرى أو الإصدار عبر الإنترنت.
 [set library apply]
-
+تطبيق التغييرات المحلية
 [set library updated]
-
+تم تحديث المحتوى المحلي.
 [set library search hint]
-
+ابحث عن السمات والمبدعين
 [set library search]
-
+بحث
 [set library set]
-
+مجموعة
 [set library update help]
-
+يستبدل هذا صراحةً التضاريس والموارد الموضوعة المطابقة، بما فيها التعديلات المحلية. تبقى العناصر المحذوفة على الإصدار القديم. تُحصر كميات المواد الحالية ضمن السعات الجديدة.
 [set library import]
-
+استيراد العناصر المحددة
 [set library next]
-
+الصفحة التالية
 [set library back]
-
+العودة إلى النتائج
 [set library license %0]
-
+الترخيص: %0
 [set library release %0]
-
+الإصدار %0
 [set library replace %0]
-
+استبدال العناصر الموضوعة من الإصدار %0
 [set library preview limit]
-
+تُعرض معاينات لأول 64 عنصرًا. تظل جميع العناصر قابلة للتحديد.
 [set library definition]
-
+تعريف الخصائص (JSON)
 [set library artwork]
-
+ربط رسومات التضاريس (JSON)
 [settings Map generators]
 مولدات الخرائط
 [settings Import a generator package, then select its landscape when creating a map or game.]

@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Hoàn tất đăng nhập trong trình duyệt. Trò chơi sẽ tự tiếp tục khi bạn hoàn tất.
 [hub browser did not open]
-
+Trình duyệt không mở. Hãy mở trang đăng nhập để tiếp tục.
 [hub compare code %0]
-
+Nếu trang yêu cầu, hãy kiểm tra mã hiển thị là %0.
 [hub code copied]
-
+Đã sao chép mã
 [settings Finish in your browser. The game continues by itself.]
-
+Hoàn tất trong trình duyệt. Trò chơi sẽ tự tiếp tục.
 [music set]
-
+Bộ nhạc
 [random music set]
-
+Ngẫu nhiên mỗi trận
 [playing music set %0]
-
+Đang phát: %0
 [music set failed]
-
+Không thể tải bộ nhạc này.
 [settings Music set]
-
+Bộ nhạc
 [settings Random each match]
-
+Chọn Ngẫu nhiên để chọn nhạc nền khi bắt đầu mỗi trận.
 [settings Edge scrolling]
-
+Cuộn ở mép màn hình
 [settings Edge scrolling in fullscreen]
-
+Cuộn ở mép trong chế độ toàn màn hình
 [settings Edge scrolling in windowed mode]
-
+Cuộn ở mép trong chế độ cửa sổ
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Di chuyển bản đồ trong trò chơi và trình chỉnh sửa khi chuột chạm mép cửa sổ.
 [AI strategy]
 Chiến lược AI
 [start recording]
@@ -4625,9 +4625,9 @@ Quay video
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Quay trận đấu thành video MP4 có âm thanh. Cần FFmpeg với bộ mã hóa libx264 và AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Ghi lại trận đấu thành video MP4 có âm thanh.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Ghi ở toàn bộ độ phân giải hiển thị với 30 khung hình mỗi giây.
 [settings FFmpeg is ready.]
 FFmpeg đã sẵn sàng.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Mọc lại
 [Units can die]
 Đơn vị có thể chết
 [Upgrades]
-
+Nâng cấp
 [No stockpile]
 Không có
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Các đội có thể tấn công nhau. Tắt để có trận hòa bình.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Đơn vị chết khi hết máu. Tắt để giữ chúng ở mức 1 máu.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Đơn vị tăng cấp tại công trình huấn luyện và công trình có thể được nâng cấp. Vẫn có thể sửa chữa khi tắt tùy chọn này.
 [stat group work]
 Thời gian công nhân
 [stat worker time]
@@ -5309,235 +5309,235 @@ sức mạnh
 [stat view by place]
 Theo vị trí
 [AI Library]
-
+Thư viện AI
 [Authoring guide]
-
+Hướng dẫn tạo AI
 [Beginner-friendly]
-
+Phù hợp người mới
 [Defensive]
-
+Phòng thủ
 [Discover]
-
+Khám phá
 [Download & install]
-
+Tải xuống và cài đặt
 [Downloading AI…]
-
+Đang tải AI…
 [Expansion]
-
+Mở rộng
 [Experimental]
-
+Thử nghiệm
 [Favourite]
-
+Thêm vào yêu thích
 [Favourited]
-
+Đã yêu thích
 [Favourites]
-
+Mục yêu thích
 [Got it]
-
+Đã hiểu
 [How AIs work]
-
+Cách AI hoạt động
 [Install selected version]
-
+Cài đặt phiên bản đã chọn
 [Installed]
-
+Đã cài đặt
 [Invalid AI catalogue response]
-
+Phản hồi danh mục AI không hợp lệ
 [JavaScript API reference]
-
+Tài liệu tham khảo API JavaScript
 [Like]
-
+Thích
 [Liked]
-
+Đã thích
 [Loading AI library…]
-
+Đang tải thư viện AI…
 [Most downloaded]
-
+Được tải nhiều nhất
 [Most liked]
-
+Được thích nhiều nhất
 [Newest]
-
+Mới nhất
 [No AIs match these filters.]
-
+Không có AI phù hợp với các bộ lọc này.
 [Not validated for this game version]
-
+Chưa được kiểm tra với phiên bản trò chơi này
 [Open AI Library]
-
+Mở thư viện AI
 [Open AI page]
-
+Mở trang AI
 [Passed compatibility checks]
-
+Đã vượt qua kiểm tra tương thích
 [Recently updated]
-
+Cập nhật gần đây
 [Rush]
-
+Tấn công chớp nhoáng
 [Search]
-
+Tìm kiếm
 [Share your AI]
-
+Chia sẻ AI của bạn
 [Show more]
-
+Hiển thị thêm
 [Sign in through Online settings to like and favourite AIs.]
-
+Đăng nhập qua phần cài đặt Trực tuyến để thích và đánh dấu AI yêu thích.
 [Starter project]
-
+Dự án khởi đầu
 [downloads of this version]
-
+lượt tải phiên bản này
 [downloads]
-
+lượt tải
 [Update available]
-
+Có bản cập nhật
 [Browse versions]
-
+Duyệt các phiên bản
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Tải AI rồi chọn cho vị trí máy tính trong một trận cục bộ. Các phiên bản đã cài đặt dùng được khi ngoại tuyến. Bản cập nhật ảnh hưởng đến các trận sau; bản lưu vẫn giữ mã gốc.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Kiểm tra tương thích không bảo đảm độ an toàn hay khả năng chơi. Chỉ chạy mã của tác giả mà bạn tin tưởng.
 [Back to results]
-
+Quay lại kết quả
 [music 2–5 minutes]
-
+2–5 phút
 [music 5–15 minutes]
-
+5–15 phút
 [music AI-generated]
-
+Do AI tạo
 [music All music]
-
+Tất cả nhạc
 [music All open licences]
-
+Tất cả giấy phép mở
 [music Any duration]
-
+Mọi thời lượng
 [music Audition each mood for eight seconds]
-
+Nghe thử mỗi sắc thái trong tám giây
 [music Back]
-
+Quay lại
 [music Browse]
-
+Duyệt
 [music Building]
-
+Dâng cao
 [music Calm]
-
+Yên bình
 [music Calm → Building → Combat]
-
+Yên bình → Dâng cao → Chiến đấu
 [music Choose Building]
-
+Chọn nhạc Dâng cao
 [music Choose Calm]
-
+Chọn nhạc Yên bình
 [music Choose Combat]
-
+Chọn nhạc Chiến đấu
 [music Choose ZIP]
-
+Chọn ZIP
 [music Choose a music file.]
-
+Chọn một tệp nhạc.
 [music Combat]
-
+Chiến đấu
 [music Could not open this music set.]
-
+Không thể mở bộ nhạc này.
 [music Credits, downloads and reporting]
-
+Ghi công, tải xuống và báo cáo
 [music Downloading music…]
-
+Đang tải nhạc…
 [music Export recovery files]
-
+Xuất tệp khôi phục
 [music Fade duration]
-
+Thời gian chuyển âm
 [music File selection cancelled or failed.]
-
+Đã hủy hoặc không chọn được tệp.
 [music Import ZIP]
-
+Nhập ZIP
 [music Import ZIP or three tracks]
-
+Nhập ZIP hoặc ba bản nhạc
 [music Import music]
-
+Nhập nhạc
 [music Import three tracks]
-
+Nhập ba bản nhạc
 [music Includes AI-generated audio]
-
+Có âm thanh do AI tạo
 [music Install]
-
+Cài đặt
 [music Install selected]
-
+Cài đặt mục đã chọn
 [music Installed]
-
+Đã cài đặt
 [music Load more]
-
+Tải thêm
 [music Loading music…]
-
+Đang tải nhạc…
 [music Most downloaded]
-
+Được tải nhiều nhất
 [music Most liked]
-
+Được thích nhiều nhất
 [music Music decoding failed.]
-
+Giải mã nhạc thất bại.
 [music Music download failed.]
-
+Tải nhạc thất bại.
 [music Music installed.]
-
+Đã cài đặt nhạc.
 [music Music installed. It is now available in Audio settings.]
-
+Đã cài đặt nhạc. Giờ bạn có thể chọn trong cài đặt Âm thanh.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Nhạc chưa được lưu lâu dài. Hãy thử lưu lại trước khi rời đi.
 [music Music library]
-
+Thư viện nhạc
 [music Music request failed.]
-
+Yêu cầu nhạc thất bại.
 [music Newest]
-
+Mới nhất
 [music No community music installed yet. Import files or browse the online library.]
-
+Chưa cài đặt nhạc cộng đồng. Hãy nhập tệp hoặc duyệt thư viện trực tuyến.
 [music No music found.]
-
+Không tìm thấy nhạc.
 [music Not AI-generated]
-
+Không do AI tạo
 [music Pause]
-
+Tạm dừng
 [music Play]
-
+Phát
 [music Playback position]
-
+Vị trí phát
 [music Preview]
-
+Xem trước
 [music Ready to import.]
-
+Sẵn sàng nhập.
 [music Remove]
-
+Xóa
 [music Reset to game behavior]
-
+Khôi phục hành vi mặc định của trò chơi
 [music Retry saving]
-
+Thử lưu lại
 [music Saved.]
-
+Đã lưu.
 [music Saving music…]
-
+Đang lưu nhạc…
 [music Search]
-
+Tìm kiếm
 [music Search title, artist, description…]
-
+Tìm tên, nghệ sĩ, mô tả…
 [music Select for installation]
-
+Chọn để cài đặt
 [music Share music on the web]
-
+Chia sẻ nhạc trên web
 [music Some catalogue entries could not be read.]
-
+Không đọc được một số mục trong danh mục.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Không lưu được dữ liệu. Hãy thử lại hoặc xuất tệp trước khi rời đi.
 [music Tag]
-
+Nhãn
 [music Test crossfades]
-
+Thử chuyển tiếp âm thanh
 [music Up to 2 minutes]
-
+Tối đa 2 phút
 [music Use this music]
-
+Dùng nhạc này
 [music Validating music…]
-
+Đang kiểm tra nhạc…
 [settings Music library · Browse, install and import]
-
+Thư viện nhạc · Duyệt, cài đặt và nhập
 [music Filters]
-
+Bộ lọc
 [music Leave without saving]
-
+Rời đi mà không lưu
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Nhập ZIP nhạc đã tải hoặc ba bản nhạc Opus. Siêu dữ liệu và ảnh bìa được đọc từ bản Yên bình; không cần tệp bổ sung.
 [settings Target render FPS]
 FPS kết xuất mục tiêu
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Cá
 [Reroll terrain look]
 Chọn lại ngẫu nhiên diện mạo địa hình
 [boulders]
-
+Đá tảng
 [hedge]
-
+Hàng rào cây
 [thicket]
-
+Bụi rậm
 [ridge_rock]
-
+Sống đá
 [outcrop]
-
+Đá lộ thiên
 [dirt]
-
+Đất
 [clay]
-
+Đất sét
 [gravel]
-
+Sỏi
 [flower_meadow]
-
+Đồng hoa
 [mud]
-
+Bùn
 [marsh]
-
+Đầm lầy
 [deep_snow]
-
+Tuyết dày
 [scree]
-
+Sườn đá vụn
 [dirt_track]
-
+Đường đất
 [boardwalk]
-
+Lối ván gỗ
 [lava]
-
+Dung nham
 [ember_field]
-
+Bãi than hồng
 [loam]
-
+Đất thịt
 [moss]
-
+Rêu
 [spring_meadow]
-
+Đồng cỏ mùa xuân
 [deep_water]
-
+Nước sâu
 [dark_water]
-
+Nước tối
 [void_hole]
-
+Hố
 [chasm]
-
+Vực sâu
 [terrain group water]
-
+Nước
 [terrain group sand]
-
+Cát
 [terrain group grass]
-
+Cỏ
 [terrain group ice]
-
+Băng
 [terrain group paths]
-
+Đường
 [terrain group obstacles]
-
+Chướng ngại vật
 [terrain group ridges]
-
+Sống đá
 [terrain group barren]
-
+Đất cằn
 [terrain group rough]
-
+Đất khó đi
 [terrain group lava]
-
+Dung nham
 [terrain group fertile]
-
+Đất màu mỡ
 [terrain group deep-water]
-
+Nước sâu
 [terrain group void]
-
+Khoảng không
 [experiment obstacle-terrain]
-
+Địa hình chướng ngại vật
 [experiment obstacle-terrain help]
-
+Thêm đá tảng, hàng rào cây và bụi rậm vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể đi qua và đạn bị chặn; đơn vị bay có thể vượt qua. Không thể đặt công trình hay tài nguyên trên đó.
 [experiment ridge-terrain]
-
+Địa hình sống đá
 [experiment ridge-terrain help]
-
+Thêm sống đá và đá lộ thiên vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể đi qua, nhưng đạn từ tháp và đơn vị bay có thể vượt qua. Không thể đặt công trình hay tài nguyên trên đó.
 [experiment barren-terrain]
-
+Đất cằn
 [experiment barren-terrain help]
-
+Thêm đất, đất sét, sỏi và đồng hoa vào trình chỉnh sửa bản đồ. Có thể đặt công trình, nhưng không có gì mọc trên hoặc cạnh đó, và chúng không được tính là bờ nước.
 [experiment rough-terrain]
-
+Đất khó đi
 [experiment rough-terrain help]
-
+Thêm bùn, đầm lầy, tuyết dày và sườn đá vụn vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với khoảng hai phần ba tốc độ bình thường. Không thể đặt công trình hay tài nguyên trên đó.
 [experiment path-terrain]
-
+Địa hình đường
 [experiment path-terrain help]
-
+Thêm đường đất và lối ván gỗ vào trình chỉnh sửa bản đồ. Giống đường mòn, đơn vị mặt đất đi nhanh gấp đôi và có thể đặt công trình, nhưng không có gì mọc.
 [experiment lava-terrain]
-
+Địa hình dung nham
 [experiment lava-terrain help]
-
+Thêm dung nham và bãi than hồng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể vào; đơn vị bay qua sẽ mất máu nhanh. Đạn có thể vượt qua.
 [experiment fertile-terrain]
-
+Đất màu mỡ
 [experiment fertile-terrain help]
-
+Thêm đất thịt, rêu và đồng cỏ mùa xuân vào trình chỉnh sửa bản đồ. Chúng hỗ trợ công trình và cây trồng, đồng thời tưới vùng đất xung quanh mạnh hơn nước.
 [experiment deep-water-terrain]
-
+Nước sâu
 [experiment deep-water-terrain help]
-
+Thêm nước sâu và nước tối vào trình chỉnh sửa bản đồ. Đơn vị bơi đi qua chậm hơn, tảo không mọc, nhưng vẫn tưới các cánh đồng gần đó.
 [experiment void-terrain]
-
+Địa hình khoảng không
 [experiment void-terrain help]
-
+Thêm hố và vực sâu vào trình chỉnh sửa bản đồ. Không gì có thể vượt qua, kể cả đơn vị bay, và đạn dừng ở mép.
 [terrain group custom]
-
+Tùy chỉnh
 [terrain group classic]
-
+Đất cổ điển
 [terrain rule walkable]
-
+Có thể đi bộ
 [terrain rule swimmable]
-
+Có thể bơi
 [terrain rule impassable]
-
+Không thể đi qua
 [terrain rule no flying]
-
+Không thể bay qua
 [terrain rule buildable]
-
+Có thể xây dựng
 [terrain rule speed %0]
-
+Tốc độ %0%
 [terrain rule crops grow]
-
+Cây trồng mọc
 [terrain rule irrigates]
-
+Tưới đất xung quanh
 [terrain rule stops nearby growth]
-
+Ngăn sinh trưởng xung quanh
 [terrain rule blocks shots]
-
+Chặn đạn
 [terrain rule hurts walkers]
-
+Gây hại cho đơn vị đi bộ
 [terrain rule hurts fliers]
-
+Gây hại cho đơn vị bay
 [terrain palette hint]
-
+Chọn cọ. Các địa hình trong cùng nhóm có chung quy tắc và chỉ khác vẻ ngoài.
 [terrain rule algae grow]
-
+Tảo mọc
 [terrain palette experiments hint]
-
+Chọn cọ. Các nhóm địa hình khác xuất hiện khi bật thử nghiệm tương ứng trong Cài đặt > Thử nghiệm.
 [brush valid on %0]
-
+Có thể đặt trên: %0
 [brush valid nowhere]
-
+Không thể đặt trên bất kỳ địa hình nào của bản đồ này
 [brush requires experiment %0]
-
+Cần thử nghiệm %0
 [brush resources custom]
-
+Tài nguyên đã nhập
 [brush section zones]
-
+Vùng
 [brush section areas]
-
+Khu vực
 [brush section tools]
-
+Công cụ
 [brush clearing area]
-
+Khu vực dọn dẹp
 [editor unsaved title]
-
+Thay đổi chưa lưu
 [editor quit unsaved]
-
+Lưu thay đổi của bản đồ này trước khi rời trình chỉnh sửa?
 [editor load unsaved]
-
+Lưu thay đổi của bản đồ này trước khi mở bản đồ khác?
 [editor save]
-
+Lưu…
 [editor discard]
-
+Không lưu
 [editor share never saved]
-
+Bản đồ được chia sẻ từ tệp đã lưu. Hãy lưu bản đồ này trước rồi chia sẻ.
 [editor share unsaved]
-
+Bản đồ có thay đổi chưa lưu. Khi chia sẻ, tệp đã lưu sẽ được tải lên.
 [editor save and share]
-
+Lưu và chia sẻ…
 [editor share saved version]
-
+Chia sẻ phiên bản đã lưu
 [editor reroll confirm]
-
+Chọn lại ngẫu nhiên vẻ ngoài của mọi ô địa hình? Loại địa hình và lối chơi không thay đổi. Không thể hoàn tác thao tác này.
 [editor reroll]
-
+Chọn lại ngẫu nhiên
 [editor map saved]
-
+Đã lưu bản đồ
 [editor map shared]
-
+Đã chia sẻ bản đồ trực tuyến
 [editor save needs fertility]
-
+Cần bản đồ độ màu mỡ để lưu nên thao tác lưu đã bị hủy. Nhấn OK để thử lại.
 [editor fertility stale]
-
+Bản đồ độ màu mỡ đã cũ · Nhấp để làm mới
 [No definition files found in %0]
-
+Không tìm thấy tệp định nghĩa trong %0
 [From device…]
-
+Từ thiết bị…
 [replace existing file %0?]
-
+Đã có tệp tên "%0". Thay thế?
 [Replace]
-
+Thay thế
 [Keep existing file]
-
+Giữ tệp hiện có
 [editor menu save]
-
+Lưu bản đồ
 [editor menu load]
-
+Mở bản đồ…
 [editor menu import terrain]
-
+Nhập định nghĩa địa hình…
 [editor menu import resources]
-
+Nhập định nghĩa tài nguyên…
 [editor menu teams]
-
+Đội…
 [editor menu scenario]
-
+Kịch bản…
 [editor menu reroll]
-
+Chọn lại vẻ ngoài địa hình…
 [editor menu file]
-
+Tệp
 [editor menu map]
-
+Bản đồ
 [no resource growth areas]
-
+Khu vực cấm sinh trưởng
 [dock flags and units]
-
+Cờ và đơn vị
 [dock minimap]
-
+Bản đồ nhỏ
 [dock search brushes]
-
+Tìm cọ
 [dock brush shape %0]
-
+Hình dạng cọ %0
 [dock brush]
-
+Cọ
 [dock brush paint]
-
+Vẽ
 [dock brush erase]
-
+Xóa
 [dock enable for map]
-
+Bật cho bản đồ này
 [dock enable experiment %0]
-
+Bật %0
 [dock enable experiment hint %0]
-
+Chỉ bật thử nghiệm %0 cho bản đồ này.
 [dock area number]
-
+Khu vực
 [dock building level]
-
+Cấp
 [dock unit level]
-
+Cấp đơn vị
 [dock no brushes match]
-
+Không có cọ phù hợp với tìm kiếm.
 [dock active team]
-
+Đội hiện tại
 [dock team count %0]
-
+Số đội trên bản đồ này: %0
 [dock add team]
-
+Thêm đội
 [dock remove team]
-
+Xóa đội
 [dock nothing selected]
-
+Chưa chọn gì.
 [dock no properties]
-
+Đối tượng này không có thuộc tính có thể chỉnh sửa.
 [focus brush search]
-
+Tìm cọ
 [switch to resources view]
-
+Chuyển sang chế độ xem tài nguyên
 [dock resources base]
-
+Tài nguyên tiêu chuẩn
 [dock fertility stale]
-
+Bản đồ độ màu mỡ đã cũ.
 [dock fertility refresh]
-
+Làm mới độ màu mỡ
 [Enabled %0 for this map]
-
+Đã bật %0 cho bản đồ này
 [editor fertility tap refresh]
-
+Bản đồ độ màu mỡ đã cũ: chạm để làm mới
 [editor menu import set]
-
+Nhập bộ địa hình và tài nguyên
 [editor menu set library]
-
+Thư viện bộ nội dung
 [set library loading]
-
+Đang tải các bộ nội dung…
 [set library downloading]
-
+Đang tải đúng bản phát hành…
 [set library connection error]
-
+Không tải được các bộ nội dung. Kiểm tra kết nối rồi thử lại.
 [set library hash error]
-
+Bộ nội dung tải về không vượt qua kiểm tra hàm băm.
 [set library package error]
-
+Gói bộ nội dung không hợp lệ.
 [set library listing error]
-
+Danh sách bộ nội dung không hợp lệ.
 [set library release error]
-
+Bản phát hành bộ nội dung không hợp lệ.
 [set library selection help]
-
+Chọn các mục cần nhập. Tài nguyên tùy chỉnh cần thiết được tự động bao gồm.
 [set library empty]
-
+Không tìm thấy bộ nội dung.
 [set library release help]
-
+Chọn bản phát hành cụ thể để xem và nhập.
 [set library heading]
-
+Bộ địa hình và tài nguyên
 [set library browse]
-
+Duyệt thư viện trực tuyến
 [set library local]
-
+Nội dung bản đồ, ghi công và chỉnh sửa cục bộ
 [set library local help]
-
+Chỉnh sửa bản sao nội dung được lưu trong bản đồ này. Ghi công của bản phát hành gốc vẫn được giữ. Thay đổi không cập nhật bản đồ khác hay bản phát hành trực tuyến.
 [set library apply]
-
+Áp dụng thay đổi cục bộ
 [set library updated]
-
+Đã cập nhật nội dung cục bộ.
 [set library search hint]
-
+Tìm chủ đề và tác giả
 [set library search]
-
+Tìm kiếm
 [set library set]
-
+Bộ nội dung
 [set library update help]
-
+Thao tác này sẽ thay thế địa hình và tài nguyên đã đặt có khớp, kể cả chỉnh sửa cục bộ. Các mục đã loại bỏ vẫn dùng bản phát hành cũ. Lượng nguyên liệu hiện có được giới hạn theo sức chứa mới.
 [set library import]
-
+Nhập các mục đã chọn
 [set library next]
-
+Trang tiếp
 [set library back]
-
+Quay lại kết quả
 [set library license %0]
-
+Giấy phép: %0
 [set library release %0]
-
+bản phát hành %0
 [set library replace %0]
-
+Thay thế các mục đã đặt từ bản phát hành %0
 [set library preview limit]
-
+Chỉ xem trước 64 mục đầu tiên. Vẫn có thể chọn mọi mục.
 [set library definition]
-
+Định nghĩa thuộc tính (JSON)
 [set library artwork]
-
+Ánh xạ hình ảnh địa hình (JSON)
 [settings Map generators]
 Trình tạo bản đồ
 [settings Import a generator package, then select its landscape when creating a map or game.]

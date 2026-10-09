@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Dokončajte prijavo v brskalniku. Igra se bo nato samodejno nadaljevala.
 [hub browser did not open]
-
+Brskalnik se ni odprl. Za nadaljevanje odprite prijavno stran.
 [hub compare code %0]
-
+Če stran zahteva, preverite, ali prikazuje %0.
 [hub code copied]
-
+Koda kopirana
 [settings Finish in your browser. The game continues by itself.]
-
+Dokončajte v brskalniku. Igra se bo samodejno nadaljevala.
 [music set]
-
+Glasbeni paket
 [random music set]
-
+Naključen za vsako igro
 [playing music set %0]
-
+Predvajanje: %0
 [music set failed]
-
+Tega glasbenega paketa ni bilo mogoče naložiti.
 [settings Music set]
-
+Glasbeni paket
 [settings Random each match]
-
+Izberite »Naključen«, da se glasba izbere ob začetku vsake igre.
 [settings Edge scrolling]
-
+Pomikanje ob robu
 [settings Edge scrolling in fullscreen]
-
+Pomikanje ob robu v celozaslonskem načinu
 [settings Edge scrolling in windowed mode]
-
+Pomikanje ob robu v okenskem načinu
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Premakni zemljevid igre in urejevalnika, ko miška doseže rob okna.
 [AI strategy]
 Strategija UI
 [start recording]
@@ -4625,9 +4625,9 @@ Snemanje
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Snemajte igre kot videoposnetke MP4 z zvokom. Snemanje potrebuje FFmpeg s kodirnikoma libx264 in AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Snemajte igre kot videoposnetke MP4 z zvokom.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Snemanje uporablja polno ločljivost slike pri 30 sličicah na sekundo.
 [settings FFmpeg is ready.]
 FFmpeg je pripravljen.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Ranjene enote se umaknejo
 [Units can die]
 Enote lahko umrejo
 [Upgrades]
-
+Nadgradnje
 [No stockpile]
 Brez
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Poškodovane enote se gredo zdravit, namesto da se borijo do smrti.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Enote umrejo, ko jim zmanjka zdravja. Izklopite, da se ustavijo pri 1 točki zdravja.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Enote pridobivajo ravni v vadbenih stavbah, stavbe pa je mogoče nadgraditi. Popravila ostanejo na voljo tudi ob izklopu.
 [stat group work]
 Čas delavcev
 [stat worker time]
@@ -5309,235 +5309,235 @@ moč
 [stat view by place]
 Po kraju
 [AI Library]
-
+Knjižnica UI
 [Authoring guide]
-
+Priročnik za avtorje
 [Beginner-friendly]
-
+Primerno za začetnike
 [Defensive]
-
+Obrambna
 [Discover]
-
+Razišči
 [Download & install]
-
+Prenesi in namesti
 [Downloading AI…]
-
+Prenašanje UI…
 [Expansion]
-
+Širjenje
 [Experimental]
-
+Poskusna
 [Favourite]
-
+Dodaj med priljubljene
 [Favourited]
-
+Med priljubljenimi
 [Favourites]
-
+Priljubljene
 [Got it]
-
+Razumem
 [How AIs work]
-
+Kako delujejo UI
 [Install selected version]
-
+Namesti izbrano različico
 [Installed]
-
+Nameščeno
 [Invalid AI catalogue response]
-
+Neveljaven odgovor kataloga UI
 [JavaScript API reference]
-
+Referenčni priročnik API JavaScript
 [Like]
-
+Všeč mi je
 [Liked]
-
+Všečkano
 [Loading AI library…]
-
+Nalaganje knjižnice UI…
 [Most downloaded]
-
+Največkrat prenesene
 [Most liked]
-
+Najbolj všečkane
 [Newest]
-
+Najnovejše
 [No AIs match these filters.]
-
+Nobena UI ne ustreza tem filtrom.
 [Not validated for this game version]
-
+Ni preverjeno za to različico igre
 [Open AI Library]
-
+Odpri knjižnico UI
 [Open AI page]
-
+Odpri stran UI
 [Passed compatibility checks]
-
+Preverjanja združljivosti uspešna
 [Recently updated]
-
+Nedavno posodobljene
 [Rush]
-
+Hiter napad
 [Search]
-
+Išči
 [Share your AI]
-
+Deli svojo UI
 [Show more]
-
+Prikaži več
 [Sign in through Online settings to like and favourite AIs.]
-
+Prijavite se prek spletnih nastavitev, da boste lahko všečkali UI in jih dodajali med priljubljene.
 [Starter project]
-
+Začetni projekt
 [downloads of this version]
-
+prenosov te različice
 [downloads]
-
+prenosov
 [Update available]
-
+Na voljo je posodobitev
 [Browse versions]
-
+Prebrskaj različice
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Prenesite UI in jo izberite za računalniškega igralca v lokalni igri. Nameščene različice delujejo brez povezave. Posodobitve vplivajo na prihodnje igre; shranjene igre ohranijo prvotno kodo.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Preverjanja združljivosti ne zagotavljajo varnosti ali igralne moči. Zaganjajte le kodo avtorjev, ki jim zaupate.
 [Back to results]
-
+Nazaj k rezultatom
 [music 2–5 minutes]
-
+2–5 minut
 [music 5–15 minutes]
-
+5–15 minut
 [music AI-generated]
-
+Ustvarjeno z UI
 [music All music]
-
+Vsa glasba
 [music All open licences]
-
+Vse odprte licence
 [music Any duration]
-
+Poljubno trajanje
 [music Audition each mood for eight seconds]
-
+Poslušaj vsako vzdušje osem sekund
 [music Back]
-
+Nazaj
 [music Browse]
-
+Prebrskaj
 [music Building]
-
+Stopnjevanje napetosti
 [music Calm]
-
+Mir
 [music Calm → Building → Combat]
-
+Mir → Stopnjevanje napetosti → Boj
 [music Choose Building]
-
+Izberi stopnjevanje napetosti
 [music Choose Calm]
-
+Izberi Mir
 [music Choose Combat]
-
+Izberi Boj
 [music Choose ZIP]
-
+Izberi ZIP
 [music Choose a music file.]
-
+Izberite glasbeno datoteko.
 [music Combat]
-
+Boj
 [music Could not open this music set.]
-
+Tega glasbenega paketa ni bilo mogoče odpreti.
 [music Credits, downloads and reporting]
-
+Avtorji, prenosi in prijave
 [music Downloading music…]
-
+Prenašanje glasbe…
 [music Export recovery files]
-
+Izvozi datoteke za obnovitev
 [music Fade duration]
-
+Trajanje prelivanja
 [music File selection cancelled or failed.]
-
+Izbira datoteke je bila preklicana ali ni uspela.
 [music Import ZIP]
-
+Uvozi ZIP
 [music Import ZIP or three tracks]
-
+Uvozi ZIP ali tri skladbe
 [music Import music]
-
+Uvozi glasbo
 [music Import three tracks]
-
+Uvozi tri skladbe
 [music Includes AI-generated audio]
-
+Vključuje zvok, ustvarjen z UI
 [music Install]
-
+Namesti
 [music Install selected]
-
+Namesti izbrano
 [music Installed]
-
+Nameščeno
 [music Load more]
-
+Naloži več
 [music Loading music…]
-
+Nalaganje glasbe…
 [music Most downloaded]
-
+Največkrat prenesene
 [music Most liked]
-
+Najbolj všečkane
 [music Music decoding failed.]
-
+Dekodiranje glasbe ni uspelo.
 [music Music download failed.]
-
+Prenos glasbe ni uspel.
 [music Music installed.]
-
+Glasba je nameščena.
 [music Music installed. It is now available in Audio settings.]
-
+Glasba je nameščena. Zdaj je na voljo v zvočnih nastavitvah.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Glasba še ni trajno shranjena. Pred odhodom znova poskusite shraniti.
 [music Music library]
-
+Glasbena knjižnica
 [music Music request failed.]
-
+Zahteva za glasbo ni uspela.
 [music Newest]
-
+Najnovejše
 [music No community music installed yet. Import files or browse the online library.]
-
+Glasba skupnosti še ni nameščena. Uvozite datoteke ali prebrskajte spletno knjižnico.
 [music No music found.]
-
+Glasba ni bila najdena.
 [music Not AI-generated]
-
+Ni ustvarjeno z UI
 [music Pause]
-
+Premor
 [music Play]
-
+Predvajaj
 [music Playback position]
-
+Položaj predvajanja
 [music Preview]
-
+Predogled
 [music Ready to import.]
-
+Pripravljeno za uvoz.
 [music Remove]
-
+Odstrani
 [music Reset to game behavior]
-
+Obnovi vedenje igre
 [music Retry saving]
-
+Znova poskusi shraniti
 [music Saved.]
-
+Shranjeno.
 [music Saving music…]
-
+Shranjevanje glasbe…
 [music Search]
-
+Išči
 [music Search title, artist, description…]
-
+Išči naslov, izvajalca, opis…
 [music Select for installation]
-
+Izberi za namestitev
 [music Share music on the web]
-
+Deli glasbo na spletu
 [music Some catalogue entries could not be read.]
-
+Nekaterih vnosov kataloga ni bilo mogoče prebrati.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Podatkov ni bilo mogoče shraniti. Pred odhodom poskusite znova ali izvozite datoteke.
 [music Tag]
-
+Oznaka
 [music Test crossfades]
-
+Preizkusi prelivanje
 [music Up to 2 minutes]
-
+Do 2 minuti
 [music Use this music]
-
+Uporabi to glasbo
 [music Validating music…]
-
+Preverjanje glasbe…
 [settings Music library · Browse, install and import]
-
+Glasbena knjižnica · Brskanje, namestitev in uvoz
 [music Filters]
-
+Filtri
 [music Leave without saving]
-
+Odidi brez shranjevanja
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Uvozite preneseni glasbeni ZIP ali tri skladbe Opus. Metapodatki in naslovnica se preberejo iz skladbe Mir; dodatne datoteke niso potrebne.
 [settings Target render FPS]
 Ciljna hitrost izrisa sličic
 [settings Unlimited]
@@ -5605,367 +5605,367 @@ Kremen
 [Cotton]
 Bombaž
 [Jungle trees]
-
+Drevesa džungle
 [Pine trees]
-
+Borovci
 [Dead trees]
-
+Odmrla drevesa
 [Ruins]
-
+Ruševine
 [Camp-site]
-
+Taborišče
 [Ancient debris]
-
+Starodavni ostanki
 [Scrub]
-
+Grmičevje
 [Tall grass]
-
+Visoka trava
 [Maize]
-
+Koruza
 [Potatoes]
-
+Krompir
 [Rice]
-
+Riž
 [Fish]
-
+Ribe
 [Reroll terrain look]
 Znova naključno izberi videz terena
 [boulders]
-
+Balvani
 [hedge]
-
+Živa meja
 [thicket]
-
+Goščava
 [ridge_rock]
-
+Greben
 [outcrop]
-
+Skalni izdanek
 [dirt]
-
+Prst
 [clay]
-
+Glina
 [gravel]
-
+Prod
 [flower_meadow]
-
+Cvetlični travnik
 [mud]
-
+Blato
 [marsh]
-
+Močvirje
 [deep_snow]
-
+Globok sneg
 [scree]
-
+Melišče
 [dirt_track]
-
+Kolovoz
 [boardwalk]
-
+Lesena pot
 [lava]
-
+Lava
 [ember_field]
-
+Žerjavica
 [loam]
-
+Ilovica
 [moss]
-
+Mah
 [spring_meadow]
-
+Pomladni travnik
 [deep_water]
-
+Globoka voda
 [dark_water]
-
+Temna voda
 [void_hole]
-
+Luknja
 [chasm]
-
+Prepad
 [terrain group water]
-
+Voda
 [terrain group sand]
-
+Pesek
 [terrain group grass]
-
+Trava
 [terrain group ice]
-
+Led
 [terrain group paths]
-
+Poti
 [terrain group obstacles]
-
+Ovire
 [terrain group ridges]
-
+Grebeni
 [terrain group barren]
-
+Nerodovitna tla
 [terrain group rough]
-
+Zahteven teren
 [terrain group lava]
-
+Lava
 [terrain group fertile]
-
+Rodovitna tla
 [terrain group deep-water]
-
+Globoka voda
 [terrain group void]
-
+Praznina
 [experiment obstacle-terrain]
-
+Teren z ovirami
 [experiment obstacle-terrain help]
-
+V urejevalnik zemljevidov doda balvane, žive meje in goščave. Kopenske enote jih ne morejo prečkati in ustavljajo izstrelke; leteče enote jih preletijo. Na njih ni stavb ali virov.
 [experiment ridge-terrain]
-
+Skalnat teren
 [experiment ridge-terrain help]
-
+V urejevalnik zemljevidov doda skalne grebene in izdanke. Kopenske enote jih ne morejo prečkati, vendar stolpi streljajo čeznje in leteče enote jih preletijo. Na njih ni stavb ali virov.
 [experiment barren-terrain]
-
+Nerodovitna tla
 [experiment barren-terrain help]
-
+V urejevalnik zemljevidov doda prst, glino, prod in cvetlične travnike. Na njih lahko stojijo stavbe, vendar na njih ali ob njih nič ne raste in ne štejejo za obalo.
 [experiment rough-terrain]
-
+Zahteven teren
 [experiment rough-terrain help]
-
+V urejevalnik zemljevidov doda blato, močvirja, globok sneg in melišča. Kopenske enote se premikajo s približno dvema tretjinama hitrosti. Na tem terenu ni stavb ali virov.
 [experiment path-terrain]
-
+Teren s potmi
 [experiment path-terrain help]
-
+V urejevalnik zemljevidov doda kolovoze in lesene poti. Tako kot na stezah se kopenske enote premikajo z dvojno hitrostjo in stavbe so dovoljene, vendar nič ne raste.
 [experiment lava-terrain]
-
+Teren z lavo
 [experiment lava-terrain help]
-
+V urejevalnik zemljevidov doda lavo in žerjavico. Kopenske enote ne morejo vstopiti; leteče enote med preletom hitro izgubljajo zdravje. Izstrelki letijo čeznje.
 [experiment fertile-terrain]
-
+Rodovitna tla
 [experiment fertile-terrain help]
-
+V urejevalnik zemljevidov doda ilovico, mah in pomladne travnike. Omogočajo stavbe in poljščine ter okolico namakajo močneje kot voda.
 [experiment deep-water-terrain]
-
+Globoka voda
 [experiment deep-water-terrain help]
-
+V urejevalnik zemljevidov doda globoko in temno vodo. Plavalci jo prečkajo počasneje, alge v njej ne rastejo, vendar še vedno namaka bližnja polja.
 [experiment void-terrain]
-
+Prazen teren
 [experiment void-terrain help]
-
+V urejevalnik zemljevidov doda luknje in prepade. Nič jih ne more prečkati, niti leteče enote, izstrelki pa se ustavijo na robu.
 [terrain group custom]
-
+Po meri
 [terrain group classic]
-
+Klasičen teren
 [terrain rule walkable]
-
+Prehodno
 [terrain rule swimmable]
-
+Primerno za plavanje
 [terrain rule impassable]
-
+Neprehodno
 [terrain rule no flying]
-
+Letenje prepovedano
 [terrain rule buildable]
-
+Primerno za gradnjo
 [terrain rule speed %0]
-
+Hitrost %0%
 [terrain rule crops grow]
-
+Poljščine rastejo
 [terrain rule irrigates]
-
+Namaka bližnja tla
 [terrain rule stops nearby growth]
-
+Preprečuje rast v okolici
 [terrain rule blocks shots]
-
+Ustavlja izstrelke
 [terrain rule hurts walkers]
-
+Poškoduje kopenske enote
 [terrain rule hurts fliers]
-
+Poškoduje leteče enote
 [terrain palette hint]
-
+Izberite čopič. Skupine imajo skupna pravila; njihovi člani se razlikujejo le po videzu.
 [terrain rule algae grow]
-
+Alge rastejo
 [terrain palette experiments hint]
-
+Izberite čopič. Več skupin terena se pojavi po vklopu njihovih poskusov v Nastavitve > Poskusi.
 [brush valid on %0]
-
+Veljavno na: %0
 [brush valid nowhere]
-
+Ni mogoče postaviti na noben teren tega zemljevida
 [brush requires experiment %0]
-
+Zahteva poskus %0
 [brush resources custom]
-
+Uvoženi viri
 [brush section zones]
-
+Cone
 [brush section areas]
-
+Območja
 [brush section tools]
-
+Orodja
 [brush clearing area]
-
+Območje čiščenja
 [editor unsaved title]
-
+Neshranjene spremembe
 [editor quit unsaved]
-
+Shranim spremembe tega zemljevida pred odhodom iz urejevalnika?
 [editor load unsaved]
-
+Shranim spremembe tega zemljevida pred odprtjem drugega?
 [editor save]
-
+Shrani…
 [editor discard]
-
+Ne shrani
 [editor share never saved]
-
+Zemljevidi se delijo iz shranjene datoteke. Najprej shranite zemljevid in ga nato delite.
 [editor share unsaved]
-
+Ta zemljevid ima neshranjene spremembe. Deljenje naloži shranjeno datoteko.
 [editor save and share]
-
+Shrani in deli…
 [editor share saved version]
-
+Deli shranjeno različico
 [editor reroll confirm]
-
+Vsakemu polju terena dodelim nov naključen videz? Vrste terena in igranje ostanejo enaki. Tega ni mogoče razveljaviti.
 [editor reroll]
-
+Nov naključen videz
 [editor map saved]
-
+Zemljevid shranjen
 [editor map shared]
-
+Zemljevid deljen na spletu
 [editor save needs fertility]
-
+Shranjevanje zahteva zemljevid rodovitnosti, zato je bilo preklicano. Pritisnite OK za ponoven poskus.
 [editor fertility stale]
-
+Zemljevid rodovitnosti je zastarel · Kliknite za osvežitev
 [No definition files found in %0]
-
+V %0 ni bilo najdenih datotek z definicijami
 [From device…]
-
+Iz naprave…
 [replace existing file %0?]
-
+Datoteka z imenom »%0« že obstaja. Jo zamenjam?
 [Replace]
-
+Zamenjaj
 [Keep existing file]
-
+Obdrži obstoječo datoteko
 [editor menu save]
-
+Shrani zemljevid
 [editor menu load]
-
+Odpri zemljevid…
 [editor menu import terrain]
-
+Uvozi definicije terena…
 [editor menu import resources]
-
+Uvozi definicije virov…
 [editor menu teams]
-
+Ekipe…
 [editor menu scenario]
-
+Scenarij…
 [editor menu reroll]
-
+Nov naključen videz terena…
 [editor menu file]
-
+Datoteka
 [editor menu map]
-
+Zemljevid
 [no resource growth areas]
-
+Območja brez rasti
 [dock flags and units]
-
+Zastave in enote
 [dock minimap]
-
+Minizemljevid
 [dock search brushes]
-
+Išči čopiče
 [dock brush shape %0]
-
+Oblika čopiča %0
 [dock brush]
-
+Čopič
 [dock brush paint]
-
+Slikaj
 [dock brush erase]
-
+Izbriši
 [dock enable for map]
-
+Omogoči za ta zemljevid
 [dock enable experiment %0]
-
+Omogoči %0
 [dock enable experiment hint %0]
-
+Vklopi poskus %0 samo za ta zemljevid.
 [dock area number]
-
+Območje
 [dock building level]
-
+Raven
 [dock unit level]
-
+Raven enote
 [dock no brushes match]
-
+Noben čopič ne ustreza iskanju.
 [dock active team]
-
+Aktivna ekipa
 [dock team count %0]
-
+Ekipe na tem zemljevidu: %0
 [dock add team]
-
+Dodaj ekipo
 [dock remove team]
-
+Odstrani ekipo
 [dock nothing selected]
-
+Nič ni izbrano.
 [dock no properties]
-
+Ta predmet nima lastnosti, ki bi jih bilo mogoče urejati.
 [focus brush search]
-
+Išči čopiče
 [switch to resources view]
-
+Preklopi na prikaz virov
 [dock resources base]
-
+Standardni viri
 [dock fertility stale]
-
+Zemljevid rodovitnosti je zastarel.
 [dock fertility refresh]
-
+Osveži rodovitnost
 [Enabled %0 for this map]
-
+%0 omogočen za ta zemljevid
 [editor fertility tap refresh]
-
+Zemljevid rodovitnosti je zastarel: tapnite za osvežitev
 [editor menu import set]
-
+Uvozi paket terena in virov
 [editor menu set library]
-
+Knjižnica paketov
 [set library loading]
-
+Nalaganje paketov…
 [set library downloading]
-
+Prenašanje določene izdaje…
 [set library connection error]
-
+Paketov ni mogoče naložiti. Preverite povezavo in poskusite znova.
 [set library hash error]
-
+Preneseni paket ni prestal preverjanja zgoščene vrednosti.
 [set library package error]
-
+Neveljaven paket.
 [set library listing error]
-
+Neveljaven seznam paketov.
 [set library release error]
-
+Neveljavna izdaja paketa.
 [set library selection help]
-
+Izberite vnose za uvoz. Potrebni viri po meri se vključijo samodejno.
 [set library empty]
-
+Noben paket ni bil najden.
 [set library release help]
-
+Izberite določeno izdajo za pregled in uvoz.
 [set library heading]
-
+Paketi terena in virov
 [set library browse]
-
+Prebrskaj spletno knjižnico
 [set library local]
-
+Vsebina zemljevida, avtorji in lokalne spremembe
 [set library local help]
-
+Uredite kopijo vsebine, shranjeno v tem zemljevidu. Podatki o avtorjih izvirne izdaje ostanejo priloženi. Spremembe ne posodobijo drugih zemljevidov ali spletne izdaje.
 [set library apply]
-
+Uporabi lokalne spremembe
 [set library updated]
-
+Lokalna vsebina posodobljena.
 [set library search hint]
-
+Išči teme in ustvarjalce
 [set library search]
-
+Išči
 [set library set]
-
+Paket
 [set library update help]
-
+Izrecno zamenja ujemajoči se postavljeni teren in vire, vključno z lokalnimi spremembami. Odstranjeni vnosi ostanejo pri stari izdaji. Količine obstoječih materialov so omejene na nove zmogljivosti.
 [set library import]
-
+Uvozi izbrane vnose
 [set library next]
-
+Naslednja stran
 [set library back]
-
+Nazaj k rezultatom
 [set library license %0]
-
+Licenca: %0
 [set library release %0]
-
+izdaja %0
 [set library replace %0]
-
+Zamenjaj postavljene vnose iz izdaje %0
 [set library preview limit]
-
+Predogledi so prikazani za prvih 64 vnosov. Vse vnose je še vedno mogoče izbrati.
 [set library definition]
-
+Definicija lastnosti (JSON)
 [set library artwork]
-
+Preslikava grafike terena (JSON)
 [settings Map generators]
 Generatorji zemljevidov
 [settings Import a generator package, then select its landscape when creating a map or game.]

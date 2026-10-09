@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Ολοκληρώστε τη σύνδεση στο πρόγραμμα περιήγησης. Το παιχνίδι συνεχίζεται αυτόματα μόλις τελειώσετε.
 [hub browser did not open]
-
+Το πρόγραμμα περιήγησης δεν άνοιξε. Ανοίξτε τη σελίδα σύνδεσης για να συνεχίσετε.
 [hub compare code %0]
-
+Αν το ζητήσει η σελίδα, ελέγξτε ότι εμφανίζει %0.
 [hub code copied]
-
+Ο κωδικός αντιγράφηκε
 [settings Finish in your browser. The game continues by itself.]
-
+Ολοκληρώστε στο πρόγραμμα περιήγησης. Το παιχνίδι συνεχίζεται αυτόματα.
 [music set]
-
+Μουσικό σύνολο
 [random music set]
-
+Τυχαίο σε κάθε αγώνα
 [playing music set %0]
-
+Αναπαραγωγή: %0
 [music set failed]
-
+Δεν ήταν δυνατή η φόρτωση αυτού του μουσικού συνόλου.
 [settings Music set]
-
+Μουσικό σύνολο
 [settings Random each match]
-
+Επιλέξτε Τυχαίο για να επιλέγεται μουσική στην αρχή κάθε αγώνα.
 [settings Edge scrolling]
-
+Κύλιση στις άκρες
 [settings Edge scrolling in fullscreen]
-
+Κύλιση στις άκρες σε πλήρη οθόνη
 [settings Edge scrolling in windowed mode]
-
+Κύλιση στις άκρες σε λειτουργία παραθύρου
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Μετακινήστε τους χάρτες του παιχνιδιού και του επεξεργαστή όταν το ποντίκι φτάνει στην άκρη του παραθύρου.
 [AI strategy]
 Στρατηγική ΤΝ
 [start recording]
@@ -4625,9 +4625,9 @@ CPU %0%
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Εγγραφή των παιχνιδιών σας ως βίντεο MP4 με ήχο. Η εγγραφή απαιτεί FFmpeg με τους κωδικοποιητές libx264 και AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Καταγράψτε τα παιχνίδια σας ως βίντεο MP4 με ήχο.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Η καταγραφή χρησιμοποιεί την πλήρη ανάλυση απόδοσης με 30 καρέ ανά δευτερόλεπτο.
 [settings FFmpeg is ready.]
 Το FFmpeg είναι έτοιμο.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ CPU %0%
 [Units can die]
 Οι μονάδες πεθαίνουν
 [Upgrades]
-
+Αναβαθμίσεις
 [No stockpile]
 Κανένα
 [No glass cannon]
@@ -5193,7 +5193,7 @@ CPU %0%
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Οι μονάδες πεθαίνουν όταν εξαντλήσουν τους πόντους ζωής τους. Απενεργοποιήστε για να σταματούν σε 1 πόντο ζωής.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Οι μονάδες ανεβαίνουν επίπεδο στα κτίρια εκπαίδευσης και τα κτίρια μπορούν να αναβαθμιστούν. Οι επισκευές παραμένουν διαθέσιμες όταν η επιλογή είναι απενεργοποιημένη.
 [stat group work]
 Χρόνος εργατών
 [stat worker time]
@@ -5309,235 +5309,235 @@ CPU %0%
 [stat view by place]
 Ανά τοποθεσία
 [AI Library]
-
+Βιβλιοθήκη ΤΝ
 [Authoring guide]
-
+Οδηγός δημιουργίας
 [Beginner-friendly]
-
+Κατάλληλη για αρχάριους
 [Defensive]
-
+Αμυντική
 [Discover]
-
+Ανακαλύψτε
 [Download & install]
-
+Λήψη και εγκατάσταση
 [Downloading AI…]
-
+Λήψη ΤΝ…
 [Expansion]
-
+Επέκταση
 [Experimental]
-
+Πειραματική
 [Favourite]
-
+Προσθήκη στα αγαπημένα
 [Favourited]
-
+Προστέθηκε στα αγαπημένα
 [Favourites]
-
+Αγαπημένα
 [Got it]
-
+Κατάλαβα
 [How AIs work]
-
+Πώς λειτουργούν οι ΤΝ
 [Install selected version]
-
+Εγκατάσταση επιλεγμένης έκδοσης
 [Installed]
-
+Εγκατεστημένη
 [Invalid AI catalogue response]
-
+Μη έγκυρη απάντηση καταλόγου ΤΝ
 [JavaScript API reference]
-
+Τεκμηρίωση API JavaScript
 [Like]
-
+Μου αρέσει
 [Liked]
-
+Δηλώθηκε προτίμηση
 [Loading AI library…]
-
+Φόρτωση βιβλιοθήκης ΤΝ…
 [Most downloaded]
-
+Περισσότερες λήψεις
 [Most liked]
-
+Περισσότερες προτιμήσεις
 [Newest]
-
+Νεότερες
 [No AIs match these filters.]
-
+Καμία ΤΝ δεν αντιστοιχεί σε αυτά τα φίλτρα.
 [Not validated for this game version]
-
+Δεν έχει ελεγχθεί για αυτή την έκδοση του παιχνιδιού
 [Open AI Library]
-
+Άνοιγμα βιβλιοθήκης ΤΝ
 [Open AI page]
-
+Άνοιγμα σελίδας ΤΝ
 [Passed compatibility checks]
-
+Επιτυχής έλεγχος συμβατότητας
 [Recently updated]
-
+Πρόσφατα ενημερωμένες
 [Rush]
-
+Γρήγορη επίθεση
 [Search]
-
+Αναζήτηση
 [Share your AI]
-
+Μοιραστείτε την ΤΝ σας
 [Show more]
-
+Εμφάνιση περισσότερων
 [Sign in through Online settings to like and favourite AIs.]
-
+Συνδεθείτε από τις ρυθμίσεις Διαδίκτυο για να δηλώσετε προτίμηση σε ΤΝ και να τις προσθέσετε στα αγαπημένα.
 [Starter project]
-
+Αρχικό έργο
 [downloads of this version]
-
+λήψεις αυτής της έκδοσης
 [downloads]
-
+λήψεις
 [Update available]
-
+Διαθέσιμη ενημέρωση
 [Browse versions]
-
+Περιήγηση στις εκδόσεις
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Κατεβάστε μια ΤΝ και επιλέξτε την για μια θέση υπολογιστή σε τοπικό παιχνίδι. Οι εγκατεστημένες εκδόσεις λειτουργούν εκτός σύνδεσης. Οι ενημερώσεις επηρεάζουν τα μελλοντικά παιχνίδια· οι αποθηκεύσεις διατηρούν τον αρχικό τους κώδικα.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Οι έλεγχοι συμβατότητας δεν εγγυώνται ασφάλεια ή ικανότητα στο παιχνίδι. Εκτελείτε κώδικα μόνο από δημιουργούς που εμπιστεύεστε.
 [Back to results]
-
+Επιστροφή στα αποτελέσματα
 [music 2–5 minutes]
-
+2–5 λεπτά
 [music 5–15 minutes]
-
+5–15 λεπτά
 [music AI-generated]
-
+Δημιουργημένη από ΤΝ
 [music All music]
-
+Όλη η μουσική
 [music All open licences]
-
+Όλες οι ανοικτές άδειες
 [music Any duration]
-
+Οποιαδήποτε διάρκεια
 [music Audition each mood for eight seconds]
-
+Ακούστε κάθε ατμόσφαιρα για οκτώ δευτερόλεπτα
 [music Back]
-
+Πίσω
 [music Browse]
-
+Περιήγηση
 [music Building]
-
+Κλιμάκωση
 [music Calm]
-
+Ηρεμία
 [music Calm → Building → Combat]
-
+Ηρεμία → Κλιμάκωση → Μάχη
 [music Choose Building]
-
+Επιλογή κλιμάκωσης
 [music Choose Calm]
-
+Επιλογή ηρεμίας
 [music Choose Combat]
-
+Επιλογή μάχης
 [music Choose ZIP]
-
+Επιλογή ZIP
 [music Choose a music file.]
-
+Επιλέξτε ένα αρχείο μουσικής.
 [music Combat]
-
+Μάχη
 [music Could not open this music set.]
-
+Δεν ήταν δυνατό το άνοιγμα αυτού του μουσικού συνόλου.
 [music Credits, downloads and reporting]
-
+Συντελεστές, λήψεις και αναφορές
 [music Downloading music…]
-
+Λήψη μουσικής…
 [music Export recovery files]
-
+Εξαγωγή αρχείων ανάκτησης
 [music Fade duration]
-
+Διάρκεια εξασθένησης
 [music File selection cancelled or failed.]
-
+Η επιλογή αρχείου ακυρώθηκε ή απέτυχε.
 [music Import ZIP]
-
+Εισαγωγή ZIP
 [music Import ZIP or three tracks]
-
+Εισαγωγή ZIP ή τριών κομματιών
 [music Import music]
-
+Εισαγωγή μουσικής
 [music Import three tracks]
-
+Εισαγωγή τριών κομματιών
 [music Includes AI-generated audio]
-
+Περιλαμβάνει ήχο δημιουργημένο από ΤΝ
 [music Install]
-
+Εγκατάσταση
 [music Install selected]
-
+Εγκατάσταση επιλεγμένων
 [music Installed]
-
+Εγκατεστημένη
 [music Load more]
-
+Φόρτωση περισσότερων
 [music Loading music…]
-
+Φόρτωση μουσικής…
 [music Most downloaded]
-
+Περισσότερες λήψεις
 [music Most liked]
-
+Περισσότερες προτιμήσεις
 [music Music decoding failed.]
-
+Η αποκωδικοποίηση μουσικής απέτυχε.
 [music Music download failed.]
-
+Η λήψη μουσικής απέτυχε.
 [music Music installed.]
-
+Η μουσική εγκαταστάθηκε.
 [music Music installed. It is now available in Audio settings.]
-
+Η μουσική εγκαταστάθηκε. Είναι πλέον διαθέσιμη στις ρυθμίσεις ήχου.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Η μουσική δεν έχει ακόμη αποθηκευτεί μόνιμα. Δοκιμάστε ξανά την αποθήκευση πριν φύγετε.
 [music Music library]
-
+Βιβλιοθήκη μουσικής
 [music Music request failed.]
-
+Το αίτημα μουσικής απέτυχε.
 [music Newest]
-
+Νεότερες
 [music No community music installed yet. Import files or browse the online library.]
-
+Δεν έχει εγκατασταθεί ακόμη μουσική της κοινότητας. Εισαγάγετε αρχεία ή περιηγηθείτε στη διαδικτυακή βιβλιοθήκη.
 [music No music found.]
-
+Δεν βρέθηκε μουσική.
 [music Not AI-generated]
-
+Δεν δημιουργήθηκε από ΤΝ
 [music Pause]
-
+Παύση
 [music Play]
-
+Αναπαραγωγή
 [music Playback position]
-
+Θέση αναπαραγωγής
 [music Preview]
-
+Προακρόαση
 [music Ready to import.]
-
+Έτοιμο για εισαγωγή.
 [music Remove]
-
+Αφαίρεση
 [music Reset to game behavior]
-
+Επαναφορά στη συμπεριφορά του παιχνιδιού
 [music Retry saving]
-
+Νέα προσπάθεια αποθήκευσης
 [music Saved.]
-
+Αποθηκεύτηκε.
 [music Saving music…]
-
+Αποθήκευση μουσικής…
 [music Search]
-
+Αναζήτηση
 [music Search title, artist, description…]
-
+Αναζήτηση τίτλου, καλλιτέχνη, περιγραφής…
 [music Select for installation]
-
+Επιλογή για εγκατάσταση
 [music Share music on the web]
-
+Κοινοποίηση μουσικής στον ιστό
 [music Some catalogue entries could not be read.]
-
+Δεν ήταν δυνατή η ανάγνωση ορισμένων καταχωρίσεων του καταλόγου.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Δεν ήταν δυνατή η αποθήκευση των δεδομένων. Δοκιμάστε ξανά ή εξαγάγετε τα αρχεία σας πριν φύγετε.
 [music Tag]
-
+Ετικέτα
 [music Test crossfades]
-
+Δοκιμή ομαλών μεταβάσεων
 [music Up to 2 minutes]
-
+Έως 2 λεπτά
 [music Use this music]
-
+Χρήση αυτής της μουσικής
 [music Validating music…]
-
+Έλεγχος μουσικής…
 [settings Music library · Browse, install and import]
-
+Βιβλιοθήκη μουσικής · Περιήγηση, εγκατάσταση και εισαγωγή
 [music Filters]
-
+Φίλτρα
 [music Leave without saving]
-
+Έξοδος χωρίς αποθήκευση
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Εισαγάγετε ένα ληφθέν ZIP μουσικής ή τα τρία κομμάτια Opus. Τα μεταδεδομένα και το εξώφυλλο διαβάζονται από το κομμάτι Ηρεμία· δεν χρειάζονται επιπλέον αρχεία.
 [settings Target render FPS]
 Στόχος καρέ ανά δευτερόλεπτο
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ CPU %0%
 [Reroll terrain look]
 Νέα τυχαία εμφάνιση εδάφους
 [boulders]
-
+Ογκόλιθοι
 [hedge]
-
+Φράχτης από θάμνους
 [thicket]
-
+Πυκνή βλάστηση
 [ridge_rock]
-
+Κορυφογραμμή
 [outcrop]
-
+Βραχώδης προεξοχή
 [dirt]
-
+Χώμα
 [clay]
-
+Άργιλος
 [gravel]
-
+Χαλίκι
 [flower_meadow]
-
+Ανθισμένο λιβάδι
 [mud]
-
+Λάσπη
 [marsh]
-
+Έλος
 [deep_snow]
-
+Βαθύ χιόνι
 [scree]
-
+Σάρα
 [dirt_track]
-
+Χωματόδρομος
 [boardwalk]
-
+Ξύλινος διάδρομος
 [lava]
-
+Λάβα
 [ember_field]
-
+Πεδίο θράκας
 [loam]
-
+Γόνιμο χώμα
 [moss]
-
+Βρύα
 [spring_meadow]
-
+Ανοιξιάτικο λιβάδι
 [deep_water]
-
+Βαθύ νερό
 [dark_water]
-
+Σκοτεινό νερό
 [void_hole]
-
+Τρύπα
 [chasm]
-
+Χάσμα
 [terrain group water]
-
+Νερό
 [terrain group sand]
-
+Άμμος
 [terrain group grass]
-
+Γρασίδι
 [terrain group ice]
-
+Πάγος
 [terrain group paths]
-
+Δρόμοι
 [terrain group obstacles]
-
+Εμπόδια
 [terrain group ridges]
-
+Κορυφογραμμές
 [terrain group barren]
-
+Άγονο έδαφος
 [terrain group rough]
-
+Δύσβατο έδαφος
 [terrain group lava]
-
+Λάβα
 [terrain group fertile]
-
+Γόνιμο έδαφος
 [terrain group deep-water]
-
+Βαθύ νερό
 [terrain group void]
-
+Κενό
 [experiment obstacle-terrain]
-
+Έδαφος με εμπόδια
 [experiment obstacle-terrain help]
-
+Προσθέτει ογκόλιθους, φράχτες από θάμνους και πυκνή βλάστηση στον επεξεργαστή χαρτών. Οι χερσαίες μονάδες δεν μπορούν να τα διασχίσουν και σταματούν τα βλήματα· οι ιπτάμενες μονάδες περνούν από πάνω. Δεν δέχονται κτίρια ή πόρους.
 [experiment ridge-terrain]
-
+Έδαφος με κορυφογραμμές
 [experiment ridge-terrain help]
-
+Προσθέτει βραχώδεις κορυφογραμμές και προεξοχές στον επεξεργαστή χαρτών. Οι χερσαίες μονάδες δεν μπορούν να τις διασχίσουν, αλλά οι πύργοι πυροβολούν από πάνω και οι ιπτάμενες μονάδες περνούν. Δεν δέχονται κτίρια ή πόρους.
 [experiment barren-terrain]
-
+Άγονο έδαφος
 [experiment barren-terrain help]
-
+Προσθέτει χώμα, άργιλο, χαλίκι και ανθισμένα λιβάδια στον επεξεργαστή χαρτών. Μπορούν να δεχτούν κτίρια, τίποτα δεν φυτρώνει πάνω ή δίπλα τους και δεν θεωρούνται ακτογραμμή.
 [experiment rough-terrain]
-
+Δύσβατο έδαφος
 [experiment rough-terrain help]
-
+Προσθέτει λάσπη, έλη, βαθύ χιόνι και σάρες στον επεξεργαστή χαρτών. Οι χερσαίες μονάδες κινούνται περίπου με τα δύο τρίτα της ταχύτητάς τους. Το δύσβατο έδαφος δεν δέχεται κτίρια ή πόρους.
 [experiment path-terrain]
-
+Έδαφος με δρόμους
 [experiment path-terrain help]
-
+Προσθέτει χωματόδρομους και ξύλινους διαδρόμους στον επεξεργαστή χαρτών. Όπως στα μονοπάτια, οι χερσαίες μονάδες κινούνται με διπλή ταχύτητα και επιτρέπονται κτίρια, αλλά τίποτα δεν φυτρώνει.
 [experiment lava-terrain]
-
+Έδαφος λάβας
 [experiment lava-terrain help]
-
+Προσθέτει λάβα και πεδία θράκας στον επεξεργαστή χαρτών. Οι χερσαίες μονάδες δεν μπορούν να μπουν· οι ιπτάμενες μονάδες που περνούν χάνουν γρήγορα υγεία. Τα βλήματα περνούν από πάνω.
 [experiment fertile-terrain]
-
+Γόνιμο έδαφος
 [experiment fertile-terrain help]
-
+Προσθέτει γόνιμο χώμα, βρύα και ανοιξιάτικα λιβάδια στον επεξεργαστή χαρτών. Υποστηρίζουν κτίρια και καλλιέργειες και ποτίζουν το γύρω έδαφος περισσότερο από το νερό.
 [experiment deep-water-terrain]
-
+Βαθύ νερό
 [experiment deep-water-terrain help]
-
+Προσθέτει βαθύ και σκοτεινό νερό στον επεξεργαστή χαρτών. Οι κολυμβητές περνούν πιο αργά, δεν αναπτύσσονται φύκια και εξακολουθούν να ποτίζουν τα κοντινά χωράφια.
 [experiment void-terrain]
-
+Έδαφος κενού
 [experiment void-terrain help]
-
+Προσθέτει τρύπες και χάσματα στον επεξεργαστή χαρτών. Τίποτα δεν μπορεί να τα διασχίσει, ούτε οι ιπτάμενες μονάδες, και τα βλήματα σταματούν στην άκρη τους.
 [terrain group custom]
-
+Προσαρμοσμένο
 [terrain group classic]
-
+Κλασικό έδαφος
 [terrain rule walkable]
-
+Βατό
 [terrain rule swimmable]
-
+Κολυμβήσιμο
 [terrain rule impassable]
-
+Αδιάβατο
 [terrain rule no flying]
-
+Απαγορεύεται η πτήση
 [terrain rule buildable]
-
+Οικοδομήσιμο
 [terrain rule speed %0]
-
+Ταχύτητα %0%
 [terrain rule crops grow]
-
+Αναπτύσσονται καλλιέργειες
 [terrain rule irrigates]
-
+Ποτίζει το κοντινό έδαφος
 [terrain rule stops nearby growth]
-
+Σταματά την κοντινή ανάπτυξη
 [terrain rule blocks shots]
-
+Μπλοκάρει βολές
 [terrain rule hurts walkers]
-
+Τραυματίζει πεζούς
 [terrain rule hurts fliers]
-
+Τραυματίζει ιπτάμενες μονάδες
 [terrain palette hint]
-
+Επιλέξτε πινέλο. Τα εδάφη κάθε ομάδας έχουν τους ίδιους κανόνες και διαφέρουν μόνο στην εμφάνιση.
 [terrain rule algae grow]
-
+Αναπτύσσονται φύκια
 [terrain palette experiments hint]
-
+Επιλέξτε πινέλο. Εδώ εμφανίζονται περισσότερες ομάδες εδάφους όταν ενεργοποιηθούν τα πειράματά τους στις Ρυθμίσεις > Πειράματα.
 [brush valid on %0]
-
+Έγκυρο σε: %0
 [brush valid nowhere]
-
+Δεν μπορεί να τοποθετηθεί σε κανένα έδαφος αυτού του χάρτη
 [brush requires experiment %0]
-
+Απαιτεί το πείραμα %0
 [brush resources custom]
-
+Εισαγόμενοι πόροι
 [brush section zones]
-
+Ζώνες
 [brush section areas]
-
+Περιοχές
 [brush section tools]
-
+Εργαλεία
 [brush clearing area]
-
+Περιοχή εκκαθάρισης
 [editor unsaved title]
-
+Μη αποθηκευμένες αλλαγές
 [editor quit unsaved]
-
+Να αποθηκευτούν οι αλλαγές σας σε αυτόν τον χάρτη πριν φύγετε από τον επεξεργαστή;
 [editor load unsaved]
-
+Να αποθηκευτούν οι αλλαγές σας σε αυτόν τον χάρτη πριν ανοίξετε άλλον;
 [editor save]
-
+Αποθήκευση…
 [editor discard]
-
+Να μην αποθηκευτεί
 [editor share never saved]
-
+Οι χάρτες κοινοποιούνται από το αποθηκευμένο αρχείο τους. Αποθηκεύστε πρώτα αυτόν τον χάρτη και μετά κοινοποιήστε τον.
 [editor share unsaved]
-
+Αυτός ο χάρτης έχει αλλαγές που δεν έχουν ακόμη αποθηκευτεί. Η κοινοποίηση μεταφορτώνει το αποθηκευμένο αρχείο.
 [editor save and share]
-
+Αποθήκευση και κοινοποίηση…
 [editor share saved version]
-
+Κοινοποίηση αποθηκευμένης έκδοσης
 [editor reroll confirm]
-
+Να δοθεί νέα τυχαία εμφάνιση σε κάθε πλακίδιο εδάφους; Οι τύποι εδάφους και το παιχνίδι παραμένουν ίδια. Αυτό δεν αναιρείται.
 [editor reroll]
-
+Νέα τυχαία εμφάνιση
 [editor map saved]
-
+Ο χάρτης αποθηκεύτηκε
 [editor map shared]
-
+Ο χάρτης κοινοποιήθηκε διαδικτυακά
 [editor save needs fertility]
-
+Η αποθήκευση απαιτεί τον χάρτη γονιμότητας, οπότε ακυρώθηκε. Πατήστε OK για νέα προσπάθεια.
 [editor fertility stale]
-
+Ο χάρτης γονιμότητας είναι παρωχημένος · Κλικ για ανανέωση
 [No definition files found in %0]
-
+Δεν βρέθηκαν αρχεία ορισμών στο %0
 [From device…]
-
+Από τη συσκευή…
 [replace existing file %0?]
-
+Υπάρχει ήδη αρχείο με όνομα "%0". Να αντικατασταθεί;
 [Replace]
-
+Αντικατάσταση
 [Keep existing file]
-
+Διατήρηση υπάρχοντος αρχείου
 [editor menu save]
-
+Αποθήκευση χάρτη
 [editor menu load]
-
+Άνοιγμα χάρτη…
 [editor menu import terrain]
-
+Εισαγωγή ορισμών εδάφους…
 [editor menu import resources]
-
+Εισαγωγή ορισμών πόρων…
 [editor menu teams]
-
+Ομάδες…
 [editor menu scenario]
-
+Σενάριο…
 [editor menu reroll]
-
+Νέα τυχαία εμφάνιση εδάφους…
 [editor menu file]
-
+Αρχείο
 [editor menu map]
-
+Χάρτης
 [no resource growth areas]
-
+Περιοχές χωρίς ανάπτυξη
 [dock flags and units]
-
+Σημαίες και μονάδες
 [dock minimap]
-
+Μικρός χάρτης
 [dock search brushes]
-
+Αναζήτηση πινέλων
 [dock brush shape %0]
-
+Σχήμα πινέλου %0
 [dock brush]
-
+Πινέλο
 [dock brush paint]
-
+Ζωγραφική
 [dock brush erase]
-
+Διαγραφή
 [dock enable for map]
-
+Ενεργοποίηση για αυτόν τον χάρτη
 [dock enable experiment %0]
-
+Ενεργοποίηση %0
 [dock enable experiment hint %0]
-
+Ενεργοποιεί το πείραμα %0 μόνο για αυτόν τον χάρτη.
 [dock area number]
-
+Περιοχή
 [dock building level]
-
+Επίπεδο
 [dock unit level]
-
+Επίπεδο μονάδας
 [dock no brushes match]
-
+Κανένα πινέλο δεν αντιστοιχεί στην αναζήτηση.
 [dock active team]
-
+Ενεργή ομάδα
 [dock team count %0]
-
+Ομάδες σε αυτόν τον χάρτη: %0
 [dock add team]
-
+Προσθήκη ομάδας
 [dock remove team]
-
+Αφαίρεση ομάδας
 [dock nothing selected]
-
+Δεν έχει επιλεγεί τίποτα.
 [dock no properties]
-
+Αυτό το αντικείμενο δεν έχει επεξεργάσιμες ιδιότητες.
 [focus brush search]
-
+Αναζήτηση πινέλων
 [switch to resources view]
-
+Μετάβαση στην προβολή πόρων
 [dock resources base]
-
+Τυπικοί πόροι
 [dock fertility stale]
-
+Ο χάρτης γονιμότητας είναι παρωχημένος.
 [dock fertility refresh]
-
+Ανανέωση γονιμότητας
 [Enabled %0 for this map]
-
+Το %0 ενεργοποιήθηκε για αυτόν τον χάρτη
 [editor fertility tap refresh]
-
+Παρωχημένος χάρτης γονιμότητας: αγγίξτε για ανανέωση
 [editor menu import set]
-
+Εισαγωγή συνόλου εδάφους και πόρων
 [editor menu set library]
-
+Βιβλιοθήκη συνόλων
 [set library loading]
-
+Φόρτωση συνόλων…
 [set library downloading]
-
+Λήψη συγκεκριμένης έκδοσης…
 [set library connection error]
-
+Δεν είναι δυνατή η φόρτωση συνόλων. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.
 [set library hash error]
-
+Ο έλεγχος κατακερματισμού του ληφθέντος συνόλου απέτυχε.
 [set library package error]
-
+Μη έγκυρο πακέτο συνόλου.
 [set library listing error]
-
+Μη έγκυρη λίστα συνόλων.
 [set library release error]
-
+Μη έγκυρη έκδοση συνόλου.
 [set library selection help]
-
+Επιλέξτε καταχωρίσεις για εισαγωγή. Οι απαιτούμενοι προσαρμοσμένοι πόροι περιλαμβάνονται αυτόματα.
 [set library empty]
-
+Δεν βρέθηκαν σύνολα.
 [set library release help]
-
+Επιλέξτε μια συγκεκριμένη έκδοση για έλεγχο και εισαγωγή.
 [set library heading]
-
+Σύνολα εδάφους και πόρων
 [set library browse]
-
+Περιήγηση στη διαδικτυακή βιβλιοθήκη
 [set library local]
-
+Περιεχόμενο χάρτη, συντελεστές και τοπικές αλλαγές
 [set library local help]
-
+Επεξεργαστείτε το αντίγραφο του εισαγόμενου περιεχομένου σε αυτόν τον χάρτη. Τα στοιχεία συντελεστών της αρχικής έκδοσης διατηρούνται. Οι αλλαγές δεν ενημερώνουν άλλους χάρτες ή τη διαδικτυακή έκδοση.
 [set library apply]
-
+Εφαρμογή τοπικών αλλαγών
 [set library updated]
-
+Το τοπικό περιεχόμενο ενημερώθηκε.
 [set library search hint]
-
+Αναζήτηση θεμάτων και δημιουργών
 [set library search]
-
+Αναζήτηση
 [set library set]
-
+Σύνολο
 [set library update help]
-
+Αυτό αντικαθιστά ρητά τα αντίστοιχα τοποθετημένα εδάφη και πόρους, μαζί με τις τοπικές αλλαγές. Οι αφαιρεμένες καταχωρίσεις παραμένουν στην παλιά έκδοση. Οι υπάρχουσες ποσότητες υλικών περιορίζονται στις νέες χωρητικότητες.
 [set library import]
-
+Εισαγωγή επιλεγμένων καταχωρίσεων
 [set library next]
-
+Επόμενη σελίδα
 [set library back]
-
+Επιστροφή στα αποτελέσματα
 [set library license %0]
-
+Άδεια: %0
 [set library release %0]
-
+έκδοση %0
 [set library replace %0]
-
+Αντικατάσταση τοποθετημένων καταχωρίσεων από την έκδοση %0
 [set library preview limit]
-
+Εμφανίζονται προεπισκοπήσεις για τις πρώτες 64 καταχωρίσεις. Όλες παραμένουν διαθέσιμες για επιλογή.
 [set library definition]
-
+Ορισμός ιδιοτήτων (JSON)
 [set library artwork]
-
+Αντιστοίχιση γραφικών εδάφους (JSON)
 [settings Map generators]
 Γεννήτριες χαρτών
 [settings Import a generator package, then select its landscape when creating a map or game.]
