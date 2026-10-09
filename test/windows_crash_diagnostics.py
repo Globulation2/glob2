@@ -24,11 +24,32 @@ def crashed_cases(document):
                 break
 
 
-def debugger_command(debugger, binary, suite, name):
-    return [debugger, '--nx', '--batch', '--quiet', '-ex', 'set pagination off',
-            '-ex', 'set breakpoint pending on',
-            '-ex', 'break _assert', '-ex', 'break _wassert', '-ex', 'break abort',
-            '-ex', 'run', '-ex', 'thread apply all bt', '--args', str(binary),
+def debugger_script():
+    # Windows x64 passes the runtime pointer in RCX at function entry.
+    # Enable vendor leak reporting only in this bounded diagnostic replay.
+    return """set pagination off
+set breakpoint pending on
+break _assert
+break _wassert
+break abort
+break JS_FreeRuntime
+commands
+silent
+call ((void (*)(void *, unsigned long long)) JS_SetDumpFlags)((void *)$rcx, 0x4000)
+continue
+end
+run
+call ((int (*)(void *)) fflush)((void *)0)
+thread apply all bt
+"""
+
+
+def debugger_command(debugger, binary, suite, name, script=None):
+    startup = ['-x', str(script)] if script else [
+        '-ex', 'set pagination off', '-ex', 'set breakpoint pending on',
+        '-ex', 'break _assert', '-ex', 'break _wassert', '-ex', 'break abort',
+        '-ex', 'run', '-ex', 'thread apply all bt']
+    return [debugger, '--nx', '--batch', '--quiet', *startup, '--args', str(binary),
             '--no-breaks=true', '-tc=' + doctest_pattern(name), '-ts=' + doctest_pattern(suite)]
 
 
@@ -59,7 +80,9 @@ def main():
             env.update(GLOB2_USER_DATA_DIR=profile, SDL_VIDEODRIVER='dummy',
                        SDL_RENDER_DRIVER='software', SDL_AUDIODRIVER='dummy',
                        GLOB2_TEST_ARTIFACTS=str((args.output / str(index)).resolve()))
-            command = debugger_command(debugger, args.binary.resolve(), suite, name)
+            script = Path(profile) / 'replay.gdb'
+            script.write_text(debugger_script(), encoding='ascii')
+            command = debugger_command(debugger, args.binary.resolve(), suite, name, script)
             try:
                 result = subprocess.run(command, env=env, stdout=subprocess.PIPE,
                                         stderr=subprocess.STDOUT, timeout=180)
