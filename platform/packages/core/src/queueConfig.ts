@@ -54,7 +54,7 @@ const FAIR_GENERATORS: readonly {
   // exact symmetry and solved fairness
   { id: 'symmetric-arena', revision: 1, fourColonies: true },
   { id: 'sierpinski-gardens', revision: 8, fourColonies: false },
-  { id: 'even-ground', revision: 2, fourColonies: true },
+  { id: 'even-ground', revision: 3, fourColonies: true },
   { id: 'marchland', revision: 2, fourColonies: true },
   // repeated wedge
   { id: 'amphitheatre', revision: 3, fourColonies: true },

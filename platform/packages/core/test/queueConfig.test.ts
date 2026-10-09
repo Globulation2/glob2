@@ -11,6 +11,11 @@ import {
 } from '../src/index.ts';
 
 describe('queue config', () => {
+  it('serves the current Even Ground revision in every queue mode', () => {
+    for (const mode of ['1v1', '2v2'] as const) {
+      expect(defaultMapPool(mode).find((m) => m.generatorId === 'even-ground')?.revision).toBe(3);
+    }
+  });
   it('serves the Caravanserai revision with seeded Random designs', () => {
     expect(defaultMapPool('1v1').find((m) => m.generatorId === 'caravanserai')?.revision).toBe(3);
   });
