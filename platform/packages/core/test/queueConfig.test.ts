@@ -11,8 +11,8 @@ import {
 } from '../src/index.ts';
 
 describe('queue config', () => {
-  it('serves the Caravanserai revision with seeded Random designs', () => {
-    expect(defaultMapPool('1v1').find((m) => m.generatorId === 'caravanserai')?.revision).toBe(3);
+  it('serves the Caravanserai revision with owner-specific resource placement', () => {
+    expect(defaultMapPool('1v1').find((m) => m.generatorId === 'caravanserai')?.revision).toBe(4);
   });
   it('fills defaults: ranked accept step, casual none, fair 128x128 map pool', () => {
     const ranked = resolveQueue({ id: 'r', name: 'R', mode: '1v1', rated: true });
