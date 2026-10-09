@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="36" failures="0" errors="0" skipped="0"><testsuite name="BuildingFootprint"><testcase classname="BuildingFootprint" name="generated fixtures round-trip through binary saves [save-format]" time="1.99015" status="run" />
+  <testcase classname="BuildingFootprint" name="the retained fixture loads [save-format]" time="0.121311" status="run" />
+  </testsuite><testsuite name="EnteringUnitSave"><testcase classname="EnteringUnitSave" name="generated fixtures round-trip through binary saves [save-format]" time="12.8789" status="run" />
+  <testcase classname="EnteringUnitSave" name="the retained fixture loads [save-format]" time="0.137872" status="run" />
+  </testsuite><testsuite name="FarmAreas"><testcase classname="FarmAreas" name="a farm area survives a save and load [save-format]" time="0.462849" status="run" />
+  </testsuite><testsuite name="GuardAreaBalance"><testcase classname="GuardAreaBalance" name="a saved game continues identically for 1000 ticks after loading [save-format]" time="1.35628" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="3.55797" status="run" />
+  </testsuite><testsuite name="MapTiling"><testcase classname="MapTiling" name="a repeated starting map has portable per-tick checksums [save-format][golden]" time="0.300633" status="run" />
+  <testcase classname="MapTiling" name="copies colonies, painted areas and clearing settings [save-format]" time="0.130677" status="run" />
+  <testcase classname="MapTiling" name="refuses over-capacity bases before replacing the source [save-format]" time="0.035905" status="run" />
+  <testcase classname="MapTiling" name="rejects invalid requests without mutating the source [save-format]" time="0.099812" status="run" />
+  <testcase classname="MapTiling" name="wraps swimmers, buildings and team areas together across the source seam [save-format]" time="0.037672" status="run" />
+  <testcase classname="MapTiling" name="writes a compressed source as a reloadable ordinary map [save-format]" time="0.584368" status="run" />
+  </testsuite><testsuite name="src/unit/MarketFetchHarness.cpp"><testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/market fields and pending publications survive binary and text saves [save-format]" time="3.68288" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]" time="4.52022" status="run" />
+  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]" time="2.94401" status="run" />
+  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="5.37504" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="0.231242" status="run" />
+  </testsuite><testsuite name="Maxima.Economy"><testcase classname="Maxima.Economy" name="counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format]" time="0.050834" status="run" />
+  </testsuite><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="both format 144 and 145 lineages and compact growth saves retain continuation [save-format]" time="9.4851" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="0.500178" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="27.7941" status="run" />
+  </testsuite><testsuite name="TeamLimit"><testcase classname="TeamLimit" name="retained format126 Maxima save preserves identities and subsequent AI decisions [save-format][artifacts]" time="5.04958" status="run" />
+  <testcase classname="TeamLimit" name="script generation slot counts reject missing capacity and truncated planes [save-format]" time="1.80761" status="run" />
+  <testcase classname="TeamLimit" name="sixteen controller slots survive binary and text headers [save-format]" time="0.02891" status="run" />
+  <testcase classname="TeamLimit" name="sixteen team saves continue identically and preserve entity generations [save-format][artifacts]" time="1.04957" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="22.8403" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="5.52179" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.539981" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.198657" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.132677" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.173257" status="run" />
+  </testsuite><testsuite name="UntrustedFiles"><testcase classname="UntrustedFiles" name="complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]" time="0.609017" status="run" />
+  <testcase classname="UntrustedFiles" name="entity loaders reject malicious indices before using them [save-format]" time="0.035436" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy saved instruction pointers must identify statement boundaries [save-format]" time="0.035987" status="run" />
+  <testcase classname="UntrustedFiles" name="terrain loaders reject invalid resources occupants and sector dimensions [save-format]" time="0.043539" status="run" />
+  </testsuite></testsuites>

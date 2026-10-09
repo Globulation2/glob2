@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/network.test.ts packages/protocol/test/protocol.test.ts
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/6008/glob2/platform
+
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  21:30:16
+   Duration  1.72s (transform 54%, import 44%, tests 1%)
+

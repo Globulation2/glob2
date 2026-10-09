@@ -1,0 +1,15 @@
+{
+  "tested_commit": "28f527f393c6e05dc26175a3f934418a0c85d2d6",
+  "base": "2f3db465080eb9b9e1025c220edc8a0c4f5aa0fc",
+  "integration": "PR head includes the fetched master",
+  "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "arch": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "sdl": [
+    "3.4.18",
+    "3.4.8",
+    "3.2.2",
+    "3.2.0"
+  ],
+  "node": "v26.0.0"
+}

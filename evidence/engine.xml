@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="42" failures="0" errors="0" skipped="0"><testsuite name="BuildingAreaEffects"><testcase classname="BuildingAreaEffects" name="catalog bounds identity and canonical absence" time="0.237573" status="run" />
+  <testcase classname="BuildingAreaEffects" name="combat uses live coverage and magic preserves armor bypass" time="0.060088" status="run" />
+  <testcase classname="BuildingAreaEffects" name="construction deletion and repair retain the intended funding boundaries" time="0.058746" status="run" />
+  <testcase classname="BuildingAreaEffects" name="damage resolves death before healing and respects no permadeath" time="0.064525" status="run" />
+  <testcase classname="BuildingAreaEffects" name="even footprints receive combat modifiers at the northwestern center" time="0.062598" status="run" />
+  <testcase classname="BuildingAreaEffects" name="fertility snapshots retain their captured modifiers and only land changes" time="0.065666" status="run" />
+  <testcase classname="BuildingAreaEffects" name="immediate growth obeys temporary land suppression and resumes afterward" time="0.05637" status="run" />
+  <testcase classname="BuildingAreaEffects" name="magic and flying services use coverage without fruit bonuses" time="0.063989" status="run" />
+  <testcase classname="BuildingAreaEffects" name="map replacement discards old dense planes before new tile queries" time="0.060588" status="run" />
+  <testcase classname="BuildingAreaEffects" name="ordinary building services discard positive aura fractions at their caps" time="0.078073" status="run" />
+  <testcase classname="BuildingAreaEffects" name="ownership changes invalidate paid coverage and wait for the next pulse" time="0.060049" status="run" />
+  <testcase classname="BuildingAreaEffects" name="paid intervals and fractions preserve full save continuation [save-format][artifacts]" time="1.73459" status="run" />
+  <testcase classname="BuildingAreaEffects" name="saved funding and fractions reject values before compact storage narrowing [save-format]" time="0.238173" status="run" />
+  <testcase classname="BuildingAreaEffects" name="strongest fields match reference across wrapped oversized and changed coverage" time="0.086032" status="run" />
+  <testcase classname="BuildingAreaEffects" name="turret snapshots attack at firing and reads target armor at impact" time="0.118584" status="run" />
+  <testcase classname="BuildingAreaEffects" name="upkeep is atomic pulses accumulate fractions and cap services" time="0.054183" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="5.04625" status="run" />
+  <testcase classname="EngineSession" name="paced sessions publish completed worlds before waiting and AI reuses them [display]" time="0.910767" status="run" />
+  </testsuite><testsuite name="GameSpeed"><testcase classname="GameSpeed" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="6.79868" status="run" />
+  <testcase classname="GameSpeed" name="presets; bounds; legacy settings and persistence" time="0.073936" status="run" />
+  <testcase classname="GameSpeed" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="1.47704" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.089508" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.051161" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.006289" status="run" />
+  <testcase classname="MatchSetup" name="Scripted map sources preserve exact provenance and enforce team count" time="0.000506" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.029249" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000156" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.022842" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="0.31204" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.063449" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.023872" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.034426" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.008289" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.024562" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.029933" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="25.4846" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="3.10416" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="1.42401" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="3.66265" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.630062" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="4.21795" status="run" />
+  </testsuite></testsuites>

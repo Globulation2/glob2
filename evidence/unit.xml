@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="90" failures="0" errors="0" skipped="0"><testsuite name="GameSpeedControl"><testcase classname="GameSpeedControl" name="chevrons light and step through 1x, 2x, 4x, 8x and maximum" time="0" status="run" />
+    <testcase classname="GameSpeedControl" name="the rate has one decimal below 25" time="0" status="run" />
+    <testcase classname="GameSpeedControl" name="a steady simulation reads its exact rate once a second has passed" time="0" status="run" />
+    <testcase classname="GameSpeedControl" name="the readout changes at most once per second and averages three" time="0" status="run" />
+    <testcase classname="GameSpeedControl" name="a stalled simulation decays to zero and recovers" time="0" status="run" />
+    <testcase classname="GameSpeedControl" name="the millisecond clock may wrap" time="0" status="run" />
+  </testsuite><testsuite name="MetricSeries"><testcase classname="MetricSeries" name="A counter's rate per minute follows its slope and shortens its window at the start" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Nested thresholds become disjoint bands that add up to the whole" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Percentages stay within 0-100 when the part outruns its whole" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Bands of unequal length and negative values normalise without reading past the end" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Axes use round steps and include zero" time="0" status="run" />
+    <testcase classname="MetricSeries" name="Texts switch form at their boundaries" time="0" status="run" />
+  </testsuite><testsuite name="MetricSeries views"><testcase classname="MetricSeries views" name="Averaged levels, ratios with nothing to measure, and whole-number axes" time="0" status="run" />
+    <testcase classname="MetricSeries views" name="Metrics open in the view that reads best for them" time="0.000318" status="run" />
+    <testcase classname="MetricSeries views" name="A chart knows when it has nothing to show, and leaves gaps out of its range" time="0" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.001211" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000579" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="TurnHarness"><testcase classname="TurnHarness" name="two clients on clean links execute identical turns [network-sim]" time="0.023329" status="run" />
+    <testcase classname="TurnHarness" name="four clients with latency, jitter, loss and AI seats [network-sim]" time="0.140418" status="run" />
+    <testcase classname="TurnHarness" name="a stalled client stalls only itself and resumes from its horizon [network-sim]" time="0.031101" status="run" />
+    <testcase classname="TurnHarness" name="a restarted client reloads, replays the full log and rejoins [network-sim]" time="0.051378" status="run" />
+    <testcase classname="TurnHarness" name="a diverged client in a three-player match is repaired by rejoin [network-sim]" time="0.074864" status="run" />
+    <testcase classname="TurnHarness" name="two diverged clients are flagged and keep playing [network-sim]" time="0.010918" status="run" />
+    <testcase classname="TurnHarness" name="the input delay rises with jitter and returns when it subsides [network-sim][artifacts]" time="0.086505" status="run" />
+    <testcase classname="TurnHarness" name="input delay stays within bounds on loopback and at 50 ms [network-sim]" time="0.094794" status="run" />
+    <testcase classname="TurnHarness" name="players who quit or never return are sequenced out [network-sim]" time="0.006471" status="run" />
+    <testcase classname="TurnHarness" name="network telemetry follows injected latency, jitter, loss, an outage and a rejoin [network-sim][artifacts]" time="0.158894" status="run" />
+  </testsuite><testsuite name="TurnJitterBuffer"><testcase classname="TurnJitterBuffer" name="jitter is the p95 delay above the fastest delivery" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="the target rises at once and falls one tick per hold period" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="with bundles every few ticks the controller holds the sawtooth's mean" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="the delay controller nudges by at most five percent and catches up" time="0" status="run" />
+  </testsuite><testsuite name="TurnMatchRecord"><testcase classname="TurnMatchRecord" name="round-trips through bytes and files" time="0.000365" status="run" />
+    <testcase classname="TurnMatchRecord" name="rejects corruption, truncation, newer versions and disorder" time="0.000526" status="run" />
+    <testcase classname="TurnMatchRecord" name="CRC-32 matches the IEEE check value" time="0" status="run" />
+  </testsuite><testsuite name="TurnMessages"><testcase classname="TurnMessages" name="every message round-trips" time="0" status="run" />
+    <testcase classname="TurnMessages" name="every truncation and any trailing byte is rejected" time="0.008229" status="run" />
+    <testcase classname="TurnMessages" name="malformed fields and non-turn types are rejected" time="0.000213" status="run" />
+    <testcase classname="TurnMessages" name="bundles split at tick boundaries under the frame limit" time="0" status="run" />
+    <testcase classname="TurnMessages" name="the quit order matches PlayerQuitsGameOrder's encoding" time="0" status="run" />
+  </testsuite><testsuite name="TurnSequencer"><testcase classname="TurnSequencer" name="turn defaults use 30 TPS and retain fractional tick periods" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="bundles every tick by default, empty or not" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="bundles every two ticks from match start, empty or not" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="the load barrier holds the clock until every human seat has connected" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="the load barrier gives up after its timeout; the late seat gets grace from the start" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="without a barrier the clock starts when the sequencer is created" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="an order takes the earliest tick not yet broadcast, whatever the relay clock" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="orders execute the tick after arrival, one per seat per tick" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="a full tick spills orders to the next one" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="duplicates, nulls and latency adjustments are dropped; a flood is dropped, not the seat" time="0.000413" status="run" />
+    <testcase classname="TurnSequencer" name="admission: tickets, versions, first message and seat takeover" time="0.000201" status="run" />
+    <testcase classname="TurnSequencer" name="resume serves the log from the client's horizon, or from zero" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="grace expiry and explicit quits sequence PlayerQuitsGameOrder" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="an explicit Quit message leaves at once" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="one client's GameFinished decides nothing: the others keep their grace" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="a game is decided when every seat still playing reports it finished" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="the next wake: a bundle while connected, grace while empty, now for presence" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="arbitration stays incremental over a long match and the record keeps every report" time="0.150511" status="run" />
+    <testcase classname="TurnSequencer" name="three clients: the majority wins and the minority rejoins" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="two clients that disagree are flagged, not dropped" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="no strict majority is flagged; a silent seat times out of arbitration" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="presence reports lag, reconnecting and grace remaining" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="versions 1 and 2 are both served; only version 2 receives seat round trips" time="0" status="run" />
+  </testsuite><testsuite name="TurnSession"><testcase classname="TurnSession" name="executes bundled human orders and local AI orders tick by tick" time="0" status="run" />
+    <testcase classname="TurnSession" name="local orders are submitted, and resubmitted after a reconnect" time="0" status="run" />
+    <testcase classname="TurnSession" name="a gap asks for a resync, and a rejoin notice asks for a reload" time="0" status="run" />
+    <testcase classname="TurnSession" name="seat round trips from the relay reach the connection panel" time="0" status="run" />
+    <testcase classname="TurnSession" name="a silent link shows as lost within the stall threshold and reconnects after five seconds" time="0" status="run" />
+    <testcase classname="TurnSession" name="a horizon that stops moving shows as lost even while pongs arrive" time="0" status="run" />
+    <testcase classname="TurnSession" name="after a stall the delay estimate starts over instead of keeping the gap" time="0.000131" status="run" />
+    <testcase classname="TurnSession" name="an older relay that refuses version 2 is offered version 1 once" time="0" status="run" />
+    <testcase classname="TurnSession" name="orders go out at one per tick after a burst; a later move of the same flag replaces a waiting one" time="0" status="run" />
+    <testcase classname="TurnSession" name="orders that must all execute are paced but never merged" time="0" status="run" />
+    <testcase classname="TurnSession" name="voice waits for gameplay orders and keeps its own gap" time="0" status="run" />
+    <testcase classname="TurnSession" name="the local queue is bounded and says so" time="0" status="run" />
+    <testcase classname="TurnSession" name="quitting sends the orders still waiting, then Quit" time="0" status="run" />
+    <testcase classname="TurnSession" name="a flooding reject reconnects instead of ending the match" time="0" status="run" />
+    <testcase classname="TurnSession" name="a reject ends the session" time="0" status="run" />
+  </testsuite><testsuite name="TurnTelemetry"><testcase classname="TurnTelemetry" name="histogram quantiles are within a bin of the data [network]" time="0" status="run" />
+    <testcase classname="TurnTelemetry" name="session telemetry measures stalls, catch-up, reconnects and input delay [network]" time="0.00026" status="run" />
+    <testcase classname="TurnTelemetry" name="the client network summary is one stable versioned object [network]" time="0.000188" status="run" />
+    <testcase classname="TurnTelemetry" name="relay telemetry counts per-seat orders, deferrals, bundles, lateness and arbitration [network]" time="0.000347" status="run" />
+    <testcase classname="TurnTelemetry" name="a seat that never returns uses its whole grace period [network]" time="0.000119" status="run" />
+  </testsuite><testsuite name="UnitTiming"><testcase classname="UnitTiming" name="TravelTiming" time="0" status="run" />
+    <testcase classname="UnitTiming" name="NonTravelActions" time="0" status="run" />
+    <testcase classname="UnitTiming" name="IntegerQuantization" time="0" status="run" />
+  </testsuite></testsuites>

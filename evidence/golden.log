@@ -1,0 +1,4 @@
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (1.3s)
+
+1 passed, 0 failed, 0 skipped (1.3s of test time)
+[run_tests] JUnit report: artifacts/30tps-merge/golden.xml (1 cases)

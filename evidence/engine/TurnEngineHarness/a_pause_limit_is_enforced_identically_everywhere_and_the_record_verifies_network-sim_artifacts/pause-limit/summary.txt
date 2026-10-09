@@ -1,0 +1,5 @@
+end_tick 607 turns 49 flagged 0
+client seat lives reloads orders target_ticks rtt_ms catch_up_ticks catch_up_ms
+0 0 1 0 25 0 30 0 0
+1 1 1 0 19 0 95 0 0
+paused ticks: seat 0 120, seat 1 120

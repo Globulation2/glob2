@@ -1,0 +1,6 @@
+end_tick 1441 turns 161 flagged 0
+client seat lives reloads orders target_ticks rtt_ms catch_up_ticks catch_up_ms
+0 0 1 0 62 0 40 0 0
+1 1 2 1 53 2 110 432 229
+2 2 1 0 46 7 70 0 0
+reload fast-forward of seat 1: 432 ticks in 229 ms
