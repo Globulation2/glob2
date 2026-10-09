@@ -106,6 +106,13 @@ class Compositor
     bool mixedDecorSprites = false;
 	static void readTexture(Texture &, GAGCore::DrawableSurface *);
 	std::vector<std::vector<Texture>> textures;
+	struct AnimationTextures
+	{
+		std::vector<Texture> current, next;
+		unsigned blend = ~0u;
+	};
+	std::vector<AnimationTextures> animationTextures;
+	bool prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target);
 	std::vector<std::uint64_t> materialRevisions;
 	int resolution = 1;
 };
