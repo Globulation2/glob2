@@ -313,16 +313,15 @@ to compare this platform's rows of `test/map-generator-golden.txt` against fresh
 with no rows reports and passes, so a new machine can run the check before its rows exist;
 `--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
 rows for every platform running that check in CI (`linux-x86_64` today). The current
-table records vertex terrain and simulation-revision-40 placement stocks (save
-format 152). The owner-RNG transition changed initial stock quantities without
-changing individual generator recipes or revisions; hosted GCC 11 and GCC 13
-independently agree on all current Linux rows. Earlier, every generated map
-changed when terrain moved to map vertices. The complete
+table records vertex terrain (save format 146): every generated map changed when terrain
+moved to map vertices, without individual generator recipe revisions. The complete
 pre-resource-epoch table, including historical `macos-arm64` rows, is retained in
 `test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The table has no macOS rows;
 they must be measured on macOS before `--require-rows` can pass there; do not copy Linux
 hashes. The five separately verified explicit-design topology comparisons below do
-not establish topology equivalence for every changed golden. The framework reference under
+not establish topology equivalence for every changed golden. The five explicit-design full
+hashes include simulation-revision-40 map-owned placement stocks; their historical
+topology references remain unchanged. The framework reference under
 `docs/map-generators/` describes the remaining rules it enforces.
 
 `MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
