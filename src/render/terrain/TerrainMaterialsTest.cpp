@@ -340,13 +340,13 @@ TEST_SUITE("TerrainMaterials")
 				const std::string name = after ? "after" : "before";
 				log << name << " scale=" << scale << " cold_ms=" << ms << " median_of=5" << '\n';
 				CHECK(IMG_SavePNG(image.getSDLSurface(),
-					(glob2test::artifactDir() / (name + "-" + std::to_string(scale) + ".png")).c_str()));
+					(glob2test::artifactDir() / (name + "-" + std::to_string(scale) + ".png")).string().c_str()));
 				if (scale == 1)
 				{
 					GAGCore::DrawableSurface zoom(384, 384);
 					REQUIRE(SDL_BlitSurfaceScaled(image.getSDLSurface(), nullptr, zoom.getSDLSurface(), nullptr, SDL_SCALEMODE_LINEAR));
 					CHECK(IMG_SavePNG(zoom.getSDLSurface(),
-						(glob2test::artifactDir() / (name + "-zoom-half.png")).c_str()));
+						(glob2test::artifactDir() / (name + "-zoom-half.png")).string().c_str()));
 				}
 			}
 			globals->terrainCompositor_ = std::make_unique<TerrainVisual::Compositor>(after ? current : previous);
