@@ -18,9 +18,16 @@ class SoftwareTerrainCache
   public:
 	static constexpr int ChunkTiles = 16, ChunkPixels = ChunkTiles * 32;
 	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 128u * 1024u * 1024u;
+	// Preserve the existing density/GPU allowance; keep inactive zoom pixels
+	// in an additional bounded CPU reserve rather than recomposing them.
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+	static constexpr std::size_t GPUCacheBudget = GPUBudget;
+#else
+	static constexpr std::size_t GPUCacheBudget = GPUBudget + 128u * 1024u * 1024u;
+#endif
 	// Coverage kept for mixed cells next to animated materials, so a phase change
 	// re-blends their textures instead of re-sampling coverage. A quarter of the
-	// page budget; cells beyond it compose without a kept mask.
+	// original density budget; cells beyond it compose without a kept mask.
 	static constexpr std::size_t MaskBudget = Budget / 4, GPUMaskBudget = GPUBudget / 4;
 	struct HeldMask
 	{
@@ -48,20 +55,24 @@ class SoftwareTerrainCache
 	};
 	struct Chunk
 	{
-		int x = 0, y = 0, scale = 1;
+		int x = 0, y = 0, scale = 1, downsample = 1;
 		Uint32 seed = 0; // Map terrain seed the page was composed with.
 		// Corner vertices and one-vertex halo used by contextual borders.
 		std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 		// Empty cells expose only the separately drawn ocean and submit no software blit.
 		std::array<bool, ChunkTiles * ChunkTiles> opaque{}, empty{};
-		std::unique_ptr<GAGCore::DrawableSurface> image;
+		// An uploaded drawable owns the pixels; a retired page keeps them in parked.
+	// Exactly one owner exists, so texture retirement never discards composition.
+	std::unique_ptr<TerrainVisual::Surface> image;
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> parked{nullptr, SDL_DestroySurface};
 		std::vector<OpaqueRun> opaqueRuns;
 		std::array<std::unique_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
 		bool valid = false;
 		// Only materials present in discovered recipes invalidate this page.
 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
 		std::uint64_t used = 0;
+		std::uint64_t textureUsed = 0;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
@@ -88,6 +99,7 @@ class SoftwareTerrainCache
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
+	std::uint64_t textureUse = 0, reductions = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
 	std::shared_ptr<std::size_t> maskTotal = std::make_shared<std::size_t>(0);
 	SDL_Rect paintBounds{};
@@ -118,7 +130,11 @@ class SoftwareTerrainCache
 				 bool tiledCapture = false);
 	void draw(GAGCore::GraphicContext &);
 	std::size_t bytes() const;
+	std::size_t residentTextureBytes() const;
+	int samplingResolution() const { return resolution; }
+	int samplingReduction() const { return downsample; }
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
+	std::uint64_t cacheReductions() const { return reductions; }
 	std::size_t maskBytes() const { return *maskTotal; }
 };

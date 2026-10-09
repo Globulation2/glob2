@@ -7,6 +7,7 @@
 // (test/SConstruct).
 #include "GlobalContainer.h"
 #include "Map.h"
+#include "Game.h"
 #include "MapInternal.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -31,12 +32,12 @@ void Map::smoothResources(int times)
 				Resource &r=resourceCells[coordToIndex(x, y)].resource;
 				if (r.type==NO_RES_TYPE || !resourcePropertiesByIndex(r.type).smoothPlacement)
 					continue;
-				if (!(syncRand()&4))
+				if (!(privateRandom(RandomDomain::ResourceSmoothing).nextU32()&4))
 					continue;
 				const auto& definition = resourceRegistry().yields(static_cast<ResourceId>(r.type));
 				const auto material = resourcePropertiesByIndex(r.type).primaryMaterial;
 				const auto& yield = definition[materialIndex(material)];
-				if (int(r.amount)-RESOURCE_INITIAL_AMOUNT<=int(syncRand()&3))
+				if (int(r.amount)-RESOURCE_INITIAL_AMOUNT<=int(privateRandom(RandomDomain::ResourceSmoothing).nextU32()&3))
 				{
 					if (r.amount<yield.capacity)
 						setMaterialAmountSlot(coordToIndex(x,y), materialIndex(material), r.amount+1);
@@ -44,7 +45,7 @@ void Map::smoothResources(int times)
 				else
 				{
 					int dx, dy;
-					Unit::dxDyFromDirection(syncRand()&7, &dx, &dy);
+					Unit::dxDyFromDirection(privateRandom(RandomDomain::ResourceSmoothing).nextU32()&7, &dx, &dy);
 					const int nx=normalizeX(x+dx), ny=normalizeY(y+dy);
 					if (getResource(nx, ny).type==NO_RES_TYPE && isResourceAllowed(nx, ny, r.type))
 					{

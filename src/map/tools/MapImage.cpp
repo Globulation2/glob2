@@ -721,13 +721,8 @@ void importMapImage(Game &game, const std::string &path, GenerationRequest &requ
 							 " colony markers; observed " + std::to_string(report.markers));
 	request.nbTeams = report.markers;
 	GenerationContext context(request);
-	struct RestoreRandom
-	{
-		MersenneTwister saved = syncRandEngine();
-		~RestoreRandom() { syncRandEngine() = saved; }
-	} restore;
-	setSyncRandSeed(GenerationContext::deriveSeed(request.seed, "map-image-engine"));
 	game.gameHeader.setRandomSeed(request.seed);
+	game.map.worldRandom.initialize(request.seed);
 	game.map.setSize(request.wDec, request.hDec);
 	game.map.setGame(&game);
 	auto &map = game.map;

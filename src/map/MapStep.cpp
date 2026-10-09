@@ -23,15 +23,15 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
 {
     static_assert(MersenneTwister::min()==0 && MersenneTwister::max()==UINT32_MAX);
     assert(scarcity>=1);
-    const unsigned opportunities=growthOpportunities(rate,[]{return syncRand();});
+    const unsigned opportunities=growthOpportunities(rate,[&]{return map.privateRandom(RandomDomain::ReferenceGrowth).nextU32();});
     for(unsigned attempt=0;attempt<opportunities;++attempt)
     {
-        if(scarcity!=1 && syncRand()%scarcity!=0) continue;
+        if(scarcity!=1 && map.privateRandom(RandomDomain::ReferenceGrowth).nextU32()%scarcity!=0) continue;
         // Re-read the source after each attempt: growth can change its amount.
         const Resource& resource=map.getResource(x,y);
         if(resource.type==NO_RES_TYPE) break;
         const auto& properties=map.resourcePropertiesByIndex(resource.type);
-        const bool growsHere=!properties.stockDependentGrowth || resource.amount <= syncRand()%properties.stockBranchDivisor;
+        const bool growsHere=!properties.stockDependentGrowth || resource.amount <= map.privateRandom(RandomDomain::ReferenceGrowth).nextU32()%properties.stockBranchDivisor;
         if(growsHere)
         {
             if(map.canResourcesGrow(x,y))
@@ -44,11 +44,11 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
         }
         if(properties.spreadRate && (!properties.stockDependentGrowth || !growsHere))
         {
-            const auto spreads=Fertility::growthOpportunities(properties.spreadRate,[]{return syncRand();});
+            const auto spreads=Fertility::growthOpportunities(properties.spreadRate,[&]{return map.privateRandom(RandomDomain::ReferenceGrowth).nextU32();});
             for (unsigned spread=0;spread<spreads;++spread)
             {
                 int dx,dy;
-                Unit::dxDyFromDirection(syncRand()&7,&dx,&dy);
+                Unit::dxDyFromDirection(map.privateRandom(RandomDomain::ReferenceGrowth).nextU32()&7,&dx,&dy);
                 const int nx=x+dx,ny=y+dy;
                 if(map.canResourcesGrow(nx,ny))
                 {
@@ -71,9 +71,9 @@ void Map::growResources(void)
     rebuildGrowthCoverage();
     static constexpr int scarcityDivisor[]={1,2,4,8};
     const int scarcity=scarcityDivisor[game->gameHeader.getResourceScarcityLevel()];
-    const int firstY=syncRand()&3;
+    const int firstY=privateRandom(RandomDomain::ReferenceGrowth).nextU32()&3;
     for(int y=firstY;y<h;y+=4)
-        for(int x=syncRand()&15;x<w;x+=syncRand()&31)
+        for(int x=privateRandom(RandomDomain::ReferenceGrowth).nextU32()&15;x<w;x+=privateRandom(RandomDomain::ReferenceGrowth).nextU32()&31)
         {
             const auto& resource=getResource(x,y);
             if(resource.type!=NO_RES_TYPE)

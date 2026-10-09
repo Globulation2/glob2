@@ -214,7 +214,6 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
-	const auto random = bindRandom();
 	map.preparePendingWorld();
 	applyClientRequests();
 	if (!anyPlayerWaited)
@@ -247,8 +246,6 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		// Normally polled controllers already observed this logical tick in their
 		// ordered worker stream. Only replica/replay seats need this boundary.
 		observeUnpolledAI();
-
-		syncRand();
 
 		if ((stepCounter&FOW_SWITCH_TICK_MASK)==FOW_SWITCH_TICK_PHASE)
 		{

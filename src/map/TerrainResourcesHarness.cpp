@@ -1083,7 +1083,9 @@ TEST_CASE("renamed deposits and sprite variants preserve stochastic stock trajec
     definition["key"]="trajectory-original";
     definition["properties"]["ecology"]="uniform";
     definition["properties"]["growthRate"]=ResourceRateScale;
-    definition["properties"]["spreadRate"]=ResourceRateScale/4;
+    // Every sampled source attempts spread; fractional material replenishment
+    // still exercises stochastic decisions independently of presentation.
+    definition["properties"]["spreadRate"]=ResourceRateScale;
     definition["properties"]["stockDependentGrowth"]=false;
     definition["properties"]["blocksGround"]=false;
     definition["properties"]["persistsWhenEmpty"]=true;
@@ -1100,15 +1102,16 @@ TEST_CASE("renamed deposits and sprite variants preserve stochastic stock trajec
     REQUIRE(original.game.map.resourceRegistry().digest()!=renamed.game.map.resourceRegistry().digest());
     REQUIRE(original.game.map.incResource(8,8,leftId,0));
     REQUIRE(renamed.game.map.incResource(8,8,rightId,0));
-    // Copy the actual engine state; binding must not reseed either game from
-    // the process-global stream between ticks.
-    renamed.game.syncRandom=original.game.syncRandom;
+    REQUIRE(original.game.map.resourceGrowthRateAt(original.game.map.coordToIndex(8,8),resourceIndex(leftId))>0);
+    REQUIRE(original.game.map.canResourcesGrow(8,8));
+    // Presentation changes must not alter the maps' private simulation streams.
+    const auto globalRandom=syncRandEngine();
     unsigned occupied=0;
-    for (unsigned tick=0;tick<192;++tick)
+    for (unsigned tick=0;tick<512;++tick)
     {
         CAPTURE(tick);
-        { auto random=original.game.bindRandom(); original.game.map.growResources(); }
-        { auto random=renamed.game.bindRandom(); renamed.game.map.growResources(); }
+        original.game.map.growResources();
+        renamed.game.map.growResources();
         if (tick%3==0)
         {
             CHECK(original.game.map.takeHarvest(8,8,0,0,MaterialId::Food,1)
@@ -1131,8 +1134,9 @@ TEST_CASE("renamed deposits and sprite variants preserve stochastic stock trajec
                 renamed.game.map.resourceRegistry().presentation(rightId).frame(right.amount,index%16,index/16,tick);
             }
         }
-        CHECK(original.game.syncRandom==renamed.game.syncRandom);
+        CHECK(original.game.map.worldRandom.streams==renamed.game.map.worldRandom.streams);
     }
+    CHECK(syncRandEngine()==globalRandom);
     CHECK(occupied>1); // The fixture exercised spreading as well as in-place stock.
 }
 }

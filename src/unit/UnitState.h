@@ -2,6 +2,8 @@
 #pragma once
 #include <array>
 
+#include "EntityRandom.h"
+
 #include "MaterialPacket.h"
 #include "UnitConsts.h"
 #include <type_traits>
@@ -78,6 +80,7 @@ struct UnitState
 	};
 
 	Sint32 typeNum;
+	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	Uint16 gid;
 	Sint32 isDead;

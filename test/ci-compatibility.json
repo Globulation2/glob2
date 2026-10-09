@@ -8,6 +8,7 @@
     "*Replay*/*",
     "*Gradient*/*",
     "ComputeExecutor/*",
+    "EntityRandomLifecycle/*",
     "ReadOnlyPhase/*",
     "SimulationReadPhase/*",
     "*Script*/*",

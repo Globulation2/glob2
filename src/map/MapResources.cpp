@@ -186,7 +186,7 @@ bool Map::growResourceStock(size_t index)
         if (!y.growthRate) continue;
         const auto amount=materialAmountAtSlot(index,m);
         if (amount>=y.capacity) continue;
-        const auto increment=Fertility::growthOpportunities(y.growthRate,[]{return syncRand();});
+        const auto increment=Fertility::growthOpportunities(y.growthRate,[&]{return privateRandom(RandomDomain::ResourceStocks).nextU32();});
         if (increment) { setMaterialAmountSlot(index,m,std::min<unsigned>(y.capacity,unsigned(amount)+increment)); changed=true; }
     }
     return changed;
@@ -247,7 +247,7 @@ void Map::setResource(int x,int y,ResourceId resourceId,int l)
                 r.amount=yld.initial;
                 // Stock is simulation state; variant selection is deterministic presentation.
                 if (std::has_single_bit(p.materialMask) && yld.placementMaximum>yld.initial)
-                    r.amount+=syncRand()%(yld.placementMaximum-yld.initial+1);
+                    r.amount+=privateRandom(RandomDomain::ResourcePlacement).nextU32()%(yld.placementMaximum-yld.initial+1);
                 replaceResource(dx,dy,r);
             }
 }

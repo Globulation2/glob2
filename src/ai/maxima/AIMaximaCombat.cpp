@@ -1288,7 +1288,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	if(buildings_to_attack.size() == 0)
 		return false;
 
-	int num=syncRand() % buildings_to_attack.size();
+	int num=random() % buildings_to_attack.size();
 
 
 	int building=buildings_to_attack[num];

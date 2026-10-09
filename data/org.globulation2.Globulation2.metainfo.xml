@@ -22,6 +22,12 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.0.0" date="2026-10-08">
+      <description>
+        <p>Refreshed terrain and animated units; a redesigned map editor with touch controls; shared JavaScript map generators and online creation studios for maps, buildings, terrain, resources, music and colony skins; and complete translations.</p>
+        <p>Normal simulation now runs at 30 ticks per second, with deterministic scheduling and resource growth. Older saves remain supported through versioned migrations. Replays and multiplayer require matching compatible versions.</p>
+      </description>
+    </release>
     <release version="0.10.0.1" date="2026-10-04">
       <description>
         <p>Packaging update for 0.10.0: Linux, Snap, Flatpak, RPM and Amazon Fire tablet builds.</p>

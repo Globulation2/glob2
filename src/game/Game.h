@@ -13,6 +13,7 @@
 #include "Map.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "Utilities.h"
+#include "OwnerRandom.h"
 #include "SGSL.h"
 #include <string>
 #include <valarray>
@@ -161,11 +162,13 @@ public:
 	// Setup/load only: compile experiment gates and discard catalog-derived AI
 	// indexes before controllers observe the resolved game configuration.
 	void configureBuildingCatalog();
-	//! This game's synchronized random stream. syncStep, executeOrder, load and save
-	//! bind it, so syncRand() draws from the game being simulated on whichever thread
-	//! simulates it. Saved and restored with the game; never shared between games.
+	// Retained only for reading/writing historical continuation records and test
+	// diagnostics. Production decisions never draw from this obsolete stream.
 	MersenneTwister syncRandom;
-	//! Bind syncRandom for other code that advances this game's simulation.
+	EntityRandom& privateRandom(RandomDomain domain) {
+		return map.privateRandom(domain);
+	}
+	//! Legacy test diagnostics only; production consumers are forbidden.
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
 private:
 	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;

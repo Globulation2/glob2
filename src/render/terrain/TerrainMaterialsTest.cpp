@@ -136,9 +136,18 @@ TEST_SUITE("TerrainMaterials")
 					const auto weights = materialWeights(sample);
 					CHECK(weights[a] + weights[b] == 65536);
 				}
+			// Deep lobes must preserve the corner pockets for rerolled looks too.
+			for (unsigned seed = 1; seed <= 128; ++seed)
+			{
+				r.seed = seed;
+				const TerrainVisual::PreparedCoverage varied(c, r);
+				for (unsigned k = 0; k < 4; ++k)
+					CHECK(materialWeights(varied.at((k & 1 ? 28 : 4) * 256,
+						(k & 2 ? 28 : 4) * 256))[r.corners[k]] == 65536);
+			}
 		}
 	}
-	TEST_CASE("contextual interiors remain within six pixels of the marching contour")
+	TEST_CASE("contextual interiors remain within twelve pixels of the marching contour")
 	{
 		glob2test::HeadlessGlobals globals;
 		auto c = catalog(); c.boundaryWarp = {1024, 384, 128};
@@ -167,12 +176,51 @@ TEST_SUITE("TerrainMaterials")
 					for (int x = 4; x < 28; ++x)
 					{
 						const float cross = dx * (y + .5f - ends[0].y) - dy * (x + .5f - ends[0].x);
-						if (std::abs(cross) / length <= 6) continue;
+						if (std::abs(cross) / length <= 12) continue;
 						const auto expected = cross * cornerSide > 0 ? r.corners[0] :
 							(r.corners[0] == a ? b : a);
 						CHECK(materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768);
 					}
 			}
+	}
+	TEST_CASE("straight contextual borders have seeded scallops without folding")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto c = catalog(); c.boundaryWarp = {};
+		const auto a = c.find("sand"), b = c.find("grass");
+		std::array<std::set<std::vector<int>>, 2> shapes;
+		for (unsigned seed : {0u, 19u, 73u, 291u})
+			for (int cell = 1; cell < 8; ++cell)
+				for (int axis = 0; axis < 2; ++axis)
+				{
+					auto r = contextualRecipe(axis ? cell : 3, axis ? 3 : cell, 16,
+						[&](int x, int y) { return (axis ? y : x) <= 3 ? a : b; });
+					r.seed = seed;
+					const TerrainVisual::PreparedCoverage p(c, r), repeated(c, r);
+					std::vector<int> crossings;
+					for (int y = 4; y < 28; ++y)
+					{
+						int crossing = -1;
+						bool enteredB = false;
+						for (int x = 0; x < 128; ++x)
+						{
+							const int px = axis ? y * 256 + 128 : x * 64 + 32;
+							const int py = axis ? x * 64 + 32 : y * 256 + 128;
+							const auto sample = p.at(px, py);
+							CHECK(materialWeights(sample) == materialWeights(repeated.at(px, py)));
+							const bool isB = materialWeights(sample)[b] > 32768;
+							if (isB && !enteredB) crossing = x;
+							CHECK_FALSE((enteredB && !isB));
+							enteredB |= isB;
+						}
+						REQUIRE(crossing >= 0);
+						crossings.push_back(crossing);
+					}
+					const auto [low, high] = std::minmax_element(crossings.begin(), crossings.end());
+					CHECK(*high - *low >= 4); // At least one logical pixel of visible variation without warp.
+					shapes[axis].insert(crossings);
+				}
+		for (const auto &axis : shapes) CHECK(axis.size() == 28);
 	}
 
 	TEST_CASE("halo edits invalidate adjacent terrain pages including wrap and undo [display]")
@@ -292,13 +340,13 @@ TEST_SUITE("TerrainMaterials")
 				const std::string name = after ? "after" : "before";
 				log << name << " scale=" << scale << " cold_ms=" << ms << " median_of=5" << '\n';
 				CHECK(IMG_SavePNG(image.getSDLSurface(),
-					(glob2test::artifactDir() / (name + "-" + std::to_string(scale) + ".png")).c_str()));
+					(glob2test::artifactDir() / (name + "-" + std::to_string(scale) + ".png")).string().c_str()));
 				if (scale == 1)
 				{
 					GAGCore::DrawableSurface zoom(384, 384);
 					REQUIRE(SDL_BlitSurfaceScaled(image.getSDLSurface(), nullptr, zoom.getSDLSurface(), nullptr, SDL_SCALEMODE_LINEAR));
 					CHECK(IMG_SavePNG(zoom.getSDLSurface(),
-						(glob2test::artifactDir() / (name + "-zoom-half.png")).c_str()));
+						(glob2test::artifactDir() / (name + "-zoom-half.png")).string().c_str()));
 				}
 			}
 			globals->terrainCompositor_ = std::make_unique<TerrainVisual::Compositor>(after ? current : previous);

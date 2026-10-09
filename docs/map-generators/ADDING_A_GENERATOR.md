@@ -112,7 +112,7 @@ The stages are shared functions; call them in the order the map needs. A designe
 
 Use `context.stream("name")` for a per-attempt `std::mt19937` stream, or `context.bounded("name", count)` for a rejection-sampled bounded choice. Seed derivation is defined in `GenerationContext.cpp`: unsigned FNV-1a mixed with the root seed, followed by a fixed integer avalanche. Do not use `std::hash`, wall-clock reseeding, `rand()`, `srand()` or the gameplay RNG in generator algorithms. Noise tables and stamp caches belong to each height-map instance.
 
-General engine mutation functions still consume the synchronized gameplay RNG. `GenerationService` seeds and restores it with an RAII scope. This bridge is synchronous; this refactor does not make `Game` generation thread-safe. Independent processes can generate concurrently.
+General map mutation APIs use private map-owned streams initialized from the request seed. Generation and scored trial maps never seed or bind a shared gameplay RNG. Independent target Games isolate random consumption; each target still requires exclusive ownership of its mutable state.
 
 The same seed, generator revision and settings reproduce a world within this implementation on the same platform. Historical seeds intentionally do not promise the same maps, and cross-platform floating-point identity is not a supported contract. Bump a generator's revision when its output changes deliberately after this framework lands.
 
@@ -146,7 +146,7 @@ python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
 ```
 
-The `MapGeneratorDefaults` suite injects a test-only generator at ID 101, constructs its actual editor controls, edits its custom option, and generates a map. It also checks defaults, ranges, mode memory, codec roundtrips, legacy sentinels, interleaved repeatability, gameplay RNG restoration and structured failures.
+The `MapGeneratorDefaults` suite injects a test-only generator at ID 101, constructs its actual editor controls, edits its custom option, and generates a map. It also checks defaults, ranges, mode memory, codec roundtrips, legacy sentinels, interleaved repeatability, private RNG isolation and structured failures.
 
 Run all registered playable defaults without maintaining another generator list:
 

@@ -98,8 +98,8 @@ void Story::summonUnits(Game *game)
 				int x = fi->second.x;
 				int y = fi->second.y;
 				int r = fi->second.r;
-				int dx=(syncRand()%(2*r))+1;
-				int dy=(syncRand()%(2*r))+1;
+				int dx=(random.nextU32()%(2*r))+1;
+				int dy=(random.nextU32()%(2*r))+1;
 				dx-=r;
 				dy-=r;
 

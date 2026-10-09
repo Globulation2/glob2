@@ -60,6 +60,9 @@ Uint32 Map::checkSum(bool heavy, bool includePending)
 		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];
 	}
 
+	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
+	for (const auto& random : worldRandom.streams)
+		cs = rotr1(cs) ^ random.checksum();
 	return cs;
 }
 

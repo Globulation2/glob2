@@ -57,6 +57,12 @@ and no GOG credentials.
    [headless replay verification](headless-replays.md). Keep evidence under
    `artifacts/` and attach reviewable files to the release PR.
 
+All three depot builds reuse the game's checksum-pinned SDL3 dependencies.
+Windows and Linux use the lean image runtime and the shared verified artwork
+export; depot validation accepts its WebP images. Windows stages the private
+SDL3 DLLs before the host runtime, and Linux resolves the installed executable's
+library paths before copying its complete dependency closure.
+
 The Linux depot includes a `start.sh` launcher, its game data and the linked
 libraries that do not belong to the host graphics or base system. GOG asks for
 a clean-machine launch without users installing missing dependencies; use its

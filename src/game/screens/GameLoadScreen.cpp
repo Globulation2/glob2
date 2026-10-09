@@ -10,7 +10,7 @@ GameLoadScreen::GameLoadScreen(Initializer initialize, GAGCore::CooperativeSlice
 }
 GameLoadScreen::GameLoadScreen(std::unique_ptr<Engine> engine, Initializer initialize,
 							   GAGCore::CooperativeSlice slice)
-	: slice(std::move(slice)), previousRng(getSyncRandState()), engine(std::move(engine))
+	: slice(std::move(slice)), engine(std::move(engine))
 {
 	if (!this->engine)
 		throw std::invalid_argument("A loader requires an engine");
@@ -30,8 +30,6 @@ GameLoadScreen::~GameLoadScreen()
 	if (!accepted)
 		engine->cancelInitialization();
 	engine.reset();
-	if (!accepted)
-		setSyncRandState(previousRng);
 }
 std::unique_ptr<Engine> GameLoadScreen::takeEngine()
 {

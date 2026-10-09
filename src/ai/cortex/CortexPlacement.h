@@ -33,7 +33,7 @@ namespace Cortex
 	/// Returns 0 (and leaves all slots valid == 0) when no legal placement exists.
 	/// Pass a qualification computed for the current observation to avoid rescanning
 	/// workers for each role. The default computes it for standalone callers.
-	int placeCandidates(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
+	int placeCandidates(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType = -1,
 	                    int maxWorkerQualification = -1);
 
@@ -46,7 +46,7 @@ namespace Cortex
 	/// stay-clustered-with-the-colony cap is lifted. Among legal spots the one
 	/// closest to the colony wins (safest that does the job). Returns 1 and fills
 	/// `out`, or 0 (out.valid == 0) when no legal forward spot exists.
-	int placeForwardCandidate(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType,
+	int placeForwardCandidate(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
 	                          BuildCandidate& out, int maxWorkerQualification = -1);
@@ -62,11 +62,11 @@ namespace Cortex
 	/// gate strictly on Building::seenByMask & team->mask (the engine's own per-
 	/// building discovery record). NEVER read unfogged enemy state. Iterate enemy
 	/// myBuildings[] by index (never an std::set); break ties deterministically by
-	/// scan order / syncRand(), exactly as placeCandidates does.
+	/// scan order / the supplied controller stream, as placeCandidates does.
 	///
 	/// Returns the number of valid targets written (0..CORTEX_FLAG_TARGETS); 0 when
 	/// we have not yet discovered any enemy building.
-	int placeFlagTargetsWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS]);
+	int placeFlagTargetsWorld(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS]);
 
 	/// Chebyshev distance from tile (x, y) to the nearest food tile, found
 	/// by an outward radial scan bounded at `cap` rings. Returns the distance in
@@ -80,5 +80,5 @@ namespace Cortex
 }
 
 namespace Cortex {
-int placeFlagTargets(::Game*,::Team*,BuildCandidate out[CORTEX_FLAG_TARGETS],Sint32 teams[CORTEX_FLAG_TARGETS]);
+int placeFlagTargets(MersenneTwister& random, ::Game*,::Team*,BuildCandidate out[CORTEX_FLAG_TARGETS],Sint32 teams[CORTEX_FLAG_TARGETS]);
 }

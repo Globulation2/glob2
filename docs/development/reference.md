@@ -692,7 +692,8 @@ selects `2D no clouds` or `2D clouds`; otherwise both run. Set
 a controlled comparison. `GLOB2_BENCH_BARS=1` adds health/food bars. Unit count
 zero measures the same terrain without units. Retain executable hashes, commands,
 GPU identity, logs and captures with before/after comparisons. The flat fixture
-checks that rendering leaves the simulation checksum unchanged.
+checks that rendering leaves the simulation checksum unchanged. New fixture headers
+use seed 1; saved-game runs retain their saved seed.
 
 For an AI match, replace `GLOB2_BENCH_SIZE` and `GLOB2_BENCH_UNITS` with
 `GLOB2_BENCH_GAME=/absolute/path/to/checkpoint.game.gz`. The saved players and
@@ -704,6 +705,17 @@ the checkpoint's natural population from this deliberately seeded stress case.
 and can go below the interactive camera's minimum zoom.
 `GLOB2_BENCH_CAMERA_SWEEP=1` repeatedly changes zoom and pans across wrap seams.
 Sweep measurements mix those view sizes; use a fixed camera for paired timings.
+`GLOB2_BENCH_CAMERA_MOTION=1` instead pans four/two map pixels per frame and
+cycles smoothly between the selected zoom and four times that zoom over 120
+frames. It takes precedence over the seam sweep in the ordinary flat pass.
+`GLOB2_BENCH_CAMERA_PAN=1` uses the same scrolling at a fixed zoom.
+`GLOB2_BENCH_FRAME_TIMES=1` prints each measured and warmup frame; summaries
+include p99 and maximum latency as well as median and p95. The benchmark finishes
+deferred HD artwork loading before timing, so density changes compare identical
+source artwork rather than different asset-loader progress. Keep cold frames when
+investigating navigation stalls, and repeat cycles to distinguish first-use work
+from recurring hitches. The motion option does not change the paired comparison's
+camera; use the seam sweep for that comparison.
 `GLOB2_BENCH_COMPARE_RENDERER=1` additionally compares immediate and optimized
 native rendering in the same process, at the same camera and simulation state.
 It reports paired process CPU timings and checks pixel differences after timing
@@ -718,7 +730,9 @@ mixed unit queue, texture arrays and persistent map geometry.
 pair as `pair-immediate.ppm` and `pair-optimized.ppm` for visual review.
 
 Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
-input and simulation work. They are renderer measurements, not whole-game FPS.
+input, scene extraction and simulation work. Flat passes retain a prepared scene;
+AI comparisons refresh it before each timed pair. They are renderer measurements,
+not whole-game FPS.
 POSIX builds also report process CPU time separately from elapsed time.
 Scope timings separately report CPU submission and overlap; do not sum inclusive
 scopes. The fixture is native OpenGL only; mobile uses the SDL portable renderer,
@@ -947,25 +961,40 @@ sprite render revision and re-bakes every published skin.
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
 For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/EngineRun.cpp`.
 
-- Use `Utilities::syncRand()` for simulation randomness. Keep iteration and tie
-  breaking deterministic; never depend on pointer ordering, hash-table iteration,
-  thread scheduling or wall-clock budgets for simulation decisions.
-- Each AI controller has a saved random stream derived from the game seed and player
-  number. AI implementations receive that stream when created or loaded. During
-  `AI::getOrder()`, legacy helper calls to `syncRand()` are routed to the same AI
-  stream. This keeps one AI's random draws independent of other controllers' poll
-  order, but does not make their shared map and caches safe for concurrent access.
-  A controller must still have at most one `getOrder()` in flight; its stream
-  and decision state are mutable.
-- Each `Game` owns its synchronized stream (`Game::syncRandom`), saved and restored
-  with the game. `Game::syncStep`, `Game::executeOrder`, load and save bind it with
-  `SyncRandScope`, so the simulation draws from the game it advances on whichever
-  thread runs it. Other code that advances a game's simulation must bind it with
-  `Game::bindRandom()`. Outside a bound scope, `syncRand()` uses a `thread_local`
-  default stream that map generation and other tools seed for themselves; a new
-  thread starts from the default seed. During an engine session an unbound draw is
-  a determinism bug: it is counted (`unboundSyncRandDraws()`), and
-  `GLOB2_SYNC_RAND_STRICT=1` aborts on it.
+- Units and buildings own saved private `EntityRandom` PCG32 streams (format 151).
+  Entity decisions use `entityRandom.nextU32()`; randomized map pathfinding takes
+  the moving unit's stream explicitly. Initialization salts the game seed with
+  kind, full GID and slot generation without consuming another stream. Upgrades,
+  repairs and ownership conversion preserve progress; reused slots get fresh streams.
+  Both state words participate in entity checksums and snapshot records. Older
+  saves initialize missing streams once and then run only the new behavior.
+  Starting maps are reseeded with the final match header; saved resumes retain state.
+  Team has no independent draws or stream. `python3 test/check_entity_random.py`
+  checks that production code cannot implicitly draw `syncRand()` or process-global `rand()`.
+- Format 152 adds separate saved PCG32 streams owned by the map for growth-job
+  seeds, immediate reference growth, resource stocks, placement and smoothing.
+  Each SGSL story has its own stream, salted by its source-order index. All streams
+  are seeded directly with the match/request seed and fixed domains; no parent
+  stream is consumed. Both words participate in ordinary simulation checksums.
+  Older saves initialize missing streams once. Fresh match headers reset template
+  progress; resumed saves retain it. Resource-growth jobs retain a private MT19937
+  scan stream, with separate PCG32 decisions per source tile. Additional decisions
+  at one source cannot change another source's draws or the scan schedule.
+- AI controllers already own saved MT19937 streams derived from game seed and
+  player number. Helpers now take that stream explicitly, including placement,
+  shuffling and strategy selection; no thread-local binding chooses their owner.
+  Each controller still permits at most one decision in flight.
+- Generation mutates only its target map's streams, and scored trial maps initialize
+  independently. Test-game map selection and each AI seat use distinct domains.
+  The historical `Game::syncRandom` record is retained for save/test diagnostics
+  but has no production consumers or per-tick advancement. The source contract
+  rejects implicit RNG calls throughout production code; legacy utility bindings
+  remain only to support older test diagnostics.
+- Random consumption is isolated, but map mutations, interactions and execution
+  order remain sequential. Keep iteration and tie breaking deterministic; never
+  depend on pointer ordering, hash-table iteration or thread scheduling. These changes alter resource ecology, map placement and
+  legacy summons, in addition to the entity trajectory changes in format 151.
+  Gameplay review remains necessary.
 - Keep rendering, particles, animation and other presentation-only randomness off
   `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
   so visual effects can change, run at any frame rate or move to another thread
@@ -1171,9 +1200,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Engine snapshots and scheduled AI decisions introduced replay floor 143 and network
   protocol 61; building artwork raised the protocol to 62. Vertex terrain set replay
   floor 146; greedy-only fetching (format 147) and scheduled building gradients
-  (format 148) set the replay floor before growth integration. Delayed resource growth
-  introduced replay floor 149 and network protocol 67. Building area effects set the
-  current replay floor to 150 and network protocol to 68; the save floor remains 58.
+  (format 148) set the current replay floor before growth integration. Delayed resource growth sets
+  replay floor 149 and network protocol 67; building area effects set replay floor 150 and network protocol 68; private entity RNGs raise the replay floor to 151 and private world/story RNGs raise it to 152.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
@@ -1474,9 +1502,8 @@ rare overflows grow the vector normally. Headless results expose
 `growth_capacityGrowthBatches` and `growth_maxProposals` to measure its coverage.
 Capacity and pooling decisions do not affect simulation results.
 
-Resource-growth integration introduced save format 149, replay floor 149 and
-network protocol 67. Building area effects advance the current save/replay format
-to 150 and network protocol to 68. The save compatibility floor remains 58. Released master layouts
+Resource-growth integration introduced save format 149 and network protocol 67.
+The current writer and replay floor are 152, with private entity, map and legacy-story RNG state after area-effect funding and fractional services in format 150. The save compatibility floor remains 58. Released master layouts
 146–148 and historical growth-draft layouts with the same numbers are resolved
 before loading game state: the map catalog or a bounded terrain-block probe
 identifies vertex versus legacy corner storage. Historical growth layouts retain
@@ -1928,7 +1955,8 @@ also remains the headless default and the equivalence reference.
   over the Scene: active strokes and queued paint remain visible until an execution
   acknowledgement is included in the acquired Scene. Farm paint eligibility reads
   retained growth/rules inputs when the experiment is enabled.
-- The synchronized RNG belongs to the game, so results do not depend on the thread.
+- Simulation RNG state belongs to units, buildings, map operations, stories and AI
+  controllers. Explicit ownership keeps draws independent of the executing thread.
   `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
   `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps
   any session serial, for tests that count frames against a scripted host clock.
@@ -2146,9 +2174,17 @@ cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game`
 the simulation neither reads nor writes it and each view animates independently. The
 terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
 software storage reservation including pixels, recipes and borrowed views, and a
-separate 128 MiB GPU-mode reservation with least-recently-used eviction. Kept
-coverage masks for mixed cells beside animated materials add at most a quarter of
-that budget. Native and
+separate 128 MiB allowance for GPU density selection and resident texture/mip
+reservations. The desktop GPU-mode cache has a 256 MiB total ceiling, including
+CPU pixels and bookkeeping; Android/browser builds retain the 128 MiB total limit.
+On desktop, the additional CPU retention allowance avoids evicting inactive
+zoom densities. GPU views retain pixels and textures across sampling
+changes, retiring idle textures first when needed. When the visible textures
+exceed the allowance but their CPU pages and one upload fit, drawing streams
+textures from those retained pixels rather than recomposing the entire view.
+Terrain, discovery and material revisions are checked when an old zoom level
+returns. Kept coverage masks for mixed cells beside animated materials add at
+most 8 MiB in software mode or 32 MiB in GPU mode. Native and
 HD rendering share CPU composition; GPU backends upload the resulting pages.
 The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
 boundary resolver, source preparation, budgets and asset pipeline.

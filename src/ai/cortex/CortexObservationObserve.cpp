@@ -25,7 +25,7 @@
 
 namespace Cortex
 {
-	CortexObservation observeWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, Uint16 offenseFlagGid)
+	CortexObservation observeWorld(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, Uint16 offenseFlagGid)
 	{
 		PERF_SCOPE_TIME(AIObserve);
 		CortexObservation obs = makeEmptyObservation();
@@ -271,7 +271,7 @@ namespace Cortex
 			// phase reasons about. Other types keep valid==0 from the empty
 			// observation. placeCandidates writes exactly CORTEX_BUILD_CANDIDATES
 			// slots (zero-filling unused trailing ones).
-			placeCandidates(game, team, scratch, intents, Cortex::CORTEX_BUILD_FOOD,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD], -1, maxBuildLevel);
+			placeCandidates(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_FOOD,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_FOOD], -1, maxBuildLevel);
             for (const auto& project:game->buildProjects) {
                 if(project.teamNumber!=team->number)continue;
                 const auto* type=catalogType(*game,project.typeNum);
@@ -293,7 +293,7 @@ namespace Cortex
             }
             obs.productionPlacementType=productionChoice.placementType;
             if(productionChoice.placementType>=0)
-                placeCandidates(game,team,scratch,intents,CORTEX_BUILD_SWARM,0,obs.buildCandidates[CORTEX_BUILD_SWARM],productionChoice.placementType,maxBuildLevel);
+                placeCandidates(random, game,team,scratch,intents,CORTEX_BUILD_SWARM,0,obs.buildCandidates[CORTEX_BUILD_SWARM],productionChoice.placementType,maxBuildLevel);
             for(int id=0;id<::Building::MAX_COUNT;++id) {
                 const auto* building=game->buildingSlots(team->number)[id];
                 if(!building || building->buildingState!=::Building::ALIVE || buildingType(*game,*building)->isBuildingSite)continue;
@@ -305,17 +305,17 @@ namespace Cortex
                     obs.productionNeedsRetune |= (plannedRatio(intents,*building,unit)>0) !=
                         bool((mask&(1u<<unit)) && productionTargets[unit]>0);
             }
-			placeCandidates(game, team, scratch, intents, Cortex::CORTEX_BUILD_HEAL,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_HEAL], -1, maxBuildLevel);
-			placeCandidates(game, team, scratch, intents, Cortex::CORTEX_BUILD_SCIENCE, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SCIENCE], -1, maxBuildLevel);
-			placeCandidates(game, team, scratch, intents, Cortex::CORTEX_BUILD_WALKSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_WALKSPEED], -1, maxBuildLevel);
-			placeCandidates(game, team, scratch, intents, Cortex::CORTEX_BUILD_SWIMSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SWIMSPEED], -1, maxBuildLevel);
-			placeCandidates(game, team, scratch, intents, Cortex::CORTEX_BUILD_ATTACK,  0, obs.buildCandidates[Cortex::CORTEX_BUILD_ATTACK], -1, maxBuildLevel);
+			placeCandidates(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_HEAL,    0, obs.buildCandidates[Cortex::CORTEX_BUILD_HEAL], -1, maxBuildLevel);
+			placeCandidates(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_SCIENCE, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SCIENCE], -1, maxBuildLevel);
+			placeCandidates(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_WALKSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_WALKSPEED], -1, maxBuildLevel);
+			placeCandidates(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_SWIMSPEED, 0, obs.buildCandidates[Cortex::CORTEX_BUILD_SWIMSPEED], -1, maxBuildLevel);
+			placeCandidates(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_ATTACK,  0, obs.buildCandidates[Cortex::CORTEX_BUILD_ATTACK], -1, maxBuildLevel);
 
 			// OFFENSE targets: discovered enemy buildings, nearest-first. Filled
 			// ONLY from buildings we have legitimately seen (Building::seenByMask),
 			// never from unfogged truth — implemented (with the same visibility
 			// gating discipline as the enemy-intel pass below) by placeFlagTargets.
-			placeFlagTargetsWorld(game, team, intents, obs.flagTargets, obs.flagTargetTeam);
+			placeFlagTargetsWorld(random, game, team, intents, obs.flagTargets, obs.flagTargetTeam);
 
 			// Per-target SUPPORT DISTANCE (v18): how far each offense target sits
 			// from our nearest FINISHED inn — the attack-range gate's input. Food is
@@ -421,14 +421,14 @@ namespace Cortex
 						minD = CORTEX_FORWARD_MIN_ENEMY_DIST;
 						maxD = range - CORTEX_FORWARD_RANGE_SLACK;
 					}
-					placeForwardCandidate(game, team, scratch, intents, Cortex::CORTEX_BUILD_FOOD,
+					placeForwardCandidate(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_FOOD,
 					                      tx, ty, minD, maxD,
 					                      obs.forwardInn, maxBuildLevel);
 					// A forward hospital is surfaced only when a finished hospital
 					// already exists (advisory support; the inn binds the envelope);
 					// the forward inn always leads.
 					if (cortexFinishedBuildings(obs, CORTEX_BUILD_HEAL) > 0)
-						placeForwardCandidate(game, team, scratch, intents, Cortex::CORTEX_BUILD_HEAL,
+						placeForwardCandidate(random, game, team, scratch, intents, Cortex::CORTEX_BUILD_HEAL,
 						                      tx, ty, minD, maxD,
 						                      obs.forwardHeal, maxBuildLevel);
 				}
@@ -558,12 +558,12 @@ namespace Cortex
 }
 
 namespace Cortex {
-CortexObservation observe(::Player* player, int margin, Uint16 gid)
+CortexObservation observe(MersenneTwister& random, ::Player* player, int margin, Uint16 gid)
 {
     if(!player || !player->team)return makeEmptyObservation();
     const auto view=AIEngine::AIWorldView::capture(*player->game, AIEngine::AIWorldView::captureCatalog(*player->game));
     QueryScratch scratch; PlanningIntent intents;
-    return observeWorld(view.get(),&view->teams[player->teamNumber],scratch,intents,nullptr,margin,gid);
+    return observeWorld(random, view.get(),&view->teams[player->teamNumber],scratch,intents,nullptr,margin,gid);
 }
 void observeBuildings(CortexObservation& observation, ::Team* team, ::Game* game,
     int level,Uint16 gid,bool& found,Sint32& x,Sint32& y,Sint32& range)

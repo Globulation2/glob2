@@ -44,11 +44,6 @@ bool validName(const std::string &name, const std::string &extension)
 		return false;
 	return true;
 }
-struct RestoreRng
-{
-	std::string previous = getSyncRandState();
-	~RestoreRng() { setSyncRandState(previous); }
-};
 } // namespace
 FileImport::FileImport(ApplicationHost::SelectedFile file, std::string extension, Persist persist,
 					   CooperativeSlice slice)
@@ -92,7 +87,6 @@ CooperativeTask FileImport::validate()
 	if (!std::equal(mapStart, mapStart + 4, "MapB"))
 		co_return false;
 	input.seekFromStart(0);
-	RestoreRng rng;
 	GameGUI gui(false);
 	if (!(co_await gui.loadTask(&input)))
 		co_return false;

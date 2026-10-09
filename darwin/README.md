@@ -1,5 +1,9 @@
 # macOS build dependency
 
+The native file manager locates bundled runtime assets through SDL's absolute
+Resources directory. Command-line map tools preserve the caller's working
+directory for input and output paths; they can run outside the source checkout.
+
 Native secure WebSocket support is enabled by default and uses OpenSSL from
 Homebrew or MacPorts. The existing application-bundle step copies `libssl`,
 `libcrypto`, and their non-system dependencies into `Contents/Frameworks` and

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SoundMixer.h"
+#include <random>
 #include "MusicProducer.h"
 #include "MusicBuffer.h"
 #include "Order.h"
@@ -337,6 +338,7 @@ struct SoundMixer::Impl
 #endif
 SoundMixer::SoundMixer(unsigned music, unsigned voice, bool mute) : impl(std::make_unique<Impl>())
 {
+	musicRandom.initializeOwner(std::random_device{}(), unsigned(RandomDomain::Music));
 	setVolume(music, voice, mute);
 }
 SoundMixer::~SoundMixer() = default;
@@ -437,7 +439,7 @@ bool SoundMixer::selectMusicSet(const std::string &preference)
 	auto candidates = getMusicSets();
 	if (preference.empty())
 		for (size_t i = candidates.size(); i > 1; --i)
-			std::swap(candidates[i - 1], candidates[size_t(rand()) % i]);
+			std::swap(candidates[i - 1], candidates[size_t(musicRandom.nextU32()) % i]);
 	else if (std::find(candidates.begin(), candidates.end(), preference) != candidates.end())
 		candidates = {preference};
 	else

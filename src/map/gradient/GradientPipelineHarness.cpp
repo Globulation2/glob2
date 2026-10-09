@@ -170,6 +170,7 @@ class TestBuildingPipeline : public TestBuildingPipelineBase
     ComputeExecutor executor;
 public:
     ~TestBuildingPipeline() { reset(); }
+    std::size_t workerCount() const { return executor.threadCount() - 1; }
     void configure(unsigned count, unsigned delay, Work work)
     {
         reset(); executor.configure(count+1);
@@ -337,6 +338,8 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
         // A slow worker never moves its deadline: the owner joins it exactly at the due tick.
         if (workers && GAGCore::ThreadSupport::available) {
             pipeline.configure(workers, delay, runTestBuildingJob);
+            // Owner-only fallback cannot wait on a gate opened by another thread.
+            if (!pipeline.workerCount()) continue;
             published.clear();
             pipeline.publish=[&](auto& job) { published.push_back(job.payload.value); return true; };
             std::promise<void> release; std::shared_future<void> gate=release.get_future().share();

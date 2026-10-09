@@ -468,7 +468,7 @@ private:
 
 	/// Per-game food open-margin N: the first N rows of food nearest the harvest
 	/// source stay unpainted; the checkerboard starts at depth N+1. Drawn ONCE via
-	/// syncRand on the first decision cycle (sentinel -1 = not yet drawn) and then
+	/// the controller stream on the first decision cycle (sentinel -1 = not yet drawn) and then
 	/// persisted (NOT redrawn on load) so same-seed replays stay byte-identical.
 	/// The draw consumes one AI random value, advancing this controller's stream, so this
 	/// is replay-relevant (validated against the deterministic harness).

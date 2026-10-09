@@ -25,6 +25,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
 	init(x, y, gid, typeNum, team, level);
 	scriptIdentity = owner->game->allocateScriptIdentity(false, gid);
+	entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, gid, scriptIdentity);
 }
 
 void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
