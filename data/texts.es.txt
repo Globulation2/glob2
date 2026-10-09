@@ -5996,3 +5996,17 @@ La selección de archivos no está disponible.
 La exportación de paquetes no está disponible.
 [stat band area upkeep]
 Mantenimiento del área
+[outcome reason eliminated]
+Colonia eliminada.
+[outcome reason opponents defeated]
+Todos los adversarios han sido derrotados.
+[outcome reason ally won]
+Una colonia aliada ha ganado.
+[outcome reason prestige]
+Objetivo de prestigio alcanzado.
+[outcome reason scenario]
+Las reglas del escenario han determinado el resultado.
+[outcome reason timer]
+Límite de tiempo alcanzado.
+[outcome reason probability]
+Umbral de probabilidad de victoria alcanzado.

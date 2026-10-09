@@ -5996,3 +5996,17 @@ FFmpeg није доступан, па је снимање искључено. �
 Извоз пакета није доступан.
 [stat band area upkeep]
 Одржавање области
+[outcome reason eliminated]
+Колонија је уништена.
+[outcome reason opponents defeated]
+Сви противници су поражени.
+[outcome reason ally won]
+Савезничка колонија је победила.
+[outcome reason prestige]
+Циљ престижа је достигнут.
+[outcome reason scenario]
+Правила сценарија су одредила исход.
+[outcome reason timer]
+Временско ограничење је истекло.
+[outcome reason probability]
+Праг вероватноће победе је достигнут.

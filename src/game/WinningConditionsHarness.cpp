@@ -222,11 +222,8 @@ void testSuddenDeath()
 		{"atTick-tieAtTop",     100, 100, {30, 30, 10}},
 		{"afterTick-uniqueMax", 150, 100, {10, 30, 10}},
 		{"negativePrestige",    100, 100, {-5, 0, -10}},
-		// All-negative: maximumPrestige()'s floor at 0 (shared with Prestige,
-		// which never actually hits it thanks to its own totalPrestige gate)
-		// would make every team compare against 0 here, so nobody ties it and
-		// everybody loses. actualMaximumPrestige() must find team 1's -2 as
-		// the true max instead, so team 1 (only) wins and the other two lose.
+		// All-negative standings must find team 1's -2 as the true maximum,
+		// rather than comparing everybody against a floor of zero.
 		{"allNegativePrestige", 100, 100, {-5, -2, -10}},
 	};
 	for (const auto& c : tiles)
@@ -390,6 +387,43 @@ TEST_CASE("every predicate matches the golden record stream [golden]")
 	testScript();
 	testOpponentsDefeated();
 	glob2test::expectGolden("winning-conditions/expected.txt", out);
+}
+
+TEST_CASE("prestige and timer adjudication exclude eliminated leaders")
+{
+    for (bool timer : {false, true})
+    {
+        clearAll();
+        setupTeams(3);
+        g()->totalPrestige = 100;
+        g()->prestigeToReach = 100;
+        g()->stepCounter = 100;
+        T(0)->isAlive = false;
+        T(0)->prestige = 100;
+        T(1)->prestige = -2;
+        T(2)->prestige = -5;
+        WinningConditionPrestige prestige;
+        WinningConditionSuddenDeath suddenDeath;
+        suddenDeath.endStepTick = 100;
+        const WinningCondition& condition = timer
+            ? static_cast<const WinningCondition&>(suddenDeath)
+            : static_cast<const WinningCondition&>(prestige);
+        CHECK_FALSE(condition.hasTeamWon(0, g()));
+        CHECK(condition.hasTeamLost(0, g()));
+        CHECK(condition.hasTeamWon(1, g()));
+        CHECK_FALSE(condition.hasTeamLost(1, g()));
+        CHECK(condition.hasTeamLost(2, g()));
+        T(2)->prestige = -2;
+        CHECK(condition.hasTeamWon(1, g()));
+        CHECK(condition.hasTeamWon(2, g()));
+        T(1)->isAlive = false;
+        T(2)->isAlive = false;
+        for (int t = 0; t < 3; ++t)
+        {
+            CHECK_FALSE(condition.hasTeamWon(t, g()));
+            CHECK(condition.hasTeamLost(t, g()));
+        }
+    }
 }
 
 TEST_CASE("draw outcome: before the buzzer nobody is decided")

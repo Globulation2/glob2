@@ -5996,3 +5996,17 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 تصدير الحزم غير متاح.
 [stat band area upkeep]
 صيانة المنطقة
+[outcome reason eliminated]
+أُبيدت المستعمرة.
+[outcome reason opponents defeated]
+هُزم جميع الخصوم.
+[outcome reason ally won]
+فازت مستعمرة حليفة.
+[outcome reason prestige]
+تم بلوغ هدف الهيبة.
+[outcome reason scenario]
+حددت قواعد السيناريو النتيجة.
+[outcome reason timer]
+انتهت المهلة الزمنية.
+[outcome reason probability]
+تم بلوغ عتبة احتمال الفوز.

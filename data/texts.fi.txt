@@ -5996,3 +5996,17 @@ Tiedoston valinta ei ole käytettävissä.
 Pakettien vienti ei ole käytettävissä.
 [stat band area upkeep]
 Alueen ylläpito
+[outcome reason eliminated]
+Siirtokunta tuhottu.
+[outcome reason opponents defeated]
+Kaikki vastustajat voitettu.
+[outcome reason ally won]
+Liittoutunut siirtokunta voitti.
+[outcome reason prestige]
+Mainetavoite saavutettu.
+[outcome reason scenario]
+Skenaarion säännöt ratkaisivat lopputuloksen.
+[outcome reason timer]
+Aikaraja saavutettu.
+[outcome reason probability]
+Voittotodennäköisyyden kynnysarvo saavutettu.

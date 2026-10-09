@@ -5996,3 +5996,17 @@ Izbira datotek ni na voljo.
 Izvoz paketov ni na voljo.
 [stat band area upkeep]
 Vzdrževanje območja
+[outcome reason eliminated]
+Kolonija je izumrla.
+[outcome reason opponents defeated]
+Vsi nasprotniki so poraženi.
+[outcome reason ally won]
+Zavezniška kolonija je zmagala.
+[outcome reason prestige]
+Cilj ugleda je dosežen.
+[outcome reason scenario]
+Pravila scenarija so odločila o izidu.
+[outcome reason timer]
+Časovna omejitev je dosežena.
+[outcome reason probability]
+Prag verjetnosti zmage je dosežen.

@@ -5996,3 +5996,17 @@ Selectarea fișierelor nu este disponibilă.
 Exportul pachetelor nu este disponibil.
 [stat band area upkeep]
 Întreținerea zonei
+[outcome reason eliminated]
+Colonia a fost eliminată.
+[outcome reason opponents defeated]
+Toți adversarii au fost învinși.
+[outcome reason ally won]
+O colonie aliată a câștigat.
+[outcome reason prestige]
+Obiectivul de prestigiu a fost atins.
+[outcome reason scenario]
+Regulile scenariului au decis rezultatul.
+[outcome reason timer]
+Limita de timp a fost atinsă.
+[outcome reason probability]
+Pragul probabilității de victorie a fost atins.

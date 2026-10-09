@@ -5996,3 +5996,17 @@ CPU %0%
 Η εξαγωγή πακέτων δεν είναι διαθέσιμη.
 [stat band area upkeep]
 Συντήρηση περιοχής
+[outcome reason eliminated]
+Η αποικία καταστράφηκε.
+[outcome reason opponents defeated]
+Όλοι οι αντίπαλοι ηττήθηκαν.
+[outcome reason ally won]
+Μια συμμαχική αποικία νίκησε.
+[outcome reason prestige]
+Επιτεύχθηκε ο στόχος κύρους.
+[outcome reason scenario]
+Οι κανόνες του σεναρίου καθόρισαν το αποτέλεσμα.
+[outcome reason timer]
+Έληξε το χρονικό όριο.
+[outcome reason probability]
+Επιτεύχθηκε το όριο πιθανότητας νίκης.

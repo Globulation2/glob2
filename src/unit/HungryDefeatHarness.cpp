@@ -9,6 +9,8 @@
 #include "IntBuildingType.h"
 #include "WinningConditions.h"
 #include "Utilities.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
@@ -30,7 +32,7 @@ struct Colony
     Building* inn;
     std::vector<Uint32> trace;
 
-    Colony(int corn = 10)
+    Colony(int corn = 10, const char* buildingName = "inn")
     {
         setSyncRandSeed(110);
         game.gameHeader.setRandomSeed(110);
@@ -45,7 +47,7 @@ struct Colony
         team->playersMask = 1;
         game.gameHeader.getWinningConditions().clear();
         game.gameHeader.getWinningConditions().push_back(std::make_shared<WinningConditionDeath>());
-        const int type = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+        const int type = globalContainer->buildingsTypes.getTypeNum(buildingName, 0, false);
         inn = new Building(8, 8, 0, type, team, &globalContainer->buildingsTypes, 0, 0);
         team->myBuildings[0] = inn;
         team->rebuildLiveLists();
@@ -78,6 +80,33 @@ struct Colony
         ++game.stepCounter;
     }
 };
+
+static std::vector<Uint32> checkHealing(int type)
+{
+    Colony c(0, "hospital");
+    Unit* u = c.unit(type);
+    u->hungry = Unit::HUNGRY_MAX;
+    u->hp = u->trigHP;
+    u->medical = Unit::MED_DAMAGED;
+    u->delta = 255;
+    c.step(true, "reserving the final hospital place must not cause defeat");
+    require(u->attachedBuilding == c.inn && u->destinationPurpose == HEAL,
+            "injured unit reserves healing during the team step");
+    require(c.team->canFeedUnit.empty() && c.team->canHealUnit.empty(),
+            "full hospital is absent from admission lists");
+    bool entered = false;
+    for (int tick = 0; tick < 2000 && u->hp != u->performance[HP]; ++tick)
+    {
+        entered |= u->displacement == Unit::DIS_INSIDE;
+        c.step(true, "colony remains alive while approaching, entering and healing");
+    }
+    require(entered && u->hp == u->performance[HP], "unit completes healing");
+    for (int tick = 0; tick < 300; ++tick)
+        c.step(true, "healed colony remains alive through exit and medical refresh");
+    require(u->attachedBuilding == nullptr && u->medical == Unit::MED_FREE,
+            "healed unit exits and refreshes medical status");
+    return c.trace;
+}
 
 static std::vector<Uint32> checkFeeding(int type, int corn)
 {
@@ -115,6 +144,64 @@ static std::vector<Uint32> checkFeeding(int type, int corn)
 
 TEST_SUITE("HungryDefeat")
 {
+    TEST_CASE("healing defeat recovery survives a save with an occupied hospital")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams = 2, .clearImmobile = true,
+                                     .loadDefaultRace = true, .header = true, .seed = 110});
+        WinningCondition::setPrestigeWinCondition(world.game.gameHeader.getWinningConditions(), false);
+        Building* hospital = world.addBuilding("hospital", 8, 8);
+        hospital->maxUnitInside = 1;
+        hospital->updateCallLists();
+        Unit* patient = world.addUnit(WORKER, 6, 8);
+        patient->hp = patient->trigHP;
+        patient->medical = Unit::MED_DAMAGED;
+        patient->delta = 255;
+        REQUIRE(world.addUnit(WORKER, 20, 20, 1));
+        world.step();
+        REQUIRE(patient->attachedBuilding == hospital);
+        REQUIRE(world.team->isAlive);
+        REQUIRE_FALSE(world.team->hasLost);
+        auto* backend = new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);
+        world.game.save(&output, false, "occupied hospital recovery");
+        output.flush();
+        std::string bytes(backend->getBuffer(), backend->getPosition());
+        const auto rng = world.game.syncRandom;
+        const auto continueGame = [](Game& game) {
+            SyncRandScope bound(game.syncRandom);
+            std::vector<Uint32> trace;
+            for (int tick = 0; tick < 512; ++tick)
+            {
+                game.syncStep(0);
+                REQUIRE(game.teams[0]->isAlive);
+                REQUIRE_FALSE(game.teams[0]->hasLost);
+                REQUIRE_FALSE(game.teams[1]->hasWon);
+                REQUIRE_FALSE(game.isGameEnded);
+                trace.push_back(game.checkSum(nullptr, nullptr, nullptr, true));
+            }
+            return trace;
+        };
+        const auto original = continueGame(world.game);
+        GameGUI restored;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+        input.seekFromStart(0);
+        REQUIRE(restored.game.load(&input));
+        restored.game.setWaitingOnMask(0);
+        REQUIRE(restored.game.syncRandom == rng);
+        REQUIRE(continueGame(restored.game) == original);
+    }
+
+    TEST_CASE("healing reserves the last hospital place without eliminating the colony")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int type : {WORKER, WARRIOR})
+        {
+            const auto first = checkHealing(type);
+            REQUIRE(checkHealing(type) == first);
+        }
+    }
+
 	TEST_CASE("feeding reserves the last inn place and defeat controls hold")
 	{
 		glob2test::HeadlessGlobals globals;

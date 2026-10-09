@@ -5996,3 +5996,17 @@ AI 生成ではない
 パッケージのエクスポートは利用できません。
 [stat band area upkeep]
 範囲効果の維持費
+[outcome reason eliminated]
+コロニーが全滅しました。
+[outcome reason opponents defeated]
+すべての敵を倒しました。
+[outcome reason ally won]
+同盟コロニーが勝利しました。
+[outcome reason prestige]
+名声目標に到達しました。
+[outcome reason scenario]
+シナリオのルールによって結果が決まりました。
+[outcome reason timer]
+制限時間に達しました。
+[outcome reason probability]
+勝利確率がしきい値に達しました。

@@ -5996,3 +5996,17 @@ AI 생성 아님
 패키지 내보내기를 사용할 수 없습니다.
 [stat band area upkeep]
 영역 유지비
+[outcome reason eliminated]
+식민지가 전멸했습니다.
+[outcome reason opponents defeated]
+모든 적을 물리쳤습니다.
+[outcome reason ally won]
+동맹 식민지가 승리했습니다.
+[outcome reason prestige]
+명성 목표에 도달했습니다.
+[outcome reason scenario]
+시나리오 규칙에 따라 결과가 결정되었습니다.
+[outcome reason timer]
+제한 시간에 도달했습니다.
+[outcome reason probability]
+승리 확률이 기준값에 도달했습니다.

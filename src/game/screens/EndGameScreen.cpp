@@ -10,6 +10,7 @@
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
 #include "Team.h"
+#include "OutcomeReason.h"
 #include "TeamDisplay.h"
 #include "Utilities.h"
 #include "InGameTouchTheme.h"
@@ -187,22 +188,19 @@ EndGameScreen::Description EndGameScreen::describe(const Game &game, const Team 
 			opponentPlayed = true;
 	}
 	auto &strings = *GAGCore::Toolkit::getStringTable();
+	const std::string reasonKey = outcomeReasonKey(game, local.teamNumber);
 	if (d.outcome == Outcome::Victory)
 	{
 		if (!leftNames.empty() && !opponentPlayed)
 			d.reason = leftNames.size() == 1 ? std::string(GAGCore::FormattableString(strings.getString("[conn notice left %0]")).arg(leftNames.front()))
 											 : strings.getString("[results reason opponents left]");
-		else if (game.totalPrestigeReached)
-			d.reason = strings.getString("[Total prestige reached]");
-		else if (local.winCondition == WCWinProbability)
-			d.reason = strings.getString("[results reason beyond doubt]");
+		else if (!reasonKey.empty())
+			d.reason = strings.getString(reasonKey);
 		else
 			d.reason = strings.getString("[results reason victory]");
 	}
 	else if (d.outcome == Outcome::Defeat)
-		d.reason = strings.getString(game.totalPrestigeReached					? "[Total prestige reached]"
-									 : local.winCondition == WCWinProbability ? "[results reason beyond doubt]"
-																				: "[results reason defeat]");
+		d.reason = strings.getString(reasonKey.empty() ? "[results reason defeat]" : reasonKey);
 	else if (d.outcome == Outcome::Left)
 		d.reason = strings.getString("[results reason you left]");
 	return d;

@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <iterator>
 #include "Engine.h"
+#include "OutcomeReason.h"
 #include "NetEngine.h"
 #include "Player.h"
 #include "sim/SimulationRunner.h"
@@ -77,6 +78,87 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+
+    TEST_CASE("eliminated prestige leaders cannot make every survivor lose")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool timer : {false, true})
+        for (int eliminated = 0; eliminated < 3; ++eliminated)
+        {
+            Engine engine;
+            auto& game = engine.gui.game;
+            game.map.setSize(5, 5, GRASS);
+            game.map.setGame(&game);
+            for (int t = 0; t < 3; ++t)
+            {
+                game.addTeam();
+                game.teams[t]->allies = game.teams[t]->me;
+            }
+            CAPTURE(timer); CAPTURE(eliminated);
+            const int winner = (eliminated + 1) % 3;
+            const int loser = (eliminated + 2) % 3;
+            game.teams[eliminated]->isAlive = false;
+            game.teams[eliminated]->prestige = 100;
+            game.teams[winner]->prestige = -2;
+            game.teams[loser]->prestige = -5;
+            game.prestigeToReach = 50;
+            game.stepCounter = 100;
+            if (timer)
+            {
+                WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), false);
+                WinningCondition::setSuddenDeathWinCondition(game.gameHeader.getWinningConditions(), 100);
+            }
+            game.prestigeSyncStep();
+            game.wonSyncStep();
+            CHECK(game.teams[eliminated]->hasLost);
+            CHECK(game.teams[winner]->hasWon);
+            CHECK_FALSE(game.teams[winner]->hasLost);
+            CHECK(game.teams[loser]->hasLost);
+            CHECK(std::string(outcomeReasonKey(game, winner)) == (timer ? "[outcome reason timer]" : "[outcome reason prestige]"));
+            CHECK(std::string(outcomeReasonKey(game, loser)) == (timer ? "[outcome reason timer]" : "[outcome reason prestige]"));
+            CHECK(std::string(outcomeReasonKey(game, eliminated)) == "[outcome reason eliminated]");
+            CHECK(game.isGameEnded);
+        }
+    }
+    TEST_CASE("disabled prestige victory cannot end automatic matches")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        auto& game = engine.gui.game;
+        game.map.setSize(5, 5, GRASS);
+        game.map.setGame(&game);
+        game.addTeam();
+        game.addTeam();
+        engine.gui.localTeamNo = 0;
+        for (int t = 0; t < 2; ++t)
+            game.teams[t]->allies = game.teams[t]->me;
+        game.prestigeToReach = 100;
+        game.teams[0]->prestige = 100;
+        WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), false);
+        globalContainer->automaticEndingGame = true;
+        globalContainer->automaticGameGlobalEndConditions = true;
+        game.prestigeSyncStep();
+        game.wonSyncStep();
+        CHECK(game.totalPrestige == 100);
+        CHECK_FALSE(game.totalPrestigeReached);
+        CHECK_FALSE(game.isGameEnded);
+        CHECK_FALSE(game.teams[0]->hasWon);
+        CHECK_FALSE(game.teams[1]->hasLost);
+        engine.gui.isRunning = true;
+        engine.pollAutomaticEndingConditions(1000);
+        CHECK(engine.gui.isRunning);
+
+        WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), true);
+        game.prestigeSyncStep();
+        game.wonSyncStep();
+        CHECK(game.totalPrestigeReached);
+        CHECK(game.isGameEnded);
+        CHECK(game.teams[0]->hasWon);
+        CHECK(game.teams[1]->hasLost);
+        engine.pollAutomaticEndingConditions(1001);
+        CHECK_FALSE(engine.gui.isRunning);
+    }
+
     TEST_CASE("observation players preserve seat order and spectator readiness")
     {
         glob2test::HeadlessGlobals globals;

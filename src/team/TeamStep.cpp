@@ -340,7 +340,7 @@ void Team::syncStep(void)
 
 	int nbUsefulUnits = 0;
 	int nbUsefulUnitsAlone = 0;
-	bool hasFedOrFeedingUnit = false;
+	bool hasHealthyOrRecoveringUnit = false;
 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
 	// Select once per team. The usual loop has no aura branch per unit;
 	// pulse services still run immediately before that unit's normal update.
@@ -358,12 +358,15 @@ void Team::syncStep(void)
 			}
 			if constexpr (areaPulse) u->applyAreaServices();
 			u->syncStep();
-			// Check after the step: admission lists and medical status can lag a meal.
+			// Check after the step: reserving the last service place removes the
+			// building from admission lists. Feeding and healing still offer recovery.
 			if (!u->isDead && u->owner == this && u->typeNum != EXPLORER
 				&& ((!u->isUnitHungry() && u->hp > u->trigHP)
 					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == FEED
-						&& u->attachedBuilding && u->attachedBuilding->type->canFeedUnit)))
-				hasFedOrFeedingUnit = true;
+						&& u->attachedBuilding && u->attachedBuilding->type->canFeedUnit)
+					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == HEAL
+						&& u->attachedBuilding && u->attachedBuilding->type->canHealUnit)))
+				hasHealthyOrRecoveringUnit = true;
 			if (u->isDead)
 			{
 				// Client selections hold a UnitRef and notice the death when
@@ -483,7 +486,7 @@ void Team::syncStep(void)
 
 	bool isDying= (playersMask==0)
 		|| allRemainingUnitsTrapped(*this)
-		|| (!isEnoughFoodInSwarm && !hasFedOrFeedingUnit && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
+		|| (!isEnoughFoodInSwarm && !hasHealthyOrRecoveringUnit && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
 	{
 		isAlive=false;

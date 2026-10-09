@@ -5996,3 +5996,17 @@ Výber súboru nie je dostupný.
 Export balíkov nie je dostupný.
 [stat band area upkeep]
 Údržba oblasti
+[outcome reason eliminated]
+Kolónia zanikla.
+[outcome reason opponents defeated]
+Všetci súperi boli porazení.
+[outcome reason ally won]
+Spojenecká kolónia zvíťazila.
+[outcome reason prestige]
+Cieľ prestíže bol dosiahnutý.
+[outcome reason scenario]
+Pravidlá scenára rozhodli o výsledku.
+[outcome reason timer]
+Časový limit vypršal.
+[outcome reason probability]
+Prahová hodnota pravdepodobnosti víťazstva bola dosiahnutá.

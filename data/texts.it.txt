@@ -5996,3 +5996,17 @@ La selezione dei file non è disponibile.
 L’esportazione dei pacchetti non è disponibile.
 [stat band area upkeep]
 Mantenimento dell’area
+[outcome reason eliminated]
+Colonia eliminata.
+[outcome reason opponents defeated]
+Tutti gli avversari sono stati sconfitti.
+[outcome reason ally won]
+Una colonia alleata ha vinto.
+[outcome reason prestige]
+Obiettivo di prestigio raggiunto.
+[outcome reason scenario]
+Le regole dello scenario hanno determinato l’esito.
+[outcome reason timer]
+Limite di tempo raggiunto.
+[outcome reason probability]
+Soglia di probabilità di vittoria raggiunta.

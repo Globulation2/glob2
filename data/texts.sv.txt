@@ -5996,3 +5996,17 @@ Filval är inte tillgängligt.
 Paketexport är inte tillgänglig.
 [stat band area upkeep]
 Områdesunderhåll
+[outcome reason eliminated]
+Kolonin är utslagen.
+[outcome reason opponents defeated]
+Alla motståndare är besegrade.
+[outcome reason ally won]
+En allierad koloni har vunnit.
+[outcome reason prestige]
+Prestigemålet är uppnått.
+[outcome reason scenario]
+Scenariots regler avgjorde resultatet.
+[outcome reason timer]
+Tidsgränsen är nådd.
+[outcome reason probability]
+Tröskeln för vinstsannolikhet är uppnådd.

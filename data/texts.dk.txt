@@ -5996,3 +5996,17 @@ Filvalg er ikke tilgængeligt.
 Pakkeeksport er ikke tilgængelig.
 [stat band area upkeep]
 Områdevedligeholdelse
+[outcome reason eliminated]
+Kolonien er udslettet.
+[outcome reason opponents defeated]
+Alle modstandere er besejret.
+[outcome reason ally won]
+En allieret koloni har vundet.
+[outcome reason prestige]
+Prestigemålet er nået.
+[outcome reason scenario]
+Scenariets regler afgjorde udfaldet.
+[outcome reason timer]
+Tidsgrænsen er nået.
+[outcome reason probability]
+Tærsklen for sejrsandsynlighed er nået.

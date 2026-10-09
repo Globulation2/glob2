@@ -5996,3 +5996,17 @@ AI 生成
 無法使用套件匯出功能。
 [stat band area upkeep]
 區域維護
+[outcome reason eliminated]
+殖民地已被消滅。
+[outcome reason opponents defeated]
+所有對手均已被擊敗。
+[outcome reason ally won]
+盟友殖民地獲勝。
+[outcome reason prestige]
+聲望目標已達成。
+[outcome reason scenario]
+劇情規則決定了結果。
+[outcome reason timer]
+時間已達上限。
+[outcome reason probability]
+獲勝機率已達門檻。
