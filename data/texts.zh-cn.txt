@@ -6010,3 +6010,5 @@ AI 生成
 时间已达上限。
 [outcome reason probability]
 获胜概率已达阈值。
+[Destroy this building?]
+摧毁这座建筑？

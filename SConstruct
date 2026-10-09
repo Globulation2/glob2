@@ -639,3 +639,6 @@ def main():
         SConscript(target + "/SConscript", variant_dir = bdir + "/" + target, duplicate = 0)
 
 main()
+
+# A configuration-only target for first-use dependency measurements.
+Alias("dev-dependencies", [])

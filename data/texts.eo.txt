@@ -6010,3 +6010,5 @@ La reguloj de la scenaro decidis la rezulton.
 Tempolimo atingita.
 [outcome reason probability]
 Sojlo de venkoprobablo atingita.
+[Destroy this building?]
+Ĉu detrui ĉi tiun konstruaĵon?

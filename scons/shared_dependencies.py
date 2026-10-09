@@ -94,8 +94,13 @@ def ensure(builder, local_prefix, work, *, explicit=False, execute=True, **argum
         if not verify(prefix, identity):
             raise ValueError('In-use dependency installation changed: ' + str(prefix))
         return prefix
-    # Recheck after acquiring the reader lease: pruning can win between leases.
+    # Valid installations need only a reader lease: other active consumers must
+    # not serialize compatible builds. Release it before repairing/publishing.
     while True:
+        store.hold(entry)
+        if verify(prefix, identity):
+            break
+        store._HELD.pop(entry.resolve()).close()
         with store.Lease(entry, exclusive=True):
             if not verify(prefix, identity):
                 entry.parent.mkdir(parents=True, exist_ok=True)
@@ -111,10 +116,6 @@ def ensure(builder, local_prefix, work, *, explicit=False, execute=True, **argum
                     if entry.exists():
                         shutil.rmtree(entry)
                     staging.replace(entry)
-        store.hold(entry)
-        if verify(prefix, identity):
-            break
-        store._HELD.pop(entry.resolve()).close()
     log = os.environ.get('GLOB2_BUILD_TIMING_LOG')
     if log:
         with open(log, 'a') as output:

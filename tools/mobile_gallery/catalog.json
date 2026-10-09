@@ -277,7 +277,85 @@
     {
       "id": "game-inspector-production",
       "title": "Inspector \u00b7 production",
-      "description": "A real swarm selected to review production ratios and shared allocation controls. Phones show the thumb dial: workers on the outer ring, the chosen unit's ratio inside it, priority innermost, and unit and action chips on the far side.",
+      "description": "A real swarm selected to review production weights. Phones show workers on the outer arc, priority in the middle, three cycling ratio buttons on the third ring, and a circular trash button in the hollow center with destroy confirmation.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-inn",
+      "title": "Inspector \u00b7 Inn",
+      "description": "A disposable level-one inn fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-hospital",
+      "title": "Inspector \u00b7 Hospital",
+      "description": "A disposable level-one hospital fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-racetrack",
+      "title": "Inspector \u00b7 Racetrack",
+      "description": "A disposable level-one racetrack fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-swimmingpool",
+      "title": "Inspector \u00b7 Swimming pool",
+      "description": "A disposable level-one swimming pool fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-barracks",
+      "title": "Inspector \u00b7 Barracks",
+      "description": "A disposable level-one barracks fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-school",
+      "title": "Inspector \u00b7 School",
+      "description": "A disposable level-one school fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-defencetower",
+      "title": "Inspector \u00b7 Defence tower",
+      "description": "A disposable level-one defence tower fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-market",
+      "title": "Inspector \u00b7 Market",
+      "description": "A disposable level-one market fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-stonewall",
+      "title": "Inspector \u00b7 Stone wall",
+      "description": "A disposable level-one stone wall fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-warflag",
+      "title": "Inspector \u00b7 War flag",
+      "description": "A disposable level-one war flag fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-clearingflag",
+      "title": "Inspector \u00b7 Clearing flag",
+      "description": "A disposable level-one clearing flag fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-explorationflag",
+      "title": "Inspector \u00b7 Exploration flag",
+      "description": "A disposable level-one exploration flag fixture showing its contextual controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-unit",
+      "title": "Inspector \u00b7 Unit",
+      "description": "Selected unit with the shared identity header and a separate scrollable statistics panel.",
       "group": "Gameplay"
     },
     {
@@ -1078,6 +1156,48 @@
       "title": "Scripted game landscape",
       "description": "Installed JavaScript package with a generated local-game preview. Requires generator-only capture fixtures.",
       "group": "Map generators"
+    },
+    {
+      "id": "game-inspector-destroy-confirmation",
+      "title": "Inspector \u00b7 destroy confirmation",
+      "description": "The center trash action opens the existing separate Confirm Destroy and Cancel controls; no destruction order is sent before confirmation.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-barracks-construction",
+      "title": "Inspector \u00b7 Barracks construction",
+      "description": "Construction fixture showing active worker assignment and priority controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-hospital-construction",
+      "title": "Inspector \u00b7 Hospital construction",
+      "description": "Construction fixture showing active worker assignment and priority controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-racetrack-construction",
+      "title": "Inspector \u00b7 Racetrack construction",
+      "description": "Construction fixture showing active worker assignment and priority controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-school-construction",
+      "title": "Inspector \u00b7 School construction",
+      "description": "Construction fixture showing active worker assignment and priority controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-stonewall-construction",
+      "title": "Inspector \u00b7 Stonewall construction",
+      "description": "Construction fixture showing active worker assignment and priority controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-swimmingpool-construction",
+      "title": "Inspector \u00b7 Swimmingpool construction",
+      "description": "Construction fixture showing active worker assignment and priority controls.",
+      "group": "Gameplay"
     }
   ],
   "gaps": [
