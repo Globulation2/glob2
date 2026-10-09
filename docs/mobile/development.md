@@ -1082,3 +1082,18 @@ For focused custom-generator review, install the example packages in a disposabl
 profile and set `GLOB2_GALLERY_GENERATORS_ONLY=1` when running `mobile-gallery`.
 This captures the package list, the scripted editor selection and a generated
 local-game preview using `examples:swamp`.
+
+
+## Fast native development compilation
+
+After provisioning the pinned SDK and mobile dependencies, use
+`python3 tools/dev_build.py target=android arch=arm64-v8a` or
+`python3 tools/dev_build.py target=ios environment=simulator`. These build the
+existing native artifacts in separate fast-development directories; packaging,
+signing and device installation remain the responsibility of the existing mobile
+workflows. Fast/PCH/unity profiles reuse compatible mobile dependency manifests
+and never fall back to host libraries. Recording libraries share verified entries
+by architecture, SDK, toolchain and flags. Use ordinary debug builds for full
+variable inspection and release builds for packaging and performance assessment.
+See [fast development builds](../development/reference.md#fast-development-builds)
+for profile flags, dependency parallelism, cache controls and verification.

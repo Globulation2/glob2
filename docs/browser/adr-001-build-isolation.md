@@ -46,3 +46,17 @@ Emscripten ports are not used. The FreeType source dependency is separately
 pinned in `scons/sdl3-vendored.json`; other existing Emscripten ports retain their
 SDK pins. Browser transport uses WebSockets and does not initialize SDL_net's
 native resolver threads or LAN discovery.
+
+
+## Development build variants
+
+`python3 tools/dev_build.py target=web` builds only the threaded development
+runtime. Use `web_variant=serial` where cross-origin isolation, shared memory or
+worker rendering is unavailable. A threaded-only package reports unsupported
+hosts instead of attempting to fetch a missing serial runtime. Music, recording,
+Hive, scripting, assets and localization remain available in either variant.
+Ordinary `scons target=web` defaults to both variants; `web-package` requires both.
+Browser SDL/Opus installations are shared by SDK and threading configuration,
+while the standalone music decoder always uses serial Opus libraries.
+See [fast development builds](../development/reference.md#fast-development-builds)
+for PCH/unity options, caching, dependency jobs and measurement limitations.

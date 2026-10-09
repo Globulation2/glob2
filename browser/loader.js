@@ -56,7 +56,10 @@
     await root.Glob2I18n?.initialize();
     const module = root.Module;
     const forced = new URLSearchParams(location.search).get('threads');
-    const reason = forced === 'serial' ? (new URLSearchParams(location.search).get('thread-fallback') || 'serial requested') : await threadingSupport(module.renderer);
+    const available = root.Glob2BuildVariants || ['serial', 'threaded'];
+    if (forced === 'serial' && !available.includes('serial')) throw new Error('This development build includes only the threaded runtime');
+    const reason = !available.includes('threaded') ? 'serial development build' : forced === 'serial' ? (new URLSearchParams(location.search).get('thread-fallback') || 'serial requested') : await threadingSupport(module.renderer);
+    if (reason && !available.includes('serial')) throw new Error('Threaded development runtime unavailable: ' + reason);
     module.executionMode = reason ? 'serial' : 'threaded';
     module.threadFallback = reason;
     let stopWatching = () => {};
@@ -64,6 +67,11 @@
     const fallback = reason => {
       if (module.executionMode !== 'threaded' || module.glob2ApplicationStarted) return false;
       if (fallingBack) return true;
+      if (!available.includes('serial')) {
+        stopWatching();
+        abort?.('Threaded development runtime unavailable: ' + reason);
+        return true;
+      }
       fallingBack = true;
       stopWatching();
       const url = new URL(location.href);
