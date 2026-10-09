@@ -22,6 +22,12 @@ ephemeral ports with its own .env and instance.yaml, and checks:
      the verify-match job judges it, and both ratings change;
 
 then tears the project down with its volumes. Python standard library only.
+On AppArmor hosts, load the Compose profiles before starting the smoke test:
+
+  sudo apparmor_parser -r deploy/security/glob2-engine.apparmor
+  sudo apparmor_parser -r deploy/security/glob2-ai-music.apparmor
+
+The hosted CI job loads these scoped profiles; it retains container confinement.
 
   python3 test/deployment/platform_stack_smoke.py [--no-build] [--keep] [--log-dir DIR]
 
