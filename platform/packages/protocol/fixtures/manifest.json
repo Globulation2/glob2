@@ -72,6 +72,11 @@
     "GeneratorSample": "schemas/GeneratorSample.schema.json",
     "GeneratorSettings": "schemas/GeneratorSettings.schema.json",
     "GeneratorSocialResult": "schemas/GeneratorSocialResult.schema.json",
+    "GeneratorStudioCommand": "schemas/GeneratorStudioCommand.schema.json",
+    "GeneratorStudioConfig": "schemas/GeneratorStudioConfig.schema.json",
+    "GeneratorStudioCreate": "schemas/GeneratorStudioCreate.schema.json",
+    "GeneratorStudioRun": "schemas/GeneratorStudioRun.schema.json",
+    "GeneratorStudioSave": "schemas/GeneratorStudioSave.schema.json",
     "GeneratorUpload": "schemas/GeneratorUpload.schema.json",
     "GeneratorValidationReport": "schemas/GeneratorValidationReport.schema.json",
     "GeneratorVersion": "schemas/GeneratorVersion.schema.json",
@@ -264,6 +269,37 @@
     "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
   },
   "fixtures": [
+    {
+      "file": "valid/GeneratorStudioCreate/starter.json",
+      "schema": "GeneratorStudioCreate",
+      "valid": true,
+      "note": "Create a generator Studio project with its working starter."
+    },
+    {
+      "file": "valid/GeneratorStudioSave/incomplete-manifest.json",
+      "schema": "GeneratorStudioSave",
+      "valid": true,
+      "note": "Both editable files persist atomically, including incomplete manifest JSON."
+    },
+    {
+      "file": "valid/GeneratorStudioCommand/bounded-edit.json",
+      "schema": "GeneratorStudioCommand",
+      "valid": true,
+      "note": "A revision-checked coding request reserves no more than its cap."
+    },
+    {
+      "file": "valid/GeneratorStudioRun/seeded-preview.json",
+      "schema": "GeneratorStudioRun",
+      "valid": true,
+      "note": "Freeze one exact seed and settings for a local preview."
+    },
+    {
+      "file": "invalid/GeneratorStudioRun/no-inline-package.json",
+      "schema": "GeneratorStudioRun",
+      "valid": false,
+      "stage": "schema",
+      "note": "Runs select a stored revision; clients cannot replace its package."
+    },
     {
       "file": "valid/AiStudioCreate/starter.json",
       "schema": "AiStudioCreate",

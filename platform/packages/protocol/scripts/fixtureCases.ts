@@ -731,6 +731,57 @@ const AI_INFO = {
 
 export const fixtureCases: FixtureCase[] = [
   {
+    schema: 'GeneratorStudioCreate',
+    name: 'starter',
+    valid: true,
+    note: 'Create a generator Studio project with its working starter.',
+    value: { title: 'My landscape' },
+  },
+  {
+    schema: 'GeneratorStudioSave',
+    name: 'incomplete-manifest',
+    valid: true,
+    note: 'Both editable files persist atomically, including incomplete manifest JSON.',
+    value: { expectedRevision: 1, source: JSON.stringify({ manifest: '{', script: '' }) },
+  },
+  {
+    schema: 'GeneratorStudioCommand',
+    name: 'bounded-edit',
+    valid: true,
+    note: 'A revision-checked coding request reserves no more than its cap.',
+    value: { id: JOB_ID, expectedRevision: 1, text: 'Add a river', budget: 100 },
+  },
+  {
+    schema: 'GeneratorStudioRun',
+    name: 'seeded-preview',
+    valid: true,
+    note: 'Freeze one exact seed and settings for a local preview.',
+    value: {
+      id: JOB_ID,
+      expectedRevision: 1,
+      settings: {
+        seed: 19,
+        params: { width: 7, height: 7, teams: 4, workers: 4 },
+        candidates: 1,
+        startingUnitLevel: 0,
+      },
+    },
+  },
+  {
+    schema: 'GeneratorStudioRun',
+    name: 'no-inline-package',
+    valid: false,
+    stage: 'schema',
+    note: 'Runs select a stored revision; clients cannot replace its package.',
+    value: {
+      id: JOB_ID,
+      expectedRevision: 1,
+      source: '{}',
+      settings: { seed: 19, params: {}, candidates: 1, startingUnitLevel: 0 },
+    },
+  },
+
+  {
     schema: 'AiStudioCreate',
     name: 'starter',
     valid: true,

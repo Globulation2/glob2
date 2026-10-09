@@ -1,13 +1,14 @@
 // AI Studio's ephemeral browser host. The generated AI is interpreted by Glob2,
 // never evaluated by the web page. This bridge accepts one launch per document.
 (function (root) {
+  const bridge =
+    root.glob2StudioEnvelope ||
+    (typeof require === "function" ? require("./studio-envelope.js") : null);
   const MAP_HASH =
     "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39";
   function validLaunch(m, run, revision) {
     return (
-      m &&
-      m.channel === "glob2-ai-studio" &&
-      m.version === 1 &&
+      bridge.envelope(m, "glob2-ai-studio", run, revision) &&
       m.type === "launch" &&
       m.runId === run &&
       m.revision === revision &&
@@ -43,14 +44,7 @@
   launch.catch(() => {});
   function send(type, data = {}) {
     root.parent.postMessage(
-      {
-        channel: "glob2-ai-studio",
-        version: 1,
-        runId: run,
-        revision,
-        type,
-        ...data,
-      },
+      bridge.message("glob2-ai-studio", run, revision, type, data),
       root.location.origin,
     );
   }

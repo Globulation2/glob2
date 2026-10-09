@@ -60,7 +60,7 @@ export async function analyticsRoutes(app: FastifyInstance, identity: Identity) 
       const attention = (
         await sql<{ reports: number; uncertain: number; failedJobs: number }>`SELECT
        (SELECT count(*)::int FROM map_reports WHERE status='open')+(SELECT count(*)::int FROM ai_reports WHERE status='open')+(SELECT count(*)::int FROM building_reports WHERE NOT resolved)+(SELECT count(*)::int FROM set_reports WHERE NOT resolved)+(SELECT count(*)::int FROM colony_skin_reports WHERE resolution IS NULL)+(SELECT count(*)::int FROM music_reports WHERE NOT resolved) AS reports,
-       (SELECT count(*)::int FROM studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM music_studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM terrain_studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM building_studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM ai_studio_calls WHERE status='uncertain')+(SELECT count(*)::int FROM hive_calls WHERE status='uncertain') AS uncertain,
+       (SELECT count(*)::int FROM studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM music_studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM terrain_studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM building_studio_requests WHERE status='uncertain')+(SELECT count(*)::int FROM generator_studio_calls WHERE status='uncertain')+(SELECT count(*)::int FROM ai_studio_calls WHERE status='uncertain')+(SELECT count(*)::int FROM hive_calls WHERE status='uncertain') AS uncertain,
        (SELECT count(*)::int FROM engine_jobs WHERE status='failed') AS "failedJobs"`.execute(db)
       ).rows[0] ?? { reports: 0, uncertain: 0, failedJobs: 0 };
       return {

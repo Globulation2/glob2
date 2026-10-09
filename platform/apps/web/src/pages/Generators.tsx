@@ -53,6 +53,9 @@ export function Generators({ mine = false }: { mine?: boolean }) {
         {' · '}
         <Link to="/generators/mine">My generators</Link>
         {' · '}
+        <Link className="btn" to="/generator-studio">
+          Create with AI
+        </Link>
         <Link className="btn primary" to="/generators/new">
           Share a generator
         </Link>
@@ -284,6 +287,16 @@ export function GeneratorPage({ id }: { id: string }) {
             {detail.viewer.owner && (
               <>
                 <Link to={'/generators/' + id + '/new'}>Publish a new release</Link>
+                <Link
+                  to={
+                    '/generator-studio?version=' +
+                    detail.generator.latestVersion.id +
+                    '&library=' +
+                    id
+                  }
+                >
+                  Edit in Generator Studio
+                </Link>
                 <label className="field">
                   Visibility
                   <select

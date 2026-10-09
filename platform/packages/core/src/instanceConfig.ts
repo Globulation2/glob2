@@ -10,6 +10,7 @@ import {
   TerrainStudioConfig,
   BuildingAiStudioConfig,
   AiStudioConfig,
+  GeneratorStudioConfig,
   Strict,
 } from '@glob2/protocol';
 
@@ -137,6 +138,7 @@ export const InstanceConfig = Strict({
   terrainStudio: Type.Optional(TerrainStudioConfig),
   buildingStudio: Type.Optional(BuildingAiStudioConfig),
   aiStudio: Type.Optional(AiStudioConfig),
+  generatorStudio: Type.Optional(GeneratorStudioConfig),
   name: Type.String({ minLength: 1, maxLength: 128 }),
   guests: Strict({ enabled: Type.Boolean() }),
   auth: Strict({

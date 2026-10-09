@@ -114,12 +114,14 @@ export function StudioWorkspace({
   attention,
   focusChat,
   result,
+  onArtifactHidden,
 }: {
   conversation: ReactNode;
   artifact: ReactNode;
   attention?: string;
   focusChat?: number;
   result?: { id: string; status: 'ready' | 'failed'; text?: string };
+  onArtifactHidden?: () => void;
 }) {
   const { account } = useSession();
   const key = `studio-split:${account?.id ?? 'anonymous'}`;
@@ -164,6 +166,9 @@ export function StudioWorkspace({
     }
   }, [focusChat]);
   const narrow = width < 760;
+  useEffect(() => {
+    if (narrow && pane !== 'preview') onArtifactHidden?.();
+  }, [narrow, pane, onArtifactHidden]);
   if ((!narrow || pane === 'preview') && seenResult !== result?.id) {
     setSeenResult(result?.id);
   }

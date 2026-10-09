@@ -398,6 +398,58 @@ const typedColumns: ColumnLists = {
     'reversed',
     'created_at',
   ],
+  generator_studio_projects: ['id', 'account_id', 'title', 'revision', 'created_at', 'updated_at'],
+  generator_studio_revisions: ['project_id', 'revision', 'source', 'hash', 'reason', 'created_at'],
+  generator_studio_requests: [
+    'completed_at',
+    'id',
+    'project_id',
+    'base_revision',
+    'prompt',
+    'diagnostics',
+    'budget',
+    'status',
+    'response',
+    'error',
+    'cancelled',
+    'lease_until',
+    'created_at',
+    'provider_result',
+  ],
+  generator_studio_events: ['id', 'project_id', 'request_id', 'kind', 'body', 'created_at'],
+  generator_studio_runs: [
+    'id',
+    'project_id',
+    'revision',
+    'settings',
+    'source_hash',
+    'summary',
+    'created_at',
+  ],
+  generator_studio_wallets: ['account_id', 'balance', 'reserved'],
+  generator_studio_calls: [
+    'completed_at',
+    'id',
+    'account_id',
+    'reserved',
+    'status',
+    'charged',
+    'rate',
+    'usage',
+    'created_at',
+  ],
+  generator_studio_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  generator_studio_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
+  generator_studio_checks: ['project_id', 'revision', 'upload_id'],
   generator_ids: ['manifest_id', 'generator_id'],
   generators: [
     'id',
@@ -1484,6 +1536,7 @@ describe('migrations', () => {
         '0055_admin_finances',
         '0056_admin_rollup_state',
         '0057_generator_library',
+        '0058_generator_studio',
       ]);
       expect(
         (
@@ -1553,7 +1606,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(36);
+      expect(upgraded).toHaveLength(37);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1705,6 +1758,7 @@ describe('migrations', () => {
         ['0055_admin_finances', 'Success'],
         ['0056_admin_rollup_state', 'Success'],
         ['0057_generator_library', 'Success'],
+        ['0058_generator_studio', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1853,6 +1907,7 @@ describe('migrations', () => {
         ['0055_admin_finances', 'Success'],
         ['0056_admin_rollup_state', 'Success'],
         ['0057_generator_library', 'Success'],
+        ['0058_generator_studio', 'Success'],
       ]);
       expect(
         await db

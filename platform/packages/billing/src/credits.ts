@@ -71,6 +71,11 @@ export const CREDIT_PRODUCTS = {
     path: 'music-studio',
     insufficient: 'Your music studio needs more credits.',
   },
+  generatorStudio: {
+    prefix: 'generator_studio',
+    path: 'generator-studio',
+    insufficient: 'Your Generator Studio needs more credits.',
+  },
   aiStudio: {
     prefix: 'ai_studio',
     path: 'ai-studio',

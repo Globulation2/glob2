@@ -11,6 +11,7 @@
     "SimulationReadPhase/*",
     "*Script*/*",
     "ScriptGenerator/*",
+    "MapPreview/generator Studio*",
     "AITelemetryUI/*",
     "SettingsAILibrary/*",
     "*Stream*/*",

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorStudioConfig",
+  "title": "GeneratorStudioConfig",
+  "type": "object",
+  "required": [
+    "enabled",
+    "maxRequestCredits",
+    "maxOutputTokens"
+  ],
+  "properties": {
+    "enabled": {
+      "type": "boolean"
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "rate": {
+      "type": "object",
+      "required": [
+        "version",
+        "input",
+        "cachedInput",
+        "output"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "input": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000000
+        },
+        "cachedInput": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "cacheWrite": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000000000
+        },
+        "output": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000000
+        }
+      },
+      "additionalProperties": false
+    },
+    "salesEnabled": {
+      "type": "boolean"
+    },
+    "packs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "priceId",
+          "credits",
+          "amount",
+          "currency"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "priceId": {
+            "type": "string",
+            "pattern": "^price_"
+          },
+          "credits": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000000
+          },
+          "amount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000000
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[a-z]{3}$"
+          }
+        },
+        "additionalProperties": false
+      },
+      "maxItems": 16
+    },
+    "maxRequestCredits": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000000
+    },
+    "maxOutputTokens": {
+      "type": "integer",
+      "minimum": 1024,
+      "maximum": 32768
+    }
+  },
+  "additionalProperties": false
+}

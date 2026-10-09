@@ -5,6 +5,41 @@ Globulation 2's existing native map toolkit. Generated worlds are ordinary maps;
 playing, saving or transferring one does not require the generator package.
 Native generators retain their IDs and remain the default catalog.
 
+## Generator Studio
+
+The opt-in web workspace at `/generator-studio` combines conversation, JavaScript
+and manifest editing, immutable private revisions, and engine previews. Start with
+a playable Swamp example with a fresh identity, or import a portable package. V1
+supports exactly one JavaScript module; imports preserve the manifest and entry
+filename and reject packages with additional modules. The native package format
+still supports multiple modules.
+
+Both files form one revision and one assistant replacement. Invalid manifest JSON
+remains editable and recoverable; syntax hints do not establish engine validity.
+Code and Changes select either file, and restoring or undoing an assistant edit
+creates another immutable project revision. Project revision numbers are separate
+from the manifest's increasing release revision.
+
+Generate freezes the saved revision and settings in the browser engine. Defaults
+are seed 19, 128 × 128 tiles, four colonies and four starting workers. Manifest
+controls augment the shared settings; dimensions display tiles and travel as the
+existing width/height exponents. Changing controls requires another Generate.
+Reports include package identity, engine/simulation version, duration, refusals
+and bounded telemetry. Watch AI play starts Nicowar colonies from that exact world
+with spectator camera, pause and speed controls. Editor-only terrain can be
+previewed but cannot be playtested. Closing or replacing the preview ends its
+temporary-profile host.
+
+Run checks explicitly submits the saved package to the isolated Generator Library
+validator. Reports stay bound to their revision and can be supplied to chat for a
+requested repair; the assistant cannot run tests or claim unsupplied results.
+Download exports the portable package. An invalid manifest instead downloads a
+Studio recovery draft containing both editable files; import that draft to resume
+repairing its JSON. Publish uses the existing library rules:
+a matching, valid, unexpired upload receipt, identity ownership, increasing
+manifest revision, licensing and immutable releases. Browser results are local
+development diagnostics and never authorize publication.
+
 ## Author and run
 
 An authoring directory contains `manifest.json`, `generator.js`, and optional `.js`

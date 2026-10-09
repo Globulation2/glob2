@@ -188,6 +188,10 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   await page.route('**/play/studio.html?*', (r) =>
     r.fulfill({
       contentType: 'text/html',
+      headers: {
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+        'Cross-Origin-Resource-Policy': 'same-origin',
+      },
       body: `<html><body style="background:#213d29;color:white"><h2>Live colony test</h2><script>const q=new URLSearchParams(location.search),base={channel:'glob2-ai-studio',version:1,runId:q.get('run'),revision:Number(q.get('revision'))};addEventListener('message',e=>{if(e.data.type==='launch')parent.postMessage({...base,type:'progress',tick:100},location.origin);});parent.postMessage({...base,type:'ready'},location.origin);</script></body></html>`,
     }),
   );

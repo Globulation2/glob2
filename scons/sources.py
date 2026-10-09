@@ -570,6 +570,7 @@ CLIENT_SOURCES = (
     'game/screens/GameLoadScreen.cpp',
     'ui/screens/FileImport.cpp',
     'game/screens/SinglePlayerFlow.cpp',
+    'game/screens/GeneratorStudioScreen.cpp',
     'net/lan/screens/LANSessionScreen.cpp',
     'net/lan/LanClient.cpp',
     'net/lan/LanHost.cpp',

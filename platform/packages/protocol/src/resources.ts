@@ -216,6 +216,7 @@ export const AccountExport = Open(
         programs: ExportRows,
       }),
     ),
+    generatorStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     aiStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     mapStudio: Type.Optional(
       Open({

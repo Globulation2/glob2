@@ -6,6 +6,7 @@ export const PRODUCT_NAMES: Readonly<Record<string, string>> = {
   terrain: 'Terrain Studio',
   buildings: 'Building Studio',
   aiStudio: 'AI Studio',
+  generatorStudio: 'Generator Studio',
   hive: 'Hive',
   engine: 'Engine jobs',
 };

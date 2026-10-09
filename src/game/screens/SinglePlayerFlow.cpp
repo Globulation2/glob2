@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SinglePlayerFlow.h"
+#include "GeneratorStudioScreen.h"
 #include "Engine.h"
 #include "CustomGameScreen.h"
 #include "ChooseMapScreen.h"
@@ -32,7 +33,7 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repea
 							 });
 			else if (result == 2)
 			{
-                if (std::getenv("GLOB2_STUDIO_PLAYTEST"))
+                if (std::getenv("GLOB2_STUDIO_PLAYTEST") || std::getenv("GLOB2_GENERATOR_STUDIO"))
                     GAGCore::ApplicationHost::studioError(
                         static_cast<GameLoadScreen &>(screen).failureMessage());
 				auto &strings = *GAGCore::Toolkit::getStringTable();
@@ -131,4 +132,19 @@ void SinglePlayerFlow::studio()
         header.setAIConfig(0, Script::config(source, Script::inspectAI(source).apiVersion));
         co_return co_await engine.initCustomTask(map, header, 0, -1, path);
     }, false);
+}
+
+void SinglePlayerFlow::generatorStudio()
+{
+	screens.push(std::make_unique<GeneratorStudioScreen>(),
+				 [this](GAGGUI::Screen &screen, int result)
+				 {
+					 if (result != 1)
+						 return;
+					 auto &preview = static_cast<GeneratorStudioScreen &>(screen);
+					 auto bytes = preview.snapshot;
+					 launch([map = preview.map, players = preview.players, bytes](Engine &engine)
+							{ return engine.initCustomFromBytesTask(map, players, 0, -1, bytes); },
+							false, bytes);
+				 });
 }
