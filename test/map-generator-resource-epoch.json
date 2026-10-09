@@ -28,6 +28,33 @@
         "topology": 8061784440331878678,
         "full": 251410384669209409
       }
+    },
+    "macos-arm64": {
+      "canals": {
+        "historical_full": 16622643961647829752,
+        "topology": 6348996818089081022,
+        "full": 6840133876837962579
+      },
+      "caravanserai": {
+        "historical_full": 6244602504248136250,
+        "topology": 3089921906549973481,
+        "full": 3708140998014682865
+      },
+      "fingerprint": {
+        "historical_full": 15850274609968439542,
+        "topology": 12595387656138280966,
+        "full": 9431081131420941301
+      },
+      "honeycomb-isle": {
+        "historical_full": 5908701397362810997,
+        "topology": 10716426061597934434,
+        "full": 3103427619339799392
+      },
+      "maze": {
+        "historical_full": 6132248727033081699,
+        "topology": 8061784440331878678,
+        "full": 251410384669209409
+      }
     }
   },
   "portable_topology": {
