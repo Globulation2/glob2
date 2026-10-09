@@ -465,7 +465,7 @@ void PreparedCoverage::prepareBorders(const Catalog &c, const Recipe &r)
 		// Zero displacement and slope at the endpoints keep their guided tangent.
 		const float taper = std::min(1.f, 64 * t*t*u*u);
 		const float window = taper * taper * (3 - 2 * taper);
-		const float displacement = detail * window *
+		const float displacement = .7f * detail * window *
 			(9.f * scallop(t, 3, 0) + 6.f * scallop(t, 5, 1) + 1.2f * scallop(t, 9, 2));
 		if (vertical) p.x += displacement;
 		else p.y += displacement;
