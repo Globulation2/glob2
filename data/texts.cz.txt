@@ -5967,32 +5967,32 @@ Znovu náhodně zvolit vzhled terénu
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Generátory map
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importujte balíček generátoru a poté při vytváření mapy nebo hry vyberte jeho krajinu.
 [settings Import map generator]
-Import map generator
+Importovat generátor map
 [settings No custom map generators installed.]
-No custom map generators installed.
+Nejsou nainstalovány žádné vlastní generátory map.
 [settings Replace package]
-Replace package
+Nahradit balíček
 [settings Export package]
-Export package
+Exportovat balíček
 [settings Remove generator]
-Remove generator
+Odstranit generátor
 [settings Saving generator library…]
-Saving generator library…
+Ukládání knihovny generátorů…
 [settings Could not read generator package.]
-Could not read generator package.
+Balíček generátoru se nepodařilo přečíst.
 [settings Generator library saved.]
-Generator library saved.
+Knihovna generátorů byla uložena.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Data se nepodařilo uložit. Předchozí knihovna zůstává zachována.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Čekání na výběr souboru nebo uložení…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Výběr souboru není dostupný.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Export balíčků není dostupný.
 [stat band area upkeep]
 Údržba oblasti

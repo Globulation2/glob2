@@ -5967,32 +5967,32 @@ CPU %0%
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Γεννήτριες χαρτών
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Εισαγάγετε ένα πακέτο γεννήτριας και επιλέξτε το τοπίο του κατά τη δημιουργία χάρτη ή παιχνιδιού.
 [settings Import map generator]
-Import map generator
+Εισαγωγή γεννήτριας χαρτών
 [settings No custom map generators installed.]
-No custom map generators installed.
+Δεν έχουν εγκατασταθεί προσαρμοσμένες γεννήτριες χαρτών.
 [settings Replace package]
-Replace package
+Αντικατάσταση πακέτου
 [settings Export package]
-Export package
+Εξαγωγή πακέτου
 [settings Remove generator]
-Remove generator
+Αφαίρεση γεννήτριας
 [settings Saving generator library…]
-Saving generator library…
+Αποθήκευση βιβλιοθήκης γεννητριών…
 [settings Could not read generator package.]
-Could not read generator package.
+Δεν ήταν δυνατή η ανάγνωση του πακέτου γεννήτριας.
 [settings Generator library saved.]
-Generator library saved.
+Η βιβλιοθήκη γεννητριών αποθηκεύτηκε.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Δεν ήταν δυνατή η αποθήκευση των δεδομένων. Η προηγούμενη βιβλιοθήκη διατηρείται.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Αναμονή για επιλογή αρχείου ή αποθήκευση…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Η επιλογή αρχείου δεν είναι διαθέσιμη.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Η εξαγωγή πακέτων δεν είναι διαθέσιμη.
 [stat band area upkeep]
 Συντήρηση περιοχής

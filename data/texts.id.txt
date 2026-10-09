@@ -5967,32 +5967,32 @@ Acak ulang tampilan medan
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Generator peta
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Impor paket generator, lalu pilih bentang alamnya saat membuat peta atau permainan.
 [settings Import map generator]
-Import map generator
+Impor generator peta
 [settings No custom map generators installed.]
-No custom map generators installed.
+Belum ada generator peta khusus yang terpasang.
 [settings Replace package]
-Replace package
+Ganti paket
 [settings Export package]
-Export package
+Ekspor paket
 [settings Remove generator]
-Remove generator
+Hapus generator
 [settings Saving generator library…]
-Saving generator library…
+Menyimpan pustaka generator…
 [settings Could not read generator package.]
-Could not read generator package.
+Tidak dapat membaca paket generator.
 [settings Generator library saved.]
-Generator library saved.
+Pustaka generator disimpan.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Data tidak dapat disimpan. Pustaka sebelumnya dipertahankan.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Menunggu pemilihan berkas atau penyimpanan…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Pemilihan berkas tidak tersedia.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Ekspor paket tidak tersedia.
 [stat band area upkeep]
 Pemeliharaan area

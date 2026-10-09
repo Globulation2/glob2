@@ -5967,32 +5967,32 @@ Ausaz aukeratu berriro lurraren itxura
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Mapa-sortzaileak
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Inportatu sortzaile-pakete bat, eta hautatu haren paisaia mapa edo partida bat sortzean.
 [settings Import map generator]
-Import map generator
+Inportatu mapa-sortzailea
 [settings No custom map generators installed.]
-No custom map generators installed.
+Ez dago mapa-sortzaile pertsonalizaturik instalatuta.
 [settings Replace package]
-Replace package
+Ordeztu paketea
 [settings Export package]
-Export package
+Esportatu paketea
 [settings Remove generator]
-Remove generator
+Kendu sortzailea
 [settings Saving generator library…]
-Saving generator library…
+Sortzaileen liburutegia gordetzen…
 [settings Could not read generator package.]
-Could not read generator package.
+Ezin izan da sortzaile-paketea irakurri.
 [settings Generator library saved.]
-Generator library saved.
+Sortzaileen liburutegia gorde da.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Ezin izan dira datuak gorde. Aurreko liburutegia mantendu da.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Fitxategia hautatzeko edo gordetzeko zain…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Fitxategiak hautatzea ez dago erabilgarri.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Paketeak esportatzea ez dago erabilgarri.
 [stat band area upkeep]
 Eremuaren mantentzea

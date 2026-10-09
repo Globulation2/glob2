@@ -5967,32 +5967,32 @@ FFmpeg није доступан, па је снимање искључено. �
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Генератори мапа
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Увезите пакет генератора, а затим изаберите његов предео при прављењу мапе или игре.
 [settings Import map generator]
-Import map generator
+Увези генератор мапа
 [settings No custom map generators installed.]
-No custom map generators installed.
+Нема инсталираних прилагођених генератора мапа.
 [settings Replace package]
-Replace package
+Замени пакет
 [settings Export package]
-Export package
+Извези пакет
 [settings Remove generator]
-Remove generator
+Уклони генератор
 [settings Saving generator library…]
-Saving generator library…
+Чување библиотеке генератора…
 [settings Could not read generator package.]
-Could not read generator package.
+Није могуће прочитати пакет генератора.
 [settings Generator library saved.]
-Generator library saved.
+Библиотека генератора је сачувана.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Није могуће сачувати податке. Претходна библиотека је задржана.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Чекање на избор датотеке или чување…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Избор датотека није доступан.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Извоз пакета није доступан.
 [stat band area upkeep]
 Одржавање области

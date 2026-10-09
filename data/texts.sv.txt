@@ -5967,32 +5967,32 @@ Slumpa terrängens utseende igen
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Kartgeneratorer
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importera ett generatorpaket och välj sedan dess landskap när du skapar en karta eller ett spel.
 [settings Import map generator]
-Import map generator
+Importera kartgenerator
 [settings No custom map generators installed.]
-No custom map generators installed.
+Inga anpassade kartgeneratorer är installerade.
 [settings Replace package]
-Replace package
+Ersätt paket
 [settings Export package]
-Export package
+Exportera paket
 [settings Remove generator]
-Remove generator
+Ta bort generator
 [settings Saving generator library…]
-Saving generator library…
+Sparar generatorbiblioteket…
 [settings Could not read generator package.]
-Could not read generator package.
+Kunde inte läsa generatorpaketet.
 [settings Generator library saved.]
-Generator library saved.
+Generatorbiblioteket har sparats.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Kunde inte spara data. Det tidigare biblioteket behålls.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Väntar på filval eller lagring…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Filval är inte tillgängligt.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Paketexport är inte tillgänglig.
 [stat band area upkeep]
 Områdesunderhåll

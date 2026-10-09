@@ -5967,32 +5967,32 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [set library artwork]
 
 [settings Map generators]
-Map generators
+مولدات الخرائط
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+استورد حزمة مولد، ثم اختر تضاريسها عند إنشاء خريطة أو لعبة.
 [settings Import map generator]
-Import map generator
+استيراد مولد خرائط
 [settings No custom map generators installed.]
-No custom map generators installed.
+لا توجد مولدات خرائط مخصصة مثبتة.
 [settings Replace package]
-Replace package
+استبدال الحزمة
 [settings Export package]
-Export package
+تصدير الحزمة
 [settings Remove generator]
-Remove generator
+إزالة المولد
 [settings Saving generator library…]
-Saving generator library…
+جارٍ حفظ مكتبة المولدات…
 [settings Could not read generator package.]
-Could not read generator package.
+تعذرت قراءة حزمة المولد.
 [settings Generator library saved.]
-Generator library saved.
+تم حفظ مكتبة المولدات.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+تعذر حفظ البيانات. تم الاحتفاظ بالمكتبة السابقة.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+في انتظار اختيار الملف أو التخزين…
 [settings File selection is unavailable.]
-File selection is unavailable.
+اختيار الملفات غير متاح.
 [settings Package export is unavailable.]
-Package export is unavailable.
+تصدير الحزم غير متاح.
 [stat band area upkeep]
 صيانة المنطقة

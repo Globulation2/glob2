@@ -5967,32 +5967,32 @@ Vælg terrænets udseende tilfældigt igen
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Kortgeneratorer
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importér en generatorpakke, og vælg derefter dens landskab, når du opretter et kort eller et spil.
 [settings Import map generator]
-Import map generator
+Importér kortgenerator
 [settings No custom map generators installed.]
-No custom map generators installed.
+Ingen brugerdefinerede kortgeneratorer er installeret.
 [settings Replace package]
-Replace package
+Erstat pakke
 [settings Export package]
-Export package
+Eksportér pakke
 [settings Remove generator]
-Remove generator
+Fjern generator
 [settings Saving generator library…]
-Saving generator library…
+Gemmer generatorbiblioteket…
 [settings Could not read generator package.]
-Could not read generator package.
+Kunne ikke læse generatorpakken.
 [settings Generator library saved.]
-Generator library saved.
+Generatorbiblioteket er gemt.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Kunne ikke gemme data. Det tidligere bibliotek bevares.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Venter på filvalg eller lagring…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Filvalg er ikke tilgængeligt.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Pakkeeksport er ikke tilgængelig.
 [stat band area upkeep]
 Områdevedligeholdelse

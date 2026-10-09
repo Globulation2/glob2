@@ -5967,32 +5967,32 @@ Chọn lại ngẫu nhiên diện mạo địa hình
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Trình tạo bản đồ
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Nhập gói trình tạo, rồi chọn địa hình của gói khi tạo bản đồ hoặc trò chơi.
 [settings Import map generator]
-Import map generator
+Nhập trình tạo bản đồ
 [settings No custom map generators installed.]
-No custom map generators installed.
+Chưa cài đặt trình tạo bản đồ tùy chỉnh nào.
 [settings Replace package]
-Replace package
+Thay thế gói
 [settings Export package]
-Export package
+Xuất gói
 [settings Remove generator]
-Remove generator
+Xóa trình tạo
 [settings Saving generator library…]
-Saving generator library…
+Đang lưu thư viện trình tạo…
 [settings Could not read generator package.]
-Could not read generator package.
+Không thể đọc gói trình tạo.
 [settings Generator library saved.]
-Generator library saved.
+Đã lưu thư viện trình tạo.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Không thể lưu dữ liệu. Thư viện trước đó được giữ nguyên.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Đang chờ chọn tệp hoặc lưu trữ…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Không thể sử dụng chức năng chọn tệp.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Không thể sử dụng chức năng xuất gói.
 [stat band area upkeep]
 Duy trì khu vực

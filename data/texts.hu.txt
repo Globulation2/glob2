@@ -5967,32 +5967,32 @@ Terep megjelenésének újrasorsolása
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Térképgenerátorok
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importálj egy generátorcsomagot, majd térkép vagy játék létrehozásakor válaszd ki a hozzá tartozó tájat.
 [settings Import map generator]
-Import map generator
+Térképgenerátor importálása
 [settings No custom map generators installed.]
-No custom map generators installed.
+Nincsenek telepített egyéni térképgenerátorok.
 [settings Replace package]
-Replace package
+Csomag cseréje
 [settings Export package]
-Export package
+Csomag exportálása
 [settings Remove generator]
-Remove generator
+Generátor eltávolítása
 [settings Saving generator library…]
-Saving generator library…
+Generátorkönyvtár mentése…
 [settings Could not read generator package.]
-Could not read generator package.
+Nem sikerült beolvasni a generátorcsomagot.
 [settings Generator library saved.]
-Generator library saved.
+A generátorkönyvtár mentve.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Nem sikerült menteni az adatokat. A korábbi könyvtár megmarad.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Várakozás fájlválasztásra vagy mentésre…
 [settings File selection is unavailable.]
-File selection is unavailable.
+A fájlválasztás nem érhető el.
 [settings Package export is unavailable.]
-Package export is unavailable.
+A csomagexportálás nem érhető el.
 [stat band area upkeep]
 Terület fenntartása

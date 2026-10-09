@@ -5967,32 +5967,32 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [set library artwork]
 
 [settings Map generators]
-Map generators
+مولدهای نقشه
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+بستهٔ مولد را وارد کنید، سپس هنگام ساخت نقشه یا بازی، چشم‌انداز آن را انتخاب کنید.
 [settings Import map generator]
-Import map generator
+وارد کردن مولد نقشه
 [settings No custom map generators installed.]
-No custom map generators installed.
+هیچ مولد نقشهٔ سفارشی نصب نشده است.
 [settings Replace package]
-Replace package
+جایگزینی بسته
 [settings Export package]
-Export package
+صدور بسته
 [settings Remove generator]
-Remove generator
+حذف مولد
 [settings Saving generator library…]
-Saving generator library…
+در حال ذخیرهٔ کتابخانهٔ مولدها…
 [settings Could not read generator package.]
-Could not read generator package.
+خواندن بستهٔ مولد ممکن نشد.
 [settings Generator library saved.]
-Generator library saved.
+کتابخانهٔ مولدها ذخیره شد.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+ذخیرهٔ داده‌ها ممکن نشد. کتابخانهٔ قبلی حفظ می‌شود.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+در انتظار انتخاب پرونده یا ذخیره‌سازی…
 [settings File selection is unavailable.]
-File selection is unavailable.
+انتخاب پرونده در دسترس نیست.
 [settings Package export is unavailable.]
-Package export is unavailable.
+صدور بسته در دسترس نیست.
 [stat band area upkeep]
 نگهداری منطقه

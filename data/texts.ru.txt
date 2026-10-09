@@ -5967,32 +5967,32 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Генераторы карт
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Импортируйте пакет генератора, затем выберите его ландшафт при создании карты или игры.
 [settings Import map generator]
-Import map generator
+Импортировать генератор карт
 [settings No custom map generators installed.]
-No custom map generators installed.
+Пользовательские генераторы карт не установлены.
 [settings Replace package]
-Replace package
+Заменить пакет
 [settings Export package]
-Export package
+Экспортировать пакет
 [settings Remove generator]
-Remove generator
+Удалить генератор
 [settings Saving generator library…]
-Saving generator library…
+Сохранение библиотеки генераторов…
 [settings Could not read generator package.]
-Could not read generator package.
+Не удалось прочитать пакет генератора.
 [settings Generator library saved.]
-Generator library saved.
+Библиотека генераторов сохранена.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Не удалось сохранить данные. Предыдущая библиотека сохранена.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Ожидание выбора файла или сохранения…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Выбор файла недоступен.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Экспорт пакетов недоступен.
 [stat band area upkeep]
 Содержание области

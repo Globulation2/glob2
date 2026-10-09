@@ -5967,32 +5967,32 @@ Adtresañ neuz an douar
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Geradores de mapas
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importe um pacote de gerador e selecione sua paisagem ao criar um mapa ou uma partida.
 [settings Import map generator]
-Import map generator
+Importar gerador de mapas
 [settings No custom map generators installed.]
-No custom map generators installed.
+Nenhum gerador de mapas personalizado instalado.
 [settings Replace package]
-Replace package
+Substituir pacote
 [settings Export package]
-Export package
+Exportar pacote
 [settings Remove generator]
-Remove generator
+Remover gerador
 [settings Saving generator library…]
-Saving generator library…
+Salvando a biblioteca de geradores…
 [settings Could not read generator package.]
-Could not read generator package.
+Não foi possível ler o pacote de gerador.
 [settings Generator library saved.]
-Generator library saved.
+Biblioteca de geradores salva.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Não foi possível salvar os dados. A biblioteca anterior foi mantida.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Aguardando a seleção de um arquivo ou o armazenamento…
 [settings File selection is unavailable.]
-File selection is unavailable.
+A seleção de arquivos não está disponível.
 [settings Package export is unavailable.]
-Package export is unavailable.
+A exportação de pacotes não está disponível.
 [stat band area upkeep]
 Trezalc’h an takad

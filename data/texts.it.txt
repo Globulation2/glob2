@@ -5967,32 +5967,32 @@ Genera un nuovo aspetto casuale del terreno
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Generatori di mappe
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importa un pacchetto generatore, poi seleziona il suo paesaggio quando crei una mappa o una partita.
 [settings Import map generator]
-Import map generator
+Importa generatore di mappe
 [settings No custom map generators installed.]
-No custom map generators installed.
+Nessun generatore di mappe personalizzato installato.
 [settings Replace package]
-Replace package
+Sostituisci pacchetto
 [settings Export package]
-Export package
+Esporta pacchetto
 [settings Remove generator]
-Remove generator
+Rimuovi generatore
 [settings Saving generator library…]
-Saving generator library…
+Salvataggio della libreria dei generatori…
 [settings Could not read generator package.]
-Could not read generator package.
+Impossibile leggere il pacchetto generatore.
 [settings Generator library saved.]
-Generator library saved.
+Libreria dei generatori salvata.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Impossibile salvare i dati. La libreria precedente viene conservata.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+In attesa della selezione di un file o del salvataggio…
 [settings File selection is unavailable.]
-File selection is unavailable.
+La selezione dei file non è disponibile.
 [settings Package export is unavailable.]
-Package export is unavailable.
+L’esportazione dei pacchetti non è disponibile.
 [stat band area upkeep]
 Mantenimento dell’area

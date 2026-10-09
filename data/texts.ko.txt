@@ -5967,32 +5967,32 @@ AI 원격 측정
 [set library artwork]
 
 [settings Map generators]
-Map generators
+지도 생성기
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+생성기 패키지를 가져온 다음 지도나 게임을 만들 때 해당 지형을 선택하세요.
 [settings Import map generator]
-Import map generator
+지도 생성기 가져오기
 [settings No custom map generators installed.]
-No custom map generators installed.
+설치된 사용자 지정 지도 생성기가 없습니다.
 [settings Replace package]
-Replace package
+패키지 교체
 [settings Export package]
-Export package
+패키지 내보내기
 [settings Remove generator]
-Remove generator
+생성기 제거
 [settings Saving generator library…]
-Saving generator library…
+생성기 라이브러리 저장 중…
 [settings Could not read generator package.]
-Could not read generator package.
+생성기 패키지를 읽을 수 없습니다.
 [settings Generator library saved.]
-Generator library saved.
+생성기 라이브러리를 저장했습니다.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+데이터를 저장할 수 없습니다. 이전 라이브러리는 유지됩니다.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+파일 선택 또는 저장 작업을 기다리는 중…
 [settings File selection is unavailable.]
-File selection is unavailable.
+파일 선택을 사용할 수 없습니다.
 [settings Package export is unavailable.]
-Package export is unavailable.
+패키지 내보내기를 사용할 수 없습니다.
 [stat band area upkeep]
 영역 유지비
