@@ -6010,3 +6010,5 @@ Les règles du scénario ont déterminé le résultat.
 Limite de temps atteinte.
 [outcome reason probability]
 Seuil de probabilité de victoire atteint.
+[Destroy this building?]
+Détruire ce bâtiment ?

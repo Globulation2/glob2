@@ -6010,3 +6010,5 @@ Die Szenarioregeln haben den Ausgang entschieden.
 Zeitlimit erreicht.
 [outcome reason probability]
 Schwellenwert der Siegwahrscheinlichkeit erreicht.
+[Destroy this building?]
+Dieses Gebäude zerstören?

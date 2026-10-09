@@ -6010,3 +6010,5 @@ Senaryo kuralları sonucu belirledi.
 Süre sınırına ulaşıldı.
 [outcome reason probability]
 Kazanma olasılığı eşiğine ulaşıldı.
+[Destroy this building?]
+Bu bina yıkılsın mı?

@@ -19,6 +19,7 @@
 #include "online/SkinDownloads.h"
 #include "render/ColonySkinPreview.h"
 #include "GameGUITouch.h"
+#include "HudUnitConversionIcon.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "LoadSaveDialog.h"
@@ -98,6 +99,7 @@ void GameGUI::init()
 	camera=MapCamera();zoomControlPushed=false;
 	if (!globalContainer->runNoX) Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);
     touch = std::make_unique<GameGUITouch>(*this);
+	unitConversionIcon = std::make_unique<HudUnitConversionIcon>();
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;

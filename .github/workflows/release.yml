@@ -572,7 +572,7 @@ jobs:
           ref: ${{ needs.preflight.outputs.revision }}
       - name: Install dependencies
         run: |
-          brew install cmake freetype libpng jpeg-turbo scons     \
+          brew install cmake freetype libpng jpeg-turbo scons nasm \
             opusfile opus libogg speex boost openssl@3 fribidi pcre libepoxy
       - name: Build application and DMG
         run: |
