@@ -5967,30 +5967,30 @@ Terreinuiterlijk opnieuw loten
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Kaartgeneratoren
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importeer een generatorpakket en selecteer het landschap bij het maken van een kaart of spel.
 [settings Import map generator]
-Import map generator
+Kaartgenerator importeren
 [settings No custom map generators installed.]
-No custom map generators installed.
+Geen aangepaste kaartgeneratoren geïnstalleerd.
 [settings Replace package]
-Replace package
+Pakket vervangen
 [settings Export package]
-Export package
+Pakket exporteren
 [settings Remove generator]
-Remove generator
+Generator verwijderen
 [settings Saving generator library…]
-Saving generator library…
+Generatorbibliotheek opslaan…
 [settings Could not read generator package.]
-Could not read generator package.
+Kan het generatorpakket niet lezen.
 [settings Generator library saved.]
-Generator library saved.
+Generatorbibliotheek opgeslagen.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Kan de gegevens niet opslaan. De vorige bibliotheek blijft behouden.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Wachten op bestandsselectie of opslag…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Bestandsselectie is niet beschikbaar.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Pakketexport is niet beschikbaar.

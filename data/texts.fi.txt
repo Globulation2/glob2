@@ -5967,30 +5967,30 @@ Arvo maaston ulkoasu uudelleen
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Karttageneraattorit
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Tuo generaattoripaketti ja valitse sen maisema luodessasi karttaa tai peliä.
 [settings Import map generator]
-Import map generator
+Tuo karttageneraattori
 [settings No custom map generators installed.]
-No custom map generators installed.
+Mukautettuja karttageneraattoreita ei ole asennettu.
 [settings Replace package]
-Replace package
+Korvaa paketti
 [settings Export package]
-Export package
+Vie paketti
 [settings Remove generator]
-Remove generator
+Poista generaattori
 [settings Saving generator library…]
-Saving generator library…
+Tallennetaan generaattorikirjastoa…
 [settings Could not read generator package.]
-Could not read generator package.
+Generaattoripakettia ei voitu lukea.
 [settings Generator library saved.]
-Generator library saved.
+Generaattorikirjasto tallennettu.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Tietoja ei voitu tallentaa. Aiempi kirjasto säilytetään.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Odotetaan tiedoston valintaa tai tallennusta…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Tiedoston valinta ei ole käytettävissä.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Pakettien vienti ei ole käytettävissä.
