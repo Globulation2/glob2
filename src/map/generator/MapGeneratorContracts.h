@@ -528,7 +528,7 @@ inline void savannahContracts()
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("savannah"));
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(definition.legacyId == 45 && definition.revision == 2);
+	assert(definition.legacyId == 45 && definition.revision == 3);
 	assert(request.option("watering-holes") == 1 && request.option("dry-patches") == 8);
 	GenerationService service;
 	for (auto dimensions : {std::pair{7, 7}, std::pair{7, 8}, std::pair{8, 7}})
@@ -707,7 +707,7 @@ inline void rebuiltLandscapeContracts()
 	{
 		const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf(id));
 		// Glacis fort fixes and Caravanserai seeded desert defaults use revision 3.
-		assert(definition.revision == (std::string(id) == "allotments" ? 2 : 3));
+		assert(definition.revision == (std::string(id) == "allotments" ? 3 : 4));
 		// The supported envelope: square and rectangular maps, one colony to a crowd.
 		for (const auto &[w, h, teams] :
 			 {std::tuple{8, 8, 1}, std::tuple{8, 8, 4}, std::tuple{8, 8, 6}, std::tuple{9, 8, 4},
@@ -820,7 +820,7 @@ inline void honeycombIsleContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
-	assert(definition.legacyId == 53 && definition.revision == 2);
+	assert(definition.legacyId == 53 && definition.revision == 3);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("block-shape") == 2 && request.option("river-width") == 12 &&
@@ -930,7 +930,7 @@ inline void karstTowersContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("karst-towers"));
-	assert(definition.legacyId == 54 && definition.revision == 2);
+	assert(definition.legacyId == 54 && definition.revision == 3);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("tower-spacing") == 16 && request.option("river-width") == 7 &&
@@ -1036,7 +1036,7 @@ inline void karstTowersContracts()
 inline void bajadaContracts()
 {
 	const auto &definition = GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("bajada"));
-	assert(definition.legacyId == 55 && definition.revision == 1);
+	assert(definition.legacyId == 55 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("range-spacing") == 128 && request.option("passes") == 2 &&
@@ -1154,7 +1154,7 @@ inline void evenGroundContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("even-ground"));
-	assert(definition.legacyId == 60 && definition.revision == 2);
+	assert(definition.legacyId == 60 && definition.revision == 3);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("water-share") == 10 && request.option("balance") == 70 &&
@@ -1263,7 +1263,7 @@ inline void marchlandContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("marchland"));
-	assert(definition.legacyId == 61 && definition.revision == 2);
+	assert(definition.legacyId == 61 && definition.revision == 3);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
 	assert(request.option("prizes") == 6 && request.option("march") == 16 &&

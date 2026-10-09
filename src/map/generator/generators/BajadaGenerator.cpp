@@ -1510,7 +1510,7 @@ GeneratorDefinition bajadaDefinition()
 		"bajada",
 		55,
 		"Bajada",
-		1,
+		2,
 		false,
 		{GeneratorControl{"range-spacing", "Range spacing", 128, 256, 16, 128,
 						  ControlGroup::Terrain}

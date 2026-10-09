@@ -737,7 +737,7 @@ GeneratorDefinition spiderWebDefinition()
 		"spider-web",
 		20,
 		"Spider web",
-		2,
+		3,
 		false,
 		// Spokes per colony (more on a web with few colonies); the spacing between capture threads
 		// and every thread's width in tiles; how far the capture threads sag and the share of them

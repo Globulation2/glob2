@@ -488,7 +488,7 @@ GeneratorDefinition hillsDefinition()
 	return {"hills",
 			46,
 			"Hills",
-			7,
+			8,
 			false,
 			{GeneratorControl{"extra-hills", "Unoccupied hills", 0, 4, 1, 0, ControlGroup::Layout}
 				 .withSearchRange(0, 2),

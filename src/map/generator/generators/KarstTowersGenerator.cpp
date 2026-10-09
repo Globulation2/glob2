@@ -1213,7 +1213,7 @@ GeneratorDefinition karstTowersDefinition()
 		"karst-towers",
 		54,
 		"Karst towers",
-		2,
+		3,
 		false,
 		{GeneratorControl{"tower-spacing", "Tower spacing", 14, 32, 2, 16, ControlGroup::Terrain}
 			 .withSearchRange(14, 24),

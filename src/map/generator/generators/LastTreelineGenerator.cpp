@@ -651,7 +651,7 @@ GeneratorDefinition lastTreelineDefinition()
 		"last-treeline",
 		70,
 		"The Last Treeline",
-		3,
+		4,
 		false,
 		{GeneratorControl{"woodland-depth", "Woodland depth", 12, 16, 2, 14, ControlGroup::Layout}
 			 .withSearchRange(12, 16),

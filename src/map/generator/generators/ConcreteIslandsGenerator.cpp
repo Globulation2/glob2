@@ -279,7 +279,7 @@ GeneratorDefinition concreteIslandsDefinition()
 	return {"concrete-islands",
 			5,
 			"Concrete islands",
-			2,
+			3,
 			false,
 			// Channel width is how many steps from a boundary are dug (about two tiles of water per
 			// step beyond 3); extra islands is the number of neutral islands.

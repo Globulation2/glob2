@@ -564,7 +564,7 @@ GeneratorDefinition whoAteTheMapDefinition()
 	return {"who-ate-the-map",
 			66,
 			"Who Ate the Map?",
-			1,
+			2,
 			false,
 			{GeneratorControl::choice("appetite", "Appetite",
 									  {"A Little Nibble", "Hungry", "Who Ate the Map?"}, 1)

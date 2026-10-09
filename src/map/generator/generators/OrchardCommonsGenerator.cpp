@@ -821,7 +821,7 @@ GeneratorDefinition orchardCommonsDefinition()
 	return {"orchard-commons",
 			58,
 			"Orchard Commons",
-			3,
+			4,
 			false,
 			{GeneratorControl::choice("orchard-spacing", "Orchard spacing",
 									  {"Compact", "Balanced", "Spread"}, 1, ControlGroup::Layout)

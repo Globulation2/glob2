@@ -530,7 +530,7 @@ GeneratorDefinition breachableHighlandsDefinition()
 		"breachable-highlands",
 		37,
 		"Breachable highlands",
-		5,
+		6,
 		false,
 		{GeneratorControl{"valley-size", "Valley size", 64, 96, 8, 64, ControlGroup::Layout}
 			 .withSearchRange(64, 80),

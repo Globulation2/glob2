@@ -1323,7 +1323,7 @@ GeneratorDefinition braidedRiverDefinition()
 	return {"braided-river",
 			42,
 			"Braided river",
-			2,
+			3,
 			false,
 			{// The belt of channels and bars as a share of the map's breadth; what is left either
 			 // side is terrace. Below 30 the braid is two threads; above 60 a 128 map has no

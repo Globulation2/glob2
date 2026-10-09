@@ -679,7 +679,7 @@ GeneratorDefinition bastionKeysDefinition()
 		"bastion-keys",
 		68,
 		"Bastion Keys",
-		1,
+		2,
 		false,
 		{GeneratorControl{"home-size", "Home size", 13, 15, 1, 14, ControlGroup::Layout}
 			 .withSearchRange(13, 15),

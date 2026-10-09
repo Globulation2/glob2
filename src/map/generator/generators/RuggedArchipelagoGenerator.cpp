@@ -364,7 +364,7 @@ GeneratorDefinition ruggedArchipelagoDefinition()
 		"rugged-archipelago",
 		8,
 		"Old islands",
-		3,
+		4,
 		false,
 		// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
 		// beach size is the number of beach-widening passes.
