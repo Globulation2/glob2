@@ -1,6 +1,7 @@
 """Source manifests shared by every Glob2 toolchain. Paths are relative to each library."""
 
 CLIENT_SOURCES = (
+    'field/OpenCLGradient.cpp',
     'ai/castor/Control.cpp',
     'ai/castor/GetOrder.cpp',
     'ai/castor/Lifecycle.cpp',

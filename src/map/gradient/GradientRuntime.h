@@ -101,4 +101,17 @@ struct GradientRuntime
 	ResourceSeedCache resourceSeeds;
 	// Shared inert field for materials with no natural or supplier source.
 	std::vector<Uint16> absentMaterialField;
+    std::shared_ptr<gradient_kernel::BackendSession> backendSession = std::make_shared<gradient_kernel::BackendSession>();
+    void shareBackendSession()
+    {
+        for (auto& workspace : workspaces) workspace.propagation.backendSession = backendSession;
+        pipeline.setBackendSession(backendSession);
+    }
+    void resetBackendSession()
+    {
+        backendSession = std::make_shared<gradient_kernel::BackendSession>();
+        shareBackendSession();
+    }
+    GradientRuntime() { shareBackendSession(); }
+
 };

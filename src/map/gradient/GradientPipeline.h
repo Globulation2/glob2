@@ -62,6 +62,7 @@ public:
 		std::unique_ptr<std::uint16_t[]> data;
 	};
 	using Work = std::function<void(Job &, GradientWorkspace &)>;
+    using BatchWork = std::function<void(std::span<Job* const>, std::span<GradientWorkspace>)>;
 	// Simulation-owner callback observes publication, never computation.
 	std::function<void(std::uint16_t**)> onPublished;
 	// Executor due key of a job published `remaining` advances from now. The
@@ -78,10 +79,12 @@ private:
 	bool shared = true;
 	struct Workspace { GradientWorkspace propagation; gradient_preparation::CrowdingScratch crowding; };
 	std::vector<Workspace> workspaces;
+	std::shared_ptr<gradient_kernel::BackendSession> backendSession = std::make_shared<gradient_kernel::BackendSession>();
 	unsigned delay = 0;
 	std::uint64_t tick = 0, lastSubmission = 0;
 	std::size_t cells = 0;
 	Work work;
+    BatchWork batchWork;
 	std::atomic<std::uint64_t> activeNs{0};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
@@ -96,7 +99,10 @@ private:
 			try { if (job.seed) job.seed(job); }
 			catch (...) { job.preparationNs = ns(preparationStart); throw; }
 			job.preparationNs = ns(preparationStart);
-			work(job, scratch.propagation);
+            if (batchWork && gradient_kernel::canBatch(*backendSession)) {
+                const std::array jobs{&job};
+                batchWork(jobs, std::span(&scratch.propagation, 1));
+            } else work(job, scratch.propagation);
 		}
 		catch (...)
 		{
@@ -137,15 +143,22 @@ public:
 		delay = 0; tick = 0; lastSubmission = 0;
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
-		reset(); metrics = {}; activeNs = 0; cells = size; work = std::move(callback);
+		reset(); batchWork = {}; metrics = {}; activeNs = 0; cells = size; work = std::move(callback);
 		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
+    void setBatchWork(BatchWork callback) { finish(); batchWork=std::move(callback); }
+	// Share the game choice with all previous work drained.
+    void setBackendSession(std::shared_ptr<gradient_kernel::BackendSession> session) {
+        backendSession = std::move(session);
+        for (auto& workspace : workspaces) workspace.propagation.backendSession = backendSession;
+    }
 	// Call after the executor is resized, with all previous work drained.
 	void resizeWorkspaces() {
         workspaces.resize(executor ? executor->threadCount() : 1);
         // Bound optional seed caches across the entire pool, not per thread.
         for (auto& workspace : workspaces) {
+            workspace.propagation.backendSession = backendSession;
             workspace.crowding.materials = {};
             workspace.crowding.materials.budget = 64 * 1024 * 1024 / workspaces.size();
         }
@@ -195,7 +208,7 @@ public:
 		if (spare.empty()) { job = std::make_unique<Job>(); job->data.reset(new std::uint16_t[cells]); }
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
-		job->done=false; job->superseded=false; job->error=nullptr; job->owner=this; job->preparationNs=0;
+		job->done=false; job->superseded=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
 		++metrics.jobs;

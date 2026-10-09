@@ -45,9 +45,9 @@ void expandProfileBucket(std::uint16_t *gradient, GradientBucket *queue, std::si
 		*movement.prepared);
 }
 
-template <unsigned Buckets, bool DirectProfiles = false, class TerrainAt>
+template <unsigned Buckets, bool DirectProfiles = false, bool Accelerated = true, class TerrainAt>
 void propagate(std::uint16_t *gradient, int maxCost, field::Grid grid, GradientWorkspace &workspace,
-			   TerrainAt terrainAt, const TerrainRegistry::Movement &movement)
+			   TerrainAt terrainAt, const TerrainRegistry::Movement &movement, CostIdentity identity = {})
 {
 	const bool allProfilesFit = std::all_of(movement.profiles.begin(), movement.profiles.end(),
 											[](EntrySteps costs)
@@ -74,6 +74,17 @@ void propagate(std::uint16_t *gradient, int maxCost, field::Grid grid, GradientW
 				}
 			}
 	}
+    if constexpr (Accelerated)
+    {
+        const auto costs = [&](std::size_t i) {
+            const auto id = DirectProfiles ? unsigned(terrainAt(i)) : movement.profileIds[terrainAt(i)];
+            return movement.profiles[id];
+        };
+        const auto cpu = [&](std::uint16_t* out) {
+            propagate<Buckets, DirectProfiles, false>(out, maxCost, grid, workspace, terrainAt, movement);
+        };
+        if (tryAcceleratedGradient(gradient, maxCost, grid, *workspace.backendSession, costs, cpu, std::move(identity), workspace.family)) return;
+    }
 	if (!workspace.terrain)
 		workspace.terrain = std::make_unique<TerrainGradientWorkspace>();
 	auto &scratch = *workspace.terrain;
@@ -149,16 +160,16 @@ namespace gradient_kernel
 inline void propagateTerrainProfiles(std::uint16_t *gradient, int swim, int maxCost,
 									 field::Grid grid, GradientWorkspace &workspace,
 									 const std::uint8_t *profiles,
-									 const TerrainRegistry::Movement &movement, unsigned buckets)
+									 const TerrainRegistry::Movement &movement, unsigned buckets, CostIdentity identity = {})
 {
 	runtime_terrain::validateQueueSize(buckets);
 	const auto at = [profiles](std::size_t i) { return profiles[i]; };
 	if (buckets == 64)
-		runtime_terrain::propagate<64, true>(gradient, maxCost, grid, workspace, at, movement);
+		runtime_terrain::propagate<64, true>(gradient, maxCost, grid, workspace, at, movement, identity);
 	else if (buckets == 128)
-		runtime_terrain::propagate<128, true>(gradient, maxCost, grid, workspace, at, movement);
+		runtime_terrain::propagate<128, true>(gradient, maxCost, grid, workspace, at, movement, identity);
 	else
-		runtime_terrain::propagate<256, true>(gradient, maxCost, grid, workspace, at, movement);
+		runtime_terrain::propagate<256, true>(gradient, maxCost, grid, workspace, at, movement, identity);
 }
 inline void propagateTerrainProfiles(std::uint16_t *gradient, int swim, int maxCost,
 									 field::Grid grid, GradientWorkspace &workspace,
@@ -172,21 +183,21 @@ inline void propagateTerrainProfiles(std::uint16_t *gradient, int swim, int maxC
 template <class RuleAt>
 void propagateTerrainField(std::uint16_t *gradient, int swim, int maxCost, field::Grid grid,
 						   GradientWorkspace &workspace, RuleAt ruleAt, bool modifiedCosts,
-						   const CellRuleTable &rules, unsigned buckets)
+						   const CellRuleTable &rules, unsigned buckets, CostIdentity identity = {})
 {
 	runtime_terrain::validateQueueSize(buckets);
 	if (!modifiedCosts)
 	{
 		propagateField(gradient, swim, maxCost, grid, workspace,
-					   [&](std::size_t i) { return rules.swimming(ruleAt(i)); });
+					   [&](std::size_t i) { return rules.swimming(ruleAt(i)); }, identity);
 		return;
 	}
 	if (buckets == 64)
-		runtime_terrain::propagate<64>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim));
+		runtime_terrain::propagate<64>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim), identity);
 	else if (buckets == 128)
-		runtime_terrain::propagate<128>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim));
+		runtime_terrain::propagate<128>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim), identity);
 	else
-		runtime_terrain::propagate<256>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim));
+		runtime_terrain::propagate<256>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim), identity);
 }
 template <class TerrainAt>
 void propagateTerrainField(std::uint16_t *gradient, int swim, int maxCost, field::Grid grid,

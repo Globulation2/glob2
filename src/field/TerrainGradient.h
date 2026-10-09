@@ -178,7 +178,7 @@ void expandTerrainBucket(std::uint16_t *gradient, GradientBucket *queue,
 }
 
 template<std::size_t N, class ClassAt>
-void propagatePreparedTerrainField(std::uint16_t *gradient, int maxCost,
+void propagatePreparedTerrainFieldCPU(std::uint16_t *gradient, int maxCost,
     field::Grid grid, GradientWorkspace &workspace, const PreparedTerrainCosts<N> &profile, ClassAt classAt)
 {
     auto *buckets=workspace.buckets.data();
@@ -227,6 +227,17 @@ void propagatePreparedTerrainField(std::uint16_t *gradient, int maxCost,
     }
     else
         sweep(profile, classAt);
+}
+
+template<std::size_t N, class ClassAt>
+void propagatePreparedTerrainField(std::uint16_t* gradient, int maxCost, field::Grid grid,
+    GradientWorkspace& workspace, const PreparedTerrainCosts<N>& profile, ClassAt classAt)
+{
+    const auto costs = [&](std::size_t i) { return profile.classes[classAt(i)]; };
+    const auto cpu = [&](std::uint16_t* out) {
+        propagatePreparedTerrainFieldCPU(out, maxCost, grid, workspace, profile, classAt);
+    };
+    if (!tryAcceleratedGradient(gradient, maxCost, grid, *workspace.backendSession, costs, cpu, {}, workspace.family)) cpu(gradient);
 }
 
 template<class TerrainAt>

@@ -331,6 +331,13 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
             gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
         });
+    gradientRuntime->pipeline.setBatchWork([this](std::span<GradientPipeline::Job* const> jobs,
+        std::span<GradientWorkspace> scratch) {
+        std::vector<gradient_preparation::PropagationField> fields;fields.reserve(jobs.size());
+        for(std::size_t i=0;i<jobs.size();++i)
+            fields.push_back({jobs[i]->request,&*jobs[i]->snapshotLease,jobs[i]->data.get(),&scratch[i],&jobs[i]->error,&compute});
+        gradient_preparation::propagateBatch(fields);
+    });
 }
 
 void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)

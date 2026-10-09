@@ -1,3 +1,4 @@
+#include "field/OpenCLGradient.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "sim/snapshot/SnapshotStore.h"
 #include "EngineFixtures.h"
@@ -116,6 +117,21 @@ static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map 
 
 TEST_SUITE("GradientPreparation")
 {
+	TEST_CASE("map dimensions enforce power-of-two exponents before mutation")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=6, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .header=true});
+        auto& map = fixture.game.map;
+        CHECK(map.getW() == 64);
+        CHECK(map.getH() == 32);
+        for (auto dimensions : {std::pair{-1,5}, std::pair{6,-1}, std::pair{16,5}, std::pair{6,16}})
+        {
+            CHECK_THROWS_AS(map.setSize(dimensions.first, dimensions.second, GRASS), std::invalid_argument);
+            CHECK(map.getW() == 64);
+            CHECK(map.getH() == 32);
+            CHECK(map.coordToIndex(-1,-1) == 64*32-1);
+        }
+    }
 	TEST_CASE("warm preparation keeps custom supplier unions exclusions penalties and overlays live")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -1213,4 +1229,104 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     glob2test::HeadlessGame replacement({.wDec=7,.hDec=7,.teams=2,.discovered=true,.clearImmobile=true,.header=true});
     auto other=SimulationSnapshot::capture(replacement.game,SimulationSnapshot::captureCatalog(replacement.game),request.requirements());
     check(other);
+}
+
+TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output")
+{
+    using namespace gradient_kernel;
+    const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=fixture.game;auto& map=game.map;
+    map.setVertexTerrain(5,5,WATER);
+    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
+    std::array<std::vector<Uint16>,3> outputs,expected;
+    std::array<std::exception_ptr,3> errors{};
+    std::array<GradientWorkspace,3> scratch;
+    std::vector<gradient_preparation::PropagationField> fields;
+    setBackend(Backend::CPU);
+    for(unsigned i=0;i<3;++i){
+        outputs[i].assign(map.getW()*map.getH(),1);outputs[i][i]=65535;outputs[i][13]=0;
+        outputs[i][21]=65000;expected[i]=outputs[i];
+        map.propagateGradient(expected[i].data(),i==2?6:0);
+        gradient_preparation::Request request;request.swim=i==2?6:0;request.terrainBuckets=i==1?65:64;
+        fields.push_back({request,&snapshot,outputs[i].data(),&scratch[i],&errors[i]});
+    }
+    setBackend(Backend::OpenCL);gradient_preparation::propagateBatch(fields);
+    CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
+    CHECK_FALSE(errors[0]);CHECK_FALSE(errors[2]);REQUIRE(errors[1]);
+    CHECK_THROWS_AS(std::rethrow_exception(errors[1]),std::invalid_argument);
+    CHECK(outputs[1][1]==65535);CHECK(outputs[1][21]==65000); // Invalid field was never propagated.
+    if (openCLStatus().available) {
+        auto session=std::make_shared<BackendSession>();
+        for(auto& workspace:scratch) workspace.backendSession=session;
+        ComputeExecutor executor;executor.configure(4);
+        for(auto& field:fields) field.executor=&executor;
+        for(unsigned i:{0u,2u}) {
+            outputs[i].assign(map.getW()*map.getH(),1);outputs[i][i]=65535;outputs[i][13]=0;
+            outputs[i][21]=65000;
+        }
+        const auto initialCalibrations=openCLStatus().calibrations;
+        setBackend(Backend::Automatic);gradient_preparation::propagateBatch(fields);
+        CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
+        CHECK(session->selection(Family::Materials,2).load()!=Backend::Automatic);
+        CHECK(openCLStatus().calibrations==initialCalibrations+1);
+        CHECK(executor.metrics().parallelBatches>=4); // Warmup and three real CPU batch samples.
+        fields[0].request.kind=gradient_preparation::Kind::Materials;
+        fields[2].request.kind=gradient_preparation::Kind::Guard;
+        for(unsigned i:{0u,2u}) {
+            outputs[i].assign(map.getW()*map.getH(),1);outputs[i][i]=65535;outputs[i][13]=0;
+            outputs[i][21]=65000;
+        }
+        const auto calibrations=openCLStatus().calibrations;
+        setBackend(Backend::Automatic);gradient_preparation::propagateBatch(fields);
+        CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
+        CHECK(session->selection(Family::Materials,1).load()!=Backend::Automatic);
+        CHECK(session->selection(Family::Guard,1).load()!=Backend::Automatic);
+        CHECK(session->selection(Family::Materials,2).load()!=Backend::Automatic);
+        CHECK(session->selection().load()==Backend::Automatic);
+        CHECK(openCLStatus().calibrations==calibrations+2);
+        // The ordinary one-field entry point uses the same family choice.
+        outputs[2].assign(map.getW()*map.getH(),1);outputs[2][2]=65535;outputs[2][13]=0;
+        outputs[2][21]=65000;
+        gradient_preparation::propagate(fields[2].request,snapshot,outputs[2].data(),scratch[2]);
+        CHECK(outputs[2]==expected[2]);
+        CHECK(openCLStatus().calibrations==calibrations+2);
+    }
+
+}
+
+TEST_CASE("GradientPreparation/modified terrain costs stay resident when field obstacles change")
+{
+    using namespace gradient_kernel;
+    const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto& map=world.game.map;
+    map.game=nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:gpu-cost","name":"Slow ground","base":"grass","appearance":"grass","properties":{"groundSpeedQ8":192}}]})");
+    map.setGame(&world.game);
+    map.paintCell(3,*map.terrainRegistry().find("test:gpu-cost"));
+    const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),gradient_preparation::buildingRequirements());
+    REQUIRE(snapshot.terrain->movementModifiers);
+    gradient_preparation::Request request;
+    GradientWorkspace scratch;
+    for (unsigned entry=0;entry<3;++entry) {
+        std::uint64_t hits=0;
+        for(unsigned phase=0;phase<2;++phase) {
+            std::vector<Uint16> output(map.size,1);output[0]=65535;output[phase?37:13]=0;
+            auto expected=output;
+            setBackend(Backend::CPU);map.propagateGradient(expected.data(),0);
+            setBackend(Backend::OpenCL);
+            if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
+            else if(entry==1) {
+                const gradient_preparation::PropagationField field{request,&snapshot,output.data(),&scratch};
+                gradient_preparation::propagateBatch(std::span(&field,1));
+            } else map.propagateGradient(output.data(),0);
+            CHECK(output==expected);
+            const auto status=openCLStatus();
+            if(phase && status.available) CHECK(status.costIdentityHits>hits);
+            hits=status.costIdentityHits;
+        }
+    }
 }

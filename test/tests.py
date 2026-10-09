@@ -247,6 +247,7 @@ UNIT_TESTS = [
     '#src/hud/GhostBuildingOverlapTest.cpp',
     '#src/ai/shared_runtime/GradientBFSTest.cpp',
     '#src/field/FieldTraversalTest.cpp',
+    '#src/field/OpenCLGradientTest.cpp',
     ('#src/map/gradient/GradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HelloWorldTest.cpp',
     '#libgag/src/Sha1Test.cpp',
@@ -353,6 +354,7 @@ UNIT_TESTS = [
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
     '#src/app/cli/CommandLine.cpp',
+    '#src/field/OpenCLGradient.cpp',
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',
     '#src/map/MapAssetBundle.cpp',

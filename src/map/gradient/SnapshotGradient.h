@@ -3,14 +3,30 @@
 #include "sim/snapshot/WorldSnapshot.h"
 #include "field/GradientWorkspace.h"
 #include <vector>
+#include <span>
+#include <exception>
+#include <stdexcept>
 #include "Team.h"
 #include "BuildingGradientSearch.h"
 #include "Building.h"
 #include "SeedCells.h"
 
+class ComputeExecutor;
+
 namespace gradient_preparation
 {
 enum class Kind { Materials, Markets, Guard, Clear };
+inline gradient_kernel::Family backendFamily(Kind kind)
+{
+    using gradient_kernel::Family;
+    switch (kind) {
+    case Kind::Materials: return Family::Materials;
+    case Kind::Markets: return Family::Markets;
+    case Kind::Guard: return Family::Guard;
+    case Kind::Clear: return Family::Clear;
+    }
+    throw std::invalid_argument("unknown gradient family");
+}
 struct Request
 {
     Kind kind = Kind::Materials;
@@ -51,6 +67,16 @@ struct CrowdingScratch
 };
 void boxSum(Uint16* grid, int width, int height, CrowdingScratch& scratch);
 void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
+struct PropagationField {
+    Request request;
+    const SimulationSnapshot::Handle* snapshot;
+    Uint16* output;
+    GradientWorkspace* scratch;
+    std::exception_ptr* error = nullptr;
+    ComputeExecutor* executor = nullptr;
+};
+// Independent immutable fields; completes synchronously with original-seed CPU recovery.
+void propagateBatch(std::span<const PropagationField> fields);
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, GradientWorkspace& scratch);
 
 // The snapshot components a building field reads: terrain, resources,

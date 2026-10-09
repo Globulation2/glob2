@@ -528,6 +528,7 @@ void Map::configureCompute(unsigned threads)
 	compute.configure(threads);
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
+	gradientRuntime->shareBackendSession();
 }
 
 void Map::clear()
@@ -547,6 +548,7 @@ void Map::clear()
 	gradientRuntime->pipeline.reset();
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
+	gradientRuntime->resetBackendSession();
 	gradientRuntime->buildingSynchronous=0;
 	gradientRuntime->synchronousByReason={};
 	gradientRuntime->overlaySupplierLocations.clear();
@@ -646,6 +648,10 @@ void Map::clear()
 
 void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 {
+    // Dimensions are exponents, never arbitrary cell counts. Validate before
+    // shifting or clearing the existing map, including in release builds.
+    if (wDec < 0 || hDec < 0 || wDec >= 16 || hDec >= 16)
+        throw std::invalid_argument("Map dimensions require power-of-two size exponents in [0, 15]");
     if (!resourceRegistryValue->size())
     {
         resourceRegistryValue = ResourceRegistry::builtins();
@@ -656,8 +662,6 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 	clear();
 
-	assert(wDec<16);
-	assert(hDec<16);
 	this->wDec=wDec;
 	this->hDec=hDec;
 	w=1<<wDec;

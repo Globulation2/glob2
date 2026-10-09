@@ -40,6 +40,7 @@ class MapAssetBundle;
 #include "BitArray.h"
 
 namespace SimulationSnapshot { struct Handle; }
+namespace gradient_kernel { enum class Family; }
 
 class Unit;
 
@@ -1149,6 +1150,7 @@ public:
 	//! swimClass must be in [0, SWIM_CLASS_COUNT).
     GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
+	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradient_kernel::Family family);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count
