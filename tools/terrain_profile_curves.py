@@ -112,11 +112,14 @@ def generate(root, sand_count=24):
             curve.append(rng.choice((-640, -400, -200, 0, 200, 400, 640)) + rng.randint(-80, 80))
         curve.append(0)
         cobblestone.append(clamp(curve))
-    curves = {"sand": trace_sand(root, sand_count), "fractured": fractured, "cobblestone": cobblestone}
+    # Frozen keeps ice's original detail, independently of lava's sharp shape.
+    curves = {"sand": trace_sand(root, sand_count), "fractured": fractured,
+              "frozen": fractured, "cobblestone": cobblestone}
     for key, spec in NEW_PROFILES.items():
         seed, count, points, low, high, kink = spec["walk"]
         walk = random.Random(seed)
         curves[key] = [random_walk(walk, points, low, high, kink) for _ in range(count)]
+    curves["cliff"] = curves["rock"]
     return curves
 
 

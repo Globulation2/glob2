@@ -25,6 +25,7 @@ struct Profile
 	int bridge = 0;       // Q8 pixel half-width of the neck joining diagonal lobes.
 	int shearScale = 128; // Version 3 reads shear curves as pixel displacement (256).
 	bool legacyEdges = false;
+	bool contextual = false; // Neighbour-guided natural border geometry (version 3).
 	std::vector<std::vector<int>> contours; // Q12 normalized patch displacements.
 };
 // Contact treatment where this material meets another. A higher material casts
@@ -84,6 +85,7 @@ class Catalog
 	static Catalog parse(const nlohmann::json &document);
 	MaterialId find(const std::string &key) const;
 	unsigned profileFor(MaterialId a, MaterialId b) const;
+	bool contextualFor(MaterialId a, MaterialId b) const;
 	// seed is the map's terrain look seed (Recipe::seed); zero for diagnostics.
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
@@ -94,13 +96,16 @@ std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
 struct Recipe
 {
 	// Materials of the cell's corner vertices: top-left, top-right, bottom-left,
-	// bottom-right. Every half cell of the map shows its nearest vertex.
+	// bottom-right. Only these materials may contribute to this cell.
 	std::array<MaterialId, 4> corners{};
 	// Canonical gameplay-cell coordinates and positive wrapped map dimensions.
 	int x = 0, y = 0, width = 0, height = 0;
 	// The map's terrain look seed: every hash of coordinates is salted with it,
 	// so caches that compare recipes rebuild when it changes.
 	std::uint32_t seed = 0;
+	// Row-major vertices (-1,-1)..(2,2); optional for standalone diagnostics.
+	std::array<MaterialId, 16> neighborhood{};
+	bool hasNeighborhood = false;
 	bool operator==(const Recipe &) const = default;
 };
 struct Coverage
@@ -112,7 +117,8 @@ struct Coverage
 	MaterialId neighbor = 0;
 	unsigned margin = 65535;
 };
-// A tile's nine transition patches share immutable topology and contour choices
+// Contextual curves and the fallback's nine patches share immutable geometry
+// across sampling resolutions. The fallback topology and contour choices agree
 // across all native/HD samples. Patches are centred on the half-cell lattice at
 // -8, 8, 24 and 40 logical pixels; each lattice point takes the nearest corner,
 // so the outer patches repeat the tile's own corners and match the patches the
@@ -125,6 +131,20 @@ class PreparedCoverage
 	Coverage at(int px, int py) const;
 
   private:
+	struct Point { float x = 0, y = 0; };
+	struct Border
+	{
+		std::array<Point, 17> points{};
+		std::array<float, 33> ordinate{}, normal{};
+		bool vertical = false;
+		float direction = 1;
+	};
+	Border naturalBorder{};
+	bool hasBorder = false;
+	std::array<MaterialId, 2> borderMaterials{};
+	float borderBlendScale = 65536;
+	void prepareBorders(const Catalog &, const Recipe &);
+	Coverage patchCoverage(int px, int py, const std::array<int, 2> *displacement = nullptr) const;
 	struct WarpLayer
 	{
 		int shift = 0, offsetX = 0, offsetY = 0;

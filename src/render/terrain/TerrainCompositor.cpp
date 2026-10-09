@@ -14,6 +14,8 @@ namespace TerrainVisual
 Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
     : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
+	hasContextualProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
+		[](const auto &profile) { return profile.contextual; });
 	pack = CompiledPack::load(definitions);
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
 	{
@@ -232,6 +234,19 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	const auto corners = map.cellCorners(r.x, r.y);
 	for (unsigned k = 0; k < corners.size(); ++k)
 		r.corners[k] = materialFor(map, corners[k]);
+	const auto first = r.corners[0];
+	MaterialId other = first;
+	for (const auto id : r.corners)
+		if (id != first) other = id;
+	if (other == first || !definitions.contextualFor(first, other) ||
+		std::any_of(r.corners.begin(), r.corners.end(),
+			[first, other](auto id) { return id != first && id != other; }))
+		return r;
+	r.hasNeighborhood = true;
+	for (int y = -1; y <= 2; ++y)
+		for (int x = -1; x <= 2; ++x)
+			r.neighborhood[(y + 1) * 4 + x + 1] =
+				materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 	return r;
 }
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,

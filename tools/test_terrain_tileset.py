@@ -23,6 +23,17 @@ class TerrainTileset(unittest.TestCase):
     def setUp(self):
         self.document = json.loads((ROOT / "data/terrain/tileset.json").read_text())
 
+    def test_boundary_shapes_are_explicit_and_version_gated(self):
+        validate(self.document)
+        for shape in ("unknown", 3, None, []):
+            self.document["profiles"][0]["shape"] = shape
+            with self.assertRaises(ValueError):
+                validate(self.document)
+        self.document["profiles"][0]["shape"] = "contextual"
+        self.document["version"] = 2
+        with self.assertRaises(ValueError):
+            validate(self.document)
+
     def test_registered_materials_and_scalability(self):
         expected = catalog_frame_count(self.document)
         self.assertGreaterEqual(expected, 80)
@@ -139,8 +150,8 @@ class TerrainTileset(unittest.TestCase):
         self.document["version"] = 1
         self.document.pop("boundary_warp_q8")
         for profile in self.document["profiles"]:
-            for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8"):
-                profile.pop(field)
+            for field in ("feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape"):
+                profile.pop(field, None)
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4
         for material in self.document["materials"]:
             material.pop("seam", None)

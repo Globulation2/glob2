@@ -8,6 +8,7 @@
 #include <limits>
 #include <stdexcept>
 #include <set>
+#include <cmath>
 
 namespace TerrainVisual
 {
@@ -113,6 +114,10 @@ Catalog Catalog::parse(const nlohmann::json &j)
 	{
 		Profile v{p.at("key").get<std::string>(), integerInRange(p.at("roughness_q8"), 0, 512)};
 		v.legacyEdges = version == 1;
+		const auto shape = p.value("shape", std::string{"patch"});
+		require(shape == "patch" || shape == "contextual", "unknown boundary shape");
+		require(version >= 3 || shape == "patch", "contextual shape requires catalog version 3");
+		v.contextual = shape == "contextual";
 		require(version >= 2 || !p.contains("feather_q8"),
 				"boundary feather requires catalog version 2");
 		v.feather = integerInRange(p.value("feather_q8", nlohmann::json(256)), 128, 512);
@@ -264,6 +269,13 @@ unsigned Catalog::profileFor(MaterialId a, MaterialId b) const
 			   ? bb.profile
 			   : (aa.key < bb.key ? aa.profile : bb.profile);
 }
+bool Catalog::contextualFor(MaterialId a, MaterialId b) const
+{
+	// Both surfaces must opt in: an organic default must not round a road,
+	// boardwalk or sharp hazard just because it has the greater roughness.
+	return a != b && profiles[materials[a].profile].contextual && profiles[materials[b].profile].contextual &&
+		profiles[profileFor(a, b)].contextual;
+}
 std::uint32_t mapSeedSalt(std::uint32_t seed)
 {
 	// Spread the seed before it meets the material and profile salts, so small
@@ -323,8 +335,210 @@ int PreparedCoverage::Curve::wave(int t) const
 	const int i = std::min(scaled / 4096, segments - 1), f = scaled - i * 4096;
 	return sign * (points[i] * (4096 - f) + points[i + 1] * f) / 4096;
 }
+// Marching-square segments are prepared from the same one-vertex halo on every
+// view. Ambiguous diagonals and multi-material junctions retain their old masks.
+void PreparedCoverage::prepareBorders(const Catalog &c, const Recipe &r)
+{
+	if (!r.hasNeighborhood || c.version < 3)
+		return;
+	const auto a = r.corners[0];
+	MaterialId b = a;
+	for (auto id : r.corners)
+		if (id != a) b = id;
+	if (a == b || !c.contextualFor(a, b) ||
+		std::any_of(r.corners.begin(), r.corners.end(),
+			[a, b](auto id) { return id != a && id != b; }))
+		return;
+	struct Segment { Point from, to; bool valid = false; };
+	std::array<Segment, 9> segments{};
+	const auto sub = [](Point a, Point b) { return Point{a.x - b.x, a.y - b.y}; };
+	const auto length = [](Point p) { return std::sqrt(p.x * p.x + p.y * p.y); };
+	const auto vertex = [&](int x, int y) { return r.neighborhood[(y + 1) * 4 + x + 1]; };
+	for (int y = -1; y <= 1; ++y)
+		for (int x = -1; x <= 1; ++x)
+		{
+			const MaterialId ids[] = {vertex(x, y), vertex(x + 1, y),
+				vertex(x + 1, y + 1), vertex(x, y + 1)};
+			if (std::any_of(std::begin(ids), std::end(ids),
+				[a, b](auto id) { return id != a && id != b; })) continue;
+			const Point midpoints[] = {{x * 32.f + 16, y * 32.f},
+				{x * 32.f + 32, y * 32.f + 16}, {x * 32.f + 16, y * 32.f + 32},
+				{x * 32.f, y * 32.f + 16}};
+			Point ends[4];
+			unsigned count = 0;
+			for (int edge = 0; edge < 4; ++edge)
+				if (ids[edge] != ids[(edge + 1) % 4]) ends[count++] = midpoints[edge];
+			if (count != 2) continue;
+			auto &segment = segments[(y + 1) * 3 + x + 1];
+			segment = {ends[0], ends[1], true};
+		}
+	const auto &center = segments[4];
+	if (!center.valid) return;
+	borderMaterials = {a, b};
+	borderBlendScale = 33554432.f / (c.profiles[c.materials[a].profile].feather +
+		c.profiles[c.materials[b].profile].feather);
+	Point controls[] = {center.from, {}, {}, center.to};
+	const float chord = length(sub(center.to, center.from));
+	for (int end = 0; end < 2; ++end)
+	{
+		const Point p = end ? center.to : center.from;
+		const Point other = end ? center.from : center.to;
+		Point direction = sub(other, p);
+		float handle = chord / 3;
+		for (int index : {1, 3, 5, 7})
+		{
+			const auto &neighbor = segments[index];
+			if (!neighbor.valid) continue;
+			Point continuation;
+			if (neighbor.from.x == p.x && neighbor.from.y == p.y) continuation = neighbor.to;
+			else if (neighbor.to.x == p.x && neighbor.to.y == p.y) continuation = neighbor.from;
+			else continue;
+			direction = sub(other, continuation);
+			handle = std::min(chord, length(sub(continuation, p))) / 3;
+			break;
+		}
+		const float norm = length(direction);
+		Point control{p.x + direction.x * handle / norm, p.y + direction.y * handle / norm};
+		// A convex control hull inside the tile prevents loops, crossings and
+		// loss of a narrow corner region. Its chord distance bounds the whole curve.
+		control.x = std::clamp(control.x, 0.f, 32.f);
+		control.y = std::clamp(control.y, 0.f, 32.f);
+		const auto delta = sub(center.to, center.from);
+		const auto offset = sub(control, p);
+		const float distance = std::abs(delta.x * offset.y - delta.y * offset.x) / chord;
+		if (distance > 4)
+		{
+			control.x = p.x + offset.x * 4 / distance;
+			control.y = p.y + offset.y * 4 / distance;
+		}
+		controls[end ? 2 : 1] = control;
+	}
+	// Monotone projection along the chord rules out self intersections and
+	// reversed connections. A failed check falls back to the straight contour.
+	const auto chordVector = sub(center.to, center.from);
+	const auto projection = [&](Point p)
+	{
+		const auto offset = sub(p, center.from);
+		return offset.x * chordVector.x + offset.y * chordVector.y;
+	};
+	const bool vertical = std::abs(chordVector.y) > std::abs(chordVector.x);
+	const auto along = [&](Point p) { return vertical ? p.y : p.x; };
+	const float axisSign = along(center.to) > along(center.from) ? 1.f : -1.f;
+	if (projection(controls[1]) < 0 || projection(controls[2]) > chord * chord ||
+		projection(controls[1]) > projection(controls[2]) ||
+		axisSign * (along(controls[1]) - along(controls[0])) < 0 ||
+		axisSign * (along(controls[2]) - along(controls[1])) < 0 ||
+		axisSign * (along(controls[3]) - along(controls[2])) < 0)
+	{
+		controls[1] = {center.from.x + chordVector.x / 3, center.from.y + chordVector.y / 3};
+		controls[2] = {center.to.x - chordVector.x / 3, center.to.y - chordVector.y / 3};
+	}
+	// Orient the curve so material a lies on its left. All a corners of an
+	// unambiguous marching square lie on the same side of the straight segment.
+	const auto delta = sub(center.to, center.from), offset = sub(Point{}, center.from);
+	if (delta.x * offset.y - delta.y * offset.x < 0)
+		std::reverse(std::begin(controls), std::end(controls));
+	auto &border = naturalBorder;
+	for (unsigned i = 0; i < border.points.size(); ++i)
+	{
+		const float t = float(i) / (border.points.size() - 1), u = 1 - t;
+		auto &p = border.points[i];
+		p = {u*u*u*controls[0].x + 3*u*u*t*controls[1].x + 3*u*t*t*controls[2].x + t*t*t*controls[3].x,
+			u*u*u*controls[0].y + 3*u*u*t*controls[1].y + 3*u*t*t*controls[2].y + t*t*t*controls[3].y};
+	}
+	const auto first = border.points.front(), last = border.points.back();
+	border.vertical = std::abs(last.y - first.y) > std::abs(last.x - first.x);
+	border.direction = border.vertical ? (last.y > first.y ? -1.f : 1.f) : (last.x > first.x ? 1.f : -1.f);
+	const auto primary = [&](Point p) { return border.vertical ? p.y : p.x; };
+	const auto secondary = [&](Point p) { return border.vertical ? p.x : p.y; };
+	// Tabulate the monotone contour and its unit normal at logical pixel rows.
+	// Runtime samples interpolate this resolution-independent geometry instead
+	// of searching sixteen curve segments for every native/HD pixel.
+	for (unsigned coordinate = 0; coordinate < border.ordinate.size(); ++coordinate)
+	{
+		unsigned segment = 1;
+		for (unsigned i = 1; i < border.points.size(); ++i)
+			if (coordinate >= std::min(primary(border.points[i - 1]), primary(border.points[i])) &&
+				coordinate <= std::max(primary(border.points[i - 1]), primary(border.points[i])))
+			{ segment = i; break; }
+			else if (std::abs(float(coordinate) - primary(border.points[i])) <
+				std::abs(float(coordinate) - primary(border.points[segment]))) segment = i;
+		const auto p = border.points[segment - 1], q = border.points[segment];
+		const float dp = primary(q) - primary(p), ds = secondary(q) - secondary(p);
+		const float t = std::clamp((float(coordinate) - primary(p)) / dp, 0.f, 1.f);
+		border.ordinate[coordinate] = secondary(p) + t * ds;
+		border.normal[coordinate] = std::abs(dp) / std::sqrt(dp * dp + ds * ds);
+	}
+	hasBorder = true;
+}
+
+Coverage PreparedCoverage::at(int px, int py) const
+{
+	if (!hasBorder) return patchCoverage(px, py);
+	// Keep historical crossings and feather weights in a 1px seam band. Blend
+	// to the contextual geometry by 4px; this also joins complex junctions.
+	const int edgeDistance = std::min({px, py, 8192 - px, 8192 - py});
+	if (edgeDistance <= 256) return patchCoverage(px, py);
+	int dx = 0, dy = 0;
+	for (const auto &layer : warp)
+	{
+		const auto d = layer.at(px, py);
+		dx += d[0]; dy += d[1];
+	}
+	// The authored field reaches at most six pixels. Scale it to two here,
+	// leaving four pixels for curve shaping without touching sharp profiles.
+	const Point sample{float(px + dx / 3) / 256, float(py + dy / 3) / 256};
+	const auto &border = naturalBorder;
+	const float coordinate = std::clamp(border.vertical ? sample.y : sample.x, 0.f, 32.f);
+	const unsigned index = std::min(unsigned(coordinate), 31u);
+	const float t = coordinate - index;
+	const float ordinate = border.ordinate[index] * (1 - t) + border.ordinate[index + 1] * t;
+	const float normal = border.normal[index] * (1 - t) + border.normal[index + 1] * t;
+	float signedDistance = ((border.vertical ? sample.x : sample.y) - ordinate) * normal * border.direction;
+	const float first = border.vertical ? border.points.front().y : border.points.front().x;
+	const float last = border.vertical ? border.points.back().y : border.points.back().x;
+	const float along = border.vertical ? sample.y : sample.x;
+	if (along < std::min(first, last) || along > std::max(first, last))
+	{
+		// Outside the curve's primary-axis extent the nearest endpoint supplies
+		// distance. Extending its normal would smear a nearly vertical tangent
+		// across an entire corner region.
+		const bool atStart = std::abs(along - first) < std::abs(along - last);
+		const auto p = atStart ? border.points.front() : border.points[border.points.size() - 2];
+		const auto q = atStart ? border.points[1] : border.points.back();
+		const auto end = atStart ? p : q;
+		const float cross = (q.x - p.x) * (sample.y - end.y) - (q.y - p.y) * (sample.x - end.x);
+		const float squared = (sample.x - end.x) * (sample.x - end.x) +
+			(sample.y - end.y) * (sample.y - end.y);
+		// All feather and seam treatments end within eight logical pixels.
+		signedDistance = (cross < 0 ? -1.f : 1.f) * (squared >= 64 ? 256.f : std::sqrt(squared));
+	}
+	Coverage result;
+	result.material[0] = borderMaterials[0]; result.material[1] = borderMaterials[1];
+	result.weight[0] = unsigned(std::clamp(32768.f + signedDistance * borderBlendScale, 0.f, 65536.f));
+	result.weight[1] = 65536 - result.weight[0];
+	result.neighbor = borderMaterials[result.weight[0] >= result.weight[1] ? 1 : 0];
+	result.margin = unsigned(std::min(65535.f, std::abs(signedDistance) * 256));
+	if (edgeDistance < 1024)
+	{
+		const std::array<int, 2> displacement{dx, dy};
+		const auto old = patchCoverage(px, py, &displacement);
+		unsigned oldA = 0;
+		for (unsigned i = 0; i < 4; ++i)
+			if (old.material[i] == borderMaterials[0]) oldA += old.weight[i];
+		int blend = (edgeDistance - 256) * 4096 / 768;
+		blend = int(std::int64_t(blend) * blend * (12288 - 2 * blend) >> 24);
+		result.weight[0] = (std::uint64_t(result.weight[0]) * blend + std::uint64_t(oldA) * (4096 - blend)) / 4096;
+		result.weight[1] = 65536 - result.weight[0];
+		result.margin = (result.margin * blend + old.margin * (4096 - blend)) / 4096;
+		result.neighbor = borderMaterials[result.weight[0] >= result.weight[1] ? 1 : 0];
+	}
+	return result;
+}
+
 PreparedCoverage::PreparedCoverage(const Catalog &c, const Recipe &r)
 {
+	prepareBorders(c, r);
 	// A single world-space field bends the complete material partition. Using
 	// different fields per material would pull junctions apart. Hash only grid
 	// vertices here; native and HD pixels interpolate the same prepared field.
@@ -535,13 +749,17 @@ std::array<int, 2> PreparedCoverage::WarpLayer::at(int px, int py) const
 			lerp(vertices[(iy + 1) * 5 + ix][axis], vertices[(iy + 1) * 5 + ix + 1][axis], u), v);
 	return displacement;
 }
-Coverage PreparedCoverage::at(int px, int py) const
+Coverage PreparedCoverage::patchCoverage(int px, int py, const std::array<int, 2> *displacement) const
 {
 	// Sum the layers at the original coordinate; composing them sequentially
 	// would amplify their slopes and their maximum displacement. The catalog
 	// limits their sum to six pixels; local contours share the remaining halo.
 	const int originalX = px, originalY = py;
-	for (const auto &layer : warp)
+	if (displacement)
+	{
+		px += (*displacement)[0]; py += (*displacement)[1];
+	}
+	else for (const auto &layer : warp)
 	{
 		const auto displacement = layer.at(originalX, originalY);
 		px += displacement[0];

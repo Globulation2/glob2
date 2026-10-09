@@ -435,6 +435,44 @@ All materials share this field so multi-material junctions remain joined. Wrappe
 world coordinates determine its control points, independently of texture variants,
 camera position, animation and simulation randomness.
 
+### Contextual natural borders
+
+Version-3 profiles may set `"shape": "contextual"`; omission or `"patch"` retains
+existing patch geometry. The shipped sand, shore, organic, soft, rock, brush,
+liquid and frozen profiles use contextual geometry. Ice uses frozen, which shares
+fractured's authored detail but enables natural curves; lava retains fractured.
+Chasm uses the cliff profile, which preserves rock's authored detail with patch
+geometry and prevents new natural materials from rounding a chasm boundary.
+Both materials' own profiles and their selected pair treatment must opt in.
+Constructed paths, lava, and crisp holes/chasm borders therefore retain their
+existing treatment even against a rougher natural material.
+
+The compositor reads a 4×4 vertex neighbourhood, including one vertex beyond each
+side of the cell. Ordinary two-material cells use marching-square edge midpoints
+and cubic curves with tangents guided by the adjacent cells' contour endpoints.
+Handles start at one-third of the shorter adjoining segment. Their control hull
+stays inside the cell and within four logical pixels of the straight contour;
+non-monotone handles fall back to a straight contour. Ambiguous diagonal cells and
+three/four-material junctions retain the patch resolver and its connection choice.
+Uniform cells remain uniform, and neighbours never add materials to a cell's palette.
+
+Curves are sampled into a monotone row/column table once per cell. Native, HD and
+overview samples interpolate that same geometry, with distance-based feathering
+and seam shading. Contextual interiors use one-third of the world-space warp
+(at most two pixels), leaving four pixels for shaping. A one-pixel band at tile
+edges retains the existing mask's displaced crossings and feather weights, then
+smoothly blends to the new geometry by four pixels. This compatibility band joins
+natural curves to existing complex junctions without introducing tile seams.
+It retains the existing edge detail rather than shifting every crossing to the
+marching-square midpoint. The six-pixel displacement limit applies to contextual
+interiors; existing masks in compatibility bands and fallback cells keep their
+original limits.
+
+Recipes and page-cache source windows include the halo, so painting, undoing, or
+rerolling a look refreshes affected neighbouring cells, including across map wraps.
+These are transient presentation inputs; terrain storage, saves, pathfinding,
+simulation randomness and checksums are unchanged.
+
 ### Map seed
 
 Every hash in this chapter takes wrapped coordinates, a material or profile salt

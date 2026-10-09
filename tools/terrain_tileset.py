@@ -129,6 +129,11 @@ def _validate(document, root):
             or not 0 <= p["roughness_q8"] <= 512
         ):
             raise ValueError("Invalid or duplicate profile")
+        shape = p.get("shape", "patch")
+        if shape not in ("patch", "contextual"):
+            raise ValueError("Unknown boundary shape")
+        if version < 3 and shape != "patch":
+            raise ValueError("Contextual shape requires catalog version 3")
         if version == 1 and "feather_q8" in p:
             raise ValueError("Boundary feather requires catalog version 2")
         integer(p.get("feather_q8", 256), 128, 512, "Boundary feather")
