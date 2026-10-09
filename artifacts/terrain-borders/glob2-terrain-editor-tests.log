@@ -1,0 +1,10 @@
+PASS EditorActionCoverage/rerolling the terrain look changes the map seed and marks the map modified [display] (2.5s)
+PASS EditorTerrainPaint/terrain strokes remove only what the new terrain disallows [display] (2.1s)
+PASS EditorTerrainPaint/Del reverts only vertices of the selected terrain to grass [display] (1.9s)
+PASS EditorTerrainPaint/a resource stroke that places nothing explains where the resource grows [display] (2.5s)
+PASS EditorFlows/rerolling the terrain look from the menu asks first [display] (1.7s)
+PASS EditorTerrainPaint/every terrain brush paints exactly the vertices its hover preview shows [display] (6.3s)
+PASS EditorTerrainPaint/the smallest brush paints one vertex and lays a beach around water [display] (1.6s)
+
+7 passed, 0 failed, 0 skipped (18.5s of test time)
+[run_tests] JUnit report: artifacts/terrain-borders/editor-tests.xml (7 cases)

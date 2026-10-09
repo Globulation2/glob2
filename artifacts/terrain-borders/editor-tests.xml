@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="EditorActionCoverage"><testcase classname="EditorActionCoverage" name="rerolling the terrain look changes the map seed and marks the map modified [display]" time="2.36862" status="run" />
+  </testsuite><testsuite name="EditorFlows"><testcase classname="EditorFlows" name="rerolling the terrain look from the menu asks first [display]" time="1.59544" status="run" />
+  </testsuite><testsuite name="EditorTerrainPaint"><testcase classname="EditorTerrainPaint" name="Del reverts only vertices of the selected terrain to grass [display]" time="1.74508" status="run" />
+  <testcase classname="EditorTerrainPaint" name="a resource stroke that places nothing explains where the resource grows [display]" time="2.3315" status="run" />
+  <testcase classname="EditorTerrainPaint" name="every terrain brush paints exactly the vertices its hover preview shows [display]" time="6.27014" status="run" />
+  <testcase classname="EditorTerrainPaint" name="terrain strokes remove only what the new terrain disallows [display]" time="1.94939" status="run" />
+  <testcase classname="EditorTerrainPaint" name="the smallest brush paints one vertex and lays a beach around water [display]" time="1.49096" status="run" />
+  </testsuite></testsuites>

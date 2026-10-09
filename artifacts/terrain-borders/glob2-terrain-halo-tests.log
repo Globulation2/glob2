@@ -1,0 +1,4 @@
+PASS TerrainMaterials/halo edits invalidate adjacent terrain pages including wrap and undo [display] (1.5s)
+
+1 passed, 0 failed, 0 skipped (1.5s of test time)
+[run_tests] JUnit report: artifacts/terrain-borders/halo-tests.xml (1 cases)
