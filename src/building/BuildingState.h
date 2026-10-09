@@ -67,6 +67,11 @@ struct BuildingStateRecord
 	Uint32 seenByMask;
 	// Footprint, clearing and combat access, each without/with swimming.
 	bool locked[6];
+	// Keep optional funding bookkeeping after existing hot simulation fields.
+	bool areaFunded = false;
+	Sint8 areaFundingTeam = -1;
+	Sint32 areaFundingType = -1;
+	Uint32 areaFundingTick = 0;
 	bool operator==(const BuildingStateRecord&) const = default;
 };
 static_assert(std::is_trivially_copyable_v<BuildingStateRecord>);

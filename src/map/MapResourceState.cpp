@@ -337,6 +337,7 @@ MapState::View Map::stateView() const
 {
     auto view=cellView();
     view.growth=&resourceGrowthField();
+    if(game) view.areaFertility=game->areaEffects.fertilityValues();
     return view;
 }
 std::uint32_t Map::resourceGrowthRateAt(size_t index,int resourceType) const

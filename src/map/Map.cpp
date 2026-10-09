@@ -532,6 +532,7 @@ void Map::configureCompute(unsigned threads)
 
 void Map::clear()
 {
+	if (game) game->areaEffects.reset();
 	loadedHistoricalGrowthVersion = 0;
 	loadedLegacyGrowth144 = false;
 	loadedLegacyGrowth145 = false;
