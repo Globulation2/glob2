@@ -1,0 +1,12 @@
+{
+  "baseline": {
+    "instructions": 23,
+    "idiv": 2,
+    "and": 0
+  },
+  "candidate": {
+    "instructions": 15,
+    "idiv": 0,
+    "and": 2
+  }
+}

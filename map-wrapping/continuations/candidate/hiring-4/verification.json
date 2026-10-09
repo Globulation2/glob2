@@ -1,0 +1,9 @@
+{
+  "fixture_sha256": "d09d1089e765822325528fc3167d7b2a099250e22e1c79dd589ebd393ceecf87",
+  "hashes": {
+    "game.replay.checksums": "baf0aeb62aca260b1f29a96f5c8ca4aae1e2d9a55e1247127d3eb454e7be8a9f",
+    "game.replay": "ec910e8034932e701d270a785ee3aaebb5ddb611f532dfe8c5a2363ed9784f6d",
+    "final.game.gz": "11f52062c550513b15259ae8f6dc76276b73894add562aaebc0f4ed73c2b0b0d"
+  },
+  "baseline_bytes_match": true
+}

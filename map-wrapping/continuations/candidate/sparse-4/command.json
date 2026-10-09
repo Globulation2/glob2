@@ -1,0 +1,22 @@
+[
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/candidate-glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/initial.game.gz",
+  "--ticks",
+  "4096",
+  "--compute-threads",
+  "4",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/continuations/candidate/sparse-4",
+  "--profile",
+  "map-wrap",
+  "--telemetry",
+  "checksums",
+  "--replay",
+  "true",
+  "--save",
+  "final"
+]

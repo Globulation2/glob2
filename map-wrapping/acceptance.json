@@ -1,0 +1,10 @@
+{
+  "candidate": "7bed8f543140ceb78139fdf35a36fe1dceb6be49",
+  "correctness": "passed with documented environment reruns",
+  "unit_cases": 921,
+  "engine_cases": 598,
+  "engine_skipped": 45,
+  "render_cases": 10,
+  "generator_rows": 564,
+  "identical_continuations": 10
+}

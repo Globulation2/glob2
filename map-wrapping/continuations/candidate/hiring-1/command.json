@@ -1,0 +1,22 @@
+[
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/candidate-glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/checkpoint-4096.game.gz",
+  "--ticks",
+  "8192",
+  "--compute-threads",
+  "1",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/continuations/candidate/hiring-1",
+  "--profile",
+  "map-wrap",
+  "--telemetry",
+  "checksums",
+  "--replay",
+  "true",
+  "--save",
+  "final"
+]

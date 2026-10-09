@@ -1,0 +1,6 @@
+PASS TorusRender/game rendering; picking and cache changes in software rendering [writes-preferences] (0.7s)
+PASS TorusRender/game rendering; picking and cache changes in OpenGL [display][writes-preferences] (83.4s)
+PASS TorusRender/game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences] (82.2s)
+
+3 passed, 0 failed, 0 skipped (166.3s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/render-rerun.xml (3 cases)

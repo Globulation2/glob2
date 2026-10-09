@@ -1,0 +1,12 @@
+{
+  "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/current-asset-overlay",
+  "removed_environment": [
+    "WAYLAND_DISPLAY",
+    "XDG_SESSION_TYPE",
+    "DISPLAY",
+    "SDL_VIDEO_DRIVER",
+    "SDL_VIDEODRIVER"
+  ],
+  "catalog_source_sha256": "0e6e410b8f9b557a9dc52adce7ea82ba26d06443bd9251ee21c333733a94c086",
+  "catalog_old_runtime_sha256": "a5ba44f9d9e56384f9964ae5acb1894e53bd520fcabfc140d6572d540115cdda"
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/python3
+import os,sys
+args=[a for a in sys.argv[1:] if a!="-s"]
+if any(a.endswith("/Headless.cpp") for a in args):args.append("-DGLOB2_SERIAL_AUDIT=1")
+os.execv("/usr/bin/g++-13",["g++-13",*args])

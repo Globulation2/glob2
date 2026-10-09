@@ -1,0 +1,6 @@
+PASS EngineSession/incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences] (5.8s)
+PASS TerrainMaterials/contextual contours use their halo and leave ambiguous and sharp borders unchanged (0.1s)
+PASS TerrainMaterials/contextual interiors remain within six pixels of the marching contour (0.1s)
+
+3 passed, 0 failed, 0 skipped (6.1s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/environment-rerun.xml (3 cases)

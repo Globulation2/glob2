@@ -1,0 +1,1 @@
+Million-input arithmetic stress check under UBSan: exit 0. Source: arithmetic-check.cpp.

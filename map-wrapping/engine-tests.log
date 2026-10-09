@@ -1,0 +1,831 @@
+PASS AICustomCatalog/production placement falls back from an obstructed preferred footprint (0.1s)
+PASS AICustomCatalog/Nicowar resolves one aggregate production demand per colony management pass (0.2s)
+PASS AICustomCatalog/shared runtime retirement distinguishes attraction and feeding and preserves mixed services (0.3s)
+PASS AICustomCatalog/shared runtime exact anchors support rectangular attractors across the torus (0.2s)
+PASS AICustomCatalog/Nicowar retained attraction retirement completes missions across save load (0.3s)
+PASS AICustomCatalog/Maxima exact anchors support rectangular footprints across the torus (0.2s)
+PASS AICustomCatalog/Nicowar and Econo keep independent weighted material objectives and stone clearance (0.4s)
+PASS AICustomCatalog/Warrush staffing preserves intent priority slot order and current stage limits (0.2s)
+PASS AICustomCatalog/six native strategies construct and use separate demanded production classes (0.5s)
+PASS AICustomCatalog/Castor bulk wheat reads preserve weighted distance rounding and sentinels (0.2s)
+PASS AICustomCatalog/Warrush mixed producer staffing respects zero and saturated assignment limits (0.2s)
+PASS AICustomCatalog/AI source selectors discover renamed multi-material deposits and independent depletion (0.2s)
+PASS AICustomCatalog/Castor projects only its strategic demands and preserves mixed staffing (0.4s)
+PASS AICustomCatalog/all native controllers select renamed mixed providers and release missing demands (1.2s)
+PASS AICustomCatalog/historical farming reserves only propagating finite material donors (0.8s)
+PASS AIDecisionCoverage/Cabino specialist modules survive save-load (1.5s)
+PASS RuntimePack/HD runtime pack: logical sizes in software rendering (2.2s)
+PASS AIDecisionCoverage/Cortex economy and food shortage survive save-load (2.0s)
+PASS AIDecisionCoverage/Warrush growth and attack preparation survive save-load (1.6s)
+PASS AIDecisionCoverage/Numbi growth and attack preparation survive save-load (1.7s)
+PASS AIDecisionCoverage/Econo adds new swarms as its colony grows (0.4s)
+PASS AIDecisionCoverage/Econo retains wheat-starved swarms while still retiring starved inns (1.1s)
+PASS AICustomCatalog/all native controllers continue deterministically with mixed permuted catalog (3.1s)
+PASS AIDecisionCoverage/Nicowar shared runtime survives save-load (1.4s)
+PASS AIRecoveryCoverage/Cabino declared inputs omit published fields without changing decisions (0.2s)
+PASS AIRecoveryCoverage/Cortex shore harvest differs from inaccessible algae and swimming opens islands (0.2s)
+PASS AIRecoveryCoverage/Cortex amphibious assessment distinguishes land water and blocked targets (0.2s)
+PASS AIRecoveryCoverage/Cortex wheat protection emits real area orders and food burst releases only our paint (0.2s)
+PASS AIRecoveryCoverage/Cortex farm checkerboard retires prototype paint and wheat blitz releases it (0.2s)
+PASS AIRecoveryCoverage/Castor projects deduplicate replace and decline already satisfied requests (0.2s)
+PASS AIRecoveryCoverage/Castor food lock backs off growth and boot projects wait for their cadence (0.2s)
+PASS AIRecoveryCoverage/Nicowar defense flags materialize once and withdraw when the threat disappears (0.2s)
+PASS AIRecoveryCoverage/Cabino defense records create assign deduplicate and retire actual flags (0.2s)
+PASS AIRecoveryCoverage/Cabino pending upgrades survive delayed observation and release rejected reservations (0.2s)
+PASS AIDecisionCoverage/with the farm-areas experiment every farming AI farms its wheat with a farm area and survives save-load (3.5s)
+PASS AIRecoveryCoverage/Cabino queued target identities survive saves and reject reused building slots (0.2s)
+PASS AIDecisionCoverage/Econo shared runtime survives save-load (1.4s)
+PASS AIRules/owner and snapshot selection audits agree for rule constrained orders (0.2s)
+PASS AIRules/disabled training preserves independent services of mixed providers (0.1s)
+PASS AIRules/construction staffing uses separate site and completed capacities (0.1s)
+PASS AIRules/retained tournament replay contains no unavailable orders (0.0s)
+PASS AIRules/Cabino reservations match unit class and qualification instead of building level (0.1s)
+PASS AIRules/legacy queued staffing imports explicit 135 wire without weakening modern validation (0.2s)
+PASS AIRules/engine prevents training and upgrades while retaining repairs and starting levels (0.2s)
+PASS AIRules/restored controller queues discard unavailable work and release prerequisites (0.2s)
+PASS AIRules/Cabino migrates legacy warrior reservations only when training is disabled (0.2s)
+PASS AIRules/rule parser and script observations use effective match values (0.2s)
+PASS AIRules/Cortex excludes unavailable technology from scoring and feeding prerequisites (0.0s)
+PASS AIRules/no growth farms harvest their finite seed rather than waiting forever (0.2s)
+PASS AIRules/Maxima removes disabled reserves while retaining finite production supply (0.2s)
+PASS AIRules/JavaScript profiles can inspect rules and issue useful orders (0.3s)
+PASS AIRules/renewable material potential survives saturation and honors yield policies (0.2s)
+PASS AIRules/prospective material supply combines mixed branch numerators without overflow (0.2s)
+PASS AISavePortability/runtime initialisation; area order serialisation and Maxima reserved telemetry (0.1s)
+PASS AIStateContinuation/Cortex economy and food shortage survive save-load (1.7s)
+PASS AIDecisionCoverage/Castor and Maxima growth and shortage resume at early and active checkpoints (4.0s)
+PASS AIDecisionCoverage/farm areas reuse each AI's forbidden wheat placement on an unchanged colony (6.7s)
+PASS AIStateContinuation/Econo shared runtime survives save-load (5.3s)
+PASS AIStateContinuation/all controllers continue alongside another AI and a shared-team controller [slow] (6.9s)
+PASS LegacyAIState/Warrush timers and constructors round-trip at boundaries (0.2s)
+PASS AIStateContinuation/Numbi growth and attack preparation survive save-load (9.7s)
+PASS LegacyAIState/Numbi phase clock survives and advances on the original poll (0.2s)
+PASS LegacyAIState/old layouts default omitted clocks without consuming the following field (0.2s)
+PASS LegacyAIState/new timer records reject out-of-range missing and malformed values (0.2s)
+PASS LegacyAIState/pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex (0.2s)
+PASS LegacyAIState/Warrush wrapper preserves the next decision and its random stream (0.2s)
+PASS LegacyAIState/Numbi wrapper preserves an active phase clock and the next decision (0.2s)
+PASS LegacyAIState/Nicowar explorer phases and full construction counts survive (0.2s)
+PASS LegacyAIState/Cabino saving leaves its pending FIFO intact (0.2s)
+PASS LegacyAIState/Cabino preserves stale gradients module latches and fruit memories (0.2s)
+PASS LegacyAIState/Cortex saved policy and model supersede the current process selection (0.2s)
+PASS LegacyAIState/shared runtime reload replaces queues and registrations in binary and text (0.2s)
+PASS AIRules/Castor waits for configured recovery rather than exhausted finite food (0.2s)
+PASS CastorContinuation/crop habitat excludes sand transitions and new paved terrain (0.2s)
+PASS CastorContinuation/Castor seeded boot and active decisions repeat exactly (1.1s)
+PASS CastorContinuation/binary and text snapshots preserve project fields and cache history (0.2s)
+PASS CastorContinuation/decisions keep assignments private and rejected requests can retry (0.2s)
+PASS CastorContinuation/snapshot decisions ignore later live changes and release borrowed inputs (0.2s)
+PASS CastorContinuation/historical timer-only AI saves remain readable (0.2s)
+PASS CortexActionCoverage/idle polls preserve slow path timer and random state (0.2s)
+PASS CortexActionCoverage/wheat discovery keeps first path depths and local fog boundaries (0.2s)
+PASS CortexActionCoverage/placement reuses observation qualification without persisting stale worker levels (0.2s)
+PASS CortexActionCoverage/Cortex observations stay isolated from later simulation changes (0.2s)
+PASS CortexActionCoverage/bounded model channels preserve stock identity and ignore custom family metadata (0.1s)
+PASS AIStateContinuation/Castor and Maxima active full games preserve decisions and RNG [slow] (5.9s)
+PASS CortexActionCoverage/stock consumers are not exchange providers and hybrid attractors survive retirement (0.3s)
+PASS CortexActionCoverage/mixed renamed provider has multiple policy roles but one model and worker identity (0.2s)
+PASS CortexActionCoverage/actual observation and policy build split overlay producers for requested classes (0.2s)
+PASS CortexActionCoverage/actual production observation preserves positive weights and settles output transitions (0.2s)
+PASS CortexActionCoverage/provider ranking uses construction materials independently of storage (0.2s)
+PASS CortexActionCoverage/live capability upgrade eligibility and descriptor capacities drive construction (0.2s)
+PASS AIStateContinuation/Nicowar shared runtime survives save-load (12.4s)
+PASS CortexActionCoverage/build actions reject invalid slots and cooldown suppresses duplicate orders (0.2s)
+PASS CortexActionCoverage/war flags create once reconcile force limits and retarget through real orders (0.2s)
+PASS CortexActionCoverage/flag rediscovery excludes claimed flags and stale defense teardown is idempotent (0.2s)
+PASS CortexActionCoverage/rally selection and bound warrior arrivals respect colony preference and toroidal range (0.2s)
+PASS CortexActionCoverage/production clamps ratios applies orders and deduplicates finished swarms (0.2s)
+PASS CortexActionCoverage/Cortex rejection receipts clear exact delayed upgrade and flag intents (0.2s)
+PASS CortexActionCoverage/Cortex delayed staffing overlay respects entity incarnations (0.1s)
+PASS AIDecisionCoverage/long AI campaigns resume with identical orders state and game RNG [slow][artifacts] (16.1s)
+PASS CortexGeometry/snapshot distances preserve wrapped inputs and discovery never bypasses legality (0.1s)
+PASS CortexGeometry/placement food snapshot matches scalar stock queries and refreshes per pass (0.2s)
+PASS AIStateContinuation/Cabino specialist modules survive save-load (14.7s)
+PASS CortexGeometry/placement food snapshot matches toroidal scalar distances on thin maps (0.2s)
+PASS CortexNetCoverage/equal negative logits select the lowest eligible class (0.0s)
+PASS CortexNetCoverage/integer inference matches an independent two-signal oracle (0.0s)
+PASS CortexNetCoverage/worker caps mask impossible outputs and clamp depleted wheat (0.0s)
+PASS CortexNetCoverage/truncated blobs and invalid header or layer contracts are rejected (0.0s)
+PASS CortexPolicyCoverage/learned policies load once retain feasibility masks and fall back on invalid files (0.0s)
+PASS CortexPolicyCoverage/tech upgrades require trained units and decline below the boundary (0.0s)
+PASS CortexNetCoverage/file loaders reject missing empty and wrong-net blobs (0.0s)
+PASS CortexPolicyCoverage/first tech buildings require prerequisites and feasible locations (0.0s)
+PASS CortexPolicyCoverage/inn upgrades retain enough feeding capacity and hospitals scale with army (0.0s)
+PASS CortexPolicyCoverage/worker tuning respects depletion floors settling and a shared construction budget (0.0s)
+PASS CortexPolicyCoverage/combat prioritizes serious defense and respects attack hold and amphibious capacity (0.0s)
+PASS CortexPolicyCoverage/protection hunger and bootstrap decisions honor observation validity (0.0s)
+PASS CastorContinuation/Castor boot and active projects survive save-load (3.9s)
+PASS CortexGeometry/lazy placement hard space matches canonical rectangles and refreshes per pass (0.2s)
+PASS AIOrderScheduler/save drains computation and retains future outputs without recomputing (0.0s)
+PASS AIOrderScheduler/saved repeated enrollments retain the first initialization tick (0.0s)
+PASS AIOrderScheduler/same initialization identity cannot restore contradictory planes (0.0s)
+PASS AIOrderScheduler/failure joins work and cannot partially publish or lose the original error (0.0s)
+PASS AIOrderScheduler/cancellation joins the old controller generation before replacement (0.0s)
+PASS AIOrderScheduler/configuration rejects live work and submissions after a tick was dispatched (0.0s)
+PASS AIOrderScheduler/sharing follows the delay and the measured decision work (0.0s)
+PASS AIOrderScheduler/Diagnostic captures do not change saved pending orders (0.0s)
+PASS AIOrderScheduler/restore refuses truncated duplicate and out of window pending requests (0.0s)
+PASS AIPipeline/replacement cancels an old output without rejecting identical new wire bytes (0.1s)
+PASS AIPipeline/team death cancels submitted work and saves receipts for a revived controller (0.2s)
+PASS AIOrderScheduler/all delays preserve every FIFO poll and fixed player ordered deadlines (0.4s)
+PASS CortexGeometry/placement geometry matches the tile-scan oracle (0.7s)
+PASS AIPipeline/a submitted deadline is delivered even when no new poll is eligible (0.1s)
+PASS AIPipeline/pause and repeated boundary calls cannot execute a published command twice (0.5s)
+PASS Maxima.Combat/retained attraction completes saved missions (0.2s)
+PASS AIPipeline/wrapper preemption preserves controller rejection feedback and pending release identity across save (0.3s)
+PASS Maxima.Combat/retirement preserves independent training (0.2s)
+PASS Maxima.Combat/unavailable attraction has no placement (0.2s)
+PASS Maxima.Combat/fitted force uses only visible units (0.1s)
+PASS Maxima.Combat/fitted power controls attack gate (0.1s)
+PASS Maxima.Combat/fitted history survives save (0.1s)
+PASS Maxima.Combat/nearby warriors count as rallied (0.1s)
+PASS Maxima.Combat/rally rejects blocked ground (0.1s)
+PASS AIStateContinuation/Warrush growth and attack preparation survive save-load (15.6s)
+PASS Maxima.Combat/rally assembles by movement (0.2s)
+PASS Maxima.Combat/wave assembly and pipeline (0.1s)
+PASS Maxima.Combat/wave assembly fallback (0.1s)
+PASS Maxima.Combat/wave delivery fallback (0.2s)
+PASS Maxima.Combat/small wave keeps recruiting (0.1s)
+PASS Maxima.Combat/defense wraps building origins (0.2s)
+PASS Maxima.Combat/warrior eligibility (0.1s)
+PASS Maxima.Combat/defense coverage (0.2s)
+PASS Maxima.Combat/untrained warriors fight at level one (0.2s)
+PASS Maxima.Combat/minimum force gate (0.1s)
+PASS Maxima.Combat/lowered flag level survives review (0.1s)
+PASS Maxima.Combat/barracks are filled before attacking (0.2s)
+PASS Maxima.Combat/training reservations match different levels (0.1s)
+PASS Maxima.Combat/food posture does not veto combat (0.1s)
+PASS Maxima.Combat/unusable training does not block attacks (0.2s)
+PASS Maxima.Combat/offense follows destroyed targets (0.1s)
+PASS Maxima.Combat/streaming scales with army (0.6s)
+PASS Maxima.Combat/stalled target is quarantined (0.1s)
+PASS Maxima.Combat/sealed target opens route (0.2s)
+PASS Maxima.Combat/raids outscore distant buildings (0.1s)
+PASS Maxima.Combat/economic recovery preserves military budget (0.1s)
+PASS Maxima.Combat/forbidden defense zones (0.2s)
+PASS Maxima.Director/reconnaissance waits for eighty percent (0.1s)
+PASS Maxima.Director/fortification uses only spare labour (0.1s)
+PASS Maxima.Director/unified hospital capacity (0.1s)
+PASS Maxima.Director/cadence (0.1s)
+PASS Maxima.Combat/defense deadband preserves coverage (0.4s)
+PASS Maxima.Director/ally prestige (0.1s)
+PASS Maxima.Combat/offensive control switches (0.5s)
+PASS Maxima.Director/third party tower (0.1s)
+PASS Maxima.Director/disconnected army (0.1s)
+PASS Maxima.Director/proactive protection (0.1s)
+PASS Maxima.Economy/counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format] (0.1s)
+PASS Maxima.Director/reused own id (0.2s)
+PASS Maxima.Economy/labour continuation (0.1s)
+PASS Maxima.Economy/stranded algae keeps pool demand (0.1s)
+PASS Maxima.Economy/schools do not require known algae (0.1s)
+PASS Maxima.Economy/birth budget scales beyond twenty (0.1s)
+PASS Maxima.Economy/growing food funds capacity (0.1s)
+PASS Maxima.Economy/colony startup and affordability (0.1s)
+PASS Maxima.Economy/distant wheat funds recovery (0.1s)
+PASS Maxima.Economy/sole swarm staffs from its own stock (0.1s)
+PASS Maxima.Economy/new buildings start staffed (0.1s)
+PASS Maxima.Economy/nearby corn determines staffing (0.1s)
+PASS Maxima.Economy/corn pile interior is supply (0.1s)
+PASS Maxima.Economy/explorer target always gets production (0.1s)
+PASS Maxima.Economy/army demand funds training and birth mix (0.1s)
+PASS Maxima.Economy/barracks upgrades keep training open (0.1s)
+PASS Maxima.Economy/army births match platform checksums (0.1s)
+PASS Maxima.Economy/crisis production pause (0.1s)
+PASS Maxima.Economy/completion reallocates colony (0.1s)
+PASS Maxima.Economy/service rate uses simulated visit ticks (0.1s)
+PASS Maxima.Economy/holiday harvest capacity (0.2s)
+PASS Maxima.Economy/feeding estimate shares resources and seats across capability combinations (0.2s)
+PASS Maxima.Economy/food pressure increases planned feeding capacity without a permanent queue ratchet (0.1s)
+PASS Maxima.Economy/tracker logical cadence (0.5s)
+PASS AIPipeline/every shipped controller preserves orders and state across worker counts and all delays (3.0s)
+PASS Maxima.Economy/operating estimates use one production clock and packet denominators (0.2s)
+PASS Maxima.Economy/parallel training budgets separate compatible recipients and disabled services (0.1s)
+PASS Maxima.Economy/projectile profiles reserve ammunition workers and cache nominal feeding (0.1s)
+PASS Maxima.Economy/feeding budget scaling handles maximum seats without overflowing intermediate products (0.1s)
+PASS Maxima.Economy/feeding demand allocation conserves recipient classes and shared provider capacity (0.0s)
+PASS Maxima.Economy/feeding farm claims follow one cohort while hybrid operating demand stays independent (0.0s)
+PASS Maxima.Economy/one training course credits independent movement and worker construction outcomes (0.2s)
+PASS Maxima.Economy/feeding packet denominations preserve large stock rates and profile continuation (0.1s)
+PASS Maxima.Economy/feeding colonies join overlapping catchments transitively and preserve independent training (0.2s)
+PASS Maxima.Economy/recipient meal demand follows saved hunger and external action clocks (0.1s)
+PASS Maxima.Economy/feeding capacity preserves independently admitted recipient classes (0.0s)
+PASS Maxima.Economy/mechanical production ceilings are separate from planned carrier throughput (0.1s)
+PASS Maxima.Economy/birth funding counts production packets without independent hybrid service costs (0.1s)
+PASS Maxima.Economy/service ceilings respect the engine action clock and crop funding avoids overflow (0.1s)
+PASS Maxima.Economy/food retirement preserves the only explorer feeder despite surplus worker seats (0.1s)
+PASS Maxima.Economy/operating production claims preserve weighted recipe costs and shared carrier work (0.0s)
+PASS Maxima.Economy/production ledger uses requested staffing ratios and target stage with continuation (0.0s)
+PASS Maxima.Economy/producer candidates enforce local feasibility alongside strategic target caps (0.0s)
+PASS Maxima.Economy/feeding candidates transfer funded meal shares through cache reload and replacement (0.0s)
+PASS Maxima.Economy/Food reach crosses passable nonfood deposits but respects resource obstruction (0.0s)
+PASS Maxima.Economy/production observation keeps planned work despite temporarily absent carriers (0.2s)
+PASS Maxima.Economy/custom construction supply counts reachable mixed yields and shore access (0.1s)
+PASS Maxima.Economy/Colony food traversal preserves ordered scalar reachability (0.0s)
+PASS Maxima.Economy/aggregate feeding demand escapes a crop count cap during service shortage (0.3s)
+PASS Maxima.Economy/food allocation does not retire reachable production but exhausted sites remain retirable (0.1s)
+PASS Maxima.FarmingIntegration/farm zones use the final wheat protection plan including empty frontier cells (0.1s)
+PASS Maxima.FarmingIntegration/firebreak management radius (0.1s)
+PASS Maxima.FarmingIntegration/farm management radius (0.1s)
+PASS Maxima.FarmingIntegration/permanent wheat layout (0.2s)
+PASS Maxima.FarmingIntegration/coastal wheat crosses fertility dips (0.2s)
+PASS Maxima.FarmingIntegration/initial flag staffing (0.2s)
+PASS Maxima.FarmingIntegration/seed survival (0.2s)
+PASS Maxima.FarmingIntegration/wood reserve survives own farm protection (0.1s)
+PASS Maxima.FarmingIntegration/wood reserve survives wheat pincer (0.2s)
+PASS Maxima.FarmingIntegration/expansion leaves harvest lanes open (0.2s)
+PASS Maxima.FarmingIntegration/maintenance protection agreement (0.2s)
+PASS Maxima.FarmingIntegration/aligned pattern transitions (0.2s)
+PASS Maxima.FarmingIntegration/archipelago harvest does not seal wheat (0.2s)
+PASS Maxima.FarmingIntegration/farming respects discovery (0.2s)
+PASS Maxima.FarmingIntegration/custom spreading frontier follows actual donor habitat (0.2s)
+PASS Maxima.FarmingIntegration/mixed donor reserves its propagating wood without borrowing food renewal (0.1s)
+PASS Maxima.FarmingIntegration/farming eligibility snapshot refreshes after stock and catalog changes (0.1s)
+PASS Maxima.FarmingIntegration/indexed farm geometry matches scalar toroidal closing and seed adjacency (0.0s)
+PASS Maxima.FarmingIntegration/custom producers only reserve finite spreading seeds (0.5s)
+PASS Maxima.FarmingIntegration/farm boundary geometry reads depleted secondary Food stocks (0.1s)
+PASS Maxima.FarmingIntegration/seed stability across maps (0.8s)
+PASS Maxima.Implementation/terrain travel fields serialize mode and retain stale snapshots (0.2s)
+PASS Maxima.Implementation/gradient dependencies; payload round trips and cache expiry (0.2s)
+PASS Maxima.Implementation/upgrade clearing regressions (0.2s)
+PASS Maxima.Implementation/rejected placement upgrade regressions (0.1s)
+PASS Maxima.Implementation/placement maintenance regressions (0.3s)
+PASS Maxima.Implementation/preemptive scheduling regression (0.1s)
+PASS Maxima.Implementation/maxima bootstrap regression (0.1s)
+PASS Maxima.Implementation/integration regressions (0.1s)
+PASS Maxima.Implementation/execution regressions (0.1s)
+PASS Maxima.Implementation/fruit supply routes (0.1s)
+PASS Maxima.Implementation/fruit strategy regressions (0.1s)
+PASS Maxima.Implementation/review bug regressions (0.1s)
+PASS Maxima.Implementation/mission force regressions (0.2s)
+PASS Maxima.Implementation/economy staffing regressions (0.1s)
+PASS Maxima.Implementation/execution state save regression (0.1s)
+PASS Maxima.Implementation/food relocation executor regression (0.1s)
+PASS Maxima.Implementation/explorer swarm staffing regressions (0.2s)
+PASS Maxima.Implementation/economic resource access regressions (0.1s)
+PASS Maxima.Implementation/completed swarm budget regressions (0.2s)
+PASS Maxima.Implementation/director upgrade priority regressions (0.1s)
+PASS Maxima.Implementation/repair labor contract regressions (0.2s)
+PASS Maxima.Implementation/inn completion staffing regressions (0.2s)
+PASS Maxima.Implementation/director upgrade regressions (0.1s)
+PASS Maxima.Implementation/director execution regressions (0.2s)
+PASS Maxima.Implementation/upgrade worker priority regressions (0.2s)
+PASS Maxima.Implementation/school population scaling regressions (0.2s)
+PASS Maxima.Implementation/Maxima food catchments and carrier discounts follow trail and ice travel costs (0.1s)
+PASS Maxima.Implementation/prepared resource obstacles match scalar entity gradients (0.2s)
+PASS Maxima.Diagnostics/names; descriptions and two seeded diagnostic runs (5.3s)
+PASS Maxima.Relocation/lost replacement (0.2s)
+PASS Maxima.Relocation/deferred retry (0.1s)
+PASS Maxima.Relocation/deletion safety (0.4s)
+PASS Maxima.Strategy/formats; canonical values and version gates (0.2s)
+PASS Maxima.Relocation/saved relationships (0.4s)
+PASS NicowarFarming/zone boundaries; eight-way adjacency; wrap seams; discovery; protection and building clearance (0.2s)
+PASS RuntimeBuildingOrderSaveLoad/RoundTripCurrentVersion (0.0s)
+PASS RuntimeBuildingOrderSaveLoad/UnregisteredOrderRoundTrips (0.0s)
+PASS RuntimeBuildingOrderSaveLoad/Pre96StreamLeavesSentinel (0.0s)
+PASS NicowarFarming/farm areas reuse wheat protection while wood keeps its existing forbidden and clearing rules (0.2s)
+PASS RuntimeContinuation/terrain weighted influence retains obstacles and sub-tile trail costs (0.0s)
+PASS RuntimeContinuation/irrigation heuristics require a positive enabled fertility contribution (0.0s)
+PASS RuntimeContinuation/position entities retain historical binary and text payloads (0.0s)
+PASS RuntimeContinuation/recurring input tracking and provider lookup preserve composite membership (0.2s)
+PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (0.4s)
+PASS RuntimeContinuation/runtime owner helpers and decisions release their full observation leases (0.2s)
+PASS RuntimeContinuation/flat building relationships resolve captured unit incarnations (0.2s)
+PASS RuntimeContinuation/queued orders preserve selection incarnations through save and slot replacement (0.2s)
+PASS RuntimeContinuation/static material fields invalidate on source edits and preserve continuation (0.2s)
+PASS AITargetTelemetrySave/Cortex flag targets carry the team that owns each building (0.2s)
+PASS AITargetTelemetrySave/target fields are declared in schema version 2 (0.3s)
+PASS AITargetTelemetrySave/Numbi reports the highest-numbered enemy its attack searches (0.1s)
+PASS AITargetTelemetrySave/Cortex records its committed target until the offense stands down, across saves (0.3s)
+PASS Maxima.Implementation/category maintenance capacity regressions (2.6s)
+PASS AITelemetryUI/telemetry selection filtering samples and access changes preserve safe state (0.3s)
+PASS AITelemetryUI/telemetry layout and painting stay bounded with full schemas (0.5s)
+PASS WarrushObservation/declared inputs omit published fields without changing decisions (0.2s)
+PASS WarrushObservation/snapshot influence and uphill destination preserve live query semantics (0.2s)
+PASS AITelemetryUI/telemetry waits for touch coasting and scrolls long details independently (0.4s)
+PASS FetchApportionment/site spreads its fetchers across both resources (0.1s)
+PASS WarrushObservation/pending assignments settle through immutable rejection receipts (0.2s)
+PASS FetchApportionment/an empty handed unit wins all else equal (0.1s)
+PASS FetchApportionment/a loaded unit far enough ahead is still hired (0.1s)
+PASS HiringBucket/hiring round is fair (0.1s)
+PASS EngineSession/observation players preserve seat order and spectator readiness (0.1s)
+PASS LevelGate/worker hiring reads construction qualification independently of speed training (0.2s)
+PASS EngineSession/new client requests replace completed pending frames without recapture (0.1s)
+PASS EngineSession/native presentation fallback yields between expensive chunks (0.1s)
+PASS Maxima.Lifecycle/names; descriptions and two seeded lifecycles (4.7s)
+PASS EngineSession/serial sessions retain chat text across skipped GUI frames (1.4s)
+FAIL EngineSession/incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences] (1.4s)
+PASS SimulationReadPhase/presentation borrows the published no-AI read boundary without recapture (0.1s)
+PASS SimulationReadPhase/direct completed steps match deferred preparation across worker counts (0.4s)
+PASS SimulationReadPhase/AI and pending gradients consume the presentation union without another capture (0.2s)
+PASS MapSets/invalid packages fail atomically and reimports preserve local edits (0.1s)
+PASS MapSets/selected terrain includes custom resources and explicit updates replace local copies (0.1s)
+PASS MapTiling/copies colonies, painted areas and clearing settings [save-format] (0.2s)
+PASS MapTiling/rejects invalid requests without mutating the source [save-format] (0.1s)
+PASS MapTiling/wraps swimmers, buildings and team areas together across the source seam [save-format] (0.1s)
+PASS MapTiling/writes a compressed source as a reloadable ordinary map [save-format] (0.3s)
+PASS MapTiling/a repeated starting map has portable per-tick checksums [save-format][golden] (0.3s)
+PASS MapTiling/refuses over-capacity bases before replacing the source [save-format] (0.1s)
+PASS MapSets/custom artwork properties and credits survive offline save and load [artifacts] (0.8s)
+PASS ResourceGrowth/signed proposals use only current resource type and apply in order (0.1s)
+PASS ResourceGrowth/material deltas cap independently and create configured seed stocks (0.1s)
+PASS ResourceGrowth/proposal capacity grows safely and is retained for reuse (0.1s)
+PASS ResourceGrowth/legacy pending masks migrate and signed pending proposals validate on load (0.1s)
+PASS ResourceGrowth/kernel is immutable deterministic and responds to disabled growth and scarcity (0.1s)
+PASS ResourceGrowth/zero-worker and shared deadlines match and pending work survives saving (0.6s)
+PASS ResourceGrowth/setting the delay leaves reservations and unfinished work untouched (0.1s)
+PASS ResourceGrowth/pipeline waits at exact deadline and pause does not publish (0.1s)
+PASS ResourceGrowth/frozen input outlives terrain and resource edits and wrapping remains valid (0.1s)
+PASS ResourceGrowth/light checksums leave zero-worker work deferred and world replacement discards it (0.1s)
+PASS ResourceGrowth/publication accounts for proposals rejected by a different world (0.2s)
+PASS ResourceGrowthBenchmark/player-free growth reconciles world stocks and team statistics (2.0s)
+PASS ResourceGrowth/format 144 and 145 packed growth headers cannot alias artwork lengths (0.0s)
+PASS ResourceGrowth/text save layout probes are relative and preserve section state (0.0s)
+PASS ResourceGrowth/later completed work cannot publish ahead of an earlier batch (0.2s)
+PASS ResourceGrowth/configured seeds preserve rates variety collisions and saved output (0.2s)
+PASS ResourceGrowthBenchmark/generated landscapes preserve player-free growth accounting (2.2s)
+PASS ResourceGrowth/typed proposal loading validates fields and preserves old queued units (0.1s)
+PASS ResourceGrowth/finishing the last deferred tick computes without publishing early (0.1s)
+PASS ResourceGrowth/zero seed stocks use authoritative resource initialization (0.3s)
+PASS TerrainEcology/four growth opportunities preserve capped stacks and measured conservation (0.4s)
+PASS TerrainEcology/empty and prohibited resource cells do not acquire bonus growth (0.1s)
+PASS ResourceGrowth/engine preflight opens both historical growth and released vertex saves (0.6s)
+PASS TerrainProperties/exclusive movement modes and bounded compile-time definitions (0.0s)
+PASS TerrainProperties/Trail retains legacy identities and terrain behavior (0.0s)
+PASS TerrainProperties/vertex terrain survives tiling and batches snapshot invalidation (0.1s)
+PASS TerrainProperties/same-size map replacement and terrain edits refresh ecology (0.1s)
+PASS TerrainProperties/terrain edits refresh escape costs and supersede queued route snapshots (0.1s)
+PASS TerrainProperties/required terrain experiments survive tiling and distinguish map headers (0.1s)
+PASS TerrainProperties/explorers ignore ice damage and no-permadeath applies to ground hazards (0.1s)
+PASS TerrainProperties/ice exposure includes stationary units and preserves fractional health in saves (0.2s)
+PASS TerrainProperties/health modifiers clip healing and expose units that have found an exit (0.2s)
+PASS TerrainProperties/terrain health profiles choose independent air and ground rates (0.1s)
+PASS TerrainProperties/projectile supercover tests intermediate cells corners and wrapped coordinates (0.0s)
+PASS TerrainProperties/explorer flag eligibility applies route accessibility and hunger distance (0.1s)
+PASS TerrainRuntime/maps isolate registries and reject failed imports atomically (0.1s)
+PASS TerrainRuntime/eager resumed and worker gradients agree on custom slow swimming (0.1s)
+PASS TerrainRuntime/custom capabilities drive map queries health ecology and immutable match definitions (0.2s)
+PASS TerrainRuntime/unused distinct costs do not expand map movement setup (0.1s)
+PASS TerrainRuntime/production pipeline captures custom movement and discards fields after reimport (0.3s)
+PASS TerrainRuntime/embedded registry restores custom state and pending gradients without source files (0.3s)
+PASS TerrainRuntime/format-137 saves with custom terrain load with remapped IDs and resave at the current format (0.2s)
+PASS TerrainRuntime/painted catalogue terrain survives save and reload with its checksum (0.6s)
+PASS TerrainRuntime/large embedded registry crosses the stream string limit (1.2s)
+PASS TerrainRuntime/each catalogue type requires exactly its group's experiment and shares the group profile (0.1s)
+PASS TerrainHazardRouting/ice costs twenty recovery ticks per HP and remains traversable (0.2s)
+PASS TerrainHazardRouting/idle ground units avoid entering ice and escape a multi-cell patch (0.1s)
+PASS TerrainHazardRouting/extreme authored hazards saturate and shared fields agree with point costs (0.1s)
+PASS TerrainHazardRouting/custom air damage routes flyers and idle flyers escape it (0.2s)
+PASS TerrainHazardRouting/workers and warriors reuse escape fields and moving units do not invalidate them (0.1s)
+PASS TerrainHazardRouting/old hazard route caches rebuild while current saves retain routing state (0.2s)
+PASS TerrainHazardRouting/escape fields separate team permissions swimming and forbidden-area escape (0.1s)
+PASS TerrainHazardRouting/flyers share safety fields across teams and ignore ground invalidations (0.1s)
+PASS TerrainHazardRouting/escape fields respect runtime resource blocking and ignore stock-only edits (0.1s)
+PASS TerrainHazardRouting/escape fields charge destination terrain and choose a cheaper indirect exit (0.1s)
+PASS TerrainHazardRouting/escape cache evicts the least recently used profile and resets generations (0.0s)
+PASS RuntimeResources/material harvesting consumes stock and never invents a delivery (0.1s)
+PASS RuntimeResources/growth at capacity stays capped and persistent fruit depletes (0.1s)
+PASS RuntimeResources/custom compound deposit has independent material stock and destructive harvest (0.1s)
+PASS ResourceGrowth/both format 144 and 145 lineages and compact growth saves retain continuation [save-format] (4.2s)
+PASS RuntimeResources/landscape scavenge sites start full, deplete per material and vanish when empty (0.1s)
+PASS RuntimeResources/resource identities above byte range preserve compound stocks through save and continuation (0.4s)
+PASS RuntimeResources/landscape dead trees, undergrowth and fish keep their habitats and obstruction (0.1s)
+PASS RuntimeResources/workers carry food from camp-sites to an inn and leave their other yields (0.2s)
+PASS RuntimeResources/a half-harvested scavenge site survives save and continues identically (0.3s)
+PASS RuntimeResources/last finite source extinction and persistent source regrowth update material presence (0.1s)
+PASS RuntimeResources/landscape showcase map places every landscape resource [artifacts] (0.2s)
+PASS RuntimeResources/starting crop guarantees and adjacent supply use live material yields (0.1s)
+PASS AIRules/native controllers exclude disabled work and continue after reload [slow] (34.6s)
+PASS RuntimeResources/shared starting supply checks accept material sources above resource id 255 (0.3s)
+PASS RuntimeResources/bounded starter crop replacement uses surplus materials and respects clearability (0.1s)
+PASS RuntimeResources/material frontage counts secondary stocks and prospective renewable supply (0.1s)
+PASS RuntimeResources/fixed property ablations preserve harvest growth clearing and movement invariants (0.1s)
+PASS RuntimeResources/start diagnostics distinguish configured renewal from spreading pressure (0.2s)
+PASS RuntimeResources/editor catalog replacement preserves materials across layouts and rejects invalid imports atomically (0.1s)
+PASS RuntimeResources/redefined builtin resource follows declarative habitat and terrain whitelist intersection (0.1s)
+PASS RuntimeResources/infinite farm stocks remain harvestable at their seed reserve (0.2s)
+PASS RuntimeResources/destructive resources cannot bridge pooled farms even without reserves or regrowth (0.3s)
+PASS RuntimeResources/farm harvest uses the touched material policy before pooling neighboring stock (0.3s)
+PASS RuntimeResources/renamed deposits and sprite variants preserve stochastic stock trajectories (0.2s)
+PASS RuntimeResources/embedded resource save starts with an invalid installed catalog (0.4s)
+PASS RuntimeResources/legacy resource saves ignore reordered modified installed defaults in a fresh process (0.2s)
+PASS RuntimeResources/custom ground and air obstruction independently govern routes across toroidal barriers (0.3s)
+PASS RuntimeResources/released terrain-seed format 138 retains legacy resource and material continuation (0.3s)
+PASS RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden] (0.8s)
+PASS RuntimeResources/released observation format 139 imports legacy stocks and preserves current save continuation (0.4s)
+PASS MapGeneratorDefaults/search domains preserve legal values and constrain deterministic rolls (0.2s)
+PASS MapGeneratorDefaults/starting layouts follow rectangular and overlay catalog footprints (0.4s)
+PASS MapGeneratorDefaults/resource habitat distinguishes terrain permission from growth and occupancy (0.1s)
+PASS MapGeneratorDefaults/shared route and wall contracts use terrain capabilities (0.1s)
+PASS MapGeneratorDefaults/Random design defaults resolve reproducibly without changing explicit enums (3.3s)
+PASS MapGeneratorDefaults/toolkit geometry; raster; resource and home contracts (3.3s)
+PASS AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged (15.9s)
+PASS Maxima.Economy/sustained stock feeding reports capability estimates and historical strategy targets (22.0s)
+PASS AIPipeline/save continuation retains controller caches receipts and future commands at pipeline boundaries (25.1s)
+PASS MapGeneratorDefaults/Explicit designs preserve topology across the runtime-resource RNG epoch (1.4s)
+PASS MapGeneratorDefaults/Drowned Forest circulation uses the configured starting definition (1.7s)
+PASS MapGeneratorDefaults/Bastion Keys contracts (2.4s)
+PASS MapGeneratorDefaults/Who Ate the Map contracts (3.5s)
+PASS MapGeneratorDefaults/Random designs match explicit generated worlds on rectangles [slow] (7.3s)
+PASS MapGeneratorDefaults/Gauntlet shapes; request rejection and final-world corruption checks (5.8s)
+PASS MapGeneratorDefaults/contact costs follow custom deposit obstruction and removal properties (0.2s)
+PASS ScriptGenerator/Fertility binding rejects incomplete fields and mismatched masks (0.0s)
+PASS ScriptGenerator/Fertility binding reserves native work and memory before rebuilding (0.1s)
+PASS ScriptGenerator/Toolkit consumers reject empty fertility arguments (0.1s)
+PASS ScriptGenerator/Script control mutations cannot bypass native domain contracts (0.0s)
+PASS ScriptGenerator/Site graphs share distance captures and account repeated graph copies (0.2s)
+PASS ScriptGenerator/Package identity controls modules and installation rollback (0.0s)
+PASS ScriptGenerator/Full toolkit records buffers geometry callbacks and solver (0.2s)
+PASS ScriptGenerator/Graph ownership optional callbacks and pointer outputs (0.1s)
+PASS MapGeneratorDefaults/Hungry Marches contracts (5.9s)
+PASS ScriptGenerator/Native scratch tables respect the allocation budget (1.1s)
+PASS ScriptGenerator/Script terrain and colonies go through engine world validation (0.4s)
+PASS ScriptGenerator/Script resource placement uses the world catalog and bounded brushes (0.1s)
+PASS ScriptGenerator/Request immutability RNG streams and module isolation (0.0s)
+PASS ScriptGenerator/Custom preferences persist string identity and tolerate missing packages (0.0s)
+PASS Maxima.Economy/observed hunger expands feeding for an opening colony mix beyond nominal forecasts (31.4s)
+PASS ScriptGenerator/Frozen controls survive package replacement and catalogs are released (0.0s)
+PASS ScriptGenerator/Conversion failures release intermediate QuickJS containers (0.0s)
+PASS ScriptGenerator/Installed generator library writes to a fresh user profile [writes-preferences] (0.1s)
+PASS ScriptGenerator/Frozen selections retain defaults and rules after package removal (0.0s)
+PASS ScriptGenerator/Library mutations retain memory and disk when storage throws (0.0s)
+PASS ScriptGenerator/Online generator installation verifies hashes and persists provenance transactionally (0.0s)
+PASS ScriptGenerator/Shared generated worlds continue identically without installed generator code [golden] (0.6s)
+PASS ScriptGenerator/Moved callback arguments retain their converted storage (0.0s)
+PASS ScriptGenerator/Owned classes preserve borrowed context and RNG expiration (0.2s)
+PASS ScriptGenerator/Every operation registration path shares the handle budget (0.1s)
+PASS ScriptGenerator/By value copies reserve native payloads before allocation (0.0s)
+PASS ScriptGenerator/Nested buffer get fill and set reserve before copying (0.0s)
+PASS ScriptGenerator/Nested buffer fills are accounted and returned rows own their data (0.0s)
+PASS ScriptGenerator/Boolean buffer proxies become JavaScript booleans (0.0s)
+PASS ScriptGenerator/All named stream consumers share creation limits and accounting (0.1s)
+PASS GradientPreparation/warm preparation keeps custom supplier unions exclusions penalties and overlays live (0.2s)
+PASS GradientPreparation/supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields (0.1s)
+PASS ScriptGenerator/Native work and interpreter resource failures are sticky (3.3s)
+PASS GradientPreparation/cached natural goals follow immobile occupancy and live overlays (0.2s)
+PASS GradientPreparation/resource cache tracks cell writes and falls back through mutation bursts (0.3s)
+PASS GradientPreparation/concurrent preparation owns buffers and serializes dirty cache refresh (0.1s)
+PASS GradientPreparation/custom terrain and registry replacement preserve cached and direct seeds (0.2s)
+PASS GradientPreparation/optional cache storage can be unavailable or over budget (0.5s)
+PASS GradientPreparation/all supported team masks match the scalar fields (0.2s)
+PASS GradientPreparation/explicit clearing overrides farm crop protection but never forbidden paint (0.1s)
+PASS GradientPreparation/mutation and reset boundaries use current state (0.1s)
+PASS GradientPreparation/concurrent lazy requests publish one complete resource field (0.1s)
+PASS GradientPreparation/compound passable material goals track depletion visibility and overlapping suppliers (0.1s)
+PASS RuntimeResources/unused catalog definitions allocate no material gradients and schedule no extra work (0.2s)
+PASS RuntimeResources/seed cache allocates only live material bitsets and reuses them after depletion (0.1s)
+PASS GradientPreparation/compact clearing traits preserve custom high-ID property combinations (0.2s)
+PASS GradientPreparation/published plane registry matches a sweep of live material fields (0.1s)
+PASS GradientPreparation/snapshot seeds preserve every periodic kind after the live world changes (0.2s)
+PASS GradientPreparation/periodic supplier snapshots subtract reservations and retain overlay seeds (0.2s)
+PASS GradientPreparation/seed cells match scalar predicates across policies and changing overlays (2.0s)
+PASS GradientPreparation/snapshot material templates refresh changed chunks and accept older snapshots (0.3s)
+PASS MapGradientInvalidation/forbidden painting refreshes routes across passable resources (0.4s)
+PASS MapGradientInvalidation/gradient stats record field lifetimes without changing fields (0.2s)
+PASS MapPreview/preview geometry (0.2s)
+PASS ScriptGenerator/Optional JavaScript examples generate repeatable validated worlds [slow] (5.2s)
+PASS MapPreview/thumbnail codec; envelope limits and corrupt input (0.9s)
+PASS TurnEngineHarness/shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts] (1.1s)
+PASS TurnEngineHarness/embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts] (1.9s)
+PASS MapGradientInvalidation/forbidden edits invalidate exactly the affected fields and preserve the rest (5.9s)
+PASS MapGeneratorDefaults/Faulted City contracts (18.1s)
+PASS TurnEngineHarness/a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts] (3.9s)
+PASS TurnEngineHarness/two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts] (4.3s)
+PASS TurnEngineHarness/a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim] (0.6s)
+PASS TurnEngineHarness/a player who quits leaves through the relay's quit order and the rest play on [network-sim] (2.3s)
+PASS TerrainResources/terrain strokes clear incompatible resources; buildings and units (29.3s)
+PASS TurnEngineHarness/a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim] (2.8s)
+PASS TurnEngineHarness/four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts] (4.6s)
+PASS TurnEngineHarness/orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim] (1.4s)
+PASS TurnEngineHarness/a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts] (1.5s)
+PASS MapGeneratorDefaults/Last Treeline checks (22.5s)
+PASS TurnEngineHarness/a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts] (2.8s)
+PASS TurnEngineHarness/without a pause limit a pause lasts until someone resumes it [network-sim] (0.8s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (0.9s)
+PASS TurnEngineHarness/one client claiming the game finished does not end it for a player who is reconnecting [network-sim] (1.6s)
+PASS TurnEngineHarness/voice packets do not hold up a player's orders [network-sim][artifacts] (4.0s)
+PASS TerrainPresentation/terrain seed survives save and load and stays out of the simulation checksum (0.3s)
+PASS TerrainPresentation/catalog palettes preserve distinct legacy shores and independent preview colors (0.1s)
+PASS TerrainPresentation/custom thumbnail palettes retain embedded colors alongside catalog builtins (0.1s)
+PASS TerrainPresentation/image import reads each pixel as a terrain vertex [artifacts] (0.1s)
+PASS TerrainPresentation/export uses registered whole-cell material colors [artifacts] (0.1s)
+PASS TerrainMaterials/contextual borders preserve seams and normalization across both wrapped axes (0.1s)
+FAIL TerrainMaterials/contextual contours use their halo and leave ambiguous and sharp borders unchanged (0.1s)
+PASS TerrainMaterials/contextual cells retain every corner region at native and HD sample positions (0.1s)
+FAIL TerrainMaterials/contextual interiors remain within six pixels of the marching contour (0.1s)
+PASS TerrainMaterials/unequal variant weights affect deterministic texture selection (0.1s)
+PASS TerrainMaterials/compiled pages validate metadata and stale catalogs use source fallback [artifacts] (0.1s)
+PASS TerrainMaterials/map seed reseeds variants and boundaries without breaking partitions or edges (0.1s)
+PASS MapRenderResize/repeated map copies; settings and credits after resizing in software rendering (1.4s)
+PASS TerrainMaterials/the Python validator's built-in name list mirrors the terrain table (0.0s)
+PASS TerrainMaterials/coverage partitions every binary shape and multi-material junction (0.2s)
+PASS TerrainMaterials/shared edges and wrapped samples have identical coverage (0.1s)
+PASS TerrainMaterials/diagonal contacts stay distinct and both torus axes share coverage (0.1s)
+PASS TerrainMaterials/catalogue boundary profiles keep their reviewed geometry (0.6s)
+PASS TerrainMaterials/organic contours agree across ordinary tile edges and both torus axes (0.1s)
+PASS TurnEngineHarness/engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts] (2.8s)
+PASS TerrainMaterials/straight boundaries bend over multiple cells without moving their solid cores (0.1s)
+PASS TerrainMaterials/steep detailed contours retain one crossing on shared patch edges (0.1s)
+PASS TerrainMaterials/weighted choices are stable and all existing variants are reachable (0.1s)
+PASS TerrainMaterials/grid variants repeat one positional block independent of the map seed (0.1s)
+PASS TerrainMaterials/prepared coverage preserves native and HD contour geometry (0.9s)
+PASS TerrainMaterials/single vertices own their corner and animation does not reseed variants (0.1s)
+PASS TerrainMaterials/catalog rejects corrupt references and grows independently of gameplay IDs (0.2s)
+PASS TurnEngineHarness/closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim] (9.2s)
+PASS ScriptEditor/JavaScript maps reopen in the editor without resetting live globals (0.3s)
+PASS ScriptEditor/Script language drafts survive switching and invalid JavaScript cannot commit (0.3s)
+PASS ScriptEditor/Cancelling script drafts preserves the source, globals and scenario text (0.3s)
+PASS ScriptEditor/JavaScript script file dialogs use js and leave loading as a draft (0.3s)
+PASS ScriptEditor/JavaScript file loading preserves embedded NULs for validation (0.3s)
+PASS ScriptEditor/Editing legacy SGSL retains the released USL and SGSL payload pairing (0.2s)
+PASS LegacyAreaWait/legacy area negation checks the selected team and wraps map edges (0.1s)
+PASS LegacyScriptCoverage/supported statements and wait forms compile (0.1s)
+PASS ScriptEditor/JavaScript to SGSL prepares both runtimes before committing (0.3s)
+PASS LegacyScriptCoverage/invalid references and value boundaries report typed errors (0.1s)
+PASS LegacyScriptCoverage/truncated arguments fail without accepting incomplete statements (0.1s)
+PASS LegacyAreaWait/legacy setArea waits retain the area name across team-selector tokens (0.3s)
+PASS LegacyScriptCoverage/summons respect painted area capacity and unit attributes (0.1s)
+PASS LegacyScriptCoverage/alliance levels preserve unrelated teams and apply vision masks (0.1s)
+PASS LegacyScriptCoverage/area waits observe team alliance and negation instead of unrelated units (0.1s)
+PASS LegacyScriptCoverage/flag lifecycle and GUI commands change their real game objects (0.1s)
+PASS LegacyScriptCoverage/independent stories timers space and saved suspension resume exactly (0.1s)
+PASS LegacyScriptCoverage/resetAI changes only the chosen player and rejects unsafe indices (0.1s)
+PASS LegacyScriptCoverage/resetAI authoring accepts valid slots before an editor map has a player header (0.1s)
+PASS LegacyScriptCoverage/authored flag aliases resolve game catalog IDs and respect missing definitions (0.2s)
+PASS LegacyScriptCoverage/legacy resetAI tokens with invalid player or implementation leave players intact (0.2s)
+PASS LegacyScriptCoverage/named highlights target distinct GUI elements and unhighlight restores state (0.2s)
+PASS LegacyScriptCoverage/objectives and hints resolve script numbers and persist in game snapshots (0.2s)
+PASS LegacyScriptCoverage/unit and building highlights use map and panel channels independently (0.2s)
+PASS TeamStatsSave/every live worker-tick lands in exactly one labour bucket (0.1s)
+PASS TeamStatsSave/places: own buildings first, then enemies; allies, flags and new buildings do not count (0.1s)
+PASS TeamLiveLists/live slot lists follow every slot assignment and order the snapshot records (0.2s)
+PASS TeamStatsSave/place lookup agrees with a brute-force scan of every building tile (0.2s)
+PASS TeamStatsSave/combat deaths are attributed by place and assignment (0.1s)
+PASS TeamStatsSave/defence snapshot counts warriors by place and enemy warriors at home (0.1s)
+PASS TeamStatsSave/older saves load with labour coverage starting at the loaded tick [save-format] (0.2s)
+PASS LegacyScriptCoverage/count waits evaluate all building classes exact levels and unit comparisons (0.8s)
+PASS TeamStatsSave/clearing telemetry counts operations once by configured primary material (0.3s)
+PASS TeamStatsSave/labour, combat and defence measurements survive a save [save-format] (0.3s)
+PASS TeamStatsSave/legacy version 88 fixture replays the golden trace [save-format][golden] (0.1s)
+PASS TeamStatsSave/legacy version 84 fixture replays the golden trace [save-format][golden] (0.2s)
+PASS TeamStatsSave/Compact team histories preserve samples across two batch boundaries (0.5s)
+PASS TeamStatsSave/Sparse variant snapshot reset clears vanished types without clearing history (0.5s)
+PASS TeamStatsSave/Delayed observation telemetry saves remain readable (0.1s)
+PASS FetchHiringScore/carrying candidates preserve sparse slot ties and all purpose writes (0.1s)
+PASS FetchHiringScore/a unit is judged on the walk to the resource (0.1s)
+PASS FetchHiringScore/the score estimates the whole fetch-and-carry trip (0.1s)
+PASS TeamStatsSave/Compact telemetry retains every sample across chunk boundaries (1.2s)
+PASS MarketFetch/stocked markets are resource goals, depleted markets are not (0.2s)
+PASS TeamStatsSave/Sparse variant reset accepts refreshed diagnostics and restored snapshots (1.1s)
+PASS MarketFetch/deliverer stays attached and fetches the next market delivery (0.1s)
+PASS LegacyRoundTripSave/a format-143 save with live round-trip fields plays on greedily [golden][save-format] (1.6s)
+PASS TeamStatsSave/AI telemetry continues across a save [save-format] (3.1s)
+PASS MarketsV2/legacy workers already travelling to markets continue after migration [golden][save-format] (0.2s)
+PASS MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format] (1.9s)
+PASS MarketFetch/market fields and pending publications survive binary and text saves [save-format] (2.0s)
+PASS MarketsV2/disabled gate blocks explicit fetch APIs and upgrade execution (0.2s)
+PASS MarketsV2/market routes respect forbidden ground and water across swim classes (0.1s)
+PASS MarketsV2/each market level accepts only its resources across all swim classes (0.2s)
+PASS MarketsV2/a frequently refreshed market field publishes depletion and restocking (0.1s)
+PASS MarketsV2/disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts] (1.4s)
+PASS MarketsV2/market repair materials do not overwrite shared stock (0.2s)
+PASS MarketsV2/upgrading cancelling and completing preserve shared stock and gate (0.7s)
+PASS PortableGame/the portable renderer loads and draws a complete 50-tick game scene (2.1s)
+PASS MarketsV2/enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts] (2.7s)
+PASS TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] (8.5s)
+PASS TurnEngineHarness/a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] (18.9s)
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (14.1s)
+PASS MapGeneratorDefaults/Drowned Forest contracts [slow] (109.4s)
+PASS MapGeneratorDefaults/Portage Lakes contracts [slow] (108.0s)
+
+===== FAIL EngineSession/incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences] =====
+GLOB2_TEST_BUILD compiler=13.4.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/g++-13-symbols", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g2 -std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-g2 -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "7de7d1553163d1a70738e2a313f2d6955918aebd", "sourceStatus": [" M SConstruct", " M src/ai/castor/Maps.cpp", " M src/ai/cortex/CortexFoodSources.cpp", " M src/ai/cortex/CortexSnapshotQueries.h", " M src/ai/cortex/CortexWater.cpp", " M src/ai/maxima/AIMaxima.cpp", " M src/ai/maxima/AIMaximaCombat.cpp", " M src/ai/maxima/AIMaximaDefense.cpp", " M src/ai/maxima/AIMaximaFarming.cpp", " M src/ai/maxima/AIMaximaFarmingPolicy.cpp", " M src/ai/maxima/AIMaximaFoodSupply.h", " M src/ai/maxima/AIMaximaFruit.h", " M src/ai/maxima/AIMaximaPlacement.cpp", " M src/ai/maxima/AIMaximaRecon.cpp", " M src/ai/maxima/AIMaximaRuntime.cpp", " M src/ai/nicowar/Attack.cpp", " M src/ai/nicowar/Flags.cpp", " M src/ai/shared_runtime/Gradient.cpp", " M src/ai/simple/AICabino.cpp", " M src/ai/warrush/AIWarrush.cpp", " M src/app/cli/Headless.cpp", " M src/app/cli/MapStudy.cpp", " M src/field/AirPathfind.h", " M src/field/FieldTraversalTest.cpp", " M src/field/Grid.h", " M src/field/TerrainTravel.h", " M src/game/Game_editor.cpp", " M src/game/Game_tiling.cpp", " M src/game/diagnostics/GameDiagnostics.cpp", " M src/hive/HiveWorker.cpp", " M src/hud/GameGUIStep.cpp", " M src/hud/draw/GameGUIDrawBuildingHelpers.cpp", " M src/map/FertilityField.cpp", " M src/map/ResourceGrowth.cpp", " M src/map/editor/MapEditTerrainPaint.cpp", " M src/map/generator/generators/AllotmentsGenerator.cpp", " M src/map/generator/generators/AmphitheatreGenerator.cpp", " M src/map/generator/generators/AnthillGenerator.cpp", " M src/map/generator/generators/BajadaGenerator.cpp", " M src/map/generator/generators/BastionKeysGenerator.cpp", " M src/map/generator/generators/BraidedDeltaGenerator.cpp", " M src/map/generator/generators/BraidedRiverGenerator.cpp", " M src/map/generator/generators/BreachableHighlandsGenerator.cpp", " M src/map/generator/generators/CanalsGenerator.cpp", " M src/map/generator/generators/CaravanseraiGenerator.cpp", " M src/map/generator/generators/CarouselGenerator.cpp", " M src/map/generator/generators/CentralQuarryGenerator.cpp", " M src/map/generator/generators/CityStatesGenerator.cpp", " M src/map/generator/generators/CombGenerator.cpp", " M src/map/generator/generators/ContinentsGenerator.cpp", " M src/map/generator/generators/CoralGenerator.cpp", " M src/map/generator/generators/DrownedForestGenerator.cpp", " M src/map/generator/generators/DrumlinFieldGenerator.cpp", " M src/map/generator/generators/EmojiGenerator.cpp", " M src/map/generator/generators/EncircledKingdomGenerator.cpp", " M src/map/generator/generators/EvenGroundGenerator.cpp", " M src/map/generator/generators/EvergladesGenerator.cpp", " M src/map/generator/generators/FaultedCityGenerator.cpp", " M src/map/generator/generators/FingerprintGenerator.cpp", " M src/map/generator/generators/FortsGenerator.cpp", " M src/map/generator/generators/FractalMapSupport.cpp", " M src/map/generator/generators/GauntletGenerator.cpp", " M src/map/generator/generators/GlacisGenerator.cpp", " M src/map/generator/generators/HedgerowCountryGenerator.cpp", " M src/map/generator/generators/HiddenOasisGenerator.cpp", " M src/map/generator/generators/HillsGenerator.cpp", " M src/map/generator/generators/HoneycombIsleGenerator.cpp", " M src/map/generator/generators/HungryMarchesGenerator.cpp", " M src/map/generator/generators/KarstTowersGenerator.cpp", " M src/map/generator/generators/LastTreelineGenerator.cpp", " M src/map/generator/generators/LavaShieldGenerator.cpp", " M src/map/generator/generators/LocustGenerator.cpp", " M src/map/generator/generators/MarchlandGenerator.cpp", " M src/map/generator/generators/MazeGenerator.cpp", " M src/map/generator/generators/OldGrowthGenerator.cpp", " M src/map/generator/generators/OldTownGenerator.cpp", " M src/map/generator/generators/OrchardCommonsGenerator.cpp", " M src/map/generator/generators/PlantationsGenerator.cpp", " M src/map/generator/generators/PolderGenerator.cpp", " M src/map/generator/generators/PortageLakesGenerator.cpp", " M src/map/generator/generators/RainShadowGenerator.cpp", " M src/map/generator/generators/RiceTerracesGenerator.cpp", " M src/map/generator/generators/RingWorldGenerator.cpp", " M src/map/generator/generators/RuggedArchipelagoGenerator.cpp", " M src/map/generator/generators/SavannahGenerator.cpp", " M src/map/generator/generators/SpiderWebGenerator.cpp", " M src/map/generator/generators/StoneHighlandsGenerator.cpp", " M src/map/generator/generators/SwitchbacksGenerator.cpp", " M src/map/generator/generators/SymmetricArenaGenerator.cpp", " M src/map/generator/generators/TidalFlatsGenerator.cpp", " M src/map/generator/generators/WatershedGenerator.cpp", " M src/map/generator/generators/WhoAteTheMapGenerator.cpp", " M src/map/generator/javascript/ToolkitBinding.cpp", " M src/map/generator/shared/BalancedStarts.cpp", " M src/map/generator/shared/Biomes.cpp", " M src/map/generator/shared/Channels.cpp", " M src/map/generator/shared/Channels.h", " M src/map/generator/shared/ClearingLandscape.cpp", " M src/map/generator/shared/Contact.cpp", " M src/map/generator/shared/Farmland.cpp", " M src/map/generator/shared/Farmland.h", " M src/map/generator/shared/Grid.cpp", " M src/map/generator/shared/Grid.h", " M src/map/generator/shared/Growth.cpp", " M src/map/generator/shared/Growth.h", " M src/map/generator/shared/HeightMap.cpp", " M src/map/generator/shared/HeightMap.h", " M src/map/generator/shared/Homes.h", " M src/map/generator/shared/Landmass.cpp", " M src/map/generator/shared/Morphology.cpp", " M src/map/generator/shared/Orbits.cpp", " M src/map/generator/shared/Patterns.cpp", " M src/map/generator/shared/Pipeline.cpp", " M src/map/generator/shared/Planting.cpp", " M src/map/generator/shared/Planting.h", " M src/map/generator/shared/Points.cpp", " M src/map/generator/shared/Resources.cpp", " M src/map/generator/shared/Roads.cpp", " M src/map/generator/shared/Roads.h", " M src/map/generator/shared/Room.cpp", " M src/map/generator/shared/Room.h", " M src/map/generator/shared/Settlements.cpp", " M src/map/generator/shared/Sketch.cpp", " M src/map/generator/shared/Sketch.h", " M src/map/generator/shared/StartDiagnostics.cpp", " M src/map/generator/shared/StartQuality.cpp", " M src/map/generator/shared/Terrain.cpp", " M src/map/generator/shared/Territories.h", " M src/map/generator/shared/Topology.cpp", " M src/map/generator/shared/Towers.cpp", " M src/map/generator/shared/WalkBandStarts.cpp", " M src/map/generator/shared/Walls.cpp", " M src/map/generator/shared/Wedge.h", " M src/map/generator/shared/legacy/Regions.cpp", " M src/map/pathfind/MapTerrainSafety.cpp", " M src/map/preview/MapRenderGeometry.h", " M src/map/tools/MapImage.cpp", " M src/map/tools/MapReport.cpp", " M src/render/GameRenderOverlay.cpp", " M src/render/GameRenderTerrain.cpp", " M src/render/Minimap.cpp", " M src/render/clouds/CloudField.h", " M src/render/overlay/OverlayAreas.cpp", " M src/render/overlay/OverlayFill.cpp", " M src/scripting/javascript/ScriptObservations.cpp", " M src/scripting/javascript/ScriptSpatial.cpp", "?? src/common/PowerOfTwo.h"], "sourceTreeSha256": "4bdc56453faf70ffb51d41ec32bc1f81e508701499191a26d442d20af285aa50"}
+ChooseMapScreen: can't open file maps/browser-missing-fixture.map
+Map thumbnail load: Incomplete binary field: signature: iostream error
+ChooseMapScreen: Incomplete binary field: signature: iostream error
+
+[failure] incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]: false
+src/engine/EngineSessionHarness.cpp:70:
+REQUIRE( static_cast<bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: Logical resolution did not follow viewport
+
+
+===== FAIL TerrainMaterials/contextual contours use their halo and leave ambiguous and sharp borders unchanged =====
+GLOB2_TEST_BUILD compiler=13.4.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/g++-13-symbols", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g2 -std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-g2 -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix/lib -Wl,--enable-new-dtags"}, "revision": "7de7d1553163d1a70738e2a313f2d6955918aebd", "sourceStatus": [" M SConstruct", " M src/ai/castor/Maps.cpp", " M src/ai/cortex/CortexFoodSources.cpp", " M src/ai/cortex/CortexSnapshotQueries.h", " M src/ai/cortex/CortexWater.cpp", " M src/ai/maxima/AIMaxima.cpp", " M src/ai/maxima/AIMaximaCombat.cpp", " M src/ai/maxima/AIMaximaDefense.cpp", " M src/ai/maxima/AIMaximaFarming.cpp", " M src/ai/maxima/AIMaximaFarmingPolicy.cpp", " M src/ai/maxima/AIMaximaFoodSupply.h", " M src/ai/maxima/AIMaximaFruit.h", " M src/ai/maxima/AIMaximaPlacement.cpp", " M src/ai/maxima/AIMaximaRecon.cpp", " M src/ai/maxima/AIMaximaRuntime.cpp", " M src/ai/nicowar/Attack.cpp", " M src/ai/nicowar/Flags.cpp", " M src/ai/shared_runtime/Gradient.cpp", " M src/ai/simple/AICabino.cpp", " M src/ai/warrush/AIWarrush.cpp", " M src/app/cli/Headless.cpp", " M src/app/cli/MapStudy.cpp", " M src/field/AirPathfind.h", " M src/field/FieldTraversalTest.cpp", " M src/field/Grid.h", " M src/field/TerrainTravel.h", " M src/game/Game_editor.cpp", " M src/game/Game_tiling.cpp", " M src/game/diagnostics/GameDiagnostics.cpp", " M src/hive/HiveWorker.cpp", " M src/hud/GameGUIStep.cpp", " M src/hud/draw/GameGUIDrawBuildingHelpers.cpp", " M src/map/FertilityField.cpp", " M src/map/ResourceGrowth.cpp", " M src/map/editor/MapEditTerrainPaint.cpp", " M src/map/generator/generators/AllotmentsGenerator.cpp", " M src/map/generator/generators/AmphitheatreGenerator.cpp", " M src/map/generator/generators/AnthillGenerator.cpp", " M src/map/generator/generators/BajadaGenerator.cpp", " M src/map/generator/generators/BastionKeysGenerator.cpp", " M src/map/generator/generators/BraidedDeltaGenerator.cpp", " M src/map/generator/generators/BraidedRiverGenerator.cpp", " M src/map/generator/generators/BreachableHighlandsGenerator.cpp", " M src/map/generator/generators/CanalsGenerator.cpp", " M src/map/generator/generators/CaravanseraiGenerator.cpp", " M src/map/generator/generators/CarouselGenerator.cpp", " M src/map/generator/generators/CentralQuarryGenerator.cpp", " M src/map/generator/generators/CityStatesGenerator.cpp", " M src/map/generator/generators/CombGenerator.cpp", " M src/map/generator/generators/ContinentsGenerator.cpp", " M src/map/generator/generators/CoralGenerator.cpp", " M src/map/generator/generators/DrownedForestGenerator.cpp", " M src/map/generator/generators/DrumlinFieldGenerator.cpp", " M src/map/generator/generators/EmojiGenerator.cpp", " M src/map/generator/generators/EncircledKingdomGenerator.cpp", " M src/map/generator/generators/EvenGroundGenerator.cpp", " M src/map/generator/generators/EvergladesGenerator.cpp", " M src/map/generator/generators/FaultedCityGenerator.cpp", " M src/map/generator/generators/FingerprintGenerator.cpp", " M src/map/generator/generators/FortsGenerator.cpp", " M src/map/generator/generators/FractalMapSupport.cpp", " M src/map/generator/generators/GauntletGenerator.cpp", " M src/map/generator/generators/GlacisGenerator.cpp", " M src/map/generator/generators/HedgerowCountryGenerator.cpp", " M src/map/generator/generators/HiddenOasisGenerator.cpp", " M src/map/generator/generators/HillsGenerator.cpp", " M src/map/generator/generators/HoneycombIsleGenerator.cpp", " M src/map/generator/generators/HungryMarchesGenerator.cpp", " M src/map/generator/generators/KarstTowersGenerator.cpp", " M src/map/generator/generators/LastTreelineGenerator.cpp", " M src/map/generator/generators/LavaShieldGenerator.cpp", " M src/map/generator/generators/LocustGenerator.cpp", " M src/map/generator/generators/MarchlandGenerator.cpp", " M src/map/generator/generators/MazeGenerator.cpp", " M src/map/generator/generators/OldGrowthGenerator.cpp", " M src/map/generator/generators/OldTownGenerator.cpp", " M src/map/generator/generators/OrchardCommonsGenerator.cpp", " M src/map/generator/generators/PlantationsGenerator.cpp", " M src/map/generator/generators/PolderGenerator.cpp", " M src/map/generator/generators/PortageLakesGenerator.cpp", " M src/map/generator/generators/RainShadowGenerator.cpp", " M src/map/generator/generators/RiceTerracesGenerator.cpp", " M src/map/generator/generators/RingWorldGenerator.cpp", " M src/map/generator/generators/RuggedArchipelagoGenerator.cpp", " M src/map/generator/generators/SavannahGenerator.cpp", " M src/map/generator/generators/SpiderWebGenerator.cpp", " M src/map/generator/generators/StoneHighlandsGenerator.cpp", " M src/map/generator/generators/SwitchbacksGenerator.cpp", " M src/map/generator/generators/SymmetricArenaGenerator.cpp", " M src/map/generator/generators/TidalFlatsGenerator.cpp", " M src/map/generator/generators/WatershedGenerator.cpp", " M src/map/generator/generators/WhoAteTheMapGenerator.cpp", " M src/map/generator/javascript/ToolkitBinding.cpp", " M src/map/generator/shared/BalancedStarts.cpp", " M src/map/generator/shared/Biomes.cpp", " M src/map/generator/shared/Channels.cpp", " M src/map/generator/shared/Channels.h", " M src/map/generator/shared/ClearingLandscape.cpp", " M src/map/generator/shared/Contact.cpp", " M src/map/generator/shared/Farmland.cpp", " M src/map/generator/shared/Farmland.h", " M src/map/generator/shared/Grid.cpp", " M src/map/generator/shared/Grid.h", " M src/map/generator/shared/Growth.cpp", " M src/map/generator/shared/Growth.h", " M src/map/generator/shared/HeightMap.cpp", " M src/map/generator/shared/HeightMap.h", " M src/map/generator/shared/Homes.h", " M src/map/generator/shared/Landmass.cpp", " M src/map/generator/shared/Morphology.cpp", " M src/map/generator/shared/Orbits.cpp", " M src/map/generator/shared/Patterns.cpp", " M src/map/generator/shared/Pipeline.cpp", " M src/map/generator/shared/Planting.cpp", " M src/map/generator/shared/Planting.h", " M src/map/generator/shared/Points.cpp", " M src/map/generator/shared/Resources.cpp", " M src/map/generator/shared/Roads.cpp", " M src/map/generator/shared/Roads.h", " M src/map/generator/shared/Room.cpp", " M src/map/generator/shared/Room.h", " M src/map/generator/shared/Settlements.cpp", " M src/map/generator/shared/Sketch.cpp", " M src/map/generator/shared/Sketch.h", " M src/map/generator/shared/StartDiagnostics.cpp", " M src/map/generator/shared/StartQuality.cpp", " M src/map/generator/shared/Terrain.cpp", " M src/map/generator/shared/Territories.h", " M src/map/generator/shared/Topology.cpp", " M src/map/generator/shared/Towers.cpp", " M src/map/generator/shared/WalkBandStarts.cpp", " M src/map/generator/shared/Walls.cpp", " M src/map/generator/shared/Wedge.h", " M src/map/generator/shared/legacy/Regions.cpp", " M src/map/pathfind/MapTerrainSafety.cpp", " M src/map/preview/MapRenderGeometry.h", " M src/map/tools/MapImage.cpp", " M src/map/tools/MapReport.cpp", " M src/render/GameRenderOverlay.cpp", " M src/render/GameRenderTerrain.cpp", " M src/render/Minimap.cpp", " M src/render/clouds/CloudField.h", " M src/render/overlay/OverlayAreas.cpp", " M src/render/overlay/OverlayFill.cpp", " M src/scripting/javascript/ScriptObservations.cpp", " M src/scripting/javascript/ScriptSpatial.cpp", "?? src/common/PowerOfTwo.h"], "sourceTreeSha256": "4bdc56453faf70ffb51d41ec32bc1f81e508701499191a26d442d20af285aa50"}
+
+[failure] contextual contours use their halo and leave ambiguous and sharp borders unchanged: 0 >  40
+src/render/terrain/TerrainMaterialsTest.cpp:99:
+CHECK( changed > 40 ) is NOT correct!
+  values: CHECK( 0 >  40 )
+[failure] contextual contours use their halo and leave ambiguous and sharp borders unchanged: 0 >  0
+src/render/terrain/TerrainMaterialsTest.cpp:100:
+CHECK( haloChanged > 0 ) is NOT correct!
+  values: CHECK( 0 >  0 )
+
+
+===== FAIL TerrainMaterials/contextual interiors remain within six pixels of the marching contour =====
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 29179 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 29179 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 27489 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 27489 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 7921 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 7921 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 7281 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 7281 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 29291 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 29291 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 0 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 0 >= 32768 )
+[failure] contextual interiors remain within six pixels of the marching contour: 30916 >= 32768
+src/render/terrain/TerrainMaterialsTest.cpp:173:
+CHECK( materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768 ) is NOT correct!
+  values: CHECK( 30916 >= 32768 )
+
+595 passed, 3 failed, 45 skipped (812.9s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/b625/glob2/artifacts/map-wrapping/engine-tests.xml (643 cases)

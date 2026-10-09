@@ -1,0 +1,9 @@
+# Source audit
+
+The change covers map-coordinate normalization and map-width/height remainders in native simulation, AI, JavaScript query/toolkit bindings, rendering, previews, editor, import/export and procedural generators. It preserves the dividend expression and its C++ usual arithmetic conversions. `powerOfTwoRemainder` preserves negative signed remainders; unsigned normalization uses existing map/grid helpers. Generic utilities keep arbitrary-size behavior. Generator tori compute mask fast paths from their current dimensions and retain general fallbacks. Their two-integer layout is unchanged because script memory budgets account for sizeof(Torus); a focused static assertion protects that contract.
+
+The reverse-substitution audit (`mechanical-audit.json`) confirms identical non-parenthesis tokens for 123 production files after substituting helpers back to remainder operators; it supplements review, not a semantic proof. The other production files use existing normalizers or mask fast paths. Focused tests and continuation/golden comparisons validate the resulting behavior independently.
+
+Retained modulo operations include independently written test references; the already masked generic fallback paths in Grid/TerrainGradient/GradientRelaxation, AIWorldView and FoodLedger; load-time gradient-shape validation; brush, building-footprint, UI-layout and sprite-atlas sizes; material-history lengths; generator stencil/lattice/noise/cyclic-line sizes and team/periodic scheduling counts. These are arbitrary-size utility or non-map contracts, not live map wrapping. Floating-point periods and division used for row decoding are outside this integer remainder change.
+
+No generator recipe revision, SIM_REVISION, golden, save layout, dependency, iteration order or scheduling delay changes are included. Newer master changes to Lava Shield and terrain presentation are part of the matching baseline, not claimed as optimization results.

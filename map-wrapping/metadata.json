@@ -1,0 +1,45 @@
+{
+  "baseline": "7de7d1553163d1a70738e2a313f2d6955918aebd",
+  "candidate": "7bed8f543140ceb78139fdf35a36fe1dceb6be49",
+  "compiler": "g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "host": "Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux\n",
+  "instrumentation_sha256": "2bf07927089ae41e943288ac17d23e49cb85c4e542dbcc628fe6a7b08aae8743",
+  "source_patch_sha256": "85473c31ce41404f6910cddd3d7cea21eecfbf12bba97c5e3551ac435693e7c8",
+  "build_commands": {
+    "baseline": [
+      "scons",
+      "-j8",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-13",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/g++-13-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-opt-gcc13",
+      "build/serial-opt-gcc13/src/glob2"
+    ],
+    "candidate": [
+      "scons",
+      "-j12",
+      "release=1",
+      "profile=0",
+      "serial_audit_skip_assets=1",
+      "CC=gcc-13",
+      "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/g++-13-symbols",
+      "CXXFLAGS=-g2",
+      "LINKFLAGS=-g2",
+      "--build=build/serial-opt-gcc13",
+      "build/serial-opt-gcc13/src/glob2",
+      "tests"
+    ]
+  },
+  "binaries": {
+    "baseline": "307c9ea3b1212de6f65d8d446b71d839e80e7419996c270a5b53332243c66088",
+    "candidate": "0c9f7ce7b0625747b2aaabffc6d4448dd318ffdf923f99c40021aab841928558"
+  },
+  "harnesses": {
+    "glob2-unit-tests": "869c507b8d646450ab29c50857c26b71db3056ff1c0f465a5eacd655fe9c9b36",
+    "glob2-engine-tests": "778c9ed6873023fa76c1d094275e2b8ea10a043b5a720a3e3c3f66129a6dbd73"
+  }
+}
