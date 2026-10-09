@@ -1,0 +1,317 @@
+[
+  {
+    "trial": 1,
+    "mode": "baseline",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/artifacts/area-effects/baseline-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBaseline",
+      "--test-case=populated*"
+    ],
+    "started": 1791505885.9162562,
+    "wall_seconds": 2.8129494190216064,
+    "exit_code": 0,
+    "load": [
+      15.380859375,
+      20.95849609375,
+      30.48388671875
+    ]
+  },
+  {
+    "trial": 1,
+    "mode": "disabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505888.7296667,
+    "wall_seconds": 3.014382839202881,
+    "exit_code": 0,
+    "load": [
+      15.6708984375,
+      20.92578125,
+      30.421875
+    ]
+  },
+  {
+    "trial": 1,
+    "mode": "enabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505891.7445846,
+    "wall_seconds": 2.9448440074920654,
+    "exit_code": 0,
+    "load": [
+      15.6708984375,
+      20.92578125,
+      30.421875
+    ]
+  },
+  {
+    "trial": 2,
+    "mode": "enabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505894.6900697,
+    "wall_seconds": 2.7862110137939453,
+    "exit_code": 0,
+    "load": [
+      15.61669921875,
+      20.8271484375,
+      30.3388671875
+    ]
+  },
+  {
+    "trial": 2,
+    "mode": "disabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505897.4767647,
+    "wall_seconds": 2.7244882583618164,
+    "exit_code": 0,
+    "load": [
+      15.61669921875,
+      20.8271484375,
+      30.3388671875
+    ]
+  },
+  {
+    "trial": 2,
+    "mode": "baseline",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/artifacts/area-effects/baseline-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBaseline",
+      "--test-case=populated*"
+    ],
+    "started": 1791505900.2019286,
+    "wall_seconds": 2.645582675933838,
+    "exit_code": 0,
+    "load": [
+      15.32666015625,
+      20.68017578125,
+      30.240234375
+    ]
+  },
+  {
+    "trial": 3,
+    "mode": "baseline",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/artifacts/area-effects/baseline-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBaseline",
+      "--test-case=populated*"
+    ],
+    "started": 1791505902.8481026,
+    "wall_seconds": 2.774954080581665,
+    "exit_code": 0,
+    "load": [
+      15.06005859375,
+      20.53564453125,
+      30.14208984375
+    ]
+  },
+  {
+    "trial": 3,
+    "mode": "disabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505905.6235476,
+    "wall_seconds": 2.8251311779022217,
+    "exit_code": 0,
+    "load": [
+      15.06005859375,
+      20.53564453125,
+      30.14208984375
+    ]
+  },
+  {
+    "trial": 3,
+    "mode": "enabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505908.4494185,
+    "wall_seconds": 2.8003878593444824,
+    "exit_code": 0,
+    "load": [
+      14.73486328125,
+      20.376953125,
+      30.0390625
+    ]
+  },
+  {
+    "trial": 4,
+    "mode": "enabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505911.2505114,
+    "wall_seconds": 2.733086347579956,
+    "exit_code": 0,
+    "load": [
+      14.73486328125,
+      20.376953125,
+      30.0390625
+    ]
+  },
+  {
+    "trial": 4,
+    "mode": "disabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505913.9845173,
+    "wall_seconds": 2.75504469871521,
+    "exit_code": 0,
+    "load": [
+      14.67578125,
+      20.27099609375,
+      29.95263671875
+    ]
+  },
+  {
+    "trial": 4,
+    "mode": "baseline",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/artifacts/area-effects/baseline-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBaseline",
+      "--test-case=populated*"
+    ],
+    "started": 1791505916.7403104,
+    "wall_seconds": 2.8715901374816895,
+    "exit_code": 0,
+    "load": [
+      14.67578125,
+      20.27099609375,
+      29.95263671875
+    ]
+  },
+  {
+    "trial": 5,
+    "mode": "baseline",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/artifacts/area-effects/baseline-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBaseline",
+      "--test-case=populated*"
+    ],
+    "started": 1791505919.6126084,
+    "wall_seconds": 2.7463974952697754,
+    "exit_code": 0,
+    "load": [
+      14.62158203125,
+      20.16650390625,
+      29.86669921875
+    ]
+  },
+  {
+    "trial": 5,
+    "mode": "disabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505922.3594706,
+    "wall_seconds": 2.731991767883301,
+    "exit_code": 0,
+    "load": [
+      14.62158203125,
+      20.16650390625,
+      29.86669921875
+    ]
+  },
+  {
+    "trial": 5,
+    "mode": "enabled",
+    "command": [
+      "taskset",
+      "-c",
+      "24",
+      "/home/bradley/.codex/worktrees/3c8f/glob2/build/linux/client/release/test/glob2-engine-tests",
+      "--no-breaks=true",
+      "--test-suite=BuildingAreaEffectsBenchmark",
+      "--test-case=populated*"
+    ],
+    "started": 1791505925.0920684,
+    "wall_seconds": 4.413890361785889,
+    "exit_code": 0,
+    "load": [
+      14.892578125,
+      20.13037109375,
+      29.802734375
+    ]
+  }
+]

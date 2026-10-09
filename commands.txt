@@ -1,0 +1,9 @@
+CCACHE=1 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix scons --site-dir=artifacts/area-effects/headless-scons -j16 release=1 server=0 engine-tests unit-tests build/linux/client/release/src/glob2
+python3 test/run_tests.py --binary engine --filter 'BuildingAreaEffects/*' --filter 'BuildingCatalog/*' --filter 'BuildingCatalogFixtures/*' --filter 'BuildingServices/*' --filter 'BuildingProductionCombat/*' --filter 'ResourceGrowth/*' --filter 'WorldSnapshot/*' --filter 'UnitContinuation/*' --filter 'LegacyRoundTripSave/*' --filter 'EnteringUnitSave/*' --filter 'FertilityField/*' --filter 'ReplayStepCounter/*' --filter 'MatchSetup/*' --filter 'TeamStatsSave/*' --filter 'SavegameSafety/*' --filter 'SimulationReadPhase/*' --filter 'PlatformProtocol/*' --filter 'TurnEngineHarness/*' --filter 'TerrainProperties/*' --filter 'TerrainRuntime/*' --exclude-tag benchmark --no-display -j4 --junit artifacts/area-effects/pr-engine.xml --artifacts artifacts/area-effects/pr-engine
+python3 test/run_tests.py --binary unit --no-display -j4 --junit artifacts/area-effects/pr-unit.xml
+python3 test/check_sim_revision.py --base origin/master
+python3 -m unittest discover -s test/build_system -p test_ci_changed_paths.py
+node --check browser/tests/import.spec.js
+node --check browser/tests/session-reload.spec.js
+git diff --check origin/master...HEAD
+python3 artifacts/area-effects/run-reviewed-benchmarks.py
