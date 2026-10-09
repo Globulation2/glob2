@@ -1,0 +1,17 @@
+{
+  "tested_commit": "edadd16edf523ace9f378b1c330f1f99e1ebc7af",
+  "base": "9f94ba8bcdb125a2c21d08d63f5f6072847923e1",
+  "integration": "PR head; base unchanged; no conflicts",
+  "environment": "Linux 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux",
+  "compiler": "15.2.0",
+  "build_flags": "dev_fast=1, -O0 -g1, linker=auto, CCACHE=1; native OpenGL and software/portable rendering; lossless packaged runtime artwork",
+  "build_command": "GLOB2_SDL3_PREFIX=/tmp/glob2-terrain-sdl-patched/prefix python3 tools/dev_build.py engine-tests",
+  "game_build_command": "GLOB2_SDL3_PREFIX=/tmp/glob2-terrain-sdl-patched/prefix python3 tools/dev_build.py",
+  "test_command": "LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'TerrainMaterials/*' --filter 'TerrainPresentation/*' --filter 'SoftwareRenderer/*' --filter 'TorusRender/*' --jobs 8 --artifacts artifacts/terrain-crossfade/committed-tests --junit artifacts/terrain-crossfade/committed-junit.xml",
+  "result": "68 passed, 0 failed, 0 skipped; exit 0. Engine test build and game build exit 0.",
+  "dependencies": "Headers requested from native patched SDL prefix; pkg-config/rpath resolves loaded SDL libraries from /tmp/glob2-sdl3/prefix. Loaded SDL 3.4.16, SDL_image 3.4.6, SDL_ttf 3.2.2, SDL_net 3.2.0; system WebP 1.5.0. Recording prefix build-3b2397dbe765a383cdec6c3f.",
+  "coverage": "Endpoints, midpoint, loop wrap, same-time revision reuse, source edits, transparent pixels, material-only page invalidation, wrapped/coastal/mixed terrain, native/HD pages, zoom and tiled capture, software/portable/OpenGL rendering, pause integration and simulation-checksum invariance in presentation fixtures.",
+  "omissions": "No release performance measurements, Windows/macOS/browser/mobile execution, or human in-game play. Presentation-only change does not modify simulation, saves, replay/network gates or dependencies.",
+  "visual_review": "Before-after GIF renders existing water/deep-water artwork with held phases versus crossfade; asset preview, not game capture. User judged the crossfade much better and explicitly requested merge.",
+  "acceptance": "genixpro accepts focused local evidence for the requested presentation prototype and user-authorized merge."
+}

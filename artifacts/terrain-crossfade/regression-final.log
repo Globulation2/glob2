@@ -1,0 +1,4 @@
+PASS TerrainMaterials/terrain crossfade preserves endpoints midpoint loop and paused revisions [display] (2.2s)
+
+1 passed, 0 failed, 0 skipped (2.2s of test time)
+[run_tests] JUnit report: artifacts/terrain-crossfade/regression-final.xml (1 cases)

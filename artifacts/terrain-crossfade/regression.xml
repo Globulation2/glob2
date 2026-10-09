@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="1" skipped="0"><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="terrain crossfade preserves endpoints midpoint loop and paused revisions" time="0.417"><error message="error" type="error">GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/5806/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/tmp/glob2-sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "9f94ba8bcdb125a2c21d08d63f5f6072847923e1", "sourceStatus": [" M docs/assets/terrain-materials.md", " M src/render/terrain/TerrainCompositor.cpp", " M src/render/terrain/TerrainCompositor.h", " M src/render/terrain/TerrainMaterialsTest.cpp"], "sourceTreeSha256": "a69ea5891304c4a13ca6ab9dfcf62ef47a6cbb765af55ba3e79d9d325b8fd62e"}
+
+[run_tests] exit status -11
+
+[error] terrain crossfade preserves endpoints midpoint loop and paused revisions: exception
+SIGSEGV - Segmentation violation signal
+</error></testcase></testsuite></testsuites>
