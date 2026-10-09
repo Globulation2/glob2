@@ -1,0 +1,1578 @@
+diff --git a/data/texts.ar.txt b/data/texts.ar.txt
+index 17ca8d48f..139dce0f2 100644
+--- a/data/texts.ar.txt
++++ b/data/texts.ar.txt
+@@ -5996,3 +5996,17 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت
+ تصدير الحزم غير متاح.
+ [stat band area upkeep]
+ صيانة المنطقة
++[outcome reason eliminated]
++أُبيدت المستعمرة.
++[outcome reason opponents defeated]
++هُزم جميع الخصوم.
++[outcome reason ally won]
++فازت مستعمرة حليفة.
++[outcome reason prestige]
++تم بلوغ هدف الهيبة.
++[outcome reason scenario]
++حددت قواعد السيناريو النتيجة.
++[outcome reason timer]
++انتهت المهلة الزمنية.
++[outcome reason probability]
++تم بلوغ عتبة احتمال الفوز.
+diff --git a/data/texts.br.txt b/data/texts.br.txt
+index 7c784d5fe..baa8402c0 100644
+--- a/data/texts.br.txt
++++ b/data/texts.br.txt
+@@ -5996,3 +5996,17 @@ A seleção de arquivos não está disponível.
+ A exportação de pacotes não está disponível.
+ [stat band area upkeep]
+ Trezalc’h an takad
++[outcome reason eliminated]
++Colônia eliminada.
++[outcome reason opponents defeated]
++Todos os adversários foram derrotados.
++[outcome reason ally won]
++Uma colônia aliada venceu.
++[outcome reason prestige]
++Meta de prestígio alcançada.
++[outcome reason scenario]
++As regras do cenário determinaram o resultado.
++[outcome reason timer]
++Limite de tempo atingido.
++[outcome reason probability]
++Limiar de probabilidade de vitória atingido.
+diff --git a/data/texts.ca.txt b/data/texts.ca.txt
+index 8c5dd06e3..a09d904ef 100644
+--- a/data/texts.ca.txt
++++ b/data/texts.ca.txt
+@@ -5996,3 +5996,17 @@ La selecció de fitxers no està disponible.
+ L’exportació de paquets no està disponible.
+ [stat band area upkeep]
+ Manteniment de l’àrea
++[outcome reason eliminated]
++Colònia eliminada.
++[outcome reason opponents defeated]
++Tots els adversaris han estat derrotats.
++[outcome reason ally won]
++Una colònia aliada ha guanyat.
++[outcome reason prestige]
++Objectiu de prestigi assolit.
++[outcome reason scenario]
++Les regles de l’escenari han determinat el resultat.
++[outcome reason timer]
++Límit de temps assolit.
++[outcome reason probability]
++Llindar de probabilitat de victòria assolit.
+diff --git a/data/texts.cz.txt b/data/texts.cz.txt
+index bf4c69481..56dc1866b 100644
+--- a/data/texts.cz.txt
++++ b/data/texts.cz.txt
+@@ -5996,3 +5996,17 @@ Výběr souboru není dostupný.
+ Export balíčků není dostupný.
+ [stat band area upkeep]
+ Údržba oblasti
++[outcome reason eliminated]
++Kolonie zanikla.
++[outcome reason opponents defeated]
++Všichni soupeři byli poraženi.
++[outcome reason ally won]
++Spojenecká kolonie zvítězila.
++[outcome reason prestige]
++Cíl prestiže byl dosažen.
++[outcome reason scenario]
++Pravidla scénáře rozhodla o výsledku.
++[outcome reason timer]
++Časový limit vypršel.
++[outcome reason probability]
++Prahová hodnota pravděpodobnosti vítězství byla dosažena.
+diff --git a/data/texts.de.txt b/data/texts.de.txt
+index 1984ae66f..b336e9342 100644
+--- a/data/texts.de.txt
++++ b/data/texts.de.txt
+@@ -5996,3 +5996,17 @@ Die Dateiauswahl ist nicht verfügbar.
+ Der Paketexport ist nicht verfügbar.
+ [stat band area upkeep]
+ Bereichsunterhalt
++[outcome reason eliminated]
++Kolonie ausgelöscht.
++[outcome reason opponents defeated]
++Alle Gegner besiegt.
++[outcome reason ally won]
++Eine verbündete Kolonie hat gewonnen.
++[outcome reason prestige]
++Prestigeziel erreicht.
++[outcome reason scenario]
++Die Szenarioregeln haben den Ausgang entschieden.
++[outcome reason timer]
++Zeitlimit erreicht.
++[outcome reason probability]
++Schwellenwert der Siegwahrscheinlichkeit erreicht.
+diff --git a/data/texts.dk.txt b/data/texts.dk.txt
+index 49d83f73c..56302457b 100644
+--- a/data/texts.dk.txt
++++ b/data/texts.dk.txt
+@@ -5996,3 +5996,17 @@ Filvalg er ikke tilgængeligt.
+ Pakkeeksport er ikke tilgængelig.
+ [stat band area upkeep]
+ Områdevedligeholdelse
++[outcome reason eliminated]
++Kolonien er udslettet.
++[outcome reason opponents defeated]
++Alle modstandere er besejret.
++[outcome reason ally won]
++En allieret koloni har vundet.
++[outcome reason prestige]
++Prestigemålet er nået.
++[outcome reason scenario]
++Scenariets regler afgjorde udfaldet.
++[outcome reason timer]
++Tidsgrænsen er nået.
++[outcome reason probability]
++Tærsklen for sejrsandsynlighed er nået.
+diff --git a/data/texts.en.txt b/data/texts.en.txt
+index 1709bfd66..4cf478190 100644
+--- a/data/texts.en.txt
++++ b/data/texts.en.txt
+@@ -5996,3 +5996,17 @@ File selection is unavailable.
+ Package export is unavailable.
+ [stat band area upkeep]
+ Area upkeep
++[outcome reason eliminated]
++Colony eliminated.
++[outcome reason opponents defeated]
++All opponents defeated.
++[outcome reason ally won]
++An allied colony won.
++[outcome reason prestige]
++Prestige goal reached.
++[outcome reason scenario]
++Scenario rules decided the outcome.
++[outcome reason timer]
++Time limit reached.
++[outcome reason probability]
++Win probability threshold reached.
+diff --git a/data/texts.eo.txt b/data/texts.eo.txt
+index 0a9836693..e8ea9bd01 100644
+--- a/data/texts.eo.txt
++++ b/data/texts.eo.txt
+@@ -5996,3 +5996,17 @@ Dosierelekto ne estas disponebla.
+ Pakaĵeksporto ne estas disponebla.
+ [stat band area upkeep]
+ Prizorgado de la areo
++[outcome reason eliminated]
++Kolonio ekstermita.
++[outcome reason opponents defeated]
++Ĉiuj kontraŭuloj venkitaj.
++[outcome reason ally won]
++Aliancita kolonio venkis.
++[outcome reason prestige]
++Celo de prestiĝo atingita.
++[outcome reason scenario]
++La reguloj de la scenaro decidis la rezulton.
++[outcome reason timer]
++Tempolimo atingita.
++[outcome reason probability]
++Sojlo de venkoprobablo atingita.
+diff --git a/data/texts.es.txt b/data/texts.es.txt
+index c7398efa7..614b376ba 100644
+--- a/data/texts.es.txt
++++ b/data/texts.es.txt
+@@ -5996,3 +5996,17 @@ La selección de archivos no está disponible.
+ La exportación de paquetes no está disponible.
+ [stat band area upkeep]
+ Mantenimiento del área
++[outcome reason eliminated]
++Colonia eliminada.
++[outcome reason opponents defeated]
++Todos los adversarios han sido derrotados.
++[outcome reason ally won]
++Una colonia aliada ha ganado.
++[outcome reason prestige]
++Objetivo de prestigio alcanzado.
++[outcome reason scenario]
++Las reglas del escenario han determinado el resultado.
++[outcome reason timer]
++Límite de tiempo alcanzado.
++[outcome reason probability]
++Umbral de probabilidad de victoria alcanzado.
+diff --git a/data/texts.eu.txt b/data/texts.eu.txt
+index 0dcec835b..49672ef13 100644
+--- a/data/texts.eu.txt
++++ b/data/texts.eu.txt
+@@ -5996,3 +5996,17 @@ Fitxategiak hautatzea ez dago erabilgarri.
+ Paketeak esportatzea ez dago erabilgarri.
+ [stat band area upkeep]
+ Eremuaren mantentzea
++[outcome reason eliminated]
++Kolonia suntsitu da.
++[outcome reason opponents defeated]
++Aurkari guztiak garaitu dira.
++[outcome reason ally won]
++Kolonia aliatu batek irabazi du.
++[outcome reason prestige]
++Ospearen helburua lortu da.
++[outcome reason scenario]
++Agertokiaren arauek emaitza erabaki dute.
++[outcome reason timer]
++Denbora agortu da.
++[outcome reason probability]
++Irabazteko probabilitatearen atalasea lortu da.
+diff --git a/data/texts.fa.txt b/data/texts.fa.txt
+index 260673fd0..fa0f8c1aa 100644
+--- a/data/texts.fa.txt
++++ b/data/texts.fa.txt
+@@ -5996,3 +5996,17 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن
+ صدور بسته در دسترس نیست.
+ [stat band area upkeep]
+ نگهداری منطقه
++[outcome reason eliminated]
++مستعمره از بین رفت.
++[outcome reason opponents defeated]
++همهٔ حریفان شکست خوردند.
++[outcome reason ally won]
++یک مستعمرهٔ متحد پیروز شد.
++[outcome reason prestige]
++هدف اعتبار محقق شد.
++[outcome reason scenario]
++قواعد سناریو نتیجه را تعیین کردند.
++[outcome reason timer]
++مهلت زمانی به پایان رسید.
++[outcome reason probability]
++آستانهٔ احتمال پیروزی محقق شد.
+diff --git a/data/texts.fi.txt b/data/texts.fi.txt
+index 3f1d13f6b..25a802c9d 100644
+--- a/data/texts.fi.txt
++++ b/data/texts.fi.txt
+@@ -5996,3 +5996,17 @@ Tiedoston valinta ei ole käytettävissä.
+ Pakettien vienti ei ole käytettävissä.
+ [stat band area upkeep]
+ Alueen ylläpito
++[outcome reason eliminated]
++Siirtokunta tuhottu.
++[outcome reason opponents defeated]
++Kaikki vastustajat voitettu.
++[outcome reason ally won]
++Liittoutunut siirtokunta voitti.
++[outcome reason prestige]
++Mainetavoite saavutettu.
++[outcome reason scenario]
++Skenaarion säännöt ratkaisivat lopputuloksen.
++[outcome reason timer]
++Aikaraja saavutettu.
++[outcome reason probability]
++Voittotodennäköisyyden kynnysarvo saavutettu.
+diff --git a/data/texts.fr.txt b/data/texts.fr.txt
+index 79de141b5..cfc6118b9 100644
+--- a/data/texts.fr.txt
++++ b/data/texts.fr.txt
+@@ -5996,3 +5996,17 @@ La sélection de fichiers est indisponible.
+ L’exportation de paquets est indisponible.
+ [stat band area upkeep]
+ Entretien de zone
++[outcome reason eliminated]
++Colonie éliminée.
++[outcome reason opponents defeated]
++Tous les adversaires ont été vaincus.
++[outcome reason ally won]
++Une colonie alliée a gagné.
++[outcome reason prestige]
++Objectif de prestige atteint.
++[outcome reason scenario]
++Les règles du scénario ont déterminé le résultat.
++[outcome reason timer]
++Limite de temps atteinte.
++[outcome reason probability]
++Seuil de probabilité de victoire atteint.
+diff --git a/data/texts.gr.txt b/data/texts.gr.txt
+index 49f99c2e6..b52f542ca 100644
+--- a/data/texts.gr.txt
++++ b/data/texts.gr.txt
+@@ -5996,3 +5996,17 @@ CPU %0%
+ Η εξαγωγή πακέτων δεν είναι διαθέσιμη.
+ [stat band area upkeep]
+ Συντήρηση περιοχής
++[outcome reason eliminated]
++Η αποικία καταστράφηκε.
++[outcome reason opponents defeated]
++Όλοι οι αντίπαλοι ηττήθηκαν.
++[outcome reason ally won]
++Μια συμμαχική αποικία νίκησε.
++[outcome reason prestige]
++Επιτεύχθηκε ο στόχος κύρους.
++[outcome reason scenario]
++Οι κανόνες του σεναρίου καθόρισαν το αποτέλεσμα.
++[outcome reason timer]
++Έληξε το χρονικό όριο.
++[outcome reason probability]
++Επιτεύχθηκε το όριο πιθανότητας νίκης.
+diff --git a/data/texts.hu.txt b/data/texts.hu.txt
+index 1334f1a8c..80abf7e98 100644
+--- a/data/texts.hu.txt
++++ b/data/texts.hu.txt
+@@ -5996,3 +5996,17 @@ A fájlválasztás nem érhető el.
+ A csomagexportálás nem érhető el.
+ [stat band area upkeep]
+ Terület fenntartása
++[outcome reason eliminated]
++A kolónia elpusztult.
++[outcome reason opponents defeated]
++Minden ellenfél vereséget szenvedett.
++[outcome reason ally won]
++Egy szövetséges kolónia győzött.
++[outcome reason prestige]
++A presztízscél teljesült.
++[outcome reason scenario]
++A forgatókönyv szabályai döntötték el az eredményt.
++[outcome reason timer]
++Lejárt az időkorlát.
++[outcome reason probability]
++A győzelmi valószínűség elérte a küszöbértéket.
+diff --git a/data/texts.id.txt b/data/texts.id.txt
+index 1c07b0b9f..46a8caa9f 100644
+--- a/data/texts.id.txt
++++ b/data/texts.id.txt
+@@ -5996,3 +5996,17 @@ Pemilihan berkas tidak tersedia.
+ Ekspor paket tidak tersedia.
+ [stat band area upkeep]
+ Pemeliharaan area
++[outcome reason eliminated]
++Koloni telah musnah.
++[outcome reason opponents defeated]
++Semua lawan telah dikalahkan.
++[outcome reason ally won]
++Koloni sekutu menang.
++[outcome reason prestige]
++Target prestise tercapai.
++[outcome reason scenario]
++Aturan skenario menentukan hasil.
++[outcome reason timer]
++Batas waktu tercapai.
++[outcome reason probability]
++Ambang probabilitas kemenangan tercapai.
+diff --git a/data/texts.it.txt b/data/texts.it.txt
+index 083f5baa5..176a740f2 100644
+--- a/data/texts.it.txt
++++ b/data/texts.it.txt
+@@ -5996,3 +5996,17 @@ La selezione dei file non è disponibile.
+ L’esportazione dei pacchetti non è disponibile.
+ [stat band area upkeep]
+ Mantenimento dell’area
++[outcome reason eliminated]
++Colonia eliminata.
++[outcome reason opponents defeated]
++Tutti gli avversari sono stati sconfitti.
++[outcome reason ally won]
++Una colonia alleata ha vinto.
++[outcome reason prestige]
++Obiettivo di prestigio raggiunto.
++[outcome reason scenario]
++Le regole dello scenario hanno determinato l’esito.
++[outcome reason timer]
++Limite di tempo raggiunto.
++[outcome reason probability]
++Soglia di probabilità di vittoria raggiunta.
+diff --git a/data/texts.ja.txt b/data/texts.ja.txt
+index 2810598f1..d95ceee4c 100644
+--- a/data/texts.ja.txt
++++ b/data/texts.ja.txt
+@@ -5996,3 +5996,17 @@ AI 生成ではない
+ パッケージのエクスポートは利用できません。
+ [stat band area upkeep]
+ 範囲効果の維持費
++[outcome reason eliminated]
++コロニーが全滅しました。
++[outcome reason opponents defeated]
++すべての敵を倒しました。
++[outcome reason ally won]
++同盟コロニーが勝利しました。
++[outcome reason prestige]
++名声目標に到達しました。
++[outcome reason scenario]
++シナリオのルールによって結果が決まりました。
++[outcome reason timer]
++制限時間に達しました。
++[outcome reason probability]
++勝利確率がしきい値に達しました。
+diff --git a/data/texts.keys.txt b/data/texts.keys.txt
+index 205c766f7..8cf36bbc8 100644
+--- a/data/texts.keys.txt
++++ b/data/texts.keys.txt
+@@ -2997,3 +2997,10 @@
+ [settings File selection is unavailable.]
+ [settings Package export is unavailable.]
+ [stat band area upkeep]
++[outcome reason eliminated]
++[outcome reason opponents defeated]
++[outcome reason ally won]
++[outcome reason prestige]
++[outcome reason scenario]
++[outcome reason timer]
++[outcome reason probability]
+diff --git a/data/texts.ko.txt b/data/texts.ko.txt
+index 366988c91..b4bc9ffed 100644
+--- a/data/texts.ko.txt
++++ b/data/texts.ko.txt
+@@ -5996,3 +5996,17 @@ AI 생성 아님
+ 패키지 내보내기를 사용할 수 없습니다.
+ [stat band area upkeep]
+ 영역 유지비
++[outcome reason eliminated]
++식민지가 전멸했습니다.
++[outcome reason opponents defeated]
++모든 적을 물리쳤습니다.
++[outcome reason ally won]
++동맹 식민지가 승리했습니다.
++[outcome reason prestige]
++명성 목표에 도달했습니다.
++[outcome reason scenario]
++시나리오 규칙에 따라 결과가 결정되었습니다.
++[outcome reason timer]
++제한 시간에 도달했습니다.
++[outcome reason probability]
++승리 확률이 기준값에 도달했습니다.
+diff --git a/data/texts.nl.txt b/data/texts.nl.txt
+index 5395b8c64..52d19c5f2 100644
+--- a/data/texts.nl.txt
++++ b/data/texts.nl.txt
+@@ -5996,3 +5996,17 @@ Bestandsselectie is niet beschikbaar.
+ Pakketexport is niet beschikbaar.
+ [stat band area upkeep]
+ Gebiedsonderhoud
++[outcome reason eliminated]
++Kolonie uitgeschakeld.
++[outcome reason opponents defeated]
++Alle tegenstanders verslagen.
++[outcome reason ally won]
++Een geallieerde kolonie heeft gewonnen.
++[outcome reason prestige]
++Roemdoel bereikt.
++[outcome reason scenario]
++De scenarioregels hebben de uitkomst bepaald.
++[outcome reason timer]
++Tijdslimiet bereikt.
++[outcome reason probability]
++Drempel voor de winstkans bereikt.
+diff --git a/data/texts.pl.txt b/data/texts.pl.txt
+index f5928d15d..1bb5e55a9 100644
+--- a/data/texts.pl.txt
++++ b/data/texts.pl.txt
+@@ -5996,3 +5996,17 @@ Wybór pliku jest niedostępny.
+ Eksport pakietów jest niedostępny.
+ [stat band area upkeep]
+ Utrzymanie obszaru
++[outcome reason eliminated]
++Kolonia została wyeliminowana.
++[outcome reason opponents defeated]
++Wszyscy przeciwnicy zostali pokonani.
++[outcome reason ally won]
++Sojusznicza kolonia zwyciężyła.
++[outcome reason prestige]
++Osiągnięto cel prestiżu.
++[outcome reason scenario]
++Reguły scenariusza rozstrzygnęły wynik.
++[outcome reason timer]
++Upłynął limit czasu.
++[outcome reason probability]
++Osiągnięto próg prawdopodobieństwa zwycięstwa.
+diff --git a/data/texts.pt.txt b/data/texts.pt.txt
+index d2ec6b893..3bbe4e601 100644
+--- a/data/texts.pt.txt
++++ b/data/texts.pt.txt
+@@ -5996,3 +5996,17 @@ A seleção de ficheiros não está disponível.
+ A exportação de pacotes não está disponível.
+ [stat band area upkeep]
+ Manutenção da área
++[outcome reason eliminated]
++Colónia eliminada.
++[outcome reason opponents defeated]
++Todos os adversários foram derrotados.
++[outcome reason ally won]
++Uma colónia aliada venceu.
++[outcome reason prestige]
++Objetivo de prestígio atingido.
++[outcome reason scenario]
++As regras do cenário determinaram o resultado.
++[outcome reason timer]
++Limite de tempo atingido.
++[outcome reason probability]
++Limiar de probabilidade de vitória atingido.
+diff --git a/data/texts.ro.txt b/data/texts.ro.txt
+index 3b1c968ac..3ed30c5e4 100644
+--- a/data/texts.ro.txt
++++ b/data/texts.ro.txt
+@@ -5996,3 +5996,17 @@ Selectarea fișierelor nu este disponibilă.
+ Exportul pachetelor nu este disponibil.
+ [stat band area upkeep]
+ Întreținerea zonei
++[outcome reason eliminated]
++Colonia a fost eliminată.
++[outcome reason opponents defeated]
++Toți adversarii au fost învinși.
++[outcome reason ally won]
++O colonie aliată a câștigat.
++[outcome reason prestige]
++Obiectivul de prestigiu a fost atins.
++[outcome reason scenario]
++Regulile scenariului au decis rezultatul.
++[outcome reason timer]
++Limita de timp a fost atinsă.
++[outcome reason probability]
++Pragul probabilității de victorie a fost atins.
+diff --git a/data/texts.ru.txt b/data/texts.ru.txt
+index bb1d4db89..f1311411f 100644
+--- a/data/texts.ru.txt
++++ b/data/texts.ru.txt
+@@ -5996,3 +5996,17 @@ FFmpeg недоступен, поэтому запись отключена. У
+ Экспорт пакетов недоступен.
+ [stat band area upkeep]
+ Содержание области
++[outcome reason eliminated]
++Колония уничтожена.
++[outcome reason opponents defeated]
++Все противники побеждены.
++[outcome reason ally won]
++Союзная колония победила.
++[outcome reason prestige]
++Цель по престижу достигнута.
++[outcome reason scenario]
++Правила сценария определили исход.
++[outcome reason timer]
++Лимит времени истёк.
++[outcome reason probability]
++Порог вероятности победы достигнут.
+diff --git a/data/texts.si.txt b/data/texts.si.txt
+index 7083c0b2b..453144bbd 100644
+--- a/data/texts.si.txt
++++ b/data/texts.si.txt
+@@ -5996,3 +5996,17 @@ Izbira datotek ni na voljo.
+ Izvoz paketov ni na voljo.
+ [stat band area upkeep]
+ Vzdrževanje območja
++[outcome reason eliminated]
++Kolonija je izumrla.
++[outcome reason opponents defeated]
++Vsi nasprotniki so poraženi.
++[outcome reason ally won]
++Zavezniška kolonija je zmagala.
++[outcome reason prestige]
++Cilj ugleda je dosežen.
++[outcome reason scenario]
++Pravila scenarija so odločila o izidu.
++[outcome reason timer]
++Časovna omejitev je dosežena.
++[outcome reason probability]
++Prag verjetnosti zmage je dosežen.
+diff --git a/data/texts.sk.txt b/data/texts.sk.txt
+index 9004e10b6..ed323ab66 100644
+--- a/data/texts.sk.txt
++++ b/data/texts.sk.txt
+@@ -5996,3 +5996,17 @@ Výber súboru nie je dostupný.
+ Export balíkov nie je dostupný.
+ [stat band area upkeep]
+ Údržba oblasti
++[outcome reason eliminated]
++Kolónia zanikla.
++[outcome reason opponents defeated]
++Všetci súperi boli porazení.
++[outcome reason ally won]
++Spojenecká kolónia zvíťazila.
++[outcome reason prestige]
++Cieľ prestíže bol dosiahnutý.
++[outcome reason scenario]
++Pravidlá scenára rozhodli o výsledku.
++[outcome reason timer]
++Časový limit vypršal.
++[outcome reason probability]
++Prahová hodnota pravdepodobnosti víťazstva bola dosiahnutá.
+diff --git a/data/texts.sr.txt b/data/texts.sr.txt
+index 6a2eab6ab..12245e908 100644
+--- a/data/texts.sr.txt
++++ b/data/texts.sr.txt
+@@ -5996,3 +5996,17 @@ FFmpeg није доступан, па је снимање искључено. 
+ Извоз пакета није доступан.
+ [stat band area upkeep]
+ Одржавање области
++[outcome reason eliminated]
++Колонија је уништена.
++[outcome reason opponents defeated]
++Сви противници су поражени.
++[outcome reason ally won]
++Савезничка колонија је победила.
++[outcome reason prestige]
++Циљ престижа је достигнут.
++[outcome reason scenario]
++Правила сценарија су одредила исход.
++[outcome reason timer]
++Временско ограничење је истекло.
++[outcome reason probability]
++Праг вероватноће победе је достигнут.
+diff --git a/data/texts.sv.txt b/data/texts.sv.txt
+index c39e467ca..1a51b294c 100644
+--- a/data/texts.sv.txt
++++ b/data/texts.sv.txt
+@@ -5996,3 +5996,17 @@ Filval är inte tillgängligt.
+ Paketexport är inte tillgänglig.
+ [stat band area upkeep]
+ Områdesunderhåll
++[outcome reason eliminated]
++Kolonin är utslagen.
++[outcome reason opponents defeated]
++Alla motståndare är besegrade.
++[outcome reason ally won]
++En allierad koloni har vunnit.
++[outcome reason prestige]
++Prestigemålet är uppnått.
++[outcome reason scenario]
++Scenariots regler avgjorde resultatet.
++[outcome reason timer]
++Tidsgränsen är nådd.
++[outcome reason probability]
++Tröskeln för vinstsannolikhet är uppnådd.
+diff --git a/data/texts.tr.txt b/data/texts.tr.txt
+index 97c684d5b..ba34586ef 100644
+--- a/data/texts.tr.txt
++++ b/data/texts.tr.txt
+@@ -5996,3 +5996,17 @@ Dosya seçimi kullanılamıyor.
+ Paket dışa aktarma kullanılamıyor.
+ [stat band area upkeep]
+ Alan bakımı
++[outcome reason eliminated]
++Koloni yok oldu.
++[outcome reason opponents defeated]
++Tüm rakipler yenildi.
++[outcome reason ally won]
++Müttefik bir koloni kazandı.
++[outcome reason prestige]
++Prestij hedefine ulaşıldı.
++[outcome reason scenario]
++Senaryo kuralları sonucu belirledi.
++[outcome reason timer]
++Süre sınırına ulaşıldı.
++[outcome reason probability]
++Kazanma olasılığı eşiğine ulaşıldı.
+diff --git a/data/texts.uk.txt b/data/texts.uk.txt
+index d4c334520..c917d13a1 100644
+--- a/data/texts.uk.txt
++++ b/data/texts.uk.txt
+@@ -5996,3 +5996,17 @@ FFmpeg недоступний, тому запис вимкнено. Устан
+ Експорт пакетів недоступний.
+ [stat band area upkeep]
+ Утримання області
++[outcome reason eliminated]
++Колонію знищено.
++[outcome reason opponents defeated]
++Усіх супротивників переможено.
++[outcome reason ally won]
++Союзна колонія перемогла.
++[outcome reason prestige]
++Мету престижу досягнуто.
++[outcome reason scenario]
++Правила сценарію визначили результат.
++[outcome reason timer]
++Ліміт часу вичерпано.
++[outcome reason probability]
++Поріг імовірності перемоги досягнуто.
+diff --git a/data/texts.vi.txt b/data/texts.vi.txt
+index c07c60edb..a9ab1742a 100644
+--- a/data/texts.vi.txt
++++ b/data/texts.vi.txt
+@@ -5996,3 +5996,17 @@ Không thể sử dụng chức năng chọn tệp.
+ Không thể sử dụng chức năng xuất gói.
+ [stat band area upkeep]
+ Duy trì khu vực
++[outcome reason eliminated]
++Thuộc địa đã bị diệt.
++[outcome reason opponents defeated]
++Tất cả đối thủ đã bị đánh bại.
++[outcome reason ally won]
++Một thuộc địa đồng minh đã thắng.
++[outcome reason prestige]
++Đã đạt mục tiêu uy danh.
++[outcome reason scenario]
++Quy tắc kịch bản đã quyết định kết quả.
++[outcome reason timer]
++Đã hết thời gian.
++[outcome reason probability]
++Đã đạt ngưỡng xác suất thắng.
+diff --git a/data/texts.zh-cn.txt b/data/texts.zh-cn.txt
+index 855852a80..88937bed5 100644
+--- a/data/texts.zh-cn.txt
++++ b/data/texts.zh-cn.txt
+@@ -5996,3 +5996,17 @@ AI 生成
+ 无法使用包导出功能。
+ [stat band area upkeep]
+ 区域维护
++[outcome reason eliminated]
++殖民地已被消灭。
++[outcome reason opponents defeated]
++所有对手均已被击败。
++[outcome reason ally won]
++盟友殖民地获胜。
++[outcome reason prestige]
++声望目标已达成。
++[outcome reason scenario]
++剧情规则决定了结果。
++[outcome reason timer]
++时间已达上限。
++[outcome reason probability]
++获胜概率已达阈值。
+diff --git a/data/texts.zh-tw.txt b/data/texts.zh-tw.txt
+index bd3a90b81..c3be946ad 100644
+--- a/data/texts.zh-tw.txt
++++ b/data/texts.zh-tw.txt
+@@ -5996,3 +5996,17 @@ AI 生成
+ 無法使用套件匯出功能。
+ [stat band area upkeep]
+ 區域維護
++[outcome reason eliminated]
++殖民地已被消滅。
++[outcome reason opponents defeated]
++所有對手均已被擊敗。
++[outcome reason ally won]
++盟友殖民地獲勝。
++[outcome reason prestige]
++聲望目標已達成。
++[outcome reason scenario]
++劇情規則決定了結果。
++[outcome reason timer]
++時間已達上限。
++[outcome reason probability]
++獲勝機率已達門檻。
+diff --git a/docs/features/custom-game-setup/README.md b/docs/features/custom-game-setup/README.md
+index ef33493ae..3c101d799 100644
+--- a/docs/features/custom-game-setup/README.md
++++ b/docs/features/custom-game-setup/README.md
+@@ -77,8 +77,17 @@ limits when their homes, resources or routes need more room.
+     Combat. A setup that cannot end (combat off, conquest only, no time limit, no
+     probability victory) shows a warning, as does a 30-minute limit.
+   - Session speed is restored when the match ends.
++- Prestige victory and probability victory are independent rules. Disabling
++  prestige victory prevents the prestige threshold from ending local, online or
++  headless matches. Conquest can still eliminate a colony before every unit and
++  building disappears, when it has no useful units or production capable of
++  recovery; reserved feeding or healing protects a recovering colony.
++- The in-game win/loss popup shows the outcome and its reason: colony elimination,
++  opponents defeated, an allied victory, prestige, scenario rules, the time
++  limit, or the win-probability threshold. The results screen uses the same reason;
++  it can also explain when opponents left.
+ - When the sudden-death timer or prestige goal ends a match with non-allied teams
+-  tied for the most prestige, the tied players and live watchers see **Draw**
++  tied for the most prestige among surviving colonies, the tied players and live watchers see **Draw**
+   instead of a win. Allies that win together still see a win, and teams below the
+   tie still lose. This is presentation only: the engine still marks every tied
+   team as won, so saves, replays and result files are unchanged.
+diff --git a/docs/multiplayer/ratings-and-matchmaking.md b/docs/multiplayer/ratings-and-matchmaking.md
+index f40cc0401..73f4d6899 100644
+--- a/docs/multiplayer/ratings-and-matchmaking.md
++++ b/docs/multiplayer/ratings-and-matchmaking.md
+@@ -73,11 +73,13 @@ it automatically could punish the wrong player.
+ ### Shared wins are draws
+ 
+ The engine marks a team won when any winning condition says so, and ties count.
+-When the prestige goal is reached, or the sudden-death timer runs out, every team
+-tied for the most prestige has won, whatever its alliance; the in-game end screen
+-tells each of those players "you have won". A sudden-death game in which every team is on
+-the same prestige at the buzzer (often none at all) therefore ends with every team
+-won, which
++When enabled prestige victory reaches its goal, or the sudden-death timer runs
++out, surviving teams tied for the most prestige have won, whatever their alliance.
++Eliminated colonies cannot set the winning prestige score. The in-game end screen
++shows a draw when winning teams belong to different alliances, and a shared win
++when they are mutually allied. A sudden-death game in which every surviving team
++is on the same prestige at the buzzer (often none at all) therefore marks every
++survivor won, which
+ `result.json` and the verify-match verdict report as such.
+ 
+ The platform reads a win as a win only when one side holds it.
+diff --git a/src/engine/EngineSessionHarness.cpp b/src/engine/EngineSessionHarness.cpp
+index 6a93c784f..332c6c2d0 100644
+--- a/src/engine/EngineSessionHarness.cpp
++++ b/src/engine/EngineSessionHarness.cpp
+@@ -12,6 +12,7 @@
+ #include <cstdint>
+ #include <iterator>
+ #include "Engine.h"
++#include "OutcomeReason.h"
+ #include "NetEngine.h"
+ #include "Player.h"
+ #include "sim/SimulationRunner.h"
+@@ -77,6 +78,87 @@ GAGCore::CooperativeSlice fixedSlice()
+ 
+ TEST_SUITE("EngineSession")
+ {
++
++    TEST_CASE("eliminated prestige leaders cannot make every survivor lose")
++    {
++        glob2test::HeadlessGlobals globals;
++        for (bool timer : {false, true})
++        for (int eliminated = 0; eliminated < 3; ++eliminated)
++        {
++            Engine engine;
++            auto& game = engine.gui.game;
++            game.map.setSize(5, 5, GRASS);
++            game.map.setGame(&game);
++            for (int t = 0; t < 3; ++t)
++            {
++                game.addTeam();
++                game.teams[t]->allies = game.teams[t]->me;
++            }
++            CAPTURE(timer); CAPTURE(eliminated);
++            const int winner = (eliminated + 1) % 3;
++            const int loser = (eliminated + 2) % 3;
++            game.teams[eliminated]->isAlive = false;
++            game.teams[eliminated]->prestige = 100;
++            game.teams[winner]->prestige = -2;
++            game.teams[loser]->prestige = -5;
++            game.prestigeToReach = 50;
++            game.stepCounter = 100;
++            if (timer)
++            {
++                WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), false);
++                WinningCondition::setSuddenDeathWinCondition(game.gameHeader.getWinningConditions(), 100);
++            }
++            game.prestigeSyncStep();
++            game.wonSyncStep();
++            CHECK(game.teams[eliminated]->hasLost);
++            CHECK(game.teams[winner]->hasWon);
++            CHECK_FALSE(game.teams[winner]->hasLost);
++            CHECK(game.teams[loser]->hasLost);
++            CHECK(std::string(outcomeReasonKey(game, winner)) == (timer ? "[outcome reason timer]" : "[outcome reason prestige]"));
++            CHECK(std::string(outcomeReasonKey(game, loser)) == (timer ? "[outcome reason timer]" : "[outcome reason prestige]"));
++            CHECK(std::string(outcomeReasonKey(game, eliminated)) == "[outcome reason eliminated]");
++            CHECK(game.isGameEnded);
++        }
++    }
++    TEST_CASE("disabled prestige victory cannot end automatic matches")
++    {
++        glob2test::HeadlessGlobals globals;
++        Engine engine;
++        auto& game = engine.gui.game;
++        game.map.setSize(5, 5, GRASS);
++        game.map.setGame(&game);
++        game.addTeam();
++        game.addTeam();
++        engine.gui.localTeamNo = 0;
++        for (int t = 0; t < 2; ++t)
++            game.teams[t]->allies = game.teams[t]->me;
++        game.prestigeToReach = 100;
++        game.teams[0]->prestige = 100;
++        WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), false);
++        globalContainer->automaticEndingGame = true;
++        globalContainer->automaticGameGlobalEndConditions = true;
++        game.prestigeSyncStep();
++        game.wonSyncStep();
++        CHECK(game.totalPrestige == 100);
++        CHECK_FALSE(game.totalPrestigeReached);
++        CHECK_FALSE(game.isGameEnded);
++        CHECK_FALSE(game.teams[0]->hasWon);
++        CHECK_FALSE(game.teams[1]->hasLost);
++        engine.gui.isRunning = true;
++        engine.pollAutomaticEndingConditions(1000);
++        CHECK(engine.gui.isRunning);
++
++        WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), true);
++        game.prestigeSyncStep();
++        game.wonSyncStep();
++        CHECK(game.totalPrestigeReached);
++        CHECK(game.isGameEnded);
++        CHECK(game.teams[0]->hasWon);
++        CHECK(game.teams[1]->hasLost);
++        engine.pollAutomaticEndingConditions(1001);
++        CHECK_FALSE(engine.gui.isRunning);
++    }
++
+     TEST_CASE("observation players preserve seat order and spectator readiness")
+     {
+         glob2test::HeadlessGlobals globals;
+diff --git a/src/engine/sim/snapshot/WorldCapture.cpp b/src/engine/sim/snapshot/WorldCapture.cpp
+index 3ae53cdb8..a1d9e0950 100644
+--- a/src/engine/sim/snapshot/WorldCapture.cpp
++++ b/src/engine/sim/snapshot/WorldCapture.cpp
+@@ -8,6 +8,7 @@
+ #include "GlobalContainer.h"
+ #include "Unit.h"
+ #include "Team.h"
++#include "OutcomeReason.h"
+ #include "Player.h"
+ #include "Bullet.h"
+ #include "Sector.h"
+@@ -318,6 +319,7 @@ Handle capture(const Game& game,
+ 		target.otherVision = team->sharedVisionOther;
+ 		if (storage && target.statistics.buildingCountByVariant.capacity() < std::as_const(team->stats).getLatestStat()->buildingCountByVariant.size()) ++storage->allocations;
+         target.color = {team->color.r,team->color.g,team->color.b,team->color.a}; target.won = team->hasWon; target.lost = team->hasLost;
++        target.outcomeReasonKey = outcomeReasonKey(game, t);
+         target.unitConversionGained = team->unitConversionGained;
+         target.unitConversionLost = team->unitConversionLost;
+         target.noMoreBuildingSitesCountdown = team->noMoreBuildingSitesCountdown;
+diff --git a/src/engine/sim/snapshot/WorldRecords.h b/src/engine/sim/snapshot/WorldRecords.h
+index 0b15e8f74..89e9b18d5 100644
+--- a/src/engine/sim/snapshot/WorldRecords.h
++++ b/src/engine/sim/snapshot/WorldRecords.h
+@@ -46,6 +46,7 @@ struct TeamView
+ 	bool alive = false, won = false, lost = false;
+ 	ColorRecord color;
+ 	std::string firstPlayerName;
++	std::string outcomeReasonKey; // Translation key, resolved at the simulation read boundary.
+ 	int unitConversionGained = 0, unitConversionLost = 0, noMoreBuildingSitesCountdown = 0;
+ 	std::array<Sint32, MaterialSlotCount> reservedMaterials{};
+ 	Uint32 mask = 0, allies = 0, enemies = 0, playersMask = 0;
+diff --git a/src/engine/sim/snapshot/WorldSnapshotTest.cpp b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+index 57620cb7c..61b7f7b3f 100644
+--- a/src/engine/sim/snapshot/WorldSnapshotTest.cpp
++++ b/src/engine/sim/snapshot/WorldSnapshotTest.cpp
+@@ -5,6 +5,7 @@
+ #include "Building.h"
+ #include "Unit.h"
+ #include "Team.h"
++#include "OutcomeReason.h"
+ #include "ai/observation/AIWorldView.h"
+ #include <limits>
+ #include <span>
+@@ -16,6 +17,47 @@
+ 
+ TEST_SUITE("WorldSnapshot")
+ {
++    TEST_CASE("outcome reasons survive the read boundary without changing simulation state")
++    {
++        glob2test::HeadlessGlobals globals;
++        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=2, .header=true}};
++        auto& game=fixture.game;
++        auto& winner=*game.teams[0];
++        auto& loser=*game.teams[1];
++        winner.allies=winner.me; loser.allies=loser.me;
++        winner.hasWon=true; winner.winCondition=WCAllies;
++        loser.isAlive=false; loser.hasLost=true; loser.winCondition=WCDeath;
++        const auto before=game.checkSum();
++        const auto captured=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game));
++        CHECK(captured.teams->values[0].outcomeReasonKey=="[outcome reason opponents defeated]");
++        CHECK(captured.teams->values[1].outcomeReasonKey=="[outcome reason eliminated]");
++        CHECK(game.checkSum()==before);
++        CHECK(winner.winCondition==WCAllies);
++
++        // The probability sample may be older than the displayed tick. Its
++        // living losers must not turn the displayed reason into conquest.
++        WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(),970);
++        game.stepCounter=513;
++        loser.isAlive=true; loser.winCondition=WCWinProbability;
++        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason probability]");
++        CHECK(std::string(outcomeReasonKey(game,1))=="[outcome reason probability]");
++        winner.winCondition=WCOpponentsDefeated;
++        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason probability]");
++        CHECK(captured.teams->values[0].outcomeReasonKey=="[outcome reason opponents defeated]");
++
++        winner.winCondition=WCScript;
++        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason scenario]");
++        winner.hasWon=false; winner.hasLost=false;
++        CHECK(std::string(outcomeReasonKey(game,0)).empty());
++
++        // A scenario won only by the ally still explains the local result.
++        winner.hasWon=true; winner.winCondition=WCAllies;
++        loser.hasLost=false; loser.hasWon=true; loser.winCondition=WCScript;
++        winner.allies|=loser.me; loser.allies|=winner.me;
++        game.gameHeader.getWinningConditions().clear();
++        game.gameHeader.getWinningConditions().push_back(std::make_shared<WinningConditionAllies>());
++        CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason ally won]");
++    }
+     TEST_CASE("shared entity indices preserve empty slots and canonical record addresses")
+     {
+         glob2test::HeadlessGlobals globals;
+diff --git a/src/game/Game_sync.cpp b/src/game/Game_sync.cpp
+index 0b4e1fcbc..ae3bbc961 100644
+--- a/src/game/Game_sync.cpp
++++ b/src/game/Game_sync.cpp
+@@ -204,7 +204,9 @@ void Game::prestigeSyncStep()
+ 	{
+ 		totalPrestige += teams[i]->prestige;
+ 	}
+-	if(totalPrestige >= prestigeToReach)
++	// The threshold is an end condition only when prestige victory is enabled.
++	// Headless clients and result screens also consume this flag.
++	if(isPrestigeWinCondition() && totalPrestige >= prestigeToReach)
+ 	{
+ 		totalPrestigeReached=true;
+ 	}
+diff --git a/src/game/SimRevision.h b/src/game/SimRevision.h
+index 9e150d34e..670c6659d 100644
+--- a/src/game/SimRevision.h
++++ b/src/game/SimRevision.h
+@@ -16,4 +16,4 @@
+ //
+ // Kept apart from Version.h so a bump recompiles only the sim version code.
+ // deploy/sim_version.py reads this line.
+-#define SIM_REVISION 40
++#define SIM_REVISION 41
+diff --git a/src/game/WinningConditions.cpp b/src/game/WinningConditions.cpp
+index 1bb28dba3..b2ea0c6c8 100644
+--- a/src/game/WinningConditions.cpp
++++ b/src/game/WinningConditions.cpp
+@@ -20,28 +20,19 @@ namespace
+ 		return aInBsAllies && bInAsAllies;
+ 	}
+ 
+-	int maximumPrestige(const Game* game)
++	int maximumSurvivingPrestige(const Game* game)
+ 	{
+ 		int maximum = 0;
++		bool found = false;
+ 		for (int i = 0; i < game->mapHeader.getNumberOfTeams(); ++i)
+-			maximum = std::max(maximum, game->teams[i]->prestige);
+-		return maximum;
+-	}
+-
+-	// Custom-game "sudden-death timer" rule: like maximumPrestige() above, but
+-	// without its floor at 0. WinningConditionPrestige can share that floor
+-	// safely -- its own totalPrestige<prestigeToReach guard keeps it from ever
+-	// evaluating while every team could plausibly be negative -- but sudden
+-	// death's only guard is the tick count, so it must handle an all-negative
+-	// standing correctly: with the floor, maximum could come out as 0 even
+-	// though no team is actually at 0, making hasTeamWon() false and
+-	// hasTeamLost() true for every team simultaneously instead of the
+-	// intended tie among whoever is actually least-negative.
+-	int actualMaximumPrestige(const Game* game)
+-	{
+-		int maximum = game->teams[0]->prestige;
+-		for (int i = 1; i < game->mapHeader.getNumberOfTeams(); ++i)
+-			maximum = std::max(maximum, game->teams[i]->prestige);
++		{
++			const Team* team = game->teams[i];
++			if (!team->isAlive) continue;
++			// A defeated colony may retain its schools and prestige. It must
++			// not make every survivor lose. Preserve all-negative standings too.
++			if (!found || team->prestige > maximum) maximum = team->prestige;
++			found = true;
++		}
+ 		return maximum;
+ 	}
+ 
+@@ -303,7 +294,7 @@ bool WinningConditionPrestige::hasTeamWon(int team, const Game* game) const
+ {
+ 	if(game->totalPrestige < game->prestigeToReach)
+ 		return false;
+-	return game->teams[team]->prestige == maximumPrestige(game);
++	return game->teams[team]->isAlive && game->teams[team]->prestige == maximumSurvivingPrestige(game);
+ }
+ 
+ 
+@@ -312,7 +303,7 @@ bool WinningConditionPrestige::hasTeamLost(int team, const Game* game) const
+ {
+ 	if(game->totalPrestige < game->prestigeToReach)
+ 		return false;
+-	return game->teams[team]->prestige < maximumPrestige(game);
++	return !game->teams[team]->isAlive || game->teams[team]->prestige < maximumSurvivingPrestige(game);
+ }
+ 
+ 
+@@ -424,7 +415,7 @@ bool WinningConditionSuddenDeath::hasTeamWon(int team, const Game* game) const
+ {
+ 	if (game->stepCounter < endStepTick)
+ 		return false;
+-	return game->teams[team]->prestige == actualMaximumPrestige(game);
++	return game->teams[team]->isAlive && game->teams[team]->prestige == maximumSurvivingPrestige(game);
+ }
+ 
+ 
+@@ -433,7 +424,7 @@ bool WinningConditionSuddenDeath::hasTeamLost(int team, const Game* game) const
+ {
+ 	if (game->stepCounter < endStepTick)
+ 		return false;
+-	return game->teams[team]->prestige < actualMaximumPrestige(game);
++	return !game->teams[team]->isAlive || game->teams[team]->prestige < maximumSurvivingPrestige(game);
+ }
+ 
+ 
+diff --git a/src/game/WinningConditionsHarness.cpp b/src/game/WinningConditionsHarness.cpp
+index 1b45c7e9e..80c571219 100644
+--- a/src/game/WinningConditionsHarness.cpp
++++ b/src/game/WinningConditionsHarness.cpp
+@@ -222,11 +222,8 @@ void testSuddenDeath()
+ 		{"atTick-tieAtTop",     100, 100, {30, 30, 10}},
+ 		{"afterTick-uniqueMax", 150, 100, {10, 30, 10}},
+ 		{"negativePrestige",    100, 100, {-5, 0, -10}},
+-		// All-negative: maximumPrestige()'s floor at 0 (shared with Prestige,
+-		// which never actually hits it thanks to its own totalPrestige gate)
+-		// would make every team compare against 0 here, so nobody ties it and
+-		// everybody loses. actualMaximumPrestige() must find team 1's -2 as
+-		// the true max instead, so team 1 (only) wins and the other two lose.
++		// All-negative standings must find team 1's -2 as the true maximum,
++		// rather than comparing everybody against a floor of zero.
+ 		{"allNegativePrestige", 100, 100, {-5, -2, -10}},
+ 	};
+ 	for (const auto& c : tiles)
+@@ -392,6 +389,43 @@ TEST_CASE("every predicate matches the golden record stream [golden]")
+ 	glob2test::expectGolden("winning-conditions/expected.txt", out);
+ }
+ 
++TEST_CASE("prestige and timer adjudication exclude eliminated leaders")
++{
++    for (bool timer : {false, true})
++    {
++        clearAll();
++        setupTeams(3);
++        g()->totalPrestige = 100;
++        g()->prestigeToReach = 100;
++        g()->stepCounter = 100;
++        T(0)->isAlive = false;
++        T(0)->prestige = 100;
++        T(1)->prestige = -2;
++        T(2)->prestige = -5;
++        WinningConditionPrestige prestige;
++        WinningConditionSuddenDeath suddenDeath;
++        suddenDeath.endStepTick = 100;
++        const WinningCondition& condition = timer
++            ? static_cast<const WinningCondition&>(suddenDeath)
++            : static_cast<const WinningCondition&>(prestige);
++        CHECK_FALSE(condition.hasTeamWon(0, g()));
++        CHECK(condition.hasTeamLost(0, g()));
++        CHECK(condition.hasTeamWon(1, g()));
++        CHECK_FALSE(condition.hasTeamLost(1, g()));
++        CHECK(condition.hasTeamLost(2, g()));
++        T(2)->prestige = -2;
++        CHECK(condition.hasTeamWon(1, g()));
++        CHECK(condition.hasTeamWon(2, g()));
++        T(1)->isAlive = false;
++        T(2)->isAlive = false;
++        for (int t = 0; t < 3; ++t)
++        {
++            CHECK_FALSE(condition.hasTeamWon(t, g()));
++            CHECK(condition.hasTeamLost(t, g()));
++        }
++    }
++}
++
+ TEST_CASE("draw outcome: before the buzzer nobody is decided")
+ {
+ 	clearAll();
+diff --git a/src/game/screens/EndGameScreen.cpp b/src/game/screens/EndGameScreen.cpp
+index 37adab449..d5f00326e 100644
+--- a/src/game/screens/EndGameScreen.cpp
++++ b/src/game/screens/EndGameScreen.cpp
+@@ -10,6 +10,7 @@
+ #include "GlobalContainer.h"
+ #include "ReplayWriter.h"
+ #include "Team.h"
++#include "OutcomeReason.h"
+ #include "TeamDisplay.h"
+ #include "Utilities.h"
+ #include "InGameTouchTheme.h"
+@@ -187,22 +188,19 @@ EndGameScreen::Description EndGameScreen::describe(const Game &game, const Team
+ 			opponentPlayed = true;
+ 	}
+ 	auto &strings = *GAGCore::Toolkit::getStringTable();
++	const std::string reasonKey = outcomeReasonKey(game, local.teamNumber);
+ 	if (d.outcome == Outcome::Victory)
+ 	{
+ 		if (!leftNames.empty() && !opponentPlayed)
+ 			d.reason = leftNames.size() == 1 ? std::string(GAGCore::FormattableString(strings.getString("[conn notice left %0]")).arg(leftNames.front()))
+ 											 : strings.getString("[results reason opponents left]");
+-		else if (game.totalPrestigeReached)
+-			d.reason = strings.getString("[Total prestige reached]");
+-		else if (local.winCondition == WCWinProbability)
+-			d.reason = strings.getString("[results reason beyond doubt]");
++		else if (!reasonKey.empty())
++			d.reason = strings.getString(reasonKey);
+ 		else
+ 			d.reason = strings.getString("[results reason victory]");
+ 	}
+ 	else if (d.outcome == Outcome::Defeat)
+-		d.reason = strings.getString(game.totalPrestigeReached					? "[Total prestige reached]"
+-									 : local.winCondition == WCWinProbability ? "[results reason beyond doubt]"
+-																				: "[results reason defeat]");
++		d.reason = strings.getString(reasonKey.empty() ? "[results reason defeat]" : reasonKey);
+ 	else if (d.outcome == Outcome::Left)
+ 		d.reason = strings.getString("[results reason you left]");
+ 	return d;
+diff --git a/src/hud/GUIInteractionCoverageTest.cpp b/src/hud/GUIInteractionCoverageTest.cpp
+index 7fe144828..345292a0f 100644
+--- a/src/hud/GUIInteractionCoverageTest.cpp
++++ b/src/hud/GUIInteractionCoverageTest.cpp
+@@ -7,6 +7,9 @@
+ #include "Order.h"
+ #include "GameGUIKeyActions.h"
+ #include "GameGUIDialog.h"
++#include "EndGameScreen.h"
++#include <StringTable.h>
++#include <Toolkit.h>
+ #include "LoadSaveDialog.h"
+ #include "MapEditDialog.h"
+ #include <SDLGraphicContext.h>
+@@ -497,6 +500,39 @@ TEST_SUITE("GUIInteractionCoverage")
+         CHECK(w.checksum()==checksum); CHECK(gui.orderQueue.empty());
+     }
+ 
++    TEST_CASE("local victory popup and results show the same deciding condition [display][artifacts]")
++    {
++        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=640,.height=480});
++        glob2test::HeadlessGame world(glob2test::GameOptions{.teams=2,.discovered=true,.loadDefaultRace=true,.header=true});
++        auto& gui=world.gui;
++        gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=world.team;
++        gui.init();
++        for (int t=0;t<2;++t) world.game.teams[t]->allies=world.game.teams[t]->me;
++        world.game.prestigeToReach=10;
++        world.team->prestige=10;
++        world.game.prestigeSyncStep(); world.game.wonSyncStep();
++        REQUIRE(world.team->hasWon);
++        const auto checksum=world.checksum();
++        glob2test::drawGUI(gui,0);
++        gui.checkWonConditions();
++        REQUIRE(gui.inGameMenu==GameGUI::IGM_END_OF_GAME);
++        auto* dialog=dynamic_cast<InGameEndOfGameScreen*>(gui.gameMenuScreen.get());
++        REQUIRE(dialog);
++        dialog->update(0);
++        CHECK(dialog->title==GAGCore::Toolkit::getStringTable()->getString("[you have won]"));
++        auto* explanation=dialog->host().find("outcome/reason");
++        REQUIRE(explanation);
++        CHECK(explanation->accessibleText()==GAGCore::Toolkit::getStringTable()->getString("[outcome reason prestige]"));
++        CHECK(EndGameScreen::describe(world.game,*world.team).reason==explanation->accessibleText());
++        CHECK(world.checksum()==checksum);
++        CHECK(dialog->host().bounds("ok").bottom()<=globalContainer->gfx->getH());
++        auto* gfx=globalContainer->gfx;
++        gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
++        gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(60,110,50));
++        dialog->draw(0); gfx->nextFrame();
++        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"victory-prestige-reason.bmp").string().c_str()));
++    }
++
+     TEST_CASE("match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]")
+     {
+         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=1024,.height=768});
+@@ -519,7 +555,7 @@ TEST_SUITE("GUIInteractionCoverage")
+         InGameMainScreen menu(false,true,false);
+         CHECK(&menu.theme()==&match);
+         capture(menu,"dialog-ingame-menu.bmp");
+-        InGameEndOfGameScreen outcome("Victory",true);
++        InGameEndOfGameScreen outcome("Victory",true,{},true,"Win probability threshold reached.");
+         CHECK(&outcome.theme()==&match);
+         capture(outcome,"dialog-ingame-outcome.bmp");
+         LoadSaveDialog save("games","game",false,"Save game");
+diff --git a/src/hud/GameGUIDialog.cpp b/src/hud/GameGUIDialog.cpp
+index 7d3f42561..c370928fa 100644
+--- a/src/hud/GameGUIDialog.cpp
++++ b/src/hud/GameGUIDialog.cpp
+@@ -103,8 +103,8 @@ Element InGameConfirmScreen::build(const Presentation &p)
+ }
+ 
+ InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor,
+-											 bool won)
+-	: title(std::move(title)), canContinue(canContinue), teamColor(teamColor), won(won)
++											 bool won, std::string reason)
++	: title(std::move(title)), canContinue(canContinue), teamColor(teamColor), reason(std::move(reason)), won(won)
+ {
+ }
+ 
+@@ -132,6 +132,12 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
+ 								   }));
+ 	}
+ 	parts.push_back(fe::paragraph(title, {fe::FontRole::Title, false, fe::TextAlign::Center}));
++	if (!reason.empty())
++	{
++		auto explanation = fe::paragraph(reason, {fe::FontRole::Body, true, fe::TextAlign::Center});
++		explanation->key = "outcome/reason";
++		parts.push_back(std::move(explanation));
++	}
+ 	std::vector<fe::MenuAction> actions;
+ 	actions.push_back({"ok", fe::tr("[ok]"), [this] { finish(QUIT); }, true, SDLK_RETURN});
+ 	if (canContinue)
+diff --git a/src/hud/GameGUIDialog.h b/src/hud/GameGUIDialog.h
+index 5b7ba5a2a..f2a691f6a 100644
+--- a/src/hud/GameGUIDialog.h
++++ b/src/hud/GameGUIDialog.h
+@@ -89,7 +89,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
+ 	const std::string title;
+ 	const bool canContinue;
+ 	InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor = {},
+-						  bool won = false);
++						  bool won = false, std::string reason = {});
+ 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+ 
+   protected:
+@@ -98,6 +98,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
+ 
+   private:
+ 	std::optional<GAGCore::Color> teamColor;
++	std::string reason;
+ 	bool won;
+ };
+ 
+diff --git a/src/hud/GameGUIStep.cpp b/src/hud/GameGUIStep.cpp
+index f3e102764..ac8e7ee23 100644
+--- a/src/hud/GameGUIStep.cpp
++++ b/src/hud/GameGUIStep.cpp
+@@ -457,11 +457,13 @@ void GameGUI::checkWonConditions(void)
+         const auto& hud=scene.panels.hud;
+         const char* message=nullptr;
+         bool won=false;
++        std::string reasonKey=hud.localState().outcomeReasonKey;
+         auto color=presentationColor(scene.panels.local.state().color);
+         if (globalContainer->liveSpectating)
+         {
+             if (hud.winningTeam<0) return;
+             message=hud.drawn ? "[game draw]" : "[Match finished]";
++            reasonKey=scene.entities.teams[hud.winningTeam].outcomeReasonKey;
+             won=!hud.drawn; color=presentationColor(scene.entities.teams[hud.winningTeam].color);
+         }
+         else if (networkMatch.active && hud.localState().won)
+@@ -471,7 +473,10 @@ void GameGUI::checkWonConditions(void)
+             isRunning=false; return;
+         }
+         else if (hud.state().totalPrestigeReached && hud.state().prestigeWinCondition)
+-        { message=hud.localDraw ? "[game draw]" : "[Total prestige reached]"; won=hud.localState().won && !hud.localDraw; }
++        {
++            message=hud.localDraw ? "[game draw]" : hud.localState().won ? "[you have won]" : "[you have lost]";
++            won=hud.localState().won && !hud.localDraw;
++        }
+         else if (hud.localState().lost) message="[you have lost]";
+         else if (hud.localState().won)
+         {
+@@ -480,7 +485,9 @@ void GameGUI::checkWonConditions(void)
+         }
+         if (message && inGameMenu==IGM_NONE)
+         {
+-            openDialog(IGM_END_OF_GAME,std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(message),true,color,won));
++            const auto reason=reasonKey.empty() ? std::string{} : Toolkit::getStringTable()->getString(reasonKey);
++            openDialog(IGM_END_OF_GAME,std::make_unique<InGameEndOfGameScreen>(
++                Toolkit::getStringTable()->getString(message),true,color,won,reason));
+             hasEndOfGameDialogBeenShown=true; miniMapPushed=false;
+         }
+         return;
+diff --git a/src/team/TeamStep.cpp b/src/team/TeamStep.cpp
+index 1ec2eb803..bc8b3aaa8 100644
+--- a/src/team/TeamStep.cpp
++++ b/src/team/TeamStep.cpp
+@@ -340,7 +340,7 @@ void Team::syncStep(void)
+ 
+ 	int nbUsefulUnits = 0;
+ 	int nbUsefulUnitsAlone = 0;
+-	bool hasFedOrFeedingUnit = false;
++	bool hasHealthyOrRecoveringUnit = false;
+ 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
+ 	// Select once per team. The usual loop has no aura branch per unit;
+ 	// pulse services still run immediately before that unit's normal update.
+@@ -358,12 +358,15 @@ void Team::syncStep(void)
+ 			}
+ 			if constexpr (areaPulse) u->applyAreaServices();
+ 			u->syncStep();
+-			// Check after the step: admission lists and medical status can lag a meal.
++			// Check after the step: reserving the last service place removes the
++			// building from admission lists. Feeding and healing still offer recovery.
+ 			if (!u->isDead && u->owner == this && u->typeNum != EXPLORER
+ 				&& ((!u->isUnitHungry() && u->hp > u->trigHP)
+ 					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == FEED
+-						&& u->attachedBuilding && u->attachedBuilding->type->canFeedUnit)))
+-				hasFedOrFeedingUnit = true;
++						&& u->attachedBuilding && u->attachedBuilding->type->canFeedUnit)
++					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == HEAL
++						&& u->attachedBuilding && u->attachedBuilding->type->canHealUnit)))
++				hasHealthyOrRecoveringUnit = true;
+ 			if (u->isDead)
+ 			{
+ 				// Client selections hold a UnitRef and notice the death when
+@@ -483,7 +486,7 @@ void Team::syncStep(void)
+ 
+ 	bool isDying= (playersMask==0)
+ 		|| allRemainingUnitsTrapped(*this)
+-		|| (!isEnoughFoodInSwarm && !hasFedOrFeedingUnit && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
++		|| (!isEnoughFoodInSwarm && !hasHealthyOrRecoveringUnit && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
+ 	if (isAlive && isDying)
+ 	{
+ 		isAlive=false;
+diff --git a/src/unit/HungryDefeatHarness.cpp b/src/unit/HungryDefeatHarness.cpp
+index ae2a5ae48..d97ecf799 100644
+--- a/src/unit/HungryDefeatHarness.cpp
++++ b/src/unit/HungryDefeatHarness.cpp
+@@ -9,6 +9,8 @@
+ #include "IntBuildingType.h"
+ #include "WinningConditions.h"
+ #include "Utilities.h"
++#include <BinaryStream.h>
++#include <StreamBackend.h>
+ #include <cstdio>
+ #include <cstdlib>
+ #include <string>
+@@ -30,7 +32,7 @@ struct Colony
+     Building* inn;
+     std::vector<Uint32> trace;
+ 
+-    Colony(int corn = 10)
++    Colony(int corn = 10, const char* buildingName = "inn")
+     {
+         setSyncRandSeed(110);
+         game.gameHeader.setRandomSeed(110);
+@@ -45,7 +47,7 @@ struct Colony
+         team->playersMask = 1;
+         game.gameHeader.getWinningConditions().clear();
+         game.gameHeader.getWinningConditions().push_back(std::make_shared<WinningConditionDeath>());
+-        const int type = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
++        const int type = globalContainer->buildingsTypes.getTypeNum(buildingName, 0, false);
+         inn = new Building(8, 8, 0, type, team, &globalContainer->buildingsTypes, 0, 0);
+         team->myBuildings[0] = inn;
+         team->rebuildLiveLists();
+@@ -79,6 +81,33 @@ struct Colony
+     }
+ };
+ 
++static std::vector<Uint32> checkHealing(int type)
++{
++    Colony c(0, "hospital");
++    Unit* u = c.unit(type);
++    u->hungry = Unit::HUNGRY_MAX;
++    u->hp = u->trigHP;
++    u->medical = Unit::MED_DAMAGED;
++    u->delta = 255;
++    c.step(true, "reserving the final hospital place must not cause defeat");
++    require(u->attachedBuilding == c.inn && u->destinationPurpose == HEAL,
++            "injured unit reserves healing during the team step");
++    require(c.team->canFeedUnit.empty() && c.team->canHealUnit.empty(),
++            "full hospital is absent from admission lists");
++    bool entered = false;
++    for (int tick = 0; tick < 2000 && u->hp != u->performance[HP]; ++tick)
++    {
++        entered |= u->displacement == Unit::DIS_INSIDE;
++        c.step(true, "colony remains alive while approaching, entering and healing");
++    }
++    require(entered && u->hp == u->performance[HP], "unit completes healing");
++    for (int tick = 0; tick < 300; ++tick)
++        c.step(true, "healed colony remains alive through exit and medical refresh");
++    require(u->attachedBuilding == nullptr && u->medical == Unit::MED_FREE,
++            "healed unit exits and refreshes medical status");
++    return c.trace;
++}
++
+ static std::vector<Uint32> checkFeeding(int type, int corn)
+ {
+     Colony c(corn);
+@@ -115,6 +144,64 @@ static std::vector<Uint32> checkFeeding(int type, int corn)
+ 
+ TEST_SUITE("HungryDefeat")
+ {
++    TEST_CASE("healing defeat recovery survives a save with an occupied hospital")
++    {
++        glob2test::HeadlessGlobals globals;
++        glob2test::HeadlessGame world({.teams = 2, .clearImmobile = true,
++                                     .loadDefaultRace = true, .header = true, .seed = 110});
++        WinningCondition::setPrestigeWinCondition(world.game.gameHeader.getWinningConditions(), false);
++        Building* hospital = world.addBuilding("hospital", 8, 8);
++        hospital->maxUnitInside = 1;
++        hospital->updateCallLists();
++        Unit* patient = world.addUnit(WORKER, 6, 8);
++        patient->hp = patient->trigHP;
++        patient->medical = Unit::MED_DAMAGED;
++        patient->delta = 255;
++        REQUIRE(world.addUnit(WORKER, 20, 20, 1));
++        world.step();
++        REQUIRE(patient->attachedBuilding == hospital);
++        REQUIRE(world.team->isAlive);
++        REQUIRE_FALSE(world.team->hasLost);
++        auto* backend = new GAGCore::MemoryStreamBackend;
++        GAGCore::BinaryOutputStream output(backend);
++        world.game.save(&output, false, "occupied hospital recovery");
++        output.flush();
++        std::string bytes(backend->getBuffer(), backend->getPosition());
++        const auto rng = world.game.syncRandom;
++        const auto continueGame = [](Game& game) {
++            SyncRandScope bound(game.syncRandom);
++            std::vector<Uint32> trace;
++            for (int tick = 0; tick < 512; ++tick)
++            {
++                game.syncStep(0);
++                REQUIRE(game.teams[0]->isAlive);
++                REQUIRE_FALSE(game.teams[0]->hasLost);
++                REQUIRE_FALSE(game.teams[1]->hasWon);
++                REQUIRE_FALSE(game.isGameEnded);
++                trace.push_back(game.checkSum(nullptr, nullptr, nullptr, true));
++            }
++            return trace;
++        };
++        const auto original = continueGame(world.game);
++        GameGUI restored;
++        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
++        input.seekFromStart(0);
++        REQUIRE(restored.game.load(&input));
++        restored.game.setWaitingOnMask(0);
++        REQUIRE(restored.game.syncRandom == rng);
++        REQUIRE(continueGame(restored.game) == original);
++    }
++
++    TEST_CASE("healing reserves the last hospital place without eliminating the colony")
++    {
++        glob2test::HeadlessGlobals globals;
++        for (int type : {WORKER, WARRIOR})
++        {
++            const auto first = checkHealing(type);
++            REQUIRE(checkHealing(type) == first);
++        }
++    }
++
+ 	TEST_CASE("feeding reserves the last inn place and defeat controls hold")
+ 	{
+ 		glob2test::HeadlessGlobals globals;
+diff --git a/test/fixtures/multiplayer/FourSquares1.g2mr b/test/fixtures/multiplayer/FourSquares1.g2mr
+index 900282c43ddeca04eb533dc8b8bdd6a91c83a17d..60664d6b3957bc73b73903fd77a89bb9a471ebaf 100644
+GIT binary patch
+delta 150
+zcmdldyH9q4frGJyadN7mVTx%=qDh)jqJgQAVUl5rL6U_bP{Pc_*f`P1%s4IC+}Ok{
+q+0xh~#UL@&+}JWXHQC%KH8Iu1aASclGsT8%{>!|Vi)Dq(SAPJPiz~hW
+
+delta 150
+zcmdldyH9q4fkR57Wm-x~T56I-YO;}enn`k+v7v>zg{5(_iAkbKnyFE$L2|O8u~|x*
+rNup_*S)x&jv3atYfrX)As)=QqVe-ZTUuKF8+5DGzFBc2vUom|Ef9)+T
+
+diff --git a/src/game/OutcomeReason.h b/src/game/OutcomeReason.h
+new file mode 100644
+index 000000000..f8a14ca85
+--- /dev/null
++++ b/src/game/OutcomeReason.h
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#pragma once
++
++#include "Game.h"
++#include "Team.h"
++
++// Presentation only: do not change the simulation's recorded condition. An
++// allied winner can inherit its partner's result, and the second evaluation
++// pass can relabel a score decision as opponents defeated.
++inline const char* outcomeReasonKey(const Game& game, int teamNumber)
++{
++    const auto& team = *game.teams[teamNumber];
++    const auto key = [](WinningConditionType condition) {
++        switch (condition) {
++        case WCDeath: return "[outcome reason eliminated]";
++        case WCAllies: return "[outcome reason ally won]";
++        case WCPrestige: return "[outcome reason prestige]";
++        case WCScript: return "[outcome reason scenario]";
++        case WCOpponentsDefeated: return "[outcome reason opponents defeated]";
++        case WCSuddenDeath: return "[outcome reason timer]";
++        case WCWinProbability: return "[outcome reason probability]";
++        default: return "";
++        }
++    };
++    if (!team.hasWon && !team.hasLost)
++        return "";
++    if (!team.hasWon || (team.winCondition != WCAllies && team.winCondition != WCOpponentsDefeated))
++        return key(team.winCondition);
++
++    bool scoringOpponentLost = false;
++    bool probabilityDecision = false;
++    for (int t = 0; t < game.teamsCount(); ++t) {
++        const auto& other = *game.teams[t];
++        if (t == teamNumber || ((team.allies & other.me) && (other.allies & team.me))) continue;
++        if (other.isAlive && other.hasLost && (other.winCondition == WCPrestige ||
++            other.winCondition == WCSuddenDeath || other.winCondition == WCWinProbability)) {
++            scoringOpponentLost = true;
++            probabilityDecision |= other.winCondition == WCWinProbability;
++        }
++    }
++    for (const auto& condition : game.gameHeader.getWinningConditions()) {
++        const auto type = condition->getType();
++        if (type == WCAllies) continue;
++        // Score/probability losses can make all opponents count as
++        // defeated after the decision. That is a consequence, not its reason.
++        if (type == WCOpponentsDefeated && scoringOpponentLost) continue;
++        // Probability evaluates only on sample ticks. Keep its explanation
++        // when the UI receives a later tick with the decided outcomes intact.
++        if ((type == WCWinProbability && probabilityDecision) || condition->hasTeamWon(teamNumber, &game))
++            return key(type);
++    }
++    return key(WCAllies);
++}

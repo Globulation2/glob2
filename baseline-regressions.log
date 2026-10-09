@@ -1,0 +1,158 @@
+$ python3 test/run_tests.py -j2 --no-display --filter 'EngineSession/disabled prestige*' --filter 'EngineSession/eliminated prestige*' --filter 'HungryDefeat/healing*' --filter 'WinningConditions/prestige and timer adjudication*' --junit /Users/bradley/.codex/worktrees/9aea/glob2/artifacts/victory/baseline.xml
+FAIL glob2-unit-tests WinningConditions (1 cases) (0.0s)
+FAIL EngineSession/disabled prestige victory cannot end automatic matches (0.1s)
+FAIL EngineSession/eliminated prestige leaders cannot make every survivor lose (0.1s)
+FAIL HungryDefeat/healing reserves the last hospital place without eliminating the colony (0.1s)
+FAIL HungryDefeat/healing defeat recovery survives a save with an occupied hospital (0.1s)
+
+===== FAIL EngineSession/disabled prestige victory cannot end automatic matches =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"}, "revision": "9f8fe35373244553ea3f4883fbe03983aacc9c77", "sourceStatus": [" M docs/features/custom-game-setup/README.md", " M docs/multiplayer/ratings-and-matchmaking.md", " M src/engine/EngineSessionHarness.cpp", " M src/game/SimRevision.h", " M src/game/WinningConditionsHarness.cpp", " M src/unit/HungryDefeatHarness.cpp", "?? glob2/"], "sourceTreeSha256": "c8923a6d047be3efd8baa1a9c22e86f140c884ae1592684c3e8e4fb4bb18809a"}
+nox::gui.game.totalPrestigeReached
+nox::gui.game.totalPrestigeReached
+
+[failure] disabled prestige victory cannot end automatic matches: true
+src/engine/EngineSessionHarness.cpp:138:
+CHECK_FALSE( game.totalPrestigeReached ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] disabled prestige victory cannot end automatic matches: {?}
+src/engine/EngineSessionHarness.cpp:144:
+CHECK( engine.gui.isRunning ) is NOT correct!
+  values: CHECK( {?} )
+
+
+===== FAIL EngineSession/eliminated prestige leaders cannot make every survivor lose =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"}, "revision": "9f8fe35373244553ea3f4883fbe03983aacc9c77", "sourceStatus": [" M docs/features/custom-game-setup/README.md", " M docs/multiplayer/ratings-and-matchmaking.md", " M src/engine/EngineSessionHarness.cpp", " M src/game/SimRevision.h", " M src/game/WinningConditionsHarness.cpp", " M src/unit/HungryDefeatHarness.cpp", "?? glob2/"], "sourceTreeSha256": "c8923a6d047be3efd8baa1a9c22e86f140c884ae1592684c3e8e4fb4bb18809a"}
+
+[failure] eliminated prestige leaders cannot make every survivor lose: false
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]->hasWon ) is NOT correct!
+  values: CHECK( false )
+[failure] eliminated prestige leaders cannot make every survivor lose: true
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]->hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] eliminated prestige leaders cannot make every survivor lose: false
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]->hasWon ) is NOT correct!
+  values: CHECK( false )
+[failure] eliminated prestige leaders cannot make every survivor lose: true
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]->hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] eliminated prestige leaders cannot make every survivor lose: false
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]->hasWon ) is NOT correct!
+  values: CHECK( false )
+[failure] eliminated prestige leaders cannot make every survivor lose: true
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]->hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] eliminated prestige leaders cannot make every survivor lose: false
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]->hasWon ) is NOT correct!
+  values: CHECK( false )
+[failure] eliminated prestige leaders cannot make every survivor lose: true
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]->hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] eliminated prestige leaders cannot make every survivor lose: false
+src/engine/EngineSessionHarness.cpp:114:
+CHECK( game.teams[loser]->hasLost ) is NOT correct!
+  values: CHECK( false )
+
+
+===== FAIL HungryDefeat/healing defeat recovery survives a save with an occupied hospital =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"}, "revision": "9f8fe35373244553ea3f4883fbe03983aacc9c77", "sourceStatus": [" M docs/features/custom-game-setup/README.md", " M docs/multiplayer/ratings-and-matchmaking.md", " M src/engine/EngineSessionHarness.cpp", " M src/game/SimRevision.h", " M src/game/WinningConditionsHarness.cpp", " M src/unit/HungryDefeatHarness.cpp", "?? glob2/"], "sourceTreeSha256": "c8923a6d047be3efd8baa1a9c22e86f140c884ae1592684c3e8e4fb4bb18809a"}
+
+[failure] healing defeat recovery survives a save with an occupied hospital: false
+src/unit/HungryDefeatHarness.cpp:163:
+REQUIRE( world.team->isAlive ) is NOT correct!
+  values: REQUIRE( false )
+
+
+===== FAIL HungryDefeat/healing reserves the last hospital place without eliminating the colony =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"}, "revision": "9f8fe35373244553ea3f4883fbe03983aacc9c77", "sourceStatus": [" M docs/features/custom-game-setup/README.md", " M docs/multiplayer/ratings-and-matchmaking.md", " M src/engine/EngineSessionHarness.cpp", " M src/game/SimRevision.h", " M src/game/WinningConditionsHarness.cpp", " M src/unit/HungryDefeatHarness.cpp", "?? glob2/"], "sourceTreeSha256": "c8923a6d047be3efd8baa1a9c22e86f140c884ae1592684c3e8e4fb4bb18809a"}
+
+[failure] healing reserves the last hospital place without eliminating the colony: false
+src/unit/HungryDefeatHarness.cpp:23:
+REQUIRE( static_cast<bool>(ok) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: reserving the final hospital place must not cause defeat
+
+
+===== FAIL glob2-unit-tests WinningConditions (1 cases) =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"}, "revision": "9f8fe35373244553ea3f4883fbe03983aacc9c77", "sourceStatus": [" M docs/features/custom-game-setup/README.md", " M docs/multiplayer/ratings-and-matchmaking.md", " M src/engine/EngineSessionHarness.cpp", " M src/game/SimRevision.h", " M src/game/WinningConditionsHarness.cpp", " M src/unit/HungryDefeatHarness.cpp", "?? glob2/"], "sourceTreeSha256": "c8923a6d047be3efd8baa1a9c22e86f140c884ae1592684c3e8e4fb4bb18809a"}
+
+[failure] prestige and timer adjudication exclude eliminated leaders: true
+src/game/WinningConditionsHarness.cpp:411:
+CHECK_FALSE( condition.hasTeamWon(0, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:412:
+CHECK( condition.hasTeamLost(0, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:413:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: true
+src/game/WinningConditionsHarness.cpp:414:
+CHECK_FALSE( condition.hasTeamLost(1, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:417:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:418:
+CHECK( condition.hasTeamWon(2, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: true
+src/game/WinningConditionsHarness.cpp:423:
+CHECK_FALSE( condition.hasTeamWon(t, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:424:
+CHECK( condition.hasTeamLost(t, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: true
+src/game/WinningConditionsHarness.cpp:411:
+CHECK_FALSE( condition.hasTeamWon(0, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:412:
+CHECK( condition.hasTeamLost(0, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:413:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: true
+src/game/WinningConditionsHarness.cpp:414:
+CHECK_FALSE( condition.hasTeamLost(1, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:417:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:418:
+CHECK( condition.hasTeamWon(2, g()) ) is NOT correct!
+  values: CHECK( false )
+[failure] prestige and timer adjudication exclude eliminated leaders: true
+src/game/WinningConditionsHarness.cpp:423:
+CHECK_FALSE( condition.hasTeamWon(t, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+[failure] prestige and timer adjudication exclude eliminated leaders: false
+src/game/WinningConditionsHarness.cpp:424:
+CHECK( condition.hasTeamLost(t, g()) ) is NOT correct!
+  values: CHECK( false )
+
+
+0 passed, 5 failed, 0 skipped (0.5s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/9aea/glob2/artifacts/victory/baseline.xml (5 cases)

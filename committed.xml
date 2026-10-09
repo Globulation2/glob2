@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="127" failures="0" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="disabled prestige victory cannot end automatic matches" time="0.026066" status="run" />
+  <testcase classname="EngineSession" name="eliminated prestige leaders cannot make every survivor lose" time="0.068394" status="run" />
+  </testsuite><testsuite name="GUIInteractionCoverage"><testcase classname="GUIInteractionCoverage" name="local victory popup and results show the same deciding condition [display][artifacts]" time="1.33747" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]" time="1.00462" status="run" />
+  <testcase classname="GUIInteractionCoverage" name="match dialogs accept return and distinguish continuing from ending a game [display]" time="0.78963" status="run" />
+  </testsuite><testsuite name="HungryDefeat"><testcase classname="HungryDefeat" name="feeding reserves the last inn place and defeat controls hold" time="0.135034" status="run" />
+  <testcase classname="HungryDefeat" name="healing defeat recovery survives a save with an occupied hospital" time="0.124622" status="run" />
+  <testcase classname="HungryDefeat" name="healing reserves the last hospital place without eliminating the colony" time="0.05851" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="0.822192" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.022683" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.023348" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.002903" status="run" />
+  <testcase classname="MatchSetup" name="Scripted map sources preserve exact provenance and enforce team count" time="0.000366" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.025355" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000108" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.019144" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="0.076859" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.029463" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.019417" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.029253" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.007967" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.019862" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.020901" status="run" />
+  </testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="Serial hosts publish immutable Scenes through workers or explicit fallback" time="0.03943" status="run" />
+  <testcase classname="SceneExtract" name="building events preserve concrete catalog IDs and key-only display names" time="0.053839" status="run" />
+  <testcase classname="SceneExtract" name="building sprite frames honor damage effective maximum and connection precedence" time="0" status="run" />
+  <testcase classname="SceneExtract" name="client paint survives old Scenes and retires only with its execution revision" time="0.029827" status="run" />
+  <testcase classname="SceneExtract" name="connected overlays use configured groups and scene retains its catalog" time="0.0363" status="run" />
+  <testcase classname="SceneExtract" name="custom ground and overlay frames render connections and damage [display:1100x1100][artifacts]" time="1.40452" status="run" />
+  <testcase classname="SceneExtract" name="empty worlds and a view whose team disappeared prepare without live fallback" time="0.031359" status="run" />
+  <testcase classname="SceneExtract" name="farm input eligibility is frozen with presentation inputs" time="0.041833" status="run" />
+  <testcase classname="SceneExtract" name="large defence overlay preparation yields and finishes its kernel" time="0.045553" status="run" />
+  <testcase classname="SceneExtract" name="map service indicators follow arbitrary and free recipes" time="0" status="run" />
+  <testcase classname="SceneExtract" name="order execution revisions are captured even without advancing the tick" time="0.028843" status="run" />
+  <testcase classname="SceneExtract" name="ordinary captures reuse unchanged HUD samples" time="0.050944" status="run" />
+  <testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.028344" status="run" />
+  <testcase classname="SceneExtract" name="published catalog definitions remain immutable across owner reconfiguration" time="0.031374" status="run" />
+  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.028067" status="run" />
+  <testcase classname="SceneExtract" name="retired map storage reuses masks without retaining a world or clearing its values" time="0.029044" status="run" />
+  <testcase classname="SceneExtract" name="same-tick map edits refresh overlays while retained frames remain immutable" time="0.029305" status="run" />
+  <testcase classname="SceneExtract" name="script area snapshots are opt-in and independent of later map edits" time="0.02949" status="run" />
+  <testcase classname="SceneExtract" name="session narrative payloads are immutable and reused until mutation" time="0.029559" status="run" />
+  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.028556" status="run" />
+  <testcase classname="SceneExtract" name="snapshot preparation matches retained queries and survives later live mutations" time="0.036142" status="run" />
+  <testcase classname="SceneExtract" name="snapshot preparation retains definitions after the source game is destroyed" time="0.043593" status="run" />
+  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.02823" status="run" />
+  <testcase classname="SceneExtract" name="statistics history is optional immutable and reused until a new sample" time="0.038758" status="run" />
+  <testcase classname="SceneExtract" name="superseded and retired frames promptly release all world leases" time="0.000236" status="run" />
+  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.028859" status="run" />
+  </testsuite><testsuite name="TrappedUnitLifecycle"><testcase classname="TrappedUnitLifecycle" name="trapped elimination; indoor survival; rescue; service; hatchery recovery; repeated seeds and save continuation" time="0.787045" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.361756" status="run" />
+  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="calling an early loser cannot change later teams' decision inputs" time="0.041159" status="run" />
+  <testcase classname="WinProbability" name="combat facilities count concrete providers once, including explicit construction targets" time="0.12653" status="run" />
+  <testcase classname="WinProbability" name="enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]" time="0.058101" status="run" />
+  <testcase classname="WinProbability" name="equal alliances share chances and eliminated allies contribute nothing" time="0.04929" status="run" />
+  <testcase classname="WinProbability" name="native arithmetic reproduces every published calibration sample" time="0.000273" status="run" />
+  <testcase classname="WinProbability" name="rule serialization gates the new tag and rejects ambiguous thresholds" time="0" status="run" />
+  <testcase classname="WinProbability" name="the rule waits for the minimum tick and sample boundary then ends all teams" time="0.040769" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.019143" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="0.027777" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.02653" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.029104" status="run" />
+  <testcase classname="WorldSnapshot" name="capture requirements exclude arrays that no scheduled consumer requests" time="0.026274" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.028694" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="0.030232" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.025522" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.027771" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000208" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.026372" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="0.029157" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.027882" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.028288" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.026246" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.029849" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.028671" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="0.037976" status="run" />
+  <testcase classname="WorldSnapshot" name="outcome reasons survive the read boundary without changing simulation state" time="0.040707" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="0.027894" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.028069" status="run" />
+  <testcase classname="WorldSnapshot" name="resource copy metrics include multi-material stock sidecars" time="0.027808" status="run" />
+  <testcase classname="WorldSnapshot" name="reused buffers copy sparse chunks and refresh dense changes contiguously" time="0.026466" status="run" />
+  <testcase classname="WorldSnapshot" name="same tick component expansion preserves narrow leases and captures arrays once" time="0.028307" status="run" />
+  <testcase classname="WorldSnapshot" name="shared entity indices preserve empty slots and canonical record addresses" time="0.027434" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.02822" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.027815" status="run" />
+  <testcase classname="WorldSnapshot" name="vertex changes preserve retained terrain and reuse unchanged versions" time="0.026274" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="0.028352" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.000517" status="run" />
+  </testsuite><testsuite name="BaseTeamSaveLoad"><testcase classname="BaseTeamSaveLoad" name="RoundTripPinsAlphaOpaque" time="0" status="run" />
+    <testcase classname="BaseTeamSaveLoad" name="SaveLoadSaveIsByteStable" time="0" status="run" />
+  </testsuite><testsuite name="GameHeaderTextSaveLoad"><testcase classname="GameHeaderTextSaveLoad" name="embedded catalog crosses text and binary chunk boundaries" time="0.222557" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="FullRoundTrip" time="0.000269" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="PlayerInfoRoundTrip" time="0.000179" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="BinaryHeaderFormsAndLegacy" time="0.00022" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="AI order delay round trips at both boundaries and rejects invalid saved bytes" time="0.000717" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="New games and reset headers default to eight tick AI decisions" time="0" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="Building gradient delay round trips at both boundaries and rejects invalid saved bytes" time="0.000676" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="New games and reset headers default to an eight tick building gradient delay" time="0" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="released format 145 header detects empty artwork without consuming the next record" time="0.000621" status="run" />
+    <testcase classname="GameHeaderTextSaveLoad" name="compact-growth format 145 headers preserve definitions and enabled keys" time="0.000124" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.001132" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000394" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditionDecode"><testcase classname="WinningConditionDecode" name="RoundTrip" time="0.000119" status="run" />
+    <testcase classname="WinningConditionDecode" name="SuddenDeathRoundTrip" time="0" status="run" />
+    <testcase classname="WinningConditionDecode" name="UnknownTypeTag" time="0" status="run" />
+    <testcase classname="WinningConditionDecode" name="TruncatedStream" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditionPrestigeToggle"><testcase classname="WinningConditionPrestigeToggle" name="prestige toggle edits only the prestige entry at its default rank" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditionSuddenDeathToggle"><testcase classname="WinningConditionSuddenDeathToggle" name="sudden death toggle appends last and retunes in place" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditions"><testcase classname="WinningConditions" name="every predicate matches the golden record stream [golden]" time="0.002381" status="run" />
+    <testcase classname="WinningConditions" name="prestige and timer adjudication exclude eliminated leaders" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: before the buzzer nobody is decided" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a single winner wins and the rest lose" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a tie at the top across alliances is a draw and teams below still lose" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: allied teams tied at the top share a win" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: an ally of the sole leader shares its win" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: an alliance tied with an outsider is a draw for everyone at the top" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a one-way alliance does not turn a tie into a shared win" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a prestige finish tied at the top across alliances is a draw" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: empty seats count for nobody" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: two players tied next to empty seats still draw" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a real AI tied at the top is a draw; replays count every team" time="0" status="run" />
+  </testsuite></testsuites>

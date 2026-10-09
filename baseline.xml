@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="29" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="disabled prestige victory cannot end automatic matches" time="0.037933" status="run">
+      <failure message="true" type="CHECK_FALSE">
+src/engine/EngineSessionHarness.cpp:138:
+CHECK_FALSE( game.totalPrestigeReached ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="{?}" type="CHECK">
+src/engine/EngineSessionHarness.cpp:144:
+CHECK( engine.gui.isRunning ) is NOT correct!
+  values: CHECK( {?} )
+
+      </failure>
+    </testcase>
+  <testcase classname="EngineSession" name="eliminated prestige leaders cannot make every survivor lose" time="0.096594" status="run">
+      <failure message="false" type="CHECK">
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]-&gt;hasWon ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]-&gt;hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]-&gt;hasWon ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]-&gt;hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]-&gt;hasWon ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]-&gt;hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/engine/EngineSessionHarness.cpp:112:
+CHECK( game.teams[winner]-&gt;hasWon ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/engine/EngineSessionHarness.cpp:113:
+CHECK_FALSE( game.teams[winner]-&gt;hasLost ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/engine/EngineSessionHarness.cpp:114:
+CHECK( game.teams[loser]-&gt;hasLost ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="HungryDefeat"><testcase classname="HungryDefeat" name="healing defeat recovery survives a save with an occupied hospital" time="0.054701" status="run">
+      <failure message="false" type="REQUIRE">
+src/unit/HungryDefeatHarness.cpp:163:
+REQUIRE( world.team-&gt;isAlive ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  <testcase classname="HungryDefeat" name="healing reserves the last hospital place without eliminating the colony" time="0.03936" status="run">
+      <failure message="false" type="REQUIRE">
+src/unit/HungryDefeatHarness.cpp:23:
+REQUIRE( static_cast&lt;bool&gt;(ok) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: reserving the final hospital place must not cause defeat
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="WinningConditions"><testcase classname="WinningConditions" name="prestige and timer adjudication exclude eliminated leaders" time="0.000332" status="run">
+      <failure message="true" type="CHECK_FALSE">
+src/game/WinningConditionsHarness.cpp:411:
+CHECK_FALSE( condition.hasTeamWon(0, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:412:
+CHECK( condition.hasTeamLost(0, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:413:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/game/WinningConditionsHarness.cpp:414:
+CHECK_FALSE( condition.hasTeamLost(1, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:417:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:418:
+CHECK( condition.hasTeamWon(2, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/game/WinningConditionsHarness.cpp:423:
+CHECK_FALSE( condition.hasTeamWon(t, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:424:
+CHECK( condition.hasTeamLost(t, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/game/WinningConditionsHarness.cpp:411:
+CHECK_FALSE( condition.hasTeamWon(0, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:412:
+CHECK( condition.hasTeamLost(0, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:413:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/game/WinningConditionsHarness.cpp:414:
+CHECK_FALSE( condition.hasTeamLost(1, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:417:
+CHECK( condition.hasTeamWon(1, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:418:
+CHECK( condition.hasTeamWon(2, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/game/WinningConditionsHarness.cpp:423:
+CHECK_FALSE( condition.hasTeamWon(t, g()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+
+      </failure>
+      <failure message="false" type="CHECK">
+src/game/WinningConditionsHarness.cpp:424:
+CHECK( condition.hasTeamLost(t, g()) ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>
