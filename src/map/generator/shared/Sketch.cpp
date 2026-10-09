@@ -16,7 +16,7 @@ std::vector<unsigned char> pureTiles(const Map &map, TerrainType type)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		result.at(i) = map.terrainTypeAt(i % t.w, i / t.w) == type;
+		result.at(i) = map.terrainTypeAt(t.remainderX(i), i / t.w) == type;
 	}
 	return result;
 }
@@ -74,7 +74,7 @@ std::vector<unsigned char> tileCorners(const Torus &t, const std::vector<unsigne
 		::MapGeneration::generationCheckpoint();
 		if (tiles.at(i))
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			corners.at(i) = corners.at(t.at(x + 1, y)) = corners.at(t.at(x, y + 1)) =
 				corners.at(t.at(x + 1, y + 1)) = 1;
 		}
@@ -129,7 +129,7 @@ std::vector<Island> raiseIslands(TerrainSketch &terrain, const Torus &t, Generat
 	{
 		::MapGeneration::generationCheckpoint();
 		const int at = sea.at(context.bounded(placement.stream, sea.size()));
-		const int x = at % t.w, y = at / t.w;
+		const int x = t.remainderX(at), y = at / t.w;
 		const RadialShape shape((4 + context.bounded(placement.stream, 3)) * scale, 0.3, context,
 								placement.stream);
 		const double reach = shape.maximumRadius();
@@ -191,7 +191,7 @@ std::vector<unsigned char> roadTiles(const Torus &t, const std::vector<unsigned 
 				for (int dx = -1; dx <= 0; ++dx)
 				{
 					::MapGeneration::generationCheckpoint();
-					tiles.at(t.at(i % t.w + dx, i / t.w + dy)) = 1;
+					tiles.at(t.at(t.remainderX(i) + dx, i / t.w + dy)) = 1;
 				}
 			}
 	}

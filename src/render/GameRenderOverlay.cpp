@@ -1,5 +1,6 @@
 #include <climits>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "scene/Scene.h"
@@ -281,8 +282,8 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 				Uint32 visibleTeams = view.drawnScene().entities.teams[localTeam].mask;
 				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-				int rx=(x+viewportX-1+map.getW())%map.getW();
-				int ry=(y+viewportY-1+map.getH())%map.getH();
+				int rx=powerOfTwoRemainder(x+viewportX-1+map.getW(), map.getW());
+				int ry=powerOfTwoRemainder(y+viewportY-1+map.getH(), map.getH());
 				if(!view.drawnScene().editor && !map.isMapDiscovered(rx, ry, visibleTeams))
 					continue;
 				if(overlays->getValue(rx, ry))

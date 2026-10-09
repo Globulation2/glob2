@@ -133,12 +133,22 @@ class MapGeneratorDefaultsTest
 			GenerationContext probe(request);
 			const auto &definition = GeneratorRegistry::builtins().at(method);
 			REQUIRE(definition.validateWorld(first, probe).empty());
-			// Removing all rock must be caught by the generator's actual final-world
-			// validator, not merely by a golden hash. Corrupt the unused repeated copy.
+			// The default map is built from catalogue lava, and cooling the lava must be
+			// caught by the generator's actual final-world validator, not merely by a golden
+			// hash. Corrupt the unused repeated copy.
+			int lava = 0;
 			for (int y = 0; y < repeat.map.getH(); ++y)
 				for (int x = 0; x < repeat.map.getW(); ++x)
-					if (repeat.map.getResource(x, y).type == STONE)
-						repeat.map.setNoResource(x, y, 1);
+					if (repeat.map.vertexTerrainAt(x, y) == LAVA ||
+						repeat.map.vertexTerrainAt(x, y) == EMBER_FIELD)
+						++lava;
+			REQUIRE(lava > 0);
+			REQUIRE(repeat.map.requiredTerrainExperiments().has(ExperimentId::LavaTerrain));
+			for (int y = 0; y < repeat.map.getH(); ++y)
+				for (int x = 0; x < repeat.map.getW(); ++x)
+					if (repeat.map.vertexTerrainAt(x, y) == LAVA ||
+						repeat.map.vertexTerrainAt(x, y) == EMBER_FIELD)
+						repeat.map.setVertexTerrain(x, y, GRASS);
 			REQUIRE(!definition.validateWorld(repeat, probe).empty());
 		}
 		if (a)

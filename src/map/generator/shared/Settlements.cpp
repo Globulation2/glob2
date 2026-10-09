@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Settlements.h"
 #include "StartingLayout.h"
 #include "Building.h"
@@ -255,7 +256,7 @@ int placeBuilding(Game &game, int team, const char *typeName, int level, double 
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(best % w, best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
+	Building *building = game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	game.teams[team]->addToStaticAbilitiesLists(building);
@@ -288,7 +289,7 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(best % w, best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
+	Building *building = game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	building->bullets = stocked ? tower->maxBullets : 0;
@@ -322,7 +323,7 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	if (site < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(site % w, site / w, type, team, std::min(1, buildingType->semantics.assignmentLimit), 0);
+	Building *building = game.addBuilding(powerOfTwoRemainder(site, w), site / w, type, team, std::min(1, buildingType->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	for (int resource : supplies)

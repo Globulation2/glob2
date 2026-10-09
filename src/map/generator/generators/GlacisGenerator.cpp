@@ -633,7 +633,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			int best = INT_MAX;
 			for (int k = 0; k < teams; ++k)
 			{
-				const int d = t.dist2(i % t.w, i / t.w, int(std::lround(L.homes[k].x)),
+				const int d = t.dist2(t.remainderX(i), i / t.w, int(std::lround(L.homes[k].x)),
 									  int(std::lround(L.homes[k].y)));
 				if (d < best)
 				{
@@ -645,7 +645,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::vector<int> pairKey(n, -1);
 		for (int i = 0; i < n; ++i)
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (const int j : {t.at(x + 1, y), t.at(x, y + 1)})
 				if (owner[j] != owner[i])
 				{
@@ -667,7 +667,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			seen[start] = 1;
 			for (size_t q = 0; q < component.size(); ++q)
 			{
-				const int x = component[q] % t.w, y = component[q] / t.w;
+				const int x = t.remainderX(component[q]), y = component[q] / t.w;
 				for (int ddy = -1; ddy <= 1; ++ddy)
 					for (int ddx = -1; ddx <= 1; ++ddx)
 					{
@@ -706,9 +706,9 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			// Unwrap the walk and displace it.
 			const int m = int(path.size());
 			std::vector<ShapePoint> base(m);
-			base[0] = {double(path[0] % t.w), double(path[0] / t.w)};
+			base[0] = {double(t.remainderX(path[0])), double(path[0] / t.w)};
 			for (int j = 1; j < m; ++j)
-				base[j] = {base[j - 1].x + t.offsetX(path[j - 1] % t.w, path[j] % t.w),
+				base[j] = {base[j - 1].x + t.offsetX(t.remainderX(path[j - 1]), t.remainderX(path[j])),
 						   base[j - 1].y + t.offsetY(path[j - 1] / t.w, path[j] / t.w)};
 			const double longWave = 40 + context.bounded("glacis-meander", 32);
 			const double shortWave = 14 + context.bounded("glacis-meander", 10);
@@ -763,14 +763,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					continue;
 				bool apart = true;
 				for (int i = 0; i < n && apart; ++i)
-					apart = !(queued[i] && t.chebyshev(i % t.w, i / t.w, seed % t.w, seed / t.w) < 2 * kPondClearance);
+					apart = !(queued[i] && t.chebyshev(t.remainderX(i), i / t.w, t.remainderX(seed), seed / t.w) < 2 * kPondClearance);
 				if (!apart)
 					continue;
 				growWater(
 					t, water, seed, kPondCorners, [&](int i) { return clearance[i] >= 4; },
 					[&](int i)
 					{
-						const long long dx = t.offsetX(seed % t.w, i % t.w),
+						const long long dx = t.offsetX(t.remainderX(seed), t.remainderX(i)),
 										dy = t.offsetY(seed / t.w, i / t.w);
 						return dx * dx + dy * dy + meander[i] / 512;
 					},
@@ -789,7 +789,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int ddy = -kFordHalf; ddy <= kFordHalf; ++ddy)
 			for (int ddx = -kFordHalf; ddx <= kFordHalf; ++ddx)
 			{
-				const int j = t.at(ford.tile % t.w + ddx, ford.tile / t.w + ddy);
+				const int j = t.at(t.remainderX(ford.tile) + ddx, ford.tile / t.w + ddy);
 				L.sketch[j] = SAND;
 				L.roads[j] = 1;
 			}
@@ -803,7 +803,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			{
 				const ShapePoint p = turnStencilPoint(L.facings[k], e);
 				const int tile = t.at(cx + int(std::lround(p.x)), cy + int(std::lround(p.y)));
-				const int d = t.dist2(tile % t.w, tile / t.w, ford.tile % t.w, ford.tile / t.w);
+				const int d = t.dist2(t.remainderX(tile), tile / t.w, t.remainderX(ford.tile), ford.tile / t.w);
 				if (d < best)
 				{
 					best = d;
@@ -832,7 +832,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				for (int ddy = -1; ddy <= 1; ++ddy)
 					for (int ddx = -1; ddx <= 1; ++ddx)
 					{
-						const int j = t.at(i % t.w + ddx, i / t.w + ddy);
+						const int j = t.at(t.remainderX(i) + ddx, i / t.w + ddy);
 						if (!L.core[j])
 						{
 							L.roads[j] = 1;
@@ -882,13 +882,13 @@ bool generate(Game &game, GenerationContext &context)
 	const DesignedStone walls = designedStone(map, t, L.wall);
 	if (walls.gaps)
 	{
-		context.detail = "a fort wall has a gap at (" + std::to_string(walls.firstGap % t.w) + ", " +
+		context.detail = "a fort wall has a gap at (" + std::to_string(t.remainderX(walls.firstGap)) + ", " +
 						 std::to_string(walls.firstGap / t.w) + ")";
 		return false;
 	}
 	for (int i = 0; i < n; ++i)
 		if (walls.stone[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "glacis colonies";
 	std::vector<int> courtOf(n, -1);
@@ -915,7 +915,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> buildable(n, 0), target(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			owner[i] = L.fortOf[i];
 			const bool towerBastion = L.kind[i] == kPocket;
 			buildable[i] = towerBastion && map.terrainPropertiesAt(x, y).buildable && !map.isResource(x, y) &&
@@ -957,8 +957,8 @@ bool generate(Game &game, GenerationContext &context)
 			const auto eligible = [&](int i)
 			{
 				return L.gardenOf[i] == k * 3 + h &&
-					map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, (wood ? WOOD : WHEAT)) && !reserved[i] &&
-					   clearGround(map, i % t.w, i / t.w);
+					map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, (wood ? WOOD : WHEAT)) && !reserved[i] &&
+					   clearGround(map, t.remainderX(i), i / t.w);
 			};
 			int placed = 0;
 			if (wood)
@@ -975,12 +975,12 @@ bool generate(Game &game, GenerationContext &context)
 				std::vector<std::pair<int, int>> garden;
 				for (int i = 0; i < n; ++i)
 					if (eligible(i))
-						garden.push_back({t.dist2(i % t.w, i / t.w, sx, sy), i});
+						garden.push_back({t.dist2(t.remainderX(i), i / t.w, sx, sy), i});
 				std::stable_sort(garden.begin(), garden.end());
 				for (const auto &[d, i] : garden)
 					if (placed < std::min(wanted, s.gardenTiles[h]))
 					{
-						map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+						map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 						++placed;
 					}
 			}
@@ -994,7 +994,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<int> woods = fractalNoise(t.w, t.h, 48, 3, context.stream("glacis-woods"));
 	const PeriodicNoise fields(t.w, t.h, 12, context.stream("glacis-fields"));
 	const auto country = [&](int i)
-	{ return !L.zone[i] && !L.roads[i] && clearGround(map, i % t.w, i / t.w); };
+	{ return !L.zone[i] && !L.roads[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	std::vector<int> open;
 	for (int i = 0; i < n; ++i)
 		if (country(i))
@@ -1009,13 +1009,13 @@ bool generate(Game &game, GenerationContext &context)
 	const int forest =
 		std::min(int(open.size()), int(scaledCount(int(open.size()) * kForestPercent / 100, o.wood)));
 	for (int j = 0; j < forest; ++j)
-		map.setResourceByIndex(open[j] % t.w, open[j] / t.w, WOOD, 1);
+		map.setResourceByIndex(t.remainderX(open[j]), open[j] / t.w, WOOD, 1);
 	context.telemetry.measure("glacis.country.forest-tiles", forest);
 	// The contested fords' prizes, before the fields take the banks.
 	for (size_t f = 0; f < L.fords.size(); ++f)
 	{
 		const Ford &ford = L.fords[f];
-		const int fx = ford.tile % t.w, fy = ford.tile / t.w;
+		const int fx = t.remainderX(ford.tile), fy = ford.tile / t.w;
 		const double nx = -ford.along.y, ny = ford.along.x;
 		for (const int bank : {-1, 1})
 		{
@@ -1034,13 +1034,13 @@ bool generate(Game &game, GenerationContext &context)
 										fy + int(std::lround(bank * kQuarryOut * ny)), 4,
 										[&](int i) { return country(i); });
 			if (quarry >= 0 && scaledCount(1, o.stone) > 0)
-				placeResourceClump(map, context, MapGeneratorPoint(quarry % t.w, quarry / t.w), STONE,
+				placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(quarry), quarry / t.w), STONE,
 								   1);
 		}
 	}
 	furnishGround(
-		map, t, context, fertility, country, [&](int i) { return fields.at(i % t.w, i / t.w); },
-		[&](int i) { return fields.at(i % t.w + 7919, i / t.w + 104729); },
+		map, t, context, fertility, country, [&](int i) { return fields.at(t.remainderX(i), i / t.w); },
+		[&](int i) { return fields.at(t.remainderX(i) + 7919, i / t.w + 104729); },
 		[&](int area)
 		{
 			return GroundAmounts{int(scaledCount(area / kFieldTilesPer, o.wheat)), 0,
@@ -1065,7 +1065,7 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	std::vector<unsigned char> open(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
 			map.terrainSupportsResourceAtByIndex(x, y, WOOD))) &&
 				  !permanentResourceBarrier(map, i);
@@ -1100,7 +1100,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const std::vector<int> fromGlacis = grassReach(map, t, L.glacis);
 	for (int i = 0; i < n; ++i)
 	{
-		if (L.glacis[i] && map.isResource(i % t.w, i / t.w))
+		if (L.glacis[i] && map.isResource(t.remainderX(i), i / t.w))
 			return "Something was planted on a glacis.";
 		if (fromGlacis[i] >= 0 && L.kind[i] != kGlacisTile && L.kind[i] != kCoveredTile &&
 			L.kind[i] != kFootTile)

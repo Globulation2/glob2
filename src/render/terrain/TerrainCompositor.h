@@ -28,6 +28,7 @@ class Compositor
   public:
 	explicit Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
 	const Catalog &catalog() const { return definitions; }
+	bool contextualBorders() const { return hasContextualProfiles; }
 	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
 	void prepare(bool hd, int time);
 	Recipe describe(const SceneMap &, int x, int y) const;
@@ -85,6 +86,7 @@ class Compositor
 		std::vector<std::array<unsigned char, 4>> pixels;
 	};
 	Catalog definitions;
+	bool hasContextualProfiles = false;
     MapAssetSprites customSprites;
     MaterialId materialFor(const SceneMap&, TerrainType type) const;
     std::pair<MaterialId, unsigned> decorMaterial(const SceneMap&, int x, int y) const;

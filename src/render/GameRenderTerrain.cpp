@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>
 
@@ -316,8 +317,8 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 		}
 	const auto teamAt = [&](int x, int y) -> int
 	{
-		const int cellX = ((x+viewportX)%sceneMap.getW()+sceneMap.getW())%sceneMap.getW()/Cell;
-		const int cellY = ((y+viewportY)%sceneMap.getH()+sceneMap.getH())%sceneMap.getH()/Cell;
+		const int cellX = powerOfTwoRemainder(powerOfTwoRemainder((x+viewportX), sceneMap.getW())+sceneMap.getW(), sceneMap.getW())/Cell;
+		const int cellY = powerOfTwoRemainder(powerOfTwoRemainder((y+viewportY), sceneMap.getH())+sceneMap.getH(), sceneMap.getH())/Cell;
 		const Uint16 cell = owner[size_t(std::min(cellY, gridH-1))*gridW + std::min(cellX, gridW-1)];
 		return cell==0xFFFF ? -1 : cell >> 8;
 	};

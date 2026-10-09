@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Orbits.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -19,7 +20,7 @@ namespace
 {
 int wrap(int v, int n)
 {
-	v %= n;
+	v = dimensionRemainder(v, n);
 	return v < 0 ? v + n : v;
 }
 
@@ -436,7 +437,7 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 			{
 				::MapGeneration::generationCheckpoint();
 				const int c = s.corner(e, u, v);
-				if (map.vertexTerrainAt(u, v) != map.vertexTerrainAt(c % w, c / w))
+				if (map.vertexTerrainAt(u, v) != map.vertexTerrainAt(dimensionRemainder(c, w), c / w))
 					return "Terrain vertex" + at(u, v) + under;
 			}
 		}
@@ -446,7 +447,7 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 			for (int x = 0; x < w; ++x)
 			{
 				::MapGeneration::generationCheckpoint();
-				const int q = s.tile(e, x, y), qx = q % w, qy = q / w;
+				const int q = s.tile(e, x, y), qx = dimensionRemainder(q, w), qy = q / w;
 				if (map.terrainTypeAt(x,y) != map.terrainTypeAt(qx,qy))
 					return "Terrain" + at(x, y) + under;
 				const Resource &ra = map.getResource(x, y), &rb = map.getResource(qx, qy);

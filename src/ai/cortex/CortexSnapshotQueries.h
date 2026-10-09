@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "PowerOfTwo.h"
 #include "ai/observation/AIWorldView.h"
 #include "CortexQueryScratch.h"
 #include "Building.h"
@@ -60,7 +61,7 @@ int finishedType(const AIEngine::AIWorldView&,const std::string&);
 int maxBuildLevel(const AIEngine::AIWorldView&,const AIEngine::TeamView&);
 inline int warpDistMax(const AIEngine::AIWorldView& map,int x,int y,int xx,int yy)
 {
-    const auto distance=[](int a,int b,int period){Sint64 d=Sint64(a)-Sint64(b);if(d<0)d=-d;if(d>=period)d%=period;return int(d>period/2?period-d:d);};
+    const auto distance=[](int a,int b,int period){Sint64 d=Sint64(a)-Sint64(b);if(d<0)d=-d;if(d>=period)d=dimensionRemainder(d,period);return int(d>period/2?period-d:d);};
     return std::max(distance(x,xx,map.width),distance(y,yy,map.height));
 }
 inline auto getResource(const AIEngine::AIWorldView& map,int x,int y){return map.resourceAt(map.tileIndex(x,y)).resource;}

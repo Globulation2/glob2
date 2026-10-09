@@ -325,7 +325,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				continue;
 			++riverCount;
 			const bool ford = valley[i] == lowest[i];
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int dy = 0; dy <= 1; ++dy)
 				for (int dx = 0; dx <= 1; ++dx)
 				{
@@ -400,7 +400,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		const LandClass c = LandClass(L.corners[i]);
 		farmable[i] = pureGrass[i] &&
 					  (c == LandClass::Plain || c == LandClass::Forest || c == LandClass::Steppe) &&
-					  startField.at(i % t.w, i / t.w) >= kFertileChance;
+					  startField.at(t.remainderX(i), i / t.w) >= kFertileChance;
 	}
 	const std::vector<int> roomAround = windowCount(t, farmable, kRoomRadius);
 	// The candidates with `room`: every roomy square on the mainland, or with `choosy` only the
@@ -502,7 +502,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::vector<std::vector<int>> seeds(static_cast<size_t>(teams));
 		for (int k = 0; k < teams; ++k)
 		{
-			const int sx = L.sites[k] % t.w, sy = L.sites[k] / t.w;
+			const int sx = t.remainderX(L.sites[k]), sy = L.sites[k] / t.w;
 			for (int dy = -L.siteRoom; dy <= L.siteRoom; ++dy)
 				for (int dx = -L.siteRoom; dx <= L.siteRoom; ++dx)
 					seeds[k].push_back(t.at(sx + dx, sy + dy));
@@ -611,11 +611,11 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			ground[i] = L.territory[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
-	{ return MapGeneratorPoint(L.sites[team] % t.w - 2, L.sites[team] / t.w - 2); };
+	{ return MapGeneratorPoint(t.remainderX(L.sites[team]) - 2, L.sites[team] / t.w - 2); };
 	if (!settleColonies(game, context, "continents-starts", homeMask, anchor))
 		return false;
 
@@ -668,12 +668,12 @@ bool generate(Game &game, GenerationContext &context)
 	// colony whose kit found no room.
 	for (int k = 0; k < teams; ++k)
 	{
-		const ShapePoint site{double(L.sites[k] % t.w), double(L.sites[k] / t.w)};
+		const ShapePoint site{double(t.remainderX(L.sites[k])), double(L.sites[k] / t.w)};
 		plantOpenHomeKit(map, t, context, site, 0.0, kHomeRadius, kKitWheat, kKitWood, kKitQuarry,
 						 [&](int i)
 						 {
 							 return L.territory[i] == k && !reserved[i] &&
-									clearGround(map, i % t.w, i / t.w);
+									clearGround(map, t.remainderX(i), i / t.w);
 						 });
 	}
 

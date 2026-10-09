@@ -46,7 +46,7 @@ std::string startingAccessFailure(const Map &map, int teams,
 		for (int i : reached.visited)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int x = i % t.w, y = i / t.w, distance = reached.steps.at(i);
+			const int x = t.remainderX(i), y = i / t.w, distance = reached.steps.at(i);
 			if (distance <= buildingRange && map.isFreeForBuilding(x, y, 4, 4))
 				++sites;
 			for (int dy = -1; dy <= 1; ++dy)

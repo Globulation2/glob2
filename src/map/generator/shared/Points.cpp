@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include "Points.h"
 #include <cmath>
@@ -43,7 +44,7 @@ std::vector<int> spreadRankedSites(const Torus &t, const std::vector<RankedSite>
 			{
 				::MapGeneration::generationCheckpoint();
 				distance =
-					std::min(distance, t.dist2(site.tile % t.w, site.tile / t.w, p % t.w, p / t.w));
+					std::min(distance, t.dist2(t.remainderX(site.tile), site.tile / t.w, t.remainderX(p), p / t.w));
 			}
 			if (distance < static_cast<long long>(minimumSpacing) * minimumSpacing)
 				continue;
@@ -663,8 +664,8 @@ std::vector<int> nearestSiteLabels(const Torus &t, const std::vector<Site> &site
 			const size_t i = size_t(y) * t.w + x;
 			int px = x * 16 + 8 + int((warpX.at(i) - 32768) * amplitude / 32768);
 			int py = y * 16 + 8 + int((warpY.at(i) - 32768) * amplitude / 32768);
-			px = ((px % W) + W) % W;
-			py = ((py % H) + H) % H;
+			px = dimensionRemainder(((dimensionRemainder(px, W)) + W), W);
+			py = dimensionRemainder(((dimensionRemainder(py, H)) + H), H);
 			const int bx = int(std::int64_t(px) * gx / W), by = int(std::int64_t(py) * gy / H);
 			std::int64_t best = INT64_MAX;
 			int nearest = 0;
@@ -866,8 +867,8 @@ std::vector<int> recentreSites(const Torus &t, const std::vector<int> &labels,
 		const int k = labels.at(i);
 		if (k < 0 || k >= n)
 			continue;
-		const int sx = sites.at(k) % t.w, sy = sites.at(k) / t.w;
-		sumX.at(k) += t.offsetX(sx, i % t.w);
+		const int sx = t.remainderX(sites.at(k)), sy = sites.at(k) / t.w;
+		sumX.at(k) += t.offsetX(sx, t.remainderX(i));
 		sumY.at(k) += t.offsetY(sy, i / t.w);
 		++tiles.at(k);
 	}
@@ -878,7 +879,7 @@ std::vector<int> recentreSites(const Torus &t, const std::vector<int> &labels,
 			continue;
 		// The middle in sixteenths of a tile, rounded to nearest, so the arithmetic is integer.
 		const std::int64_t mx =
-			(sites.at(k) % t.w) * 16 + (sumX.at(k) * 16 + tiles.at(k) / 2) / tiles.at(k);
+			(t.remainderX(sites.at(k))) * 16 + (sumX.at(k) * 16 + tiles.at(k) / 2) / tiles.at(k);
 		const std::int64_t my =
 			(sites.at(k) / t.w) * 16 + (sumY.at(k) * 16 + tiles.at(k) / 2) / tiles.at(k);
 		std::int64_t nearest = -1;
@@ -887,7 +888,7 @@ std::vector<int> recentreSites(const Torus &t, const std::vector<int> &labels,
 			::MapGeneration::generationCheckpoint();
 			if (!candidates.at(i) || labels.at(i) != k)
 				continue;
-			std::int64_t dx = std::abs((i % t.w) * 16 - mx), dy = std::abs((i / t.w) * 16 - my);
+			std::int64_t dx = std::abs((t.remainderX(i)) * 16 - mx), dy = std::abs((i / t.w) * 16 - my);
 			dx = std::min(dx, t.w * 16 - dx);
 			dy = std::min(dy, t.h * 16 - dy);
 			const std::int64_t d = dx * dx + dy * dy;

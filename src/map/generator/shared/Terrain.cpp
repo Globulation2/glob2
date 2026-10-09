@@ -1,5 +1,6 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
 #include "Terrain.h"
@@ -216,7 +217,7 @@ void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &t
 				{
 					::MapGeneration::generationCheckpoint();
 					const unsigned i = xRepeat * wHeightMap + x + (yRepeat * hHeightMap + y) * w;
-					vertices.at(size_t(map.coordToIndex(int(i % w), int(i / w)))) = vertex;
+					vertices.at(size_t(map.coordToIndex(int(dimensionRemainder(i, w)), int(i / w)))) = vertex;
 				}
 			}
 		}
@@ -259,8 +260,8 @@ void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling 
 			// slope, every hill would come out wheat on one side and wood on the other, in rings
 			// round it. Read far away it is an unrelated smooth pattern, so the two crops form
 			// blobs across the farmland band instead.
-			else if (hm((x + wHeightMap / 2) % wHeightMap + wHeightMap * y) <
-					 hm((x + wHeightMap / 2 + 1) % wHeightMap + wHeightMap * y))
+			else if (hm(dimensionRemainder((x + wHeightMap / 2), wHeightMap) + wHeightMap * y) <
+					 hm(dimensionRemainder((x + wHeightMap / 2 + 1), wHeightMap) + wHeightMap * y))
 			{
 				if (level < levels.wheat)
 					tmpResource = WHEAT;
@@ -438,8 +439,8 @@ bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFi
 				context.telemetry.choice("terrain.groves.failure", "no free grass for fruit", q1);
 				return false;
 			}
-			x = (context.stream("resources")() % wHeightMap);
-			y = (context.stream("resources")() % hHeightMap);
+			x = (dimensionRemainder(context.stream("resources")(), wHeightMap));
+			y = (dimensionRemainder(context.stream("resources")(), hHeightMap));
 		} while (map.vertexTerrainAt(x, y) != GRASS || map.isResource(x, y));
 		// choose size of grove (tree count)
 		int grovesize = (context.stream("resources")() % 10) + 1;

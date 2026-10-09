@@ -1,5 +1,6 @@
 #ifndef AI_MAXIMA_FOOD_SUPPLY_H
 #define AI_MAXIMA_FOOD_SUPPLY_H
+#include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/UniformTraversal.h"
 #include "field/TerrainTravel.h"
@@ -88,7 +89,7 @@ inline void traverseWeightedFoodSupply(const AIEngine::AIWorldView* map,const st
         if(action==field::Visit::Skip)continue;
         const unsigned candidate=cost+field::terrainTravelCost(foodTerrain(map,index),
             canSwim?field::TerrainTravel::Swim:field::TerrainTravel::Walk);
-        const int x=index%width,y=index/width;
+        const int x=powerOfTwoRemainder(index, width),y=index/width;
         for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
             if(dx || dy)add(x+dx,y+dy,candidate);
     }
@@ -109,7 +110,7 @@ inline long long distantFoodCapacity(const AIEngine::AIWorldView* map,const std:
         traverseWeightedFoodSupply(map,buildings,teamMask,canSwim,protectedTiles,
             [&](int index,int steps) {
                 if(steps>stop)return field::Visit::Stop;
-                const int x=index%width,y=index/width;
+                const int x=powerOfTwoRemainder(index, width),y=index/width;
                 const auto tileIndex=map->tileIndex(x,y);
                 if(MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food) && map->resourceAt(tileIndex).resource.amount>0)
                 {
@@ -138,7 +139,7 @@ inline long long distantFoodCapacity(const AIEngine::AIWorldView* map,const std:
     const int localRadius=std::max(1,radius);
     field::traverse(queue,{width,foodHeight(map)},field::Surrounding,
         [&](int index) {
-            const int x=index%width,y=index/width,steps=distance[index];
+            const int x=powerOfTwoRemainder(index, width),y=index/width,steps=distance[index];
             if(steps>stop)return field::Visit::Stop;
             const auto tileIndex=map->tileIndex(x,y);
             if(MapState::terrainSupportsMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food)&&MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food)&&map->resourceAt(tileIndex).resource.amount>0)
@@ -167,7 +168,7 @@ inline long long reachableFoodCapacity(const AIEngine::AIWorldView* map, const A
         traverseWeightedFoodSupply(map,std::vector<const AIEngine::BuildingView*>{building},teamMask,canSwim,protectedTiles,
             [&](int index,int steps) {
                 if(steps>radius)return field::Visit::Stop;
-                const int x=index%width,y=index/width;
+                const int x=powerOfTwoRemainder(index, width),y=index/width;
                 const auto tileIndex=map->tileIndex(x,y);
                 if(MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food) && map->resourceAt(tileIndex).resource.amount>0
                     && (!shared_tiles || shared_tiles->insert(index).second))
@@ -200,7 +201,7 @@ inline long long reachableFoodCapacity(const AIEngine::AIWorldView* map, const A
 	long long capacity=0;
 	field::traverse(queue,{width,foodHeight(map)},field::Surrounding,
 		[&](int index) {
-			const int x=index%width,y=index/width;
+			const int x=powerOfTwoRemainder(index, width),y=index/width;
 			const auto tileIndex=map->tileIndex(x,y);
 			if(MapState::terrainSupportsMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food)&&MapState::hasMaterial(map->state(),map->tileIndex(x,y),MaterialId::Food)&&map->resourceAt(tileIndex).resource.amount>0
 			   &&(!shared_tiles||shared_tiles->insert(index).second))

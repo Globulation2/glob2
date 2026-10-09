@@ -68,7 +68,7 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 		for (int i : reach.tiles)
 		{
 			::MapGeneration::generationCheckpoint();
-			yield += field.at(i % t.w, i / t.w);
+			yield += field.at(t.remainderX(i), i / t.w);
 		}
 		return yieldOf[site] = yield;
 	};
@@ -182,7 +182,7 @@ std::vector<int> firstWalkTerritories(const Torus &t, const std::vector<unsigned
 			for (int dx = -room; dx <= room; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				const int i = t.at(sites.at(k) % t.w + dx, sites.at(k) / t.w + dy);
+				const int i = t.at(t.remainderX(sites.at(k)) + dx, sites.at(k) / t.w + dy);
 				if (land.at(i) && territory.at(i) < 0)
 				{
 					territory.at(i) = k;
@@ -201,7 +201,7 @@ std::vector<int> firstWalkTerritories(const Torus &t, const std::vector<unsigned
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				const int j = t.at(i % t.w + dx, i / t.w + dy);
+				const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
 				if (land.at(j) && territory.at(j) < 0)
 				{
 					territory.at(j) = territory.at(i);

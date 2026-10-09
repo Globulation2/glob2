@@ -326,7 +326,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 		::MapGeneration::generationCheckpoint();
 		if (farm.row.at(i) >= 0 && farm.row.at(i) % 2 == 0 && fromWater.at(i) >= 0 &&
 			!farm.plot.at(i) && eligible(i) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT))
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT))
 		{
 			crops.push_back({fromWater.at(i), i});
 			if (farm.row.at(i) >= int(rowRoom.size()))
@@ -346,7 +346,7 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 		const int i = entry.second;
 		if (woods < wood && farm.row.at(i) == woodRow)
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 			++woods;
 			++planted;
 		}
@@ -357,9 +357,9 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 		const int i = entry.second;
 		if (wheats >= wheat)
 			break;
-		if (map.isResource(i % t.w, i / t.w))
+		if (map.isResource(t.remainderX(i), i / t.w))
 			continue;
-		map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+		map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 		++wheats;
 		++planted;
 	}

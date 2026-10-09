@@ -62,7 +62,7 @@ const FAIR_GENERATORS: readonly {
   { id: 'city-states', revision: 10, fourColonies: true },
   { id: 'coral', revision: 1, fourColonies: true },
   { id: 'fjord-continent', revision: 13, fourColonies: true },
-  { id: 'lava-shield', revision: 4, fourColonies: false },
+  { id: 'lava-shield', revision: 5, fourColonies: false },
   { id: 'spider-web', revision: 2, fourColonies: true },
   { id: 'switchbacks', revision: 4, fourColonies: true },
   { id: 'tidal-flats', revision: 6, fourColonies: true },

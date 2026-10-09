@@ -317,17 +317,17 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 				bool fits = true;
 				for (int p : sites)
 				{
-					if (t.chebyshev(i % t.w, i / t.w, p % t.w, p / t.w) < 60)
+					if (t.chebyshev(t.remainderX(i), i / t.w, t.remainderX(p), p / t.w) < 60)
 					{
 						fits = false;
 						break;
 					}
-					distance = std::min(distance, t.dist2(i % t.w, i / t.w, p % t.w, p / t.w));
+					distance = std::min(distance, t.dist2(t.remainderX(i), i / t.w, t.remainderX(p), p / t.w));
 				}
 				// Deal balanced groups to nearby fronts before furnishing the country. This
 				// keeps a remote toroidal corner from becoming a needlessly long opening.
-				const int approach = t.dist2(i % t.w, i / t.w, int(target.x), int(target.y));
-				const bool visible = std::min({i % t.w, t.w - 1 - i % t.w, i / t.w,
+				const int approach = t.dist2(t.remainderX(i), i / t.w, int(target.x), int(target.y));
+				const bool visible = std::min({t.remainderX(i), t.w - 1 - t.remainderX(i), i / t.w,
 											   t.h - 1 - i / t.w}) >= kTownRadius + 2;
 				const int preference = distance / 2 - approach + (visible ? 1600 : 0);
 				if (fits && preference > score)
@@ -348,7 +348,7 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 	}
 	L.homes.push_back({cx, cy});
 	for (int i : sites)
-		L.homes.push_back({double(i % t.w), double(i / t.w)});
+		L.homes.push_back({double(t.remainderX(i)), double(i / t.w)});
 	c.shuffle(L.homes.begin() + 1, L.homes.end(), "kingdom-deal");
 	// Circumferential road and radial approaches. Gardens are placed afterwards, outside roads.
 	strokePath(L.roads, t,
@@ -403,7 +403,7 @@ Layout buildDesign(const GenerationRequest &r, GenerationContext &c)
 				for (int dy = -1; dy <= 1 && next < 0; ++dy)
 					for (int dx = -1; dx <= 1; ++dx)
 					{
-						int candidate = t.at(i % t.w + dx, i / t.w + dy);
+						int candidate = t.at(t.remainderX(i) + dx, i / t.w + dy);
 						if (steps[candidate] == steps[i] - 1)
 						{
 							next = candidate;
@@ -587,7 +587,7 @@ std::string assess(const Game &game, const Layout &L, GenerationContext &c)
 	auto economicWalk = walk;
 	for (const auto &garden : L.gardens)
 		for (int i : garden.tiles)
-			if (game.map.isResource(i % t.w, i / t.w))
+			if (game.map.isResource(t.remainderX(i), i / t.w))
 			{
 				const int type = game.map.getResource(i).type;
 				if (type == WHEAT || type == WOOD)
@@ -600,7 +600,7 @@ std::string assess(const Game &game, const Layout &L, GenerationContext &c)
 	for (const auto &g : L.gardens)
 		if (g.resource == WHEAT)
 			for (int i : g.tiles)
-				food[g.owner] += growth.at(i % t.w, i / t.w);
+				food[g.owner] += growth.at(t.remainderX(i), i / t.w);
 	std::vector<int> room(teams, 0);
 	for (int k = 0; k < teams; ++k)
 	{
@@ -613,7 +613,7 @@ std::string assess(const Game &game, const Layout &L, GenerationContext &c)
 				++room[k];
 			if (d <= 48 && L.plotOf[i] >= 0 && L.gardens[L.plotOf[i]].resource == WHEAT)
 			{
-				auto f = growth.at(i % t.w, i / t.w);
+				auto f = growth.at(t.remainderX(i), i / t.w);
 				local48 += f;
 				if (d <= 24)
 					local24 += f;
@@ -717,7 +717,7 @@ bool generate(Game &game, GenerationContext &c)
 	writeVertices(game.map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.wall[i])
-			game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			game.map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	c.stage = "kingdom colonies";
@@ -749,7 +749,7 @@ bool generate(Game &game, GenerationContext &c)
 			// Ranking only by fertility can hide all opening wood at the back of its plot.
 			std::vector<int> nearby;
 			for (int i : g.tiles)
-				if (t.dist2(i % t.w, i / t.w, c.bootX[g.owner], c.bootY[g.owner]) <= 400)
+				if (t.dist2(t.remainderX(i), i / t.w, c.bootX[g.owner], c.bootY[g.owner]) <= 400)
 					nearby.push_back(i);
 			planted = plantContainedPlot(game.map, t, nearby, fertility, WOOD, 16);
 			if (planted < 16)
@@ -772,7 +772,7 @@ bool generate(Game &game, GenerationContext &c)
 	std::vector<int> scenery;
 	for (int i = 0; i < t.size(); ++i)
 		if (!L.reserved[i] && !L.inside[i] && !L.roads[i] &&
-			clearGround(game.map, i % t.w, i / t.w) && fertility.at(i % t.w, i / t.w) == 0)
+			clearGround(game.map, t.remainderX(i), i / t.w) && fertility.at(t.remainderX(i), i / t.w) == 0)
 			scenery.push_back(i);
 	std::stable_sort(scenery.begin(), scenery.end(),
 					 [&](int a, int b) { return noise[a] > noise[b]; });
@@ -782,12 +782,12 @@ bool generate(Game &game, GenerationContext &c)
 	for (int j = 0; j < woods; ++j)
 	{
 		int i = scenery[j];
-		game.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
+		game.map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 	}
 	for (int j = 0; j < stones; ++j)
 	{
 		int i = scenery[scenery.size() - 1 - j];
-		game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		game.map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	}
 	c.telemetry.measure("kingdom.scenery.wood", woods);
 	c.telemetry.measure("kingdom.scenery.stone", stones);
@@ -822,7 +822,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			!permanentResourceBarrier(game.map,i))
 			return "A kingdom rampart is missing.";
 		if (L.roads[i] && game.map.resourceBlocksGround(i))
-			return "A kingdom road is obstructed at " + std::to_string(i % t.w) + "," +
+			return "A kingdom road is obstructed at " + std::to_string(t.remainderX(i)) + "," +
 				   std::to_string(i / t.w);
 	}
 	const auto walk = groundUnitTiles(game.map);
@@ -845,9 +845,9 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 						for (int dy = -1; dy <= 1; ++dy)
 							for (int dx = -1; dx <= 1; ++dx)
 							{
-								const int b = t.at(a % t.w + dx, a / t.w + dy);
+								const int b = t.at(t.remainderX(a) + dx, a / t.w + dy);
 								if (!L.inside[b] && sealed[b])
-									return "The kingdom leaks at " + std::to_string(a % t.w) + "," +
+									return "The kingdom leaks at " + std::to_string(t.remainderX(a)) + "," +
 										   std::to_string(a / t.w);
 							}
 				return "The kingdom has an unintended land entrance.";
@@ -892,7 +892,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			if (garden.owner == k && garden.starter && garden.resource == WOOD)
 				for (int i : garden.tiles)
 					if (game.map.getResource(i).type == WOOD &&
-						t.dist2(i % t.w, i / t.w, game.teams[k]->startPosX,
+						t.dist2(t.remainderX(i), i / t.w, game.teams[k]->startPosX,
 								game.teams[k]->startPosY) <= 400)
 						++closeWood;
 		if (closeWood < 16)
@@ -903,7 +903,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			for (const auto &g : L.gardens)
 				if (g.owner == k && g.starter && g.resource == type)
 					for (int i : g.tiles)
-						if (game.map.isResource(i % t.w, i / t.w) &&
+						if (game.map.isResource(t.remainderX(i), i / t.w) &&
 							game.map.getResource(i).type == type)
 							++count;
 			if (count < (type == WHEAT ? 64 : 32))

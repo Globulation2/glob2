@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Patterns.h"
 #include "GenerationContext.h"
 #include "LatticeNoise.h"
@@ -84,7 +85,7 @@ void boxBlurWith(const Torus &t, const std::vector<int> &field, std::vector<int>
 		for (int d = -rx; d <= rx; ++d)
 		{
 			::MapGeneration::generationCheckpoint();
-			sum += in[((d % w) + w) % w];
+			sum += in[dimensionRemainder((dimensionRemainder(d, w)) + w, w)];
 		}
 		// i - rx and i + rx + 1 leave [0, w) only in the two end ranges; the middle indexes plainly.
 		int i = 0;
@@ -116,7 +117,7 @@ void boxBlurWith(const Torus &t, const std::vector<int> &field, std::vector<int>
 	for (int d = -ry; d <= ry; ++d)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int *row = &rows.at(size_t(((d % h) + h) % h) * w);
+		const int *row = &rows.at(size_t(dimensionRemainder((dimensionRemainder(d, h)) + h, h)) * w);
 		for (int x = 0; x < w; ++x)
 		{
 			::MapGeneration::generationCheckpoint();
@@ -132,8 +133,8 @@ void boxBlurWith(const Torus &t, const std::vector<int> &field, std::vector<int>
 			::MapGeneration::generationCheckpoint();
 			out[x] = floorY(sums.at(x));
 		}
-		const int *leaving = &rows.at(size_t(((y - ry) % h + h) % h) * w);
-		const int *entering = &rows.at(size_t((y + ry + 1) % h) * w);
+		const int *leaving = &rows.at(size_t(dimensionRemainder(dimensionRemainder((y - ry), h) + h, h)) * w);
+		const int *entering = &rows.at(size_t(dimensionRemainder(y + ry + 1, h)) * w);
 		for (int x = 0; x < w; ++x)
 		{
 			::MapGeneration::generationCheckpoint();

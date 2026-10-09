@@ -427,14 +427,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		{
 			bool apart = true;
 			for (int c : chosen)
-				apart = apart && t.dist2(i % t.w, i / t.w, c % t.w, c / t.w) >= 4 * need * need;
+				apart = apart && t.dist2(t.remainderX(i), i / t.w, t.remainderX(c), c / t.w) >= 4 * need * need;
 			if (!apart || int(chosen.size()) >= o.dewDrops)
 				continue;
 			const int prize = int(chosen.size()) % 4;
 			chosen.push_back(i);
 			// Turned round the centre in the round design frame, then stretched back onto the map.
 			const ShapePoint round =
-				L.stretch.undo(t.offsetX(L.cx, i % t.w), t.offsetY(L.cy, i / t.w));
+				L.stretch.undo(t.offsetX(L.cx, t.remainderX(i)), t.offsetY(L.cy, i / t.w));
 			for (int w = 0; w < teams; ++w)
 			{
 				const double turn = w * 2 * kPi / teams;
@@ -491,7 +491,7 @@ void furnishPads(Map &map, const Layout &L, GenerationContext &context)
 	for (int team = 0; team < L.g.teams; ++team)
 	{
 		const auto eligible = [&](int i)
-		{ return L.padOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.padOf[i] == team && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		const KitFrame frame{int(std::lround(L.pads[team].x)), int(std::lround(L.pads[team].y)),
 							 L.padAngle[team]};
 		// Wheat and wood 6 tiles to either side of the pad's centre and 5 back from it, stone 8
@@ -511,7 +511,7 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 {
 	const Torus &t = L.t;
 	const int n = t.size();
-	const auto onThread = [&](int i) { return L.thread[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto onThread = [&](int i) { return L.thread[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	for (const ShapePoint &knot : L.knots)
 		if (const int seed =
 				seedNear(t, int(std::lround(knot.x)), int(std::lround(knot.y)), 3, onThread);
@@ -522,7 +522,7 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 	{
 		const Drop &drop = L.drops[d];
 		const auto onDrop = [&](int i)
-		{ return L.dewOf[i] == int(d) && clearGround(map, i % t.w, i / t.w); };
+		{ return L.dewOf[i] == int(d) && clearGround(map, t.remainderX(i), i / t.w); };
 		const int seed = seedNear(t, int(std::lround(drop.x)), int(std::lround(drop.y)), 3, onDrop);
 		if (seed < 0)
 			continue;
@@ -533,7 +533,7 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 			growPatch(map, t, seed, stone ? STONE : CHERRY + drop.prize, 9, onDrop);
 	}
 
-	const auto onHub = [&](int i) { return L.hub[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto onHub = [&](int i) { return L.hub[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	// The orchard's groves stand 4 tiles past the pond's fullest outline (1.25), clear of its
 	// beach, or halfway out on a hub without a pond.
 	const double rho = L.g.pondRadius > 0 ? L.g.pondRadius * 1.25 + 4 : 0.5 * L.g.hubRadius;
@@ -546,7 +546,7 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 			if (const int seed =
 					seedNear(t, int(std::lround(p.x)), int(std::lround(p.y)), 6, onHub);
 				seed >= 0)
-				placeResourceClump(map, context, {seed % t.w, seed / t.w}, CHERRY + f, 2);
+				placeResourceClump(map, context, {t.remainderX(seed), seed / t.w}, CHERRY + f, 2);
 		}
 	if (scaledCount(1, o.stone) > 0)
 	{
@@ -554,7 +554,7 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 			L.stretch.apply(L.cx, L.cy, polarPoint(L.cx, L.cy, rho + 2, spin + kPi / 3));
 		if (const int seed = seedNear(t, int(std::lround(p.x)), int(std::lround(p.y)), 6, onHub);
 			seed >= 0)
-			placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
+			placeResourceClump(map, context, {t.remainderX(seed), seed / t.w}, STONE, 2);
 	}
 
 	const WedgeFrame wedges(t, L.phase, L.g.teams, L.stretch);
@@ -569,7 +569,7 @@ void stockWeb(Map &map, const Layout &L, GenerationContext &context, const Spide
 	for (int i = 0; i < n; ++i)
 		if (onThread(i))
 		{
-			const WedgeFrame::Cell cell = wedges.cell(i % t.w, i / t.w);
+			const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
 			ranked.push_back({-patch.at(cell.s, cell.d), i});
 			splitKey[i] = split.at(cell.s, cell.d);
 		}
@@ -614,7 +614,7 @@ bool generate(Game &game, GenerationContext &context)
 		sprinkleSand(terrain, t, L.thread, kSandShare, kSandInland,
 					 [&](int i)
 					 {
-						 const WedgeFrame::Cell cell = wedges.cell(i % t.w, i / t.w);
+						 const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
 						 return dry.at(cell.s, cell.d);
 					 });
 	}
@@ -639,7 +639,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> home(n, 0);
 		for (int i = 0; i < n; ++i)
-			home[i] = L.padOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			home[i] = L.padOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return home;
 	};
 	// The swarm stands a little out from the pad's middle, away from the hub, so the kit and the

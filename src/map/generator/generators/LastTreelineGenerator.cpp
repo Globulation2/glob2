@@ -115,7 +115,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			[&](int i, double along, double across)
 			{
 				if (std::abs(across) <
-					outline.halfWidthAt(along) + 4 * (bankEdge.at(i % t.w, i / t.w) - .5))
+					outline.halfWidthAt(along) + 4 * (bankEdge.at(t.remainderX(i), i / t.w) - .5))
 					corners.push_back(i);
 			});
 		Patch grove{p, stampContainedPlot(L.terrain, t, corners), WOOD};
@@ -129,7 +129,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			[&](int i, double along, double across)
 			{
 				if (std::abs(across) <
-					water.halfWidthAt(along) + 4 * (waterEdge.at(i % t.w, i / t.w) - .5))
+					water.halfWidthAt(along) + 4 * (waterEdge.at(t.remainderX(i), i / t.w) - .5))
 					L.terrain[i] = WATER;
 			});
 		L.patches.push_back(std::move(grove));
@@ -166,7 +166,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 							  {
 								  if (std::abs(across) <
 									  field.halfWidthAt(along) +
-										  4 * (bankEdge.at(i % t.w, i / t.w) - .5))
+										  4 * (bankEdge.at(t.remainderX(i), i / t.w) - .5))
 									  corners.push_back(i);
 							  });
 		L.patches.push_back({farm, stampContainedPlot(L.terrain, t, corners), WHEAT});
@@ -178,7 +178,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 							  {
 								  if (std::abs(across) <
 									  pond.halfWidthAt(along) +
-										  4 * (waterEdge.at(i % t.w, i / t.w) - .5))
+										  4 * (waterEdge.at(t.remainderX(i), i / t.w) - .5))
 									  L.terrain[i] = WATER;
 							  });
 	}
@@ -189,13 +189,13 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		bool allowed =
-			t.dist2(i % t.w, i / t.w, int(cx), int(cy)) > (homeRadius + 20) * (homeRadius + 20);
+			t.dist2(t.remainderX(i), i / t.w, int(cx), int(cy)) > (homeRadius + 20) * (homeRadius + 20);
 		for (const auto &h : L.homes)
-			allowed &= t.dist2(i % t.w, i / t.w, int(h.x), int(h.y)) > 48 * 48;
+			allowed &= t.dist2(t.remainderX(i), i / t.w, int(h.x), int(h.y)) > 48 * 48;
 		countryside[i] = allowed;
 		if (!allowed)
 			continue;
-		const double basin = lakes.at(i % t.w, i / t.w);
+		const double basin = lakes.at(t.remainderX(i), i / t.w);
 		L.wheatland[i] = 1;
 		if (basin < .30)
 			L.terrain[i] = WATER;
@@ -210,7 +210,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	std::vector<unsigned char> dryTerraces(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 		dryTerraces[i] = countryside[i] && L.terrain[i] == GRASS && fromWater[i] >= 22 &&
-			terraces.at(i % t.w, i / t.w) > .64;
+			terraces.at(t.remainderX(i), i / t.w) > .64;
 	// Coherent patches, not a noisy fringe of single sand corners.
 	dryTerraces = openMask(t, dryTerraces, 2);
 	const auto terraceLabels = connectedRegions(dryTerraces, t.w, t.h, true);
@@ -310,7 +310,7 @@ bool generate(Game &game, GenerationContext &c)
 					for (int dx = -5; dx <= 5; ++dx)
 					{
 						int i = t.at(int(L.homes[k].x) + dx, int(L.homes[k].y) + dy);
-						mask[i] = game.map.terrainPropertiesAt(i % t.w, i / t.w).buildable && L.plotOf[i] < 0;
+						mask[i] = game.map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable && L.plotOf[i] < 0;
 					}
 				return mask;
 			},
@@ -331,8 +331,8 @@ bool generate(Game &game, GenerationContext &c)
 			const Team *home = game.teams[k - c.request.nbTeams];
 			const auto eligible = [&](int i)
 			{
-				return L.plotOf[i] == int(k) && fertility.at(i % t.w, i / t.w) > 0 &&
-					   clearGround(game.map, i % t.w, i / t.w);
+				return L.plotOf[i] == int(k) && fertility.at(t.remainderX(i), i / t.w) > 0 &&
+					   clearGround(game.map, t.remainderX(i), i / t.w);
 			};
 			const int seed = seedNear(t, home->startPosX + 2, home->startPosY + 2, 18, eligible);
 			if (seed >= 0)
@@ -354,8 +354,8 @@ bool generate(Game &game, GenerationContext &c)
 				const Team *home = game.teams[neighbours[side].second];
 				const auto eligible = [&](int i)
 				{
-					return L.plotOf[i] == int(k) && fertility.at(i % t.w, i / t.w) > 0 &&
-						   clearGround(game.map, i % t.w, i / t.w);
+					return L.plotOf[i] == int(k) && fertility.at(t.remainderX(i), i / t.w) > 0 &&
+						   clearGround(game.map, t.remainderX(i), i / t.w);
 				};
 				const int seed =
 					seedNear(t, home->startPosX + 2, home->startPosY + 2, 72, eligible);
@@ -378,7 +378,7 @@ bool generate(Game &game, GenerationContext &c)
 		{
 			double yield = 0;
 			for (int i : p.tiles)
-				yield += fertility.at(i % t.w, i / t.w) / double(Fertility::kScale);
+				yield += fertility.at(t.remainderX(i), i / t.w) / double(Fertility::kScale);
 			c.telemetry.measure("treeline.patch.growth-potential", yield, int(k));
 		}
 	}
@@ -394,11 +394,11 @@ bool generate(Game &game, GenerationContext &c)
 				const int i = t.at(sx + dx, sy + dy), d = dx * dx + dy * dy;
 				bool court = false;
 				for (const ShapePoint q : L.courts)
-					court |= t.chebyshev(i % t.w, i / t.w, int(q.x), int(q.y)) < 7;
+					court |= t.chebyshev(t.remainderX(i), i / t.w, int(q.x), int(q.y)) < 7;
 				if (court || d < 9 * 9 || d > 30 * 30 || L.plotOf[i] >= 0 ||
-					!clearGround(game.map, i % t.w, i / t.w))
+					!clearGround(game.map, t.remainderX(i), i / t.w))
 					continue;
-				if (fertility.at(i % t.w, i / t.w) == 0)
+				if (fertility.at(t.remainderX(i), i / t.w) == 0)
 					dry.push_back({d, i});
 				if (d >= 17 * 17)
 					quarry.push_back({d, i});
@@ -414,16 +414,16 @@ bool generate(Game &game, GenerationContext &c)
 		std::stable_sort(dry.begin(), dry.end(),
 						 [&](const auto &a, const auto &b)
 						 {
-							 return t.dist2(a.second % t.w, a.second / t.w, root % t.w,
+							 return t.dist2(t.remainderX(a.second), a.second / t.w, t.remainderX(root),
 											root / t.w) <
-									t.dist2(b.second % t.w, b.second / t.w, root % t.w, root / t.w);
+									t.dist2(t.remainderX(b.second), b.second / t.w, t.remainderX(root), root / t.w);
 						 });
 		for (int n = 0; n < kHomeWood; ++n)
-			game.map.setResourceByIndex(dry[n].second % t.w, dry[n].second / t.w, WOOD, 1);
+			game.map.setResourceByIndex(t.remainderX(dry[n].second), dry[n].second / t.w, WOOD, 1);
 		std::sort(quarry.begin(), quarry.end());
 		const auto firstFree =
 			std::find_if(quarry.begin(), quarry.end(), [&](const auto &entry)
-						 { return clearGround(game.map, entry.second % t.w, entry.second / t.w); });
+						 { return clearGround(game.map, t.remainderX(entry.second), entry.second / t.w); });
 		if (firstFree != quarry.end())
 		{
 			const int centre = firstFree->second;
@@ -431,8 +431,8 @@ bool generate(Game &game, GenerationContext &c)
 				quarry.begin(), quarry.end(),
 				[&](const auto &a, const auto &b)
 				{
-					return t.dist2(a.second % t.w, a.second / t.w, centre % t.w, centre / t.w) <
-						   t.dist2(b.second % t.w, b.second / t.w, centre % t.w, centre / t.w);
+					return t.dist2(t.remainderX(a.second), a.second / t.w, t.remainderX(centre), centre / t.w) <
+						   t.dist2(t.remainderX(b.second), b.second / t.w, t.remainderX(centre), centre / t.w);
 				});
 		}
 		int stones = 0, fruits = 0;
@@ -441,16 +441,16 @@ bool generate(Game &game, GenerationContext &c)
 		for (const auto &entry : quarry)
 		{
 			int i = entry.second;
-			if (!clearGround(game.map, i % t.w, i / t.w))
+			if (!clearGround(game.map, t.remainderX(i), i / t.w))
 				continue;
 			if (stones < wantedStone)
 			{
-				game.map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+				game.map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 				++stones;
 			}
 			else if (fruits < wantedFruit)
 			{
-				game.map.setResourceByIndex(i % t.w, i / t.w, CHERRY + fruits % 3, 1);
+				game.map.setResourceByIndex(t.remainderX(i), i / t.w, CHERRY + fruits % 3, 1);
 				++fruits;
 			}
 			else
@@ -481,7 +481,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	// Read the FINISHED terrain, so a late edit cannot silently irrigate home wood.
 	TerrainSketch actual(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		actual[i] = TerrainType(map.vertexTerrainAt(i % t.w, i / t.w));
+		actual[i] = TerrainType(map.vertexTerrainAt(t.remainderX(i), i / t.w));
 	const auto fertility = cropGrowthField(actual, t);
 	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &fertility); !e.empty())
 		return e;
@@ -493,9 +493,9 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	std::vector<std::vector<int>> faces(c.request.nbTeams);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		open[i] = stepCost(map, i % t.w, i / t.w, StepCosts::walking()) >= 0;
+		open[i] = stepCost(map, t.remainderX(i), i / t.w, StepCosts::walking()) >= 0;
 		future[i] = open[i] && L.plotOf[i] < 0;
-		int type = map.getResource(i % t.w, i / t.w).type;
+		int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if (type == WOOD && L.wheatland[i])
 			return "The open grain country must not add timber.";
 		if ((type == WOOD || type == WHEAT) && L.plotOf[i] >= 0 &&
@@ -503,10 +503,10 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			return "Wood and wheat must remain in separate growing areas.";
 	}
 	for (int i = 0; i < t.size(); ++i)
-		if (map.getResource(i % t.w, i / t.w).type == WOOD && L.plotOf[i] >= 0)
+		if (map.getResource(t.remainderX(i), i / t.w).type == WOOD && L.plotOf[i] >= 0)
 			for (const auto &step : kCardinalSteps)
 			{
-				const int n = t.at(i % t.w + step[0], i / t.w + step[1]);
+				const int n = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 				if (open[n])
 					faces[L.plotOf[i]].push_back(n);
 			}
@@ -539,17 +539,17 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		const double a = std::atan2(p.centre.y - t.h / 2., p.centre.x - t.w / 2.);
 		for (int i : p.tiles)
 		{
-			yield += fertility.at(i % t.w, i / t.w) / double(Fertility::kScale);
+			yield += fertility.at(t.remainderX(i), i / t.w) / double(Fertility::kScale);
 			bool edge = false;
 			for (const auto &step : kCardinalSteps)
 			{
-				const int n = t.at(i % t.w + step[0], i / t.w + step[1]);
+				const int n = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 				edge |= future[n] && futureReach[n] >= 0;
 			}
 			if (edge)
 			{
 				const double tangent =
-					-(i % t.w - p.centre.x) * std::sin(a) + (i / t.w - p.centre.y) * std::cos(a);
+					-(t.remainderX(i) - p.centre.x) * std::sin(a) + (i / t.w - p.centre.y) * std::cos(a);
 				++frontage[tangent > 0];
 			}
 		}
@@ -562,7 +562,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	{
 		double yield = 0;
 		for (int i : L.patches[k].tiles)
-			yield += fertility.at(i % t.w, i / t.w) / double(Fertility::kScale);
+			yield += fertility.at(t.remainderX(i), i / t.w) / double(Fertility::kScale);
 		if (yield < 25)
 			return "A home farm lacks sustainable wheat growing room.";
 	}
@@ -591,19 +591,19 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		{
 			if (d[i] >= 0 && d[i] <= 24 && anchors[i])
 				++room;
-			const int type = map.getResource(i % t.w, i / t.w).type;
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			if (type != WHEAT && type != WOOD)
 				continue;
 			int distance = t.size();
 			for (const auto &step : kCardinalSteps)
 			{
-				int n = t.at(i % t.w + step[0], i / t.w + step[1]);
+				int n = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 				if (d[n] >= 0)
 					distance = std::min(distance, d[n]);
 			}
-			if (type == WHEAT && distance <= 24 && fertility.at(i % t.w, i / t.w) > 0)
+			if (type == WHEAT && distance <= 24 && fertility.at(t.remainderX(i), i / t.w) > 0)
 				++food;
-			if (type == WHEAT && distance <= 12 && fertility.at(i % t.w, i / t.w) > 0)
+			if (type == WHEAT && distance <= 12 && fertility.at(t.remainderX(i), i / t.w) > 0)
 				++earlyFood;
 			if (type == WOOD && L.plotOf[i] < 0 && distance <= 32)
 				++timber;

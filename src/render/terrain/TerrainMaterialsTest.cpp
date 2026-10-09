@@ -12,6 +12,8 @@
 #include <fstream>
 #include <set>
 #include <algorithm>
+#include <chrono>
+#include <cmath>
 
 namespace
 {
@@ -19,9 +21,309 @@ TerrainVisual::Catalog catalog()
 {
 	return TerrainVisual::loadCatalog();
 }
+template <class Field>
+TerrainVisual::Recipe contextualRecipe(int x, int y, int size, Field field)
+{
+	TerrainVisual::Recipe r;
+	r.x = (x % size + size) % size; r.y = (y % size + size) % size;
+	r.width = r.height = size; r.hasNeighborhood = true;
+	for (int dy = -1; dy <= 2; ++dy)
+		for (int dx = -1; dx <= 2; ++dx)
+			r.neighborhood[(dy + 1) * 4 + dx + 1] =
+				field((r.x + dx + size) % size, (r.y + dy + size) % size);
+	r.corners = {r.neighborhood[5], r.neighborhood[6], r.neighborhood[9], r.neighborhood[10]};
+	return r;
+}
+std::array<unsigned, 64> materialWeights(const TerrainVisual::Coverage &coverage)
+{
+	std::array<unsigned, 64> weights{};
+	for (unsigned k = 0; k < 4; ++k) weights[coverage.material[k]] += coverage.weight[k];
+	return weights;
+}
 } // namespace
 TEST_SUITE("TerrainMaterials")
 {
+	TEST_CASE("contextual borders preserve seams and normalization across both wrapped axes")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		const auto a = c.find("sand"), b = c.find("water");
+		for (int size : {1, 2, 16})
+			for (unsigned seed : {0u, 73u})
+				for (int axis = 0; axis < 2; ++axis)
+					for (int position = 0; position < size; ++position)
+					{
+						const auto field = [&](int x, int y)
+						{ return TerrainVisual::hash(x, y, seed) & 1 ? a : b; };
+						auto r = contextualRecipe(position, position, size, field);
+						auto s = contextualRecipe(position + (axis == 0), position + (axis == 1), size, field);
+						r.seed = s.seed = seed;
+						const TerrainVisual::PreparedCoverage p(c, r), q(c, s);
+						for (int t = 0; t <= 8192; t += 64)
+						{
+							CHECK(materialWeights(axis ? p.at(t, 8192) : p.at(8192, t)) ==
+								materialWeights(axis ? q.at(t, 0) : q.at(0, t)));
+							const auto sample = p.at(t, 4096);
+							CHECK(sample.weight[0] + sample.weight[1] + sample.weight[2] + sample.weight[3] == 65536);
+						}
+					}
+	}
+	TEST_CASE("contextual contours use their halo and leave ambiguous and sharp borders unchanged")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto c = catalog(); c.boundaryWarp = {};
+		const auto a = c.find("sand"), b = c.find("water");
+		auto additional = c.materials[c.find("grass")];
+		additional.key = "fixture-natural";
+		c.materials.push_back(additional); // Sharp borders also remain sharp against new materials.
+		for (const auto &material : c.materials)
+			for (auto sharp : {"road", "boardwalk", "lava", "ember_field", "void_hole", "chasm"})
+				CHECK_FALSE(c.contextualFor(c.find(sharp), c.find(material.key)));
+		auto old = c;
+		for (auto &profile : old.profiles) profile.contextual = false;
+		auto r = contextualRecipe(3, 4, 16, [&](int x, int y) { return x + y < 8 ? a : b; });
+		auto changedHalo = r;
+		changedHalo.neighborhood[1] = b;
+		changedHalo.neighborhood[2] = b;
+		CHECK(r.corners == changedHalo.corners);
+		CHECK_FALSE(r == changedHalo);
+		const TerrainVisual::PreparedCoverage p(c, r), q(c, changedHalo), baseline(old, r);
+		unsigned changed = 0, haloChanged = 0;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				const int px = x * 256 + 128, py = y * 256 + 128;
+				changed += materialWeights(p.at(px, py)) != materialWeights(baseline.at(px, py));
+				haloChanged += materialWeights(p.at(px, py)) != materialWeights(q.at(px, py));
+			}
+		CHECK(changed > 40);
+		CHECK(haloChanged > 0);
+		for (const auto corners : {std::array<TerrainVisual::MaterialId, 4>{a, b, b, a},
+			std::array<TerrainVisual::MaterialId, 4>{a, b, c.find("grass"), a},
+			std::array<TerrainVisual::MaterialId, 4>{c.find("road"), a, c.find("road"), a}})
+		{
+			r.corners = corners;
+			r.neighborhood[5] = corners[0]; r.neighborhood[6] = corners[1];
+			r.neighborhood[9] = corners[2]; r.neighborhood[10] = corners[3];
+			const TerrainVisual::PreparedCoverage current(c, r), original(old, r);
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+					CHECK(materialWeights(current.at(x * 256 + 128, y * 256 + 128)) ==
+						materialWeights(original.at(x * 256 + 128, y * 256 + 128)));
+		}
+	}
+	TEST_CASE("contextual cells retain every corner region at native and HD sample positions")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto c = catalog(); c.boundaryWarp = {};
+		const auto a = c.find("sand"), b = c.find("water");
+		for (unsigned pattern = 1; pattern < 15; ++pattern)
+		{
+			auto r = contextualRecipe(3, 3, 16, [&](int x, int y)
+			{ return TerrainVisual::hash(x, y, pattern) & 1 ? a : b; });
+			for (unsigned k = 0; k < 4; ++k)
+				r.corners[k] = (pattern >> k) & 1 ? a : b;
+			r.neighborhood[5] = r.corners[0]; r.neighborhood[6] = r.corners[1];
+			r.neighborhood[9] = r.corners[2]; r.neighborhood[10] = r.corners[3];
+			const TerrainVisual::PreparedCoverage p(c, r);
+			for (unsigned k = 0; k < 4; ++k)
+				CHECK(materialWeights(p.at((k & 1 ? 28 : 4) * 256,
+					(k & 2 ? 28 : 4) * 256))[r.corners[k]] == 65536);
+			for (int y = 0; y < 128; ++y)
+				for (int x = 0; x < 128; ++x)
+				{
+					const auto sample = p.at(x * 64 + 32, y * 64 + 32);
+					const auto weights = materialWeights(sample);
+					CHECK(weights[a] + weights[b] == 65536);
+				}
+		}
+	}
+	TEST_CASE("contextual interiors remain within six pixels of the marching contour")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto c = catalog(); c.boundaryWarp = {1024, 384, 128};
+		const auto a = c.find("sand"), b = c.find("water");
+		struct Point { float x, y; };
+		const Point midpoints[] = {{16, 0}, {32, 16}, {16, 32}, {0, 16}};
+		for (unsigned pattern = 1; pattern < 15; ++pattern)
+			for (unsigned seed : {0u, 19u, 73u})
+			{
+				auto r = contextualRecipe(3, 7, 16, [&](int x, int y)
+				{ return TerrainVisual::hash(x, y, seed) & 1 ? a : b; });
+				r.seed = seed;
+				for (unsigned k = 0; k < 4; ++k) r.corners[k] = (pattern >> k) & 1 ? a : b;
+				r.neighborhood[5] = r.corners[0]; r.neighborhood[6] = r.corners[1];
+				r.neighborhood[9] = r.corners[2]; r.neighborhood[10] = r.corners[3];
+				const TerrainVisual::MaterialId around[] = {r.corners[0], r.corners[1], r.corners[3], r.corners[2]};
+				Point ends[4]; unsigned count = 0;
+				for (unsigned k = 0; k < 4; ++k)
+					if (around[k] != around[(k + 1) % 4]) ends[count++] = midpoints[k];
+				if (count != 2) continue; // Ambiguous diagonals intentionally keep their old shape.
+				const float dx = ends[1].x - ends[0].x, dy = ends[1].y - ends[0].y;
+				const float length = std::sqrt(dx*dx + dy*dy);
+				const float cornerSide = dx * -ends[0].y - dy * -ends[0].x;
+				const TerrainVisual::PreparedCoverage p(c, r);
+				for (int y = 4; y < 28; ++y)
+					for (int x = 4; x < 28; ++x)
+					{
+						const float cross = dx * (y + .5f - ends[0].y) - dy * (x + .5f - ends[0].x);
+						if (std::abs(cross) / length <= 6) continue;
+						const auto expected = cross * cornerSide > 0 ? r.corners[0] :
+							(r.corners[0] == a ? b : a);
+						CHECK(materialWeights(p.at(x * 256 + 128, y * 256 + 128))[expected] >= 32768);
+					}
+			}
+	}
+
+	TEST_CASE("halo edits invalidate adjacent terrain pages including wrap and undo [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = SAND, .discovered = true});
+		fixture.game.map.setVertexTerrain(15, 8, SAND);
+		fixture.game.map.setVertexTerrain(16, 8, WATER);
+		fixture.game.map.setVertexTerrain(0, 8, SAND);
+		fixture.game.map.setVertexTerrain(1, 8, WATER);
+		SceneMap scene;
+		SoftwareTerrainCache cache;
+		const auto prepare = [&]
+		{
+			glob2test::observeMap(fixture.game.map, scene);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me, true, 0));
+			std::vector<Uint32> expected;
+			for (bool cached : {false, true})
+			{
+				globals->gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(11, 22, 33));
+				if (cached) cache.draw(*globals->gfx);
+				else SoftwareTerrainCache::drawUncached(scene, *globals->terrain,
+					0, 0, 15, 15, 0, 0, fixture.team->me, true, 0);
+				const auto *surface = globals->gfx->getSDLSurface();
+				std::vector<Uint32> pixels;
+				for (int y = 0; y < surface->h; ++y)
+				{
+					const auto *row = reinterpret_cast<const Uint32 *>(
+						static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch);
+					pixels.insert(pixels.end(), row, row + surface->w);
+				}
+				if (cached) CHECK(pixels == expected);
+				else expected = std::move(pixels);
+			}
+		};
+		prepare();
+		for (int x : {17, 63})
+		{
+			const auto original = fixture.game.map.vertexTerrainAt(x, 8);
+			const auto before = cache.cacheRebuilds();
+			fixture.game.map.setVertexTerrain(x, 8, original == WATER ? SAND : WATER);
+			prepare(); CHECK(cache.cacheRebuilds() == before + 1);
+			fixture.game.map.setVertexTerrain(x, 8, original);
+			prepare(); CHECK(cache.cacheRebuilds() == before + 2);
+			prepare(); CHECK(cache.cacheRebuilds() == before + 2);
+			fixture.game.map.setVertexTerrain(x, 8, original == WATER ? SAND : WATER);
+			prepare(); CHECK(cache.cacheRebuilds() == before + 3); // Redo the same edit.
+			fixture.game.map.setVertexTerrain(x, 8, original);
+			prepare(); CHECK(cache.cacheRebuilds() == before + 4);
+		}
+	}
+
+	TEST_CASE("natural border visual fixture and cold composition timings [display] [artifacts]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 768, .height = 768});
+		auto current = catalog(); current.compiledPack.clear();
+		auto previous = current;
+		for (auto &profile : previous.profiles) profile.contextual = false;
+		const auto water = current.find("water"), sand = current.find("sand"), grass = current.find("grass");
+		const auto field = [&](int scenario, int x, int y) -> TerrainVisual::MaterialId
+		{
+			const int dx = x - 4, dy = y - 4;
+			switch (scenario)
+			{
+			case 0: return x + y < 8 ? sand : water; // diagonal
+			case 1: return x < 2 || dx*dx + dy*dy < 10 ? sand : water; // headland
+			case 2: return x > 5 || dx*dx + dy*dy < 10 ? water : sand; // bay
+			case 3: return std::abs(x - (3 + int(std::round(2 * std::sin(y * .7))))) <= 0 ? water : sand;
+			case 4: return x == 3 ? water : sand; // channel
+			case 5: return x == 3 ? sand : water; // land strip
+			case 6: return x == 3 && y == 3 ? sand : water; // island
+			case 7: return (x + y) & 1 ? sand : water; // ambiguous diagonal
+			default: return x < 4 ? water : y < 4 ? sand : grass; // three materials
+			}
+		};
+		std::vector<TerrainVisual::Recipe> recipes;
+		for (int scenario = 0; scenario < 9; ++scenario)
+			for (int y = 0; y < 8; ++y)
+				for (int x = 0; x < 8; ++x)
+					recipes.push_back(contextualRecipe(x, y, 8,
+						[&](int x, int y) { return field(scenario, x, y); }));
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+			{
+				const auto material = x < 24 && y < 24 ? field((y / 8) * 3 + x / 8, x % 8, y % 8) : grass;
+				fixture.game.map.setVertexTerrain(x, y, material == water ? WATER : material == sand ? SAND : GRASS);
+			}
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		const auto simulationChecksum = fixture.game.checkSum(nullptr, nullptr, nullptr, true);
+		std::ofstream log(glob2test::artifactDir() / "composition.txt");
+		log << "Panels row-major: diagonal, headland, bay, S gully, water channel, land strip, island, checkerboard, three-material junction.\n";
+		log << "Before disables contextual profiles; textures, seeds and source vertices are identical.\n";
+		for (bool after : {false, true})
+		{
+			TerrainVisual::Compositor compositor(after ? current : previous);
+			for (int scale : {1, 4})
+			{
+				compositor.prepare(scale > 1, 0);
+				GAGCore::DrawableSurface image(768 * scale, 768 * scale);
+				std::array<double, 5> timings{};
+				for (auto &timing : timings)
+				{
+					const auto start = std::chrono::steady_clock::now();
+					for (unsigned i = 0; i < recipes.size(); ++i)
+					{
+						const unsigned scenario = i / 64;
+						compositor.compose(recipes[i], image.getSDLSurface(),
+							((scenario % 3) * 256 + (i % 8) * 32) * scale,
+							((scenario / 3) * 256 + ((i % 64) / 8) * 32) * scale, scale);
+					}
+					timing = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
+				}
+				std::sort(timings.begin(), timings.end());
+				const auto ms = timings[timings.size() / 2];
+				const std::string name = after ? "after" : "before";
+				log << name << " scale=" << scale << " cold_ms=" << ms << " median_of=5" << '\n';
+				CHECK(IMG_SavePNG(image.getSDLSurface(),
+					(glob2test::artifactDir() / (name + "-" + std::to_string(scale) + ".png")).c_str()));
+				if (scale == 1)
+				{
+					GAGCore::DrawableSurface zoom(384, 384);
+					REQUIRE(SDL_BlitSurfaceScaled(image.getSDLSurface(), nullptr, zoom.getSDLSurface(), nullptr, SDL_SCALEMODE_LINEAR));
+					CHECK(IMG_SavePNG(zoom.getSDLSurface(),
+						(glob2test::artifactDir() / (name + "-zoom-half.png")).c_str()));
+				}
+			}
+			globals->terrainCompositor_ = std::make_unique<TerrainVisual::Compositor>(after ? current : previous);
+			SoftwareTerrainCache cache;
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 23, 23, 0, 0, fixture.team->me, true, 0));
+			const auto rebuilds = cache.cacheRebuilds();
+			std::array<double, 5> warmTimings{};
+			for (auto &timing : warmTimings)
+			{
+				const auto start = std::chrono::steady_clock::now();
+				for (int frame = 0; frame < 100; ++frame)
+				{
+					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 23, 23, 0, 0, fixture.team->me, true, 0));
+					cache.draw(*globals->gfx);
+				}
+				timing = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count() / 100;
+			}
+			CHECK(cache.cacheRebuilds() == rebuilds);
+			std::sort(warmTimings.begin(), warmTimings.end());
+			log << (after ? "after" : "before") << " warm_frame_ms=" << warmTimings[2] << " median_of=5x100 frames\n";
+		}
+		CHECK(fixture.game.checkSum(nullptr, nullptr, nullptr, true) == simulationChecksum);
+		log << "simulation_checksum=" << simulationChecksum << " unchanged after both presentations\n";
+	}
+
 	TEST_CASE("animation invalidates only pages using that material [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
@@ -459,7 +761,7 @@ TEST_SUITE("TerrainMaterials")
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)
 				{
 					auto &p = j["profiles"][i];
-					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8"})
+					for (const char *field : {"feather_q8", "amplitude_q8", "speckle_q8", "bridge_q8", "shape"})
 						p.erase(field);
 					p["roughness_q8"] = roughness[i % std::size(roughness)];
 					p["contours_q12"] = {{0, 180, -120, 100, 0},
@@ -819,6 +1121,11 @@ TEST_SUITE("TerrainMaterials")
 			j["materials"].push_back(m);
 		}
 		CHECK(TerrainVisual::Catalog::parse(j).materials.size() == 64);
+		auto patchOnly = j;
+		for (auto &profile : patchOnly["profiles"]) profile.erase("shape");
+		const auto withoutShapes = TerrainVisual::Catalog::parse(patchOnly);
+		CHECK(std::none_of(withoutShapes.profiles.begin(), withoutShapes.profiles.end(),
+			[](const auto &profile) { return profile.contextual; }));
 		auto legacy = j;
 		legacy.erase("boundary_warp_q8");
 		CHECK(TerrainVisual::Catalog::parse(legacy).boundaryWarp == std::array<int, 3>{});
@@ -843,6 +1150,8 @@ TEST_SUITE("TerrainMaterials")
 		invalid["bindings"].erase("mud"); // Every paintable built-in needs a material.
 		CHECK_THROWS(TerrainVisual::Catalog::parse(invalid));
 		const std::vector<std::pair<nlohmann::json::json_pointer, nlohmann::json>> malformed = {
+			{nlohmann::json::json_pointer("/profiles/0/shape"), "unknown"},
+			{nlohmann::json::json_pointer("/profiles/0/shape"), 1},
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), true},
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), 127},
 			{nlohmann::json::json_pointer("/profiles/0/feather_q8"), 513},

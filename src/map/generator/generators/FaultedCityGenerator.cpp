@@ -150,7 +150,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	for (int i = 0; i < n; ++i)
 	{
 		const auto shift = shifts[L.district[i]];
-		const int sx = t.x(i % t.w - shift.first + phaseX);
+		const int sx = t.x(t.remainderX(i) - shift.first + phaseX);
 		const int sy = t.y(i / t.w - shift.second + phaseY);
 		const int block = (sy / kPitch) * columns + sx / kPitch;
 		L.source[i] = block;
@@ -258,17 +258,17 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			for (int i : eligible)
 			{
 				int gap = INT_MAX;
-				for (int s : selected) gap = std::min(gap, t.dist2(i % t.w, i / t.w, s % t.w, s / t.w));
+				for (int s : selected) gap = std::min(gap, t.dist2(t.remainderX(i), i / t.w, t.remainderX(s), s / t.w));
 				if (gap > bestGap) { best = i; bestGap = gap; }
 			}
 			if (best < 0 || bestGap < 144) break;
 			selected.push_back(best);
 			L.gates.push_back(best);
-			c.telemetry.measure("faulted-city.junction.x", best % t.w, L.gates.size() - 1);
+			c.telemetry.measure("faulted-city.junction.x", t.remainderX(best), L.gates.size() - 1);
 			c.telemetry.measure("faulted-city.junction.y", best / t.w, L.gates.size() - 1);
 			for (int dy = -4; dy <= 4; ++dy)
 				for (int dx = -4; dx <= 4; ++dx)
-					gateMask[t.at(best % t.w + dx, best / t.w + dy)] = 1;
+					gateMask[t.at(t.remainderX(best) + dx, best / t.w + dy)] = 1;
 		}
 		if (selected.size() < 2) { L.failure = "The city has too few usable junctions."; return L; }
 		c.telemetry.measure("faulted-city.junctions.actual", selected.size(), d);
@@ -316,7 +316,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	for (int i = 0; i < n; ++i)
 	{
 		open[i] = !water[i] && !L.wall[i] && !cropGround[i] && L.crop[i] < CHERRY;
-		L.renewable[i] = cropGround[i] && fertility.at(i % t.w, i / t.w) > 0;
+		L.renewable[i] = cropGround[i] && fertility.at(t.remainderX(i), i / t.w) > 0;
 		if (L.renewable[i] && !L.wall[i]) ++L.plotCapacity[L.plotOf[i]];
 	}
 	const auto cropAccess = [&](int resource, std::vector<int> &owner, std::vector<int> &steps, std::vector<int> &entry)
@@ -330,11 +330,11 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			if (plot.empty() || L.crop[plot.front()] != resource) continue;
 			std::uint64_t yield = 0;
 			int capacity = 0;
-			for (int i : plot) if (!L.wall[i] && fertility.at(i % t.w, i / t.w) > 0)
-			{ yield += fertility.at(i % t.w, i / t.w); ++capacity; }
+			for (int i : plot) if (!L.wall[i] && fertility.at(t.remainderX(i), i / t.w) > 0)
+			{ yield += fertility.at(t.remainderX(i), i / t.w); ++capacity; }
 			if (resource == WHEAT) c.telemetry.measure("faulted-city.plot.food-yield", double(yield) / 65536, p);
 			if (capacity < (resource == WHEAT ? 48 : 16) || (resource == WHEAT && yield < 3 * 65536ULL)) continue;
-			for (int i : plot) if (!L.wall[i] && fertility.at(i % t.w, i / t.w) > 0)
+			for (int i : plot) if (!L.wall[i] && fertility.at(t.remainderX(i), i / t.w) > 0)
 			{ owner[i] = p; entry[i] = i; steps[i] = 0; queue.push_back(i); }
 		}
 		for (size_t q = 0; q < queue.size(); ++q)
@@ -342,7 +342,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			const int i = queue[q];
 			for (int dy = -1; dy <= 1; ++dy) for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int j = t.at(i % t.w + dx, i / t.w + dy);
+				const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
 				if (steps[j] < 0 && open[j])
 				{ steps[j] = steps[i] + 1; owner[j] = owner[i]; entry[j] = entry[i]; queue.push_back(j); }
 			}
@@ -355,7 +355,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	for (int i = 0; i < n; ++i) room[i] = grass[i] && L.lawn[i] && !L.wall[i] && L.crop[i] < 0;
 	const auto anchors = buildAnchors(t, room, 7);
 	for (int i = 0; i < n; ++i)
-		if (anchors[i] && i % 3 == 0) L.candidates.push_back(t.at(i % t.w + 2, i / t.w + 2));
+		if (anchors[i] && i % 3 == 0) L.candidates.push_back(t.at(t.remainderX(i) + 2, i / t.w + 2));
 	c.telemetry.measure("faulted-city.districts", districts.cellCount());
 	c.telemetry.measure("faulted-city.starts.candidates", L.candidates.size());
 	c.telemetry.measure("faulted-city.fault.corners", std::count(L.fault.begin(), L.fault.end(), 1));
@@ -371,7 +371,7 @@ std::string colonyRoutes(const Map &map, const Layout &L, int teams)
 	for (int gate : L.gates)
 		for (int dy = -2; dy <= 2; ++dy)
 			for (int dx = -2; dx <= 2; ++dx)
-				if (!walking[L.t.at(gate % L.t.w + dx, gate / L.t.w + dy)])
+				if (!walking[L.t.at(L.t.remainderX(gate) + dx, gate / L.t.w + dy)])
 					return "The city has too few usable junctions.";
 	auto interior = walking;
 	for (int i = 0; i < L.t.size(); ++i) if (L.fault[i]) interior[i] = 0;
@@ -398,7 +398,7 @@ std::string colonyRoom(const Map &map, const Layout &L, int teams)
 	for (int k = 0; k < teams; ++k)
 	{
 		if (units[k].empty()) return "A city colony has no workers.";
-		const int site = units[k].front(), x = site % t.w, y = site / t.w;
+		const int site = units[k].front(), x = t.remainderX(site), y = site / t.w;
 		const auto reach = reachFrom(t, units[k], walking, 24);
 		auto local = tileMask(t, reach.tiles);
 		for (int i : reach.tiles) local[i] = building[i];
@@ -433,8 +433,8 @@ std::string colonyFood(const Map &map, const Layout &L, int teams, const std::ve
 			const int i = reach.tiles[p];
 			for (int dy = -1; dy <= 1; ++dy) for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int j = L.t.at(i % L.t.w + dx, i / L.t.w + dy);
-				const int resource = map.getResource(j % L.t.w, j / L.t.w).type;
+				const int j = L.t.at(L.t.remainderX(i) + dx, i / L.t.w + dy);
+				const int resource = map.getResource(L.t.remainderX(j), j / L.t.w).type;
 				if (seen[j] || (resource != WHEAT && resource != WOOD) || reach.steps[p] + 1 > 24) continue;
 				seen[j] = 1;
 				if (resource == WOOD)
@@ -451,7 +451,7 @@ std::string colonyFood(const Map &map, const Layout &L, int teams, const std::ve
 		}
 		std::uint64_t yield = 0;
 		for (size_t p = 0; p < plots.size(); ++p) if (plots[p])
-			for (int i : L.plots[p]) if (!L.wall[i]) yield += fertility.at(i % L.t.w, i / L.t.w);
+			for (int i : L.plots[p]) if (!L.wall[i]) yield += fertility.at(L.t.remainderX(i), i / L.t.w);
 		if (!wood || close < 12 || total < 24 || yield < 3 * 65536ULL)
 		return "A city neighbourhood lacks reachable crops or building room.";
 	}
@@ -466,7 +466,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	writeVertices(map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k) game.addTeam();
 	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i]) map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		if (L.wall[i]) map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	const auto fertility = Fertility::forMap(map, false);
 	std::vector<int> starterOwner(L.plots.size(), -1);
 	for (int site : sites)
@@ -498,7 +498,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			const int owner = starterOwner[label];
 			const int seed = (resource == WHEAT ? L.wheatEntry[owner] : L.woodEntry[owner]);
 			const auto eligible = [&](int i)
-			{ return L.plotOf[i] == label && fertility.at(i % t.w, i / t.w) > 0 && clearGround(map, i % t.w, i / t.w); };
+			{ return L.plotOf[i] == label && fertility.at(t.remainderX(i), i / t.w) > 0 && clearGround(map, t.remainderX(i), i / t.w); };
 			// Put the first grain on the town-facing edge, not only at the deepest water.
 			// Inns need several grains within their own working radius from the opening.
 			if (seed >= 0) guaranteed = growPatch(map, t, seed, resource, minimum, eligible);
@@ -512,25 +512,25 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 		for (int dy = -3; dy <= 6; ++dy)
 			for (int dx = -3; dx <= 6; ++dx)
 			{
-				const int i = t.at(site % t.w + dx, site / t.w + dy);
+				const int i = t.at(t.remainderX(site) + dx, site / t.w + dy);
 				home[i] = L.lawn[i] && !L.wall[i] && L.crop[i] < 0;
 			}
-		if (!placeSettlement(game, c, k, home, {site % t.w, site / t.w}, "faulted-city-starts")) return false;
+		if (!placeSettlement(game, c, k, home, {t.remainderX(site), site / t.w}, "faulted-city-starts")) return false;
 	}
 	// Optional stone/fruit furnish ruin interiors, off the streets and colony lawns.
 	int stones = 0, fruits = 0;
 	for (int i = 0; i < t.size(); ++i)
 		if (!L.street[i] && !L.lawn[i] && !L.fault[i] && !L.junction[i] && L.crop[i] < 0 &&
-			!L.wall[i] && clearGround(map, i % t.w, i / t.w))
+			!L.wall[i] && clearGround(map, t.remainderX(i), i / t.w))
 		{
 			const auto draw = c.bounded("faulted-city-ambient", 12000);
-			if (draw < unsigned(o.stone)) { map.setResourceByIndex(i % t.w, i / t.w, STONE, 1); ++stones; }
+			if (draw < unsigned(o.stone)) { map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1); ++stones; }
 
 		}
 	for (int i = 0; i < t.size(); ++i)
-		if (L.crop[i] >= CHERRY && !L.junction[i] && clearGround(map, i % t.w, i / t.w) &&
+		if (L.crop[i] >= CHERRY && !L.junction[i] && clearGround(map, t.remainderX(i), i / t.w) &&
 			c.bounded("faulted-city-fruit", 300) < unsigned(o.fruit))
-		{ map.setResourceByIndex(i % t.w, i / t.w, L.crop[i], 1); ++fruits; }
+		{ map.setResourceByIndex(t.remainderX(i), i / t.w, L.crop[i], 1); ++fruits; }
 	seedAlgae(map, c, t, "faulted-city-algae", o.algae, AlgaeBand::anyWater());
 	if (const auto routes = colonyRoutes(map, L, c.request.nbTeams); !routes.empty())
 	{ c.telemetry.choice("faulted-city.rejected-check", "routes"); c.detail = routes; return false; }
@@ -638,17 +638,17 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		if (!designMismatch(candidate, game.map, "faulted city").empty()) continue;
 		matched = true;
 		for (int i = 0; i < candidate.t.size() && matched; ++i)
-			matched = candidate.terrain[i] == game.map.vertexTerrainAt(i % candidate.t.w, i / candidate.t.w);
+			matched = candidate.terrain[i] == game.map.vertexTerrainAt(candidate.t.remainderX(i), i / candidate.t.w);
 		if (matched) L = std::move(candidate);
 	}
 	if (!matched) return "The city terrain no longer matches its design.";
 	if (const auto plots = containedPlotsMismatch(game.map, L.t, L.plotOf); !plots.empty()) return plots;
 	for (int i = 0; i < L.t.size(); ++i)
 	{
-		if (L.wall[i] && game.map.getResource(i % L.t.w, i / L.t.w).type != STONE)
+		if (L.wall[i] && game.map.getResource(L.t.remainderX(i), i / L.t.w).type != STONE)
 			return "The city has lost part of its masonry.";
-		if (L.fault[i] && (game.map.vertexTerrainAt(i % L.t.w, i / L.t.w) != SAND ||
-			game.map.isResource(i % L.t.w, i / L.t.w)))
+		if (L.fault[i] && (game.map.vertexTerrainAt(L.t.remainderX(i), i / L.t.w) != SAND ||
+			game.map.isResource(L.t.remainderX(i), i / L.t.w)))
 			return "A city fault is obstructed.";
 	}
 	if (const auto access = startingAccessFailure(game.map, c.request.nbTeams,

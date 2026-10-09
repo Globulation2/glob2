@@ -96,13 +96,14 @@ class CliSmoke(unittest.TestCase):
 
     def test_match_verification_preserves_trace_across_compute_sizes(self):
         reference = None
-        golden = (ROOT / 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
+        # Git may check out the golden text with CRLF on Windows.
+        golden = (ROOT / 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_text(encoding='utf-8')
         for count in (1, 2, 4, 8, 'auto'):
             output = self.root / f'verify-{count}'
             self.command('--verify-match', ROOT / 'test/fixtures/multiplayer/FourSquares1.g2mr',
                          '--map', ROOT / 'maps/FourSquares1.map.gz', '--out', output,
                          '--compute-threads', count)
-            self.assertEqual((output / 'checksums.txt').read_bytes(), golden)
+            self.assertEqual((output / 'checksums.txt').read_text(encoding='utf-8'), golden)
             result = (output / 'result.json').read_bytes()
             if reference is None:
                 reference = result

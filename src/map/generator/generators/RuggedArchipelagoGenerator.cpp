@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
+#include "PowerOfTwo.h"
 #include "RuggedArchipelagoGenerator.h"
 #include "Distances.h"
 #include "Game.h"
@@ -82,8 +83,8 @@ static int plantBootstraps(Map &map, GenerationContext &context,
 	int c = 0;
 	for (int i = 0; i < nbIslands; i++)
 	{
-		int x = rng() % w;
-		int y = rng() % h;
+		int x = powerOfTwoRemainder(rng(), w);
+		int y = powerOfTwoRemainder(rng(), h);
 		bool failed = false;
 		int j;
 		for (j = 0; j < i; j++)

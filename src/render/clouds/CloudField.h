@@ -2,6 +2,7 @@
 
 #ifndef GLOB2_CLOUD_FIELD_H
 #define GLOB2_CLOUD_FIELD_H
+#include "field/Grid.h"
 #include "SimplexNoise.h"
 #include <algorithm>
 #include <cmath>
@@ -31,8 +32,9 @@ struct CloudField
     // by position, so the field is continuous across the map seams.
     unsigned char opacity(int x, int y, float magnification = 1) const
     {
-        x = ((x % width) + width) % width;
-        y = ((y % height) + height) % height;
+        const field::Grid grid(width, height);
+        x = grid.wrapX(x);
+        y = grid.wrapY(y);
         float fx = float(x) / width, fy = float(y) / height;
         float top = sample(x, y, magnification) * (1 - fx) + sample(x - width, y, magnification) * fx;
         float bottom = sample(x, y - height, magnification) * (1 - fx) +

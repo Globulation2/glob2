@@ -124,7 +124,7 @@ std::vector<int> cheapestRoute(const Torus &t, const std::vector<int> &sources,
 			reached = i;
 			break;
 		}
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (int dy = -1; dy <= 1; ++dy)
 		{
 			::MapGeneration::generationCheckpoint();
@@ -166,7 +166,7 @@ bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		blocked.at(i) = !map.terrainPropertiesAt(x, y).walkable ||
 						map.getBuilding(x, y) != NOGBID || (alsoBlocked && (*alsoBlocked).at(i));
 		costly.at(i) = map.isResource(x, y);
@@ -177,8 +177,8 @@ bool openRoad(Map &map, const Torus &t, const std::vector<int> &sources,
 	for (int i : route)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (map.isResource(i % t.w, i / t.w))
-			map.setNoResource(i % t.w, i / t.w, 1);
+		if (map.isResource(t.remainderX(i), i / t.w))
+			map.setNoResource(t.remainderX(i), i / t.w, 1);
 	}
 	return true;
 }
@@ -222,10 +222,10 @@ int clearRoute(Map &map, const Torus &t, const std::vector<int> &route, int radi
 			for (int dx = -radius; dx <= radius; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				const int j = t.at(i % t.w + dx, i / t.w + dy);
-				if ((keep && (*keep).at(j)) || !map.isResource(j % t.w, j / t.w))
+				const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
+				if ((keep && (*keep).at(j)) || !map.isResource(t.remainderX(j), j / t.w))
 					continue;
-				map.setNoResource(j % t.w, j / t.w, 1);
+				map.setNoResource(t.remainderX(j), j / t.w, 1);
 				++cleared;
 			}
 		}
@@ -241,7 +241,7 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 		return false;
 	const auto openAt = [&](int i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 	};
 	// The open tiles round a colony's swarm.
@@ -303,9 +303,9 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 			[&](int, int to, int, int)
 			{
 				if ((!map.terrainPropertiesAt(to).walkable && map.terrainTypeAt(to) != WATER) ||
-					map.getBuilding(to % t.w, to / t.w) != NOGBID || (keep && (*keep).at(to)))
+					map.getBuilding(t.remainderX(to), to / t.w) != NOGBID || (keep && (*keep).at(to)))
 					return -1;
-				return stepCost(map, to % t.w, to / t.w, costs);
+				return stepCost(map, t.remainderX(to), to / t.w, costs);
 			});
 		if (radius > 0)
 			clearRoute(map, t, route, radius, keep);
@@ -315,7 +315,7 @@ bool openColonyRoutes(Map &map, const GenerationContext &context, const Torus &t
 		for (int i : route)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			if (map.isWater(x, y))
 			{
 				// One sand corner turns this tile and its three other tiles into walkable shore.
@@ -350,7 +350,7 @@ bool openTrail(Map &map, const Torus &t, const std::vector<int> &sources,
 {
 	const auto cost = [&](int, int to, int, int)
 	{
-		const int x = to % t.w, y = to / t.w;
+		const int x = t.remainderX(to), y = to / t.w;
 		if (!map.terrainPropertiesAt(x, y).walkable || map.getBuilding(x, y) != NOGBID ||
 			keep.at(to))
 			return -1;

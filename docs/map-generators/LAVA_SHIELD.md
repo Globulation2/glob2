@@ -2,31 +2,43 @@
 
 ## Play contract
 
-Lava shield is an asymmetric volcanic island: a crater lake in a stone summit,
-branching lava tongues running downhill, and unequal green wedges between them.
-The ocean surrounds the island across the toroidal map seams. Colonies occupy
-scored usable ground, not repeated angular slots. The crater is the only inland
-water body; coastal and crater-side fields support renewable production, while
-middle slopes supply relatively dry construction and expansion ground.
+Lava shield is an asymmetric volcanic island: a lava lake in the crater, live lava
+tongues running downhill, older cooled flows branching off them, and unequal green
+wedges between them. Deep ocean surrounds the island across the toroidal map seams.
+Colonies occupy scored usable ground, not repeated angular slots. There is no inland
+water; the coast and the volcanic loam of the crater rim support renewable
+production, while middle slopes supply relatively dry construction and expansion
+ground.
 
 The opening should establish food, wood, population and training within a roomy
 home clearing. First contact is a choice between neighbouring coastal approaches
 and the exposed crater rim. The rim offers renewable farmland and fruit, with room
-for feeding infrastructure. Swimming changes coastal approach costs; it never
-allows units to cross stone. Stone is also an inexhaustible quarry, so ammunition
-scarcity is deliberately not this map's pressure.
+for feeding infrastructure. Swimming changes coastal approach costs; nothing crosses
+lava on foot. The stone crust along the flows is an inexhaustible quarry, so
+ammunition scarcity is deliberately not this map's pressure.
 
-### Engine constraint and chosen adaptation
+### Lava walls and fords
 
-Legal stone deposits require pure grass. The beach pass separates that grass from
-water with walkable sand. Consequently, simply drawing a stone tongue into the sea
-leaves a beach bypass: it does **not** seal a coastal route. The user chose broad green gaps versus narrow beach detours, preserving the
-inland crater. All colonies can meet on foot; swimming adds another approach.
-No colony requires swimming to survive or meet rivals.
+Revisions 1–4 drew the tongues as stone deposits. Legal stone requires pure grass and
+the beach pass puts walkable sand between grass and water, so a stone tongue drawn
+into the sea left a narrow beach bypass rather than a seal, and the crater was a
+water lake.
+
+Since revision 5 (maintainer decision, 2026-10-08) the tongues are terrain of the
+catalogue's lava group: lava with an ember fringe, impassable on foot and harmful to
+fliers, which route around it. Lava is not water, so a long tongue runs into the sea
+with no beach and seals its two wedges from each other along the coast. Each long
+tongue therefore keeps one **ford**: the flow is cut across its whole width for about
+five tiles at a point 40–65% of the way down and filled with scree, slow but
+walkable. Short tongues stop inland and leave a broad coastal gap, as before. The
+crater is a lava lake with one to three void vents, ash between the lake and the rim
+circuit, and loam and moss on the rim. All colonies still meet on foot, over the rim,
+the fords and the short tongues' gaps; swimming adds coastal approaches. No colony
+requires swimming to survive or meet rivals.
 
 ## Construction and validation
 
-Reserve the crater, its walking rim, and the ocean before growing lava. Use
+Reserve the crater, its walking rim, and the ocean before drawing the flows. Use
 independently sized angular intervals and downhill walks with correlated turns;
 never rotate one completed branch tree into colony copies. Collision checks stop
 side branches before they erase usable wedges. Report requested and surviving
@@ -38,16 +50,15 @@ Randomly deal selected sites to teams. Judge completed settlements with
 alone do not prove equal expansion, contact costs or winning chances.
 
 Keep starter guarantees distinct from ambient abundance. Scale every optional
-resource layer, including rim fruit, with its control. Structural lava stays at
-zero stone abundance. Sand reservations must preserve travel and construction
-through future crop growth without adding home ponds that erase the crater's role.
+resource layer, including rim fruit, with its control. The crust stone along the
+flows stays at zero stone abundance. Road reservations must preserve travel and
+construction through future crop growth without adding home ponds.
 
-Validation must inspect final pure terrain and resources: the crater survives,
-stone remains legal and continuous where required, the reserved rim stays open,
-homes have room and both primary resources, colonies reach the rim, and coastal
-route claims hold under both walking and swimming. Reject infeasible settings or
-failed essential geometry with a stage-specific explanation; do not quietly carve
-through lava or add inland ponds as a repair.
+Validation must inspect final terrain and resources: the ocean and every lava wall
+survive, the reserved rim stays open, every ford is open ground the colonies reach,
+homes have room and both primary resources, and colonies reach the rim. Reject
+infeasible settings or failed essential geometry with a stage-specific explanation;
+do not quietly carve through lava or add inland ponds as a repair.
 
 ## Evidence policy
 
@@ -62,11 +73,11 @@ or in pull-request attachments.
 
 ### Review previews
 
-These committed previews are native generator screenshots from the current
-revision-1 implementation. They show the preserved crater lake, unequal green
-wedges, branching stone, scored coastal towns and continuous beach bypasses at
-four useful scales. Resource sprites appear as small light marks; the dark radial
-shapes are quarry deposits.
+These committed previews are native generator screenshots of revision 5. They show
+the lava crater, unequal green wedges, live tongues with their scree fords, cooled
+grey branches, the crust and ash along the flows, dirt-track approaches, scored
+coastal towns and the deep-water ring at four useful scales. Resource sprites appear
+as small light marks.
 
 | Default 256² | Minimum 128² |
 | --- | --- |
@@ -78,23 +89,24 @@ shapes are quarry deposits.
 
 ## Implemented interpretation
 
-The user chose to keep the inland crater lake and allow narrow beach paths around
-all tongues. Short tongues leave broad green coastal gaps; long tongues push that
-route onto their beaches. All colonies can meet on foot. Swimming adds ocean
-approaches and may shorten travel; it is not a prerequisite for crossing a seal.
-The generator does not introduce a new terrain type or alter resource/movement rules.
+Short tongues leave broad green coastal gaps; long tongues seal the coast and are
+crossed at their fords. All colonies can meet on foot. Swimming adds ocean approaches
+and may shorten travel; it is not a prerequisite for crossing a seal. The generator
+uses only existing catalogue terrain and does not alter resource or movement rules;
+a generated map carries the lava, paths, barren, rough, fertile, deep-water and void
+terrain experiments in its header.
 
 ### Controls and support envelope
 
 | Control | Values; default | Player consequence |
 | --- | --- | --- |
-| Lava tongues | 3–9; 5 | More permanent ridges divide the slopes into more, smaller wedges. Independent of colony count. |
-| Long tongues | 25%, 50%, 75%; 50% | Percentage of primary flows reaching the coast. Rounded to a count, with at least one long and one short flow. Changes broad versus beach-only coastal detours. |
+| Lava tongues | 3–9; 5 | More lava walls divide the slopes into more, smaller wedges. Independent of colony count. |
+| Long tongues | 25%, 50%, 75%; 50% | Percentage of primary flows reaching the coast. Rounded to a count, with at least one long and one short flow. Changes broad coastal gaps versus sealed coasts crossed at a ford. |
 | Branching | 0–3; 2 | Side-branch proposals per primary flow. Crowded or uphill proposals are omitted, with counts in telemetry. |
-| Crater rim width | 6–12, step 2; 8 | Grass budget outside the fixed shoreline/circuit margin, before the stone roots begin. |
+| Crater rim width | 6–12, step 2; 8 | Loam budget outside the fixed circuit margin, before the lava roots begin. |
 | Islets | on/off; on | A couple of small islands out in the ocean where the torus wraps (at least two, one more per 8,000 tiles of sea), each six tiles of water from any coast so only swimmers reach it, each with a prize at its middle. A maintainer's first look asked for them; off leaves the ocean empty as the first revision had it. |
 | Wheat/wood amounts | Shared percentage controls | Scale optional fertile patches; external starter patches remain guaranteed. |
-| Stone amount | Shared percentage control | Scales sparse optional outcrops. Structural lava remains an inexhaustible quarry at zero. |
+| Stone amount | Shared percentage control | Scales sparse optional outcrops. The crust along the flows remains an inexhaustible quarry at zero. |
 | Algae amount | Shared percentage control | Scales shallow-water clumps, using the engine-derived growth preference. |
 | Fruit amount | Shared percentage control | Scales sparse rim prizes. Zero removes this reward; the fertile rim remains. |
 
@@ -119,12 +131,17 @@ remain authoritative.
 | Budget | Meaning and rationale |
 | --- | --- |
 | Island radius `0.43 × shorter side`, roughness `0.06` | A gently irregular island with ocean left across every toroidal seam, including at maximum positive coastline wobble. Stretch changes centres to fill rectangles; flow thickness stays in map tiles. |
-| Crater radius `max(8, 0.06 × shorter side)`, roughness `0.08` | A visible lake at minimum size without consuming the whole slope. No starter ponds are added. |
-| Crater circuit at local lake radius + 5, half-width 1.5 corners | Pays for beach and transition tiles and leaves a continuous sand route. The circuit uses approximately one sample per circumference tile. |
-| Stone roots at lake radius + rim width + 5 | Separates the useful rim budget from the fixed shoreline/circuit cost. Thick root lobes form a broken stone crown; the openings admit approaches. |
+| Crater radius `max(8, 0.06 × shorter side)`, roughness `0.08` | A visible lava lake at minimum size without consuming the whole slope. Corners touching anything but lava are ember; 1–3 void vents of radius 1.5 sit within 45% of the radius. No starter ponds are added. |
+| Crater circuit at local lake radius + 5, half-width 1.5 corners | A continuous dirt-track route round the crater; inside it, two corners clear of the track, the crater wall is dirt and clay; outside it, out to the lava roots ±4 tiles by noise, the rim is loam with moss patches. The circuit uses approximately one sample per circumference tile. |
+| Lava roots at lake radius + rim width + 5 | Separates the useful rim budget from the fixed circuit cost. Thick root lobes form a broken crown of lava; the openings admit approaches. |
 | Angular interval weights `0.65 + U[0,1)` | Unequal green wedge sizes with a lower bound. The weights normalize to a full turn; no complete branch is copied into another sector. |
 | Primary steps 3; angular memory 0.72; angular noise 0.055 radians | Bends persist over several steps instead of alternating in a noisy zigzag. Heading stays within 30% of the smaller adjacent angular interval. Radius always increases. |
-| Width `clamp(shorter/70, 2, 5)`, roots ×1.8 | Thick roots taper to legible, raster-safe fingers. Width does not grow without bound on large maps. |
+| Width `clamp(shorter/70, 2, 5)`, roots ×1.8 | Thick roots taper to legible, raster-safe fingers. Width does not grow without bound on large maps. The flows are drawn on corners half a tile thinner than this, because a tile takes lava from any corner: the walls cover the same tiles the stone tongues of revision 4 did. |
+| Ford: 2.5 tiles either side, along the flow, of a point 40–65% down each long tongue | A crossing about five tiles long through the whole width of the flow, filled with scree (slow, unbuildable, walkable). No crust stone within four corners of a ford. |
+| Flow girth: ±25% over 18-tile noise; primary toes ×1.35 over the last three points; corner strokes at least 1.25 | Flows swell, narrow and spread at their toes instead of reading as constant-width tubes; the thinnest stretch is still a wall two pure tiles across. |
+| Margins along the flows: 12-tile noise cells; crust below 0.62, bare to 0.70, scree to 0.85, ash above; reaches 3, 3 and 4 corners at 256-tile sides, halved at 128 | Stretches of stone crust on the grass, bare grass up to the flow, scree aprons and dirt or clay ash, measured from live lava and cooled branches alike. Laid after the towns, their rings and roads, which they never touch. The crust gives about 40% of the tiles of the old full-width stone tongues; over twelve default seeds the worst-placed colony's nearest stone is a median 26.5 steps away (revision 4: 33.5). |
+| Upper-slope ash: from the lava roots a third of the way to the coast, where a 9-tile noise exceeds a threshold rising from 0.45 to 1 | Dirt and clay patches that thin out downhill give the cone a slope. Laid with the margins, after the towns. |
+| Deep water about 10 steps from any land, ±4 by 20-tile noise | The far sea reads dark and swims slowly; algae stay in the shallow band; no island or islet sits in a ruled ring of shallows. |
 | Short-flow setback 12–22 × `sqrt(shorter/128)` | Broad coastal detours remain useful as size grows. A conservative minimum coastline radius protects the gap against a later bend. Long flows end beyond the maximum coastline radius. |
 | Fork origins 25–75% along parents | Branches emerge along the slope, leaving roots readable and avoiding coast-tip stubs. |
 | Fork lengths 35–60% of remaining radial extent; angles 0.35–0.65 radians; bend ±0.1 | Side growth makes asymmetric fingers without routinely reversing uphill. Half-width starts at 75% of the parent's and ends at 2. |
@@ -143,8 +160,9 @@ same ground and the edge still looks grown rather than ruled.
 ![One town from each of the seven plans](images/lava-shield/town-shapes.png)
 
 Candidates lie on a four-tile sampling grid. Every tile the town will touch (its grass and
-every tile with a corner in its ring, thicker stretches included) must be pure grass
-free of structural rock, so the ring can never take a corner from a tile of lava stone. Each candidate must also be 12–21 eight-neighbour grid
+every tile with a corner in its ring, thicker stretches included) must be pure grass or
+the rim's loam, which the town turns back to grass so no crop takes root inside it, and
+so the ring can never take a corner from a tile of lava. Each candidate must also be 12–21 eight-neighbour grid
 steps from ocean water (crater sources are excluded). A radial exclusion keeps crater-side candidates out so the
 summit starts neutral. Fertility is summed over a square three tiles past the plan's
 half-length (23×23 for the square town): the town and its immediate external growing edges.
@@ -168,9 +186,10 @@ minimum observed over forty default 256×256 four-colony seeds, so it does not
 reject anything the generator produces at its defaults. Ties keep the earlier
 proposal.
 
-Each town leaves its plan's pure grass inside the frayed two-corner sand ring. A sand
+Each town leaves its plan's pure grass inside the frayed two-corner sand ring. An
 approach begins two corners beyond the plain ring and reaches the crater circuit,
-protecting town and route from future crop growth. It first requests three tiles
+protecting town and route from future crop growth; it is reserved as sand and then
+laid as dirt track, except beside water, where it stays a sand beach. It first requests three tiles
 of width. If that cannot fit, the same shared operation tries a one-tile route with the
 same protected terrain and routing costs. Existing walkable non-grass beach
 tiles are reused unchanged; only new stretches are painted pure sand. This explicit narrow-detour
@@ -228,13 +247,13 @@ half of that band. The shared algae helper evaluates its own engine growth rule.
 - Full proposals fail on missing town/worker room, absent fertile starter fields,
   starter patches below their floor, missing protected approaches, or quality floors.
   Scored selection records each failure and returns an actionable reason if none fit.
-- Shared crop guarantees run with structural rock protected. A final crop-clearing
-  route may remove crops, but fruit, stone and water stay blocked. The reserved
-  sand approach should make that operation a no-op in ordinary cases.
-- Final validation reconstructs terrain from the request, checks crater/ocean water,
-  every legal structural rock tile, the entire reserved crater circuit, and actual
-  worker connectivity to every colony and every part of the circuit. A failed map
-  is discarded by the generation service.
+- Shared crop guarantees run with the crust stone protected. A final crop-clearing
+  route may remove crops, but fruit, stone, lava and water stay blocked. The reserved
+  approach should make that operation a no-op in ordinary cases.
+- Final validation reconstructs terrain from the request, checks the ocean, every
+  wall tile of lava, the entire reserved crater circuit, actual worker connectivity
+  to every colony and every part of the circuit, and that every ford has open ground
+  the colonies reach. A failed map is discarded by the generation service.
 
 ### Reusable operations
 
@@ -311,7 +330,7 @@ once, rather than summing discarded proposals into the final map.
 
 | Key family | Meaning |
 | --- | --- |
-| `lava-shield.tongues.requested`, `.long` | Primary count and effective rounded long-flow count. “Long” describes a coast-reaching design, not a walking seal. |
+| `lava-shield.tongues.requested`, `.long` | Primary count and effective rounded long-flow count. A long tongue seals the coast and is crossed at its ford. |
 | `lava-shield.branches.requested`, `.placed`, `.refused` | Side proposals and collision/coast/uphill omissions. `branches.omitted` records the fallback when any are refused. |
 | `lava-shield.crater.radius`, `lava-shield.rim.width` | Effective design-frame radius and selected rim budget in tiles. |
 | `lava-shield.town.shape`, `.grass-corners`, `.half-extent` | The map's town plan, the grass corners one town holds after fraying, and half the plan's longer side. |
@@ -322,13 +341,61 @@ once, rather than summing discarded proposals into the final map.
 | `lava-shield.approach.steps` | Centreline tile count per reserved approach; repeated records are separate homes. Diagonal steps are counted as tiles here, not Dijkstra cost. |
 | `lava-shield.starter.wheat`, `.wood` | Actually planted guaranteed tiles per team; subject is the team index. Targets are 40/32, acceptance floors 20/16. |
 | `lava-shield.starter.secondary` | Fallback occurrence when a starter crop needs another compact patch because the first seed had insufficient connected frontage. Successful first fields do not probe or change. |
-| `lava-shield.ambient.wheat`, `.wood`, `.stone`, `lava-shield.prizes.fruit` | Actual optional tile placements, distinct from guarantees and structural lava. |
+| `lava-shield.ambient.wheat`, `.wood`, `.stone`, `lava-shield.prizes.fruit` | Actual optional tile placements, distinct from guarantees and the crust. |
+| `lava-shield.lava.vertices`, `.fords`, `.vents` | Lava and ember corners in the live tongues (not the crater), long tongues given a ford, and void vents in the crater. |
+| `lava-shield.crater.ash`, `lava-shield.ground.loam`, `.deep-water` | Corners of crater-wall ash, rim loam and moss, and deep sea. |
+| `lava-shield.margin.crust`, `.scree`, `.ash` | Crust stone tiles, and scree and ash corners, laid along the flows after the towns. |
 
 The generic algae helper supplies its existing counters. Counters reuse values
 already computed by generation; they do not draw RNG or introduce analysis scans.
 The bulk report joins them to final resource, room, movement and quality metrics.
 
 ## Verification and review evidence
+
+### Revision 5: terrain catalogue, 2026-10-08
+
+Measured on Linux x86-64 (GCC, `release=1`), revision 5 against a revision 4 build of
+the same base, with four colonies on 256×256 unless stated otherwise.
+
+Generation success over seeds 1–100:
+
+| Map | Revision 4 | Revision 5 |
+| --- | --- | --- |
+| 128×128, 2 colonies | 85 | 85 |
+| 256×128, 2 colonies | 95 | 93 |
+| 256×256, 2 colonies | 93 | 93 (earlier build) |
+| 256×256, 4 colonies | 100 | 100 |
+| 512×512, 8 colonies | 100 | 100 (earlier build) |
+
+Refusals are the fairness floor and incomplete site searches, as before. The shape
+sweep (`sweep_shapes.sh`, three seeds per cell) refuses the same cells as revision 4
+except one 256×256 two-colony seed that revision 4 refused and revision 5 accepts.
+Over seeds 1–12 the worst-placed colony's nearest stone is a median 26.5 steps away
+(revision 4: 33.5; worst 38 against 46); all colonies' median is 18 (19); fairness has
+median 0.932 and minimum 0.870 (0.940, 0.899). The crust is about 1,500–2,400 stone
+tiles against about 5,000 tiles of stone tongue, and total 4×4 building origins fall
+from about 17,000 to 13,000 because the walls, aprons and ash take ground.
+
+A seat rotation (each of Nicowar, Cortex, Cabino and Maxima in every seat, map seeds
+1–3, game seed 1, 25,000 ticks, twelve games per AI) on each revision:
+
+| AI | Final units, rev. 4 → 5 (minimum) | Wheat harvested | Starved | Killed |
+| --- | --- | --- | --- | --- |
+| Nicowar | 114 → 130 (56 → 53) | 1,069 → 1,123 | 22 → 14 | 102 → 48 |
+| Cortex | 56 → 76 (22 → 38) | 572 → 698 | 0 → 0 | 5 → 1 |
+| Cabino | 95 → 118 (64 → 80) | 641 → 827 | 12 → 82 | 12 → 20 |
+| Maxima | 125 → 106 (62 → 11) | 850 → 889 | 3 → 16 | 39 → 51 |
+
+Three AIs end larger. Maxima ends about 15% smaller, and one of its twelve games
+collapsed to 11 units under attack; Cabino starves far more units while still growing.
+These are single-seed games, which vary by up to 40%, and the maps of the two
+revisions place towns differently, so the rotation separates AIs from seats but not
+from map layout. The live walls change pacing: wedges meet over the rim, the fords and
+the coastal gaps, roads are faster dirt tracks, and fliers route round the lava.
+None of this has yet been played by a person, and the terrain has been reviewed only
+in generator previews, not in the game's own renderer.
+
+### Revisions 1–4
 
 Evidence is retained under `artifacts/lava-shield/` in this checkout. These are
 primarily macOS arm64 release-build results. Linux x86-64 golden/contract checks

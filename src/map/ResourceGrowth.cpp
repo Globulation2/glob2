@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "ResourceGrowth.h"
 #include "Utilities.h"
 #include "gradient/GradientRuntime.h"
@@ -30,7 +31,7 @@ bool emptyAllowed(const MapState::OccupancyCell &o, const ResourceProperties &p)
 // Avoid constructing and comparing all material stocks for each unit operation.
 void recordDelta(Map &map, const Proposal &p, bool newTile, int delta)
 {
-	const int x = p.tile % map.getW(), y = p.tile / map.getW();
+	const int x = powerOfTwoRemainder(p.tile, map.getW()), y = p.tile / map.getW();
 	std::array<Uint32, GROWTH_COVERAGE_BANDS> coverage;
 	for (int band = 0; band < GROWTH_COVERAGE_BANDS; ++band)
 		coverage[band] = map.teamsWithBuildingsNear(x, y, band);
@@ -150,7 +151,7 @@ void apply(Map &map, const Batch &batch, Metrics &metrics)
 		const auto oldType = map.getResource(op.tile).type;
 		const bool legacy = op.kind == Proposal::Kind::LegacyIncrement;
 		const auto &properties = map.resourcePropertiesByIndex(op.type);
-		const int x = op.tile % map.getW(), y = op.tile / map.getW();
+		const int x = powerOfTwoRemainder(op.tile, map.getW()), y = op.tile / map.getW();
 		if ((oldType != op.type && (oldType != NO_RES_TYPE || op.delta < 0)) ||
 			(!legacy && op.delta > 0 &&
 			 (!map.canResourcesGrow(x, y) || !map.terrainSupportsResourceAtByIndex(x, y, op.type) ||

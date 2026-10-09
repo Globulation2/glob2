@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "MapAssetBundle.h"
 #include "MapReport.h"
 #include "TerrainPresentation.h"
@@ -374,7 +375,7 @@ StartQualityReport canonicalQuality(Game &game)
 		~RestoreFertility()
 		{
 			for (size_t i = 0; i < values.size(); ++i)
-				map.setFertility(i % map.getW(), i / map.getW(), values[i]);
+				map.setFertility(powerOfTwoRemainder(i, map.getW()), i / map.getW(), values[i]);
 			map.fertilityMaximum = maximum;
 		}
 	} restore(game.map);
@@ -500,8 +501,8 @@ J movementReport(const Game &game, const StepCosts &costs,
 	std::vector<unsigned char> passable(t.size());
 	for (int p = 0; p < t.size(); ++p)
 		passable[p] = clearing
-						  ? stepCost(map, p % t.w, p / t.w, costs) >= 0
-						  : map.isHardSpaceForGroundUnit(p % t.w, p / t.w, costs.water >= 0, 0);
+						  ? stepCost(map, t.remainderX(p), p / t.w, costs) >= 0
+						  : map.isHardSpaceForGroundUnit(t.remainderX(p), p / t.w, costs.water >= 0, 0);
 	std::vector<std::vector<int>> fields;
 	for (const auto &sources : units)
 		fields.push_back(clearing ? costsFrom(map, t, sources, costs)
@@ -595,7 +596,7 @@ J movementReport(const Game &game, const StepCosts &costs,
 				{
 					if (!dx && !dy)
 						continue;
-					const int d = field[t.at(p % t.w + dx, p / t.w + dy)];
+					const int d = field[t.at(t.remainderX(p) + dx, p / t.w + dy)];
 					if (d >= 0 && (approach < 0 || d < approach))
 						approach = d;
 				}
@@ -701,7 +702,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		}
 		else if (r.type != NO_RES_TYPE)
 			++unknownResources;
-		buildingTiles += map.getBuilding(p % t.w, p / t.w) != NOGBID;
+		buildingTiles += map.getBuilding(t.remainderX(p), p / t.w) != NOGBID;
 		noGrowth += !map.resourceState()[p].mayGrow;
 		fertilityAll.push_back(fertility.values()[p]);
 		if (map.isGrass(p))

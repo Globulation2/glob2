@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "PowerOfTwo.h"
 #include "TerrainMovementCosts.h"
 #include "map/TerrainRegistry.h"
 #include <limits>
@@ -65,7 +66,7 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
             // This is a reverse field: index is the destination of the forward
             // move from next. Charge entry to index, not entry to next.
             const unsigned candidate=cost+(mode==TerrainTravel::Fly ? registry.airCost(terrainAt(index)) : registry.groundTravelCost(terrainAt(index)));
-            const int x=index%width,y=index/width;
+            const int x=dimensionRemainder(index, width),y=index/width;
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
             {
                 if(!dx&&!dy)continue;
@@ -106,7 +107,7 @@ void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrain
     {
         const auto [remaining,index]=queue.top();queue.pop();
         if(strength[index]!=remaining)continue;
-        const int x=index%width,y=index/width;
+        const int x=dimensionRemainder(index, width),y=index/width;
         for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
         {
             if(!dx&&!dy)continue;

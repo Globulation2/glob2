@@ -1,3 +1,4 @@
+#include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/PriorityTraversal.h"
 #include "field/UniformTraversal.h"
@@ -91,10 +92,10 @@ namespace
 		auto table=std::make_shared<std::vector<int>>(size_t(width)*height*9);
 		for(int index=0;index<width*height;++index)
 		{
-			const int x=index%width,y=index/width;
+			const int x=dimensionRemainder(index, width),y=index/width;
 			int offset=0;
 			for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-				(*table)[index*9+offset++]=((y+dy+height)%height)*width+(x+dx+width)%width;
+				(*table)[index*9+offset++]=(dimensionRemainder(y+dy+height, height))*width+dimensionRemainder(x+dx+width, width);
 		}
 		tables[key]=table;
 		return table;
@@ -744,7 +745,7 @@ std::vector<int> Planner::ringTiles(const WorldState& world,
 	std::vector<int> result;
 	for(size_t i=0; i<parcel.size(); ++i)
 	{
-		const int x=parcel[i]%world.width, y=parcel[i]/world.width;
+		const int x=world.normalizeX(parcel[i]), y=parcel[i]/world.width;
 		const int n[4]={world.index(x-1,y),world.index(x+1,y),
 			world.index(x,y-1),world.index(x,y+1)};
 		for(int d=0; d<4; ++d) if(!contains(sorted,n[d])) result.push_back(n[d]);
@@ -998,7 +999,7 @@ void Planner::prepareScoringCaches(const WorldState& world) const
 		const int radius=foodHaloRadiusCache;
 		for(int index=0;index<size;++index)
 		{
-			const int x=index%world.width,y=index/world.width;
+			const int x=world.normalizeX(index),y=index/world.width;
 			uint64_t strongest=0;
 			for(int dy=-radius;dy<=radius;++dy)
 				for(int dx=-(radius-std::abs(dy));
@@ -1113,7 +1114,7 @@ std::vector<int> Planner::colonyFoodTiles(const WorldState& world, int x, int y,
 			}
 			else
 			{
-				relativeX=index%width-footprintX;
+				relativeX=dimensionRemainder(index, width)-footprintX;
 				relativeY=index/width-footprintY;
 				if(relativeX<0) relativeX+=width;
 				if(relativeY<0) relativeY+=height;
@@ -1263,7 +1264,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
     if(candidateType<0)prepareMaterialSources(world);
 	const int size=world.width*world.height;
 	if(size<=0)return;
-	foodInput.width=world.width;foodInput.height=world.height;
+	foodInput.setDimensions(world.width,world.height);
 	foodInput.policy.supplyRadius=placementPolicy.foodSupplyRadius;
 	foodInput.policy.qualityBandTiles=placementPolicy.foodQualityBandTiles;
 	foodInput.policy.unreachablePenaltyTiles=
@@ -1689,7 +1690,7 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 		std::greater<QueueEntry> > queue;
 	for(int index=0; index<size; ++index)
 	{
-		const int x=index%world.width,y=index/world.width;
+		const int x=world.normalizeX(index),y=index/world.width;
 		const int other=orientation==0?world.index(x+1,y):world.index(x,y+1);
 		if(isCirculationReserved(index)&&isCirculationReserved(other))
 		{distance[index]=0;queue.push(QueueEntry(0,index));}
@@ -1701,7 +1702,7 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 		[&](const QueueEntry& entry,int px,int py) {
 			const int cost=entry.first,current=entry.second;
 			const int next=world.index(px,py);
-			const int nx=next%world.width,ny=next/world.width;
+			const int nx=world.normalizeX(next),ny=next/world.width;
 			const int other=orientation==0?world.index(nx+1,ny):world.index(nx,ny+1);
 			const int pair[2]={next,other}; bool pass=true,pairAlreadyNetwork=true;
 			int stepCost=1;
@@ -1744,7 +1745,7 @@ bool Planner::routeArtery(const WorldState& world, const std::vector<int>& ring,
 	std::vector<int> targets[2];
 	for(size_t i=0;i<ring.size();++i)
 	{
-		const int x=ring[i]%world.width,y=ring[i]/world.width;
+		const int x=world.normalizeX(ring[i]),y=ring[i]/world.width;
 		if(std::binary_search(ring.begin(),ring.end(),world.index(x+1,y)))
 			targets[0].push_back(ring[i]);
 		if(std::binary_search(ring.begin(),ring.end(),world.index(x,y+1)))
@@ -1794,7 +1795,7 @@ bool Planner::routeArtery(const WorldState& world, const std::vector<int>& ring,
 		const std::vector<int>& selectedParent=routeParentCache[selectedOrientation];
 		for(int at=selectedTarget;at>=0;at=selectedParent[at])
 		{
-			const int x=at%world.width,y=at/world.width;
+			const int x=world.normalizeX(at),y=at/world.width;
 			const int other=selectedOrientation==0?world.index(x+1,y):world.index(x,y+1);
 			if(!isCirculationReserved(at))route.push_back(at);
 			if(!isCirculationReserved(other))route.push_back(other);
@@ -1946,7 +1947,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 		const size_t origin=originCursor++%mapArea;
 		++processed;
 		const int originY=int(origin/size_t(world.width));
-		const int originX=int(origin%size_t(world.width));
+		const int originX=int(size_t(world.normalizeX(int(origin))));
 		{
 				Candidate candidate;candidate.newCampus=t.compact;
 				candidate.action.type=t.compact?BuildCampusMember:BuildStandalone;
@@ -2031,7 +2032,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				for(size_t n=0;n<candidate.action.accessTiles.size()&&!ringConnected;++n)
 				{
 					const int index=candidate.action.accessTiles[n];
-					const int x=index%world.width,y=index/world.width;
+					const int x=world.normalizeX(index),y=index/world.width;
 					ringConnected=isCirculationReserved(index)
 						&&(isCirculationReserved(world.index(x+1,y))
 						   ||isCirculationReserved(world.index(x,y+1)));

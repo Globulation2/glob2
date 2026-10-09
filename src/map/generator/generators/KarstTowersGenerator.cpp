@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "field/Grid.h"
 #include "KarstTowersGenerator.h"
 #include "Channels.h"
 #include "DesignCache.h"
@@ -156,7 +157,7 @@ struct Layout
 	std::string failure;
 };
 
-int wrapped(int v, int period) { return ((v % period) + period) % period; }
+int wrapped(int v, int period) { return field::Grid(period, 1).wrapX(v); }
 
 // What the design's stages share beyond the layout itself.
 struct Work
@@ -189,8 +190,8 @@ int towards(int from, int to, int period)
 	const int d = wrapped(to - from, period);
 	return d > period / 2 ? d - period : d;
 }
-int alongOf(const Layout &L, int i) { return L.alongX ? i % L.t.w : i / L.t.w; }
-int crossOf(const Layout &L, int i) { return L.alongX ? i / L.t.w : i % L.t.w; }
+int alongOf(const Layout &L, int i) { return L.alongX ? L.t.remainderX(i) : i / L.t.w; }
+int crossOf(const Layout &L, int i) { return L.alongX ? i / L.t.w : L.t.remainderX(i); }
 int alongOf(const Layout &L, const ShapePoint &p) { return int(L.alongX ? p.x : p.y); }
 int crossOf(const Layout &L, const ShapePoint &p) { return int(L.alongX ? p.y : p.x); }
 int tileAt(const Layout &L, int along, int cross)
@@ -201,7 +202,7 @@ int tileAt(const Layout &L, int along, int cross)
 // Whether all four terrain vertices of tile `i` hold `type`: what the game will draw as a pure tile.
 bool pureTile(const TerrainSketch &terrain, const Torus &t, int i, TerrainType type)
 {
-	const int x = i % t.w, y = i / t.w;
+	const int x = t.remainderX(i), y = i / t.w;
 	return terrain[i] == type && terrain[t.at(x + 1, y)] == type && terrain[t.at(x, y + 1)] == type &&
 		   terrain[t.at(x + 1, y + 1)] == type;
 }
@@ -256,7 +257,7 @@ class Walker
 				reached = i;
 				break;
 			}
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
@@ -594,10 +595,10 @@ void placeFords(Layout &L, const Work &w)
 				continue;
 			const int p = (first + last) / 2;
 			const int a = river.centreline[wrapped(p - 4, count)], b = river.centreline[(p + 4) % count];
-			const double tx = t.offsetX(a % t.w, b % t.w), ty = t.offsetY(a / t.w, b / t.w);
+			const double tx = t.offsetX(t.remainderX(a), t.remainderX(b)), ty = t.offsetY(a / t.w, b / t.w);
 			const double norm = std::max(1e-6, std::hypot(tx, ty));
 			const double half = w.riverWidth / 2.0 + 3;
-			const double cx = river.centreline[p] % t.w + 0.5, cy = river.centreline[p] / t.w + 0.5;
+			const double cx = t.remainderX(river.centreline[p]) + 0.5, cy = river.centreline[p] / t.w + 0.5;
 			L.fords.push_back({{cx + ty / norm * half, cy - tx / norm * half},
 							   {cx - ty / norm * half, cy + tx / norm * half},
 							   {cx, cy}});
@@ -707,7 +708,7 @@ void digSinkholes(Layout &L, const Work &w)
 			growWater(
 				t, L.water, i, kSinkholeTiles * sizePercent / 100, [&](int j) { return !keepDry[j]; },
 				[&](int j)
-				{ return std::int64_t(w.field[j]) + t.dist2(i % t.w, i / t.w, j % t.w, j / t.w) * 400; },
+				{ return std::int64_t(w.field[j]) + t.dist2(t.remainderX(i), i / t.w, t.remainderX(j), j / t.w) * 400; },
 				queued, ++ponds);
 			sinkholes.push_back(i);
 		}
@@ -738,7 +739,7 @@ void digSinkholes(Layout &L, const Work &w)
 			growWater(
 				t, L.water, at, kStreamPoolTiles * sizePercent / 100, [&](int j) { return !keepDry[j]; },
 				[&](int j)
-				{ return std::int64_t(t.dist2(at % t.w, at / t.w, j % t.w, j / t.w)) * 100 + w.field[j] / 64; },
+				{ return std::int64_t(t.dist2(t.remainderX(at), at / t.w, t.remainderX(j), j / t.w)) * 100 + w.field[j] / 64; },
 				queued, ++ponds);
 			++pools;
 		}
@@ -792,7 +793,7 @@ std::vector<int> riverReach(const Layout &L)
 		const int i = queue[head];
 		for (const auto &step : kCardinalSteps)
 		{
-			const int m = t.at(i % t.w + step[0], i / t.w + step[1]);
+			const int m = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 			if (reach[m] < 0)
 			{
 				reach[m] = reach[i];
@@ -862,7 +863,7 @@ void terracePaddies(Layout &L, Work &w)
 	{
 		if (!L.paddyZone[i])
 			continue;
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const int right = t.at(x + 1, y), down = t.at(x, y + 1);
 		if (!L.paddyZone[right] || !L.paddyZone[down] || !L.paddyZone[t.at(x - 1, y)] ||
 			!L.paddyZone[t.at(x, y - 1)] || label[right] != label[i] || label[down] != label[i])
@@ -1047,8 +1048,8 @@ void sowPaddies(Map &map, const Layout &L, Sown sown, Keep keep)
 {
 	const Torus &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.paddyOf[i] >= 0 && sown(L.paddyOf[i]) && keep(i) && map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
-			map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+		if (L.paddyOf[i] >= 0 && sown(L.paddyOf[i]) && keep(i) && map.isResourceAllowed(t.remainderX(i), i / t.w, WHEAT))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 }
 
 bool generate(Game &game, GenerationContext &context)
@@ -1071,9 +1072,9 @@ bool generate(Game &game, GenerationContext &context)
 	writeVertices(map, L.terrain);
 	int towers = 0;
 	for (int i = 0; i < n; ++i)
-		if (L.tower[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
+		if (L.tower[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 			++towers;
 		}
 	context.telemetry.measure("karst.tower.tiles", towers);
@@ -1084,7 +1085,7 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "karst resources";
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
-	const auto open = [&](int i) { return !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto open = [&](int i) { return !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	for (int k = 0; k < teams; ++k)
 		plantHomeKit(map, t, context, L.kits[k], 0.0, L.homeRadius, kHomeWheat, kHomeWood,
 					 [&](int i) { return L.homeOf[i] == k && !L.homePaddy[i] && open(i); });
@@ -1114,7 +1115,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::int64_t wetClearance2 = std::int64_t(kWetWoodClearance * kWetWoodClearance);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (fromTower[i] <= 0 || L.bowl[i] || L.paddyZone[i] || !open(i) || !map.isResourceAllowed(x, y, WOOD))
 			continue;
 		if (growth.at(x, y) > 0 &&
@@ -1136,8 +1137,8 @@ bool generate(Game &game, GenerationContext &context)
 						const int p = L.paddyOf[i];
 						if (std::hypot(dx, dy) <= L.lakeRadius * 1.9 + 11 && (hash % 1000) < lakeShare * 1000 &&
 							p >= 0 && p < L.paddies && L.lakeField[p] && open(i) &&
-							map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
-							map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+							map.isResourceAllowed(t.remainderX(i), i / t.w, WHEAT))
+							map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 					});
 
 	// Orchards anywhere on open ground off the bowls, paddies and towers.
@@ -1172,7 +1173,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// Paddies and lake fields are sealed: no pure-grass tile of one touches pure grass that is not the same.
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (L.paddyOf[i] < 0 || !(map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
 			map.terrainSupportsResourceAtByIndex(x, y, WOOD))))
 			continue;
@@ -1180,15 +1181,15 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				const int m = t.at(x + dx, y + dy);
-				if ((map.canResourcesGrow(m % t.w, m / t.w) && (map.terrainSupportsResourceAtByIndex(m % t.w, m / t.w, WHEAT) ||
-					map.terrainSupportsResourceAtByIndex(m % t.w, m / t.w, WOOD))) && L.paddyOf[m] != L.paddyOf[i])
+				if ((map.canResourcesGrow(t.remainderX(m), m / t.w) && (map.terrainSupportsResourceAtByIndex(t.remainderX(m), m / t.w, WHEAT) ||
+					map.terrainSupportsResourceAtByIndex(t.remainderX(m), m / t.w, WOOD))) && L.paddyOf[m] != L.paddyOf[i])
 					return "A paddy's bund is broken at " + at(x, y) + ": its crops could spread out.";
 			}
 	}
 	// Every gate stays free of stone and every ford stays dry.
 	for (int i = 0; i < t.size(); ++i)
-		if (L.gateOpen[i] && map.isResource(i % t.w, i / t.w) && map.getResource(i % t.w, i / t.w).type == STONE)
-			return "A home's gate is closed by stone at " + at(i % t.w, i / t.w) + ".";
+		if (L.gateOpen[i] && map.isResource(t.remainderX(i), i / t.w) && map.getResource(t.remainderX(i), i / t.w).type == STONE)
+			return "A home's gate is closed by stone at " + at(t.remainderX(i), i / t.w) + ".";
 	for (const Ford &f : L.fords)
 		if (!map.terrainPropertiesAt(int(f.centre.x), int(f.centre.y)).walkable)
 			return "A ford is under water at " + at(int(f.centre.x), int(f.centre.y)) + ".";

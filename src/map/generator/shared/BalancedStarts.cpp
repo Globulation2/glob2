@@ -1,5 +1,6 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "BalancedStarts.h"
 #include "StartingLayout.h"
 #include "Game.h"
@@ -43,7 +44,7 @@ SeparatedSites selectSeparatedSites(const Torus &t, const std::vector<int> &cand
 				{
 					::MapGeneration::generationCheckpoint();
 					const int h = candidates.at(index);
-					nearest = std::min(nearest, t.chebyshev(p % t.w, p / t.w, h % t.w, h / t.w));
+					nearest = std::min(nearest, t.chebyshev(t.remainderX(p), p / t.w, t.remainderX(h), h / t.w));
 				}
 				if (nearest >= minimumSeparation && nearest > score)
 				{
@@ -209,7 +210,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			++qHead;
 			if (d >= limit)
 				continue;
-			int x = p % w, y = p / w;
+			int x = powerOfTwoRemainder(p, w), y = p / w;
 			for (int dy = -1; dy <= 1; ++dy)
 			{
 				::MapGeneration::generationCheckpoint();
@@ -285,7 +286,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			::MapGeneration::generationCheckpoint();
 			// 32 steps: the wood range of the start guarantee, the farthest a start's resources are
 			// allowed to be.
-			const int built = scoreAsBuilt(s.second % w, s.second / w, 32);
+			const int built = scoreAsBuilt(powerOfTwoRemainder(s.second, w), s.second / w, 32);
 			if (built >= 0)
 				exact.push_back({built, s.second});
 		}
@@ -313,12 +314,12 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			::MapGeneration::generationCheckpoint();
 			if (bestSpread >= 0 && sites.at(j).first - sites.at(i).first >= bestSpread)
 				break; // this window is already no better than what we hold
-			const int px = sites.at(j).second % w, py = sites.at(j).second / w;
+			const int px = powerOfTwoRemainder(sites.at(j).second, w), py = sites.at(j).second / w;
 			bool farEnough = true;
 			for (int q : picked)
 			{
 				::MapGeneration::generationCheckpoint();
-				if (map.warpDistSquare(px, py, q % w, q / w) < minDistSquare)
+				if (map.warpDistSquare(px, py, powerOfTwoRemainder(q, w), q / w) < minDistSquare)
 				{
 					farEnough = false;
 					break;
@@ -343,7 +344,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	for (int team = 0; team < nbTeams; ++team)
 	{
 		::MapGeneration::generationCheckpoint();
-		context.bootX[team] = best.at(team) % w;
+		context.bootX[team] = powerOfTwoRemainder(best.at(team), w);
 		context.bootY[team] = best.at(team) / w;
 	}
 	return true;

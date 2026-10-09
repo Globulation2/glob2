@@ -1,5 +1,6 @@
 #include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #include "Material.h"
@@ -136,7 +137,7 @@ inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmAr
 		{
 			if (seed < 0 || seed >= w * h)
 				continue;
-			const int seedX = seed % w;
+			const int seedX = powerOfTwoRemainder(seed, w);
 			const int seedY = seed / w;
 			for (int dy = -SEED_EXIT_RADIUS; dy <= SEED_EXIT_RADIUS; dy++)
 				for (int dx = -SEED_EXIT_RADIUS; dx <= SEED_EXIT_RADIUS; dx++)
@@ -174,7 +175,7 @@ inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmAr
 		// --- Classify field food and collect the desired forbidden set. ---
 		for (int idx : fieldTiles)
 		{
-			const int x = idx % w;
+			const int x = powerOfTwoRemainder(idx, w);
 			const int y = idx / w;
 			const int d = depth[idx];
 			if (d == INT_MAX)
@@ -284,7 +285,7 @@ inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmAr
 		{
 			if (!liftAll)
 			{
-				const int x = idx % w;
+				const int x = powerOfTwoRemainder(idx, w);
 				const int y = idx / w;
 				if (!ignoreFOW && !isFOWDiscovered(map,x, y, teamMask))
 					continue; // in fog: confirmation pending, leave the paint.
@@ -381,9 +382,9 @@ inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmAr
 			// two BrushAccumulators, one 1x1 brush per tile (figure 0), exactly as
 			// AIWarrush paints its forbidden checkerboard (AIWarrush.cpp:551-583).
 			for (int idx : r.add)
-				out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), mapWidth(map), mapHeight(map));
+				out.add.applyBrush(BrushApplication(powerOfTwoRemainder(idx, w), idx / w, 0), mapWidth(map), mapHeight(map));
 			for (int idx : r.del)
-				out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), mapWidth(map), mapHeight(map));
+				out.del.applyBrush(BrushApplication(powerOfTwoRemainder(idx, w), idx / w, 0), mapWidth(map), mapHeight(map));
 		}
 		return out;
 	}

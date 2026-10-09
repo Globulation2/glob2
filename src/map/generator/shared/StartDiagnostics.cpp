@@ -1,5 +1,6 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "StartDiagnostics.h"
 #include "Game.h"
 #include "Grid.h"
@@ -114,7 +115,7 @@ int chokeWidth(const Map &map, const std::vector<int> &dist,
 	while (dist.at(here) > 0)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = here % w, y = here / w;
+		const int x = powerOfTwoRemainder(here, w), y = here / w;
 		int open = 0;
 		for (int dy = -kChokeWindow; dy <= kChokeWindow; ++dy)
 		{
@@ -204,7 +205,7 @@ StartDiagnosticsReport diagnoseStarts(Game &game, int requestedTeams, const Star
 			const int d = dist.at(p);
 			if (d < 0)
 				continue;
-			const int x = p % w, y = p / w;
+			const int x = powerOfTwoRemainder(p, w), y = p / w;
 			if (d <= scale.catchmentSteps)
 			{
                 double foodRenewal = 0, woodExpansion = 0;

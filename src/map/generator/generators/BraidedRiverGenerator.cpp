@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "field/Grid.h"
 #include "BraidedRiverGenerator.h"
 #include "Channels.h"
 #include "Drawing.h"
@@ -259,7 +260,7 @@ double between(GenerationContext &context, const char *stream, double lo, double
 }
 int wrapIndex(int value, int period)
 {
-	return ((value % period) + period) % period;
+	return field::Grid(period, 1).wrapX(value);
 }
 double centred(double delta, double period)
 {
@@ -775,7 +776,7 @@ bool planHomes(Layout &L, GenerationContext &context, int teams)
 	{
 		Home &home = L.homes[k];
 		const int centre = axes.at(home.u + 2, home.v + 2);
-		const int hx = centre % L.t.w, hy = centre / L.t.w;
+		const int hx = L.t.remainderX(centre), hy = centre / L.t.w;
 		std::vector<std::pair<std::int64_t, int>> ranked;
 		for (size_t c = 0; c < L.crossings.size(); ++c)
 		{
@@ -787,7 +788,7 @@ bool planHomes(Layout &L, GenerationContext &context, int teams)
 			const ShapePoint p = L.lines[L.crossings[c].thread].points[x.index];
 			const int i = L.t.at(int(std::floor(p.x)), int(std::floor(p.y)));
 			// Bars below the full grass floor rank after every bar above it, however near.
-			const std::int64_t key = std::int64_t(L.t.dist2(hx, hy, i % L.t.w, i / L.t.w)) +
+			const std::int64_t key = std::int64_t(L.t.dist2(hx, hy, L.t.remainderX(i), i / L.t.w)) +
 									 (L.compGrass[bar] < kGuaranteedBarGrass ? 1LL << 40 : 0);
 			ranked.push_back({key, int(c)});
 		}
@@ -1010,7 +1011,7 @@ bool generate(Game &game, GenerationContext &context)
 	const DesignedStone bluffs = designedStone(map, t, L.wall);
 	if (bluffs.gaps > 0)
 	{
-		context.detail = "The bluffs have a gap at (" + std::to_string(bluffs.firstGap % t.w) +
+		context.detail = "The bluffs have a gap at (" + std::to_string(t.remainderX(bluffs.firstGap)) +
 						 ", " + std::to_string(bluffs.firstGap / t.w) + ").";
 		return false;
 	}
@@ -1019,14 +1020,14 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		if (bluffs.stone[i])
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 			protectedStone[i] = 1;
 			++wallTiles;
 		}
 	for (int i = 0; i < n; ++i)
-		if (L.hummocks[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) && !map.isResource(i % t.w, i / t.w))
+		if (L.hummocks[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) && !map.isResource(t.remainderX(i), i / t.w))
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 			protectedStone[i] = 1;
 			++hummocks;
 		}
@@ -1044,7 +1045,7 @@ bool generate(Game &game, GenerationContext &context)
 			for (int du = -6; du <= 9; ++du)
 			{
 				const int i = axes.at(home.u + du, home.v + dv);
-				mask[i] = L.comp[i] == home.terrace && map.terrainPropertiesAt(i % t.w, i / t.w).buildable &&
+				mask[i] = L.comp[i] == home.terrace && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable &&
 						  !protectedStone[i];
 			}
 		return mask;
@@ -1052,7 +1053,7 @@ bool generate(Game &game, GenerationContext &context)
 	const auto anchor = [&](int team)
 	{
 		const int i = axes.at(L.homes[team].u, L.homes[team].v);
-		return MapGeneratorPoint(i % t.w, i / t.w);
+		return MapGeneratorPoint(t.remainderX(i), i / t.w);
 	};
 	if (!settleColonies(game, context, "braided-river-starts", homeMask, anchor))
 		return false;
@@ -1063,12 +1064,12 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> grass(size_t(n), 0), notGrass(size_t(n), 0), swarms(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
-		grass[i] = (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE));
+		grass[i] = (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, PRUNE));
 		notGrass[i] = !grass[i];
 	}
 	for (int team = 0; team < teams; ++team)
@@ -1077,13 +1078,13 @@ bool generate(Game &game, GenerationContext &context)
 				swarms[t.at(context.bootX[team] + dx, context.bootY[team] + dy)] = 1;
 	const std::vector<int> grassDepth = stepsFrom(t, notGrass);
 	const std::vector<unsigned char> townRoom = dilate(t, swarms, kTownRoom);
-	const auto fertile = [&](int i) { return fertility.at(i % t.w, i / t.w); };
+	const auto fertile = [&](int i) { return fertility.at(t.remainderX(i), i / t.w); };
 	// Ground nothing is planted on: the swarms' surroundings, the riffles' landings, the wall and
 	// the moraine.
 	const auto open = [&](int i)
 	{
 		return grass[i] && !reserved[i] && !L.riffleTiles[i] && !protectedStone[i] &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 
 	// Every home's kit, beside its swarm along the bank, with stone behind.
@@ -1112,16 +1113,16 @@ bool generate(Game &game, GenerationContext &context)
 				(wheatAt < 0 || fertile(i) > fertile(wheatAt)))
 				wheatAt = i;
 		if (wheatAt >= 0)
-			placeResourceClump(map, context, MapGeneratorPoint(wheatAt % t.w, wheatAt / t.w), WHEAT,
+			placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(wheatAt), wheatAt / t.w), WHEAT,
 							   kBarKitRadius);
 		for (int i = 0; i < n; ++i)
 			if (L.comp[i] == home.bar && open(i) && grassDepth[i] >= 2 &&
-				(wheatAt < 0 || t.dist2(i % t.w, i / t.w, wheatAt % t.w, wheatAt / t.w) >=
+				(wheatAt < 0 || t.dist2(t.remainderX(i), i / t.w, t.remainderX(wheatAt), wheatAt / t.w) >=
 									kBarKitSpacing * kBarKitSpacing) &&
 				(woodAt < 0 || fertile(i) > fertile(woodAt)))
 				woodAt = i;
 		if (woodAt >= 0)
-			placeResourceClump(map, context, MapGeneratorPoint(woodAt % t.w, woodAt / t.w), WOOD,
+			placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(woodAt), woodAt / t.w), WOOD,
 							   kBarKitRadius);
 		context.telemetry.measure("braided-river.promised-bar.wheat", wheatAt >= 0, team);
 		context.telemetry.measure("braided-river.promised-bar.wood", woodAt >= 0, team);
@@ -1167,8 +1168,8 @@ bool generate(Game &game, GenerationContext &context)
 				for (int dy = 0; dy < 4 && site; ++dy)
 					for (int dx = 0; dx < 4 && site; ++dx)
 					{
-						const int j = t.at(i % t.w + dx, i / t.w + dy);
-						site = L.comp[j] == int(c) && grass[j] && !map.isResource(j % t.w, j / t.w);
+						const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
+						site = L.comp[j] == int(c) && grass[j] && !map.isResource(t.remainderX(j), j / t.w);
 					}
 			}
 			barsWithoutSite += !site;
@@ -1225,7 +1226,7 @@ bool generate(Game &game, GenerationContext &context)
 				best = i;
 		if (best < 0)
 			continue;
-		placeResourceClump(map, context, MapGeneratorPoint(best % t.w, best / t.w), CHERRY + kind,
+		placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(best), best / t.w), CHERRY + kind,
 						   1);
 		kind = (kind + 1) % 3;
 		++grovesPlaced;
@@ -1272,8 +1273,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return mismatch;
 	const Torus &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i] && map.getResource(i % t.w, i / t.w).type != STONE)
-			return "The bluffs have a gap at (" + std::to_string(i % t.w) + ", " +
+		if (L.wall[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
+			return "The bluffs have a gap at (" + std::to_string(t.remainderX(i)) + ", " +
 				   std::to_string(i / t.w) + ").";
 	if (const std::string fault = checkBraid(L, [&](int x, int y) { return map.isWater(x, y); });
 		!fault.empty())
