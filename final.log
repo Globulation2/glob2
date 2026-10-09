@@ -1,0 +1,29 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "808b7df8ed04f49a87aefdf25ac2fbb20f385118", "sourceStatus": [" M src/render/HighResolutionIntegrationHarness.cpp", "?? build-software-terrain/"], "sourceTreeSha256": "ab3998332a583f697a7ab39d2518fc714765a92542c1ae6cf00faa623cbe77f9"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 100%: 24.9607 ms, 412 calls, 96582208 GPU bytes
+original gameplay 50%: 67.9088 ms, 689 calls, 96846400 GPU bytes
+original gameplay 100%: 17.3967 ms, 412 calls, 96847424 GPU bytes
+original gameplay 200%: 10.3448 ms, 301 calls, 96849472 GPU bytes
+original gameplay 500%: 6.02968 ms, 205 calls, 96851520 GPU bytes
+SKIP fullscreen camera continuity: enable with --fullscreen
+HD gameplay 100%: 121.41 ms, 459 calls, 357987200 GPU bytes
+HD gameplay 50%: 68.5189 ms, 736 calls, 358249344 GPU bytes
+HD gameplay 100%: 24.689 ms, 459 calls, 358249344 GPU bytes
+HD gameplay 200%: 15.1078 ms, 348 calls, 358249344 GPU bytes
+HD gameplay 500%: 104.994 ms, 212 calls, 369434144 GPU bytes
+SKIP fullscreen camera continuity: enable with --fullscreen
+original dense map 37.5%: 43.0211 ms, 4416 calls, 92913216 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 50%: 28.1605 ms, 2838 calls, 92651072 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 500%: 7.07594 ms, 21 calls, 93716032 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 37.5%: 41.4695 ms, 4416 calls, 352557984 GPU bytes, 493379072 HD CPU bytes, 0 colored frames
+HD dense map 50%: 27.2064 ms, 2838 calls, 352317680 GPU bytes, 493444608 HD CPU bytes, 1 colored frames
+HD dense map 500%: 189.733 ms, 21 calls, 357997456 GPU bytes, 493706752 HD CPU bytes, 2 colored frames
+PASS gameplay/editor conversions, wheel zoom, zoom controls, replay drawing, stable simulation checksums and resource release
+===============================================================================
+[doctest] test cases:   1 |   1 passed | 0 failed | 1396 skipped
+[doctest] assertions: 257 | 257 passed | 0 failed |
+[doctest] Status: SUCCESS!

@@ -1,0 +1,111 @@
+Breakpoint 1 at 0xbc08c0: file src/render/HighResolutionIntegrationHarness.cpp, line 46.
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/x86_64-linux-gnu/libthread_db.so.1".
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "f218e8b39509f81afbae4649bafa94fc5f7c1a00", "sourceStatus": [" M .agents/skills/glob2-map-design/references/implementation-and-verification.md", " M src/map/generator/MapGeneratorContracts.h", " M src/map/generator/generators/AllotmentsGenerator.cpp", " M src/map/generator/generators/AmphitheatreGenerator.cpp", " M src/map/generator/generators/AnthillGenerator.cpp", " M src/map/generator/generators/BajadaGenerator.cpp", " M src/map/generator/generators/BastionKeysGenerator.cpp", " M src/map/generator/generators/BraidedDeltaGenerator.cpp", " M src/map/generator/generators/BraidedRiverGenerator.cpp", " M src/map/generator/generators/BreachableHighlandsGenerator.cpp", " M src/map/generator/generators/CanalsGenerator.cpp", " M src/map/generator/generators/CaravanseraiGenerator.cpp", " M src/map/generator/generators/CarouselGenerator.cpp", " M src/map/generator/generators/CentralQuarryGenerator.cpp", " M src/map/generator/generators/CityStatesGenerator.cpp", " M src/map/generator/generators/CombGenerator.cpp", " M src/map/generator/generators/ConcreteIslandsGenerator.cpp", " M src/map/generator/generators/ContestedCommonsGenerator.cpp", " M src/map/generator/generators/ContinentsGenerator.cpp", " M src/map/generator/generators/CoralGenerator.cpp", " M src/map/generator/generators/CraterLakesGenerator.cpp", " M src/map/generator/generators/DrownedForestGenerator.cpp", " M src/map/generator/generators/DrumlinFieldGenerator.cpp", " M src/map/generator/generators/EmojiGenerator.cpp", " M src/map/generator/generators/EncircledKingdomGenerator.cpp", " M src/map/generator/generators/EvenGroundGenerator.cpp", " M src/map/generator/generators/EvergladesGenerator.cpp", " M src/map/generator/generators/FaultedCityGenerator.cpp", " M src/map/generator/generators/FingerprintGenerator.cpp", " M src/map/generator/generators/FjordContinentGenerator.cpp", " M src/map/generator/generators/FortsGenerator.cpp", " M src/map/generator/generators/GauntletGenerator.cpp", " M src/map/generator/generators/GlacisGenerator.cpp", " M src/map/generator/generators/HedgerowCountryGenerator.cpp", " M src/map/generator/generators/HiddenOasisGenerator.cpp", " M src/map/generator/generators/HilbertRiverGenerator.cpp", " M src/map/generator/generators/HillsGenerator.cpp", " M src/map/generator/generators/HoneycombIsleGenerator.cpp", " M src/map/generator/generators/HungryMarchesGenerator.cpp", " M src/map/generator/generators/IslandsGenerator.cpp", " M src/map/generator/generators/IslesGenerator.cpp", " M src/map/generator/generators/KarstTowersGenerator.cpp", " M src/map/generator/generators/LastTreelineGenerator.cpp", " M src/map/generator/generators/LavaShieldGenerator.cpp", " M src/map/generator/generators/LocustGenerator.cpp", " M src/map/generator/generators/MarchlandGenerator.cpp", " M src/map/generator/generators/MazeGenerator.cpp", " M src/map/generator/generators/OldGrowthGenerator.cpp", " M src/map/generator/generators/OldTownGenerator.cpp", " M src/map/generator/generators/OrchardCommonsGenerator.cpp", " M src/map/generator/generators/PlantationsGenerator.cpp", " M src/map/generator/generators/PolderGenerator.cpp", " M src/map/generator/generators/PortageLakesGenerator.cpp", " M src/map/generator/generators/RainShadowGenerator.cpp", " M src/map/generator/generators/RiceTerracesGenerator.cpp", " M src/map/generator/generators/RingWorldGenerator.cpp", " M src/map/generator/generators/RiverGenerator.cpp", " M src/map/generator/generators/RuggedArchipelagoGenerator.cpp", " M src/map/generator/generators/SavannahGenerator.cpp", " M src/map/generator/generators/ShatteredCoastGenerator.cpp", " M src/map/generator/generators/SierpinskiGardensGenerator.cpp", " M src/map/generator/generators/SpiderWebGenerator.cpp", " M src/map/generator/generators/StoneHighlandsGenerator.cpp", " M src/map/generator/generators/SwampGenerator.cpp", " M src/map/generator/generators/SwitchbacksGenerator.cpp", " M src/map/generator/generators/SymmetricArenaGenerator.cpp", " M src/map/generator/generators/TidalFlatsGenerator.cpp", " M src/map/generator/generators/WatershedGenerator.cpp", " M src/map/generator/generators/WhoAteTheMapGenerator.cpp", "?? build-software-terrain/"], "sourceTreeSha256": "4a4c2b1a35e4665eaad17d0b919346d52bec23ebc0001f5641139110aba21485"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+[New Thread 0x7fffea09c6c0 (LWP 4165785)]
+[New Thread 0x7fffe989b6c0 (LWP 4165786)]
+[New Thread 0x7fffe909a6c0 (LWP 4165787)]
+[New Thread 0x7fffe88996c0 (LWP 4165788)]
+[New Thread 0x7fffdbfff6c0 (LWP 4165789)]
+[New Thread 0x7fffdb7fe6c0 (LWP 4165790)]
+[New Thread 0x7fffdaffd6c0 (LWP 4165791)]
+[New Thread 0x7fffda7fc6c0 (LWP 4165792)]
+[New Thread 0x7fffd9ffb6c0 (LWP 4165793)]
+[New Thread 0x7fffd97fa6c0 (LWP 4165794)]
+[New Thread 0x7fffd8ff96c0 (LWP 4165795)]
+[New Thread 0x7fffbbfff6c0 (LWP 4165796)]
+[New Thread 0x7fffbb7fe6c0 (LWP 4165797)]
+[New Thread 0x7fffbaffd6c0 (LWP 4165798)]
+[New Thread 0x7fffba7fc6c0 (LWP 4165799)]
+[New Thread 0x7fffb9ffb6c0 (LWP 4165800)]
+[New Thread 0x7fffb97fa6c0 (LWP 4165801)]
+[New Thread 0x7fffb8ff96c0 (LWP 4165802)]
+[New Thread 0x7fff9bfff6c0 (LWP 4165803)]
+[New Thread 0x7fff9b7fe6c0 (LWP 4165804)]
+[New Thread 0x7fff9affd6c0 (LWP 4165805)]
+[New Thread 0x7fff9a7fc6c0 (LWP 4165806)]
+[New Thread 0x7fff99ffb6c0 (LWP 4165807)]
+[New Thread 0x7fff997fa6c0 (LWP 4165808)]
+[New Thread 0x7fff98ff96c0 (LWP 4165809)]
+[New Thread 0x7fff7bfff6c0 (LWP 4165810)]
+[New Thread 0x7fff7b7fe6c0 (LWP 4165811)]
+[New Thread 0x7fff7affd6c0 (LWP 4165812)]
+[New Thread 0x7fff7a7fc6c0 (LWP 4165813)]
+[New Thread 0x7fff79ffb6c0 (LWP 4165814)]
+[New Thread 0x7fff797fa6c0 (LWP 4165815)]
+[New Thread 0x7fff78ff96c0 (LWP 4165816)]
+[New Thread 0x7fff5bfff6c0 (LWP 4165817)]
+[New Thread 0x7fff5b7fe6c0 (LWP 4165818)]
+[New Thread 0x7fff5affd6c0 (LWP 4165819)]
+[New Thread 0x7fff5a7fc6c0 (LWP 4165820)]
+[New Thread 0x7fff59ffb6c0 (LWP 4165821)]
+[New Thread 0x7fff597fa6c0 (LWP 4165822)]
+[New Thread 0x7fff58ff96c0 (LWP 4165823)]
+[New Thread 0x7fff3bfff6c0 (LWP 4165824)]
+[New Thread 0x7fff3b7fe6c0 (LWP 4165825)]
+[New Thread 0x7fff3affd6c0 (LWP 4165826)]
+[New Thread 0x7fff3a7fc6c0 (LWP 4165827)]
+[New Thread 0x7fff39ffb6c0 (LWP 4165828)]
+[New Thread 0x7fff397fa6c0 (LWP 4165829)]
+[New Thread 0x7fff38ff96c0 (LWP 4165830)]
+[New Thread 0x7fff1bfff6c0 (LWP 4165831)]
+[New Thread 0x7fff1b7fe6c0 (LWP 4165832)]
+[New Thread 0x7fff1affd6c0 (LWP 4165833)]
+[New Thread 0x7fff1a7fc6c0 (LWP 4165834)]
+[New Thread 0x7fff19ffb6c0 (LWP 4165835)]
+[New Thread 0x7fff197fa6c0 (LWP 4165836)]
+[New Thread 0x7fff18ff96c0 (LWP 4165837)]
+[New Thread 0x7ffefbfff6c0 (LWP 4165838)]
+[New Thread 0x7ffefb7fe6c0 (LWP 4165839)]
+[New Thread 0x7ffefaffd6c0 (LWP 4165840)]
+[New Thread 0x7ffefa7fc6c0 (LWP 4165841)]
+[New Thread 0x7ffef9ffb6c0 (LWP 4165842)]
+[New Thread 0x7ffef97fa6c0 (LWP 4165843)]
+[New Thread 0x7ffef8ff96c0 (LWP 4165844)]
+[New Thread 0x7ffedbfff6c0 (LWP 4165845)]
+[New Thread 0x7ffedb7fe6c0 (LWP 4165846)]
+[New Thread 0x7ffedaffd6c0 (LWP 4165847)]
+[New Thread 0x7ffeda7fc6c0 (LWP 4165848)]
+[New Thread 0x7ffed9ffb6c0 (LWP 4165849)]
+[New Thread 0x7ffed97fa6c0 (LWP 4165852)]
+[New Thread 0x7ffed8ff96c0 (LWP 4165853)]
+[New Thread 0x7ffec3fff6c0 (LWP 4165854)]
+[New Thread 0x7ffec37fe6c0 (LWP 4165855)]
+[New Thread 0x7ffec2ffd6c0 (LWP 4165856)]
+[New Thread 0x7ffec27fc6c0 (LWP 4165857)]
+[New Thread 0x7ffec1ffb6c0 (LWP 4165858)]
+[New Thread 0x7ffec17fa6c0 (LWP 4165859)]
+[New Thread 0x7ffec0ff96c0 (LWP 4165860)]
+[New Thread 0x7ffebbfff6c0 (LWP 4165861)]
+[New Thread 0x7ffebabff6c0 (LWP 4165864)]
+[New Thread 0x7ffeba3fe6c0 (LWP 4165866)]
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 100%: 26.2937 ms, 412 calls, 96582208 GPU bytes
+original gameplay 50%: 62.0527 ms, 689 calls, 96846400 GPU bytes
+original gameplay 100%: 17.0907 ms, 412 calls, 96847424 GPU bytes
+original gameplay 200%: 10.4424 ms, 301 calls, 96849472 GPU bytes
+original gameplay 500%: 6.18102 ms, 205 calls, 96851520 GPU bytes
+SKIP fullscreen camera continuity: enable with --fullscreen
+
+Thread 1 "glob2-engine-te" hit Breakpoint 1, HighResolutionIntegrationHarness::finishAssets () at src/render/HighResolutionIntegrationHarness.cpp:46
+46	        REQUIRE(complete);
+#0  HighResolutionIntegrationHarness::finishAssets () at src/render/HighResolutionIntegrationHarness.cpp:46
+#1  0x0000555556118fb1 in HighResolutionIntegrationHarness::run () at src/render/HighResolutionIntegrationHarness.cpp:217
+#2  0x00005555561137bf in (anonymous namespace)::highResolution (software=false) at src/render/HighResolutionIntegrationHarness.cpp:439
+DIAGNOSTIC extra_seconds= 3.408426537178457 completed= True
+$1 = std::map with 0 elements
+A debugging session is active.
+
+	Inferior 1 [process 4165769] will be killed.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]
