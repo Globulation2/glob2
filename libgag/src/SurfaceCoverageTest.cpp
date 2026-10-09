@@ -27,6 +27,28 @@ void black(DrawableSurface& surface)
 }
 TEST_SUITE("SurfaceCoverage")
 {
+    TEST_CASE("backing pixel fills and blits retain native clipping and queued order")
+    {
+        glob2test::ToolkitScope toolkit; Toolkit::initGraphic(96,96,0,"pixel operations");
+        DrawableSurface target(64,48), source(4,4);
+        black(target);
+        source.drawFilledRect(0,0,4,4,Color(0,255,0));
+        auto backend = makeSoftwareRenderBackend(target.getSDLSurface());
+        backend->nativeLogicalSize(32,24);
+        const SDL_Rect bounds{4,4,16,12};
+        backend->transform(.5f,0,0,&bounds);
+        const SDL_FColor blue{0,0,1,1};
+        const SDL_Vertex triangle[] = {{{0,0},blue,{}},{{32,0},blue,{}},{{0,32},blue,{}}};
+        backend->triangles(triangle);
+        REQUIRE(backend->fillPixels({0,0,64,48},{255,0,0,255}));
+        CHECK(pixel(target,12,12)==std::array<int,3>{255,0,0});
+        CHECK(pixel(target,6,6)==std::array<int,3>{0,0,0});
+        backend->triangles(triangle);
+        REQUIRE(backend->blitPixels(source.getSDLSurface(),{0,0,4,4},{0,0,64,48},255));
+        CHECK(pixel(target,12,12)==std::array<int,3>{0,255,0});
+        CHECK(pixel(target,6,6)==std::array<int,3>{0,0,0});
+    }
+
     TEST_CASE("float and byte alpha grids agree and respect clip rectangles")
     {
         glob2test::ToolkitScope toolkit; Toolkit::initGraphic(64,64,0,"surface coverage");
