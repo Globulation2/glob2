@@ -32,10 +32,12 @@ set breakpoint pending on
 break _assert
 break _wassert
 break abort
-break JS_FreeRuntime
+break *JS_FreeRuntime
 commands
 silent
-call ((void (*)(void *, unsigned long long)) JS_SetDumpFlags)((void *)$rcx, 0x4000)
+set $runtime = (void *)$rcx
+call ((void (*)(void *, unsigned long long)) JS_SetDumpFlags)($runtime, 0x4000)
+printf "QuickJS teardown dump flags: 0x%llx\\n", ((unsigned long long (*)(void *)) JS_GetDumpFlags)($runtime)
 continue
 end
 run
