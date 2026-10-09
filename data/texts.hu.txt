@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Fejezze be a bejelentkezést a böngészőben. Ha végzett, a játék magától folytatódik.
 [hub browser did not open]
-
+A böngésző nem nyílt meg. A folytatáshoz nyissa meg a bejelentkezési oldalt.
 [hub compare code %0]
-
+Ha az oldal kéri, ellenőrizze, hogy ezt mutatja-e: %0.
 [hub code copied]
-
+Kód másolva
 [settings Finish in your browser. The game continues by itself.]
-
+Fejezze be a böngészőben. A játék magától folytatódik.
 [music set]
-
+Zenei készlet
 [random music set]
-
+Minden meccsen véletlenszerű
 [playing music set %0]
-
+Lejátszás: %0
 [music set failed]
-
+Nem sikerült betölteni ezt a zenei készletet.
 [settings Music set]
-
+Zenei készlet
 [settings Random each match]
-
+A Véletlenszerű beállítás minden meccs elején kiválaszt egy zenei készletet.
 [settings Edge scrolling]
-
+Görgetés a széleken
 [settings Edge scrolling in fullscreen]
-
+Görgetés a széleken teljes képernyőn
 [settings Edge scrolling in windowed mode]
-
+Görgetés a széleken ablakos módban
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+A játék és a szerkesztő térképének mozgatása, amikor az egér az ablak széléhez ér.
 [AI strategy]
 MI-stratégia
 [start recording]
@@ -4625,9 +4625,9 @@ Felvétel
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Rögzítsd játékaidat hangos MP4 videóként. A felvételhez FFmpeg kell libx264 és AAC kódolóval.
 [settings Record your games as MP4 videos with sound.]
-
+Rögzítse játékait hangos MP4-videóként.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+A felvétel a teljes renderelési felbontást használja másodpercenként 30 képkockával.
 [settings FFmpeg is ready.]
 Az FFmpeg készen áll.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Sebesültek visszavonulása
 [Units can die]
 Az egységek meghalhatnak
 [Upgrades]
-
+Fejlesztések
 [No stockpile]
 Nincs
 [No glass cannon]
@@ -5193,7 +5193,7 @@ A sérült egységek visszamennek gyógyulni ahelyett, hogy halálig harcolnána
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Az egységek meghalnak, ha elfogy az életerejük. Kikapcsolva 1 életerőpontnál megállnak.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Az egységek a kiképzőépületekben szintet lépnek, az épületek pedig fejleszthetők. Kikapcsolva a javítások továbbra is elérhetők.
 [stat group work]
 Dolgozók ideje
 [stat worker time]
@@ -5309,235 +5309,235 @@ erő
 [stat view by place]
 Hely szerint
 [AI Library]
-
+MI-könyvtár
 [Authoring guide]
-
+Fejlesztői útmutató
 [Beginner-friendly]
-
+Kezdőbarát
 [Defensive]
-
+Védekező
 [Discover]
-
+Felfedezés
 [Download & install]
-
+Letöltés és telepítés
 [Downloading AI…]
-
+MI letöltése…
 [Expansion]
-
+Terjeszkedés
 [Experimental]
-
+Kísérleti
 [Favourite]
-
+Kedvencekhez adás
 [Favourited]
-
+Kedvencekhez adva
 [Favourites]
-
+Kedvencek
 [Got it]
-
+Értem
 [How AIs work]
-
+Az MI-k működése
 [Install selected version]
-
+Kijelölt verzió telepítése
 [Installed]
-
+Telepítve
 [Invalid AI catalogue response]
-
+Érvénytelen válasz az MI-katalógustól
 [JavaScript API reference]
-
+JavaScript API-referencia
 [Like]
-
+Kedvelés
 [Liked]
-
+Kedvelve
 [Loading AI library…]
-
+MI-könyvtár betöltése…
 [Most downloaded]
-
+Legtöbbször letöltöttek
 [Most liked]
-
+Legkedveltebbek
 [Newest]
-
+Legújabbak
 [No AIs match these filters.]
-
+Nincs ezeknek a szűrőknek megfelelő MI.
 [Not validated for this game version]
-
+Ehhez a játékverzióhoz nincs ellenőrizve
 [Open AI Library]
-
+MI-könyvtár megnyitása
 [Open AI page]
-
+MI-oldal megnyitása
 [Passed compatibility checks]
-
+Sikeres kompatibilitási ellenőrzések
 [Recently updated]
-
+Nemrég frissítettek
 [Rush]
-
+Gyors támadás
 [Search]
-
+Keresés
 [Share your AI]
-
+Saját MI megosztása
 [Show more]
-
+Továbbiak megjelenítése
 [Sign in through Online settings to like and favourite AIs.]
-
+Az MI-k kedveléséhez és kedvencekhez adásához jelentkezzen be az Online beállításokban.
 [Starter project]
-
+Kezdőprojekt
 [downloads of this version]
-
+ennek a verziónak a letöltései
 [downloads]
-
+letöltések
 [Update available]
-
+Frissítés elérhető
 [Browse versions]
-
+Verziók böngészése
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Töltsön le egy MI-t, majd válassza ki számítógépes játékosnak egy helyi játékban. A telepített verziók internet nélkül is működnek. A frissítések a későbbi játékokat érintik; a mentések megőrzik az eredeti kódjukat.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+A kompatibilitási ellenőrzések nem garantálják a biztonságot vagy a játékerőt. Csak megbízható szerzők kódját futtassa.
 [Back to results]
-
+Vissza a találatokhoz
 [music 2–5 minutes]
-
+2–5 perc
 [music 5–15 minutes]
-
+5–15 perc
 [music AI-generated]
-
+MI-vel készített
 [music All music]
-
+Minden zene
 [music All open licences]
-
+Minden nyílt licenc
 [music Any duration]
-
+Bármilyen hossz
 [music Audition each mood for eight seconds]
-
+Hallgasson bele minden hangulatba nyolc másodpercig
 [music Back]
-
+Vissza
 [music Browse]
-
+Böngészés
 [music Building]
-
+Fokozódás
 [music Calm]
-
+Nyugalom
 [music Calm → Building → Combat]
-
+Nyugalom → Fokozódás → Harc
 [music Choose Building]
-
+Fokozódás kiválasztása
 [music Choose Calm]
-
+Nyugalom kiválasztása
 [music Choose Combat]
-
+Harc kiválasztása
 [music Choose ZIP]
-
+ZIP kiválasztása
 [music Choose a music file.]
-
+Válasszon zenefájlt.
 [music Combat]
-
+Harc
 [music Could not open this music set.]
-
+Nem sikerült megnyitni ezt a zenei készletet.
 [music Credits, downloads and reporting]
-
+Közreműködők, letöltések és bejelentések
 [music Downloading music…]
-
+Zene letöltése…
 [music Export recovery files]
-
+Helyreállítási fájlok exportálása
 [music Fade duration]
-
+Áttűnés időtartama
 [music File selection cancelled or failed.]
-
+A fájlkiválasztás megszakadt vagy sikertelen volt.
 [music Import ZIP]
-
+ZIP importálása
 [music Import ZIP or three tracks]
-
+ZIP vagy három zeneszám importálása
 [music Import music]
-
+Zene importálása
 [music Import three tracks]
-
+Három zeneszám importálása
 [music Includes AI-generated audio]
-
+MI-vel készített hangot tartalmaz
 [music Install]
-
+Telepítés
 [music Install selected]
-
+Kijelöltek telepítése
 [music Installed]
-
+Telepítve
 [music Load more]
-
+Továbbiak betöltése
 [music Loading music…]
-
+Zene betöltése…
 [music Most downloaded]
-
+Legtöbbször letöltöttek
 [music Most liked]
-
+Legkedveltebbek
 [music Music decoding failed.]
-
+A zene dekódolása sikertelen.
 [music Music download failed.]
-
+A zene letöltése sikertelen.
 [music Music installed.]
-
+Zene telepítve.
 [music Music installed. It is now available in Audio settings.]
-
+Zene telepítve. Most már elérhető a hangbeállításokban.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+A zene még nincs véglegesen mentve. Kilépés előtt próbálja újra a mentést.
 [music Music library]
-
+Zenei könyvtár
 [music Music request failed.]
-
+A zenei kérés sikertelen.
 [music Newest]
-
+Legújabbak
 [music No community music installed yet. Import files or browse the online library.]
-
+Még nincs közösségi zene telepítve. Importáljon fájlokat vagy böngéssze az online könyvtárat.
 [music No music found.]
-
+Nem található zene.
 [music Not AI-generated]
-
+Nem MI-vel készített
 [music Pause]
-
+Szünet
 [music Play]
-
+Lejátszás
 [music Playback position]
-
+Lejátszási pozíció
 [music Preview]
-
+Belehallgatás
 [music Ready to import.]
-
+Importálásra kész.
 [music Remove]
-
+Eltávolítás
 [music Reset to game behavior]
-
+Visszaállítás a játék működésére
 [music Retry saving]
-
+Mentés újrapróbálása
 [music Saved.]
-
+Mentve.
 [music Saving music…]
-
+Zene mentése…
 [music Search]
-
+Keresés
 [music Search title, artist, description…]
-
+Cím, előadó, leírás keresése…
 [music Select for installation]
-
+Kijelölés telepítéshez
 [music Share music on the web]
-
+Zene megosztása a weben
 [music Some catalogue entries could not be read.]
-
+Néhány katalógusbejegyzést nem sikerült beolvasni.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Az adatokat nem sikerült menteni. Kilépés előtt próbálja újra, vagy exportálja a fájlokat.
 [music Tag]
-
+Címke
 [music Test crossfades]
-
+Áttűnések tesztelése
 [music Up to 2 minutes]
-
+Legfeljebb 2 perc
 [music Use this music]
-
+E zene használata
 [music Validating music…]
-
+Zene ellenőrzése…
 [settings Music library · Browse, install and import]
-
+Zenei könyvtár · Böngészés, telepítés és importálás
 [music Filters]
-
+Szűrők
 [music Leave without saving]
-
+Kilépés mentés nélkül
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importáljon egy letöltött zenei ZIP-et vagy a három Opus-számot. A metaadatok és a borítókép a Nyugalom számból származnak; további fájlok nem szükségesek.
 [settings Target render FPS]
 Célzott megjelenítési FPS
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Halak
 [Reroll terrain look]
 Terep megjelenésének újrasorsolása
 [boulders]
-
+Sziklatömbök
 [hedge]
-
+Sövény
 [thicket]
-
+Bozót
 [ridge_rock]
-
+Gerinc
 [outcrop]
-
+Sziklakibúvás
 [dirt]
-
+Föld
 [clay]
-
+Agyag
 [gravel]
-
+Kavics
 [flower_meadow]
-
+Virágos rét
 [mud]
-
+Sár
 [marsh]
-
+Mocsár
 [deep_snow]
-
+Mély hó
 [scree]
-
+Kőtörmelék
 [dirt_track]
-
+Földút
 [boardwalk]
-
+Pallóút
 [lava]
-
+Láva
 [ember_field]
-
+Parázsmező
 [loam]
-
+Termőtalaj
 [moss]
-
+Moha
 [spring_meadow]
-
+Tavaszi rét
 [deep_water]
-
+Mély víz
 [dark_water]
-
+Sötét víz
 [void_hole]
-
+Lyuk
 [chasm]
-
+Szakadék
 [terrain group water]
-
+Víz
 [terrain group sand]
-
+Homok
 [terrain group grass]
-
+Fű
 [terrain group ice]
-
+Jég
 [terrain group paths]
-
+Utak
 [terrain group obstacles]
-
+Akadályok
 [terrain group ridges]
-
+Gerincek
 [terrain group barren]
-
+Kopár talaj
 [terrain group rough]
-
+Nehéz terep
 [terrain group lava]
-
+Láva
 [terrain group fertile]
-
+Termékeny talaj
 [terrain group deep-water]
-
+Mély víz
 [terrain group void]
-
+Üresség
 [experiment obstacle-terrain]
-
+Akadályos terep
 [experiment obstacle-terrain help]
-
+Sziklatömböket, sövényeket és bozótot ad a térképszerkesztőhöz. A földi egységek nem tudnak átkelni rajtuk, és megállítják a lövedékeket; a repülő egységek átrepülnek felettük. Nem lehetnek rajtuk épületek vagy nyersanyagok.
 [experiment ridge-terrain]
-
+Gerincterep
 [experiment ridge-terrain help]
-
+Sziklagerinceket és sziklakibúvásokat ad a térképszerkesztőhöz. A földi egységek nem tudnak átkelni rajtuk, de a tornyok átlőnek felettük, és a repülő egységek átrepülnek. Nem lehetnek rajtuk épületek vagy nyersanyagok.
 [experiment barren-terrain]
-
+Kopár talaj
 [experiment barren-terrain help]
-
+Földet, agyagot, kavicsot és virágos réteket ad a térképszerkesztőhöz. Épületek állhatnak rajtuk, semmi sem nő rajtuk vagy mellettük, és nem számítanak partnak.
 [experiment rough-terrain]
-
+Nehéz terep
 [experiment rough-terrain help]
-
+Sarat, mocsarat, mély havat és kőtörmeléket ad a térképszerkesztőhöz. A földi egységek nagyjából kétharmados sebességgel mozognak. A nehéz terepen nem lehetnek épületek vagy nyersanyagok.
 [experiment path-terrain]
-
+Útterep
 [experiment path-terrain help]
-
+Földutakat és pallóutakat ad a térképszerkesztőhöz. Az ösvényekhez hasonlóan a földi egységek kétszeres sebességgel mozognak, és épületek is lehetnek rajtuk, de semmi sem nő.
 [experiment lava-terrain]
-
+Lávaterep
 [experiment lava-terrain help]
-
+Lávát és parázsmezőket ad a térképszerkesztőhöz. A földi egységek nem léphetnek rájuk; az átrepülő egységek gyorsan életerőt veszítenek. A lövedékek áthaladnak felettük.
 [experiment fertile-terrain]
-
+Termékeny talaj
 [experiment fertile-terrain help]
-
+Termőtalajt, mohát és tavaszi réteket ad a térképszerkesztőhöz. Épületeket és növényeket támogatnak, és a környező földet a víznél erősebben öntözik.
 [experiment deep-water-terrain]
-
+Mély víz
 [experiment deep-water-terrain help]
-
+Mély és sötét vizet ad a térképszerkesztőhöz. Az úszók lassabban kelnek át rajtuk, algák nem nőnek bennük, és továbbra is öntözik a közeli mezőket.
 [experiment void-terrain]
-
+Ürességterep
 [experiment void-terrain help]
-
+Lyukakat és szakadékokat ad a térképszerkesztőhöz. Semmi sem tud átkelni rajtuk, még a repülő egységek sem, és a lövedékek megállnak a szélükön.
 [terrain group custom]
-
+Egyéni
 [terrain group classic]
-
+Klasszikus talaj
 [terrain rule walkable]
-
+Járható
 [terrain rule swimmable]
-
+Úszható
 [terrain rule impassable]
-
+Átjárhatatlan
 [terrain rule no flying]
-
+Repülés tiltva
 [terrain rule buildable]
-
+Beépíthető
 [terrain rule speed %0]
-
+Sebesség %0%
 [terrain rule crops grow]
-
+Növények nőnek
 [terrain rule irrigates]
-
+Öntözi a közeli földet
 [terrain rule stops nearby growth]
-
+Megállítja a közeli növekedést
 [terrain rule blocks shots]
-
+Blokkolja a lövéseket
 [terrain rule hurts walkers]
-
+Sebzi a gyaloglókat
 [terrain rule hurts fliers]
-
+Sebzi a repülőket
 [terrain palette hint]
-
+Válasszon ecsetet. Az egy csoportba tartozó terepek azonos szabályokat használnak, és csak megjelenésükben különböznek.
 [terrain rule algae grow]
-
+Algák nőnek
 [terrain palette experiments hint]
-
+Válasszon ecsetet. További terepcsoportok jelennek meg itt, ha a Beállítások > Kísérletek alatt bekapcsolja a kísérleteiket.
 [brush valid on %0]
-
+Érvényes itt: %0
 [brush valid nowhere]
-
+A térkép egyetlen terepére sem helyezhető
 [brush requires experiment %0]
-
+A(z) %0 kísérletet igényli
 [brush resources custom]
-
+Importált nyersanyagok
 [brush section zones]
-
+Zónák
 [brush section areas]
-
+Területek
 [brush section tools]
-
+Eszközök
 [brush clearing area]
-
+Tisztítási terület
 [editor unsaved title]
-
+Nem mentett változtatások
 [editor quit unsaved]
-
+Mentse a térkép módosításait a szerkesztő elhagyása előtt?
 [editor load unsaved]
-
+Mentse a térkép módosításait egy másik megnyitása előtt?
 [editor save]
-
+Mentés…
 [editor discard]
-
+Ne mentse
 [editor share never saved]
-
+A térképek a mentett fájljukból oszthatók meg. Előbb mentse ezt a térképet, majd ossza meg.
 [editor share unsaved]
-
+A térképen még nem mentett változtatások vannak. Megosztáskor a mentett fájl töltődik fel.
 [editor save and share]
-
+Mentés és megosztás…
 [editor share saved version]
-
+Mentett verzió megosztása
 [editor reroll confirm]
-
+Minden terepcella kapjon új véletlenszerű megjelenést? A tereptípusok és a játékmenet változatlanok maradnak. Ez nem vonható vissza.
 [editor reroll]
-
+Újrasorsolás
 [editor map saved]
-
+Térkép mentve
 [editor map shared]
-
+Térkép megosztva online
 [editor save needs fertility]
-
+A mentéshez szükséges a termékenységi térkép, ezért a mentés megszakadt. Az OK gombbal próbálja újra.
 [editor fertility stale]
-
+A termékenységi térkép elavult · Kattintson a frissítéshez
 [No definition files found in %0]
-
+Nem találhatók definíciós fájlok itt: %0
 [From device…]
-
+Eszközről…
 [replace existing file %0?]
-
+Már létezik "%0" nevű fájl. Lecseréli?
 [Replace]
-
+Csere
 [Keep existing file]
-
+Meglévő fájl megtartása
 [editor menu save]
-
+Térkép mentése
 [editor menu load]
-
+Térkép megnyitása…
 [editor menu import terrain]
-
+Terepdefiníciók importálása…
 [editor menu import resources]
-
+Nyersanyagdefiníciók importálása…
 [editor menu teams]
-
+Csapatok…
 [editor menu scenario]
-
+Forgatókönyv…
 [editor menu reroll]
-
+Terep megjelenésének újrasorsolása…
 [editor menu file]
-
+Fájl
 [editor menu map]
-
+Térkép
 [no resource growth areas]
-
+Növekedés nélküli területek
 [dock flags and units]
-
+Zászlók és egységek
 [dock minimap]
-
+Minitérkép
 [dock search brushes]
-
+Ecsetek keresése
 [dock brush shape %0]
-
+Ecset alakja %0
 [dock brush]
-
+Ecset
 [dock brush paint]
-
+Festés
 [dock brush erase]
-
+Törlés
 [dock enable for map]
-
+Bekapcsolás ezen a térképen
 [dock enable experiment %0]
-
+%0 bekapcsolása
 [dock enable experiment hint %0]
-
+Csak ezen a térképen kapcsolja be a(z) %0 kísérletet.
 [dock area number]
-
+Terület
 [dock building level]
-
+Szint
 [dock unit level]
-
+Egység szintje
 [dock no brushes match]
-
+Nincs a keresésnek megfelelő ecset.
 [dock active team]
-
+Aktív csapat
 [dock team count %0]
-
+Csapatok ezen a térképen: %0
 [dock add team]
-
+Csapat hozzáadása
 [dock remove team]
-
+Csapat eltávolítása
 [dock nothing selected]
-
+Nincs semmi kijelölve.
 [dock no properties]
-
+Ennek az objektumnak nincsenek szerkeszthető tulajdonságai.
 [focus brush search]
-
+Ecsetek keresése
 [switch to resources view]
-
+Váltás a nyersanyagnézetre
 [dock resources base]
-
+Alap nyersanyagok
 [dock fertility stale]
-
+A termékenységi térkép elavult.
 [dock fertility refresh]
-
+Termékenység frissítése
 [Enabled %0 for this map]
-
+%0 bekapcsolva ezen a térképen
 [editor fertility tap refresh]
-
+Elavult termékenységi térkép: érintse meg a frissítéshez
 [editor menu import set]
-
+Terep- és nyersanyagkészlet importálása
 [editor menu set library]
-
+Készletkönyvtár
 [set library loading]
-
+Készletek betöltése…
 [set library downloading]
-
+Adott kiadás letöltése…
 [set library connection error]
-
+Nem sikerült betölteni a készleteket. Ellenőrizze a kapcsolatot és próbálja újra.
 [set library hash error]
-
+A letöltött készlet ellenőrzőösszege hibás.
 [set library package error]
-
+Érvénytelen készletcsomag.
 [set library listing error]
-
+Érvénytelen készletlista.
 [set library release error]
-
+Érvénytelen készletkiadás.
 [set library selection help]
-
+Válassza ki az importálandó elemeket. A szükséges egyéni nyersanyagok automatikusan bekerülnek.
 [set library empty]
-
+Nem találhatók készletek.
 [set library release help]
-
+Válasszon egy konkrét kiadást az ellenőrzéshez és importáláshoz.
 [set library heading]
-
+Terep- és nyersanyagkészletek
 [set library browse]
-
+Online könyvtár böngészése
 [set library local]
-
+Térképtartalom, közreműködők és helyi módosítások
 [set library local help]
-
+Az e térképre importált tartalom másolatát szerkeszti. Az eredeti kiadás szerzői adatai megmaradnak. A módosítások nem frissítik a többi térképet vagy az online kiadást.
 [set library apply]
-
+Helyi módosítások alkalmazása
 [set library updated]
-
+Helyi tartalom frissítve.
 [set library search hint]
-
+Témák és alkotók keresése
 [set library search]
-
+Keresés
 [set library set]
-
+Készlet
 [set library update help]
-
+Ez kifejezetten lecseréli az egyező elhelyezett terepet és nyersanyagokat, a helyi módosításokat is. Az eltávolított elemek a régi kiadásban maradnak. A meglévő anyagmennyiségeket az új kapacitások korlátozzák.
 [set library import]
-
+Kijelölt elemek importálása
 [set library next]
-
+Következő oldal
 [set library back]
-
+Vissza a találatokhoz
 [set library license %0]
-
+Licenc: %0
 [set library release %0]
-
+kiadás %0
 [set library replace %0]
-
+A(z) %0 kiadásból elhelyezett elemek cseréje
 [set library preview limit]
-
+Az első 64 elem előnézete látható. Az összes elem továbbra is kijelölhető.
 [set library definition]
-
+Tulajdonságdefiníció (JSON)
 [set library artwork]
-
+Terepgrafika megfeleltetése (JSON)
 [settings Map generators]
 Térképgenerátorok
 [settings Import a generator package, then select its landscape when creating a map or game.]

@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Acaba d'iniciar la sessió al navegador. El joc continua automàticament quan hagis acabat.
 [hub browser did not open]
-
+El navegador no s'ha obert. Obre la pàgina d'inici de sessió per continuar.
 [hub compare code %0]
-
+Si la pàgina ho demana, comprova que mostra %0.
 [hub code copied]
-
+Codi copiat
 [settings Finish in your browser. The game continues by itself.]
-
+Acaba al navegador. El joc continua automàticament.
 [music set]
-
+Conjunt musical
 [random music set]
-
+Aleatori a cada partida
 [playing music set %0]
-
+Reproduint: %0
 [music set failed]
-
+No s'ha pogut carregar aquest conjunt musical.
 [settings Music set]
-
+Conjunt musical
 [settings Random each match]
-
+Tria Aleatori per seleccionar una banda sonora al començament de cada partida.
 [settings Edge scrolling]
-
+Desplaçament a les vores
 [settings Edge scrolling in fullscreen]
-
+Desplaçament a les vores a pantalla completa
 [settings Edge scrolling in windowed mode]
-
+Desplaçament a les vores en mode finestra
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Moure els mapes del joc i de l'editor quan el ratolí arriba a la vora de la finestra.
 [AI strategy]
 Estratègia de la IA
 [start recording]
@@ -4625,9 +4625,9 @@ Gravació
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Grava les partides com a vídeos MP4 amb so. La gravació necessita FFmpeg amb els codificadors libx264 i AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Grava les partides com a vídeos MP4 amb so.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+La gravació fa servir tota la resolució de renderització a 30 FPS.
 [settings FFmpeg is ready.]
 FFmpeg està a punt.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Les unitats ferides es retiren
 [Units can die]
 Les unitats poden morir
 [Upgrades]
-
+Millores
 [No stockpile]
 Cap
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Les unitats ferides tornen a curar-se en lloc de lluitar fins a la mort.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Les unitats moren quan es queden sense punts de vida. Desactiva-ho per aturar-les a 1 punt de vida.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Les unitats pugen de nivell als edificis d'entrenament i els edificis es poden millorar. Les reparacions continuen disponibles quan l'opció està desactivada.
 [stat group work]
 Temps dels treballadors
 [stat worker time]
@@ -5309,235 +5309,235 @@ força
 [stat view by place]
 Per lloc
 [AI Library]
-
+Biblioteca d'IA
 [Authoring guide]
-
+Guia de creació
 [Beginner-friendly]
-
+Apta per a principiants
 [Defensive]
-
+Defensiva
 [Discover]
-
+Descobreix
 [Download & install]
-
+Baixa i instal·la
 [Downloading AI…]
-
+Baixant la IA…
 [Expansion]
-
+Expansió
 [Experimental]
-
+Experimental
 [Favourite]
-
+Afegeix als preferits
 [Favourited]
-
+Afegida als preferits
 [Favourites]
-
+Preferits
 [Got it]
-
+Entesos
 [How AIs work]
-
+Com funcionen les IA
 [Install selected version]
-
+Instal·la la versió seleccionada
 [Installed]
-
+Instal·lada
 [Invalid AI catalogue response]
-
+Resposta no vàlida del catàleg d'IA
 [JavaScript API reference]
-
+Referència de l'API de JavaScript
 [Like]
-
+M'agrada
 [Liked]
-
+T'agrada
 [Loading AI library…]
-
+Carregant la biblioteca d'IA…
 [Most downloaded]
-
+Més baixades
 [Most liked]
-
+Amb més «M’agrada»
 [Newest]
-
+Més recents
 [No AIs match these filters.]
-
+Cap IA coincideix amb aquests filtres.
 [Not validated for this game version]
-
+No validada per a aquesta versió del joc
 [Open AI Library]
-
+Obre la biblioteca d'IA
 [Open AI page]
-
+Obre la pàgina de la IA
 [Passed compatibility checks]
-
+Comprovacions de compatibilitat superades
 [Recently updated]
-
+Actualitzades recentment
 [Rush]
-
+Atac ràpid
 [Search]
-
+Cerca
 [Share your AI]
-
+Comparteix la teva IA
 [Show more]
-
+Mostra'n més
 [Sign in through Online settings to like and favourite AIs.]
-
+Inicia la sessió des de les opcions En línia per indicar que t'agraden les IA i afegir-les als preferits.
 [Starter project]
-
+Projecte inicial
 [downloads of this version]
-
+Baixades d'aquesta versió
 [downloads]
-
+Baixades
 [Update available]
-
+Actualització disponible
 [Browse versions]
-
+Explora les versions
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Baixa una IA i després tria-la per a un jugador controlat per l'ordinador en una partida local. Les versions instal·lades funcionen fora de línia. Les actualitzacions afecten les partides futures; les partides desades conserven el codi original.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Les comprovacions de compatibilitat no certifiquen ni la seguretat ni la força de joc. Executa només codi d'autors en qui confiïs.
 [Back to results]
-
+Torna als resultats
 [music 2–5 minutes]
-
+2–5 minuts
 [music 5–15 minutes]
-
+5–15 minuts
 [music AI-generated]
-
+Generada per IA
 [music All music]
-
+Tota la música
 [music All open licences]
-
+Totes les llicències obertes
 [music Any duration]
-
+Qualsevol durada
 [music Audition each mood for eight seconds]
-
+Escolta cada ambient durant vuit segons
 [music Back]
-
+Enrere
 [music Browse]
-
+Explora
 [music Building]
-
+Intensificació
 [music Calm]
-
+Calma
 [music Calm → Building → Combat]
-
+Calma → Intensificació → Combat
 [music Choose Building]
-
+Tria Intensificació
 [music Choose Calm]
-
+Tria Calma
 [music Choose Combat]
-
+Tria Combat
 [music Choose ZIP]
-
+Tria un ZIP
 [music Choose a music file.]
-
+Tria un fitxer de música.
 [music Combat]
-
+Combat
 [music Could not open this music set.]
-
+No s'ha pogut obrir aquest conjunt musical.
 [music Credits, downloads and reporting]
-
+Crèdits, baixades i denúncies
 [music Downloading music…]
-
+Baixant música…
 [music Export recovery files]
-
+Exporta els fitxers de recuperació
 [music Fade duration]
-
+Durada de la fosa
 [music File selection cancelled or failed.]
-
+La selecció del fitxer s'ha cancel·lat o ha fallat.
 [music Import ZIP]
-
+Importa un ZIP
 [music Import ZIP or three tracks]
-
+Importa un ZIP o tres pistes
 [music Import music]
-
+Importa música
 [music Import three tracks]
-
+Importa tres pistes
 [music Includes AI-generated audio]
-
+Inclou àudio generat per IA
 [music Install]
-
+Instal·la
 [music Install selected]
-
+Instal·la la selecció
 [music Installed]
-
+Instal·lada
 [music Load more]
-
+Carrega'n més
 [music Loading music…]
-
+Carregant música…
 [music Most downloaded]
-
+Més baixades
 [music Most liked]
-
+Amb més «M’agrada»
 [music Music decoding failed.]
-
+Ha fallat la descodificació de la música.
 [music Music download failed.]
-
+Ha fallat la baixada de la música.
 [music Music installed.]
-
+Música instal·lada.
 [music Music installed. It is now available in Audio settings.]
-
+Música instal·lada. Ara està disponible a les opcions d'àudio.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+La música encara no s'ha desat permanentment. Torna a provar de desar-la abans de sortir.
 [music Music library]
-
+Biblioteca musical
 [music Music request failed.]
-
+Ha fallat la sol·licitud de música.
 [music Newest]
-
+Més recents
 [music No community music installed yet. Import files or browse the online library.]
-
+Encara no hi ha música de la comunitat instal·lada. Importa fitxers o explora la biblioteca en línia.
 [music No music found.]
-
+No s'ha trobat música.
 [music Not AI-generated]
-
+No generada per IA
 [music Pause]
-
+Pausa
 [music Play]
-
+Reprodueix
 [music Playback position]
-
+Posició de reproducció
 [music Preview]
-
+Previsualització
 [music Ready to import.]
-
+A punt per importar.
 [music Remove]
-
+Elimina
 [music Reset to game behavior]
-
+Restableix el comportament del joc
 [music Retry saving]
-
+Torna a provar de desar
 [music Saved.]
-
+Desada.
 [music Saving music…]
-
+Desant música…
 [music Search]
-
+Cerca
 [music Search title, artist, description…]
-
+Cerca un títol, un artista, una descripció…
 [music Select for installation]
-
+Selecciona per instal·lar
 [music Share music on the web]
-
+Comparteix música al web
 [music Some catalogue entries could not be read.]
-
+No s'han pogut llegir algunes entrades del catàleg.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+No s'han pogut desar les dades. Torna-ho a provar o exporta els fitxers abans de sortir.
 [music Tag]
-
+Etiqueta
 [music Test crossfades]
-
+Prova les foses creuades
 [music Up to 2 minutes]
-
+Fins a 2 minuts
 [music Use this music]
-
+Fes servir aquesta música
 [music Validating music…]
-
+Validant música…
 [settings Music library · Browse, install and import]
-
+Biblioteca musical · Explora, instal·la i importa
 [music Filters]
-
+Filtres
 [music Leave without saving]
-
+Surt sense desar
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importa un ZIP musical baixat o les tres pistes Opus. Les metadades i la portada es llegeixen de la pista Calma; no calen fitxers addicionals.
 [settings Target render FPS]
 FPS de renderització objectiu
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Peixos
 [Reroll terrain look]
 Torna a sortejar l’aspecte del terreny
 [boulders]
-
+Blocs de roca
 [hedge]
-
+Bardissa
 [thicket]
-
+Matollar
 [ridge_rock]
-
+Cresta rocosa
 [outcrop]
-
+Aflorament
 [dirt]
-
+Terra
 [clay]
-
+Argila
 [gravel]
-
+Grava
 [flower_meadow]
-
+Prat de flors
 [mud]
-
+Fang
 [marsh]
-
+Aiguamoll
 [deep_snow]
-
+Neu profunda
 [scree]
-
+Tartera
 [dirt_track]
-
+Camí de terra
 [boardwalk]
-
+Passarel·la de fusta
 [lava]
-
+Lava
 [ember_field]
-
+Camp de brases
 [loam]
-
+Terra franca
 [moss]
-
+Molsa
 [spring_meadow]
-
+Prat primaveral
 [deep_water]
-
+Aigua profunda
 [dark_water]
-
+Aigua fosca
 [void_hole]
-
+Forat
 [chasm]
-
+Avenc
 [terrain group water]
-
+Aigua
 [terrain group sand]
-
+Sorra
 [terrain group grass]
-
+Herba
 [terrain group ice]
-
+Gel
 [terrain group paths]
-
+Camins
 [terrain group obstacles]
-
+Obstacles
 [terrain group ridges]
-
+Crestes
 [terrain group barren]
-
+Sòl estèril
 [terrain group rough]
-
+Sòl accidentat
 [terrain group lava]
-
+Lava
 [terrain group fertile]
-
+Sòl fèrtil
 [terrain group deep-water]
-
+Aigua profunda
 [terrain group void]
-
+Buit
 [experiment obstacle-terrain]
-
+Terreny amb obstacles
 [experiment obstacle-terrain help]
-
+Afegeix blocs de roca, bardisses i matollars a l'editor de mapes. Les unitats terrestres no poden travessar-los i aturen els projectils; les unitats voladores passen per sobre. No admeten edificis ni recursos.
 [experiment ridge-terrain]
-
+Terreny de crestes
 [experiment ridge-terrain help]
-
+Afegeix crestes rocoses i afloraments a l'editor de mapes. Les unitats terrestres no poden travessar-los, però les torres disparen per sobre i les unitats voladores passen. No admeten edificis ni recursos.
 [experiment barren-terrain]
-
+Sòl estèril
 [experiment barren-terrain help]
-
+Afegeix terra, argila, grava i prats de flors a l'editor de mapes. Hi pot haver edificis, no hi creix res ni al costat i no compten com a riba.
 [experiment rough-terrain]
-
+Sòl accidentat
 [experiment rough-terrain help]
-
+Afegeix fang, aiguamolls, neu profunda i tarteres a l'editor de mapes. Les unitats terrestres es mouen a uns dos terços de la velocitat. El sòl accidentat no admet edificis ni recursos.
 [experiment path-terrain]
-
+Terreny de camins
 [experiment path-terrain help]
-
+Afegeix camins de terra i passarel·les de fusta a l'editor de mapes. Com als senders, les unitats terrestres es mouen al doble de velocitat i s'hi permeten edificis, però no hi creix res.
 [experiment lava-terrain]
-
+Terreny de lava
 [experiment lava-terrain help]
-
+Afegeix lava i camps de brases a l'editor de mapes. Les unitats terrestres no hi poden entrar; les unitats voladores que els travessen perden salut ràpidament. Els projectils passen per sobre.
 [experiment fertile-terrain]
-
+Sòl fèrtil
 [experiment fertile-terrain help]
-
+Afegeix terra franca, molsa i prats primaverals a l'editor de mapes. Admeten edificis i conreus i irriguen el terreny del voltant amb més intensitat que l'aigua.
 [experiment deep-water-terrain]
-
+Aigua profunda
 [experiment deep-water-terrain help]
-
+Afegeix aigua profunda i fosca a l'editor de mapes. Els nedadors la travessen més lentament, no hi creixen algues i continua irrigant els camps propers.
 [experiment void-terrain]
-
+Terreny buit
 [experiment void-terrain help]
-
+Afegeix forats i avencs a l'editor de mapes. Res no els pot travessar, ni tan sols les unitats voladores, i els projectils s'aturen a la vora.
 [terrain group custom]
-
+Personalitzat
 [terrain group classic]
-
+Sòl clàssic
 [terrain rule walkable]
-
+Transitable a peu
 [terrain rule swimmable]
-
+Transitable nedant
 [terrain rule impassable]
-
+Infranquejable
 [terrain rule no flying]
-
+Vol prohibit
 [terrain rule buildable]
-
+Edificable
 [terrain rule speed %0]
-
+Velocitat %0%
 [terrain rule crops grow]
-
+Hi creixen conreus
 [terrain rule irrigates]
-
+Irriga el terreny proper
 [terrain rule stops nearby growth]
-
+Impedeix el creixement proper
 [terrain rule blocks shots]
-
+Bloqueja els trets
 [terrain rule hurts walkers]
-
+Fereix les unitats terrestres
 [terrain rule hurts fliers]
-
+Fereix les unitats voladores
 [terrain palette hint]
-
+Tria un pinzell. Els terrenys de cada grup comparteixen les mateixes regles i només difereixen en l’aspecte.
 [terrain rule algae grow]
-
+Hi creixen algues
 [terrain palette experiments hint]
-
+Tria un pinzell. Aquí apareixen més grups de terreny quan les seves funcions experimentals s'activen a Opcions > Funcions experimentals.
 [brush valid on %0]
-
+Vàlid sobre: %0
 [brush valid nowhere]
-
+No es pot col·locar en cap terreny d'aquest mapa
 [brush requires experiment %0]
-
+Requereix la funció experimental %0
 [brush resources custom]
-
+Recursos importats
 [brush section zones]
-
+Zones
 [brush section areas]
-
+Àrees
 [brush section tools]
-
+Eines
 [brush clearing area]
-
+Àrea de neteja
 [editor unsaved title]
-
+Canvis sense desar
 [editor quit unsaved]
-
+Vols desar els canvis d'aquest mapa abans de sortir de l'editor?
 [editor load unsaved]
-
+Vols desar els canvis d'aquest mapa abans d'obrir-ne un altre?
 [editor save]
-
+Desa…
 [editor discard]
-
+No desis
 [editor share never saved]
-
+Els mapes es comparteixen des del fitxer desat. Desa primer aquest mapa i després comparteix-lo.
 [editor share unsaved]
-
+Aquest mapa té canvis encara no desats. En compartir-lo es puja el fitxer desat.
 [editor save and share]
-
+Desa i comparteix…
 [editor share saved version]
-
+Comparteix la versió desada
 [editor reroll confirm]
-
+Vols donar a cada casella de terreny un aspecte aleatori nou? Els tipus de terreny i la jugabilitat no canvien. Aquesta operació no es pot desfer.
 [editor reroll]
-
+Torna a aleatoritzar
 [editor map saved]
-
+Mapa desat
 [editor map shared]
-
+Mapa compartit en línia
 [editor save needs fertility]
-
+Per desar cal el mapa de fertilitat, per això s'ha cancel·lat l'operació. Prem D'acord per tornar-ho a provar.
 [editor fertility stale]
-
+Mapa de fertilitat desactualitzat · Fes clic per actualitzar
 [No definition files found in %0]
-
+No s'han trobat fitxers de definició a %0
 [From device…]
-
+Des del dispositiu…
 [replace existing file %0?]
-
+Ja existeix un fitxer anomenat «%0». Vols substituir-lo?
 [Replace]
-
+Substitueix
 [Keep existing file]
-
+Conserva el fitxer existent
 [editor menu save]
-
+Desa el mapa
 [editor menu load]
-
+Obre un mapa…
 [editor menu import terrain]
-
+Importa definicions de terreny…
 [editor menu import resources]
-
+Importa definicions de recursos…
 [editor menu teams]
-
+Equips…
 [editor menu scenario]
-
+Escenari…
 [editor menu reroll]
-
+Aleatoritza l'aspecte del terreny…
 [editor menu file]
-
+Fitxer
 [editor menu map]
-
+Mapa
 [no resource growth areas]
-
+Àrees sense creixement
 [dock flags and units]
-
+Banderes i unitats
 [dock minimap]
-
+Minimapa
 [dock search brushes]
-
+Cerca pinzells
 [dock brush shape %0]
-
+Forma del pinzell %0
 [dock brush]
-
+Pinzell
 [dock brush paint]
-
+Pinta
 [dock brush erase]
-
+Esborra
 [dock enable for map]
-
+Activa per a aquest mapa
 [dock enable experiment %0]
-
+Activa %0
 [dock enable experiment hint %0]
-
+Activa la funció experimental %0 només per a aquest mapa.
 [dock area number]
-
+Àrea
 [dock building level]
-
+Nivell
 [dock unit level]
-
+Nivell de la unitat
 [dock no brushes match]
-
+Cap pinzell coincideix amb la cerca.
 [dock active team]
-
+Equip actiu
 [dock team count %0]
-
+Equips en aquest mapa: %0
 [dock add team]
-
+Afegeix un equip
 [dock remove team]
-
+Elimina un equip
 [dock nothing selected]
-
+No hi ha res seleccionat.
 [dock no properties]
-
+Aquest objecte no té propietats editables.
 [focus brush search]
-
+Cerca pinzells
 [switch to resources view]
-
+Canvia a la vista de recursos
 [dock resources base]
-
+Recursos estàndard
 [dock fertility stale]
-
+El mapa de fertilitat està desactualitzat.
 [dock fertility refresh]
-
+Actualitza la fertilitat
 [Enabled %0 for this map]
-
+%0 activada per a aquest mapa
 [editor fertility tap refresh]
-
+Mapa de fertilitat desactualitzat: toca per actualitzar
 [editor menu import set]
-
+Importa un conjunt de terrenys i recursos
 [editor menu set library]
-
+Biblioteca de conjunts
 [set library loading]
-
+Carregant conjunts…
 [set library downloading]
-
+Baixant la versió triada…
 [set library connection error]
-
+No es poden carregar els conjunts. Comprova la connexió i torna-ho a provar.
 [set library hash error]
-
+El conjunt baixat no ha superat la comprovació de la seva empremta digital.
 [set library package error]
-
+Paquet de conjunt no vàlid.
 [set library listing error]
-
+Llista de conjunts no vàlida.
 [set library release error]
-
+Versió de conjunt no vàlida.
 [set library selection help]
-
+Selecciona les entrades per importar. Els recursos personalitzats necessaris s'inclouen automàticament.
 [set library empty]
-
+No s'han trobat conjunts.
 [set library release help]
-
+Tria una versió concreta per examinar-la i importar-la.
 [set library heading]
-
+Conjunts de terrenys i recursos
 [set library browse]
-
+Explora la biblioteca en línia
 [set library local]
-
+Contingut del mapa, crèdits i canvis locals
 [set library local help]
-
+Edita la còpia del contingut importat que hi ha en aquest mapa. Els crèdits de la versió original es mantenen associats. Els canvis no actualitzen altres mapes ni la versió en línia.
 [set library apply]
-
+Aplica els canvis locals
 [set library updated]
-
+Contingut local actualitzat.
 [set library search hint]
-
+Cerca temes i creadors
 [set library search]
-
+Cerca
 [set library set]
-
+Conjunt
 [set library update help]
-
+Substitueix explícitament els terrenys i recursos col·locats que coincideixin, inclosos els canvis locals. Les entrades eliminades es mantenen a la versió antiga. Les quantitats de materials existents es limiten a les noves capacitats.
 [set library import]
-
+Importa les entrades seleccionades
 [set library next]
-
+Pàgina següent
 [set library back]
-
+Torna als resultats
 [set library license %0]
-
+Llicència: %0
 [set library release %0]
-
+Versió %0
 [set library replace %0]
-
+Substitueix les entrades col·locades de la versió %0
 [set library preview limit]
-
+Es mostren previsualitzacions de les primeres 64 entrades. Totes les entrades continuen sent seleccionables.
 [set library definition]
-
+Definició de propietats (JSON)
 [set library artwork]
-
+Correspondència de les il·lustracions del terreny (JSON)
 [settings Map generators]
 Generadors de mapes
 [settings Import a generator package, then select its landscape when creating a map or game.]

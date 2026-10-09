@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Afslut login i din browser. Spillet fortsætter automatisk, når du er færdig.
 [hub browser did not open]
-
+Din browser blev ikke åbnet. Åbn login-siden for at fortsætte.
 [hub compare code %0]
-
+Hvis siden spørger, skal du kontrollere, at den viser %0.
 [hub code copied]
-
+Kode kopieret
 [settings Finish in your browser. The game continues by itself.]
-
+Afslut i din browser. Spillet fortsætter automatisk.
 [music set]
-
+Musiksæt
 [random music set]
-
+Tilfældigt ved hvert spil
 [playing music set %0]
-
+Afspiller: %0
 [music set failed]
-
+Kunne ikke indlæse dette musiksæt.
 [settings Music set]
-
+Musiksæt
 [settings Random each match]
-
+Vælg Tilfældigt for at vælge et lydspor ved starten af hvert spil.
 [settings Edge scrolling]
-
+Rulning ved kanten
 [settings Edge scrolling in fullscreen]
-
+Rulning ved kanten i fuld skærm
 [settings Edge scrolling in windowed mode]
-
+Rulning ved kanten i vinduestilstand
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Flyt kortene i spillet og editoren, når musen når vinduets kant.
 [AI strategy]
 AI-strategi
 [start recording]
@@ -4625,9 +4625,9 @@ Optagelse
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Optag dine spil som MP4-videoer med lyd. Optagelse kræver FFmpeg med libx264- og AAC-koderne.
 [settings Record your games as MP4 videos with sound.]
-
+Optag dine spil som MP4-videoer med lyd.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Optagelsen bruger den fulde gengivne opløsning ved 30 billeder/s.
 [settings FFmpeg is ready.]
 FFmpeg er klar.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Sårede enheder trækker sig tilbage
 [Units can die]
 Enheder kan dø
 [Upgrades]
-
+Opgraderinger
 [No stockpile]
 Intet
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Sårede enheder går tilbage for at blive helet i stedet for at kæmpe til døde
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Enheder dør, når de løber tør for livspoint. Slå fra for at stoppe dem ved 1 livspoint.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Enheder stiger i niveau ved træningsbygninger, og bygninger kan opgraderes. Reparationer er stadig mulige, når indstillingen er slået fra.
 [stat group work]
 Arbejdernes tid
 [stat worker time]
@@ -5309,235 +5309,235 @@ styrke
 [stat view by place]
 Efter sted
 [AI Library]
-
+AI-bibliotek
 [Authoring guide]
-
+Forfattervejledning
 [Beginner-friendly]
-
+Begyndervenlig
 [Defensive]
-
+Defensiv
 [Discover]
-
+Opdag
 [Download & install]
-
+Download og installer
 [Downloading AI…]
-
+Downloader AI…
 [Expansion]
-
+Ekspansion
 [Experimental]
-
+Eksperimentel
 [Favourite]
-
+Tilføj til favoritter
 [Favourited]
-
+Tilføjet til favoritter
 [Favourites]
-
+Favoritter
 [Got it]
-
+Forstået
 [How AIs work]
-
+Sådan fungerer AI'er
 [Install selected version]
-
+Installer den valgte version
 [Installed]
-
+Installeret
 [Invalid AI catalogue response]
-
+Ugyldigt svar fra AI-kataloget
 [JavaScript API reference]
-
+JavaScript-API-reference
 [Like]
-
+Synes godt om
 [Liked]
-
+Du synes godt om
 [Loading AI library…]
-
+Indlæser AI-bibliotek…
 [Most downloaded]
-
+Mest downloadede
 [Most liked]
-
+Mest populære
 [Newest]
-
+Nyeste
 [No AIs match these filters.]
-
+Ingen AI'er matcher disse filtre.
 [Not validated for this game version]
-
+Ikke valideret til denne spilversion
 [Open AI Library]
-
+Åbn AI-bibliotek
 [Open AI page]
-
+Åbn AI-siden
 [Passed compatibility checks]
-
+Bestået kompatibilitetskontrol
 [Recently updated]
-
+Nyligt opdaterede
 [Rush]
-
+Hurtigt angreb
 [Search]
-
+Søg
 [Share your AI]
-
+Del din AI
 [Show more]
-
+Vis mere
 [Sign in through Online settings to like and favourite AIs.]
-
+Log ind via onlineindstillingerne for at synes godt om AI'er og tilføje dem til favoritter.
 [Starter project]
-
+Startprojekt
 [downloads of this version]
-
+Downloads af denne version
 [downloads]
-
+Downloads
 [Update available]
-
+Opdatering tilgængelig
 [Browse versions]
-
+Gennemse versioner
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Download en AI, og vælg den derefter til en computerspiller i et lokalt spil. Installerede versioner virker offline. Opdateringer påvirker fremtidige spil; gemte spil beholder deres oprindelige kode.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Kompatibilitetskontroller garanterer hverken sikkerhed eller spillestyrke. Kør kun kode fra forfattere, du stoler på.
 [Back to results]
-
+Tilbage til resultater
 [music 2–5 minutes]
-
+2–5 minutter
 [music 5–15 minutes]
-
+5–15 minutter
 [music AI-generated]
-
+AI-genereret
 [music All music]
-
+Al musik
 [music All open licences]
-
+Alle åbne licenser
 [music Any duration]
-
+Enhver varighed
 [music Audition each mood for eight seconds]
-
+Lyt til hver stemning i otte sekunder
 [music Back]
-
+Tilbage
 [music Browse]
-
+Gennemse
 [music Building]
-
+Spændingsopbygning
 [music Calm]
-
+Ro
 [music Calm → Building → Combat]
-
+Ro → Spændingsopbygning → Kamp
 [music Choose Building]
-
+Vælg Spændingsopbygning
 [music Choose Calm]
-
+Vælg Ro
 [music Choose Combat]
-
+Vælg Kamp
 [music Choose ZIP]
-
+Vælg ZIP
 [music Choose a music file.]
-
+Vælg en musikfil.
 [music Combat]
-
+Kamp
 [music Could not open this music set.]
-
+Kunne ikke åbne dette musiksæt.
 [music Credits, downloads and reporting]
-
+Kreditering, downloads og indberetning
 [music Downloading music…]
-
+Downloader musik…
 [music Export recovery files]
-
+Eksporter gendannelsesfiler
 [music Fade duration]
-
+Overgangens varighed
 [music File selection cancelled or failed.]
-
+Valg af fil blev annulleret eller mislykkedes.
 [music Import ZIP]
-
+Importer ZIP
 [music Import ZIP or three tracks]
-
+Importer ZIP eller tre numre
 [music Import music]
-
+Importer musik
 [music Import three tracks]
-
+Importer tre numre
 [music Includes AI-generated audio]
-
+Indeholder AI-genereret lyd
 [music Install]
-
+Installer
 [music Install selected]
-
+Installer valgte
 [music Installed]
-
+Installeret
 [music Load more]
-
+Indlæs flere
 [music Loading music…]
-
+Indlæser musik…
 [music Most downloaded]
-
+Mest downloadede
 [music Most liked]
-
+Mest populære
 [music Music decoding failed.]
-
+Afkodning af musik mislykkedes.
 [music Music download failed.]
-
+Download af musik mislykkedes.
 [music Music installed.]
-
+Musik installeret.
 [music Music installed. It is now available in Audio settings.]
-
+Musik installeret. Den er nu tilgængelig i lydindstillingerne.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Musikken er endnu ikke gemt permanent. Prøv at gemme igen, før du forlader siden.
 [music Music library]
-
+Musikbibliotek
 [music Music request failed.]
-
+Musikforespørgslen mislykkedes.
 [music Newest]
-
+Nyeste
 [music No community music installed yet. Import files or browse the online library.]
-
+Ingen musik fra fællesskabet er installeret endnu. Importer filer, eller gennemse onlinebiblioteket.
 [music No music found.]
-
+Ingen musik fundet.
 [music Not AI-generated]
-
+Ikke AI-genereret
 [music Pause]
-
+Pause
 [music Play]
-
+Afspil
 [music Playback position]
-
+Afspilningsposition
 [music Preview]
-
+Forhåndsvisning
 [music Ready to import.]
-
+Klar til import.
 [music Remove]
-
+Fjern
 [music Reset to game behavior]
-
+Nulstil til spillets adfærd
 [music Retry saving]
-
+Prøv at gemme igen
 [music Saved.]
-
+Gemt.
 [music Saving music…]
-
+Gemmer musik…
 [music Search]
-
+Søg
 [music Search title, artist, description…]
-
+Søg efter titel, kunstner, beskrivelse…
 [music Select for installation]
-
+Vælg til installation
 [music Share music on the web]
-
+Del musik på nettet
 [music Some catalogue entries could not be read.]
-
+Nogle katalogposter kunne ikke læses.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Data kunne ikke gemmes. Prøv igen, eller eksporter dine filer, før du forlader siden.
 [music Tag]
-
+Mærke
 [music Test crossfades]
-
+Test glidende overgange
 [music Up to 2 minutes]
-
+Op til 2 minutter
 [music Use this music]
-
+Brug denne musik
 [music Validating music…]
-
+Validerer musik…
 [settings Music library · Browse, install and import]
-
+Musikbibliotek · Gennemse, installer og importer
 [music Filters]
-
+Filtre
 [music Leave without saving]
-
+Forlad uden at gemme
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importer en downloadet musik-ZIP eller de tre Opus-numre. Metadata og omslag læses fra nummeret Ro; ingen ekstra filer er nødvendige.
 [settings Target render FPS]
 Ønsket billedfrekvens
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Fisk
 [Reroll terrain look]
 Vælg terrænets udseende tilfældigt igen
 [boulders]
-
+Kampesten
 [hedge]
-
+Hæk
 [thicket]
-
+Krat
 [ridge_rock]
-
+Klippekam
 [outcrop]
-
+Klippefremspring
 [dirt]
-
+Jord
 [clay]
-
+Ler
 [gravel]
-
+Grus
 [flower_meadow]
-
+Blomstereng
 [mud]
-
+Mudder
 [marsh]
-
+Sump
 [deep_snow]
-
+Dyb sne
 [scree]
-
+Stenur
 [dirt_track]
-
+Jordsti
 [boardwalk]
-
+Plankesti
 [lava]
-
+Lava
 [ember_field]
-
+Glødemark
 [loam]
-
+Muldjord
 [moss]
-
+Mos
 [spring_meadow]
-
+Forårseng
 [deep_water]
-
+Dybt vand
 [dark_water]
-
+Mørkt vand
 [void_hole]
-
+Hul
 [chasm]
-
+Afgrund
 [terrain group water]
-
+Vand
 [terrain group sand]
-
+Sand
 [terrain group grass]
-
+Græs
 [terrain group ice]
-
+Is
 [terrain group paths]
-
+Stier
 [terrain group obstacles]
-
+Forhindringer
 [terrain group ridges]
-
+Kamme
 [terrain group barren]
-
+Ufrugtbar jord
 [terrain group rough]
-
+Ujævnt terræn
 [terrain group lava]
-
+Lava
 [terrain group fertile]
-
+Frugtbar jord
 [terrain group deep-water]
-
+Dybt vand
 [terrain group void]
-
+Tomrum
 [experiment obstacle-terrain]
-
+Terræn med forhindringer
 [experiment obstacle-terrain help]
-
+Føjer kampesten, hække og krat til korteditoren. Landenheder kan ikke krydse dem, og de stopper projektiler; flyvende enheder passerer over dem. De kan hverken rumme bygninger eller ressourcer.
 [experiment ridge-terrain]
-
+Terræn med klippekamme
 [experiment ridge-terrain help]
-
+Føjer klippekamme og klippefremspring til korteditoren. Landenheder kan ikke krydse dem, men tårne skyder over dem, og flyvende enheder passerer. De kan hverken rumme bygninger eller ressourcer.
 [experiment barren-terrain]
-
+Ufrugtbar jord
 [experiment barren-terrain help]
-
+Føjer jord, ler, grus og blomsterenge til korteditoren. Bygninger kan stå på dem, intet vokser på eller ved siden af dem, og de tæller ikke som kyst.
 [experiment rough-terrain]
-
+Ujævnt terræn
 [experiment rough-terrain help]
-
+Føjer mudder, sump, dyb sne og stenurer til korteditoren. Landenheder bevæger sig med omkring to tredjedele af hastigheden. Ujævnt terræn kan hverken rumme bygninger eller ressourcer.
 [experiment path-terrain]
-
+Terræn med stier
 [experiment path-terrain help]
-
+Føjer jordstier og plankestier til korteditoren. Ligesom på spor bevæger landenheder sig med dobbelt hastighed, og bygninger er tilladt, men intet vokser.
 [experiment lava-terrain]
-
+Lavaterræn
 [experiment lava-terrain help]
-
+Føjer lava og glødemarker til korteditoren. Landenheder kan ikke komme ind; flyvende enheder mister hurtigt helbred, når de krydser dem. Projektiler passerer over.
 [experiment fertile-terrain]
-
+Frugtbar jord
 [experiment fertile-terrain help]
-
+Føjer muldjord, mos og forårsenge til korteditoren. De understøtter bygninger og afgrøder og vander jorden omkring dem kraftigere end vand.
 [experiment deep-water-terrain]
-
+Dybt vand
 [experiment deep-water-terrain help]
-
+Føjer dybt og mørkt vand til korteditoren. Svømmere krydser det langsommere, ingen alger vokser i det, og det vander stadig nærliggende marker.
 [experiment void-terrain]
-
+Tomt terræn
 [experiment void-terrain help]
-
+Føjer huller og afgrunde til korteditoren. Intet kan krydse dem, ikke engang flyvende enheder, og projektiler stopper ved kanten.
 [terrain group custom]
-
+Brugerdefineret
 [terrain group classic]
-
+Klassisk jord
 [terrain rule walkable]
-
+Kan krydses til fods
 [terrain rule swimmable]
-
+Kan krydses svømmende
 [terrain rule impassable]
-
+Ufarbart
 [terrain rule no flying]
-
+Flyvning forbudt
 [terrain rule buildable]
-
+Kan bebygges
 [terrain rule speed %0]
-
+Hastighed %0%
 [terrain rule crops grow]
-
+Afgrøder vokser
 [terrain rule irrigates]
-
+Vander nærliggende jord
 [terrain rule stops nearby growth]
-
+Stopper vækst i nærheden
 [terrain rule blocks shots]
-
+Blokerer skud
 [terrain rule hurts walkers]
-
+Skader gående enheder
 [terrain rule hurts fliers]
-
+Skader flyvende enheder
 [terrain palette hint]
-
+Vælg en pensel. Terræntyperne i hver gruppe har de samme regler og adskiller sig kun i udseende.
 [terrain rule algae grow]
-
+Alger vokser
 [terrain palette experiments hint]
-
+Vælg en pensel. Flere terrængrupper vises her, når deres eksperimenter er aktiveret under Indstillinger > Eksperimenter.
 [brush valid on %0]
-
+Gyldig på: %0
 [brush valid nowhere]
-
+Kan ikke placeres på noget terræn på dette kort
 [brush requires experiment %0]
-
+Kræver eksperimentet %0
 [brush resources custom]
-
+Importerede ressourcer
 [brush section zones]
-
+Zoner
 [brush section areas]
-
+Områder
 [brush section tools]
-
+Værktøjer
 [brush clearing area]
-
+Rydningsområde
 [editor unsaved title]
-
+Ikke-gemte ændringer
 [editor quit unsaved]
-
+Gem ændringerne på dette kort, før du forlader editoren?
 [editor load unsaved]
-
+Gem ændringerne på dette kort, før du åbner et andet?
 [editor save]
-
+Gem…
 [editor discard]
-
+Gem ikke
 [editor share never saved]
-
+Kort deles fra deres gemte fil. Gem først dette kort, og del det derefter.
 [editor share unsaved]
-
+Dette kort har ændringer, der endnu ikke er gemt. Deling uploader den gemte fil.
 [editor save and share]
-
+Gem og del…
 [editor share saved version]
-
+Del gemt version
 [editor reroll confirm]
-
+Giv hvert terrænfelt et nyt tilfældigt udseende? Terræntyper og spilforløb forbliver det samme. Dette kan ikke fortrydes.
 [editor reroll]
-
+Vælg nyt udseende
 [editor map saved]
-
+Kort gemt
 [editor map shared]
-
+Kort delt online
 [editor save needs fertility]
-
+Der kræves et frugtbarhedskort for at gemme, så lagringen blev annulleret. Tryk på OK for at prøve igen.
 [editor fertility stale]
-
+Frugtbarhedskortet er forældet · Klik for at opdatere
 [No definition files found in %0]
-
+Ingen definitionsfiler fundet i %0
 [From device…]
-
+Fra enheden…
 [replace existing file %0?]
-
+En fil med navnet "%0" findes allerede. Erstat den?
 [Replace]
-
+Erstat
 [Keep existing file]
-
+Behold eksisterende fil
 [editor menu save]
-
+Gem kort
 [editor menu load]
-
+Åbn kort…
 [editor menu import terrain]
-
+Importer terrændefinitioner…
 [editor menu import resources]
-
+Importer ressourcedefinitioner…
 [editor menu teams]
-
+Hold…
 [editor menu scenario]
-
+Scenarie…
 [editor menu reroll]
-
+Vælg nyt tilfældigt terrænudseende…
 [editor menu file]
-
+Fil
 [editor menu map]
-
+Kort
 [no resource growth areas]
-
+Områder uden vækst
 [dock flags and units]
-
+Flag og enheder
 [dock minimap]
-
+Minikort
 [dock search brushes]
-
+Søg efter pensler
 [dock brush shape %0]
-
+Penselform %0
 [dock brush]
-
+Pensel
 [dock brush paint]
-
+Mal
 [dock brush erase]
-
+Slet
 [dock enable for map]
-
+Aktiver for dette kort
 [dock enable experiment %0]
-
+Aktiver %0
 [dock enable experiment hint %0]
-
+Slår eksperimentet %0 til for dette kort alene.
 [dock area number]
-
+Område
 [dock building level]
-
+Niveau
 [dock unit level]
-
+Enhedsniveau
 [dock no brushes match]
-
+Ingen pensler matcher søgningen.
 [dock active team]
-
+Aktivt hold
 [dock team count %0]
-
+Hold på dette kort: %0
 [dock add team]
-
+Tilføj hold
 [dock remove team]
-
+Fjern hold
 [dock nothing selected]
-
+Intet er valgt.
 [dock no properties]
-
+Dette objekt har ingen redigerbare egenskaber.
 [focus brush search]
-
+Søg efter pensler
 [switch to resources view]
-
+Skift til ressourcevisning
 [dock resources base]
-
+Standardressourcer
 [dock fertility stale]
-
+Frugtbarhedskortet er forældet.
 [dock fertility refresh]
-
+Opdater frugtbarhed
 [Enabled %0 for this map]
-
+%0 aktiveret for dette kort
 [editor fertility tap refresh]
-
+Frugtbarhedskortet er forældet: tryk for at opdatere
 [editor menu import set]
-
+Importer terræn- og ressourcesæt
 [editor menu set library]
-
+Sætbibliotek
 [set library loading]
-
+Indlæser sæt…
 [set library downloading]
-
+Downloader den valgte udgivelse…
 [set library connection error]
-
+Kan ikke indlæse sæt. Kontroller din forbindelse, og prøv igen.
 [set library hash error]
-
+Det downloadede sæt bestod ikke hashkontrollen.
 [set library package error]
-
+Ugyldig sætpakke.
 [set library listing error]
-
+Ugyldig sætliste.
 [set library release error]
-
+Ugyldig sætudgivelse.
 [set library selection help]
-
+Vælg poster til import. Nødvendige brugerdefinerede ressourcer medtages automatisk.
 [set library empty]
-
+Ingen sæt fundet.
 [set library release help]
-
+Vælg en bestemt udgivelse til gennemgang og import.
 [set library heading]
-
+Terræn- og ressourcesæt
 [set library browse]
-
+Gennemse onlinebibliotek
 [set library local]
-
+Kortindhold, kreditering og lokale ændringer
 [set library local help]
-
+Rediger kopien af det importerede indhold på dette kort. Krediteringen fra den oprindelige udgivelse forbliver tilknyttet. Ændringer opdaterer ikke andre kort eller onlineudgivelsen.
 [set library apply]
-
+Anvend lokale ændringer
 [set library updated]
-
+Lokalt indhold opdateret.
 [set library search hint]
-
+Søg efter temaer og skabere
 [set library search]
-
+Søg
 [set library set]
-
+Sæt
 [set library update help]
-
+Erstatter udtrykkeligt matchende placeret terræn og ressourcer, inklusive lokale ændringer. Fjernede poster forbliver på den gamle udgivelse. Eksisterende materialemængder begrænses til de nye kapaciteter.
 [set library import]
-
+Importer valgte poster
 [set library next]
-
+Næste side
 [set library back]
-
+Tilbage til resultater
 [set library license %0]
-
+Licens: %0
 [set library release %0]
-
+Udgivelse %0
 [set library replace %0]
-
+Erstat placerede poster fra udgivelse %0
 [set library preview limit]
-
+Forhåndsvisninger vises for de første 64 poster. Alle poster kan stadig vælges.
 [set library definition]
-
+Egenskabsdefinition (JSON)
 [set library artwork]
-
+Kortlægning af terrænbilleder (JSON)
 [settings Map generators]
 Kortgeneratorer
 [settings Import a generator package, then select its landscape when creating a map or game.]

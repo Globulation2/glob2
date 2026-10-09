@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+브라우저에서 로그인을 완료하세요. 완료하면 게임이 자동으로 계속됩니다.
 [hub browser did not open]
-
+브라우저가 열리지 않았습니다. 로그인 페이지를 열어 계속하세요.
 [hub compare code %0]
-
+페이지에서 확인을 요청하면 %0이 표시되는지 확인하세요.
 [hub code copied]
-
+코드 복사됨
 [settings Finish in your browser. The game continues by itself.]
-
+브라우저에서 완료하세요. 게임이 자동으로 계속됩니다.
 [music set]
-
+음악 세트
 [random music set]
-
+경기마다 무작위
 [playing music set %0]
-
+재생 중: %0
 [music set failed]
-
+이 음악 세트를 불러올 수 없습니다.
 [settings Music set]
-
+음악 세트
 [settings Random each match]
-
+무작위를 선택하면 경기 시작마다 배경 음악이 선택됩니다.
 [settings Edge scrolling]
-
+가장자리 스크롤
 [settings Edge scrolling in fullscreen]
-
+전체 화면에서 가장자리 스크롤
 [settings Edge scrolling in windowed mode]
-
+창 모드에서 가장자리 스크롤
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+마우스가 창 가장자리에 닿으면 게임과 편집기의 지도를 이동합니다.
 [AI strategy]
 AI 전략
 [start recording]
@@ -4625,9 +4625,9 @@ AI 상대: %0
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 게임을 소리가 포함된 MP4 동영상으로 녹화합니다. 녹화하려면 libx264 및 AAC 인코더가 포함된 FFmpeg가 필요합니다.
 [settings Record your games as MP4 videos with sound.]
-
+게임을 소리와 함께 MP4 동영상으로 녹화합니다.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+렌더링된 전체 해상도로 초당 30프레임을 녹화합니다.
 [settings FFmpeg is ready.]
 FFmpeg가 준비되었습니다.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ AI 원격 측정
 [Units can die]
 유닛 사망 가능
 [Upgrades]
-
+업그레이드
 [No stockpile]
 없음
 [No glass cannon]
@@ -5193,7 +5193,7 @@ AI 원격 측정
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 체력이 다 떨어지면 유닛이 죽습니다. 끄면 체력 1에서 멈춥니다.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+유닛은 훈련 건물에서 레벨이 오르고 건물은 업그레이드할 수 있습니다. 끄더라도 수리는 가능합니다.
 [stat group work]
 일꾼의 시간
 [stat worker time]
@@ -5309,235 +5309,235 @@ AI 원격 측정
 [stat view by place]
 장소별
 [AI Library]
-
+AI 라이브러리
 [Authoring guide]
-
+제작 안내
 [Beginner-friendly]
-
+초보자에게 적합
 [Defensive]
-
+방어형
 [Discover]
-
+둘러보기
 [Download & install]
-
+다운로드 및 설치
 [Downloading AI…]
-
+AI 다운로드 중…
 [Expansion]
-
+확장형
 [Experimental]
-
+실험적
 [Favourite]
-
+즐겨찾기
 [Favourited]
-
+즐겨찾기에 추가됨
 [Favourites]
-
+즐겨찾기 목록
 [Got it]
-
+알겠습니다
 [How AIs work]
-
+AI 작동 방식
 [Install selected version]
-
+선택한 버전 설치
 [Installed]
-
+설치됨
 [Invalid AI catalogue response]
-
+AI 목록 응답이 잘못되었습니다
 [JavaScript API reference]
-
+JavaScript API 참고 문서
 [Like]
-
+좋아요
 [Liked]
-
+좋아요 표시됨
 [Loading AI library…]
-
+AI 라이브러리 불러오는 중…
 [Most downloaded]
-
+다운로드 많은 순
 [Most liked]
-
+좋아요 많은 순
 [Newest]
-
+최신순
 [No AIs match these filters.]
-
+이 필터에 맞는 AI가 없습니다.
 [Not validated for this game version]
-
+이 게임 버전에서 검증되지 않음
 [Open AI Library]
-
+AI 라이브러리 열기
 [Open AI page]
-
+AI 페이지 열기
 [Passed compatibility checks]
-
+호환성 검사 통과
 [Recently updated]
-
+최근 업데이트
 [Rush]
-
+속공형
 [Search]
-
+검색
 [Share your AI]
-
+내 AI 공유
 [Show more]
-
+더 보기
 [Sign in through Online settings to like and favourite AIs.]
-
+AI에 좋아요를 표시하거나 즐겨찾기에 추가하려면 온라인 설정에서 로그인하세요.
 [Starter project]
-
+시작용 프로젝트
 [downloads of this version]
-
+이 버전 다운로드 수
 [downloads]
-
+다운로드 수
 [Update available]
-
+업데이트 가능
 [Browse versions]
-
+버전 둘러보기
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+AI를 다운로드한 다음 로컬 게임의 컴퓨터 자리에서 선택하세요. 설치한 버전은 오프라인에서도 작동합니다. 업데이트는 이후 게임에 적용되며, 저장된 게임은 원래 코드를 유지합니다.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+호환성 검사는 안전성이나 플레이 실력을 보증하지 않습니다. 신뢰하는 제작자의 코드만 실행하세요.
 [Back to results]
-
+결과로 돌아가기
 [music 2–5 minutes]
-
+2~5분
 [music 5–15 minutes]
-
+5~15분
 [music AI-generated]
-
+AI 생성
 [music All music]
-
+모든 음악
 [music All open licences]
-
+모든 공개 라이선스
 [music Any duration]
-
+길이 제한 없음
 [music Audition each mood for eight seconds]
-
+각 분위기를 8초씩 들어보기
 [music Back]
-
+뒤로
 [music Browse]
-
+둘러보기
 [music Building]
-
+고조
 [music Calm]
-
+평온
 [music Calm → Building → Combat]
-
+평온 → 고조 → 전투
 [music Choose Building]
-
+고조 음악 선택
 [music Choose Calm]
-
+평온 음악 선택
 [music Choose Combat]
-
+전투 음악 선택
 [music Choose ZIP]
-
+ZIP 선택
 [music Choose a music file.]
-
+음악 파일을 선택하세요.
 [music Combat]
-
+전투
 [music Could not open this music set.]
-
+이 음악 세트를 열 수 없습니다.
 [music Credits, downloads and reporting]
-
+제작 정보, 다운로드 및 신고
 [music Downloading music…]
-
+음악 다운로드 중…
 [music Export recovery files]
-
+복구 파일 내보내기
 [music Fade duration]
-
+페이드 시간
 [music File selection cancelled or failed.]
-
+파일 선택이 취소되었거나 실패했습니다.
 [music Import ZIP]
-
+ZIP 가져오기
 [music Import ZIP or three tracks]
-
+ZIP 또는 곡 3개 가져오기
 [music Import music]
-
+음악 가져오기
 [music Import three tracks]
-
+곡 3개 가져오기
 [music Includes AI-generated audio]
-
+AI 생성 오디오 포함
 [music Install]
-
+설치
 [music Install selected]
-
+선택 항목 설치
 [music Installed]
-
+설치됨
 [music Load more]
-
+더 불러오기
 [music Loading music…]
-
+음악 불러오는 중…
 [music Most downloaded]
-
+다운로드 많은 순
 [music Most liked]
-
+좋아요 많은 순
 [music Music decoding failed.]
-
+음악 디코딩에 실패했습니다.
 [music Music download failed.]
-
+음악 다운로드에 실패했습니다.
 [music Music installed.]
-
+음악이 설치되었습니다.
 [music Music installed. It is now available in Audio settings.]
-
+음악이 설치되었습니다. 이제 오디오 설정에서 사용할 수 있습니다.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+음악이 아직 영구 저장되지 않았습니다. 나가기 전에 저장을 다시 시도하세요.
 [music Music library]
-
+음악 라이브러리
 [music Music request failed.]
-
+음악 요청에 실패했습니다.
 [music Newest]
-
+최신순
 [music No community music installed yet. Import files or browse the online library.]
-
+설치된 커뮤니티 음악이 없습니다. 파일을 가져오거나 온라인 라이브러리를 둘러보세요.
 [music No music found.]
-
+음악을 찾지 못했습니다.
 [music Not AI-generated]
-
+AI 생성 아님
 [music Pause]
-
+일시 정지
 [music Play]
-
+재생
 [music Playback position]
-
+재생 위치
 [music Preview]
-
+미리 보기
 [music Ready to import.]
-
+가져올 준비가 되었습니다.
 [music Remove]
-
+제거
 [music Reset to game behavior]
-
+게임 기본 동작으로 초기화
 [music Retry saving]
-
+저장 다시 시도
 [music Saved.]
-
+저장되었습니다.
 [music Saving music…]
-
+음악 저장 중…
 [music Search]
-
+검색
 [music Search title, artist, description…]
-
+제목, 아티스트, 설명 검색…
 [music Select for installation]
-
+설치 대상으로 선택
 [music Share music on the web]
-
+웹에서 음악 공유
 [music Some catalogue entries could not be read.]
-
+목록의 일부 항목을 읽을 수 없습니다.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+저장소에 저장할 수 없습니다. 나가기 전에 다시 시도하거나 파일을 내보내세요.
 [music Tag]
-
+태그
 [music Test crossfades]
-
+크로스페이드 시험
 [music Up to 2 minutes]
-
+최대 2분
 [music Use this music]
-
+이 음악 사용
 [music Validating music…]
-
+음악 검증 중…
 [settings Music library · Browse, install and import]
-
+음악 라이브러리 · 둘러보기, 설치 및 가져오기
 [music Filters]
-
+필터
 [music Leave without saving]
-
+저장하지 않고 나가기
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+다운로드한 음악 ZIP 또는 Opus 곡 3개를 가져옵니다. 메타데이터와 표지 그림은 평온 곡에서 읽으므로 추가 파일이 필요하지 않습니다.
 [settings Target render FPS]
 목표 렌더링 FPS
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ AI 원격 측정
 [Reroll terrain look]
 지형 외관 다시 무작위 선택
 [boulders]
-
+큰 바위
 [hedge]
-
+생울타리
 [thicket]
-
+덤불
 [ridge_rock]
-
+바위 능선
 [outcrop]
-
+노출된 바위
 [dirt]
-
+흙
 [clay]
-
+점토
 [gravel]
-
+자갈
 [flower_meadow]
-
+꽃 초원
 [mud]
-
+진흙
 [marsh]
-
+습지
 [deep_snow]
-
+깊은 눈
 [scree]
-
+돌무더기 비탈
 [dirt_track]
-
+흙길
 [boardwalk]
-
+나무 길
 [lava]
-
+용암
 [ember_field]
-
+잿불 지대
 [loam]
-
+양토
 [moss]
-
+이끼
 [spring_meadow]
-
+봄 초원
 [deep_water]
-
+깊은 물
 [dark_water]
-
+어두운 물
 [void_hole]
-
+구멍
 [chasm]
-
+깊은 틈
 [terrain group water]
-
+물
 [terrain group sand]
-
+모래
 [terrain group grass]
-
+풀
 [terrain group ice]
-
+얼음
 [terrain group paths]
-
+길
 [terrain group obstacles]
-
+장애물
 [terrain group ridges]
-
+능선
 [terrain group barren]
-
+척박한 땅
 [terrain group rough]
-
+험한 땅
 [terrain group lava]
-
+용암
 [terrain group fertile]
-
+비옥한 땅
 [terrain group deep-water]
-
+깊은 물
 [terrain group void]
-
+공허
 [experiment obstacle-terrain]
-
+장애물 지형
 [experiment obstacle-terrain help]
-
+지도 편집기에 큰 바위, 생울타리, 덤불을 추가합니다. 지상 유닛과 투사체는 통과할 수 없지만 비행 유닛은 지나갈 수 있습니다. 건물이나 자원을 놓을 수 없습니다.
 [experiment ridge-terrain]
-
+능선 지형
 [experiment ridge-terrain help]
-
+지도 편집기에 바위 능선과 노출된 바위를 추가합니다. 지상 유닛은 통과할 수 없지만 탑의 공격과 비행 유닛은 지나갈 수 있습니다. 건물이나 자원을 놓을 수 없습니다.
 [experiment barren-terrain]
-
+척박한 땅
 [experiment barren-terrain help]
-
+지도 편집기에 흙, 점토, 자갈, 꽃 초원을 추가합니다. 건물을 세울 수 있지만 그 위나 주변에서는 아무것도 자라지 않으며 물가로 취급되지 않습니다.
 [experiment rough-terrain]
-
+험한 땅
 [experiment rough-terrain help]
-
+지도 편집기에 진흙, 습지, 깊은 눈, 돌무더기 비탈을 추가합니다. 지상 유닛의 이동 속도는 약 3분의 2가 됩니다. 건물이나 자원을 놓을 수 없습니다.
 [experiment path-terrain]
-
+길 지형
 [experiment path-terrain help]
-
+지도 편집기에 흙길과 나무 길을 추가합니다. 오솔길처럼 지상 유닛이 두 배 속도로 이동하며 건물을 세울 수 있지만 아무것도 자라지 않습니다.
 [experiment lava-terrain]
-
+용암 지형
 [experiment lava-terrain help]
-
+지도 편집기에 용암과 잿불 지대를 추가합니다. 지상 유닛은 들어갈 수 없으며, 통과하는 비행 유닛은 체력을 빠르게 잃습니다. 투사체는 지나갈 수 있습니다.
 [experiment fertile-terrain]
-
+비옥한 땅
 [experiment fertile-terrain help]
-
+지도 편집기에 양토, 이끼, 봄 초원을 추가합니다. 건물과 작물을 지원하며, 물보다 더 강하게 주변 땅에 수분을 공급합니다.
 [experiment deep-water-terrain]
-
+깊은 물
 [experiment deep-water-terrain help]
-
+지도 편집기에 깊은 물과 어두운 물을 추가합니다. 수영 유닛은 느리게 지나가고 조류는 자라지 않지만 주변 밭에 수분을 공급합니다.
 [experiment void-terrain]
-
+공허 지형
 [experiment void-terrain help]
-
+지도 편집기에 구멍과 깊은 틈을 추가합니다. 비행 유닛을 포함해 아무것도 지나갈 수 없으며 투사체는 가장자리에서 멈춥니다.
 [terrain group custom]
-
+사용자 지정
 [terrain group classic]
-
+기본 지면
 [terrain rule walkable]
-
+걸을 수 있음
 [terrain rule swimmable]
-
+수영 가능
 [terrain rule impassable]
-
+통과 불가
 [terrain rule no flying]
-
+비행 불가
 [terrain rule buildable]
-
+건설 가능
 [terrain rule speed %0]
-
+속도 %0%
 [terrain rule crops grow]
-
+작물이 자람
 [terrain rule irrigates]
-
+주변 땅에 수분 공급
 [terrain rule stops nearby growth]
-
+주변 성장 차단
 [terrain rule blocks shots]
-
+사격 차단
 [terrain rule hurts walkers]
-
+보행 유닛에 피해
 [terrain rule hurts fliers]
-
+비행 유닛에 피해
 [terrain palette hint]
-
+브러시를 선택하세요. 같은 그룹의 지형은 규칙을 공유하며 외형만 다릅니다.
 [terrain rule algae grow]
-
+조류가 자람
 [terrain palette experiments hint]
-
+브러시를 선택하세요. 설정 > 실험에서 실험 기능을 켜면 더 많은 지형 그룹이 나타납니다.
 [brush valid on %0]
-
+배치 가능: %0
 [brush valid nowhere]
-
+이 지도의 어떤 지형에도 배치할 수 없습니다
 [brush requires experiment %0]
-
+%0 실험 기능 필요
 [brush resources custom]
-
+가져온 자원
 [brush section zones]
-
+구역
 [brush section areas]
-
+영역
 [brush section tools]
-
+도구
 [brush clearing area]
-
+제거 구역
 [editor unsaved title]
-
+저장되지 않은 변경 사항
 [editor quit unsaved]
-
+편집기를 나가기 전에 이 지도의 변경 사항을 저장할까요?
 [editor load unsaved]
-
+다른 지도를 열기 전에 이 지도의 변경 사항을 저장할까요?
 [editor save]
-
+저장…
 [editor discard]
-
+저장 안 함
 [editor share never saved]
-
+지도는 저장된 파일로 공유됩니다. 먼저 이 지도를 저장한 다음 공유하세요.
 [editor share unsaved]
-
+이 지도에 아직 저장되지 않은 변경 사항이 있습니다. 공유하면 저장된 파일이 업로드됩니다.
 [editor save and share]
-
+저장 및 공유…
 [editor share saved version]
-
+저장된 버전 공유
 [editor reroll confirm]
-
+모든 지형 타일의 외형을 무작위로 다시 정할까요? 지형 종류와 게임 플레이는 유지됩니다. 이 작업은 취소할 수 없습니다.
 [editor reroll]
-
+외형 다시 뽑기
 [editor map saved]
-
+지도가 저장되었습니다
 [editor map shared]
-
+지도가 온라인에 공유되었습니다
 [editor save needs fertility]
-
+저장하려면 비옥도 지도가 필요하므로 저장을 취소했습니다. 확인을 눌러 다시 시도하세요.
 [editor fertility stale]
-
+비옥도 지도가 오래되었습니다 · 클릭하여 새로 고침
 [No definition files found in %0]
-
+%0에서 정의 파일을 찾지 못했습니다
 [From device…]
-
+기기에서…
 [replace existing file %0?]
-
+이름이 "%0"인 파일이 이미 있습니다. 바꿀까요?
 [Replace]
-
+바꾸기
 [Keep existing file]
-
+기존 파일 유지
 [editor menu save]
-
+지도 저장
 [editor menu load]
-
+지도 열기…
 [editor menu import terrain]
-
+지형 정의 가져오기…
 [editor menu import resources]
-
+자원 정의 가져오기…
 [editor menu teams]
-
+팀…
 [editor menu scenario]
-
+시나리오…
 [editor menu reroll]
-
+지형 외형 다시 뽑기…
 [editor menu file]
-
+파일
 [editor menu map]
-
+지도
 [no resource growth areas]
-
+성장 금지 구역
 [dock flags and units]
-
+깃발 및 유닛
 [dock minimap]
-
+미니맵
 [dock search brushes]
-
+브러시 검색
 [dock brush shape %0]
-
+브러시 모양 %0
 [dock brush]
-
+브러시
 [dock brush paint]
-
+그리기
 [dock brush erase]
-
+지우기
 [dock enable for map]
-
+이 지도에서 켜기
 [dock enable experiment %0]
-
+%0 켜기
 [dock enable experiment hint %0]
-
+이 지도에서만 %0 실험 기능을 켭니다.
 [dock area number]
-
+영역
 [dock building level]
-
+레벨
 [dock unit level]
-
+유닛 레벨
 [dock no brushes match]
-
+검색에 맞는 브러시가 없습니다.
 [dock active team]
-
+활성 팀
 [dock team count %0]
-
+이 지도의 팀: %0
 [dock add team]
-
+팀 추가
 [dock remove team]
-
+팀 제거
 [dock nothing selected]
-
+선택된 항목이 없습니다.
 [dock no properties]
-
+이 개체에는 편집할 수 있는 속성이 없습니다.
 [focus brush search]
-
+브러시 검색
 [switch to resources view]
-
+자원 보기로 전환
 [dock resources base]
-
+표준 자원
 [dock fertility stale]
-
+비옥도 지도가 오래되었습니다.
 [dock fertility refresh]
-
+비옥도 새로 고침
 [Enabled %0 for this map]
-
+이 지도에서 %0 켜짐
 [editor fertility tap refresh]
-
+비옥도 지도가 오래되었습니다: 눌러서 새로 고침
 [editor menu import set]
-
+지형 및 자원 세트 가져오기
 [editor menu set library]
-
+세트 라이브러리
 [set library loading]
-
+세트 불러오는 중…
 [set library downloading]
-
+지정한 릴리스 다운로드 중…
 [set library connection error]
-
+세트를 불러올 수 없습니다. 연결을 확인하고 다시 시도하세요.
 [set library hash error]
-
+다운로드한 세트의 해시 검사가 실패했습니다.
 [set library package error]
-
+잘못된 세트 패키지입니다.
 [set library listing error]
-
+잘못된 세트 목록입니다.
 [set library release error]
-
+잘못된 세트 릴리스입니다.
 [set library selection help]
-
+가져올 항목을 선택하세요. 필요한 사용자 지정 자원은 자동으로 포함됩니다.
 [set library empty]
-
+세트를 찾지 못했습니다.
 [set library release help]
-
+확인하고 가져올 정확한 릴리스를 선택하세요.
 [set library heading]
-
+지형 및 자원 세트
 [set library browse]
-
+온라인 라이브러리 둘러보기
 [set library local]
-
+지도 콘텐츠, 제작 정보 및 로컬 편집
 [set library local help]
-
+이 지도에 저장된 콘텐츠 사본을 편집합니다. 원본 릴리스의 제작 정보는 유지됩니다. 변경 사항은 다른 지도나 온라인 릴리스를 갱신하지 않습니다.
 [set library apply]
-
+로컬 변경 사항 적용
 [set library updated]
-
+로컬 콘텐츠가 갱신되었습니다.
 [set library search hint]
-
+테마와 제작자 검색
 [set library search]
-
+검색
 [set library set]
-
+세트
 [set library update help]
-
+일치하는 배치된 지형과 자원을 로컬 편집을 포함하여 명시적으로 바꿉니다. 제거된 항목은 이전 릴리스로 남습니다. 기존 재료량은 새 용량을 넘지 않도록 제한됩니다.
 [set library import]
-
+선택한 항목 가져오기
 [set library next]
-
+다음 페이지
 [set library back]
-
+결과로 돌아가기
 [set library license %0]
-
+라이선스: %0
 [set library release %0]
-
+릴리스 %0
 [set library replace %0]
-
+릴리스 %0의 배치된 항목 바꾸기
 [set library preview limit]
-
+처음 64개 항목의 미리 보기가 표시됩니다. 모든 항목을 선택할 수 있습니다.
 [set library definition]
-
+속성 정의 (JSON)
 [set library artwork]
-
+지형 그림 매핑 (JSON)
 [settings Map generators]
 지도 생성기
 [settings Import a generator package, then select its landscape when creating a map or game.]
