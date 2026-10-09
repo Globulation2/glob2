@@ -45,6 +45,16 @@ class DevelopmentBuildTests(unittest.TestCase):
             with self.subTest(args=args), self.assertRaises(ValueError):
                 build_identity(args)
 
+    def test_dependency_configuration_skips_query_only_targets(self):
+        import SCons.Script
+        for targets, flags, expected in [([], (), True), (['compile_commands.json'], (), False),
+                                       (['custom/compile_commands.json'], (), False),
+                                       (['compile_commands.json', 'glob2'], (), True),
+                                       ([], ('clean',), False), ([], ('no_exec',), False),
+                                       ([], ('help',), False)]:
+            with self.subTest(targets=targets, flags=flags), patch.object(SCons.Script, 'COMMAND_LINE_TARGETS', targets), patch.object(SCons.Script, 'GetOption', side_effect=lambda name: name in flags):
+                self.assertEqual(dev_build.can_build_dependencies(), expected)
+
     def test_development_command_preserves_overrides(self):
         spec = importlib.util.spec_from_file_location('dev_command', ROOT / 'tools/dev_build.py')
         command = importlib.util.module_from_spec(spec)
