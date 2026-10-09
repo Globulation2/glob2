@@ -254,7 +254,6 @@ namespace GAGCore
 			}
 			else
 			{
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
                 if(highResolutionSampling)
                 {
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
@@ -281,7 +280,12 @@ namespace GAGCore
 #ifdef GLOB2_WEBGL2
                     const bool compress=false;
 #else
-                    const bool compress=glState.hasS3TCCompression;
+                    // Authored artwork has worker-prepared mip levels. Generated
+                    // or edited pixels use the fallback chain and can change on
+                    // every animation phase; driver-side DXT encoding stalls the
+                    // render thread for those updates.
+                    const bool compress=glState.hasS3TCCompression &&
+                        preparedUploadRevision == pixelRevision && !preparedMips.empty();
 #endif
                     const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
                     for (size_t mip = 0; mip < levels->size(); ++mip) {
@@ -294,6 +298,8 @@ namespace GAGCore
                     }
 
                 }
+                else
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
 			}
 		}
 		#endif

@@ -8,6 +8,7 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Team.h"
+#include "OutcomeReason.h"
 #include "Player.h"
 #include "Bullet.h"
 #include "Sector.h"
@@ -318,6 +319,7 @@ Handle capture(const Game& game,
 		target.otherVision = team->sharedVisionOther;
 		if (storage && target.statistics.buildingCountByVariant.capacity() < std::as_const(team->stats).getLatestStat()->buildingCountByVariant.size()) ++storage->allocations;
         target.color = {team->color.r,team->color.g,team->color.b,team->color.a}; target.won = team->hasWon; target.lost = team->hasLost;
+        target.outcomeReasonKey = outcomeReasonKey(game, t);
         target.unitConversionGained = team->unitConversionGained;
         target.unitConversionLost = team->unitConversionLost;
         target.noMoreBuildingSitesCountdown = team->noMoreBuildingSitesCountdown;

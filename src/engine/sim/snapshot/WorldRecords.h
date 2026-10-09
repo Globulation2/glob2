@@ -46,6 +46,7 @@ struct TeamView
 	bool alive = false, won = false, lost = false;
 	ColorRecord color;
 	std::string firstPlayerName;
+	std::string outcomeReasonKey; // Translation key, resolved at the simulation read boundary.
 	int unitConversionGained = 0, unitConversionLost = 0, noMoreBuildingSitesCountdown = 0;
 	std::array<Sint32, MaterialSlotCount> reservedMaterials{};
 	Uint32 mask = 0, allies = 0, enemies = 0, playersMask = 0;

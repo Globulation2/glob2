@@ -100,6 +100,17 @@ class PlayReleaseTests(unittest.TestCase):
         self.assertEqual(update['body']['releases'][0]['versionCodes'], ['42'])
         self.assertEqual(update['body']['releases'][0]['releaseNotes'][0]['text'], 'Test build')
 
+    def test_production_requires_explicit_track_and_validated_bundle(self):
+        service, edits = self.service()
+        result = play_release.publish(service, self.bundle, self.code, 'Release 42', 'Public release', track='production')
+        self.assertEqual(result['track'], 'production')
+        self.assertEqual(edits.calls[1][1]['track'], 'production')
+        self.assertEqual(edits.calls[3][1]['track'], 'production')
+        service, edits = self.service()
+        with self.assertRaises(ValueError):
+            play_release.publish(service, self.bundle, self.code, 'Release 42', 'Public release', track='unknown')
+        self.assertEqual(edits.calls, [])
+
     def test_never_commits_wrong_or_reused_bundle(self):
         for kwargs in ({'active': self.code}, {'bad_digest': True}):
             with self.subTest(kwargs=kwargs):

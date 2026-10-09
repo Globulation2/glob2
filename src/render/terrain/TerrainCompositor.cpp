@@ -260,7 +260,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	struct Source
 	{
 		const std::array<unsigned char, 4> *pixels = nullptr;
-		int size = 0;
+		int size = 0, step = 0;
 	};
 	std::vector<Source> selected(definitions.materials.size());
 	auto *sources = selected.data();
@@ -268,13 +268,32 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		if (!sources[id].pixels)
 		{
 			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
-			sources[id] = {texture.pixels.data(), texture.size};
+			sources[id] = {texture.pixels.data(), texture.size,
+			texture.size % size == 0 ? texture.size / size : 0};
 		}
 	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
 									 [&](auto id) { return id == r.corners[0]; });
 	if (uniform)
 	{
 		const auto &texture = sources[r.corners[0]];
+		// Native and HD sources usually divide the composition grid exactly.
+		// Walk their texels directly instead of dividing twice per output pixel.
+		if (texture.pixels && texture.step)
+		{
+			for (int y = 0; y < size; ++y)
+			{
+				auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
+					(oy + y) * target->pitch) + ox;
+				const auto *source = texture.pixels + y * texture.step * texture.size;
+				for (int x = 0; x < size; ++x, source += texture.step)
+				{
+					const auto *p = source->data();
+					row[x] = (unsigned(p[3]) << 24) | (unsigned(p[0]) << 16) |
+						(unsigned(p[1]) << 8) | p[2];
+				}
+			}
+			return;
+		}
 		for (int y = 0; y < size; ++y)
 		{
 			auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
@@ -322,7 +341,9 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 				if (weights[slot] && sources[cell.palette[slot]].pixels)
 				{
 					const auto &t = sources[cell.palette[slot]];
-					const auto *p = t.pixels[(y * t.size / size) * t.size + x * t.size / size].data();
+					const int sx = t.step ? x * t.step : x * t.size / size;
+					const int sy = t.step ? y * t.step : y * t.size / size;
+					const auto *p = t.pixels[sy * t.size + sx].data();
 					const unsigned a = weights[slot] * p[3];
 					alpha += a;
 					for (int k = 0; k < 3; ++k)
@@ -349,7 +370,13 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			}
 			const auto channel = [&](int k)
 			{
-				unsigned value = unsigned(alpha ? rgb[k] / alpha : 0) * shade >> 8;
+				// Opaque materials have a constant denominator. Keep the exact
+				// integer result while avoiding three variable-width divisions
+				// per sample when an animated terrain page is re-blended.
+				constexpr unsigned opaqueAlpha = 255u * 65536;
+				const unsigned blended = alpha == opaqueAlpha ? unsigned(rgb[k] / opaqueAlpha)
+					: unsigned(alpha ? rgb[k] / alpha : 0);
+				unsigned value = blended * shade >> 8;
 				return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
 			};
 			*p = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) | (channel(1) << 8) |

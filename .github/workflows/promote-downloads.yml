@@ -1,0 +1,96 @@
+name: Promote qualified public downloads
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Exact public version tag whose final packages are already staged in a draft
+        required: true
+        type: string
+      qualification_url:
+        description: HTTPS JSON qualification evidence reviewed for these exact final bytes
+        required: true
+        type: string
+      qualification_sha256:
+        description: Reviewed qualification JSON SHA-256
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-all-platform-release
+  cancel-in-progress: false
+
+jobs:
+  context:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Reject malformed inputs before obtaining publication credentials
+        env:
+          TAG: ${{ inputs.tag }}
+          URL: ${{ inputs.qualification_url }}
+          SHA256: ${{ inputs.qualification_sha256 }}
+        run: |
+          python3 - <<'PY'
+          import os, re
+          from urllib.parse import urlsplit
+          if not re.fullmatch(r'v[0-9]+(?:\.[0-9]+)+',os.environ['TAG']): raise SystemExit('Invalid tag')
+          if not re.fullmatch('[0-9a-f]{64}',os.environ['SHA256']): raise SystemExit('Invalid evidence digest')
+          url=urlsplit(os.environ['URL'])
+          if url.scheme!='https' or not url.hostname or url.username or url.password: raise SystemExit('Evidence must use HTTPS without embedded credentials')
+          PY
+
+  promote:
+    needs: context
+    environment: github-release
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate tagged checkout and qualified final bytes before visibility changes
+        env:
+          GH_TOKEN: ${{ secrets.PUBLIC_RELEASE_GH_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          QUALIFICATION_URL: ${{ inputs.qualification_url }}
+          QUALIFICATION_SHA256: ${{ inputs.qualification_sha256 }}
+        run: |
+          set -euo pipefail
+          test -n "$GH_TOKEN"
+          python3 tools/release/release.py check --tag "$TAG"
+          test "$(gh release view "$TAG" --repo Globulation2/glob2 --json isDraft --jq .isDraft)" = true
+          mkdir -p artifacts/qualified
+          gh release download "$TAG" --repo Globulation2/glob2 --dir artifacts/qualified
+          curl --fail --silent --show-error --proto '=https' "$QUALIFICATION_URL" --output artifacts/qualification.json
+          echo "$QUALIFICATION_SHA256  artifacts/qualification.json" | sha256sum --check
+          python3 tools/release/downloads_manifest.py --artifacts artifacts/qualified \
+            --inventory artifacts/qualified/package-inventory.json --qualification artifacts/qualification.json \
+            --tag "$TAG" --source-commit "$(git rev-parse HEAD)" --repository Globulation2/glob2 \
+            --output artifacts/downloads-manifest.json --checksums artifacts/SHA256SUMS
+          python3 - <<'PY'
+          import os, subprocess
+          from pathlib import Path
+          # Retry safely after metadata upload succeeds but visibility promotion fails.
+          for name in ('downloads-manifest.json', 'SHA256SUMS'):
+              expected=Path('artifacts')/name
+              staged=Path('artifacts/qualified')/name
+              if staged.exists():
+                  if staged.read_bytes()!=expected.read_bytes():
+                      raise SystemExit('Existing draft metadata differs from the qualified bytes: '+name)
+              else:
+                  subprocess.run(['gh','release','upload',os.environ['TAG'],'--repo','Globulation2/glob2',str(expected)],check=True)
+          PY
+          gh release edit "$TAG" --repo Globulation2/glob2 --draft=false
+          echo 'Published the qualified immutable packages. Refresh website metadata through its reviewed PR workflow.' >> "$GITHUB_STEP_SUMMARY"

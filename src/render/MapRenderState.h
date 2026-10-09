@@ -15,6 +15,7 @@ class DynamicClouds;
 class ColonySkinPreview;
 namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
+class OverviewTerrainCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
 //! cloud field, the terrain page cache and scratch buffers. Owned by the
@@ -44,6 +45,7 @@ struct MapRenderState
 	ZoomDetail detail;
 	//! The terrain overview's sampled palette image, kept between frames.
 	std::unique_ptr<GAGCore::DrawableSurface> overview;
+	std::unique_ptr<OverviewTerrainCache> overviewCache;
 	//! The furthest this view's camera can zoom out, set by its owner; 0 when
 	//! unknown. It anchors the far end of the detail curves (ZoomDetail::rampTile).
 	double minimumZoom = 0;

@@ -2113,10 +2113,17 @@ it is saved, checksummed or read by the simulation.
 - The torus view draws its map texture through the same map transform at the
   camera's zoom (`TorusView::draw`), so it shows the same detail, overlay sizes and
   overview as the 2D view at that zoom. Its tiled atlas chooses terrain sampling
-  density from the complete map capture, then admits each bounded tile at that
-  density. Narrow edge tiles therefore reuse warm pages and keep the same shore
-  samples as their wider neighbors, including when HD sources exceed the cache
-  budget. Streaming fallback follows the same density choice.
+  density from the complete map capture, with enough room for every terrain page
+  and its renderer allocation to remain resident. Large captures use filtered
+  native terrain pages and a matching reduced atlas; this reduces fine texture
+  detail when magnified, while preserving contour coverage and the shared zoom
+  detail transitions. The atlas uses the device texture/viewport limits, splitting
+  only when necessary. Narrow edge tiles reuse the same sampling density and warm
+  pages. Streaming fallback follows the same density choice.
+  Overview palette samples are cached in canonical CPU pages independently of
+  zoom and animation. Terrain vertices (including the contour halo), the terrain
+  seed, registry/asset replacement and resource visibility invalidate those pages;
+  camera movement and blend opacity do not resample unchanged contours.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling

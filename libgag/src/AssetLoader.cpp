@@ -96,11 +96,15 @@ void AssetImage::prepareUpload(bool highResolution) {
     auto power = [](int value) { int result = 1; while (result < value) result *= 2; return result; };
     int width = power(surface->w), height = power(surface->h);
     Mip level{width, height, std::vector<unsigned char>(size_t(width) * height * 4)};
-    for (int y = 0; y < height; ++y) for (int x = 0; x < width; ++x) {
+    for (int y = 0; y < height; ++y) {
+        const int sy = std::min(y, surface->h - 1);
         const auto *source = uploadPixels.empty()
-            ? static_cast<const unsigned char*>(surface->pixels) + std::min(y, surface->h - 1) * surface->pitch + std::min(x, surface->w - 1) * 4
-            : uploadPixels.data() + (size_t(std::min(y, surface->h - 1)) * surface->w + std::min(x, surface->w - 1)) * 4;
-        std::copy_n(source, 4, level.pixels.data() + (size_t(y) * width + x) * 4);
+            ? static_cast<const unsigned char*>(surface->pixels) + sy * surface->pitch
+            : uploadPixels.data() + size_t(sy) * surface->w * 4;
+        auto *dest = level.pixels.data() + size_t(y) * width * 4;
+        std::copy_n(source, size_t(surface->w) * 4, dest);
+        for (int x = surface->w; x < width; ++x)
+            std::copy_n(source + (surface->w - 1) * 4, 4, dest + x * 4);
     }
     for (;;) {
         mips.push_back(std::move(level));
@@ -110,13 +114,20 @@ void AssetImage::prepareUpload(bool highResolution) {
         const auto &input = mips.back().pixels;
         for (int y = 0; y < nextHeight; ++y) for (int x = 0; x < nextWidth; ++x) {
             unsigned sum[4] = {};
-            for (int dy = 0; dy < 2; ++dy) for (int dx = 0; dx < 2; ++dx) {
-                const auto *pixel = input.data() + (size_t(std::min(height - 1, y * 2 + dy)) * width + std::min(width - 1, x * 2 + dx)) * 4;
+            const auto *top = input.data() + (size_t(y * 2) * width + x * 2) * 4;
+            const auto *bottom = top + (height > 1 ? width * 4 : 0);
+            const int right = width > 1 ? 4 : 0;
+            for (const auto *pixel : {top, top + right, bottom, bottom + right}) {
                 sum[3] += pixel[3]; for (int c = 0; c < 3; ++c) sum[c] += pixel[c] * pixel[3];
             }
             auto *pixel = level.pixels.data() + (size_t(y) * nextWidth + x) * 4;
             pixel[3] = (sum[3] + 2) / 4;
-            for (int c = 0; c < 3; ++c) pixel[c] = sum[3] ? (sum[c] + sum[3] / 2) / sum[3] : 0;
+            // Opaque footprints use a constant denominator, preserving the
+            // alpha-weighted rounding without three divisions on the render
+            // thread when a generated/animated surface prepares its mips.
+            for (int c = 0; c < 3; ++c)
+                pixel[c] = sum[3] == 4u * 255 ? (sum[c] + 2u * 255) / (4u * 255)
+                    : (sum[3] ? (sum[c] + sum[3] / 2) / sum[3] : 0);
         }
         width = nextWidth; height = nextHeight;
     }

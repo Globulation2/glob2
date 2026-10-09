@@ -19,6 +19,10 @@ on:
         default: false
   workflow_call:
     inputs:
+      source_commit:
+        required: false
+        default: ''
+        type: string
       tag:
         required: true
         type: string
@@ -46,6 +50,7 @@ jobs:
       github.repository_id == 1397722696 &&
       github.actor_id == 6193625 &&
       github.triggering_actor == 'genixpro' &&
+      github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     outputs:
@@ -61,6 +66,7 @@ jobs:
         id: version
         env:
           TAG: ${{ inputs.tag }}
+          EXPECTED_COMMIT: ${{ inputs.source_commit }}
         run: |
           set -euo pipefail
           if [[ -n "$TAG" ]]; then
@@ -77,6 +83,7 @@ jobs:
               exit 1
             fi
           fi
+          if [[ -n "$EXPECTED_COMMIT" ]]; then test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"; fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Validate Android release identity
@@ -93,7 +100,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
           fetch-depth: 0
       - name: Create reproducible source archive
         env:
@@ -123,7 +130,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Install native build utilities
         run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config nasm libva-dev unzip zip autoconf automake libtool cmake ninja-build
       - name: Install pinned Android toolchain
@@ -183,7 +190,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Install build and runtime dependencies
         run: |
           sudo apt-get update -qq
@@ -224,6 +231,7 @@ jobs:
           VERSION: ${{ needs.preflight.outputs.version }}
         run: |
           mkdir -p artifacts/release-output
+          python3 tools/release/linux_installation.py --stage artifacts/release-stage
           python3 tools/release/archives.py linux --stage artifacts/release-stage \
             --output "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" \
             --report artifacts/package-sizes/linux-compression.json
@@ -322,7 +330,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Build from source
         run: |
           # The checkout is owned by another user inside the container.
@@ -351,7 +359,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: release-source
@@ -418,7 +426,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Build and package Windows client
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
@@ -540,18 +548,28 @@ jobs:
           path: artifacts/package-sizes/*.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: release-windows
+          name: unsigned-windows
           path: artifacts/release-output/*
           if-no-files-found: error
 
   macos-package:
     needs: preflight
-    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    runs-on: ${{ matrix.runner }}
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '15.0'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Install dependencies
         run: |
           brew install cmake freetype libpng jpeg-turbo scons     \
@@ -561,15 +579,15 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 package
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 CXXFLAGS="-g -mmacosx-version-min=15.0" LINKFLAGS="-mmacosx-version-min=15.0" package
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: release-macos
+          name: unsigned-macos-${{ matrix.architecture }}
           path: Glob2-*.dmg
           if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: release-macos-symbols
+          name: release-macos-symbols-${{ matrix.architecture }}
           path: build/darwin/client/release/symbols/
           if-no-files-found: error
           retention-days: 90
@@ -585,7 +603,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - name: Pin upstream source
         env:
           REVISION: ${{ needs.preflight.outputs.revision }}
@@ -625,7 +643,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1
         id: snap
       - name: Test installed snap
@@ -649,13 +667,13 @@ jobs:
 
   compiler-profile-portability:
     if: inputs.benchmark_profiles
-    needs: [linux-package, windows-package]
+    needs: [preflight, linux-package, windows-package]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
-          ref: ${{ inputs.tag || github.sha }}
+          ref: ${{ needs.preflight.outputs.revision }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: compiler-profile-measurements-linux

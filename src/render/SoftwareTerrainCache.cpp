@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <optional>
+#include <cstring>
 #include <stdexcept>
 namespace
 {
@@ -97,9 +98,9 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 // darken their neighbours.
 // Both surfaces are ARGB8888; the power-of-two divisor divides one native tile.
 // Filtering each tile independently preserves exact tile-aligned page crops.
-void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy, int divisor)
+template <int divisor> void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy)
 {
-	const int size = NativeTilePixels / divisor, count = divisor * divisor;
+	constexpr int size = NativeTilePixels / divisor, count = divisor * divisor;
 	for (int y = 0; y < size; ++y)
 		for (int x = 0; x < size; ++x)
 		{
@@ -120,11 +121,34 @@ void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy, int di
 			}
 			Uint32 pixel = ((alpha + count / 2) / count) << 24;
 			for (int k = 0; k < 3; ++k)
-				pixel |= (alpha ? (rgb[k] + alpha / 2) / alpha : 0) << (k * 8);
+				pixel |= (alpha == 255u * count ? (rgb[k] + 255u * count / 2) / (255u * count)
+												: (alpha ? (rgb[k] + alpha / 2) / alpha : 0))
+						 << (k * 8);
 			auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) +
 												   (oy + y) * target->pitch);
 			row[ox + x] = pixel;
 		}
+}
+void reduceTile(SDL_Surface *source, SDL_Surface *target, int ox, int oy, int divisor)
+{
+	// The sampling plan chooses one of these power-of-two reductions. Constant
+	// footprints let the compiler unroll filtering and divide opaque colours by
+	// a constant, with the same integer rounding as the alpha-weighted path.
+	switch (divisor)
+	{
+	case 2:
+		return reduceTile<2>(source, target, ox, oy);
+	case 4:
+		return reduceTile<4>(source, target, ox, oy);
+	case 8:
+		return reduceTile<8>(source, target, ox, oy);
+	case 16:
+		return reduceTile<16>(source, target, ox, oy);
+	case 32:
+		return reduceTile<32>(source, target, ox, oy);
+	default:
+		throw std::logic_error("Invalid terrain reduction");
+	}
 }
 SamplingPlan viewSamplingPlan(const SceneMap &map, int left, int top, int right, int bottom, int vx,
 							  int vy, int preferredResolution, bool tiledCapture,
@@ -139,6 +163,10 @@ SamplingPlan viewSamplingPlan(const SceneMap &map, int left, int top, int right,
 			samplingPlan(map, 0, 0, map.getW() - 1, map.getH() - 1, 0, 0, preferredResolution);
 		preferredResolution = capture.resolution;
 		preferredDownsample = capture.downsample;
+		if (globalContainer->gfx->getOptionFlags() &
+			(GAGCore::GraphicContext::USEGPU | GAGCore::GraphicContext::PORTABLEGPU))
+			preferredDownsample = std::max(preferredDownsample,
+				NativeTilePixels / SoftwareTerrainCache::capturePixelsPerCell(map.getW(), map.getH()));
 	}
 	return samplingPlan(map, left, top, right, bottom, vx, vy, preferredResolution,
 						preferredDownsample);
@@ -217,6 +245,21 @@ void buildOpaqueRuns(SoftwareTerrainCache::Chunk &chunk)
 			{rect, std::make_unique<OpaqueView>(chunk.image->getSDLSurface(), rect)});
 }
 } // namespace
+
+int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
+{
+	const auto count =
+		std::uint64_t(std::max(1, width / ChunkTiles)) * std::max(1, height / ChunkTiles);
+	int divisor = 1;
+	while (divisor < NativeTilePixels)
+	{
+		const auto cpu = pageStorage(1, false, divisor), total = pageStorage(1, true, divisor);
+		if (count * total <= GPUCacheBudget && count * (total - cpu) <= GPUBudget)
+			break;
+		divisor *= 2;
+	}
+	return NativeTilePixels / divisor;
+}
 
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
@@ -320,6 +363,42 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		// frames reuse pages without allocating or recomposing native pixels.
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> scratch(nullptr,
 																			SDL_DestroySurface);
+		// Uniform cells of one material/variant share the same filtered pixels.
+		// A water phase can change thousands of cells but only sixteen variants;
+		// compose/filter each of those once within this capture pass.
+		using Pixels = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+		std::vector<std::vector<Pixels>> uniformTiles(compositor.catalog().materials.size());
+		const auto copyUniform = [&](const auto &recipe, SDL_Surface *target, int ox, int oy, int n)
+		{
+			const auto id = recipe.corners[0];
+			const auto variant =
+				compositor.catalog().variantIndex(id, recipe.x, recipe.y, recipe.seed);
+			auto &variants = uniformTiles[id];
+			if (variants.empty())
+			{
+				variants.reserve(compositor.catalog().materials[id].variants.size());
+				for (std::size_t i = 0; i < compositor.catalog().materials[id].variants.size(); ++i)
+					variants.emplace_back(nullptr, SDL_DestroySurface);
+			}
+			auto &tile = variants[variant];
+			if (!tile)
+			{
+				tile.reset(SDL_CreateSurface(n, n, SDL_PIXELFORMAT_ARGB8888));
+				if (!tile)
+					throw std::bad_alloc();
+				if (!scratch)
+					scratch.reset(SDL_CreateSurface(NativeTilePixels, NativeTilePixels,
+													SDL_PIXELFORMAT_ARGB8888));
+				if (!scratch)
+					throw std::bad_alloc();
+				compositor.compose(recipe, scratch.get(), 0, 0, 1);
+				reduceTile(scratch.get(), tile.get(), 0, 0, downsample);
+			}
+			for (int y = 0; y < n; ++y)
+				std::memcpy(static_cast<Uint8 *>(target->pixels) + (oy + y) * target->pitch +
+								ox * 4,
+							static_cast<const Uint8 *>(tile->pixels) + y * tile->pitch, n * 4);
+		};
 		for (int cy = y0; cy <= y1; ++cy)
 			for (int cx = x0; cx <= x1; ++cx)
 			{
@@ -483,7 +562,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							}
 							if (tiles[i].discovered)
 							{
-								if (downsample > 1)
+								if (gpu && downsample > 1 && !native &&
+									std::all_of(corners.begin(), corners.end(),
+												[&](auto id) { return id == corners[0]; }))
+									copyUniform(recipe, target, x * n, y * n, n);
+								else if (downsample > 1)
 								{
 									if (native)
 									{
@@ -512,21 +595,25 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								SDL_Rect area{x * n, y * n, n, n};
 								SDL_FillSurfaceRect(target, &area, 0);
 							}
-							bool opaque = true, empty = true;
-							for (int py = 0; py < n && (opaque || empty); ++py)
-								for (int px = 0; px < n; ++px)
-								{
-									const auto *row = reinterpret_cast<const Uint32 *>(
-										static_cast<const Uint8 *>(target->pixels) +
-										(y * n + py) * target->pitch);
-									const auto alpha = row[x * n + px] >> 24;
-									opaque &= alpha == 255;
-									empty &= alpha == 0;
-									if (!opaque && !empty)
-										break;
-								}
-							entry->opaque[i] = opaque;
-							entry->empty[i] = empty;
+							// Opacity runs are consumed only by the software draw path.
+							if (!gpu)
+							{
+								bool opaque = true, empty = true;
+								for (int py = 0; py < n && (opaque || empty); ++py)
+									for (int px = 0; px < n; ++px)
+									{
+										const auto *row = reinterpret_cast<const Uint32 *>(
+											static_cast<const Uint8 *>(target->pixels) +
+											(y * n + py) * target->pitch);
+										const auto alpha = row[x * n + px] >> 24;
+										opaque &= alpha == 255;
+										empty &= alpha == 0;
+										if (!opaque && !empty)
+											break;
+									}
+								entry->opaque[i] = opaque;
+								entry->empty[i] = empty;
+							}
 						}
 					if (entry->image) entry->image->markPixelsChanged();
 					entry->tiles = tiles;
@@ -661,7 +748,12 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 }
 bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 {
-	const std::size_t budget = gpu ? GPUMaskBudget : MaskBudget;
+	std::size_t budget = gpu ? GPUMaskBudget : MaskBudget;
+#if !defined(GLOB2_MOBILE) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+	// Reduced desktop views cover many more mixed animated cells. Keep their
+	// native coverage too; otherwise every phase samples those contours again.
+	if (gpu && downsample > 1) budget = GPUBudget;
+#endif
 	if (needed > budget)
 		return false;
 	if (*maskTotal + needed <= budget)
