@@ -188,6 +188,7 @@ jobs:
   play-candidate:
     needs: [context, windows-preflight, macos-preflight, android-preflight, publication-preflight, play-preflight, ios-preflight]
     uses: ./.github/workflows/android-play-internal.yml
+    secrets: inherit
     permissions:
       contents: read
       id-token: write
@@ -200,6 +201,7 @@ jobs:
   ios-candidate:
     needs: [context, windows-preflight, macos-preflight, android-preflight, publication-preflight, play-preflight, ios-preflight]
     uses: ./.github/workflows/ios-testflight.yml
+    secrets: inherit
     with:
       tag: ${{ inputs.tag }}
       source_commit: ${{ needs.context.outputs.revision }}
