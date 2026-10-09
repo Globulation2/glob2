@@ -132,7 +132,7 @@ class GameGUITouch
 	struct HudLayout
 	{
 		GAGCore::ViewRect minimap, stats, identity;
-		int columns;
+		std::array<GAGCore::ViewRect, 6> cells;
 	};
 	HudLayout hudLayout(const GAGCore::MobileLayout &ui) const;
 	GAGCore::ViewRect statRect(const HudLayout &hud, int index) const;
@@ -319,6 +319,10 @@ class GameGUITouch
 	std::optional<GAGCore::ViewPoint> preview;
 	std::string previewType;
 	std::unique_ptr<GAGCore::DrawableSurface> confirmLabel, cancelLabel;
+	// Owned by the HUD so GPU surfaces expire with its graphics context.
+	std::array<std::unique_ptr<GAGCore::DrawableSurface>, 10> navigationIcons;
+	std::array<double, 4> navigationIconKey{};
+	void drawNavigationIcon(int icon, GAGCore::ViewPoint center, bool selected, double points = 26);
 	GAGCore::ViewRect world() const;
 	GAGCore::ViewRect controls() const;
 	// Placement confirmation halves of controls(); OK sits under the thumb.

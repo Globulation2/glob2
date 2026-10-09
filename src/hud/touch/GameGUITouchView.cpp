@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
 #include <algorithm>
+#include <cmath>
 // Presentation-only composition. Input and commands live in the coordinator,
 // placement session, and action modules; no desktop composed screen is reused.
 #include "GameGUITouch.h"
+#include "HudUnitConversionIcon.h"
 #include "InGameTouchTheme.h"
 #include "TouchReadout.h"
 #include "Brush.h"
@@ -24,6 +26,87 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 using namespace GAGCore;
+
+void GameGUITouch::drawNavigationIcon(int icon, ViewPoint center, bool selected, double points)
+{
+	auto *gfx = globalContainer->gfx;
+	const double unit = gfx->logicalUnitsPerPoint(), density = std::max(.25, double(gfx->getRasterScale()));
+	const auto ink = icon == 9 ? Color(232, 194, 107) : InGameTouchTheme::ink();
+	const Color accent(232, 194, 107);
+	const auto packed = [](Color c) { return double((Uint32(c.r) << 24) | (Uint32(c.g) << 16) | (Uint32(c.b) << 8) | c.a); };
+	const std::array<double, 4> key{unit, density, packed(InGameTouchTheme::ink()), packed(accent)};
+	if (key != navigationIconKey)
+	{
+		for (auto &image : navigationIcons) image.reset();
+		navigationIconKey = key;
+	}
+	if (!navigationIcons[icon])
+	{
+		// Evaluate strokes in backing pixels: rounded ends and smooth edges at
+		// every display density, without scaling pixel-art desktop buttons.
+		const int size = std::max(1, int(std::ceil(28 * unit * density)));
+		auto *pixels = SDL_CreateSurface(size, size, SDL_PIXELFORMAT_ARGB8888);
+		if (!pixels) return;
+		SDL_SetSurfaceBlendMode(pixels, SDL_BLENDMODE_BLEND);
+		for (int row = 0; row < size; ++row)
+			for (int col = 0; col < size; ++col)
+			{
+				const double x = (col + .5) / (density * unit) - 14;
+				const double y = (row + .5) / (density * unit) - 14;
+				double distance = 100;
+				const auto line = [&](double ax, double ay, double bx, double by) {
+					const double dx = bx - ax, dy = by - ay;
+					const double t = std::clamp(((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy), 0., 1.);
+					distance = std::min(distance, std::hypot(x - ax - t * dx, y - ay - t * dy) - 1.05);
+				};
+				const auto circle = [&](double cx, double cy, double r) {
+					distance = std::min(distance, std::abs(std::hypot(x - cx, y - cy) - r) - 1.05);
+				};
+				switch (icon)
+				{
+				case 0: // Hammer: construction.
+					line(-7, 8, 3, -2); line(-5, -5, 0, -10); line(0, -10, 8, -2);
+					line(8, -2, 3, 3); line(3, 3, -5, -5); break;
+				case 1:
+					line(-7, 10, -7, -10); line(-7, -9, 8, -9); line(8, -9, 4, -3);
+					line(4, -3, 8, 2); line(8, 2, -7, 2); break;
+				case 2: // Sliders, with gaps around the handles.
+					for (int j = 0; j < 3; ++j) {
+						const double yy = -7 + j * 7, xx = j == 1 ? 4 : -4;
+						line(-10, yy, xx - 3, yy); line(xx + 3, yy, 10, yy); circle(xx, yy, 2.5);
+					} break;
+				case 3: circle(0, 0, 9); circle(0, 0, 4); line(0, 0, 9, -9); break;
+				case 4:
+					circle(0, -6, 3); circle(-8, -3, 2); circle(8, -3, 2);
+					line(-5, 10, -5, 5); line(-5, 5, -2, 2); line(-2, 2, 2, 2);
+					line(2, 2, 5, 5); line(5, 5, 5, 10); line(-5, 10, 5, 10);
+					line(-11, 8, -11, 4); line(-11, 4, -8, 2);
+					line(11, 8, 11, 4); line(11, 4, 8, 2); break;
+				case 5: line(-9, -7, 9, -7); line(-9, 0, 9, 0); line(-9, 7, 9, 7); break;
+				case 6: line(-5, -9, -5, 9); line(5, -9, 5, 9); break;
+				case 7: line(-6, -9, 8, 0); line(8, 0, -6, 9); line(-6, 9, -6, -9); break;
+				case 8:
+					for (int j = 0; j < 2; ++j) { const double xx = -9 + j * 11;
+						line(xx, -8, xx + 7, 0); line(xx + 7, 0, xx, 8); } break;
+				case 9: // Trophy, with handles and a broad pedestal.
+					line(-6, -9, 6, -9); line(-6, -9, -5, 0); line(-5, 0, 0, 4);
+					line(0, 4, 5, 0); line(5, 0, 6, -9); line(0, 4, 0, 9);
+					line(-5, 10, 5, 10); line(-6, -6, -10, -6); line(-10, -6, -10, -2);
+					line(-10, -2, -5, 2); line(6, -6, 10, -6); line(10, -6, 10, -2); line(10, -2, 5, 2); break;
+
+				}
+				const Uint32 alpha = Uint8(std::round(255 * std::clamp(.5 - distance * density * unit, 0., 1.)));
+				auto *scan = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(pixels->pixels) + row * pixels->pitch);
+				scan[col] = (alpha << 24) | (Uint32(ink.r) << 16) | (Uint32(ink.g) << 8) | ink.b;
+			}
+		navigationIcons[icon] = std::make_unique<DrawableSurface>(pixels, DrawableSurface::AdoptPixels{});
+	}
+	if (selected)
+		gfx->drawFilledRect(int(center.x - 12 * unit), int(center.y - 16 * unit), int(24 * unit),
+			std::max(1, int(2 * unit)), accent);
+	gfx->drawSurface(float(center.x - points / 2 * unit), float(center.y - points / 2 * unit), float(points * unit),
+		float(points * unit), navigationIcons[icon].get());
+}
 
 void GameGUITouch::drawControls()
 {
@@ -229,55 +312,134 @@ void GameGUITouch::drawHUD()
 			{std::to_string(free) + "/" + std::to_string(gui.teamStats->getTotalUnits(i)), i,
 			 free < 0});
 	}
-	stats.push_back(
-		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[P %0/%1/%2]"))
-			 .arg(gui.drawnScene().panels.local.state().prestige)
-			 .arg(gui.drawnScene().panels.hud.totalPrestige())
-			 .arg(gui.drawnScene().panels.hud.state().prestigeToReach)});
-	stats.push_back({"+" + std::to_string(gui.drawnScene().panels.local.state().unitConversionGained) + " / −" +
-					 std::to_string(gui.drawnScene().panels.local.state().unitConversionLost)});
+	const auto &colony = gui.drawnScene().panels.local.state();
+	const auto &match = gui.drawnScene().panels.hud;
+	stats.push_back({std::to_string(colony.prestige)});
+	stats.push_back({""});
 	// The last cell holds the speed chevrons and the simulation tick rate; where
 	// the speed is fixed (network games) the rate has the cell to itself.
 	const auto rate = gui.tickRate.rate();
 	const bool chevrons = gui.canChangeGameSpeed();
 	stats.push_back({rate ? TickRateMeter::format(*rate) : "-", -1, gui.tickRateShortfall() == 2});
+	const auto paper = InGameTouchTheme::paper();
+	const Color backdrop(paper.r, paper.g, paper.b, 245);
+	gfx->drawFilledRect(int(hud.stats.x), int(hud.stats.y), int(hud.stats.w), int(hud.stats.h), backdrop);
+	const auto drawUnitImage = [&](ViewRect box, int frame, Color color) {
+		auto *sprite = globalContainer->unitmini;
+		sprite->setBaseColor(color);
+		const double scale = std::min(box.w / sprite->getW(frame), box.h / sprite->getH(frame));
+		SDL_Rect clip{int(box.x), int(box.y), int(box.w), int(box.h)};
+		gfx->setUITransform(scale, box.x + (box.w - sprite->getW(frame) * scale) / 2,
+			box.y + (box.h - sprite->getH(frame) * scale) / 2, &clip);
+		gfx->drawSprite(0, 0, sprite, frame);
+		gfx->setUITransform(); gfx->setClipRect();
+	};
+	// Measure the icon and value as one group. Every value starts the same
+	// distance after its icon; the cell centres the group, not the text alone.
+	auto *font = globalContainer->standardFont;
+	const double mainHeight = 40 * unit, valueGap = 6 * unit, iconGap = 4 * unit;
+	double numericScale = std::min(.88, 24 * unit /
+		(std::max(1, font->getStringHeight("Ag")) * gfx->textUnitsPerPoint()));
+	double iconPoints = 24;
+	const auto textWidth = [&](const std::string &text) {
+		return font->getStringWidth(text) * gfx->textUnitsPerPoint();
+	};
+	const auto eachMetric = [&](const auto &visit) {
+		for (int i : {0, 1, 2, 3, 5})
+			visit(hud.cells[i], stats[i].text, false, i != 5 || chevrons);
+		for (int side = 0; side < 2; ++side)
+			visit(ViewRect{0, 0, hud.cells[4].w / 2, mainHeight},
+				std::to_string(side == 0 ? colony.unitConversionGained : colony.unitConversionLost), true, true);
+	};
+	eachMetric([&](const ViewRect &r, const std::string &text, bool pair, bool hasIcon) {
+		if (hasIcon)
+			iconPoints = std::min(iconPoints, (r.w - 8 * unit - valueGap -
+				(pair ? iconGap : 0) - textWidth(text) * numericScale) / ((pair ? 2 : 1) * unit));
+	});
+	iconPoints = std::clamp(iconPoints, 12., 24.);
+	const auto iconWidth = [&](bool pair, bool hasIcon) {
+		return hasIcon ? (pair ? 2 * iconPoints * unit + iconGap : iconPoints * unit) : 0.;
+	};
+	eachMetric([&](const ViewRect &r, const std::string &text, bool pair, bool hasIcon) {
+		numericScale = std::min(numericScale, std::max(1., r.w - 8 * unit -
+			iconWidth(pair, hasIcon) - (hasIcon ? valueGap : 0)) / std::max(1., textWidth(text)));
+	});
+	const auto groupLeft = [&](ViewRect r, const std::string &text, bool pair = false, bool hasIcon = true) {
+		return r.x + (r.w - iconWidth(pair, hasIcon) - (hasIcon ? valueGap : 0) -
+			textWidth(text) * numericScale) / 2;
+	};
+	const auto drawValue = [&](ViewRect r, double x, const std::string &text) {
+		const double scale = numericScale * gfx->textUnitsPerPoint();
+		SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
+		InGameTouchTheme::TextStyle textStyle(font);
+		gfx->setUITransform(scale, x, r.y + (mainHeight - font->getStringHeight("Ag") * scale) / 2, &clip);
+		gfx->drawString(0, 0, font, text);
+		gfx->setUITransform(); gfx->setClipRect();
+	};
+	const auto unitIcon = [&](ViewPoint center, int frame) {
+		drawUnitImage({center.x - iconPoints / 2 * unit, center.y - iconPoints / 2 * unit, iconPoints * unit, iconPoints * unit}, frame, presentationColor(colony.color));
+	};
 	for (size_t i = 0; i < stats.size(); ++i)
 	{
 		const auto &stat = stats[i];
 		const ViewRect r = statRect(hud, int(i));
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper());
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), backdrop);
 		if (stat.warning)
 			gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), Color(230, 100, 95));
-		double inset = 0;
-		if (stat.icon >= 0)
+		const bool hasIcon = i != 5 || chevrons;
+		const double left = groupLeft(r, stat.text, false, hasIcon);
+		const ViewPoint center{left + iconPoints / 2 * unit, r.y + mainHeight / 2};
+		if (i == 4)
 		{
-			SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
-			gfx->setUITransform(unit, r.x + 2 * unit, r.y + 3 * unit, &clip);
-			globalContainer->unitmini->setBaseColor(presentationColor(gui.drawnScene().panels.local.state().color));
-			gfx->drawSprite(0, 0, globalContainer->unitmini, stat.icon);
-			gfx->setUITransform();
-			gfx->setClipRect();
-			inset = 20 * unit;
+			for (int side = 0; side < 2; ++side)
+			{
+				const ViewRect part{r.x + side * r.w / 2, r.y, r.w / 2, r.h};
+				const std::string text = std::to_string(side == 0 ? colony.unitConversionGained : colony.unitConversionLost);
+				const double groupX = groupLeft(part, text, true);
+				const double width = iconWidth(true, true), height = iconPoints * unit;
+				gui.unitConversionIcon->draw(gfx, globalContainer->unitmini,
+					{groupX, part.y + (mainHeight - height) / 2, width, height},
+					presentationColor(colony.color), side == 0);
+				drawValue(part, groupX + iconWidth(true, true) + valueGap, text);
+			}
+			continue;
 		}
-		if (chevrons && i + 1 == stats.size())
+		if (stat.icon >= 0)
+			unitIcon(center, stat.icon);
+		else if (i == 3)
+			drawNavigationIcon(9, center, false, iconPoints);
+		else if (chevrons)
 		{
+			// The full speed symbol shares the same icon box as the
+			// unit portraits and trophy, regardless of the active speed.
 			const int lit = gui.litSpeedChevrons();
-			const double middle = r.y + r.h / 2;
+			const double pitch = iconPoints / GameSpeedControl::CHEVRONS;
 			for (int c = 0; c < GameSpeedControl::CHEVRONS; ++c)
 			{
 				const Color color = c < lit ? Color(120, 230, 120) : Color(110, 95, 125);
-				// Half-pixel steps fill a stroke two points thick.
-				for (double stroke = 0; stroke < 2 * unit; stroke += .5)
+				for (double stroke = 0; stroke < 1.5 * unit; stroke += .5)
 				{
-					const float x = float(r.x + (4 + c * 7.5) * unit + stroke);
-					gfx->drawLine(x, float(middle - 5 * unit), float(x + 4.5 * unit), float(middle), color);
-					gfx->drawLine(float(x + 4.5 * unit), float(middle), x, float(middle + 5 * unit), color);
+					const float x = float(center.x - iconPoints / 2 * unit + c * pitch * unit + stroke);
+					gfx->drawLine(x, float(center.y - 5 * unit), float(x + 3 * unit), float(center.y), color);
+					gfx->drawLine(float(x + 3 * unit), float(center.y), x, float(center.y + 5 * unit), color);
 				}
 			}
-			inset = 42 * unit;
 		}
-		drawPointLabel({r.x + inset, r.y, r.w - inset, r.h}, stat.text, .72);
+		drawValue(r, left + iconWidth(false, hasIcon) + (hasIcon ? valueGap : 0), stat.text);
+		if (i == 3)
+		{
+			// Secondary match progress stays below the common primary row.
+			const double barY = r.y + 36 * unit, barW = r.w - 16 * unit;
+			const double barX = r.x + 8 * unit;
+			if (match.state().prestigeWinCondition && match.state().prestigeToReach > 0)
+			{
+				const double progress = std::clamp(double(match.totalPrestige()) / match.state().prestigeToReach, 0., 1.);
+				gfx->drawFilledRect(int(barX), int(barY), int(barW), int(2 * unit), InGameTouchTheme::dialTrack());
+				gfx->drawFilledRect(int(barX), int(barY), int(barW * progress), int(2 * unit), Color(232, 194, 107));
+			}
+		}
 	}
+
 	if (!activeDialog())
 	{
 		drawTutorial();
@@ -299,34 +461,23 @@ void GameGUITouch::drawHUD()
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION ||
 		gui.selectionMode == GameGUI::BRUSH_SELECTION)
 		return; // Active tools own this strip.
-	const int icons[] = {globalContainer->replaying ? (gui.gamePaused ? 51 : 53) : 1,
-						 globalContainer->replaying ? 55 : 29,
-						 3,
-						 47,
-						 45,
-						 6};
+	const std::string labels[] = {globalContainer->replaying ? "[Pause]" : "[Build]",
+		globalContainer->replaying ? "[Speed]" : "[Flags]", "[Editor tools]", "[Goals]", "[Teams]", "[Menu]"};
+	gfx->drawFilledRect(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), int(ui.actions.h),
+		InGameTouchTheme::paper());
+	gfx->drawHorzLine(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), InGameTouchTheme::border());
 	for (int i = 0; i < 6; ++i)
 	{
 		const double x = ui.actions.x + i * ui.actions.w / 6, width = ui.actions.w / 6;
-		gfx->drawFilledRect(int(x), int(ui.actions.y), int(width) - 1, int(ui.actions.h),
-							InGameTouchTheme::paper());
-		SDL_Rect clip{int(x), int(ui.actions.y), int(width), int(ui.actions.h)};
-		gfx->setUITransform(.75 * unit, x + (width - 24 * unit) / 2, ui.actions.y + 2 * unit,
-							&clip);
-		gfx->drawSprite(0, 0, globalContainer->gamegui, icons[i]);
-		gfx->setUITransform();
-		gfx->setClipRect();
-		const std::string labels[] = {globalContainer->replaying ? "[Pause]" : "[Build]",
-									  globalContainer->replaying ? "[Speed]" : "[Flags]",
-									  "[Info]",
-									  "[Goals]",
-									  "[Teams]",
-									  "[Menu]"};
-		drawPointLabel({x, ui.actions.y + 26 * unit, width, 22 * unit},
-					   i == 2 ? GAGCore::Toolkit::getStringTable()->getString("[Editor tools]")
-							  : Toolkit::getStringTable()->getString(labels[i]),
-					   .82);
+		const bool selected = i == 0 ? panelOpen && !inspecting() && !inspectingReadOnly() && gui.displayMode == GameGUI::CONSTRUCTION_VIEW
+			: i == 1 ? panelOpen && !inspecting() && !inspectingReadOnly() && gui.displayMode == GameGUI::FLAG_VIEW
+			: i == 2 && (lensOpen || (panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW));
+		const int icon = globalContainer->replaying && i < 2 ? (i == 1 ? 8 : gui.gamePaused ? 7 : 6) : i;
+		drawNavigationIcon(icon, {x + width / 2, ui.actions.y + 17 * unit}, selected);
+		drawPointLabel({x + 2 * unit, ui.actions.y + 32 * unit, width - 4 * unit, 16 * unit},
+			Toolkit::getStringTable()->getString(labels[i]), .86);
 	}
+
 }
 
 ViewRect GameGUITouch::tutorialRect() const
@@ -597,18 +748,39 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 {
 	const auto safe = ui.safe;
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	// Two stat rows need 56 points, then a 40-point identity bar and a gap.
-	// Reserve it for compact building/resource inspection; other tools keep their usual
-	// minimap size. Wide landscapes have enough room for a single stat row.
-	const bool identity = (inspecting() || inspectingReadOnly()) && !ui.persistentPanel;
-	const double side = (safe.h / unit < 400 && (!identity || safe.w / unit >= 680) ? 72 : 96) * unit;
 	HudLayout hud;
-	hud.minimap = {safe.x + safe.w - side - 4 * unit, safe.y + 4 * unit, side, side};
-	const double available = std::max(0.0, hud.minimap.x - 4 * unit - ui.world.x);
-	hud.columns = available / unit >= 600 ? 6 : 3;
-	const double cell = std::min(120 * unit, available / hud.columns);
-	hud.stats = {ui.world.x + (available - hud.columns * cell) / 2, safe.y + 4 * unit,
-				 std::max(0.0, hud.columns * cell - 3 * unit), (6 / hud.columns * 28 - 4) * unit};
+	const bool wide = safe.w > safe.h || safe.w / unit >= 680;
+	const bool identity = (inspecting() || inspectingReadOnly()) && !ui.persistentPanel;
+	const bool stackedWide = wide && ((safe.w / unit - 92) * .25 - 4) / 2 < 82;
+	const double side = (wide ? (safe.h / unit < 360 && !identity ? 72 : stackedWide ? 104 : 84) : 104) * unit, gap = 4 * unit;
+	const double x = safe.x, y = safe.y + gap;
+	hud.minimap = {safe.x + safe.w - side - gap, wide ? y : y + 44 * unit, side, side};
+	const double available = std::max(0.0, hud.minimap.x - gap - x);
+	if (wide)
+	{
+		// Prestige and conversion imagery get more room than simple counters.
+		const double weights[] = {.14, .14, .14, .21, .25, .12};
+		double left = x;
+		for (int i = 0; i < 6; ++i)
+		{
+			const double width = available * weights[i];
+			hud.cells[i] = {left, y, width - gap, (stackedWide ? 60 : 40) * unit};
+			left += width;
+		}
+		hud.stats = {x, y, available - gap, (stackedWide ? 60 : 40) * unit};
+	}
+	else
+	{
+		// Keep speed above the minimap, so the second row can give conversions
+		// a full visual composition instead of two tiny symbols in one cell.
+		for (int i = 0; i < 3; ++i)
+			hud.cells[i] = {x + i * available / 3, y, available / 3 - gap, 40 * unit};
+		hud.cells[5] = {hud.minimap.x, y, side, 40 * unit};
+		const double prestige = available * .42;
+		hud.cells[3] = {x, y + 44 * unit, prestige - gap, 60 * unit};
+		hud.cells[4] = {x + prestige, y + 44 * unit, available - prestige - gap, 60 * unit};
+		hud.stats = {x, y, available - gap, 104 * unit};
+	}
 	const double header = InGameTouchTheme::inspectorHeader * unit;
 	hud.identity = {hud.stats.x, hud.minimap.y + hud.minimap.h - header, hud.stats.w, header};
 	return hud;
@@ -616,10 +788,7 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 
 ViewRect GameGUITouch::statRect(const HudLayout &hud, int index) const
 {
-	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const double cell = (hud.stats.w + 3 * unit) / hud.columns;
-	return {hud.stats.x + (index % hud.columns) * cell,
-			hud.stats.y + (index / hud.columns) * 28 * unit, cell - 3 * unit, 24 * unit};
+	return hud.cells[index];
 }
 
 ViewRect GameGUITouch::speedRect() const
@@ -630,7 +799,7 @@ ViewRect GameGUITouch::speedRect() const
 	auto rect = statRect(hud, 5);
 	// A thumb-sized target reaches below the cell unless the identity bar sits there.
 	if (!((inspecting() || inspectingReadOnly()) && !layout().persistentPanel))
-		rect.h = InGameTouchTheme::target * globalContainer->gfx->logicalUnitsPerPoint();
+		rect.h = std::max(rect.h, InGameTouchTheme::target * globalContainer->gfx->logicalUnitsPerPoint());
 	return rect;
 }
 

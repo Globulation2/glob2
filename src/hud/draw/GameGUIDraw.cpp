@@ -22,6 +22,7 @@
 #include "IntBuildingType.h"
 #include "TeamStatChart.h"
 #include "GameGUITouch.h"
+#include "HudUnitConversionIcon.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "PanelButtonHit.h"
@@ -248,7 +249,7 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 int GameGUI::topBarSpeedX() const
 {
 	// After the three unit counters, prestige and conversions.
-	return ((globalContainer->gfx->getW()-640)>>2) + 10 + 3*70 + 90 + 70;
+	return ((globalContainer->gfx->getW()-640)>>2) + 10 + 3*70 + 90 + TOP_BAR_CONVERSION_WIDTH;
 }
 
 void GameGUI::drawTopScreenBar(void)
@@ -316,8 +317,29 @@ void GameGUI::drawTopScreenBar(void)
 
 	dec += 90;
 
-	// draw unit conversion stats
-	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormattableString("+%0 / -%1").arg(drawnScene().panels.local.state().unitConversionGained).arg(drawnScene().panels.local.state().unitConversionLost).c_str());
+	// Match the touch HUD: team-coloured Globs on either side of an arrow,
+	// followed by a left-aligned total. Centre each complete group in its cell.
+	auto *gfx = globalContainer->gfx;
+	auto *font = globalContainer->littleFont;
+	const auto &colony = drawnScene().panels.local.state();
+	const std::array<std::string, 2> conversions{
+		std::to_string(colony.unitConversionGained), std::to_string(colony.unitConversionLost)};
+	const double cellWidth = TOP_BAR_CONVERSION_WIDTH / 2., gap = 6;
+	const double maxTextWidth = std::max(font->getStringWidth(conversions[0]), font->getStringWidth(conversions[1]));
+	const double scale = std::min(1., (cellWidth - 8 - 4 - gap) / (32 + maxTextWidth));
+	const double iconHeight = 16 * scale, iconWidth = 2 * iconHeight + 4;
+	for (int side = 0; side < 2; ++side)
+	{
+		const double x = dec + side * cellWidth;
+		const double left = x + (cellWidth - iconWidth - gap - font->getStringWidth(conversions[side]) * scale) / 2;
+		unitConversionIcon->draw(gfx, globalContainer->unitmini,
+			{left, (16 - iconHeight) / 2, iconWidth, iconHeight}, presentationColor(colony.color), side == 0);
+		SDL_Rect clip{int(x), 0, int(cellWidth), 16};
+		gfx->setUITransform(scale, left + iconWidth + gap,
+			(16 - font->getStringHeight("Ag") * scale) / 2, &clip);
+		gfx->drawString(0, 0, font, conversions[side]);
+		gfx->setUITransform(); gfx->setClipRect();
+	}
 
 	// draw the speed control and the simulation tick rate
 	dec = topBarSpeedX();

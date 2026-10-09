@@ -71,6 +71,7 @@ class MapMarkOrder;
 */
 namespace Hive { class Client; class Dialog; }
 class GameGUITouch;
+class HudUnitConversionIcon;
 class ConnectionOverlay;
 class GameGUI : public ClientCommandSink
 {
@@ -397,6 +398,7 @@ private:
     friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
 	std::unique_ptr<GameGUITouch> touch;
+	std::unique_ptr<HudUnitConversionIcon> unitConversionIcon;
 
 	//! Serializes the game and hands the bytes to autosaveWriter.
 	void autosave();
