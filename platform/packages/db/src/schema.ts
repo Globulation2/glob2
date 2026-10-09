@@ -1353,6 +1353,16 @@ export interface Database {
   ai_studio_ledger: HiveLedgerTable;
   ai_studio_calls: HiveCallsTable;
   ai_studio_purchases: HivePurchasesTable;
+  generator_studio_projects: AiStudioProjectsTable;
+  generator_studio_revisions: AiStudioRevisionsTable;
+  generator_studio_requests: AiStudioRequestsTable;
+  generator_studio_events: AiStudioEventsTable;
+  generator_studio_runs: GeneratorStudioRunsTable;
+  generator_studio_wallets: HiveWalletsTable;
+  generator_studio_ledger: HiveLedgerTable;
+  generator_studio_calls: HiveCallsTable;
+  generator_studio_purchases: HivePurchasesTable;
+  generator_studio_checks: GeneratorStudioChecksTable;
   generators: GeneratorsTable;
   generator_ids: { manifest_id: string; generator_id: Nullable<string> };
   generator_versions: GeneratorVersionsTable;
@@ -1557,3 +1567,18 @@ export type Match = Selectable<MatchesTable>;
 export type NewMatch = Insertable<MatchesTable>;
 export type Room = Selectable<RoomsTable>;
 export type WarmMap = Selectable<WarmMapsTable>;
+
+export interface GeneratorStudioRunsTable {
+  id: string;
+  project_id: string;
+  revision: number;
+  settings: Json<GeneratorSettings>;
+  source_hash: string;
+  summary: Defaulted<string>;
+  created_at: Timestamp;
+}
+export interface GeneratorStudioChecksTable {
+  project_id: string;
+  revision: number;
+  upload_id: string;
+}

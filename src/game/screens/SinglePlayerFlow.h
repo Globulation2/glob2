@@ -16,6 +16,7 @@ class SinglePlayerFlow
 	void custom(const std::optional<Online::MapPlayRequest> &map = std::nullopt);
 	void load();
 	void studio();
+	void generatorStudio();
 	void replay(const std::string &filename);
 
   private:

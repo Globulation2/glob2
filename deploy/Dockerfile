@@ -122,6 +122,7 @@ ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
 COPY platform/ ./
 COPY examples/javascript /app/examples/javascript
+COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
 # The navigation shares the game's Tabler icon sources (src/icons.tsx).
@@ -164,6 +165,9 @@ COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY examples/javascript /app/examples/javascript
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
+COPY docs/map-generators/JAVASCRIPT.md /app/docs/map-generators/JAVASCRIPT.md
+COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
+COPY data/generators/examples/swamp /app/data/generators/examples/swamp
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
 RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init

@@ -91,7 +91,7 @@ width (320 px up).
 
 ### AI workspaces
 
-Maps, music, colony AI, buildings and terrain share React primitives in
+Maps, generators, music, colony AI, buildings and terrain share React primitives in
 `apps/web/src/components/studio/`. Explicit route metadata selects the compact
 workspace shell and the shared navigation preference. The shell fits the visual
 viewport, with independent conversation and artifact scrolling and a reachable
@@ -117,7 +117,12 @@ draft preserves the replaced draft again, creates a new current revision and
 never changes charges. Backups are owner-only, included in account exports and
 deleted with project history. Each account has a separate 64 MiB draft-history
 limit per studio; generation cannot silently discard history to make room.
-Historical colony AI editing uses restoration.
+Historical colony AI and generator editing use immutable restoration. Generator
+revisions retain manifest text and JavaScript together, including invalid manifest
+JSON, and generated-edit Undo restores both atomically. The coding workspaces share
+request recovery and editor mechanics with separate declarations, prompts and
+credits. Generator previews and isolated checks are explicit actions; settings
+changes do not mutate an already previewed world.
 Map/music edits preserve parent versions; accepting a delivery advances the edit
 target without unpinning inspection, and Undo returns the target to its previous
 parent, including parents outside the loaded history page. Deliveries completed

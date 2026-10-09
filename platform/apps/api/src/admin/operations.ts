@@ -31,6 +31,7 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
           AdminOperation & { cursorAt: string }
         >`SELECT *,${cursorTimeSql(sql<Date>`"createdAt"`)} AS "cursorAt" FROM (${sql.join(requests, sql` UNION ALL `)} UNION ALL
    SELECT c.id::text,'aiStudio',c.account_id,c.status,c.created_at,c.reserved::int,'usage','Provider usage needs review' FROM ai_studio_calls c WHERE c.status='uncertain' UNION ALL
+   SELECT c.id::text,'generatorStudio',c.account_id,c.status,c.created_at,c.reserved::int,'usage','Provider usage needs review' FROM generator_studio_calls c WHERE c.status='uncertain' UNION ALL
    SELECT c.id::text,'hive',c.account_id,c.status,c.created_at,c.reserved::int,'usage','Provider usage needs review' FROM hive_calls c WHERE c.status='uncertain' UNION ALL
    SELECT id::text,'engine',NULL::uuid,status,created_at,0,kind,CASE WHEN status='failed' THEN 'Engine job failed; inspect verification or library validation' ELSE NULL END FROM engine_jobs WHERE status IN ('queued','failed')) x WHERE TRUE ${r.query.product ? sql`AND product=${r.query.product}` : sql``} ${before ? sql`AND ("createdAt",product || ':' || id::text)>(${before.exactAt},${before.id})` : sql``} ORDER BY "createdAt" ASC,product || ':' || id::text ASC LIMIT ${limit + 1}`.execute(
           db,
@@ -93,11 +94,13 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
     async (r) => {
       await requireRole(identity, r, 'admin');
       const spec = REQUESTS.find(([p]) => p === r.params.product);
-      const metered = ['aiStudio', 'hive'].includes(r.params.product);
+      const metered = ['aiStudio', 'generatorStudio', 'hive'].includes(r.params.product);
       if (!spec && !metered && r.params.product !== 'engine')
         throw apiError('bad_request', 'Unknown product.');
       if (
-        (spec || r.params.product === 'engine' || r.params.product === 'aiStudio') &&
+        (spec ||
+          r.params.product === 'engine' ||
+          ['aiStudio', 'generatorStudio'].includes(r.params.product)) &&
         !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(r.params.id)
       )
         throw apiError('bad_request', 'Invalid request identifier.');
@@ -107,7 +110,9 @@ export async function operationsRoutes(app: FastifyInstance, identity: Identity)
           ? 'engine_jobs'
           : r.params.product === 'hive'
             ? 'hive_calls'
-            : 'ai_studio_calls';
+            : r.params.product === 'generatorStudio'
+              ? 'generator_studio_calls'
+              : 'ai_studio_calls';
       const row = (
         await sql<{
           id: string;

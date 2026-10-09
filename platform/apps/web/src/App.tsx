@@ -42,6 +42,9 @@ const MusicStudio = lazy(() =>
 const MapStudio = lazy(() =>
   import('./pages/MapStudio.tsx').then((m) => ({ default: m.MapStudio })),
 );
+const GeneratorStudio = lazy(() =>
+  import('./pages/GeneratorStudio.tsx').then((m) => ({ default: m.GeneratorStudio })),
+);
 const AiStudio = lazy(() => import('./pages/AiStudio.tsx').then((m) => ({ default: m.AiStudio })));
 const BuildingLibrary = lazy(() =>
   import('./pages/BuildingLibrary.tsx').then((m) => ({ default: m.BuildingLibrary })),
@@ -169,6 +172,20 @@ export const ROUTES: Route[] = [
     section: 'ais',
     title: 'AI Studio',
     render: (p) => <AiStudio key={p['id']} id={p['id']} />,
+  },
+  {
+    pattern: '/generator-studio',
+    workspace: true,
+    section: 'maps',
+    title: 'Generator Studio',
+    render: () => <GeneratorStudio />,
+  },
+  {
+    pattern: '/generator-studio/:id',
+    workspace: true,
+    section: 'maps',
+    title: 'Generator Studio',
+    render: (p) => <GeneratorStudio key={p['id']} id={p['id']} />,
   },
   {
     pattern: '/generators',

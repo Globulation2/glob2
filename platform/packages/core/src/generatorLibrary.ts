@@ -162,7 +162,7 @@ async function collectAbandonedGeneratorValidations(db: Kysely<Database>) {
 
 /** Bounded scheduler work; historical passing reports are never replaced. */
 export async function maintainGeneratorLibrary(db: Kysely<Database>) {
-  await sql`DELETE FROM generator_uploads WHERE id IN (SELECT id FROM generator_uploads WHERE expires_at < now() LIMIT 1000)`.execute(
+  await sql`DELETE FROM generator_uploads WHERE id IN (SELECT id FROM generator_uploads WHERE expires_at < now() AND NOT EXISTS (SELECT 1 FROM generator_studio_checks c WHERE c.upload_id=generator_uploads.id) LIMIT 1000)`.execute(
     db,
   );
   await collectAbandonedGeneratorValidations(db);

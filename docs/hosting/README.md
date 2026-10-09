@@ -880,8 +880,8 @@ one command, in an order that never leaves a half-upgraded instance:
    pool change still requires the downtime described above.
 4. **Web client last:** only once the new stack is healthy is the new client
    installed at `/play/`, so browsers never load a client newer than the platform
-   and engine agents behind it. Both `index.html` and the AI Studio entry page
-   `studio.html` are installed with their available precompressed copies.
+   and engine agents behind it. The `index.html`, `studio.html` and `generator-studio.html` entries
+   are installed with their available precompressed copies.
 
 If the new stack does not become healthy, the script starts the `:previous`
 images of the previous revision again, recreating containers to restore network
@@ -1755,3 +1755,27 @@ Roll out additive migrations and backend before the dependent web build. Verify
 live dashboard totals against source tables using read-only queries; test destructive
 actions on a disposable database. Schema rollback is unnecessary for a UI rollback;
 collection/display can each be disabled independently.
+
+### Generator Studio rollout
+
+Deploy migration `0058_generator_studio.sql` and API support before installing the
+web client. Generator Studio is independently opt-in: leave
+`generatorStudio.enabled` false until a maintainer has played through authoring,
+preview, checks and publication. The flag gates project and tool APIs as well as
+model requests; account export remains available for recovery when disabled.
+Configure its `model`, versioned token `rate`,
+`maxRequestCredits` and `maxOutputTokens` as for AI Studio, with
+`GENERATOR_STUDIO_OPENAI_API_KEY`. Optional sales additionally require packs,
+`salesEnabled`, `GENERATOR_STUDIO_STRIPE_SECRET_KEY` and
+`GENERATOR_STUDIO_STRIPE_WEBHOOK_SECRET`. Webhook and reconciliation paths are
+`/api/v1/generator-studio/stripe` and `/api/v1/generator-studio/reconcile`.
+Generator credits, reservations, purchases and financial reporting are separate.
+
+Serve `/generator-studio` and its project routes with COOP/COEP, including the
+Monaco editor, TypeScript and JSON worker responses. Only the dedicated
+`/play/generator-studio.html` entry permits same-origin framing. The installer
+copies the entry and available precompressed versions before the main index;
+ordinary game and account pages remain unframeable. Keep the existing isolated
+Generator Library engine validators available for checks and publication; browser
+reports are untrusted development summaries. Monitor generator request leases,
+uncertain calls, validator queue age and browser launch failures.

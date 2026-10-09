@@ -111,6 +111,7 @@ def package(source, destination):
         contents["threaded/" + names["js"]] = thread_script.encode()
         contents["threaded/" + names["wasm"]] = files["threaded/wasm"]
     # The Studio entry uses the identical runtime but a temporary profile and bridge.
+    contents["generator-studio.html"] = contents["index.html"]
     contents["studio.html"] = contents["index.html"]
     contents["set-preview.html"] = contents["index.html"]
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -221,7 +222,7 @@ def verify(directory):
     marker = json.loads((directory / MARKER).read_text())
     if marker["policy"] != POLICY.decode().rstrip("\0"):
         raise ValueError("Unknown static package policy")
-    names = ["index.html", "studio.html", "set-preview.html"] + [
+    names = ["index.html", "studio.html", "generator-studio.html", "set-preview.html"] + [
         f"index-{marker['version']}.{ext}" for ext in ("js", "wasm")
     ]
     names += [

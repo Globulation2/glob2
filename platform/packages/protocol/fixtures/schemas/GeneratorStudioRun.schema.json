@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorStudioRun",
+  "title": "GeneratorStudioRun",
+  "type": "object",
+  "required": [
+    "id",
+    "expectedRevision",
+    "settings"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "settings": {
+      "type": "object",
+      "required": [
+        "seed",
+        "params",
+        "candidates",
+        "startingUnitLevel"
+      ],
+      "properties": {
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "params": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9_-]{1,64}$": {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            }
+          },
+          "maxProperties": 72
+        },
+        "candidates": {
+          "type": "number",
+          "const": 1
+        },
+        "startingUnitLevel": {
+          "type": "number",
+          "const": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

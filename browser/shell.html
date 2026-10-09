@@ -303,11 +303,17 @@ var Module = {
       Module.storage.restored(null);
       addRunDependency('studio-launch');
       globalThis.glob2Studio.launch.then(run => {
+        if (globalThis.glob2Studio.generator) {
+          FS.writeFile('/tmp/generator-studio.json', run.source);
+          FS.writeFile('/tmp/generator-studio-settings.json', JSON.stringify(run.settings));
+          ENV.GLOB2_GENERATOR_STUDIO = '1';
+        } else {
         FS.writeFile('/tmp/studio.map.gz', new Uint8Array(run.map));
         FS.writeFile('/tmp/studio.js', run.source);
         ENV.GLOB2_STUDIO_PLAYTEST = '1';
         ENV.GLOB2_STUDIO_SEED = String(run.seed);
         ENV.GLOB2_STUDIO_OPPONENT = run.opponent;
+        }
         removeRunDependency('studio-launch');
       }).catch(error => Module.glob2AssetError(error));
     } else {

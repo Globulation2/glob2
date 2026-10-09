@@ -541,6 +541,12 @@ void studioError(const std::string &message)
         globalThis.glob2Studio?.send('error', {text: UTF8ToString($0).slice(0, 2000)});
     }, message.c_str());
 }
+void studioGenerated(const std::string &report) {
+    MAIN_THREAD_EM_ASM({ globalThis.glob2Studio?.send('generated', JSON.parse(UTF8ToString($0))); }, report.c_str());
+}
+bool studioWatchRequested() {
+    return MAIN_THREAD_EM_ASM_INT({ return globalThis.glob2Studio?.watch === true; }) != 0;
+}
 bool controlsObserved() { return true; }
 void controlsChanged(const void *owner, const char *json) {
     diagnostics.controls[reinterpret_cast<std::uintptr_t>(owner)] = json ? json : "";

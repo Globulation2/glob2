@@ -398,6 +398,14 @@ export class AdminService {
         tx,
       );
       await tx.deleteFrom('ai_studio_projects').where('account_id', '=', id).execute();
+      await sql`SELECT id FROM generator_studio_projects WHERE account_id=${id} ORDER BY id FOR UPDATE`.execute(
+        tx,
+      );
+      await sql`UPDATE generator_studio_wallets SET reserved=0 WHERE account_id=${id}`.execute(tx);
+      await sql`UPDATE generator_studio_calls SET status='settled',charged=0,usage='{"input":0,"cachedInput":0,"output":0}'::jsonb WHERE account_id=${id} AND status<>'settled'`.execute(
+        tx,
+      );
+      await tx.deleteFrom('generator_studio_projects').where('account_id', '=', id).execute();
       // Every name the account went by: now, in its matches, and in renames.
       const pastNames = await tx
         .selectFrom('match_participants')

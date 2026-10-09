@@ -101,6 +101,11 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   ai_studio_ledger: ['account_id'],
   ai_studio_calls: ['account_id'],
   ai_studio_purchases: ['account_id'],
+  generator_studio_projects: ['account_id'],
+  generator_studio_wallets: ['account_id'],
+  generator_studio_ledger: ['account_id'],
+  generator_studio_calls: ['account_id'],
+  generator_studio_purchases: ['account_id'],
 };
 
 /**
@@ -801,6 +806,40 @@ export async function exportAccount(
           ).rows,
         );
       }
+      const generatorStudio: Record<string, Row[]> = {};
+      for (const name of ['wallets', 'ledger', 'calls', 'purchases']) {
+        generatorStudio[name] = rows(
+          (
+            await sql<Row>`SELECT * FROM ${sql.table('generator_studio_' + name)} WHERE account_id=${id}`.execute(
+              tx,
+            )
+          ).rows,
+        );
+      }
+      generatorStudio['projects'] = rows(
+        (await sql<Row>`SELECT * FROM generator_studio_projects WHERE account_id=${id}`.execute(tx))
+          .rows,
+      );
+      for (const name of ['revisions', 'requests', 'events', 'runs']) {
+        generatorStudio[name] = rows(
+          (
+            await sql<Row>`SELECT r.* FROM ${sql.table('generator_studio_' + name)} r JOIN generator_studio_projects p ON p.id=r.project_id WHERE p.account_id=${id}`.execute(
+              tx,
+            )
+          ).rows,
+        );
+      }
+      generatorStudio['checks'] = rows(
+        (
+          await sql<Row>`
+        SELECT c.*,v.report,v.status,v.error,u.expires_at
+        FROM generator_studio_checks c
+        JOIN generator_studio_projects p ON p.id=c.project_id
+        JOIN generator_uploads u ON u.id=c.upload_id
+        JOIN generator_validations v ON v.id=u.validation_id
+        WHERE p.account_id=${id}`.execute(tx)
+        ).rows,
+      );
       const studioWallets = await tx
         .selectFrom('map_wallets')
         .select(['balance', 'reserved'])
@@ -1329,6 +1368,7 @@ export async function exportAccount(
           programs: rows(hivePrograms),
         },
         aiStudio,
+        generatorStudio,
         mapStudio: {
           wallets: rows(studioWallets),
           ledger: rows(studioLedger),

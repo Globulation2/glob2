@@ -61,6 +61,7 @@ function host() {
     crypto: webcrypto,
     addEventListener: (_t, fn) => (listener = fn),
   });
+  vm.runInContext(readFileSync(require("node:path").join(__dirname,"../studio-envelope.js"),"utf8"),context);
   vm.runInContext(
     readFileSync(require("node:path").join(__dirname, "../studio.js"), "utf8"),
     context,

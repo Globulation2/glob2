@@ -55,7 +55,7 @@ export async function financeRoutes(app: FastifyInstance, identity: Identity) {
           await sql<AdminFinances['credits'][number]>`${sql.join(
             Object.entries(CREDIT_PRODUCTS).map(
               ([product, { prefix }]) =>
-                sql`SELECT ${product}::text AS product,kind,sum(amount)::float8 AS amount FROM ${sql.table(prefix + '_ledger')} WHERE created_at>=${cutoff} GROUP BY kind UNION ALL ${product === 'hive' || product === 'aiStudio' ? sql`SELECT ${product},'returned',coalesce(sum(greatest(0,reserved-charged)),0)::float8 FROM ${sql.table(prefix + '_calls')} WHERE status='settled' AND completed_at>=${cutoff}` : sql`SELECT ${product},'returned',count(*)::float8 FROM ${sql.table(prefix + '_ledger')} WHERE created_at>=${cutoff} AND details->>'returned'='true'`} UNION ALL SELECT ${product},'reserved',coalesce(sum(reserved),0)::float8 FROM ${sql.table(prefix + '_wallets')}`,
+                sql`SELECT ${product}::text AS product,kind,sum(amount)::float8 AS amount FROM ${sql.table(prefix + '_ledger')} WHERE created_at>=${cutoff} GROUP BY kind UNION ALL ${product === 'hive' || product === 'aiStudio' || product === 'generatorStudio' ? sql`SELECT ${product},'returned',coalesce(sum(greatest(0,reserved-charged)),0)::float8 FROM ${sql.table(prefix + '_calls')} WHERE status='settled' AND completed_at>=${cutoff}` : sql`SELECT ${product},'returned',count(*)::float8 FROM ${sql.table(prefix + '_ledger')} WHERE created_at>=${cutoff} AND details->>'returned'='true'`} UNION ALL SELECT ${product},'reserved',coalesce(sum(reserved),0)::float8 FROM ${sql.table(prefix + '_wallets')}`,
             ),
             sql` UNION ALL `,
           )}`.execute(db)

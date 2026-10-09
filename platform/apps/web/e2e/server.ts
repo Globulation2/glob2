@@ -18,6 +18,7 @@ import { createHarness } from '../../api/test/support.ts';
 import { seedAdminReports } from './adminShowcase.ts';
 import { seedBuildingLibrary } from './buildingShowcase.ts';
 import { previewFixture, seedShowcase } from './showcase.ts';
+import { simVersionKey, type GeneratorSettings } from '@glob2/protocol';
 import { SET_CREDITS_FIXTURE } from '../../api/test/setCreditsFixture.ts';
 
 const here = import.meta.dirname;
@@ -114,14 +115,122 @@ const musicRunner =
         });
       })()
     : undefined;
+// Test credentials only. The end-to-end authoring flow never dispatches a model request.
+if (process.env['GENERATOR_E2E_BINARY'] || process.env['GENERATOR_E2E_ENABLED'])
+  process.env['GENERATOR_STUDIO_OPENAI_API_KEY'] = 'e2e-not-dispatched';
 const api = await harness.start({
   origin,
   instance: {
     name: 'Glob2 Online (test)',
     queues: SEEDED_QUEUES,
     auth: { providers: [], local: { enabled: true } },
+    ...(process.env['GENERATOR_E2E_BINARY'] || process.env['GENERATOR_E2E_ENABLED']
+      ? {
+          generatorStudio: {
+            enabled: true,
+            model: 'e2e-not-dispatched',
+            rate: { version: 'e2e', input: 10, cachedInput: 1, output: 20 },
+            maxRequestCredits: 100,
+            maxOutputTokens: 2048,
+          },
+        }
+      : {}),
   },
 });
+// Optional real isolated generator validation for the Studio end-to-end flow.
+let generatorTimer: ReturnType<typeof setInterval> | undefined;
+let generatorWork: Promise<void> | undefined;
+if (process.env['GENERATOR_E2E_BINARY']) {
+  const { execFile } = await import('node:child_process');
+  const { promisify } = await import('node:util');
+  const { createGeneratorExecutor } = await import('../../engine-agent/src/generatorValidation.ts');
+  const { DEFAULT_LIMITS } = await import('../../engine-agent/src/engine.ts');
+  const { putContent } = await import('@glob2/core');
+  const { handleEngineJobResult, insertBlob } = await import('@glob2/play');
+  const { stdout } = await promisify(execFile)(
+    resolve(repo, process.env['GENERATOR_E2E_BINARY']),
+    ['--sim-version'],
+    { cwd: repo },
+  );
+  const sim = JSON.parse(stdout);
+  await harness.database.db
+    .insertInto('engine_agents')
+    .values({
+      id: 'generator-studio-e2e',
+      sim_version: simVersionKey(sim),
+      kinds: ['validate-generator'],
+      build: 'real-isolated',
+    })
+    .execute();
+  const executor = await createGeneratorExecutor(
+    {
+      binary: resolve(repo, process.env['GENERATOR_E2E_BINARY']),
+      workdir: resolve(repo, process.env['GENERATOR_E2E_WORKDIR'] ?? '.'),
+      scratchRoot: resolve(
+        repo,
+        process.env['GENERATOR_E2E_SCRATCH'] ?? 'artifacts/generator-studio/isolated-ui',
+      ),
+      limits: DEFAULT_LIMITS,
+      maxOutputBytes: 64 * 1024 * 1024,
+    },
+    sim,
+  );
+  generatorTimer = setInterval(() => {
+    if (generatorWork) return;
+    generatorWork = (async () => {
+      await harness.database.db
+        .updateTable('engine_agents')
+        .set({ last_seen_at: new Date() })
+        .execute();
+      const job = await harness.database.db
+        .selectFrom('engine_jobs')
+        .selectAll()
+        .where('kind', '=', 'validate-generator')
+        .where('status', '=', 'queued')
+        .executeTakeFirst();
+      if (!job) return;
+      const payload = job.payload as {
+        blobHash: string;
+        example: GeneratorSettings;
+      };
+      const blob = await harness.database.db
+        .selectFrom('blobs')
+        .select('storage_key')
+        .where('sha256', '=', payload.blobHash)
+        .executeTakeFirstOrThrow();
+      const stream = await harness.blobs.get(blob.storage_key);
+      if (!stream) throw Error('Generator input blob missing.');
+      const chunks: Buffer[] = [];
+      for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+      const validation = await executor.validate(
+        Buffer.concat(chunks),
+        payload.example,
+        new AbortController().signal,
+      );
+      for (const [bytes, type] of [
+        [validation.canonical, 'application/x-glob2-generator'],
+        [validation.png, 'image/png'],
+      ] as const) {
+        if (!bytes) continue;
+        const stored = await putContent(harness.blobs, bytes);
+        await insertBlob(harness.database.db, stored.sha256, stored.size, type, 'private');
+        if (type === 'image/png') validation.report.previewHash = stored.sha256;
+        else validation.report.fileHash = stored.sha256;
+      }
+      await handleEngineJobResult(harness.database.db, {
+        jobId: job.id,
+        kind: 'validate-generator',
+        agent: 'studio-e2e-isolated',
+        ok: true,
+        result: validation.report,
+      });
+    })()
+      .catch(console.error)
+      .finally(() => {
+        generatorWork = undefined;
+      });
+  }, 500);
+}
 const replayFixture = join(repo, 'browser/tests/fixtures/cross-replay.replay');
 const seed = await seedHistory(harness.database.db, harness.blobs, {
   ...(existsSync(replayFixture) ? { replayBytes: readFileSync(replayFixture) } : {}),
@@ -253,7 +362,12 @@ const front = createServer((req, res) => {
     'Content-Security-Policy',
     url.pathname === '/music/decode-worker.js' ? musicDecoderPolicy : webPolicy,
   );
-  sendFile(res, file ?? join(dist, 'index.html'));
+  sendFile(
+    res,
+    file ?? join(dist, 'index.html'),
+    /^\/(ai-studio|generator-studio)(\/|$)/.test(url.pathname) ||
+      /^\/assets\/(editor|ts|json)\.worker-[^/]+\.js$/.test(url.pathname),
+  );
 });
 
 front.listen(port, '127.0.0.1', () => {
@@ -263,6 +377,8 @@ front.listen(port, '127.0.0.1', () => {
 const stop = async () => {
   front.close();
   await musicRunner?.stop();
+  clearInterval(generatorTimer);
+  await generatorWork;
   await harness.close();
   process.exit(0);
 };

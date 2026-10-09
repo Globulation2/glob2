@@ -247,7 +247,7 @@ def build_web(directory, identity, arguments):
     env, serial, database, packaged = _build_variant(directory, identity, arguments)
     _, threaded, _, _ = _build_variant(Path(directory) / 'threaded', identity, arguments, True, packaged)
     def shell(target, source, env):
-        page = Path('browser/shell.html').read_text().replace('/* AI_STUDIO_BRIDGE */', Path('browser/studio.js').read_text() + '\n' + Path('browser/set-preview.js').read_text()).replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
+        page = Path('browser/shell.html').read_text().replace('/* AI_STUDIO_BRIDGE */', Path('browser/studio-envelope.js').read_text() + '\n' + Path('browser/generator-studio.js').read_text() + '\n' + Path('browser/studio.js').read_text() + '\n' + Path('browser/set-preview.js').read_text()).replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
         # The page shows WebAssembly download progress against these sizes.
         sizes = {'index.wasm': Path(directory) / 'index.wasm', 'threaded/index.wasm': Path(directory) / 'threaded/index.wasm'}
         sizes = json.dumps({name: path.stat().st_size for name, path in sizes.items()}, separators=(',', ':'), sort_keys=True)
@@ -257,9 +257,10 @@ def build_web(directory, identity, arguments):
         write_if_changed(str(target[0]), page)
         write_if_changed(str(target[1]), page)
         write_if_changed(str(target[2]), page)
+        write_if_changed(str(target[3]), page)
         return 0
-    page = env.Command([str(Path(directory) / 'index.html'), str(Path(directory) / 'studio.html'), str(Path(directory) / 'set-preview.html')],
-        ['browser/shell.html', 'browser/studio.js', 'browser/set-preview.js', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
+    page = env.Command([str(Path(directory) / 'index.html'), str(Path(directory) / 'studio.html'), str(Path(directory) / 'set-preview.html'), str(Path(directory) / 'generator-studio.html')],
+        ['browser/shell.html', 'browser/studio-envelope.js', 'browser/generator-studio.js', 'browser/studio.js', 'browser/set-preview.js', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
     # The music decoder has independent Wasm memory in both browser variants.
     music = env.Clone()
     music['LIBS'] = [music.File(str(Path(directory).resolve() / 'opus/prefix/lib' / ('lib' + name + '.a')))

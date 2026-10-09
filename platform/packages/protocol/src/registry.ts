@@ -11,6 +11,7 @@ import { buildingStudioSchemas } from './buildingStudio.ts';
 import { terrainStudioSchemas } from './terrainStudio.ts';
 import { setSchemas } from './sets.ts';
 import { musicStudioSchemas } from './musicStudio.ts';
+import { generatorStudioSchemas } from './generatorStudio.ts';
 import { aiStudioSchemas } from './aiStudio.ts';
 import { aiSchemas } from './ais.ts';
 import { musicSchemas } from './music.ts';
@@ -222,7 +223,10 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   MatchColonySkin: { schema: MatchColonySkin },
   ColonySkinClaims: { schema: ColonySkinClaims },
   ...Object.fromEntries(
-    Object.entries(aiStudioSchemas).map(([name, schema]) => [name, { schema }]),
+    Object.entries({ ...aiStudioSchemas, ...generatorStudioSchemas }).map(([name, schema]) => [
+      name,
+      { schema },
+    ]),
   ),
   ...setSchemas,
   ...Object.fromEntries(Object.entries(aiSchemas).map(([name, schema]) => [name, { schema }])),

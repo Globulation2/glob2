@@ -400,6 +400,20 @@
         }
       }
     },
+    "generatorStudio": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    },
     "aiStudio": {
       "type": "object",
       "patternProperties": {

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from 'vitest';
 import { act, cleanup, renderHook } from '@testing-library/react';
-import type { AiStudioDetail } from '@glob2/protocol';
+import type { AiStudioDetail, StudioDetail } from '@glob2/protocol';
 import { request } from '../src/api.ts';
 import { useProjectDraft } from '../src/pages/aiStudio/useProjectDraft.ts';
 import { checkoutAttempt } from '../src/pages/aiStudio/checkoutAttempt.ts';
@@ -43,7 +43,7 @@ it('rejects a pre-save refresh that arrives after the acknowledged revision', as
   const error = vi.fn();
   const { result } = renderHook(() => useProjectDraft('/project', 'draft', error));
   await act(() => result.current.refresh());
-  let late!: Promise<AiStudioDetail | undefined>;
+  let late!: Promise<StudioDetail | undefined>;
   act(() => {
     late = result.current.refresh();
     result.current.change('edited');
@@ -66,7 +66,7 @@ it('keeps the newest request state when same-revision refreshes arrive out of or
     .mockResolvedValueOnce(detail(1, 'first', '3'));
   const { result } = renderHook(() => useProjectDraft('/project', 'draft', vi.fn()));
   await act(() => result.current.refresh());
-  let late!: Promise<AiStudioDetail | undefined>;
+  let late!: Promise<StudioDetail | undefined>;
   act(() => {
     late = result.current.refresh();
   });

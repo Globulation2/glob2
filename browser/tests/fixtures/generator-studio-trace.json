@@ -1,0 +1,13 @@
+{
+  "source": "data/generators/examples/swamp/generator.js",
+  "sourceSha256": "59ab5aed48c48786ac451073426b74d4325ceb5f0781eaf96c02952ae00289ee",
+  "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+  "worldFingerprint": "ff8c52881209d68e1fbab335b630e2c31f56703c26a1272dc52b6b8c31bd8d65",
+  "checksum": 1366485752,
+  "ticks": 64,
+  "traceSha256": "40ff4af71d2304d27a1429200fa17305b0352038fc978e97b03e2ef11bc8af07",
+  "traceBytes": 197652,
+  "versionMinor": 150,
+  "simRevision": 38,
+  "simVersion": "150-68-da989dddbe288ba0d674acea8a00a610488886aca86861db5293551f3761252b"
+}

@@ -70,7 +70,10 @@ export function RouterProvider({ children }: { children: ReactNode }) {
     )
       return;
     // Studio needs document-level COOP/COEP headers before embedding the threaded game.
-    if (to.startsWith('/ai-studio') !== window.location.pathname.startsWith('/ai-studio')) {
+    if (
+      /^\/(ai-studio|generator-studio)(\/|$)/.test(to) !==
+      /^\/(ai-studio|generator-studio)(\/|$)/.test(window.location.pathname)
+    ) {
       window.location.assign(to);
       return;
     }

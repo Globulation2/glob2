@@ -95,9 +95,9 @@
 		# WebAssembly runtime ('wasm-unsafe-eval'), pthread and probe workers
 		# (blob:), and connections to whichever instance and relays the player
 		# chooses (https:, wss:).
-		@standardPlay not path /studio.html /set-preview.html
+		@standardPlay not path /studio.html /generator-studio.html /set-preview.html
 		header @standardPlay Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
-		@studioEmbed path /studio.html /set-preview.html
+		@studioEmbed path /studio.html /generator-studio.html /set-preview.html
 		header @studioEmbed X-Frame-Options "SAMEORIGIN"
 		header @studioEmbed Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
 		# Serve the Brotli or gzip copy written at build time (browser/precompress.py)
@@ -138,11 +138,11 @@
 		# compilation here while keeping JavaScript eval blocked everywhere.
 		@musicDecoder path /music/decode-worker.js
 		header @musicDecoder Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
-		@aiStudio path /ai-studio /ai-studio/*
+		@aiStudio path /ai-studio /ai-studio/* /generator-studio /generator-studio/*
 		header @aiStudio Cross-Origin-Opener-Policy "same-origin"
 		header @aiStudio Cross-Origin-Embedder-Policy "require-corp"
 		# Dedicated Monaco workers inherit the isolated Studio document policy.
-		@studioWorkers path_regexp ^/assets/(editor|ts)\.worker-[^/]+\.js$
+		@studioWorkers path_regexp ^/assets/(editor|ts|json)\.worker-[^/]+\.js$
 		header @studioWorkers Cross-Origin-Embedder-Policy "require-corp"
 		@assets path /assets/*
 		header @assets Cache-Control "public, max-age=31536000, immutable"

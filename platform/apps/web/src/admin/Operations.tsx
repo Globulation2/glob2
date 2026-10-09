@@ -80,7 +80,7 @@ function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) 
   const [usage, setUsage] = useState({ input: '', cachedInput: '', cacheWrite: '0', output: '' });
   const [verified, setVerified] = useState(false);
   const [details, setDetails] = useState<AdminOperationDetail>();
-  const metered = row.product === 'hive' || row.product === 'aiStudio';
+  const metered = row.product === 'hive' || ['aiStudio', 'generatorStudio'].includes(row.product);
   const validUsage =
     Object.values(usage).every(
       (value) => /^\d+$/.test(value) && Number.isSafeInteger(Number(value)),
@@ -119,14 +119,16 @@ function Recovery({ row, reload }: { row: AdminOperation; reload: () => void }) 
     const path =
       row.product === 'hive'
         ? `/api/v1/admin/hive/calls/${row.id}/reconcile`
-        : row.product === 'aiStudio'
-          ? '/api/v1/ai-studio/reconcile'
+        : ['aiStudio', 'generatorStudio'].includes(row.product)
+          ? `/api/v1/${row.product === 'generatorStudio' ? 'generator-studio' : 'ai-studio'}/reconcile`
           : `/api/v1/admin/${({ maps: 'map-studio', music: 'music-studio', terrain: 'terrain-studio', buildings: 'ai-building-studio' } as Record<string, string>)[row.product]}/requests/${row.id}/fail`;
     try {
       await request('POST', path, {
         body: metered
           ? {
-              ...(row.product === 'aiStudio' ? { requestId: row.id } : {}),
+              ...(['aiStudio', 'generatorStudio'].includes(row.product)
+                ? { requestId: row.id }
+                : {}),
               usage: {
                 input: Number(usage.input),
                 cachedInput: Number(usage.cachedInput),
@@ -262,7 +264,16 @@ export function Operations() {
         Product{' '}
         <select value={values['product'] ?? ''} onChange={(e) => set({ product: e.target.value })}>
           <option value="">All</option>
-          {['maps', 'music', 'terrain', 'buildings', 'aiStudio', 'hive', 'engine'].map((p) => (
+          {[
+            'maps',
+            'music',
+            'terrain',
+            'buildings',
+            'aiStudio',
+            'generatorStudio',
+            'hive',
+            'engine',
+          ].map((p) => (
             <option key={p} value={p}>
               {productName(p)}
             </option>

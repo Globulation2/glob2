@@ -1234,8 +1234,11 @@ The assistant has no execution tools: checks, playtests and further repair promp
 are explicit user actions. New projects use the profile-2 starter; imported files
 retain their API profile.
 
-`apps/api/src/ai-studio` owns projects, request dispatch and provider-result recovery.
-Each API replica dispatches one model request at a time.
+`apps/api/src/coding-studio` owns the shared project, request dispatch, provider
+transport and provider-result recovery implementation. The `ai-studio` exports
+preserve existing callers; explicit domain adapters provide prompts, replacement
+encoding, hashing, checks and publication.
+Each API replica dispatches one model request at a time per Studio domain.
 Its SQL tables use `ai_studio_`, including a separate wallet, ledger, calls and
 purchases. Billing shares the Hive/Map accounting implementation through an explicit
 product registry. Reservations precede dispatch; known usage settles once, even if
@@ -1295,6 +1298,57 @@ status, validation queue age, and browser launch errors. Studio request failures
 are structured API logs. Playtest summaries are client-reported development data,
 not competitive ratings or trusted match results. V1 has no multiplayer custom
 controllers, remote live games, community remixing, subscriptions, or shared credits.
+
+## Generator coding Studio
+
+`/generator-studio` and `/api/v1/generator-studio` use the shared coding Studio
+lifecycle with a separate opt-in `generatorStudio` configuration and billing
+product. Migration `0058_generator_studio.sql` adds independent `generator_studio_`
+projects, immutable two-file revisions, requests, events, checks, runs and financial
+tables. Revisions persist a JSON envelope of manifest text and script text;
+invalid manifest JSON is preserved for repair. A completed `replace_generator`
+response must contain both full files and pass the expected-revision check before
+one atomic revision is applied. Incomplete, malformed or ambiguous replacements
+retain usage accounting without changing either file. Uncertain provider outcomes
+are never automatically dispatched again; journaled results recover through the
+same settlement path as AI Studio.
+
+The generator adapter supplies committed documentation, toolkit declarations,
+starter source, current files, bounded conversation and explicitly supplied
+diagnostics. The assistant has no execution tools. Separate declaration leases
+and model paths provide Monaco completion for each domain, with plain text editing
+on narrow screens. Shared recovery, conflict handling, historical inspection,
+restoration and generated-edit Undo operate on both files together.
+
+Explicit local runs retain revision, draft hash, settings and bounded client
+summaries. `/play/generator-studio.html` uses the same temporary-profile host and
+validated, same-origin, versioned run envelope as AI Studio. Native package parsing,
+control validation, generation scheduling and interpreter budgets remain
+responsible for execution. The engine reports package hash, engine/simulation
+version, generation duration, diagnostic and bounded telemetry. The frozen world
+is rendered through MapPreview, then optionally launched with Nicowar colonies
+from its serialized snapshot. Replacing a host discards late results. Serial
+browser builds retain the existing bounded synchronous generation fallback;
+threaded builds generate on a worker.
+
+Checks submit the exact saved package through isolated Generator Library validation
+and retain the upload receipt with the project revision. Publish remains the
+existing Generator Library API and requires a valid matching unexpired receipt;
+local browser reports cannot authorize it. Account export includes all private
+project files, revisions, requests, events, checks and runs. Account deletion fences
+active completion and removes private content while retaining financial audit
+records. Financial reporting and reconciliation use the separate generator product.
+
+Deploy the additive migration and backend before the web/browser entries. Keep
+`generatorStudio.enabled` false until a maintainer playthrough. Its model, rate,
+request cap, output cap, sales and pack settings follow `aiStudio` independently;
+credentials are `GENERATOR_STUDIO_OPENAI_API_KEY`,
+`GENERATOR_STUDIO_STRIPE_SECRET_KEY` and `GENERATOR_STUDIO_STRIPE_WEBHOOK_SECRET`.
+Stripe callbacks and administrator reconciliation use
+`/api/v1/generator-studio/stripe` and `/api/v1/generator-studio/reconcile`.
+Generator Studio balances are never shared with other products. V1 excludes
+multiple-module editing, automatic repair loops, ranked integration and remote
+trusted playtests.
 
 ## Community music
 

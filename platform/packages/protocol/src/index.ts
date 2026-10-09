@@ -21,6 +21,7 @@ export * from './ais.ts';
 export * from './music.ts';
 export * from './musicStudio.ts';
 export * from './aiStudio.ts';
+export * from './codingStudio.ts';
 export * from './buildings.ts';
 export * from './sets.ts';
 export * from './terrainStudio.ts';
@@ -29,3 +30,5 @@ export * from './setAuthoring.ts';
 export * from './buildingStudio.ts';
 
 export * from './generators.ts';
+
+export * from './generatorStudio.ts';

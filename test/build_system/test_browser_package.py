@@ -24,7 +24,7 @@ class BrowserPackageTests(unittest.TestCase):
             with self.subTest(artifact=artifact):
                 self.assertEqual(len(matches), 1)
                 paths = {line.strip() for line in matches[0].splitlines()}
-                for name in module.MUSIC_FILES:
+                for name in (*module.MUSIC_FILES, "generator-studio.html"):
                     self.assertIn("build/emscripten/client/release/" + name, paths)
 
     @unittest.skipIf(os.name == "nt", "POSIX web-server permissions")
@@ -60,6 +60,7 @@ class BrowserPackageTests(unittest.TestCase):
         version = module.package(self.source, self.output)
         module.verify(self.output)
         self.assertEqual((self.output / "studio.html").read_bytes(), (self.output / "index.html").read_bytes())
+        self.assertEqual((self.output / "generator-studio.html").read_bytes(), (self.output / "index.html").read_bytes())
         self.assertEqual((self.output / "set-preview.html").read_bytes(), (self.output / "index.html").read_bytes())
         js = (self.output / f"index-{version}.js").read_text()
         self.assertIn(f"index-{version}.wasm", js)

@@ -870,6 +870,7 @@ jobs:
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
             build/emscripten/client/release/studio.html
+            build/emscripten/client/release/generator-studio.html
             build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/hive-worker.js
@@ -908,6 +909,7 @@ jobs:
           path: |
             build/emscripten/client/release/index.html
             build/emscripten/client/release/studio.html
+            build/emscripten/client/release/generator-studio.html
             build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
             build/emscripten/client/release/hive-worker.js

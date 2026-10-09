@@ -209,7 +209,7 @@ class Smoke:
         (self.directory / '.env').write_text(''.join(f'{k}={v}\n' for k, v in settings.items()))
         (self.directory / 'instance.yaml').write_text(INSTANCE_YAML_E2E if arguments.match_e2e else INSTANCE_YAML)
         (self.directory / 'web-client').mkdir()
-        for entry in ('index.html', 'studio.html'):
+        for entry in ('index.html', 'studio.html', 'generator-studio.html'):
             (self.directory / 'web-client' / entry).write_text('<!doctype html><title>glob2 web client</title>')
         # A content-addressed data package with a precompressed copy, as
         # browser/precompress.py and deploy/install-web-client.py lay them out.
@@ -341,6 +341,9 @@ class Smoke:
             ('/ai-studio', 'DENY', "'none'"),
             ('/ai-studio/11111111-1111-4111-8111-111111111111', 'DENY', "'none'"),
             ('/play/studio.html', 'SAMEORIGIN', "'self'"),
+            ('/generator-studio', 'DENY', "'none'"),
+            ('/generator-studio/11111111-1111-4111-8111-111111111111', 'DENY', "'none'"),
+            ('/play/generator-studio.html', 'SAMEORIGIN', "'self'"),
             ('/play/index.html', 'DENY', "'none'"),
         ):
             status, headers, body = self.https('GET', path)
@@ -356,13 +359,13 @@ class Smoke:
             directives = {part.strip() for part in headers.get('Content-Security-Policy', '').split(';')}
             if f'frame-ancestors {ancestors}' not in directives:
                 raise Failure(f'{path}: incorrect frame-ancestors policy')
-            if path.startswith('/ai-studio') and "frame-src 'self'" not in directives:
+            if path.startswith(('/ai-studio', '/generator-studio')) and "frame-src 'self'" not in directives:
                 raise Failure(f'{path}: Studio cannot embed its game')
             pages[path] = status
         # These policy probes deliberately use stable synthetic worker names: the
         # deployed Vite hashes change on every editor release. The SPA may answer
         # the missing file, but the worker-path COEP rule must still be selected.
-        for worker in ('editor', 'ts'):
+        for worker in ('editor', 'ts', 'json'):
             path = f'/assets/{worker}.worker-studio-header-probe.js'
             status, headers, _ = self.https('GET', path)
             if status != 200 or headers.get('Cross-Origin-Embedder-Policy') != 'require-corp':

@@ -1060,6 +1060,9 @@ void Engine::clientStep(const std::vector<SDL_Event>& events)
     }
     // Studio reads controller-private status only after its worker stream ends.
 #ifdef __EMSCRIPTEN__
+    if (std::getenv("GLOB2_GENERATOR_STUDIO")) {
+        GAGCore::ApplicationHost::studioProgress(gui.game.stepCounter, !gui.isRunning || gui.game.isGameEnded, false, "", false, false);
+    }
     if (std::getenv("GLOB2_STUDIO_PLAYTEST")) {
         gui.game.drainAI();
         auto &game = gui.game;
