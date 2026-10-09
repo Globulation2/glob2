@@ -1,0 +1,6 @@
+PR982 local verification
+Commit fdc455ca05439093535dd92eb7ea202b7ebffb42, base93273e6361b7a27a8ed251e9182a9099f24ab4dc.
+Linux x86_64 GCC15.2 debug, local SDL3 prefix. Build: GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" scons --build=build/native-coverage-torus release=0 -j8 build/native-coverage-torus/test/glob2-engine-tests
+Test: SDL_VIDEODRIVER=x11 xvfb-run -a build/native-coverage-torus/test/glob2-engine-tests --test-suite=TerrainMaterials
+PASS27cases1744616assertions, including PNG artifact writes. PNG outputs attached. No rendering or simulation behavior change; two filename argument conversions only. Not a visual redesign; no visual quality claims.
+Original Windows compiler failure job113605083054 retained. Actual Windows verification run37872103881 job113633058860 remains compiling; this evidence does not establish Windows success. Latestmastera1796e346 fetched; later changes translations/privateRNG do not alter changed screenshot calls. Full matrix not repeated locally.
