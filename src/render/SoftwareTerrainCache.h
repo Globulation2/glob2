@@ -50,8 +50,8 @@ class SoftwareTerrainCache
 	{
 		int x = 0, y = 0, scale = 1;
 		Uint32 seed = 0; // Map terrain seed the page was composed with.
-		// Vertex terrain the page's tile corners read.
-		std::array<Uint32, (ChunkTiles + 1) * (ChunkTiles + 1)> sources{};
+		// Corner vertices and one-vertex halo used by contextual borders.
+		std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
 		std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 		// Empty cells expose only the separately drawn ocean and submit no software blit.
 		std::array<bool, ChunkTiles * ChunkTiles> opaque{}, empty{};

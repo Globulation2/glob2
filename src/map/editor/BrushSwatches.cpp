@@ -258,6 +258,10 @@ GAGCore::DrawableSurface *BrushSwatches::terrainScene(TerrainType type, TerrainT
 			recipe.seed = variation;
 			recipe.corners = {cellMaterial(x, y), cellMaterial(x + 1, y), cellMaterial(x, y + 1),
 							  cellMaterial(x + 1, y + 1)};
+			recipe.hasNeighborhood = true;
+			for (int dy = -1; dy <= 2; ++dy)
+				for (int dx = -1; dx <= 2; ++dx)
+					recipe.neighborhood[(dy + 1) * 4 + dx + 1] = cellMaterial(x + dx, y + dy);
 			compositor.compose(recipe, source->getSDLSurface(), x * 32, y * 32, 1);
 		}
 	source->markPixelsChanged();

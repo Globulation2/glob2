@@ -274,13 +274,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						entry = c.get();
 						break;
 					}
-				// Compare the page's vertex window once, rather than the four
-				// corners of every tile: tiles 0..ChunkTiles-1 read vertices
-				// 0..ChunkTiles.
-				std::array<Uint32, (ChunkTiles + 1) * (ChunkTiles + 1)> sources{};
-				for (int y = 0; y <= ChunkTiles; ++y)
-					for (int x = 0; x <= ChunkTiles; ++x)
-						sources[y * (ChunkTiles + 1) + x] = map.vertexTerrainAt(wx + x, wy + y);
+				// Compare the complete vertex window including the contour halo.
+				std::array<Uint32, (ChunkTiles + 3) * (ChunkTiles + 3)> sources{};
+				const int halo = compositor.contextualBorders() ? 1 : 0;
+				for (int y = -halo; y <= ChunkTiles + halo; ++y)
+					for (int x = -halo; x <= ChunkTiles + halo; ++x)
+						sources[(y + 1) * (ChunkTiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
 				const auto revisionChanged = [&](const auto &revision)
 				{ return compositor.materialRevision(revision.first) != revision.second; };
 				bool unchanged = entry && entry->valid && entry->sources == sources &&
