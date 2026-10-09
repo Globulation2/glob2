@@ -1,0 +1,24 @@
+g++ -o artifacts/windows-near-repair/GameGUITouchHarness.o -c -g -std=gnu++20 -Wall -fPIC '-DGLOB2_OFFICIAL_INSTANCE_ORIGIN="https://app.glob2online.com"' '-DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS="https://glob2online.com"' -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/.local/share/glob2/development/dependencies/build-eba4bfe69daee069b47a7133/prefix/include -Ibuild/sdl3-ci/prefix/include -Ibuild/native-coverage-torus/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/javascript -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -Ibuild/sdl3-ci/prefix/include/webp -Itest -Itest/support -Ilibgag/src -Ithird_party/quickjs-ng src/hud/touch/GameGUITouchHarness.cpp
+In file included from src/hud/touch/GameGUITouchHarness.cpp:43:
+src/map/editor/MapEdit.h:35:9: warning: ‘RIGHT_MENU_WIDTH’ redefined
+   35 | #define RIGHT_MENU_WIDTH 160
+      |         ^~~~~~~~~~~~~~~~
+In file included from src/hud/touch/GameGUITouchHarness.cpp:21:
+src/hud/GameGUIInternal.h:86:9: note: this is the location of the previous definition
+   86 | #define RIGHT_MENU_WIDTH GAME_GUI_RIGHT_MENU_WIDTH
+      |         ^~~~~~~~~~~~~~~~
+src/map/editor/MapEdit.h:36:9: warning: ‘RIGHT_MENU_OFFSET’ redefined
+   36 | #define RIGHT_MENU_OFFSET (160-128)/2
+      |         ^~~~~~~~~~~~~~~~~
+src/hud/GameGUIInternal.h:88:9: note: this is the location of the previous definition
+   88 | #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
+      |         ^~~~~~~~~~~~~~~~~
+In file included from src/hud/GameGUIInternal.h:15:
+src/building/hud/BuildingPresentation.h: In function ‘bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)’:
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: ‘int’ and ‘const unsigned int’ [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
