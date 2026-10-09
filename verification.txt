@@ -1,0 +1,9 @@
+PR982 final verification
+Final commit47f6be1b1f20920f6da20689d59ce7905e396075 integrates master6a7812ac9. Only two .string() conversions in TerrainMaterialsTest.cpp remain in PR diff.
+Linux x86_64 GCC15.2 debug, local SDL3 prefix.
+GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" scons --build=build/native-coverage-torus release=0 -j8 build/native-coverage-torus/test/glob2-engine-tests
+SDL_VIDEODRIVER=x11 xvfb-run -a build/native-coverage-torus/test/glob2-engine-tests --test-suite=TerrainMaterials
+PASS28cases2089859assertions after terrain contour/scalloping integration. Build/test logs retained; earlier PNG artifacts in comment6073142044.
+Windows hosted run37872103881 job113633058860 on initial repair fdc455ca0: Build glob2 and regression harnesses SUCCESS. Later JavaScript corpus failed stale protocol assertions addressed separately by merged986. Windows engine tests skipped; do not claim Windows runtime suite success. EntireWindowslog retained.
+Fetched64616f1a5 beforemerge: changes SoftwareTerrainCache/page reuse and TerrainPresentation tests; repaired natural-border PNG fixture directly uses compositor and DrawableSurface, not that cache. TerrainMaterialsTest.cpp and compositor implementation unchanged; header adds unused takePixels method. No further affected-path integration change found. Did not rerun unrelated cache tests.
+No production renderer/simulation/save/replay/network changes; test artifact filename type conversion only. No checks weakened; original failedmasterlog retained in earlier evidence. Full master recovery remains to be observed.
