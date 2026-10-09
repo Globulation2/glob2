@@ -6,6 +6,7 @@ from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
 from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
+from build_timing import record
 from mobile_toolchain import discover, LOCK
 from mobile_artifacts import verify_android_library, archive_object_name
 from javascript import javascript_objects, numeric_guard, strict_numeric_source, guarded_numeric_source
@@ -17,7 +18,9 @@ import skin_materials
 def build_mobile(directory, identity, arguments):
     output = Path(directory).resolve()
     # The Amazon flavor changes game behavior, not its pinned native dependencies.
-    dependency_identity = dict(identity)
+    from dev_build import dependency_identity as application_dependency_identity, configure as configure_development, can_build_dependencies, dependency_jobs
+    from shared_dependencies import ensure as ensure_dependency
+    dependency_identity = application_dependency_identity(identity)
     dependency_identity.pop('amazon', None)
     toolchain = discover(dependency_identity, arguments)
     from dev_store import dependency_prefix, dependency_key, command_path, adopt
@@ -56,6 +59,7 @@ def build_mobile(directory, identity, arguments):
     environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
         ENV=environment, CC=command_path(toolchain['cc']), CXX=command_path(toolchain['cxx']), LINK=command_path(toolchain['cxx']), AR=command_path(toolchain['ar']))
+    env['BUILDDIR'] = str(output)
     if ccache.enabled():
         ccache.enable(env)
     config = output / 'include/glob2/BuildConfig.h'
@@ -77,7 +81,8 @@ def build_mobile(directory, identity, arguments):
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
     from recording_dependencies import build as build_recording, attach as attach_recording
     recording_prefix = output / 'recording/prefix'
-    build_recording(recording_prefix, output / 'recording/sources', sdk_identity=toolchain['fingerprint'],
+    recording_prefix = ensure_dependency(build_recording, os.environ.get('GLOB2_RECORDING_PREFIX', recording_prefix), output / 'recording/sources',
+        explicit=bool(os.environ.get('GLOB2_RECORDING_PREFIX')), execute=can_build_dependencies(), jobs=dependency_jobs(arguments), sdk_identity=toolchain['fingerprint'],
         cc=command_path(toolchain['cc']), cxx=command_path(toolchain['cxx']),
         ar=command_path(toolchain['ar']), ranlib=command_path(Path(toolchain['ar']).with_name('llvm-ranlib' if identity['target']=='android' else 'ranlib')),
         target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
@@ -86,6 +91,11 @@ def build_mobile(directory, identity, arguments):
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
+    configure_development(env, identity)
+    if ccache.enabled():
+        from dev_build import cache_flags
+        cache_flags(env)
+    env.Alias("dev-dependencies", [])
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
@@ -101,9 +111,13 @@ def build_mobile(directory, identity, arguments):
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         # SDL3/SDL_main.h supplies Android entry-point routing.
-        objects = [(strict if strict_numeric_source(name) else env).SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
-        numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
-        program = env.SharedLibrary(str(output / 'lib/main'), objects)
+        from dev_compile import objects as development_objects, unique
+        by_source = {}
+        for compile_env, subset in ((strict, [f for f in files if strict_numeric_source(f)]), (env, [f for f in files if not strict_numeric_source(f)])):
+            by_source.update(development_objects(compile_env, subset, lambda name: str(object_root / (name + '.o')), shared=True))
+        objects = unique([by_source[name] for name in files]) + script_objects
+        numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
+        program = record(env, env.SharedLibrary(str(output / 'lib/main'), objects), 'link')
         if 'android-tests' in COMMAND_LINE_TARGETS:
             # Cross-compile the two doctest binaries from test/tests.py as Android PIE
             # executables for adb shell (mobile/android_device_tests.py). They reuse the
@@ -116,8 +130,8 @@ def build_mobile(directory, identity, arguments):
             # Retain build definitions (including the official origin).
             # TestMain.cpp defines SDL_MAIN_HANDLED itself.
             tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
-            by_source = dict(zip(files, objects))
-            client_objects = [obj for name, obj in by_source.items() if name != 'src/app/Glob2.cpp'] + script_objects
+            # by_source also maps unity members to their shared production object.
+            client_objects = unique([obj for name, obj in by_source.items() if name != 'src/app/Glob2.cpp']) + script_objects
             library_objects = [obj for name, obj in by_source.items()
                                if name.startswith('libgag/') or name.startswith('libusl/')] + script_objects
 
@@ -154,7 +168,7 @@ def build_mobile(directory, identity, arguments):
                         out.append(by_source[key])
                     else:
                         out += test_objects([entry], 'unit-')
-                return out
+                return unique(out)
 
             bridge = tests.Object(str(object_root / 'tests' / 'NativeTestMain.o'), 'mobile/NativeTestMain.cpp')
             engine = tests.Program(str(output / 'tests' / 'glob2-engine-tests'),
@@ -169,11 +183,11 @@ def build_mobile(directory, identity, arguments):
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
         objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
-        numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
+        numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]
-        program = env.StaticLibrary(str(output / 'lib/glob2'), objects)
+        program = record(env, env.StaticLibrary(str(output / 'lib/glob2'), objects), 'link')
         if 'ios-tests' in COMMAND_LINE_TARGETS:
             import sys
             sys.path.insert(0, os.path.abspath('test'))
