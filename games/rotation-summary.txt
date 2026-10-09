@@ -1,0 +1,8 @@
+rot-base   nicowar  n=12 units avg  113.8 min   56 wheat  1069 starved  22 killed 102
+rot-base   cortex   n=12 units avg   56.2 min   22 wheat   572 starved   0 killed   5
+rot-base   cabino   n=12 units avg   95.1 min   64 wheat   641 starved  12 killed  12
+rot-base   maxima   n=12 units avg  125.2 min   62 wheat   850 starved   3 killed  39
+rot-final  nicowar  n=12 units avg  129.8 min   53 wheat  1123 starved  14 killed  48
+rot-final  cortex   n=12 units avg   76.2 min   38 wheat   698 starved   0 killed   1
+rot-final  cabino   n=12 units avg  117.6 min   80 wheat   827 starved  82 killed  20
+rot-final  maxima   n=12 units avg  106.0 min   11 wheat   889 starved  16 killed  51

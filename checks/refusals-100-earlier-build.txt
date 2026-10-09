@@ -1,0 +1,5 @@
+128x128 teams 2: rev4 85/100 rev5 77/100
+256x256 teams 2: rev4 93/100 rev5 93/100
+256x256 teams 4: rev4 100/100 rev5 99/100
+512x512 teams 8: rev4 100/100 rev5 100/100
+256x128 teams 2: rev4 95/100 rev5 88/100
