@@ -8,6 +8,7 @@
 */
 
 #pragma once
+#include "OwnerRandom.h"
 
 #include <set>
 
@@ -264,9 +265,10 @@ public:
 	std::set<int> instructionStarts; //!< Reconstructed from source, never trusted from a save.
 	int lineSelector; //!< PC : Program Counter
 	int internTimer;
+	EntityRandom random;
 
 	void syncStep(StoryContext *gui);
-	Sint32 checkSum() { return lineSelector; }
+	Sint32 checkSum() { return Uint32(lineSelector) ^ random.checksum(); }
 
 	void sendSpace() { receivedSpace=true; }
 	
@@ -341,6 +343,7 @@ public:
 	//! from `requests`; presentation commands go to `client`.
 	void syncStep(Game &game, ClientCommandSink &client, ClientRequests &requests);
 	Sint32 checkSum();
+	void initializeRandom(Uint32 seed);
 	bool hasTeamWon(unsigned teamNumber) const;
 	bool hasTeamLost(unsigned teamNumber) const;
 	int getMainTimer(void) const { return mainTimer; }

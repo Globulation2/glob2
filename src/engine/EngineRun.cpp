@@ -917,7 +917,6 @@ void Engine::beginSession(Uint64 now)
     teamEliminatedTick.clear();
     session = st;
     readBoundaryOpened = false;
-    randomRequirement.emplace();
     automaticGameStartTick = now;
 	if (!globalContainer->runNoX)
 		GAGCore::Recording::recorder().beginMatch(
@@ -988,7 +987,6 @@ void Engine::abortSession() noexcept
     }
     if (diagnostics) diagnostics->drain();
     session.reset();
-    randomRequirement.reset();
     sessionInput.clear();
     globalContainer->replayWriter.reset();
     PerformanceTelemetry::collector().reset();
@@ -1218,7 +1216,6 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 
     if (diagnostics) diagnostics->drain();
     session.reset();
-    randomRequirement.reset();
     sessionInput.clear();
     const auto filename = std::exchange(gui.toLoadGameFileName, {});
     if (gui.exitGlobCompletely || filename.empty()) return std::nullopt;

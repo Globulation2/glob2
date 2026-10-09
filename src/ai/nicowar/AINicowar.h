@@ -189,7 +189,7 @@ public:
 	NicowarStrategyLoader();
 	
 	///This chooses a strategy at random
-	NicowarStrategy chooseRandomStrategy();
+	NicowarStrategy chooseRandomStrategy(MersenneTwister& random);
 	
 	///This chooses a strategy with a particular name
 	NicowarStrategy getParticularStrategy(const std::string& name);
@@ -231,7 +231,7 @@ private:
 	} defenseScanScratch;
 	///This function loads up all available strategies, and selects one at random.
 	///As such, Nicowar may be going war-rush style, or it may try a longer game.
-	void selectStrategy();
+	void selectStrategy(AISharedRuntime::Runtime& runtime);
 
 	///This is the basic, variable strategy that Nicowar will be taking at all times
 	NicowarStrategy strategy;

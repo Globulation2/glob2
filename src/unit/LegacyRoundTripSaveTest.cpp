@@ -71,6 +71,24 @@ TEST_CASE("a format-143 save with live round-trip fields plays on greedily [gold
 	CHECK(g.mapHeader.getVersionMinor() >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS);
 	CHECK(g.mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_GREEDY_FETCHING);
 	REQUIRE(g.stepCounter == 1200);
+	// Older save state becomes a deterministic PCG stream once, never a fallback.
+	for (int t=0; t<g.teamsCount(); ++t) {
+		for (auto* unit : g.teams[t]->liveUnits.entries()) {
+			EntityRandom expected;
+			expected.initialize(g.gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);
+			CHECK(unit->entityRandom == expected);
+		}
+		for (auto* building : g.teams[t]->liveBuildings.entries()) {
+			EntityRandom expected;
+			expected.initialize(g.gameHeader.getRandomSeed(), EntityRandom::Kind::Building, building->gid, building->scriptIdentity);
+			CHECK(building->entityRandom == expected);
+		}
+	}
+
+    WorldRandomStreams expectedWorld;
+    expectedWorld.initialize(g.gameHeader.getRandomSeed());
+    CHECK(g.map.worldRandom.streams == expectedWorld.streams);
+
 
 	std::ostringstream trace;
 	trace << "loaded " << std::hex << digest(g) << std::dec << '\n';

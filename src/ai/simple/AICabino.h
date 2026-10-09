@@ -1470,23 +1470,15 @@ namespace Cabino
 
 	//These are just some handy functions
 
-	///Adapts syncRand to work as a RandomNumberFunctor for the std.
-	inline unsigned int syncRandAdapter(unsigned int x)
-	{
-		return syncRand()%x;
-	}
-
-	
-
 	///Shuffles the given list.
-	template<typename T> void list_shuffle(std::list<T>& l)
+	template<typename T> void list_shuffle(MersenneTwister& random, std::list<T>& l)
 	{
 		std::vector<T> v(l.begin(), l.end());
 		// std::random_shuffle and its RandomNumberGenerator-functor overload were
-		// removed in C++17. Fisher-Yates by hand keeps this syncRand-driven and
+		// removed in C++17. Fisher-Yates by hand uses the controller stream and
 		// deterministic across clients, matching the old semantics exactly.
 		for (typename std::vector<T>::size_type i = v.size(); i > 1; --i)
-			std::swap(v[i - 1], v[syncRandAdapter(static_cast<unsigned int>(i))]);
+			std::swap(v[i - 1], v[random() % static_cast<unsigned int>(i)]);
 		typename std::list<T>::iterator i1 = l.begin();
 		typename std::vector<T>::iterator i2 = v.begin();
 		while (i1!=l.end())

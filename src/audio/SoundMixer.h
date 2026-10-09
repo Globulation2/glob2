@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #pragma once
+#include "OwnerRandom.h"
 #include "MusicTrack.h"
 #include "MusicTypes.h"
 #include <memory>
@@ -46,6 +47,7 @@ class SoundMixer
   private:
 	struct Impl;
 	std::unique_ptr<Impl> impl;
+    EntityRandom musicRandom;
 	std::string activeMusicSet = "original";
 	unsigned previewSession = 0, nextPreviewSession = 0;
 };

@@ -16,6 +16,7 @@
 
 #include "FileFormatVersions.h"
 #include "Utilities.h"
+#include "EntityRandomIO.h"
 #include <Stream.h>
 
 void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
@@ -42,6 +43,10 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		throw std::runtime_error("Invalid unit identity");
 	scriptIdentity=versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(false,gid);
 	this->owner = owner;
+	if (versionMinor >= FILE_FORMAT_VERSION_ENTITY_RANDOM)
+		loadEntityRandom(stream, entityRandom);
+	else
+		entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, gid, scriptIdentity);
 	isDead = stream->readSint32("isDead");
 	diagnosticDeathCause = GameplayMeasurements::UNKNOWN;
 	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
@@ -202,6 +207,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	// identity
 	stream->writeUint16(gid, "gid");
 	stream->writeUint32(scriptIdentity, "scriptIdentity");
+	saveEntityRandom(stream, entityRandom);
 	stream->writeSint32(isDead, "isDead");
 	stream->writeSint32(diagnosticDeathCause, "diagnosticDeathCause");
 
@@ -486,5 +492,15 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(0);// [39]
 
+	if (checkSumsVector)
+	{
+		const auto random = entityRandom.exportState();
+		checkSumsVector->push_back(Uint32(random.value >> 32));
+		checkSumsVector->push_back(Uint32(random.value));
+		checkSumsVector->push_back(Uint32(random.increment >> 32));
+		checkSumsVector->push_back(Uint32(random.increment));
+	}
+
+	cs ^= entityRandom.checksum();
 	return cs;
 }

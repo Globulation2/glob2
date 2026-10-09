@@ -91,14 +91,14 @@ Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell
 	return building->globalGradient[slot][cell];
 }
 
-bool Map::buildingGradientDirection(Building *building, int swimClass, int x, int y,
+bool Map::buildingGradientDirection(EntityRandom& random, Building *building, int swimClass, int x, int y,
 	int *dx, int *dy, bool strict, BuildingRoute route) const
 {
 	const int slot = building->routeSlot(swimClass, route);
 	// Settling this layer also settles all equal/better neighbors the generic
 	// direction picker can select. Keep partial-array access inside this adapter.
 	buildingGradientValue(building, swimClass, coordToIndex(x, y), route);
-	return directionByGradient(building->owner->me, swimClass, x, y,
+	return directionByGradient(random, building->owner->me, swimClass, x, y,
 		building->globalGradient[slot], dx, dy, strict);
 }
 
@@ -121,7 +121,7 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 }
 
 
-bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route)
+bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route)
 {
 	const int slot = building->routeSlot(swimClass, route);
 	PERF_SCOPE_TIME(PathBuilding);
@@ -146,21 +146,21 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 		if (gradientStats) gradientStats->clearingGoalGone();
 		return false;
 	}
-	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true, route))
+	if (buildingGradientDirection(random, building, swimClass, x, y, dx, dy, true, route))
 		return true;
 	if (building->lastGlobalGradientUpdateStepCounter[slot]+STUCK_REBUILD_TICKS>game->stepCounter)
-		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
+		return buildingGradientDirection(random, building, swimClass, x, y, dx, dy, false, route);
 
 	// Stuck for a while: the gradient may be stale. A scheduled refresh keeps
 	// sidestepping on the old field until it publishes; otherwise rebuild now.
 	if (requestBuildingRefresh(building, slot))
-		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
+		return buildingGradientDirection(random, building, swimClass, x, y, dx, dy, false, route);
 	noteBuildingSyncReason(BuildingSyncReason::Other);
 	if (gradientStats) gradientStats->setPendingReason(BuildingGradientStats::Reason::Stuck);
 	updateGlobalGradient(building, swimClass, route);
 	if (building->locked[building->routeAccess(swimClass, route)])
 		return false;
-	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true, route))
+	if (buildingGradientDirection(random, building, swimClass, x, y, dx, dy, true, route))
 		return true;
-	return buildingGradientDirection(building, swimClass, x, y, dx, dy, false, route);
+	return buildingGradientDirection(random, building, swimClass, x, y, dx, dy, false, route);
 }

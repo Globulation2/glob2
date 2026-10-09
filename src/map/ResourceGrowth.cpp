@@ -63,8 +63,11 @@ void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 	if (v.resourceGrowthDisabled)
 		return;
 	const unsigned scarcity = 1u << v.resourceScarcityLevel;
+	const Uint32 decisionSeed = rng();
+	EntityRandom decisions;
+	size_t lastSource = std::numeric_limits<size_t>::max();
 	auto opportunities = [&](Uint32 rate)
-	{ return Fertility::growthOpportunities(rate, [&] { return rng(); }); };
+	{ return Fertility::growthOpportunities(rate, [&] { return decisions.nextU32(); }); };
 	auto propose = [&](size_t i, const Resource &source)
 	{
 		if (!MapState::resourcesMayGrow(v, i) ||
@@ -105,6 +108,13 @@ void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 		{
 			++out.sampled;
 			const auto i = v.index(x, y);
+			// A repeated scan of the same tile continues that tile's stream.
+			// Draws from a source never change another source or the scan schedule.
+			if (i != lastSource)
+			{
+				decisions.initializeOwner(decisionSeed, unsigned(RandomDomain::GrowthSource), Uint32(i));
+				lastSource = i;
+			}
 			const auto &r = v.resources[i].resource;
 			if (r.type == NO_RES_TYPE)
 				continue;
@@ -112,10 +122,10 @@ void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 			const auto attempts = opportunities(MapState::resourceGrowthRate(v, i, r.type));
 			for (unsigned attempt = 0; attempt < attempts; ++attempt)
 			{
-				if (scarcity != 1 && rng() % scarcity)
+				if (scarcity != 1 && decisions.nextU32() % scarcity)
 					continue;
 				const bool local =
-					!p.stockDependentGrowth || r.amount <= rng() % p.stockBranchDivisor;
+					!p.stockDependentGrowth || r.amount <= decisions.nextU32() % p.stockBranchDivisor;
 				if (local)
 					propose(i, r);
 				if (p.spreadRate && (!p.stockDependentGrowth || !local))
@@ -123,7 +133,7 @@ void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 					const auto spreads = opportunities(p.spreadRate);
 					for (unsigned n = 0; n < spreads; ++n)
 					{
-						const auto &d = directions[rng() & 7];
+						const auto &d = directions[decisions.nextU32() & 7];
 						propose(v.index(x + d[0], y + d[1]), r);
 					}
 				}
@@ -582,7 +592,7 @@ void Map::preparePendingWorld(const SimulationSnapshot::Handle &snapshot)
 void Map::stageResourceGrowth()
 {
 	if (!game->gameHeader.isResourceGrowthDisabled())
-		gradientRuntime->growth.stage(game->stepCounter, syncRand());
+		gradientRuntime->growth.stage(game->stepCounter, privateRandom(RandomDomain::GrowthJobs).nextU32());
 }
 void Map::finishResourceGrowth()
 {

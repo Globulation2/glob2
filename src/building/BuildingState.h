@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "EntityRandom.h"
+
 #include "Material.h"
 #include "UnitConsts.h"
 #include <type_traits>
@@ -40,6 +42,7 @@ struct BuildingStateRecord
 	// Authoritative order-applied priority (-1/0/+1). Pending GUI values live
 	// in BuildingGuiState, outside simulation state.
 	Sint32 priority;
+	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Excluded from legacy simulation checksums.
 	Uint16 gid;
 	Sint32 posX, posY;

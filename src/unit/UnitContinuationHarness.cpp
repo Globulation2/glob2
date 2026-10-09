@@ -69,6 +69,7 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     setSyncRandSeed(731);
     GameGUI original;
     Game& game = original.game;
+    game.gameHeader.setRandomSeed(731);
     glob2test::BoundGameRandom bound(game);
     game.map.setSize(5, 5, GRASS);
     game.map.setGame(&game);

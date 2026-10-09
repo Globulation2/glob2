@@ -64,6 +64,7 @@ public:
 	void setRandomEngine(MersenneTwister &engine) { randomEngine = &engine; }
 	MersenneTwister snapshotRandom() const { assert(randomEngine); return *randomEngine; }
 	void restoreRandom(const MersenneTwister& state) { assert(randomEngine); *randomEngine=state; }
+	MersenneTwister& privateRandomEngine() const { assert(randomEngine); return *randomEngine; }
 	Uint32 random() const { assert(randomEngine); return (*randomEngine)(); }
   AITelemetry::Sink telemetry;
   mutable std::vector<AIEngine::DiagnosticRecord> bufferedDiagnostics;

@@ -381,14 +381,7 @@ void Engine::createRandomGame()
 
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
 	game.setBuildingCatalogSnapshot(loadGameHeader(map.getFileName()).getBuildingCatalogSnapshot());
-	// Mirror the syncRand seed (captured at runTestGames entry) into the
-	// GameHeader so a saved .game file reloads with the same syncRand
-	// state. GameHeader's ctor defaults seed to time(NULL) at header-
-	// construction time, which won't match GLOB2_TEST_SEED (and even
-	// without that env var, can drift seconds away from the time(NULL)
-	// runTestGames already used for setSyncRandSeed). Without this mirror,
-	// --save-game-as / GLOB2_DUMP_GAME produce .game files that diverge
-	// from the original run when reloaded via --nox.
+	// Pin the final simulation header to the test-game setup seed.
 	if (globalContainer->testGamesSeedSet)
 	{
 		game.setRandomSeed(globalContainer->testGamesSeed);

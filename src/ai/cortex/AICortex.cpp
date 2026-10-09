@@ -141,7 +141,7 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	rangeGateBindingSince = stream->readSint32("rangeGateBindingSince");
 	flagPosture = stream->readSint32("flagPosture");
 	offenseHoldUntil = stream->readSint32("offenseHoldUntil");
-	// Persisted, NOT redrawn on load: re-drawing would consume a fresh syncRand on
+	// Persisted, NOT redrawn on load: re-drawing would consume a fresh controller draw on
 	// every load and desync replays. -1 means a pre-food save (or a game that has
 	// not reached its first decision cycle yet) — getOrder draws it next cycle.
 	wheatOpenMargin = stream->readSint32("wheatOpenMargin");
@@ -361,7 +361,7 @@ const AIEngine::BuildingView* AICortex::findUpgradeTarget(int buildingType) cons
 			continue;
 
 		// Bottleneck ranking (deterministic — we deliberately do NOT mimic
-		// Nicowar's `syncRand() % buildings.size()` random pick from
+		// Nicowar's random building pick from
 		// ai/nicowar/Upgrade.cpp:141). Pick, in order:
 		//   (1) LOWEST type->level — lift the most-behind building first, so the
 		//       colony's weakest variant catches up before already-strong ones.
@@ -370,9 +370,9 @@ const AIEngine::BuildingView* AICortex::findUpgradeTarget(int buildingType) cons
 		//       real production bottleneck whose upgrade pays off most. unitsInside
 		//       is a std::list, so we read .size().
 		//   (3) tie -> first scan order (lowest array index, ~lowest gid) as the
-		//       final fully-deterministic tie-break. No rand()/syncRand() is needed
+		//       final deterministic tie-break. No random draw is needed
 		//       since (1)+(2)+(3) totally order the candidates; if a future tie-break
-		//       beyond index were ever wanted it must use syncRand(), never rand().
+		//       beyond index were ever wanted it must use the controller stream.
 		const std::size_t demand = observedWorld->occupants(*b).size();
 		bool better;
 		if (best == NULL)
@@ -469,12 +469,8 @@ shared_ptr<Order> AICortex::decide()
 	timer++;
 	if ((timer % OBSERVE_INTERVAL) == 0)
 	{
-		// Draw the per-game food open-margin N exactly once, lazily, on the first
-		// decision cycle — not in the constructor — so the sync RNG is live and the
-		// draw lands at the same point in the shared stream on every client (all
-		// clients run getOrder in lockstep). syncRand(), NEVER rand(): this value
-		// must be identical across machines. The draw shifts the shared RNG stream,
-		// so it is replay-relevant (validated against the deterministic harness).
+		// Draw the food open-margin once from this controller's stream on its
+		// first decision cycle. Saves retain both the margin and stream progress.
 		if (wheatOpenMargin < 0)
 		{
 			const int span = Cortex::WHEAT_OPEN_MARGIN_MAX - Cortex::WHEAT_OPEN_MARGIN_MIN + 1;
@@ -486,7 +482,7 @@ shared_ptr<Order> AICortex::decide()
 		// footprint for enemyUnitsNearFlag (scoreRetireFlag's straggler grace on the
 		// primary push). The per-wave warrior counts the pipeline needs are computed
 		// directly in the action layer (countWarriorsNear), not via the observation.
-		Cortex::CortexObservation obs = Cortex::observeWorld(observedWorld,observedTeam,queryScratch,intents,&diagnosticStream, wheatOpenMargin, offenseWaves[0].gid);
+		Cortex::CortexObservation obs = Cortex::observeWorld(privateRandomEngine(), observedWorld,observedTeam,queryScratch,intents,&diagnosticStream, wheatOpenMargin, offenseWaves[0].gid);
 
 		// Stamp each tracked inn's post-build settle clock. The first cycle we see an
 		// inn finished we record obs.tick; thereafter ticksSinceFinished is the age,

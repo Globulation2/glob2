@@ -145,6 +145,7 @@ void Game::clearGame()
 	scriptGenerations.fill(0);
 	recordingFailingUnits=BuildingRef();
 	hasSavedRandomState = false;
+	map.worldRandom.initialized = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
@@ -240,11 +241,28 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		teams[tn]->playersMask |= Team::teamNumberToMask(i);
 	}
 
-	// A loaded saved game already restored the live RNG. New maps and old
-	// saves retain the seed-based initialization used by earlier versions.
+	// Preserve the historical continuation record for save/test diagnostics.
+	// Active owner streams are initialized or restored separately below.
 	const bool gameSeedChanged = newGameHeader.getRandomSeed() != previousHeader.getRandomSeed();
 	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() || gameSeedChanged)
 		syncRandom.seed(newGameHeader.getRandomSeed());
+	// Starting maps carry template state, not a match's private stream progress.
+	// Saved-game resumes always retain their restored/migrated entity streams.
+	if (!mapHeader.getIsSavedGame())
+	{
+		map.worldRandom.initialize(newGameHeader.getRandomSeed());
+		sgslScript.initializeRandom(newGameHeader.getRandomSeed());
+	}
+	if (!mapHeader.getIsSavedGame())
+		for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		{
+			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
+				if (Unit* unit = teams[t]->myUnits[slot])
+					unit->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);
+			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+				if (Building* building = teams[t]->myBuildings[slot])
+					building->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Building, building->gid, building->scriptIdentity);
+		}
 	if (gameSeedChanged)
 		for (int p=0; p<newGameHeader.getNumberOfPlayers(); ++p)
 			if (players[p] && players[p]->ai)

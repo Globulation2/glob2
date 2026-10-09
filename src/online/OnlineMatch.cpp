@@ -214,7 +214,6 @@ struct OnlineMatch::Running
 	std::optional<GAGCore::CooperativeTask> task;
 	GAGCore::CooperativeSlice slice;
 	std::shared_ptr<Turn::TurnTransport> transport;
-	std::string previousRng = getSyncRandState();
 	bool accepted = false;
 	~Running()
 	{
@@ -223,7 +222,6 @@ struct OnlineMatch::Running
 		{
 			engine->cancelInitialization();
 			engine.reset();
-			setSyncRandState(previousRng);
 		}
 		if (transport && !accepted)
 			transport->close();

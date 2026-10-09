@@ -146,7 +146,7 @@ TEST_SUITE("AITargetTelemetrySave")
 		World w(AI::CORTEX, 3);
 		Cortex::BuildCandidate out[Cortex::CORTEX_FLAG_TARGETS];
 		Sint32 outTeam[Cortex::CORTEX_FLAG_TARGETS];
-		const int count = Cortex::placeFlagTargets(&w.game(), w.game().teams[0], out, outTeam);
+		const int count = Cortex::placeFlagTargets(syncRandEngine(), &w.game(), w.game().teams[0], out, outTeam);
 		REQUIRE(count > 0);
 		std::vector<bool> seen(4, false);
 		for (int i = 0; i < Cortex::CORTEX_FLAG_TARGETS; ++i)

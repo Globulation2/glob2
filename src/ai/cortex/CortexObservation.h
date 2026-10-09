@@ -21,14 +21,14 @@ namespace Cortex
 {
 	/// Project the player's current game state into a fixed feature vector.
 	/// Returns an observation with version == OBSERVATION_VERSION and valid == 1.
-	/// `openMargin` is the per-game food open-margin N (drawn once via syncRand in
+	/// `openMargin` is the per-game food open-margin N (drawn once from the controller stream in
 	/// AICortex); it is runtimeed into obs.wheatOpenMargin and drives the food scan.
 	/// `offenseFlagGid` is AICortex's tracked OFFENSE war-flag gid (NOGBID == none):
 	/// the building scan captures THAT flag's footprint specifically (Cortex runs two
 	/// flags now — offense + defense — so a bare "last WAR_FLAG wins" capture would be
 	/// ambiguous), so the enemy-straggler and own-warriors-near-flag passes measure the
 	/// offense front, which is what the retire/retreat decisions reason about.
-	CortexObservation observeWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, Uint16 offenseFlagGid);
+	CortexObservation observeWorld(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, Uint16 offenseFlagGid);
 
 	/// Internal observe() helper: the single index pass over game->buildingSlots(team->number)
 	/// that fills the building-derived signals (feedCapacity, swarm/inn tracking,
@@ -44,6 +44,6 @@ namespace Cortex
 }
 
 namespace Cortex {
-CortexObservation observe(::Player* player, int margin, Uint16 gid);
+CortexObservation observe(MersenneTwister& random, ::Player* player, int margin, Uint16 gid);
 void observeBuildings(CortexObservation&, ::Team*, ::Game*, int, Uint16, bool&, Sint32&, Sint32&, Sint32&);
 }

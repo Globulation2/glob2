@@ -30,6 +30,7 @@
 #include "DatasetWriter.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
+#include "EntityRandomIO.h"
 #include <DeferredStream.h>
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
@@ -325,6 +326,20 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_PENDING_CONSTRUCTION) loadBuildProjects(stream);
+	if (versionMinor >= FILE_FORMAT_VERSION_PRIVATE_RANDOM)
+	{
+		stream->readEnterSection("worldRandom");
+		for (unsigned i = 0; i < WorldRandomStreams::Count; ++i)
+		{
+			stream->readEnterSection(i);
+			loadEntityRandom(stream, map.worldRandom.streams[i]);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		map.worldRandom.initialized = true;
+	}
+	else
+		map.worldRandom.initialize(gameHeader.getRandomSeed());
 	MersenneTwister savedRandom;
 	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
 	{
@@ -752,6 +767,15 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	gameHints.encodeData(stream);
 
 	saveBuildProjects(stream);
+	privateRandom(RandomDomain::GrowthJobs); // Initialize without drawing.
+	stream->writeEnterSection("worldRandom");
+	for (unsigned i = 0; i < WorldRandomStreams::Count; ++i)
+	{
+		stream->writeEnterSection(i);
+		saveEntityRandom(stream, map.worldRandom.streams[i]);
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	if (!fileIsAMap)
 	{
 		std::ostringstream randomState;
