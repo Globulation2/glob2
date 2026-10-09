@@ -1,0 +1,20 @@
+{
+  "tested_commit": "f369cbc087fa11605d7db95a019231dc8c6a31d3",
+  "base_revision": "c26a0a02aeef4993a7478c3651d6117b49dbc56c",
+  "environment": "Linux x86_64; Ubuntu GCC 15.2.0; SDL 3.4.16; release=1; CCACHE=1; Xvfb/OpenGL screenshots",
+  "tests": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 55.8
+  },
+  "gallery_exit_status": {
+    "desktop": 0,
+    "small-desktop": 0,
+    "landscape": 1,
+    "portrait": 1
+  },
+  "gallery_limitation": "Compact runs capture requested screenshots, then fail the existing construction-order gesture fixture, also reported on merged PR #1030.",
+  "fixture_checksum": 1849999527,
+  "platform_limitations": "No physical Android/iOS, browser, Windows or macOS validation. Presentation-only; simulation/serialization and runtime dependencies unchanged."
+}

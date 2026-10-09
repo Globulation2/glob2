@@ -1,0 +1,81 @@
+Settings::load("preferences.txt") : error, can't open file.
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+libEGL warning: pci id for fd 17: 10de:1e84, driver (null)
+
+pci id for fd 20: 10de:1e84, driver (null)
+pci id for fd 21: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+pci id for fd 20: 10de:1e84, driver (null)
+pci id for fd 21: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+CAPTURE game-map 1024 768
+FIXTURE_CHECKSUM 1849999527
+CAPTURE game-tutorial 1024 768
+CAPTURE game-build 1024 768
+CAPTURE game-build-bottom 1024 768
+CAPTURE game-flags 1024 768
+CAPTURE game-zone-paint 1024 768
+CAPTURE game-tactical-tools 1024 768
+CAPTURE game-placement 1024 768
+CAPTURE game-inspector-0 1024 768
+CAPTURE game-inspector-1 1024 768
+CAPTURE game-inspector-3 1024 768
+CAPTURE game-inspector-4 1024 768
+CAPTURE game-inspector-production 1024 768
+CAPTURE game-inspector-unit 1024 768
+CAPTURE game-inspector-enemy 1024 768
+CAPTURE game-inspector-damaged 1024 768
+CAPTURE game-inspector-inn 1024 768
+CAPTURE game-inspector-hospital 1024 768
+CAPTURE game-inspector-hospital-construction 1024 768
+CAPTURE game-inspector-racetrack 1024 768
+CAPTURE game-inspector-racetrack-construction 1024 768
+CAPTURE game-inspector-swimmingpool 1024 768
+CAPTURE game-inspector-swimmingpool-construction 1024 768
+CAPTURE game-inspector-barracks 1024 768
+CAPTURE game-inspector-barracks-construction 1024 768
+CAPTURE game-inspector-school 1024 768
+CAPTURE game-inspector-school-construction 1024 768
+CAPTURE game-inspector-defencetower 1024 768
+CAPTURE game-inspector-market 1024 768
+CAPTURE game-inspector-stonewall 1024 768
+CAPTURE game-inspector-stonewall-construction 1024 768
+CAPTURE game-inspector-warflag 1024 768
+CAPTURE game-inspector-clearingflag 1024 768
+CAPTURE game-inspector-destroy-confirmation 1024 768
+CAPTURE game-inspector-explorationflag 1024 768
+CAPTURE game-pause 1024 768
+CAPTURE game-options 1024 768
+CAPTURE game-alliances 1024 768
+CAPTURE game-objectives 1024 768
+CAPTURE game-briefing 1024 768
+CAPTURE game-save 1024 768
+CAPTURE game-load 1024 768
+CAPTURE game-victory 1024 768
+CAPTURE game-draw 1024 768
+CAPTURE replay-menu 1024 768
+CAPTURE replay-controls 1024 768
+CAPTURE game-chat 1024 768
+CAPTURE game-connection 1024 768
+CAPTURE game-connection-trouble 1024 768
+CAPTURE game-connection-details 1024 768
+CAPTURE game-connection-own 1024 768
+CAPTURE game-connection-own-details 1024 768
+CAPTURE game-connection-grid 1024 768
+CAPTURE game-connection-grid-details 1024 768
+CAPTURE game-connection-lost 1024 768
+CAPTURE game-catching-up 1024 768
+CAPTURE game-out-of-sync 1024 768
+CAPTURE game-connection-left 1024 768
+CAPTURE game-paused-online 1024 768
+CAPTURE game-menu-online 1024 768
+CAPTURE game-results 1024 768
+CAPTURE game-results-filters 1024 768
+CAPTURE game-results-value 1024 768
+CAPTURE game-results-verifying 1024 768
+CAPTURE game-results-verified 1024 768
+CAPTURE game-results-room 1024 768
+CAPTURE game-results-opponent-left 1024 768
+CAPTURE game-results-left 1024 768

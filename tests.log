@@ -1,0 +1,7 @@
+PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (1.6s)
+PASS GameGUITouch/unit taps have a zoom independent halo and show unit stats [display][artifacts] (3.5s)
+PASS GameGUITouch/touch scroll momentum on the map; the HUD palette and the editor [display] (2.8s)
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (47.9s)
+
+4 passed, 0 failed, 0 skipped (55.8s of test time)
+[run_tests] JUnit report: artifacts/hud-icons-final/junit.xml (4 cases)
