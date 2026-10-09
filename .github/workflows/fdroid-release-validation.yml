@@ -11,6 +11,14 @@ on:
         description: Public vVERSION tag after release approval; leave blank for a candidate build
         required: false
         type: string
+  workflow_call:
+    inputs:
+      source_commit:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
 
 permissions:
   contents: read

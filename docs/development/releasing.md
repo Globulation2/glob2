@@ -29,10 +29,15 @@ the mirror.
 
 The `.github/workflows/release.yml` package build does not publish; the
 publication workflows below call it.
-Run `publish-desktop.yml` manually with the public `vVERSION` tag to publish the
-GitHub release, publish Snap stable, and propose the Flathub update in that
-order. Each channel retains a separate manual workflow for retries; no
-publication workflow runs on ordinary pushes or pull requests.
+Run `github-release.yml` manually with the existing public `vVERSION` tag to
+preflight protected mirror configuration, build from its exact source commit,
+sign direct-download packages, submit an internal Play candidate and an
+App Store-eligible external TestFlight candidate, and stage a **draft** GitHub
+release. `publish-desktop.yml` calls this staging workflow before the optional
+Snap stable and Flathub submission workflows. Neither workflow makes the GitHub
+release public; only `promote-downloads.yml` can do that after qualification.
+Each channel retains a separate manual workflow for retries; no publication
+workflow runs on ordinary pushes or pull requests.
 Each publication workflow skips every job unless it is manually dispatched
 from the release repository's `master` branch by the owner account; the same
 check applies to a re-run's initiator. It then
@@ -44,11 +49,12 @@ When changing a release workflow's actions, pin each action to a reviewed
 commit and add only that exact reference to the release repository's allowed
 actions list before running it there.
 The selected public `vVERSION` tag supplies the game source for every
-publication build. The release mirror's `master` supplies the reviewed workflow
-and the secrets; its HEAD can be newer than the public tag. Desktop publication uses `tools/release/release.py check
---tag` to verify the checked-out public source and tag identify the same commit;
-browser publication checks the tag commit and game version directly. Mirror only reviewed public
-commits. Review of workflow changes is essential:
+publication build, including Android and iOS submissions. The release mirror's
+`master` supplies the reviewed workflow and protected environment configuration;
+its HEAD can be newer than the public tag. Publication uses
+`tools/release/release.py check --tag` to verify the checked-out public source
+and tag identify the same commit; browser publication checks the tag commit and
+game version directly. Mirror only reviewed public commits. Review of workflow changes is essential:
 the mirror and dispatch gates alone do not make unreviewed code safe to run.
 Before tagging a new release, choose an unused version, update
 `PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
@@ -193,7 +199,11 @@ with package access, push, update and release rights for that name. The
 `snap-release.yml` workflow publishes only Snap stable. Configure the
 `PUBLIC_RELEASE_GH_TOKEN` secret in the `github-release` environment
 with permission to create releases in `Globulation2/glob2`. The
-`github-release.yml` workflow publishes the GitHub packages independently.
+`github-release.yml` workflow stages final packages and `package-inventory.json`
+in a draft GitHub release. Its inventory normalizes Snap/RPM filenames and
+includes all eleven playable packages plus the tagged source archive.
+`promote-downloads.yml` independently downloads and validates these bytes before
+publication; see the qualified manifest procedure below.
 
 The Flatpak recipe in `flatpak/org.globulation2.Globulation2.yml.in` pins every
 third-party source and is rendered with the selected commit. Once its package
@@ -228,10 +238,13 @@ Release preflight checks all three recipe codes and rejects missing listing
 material. Do not use a
 desktop or browser screenshot as an Android screenshot.
 
-The mobile and release workflows build unsigned APKs and retain them only as
-validation artifacts. They are not GitHub release assets and cannot be installed
-as public releases. A temporary developer signature supports emulator and
-device checks. F-Droid's signature is the sole public F-Droid update channel.
+The mobile and build-only release workflows retain unsigned APKs as validation
+artifacts; those files are not installable public releases. A temporary
+developer signature supports emulator and device checks. The all-platform
+staging workflow signs those verified unsigned APKs in its protected
+`android-sideload` job using `mobile/sideload_release.py`, verifies the pinned
+permanent signing certificate and alignment, and stages only the final signed
+APKs. F-Droid's signature remains the sole public F-Droid update channel.
 The reviewed `.github/workflows/fdroid-release-validation.yml` workflow is
 mirrored to `genixpro/glob2-release` and runs by owner dispatch with
 the exact public candidate commit SHA. Its read-only jobs build all three
@@ -288,3 +301,155 @@ Flatpak and Snap on multiple distributions, check save continuity and replay/
 network version gates, compare cross-platform simulation checksums for any
 simulation changes, and play the release candidate. Retain the resulting files
 and logs under `artifacts/` and attach review evidence to the release PR.
+
+## Qualified downloads manifest
+
+The all-platform launch gate requires Windows x64 installer and portable ZIP,
+separate Intel and Apple Silicon DMGs, Linux x64 tarball/RPM/Flatpak/Snap,
+and signed ARM64/ARMv7/x86-64 Android APKs. Google Play and iPhone/iPad App
+Store listings must be publicly available in production. TestFlight, internal
+tracks and successful CI builds do not satisfy these requirements. Supplemental
+stores can be added after independently verifying their listings. Missing
+publisher verification, signing credentials, real-device evidence or store
+acceptance blocks launch; never fabricate an approval to unblock automation.
+
+Signing, submission and publication run only from the release mirror; public
+release assets remain on `Globulation2/glob2`. Windows uses Azure Artifact
+Signing public trust with mirror/environment-bound GitHub OIDC, publisher
+identity verification, and timestamped signatures. Direct Mac DMGs use a
+Developer ID Application identity, hardened runtime, notarization and stapling,
+separate from Mac App Store credentials. Android sideload packages use a
+permanent backed-up key separate from development and Play upload keys. Keep
+signing material and private qualification records in protected mirror
+environments or external secret storage, never Git or public artifacts.
+Android channels with different keys cannot update one another: back up saves,
+uninstall, then install the other channel. Preserve application identities and
+save paths across releases.
+
+Configure protected mirror environments before dispatch: `windows-signing`
+requires Azure signing endpoint/account/profile, verified publisher identity and
+GitHub OIDC restricted to the mirror signing environment; `macos-developer-id`
+requires the Developer ID certificate identity and notarization authentication,
+separate from App Store signing; `android-sideload` requires the permanent key,
+passwords, alias and pinned certificate SHA-256. Configuration alone does not
+establish installed-package qualification or public mobile store acceptance.
+
+For staging, dispatch `github-release.yml` from mirror `master` as the owner
+with the existing public tag. For public visibility, dispatch
+`promote-downloads.yml` with that same `tag`, an HTTPS `qualification_url`
+pointing to the reviewed JSON, and its exact `qualification_sha256`. The
+protected `github-release` environment gates the publication token. Promotion
+checks the tagged checkout, downloads the draft packages/inventory, verifies the
+reviewed JSON digest and generates the manifest from final bytes before setting
+`--draft=false`. Interrupted promotion retries reuse identical metadata and
+reject changed metadata; they do not replace stable package bytes. Keep private
+evidence retrieval URLs free of embedded credentials; GitHub run inputs are
+visible to people with repository access.
+
+`tools/release/downloads_manifest.py` generates `downloads-manifest.json` and an
+optional checksum inventory from the **final** signed/notarized file bytes. It
+requires the checkout HEAD, local immutable version tag and source commit to
+match, and the tag to match `PACKAGE_VERSION`. The publication workflow must
+also fetch and verify the tag against public upstream before running this
+command. Do not move tags or replace files attached to a published stable tag.
+
+```sh
+python3 tools/release/downloads_manifest.py \
+  --artifacts artifacts/release-final \
+  --inventory artifacts/release-inventory.json \
+  --qualification artifacts/release-qualification.json \
+  --tag vVERSION --source-commit FULL_PUBLIC_COMMIT_SHA \
+  --output artifacts/release-final/downloads-manifest.json \
+  --checksums artifacts/release-final/SHA256SUMS
+```
+
+The inventory is a JSON object with `schemaVersion: 1`, `sourceCommit`,
+`packages` and `sources`. Each package explicitly declares `platform`,
+`architecture`, `format`, `minimumOs` and `filename`; Linux packages may include
+`dependencies`, an array of installation prerequisites. Filenames are plain
+basenames, not paths. Supported identities are Windows `x86_64` with `exe` and
+`zip`; macOS `arm64` and `x86_64` with `dmg`; Linux `x86_64` with `tar.gz`,
+`rpm`, `flatpak` and `snap`; Android `arm64`, `armv7` and `x86_64` with `apk`.
+At least one source entry is required; each declares `filename` and must remain
+distinct from playable packages. Set minimum OS and dependencies from actual
+build/installed-package qualification, not the runner's name alone. Mac launch builds target macOS 15+;
+Linux tarballs document their tested Ubuntu baseline and RPMs their target
+Fedora version.
+
+The private qualification JSON uses `schemaVersion: 1`, `tag`, `sourceCommit`,
+a named `reviewedBy`, a past timezone-qualified ISO `reviewedAt`, and an HTTPS
+`evidenceUrl` accessible to reviewers. Its `artifacts` object maps every package
+and source filename to its final SHA-256, with no omitted or extra files. Its
+`platforms` object requires literal true assertions for Windows `signed` and
+`tested`; macOS `signed`, `notarized` and `tested`; Linux `tested`; Android
+`signed` and `tested`; and iOS `tested`. Its `compatibility` object requires
+`simulationChecksumsMatch`, `saveLoad`, `replayNetwork` and `onlinePlay`, each
+literal true. Its `testedTargets` object requires literal true entries for
+`windows-x86_64`, `macos-arm64`, `macos-x86_64`, `linux-flatpak`, `linux-snap`,
+`linux-tar.gz`, `linux-rpm`, `android-arm64`, `android-armv7`, `android-x86_64`,
+`ios-iphone` and `ios-ipad`. Each target attests to installation and gameplay
+qualification of that package/architecture/device, not merely a successful
+build. Set these only after review of evidence identifying the selected commit, artifact digests, devices, OS/toolchains, commands and limits.
+
+The `stores` object requires both `googlePlay` and `appStore` entries, each
+containing a verified HTTPS production listing `url` and `production: true`.
+The Google Play listing must identify `org.globulation2.glob2`.
+These are reviewed availability attestations, not automatic store API checks.
+Review clean install/update, tutorial/full match, audio, saves, editor, online
+play and mobile lifecycle/input on clean desktops, both Mac architectures,
+representative Linux distributions, Android ARM devices and x86-64 emulator,
+and an iPhone and iPad. Compare simulation checksums across architectures and
+exercise the existing save, replay and network acceptance gates. Retain symbols,
+logs, screenshots and qualification records outside source control.
+
+The public manifest contains `schemaVersion`, `version`, `tag`, `sourceCommit`,
+`releaseNotesUrl`, `qualification`, `packages` and `sources`. Package descriptors
+receive final `sizeBytes`, `sha256` and immutable release `url`. Source entries
+receive the same file metadata separately. Public qualification contains only
+`qualified: true`, the matching `sourceCommit`, and production store URLs; it
+omits private reviewer/evidence metadata. Validation failures preserve the
+previous manifest file. Publish this manifest only after every gate passes;
+a reviewed website metadata PR then imports it without filename guessing or
+runtime GitHub requests. Stage packages as a draft while awaiting store review.
+
+
+## iOS production submission and manual publication
+
+Dispatch `ios-testflight.yml` from mirror `master` as the owner with the exact
+public tag and `audience: external`. An eligible upload emits the
+`ios-upload-provenance` artifact only after upload succeeds, recording the tag,
+source commit, application ID, marketing version, build number and archive binary
+hash. The artifact is retained for 90 days. Save release evidence externally if
+review may outlast that retention period. Internal-only uploads cannot be used
+for App Store production.
+
+Dispatch `ios-production.yml` with the same `tag`, the successful mirror
+`upload_run_id`, and one deliberate `stage`: `prepare`, `submit` or `publish`.
+The context job verifies the owner-dispatched mirror run, expected workflow,
+success and exact source provenance before the protected `ios-testflight`
+environment supplies App Store Connect credentials. Apple queries must find
+exactly one processed, eligible build with that build number and marketing
+version. A version attached to a different build is never overwritten.
+
+`prepare` creates or binds the selected version with `MANUAL` release and does
+not submit it. Complete private store listing configuration before `submit`:
+copyright, localized descriptions and HTTPS support links, primary-locale
+privacy policy, fully uploaded iPhone and iPad screenshots, and review contact
+information plus demo credentials when required. Apple validates additional
+agreements, ratings and review requirements; failures remain blocking.
+`submit` requests Apple review without public distribution. Only `publish`,
+after Apple returns `PENDING_DEVELOPER_RELEASE` for the same manually released
+version and build, requests public distribution. An accepted upload or pending
+review never counts as production availability for the website launch gate.
+
+`mobile/ios_release.py` encodes the four-component game version `a.b.c.d` as
+App Store marketing version `a.b.(100*c+d)`. Each component is numeric without
+leading zeroes and `d` must be below 100 to avoid collisions. Unsupported versions
+fail before the iOS build; the generated Info.plist and provenance use this exact
+encoding instead of a stale fixed marketing version.
+
+Run the focused metadata contracts with:
+
+```sh
+python3 -m unittest discover -s test/build_system -p test_downloads_manifest.py -v
+```
