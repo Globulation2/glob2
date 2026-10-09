@@ -19,7 +19,10 @@ for (const missing of [[STUDIO], ADMIN]) {
     const directory = await mkdtemp(join(tmpdir(), 'glob2-migration-branches-'));
     try {
       const files = await readdir(MIGRATIONS_DIR);
-      for (const file of files.filter((name) => !missing.includes(name)))
+      // Recreate the deployed branch before later migrations depended on both sides.
+      const branchFiles = files.filter((name) => name <= '0056_admin_rollup_state.sql');
+      const laterFiles = files.filter((name) => name > '0056_admin_rollup_state.sql');
+      for (const file of branchFiles.filter((name) => !missing.includes(name)))
         await symlink(join(MIGRATIONS_DIR, file), join(directory, file));
       const initial = await createMigrator(database.db, directory).migrateToLatest();
       expect(initial.error).toBeUndefined();
@@ -38,6 +41,15 @@ for (const missing of [[STUDIO], ADMIN]) {
         missing.map((file) => file.replace('.sql', '')).sort(),
       );
       expect(integrated.results?.every((result) => result.status === 'Success')).toBe(true);
+      // After joining the historical branches, all subsequent migrations must work.
+      for (const file of laterFiles)
+        await symlink(join(MIGRATIONS_DIR, file), join(directory, file));
+      const latest = await createMigrator(database.db, directory).migrateToLatest();
+      expect(latest.error).toBeUndefined();
+      expect(latest.results?.map((result) => result.migrationName)).toEqual(
+        laterFiles.map((file) => file.replace('.sql', '')).sort(),
+      );
+      expect(latest.results?.every((result) => result.status === 'Success')).toBe(true);
       expect(await createMigrator(database.db, directory).migrateToLatest()).toEqual({
         results: [],
       });
