@@ -1,0 +1,260 @@
+{
+  "final_source": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3",
+      "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"
+    },
+    "revision": "8b33938c25c1c42df52a8b1e534309b4367e01d7",
+    "sourceStatus": [],
+    "sourceTreeSha256": "e6a24f41fa35db7abb4b715bb43b8efc5c056ba7ff90ea38f529c80f906472ff"
+  },
+  "final_base": "93273e6361b7a27a8ed251e9182a9099f24ab4dc",
+  "comprehensive_validation": {
+    "source": {
+      "dirty": false,
+      "revision": "65f1e6a7659435db733505a9d22edb2d29a7ff67",
+      "sourceStatus": [],
+      "sourceTreeSha256": "97c3de3fbc65c3f981a6d81782728e75df2d9d7edb18401d849ec3a7e46aa587"
+    },
+    "base": "f15d86cd0d4b55d49e930a29aa787e4b246f77df",
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "toolchain": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "native": {
+      "cases": 2268,
+      "passed": 2072,
+      "failed": 1,
+      "skipped": 195,
+      "failures": [
+        {
+          "suite": "ImageAssets",
+          "name": "16-bit RGBA rounds normalized channels to the exporter reference",
+          "details": "\nlibgag/src/ImageAssetTest.cpp:75:\nCHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!\n  values: CHECK( -1 == 0 )\n\n      "
+        }
+      ],
+      "report": "pr-native-all.xml",
+      "producer": {
+        "compiler": "g++",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3",
+          "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"
+        },
+        "revision": "65f1e6a7659435db733505a9d22edb2d29a7ff67",
+        "sourceStatus": [],
+        "sourceTreeSha256": "97c3de3fbc65c3f981a6d81782728e75df2d9d7edb18401d849ec3a7e46aa587"
+      }
+    },
+    "traces": {
+      "fixture": "games/cross-replay.game.gz",
+      "seed": 42,
+      "ticks": 1500,
+      "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+      "trace_sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9a4f/glob2/build/darwin/client/release/src/glob2",
+        "--nox",
+        "/Users/bradley/.codex/worktrees/9a4f/glob2/games/cross-replay.game.gz",
+        "1500",
+        "1"
+      ],
+      "verify_match": {
+        "record": "test/fixtures/multiplayer/FourSquares1.g2mr",
+        "record_sha256": "8181cf7e84f15bde3095c79e7baad0ca3fa613d35ec0d21974257cbea5a99335",
+        "trace_sha256": "6f71b523fcd7edd4579c908a13392d94e824920dd585c2d435bf936e254ea3b1",
+        "verdict": "verified",
+        "command": [
+          "/Users/bradley/.codex/worktrees/9a4f/glob2/build/darwin/client/release/src/glob2",
+          "--verify-match",
+          "/Users/bradley/.codex/worktrees/9a4f/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+          "--map",
+          "/Users/bradley/.codex/worktrees/9a4f/glob2/maps/FourSquares1.map.gz",
+          "--out",
+          "/Users/bradley/.codex/worktrees/9a4f/glob2/artifacts/private-rng/pr-native-determinism/verify-match"
+        ]
+      }
+    },
+    "coverage_limits": [
+      "Native Linux and Windows unavailable",
+      "Display/manual gameplay not run",
+      "Browsers execute on macOS arm64"
+    ],
+    "native_build_command": "CCACHE=1 scons -j8 release=1 server=0 engine-tests unit-tests build/darwin/client/release/src/glob2",
+    "native_test_command": "python3 test/run_tests.py --no-display -j8 --junit artifacts/private-rng/pr-native-all.xml --artifacts artifacts/private-rng/pr-native-all",
+    "web_build_command": "CCACHE=1 scons target=web release=1 -j8 web-package web-tests",
+    "binaries": {
+      "build/darwin/client/release/src/glob2": "9b14441a7308c50896786d01fad5df004d1bb6c28229a501a3635d13771d70cf",
+      "build/darwin/client/release/test/glob2-engine-tests": "99abba0bec3d487374bb568d375ea231e0135b446a1669950c71a3c46b6ff1e2",
+      "build/darwin/client/release/test/glob2-unit-tests": "6d609bf4f04c9575f28f268725f46d41b6711cdd3c3573a5247285c4280fbfbd"
+    },
+    "dependencies": {
+      "SDL3": "3.4.18",
+      "SDL3_image": "3.4.8",
+      "SDL3_ttf": "3.2.2",
+      "Opus": "1.6.1",
+      "opusfile": "0.12",
+      "Speex": "1.2.1"
+    },
+    "browser_toolchain": "Emscripten 4.0.15; Playwright 1.63.0",
+    "browser_test_command": "cd browser && npx playwright test tests/determinism.spec.js tests/threading.spec.js tests/import.spec.js tests/session-reload.spec.js tests/studio.spec.js --grep 'complete per-tick|committed match|shared scripting corpus|shared generator worlds|runtime executes shared compute|imports a complete replay|an active replay can be loaded again|Studio source produces deterministic trace' --workers 3 --output ../artifacts/private-rng/pr-browser-results"
+  },
+  "comprehensive_browser": {
+    "checks": 54,
+    "passed": 54,
+    "trace_comparisons": [
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--chromium/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--firefox/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-165a4-imulation-trace-threaded-2--webkit/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--chromium/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--firefox/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-34f1c-imulation-trace-threaded-1--webkit/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--chromium/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--firefox/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-7b5ce--simulation-trace-serial-1--webkit/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--chromium/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--firefox/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-pr-96d45-imulation-trace-threaded-4--webkit/wasm.replay.checksums",
+        "sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-ve-69764-mitted-match-record-serial--chromium/verify-match.checksums.txt",
+        "sha256": "6f71b523fcd7edd4579c908a13392d94e824920dd585c2d435bf936e254ea3b1",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-ve-69764-mitted-match-record-serial--firefox/verify-match.checksums.txt",
+        "sha256": "6f71b523fcd7edd4579c908a13392d94e824920dd585c2d435bf936e254ea3b1",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-ve-69764-mitted-match-record-serial--webkit/verify-match.checksums.txt",
+        "sha256": "6f71b523fcd7edd4579c908a13392d94e824920dd585c2d435bf936e254ea3b1",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--chromium/verify-match.checksums.txt",
+        "sha256": "6f71b523fcd7edd4579c908a13392d94e824920dd585c2d435bf936e254ea3b1",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--firefox/verify-match.checksums.txt",
+        "sha256": "6f71b523fcd7edd4579c908a13392d94e824920dd585c2d435bf936e254ea3b1",
+        "matches_native": true
+      },
+      {
+        "file": "artifacts/private-rng/pr-browser-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--webkit/verify-match.checksums.txt",
+        "sha256": "6f71b523fcd7edd4579c908a13392d94e824920dd585c2d435bf936e254ea3b1",
+        "matches_native": true
+      }
+    ],
+    "log": "pr-browser.log"
+  },
+  "integration_native": {
+    "cases": 201,
+    "passed": 199,
+    "failed": 0,
+    "skipped": 2,
+    "report": "pr-merge-native.xml",
+    "log": "pr-merge-native.log",
+    "command": "python3 test/run_tests.py --no-display -j8 --filter 'EntityRandom/*' --filter 'EntityRandomLifecycle/*' --filter 'BuildingAreaEffects/*' --filter 'FieldGradient/*' --filter 'ResourceGrowth/*' --filter 'Maxima.Combat/*' --filter 'Maxima.Economy/*' --filter 'MapPreview/generator Studio*' --filter 'GameSpeed/*' --filter 'TurnProtocol/*' --filter 'ScriptGenerator/*' --filter '*golden*' --junit artifacts/private-rng/pr-merge-native.xml --artifacts artifacts/private-rng/pr-merge-native"
+  },
+  "integration_native_traces": {
+    "fixture": "games/cross-replay.game.gz",
+    "seed": 42,
+    "ticks": 1500,
+    "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+    "trace_sha256": "42ad1f4a812efa07888383cc68a69ff1f8487231b2781cc9ed13d7194262d9b0",
+    "command": [
+      "/Users/bradley/.codex/worktrees/9a4f/glob2/build/darwin/client/release/src/glob2",
+      "--nox",
+      "/Users/bradley/.codex/worktrees/9a4f/glob2/games/cross-replay.game.gz",
+      "1500",
+      "1"
+    ],
+    "verify_match": {
+      "record": "test/fixtures/multiplayer/FourSquares1.g2mr",
+      "record_sha256": "bc8acb6b1cea26d83738b2425c37ca5951c490d5765326ef020e89014e76501d",
+      "trace_sha256": "3be335c1b07c9e8cdcb266f49df634c2233a0f5bbcdaf873faca774b7a57e084",
+      "verdict": "verified",
+      "command": [
+        "/Users/bradley/.codex/worktrees/9a4f/glob2/build/darwin/client/release/src/glob2",
+        "--verify-match",
+        "/Users/bradley/.codex/worktrees/9a4f/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+        "--map",
+        "/Users/bradley/.codex/worktrees/9a4f/glob2/maps/FourSquares1.map.gz",
+        "--out",
+        "/Users/bradley/.codex/worktrees/9a4f/glob2/artifacts/private-rng/pr-merge-native-determinism/verify-match"
+      ]
+    }
+  },
+  "review": "Independent sub-agent review completed; all findings addressed; final map arithmetic integration has no blocker.",
+  "rationale": "Comprehensive native and browser runs verified private RNG ownership, persistence, compatibility and cross-runtime vectors/traces. Final native integration covers released area-state migration, active aura continuation, map arithmetic, RNG lifecycle, resource growth, AI, timing, Generator Studio and all golden cases; source and sim-version contracts pass. The RNG primitive and domains are unchanged since browser verification.",
+  "limits": [
+    "Native Linux and Windows unavailable",
+    "Display/manual gameplay not run",
+    "Browsers execute on macOS arm64",
+    "Native SDL3_image 3.4.8 normalization failure independently reproduced outside engine; browser pinned dependency passes.",
+    "Hosted checks are cheap contracts only.",
+    "54 browser checks passed on 65f1e6a7659435db733505a9d22edb2d29a7ff67 before later master integrations. Final combined browser execution was not repeated; final integration validation is native."
+  ],
+  "formats": {
+    "area_effects": 150,
+    "entity_rng": 151,
+    "world_story_rng": 152,
+    "writer_replay_floor": 152,
+    "save_floor": 58,
+    "sim_revision": 40,
+    "network_protocol": 68
+  }
+}
