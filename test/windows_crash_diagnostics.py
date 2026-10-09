@@ -26,6 +26,8 @@ def crashed_cases(document):
 
 def debugger_command(debugger, binary, suite, name):
     return [debugger, '--nx', '--batch', '--quiet', '-ex', 'set pagination off',
+            '-ex', 'set breakpoint pending on',
+            '-ex', 'break _assert', '-ex', 'break _wassert', '-ex', 'break abort',
             '-ex', 'run', '-ex', 'thread apply all bt', '--args', str(binary),
             '--no-breaks=true', '-tc=' + doctest_pattern(name), '-ts=' + doctest_pattern(suite)]
 

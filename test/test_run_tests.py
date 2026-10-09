@@ -55,6 +55,10 @@ class WindowsCrashDiagnosticsTests(unittest.TestCase):
         self.assertIn('-tc=' + run_tests.doctest_pattern(name), command)
         self.assertEqual(command[command.index('--args') + 1], 'engine.exe')
         self.assertIn('--nx', command)
+        self.assertIn('break _assert', command)
+        self.assertIn('break _wassert', command)
+        self.assertIn('break abort', command)
+        self.assertLess(command.index('break _assert'), command.index('run'))
 
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">
