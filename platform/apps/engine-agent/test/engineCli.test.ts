@@ -43,7 +43,9 @@ describe('catalog and generation', () => {
 
   it('builds the documented structured generation command from a pool entry', () => {
     const entry = defaultMapPool('1v1').find((e) => e.generatorId === 'symmetric-arena')!;
-    expect(generateMapArgs({ ...entry, seed: 42 }, catalog, '/tmp/out')).toEqual([
+    // This recorded catalog predates the current pool's generator revisions.
+    const revision = catalog.generators.get(entry.generatorId)!.revision;
+    expect(generateMapArgs({ ...entry, revision, seed: 42 }, catalog, '/tmp/out')).toEqual([
       '--generate-map',
       '--generator',
       '15',
