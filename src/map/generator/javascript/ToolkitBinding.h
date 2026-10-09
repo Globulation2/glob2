@@ -283,6 +283,7 @@ class Binding
 		validateNative(result);
 		return result;
 	}
+	void tracePrototype(const char *, const std::type_info &, JSValueConst, bool);
 	template <class T>
 	JSValue handle(T *pointer, std::shared_ptr<void> owner = {}, bool ro = false,
 				   std::shared_ptr<bool> alive = {})
@@ -295,7 +296,8 @@ class Binding
 		{
 			auto prototype = JS_NewObject(ctx);
 			check(prototype);
-			prototypes.emplace(typeid(U), prototype);
+			const auto inserted = prototypes.emplace(typeid(U), prototype).second;
+			tracePrototype("retain", typeid(U), prototype, inserted);
 			attach<U>(prototype);
 			found = prototypes.find(typeid(U));
 		}

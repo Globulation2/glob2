@@ -13,6 +13,7 @@ permissions:
   contents: read
 env:
   GLOB2_DEV_MODE: isolated
+  GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS: "1"
 jobs:
   diagnose:
     runs-on: windows-latest
