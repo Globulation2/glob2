@@ -41,7 +41,7 @@ printf "QuickJS teardown dump flags: 0x%llx\\n", ((unsigned long long (*)(void *
 continue
 end
 run
-call ((int (*)(void *)) fflush)((void *)0)
+call ((int (*)(void *)) 'msvcrt!fflush')((void *)0)
 thread apply all bt
 """
 

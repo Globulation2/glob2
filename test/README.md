@@ -93,7 +93,9 @@ per case and never replace the original failed result. CRT assertion/abort entry
 points have pending breakpoints so the stack is captured before process exit.
 For generator teardown leaks, the Windows x64 replay also enables QuickJS leak
 reporting at the exact runtime-destruction entry point and prints the resulting
-dump flags to verify activation; this affects only the replay under GDB, not
+dump flags to verify activation. It flushes the named Windows CRT used by the
+assertion so a different loaded CRT cannot hide buffered output. This affects only
+the replay under GDB, not
 the original test or the shipped program.
 The manual `windows-generator-diagnostics.yml` workflow takes an exact `revision`,
 builds the engine harness with the normal MinGW release flags/dependencies, and
