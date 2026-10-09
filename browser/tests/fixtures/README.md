@@ -66,3 +66,6 @@ threaded fallback as unavailable coverage, even when headless threaded checks pa
 The generator reference also records engine and simulation versions. Save-version
 advances can change the frozen snapshot bytes and generated-map checksum trace;
 refresh these fields from native execution before comparing browser builds.
+
+Refresh simulation metadata whenever `SIM_REVISION` advances, even if the frozen
+snapshot and per-tick trace bytes remain unchanged.
