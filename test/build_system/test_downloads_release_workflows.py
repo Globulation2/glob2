@@ -48,6 +48,11 @@ class ReleaseWorkflowTests(unittest.TestCase):
             block=re.split(r'\n  (?=\S)',text.split('  '+job+':\n',1)[1],maxsplit=1)[0]
             self.assertNotIn('secrets:',block)
 
+    def test_desktop_queue_is_scoped_to_the_immutable_release_tag(self):
+        text=(ROOT/'.github/workflows/release.yml').read_text()
+        self.assertIn('group: release-${{ github.ref }}-${{ inputs.tag }}',text)
+        self.assertIn('cancel-in-progress: false',text)
+
     def test_only_qualified_promotion_makes_public_release_visible(self):
         staged=(ROOT/'.github/workflows/github-release.yml').read_text()
         promote=(ROOT/'.github/workflows/promote-downloads.yml').read_text()
