@@ -1,0 +1,92 @@
+GPU=NVIDIA GeForce RTX 2070 SUPER/PCIe/SSE2 map=maps/lava-performance.map 256x256 viewport=1120x743 frames=12
+capture=8192x8192 tiles=25 pixels/cell=32 texture_bytes=289816576 cloud=0x0
+FRAME mode=Torus clouds frame=-2 elapsed_ms=1448.496248
+FRAME_SCOPE frame=-2 scope=37 elapsed_ms=990.232714
+FRAME_SCOPE frame=-2 scope=36 elapsed_ms=373.291929
+FRAME_SCOPE frame=-2 scope=39 elapsed_ms=17.308568
+FRAME_SCOPE frame=-2 scope=41 elapsed_ms=1.483580
+FRAME_CACHE frame=-2 bytes=267336008 rebuilds=616 hits=770 reductions=0 resolution=1 downsample=1
+WARMUP frame=0 elapsed_ms=1448.496 process_cpu_ms=1493.151
+FRAME mode=Torus clouds frame=-1 elapsed_ms=1400.484758
+FRAME_SCOPE frame=-1 scope=37 elapsed_ms=969.552573
+FRAME_SCOPE frame=-1 scope=36 elapsed_ms=387.363058
+FRAME_SCOPE frame=-1 scope=39 elapsed_ms=15.936425
+FRAME_SCOPE frame=-1 scope=41 elapsed_ms=1.364067
+FRAME_CACHE frame=-1 bytes=267336008 rebuilds=796 hits=1052 reductions=0 resolution=1 downsample=1
+WARMUP frame=1 elapsed_ms=1400.485 process_cpu_ms=1441.854
+FRAME mode=Torus clouds frame=0 elapsed_ms=1475.542006
+FRAME_SCOPE frame=0 scope=37 elapsed_ms=994.956056
+FRAME_SCOPE frame=0 scope=36 elapsed_ms=400.395717
+FRAME_SCOPE frame=0 scope=39 elapsed_ms=17.346153
+FRAME_SCOPE frame=0 scope=41 elapsed_ms=1.499327
+FRAME_CACHE frame=0 bytes=267336008 rebuilds=976 hits=1334 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=1 elapsed_ms=1497.705918
+FRAME_SCOPE frame=1 scope=37 elapsed_ms=1057.904622
+FRAME_SCOPE frame=1 scope=36 elapsed_ms=392.481296
+FRAME_SCOPE frame=1 scope=39 elapsed_ms=17.099246
+FRAME_SCOPE frame=1 scope=41 elapsed_ms=1.479892
+FRAME_CACHE frame=1 bytes=267336008 rebuilds=1192 hits=1580 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=2 elapsed_ms=1469.373335
+FRAME_SCOPE frame=2 scope=37 elapsed_ms=1016.565151
+FRAME_SCOPE frame=2 scope=36 elapsed_ms=403.587340
+FRAME_SCOPE frame=2 scope=39 elapsed_ms=18.440033
+FRAME_SCOPE frame=2 scope=41 elapsed_ms=1.589376
+FRAME_CACHE frame=2 bytes=267336008 rebuilds=1372 hits=1862 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=3 elapsed_ms=1583.984170
+FRAME_SCOPE frame=3 scope=37 elapsed_ms=1106.770983
+FRAME_SCOPE frame=3 scope=36 elapsed_ms=427.163803
+FRAME_SCOPE frame=3 scope=39 elapsed_ms=17.052634
+FRAME_SCOPE frame=3 scope=41 elapsed_ms=1.459961
+FRAME_CACHE frame=3 bytes=267336008 rebuilds=1573 hits=2123 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=4 elapsed_ms=1449.837882
+FRAME_SCOPE frame=4 scope=37 elapsed_ms=989.779147
+FRAME_SCOPE frame=4 scope=36 elapsed_ms=410.732601
+FRAME_SCOPE frame=4 scope=39 elapsed_ms=17.611301
+FRAME_SCOPE frame=4 scope=41 elapsed_ms=1.525877
+FRAME_CACHE frame=4 bytes=267336008 rebuilds=1753 hits=2405 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=5 elapsed_ms=1497.428921
+FRAME_SCOPE frame=5 scope=37 elapsed_ms=1021.177283
+FRAME_SCOPE frame=5 scope=36 elapsed_ms=421.570151
+FRAME_SCOPE frame=5 scope=39 elapsed_ms=18.201399
+FRAME_SCOPE frame=5 scope=41 elapsed_ms=1.546868
+FRAME_CACHE frame=5 bytes=267336008 rebuilds=1933 hits=2687 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=6 elapsed_ms=1473.986596
+FRAME_SCOPE frame=6 scope=37 elapsed_ms=1020.349355
+FRAME_SCOPE frame=6 scope=36 elapsed_ms=403.662039
+FRAME_SCOPE frame=6 scope=39 elapsed_ms=18.741504
+FRAME_SCOPE frame=6 scope=41 elapsed_ms=1.563572
+FRAME_CACHE frame=6 bytes=267336008 rebuilds=2113 hits=2969 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=7 elapsed_ms=1575.687602
+FRAME_SCOPE frame=7 scope=37 elapsed_ms=1099.396091
+FRAME_SCOPE frame=7 scope=36 elapsed_ms=425.950532
+FRAME_SCOPE frame=7 scope=39 elapsed_ms=17.667311
+FRAME_SCOPE frame=7 scope=41 elapsed_ms=1.480966
+FRAME_CACHE frame=7 bytes=267336008 rebuilds=2329 hits=3215 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=8 elapsed_ms=1483.282080
+FRAME_SCOPE frame=8 scope=37 elapsed_ms=1003.946196
+FRAME_SCOPE frame=8 scope=36 elapsed_ms=400.223641
+FRAME_SCOPE frame=8 scope=39 elapsed_ms=18.325125
+FRAME_SCOPE frame=8 scope=41 elapsed_ms=1.504371
+FRAME_CACHE frame=8 bytes=267336008 rebuilds=2509 hits=3497 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=9 elapsed_ms=1476.530472
+FRAME_SCOPE frame=9 scope=37 elapsed_ms=1029.601439
+FRAME_SCOPE frame=9 scope=36 elapsed_ms=397.677080
+FRAME_SCOPE frame=9 scope=39 elapsed_ms=18.382254
+FRAME_SCOPE frame=9 scope=41 elapsed_ms=1.576460
+FRAME_CACHE frame=9 bytes=267336008 rebuilds=2689 hits=3779 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=10 elapsed_ms=1485.602091
+FRAME_SCOPE frame=10 scope=37 elapsed_ms=1009.429025
+FRAME_SCOPE frame=10 scope=36 elapsed_ms=426.039065
+FRAME_SCOPE frame=10 scope=39 elapsed_ms=18.055788
+FRAME_SCOPE frame=10 scope=41 elapsed_ms=1.547909
+FRAME_CACHE frame=10 bytes=267336008 rebuilds=2869 hits=4061 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus clouds frame=11 elapsed_ms=1543.514149
+FRAME_SCOPE frame=11 scope=37 elapsed_ms=1104.691300
+FRAME_SCOPE frame=11 scope=36 elapsed_ms=392.074243
+FRAME_SCOPE frame=11 scope=39 elapsed_ms=17.380054
+FRAME_SCOPE frame=11 scope=41 elapsed_ms=1.453985
+FRAME_CACHE frame=11 bytes=267336008 rebuilds=3070 hits=4322 reductions=0 resolution=1 downsample=1
+Torus clouds median=1485.602 ms p95=1583.984 ms
+Torus clouds p99=1583.984 ms max=1583.984 ms
+Torus clouds process_cpu_median=1528.335 ms process_cpu_p95=1624.201 ms
+capture=8192x8192 tiles=25 pixels/cell=32 texture_bytes=289816576 cloud=128x128

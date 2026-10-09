@@ -1,0 +1,1136 @@
+GPU=NVIDIA GeForce RTX 2070 SUPER/PCIe/SSE2 map=maps/lava-performance.map 256x256 viewport=1120x743 frames=64
+FRAME mode=Torus no clouds frame=-96 elapsed_ms=100.951977
+FRAME_SCOPE frame=-96 scope=37 elapsed_ms=36.863873
+FRAME_SCOPE frame=-96 scope=36 elapsed_ms=21.500658
+FRAME_SCOPE frame=-96 scope=39 elapsed_ms=4.571332
+FRAME_SCOPE frame=-96 scope=41 elapsed_ms=0.871064
+FRAME_CACHE frame=-96 bytes=227284992 mask_bytes=49858080 rebuilds=308 hits=270 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-96 composed_cells=65536
+WARMUP frame=0 elapsed_ms=100.952 process_cpu_ms=103.954
+FRAME mode=Torus no clouds frame=-95 elapsed_ms=15.811404
+FRAME_SCOPE frame=-95 scope=37 elapsed_ms=0.927494
+FRAME_SCOPE frame=-95 scope=36 elapsed_ms=3.296749
+FRAME_SCOPE frame=-95 scope=39 elapsed_ms=4.504003
+FRAME_SCOPE frame=-95 scope=41 elapsed_ms=0.274668
+FRAME_CACHE frame=-95 bytes=227284992 mask_bytes=49858080 rebuilds=308 hits=559 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-95 composed_cells=65536
+WARMUP frame=1 elapsed_ms=15.811 process_cpu_ms=16.266
+FRAME mode=Torus no clouds frame=-94 elapsed_ms=14.319665
+FRAME_SCOPE frame=-94 scope=37 elapsed_ms=0.934434
+FRAME_SCOPE frame=-94 scope=36 elapsed_ms=3.206550
+FRAME_SCOPE frame=-94 scope=39 elapsed_ms=4.224874
+FRAME_SCOPE frame=-94 scope=41 elapsed_ms=0.270978
+FRAME_CACHE frame=-94 bytes=227284992 mask_bytes=49858080 rebuilds=308 hits=848 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-94 composed_cells=65536
+WARMUP frame=2 elapsed_ms=14.320 process_cpu_ms=14.880
+FRAME mode=Torus no clouds frame=-93 elapsed_ms=14.202842
+FRAME_SCOPE frame=-93 scope=37 elapsed_ms=0.934224
+FRAME_SCOPE frame=-93 scope=36 elapsed_ms=3.179010
+FRAME_SCOPE frame=-93 scope=39 elapsed_ms=4.160125
+FRAME_SCOPE frame=-93 scope=41 elapsed_ms=0.246329
+FRAME_CACHE frame=-93 bytes=227284992 mask_bytes=49858080 rebuilds=308 hits=1137 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-93 composed_cells=65536
+WARMUP frame=3 elapsed_ms=14.203 process_cpu_ms=14.637
+FRAME mode=Torus no clouds frame=-92 elapsed_ms=112.982333
+FRAME_SCOPE frame=-92 scope=37 elapsed_ms=51.996180
+FRAME_SCOPE frame=-92 scope=36 elapsed_ms=50.352870
+FRAME_SCOPE frame=-92 scope=39 elapsed_ms=4.128915
+FRAME_SCOPE frame=-92 scope=41 elapsed_ms=0.250578
+FRAME_CACHE frame=-92 bytes=227284992 mask_bytes=49858080 rebuilds=443 hits=1291 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-92 composed_cells=65536
+WARMUP frame=4 elapsed_ms=112.982 process_cpu_ms=116.623
+FRAME mode=Torus no clouds frame=-91 elapsed_ms=12.310993
+FRAME_SCOPE frame=-91 scope=37 elapsed_ms=0.986564
+FRAME_SCOPE frame=-91 scope=36 elapsed_ms=2.958192
+FRAME_SCOPE frame=-91 scope=39 elapsed_ms=3.859316
+FRAME_SCOPE frame=-91 scope=41 elapsed_ms=0.246539
+FRAME_CACHE frame=-91 bytes=227284992 mask_bytes=49858080 rebuilds=443 hits=1580 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-91 composed_cells=65536
+WARMUP frame=5 elapsed_ms=12.311 process_cpu_ms=12.760
+FRAME mode=Torus no clouds frame=-90 elapsed_ms=84.909117
+FRAME_SCOPE frame=-90 scope=37 elapsed_ms=53.168573
+FRAME_SCOPE frame=-90 scope=36 elapsed_ms=23.015298
+FRAME_SCOPE frame=-90 scope=39 elapsed_ms=3.296180
+FRAME_SCOPE frame=-90 scope=41 elapsed_ms=0.236768
+FRAME_CACHE frame=-90 bytes=227284992 mask_bytes=49858080 rebuilds=501 hits=1811 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-90 composed_cells=65536
+WARMUP frame=6 elapsed_ms=84.909 process_cpu_ms=87.536
+FRAME mode=Torus no clouds frame=-89 elapsed_ms=13.517744
+FRAME_SCOPE frame=-89 scope=37 elapsed_ms=0.793355
+FRAME_SCOPE frame=-89 scope=36 elapsed_ms=3.163481
+FRAME_SCOPE frame=-89 scope=39 elapsed_ms=3.946046
+FRAME_SCOPE frame=-89 scope=41 elapsed_ms=0.238509
+FRAME_CACHE frame=-89 bytes=227284992 mask_bytes=49858080 rebuilds=501 hits=2100 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-89 composed_cells=65536
+WARMUP frame=7 elapsed_ms=13.518 process_cpu_ms=14.003
+FRAME mode=Torus no clouds frame=-88 elapsed_ms=12.637941
+FRAME_SCOPE frame=-88 scope=37 elapsed_ms=0.780655
+FRAME_SCOPE frame=-88 scope=36 elapsed_ms=2.830283
+FRAME_SCOPE frame=-88 scope=39 elapsed_ms=3.341329
+FRAME_SCOPE frame=-88 scope=41 elapsed_ms=0.220888
+FRAME_CACHE frame=-88 bytes=227284992 mask_bytes=49858080 rebuilds=501 hits=2389 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-88 composed_cells=65536
+FRAME mode=Torus no clouds frame=-87 elapsed_ms=14.544451
+FRAME_SCOPE frame=-87 scope=37 elapsed_ms=0.937265
+FRAME_SCOPE frame=-87 scope=36 elapsed_ms=2.935551
+FRAME_SCOPE frame=-87 scope=39 elapsed_ms=3.663198
+FRAME_SCOPE frame=-87 scope=41 elapsed_ms=0.228769
+FRAME_CACHE frame=-87 bytes=227284992 mask_bytes=49858080 rebuilds=501 hits=2678 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-87 composed_cells=65536
+FRAME mode=Torus no clouds frame=-86 elapsed_ms=104.586783
+FRAME_SCOPE frame=-86 scope=37 elapsed_ms=48.745640
+FRAME_SCOPE frame=-86 scope=36 elapsed_ms=46.353465
+FRAME_SCOPE frame=-86 scope=39 elapsed_ms=4.058855
+FRAME_SCOPE frame=-86 scope=41 elapsed_ms=0.264188
+FRAME_CACHE frame=-86 bytes=227284992 mask_bytes=49858080 rebuilds=636 hits=2832 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-86 composed_cells=65536
+FRAME mode=Torus no clouds frame=-85 elapsed_ms=11.488772
+FRAME_SCOPE frame=-85 scope=37 elapsed_ms=0.770536
+FRAME_SCOPE frame=-85 scope=36 elapsed_ms=3.004901
+FRAME_SCOPE frame=-85 scope=39 elapsed_ms=3.259360
+FRAME_SCOPE frame=-85 scope=41 elapsed_ms=0.202898
+FRAME_CACHE frame=-85 bytes=227284992 mask_bytes=49858080 rebuilds=636 hits=3121 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-85 composed_cells=65536
+FRAME mode=Torus no clouds frame=-84 elapsed_ms=12.131718
+FRAME_SCOPE frame=-84 scope=37 elapsed_ms=0.775895
+FRAME_SCOPE frame=-84 scope=36 elapsed_ms=2.846942
+FRAME_SCOPE frame=-84 scope=39 elapsed_ms=3.252200
+FRAME_SCOPE frame=-84 scope=41 elapsed_ms=0.270008
+FRAME_CACHE frame=-84 bytes=227284992 mask_bytes=49858080 rebuilds=636 hits=3410 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-84 composed_cells=65536
+FRAME mode=Torus no clouds frame=-83 elapsed_ms=11.849211
+FRAME_SCOPE frame=-83 scope=37 elapsed_ms=0.977804
+FRAME_SCOPE frame=-83 scope=36 elapsed_ms=2.886282
+FRAME_SCOPE frame=-83 scope=39 elapsed_ms=3.639088
+FRAME_SCOPE frame=-83 scope=41 elapsed_ms=0.205369
+FRAME_CACHE frame=-83 bytes=227284992 mask_bytes=49858080 rebuilds=636 hits=3699 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-83 composed_cells=65536
+FRAME mode=Torus no clouds frame=-82 elapsed_ms=84.098236
+FRAME_SCOPE frame=-82 scope=37 elapsed_ms=51.922471
+FRAME_SCOPE frame=-82 scope=36 elapsed_ms=23.314047
+FRAME_SCOPE frame=-82 scope=39 elapsed_ms=3.863786
+FRAME_SCOPE frame=-82 scope=41 elapsed_ms=0.250039
+FRAME_CACHE frame=-82 bytes=227284992 mask_bytes=49858080 rebuilds=694 hits=3930 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-82 composed_cells=65536
+FRAME mode=Torus no clouds frame=-81 elapsed_ms=12.631251
+FRAME_SCOPE frame=-81 scope=37 elapsed_ms=0.777605
+FRAME_SCOPE frame=-81 scope=36 elapsed_ms=2.835142
+FRAME_SCOPE frame=-81 scope=39 elapsed_ms=2.926763
+FRAME_SCOPE frame=-81 scope=41 elapsed_ms=0.254378
+FRAME_CACHE frame=-81 bytes=227284992 mask_bytes=49858080 rebuilds=694 hits=4219 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-81 composed_cells=65536
+FRAME mode=Torus no clouds frame=-80 elapsed_ms=108.563707
+FRAME_SCOPE frame=-80 scope=37 elapsed_ms=49.352157
+FRAME_SCOPE frame=-80 scope=36 elapsed_ms=49.662024
+FRAME_SCOPE frame=-80 scope=39 elapsed_ms=3.567208
+FRAME_SCOPE frame=-80 scope=41 elapsed_ms=0.281988
+FRAME_CACHE frame=-80 bytes=227284992 mask_bytes=49858080 rebuilds=829 hits=4373 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-80 composed_cells=65536
+FRAME mode=Torus no clouds frame=-79 elapsed_ms=12.021615
+FRAME_SCOPE frame=-79 scope=37 elapsed_ms=0.813465
+FRAME_SCOPE frame=-79 scope=36 elapsed_ms=2.828753
+FRAME_SCOPE frame=-79 scope=39 elapsed_ms=2.913312
+FRAME_SCOPE frame=-79 scope=41 elapsed_ms=0.249228
+FRAME_CACHE frame=-79 bytes=227284992 mask_bytes=49858080 rebuilds=829 hits=4662 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-79 composed_cells=65536
+FRAME mode=Torus no clouds frame=-78 elapsed_ms=13.138415
+FRAME_SCOPE frame=-78 scope=37 elapsed_ms=0.950184
+FRAME_SCOPE frame=-78 scope=36 elapsed_ms=3.093441
+FRAME_SCOPE frame=-78 scope=39 elapsed_ms=3.631308
+FRAME_SCOPE frame=-78 scope=41 elapsed_ms=0.265918
+FRAME_CACHE frame=-78 bytes=227284992 mask_bytes=49858080 rebuilds=829 hits=4951 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-78 composed_cells=65536
+FRAME mode=Torus no clouds frame=-77 elapsed_ms=13.018062
+FRAME_SCOPE frame=-77 scope=37 elapsed_ms=0.777975
+FRAME_SCOPE frame=-77 scope=36 elapsed_ms=3.160470
+FRAME_SCOPE frame=-77 scope=39 elapsed_ms=3.153951
+FRAME_SCOPE frame=-77 scope=41 elapsed_ms=0.273449
+FRAME_CACHE frame=-77 bytes=227284992 mask_bytes=49858080 rebuilds=829 hits=5240 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-77 composed_cells=65536
+FRAME mode=Torus no clouds frame=-76 elapsed_ms=16.755649
+FRAME_SCOPE frame=-76 scope=37 elapsed_ms=0.836054
+FRAME_SCOPE frame=-76 scope=36 elapsed_ms=4.846001
+FRAME_SCOPE frame=-76 scope=39 elapsed_ms=2.941712
+FRAME_SCOPE frame=-76 scope=41 elapsed_ms=0.267008
+FRAME_CACHE frame=-76 bytes=227284992 mask_bytes=49858080 rebuilds=829 hits=5529 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-76 composed_cells=65536
+FRAME mode=Torus no clouds frame=-75 elapsed_ms=13.611667
+FRAME_SCOPE frame=-75 scope=37 elapsed_ms=0.786405
+FRAME_SCOPE frame=-75 scope=36 elapsed_ms=3.122321
+FRAME_SCOPE frame=-75 scope=39 elapsed_ms=3.091671
+FRAME_SCOPE frame=-75 scope=41 elapsed_ms=0.292578
+FRAME_CACHE frame=-75 bytes=227284992 mask_bytes=49858080 rebuilds=829 hits=5818 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-75 composed_cells=65536
+FRAME mode=Torus no clouds frame=-74 elapsed_ms=182.689301
+FRAME_SCOPE frame=-74 scope=37 elapsed_ms=103.128476
+FRAME_SCOPE frame=-74 scope=36 elapsed_ms=70.155369
+FRAME_SCOPE frame=-74 scope=39 elapsed_ms=2.935942
+FRAME_SCOPE frame=-74 scope=41 elapsed_ms=0.260598
+FRAME_CACHE frame=-74 bytes=227284992 mask_bytes=49858080 rebuilds=1014 hits=5922 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-74 composed_cells=65536
+FRAME mode=Torus no clouds frame=-73 elapsed_ms=13.170606
+FRAME_SCOPE frame=-73 scope=37 elapsed_ms=0.781915
+FRAME_SCOPE frame=-73 scope=36 elapsed_ms=2.839412
+FRAME_SCOPE frame=-73 scope=39 elapsed_ms=2.900222
+FRAME_SCOPE frame=-73 scope=41 elapsed_ms=0.260208
+FRAME_CACHE frame=-73 bytes=227284992 mask_bytes=49858080 rebuilds=1014 hits=6211 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-73 composed_cells=65536
+FRAME mode=Torus no clouds frame=-72 elapsed_ms=13.053512
+FRAME_SCOPE frame=-72 scope=37 elapsed_ms=1.013824
+FRAME_SCOPE frame=-72 scope=36 elapsed_ms=2.919213
+FRAME_SCOPE frame=-72 scope=39 elapsed_ms=3.618447
+FRAME_SCOPE frame=-72 scope=41 elapsed_ms=0.260088
+FRAME_CACHE frame=-72 bytes=227284992 mask_bytes=49858080 rebuilds=1014 hits=6500 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-72 composed_cells=65536
+FRAME mode=Torus no clouds frame=-71 elapsed_ms=24.560104
+FRAME_SCOPE frame=-71 scope=37 elapsed_ms=0.770425
+FRAME_SCOPE frame=-71 scope=36 elapsed_ms=2.828292
+FRAME_SCOPE frame=-71 scope=39 elapsed_ms=2.965172
+FRAME_SCOPE frame=-71 scope=41 elapsed_ms=0.275838
+FRAME_CACHE frame=-71 bytes=227284992 mask_bytes=49858080 rebuilds=1014 hits=6789 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-71 composed_cells=65536
+FRAME mode=Torus no clouds frame=-70 elapsed_ms=12.278472
+FRAME_SCOPE frame=-70 scope=37 elapsed_ms=0.768905
+FRAME_SCOPE frame=-70 scope=36 elapsed_ms=2.845623
+FRAME_SCOPE frame=-70 scope=39 elapsed_ms=2.916812
+FRAME_SCOPE frame=-70 scope=41 elapsed_ms=0.227188
+FRAME_CACHE frame=-70 bytes=227284992 mask_bytes=49858080 rebuilds=1014 hits=7078 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-70 composed_cells=65536
+FRAME mode=Torus no clouds frame=-69 elapsed_ms=13.105833
+FRAME_SCOPE frame=-69 scope=37 elapsed_ms=0.989514
+FRAME_SCOPE frame=-69 scope=36 elapsed_ms=3.009412
+FRAME_SCOPE frame=-69 scope=39 elapsed_ms=3.624458
+FRAME_SCOPE frame=-69 scope=41 elapsed_ms=0.251739
+FRAME_CACHE frame=-69 bytes=227284992 mask_bytes=49858080 rebuilds=1014 hits=7367 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-69 composed_cells=65536
+FRAME mode=Torus no clouds frame=-68 elapsed_ms=106.986746
+FRAME_SCOPE frame=-68 scope=37 elapsed_ms=48.591481
+FRAME_SCOPE frame=-68 scope=36 elapsed_ms=49.431056
+FRAME_SCOPE frame=-68 scope=39 elapsed_ms=2.918532
+FRAME_SCOPE frame=-68 scope=41 elapsed_ms=0.252169
+FRAME_CACHE frame=-68 bytes=227284992 mask_bytes=49858080 rebuilds=1149 hits=7521 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-68 composed_cells=65536
+FRAME mode=Torus no clouds frame=-67 elapsed_ms=14.309905
+FRAME_SCOPE frame=-67 scope=37 elapsed_ms=0.952135
+FRAME_SCOPE frame=-67 scope=36 elapsed_ms=3.096700
+FRAME_SCOPE frame=-67 scope=39 elapsed_ms=3.609668
+FRAME_SCOPE frame=-67 scope=41 elapsed_ms=0.233609
+FRAME_CACHE frame=-67 bytes=227284992 mask_bytes=49858080 rebuilds=1149 hits=7810 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-67 composed_cells=65536
+FRAME mode=Torus no clouds frame=-66 elapsed_ms=86.526869
+FRAME_SCOPE frame=-66 scope=37 elapsed_ms=53.641490
+FRAME_SCOPE frame=-66 scope=36 elapsed_ms=23.371816
+FRAME_SCOPE frame=-66 scope=39 elapsed_ms=3.611178
+FRAME_SCOPE frame=-66 scope=41 elapsed_ms=0.294388
+FRAME_CACHE frame=-66 bytes=227284992 mask_bytes=49858080 rebuilds=1207 hits=8041 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-66 composed_cells=65536
+FRAME mode=Torus no clouds frame=-65 elapsed_ms=12.247221
+FRAME_SCOPE frame=-65 scope=37 elapsed_ms=0.780465
+FRAME_SCOPE frame=-65 scope=36 elapsed_ms=2.847073
+FRAME_SCOPE frame=-65 scope=39 elapsed_ms=2.890222
+FRAME_SCOPE frame=-65 scope=41 elapsed_ms=0.260849
+FRAME_CACHE frame=-65 bytes=227284992 mask_bytes=49858080 rebuilds=1207 hits=8330 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-65 composed_cells=65536
+FRAME mode=Torus no clouds frame=-64 elapsed_ms=12.727443
+FRAME_SCOPE frame=-64 scope=37 elapsed_ms=0.986324
+FRAME_SCOPE frame=-64 scope=36 elapsed_ms=2.841553
+FRAME_SCOPE frame=-64 scope=39 elapsed_ms=3.403739
+FRAME_SCOPE frame=-64 scope=41 elapsed_ms=0.261259
+FRAME_CACHE frame=-64 bytes=227284992 mask_bytes=49858080 rebuilds=1207 hits=8619 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-64 composed_cells=65536
+FRAME mode=Torus no clouds frame=-63 elapsed_ms=12.295963
+FRAME_SCOPE frame=-63 scope=37 elapsed_ms=0.782915
+FRAME_SCOPE frame=-63 scope=36 elapsed_ms=2.822242
+FRAME_SCOPE frame=-63 scope=39 elapsed_ms=2.967082
+FRAME_SCOPE frame=-63 scope=41 elapsed_ms=0.264618
+FRAME_CACHE frame=-63 bytes=227284992 mask_bytes=49858080 rebuilds=1207 hits=8908 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-63 composed_cells=65536
+FRAME mode=Torus no clouds frame=-62 elapsed_ms=109.054160
+FRAME_SCOPE frame=-62 scope=37 elapsed_ms=49.628155
+FRAME_SCOPE frame=-62 scope=36 elapsed_ms=49.365536
+FRAME_SCOPE frame=-62 scope=39 elapsed_ms=3.534568
+FRAME_SCOPE frame=-62 scope=41 elapsed_ms=0.244018
+FRAME_CACHE frame=-62 bytes=227284992 mask_bytes=49858080 rebuilds=1342 hits=9062 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-62 composed_cells=65536
+FRAME mode=Torus no clouds frame=-61 elapsed_ms=11.191513
+FRAME_SCOPE frame=-61 scope=37 elapsed_ms=0.822575
+FRAME_SCOPE frame=-61 scope=36 elapsed_ms=2.903792
+FRAME_SCOPE frame=-61 scope=39 elapsed_ms=2.912522
+FRAME_SCOPE frame=-61 scope=41 elapsed_ms=0.242238
+FRAME_CACHE frame=-61 bytes=227284992 mask_bytes=49858080 rebuilds=1342 hits=9351 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-61 composed_cells=65536
+FRAME mode=Torus no clouds frame=-60 elapsed_ms=13.671059
+FRAME_SCOPE frame=-60 scope=37 elapsed_ms=0.937554
+FRAME_SCOPE frame=-60 scope=36 elapsed_ms=3.165330
+FRAME_SCOPE frame=-60 scope=39 elapsed_ms=3.618398
+FRAME_SCOPE frame=-60 scope=41 elapsed_ms=0.293598
+FRAME_CACHE frame=-60 bytes=227284992 mask_bytes=49858080 rebuilds=1342 hits=9640 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-60 composed_cells=65536
+FRAME mode=Torus no clouds frame=-59 elapsed_ms=12.390665
+FRAME_SCOPE frame=-59 scope=37 elapsed_ms=0.794175
+FRAME_SCOPE frame=-59 scope=36 elapsed_ms=2.849362
+FRAME_SCOPE frame=-59 scope=39 elapsed_ms=2.919492
+FRAME_SCOPE frame=-59 scope=41 elapsed_ms=0.242698
+FRAME_CACHE frame=-59 bytes=227284992 mask_bytes=49858080 rebuilds=1342 hits=9929 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-59 composed_cells=65536
+FRAME mode=Torus no clouds frame=-58 elapsed_ms=84.727082
+FRAME_SCOPE frame=-58 scope=37 elapsed_ms=53.999408
+FRAME_SCOPE frame=-58 scope=36 elapsed_ms=23.009369
+FRAME_SCOPE frame=-58 scope=39 elapsed_ms=2.908141
+FRAME_SCOPE frame=-58 scope=41 elapsed_ms=0.261899
+FRAME_CACHE frame=-58 bytes=227284992 mask_bytes=49858080 rebuilds=1400 hits=10160 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-58 composed_cells=65536
+FRAME mode=Torus no clouds frame=-57 elapsed_ms=14.296165
+FRAME_SCOPE frame=-57 scope=37 elapsed_ms=0.931384
+FRAME_SCOPE frame=-57 scope=36 elapsed_ms=3.147391
+FRAME_SCOPE frame=-57 scope=39 elapsed_ms=3.596987
+FRAME_SCOPE frame=-57 scope=41 elapsed_ms=0.276908
+FRAME_CACHE frame=-57 bytes=227284992 mask_bytes=49858080 rebuilds=1400 hits=10449 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-57 composed_cells=65536
+FRAME mode=Torus no clouds frame=-56 elapsed_ms=107.143480
+FRAME_SCOPE frame=-56 scope=37 elapsed_ms=48.818720
+FRAME_SCOPE frame=-56 scope=36 elapsed_ms=49.234428
+FRAME_SCOPE frame=-56 scope=39 elapsed_ms=3.522028
+FRAME_SCOPE frame=-56 scope=41 elapsed_ms=0.290559
+FRAME_CACHE frame=-56 bytes=227284992 mask_bytes=49858080 rebuilds=1535 hits=10603 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-56 composed_cells=65536
+FRAME mode=Torus no clouds frame=-55 elapsed_ms=11.260515
+FRAME_SCOPE frame=-55 scope=37 elapsed_ms=0.784656
+FRAME_SCOPE frame=-55 scope=36 elapsed_ms=2.940132
+FRAME_SCOPE frame=-55 scope=39 elapsed_ms=2.925631
+FRAME_SCOPE frame=-55 scope=41 elapsed_ms=0.265419
+FRAME_CACHE frame=-55 bytes=227284992 mask_bytes=49858080 rebuilds=1535 hits=10892 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-55 composed_cells=65536
+FRAME mode=Torus no clouds frame=-54 elapsed_ms=14.062659
+FRAME_SCOPE frame=-54 scope=37 elapsed_ms=0.776675
+FRAME_SCOPE frame=-54 scope=36 elapsed_ms=2.812443
+FRAME_SCOPE frame=-54 scope=39 elapsed_ms=2.919852
+FRAME_SCOPE frame=-54 scope=41 elapsed_ms=0.259649
+FRAME_CACHE frame=-54 bytes=227284992 mask_bytes=49858080 rebuilds=1535 hits=11181 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-54 composed_cells=65536
+FRAME mode=Torus no clouds frame=-53 elapsed_ms=13.852764
+FRAME_SCOPE frame=-53 scope=37 elapsed_ms=0.825015
+FRAME_SCOPE frame=-53 scope=36 elapsed_ms=3.117741
+FRAME_SCOPE frame=-53 scope=39 elapsed_ms=3.046041
+FRAME_SCOPE frame=-53 scope=41 elapsed_ms=0.286918
+FRAME_CACHE frame=-53 bytes=227284992 mask_bytes=49858080 rebuilds=1535 hits=11470 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-53 composed_cells=65536
+FRAME mode=Torus no clouds frame=-52 elapsed_ms=12.084477
+FRAME_SCOPE frame=-52 scope=37 elapsed_ms=0.807415
+FRAME_SCOPE frame=-52 scope=36 elapsed_ms=2.845252
+FRAME_SCOPE frame=-52 scope=39 elapsed_ms=2.903142
+FRAME_SCOPE frame=-52 scope=41 elapsed_ms=0.239679
+FRAME_CACHE frame=-52 bytes=227284992 mask_bytes=49858080 rebuilds=1535 hits=11759 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-52 composed_cells=65536
+FRAME mode=Torus no clouds frame=-51 elapsed_ms=15.538748
+FRAME_SCOPE frame=-51 scope=37 elapsed_ms=0.931054
+FRAME_SCOPE frame=-51 scope=36 elapsed_ms=3.172100
+FRAME_SCOPE frame=-51 scope=39 elapsed_ms=3.631188
+FRAME_SCOPE frame=-51 scope=41 elapsed_ms=0.240698
+FRAME_CACHE frame=-51 bytes=227284992 mask_bytes=49858080 rebuilds=1535 hits=12048 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-51 composed_cells=65536
+FRAME mode=Torus no clouds frame=-50 elapsed_ms=181.028457
+FRAME_SCOPE frame=-50 scope=37 elapsed_ms=102.294941
+FRAME_SCOPE frame=-50 scope=36 elapsed_ms=70.175169
+FRAME_SCOPE frame=-50 scope=39 elapsed_ms=3.592548
+FRAME_SCOPE frame=-50 scope=41 elapsed_ms=0.264179
+FRAME_CACHE frame=-50 bytes=227284992 mask_bytes=49858080 rebuilds=1720 hits=12152 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-50 composed_cells=65536
+FRAME mode=Torus no clouds frame=-49 elapsed_ms=12.353944
+FRAME_SCOPE frame=-49 scope=37 elapsed_ms=0.772465
+FRAME_SCOPE frame=-49 scope=36 elapsed_ms=2.833763
+FRAME_SCOPE frame=-49 scope=39 elapsed_ms=2.953031
+FRAME_SCOPE frame=-49 scope=41 elapsed_ms=0.263218
+FRAME_CACHE frame=-49 bytes=227284992 mask_bytes=49858080 rebuilds=1720 hits=12441 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-49 composed_cells=65536
+FRAME mode=Torus no clouds frame=-48 elapsed_ms=14.957942
+FRAME_SCOPE frame=-48 scope=37 elapsed_ms=0.914664
+FRAME_SCOPE frame=-48 scope=36 elapsed_ms=3.191651
+FRAME_SCOPE frame=-48 scope=39 elapsed_ms=3.603018
+FRAME_SCOPE frame=-48 scope=41 elapsed_ms=0.285028
+FRAME_CACHE frame=-48 bytes=227284992 mask_bytes=49858080 rebuilds=1720 hits=12730 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-48 composed_cells=65536
+FRAME mode=Torus no clouds frame=-47 elapsed_ms=13.108253
+FRAME_SCOPE frame=-47 scope=37 elapsed_ms=0.795025
+FRAME_SCOPE frame=-47 scope=36 elapsed_ms=2.793413
+FRAME_SCOPE frame=-47 scope=39 elapsed_ms=2.899662
+FRAME_SCOPE frame=-47 scope=41 elapsed_ms=0.222529
+FRAME_CACHE frame=-47 bytes=227284992 mask_bytes=49858080 rebuilds=1720 hits=13019 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-47 composed_cells=65536
+FRAME mode=Torus no clouds frame=-46 elapsed_ms=15.262660
+FRAME_SCOPE frame=-46 scope=37 elapsed_ms=0.804225
+FRAME_SCOPE frame=-46 scope=36 elapsed_ms=3.113611
+FRAME_SCOPE frame=-46 scope=39 elapsed_ms=3.442159
+FRAME_SCOPE frame=-46 scope=41 elapsed_ms=0.245398
+FRAME_CACHE frame=-46 bytes=227284992 mask_bytes=49858080 rebuilds=1720 hits=13308 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-46 composed_cells=65536
+FRAME mode=Torus no clouds frame=-45 elapsed_ms=11.216544
+FRAME_SCOPE frame=-45 scope=37 elapsed_ms=0.780215
+FRAME_SCOPE frame=-45 scope=36 elapsed_ms=2.833933
+FRAME_SCOPE frame=-45 scope=39 elapsed_ms=2.963342
+FRAME_SCOPE frame=-45 scope=41 elapsed_ms=0.253388
+FRAME_CACHE frame=-45 bytes=227284992 mask_bytes=49858080 rebuilds=1720 hits=13597 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-45 composed_cells=65536
+FRAME mode=Torus no clouds frame=-44 elapsed_ms=107.607342
+FRAME_SCOPE frame=-44 scope=37 elapsed_ms=48.831319
+FRAME_SCOPE frame=-44 scope=36 elapsed_ms=52.798006
+FRAME_SCOPE frame=-44 scope=39 elapsed_ms=2.889512
+FRAME_SCOPE frame=-44 scope=41 elapsed_ms=0.287598
+FRAME_CACHE frame=-44 bytes=227284992 mask_bytes=49858080 rebuilds=1855 hits=13751 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-44 composed_cells=65536
+FRAME mode=Torus no clouds frame=-43 elapsed_ms=10.923437
+FRAME_SCOPE frame=-43 scope=37 elapsed_ms=0.939264
+FRAME_SCOPE frame=-43 scope=36 elapsed_ms=3.131560
+FRAME_SCOPE frame=-43 scope=39 elapsed_ms=3.611868
+FRAME_SCOPE frame=-43 scope=41 elapsed_ms=0.282328
+FRAME_CACHE frame=-43 bytes=227284992 mask_bytes=49858080 rebuilds=1855 hits=14040 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-43 composed_cells=65536
+FRAME mode=Torus no clouds frame=-42 elapsed_ms=81.901038
+FRAME_SCOPE frame=-42 scope=37 elapsed_ms=52.684415
+FRAME_SCOPE frame=-42 scope=36 elapsed_ms=23.107529
+FRAME_SCOPE frame=-42 scope=39 elapsed_ms=2.894812
+FRAME_SCOPE frame=-42 scope=41 elapsed_ms=0.284269
+FRAME_CACHE frame=-42 bytes=227284992 mask_bytes=49858080 rebuilds=1913 hits=14271 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-42 composed_cells=65536
+FRAME mode=Torus no clouds frame=-41 elapsed_ms=9.441917
+FRAME_SCOPE frame=-41 scope=37 elapsed_ms=0.779276
+FRAME_SCOPE frame=-41 scope=36 elapsed_ms=3.027281
+FRAME_SCOPE frame=-41 scope=39 elapsed_ms=2.962042
+FRAME_SCOPE frame=-41 scope=41 elapsed_ms=0.247588
+FRAME_CACHE frame=-41 bytes=227284992 mask_bytes=49858080 rebuilds=1913 hits=14560 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-41 composed_cells=65536
+FRAME mode=Torus no clouds frame=-40 elapsed_ms=11.242684
+FRAME_SCOPE frame=-40 scope=37 elapsed_ms=0.929174
+FRAME_SCOPE frame=-40 scope=36 elapsed_ms=3.134981
+FRAME_SCOPE frame=-40 scope=39 elapsed_ms=3.597598
+FRAME_SCOPE frame=-40 scope=41 elapsed_ms=0.260178
+FRAME_CACHE frame=-40 bytes=227284992 mask_bytes=49858080 rebuilds=1913 hits=14849 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-40 composed_cells=65536
+FRAME mode=Torus no clouds frame=-39 elapsed_ms=9.705784
+FRAME_SCOPE frame=-39 scope=37 elapsed_ms=0.834605
+FRAME_SCOPE frame=-39 scope=36 elapsed_ms=2.835193
+FRAME_SCOPE frame=-39 scope=39 elapsed_ms=2.905852
+FRAME_SCOPE frame=-39 scope=41 elapsed_ms=0.259898
+FRAME_CACHE frame=-39 bytes=227284992 mask_bytes=49858080 rebuilds=1913 hits=15138 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-39 composed_cells=65536
+FRAME mode=Torus no clouds frame=-38 elapsed_ms=103.893305
+FRAME_SCOPE frame=-38 scope=37 elapsed_ms=48.751571
+FRAME_SCOPE frame=-38 scope=36 elapsed_ms=49.199128
+FRAME_SCOPE frame=-38 scope=39 elapsed_ms=2.953411
+FRAME_SCOPE frame=-38 scope=41 elapsed_ms=0.269369
+FRAME_CACHE frame=-38 bytes=227284992 mask_bytes=49858080 rebuilds=2048 hits=15292 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-38 composed_cells=65536
+FRAME mode=Torus no clouds frame=-37 elapsed_ms=9.873269
+FRAME_SCOPE frame=-37 scope=37 elapsed_ms=0.780816
+FRAME_SCOPE frame=-37 scope=36 elapsed_ms=3.212570
+FRAME_SCOPE frame=-37 scope=39 elapsed_ms=3.183490
+FRAME_SCOPE frame=-37 scope=41 elapsed_ms=0.287848
+FRAME_CACHE frame=-37 bytes=227284992 mask_bytes=49858080 rebuilds=2048 hits=15581 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-37 composed_cells=65536
+FRAME mode=Torus no clouds frame=-36 elapsed_ms=11.065250
+FRAME_SCOPE frame=-36 scope=37 elapsed_ms=0.930765
+FRAME_SCOPE frame=-36 scope=36 elapsed_ms=2.840612
+FRAME_SCOPE frame=-36 scope=39 elapsed_ms=3.254240
+FRAME_SCOPE frame=-36 scope=41 elapsed_ms=0.255209
+FRAME_CACHE frame=-36 bytes=227284992 mask_bytes=49858080 rebuilds=2048 hits=15870 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-36 composed_cells=65536
+FRAME mode=Torus no clouds frame=-35 elapsed_ms=9.703794
+FRAME_SCOPE frame=-35 scope=37 elapsed_ms=0.846165
+FRAME_SCOPE frame=-35 scope=36 elapsed_ms=2.811693
+FRAME_SCOPE frame=-35 scope=39 elapsed_ms=2.946331
+FRAME_SCOPE frame=-35 scope=41 elapsed_ms=0.246388
+FRAME_CACHE frame=-35 bytes=227284992 mask_bytes=49858080 rebuilds=2048 hits=16159 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-35 composed_cells=65536
+FRAME mode=Torus no clouds frame=-34 elapsed_ms=83.194152
+FRAME_SCOPE frame=-34 scope=37 elapsed_ms=53.842849
+FRAME_SCOPE frame=-34 scope=36 elapsed_ms=23.779034
+FRAME_SCOPE frame=-34 scope=39 elapsed_ms=2.901552
+FRAME_SCOPE frame=-34 scope=41 elapsed_ms=0.263739
+FRAME_CACHE frame=-34 bytes=227284992 mask_bytes=49858080 rebuilds=2106 hits=16390 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-34 composed_cells=65536
+FRAME mode=Torus no clouds frame=-33 elapsed_ms=11.520662
+FRAME_SCOPE frame=-33 scope=37 elapsed_ms=0.936475
+FRAME_SCOPE frame=-33 scope=36 elapsed_ms=3.248539
+FRAME_SCOPE frame=-33 scope=39 elapsed_ms=3.597338
+FRAME_SCOPE frame=-33 scope=41 elapsed_ms=0.295478
+FRAME_CACHE frame=-33 bytes=227284992 mask_bytes=49858080 rebuilds=2106 hits=16679 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-33 composed_cells=65536
+FRAME mode=Torus no clouds frame=-32 elapsed_ms=104.386567
+FRAME_SCOPE frame=-32 scope=37 elapsed_ms=48.723050
+FRAME_SCOPE frame=-32 scope=36 elapsed_ms=49.043769
+FRAME_SCOPE frame=-32 scope=39 elapsed_ms=3.613307
+FRAME_SCOPE frame=-32 scope=41 elapsed_ms=0.270169
+FRAME_CACHE frame=-32 bytes=227284992 mask_bytes=49858080 rebuilds=2241 hits=16833 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-32 composed_cells=65536
+FRAME mode=Torus no clouds frame=-31 elapsed_ms=9.407837
+FRAME_SCOPE frame=-31 scope=37 elapsed_ms=0.771795
+FRAME_SCOPE frame=-31 scope=36 elapsed_ms=2.921042
+FRAME_SCOPE frame=-31 scope=39 elapsed_ms=2.894572
+FRAME_SCOPE frame=-31 scope=41 elapsed_ms=0.284798
+FRAME_CACHE frame=-31 bytes=227284992 mask_bytes=49858080 rebuilds=2241 hits=17122 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-31 composed_cells=65536
+FRAME mode=Torus no clouds frame=-30 elapsed_ms=10.537736
+FRAME_SCOPE frame=-30 scope=37 elapsed_ms=0.964874
+FRAME_SCOPE frame=-30 scope=36 elapsed_ms=2.892562
+FRAME_SCOPE frame=-30 scope=39 elapsed_ms=3.611648
+FRAME_SCOPE frame=-30 scope=41 elapsed_ms=0.218849
+FRAME_CACHE frame=-30 bytes=227284992 mask_bytes=49858080 rebuilds=2241 hits=17411 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-30 composed_cells=65536
+FRAME mode=Torus no clouds frame=-29 elapsed_ms=10.314071
+FRAME_SCOPE frame=-29 scope=37 elapsed_ms=0.826735
+FRAME_SCOPE frame=-29 scope=36 elapsed_ms=3.055572
+FRAME_SCOPE frame=-29 scope=39 elapsed_ms=2.911592
+FRAME_SCOPE frame=-29 scope=41 elapsed_ms=0.284779
+FRAME_CACHE frame=-29 bytes=227284992 mask_bytes=49858080 rebuilds=2241 hits=17700 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-29 composed_cells=65536
+FRAME mode=Torus no clouds frame=-28 elapsed_ms=11.414989
+FRAME_SCOPE frame=-28 scope=37 elapsed_ms=0.937914
+FRAME_SCOPE frame=-28 scope=36 elapsed_ms=2.831623
+FRAME_SCOPE frame=-28 scope=39 elapsed_ms=3.551598
+FRAME_SCOPE frame=-28 scope=41 elapsed_ms=0.259989
+FRAME_CACHE frame=-28 bytes=227284992 mask_bytes=49858080 rebuilds=2241 hits=17989 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-28 composed_cells=65536
+FRAME mode=Torus no clouds frame=-27 elapsed_ms=12.833857
+FRAME_SCOPE frame=-27 scope=37 elapsed_ms=0.812795
+FRAME_SCOPE frame=-27 scope=36 elapsed_ms=3.117001
+FRAME_SCOPE frame=-27 scope=39 elapsed_ms=3.162741
+FRAME_SCOPE frame=-27 scope=41 elapsed_ms=0.283769
+FRAME_CACHE frame=-27 bytes=227284992 mask_bytes=49858080 rebuilds=2241 hits=18278 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-27 composed_cells=65536
+FRAME mode=Torus no clouds frame=-26 elapsed_ms=180.065272
+FRAME_SCOPE frame=-26 scope=37 elapsed_ms=103.121856
+FRAME_SCOPE frame=-26 scope=36 elapsed_ms=70.517306
+FRAME_SCOPE frame=-26 scope=39 elapsed_ms=3.518208
+FRAME_SCOPE frame=-26 scope=41 elapsed_ms=0.261629
+FRAME_CACHE frame=-26 bytes=227284992 mask_bytes=49858080 rebuilds=2426 hits=18382 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-26 composed_cells=65536
+FRAME mode=Torus no clouds frame=-25 elapsed_ms=10.147586
+FRAME_SCOPE frame=-25 scope=37 elapsed_ms=0.936654
+FRAME_SCOPE frame=-25 scope=36 elapsed_ms=3.015841
+FRAME_SCOPE frame=-25 scope=39 elapsed_ms=2.923292
+FRAME_SCOPE frame=-25 scope=41 elapsed_ms=0.242588
+FRAME_CACHE frame=-25 bytes=227284992 mask_bytes=49858080 rebuilds=2426 hits=18671 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-25 composed_cells=65536
+FRAME mode=Torus no clouds frame=-24 elapsed_ms=11.101291
+FRAME_SCOPE frame=-24 scope=37 elapsed_ms=0.763845
+FRAME_SCOPE frame=-24 scope=36 elapsed_ms=3.100261
+FRAME_SCOPE frame=-24 scope=39 elapsed_ms=3.449139
+FRAME_SCOPE frame=-24 scope=41 elapsed_ms=0.275088
+FRAME_CACHE frame=-24 bytes=227284992 mask_bytes=49858080 rebuilds=2426 hits=18960 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-24 composed_cells=65536
+FRAME mode=Torus no clouds frame=-23 elapsed_ms=9.666094
+FRAME_SCOPE frame=-23 scope=37 elapsed_ms=0.894225
+FRAME_SCOPE frame=-23 scope=36 elapsed_ms=2.794603
+FRAME_SCOPE frame=-23 scope=39 elapsed_ms=2.899242
+FRAME_SCOPE frame=-23 scope=41 elapsed_ms=0.259328
+FRAME_CACHE frame=-23 bytes=227284992 mask_bytes=49858080 rebuilds=2426 hits=19249 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-23 composed_cells=65536
+FRAME mode=Torus no clouds frame=-22 elapsed_ms=13.188306
+FRAME_SCOPE frame=-22 scope=37 elapsed_ms=0.796035
+FRAME_SCOPE frame=-22 scope=36 elapsed_ms=3.145581
+FRAME_SCOPE frame=-22 scope=39 elapsed_ms=3.607457
+FRAME_SCOPE frame=-22 scope=41 elapsed_ms=0.278698
+FRAME_CACHE frame=-22 bytes=227284992 mask_bytes=49858080 rebuilds=2426 hits=19538 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-22 composed_cells=65536
+FRAME mode=Torus no clouds frame=-21 elapsed_ms=9.114869
+FRAME_SCOPE frame=-21 scope=37 elapsed_ms=0.763125
+FRAME_SCOPE frame=-21 scope=36 elapsed_ms=2.870202
+FRAME_SCOPE frame=-21 scope=39 elapsed_ms=2.939823
+FRAME_SCOPE frame=-21 scope=41 elapsed_ms=0.227309
+FRAME_CACHE frame=-21 bytes=227284992 mask_bytes=49858080 rebuilds=2426 hits=19827 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-21 composed_cells=65536
+FRAME mode=Torus no clouds frame=-20 elapsed_ms=107.613732
+FRAME_SCOPE frame=-20 scope=37 elapsed_ms=48.773980
+FRAME_SCOPE frame=-20 scope=36 elapsed_ms=53.058733
+FRAME_SCOPE frame=-20 scope=39 elapsed_ms=2.933662
+FRAME_SCOPE frame=-20 scope=41 elapsed_ms=0.265708
+FRAME_CACHE frame=-20 bytes=227284992 mask_bytes=49858080 rebuilds=2561 hits=19981 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-20 composed_cells=65536
+FRAME mode=Torus no clouds frame=-19 elapsed_ms=11.439640
+FRAME_SCOPE frame=-19 scope=37 elapsed_ms=0.772095
+FRAME_SCOPE frame=-19 scope=36 elapsed_ms=3.094701
+FRAME_SCOPE frame=-19 scope=39 elapsed_ms=3.573818
+FRAME_SCOPE frame=-19 scope=41 elapsed_ms=0.284088
+FRAME_CACHE frame=-19 bytes=227284992 mask_bytes=49858080 rebuilds=2561 hits=20270 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-19 composed_cells=65536
+FRAME mode=Torus no clouds frame=-18 elapsed_ms=81.985370
+FRAME_SCOPE frame=-18 scope=37 elapsed_ms=52.793705
+FRAME_SCOPE frame=-18 scope=36 elapsed_ms=23.270318
+FRAME_SCOPE frame=-18 scope=39 elapsed_ms=2.893092
+FRAME_SCOPE frame=-18 scope=41 elapsed_ms=0.261338
+FRAME_CACHE frame=-18 bytes=227284992 mask_bytes=49858080 rebuilds=2619 hits=20501 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-18 composed_cells=65536
+FRAME mode=Torus no clouds frame=-17 elapsed_ms=9.058027
+FRAME_SCOPE frame=-17 scope=37 elapsed_ms=0.808645
+FRAME_SCOPE frame=-17 scope=36 elapsed_ms=2.868622
+FRAME_SCOPE frame=-17 scope=39 elapsed_ms=2.907792
+FRAME_SCOPE frame=-17 scope=41 elapsed_ms=0.267148
+FRAME_CACHE frame=-17 bytes=227284992 mask_bytes=49858080 rebuilds=2619 hits=20790 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-17 composed_cells=65536
+FRAME mode=Torus no clouds frame=-16 elapsed_ms=11.216365
+FRAME_SCOPE frame=-16 scope=37 elapsed_ms=0.934814
+FRAME_SCOPE frame=-16 scope=36 elapsed_ms=3.167910
+FRAME_SCOPE frame=-16 scope=39 elapsed_ms=3.597938
+FRAME_SCOPE frame=-16 scope=41 elapsed_ms=0.285778
+FRAME_CACHE frame=-16 bytes=227284992 mask_bytes=49858080 rebuilds=2619 hits=21079 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-16 composed_cells=65536
+FRAME mode=Torus no clouds frame=-15 elapsed_ms=9.546770
+FRAME_SCOPE frame=-15 scope=37 elapsed_ms=0.775715
+FRAME_SCOPE frame=-15 scope=36 elapsed_ms=2.792873
+FRAME_SCOPE frame=-15 scope=39 elapsed_ms=2.924222
+FRAME_SCOPE frame=-15 scope=41 elapsed_ms=0.211749
+FRAME_CACHE frame=-15 bytes=227284992 mask_bytes=49858080 rebuilds=2619 hits=21368 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-15 composed_cells=65536
+FRAME mode=Torus no clouds frame=-14 elapsed_ms=105.605470
+FRAME_SCOPE frame=-14 scope=37 elapsed_ms=48.408852
+FRAME_SCOPE frame=-14 scope=36 elapsed_ms=49.713535
+FRAME_SCOPE frame=-14 scope=39 elapsed_ms=3.594467
+FRAME_SCOPE frame=-14 scope=41 elapsed_ms=0.252669
+FRAME_CACHE frame=-14 bytes=227284992 mask_bytes=49858080 rebuilds=2754 hits=21522 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-14 composed_cells=65536
+FRAME mode=Torus no clouds frame=-13 elapsed_ms=9.291604
+FRAME_SCOPE frame=-13 scope=37 elapsed_ms=0.802835
+FRAME_SCOPE frame=-13 scope=36 elapsed_ms=2.886703
+FRAME_SCOPE frame=-13 scope=39 elapsed_ms=2.904552
+FRAME_SCOPE frame=-13 scope=41 elapsed_ms=0.282039
+FRAME_CACHE frame=-13 bytes=227284992 mask_bytes=49858080 rebuilds=2754 hits=21811 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-13 composed_cells=65536
+FRAME mode=Torus no clouds frame=-12 elapsed_ms=11.534613
+FRAME_SCOPE frame=-12 scope=37 elapsed_ms=0.944934
+FRAME_SCOPE frame=-12 scope=36 elapsed_ms=3.896676
+FRAME_SCOPE frame=-12 scope=39 elapsed_ms=3.419199
+FRAME_SCOPE frame=-12 scope=41 elapsed_ms=0.242048
+FRAME_CACHE frame=-12 bytes=227284992 mask_bytes=49858080 rebuilds=2754 hits=22100 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-12 composed_cells=65536
+FRAME mode=Torus no clouds frame=-11 elapsed_ms=11.579964
+FRAME_SCOPE frame=-11 scope=37 elapsed_ms=0.763135
+FRAME_SCOPE frame=-11 scope=36 elapsed_ms=3.104591
+FRAME_SCOPE frame=-11 scope=39 elapsed_ms=3.113151
+FRAME_SCOPE frame=-11 scope=41 elapsed_ms=0.282628
+FRAME_CACHE frame=-11 bytes=227284992 mask_bytes=49858080 rebuilds=2754 hits=22389 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-11 composed_cells=65536
+FRAME mode=Torus no clouds frame=-10 elapsed_ms=82.564505
+FRAME_SCOPE frame=-10 scope=37 elapsed_ms=52.662617
+FRAME_SCOPE frame=-10 scope=36 elapsed_ms=23.211717
+FRAME_SCOPE frame=-10 scope=39 elapsed_ms=3.595268
+FRAME_SCOPE frame=-10 scope=41 elapsed_ms=0.284998
+FRAME_CACHE frame=-10 bytes=227284992 mask_bytes=49858080 rebuilds=2812 hits=22620 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-10 composed_cells=65536
+FRAME mode=Torus no clouds frame=-9 elapsed_ms=8.796320
+FRAME_SCOPE frame=-9 scope=37 elapsed_ms=0.864294
+FRAME_SCOPE frame=-9 scope=36 elapsed_ms=2.805893
+FRAME_SCOPE frame=-9 scope=39 elapsed_ms=2.951212
+FRAME_SCOPE frame=-9 scope=41 elapsed_ms=0.277208
+FRAME_CACHE frame=-9 bytes=227284992 mask_bytes=49858080 rebuilds=2812 hits=22909 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-9 composed_cells=65536
+FRAME mode=Torus no clouds frame=-8 elapsed_ms=104.670305
+FRAME_SCOPE frame=-8 scope=37 elapsed_ms=49.386397
+FRAME_SCOPE frame=-8 scope=36 elapsed_ms=49.224267
+FRAME_SCOPE frame=-8 scope=39 elapsed_ms=2.897552
+FRAME_SCOPE frame=-8 scope=41 elapsed_ms=0.289049
+FRAME_CACHE frame=-8 bytes=227284992 mask_bytes=49858080 rebuilds=2947 hits=23063 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-8 composed_cells=65536
+FRAME mode=Torus no clouds frame=-7 elapsed_ms=10.260459
+FRAME_SCOPE frame=-7 scope=37 elapsed_ms=0.937885
+FRAME_SCOPE frame=-7 scope=36 elapsed_ms=3.177170
+FRAME_SCOPE frame=-7 scope=39 elapsed_ms=3.617488
+FRAME_SCOPE frame=-7 scope=41 elapsed_ms=0.259588
+FRAME_CACHE frame=-7 bytes=227284992 mask_bytes=49858080 rebuilds=2947 hits=23352 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-7 composed_cells=65536
+FRAME mode=Torus no clouds frame=-6 elapsed_ms=10.458634
+FRAME_SCOPE frame=-6 scope=37 elapsed_ms=0.763545
+FRAME_SCOPE frame=-6 scope=36 elapsed_ms=2.805032
+FRAME_SCOPE frame=-6 scope=39 elapsed_ms=2.931903
+FRAME_SCOPE frame=-6 scope=41 elapsed_ms=0.261898
+FRAME_CACHE frame=-6 bytes=227284992 mask_bytes=49858080 rebuilds=2947 hits=23641 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-6 composed_cells=65536
+FRAME mode=Torus no clouds frame=-5 elapsed_ms=9.930791
+FRAME_SCOPE frame=-5 scope=37 elapsed_ms=0.856435
+FRAME_SCOPE frame=-5 scope=36 elapsed_ms=2.810953
+FRAME_SCOPE frame=-5 scope=39 elapsed_ms=2.930322
+FRAME_SCOPE frame=-5 scope=41 elapsed_ms=0.287718
+FRAME_CACHE frame=-5 bytes=227284992 mask_bytes=49858080 rebuilds=2947 hits=23930 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-5 composed_cells=65536
+FRAME mode=Torus no clouds frame=-4 elapsed_ms=11.074310
+FRAME_SCOPE frame=-4 scope=37 elapsed_ms=0.923904
+FRAME_SCOPE frame=-4 scope=36 elapsed_ms=3.245130
+FRAME_SCOPE frame=-4 scope=39 elapsed_ms=3.616648
+FRAME_SCOPE frame=-4 scope=41 elapsed_ms=0.251598
+FRAME_CACHE frame=-4 bytes=227284992 mask_bytes=49858080 rebuilds=2947 hits=24219 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-4 composed_cells=65536
+FRAME mode=Torus no clouds frame=-3 elapsed_ms=11.902812
+FRAME_SCOPE frame=-3 scope=37 elapsed_ms=0.786175
+FRAME_SCOPE frame=-3 scope=36 elapsed_ms=2.800833
+FRAME_SCOPE frame=-3 scope=39 elapsed_ms=2.894772
+FRAME_SCOPE frame=-3 scope=41 elapsed_ms=0.260278
+FRAME_CACHE frame=-3 bytes=227284992 mask_bytes=49858080 rebuilds=2947 hits=24508 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-3 composed_cells=65536
+FRAME mode=Torus no clouds frame=-2 elapsed_ms=180.423252
+FRAME_SCOPE frame=-2 scope=37 elapsed_ms=103.469914
+FRAME_SCOPE frame=-2 scope=36 elapsed_ms=70.676276
+FRAME_SCOPE frame=-2 scope=39 elapsed_ms=3.525918
+FRAME_SCOPE frame=-2 scope=41 elapsed_ms=0.250578
+FRAME_CACHE frame=-2 bytes=227284992 mask_bytes=49858080 rebuilds=3132 hits=24612 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-2 composed_cells=65536
+FRAME mode=Torus no clouds frame=-1 elapsed_ms=9.973402
+FRAME_SCOPE frame=-1 scope=37 elapsed_ms=0.763555
+FRAME_SCOPE frame=-1 scope=36 elapsed_ms=2.862212
+FRAME_SCOPE frame=-1 scope=39 elapsed_ms=2.942732
+FRAME_SCOPE frame=-1 scope=41 elapsed_ms=0.269519
+FRAME_CACHE frame=-1 bytes=227284992 mask_bytes=49858080 rebuilds=3132 hits=24901 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=-1 composed_cells=65536
+FRAME mode=Torus no clouds frame=0 elapsed_ms=10.985198
+FRAME_SCOPE frame=0 scope=37 elapsed_ms=0.937264
+FRAME_SCOPE frame=0 scope=36 elapsed_ms=2.830273
+FRAME_SCOPE frame=0 scope=39 elapsed_ms=3.524988
+FRAME_SCOPE frame=0 scope=41 elapsed_ms=0.254118
+FRAME_CACHE frame=0 bytes=227284992 mask_bytes=49858080 rebuilds=3132 hits=25190 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=0 composed_cells=65536
+FRAME mode=Torus no clouds frame=1 elapsed_ms=10.317901
+FRAME_SCOPE frame=1 scope=37 elapsed_ms=0.814815
+FRAME_SCOPE frame=1 scope=36 elapsed_ms=3.140841
+FRAME_SCOPE frame=1 scope=39 elapsed_ms=3.052581
+FRAME_SCOPE frame=1 scope=41 elapsed_ms=0.270428
+FRAME_CACHE frame=1 bytes=227284992 mask_bytes=49858080 rebuilds=3132 hits=25479 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=1 composed_cells=65536
+FRAME mode=Torus no clouds frame=2 elapsed_ms=12.615221
+FRAME_SCOPE frame=2 scope=37 elapsed_ms=0.937214
+FRAME_SCOPE frame=2 scope=36 elapsed_ms=2.961482
+FRAME_SCOPE frame=2 scope=39 elapsed_ms=3.277310
+FRAME_SCOPE frame=2 scope=41 elapsed_ms=0.263298
+FRAME_CACHE frame=2 bytes=227284992 mask_bytes=49858080 rebuilds=3132 hits=25768 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=2 composed_cells=65536
+FRAME mode=Torus no clouds frame=3 elapsed_ms=13.597876
+FRAME_SCOPE frame=3 scope=37 elapsed_ms=0.823335
+FRAME_SCOPE frame=3 scope=36 elapsed_ms=6.444610
+FRAME_SCOPE frame=3 scope=39 elapsed_ms=3.624188
+FRAME_SCOPE frame=3 scope=41 elapsed_ms=0.245909
+FRAME_CACHE frame=3 bytes=227284992 mask_bytes=49858080 rebuilds=3132 hits=26057 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=3 composed_cells=65536
+FRAME mode=Torus no clouds frame=4 elapsed_ms=108.993448
+FRAME_SCOPE frame=4 scope=37 elapsed_ms=48.578841
+FRAME_SCOPE frame=4 scope=36 elapsed_ms=53.757959
+FRAME_SCOPE frame=4 scope=39 elapsed_ms=3.609898
+FRAME_SCOPE frame=4 scope=41 elapsed_ms=0.292248
+FRAME_CACHE frame=4 bytes=227284992 mask_bytes=49858080 rebuilds=3267 hits=26211 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=4 composed_cells=65536
+FRAME mode=Torus no clouds frame=5 elapsed_ms=9.604032
+FRAME_SCOPE frame=5 scope=37 elapsed_ms=0.778105
+FRAME_SCOPE frame=5 scope=36 elapsed_ms=2.820613
+FRAME_SCOPE frame=5 scope=39 elapsed_ms=2.929202
+FRAME_SCOPE frame=5 scope=41 elapsed_ms=0.258919
+FRAME_CACHE frame=5 bytes=227284992 mask_bytes=49858080 rebuilds=3267 hits=26500 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=5 composed_cells=65536
+FRAME mode=Torus no clouds frame=6 elapsed_ms=84.628989
+FRAME_SCOPE frame=6 scope=37 elapsed_ms=53.098684
+FRAME_SCOPE frame=6 scope=36 elapsed_ms=23.274207
+FRAME_SCOPE frame=6 scope=39 elapsed_ms=2.951032
+FRAME_SCOPE frame=6 scope=41 elapsed_ms=0.264949
+FRAME_CACHE frame=6 bytes=227284992 mask_bytes=49858080 rebuilds=3325 hits=26731 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=6 composed_cells=65536
+FRAME mode=Torus no clouds frame=7 elapsed_ms=12.803266
+FRAME_SCOPE frame=7 scope=37 elapsed_ms=0.931134
+FRAME_SCOPE frame=7 scope=36 elapsed_ms=2.964572
+FRAME_SCOPE frame=7 scope=39 elapsed_ms=3.616308
+FRAME_SCOPE frame=7 scope=41 elapsed_ms=0.275579
+FRAME_CACHE frame=7 bytes=227284992 mask_bytes=49858080 rebuilds=3325 hits=27020 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=7 composed_cells=65536
+FRAME mode=Torus no clouds frame=8 elapsed_ms=13.938165
+FRAME_SCOPE frame=8 scope=37 elapsed_ms=0.763765
+FRAME_SCOPE frame=8 scope=36 elapsed_ms=3.124370
+FRAME_SCOPE frame=8 scope=39 elapsed_ms=3.353040
+FRAME_SCOPE frame=8 scope=41 elapsed_ms=0.276819
+FRAME_CACHE frame=8 bytes=227284992 mask_bytes=49858080 rebuilds=3325 hits=27309 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=8 composed_cells=65536
+FRAME mode=Torus no clouds frame=9 elapsed_ms=11.968423
+FRAME_SCOPE frame=9 scope=37 elapsed_ms=0.806205
+FRAME_SCOPE frame=9 scope=36 elapsed_ms=2.792772
+FRAME_SCOPE frame=9 scope=39 elapsed_ms=2.928453
+FRAME_SCOPE frame=9 scope=41 elapsed_ms=0.238408
+FRAME_CACHE frame=9 bytes=227284992 mask_bytes=49858080 rebuilds=3325 hits=27598 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=9 composed_cells=65536
+FRAME mode=Torus no clouds frame=10 elapsed_ms=109.404699
+FRAME_SCOPE frame=10 scope=37 elapsed_ms=49.256458
+FRAME_SCOPE frame=10 scope=36 elapsed_ms=50.789317
+FRAME_SCOPE frame=10 scope=39 elapsed_ms=3.598108
+FRAME_SCOPE frame=10 scope=41 elapsed_ms=0.296688
+FRAME_CACHE frame=10 bytes=227284992 mask_bytes=49858080 rebuilds=3460 hits=27752 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=10 composed_cells=65536
+FRAME mode=Torus no clouds frame=11 elapsed_ms=12.905299
+FRAME_SCOPE frame=11 scope=37 elapsed_ms=0.772195
+FRAME_SCOPE frame=11 scope=36 elapsed_ms=2.819313
+FRAME_SCOPE frame=11 scope=39 elapsed_ms=2.923922
+FRAME_SCOPE frame=11 scope=41 elapsed_ms=0.254209
+FRAME_CACHE frame=11 bytes=227284992 mask_bytes=49858080 rebuilds=3460 hits=28041 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=11 composed_cells=65536
+FRAME mode=Torus no clouds frame=12 elapsed_ms=13.790702
+FRAME_SCOPE frame=12 scope=37 elapsed_ms=0.979384
+FRAME_SCOPE frame=12 scope=36 elapsed_ms=2.880343
+FRAME_SCOPE frame=12 scope=39 elapsed_ms=3.610997
+FRAME_SCOPE frame=12 scope=41 elapsed_ms=0.262799
+FRAME_CACHE frame=12 bytes=227284992 mask_bytes=49858080 rebuilds=3460 hits=28330 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=12 composed_cells=65536
+FRAME mode=Torus no clouds frame=13 elapsed_ms=13.252687
+FRAME_SCOPE frame=13 scope=37 elapsed_ms=0.860444
+FRAME_SCOPE frame=13 scope=36 elapsed_ms=3.123101
+FRAME_SCOPE frame=13 scope=39 elapsed_ms=3.627388
+FRAME_SCOPE frame=13 scope=41 elapsed_ms=0.286968
+FRAME_CACHE frame=13 bytes=227284992 mask_bytes=49858080 rebuilds=3460 hits=28619 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=13 composed_cells=65536
+FRAME mode=Torus no clouds frame=14 elapsed_ms=84.253589
+FRAME_SCOPE frame=14 scope=37 elapsed_ms=52.885545
+FRAME_SCOPE frame=14 scope=36 elapsed_ms=22.931589
+FRAME_SCOPE frame=14 scope=39 elapsed_ms=3.612348
+FRAME_SCOPE frame=14 scope=41 elapsed_ms=0.260969
+FRAME_CACHE frame=14 bytes=227284992 mask_bytes=49858080 rebuilds=3518 hits=28850 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=14 composed_cells=65536
+FRAME mode=Torus no clouds frame=15 elapsed_ms=10.859515
+FRAME_SCOPE frame=15 scope=37 elapsed_ms=0.778526
+FRAME_SCOPE frame=15 scope=36 elapsed_ms=2.920411
+FRAME_SCOPE frame=15 scope=39 elapsed_ms=2.918523
+FRAME_SCOPE frame=15 scope=41 elapsed_ms=0.294068
+FRAME_CACHE frame=15 bytes=227284992 mask_bytes=49858080 rebuilds=3518 hits=29139 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=15 composed_cells=65536
+FRAME mode=Torus no clouds frame=16 elapsed_ms=108.890796
+FRAME_SCOPE frame=16 scope=37 elapsed_ms=48.909790
+FRAME_SCOPE frame=16 scope=36 elapsed_ms=49.750414
+FRAME_SCOPE frame=16 scope=39 elapsed_ms=3.599048
+FRAME_SCOPE frame=16 scope=41 elapsed_ms=0.281369
+FRAME_CACHE frame=16 bytes=227284992 mask_bytes=49858080 rebuilds=3653 hits=29293 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=16 composed_cells=65536
+FRAME mode=Torus no clouds frame=17 elapsed_ms=11.172913
+FRAME_SCOPE frame=17 scope=37 elapsed_ms=0.825455
+FRAME_SCOPE frame=17 scope=36 elapsed_ms=2.871683
+FRAME_SCOPE frame=17 scope=39 elapsed_ms=2.924162
+FRAME_SCOPE frame=17 scope=41 elapsed_ms=0.261399
+FRAME_CACHE frame=17 bytes=227284992 mask_bytes=49858080 rebuilds=3653 hits=29582 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=17 composed_cells=65536
+FRAME mode=Torus no clouds frame=18 elapsed_ms=12.714433
+FRAME_SCOPE frame=18 scope=37 elapsed_ms=0.784605
+FRAME_SCOPE frame=18 scope=36 elapsed_ms=3.128221
+FRAME_SCOPE frame=18 scope=39 elapsed_ms=2.917612
+FRAME_SCOPE frame=18 scope=41 elapsed_ms=0.279598
+FRAME_CACHE frame=18 bytes=227284992 mask_bytes=49858080 rebuilds=3653 hits=29871 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=18 composed_cells=65536
+FRAME mode=Torus no clouds frame=19 elapsed_ms=13.081593
+FRAME_SCOPE frame=19 scope=37 elapsed_ms=0.929125
+FRAME_SCOPE frame=19 scope=36 elapsed_ms=2.831673
+FRAME_SCOPE frame=19 scope=39 elapsed_ms=2.918492
+FRAME_SCOPE frame=19 scope=41 elapsed_ms=0.265258
+FRAME_CACHE frame=19 bytes=227284992 mask_bytes=49858080 rebuilds=3653 hits=30160 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=19 composed_cells=65536
+FRAME mode=Torus no clouds frame=20 elapsed_ms=14.693816
+FRAME_SCOPE frame=20 scope=37 elapsed_ms=0.764255
+FRAME_SCOPE frame=20 scope=36 elapsed_ms=3.158921
+FRAME_SCOPE frame=20 scope=39 elapsed_ms=3.601748
+FRAME_SCOPE frame=20 scope=41 elapsed_ms=0.269688
+FRAME_CACHE frame=20 bytes=227284992 mask_bytes=49858080 rebuilds=3653 hits=30449 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=20 composed_cells=65536
+FRAME mode=Torus no clouds frame=21 elapsed_ms=16.332999
+FRAME_SCOPE frame=21 scope=37 elapsed_ms=0.809345
+FRAME_SCOPE frame=21 scope=36 elapsed_ms=3.114981
+FRAME_SCOPE frame=21 scope=39 elapsed_ms=2.953442
+FRAME_SCOPE frame=21 scope=41 elapsed_ms=0.278838
+FRAME_CACHE frame=21 bytes=227284992 mask_bytes=49858080 rebuilds=3653 hits=30738 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=21 composed_cells=65536
+FRAME mode=Torus no clouds frame=22 elapsed_ms=181.866150
+FRAME_SCOPE frame=22 scope=37 elapsed_ms=103.007477
+FRAME_SCOPE frame=22 scope=36 elapsed_ms=69.937639
+FRAME_SCOPE frame=22 scope=39 elapsed_ms=2.883793
+FRAME_SCOPE frame=22 scope=41 elapsed_ms=0.260258
+FRAME_CACHE frame=22 bytes=227284992 mask_bytes=49858080 rebuilds=3838 hits=30842 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=22 composed_cells=65536
+FRAME mode=Torus no clouds frame=23 elapsed_ms=14.053579
+FRAME_SCOPE frame=23 scope=37 elapsed_ms=0.995073
+FRAME_SCOPE frame=23 scope=36 elapsed_ms=3.142181
+FRAME_SCOPE frame=23 scope=39 elapsed_ms=3.615438
+FRAME_SCOPE frame=23 scope=41 elapsed_ms=0.228338
+FRAME_CACHE frame=23 bytes=227284992 mask_bytes=49858080 rebuilds=3838 hits=31131 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=23 composed_cells=65536
+FRAME mode=Torus no clouds frame=24 elapsed_ms=12.413806
+FRAME_SCOPE frame=24 scope=37 elapsed_ms=0.795615
+FRAME_SCOPE frame=24 scope=36 elapsed_ms=3.018661
+FRAME_SCOPE frame=24 scope=39 elapsed_ms=2.945302
+FRAME_SCOPE frame=24 scope=41 elapsed_ms=0.245839
+FRAME_CACHE frame=24 bytes=227284992 mask_bytes=49858080 rebuilds=3838 hits=31420 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=24 composed_cells=65536
+FRAME mode=Torus no clouds frame=25 elapsed_ms=12.341004
+FRAME_SCOPE frame=25 scope=37 elapsed_ms=0.887515
+FRAME_SCOPE frame=25 scope=36 elapsed_ms=2.820913
+FRAME_SCOPE frame=25 scope=39 elapsed_ms=2.888782
+FRAME_SCOPE frame=25 scope=41 elapsed_ms=0.264248
+FRAME_CACHE frame=25 bytes=227284992 mask_bytes=49858080 rebuilds=3838 hits=31709 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=25 composed_cells=65536
+FRAME mode=Torus no clouds frame=26 elapsed_ms=16.395500
+FRAME_SCOPE frame=26 scope=37 elapsed_ms=0.931834
+FRAME_SCOPE frame=26 scope=36 elapsed_ms=3.138081
+FRAME_SCOPE frame=26 scope=39 elapsed_ms=3.611308
+FRAME_SCOPE frame=26 scope=41 elapsed_ms=0.276338
+FRAME_CACHE frame=26 bytes=227284992 mask_bytes=49858080 rebuilds=3838 hits=31998 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=26 composed_cells=65536
+FRAME mode=Torus no clouds frame=27 elapsed_ms=13.148265
+FRAME_SCOPE frame=27 scope=37 elapsed_ms=0.773055
+FRAME_SCOPE frame=27 scope=36 elapsed_ms=3.135010
+FRAME_SCOPE frame=27 scope=39 elapsed_ms=3.409780
+FRAME_SCOPE frame=27 scope=41 elapsed_ms=0.284978
+FRAME_CACHE frame=27 bytes=227284992 mask_bytes=49858080 rebuilds=3838 hits=32287 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=27 composed_cells=65536
+FRAME mode=Torus no clouds frame=28 elapsed_ms=109.755489
+FRAME_SCOPE frame=28 scope=37 elapsed_ms=48.887019
+FRAME_SCOPE frame=28 scope=36 elapsed_ms=52.833066
+FRAME_SCOPE frame=28 scope=39 elapsed_ms=2.925311
+FRAME_SCOPE frame=28 scope=41 elapsed_ms=0.261218
+FRAME_CACHE frame=28 bytes=227284992 mask_bytes=49858080 rebuilds=3973 hits=32441 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=28 composed_cells=65536
+FRAME mode=Torus no clouds frame=29 elapsed_ms=13.441773
+FRAME_SCOPE frame=29 scope=37 elapsed_ms=0.941645
+FRAME_SCOPE frame=29 scope=36 elapsed_ms=3.176690
+FRAME_SCOPE frame=29 scope=39 elapsed_ms=3.624438
+FRAME_SCOPE frame=29 scope=41 elapsed_ms=0.278488
+FRAME_CACHE frame=29 bytes=227284992 mask_bytes=49858080 rebuilds=3973 hits=32730 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=29 composed_cells=65536
+FRAME mode=Torus no clouds frame=30 elapsed_ms=85.841341
+FRAME_SCOPE frame=30 scope=37 elapsed_ms=53.285832
+FRAME_SCOPE frame=30 scope=36 elapsed_ms=23.953122
+FRAME_SCOPE frame=30 scope=39 elapsed_ms=3.134371
+FRAME_SCOPE frame=30 scope=41 elapsed_ms=0.250638
+FRAME_CACHE frame=30 bytes=227284992 mask_bytes=49858080 rebuilds=4031 hits=32961 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=30 composed_cells=65536
+FRAME mode=Torus no clouds frame=31 elapsed_ms=11.523652
+FRAME_SCOPE frame=31 scope=37 elapsed_ms=0.936214
+FRAME_SCOPE frame=31 scope=36 elapsed_ms=2.872722
+FRAME_SCOPE frame=31 scope=39 elapsed_ms=2.970121
+FRAME_SCOPE frame=31 scope=41 elapsed_ms=0.280559
+FRAME_CACHE frame=31 bytes=227284992 mask_bytes=49858080 rebuilds=4031 hits=33250 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=31 composed_cells=65536
+FRAME mode=Torus no clouds frame=32 elapsed_ms=13.994207
+FRAME_SCOPE frame=32 scope=37 elapsed_ms=0.768235
+FRAME_SCOPE frame=32 scope=36 elapsed_ms=3.889617
+FRAME_SCOPE frame=32 scope=39 elapsed_ms=2.902482
+FRAME_SCOPE frame=32 scope=41 elapsed_ms=0.256979
+FRAME_CACHE frame=32 bytes=227284992 mask_bytes=49858080 rebuilds=4031 hits=33539 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=32 composed_cells=65536
+FRAME mode=Torus no clouds frame=33 elapsed_ms=13.725350
+FRAME_SCOPE frame=33 scope=37 elapsed_ms=0.770635
+FRAME_SCOPE frame=33 scope=36 elapsed_ms=2.786393
+FRAME_SCOPE frame=33 scope=39 elapsed_ms=2.934932
+FRAME_SCOPE frame=33 scope=41 elapsed_ms=0.243249
+FRAME_CACHE frame=33 bytes=227284992 mask_bytes=49858080 rebuilds=4031 hits=33828 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=33 composed_cells=65536
+FRAME mode=Torus no clouds frame=34 elapsed_ms=107.792997
+FRAME_SCOPE frame=34 scope=37 elapsed_ms=48.889949
+FRAME_SCOPE frame=34 scope=36 elapsed_ms=49.886345
+FRAME_SCOPE frame=34 scope=39 elapsed_ms=3.621468
+FRAME_SCOPE frame=34 scope=41 elapsed_ms=0.270768
+FRAME_CACHE frame=34 bytes=227284992 mask_bytes=49858080 rebuilds=4166 hits=33982 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=34 composed_cells=65536
+FRAME mode=Torus no clouds frame=35 elapsed_ms=11.793639
+FRAME_SCOPE frame=35 scope=37 elapsed_ms=0.780485
+FRAME_SCOPE frame=35 scope=36 elapsed_ms=2.886333
+FRAME_SCOPE frame=35 scope=39 elapsed_ms=2.929172
+FRAME_SCOPE frame=35 scope=41 elapsed_ms=0.301148
+FRAME_CACHE frame=35 bytes=227284992 mask_bytes=49858080 rebuilds=4166 hits=34271 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=35 composed_cells=65536
+FRAME mode=Torus no clouds frame=36 elapsed_ms=13.452433
+FRAME_SCOPE frame=36 scope=37 elapsed_ms=0.929885
+FRAME_SCOPE frame=36 scope=36 elapsed_ms=2.839462
+FRAME_SCOPE frame=36 scope=39 elapsed_ms=3.241420
+FRAME_SCOPE frame=36 scope=41 elapsed_ms=0.231498
+FRAME_CACHE frame=36 bytes=227284992 mask_bytes=49858080 rebuilds=4166 hits=34560 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=36 composed_cells=65536
+FRAME mode=Torus no clouds frame=37 elapsed_ms=12.148828
+FRAME_SCOPE frame=37 scope=37 elapsed_ms=0.862805
+FRAME_SCOPE frame=37 scope=36 elapsed_ms=2.844873
+FRAME_SCOPE frame=37 scope=39 elapsed_ms=2.907352
+FRAME_SCOPE frame=37 scope=41 elapsed_ms=0.263389
+FRAME_CACHE frame=37 bytes=227284992 mask_bytes=49858080 rebuilds=4166 hits=34849 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=37 composed_cells=65536
+FRAME mode=Torus no clouds frame=38 elapsed_ms=84.476766
+FRAME_SCOPE frame=38 scope=37 elapsed_ms=53.732069
+FRAME_SCOPE frame=38 scope=36 elapsed_ms=22.622451
+FRAME_SCOPE frame=38 scope=39 elapsed_ms=2.932132
+FRAME_SCOPE frame=38 scope=41 elapsed_ms=0.264678
+FRAME_CACHE frame=38 bytes=227284992 mask_bytes=49858080 rebuilds=4224 hits=35080 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=38 composed_cells=65536
+FRAME mode=Torus no clouds frame=39 elapsed_ms=12.788945
+FRAME_SCOPE frame=39 scope=37 elapsed_ms=0.985754
+FRAME_SCOPE frame=39 scope=36 elapsed_ms=2.866112
+FRAME_SCOPE frame=39 scope=39 elapsed_ms=3.372930
+FRAME_SCOPE frame=39 scope=41 elapsed_ms=0.235959
+FRAME_CACHE frame=39 bytes=227284992 mask_bytes=49858080 rebuilds=4224 hits=35369 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=39 composed_cells=65536
+FRAME mode=Torus no clouds frame=40 elapsed_ms=113.428054
+FRAME_SCOPE frame=40 scope=37 elapsed_ms=52.452788
+FRAME_SCOPE frame=40 scope=36 elapsed_ms=51.575293
+FRAME_SCOPE frame=40 scope=39 elapsed_ms=3.610618
+FRAME_SCOPE frame=40 scope=41 elapsed_ms=0.293148
+FRAME_CACHE frame=40 bytes=227284992 mask_bytes=49858080 rebuilds=4359 hits=35523 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=40 composed_cells=65536
+FRAME mode=Torus no clouds frame=41 elapsed_ms=13.166295
+FRAME_SCOPE frame=41 scope=37 elapsed_ms=0.934455
+FRAME_SCOPE frame=41 scope=36 elapsed_ms=3.185721
+FRAME_SCOPE frame=41 scope=39 elapsed_ms=3.605527
+FRAME_SCOPE frame=41 scope=41 elapsed_ms=0.295749
+FRAME_CACHE frame=41 bytes=227284992 mask_bytes=49858080 rebuilds=4359 hits=35812 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=41 composed_cells=65536
+FRAME mode=Torus no clouds frame=42 elapsed_ms=12.927469
+FRAME_SCOPE frame=42 scope=37 elapsed_ms=0.934124
+FRAME_SCOPE frame=42 scope=36 elapsed_ms=3.133641
+FRAME_SCOPE frame=42 scope=39 elapsed_ms=3.602918
+FRAME_SCOPE frame=42 scope=41 elapsed_ms=0.300588
+FRAME_CACHE frame=42 bytes=227284992 mask_bytes=49858080 rebuilds=4359 hits=36101 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=42 composed_cells=65536
+FRAME mode=Torus no clouds frame=43 elapsed_ms=12.347674
+FRAME_SCOPE frame=43 scope=37 elapsed_ms=0.993514
+FRAME_SCOPE frame=43 scope=36 elapsed_ms=3.210451
+FRAME_SCOPE frame=43 scope=39 elapsed_ms=3.630217
+FRAME_SCOPE frame=43 scope=41 elapsed_ms=0.289569
+FRAME_CACHE frame=43 bytes=227284992 mask_bytes=49858080 rebuilds=4359 hits=36390 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=43 composed_cells=65536
+FRAME mode=Torus no clouds frame=44 elapsed_ms=13.090153
+FRAME_SCOPE frame=44 scope=37 elapsed_ms=0.955164
+FRAME_SCOPE frame=44 scope=36 elapsed_ms=3.240201
+FRAME_SCOPE frame=44 scope=39 elapsed_ms=3.625137
+FRAME_SCOPE frame=44 scope=41 elapsed_ms=0.277539
+FRAME_CACHE frame=44 bytes=227284992 mask_bytes=49858080 rebuilds=4359 hits=36679 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=44 composed_cells=65536
+FRAME mode=Torus no clouds frame=45 elapsed_ms=14.326696
+FRAME_SCOPE frame=45 scope=37 elapsed_ms=0.929634
+FRAME_SCOPE frame=45 scope=36 elapsed_ms=3.237120
+FRAME_SCOPE frame=45 scope=39 elapsed_ms=3.607948
+FRAME_SCOPE frame=45 scope=41 elapsed_ms=0.289628
+FRAME_CACHE frame=45 bytes=227284992 mask_bytes=49858080 rebuilds=4359 hits=36968 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=45 composed_cells=65536
+FRAME mode=Torus no clouds frame=46 elapsed_ms=190.113945
+FRAME_SCOPE frame=46 scope=37 elapsed_ms=110.298422
+FRAME_SCOPE frame=46 scope=36 elapsed_ms=73.264459
+FRAME_SCOPE frame=46 scope=39 elapsed_ms=3.615968
+FRAME_SCOPE frame=46 scope=41 elapsed_ms=0.283868
+FRAME_CACHE frame=46 bytes=227284992 mask_bytes=49858080 rebuilds=4544 hits=37072 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=46 composed_cells=65536
+FRAME mode=Torus no clouds frame=47 elapsed_ms=10.861725
+FRAME_SCOPE frame=47 scope=37 elapsed_ms=0.946734
+FRAME_SCOPE frame=47 scope=36 elapsed_ms=3.176251
+FRAME_SCOPE frame=47 scope=39 elapsed_ms=3.631167
+FRAME_SCOPE frame=47 scope=41 elapsed_ms=0.273558
+FRAME_CACHE frame=47 bytes=227284992 mask_bytes=49858080 rebuilds=4544 hits=37361 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=47 composed_cells=65536
+FRAME mode=Torus no clouds frame=48 elapsed_ms=10.926637
+FRAME_SCOPE frame=48 scope=37 elapsed_ms=0.762655
+FRAME_SCOPE frame=48 scope=36 elapsed_ms=3.157841
+FRAME_SCOPE frame=48 scope=39 elapsed_ms=3.476459
+FRAME_SCOPE frame=48 scope=41 elapsed_ms=0.305139
+FRAME_CACHE frame=48 bytes=227284992 mask_bytes=49858080 rebuilds=4544 hits=37650 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=48 composed_cells=65536
+FRAME mode=Torus no clouds frame=49 elapsed_ms=9.837098
+FRAME_SCOPE frame=49 scope=37 elapsed_ms=0.773306
+FRAME_SCOPE frame=49 scope=36 elapsed_ms=2.909292
+FRAME_SCOPE frame=49 scope=39 elapsed_ms=2.901032
+FRAME_SCOPE frame=49 scope=41 elapsed_ms=0.275648
+FRAME_CACHE frame=49 bytes=227284992 mask_bytes=49858080 rebuilds=4544 hits=37939 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=49 composed_cells=65536
+FRAME mode=Torus no clouds frame=50 elapsed_ms=13.635088
+FRAME_SCOPE frame=50 scope=37 elapsed_ms=0.928944
+FRAME_SCOPE frame=50 scope=36 elapsed_ms=3.145701
+FRAME_SCOPE frame=50 scope=39 elapsed_ms=3.617077
+FRAME_SCOPE frame=50 scope=41 elapsed_ms=0.279288
+FRAME_CACHE frame=50 bytes=227284992 mask_bytes=49858080 rebuilds=4544 hits=38228 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=50 composed_cells=65536
+FRAME mode=Torus no clouds frame=51 elapsed_ms=10.598888
+FRAME_SCOPE frame=51 scope=37 elapsed_ms=0.934514
+FRAME_SCOPE frame=51 scope=36 elapsed_ms=3.291370
+FRAME_SCOPE frame=51 scope=39 elapsed_ms=3.617718
+FRAME_SCOPE frame=51 scope=41 elapsed_ms=0.279698
+FRAME_CACHE frame=51 bytes=227284992 mask_bytes=49858080 rebuilds=4544 hits=38517 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=51 composed_cells=65536
+FRAME mode=Torus no clouds frame=52 elapsed_ms=114.910774
+FRAME_SCOPE frame=52 scope=37 elapsed_ms=52.680336
+FRAME_SCOPE frame=52 scope=36 elapsed_ms=55.325761
+FRAME_SCOPE frame=52 scope=39 elapsed_ms=3.605197
+FRAME_SCOPE frame=52 scope=41 elapsed_ms=0.309448
+FRAME_CACHE frame=52 bytes=227284992 mask_bytes=49858080 rebuilds=4679 hits=38671 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=52 composed_cells=65536
+FRAME mode=Torus no clouds frame=53 elapsed_ms=10.946147
+FRAME_SCOPE frame=53 scope=37 elapsed_ms=0.935164
+FRAME_SCOPE frame=53 scope=36 elapsed_ms=3.116901
+FRAME_SCOPE frame=53 scope=39 elapsed_ms=3.603048
+FRAME_SCOPE frame=53 scope=41 elapsed_ms=0.293568
+FRAME_CACHE frame=53 bytes=227284992 mask_bytes=49858080 rebuilds=4679 hits=38960 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=53 composed_cells=65536
+FRAME mode=Torus no clouds frame=54 elapsed_ms=88.634094
+FRAME_SCOPE frame=54 scope=37 elapsed_ms=56.472182
+FRAME_SCOPE frame=54 scope=36 elapsed_ms=24.205771
+FRAME_SCOPE frame=54 scope=39 elapsed_ms=3.597398
+FRAME_SCOPE frame=54 scope=41 elapsed_ms=0.275408
+FRAME_CACHE frame=54 bytes=227284992 mask_bytes=49858080 rebuilds=4737 hits=39191 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=54 composed_cells=65536
+FRAME mode=Torus no clouds frame=55 elapsed_ms=10.390452
+FRAME_SCOPE frame=55 scope=37 elapsed_ms=0.938564
+FRAME_SCOPE frame=55 scope=36 elapsed_ms=3.176861
+FRAME_SCOPE frame=55 scope=39 elapsed_ms=3.599928
+FRAME_SCOPE frame=55 scope=41 elapsed_ms=0.271989
+FRAME_CACHE frame=55 bytes=227284992 mask_bytes=49858080 rebuilds=4737 hits=39480 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=55 composed_cells=65536
+FRAME mode=Torus no clouds frame=56 elapsed_ms=11.819920
+FRAME_SCOPE frame=56 scope=37 elapsed_ms=0.933674
+FRAME_SCOPE frame=56 scope=36 elapsed_ms=3.219360
+FRAME_SCOPE frame=56 scope=39 elapsed_ms=3.602588
+FRAME_SCOPE frame=56 scope=41 elapsed_ms=0.287328
+FRAME_CACHE frame=56 bytes=227284992 mask_bytes=49858080 rebuilds=4737 hits=39769 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=56 composed_cells=65536
+FRAME mode=Torus no clouds frame=57 elapsed_ms=11.697617
+FRAME_SCOPE frame=57 scope=37 elapsed_ms=0.939665
+FRAME_SCOPE frame=57 scope=36 elapsed_ms=3.159851
+FRAME_SCOPE frame=57 scope=39 elapsed_ms=3.611377
+FRAME_SCOPE frame=57 scope=41 elapsed_ms=0.266778
+FRAME_CACHE frame=57 bytes=227284992 mask_bytes=49858080 rebuilds=4737 hits=40058 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=57 composed_cells=65536
+FRAME mode=Torus no clouds frame=58 elapsed_ms=109.323377
+FRAME_SCOPE frame=58 scope=37 elapsed_ms=51.856461
+FRAME_SCOPE frame=58 scope=36 elapsed_ms=51.313015
+FRAME_SCOPE frame=58 scope=39 elapsed_ms=3.134221
+FRAME_SCOPE frame=58 scope=41 elapsed_ms=0.267399
+FRAME_CACHE frame=58 bytes=227284992 mask_bytes=49858080 rebuilds=4872 hits=40212 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=58 composed_cells=65536
+FRAME mode=Torus no clouds frame=59 elapsed_ms=9.165971
+FRAME_SCOPE frame=59 scope=37 elapsed_ms=0.789765
+FRAME_SCOPE frame=59 scope=36 elapsed_ms=2.966082
+FRAME_SCOPE frame=59 scope=39 elapsed_ms=2.913792
+FRAME_SCOPE frame=59 scope=41 elapsed_ms=0.251169
+FRAME_CACHE frame=59 bytes=227284992 mask_bytes=49858080 rebuilds=4872 hits=40501 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=59 composed_cells=65536
+FRAME mode=Torus no clouds frame=60 elapsed_ms=11.854371
+FRAME_SCOPE frame=60 scope=37 elapsed_ms=0.875495
+FRAME_SCOPE frame=60 scope=36 elapsed_ms=3.137309
+FRAME_SCOPE frame=60 scope=39 elapsed_ms=3.608659
+FRAME_SCOPE frame=60 scope=41 elapsed_ms=0.270638
+FRAME_CACHE frame=60 bytes=227284992 mask_bytes=49858080 rebuilds=4872 hits=40790 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=60 composed_cells=65536
+FRAME mode=Torus no clouds frame=61 elapsed_ms=11.116932
+FRAME_SCOPE frame=61 scope=37 elapsed_ms=1.017304
+FRAME_SCOPE frame=61 scope=36 elapsed_ms=3.158571
+FRAME_SCOPE frame=61 scope=39 elapsed_ms=3.613697
+FRAME_SCOPE frame=61 scope=41 elapsed_ms=0.288448
+FRAME_CACHE frame=61 bytes=227284992 mask_bytes=49858080 rebuilds=4872 hits=41079 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=61 composed_cells=65536
+FRAME mode=Torus no clouds frame=62 elapsed_ms=87.905666
+FRAME_SCOPE frame=62 scope=37 elapsed_ms=56.898781
+FRAME_SCOPE frame=62 scope=36 elapsed_ms=25.017915
+FRAME_SCOPE frame=62 scope=39 elapsed_ms=2.964992
+FRAME_SCOPE frame=62 scope=41 elapsed_ms=0.242379
+FRAME_CACHE frame=62 bytes=227284992 mask_bytes=49858080 rebuilds=4930 hits=41310 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=62 composed_cells=65536
+FRAME mode=Torus no clouds frame=63 elapsed_ms=10.799293
+FRAME_SCOPE frame=63 scope=37 elapsed_ms=0.937615
+FRAME_SCOPE frame=63 scope=36 elapsed_ms=3.067040
+FRAME_SCOPE frame=63 scope=39 elapsed_ms=3.659788
+FRAME_SCOPE frame=63 scope=41 elapsed_ms=0.254128
+FRAME_CACHE frame=63 bytes=227284992 mask_bytes=49858080 rebuilds=4930 hits=41599 reductions=0 resolution=1 downsample=2
+FRAME_OVERVIEW frame=63 composed_cells=65536
+Torus no clouds median=13.148 ms p95=113.428 ms
+Torus no clouds p99=190.114 ms max=190.114 ms
+Torus no clouds process_cpu_median=13.537 ms process_cpu_p95=116.841 ms
+capture=4096x4096 tiles=1 pixels/cell=16 texture_bytes=68161536 cloud=0x0
+simulation_checksum=764d540f
+capture=4096x4096 tiles=1 pixels/cell=16 texture_bytes=68161536 cloud=128x128
+simulation_checksum=764d540f

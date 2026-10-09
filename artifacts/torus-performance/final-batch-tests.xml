@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="18" failures="0" errors="0" skipped="0"><testsuite name="OpaqueRectangleBatch"><testcase classname="OpaqueRectangleBatch" name="retains OpenGL pixels [display]" time="0.491538" status="run" />
+  <testcase classname="OpaqueRectangleBatch" name="retains portable renderer pixels [display]" time="0.40546" status="run" />
+  <testcase classname="OpaqueRectangleBatch" name="native software fog runs meet shade tiles at fractional zoom" time="0.327225" status="run" />
+    <testcase classname="OpaqueRectangleBatch" name="recovers from submission errors" time="0.004586" status="run" />
+  </testsuite><testsuite name="libgag/src/UnitDrawBatchTest.cpp"><testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="cold frame batches defer and bound texture preparation without changing pixels [display]" time="0.609652" status="run" />
+  <testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="unit batch outline bounds preserve all clip edges [display]" time="0.516155" status="run" />
+  <testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="unit batches preserve overlays, clipping and texture lifetime [display]" time="7.68818" status="run" />
+  </testsuite><testsuite name="libgag/src/SpriteDrawBatchTest.cpp"><testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="resource sprite batch recovers from submission errors" time="0.018128" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered HD resource sprite batch retains pixels [display]" time="1.93122" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered native resource sprite batch retains pixels [display]" time="1.01168" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered portable resource sprite batch retains pixels [display]" time="1.12436" status="run" />
+  </testsuite><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.019352" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches complete with lanes and isolated errors" time="0.098411" status="run" />
+    <testcase classname="ComputeExecutor" name="workers run deferred batches earliest due first and the owner only waits" time="0.000438" status="run" />
+  </testsuite><testsuite name="FertilityField"><testcase classname="FertilityField" name="ecology rebuilt inside a terrain batch survives its commit" time="0.00286" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="0.011346" status="run" />
+  </testsuite><testsuite name="HiveMind"><testcase classname="HiveMind" name="Hive Mind bounds work output batches and wake storms" time="0.009635" status="run" />
+  </testsuite><testsuite name="SkinAtlasCache"><testcase classname="SkinAtlasCache" name="visible hits survive a full atlas eviction batch" time="0.000675" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="56" failures="0" errors="0" skipped="0"><testsuite name="TerrainMaterials"><testcase classname="TerrainMaterials" name="an additional material and a 64-material catalog compose without renderer branches [display]" time="0.845516" status="run" />
+  <testcase classname="TerrainMaterials" name="animation invalidates only pages using that material [display]" time="0.770904" status="run" />
+  <testcase classname="TerrainMaterials" name="catalog rejects corrupt references and grows independently of gameplay IDs" time="0.136627" status="run" />
+  <testcase classname="TerrainMaterials" name="catalogue boundary profiles keep their reviewed geometry" time="0.463463" status="run" />
+  <testcase classname="TerrainMaterials" name="compiled pages validate metadata and stale catalogs use source fallback [artifacts]" time="0.064178" status="run" />
+  <testcase classname="TerrainMaterials" name="compositor preserves native artwork overridden before startup [display] [artifacts]" time="0.806476" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual borders preserve seams and normalization across both wrapped axes" time="0.048862" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual cells retain every corner region at native and HD sample positions" time="0.096539" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual contours use their halo and leave ambiguous and sharp borders unchanged" time="0.042629" status="run" />
+  <testcase classname="TerrainMaterials" name="contextual interiors remain within twelve pixels of the marching contour" time="0.045109" status="run" />
+  <testcase classname="TerrainMaterials" name="coverage partitions every binary shape and multi-material junction" time="0.154205" status="run" />
+  <testcase classname="TerrainMaterials" name="diagonal contacts stay distinct and both torus axes share coverage" time="0.042318" status="run" />
+  <testcase classname="TerrainMaterials" name="grid variants repeat one positional block independent of the map seed" time="0.048599" status="run" />
+  <testcase classname="TerrainMaterials" name="halo edits invalidate adjacent terrain pages including wrap and undo [display]" time="0.832079" status="run" />
+  <testcase classname="TerrainMaterials" name="map seed reseeds variants and boundaries without breaking partitions or edges" time="0.045787" status="run" />
+  <testcase classname="TerrainMaterials" name="mixed cells compose exactly as a direct per-pixel coverage blend [display]" time="0.805084" status="run" />
+  <testcase classname="TerrainMaterials" name="natural border visual fixture and cold composition timings [display] [artifacts]" time="6.89615" status="run" />
+  <testcase classname="TerrainMaterials" name="organic contours agree across ordinary tile edges and both torus axes" time="0.04546" status="run" />
+  <testcase classname="TerrainMaterials" name="prepared coverage preserves native and HD contour geometry" time="0.733787" status="run" />
+  <testcase classname="TerrainMaterials" name="seam treatment tones only the lower material beside a higher edge [display]" time="0.737635" status="run" />
+  <testcase classname="TerrainMaterials" name="shared edges and wrapped samples have identical coverage" time="0.043835" status="run" />
+  <testcase classname="TerrainMaterials" name="single vertices own their corner and animation does not reseed variants" time="0.051951" status="run" />
+  <testcase classname="TerrainMaterials" name="steep detailed contours retain one crossing on shared patch edges" time="0.042893" status="run" />
+  <testcase classname="TerrainMaterials" name="straight boundaries bend over multiple cells without moving their solid cores" time="0.046751" status="run" />
+  <testcase classname="TerrainMaterials" name="straight contextual borders have seeded scallops without folding" time="0.093876" status="run" />
+  <testcase classname="TerrainMaterials" name="the Python validator's built-in name list mirrors the terrain table" time="0.000121" status="run" />
+  <testcase classname="TerrainMaterials" name="unequal variant weights affect deterministic texture selection" time="0.053936" status="run" />
+  <testcase classname="TerrainMaterials" name="weighted choices are stable and all existing variants are reachable" time="0.057569" status="run" />
+  </testsuite><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="GPU terrain retains CPU pages when the visible textures exceed its budget [display]" time="1.59946" status="run" />
+  <testcase classname="TerrainPresentation" name="GPU terrain zoom round trips reuse pixels and refresh parked pages [display]" time="2.75818" status="run" />
+  <testcase classname="TerrainPresentation" name="HD material pages and fractional zoom preserve cached pixels with missing optional atlas [display][artifacts]" time="10.8802" status="run" />
+  <testcase classname="TerrainPresentation" name="catalog palettes preserve distinct legacy shores and independent preview colors" time="0.042049" status="run" />
+  <testcase classname="TerrainPresentation" name="complete torus terrain working set survives repeated atlas sweeps [display]" time="1.09526" status="run" />
+  <testcase classname="TerrainPresentation" name="custom aliases share material recipes and keep whole-cell identity [display]" time="0.911694" status="run" />
+  <testcase classname="TerrainPresentation" name="custom thumbnail palettes retain embedded colors alongside catalog builtins" time="0.061442" status="run" />
+  <testcase classname="TerrainPresentation" name="emergency tiles remain deterministic and cover opaque fractional terrain [display]" time="3.31579" status="run" />
+  <testcase classname="TerrainPresentation" name="every paintable built-in binds a material, has an editor icon and exports its own colour [display][artifacts]" time="0.827474" status="run" />
+  <testcase classname="TerrainPresentation" name="export uses registered whole-cell material colors [artifacts]" time="0.054757" status="run" />
+  <testcase classname="TerrainPresentation" name="generated terrain mip uploads stay uncompressed across animation updates [display]" time="0.886787" status="run" />
+  <testcase classname="TerrainPresentation" name="image import reads each pixel as a terrain vertex [artifacts]" time="0.060826" status="run" />
+  <testcase classname="TerrainPresentation" name="offscreen terrain density follows the target and stays stable across capture tiles [display]" time="1.04813" status="run" />
+  <testcase classname="TerrainPresentation" name="overview pages retain wrapped samples and invalidate edits, resources and visibility [display]" time="0.847249" status="run" />
+  <testcase classname="TerrainPresentation" name="overview palette follows detailed shore coverage across both wrapped axes [display] [artifacts]" time="1.32421" status="run" />
+  <testcase classname="TerrainPresentation" name="portable texture limits reduce HD pages and admit only fitting fallback tiles [display]" time="1.0442" status="run" />
+  <testcase classname="TerrainPresentation" name="streaming pages match cached fractional pixels across wraps and small maps [display]" time="7.29594" status="run" />
+  <testcase classname="TerrainPresentation" name="terrain seed survives save and load and stays out of the simulation checksum" time="0.158709" status="run" />
+  <testcase classname="TerrainPresentation" name="tiled capture keeps whole-map density and warm pages at narrow edges [display]" time="1.01471" status="run" />
+  <testcase classname="TerrainPresentation" name="undiscovered pages skip software submissions and refresh after discovery [display]" time="0.91213" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve OpenGL terrain caching [display]" time="3.07657" status="run" />
+  <testcase classname="TerrainPresentation" name="whole-cell layers preserve software terrain caching [display][artifacts]" time="2.97652" status="run" />
+  <testcase classname="TerrainPresentation" name="zoomed-out GPU terrain retains pages across frames and wrapped views [display] [artifacts]" time="4.68265" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="HD tiled capture interiors and gutters match whole-map pixels [display]" time="4.23201" status="run" />
+  <testcase classname="TorusRender" name="game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]" time="32.7289" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in OpenGL [display][writes-preferences]" time="33.1413" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.58356" status="run" />
+  <testcase classname="TorusRender" name="native tiled capture pixels and allocation fallback [display]" time="3.44148" status="run" />
+  </testsuite></testsuites>

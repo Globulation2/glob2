@@ -1,0 +1,93 @@
+Settings::load("preferences.txt") : error, can't open file.
+GPU=NVIDIA GeForce RTX 2070 SUPER/PCIe/SSE2 map=maps/lava-performance.map 256x256 viewport=1120x743 frames=12
+FRAME mode=Torus no clouds frame=-2 elapsed_ms=1488.780254
+FRAME_SCOPE frame=-2 scope=37 elapsed_ms=987.240660
+FRAME_SCOPE frame=-2 scope=36 elapsed_ms=414.212542
+FRAME_SCOPE frame=-2 scope=39 elapsed_ms=16.544984
+FRAME_SCOPE frame=-2 scope=41 elapsed_ms=1.461038
+FRAME_CACHE frame=-2 bytes=267336008 rebuilds=436 hits=488 reductions=0 resolution=1 downsample=1
+WARMUP frame=0 elapsed_ms=1488.780 process_cpu_ms=1524.999
+FRAME mode=Torus no clouds frame=-1 elapsed_ms=1452.717008
+FRAME_SCOPE frame=-1 scope=37 elapsed_ms=1018.769776
+FRAME_SCOPE frame=-1 scope=36 elapsed_ms=395.464514
+FRAME_SCOPE frame=-1 scope=39 elapsed_ms=18.564704
+FRAME_SCOPE frame=-1 scope=41 elapsed_ms=1.551768
+FRAME_CACHE frame=-1 bytes=267336008 rebuilds=616 hits=770 reductions=0 resolution=1 downsample=1
+WARMUP frame=1 elapsed_ms=1452.717 process_cpu_ms=1487.918
+FRAME mode=Torus no clouds frame=0 elapsed_ms=1490.280373
+FRAME_SCOPE frame=0 scope=37 elapsed_ms=1033.837063
+FRAME_SCOPE frame=0 scope=36 elapsed_ms=414.911587
+FRAME_SCOPE frame=0 scope=39 elapsed_ms=18.124688
+FRAME_SCOPE frame=0 scope=41 elapsed_ms=1.554622
+FRAME_CACHE frame=0 bytes=267336008 rebuilds=796 hits=1052 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=1 elapsed_ms=1497.252826
+FRAME_SCOPE frame=1 scope=37 elapsed_ms=1039.569704
+FRAME_SCOPE frame=1 scope=36 elapsed_ms=417.011826
+FRAME_SCOPE frame=1 scope=39 elapsed_ms=18.874361
+FRAME_SCOPE frame=1 scope=41 elapsed_ms=1.603414
+FRAME_CACHE frame=1 bytes=267336008 rebuilds=976 hits=1334 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=2 elapsed_ms=1550.696618
+FRAME_SCOPE frame=2 scope=37 elapsed_ms=1099.595264
+FRAME_SCOPE frame=2 scope=36 elapsed_ms=408.885806
+FRAME_SCOPE frame=2 scope=39 elapsed_ms=18.259192
+FRAME_SCOPE frame=2 scope=41 elapsed_ms=1.565656
+FRAME_CACHE frame=2 bytes=267336008 rebuilds=1192 hits=1580 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=3 elapsed_ms=1460.464281
+FRAME_SCOPE frame=3 scope=37 elapsed_ms=996.637190
+FRAME_SCOPE frame=3 scope=36 elapsed_ms=424.192244
+FRAME_SCOPE frame=3 scope=39 elapsed_ms=17.436259
+FRAME_SCOPE frame=3 scope=41 elapsed_ms=1.553328
+FRAME_CACHE frame=3 bytes=267336008 rebuilds=1372 hits=1862 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=4 elapsed_ms=1581.544027
+FRAME_SCOPE frame=4 scope=37 elapsed_ms=1145.890395
+FRAME_SCOPE frame=4 scope=36 elapsed_ms=397.904715
+FRAME_SCOPE frame=4 scope=39 elapsed_ms=17.839544
+FRAME_SCOPE frame=4 scope=41 elapsed_ms=1.529678
+FRAME_CACHE frame=4 bytes=267336008 rebuilds=1573 hits=2123 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=5 elapsed_ms=1476.052670
+FRAME_SCOPE frame=5 scope=37 elapsed_ms=1031.019920
+FRAME_SCOPE frame=5 scope=36 elapsed_ms=408.923811
+FRAME_SCOPE frame=5 scope=39 elapsed_ms=18.962771
+FRAME_SCOPE frame=5 scope=41 elapsed_ms=1.570570
+FRAME_CACHE frame=5 bytes=267336008 rebuilds=1753 hits=2405 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=6 elapsed_ms=1481.790381
+FRAME_SCOPE frame=6 scope=37 elapsed_ms=1026.949439
+FRAME_SCOPE frame=6 scope=36 elapsed_ms=415.587687
+FRAME_SCOPE frame=6 scope=39 elapsed_ms=19.015807
+FRAME_SCOPE frame=6 scope=41 elapsed_ms=1.620159
+FRAME_CACHE frame=6 bytes=267336008 rebuilds=1933 hits=2687 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=7 elapsed_ms=1468.701697
+FRAME_SCOPE frame=7 scope=37 elapsed_ms=1033.894297
+FRAME_SCOPE frame=7 scope=36 elapsed_ms=398.739629
+FRAME_SCOPE frame=7 scope=39 elapsed_ms=19.008755
+FRAME_SCOPE frame=7 scope=41 elapsed_ms=1.576460
+FRAME_CACHE frame=7 bytes=267336008 rebuilds=2113 hits=2969 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=8 elapsed_ms=1603.670777
+FRAME_SCOPE frame=8 scope=37 elapsed_ms=1130.526063
+FRAME_SCOPE frame=8 scope=36 elapsed_ms=429.527082
+FRAME_SCOPE frame=8 scope=39 elapsed_ms=18.819066
+FRAME_SCOPE frame=8 scope=41 elapsed_ms=1.611388
+FRAME_CACHE frame=8 bytes=267336008 rebuilds=2329 hits=3215 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=9 elapsed_ms=1469.157419
+FRAME_SCOPE frame=9 scope=37 elapsed_ms=1027.457254
+FRAME_SCOPE frame=9 scope=36 elapsed_ms=402.831716
+FRAME_SCOPE frame=9 scope=39 elapsed_ms=19.021319
+FRAME_SCOPE frame=9 scope=41 elapsed_ms=1.595768
+FRAME_CACHE frame=9 bytes=267336008 rebuilds=2509 hits=3497 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=10 elapsed_ms=1464.490756
+FRAME_SCOPE frame=10 scope=37 elapsed_ms=1036.871229
+FRAME_SCOPE frame=10 scope=36 elapsed_ms=392.156579
+FRAME_SCOPE frame=10 scope=39 elapsed_ms=18.788470
+FRAME_SCOPE frame=10 scope=41 elapsed_ms=1.576793
+FRAME_CACHE frame=10 bytes=267336008 rebuilds=2689 hits=3779 reductions=0 resolution=1 downsample=1
+FRAME mode=Torus no clouds frame=11 elapsed_ms=1493.669762
+FRAME_SCOPE frame=11 scope=37 elapsed_ms=1030.522213
+FRAME_SCOPE frame=11 scope=36 elapsed_ms=422.009793
+FRAME_SCOPE frame=11 scope=39 elapsed_ms=19.204385
+FRAME_SCOPE frame=11 scope=41 elapsed_ms=1.576874
+FRAME_CACHE frame=11 bytes=267336008 rebuilds=2869 hits=4061 reductions=0 resolution=1 downsample=1
+Torus no clouds median=1490.280 ms p95=1603.671 ms
+Torus no clouds p99=1603.671 ms max=1603.671 ms
+Torus no clouds process_cpu_median=1529.030 ms process_cpu_p95=1643.576 ms
+capture=8192x8192 tiles=25 pixels/cell=32 texture_bytes=289816576 cloud=0x0
+capture=8192x8192 tiles=25 pixels/cell=32 texture_bytes=289816576 cloud=128x128

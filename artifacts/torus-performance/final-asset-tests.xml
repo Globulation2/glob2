@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="17" failures="0" errors="0" skipped="0"><testsuite name="AssetLoader"><testcase classname="AssetLoader" name="WebP requests deduplicate and preserve alpha and invisible RGB in both execution modes" time="0.001971" status="run" />
+    <testcase classname="AssetLoader" name="read backpressure yields to decoders and retained metadata cannot stall images" time="0.002541" status="run" />
+    <testcase classname="AssetLoader" name="dependency continuations do not block workers and preparation overlaps" time="0.001211" status="run" />
+    <testcase classname="AssetLoader" name="exclusive transfer refuses copied subscriptions and borrowed payloads" time="0" status="run" />
+    <testcase classname="AssetLoader" name="retained continuation inputs survive cancellation of the caller subscription" time="0.002281" status="run" />
+    <testcase classname="AssetLoader" name="unique completed requests do not accumulate expired cache metadata" time="0.000514" status="run" />
+    <testcase classname="AssetLoader" name="reader workers overlap independently of CPU preparation" time="0.001251" status="run" />
+    <testcase classname="AssetLoader" name="finalizers run only on the owner thread and expired owners cancel publication" time="0.001228" status="run" />
+    <testcase classname="AssetLoader" name="nonpositive polling budgets do not start cooperative work or finalizers" time="0" status="run" />
+    <testcase classname="AssetLoader" name="failures cancellation invalidation and shutdown leave usable handles" time="0.000387" status="run" />
+  </testsuite><testsuite name="ImageAssets"><testcase classname="ImageAssets" name="prepared image adoption separates shared pixels and transfers exclusive pixels" time="0.000288" status="run" />
+    <testcase classname="ImageAssets" name="mip preparation preserves padded alpha weighted integer filtering" time="0" status="run" />
+    <testcase classname="ImageAssets" name="WebP decoder preserves exact RGBA including transparent RGB" time="0.000231" status="run" />
+    <testcase classname="ImageAssets" name="Q90 lossy WebP preserves dimensions and exact alpha" time="0.000177" status="run" />
+    <testcase classname="ImageAssets" name="16-bit RGBA rounds normalized channels to the exporter reference" time="0.000142" status="run" />
+    <testcase classname="ImageAssets" name="Native PNG and JPEG loading and saving remain available" time="0.000659" status="run" />
+    <testcase classname="ImageAssets" name="WebP artwork lookup preserves directories without PNG alternatives" time="0.000717" status="run" />
+  </testsuite></testsuites>
