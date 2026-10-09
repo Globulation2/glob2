@@ -83,7 +83,7 @@ describe('generate-map', () => {
   it('refuses descriptors the binary cannot honour, without running it', async () => {
     expect(
       (await failure('generate-map', { generator: { ...ARENA, revision: 9 } })).message,
-    ).toMatch(/revision 1 in this engine, not 9/);
+    ).toMatch(/revision 2 in this engine, not 9/);
     expect(
       (await failure('generate-map', { generator: { ...ARENA, generatorId: 'atlantis' } })).code,
     ).toBe('bad_request');
