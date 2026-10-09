@@ -17,7 +17,9 @@ def crashed_cases(document):
     for case in document.iter('testcase'):
         for error in case.findall('error'):
             match = re.search(r'exit status (-?\d+)', error.text or '')
-            if match and (int(match[1]) & 0xFFFFFFFF) >= 0xC0000000:
+            # The Windows CRT reports abort()/failed C assertions as status 3.
+            if match and (int(match[1]) == 3 or
+                          (int(match[1]) & 0xFFFFFFFF) >= 0xC0000000):
                 yield case.get('classname', ''), case.get('name', '')
                 break
 
