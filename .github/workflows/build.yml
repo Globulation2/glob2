@@ -1439,6 +1439,10 @@ jobs:
         id: actions_checkout_v4_1
         with:
           ref: ${{ inputs.revision || github.sha }}
+      - name: Load the scoped Compose AppArmor profiles
+        run: |
+          sudo apparmor_parser -r deploy/security/glob2-engine.apparmor
+          sudo apparmor_parser -r deploy/security/glob2-ai-music.apparmor
       - name: Build the images and smoke-test deploy/compose.yaml
         id: smoke_test_the_platform_stack
         continue-on-error: true
