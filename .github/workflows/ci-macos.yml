@@ -1,5 +1,16 @@
 name: macOS development validation
 on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Exact source revision to validate
+        type: string
+        required: true
+      coverage_profile:
+        description: Native regression coverage profile
+        type: choice
+        options: [compatibility, full]
+        default: full
   workflow_call:
     inputs:
       revision:
@@ -15,7 +26,7 @@ env:
 jobs:
   native:
     runs-on: macos-26
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
