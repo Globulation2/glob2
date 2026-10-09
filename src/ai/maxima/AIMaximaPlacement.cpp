@@ -1263,7 +1263,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
     if(candidateType<0)prepareMaterialSources(world);
 	const int size=world.width*world.height;
 	if(size<=0)return;
-	foodInput.width=world.width;foodInput.height=world.height;
+	foodInput.setDimensions(world.width,world.height);
 	foodInput.policy.supplyRadius=placementPolicy.foodSupplyRadius;
 	foodInput.policy.qualityBandTiles=placementPolicy.foodQualityBandTiles;
 	foodInput.policy.unreachablePenaltyTiles=

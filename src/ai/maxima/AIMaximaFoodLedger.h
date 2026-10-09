@@ -144,6 +144,8 @@ struct ConsumerResult
 struct Input
 {
 	Input();
+	/// Precompute wrapping masks; direct dimension writes remain supported.
+	void setDimensions(int width, int height);
 	int width;
 	int height;
 	Policy policy;
@@ -155,6 +157,12 @@ struct Input
 	int index(int x, int y) const;
 	int normalizeX(int x) const;
 	int normalizeY(int y) const;
+
+private:
+	// An invalid mask cannot match a positive dimension. Stale masks fall back
+	// to modulo if a caller changes the public dimensions directly.
+	unsigned widthMask = ~0u;
+	unsigned heightMask = ~0u;
 };
 
 struct Result
