@@ -64,7 +64,7 @@ static constexpr int AI_WARRUSH_INNS_PER_SWARM_RATIO = 2;
 static constexpr int AI_WARRUSH_INN_LOOKAHEAD        = 1;
 
 // ---------------------------------------------------------------------------
-// Random-building probability ladder (syncRand() % 100):
+// Random-building probability ladder (the controller stream modulo 100):
 //
 //   <70  -> HEAL          (or HEAL when there are zero heal buildings; see
 //                          bug L11 in bugs_surfaced_during_magic_number_audit.md

@@ -743,8 +743,10 @@ given kind, and teams no human or AI seat controls (closed teams) are cleared as
 new map. The rules, seed and
 experiments come from the setup like any other match, so a platform that wants to
 continue a save unchanged builds the setup with `fromGameHeader` from the save's
-header. If the seed equals the saved one, the saved random state is kept; otherwise
-the simulation is reseeded.
+header. Saved unit, building, map-operation and story RNG streams retain their
+progress even when a replacement setup changes the seed. New entities use the
+replacement seed. AI controllers are newly created for the replacement seats and
+use their own streams derived from that seed.
 
 ### Shared scripted generator sources
 

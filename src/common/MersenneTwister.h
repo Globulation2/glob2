@@ -9,7 +9,7 @@
 #include <ostream>
 
 /// 32-bit MT19937 Mersenne Twister (Matsumoto & Nishimura), used as the
-/// simulation RNG behind syncRand().
+/// private AI and resource-job RNG (and historical save/test state).
 ///
 /// Determinism note: this replaces boost::mt19937 and must stay bit-identical
 /// to it, since saved games and menu-colony snapshots store the state and

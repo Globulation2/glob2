@@ -63,7 +63,7 @@ static constexpr int UNIT_DELTA_QUANTUM = 256;
 // directions plus a "no direction" sentinel. The encoding numerically
 // collides with COUNT (8 == UNIT_DIRECTION_NONE) — both names are kept so
 // each call site reads in its intended meaning. See UnitGeometry.cpp /
-// UnitMovement.cpp / MapStep.cpp (`syncRand()&7`).
+// UnitMovement.cpp / MapStep.cpp (private unit/world random direction draws).
 
 //! Number of compass directions a unit can face.
 static constexpr int UNIT_DIRECTION_COUNT = 8;

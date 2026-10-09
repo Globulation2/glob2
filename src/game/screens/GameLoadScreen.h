@@ -28,7 +28,6 @@ class GameLoadScreen : public Glob2UI::Screen
 
   private:
 	GAGCore::CooperativeSlice slice;
-	std::string previousRng;
 	std::unique_ptr<Engine> engine;
 	std::optional<GAGCore::CooperativeTask> task;
 	std::string status;

@@ -113,6 +113,8 @@ static void forbidRow(World& world, int y, int gapX)
 
 static void paintingForbiddenAreaRefreshesGradients()
 {
+	EntityRandom random;
+	random.seed(42, 54);
 	World world;
 	world.clearOccupancy();
 	Team* team = world.game.teams[0];
@@ -126,7 +128,7 @@ static void paintingForbiddenAreaRefreshesGradients()
 	{
 		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "near route uses the gap");
 		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "distant route uses the gap");
-		require(world.game.map.pathfindBuilding(world.inn, c, 40, 45, &dx, &dy), "distant unit can advance");
+		require(world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit can advance");
 	}
 	forbidRow(world, 23, -1);
 	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
@@ -134,7 +136,7 @@ static void paintingForbiddenAreaRefreshesGradients()
 		require(world.inn->globalGradient[c] == nullptr, "painting invalidates every cached swim class immediately");
 		require(!world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "closing the gap cuts off the near route");
 		require(!world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "closing the gap cuts off the distant route");
-		require(!world.game.map.pathfindBuilding(world.inn, c, 40, 45, &dx, &dy), "distant unit has no route left");
+		require(!world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit has no route left");
 	}
 	BrushAccumulator gap;
 	gap.applyBrush(BrushApplication(20, 23, 0), &world.game.map);

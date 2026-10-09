@@ -12,7 +12,7 @@ EditorLoadScreen::EditorLoadScreen(const std::string &filename, GAGCore::Coopera
 }
 EditorLoadScreen::EditorLoadScreen(Initializer initialize, const char *caption,
 								   GAGCore::CooperativeSlice slice)
-	: slice(std::move(slice)), previousRng(getSyncRandState())
+	: slice(std::move(slice))
 {
 	status = Glob2UI::tr(caption);
 	task.emplace(prepare(std::move(initialize)));
@@ -36,8 +36,6 @@ EditorLoadScreen::~EditorLoadScreen()
 {
 	task.reset();
 	editor.reset();
-	if (!accepted)
-		setSyncRandState(previousRng);
 }
 std::unique_ptr<MapEdit> EditorLoadScreen::takeEditor()
 {

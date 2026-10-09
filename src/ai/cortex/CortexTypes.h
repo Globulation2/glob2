@@ -411,7 +411,7 @@ namespace Cortex
 		Sint32 offenseHoldUntil;///< == AICortex.offenseHoldUntil (tick the offense hold expires; 0 == none).
 
 		// --- food sustainability (v5) ---
-		// The open margin N drawn once per game (AICortex, via syncRand) and runtimeed
+		// The open margin N drawn once per game (AICortex, from its controller stream) and runtimeed
 		// through the observation so the pure policy reads it like any other feature.
 		// It is the ML seam (a learned policy later OUTPUTS N here instead of runtimeing
 		// the seeded value); the food executor reads it each cycle via the AICortex

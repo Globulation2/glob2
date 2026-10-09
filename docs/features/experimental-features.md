@@ -154,7 +154,7 @@ For a built-in engine experiment:
    unit, `owner->game->gameHeader`). The path with the experiment off must stay
    byte-identical to the game before your change: existing replays and the
    checksum fixtures under `test/maxima/fixtures/` guard this. Consuming
-   `syncRand()` differently under the experiment is fine, because the set is baked
+   the owning object's private RNG differently under the experiment is fine, because the set is baked
    into the game.
 3. Add `[experiment <key>]` and `[experiment <key> help]` to `data/texts.keys.txt`
    and to every catalog in `data/texts.list.txt`, with the English text equal to the

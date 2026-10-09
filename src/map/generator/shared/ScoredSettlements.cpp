@@ -3,7 +3,6 @@
 #include "ScoredSettlements.h"
 #include "Game.h"
 #include "GenerationContext.h"
-#include "Utilities.h"
 #include <memory>
 namespace MapGeneration
 {
@@ -11,11 +10,6 @@ ScoredSettlementChoice
 chooseScoredSettlements(GenerationContext &context, const std::vector<std::vector<int>> &proposals,
 						const SettlementBuilder &build, const SettlementCheck &check)
 {
-	struct EngineScope
-	{
-		MersenneTwister initial = syncRandEngine();
-		~EngineScope() { syncRandEngine() = initial; }
-	} engine;
 	GenerationContext initial(context);
 	initial.telemetry = GenerationTelemetry(false);
 	ScoredSettlementChoice result;
@@ -36,7 +30,8 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 		trial.map.setSize(context.request.wDec, context.request.hDec);
 		trial.map.setGame(&trial);
 		GenerationContext probe(initial);
-		syncRandEngine() = engine.initial;
+		trial.gameHeader.setRandomSeed(context.request.seed);
+		trial.map.worldRandom.initialize(context.request.seed);
 		if (!build(trial, probe, proposals.at(k)))
 		{
 			result.failure =

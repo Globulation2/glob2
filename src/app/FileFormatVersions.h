@@ -261,3 +261,8 @@ static constexpr int FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH = 149;
 
 //! Building area-effect funding and fractional pulse services.
 static constexpr int FILE_FORMAT_VERSION_AREA_EFFECTS = 150;
+
+//! Salted, persistent private PCG32 streams for units and buildings.
+static constexpr int FILE_FORMAT_VERSION_ENTITY_RANDOM = 151;
+//! Private PCG32 streams for map operations and legacy stories.
+static constexpr int FILE_FORMAT_VERSION_PRIVATE_RANDOM = 152;

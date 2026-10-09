@@ -33,6 +33,7 @@ struct Colony
     Colony(int corn = 10)
     {
         setSyncRandSeed(110);
+        game.gameHeader.setRandomSeed(110);
         game.map.setSize(5, 5, GRASS);
         game.map.setGame(&game);
         for (int y = 0; y < 32; ++y)

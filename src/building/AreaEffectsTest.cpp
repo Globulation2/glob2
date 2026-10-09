@@ -544,6 +544,7 @@ TEST_SUITE("BuildingAreaEffects")
 			map.setVertexTerrain(0, y, WATER);
 			map.setVertexTerrain(1, y, WATER);
 			map.setResourceByIndex(3, y, WHEAT, 0);
+			REQUIRE(map.getResource(3, y).type == WHEAT);
 			initial[y] = map.getResource(3, y).amount;
 		}
 		install(world.game, {{"radius", 65535}, {"fertilityWeaknessBps", 10000}});
@@ -557,11 +558,13 @@ TEST_SUITE("BuildingAreaEffects")
 		source->kill();
 		refresh(world, 1);
 		REQUIRE(map.resourceGrowthRateAt(map.coordToIndex(3, 8), WHEAT) > 0);
-		for (int n = 0; n < 100; ++n)
-			map.growResources();
 		bool changed = false;
-		for (int y = 0; y < 32; ++y)
-			changed |= map.getResource(3, y).amount != initial[y];
+		for (int n = 0; n < 1024 && !changed; ++n)
+		{
+			map.growResources();
+			for (int y = 0; y < 32; ++y)
+				changed |= map.getResource(3, y).amount != initial[y];
+		}
 		// Legacy growth oscillates stock at its cap, so recovery need not
 		// increase the final sum. It must resume actual growth mutations.
 		CHECK(changed);

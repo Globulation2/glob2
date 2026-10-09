@@ -131,7 +131,7 @@ int Building::neededMaterial(void)
 	for (unsigned material=0; material<MaterialCount; ++material)
 		if (materialDeliveryTarget(material)>0) demanded[count++]=material;
 	if (!count) return minType;
-	const int first=syncRand()%count;
+	const int first=entityRandom.nextU32()%count;
 	for (int offset=0; offset<count; ++offset)
 	{
 		const int i=demanded[(first+offset)%count];

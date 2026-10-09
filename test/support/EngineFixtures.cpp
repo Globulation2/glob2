@@ -116,6 +116,7 @@ namespace glob2test
 	{
 		REQUIRE_MESSAGE(globalContainer != nullptr, "HeadlessGame needs a live HeadlessGlobals");
 		random.emplace(game);
+		game.gameHeader.setRandomSeed(options.seed);
 		game.map.setSize(options.wDec, options.hDec, options.terrain);
 		game.map.setGame(&game);
 		if (options.clearImmobile)

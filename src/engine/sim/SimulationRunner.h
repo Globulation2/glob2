@@ -29,7 +29,7 @@ class Engine;
 //! - Drawing reads only acquireScene() and GUI state.
 //!
 //! The simulation's results do not depend on this: ticks, orders and the
-//! synchronized RNG are the same as in serial execution.
+//! owner RNG streams are the same as in serial execution.
 class SimulationRunner
 {
 public:

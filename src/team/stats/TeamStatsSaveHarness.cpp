@@ -81,11 +81,11 @@ struct TeamStatsMeasurementFixture
 	glob2test::BoundGameRandom random{game};
 	TeamStatsMeasurementFixture()
 	{
+        game.gameHeader.setRandomSeed(19);
         if (glob2test::currentTestSuite() == "JavaScriptLifecycle")
         {
             // Both the serialized game seed and live simulation stream must
             // be explicit; defaults otherwise depend on time and test order.
-            game.gameHeader.setRandomSeed(19);
             setSyncRandSeed(19);
         }
 		game.map.setSize(5, 5, GRASS);
@@ -844,9 +844,9 @@ static void measurementReplayBoundaries()
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
 	// Save compatibility is independent of the integrated replay/network gates.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 150 && NET_PROTOCOL_VERSION == 68,
+	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_PRIVATE_RANDOM && NET_PROTOCOL_VERSION == 68,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -1452,12 +1452,16 @@ TEST_CASE("Scripting identity survives conversion and save load" * doctest::test
  u->hungry=u->trigHungry;
  u->medical=Unit::MED_HUNGRY;
  u->needToRecheckMedical=true;
+ u->entityRandom.nextU32();
+ const auto randomBefore=u->entityRandom;
  TeamStatsMeasurementFixture::activity(u);
  REQUIRE(u->owner==w.game.teams[1]);
+ CHECK(u->entityRandom==randomBefore);
  REQUIRE(w.game.scriptGenerations[Game::scriptGenerationIndex(false, 1, Unit::GIDtoID(u->gid))]==u->scriptIdentity);
  auto loaded=roundTrip(w.game);
  REQUIRE(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->scriptIdentity==u->scriptIdentity);
  CHECK(loaded->game.scriptGenerations==w.game.scriptGenerations);
+ CHECK(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->entityRandom==randomBefore);
 }
 
 TEST_CASE("Scripting level reset preserves generation counters" * doctest::test_suite("JavaScriptLifecycle"))
@@ -1530,6 +1534,7 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
   TeamStatsMeasurementFixture w;
   auto* site=w.building("inn",8,8,0,kind==Building::NEW_BUILDING,0);
   auto generations=w.game.scriptGenerations; auto identity=site->scriptIdentity;
+  site->entityRandom.nextU32(); const auto randomBefore=site->entityRandom;
   if(kind!=Building::NEW_BUILDING) {
    if(kind==Building::REPAIR)--site->hp;
    site->launchConstruction(1,1);
@@ -1546,9 +1551,11 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
   site->update(); site->update();
   REQUIRE_FALSE(site->type->isBuildingSite);
   CHECK(site->scriptIdentity==identity);
+  CHECK(site->entityRandom==randomBefore);
   CHECK(w.game.scriptGenerations==generations);
   auto loaded=roundTrip(w.game);
   CHECK(loaded->game.scriptGenerations==generations);
+  CHECK(loaded->game.teams[0]->myBuildings[Building::GIDtoID(site->gid)]->entityRandom==randomBefore);
  }
 }
 

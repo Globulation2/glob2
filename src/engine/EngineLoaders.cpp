@@ -129,12 +129,12 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 //   * --map override set: returns the named map (still throws on missing
 //     file, since a typo'd name is a fatal user error).
 //   * No override + maps/ has at least one .map file: consumes one
-//     syncRand() call to index uniformly into the listing and returns
+//     draw from the private map-selection stream to index the listing and returns
 //     the loaded MapHeader.
 //   * No override + maps/ is empty or unreadable: returns std::nullopt
 //     without consuming RNG state. Callers must surface this as a clear
 //     fatal-config error — previously this path was undefined behavior
-//     (syncRand() % 0 → SIGFPE on x86, bypassing the createRandomGame
+//     (a modulo-zero draw caused SIGFPE on x86, bypassing the createRandomGame
 //     retry-on-malformed-file loop and terminating the process).
 // Loaded maps that turn out to be malformed propagate via
 // std::ios_base::failure (the existing retry loop in createRandomGame
@@ -153,7 +153,13 @@ std::optional<MapHeader> Engine::chooseRandomMap()
 	if (maps.empty())
 		return std::nullopt;
 
-	int number = syncRand() % maps.size();
+	if (!mapSelectionInitialized)
+	{
+		const Uint32 seed = globalContainer->testGamesSeedSet ? globalContainer->testGamesSeed : gui.game.gameHeader.getRandomSeed();
+		mapSelectionRandom.initializeOwner(seed, unsigned(RandomDomain::MatchMap));
+		mapSelectionInitialized = true;
+	}
+	int number = mapSelectionRandom.nextU32() % maps.size();
 
 	return loadMapHeader(maps[number]);
 }
@@ -163,6 +169,7 @@ std::optional<MapHeader> Engine::chooseRandomMap()
 GameHeader Engine::createRandomGame(int numberOfTeams)
 {
 	GameHeader gameHeader;
+	gameHeader.setRandomSeed(globalContainer->testGamesSeedSet ? globalContainer->testGamesSeed : gui.game.gameHeader.getRandomSeed());
 	int count = 0;
 	for (int i=0; i<numberOfTeams+1; i++)
 	{
@@ -173,6 +180,8 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		}
 		else
 		{
+			EntityRandom seatRandom;
+			seatRandom.initializeOwner(gameHeader.getRandomSeed(), unsigned(RandomDomain::MatchAI), teamColor);
 			AI::ImplementationID iid;
 			if (!globalContainer->testGamesMatchup.empty())
 			{
@@ -187,12 +196,12 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 			}
 			else if (!globalContainer->testGamesAIPool.empty())
 			{
-				int idx = syncRand() % globalContainer->testGamesAIPool.size();
+				int idx = seatRandom.nextU32() % globalContainer->testGamesAIPool.size();
 				iid = static_cast<AI::ImplementationID>(globalContainer->testGamesAIPool[idx]);
 			}
 			else
 			{
-				iid = static_cast<AI::ImplementationID>(syncRand() % AI_RANDOM_PICK_COUNT + 1);
+				iid = static_cast<AI::ImplementationID>(seatRandom.nextU32() % AI_RANDOM_PICK_COUNT + 1);
 			}
 			FormattableString name("%0 %1");
 			name.arg(AINames::getAIText(iid)).arg(i-1);

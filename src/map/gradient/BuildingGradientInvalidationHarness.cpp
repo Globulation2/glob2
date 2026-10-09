@@ -286,6 +286,8 @@ static void aPausedFieldKeepsItsOriginalObstacles()
 // finish the whole field. Compare movement and distance against a complete field.
 static void publicReadsResolveTheirInputs()
 {
+	EntityRandom random;
+	random.seed(42, 54);
 	World world;
 	Map &map = world.game.map;
 	Building *centre = world.place(20, 20);
@@ -296,14 +298,14 @@ static void publicReadsResolveTheirInputs()
 		std::vector<Uint16> expected(full, full + map.getW() * map.getH());
 		int expectedDist, expectedDx, expectedDy;
 		require(map.buildingAvailable(centre, swim, 18, 20, &expectedDist), "complete distance exists");
-		require(map.pathfindBuilding(centre, swim, 18, 20, &expectedDx, &expectedDy), "complete direction exists");
+		require(map.pathfindBuilding(random, centre, swim, 18, 20, &expectedDx, &expectedDy), "complete direction exists");
 		map.updateGlobalGradient(centre, swim);
 		int dist, dx, dy;
 		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
 			"point API resolves its own distance");
 		require(!centre->globalGradientSearch[swim]->complete(), "point read does not finish the field");
 		map.updateGlobalGradient(centre, swim);
-		require(map.pathfindBuilding(centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
+		require(map.pathfindBuilding(random, centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
 			"movement API resolves its own input layer");
 		require(!centre->globalGradientSearch[swim]->complete(), "movement does not finish the field");
 		full = map.buildingGradient(centre, swim);

@@ -677,7 +677,17 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [24]
 	
-	return cs;
+	if (checkSumsVector)
+	{
+		const auto random = entityRandom.exportState();
+		checkSumsVector->push_back(Uint32(random.value >> 32));
+		checkSumsVector->push_back(Uint32(random.value));
+		checkSumsVector->push_back(Uint32(random.increment >> 32));
+		checkSumsVector->push_back(Uint32(random.increment));
+	}
+
+	// Mix private RNG after the historical signed checksum rotations.
+	return Uint32(cs) ^ entityRandom.checksum();
 }
 
 int Building::getEffectiveArmor() const

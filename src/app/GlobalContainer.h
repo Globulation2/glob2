@@ -162,12 +162,7 @@ public:
 	//! one captured in testGamesSeed below.
 	std::string testGamesSaveGameAs;
 
-	//! Seed actually passed to setSyncRandSeed() at the top of runTestGames().
-	//! createRandomGame() mirrors this into GameHeader::seed so the saved
-	//! .game file (via --save-game-as or GLOB2_DUMP_GAME) loads with the same
-	//! syncRand state. Without this mirror, GameHeader's constructor default
-	//! (time(NULL) at header-construction time) wins and the loaded game
-	//! diverges from the original -test-games-nox run.
+	//! Match setup seed captured by runTestGames; also initializes map/seat streams.
 	Uint32 testGamesSeed;
 	bool testGamesSeedSet;
 
