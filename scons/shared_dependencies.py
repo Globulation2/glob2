@@ -69,7 +69,11 @@ def relocate(prefix, destination):
     for path in prefix.rglob('*'):
         if path.is_file() and path.suffix in ('.pc', '.cmake', '.la'):
             text = path.read_text()
-            path.write_text(text.replace(str(prefix), str(destination)).replace(prefix.as_posix(), destination.as_posix()))
+            installed = destination.as_posix() if path.suffix == '.pc' else str(destination)
+            if path.suffix == '.pc':
+                # pkg-config emits these values as shell/compiler arguments.
+                installed = ''.join('\\' + char if char.isspace() else char for char in installed)
+            path.write_text(text.replace(str(prefix), installed).replace(prefix.as_posix(), installed))
 
 
 def ensure(builder, local_prefix, work, *, explicit=False, execute=True, **arguments):

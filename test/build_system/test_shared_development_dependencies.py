@@ -31,7 +31,7 @@ class SharedDevelopmentDependenciesTests(unittest.TestCase):
                 (prefix / 'library.pc').write_text('prefix=' + str(prefix) + '\n')
             with patch.dict(os.environ, {'GLOB2_DEV_HOME': str(home), 'GLOB2_DEV_MODE': 'shared'}), patch.object(shared_dependencies, 'fingerprint', return_value={'version': 1}):
                 installed = shared_dependencies.ensure(upstream, home / 'local', home / 'work')
-                self.assertEqual((installed / 'library.pc').read_text(), 'prefix=' + str(installed) + '\n')
+                self.assertEqual((installed / 'library.pc').read_text(), 'prefix=' + installed.as_posix().replace(' ', '\\ ') + '\n')
                 self.assertTrue(shared_dependencies.verify(installed, {'version': 1}))
                 self.assertFalse(seen[0][0].exists())
                 reused = shared_dependencies.ensure(upstream, home / 'local', home / 'work')
