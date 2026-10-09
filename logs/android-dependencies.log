@@ -1,0 +1,416 @@
+warning: Embedding `vcpkg-configuration` in a manifest file is an EXPERIMENTAL feature.
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+Detecting compiler hash for triplet glob2-x64-android...
+Compiler found: /home/bradley/.local/share/glob2/development/toolchains/artifacts/Linux-x86_64-6230c51c0bd0463f71364cf9/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++
+The following packages will be built and installed:
+  * boost-algorithm:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-algorithm/16fe704598a261d9766b1d6eb3a483f468ab6cac
+  * boost-align:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-align/c8dc52b5f1feedf8b14e93d23d6d6e719d269c0e
+  * boost-array:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-array/6259bc62d2fa5980736b9365bb69fb242269b0e2
+    boost-asio:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-asio/ce757138eb7af2b214f21e2680814777b580b325
+  * boost-assert:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-assert/89ff4d2e2e735c492f4f186ef5d08c27a33af0b7
+    boost-beast:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-beast/ce6db020fd6f96d0340dc88560cf05ac4c4402cc
+  * boost-bind:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-bind/4779d27870e250fbe6fc8b7a05d911cacb8aae60
+  * boost-cmake:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-cmake/453705350fbd0a8dbdbbdd06e8f368baa30b131b
+  * boost-concept-check:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-concept-check/e55931d7c2bc2b33a2cf49d6ced511e2e209bdd2
+  * boost-config:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-config/762b2f284c48416310b5d05c4028716803ec2043
+  * boost-container:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-container/5a0b49ee85c27c39ef25631cfdbd5d3ad1149310
+  * boost-container-hash:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-container-hash/2903e8d987be9e6c2d367298452cca9900f87f8e
+  * boost-context:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-context/306765f81ddde7b69509b45679f1ea40e61ee87e
+  * boost-conversion:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-conversion/41fb2eb0dd4203ced5645d9e659253e642d6848c
+  * boost-core:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-core/d978b719a8e14adce4d804ab5371e357afed9687
+  * boost-coroutine:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-coroutine/8e8c55041bd950518602014556a780c71e806470
+    boost-date-time:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-date-time/1369ed0885ac49e0798a74ae9d74190658364ed6
+  * boost-describe:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-describe/d2a4fc640014f7442932464d954ad44b302e41c3
+  * boost-detail:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-detail/180c83d347dfd34afc12f69f5ca7d9e75b9681bf
+  * boost-dynamic-bitset:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-dynamic-bitset/51d054aab9c1c50259e253c4cc02114d661a4f4f
+  * boost-endian:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-endian/41ac0a7472ea5f242d1df7874ff39f6c64123c0a
+  * boost-exception:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-exception/3c99e4a65f9f64580c5601219d05dac6f54bc0ab
+  * boost-function:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-function/6c633bb26db4be00c4d2aaacbb36493cce90edae
+  * boost-function-types:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-function-types/13e0fd21c39949a145a90a001eb01d95c10e6cd9
+  * boost-functional:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-functional/1a149e24ca42cbda3040781ebb9a4a634ccccfba
+  * boost-fusion:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-fusion/7fca552578f4e09ce194b1bf0d6f25bac435907b
+  * boost-headers:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-headers/c01b4dd603c01edf1940f0df3f6498f51c8acda1
+  * boost-integer:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-integer/944979527cd3e9b158f6d4fa27174a154b756f44
+  * boost-intrusive:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-intrusive/fdd697cf75e1c4151548b2a5df0cd17376999534
+  * boost-io:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-io/381228ce40062d70c8a56afaafed81710a1ff743
+  * boost-iterator:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-iterator/8b9a0e755f202cc140222722f4292daf54ff582b
+    boost-lambda:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-lambda/2d8080f6e41b95cd9f13ddecfdc4db12bbb72994
+  * boost-lexical-cast:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-lexical-cast/0a36777f88db58f8d69f5e0727e3603c29e67c63
+    boost-logic:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-logic/5909374a447c242f80b0921ac3ada302ba42732c
+    boost-math:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-math/690873bedff0687ce992ee4e67a1fcd35efff094
+  * boost-move:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-move/2ec65ea9d8386c7364647e10ce8eeeb809be40b9
+  * boost-mp11:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-mp11/46e636f8b4c3d8baad6af94f37838a84bf2a3ad7
+  * boost-mpl:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-mpl/42387dab4931df9bfd20d869b92d7c6855900a93
+  * boost-numeric-conversion:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-numeric-conversion/d7c5fdc151bf418c8b4c7e8df69306797ea12f63
+  * boost-optional:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-optional/1401709a35e73abf6581ee9eab32ae2b71a7fa0f
+  * boost-pool:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-pool/fae207f1642a362cab7ed2d17550bf776ca99a93
+  * boost-predef:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-predef/955dda784a843bfb85d7c17343666c5ccf0f8642
+  * boost-preprocessor:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-preprocessor/a086ddc6ee105650c442c1d40438b1670e3248b4
+    boost-random:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-random/28837a21143c7896257a2714036769302199b030
+  * boost-range:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-range/92192fe61d14a9c421db7c3ed640e7b35f9685a4
+  * boost-regex:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-regex/9318a93a93511ef643cf511123f7be253b27cb66
+  * boost-smart-ptr:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-smart-ptr/a5ab980fbf31a3a2a95cadf878c42cfdf7e5449f
+  * boost-static-assert:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-static-assert/47f251620a2037084eb2d8ac0e6ff3601523e42a
+  * boost-static-string:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-static-string/582bee8fec9374c28c43d8d42f7dcc0e360e3998
+  * boost-system:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-system/7c85bcb721e1a1cc3bd96660476a30c0eba11f8f
+  * boost-throw-exception:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-throw-exception/4b282c6d95bbb3e399592f9eb87b8f420d34b3b5
+  * boost-tokenizer:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-tokenizer/b7b01a69aaf4f53a6e97eb141790cb96222f69d6
+  * boost-tuple:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-tuple/b04ebfe07fa6c45bf2e0dd35a9fec10add1b6ef9
+  * boost-type-index:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-type-index/bde43caf92370cdc6b55d296f0641e1b9a516885
+  * boost-type-traits:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-type-traits/fe39918134d7cdeec3dc248cd6075bc792039ce5
+  * boost-typeof:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-typeof/dbef6caf417e0c2ec880da9e9a6d4094a750e970
+  * boost-uninstall:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-uninstall/f7397719df120125cafecc8000deb3d2a0d5c7af
+  * boost-unordered:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-unordered/3016f6768a087d2f7a5629edae86d00c67191f1f
+  * boost-utility:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-utility/ee6600d9dea03593efcc67d0862d7d14807bd14d
+  * boost-variant2:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-variant2/da8c7998e31bf676c2efbce08f4e7cb41066dfe2
+  * boost-winapi:glob2-x64-android@1.86.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/boost-winapi/d75ae8aec7f6af51c19a6301a05194616da25145
+  * brotli:glob2-x64-android@1.1.0#1 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/brotli/4e5b5ae1ad26c80535c893cc0307121f0398549e
+  * bzip2[core,tool]:glob2-x64-android@1.0.8#6 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/bzip2/2d029da682847c5ebdc54e4dbea001331a02207e
+  * freetype[brotli,bzip2,core,png,zlib]:glob2-x64-android@2.13.3 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/freetype/8a2c633dcc14eaabdb31cf4637242f4e3c2f3fa2
+  * libjpeg-turbo:glob2-x64-android@3.1.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/libjpeg-turbo/8286a6351f59be7eed5e924d32c3a419d0612ee9
+  * libogg:glob2-x64-android@1.3.5#1 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/libogg/98e27727c32704393494d32615c25b7b16eb3067
+  * libpng:glob2-x64-android@1.6.44 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/libpng/bda480fe3c3cef1113fe8bfdecda127a5b3b2a77
+  * libwebp[core,libwebpmux,nearlossless,simd]:glob2-x64-android@1.4.0#1 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/libwebp/9d0c00119dd6ec04488b4e0c926aa3ae73b95847
+    openssl:glob2-x64-android@3.4.0 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/openssl/ce504a83eb9627d54f1cffdb497a6bf5bd970d18
+  * opus:glob2-x64-android@1.5.2 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/opus/368f8193c8c240a844cd342a3a485a0fa62e5774
+    opusfile:glob2-x64-android@0.12+20221121#1 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/opusfile/6b39a2d4ff309c4e2bedf74adeb1cd18f7ab16c9
+    sdl3:glob2-x64-android@3.4.16 -- /home/bradley/.codex/worktrees/3d84/glob2/scons/vcpkg-ports/sdl3
+    sdl3-image[core,jpeg,png,webp]:glob2-x64-android@3.4.6 -- /home/bradley/.codex/worktrees/3d84/glob2/scons/vcpkg-ports/sdl3-image
+    sdl3-net:glob2-x64-android@3.2.0 -- /home/bradley/.codex/worktrees/3d84/glob2/scons/vcpkg-ports/sdl3-net
+    sdl3-ttf:glob2-x64-android@3.2.2 -- /home/bradley/.codex/worktrees/3d84/glob2/scons/vcpkg-ports/sdl3-ttf
+  * vcpkg-boost:x64-linux@2024-05-15 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/vcpkg-boost/aca8ab6ec76d120c4482a629de23cad5ad7e4643
+  * vcpkg-cmake:x64-linux@2024-04-23 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake/e74aa1e8f93278a8e71372f1fa08c3df420eb840
+  * vcpkg-cmake-config:x64-linux@2024-05-23 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake-config/97a63e4bc1a17422ffe4eff71da53b4b561a7841
+  * vcpkg-cmake-get-vars:x64-linux@2024-09-22 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake-get-vars/f23148add155147f3d95ae622d3b0031beb25acf
+    zlib:glob2-x64-android@1.3.1 -- /home/bradley/.codex/worktrees/3d84/glob2/build/android/device/x86_64/24/client/debug/dependency-staging-5287b17q/vcpkg-buildtrees/versioning_/versions/zlib/3f05e04b9aededb96786a911a16193cdb711f0c9
+Additional packages (*) will be modified to complete this operation.
+Restored 80 package(s) from /home/bradley/.local/share/glob2/development/caches/vcpkg-binary in 649 ms. Use --debug to see more details.
+Installing 1/80 vcpkg-cmake-config:x64-linux@2024-05-23...
+Elapsed time to handle vcpkg-cmake-config:x64-linux: 680 us
+vcpkg-cmake-config:x64-linux package ABI: 5564dcd992886de29f161f37147051bc7042151f5941d5fecfd1b1e93dcfe040
+Installing 2/80 vcpkg-cmake:x64-linux@2024-04-23...
+Elapsed time to handle vcpkg-cmake:x64-linux: 620 us
+vcpkg-cmake:x64-linux package ABI: e5bd2e010dcd0a38a046215db6521d98387cfec83216237f9fd1d6db715c621f
+Installing 3/80 vcpkg-boost:x64-linux@2024-05-15...
+Elapsed time to handle vcpkg-boost:x64-linux: 529 us
+vcpkg-boost:x64-linux package ABI: 44c60631fe969391301be14564839321b6026e32253d7c4f8d970abedce15cff
+Installing 4/80 boost-uninstall:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-uninstall:glob2-x64-android: 681 us
+boost-uninstall:glob2-x64-android package ABI: 60c664aac548821e0730d4b55d394e6f97a3851bfbcce137061571e1a65e1f58
+Installing 5/80 boost-cmake:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-cmake:glob2-x64-android: 967 us
+boost-cmake:glob2-x64-android package ABI: b589debfa65dfc379f1e037bf25bef47f1370f1155ad90d77f4288ceeccfa675
+Installing 6/80 boost-headers:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-headers:glob2-x64-android: 916 us
+boost-headers:glob2-x64-android package ABI: de841ba2d9fc4f731c0be5e11f754a0ac411245fdc11a9d7715775e1c7e66e76
+Installing 7/80 boost-config:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-config:glob2-x64-android: 8.19 ms
+boost-config:glob2-x64-android package ABI: 635f064a7e90c18bb741b5c6610fb1862a19ec331715607c547832a5624aec06
+Installing 8/80 boost-assert:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-assert:glob2-x64-android: 1.16 ms
+boost-assert:glob2-x64-android package ABI: ed2ca4a4efffeb118542feb1296233a1d73acab4e66cafa6ca960b21204c062f
+Installing 9/80 boost-throw-exception:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-throw-exception:glob2-x64-android: 1.04 ms
+boost-throw-exception:glob2-x64-android package ABI: 907b6e6bdab062a8c46b346f29466bd21e3d7ce166092b076b0c5e54cd4ae0c9
+Installing 10/80 boost-predef:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-predef:glob2-x64-android: 5.74 ms
+boost-predef:glob2-x64-android package ABI: c751a26afabfdfee3c1216469817a7ee18f18e852288ab46021c9a970f26a6be
+Installing 11/80 boost-winapi:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-winapi:glob2-x64-android: 4.01 ms
+boost-winapi:glob2-x64-android package ABI: abb63edebc3c31eb5771c7ff93a48762d1c650d7a2078d43496e20ba851f0da7
+Installing 12/80 boost-mp11:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-mp11:glob2-x64-android: 2.2 ms
+boost-mp11:glob2-x64-android package ABI: 2d7c67a71964e4593910e66caac13eca9b9dcf73af588daf23c5d2ac7985b756
+Installing 13/80 boost-variant2:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-variant2:glob2-x64-android: 1.18 ms
+boost-variant2:glob2-x64-android package ABI: 70e5268c6055f68209729a1bce4197dbe37650072eb47de4767d5db87035500b
+Installing 14/80 boost-system:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-system:glob2-x64-android: 2.53 ms
+boost-system:glob2-x64-android package ABI: cae0d55d130b5a76f58592b3fde6572a308f603cec07c06ba2096687e2e895ce
+Installing 15/80 boost-static-assert:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-static-assert:glob2-x64-android: 1.16 ms
+boost-static-assert:glob2-x64-android package ABI: 5f7f38539fc36a05b077be390db42f4440b3df32b13c0a300c2bbd84196edb1f
+Installing 16/80 boost-type-traits:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-type-traits:glob2-x64-android: 6.24 ms
+boost-type-traits:glob2-x64-android package ABI: d49676e8c1dc23837c094fd08e6d7ac68ca32ac82ec3eb2e92e5e80b40002c03
+Installing 17/80 boost-preprocessor:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-preprocessor:glob2-x64-android: 13.6 ms
+boost-preprocessor:glob2-x64-android package ABI: b2e421eeffce54f8d0c6a196b4dd1f09c38e35b6981a89d1e066418b8f845335
+Installing 18/80 boost-io:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-io:glob2-x64-android: 1.82 ms
+boost-io:glob2-x64-android package ABI: 93ecea77d120b44d26ff646d3c3b1b1828f493c06c90cc41abfdb28118107ebe
+Installing 19/80 boost-core:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-core:glob2-x64-android: 3.57 ms
+boost-core:glob2-x64-android package ABI: a1164134041e61ac39622fc81fe1bce8ace86e0a1c3385bd79c82fdc1905ac22
+Installing 20/80 boost-utility:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-utility:glob2-x64-android: 2.37 ms
+boost-utility:glob2-x64-android package ABI: 580e3d2ca3507e24424eb169ccb096f93e574ca7504890ac14540d1ecf502942
+Installing 21/80 boost-move:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-move:glob2-x64-android: 3.11 ms
+boost-move:glob2-x64-android package ABI: b371c36519f2e81aaa812cddee9edd2ac5ba0462d1370ce9ad67bd10980c68f4
+Installing 22/80 boost-smart-ptr:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-smart-ptr:glob2-x64-android: 4.3 ms
+boost-smart-ptr:glob2-x64-android package ABI: 5769f792480a11f376440f1e550c6e9a76cf9491ffb3ef72da1014691c90182f
+Installing 23/80 boost-detail:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-detail:glob2-x64-android: 2.01 ms
+boost-detail:glob2-x64-android package ABI: d3d6a14f8e85f2233199b0356cd16209e8997c11742ac298a2a6bb4f6e9ef770
+Installing 24/80 boost-optional:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-optional:glob2-x64-android: 1.96 ms
+boost-optional:glob2-x64-android package ABI: 27f4249663716b0633a7e73563c1f452d985b74c8faf75742c680b5bae3fa568
+Installing 25/80 boost-mpl:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-mpl:glob2-x64-android: 30 ms
+boost-mpl:glob2-x64-android package ABI: 142f6489a01bfc91a939c902b899d7124fb016f0135827ecb436459efdbc536e
+Installing 26/80 boost-typeof:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-typeof:glob2-x64-android: 2.7 ms
+boost-typeof:glob2-x64-android package ABI: 63a02ebd11610dd67708936adf47d8d0ebaa163a90eb67ecd7aac8ced890243e
+Installing 27/80 boost-tuple:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-tuple:glob2-x64-android: 2.26 ms
+boost-tuple:glob2-x64-android package ABI: 43bfc6707eeefee20c7f1ea9c8530484a2305f19f31cf071695699d18293f827
+Installing 28/80 boost-function-types:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-function-types:glob2-x64-android: 4.94 ms
+boost-function-types:glob2-x64-android package ABI: 7f4ecedb1ae27372321a775949aefe30de37e9383cb38565a3fd8f2945b2d43d
+Installing 29/80 boost-bind:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-bind:glob2-x64-android: 2.86 ms
+boost-bind:glob2-x64-android package ABI: 25fa75f90c356ad0ca47528503e2731a5d61602c1f96970c9c19ec3ba7c07561
+Installing 30/80 boost-function:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-function:glob2-x64-android: 2.64 ms
+boost-function:glob2-x64-android package ABI: 5b58201f4f58a925aa9adb773b40ecd2e703fe9e0d96bbc4529c272efc3ab898
+Installing 31/80 boost-functional:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-functional:glob2-x64-android: 2.36 ms
+boost-functional:glob2-x64-android package ABI: 98aa7f9a1d1b0b6d0374b942c66020e5bc67c364b594be95102b793c1f86a072
+Installing 32/80 boost-describe:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-describe:glob2-x64-android: 2.61 ms
+boost-describe:glob2-x64-android package ABI: c3757e7a057f1b60a756be9576b0e87a8ace46ec85e131f5751ab79247c27414
+Installing 33/80 boost-container-hash:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-container-hash:glob2-x64-android: 2.92 ms
+boost-container-hash:glob2-x64-android package ABI: 9f861a716200ee4a8bc7f8ddfb58796a7bb80ee7a7307be5ba472ee413bd6d9f
+Installing 34/80 boost-fusion:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-fusion:glob2-x64-android: 33.7 ms
+boost-fusion:glob2-x64-android package ABI: 80afe798b7ab22b406854e161fa52e77794ad80681eb16e945d2b46cfa8102c6
+Installing 35/80 boost-concept-check:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-concept-check:glob2-x64-android: 3.46 ms
+boost-concept-check:glob2-x64-android package ABI: 0ff1087abfd9d281fb1c93dfb60707db7157dfb656e27e4dc13f3bd0e0be4e3f
+Installing 36/80 boost-iterator:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-iterator:glob2-x64-android: 4.18 ms
+boost-iterator:glob2-x64-android package ABI: e5c9d1e99d3ed8860f53b0b5ab4011aa0ab49a50ce06a92b4e0d5bdc6449faf7
+Installing 37/80 boost-tokenizer:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-tokenizer:glob2-x64-android: 2.74 ms
+boost-tokenizer:glob2-x64-android package ABI: bbd6d9f4bc5c4d68451ee82510bd63c887d3a78e45f7459c31026a59267365a6
+Installing 38/80 boost-integer:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-integer:glob2-x64-android: 2.94 ms
+boost-integer:glob2-x64-android package ABI: 352a630913be6d6e503c04ebb6d52954009594d6c75cc4e46e33968f64943b96
+Installing 39/80 boost-regex:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-regex:glob2-x64-android: 5.92 ms
+boost-regex:glob2-x64-android package ABI: b60df11d1f1acf548eec8afe7ef7c1b80daa20585e3b226c818adbf0673f40cd
+Installing 40/80 boost-conversion:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-conversion:glob2-x64-android: 3.44 ms
+boost-conversion:glob2-x64-android package ABI: 531e93daf85f5f819199dd4c95033a0b5d38c214a5ddbc69d0992cd2cfe15c04
+Installing 41/80 boost-array:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-array:glob2-x64-android: 3.03 ms
+boost-array:glob2-x64-android package ABI: 85e5e5e0b99def664b48c76f0baee8de4e40f9b7ab580979d4530b0174dca62b
+Installing 42/80 boost-range:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-range:glob2-x64-android: 6.85 ms
+boost-range:glob2-x64-android package ABI: e127f3b5d2491f242c487a5f0641b4f4dcb7ab05d19b9db285cb91adf720585b
+Installing 43/80 boost-numeric-conversion:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-numeric-conversion:glob2-x64-android: 4.17 ms
+boost-numeric-conversion:glob2-x64-android package ABI: 284af953923c44994f5f4b2830785ebede690022a3be994f65358b2199b74a9e
+Installing 44/80 boost-intrusive:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-intrusive:glob2-x64-android: 5.63 ms
+boost-intrusive:glob2-x64-android package ABI: 010059fe4cca919930726b3833d6aced5272410e2b579e58d73bb62796063c00
+Installing 45/80 boost-container:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-container:glob2-x64-android: 6.17 ms
+boost-container:glob2-x64-android package ABI: f8af8e7b242bd4b6bd767b69c37b25dd5141ff64a3744631f114de8c9a9cb65b
+Installing 46/80 boost-lexical-cast:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-lexical-cast:glob2-x64-android: 3.58 ms
+boost-lexical-cast:glob2-x64-android package ABI: 57d9eee43703cfaf0546e77a411a73b8aa60966a1c0a3ad28e676c16fc48aa5a
+Installing 47/80 boost-unordered:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-unordered:glob2-x64-android: 4.76 ms
+boost-unordered:glob2-x64-android package ABI: 03fafb5809c7297585f10d2a1d24c1f689da2a16329070384fdf4f91b2b4e829
+Installing 48/80 boost-exception:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-exception:glob2-x64-android: 3.93 ms
+boost-exception:glob2-x64-android package ABI: 9159c066f7d7b0b1b9701ad29dd96b08108e3db1303fa191ac62436613328072
+Installing 49/80 boost-algorithm:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-algorithm:glob2-x64-android: 5.89 ms
+boost-algorithm:glob2-x64-android package ABI: 5de654413c1102f4ce2f7ca2fa40e465d22eff8461b76ff11f86c3d092bd6cd7
+Installing 50/80 boost-date-time:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-date-time:glob2-x64-android: 6.3 ms
+boost-date-time:glob2-x64-android package ABI: 1e6286d5b129e75539f8231e63aabaff312ac654abc9a7d195f7907cc6543090
+Installing 51/80 boost-pool:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-pool:glob2-x64-android: 3.75 ms
+boost-pool:glob2-x64-android package ABI: d53e3efd1461edf2d0138c7b654dbde54f2408f3de8dbda5ad7bb4cf96a07a93
+Installing 52/80 boost-context:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-context:glob2-x64-android: 4.26 ms
+boost-context:glob2-x64-android package ABI: c1fbe27b598d5c382a71e46f6da6d5de768b51f4eff7a3e5192c0343d85e29e9
+Installing 53/80 boost-coroutine:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-coroutine:glob2-x64-android: 4.49 ms
+boost-coroutine:glob2-x64-android package ABI: 35cf6b2e708d1224af49dbe267251e24a140eed30f35b28174e5df7348b4c0c7
+Installing 54/80 boost-align:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-align:glob2-x64-android: 4.56 ms
+boost-align:glob2-x64-android package ABI: f0aee467bce652fad65911c659694353cb68f9f7664fca916cf318ecb96533b4
+Installing 55/80 boost-asio:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-asio:glob2-x64-android: 20.1 ms
+boost-asio:glob2-x64-android package ABI: 3b358d29d32ec48492b9e6967d05c891b23c0359fcce757c5b855075736949dc
+Installing 56/80 boost-type-index:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-type-index:glob2-x64-android: 3.96 ms
+boost-type-index:glob2-x64-android package ABI: fb61383dcf2d115fa8b63d6d3aabb6c65cdee6331a22132cc71ff1c388bd5863
+Installing 57/80 boost-static-string:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-static-string:glob2-x64-android: 3.83 ms
+boost-static-string:glob2-x64-android package ABI: 3985b9048feb83e963b761f6cb4ed1e91e4126cde08761efd24ea4f56bdc5e39
+Installing 58/80 boost-logic:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-logic:glob2-x64-android: 3.44 ms
+boost-logic:glob2-x64-android package ABI: 4697c990c7e8ab50928332042542fc6a4af6ffec17752b85c3f4f7ed02b12460
+Installing 59/80 boost-endian:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-endian:glob2-x64-android: 3.88 ms
+boost-endian:glob2-x64-android package ABI: 03df24d58e642a8332914e8a37dd31f18b410a6eb63b8a3683cbfe0f7b45689a
+Installing 60/80 boost-beast:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-beast:glob2-x64-android: 10.7 ms
+boost-beast:glob2-x64-android package ABI: 33c03f778491e388f4d590deff443bade8e1251ca6f51c37544cb9ef4813ba0e
+Installing 61/80 boost-lambda:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-lambda:glob2-x64-android: 4.36 ms
+boost-lambda:glob2-x64-android package ABI: ba05a28acc482f143142da3a055a15614a8f53f73fae083a70cfb0853c271aaf
+Installing 62/80 boost-dynamic-bitset:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-dynamic-bitset:glob2-x64-android: 4.11 ms
+boost-dynamic-bitset:glob2-x64-android package ABI: 8560bab3bac079f3cba4637cdc27e1540e606768105a42105470ee37dbb51a82
+Installing 63/80 boost-random:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-random:glob2-x64-android: 5.81 ms
+boost-random:glob2-x64-android package ABI: a660da357898ed15aa2e7509c15a1248223abbf3ad8047813b59ee30bb6ef926
+Installing 64/80 boost-math:glob2-x64-android@1.86.0...
+Elapsed time to handle boost-math:glob2-x64-android: 16.2 ms
+boost-math:glob2-x64-android package ABI: e50ab6dff5ceb445aeb6653c1049dfa06989494396e2b3801949accad8561c71
+Installing 65/80 vcpkg-cmake-get-vars:x64-linux@2024-09-22...
+Elapsed time to handle vcpkg-cmake-get-vars:x64-linux: 2.01 ms
+vcpkg-cmake-get-vars:x64-linux package ABI: 0a19735f38762e473df8ee1f95dd236e8c17a96f5fc4a25fb4533b9942b863e0
+Installing 66/80 openssl:glob2-x64-android@3.4.0...
+Elapsed time to handle openssl:glob2-x64-android: 7.81 ms
+openssl:glob2-x64-android package ABI: 542c61f3d81a543ab44c6bdb3a58973361bdf8de38970c99012b9e22421ae7d0
+Installing 67/80 opus:glob2-x64-android@1.5.2...
+Elapsed time to handle opus:glob2-x64-android: 4.29 ms
+opus:glob2-x64-android package ABI: 411c8941271a950af74d156044ed339384c661ad038c00b6706240c6380a83e4
+Installing 68/80 libogg:glob2-x64-android@1.3.5#1...
+Elapsed time to handle libogg:glob2-x64-android: 4.45 ms
+libogg:glob2-x64-android package ABI: 679d841f25f90c78bc2ae5fb83392eb128d15b991d16db21bc77ba7a7287b017
+Installing 69/80 opusfile:glob2-x64-android@0.12+20221121#1...
+Elapsed time to handle opusfile:glob2-x64-android: 4.24 ms
+opusfile:glob2-x64-android package ABI: 499c972ca2d24e0b1a64455d818148f39e1dfd54e897bc2e05c44568d9607493
+Installing 70/80 sdl3:glob2-x64-android@3.4.16...
+Elapsed time to handle sdl3:glob2-x64-android: 6.26 ms
+sdl3:glob2-x64-android package ABI: f5856410bb917b5dbaa76d77313b516834833fcd61b4ea8c286e31d61847c7fb
+Installing 71/80 libwebp[core,libwebpmux,nearlossless,simd]:glob2-x64-android@1.4.0#1...
+Elapsed time to handle libwebp:glob2-x64-android: 5.88 ms
+libwebp:glob2-x64-android package ABI: c89303cbaa88c335606856a7dcec8930b4e037d2615decb3d3c892d16ff3b4f0
+Installing 72/80 zlib:glob2-x64-android@1.3.1...
+Elapsed time to handle zlib:glob2-x64-android: 3.89 ms
+zlib:glob2-x64-android package ABI: 9ca2780e64b48d0ddd85883b43c59c028046adcb5eead1fc38d7b47f1a677029
+Installing 73/80 libpng:glob2-x64-android@1.6.44...
+Elapsed time to handle libpng:glob2-x64-android: 4.74 ms
+libpng:glob2-x64-android package ABI: 37b4ea389f0da4a5491d91c5bc52a950c457e002b16e458547865a85f391396b
+Installing 74/80 libjpeg-turbo:glob2-x64-android@3.1.0...
+Elapsed time to handle libjpeg-turbo:glob2-x64-android: 4.76 ms
+libjpeg-turbo:glob2-x64-android package ABI: 5986c6be9300fa91e0a18f1a17f9abfbf4350468a9cf5866090e1c98e3cde691
+Installing 75/80 sdl3-image[core,jpeg,png,webp]:glob2-x64-android@3.4.6...
+Elapsed time to handle sdl3-image:glob2-x64-android: 5.62 ms
+sdl3-image:glob2-x64-android package ABI: ef6b0054f29be1b67ee6a8ab78ab252733eb3b16ee4f00be9e0c6b562a754b2a
+Installing 76/80 sdl3-net:glob2-x64-android@3.2.0...
+Elapsed time to handle sdl3-net:glob2-x64-android: 4.6 ms
+sdl3-net:glob2-x64-android package ABI: 123a76af69c280c6158cf8a000471489564317f61a834f1e86f5d1d4cc1a20cb
+Installing 77/80 bzip2[core,tool]:glob2-x64-android@1.0.8#6...
+Elapsed time to handle bzip2:glob2-x64-android: 4.71 ms
+bzip2:glob2-x64-android package ABI: 2c0b6af774b22e5671a9061fa0b29c3bab7cd8e8ed88384a6c3a6b002bb3b635
+Installing 78/80 brotli:glob2-x64-android@1.1.0#1...
+Elapsed time to handle brotli:glob2-x64-android: 4.92 ms
+brotli:glob2-x64-android package ABI: ed48e9d1a0257d30885c526360fca95d989487b6d2cafdd8ed205f408285d292
+Installing 79/80 freetype[brotli,bzip2,core,png,zlib]:glob2-x64-android@2.13.3...
+Elapsed time to handle freetype:glob2-x64-android: 6.26 ms
+freetype:glob2-x64-android package ABI: 0b97bf9e72f5dd142f98924da300ce3b87670b2c38c274d53cf97dc1a1a2d859
+Installing 80/80 sdl3-ttf:glob2-x64-android@3.2.2...
+Elapsed time to handle sdl3-ttf:glob2-x64-android: 4.99 ms
+sdl3-ttf:glob2-x64-android package ABI: 107a58fbfec70ccba357dce3828291537b22866a4381e398af6541f3270edfe4
+Total install time: 405 ms
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+boost-logic provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_logic CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::logic)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-lambda provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_lambda CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::lambda)
+
+boost-random provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_random CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::random)
+
+boost-math provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_math CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::math)
+
+openssl is compatible with built-in CMake targets:
+
+  find_package(OpenSSL REQUIRED)
+  target_link_libraries(main PRIVATE OpenSSL::SSL)
+  target_link_libraries(main PRIVATE OpenSSL::Crypto)
+
+The package opusfile provides CMake targets:
+
+    find_package(OpusFile CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE OpusFile::opusfile)
+
+    # To use the opusurl API
+    target_link_libraries(main PRIVATE OpusFile::opusurl)
+
+sdl3 provides CMake targets:
+
+  find_package(SDL3 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SDL3::SDL3)
+
+The package zlib is compatible with built-in CMake targets:
+
+    find_package(ZLIB REQUIRED)
+    target_link_libraries(main PRIVATE ZLIB::ZLIB)
+
+sdl3-image provides CMake targets:
+
+  find_package(SDL3_image CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL3_image::SDL3_image-shared>,SDL3_image::SDL3_image-shared,SDL3_image::SDL3_image-static>)
+
+sdl3-image provides pkg-config modules:
+
+  # image loading library for Simple DirectMedia Layer
+  sdl3-image
+
+sdl3-net provides CMake targets:
+
+  find_package(SDL3_net CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL3_net::SDL3_net>,SDL3_net::SDL3_net,SDL3_net::SDL3_net-static>)
+
+sdl3-ttf provides CMake targets:
+
+  find_package(SDL3_ttf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SDL3_ttf::SDL3_ttf)
+
+Dependency prefix: /home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-1d7d46d89bf767d17c2c550c

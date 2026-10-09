@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:444594) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (8.0s)
+  ✓  2 [chromium] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (1.8s)
+  ✓  3 [chromium] › tests/music-game.spec.js:27:3 › threaded game sends soundtrack and gain to independent audio (20.0s)
+  ✓  4 [chromium] › tests/runtime-build.spec.js:25:1 › threaded startup transfers its worker lifetime to gameplay and exits cleanly (23.0s)
+
+  4 passed (54.5s)

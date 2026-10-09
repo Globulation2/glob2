@@ -1,0 +1,19 @@
+usage: benchmark_build.py [-h] [--configuration CONFIGURATION]
+                          [--scons-arg SCONS_ARG] [--repetitions REPETITIONS]
+                          [--source SOURCE] [--header HEADER]
+                          [--output OUTPUT]
+
+Compare development configurations in disposable source snapshots. Example:
+python3 tools/benchmark_build.py --configuration normal:dev_fast=0
+--configuration 'fast:dev_fast=1 linker=auto' --scons-arg target=web Reports
+are local review evidence, never repository documentation.
+
+options:
+  -h, --help            show this help message and exit
+  --configuration CONFIGURATION
+                        LABEL:SCons options
+  --scons-arg SCONS_ARG
+  --repetitions REPETITIONS
+  --source SOURCE
+  --header HEADER
+  --output OUTPUT

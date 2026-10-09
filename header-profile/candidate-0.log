@@ -1,0 +1,18 @@
+<stdin>:2:9: warning: ‘#pragma once’ in main file [-Wpragma-once-outside-header]
+
+Time variable                                  wall           GGC
+ phase setup                        :   0.01 (  1%)  1953k (  2%)
+ phase parsing                      :   0.53 ( 90%)    83M ( 91%)
+ phase lang. deferred               :   0.05 (  9%)  6314k (  7%)
+ |name lookup                       :   0.06 ( 10%)  3358k (  4%)
+ |overload resolution               :   0.05 (  9%)  5237k (  6%)
+ preprocessing                      :   0.10 ( 16%)  3814k (  4%)
+ parser (global)                    :   0.10 ( 16%)    27M ( 29%)
+ parser struct body                 :   0.10 ( 17%)    17M ( 19%)
+ parser function body               :   0.02 (  3%)  5404k (  6%)
+ parser inl. func. body             :   0.04 (  6%)  3713k (  4%)
+ parser inl. meth. body             :   0.10 ( 16%)    12M ( 14%)
+ template instantiation             :   0.13 ( 22%)    19M ( 21%)
+ constant expression evaluation     :   0.01 (  1%)   198k (  0%)
+ constraint satisfaction            :   0.01 (  1%)   550k (  1%)
+ TOTAL                              :   0.59           91M

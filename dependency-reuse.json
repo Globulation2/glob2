@@ -1,0 +1,16 @@
+[
+  {
+    "checkout": "/tmp/glob2-reuse-uhym5jef/source",
+    "revision": "1599a2ec497b8eeb0caebdfeee2bdfe6d7479b08",
+    "returncode": 0,
+    "seconds": 97.92712075309828,
+    "log": "dependency-reuse-0.log"
+  },
+  {
+    "checkout": "/tmp/glob2-reuse-n1o1bgsm/source",
+    "revision": "1599a2ec497b8eeb0caebdfeee2bdfe6d7479b08",
+    "returncode": 0,
+    "seconds": 10.606629862915725,
+    "log": "dependency-reuse-1.log"
+  }
+]

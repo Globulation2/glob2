@@ -1,0 +1,52 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... yes
+Checking whether the C++ compiler works... yes
+Checking for C++ header file zlib.h... yes
+Checking for C library z... yes
+Checking for C++ header file regex.h... yes
+Checking for C++ header file openssl/ssl.h... yes
+Checking for C library ssl... yes
+Checking for C library crypto... yes
+Checking for C++ header file boost/beast/websocket.hpp... yes
+Checking for C++ header file boost/asio/ssl.hpp... yes
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/campaigns/SConscript  took 0.664 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/maxima/SConscript  took 0.469 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/buildings/SConscript  took 0.852 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/fonts/SConscript  took 0.585 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/gfx/cursor/SConscript  took 0.512 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/gfx/SConscript  took 1.860 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/skins/SConscript  took 0.492 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/gui/SConscript  took 0.538 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/themes/SConscript  took 0.707 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/icons/SConscript  took 0.701 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/zik/SConscript  took 0.572 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/highres/SConscript  took 0.518 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/menu/SConscript  took 0.575 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/usl/SConscript  took 0.588 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/data/SConscript  took 20.074 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/debian/SConscript  took 0.713 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/fedora/SConscript  took 0.582 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/libgag/src/SConscript  took 49.343 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/libgag/include/SConscript  took 0.553 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/libgag/SConscript  took 51.509 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/libusl/src/SConscript  took 5.785 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/libusl/test/SConscript  took 1.670 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/libusl/SConscript  took 8.628 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/maps/SConscript  took 0.479 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/natsort/SConscript  took 0.303 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/scripts/SConscript  took 0.300 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/scons/SConscript  took 0.270 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/src/SConscript  took 20.771 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/test/SConscript  took 1.539 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/tools/SConscript  took 0.374 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/build/linux/relay/debug/windows/SConscript  took 0.514 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/2/source-2pijsjja/SConstruct  took 7028.980 ms
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: Nothing to be done for `dev-dependencies'.
+scons: done building targets.
+Total SConsign sync time: 0.001178 seconds
+Total build time: 7.084933 seconds
+Total SConscript file execution time: 7.029181 seconds
+Total SCons execution time: 0.055752 seconds
+Total command execution time: 0.000000 seconds

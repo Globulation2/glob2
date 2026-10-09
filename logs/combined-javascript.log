@@ -1,0 +1,2 @@
+PASS profile1: complete tick checksums, exact 1/4-worker replay/save output, 1 saved continuations
+PASS realistic-profile1: complete tick checksums, exact 1/4-worker replay/save output, 5 saved continuations

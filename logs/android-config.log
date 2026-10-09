@@ -1,0 +1,8 @@
+scons: Reading SConscript files ...
+ValueError: Missing cross-compiled dependency manifest /home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-47817fac084982eaf9a8ce61/manifest.json; see docs/mobile/development.md. Host libraries are never used.:
+  File "/home/bradley/.codex/worktrees/3d84/glob2/SConstruct", line 641:
+    main()
+  File "/home/bradley/.codex/worktrees/3d84/glob2/SConstruct", line 316:
+    build_mobile(bdir, identity, ARGUMENTS)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/scons/mobile_build.py", line 29:
+    raise ValueError(f'Missing cross-compiled dependency manifest {manifest}; see docs/mobile/development.md. Host libraries are never used.')

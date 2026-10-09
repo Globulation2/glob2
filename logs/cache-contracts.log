@@ -1,0 +1,2 @@
+ccache: cold/warm builds, header invalidation, unwrapped linking and wrapper guards PASS
+ccache: cross-checkout reuse, relative debugger paths and header changes PASS

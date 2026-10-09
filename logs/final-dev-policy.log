@@ -1,0 +1,17 @@
+test_benchmark_snapshot_retains_git_provenance_and_candidate_edits (test_dev_build.DevelopmentBuildTests.test_benchmark_snapshot_retains_git_provenance_and_candidate_edits) ... ok
+test_compatible_consumer_reuses_an_active_reader_installation (test_dev_build.DevelopmentBuildTests.test_compatible_consumer_reuses_an_active_reader_installation) ... ok
+test_concurrent_consumers_publish_once (test_dev_build.DevelopmentBuildTests.test_concurrent_consumers_publish_once) ... ok
+test_configurable_budget_and_no_automatic_pruning (test_dev_build.DevelopmentBuildTests.test_configurable_budget_and_no_automatic_pruning) ... ok
+test_dependency_configuration_skips_query_only_targets (test_dev_build.DevelopmentBuildTests.test_dependency_configuration_skips_query_only_targets) ... ok
+test_development_command_preserves_overrides (test_dev_build.DevelopmentBuildTests.test_development_command_preserves_overrides) ... ok
+test_failed_publish_preserves_prior_install (test_dev_build.DevelopmentBuildTests.test_failed_publish_preserves_prior_install) ... ok
+test_identity_serializes_path_and_tuple_inputs (test_dev_build.DevelopmentBuildTests.test_identity_serializes_path_and_tuple_inputs) ... ok
+test_invalid_profiles (test_dev_build.DevelopmentBuildTests.test_invalid_profiles) ... ok
+test_profiles_are_isolated_and_mobile_dependencies_reused (test_dev_build.DevelopmentBuildTests.test_profiles_are_isolated_and_mobile_dependencies_reused) ... ok
+test_query_and_isolated_mode (test_dev_build.DevelopmentBuildTests.test_query_and_isolated_mode) ... ok
+test_shared_install_reuses_content_and_relocates_metadata (test_dev_build.DevelopmentBuildTests.test_shared_install_reuses_content_and_relocates_metadata) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.454s
+
+OK

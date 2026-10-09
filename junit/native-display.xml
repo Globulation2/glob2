@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="0"><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]" time="5.2898" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="18.5992" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="14.0011" status="run" />
+  </testsuite><testsuite name="MusicSet"><testcase classname="MusicSet" name="discovery atomic replacement queued moods and muted preferences [display][writes-preferences]" time="6.30772" status="run" />
+  </testsuite><testsuite name="PortableGame"><testcase classname="PortableGame" name="the portable renderer loads and draws a complete 50-tick game scene" time="8.47189" status="run" />
+  </testsuite></testsuites>

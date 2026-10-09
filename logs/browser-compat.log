@@ -1,0 +1,13 @@
+
+Running 4 tests using 1 worker
+
+(node:449604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (8.6s)
+  ✓  2 [firefox] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (1.6s)
+(node:454807) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [webkit] › tests/determinism.spec.js:64:1 › WebAssembly verifies the committed match record (threaded) (11.9s)
+  ✓  4 [webkit] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (2.1s)
+
+  4 passed (27.8s)

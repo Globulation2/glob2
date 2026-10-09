@@ -1,0 +1,34 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... yes
+Checking whether the C++ compiler works... yes
+Checking for C library SDL3... yes
+Checking for C library SDL3_ttf... yes
+Checking for C library SDL3_image... yes
+Checking for C library SDL3_net... yes
+Checking for C library speex... yes
+Checking for C++ header file speex/speex.h... yes
+Checking for C library opusfile... yes
+Checking for C++ header file opusfile.h... yes
+Checking for C library opus... yes
+Checking for C library ogg... yes
+Checking for C++ header file zlib.h... yes
+Checking for C library z... yes
+Checking for C++ header file regex.h... yes
+Checking for C++ header file openssl/ssl.h... yes
+Checking for C library ssl... yes
+Checking for C library crypto... yes
+Checking for C++ header file boost/beast/websocket.hpp... yes
+Checking for C++ header file boost/asio/ssl.hpp... yes
+Checking for C library GL... yes
+Checking for C++ header file GL/gl.h... yes
+Checking for C library GLU... yes
+Checking for C++ header file GL/glu.h... yes
+Checking for C library epoxy... yes
+Checking for C++ header file epoxy/gl.h... yes
+Checking for C library fribidi... yes
+Checking for C++ header file fribidi/fribidi.h... yes
+Checking for C library portaudio... no
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: Nothing to be done for `dev-dependencies'.
+scons: done building targets.

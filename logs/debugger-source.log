@@ -1,0 +1,24 @@
+Line 44 of "libgag/src/ui/Containers.cpp" starts at address 0x2365fce <main()> and ends at 0x2365fda <main()+12>.
+Line 645 of "src/app/Glob2.cpp" starts at address 0xac82e9 <main()> and ends at 0xac8301 <main()+24>.
+file: "libgag/src/ui/Containers.cpp", line number: 44, symbol: "main()"
+39			: vertical(vertical), options(options)
+40		{
+41			appendChildren(*this, items);
+42		}
+43		const char *name() const override { return vertical ? "column" : "row"; }
+44		int main(Size s) const { return vertical ? s.h : s.w; }
+45		int cross(Size s) const { return vertical ? s.w : s.h; }
+46		Size make(int mainValue, int crossValue) const
+47		{
+48			return vertical ? Size{crossValue, mainValue} : Size{mainValue, crossValue};
+file: "src/app/Glob2.cpp", line number: 645, symbol: "main()"
+640	
+641		return 0;
+642	}
+643	
+644	int main(int argc, char *argv[])
+645	{
+646		if (argc == 2 && std::string(argv[1]) == "--hive-worker") return Hive::workerMain();
+647		Hive::setExecutable(argv[0]);
+648	#ifdef GLOB2_MOBILE
+649	    try { initializeMobilePaths(); }

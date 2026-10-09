@@ -1,0 +1,4 @@
+scons: Reading SConscript files ...
+
+scons: *** Cannot create configure directory "build/linux/client/debug/dev-dev_fast-true-pch-true-unity-true/configure" within a dry-run.
+File "/home/bradley/.codex/worktrees/3d84/glob2/SConstruct", line 83, in configure

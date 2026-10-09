@@ -1,0 +1,25 @@
+{
+  "tested_commit": "1cdcaf8454fefd0cb3ead321188b617a0afb3351",
+  "base_revision": "d912223f4bf6c76961e84c3698b4d44884daea2a",
+  "current_master": "c26a0a02aeef4993a7478c3651d6117b49dbc56c",
+  "merge_tree": "5fc55eda385e0c97aa329dea766eda0d5f5819e8",
+  "os": "Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "scons": "SCons by Steven Knight et al.:\n\tSCons: v4.8.1.08661ed4c552323ef3a7f0ff1af38868cbabb05e, Tue, 03 Sep 2024 17:46:32 -0700, by bdbaddog on M1Dog2021\n\tSCons path: ['/usr/lib/python3/dist-packages/SCons']\nCopyright (c) 2001 - 2024 The SCons Foundation",
+  "ccache": "ccache version 4.12.3\nFeatures: avx2 file-storage http-storage redis+unix-storage redis-storage\n\nCopyright (C) 2002-2007 Andrew Tridgell\nCopyright (C) 2009-2026 Joel Rosdahl and other contributors\n\nSee <https://ccache.dev/credits.html> for a complete list of contributors.\n\nThis program is free software; you can redistribute it and/or modify it under\nthe terms of the GNU General Public License as published by the Free Software\nFoundation; either version 3 of the License, or (at your option) any later\nversion.",
+  "lld": "unavailable",
+  "dependency_inputs": {
+    "scons/opus-versions.json": "f66e4ab6c795dcaec89c269ca4e06a3394ec9f0ecf5184a5d91902948bc252e0",
+    "scons/recording-versions.json": "264d868e3eb117595546456250ccfefd99203355ac74d0dbd68eab53d5db5629",
+    "scons/sdl3-versions.json": "a3a1b8abb7980edb71ca9d42733eb5d8e6fd92ac2b26caf9fb22b3526b315c60",
+    "scons/sdl3-vendored.json": "98dbcf0823dcc0c059a331f8edcb04a3dff06d8943f8bdf58c68531a9ed6f8bc",
+    "browser/toolchain.json": "3c68309a9e41df83e7086a7415a99a07e727fe2c2a84c56e897bbeb5a74411d5",
+    "vcpkg.json": "c63e76c0621c73ff1c44bbee671c937231be854debb10e2280417997aeb11c7e"
+  },
+  "binaries": {
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2": "b39ac344db3aaea61b56343351ca0bae285be18549ad497b374e86bce4b9b053",
+    "build/linux/client/debug/dev-dev_fast-true-pch-true-unity-true-linker-auto/src/glob2": "5978dc07b585dc015d9a91b92656aa4977a0c1cb9791019e6e493cf0b27c6951",
+    "build/android/device/x86_64/24/client/debug/dev-dev_fast-true-linker-auto/lib/libmain.so": "48ae8dcc6d71953985c1ee0cd522c14586480b5a4f10aea3b890814ec80a78f3",
+    "build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded/threaded/index.wasm": "531264a00190b9b5c8fafe75c66230265fbc1a251ed3395f76aabba4738a3cb9"
+  }
+}

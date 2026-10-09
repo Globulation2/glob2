@@ -1,0 +1,31 @@
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.013s
+
+OK
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.138s
+
+OK
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 7.387s
+
+OK
+...........simctl list devices --json
+simctl spawn owned-test launchctl list
+simctl launch --stdout=/home/bradley/.codex/worktrees/3d84/glob2/build/test-profiles/tmpu4ngirm3/diagnostics/startup-stdout.txt --stderr=/home/bradley/.codex/worktrees/3d84/glob2/build/test-profiles/tmpu4ngirm3/diagnostics/startup-stderr.txt owned-test org.globulation2.glob2
+simctl spawn owned-test launchctl list
+simctl spawn owned-test log show --last 3m --style compact --predicate process == "Glob2" OR eventMessage CONTAINS "org.globulation2.glob2"
+simctl io owned-test screenshot /home/bradley/.codex/worktrees/3d84/glob2/build/test-profiles/tmpu4ngirm3/diagnostics/failure.png
+..............
+----------------------------------------------------------------------
+Ran 25 tests in 0.083s
+
+OK
+.........................
+----------------------------------------------------------------------
+Ran 25 tests in 0.341s
+
+OK

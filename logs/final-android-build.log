@@ -1,0 +1,6 @@
+scons: Reading SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `build/android/device/x86_64/24/client/debug/dev-dev_fast-true-linker-auto/lib/libmain.so' is up to date.
+Building compilation database build/android/device/x86_64/24/client/debug/dev-dev_fast-true-linker-auto/compile_commands.json
+scons: done building targets.

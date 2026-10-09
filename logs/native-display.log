@@ -1,0 +1,8 @@
+PASS MusicSet/discovery atomic replacement queued moods and muted preferences [display][writes-preferences] (6.4s)
+PASS GameplayRecording.Integration/production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording] (18.7s)
+PASS GameplayRecording.Integration/global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences] (5.4s)
+PASS GameplayRecording.Integration/threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording] (14.1s)
+PASS PortableGame/the portable renderer loads and draws a complete 50-tick game scene (8.8s)
+
+5 passed, 0 failed, 0 skipped (53.4s of test time)
+[run_tests] JUnit report: artifacts/dev-build/native-display.xml (5 cases)

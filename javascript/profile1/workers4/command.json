@@ -1,0 +1,20 @@
+[
+  "/home/bradley/.codex/worktrees/3d84/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/3d84/glob2/test/fixtures/javascript/profile1-initial.game.gz",
+  "--ticks",
+  "256",
+  "--compute-threads",
+  "4",
+  "--telemetry",
+  "checksums",
+  "--replay",
+  "true",
+  "--save",
+  "final",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/javascript/profile1/workers4",
+  "--save",
+  "every:128"
+]

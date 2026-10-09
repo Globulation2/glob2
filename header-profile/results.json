@@ -1,0 +1,48 @@
+{
+  "command": [
+    "g++",
+    "-std=gnu++20",
+    "-fsyntax-only",
+    "-ftime-report",
+    "-Ithird_party/nlohmann-json/include",
+    "-Isrc",
+    "-x",
+    "c++",
+    "-"
+  ],
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "samples": {
+    "baseline": [
+      {
+        "wall_seconds": 1.4769000820815563,
+        "exit_code": 0
+      },
+      {
+        "wall_seconds": 1.6106135486625135,
+        "exit_code": 0
+      },
+      {
+        "wall_seconds": 1.555683040060103,
+        "exit_code": 0
+      }
+    ],
+    "candidate": [
+      {
+        "wall_seconds": 0.612355463206768,
+        "exit_code": 0
+      },
+      {
+        "wall_seconds": 0.6191509268246591,
+        "exit_code": 0
+      },
+      {
+        "wall_seconds": 0.5975731126964092,
+        "exit_code": 0
+      }
+    ]
+  },
+  "medians": {
+    "baseline": 1.555683040060103,
+    "candidate": 0.612355463206768
+  }
+}

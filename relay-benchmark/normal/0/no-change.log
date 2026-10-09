@@ -1,0 +1,158 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/campaigns/SConscript  took 0.393 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/maxima/SConscript  took 0.193 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/buildings/SConscript  took 0.253 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/fonts/SConscript  took 0.208 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/gfx/cursor/SConscript  took 0.252 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/gfx/SConscript  took 1.196 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/skins/SConscript  took 0.220 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/gui/SConscript  took 0.253 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/themes/SConscript  took 0.317 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/icons/SConscript  took 0.414 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/zik/SConscript  took 0.342 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/highres/SConscript  took 0.190 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/menu/SConscript  took 0.146 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/usl/SConscript  took 0.221 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/data/SConscript  took 12.322 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/debian/SConscript  took 0.325 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/fedora/SConscript  took 0.197 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/libgag/src/SConscript  took 52.254 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/libgag/include/SConscript  took 0.271 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/libgag/SConscript  took 53.613 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/libusl/src/SConscript  took 7.671 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/libusl/test/SConscript  took 1.348 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/libusl/SConscript  took 9.990 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/maps/SConscript  took 0.381 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/natsort/SConscript  took 0.207 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/scripts/SConscript  took 0.225 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/scons/SConscript  took 0.157 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/src/SConscript  took 19.776 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/test/SConscript  took 1.862 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/tools/SConscript  took 0.315 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/build/linux/relay/debug/windows/SConscript  took 0.570 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/normal/0/source-1lmfxh5l/SConstruct  took 273.427 ms
+scons: done reading SConscript files.
+scons: Building targets ...
+Command execution time: [<SCons.Node.FS.File object at 0x3484c80>]: 0.000857 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34ad070>]: 0.000621 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3496cb0>]: 0.000440 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34973d0>]: 0.000377 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3499f60>]: 0.000415 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x349a900>]: 0.000373 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x349b2a0>]: 0.000444 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x349bf30>]: 0.000562 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x349cd90>]: 0.000806 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x349d980>]: 0.000487 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x351a580>]: 0.012501 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x351b1f0>]: 0.011946 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x354a0c0>]: 0.015018 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x351c1d0>]: 0.003537 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3516610>]: 0.001436 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3517040>]: 0.001339 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x351d1a0>]: 0.005433 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3515870>]: 0.007071 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x353b550>]: 0.001879 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x353d4b0>]: 0.001215 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3517a70>]: 0.004763 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x353dee0>]: 0.003059 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x353e910>]: 0.001761 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35187b0>]: 0.005123 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3540a80>]: 0.001287 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3545400>]: 0.001294 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35414b0>]: 0.004843 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3542d70>]: 0.005277 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x353f620>]: 0.006373 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3543830>]: 0.003273 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3545e30>]: 0.003151 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3547290>]: 0.001237 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x353c1c0>]: 0.003961 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3567110>]: 0.001237 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3544260>]: 0.002143 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3567b40>]: 0.001285 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3568570>]: 0.003014 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x346bb70>]: 0.003147 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x346c5a0>]: 0.003052 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3470200>]: 0.001143 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x346cfd0>]: 0.003306 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3546860>]: 0.003782 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x346f7d0>]: 0.001299 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3547cc0>]: 0.003371 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x346e370>]: 0.001813 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35432e0>]: 0.001260 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3471660>]: 0.001056 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3472090>]: 0.003247 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3470c30>]: 0.001709 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3540050>]: 0.001258 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3474970>]: 0.001204 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3475cd0>]: 0.002746 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3476700>]: 0.001801 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x346eda0>]: 0.002705 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3477b60>]: 0.001750 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b4bf0>]: 0.002617 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b5620>]: 0.001423 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b6050>]: 0.001263 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b6a80>]: 0.001569 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b74b0>]: 0.002976 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b7ee0>]: 0.004328 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b8b70>]: 0.002817 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3477130>]: 0.003030 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3472db0>]: 0.003561 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34b9800>]: 0.003388 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34bb900>]: 0.002937 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34bd790>]: 0.001283 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34bc330>]: 0.001027 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3548e40>]: 0.003476 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c74b0>]: 0.003094 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c7c80>]: 0.002878 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c86b0>]: 0.001427 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c06d0>]: 0.000988 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c1100>]: 0.001420 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c1bc0>]: 0.002958 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c25f0>]: 0.001688 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c3020>]: 0.002582 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34ba4a0>]: 0.001861 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34cf1d0>]: 0.001306 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34bcd60>]: 0.002825 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34c3d60>]: 0.003452 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34baed0>]: 0.003949 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35488c0>]: 0.001588 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3521150>]: 0.004262 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x346da00>]: 0.002877 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34d7b10>]: 0.001019 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3541ee0>]: 0.002679 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34d8f70>]: 0.001386 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35490a0>]: 0.002900 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35b7010>]: 0.002591 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35b8010>]: 0.003570 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35b8a40>]: 0.003771 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35b9470>]: 0.001659 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34ce7a0>]: 0.006099 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34d8540>]: 0.003035 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34d4e70>]: 0.001017 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x353f880>]: 0.001224 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3473010>]: 0.000951 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35be690>]: 0.003598 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x34722f0>]: 0.001015 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35bf010>]: 0.001635 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35ba5c0>]: 0.005628 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x35beb50>]: 0.000971 seconds
+Command execution time: [<SCons.Node.FS.File object at 0x3518a10>]: 0.001158 seconds
+scons: `build/linux/relay/debug/src/glob2-relay' is up to date.
+Building compilation database build/linux/relay/debug/compile_commands.json
+Command execution time: build/linux/relay/debug/compile_commands.json: 0.004700 seconds
+scons: done building targets.
+Total SConsign sync time: 0.006027 seconds
+Total build time: 1.331872 seconds
+Total SConscript file execution time: 0.273700 seconds
+Total SCons execution time: 0.088273 seconds
+Total command execution time: 0.969899 seconds

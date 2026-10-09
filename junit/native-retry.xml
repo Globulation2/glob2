@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="10" failures="1" errors="0" skipped="0"><testsuite name="AIPipeline"><testcase classname="AIPipeline" name="save continuation retains controller caches receipts and future commands at pipeline boundaries" time="177.632" status="run" />
+  </testsuite><testsuite name="AIStateContinuation"><testcase classname="AIStateContinuation" name="Warrush growth and attack preparation survive save-load" time="97.7128" status="run" />
+  </testsuite><testsuite name="AITargetTelemetrySave"><testcase classname="AITargetTelemetrySave" name="target telemetry names only real enemies and leaves the simulation unchanged" time="217.748" status="run" />
+  </testsuite><testsuite name="LanMatchHarness"><testcase classname="LanMatchHarness" name="an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]" time="4.40261" status="run">
+      <failure message="155 &lt;  50" type="CHECK">
+src/net/lan/LanMatchHarness.cpp:1035:
+CHECK( hostToGuest &lt; 50 ) is NOT correct!
+  values: CHECK( 155 &lt;  50 )
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Faulted City contracts" time="179.437" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Last Treeline checks" time="203.088" status="run" />
+  </testsuite><testsuite name="Maxima.Economy"><testcase classname="Maxima.Economy" name="observed hunger expands feeding for an opening colony mix beyond nominal forecasts" time="340.537" status="run" />
+  <testcase classname="Maxima.Economy" name="sustained stock feeding reports capability estimates and historical strategy targets" time="218.061" status="run" />
+  </testsuite><testsuite name="TerrainResources"><testcase classname="TerrainResources" name="terrain strokes clear incompatible resources; buildings and units" time="233.814" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="131.632" status="run" />
+  </testsuite></testsuites>

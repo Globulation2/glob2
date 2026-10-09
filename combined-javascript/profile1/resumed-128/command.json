@@ -1,0 +1,18 @@
+[
+  "/home/bradley/.codex/worktrees/3d84/glob2/build/linux/client/debug/dev-dev_fast-true-pch-true-unity-true-linker-auto/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/combined-javascript/profile1/workers1/checkpoint-128.game.gz",
+  "--ticks",
+  "256",
+  "--compute-threads",
+  "4",
+  "--telemetry",
+  "checksums",
+  "--replay",
+  "true",
+  "--save",
+  "final",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/combined-javascript/profile1/resumed-128"
+]

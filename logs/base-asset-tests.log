@@ -1,0 +1,270 @@
+Collecting Pillow==12.2.0 (from -r /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/asset-requirements.txt (line 2))
+  Using cached pillow-12.2.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Using cached pillow-12.2.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+Installing collected packages: Pillow
+Successfully installed Pillow-12.2.0
+Runtime assets: 229 -> 54 bytes (2 files)
+Runtime assets: 229 -> 54 bytes (2 files)
+.Runtime assets: 229 -> 54 bytes (2 files)
+Runtime assets: 229 -> 54 bytes (2 files)
+.Runtime assets: 229 -> 54 bytes (2 files)
+Runtime assets: 229 -> 54 bytes (2 files)
+.Runtime assets: 229 -> 54 bytes (2 files)
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 845, in <module>
+    main()
+    ~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 829, in main
+    result = export_assets(
+        args.source,
+    ...<5 lines>...
+        args.worker,
+    )
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 799, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 604, in _export_assets
+    blob, record = encode_image(source, relative.as_posix(), cache, lossy)
+                   ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 231, in encode_image
+    image = Image.open(io.BytesIO(raw))
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/store/caches/asset-encoder-runtime-assets-v1-py3.14/venv/lib/python3.14/site-packages/PIL/Image.py", line 3711, in open
+    raise UnidentifiedImageError(msg)
+PIL.UnidentifiedImageError: cannot identify image file <_io.BytesIO object at 0x769746a46430>
+.Runtime assets: 229 -> 54 bytes (2 files)
+.Runtime assets: 229 -> 54 bytes (2 files)
+Runtime assets: 229 -> 54 bytes (2 files)
+F.Runtime assets: 61974 -> 27936 bytes (5 files)
+.Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 845, in <module>
+    main()
+    ~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 829, in main
+    result = export_assets(
+        args.source,
+    ...<5 lines>...
+        args.worker,
+    )
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 799, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 604, in _export_assets
+    blob, record = encode_image(source, relative.as_posix(), cache, lossy)
+                   ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 240, in encode_image
+    raise ValueError("Unsupported higher-depth PNG mode for WebP export: " + relative)
+ValueError: Unsupported higher-depth PNG mode for WebP export: data/gfx/frame0.png
+ERuntime assets: 21759 -> 8024 bytes (2 files)
+Runtime assets: 21759 -> 16538 bytes (2 files)
+.Runtime assets: 452 -> 277 bytes (3 files)
+.Runtime assets: 12426 -> 3846 bytes (2 files)
+..Runtime assets: 4120 -> 4137 bytes (4 files)
+.Runtime assets: 229 -> 54 bytes (2 files)
+FRuntime assets: 229 -> 54 bytes (2 files)
+Runtime assets: 229 -> 54 bytes (2 files)
+FTraceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 845, in <module>
+    main()
+    ~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 829, in main
+    result = export_assets(
+        args.source,
+    ...<5 lines>...
+        args.worker,
+    )
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 799, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 726, in _export_assets
+    raise ValueError(
+        "Refusing to replace an unowned asset directory: " + str(output)
+    )
+ValueError: Refusing to replace an unowned asset directory: /tmp/tmp64npkyvq/output
+E.Runtime assets: 229 -> 54 bytes (2 files)
+.Runtime assets: 229 -> 54 bytes (2 files)
+Runtime assets: 216 -> 50 bytes (2 files)
+.Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 845, in <module>
+    main()
+    ~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 829, in main
+    result = export_assets(
+        args.source,
+    ...<5 lines>...
+        args.worker,
+    )
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 799, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 584, in _export_assets
+    verify_highres_atlases(root)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 471, in verify_highres_atlases
+    raise ValueError("Source atlas frame placement differs: " + str(frame_path))
+ValueError: Source atlas frame placement differs: /tmp/tmpovsdz1i7/source/data/highres/v1/terrain0.png
+ERuntime assets: 818 -> 683 bytes (5 files)
+Runtime assets: 818 -> 683 bytes (5 files)
+Runtime assets: 818 -> 691 bytes (5 files)
+.Runtime assets: 818 -> 683 bytes (5 files)
+Runtime assets: 818 -> 683 bytes (5 files)
+.Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 845, in <module>
+    main()
+    ~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 829, in main
+    result = export_assets(
+        args.source,
+    ...<5 lines>...
+        args.worker,
+    )
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 799, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 585, in _export_assets
+    sheets = sheet_plan(files, root) if optimized else {}
+             ~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 346, in sheet_plan
+    raise ValueError("Sprite frames are not consecutive: " + sprite)
+ValueError: Sprite frames are not consecutive: data/gfx/unit
+E.Runtime assets: 818 -> 683 bytes (5 files)
+FRuntime assets: 818 -> 683 bytes (5 files)
+...
+======================================================================
+ERROR: test_high_depth_png_is_not_quantized_to_webp (test_package_assets.AssetExportTests.test_high_depth_png_is_not_quantized_to_webp)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 239, in test_high_depth_png_is_not_quantized_to_webp
+    self.export()
+    ~~~~~~~~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 111, in export
+    return export_assets(self.root, self.output, cache=self.cache, **kwargs)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 794, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 559, in _export_assets
+    subprocess.run(command, check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/store/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python', '/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py', '--source', '/tmp/tmpif0ea2vi/source', '--output', '/tmp/tmpif0ea2vi/output', '--platform', 'generic', '--worker', '--lossy-images', '--cache', '/tmp/tmpif0ea2vi/cache']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_refuses_source_and_unowned_output (test_package_assets.AssetExportTests.test_refuses_source_and_unowned_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 165, in test_refuses_source_and_unowned_output
+    self.export()
+    ~~~~~~~~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 111, in export
+    return export_assets(self.root, self.output, cache=self.cache, **kwargs)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 794, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 559, in _export_assets
+    subprocess.run(command, check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/store/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python', '/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py', '--source', '/tmp/tmp64npkyvq/source', '--output', '/tmp/tmp64npkyvq/output', '--platform', 'generic', '--worker', '--lossy-images', '--cache', '/tmp/tmp64npkyvq/cache']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_source_hd_atlas_placement_is_verified_before_encoding (test_package_assets.AssetExportTests.test_source_hd_atlas_placement_is_verified_before_encoding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 305, in test_source_hd_atlas_placement_is_verified_before_encoding
+    self.export()
+    ~~~~~~~~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 111, in export
+    return export_assets(self.root, self.output, cache=self.cache, **kwargs)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 794, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 559, in _export_assets
+    subprocess.run(command, check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/store/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python', '/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py', '--source', '/tmp/tmpovsdz1i7/source', '--output', '/tmp/tmpovsdz1i7/output', '--platform', 'generic', '--worker', '--lossy-images', '--cache', '/tmp/tmpovsdz1i7/cache']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_frames_behind_a_gap_are_rejected (test_package_assets.SpriteSheetExportTests.test_frames_behind_a_gap_are_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 493, in test_frames_behind_a_gap_are_rejected
+    self.export()
+    ~~~~~~~~~~~^^
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 412, in export
+    return export_assets(self.root, self.output, cache=self.cache, **kwargs)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 794, in export_assets
+    return _export_assets(root, output, platform, optimized, lossy, cache, worker)
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py", line 559, in _export_assets
+    subprocess.run(command, check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/store/caches/asset-encoder-runtime-assets-v1-py3.14/venv/bin/python', '/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/tools/package_assets.py', '--source', '/tmp/tmpro8qfy7v/source', '--output', '/tmp/tmpro8qfy7v/output', '--platform', 'generic', '--worker', '--lossy-images', '--cache', '/tmp/tmpro8qfy7v/cache']' returned non-zero exit status 1.
+
+======================================================================
+FAIL: test_failed_audit_replacement_rolls_back_export (test_package_assets.AssetExportTests.test_failed_audit_replacement_rolls_back_export)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 214, in test_failed_audit_replacement_rolls_back_export
+    with self.assertRaises(OSError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^
+AssertionError: OSError not raised
+
+======================================================================
+FAIL: test_q90_encoder_parameters (test_package_assets.AssetExportTests.test_q90_encoder_parameters)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 320, in test_q90_encoder_parameters
+    self.assertTrue(any(c.get("lossless") is False and c.get("quality") == 90
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        and c.get("method") == 6 and c.get("exact") is True for c in calls))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_recipe_change_invalidates_cache (test_package_assets.AssetExportTests.test_recipe_change_invalidates_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 328, in test_recipe_change_invalidates_cache
+    self.assertGreater(len(list(self.cache.glob("*/selection.json"))), count)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 not greater than 1
+
+======================================================================
+FAIL: test_runs_split_by_layer_size_and_sheet_capacity (test_package_assets.SpriteSheetExportTests.test_runs_split_by_layer_size_and_sheet_capacity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/baseline-apr0asve/test/build_system/test_package_assets.py", line 458, in test_runs_split_by_layer_size_and_sheet_capacity
+    self.assertEqual(
+    ~~~~~~~~~~~~~~~~^
+        lines,
+        ^^^^^^
+    ...<6 lines>...
+        ],
+        ^^
+    )
+    ^
+AssertionError: Lists differ: [['im[40 chars]0', '5', '3', '3'], ['rotated', '5', '2', '4', '4']] != [['im[40 chars]0', '2', '3', '3'], ['rotated', '2', '2', '3',[67 chars]'4']]
+
+First differing element 1:
+['rotated', '0', '5', '3', '3']
+['rotated', '0', '2', '3', '3']
+
+Second list contains 2 additional elements.
+First extra element 3:
+['rotated', '4', '1', '3', '3']
+
+  [['image', '2', '2', '3', '3'],
+-  ['rotated', '0', '5', '3', '3'],
+?                    ^
+
++  ['rotated', '0', '2', '3', '3'],
+?                    ^
+
++  ['rotated', '2', '2', '3', '3'],
++  ['rotated', '4', '1', '3', '3'],
+   ['rotated', '5', '2', '4', '4']]
+
+----------------------------------------------------------------------
+Ran 29 tests in 14.388s
+
+FAILED (failures=4, errors=4)

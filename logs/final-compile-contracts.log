@@ -1,0 +1,5 @@
+/usr/bin/g++ pch=0 unity=0 PASS
+/usr/bin/g++ pch=1 unity=0 PASS
+/usr/bin/g++ pch=0 unity=1 PASS
+/usr/bin/g++ pch=1 unity=1 PASS
+development compilation: configurations, header invalidation and no-change builds PASS

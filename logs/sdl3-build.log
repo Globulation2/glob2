@@ -1,0 +1,1638 @@
+-- The C compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Performing Test HAVE_BUILTIN_BSWAP16
+-- Performing Test HAVE_BUILTIN_BSWAP16 - Success
+-- Performing Test HAVE_BUILTIN_BSWAP32
+-- Performing Test HAVE_BUILTIN_BSWAP32 - Success
+-- Performing Test HAVE_BUILTIN_BSWAP64
+-- Performing Test HAVE_BUILTIN_BSWAP64 - Success
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so
+-- Performing Test HAVE_MATH_LIBRARY
+-- Performing Test HAVE_MATH_LIBRARY - Failed
+-- Adding -lm flag.
+-- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.a (found version "1.3.1")
+-- Found PNG: /usr/lib/x86_64-linux-gnu/libpng.a (found version "1.6.57")
+-- Found JPEG: /usr/lib/x86_64-linux-gnu/libjpeg.a (found version "80")
+-- TIFF is disabled when statically linking.
+-- Could NOT find GIF (missing: GIF_LIBRARY GIF_INCLUDE_DIR) 
+-- Looking for include file GLUT/glut.h
+-- Looking for include file GLUT/glut.h - not found
+-- Looking for include file GL/glut.h
+-- Looking for include file GL/glut.h - not found
+-- Looking for include file OpenGL/glut.h
+-- Looking for include file OpenGL/glut.h - not found
+-- Looking for include file shlwapi.h
+-- Looking for include file shlwapi.h - not found
+-- Looking for include file unistd.h
+-- Looking for include file unistd.h - found
+-- Looking for include file wincodec.h
+-- Looking for include file wincodec.h - not found
+-- Looking for include file windows.h
+-- Looking for include file windows.h - not found
+-- Performing Test WEBP_HAVE_FLAG_AVX2
+-- Performing Test WEBP_HAVE_FLAG_AVX2 - Failed
+-- Performing Test WEBP_HAVE_FLAG_AVX2
+-- Performing Test WEBP_HAVE_FLAG_AVX2 - Success
+-- Performing Test WEBP_HAVE_FLAG_SSE41
+-- Performing Test WEBP_HAVE_FLAG_SSE41 - Failed
+-- Performing Test WEBP_HAVE_FLAG_SSE41
+-- Performing Test WEBP_HAVE_FLAG_SSE41 - Success
+-- Performing Test WEBP_HAVE_FLAG_SSE2
+-- Performing Test WEBP_HAVE_FLAG_SSE2 - Success
+-- Performing Test WEBP_HAVE_FLAG_MIPS32
+-- Performing Test WEBP_HAVE_FLAG_MIPS32 - Failed
+-- Performing Test WEBP_HAVE_FLAG_MIPS32
+-- Performing Test WEBP_HAVE_FLAG_MIPS32 - Failed
+-- Performing Test WEBP_HAVE_FLAG_MIPS_DSP_R2
+-- Performing Test WEBP_HAVE_FLAG_MIPS_DSP_R2 - Failed
+-- Performing Test WEBP_HAVE_FLAG_MIPS_DSP_R2
+-- Performing Test WEBP_HAVE_FLAG_MIPS_DSP_R2 - Failed
+-- Performing Test HAS_COMPILE_FLAG
+-- Performing Test HAS_COMPILE_FLAG - Failed
+-- Performing Test WEBP_HAVE_FLAG_NEON
+-- Performing Test WEBP_HAVE_FLAG_NEON - Failed
+-- Performing Test WEBP_HAVE_FLAG_NEON
+-- Performing Test WEBP_HAVE_FLAG_NEON - Failed
+-- Performing Test WEBP_HAVE_FLAG_MSA
+-- Performing Test WEBP_HAVE_FLAG_MSA - Failed
+-- Performing Test WEBP_HAVE_FLAG_MSA
+-- Performing Test WEBP_HAVE_FLAG_MSA - Failed
+-- Performing Test HAS_COMPILE_FLAG
+-- Performing Test HAS_COMPILE_FLAG - Failed
+-- Configuring done (2.4s)
+-- Generating done (0.1s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    BUILD_TESTING
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_HARFBUZZ
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDL_EXAMPLES
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-sources/libwebp-1.6.0-build
+[  1%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_sse2.c.o
+[  1%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_neon.c.o
+[  2%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/bit_reader_utils.c.o
+[  4%] Building C object CMakeFiles/webpdecode.dir/src/dec/alpha_dec.c.o
+[  4%] Building C object CMakeFiles/webputils.dir/src/utils/bit_reader_utils.c.o
+[  4%] Building C object CMakeFiles/webpencode.dir/src/enc/alpha_enc.c.o
+[  4%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing.c.o
+[  4%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing.c.o
+[  5%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/cpu.c.o
+[  5%] Building C object CMakeFiles/webpdecode.dir/src/dec/buffer_dec.c.o
+[  6%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cpu.c.o
+[  6%] Building C object CMakeFiles/webputils.dir/src/utils/color_cache_utils.c.o
+[  6%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/color_cache_utils.c.o
+[  7%] Building C object CMakeFiles/webpdecode.dir/src/dec/frame_dec.c.o
+[  8%] Building C object CMakeFiles/webputils.dir/src/utils/filters_utils.c.o
+[  9%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/filters_utils.c.o
+[ 10%] Building C object CMakeFiles/webpencode.dir/src/enc/analysis_enc.c.o
+[ 11%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_cpu.c.o
+[ 11%] Building C object CMakeFiles/webputils.dir/src/utils/huffman_utils.c.o
+[ 12%] Building C object CMakeFiles/webputils.dir/src/utils/palette.c.o
+[ 12%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec.c.o
+[ 12%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_csp.c.o
+[ 12%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec.c.o
+[ 12%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/huffman_utils.c.o
+[ 13%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_dsp.c.o
+[ 13%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv_gamma.c.o
+[ 13%] Building C object CMakeFiles/webputils.dir/src/utils/quant_levels_dec_utils.c.o
+[ 13%] Building C object CMakeFiles/webpdecode.dir/src/dec/idec_dec.c.o
+[ 13%] Building C object CMakeFiles/webpencode.dir/src/enc/backward_references_cost_enc.c.o
+[ 14%] Building C object CMakeFiles/webpdecode.dir/src/dec/io_dec.c.o
+[ 15%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/palette.c.o
+[ 16%] Building C object CMakeFiles/sharpyuv.dir/sharpyuv/sharpyuv.c.o
+[ 17%] Building C object CMakeFiles/webputils.dir/src/utils/rescaler_utils.c.o
+[ 17%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/quant_levels_dec_utils.c.o
+[ 17%] Building C object CMakeFiles/webputils.dir/src/utils/random_utils.c.o
+[ 18%] Building C object CMakeFiles/webputils.dir/src/utils/thread_utils.c.o
+[ 18%] Building C object CMakeFiles/webputils.dir/src/utils/utils.c.o
+[ 19%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_clip_tables.c.o
+[ 20%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_clip_tables.c.o
+[ 21%] Building C object CMakeFiles/webpencode.dir/src/enc/backward_references_enc.c.o
+[ 21%] Building C object CMakeFiles/webpdecode.dir/src/dec/quant_dec.c.o
+[ 21%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters.c.o
+[ 22%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless.c.o
+[ 23%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/rescaler_utils.c.o
+[ 24%] Building C object CMakeFiles/webputils.dir/src/utils/bit_writer_utils.c.o
+[ 24%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters.c.o
+[ 25%] Building C object CMakeFiles/webpdecode.dir/src/dec/tree_dec.c.o
+[ 25%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/random_utils.c.o
+[ 26%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/thread_utils.c.o
+[ 27%] Building C object CMakeFiles/webputils.dir/src/utils/huffman_encode_utils.c.o
+[ 27%] Building C object CMakeFiles/webputils.dir/src/utils/quant_levels_utils.c.o
+[ 28%] Building C object CMakeFiles/webputilsdecode.dir/src/utils/utils.c.o
+[ 28%] Building C object CMakeFiles/webpdecode.dir/src/dec/vp8_dec.c.o
+[ 29%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless.c.o
+[ 29%] Built target webputilsdecode
+[ 30%] Linking C static library libsharpyuv.a
+[ 30%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler.c.o
+[ 31%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling.c.o
+[ 31%] Building C object CMakeFiles/webpencode.dir/src/enc/config_enc.c.o
+[ 31%] Built target sharpyuv
+[ 32%] Building C object CMakeFiles/webpencode.dir/src/enc/cost_enc.c.o
+[ 33%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler.c.o
+[ 33%] Built target webputils
+[ 33%] Building C object CMakeFiles/webpencode.dir/src/enc/filter_enc.c.o
+[ 34%] Building C object CMakeFiles/webpencode.dir/src/enc/frame_enc.c.o
+[ 34%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling.c.o
+[ 35%] Building C object CMakeFiles/webpdecode.dir/src/dec/vp8l_dec.c.o
+[ 35%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv.c.o
+[ 36%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_avx2.c.o
+[ 37%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_sse41.c.o
+[ 37%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_sse41.c.o
+[ 38%] Building C object CMakeFiles/webpencode.dir/src/enc/histogram_enc.c.o
+[ 38%] Building C object CMakeFiles/webpencode.dir/src/enc/iterator_enc.c.o
+[ 39%] Building C object CMakeFiles/webpdecode.dir/src/dec/webp_dec.c.o
+[ 40%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_sse41.c.o
+[ 41%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv.c.o
+[ 41%] Building C object CMakeFiles/webpencode.dir/src/enc/near_lossless_enc.c.o
+[ 41%] Built target webpdecode
+[ 42%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_enc.c.o
+[ 42%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_avx2.c.o
+[ 43%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_csp_enc.c.o
+[ 43%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_sse41.c.o
+[ 44%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_sse41.c.o
+[ 44%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_psnr_enc.c.o
+[ 45%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_sse41.c.o
+[ 45%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_sse2.c.o
+[ 45%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_sse41.c.o
+[ 46%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_sse2.c.o
+[ 47%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_sse41.c.o
+[ 48%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_rescale_enc.c.o
+[ 48%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_sse41.c.o
+[ 48%] Building C object CMakeFiles/webpencode.dir/src/enc/picture_tools_enc.c.o
+[ 49%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_sse41.c.o
+[ 50%] Building C object CMakeFiles/webpencode.dir/src/enc/predictor_enc.c.o
+[ 50%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_sse2.c.o
+[ 51%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_sse2.c.o
+[ 51%] Building C object CMakeFiles/webpencode.dir/src/enc/quant_enc.c.o
+[ 51%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_sse2.c.o
+[ 52%] Building C object CMakeFiles/webpencode.dir/src/enc/syntax_enc.c.o
+[ 52%] Building C object CMakeFiles/webpencode.dir/src/enc/token_enc.c.o
+[ 53%] Building C object CMakeFiles/webpencode.dir/src/enc/tree_enc.c.o
+[ 54%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_sse2.c.o
+[ 55%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_sse2.c.o
+[ 55%] Building C object CMakeFiles/webpencode.dir/src/enc/vp8l_enc.c.o
+[ 56%] Building C object CMakeFiles/webpencode.dir/src/enc/webp_enc.c.o
+[ 56%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_sse2.c.o
+[ 57%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_sse2.c.o
+[ 57%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_sse2.c.o
+[ 58%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_sse2.c.o
+[ 59%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_sse2.c.o
+[ 59%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_neon.c.o
+[ 60%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_neon.c.o
+[ 60%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_neon.c.o
+[ 61%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_neon.c.o
+[ 61%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_sse2.c.o
+[ 61%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_neon.c.o
+[ 62%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_sse2.c.o
+[ 63%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_neon.c.o
+[ 63%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_neon.c.o
+[ 64%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_neon.c.o
+[ 64%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_neon.c.o
+[ 65%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_neon.c.o
+[ 65%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_neon.c.o
+[ 65%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_neon.c.o
+[ 66%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_msa.c.o
+[ 66%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_msa.c.o
+[ 67%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_msa.c.o
+[ 68%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_msa.c.o
+[ 68%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_msa.c.o
+[ 69%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_mips32.c.o
+[ 69%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_mips32.c.o
+[ 70%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_mips32.c.o
+[ 70%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/alpha_processing_mips_dsp_r2.c.o
+[ 71%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/dec_mips_dsp_r2.c.o
+[ 71%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/filters_mips_dsp_r2.c.o
+[ 72%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/lossless_mips_dsp_r2.c.o
+[ 72%] Built target webpencode
+[ 72%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/rescaler_mips_dsp_r2.c.o
+[ 73%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/upsampling_mips_dsp_r2.c.o
+[ 74%] Building C object CMakeFiles/webpdspdecode.dir/src/dsp/yuv_mips_dsp_r2.c.o
+[ 75%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_neon.c.o
+[ 75%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_neon.c.o
+[ 77%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_msa.c.o
+[ 77%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_msa.c.o
+[ 77%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_msa.c.o
+[ 78%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_msa.c.o
+[ 78%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_mips32.c.o
+[ 78%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_msa.c.o
+[ 79%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_mips32.c.o
+[ 80%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_mips32.c.o
+[ 80%] Building C object CMakeFiles/webpdsp.dir/src/dsp/alpha_processing_mips_dsp_r2.c.o
+[ 81%] Building C object CMakeFiles/webpdsp.dir/src/dsp/dec_mips_dsp_r2.c.o
+[ 81%] Building C object CMakeFiles/webpdsp.dir/src/dsp/filters_mips_dsp_r2.c.o
+[ 82%] Building C object CMakeFiles/webpdsp.dir/src/dsp/rescaler_mips_dsp_r2.c.o
+[ 83%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_mips_dsp_r2.c.o
+[ 84%] Building C object CMakeFiles/webpdsp.dir/src/dsp/upsampling_mips_dsp_r2.c.o
+[ 84%] Building C object CMakeFiles/webpdsp.dir/src/dsp/yuv_mips_dsp_r2.c.o
+[ 84%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost.c.o
+[ 85%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc.c.o
+[ 85%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc.c.o
+[ 86%] Building C object CMakeFiles/webpdsp.dir/src/dsp/ssim.c.o
+[ 86%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_sse2.c.o
+[ 87%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_sse2.c.o
+[ 87%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_sse2.c.o
+[ 88%] Building C object CMakeFiles/webpdsp.dir/src/dsp/ssim_sse2.c.o
+[ 89%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_sse41.c.o
+[ 89%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_sse41.c.o
+[ 90%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_avx2.c.o
+[ 90%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_neon.c.o
+[ 91%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_neon.c.o
+[ 91%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_neon.c.o
+[ 92%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_msa.c.o
+[ 92%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_msa.c.o
+[ 92%] Built target webpdspdecode
+[ 93%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_mips32.c.o
+[ 93%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_mips32.c.o
+[ 94%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_mips32.c.o
+[ 95%] Building C object CMakeFiles/webpdsp.dir/src/dsp/cost_mips_dsp_r2.c.o
+[ 95%] Building C object CMakeFiles/webpdsp.dir/src/dsp/enc_mips_dsp_r2.c.o
+[ 96%] Building C object CMakeFiles/webpdsp.dir/src/dsp/lossless_enc_mips_dsp_r2.c.o
+[ 96%] Linking C static library libwebpdecoder.a
+[ 96%] Built target webpdecoder
+[ 96%] Built target webpdsp
+[ 96%] Linking C static library libwebp.a
+[ 96%] Built target webp
+[ 96%] Building C object CMakeFiles/webpdemux.dir/src/demux/demux.c.o
+[ 97%] Building C object CMakeFiles/webpdemux.dir/src/demux/anim_decode.c.o
+[ 97%] Building C object CMakeFiles/libwebpmux.dir/src/mux/muxinternal.c.o
+[ 97%] Building C object CMakeFiles/libwebpmux.dir/src/mux/anim_encode.c.o
+[ 98%] Building C object CMakeFiles/libwebpmux.dir/src/mux/muxedit.c.o
+[ 99%] Building C object CMakeFiles/libwebpmux.dir/src/mux/muxread.c.o
+[100%] Linking C static library libwebpdemux.a
+[100%] Built target webpdemux
+[100%] Linking C static library libwebpmux.a
+[100%] Built target libwebpmux
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/libsharpyuv.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libsharpyuv.a
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/sharpyuv/sharpyuv.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/sharpyuv/sharpyuv_csp.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/libwebpdecoder.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/libwebp.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/libwebpdemux.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/libwebpmux.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libwebpdecoder.a
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/decode.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libwebp.a
+-- Up-to-date: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/decode.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/encode.h
+-- Up-to-date: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libwebpdemux.a
+-- Up-to-date: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/decode.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/demux.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/mux_types.h
+-- Up-to-date: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libwebpmux.a
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/mux.h
+-- Up-to-date: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/mux_types.h
+-- Up-to-date: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/webp/types.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/WebP/cmake/WebPTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/WebP/cmake/WebPTargets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/WebP/cmake/WebPConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/WebP/cmake/WebPConfig.cmake
+-- The C compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "2.5.1")
+-- Detecting Target CPU Architecture
+-- Detecting Target CPU Architecture - X64
+-- Performing Test HAVE_GCC_WALL
+-- Performing Test HAVE_GCC_WALL - Success
+-- Performing Test HAVE_GCC_WUNDEF
+-- Performing Test HAVE_GCC_WUNDEF - Success
+-- Performing Test HAVE_GCC_WFLOAT_CONVERSION
+-- Performing Test HAVE_GCC_WFLOAT_CONVERSION - Success
+-- Performing Test HAVE_GCC_NO_STRICT_ALIASING
+-- Performing Test HAVE_GCC_NO_STRICT_ALIASING - Success
+-- Performing Test HAVE_GCC_WDOCUMENTATION
+-- Performing Test HAVE_GCC_WDOCUMENTATION - Failed
+-- Performing Test HAVE_GCC_WDOCUMENTATION_UNKNOWN_COMMAND
+-- Performing Test HAVE_GCC_WDOCUMENTATION_UNKNOWN_COMMAND - Failed
+-- Performing Test HAVE_GCC_COMMENT_BLOCK_COMMANDS
+-- Performing Test HAVE_GCC_COMMENT_BLOCK_COMMANDS - Failed
+-- Performing Test HAVE_CLANG_COMMENT_BLOCK_COMMANDS
+-- Performing Test HAVE_CLANG_COMMENT_BLOCK_COMMANDS - Failed
+-- Performing Test HAVE_GCC_WSHADOW
+-- Performing Test HAVE_GCC_WSHADOW - Success
+-- Performing Test HAVE_GCC_WUNUSED_LOCAL_TYPEDEFS
+-- Performing Test HAVE_GCC_WUNUSED_LOCAL_TYPEDEFS - Success
+-- Performing Test HAVE_GCC_WIMPLICIT_FALLTHROUGH
+-- Performing Test HAVE_GCC_WIMPLICIT_FALLTHROUGH - Success
+-- Performing Test COMPILER_SUPPORTS_FDIAGNOSTICS_COLOR_ALWAYS
+-- Performing Test COMPILER_SUPPORTS_FDIAGNOSTICS_COLOR_ALWAYS - Success
+-- Looking for __GLIBC__
+-- Looking for __GLIBC__ - found
+-- Performing Test HAVE_WL_VERSION_SCRIPT
+-- Performing Test HAVE_WL_VERSION_SCRIPT - Success
+-- Performing Test COMPILER_SUPPORTS_GCC_ATOMICS
+-- Performing Test COMPILER_SUPPORTS_GCC_ATOMICS - Success
+-- Performing Test HAVE_GCC_FVISIBILITY
+-- Performing Test HAVE_GCC_FVISIBILITY - Success
+-- Performing Test LINKER_SUPPORTS_WL_NO_UNDEFINED
+-- Performing Test LINKER_SUPPORTS_WL_NO_UNDEFINED - Success
+-- Performing Test COMPILER_SUPPORTS_MMX
+-- Performing Test COMPILER_SUPPORTS_MMX - Success
+-- Performing Test COMPILER_SUPPORTS_SSE
+-- Performing Test COMPILER_SUPPORTS_SSE - Success
+-- Performing Test COMPILER_SUPPORTS_SSE2
+-- Performing Test COMPILER_SUPPORTS_SSE2 - Success
+-- Performing Test COMPILER_SUPPORTS_SSE3
+-- Performing Test COMPILER_SUPPORTS_SSE3 - Success
+-- Performing Test COMPILER_SUPPORTS_SSE4_1
+-- Performing Test COMPILER_SUPPORTS_SSE4_1 - Success
+-- Performing Test COMPILER_SUPPORTS_SSE4_2
+-- Performing Test COMPILER_SUPPORTS_SSE4_2 - Success
+-- Performing Test COMPILER_SUPPORTS_AVX
+-- Performing Test COMPILER_SUPPORTS_AVX - Success
+-- Performing Test COMPILER_SUPPORTS_AVX2
+-- Performing Test COMPILER_SUPPORTS_AVX2 - Success
+-- Performing Test COMPILER_SUPPORTS_AVX512F
+-- Performing Test COMPILER_SUPPORTS_AVX512F - Success
+-- Looking for alloca.h
+-- Looking for alloca.h - found
+-- Looking for float.h
+-- Looking for float.h - found
+-- Looking for iconv.h
+-- Looking for iconv.h - found
+-- Looking for inttypes.h
+-- Looking for inttypes.h - found
+-- Looking for limits.h
+-- Looking for limits.h - found
+-- Looking for malloc.h
+-- Looking for malloc.h - found
+-- Looking for math.h
+-- Looking for math.h - found
+-- Looking for memory.h
+-- Looking for memory.h - found
+-- Looking for signal.h
+-- Looking for signal.h - found
+-- Looking for stdarg.h
+-- Looking for stdarg.h - found
+-- Looking for stdbool.h
+-- Looking for stdbool.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Looking for stdint.h
+-- Looking for stdint.h - found
+-- Looking for stdio.h
+-- Looking for stdio.h - found
+-- Looking for stdlib.h
+-- Looking for stdlib.h - found
+-- Looking for string.h
+-- Looking for string.h - found
+-- Looking for strings.h
+-- Looking for strings.h - found
+-- Looking for sys/types.h
+-- Looking for sys/types.h - found
+-- Looking for time.h
+-- Looking for time.h - found
+-- Looking for wchar.h
+-- Looking for wchar.h - found
+-- Looking for pow in m
+-- Looking for pow in m - found
+-- Looking for abs
+-- Looking for abs - found
+-- Looking for acos
+-- Looking for acos - found
+-- Looking for acosf
+-- Looking for acosf - found
+-- Looking for asin
+-- Looking for asin - found
+-- Looking for asinf
+-- Looking for asinf - found
+-- Looking for atan
+-- Looking for atan - found
+-- Looking for atan2
+-- Looking for atan2 - found
+-- Looking for atan2f
+-- Looking for atan2f - found
+-- Looking for atanf
+-- Looking for atanf - found
+-- Looking for atof
+-- Looking for atof - found
+-- Looking for atoi
+-- Looking for atoi - found
+-- Looking for bcopy
+-- Looking for bcopy - found
+-- Looking for ceil
+-- Looking for ceil - found
+-- Looking for ceilf
+-- Looking for ceilf - found
+-- Looking for copysign
+-- Looking for copysign - found
+-- Looking for copysignf
+-- Looking for copysignf - found
+-- Looking for cos
+-- Looking for cos - found
+-- Looking for cosf
+-- Looking for cosf - found
+-- Looking for _Exit
+-- Looking for _Exit - found
+-- Looking for exp
+-- Looking for exp - found
+-- Looking for expf
+-- Looking for expf - found
+-- Looking for fabs
+-- Looking for fabs - found
+-- Looking for fabsf
+-- Looking for fabsf - found
+-- Looking for floor
+-- Looking for floor - found
+-- Looking for floorf
+-- Looking for floorf - found
+-- Looking for fmod
+-- Looking for fmod - found
+-- Looking for fmodf
+-- Looking for fmodf - found
+-- Looking for fopen64
+-- Looking for fopen64 - found
+-- Looking for fseeko
+-- Looking for fseeko - found
+-- Looking for fseeko64
+-- Looking for fseeko64 - found
+-- Looking for getenv
+-- Looking for getenv - found
+-- Looking for _i64toa
+-- Looking for _i64toa - not found
+-- Looking for index
+-- Looking for index - found
+-- Looking for itoa
+-- Looking for itoa - not found
+-- Looking for log
+-- Looking for log - found
+-- Looking for log10
+-- Looking for log10 - found
+-- Looking for log10f
+-- Looking for log10f - found
+-- Looking for logf
+-- Looking for logf - found
+-- Looking for lround
+-- Looking for lround - found
+-- Looking for lroundf
+-- Looking for lroundf - found
+-- Looking for _ltoa
+-- Looking for _ltoa - not found
+-- Looking for malloc
+-- Looking for malloc - found
+-- Looking for memcmp
+-- Looking for memcmp - found
+-- Looking for memcpy
+-- Looking for memcpy - found
+-- Looking for memmove
+-- Looking for memmove - found
+-- Looking for memset
+-- Looking for memset - found
+-- Looking for modf
+-- Looking for modf - found
+-- Looking for modff
+-- Looking for modff - found
+-- Looking for pow
+-- Looking for pow - found
+-- Looking for powf
+-- Looking for powf - found
+-- Looking for putenv
+-- Looking for putenv - found
+-- Looking for rindex
+-- Looking for rindex - found
+-- Looking for round
+-- Looking for round - found
+-- Looking for roundf
+-- Looking for roundf - found
+-- Looking for scalbn
+-- Looking for scalbn - found
+-- Looking for scalbnf
+-- Looking for scalbnf - found
+-- Looking for setenv
+-- Looking for setenv - found
+-- Looking for sin
+-- Looking for sin - found
+-- Looking for sinf
+-- Looking for sinf - found
+-- Looking for sqr
+-- Looking for sqr - not found
+-- Looking for sqrt
+-- Looking for sqrt - found
+-- Looking for sqrtf
+-- Looking for sqrtf - found
+-- Looking for sscanf
+-- Looking for sscanf - found
+-- Looking for strchr
+-- Looking for strchr - found
+-- Looking for strcmp
+-- Looking for strcmp - found
+-- Looking for strlcat
+-- Looking for strlcat - found
+-- Looking for strlcpy
+-- Looking for strlcpy - found
+-- Looking for strlen
+-- Looking for strlen - found
+-- Looking for strncmp
+-- Looking for strncmp - found
+-- Looking for strnlen
+-- Looking for strnlen - found
+-- Looking for strpbrk
+-- Looking for strpbrk - found
+-- Looking for strrchr
+-- Looking for strrchr - found
+-- Looking for strstr
+-- Looking for strstr - found
+-- Looking for strnstr
+-- Looking for strnstr - not found
+-- Looking for strtod
+-- Looking for strtod - found
+-- Looking for strtok_r
+-- Looking for strtok_r - found
+-- Looking for strtol
+-- Looking for strtol - found
+-- Looking for strtoll
+-- Looking for strtoll - found
+-- Looking for strtoul
+-- Looking for strtoul - found
+-- Looking for strtoull
+-- Looking for strtoull - found
+-- Looking for tan
+-- Looking for tan - found
+-- Looking for tanf
+-- Looking for tanf - found
+-- Looking for trunc
+-- Looking for trunc - found
+-- Looking for truncf
+-- Looking for truncf - found
+-- Looking for unsetenv
+-- Looking for unsetenv - found
+-- Looking for vsnprintf
+-- Looking for vsnprintf - found
+-- Looking for vsscanf
+-- Looking for vsscanf - found
+-- Looking for wcsnlen
+-- Looking for wcsnlen - found
+-- Looking for wcscmp
+-- Looking for wcscmp - found
+-- Looking for wcsdup
+-- Looking for wcsdup - found
+-- Looking for wcslcat
+-- Looking for wcslcat - found
+-- Looking for wcslcpy
+-- Looking for wcslcpy - found
+-- Looking for wcslen
+-- Looking for wcslen - found
+-- Looking for wcsncmp
+-- Looking for wcsncmp - found
+-- Looking for wcsstr
+-- Looking for wcsstr - found
+-- Looking for wcstol
+-- Looking for wcstol - found
+-- Looking for strcasestr
+-- Looking for strcasestr - found
+-- Performing Test LIBC_HAS_ISINF
+-- Performing Test LIBC_HAS_ISINF - Success
+-- Performing Test LIBC_ISINF_HANDLES_FLOAT
+-- Performing Test LIBC_ISINF_HANDLES_FLOAT - Success
+-- Performing Test LIBC_HAS_ISINFF
+-- Performing Test LIBC_HAS_ISINFF - Success
+-- Performing Test LIBC_HAS_ISNAN
+-- Performing Test LIBC_HAS_ISNAN - Success
+-- Performing Test LIBC_ISNAN_HANDLES_FLOAT
+-- Performing Test LIBC_ISNAN_HANDLES_FLOAT - Success
+-- Performing Test LIBC_HAS_ISNANF
+-- Performing Test LIBC_HAS_ISNANF - Success
+-- Looking for fdatasync
+-- Looking for fdatasync - found
+-- Looking for gethostname
+-- Looking for gethostname - found
+-- Looking for getpagesize
+-- Looking for getpagesize - found
+-- Looking for getresgid
+-- Looking for getresgid - found
+-- Looking for getresuid
+-- Looking for getresuid - found
+-- Looking for sigaction
+-- Looking for sigaction - found
+-- Looking for sigtimedwait
+-- Looking for sigtimedwait - found
+-- Looking for setjmp
+-- Looking for setjmp - found
+-- Looking for nanosleep
+-- Looking for nanosleep - found
+-- Looking for gmtime_r
+-- Looking for gmtime_r - found
+-- Looking for localtime_r
+-- Looking for localtime_r - found
+-- Looking for nl_langinfo
+-- Looking for nl_langinfo - found
+-- Looking for sysconf
+-- Looking for sysconf - found
+-- Looking for sysctlbyname
+-- Looking for sysctlbyname - not found
+-- Looking for getauxval
+-- Looking for getauxval - found
+-- Looking for elf_aux_info
+-- Looking for elf_aux_info - not found
+-- Looking for ppoll
+-- Looking for ppoll - found
+-- Looking for memfd_create
+-- Looking for memfd_create - found
+-- Looking for posix_fallocate
+-- Looking for posix_fallocate - found
+-- Looking for posix_spawn_file_actions_addchdir
+-- Looking for posix_spawn_file_actions_addchdir - not found
+-- Looking for posix_spawn_file_actions_addchdir_np
+-- Looking for posix_spawn_file_actions_addchdir_np - found
+-- Performing Test ICONV_IN_LIBC
+-- Performing Test ICONV_IN_LIBC - Success
+-- Performing Test ICONV_IN_LIBICONV
+-- Performing Test ICONV_IN_LIBICONV - Failed
+-- Performing Test HAVE_SA_SIGACTION
+-- Performing Test HAVE_SA_SIGACTION - Success
+-- Performing Test HAVE_ST_MTIM
+-- Performing Test HAVE_ST_MTIM - Success
+-- Looking for dlopen
+-- Looking for dlopen - found
+-- Performing Test HAVE_O_CLOEXEC
+-- Performing Test HAVE_O_CLOEXEC - Success
+-- Performing Test COMPILER_SUPPORTS_ELFNOTES
+-- Performing Test COMPILER_SUPPORTS_ELFNOTES - Success
+-- Found ALSA: /usr/lib/x86_64-linux-gnu/libasound.so (found version "1.2.15.3")
+-- dynamic libasound -> libasound.so.2
+-- Checking for module 'jack'
+--   Found jack, version 0.126.0
+-- dynamic libjack -> libjack.so.0
+-- Checking for module 'libpipewire-0.3>=0.3.44'
+--   Found libpipewire-0.3, version 1.6.2
+-- dynamic libpipewire-0.3 -> libpipewire-0.3.so.0
+-- Checking for module 'libpulse>=0.9.15'
+--   Found libpulse, version 17.0
+-- dynamic libpulse -> libpulse.so.0
+-- Checking for module 'sndio'
+--   Found sndio, version 1.10.0
+-- dynamic libsndio -> libsndio.so.7
+-- Found X11: /usr/include
+-- Looking for XOpenDisplay in /usr/lib/x86_64-linux-gnu/libX11.so;/usr/lib/x86_64-linux-gnu/libXext.so
+-- Looking for XOpenDisplay in /usr/lib/x86_64-linux-gnu/libX11.so;/usr/lib/x86_64-linux-gnu/libXext.so - found
+-- Looking for gethostbyname
+-- Looking for gethostbyname - found
+-- Looking for connect
+-- Looking for connect - found
+-- Looking for remove
+-- Looking for remove - found
+-- Looking for shmat
+-- Looking for shmat - found
+-- Looking for IceConnectionNumber in ICE
+-- Looking for IceConnectionNumber in ICE - found
+-- dynamic libX11 -> libX11.so.6
+-- dynamic libXext -> libXext.so.6
+-- dynamic libXcursor -> libXcursor.so.1
+-- dynamic libXi -> libXi.so.6
+-- dynamic libXfixes -> libXfixes.so.3
+-- dynamic libXrandr -> libXrandr.so.2
+-- dynamic libXrender -> libXrender.so.1
+-- dynamic libXss -> libXss.so.1
+-- dynamic libXtst -> libXtst.so.6
+-- Looking for shmat
+-- Looking for shmat - found
+-- Performing Test HAVE_XGENERICEVENT
+-- Performing Test HAVE_XGENERICEVENT - Success
+-- Looking for X11/XKBlib.h
+-- Looking for X11/XKBlib.h - found
+-- Performing Test HAVE_XINPUT2_SCROLLINFO
+-- Performing Test HAVE_XINPUT2_SCROLLINFO - Success
+-- Performing Test HAVE_XINPUT2_MULTITOUCH
+-- Performing Test HAVE_XINPUT2_MULTITOUCH - Success
+-- Performing Test HAVE_XINPUT2_GESTURE
+-- Performing Test HAVE_XINPUT2_GESTURE - Success
+-- Performing Test HAVE_XFIXES_H
+-- Performing Test HAVE_XFIXES_H - Success
+-- Checking for module 'fribidi'
+--   Found fribidi, version 1.0.16
+-- dynamic libfribidi -> libfribidi.so.0
+-- Checking for module 'libthai'
+--   Found libthai, version 0.1.30
+-- dynamic libthai -> libthai.so.0
+-- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so
+-- Performing Test HAVE_OPENGL_EGL
+-- Performing Test HAVE_OPENGL_EGL - Success
+-- Checking for module 'libdrm'
+--   Found libdrm, version 2.4.131
+-- Checking for module 'gbm'
+--   Found gbm, version 26.0.8-1ubuntu0.3
+-- dynamic libdrm -> libdrm.so.2
+-- dynamic libgbm -> libgbm.so.1
+-- Performing Test HAVE_OPENGL_GLX
+-- Performing Test HAVE_OPENGL_GLX - Success
+-- Performing Test HAVE_OPENGL
+-- Performing Test HAVE_OPENGL - Success
+-- Performing Test HAVE_OPENGLES_V1
+-- Performing Test HAVE_OPENGLES_V1 - Success
+-- Performing Test HAVE_OPENGLES_V2
+-- Performing Test HAVE_OPENGLES_V2 - Success
+-- Checking for modules 'wayland-client>=1.18;wayland-egl;wayland-cursor;egl;xkbcommon>=0.5.0'
+--   Found wayland-client, version 1.24.0
+--   Found wayland-egl, version 18.1.0
+--   Found wayland-cursor, version 1.24.0
+--   Found egl, version 1.5
+--   Found xkbcommon, version 1.13.1
+-- dynamic libwayland-client -> libwayland-client.so.0
+-- dynamic libwayland-egl -> libwayland-egl.so.1
+-- dynamic libwayland-cursor -> libwayland-cursor.so.0
+-- dynamic libxkbcommon -> libxkbcommon.so.0
+-- Checking for module 'libdecor-0'
+--   Found libdecor-0, version 0.2.5
+-- dynamic libdecor-0 -> libdecor-0.so.0
+-- Performing Test HAVE_LINUX_INPUT_H
+-- Performing Test HAVE_LINUX_INPUT_H - Success
+-- Performing Test HAVE_INPUT_KD
+-- Performing Test HAVE_INPUT_KD - Success
+-- Performing Test HAVE_LINUX_VIDEODEV2_H
+-- Performing Test HAVE_LINUX_VIDEODEV2_H - Success
+-- Looking for libudev.h
+-- Looking for libudev.h - found
+-- dynamic libudev -> libudev.so.1
+-- Looking for sys/inotify.h
+-- Looking for sys/inotify.h - found
+-- Looking for inotify_init
+-- Looking for inotify_init - found
+-- Looking for inotify_init1
+-- Looking for inotify_init1 - found
+-- Checking for one of the modules 'dbus-1;dbus'
+-- Checking for one of the modules 'ibus-1.0;ibus'
+-- Checking for one of the modules 'liburing-ffi'
+-- Checking for module 'libusb-1.0>=1.0.16'
+--   Package 'libusb-1.0' not found
+-- Could NOT find LibUSB (missing: LibUSB_LIBRARY LibUSB_INCLUDE_PATH) (found version "LibUSB_VERSION-NOTFOUND")
+-- Performing Test HAVE_PTHREADS
+-- Performing Test HAVE_PTHREADS - Success
+-- Performing Test HAVE_RECURSIVE_MUTEXES
+-- Performing Test HAVE_RECURSIVE_MUTEXES - Success
+-- Performing Test HAVE_PTHREADS_SEM
+-- Performing Test HAVE_PTHREADS_SEM - Success
+-- Performing Test COMPILER_HAS_SEM_TIMEDWAIT
+-- Performing Test COMPILER_HAS_SEM_TIMEDWAIT - Success
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Looking for pthread_np.h
+-- Looking for pthread_np.h - not found
+-- Performing Test HAVE_PTHREAD_SETNAME_NP
+-- Performing Test HAVE_PTHREAD_SETNAME_NP - Success
+-- Looking for clock_gettime in c
+-- Looking for clock_gettime in c - found
+-- Performing Test HAVE_ENABLE_NEW_DTAGS
+-- Performing Test HAVE_ENABLE_NEW_DTAGS - Success
+-- Performing Test HAVE_POSIX_SPAWN
+-- Performing Test HAVE_POSIX_SPAWN - Success
+-- Looking for vfork
+-- Looking for vfork - found
+-- 
+-- SDL3 was configured with the following options:
+-- 
+-- Platform: Linux-7.0.0-31-generic
+-- 64-bit:   TRUE
+-- Compiler: /usr/bin/cc
+-- Revision: SDL-release-3.4.16-0-gfa2c02bb6
+-- Vendor:   
+-- 
+-- Subsystems:
+--   Audio:    ON
+--   Video:    ON
+--   GPU:      ON
+--   Render:   ON
+--   Camera:   ON
+--   Joystick: ON
+--   Haptic:   ON
+--   Hidapi:   ON
+--   Power:    ON
+--   Sensor:   ON
+--   Dialog:   ON
+--   Tray:     ON
+-- 
+-- Options:
+--   SDL_ALSA                    (Wanted: ON): ON
+--   SDL_ALSA_SHARED             (Wanted: ON): ON
+--   SDL_ALTIVEC                 (Wanted: OFF): OFF
+--   SDL_ARMNEON                 (Wanted: OFF): OFF
+--   SDL_ASAN                    (Wanted: OFF): OFF
+--   SDL_ASSEMBLY                (Wanted: ON): ON
+--   SDL_ASSERTIONS              (Wanted: auto): auto
+--   SDL_AVX                     (Wanted: ON): ON
+--   SDL_AVX2                    (Wanted: ON): ON
+--   SDL_AVX512F                 (Wanted: ON): ON
+--   SDL_BACKGROUNDING_SIGNAL    (Wanted: OFF): OFF
+--   SDL_CCACHE                  (Wanted: OFF): OFF
+--   SDL_CLANG_TIDY              (Wanted: OFF): OFF
+--   SDL_CLOCK_GETTIME           (Wanted: ON): ON
+--   SDL_COCOA                   (Wanted: OFF): OFF
+--   SDL_DBUS                    (Wanted: ON): ON
+--   SDL_DEPS_SHARED             (Wanted: ON): OFF
+--   SDL_DIRECTX                 (Wanted: OFF): OFF
+--   SDL_DISKAUDIO               (Wanted: ON): ON
+--   SDL_DLOPEN_NOTES            (Wanted: ON): ON
+--   SDL_DUMMYAUDIO              (Wanted: ON): ON
+--   SDL_DUMMYCAMERA             (Wanted: ON): ON
+--   SDL_DUMMYVIDEO              (Wanted: ON): ON
+--   SDL_EXAMPLES                (Wanted: OFF): OFF
+--   SDL_EXAMPLES_LINK_SHARED    (Wanted: ON): OFF
+--   SDL_FOREGROUNDING_SIGNAL    (Wanted: OFF): OFF
+--   SDL_FRIBIDI                 (Wanted: ON): ON
+--   SDL_FRIBIDI_SHARED          (Wanted: ON): ON
+--   SDL_GCC_ATOMICS             (Wanted: ON): ON
+--   SDL_HIDAPI                  (Wanted: ON): ON
+--   SDL_HIDAPI_JOYSTICK         (Wanted: ON): ON
+--   SDL_HIDAPI_LIBUSB           (Wanted: ON): OFF
+--   SDL_HIDAPI_LIBUSB_SHARED    (Wanted: ON): OFF
+--   SDL_IBUS                    (Wanted: ON): ON
+--   SDL_INSTALL                 (Wanted: ON): OFF
+--   SDL_INSTALL_TESTS           (Wanted: OFF): OFF
+--   SDL_JACK                    (Wanted: ON): ON
+--   SDL_JACK_SHARED             (Wanted: ON): ON
+--   SDL_KMSDRM                  (Wanted: ON): ON
+--   SDL_KMSDRM_SHARED           (Wanted: ON): ON
+--   SDL_LASX                    (Wanted: OFF): OFF
+--   SDL_LIBC                    (Wanted: ON): ON
+--   SDL_LIBICONV                (Wanted: OFF): OFF
+--   SDL_LIBTHAI                 (Wanted: ON): ON
+--   SDL_LIBTHAI_SHARED          (Wanted: ON): ON
+--   SDL_LIBUDEV                 (Wanted: ON): ON
+--   SDL_LIBURING                (Wanted: ON): OFF
+--   SDL_LSX                     (Wanted: OFF): OFF
+--   SDL_METAL                   (Wanted: OFF): OFF
+--   SDL_MMX                     (Wanted: ON): ON
+--   SDL_OFFSCREEN               (Wanted: ON): ON
+--   SDL_OPENGL                  (Wanted: ON): ON
+--   SDL_OPENGLES                (Wanted: ON): ON
+--   SDL_OPENVR                  (Wanted: OFF): OFF
+--   SDL_OSS                     (Wanted: OFF): OFF
+--   SDL_PIPEWIRE                (Wanted: ON): ON
+--   SDL_PIPEWIRE_SHARED         (Wanted: ON): ON
+--   SDL_PTHREADS                (Wanted: ON): ON
+--   SDL_PTHREADS_SEM            (Wanted: ON): ON
+--   SDL_PULSEAUDIO              (Wanted: ON): ON
+--   SDL_PULSEAUDIO_SHARED       (Wanted: ON): ON
+--   SDL_RENDER_D3D              (Wanted: OFF): OFF
+--   SDL_RENDER_D3D11            (Wanted: OFF): OFF
+--   SDL_RENDER_D3D12            (Wanted: OFF): OFF
+--   SDL_RENDER_GPU              (Wanted: ON): ON
+--   SDL_RENDER_METAL            (Wanted: OFF): OFF
+--   SDL_RENDER_VULKAN           (Wanted: ON): ON
+--   SDL_ROCKCHIP                (Wanted: OFF): OFF
+--   SDL_RPATH                   (Wanted: ON): ON
+--   SDL_RPI                     (Wanted: OFF): OFF
+--   SDL_SNDIO                   (Wanted: ON): ON
+--   SDL_SNDIO_SHARED            (Wanted: ON): ON
+--   SDL_SSE                     (Wanted: ON): ON
+--   SDL_SSE2                    (Wanted: ON): ON
+--   SDL_SSE3                    (Wanted: ON): ON
+--   SDL_SSE4_1                  (Wanted: ON): ON
+--   SDL_SSE4_2                  (Wanted: ON): ON
+--   SDL_SYSTEM_ICONV            (Wanted: ON): ON
+--   SDL_TESTS                   (Wanted: OFF): OFF
+--   SDL_TESTS_LINK_SHARED       (Wanted: ON): OFF
+--   SDL_UNINSTALL               (Wanted: ON): ON
+--   SDL_VIRTUAL_JOYSTICK        (Wanted: ON): ON
+--   SDL_VIVANTE                 (Wanted: OFF): OFF
+--   SDL_VULKAN                  (Wanted: ON): ON
+--   SDL_WASAPI                  (Wanted: OFF): OFF
+--   SDL_WAYLAND                 (Wanted: ON): ON
+--   SDL_WAYLAND_LIBDECOR        (Wanted: ON): ON
+--   SDL_WAYLAND_LIBDECOR_SHARED (Wanted: ON): ON
+--   SDL_WAYLAND_SHARED          (Wanted: ON): ON
+--   SDL_X11                     (Wanted: ON): ON
+--   SDL_X11_SHARED              (Wanted: ON): ON
+--   SDL_X11_XCURSOR             (Wanted: ON): ON
+--   SDL_X11_XDBE                (Wanted: ON): ON
+--   SDL_X11_XFIXES              (Wanted: ON): ON
+--   SDL_X11_XINPUT              (Wanted: ON): ON
+--   SDL_X11_XRANDR              (Wanted: ON): ON
+--   SDL_X11_XSCRNSAVER          (Wanted: ON): ON
+--   SDL_X11_XSHAPE              (Wanted: ON): ON
+--   SDL_X11_XSYNC               (Wanted: ON): ON
+--   SDL_X11_XTEST               (Wanted: ON): ON
+--   SDL_XINPUT                  (Wanted: OFF): OFF
+-- 
+--  Build Shared Library: ON
+--  Build Static Library: OFF
+-- 
+-- Enabled backends:
+--   Video drivers: dummy kmsdrm(dynamic) offscreen wayland(dynamic) x11(dynamic)
+--   X11 libraries: xcursor xdbe xfixes xinput2 xrandr xscrnsaver xshape xsync xtest
+--   Render drivers: gpu ogl ogl_es2 vulkan
+--   GPU drivers: vulkan
+--   Audio drivers: alsa(dynamic) disk dummy jack(dynamic) pipewire(dynamic) pulseaudio(dynamic) sndio(dynamic)
+--   Joystick drivers: hidapi linux virtual
+--   Camera drivers: dummy pipewire(dynamic) v4l2
+-- 
+-- If something was not detected, although the libraries
+-- were installed, then make sure you have set the
+-- CMAKE_C_FLAGS and CMAKE_PREFIX_PATH CMake variables correctly.
+-- 
+-- Configuring done (34.8s)
+-- Generating done (0.1s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_HARFBUZZ
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-sources/SDL3-3.4.16-build
+[  0%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_atan2.c.o
+[  0%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_fmod.c.o
+[  0%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log10.c.o
+[  0%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_pow.c.o
+[  1%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_log.c.o
+[  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_sqrt.c.o
+[  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_exp.c.o
+[  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/e_rem_pio2.c.o
+[  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/k_cos.c.o
+[  2%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/k_rem_pio2.c.o
+[  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/k_sin.c.o
+[  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/k_tan.c.o
+[  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_atan.c.o
+[  3%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_copysign.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_cos.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_fabs.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_floor.c.o
+[  4%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_isinf.c.o
+[  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_isinff.c.o
+[  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_isnan.c.o
+[  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_isnanf.c.o
+[  5%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_modf.c.o
+[  6%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_scalbn.c.o
+[  6%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_sin.c.o
+[  6%] Building C object CMakeFiles/SDL_uclibc.dir/src/libm/s_tan.c.o
+[  7%] Linking C static library libSDL_uclibc.a
+[  7%] Built target SDL_uclibc
+[  7%] Generating wayland-generated-protocols/color-management-v1-client-protocol.h
+[  7%] Generating wayland-generated-protocols/fractional-scale-v1-client-protocol.h
+[  7%] Generating wayland-generated-protocols/alpha-modifier-v1-client-protocol.h
+[  7%] Generating wayland-generated-protocols/xdg-toplevel-icon-v1-client-protocol.h
+[  7%] Generating wayland-generated-protocols/frog-color-management-v1-client-protocol.h
+[  8%] Generating wayland-generated-protocols/idle-inhibit-unstable-v1-client-protocol.h
+[  9%] Generating wayland-generated-protocols/cursor-shape-v1-client-protocol.h
+[  9%] Generating wayland-generated-protocols/input-timestamps-unstable-v1-client-protocol.h
+[  9%] Generating wayland-generated-protocols/keyboard-shortcuts-inhibit-unstable-v1-client-protocol.h
+[  9%] Generating wayland-generated-protocols/pointer-constraints-unstable-v1-client-protocol.h
+[  9%] Generating wayland-generated-protocols/pointer-warp-v1-client-protocol.h
+[  9%] Generating wayland-generated-protocols/primary-selection-unstable-v1-client-protocol.h
+[ 10%] Generating wayland-generated-protocols/pointer-gestures-unstable-v1-client-protocol.h
+[ 11%] Generating wayland-generated-protocols/relative-pointer-unstable-v1-client-protocol.h
+[ 11%] Generating wayland-generated-protocols/tablet-v2-client-protocol.h
+[ 11%] Generating wayland-generated-protocols/text-input-unstable-v3-client-protocol.h
+[ 11%] Generating wayland-generated-protocols/viewporter-client-protocol.h
+[ 11%] Generating wayland-generated-protocols/wayland-client-protocol.h
+[ 12%] Generating wayland-generated-protocols/xdg-activation-v1-client-protocol.h
+[ 12%] Generating wayland-generated-protocols/xdg-decoration-unstable-v1-client-protocol.h
+[ 12%] Generating wayland-generated-protocols/xdg-output-unstable-v1-client-protocol.h
+[ 13%] Generating wayland-generated-protocols/xdg-dialog-v1-client-protocol.h
+[ 13%] Generating wayland-generated-protocols/xdg-foreign-unstable-v2-client-protocol.h
+*******************************************************
+*                                                     *
+* WARNING: XML failed validation against built-in DTD *
+*                                                     *
+*******************************************************
+[ 13%] Generating wayland-generated-protocols/xdg-shell-client-protocol.h
+[ 13%] Generating wayland-generated-protocols/xdg-toplevel-icon-v1-protocol.c
+[ 13%] Generating wayland-generated-protocols/alpha-modifier-v1-protocol.c
+[ 13%] Generating wayland-generated-protocols/color-management-v1-protocol.c
+[ 13%] Generating wayland-generated-protocols/frog-color-management-v1-protocol.c
+[ 13%] Generating wayland-generated-protocols/cursor-shape-v1-protocol.c
+[ 14%] Generating wayland-generated-protocols/fractional-scale-v1-protocol.c
+[ 14%] Generating wayland-generated-protocols/idle-inhibit-unstable-v1-protocol.c
+[ 14%] Generating wayland-generated-protocols/input-timestamps-unstable-v1-protocol.c
+[ 15%] Generating wayland-generated-protocols/keyboard-shortcuts-inhibit-unstable-v1-protocol.c
+[ 15%] Generating wayland-generated-protocols/pointer-constraints-unstable-v1-protocol.c
+[ 15%] Generating wayland-generated-protocols/pointer-gestures-unstable-v1-protocol.c
+[ 16%] Generating wayland-generated-protocols/pointer-warp-v1-protocol.c
+[ 16%] Generating wayland-generated-protocols/primary-selection-unstable-v1-protocol.c
+[ 17%] Generating wayland-generated-protocols/tablet-v2-protocol.c
+[ 17%] Generating wayland-generated-protocols/text-input-unstable-v3-protocol.c
+[ 17%] Generating wayland-generated-protocols/relative-pointer-unstable-v1-protocol.c
+[ 18%] Generating wayland-generated-protocols/wayland-protocol.c
+[ 18%] Generating wayland-generated-protocols/xdg-decoration-unstable-v1-protocol.c
+[ 18%] Generating wayland-generated-protocols/xdg-activation-v1-protocol.c
+[ 18%] Generating wayland-generated-protocols/viewporter-protocol.c
+[ 18%] Generating wayland-generated-protocols/xdg-dialog-v1-protocol.c
+[ 18%] Generating wayland-generated-protocols/xdg-foreign-unstable-v2-protocol.c
+*******************************************************
+*                                                     *
+* WARNING: XML failed validation against built-in DTD *
+*                                                     *
+*******************************************************
+[ 19%] Generating wayland-generated-protocols/xdg-shell-protocol.c
+[ 19%] Generating wayland-generated-protocols/xdg-output-unstable-v1-protocol.c
+[ 20%] Building C object CMakeFiles/SDL3-shared.dir/cmake_pch.h.gch
+[ 20%] Building C object CMakeFiles/SDL3-shared.dir/src/dynapi/SDL_dynapi.c.o
+[ 20%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_error.c.o
+[ 20%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_hashtable.c.o
+[ 20%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_assert.c.o
+[ 21%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_guid.c.o
+[ 21%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL.c.o
+[ 21%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_list.c.o
+[ 21%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_hints.c.o
+[ 22%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_log.c.o
+[ 22%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_properties.c.o
+[ 22%] Building C object CMakeFiles/SDL3-shared.dir/src/SDL_utils.c.o
+[ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/atomic/SDL_atomic.c.o
+[ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/atomic/SDL_spinlock.c.o
+[ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_audio.c.o
+[ 23%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_audiocvt.c.o
+[ 24%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_audiodev.c.o
+[ 24%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_audioqueue.c.o
+[ 24%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_audioresample.c.o
+[ 24%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_audiotypecvt.c.o
+[ 25%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_mixer.c.o
+[ 25%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/SDL_wave.c.o
+[ 25%] Building C object CMakeFiles/SDL3-shared.dir/src/camera/SDL_camera.c.o
+[ 25%] Building C object CMakeFiles/SDL3-shared.dir/src/core/SDL_core_unsupported.c.o
+[ 26%] Building C object CMakeFiles/SDL3-shared.dir/src/cpuinfo/SDL_cpuinfo.c.o
+[ 26%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_categories.c.o
+[ 27%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_clipboardevents.c.o
+[ 27%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_displayevents.c.o
+[ 27%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_dropevents.c.o
+[ 27%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_events.c.o
+[ 28%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_eventwatch.c.o
+[ 28%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_keyboard.c.o
+[ 28%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_keymap.c.o
+[ 28%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_keysym_to_keycode.c.o
+[ 29%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_keysym_to_scancode.c.o
+[ 29%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_mouse.c.o
+[ 29%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_pen.c.o
+[ 29%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_quit.c.o
+[ 30%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_scancode_tables.c.o
+[ 30%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_touch.c.o
+[ 30%] Building C object CMakeFiles/SDL3-shared.dir/src/events/SDL_windowevents.c.o
+[ 31%] Building C object CMakeFiles/SDL3-shared.dir/src/events/imKStoUCS.c.o
+[ 31%] Building C object CMakeFiles/SDL3-shared.dir/src/filesystem/SDL_filesystem.c.o
+[ 31%] Building C object CMakeFiles/SDL3-shared.dir/src/gpu/SDL_gpu.c.o
+[ 31%] Building C object CMakeFiles/SDL3-shared.dir/src/haptic/SDL_haptic.c.o
+[ 32%] Building C object CMakeFiles/SDL3-shared.dir/src/hidapi/SDL_hidapi.c.o
+[ 32%] Building C object CMakeFiles/SDL3-shared.dir/src/io/SDL_asyncio.c.o
+[ 32%] Building C object CMakeFiles/SDL3-shared.dir/src/io/SDL_iostream.c.o
+[ 32%] Building C object CMakeFiles/SDL3-shared.dir/src/io/generic/SDL_asyncio_generic.c.o
+[ 33%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/SDL_gamepad.c.o
+[ 33%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/SDL_joystick.c.o
+[ 33%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/SDL_steam_virtual_gamepad.c.o
+[ 33%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/controller_type.c.o
+[ 34%] Building C object CMakeFiles/SDL3-shared.dir/src/locale/SDL_locale.c.o
+[ 34%] Building C object CMakeFiles/SDL3-shared.dir/src/main/SDL_main_callbacks.c.o
+[ 34%] Building C object CMakeFiles/SDL3-shared.dir/src/main/SDL_runapp.c.o
+[ 35%] Building C object CMakeFiles/SDL3-shared.dir/src/misc/SDL_libusb.c.o
+[ 35%] Building C object CMakeFiles/SDL3-shared.dir/src/misc/SDL_url.c.o
+[ 35%] Building C object CMakeFiles/SDL3-shared.dir/src/power/SDL_power.c.o
+[ 35%] Building C object CMakeFiles/SDL3-shared.dir/src/render/SDL_render.c.o
+[ 36%] Building C object CMakeFiles/SDL3-shared.dir/src/render/SDL_render_unsupported.c.o
+[ 36%] Building C object CMakeFiles/SDL3-shared.dir/src/render/SDL_yuv_sw.c.o
+[ 36%] Building C object CMakeFiles/SDL3-shared.dir/src/render/direct3d/SDL_render_d3d.c.o
+[ 36%] Building C object CMakeFiles/SDL3-shared.dir/src/render/direct3d/SDL_shaders_d3d.c.o
+[ 37%] Building C object CMakeFiles/SDL3-shared.dir/src/render/direct3d11/SDL_render_d3d11.c.o
+[ 37%] Building C object CMakeFiles/SDL3-shared.dir/src/render/direct3d11/SDL_shaders_d3d11.c.o
+[ 37%] Building C object CMakeFiles/SDL3-shared.dir/src/render/direct3d12/SDL_render_d3d12.c.o
+[ 37%] Building C object CMakeFiles/SDL3-shared.dir/src/render/direct3d12/SDL_shaders_d3d12.c.o
+[ 38%] Building C object CMakeFiles/SDL3-shared.dir/src/render/gpu/SDL_pipeline_gpu.c.o
+[ 38%] Building C object CMakeFiles/SDL3-shared.dir/src/render/gpu/SDL_render_gpu.c.o
+[ 38%] Building C object CMakeFiles/SDL3-shared.dir/src/render/gpu/SDL_shaders_gpu.c.o
+[ 39%] Building C object CMakeFiles/SDL3-shared.dir/src/render/ngage/SDL_render_ngage.c.o
+[ 39%] Building C object CMakeFiles/SDL3-shared.dir/src/render/opengl/SDL_render_gl.c.o
+[ 39%] Building C object CMakeFiles/SDL3-shared.dir/src/render/opengl/SDL_shaders_gl.c.o
+[ 39%] Building C object CMakeFiles/SDL3-shared.dir/src/render/opengles2/SDL_render_gles2.c.o
+[ 40%] Building C object CMakeFiles/SDL3-shared.dir/src/render/opengles2/SDL_shaders_gles2.c.o
+[ 40%] Building C object CMakeFiles/SDL3-shared.dir/src/render/ps2/SDL_render_ps2.c.o
+[ 40%] Building C object CMakeFiles/SDL3-shared.dir/src/render/psp/SDL_render_psp.c.o
+[ 40%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_blendfillrect.c.o
+[ 41%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_blendline.c.o
+[ 41%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_blendpoint.c.o
+[ 41%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_drawline.c.o
+[ 41%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_drawpoint.c.o
+[ 42%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_render_sw.c.o
+[ 42%] Building C object CMakeFiles/SDL3-shared.dir/src/render/software/SDL_triangle.c.o
+[ 42%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm.c.o
+[ 43%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm_memory.c.o
+[ 43%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vitagxm/SDL_render_vita_gxm_tools.c.o
+[ 43%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vulkan/SDL_render_vulkan.c.o
+[ 43%] Building C object CMakeFiles/SDL3-shared.dir/src/render/vulkan/SDL_shaders_vulkan.c.o
+[ 44%] Building C object CMakeFiles/SDL3-shared.dir/src/sensor/SDL_sensor.c.o
+[ 44%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_crc16.c.o
+[ 44%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_crc32.c.o
+[ 44%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_getenv.c.o
+[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_iconv.c.o
+[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_malloc.c.o
+[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_memcpy.c.o
+[ 45%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_memmove.c.o
+[ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_memset.c.o
+[ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_murmur3.c.o
+[ 46%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_mslibc.c.o
+[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_qsort.c.o
+[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_random.c.o
+[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_stdlib.c.o
+[ 47%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_string.c.o
+[ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/stdlib/SDL_strtokr.c.o
+[ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/storage/SDL_storage.c.o
+[ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/thread/SDL_thread.c.o
+[ 48%] Building C object CMakeFiles/SDL3-shared.dir/src/time/SDL_time.c.o
+[ 49%] Building C object CMakeFiles/SDL3-shared.dir/src/timer/SDL_timer.c.o
+[ 49%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_RLEaccel.c.o
+[ 49%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit.c.o
+[ 49%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit_0.c.o
+[ 50%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit_1.c.o
+[ 50%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit_A.c.o
+[ 50%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit_N.c.o
+[ 51%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit_auto.c.o
+[ 51%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit_copy.c.o
+[ 51%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_blit_slow.c.o
+[ 51%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_bmp.c.o
+[ 52%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_clipboard.c.o
+[ 52%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_egl.c.o
+[ 52%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_fillrect.c.o
+[ 52%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_pixels.c.o
+[ 52%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_rotate.c.o
+[ 53%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_rect.c.o
+[ 53%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_stb.c.o
+[ 53%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_stretch.c.o
+[ 54%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_surface.c.o
+[ 54%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_video.c.o
+[ 54%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_video_unsupported.c.o
+[ 55%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_vulkan_utils.c.o
+[ 55%] Building C object CMakeFiles/SDL3-shared.dir/src/video/SDL_yuv.c.o
+[ 55%] Building C object CMakeFiles/SDL3-shared.dir/src/video/yuv2rgb/yuv_rgb_lsx.c.o
+[ 55%] Building C object CMakeFiles/SDL3-shared.dir/src/video/yuv2rgb/yuv_rgb_sse.c.o
+[ 56%] Building C object CMakeFiles/SDL3-shared.dir/src/video/yuv2rgb/yuv_rgb_std.c.o
+[ 56%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/dummy/SDL_dummyaudio.c.o
+[ 56%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/disk/SDL_diskaudio.c.o
+[ 56%] Building C object CMakeFiles/SDL3-shared.dir/src/camera/dummy/SDL_camera_dummy.c.o
+[ 57%] Building C object CMakeFiles/SDL3-shared.dir/src/loadso/dlopen/SDL_sysloadso.c.o
+[ 57%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/virtual/SDL_virtualjoystick.c.o
+[ 57%] Building C object CMakeFiles/SDL3-shared.dir/src/video/dummy/SDL_nullevents.c.o
+[ 57%] Building C object CMakeFiles/SDL3-shared.dir/src/video/dummy/SDL_nullframebuffer.c.o
+[ 58%] Building C object CMakeFiles/SDL3-shared.dir/src/video/dummy/SDL_nullvideo.c.o
+[ 58%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/alsa/SDL_alsa_audio.c.o
+[ 58%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/jack/SDL_jackaudio.c.o
+[ 59%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/pipewire/SDL_pipewire.c.o
+[ 59%] Building C object CMakeFiles/SDL3-shared.dir/src/camera/pipewire/SDL_camera_pipewire.c.o
+[ 59%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/pulseaudio/SDL_pulseaudio.c.o
+[ 59%] Building C object CMakeFiles/SDL3-shared.dir/src/audio/sndio/SDL_sndioaudio.c.o
+[ 60%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11clipboard.c.o
+[ 60%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11dyn.c.o
+[ 60%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11events.c.o
+[ 60%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11framebuffer.c.o
+[ 61%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11keyboard.c.o
+[ 61%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11messagebox.c.o
+[ 61%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11modes.c.o
+[ 61%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11mouse.c.o
+[ 62%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11opengl.c.o
+[ 62%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11opengles.c.o
+[ 62%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11pen.c.o
+[ 63%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11settings.c.o
+[ 63%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11toolkit.c.o
+[ 63%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11shape.c.o
+[ 63%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11touch.c.o
+[ 64%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11video.c.o
+[ 64%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11vulkan.c.o
+[ 64%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11window.c.o
+[ 64%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11xfixes.c.o
+[ 65%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11xinput2.c.o
+[ 65%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11xsync.c.o
+[ 65%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/SDL_x11xtest.c.o
+[ 65%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/edid-parse.c.o
+[ 66%] Building C object CMakeFiles/SDL3-shared.dir/src/video/x11/xsettings-client.c.o
+[ 66%] Building C object CMakeFiles/SDL3-shared.dir/src/video/kmsdrm/SDL_kmsdrmdyn.c.o
+[ 66%] Building C object CMakeFiles/SDL3-shared.dir/src/video/kmsdrm/SDL_kmsdrmevents.c.o
+[ 67%] Building C object CMakeFiles/SDL3-shared.dir/src/video/kmsdrm/SDL_kmsdrmmouse.c.o
+[ 67%] Building C object CMakeFiles/SDL3-shared.dir/src/video/kmsdrm/SDL_kmsdrmopengles.c.o
+[ 67%] Building C object CMakeFiles/SDL3-shared.dir/src/video/kmsdrm/SDL_kmsdrmvideo.c.o
+[ 67%] Building C object CMakeFiles/SDL3-shared.dir/src/video/kmsdrm/SDL_kmsdrmvulkan.c.o
+[ 68%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandclipboard.c.o
+[ 68%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandcolor.c.o
+[ 68%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylanddatamanager.c.o
+[ 68%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylanddyn.c.o
+[ 69%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandevents.c.o
+[ 69%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandkeyboard.c.o
+[ 69%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandmessagebox.c.o
+[ 69%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandmouse.c.o
+[ 70%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandopengles.c.o
+[ 70%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandutil.c.o
+[ 70%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandshmbuffer.c.o
+[ 71%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandvideo.c.o
+[ 71%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandvulkan.c.o
+[ 71%] Building C object CMakeFiles/SDL3-shared.dir/src/video/wayland/SDL_waylandwindow.c.o
+[ 71%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/alpha-modifier-v1-protocol.c.o
+[ 72%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/color-management-v1-protocol.c.o
+[ 72%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/cursor-shape-v1-protocol.c.o
+[ 72%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/fractional-scale-v1-protocol.c.o
+[ 72%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/frog-color-management-v1-protocol.c.o
+[ 73%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/idle-inhibit-unstable-v1-protocol.c.o
+[ 73%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/input-timestamps-unstable-v1-protocol.c.o
+[ 73%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/keyboard-shortcuts-inhibit-unstable-v1-protocol.c.o
+[ 73%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/pointer-constraints-unstable-v1-protocol.c.o
+[ 74%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/pointer-gestures-unstable-v1-protocol.c.o
+[ 74%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/pointer-warp-v1-protocol.c.o
+[ 74%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/primary-selection-unstable-v1-protocol.c.o
+[ 75%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/relative-pointer-unstable-v1-protocol.c.o
+[ 75%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/tablet-v2-protocol.c.o
+[ 75%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/text-input-unstable-v3-protocol.c.o
+[ 75%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/viewporter-protocol.c.o
+[ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/wayland-protocol.c.o
+[ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-activation-v1-protocol.c.o
+[ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-decoration-unstable-v1-protocol.c.o
+[ 76%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-dialog-v1-protocol.c.o
+[ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-foreign-unstable-v2-protocol.c.o
+[ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-output-unstable-v1-protocol.c.o
+[ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-shell-protocol.c.o
+[ 77%] Building C object CMakeFiles/SDL3-shared.dir/wayland-generated-protocols/xdg-toplevel-icon-v1-protocol.c.o
+[ 78%] Building C object CMakeFiles/SDL3-shared.dir/src/tray/unix/SDL_tray.c.o
+[ 78%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_appid.c.o
+[ 78%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_fribidi.c.o
+[ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_gtk.c.o
+[ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_libthai.c.o
+[ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/core/unix/SDL_poll.c.o
+[ 79%] Building C object CMakeFiles/SDL3-shared.dir/src/camera/v4l2/SDL_camera_v4l2.c.o
+[ 80%] Building C object CMakeFiles/SDL3-shared.dir/src/haptic/linux/SDL_syshaptic.c.o
+[ 80%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_dbus.c.o
+[ 80%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_progressbar.c.o
+[ 80%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_system_theme.c.o
+[ 81%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_ime.c.o
+[ 81%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_ibus.c.o
+[ 81%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_fcitx.c.o
+[ 81%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_udev.c.o
+[ 82%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_evdev.c.o
+[ 82%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_evdev_kbd.c.o
+[ 82%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_evdev_capabilities.c.o
+[ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/core/linux/SDL_threadprio.c.o
+[ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_8bitdo.c.o
+[ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_combined.c.o
+[ 83%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_flydigi.c.o
+[ 84%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_gamecube.c.o
+[ 84%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_gip.c.o
+[ 84%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_lg4ff.c.o
+[ 84%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_luna.c.o
+[ 85%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_ps3.c.o
+[ 85%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_ps4.c.o
+[ 85%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_ps5.c.o
+[ 86%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_shield.c.o
+[ 86%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_rumble.c.o
+[ 86%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_sinput.c.o
+[ 86%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_stadia.c.o
+[ 87%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_steam.c.o
+[ 87%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_steam_hori.c.o
+[ 87%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_steam_triton.c.o
+[ 87%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_steamdeck.c.o
+[ 88%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_switch.c.o
+[ 88%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_switch2.c.o
+[ 88%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_wii.c.o
+[ 88%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_xbox360.c.o
+[ 89%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_xbox360w.c.o
+[ 89%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_xboxone.c.o
+[ 89%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapi_zuiki.c.o
+[ 89%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_hidapijoystick.c.o
+[ 90%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/hidapi/SDL_report_descriptor.c.o
+[ 90%] Building C object CMakeFiles/SDL3-shared.dir/src/haptic/hidapi/SDL_hidapihaptic.c.o
+[ 90%] Building C object CMakeFiles/SDL3-shared.dir/src/haptic/hidapi/SDL_hidapihaptic_lg4ff.c.o
+[ 91%] Building C object CMakeFiles/SDL3-shared.dir/src/joystick/linux/SDL_sysjoystick.c.o
+[ 91%] Building C object CMakeFiles/SDL3-shared.dir/src/thread/pthread/SDL_systhread.c.o
+[ 91%] Building C object CMakeFiles/SDL3-shared.dir/src/thread/pthread/SDL_sysmutex.c.o
+[ 91%] Building C object CMakeFiles/SDL3-shared.dir/src/thread/pthread/SDL_syscond.c.o
+[ 92%] Building C object CMakeFiles/SDL3-shared.dir/src/thread/pthread/SDL_sysrwlock.c.o
+[ 92%] Building C object CMakeFiles/SDL3-shared.dir/src/thread/pthread/SDL_systls.c.o
+[ 92%] Building C object CMakeFiles/SDL3-shared.dir/src/thread/pthread/SDL_syssem.c.o
+[ 92%] Building C object CMakeFiles/SDL3-shared.dir/src/misc/unix/SDL_sysurl.c.o
+[ 93%] Building C object CMakeFiles/SDL3-shared.dir/src/power/linux/SDL_syspower.c.o
+[ 93%] Building C object CMakeFiles/SDL3-shared.dir/src/locale/unix/SDL_syslocale.c.o
+[ 93%] Building C object CMakeFiles/SDL3-shared.dir/src/filesystem/unix/SDL_sysfilesystem.c.o
+[ 93%] Building C object CMakeFiles/SDL3-shared.dir/src/storage/generic/SDL_genericstorage.c.o
+[ 94%] Building C object CMakeFiles/SDL3-shared.dir/src/storage/steam/SDL_steamstorage.c.o
+[ 94%] Building C object CMakeFiles/SDL3-shared.dir/src/time/unix/SDL_systime.c.o
+[ 94%] Building C object CMakeFiles/SDL3-shared.dir/src/filesystem/posix/SDL_sysfsops.c.o
+[ 95%] Building C object CMakeFiles/SDL3-shared.dir/src/timer/unix/SDL_systimer.c.o
+[ 95%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/SDL_dialog.c.o
+[ 95%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/SDL_dialog_utils.c.o
+[ 95%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_unixdialog.c.o
+[ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_portaldialog.c.o
+[ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_zenitydialog.c.o
+[ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/dialog/unix/SDL_zenitymessagebox.c.o
+[ 96%] Building C object CMakeFiles/SDL3-shared.dir/src/process/SDL_process.c.o
+[ 97%] Building C object CMakeFiles/SDL3-shared.dir/src/process/posix/SDL_posixprocess.c.o
+[ 97%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenevents.c.o
+[ 97%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenframebuffer.c.o
+[ 97%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenopengles.c.o
+[ 98%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenvideo.c.o
+[ 98%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenvulkan.c.o
+[ 98%] Building C object CMakeFiles/SDL3-shared.dir/src/video/offscreen/SDL_offscreenwindow.c.o
+[ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/tray/SDL_tray_utils.c.o
+[ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/gpu/vulkan/SDL_gpu_vulkan.c.o
+[ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/sensor/dummy/SDL_dummysensor.c.o
+[ 99%] Building C object CMakeFiles/SDL3-shared.dir/src/main/generic/SDL_sysmain_callbacks.c.o
+[100%] Linking C shared library libSDL3.so
+[100%] Built target SDL3-shared
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/sdl3.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3.so.0.4.16
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3.so.0
+-- Set non-toolchain portion of runtime path of "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3.so.0.4.16" to "$ORIGIN"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3.so
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3/SDL3headersTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3/SDL3sharedTargets.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3/SDL3sharedTargets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3/SDL3Config.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3/SDL3ConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_assert.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_asyncio.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_atomic.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_audio.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_begin_code.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_bits.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_blendmode.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_camera.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_clipboard.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_close_code.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_copying.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_cpuinfo.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_dialog.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_dlopennote.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_egl.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_endian.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_error.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_events.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_filesystem.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_gamepad.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_gpu.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_guid.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_haptic.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_hidapi.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_hints.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_init.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_intrin.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_iostream.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_joystick.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_keyboard.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_keycode.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_loadso.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_locale.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_log.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_main.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_main_impl.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_messagebox.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_metal.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_misc.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_mouse.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_mutex.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_oldnames.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengl.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengl_glext.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengles.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengles2.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengles2_gl2.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengles2_gl2ext.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengles2_gl2platform.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_opengles2_khrplatform.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_pen.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_pixels.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_platform.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_platform_defines.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_power.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_process.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_properties.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_rect.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_render.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_scancode.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_sensor.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_stdinc.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_storage.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_surface.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_system.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_thread.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_time.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_timer.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_touch.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_tray.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_version.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_video.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_vulkan.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3/SDL_revision.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/licenses/SDL3/LICENSE.txt
+-- The C compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring SDL3_image 3.4.6
+-- Detecting Target CPU Architecture
+-- Detecting Target CPU Architecture - X64
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT - Success
+-- Performing Test HAVE_WL_NO_UNDEFINED
+-- Performing Test HAVE_WL_NO_UNDEFINED - Success
+-- libavif-1.0 or compatible not found
+-- libavif NOT found
+-- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.3.1")
+-- SDL3_image: Using system libpng
+-- Found TIFF: /usr/lib/x86_64-linux-gnu/libtiff.so (found version "4.7.0")
+-- SDL3_image: Using system libtiff
+-- Found webp: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libwebp.a
+-- SDL3_image: Using system libwebp
+-- SDL3_image backends:
+-- - enabled:  stb ani bmp gif jpg lbm pcx png apng pnm qoi svg tga tif webp xcf xpm xv
+-- - disabled: imageio wic avif jxl
+-- Configuring done (0.7s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_HARFBUZZ
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDL_EXAMPLES
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-sources/SDL3_image-3.4.6-build
+[  3%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_WIC.c.o
+[  7%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG.c.o
+[ 11%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_ani.c.o
+[ 18%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_gif.c.o
+[ 18%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_anim_encoder.c.o
+[ 22%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_bmp.c.o
+[ 25%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_anim_decoder.c.o
+[ 29%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_avif.c.o
+[ 33%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_gpu.c.o
+[ 37%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_jpg.c.o
+[ 40%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_jxl.c.o
+[ 44%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_lbm.c.o
+[ 48%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_pcx.c.o
+[ 51%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_png.c.o
+[ 55%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_pnm.c.o
+[ 59%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_qoi.c.o
+[ 62%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_stb.c.o
+[ 66%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_svg.c.o
+[ 70%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_tga.c.o
+[ 74%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_tif.c.o
+[ 77%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_webp.c.o
+[ 81%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_xcf.c.o
+[ 85%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_xv.c.o
+[ 88%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_xpm.c.o
+[ 92%] Building C object CMakeFiles/SDL3_image-shared.dir/src/IMG_libpng.c.o
+[ 96%] Building C object CMakeFiles/SDL3_image-shared.dir/src/xmlman.c.o
+[100%] Linking C shared library libSDL3_image.so
+[100%] Built target SDL3_image-shared
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_image.so.0.4.6
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_image.so.0
+-- Set non-toolchain portion of runtime path of "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_image.so.0.4.6" to "$ORIGIN"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_image.so
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3_image/SDL_image.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_image/SDL3_imageConfig.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_image/SDL3_imageConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_image/Findwebp.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_image/SDL3_image-shared-targets.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_image/SDL3_image-shared-targets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/sdl3-image.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/licenses/SDL3_image/LICENSE.txt
+-- The C compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring SDL3_ttf 3.2.2
+-- Detecting Target CPU Architecture
+-- Detecting Target CPU Architecture - X64
+-- Looking for __GLIBC__
+-- Looking for __GLIBC__ - found
+-- Performing Test HAVE_WL_NO_UNDEFINED
+-- Performing Test HAVE_WL_NO_UNDEFINED - Success
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT - Success
+-- SDL3_ttf: Using system freetype library
+-- Found Freetype: /usr/lib/x86_64-linux-gnu/libfreetype.so (found version "2.14.2")
+-- Could NOT find plutovg (missing: plutovg_LIBRARY plutovg_INCLUDE_PATH) 
+-- Could NOT find plutosvg (missing: plutosvg_LIBRARY plutosvg_INCLUDE_PATH plutovg_FOUND) 
+-- plutosvg NOT found
+-- SDL3_ttf backends:
+-- - enabled:  freetype
+-- - disabled: harfbuzz plutosvg
+-- Configuring done (0.9s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_SAMPLES
+    SDLNET_TESTS
+    SDLTTF_TESTS
+    SDL_EXAMPLES
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-sources/SDL3_ttf-3.2.2-build
+[ 42%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_hashtable_ttf.c.o
+[ 42%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_surface_textengine.c.o
+[ 42%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_ttf.c.o
+[ 57%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_renderer_textengine.c.o
+[ 71%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_hashtable.c.o
+[ 85%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_gpu_textengine.c.o
+[100%] Linking C shared library libSDL3_ttf.so
+[100%] Built target SDL3_ttf-shared
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_ttf.so.0.2.2
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_ttf.so.0
+-- Set non-toolchain portion of runtime path of "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_ttf.so.0.2.2" to "$ORIGIN"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_ttf.so
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3_ttf/SDL_textengine.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3_ttf/SDL_ttf.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/SDL3_ttfConfig.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/SDL3_ttfConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/PkgConfigHelper.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/Findharfbuzz.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/Findplutosvg.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/Findplutovg.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/SDL3_ttf-shared-targets.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_ttf/SDL3_ttf-shared-targets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/sdl3-ttf.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/licenses/SDL3_ttf/LICENSE.txt
+-- The C compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring SDL3_net 3.2.0
+-- Performing Test HAVE_GETIFADDRS
+-- Performing Test HAVE_GETIFADDRS - Success
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT - Success
+-- Performing Test HAVE_WL_NO_UNDEFINED
+-- Performing Test HAVE_WL_NO_UNDEFINED - Success
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    SDLIMAGE_DEPS_SHARED
+    SDLIMAGE_SAMPLES
+    SDLIMAGE_TESTS
+    SDLIMAGE_WEBP
+    SDLIMAGE_WEBP_SAVE
+    SDLNET_TESTS
+    SDLTTF_HARFBUZZ
+    SDLTTF_SAMPLES
+    SDLTTF_TESTS
+    SDL_EXAMPLES
+    SDL_TESTS
+    SDL_TEST_LIBRARY
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-sources/SDL3_net-3.2.0-build
+[ 50%] Building C object CMakeFiles/SDL3_net-shared.dir/src/SDL_net.c.o
+[100%] Linking C shared library libSDL3_net.so
+[100%] Built target SDL3_net-shared
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_net.so.0.2.0
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_net.so.0
+-- Set non-toolchain portion of runtime path of "/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_net.so.0.2.0" to "$ORIGIN"
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/libSDL3_net.so
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/include/SDL3_net/SDL_net.h
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_net/SDL3_netConfig.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_net/SDL3_netConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_net/SDL3_net-shared-targets.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/cmake/SDL3_net/SDL3_net-shared-targets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/lib/pkgconfig/sdl3-net.pc
+-- Installing: /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/sdl3-prefix/share/licenses/SDL3_net/LICENSE.txt

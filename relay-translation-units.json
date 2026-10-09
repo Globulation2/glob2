@@ -1,0 +1,137 @@
+[
+  {
+    "object": "RelayServer.o",
+    "individual_seconds": [
+      103.19136278703809,
+      93.0511251189746,
+      62.53863423364237
+    ],
+    "median_seconds": 93.0511251189746
+  },
+  {
+    "object": "HttpClient.o",
+    "individual_seconds": [
+      40.05041426233947,
+      42.05278578493744,
+      23.257224070839584
+    ],
+    "median_seconds": 40.05041426233947
+  },
+  {
+    "object": "RelayMain.o",
+    "individual_seconds": [
+      12.892732739914209,
+      12.87022844189778,
+      7.247759202029556
+    ],
+    "median_seconds": 12.87022844189778
+  },
+  {
+    "object": "PlatformLink.o",
+    "individual_seconds": [
+      13.226396306883544,
+      12.259148081764579,
+      7.419262531213462
+    ],
+    "median_seconds": 12.259148081764579
+  },
+  {
+    "object": "MatchReport.o",
+    "individual_seconds": [
+      8.7468121801503,
+      8.82005611481145,
+      5.039326750673354
+    ],
+    "median_seconds": 8.7468121801503
+  },
+  {
+    "object": "TurnTelemetry.o",
+    "individual_seconds": [
+      10.363523208070546,
+      8.26583710918203,
+      5.296059051994234
+    ],
+    "median_seconds": 8.26583710918203
+  },
+  {
+    "object": "TicketVerifier.o",
+    "individual_seconds": [
+      8.225054994225502,
+      7.815519521012902,
+      5.024999985937029
+    ],
+    "median_seconds": 7.815519521012902
+  },
+  {
+    "object": "TurnSequencer.o",
+    "individual_seconds": [
+      6.878155543934554,
+      7.096663068048656,
+      4.252022841013968
+    ],
+    "median_seconds": 6.878155543934554
+  },
+  {
+    "object": "JwksStore.o",
+    "individual_seconds": [
+      6.495085112284869,
+      6.876978691201657,
+      4.19895883416757
+    ],
+    "median_seconds": 6.495085112284869
+  },
+  {
+    "object": "TurnMessages.o",
+    "individual_seconds": [
+      3.1495013730600476,
+      3.502292779739946,
+      1.9883005572482944
+    ],
+    "median_seconds": 3.1495013730600476
+  },
+  {
+    "object": "MatchRecord.o",
+    "individual_seconds": [
+      2.4263967690058053,
+      2.50262877298519,
+      1.4285709620453417
+    ],
+    "median_seconds": 2.4263967690058053
+  },
+  {
+    "object": "RelayLog.o",
+    "individual_seconds": [
+      2.2819730639457703,
+      2.372681310866028,
+      1.476498942822218
+    ],
+    "median_seconds": 2.2819730639457703
+  },
+  {
+    "object": "MatchDirectory.o",
+    "individual_seconds": [
+      2.012820711825043,
+      1.873810341116041,
+      1.3205501213669777
+    ],
+    "median_seconds": 1.873810341116041
+  },
+  {
+    "object": "RelayConfig.o",
+    "individual_seconds": [
+      1.8474157298915088,
+      1.997589775826782,
+      1.1999738831073046
+    ],
+    "median_seconds": 1.8474157298915088
+  },
+  {
+    "object": "RelayMetrics.o",
+    "individual_seconds": [
+      1.8016511090099812,
+      2.1534219617024064,
+      1.172530877403915
+    ],
+    "median_seconds": 1.8016511090099812
+  }
+]

@@ -1,0 +1,23 @@
+PASS AIStateContinuation/Warrush growth and attack preparation survive save-load (97.8s)
+PASS AIPipeline/save continuation retains controller caches receipts and future commands at pipeline boundaries (177.7s)
+PASS Maxima.Economy/sustained stock feeding reports capability estimates and historical strategy targets (218.2s)
+PASS Maxima.Economy/observed hunger expands feeding for an opening colony mix beyond nominal forecasts (340.6s)
+PASS AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged (217.8s)
+PASS MapGeneratorDefaults/Faulted City contracts (179.5s)
+PASS TerrainResources/terrain strokes clear incompatible resources; buildings and units (233.9s)
+FAIL LanMatchHarness/an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts] (4.5s)
+PASS TurnEngineHarness/a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] (131.7s)
+PASS MapGeneratorDefaults/Last Treeline checks (203.2s)
+
+===== FAIL LanMatchHarness/an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/3d84/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/work/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "5e7297b92fae6ff89f3380ed6b3ac3a8af789e46", "sourceStatus": [], "sourceTreeSha256": "2905797abc159ccdc23271d64e24158d48b9f4f09f6fe392dad1e6716cbf563a"}
+
+[failure] an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]: 155 <  50
+src/net/lan/LanMatchHarness.cpp:1035:
+CHECK( hostToGuest < 50 ) is NOT correct!
+  values: CHECK( 155 <  50 )
+
+
+9 passed, 1 failed, 0 skipped (1804.8s of test time)
+[run_tests] JUnit report: artifacts/dev-build/native-retry.xml (10 cases)

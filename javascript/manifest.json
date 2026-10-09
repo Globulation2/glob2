@@ -1,0 +1,50 @@
+{
+  "revision": "d912223f4bf6c76961e84c3698b4d44884daea2a",
+  "binarySha256": "b39ac344db3aaea61b56343351ca0bae285be18549ad497b374e86bce4b9b053",
+  "fixtures": {
+    "profile1": {
+      "initialSha256": "5d3264136360c2cbe50947c1e680ead0703c14279d4987a05db94482e75ad0eb",
+      "trace": "test/fixtures/javascript/profile1-256-resources.checksums.gz",
+      "releasedTraceSha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c",
+      "teams16TraceSha256": "7bb04eee57cdebccfa202f79f08de1a59ea4e5c07d5d06ed7fd384d7bf813ed8",
+      "traceSha256": "8d708c99f62b4b2cc9c3d317eae2b3b6a071cc6d108fce19c39558bfdc1c63b6"
+    },
+    "realistic-profile1": {
+      "initialSha256": "b1394f861f2bbf3ab399c1e355c61baed936506155a39a64834c0f36e61e6516",
+      "trace": "test/fixtures/javascript/realistic-profile1-256-resources.checksums.gz",
+      "releasedTraceSha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6",
+      "teams16TraceSha256": "d06a0896cb5562625873343088f336bb7a83ff17e293952cc7e69dd281248ac2",
+      "traceSha256": "98ff9a233d6440828034e046e89e112854076378368bddf25130674f790d5675"
+    }
+  },
+  "checks": [
+    {
+      "fixture": "profile1",
+      "ticks": 256,
+      "workers": [
+        1,
+        4
+      ],
+      "resumeBoundaries": [
+        128
+      ]
+    },
+    {
+      "fixture": "realistic-profile1",
+      "ticks": 256,
+      "workers": [
+        1,
+        4
+      ],
+      "resumeBoundaries": [
+        32,
+        64,
+        96,
+        128,
+        224
+      ]
+    }
+  ],
+  "excludedSaveMetadata": "MapHeader SHA1 only (depends on save history)",
+  "continuationChecksumAdjustment": "MapHeader format-version contribution only"
+}

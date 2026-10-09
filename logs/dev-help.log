@@ -1,0 +1,8 @@
+usage: dev_build.py [-h] [--cache-stats]
+
+Build the full-featured fast development client; remaining arguments go to
+SCons.
+
+options:
+  -h, --help     show this help message and exit
+  --cache-stats  show managed compiler-cache statistics and exit

@@ -1,0 +1,9 @@
+
+Running 2 tests using 1 worker
+
+(node:446448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (28.4s)
+  ✓  2 [chromium] › tests/recording.spec.js:71:1 › threaded missing WebCodecs uses embedded x264 (26.5s)
+
+  2 passed (56.6s)

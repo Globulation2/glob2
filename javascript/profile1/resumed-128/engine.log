@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 081e5301
+automaticEndingGame ended: 256 ticks, 0 minutes, 8 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=196 players=team0:JavaScript,team1:JavaScript
+final: wrote /home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/javascript/profile1/resumed-128/final.game.gz

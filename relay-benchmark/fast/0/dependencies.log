@@ -1,0 +1,52 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... yes
+Checking whether the C++ compiler works... yes
+Checking for C++ header file zlib.h... yes
+Checking for C library z... yes
+Checking for C++ header file regex.h... yes
+Checking for C++ header file openssl/ssl.h... yes
+Checking for C library ssl... yes
+Checking for C library crypto... yes
+Checking for C++ header file boost/beast/websocket.hpp... yes
+Checking for C++ header file boost/asio/ssl.hpp... yes
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/campaigns/SConscript  took 0.595 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/maxima/SConscript  took 0.365 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/buildings/SConscript  took 0.663 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/fonts/SConscript  took 0.420 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/gfx/cursor/SConscript  took 0.420 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/gfx/SConscript  took 1.556 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/skins/SConscript  took 0.382 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/gui/SConscript  took 0.411 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/themes/SConscript  took 0.516 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/icons/SConscript  took 0.594 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/zik/SConscript  took 0.484 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/highres/SConscript  took 0.421 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/menu/SConscript  took 0.341 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/usl/SConscript  took 0.452 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/data/SConscript  took 16.904 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/debian/SConscript  took 0.529 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/fedora/SConscript  took 0.396 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/libgag/src/SConscript  took 42.210 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/libgag/include/SConscript  took 0.348 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/libgag/SConscript  took 43.925 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/libusl/src/SConscript  took 4.834 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/libusl/test/SConscript  took 0.913 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/libusl/SConscript  took 6.629 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/maps/SConscript  took 0.364 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/natsort/SConscript  took 0.246 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/scripts/SConscript  took 0.269 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/scons/SConscript  took 0.230 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/src/SConscript  took 12.741 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/test/SConscript  took 1.443 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/tools/SConscript  took 0.382 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/build/linux/relay/debug/dev-dev_fast-true-linker-auto/windows/SConscript  took 0.468 ms
+SConscript:/home/bradley/.codex/worktrees/3d84/glob2/artifacts/dev-build/relay-benchmark-verified/fast/0/source-yfovi9jb/SConstruct  took 6787.537 ms
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: Nothing to be done for `dev-dependencies'.
+scons: done building targets.
+Total SConsign sync time: 0.001103 seconds
+Total build time: 6.842324 seconds
+Total SConscript file execution time: 6.787738 seconds
+Total SCons execution time: 0.054585 seconds
+Total command execution time: 0.000000 seconds
