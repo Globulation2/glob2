@@ -980,7 +980,7 @@ GeneratorDefinition symmetricArenaDefinition()
 		"symmetric-arena",
 		15,
 		"Symmetric arena",
-		1,
+		2,
 		false,
 		// centre-size: the orchard island's radius as a share of the shorter side (over a
 		// small floor); moat and causeway widths are in tiles; causeways per colony, one

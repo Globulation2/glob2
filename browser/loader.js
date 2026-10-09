@@ -53,6 +53,7 @@
     };
   }
   async function load() {
+    await root.Glob2I18n?.initialize();
     const module = root.Module;
     const forced = new URLSearchParams(location.search).get('threads');
     const reason = forced === 'serial' ? (new URLSearchParams(location.search).get('thread-fallback') || 'serial requested') : await threadingSupport(module.renderer);

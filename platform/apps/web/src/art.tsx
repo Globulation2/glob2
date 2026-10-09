@@ -1,3 +1,5 @@
+import { t } from './i18n.tsx';
+import { useLocale } from './i18n.tsx';
 // The game's own artwork (data/gfx, data/highres), compressed by
 // art/build_art.py. Vite fingerprints these files, so they cache forever.
 import algae from './art/algae.webp';
@@ -56,6 +58,7 @@ export function GameArt({
   className?: string;
   alt?: string;
 }) {
+  useLocale();
   return (
     <img
       src={ART[name]}
@@ -72,12 +75,13 @@ export function GameArt({
 
 /** The game's wordmark, drawn from two masks so it follows the theme. */
 export function Wordmark({
-  label = 'Globulation 2',
+  label = t('Globulation 2'),
   className = '',
 }: {
   label?: string | null;
   className?: string;
 }) {
+  useLocale();
   return label ? (
     <span className={`wordmark ${className}`} role="img" aria-label={label} />
   ) : (

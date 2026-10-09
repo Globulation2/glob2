@@ -1,4 +1,6 @@
 import importlib.util
+import gzip
+import hashlib
 import os
 import re
 import stat
@@ -68,6 +70,83 @@ class BrowserPackageTests(unittest.TestCase):
         self.assertEqual((self.output / "assets/core.0123456789abcdef.data").read_bytes(), self.package.read_bytes())
         self.assertEqual(version, module.package(self.source, self.output))
         module.verify(self.output)
+
+    def test_translation_catalogs_ship_and_change_release_identity(self):
+        self.localized_source()
+        catalog = self.source / "locales/fr.json"
+        catalog.write_text('{"Loading game…":"Chargement…"}')
+        version = module.package(self.source, self.output)
+        module.verify(self.output)
+        self.assertEqual((self.output / "locales/fr.json").read_bytes(), catalog.read_bytes())
+        self.assertTrue((self.output / "locales/fr.json.gz").is_file())
+        catalog.write_text('{"Loading game…":"Chargement du jeu…"}')
+        self.assertNotEqual(version, module.package(self.source, self.output))
+        module.verify(self.output)
+
+    def test_localized_shell_requires_translation_assets(self):
+        (self.source / "index.html").write_text('<script src="i18n.js"></script><script src="index.js"></script>')
+        with self.assertRaises(FileNotFoundError):
+            module.package(self.source, self.output)
+        (self.source / "i18n.js").write_text('/* translation runtime */')
+        with self.assertRaisesRegex(ValueError, 'translation catalog inventory mismatch'):
+            module.package(self.source, self.output)
+
+    def localized_source(self):
+        (self.source / "index.html").write_text('<script src="i18n.js"></script><script src="index.js"></script>')
+        (self.source / "i18n.js").write_text('/* translation runtime */')
+        catalogs = self.source / "locales"
+        catalogs.mkdir()
+        for canonical in (module.ROOT / "platform/packages/i18n/locales").glob("*.json"):
+            (catalogs / canonical.name).write_text('{"Loading game…":"Fixture translation"}')
+
+    def refresh_checksums(self):
+        (self.output / "SHA256SUMS").write_text("".join(
+            f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(self.output).as_posix()}\n"
+            for path in sorted(self.output.rglob("*"))
+            if path.is_file() and path.name != "SHA256SUMS"
+        ))
+
+    def test_package_rejects_missing_locale_and_preserves_previous_release(self):
+        self.localized_source()
+        module.package(self.source, self.output)
+        previous = (self.output / "SHA256SUMS").read_bytes()
+        (self.source / "locales/fr.json").unlink()
+        with self.assertRaisesRegex(ValueError, 'missing locales/fr.json'):
+            module.package(self.source, self.output)
+        self.assertEqual((self.output / "SHA256SUMS").read_bytes(), previous)
+
+    def test_package_rejects_noncanonical_locale(self):
+        self.localized_source()
+        (self.source / "locales/zz.json").write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'unexpected locales/zz.json'):
+            module.package(self.source, self.output)
+
+    def test_verify_rejects_missing_locale_even_with_rewritten_checksums(self):
+        self.localized_source()
+        module.package(self.source, self.output)
+        for name in ('locales/fr.json', 'locales/fr.json.gz'):
+            (self.output / name).unlink()
+        self.refresh_checksums()
+        with self.assertRaisesRegex(ValueError, 'missing locales/fr.json'):
+            module.verify(self.output)
+
+    def test_verify_rejects_noncanonical_locale_with_valid_sidecar_and_checksum(self):
+        self.localized_source()
+        module.package(self.source, self.output)
+        (self.output / "locales/zz.json").write_bytes(b'{}')
+        (self.output / "locales/zz.json.gz").write_bytes(gzip.compress(b'{}', mtime=0))
+        self.refresh_checksums()
+        with self.assertRaisesRegex(ValueError, 'unexpected locales/zz.json'):
+            module.verify(self.output)
+
+    def test_verify_rejects_missing_localization_runtime(self):
+        self.localized_source()
+        module.package(self.source, self.output)
+        for name in ('i18n.js', 'i18n.js.gz'):
+            (self.output / name).unlink()
+        self.refresh_checksums()
+        with self.assertRaisesRegex(ValueError, 'Missing browser localization runtime'):
+            module.verify(self.output)
 
     def threaded_source(self):
         (self.source / "index.html").write_text('<script src="loader.js"></script>')

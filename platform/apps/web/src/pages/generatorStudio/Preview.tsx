@@ -1,3 +1,5 @@
+import { message as sourceMessage } from '../../i18n.tsx';
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { GeneratorSettings } from '@glob2/protocol';
 export interface GeneratorRun {
@@ -14,9 +16,10 @@ export default function Preview({
   run: GeneratorRun;
   onResult: (text: string) => void;
 }) {
+  useLocale();
   const frame = useRef<HTMLIFrameElement>(null),
     callback = useRef(onResult);
-  const [status, setStatus] = useState('Loading engine…'),
+  const [status, setStatus] = useState(t('Loading engine…')),
     [ready, setReady] = useState(false),
     [playable, setPlayable] = useState(false),
     [playing, setPlaying] = useState(false),
@@ -42,12 +45,12 @@ export default function Preview({
     const diagnostics: string[] = [];
     const timeout = setTimeout(() => {
       if (!closed) {
-        setStatus('Engine launch timed out. Stop and retry the preview.');
+        setStatus(sourceMessage('Engine launch timed out. Stop and retry the preview.'));
         callback.current(
           JSON.stringify({
             revision: run.revision,
             settings: run.settings,
-            error: 'launch timeout',
+            error: t('launch timeout'),
           }),
         );
       }
@@ -97,7 +100,11 @@ export default function Preview({
         setPlayable(m.playable === true);
         setStatus(
           m.success
-            ? `Revision ${run.revision} · seed ${run.settings.seed} · ${Number(m.seconds).toFixed(2)} seconds`
+            ? t('Revision {value0} · seed {value1} · {value2} seconds', {
+                value0: run.revision,
+                value1: run.settings.seed,
+                value2: Number(m.seconds).toFixed(2),
+              })
             : String(m.diagnostic || 'Generation failed').slice(0, 2000),
         );
         callback.current(
@@ -116,7 +123,12 @@ export default function Preview({
         m.tick <= 4294967295
       ) {
         clearTimeout(timeout);
-        setStatus(`Revision ${run.revision} · tick ${Number(m.tick) || 0} · live`);
+        setStatus(
+          t('Revision {value0} · tick {value1} · live', {
+            value0: run.revision,
+            value1: Number(m.tick) || 0,
+          }),
+        );
       }
       if (m.type === 'diagnostic' && typeof m.text === 'string' && diagnostics.length < 40) {
         diagnostics.push(m.text.slice(0, 2000));
@@ -167,18 +179,18 @@ export default function Preview({
           setPlaying(true);
         }}
       >
-        Watch AI play
+        {t('Watch AI play')}
       </button>
-      {ready && !playable && <p>Editor-only terrain cannot launch a colony game.</p>}
+      {ready && !playable && <p>{t('Editor-only terrain cannot launch a colony game.')}</p>}
       <iframe
         ref={frame}
-        title={`Generator preview revision ${run.revision}`}
+        title={t('Generator preview revision {value0}', { value0: run.revision })}
         src={`/play/generator-studio.html?run=${run.runId}&revision=${run.revision}`}
         allow="cross-origin-isolated; fullscreen"
       />
       {report && (
         <details open={!ready}>
-          <summary>Generation report</summary>
+          <summary>{t('Generation report')}</summary>
           <pre>
             {JSON.stringify(
               {
@@ -194,7 +206,9 @@ export default function Preview({
         </details>
       )}
       <details>
-        <summary>Runtime diagnostics ({logs.length})</summary>
+        <summary>
+          <RichMessage source={'Runtime diagnostics ({slot0})'} slots={{ slot0: logs.length }} />
+        </summary>
         <pre>{logs.join('\n')}</pre>
       </details>
     </div>

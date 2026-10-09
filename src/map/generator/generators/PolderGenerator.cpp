@@ -365,7 +365,7 @@ GeneratorDefinition polderDefinition()
 		"polder",
 		30,
 		"Polder",
-		5,
+		6,
 		false,
 		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and

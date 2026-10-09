@@ -1,3 +1,5 @@
+import { validationMessage } from '../messages.ts';
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 /* GSB1 contract; keep in agreement with libgag/src/SkinShapeModel.cpp.
  *
@@ -47,10 +49,10 @@ const MAX_SHAPES = 128;
 export function decodeShapes(bytes: ArrayBuffer): ShapeModel {
   requireAsset(
     bytes.byteLength >= HEADER_BYTES && bytes.byteLength <= MAX_ASSET_BYTES,
-    'Invalid shape size',
+    validationMessage('Invalid shape size'),
   );
   const reader = new ByteReader(bytes, 'shape');
-  requireAsset(reader.u32() === 0x31425347, 'Unsupported shape format');
+  requireAsset(reader.u32() === 0x31425347, validationMessage('Unsupported shape format'));
   const count = reader.u32(),
     indexCount = reader.u32(),
     shapes = reader.u32(),
@@ -65,7 +67,7 @@ export function decodeShapes(bytes: ArrayBuffer): ShapeModel {
       normalShapes >= 1 &&
       normalShapes <= MAX_SHAPES &&
       payload === bytes.byteLength - HEADER_BYTES,
-    'Invalid shape dimensions',
+    validationMessage('Invalid shape dimensions'),
   );
   const expected =
     HEADER_BYTES +
@@ -74,16 +76,16 @@ export function decodeShapes(bytes: ArrayBuffer): ShapeModel {
     count * 24 +
     (shapes + normalShapes) * (4 + count * 6) +
     clipCount * (8 + 64 + 36 + CLIP_FRAMES * 4 + CLIP_FRAMES * 4 * (shapes + normalShapes));
-  requireAsset(expected === bytes.byteLength, 'Shape asset length mismatch');
+  requireAsset(expected === bytes.byteLength, validationMessage('Shape asset length mismatch'));
   const uv = new Float32Array(count * 2);
   for (let i = 0; i < uv.length; i++) {
     uv[i] = reader.f32();
-    requireAsset(uv[i]! >= 0 && uv[i]! <= 1, 'Invalid shape UV');
+    requireAsset(uv[i]! >= 0 && uv[i]! <= 1, validationMessage('Invalid shape UV'));
   }
   const indices = new Uint32Array(indexCount);
   for (let i = 0; i < indexCount; i++) {
     indices[i] = reader.u32();
-    requireAsset(indices[i]! < count, 'Invalid shape index');
+    requireAsset(indices[i]! < count, validationMessage('Invalid shape index'));
   }
   const mean = new Float32Array(count * 3);
   for (let i = 0; i < mean.length; i++) mean[i] = reader.f32();
@@ -94,7 +96,7 @@ export function decodeShapes(bytes: ArrayBuffer): ShapeModel {
     const deltas = new Int16Array(total * count * 3);
     for (let s = 0; s < total; s++) {
       scales[s] = reader.f32();
-      requireAsset(scales[s]! > 0, 'Invalid shape scale');
+      requireAsset(scales[s]! > 0, validationMessage('Invalid shape scale'));
       for (let k = 0; k < count * 3; k++) deltas[s * count * 3 + k] = reader.i16();
     }
     return { scales, deltas };
@@ -105,14 +107,14 @@ export function decodeShapes(bytes: ArrayBuffer): ShapeModel {
   const ids = new Set<number>();
   for (let c = 0; c < clipCount; c++) {
     const id = reader.u32();
-    requireAsset(!ids.has(id), 'Duplicate shape clip');
+    requireAsset(!ids.has(id), validationMessage('Duplicate shape clip'));
     ids.add(id);
-    requireAsset(reader.u32() === CLIP_FRAMES, 'Unsupported shape clip frames');
+    requireAsset(reader.u32() === CLIP_FRAMES, validationMessage('Unsupported shape clip frames'));
     const camera = readClipCamera(reader, 'shape');
     const headings = reader.f32s(CLIP_FRAMES);
     requireAsset(
       headings.every((h) => Math.abs(h) <= MAX_HEADING),
-      'Invalid shape heading',
+      validationMessage('Invalid shape heading'),
     );
     const coefficients = new Float32Array(CLIP_FRAMES * shapes);
     for (let i = 0; i < coefficients.length; i++) coefficients[i] = reader.f32();
@@ -158,7 +160,7 @@ export function evaluateShapes(
   const animation = model.clips[clip];
   requireAsset(
     animation !== undefined && Number.isInteger(frame) && frame >= 0 && frame < CLIP_FRAMES,
-    'Invalid shape frame',
+    validationMessage('Invalid shape frame'),
   );
   const count = model.count;
   const out = output?.length === count * 6 ? output : new Float32Array(count * 6);

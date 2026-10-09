@@ -928,7 +928,7 @@ GeneratorDefinition encircledKingdomDefinition()
 		"encircled-kingdom",
 		63,
 		"Encircled Kingdom",
-		2,
+		3,
 		false,
 		{GeneratorControl::choice(
 			 "fortress-plan", "Fortress plan",

@@ -1,3 +1,7 @@
+import { statusLabel } from '../i18n.tsx';
+import { displayMessage } from '../i18n.tsx';
+import { translateError } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { MusicMetadata, MusicRelease } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -12,6 +16,7 @@ function errorText(error: unknown) {
   return error instanceof Error ? error.message : String(error);
 }
 function PreviewDialog({ release, close }: { release: MusicRelease; close: () => void }) {
+  useLocale();
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
@@ -32,13 +37,14 @@ function PreviewDialog({ release, close }: { release: MusicRelease; close: () =>
     >
       <div className="music-heading">
         <h2 id="music-preview-title">{release.metadata.title}</h2>
-        <button onClick={close}>Close preview</button>
+        <button onClick={close}>{t('Close preview')}</button>
       </div>
       <MusicPlayer release={release} />
     </dialog>
   );
 }
 export function MusicLibrary() {
+  useLocale();
   const { account } = useSession();
   const [query, setQuery] = useState(''),
     [sort, setSort] = useState('likes'),
@@ -103,58 +109,58 @@ export function MusicLibrary() {
     <main className="music-library">
       <div className="music-heading">
         <div>
-          <p className="eyebrow">COMMUNITY SOUNDTRACKS</p>
-          <h1>Music for your colony</h1>
-          <p>Three moods. One shared rhythm. Find your next soundtrack.</p>
+          <p className="eyebrow">{t('COMMUNITY SOUNDTRACKS')}</p>
+          <h1>{t('Music for your colony')}</h1>
+          <p>{t('Three moods. One shared rhythm. Find your next soundtrack.')}</p>
         </div>
         <Link to="/music-studio" className="button">
-          Build in AI Music Studio
+          {t('Build in AI Music Studio')}
         </Link>
         <Link to="/music/new" className="button">
-          Share music
+          {t('Share music')}
         </Link>
       </div>
       <div className="music-filters">
         <label>
-          Search
+          {t('Search')}
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Title, artist, description…"
+            placeholder={t('Title, artist, description…')}
           />
         </label>
         <label>
-          Sort
+          {t('Sort')}
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="likes">Most liked</option>
-            <option value="recent">Newest</option>
-            <option value="downloads">Most downloaded</option>
+            <option value="likes">{t('Most liked')}</option>
+            <option value="recent">{t('Newest')}</option>
+            <option value="downloads">{t('Most downloaded')}</option>
           </select>
         </label>
         <label>
-          Licence
+          {t('Licence')}
           <select value={licence} onChange={(e) => setLicence(e.target.value)}>
-            <option value="">All open licences</option>
-            <option>CC0-1.0</option>
-            <option>CC-BY-4.0</option>
-            <option>CC-BY-SA-4.0</option>
+            <option value="">{t('All open licences')}</option>
+            <option>{t('CC0-1.0')}</option>
+            <option>{t('CC-BY-4.0')}</option>
+            <option>{t('CC-BY-SA-4.0')}</option>
           </select>
         </label>
         <label>
-          AI disclosure
+          {t('AI disclosure')}
           <select value={ai} onChange={(e) => setAi(e.target.value)}>
-            <option value="">All music</option>
-            <option value="false">Not AI-generated</option>
-            <option value="true">AI-generated</option>
+            <option value="">{t('All music')}</option>
+            <option value="false">{t('Not AI-generated')}</option>
+            <option value="true">{t('AI-generated')}</option>
           </select>
         </label>
         <label>
-          Tag
-          <input value={tag} onChange={(e) => setTag(e.target.value)} placeholder="forest" />
+          {t('Tag')}
+          <input value={tag} onChange={(e) => setTag(e.target.value)} placeholder={t('forest')} />
         </label>
         <label>
-          Minimum seconds
+          {t('Minimum seconds')}
           <input
             type="number"
             min="10"
@@ -164,7 +170,7 @@ export function MusicLibrary() {
           />
         </label>
         <label>
-          Maximum seconds
+          {t('Maximum seconds')}
           <input
             type="number"
             min="10"
@@ -175,13 +181,13 @@ export function MusicLibrary() {
         </label>
         {account && (
           <label>
-            <input type="checkbox" checked={mine} onChange={(e) => setMine(e.target.checked)} /> My
-            releases and uploads
+            <input type="checkbox" checked={mine} onChange={(e) => setMine(e.target.checked)} />{' '}
+            {t(' My releases and uploads')}
           </label>
         )}
       </div>
       {(notice || error) && <p role="alert">{notice || error}</p>}
-      {(busy || loading) && <p role="status">Loading…</p>}
+      {(busy || loading) && <p role="status">{t('Loading…')}</p>}
       <div className="music-grid">
         {items.map((release) => (
           <article key={release.id} className="music-card">
@@ -191,14 +197,29 @@ export function MusicLibrary() {
                 <h2>{release.metadata.title}</h2>
               </Link>
               <p>
-                {release.metadata.artist} · {Math.round(release.frames / 48000)} seconds
+                <RichMessage
+                  source={'{slot0} · {slot1} seconds'}
+                  slots={{
+                    slot0: release.metadata.artist,
+                    slot1: Math.round(release.frames / 48000),
+                  }}
+                  singular={'{slot0} · {slot1} second'}
+                  count={Number(Math.round(release.frames / 48000))}
+                />
               </p>
               <p className="music-description">{release.metadata.description}</p>
               <p>
                 {release.metadata.license}
-                {release.metadata.aiGenerated ? ' · AI-generated' : ''}
+                {release.metadata.aiGenerated ? t(' · AI-generated') : ''}
               </p>
-              {release.status !== 'published' && <p>Status: {release.status}</p>}
+              {release.status !== 'published' && (
+                <p>
+                  <RichMessage
+                    source={'Status: {slot0}'}
+                    slots={{ slot0: statusLabel(release.status) }}
+                  />
+                </p>
+              )}
               <div className="music-card-actions">
                 <button
                   disabled={!release.tracks.length}
@@ -207,24 +228,28 @@ export function MusicLibrary() {
                     setPreview(release);
                   }}
                 >
-                  Preview
+                  {t('Preview')}
                 </button>
                 <button
                   disabled={account?.kind !== 'registered' || release.status !== 'published'}
-                  aria-label={`${release.liked ? 'Unlike' : 'Like'} ${release.metadata.title} · ${release.likes} likes`}
+                  aria-label={t('{value0} {value1} · {value2} likes', {
+                    value0: release.liked ? 'Unlike' : 'Like',
+                    value1: release.metadata.title,
+                    value2: release.likes,
+                  })}
                   title={
                     account?.kind !== 'registered'
-                      ? 'Sign in with a registered account to like music'
+                      ? t('Sign in with a registered account to like music')
                       : undefined
                   }
                   aria-pressed={release.liked}
                   onClick={() => void like(release)}
                 >
-                  ♥ {release.likes}
+                  <RichMessage source={'♥ {slot0}'} slots={{ slot0: release.likes }} />
                 </button>
                 {release.tracks.length > 0 && (
                   <a href={`/api/v1/music/${release.id}/download`} download>
-                    Download ZIP
+                    {t('Download ZIP')}
                   </a>
                 )}
               </div>
@@ -243,7 +268,7 @@ export function MusicLibrary() {
                       })
                     }
                   />{' '}
-                  Select for download
+                  {t('Select for download')}
                 </label>
               )}
             </div>
@@ -251,20 +276,25 @@ export function MusicLibrary() {
         ))}
       </div>
       {!busy && !loading && !items.length && (
-        <p>No music found. Try different filters, or share the first set.</p>
+        <p>{t('No music found. Try different filters, or share the first set.')}</p>
       )}
       {next && (
         <button onClick={() => void more()} disabled={busy || loading}>
-          Load more
+          {t('Load more')}
         </button>
       )}
       {selected.size > 0 && (
-        <aside className="music-selection" aria-label="Selected music">
-          <span>{selected.size} selected · up to 10 sets, 64 MiB</span>
+        <aside className="music-selection" aria-label={t('Selected music')}>
+          <span>
+            <RichMessage
+              source={'{slot0} selected · up to 10 sets, 64 MiB'}
+              slots={{ slot0: selected.size }}
+            />
+          </span>
           <button onClick={() => void downloadSelected()} disabled={busy}>
-            Download selected
+            {t('Download selected')}
           </button>
-          <button onClick={() => setSelected(new Map())}>Clear selection</button>
+          <button onClick={() => setSelected(new Map())}>{t('Clear selection')}</button>
         </aside>
       )}
       {preview && (
@@ -275,6 +305,7 @@ export function MusicLibrary() {
 }
 
 export function MusicDetail({ id }: { id: string }) {
+  useLocale();
   const { account } = useSession();
   const data = useLoad(
     (signal) => request<MusicRelease>('GET', `/api/v1/music/${id}`, { signal }),
@@ -305,45 +336,57 @@ export function MusicDetail({ id }: { id: string }) {
       setBusy(false);
     }
   }
-  if (data.status === 'loading') return <p role="status">Loading music…</p>;
-  if (data.status === 'error') return <p role="alert">{data.error.message}</p>;
+  if (data.status === 'loading') return <p role="status">{t('Loading music…')}</p>;
+  if (data.status === 'error') return <p role="alert">{translateError(data.error)}</p>;
   const release = data.data,
     owner = account?.id === release.ownerId;
   return (
     <main className="music-detail">
-      <Link to="/music">← Music library</Link>
+      <Link to="/music">{t('← Music library')}</Link>
       <section className="music-listening-room">
         <div className="music-detail-heading">
           <Cover release={release} />
           <div>
-            <span className="music-eyebrow">A SOUNDTRACK FOR YOUR COLONY</span>
+            <span className="music-eyebrow">{t('A SOUNDTRACK FOR YOUR COLONY')}</span>
             <h1>{release.metadata.title}</h1>
-            <p className="music-artist">By {release.metadata.artist}</p>
+            <p className="music-artist">
+              <RichMessage source={'By {slot0}'} slots={{ slot0: release.metadata.artist }} />
+            </p>
             <p className="music-description-full">{release.metadata.description}</p>
             <p className="music-attribution">
-              {release.metadata.license} ·{' '}
-              {release.metadata.aiGenerated ? 'AI-generated' : 'Not AI-generated'}
+              <RichMessage
+                source={'{slot0} · {slot1}'}
+                slots={{
+                  slot0: release.metadata.license,
+                  slot1: release.metadata.aiGenerated ? t('AI-generated') : t('Not AI-generated'),
+                }}
+              />
             </p>
           </div>
         </div>
-        {notice && <p role="status">{notice}</p>}
+        {notice && <p role="status">{displayMessage(notice)}</p>}
         {release.error && <p role="alert">{release.error}</p>}
         {release.status !== 'published' && (
-          <p className="music-release-state">Status: {release.status}</p>
+          <p className="music-release-state">
+            <RichMessage
+              source={'Status: {slot0}'}
+              slots={{ slot0: statusLabel(release.status) }}
+            />
+          </p>
         )}
         {release.tracks.length === 3 && (
           <>
             <MusicPlayer key={release.id} release={release} />
             <div className="music-downloads">
               <a className="btn" href={`/api/v1/music/${id}/download`} download>
-                Download set
+                {t('Download set')}
               </a>
               <details>
-                <summary>Individual moods</summary>
+                <summary>{t('Individual moods')}</summary>
                 <div className="music-card-actions">
                   {release.tracks.map((track, i) => (
                     <a key={track.mood} href={track.url} download={`a${i + 1}.opus`}>
-                      Download {MOODS[i]}
+                      <RichMessage source={'Download {slot0}'} slots={{ slot0: t(MOODS[i]) }} />
                     </a>
                   ))}
                 </div>
@@ -356,9 +399,11 @@ export function MusicDetail({ id }: { id: string }) {
         <MusicValidation checks={release.validation ?? []} warnings={release.warnings} />
       )}
       <details className="music-credits">
-        <summary>Credits &amp; sources</summary>
+        <summary>{t('Credits & sources')}</summary>
         <p>{release.metadata.credits}</p>
-        <p>License: {release.metadata.license}</p>
+        <p>
+          <RichMessage source={'License: {slot0}'} slots={{ slot0: release.metadata.license }} />
+        </p>
         {release.metadata.sources.map((source) => (
           <p key={source}>
             <a href={source} rel="noreferrer">
@@ -369,10 +414,10 @@ export function MusicDetail({ id }: { id: string }) {
       </details>
       {owner && !release.generated && ['draft', 'inspected'].includes(release.status) && (
         <section className="music-upload">
-          <h2>Prepare this release</h2>
-          {[...MOODS, 'Cover'].map((mood, i) => (
+          <h2>{t('Prepare this release')}</h2>
+          {[...MOODS, t('Cover')].map((mood, i) => (
             <label key={mood}>
-              {mood} {release.uploaded.includes(mood.toLowerCase()) ? '✓ uploaded' : ''}
+              {mood} {release.uploaded.includes(mood.toLowerCase()) ? t('✓ uploaded') : ''}
               <input
                 type="file"
                 disabled={busy}
@@ -391,7 +436,7 @@ export function MusicDetail({ id }: { id: string }) {
                 busy || !['calm', 'building', 'combat'].every((m) => release.uploaded.includes(m))
               }
             >
-              Inspect tracks
+              {t('Inspect tracks')}
             </button>
           )}
           {release.inspection && (
@@ -402,11 +447,11 @@ export function MusicDetail({ id }: { id: string }) {
                   .join(' · ')}
               </p>
               <label>
-                Length repair
+                {t('Length repair')}
                 <select value={repair} onChange={(e) => setRepair(e.target.value)}>
-                  <option value="none">Keep lengths (must already match)</option>
-                  <option value="trim">Trim ends to shortest</option>
-                  <option value="pad">Pad ends with silence to longest</option>
+                  <option value="none">{t('Keep lengths (must already match)')}</option>
+                  <option value="trim">{t('Trim ends to shortest')}</option>
+                  <option value="pad">{t('Pad ends with silence to longest')}</option>
                 </select>
               </label>
               {repair !== 'none' && (
@@ -414,25 +459,25 @@ export function MusicDetail({ id }: { id: string }) {
                   {release.inspection.seconds
                     .map(
                       (seconds, i, all) =>
-                        `${MOODS[i]}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? 'removed from end' : 'silence added at end'}`,
+                        `${MOODS[i]}: ${Math.abs(seconds - (repair === 'trim' ? Math.min(...all) : Math.max(...all))).toFixed(3)}s ${repair === 'trim' ? t('removed from end') : t('silence added at end')}`,
                     )
                     .join(' · ')}
                 </p>
               )}
-              <p>Matching lengths does not align beats or harmony.</p>
+              <p>{t('Matching lengths does not align beats or harmony.')}</p>
               <label>
                 <input
                   type="checkbox"
                   checked={master}
                   onChange={(e) => setMaster(e.target.checked)}
                 />{' '}
-                Apply soundtrack loudness targets and peak limiting
+                {t('Apply soundtrack loudness targets and peak limiting')}
               </label>
               <button
                 disabled={busy || (!release.inspection.equal && repair === 'none')}
                 onClick={() => void action('POST', '/convert', { repair, master })}
               >
-                Convert and prepare preview
+                {t('Convert and prepare preview')}
               </button>
             </>
           )}
@@ -449,16 +494,16 @@ export function MusicDetail({ id }: { id: string }) {
             )
           }
         >
-          Publish this release
+          {t('Publish this release')}
         </button>
       )}
       {owner && release.status !== 'withdrawn' && (
         <button disabled={busy} onClick={() => void action('DELETE', '')}>
           {release.status === 'published'
-            ? 'Withdraw release'
+            ? t('Withdraw release')
             : release.generated
-              ? 'Delete private release'
-              : 'Cancel upload'}
+              ? t('Delete private release')
+              : t('Cancel upload')}
         </button>
       )}
       {account && release.status === 'published' && (
@@ -467,12 +512,15 @@ export function MusicDetail({ id }: { id: string }) {
             aria-pressed={release.liked}
             onClick={() => void action(release.liked ? 'DELETE' : 'PUT', '/like')}
           >
-            ♥ {release.likes} · {release.liked ? 'Unlike' : 'Like'}
+            <RichMessage
+              source={'♥ {slot0} · {slot1}'}
+              slots={{ slot0: release.likes, slot1: release.liked ? t('Unlike') : t('Like') }}
+            />
           </button>
           <details>
-            <summary>Report this release</summary>
+            <summary>{t('Report this release')}</summary>
             <label>
-              Reason
+              {t('Reason')}
               <textarea
                 value={reason}
                 maxLength={2000}
@@ -483,7 +531,7 @@ export function MusicDetail({ id }: { id: string }) {
               disabled={!reason.trim()}
               onClick={() => void action('POST', '/report', { reason })}
             >
-              Send report
+              {t('Send report')}
             </button>
           </details>
         </>
@@ -493,6 +541,7 @@ export function MusicDetail({ id }: { id: string }) {
 }
 
 export function MusicCreate() {
+  useLocale();
   const { account } = useSession(),
     { navigate } = useRouter();
   const [metadata, setMetadata] = useState<MusicMetadata>({
@@ -512,17 +561,18 @@ export function MusicCreate() {
   if (!account || account.kind !== 'registered')
     return (
       <main>
-        <h1>Share music</h1>
-        <p>Sign in with a registered account to publish music.</p>
-        <a href="/signin">Sign in</a>
+        <h1>{t('Share music')}</h1>
+        <p>{t('Sign in with a registered account to publish music.')}</p>
+        <a href="/signin">{t('Sign in')}</a>
       </main>
     );
   return (
     <main className="music-create">
-      <h1>Share a soundtrack</h1>
+      <h1>{t('Share a soundtrack')}</h1>
       <p>
-        Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds
-        to 15 minutes. Originals are deleted after conversion; keep your own source files.
+        {t(
+          'Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.',
+        )}
       </p>
       <form
         onSubmit={(event) => {
@@ -558,7 +608,7 @@ export function MusicCreate() {
           </label>
         ))}
         <label>
-          Licence
+          {t('Licence')}
           <select
             value={metadata.license}
             onChange={(e) =>
@@ -568,17 +618,17 @@ export function MusicCreate() {
               }))
             }
           >
-            <option value="CC0-1.0">CC0 1.0</option>
-            <option value="CC-BY-4.0">CC BY 4.0</option>
-            <option value="CC-BY-SA-4.0">CC BY-SA 4.0</option>
+            <option value="CC0-1.0">{t('CC0 1.0')}</option>
+            <option value="CC-BY-4.0">{t('CC BY 4.0')}</option>
+            <option value="CC-BY-SA-4.0">{t('CC BY-SA 4.0')}</option>
           </select>
         </label>
         <label>
-          Source links (one per line)
+          {t('Source links (one per line)')}
           <textarea value={sources} onChange={(e) => setSources(e.target.value)} />
         </label>
         <label>
-          Tags (comma separated)
+          {t('Tags (comma separated)')}
           <input value={tags} onChange={(e) => setTags(e.target.value)} />
         </label>
         <label>
@@ -587,14 +637,14 @@ export function MusicCreate() {
             checked={metadata.aiGenerated}
             onChange={(e) => setMetadata((old) => ({ ...old, aiGenerated: e.target.checked }))}
           />{' '}
-          This music includes AI-generated audio
+          {t('This music includes AI-generated audio')}
         </label>
         <label>
-          <input type="checkbox" required /> I can share these recordings and artwork under the
-          selected licence.
+          <input type="checkbox" required />{' '}
+          {t(' I can share these recordings and artwork under the selected licence.')}
         </label>
-        <button disabled={busy}>Continue to uploads</button>
-        {notice && <p role="alert">{notice}</p>}
+        <button disabled={busy}>{t('Continue to uploads')}</button>
+        {notice && <p role="alert">{displayMessage(notice)}</p>}
       </form>
     </main>
   );

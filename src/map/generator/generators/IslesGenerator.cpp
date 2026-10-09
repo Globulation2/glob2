@@ -365,7 +365,7 @@ GeneratorDefinition islesDefinition()
 		"isles",
 		6,
 		"Isles",
-		3,
+		4,
 		false,
 		// Island size is each island's diameter as a percentage of the least distance between
 		// colonies (see layoutIslands for its range); bridge width is how many steps a bridge's

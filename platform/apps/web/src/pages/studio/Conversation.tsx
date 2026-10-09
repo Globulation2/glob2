@@ -1,3 +1,5 @@
+import { getLocale } from '../../i18n.tsx';
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { Icon } from '../../icons.tsx';
 import { useEffect, useRef, useState } from 'react';
 import { ART } from '../../art.tsx';
@@ -20,6 +22,7 @@ export function Conversation({
   inspect: (id: string) => void;
   progress?: StudioProgress;
 }) {
+  useLocale();
   const ref = useRef<HTMLDivElement>(null);
   const bottom = useRef(true);
   const [unread, setUnread] = useState(false);
@@ -64,7 +67,7 @@ export function Conversation({
         tabIndex={0}
         ref={ref}
         role="log"
-        aria-label="Map design conversation"
+        aria-label={t('Map design conversation')}
         aria-live="polite"
         onScroll={(e) => {
           const el = e.currentTarget;
@@ -85,24 +88,24 @@ export function Conversation({
               loadEarlier();
             }}
           >
-            Load earlier conversation and versions
+            {t('Load earlier conversation and versions')}
           </button>
         )}
         {!thread?.messages.length && (
           <div className="ms-chat-intro">
             <img src={ART.swarm} alt="" />
-            <h2>What will your world look like?</h2>
-            <p>Describe a map to build, ask a question, or explore an idea together.</p>
+            <h2>{t('What will your world look like?')}</h2>
+            <p>{t('Describe a map to build, ask a question, or explore an idea together.')}</p>
             <div className="ms-prompt-ideas">
               {[
-                'Create a ring of islands around a shared lagoon',
-                'Build wooded hills with wide routes between colonies',
-                'Create a winding river with room to grow',
+                t('Create a ring of islands around a shared lagoon'),
+                t('Build wooded hills with wide routes between colonies'),
+                t('Create a winding river with room to grow'),
               ].map((text, i) => (
                 <button key={text} onClick={() => choose(text)}>
                   <span aria-hidden="true">{['◈', '♧', '≈'][i]}</span>
                   {text}
-                  <span aria-hidden="true">↗</span>
+                  <span aria-hidden="true">{t('↗')}</span>
                 </button>
               ))}
             </div>
@@ -113,17 +116,21 @@ export function Conversation({
             const r = entry.build;
             if (r.kind === 'chat')
               return (
-                <article key={r.id} className="ms-build-card" aria-label="Designer request status">
+                <article
+                  key={r.id}
+                  className="ms-build-card"
+                  aria-label={t('Designer request status')}
+                >
                   <strong>
                     {r.status === 'uncertain'
-                      ? 'Designer reply awaiting reconciliation'
-                      : 'Designer request failed'}
+                      ? t('Designer reply awaiting reconciliation')
+                      : t('Designer request failed')}
                   </strong>
-                  <p>{r.error ?? 'Your message could not be completed.'}</p>
+                  <p>{r.error ?? t('Your message could not be completed.')}</p>
                   {r.status === 'uncertain' ? (
-                    <p>No map build has started. Waiting for the provider outcome.</p>
+                    <p>{t('No map build has started. Waiting for the provider outcome.')}</p>
                   ) : (
-                    <p>You can send a new message to try again.</p>
+                    <p>{t('You can send a new message to try again.')}</p>
                   )}
                 </article>
               );
@@ -132,35 +139,48 @@ export function Conversation({
               progress.stages.some((s) => s.id === 'checks' && s.status === 'running');
             const label =
               r.status === 'ready'
-                ? 'Delivered'
+                ? t('Delivered')
                 : r.status === 'failed'
-                  ? 'Failed'
+                  ? t('Failed')
                   : r.status === 'uncertain'
-                    ? 'Awaiting provider outcome'
+                    ? t('Awaiting provider outcome')
                     : r.status === 'queued'
-                      ? 'Queued'
+                      ? t('Queued')
                       : checking || r.status === 'importing'
-                        ? 'Checking'
-                        : 'Building';
+                        ? t('Checking')
+                        : t('Building');
             return (
-              <article key={r.id} className="ms-build-card" aria-label={`Map build: ${label}`}>
+              <article
+                key={r.id}
+                className="ms-build-card"
+                aria-label={t('Map build: {value0}', { value0: label })}
+              >
                 <strong>{label}</strong>
                 <span>
                   {r.input.settings
-                    ? `${r.input.settings.width} × ${r.input.settings.height} · ${r.input.settings.players} players`
-                    : 'Map build'}
+                    ? t('{value0} × {value1} · {value2} players', {
+                        value0: r.input.settings.width,
+                        value1: r.input.settings.height,
+                        value2: r.input.settings.players,
+                      })
+                    : t('Map build')}
                 </span>
                 <p>
                   {r.status === 'failed'
-                    ? `${r.error ?? 'The build did not complete.'} Your credit was returned.`
+                    ? t('{value0} Your credit was returned.', {
+                        value0: r.error ?? 'The build did not complete.',
+                      })
                     : r.status === 'uncertain'
-                      ? 'Your credit remains reserved while the provider outcome is reconciled.'
+                      ? t('Your credit remains reserved while the provider outcome is reconciled.')
                       : r.status === 'ready'
-                        ? 'Your map is ready to play.'
-                        : 'Follow progress on the canvas.'}
+                        ? t('Your map is ready to play.')
+                        : t('Follow progress on the canvas.')}
                 </p>
                 <button onClick={() => inspect(r.id)}>
-                  View {r.status === 'ready' ? 'map' : 'build'}
+                  <RichMessage
+                    source={'View {slot0}'}
+                    slots={{ slot0: r.status === 'ready' ? t('map') : t('build') }}
+                  />
                 </button>
               </article>
             );
@@ -170,10 +190,10 @@ export function Conversation({
             <article className={`ms-message ms-message-${m.role}`} key={m.id}>
               <div className="ms-message-author">
                 <span aria-hidden="true">{m.role === 'user' ? '◉' : '✧'}</span>
-                {m.role === 'user' ? 'You' : 'Map designer'}
+                {m.role === 'user' ? t('You') : t('Map designer')}
                 {m.created_at && (
                   <time dateTime={m.created_at}>
-                    {new Date(m.created_at).toLocaleTimeString([], {
+                    {new Date(m.created_at).toLocaleTimeString(getLocale(), {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
@@ -186,8 +206,8 @@ export function Conversation({
         })}
         {active && (
           <article className="ms-message ms-message-assistant">
-            <div className="ms-message-author">✧ Map designer</div>
-            <div className="ms-typing" aria-label="The map designer is replying">
+            <div className="ms-message-author">{t('✧ Map designer')}</div>
+            <div className="ms-typing" aria-label={t('The map designer is replying')}>
               <span />
               <span />
               <span />
@@ -204,7 +224,8 @@ export function Conversation({
             setUnread(false);
           }}
         >
-          New messages <Icon name="chevron-down" size={18} />
+          {t('New messages ')}
+          <Icon name="chevron-down" size={18} />
         </button>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { getLocale } from '../../messages.ts';
 import { mergeStudioThread } from '../../components/studio/history.ts';
 import type { MusicStudioRequest, MusicStudioSettings, MusicStudioThread } from '@glob2/protocol';
 export const ROOT = '/api/v1/music-studio';
@@ -21,7 +22,7 @@ export type Delivered = MusicStudioRequest & {
   input: MusicStudioRequest['input'] & { settings: MusicStudioSettings };
 };
 export const price = (p: Wallet['packs'][number]) =>
-  new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(
+  new Intl.NumberFormat(getLocale(), { style: 'currency', currency: p.currency }).format(
     p.amount / 100,
   );
 export const mergeThread = mergeStudioThread<Thread>;

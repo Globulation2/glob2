@@ -1,3 +1,5 @@
+import { MessageError } from '../messages.ts';
+import { t } from '../messages.ts';
 /* Unit meshes for Studio: baked GSK1 clips, GSB1 blend-shape clips and GSR1
  * bone rigs, all presented as one Mesh with a rest pose for the fixed paint
  * chart and a pose() evaluator for the displayed frame. Indexed geometry and
@@ -94,7 +96,7 @@ export function bakedMesh(
 }
 export function decode(bytes: ArrayBuffer): Mesh {
   if (bytes.byteLength < 20 || bytes.byteLength > 64 * 1024 * 1024)
-    throw new Error('Invalid model size');
+    throw new MessageError('Invalid model size');
   const d = new DataView(bytes),
     count = d.getUint32(4, true),
     indices = d.getUint32(8, true),
@@ -109,7 +111,7 @@ export function decode(bytes: ArrayBuffer): Mesh {
     ![1, CLIP_FRAMES].includes(frames) ||
     bytes.byteLength !== 20 + count * 8 + indices * 4 + frames * count * 24
   )
-    throw new Error('Invalid model dimensions');
+    throw new MessageError('Invalid model dimensions');
   const uv = new Float32Array(bytes, 20, count * 2),
     index = new Uint32Array(bytes, 20 + count * 8, indices),
     poses = new Float32Array(bytes, 20 + count * 8 + indices * 4);
@@ -118,7 +120,7 @@ export function decode(bytes: ArrayBuffer): Mesh {
     uv.some((v) => !Number.isFinite(v) || v < 0 || v > 1) ||
     poses.some((v) => !Number.isFinite(v))
   )
-    throw new Error('Invalid model geometry');
+    throw new MessageError('Invalid model geometry');
   return bakedMesh(count, frames, uv, index, poses);
 }
 export function validateView(view: ViewTransform) {
@@ -128,7 +130,7 @@ export function validateView(view: ViewTransform) {
     !Number.isFinite(view.radius) ||
     view.radius <= 0
   )
-    throw new Error('Invalid model camera');
+    throw new MessageError('Invalid model camera');
   for (const [values, length] of [
     [view.clipToModel, 16],
     [view.modelToClip, 16],
@@ -140,7 +142,7 @@ export function validateView(view: ViewTransform) {
       values.length !== length ||
       values.some((v) => !Number.isFinite(v))
     )
-      throw new Error('Invalid model transform');
+      throw new MessageError('Invalid model transform');
 }
 /** The view sidecar a fitted asset's clip camera implies, with the asset's
  * own digest as the cache identity. */
@@ -184,7 +186,7 @@ export function shapeGeometry(
   meshSha256: string,
 ): { mesh: Mesh; view: ViewTransform } {
   const camera = shapes.clips[clip];
-  if (!camera || !Number.isInteger(clip)) throw new Error('Invalid shape clip');
+  if (!camera || !Number.isInteger(clip)) throw new MessageError('Invalid shape clip');
   // The framing radius is the mean mesh's extent about the model origin.
   let radius = 0;
   for (let v = 0; v < shapes.count; v++)
@@ -223,7 +225,7 @@ export function rigGeometry(
   meshSha256: string,
 ): { mesh: Mesh; view: ViewTransform } {
   const camera = rig.clips[clip];
-  if (!camera || !Number.isInteger(clip)) throw new Error('Invalid rig clip');
+  if (!camera || !Number.isInteger(clip)) throw new MessageError('Invalid rig clip');
   const view = cameraView(
     camera.modelToClip,
     camera.normalToCamera,
@@ -256,7 +258,8 @@ export async function loadFittedMesh(asset: string, clip = 0) {
   const format = unitClipFormat(asset);
   if (!format) throw new Error(`${asset} has no fitted clip`);
   const response = await fetch(`/skins/models/${asset}.${format}`);
-  if (!response.ok) throw new Error(`Could not load ${asset}.${format}`);
+  if (!response.ok)
+    throw new MessageError('Could not load {value0}.{value1}', { value0: asset, value1: format });
   const bytes = await response.arrayBuffer();
   const hash = await sha256Hex(bytes);
   return format === 'gsb'
@@ -268,12 +271,12 @@ async function loadBakedMesh(asset: string) {
     fetch(`/skins/models/${asset}.gsk`),
     fetch(`/skins/models/${asset}.view.json`),
   ]);
-  if (!a.ok || !b.ok) throw new Error('Could not load this model. Please retry.');
+  if (!a.ok || !b.ok) throw new MessageError('Could not load this model. Please retry.');
   const bytes = await a.arrayBuffer(),
     view = (await b.json()) as ViewTransform;
   validateView(view);
   if ((await sha256Hex(bytes)) !== view.meshSha256)
-    throw new Error('Model and camera versions do not match. Reload to update.');
+    throw new MessageError('Model and camera versions do not match. Reload to update.');
   return { mesh: decode(bytes), view };
 }
 export function decodeDetailUV(bytes: ArrayBuffer, count: number): Float32Array {
@@ -285,12 +288,12 @@ export function decodeDetailUV(bytes: ArrayBuffer, count: number): Float32Array 
     String.fromCharCode(...new Uint8Array(bytes, 0, 4)) !== 'GUV1' ||
     view.getUint32(4, true) !== count
   )
-    throw new Error('Invalid material unwrap dimensions.');
+    throw new MessageError('Invalid material unwrap dimensions.');
   const uv = new Float32Array(count * 2);
   for (let i = 0; i < uv.length; i++) {
     const value = view.getFloat32(8 + i * 4, true);
     if (!Number.isFinite(value) || value < 0 || value > 1)
-      throw new Error('Invalid material unwrap coordinate.');
+      throw new MessageError('Invalid material unwrap coordinate.');
     uv[i] = value;
   }
   return uv;
@@ -299,7 +302,7 @@ async function withDetailUV(asset: string, loaded: { mesh: Mesh; view: ViewTrans
   if (!asset.startsWith('worker-') && !asset.startsWith('warrior-')) return loaded;
   const response = await fetch(`/skins/models/${asset}.guv`);
   if (response.status === 404) return loaded;
-  if (!response.ok) throw new Error('Could not load the material unwrap.');
+  if (!response.ok) throw new MessageError('Could not load the material unwrap.');
   loaded.mesh.detailUV = decodeDetailUV(await response.arrayBuffer(), loaded.mesh.count);
   return loaded;
 }
@@ -312,7 +315,10 @@ export function loadMesh(asset: string) {
     pending = (
       unitClipFormat(asset)
         ? loadFittedMesh(asset).catch((error: unknown) => {
-            console.warn(`Fitted ${asset} unavailable, using the baked clip:`, error);
+            console.warn(
+              t('Fitted {value0} unavailable, using the baked clip:', { value0: asset }),
+              error,
+            );
             return loadBakedMesh(asset);
           })
         : loadBakedMesh(asset)

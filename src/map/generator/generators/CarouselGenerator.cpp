@@ -1056,7 +1056,7 @@ GeneratorDefinition carouselDefinition()
 		"carousel",
 		22,
 		"Carousel",
-		2,
+		3,
 		false,
 		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as

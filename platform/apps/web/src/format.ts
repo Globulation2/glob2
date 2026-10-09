@@ -1,3 +1,5 @@
+import { getLocale } from './messages.ts';
+import { t } from './messages.ts';
 // Display helpers shared by pages.
 import {
   TICKS_PER_SECOND,
@@ -13,10 +15,31 @@ export { TICKS_PER_SECOND };
 export function duration(ticks: number | undefined): string {
   if (ticks === undefined) return '–';
   const seconds = Math.round(ticks / TICKS_PER_SECOND);
-  if (seconds < 60) return `${seconds} s`;
+  if (seconds < 60)
+    return new Intl.NumberFormat(getLocale(), {
+      style: 'unit',
+      unit: 'second',
+      unitDisplay: 'short',
+    }).format(seconds);
   const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `${minutes} min`;
-  return `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
+  if (minutes < 60)
+    return new Intl.NumberFormat(getLocale(), {
+      style: 'unit',
+      unit: 'minute',
+      unitDisplay: 'short',
+    }).format(minutes);
+  return t('{hours} {minutes}', {
+    hours: new Intl.NumberFormat(getLocale(), {
+      style: 'unit',
+      unit: 'hour',
+      unitDisplay: 'short',
+    }).format(Math.floor(minutes / 60)),
+    minutes: new Intl.NumberFormat(getLocale(), {
+      style: 'unit',
+      unit: 'minute',
+      unitDisplay: 'short',
+    }).format(minutes % 60),
+  });
 }
 
 export function tickTime(tick: number): string {
@@ -24,18 +47,19 @@ export function tickTime(tick: number): string {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
-const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' });
-const dateTimeFormat = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-});
+const dateFormat = () => new Intl.DateTimeFormat(getLocale(), { dateStyle: 'medium' });
+const dateTimeFormat = () =>
+  new Intl.DateTimeFormat(getLocale(), {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
 
 export function date(iso: string | undefined): string {
-  return iso ? dateFormat.format(new Date(iso)) : '–';
+  return iso ? dateFormat().format(new Date(iso)) : '–';
 }
 
 export function dateTime(iso: string | undefined): string {
-  return iso ? dateTimeFormat.format(new Date(iso)) : '–';
+  return iso ? dateTimeFormat().format(new Date(iso)) : '–';
 }
 
 /** "today 14:02", "yesterday", "3 days ago", else the date. */
@@ -44,15 +68,19 @@ export function ago(iso: string | undefined, now = Date.now()): string {
   const then = new Date(iso);
   const days = Math.floor((now - then.getTime()) / 86_400_000);
   if (days <= 0) {
-    return `today ${then.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`;
+    return t('today {time}', {
+      time: then.toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' }),
+    });
   }
-  if (days === 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
-  return dateFormat.format(then);
+  if (days === 1)
+    return new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto' }).format(-1, 'day');
+  if (days < 7)
+    return new Intl.RelativeTimeFormat(getLocale(), { numeric: 'auto' }).format(-days, 'day');
+  return dateFormat().format(then);
 }
 
 export function rating(value: number): string {
-  return String(Math.round(value));
+  return new Intl.NumberFormat(getLocale(), { useGrouping: false }).format(Math.round(value));
 }
 
 export function signed(value: number): string {
@@ -63,7 +91,9 @@ export function signed(value: number): string {
 }
 
 export function percent(value: number): string {
-  return `${Math.round(value * 100)} %`;
+  return new Intl.NumberFormat(getLocale(), { style: 'percent', maximumFractionDigits: 0 }).format(
+    value,
+  );
 }
 
 /**
@@ -76,8 +106,8 @@ export function queueName(
   known?: string,
 ) {
   if (known) return known;
-  if (!id) return 'Room';
-  if (id === 'room') return 'Rooms';
+  if (!id) return t('Room');
+  if (id === 'room') return t('Rooms');
   return queues?.find((q) => q.id === id)?.name ?? readableId(id);
 }
 

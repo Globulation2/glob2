@@ -452,7 +452,8 @@ export class PlayRealtime {
         const subject = await this.subject(account.id);
         for (const id of ids) {
           const configured = config.instance.queues.find((q) => q.id === id);
-          if (!configured) throw apiError('not_found', `No queue ${id}.`);
+          if (!configured)
+            throw apiError('not_found', 'No queue {p0}.', undefined, { p0: String(id) });
           const queue = resolveQueue(configured);
           const decision = await access.canQueue(subject, {
             queueId: queue.id,

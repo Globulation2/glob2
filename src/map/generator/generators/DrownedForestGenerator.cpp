@@ -1825,7 +1825,7 @@ GeneratorDefinition drownedForestDefinition()
 	return {"drowned-forest",
 			67,
 			"Drowned Forest",
-			1,
+			2,
 			false,
 			{GeneratorControl{"sandbar-connections", "Sandbar connections", 0, 100, 10, 30,
 							  ControlGroup::Layout}

@@ -585,7 +585,7 @@ GeneratorDefinition contestedCommonsDefinition()
 		"contested-commons",
 		9,
 		"Contested commons",
-		3,
+		4,
 		false,
 		// Home island size is a percentage of the closest colony spacing; commons size a
 		// percentage of the home radius (limited by the room the spread leaves); moat width a

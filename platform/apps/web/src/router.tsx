@@ -1,3 +1,4 @@
+import { useLocale } from './i18n.tsx';
 // A small history-API router: the app has a handful of routes, all listed in
 // routes.tsx. Paths the game links to (/players/<id>, /matches/<id>,
 // /maps/<id>, /leaderboard/<queueId>) must keep working as deep links; the
@@ -32,6 +33,7 @@ function current(): Location {
 }
 
 export function RouterProvider({ children }: { children: ReactNode }) {
+  useLocale();
   const [location, setLocation] = useState<Location>(current);
   const historyIndex = useRef<number>(window.history.state?.glob2HistoryIndex ?? 0);
   const restoringHistory = useRef(false);
@@ -118,6 +120,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { to: string };
 
 /** An in-app link: plain clicks navigate without reloading. */
 export function Link({ to, onClick, children, ...rest }: LinkProps) {
+  useLocale();
   const { navigate } = useRouter();
   const handle = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);

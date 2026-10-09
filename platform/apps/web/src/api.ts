@@ -1,3 +1,5 @@
+import { MessageError, translateError } from './messages.ts';
+import { t } from './messages.ts';
 // Platform REST client for the web app. The app is served from the instance
 // origin, so requests carry the web session cookie (set by /signin); writes are
 // same-origin fetches, which the API's CSRF check accepts.
@@ -29,9 +31,15 @@ export class ApiError extends Error {
   readonly status: number;
   readonly body: ErrorBody | undefined;
   constructor(status: number, body: ErrorBody | undefined) {
-    super(body?.message ?? `HTTP ${status}`);
+    super(body?.message ?? t('HTTP {value0}', { value0: status }));
     this.status = status;
     this.body = body;
+    // Keep server metadata intact and resolve presentation text in the current locale.
+    Object.defineProperty(this, 'message', {
+      configurable: true,
+      get: () =>
+        this.body ? translateError({ body: this.body }) : t('HTTP {value0}', { value0: status }),
+    });
   }
 }
 
@@ -85,7 +93,10 @@ export async function fetchInstance(signal?: AbortSignal): Promise<InstanceInfo>
     import('@glob2/protocol'),
   ]);
   const issues = protocol.schemaIssues(protocol.InstanceInfo, body);
-  if (issues.length > 0) throw new Error(`unexpected instance response: ${issues[0]?.message}`);
+  if (issues.length > 0)
+    throw new MessageError('unexpected instance response: {value0}', {
+      value0: issues[0]?.message,
+    });
   return body as InstanceInfo;
 }
 

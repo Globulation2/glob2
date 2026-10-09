@@ -75,7 +75,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 async function start() {
-  fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Play music' }));
   await waitFor(() => expect(workers).toHaveLength(1));
   act(() => workers[0]?.onmessage?.({ data: { ready: true } }));
 }
@@ -100,7 +100,7 @@ it('applies a preselected mood and seek before starting; uses one volume gain', 
 });
 it('respects hidden-page loading and does not start automatically when visible again', async () => {
   render(<MusicPlayer release={release} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Play music' }));
   await waitFor(() => expect(workers).toHaveLength(1));
   act(() => {
     hidden = true;
@@ -113,7 +113,7 @@ it('respects hidden-page loading and does not start automatically when visible a
     hidden = false;
     document.dispatchEvent(new Event('visibilitychange'));
   });
-  expect(screen.getByRole('button', { name: 'Play' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Play music' })).toBeTruthy();
 });
 it('makes automatic preview, manual blend, and mood selection mutually exclusive', async () => {
   render(<MusicPlayer release={release} />);
@@ -148,7 +148,7 @@ it('starts guided preview on explicit intent and stops the sequence when paused'
   expect(
     (screen.getByRole('slider', { name: 'Playback position' }) as HTMLInputElement).valueAsNumber,
   ).toBe(4);
-  fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Play music' }));
   await screen.findByRole('button', { name: 'Pause' });
   expect(workers).toHaveLength(1);
 });
@@ -206,7 +206,7 @@ it('cleans up initialization interrupted before the worklet loads', async () => 
       }),
   );
   const view = render(<MusicPlayer release={release} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Play music' }));
   view.unmount();
   await act(async () => finish?.());
   expect(contexts[0]?.close).toHaveBeenCalled();

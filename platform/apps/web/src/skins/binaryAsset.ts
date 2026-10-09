@@ -1,3 +1,6 @@
+import { MessageError, type ValidationMessage } from '../messages.ts';
+import { validationMessage } from '../messages.ts';
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 /* Bounded reading and the limits the GSR1 and GSB1 decoders share with
  * libgag/src/SkinAssetReader.h. Validation arithmetic is binary64; limits on
@@ -17,8 +20,11 @@ export const MAX_SCALAR = 10000;
 export const TOLERANCE = 0.0001;
 export const MAX_HEADING = Math.fround(6.283186);
 
-export function requireAsset(ok: boolean, message: string): asserts ok {
-  if (!ok) throw new Error(message);
+export function requireAsset(ok: boolean, message: string | ValidationMessage): asserts ok {
+  if (!ok)
+    throw typeof message === 'string'
+      ? new Error(message)
+      : new MessageError(message.source, message.params);
 }
 
 export class ByteReader {
@@ -37,24 +43,33 @@ export class ByteReader {
     return this.data.byteLength - this.at;
   }
   u32(): number {
-    requireAsset(this.remaining >= 4, `Truncated ${this.label} payload`);
+    requireAsset(
+      this.remaining >= 4,
+      validationMessage('Truncated {value0} payload', { value0: this.label }),
+    );
     const value = this.data.getUint32(this.at, true);
     this.at += 4;
     return value;
   }
   i16(): number {
-    requireAsset(this.remaining >= 2, `Truncated ${this.label} payload`);
+    requireAsset(
+      this.remaining >= 2,
+      validationMessage('Truncated {value0} payload', { value0: this.label }),
+    );
     const value = this.data.getInt16(this.at, true);
     this.at += 2;
     return value;
   }
   f32(limit = MAX_SCALAR): number {
-    requireAsset(this.remaining >= 4, `Truncated ${this.label} payload`);
+    requireAsset(
+      this.remaining >= 4,
+      validationMessage('Truncated {value0} payload', { value0: this.label }),
+    );
     const value = this.data.getFloat32(this.at, true);
     this.at += 4;
     requireAsset(
       Number.isFinite(value) && Math.abs(value) <= limit,
-      `Invalid ${this.label} scalar`,
+      validationMessage('Invalid {value0} scalar', { value0: this.label }),
     );
     return value;
   }
@@ -62,7 +77,10 @@ export class ByteReader {
     return Array.from({ length: count }, () => this.f32());
   }
   assertConsumed(): void {
-    requireAsset(this.remaining === 0, `Trailing ${this.label} data`);
+    requireAsset(
+      this.remaining === 0,
+      validationMessage('Trailing {value0} data', { value0: this.label }),
+    );
   }
 }
 
@@ -71,14 +89,23 @@ export class ByteReader {
 export type ClipCamera = { modelToClip: readonly number[]; normalToCamera: readonly number[] };
 export function readClipCamera(reader: ByteReader, label: string): ClipCamera {
   const m = reader.f32s(16);
-  requireAsset(m[12] === 0 && m[13] === 0 && m[14] === 0 && m[15] === 1, `Invalid ${label} camera`);
-  requireAsset(Math.abs(determinant3(m)) > 1e-12, `Singular ${label} camera`);
+  requireAsset(
+    m[12] === 0 && m[13] === 0 && m[14] === 0 && m[15] === 1,
+    validationMessage('Invalid {value0} camera', { value0: label }),
+  );
+  requireAsset(
+    Math.abs(determinant3(m)) > 1e-12,
+    validationMessage('Singular {value0} camera', { value0: label }),
+  );
   const n = reader.f32s(9);
   for (let i = 0; i < 3; i++)
     for (let j = 0; j < 3; j++) {
       let dot = 0;
       for (let k = 0; k < 3; k++) dot += n[i * 3 + k]! * n[j * 3 + k]!;
-      requireAsset(Math.abs(dot - (i === j ? 1 : 0)) < TOLERANCE, `Invalid ${label} normal camera`);
+      requireAsset(
+        Math.abs(dot - (i === j ? 1 : 0)) < TOLERANCE,
+        validationMessage('Invalid {value0} normal camera', { value0: label }),
+      );
     }
   return { modelToClip: Object.freeze(m), normalToCamera: Object.freeze(n) };
 }
@@ -102,6 +129,6 @@ export function requireGeometryCounts(
       clipCount <= MAX_CLIPS &&
       logicalSize >= 1 &&
       logicalSize <= MAX_LOGICAL_SIZE,
-    `Invalid ${label} dimensions`,
+    validationMessage('Invalid {value0} dimensions', { value0: label }),
   );
 }

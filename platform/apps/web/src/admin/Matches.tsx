@@ -1,3 +1,5 @@
+import { displayMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import { request, api } from '../api.ts';
 import { Loaded, MatchListView } from '../components/common.tsx';
@@ -5,6 +7,7 @@ import { useLoad, useSession } from '../state.tsx';
 import { PageControls, useAdminFilters, useFilterDraft } from './filters.tsx';
 
 export function Matches() {
+  useLocale();
   const { values, set } = useAdminFilters();
   const [q, setQ] = useFilterDraft(values['q'] ?? '');
   const load = useLoad((signal) => api.adminMatches(values, signal), [JSON.stringify(values)]);
@@ -20,30 +23,30 @@ export function Matches() {
         }}
       >
         <input
-          aria-label="Search matches"
-          placeholder="Match id, account id, player name or relay"
+          aria-label={t('Search matches')}
+          placeholder={t('Match id, account id, player name or relay')}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           style={{ flex: '1 1 260px' }}
         />
         <select
-          aria-label="Status"
+          aria-label={t('Status')}
           value={values['status'] ?? ''}
           onChange={(e) => set({ status: e.target.value })}
         >
-          <option value="">Any status</option>
-          <option value="starting">Starting</option>
-          <option value="running">Running</option>
-          <option value="ended">Ended</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="">{t('Any status')}</option>
+          <option value="starting">{t('Starting')}</option>
+          <option value="running">{t('Running')}</option>
+          <option value="ended">{t('Ended')}</option>
+          <option value="cancelled">{t('Cancelled')}</option>
         </select>
         <label>
-          Verification{' '}
+          {t('Verification')}{' '}
           <select
             value={values['verification'] ?? ''}
             onChange={(e) => set({ verification: e.target.value })}
           >
-            <option value="">Any</option>
+            <option value="">{t('Any')}</option>
             {['pending', 'failed', 'verified', 'diverged', 'unverifiable', 'not_applicable'].map(
               (v) => (
                 <option key={v}>{v}</option>
@@ -51,7 +54,7 @@ export function Matches() {
             )}
           </select>
         </label>
-        <button type="submit">Search</button>
+        <button type="submit">{t('Search')}</button>
       </form>
       <Loaded load={load}>
         {(page) => (
@@ -70,12 +73,13 @@ export function Matches() {
 }
 
 function Reverify({ id, reload }: { id: string; reload: () => void }) {
+  useLocale();
   const [reason, setReason] = useState(''),
     [force, setForce] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('');
   async function act() {
-    if (force && !window.confirm(`Force re-verification of ${id}?`)) return;
+    if (force && !window.confirm(t('Force re-verification of {value0}?', { value0: id }))) return;
     if (busy) return;
     setBusy(true);
     setError('');
@@ -90,22 +94,26 @@ function Reverify({ id, reload }: { id: string; reload: () => void }) {
   }
   return (
     <details>
-      <summary>Re-verify {id}</summary>
+      <summary>
+        <RichMessage source={'Re-verify {slot0}'} slots={{ slot0: id }} />
+      </summary>
       <p>
-        Queues the stored match record for verification again. Force permits replacement of an
-        existing verification result; confirm it separately.
+        {t(
+          'Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.',
+        )}
       </p>
       <label>
-        Reason <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={2000} />
+        {t('Reason ')}
+        <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={2000} />
       </label>
       <label>
         <input type="checkbox" checked={force} onChange={(e) => setForce(e.target.checked)} />
-        Force re-verification
+        {t('Force re-verification')}
       </label>
       <button disabled={busy || !reason.trim()} onClick={() => void act()}>
-        Re-verify
+        {t('Re-verify ')}
       </button>
-      {error && <p role="alert">{error}</p>}
+      {error && <p role="alert">{displayMessage(error)}</p>}
     </details>
   );
 }

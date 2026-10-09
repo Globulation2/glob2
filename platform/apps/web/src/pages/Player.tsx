@@ -1,3 +1,5 @@
+import { statusLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { aiHref, versionLabel } from '../playerLinks.ts';
 import { versionKey } from '../format.ts';
 import { useState } from 'react';
@@ -22,6 +24,7 @@ import { isModerator, useLoad, useSession } from '../state.tsx';
 import { useTheme } from '../theme.tsx';
 
 function RatingGraph({ history, queues }: { history: RatingHistoryPoint[]; queues: string[] }) {
+  useLocale();
   const { theme } = useTheme();
   if (history.length === 0) return null;
   const ladders = [...new Set(history.map((p) => p.ladder))];
@@ -35,7 +38,7 @@ function RatingGraph({ history, queues }: { history: RatingHistoryPoint[]; queue
   });
   return (
     <LineChart
-      title="Rating after each rated match"
+      title={t('Rating after each rated match')}
       series={series}
       zeroBased={false}
       dots
@@ -46,12 +49,15 @@ function RatingGraph({ history, queues }: { history: RatingHistoryPoint[]; queue
 }
 
 function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
+  useLocale();
   if (rows.length === 0) return null;
   return (
     <div className="card">
       <h3>{title}</h3>
       <table className="data">
-        <caption className="sr-only">Win rate {title.toLowerCase()}</caption>
+        <caption className="sr-only">
+          <RichMessage source={'Win rate {slot0}'} slots={{ slot0: title.toLowerCase() }} />
+        </caption>
         <tbody>
           {rows.slice(0, 6).map((row) => (
             <tr key={row.key}>
@@ -59,11 +65,14 @@ function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
                 {row.mapId ? (
                   <Link to={`/maps/${row.mapId}`}>{row.label ?? row.key}</Link>
                 ) : (
-                  (row.label ?? (row.dimension === 'map' ? 'Private or uploaded map' : row.key))
+                  (row.label ?? (row.dimension === 'map' ? t('Private or uploaded map') : row.key))
                 )}
               </td>
               <td className="num">
-                {row.wins}–{row.games - row.wins}
+                <RichMessage
+                  source={'{slot0}–{slot1}'}
+                  slots={{ slot0: row.wins, slot1: row.games - row.wins }}
+                />
               </td>
               <td className="num" style={{ width: 70 }}>
                 {percent(row.winRate)}
@@ -77,13 +86,14 @@ function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
 }
 
 function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
+  useLocale();
   const { theme } = useTheme();
   const at = (pick: (p: EconomyCurve['points'][number]) => number) =>
     curve.points.map((p) => ({ x: p.tick, y: pick(p) }));
   return (
     <div className="grid2">
       <LineChart
-        title="Units: latest verified match against recent average"
+        title={t('Units: latest verified match against recent average')}
         series={[
           { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.units) },
           {
@@ -97,7 +107,7 @@ function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
         height={200}
       />
       <LineChart
-        title="Buildings: latest verified match against recent average"
+        title={t('Buildings: latest verified match against recent average')}
         series={[
           { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.buildings) },
           {
@@ -115,23 +125,37 @@ function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
 }
 
 function Aggregates({ aggregates }: { aggregates: PlayerAggregates | AiProfile['aggregates'] }) {
+  useLocale();
   const by = (dimension: WinRate['dimension']) =>
     aggregates.winRates.filter((r) => r.dimension === dimension);
   return (
     <>
-      <h2>Last {aggregates.windowDays} days</h2>
+      <h2>
+        <RichMessage
+          source={'Last {slot0} days'}
+          slots={{ slot0: aggregates.windowDays }}
+          singular={'Last {slot0} day'}
+          count={Number(aggregates.windowDays)}
+        />
+      </h2>
       <div className="grid3">
-        <WinRates title="By queue" rows={by('queue')} />
-        <WinRates title="By map" rows={by('map')} />
-        <WinRates title="By generator" rows={by('generator')} />
+        <WinRates title={t('By queue')} rows={by('queue')} />
+        <WinRates title={t('By map')} rows={by('map')} />
+        <WinRates title={t('By generator')} rows={by('generator')} />
       </div>
       {aggregates.economy && (
         <>
           <h2>
-            Economy{' '}
-            <Link className="caption" to={`/matches/${aggregates.economy.matchId}`}>
-              (match)
-            </Link>
+            <RichMessage
+              source={'Economy {slot0}'}
+              slots={{
+                slot0: (
+                  <Link className="caption" to={`/matches/${aggregates.economy.matchId}`}>
+                    {t('(match)')}
+                  </Link>
+                ),
+              }}
+            />
           </h2>
           <Economy curve={aggregates.economy} />
         </>
@@ -147,6 +171,7 @@ function Tiles({
     aggregates?: PlayerAggregates | AiProfile['aggregates'];
   };
 }) {
+  useLocale();
   const { instance } = useSession();
   const a = profile.aggregates;
   const best = a?.winRates
@@ -161,38 +186,61 @@ function Tiles({
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
             <span className="v">{rating(r.rating)}</span>
             {(r.overallRank ?? r.rank) !== undefined && (
-              <span className="caption">#{r.overallRank ?? r.rank}</span>
+              <span className="caption">
+                <RichMessage source={'#{slot0}'} slots={{ slot0: r.overallRank ?? r.rank }} />
+              </span>
             )}
-            {r.provisional && <span className="badge warn">provisional</span>}
+            {r.provisional && <span className="badge warn">{t('provisional')}</span>}
           </div>
           <div className="caption">
-            {r.wins} W · {r.games - r.wins} L
+            <RichMessage
+              source={'{slot0} W · {slot1} L'}
+              slots={{ slot0: r.wins, slot1: r.games - r.wins }}
+            />
           </div>
         </div>
       ))}
       {a && a.games > 0 && (
         <div className="tile">
           <GameArt name="warrior" className="art" size={64} />
-          <div className="caption">Win rate, {a.windowDays} days</div>
+          <div className="caption">
+            <RichMessage
+              source={'Win rate, {slot0} days'}
+              slots={{ slot0: a.windowDays }}
+              singular={'Win rate, {slot0} day'}
+              count={Number(a.windowDays)}
+            />
+          </div>
           <div className="v">{percent(a.wins / a.games)}</div>
           <div className="caption">
-            {a.wins} W · {a.losses} L
-            {a.games - a.wins - a.losses > 0 ? ` · ${a.games - a.wins - a.losses} unresolved` : ''}
+            <RichMessage
+              source={'{slot0} W · {slot1} L{slot2}'}
+              slots={{
+                slot0: a.wins,
+                slot1: a.losses,
+                slot2:
+                  a.games - a.wins - a.losses > 0
+                    ? t(' · {value0} unresolved', { value0: a.games - a.wins - a.losses })
+                    : '',
+              }}
+            />
           </div>
         </div>
       )}
       {a?.medianTicks !== undefined && (
         <div className="tile">
           <GameArt name="racetrack" className="art" size={64} />
-          <div className="caption">Typical game</div>
+          <div className="caption">{t('Typical game')}</div>
           <div className="v">{duration(a.medianTicks)}</div>
-          <div className="caption">median length</div>
+          <div className="caption">{t('median length')}</div>
         </div>
       )}
       {best && (
         <div className="tile">
           <GameArt name="clearingFlag" className="art" size={64} />
-          <div className="caption">Best {best.dimension}</div>
+          <div className="caption">
+            <RichMessage source={'Best {slot0}'} slots={{ slot0: best.dimension }} />
+          </div>
           <div
             style={{ fontSize: 'var(--text-lg)', fontWeight: 750, margin: '4px 0' }}
             className="ell"
@@ -200,7 +248,10 @@ function Tiles({
             {best.label ?? best.key}
           </div>
           <div className="caption">
-            {best.wins} W · {best.games - best.wins} L
+            <RichMessage
+              source={'{slot0} W · {slot1} L'}
+              slots={{ slot0: best.wins, slot1: best.games - best.wins }}
+            />
           </div>
         </div>
       )}
@@ -217,6 +268,7 @@ function Matches({
   initial: MatchSummary[];
   aiVersion?: string;
 }) {
+  useLocale();
   const { instance } = useSession();
   const [queue, setQueue] = useState('');
   const [cursor, setCursor] = useState<string>();
@@ -245,9 +297,9 @@ function Matches({
     <>
       <div className="toolbar">
         <h2 className="grow" style={{ margin: 0 }}>
-          Matches
+          {t('Matches')}
         </h2>
-        <span className="seg" role="group" aria-label="Show matches from">
+        <span className="seg" role="group" aria-label={t('Show matches from')}>
           {filters.map((f) => (
             <button
               key={f.id}
@@ -269,13 +321,13 @@ function Matches({
       )}
       {load.status === 'loading' && (
         <p role="status" className="caption">
-          Loading matches…
+          {t('Loading matches…')}
         </p>
       )}
       {load.status === 'error' && (
         <>
           <ErrorNotice error={load.error} />
-          <button onClick={load.reload}>Try again</button>
+          <button onClick={load.reload}>{t('Try again')}</button>
         </>
       )}
       {load.status === 'ready' && load.data.nextCursor && (
@@ -287,7 +339,7 @@ function Matches({
             setCursor(load.data.nextCursor);
           }}
         >
-          Show more
+          {t('Show more')}
         </button>
       )}
     </>
@@ -295,6 +347,7 @@ function Matches({
 }
 
 export function Player({ id }: { id: string }) {
+  useLocale();
   const { instance, account } = useSession();
   const load = useLoad((signal) => api.player(id, signal), [id]);
   return (
@@ -308,16 +361,26 @@ export function Player({ id }: { id: string }) {
             <div className="profile-head">
               <Avatar account={profile.account} size="large" />
               <div className="grow">
-                <h1 data-testid="player-name">{profile.account.displayName}</h1>
+                <h1 data-testid="player-name">
+                  <bdi dir="auto">{profile.account.displayName}</bdi>
+                </h1>
                 <div className="caption" style={{ fontSize: 'var(--text-md)' }}>
-                  {profile.account.kind === 'guest' ? 'Guest player' : 'Registered player'} ·
-                  playing since {date(profile.account.createdAt)}
-                  {profile.status && profile.status !== 'active' && (
-                    <>
-                      {' '}
-                      <span className="badge bad">{profile.status}</span>
-                    </>
-                  )}
+                  <RichMessage
+                    source={'{slot0} · playing since {slot1}{slot2}'}
+                    slots={{
+                      slot0:
+                        profile.account.kind === 'guest'
+                          ? t('Guest player')
+                          : t('Registered player'),
+                      slot1: date(profile.account.createdAt),
+                      slot2: profile.status && profile.status !== 'active' && (
+                        <>
+                          {' '}
+                          <span className="badge bad">{statusLabel(profile.status)}</span>
+                        </>
+                      ),
+                    }}
+                  />
                 </div>
               </div>
               {isModerator(account) && (
@@ -325,20 +388,22 @@ export function Player({ id }: { id: string }) {
                   className="btn small"
                   to={`/admin/accounts?q=${encodeURIComponent(profile.account.displayName)}`}
                 >
-                  Moderate
+                  {t('Moderate')}
                 </Link>
               )}
             </div>
             {profile.detail === 'minimal' ? (
               <p className="notice">
-                Guests are not ranked and keep no statistics. Their matches still appear below.
+                {t(
+                  'Guests are not ranked and keep no statistics. Their matches still appear below.',
+                )}
               </p>
             ) : (
               <>
                 <Tiles profile={profile} />
                 {profile.ratingHistory.length > 0 && (
                   <>
-                    <h2>Rating</h2>
+                    <h2>{t('Rating')}</h2>
                     <RatingGraph history={profile.ratingHistory} queues={ladderNames} />
                   </>
                 )}
@@ -360,6 +425,7 @@ export function Player({ id }: { id: string }) {
 }
 
 export function AiPlayer({ id }: { id: string }) {
+  useLocale();
   const { location, navigate } = useRouter();
   const { instance } = useSession();
   const version = location.search.get('simVersion') ?? undefined;
@@ -372,20 +438,23 @@ export function AiPlayer({ id }: { id: string }) {
             <AiMark size="large" />
             <div className="grow">
               <h1>
-                {profile.displayName} <span className="badge">AI</span>
+                <bdi dir="auto">{profile.displayName}</bdi> <span className="badge">{t('AI')}</span>
               </h1>
-              <p className="caption">AI opponent · ratings and games belong to this game version</p>
+              <p className="caption">
+                {t('AI opponent · ratings and games belong to this game version')}
+              </p>
             </div>
             {profile.versions.length > 0 && (
               <label className="field">
-                Game version
+                {t('Game version')}
                 <select
                   value={profile.simVersion ? versionKey(profile.simVersion) : ''}
                   onChange={(e) => navigate(aiHref(id, e.target.value))}
                 >
                   {profile.versions.map((v) => (
                     <option key={versionKey(v.simVersion)} value={versionKey(v.simVersion)}>
-                      {versionLabel(v.simVersion)} {v.current ? '(current)' : '(older version)'}
+                      {versionLabel(v.simVersion)}{' '}
+                      {v.current ? t('(current)') : t('(older version)')}
                     </option>
                   ))}
                 </select>
@@ -395,7 +464,7 @@ export function AiPlayer({ id }: { id: string }) {
           <Tiles profile={profile} />
           {profile.ratingHistory.length > 0 && (
             <>
-              <h2>Rating</h2>
+              <h2>{t('Rating')}</h2>
               <RatingGraph
                 history={profile.ratingHistory}
                 queues={[...new Set(profile.ratingHistory.map((p) => p.ladder))].map((l) =>
@@ -407,7 +476,7 @@ export function AiPlayer({ id }: { id: string }) {
           {profile.aggregates.games > 0 && <Aggregates aggregates={profile.aggregates} />}
           {!profile.recentMatches.length && (
             <p className="notice">
-              No games yet. This AI’s results will appear here after it plays.
+              {t('No games yet. This AI’s results will appear here after it plays.')}
             </p>
           )}
           {profile.simVersion && (

@@ -1,3 +1,5 @@
+import { statusLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { parse, MusicStudioCheck } from '@glob2/protocol';
 const CATEGORIES: Record<string, { label: string; guidance: string }> = {
   score: { label: 'Composition', guidance: 'Listen for the musical structure and development.' },
@@ -44,7 +46,12 @@ const ICONS: Record<MusicStudioCheck['status'], string> = {
   running: '◉',
 };
 function category(check: MusicStudioCheck) {
-  return CATEGORIES[check.label.toLowerCase()];
+  const key = check.label.toLowerCase();
+  return Object.hasOwn(CATEGORIES, key) ? CATEGORIES[key] : undefined;
+}
+function categoryLabel(check: MusicStudioCheck) {
+  const value = category(check);
+  return value ? t(value.label) : check.label;
 }
 /** Repeated candidates belong in history, never in the current quality summary. */
 export function latestMusicChecks(checks: MusicStudioCheck[]) {
@@ -65,6 +72,7 @@ export function MusicValidation({
   warnings?: string[];
   latestAttempts?: boolean;
 }) {
+  useLocale();
   const parsed = checks.flatMap((value) => {
     try {
       return [parse(MusicStudioCheck, value)];
@@ -79,7 +87,12 @@ export function MusicValidation({
   const otherSummary = otherStatuses
     .map((status) => {
       const count = valid.filter((check) => check.status === status).length;
-      return count ? `${count} ${status === 'skip' ? 'skipped' : status}` : '';
+      return count
+        ? t('{count} {status}', {
+            count,
+            status: statusLabel(status === 'skip' ? 'skipped' : status),
+          })
+        : '';
     })
     .filter(Boolean)
     .join(' · ');
@@ -96,17 +109,26 @@ export function MusicValidation({
     <section className="music-validation">
       <div className="music-quality-heading">
         <div>
-          <span className="music-eyebrow">THE LISTENING NOTES</span>
-          <h2>Audio quality checks</h2>
+          <span className="music-eyebrow">{t('THE LISTENING NOTES')}</span>
+          <h2>{t('Audio quality checks')}</h2>
         </div>
         <span className="music-quality-count">
-          {passed} passed · {attention.length} {attention.length === 1 ? 'finding' : 'findings'}
-          {otherSummary ? ` · ${otherSummary}` : ''}
+          <RichMessage
+            source={'{slot0} passed · {slot1}  {slot2}{slot3}'}
+            slots={{
+              slot0: passed,
+              slot1: attention.length,
+              slot2: attention.length === 1 ? t('finding') : t('findings'),
+              slot3: otherSummary ? ` · ${otherSummary}` : '',
+            }}
+          />
         </span>
       </div>
-      <p>Measurements flag possible defects. Your ears decide whether the music feels right.</p>
-      {!valid.length && <p>No measured results are available for this version.</p>}
-      {checks.length !== parsed.length && <p>Some results could not be displayed.</p>}
+      <p>
+        {t('Measurements flag possible defects. Your ears decide whether the music feels right.')}
+      </p>
+      {!valid.length && <p>{t('No measured results are available for this version.')}</p>}
+      {checks.length !== parsed.length && <p>{t('Some results could not be displayed.')}</p>}
       {!!attention.length && (
         <div className="music-quality-findings">
           {attention.map((check) => (
@@ -114,14 +136,14 @@ export function MusicValidation({
               <div>
                 <span className={`music-check-status ${check.status}`}>
                   <span aria-hidden="true">{ICONS[check.status]}</span>{' '}
-                  {check.status === 'fail' ? 'Failed' : 'Listening note'}
+                  {check.status === 'fail' ? t('Failed') : t('Listening note')}
                 </span>
-                <strong>{category(check)?.label ?? check.label}</strong>
+                <strong>{categoryLabel(check)}</strong>
               </div>
               <p>
                 {check.detail ??
                   check.measures.find((m) => m.status === 'warn' || m.status === 'fail')?.detail ??
-                  'Review the technical results for this finding.'}
+                  t('Review the technical results for this finding.')}
               </p>
               {category(check)?.guidance && <small>{category(check)?.guidance}</small>}
             </article>
@@ -138,7 +160,16 @@ export function MusicValidation({
       {!!valid.length && (
         <details className="music-technical">
           <summary>
-            Show technical results <span>{valid.length} checks</span>
+            <RichMessage
+              source={'Show technical results {slot0}'}
+              slots={{
+                slot0: (
+                  <span>
+                    {valid.length} {t(' checks')}
+                  </span>
+                ),
+              }}
+            />
           </summary>
           {valid.map((check) => (
             <MusicCheckDetails key={check.id} check={check} showAttempt={latestAttempts} />
@@ -155,25 +186,36 @@ export function MusicCheckDetails({
   check: MusicStudioCheck;
   showAttempt?: boolean;
 }) {
+  useLocale();
   return (
     <details className="music-check" data-status={check.status}>
       <summary>
         <span className={`music-check-status ${check.status}`}>
-          <span aria-hidden="true">{ICONS[check.status]}</span> {check.status}
+          <span aria-hidden="true">{ICONS[check.status]}</span> {statusLabel(check.status)}
         </span>
-        <strong>{category(check)?.label ?? check.label}</strong>
-        {showAttempt && <small>Candidate {check.attempt}</small>}
+        <strong>{categoryLabel(check)}</strong>
+        {showAttempt && (
+          <small>
+            <RichMessage source={'Candidate {slot0}'} slots={{ slot0: check.attempt }} />
+          </small>
+        )}
       </summary>
       {check.detail && <p>{check.detail}</p>}
       {check.measures.map((measure, index) => (
         <div className="music-measure" key={`${measure.name}:${index}`}>
           <strong>{measure.name}</strong>
           <span>
-            {measure.status} ·{' '}
-            {typeof measure.value === 'object'
-              ? JSON.stringify(measure.value)
-              : String(measure.value ?? '—')}{' '}
-            {measure.unit}
+            <RichMessage
+              source={'{slot0} · {slot1} {slot2}'}
+              slots={{
+                slot0: statusLabel(measure.status),
+                slot1:
+                  typeof measure.value === 'object'
+                    ? JSON.stringify(measure.value)
+                    : String(measure.value ?? '—'),
+                slot2: measure.unit,
+              }}
+            />
           </span>
           <small>{measure.threshold}</small>
           <p>{measure.detail}</p>

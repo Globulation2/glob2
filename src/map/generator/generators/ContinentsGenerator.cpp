@@ -730,7 +730,7 @@ GeneratorDefinition continentsDefinition()
 		44,
 		// 33 was Patchwork, retired 2026-09-13 and never reused
 		"Continents",
-		3, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
+		4, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
 		false,
 		{GeneratorControl::choice(
 			 "continent", "Continent",

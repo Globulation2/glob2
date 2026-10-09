@@ -1,3 +1,4 @@
+import { t, message as sourceMessage } from '../../messages.ts';
 import { studioLocal } from './storage.ts';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { StudioDetail } from '@glob2/protocol';
@@ -6,7 +7,11 @@ import { ApiError, request } from '../../api.ts';
 /** Coordinates editable local text with immutable server revisions. A refresh started
  * before a write may finish afterwards, so both request order and revision order
  * fence its response before it can touch the draft or resumable event cursor. */
-export function useProjectDraft(url: string, recoveryKey: string, onError: (text: string) => void) {
+export function useProjectDraft(
+  url: string,
+  recoveryKey: string,
+  onError: (text: string | Error) => void,
+) {
   const [project, setProject] = useState<StudioDetail>();
   const [source, setSource] = useState('');
   const [saved, setSaved] = useState('Loading…');
@@ -46,7 +51,11 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
     (text: string) => {
       draft.current = text;
       setSource(text);
-      setSaved(text === known.current?.current.source ? 'Saved' : 'Unsaved changes');
+      setSaved(
+        text === known.current?.current.source
+          ? sourceMessage('Saved')
+          : sourceMessage('Unsaved changes'),
+      );
       remember();
     },
     [remember],
@@ -64,11 +73,11 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
     if (!old || draft.current === old.current.source) {
       draft.current = value.current.source;
       setSource(value.current.source);
-      setSaved('Saved');
+      setSaved(sourceMessage('Saved'));
     } else if (old.revision !== value.revision) {
       setConflict(true);
       reportError.current(
-        'The draft changed elsewhere. Download your local edits before reloading.',
+        sourceMessage('The draft changed elsewhere. Download your local edits before reloading.'),
       );
     }
     known.current = value;
@@ -83,11 +92,13 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
         if (local && typeof local.source === 'string' && local.source !== value.current.source) {
           draft.current = local.source;
           setSource(local.source);
-          setSaved('Recovered local edits');
+          setSaved(sourceMessage('Recovered local edits'));
           if (local.revision !== value.revision) {
             setConflict(true);
             reportError.current(
-              'Recovered edits belong to an older revision. Download them before reloading.',
+              sourceMessage(
+                'Recovered edits belong to an older revision. Download them before reloading.',
+              ),
             );
           }
         }
@@ -108,7 +119,7 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
     if (!p || draft.current === p.current.source) return;
     const text = draft.current;
     if (!text.trim()) {
-      setSaved('Draft is temporarily empty. Add source to save.');
+      setSaved(sourceMessage('Draft is temporarily empty. Add source to save.'));
       return;
     }
     ++generation.current;
@@ -129,10 +140,10 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
     try {
       await task;
     } catch (e) {
-      setSaved('Not saved');
+      setSaved(sourceMessage('Not saved'));
       // Invalid intermediate text and network failures must leave the editor usable.
       if (e instanceof ApiError && e.status === 409) setConflict(true);
-      reportError.current(e instanceof Error ? e.message : String(e));
+      reportError.current(e instanceof Error ? e : String(e));
       throw e;
     } finally {
       saving.current = undefined;
@@ -162,7 +173,7 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
       if (
         known.current &&
         draft.current !== known.current.current.source &&
-        !window.confirm('Leave with unsaved edits? A recovery copy stays on this device.')
+        !window.confirm(t('Leave with unsaved edits? A recovery copy stays on this device.'))
       )
         event.preventDefault();
     };
@@ -178,7 +189,7 @@ export function useProjectDraft(url: string, recoveryKey: string, onError: (text
   return {
     project,
     source,
-    saved,
+    saved: t(saved),
     conflict,
     known,
     draft,

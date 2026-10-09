@@ -96,10 +96,9 @@ export async function codingStudioRoutes(
   const account = async (r: FastifyRequest, generation = false) => {
     const { account } = await requireAccount(app.identity, r);
     if ((generator || generation) && !config?.enabled)
-      throw apiError(
-        'not_found',
-        `${generator ? 'Generator' : 'AI'} Studio is not enabled on this instance.`,
-      );
+      throw apiError('not_found', '{p0} Studio is not enabled on this instance.', undefined, {
+        p0: String(generator ? 'Generator' : 'AI'),
+      });
     return account;
   };
   const idOf = (r: FastifyRequest) => body(Strict({ id: Uuid }), r.params).id;
@@ -169,7 +168,10 @@ export async function codingStudioRoutes(
               .where('v.id', '=', input.versionId)
               .where('a.owner_account_id', '=', a.id)
               .executeTakeFirst();
-        if (!v) throw apiError('not_found', `No owned ${generator ? 'generator' : 'AI'} version.`);
+        if (!v)
+          throw apiError('not_found', 'No owned {p0} version.', undefined, {
+            p0: String(generator ? 'generator' : 'AI'),
+          });
         const stream = await blobs.get(v.storage_key);
         if (!stream) throw apiError('not_found', 'Source unavailable.');
         const chunks: Buffer[] = [];

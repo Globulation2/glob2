@@ -1,3 +1,6 @@
+import { statusLabel } from '../i18n.tsx';
+import { getLocale } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import type { BuildingFamily, BuildingLibrary as Library } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -7,14 +10,16 @@ import { useLoad, useSession } from '../state.tsx';
 import '../styles/buildings.css';
 /** A hidden or rejected family should never be advertised as still validating. */
 function availability(family: BuildingFamily): string {
-  if (family.hidden) return 'Hidden by a moderator';
-  if (family.releases.some((release) => release.status === 'valid')) return 'Ready to download';
-  if (family.releases.some((release) => release.status === 'pending')) return 'Awaiting validation';
+  if (family.hidden) return t('Hidden by a moderator');
+  if (family.releases.some((release) => release.status === 'valid')) return t('Ready to download');
+  if (family.releases.some((release) => release.status === 'pending'))
+    return t('Awaiting validation');
   if (family.releases.some((release) => release.status === 'error'))
     return 'Validation failed; author action needed';
-  return 'No validated release';
+  return t('No validated release');
 }
 export function BuildingLibrary({ id }: { id?: string }) {
+  useLocale();
   const { account } = useSession(),
     { navigate } = useRouter();
   const [search, setSearch] = useState(''),
@@ -63,32 +68,34 @@ export function BuildingLibrary({ id }: { id?: string }) {
   }
   return (
     <div className="building-studio">
-      <h1>{id ? 'Building family' : 'Building library'}</h1>
+      <h1>{id ? t('Building family') : t('Building library')}</h1>
       <p>
-        <Link to="/ai-building-studio">Create with AI</Link>
-        <Link to="/building-studio">Create a building family</Link>
+        <Link to="/ai-building-studio">{t('Create with AI')}</Link>
+        <Link to="/building-studio">{t('Create a building family')}</Link>
         {id && (
           <>
             {' '}
-            · <Link to="/buildings">Browse the library</Link>
+            {t(' · ')}
+            <Link to="/buildings">{t('Browse the library')}</Link>
           </>
         )}
       </p>
       <details className="building-help">
-        <summary>Use buildings in the game</summary>
+        <summary>{t('Use buildings in the game')}</summary>
         <p>
-          Open Building families when creating a new game or a new map in the editor, install a
-          compatible release, and enable it. Enabled families apply to future generated maps
-          alongside stock buildings. Existing maps and saves keep their own buildings.
+          {t(
+            'Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.',
+          )}
         </p>
         <p>
-          For an unlisted family, copy its page link and paste it into Family link or ID in the
-          game’s Building families picker, then choose Open family. Use the same online instance
-          where the family was published. Private families also require signing in as their owner.
+          {t(
+            'For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.',
+          )}
         </p>
         <p>
-          To play online, publish the generated map in the map library and select it for your room.
-          Download family exports a ZIP for importing or editing in Building Studio.
+          {t(
+            'To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.',
+          )}
         </p>
       </details>
       {error && <ErrorNotice error={error} />}
@@ -104,14 +111,16 @@ export function BuildingLibrary({ id }: { id?: string }) {
                     <img
                       className="building-thumbnail"
                       src={`/api/v1/buildings/${family.id}/releases/${family.releases.find((v) => v.status === 'valid' && v.artworkHash)?.id}/thumbnail`}
-                      alt={`${family.name} artwork`}
+                      alt={t('{value0} artwork', { value0: family.name })}
                       width={160}
                       height={160}
                     />
                   )}
-                <p>By {family.owner.displayName}</p>
+                <p>
+                  <RichMessage source={'By {slot0}'} slots={{ slot0: family.owner.displayName }} />
+                </p>
                 <label>
-                  Family link
+                  {t('Family link')}
                   <input
                     readOnly
                     value={window.location.origin + '/buildings/' + family.id}
@@ -120,13 +129,19 @@ export function BuildingLibrary({ id }: { id?: string }) {
                   />
                 </label>
                 <p>
-                  Copy this link into Family link or ID in the game’s Building families picker to
-                  open this family directly.
+                  {t(
+                    'Copy this link into Family link or ID in the game’s Building families picker to open this family directly.',
+                  )}
                 </p>
                 <p>{family.description}</p>
-                {family.hidden && <p role="status">This family has been hidden by a moderator.</p>}
+                {family.hidden && (
+                  <p role="status">{t('This family has been hidden by a moderator.')}</p>
+                )}
                 <p>
-                  {family.likes} likes · {family.downloads} downloads
+                  <RichMessage
+                    source={'{slot0} likes · {slot1} downloads'}
+                    slots={{ slot0: family.likes, slot1: family.downloads }}
+                  />
                 </p>
                 {account && (
                   <div className="building-actions">
@@ -142,7 +157,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
                         )
                       }
                     >
-                      {family.liked ? 'Unlike' : 'Like'}
+                      {family.liked ? t('Unlike') : t('Like')}
                     </button>
                     <button
                       type="button"
@@ -156,7 +171,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
                         )
                       }
                     >
-                      {family.favourite ? 'Remove favourite' : 'Favourite'}
+                      {family.favourite ? t('Remove favourite') : t('Favourite')}
                     </button>
                   </div>
                 )}
@@ -173,11 +188,11 @@ export function BuildingLibrary({ id }: { id?: string }) {
                     }}
                   >
                     <label>
-                      Moderation reason
+                      {t('Moderation reason')}
                       <input name="reason" required={!family.hidden} maxLength={2000} />
                     </label>
                     <button disabled={busy}>
-                      {family.hidden ? 'Restore family' : 'Hide family'}
+                      {family.hidden ? t('Restore family') : t('Hide family')}
                     </button>
                   </form>
                 )}
@@ -186,7 +201,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
                     open={manageOpen}
                     onToggle={(event) => setManageOpen(event.currentTarget.open)}
                   >
-                    <summary>Manage published family</summary>
+                    <summary>{t('Manage published family')}</summary>
                     <form
                       key={family.updatedAt}
                       onSubmit={(event) => {
@@ -204,11 +219,11 @@ export function BuildingLibrary({ id }: { id?: string }) {
                       }}
                     >
                       <label>
-                        Published family name
+                        {t('Published family name')}
                         <input name="name" required maxLength={128} defaultValue={family.name} />
                       </label>
                       <label>
-                        Published description
+                        {t('Published description')}
                         <textarea
                           name="description"
                           maxLength={4000}
@@ -216,19 +231,19 @@ export function BuildingLibrary({ id }: { id?: string }) {
                         />
                       </label>
                       <label>
-                        Published visibility
+                        {t('Published visibility')}
                         <select name="visibility" defaultValue={family.visibility}>
-                          <option value="public">Public library</option>
-                          <option value="unlisted">Unlisted (people with the link)</option>
-                          <option value="private">Private</option>
+                          <option value="public">{t('Public library')}</option>
+                          <option value="unlisted">{t('Unlisted (people with the link)')}</option>
+                          <option value="private">{t('Private')}</option>
                         </select>
                       </label>
-                      <button disabled={busy}>Save published details</button>
+                      <button disabled={busy}>{t('Save published details')}</button>
                     </form>
                     <p>
-                      These details apply to every release. Changing visibility also changes who can
-                      download them. Edit building definitions in your Studio draft and publish a
-                      new release.
+                      {t(
+                        'These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.',
+                      )}
                     </p>
                     <button
                       type="button"
@@ -246,30 +261,45 @@ export function BuildingLibrary({ id }: { id?: string }) {
                         });
                       }}
                     >
-                      Withdraw published family
+                      {t('Withdraw published family')}
                     </button>
                   </details>
                 )}
-                <h2>Releases</h2>
+                <h2>{t('Releases')}</h2>
                 <p>
-                  Choose a validated release for the simulation version you play. Each download
-                  includes its artwork.
+                  {t(
+                    'Choose a validated release for the simulation version you play. Each download includes its artwork.',
+                  )}
                 </p>
                 <button type="button" onClick={() => setRevision((v) => v + 1)}>
-                  Refresh validation
+                  {t('Refresh validation')}
                 </button>
                 <ul>
                   {family.releases.map((v) => (
                     <li key={v.id}>
                       <p>
-                        <strong>{new Date(v.createdAt).toLocaleString()}</strong> · {v.status}
+                        <RichMessage
+                          source={'{slot0} · {slot1}'}
+                          slots={{
+                            slot0: (
+                              <strong>{new Date(v.createdAt).toLocaleString(getLocale())}</strong>
+                            ),
+                            slot1: statusLabel(v.status),
+                          }}
+                        />
                       </p>
                       <details>
                         <summary>
-                          Simulation {v.simVersion.split('-').slice(0, 2).join('-')}
+                          <RichMessage
+                            source={'Simulation {slot0}'}
+                            slots={{ slot0: v.simVersion.split('-').slice(0, 2).join('-') }}
+                          />
                         </summary>
                         <p>
-                          Full compatibility key: <code>{v.simVersion}</code>
+                          <RichMessage
+                            source={'Full compatibility key: {slot0}'}
+                            slots={{ slot0: <code>{v.simVersion}</code> }}
+                          />
                         </p>
                       </details>
                       {v.error && <p role="status">{v.error}</p>}
@@ -279,7 +309,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
                             className="button"
                             href={`/api/v1/buildings/${family.id}/releases/${v.id}/archive`}
                           >
-                            Download family
+                            {t('Download family')}
                           </a>
                           {account && (
                             <button
@@ -296,7 +326,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
                                 })
                               }
                             >
-                              Fork into Studio
+                              {t('Fork into Studio')}
                             </button>
                           )}
                         </div>
@@ -317,10 +347,10 @@ export function BuildingLibrary({ id }: { id?: string }) {
                     }}
                   >
                     <label>
-                      Report a problem
+                      {t('Report a problem')}
                       <textarea name="reason" required maxLength={2000} />
                     </label>
-                    <button disabled={busy}>Send report</button>
+                    <button disabled={busy}>{t('Send report')}</button>
                   </form>
                 )}
               </>
@@ -337,26 +367,26 @@ export function BuildingLibrary({ id }: { id?: string }) {
             }}
           >
             <label>
-              Search buildings
+              {t('Search buildings')}
               <input value={search} maxLength={128} onChange={(e) => setSearch(e.target.value)} />
             </label>
-            <button>Search</button>
+            <button>{t('Search')}</button>
           </form>
           {account && (
             <label>
-              Show
+              {t('Show')}
               <select
                 value={filter}
                 onChange={(e) => (setCursor(undefined), setFilter(e.target.value))}
               >
-                <option value="all">Public library</option>
-                <option value="mine">My families</option>
-                <option value="favourites">My favourites</option>
+                <option value="all">{t('Public library')}</option>
+                <option value="mine">{t('My families')}</option>
+                <option value="favourites">{t('My favourites')}</option>
               </select>
             </label>
           )}
           <label>
-            Sort
+            {t('Sort')}
             <select
               value={sort}
               onChange={(e) => {
@@ -364,10 +394,10 @@ export function BuildingLibrary({ id }: { id?: string }) {
                 setSort(e.target.value);
               }}
             >
-              <option value="updated">Recently updated</option>
-              <option value="newest">Newest</option>
-              <option value="likes">Most liked</option>
-              <option value="downloads">Most downloaded</option>
+              <option value="updated">{t('Recently updated')}</option>
+              <option value="newest">{t('Newest')}</option>
+              <option value="likes">{t('Most liked')}</option>
+              <option value="downloads">{t('Most downloaded')}</option>
             </select>
           </label>
           <Loaded load={list}>
@@ -386,27 +416,34 @@ export function BuildingLibrary({ id }: { id?: string }) {
                           <img
                             className="building-thumbnail"
                             src={`/api/v1/buildings/${f.id}/releases/${f.releases.find((release) => release.status === 'valid' && release.artworkHash)?.id}/thumbnail`}
-                            alt={`${f.name} artwork`}
+                            alt={t('{value0} artwork', { value0: f.name })}
                             width={96}
                             height={96}
                           />
                         )}
                       <p>{f.description}</p>
                       <p>
-                        By {f.owner.displayName} · {f.likes} likes · {availability(f)}
+                        <RichMessage
+                          source={'By {slot0} · {slot1} likes · {slot2}'}
+                          slots={{
+                            slot0: f.owner.displayName,
+                            slot1: f.likes,
+                            slot2: availability(f),
+                          }}
+                        />
                       </p>
                     </li>
                   ))}
                 </ul>
-                {data.items.length === 0 && <p>No families found.</p>}
+                {data.items.length === 0 && <p>{t('No families found.')}</p>}
                 {data.nextCursor && (
                   <button type="button" onClick={() => setCursor(data.nextCursor)}>
-                    Next page
+                    {t('Next page')}
                   </button>
                 )}
                 {cursor && (
                   <button type="button" onClick={() => setCursor(undefined)}>
-                    First page
+                    {t('First page')}
                   </button>
                 )}
               </>

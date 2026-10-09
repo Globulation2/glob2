@@ -122,6 +122,14 @@ const api = await harness.start({
   origin,
   instance: {
     name: 'Glob2 Online (test)',
+    // Full language sweeps reload every page twice; keep the fixture independent of throttling.
+    limits: {
+      apiPerMinute: 10_000,
+      authPerMinute: 10_000,
+      guestsPerHour: 10_000,
+      signinAttemptsPerHour: 10_000,
+      signinAttemptsPerMinuteTotal: 10_000,
+    },
     queues: SEEDED_QUEUES,
     auth: { providers: [], local: { enabled: true } },
     ...(process.env['GENERATOR_E2E_BINARY'] || process.env['GENERATOR_E2E_ENABLED']

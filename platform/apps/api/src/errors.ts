@@ -27,9 +27,19 @@ export class HttpError extends Error {
   }
 }
 
-export function apiError(code: ErrorCode, message: string, details?: unknown): HttpError {
-  return new HttpError(
-    STATUS[code],
-    details === undefined ? { code, message } : { code, message, details },
-  );
+export function apiError(
+  code: ErrorCode,
+  message: string,
+  details?: unknown,
+  messageParams?: Record<string, string | number>,
+): HttpError {
+  return new HttpError(STATUS[code], {
+    code,
+    message: messageParams
+      ? message.replace(/\{(\w+)\}/g, (match, name: string) => String(messageParams[name] ?? match))
+      : message,
+    messageKey: message,
+    ...(messageParams ? { messageParams } : {}),
+    ...(details === undefined ? {} : { details }),
+  });
 }

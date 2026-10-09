@@ -735,7 +735,7 @@ GeneratorDefinition ringWorldDefinition()
 	return {"ring-world",
 			16,
 			"Ring world",
-			1,
+			2,
 			false,
 			// Belt width is the share of the map's breadth the belt covers on average; lake density
 			// is lakes per 4096 tiles of belt; resource islands are counted per 128x128 of map.

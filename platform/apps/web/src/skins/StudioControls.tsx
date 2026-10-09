@@ -1,3 +1,4 @@
+import { t, useLocale } from '../i18n.tsx';
 /* WebGL resources are bounded to the lifetime of this effect. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useMemo, useRef, type ReactNode } from 'react';
@@ -5,6 +6,7 @@ import { SKIN_MATERIAL_GLSL } from './materialShader.ts';
 import { COLONY_SKIN_SHELLS, type ColonySkinMaterial } from '@glob2/protocol';
 import { MATERIAL_GROUPS } from './atlas.ts';
 export function StudioIcon({ name }: { name: string }) {
+  useLocale();
   const paths: Record<string, ReactNode> = {
     brush: (
       <>
@@ -97,6 +99,7 @@ export function StudioDialog({
   children: ReactNode;
   wide?: boolean;
 }) {
+  useLocale();
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const d = ref.current;
@@ -119,10 +122,14 @@ export function StudioDialog({
     >
       <header>
         <div>
-          <span className="skin-eyebrow">COLONY STUDIO</span>
+          <span className="skin-eyebrow">{t('COLONY STUDIO')}</span>
           <h2>{title}</h2>
         </div>
-        <button className="skin-icon-button" aria-label={`Close ${title}`} onClick={onClose}>
+        <button
+          className="skin-icon-button"
+          aria-label={t('Close {value0}', { value0: title })}
+          onClick={onClose}
+        >
           <StudioIcon name="close" />
         </button>
       </header>
@@ -247,6 +254,7 @@ function SwatchStrip({
   selected: number;
   onSelect: (id: number) => void;
 }) {
+  useLocale();
   const canvas = useRef<HTMLCanvasElement>(null);
   const rows = swatchRows(materials.length);
   useEffect(() => {
@@ -309,9 +317,10 @@ export function MaterialSwatches({
   selected: number;
   onSelect: (id: number) => void;
 }) {
+  useLocale();
   const source = useMemo(() => renderSwatches(color), [color]);
   return (
-    <div role="radiogroup" aria-label="Material" className="skin-material-groups">
+    <div role="radiogroup" aria-label={t('Material')} className="skin-material-groups">
       {MATERIAL_GROUPS.map((group, index) => (
         <section key={group.name} className="skin-material-group">
           <h4>{group.name}</h4>

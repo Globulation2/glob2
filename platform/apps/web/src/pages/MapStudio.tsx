@@ -1,3 +1,6 @@
+import { MessageError } from '../i18n.tsx';
+import { displayMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useVersionApplication } from '../components/studio/useVersionApplication.ts';
 import { studioSession } from '../components/studio/storage.ts';
 import { StudioShell, StudioHeader, ReleaseDialog } from '../components/studio/Studio.tsx';
@@ -14,27 +17,29 @@ import { ROOT, mergeThread, type Delivered, type Thread, type Wallet } from './s
 import '../styles/studio.css';
 
 export function MapStudio({ id }: { id?: string }) {
+  useLocale();
   const { account } = useSession();
   if (account === undefined)
     return (
       <div className="ms-gate" role="status">
-        Opening your studio…
+        {t('Opening your studio…')}
       </div>
     );
   if (account?.kind !== 'registered')
     return (
       <div className="ms-gate">
-        <span className="ms-eyebrow">AI MAP STUDIO</span>
-        <h1>Your next world starts with an idea.</h1>
-        <p>Sign in with a registered account to design, refine, and play your own maps.</p>
+        <span className="ms-eyebrow">{t('AI MAP STUDIO')}</span>
+        <h1>{t('Your next world starts with an idea.')}</h1>
+        <p>{t('Sign in with a registered account to design, refine, and play your own maps.')}</p>
         <a className="btn primary" href="/signin">
-          Sign in to create
+          {t('Sign in to create')}
         </a>
       </div>
     );
   return <RegisteredStudio key={`${account.id}:${id ?? 'new'}`} id={id} accountId={account.id} />;
 }
 function RegisteredStudio({ id, accountId }: { id?: string; accountId: string }) {
+  useLocale();
   const { navigate } = useRouter();
   const [wallet, setWallet] = useState<Wallet>();
   const [threads, setThreads] = useState<{ id: string; title: string }[]>([]);
@@ -237,7 +242,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       const result = await request<{ url: string }>('POST', `${ROOT}/checkout`, { body: { pack } });
       const url = new URL(result.url);
       if (url.protocol !== 'https:' || url.hostname !== 'checkout.stripe.com')
-        throw new Error('Invalid checkout destination.');
+        throw new MessageError('Invalid checkout destination.');
       window.location.assign(url.href);
     });
   }
@@ -276,13 +281,13 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
   );
   return (
     <StudioShell className="map-studio ms-root ms-workspace-root">
-      <StudioHeader title="AI Map Studio" icon="map">
+      <StudioHeader title={t('AI Map Studio')} icon="map">
         <details className="ms-projects">
           <summary>
-            {thread?.title ?? 'Your projects'} <Icon name="chevron-down" size={18} />
+            {thread?.title ?? t('Your projects')} <Icon name="chevron-down" size={18} />
           </summary>
-          <nav aria-label="Map projects">
-            <Link to="/map-studio">New map</Link>
+          <nav aria-label={t('Map projects')}>
+            <Link to="/map-studio">{t('New map')}</Link>
             {threads.map((t) => (
               <Link
                 key={t.id}
@@ -292,28 +297,28 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
                 {t.title}
               </Link>
             ))}
-            {!threads.length && <p>Your projects will be saved here.</p>}
+            {!threads.length && <p>{t('Your projects will be saved here.')}</p>}
           </nav>
         </details>
         <button
           className="ms-credit-button"
-          aria-label={`${wallet?.available ?? '…'} Map credits`}
+          aria-label={t('{value0} Map credits', { value0: wallet?.available ?? '…' })}
           onClick={() => setCredits(!credits)}
           aria-expanded={credits}
         >
-          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} <span>Map credits</span>
+          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} <span>{t('Map credits')}</span>
         </button>
       </StudioHeader>
       {payment === 'returned' && (
         <div className="ms-banner" role="status">
           {wallet && wallet.available > checkoutBalance
-            ? 'Your credits are ready. Let’s create.'
-            : 'Confirming your payment. Your credits appear once payment is confirmed.'}
+            ? t('Your credits are ready. Let’s create.')
+            : t('Confirming your payment. Your credits appear once payment is confirmed.')}
         </div>
       )}
       {payment === 'cancelled' && (
         <div className="ms-banner" role="status">
-          Checkout was cancelled. Your project and draft are saved.
+          {t('Checkout was cancelled. Your project and draft are saved.')}
         </div>
       )}
       {connection && (
@@ -323,40 +328,42 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       )}
       {error && (
         <div className="ms-banner ms-error" role="alert">
-          {error}
+          {displayMessage(error)}
         </div>
       )}
       {pending && (
         <div className="ms-banner">
-          A saved request is ready to send again safely.{' '}
+          {t('A saved request is ready to send again safely.')}{' '}
           <button disabled={busy} onClick={() => void action(() => submitPending(pending))}>
-            Retry the same request
+            {t('Retry the same request')}
           </button>
         </div>
       )}
       {versionUndo.version && (
         <div className="studio-revisions" role="status">
-          <span>Generated version accepted as your current edit target.</span>
+          <span>{t('Generated version accepted as your current edit target.')}</span>
           <button aria-disabled={!versionUndo.canUndo} onClick={versionUndo.undo}>
-            <Icon name="restore" size={18} /> Undo
+            <Icon name="restore" size={18} /> {t(' Undo')}
           </button>
           {!versionUndo.canUndo && (
-            <span>The edit target changed. Choose a saved version in history.</span>
+            <span>{t('The edit target changed. Choose a saved version in history.')}</span>
           )}
         </div>
       )}
-      <ReleaseDialog open={credits} onClose={() => setCredits(false)} title="Map credits">
+      <ReleaseDialog open={credits} onClose={() => setCredits(false)} title={t('Map credits')}>
         <CreditControls wallet={wallet} busy={busy} buy={buy} close={() => setCredits(false)} />
       </ReleaseDialog>
       {wallet && !wallet.enabled && (
         <div className="ms-banner">
-          AI Map Studio is not enabled on this instance. Your saved projects remain available.
+          {t(
+            'AI Map Studio is not enabled on this instance. Your saved projects remain available.',
+          )}
         </div>
       )}
       {!id && !wallet ? (
         <div className="ms-gate" role="status">
-          <p>Opening your studio…</p>
-          {error && <button onClick={refreshWallet}>Retry loading studio</button>}
+          <p>{t('Opening your studio…')}</p>
+          {error && <button onClick={refreshWallet}>{t('Retry loading studio')}</button>}
         </div>
       ) : (
         <StudioWorkspace
@@ -389,21 +396,23 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       <ReleaseDialog
         open={!!release}
         onClose={() => setRelease(undefined)}
-        title="Publish map version"
+        title={t('Publish map version')}
       >
         {release && (
           <>
             <p>
-              Publish the selected saved map ({release.map_hash.slice(0, 12)}) to the public Map
-              library.
+              <RichMessage
+                source={'Publish the selected saved map ({slot0}) to the public Map library.'}
+                slots={{ slot0: release.map_hash.slice(0, 12) }}
+              />
             </p>
-            <p>This changes the map’s visibility. Conversation history remains private.</p>
+            <p>{t('This changes the map’s visibility. Conversation history remains private.')}</p>
             <button
               className="primary"
               disabled={busy}
               onClick={() => onVersionAction('publish', release)}
             >
-              <Icon name="share" size={18} /> Publish
+              <Icon name="share" size={18} /> {t(' Publish')}
             </button>
           </>
         )}
@@ -412,7 +421,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
   );
 }
 function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : 'The request could not be completed.';
+  return error instanceof Error ? error.message : t('The request could not be completed.');
 }
 function isRejectedSubmission(error: unknown) {
   return error instanceof ApiError && [400, 401, 403, 404, 409, 422, 429].includes(error.status);

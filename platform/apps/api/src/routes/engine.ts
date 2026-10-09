@@ -84,14 +84,18 @@ export async function engineAgentRoutes(app: FastifyInstance): Promise<void> {
 
   function actAs(key: EngineAgentKey, agentId: string): void {
     if (key.agentId && key.agentId !== agentId) {
-      throw apiError('forbidden', `This key belongs to engine agent ${key.agentId}.`);
+      throw apiError('forbidden', 'This key belongs to engine agent {p0}.', undefined, {
+        p0: String(key.agentId),
+      });
     }
   }
 
   function leaseToken(request: FastifyRequest): string {
     const value = request.headers[ENGINE_LEASE_HEADER];
     if (typeof value !== 'string' || !/^[A-Za-z0-9_-]{32,128}$/.test(value)) {
-      throw apiError('unauthenticated', `Send the job's lease token in ${ENGINE_LEASE_HEADER}.`);
+      throw apiError('unauthenticated', "Send the job's lease token in {p0}.", undefined, {
+        p0: String(ENGINE_LEASE_HEADER),
+      });
     }
     return value;
   }

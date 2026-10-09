@@ -1,3 +1,6 @@
+import { statusLabel } from '../../i18n.tsx';
+import { getLocale } from '../../i18n.tsx';
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { price, type Wallet } from './types.ts';
 
 export function CreditControls({
@@ -11,14 +14,18 @@ export function CreditControls({
   buy: (pack: string) => void;
   close: () => void;
 }) {
+  useLocale();
   return (
-    <section className="ms-credit-panel" aria-label="Manage credits">
+    <section className="ms-credit-panel" aria-label={t('Manage credits')}>
       <div>
-        <h2>Your next soundtrack</h2>
+        <h2>{t('Your next soundtrack')}</h2>
         <p>
-          {wallet?.available ?? 0} available · {wallet?.reserved ?? 0} reserved. Discussion requires
-          an available credit; each delivered set or revision costs 1 credit. Failed generations
-          return the credit.
+          <RichMessage
+            source={
+              '{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.'
+            }
+            slots={{ slot0: wallet?.available ?? 0, slot1: wallet?.reserved ?? 0 }}
+          />
         </p>
       </div>
       <div>
@@ -29,21 +36,33 @@ export function CreditControls({
             disabled={busy || !wallet.enabled}
             onClick={() => buy(p.id)}
           >
-            Buy {p.credits} credits · {price(p)}
+            <RichMessage
+              source={'Buy {slot0} credits · {slot1}'}
+              slots={{ slot0: p.credits, slot1: price(p) }}
+              singular={'Buy {slot0} credit · {slot1}'}
+              count={Number(p.credits)}
+            />
           </button>
         ))}
-        {!wallet?.packs.length && <p>Credit purchases are currently unavailable.</p>}
+        {!wallet?.packs.length && <p>{t('Credit purchases are currently unavailable.')}</p>}
         <details>
-          <summary>Credit activity</summary>
+          <summary>{t('Credit activity')}</summary>
           {wallet?.usage.map((entry) => (
             <p key={entry.id}>
-              {new Date(entry.created_at).toLocaleString()} · {entry.kind} · {entry.amount}
+              <RichMessage
+                source={'{slot0} · {slot1} · {slot2}'}
+                slots={{
+                  slot0: new Date(entry.created_at).toLocaleString(getLocale()),
+                  slot1: statusLabel(entry.kind),
+                  slot2: entry.amount,
+                }}
+              />
             </p>
           ))}
         </details>
       </div>
-      <button aria-label="Close credits" onClick={close}>
-        ×
+      <button aria-label={t('Close credits')} onClick={close}>
+        {t('×')}
       </button>
     </section>
   );

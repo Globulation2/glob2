@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { decodeGeneratorDraft, type GeneratorSettings } from '@glob2/protocol';
 export const defaultSettings: GeneratorSettings = {
   seed: 19,
@@ -57,13 +58,14 @@ export default function Settings({
   value: GeneratorSettings;
   onChange: (v: GeneratorSettings) => void;
 }) {
+  useLocale();
   const params = effectiveSettings(source, value).params;
   const set = (id: string, n: number) =>
     onChange({ ...value, params: { ...value.params, [id]: n } });
   return (
     <div className="as-toolbar">
       <label>
-        Seed{' '}
+        {t('Seed')}{' '}
         <input
           type="number"
           min={0}
@@ -77,22 +79,22 @@ export default function Settings({
           onChange({ ...value, seed: crypto.getRandomValues(new Uint32Array(1))[0] ?? 0 })
         }
       >
-        Reroll seed
+        {t('Reroll seed')}
       </button>
       {['width', 'height'].map((id) => (
         <label key={id}>
-          {id === 'width' ? 'Width' : 'Height'}{' '}
+          {id === 'width' ? t('Width') : t('Height')}{' '}
           <select value={params[id]} onChange={(e) => set(id, Number(e.target.value))}>
             {[6, 7, 8, 9].map((n) => (
               <option key={n} value={n}>
-                {2 ** n} tiles
+                <RichMessage source={'{slot0} tiles'} slots={{ slot0: 2 ** n }} />
               </option>
             ))}
           </select>
         </label>
       ))}
       <label>
-        Colonies{' '}
+        {t('Colonies')}{' '}
         <input
           type="number"
           min={1}
@@ -102,7 +104,7 @@ export default function Settings({
         />
       </label>
       <label>
-        Starting workers{' '}
+        {t('Starting workers')}{' '}
         <input
           type="number"
           min={1}
@@ -148,12 +150,16 @@ export default function Settings({
                 value={params[c.id]}
                 onChange={(e) => set(c.id, Number(e.target.value))}
               />
-              {c.powerOfTwo && <span> ({2 ** (params[c.id] ?? 0)})</span>}
+              {c.powerOfTwo && (
+                <span>
+                  <RichMessage source={' ({slot0})'} slots={{ slot0: 2 ** (params[c.id] ?? 0) }} />
+                </span>
+              )}
             </>
           )}
         </label>
       ))}
-      <p>Changing settings takes effect when you press Generate. One seed per preview.</p>
+      <p>{t('Changing settings takes effect when you press Generate. One seed per preview.')}</p>
     </div>
   );
 }

@@ -138,7 +138,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.coverage == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:
@@ -875,6 +875,8 @@ jobs:
             build/emscripten/client/release/generator-studio.html
             build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
             build/emscripten/client/release/hive-runtime.wasm
@@ -914,6 +916,8 @@ jobs:
             build/emscripten/client/release/generator-studio.html
             build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
             build/emscripten/client/release/hive-runtime.wasm
@@ -1439,6 +1443,10 @@ jobs:
         id: actions_checkout_v4_1
         with:
           ref: ${{ inputs.revision || github.sha }}
+      - name: Load the scoped Compose AppArmor profiles
+        run: |
+          sudo apparmor_parser -r deploy/security/glob2-engine.apparmor
+          sudo apparmor_parser -r deploy/security/glob2-ai-music.apparmor
       - name: Build the images and smoke-test deploy/compose.yaml
         id: smoke_test_the_platform_stack
         continue-on-error: true

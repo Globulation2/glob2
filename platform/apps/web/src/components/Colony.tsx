@@ -1,8 +1,10 @@
+import { t, useLocale } from '../i18n.tsx';
 // Real menu-colony footage. The poster stays visible until playback succeeds.
 import { useEffect, useRef, useState } from 'react';
 import { COLONY } from '../art.tsx';
 
 export function ColonyHero() {
+  useLocale();
   const life = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [paused, setPaused] = useState(false);
@@ -73,7 +75,7 @@ export function ColonyHero() {
       </div>
       {!reduced && playing && (
         <button type="button" className="motion-toggle small" onClick={() => setPaused(!paused)}>
-          {paused ? '▶ Let the globs roam' : '❚❚ Pause the globs'}
+          {paused ? t('▶ Let the globs roam') : t('❚❚ Pause the globs')}
         </button>
       )}
     </>

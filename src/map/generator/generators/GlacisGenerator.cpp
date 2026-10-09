@@ -1151,7 +1151,7 @@ GeneratorDefinition glacisDefinition()
 		"glacis",
 		39,
 		"The Glacis",
-		3,
+		4,
 		false,
 		// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
 		// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of

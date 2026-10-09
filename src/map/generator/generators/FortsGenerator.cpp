@@ -939,7 +939,7 @@ GeneratorDefinition fortsDefinition()
 		"Forts",
 		// Revision 7: one fort design per map (interior layout, wall style, quarter turn and
 		// mirror, market-town plan), moats all the way round, plots a tile clear of the stone.
-		7,
+		8,
 		false,
 		{GeneratorControl{"home-size", "Home size", 20, 26, 2, 22, ControlGroup::Layout}
 			 .withSearchRange(22, 26),

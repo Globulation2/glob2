@@ -43,7 +43,8 @@
     "@ai-sdk/openai": "4.0.83",
     "@glob2/terrain-studio": "0.1.0",
     "@glob2/engine": "0.1.0",
-    "@glob2/building-studio": "0.1.0"
+    "@glob2/building-studio": "0.1.0",
+    "@glob2/i18n": "0.1.0"
   },
   "devDependencies": {
     "@types/ws": "^8.18.2"

@@ -456,7 +456,7 @@ GeneratorDefinition rainShadowDefinition()
 		"rain-shadow",
 		27,
 		"Rain shadow",
-		4,
+		5,
 		false,
 		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
 		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three

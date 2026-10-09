@@ -163,7 +163,9 @@ export async function realtimeRoutes(
         params.provider !== 'local' &&
         !identity.providers.get(params.provider)
       ) {
-        throw apiError('not_found', `No sign-in provider ${params.provider}.`);
+        throw apiError('not_found', 'No sign-in provider {p0}.', undefined, {
+          p0: String(params.provider),
+        });
       }
       if (connection.pendingAttempts.size >= MAX_PENDING_ATTEMPTS) {
         throw apiError('rate_limited', 'Too many sign-ins in progress on this connection.');

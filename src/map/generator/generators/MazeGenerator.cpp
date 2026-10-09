@@ -711,7 +711,7 @@ GeneratorDefinition mazeDefinition()
 		"maze",
 		11,
 		"Maze",
-		15,
+		16,
 		false,
 		{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons", "Random"}, 2)
 			 .withSearchValues({0, 1}),

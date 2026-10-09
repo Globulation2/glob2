@@ -1388,7 +1388,7 @@ GeneratorDefinition centralQuarryDefinition()
 		"central-quarry",
 		56,
 		"Central Quarry",
-		1,
+		2,
 		false,
 		{GeneratorControl{"lake-size", "Lake size", 14, 30, 2, 24, ControlGroup::Terrain}
 			 .withSearchRange(20, 28),

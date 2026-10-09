@@ -1873,7 +1873,7 @@ GeneratorDefinition hiddenOasisDefinition()
 		"hidden-oasis",
 		57,
 		"Hidden Oasis",
-		1,
+		2,
 		false,
 		{GeneratorControl{"pond-size", "Pond size", 5, 12, 1, 8, ControlGroup::Terrain}
 			 .withSearchRange(7, 11),

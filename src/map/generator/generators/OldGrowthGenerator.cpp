@@ -323,7 +323,7 @@ GeneratorDefinition oldGrowthDefinition()
 		"old-growth",
 		28,
 		"Old growth",
-		4,
+		5,
 		false,
 		// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
 		// tiles (four on a 256 map, each a few days' cutting from any home) keeps them rare enough

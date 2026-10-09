@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { requestState } from './adapters.ts';
 import {
   useEffect,
@@ -21,6 +22,7 @@ export function StudioShell({
   children: ReactNode;
   className?: string;
 }) {
+  useLocale();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -52,6 +54,7 @@ export function StudioHeader({
   icon: IconName;
   children?: ReactNode;
 }) {
+  useLocale();
   return (
     <header className="studio-header">
       <Icon name={icon} />
@@ -75,6 +78,7 @@ export function StudioTabs({
   panels?: Record<string, string>;
   idPrefix?: string;
 }) {
+  useLocale();
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div className="studio-tabs" role="tablist" aria-label={label} ref={ref}>
@@ -102,7 +106,7 @@ export function StudioTabs({
             }
           }}
         >
-          {item.icon && <Icon name={item.icon} size={18} />} {item.label}
+          {item.icon && <Icon name={item.icon} size={18} />} {t(item.label)}
         </button>
       ))}
     </div>
@@ -123,6 +127,7 @@ export function StudioWorkspace({
   result?: { id: string; status: 'ready' | 'failed'; text?: string };
   onArtifactHidden?: () => void;
 }) {
+  useLocale();
   const { account } = useSession();
   const key = `studio-split:${account?.id ?? 'anonymous'}`;
   const [split, setSplit] = useState(() => {
@@ -175,8 +180,8 @@ export function StudioWorkspace({
   const resultAttention =
     result && result.id !== seenResult && pane !== 'preview'
       ? result.status === 'ready'
-        ? 'Ready'
-        : 'Needs attention'
+        ? t('Ready')
+        : t('Needs attention')
       : undefined;
   const previewAttention = attention ?? resultAttention;
   const resultId = result?.id,
@@ -190,7 +195,7 @@ export function StudioWorkspace({
         id: resultId,
         text:
           resultText ??
-          (resultStatus === 'ready' ? 'Creation ready.' : 'Creation needs attention.'),
+          (resultStatus === 'ready' ? t('Creation ready.') : t('Creation needs attention.')),
       });
   }
   const minimum = width ? Math.max(25, (320 / width) * 100) : 25;
@@ -214,7 +219,7 @@ export function StudioWorkspace({
       </span>
       {narrow && (
         <StudioTabs
-          label="Studio view"
+          label={t('Studio view')}
           idPrefix={`${id}-view`}
           panels={{ chat: `${id}-chat`, preview: `${id}-artifact` }}
           value={pane}
@@ -223,7 +228,9 @@ export function StudioWorkspace({
             { id: 'chat', label: 'Chat', icon: 'message' },
             {
               id: 'preview',
-              label: previewAttention ? `Preview · ${previewAttention}` : 'Preview',
+              label: previewAttention
+                ? t('Preview · {value0}', { value0: previewAttention })
+                : 'Preview',
               icon: 'eye',
             },
           ]}
@@ -233,7 +240,7 @@ export function StudioWorkspace({
         id={`${id}-chat`}
         className="studio-conversation"
         role={narrow ? 'tabpanel' : undefined}
-        aria-label="Conversation"
+        aria-label={t('Conversation')}
         aria-labelledby={narrow ? `${id}-view-chat` : undefined}
         hidden={narrow && pane !== 'chat'}
       >
@@ -244,7 +251,7 @@ export function StudioWorkspace({
           className="studio-separator"
           role="separator"
           tabIndex={0}
-          aria-label="Resize conversation"
+          aria-label={t('Resize conversation')}
           aria-controls={`${id}-chat ${id}-artifact`}
           aria-orientation="vertical"
           aria-valuemin={Math.round(minimum)}
@@ -274,20 +281,22 @@ export function StudioWorkspace({
         id={`${id}-artifact`}
         className="studio-artifact"
         role={narrow ? 'tabpanel' : undefined}
-        aria-label="Creation workspace"
+        aria-label={t('Creation workspace')}
         aria-labelledby={narrow ? `${id}-view-preview` : undefined}
         hidden={narrow && pane !== 'preview'}
       >
         {!narrow && (
           <details className="studio-width">
             <summary>
-              <Icon name="adjustments-horizontal" size={18} /> Pane widths
+              <Icon name="adjustments-horizontal" size={18} /> {t(' Pane widths')}
             </summary>
             <div>
               {[35, 40, 50].map((value) => (
                 <button key={value} onClick={() => resize(value)}>
-                  {value === 40 ? 'Reset · ' : ''}
-                  {value}% chat
+                  <RichMessage
+                    source={'{slot0}{slot1}% chat'}
+                    slots={{ slot0: value === 40 ? t('Reset · ') : '', slot1: value }}
+                  />
                 </button>
               ))}
             </div>
@@ -311,6 +320,7 @@ export function ConversationPane({
   firstMessageId?: string;
   completion?: { id: string; text: string };
 }) {
+  useLocale();
   const ref = useRef<HTMLDivElement>(null),
     following = useRef(true),
     previous = useRef<{ height: number; top: number; first: string }>({
@@ -371,7 +381,8 @@ export function ConversationPane({
             setUnread(false);
           }}
         >
-          New messages <Icon name="chevron-down" size={18} />
+          {t('New messages ')}
+          <Icon name="chevron-down" size={18} />
         </button>
       )}
     </div>
@@ -387,6 +398,7 @@ export function ChatInput({
   inputRef?: RefObject<HTMLTextAreaElement | null>;
   onSend: () => void;
 }) {
+  useLocale();
   const ref = useRef<HTMLTextAreaElement | null>(null);
   const grow = (input: HTMLTextAreaElement) => {
     input.style.height = 'auto';
@@ -450,6 +462,7 @@ export function ChatComposer({
   inputRef?: RefObject<HTMLTextAreaElement | null>;
   maxLength?: number;
 }) {
+  useLocale();
   const id = useId();
   const send = () => {
     if (disabledReason) {
@@ -475,7 +488,7 @@ export function ChatComposer({
       {tools && (
         <details className="studio-composer-tools">
           <summary>
-            <Icon name="settings" size={18} /> Settings & references
+            <Icon name="settings" size={18} /> {t(' Settings & references')}
           </summary>
           <div>{tools}</div>
         </details>
@@ -492,7 +505,7 @@ export function ChatComposer({
         aria-describedby={`${id}-help`}
       />
       <div className="studio-compose-actions">
-        <span>Enter to send · Shift + Enter for a new line</span>
+        <span>{t('Enter to send · Shift + Enter for a new line')}</span>
         <button
           className="primary"
           aria-disabled={!!disabledReason || !value.trim()}
@@ -504,7 +517,7 @@ export function ChatComposer({
             }
           }}
         >
-          <Icon name="send" size={18} /> Send
+          <Icon name="send" size={18} /> {t(' Send')}
         </button>
       </div>
       <p id={`${id}-help`} className="studio-compose-help">
@@ -515,6 +528,7 @@ export function ChatComposer({
   );
 }
 export function ArtifactPane({ children, title }: { children: ReactNode; title: string }) {
+  useLocale();
   return (
     <div className="studio-artifact-content">
       <h2>{title}</h2>
@@ -533,13 +547,20 @@ export function RevisionControls({
   target?: string;
   follow?: () => void;
 }) {
+  useLocale();
   return (
     <div className="studio-revisions">
-      <strong>Viewing {viewed}</strong>
-      {target && <span>Editing {target}</span>}
+      <strong>
+        <RichMessage source={'Viewing {slot0}'} slots={{ slot0: viewed }} />
+      </strong>
+      {target && (
+        <span>
+          <RichMessage source={'Editing {slot0}'} slots={{ slot0: target }} />
+        </span>
+      )}
       {follow && (
         <button onClick={follow}>
-          <Icon name="refresh" size={18} /> Follow latest
+          <Icon name="refresh" size={18} /> {t(' Follow latest')}
         </button>
       )}
       {children}
@@ -547,6 +568,7 @@ export function RevisionControls({
   );
 }
 export function RequestStatus({ status, children }: { status: string; children?: ReactNode }) {
+  useLocale();
   status = requestState(status);
   const icon: IconName =
     status === 'failed'
@@ -564,9 +586,15 @@ export function RequestStatus({ status, children }: { status: string; children?:
   );
 }
 export function ValidationSummary({ children, version }: { children: ReactNode; version: string }) {
+  useLocale();
   return (
-    <section className="studio-validation" aria-label={`Checks for ${version}`}>
-      <h3>Checks · {version}</h3>
+    <section
+      className="studio-validation"
+      aria-label={t('Checks for {value0}', { value0: version })}
+    >
+      <h3>
+        <RichMessage source={'Checks · {slot0}'} slots={{ slot0: version }} />
+      </h3>
       {children}
     </section>
   );
@@ -582,6 +610,7 @@ export function ReleaseDialog({
   title: string;
   children: ReactNode;
 }) {
+  useLocale();
   const ref = useRef<HTMLDialogElement>(null),
     trigger = useRef<HTMLElement | null>(null);
   const id = useId();
@@ -637,12 +666,12 @@ export function ReleaseDialog({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close panel"
+          aria-label={t('Close panel')}
           aria-describedby={`${id}-close-help`}
         >
           <Icon name="x" />
           <span id={`${id}-close-help`} className="studio-tooltip" role="tooltip">
-            Close panel · Escape
+            {t('Close panel · Escape')}
           </span>
         </button>
       </header>
@@ -661,12 +690,23 @@ export function CreditPanel({
   reserved?: number;
   children?: ReactNode;
 }) {
+  useLocale();
   return (
-    <section aria-label={`${domain} credits`}>
+    <section aria-label={t('{value0} credits', { value0: domain })}>
       <h3>
-        {available ?? '…'} {domain} credits available
+        <RichMessage
+          source={'{slot0}  {slot1} credits available'}
+          slots={{ slot0: available ?? '…', slot1: domain }}
+          singular={'{slot0}  {slot1} credit available'}
+          count={Number(domain)}
+        />
       </h3>
-      <p>{reserved ?? 0} reserved. Credits belong to this studio.</p>
+      <p>
+        <RichMessage
+          source={'{slot0} reserved. Credits belong to this studio.'}
+          slots={{ slot0: reserved ?? 0 }}
+        />
+      </p>
       {children}
     </section>
   );
@@ -692,15 +732,17 @@ export function NewStudio({
   tools?: ReactNode;
   title: string;
 }) {
+  useLocale();
   return (
     <StudioWorkspace
       conversation={
         <>
-          <ConversationPane label={`${title} conversation`} count={0}>
-            <h2>What would you like to create?</h2>
+          <ConversationPane label={t('{value0} conversation', { value0: title })} count={0}>
+            <h2>{t('What would you like to create?')}</h2>
             <p>
-              Describe your idea, request a creation, or ask a question. Your project and its
-              history stay private until you publish.
+              {t(
+                'Describe your idea, request a creation, or ask a question. Your project and its history stay private until you publish.',
+              )}
             </p>
             {projects}
           </ConversationPane>
@@ -708,7 +750,7 @@ export function NewStudio({
             value={value}
             onChange={onChange}
             onSend={onSend}
-            label="Your first idea"
+            label={t('Your first idea')}
             disabledReason={disabledReason}
             onBlocked={onBlocked}
             pricing={pricing}
@@ -719,8 +761,9 @@ export function NewStudio({
       artifact={
         <ArtifactPane title={title}>
           <p>
-            Your creation will appear here. You can inspect, edit, compare, and publish saved
-            versions.
+            {t(
+              'Your creation will appear here. You can inspect, edit, compare, and publish saved versions.',
+            )}
           </p>
         </ArtifactPane>
       }

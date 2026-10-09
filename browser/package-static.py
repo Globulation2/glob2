@@ -19,6 +19,27 @@ ROOT = Path(__file__).resolve().parents[1]
 MUSIC_FILES = ("music-worker.js", "music-output.js", "music-runtime.js", "music-runtime.wasm")
 
 
+def require_translation_catalogs(names):
+    """A localized launcher must ship every supported locale, without aliases."""
+    canonical = {
+        "locales/" + path.name
+        for path in (ROOT / "platform/packages/i18n/locales").glob("*.json")
+    }
+    if not canonical:
+        raise ValueError("Missing canonical browser translation catalog inventory")
+    actual = {name for name in names if name.startswith("locales/") and name.endswith(".json")}
+    missing, extra = sorted(canonical - actual), sorted(actual - canonical)
+    if missing or extra:
+        raise ValueError(
+            "Browser translation catalog inventory mismatch: missing "
+            + ", ".join(missing)
+            + "; unexpected "
+            + ", ".join(extra)
+        )
+    if "i18n.js" not in names:
+        raise ValueError("Missing browser localization runtime")
+
+
 def package(source, destination):
     source, destination = Path(source), Path(destination)
     if source.resolve() == destination.resolve() or source.resolve().is_relative_to(
@@ -53,11 +74,17 @@ def package(source, destination):
     )
     if (music or needs_music) and len(music) != len(MUSIC_FILES):
         raise ValueError("Incomplete music runtime")
+    localization = {}
+    if b'src="i18n.js"' in files["html"]:
+        localization["i18n.js"] = (source / "i18n.js").read_bytes()
+        localization.update({"locales/" + path.name: path.read_bytes() for path in sorted((source / "locales").glob("*.json"))})
+        require_translation_catalogs(localization)
     version = hashlib.sha256(
         POLICY
         + b"".join(hive.values())
         + b"".join(recording.values())
         + b"".join(music.values())
+        + b"".join(name.encode() + data for name, data in localization.items())
         + b"".join(files.values())
         + b"".join(name.encode() for name in packages)
     ).hexdigest()[:16]
@@ -95,6 +122,7 @@ def package(source, destination):
         **hive,
         **worker_assets,
         **notices,
+        **localization,
     }
     if threaded:
         loader = f"loader-{version}.js"
@@ -207,6 +235,9 @@ def verify(directory):
     }
     if actual != set(expected):
         raise ValueError("Static package contains unexpected or missing files")
+    localized = b'src="i18n.js"' in (directory / "index.html").read_bytes()
+    if localized or "i18n.js" in expected or any(name.startswith("locales/") for name in expected):
+        require_translation_catalogs(expected)
     for name, digest in expected.items():
         data = (directory / name).read_bytes()
         if hashlib.sha256(data).hexdigest() != digest:
@@ -232,6 +263,7 @@ def verify(directory):
     ]
     if not any(name.startswith("assets/") for name in names):
         raise ValueError("Static package lacks game data packages")
+    names += [name for name in expected if (name == "i18n.js" or (name.startswith("locales/") and name.endswith(".json")))]
     names += [name for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if name in expected]
     recording = [f"recording-{marker['version']}-{suffix}" for suffix in
                  ("worker.js", "storage.js", "video.js", "runtime.js", "runtime.wasm")]

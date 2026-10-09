@@ -1,3 +1,6 @@
+import { MessageError } from '../i18n.tsx';
+import { displayMessage, message as sourceMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { ReleaseDialog } from '../components/studio/Studio.tsx';
 import { Icon } from '../icons.tsx';
 import { useEffect, useRef, useState } from 'react';
@@ -32,6 +35,7 @@ function Fields({
   value: Record<string, unknown>;
   onChange: (value: Record<string, unknown>) => void;
 }) {
+  useLocale();
   const [newKey, setNewKey] = useState('');
   return (
     <div className="building-fields">
@@ -69,18 +73,18 @@ function Fields({
           <button
             type="button"
             className="small"
-            aria-label={`Remove ${key}`}
+            aria-label={t('Remove {value0}', { value0: key })}
             onClick={() => {
               onChange(Object.fromEntries(Object.entries(value).filter(([name]) => name !== key)));
             }}
           >
-            Remove
+            {t('Remove')}
           </button>
         </div>
       ))}
       <div className="building-field">
         <label>
-          Additional field
+          {t('Additional field')}
           <input value={newKey} onChange={(e) => setNewKey(e.target.value)} />
         </label>
         <button
@@ -95,7 +99,7 @@ function Fields({
             setNewKey('');
           }}
         >
-          Add
+          {t('Add')}
         </button>
       </div>
     </div>
@@ -104,7 +108,7 @@ function Fields({
 function JsonField({
   value,
   onChange,
-  label = 'JSON value',
+  label = t('JSON value'),
   kind,
   text: pendingText,
   onText,
@@ -116,16 +120,18 @@ function JsonField({
   label?: string;
   kind?: 'array';
 }) {
+  useLocale();
   const text = pendingText ?? json(value);
   const [error, setError] = useState('');
   const parseValue = (value: string) => {
     const parsed: unknown = JSON.parse(value);
-    if (kind === 'array' && !Array.isArray(parsed)) throw new Error('Enter a JSON array.');
+    if (kind === 'array' && !Array.isArray(parsed)) throw new MessageError('Enter a JSON array.');
     return parsed;
   };
   return (
     <>
       <textarea
+        dir="ltr"
         rows={5}
         ref={(element) => {
           if (!element) return;
@@ -133,7 +139,7 @@ function JsonField({
             parseValue(text);
             element.setCustomValidity('');
           } catch {
-            element.setCustomValidity('Enter valid JSON.');
+            element.setCustomValidity(t('Enter valid JSON.'));
           }
         }}
         aria-label={label}
@@ -161,11 +167,12 @@ function JsonField({
           }
         }}
       />
-      {error && <span role="alert">{error}</span>}
+      {error && <span role="alert">{displayMessage(error)}</span>}
     </>
   );
 }
 export function BuildingStudio({ id }: { id?: string }) {
+  useLocale();
   const { account } = useSession(),
     { navigate } = useRouter();
   const [error, setError] = useState<Error>(),
@@ -177,15 +184,20 @@ export function BuildingStudio({ id }: { id?: string }) {
   if (id) return <BuildingWorkspace key={id} id={id} />;
   return (
     <div className="building-studio">
-      <h1>Building Studio</h1>
-      <p>Create a building or an upgrade family with custom artwork.</p>
+      <h1>{t('Building Studio')}</h1>
+      <p>{t('Create a building or an upgrade family with custom artwork.')}</p>
       <p>
-        Drafts are private. Publish a saved family to share it in the{' '}
-        <Link to="/buildings">building library</Link>.
+        <RichMessage
+          source={'Drafts are private. Publish a saved family to share it in the {slot0}.'}
+          slots={{ slot0: <Link to="/buildings">{t('building library')}</Link> }}
+        />
       </p>
       {!account ? (
         <p>
-          <a href="/signin">Sign in</a> to create and save drafts.
+          <RichMessage
+            source={'{slot0} to create and save drafts.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+          />
         </p>
       ) : (
         <>
@@ -207,7 +219,7 @@ export function BuildingStudio({ id }: { id?: string }) {
               }
             }}
           >
-            Create a family
+            {t('Create a family')}
           </button>
           {error && <ErrorNotice error={error} />}
           <Loaded load={load}>
@@ -227,6 +239,7 @@ export function BuildingStudio({ id }: { id?: string }) {
   );
 }
 function BuildingWorkspace({ id }: { id: string }) {
+  useLocale();
   const load = useLoad((signal) => request<BuildingDraft>('GET', path(id), { signal }), [id]);
   return (
     <Loaded load={load}>{(draft) => <BuildingEditor key={draft.id} initial={draft} />}</Loaded>
@@ -243,6 +256,7 @@ export function BuildingEditor({
   onDirtyChange?: (dirty: boolean) => void;
   onSaved?: () => void;
 }) {
+  useLocale();
   const [releaseOpen, setReleaseOpen] = useState(false);
   const form = useRef<HTMLFormElement>(null);
   const allowNavigation = useRef(false);
@@ -300,7 +314,7 @@ export function BuildingEditor({
     };
     const leaveRoute = (event: Event) => {
       if (allowNavigation.current) return;
-      if (!window.confirm('Leave with unsaved changes? A recovery copy stays on this device.')) {
+      if (!window.confirm(t('Leave with unsaved changes? A recovery copy stays on this device.'))) {
         event.preventDefault();
       }
     };
@@ -341,7 +355,7 @@ export function BuildingEditor({
   };
   const save = () => {
     if (!form.current?.reportValidity()) {
-      setMessage('Resolve invalid fields before saving.');
+      setMessage(sourceMessage('Resolve invalid fields before saving.'));
       return;
     }
     return operation(async () => {
@@ -352,7 +366,7 @@ export function BuildingEditor({
       return request<BuildingDraft>('PUT', path(draft.id), {
         body: { revision: draft.revision, name, package: current },
       });
-    }, 'Draft saved.');
+    }, t('Draft saved.'));
   };
   const update = (changes: Partial<typeof variant>) => {
     if (!variant) return;
@@ -365,21 +379,22 @@ export function BuildingEditor({
     <div className="building-studio">
       {!embedded && (
         <>
-          <Link to="/building-studio">Your building drafts</Link>
-          <h1>Building family editor</h1>
-          <Link to={'/ai-building-studio?draft=' + draft.id}>Edit with AI</Link>
+          <Link to="/building-studio">{t('Your building drafts')}</Link>
+          <h1>{t('Building family editor')}</h1>
+          <Link to={'/ai-building-studio?draft=' + draft.id}>{t('Edit with AI')}</Link>
         </>
       )}
-      {embedded && <h2>Building family editor</h2>}
+      {embedded && <h2>{t('Building family editor')}</h2>}
       <p>
-        Start with one building, add stages for upgrades, then save and publish. Artwork uploads are
-        saved immediately; choose their sprite keys in gameSprite and miniSprite.
+        {t(
+          'Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.',
+        )}
       </p>
-      <p role="status">{message || (dirty ? 'Unsaved changes' : 'Account draft saved')}</p>
+      <p role="status">{message || (dirty ? t('Unsaved changes') : t('Account draft saved'))}</p>
       {error && <ErrorNotice error={error} />}
       {local && (
         <div className="notice">
-          <p>This device has a recovery copy.</p>
+          <p>{t('This device has a recovery copy.')}</p>
           <button
             type="button"
             onClick={() => {
@@ -396,20 +411,20 @@ export function BuildingEditor({
               }
             }}
           >
-            Restore device copy
+            {t('Restore device copy')}
           </button>
         </div>
       )}
       <button onClick={() => setReleaseOpen(true)}>
-        <Icon name="share" size={18} /> Review release settings
+        <Icon name="share" size={18} /> {t(' Review release settings')}
       </button>
-      {dirty && <p>Save your changes before publishing.</p>}
+      {dirty && <p>{t('Save your changes before publishing.')}</p>}
       <ReleaseDialog
         open={releaseOpen}
         onClose={() => setReleaseOpen(false)}
-        title={`Publish saved revision ${draft.revision}`}
+        title={t('Publish saved revision {value0}', { value0: draft.revision })}
       >
-        <p>This release uses the current saved draft. Unsaved edits are not included.</p>
+        <p>{t('This release uses the current saved draft. Unsaved edits are not included.')}</p>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -432,40 +447,40 @@ export function BuildingEditor({
           }}
         >
           <label>
-            Description
+            {t('Description')}
             <textarea name="description" maxLength={4000} />
           </label>
           <label>
-            Visibility
+            {t('Visibility')}
             <select name="visibility" defaultValue="unlisted">
-              <option value="unlisted">Unlisted (people with the link)</option>
-              <option value="public">Public library</option>
-              <option value="private">Private</option>
+              <option value="unlisted">{t('Unlisted (people with the link)')}</option>
+              <option value="public">{t('Public library')}</option>
+              <option value="private">{t('Private')}</option>
             </select>
           </label>
-          <button disabled={dirty || busy}>Publish saved family</button>
+          <button disabled={dirty || busy}>{t('Publish saved family')}</button>
           <p>
-            Save changes first. Publishing creates a pinned release of the saved package. The engine
-            checks it before people can download it. Private releases are visible only to you;
-            unlisted releases can be opened with their link.
+            {t(
+              'Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.',
+            )}
           </p>
         </form>
       </ReleaseDialog>
       <form ref={form} onSubmit={(e) => e.preventDefault()}>
         <fieldset disabled={busy}>
           <label>
-            Family name
+            {t('Family name')}
             <input value={name} maxLength={128} onChange={(e) => setName(e.target.value)} />
           </label>
           <div className="building-actions">
             <button type="button" onClick={save}>
-              Save draft
+              {t('Save draft')}
             </button>
             <a className="button" href={path(draft.id) + '/archive'}>
-              Export saved package
+              {t('Export saved package')}
             </a>
             <label>
-              Import package
+              {t('Import package')}
               <input
                 type="file"
                 accept=".zip,application/zip"
@@ -488,7 +503,9 @@ export function BuildingEditor({
           </div>
           {dirty && (
             <p>
-              Save your changes before importing or uploading artwork. Export uses the saved draft.
+              {t(
+                'Save your changes before importing or uploading artwork. Export uses the saved draft.',
+              )}
             </p>
           )}
           <div className="building-actions">
@@ -504,7 +521,7 @@ export function BuildingEditor({
                 }
               }}
             >
-              Fields
+              {t('Fields')}
             </button>
             <button
               type="button"
@@ -522,12 +539,12 @@ export function BuildingEditor({
                 setTab('json');
               }}
             >
-              JSON
+              {t('JSON')}
             </button>
           </div>
           {tab === 'json' ? (
             <label>
-              Complete family JSON
+              {t('Complete family JSON')}
               <textarea
                 className="building-json"
                 rows={28}
@@ -538,9 +555,9 @@ export function BuildingEditor({
             </label>
           ) : (
             <>
-              <h2>Buildings and upgrade stages</h2>
+              <h2>{t('Buildings and upgrade stages')}</h2>
               <label>
-                Stage
+                {t('Stage')}
                 <select value={selected} onChange={(e) => setSelected(Number(e.target.value))}>
                   {pkg.variants.map((v, i) => (
                     <option key={i} value={i}>
@@ -572,7 +589,7 @@ export function BuildingEditor({
                     setSelected(pkg.variants.length);
                   }}
                 >
-                  Add stage
+                  {t('Add stage')}
                 </button>
                 <button
                   type="button"
@@ -597,13 +614,13 @@ export function BuildingEditor({
                     setSelected(0);
                   }}
                 >
-                  Remove stage
+                  {t('Remove stage')}
                 </button>
               </div>
               {variant && (
                 <>
                   <label>
-                    Stable key
+                    {t('Stable key')}
                     <input
                       value={variant.key}
                       onChange={(e) => {
@@ -631,12 +648,12 @@ export function BuildingEditor({
                   </label>
                   {(['previous', 'next'] as const).map((field) => (
                     <label key={field}>
-                      {field === 'previous' ? 'Previous stage' : 'Next stage'}
+                      {field === 'previous' ? t('Previous stage') : t('Next stage')}
                       <select
                         value={variant[field] ?? ''}
                         onChange={(e) => update({ [field]: e.target.value })}
                       >
-                        <option value="">None</option>
+                        <option value="">{t('None')}</option>
                         {pkg.variants
                           .filter((v) => v.key !== variant.key)
                           .map((v) => (
@@ -648,12 +665,12 @@ export function BuildingEditor({
                     </label>
                   ))}
                   <label>
-                    Required experiment
+                    {t('Required experiment')}
                     <select
                       value={variant.requiredExperiment ?? ''}
                       onChange={(e) => update({ requiredExperiment: e.target.value })}
                     >
-                      <option value="">Always available</option>
+                      <option value="">{t('Always available')}</option>
                       {pkg.experiments.map((e) => (
                         <option key={e.key} value={e.key}>
                           {e.label}
@@ -663,7 +680,15 @@ export function BuildingEditor({
                   </label>
                   {(['properties', 'semantics', 'presentation'] as const).map((section) => (
                     <details key={section} open>
-                      <summary>{section}</summary>
+                      <summary>
+                        {
+                          {
+                            properties: t('Properties'),
+                            semantics: t('Semantics'),
+                            presentation: t('Presentation'),
+                          }[section]
+                        }
+                      </summary>
                       <Fields
                         key={variant.key + section}
                         value={variant[section] ?? {}}
@@ -677,12 +702,12 @@ export function BuildingEditor({
                 </>
               )}
               <details>
-                <summary>Family experiments</summary>
+                <summary>{t('Family experiments')}</summary>
                 <JsonField
                   text={fieldEdits['experiments']}
                   onText={(text) => editField('experiments', text)}
                   kind="array"
-                  label="Family experiments JSON"
+                  label={t('Family experiments JSON')}
                   value={pkg.experiments}
                   onChange={(value) => {
                     if (Array.isArray(value))
@@ -692,18 +717,19 @@ export function BuildingEditor({
               </details>
             </>
           )}
-          <h2>Artwork</h2>
+          <h2>{t('Artwork')}</h2>
           <p>
-            Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same
-            dimensions as the base frame.
+            {t(
+              'Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same dimensions as the base frame.',
+            )}
           </p>
           <div className="building-actions">
             <label>
-              Sprite key
+              {t('Sprite key')}
               <input value={sprite} onChange={(e) => setSprite(e.target.value)} />
             </label>
             <label>
-              Frame
+              {t('Frame')}
               <input
                 type="number"
                 min={0}
@@ -713,14 +739,14 @@ export function BuildingEditor({
               />
             </label>
             <label>
-              Layer
+              {t('Layer')}
               <select value={layer} onChange={(e) => setLayer(e.target.value)}>
-                <option value="image">Base artwork</option>
-                <option value="team">Team color</option>
+                <option value="image">{t('Base artwork')}</option>
+                <option value="team">{t('Team color')}</option>
               </select>
             </label>
             <label>
-              Upload frame
+              {t('Upload frame')}
               <input
                 type="file"
                 accept="image/png,image/webp"
@@ -742,8 +768,17 @@ export function BuildingEditor({
             </label>
           </div>
           <p>
-            Use <code>package:{sprite}</code> in gameSprite or miniSprite to select an uploaded
-            sprite.
+            <RichMessage
+              source={'Use {slot0} in gameSprite or miniSprite to select an uploaded sprite.'}
+              slots={{
+                slot0: (
+                  <code>
+                    {t('package:')}
+                    {sprite}
+                  </code>
+                ),
+              }}
+            />
           </p>
           <div className="building-frames">
             {draft.package.sprites.flatMap((s) =>
@@ -753,30 +788,36 @@ export function BuildingEditor({
                     width={Math.min(128, f.width)}
                     height={Math.min(128, f.height)}
                     src={path(draft.id) + '/assets/' + f.imageHash}
-                    alt={`${s.key}, frame ${i}`}
+                    alt={t('{value0}, frame {value1}', { value0: s.key, value1: i })}
                   />
                   {f.teamColorHash && (
                     <img
                       width={Math.min(128, f.width)}
                       height={Math.min(128, f.height)}
                       src={path(draft.id) + '/assets/' + f.teamColorHash}
-                      alt={`${s.key}, frame ${i}, team color layer`}
+                      alt={t('{value0}, frame {value1}, team color layer', {
+                        value0: s.key,
+                        value1: i,
+                      })}
                     />
                   )}
                   <figcaption>
-                    {s.key} · {i} · {f.width} × {f.height}
+                    <RichMessage
+                      source={'{slot0} · {slot1} · {slot2} × {slot3}'}
+                      slots={{ slot0: s.key, slot1: i, slot2: f.width, slot3: f.height }}
+                    />
                   </figcaption>
                 </figure>
               )),
             )}
           </div>
           <details>
-            <summary>Sprite manifest</summary>
+            <summary>{t('Sprite manifest')}</summary>
             <JsonField
               text={fieldEdits['sprites']}
               onText={(text) => editField('sprites', text)}
               kind="array"
-              label="Sprite manifest JSON"
+              label={t('Sprite manifest JSON')}
               value={pkg.sprites}
               onChange={(value) => {
                 if (Array.isArray(value))
@@ -810,7 +851,7 @@ export function BuildingEditor({
               }
             }}
           >
-            Delete draft
+            {t('Delete draft')}
           </button>
         </fieldset>
       </form>

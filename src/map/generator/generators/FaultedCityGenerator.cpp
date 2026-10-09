@@ -674,7 +674,7 @@ GeneratorDefinition faultedCityDefinition()
 	return {"faulted-city",
 			64,
 			"The Faulted City",
-			3,
+			4,
 			false,
 			{GeneratorControl{"fault-displacement", "Fault displacement", 4, 14, 1, 10,
 							  ControlGroup::Terrain}

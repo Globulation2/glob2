@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage, artifactLabel } from '../../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { Artifact } from './types.ts';
 export function MapViewer({
@@ -11,12 +12,13 @@ export function MapViewer({
   dimensions?: { width: number; height: number };
   onReady?: (url: string) => void;
 }) {
+  useLocale();
   const [loaded, setLoaded] = useState<{
     url: string;
     label: string;
     width: number;
     height: number;
-    artifact: Pick<Artifact, 'stage' | 'width' | 'height'>;
+    artifact: Pick<Artifact, 'stage' | 'width' | 'height' | 'kind'>;
     previous?: { url: string; label: string };
   }>();
   const readyCallback = useRef(onReady);
@@ -25,7 +27,7 @@ export function MapViewer({
   }, [onReady]);
   const surface = useRef<HTMLDivElement>(null);
   const [viewport, setViewport] = useState({ width: 300, height: 300 });
-  const { url, label, stage, width: artifactWidth, height: artifactHeight } = artifact;
+  const { url, label, stage, width: artifactWidth, height: artifactHeight, kind } = artifact;
   useEffect(() => {
     const el = surface.current;
     if (!el || typeof ResizeObserver === 'undefined') return;
@@ -61,6 +63,7 @@ export function MapViewer({
               height: image.naturalHeight,
               artifact: {
                 stage,
+                kind,
                 width: artifactWidth,
                 height: artifactHeight,
               },
@@ -85,7 +88,7 @@ export function MapViewer({
       image.onload = null;
       image.onerror = null;
     };
-  }, [url, label, stage, artifactWidth, artifactHeight, attempt]);
+  }, [url, label, stage, kind, artifactWidth, artifactHeight, attempt]);
   const loadedUrl = loaded?.url;
   useEffect(() => {
     if (!loadedUrl) return;
@@ -106,24 +109,26 @@ export function MapViewer({
       <div className="ms-map-tools">
         <span>
           {(loaded?.artifact.stage ?? artifact.stage) === 'ready'
-            ? 'PLAYABLE MAP'
-            : 'INTERMEDIATE IMAGE'}
+            ? t('PLAYABLE MAP')
+            : t('INTERMEDIATE IMAGE')}
         </span>
         <div>
           <button
-            aria-label="Zoom out"
+            aria-label={t('Zoom out')}
             disabled={zoom <= 1}
             onClick={() => setZoom((z) => Math.max(1, z - 0.25))}
           >
-            −
+            {t('−')}
           </button>
-          <span>{Math.round(zoom * 100)}%</span>
+          <span>
+            <RichMessage source={'{slot0}%'} slots={{ slot0: Math.round(zoom * 100) }} />
+          </span>
           <button
-            aria-label="Zoom in"
+            aria-label={t('Zoom in')}
             disabled={zoom >= 4}
             onClick={() => setZoom((z) => Math.min(4, z + 0.25))}
           >
-            ＋
+            {t('＋')}
           </button>
           <button
             onClick={() => {
@@ -131,7 +136,7 @@ export function MapViewer({
               setOffset({ x: 0, y: 0 });
             }}
           >
-            Fit
+            {t('Fit')}
           </button>
         </div>
       </div>
@@ -140,7 +145,9 @@ export function MapViewer({
         style={{ touchAction: zoom > 1 ? 'none' : 'pan-y' }}
         ref={surface}
         tabIndex={0}
-        aria-label="Map viewport. Use plus and minus to zoom, arrow keys to pan, or zero to fit."
+        aria-label={t(
+          'Map viewport. Use plus and minus to zoom, arrow keys to pan, or zero to fit.',
+        )}
         onKeyDown={(e) => {
           if (
             ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '=', '-', '0'].includes(e.key)
@@ -195,17 +202,25 @@ export function MapViewer({
                 draggable={false}
               />
             )}
-            <img key={loaded.url} src={loaded.url} alt={loaded.label} draggable={false} />
+            <img
+              key={loaded.url}
+              src={loaded.url}
+              alt={artifactLabel({ label: loaded.label, kind: loaded.artifact.kind })}
+              draggable={false}
+            />
             {marker && dimensions && loaded.url === artifact.url && (
               <span
                 className="ms-location-marker"
-                aria-label={`Map location ${marker.x}, ${marker.y}`}
+                aria-label={t('Map location {value0}, {value1}', {
+                  value0: marker.x,
+                  value1: marker.y,
+                })}
                 style={{
                   left: `${(marker.x / dimensions.width) * 100}%`,
                   top: `${(marker.y / dimensions.height) * 100}%`,
                 }}
               >
-                ◎
+                {t('◎')}
               </span>
             )}
           </div>
@@ -216,29 +231,39 @@ export function MapViewer({
             role="status"
           >
             <span className="ms-spinner" />
-            Loading {artifact.label}…
+            {t('Loading ')}
+            {artifactLabel(artifact)}
+            {t('…')}
           </div>
         )}
         {error && (
           <div className="ms-image-loading" role="alert">
-            This image could not be loaded.
+            {t('This image could not be loaded.')}
             <button
               onClick={() => {
                 setErrorUrl(undefined);
                 setAttempt((n) => n + 1);
               }}
             >
-              Retry image
+              {t('Retry image')}
             </button>
           </div>
         )}
       </div>
       <figcaption>
-        <span>{loaded?.label ?? artifact.label}</span>
+        <span>
+          {artifactLabel({
+            label: loaded?.label ?? artifact.label,
+            kind: loaded?.artifact.kind ?? artifact.kind,
+          })}
+        </span>
         <span>
           {loaded?.artifact.width && loaded.artifact.height
-            ? `${loaded.artifact.width} × ${loaded.artifact.height} preview pixels`
-            : 'Drag to explore when zoomed'}
+            ? t('{value0} × {value1} preview pixels', {
+                value0: loaded.artifact.width,
+                value1: loaded.artifact.height,
+              })
+            : t('Drag to explore when zoomed')}
         </span>
       </figcaption>
     </figure>

@@ -44,7 +44,7 @@
   background: var(--surface-2);
 }
 .ts-message.user {
-  margin-left: 1rem;
+  margin-inline-start: 1rem;
   background: var(--surface, #344435);
 }
 .ts-message p {

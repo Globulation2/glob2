@@ -1,3 +1,4 @@
+import { t, useLocale } from '../i18n.tsx';
 // A small SVG line chart: one y axis, 2px lines, recessive grid, a legend for
 // two or more series, and a crosshair tooltip on hover/touch. A visually
 // hidden table carries the same numbers for screen readers.
@@ -78,6 +79,7 @@ export function LineChart({
   xLabel = 'x',
   yLabel,
 }: Props) {
+  useLocale();
   const id = useId();
   const box = useRef<HTMLElement>(null);
   // Draw at the container's pixel width so text and strokes keep their size.
@@ -131,7 +133,7 @@ export function LineChart({
     return { sx, sy, yTicks, xTicks, allX, xMin, xMax };
   }, [series, height, zeroBased, integer, WIDTH, xDomain]);
 
-  if (!geometry) return <div className="chart empty">No data yet.</div>;
+  if (!geometry) return <div className="chart empty">{t('No data yet.')}</div>;
   const { sx, sy, yTicks, xTicks, allX } = geometry;
 
   const onMove = (event: PointerEvent<SVGSVGElement>) => {
@@ -275,7 +277,9 @@ export function LineChart({
           <div>{xFormat(hover.x)}</div>
           {hovered.map(({ s, point }) => (
             <div key={s.name}>
-              <span className="sw" style={{ background: s.color }} /> {s.name}: {yFormat(point.y)}
+              <span className="sw" style={{ background: s.color }} /> {s.name}
+              {t(': ')}
+              {yFormat(point.y)}
             </div>
           ))}
         </div>

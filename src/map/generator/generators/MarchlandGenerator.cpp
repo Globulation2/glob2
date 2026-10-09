@@ -1248,7 +1248,7 @@ GeneratorDefinition marchlandDefinition()
 		"marchland",
 		61,
 		"Marchland",
-		2,
+		3,
 		false,
 		// Levelling controls the search for contested, evenly shared prizes. Zero keeps
 		// the initial random selection; telemetry records the result at every setting.

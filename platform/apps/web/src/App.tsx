@@ -1,3 +1,4 @@
+import { t, useLocale, LocaleProvider, LanguageSelector, RichMessage } from './i18n.tsx';
 import { Generators, GeneratorPage, GeneratorPublish } from './pages/Generators.tsx';
 import { studioLocal } from './components/studio/storage.ts';
 import { Players } from './pages/Players.tsx';
@@ -347,12 +348,13 @@ function resolve(path: string) {
 }
 
 function AccountChip() {
+  useLocale();
   const { account, signOut } = useSession();
   if (account === undefined) return null;
   if (!account) {
     return (
       <a className="btn primary small" href="/signin">
-        Sign in
+        {t('Sign in')}
       </a>
     );
   }
@@ -365,10 +367,12 @@ function AccountChip() {
         aria-label={account.displayName}
       >
         <Avatar account={account} size="small" />
-        <span>{account.displayName}</span>
+        <span>
+          <bdi dir="auto">{account.displayName}</bdi>
+        </span>
       </Link>
       <button className="small" onClick={() => void signOut()}>
-        Sign out
+        {t('Sign out')}
       </button>
     </>
   );
@@ -382,27 +386,29 @@ interface NavItem {
 }
 
 function About() {
+  useLocale();
   return (
     <details className="app-about">
-      <summary>About & help</summary>
-      <nav aria-label="About">
-        <a href={DOWNLOAD_URL}>Download the game</a>
+      <summary>{t('About & help')}</summary>
+      <nav aria-label={t('About')}>
+        <a href={DOWNLOAD_URL}>{t('Download the game')}</a>
         {WEBSITE_URL && (
           <>
-            <a href={WEBSITE_URL}>Globulation 2 Online website</a>
-            <a href={websitePage('/learn/')}>Player guides</a>
-            <a href={websitePage('/news/')}>News</a>
-            <a href={websitePage('/community/')}>Community</a>
+            <a href={WEBSITE_URL}>{t('Globulation 2 Online website')}</a>
+            <a href={websitePage('/learn/')}>{t('Player guides')}</a>
+            <a href={websitePage('/news/')}>{t('News')}</a>
+            <a href={websitePage('/community/')}>{t('Community')}</a>
           </>
         )}
-        <a href={SOURCE_URL}>Source code</a>
-        <a href={CREDITS_URL}>Artwork and font credits</a>
+        <a href={SOURCE_URL}>{t('Source code')}</a>
+        <a href={CREDITS_URL}>{t('Artwork and font credits')}</a>
       </nav>
     </details>
   );
 }
 
 function Layout() {
+  const locale = useLocale();
   const { location } = useRouter();
   const { instance, account } = useSession();
   const found = resolve(location.path);
@@ -448,9 +454,9 @@ function Layout() {
   }, [location.path]);
   const first = useRef(true);
   useEffect(() => {
-    const title = found ? found.route.title : 'Page not found';
+    const title = found ? t(found.route.title) : t('Page not found');
     document.title = title ? `${title} · ${name}` : name;
-  }, [found, name]);
+  }, [found, name, locale]);
   // After in-app navigation, move focus to the new page for keyboard and screen reader users.
   useEffect(() => {
     if (first.current) {
@@ -478,17 +484,19 @@ function Layout() {
     found.route.render(found.params)
   ) : (
     <>
-      <h1>Page not found</h1>
+      <h1>{t('Page not found')}</h1>
       <div className="notice">
-        Nothing here: this page wandered off like an explorer glob.{' '}
-        <Link to="/">Go to the home page</Link>.
+        <RichMessage
+          source={'Nothing here: this page wandered off like an explorer glob. {slot0}.'}
+          slots={{ slot0: <Link to="/">{t('Go to the home page')}</Link> }}
+        />
       </div>
     </>
   );
   const navigation = (overlay: boolean) => (
     <>
       <div className="sidebar-brand">
-        <Link className="brand" to="/" aria-label={`${name}, home`}>
+        <Link className="brand" to="/" aria-label={t('{value0}, home', { value0: name })}>
           <img src={GLOB_ICON} width={34} height={34} alt="" />
           <Wordmark label={null} />
         </Link>
@@ -496,7 +504,7 @@ function Layout() {
           <button
             className="sidebar-close"
             onClick={() => drawer.current?.close()}
-            aria-label="Close navigation"
+            aria-label={t('Close navigation')}
           >
             <Icon name="x" />
           </button>
@@ -504,18 +512,18 @@ function Layout() {
           <button
             className="sidebar-toggle"
             onClick={() => setCollapsed(!collapsed)}
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={collapsed ? t('Expand sidebar') : t('Collapse sidebar')}
             aria-expanded={!collapsed}
           >
             <Icon name="list-details" />
           </button>
         )}
       </div>
-      <a className="btn primary sidebar-play" href="/play/" aria-label="Play in browser">
+      <a className="btn primary sidebar-play" href="/play/" aria-label={t('Play in browser')}>
         <Icon name="player-play" size={20} />
-        <span className="nav-label">Play in browser</span>
+        <span className="nav-label">{t('Play in browser')}</span>
       </a>
-      <nav className="nav" aria-label="Main">
+      <nav className="nav" aria-label={t('Main')}>
         {['Play', 'Create', 'Manage'].map((group) => {
           const items = nav.filter((item) =>
             group === 'Play'
@@ -526,13 +534,13 @@ function Layout() {
           );
           return items.length ? (
             <div className="nav-group" key={group}>
-              <div className="nav-group-label">{group}</div>
+              <div className="nav-group-label">{t(group)}</div>
               {items.map((item) => (
                 <Link
                   key={item.id}
                   to={item.to}
                   className={section === item.id ? 'on' : ''}
-                  aria-label={item.name}
+                  aria-label={t(item.name)}
                   aria-current={section === item.id ? 'page' : undefined}
                 >
                   {item.icon ? (
@@ -542,9 +550,9 @@ function Layout() {
                   ) : (
                     <img src={GLOB_ICON} width={26} height={26} alt="" />
                   )}
-                  <span className="nav-label">{item.name}</span>
+                  <span className="nav-label">{t(item.name)}</span>
                   <span className="rail-tooltip" aria-hidden="true">
-                    {item.name}
+                    {t(item.name)}
                   </span>
                 </Link>
               ))}
@@ -556,6 +564,7 @@ function Layout() {
         <div className="sidebar-utilities">
           <About />
           <ThemeToggle />
+          <LanguageSelector />
         </div>
         <div
           className={`sidebar-account${section === 'account' || section === 'commander' ? ' on' : ''}`}
@@ -570,7 +579,7 @@ function Layout() {
       className={`site app-shell${home ? ' home' : ''}${studio ? ' studio-shell' : ''}${collapsed ? ' sidebar-collapsed' : ''}`}
     >
       <a className="skip-link" href="#main">
-        Skip to content
+        {t('Skip to content')}
       </a>
       <aside className="app-sidebar">{navigation(false)}</aside>
       <button
@@ -579,7 +588,7 @@ function Layout() {
           if (window.matchMedia('(min-width: 1100px)').matches) setCollapsed(false);
           else openNavigation();
         }}
-        aria-label="Open navigation"
+        aria-label={t('Open navigation')}
       >
         <Icon name="list-details" />
       </button>
@@ -587,7 +596,7 @@ function Layout() {
         ref={drawer}
         className="navigation-drawer"
         onClose={() => setDrawerOpen(false)}
-        aria-label="Navigation"
+        aria-label={t('Navigation')}
         onClick={(event) => {
           if (event.target === event.currentTarget) drawer.current?.close();
         }}
@@ -612,13 +621,16 @@ function Layout() {
 }
 
 export function App() {
+  useLocale();
   return (
-    <ThemeProvider>
-      <RouterProvider>
-        <SessionProvider>
-          <Layout />
-        </SessionProvider>
-      </RouterProvider>
-    </ThemeProvider>
+    <LocaleProvider>
+      <ThemeProvider>
+        <RouterProvider>
+          <SessionProvider>
+            <Layout />
+          </SessionProvider>
+        </RouterProvider>
+      </ThemeProvider>
+    </LocaleProvider>
   );
 }

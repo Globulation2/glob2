@@ -1,3 +1,4 @@
+import { t, useLocale } from './i18n.tsx';
 // Light ("Meadow") and dark ("Night colony") themes. The page follows the
 // system setting unless the viewer picks one; the choice is stored in this
 // browser only. index.html applies a stored choice before the first paint.
@@ -44,6 +45,7 @@ const ThemeContext = createContext<ThemeValue>({
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  useLocale();
   const [preference, setPreferenceState] = useState<ThemePreference>(stored);
   const [dark, setDark] = useState(() => systemDark()?.matches ?? false);
   useEffect(() => {
@@ -92,14 +94,15 @@ const LABEL: Record<ThemePreference, string> = {
 
 /** Cycles system → light → dark. */
 export function ThemeToggle() {
+  useLocale();
   const { preference, setPreference } = useTheme();
   return (
     <button
       type="button"
       className="theme-toggle"
       onClick={() => setPreference(NEXT[preference])}
-      aria-label={`${LABEL[preference]}. Change theme`}
-      title={LABEL[preference]}
+      aria-label={t('{value0}. Change theme', { value0: t(LABEL[preference]) })}
+      title={t(LABEL[preference])}
       data-testid="theme-toggle"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">

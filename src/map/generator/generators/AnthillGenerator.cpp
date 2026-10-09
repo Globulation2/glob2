@@ -460,7 +460,7 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		4,
+		5,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4
