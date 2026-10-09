@@ -1,0 +1,20 @@
+{
+  "base_revision": "6f8cf442fe5e35aa7e7773f51f3854fa3c8e0ccf",
+  "source_patch_sha256": "cb4190b86dfb7efb915703a1818ac2092315cee99647553b2f7d9a7ab1ba0f6a",
+  "binary_sha256": "c8b4c487848d3a2f22f42663d895a1b28fc0b4abba06ebcab5f6e312c20f80ec",
+  "compiler": "g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "command": [
+    "scons",
+    "-j8",
+    "release=1",
+    "profile=0",
+    "serial_audit_skip_assets=1",
+    "CC=gcc-13",
+    "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/g++-13-symbols",
+    "CXXFLAGS=-g2",
+    "LINKFLAGS=-g2",
+    "--build=build/serial-opt-gcc13",
+    "build/serial-opt-gcc13/src/glob2",
+    "unit-tests"
+  ]
+}

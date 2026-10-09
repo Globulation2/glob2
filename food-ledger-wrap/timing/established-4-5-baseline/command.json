@@ -1,0 +1,16 @@
+[
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-reanalysis/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/checkpoint-16384.game.gz",
+  "--ticks",
+  "20480",
+  "--compute-threads",
+  "4",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/food-ledger-wrap/timing/established-4-5-baseline",
+  "--profile",
+  "food-wrap"
+]

@@ -1,0 +1,14 @@
+[
+  "scons",
+  "-j8",
+  "release=1",
+  "profile=0",
+  "serial_audit_skip_assets=1",
+  "CC=gcc-13",
+  "CXX=/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-opt/g++-13-symbols",
+  "CXXFLAGS=-g2",
+  "LINKFLAGS=-g2",
+  "--build=build/serial-opt-gcc13",
+  "build/serial-opt-gcc13/src/glob2",
+  "engine-tests"
+]

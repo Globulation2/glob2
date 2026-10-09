@@ -1,0 +1,26 @@
+PASS Maxima unit suites
+PASS verify candidate established 4 0
+PASS verify candidate established 1 0
+PASS verify candidate dense 4 0
+PASS verify candidate dense 1 0
+PASS timing baseline established 4 0
+PASS timing candidate established 4 0
+PASS timing candidate established 4 1
+PASS timing baseline established 4 1
+PASS timing baseline established 4 2
+PASS timing candidate established 4 2
+PASS timing candidate established 4 3
+PASS timing baseline established 4 3
+PASS timing baseline established 4 4
+PASS timing candidate established 4 4
+PASS timing candidate established 4 5
+PASS timing baseline established 4 5
+PASS timing baseline established 4 6
+PASS timing candidate established 4 6
+PASS timing candidate established 4 7
+PASS timing baseline established 4 7
+PASS timing baseline established 4 8
+PASS timing candidate established 4 8
+PASS timing candidate established 4 9
+PASS timing baseline established 4 9
+Validation and paired screen complete

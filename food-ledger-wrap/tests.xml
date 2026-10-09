@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="57" failures="0" errors="0" skipped="0"><testsuite name="Maxima.Continuation"><testcase classname="Maxima.Continuation" name="compact arrays preserve nested state and signed limits [save-format]" time="0.000578" status="run" />
+    <testcase classname="Maxima.Continuation" name="binary bytes; SHA1; text fallback; nested records; signed limits; 64-bit order; strings; container boundaries and interleaved writes are identical [save-format]" time="0.841951" status="run" />
+    <testcase classname="Maxima.Continuation" name="compact fields retain legacy binary and text encodings [save-format]" time="0.000191" status="run" />
+  </testsuite><testsuite name="Maxima.Defense"><testcase classname="Maxima.Defense" name="choke-point modes; distance fields and footprints" time="0.021945" status="run" />
+  </testsuite><testsuite name="Maxima.Farming"><testcase classname="Maxima.Farming" name="corridor protection and fertility caches" time="0.123777" status="run" />
+  </testsuite><testsuite name="Maxima.FoodLedger"><testcase classname="Maxima.FoodLedger" name="capped queries preserve order and scratch reuse" time="0.00013" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="supply is claimed nearest first" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="quality outranks building age" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="inns and swarms interleave" time="0.000102" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="removing a consumer releases its claim" time="0.0001" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="upgrade demand uses available supply" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="upper bound never understates reach" time="0.000933" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="untraversable ground blocks supply" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="supply beyond the radius is not counted" time="0.000107" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="demand and yield match engine rates" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="residual quality follows unclaimed supply" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="prepared bounds match wrapped oracle" time="0.020607" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="equal total changes refresh the snapshot" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="operating claims price the shared reachable supply curve without contested feedback" time="0.000813" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="operating supply tails retain positive demand and zero coverage for unreachable producers" time="0.000101" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="operating fractions preserve positive rates beneath a saturated recipe ceiling" time="0" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="equivalent feeders retain funded meal reservations before discretionary production" time="0.000353" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="feeding transfer credits are funded local and limited to the meal component" time="0.000786" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="hybrid service and production claims use separate spatial pools without double spending" time="0.000212" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="hybrid queries reserve constrained production before flexible services in either route order" time="0.000237" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="candidate ledger snapshots omit only final economic bounds" time="0.001042" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="feeding priority does not make a reachable producer unviable" time="0.000302" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="unreachable production remains a retirement candidate" time="0.000265" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="services without production retain allocation-based coverage" time="0.000275" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="mixed services use production viability without double funding" time="0.00027" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="zero-demand viability needs no food" time="0.000283" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="coordinate masks match modulo including negative and extreme inputs" time="0.000195" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="direct dimension changes cannot leave a stale wrapping mask" time="0.000328" status="run" />
+    <testcase classname="Maxima.FoodLedger" name="masked food walks preserve modulo claims and query results" time="0.001792" status="run" />
+  </testsuite><testsuite name="Maxima.ForceModel"><testcase classname="Maxima.ForceModel" name="quantile forecasts and observation cadence" time="0.000429" status="run" />
+  </testsuite><testsuite name="Maxima.Labour"><testcase classname="Maxima.Labour" name="no training building means no reserve" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="reserve matches open seats" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="opening is left alone" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="swarms are the residual" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="trimming is fair and bounded" time="0" status="run" />
+    <testcase classname="Maxima.Labour" name="military is pulled by capacity" time="0" status="run" />
+  </testsuite><testsuite name="Maxima.Placement"><testcase classname="Maxima.Placement" name="templates; parcels; appraisal and continuation" time="0.674112" status="run" />
+    <testcase classname="Maxima.Placement" name="Explicit noncanonical neighborhood tables survive compact saves" time="0.000183" status="run" />
+    <testcase classname="Maxima.Placement" name="Catalog profiles share capabilities without sharing template identity" time="0.000104" status="run" />
+  </testsuite><testsuite name="Maxima.Recon"><testcase classname="Maxima.Recon" name="observation decay; estimates and building memory" time="0.000159" status="run" />
+  </testsuite><testsuite name="Maxima.StaffingControl"><testcase classname="Maxima.StaffingControl" name="empty building gains workers" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="full building sheds workers to the minimum" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="stock inside the band holds" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="understaffed building does not wind up" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="slack allows growth when nearly staffed" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="minimum is always honoured" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="request is capped at the engine limit" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="fill is relative to capacity" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="warmup delays the first adjustment" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="cooldown limits the adjustment rate" time="0" status="run" />
+    <testcase classname="Maxima.StaffingControl" name="defaults are paced for delivery latency" time="0" status="run" />
+  </testsuite><testsuite name="Maxima.Tactics"><testcase classname="Maxima.Tactics" name="raid footprints; desired army and wave readiness" time="0.003538" status="run" />
+  </testsuite></testsuites>

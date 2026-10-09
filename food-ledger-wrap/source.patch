@@ -1,0 +1,166 @@
+diff --git a/src/ai/maxima/AIMaximaFoodLedger.cpp b/src/ai/maxima/AIMaximaFoodLedger.cpp
+index 29ae1faaf..0d3d4c300 100644
+--- a/src/ai/maxima/AIMaximaFoodLedger.cpp
++++ b/src/ai/maxima/AIMaximaFoodLedger.cpp
+@@ -68,9 +68,21 @@ Input::Input(): width(0), height(0)
+ {
+ }
+ 
++void Input::setDimensions(int newWidth, int newHeight)
++{
++	width=newWidth; height=newHeight;
++	const auto mask=[](int size) {
++		const unsigned value=static_cast<unsigned>(size);
++		return size>0 && (value & (value-1u))==0 ? value-1u : ~0u;
++	};
++	widthMask=mask(width); heightMask=mask(height);
++}
++
+ int Input::normalizeX(int x) const
+ {
+ 	if(width<=0)return 0;
++	if(widthMask==static_cast<unsigned>(width)-1u)
++		return static_cast<int>(static_cast<unsigned>(x) & widthMask);
+ 	const int value=x%width;
+ 	return value<0?value+width:value;
+ }
+@@ -78,6 +90,8 @@ int Input::normalizeX(int x) const
+ int Input::normalizeY(int y) const
+ {
+ 	if(height<=0)return 0;
++	if(heightMask==static_cast<unsigned>(height)-1u)
++		return static_cast<int>(static_cast<unsigned>(y) & heightMask);
+ 	const int value=y%height;
+ 	return value<0?value+height:value;
+ }
+diff --git a/src/ai/maxima/AIMaximaFoodLedger.h b/src/ai/maxima/AIMaximaFoodLedger.h
+index b3007698e..930eba4e5 100644
+--- a/src/ai/maxima/AIMaximaFoodLedger.h
++++ b/src/ai/maxima/AIMaximaFoodLedger.h
+@@ -144,6 +144,8 @@ struct ConsumerResult
+ struct Input
+ {
+ 	Input();
++	/// Precompute wrapping masks; direct dimension writes remain supported.
++	void setDimensions(int width, int height);
+ 	int width;
+ 	int height;
+ 	Policy policy;
+@@ -155,6 +157,12 @@ struct Input
+ 	int index(int x, int y) const;
+ 	int normalizeX(int x) const;
+ 	int normalizeY(int y) const;
++
++private:
++	// An invalid mask cannot match a positive dimension. Stale masks fall back
++	// to modulo if a caller changes the public dimensions directly.
++	unsigned widthMask = ~0u;
++	unsigned heightMask = ~0u;
+ };
+ 
+ struct Result
+diff --git a/src/ai/maxima/AIMaximaPlacement.cpp b/src/ai/maxima/AIMaximaPlacement.cpp
+index d85eb64c8..9451b7283 100644
+--- a/src/ai/maxima/AIMaximaPlacement.cpp
++++ b/src/ai/maxima/AIMaximaPlacement.cpp
+@@ -1263,7 +1263,7 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
+     if(candidateType<0)prepareMaterialSources(world);
+ 	const int size=world.width*world.height;
+ 	if(size<=0)return;
+-	foodInput.width=world.width;foodInput.height=world.height;
++	foodInput.setDimensions(world.width,world.height);
+ 	foodInput.policy.supplyRadius=placementPolicy.foodSupplyRadius;
+ 	foodInput.policy.qualityBandTiles=placementPolicy.foodQualityBandTiles;
+ 	foodInput.policy.unreachablePenaltyTiles=
+diff --git a/src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp b/src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp
+index 12fa0aa5c..6e186ffea 100644
+--- a/src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp
++++ b/src/ai/maxima/MaximaFoodLedgerStandaloneTest.cpp
+@@ -7,12 +7,13 @@
+ #include <cstring>
+ #include <ctime>
+ #include <iostream>
++#include <utility>
+ 
+ using namespace AIMaximaFoodLedger;
+ 
+ static Input makeInput(int width=16,int height=16)
+ {
+-	Input input;input.width=width;input.height=height;
++	Input input;input.setDimensions(width,height);
+ 	input.yield.assign(size_t(width*height),0);
+ 	input.traversable.assign(size_t(width*height),1);
+ 	return input;
+@@ -606,3 +607,72 @@ TEST_CASE("zero-demand viability needs no food" * doctest::test_suite("Maxima.Fo
+ 	CHECK(allocation->retirementCoveragePercent()==allocation->coveragePercent);
+ 	CHECK(result.totalClaimed==800);
+ }
++
++TEST_CASE("coordinate masks match modulo including negative and extreme inputs" * doctest::test_suite("Maxima.FoodLedger"))
++{
++	std::vector<int> sizes={INT_MIN,-1,0,3,5,127,129,1023,INT_MAX};
++	for(int shift=0;shift<31;++shift)sizes.push_back(1<<shift);
++	const auto reference=[](int coordinate,int size) {
++		if(size<=0)return 0;
++		const int remainder=coordinate%size;
++		return remainder<0?remainder+size:remainder;
++	};
++	for(int size:sizes) {
++		Input input;input.setDimensions(size,size);
++		for(int coordinate:{INT_MIN,INT_MIN+1,-65537,-1025,-129,-128,-17,-1,0,1,17,127,128,1025,65537,INT_MAX}) {
++			CAPTURE(size);CAPTURE(coordinate);
++			CHECK(input.normalizeX(coordinate)==reference(coordinate,size));
++			CHECK(input.normalizeY(coordinate)==reference(coordinate,size));
++		}
++	}
++}
++
++TEST_CASE("direct dimension changes cannot leave a stale wrapping mask" * doctest::test_suite("Maxima.FoodLedger"))
++{
++	Input input;input.setDimensions(16,32);
++	for(int size:{3,64,1,0,-1,16,32}) {
++		input.width=size;input.height=size;
++		for(int coordinate=-130;coordinate<=130;++coordinate) {
++			const int expected=size>0 ? (coordinate%size+size)%size : 0;
++			CHECK(input.normalizeX(coordinate)==expected);
++			CHECK(input.normalizeY(coordinate)==expected);
++		}
++	}
++	input.setDimensions(64,8);
++	CHECK(input.normalizeX(-65)==63);
++	CHECK(input.normalizeY(-9)==7);
++}
++
++TEST_CASE("masked food walks preserve modulo claims and query results" * doctest::test_suite("Maxima.FoodLedger"))
++{
++	for(const auto dimensions:{std::pair<int,int>{16,8},{8,16},{3,5},{1,4}}) {
++		Input masked=makeInput(dimensions.first,dimensions.second);
++		masked.policy.supplyRadius=6;
++		for(size_t i=0;i<masked.yield.size();++i) {
++			masked.yield[i]=i%3==0 ? 100 : 0;
++			masked.traversable[i]=i%7!=2;
++		}
++		masked.consumers.push_back(makeConsumer(1,InnConsumer,-1,0,150));
++		masked.consumers.push_back(makeConsumer(2,SwarmConsumer,masked.width,masked.height-1,250));
++		Input modulo;modulo.width=masked.width;modulo.height=masked.height;
++		modulo.policy=masked.policy;modulo.yield=masked.yield;
++		modulo.traversable=masked.traversable;modulo.consumers=masked.consumers;
++		Ledger fast,reference;Result a,b;fast.evaluate(masked,a);reference.evaluate(modulo,b);
++		CHECK(a.residual==b.residual);CHECK(a.serviceResidual==b.serviceResidual);
++		CHECK(a.totalSupply==b.totalSupply);CHECK(a.totalDemand==b.totalDemand);
++		CHECK(a.totalClaimed==b.totalClaimed);CHECK(a.totalResidual==b.totalResidual);
++		CHECK(a.bestSiteResidual==b.bestSiteResidual);
++		REQUIRE(a.consumers.size()==b.consumers.size());
++		for(size_t i=0;i<a.consumers.size();++i) {
++			CHECK(a.consumers[i].key==b.consumers[i].key);
++			CHECK(a.consumers[i].order==b.consumers[i].order);
++			CHECK(a.consumers[i].claimed==b.consumers[i].claimed);
++			CHECK(a.consumers[i].available==b.consumers[i].available);
++			CHECK(a.consumers[i].quality==b.consumers[i].quality);
++		}
++		for(int y=-1;y<=masked.height;++y)for(int x=-1;x<=masked.width;++x) {
++			CHECK(fast.reachableResidual(masked,a,x,y,0,0,1,1,150)==reference.reachableResidual(modulo,b,x,y,0,0,1,1,150));
++			CHECK(fast.residualQuality(masked,a,x,y,0,0,1,1,150)==reference.residualQuality(modulo,b,x,y,0,0,1,1,150));
++		}
++	}
++}

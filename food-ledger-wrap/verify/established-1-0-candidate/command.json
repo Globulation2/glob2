@@ -1,0 +1,22 @@
+[
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/food-ledger-wrap/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/serial-audit/peaceful/checkpoint-16384.game.gz",
+  "--ticks",
+  "20480",
+  "--compute-threads",
+  "1",
+  "--benchmark-warmup",
+  "0",
+  "--output-dir",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/food-ledger-wrap/verify/established-1-0-candidate",
+  "--profile",
+  "food-wrap",
+  "--telemetry",
+  "checksums",
+  "--replay",
+  "true",
+  "--save",
+  "final"
+]
