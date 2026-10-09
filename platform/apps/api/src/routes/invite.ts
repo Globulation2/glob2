@@ -18,7 +18,7 @@
 // Unknown and expired codes get the same page shape with a clear message.
 import type { FastifyInstance } from 'fastify';
 import { DEFAULT_ANDROID_PACKAGE } from '../web/appLinks.ts';
-import { ASSETS, html, sendPage } from '../web/pages.ts';
+import { ASSETS, pageHtml, pageText, sendPage } from '../web/pages.ts';
 import type { RoomService } from '../play/rooms.ts';
 
 export function appJoinLink(origin: string, code: string): string {
@@ -72,7 +72,7 @@ const OPEN_APP_SCRIPT = `
     window.addEventListener('blur',away,{once:true});
     document.addEventListener('visibilitychange',function(){if(document.hidden)left=true;},{once:true});
     window.addEventListener('pagehide',away,{once:true});
-    if(status)status.textContent='Opening Globulation 2…';
+    if(status)status.textContent=OPENING_STATUS;
     setTimeout(function(){
       if(status)status.textContent='';
       if(!left&&!document.hidden){note.hidden=false;note.focus();}
@@ -87,12 +87,14 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
   const clientUrl = config.instance.web?.browserClientUrl ?? `${origin}/play/`;
   const appLinks = config.instance.appLinks;
   // Instance names that only repeat the game's name add nothing to "on …".
-  const onInstance = /^Globulation 2\b/.test(instanceName) ? '' : ` on ${instanceName}`;
 
   app.get<{ Params: { code: string } }>(
     '/j/:code',
     { config: { rateLimit: { max: 60, timeWindow: 60_000 } } },
     async (request, reply) => {
+      const onInstance = /^Globulation 2\b/.test(instanceName)
+        ? ''
+        : pageText(reply, ' on {p0}', { p0: instanceName });
       const code = request.params.code;
       const room = /^[A-Za-z0-9]{6,16}$/.test(code) ? await rooms.byCode(code) : undefined;
       const live = room && room.status !== 'closed' ? room : undefined;
@@ -101,10 +103,17 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
       const pageUrl = `${origin}/j/${encodeURIComponent(live?.code ?? code)}`;
       const title = live ? 'You’re invited' : closed ? 'This room has closed' : 'Invite not found';
       const description = live
-        ? `${live.host_display_name} invited you to their Globulation 2 room${onInstance}.`
+        ? pageText(reply, '{p0} invited you to their Globulation 2 room{p1}.', {
+            p0: live.host_display_name,
+            p1: onInstance,
+          })
         : closed
-          ? `${closed.host_display_name}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.`
-          : `This invite has expired or does not exist. Ask for a new link.`;
+          ? pageText(
+              reply,
+              '{p0}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.',
+              { p0: closed.host_display_name },
+            )
+          : 'This invite has expired or does not exist. Ask for a new link.';
       const browserLink = browserJoinLink(clientUrl, live?.code);
       const glob2Link = live
         ? appJoinLink(origin, live.code)
@@ -120,39 +129,41 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
             browserLink,
           )
         : glob2Link;
-      const head = html`<meta name="description" content="${description}" />
+      const head = pageHtml(
+        reply,
+      )`<meta name="description" content="${pageText(reply, description)}" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="${instanceName}" />
-        <meta property="og:title" content="${live ? `Join ${live.name}` : title}" />
-        <meta property="og:description" content="${description}" />
+        <meta property="og:title" content="${live ? pageText(reply, 'Join {p0}', { p0: live.name }) : pageText(reply, title)}" />
+        <meta property="og:description" content="${pageText(reply, description)}" />
         <meta property="og:url" content="${pageUrl}" />
         <meta property="og:image" content="${`${origin}${ASSETS}/og-colony.jpg`}" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta
           property="og:image:alt"
-          content="A Globulation 2 colony: globs at work around their swarm"
+          content="${pageText(reply, 'A Globulation 2 colony: globs at work around their swarm')}"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="robots" content="noindex" />`;
-      const browserButton = html`<a
+      const browserButton = pageHtml(reply)`<a
         class="button${appFirst ? '' : ' primary'}"
         id="play-browser"
         href="${browserLink}"
         >Play in browser</a
       >`;
-      const appButton = html`<a
+      const appButton = pageHtml(reply)`<a
         class="button${appFirst ? ' primary' : ''}"
         id="open-app"
         href="${appLink}"
         aria-describedby="app-note"
         >Open in the Globulation 2 app</a
       >`;
-      const appNote = html`<p class="muted" id="app-note">
+      const appNote = pageHtml(reply)`<p class="muted" id="app-note">
           ${
             appFirst
-              ? 'Opens the app if it is installed.'
-              : 'Only if you have installed the game on this device.'
+              ? pageText(reply, 'Opens the app if it is installed.')
+              : pageText(reply, 'Only if you have installed the game on this device.')
           }
           No app? <a href="${browserLink}">Play in your browser</a>; nothing to install.
         </p>
@@ -166,19 +177,19 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
           </p>
         </div>`;
       const body = live
-        ? html`<div class="card">
+        ? pageHtml(reply)`<div class="card">
               <p class="eyebrow">Room invite</p>
               <p class="room">${live.name}</p>
-              <p>${description}</p>
+              <p>${pageText(reply, description)}</p>
               ${
                 live.status === 'in_match'
-                  ? html`<p class="muted">
+                  ? pageHtml(reply)`<p class="muted">
                       They are playing a match right now; you can join the room and wait for the
                       next one.
                     </p>`
                   : ''
               }
-              ${appFirst ? html`${appButton}${browserButton}` : html`${browserButton}${appButton}`}
+              ${appFirst ? pageHtml(reply)`${appButton}${browserButton}` : pageHtml(reply)`${browserButton}${appButton}`}
               ${appNote}
             </div>
             <p class="muted">
@@ -186,20 +197,20 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
               <strong>Join by code</strong>, and enter:
             </p>
             <div class="code">${live.code}</div>`
-        : html`<div class="card">
+        : pageHtml(reply)`<div class="card">
             ${
               closed
-                ? html`<p class="eyebrow">Room invite</p>
+                ? pageHtml(reply)`<p class="eyebrow">Room invite</p>
                     <p class="room">${closed.name}</p>`
                 : ''
             }
-            <p>${description}</p>
+            <p>${pageText(reply, description)}</p>
             <a class="button primary" href="${browserJoinLink(clientUrl, undefined)}"
-              >${closed ? 'Create your own room' : 'Play in browser'}</a
+              >${pageText(reply, closed ? 'Create your own room' : 'Play in browser')}</a
             >
             ${
               closed
-                ? html`<p class="muted">
+                ? pageHtml(reply)`<p class="muted">
                     In the game, choose <strong>Play online</strong>: create a room and invite your
                     friends, or find a quick match.
                   </p>`
@@ -209,7 +220,14 @@ export async function inviteRoutes(app: FastifyInstance, rooms: RoomService): Pr
           </div>`;
       return sendPage(reply, title, body, live ? 200 : 404, {
         head,
-        ...(live ? { script: OPEN_APP_SCRIPT } : {}),
+        ...(live
+          ? {
+              script: OPEN_APP_SCRIPT.replace(
+                'OPENING_STATUS',
+                JSON.stringify(pageText(reply, 'Opening Globulation 2…')).replace(/</g, '\\u003c'),
+              ),
+            }
+          : {}),
       });
     },
   );

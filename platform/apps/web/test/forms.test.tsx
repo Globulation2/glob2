@@ -205,19 +205,20 @@ describe('map upload', () => {
     expect((screen.getByLabelText('Title') as HTMLInputElement).value).toBe('SmallForTwo');
   });
 
-  it('says why a file is refused, on the file field, and creates no map', async () => {
+  it('reports server upload validation on the file field and creates no map', async () => {
     handlers['POST /api/v1/uploads'] = () =>
       Response.json(
         {
           code: 'bad_request',
-          message: "This file isn't a Globulation 2 map. Upload a .map or .map.gz file.",
-          details: { problem: 'not_a_map' },
+          message: 'format must be map or save.',
+          messageKey: 'format must be map or save.',
+          details: { problem: 'invalid_format' },
         },
         { status: 400 },
       );
     open('/maps/new');
     const input = await chooseFileAndUpload('holiday.jpg');
-    const error = await screen.findByText(/isn't a Globulation 2 map/);
+    const error = await screen.findByText('format must be map or save.');
     expect(error.id).toBe('map-file-error');
     expect(input.getAttribute('aria-invalid')).toBe('true');
     expect(input.getAttribute('aria-describedby')).toBe('map-file-error');

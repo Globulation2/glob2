@@ -97,6 +97,10 @@ export const ErrorBody = Open(
     code: ErrorCode,
     message: Type.String({ maxLength: 2000 }),
     details: Type.Optional(Type.Unknown()),
+    messageKey: Type.Optional(Type.String({ maxLength: 2000 })),
+    messageParams: Type.Optional(
+      Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()])),
+    ),
   },
   { description: 'Error payload: REST error responses and failed realtime responses.' },
 );

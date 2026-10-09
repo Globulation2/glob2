@@ -118,7 +118,7 @@
 .ms-projects {
   margin: 0 auto;
   border-left: 1px solid var(--line);
-  padding-left: 24px;
+  padding-inline-start: 24px;
   position: relative;
   min-width: 0;
 }
@@ -299,7 +299,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  text-align: left;
+  text-align: start;
   border: 1px solid var(--ms-border);
   background: transparent;
   border-radius: 10px;
@@ -312,7 +312,7 @@
   color: var(--gold-ink);
 }
 .ms-prompt-ideas button span:last-child {
-  margin-left: auto;
+  margin-inline-start: auto;
   color: var(--ink-2);
 }
 .ms-message {
@@ -335,7 +335,7 @@
 .ms-message-author time {
   font-size: 10px;
   font-weight: 400;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .ms-message p {
   font-size: 14px;
@@ -345,7 +345,7 @@
   margin: 0;
 }
 .ms-message-user {
-  margin-left: 26px;
+  margin-inline-start: 26px;
 }
 .ms-message-user p {
   background: var(--surface-2);
@@ -504,9 +504,9 @@
   min-height: 44px;
 }
 .ms-generate-price {
-  margin-left: auto;
+  margin-inline-start: auto;
   border-left: 1px solid #0003;
-  padding-left: 12px;
+  padding-inline-start: 12px;
 }
 .ms-composer-note {
   text-align: center;
@@ -593,7 +593,7 @@
   margin: 5px 0 12px;
 }
 .ms-map-status button {
-  margin-left: auto;
+  margin-inline-start: auto;
   padding: 3px 9px;
   min-height: 29px;
   font-size: 10px;
@@ -1005,7 +1005,7 @@
   font-size: 11px;
 }
 .ms-validation summary > span:last-child {
-  margin-left: auto;
+  margin-inline-start: auto;
   color: var(--ink-2);
   font-size: 10px;
 }
@@ -1028,7 +1028,7 @@
   width: 100%;
   display: flex;
   gap: 8px;
-  text-align: left;
+  text-align: start;
   padding: 8px 2px;
   border: 0;
   background: none;
@@ -1036,7 +1036,7 @@
   font-size: 10px;
 }
 .ms-validation li button > span:last-child {
-  margin-left: auto;
+  margin-inline-start: auto;
   font-size: 9px;
   text-transform: capitalize;
   color: var(--ink-2);
@@ -1330,7 +1330,7 @@
 }
 .ms-example-grid > button {
   position: relative;
-  text-align: left;
+  text-align: start;
   padding: 0;
   border-radius: 16px;
   background: var(--ms-panel);
@@ -1420,7 +1420,7 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  text-align: left;
+  text-align: start;
   background: transparent;
   border: 0;
   padding: 10px 8px;
@@ -1550,8 +1550,8 @@
   }
   .ms-pane-heading,
   .ms-chat {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-inline-start: 20px;
+    padding-inline-end: 20px;
   }
   .ms-map-pane {
     padding: 22px 18px 0;
@@ -1595,9 +1595,9 @@
     font-size: 8px;
   }
   .ms-projects {
-    padding-left: 12px;
-    margin-left: auto;
-    margin-right: 0;
+    padding-inline-start: 12px;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
   }
   .ms-projects summary {
     font-size: 11px;
@@ -1635,7 +1635,7 @@
     color: var(--gold-ink);
   }
   .ms-mobile-tabs .ms-live-dot {
-    margin-left: 8px;
+    margin-inline-start: 8px;
   }
   .ms-workspace {
     height: calc(100dvh - 117px);
@@ -1779,7 +1779,7 @@
     top: 15px;
   }
   .ms-credit-panel h2 {
-    padding-right: 30px;
+    padding-inline-end: 30px;
   }
   .ms-banner {
     padding: 8px 16px;
@@ -2122,7 +2122,7 @@
   font-size: 11px;
 }
 .map-studio .ms-settings-popover {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 .map-studio .ms-settings-popover summary {
   cursor: pointer;

@@ -188,7 +188,7 @@
 }
 .studio-wallet summary span,
 .studio-threads summary span {
-  margin-left: 12px;
+  margin-inline-start: 12px;
   color: var(--ink-2);
   font-size: var(--text-sm);
 }

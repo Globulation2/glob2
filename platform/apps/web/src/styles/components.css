@@ -133,7 +133,7 @@ textarea {
 /* Our own chevron: Safari on iPhone draws native selects at a fixed 28 px
    height and ignores min-height, which fails the 44 px touch target. */
 select {
-  padding-right: 32px;
+  padding-inline-end: 32px;
   -webkit-appearance: none;
   appearance: none;
   background-image:
@@ -336,7 +336,7 @@ label.check {
 }
 .num {
   font-variant-numeric: tabular-nums;
-  text-align: right;
+  text-align: end;
 }
 
 /* ------------------------------------------------------------------- lists */
@@ -392,7 +392,7 @@ table.data {
   font-size: var(--text-md);
 }
 table.data th {
-  text-align: left;
+  text-align: start;
   font-weight: 750;
   color: var(--ink-2);
   font-size: var(--text-xs);
@@ -415,11 +415,11 @@ table.data tbody tr:hover td {
   background: color-mix(in srgb, var(--surface-2) 55%, transparent);
 }
 table.data .num {
-  text-align: right;
+  text-align: end;
   white-space: nowrap;
 }
 table.data th.num {
-  text-align: right;
+  text-align: end;
 }
 .card table.data,
 .card .table-wrap {
@@ -467,7 +467,7 @@ table.data th.num {
     gap: var(--sp-3);
     padding: var(--sp-1) 0;
     border: 0;
-    text-align: right;
+    text-align: end;
     white-space: normal;
   }
   .table-wrap.stack td::before {
@@ -475,11 +475,11 @@ table.data th.num {
     color: var(--ink-2);
     font-size: var(--text-sm);
     font-weight: 650;
-    text-align: left;
+    text-align: start;
   }
   .table-wrap.stack td.stack-head {
     display: block;
-    text-align: left;
+    text-align: start;
     font-weight: 700;
     padding-bottom: var(--sp-2);
     border-bottom: 1px solid var(--line);
@@ -976,13 +976,13 @@ table.data th.num {
   border-collapse: collapse;
 }
 .admin-console caption {
-  text-align: left;
+  text-align: start;
   padding-bottom: var(--sp-2);
 }
 .admin-console th,
 .admin-console td {
   padding: var(--sp-2) var(--sp-3);
-  text-align: left;
+  text-align: start;
   vertical-align: top;
   border-bottom: 1px solid var(--line);
 }
@@ -991,7 +991,7 @@ table.data th.num {
   border-bottom: 2px solid var(--line-strong);
 }
 .admin-console .numeric {
-  text-align: right;
+  text-align: end;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }

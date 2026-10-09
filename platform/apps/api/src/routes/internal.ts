@@ -62,7 +62,9 @@ export async function internalRoutes(app: FastifyInstance): Promise<void> {
 
   function actAs(key: RelayKey, relayId: string): void {
     if (key.relayId && key.relayId !== relayId) {
-      throw apiError('forbidden', `This key belongs to relay ${key.relayId}.`);
+      throw apiError('forbidden', 'This key belongs to relay {p0}.', undefined, {
+        p0: String(key.relayId),
+      });
     }
   }
 

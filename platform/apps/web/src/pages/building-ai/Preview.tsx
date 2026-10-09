@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { useState } from 'react';
 import type { BuildingPackage } from '@glob2/protocol';
 /** Display the actual packaged frame dimensions alongside the declared footprint. */
@@ -5,31 +6,32 @@ export function BuildingPreview({
   pack,
   assetRoot,
   comparison,
-  comparisonLabel = 'Current saved draft',
+  comparisonLabel = t('Current saved draft'),
 }: {
   pack: BuildingPackage;
   assetRoot: string;
   comparison?: BuildingPackage;
   comparisonLabel?: string;
 }) {
+  useLocale();
   const [terrain, setTerrain] = useState('grass'),
     [scale, setScale] = useState(1);
   return (
     <div className="building-ai-preview">
       <div className="building-ai-controls">
         <label>
-          Ground
+          {t('Ground')}
           <select value={terrain} onChange={(e) => setTerrain(e.target.value)}>
-            <option value="grass">Grass</option>
-            <option value="sand">Sand</option>
-            <option value="water">Water</option>
+            <option value="grass">{t('Grass')}</option>
+            <option value="sand">{t('Sand')}</option>
+            <option value="water">{t('Water')}</option>
           </select>
         </label>
         <label>
-          Scale
+          {t('Scale')}
           <select value={scale} onChange={(e) => setScale(Number(e.target.value))}>
-            <option value={1}>Game scale</option>
-            <option value={3}>Enlarged 3×</option>
+            <option value={1}>{t('Game scale')}</option>
+            <option value={3}>{t('Enlarged 3×')}</option>
           </select>
         </label>
       </div>
@@ -44,7 +46,13 @@ export function BuildingPreview({
               {format(value)}
               {comparison && JSON.stringify(value) !== JSON.stringify(previous) && (
                 <small className="building-ai-diff">
-                  {comparisonLabel}: {previous === undefined ? 'not set' : format(previous)}
+                  <RichMessage
+                    source={'{slot0}: {slot1}'}
+                    slots={{
+                      slot0: comparisonLabel,
+                      slot1: previous === undefined ? t('not set') : format(previous),
+                    }}
+                  />
                 </small>
               )}
             </dd>
@@ -56,7 +64,7 @@ export function BuildingPreview({
               {String(
                 v.presentation?.['displayName'] ?? v.key.replace('b-' + pack.namespace + '-', ''),
               )}
-              {v.properties['isBuildingSite'] ? ' · construction' : ''}
+              {v.properties['isBuildingSite'] ? t(' · construction') : ''}
             </h3>
             <div
               className={'building-ai-ground ' + terrain}
@@ -92,8 +100,9 @@ export function BuildingPreview({
                 </span>
               ) : (
                 <p>
-                  This building uses installed game artwork. Create or revise its appearance to
-                  preview custom artwork here.
+                  {t(
+                    'This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.',
+                  )}
                 </p>
               )}
             </div>
@@ -127,13 +136,23 @@ export function BuildingPreview({
             <ul>
               {capabilities(v.semantics).map(([name, description]) => (
                 <li key={name}>
-                  <strong>{name}</strong>: {description}
+                  <RichMessage
+                    source={'{slot0}: {slot1}'}
+                    slots={{ slot0: <strong>{name}</strong>, slot1: description }}
+                  />
                 </li>
               ))}
             </ul>
-            {v.next && <p>Next stage: {v.next.replace('b-' + pack.namespace + '-', '')}</p>}
+            {v.next && (
+              <p>
+                <RichMessage
+                  source={'Next stage: {slot0}'}
+                  slots={{ slot0: v.next.replace(t('b-') + pack.namespace + '-', '') }}
+                />
+              </p>
+            )}
             <details>
-              <summary>All properties and capabilities</summary>
+              <summary>{t('All properties and capabilities')}</summary>
               <pre>
                 {JSON.stringify(
                   {
@@ -146,7 +165,7 @@ export function BuildingPreview({
                 )}
               </pre>
               {old && (
-                <pre aria-label={comparisonLabel + ' properties'}>
+                <pre aria-label={comparisonLabel + t(' properties')}>
                   {JSON.stringify(
                     {
                       properties: old.properties,
@@ -166,7 +185,7 @@ export function BuildingPreview({
   );
 }
 function format(value: unknown): string {
-  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (typeof value === 'boolean') return value ? t('Yes') : 'No';
   if (Array.isArray(value)) return value.join(', ');
   if (value && typeof value === 'object')
     return (
@@ -183,15 +202,15 @@ function format(value: unknown): string {
 function label(key: string) {
   const names: Record<string, string> = {
     width: 'Footprint width (tiles)',
-    height: 'Footprint height (tiles)',
-    hpInit: 'Initial health',
-    hpMax: 'Maximum health',
+    height: t('Footprint height (tiles)'),
+    hpInit: t('Initial health'),
+    hpMax: t('Maximum health'),
     maxUnitInside: 'Interior seats',
-    maxUnitWorking: 'Worker slots',
-    unitMask: 'Applies to',
-    duration: 'Duration (steps)',
-    shootRhythm: 'Time between shots (ticks)',
-    regenerationPerTick: 'Health restored per tick',
+    maxUnitWorking: t('Worker slots'),
+    unitMask: t('Applies to'),
+    duration: t('Duration (steps)'),
+    shootRhythm: t('Time between shots (ticks)'),
+    regenerationPerTick: t('Health restored per tick'),
   };
   return (
     names[key] ?? key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (c) => c.toUpperCase())
@@ -222,7 +241,7 @@ function capabilities(semantics: Record<string, unknown>): [string, string][] {
     const modes = Object.entries(market)
       .filter(([, value]) => value === true)
       .map(([name]) => label(name));
-    if (modes.length) result.push(['Supply', modes.join(' · ')]);
+    if (modes.length) result.push([t('Supply'), modes.join(' · ')]);
   }
   return result;
 }

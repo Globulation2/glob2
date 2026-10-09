@@ -592,16 +592,18 @@ export class RoomService {
         .executeTakeFirst();
       if (!row) throw apiError('bad_request', 'Upload the map first (POST /api/v1/uploads).');
       if (row.status === 'invalid') {
-        throw apiError(
-          'bad_request',
-          `The uploaded file is not usable: ${row.failure ?? 'invalid'}.`,
-        );
+        throw apiError('bad_request', 'The uploaded file is not usable: {p0}.', undefined, {
+          p0: String(row.failure ?? 'invalid'),
+        });
       }
       const teamCount = row.team_count ?? undefined;
       if (teamCount !== undefined) {
         for (const entry of selection.reteaming ?? []) {
           if (entry.team >= teamCount) {
-            throw apiError('bad_request', `Reteaming names team ${entry.team} of ${teamCount}.`);
+            throw apiError('bad_request', 'Reteaming names team {p0} of {p1}.', undefined, {
+              p0: String(entry.team),
+              p1: String(teamCount),
+            });
           }
         }
       }
@@ -1308,7 +1310,9 @@ export class RoomService {
         if (!valid) {
           throw apiError(
             'bad_request',
-            `teams must list the map's ${settings.teams.length} teams in order 0..${settings.teams.length - 1}.`,
+            "teams must list the map's {p0} teams in order 0..{p1}.",
+            undefined,
+            { p0: String(settings.teams.length), p1: String(settings.teams.length - 1) },
           );
         }
         settings = { ...settings, teams };
@@ -1356,7 +1360,10 @@ export class RoomService {
         .where('room_id', '=', roomId)
         .where('seat', '=', seatIndex)
         .executeTakeFirst()) as SeatRow | undefined;
-      if (!seat) throw apiError('not_found', `The room has no seat ${seatIndex}.`);
+      if (!seat)
+        throw apiError('not_found', 'The room has no seat {p0}.', undefined, {
+          p0: String(seatIndex),
+        });
       const setSeat = (values: {
         occupant?: 'open' | 'human' | 'ai';
         account_id?: string | null;
@@ -1546,7 +1553,9 @@ export class RoomService {
         .execute()) as SeatRow[];
       const occupied = seats.filter((s) => s.occupant !== 'open');
       if (occupied.length < ROOM_RULES.minOccupiedSeats) {
-        throw apiError('conflict', `At least ${ROOM_RULES.minOccupiedSeats} seats must be taken.`);
+        throw apiError('conflict', 'At least {p0} seats must be taken.', undefined, {
+          p0: String(ROOM_RULES.minOccupiedSeats),
+        });
       }
       const unready = seats.filter(
         (s) =>

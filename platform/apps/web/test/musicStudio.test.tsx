@@ -281,7 +281,7 @@ it('clears an older candidate preview when following a live revision without del
       }}
     />,
   );
-  fireEvent.click(screen.getByRole('button', { name: 'V1 ready' }));
+  fireEvent.click(screen.getByRole('button', { name: 'V1 Ready' }));
   await screen.findByText('music1');
   fireEvent.click(screen.getByText('v1 preview'));
   expect(view.container.querySelector('audio')?.getAttribute('src')).toBe('/v1.opus');
@@ -335,7 +335,7 @@ it('keeps manually selected history audible when a new delivery arrives', async 
     <MusicWorkspace {...props} thread={{ ...thread, requests: [version, secondVersion] }} />,
   );
   await screen.findByText('music2');
-  fireEvent.click(screen.getByRole('button', { name: 'V1 ready' }));
+  fireEvent.click(screen.getByRole('button', { name: 'V1 Ready' }));
   await screen.findByText('music1');
   view.rerender(
     <MusicWorkspace
@@ -380,7 +380,7 @@ it('ignores a stale release response after switching versions', async () => {
   );
   render(<MusicWorkspace {...props} thread={{ ...thread, requests: [version, secondVersion] }} />);
   await waitFor(() => expect(finish).toBeDefined());
-  fireEvent.click(screen.getByRole('button', { name: 'V1 ready' }));
+  fireEvent.click(screen.getByRole('button', { name: 'V1 Ready' }));
   await screen.findByText('music1');
   finish?.(
     new Response(

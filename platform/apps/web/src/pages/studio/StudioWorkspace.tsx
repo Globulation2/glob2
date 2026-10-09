@@ -1,3 +1,5 @@
+import { statusLabel } from '../../i18n.tsx';
+import { t, useLocale, RichMessage, artifactLabel } from '../../i18n.tsx';
 import { useRef, useState } from 'react';
 import {
   StudioWorkspace as SharedWorkspace,
@@ -43,6 +45,7 @@ interface Props {
   versionAction: (action: 'host' | 'publish', v: Delivered) => void;
 }
 export function StudioWorkspace(p: Props) {
+  useLocale();
   const [view, setView] = useState('preview');
   const [focusChat, setFocusChat] = useState(0);
   const composerRef = useRef<HTMLTextAreaElement>(null);
@@ -90,7 +93,7 @@ export function StudioWorkspace(p: Props) {
           requestId: delivered.id,
           stage: 'ready',
           kind: 'preview',
-          label: `Version ${versions.indexOf(delivered) + 1}`,
+          label: t('Version {value0}', { value0: versions.indexOf(delivered) + 1 }),
           url: preview(delivered),
         }
       : undefined;
@@ -104,7 +107,7 @@ export function StudioWorkspace(p: Props) {
   const latestImage = artifact ?? fallback ?? previousArtifact;
   const shown =
     latestImage && current?.status === 'failed' && latestImage.kind === 'preview'
-      ? { ...latestImage, label: 'Map preview · validation did not pass' }
+      ? { ...latestImage, label: t('Map preview · validation did not pass') }
       : latestImage;
   const celebrating = useDeliveryCelebration(
     p.celebrate,
@@ -131,19 +134,19 @@ export function StudioWorkspace(p: Props) {
   const status = active
     ? active.status === 'uncertain'
       ? active.kind === 'generate'
-        ? 'Your credit is reserved while the provider outcome is reconciled.'
-        : 'The designer reply needs reconciliation. No map build has started.'
+        ? t('Your credit is reserved while the provider outcome is reconciled.')
+        : t('The designer reply needs reconciliation. No map build has started.')
       : (active.error ??
         (active.kind === 'chat'
-          ? 'The map designer is replying…'
+          ? t('The map designer is replying…')
           : active.status === 'queued'
-            ? 'Waiting for service capacity. Your place is saved.'
-            : 'Your world is taking shape…'))
+            ? t('Waiting for service capacity. Your place is saved.')
+            : t('Your world is taking shape…')))
     : current?.status === 'failed'
-      ? 'Generation stopped. Your failed generation credit is returned.'
+      ? t('Generation stopped. Your failed generation credit is returned.')
       : current?.status === 'ready'
-        ? 'Ready for your next adventure'
-        : 'A world of possibilities';
+        ? t('Ready for your next adventure')
+        : t('A world of possibilities');
   return (
     <SharedWorkspace
       focusChat={focusChat}
@@ -176,12 +179,12 @@ export function StudioWorkspace(p: Props) {
             <div className="ms-composer-tools">
               <span>
                 {parentVersion
-                  ? `Editing version ${versions.indexOf(parentVersion) + 1}`
-                  : 'New map'}
+                  ? t('Editing version {value0}', { value0: versions.indexOf(parentVersion) + 1 })
+                  : t('New map')}
               </span>
               {parentVersion && (
                 <button type="button" onClick={() => p.revise(undefined)}>
-                  New map
+                  {t('New map')}
                 </button>
               )}
               <details
@@ -197,14 +200,23 @@ export function StudioWorkspace(p: Props) {
                 }}
               >
                 <summary>
-                  {p.settings.width} × {p.settings.height} · {p.settings.players} players
+                  <RichMessage
+                    source={'{slot0} × {slot1} · {slot2} players'}
+                    slots={{
+                      slot0: p.settings.width,
+                      slot1: p.settings.height,
+                      slot2: p.settings.players,
+                    }}
+                    singular={'{slot0} × {slot1} · {slot2} player'}
+                    count={Number(p.settings.players)}
+                  />
                 </summary>
                 <fieldset className="ms-settings" disabled={p.busy || !!active}>
-                  <legend>Map settings</legend>
+                  <legend>{t('Map settings')}</legend>
                   <div className="ms-settings-grid">
                     {(['width', 'height'] as const).map((axis) => (
                       <label key={axis}>
-                        {axis === 'width' ? 'Width' : 'Height'}
+                        {axis === 'width' ? t('Width') : t('Height')}
                         <select
                           value={p.settings[axis]}
                           onChange={(e) =>
@@ -223,7 +235,7 @@ export function StudioWorkspace(p: Props) {
                       </label>
                     ))}
                     <label>
-                      Players
+                      {t('Players')}
                       <select
                         value={p.settings.players}
                         onChange={(e) =>
@@ -242,7 +254,10 @@ export function StudioWorkspace(p: Props) {
             {p.thread?.brief && (
               <details className="ms-brief">
                 <summary>
-                  Design brief <span>Agreed so far</span>
+                  <RichMessage
+                    source={'Design brief {slot0}'}
+                    slots={{ slot0: <span>{t('Agreed so far')}</span> }}
+                  />
                 </summary>
                 <p>{p.thread.brief}</p>
               </details>
@@ -257,10 +272,12 @@ export function StudioWorkspace(p: Props) {
                   : undefined
               }
               inputRef={composerRef}
-              label="Describe your map or discuss changes"
-              placeholder="Describe your landscape, or dream up a change…"
+              label={t('Describe your map or discuss changes')}
+              placeholder={t('Describe your landscape, or dream up a change…')}
               target={
-                parentVersion ? `Editing version ${versions.indexOf(parentVersion) + 1}` : 'New map'
+                parentVersion
+                  ? t('Editing version {value0}', { value0: versions.indexOf(parentVersion) + 1 })
+                  : 'New map'
               }
               disabledReason={
                 p.busy || active
@@ -279,7 +296,7 @@ export function StudioWorkspace(p: Props) {
       artifact={
         <>
           <StudioTabs
-            label="Artifact view"
+            label={t('Artifact view')}
             panels={{
               preview: 'studio-panel-artifact-view-preview',
               edit: 'studio-panel-artifact-view-edit',
@@ -299,10 +316,11 @@ export function StudioWorkspace(p: Props) {
             aria-labelledby="studio-tab-artifact-view-edit"
             hidden={view !== 'edit'}
           >
-            <h2>Edit your map</h2>
+            <h2>{t('Edit your map')}</h2>
             <p>
-              Choose a saved version, then describe the changes in chat. The saved map remains in
-              history.
+              {t(
+                'Choose a saved version, then describe the changes in chat. The saved map remains in history.',
+              )}
             </p>
             <button
               onClick={() => {
@@ -310,7 +328,7 @@ export function StudioWorkspace(p: Props) {
                 setFocusChat((n) => n + 1);
               }}
             >
-              Edit this version in chat
+              {t('Edit this version in chat')}
             </button>
           </div>
           <div
@@ -319,7 +337,7 @@ export function StudioWorkspace(p: Props) {
             aria-labelledby="studio-tab-artifact-view-history"
             hidden={view !== 'history'}
           >
-            <h2>Version history</h2>
+            <h2>{t('Version history')}</h2>
             {generations.map((v, i) => (
               <button
                 key={v.id}
@@ -328,7 +346,10 @@ export function StudioWorkspace(p: Props) {
                   setView('preview');
                 }}
               >
-                Inspect version {i + 1} · {v.status}
+                <RichMessage
+                  source={'Inspect version {slot0} · {slot1}'}
+                  slots={{ slot0: i + 1, slot1: statusLabel(v.status) }}
+                />
               </button>
             ))}
           </div>
@@ -339,14 +360,14 @@ export function StudioWorkspace(p: Props) {
             aria-labelledby="studio-tab-artifact-view-preview"
             hidden={view !== 'preview'}
             className="ms-map-pane"
-            aria-label="Map workshop"
+            aria-label={t('Map workshop')}
           >
             <header className="ms-map-heading">
-              <h2>Map canvas</h2>
+              <h2>{t('Map canvas')}</h2>
               <div className="ms-version-controls">
                 {!!generations.length && (
                   <label>
-                    <span className="ms-sr">Inspect version</span>
+                    <span className="ms-sr">{t('Inspect version ')}</span>
                     <select
                       value={current?.id ?? ''}
                       onChange={(e) => selectVersion(e.target.value)}
@@ -354,8 +375,13 @@ export function StudioWorkspace(p: Props) {
                       {generations.map((r, i) => (
                         <option key={r.id} value={r.id}>
                           {r.status === 'ready'
-                            ? `Version ${versions.findIndex((v) => v.id === r.id) + 1}`
-                            : `Generation ${i + 1} · ${r.status}`}
+                            ? t('Version {value0}', {
+                                value0: versions.findIndex((v) => v.id === r.id) + 1,
+                              })
+                            : t('Generation {value0} · {value1}', {
+                                value0: i + 1,
+                                value1: r.status,
+                              })}
                         </option>
                       ))}
                     </select>
@@ -363,7 +389,7 @@ export function StudioWorkspace(p: Props) {
                 )}
                 {versions.length > 1 && delivered && (
                   <label>
-                    <span className="ms-sr">Compare with version</span>
+                    <span className="ms-sr">{t('Compare with version')}</span>
                     <select
                       value={compare}
                       onChange={(e) => {
@@ -377,12 +403,15 @@ export function StudioWorkspace(p: Props) {
                         }
                       }}
                     >
-                      <option value="">Compare…</option>
+                      <option value="">{t('Compare…')}</option>
                       {versions
                         .filter((v) => v.id !== delivered.id)
                         .map((v) => (
                           <option key={v.id} value={v.id}>
-                            Version {versions.indexOf(v) + 1}
+                            <RichMessage
+                              source={'Version {slot0}'}
+                              slots={{ slot0: versions.indexOf(v) + 1 }}
+                            />
                           </option>
                         ))}
                     </select>
@@ -393,20 +422,22 @@ export function StudioWorkspace(p: Props) {
             <RequestStatus status={active?.status ?? current?.status ?? 'queued'}>
               <span className={active ? 'ms-live-dot' : ''} aria-hidden="true" />
               {status}
-              {!follow && <button onClick={newMap}>Follow latest</button>}
+              {!follow && <button onClick={newMap}>{t('Follow latest')}</button>}
             </RequestStatus>
             {current?.status === 'failed' && (
               <div className="ms-banner ms-error">
-                {current.error ?? 'We could not finish this map. Your earlier maps are safe.'}
+                {current.error ?? t('We could not finish this map. Your earlier maps are safe.')}
                 <button
                   onClick={() => {
                     p.setDraft(
-                      `Please try building the map again and address this issue: ${current.error ?? 'The last build did not complete.'}`,
+                      t('Please try building the map again and address this issue: {value0}', {
+                        value0: current.error ?? 'The last build did not complete.',
+                      }),
                     );
                     focusComposer();
                   }}
                 >
-                  Prepare retry
+                  {t('Prepare retry')}
                 </button>
               </div>
             )}
@@ -414,7 +445,7 @@ export function StudioWorkspace(p: Props) {
               {shown ? (
                 <>
                   {comparison && delivered ? (
-                    <div className="ms-comparison" role="region" aria-label="Map comparison">
+                    <div className="ms-comparison" role="region" aria-label={t('Map comparison')}>
                       <MapViewer
                         key={current?.id}
                         artifact={{
@@ -422,7 +453,7 @@ export function StudioWorkspace(p: Props) {
                           requestId: delivered.id,
                           stage: 'ready',
                           kind: 'preview',
-                          label: `Version ${versions.indexOf(delivered) + 1}`,
+                          label: t('Version {value0}', { value0: versions.indexOf(delivered) + 1 }),
                           url: preview(delivered),
                         }}
                       />
@@ -433,7 +464,9 @@ export function StudioWorkspace(p: Props) {
                           requestId: comparison.id,
                           stage: 'ready',
                           kind: 'preview',
-                          label: `Version ${versions.indexOf(comparison) + 1}`,
+                          label: t('Version {value0}', {
+                            value0: versions.indexOf(comparison) + 1,
+                          }),
                           url: preview(comparison),
                         }}
                       />
@@ -461,29 +494,38 @@ export function StudioWorkspace(p: Props) {
                   </div>
                   <span className="ms-eyebrow">
                     {active?.kind === 'generate'
-                      ? 'CREATION IN PROGRESS'
-                      : 'IMAGINATION, MEET POSSIBILITY'}
+                      ? t('CREATION IN PROGRESS')
+                      : t('IMAGINATION, MEET POSSIBILITY')}
                   </span>
                   <h3>
                     {active?.kind === 'generate'
-                      ? 'Something wonderful is taking shape.'
+                      ? t('Something wonderful is taking shape.')
                       : stage
-                        ? 'Explore this step.'
-                        : 'Your next battlefield starts here.'}
+                        ? t('Explore this step.')
+                        : t('Your next battlefield starts here.')}
                   </h3>
                   <p>
                     {stage
-                      ? 'Images appear here as this stage completes.'
-                      : 'Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.'}
+                      ? t('Images appear here as this stage completes.')
+                      : t(
+                          'Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.',
+                        )}
                   </p>
                   <div className="ms-empty-coordinates" aria-hidden="true">
-                    {p.settings.width} × {p.settings.height} <span>✧</span> UNCHARTED TERRITORY
+                    <RichMessage
+                      source={'{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY'}
+                      slots={{
+                        slot0: p.settings.width,
+                        slot1: p.settings.height,
+                        slot2: <span>{'✧'}</span>,
+                      }}
+                    />
                   </div>
                 </div>
               )}
             </div>
             <details className="ms-build-details">
-              <summary>Build details</summary>
+              <summary>{t('Build details')}</summary>
               <div className="ms-stage-area">
                 <GenerationTimeline
                   stages={stages}
@@ -507,8 +549,14 @@ export function StudioWorkspace(p: Props) {
                 {stageArtifacts.length > 1 && (
                   <details className="ms-artifacts">
                     <summary>
-                      {stages.find((s) => s.id === selectedStage)?.label} · {stageArtifacts.length}{' '}
-                      {stageArtifacts.length === 1 ? 'image' : 'images'}
+                      <RichMessage
+                        source={'{slot0} · {count} images'}
+                        singular={'{slot0} · {count} image'}
+                        count={stageArtifacts.length}
+                        slots={{
+                          slot0: stages.find((s) => s.id === selectedStage)?.label,
+                        }}
+                      />
                     </summary>
                     <div>
                       {stageArtifacts.map((a) => (
@@ -523,7 +571,7 @@ export function StudioWorkspace(p: Props) {
                           }}
                         >
                           <img src={a.url} alt="" />
-                          {a.label}
+                          {artifactLabel(a)}
                         </button>
                       ))}
                     </div>
@@ -532,7 +580,9 @@ export function StudioWorkspace(p: Props) {
                 {progressError && <p className="ms-stage-note">{progressError}</p>}
                 {visibleProgress?.historical && (
                   <p className="ms-stage-note">
-                    This older generation has limited stage history. Available images are preserved.
+                    {t(
+                      'This older generation has limited stage history. Available images are preserved.',
+                    )}
                   </p>
                 )}
                 {!!visibleProgress?.checks.length && (
@@ -559,10 +609,18 @@ export function StudioWorkspace(p: Props) {
             {delivered && (
               <div className="ms-delivery">
                 <div>
-                  <strong>Made for your next match.</strong>
+                  <strong>{t('Made for your next match.')}</strong>
                   <span>
-                    {delivered.input.settings.width} × {delivered.input.settings.height} ·{' '}
-                    {delivered.input.settings.players} players · Private until published
+                    <RichMessage
+                      source={'{slot0} × {slot1} · {slot2} players · Private until published'}
+                      slots={{
+                        slot0: delivered.input.settings.width,
+                        slot1: delivered.input.settings.height,
+                        slot2: delivered.input.settings.players,
+                      }}
+                      singular={'{slot0} × {slot1} · {slot2} player · Private until published'}
+                      count={Number(delivered.input.settings.players)}
+                    />
                   </span>
                 </div>
                 <div className="ms-delivery-actions">
@@ -571,7 +629,10 @@ export function StudioWorkspace(p: Props) {
                     disabled={p.busy}
                     onClick={() => p.versionAction('host', delivered)}
                   >
-                    Play <span aria-hidden="true">↗</span>
+                    <RichMessage
+                      source={'Play {slot0}'}
+                      slots={{ slot0: <span aria-hidden="true">{'↗'}</span> }}
+                    />
                   </button>
                   <button
                     disabled={p.busy || !!active}
@@ -580,7 +641,7 @@ export function StudioWorkspace(p: Props) {
                       focusComposer();
                     }}
                   >
-                    Edit this version
+                    {t('Edit this version')}
                   </button>
                   <button
                     disabled={p.busy || !!active}
@@ -589,21 +650,21 @@ export function StudioWorkspace(p: Props) {
                       focusComposer();
                     }}
                   >
-                    New map
+                    {t('New map')}
                   </button>
                   <a
                     className="btn"
                     href={`/api/v1/maps/${delivered.map_id}/versions/${delivered.map_hash}/file`}
                   >
-                    Download
+                    {t('Download')}
                   </a>
 
                   <details>
-                    <summary>More</summary>
+                    <summary>{t('More')}</summary>
                     <button disabled={p.busy} onClick={() => p.versionAction('publish', delivered)}>
-                      Publish this version
+                      {t('Publish this version')}
                     </button>
-                    <Link to={`/maps/${delivered.map_id}`}>Map details</Link>
+                    <Link to={`/maps/${delivered.map_id}`}>{t('Map details')}</Link>
                   </details>
                 </div>
               </div>

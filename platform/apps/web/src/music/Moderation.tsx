@@ -1,8 +1,12 @@
+import { displayMessage, statusLabel } from '../i18n.tsx';
+import { translateError } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import { request } from '../api.ts';
 import { useLoad } from '../state.tsx';
 import { Link } from '../router.tsx';
 export function MusicReports() {
+  useLocale();
   const [notice, setNotice] = useState('');
   const health = useLoad(
     (signal) =>
@@ -28,7 +32,7 @@ export function MusicReports() {
         body: {
           hidden,
           reason: hidden
-            ? 'Hidden following community report.'
+            ? t('Hidden following community report.')
             : 'Report reviewed; release remains available.',
         },
       });
@@ -39,28 +43,35 @@ export function MusicReports() {
   }
   return (
     <section>
-      <h2>Music reports</h2>
+      <h2>{t('Music reports')}</h2>
       {health.status === 'ready' && (
         <p>
-          {health.data.states.map((s) => `${s.status}: ${s.count}`).join(' · ')} ·{' '}
-          {(health.data.storedBytes / 1048576).toFixed(1)} MiB stored
+          <RichMessage
+            source={'{slot0} · {slot1} MiB stored'}
+            slots={{
+              slot0: health.data.states
+                .map((s) => `${statusLabel(s.status)}: ${s.count}`)
+                .join(' · '),
+              slot1: (health.data.storedBytes / 1048576).toFixed(1),
+            }}
+          />
         </p>
       )}
-      {notice && <p role="alert">{notice}</p>}
+      {notice && <p role="alert">{displayMessage(notice)}</p>}
       {data.status === 'loading' ? (
-        <p>Loading…</p>
+        <p>{t('Loading…')}</p>
       ) : data.status === 'error' ? (
-        <p role="alert">{data.error.message}</p>
+        <p role="alert">{translateError(data.error)}</p>
       ) : (
         data.data.items.map((report) => (
           <article key={report.id} className="card">
-            <Link to={`/music/${report.release_id}`}>Open music release</Link>
+            <Link to={`/music/${report.release_id}`}>{t('Open music release')}</Link>
             <p>{report.reason}</p>
             <button onClick={() => void resolve(report.release_id, true)}>
-              Hide release and resolve
+              {t('Hide release and resolve')}
             </button>
             <button onClick={() => void resolve(report.release_id, false)}>
-              Keep available and resolve
+              {t('Keep available and resolve')}
             </button>
           </article>
         ))

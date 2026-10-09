@@ -153,7 +153,7 @@ test('the loading page estimates remaining time from the rate so far', () => {
   const shell = readFileSync(path.join(__dirname, '../shell.html'), 'utf8');
   const start = shell.indexOf('function loadingEstimate(');
   const end = shell.indexOf('// End loading estimate.', start);
-  const context = vm.createContext({});
+  const context = vm.createContext({browserText:(source, params = {}) => source.replace(/\{(\w+)\}/g, (match, key) => String(params[key] ?? match))});
   vm.runInContext(shell.slice(start, end), context);
   const estimate = (...args) => ({...context.loadingEstimate(...args)});
   assert.deepEqual(estimate(0, 30e6, 0), {percent:0, text:'0.0 of 30 MB'});

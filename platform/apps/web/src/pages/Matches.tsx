@@ -1,3 +1,4 @@
+import { t, useLocale } from '../i18n.tsx';
 import { useState } from 'react';
 import type { MatchSummary } from '@glob2/protocol';
 import { api } from '../api.ts';
@@ -7,6 +8,7 @@ import { useLoad, useSession } from '../state.tsx';
 
 /** Recent public matches: quick-match games and public rooms. */
 export function Matches() {
+  useLocale();
   const { instance } = useSession();
   const [queue, setQueue] = useState('');
   const [more, setMore] = useState(0);
@@ -34,14 +36,14 @@ export function Matches() {
       <div className="page-head">
         <GameArt name="warrior" size={72} className="head-art" />
         <div className="grow">
-          <h1>Recent matches</h1>
-          <p className="sub">Quick-match games and public rooms, newest first.</p>
+          <h1>{t('Recent matches')}</h1>
+          <p className="sub">{t('Quick-match games and public rooms, newest first.')}</p>
         </div>
       </div>
       <div
         className="seg"
         role="group"
-        aria-label="Show matches from"
+        aria-label={t('Show matches from')}
         style={{ marginBottom: 'var(--sp-4)' }}
       >
         {filters.map((f) => (
@@ -68,7 +70,7 @@ export function Matches() {
                 style={{ marginTop: 'var(--sp-3)' }}
                 onClick={() => setMore(more + 1)}
               >
-                Show more
+                {t('Show more')}
               </button>
             )}
           </>

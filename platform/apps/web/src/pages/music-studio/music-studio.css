@@ -32,7 +32,7 @@
   background: var(--surface);
 }
 .mu-message.user {
-  margin-left: 1rem;
+  margin-inline-start: 1rem;
   background: var(--surface);
 }
 .mu-message p {
@@ -218,7 +218,7 @@
 }
 .mu-prompt {
   display: block;
-  text-align: left;
+  text-align: start;
   width: 100%;
   margin: 0.7rem 0;
   padding: 1rem;
@@ -271,7 +271,7 @@
 }
 .mu-idea-grid button {
   padding: 1.4rem;
-  text-align: left;
+  text-align: start;
   background: linear-gradient(135deg, #708d5022, #28332d22);
   border: 1px solid var(--line);
 }
@@ -425,7 +425,7 @@
   color: var(--ink-2);
   font-size: var(--text-xs);
   font-weight: 500;
-  margin-left: 8px;
+  margin-inline-start: 8px;
 }
 .mu-history-versions {
   display: flex;

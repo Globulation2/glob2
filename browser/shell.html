@@ -6,6 +6,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <title>Globulation 2</title>
 <script src="/theme.js"></script>
+<script src="i18n.js"></script>
 <style>
 /* Match the website's Meadow / Night colony tokens and shared brand assets. */
 @font-face{font-family:'Nunito Variable';src:url('/signin/assets/nunito.woff2') format('woff2-variations');font-weight:200 1000;font-display:swap}
@@ -37,6 +38,7 @@ body.ready #loading{opacity:0;pointer-events:none}
 #loading-bar>span{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
 #loading-detail{max-width:100%;overflow-wrap:anywhere;font-size:14px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
 #loading-note{margin:0;font-size:14px;line-height:1.55;color:var(--ink-2)}
+#loading-language{font:inherit;max-width:100%;min-height:44px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:6px 12px}
 #loading-retry{font-size:15px;font-weight:800;font-family:inherit;padding:10px 22px;min-height:44px;border:1px solid var(--accent-edge);border-radius:10px;
   background:var(--accent);color:var(--accent-ink);cursor:pointer}
 #loading-retry:hover{background:var(--accent-hover)}
@@ -62,16 +64,65 @@ body.ready #loading{opacity:0;pointer-events:none}
     <span class="wordmark" aria-hidden="true"></span>
   </div>
   <span class="loader" aria-hidden="true"></span>
-  <span id="loading-status" role="status" aria-live="polite">Loading game…</span>
+  <span id="loading-status" role="status" aria-live="polite" data-i18n="Loading game…">Loading game…</span>
   <div id="loading-progress" hidden>
-    <div id="loading-bar" role="progressbar" aria-label="Download progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+    <div id="loading-bar" role="progressbar" aria-label="Download progress" data-i18n-aria="Download progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
     <span id="loading-detail"></span>
   </div>
-  <p id="loading-note" hidden>The first visit downloads the game once. Later visits start from this device's copy.</p>
+  <select id="loading-language" aria-label="Language" data-i18n-aria="Language"></select>
+  <p id="language-error" role="alert" data-i18n="Could not load this language. Please try again." hidden>Could not load this language. Please try again.</p>
+  <p id="loading-note" data-i18n="The first visit downloads the game once. Later visits start from this device's copy." hidden>The first visit downloads the game once. Later visits start from this device's copy.</p>
 </div>
 <canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
-<div id="open-link" role="alert" hidden><span id="open-link-text"></span><a id="open-link-anchor" target="_blank" rel="noopener"></a><button type="button" id="open-link-close" aria-label="Close">×</button></div>
+<div id="open-link" role="alert" hidden><span id="open-link-text"></span><a id="open-link-anchor" target="_blank" rel="noopener"></a><button type="button" id="open-link-close" aria-label="Close" data-i18n-aria="Close">×</button></div>
 <script>
+// Browser chrome shares the website's locale; the game's saved profile remains independent.
+function browserText(source, params) {
+  if (globalThis.Glob2I18n) return Glob2I18n.t(source, params);
+  return source.replace(/\{(\w+)\}/g, (match, key) => String(params?.[key] ?? match));
+}
+// Keep the translated label in the page direction and isolate the URL itself.
+function updateOpenLink(anchor, target) {
+  const label = browserText('Open {target} ↗');
+  const parts = label.split('{target}');
+  const url = document.createElement('bdi');
+  url.dir = 'ltr';
+  url.textContent = target.host + (target.pathname === '/' ? '' : target.pathname);
+  anchor.replaceChildren(document.createTextNode(parts[0]), url, document.createTextNode(parts.slice(1).join('{target}')));
+}
+const languagePicker = document.getElementById('loading-language');
+function refreshBrowserLanguage() {
+  for (const node of document.querySelectorAll('[data-i18n]')) node.textContent = browserText(node.dataset.i18n);
+  for (const node of document.querySelectorAll('[data-i18n-aria]')) node.setAttribute('aria-label', browserText(node.dataset.i18nAria));
+  if (globalThis.Glob2I18n) languagePicker.value = Glob2I18n.getLocale();
+  if (download.failed) {
+    loadingStatus.textContent = browserText('The game could not be downloaded.');
+    loadingDetail.textContent = browserText('Check the connection, then try again.');
+  } else showDownload();
+  const anchor = document.getElementById('open-link-anchor');
+  if (!document.getElementById('open-link').hidden) {
+    const target = new URL(anchor.href);
+    updateOpenLink(anchor, target);
+    document.getElementById('open-link-text').textContent = browserText('The browser kept the page from opening.');
+  }
+}
+if (globalThis.Glob2I18n) {
+  for (const locale of Glob2I18n.locales) {
+    const option = document.createElement('option');
+    option.value = locale.code; option.textContent = locale.name; option.dir = locale.dir;
+    languagePicker.append(option);
+  }
+  Glob2I18n.initialize().then(refreshBrowserLanguage);
+  languagePicker.addEventListener('change', () => {
+    document.getElementById('language-error').hidden = true;
+    Glob2I18n.setLocale(languagePicker.value).catch(error => {
+      console.error(error);
+      languagePicker.value = Glob2I18n.getLocale();
+      document.getElementById('language-error').hidden = false;
+    });
+  });
+  addEventListener('glob2:localechange', refreshBrowserLanguage);
+} else languagePicker.hidden = true;
 const canvas = document.getElementById('canvas');
 const loading = document.getElementById('loading');
 const loadingStatus = document.getElementById('loading-status');
@@ -90,13 +141,13 @@ fitCanvas();
 // follow the bytes actually on the wire. Cached visits finish before the
 // estimate appears.
 function loadingEstimate(loaded, total, elapsedMs) {
-  const megabytes = bytes => (bytes / 1e6).toFixed(bytes < 1e7 ? 1 : 0);
+  const megabytes = bytes => new Intl.NumberFormat(globalThis.Glob2I18n?.getLocale() || 'en', {minimumFractionDigits:bytes < 1e7 ? 1 : 0, maximumFractionDigits:bytes < 1e7 ? 1 : 0, useGrouping:false}).format(bytes / 1e6);
   const percent = total > 0 ? Math.min(100, Math.floor(loaded * 100 / total)) : 0;
-  let text = megabytes(loaded) + ' of ' + megabytes(total) + ' MB';
+  let text = browserText('{loaded} of {total} MB', {loaded:megabytes(loaded), total:megabytes(total)});
   if (elapsedMs >= 2000 && loaded > 0 && loaded < total) {
     const seconds = (total - loaded) / (loaded / elapsedMs) / 1000;
-    text += ' · ' + (seconds < 10 ? 'a few seconds left' : seconds < 90 ? 'about ' + Math.ceil(seconds / 5) * 5 + ' s left'
-      : 'about ' + Math.round(seconds / 60) + ' min left');
+    text += ' · ' + (seconds < 10 ? browserText('a few seconds left') : seconds < 90 ? browserText('about {seconds} s left', {seconds:Math.ceil(seconds / 5) * 5})
+      : browserText('about {minutes} min left', {minutes:Math.round(seconds / 60)}));
   }
   return {percent, text};
 }
@@ -136,7 +187,7 @@ function showDownload() {
   loadingDetail.textContent = estimate.text;
   // Say why it takes a while only when it does (a first visit or a new version).
   if (performance.now() - download.started > 3000 && loaded < total) loadingNote.hidden = false;
-  const status = loaded < total ? 'Downloading the game…' : 'Starting the game…';
+  const status = browserText(loaded < total ? 'Downloading the game…' : 'Starting the game…');
   if (loadingStatus.textContent !== status) loadingStatus.textContent = status;
 }
 // Count the WebAssembly download from a copy of the response that Emscripten
@@ -250,7 +301,7 @@ var Module = {
     // "Preparing…/Running…" messages would only flicker over it.
     if (download.failed || !loadingProgress.hidden) return;
     const message = String(text || '').replace(/\s*\([0-9]+\/[0-9]+\)\s*$/, '');
-    loadingStatus.textContent = message || 'Loading game…';
+    loadingStatus.textContent = browserText(message === 'Downloading replay…' ? message : 'Loading game…');
   },
   glob2WireSize: wireSize,
   glob2AssetProgress(name, loaded, total) {
@@ -268,8 +319,9 @@ var Module = {
     globalThis.glob2Studio?.send('error', {text:String(error?.message || error).slice(0,2000)});
     globalThis.glob2SetPreview?.send('error', {text:String(error?.message || error).slice(0,2000)});
     download.failed = true;
-    loadingStatus.textContent = 'The game could not be downloaded.';
-    loadingDetail.textContent = 'Check the connection, then try again. (' + String(error?.message || error) + ')';
+    loadingStatus.textContent = browserText('The game could not be downloaded.');
+    Module.printErr(error);
+    loadingDetail.textContent = browserText('Check the connection, then try again.');
     loadingProgress.hidden = false;
     loadingBar.hidden = true;
     loadingNote.hidden = true;
@@ -278,7 +330,8 @@ var Module = {
     const retry = document.createElement('button');
     retry.id = 'loading-retry';
     retry.type = 'button';
-    retry.textContent = 'Try again';
+    retry.dataset.i18n = 'Try again';
+    retry.textContent = browserText('Try again');
     retry.addEventListener('click', () => location.reload());
     loading.appendChild(retry);
   },
@@ -289,6 +342,11 @@ var Module = {
     if (new URLSearchParams(location.search).get('gl-errors') === '1')
       ENV.GLOB2_WEBGL_ERRORS = '1';
     FS.mkdirTree('/home/web_user');
+    if (globalThis.glob2Studio || globalThis.glob2SetPreview) {
+      applyOnlineLanguage();
+      if (!/^en\b/i.test(interfaceLanguage())) Module.glob2RequireAsset?.('translations');
+      if (cjkInterface()) Module.glob2RequireAsset?.('font-cjk');
+    }
     if (globalThis.glob2SetPreview) {
       Module.storage = new Glob2Storage(callback => callback(null));
       Module.storageRestore = 'ready'; Module.storage.restored(null);
@@ -329,7 +387,8 @@ var Module = {
       // The core package's font covers every interface language except Chinese,
       // Japanese and Korean; those need the full font before any text is drawn.
       // Core has English and, of the other languages, only their names.
-      // A profile without a saved language follows the browser's (src/SystemLanguage.cpp).
+      // The online locale is a startup hint only; never overwrite a saved game preference.
+      applyOnlineLanguage();
       if (!/^en\b/i.test(interfaceLanguage())) Module.glob2RequireAsset?.('translations');
       if (cjkInterface()) Module.glob2RequireAsset?.('font-cjk');
       removeRunDependency('browser-saves');
@@ -422,7 +481,11 @@ function savedPreference(name) {
   } catch (_) { return null; }
 }
 function interfaceLanguage() {
-  return savedPreference('language') || (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+  return savedPreference('language') || globalThis.Glob2I18n?.getLocale() || (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+}
+function applyOnlineLanguage() {
+  if (!savedPreference('language') && globalThis.Glob2I18n)
+    ENV.SDL_PREFERRED_LOCALES = Glob2I18n.getLocale().replace(/-/g, '_');
 }
 function cjkInterface() { return /^(zh|ja|ko)\b/i.test(interfaceLanguage()); }
 // After the menu is up, the rest of the game data downloads in the background,
@@ -645,8 +708,8 @@ Module.glob2OpenUrl = (() => {
     }
     const target = new URL(url);
     anchor.href = target.href;
-    anchor.textContent = 'Open ' + target.host + (target.pathname === '/' ? '' : target.pathname) + ' ↗';
-    document.getElementById('open-link-text').textContent = 'The browser kept the page from opening.';
+    updateOpenLink(anchor, target);
+    document.getElementById('open-link-text').textContent = browserText('The browser kept the page from opening.');
     card.hidden = false;
     Module.glob2Opened.push({url, via:'offered'});
     return 2;

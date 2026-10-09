@@ -1,3 +1,5 @@
+import { statusLabel } from '../i18n.tsx';
+import { t, tp, useLocale, RichMessage } from '../i18n.tsx';
 import { MapLibraryTabs } from './Generators.tsx';
 // Map catalog: browse public maps (filters, sorting), my maps, a map's page
 // (preview, versions, like, report, owner edits and new versions) and upload.
@@ -25,20 +27,29 @@ const VISIBILITY_TEXT: Record<MapVisibility, string> = {
 };
 
 function MapCard({ map }: { map: MapInfo }) {
+  useLocale();
   const v = map.latestVersion;
   return (
     <Link className="map-card" to={`/maps/${map.id}`} data-testid="map-card">
       <MapImage src={v?.previewUrl} alt="" />
       <span className="name ell">{map.title}</span>
       <span className="caption ell">
-        {v?.width && v.height ? `${v.width}×${v.height}` : 'size unknown'}
-        {v?.teamCount ? ` · ${v.teamCount} teams` : ''} · ♥ {map.stats.likes}
-        <span className="sr-only"> likes</span>
+        <RichMessage
+          source={'{slot0}{slot1} · ♥ {slot2}{slot3}'}
+          slots={{
+            slot0: v?.width && v.height ? `${v.width}×${v.height}` : t('size unknown'),
+            slot1: v?.teamCount ? tp(' · {count} team', ' · {count} teams', v.teamCount) : '',
+            slot2: map.stats.likes,
+            slot3: <span className="sr-only"> {t(' likes')}</span>,
+          }}
+        />
       </span>
       {(map.hidden || map.visibility !== 'public') && (
         <div style={{ padding: '0 var(--sp-1)' }}>
-          {map.hidden && <span className="badge bad">hidden</span>}{' '}
-          {map.visibility !== 'public' && <span className="badge">{map.visibility}</span>}
+          {map.hidden && <span className="badge bad">{t('hidden')}</span>}{' '}
+          {map.visibility !== 'public' && (
+            <span className="badge">{statusLabel(map.visibility)}</span>
+          )}
         </div>
       )}
     </Link>
@@ -72,6 +83,7 @@ function MapPlayDialog({
   title: string;
   close: () => void;
 }) {
+  useLocale();
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const element = dialog.current;
@@ -94,11 +106,11 @@ function MapPlayDialog({
     >
       <div className="map-play-head">
         <div>
-          <h2 id="map-play-heading">How would you like to play?</h2>
+          <h2 id="map-play-heading">{t('How would you like to play?')}</h2>
           <p>{title}</p>
         </div>
-        <button aria-label="Close play choices" onClick={close}>
-          ✕
+        <button aria-label={t('Close play choices')} onClick={close}>
+          {t('✕')}
         </button>
       </div>
       <div className="map-play-choices">
@@ -138,16 +150,16 @@ function MapPlayDialog({
                   )}
                 </div>
                 <strong>
-                  {mode === 'local' ? 'Play Locally in Custom Game' : 'Play in Multiplayer'}
+                  {mode === 'local' ? t('Play Locally in Custom Game') : t('Play in Multiplayer')}
                 </strong>
                 <span>
                   {mode === 'local'
-                    ? 'Set up your colonies and AI opponents.'
-                    : 'Create a new room with this map and invite friends.'}
+                    ? t('Set up your colonies and AI opponents.')
+                    : t('Create a new room with this map and invite friends.')}
                 </span>
               </a>
               <a className="map-play-native" href={`glob2://play?${query.toString()}`}>
-                Open in installed app
+                {t('Open in installed app')}
               </a>
             </div>
           );
@@ -165,6 +177,7 @@ const SORTS = [
 ];
 
 export function Maps({ mine }: { mine: boolean }) {
+  useLocale();
   const { account } = useSession();
   const [q, setQ] = useState('');
   const [query, setQuery] = useState('');
@@ -212,75 +225,84 @@ export function Maps({ mine }: { mine: boolean }) {
         <GameArt name="explorationFlag" size={72} className="head-art" />
         <div className="grow">
           <MapLibraryTabs />
-          <h1>{mine ? 'My maps' : 'Maps'}</h1>
+          <h1>{mine ? t('My maps') : t('Maps')}</h1>
           <p className="sub">
             {mine
-              ? 'Maps you shared, whatever their visibility.'
-              : 'Maps players shared. Rooms play them by version, so everyone loads the same file.'}
+              ? t('Maps you shared, whatever their visibility.')
+              : t(
+                  'Maps players shared. Rooms play them by version, so everyone loads the same file.',
+                )}
           </p>
         </div>
-        <nav className="seg" aria-label="Map lists">
+        <nav className="seg" aria-label={t('Map lists')}>
           <Link to="/maps" className={mine ? '' : 'on'} aria-current={mine ? undefined : 'page'}>
-            Catalog
+            {t('Catalog')}
           </Link>
           <Link
             to="/maps/mine"
             className={mine ? 'on' : ''}
             aria-current={mine ? 'page' : undefined}
           >
-            My maps
+            {t('My maps')}
           </Link>
         </nav>
         <Link className="btn" to="/map-studio">
-          Build in AI Map Studio
+          {t('Build in AI Map Studio')}
         </Link>
         {account && (
           <Link className="btn primary" to="/maps/new">
-            Upload a map
+            {t('Upload a map')}
           </Link>
         )}
       </div>
       {mine && account === null ? (
         <div className="notice">
-          <a href="/signin">Sign in</a> to see and share your maps.
+          <RichMessage
+            source={'{slot0} to see and share your maps.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+          />
         </div>
       ) : (
         <>
           <form className="filters" onSubmit={submit} role="search">
             <input
               type="search"
-              aria-label="Search maps"
-              placeholder="Search titles"
+              aria-label={t('Search maps')}
+              placeholder={t('Search titles')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
-            <button type="submit">Search</button>
-            <select aria-label="Teams" value={teams} onChange={(e) => setTeams(e.target.value)}>
-              <option value="">Any teams</option>
+            <button type="submit">{t('Search')}</button>
+            <select
+              aria-label={t('Teams')}
+              value={teams}
+              onChange={(e) => setTeams(e.target.value)}
+            >
+              <option value="">{t('Any teams')}</option>
               {[2, 3, 4, 5, 6, 8, 12].map((n) => (
                 <option key={n} value={n}>
-                  {n} teams
+                  <RichMessage source={'{slot0} teams'} slots={{ slot0: n }} />
                 </option>
               ))}
             </select>
-            <select aria-label="Size" value={size} onChange={(e) => setSize(e.target.value)}>
-              <option value="">Any size</option>
+            <select aria-label={t('Size')} value={size} onChange={(e) => setSize(e.target.value)}>
+              <option value="">{t('Any size')}</option>
               {[64, 128, 256, 512].map((n) => (
                 <option key={n} value={n}>
-                  {n}×{n}
+                  <RichMessage source={'{slot0}×{slot1}'} slots={{ slot0: n, slot1: n }} />
                 </option>
               ))}
             </select>
             <select
-              aria-label="Made with"
+              aria-label={t('Made with')}
               value={madeWith}
               onChange={(e) => setMadeWith(e.target.value)}
             >
-              <option value="">Hand-made or generated</option>
-              <option value="hand">Hand-made</option>
-              <option value="generator">Generated</option>
+              <option value="">{t('Hand-made or generated')}</option>
+              <option value="hand">{t('Hand-made')}</option>
+              <option value="generator">{t('Generated')}</option>
             </select>
-            <select aria-label="Sort" value={sort} onChange={(e) => setSort(e.target.value)}>
+            <select aria-label={t('Sort')} value={sort} onChange={(e) => setSort(e.target.value)}>
               {SORTS.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -300,7 +322,7 @@ export function Maps({ mine }: { mine: boolean }) {
                   setMore(0);
                 }}
               >
-                Reset filters
+                {t('Reset filters')}
               </button>
             )}
           </form>
@@ -309,19 +331,19 @@ export function Maps({ mine }: { mine: boolean }) {
               data.items.length === 0 ? (
                 <Empty art="explorationFlag">
                   {filtered
-                    ? 'No maps match these filters.'
+                    ? t('No maps match these filters.')
                     : mine
-                      ? 'You have not shared any maps yet.'
-                      : 'No shared maps yet. Be the first to share one.'}
+                      ? t('You have not shared any maps yet.')
+                      : t('No shared maps yet. Be the first to share one.')}
                   {!filtered && (
                     <p>
                       {account ? (
                         <Link className="btn primary" to="/maps/new">
-                          Upload a map
+                          {t('Upload a map')}
                         </Link>
                       ) : (
                         <a className="btn" href="/signin">
-                          Sign in to upload a map
+                          {t('Sign in to upload a map')}
                         </a>
                       )}
                     </p>
@@ -340,7 +362,7 @@ export function Maps({ mine }: { mine: boolean }) {
                       style={{ marginTop: 'var(--sp-3)' }}
                       onClick={() => setMore(more + 1)}
                     >
-                      Show more
+                      {t('Show more')}
                     </button>
                   )}
                 </>
@@ -354,6 +376,7 @@ export function Maps({ mine }: { mine: boolean }) {
 }
 
 function ReportForm({ mapId, onDone }: { mapId: string; onDone: () => void }) {
+  useLocale();
   const [reason, setReason] = useState('broken');
   const [details, setDetails] = useState('');
   const [error, setError] = useState<Error>();
@@ -368,29 +391,30 @@ function ReportForm({ mapId, onDone }: { mapId: string; onDone: () => void }) {
   };
   return (
     <form className="card" onSubmit={submit} style={{ marginTop: 10 }}>
-      <h2 className="card-title">Report this map</h2>
+      <h2 className="card-title">{t('Report this map')}</h2>
       <label className="field">
-        Reason
+        {t('Reason')}
         <select value={reason} onChange={(e) => setReason(e.target.value)}>
-          <option value="broken">It is broken or unplayable</option>
-          <option value="offensive">It is offensive</option>
-          <option value="copyright">It copies someone else’s work</option>
-          <option value="other">Something else</option>
+          <option value="broken">{t('It is broken or unplayable')}</option>
+          <option value="offensive">{t('It is offensive')}</option>
+          <option value="copyright">{t('It copies someone else’s work')}</option>
+          <option value="other">{t('Something else')}</option>
         </select>
       </label>
       <label className="field">
-        Details
+        {t('Details')}
         <textarea maxLength={2000} value={details} onChange={(e) => setDetails(e.target.value)} />
       </label>
       {error && <ErrorNotice error={error} />}
       <button className="primary" type="submit">
-        Send report
+        {t('Send report')}
       </button>
     </form>
   );
 }
 
 function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => void }) {
+  useLocale();
   const { navigate } = useRouter();
   const map = detail.map;
   const [title, setTitle] = useState(map.title);
@@ -420,9 +444,9 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
           void run(() => api.updateMap(map.id, { title, description, visibility }), 'Saved.');
         }}
       >
-        <h3>Edit</h3>
+        <h3>{t('Edit')}</h3>
         <label className="field">
-          Title
+          {t('Title')}
           <input
             value={title}
             maxLength={128}
@@ -431,7 +455,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
           />
         </label>
         <label className="field">
-          Description
+          {t('Description')}
           <textarea
             value={description}
             maxLength={4000}
@@ -439,7 +463,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
           />
         </label>
         <label className="field">
-          Visibility
+          {t('Visibility')}
           <select
             value={visibility}
             onChange={(e) => setVisibility(e.target.value as MapVisibility)}
@@ -453,29 +477,32 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
         </label>
         <div className="toolbar">
           <button className="primary" type="submit">
-            Save
+            {t('Save')}
           </button>
           <button
             type="button"
             className="danger"
             onClick={() => {
-              if (window.confirm(`Delete “${map.title}” and all its versions?`)) {
+              if (
+                window.confirm(t('Delete “{value0}” and all its versions?', { value0: map.title }))
+              ) {
                 void api.deleteMap(map.id).then(() => navigate('/maps/mine'), setError);
               }
             }}
           >
-            Delete map
+            {t('Delete map')}
           </button>
         </div>
       </form>
       {map.authoring?.kind === 'ai' ? (
         <div className="card">
-          <h3>AI generated map</h3>
+          <h3>{t('AI generated map')}</h3>
           <p>
-            This version keeps its original map. Create a revision in AI Map Studio or upload an
-            edited copy as a new map.
+            {t(
+              'This version keeps its original map. Create a revision in AI Map Studio or upload an edited copy as a new map.',
+            )}
           </p>
-          <Link to="/map-studio">Open AI Map Studio</Link>
+          <Link to="/map-studio">{t('Open AI Map Studio')}</Link>
         </div>
       ) : (
         <form
@@ -490,9 +517,9 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
             }
           }}
         >
-          <h3>New version</h3>
+          <h3>{t('New version')}</h3>
           <label className="field">
-            Map file (.map or .map.gz)
+            {t('Map file (.map or .map.gz)')}
             <input
               type="file"
               accept=".map,.gz,.map.gz"
@@ -500,11 +527,11 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
             />
           </label>
           <label className="field">
-            What changed
+            {t('What changed')}
             <input value={notes} maxLength={2000} onChange={(e) => setNotes(e.target.value)} />
           </label>
           <button type="submit" disabled={!file}>
-            Upload version
+            {t('Upload version')}
           </button>
         </form>
       )}
@@ -519,6 +546,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
 }
 
 export function MapPage({ id }: { id: string }) {
+  useLocale();
   const { account } = useSession();
   const { location } = useRouter();
   const uploadFailed = location.search.get('upload') === 'failed';
@@ -544,7 +572,7 @@ export function MapPage({ id }: { id: string }) {
           try {
             if (map.hidden) await api.unhideMap(map.id);
             else {
-              const reason = window.prompt('Why hide this map? (shown to its owner)');
+              const reason = window.prompt(t('Why hide this map? (shown to its owner)'));
               if (!reason) return;
               await api.hideMap(map.id, reason);
             }
@@ -559,44 +587,52 @@ export function MapPage({ id }: { id: string }) {
               <div className="grow">
                 <h1 data-testid="map-title">{map.title}</h1>
                 <div className="sub">
-                  by <PlayerLink account={map.owner} /> · updated {date(map.updatedAt)} ·{' '}
-                  {map.madeWith === 'generator' ? 'generated' : 'hand-made'}{' '}
-                  {map.visibility !== 'public' && <span className="badge">{map.visibility}</span>}{' '}
-                  {map.hidden && <span className="badge bad">hidden by a moderator</span>}
+                  {t('by ')}
+                  <PlayerLink account={map.owner} /> {t(' · updated ')}
+                  {date(map.updatedAt)} {t(' · ')}{' '}
+                  {map.madeWith === 'generator' ? t('generated') : t('hand-made')}{' '}
+                  {map.visibility !== 'public' && (
+                    <span className="badge">{statusLabel(map.visibility)}</span>
+                  )}{' '}
+                  {map.hidden && <span className="badge bad">{t('hidden by a moderator')}</span>}
                 </div>
               </div>
             </div>
             {uploadFailed && detail.versions.length === 0 && (
               <div className="notice error" style={{ marginBottom: 10 }}>
-                The map was created but its file did not upload. Upload it again below.
+                {t('The map was created but its file did not upload. Upload it again below.')}
               </div>
             )}
             {map.hidden && map.hiddenReason && (
               <div className="notice warn" style={{ marginBottom: 10 }}>
-                Hidden: {map.hiddenReason}
+                <RichMessage source={'Hidden: {slot0}'} slots={{ slot0: map.hiddenReason }} />
               </div>
             )}
             <div className="map-hero">
               <div className="preview">
                 {/* CLI exports include a two-pixel Glob2Style frame. */}
-                <MapPreview src={v?.previewUrl} alt={`Preview of ${map.title}`} frameInset={2} />
+                <MapPreview
+                  src={v?.previewUrl}
+                  alt={t('Preview of {value0}', { value0: map.title })}
+                  frameInset={2}
+                />
               </div>
               <div>
                 <div className="tiles">
                   <div className="tile">
-                    <div className="caption">Size</div>
+                    <div className="caption">{t('Size')}</div>
                     <div className="v">{v?.width && v.height ? `${v.width}×${v.height}` : '–'}</div>
                   </div>
                   <div className="tile">
-                    <div className="caption">Teams</div>
+                    <div className="caption">{t('Teams')}</div>
                     <div className="v">{v?.teamCount ?? '–'}</div>
                   </div>
                   <div className="tile">
-                    <div className="caption">Plays</div>
+                    <div className="caption">{t('Plays')}</div>
                     <div className="v">{map.stats.plays}</div>
                   </div>
                   <div className="tile">
-                    <div className="caption">Likes</div>
+                    <div className="caption">{t('Likes')}</div>
                     <div className="v" data-testid="likes">
                       {map.stats.likes}
                     </div>
@@ -616,7 +652,7 @@ export function MapPage({ id }: { id: string }) {
                         aria-haspopup="dialog"
                         aria-describedby="play-map-note"
                       >
-                        Play this map
+                        {t('Play this map')}
                       </button>
                       {choosingPlay && (
                         <MapPlayDialog
@@ -627,38 +663,38 @@ export function MapPage({ id }: { id: string }) {
                         />
                       )}
                       <a className="btn" href={v.downloadUrl} download>
-                        Download
+                        {t('Download')}
                       </a>
                     </>
                   )}
                   {account ? (
                     <>
                       <button onClick={() => void toggleLike()} aria-pressed={viewer.liked}>
-                        {viewer.liked ? '♥ Liked' : '♡ Like'}
+                        {viewer.liked ? t('♥ Liked') : t('♡ Like')}
                       </button>
                       {!viewer.owner && (
                         <button
                           onClick={() => setReporting(!reporting)}
                           disabled={viewer.reported || reported}
                         >
-                          {viewer.reported || reported ? 'Reported' : 'Report'}
+                          {viewer.reported || reported ? t('Reported') : t('Report')}
                         </button>
                       )}
                     </>
                   ) : (
                     <a className="btn" href="/signin">
-                      Sign in to like or report
+                      {t('Sign in to like or report')}
                     </a>
                   )}
                   {viewer.moderator && (
                     <button className="danger" onClick={() => void moderate()}>
-                      {map.hidden ? 'Unhide' : 'Hide'}
+                      {map.hidden ? t('Unhide') : t('Hide')}
                     </button>
                   )}
                 </div>
                 {v && v.validation === 'valid' && (
                   <p className="caption" id="play-map-note">
-                    Choose a local custom game or a multiplayer room with this map.
+                    {t('Choose a local custom game or a multiplayer room with this map.')}
                   </p>
                 )}
                 {error && <ErrorNotice error={error} />}
@@ -673,16 +709,18 @@ export function MapPage({ id }: { id: string }) {
                 )}
               </div>
             </div>
-            <h2>Versions</h2>
-            <TableWrap label={`Versions of ${map.title}`}>
+            <h2>{t('Versions')}</h2>
+            <TableWrap label={t('Versions of {value0}', { value0: map.title })}>
               <table className="data">
-                <caption className="sr-only">Versions of {map.title}</caption>
+                <caption className="sr-only">
+                  <RichMessage source={'Versions of {slot0}'} slots={{ slot0: map.title }} />
+                </caption>
                 <thead>
                   <tr>
-                    <th>Uploaded</th>
-                    <th>Status</th>
-                    <th className="hide-phone">Notes</th>
-                    <th className="num">File</th>
+                    <th>{t('Uploaded')}</th>
+                    <th>{t('Status')}</th>
+                    <th className="hide-phone">{t('Notes')}</th>
+                    <th className="num">{t('File')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -691,12 +729,12 @@ export function MapPage({ id }: { id: string }) {
                       <td>{date(version.createdAt)}</td>
                       <td>
                         {version.validation === 'valid' ? (
-                          <span className="badge ok">valid</span>
+                          <span className="badge ok">{t('valid')}</span>
                         ) : version.validation === 'pending' ? (
-                          <span className="badge">checking…</span>
+                          <span className="badge">{t('checking…')}</span>
                         ) : (
                           <span className="badge bad" title={version.reason}>
-                            invalid
+                            {t('invalid')}
                           </span>
                         )}
                       </td>
@@ -707,10 +745,15 @@ export function MapPage({ id }: { id: string }) {
                             <Link
                               to={`/generators/${version.generatorProvenance.generator.libraryId}`}
                             >
-                              {version.generatorProvenance.verified
-                                ? 'Generated by'
-                                : 'Author-reported generator'}{' '}
-                              · revision {version.generatorProvenance.generator.revision}
+                              <RichMessage
+                                source={'{slot0} · revision {slot1}'}
+                                slots={{
+                                  slot0: version.generatorProvenance.verified
+                                    ? t('Generated by')
+                                    : t('Author-reported generator'),
+                                  slot1: version.generatorProvenance.generator.revision,
+                                }}
+                              />
                             </Link>
                           </p>
                         )}
@@ -718,7 +761,12 @@ export function MapPage({ id }: { id: string }) {
                       <td className="num">
                         {version.validation === 'valid' && (
                           <a href={version.downloadUrl} download>
-                            Download<span className="sr-only"> this version</span>
+                            <RichMessage
+                              source={'Download{slot0}'}
+                              slots={{
+                                slot0: <span className="sr-only"> {t(' this version')}</span>,
+                              }}
+                            />
                           </a>
                         )}
                       </td>
@@ -728,27 +776,55 @@ export function MapPage({ id }: { id: string }) {
               </table>
             </TableWrap>
             {detail.versions.some((version) => version.setCredits?.length) && (
-              <section aria-label="Custom content credits" style={{ overflowWrap: 'anywhere' }}>
-                <h2>Custom content credits</h2>
+              <section
+                aria-label={t('Custom content credits')}
+                style={{ overflowWrap: 'anywhere' }}
+              >
+                <h2>{t('Custom content credits')}</h2>
                 {detail.versions.map((version) =>
                   version.setCredits?.length ? (
                     <details key={version.hash}>
-                      <summary>Map version uploaded {date(version.createdAt)}</summary>
+                      <summary>
+                        <RichMessage
+                          source={'Map version uploaded {slot0}'}
+                          slots={{ slot0: date(version.createdAt) }}
+                        />
+                      </summary>
                       {version.setCredits.map((credit) => (
                         <article key={credit.versionId}>
                           <h3>
-                            {credit.title} · {credit.license}
+                            <RichMessage
+                              source={'{slot0} · {slot1}'}
+                              slots={{ slot0: credit.title, slot1: credit.license }}
+                            />
                           </h3>
-                          <p>Imported release {credit.versionId}.</p>
+                          <p>
+                            <RichMessage
+                              source={'Imported release {slot0}.'}
+                              slots={{ slot0: credit.versionId }}
+                            />
+                          </p>
                           <ul>
                             {credit.authors.map((author, index) => (
                               <li key={index}>
-                                {author.author} · {author.license}
-                                {author.source && <span> · {author.source}</span>}
+                                <RichMessage
+                                  source={'{slot0} · {slot1}{slot2}'}
+                                  slots={{
+                                    slot0: author.author,
+                                    slot1: author.license,
+                                    slot2: author.source && (
+                                      <span>
+                                        {' '}
+                                        {t(' · ')}
+                                        {author.source}
+                                      </span>
+                                    ),
+                                  }}
+                                />
                               </li>
                             ))}
                           </ul>
-                          <Link to={'/sets/' + credit.setId}>Source set</Link>
+                          <Link to={'/sets/' + credit.setId}>{t('Source set')}</Link>
                         </article>
                       ))}
                     </details>
@@ -778,6 +854,7 @@ const CHECK_TIMEOUT_MS = 120_000;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export function MapUpload() {
+  useLocale();
   const { account } = useSession();
   const { navigate } = useRouter();
   const [title, setTitle] = useState('');
@@ -793,8 +870,8 @@ export function MapUpload() {
     <div className="page-head">
       <GameArt name="explorationFlag" size={72} className="head-art" />
       <div className="grow">
-        <h1>Upload a map</h1>
-        <p className="sub">Share a map you made in the editor or with a generator.</p>
+        <h1>{t('Upload a map')}</h1>
+        <p className="sub">{t('Share a map you made in the editor or with a generator.')}</p>
       </div>
     </div>
   );
@@ -803,7 +880,10 @@ export function MapUpload() {
       <>
         {head}
         <div className="notice">
-          <a href="/signin">Sign in</a> to share maps.
+          <RichMessage
+            source={'{slot0} to share maps.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in')}</a> }}
+          />
         </div>
       </>
     );
@@ -816,7 +896,7 @@ export function MapUpload() {
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (!file) {
-      fileProblem('Choose a map file first: a .map or .map.gz file from the game.');
+      fileProblem(t('Choose a map file first: a .map or .map.gz file from the game.'));
       return;
     }
     setError(undefined);
@@ -864,7 +944,7 @@ export function MapUpload() {
       {head}
       <form className="card upload-form" onSubmit={(e) => void submit(e)} noValidate>
         <label className="field">
-          Map file (.map or .map.gz, from the game or its map editor)
+          {t('Map file (.map or .map.gz, from the game or its map editor)')}
           <input
             ref={fileInput}
             type="file"
@@ -883,7 +963,7 @@ export function MapUpload() {
           {fileError}
         </p>
         <label className="field">
-          Title
+          {t('Title')}
           <input
             value={title}
             maxLength={128}
@@ -892,7 +972,7 @@ export function MapUpload() {
           />
         </label>
         <label className="field">
-          Description
+          {t('Description')}
           <textarea
             value={description}
             maxLength={4000}
@@ -900,7 +980,7 @@ export function MapUpload() {
           />
         </label>
         <label className="field">
-          Visibility
+          {t('Visibility')}
           <select
             value={visibility}
             onChange={(e) => setVisibility(e.target.value as MapVisibility)}
@@ -913,26 +993,31 @@ export function MapUpload() {
           </select>
         </label>
         <label className="field">
-          Made
+          {t('Made')}
           <select value={madeWith} onChange={(e) => setMadeWith(e.target.value)}>
-            <option value="hand">In the map editor</option>
-            <option value="generator">By a map generator</option>
+            <option value="hand">{t('In the map editor')}</option>
+            <option value="generator">{t('By a map generator')}</option>
           </select>
         </label>
         {error && <ErrorNotice error={error} />}
         <button className="primary" type="submit" disabled={busy}>
-          {phase === 'checking' ? 'Checking the map…' : phase === 'saving' ? 'Saving…' : 'Upload'}
+          {phase === 'checking'
+            ? t('Checking the map…')
+            : phase === 'saving'
+              ? t('Saving…')
+              : t('Upload')}
         </button>
         <p className="sr-only" role="status">
           {phase === 'checking'
-            ? 'Checking the map with the game.'
+            ? t('Checking the map with the game.')
             : phase === 'saving'
-              ? 'The map is fine. Saving it.'
+              ? t('The map is fine. Saving it.')
               : ''}
         </p>
         <p className="caption">
-          The server first loads the file with the game to check it; the map page is created only if
-          it loads. Unlisted maps are reachable by link only; you can make a map public later.
+          {t(
+            'The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.',
+          )}
         </p>
       </form>
     </>

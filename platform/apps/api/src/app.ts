@@ -58,7 +58,7 @@ import { playRoutes } from './routes/play.ts';
 import { mapCatalogRoutes } from './maps/routes.ts';
 import { historyRoutes } from './history/routes.ts';
 import { appLinkRoutes } from './web/appLinks.ts';
-import { pageAssetRoutes } from './web/pages.ts';
+import { pageAssetRoutes, setPageLocale } from './web/pages.ts';
 import { Assignments } from './play/assignments.ts';
 import { PlayRealtime } from './play/realtime.ts';
 import { RoomService } from './play/rooms.ts';
@@ -95,6 +95,8 @@ function errorBodyFor(
       body: {
         code: 'bad_request',
         message: `This file is too big: uploads are limited to ${readableSize(uploadMaxBytes)}.`,
+        messageKey: 'This file is too big: uploads are limited to {p0}.',
+        messageParams: { p0: readableSize(uploadMaxBytes) },
         details: { problem: 'too_large' },
       },
     };
@@ -106,12 +108,12 @@ function errorBodyFor(
     };
   }
   if (error.statusCode === 429) {
-    return { status: 429, body: { code: 'rate_limited', message: 'Too many requests.' } };
+    return { status: 429, body: apiError('rate_limited', 'Too many requests.').body };
   }
   if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500) {
     return { status: error.statusCode, body: { code: 'bad_request', message: error.message } };
   }
-  return { status: 500, body: { code: 'internal', message: 'Internal server error.' } };
+  return { status: 500, body: apiError('internal', 'Internal server error.').body };
 }
 
 /** Sim versions with a recently seen engine agent: the versions this instance can serve. */
@@ -129,6 +131,9 @@ export async function buildApp(
     trustProxy: true,
     bodyLimit: 1024 * 1024,
     requestIdHeader: 'x-request-id',
+  });
+  app.addHook('onRequest', async (request, reply) => {
+    setPageLocale(request, reply);
   });
   const identity = createIdentity(services);
   await sql`UPDATE admin_analytics_settings SET collection=${services.config.instance.analytics?.collection !== false} WHERE id`.execute(

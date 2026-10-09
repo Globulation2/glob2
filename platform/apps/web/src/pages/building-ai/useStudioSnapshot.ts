@@ -1,3 +1,4 @@
+import { t, message as sourceMessage, translateError } from '../../messages.ts';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   BuildingAiStudioProgress,
@@ -26,7 +27,7 @@ export function useStudioSnapshot(
     [draft, setDraft] = useState<BuildingDraft>(),
     [progress, setProgress] = useState<BuildingAiStudioProgress>(),
     [loading, setLoading] = useState(true),
-    [loadError, setLoadError] = useState(''),
+    [loadError, setLoadError] = useState<string | Error>(''),
     [connection, setConnection] = useState('');
   const serial = useRef(0);
   const refresh = useCallback(
@@ -75,7 +76,9 @@ export function useStudioSnapshot(
         setLoading(false);
       } catch (error) {
         if (!signal?.aborted && ticket === serial.current) {
-          setLoadError(error instanceof Error ? error.message : 'Could not load your project.');
+          setLoadError(
+            error instanceof Error ? error : sourceMessage('Could not load your project.'),
+          );
           setLoading(false);
         }
         throw error;
@@ -98,7 +101,7 @@ export function useStudioSnapshot(
         setConnection('');
         update();
       };
-      stream.onerror = () => setConnection('Reconnecting to your saved project…');
+      stream.onerror = () => setConnection(sourceMessage('Reconnecting to your saved project…'));
       stream.addEventListener('reset', update);
     }
     const poll = setInterval(update, 10000);
@@ -108,5 +111,15 @@ export function useStudioSnapshot(
       clearInterval(poll);
     };
   }, [accountId, projectId, refresh]);
-  return { wallet, projects, thread, draft, progress, loading, loadError, connection, refresh };
+  return {
+    wallet,
+    projects,
+    thread,
+    draft,
+    progress,
+    loading,
+    loadError: typeof loadError === 'string' ? t(loadError) : translateError(loadError),
+    connection: t(connection),
+    refresh,
+  };
 }

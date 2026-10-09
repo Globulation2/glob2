@@ -1,3 +1,4 @@
+import { t, useLocale } from '../i18n.tsx';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { useRouter } from '../router.tsx';
 
@@ -16,11 +17,14 @@ export function useAdminFilters(defaults: Record<string, string> = {}) {
   return { values, set };
 }
 export function PageControls({ nextCursor }: { nextCursor?: string }) {
+  useLocale();
   const { values, set } = useAdminFilters();
   return (
     <div className="toolbar">
-      {values['cursor'] && <button onClick={() => set({ cursor: undefined })}>First page</button>}
-      {nextCursor && <button onClick={() => set({ cursor: nextCursor })}>Next page</button>}
+      {values['cursor'] && (
+        <button onClick={() => set({ cursor: undefined })}>{t('First page')}</button>
+      )}
+      {nextCursor && <button onClick={() => set({ cursor: nextCursor })}>{t('Next page')}</button>}
     </div>
   );
 }

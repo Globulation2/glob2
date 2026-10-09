@@ -1,3 +1,5 @@
+import { statusLabel } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import type { AdminFinances } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { Loaded } from '../components/common.tsx';
@@ -6,6 +8,7 @@ import { useAdminFilters } from './filters.tsx';
 import { downloadCsv, formatCash, productName, reportingPeriods } from './presentation.ts';
 import { dateTime } from '../format.ts';
 export function Finances() {
+  useLocale();
   const { values, set } = useAdminFilters({ days: '30', mode: 'live' });
   const load = useLoad(
     (signal) => request<AdminFinances>('GET', '/api/v1/admin/finances', { query: values, signal }),
@@ -13,27 +16,32 @@ export function Finances() {
   );
   return (
     <section>
-      <h2>Revenue and costs</h2>
+      <h2>{t('Revenue and costs')}</h2>
       <div className="toolbar">
         <label>
-          Range{' '}
+          {t('Range')}{' '}
           <select value={values['days']} onChange={(e) => set({ days: e.target.value })}>
             {[7, 30, 90].map((d) => (
               <option key={d} value={d}>
-                {d} days
+                <RichMessage
+                  source={'{slot0} days'}
+                  slots={{ slot0: d }}
+                  singular={'{slot0} day'}
+                  count={Number(d)}
+                />
               </option>
             ))}
           </select>
         </label>
         <label>
-          Payment mode{' '}
+          {t('Payment mode')}{' '}
           <select value={values['mode']} onChange={(e) => set({ mode: e.target.value })}>
             {['live', 'test', 'unclassified'].map((m) => (
               <option key={m}>{m}</option>
             ))}
           </select>
         </label>
-        <button onClick={load.reload}>Refresh</button>
+        <button onClick={load.reload}>{t('Refresh')}</button>
       </div>
       <Loaded load={load}>
         {(data) => {
@@ -42,27 +50,43 @@ export function Finances() {
           return (
             <>
               <p>
-                Updated {dateTime(data.generatedAt)} · UTC periods · {data.mode} payments
+                <RichMessage
+                  source={'Updated {slot0} · UTC periods · {slot1} payments'}
+                  slots={{ slot0: dateTime(data.generatedAt), slot1: data.mode }}
+                />
               </p>
               <p className="notice">
-                Current: {periods.currentStart} through {periods.today} (UTC; today is partial).
-                Previous: {periods.previousStart} through {periods.previousEnd}. Historical coverage
-                may differ between periods.
+                <RichMessage
+                  source={
+                    'Current: {slot0} through {slot1} (UTC; today is partial). Previous: {slot2} through {slot3}. Historical coverage may differ between periods.'
+                  }
+                  slots={{
+                    slot0: periods.currentStart,
+                    slot1: periods.today,
+                    slot2: periods.previousStart,
+                    slot3: periods.previousEnd,
+                  }}
+                />
               </p>
               <p>
-                Credit flows and provider estimates include all recorded activity in this period,
-                regardless of payment mode. Payment fees, hosting, exchange rates and profit are
-                excluded.
+                {t(
+                  'Credit flows and provider estimates include all recorded activity in this period, regardless of payment mode. Payment fees, hosting, exchange rates and profit are excluded.',
+                )}
               </p>
               {data.historicalIncomplete && (
                 <p className="notice warn">
-                  Historical amounts or payment modes are incomplete. {data.unknownPurchases}{' '}
-                  purchases have incomplete historical facts. Refund money is never inferred from
-                  reversed credits.
+                  <RichMessage
+                    source={
+                      'Historical amounts or payment modes are incomplete. {slot0} purchases have incomplete historical facts. Refund money is never inferred from reversed credits.'
+                    }
+                    slots={{ slot0: data.unknownPurchases }}
+                  />
                 </p>
               )}
-              <h3>Confirmed cash</h3>
-              {!data.cash.length && <p>No confirmed cash events in this range and payment mode.</p>}
+              <h3>{t('Confirmed cash')}</h3>
+              {!data.cash.length && (
+                <p>{t('No confirmed cash events in this range and payment mode.')}</p>
+              )}
               {currencies.map((currency) => {
                 const total = (kind: string) =>
                   data.cash
@@ -72,31 +96,40 @@ export function Finances() {
                     .reduce((n, r) => n + r.amount, 0);
                 return (
                   <p key={currency}>
-                    {currency.toUpperCase()}: collected {formatCash(total('payment'), currency)} ·
-                    refunded {formatCash(total('refund'), currency)} · collected less refunds{' '}
-                    {formatCash(total('payment') - total('refund'), currency)}
+                    <RichMessage
+                      source={
+                        '{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}'
+                      }
+                      slots={{
+                        slot0: currency.toUpperCase(),
+                        slot1: formatCash(total(t('payment')), currency),
+                        slot2: formatCash(total(t('refund')), currency),
+                        slot3: formatCash(total(t('payment')) - total(t('refund')), currency),
+                      }}
+                    />
                   </p>
                 );
               })}
               <div
                 tabIndex={0}
                 role="region"
-                aria-label="Confirmed cash table"
+                aria-label={t('Confirmed cash table')}
                 style={{ overflowX: 'auto' }}
               >
                 <table>
                   <caption>
-                    Confirmed cash uses Stripe charge/refund currency units; current and previous
-                    UTC periods. CSV exports preserve exact integer minor units.
+                    {t(
+                      'Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.',
+                    )}
                   </caption>
                   <thead>
                     <tr>
-                      <th>Product</th>
-                      <th>Currency</th>
-                      <th>Period</th>
-                      <th>Event</th>
-                      <th className="numeric">Cash amount</th>
-                      <th className="numeric">Count</th>
+                      <th>{t('Product')}</th>
+                      <th>{t('Currency')}</th>
+                      <th>{t('Period')}</th>
+                      <th>{t('Event')}</th>
+                      <th className="numeric">{t('Cash amount')}</th>
+                      <th className="numeric">{t('Count')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -105,8 +138,11 @@ export function Finances() {
                         <th>{productName(r.product)}</th>
                         <td>{r.currency.toUpperCase()}</td>
                         <td>{r.period}</td>
-                        <td>{r.kind}</td>
-                        <td className="numeric" title={`${r.amount} Stripe minor units`}>
+                        <td>{statusLabel(r.kind)}</td>
+                        <td
+                          className="numeric"
+                          title={t('{value0} Stripe minor units', { value0: r.amount })}
+                        >
                           {formatCash(r.amount, r.currency)}
                         </td>
                         <td className="numeric">{r.events}</td>
@@ -115,31 +151,31 @@ export function Finances() {
                   </tbody>
                 </table>
               </div>
-              <h3>Product credits</h3>
+              <h3>{t('Product credits')}</h3>
               <p>
-                Each product has its own credit unit. Flows cover the current selected range across
-                all payment modes. Usage/refund ledger entries are signed; reserved balances are
-                current snapshots.
+                {t(
+                  'Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.',
+                )}
               </p>
               <div
                 tabIndex={0}
                 role="region"
-                aria-label="Product credit flow table"
+                aria-label={t('Product credit flow table')}
                 style={{ overflowX: 'auto' }}
               >
                 <table>
                   <thead>
                     <tr>
-                      <th>Product</th>
-                      <th>Flow</th>
-                      <th className="numeric">Credits</th>
+                      <th>{t('Product')}</th>
+                      <th>{t('Flow')}</th>
+                      <th className="numeric">{t('Credits')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.credits.map((r, i) => (
                       <tr key={i}>
                         <th>{productName(r.product)}</th>
-                        <td>{r.kind}</td>
+                        <td>{statusLabel(r.kind)}</td>
                         <td className="numeric">{r.amount}</td>
                       </tr>
                     ))}
@@ -154,56 +190,63 @@ export function Finances() {
                   ])
                 }
               >
-                Export credits CSV
+                {t('Export credits CSV')}
               </button>
-              <h3>Estimated provider costs</h3>
+              <h3>{t('Estimated provider costs')}</h3>
               <div
                 tabIndex={0}
                 role="region"
-                aria-label="Provider cost table"
+                aria-label={t('Provider cost table')}
                 style={{ overflowX: 'auto' }}
               >
                 <table>
                   <caption>
-                    Estimates use measured usage and configured, versioned monetary rates. Missing
-                    usage/pricing remains unavailable. An estimate covers priced attempts only; it
-                    is a partial subtotal whenever any attempt has unavailable cost.
+                    {t(
+                      'Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.',
+                    )}
                   </caption>
                   <thead>
                     <tr>
-                      <th>Product / model</th>
-                      <th>Period</th>
-                      <th className="numeric">Attempts</th>
-                      <th className="numeric">Usage measured</th>
-                      <th className="numeric">Priced</th>
-                      <th className="numeric">Unavailable cost</th>
-                      <th className="numeric">Known-cost subtotal</th>
-                      <th>Rate</th>
+                      <th>{t('Product / model')}</th>
+                      <th>{t('Period')}</th>
+                      <th className="numeric">{t('Attempts')}</th>
+                      <th className="numeric">{t('Usage measured')}</th>
+                      <th className="numeric">{t('Priced')}</th>
+                      <th className="numeric">{t('Unavailable cost')}</th>
+                      <th className="numeric">{t('Known-cost subtotal')}</th>
+                      <th>{t('Rate')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.costs.map((r, i) => (
                       <tr key={i}>
                         <th>
-                          {productName(r.product)} / {r.model}
+                          <RichMessage
+                            source={'{slot0} / {slot1}'}
+                            slots={{ slot0: productName(r.product), slot1: r.model }}
+                          />
                         </th>
                         <td>{r.period}</td>
                         <td className="numeric">{r.attempts}</td>
                         <td className="numeric">{r.metered}</td>
                         <td className="numeric">{r.priced}</td>
                         <td className="numeric">
-                          {r.attempts - r.priced} (
-                          {r.attempts
-                            ? Math.round((100 * (r.attempts - r.priced)) / r.attempts)
-                            : 0}
-                          %)
+                          <RichMessage
+                            source={'{slot0} ({slot1}%)'}
+                            slots={{
+                              slot0: r.attempts - r.priced,
+                              slot1: r.attempts
+                                ? Math.round((100 * (r.attempts - r.priced)) / r.attempts)
+                                : 0,
+                            }}
+                          />
                         </td>
                         <td className="numeric">
                           {r.estimatedMicros === null
-                            ? 'Unavailable'
+                            ? t('Unavailable')
                             : `${(r.estimatedMicros / 1000000).toFixed(6)} ${r.currency}`}
                         </td>
-                        <td>{r.rateVersion ?? 'Unavailable'}</td>
+                        <td>{r.rateVersion ?? t('Unavailable')}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -237,7 +280,7 @@ export function Finances() {
                   ])
                 }
               >
-                Export provider costs CSV
+                {t('Export provider costs CSV')}
               </button>
               <button
                 onClick={() =>
@@ -263,7 +306,7 @@ export function Finances() {
                   ])
                 }
               >
-                Export cash CSV
+                {t('Export cash CSV')}
               </button>
             </>
           );

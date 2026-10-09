@@ -1,3 +1,6 @@
+import { MessageError } from '../i18n.tsx';
+import { message as sourceMessage } from '../i18n.tsx';
+import { t, useLocale } from '../i18n.tsx';
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -55,6 +58,7 @@ export type ViewportProps = {
   onScene?: (scene: SceneView) => void;
 };
 export function MeshPreview(props: ViewportProps) {
+  useLocale();
   const canvas = useRef<HTMLCanvasElement>(null),
     latest = useRef(props),
     scene = useRef<SceneView | null>(null);
@@ -109,7 +113,7 @@ export function MeshPreview(props: ViewportProps) {
       pointers.current.clear();
       pen.current = null;
       setReady(false);
-      setError('The 3D canvas was interrupted. Your painting is safe.');
+      setError(sourceMessage('The 3D canvas was interrupted. Your painting is safe.'));
     };
     const restored = () => setAttempt((n) => n + 1);
     target.addEventListener('webglcontextlost', lost);
@@ -124,7 +128,7 @@ export function MeshPreview(props: ViewportProps) {
     });
     async function start() {
       if (!gl)
-        throw new Error(
+        throw new MessageError(
           'Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.',
         );
       const { mesh, view } = await loadMesh(asset);
@@ -148,12 +152,12 @@ export function MeshPreview(props: ViewportProps) {
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-          throw new Error('The 3D shader could not compile.');
+          throw new MessageError('The 3D shader could not compile.');
         gl.attachShader(program, shader);
       }
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS))
-        throw new Error('The 3D canvas could not start.');
+        throw new MessageError('The 3D canvas could not start.');
       gl.useProgram(program);
       const buffer = (kind: number, values: ArrayBufferView) => {
         const b = gl.createBuffer()!;
@@ -304,7 +308,7 @@ export function MeshPreview(props: ViewportProps) {
       requestDraw();
     }
     void start().catch((e: unknown) => {
-      if (!disposed) setError(e instanceof Error ? e.message : 'Preview unavailable.');
+      if (!disposed) setError(e instanceof Error ? e.message : t('Preview unavailable.'));
     });
     return () => {
       disposed = true;
@@ -373,7 +377,8 @@ export function MeshPreview(props: ViewportProps) {
       <canvas
         ref={canvas}
         aria-label={
-          props.label ?? `Paint directly on the 3D ${props.model.name.toLowerCase()} model`
+          props.label ??
+          t('Paint directly on the 3D {value0} model', { value0: props.model.name.toLowerCase() })
         }
         onContextMenu={(e) => e.preventDefault()}
         onPointerDown={(e) => {
@@ -474,14 +479,14 @@ export function MeshPreview(props: ViewportProps) {
         )}
       {!ready && !error && (
         <div className="skin-canvas-message" role="status">
-          Preparing your model…
+          {t('Preparing your model…')}
         </div>
       )}
       {error && (
         <div className="skin-canvas-message" role="alert">
-          <p>{props.interactive === false ? 'Preview unavailable' : error}</p>
+          <p>{props.interactive === false ? t('Preview unavailable') : error}</p>
           {props.interactive !== false && (
-            <button onClick={() => setAttempt((n) => n + 1)}>Retry 3D canvas</button>
+            <button onClick={() => setAttempt((n) => n + 1)}>{t('Retry 3D canvas')}</button>
           )}
         </div>
       )}

@@ -23,7 +23,7 @@
   flex-direction: column;
   padding: 16px 12px;
   background: var(--surface);
-  border-right: 1px solid var(--line);
+  border-inline-end: 1px solid var(--line);
   z-index: 10;
   overflow-y: auto;
 }
@@ -67,7 +67,7 @@
   min-width: 28px;
   min-height: 36px;
   padding: 0;
-  margin-left: auto;
+  margin-inline-start: auto;
   font-size: 16px;
   border: 0;
   background: transparent;
@@ -289,7 +289,7 @@ main:focus {
   padding: 20px 16px 12px;
 }
 .sidebar-close {
-  margin-left: auto;
+  margin-inline-start: auto;
   padding: 0;
   min-width: 44px;
 }
@@ -318,7 +318,7 @@ main:focus {
   display: block;
   position: fixed;
   top: 60px;
-  left: 14px;
+  inset-inline-start: 14px;
   padding: 0;
   width: 44px;
   z-index: 11;
@@ -332,7 +332,7 @@ main:focus {
 .sidebar-collapsed .app-sidebar .app-about[open] nav {
   position: fixed;
   bottom: 100px;
-  left: 72px;
+  inset-inline-start: 72px;
   width: 240px;
   padding: 16px;
   background: var(--surface);
@@ -343,14 +343,17 @@ main:focus {
 .sidebar-collapsed .app-sidebar .sidebar-account .chip span {
   display: none;
 }
-.sidebar-collapsed .app-sidebar .sidebar-account button {
+.sidebar-collapsed .app-sidebar .sidebar-account :is(button, .btn) {
   font-size: var(--text-xs);
   padding: 0 2px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .sidebar-collapsed .app-sidebar .nav a:is(:hover, :focus-visible) .rail-tooltip {
   display: block;
   position: absolute;
-  left: calc(100% + 12px);
+  inset-inline-start: calc(100% + 12px);
   background: var(--surface);
   color: var(--ink);
   padding: 8px 12px;
@@ -385,7 +388,7 @@ main:focus {
     display: block;
     position: fixed;
     top: 60px;
-    left: 14px;
+    inset-inline-start: 14px;
     padding: 0;
     width: 44px;
     z-index: 11;
@@ -399,7 +402,7 @@ main:focus {
   .app-sidebar .app-about[open] nav {
     position: fixed;
     bottom: 100px;
-    left: 72px;
+    inset-inline-start: 72px;
     width: 240px;
     padding: 16px;
     background: var(--surface);
@@ -410,14 +413,17 @@ main:focus {
   .app-sidebar .sidebar-account .chip span {
     display: none;
   }
-  .app-sidebar .sidebar-account button {
+  .app-sidebar .sidebar-account :is(button, .btn) {
     font-size: var(--text-xs);
     padding: 0 2px;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
   .app-sidebar .nav a:is(:hover, :focus-visible) .rail-tooltip {
     display: block;
     position: absolute;
-    left: calc(100% + 12px);
+    inset-inline-start: calc(100% + 12px);
     background: var(--surface);
     color: var(--ink);
     padding: 8px 12px;
@@ -548,7 +554,7 @@ main:focus {
 .app-about[open] nav {
   position: fixed;
   bottom: 112px;
-  left: 12px;
+  inset-inline-start: 12px;
   width: 240px;
   max-height: calc(100dvh - 160px);
   overflow-y: auto;
@@ -579,4 +585,24 @@ main:focus {
     width: fit-content;
     flex-grow: 0;
   }
+}
+
+.language-preference label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: var(--text-sm);
+}
+.language-preference select {
+  width: 100%;
+  min-width: 0;
+}
+.sidebar-utilities:has(.language-preference) {
+  flex-wrap: wrap;
+}
+.language-preference {
+  width: 100%;
+}
+:root[dir='rtl'] .app-sidebar {
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--line);
 }

@@ -1,3 +1,4 @@
+import { t } from '../messages.ts';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { MusicRelease } from '@glob2/protocol';
 
@@ -143,7 +144,7 @@ export function useMusicPlayback(
           });
         };
         worker.onerror = () => {
-          if (engine.current === owned) fail('The music decoder could not be loaded.');
+          if (engine.current === owned) fail(t('The music decoder could not be loaded.'));
         };
         worker.onmessage = (event: MessageEvent<{ ready?: boolean; error?: string }>) => {
           if (!alive.current || engine.current !== owned) return;

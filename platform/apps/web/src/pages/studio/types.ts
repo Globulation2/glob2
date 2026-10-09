@@ -1,3 +1,4 @@
+import { getLocale } from '../../messages.ts';
 import { mergeStudioThread } from '../../components/studio/history.ts';
 import type {
   StudioRequest,
@@ -37,7 +38,7 @@ export const STAGES: Stage[] = [
 export const preview = (v: Delivered) =>
   `/api/v1/maps/${v.map_id}/versions/${v.map_hash}/preview.webp`;
 export const price = (p: Wallet['packs'][number]) =>
-  new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(
+  new Intl.NumberFormat(getLocale(), { style: 'currency', currency: p.currency }).format(
     p.amount / 100,
   );
 export const mergeThread = mergeStudioThread<Thread>;

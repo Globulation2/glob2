@@ -68,7 +68,7 @@
 }
 .building-ai-variant dd {
   margin: 0;
-  text-align: right;
+  text-align: end;
 }
 .building-ai-variant pre {
   max-height: 360px;
@@ -148,7 +148,7 @@
   background: var(--surface-2);
 }
 .bas-message.user {
-  margin-left: 1rem;
+  margin-inline-start: 1rem;
   background: var(--surface, #344435);
 }
 .bas-message p {

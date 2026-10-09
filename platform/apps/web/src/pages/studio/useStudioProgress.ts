@@ -1,3 +1,5 @@
+import { MessageError } from '../../messages.ts';
+import { t } from '../../messages.ts';
 import { useEffect, useState } from 'react';
 import { request } from '../../api.ts';
 import { ROOT, type Progress } from './types.ts';
@@ -24,13 +26,15 @@ export function useStudioProgress(
             !Array.isArray(value.artifacts) ||
             !Array.isArray(value.checks)
           )
-            throw new Error('Stage details are not available for this version.');
+            throw new MessageError('Stage details are not available for this version.');
           setProgress(value);
           setProgressError('');
         })
         .catch((e) => {
           if (!abort.signal.aborted) {
-            setProgressError(e instanceof Error ? e.message : 'Stage details could not be loaded.');
+            setProgressError(
+              e instanceof Error ? e.message : t('Stage details could not be loaded.'),
+            );
             retry = setTimeout(load, 3000);
           }
         });

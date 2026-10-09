@@ -44,7 +44,9 @@ export function pageLimit(value: string | undefined, fallback: number, max: numb
   if (value === undefined || value === '') return fallback;
   const n = Number(value);
   if (!Number.isInteger(n) || n < 1 || n > max) {
-    throw apiError('bad_request', `limit must be an integer from 1 to ${max}.`);
+    throw apiError('bad_request', 'limit must be an integer from 1 to {p0}.', undefined, {
+      p0: String(max),
+    });
   }
   return n;
 }

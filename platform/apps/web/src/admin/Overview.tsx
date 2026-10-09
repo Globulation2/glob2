@@ -1,3 +1,5 @@
+import { getLocale } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import type { AdminAnalytics } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { LineChart } from '../components/LineChart.tsx';
@@ -9,6 +11,7 @@ import { dateTime } from '../format.ts';
 import { downloadCsv, measureName, productName, completionStats } from './presentation.ts';
 
 export function Overview() {
+  useLocale();
   const { values, set } = useAdminFilters({ days: '30' });
   const load = useLoad(
     (signal) =>
@@ -20,19 +23,24 @@ export function Overview() {
   );
   return (
     <section>
-      <h2>Overview</h2>
+      <h2>{t('Overview')}</h2>
       <div className="toolbar">
         <label>
-          Range{' '}
+          {t('Range')}{' '}
           <select value={values['days']} onChange={(e) => set({ days: e.target.value })}>
             {[7, 30, 90].map((d) => (
               <option key={d} value={d}>
-                {d} days
+                <RichMessage
+                  source={'{slot0} days'}
+                  slots={{ slot0: d }}
+                  singular={'{slot0} day'}
+                  count={Number(d)}
+                />
               </option>
             ))}
           </select>
         </label>
-        <button onClick={load.reload}>Refresh</button>
+        <button onClick={load.reload}>{t('Refresh')}</button>
       </div>
       <Loaded load={load}>
         {(data) => {
@@ -56,13 +64,25 @@ export function Overview() {
           return (
             <>
               <p>
-                Updated {dateTime(data.generatedAt)} · UTC days ·{' '}
-                {data.collection ? 'Collection enabled' : 'Collection disabled'}
+                <RichMessage
+                  source={'Updated {slot0} · UTC days · {slot1}'}
+                  slots={{
+                    slot0: dateTime(data.generatedAt),
+                    slot1: data.collection ? t('Collection enabled') : t('Collection disabled'),
+                  }}
+                />
               </p>
               <p className="notice">
-                Reporting range: {cutoff} through {today} (UTC). Today is still in progress; the
-                previous {data.days} days are complete calendar days. History may be incomplete;
-                comparisons use recorded observations only.
+                <RichMessage
+                  source={
+                    'Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.'
+                  }
+                  slots={{ slot0: cutoff, slot1: today, slot2: data.days }}
+                  singular={
+                    'Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.'
+                  }
+                  count={Number(data.days)}
+                />
               </p>
               <div
                 style={{
@@ -72,63 +92,108 @@ export function Overview() {
                 }}
               >
                 <article className="card">
-                  <h3>Players online</h3>
+                  <h3>{t('Players online')}</h3>
                   <p>
-                    {data.live.playersOnline} within {data.live.activeWindowMinutes} minutes
+                    <RichMessage
+                      source={'{slot0} within {slot1} minutes'}
+                      slots={{
+                        slot0: data.live.playersOnline,
+                        slot1: data.live.activeWindowMinutes,
+                      }}
+                    />
                   </p>
                 </article>
                 <article className="card">
-                  <h3>Matches</h3>
+                  <h3>{t('Matches')}</h3>
                   <p>
-                    {data.live.liveMatches} live · {data.live.matchesToday} in the last 24 hours
+                    <RichMessage
+                      source={'{slot0} live · {slot1} in the last 24 hours'}
+                      slots={{ slot0: data.live.liveMatches, slot1: data.live.matchesToday }}
+                    />
                   </p>
-                  <Link to="/admin/matches">Inspect matches</Link>
+                  <Link to="/admin/matches">{t('Inspect matches')}</Link>
                 </article>
                 <article className="card">
-                  <h3>Active accounts</h3>
+                  <h3>{t('Active accounts')}</h3>
                   <p>
-                    {data.active.daily} today · {data.active.weekly} in 7 days ·{' '}
-                    {data.active.monthly} in 30 days
+                    <RichMessage
+                      source={'{slot0} today · {slot1} in 7 days · {slot2} in 30 days'}
+                      slots={{
+                        slot0: data.active.daily,
+                        slot1: data.active.weekly,
+                        slot2: data.active.monthly,
+                      }}
+                    />
                   </p>
                   <p>
-                    Registered: {data.active.registered.daily} today ·{' '}
-                    {data.active.registered.weekly} weekly · {data.active.registered.monthly}{' '}
-                    monthly
+                    <RichMessage
+                      source={'Registered: {slot0} today · {slot1} weekly · {slot2} monthly'}
+                      slots={{
+                        slot0: data.active.registered.daily,
+                        slot1: data.active.registered.weekly,
+                        slot2: data.active.registered.monthly,
+                      }}
+                    />
                   </p>
                   <p>
-                    Guests: {data.active.guests.daily} today · {data.active.guests.weekly} weekly ·{' '}
-                    {data.active.guests.monthly} monthly
+                    <RichMessage
+                      source={'Guests: {slot0} today · {slot1} weekly · {slot2} monthly'}
+                      slots={{
+                        slot0: data.active.guests.daily,
+                        slot1: data.active.guests.weekly,
+                        slot2: data.active.guests.monthly,
+                      }}
+                    />
                   </p>
-                  <p>Authenticated account activity; anonymous visitors are excluded.</p>
+                  <p>{t('Authenticated account activity; anonymous visitors are excluded.')}</p>
                 </article>
                 <article className="card">
-                  <h3>Human match participants</h3>
+                  <h3>{t('Human match participants')}</h3>
                   <p>
-                    {data.participants.current} unique accounts · previous period{' '}
-                    {data.participants.previous}
+                    <RichMessage
+                      source={'{slot0} unique accounts · previous period {slot1}'}
+                      slots={{
+                        slot0: data.participants.current,
+                        slot1: data.participants.previous,
+                      }}
+                    />
                   </p>
                 </article>
               </div>
-              <p>{data.live.queues?.map((q) => `${q.id}: ${q.searching} searching`).join(' · ')}</p>
-              <div className="toolbar">
-                <Link to="/admin/reports">Review reports</Link>
-                <Link to="/admin/operations">Review operations</Link>
-                <Link to="/admin/content">Inspect library content</Link>
-                <Link to="/admin/finances">Revenue and costs</Link>
-              </div>
-              <h3>Needs attention</h3>
               <p>
-                {data.attention['reports'] ?? 0} open reports · {data.attention['uncertain'] ?? 0}{' '}
-                uncertain requests · {data.attention['failedJobs'] ?? 0} failed engine jobs
+                {data.live.queues
+                  ?.map((q) =>
+                    t('{value0}: {count} searching', { value0: q.id, count: q.searching }),
+                  )
+                  .join(' · ')}
               </p>
-              <h3>Activity trends</h3>
+              <div className="toolbar">
+                <Link to="/admin/reports">{t('Review reports')}</Link>
+                <Link to="/admin/operations">{t('Review operations')}</Link>
+                <Link to="/admin/content">{t('Inspect library content')}</Link>
+                <Link to="/admin/finances">{t('Revenue and costs')}</Link>
+              </div>
+              <h3>{t('Needs attention')}</h3>
               <p>
-                Each point is a recorded UTC day. Gaps have no recorded measurement and are not
-                interpolated or treated as zero. Hover or touch a point for its value; the daily
-                table below provides the same values.
+                <RichMessage
+                  source={
+                    '{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs'
+                  }
+                  slots={{
+                    slot0: data.attention['reports'] ?? 0,
+                    slot1: data.attention['uncertain'] ?? 0,
+                    slot2: data.attention['failedJobs'] ?? 0,
+                  }}
+                />
+              </p>
+              <h3>{t('Activity trends')}</h3>
+              <p>
+                {t(
+                  'Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.',
+                )}
               </p>
               <LineChart
-                title="Daily active accounts"
+                title={t('Daily active accounts')}
                 xDomain={xDomain}
                 maxGap={86400000}
                 dots
@@ -145,7 +210,7 @@ export function Overview() {
                 xFormat={(x) => new Date(x).toISOString().slice(5, 10)}
               />
               <LineChart
-                title="Match activity"
+                title={t('Match activity')}
                 xDomain={xDomain}
                 maxGap={86400000}
                 dots
@@ -161,29 +226,31 @@ export function Overview() {
                 }))}
                 xFormat={(x) => new Date(x).toISOString().slice(5, 10)}
               />
-              <h3>Average successful completion time</h3>
+              <h3>{t('Average successful completion time')}</h3>
               <p>
-                Measured from creation to completion, grouped by request creation day. Only
-                successful requests/jobs with a known completion time contribute; late completions
-                update their original period.
+                {t(
+                  'Measured from creation to completion, grouped by request creation day. Only successful requests/jobs with a known completion time contribute; late completions update their original period.',
+                )}
               </p>
               <div
                 tabIndex={0}
                 role="region"
-                aria-label="Completion time comparison table"
+                aria-label={t('Completion time comparison table')}
                 style={{ overflowX: 'auto' }}
               >
                 <table>
                   <caption>
-                    Mean seconds per successful delivery, with the number of measured completions.
+                    {t(
+                      'Mean seconds per successful delivery, with the number of measured completions.',
+                    )}
                   </caption>
                   <thead>
                     <tr>
-                      <th>Product</th>
-                      <th className="numeric">Current mean</th>
-                      <th className="numeric">Current samples</th>
-                      <th className="numeric">Previous mean</th>
-                      <th className="numeric">Previous samples</th>
+                      <th>{t('Product')}</th>
+                      <th className="numeric">{t('Current mean')}</th>
+                      <th className="numeric">{t('Current samples')}</th>
+                      <th className="numeric">{t('Previous mean')}</th>
+                      <th className="numeric">{t('Previous samples')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -198,8 +265,8 @@ export function Overview() {
                         b = completionStats(previous, metric);
                       const meanText = (mean: number | null) =>
                         mean === null
-                          ? 'Unavailable'
-                          : mean.toLocaleString(undefined, { maximumFractionDigits: 1 }) + ' s';
+                          ? t('Unavailable')
+                          : mean.toLocaleString(getLocale(), { maximumFractionDigits: 1 }) + ' s';
                       return (
                         <tr key={metric}>
                           <th>{productName(metric.slice(9))}</th>
@@ -221,27 +288,33 @@ export function Overview() {
                   ])
                 }
               >
-                Export activity CSV
+                {t('Export activity CSV')}
               </button>
               <div
                 tabIndex={0}
                 role="region"
-                aria-label="Activity comparison table"
+                aria-label={t('Activity comparison table')}
                 style={{ overflowX: 'auto' }}
               >
                 <table>
                   <caption>
-                    Current {data.days} days and previous {data.days} days. Activity totals count
-                    account-days; the active-account cards count distinct accounts. Studio/job
-                    statuses use request creation dates. Publications count versions; recorded
-                    downloads use each library’s existing counting rules.
+                    <RichMessage
+                      source={
+                        'Current {slot0} days and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.'
+                      }
+                      slots={{ slot0: data.days, slot1: data.days }}
+                      singular={
+                        'Current {slot0} day and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.'
+                      }
+                      count={Number(data.days)}
+                    />
                   </caption>
                   <thead>
                     <tr>
-                      <th>Measure</th>
-                      <th className="numeric">Current recorded</th>
-                      <th className="numeric">Previous recorded</th>
-                      <th className="numeric">Change</th>
+                      <th>{t('Measure')}</th>
+                      <th className="numeric">{t('Current recorded')}</th>
+                      <th className="numeric">{t('Previous recorded')}</th>
+                      <th className="numeric">{t('Change')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -257,9 +330,9 @@ export function Overview() {
                           <th>
                             {measureName(key.split(' · ')[0] ?? key, key.split(' · ')[1] ?? '')}
                           </th>
-                          <td className="numeric">{a.toLocaleString()}</td>
-                          <td className="numeric">{b.toLocaleString()}</td>
-                          <td className="numeric">{(a - b).toLocaleString()}</td>
+                          <td className="numeric">{a.toLocaleString(getLocale())}</td>
+                          <td className="numeric">{b.toLocaleString(getLocale())}</td>
+                          <td className="numeric">{(a - b).toLocaleString(getLocale())}</td>
                         </tr>
                       );
                     })}
@@ -267,20 +340,20 @@ export function Overview() {
                 </table>
               </div>
               <details>
-                <summary>Daily values</summary>
+                <summary>{t('Daily values')}</summary>
                 <div
                   tabIndex={0}
                   role="region"
-                  aria-label="Daily activity table"
+                  aria-label={t('Daily activity table')}
                   style={{ overflowX: 'auto' }}
                 >
                   <table>
                     <thead>
                       <tr>
-                        <th>UTC day</th>
-                        <th>Metric</th>
-                        <th>Dimension</th>
-                        <th className="numeric">Value</th>
+                        <th>{t('UTC day')}</th>
+                        <th>{t('Metric')}</th>
+                        <th>{t('Dimension')}</th>
+                        <th className="numeric">{t('Value')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -289,35 +362,48 @@ export function Overview() {
                           <td>{m.day}</td>
                           <td>{measureName(m.metric, m.dimension)}</td>
                           <td>{m.dimension}</td>
-                          <td className="numeric">{m.value.toLocaleString()}</td>
+                          <td className="numeric">{m.value.toLocaleString(getLocale())}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               </details>
-              <h3>Top library content by lifetime recorded downloads</h3>
+              <h3>{t('Top library content by lifetime recorded downloads')}</h3>
               <p>
-                All-time library totals; this ranking does not change with the selected reporting
-                range. Counts follow each library’s rules and do not represent unique people.
+                {t(
+                  'All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.',
+                )}
               </p>
               {data.topContent.map((c) => (
                 <p key={c.library + c.id}>
-                  <Link to={c.href}>{c.name}</Link> · {c.library} · {c.downloads ?? 'Unavailable'}{' '}
-                  downloads
+                  <RichMessage
+                    source={'{slot0} · {slot1} · {slot2} downloads'}
+                    slots={{
+                      slot0: <Link to={c.href}>{c.name}</Link>,
+                      slot1: c.library,
+                      slot2: c.downloads ?? t('Unavailable'),
+                    }}
+                  />
                 </p>
               ))}
               <details>
-                <summary>Historical coverage</summary>
+                <summary>{t('Historical coverage')}</summary>
                 <p>
-                  Missing historical measurements are unavailable, rather than reconstructed from
-                  last-seen timestamps. Current periods may be partial. Retained account markers
-                  cover 90 days; anonymous daily totals cover 24 months.
+                  {t(
+                    'Missing historical measurements are unavailable, rather than reconstructed from last-seen timestamps. Current periods may be partial. Retained account markers cover 90 days; anonymous daily totals cover 24 months.',
+                  )}
                 </p>
                 {data.coverage.map((c) => (
                   <p key={c.metric}>
-                    {c.metric}: since {c.since}
-                    {c.historicalIncomplete ? ' · incomplete historical data' : ''}
+                    <RichMessage
+                      source={'{slot0}: since {slot1}{slot2}'}
+                      slots={{
+                        slot0: c.metric,
+                        slot1: c.since,
+                        slot2: c.historicalIncomplete ? t(' · incomplete historical data') : '',
+                      }}
+                    />
                   </p>
                 ))}
               </details>

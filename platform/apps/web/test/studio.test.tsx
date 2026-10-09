@@ -55,14 +55,14 @@ beforeEach(() => {
         if (failures-- > 0) throw new Error('Network response lost');
         if (rejectedStatus)
           return new Response(
-            JSON.stringify({ code: 'bad_request', message: 'Please adjust your request.' }),
+            JSON.stringify({ code: 'bad_request', message: 'Invalid request body.' }),
             { status: rejectedStatus },
           );
         return new Response(JSON.stringify({ id: 'request' }), { status: 200 });
       }
       if (path.endsWith(`/threads/${id}`) && failedSnapshotReads-- > 0)
         return new Response(
-          JSON.stringify({ code: 'unavailable', message: 'History temporarily unavailable.' }),
+          JSON.stringify({ code: 'unavailable', message: 'The request could not be completed.' }),
           { status: 503 },
         );
       if (path.endsWith('/updates'))
@@ -144,7 +144,7 @@ it('releases a definitively rejected submission so the draft can be corrected', 
   fireEvent.change(composer, { target: { value: 'Original request' } });
   rejectedStatus = 400;
   fireEvent.click(screen.getByRole('button', { name: 'Send' }));
-  await screen.findByText('Please adjust your request.');
+  await screen.findByText('Invalid request body.');
   expect(screen.queryByRole('button', { name: 'Retry the same request' })).toBeNull();
   expect(sessionStorage.getItem('studio-pending:owner:thread')).toBeNull();
   expect(sessionStorage.getItem('studio-draft:owner:thread')).toBe('Original request');
@@ -165,7 +165,7 @@ it('does not offer to resubmit an accepted message when refreshing history fails
   fireEvent.change(composer, { target: { value: 'Accepted message' } });
   failedSnapshotReads = 1;
   fireEvent.click(screen.getByRole('button', { name: 'Send' }));
-  await screen.findByText('History temporarily unavailable.');
+  await screen.findByText('The request could not be completed.');
   expect(writes).toHaveLength(1);
   expect(screen.queryByRole('button', { name: 'Retry the same request' })).toBeNull();
   expect(sessionStorage.getItem('studio-pending:owner:thread')).toBeNull();
@@ -181,7 +181,7 @@ it('lets a rejected first project use corrected prompt and settings', async () =
   fireEvent.change(composer, { target: { value: 'Original landscape' } });
   rejectedStatus = 400;
   fireEvent.click(screen.getByRole('button', { name: 'Send' }));
-  await screen.findByText('Please adjust your request.');
+  await screen.findByText('Invalid request body.');
   expect(sessionStorage.getItem('studio-created:owner')).toBeNull();
   rejectedStatus = 0;
   fireEvent.change(composer, { target: { value: 'Corrected landscape' } });

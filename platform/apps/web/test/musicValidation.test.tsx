@@ -19,7 +19,7 @@ it('summarizes only the latest candidate and preserves non-pass statuses', () =>
   ];
   expect(latestMusicChecks(checks).find((c) => c.label === 'seam')?.status).toBe('pass');
   const view = render(<MusicValidation checks={checks} latestAttempts />);
-  expect(screen.getByText('1 passed · 0 findings · 1 waived · 1 skipped · 1 pending')).toBeTruthy();
+  expect(screen.getByText('1 passed · 0 findings · 1 Waived · 1 Skipped · 1 Pending')).toBeTruthy();
   expect(view.container.querySelectorAll('.music-check')).toHaveLength(4);
   expect(view.container.querySelectorAll('.music-check[data-status="fail"]')).toHaveLength(0);
   expect(view.container.querySelector('.music-technical')?.hasAttribute('open')).toBe(false);
