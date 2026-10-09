@@ -1,0 +1,14 @@
+{
+  "head": "9142c0cf1582ac3162d658bd9ac774420774a161",
+  "base": "d912223f4bf6c76961e84c3698b4d44884daea2a",
+  "environment": "Linux x86_64, Ubuntu GCC 15.2.0, native SDL 3.4.16 / OpenGL via Xvfb",
+  "build": "release=1, CCACHE=1; native patched SDL library prefix selected via LINKFLAGS",
+  "results": {
+    "touch_cases": 4,
+    "touch_failed": 0,
+    "translation_cases": 5,
+    "translation_failed": 0,
+    "translation_structural_errors": 0
+  },
+  "scope": "UI presentation and existing order dispatch; no simulation, save, replay, network or runtime dependency changes"
+}

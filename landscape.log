@@ -1,0 +1,91 @@
+Settings::load("preferences.txt") : error, can't open file.
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+libEGL warning: pci id for fd 17: 10de:1e84, driver (null)
+
+pci id for fd 20: 10de:1e84, driver (null)
+pci id for fd 21: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+pci id for fd 20: 10de:1e84, driver (null)
+pci id for fd 21: 10de:1e84, driver (null)
+libEGL warning: egl: failed to create dri2 screen
+CAPTURE game-map 1299 600
+FIXTURE_CHECKSUM 1849999527
+CAPTURE game-tutorial 1299 600
+CAPTURE game-build 1299 600
+CAPTURE game-build-bottom 1299 600
+CAPTURE game-flags 1299 600
+CAPTURE game-build-left-thumb 1299 600
+CAPTURE gesture-zone-00 1299 600
+CAPTURE gesture-zone-01 1299 600
+CAPTURE gesture-zone-02 1299 600
+CAPTURE gesture-zone-03 1299 600
+CAPTURE gesture-zone-04 1299 600
+CAPTURE gesture-zone-05 1299 600
+CAPTURE gesture-zone-06 1299 600
+CAPTURE gesture-zone-07 1299 600
+CAPTURE gesture-zone-08 1299 600
+CAPTURE game-zone-paint 1299 600
+CAPTURE game-brush-rail 1299 600
+CAPTURE game-brush-undo 1299 600
+CAPTURE game-zoom-drag 1299 600
+CAPTURE game-tactical-tools 1299 600
+CAPTURE game-lens-legend 1299 600
+CAPTURE game-map-peek 1299 600
+CAPTURE game-stats-sheet 1299 600
+CAPTURE game-placement 1299 600
+CAPTURE game-inspector-0 1299 600
+CAPTURE game-inspector-1 1299 600
+CAPTURE game-inspector-3 1299 600
+CAPTURE game-inspector-4 1299 600
+CAPTURE game-inspector-production 1299 600
+CAPTURE game-inspector-unit 1299 600
+CAPTURE game-inspector-dial-drag 1299 600
+CAPTURE game-inspector-left-thumb 1299 600
+CAPTURE game-inspector-enemy 1299 600
+CAPTURE game-inspector-damaged 1299 600
+CAPTURE game-inspector-inn 1299 600
+CAPTURE game-inspector-hospital 1299 600
+CAPTURE game-inspector-hospital-construction 1299 600
+CAPTURE game-inspector-racetrack 1299 600
+CAPTURE game-inspector-racetrack-construction 1299 600
+CAPTURE game-inspector-swimmingpool 1299 600
+CAPTURE game-inspector-swimmingpool-construction 1299 600
+CAPTURE game-inspector-barracks 1299 600
+CAPTURE game-inspector-barracks-construction 1299 600
+CAPTURE game-inspector-school 1299 600
+CAPTURE game-inspector-school-construction 1299 600
+CAPTURE game-inspector-defencetower 1299 600
+CAPTURE game-inspector-market 1299 600
+CAPTURE game-inspector-stonewall 1299 600
+CAPTURE game-inspector-stonewall-construction 1299 600
+CAPTURE game-inspector-warflag 1299 600
+CAPTURE game-inspector-clearingflag 1299 600
+CAPTURE game-inspector-destroy-confirmation 1299 600
+CAPTURE game-inspector-explorationflag 1299 600
+CAPTURE game-pause 1299 600
+CAPTURE game-options 1299 600
+CAPTURE game-alliances 1299 600
+CAPTURE game-objectives 1299 600
+CAPTURE game-briefing 1299 600
+CAPTURE game-save 1299 600
+CAPTURE game-load 1299 600
+CAPTURE game-victory 1299 600
+CAPTURE game-draw 1299 600
+CAPTURE replay-menu 1299 600
+CAPTURE replay-controls 1299 600
+CAPTURE game-chat 1299 600
+CAPTURE gesture-build-00 1299 600
+CAPTURE gesture-build-01 1299 600
+CAPTURE gesture-build-02 1299 600
+CAPTURE gesture-build-03 1299 600
+CAPTURE gesture-build-04 1299 600
+CAPTURE gesture-build-05 1299 600
+CAPTURE gesture-build-06 1299 600
+CAPTURE gesture-build-07 1299 600
+CAPTURE gesture-build-08 1299 600
+CAPTURE gesture-build-09 1299 600
+CAPTURE gesture-build-10 1299 600
+CAPTURE gesture-build-11 1299 600
+Gesture fixture did not produce exactly one construction order
