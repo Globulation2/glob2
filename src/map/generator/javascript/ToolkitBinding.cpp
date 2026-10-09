@@ -9,6 +9,8 @@
 #include <filesystem>
 #include <mutex>
 #include <cstring>
+#include <cstdlib>
+#include <iostream>
 
 namespace MapGeneration::JavaScript
 {
@@ -145,6 +147,16 @@ void Binding::initializeModules()
 		},
 		this);
 }
+void Binding::tracePrototype(const char *stage, const std::type_info &type,
+                             JSValueConst value, bool inserted)
+{
+	const auto *enabled = std::getenv("GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS");
+	if (!enabled || std::strcmp(enabled, "1") != 0)
+		return;
+	std::cerr << "GENERATOR_PROTOTYPE " << package.id << " " << stage
+	          << " type=" << type.name() << " object=" << JS_VALUE_GET_PTR(value)
+	          << " inserted=" << inserted << " cache=" << prototypes.size() << "\n";
+}
 Binding::~Binding()
 {
 	// Native callbacks may own JS values; release these while their context is alive.
@@ -159,7 +171,13 @@ Binding::~Binding()
 		JS_FreeValue(ctx, value);
 	cachedDesigns.clear();
 	for (auto &[type, value] : prototypes)
+	{
+		const auto *enabled = std::getenv("GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS");
+		if (enabled && std::strcmp(enabled, "1") == 0)
+			std::cerr << "GENERATOR_PROTOTYPE " << package.id << " release type="
+			          << type.name() << " object=" << JS_VALUE_GET_PTR(value) << "\n";
 		JS_FreeValue(ctx, value);
+	}
 	prototypes.clear();
 	operations.clear();
 	if (ctx)

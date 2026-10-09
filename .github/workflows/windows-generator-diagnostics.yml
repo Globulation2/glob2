@@ -13,6 +13,7 @@ permissions:
   contents: read
 env:
   GLOB2_DEV_MODE: isolated
+  GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS: "1"
 jobs:
   diagnose:
     runs-on: windows-latest
@@ -133,7 +134,7 @@ jobs:
         if: ${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}
         run: >-
           python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release
-          --filter 'ScriptGenerator/Optional JavaScript examples*' --jobs 1 --timeout 180
+          --filter 'ScriptGenerator/*' --jobs 1 --timeout 180
           --junit artifacts/tests/engine-junit.xml
       - name: Capture teardown leaks and live stack
         if: ${{ !cancelled() && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' }}

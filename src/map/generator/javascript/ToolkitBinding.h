@@ -283,6 +283,7 @@ class Binding
 		validateNative(result);
 		return result;
 	}
+	void tracePrototype(const char *, const std::type_info &, JSValueConst, bool);
 	template <class T>
 	JSValue handle(T *pointer, std::shared_ptr<void> owner = {}, bool ro = false,
 				   std::shared_ptr<bool> alive = {})
@@ -290,14 +291,21 @@ class Binding
 		using U = std::remove_const_t<T>;
 		if (!owner && !alive && !leases.empty())
 			alive = leases.back();
-		auto found = prototypes.find(typeid(U));
-		if (found == prototypes.end())
+		// Insertion's returned iterator is authoritative: a separate lookup can
+		// miss a type that insertion recognizes in the MinGW release build.
+		// Reserve the cache slot before creating its owned QuickJS value.
+		auto [found, inserted] = prototypes.emplace(typeid(U), JS_UNDEFINED);
+		if (inserted)
 		{
 			auto prototype = JS_NewObject(ctx);
-			check(prototype);
-			prototypes.emplace(typeid(U), prototype);
+			if (JS_IsException(prototype))
+			{
+				prototypes.erase(found);
+				fail();
+			}
+			found->second = prototype;
+			tracePrototype("retain", typeid(U), prototype, inserted);
 			attach<U>(prototype);
-			found = prototypes.find(typeid(U));
 		}
 		allocate(sizeof(NativeBox) + 64); // Box and the tracking-set node.
 		Script::JSValueOwner value(ctx, JS_NewObjectProtoClass(ctx, found->second, nativeClass));

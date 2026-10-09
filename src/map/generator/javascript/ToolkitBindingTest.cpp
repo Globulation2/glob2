@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ToolkitBinding.h"
+#include "ToolkitRecords.h"
 #include "GenerationWork.h"
 #include "EngineFixtures.h"
 #include <nlohmann/json.hpp>
@@ -36,6 +37,30 @@ std::string invoke(const std::string &body)
 	}
 }
 } // namespace
+
+TEST_CASE("Repeated point handles share one owned prototype" *
+		  doctest::test_suite("ScriptGenerator"))
+{
+	auto p = package();
+	GenerationRequest request;
+	GenerationContext context(request);
+	JSGen::Binding runtime(*p, request, nullptr, &context, false, false);
+	MapGeneratorPoint point(7, 11);
+	const MapGeneratorPoint readonly(13, 17);
+	Script::JSValueOwner first(runtime.ctx, runtime.handle(&point));
+	Script::JSValueOwner prototype(runtime.ctx, JS_GetPrototype(runtime.ctx, first.get()));
+	for (unsigned repeat = 0; repeat < 4; ++repeat)
+	{
+		Script::JSValueOwner value(runtime.ctx, repeat % 2 ? runtime.handle(&readonly)
+															 : runtime.handle(&point));
+		Script::JSValueOwner again(runtime.ctx, JS_GetPrototype(runtime.ctx, value.get()));
+		CHECK(JS_VALUE_GET_PTR(again.get()) == JS_VALUE_GET_PTR(prototype.get()));
+		CHECK(runtime.prototypes.size() == 1);
+		Script::JSValueOwner x(runtime.ctx, JS_GetPropertyStr(runtime.ctx, value.get(), "x"));
+		runtime.check(x.get());
+		CHECK(runtime.read<int>(x.get()) == (repeat % 2 ? 13 : 7));
+	}
+}
 
 TEST_CASE("Moved callback arguments retain their converted storage" *
 		  doctest::test_suite("ScriptGenerator"))

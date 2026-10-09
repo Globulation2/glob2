@@ -99,7 +99,10 @@ the replay under GDB, not
 the original test or the shipped program.
 The manual `windows-generator-diagnostics.yml` workflow takes an exact `revision`,
 builds the engine harness with the normal MinGW release flags/dependencies, and
-runs only the optional generator example case before retaining the GDB replay.
+runs the ScriptGenerator suite, including optional examples and prototype ownership,
+before retaining a GDB replay of any failed case.
+It enables `GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS=1` to retain prototype cache
+insertion/release types and addresses; ordinary runs leave this trace disabled.
 It preserves that case's failure and is focused diagnostic evidence, not a full
 Windows or development checkpoint.
 
