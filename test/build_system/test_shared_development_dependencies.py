@@ -19,6 +19,25 @@ class SharedDevelopmentDependenciesTests(unittest.TestCase):
     def tearDown(self):
         dev_store.finish()
 
+    def test_build_paths_avoid_spaces_and_metadata_relocates_to_managed_home(self):
+        with tempfile.TemporaryDirectory() as task:
+            home = Path(task) / 'Application Support' / 'Glob2'
+            seen = []
+            def upstream(prefix, work, **kwargs):
+                seen.append((prefix, work))
+                self.assertNotIn(' ', str(prefix))
+                self.assertNotIn(' ', str(work))
+                build(prefix, work)
+                (prefix / 'library.pc').write_text('prefix=' + str(prefix) + '\n')
+            with patch.dict(os.environ, {'GLOB2_DEV_HOME': str(home), 'GLOB2_DEV_MODE': 'shared'}), patch.object(shared_dependencies, 'fingerprint', return_value={'version': 1}):
+                installed = shared_dependencies.ensure(upstream, home / 'local', home / 'work')
+                self.assertEqual((installed / 'library.pc').read_text(), 'prefix=' + str(installed) + '\n')
+                self.assertTrue(shared_dependencies.verify(installed, {'version': 1}))
+                self.assertFalse(seen[0][0].exists())
+                reused = shared_dependencies.ensure(upstream, home / 'local', home / 'work')
+                self.assertEqual(installed, reused)
+                self.assertEqual(len(seen), 1)
+
     def test_reuse_and_corruption_detection(self):
         with tempfile.TemporaryDirectory() as task, patch.dict(os.environ, {'GLOB2_DEV_HOME': task, 'GLOB2_DEV_MODE': 'shared'}), patch.object(shared_dependencies, 'fingerprint', return_value={'version': 1}):
             first = shared_dependencies.ensure(build, Path(task) / 'one', Path(task) / 'work')
