@@ -62,3 +62,7 @@ and loading the initial save. `generator-studio.spec.js` compares all browser
 variants against these native-derived references and separately exercises the
 interactive preview, Watch AI play, pause and host teardown. Report an interactive
 threaded fallback as unavailable coverage, even when headless threaded checks pass.
+
+The generator reference also records engine and simulation versions. Save-version
+advances can change the frozen snapshot bytes and generated-map checksum trace;
+refresh these fields from native execution before comparing browser builds.

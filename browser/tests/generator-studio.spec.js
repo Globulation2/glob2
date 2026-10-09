@@ -65,6 +65,9 @@ for (const variant of ["serial", "threaded"])
     );
     // Native-derived references remain mandatory even without local evidence files.
     expect(report.packageHash).toBe(traceFixture.packageHash);
+    expect(report.versionMinor).toBe(traceFixture.versionMinor);
+    expect(report.simRevision).toBe(traceFixture.simRevision);
+    expect(report.simVersion).toBe(traceFixture.simVersion);
     expect(report.checksum).toBe(traceFixture.checksum);
     expect(report.worldFingerprint).toBe(traceFixture.worldFingerprint);
     const frame = page
