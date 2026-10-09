@@ -3,6 +3,7 @@
   "description": "Portable regressions run completely on primary GCC 13. These suites repeat on secondary native toolchains to protect serialization, scheduling and scripting boundaries. CLI continuation and per-tick evidence run separately on each selected platform.",
   "engine_filters": [
     "*Save*/*",
+    "BuildingAreaEffects/*",
     "MapTiling/*",
     "*Replay*/*",
     "*Gradient*/*",

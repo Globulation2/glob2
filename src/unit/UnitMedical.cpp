@@ -140,7 +140,7 @@ void Unit::handleMagic(void)
 						if (owner->attackableTeams() & targetTeamMask)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
-							Sint32 damage = (attackForce + experienceLevel) * owner->game->gameHeader.getGlassCannonScale() - enemyUnit->getRealArmor(true);
+							Sint32 damage = applyAreaAttack((attackForce + experienceLevel) * owner->game->gameHeader.getGlassCannonScale()) - enemyUnit->getRealArmor(true);
 							if (damage > 0)
 							{
 								TeamStats::recordDamage(

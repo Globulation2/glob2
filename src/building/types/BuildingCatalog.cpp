@@ -202,7 +202,7 @@ BuildingSemantics semantics(const Json& j)
 {
     keys(j, {"replenishMaterials", "ammunitionMaterial", "replenishResources", "requiredWorkerLevel", "assignmentLimit", "regenerationPerTick", "repairable", "constructionCost", "repairCost", "placeable", "instantPlacement", "relocatable", "occupiesGround",
         "admittedUnitMask", "workPriorityBias", "sightSharing", "feeding", "healing", "training", "trainingInParallel",
-        "production", "market", "projectileDamage", "projectileBuildingDamage", "ammunitionResource", "ammunitionCost"}, "semantics");
+        "production", "market", "projectileDamage", "projectileBuildingDamage", "ammunitionResource", "ammunitionCost", "areaEffects"}, "semantics");
     BuildingSemantics s;
     if (j.contains("replenishMaterials") && j.contains("replenishResources")) fail("semantics", "conflicting replenishment aliases");
     if (j.contains("ammunitionMaterial") && j.contains("ammunitionResource")) fail("semantics", "conflicting ammunition aliases");
@@ -220,6 +220,18 @@ BuildingSemantics semantics(const Json& j)
     if (sight == "food") s.sightSharing = BuildingSightSharing::Food;
     else if (sight == "exchange") s.sightSharing = BuildingSightSharing::Exchange;
     else if (sight != "other") fail("sightSharing", "unknown category");
+    if (j.contains("areaEffects"))
+    {
+        const auto& a = j.at("areaEffects"); auto& out = s.areaEffects;
+        keys(a, {"radius", "cost", "healingQ8", "damageQ8", "feedingQ8", "attackBuffBps",
+            "attackWeaknessBps", "armorBuffBps", "armorWeaknessBps", "fertilityBuffBps", "fertilityWeaknessBps"}, "areaEffects");
+#define READ_AREA(n) optional(a, #n, out.n)
+        READ_AREA(radius); READ_AREA(healingQ8); READ_AREA(damageQ8); READ_AREA(feedingQ8);
+        READ_AREA(attackBuffBps); READ_AREA(attackWeaknessBps); READ_AREA(armorBuffBps); READ_AREA(armorWeaknessBps);
+        READ_AREA(fertilityBuffBps); READ_AREA(fertilityWeaknessBps);
+#undef READ_AREA
+        if (a.contains("cost")) out.cost = cost(a.at("cost"));
+    }
     if (j.contains("feeding")) s.feeding = service(j.at("feeding"));
     if (j.contains("healing")) s.healing = service(j.at("healing"));
     if (j.contains("projectileDamage")) array(j.at("projectileDamage"), s.projectileDamage, "projectileDamage");
@@ -300,6 +312,16 @@ Json semanticsJson(const BuildingSemantics& s)
     j["repairCost"] = costJson(s.repairCost);
     j["sightSharing"] = s.sightSharing == BuildingSightSharing::Food ? "food" : s.sightSharing == BuildingSightSharing::Exchange ? "exchange" : "other";
     j["feeding"] = serviceJson(s.feeding); j["healing"] = serviceJson(s.healing);
+    // Omit default data to preserve canonical bytes and hashes of existing catalogs.
+    if (s.areaEffects != BuildingAreaEffectsSpec{})
+    {
+        const auto& a = s.areaEffects;
+        j["areaEffects"] = {{"radius", a.radius}, {"cost", costJson(a.cost)},
+            {"healingQ8", a.healingQ8}, {"damageQ8", a.damageQ8}, {"feedingQ8", a.feedingQ8},
+            {"attackBuffBps", a.attackBuffBps}, {"attackWeaknessBps", a.attackWeaknessBps},
+            {"armorBuffBps", a.armorBuffBps}, {"armorWeaknessBps", a.armorWeaknessBps},
+            {"fertilityBuffBps", a.fertilityBuffBps}, {"fertilityWeaknessBps", a.fertilityWeaknessBps}};
+    }
     auto& training = j["training"] = Json::object();
     for (int a = 0; a < NB_ABILITY; ++a)
     {
@@ -791,6 +813,14 @@ void BuildingsTypes::resolveAndValidate()
             if (!b.isBuildingSite && s.constructionCost[r]) fail(b.key, "constructionCost belongs to a construction site");
         }
         compileCost(s.feeding); compileCost(s.healing);
+        compileCost(s.areaEffects);
+        const auto& a = s.areaEffects;
+        range(a.radius, 0, 65535, b.key + ".areaEffects.radius");
+        for (auto value : {a.healingQ8, a.damageQ8, a.feedingQ8}) range(value, 0, 65535, b.key + ".areaEffects.serviceQ8");
+        for (auto value : {a.attackBuffBps, a.armorBuffBps, a.fertilityBuffBps}) range(value, 0, 30000, b.key + ".areaEffects.buffBps");
+        for (auto value : {a.attackWeaknessBps, a.armorWeaknessBps, a.fertilityWeaknessBps}) range(value, 0, 10000, b.key + ".areaEffects.weaknessBps");
+        if (a.enabled() && (b.isBuildingSite || b.isVirtual)) fail(b.key, "areaEffects require a completed physical building");
+
         for (int ability=0; ability<WALK; ++ability)
             if (s.training[ability].enabled) fail(b.key, "idle movement primitives cannot be trained; configure walk, swim, or fly instead");
         s.trainingCostMask = 0;

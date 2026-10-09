@@ -447,8 +447,9 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 
 	if (sol.ticksLeft < target.ticks)
 	{
-		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, runtime->projectileBuildingDamage, target.x, target.y, posX-1, posY-1, runtime->width+2, runtime->height+2);
+		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, applyAreaAttack(runtime->projectileBuildingDamage), target.x, target.y, posX-1, posY-1, runtime->width+2, runtime->height+2);
 		b->unitDamage = runtime->projectileDamage;
+		for (auto& damage : b->unitDamage) damage=applyAreaAttack(damage);
 		b->sourceTeam = owner->teamNumber;
 		++owner->stats.measurements.shots[GameplayMeasurements::TOWER];
 		s->bullets.push_front(b);

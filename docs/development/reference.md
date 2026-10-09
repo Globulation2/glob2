@@ -1171,8 +1171,9 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Engine snapshots and scheduled AI decisions introduced replay floor 143 and network
   protocol 61; building artwork raised the protocol to 62. Vertex terrain set replay
   floor 146; greedy-only fetching (format 147) and scheduled building gradients
-  (format 148) set the current replay floor before growth integration. Delayed resource growth sets
-  replay floor 149 and network protocol 67.
+  (format 148) set the replay floor before growth integration. Delayed resource growth
+  introduced replay floor 149 and network protocol 67. Building area effects set the
+  current replay floor to 150 and network protocol to 68; the save floor remains 58.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
@@ -1473,8 +1474,9 @@ rare overflows grow the vector normally. Headless results expose
 `growth_capacityGrowthBatches` and `growth_maxProposals` to measure its coverage.
 Capacity and pooling decisions do not affect simulation results.
 
-Resource-growth integration writes save format 149 (replay floor 149, network
-protocol 67). The save compatibility floor remains 58. Released master layouts
+Resource-growth integration introduced save format 149, replay floor 149 and
+network protocol 67. Building area effects advance the current save/replay format
+to 150 and network protocol to 68. The save compatibility floor remains 58. Released master layouts
 146–148 and historical growth-draft layouts with the same numbers are resolved
 before loading game state: the map catalog or a bounded terrain-block probe
 identifies vertex versus legacy corner storage. Historical growth layouts retain
@@ -2154,6 +2156,10 @@ at the same sampling density as the full view. If a page cannot fit the device o
 allocation fails, an emergency composed-tile path preserves coverage but can differ
 in fractional resampling and HD mip filtering. None of these caches enter saves,
 simulation checksums or orders.
+
+Native software fog fills and shade tiles snap shared edges in backing pixels.
+Their pixel fill/blit operations retain clipping and flush queued geometry before
+direct writes, avoiding fractional zoom and HiDPI seams.
 
 `SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
 repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,

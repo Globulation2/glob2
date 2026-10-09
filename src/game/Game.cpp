@@ -75,6 +75,7 @@ void Game::configureBuildingCatalog()
 	for (size_t id=0; id<buildingsTypes.size(); ++id) previous.push_back(routingFlags(buildingsTypes.get(id)));
 	buildingsTypes.configureExperiments(gameHeader.getExperiments().keys());
     buildingCapabilityIndex = std::make_unique<const AIPlanning::BuildingCapabilityIndex>(buildingsTypes);
+	areaEffects.configure(*this);
 	bool routingChanged=false;
 	for (size_t id=0; id<previous.size(); ++id) routingChanged |= previous[id]!=routingFlags(buildingsTypes.get(id));
 	if (routingChanged) map.invalidateSupplierLocations();
@@ -162,6 +163,7 @@ void Game::clearGame()
 		}
 	}
 
+	areaEffects.reset();
 	// Clear build projects
 	buildProjects.clear();
 

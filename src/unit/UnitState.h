@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <array>
 
 #include "MaterialPacket.h"
 #include "UnitConsts.h"
@@ -109,6 +110,9 @@ struct UnitState
 	// Authoritative animation clocks; copied with the rest of unit state.
 	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
 	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
+	// Keep optional aura bookkeeping after existing hot simulation fields.
+	std::array<Uint8,3> areaServiceRemainders{};
+	Uint32 areaLastPulseTick = Uint32(-1);
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);
 static_assert(std::is_standard_layout_v<UnitState>);

@@ -144,7 +144,7 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 	statValue(stream, "transferredIn", stat.transferredIn);
 	statValue(stream, "transferredOut", stat.transferredOut);
 	enterStatSection(stream,"consumed");
-	const int purposes = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG ? GameplayMeasurements::PURPOSES : GameplayMeasurements::HEALING_COST;
+	const int purposes = versionMinor >= FILE_FORMAT_VERSION_AREA_EFFECTS ? GameplayMeasurements::PURPOSES : versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG ? GameplayMeasurements::AREA_UPKEEP : GameplayMeasurements::HEALING_COST;
 	for (int i=0; i<purposes; ++i)
 	{
 		enterStatSection(stream,i); statValue(stream,"value",stat.consumed[i]); leaveStatSection(stream);

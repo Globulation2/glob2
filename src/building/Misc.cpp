@@ -131,6 +131,8 @@ void Building::kill(int diagnosticRemoval)
 	}
 
 	buildingState=DEAD;
+	areaFunded=false; areaFundingType=-1; areaFundingTeam=-1;
+	owner->game->areaEffects.changed(gid);
 	owner->stockSuppliers.remove(this);
 	owner->directStockSuppliers.remove(this);
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
@@ -544,6 +546,7 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	// Rust port should preserve the arithmetic-shift behavior — i.e.
 	// `((cs as i32) >> 1) as u32` — not `cs.rotate_right(1)`.
 	int cs=0;
+	if (areaFunded || areaFundingType>=0) cs ^= Uint32(areaFundingType+1)*0x9e3779b9u ^ areaFundingTick ^ (Uint32(areaFundingTeam+1)<<24) ^ (areaFunded ? 0x61757261u : 0);
 
 	cs^=typeNum;
 	if (checkSumsVector)
@@ -675,4 +678,29 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		checkSumsVector->push_back(cs);// [24]
 	
 	return cs;
+}
+
+int Building::getEffectiveArmor() const
+{
+	if (!type->armor || !owner->game->areaEffects.enabled())
+		return type->armor;
+	const auto *base = constructionResultState == REPAIR && constructionOriginTypeNum >= 0
+						   ? owner->game->buildingsTypes.get(constructionOriginTypeNum)
+						   : type;
+	const int x = posX - type->decLeft + base->decLeft + (base->width - 1) / 2;
+	const int y = posY - type->decTop + base->decTop + (base->height - 1) / 2;
+	const auto factor = owner->game->areaEffects.at(
+		BuildingAreaEffects::BuildingArmor, owner->teamNumber, owner->map->coordToIndex(x, y));
+	return factor == BuildingAreaEffects::Neutral ? type->armor
+												  : BuildingAreaEffects::scale(type->armor, factor);
+}
+int Building::applyAreaAttack(int value) const
+{
+	if (!value || !owner->game->areaEffects.enabled())
+		return value;
+	const auto factor = owner->game->areaEffects.at(
+		BuildingAreaEffects::BuildingAttack, owner->teamNumber,
+		owner->map->coordToIndex(posX + (type->width - 1) / 2, posY + (type->height - 1) / 2));
+	return factor == BuildingAreaEffects::Neutral ? value
+												  : BuildingAreaEffects::scale(value, factor);
 }
