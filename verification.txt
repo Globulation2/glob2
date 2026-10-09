@@ -1,0 +1,7 @@
+PR986 verification
+Commit6f030805317329f8f619896dc1f1809484798a1e basea1796e346810e0d71e16acd1fbf764ff046343b0. Fetched416654a8e5ca72c11b32564728beb0b0cd00fab8 before final acceptance; later terrain changes do not overlap these compatibility/relay assertions.
+Linux x86_64 GCC15.2, local SDL3 prefix. Engine debug build: GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" scons --build=build/native-coverage-torus release=0 -j8 build/native-coverage-torus/test/glob2-engine-tests
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy build/native-coverage-torus/test/glob2-engine-tests --test-suite=JavaScriptCompatibility =>7cases427assertionsPASS, covering acceptance/rejection and released-save boundaries.
+Relay release build: GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" scons role=relay release=1 -j8 relay
+build/linux/relay/release/src/glob2-relay-tests =>20cases363assertionsPASS.
+Original ClangJavaScript assertion failures and relay900tickduration failure preserved. Changes only explicit test expectations67->68 and36000->30000, consistent with existing protocol and30Hz production values. No gate weakened or production simulation changed. No newSIM_REVISIONneeded. Cross-platform full engine matrix not rerun; focused native tests cover changed assertions.
