@@ -1,0 +1,9 @@
+{
+  "head": "66d18d0b4d2cc574296c2b7e6e123aa0c73b21fe",
+  "base": "2ccc6864a7ac0bfff5a31ded28de572e91a76fde",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "python": "3.14.4",
+  "command": "python3 -m unittest discover -s src/ai/maxima -p \"*Test.py\"",
+  "before": "61 run, 1 failure, 2 skipped",
+  "after": "61 run, 0 failures, 2 skipped"
+}
