@@ -36,7 +36,9 @@ class HighResolutionIntegrationHarness
 {
     static void finishAssets()
     {
-        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(30);
+        // Preparing every HD frame can exceed 30 seconds in debug/coverage builds.
+        // This is a completion guard, not a startup performance assertion.
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(120);
         bool complete = false;
         do {
             complete = Toolkit::pollAssets(4);
