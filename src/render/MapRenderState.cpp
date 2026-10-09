@@ -5,6 +5,7 @@
 #include "unit/render/ColonySkinPreview.h"
 #include "GlobalContainer.h"
 #include "SoftwareTerrainCache.h"
+#include "OverviewTerrainCache.h"
 
 MapRenderState::MapRenderState() = default;
 MapRenderState::~MapRenderState() = default;

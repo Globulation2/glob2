@@ -2,6 +2,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "TorusView.h"
+#include "render/SoftwareTerrainCache.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -304,7 +305,8 @@ bool TorusView::prepareRenderTarget()
     GLint maximumTexture = 0, maximumViewport[2] = {0, 0};
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maximumTexture);
     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maximumViewport);
-    const int limit = std::min({textureLimit, maximumTexture, maximumViewport[0], maximumViewport[1]});
+    const int limit = std::min({textureLimit > 0 ? textureLimit : maximumTexture,
+        maximumTexture, maximumViewport[0], maximumViewport[1]});
     if (tiles.empty() && !failed)
     {
 #ifdef GLOB2_WEBGL2
@@ -316,7 +318,8 @@ bool TorusView::prepareRenderTarget()
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        for (pixelsPerCell = 32; pixelsPerCell >= 1; pixelsPerCell /= 2)
+        const int captureDensity = SoftwareTerrainCache::capturePixelsPerCell(worldW, worldH);
+        for (pixelsPerCell = captureDensity; pixelsPerCell >= 1; pixelsPerCell /= 2)
         {
             auto candidate = TorusTextureTiles::layout(worldW * 32, worldH * 32, limit, pixelsPerCell);
             bool okay = !candidate.empty();
@@ -344,7 +347,7 @@ bool TorusView::prepareRenderTarget()
             {
                 tiles = std::move(candidate);
                 tileMeshDirty = true;
-                if (pixelsPerCell < 32)
+                if (pixelsPerCell < captureDensity)
                     fprintf(stderr, "Torus view: allocation pressure reduced capture to %d pixels per map cell\n", pixelsPerCell);
                 break;
             }

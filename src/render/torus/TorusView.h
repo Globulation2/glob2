@@ -65,7 +65,7 @@ class TorusView
     std::vector<TorusTextureTiles::Tile> tiles;
     int pixelsPerCell = 32;
     // Private test seams: simulate smaller hardware and allocation pressure.
-    int textureLimit = 2048, allocationPixelLimit = 0;
+    int textureLimit = 0, allocationPixelLimit = 0;
     float tileOffsetU = -100, tileOffsetV = -100;
     bool tileMeshDirty = true;
     Uint32 lastFrame;

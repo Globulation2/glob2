@@ -666,10 +666,14 @@ bookkeeping and resident texture reservations. The additional 128 MiB lets
 inactive zoom densities retain their CPU pixels without sacrificing sampling
 quality. Android and browser builds retain the 128 MiB total ceiling.
 These are maximum memory allowances, not up-front allocations.
+Generated/edited pages keep alpha-weighted mip filtering but upload uncompressed
+textures. Driver-side DXT encoding is reserved for artwork with prepared mip
+chains; repeating that encoding on animated terrain updates stalls rendering.
 Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
 composed pixel), so a phase change re-blends their textures instead of
 re-sampling the boundary; coverage depends only on the cell, never on the phase.
-These masks have their own budget (8 MiB software, 32 MiB GPU); when it is full,
+These masks have their own budget (8 MiB software, 32 MiB GPU, or 128 MiB for
+reduced desktop GPU pages that cover many animated cells); when it is full,
 masks of pages not drawn in the current frame are released oldest first, and cells that still do not fit compose without one.
 Composition always blends through the same mask encoding, so a kept mask and a
 fresh one give identical pixels. HD oversampling falls from 4× to 2× or
@@ -689,7 +693,12 @@ Density selection uses map zoom multiplied by the active target raster scale,
 including HiDPI windows and explicit offscreen capture scales. This preserves
 output detail independently of the window hosting a capture. It is chosen for the complete
 view and shared by cached and streamed pages; tiled map captures also share the
-whole capture's density at narrow edges. The budget includes a fixed allowance
+whole capture's density at narrow edges. A torus capture additionally reduces
+its atlas and terrain pages until the complete map's CPU pages and renderer
+reservations fit their budgets together. This avoids evicting earlier capture
+tiles while drawing later ones. Small maps keep native atlas density; large maps
+can soften fine detail when magnified. The atlas uses the device's texture and
+viewport limits before splitting into tiles. The budget includes a fixed allowance
 for recipes and bookkeeping plus density-dependent pixel storage. Increasing it
 can retain more detail but does not remove the need to handle oversized views.
 If the complete view cannot retain all of its textures simultaneously, but its
@@ -699,6 +708,14 @@ avoids repeated boundary composition near page-alignment budget thresholds.
 Only a view whose CPU pages and one upload cannot fit uses composition streaming.
 First-time composition still evaluates native terrain before reduction; this
 policy removes repeated work on warm frames, not the cost of a cold frame.
+
+Overview palette samples have a separate 32 MiB CPU page cache. Its pages keep
+canonical world coordinates across viewport movement, atlas tiles and zooms.
+Vertex windows include the contextual contour halo; terrain seeds, immutable
+terrain/resource registries and map asset bundles also invalidate the samples.
+Resource tint is refreshed when its type or discovery changes. Texture animation
+and blend opacity do not change the overview palette. The viewport scratch image
+continues to use the original 4×4 samples per cell and rendering path.
 
 The `TerrainPresentation` tests cover zoomed-out cache admission and warm reuse,
 wrapped views, alpha-weighted coast reduction, terrain-edit invalidation,

@@ -137,4 +137,7 @@ class SoftwareTerrainCache
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
 	std::uint64_t cacheReductions() const { return reductions; }
 	std::size_t maskBytes() const { return *maskTotal; }
+	// A torus visits every page each frame. Keep its complete terrain working
+	// set resident instead of selecting density independently for each tile.
+	static int capturePixelsPerCell(int width, int height);
 };
