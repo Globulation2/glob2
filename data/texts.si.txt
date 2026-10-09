@@ -5967,32 +5967,32 @@ Znova naključno izberi videz terena
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Generatorji zemljevidov
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Uvozite paket generatorja, nato pa pri ustvarjanju zemljevida ali igre izberite njegovo pokrajino.
 [settings Import map generator]
-Import map generator
+Uvozi generator zemljevidov
 [settings No custom map generators installed.]
-No custom map generators installed.
+Nameščen ni noben generator zemljevidov po meri.
 [settings Replace package]
-Replace package
+Zamenjaj paket
 [settings Export package]
-Export package
+Izvozi paket
 [settings Remove generator]
-Remove generator
+Odstrani generator
 [settings Saving generator library…]
-Saving generator library…
+Shranjevanje knjižnice generatorjev…
 [settings Could not read generator package.]
-Could not read generator package.
+Paketa generatorja ni bilo mogoče prebrati.
 [settings Generator library saved.]
-Generator library saved.
+Knjižnica generatorjev je shranjena.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Podatkov ni bilo mogoče shraniti. Prejšnja knjižnica je ohranjena.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Čakanje na izbiro datoteke ali shranjevanje…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Izbira datotek ni na voljo.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Izvoz paketov ni na voljo.
 [stat band area upkeep]
 Vzdrževanje območja

@@ -5967,32 +5967,32 @@ AI 遙測
 [set library artwork]
 
 [settings Map generators]
-Map generators
+地圖產生器
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+匯入產生器套件，然後在建立地圖或遊戲時選擇其地形。
 [settings Import map generator]
-Import map generator
+匯入地圖產生器
 [settings No custom map generators installed.]
-No custom map generators installed.
+尚未安裝自訂地圖產生器。
 [settings Replace package]
-Replace package
+取代套件
 [settings Export package]
-Export package
+匯出套件
 [settings Remove generator]
-Remove generator
+移除產生器
 [settings Saving generator library…]
-Saving generator library…
+正在儲存產生器庫…
 [settings Could not read generator package.]
-Could not read generator package.
+無法讀取產生器套件。
 [settings Generator library saved.]
-Generator library saved.
+產生器庫已儲存。
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+無法儲存資料。已保留原有產生器庫。
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+正在等待檔案選取或儲存操作…
 [settings File selection is unavailable.]
-File selection is unavailable.
+無法使用檔案選取功能。
 [settings Package export is unavailable.]
-Package export is unavailable.
+無法使用套件匯出功能。
 [stat band area upkeep]
 區域維護

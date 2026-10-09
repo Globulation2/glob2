@@ -5967,32 +5967,32 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [set library artwork]
 
 [settings Map generators]
-Map generators
+マップ生成器
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+生成器パッケージをインポートし、マップやゲームの作成時にその地形を選択してください。
 [settings Import map generator]
-Import map generator
+マップ生成器をインポート
 [settings No custom map generators installed.]
-No custom map generators installed.
+カスタムマップ生成器はインストールされていません。
 [settings Replace package]
-Replace package
+パッケージを置き換え
 [settings Export package]
-Export package
+パッケージをエクスポート
 [settings Remove generator]
-Remove generator
+生成器を削除
 [settings Saving generator library…]
-Saving generator library…
+生成器ライブラリを保存中…
 [settings Could not read generator package.]
-Could not read generator package.
+生成器パッケージを読み込めませんでした。
 [settings Generator library saved.]
-Generator library saved.
+生成器ライブラリを保存しました。
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+データを保存できませんでした。以前のライブラリは保持されます。
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+ファイルの選択または保存処理を待機中…
 [settings File selection is unavailable.]
-File selection is unavailable.
+ファイル選択は利用できません。
 [settings Package export is unavailable.]
-Package export is unavailable.
+パッケージのエクスポートは利用できません。
 [stat band area upkeep]
 範囲効果の維持費

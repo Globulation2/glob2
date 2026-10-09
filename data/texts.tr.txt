@@ -5967,32 +5967,32 @@ Arazi görünümünü yeniden rastgele seç
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Harita oluşturucuları
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Bir oluşturucu paketi içe aktarın, ardından harita veya oyun oluştururken paketin arazisini seçin.
 [settings Import map generator]
-Import map generator
+Harita oluşturucusunu içe aktar
 [settings No custom map generators installed.]
-No custom map generators installed.
+Yüklü özel harita oluşturucusu yok.
 [settings Replace package]
-Replace package
+Paketi değiştir
 [settings Export package]
-Export package
+Paketi dışa aktar
 [settings Remove generator]
-Remove generator
+Oluşturucuyu kaldır
 [settings Saving generator library…]
-Saving generator library…
+Oluşturucu kitaplığı kaydediliyor…
 [settings Could not read generator package.]
-Could not read generator package.
+Oluşturucu paketi okunamadı.
 [settings Generator library saved.]
-Generator library saved.
+Oluşturucu kitaplığı kaydedildi.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Veriler kaydedilemedi. Önceki kitaplık korunuyor.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Dosya seçimi veya depolama bekleniyor…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Dosya seçimi kullanılamıyor.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Paket dışa aktarma kullanılamıyor.
 [stat band area upkeep]
 Alan bakımı

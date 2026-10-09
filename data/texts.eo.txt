@@ -5967,32 +5967,32 @@ Denove hazardigi la aspekton de la tereno
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Mapgeneriloj
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importu generilan pakaĵon, poste elektu ĝian pejzaĝon kiam vi kreas mapon aŭ ludon.
 [settings Import map generator]
-Import map generator
+Importi mapgenerilon
 [settings No custom map generators installed.]
-No custom map generators installed.
+Neniuj propraj mapgeneriloj estas instalitaj.
 [settings Replace package]
-Replace package
+Anstataŭigi pakaĵon
 [settings Export package]
-Export package
+Eksporti pakaĵon
 [settings Remove generator]
-Remove generator
+Forigi generilon
 [settings Saving generator library…]
-Saving generator library…
+Konservado de la generila biblioteko…
 [settings Could not read generator package.]
-Could not read generator package.
+Ne eblis legi la generilan pakaĵon.
 [settings Generator library saved.]
-Generator library saved.
+La generila biblioteko estas konservita.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Ne eblis konservi la datumojn. La antaŭa biblioteko estas retenita.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Atendante dosierelekton aŭ konservadon…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Dosierelekto ne estas disponebla.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Pakaĵeksporto ne estas disponebla.
 [stat band area upkeep]
 Prizorgado de la areo

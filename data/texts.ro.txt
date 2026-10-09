@@ -5967,32 +5967,32 @@ Alege din nou aleatoriu aspectul terenului
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Generatoare de hărți
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importă un pachet de generator, apoi selectează peisajul său când creezi o hartă sau un joc.
 [settings Import map generator]
-Import map generator
+Importă generator de hărți
 [settings No custom map generators installed.]
-No custom map generators installed.
+Nu sunt instalate generatoare de hărți personalizate.
 [settings Replace package]
-Replace package
+Înlocuiește pachetul
 [settings Export package]
-Export package
+Exportă pachetul
 [settings Remove generator]
-Remove generator
+Elimină generatorul
 [settings Saving generator library…]
-Saving generator library…
+Se salvează biblioteca de generatoare…
 [settings Could not read generator package.]
-Could not read generator package.
+Pachetul de generator nu a putut fi citit.
 [settings Generator library saved.]
-Generator library saved.
+Biblioteca de generatoare a fost salvată.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Datele nu au putut fi salvate. Biblioteca anterioară este păstrată.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Se așteaptă selectarea fișierului sau stocarea…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Selectarea fișierelor nu este disponibilă.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Exportul pachetelor nu este disponibil.
 [stat band area upkeep]
 Întreținerea zonei

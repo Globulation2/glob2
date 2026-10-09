@@ -5967,32 +5967,32 @@ Torna a sortejar l’aspecte del terreny
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Generadors de mapes
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importa un paquet de generador i selecciona el seu paisatge quan creïs un mapa o una partida.
 [settings Import map generator]
-Import map generator
+Importa un generador de mapes
 [settings No custom map generators installed.]
-No custom map generators installed.
+No hi ha generadors de mapes personalitzats instal·lats.
 [settings Replace package]
-Replace package
+Substitueix el paquet
 [settings Export package]
-Export package
+Exporta el paquet
 [settings Remove generator]
-Remove generator
+Elimina el generador
 [settings Saving generator library…]
-Saving generator library…
+S’està desant la biblioteca de generadors…
 [settings Could not read generator package.]
-Could not read generator package.
+No s’ha pogut llegir el paquet de generador.
 [settings Generator library saved.]
-Generator library saved.
+S’ha desat la biblioteca de generadors.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+No s’han pogut desar les dades. Es conserva la biblioteca anterior.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+S’està esperant la selecció d’un fitxer o l’emmagatzematge…
 [settings File selection is unavailable.]
-File selection is unavailable.
+La selecció de fitxers no està disponible.
 [settings Package export is unavailable.]
-Package export is unavailable.
+L’exportació de paquets no està disponible.
 [stat band area upkeep]
 Manteniment de l’àrea
