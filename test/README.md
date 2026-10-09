@@ -319,7 +319,9 @@ pre-resource-epoch table, including historical `macos-arm64` rows, is retained i
 `test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The table has no macOS rows;
 they must be measured on macOS before `--require-rows` can pass there; do not copy Linux
 hashes. The five separately verified explicit-design topology comparisons below do
-not establish topology equivalence for every changed golden. The framework reference under
+not establish topology equivalence for every changed golden. The five explicit-design full
+hashes include simulation-revision-40 map-owned placement stocks; their historical
+topology references remain unchanged. The framework reference under
 `docs/map-generators/` describes the remaining rules it enforces.
 
 `MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
