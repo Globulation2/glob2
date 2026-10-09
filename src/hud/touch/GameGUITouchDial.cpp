@@ -35,7 +35,11 @@ bool GameGUITouch::usesDial(const MobileLayout &ui) const
 	const double unit = dial.geometry.unit;
 	const double radius = dial.geometry.rings[0].outer * unit;
 	const auto hud = hudLayout(ui);
-	return dial.geometry.center.y - radius >= hud.minimap.y + hud.minimap.h + 4 * unit &&
+	// The sweep is capped on short landscapes; its occupied arc can fit even
+	// when the unused top of the bounding quadrant extends above the HUD.
+	const double rise = radius * std::sin(dial.geometry.sweepEnd * 3.141592653589793 / 180);
+	return dial.geometry.sweepEnd >= 45 &&
+		dial.geometry.center.y - rise >= hud.minimap.y + hud.minimap.h + 4 * unit &&
 		ui.safe.w >= radius + (dial.portrait ? 16 : InGameTouchTheme::dialChipWidth + 16) * unit &&
 		dial.chips.h >= InGameTouchTheme::dialChipHeight * unit && dialChips(dial).fits;
 }

@@ -2587,15 +2587,26 @@ class GameGUITouchHarness
 				const auto hud = gui.touch->hudLayout(ui);
 				const auto identity = gui.touch->allocationRect();
 				const auto dialGeometry = gui.touch->dialLayout(ui).geometry;
-				require(dialGeometry.center.y - dialGeometry.rings[0].outer * dialGeometry.unit >=
+				require(TouchDial::point(dialGeometry, dialGeometry.rings[0].outer, dialGeometry.sweepEnd).y >=
 						hud.minimap.y + hud.minimap.h,
-						"Allocation rings clear the actual inspector minimap bounds");
+						"The occupied allocation arc clears the inspector minimap bounds");
 				auto approx = [](double a, double b) { return std::abs(a - b) < .5; };
 				require(approx(identity.x, hud.stats.x) && approx(identity.w, hud.stats.w),
 						"Building identity aligns with the rendered stats width");
 				require(approx(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
 						identity.y >= hud.stats.y + hud.stats.h && identity.x + identity.w < hud.minimap.x,
 						"Building identity sits below stats and beside the minimap, bottom aligned");
+				const auto overlaps = [](const auto &a, const auto &b) {
+					return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+				};
+				for (int stat = 0; stat < 6; ++stat)
+				{
+					const auto cell = gui.touch->statRect(hud, stat);
+					require(!overlaps(cell, identity) && !overlaps(cell, hud.minimap),
+						"Stat artwork clears the identity and minimap input regions");
+					for (int other = stat + 1; other < 6; ++other)
+						require(!overlaps(cell, gui.touch->statRect(hud, other)), "Stat readouts do not overlap");
+				}
 				const double pointUnit = gfx->logicalUnitsPerPoint();
 				const GAGCore::ViewPoint close{identity.x + identity.w - 24 * pointUnit, identity.y + identity.h / 2};
 				require(gui.touch->interfaceRegion(close) == 38, "Moved identity close target follows its drawing");
