@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import types
 import tempfile
 import subprocess
 import unittest
@@ -46,13 +47,17 @@ class DevelopmentBuildTests(unittest.TestCase):
                 build_identity(args)
 
     def test_dependency_configuration_skips_query_only_targets(self):
-        import SCons.Script
+        script = types.ModuleType('SCons.Script')
+        script.GetOption = lambda name: False
+        script.COMMAND_LINE_TARGETS = []
+        package = types.ModuleType('SCons')
+        package.Script = script
         for targets, flags, expected in [([], (), True), (['compile_commands.json'], (), False),
                                        (['custom/compile_commands.json'], (), False),
                                        (['compile_commands.json', 'glob2'], (), True),
                                        ([], ('clean',), False), ([], ('no_exec',), False),
                                        ([], ('help',), False)]:
-            with self.subTest(targets=targets, flags=flags), patch.object(SCons.Script, 'COMMAND_LINE_TARGETS', targets), patch.object(SCons.Script, 'GetOption', side_effect=lambda name: name in flags):
+            with self.subTest(targets=targets, flags=flags), patch.dict(sys.modules, {'SCons': package, 'SCons.Script': script}), patch.object(script, 'COMMAND_LINE_TARGETS', targets), patch.object(script, 'GetOption', side_effect=lambda name: name in flags):
                 self.assertEqual(dev_build.can_build_dependencies(), expected)
 
     def test_development_command_preserves_overrides(self):
