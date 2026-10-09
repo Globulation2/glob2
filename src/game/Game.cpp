@@ -20,7 +20,6 @@
 #include "Game.h"
 #include "BuildingArtwork.h"
 #include "ai/BuildingCapabilities.h"
-#include <stdexcept>
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"

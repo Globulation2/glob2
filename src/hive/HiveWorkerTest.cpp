@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "hive/HiveWorker.h"
+#include <nlohmann/json.hpp>
 #include <fstream>
 #include <sstream>
 using Hive::Json;
