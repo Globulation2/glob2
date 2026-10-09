@@ -1,3 +1,4 @@
+#include "PowerOfTwo.h"
 #include "AIMaximaRecon.h"
 
 #include <algorithm>
@@ -14,7 +15,7 @@ namespace
 	{
 		if(size<=0)
 			return 0;
-		value%=size;
+		value=dimensionRemainder(value,size);
 		return value<0 ? value+size : value;
 	}
 

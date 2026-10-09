@@ -94,7 +94,7 @@ int MapGeneration::growUntilSites(const Torus &t, std::vector<unsigned char> &re
 	std::vector<unsigned char> queued(region.size(), 0);
 	const auto offer = [&](int i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (const auto &s : kCardinalSteps)
 		{
 			::MapGeneration::generationCheckpoint();
@@ -120,7 +120,7 @@ int MapGeneration::growUntilSites(const Torus &t, std::vector<unsigned char> &re
 		region.at(i) = 1;
 		if (buildable.at(i))
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int ay = y - size + 1; ay <= y; ++ay)
 			{
 				::MapGeneration::generationCheckpoint();

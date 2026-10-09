@@ -263,7 +263,7 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "spending", .group = Group::Materials, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.consumed); }});
 		const char *keys[M::PURPOSES] = {"[stat band meals]", "[stat band new units]", "[stat band ammunition]",
-										 "[stat band construction]", "[stat band upgrades]", "[stat band healing]", "[stat band training]"};
+										 "[stat band construction]", "[stat band upgrades]", "[stat band healing]", "[stat band training]", "[stat band area upkeep]"};
 		for (int purpose = 0; purpose < M::PURPOSES; ++purpose)
 			m.bands.push_back({keys[purpose], [purpose](const M &s) { return total(s.consumed[purpose]); }});
 		m.composition = true;

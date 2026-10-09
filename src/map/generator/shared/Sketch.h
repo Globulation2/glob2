@@ -122,7 +122,7 @@ int growWater(const Torus &t, std::vector<unsigned char> &water, int seed, int t
 		for (const auto &s : kCardinalSteps)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int next = t.at(tile % t.w + s[0], tile / t.w + s[1]);
+			const int next = t.at(t.remainderX(tile) + s[0], tile / t.w + s[1]);
 			if (eligible(next) && !water.at(next) && queued.at(next) != stamp)
 			{
 				queued.at(next) = stamp;

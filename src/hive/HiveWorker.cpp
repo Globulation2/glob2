@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "HiveWorker.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include <cmath>
@@ -131,8 +132,8 @@ Json query(const Json &s, const std::string &name, const Json &args)
 		int width = s.at("width"), height = s.at("height");
 		auto tile = [&](int tx, int ty) -> Json
 		{
-			tx = (tx % width + width) % width;
-			ty = (ty % height + height) % height;
+			tx = dimensionRemainder(dimensionRemainder(tx, width) + width, width);
+			ty = dimensionRemainder(dimensionRemainder(ty, height) + height, height);
 			return s.at("tiles").at(ty * width + tx);
 		};
 		if (name == "tile")

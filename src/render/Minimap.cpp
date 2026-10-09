@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include "Minimap.h"
 #include "terrain/TerrainCatalogIO.h"
@@ -204,8 +205,8 @@ void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 
 	int xpos = nx - mini_x;
 	int ypos = ny - mini_y;
-	x = (offset_x + (int)((float)(mapW) / (float)(mini_w) * (float)(xpos))) % mapW;
-	y = (offset_y + (int)((float)(mapH) / (float)(mini_h) * (float)(ypos))) % mapH;
+	x = powerOfTwoRemainder(offset_x + (int)((float)(mapW) / (float)(mini_w) * (float)(xpos)), mapW);
+	y = powerOfTwoRemainder(offset_y + (int)((float)(mapH) / (float)(mini_h) * (float)(ypos)), mapH);
 }
 
 

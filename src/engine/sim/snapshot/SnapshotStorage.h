@@ -38,6 +38,7 @@ struct Storage
 	BufferPool<Rules> rules;
 	BufferPool<ResourceFields> resourceFields;
 	BufferPool<Fertility::GrowthCache> growth;
+	BufferPool<BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	// Every live plane of every retained capture may be distinct.
 	BufferPool<std::vector<Uint16>, std::size_t(17) * MapState::PlaneCount> resourcePlanes;
 	Uint64 allocations = 0;

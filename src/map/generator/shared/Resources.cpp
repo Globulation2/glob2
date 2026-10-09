@@ -1,6 +1,7 @@
 #include "GenerationWork.h"
 #include "GenerationFertilityWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
 #include "Resources.h"
@@ -499,7 +500,7 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 	for (int p : flood.visited)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = p % t.w, y = p / t.w;
+		const int x = t.remainderX(p), y = p / t.w;
 		if (map.vertexTerrainAt(x, y) == GRASS && r.dist.at(p) >= clearRadius &&
 			r.dist.at(p) <= exploreLimit)
 			(r.dist.at(p) <= closeRange ? r.closeGrass : r.farGrass)
@@ -641,9 +642,9 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context, const Re
 				::MapGeneration::generationCheckpoint();
 				if (!dx && !dy)
 					continue;
-				const int i = t.at(p % t.w + dx, p / t.w + dy);
+				const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
 				if (!allowedTopup.at(i) || (protectedWalls && (*protectedWalls).at(i)) ||
-					!expendable(i) || !map.isResourceAllowed(i % t.w, i / t.w, resourceType))
+					!expendable(i) || !map.isResourceAllowed(t.remainderX(i), i / t.w, resourceType))
 					continue;
 				best = i;
 				bestDistance = d + 1;
@@ -676,10 +677,10 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context, const Re
 			::MapGeneration::generationCheckpoint();
 			if (dx * dx + dy * dy > 4)
 				continue;
-			const int i = t.at(best % t.w + dx, best / t.w + dy);
+			const int i = t.at(t.remainderX(best) + dx, best / t.w + dy);
 			if (!(*placement).at(i) || !expendable(i))
 				continue;
-			map.setNoResource(i % t.w, i / t.w, 1);
+			map.setNoResource(t.remainderX(i), i / t.w, 1);
 			++result.cleared;
 		}
 	}
@@ -687,7 +688,7 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context, const Re
 	// always gives at least one immediately accessible tile. Only opposite
 	// crops are traded, within two tiles and within the supplied farm mask.
 	result.placed =
-		placeResourceClump(map, context, {best % t.w, best / t.w}, resourceType, 2, placement);
+		placeResourceClump(map, context, {t.remainderX(best), best / t.w}, resourceType, 2, placement);
 	return result;
 }
 } // namespace
@@ -839,7 +840,7 @@ WorkerReach reachFromWorkers(Map &map, int team, int range)
 	for (int p : flood.visited)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (map.isFreeForBuilding(p % t.w, p / t.w, 4, 4))
+		if (map.isFreeForBuilding(t.remainderX(p), p / t.w, 4, 4))
 			++r.sites;
 	}
 	return r;
@@ -879,7 +880,7 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 		for (int p = 0; p < w * h; ++p)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (open.at(p) >= 1 && open.at(p) <= range && map.isResource(p % w, p / w) &&
+			if (open.at(p) >= 1 && open.at(p) <= range && map.isResource(powerOfTwoRemainder(p, w), p / w) &&
 				!(protectedWalls && (*protectedWalls).at(p)))
 				rings.at(open.at(p)).push_back(p);
 		}
@@ -895,7 +896,7 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 			for (const int p : rings.at(ring))
 			{
 				::MapGeneration::generationCheckpoint();
-				map.setNoResource(p % w, p / w, 1);
+				map.setNoResource(powerOfTwoRemainder(p, w), p / w, 1);
 				++clearedTiles;
 			}
 			++clearedRings;
@@ -935,7 +936,7 @@ std::map<MaterialId, ResourceFrontage> materialFrontages(const Map &map, const F
 		for (const auto &step : kCardinalSteps)
 		{
 			::MapGeneration::generationCheckpoint();
-			const auto index = map.coordToIndex(i % t.w + step[0], i / t.w + step[1]);
+			const auto index = map.coordToIndex(t.remainderX(i) + step[0], i / t.w + step[1]);
 			for (unsigned mask = map.materialMaskAt(index); mask; mask &= mask - 1)
 			{
 				::MapGeneration::generationCheckpoint();
@@ -965,7 +966,7 @@ std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &a
 		for (const auto &step : kCardinalSteps)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int x = t.x(i % t.w + step[0]), y = t.y(i / t.w + step[1]);
+			const int x = t.x(t.remainderX(i) + step[0]), y = t.y(i / t.w + step[1]);
 			if (!map.isResource(x, y))
 				continue;
 			const int type = map.getResource(x, y).type;

@@ -87,6 +87,24 @@ struct BuildingPresentationSpec
 	Sint32 connectionGroupId = -1; // compiled, excluded from snapshots
 };
 
+// Optional cold catalog data; does not enlarge BuildingRuntimeTraits.
+struct BuildingAreaEffectsSpec
+{
+    Sint32 radius = 0;
+    BuildingMaterialCost cost{};
+    std::uint16_t costMask = 0;
+    Sint32 healingQ8 = 0, damageQ8 = 0, feedingQ8 = 0;
+    // Positive bonuses and negative weaknesses are independently authored.
+    Sint32 attackBuffBps = 0, attackWeaknessBps = 0;
+    Sint32 armorBuffBps = 0, armorWeaknessBps = 0;
+    Sint32 fertilityBuffBps = 0, fertilityWeaknessBps = 0;
+    bool enabled() const {
+        return healingQ8 || damageQ8 || feedingQ8 || attackBuffBps || attackWeaknessBps ||
+            armorBuffBps || armorWeaknessBps || fertilityBuffBps || fertilityWeaknessBps;
+    }
+    bool operator==(const BuildingAreaEffectsSpec&) const = default;
+};
+
 struct BuildingSemantics
 {
 	MaterialMask replenishMaterialMask = (1u << MaterialCount) - 1;
@@ -103,6 +121,7 @@ struct BuildingSemantics
 	Sint32 workPriorityBias = 1;
 	BuildingSightSharing sightSharing = BuildingSightSharing::Other;
 	BuildingServiceSpec feeding, healing;
+	BuildingAreaEffectsSpec areaEffects;
 	std::array<BuildingTrainingSpec, NB_ABILITY> training{};
 	std::uint16_t trainingCostMask = 0; // compiled union; not serialized
 	BuildingProductionSpec production;

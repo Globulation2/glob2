@@ -105,6 +105,7 @@ CLIENT_SOURCES = (
     'building/TypeSteps.cpp',
     'building/Misc.cpp',
     'building/Services.cpp',
+    'building/AreaEffects.cpp',
     'building/types/Buildings.cpp',
     'building/types/BuildingCatalog.cpp',
     'building/BuildingArtwork.cpp',

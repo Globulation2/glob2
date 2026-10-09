@@ -319,8 +319,8 @@ int roomiestTile(const Torus &t, const std::vector<unsigned char> &region,
 		if (!region.at(i))
 			continue;
 		if (best < 0 || room.at(i) > room.at(best) ||
-			(room.at(i) == room.at(best) && t.dist2(i % t.w, i / t.w, nearX, nearY) <
-												t.dist2(best % t.w, best / t.w, nearX, nearY)))
+			(room.at(i) == room.at(best) && t.dist2(t.remainderX(i), i / t.w, nearX, nearY) <
+												t.dist2(t.remainderX(best), best / t.w, nearX, nearY)))
 			best = i;
 	}
 	return best;
@@ -404,7 +404,7 @@ int widestWalkClearance(const Torus &t, const std::vector<unsigned char> &mask,
 				continue; // stale: this tile was queued again wider, and has been settled already
 			if (goal.at(i))
 				return width;
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int dy = -1; dy <= 1; ++dy)
 			{
 				::MapGeneration::generationCheckpoint();

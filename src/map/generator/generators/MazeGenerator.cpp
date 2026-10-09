@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "MazeGenerator.h"
 #include "Drawing.h"
 #include "Game.h"
@@ -254,7 +255,7 @@ std::vector<CellTile> resourceTilesOfCell(const Map &map, const Torus &t, const 
 	back = side = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (d.labels[i] != cell || map.isResource(x, y))
 			continue;
 		const bool habitat = resourceType >= 0 ? map.terrainSupportsResourceAtByIndex(x, y, resourceType) :
@@ -394,7 +395,7 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 		for (int attempt = 0; attempt < 32 && seed < 0; ++attempt)
 		{
 			const int candidate = pool[context.bounded("resources", pool.size())];
-			if (free[candidate] && map.terrainSupportsResourceAtByIndex(candidate % w, candidate / w, resourceType))
+			if (free[candidate] && map.terrainSupportsResourceAtByIndex(powerOfTwoRemainder(candidate, w), candidate / w, resourceType))
 				seed = candidate;
 		}
 		if (seed < 0)
@@ -405,12 +406,12 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 		int placed = 0;
 		for (size_t head = 0; head < frontier.size() && placed < size; ++head, ++placed)
 		{
-			const int x = frontier[head] % w, y = frontier[head] / w;
+			const int x = powerOfTwoRemainder(frontier[head], w), y = frontier[head] / w;
 			map.setResourceByIndex(x, y, resourceType, 1);
 			for (const auto &s : steps)
 			{
 				const size_t n = size_t(map.normalizeY(y + s[1])) * w + map.normalizeX(x + s[0]);
-				if (free[n] && map.terrainSupportsResourceAtByIndex(n % w, n / w, resourceType))
+				if (free[n] && map.terrainSupportsResourceAtByIndex(powerOfTwoRemainder(n, w), n / w, resourceType))
 				{
 					free[n] = 0;
 					frontier.push_back(int(n));
@@ -525,7 +526,7 @@ std::vector<unsigned char> layRoads(TerrainSketch &sketch, const Torus &t, const
 		if (road[i] && sketch[i] == GRASS)
 		{
 			sketch[i] = SAND;
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			onRoad[i] = onRoad[t.at(x - 1, y)] = onRoad[t.at(x, y - 1)] =
 				onRoad[t.at(x - 1, y - 1)] = 1;
 		}
@@ -576,13 +577,13 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < t.size(); ++i)
 		if (stone.stone[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	const auto chamber = [&](int team)
 	{
 		std::vector<unsigned char> home(size_t(t.size()), 0);
 		for (int i = 0; i < t.size(); ++i)
-			home[i] = d.labels[i] == homes[team] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
+			home[i] = d.labels[i] == homes[team] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 		return home;
 	};
 	// placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
@@ -672,7 +673,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const RegionLeak leak = firstRegionLeak(t, reached, d.labels, [&](int a, int b)
 											{ return joined[size_t(a) * n + b] != 0; });
 	if (leak.tile >= 0)
-		return "A maze wall leaks at (" + std::to_string(leak.tile % t.w) + ", " +
+		return "A maze wall leaks at (" + std::to_string(t.remainderX(leak.tile)) + ", " +
 			   std::to_string(leak.tile / t.w) + ").";
 	return "";
 }

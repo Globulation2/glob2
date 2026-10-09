@@ -87,8 +87,8 @@ std::vector<unsigned char> potentialBuildingTiles(const Map &map)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		open.at(i) = map.terrainPropertiesAt(i).buildable && !map.isResource(i % t.w, i / t.w) &&
-					 map.getBuilding(i % t.w, i / t.w) == NOGBID;
+		open.at(i) = map.terrainPropertiesAt(i).buildable && !map.isResource(t.remainderX(i), i / t.w) &&
+					 map.getBuilding(t.remainderX(i), i / t.w) == NOGBID;
 	}
 	return open;
 }
@@ -181,7 +181,7 @@ BuildingArrangement arrangeBuildingGrid(const Torus &t, const std::vector<unsign
 	for (size_t head = 0; missing && head < queue.size(); ++head)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int tile = queue.at(head), x = tile % t.w, y = tile / t.w;
+		const int tile = queue.at(head), x = t.remainderX(tile), y = tile / t.w;
 		for (int n : {t.at(x - 1, y), t.at(x + 1, y), t.at(x, y - 1), t.at(x, y + 1)})
 		{
 			::MapGeneration::generationCheckpoint();

@@ -220,7 +220,7 @@ bool carvePass(Layout &L, GenerationContext &context, int a, int b, std::vector<
 										if (!L.ridge[c])
 											return true;
 										for (const Pass &p : L.passes)
-											if (t.chebyshev(c % t.w, c / t.w, p.x, p.y) <
+											if (t.chebyshev(t.remainderX(c), c / t.w, p.x, p.y) <
 												kPassSpacing)
 												return true;
 										return false;
@@ -246,7 +246,7 @@ bool carvePass(Layout &L, GenerationContext &context, int a, int b, std::vector<
 	for (size_t k = 0; k < candidates.size() && k < 12; ++k)
 	{
 		const int c = candidates[k < band ? (first + k) % band : k];
-		const int cx = c % t.w, cy = c / t.w;
+		const int cx = t.remainderX(c), cy = c / t.w;
 		std::vector<int> cleared;
 		for (int dy = lo; dy <= hi; ++dy)
 			for (int dx = lo; dx <= hi; ++dx)
@@ -296,7 +296,7 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 		{
 			if (L.ridgeDistance[i] < depth)
 				continue;
-			const double d = std::sqrt(double(t.dist2(i % t.w, i / t.w, pole % t.w, pole / t.w)));
+			const double d = std::sqrt(double(t.dist2(t.remainderX(i), i / t.w, t.remainderX(pole), pole / t.w)));
 			// Closeness to the wanted offset from the valley's deepest point weighs 64 times a tile
 			// of extra distance from the ridge: the offset decides, and room from the ridge only
 			// breaks ties.
@@ -338,7 +338,7 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 	const auto take = [&](int tile)
 	{
 		used[L.valley[tile]] = 1;
-		L.homes.push_back({L.valley[tile], tile % t.w, tile / t.w});
+		L.homes.push_back({L.valley[tile], t.remainderX(tile), tile / t.w});
 	};
 	if (teams > 0 && !primary.empty())
 		take(site[primary[context.bounded("highlands-homes", std::uint32_t(primary.size()))]]);
@@ -349,7 +349,7 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 		{
 			if (used[v])
 				continue;
-			const int s = spread(site[v] % t.w, site[v] / t.w);
+			const int s = spread(t.remainderX(site[v]), site[v] / t.w);
 			if (s > chosenSpread || (s == chosenSpread && room[v] > room[L.valley[chosen]]))
 			{
 				chosen = site[v];
@@ -365,7 +365,7 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 			for (int v = 0; v < L.valleys; ++v)
 				for (int i : L.tilesOf[v])
 				{
-					const int x = i % t.w, y = i / t.w;
+					const int x = t.remainderX(i), y = i / t.w;
 					if (((x | y) & 1) || L.ridgeDistance[i] < kHomeRidge)
 						continue;
 					const int s = spread(x, y);
@@ -400,10 +400,10 @@ bool chooseHomes(Layout &L, GenerationContext &context, int teams)
 void growPond(Layout &L, const std::vector<int> &depth, const std::vector<int> &eligible,
 			  int eligibleStamp, std::vector<int> &queued, int queuedStamp, int seed, int target)
 {
-	const int sx = seed % L.t.w, sy = seed / L.t.w;
+	const int sx = L.t.remainderX(seed), sy = seed / L.t.w;
 	const auto key = [&](int tile)
 	{
-		const double d = std::sqrt(double(L.t.dist2(sx, sy, tile % L.t.w, tile / L.t.w)));
+		const double d = std::sqrt(double(L.t.dist2(sx, sy, L.t.remainderX(tile), tile / L.t.w)));
 		// A tile of distance weighs 1500 of the noise's 0..65535, so the noise's full swing is
 		// worth about 44 tiles: across a pond's few-tile radius the noise shapes the outline, and
 		// distance only stops it running off along a trough.
@@ -480,7 +480,7 @@ void placePonds(Layout &L, GenerationContext &context, int spacing, int pondSize
 		if (homeOf[v] >= 0)
 		{
 			const Home &h = L.homes[homeOf[v]];
-			const int ox = t.offsetX(h.x, L.pole[v] % t.w), oy = t.offsetY(h.y, L.pole[v] / t.w);
+			const int ox = t.offsetX(h.x, t.remainderX(L.pole[v])), oy = t.offsetY(h.y, L.pole[v] / t.w);
 			const double length = std::sqrt(double(ox * ox + oy * oy));
 			const double ux = length < 1 ? 0.0 : ox / length, uy = length < 1 ? 1.0 : oy / length;
 			targetX = t.x(h.x + int(std::lround(ux * kHomePondReach)));
@@ -499,8 +499,8 @@ void placePonds(Layout &L, GenerationContext &context, int spacing, int pondSize
 			{
 				if (besideHome)
 				{
-					const int di = t.dist2(i % t.w, i / t.w, targetX, targetY);
-					const int dc = t.dist2(current % t.w, current / t.w, targetX, targetY);
+					const int di = t.dist2(t.remainderX(i), i / t.w, targetX, targetY);
+					const int dc = t.dist2(t.remainderX(current), current / t.w, targetX, targetY);
 					if (di != dc)
 						return di < dc;
 				}
@@ -511,7 +511,7 @@ void placePonds(Layout &L, GenerationContext &context, int spacing, int pondSize
 			{
 				for (int dy = -2; dy <= 2; ++dy)
 					for (int dx = -2; dx <= 2; ++dx)
-						if (eligible[t.at(i % t.w + dx, i / t.w + dy)] != v)
+						if (eligible[t.at(t.remainderX(i) + dx, i / t.w + dy)] != v)
 							return false;
 				return true;
 			};
@@ -523,7 +523,7 @@ void placePonds(Layout &L, GenerationContext &context, int spacing, int pondSize
 						continue;
 					bool apart = true;
 					for (int s : seeds)
-						if (t.dist2(i % t.w, i / t.w, s % t.w, s / t.w) <
+						if (t.dist2(t.remainderX(i), i / t.w, t.remainderX(s), s / t.w) <
 							kPondSeparation * kPondSeparation)
 						{
 							apart = false;
@@ -587,7 +587,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			continue;
 		for (const auto &s : steps)
 		{
-			const int j = t.at(i % t.w + s[0], i / t.w + s[1]);
+			const int j = t.at(t.remainderX(i) + s[0], i / t.w + s[1]);
 			if (label[j] < label[i])
 				thick[j] = 1;
 		}
@@ -817,7 +817,7 @@ void furnishHome(Map &map, const Layout &L, int bootX, int bootY, int homeValley
 			}
 		std::sort(tiles.begin(), tiles.end());
 		for (int k = 0; k < kHomeKit && k < int(tiles.size()); ++k)
-			map.setResourceByIndex(tiles[k].second % t.w, tiles[k].second / t.w, side > 0 ? WHEAT : WOOD,
+			map.setResourceByIndex(t.remainderX(tiles[k].second), tiles[k].second / t.w, side > 0 ? WHEAT : WOOD,
 							1);
 	}
 }
@@ -858,7 +858,7 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 			++pondTiles[v];
 			continue;
 		}
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (keepClear[i] || L.ridgeDistance[i] < kRidgeRoad || pondDistance[i] < 2 ||
 			pondDistance[i] > 9 || patch[i] < patchLevel || fertility.at(x, y) == 0)
 			continue;
@@ -889,12 +889,12 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
 			continue;
 		std::stable_sort(
 			tiles.begin(), tiles.end(), [&](int a, int b)
-			{ return fertility.at(a % t.w, a / t.w) > fertility.at(b % t.w, b / t.w); });
+			{ return fertility.at(t.remainderX(a), a / t.w) > fertility.at(t.remainderX(b), b / t.w); });
 		tiles.resize(total);
 		std::stable_sort(tiles.begin(), tiles.end(),
 						 [&](int a, int b) { return split[a] < split[b]; });
 		for (int k = 0; k < total; ++k)
-			map.setResourceByIndex(tiles[k] % t.w, tiles[k] / t.w, k < wheat ? WHEAT : WOOD, 1);
+			map.setResourceByIndex(t.remainderX(tiles[k]), tiles[k] / t.w, k < wheat ? WHEAT : WOOD, 1);
 	}
 }
 
@@ -905,7 +905,7 @@ void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaeP
 	const std::vector<int> noise = periodicNoise(t.w, t.h, 6, context.stream("highlands-algae"));
 	std::vector<int> water, levels;
 	for (int i = 0; i < t.w * t.h; ++i)
-		if (L.pond[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ALGA))
+		if (L.pond[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ALGA))
 		{
 			water.push_back(i);
 			levels.push_back(noise[i]);
@@ -916,7 +916,7 @@ void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaeP
 		levels, int(std::min<std::int64_t>(100, scaledCount(kAlgaePercent, algaePercent))));
 	for (int i : water)
 		if (noise[i] <= level)
-			map.setResourceByIndex(i % t.w, i / t.w, ALGA, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, ALGA, 1);
 }
 
 // Groves at 100% fruit; the amount control scales this count.
@@ -935,7 +935,7 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 	std::vector<std::vector<int>> pool(L.valleys);
 	for (int i = 0; i < n; ++i)
 	{
-		const int v = L.valley[i], x = i % t.w, y = i / t.w;
+		const int v = L.valley[i], x = t.remainderX(i), y = i / t.w;
 		if (v < 0 || keepClear[i] || L.pond[i] || L.ridgeDistance[i] < kRidgeRoad + 1 ||
 			pondDistance[i] < 3 || pondDistance[i] > 8)
 			continue;
@@ -963,17 +963,17 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 	{
 		const std::vector<int> &tiles = pool[valleys[g % valleys.size()]];
 		const int anchor = tiles[context.bounded("highlands-fruit", std::uint32_t(tiles.size()))];
-		const int ax = anchor % t.w, ay = anchor / t.w;
+		const int ax = t.remainderX(anchor), ay = anchor / t.w;
 		std::vector<std::pair<int, int>> grove;
 		for (int tile : tiles)
 		{
-			const int d = t.dist2(ax, ay, tile % t.w, tile / t.w);
-			if (d <= 8 && !map.isResource(tile % t.w, tile / t.w))
+			const int d = t.dist2(ax, ay, t.remainderX(tile), tile / t.w);
+			if (d <= 8 && !map.isResource(t.remainderX(tile), tile / t.w))
 				grove.push_back({d, tile});
 		}
 		std::sort(grove.begin(), grove.end());
 		for (int k = 0; k < kFruitGrove && k < int(grove.size()); ++k)
-			map.setResourceByIndex(grove[k].second % t.w, grove[k].second / t.w,
+			map.setResourceByIndex(t.remainderX(grove[k].second), grove[k].second / t.w,
 							CHERRY + (firstType + g) % 3, 1);
 	}
 }
@@ -1080,8 +1080,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Torus &t = L.t;
 	const int n = t.w * t.h, teams = context.request.nbTeams;
 	for (int i = 0; i < n; ++i)
-		if (L.ridge[i] && map.getResource(i % t.w, i / t.w).type != STONE)
-			return "The ridge at (" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) +
+		if (L.ridge[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
+			return "The ridge at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
 				   ") has lost its stone.";
 	const auto walkable = [&](int x, int y)
 	{ return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID; };

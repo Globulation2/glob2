@@ -46,7 +46,7 @@ std::vector<int> cheapestWalk(const Torus &t, GridNeighbors neighbours,
 			reached = i;
 			break;
 		}
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const auto consider = [&](int dx, int dy)
 		{
 			const int m = t.at(x + dx, y + dy);

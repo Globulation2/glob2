@@ -53,8 +53,8 @@ struct Layout
 		return horizontal ? ShapePoint{u, v} : ShapePoint{v, u};
 	}
 	int index(int u, int v) const { return horizontal ? t.at(u, v) : t.at(v, u); }
-	int u(int i) const { return horizontal ? i % t.w : i / t.w; }
-	int v(int i) const { return horizontal ? i / t.w : i % t.w; }
+	int u(int i) const { return horizontal ? t.remainderX(i) : i / t.w; }
+	int v(int i) const { return horizontal ? i / t.w : t.remainderX(i); }
 };
 std::string validateRequest(const GenerationRequest &r)
 {
@@ -246,7 +246,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	{
 		eligible[i] = !protectedGround[i] && L.u(i) > L.first && L.u(i) < L.last;
 		for (const auto &tip : L.tips)
-			if (t.dist2(i % t.w, i / t.w, int(tip.x), int(tip.y)) < 100)
+			if (t.dist2(t.remainderX(i), i / t.w, int(tip.x), int(tip.y)) < 100)
 				eligible[i] = 0;
 	}
 	GenerationNoise scatter(GenerationContext::deriveSeed(r.seed, "comb-scattered-ground"));
@@ -254,8 +254,8 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	sprinkleSand(L.terrain, t, eligible, 0.18, 5,
 				 [&](int i)
 				 {
-					 return scatter.Noise((i % t.w) * 0.05f, (i / t.w) * 0.05f) +
-							0.3 * scatter.Noise((i % t.w) * 0.12f, (i / t.w) * 0.12f);
+					 return scatter.Noise((t.remainderX(i)) * 0.05f, (i / t.w) * 0.05f) +
+							0.3 * scatter.Noise((t.remainderX(i)) * 0.12f, (i / t.w) * 0.12f);
 				 });
 	for (int i = 0; i < n; ++i)
 		patches[i] = L.terrain[i] == SAND && beforeScatter[i] == GRASS;
@@ -266,12 +266,12 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	int sandCorners = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		if (depth[i] >= 2 && scatter.Noise((i % t.w) * 0.04f + 37, (i / t.w) * 0.04f) > 0)
+		if (depth[i] >= 2 && scatter.Noise((t.remainderX(i)) * 0.04f + 37, (i / t.w) * 0.04f) > 0)
 		{
 			L.terrain[i] = GRASS;
 			L.scrub[i] = 1;
 			L.scrubKind[i] =
-				scatter.Noise((i % t.w) * 0.035f, (i / t.w) * 0.035f + 71) > 0 ? WOOD : WHEAT;
+				scatter.Noise((t.remainderX(i)) * 0.035f, (i / t.w) * 0.035f + 71) > 0 ? WOOD : WHEAT;
 		}
 		L.wheatland[i] = eligible[i] && !L.scrub[i] && beforeScatter[i] == GRASS;
 		sandCorners += patches[i] && !L.scrub[i];
@@ -285,7 +285,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		const int p = L.plot[i];
 		if (p >= 0)
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			if (grass[i] && L.plot[t.at(x + 1, y)] == p && L.plot[t.at(x, y + 1)] == p &&
 				L.plot[t.at(x + 1, y + 1)] == p)
 			{
@@ -316,9 +316,9 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			!L.ends[0][i] && !L.ends[1][i] && !L.scrub[i] &&
 			u > L.first && u < L.last && std::abs(v - L.line[u]) < 10 &&
 			waterDistance[i] <= 4 && (u + shorePhase) % 16 < 5 &&
-			shoreGrowth.at(i % t.w, i / t.w) >= Fertility::kScale / 64;
+			shoreGrowth.at(t.remainderX(i), i / t.w) >= Fertility::kScale / 64;
 		for (const auto &tip : L.tips)
-			clear &= t.dist2(i % t.w, i / t.w, int(tip.x), int(tip.y)) >= 100;
+			clear &= t.dist2(t.remainderX(i), i / t.w, int(tip.x), int(tip.y)) >= 100;
 		if (clear) L.shoreWheat.push_back(i);
 	}
 	c.telemetry.measure("comb.peninsulas.actual", L.tips.size());
@@ -336,7 +336,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 		game.addTeam();
 	if (!sites.empty() && !settleColonies(
 							  game, c, "comb-starts", [&](int) { return L.town; }, [&](int k)
-							  { return MapGeneratorPoint(sites[k] % t.w, sites[k] / t.w); }))
+							  { return MapGeneratorPoint(t.remainderX(sites[k]), sites[k] / t.w); }))
 		return false;
 	for (size_t p = 0; p < L.fields.size(); ++p)
 	{
@@ -371,20 +371,20 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 			count = normal + (int(tiles.size()) - normal) * (o.wheat - 100) / 200;
 		}
 		for (int j = 0; j < count; ++j)
-			game.map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, L.kind[p], 1);
+			game.map.setResourceByIndex(t.remainderX(tiles[j]), tiles[j] / t.w, L.kind[p], 1);
 		c.telemetry.measure(food ? "comb.wheat.planted" : "comb.wood.planted", count, int(p));
 	}
 	for (int type : {WOOD})
 	{
 		std::vector<int> seeds;
 		for (int i = 0; i < t.size(); ++i)
-			if (L.scrub[i] && L.scrubKind[i] == type && clearGround(game.map, i % t.w, i / t.w))
+			if (L.scrub[i] && L.scrubKind[i] == type && clearGround(game.map, t.remainderX(i), i / t.w))
 				seeds.push_back(i);
 		c.shuffle(seeds.begin(), seeds.end(), "comb-scrub");
 		const int amount = type == WHEAT ? o.wheat : o.wood;
 		const int count = int(seeds.size()) * amount / 300;
 		for (int k = 0; k < count; ++k)
-			game.map.setResourceByIndex(seeds[k] % t.w, seeds[k] / t.w, type, 1);
+			game.map.setResourceByIndex(t.remainderX(seeds[k]), seeds[k] / t.w, type, 1);
 		c.telemetry.measure("comb.scatter.crop-seeds", count, type);
 	}
 	// Fertile tufts follow the central inlet, without changing its banks.
@@ -398,14 +398,14 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 		const int u = L.u(i), v = L.v(i), bank = v < L.breadth / 2 ? 0 : 1;
 		const double d = bank == 0 ? v - L.coast[0][u] : L.coast[1][u] - v;
 		if (u >= 35 && u < L.length - 35 && d >= 45 && d <= 49 &&
-			clearGround(game.map, i % t.w, i / t.w))
+			clearGround(game.map, t.remainderX(i), i / t.w))
 		{
 			if (u % 9 < 3)
 				stones.push_back(i);
 			else if (u % 9 >= 6)
 				fruits.push_back(i);
 		}
-		if (game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ALGA) && (d < -2 && d > -9) && u >= 20 &&
+		if (game.map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ALGA) && (d < -2 && d > -9) && u >= 20 &&
 			u < L.length - 20)
 			algae.push_back(i);
 	}
@@ -416,7 +416,7 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 	{
 		count = std::min(count, int(cells.size()));
 		for (int j = 0; j < count; ++j)
-			game.map.setResourceByIndex(cells[j] % t.w, cells[j] / t.w,
+			game.map.setResourceByIndex(t.remainderX(cells[j]), cells[j] / t.w,
 								 type == CHERRY ? CHERRY + j % 3 : type, 1);
 		c.telemetry.measure("comb.resource.planted", count, type);
 	};
@@ -432,7 +432,7 @@ std::vector<int> supplyWalk(const Map &map, const Torus &t, int type)
 	const auto open = groundUnitTiles(map);
 	std::vector<unsigned char> deposits(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		deposits[i] = map.getResource(i % t.w, i / t.w).type == type;
+		deposits[i] = map.getResource(t.remainderX(i), i / t.w).type == type;
 	auto gathering = dilate(t, deposits, 1);
 	for (int i = 0; i < t.size(); ++i)
 		gathering[i] &= open[i];
@@ -443,7 +443,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 	const auto &t = L.t;
 	const auto &map = game.map;
 	for (int i = 0; i < t.size(); ++i)
-		if (map.vertexTerrainAt(i % t.w, i / t.w) != L.terrain[i])
+		if (map.vertexTerrainAt(t.remainderX(i), i / t.w) != L.terrain[i])
 			return "The Comb terrain no longer matches its coast and channel design.";
 	auto open = groundUnitTiles(map);
 	const auto units = unitTilesByTeam(map, game.teamsCount());
@@ -460,7 +460,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 	const auto spread = fertileCropEnvelope(map, fertility);
 	std::vector<unsigned char> inlet(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		inlet[i] = terrainProvidesFertility(map.terrainPropertiesAt(i % t.w, i / t.w)) && L.side[i] >= 0;
+		inlet[i] = terrainProvidesFertility(map.terrainPropertiesAt(t.remainderX(i), i / t.w)) && L.side[i] >= 0;
 	const auto inletFringe = dilate(t, inlet, kCropProbeReach + 1);
 	const auto foodWalk = supplyWalk(map, t, WHEAT), stoneWalk = supplyWalk(map, t, STONE),
 			   woodWalk = supplyWalk(map, t, WOOD);
@@ -550,7 +550,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 				room += ownAnchors[i] && inPeninsula(i, 4) && walk[i] >= 0;
 				if (open[i] && L.side[i] == int(p % 2))
 					for (const auto &step : kCardinalSteps)
-						if (map.terrainPropertiesAt(t.at(i % t.w + step[0], i / t.w + step[1])).swimmable)
+						if (map.terrainPropertiesAt(t.at(t.remainderX(i) + step[0], i / t.w + step[1])).swimmable)
 						{
 							++landing;
 							break;
@@ -561,7 +561,7 @@ std::string checkWorld(const Game &game, const Layout &L, GenerationContext *tra
 				for (int vy = -7; vy <= 8 && !hits; ++vy)
 					for (int ux = -7; ux <= 8; ++ux)
 					{
-						const int j = t.at(i % t.w + ux, i / t.w + vy);
+						const int j = t.at(t.remainderX(i) + ux, i / t.w + vy);
 						if (open[j] && L.side[j] == 1 - int(p % 2))
 						{
 							hits = true;

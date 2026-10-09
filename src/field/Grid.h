@@ -71,7 +71,7 @@ class Grid
 	template <class Stencil, class Visit>
 	void neighbors(int index, const Stencil &stencil, Visit visit) const
 	{
-		const int x = index % w, y = index / w;
+		const int x = wrapX(index), y = index / w;
 		for (const auto offset : stencil)
 			visit(x + offset.x, y + offset.y);
 	}

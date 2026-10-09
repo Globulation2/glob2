@@ -1,5 +1,6 @@
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Topology.h"
 #include <algorithm>
 #include <map>
@@ -24,11 +25,11 @@ template <class F> void neighbors(int i, int w, int h, bool wrap, GridNeighbors 
 			::MapGeneration::generationCheckpoint();
 			if ((!dx && !dy) || (kind == GridNeighbors::Cardinal && dx && dy))
 				continue;
-			int x = i % w + dx, y = i / w + dy;
+			int x = dimensionRemainder(i, w) + dx, y = i / w + dy;
 			if (wrap)
 			{
-				x = (x + w) % w;
-				y = (y + h) % h;
+				x = dimensionRemainder(x + w, w);
+				y = dimensionRemainder(y + h, h);
 			}
 			else if (x < 0 || x >= w || y < 0 || y >= h)
 				continue;

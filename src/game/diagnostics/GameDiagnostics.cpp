@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "GameDiagnostics.h"
 #include "sim/presentation/SceneInputs.h"
 #include "Game.h"
@@ -327,7 +328,7 @@ void Session::drain() noexcept
 				auto& field=sink->fields[f]; const auto& named=names[f];
 				std::ofstream out(staging/(std::string(named.name)+".field"));
 				out << field.width << ' ' << field.height << '\n';
-				for (size_t i=0; i<field.values.size(); ++i) out << field.values[i] << ((i+1)%field.width ? ' ' : '\n');
+				for (size_t i=0; i<field.values.size(); ++i) out << field.values[i] << (dimensionRemainder((i+1), field.width) ? ' ' : '\n');
 				out.flush(); out.close(); if (!out) throw std::runtime_error("Field write failed");
 				metadata["fields"][named.name]={{"units",named.units},{"colour",{named.r,named.g,named.b}}};
 				if (png) { field.red=named.r; field.green=named.g; field.blue=named.b; MapRender::toPng(*scene,(staging/(std::string(named.name)+".png")).string(),2048,&field); }

@@ -177,7 +177,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	context.telemetry.measure("savannah.ponds.eligible-centres", order.size());
 	for (int i : order)
 	{
-		ShapePoint at{double(i % t.w), double(i / t.w)};
+		ShapePoint at{double(t.remainderX(i)), double(i / t.w)};
 		int first = t.size(), second = t.size();
 		for (ShapePoint h : L.homes)
 		{
@@ -375,7 +375,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (size_t k = 0; k < L.plainTrees.size() && clumps < wantedClumps; ++k)
 	{
 		const int i = L.plainTrees[k];
-		const int x = i % L.t.w, y = i / L.t.w;
+		const int x = L.t.remainderX(i), y = i / L.t.w;
 		if (!dryGrass(x, y))
 			continue;
 		game.map.setResourceByIndex(x, y, WOOD, 1);
@@ -424,7 +424,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	{
 		std::vector<unsigned char> shore(t.size(), 0);
 		for (int i = 0; i < t.size(); ++i)
-			shore[i] = walk.steps[i] >= 0 && t.dist2(int(L.ponds[p].x), int(L.ponds[p].y), i % t.w,
+			shore[i] = walk.steps[i] >= 0 && t.dist2(int(L.ponds[p].x), int(L.ponds[p].y), t.remainderX(i),
 													 i / t.w) <= kNeutralReserve * kNeutralReserve;
 		if (buildSites(t, buildable, shore, 8) == 0)
 			return "A neutral Savannah pond lacks reachable forward-inn room.";
@@ -434,7 +434,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// counting a diagonal touching of two five-wide pads as a full-width passage.
 	std::vector<unsigned char> passable(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		passable[i] = stepCost(map, i % t.w, i / t.w, StepCosts::walking()) >= 0;
+		passable[i] = stepCost(map, t.remainderX(i), i / t.w, StepCosts::walking()) >= 0;
 	const auto broad = erode(t, passable, 2);
 	const int firstExit = t.at(int(L.homes[0].x) - 9, int(L.homes[0].y) - 24);
 	const auto broadRegions = connectedRegions(broad, t.w, t.h, true);
@@ -446,13 +446,13 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		for (int i = 0; i < t.size(); ++i)
 		{
 			local[i] = L.homeOf[i] == k && costs[i] >= 0 && costs[i] <= 24;
-			const int type = map.getResource(i % t.w, i / t.w).type;
-			if ((type != WHEAT && type != WOOD) || !fertility.at(i % t.w, i / t.w))
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
+			if ((type != WHEAT && type != WOOD) || !fertility.at(t.remainderX(i), i / t.w))
 				continue;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					const int d = costs[t.at(i % t.w + dx, i / t.w + dy)];
+					const int d = costs[t.at(t.remainderX(i) + dx, i / t.w + dy)];
 					if (d >= 0 && d <= (type == WHEAT ? 24 : 32))
 					{
 						wheat |= type == WHEAT;
@@ -476,7 +476,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				for (int across = -11; across <= -7; ++across)
 				{
 					const int i = t.at(hx + across, hy + side * along);
-					if (stepCost(map, i % t.w, i / t.w, StepCosts::walking()) < 0 || costs[i] < 0)
+					if (stepCost(map, t.remainderX(i), i / t.w, StepCosts::walking()) < 0 || costs[i] < 0)
 						return "A Savannah home lost a five-tile approach to the shared plains.";
 				}
 		}

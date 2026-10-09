@@ -72,3 +72,8 @@ void ResourceGrowth::Pipeline::reset() noexcept {
     metrics = {};
     delay = 8;
 }
+
+#include "AreaEffects.h"
+// Standalone map tests never attach a Game; satisfy Map::clear's optional
+// simulation-owned sidecar reset without linking the complete game.
+void BuildingAreaEffects::Runtime::reset() { std::abort(); }

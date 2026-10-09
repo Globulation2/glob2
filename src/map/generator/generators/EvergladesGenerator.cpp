@@ -350,7 +350,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context)
 	{
 		const Home &home = L.homes[team];
 		const auto eligible = [&](int i)
-		{ return L.clearingOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.clearingOf[i] == team && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		const double a =
 			std::atan2(double(t.offsetY(L.cy, home.y)), double(t.offsetX(L.cx, home.x)));
 		const KitFrame frame{home.x, home.y, a};
@@ -380,14 +380,14 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 	HeightMap split(t.w, t.h, context.stream("glades-split"));
 	split.makePlain(5);
 	const auto eligible = [&](int i)
-	{ return L.clearingOf[i] < 0 && clearGround(map, i % t.w, i / t.w); };
+	{ return L.clearingOf[i] < 0 && clearGround(map, t.remainderX(i), i / t.w); };
 	std::vector<int> ground;
 	std::vector<std::pair<float, int>> byPatch;
 	for (int i = 0; i < n; ++i)
 		if (eligible(i))
 		{
 			ground.push_back(i);
-			byPatch.push_back({-patch(i % t.w, i / t.w), i});
+			byPatch.push_back({-patch(t.remainderX(i), i / t.w), i});
 		}
 	if (ground.empty())
 		return;
@@ -399,7 +399,7 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 	for (const auto &entry : byPatch)
 		byDensity.push_back(entry.second);
 	plantFields(map, t, byDensity, wheat, wood,
-				[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
+				[&](int i) { return split.uiLevel(t.remainderX(i), i / t.w, 2048); });
 	// One stone outcrop per 1000 tiles of swamp and one fruit grove per 1500, each of a random
 	// kind: stone lasts forever, so small scattered quarries are plenty; fruit is a prize to find
 	// in the thicket, not something to farm.
@@ -463,7 +463,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.clearingOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			ground[i] = L.clearingOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	// The swarm stands just past the pond's beach on the far side from the map's centre, leaving
@@ -523,8 +523,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			return "Colony " + std::to_string(k) + "'s clearing has lost its pond.";
 	}
 	for (int i = 0; i < n; ++i)
-		if (L.sand[i] && map.isResource(i % t.w, i / t.w))
-			return "A deposit stands on the levee at (" + std::to_string(i % t.w) + ", " +
+		if (L.sand[i] && map.isResource(t.remainderX(i), i / t.w))
+			return "A deposit stands on the levee at (" + std::to_string(t.remainderX(i)) + ", " +
 				   std::to_string(i / t.w) + ").";
 	return walkFromFirstColony(map, teams, "the glades", "through the glades").error;
 }

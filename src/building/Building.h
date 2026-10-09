@@ -135,6 +135,8 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	///Custom-game "fortress buildings" rule: type->hpMax scaled by the
 	///configured multiplier. Use this instead of reading type->hpMax
 	///directly anywhere the result affects simulation or display.
+	int getEffectiveArmor() const;
+	int applyAreaAttack(int value) const;
 	int getEffectiveMaxHp(void) const;
 	Sint32 getMaxUnitWorkingFuture() const { return maxUnitWorkingFuture; }
 	///Same rule, for type->hpInit.

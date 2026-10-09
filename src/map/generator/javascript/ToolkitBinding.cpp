@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "ToolkitRecords.h"
 #include "Grid.h"
 #include "GenerationWork.h"
@@ -599,7 +600,7 @@ void Binding::installContextWorld(JSValueConst result)
 				!game->map.resourceRegistry().valid(unsigned(type)) || size < 0 ||
 				size >= std::min(game->map.getW(), game->map.getH()))
 				throw TypeMismatch("Invalid resource placement");
-			game->map.setResourceByIndex(tile % game->map.getW(), tile / game->map.getW(), type,
+			game->map.setResourceByIndex(powerOfTwoRemainder(tile, game->map.getW()), tile / game->map.getW(), type,
 										 size);
 			return JS_UNDEFINED;
 		});
@@ -611,7 +612,7 @@ void Binding::installContextWorld(JSValueConst result)
 			auto i = read<unsigned>(a[0]);
 			if (i >= unsigned(game->map.getW() * game->map.getH()))
 				throw TypeMismatch("Invalid tile");
-			return write(game->map.terrainPropertiesAt(i % game->map.getW(), i / game->map.getW())
+			return write(game->map.terrainPropertiesAt(powerOfTwoRemainder(i, game->map.getW()), i / game->map.getW())
 							 .buildable);
 		});
 }

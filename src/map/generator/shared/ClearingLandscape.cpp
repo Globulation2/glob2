@@ -87,7 +87,7 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 		for (int i = 0; i < n; ++i)
 		{
 			::MapGeneration::generationCheckpoint();
-			const double d = ::MapGeneration::Numeric::hypot(t.offsetX(int(home.x), i % t.w),
+			const double d = ::MapGeneration::Numeric::hypot(t.offsetX(int(home.x), t.remainderX(i)),
 															 t.offsetY(int(home.y), i / t.w));
 			if (d <= L.homeRadius + kClearingMargin)
 				L.clearing.at(i) = 1;
@@ -159,7 +159,7 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 			[&](int i)
 			{
 				const double d = ::MapGeneration::Numeric::sqrt(
-					double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
+					double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
 				// Integer priority: distance in thousandths of a tile plus up to 2.5 tiles
 				// of periodic-noise perturbation (noise spans 0..65535). This roughens the
 				// shore without letting noise defeat the distance-led compact lake shape.

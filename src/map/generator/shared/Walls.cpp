@@ -19,7 +19,7 @@ std::vector<unsigned char> seaMargin(const Map &map, const Torus &t,
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (!map.terrainPropertiesAt(i).walkable)
 			continue;
 		beach.at(i) = map.terrainPropertiesAt(i).shoreline && !notBeach.at(i);
@@ -56,7 +56,7 @@ std::vector<unsigned char> seaVertices(const Map &map, const Torus &t,
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		sea.at(i) = map.vertexTerrainAt(i % t.w, i / t.w) == WATER && !lakes.at(i);
+		sea.at(i) = map.vertexTerrainAt(t.remainderX(i), i / t.w) == WATER && !lakes.at(i);
 	}
 	return sea;
 }
@@ -90,7 +90,7 @@ std::vector<unsigned char> sealCoasts(const Map &map, const Torus &t,
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (!wallable.at(i) || !map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
+		if (!wallable.at(i) || !map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE))
 			continue;
 		for (int dy = -1; dy <= 1 && !stone.at(i); ++dy)
 		{
@@ -98,7 +98,7 @@ std::vector<unsigned char> sealCoasts(const Map &map, const Torus &t,
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				if (margin.at(t.at(i % t.w + dx, i / t.w + dy)))
+				if (margin.at(t.at(t.remainderX(i) + dx, i / t.w + dy)))
 				{
 					stone.at(i) = 1;
 					break;
@@ -192,7 +192,7 @@ DesignedStone designedStone(const Map &map, const Torus &t, const std::vector<un
 		::MapGeneration::generationCheckpoint();
 		if (!wall.at(i))
 			continue;
-		if (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
+		if (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE))
 			result.stone.at(i) = 1;
 		else if (result.gaps++ == 0)
 			result.firstGap = i;
@@ -343,7 +343,7 @@ GatePartitionCheck checkGatePartition(const Torus &t, const std::vector<unsigned
 				for (int ox = -1; ox <= 1; ++ox)
 				{
 					::MapGeneration::generationCheckpoint();
-					const int neighbour = t.at(tile % t.w + ox, tile / t.w + oy);
+					const int neighbour = t.at(t.remainderX(tile) + ox, tile / t.w + oy);
 					if (pending.at(neighbour))
 					{
 						pending.at(neighbour) = 0;
@@ -464,7 +464,7 @@ std::string wallStanding(const Map &map, const Torus &t, const std::vector<unsig
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const bool stone = permanentResourceBarrier(map, i);
 		if (wall.at(i) && !stone)
 			return std::string("A ") + what + " has lost its permanent barrier at (" + std::to_string(x) + ", " +

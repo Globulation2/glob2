@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
+#include "PowerOfTwo.h"
 #include "OverlayAreas.h"
 #include <algorithm>
 #include <cstdint>
@@ -123,7 +124,7 @@ bool OverlayArea::computeChunk(const SimulationSnapshot::Handle& world,OverlayTy
     } else if (type==Fertility) {
         const auto count=size_t(width)*height;
         for (size_t i=chunk*1024;i<std::min(count,(chunk+1)*1024);++i) {
-            const size_t x=i/height,y=i%height;
+            const size_t x=i/height,y=powerOfTwoRemainder(i, height);
             overlay[i]=world.resources->cells[y*width+x].fertility;
         }
         overlaymax=fertilityMaximum;

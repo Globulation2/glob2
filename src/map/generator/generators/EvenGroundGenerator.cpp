@@ -265,7 +265,7 @@ void walkLand(const Torus &t, const std::vector<unsigned char> &land, int from,
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int i = queue.at(head), x = i % t.w, y = i / t.w;
+		const int i = queue.at(head), x = t.remainderX(i), y = i / t.w;
 		// Read once. steps[i] cannot change under this loop - a cell is only ever written when it is
 		// still unvisited, and this one was dequeued - but the writes below are to the same array,
 		// so the compiler has to assume they may alias and reloads it four times otherwise.
@@ -392,7 +392,7 @@ double scoreShape(Shape &s, const Solved &solved, const Torus &t, double balance
 		if (s.land.at(i))
 			continue;
 		++wet;
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (const auto &step : kCardinalSteps)
 		{
 			::MapGeneration::generationCheckpoint();
@@ -485,7 +485,7 @@ struct ShapeSearch
 		const bool alongShore = context.bounded("even-ground-shape", 4) != 0;
 		const auto onShore = [&](int i)
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (const auto &step : kCardinalSteps)
 			{
 				::MapGeneration::generationCheckpoint();
@@ -795,7 +795,7 @@ void pinHomes(Solved &solved)
 	for (const int home : solved.home)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = home % t.w, y = home / t.w;
+		const int x = t.remainderX(home), y = home / t.w;
 		solved.pinned.at(home) = 1;
 		solved.kind.at(home) = kOpen;
 		for (const auto &step : kCardinalSteps)
@@ -1133,7 +1133,7 @@ bool generate(Game &game, GenerationContext &context)
 		{
 			::MapGeneration::generationCheckpoint();
 			ground.at(i) =
-				L.homeOf.at(i) == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+				L.homeOf.at(i) == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		}
 		return ground;
 	};
@@ -1159,7 +1159,7 @@ bool generate(Game &game, GenerationContext &context)
 		::MapGeneration::generationCheckpoint();
 		const unsigned char kind = L.kind.at(L.cellOf.at(i));
 		if (kind >= kWheat && !L.pinned.at(L.cellOf.at(i)) && !reserved.at(i) &&
-			clearGround(map, i % t.w, i / t.w))
+			clearGround(map, t.remainderX(i), i / t.w))
 			ground.at(kind).push_back(i);
 	}
 	const auto level = [&](int i) { return grain.at(i); };

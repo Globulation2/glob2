@@ -212,7 +212,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// colonies, the next ring's stand between them, and so on inwards.
 	for (int i = 0; i < n; ++i)
 	{
-		const double r = std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w));
+		const double r = std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w));
 		for (int j = 0; j < g.rings && L.zone[i] == g.rings; ++j)
 			if (r < g.ringR[j] - kRingHalf)
 				L.zone[i] = j;
@@ -244,7 +244,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int k = L.rampOf[t.at(i % t.w + dx, i / t.w + dy)];
+				const int k = L.rampOf[t.at(t.remainderX(i) + dx, i / t.w + dy)];
 				if (k >= 0 && (L.mouths[k].empty() || L.mouths[k].back() != i))
 					L.mouths[k].push_back(i);
 			}
@@ -330,7 +330,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int total =
 		int(std::lround(*std::min_element(L.areas.begin(), L.areas.end()) * o.baySize / 100.0));
 	const PeriodicNoise shoreline(t.w, t.h, 8, context.stream("amphitheatre-bays"));
-	const auto noise = [&](int i) { return shoreline.at(i % t.w, i / t.w); };
+	const auto noise = [&](int i) { return shoreline.at(t.remainderX(i), i / t.w); };
 	std::vector<int> queued(n, 0);
 	for (const bool beside : {true, false})
 	{
@@ -348,7 +348,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				const int site = L.anchor[k];
 				const int mouth = L.rampMiddle[k];
 				const double heading = std::atan2(t.offsetY(mouth / t.w, site / t.w),
-												  t.offsetX(mouth % t.w, site % t.w));
+												  t.offsetX(t.remainderX(mouth), t.remainderX(site)));
 				for (const int side : {1, -1})
 				{
 					const int grown = growLakeBeside(
@@ -453,7 +453,7 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	std::vector<unsigned char> buildable(n, 0), target(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		// The arena belongs to "everyone else", so every colony's towers score for covering it.
 		const bool arena = ramps[i] || (L.zone[i] >= 0 && L.zone[i] < L.g.rings);
 		owner[i] = arena ? teams : L.territory[i];
@@ -465,7 +465,7 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	// No tower on a shore strip narrow enough for it to close.
 	std::vector<unsigned char> land(n, 0);
 	for (int i = 0; i < n; ++i)
-		land[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
+		land[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 	const std::vector<unsigned char> roomy = roomyGround(t, land, kTowerRoom);
 	for (int i = 0; i < n; ++i)
 		buildable[i] = buildable[i] && roomy[i];
@@ -505,18 +505,18 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (stone[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "amphitheatre colonies";
 	const auto home = [&](int team)
 	{
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && !stone[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			ground[i] = L.territory[i] == team && !stone[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
-	{ return MapGeneratorPoint(L.anchor[team] % t.w - 2, L.anchor[team] / t.w - 2); };
+	{ return MapGeneratorPoint(t.remainderX(L.anchor[team]) - 2, L.anchor[team] / t.w - 2); };
 	if (!settleColonies(game, context, "amphitheatre-starts", home, anchor))
 		return false;
 
@@ -538,7 +538,7 @@ bool generate(Game &game, GenerationContext &context)
 	const auto free = [&](int i)
 	{
 		return !reserved[i] && !pads[i] && fromRamps[i] > kRampClearance &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const PeriodicNoise patch(t.w, t.h, 12, context.stream("amphitheatre-patch"));
@@ -547,24 +547,24 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		const auto eligible = [&](int i) { return L.territory[i] == k && free(i); };
 		// The kit faces the nearest sea: wheat and wood between the swarm and its shore.
-		const int ax = L.anchor[k] % t.w, ay = L.anchor[k] / t.w;
+		const int ax = t.remainderX(L.anchor[k]), ay = L.anchor[k] / t.w;
 		int bayTile = -1;
 		for (int i = 0; i < n; ++i)
 			if (L.bay[i] && L.territory[i] == k &&
 				(bayTile < 0 ||
-				 t.dist2(ax, ay, i % t.w, i / t.w) < t.dist2(ax, ay, bayTile % t.w, bayTile / t.w)))
+				 t.dist2(ax, ay, t.remainderX(i), i / t.w) < t.dist2(ax, ay, t.remainderX(bayTile), bayTile / t.w)))
 				bayTile = i;
 		const double facing =
 			bayTile < 0 ? 0
-						: std::atan2(t.offsetY(ay, bayTile / t.w), t.offsetX(ax, bayTile % t.w));
+						: std::atan2(t.offsetY(ay, bayTile / t.w), t.offsetX(ax, t.remainderX(bayTile)));
 		const KitFrame frame{ax, ay, facing};
 		plantKit(map, t, context,
 				 Kit{frame.at(9, -6, 12), frame.at(9, 6, 12), frame.at(-8, 0, 10), kHomeWheat,
 					 kHomeWood, -1},
 				 eligible);
 		furnishGround(
-			map, t, context, fertility, eligible, [&](int i) { return patch.at(i % t.w, i / t.w); },
-			[&](int i) { return split.at(i % t.w, i / t.w); },
+			map, t, context, fertility, eligible, [&](int i) { return patch.at(t.remainderX(i), i / t.w); },
+			[&](int i) { return split.at(t.remainderX(i), i / t.w); },
 			[&](int area)
 			{
 				return GroundAmounts{int(scaledCount(area * kHomeWheatShare / 100, o.wheat)),
@@ -611,7 +611,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		pit[i] =
 			L.zone[i] == 0 && !stone[i] &&
-			std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) < 0.4 * g.pitR;
+			std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w)) < 0.4 * g.pitR;
 	for (int team = 0; team < teams; ++team)
 	{
 		if (workers[team].empty())
@@ -662,20 +662,20 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Geometry &g = L.g;
 	const int n = t.size(), teams = context.request.nbTeams;
 	const auto where = [&](int i)
-	{ return "(" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ")"; };
+	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	const std::vector<unsigned char> open = walkableTiles(map);
 	std::vector<int> area(teams, 0), water(teams, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		if (stone[i] && map.getResource(i % t.w, i / t.w).type != STONE)
+		if (stone[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
 			return "The stone at " + where(i) + " is missing.";
 		if ((L.rampOf[i] >= 0 || L.innerRamp[i]) && !open[i])
 			return "The ramp at " + where(i) + " is blocked.";
 		if (L.territory[i] >= 0)
 		{
 			++area[L.territory[i]];
-			water[L.territory[i]] += map.isWater(i % t.w, i / t.w);
+			water[L.territory[i]] += map.isWater(t.remainderX(i), i / t.w);
 		}
 	}
 	const int smallest = *std::min_element(area.begin(), area.end());
@@ -708,7 +708,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 
 	const auto nearestOpen = [&](int tile)
 	{
-		const int s = seedNear(t, tile % t.w, tile / t.w, 4, [&](int i) { return open[i] != 0; });
+		const int s = seedNear(t, t.remainderX(tile), tile / t.w, 4, [&](int i) { return open[i] != 0; });
 		return s >= 0 ? s : tile;
 	};
 	// Every colony's target in the pit is the open tile of the pit's middle disc (the disc the roads
@@ -719,7 +719,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		pitDisc[i] =
 			L.zone[i] == 0 && open[i] &&
-			std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) < 0.4 * g.pitR;
+			std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w)) < 0.4 * g.pitR;
 	std::vector<int> ramps, pits;
 	for (int k = 0; k < teams; ++k)
 	{

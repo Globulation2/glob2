@@ -20,7 +20,8 @@ recorded before version 137 became incompatible and network protocol 57 separate
 clients using those rules. Format 146 stores terrain per map vertex and derives each
 cell's rules from its corners. Format 147 makes resource fetching greedy only, without
 round-trip routing, and format 148 schedules building walking fields; the current
-replay floor is 149, combining these with delayed resource growth.
+replay floor is 150, adding building area-effect funding and fractional services
+to the delayed resource growth introduced in 149.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 

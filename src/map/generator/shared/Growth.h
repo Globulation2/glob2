@@ -85,14 +85,14 @@ template <typename Eligible, typename NoiseAt>
 int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int farthest, int corners,
 			Eligible eligible, NoiseAt noiseAt, std::vector<int> &queued, int stamp)
 {
-	const int n = t.size(), sx = site % t.w, sy = site / t.w;
+	const int n = t.size(), sx = t.remainderX(site), sy = site / t.w;
 	std::vector<unsigned char> roomy(size_t(n), 0), water(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
 		water.at(i) = sketch.at(i) == WATER;
 		roomy.at(i) =
-			!water.at(i) && eligible(i) && t.chebyshev(sx, sy, i % t.w, i / t.w) >= nearest;
+			!water.at(i) && eligible(i) && t.chebyshev(sx, sy, t.remainderX(i), i / t.w) >= nearest;
 	}
 	// Room is steps from anything the pond may not touch, so the seed sits away from the site's
 	// ground's edge and the pond grows into open ground rather than along a coast.
@@ -110,7 +110,7 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int d = t.chebyshev(sx, sy, i % t.w, i / t.w);
+		const int d = t.chebyshev(sx, sy, t.remainderX(i), i / t.w);
 		if (!roomy.at(i) || d > farthest)
 			continue;
 		const long long score = 4LL * std::min(room.at(i), enough) - std::abs(d - middle);
@@ -127,7 +127,7 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 		[&](int i)
 		{
 			const double d = ::MapGeneration::Numeric::sqrt(
-				double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
+				double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
 			return std::int64_t(d * 1000) + std::int64_t(noiseAt(i) * 2500);
 		},
 		queued, stamp);
@@ -185,7 +185,7 @@ DryStartWatering waterDrySite(TerrainSketch &sketch, const Torus &t, int site, i
 			return meanFertilityAround(cropGrowthField(drawn, t), t, site, radius);
 		}
 		const Torus window(2 * half + 1, 2 * half + 1);
-		const int sx = site % t.w, sy = site / t.w;
+		const int sx = t.remainderX(site), sy = site / t.w;
 		TerrainSketch drawn(size_t(window.size()));
 		for (int y = 0; y < window.h; ++y)
 		{

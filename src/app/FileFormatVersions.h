@@ -258,3 +258,6 @@ static constexpr int FILE_FORMAT_VERSION_CONFIGURED_GROWTH_SEEDS = 148;
 
 //! Integrated vertex terrain, scheduled building gradients and delayed resource growth.
 static constexpr int FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH = 149;
+
+//! Building area-effect funding and fractional pulse services.
+static constexpr int FILE_FORMAT_VERSION_AREA_EFFECTS = 150;

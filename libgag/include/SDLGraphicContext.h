@@ -607,14 +607,14 @@ namespace GAGCore
         //! Axis-aligned world rectangle with edges snapped to target pixels, so
         //! translucent neighbours tile without seams or doubled edges at any zoom.
         void drawMapFill(int x1, int y1, int x2, int y2, const Color& color);
-        //! A whole-tile fill that must meet neighbouring sprites exactly. The
-        //! software rasteriser truncates coordinates, so there it snaps like
-        //! drawMapFill; accelerated renderers place sprites at exact fractions,
-        //! and a snapped fill beside them would leave a hairline seam.
+        //! A whole-tile fill that must meet neighbouring sprites exactly. Both
+        //! software backends snap shared edges to target pixels; native software
+        //! draws there directly to avoid DPI geometry rounding. Accelerated
+        //! renderers retain exact fractions to match their neighbouring sprites.
         void drawMapTileFill(int x1, int y1, int x2, int y2, const Color& color);
         //! A sprite frame covering the `size`-pixel map square at (x, y), meeting
-        //! its neighbours and drawMapTileFill exactly. In the software rasteriser
-        //! its edges snap to the same pixels as theirs; elsewhere it is drawSprite.
+        //! its neighbours and drawMapTileFill exactly. Both software backends snap
+        //! its edges in target pixels; elsewhere it is drawSprite.
         void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index, Uint8 alpha = Color::ALPHA_OPAQUE);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
