@@ -325,9 +325,9 @@ rows for every platform running that check in CI (`linux-x86_64` today). The cur
 table records vertex terrain (save format 146): every generated map changed when terrain
 moved to map vertices, without individual generator recipe revisions. The complete
 pre-resource-epoch table, including historical `macos-arm64` rows, is retained in
-`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The table has no macOS rows;
-they must be measured on macOS before `--require-rows` can pass there; do not copy Linux
-hashes. The five separately verified explicit-design topology comparisons below do
+`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The current table includes
+native macOS arm64 rows; Linux hashes must not be used to bootstrap macOS coverage.
+The five separately verified explicit-design topology comparisons below do
 not establish topology equivalence for every changed golden. The five explicit-design full
 hashes include simulation-revision-40 map-owned placement stocks; their historical
 topology references remain unchanged. The framework reference under
