@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:151023) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/generator-studio.spec.js:30:3 › generator Studio freezes a world and watches its colonies (serial) (12.1s)
+  ✓  2 [chromium] › browser/tests/generator-studio.spec.js:30:3 › generator Studio freezes a world and watches its colonies (threaded) (16.4s)
+  ✓  3 [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (serial) (15.2s)
+  ✓  4 [chromium] › browser/tests/generator-studio.spec.js:168:3 › frozen generator game and saved continuation match every native checksum (threaded) (17.6s)
+
+  4 passed (1.0m)

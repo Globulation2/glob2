@@ -1,0 +1,261 @@
+{
+  "checksum": 1952412017,
+  "diagnostic": "examples:swamp revision 1 seed 19 [complete]: ",
+  "packageHash": "85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023",
+  "playable": true,
+  "seconds": 0.34136,
+  "seed": 19,
+  "simRevision": 41,
+  "simVersion": "152-68-383ce11d5da4f2a0521b1d0b8183c6433a263fc7346c934d0ae739cec72eae41",
+  "stage": "complete",
+  "success": true,
+  "telemetry": [
+    {
+      "key": "swamp.field.shape",
+      "kind": "choice",
+      "subject": -1,
+      "value": "noise"
+    },
+    {
+      "key": "swamp.field.smoothing",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 30
+    },
+    {
+      "key": "terrain.height_field.smoothing_factor",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 30
+    },
+    {
+      "key": "terrain.height_field.patch_width",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 128
+    },
+    {
+      "key": "terrain.height_field.patch_height",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 128
+    },
+    {
+      "key": "terrain.height_field.repeat_x",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 1
+    },
+    {
+      "key": "terrain.height_field.repeat_y",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 1
+    },
+    {
+      "key": "terrain.height_field.water_threshold",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.478515625
+    },
+    {
+      "key": "terrain.height_field.sand_threshold",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.47900390625
+    },
+    {
+      "key": "terrain.height_field.grass_threshold",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.9150390625
+    },
+    {
+      "key": "terrain.height_field.wheat_threshold",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.56396484375
+    },
+    {
+      "key": "terrain.height_field.wood_threshold",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.56396484375
+    },
+    {
+      "key": "terrain.height_field.stone_threshold",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.5087890625
+    },
+    {
+      "key": "terrain.height_field.stone_floor",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.787109375
+    },
+    {
+      "key": "terrain.height_field.algae_threshold",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0.2724609375
+    },
+    {
+      "key": "terrain.starts.min_distance_squared",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 819
+    },
+    {
+      "key": "starts.balanced.min_distance_squared",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 819
+    },
+    {
+      "key": "starts.balanced.candidate_sites",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 5969
+    },
+    {
+      "key": "starts.balanced.shortlisted_sites",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 900
+    },
+    {
+      "key": "starts.balanced.viable_built_sites",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 900
+    },
+    {
+      "key": "starts.balanced.selected_sites",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 4
+    },
+    {
+      "key": "starts.balanced.resource_cost_spread",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 0
+    },
+    {
+      "key": "starts.balanced.outcome",
+      "kind": "choice",
+      "subject": -1,
+      "value": "selected"
+    },
+    {
+      "key": "terrain.starts.method",
+      "kind": "choice",
+      "subject": -1,
+      "value": "balanced"
+    },
+    {
+      "key": "resources.starting.wheat_range",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 24
+    },
+    {
+      "key": "resources.starting.wood_range",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 32
+    },
+    {
+      "key": "resources.starting.clear_radius",
+      "kind": "measurement",
+      "subject": -1,
+      "value": 6
+    },
+    {
+      "key": "resources.starting_wheat.before_distance",
+      "kind": "measurement",
+      "subject": 0,
+      "value": 1
+    },
+    {
+      "key": "resources.starting_wood.before_distance",
+      "kind": "measurement",
+      "subject": 0,
+      "value": 1
+    },
+    {
+      "key": "resources.starting.wall_clear_rounds",
+      "kind": "measurement",
+      "subject": 0,
+      "value": 0
+    },
+    {
+      "key": "resources.starting_wheat.topup_needed",
+      "kind": "measurement",
+      "subject": 0,
+      "value": false
+    },
+    {
+      "key": "resources.starting_wood.topup_needed",
+      "kind": "measurement",
+      "subject": 0,
+      "value": false
+    },
+    {
+      "key": "resources.starting_wheat.before_distance",
+      "kind": "measurement",
+      "subject": 1,
+      "value": 3
+    },
+    {
+      "key": "resources.starting_wood.before_distance",
+      "kind": "measurement",
+      "subject": 1,
+      "value": 3
+    },
+    {
+      "key": "resources.starting.wall_clear_rounds",
+      "kind": "measurement",
+      "subject": 1,
+      "value": 0
+    },
+    {
+      "key": "resources.starting_wheat.topup_needed",
+      "kind": "measurement",
+      "subject": 1,
+      "value": false
+    },
+    {
+      "key": "resources.starting_wood.topup_needed",
+      "kind": "measurement",
+      "subject": 1,
+      "value": false
+    },
+    {
+      "key": "resources.starting_wheat.before_distance",
+      "kind": "measurement",
+      "subject": 2,
+      "value": 3
+    },
+    {
+      "key": "resources.starting_wood.before_distance",
+      "kind": "measurement",
+      "subject": 2,
+      "value": 1
+    },
+    {
+      "key": "resources.starting.wall_clear_rounds",
+      "kind": "measurement",
+      "subject": 2,
+      "value": 0
+    }
+  ],
+  "versionMinor": 152,
+  "worldFingerprint": "aaaca016d5ae98356947c7d7c154a3fdcefabe1267517c8d12b0da26b221102e",
+  "channel": "glob2-generator-studio",
+  "version": 1,
+  "runId": "11111111-1111-4111-8111-111111111111",
+  "revision": 1,
+  "type": "generated"
+}

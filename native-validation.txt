@@ -1,0 +1,6 @@
+packageHash: 85e817c7e6a323513d50ed22ffe6ac948ee0e4476c4433ccd7f7723b21d3f023 MATCH
+worldFingerprint: aaaca016d5ae98356947c7d7c154a3fdcefabe1267517c8d12b0da26b221102e MATCH
+checksum: 1952412017 MATCH
+versionMinor: 152 MATCH
+simRevision: 41 MATCH
+simVersion: 152-68-383ce11d5da4f2a0521b1d0b8183c6433a263fc7346c934d0ae739cec72eae41 MATCH

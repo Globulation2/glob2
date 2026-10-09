@@ -1,0 +1,4 @@
+{
+  "mode": "serial",
+  "fallback": "worker shared memory unavailable"
+}
