@@ -6011,4 +6011,4 @@ Tempolimo atingita.
 [outcome reason probability]
 Sojlo de venkoprobablo atingita.
 [Destroy this building?]
-Destroy this building?
+Ĉu detrui ĉi tiun konstruaĵon?

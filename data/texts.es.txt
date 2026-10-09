@@ -6011,4 +6011,4 @@ Límite de tiempo alcanzado.
 [outcome reason probability]
 Umbral de probabilidad de victoria alcanzado.
 [Destroy this building?]
-Destroy this building?
+¿Destruir este edificio?

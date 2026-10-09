@@ -6011,4 +6011,4 @@ FFmpeg није доступан, па је снимање искључено. �
 [outcome reason probability]
 Праг вероватноће победе је достигнут.
 [Destroy this building?]
-Destroy this building?
+Уништити ову зграду?

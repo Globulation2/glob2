@@ -6011,4 +6011,4 @@ Pravidlá scenára rozhodli o výsledku.
 [outcome reason probability]
 Prahová hodnota pravdepodobnosti víťazstva bola dosiahnutá.
 [Destroy this building?]
-Destroy this building?
+Zničiť túto budovu?

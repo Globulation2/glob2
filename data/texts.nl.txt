@@ -6011,4 +6011,4 @@ Tijdslimiet bereikt.
 [outcome reason probability]
 Drempel voor de winstkans bereikt.
 [Destroy this building?]
-Destroy this building?
+Dit gebouw vernietigen?

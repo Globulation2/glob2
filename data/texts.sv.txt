@@ -6011,4 +6011,4 @@ Tidsgränsen är nådd.
 [outcome reason probability]
 Tröskeln för vinstsannolikhet är uppnådd.
 [Destroy this building?]
-Destroy this building?
+Förstöra den här byggnaden?

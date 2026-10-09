@@ -6011,4 +6011,4 @@ AI 生成
 [outcome reason probability]
 獲勝機率已達門檻。
 [Destroy this building?]
-Destroy this building?
+摧毀這座建築？

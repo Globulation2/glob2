@@ -6011,4 +6011,4 @@ Zeitlimit erreicht.
 [outcome reason probability]
 Schwellenwert der Siegwahrscheinlichkeit erreicht.
 [Destroy this building?]
-Destroy this building?
+Dieses Gebäude zerstören?

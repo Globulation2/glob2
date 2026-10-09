@@ -6011,4 +6011,4 @@ Limite de temps atteinte.
 [outcome reason probability]
 Seuil de probabilité de victoire atteint.
 [Destroy this building?]
-Destroy this building?
+Détruire ce bâtiment ?

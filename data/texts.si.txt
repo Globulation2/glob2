@@ -6011,4 +6011,4 @@ Pravila scenarija so odločila o izidu.
 [outcome reason probability]
 Prag verjetnosti zmage je dosežen.
 [Destroy this building?]
-Destroy this building?
+Uniči to stavbo?

@@ -6011,4 +6011,4 @@ CPU %0%
 [outcome reason probability]
 Επιτεύχθηκε το όριο πιθανότητας νίκης.
 [Destroy this building?]
-Destroy this building?
+Να καταστραφεί αυτό το κτίριο;

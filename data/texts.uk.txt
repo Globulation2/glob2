@@ -6011,4 +6011,4 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [outcome reason probability]
 Поріг імовірності перемоги досягнуто.
 [Destroy this building?]
-Destroy this building?
+Знищити цю будівлю?

@@ -6011,4 +6011,4 @@ Süre sınırına ulaşıldı.
 [outcome reason probability]
 Kazanma olasılığı eşiğine ulaşıldı.
 [Destroy this building?]
-Destroy this building?
+Bu bina yıkılsın mı?

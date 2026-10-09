@@ -6011,4 +6011,4 @@ Lejárt az időkorlát.
 [outcome reason probability]
 A győzelmi valószínűség elérte a küszöbértéket.
 [Destroy this building?]
-Destroy this building?
+Lerombolod ezt az épületet?

@@ -6011,4 +6011,4 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [outcome reason probability]
 آستانهٔ احتمال پیروزی محقق شد.
 [Destroy this building?]
-Destroy this building?
+این ساختمان تخریب شود؟

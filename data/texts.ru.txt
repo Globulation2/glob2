@@ -6011,4 +6011,4 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [outcome reason probability]
 Порог вероятности победы достигнут.
 [Destroy this building?]
-Destroy this building?
+Уничтожить это здание?

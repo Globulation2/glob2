@@ -6011,4 +6011,4 @@ Aikaraja saavutettu.
 [outcome reason probability]
 Voittotodennäköisyyden kynnysarvo saavutettu.
 [Destroy this building?]
-Destroy this building?
+Tuhotaanko tämä rakennus?
