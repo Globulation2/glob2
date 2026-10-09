@@ -91,10 +91,12 @@ struct MapPreviewHarness
 		const auto directory = std::filesystem::path(glob2test::artifactDirFromWorkingDirectory()) /
 							   "generator-studio";
 		std::filesystem::create_directories(directory);
-		std::ifstream manifestFile("data/generators/examples/swamp/manifest.json");
+		std::ifstream manifestFile(glob2test::sourceRoot() /
+								   "data/generators/examples/swamp/manifest.json");
 		auto manifest = Json::parse(manifestFile);
 		manifest["entry"] = "generator.js";
-		std::ifstream scriptFile("data/generators/examples/swamp/generator.js");
+		std::ifstream scriptFile(glob2test::sourceRoot() /
+								 "data/generators/examples/swamp/generator.js");
 		const std::string script{std::istreambuf_iterator<char>(scriptFile),
 								 std::istreambuf_iterator<char>()};
 		const auto packagePath = (directory / "package.json").string();
