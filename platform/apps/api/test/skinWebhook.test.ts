@@ -44,3 +44,32 @@ it('verifies exact raw bytes, refuses mode mismatch, and records an event once',
     0,
   );
 });
+
+it('acknowledges credit checkouts without reconciling them as skin purchases', async () => {
+  const sdk = new Stripe('sk_test_local_fixture');
+  for (const creditProduct of ['hive', 'maps']) {
+    const payload = JSON.stringify({
+      id: `evt_credit_${creditProduct}`,
+      object: 'event',
+      type: 'checkout.session.completed',
+      livemode: false,
+      data: {
+        object: {
+          id: `cs_${creditProduct}`,
+          object: 'checkout.session',
+          metadata: { purchaseId: '00000000-0000-4000-8000-000000000001', creditProduct },
+        },
+      },
+    });
+    const response = await instance.app.inject({
+      method: 'POST',
+      url: '/api/v1/skins/stripe-webhook',
+      headers: {
+        'content-type': 'application/json',
+        'stripe-signature': sdk.webhooks.generateTestHeaderString({ payload, secret }),
+      },
+      payload,
+    });
+    expect(response.statusCode).toBe(200);
+  }
+});

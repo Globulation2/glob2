@@ -147,6 +147,8 @@ export async function skinBillingRoutes(app: FastifyInstance, identity: Identity
         event.type === 'checkout.session.expired'
       ) {
         const session = event.data.object;
+        // Credit checkouts share this Stripe account but belong to another ledger.
+        if (session.metadata?.creditProduct) return { received: true };
         purchaseId = session.metadata?.purchaseId;
         sessionId = session.id;
       } else if (
@@ -165,6 +167,7 @@ export async function skinBillingRoutes(app: FastifyInstance, identity: Identity
         const pi = charge.payment_intent;
         if (pi) {
           const payment = typeof pi === 'string' ? await stripe.paymentIntents.retrieve(pi) : pi;
+          if (payment.metadata.creditProduct) return { received: true };
           purchaseId = payment.metadata.purchaseId;
           if (purchaseId) {
             const sessions = await stripe.checkout.sessions.list({
