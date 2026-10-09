@@ -151,7 +151,7 @@ restores whatever landscape it had.
 | `plantations` | 48 | Plantations | Its own — see below |
 | `sierpinski-gardens` | 49 | Sierpiński Gardens | [Recursive lakes, home districts and orchard causeways](FRACTAL_MAPS.md) |
 | `hilbert-river` | 50 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
-| `lava-shield` | 51 | Lava shield | [Volcanic island: crater rim, lava tongues, scored coastal towns](LAVA_SHIELD.md) |
+| `lava-shield` | 51 | Lava shield | [Volcanic island: lava crater, live lava tongues with cooled fords, scored coastal towns](LAVA_SHIELD.md) |
 | `honeycomb-isle` | 53 | Honeycomb isle | [Hexagon city on an island: street-sealed blocks, a river, wheat edges, ruins](HONEYCOMB_ISLE.md) |
 | `karst-towers` | 54 | Karst towers | [Tower thickets, rivers between rows of homes, terraced paddies, gated bowls](KARST_TOWERS.md) |
 | `bajada` | 55 | Bajada | [Desert ranges with rows of alluvial fans, stamped home fans, playa lakes](BAJADA.md) |
@@ -1851,7 +1851,13 @@ crater approaches, and `chooseScoredSettlements` ranks fully furnished proposals
 starter patch finds too little usable area, it ranks nearby legal seeds by
 eligible frontage, then caller-supplied preference such as fertility. It neither
 changes the patch-growth predicate nor spends work on already sufficient fields.
-The resource and terrain rules of other generators are unchanged.
+Since revision 5 it is the first stock generator built on the terrain catalogue: the
+tongues and the crater are lava-group terrain (walls on foot, a hazard to fliers), each
+coast-reaching tongue keeps one scree ford, branches are cooled scree and gravel, the rim
+is loam and moss, roads are dirt tracks and the far sea is deep water. The stone crust,
+scree aprons and ash along the flows are laid only after the towns, rings and roads are
+fixed, so they never take a town's room. Maps carry the matching terrain experiments in
+their headers automatically.
 
 ## Honeycomb isle
 
