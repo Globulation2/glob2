@@ -44,7 +44,7 @@ keep its write access limited to the owner. Workflow logs and artifacts in that
 mirror are public, so never print credentials or include them in artifacts.
 The owner then runs **Mac App
 Store release** manually from that mirror's Actions tab. Enter a `build_number`
-larger than every previously uploaded build number. Leave `upload` off to
+larger than every previously uploaded build number. Select the immutable public release `tag`; compilation resolves that tag once, and the signing job uses the same source commit and checks the source recorded beside the app archive. The mirror master selects the workflow driver, not the game source. Leave `upload` off to
 compile and smoke-test an ad hoc sandboxed candidate. Set `upload` to true to
 sign the app, build a `.pkg`, validate it with Apple, and upload it to App Store
 Connect. The public version comes from `PACKAGE_VERSION` in

@@ -20,6 +20,23 @@ from test_release_guards import jobs, conjuncts
 
 
 class ReleaseWorkflowTests(unittest.TestCase):
+    def test_mac_store_build_and_signing_use_same_public_tag_source(self):
+        text=(ROOT/'.github/workflows/mac-app-store.yml').read_text()
+        build,upload=text.split('\n  upload:\n',1)
+        self.assertIn('tag:\n        description: Immutable public release tag',build)
+        self.assertIn('ref: ${{ inputs.tag }}',build)
+        self.assertIn('repository: Globulation2/glob2',build)
+        self.assertIn('python3 tools/release/release.py check --tag "$RELEASE_TAG"',build)
+        self.assertIn('refs/tags/$RELEASE_TAG^{commit}',build)
+        self.assertIn('source_commit: ${{ steps.source.outputs.commit }}',build)
+        self.assertNotIn('environment:',build)
+        self.assertNotIn('secrets.',build)
+        self.assertIn('ref: ${{ needs.build.outputs.source_commit }}',upload)
+        self.assertIn('repository: Globulation2/glob2',upload)
+        self.assertIn('source-commit.txt)" = "$EXPECTED_COMMIT"',upload)
+        self.assertIn('git rev-parse HEAD > artifacts/mac-app-store/source-commit.txt',build)
+        self.assertIn('environment: mac-app-store',upload)
+
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
         for name in ('github-release.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
             text=(ROOT/'.github/workflows'/name).read_text()

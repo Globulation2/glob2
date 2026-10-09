@@ -3,6 +3,10 @@ name: Mac App Store release
 on:
   workflow_dispatch:
     inputs:
+      tag:
+        description: Immutable public release tag to build and sign
+        required: true
+        type: string
       build_number:
         description: Increasing App Store build number (CFBundleVersion)
         required: true
@@ -30,8 +34,26 @@ jobs:
     if: ${{ (github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
     runs-on: macos-26
     timeout-minutes: 90
+    outputs:
+      source_commit: ${{ steps.source.outputs.commit }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Resolve and validate exact public release source
+        id: source
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          python3 tools/release/release.py check --tag "$RELEASE_TAG"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
 
       - name: Confirm owner-controlled mirror release context
         if: ${{ github.repository == 'genixpro/glob2-release' }}
@@ -128,13 +150,17 @@ jobs:
 
       - name: Archive app for signing job
         if: ${{ github.repository == 'genixpro/glob2-release' }}
-        run: ditto -c -k --keepParent artifacts/mac-app-store/Glob2.app artifacts/mac-app-store/source-app.zip
+        run: |
+          git rev-parse HEAD > artifacts/mac-app-store/source-commit.txt
+          ditto -c -k --keepParent artifacts/mac-app-store/Glob2.app artifacts/mac-app-store/source-app.zip
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: ${{ github.repository == 'genixpro/glob2-release' }}
         with:
           name: mac-app-store-source-app
-          path: artifacts/mac-app-store/source-app.zip
+          path: |
+            artifacts/mac-app-store/source-app.zip
+            artifacts/mac-app-store/source-commit.txt
           if-no-files-found: error
           retention-days: 14
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -169,13 +195,21 @@ jobs:
           test "$RELEASE_ACTOR" = genixpro
           test "$RELEASE_TRIGGERING_ACTOR" = genixpro
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.build.outputs.source_commit }}
+          persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: mac-app-store-source-app
           path: artifacts/mac-app-store
 
       - name: Restore built app
+        env:
+          EXPECTED_COMMIT: ${{ needs.build.outputs.source_commit }}
         run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+          test "$(cat artifacts/mac-app-store/source-commit.txt)" = "$EXPECTED_COMMIT"
           mkdir -p artifacts/mac-app-store/source
           ditto -x -k artifacts/mac-app-store/source-app.zip artifacts/mac-app-store/source
           test -x artifacts/mac-app-store/source/Glob2.app/Contents/MacOS/glob2
