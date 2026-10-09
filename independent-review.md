@@ -20,3 +20,7 @@ A final skim at integrated head 561bf968fb0ccadc6a633430cd77b35cf0457727 found s
 The reviewer also checked the final source-root fixture fix at d211a6db0: it supports isolated working directories/staged fixtures and changes test path resolution only, with no new blocker.
 
 The reviewer checked integration with save version 150 / SIM_REVISION 38 from master: standard versioned Game save/load serializes the new fields and rebuilds AreaEffects state; no Studio adaptation was needed. Native references were refreshed before browser comparison.
+
+## Post-merge timing audit
+
+The independent reviewer confirmed the 30 TPS engine needs no Studio-specific timing adaptation, and the native-derived SIM39 metadata correction is sound. During its final browser run, #974 merged SIM40 / format152 and updated the same Generator Studio references. Reviewer confirmed closing #984 as superseded is appropriate; merging SIM39 fields would regress the newer references. SIM39 evidence retains its exact tested revision, with no claim of final combined SIM40 browser coverage.

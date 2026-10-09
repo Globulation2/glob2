@@ -1,44 +1,33 @@
-# Generator Studio local verification
+# Generator Studio post-merge timing verification
 
-Tested head: 01f60b5d50ca96279232c21f4337ef4be00b3603. Base: 2f3db465080eb9b9e1025c220edc8a0c4f5aa0fc; clean merge of current master. Original feature base: 6f8cf442fe5e35aa7e7773f51f3854fa3c8e0ccf. No worktree source changes remain. Master was fetched immediately before the final validation; no further changes were present. Shared map wrapping, fog rendering and save-version-150 area effects were integrated and the affected native/browser builds and tests refreshed.
+Tested head: ef67fd2b32e6801da8e1e99d63ac20ddbc12aeb6. Base: 93273e6361b7a27a8ed251e9182a9099f24ab4dc (merged Generator Studio #977, including #981 normal 30 TPS). This is evidence for simulation revision 39 / save format 150, not later master revisions. Follow-up #984 refreshed two native-derived simulation metadata fields, with no runtime changes.
 
-## Environment
+During verification, master advanced to a1796e346810e0d71e16acd1fbf764ff046343b0 (#974 persistent random streams, simulation revision 40 / format 152). That change already refreshes Generator Studio's native references, superseding #984. The older reference correction is closed rather than merged over those newer values. The original feature and independent review remain recorded on #977. This report does not claim browser verification of simulation revision 40.
 
-Linux x86_64; GCC 15.2; Emscripten 4.0.15; Node 24.19.0; existing pinned SDL3/recording libraries; installed Playwright Chromium, Firefox and WebKit. Native release uses -O3; browser release uses -O2 -fwasm-exceptions and -pthread for the threaded variant. Build logs record compiler, flags, include/link inputs. Existing packages were used; no dependencies were added. Optimized runtime assets were regenerated for the final engine.
+## Environment and checks
 
-## Results and provenance
+Linux x86_64, GCC 15.2, Emscripten 4.0.15, bundled Node 24.19.0, existing pinned SDL3 and recording libraries, installed Playwright Chromium/Firefox/WebKit. Native release -O3; browser release -O2 with wasm exceptions, plus pthread for threaded build. No dependencies added. Build logs preserve flags and inputs.
 
-- All three TypeScript configurations, lint and Vite release build passed; focused platform: 14 files / 75 tests passed; browser unit tests: 76 passed. These checks cover unchanged platform/bridge source before the final C++ master integration and native-reference-only test changes.
-- Native client and both test harnesses built; final frozen-preview test passes 34 assertions; isolated generator/preview/screen/area-effects suite passes 52 cases. Final native test output records the clean tested commit and source digest.
-- Native generator and loading its initial save produce the same 64-tick, 197652-byte checksum trace: SHA256 40ff4af71d2304d27a1429200fa17305b0352038fc978e97b03e2ef11bc8af07. Native AI Studio's 1024-tick, 1819354-byte reference remains SHA256 9bc4ef614d6950d53682c4bf8c0c909734d6380f85d3059c4cc56d17d6bc3621. CLI trace computation was performed immediately before committing its derived references; native production source/flags/dependencies are identical at the tested head.
-- Save version 150 / simulation revision 38 from upstream #980 moves the generator snapshot/trace references. The native refresh records before/after values. Browser checks additionally require native engine/simulation versions, package hash, world fingerprint and initial checksum. No browser result was used to bless a reference.
-- Deployment update-host: 11 passed; online deployment: 14 passed; browser packaging: 18 passed; browser assets: 21 tests, one explicit fontTools skip.
-- Final browser matrix: 23 passed, one documented interactive threaded-WebKit skip (5.6 minutes). Final Generator/AI Studio desktop and phone flows: 4 passed (3.4 minutes), including real isolated generator validation and library publication. Earlier reviewed-base runs also passed before upstream integration. Final integration-browser-tests.log and integration-ui-tests.log supersede earlier runs. Development failures remain under logs; they are not passing evidence. The isolated native fixture-path failure was repaired using sourceRoot(), with reviewer confirmation and a passing final isolated run.
-- Six-job builds were resumed with more parallel jobs; one browser build received SIGTERM without compiler failure and was resumed. Completed builds exit zero. Hosted cheap PR contracts passed; expensive hosted jobs were skipped.
+Native release client, engine/unit harnesses, serial and threaded browser builds pass. All three platform TypeScript configurations and lint pass. Focused platform tests pass 14 files / 75 tests. Frozen native preview passes 34 assertions; isolated generator/preview/screen/area-effects/session/speed suite passes 65 cases. Final native preview reports clean tested commit and sourceTreeSha256 f8cefa7c5b5865b7a1fa9bbbccb91a0970be9c29234ba8713aa366aae0a64673.
 
-## Coverage and limits
+Native generation and initial-save loading produce byte-identical 64-tick traces (197652 bytes, SHA256 40ff4af71d2304d27a1429200fa17305b0352038fc978e97b03e2ef11bc8af07). AI Studio's 1024-tick native reference remains 1819354 bytes, SHA256 9bc4ef614d6950d53682c4bf8c0c909734d6380f85d3059c4cc56d17d6bc3621. CLI traces were recorded at the merged runtime source before the reference-only commit; runtime inputs are identical at the tested head.
 
-Focused contracts cover strict atomic generator replacements, incomplete/stale responses, recovery/Undo/restore, cancellation, account isolation, separate billing/idempotency/provider recovery, single-module imports, invalid-manifest preservation, declaration isolation, stale reports and publication receipts. Desktop/phone flows cover generation, settings changes, frozen preview/Watch, isolated validation, diagnostics, repair, Generator Library publication and package export. Paid provider/Stripe behavior uses existing fakes; no live paid request was sent.
+Browser matrix: 22 passed, one interactive threaded WebKit skip, one Firefox threaded Watch failure (Emscripten _emscripten_thread_profiler_init assertion). Isolated repetition of that Firefox case: two passed, one failed with the same assertion. This is an unresolved intermittent runtime failure; these runs are not represented as fully green. Headless trace comparisons pass across all six browser/runtime combinations. The runtime failure must be investigated before enabling the feature. Exact rerun: node browser/node_modules/.bin/playwright test -c browser/playwright.config.js browser/tests/generator-studio.spec.js --project firefox --grep 'watches its colonies \(threaded\)' --repeat-each 3.
 
-Generator CLI checksum comparisons cover generation and initial-save loading across native and six browser/runtime combinations. Live preview tests separately compare frozen metadata and exercise Watch tick progression, pause and teardown. The native preview test checks continuation of its exact frozen world. Cross-platform per-tick checksum parity through the live Watch path has not been established. AI Studio browser references cover all six browser/runtime variants.
+## Commands
 
-Interactive threaded WebKit falls back to serial because this installation cannot share worker memory; that case is explicitly skipped, while headless threaded WebKit is covered. Native Windows/macOS/Android and a complete deployed Docker/Caddy stack were not exercised. Production deployment and human maintainer playthrough remain pending; Generator Studio stays disabled by default. The feature changes no simulation computation, save/package format or runtime dependency; upstream's save/simulation revision and golden changes are retained.
-
-## Exact commands
-
-Run from repository root with the bundled Node 24.19 binary on PATH:
+Run from repository root with bundled Node on PATH. Exact native CLI commands and isolated test flags are included as tickrate-native-traces.sh and tickrate-native-suite.sh. commands.md includes the focused platform test file list.
 
 ```sh
 CCACHE=1 GLOB2_RECORDING_PREFIX=$PWD/artifacts/generator-studio/recording-prefix GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix scons release=1 -j16 --build=artifacts/generator-studio/build artifacts/generator-studio/build/src/glob2 engine-tests unit-tests
-CCACHE=1 scons target=web release=1 -j12
+CCACHE=1 scons target=web release=1 -j16
 npm --prefix platform run typecheck
 npm --prefix platform run lint
-npm --prefix platform run build -w @glob2/web
-node --test browser/unit/*.test.js
-GLOB2_TEST_ARTIFACTS=$PWD/artifacts artifacts/generator-studio/build/test/glob2-engine-tests --test-suite=MapPreview --test-case='generator Studio*' --no-breaks=true
-python3 test/run_tests.py --build-dir artifacts/generator-studio/build --filter 'ScriptGenerator/*' --filter 'MapPreview/*' --filter 'ScreenExecution/*' --filter 'BuildingAreaEffects/*' --jobs 8
 node browser/node_modules/.bin/playwright test -c browser/playwright.config.js browser/tests/generator-studio.spec.js browser/tests/studio.spec.js
 ```
 
-The archive includes focused-test command lists, exact native CLI commands, desktop/phone E2E environment and result counts in commands.md. Saves, replay checksum sidecars, packages, settings, reports and screenshots support the claims above. SHA256SUMS records the archived files. No assertion of hosted full-matrix verification or human playthrough is made.
+Final incremental builds used -j8. The archive contains fresh native/browser reports, packages, saves, replay checksum traces, screenshots and logs with SHA256SUMS.
 
+## Limits
+
+Live Watch tests establish frozen metadata, tick progression, pause and teardown; CLI generation/save-load comparisons establish cross-platform per-tick trace parity. Per-tick parity through the live Watch path has not been established. Interactive threaded WebKit cannot share worker memory in this installation; the case is explicitly skipped while headless threaded WebKit is covered. Windows/macOS/Android native execution and full deployed Docker/Caddy stack were not exercised. Full desktop/phone authoring flows passed on the feature's previously recorded tested head; they were not repeated for this metadata-only correction. Paid providers/Stripe use fakes. Production deployment and human maintainer playthrough remain pending; Generator Studio remains disabled by default.
