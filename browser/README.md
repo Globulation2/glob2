@@ -42,7 +42,7 @@ and shared assets remain present; a threaded-only client reports an error when
 the host cannot support threads. Ordinary SCons defaults to both runtimes,
 and `web-package` requires both. Full browser compatibility verification also
 uses both. `pch=1` and `unity=1` are explicit experiments; see
-[development build profiles](../docs/development/reference.md#development-build-profiles)
+[development build profiles](../docs/development/reference.md#fast-development-builds)
 for cache controls and debugging limits.
 
 Open http://127.0.0.1:8765. The game starts automatically and fills the page.
