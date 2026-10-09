@@ -6010,3 +6010,5 @@ AI 생성 아님
 제한 시간에 도달했습니다.
 [outcome reason probability]
 승리 확률이 기준값에 도달했습니다.
+[Destroy this building?]
+이 건물을 파괴하시겠습니까?

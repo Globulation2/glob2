@@ -6010,3 +6010,5 @@ As regras do cenário determinaram o resultado.
 Limite de tempo atingido.
 [outcome reason probability]
 Limiar de probabilidade de vitória atingido.
+[Destroy this building?]
+Destruir este edifício?

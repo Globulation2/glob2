@@ -274,11 +274,10 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 			return false;
 		if (usesDial())
 		{
-			// Dial sliders follow the thumb angle; the shared production arc
-			// captures the nearer divider for the full gesture.
+			// Worker and flag-range sliders follow the thumb angle.
 			const auto region = dialRegionAt(point);
-			if (!region || (region->part != DialRegion::Arc && region->part != DialRegion::Proportions) ||
-				(region->action.kind != 6 && region->action.kind != 0 && region->action.kind != 8))
+			if (!region || region->part != DialRegion::Arc ||
+				(region->action.kind != 6 && region->action.kind != 8))
 				return false;
 			TouchAllocationSession session{pointer, {}, building->state().gid, gui.localTeamNo};
 			session.generation = building->state().scriptIdentity;
@@ -289,24 +288,8 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 			session.polar = true;
 			session.sweepFrom = region->sliderFrom;
 			session.sweepTo = region->sliderTo;
-			session.requested = session.kind == 6   ? gui.displayedMaxUnitWorking(*building)
-								: session.kind == 8 ? gui.displayedUnitStayRange(*building)
-													: gui.displayedRatio(*building)[session.value];
-			if (region->part == DialRegion::Proportions)
-			{
-				session.ratios = gui.displayedRatio(*building);
-				session.initialRatios = TouchDial::shares(session.ratios, MAX_RATIO_RANGE);
-				session.start = point;
-				const auto g = dialLayout(layout()).geometry;
-				const auto polar = TouchDial::polar(g, point);
-				const int total = session.ratios[0] + session.ratios[1] + session.ratios[2];
-				const double first = TouchDial::angleOf(session.ratios[0], region->from, region->to, std::max(1, total));
-				const double second = TouchDial::angleOf(session.ratios[0] + session.ratios[1], region->from, region->to, std::max(1, total));
-				const double d0 = std::abs(polar->angle - first), d1 = std::abs(polar->angle - second);
-				session.divider = std::abs(d0 - d1) < 0.01
-					? (polar->radius < g.rings[region->ring].middle() ? 0 : 1)
-					: (d0 < d1 ? 0 : 1);
-			}
+			session.requested = session.kind == 6 ? gui.displayedMaxUnitWorking(*building)
+				: gui.displayedUnitStayRange(*building);
 			allocation = session;
 		}
 	}
@@ -350,28 +333,7 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		const auto g = dialLayout(layout()).geometry;
 		const auto polar = TouchDial::polar(g, point);
 		allocation->position = point;
-		if (allocation->divider >= 0)
-		{
-			allocation->moved |= std::hypot(point.x - allocation->start.x, point.y - allocation->start.y) >= 4 * unit;
-			if (polar && allocation->moved)
-			{
-				const int at = TouchDial::value(polar->angle, allocation->sweepFrom, allocation->sweepTo, MAX_RATIO_RANGE);
-				auto values = allocation->initialRatios;
-				if (allocation->divider == 0)
-				{
-					const int pair = values[0] + values[1];
-					values[0] = std::clamp(at, 0, pair);
-					values[1] = pair - values[0];
-				}
-				else
-				{
-					values[1] = std::clamp(at - values[0], 0, MAX_RATIO_RANGE - values[0]);
-					values[2] = MAX_RATIO_RANGE - values[0] - values[1];
-				}
-				allocation->ratios = values;
-			}
-		}
-		else if (polar)
+		if (polar)
 			allocation->requested =
 				TouchDial::value(polar->angle, allocation->sweepFrom, allocation->sweepTo, allocation->maximum);
 		if (event.type == SDL_EVENT_FINGER_UP)
@@ -381,17 +343,10 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 			const auto released = dialRegionAt(point);
 			if (polar && released && released->ring == allocation->ring)
 			{
-				if (allocation->divider >= 0)
-				{
-					if (allocation->moved)
-						commitRatios(*building, allocation->ratios);
-				}
-				else if (allocation->kind == 6)
+				if (allocation->kind == 6)
 					gui.requestWorkerAllocation(*building, allocation->requested);
 				else if (allocation->kind == 8)
 					gui.requestFlagRange(*building, allocation->requested);
-				else
-					setRatio(*building, allocation->value, allocation->requested);
 			}
 			allocation.reset();
 		}

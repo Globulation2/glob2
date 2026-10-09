@@ -6010,3 +6010,5 @@ AI 生成ではない
 制限時間に達しました。
 [outcome reason probability]
 勝利確率がしきい値に達しました。
+[Destroy this building?]
+この建物を破壊しますか？

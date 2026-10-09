@@ -6010,3 +6010,5 @@ De scenarioregels hebben de uitkomst bepaald.
 Tijdslimiet bereikt.
 [outcome reason probability]
 Drempel voor de winstkans bereikt.
+[Destroy this building?]
+Dit gebouw vernietigen?

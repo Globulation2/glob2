@@ -6010,3 +6010,5 @@ Pravila scenarija so odločila o izidu.
 Časovna omejitev je dosežena.
 [outcome reason probability]
 Prag verjetnosti zmage je dosežen.
+[Destroy this building?]
+Uniči to stavbo?

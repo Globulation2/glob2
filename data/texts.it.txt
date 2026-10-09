@@ -6010,3 +6010,5 @@ Le regole dello scenario hanno determinato l’esito.
 Limite di tempo raggiunto.
 [outcome reason probability]
 Soglia di probabilità di vittoria raggiunta.
+[Destroy this building?]
+Distruggere questo edificio?
