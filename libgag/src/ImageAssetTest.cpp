@@ -10,6 +10,8 @@
 #include <filesystem>
 #include <fstream>
 #include <cstring>
+#include <algorithm>
+#include <utility>
 namespace {
 const unsigned char webp[] = {82,73,70,70,58,0,0,0,87,69,66,80,86,80,56,76,45,0,0,0,47,1,64,0,16,31,32,32,33,238,240,127,159,220,16,18,144,41,81,245,144,144,128,88,66,247,127,138,67,2,1,66,58,229,98,156,66,169,23,23,104,136,232,127,4,0};
 const unsigned char pixels[] = {17,39,71,255,121,77,55,0,25,80,100,128,0,255,30,255};
@@ -38,6 +40,42 @@ TEST_CASE("prepared image adoption separates shared pixels and transfers exclusi
     CHECK(static_cast<Uint32*>(exclusive->getSDLSurface()->pixels)[1] == 0x80445566u);
     GAGCore::AssetImage missing(nullptr);
     CHECK_THROWS_AS(GAGCore::DrawableSurface::fromAssetImage(missing, true, false), std::runtime_error);
+}
+TEST_CASE("mip preparation preserves padded alpha weighted integer filtering") {
+    for (const auto size : {std::pair<int, int>{7, 5}, {1, 9}, {9, 1}, {8, 8}}) {
+        auto *surface = SDL_CreateSurface(size.first, size.second, SDL_PIXELFORMAT_ARGB8888);
+        REQUIRE(surface != nullptr);
+        for (int y = 0; y < surface->h; ++y) for (int x = 0; x < surface->w; ++x) {
+            auto *p = static_cast<unsigned char*>(surface->pixels) + y * surface->pitch + x * 4;
+            p[0] = (x * 37 + y * 11) % 256; p[1] = (x * 19 + y * 43) % 256;
+            p[2] = (x * 53 + y * 17) % 256;
+            p[3] = x < surface->w / 2 ? 255 : (x * 71 + y * 23) % 256;
+        }
+        GAGCore::AssetImage image(surface);
+        image.prepareUpload(true);
+        REQUIRE(!image.mips.empty());
+        const auto &base = image.mips.front();
+        for (int y = 0; y < base.height; ++y) for (int x = 0; x < base.width; ++x) {
+            const auto *expected = image.uploadPixels.empty()
+                ? static_cast<const unsigned char*>(surface->pixels) + std::min(y, surface->h - 1) * surface->pitch + std::min(x, surface->w - 1) * 4
+                : image.uploadPixels.data() + (size_t(std::min(y, surface->h - 1)) * surface->w + std::min(x, surface->w - 1)) * 4;
+            CHECK(std::memcmp(base.pixels.data() + (size_t(y) * base.width + x) * 4, expected, 4) == 0);
+        }
+        for (size_t i = 1; i < image.mips.size(); ++i) {
+            const auto &input = image.mips[i - 1], &output = image.mips[i];
+            for (int y = 0; y < output.height; ++y) for (int x = 0; x < output.width; ++x) {
+                unsigned sum[4] = {};
+                for (int dy = 0; dy < 2; ++dy) for (int dx = 0; dx < 2; ++dx) {
+                    const auto *p = input.pixels.data() + (size_t(std::min(input.height - 1, y * 2 + dy)) * input.width + std::min(input.width - 1, x * 2 + dx)) * 4;
+                    sum[3] += p[3]; for (int c = 0; c < 3; ++c) sum[c] += p[c] * p[3];
+                }
+                const auto *p = output.pixels.data() + (size_t(y) * output.width + x) * 4;
+                CHECK(p[3] == (sum[3] + 2) / 4);
+                for (int c = 0; c < 3; ++c)
+                    CHECK(p[c] == (sum[3] ? (sum[c] + sum[3] / 2) / sum[3] : 0));
+            }
+        }
+    }
 }
 TEST_CASE("WebP decoder preserves exact RGBA including transparent RGB") {
     auto stream=SDL_IOFromConstMem(webp,sizeof(webp)); REQUIRE(stream!=nullptr);

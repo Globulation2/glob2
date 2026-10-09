@@ -36,6 +36,7 @@
 #include <new>
 #include "terrain/TerrainCompositor.h"
 #include "SoftwareTerrainCache.h"
+#include "OverviewTerrainCache.h"
 #include "ResourceSprites.h"
 
 namespace
@@ -219,7 +220,6 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
-	auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
 	constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
 	const int columns = right-left+1, rows = bot-top+1;
 	if (!render.overview)
@@ -227,47 +227,10 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
 		render.overview->setRes(columns*samples, rows*samples);
 	auto *pixels = render.overview->getSDLSurface();
-	// Sample the same corner partition as the textured terrain. A whole-tile
-	// hue would move coasts half a tile during the fade.
-	for (int y=top; y<=bot; y++)
-		for (int x=left; x<=right; x++)
-		{
-			const int ox = (x-left)*samples, oy = (y-top)*samples;
-			// Custom terrain corners keep their saved overview colours.
-			const auto corners = sceneMap.cellCorners(x+viewportX, y+viewportY);
-			std::array<std::array<unsigned char, 3>, 4> colors{};
-			TerrainVisual::Compositor::CornerColors custom{};
-			bool anyCustom = false;
-			for (unsigned k = 0; k < corners.size(); ++k)
-				if (unsigned(corners[k]) >= TERRAIN_COUNT)
-				{
-					const auto color = sceneMap.terrainPresentation(corners[k]).overview;
-					colors[k] = {color.r, color.g, color.b};
-					custom[k] = &colors[k];
-					anyCustom = true;
-				}
-			compositor.composeOverview(compositor.describe(sceneMap, x+viewportX, y+viewportY),
-									   pixels, ox, oy, anyCustom ? &custom : nullptr);
-			const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
-			if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
-				sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))
-			{
-				// Resource fields retain their gameplay-cell position over the ground.
-				const auto& colorResource = sceneMap.resourceRegistry().presentation(static_cast<ResourceId>(resource.type)).minimap;
-				for (int py = oy; py < oy+samples; ++py)
-				{
-					auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(pixels->pixels) + py*pixels->pitch);
-					for (int px = ox; px < ox+samples; ++px)
-					{
-						const auto color = row[px];
-						const unsigned r = (((color >> 16) & 255) + 3*colorResource[0]) / 4;
-						const unsigned g = (((color >> 8) & 255) + 3*colorResource[1]) / 4;
-						const unsigned b = ((color & 255) + 3*colorResource[2]) / 4;
-						row[px] = 0xFF000000u | (r << 16) | (g << 8) | b;
-					}
-				}
-			}
-		}
+	if (!render.overviewCache)
+		render.overviewCache = std::make_unique<OverviewTerrainCache>();
+	render.overviewCache->copy(sceneMap, left, top, right, bot, viewportX, viewportY,
+							   visibleTeams, drawOptions & DRAW_WHOLE_MAP, pixels);
 	render.overview->markPixelsChanged();
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }

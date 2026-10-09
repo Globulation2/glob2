@@ -161,6 +161,7 @@ CLIENT_SOURCES = (
     'render/terrain/TerrainCompositor.cpp',
     'render/terrain/TerrainCompiledPack.cpp',
     'render/SoftwareTerrainCache.cpp',
+    'render/OverviewTerrainCache.cpp',
     'render/MapOverlayQueue.cpp',
     'render/MapRenderState.cpp',
     'render/FogFade.cpp',

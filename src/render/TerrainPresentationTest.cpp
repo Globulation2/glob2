@@ -14,6 +14,7 @@
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
+#include "OverviewTerrainCache.h"
 #include <Toolkit.h>
 #include "MapRenderState.h"
 #include "MapThumbnail.h"
@@ -692,6 +693,112 @@ TEST_SUITE("TerrainPresentation")
 				CHECK(fixture.checksum() == checksum);
 			}
 	}
+	TEST_CASE("overview pages retain wrapped samples and invalidate edits, resources and visibility [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256});
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		map.paintCell(0, 0, ICE);
+		map.paintCell(31, 31, SAND);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(false, 0);
+		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
+		GAGCore::DrawableSurface actual(40 * samples, 24 * samples), expected(40 * samples, 24 * samples);
+		OverviewTerrainCache cache;
+		const auto check = [&](int vx, int vy, bool wholeMap = true)
+		{
+			cache.copy(scene, -3, -2, 36, 21, vx, vy, fixture.team->me, wholeMap, actual.getSDLSurface());
+			for (int y = -2; y <= 21; ++y)
+				for (int x = -3; x <= 36; ++x)
+					compositor.composeOverview(compositor.describe(scene, x + vx, y + vy),
+						expected.getSDLSurface(), (x + 3) * samples, (y + 2) * samples);
+			CHECK(std::memcmp(actual.getSDLSurface()->pixels, expected.getSDLSurface()->pixels,
+				actual.getSDLSurface()->pitch * actual.getH()) == 0);
+		};
+		check(29, 30);
+		const auto cold = cache.composedCells();
+		check(29, 30);
+		check(-3, -2);
+		CHECK(cache.composedCells() == cold);
+		map.setVertexTerrain(31, 0, GRASS); // Halo edit across both page and map seams.
+		glob2test::observeMap(map, scene);
+		check(29, 30);
+		CHECK(cache.composedCells() > cold);
+		map.setTerrainSeed(197);
+		glob2test::observeMap(map, scene);
+		check(29, 30);
+		const auto seeded = cache.composedCells();
+		map.setResourceByIndex(9, 9, WHEAT, 1);
+		glob2test::observeMap(map, scene);
+		cache.copy(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual.getSDLSurface());
+		CHECK(cache.composedCells() == seeded + 1);
+		CHECK(std::memcmp(actual.getSDLSurface()->pixels, expected.getSDLSurface()->pixels,
+			actual.getSDLSurface()->pitch * actual.getH()) != 0);
+		// Hiding the resource restores its untinted ground, and revealing it
+		// composes it once again rather than accumulating the tint.
+		map.unsetMapDiscovered();
+		glob2test::observeMap(map, scene);
+		check(29, 30, false);
+		CHECK(cache.composedCells() == seeded + 2);
+		cache.copy(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual.getSDLSurface());
+		CHECK(cache.composedCells() == seeded + 3);
+		map.setNoResource(9, 9, 1);
+		glob2test::observeMap(map, scene);
+		check(29, 30);
+		CHECK(cache.composedCells() == seeded + 4);
+	}
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU)});
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+			SDL_CreateSurface(128, 128, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+		REQUIRE(pixels);
+		TerrainVisual::Surface image(pixels.get(), true);
+		pixels.release();
+		for (Uint32 color : {0xFF319ABCu, 0xFFAD6712u})
+		{
+			SDL_FillSurfaceRect(image.getSDLSurface(), nullptr, color);
+			image.markPixelsChanged();
+			image.prepareTexture();
+			GLint compressed = 1, width = 0;
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED, &compressed);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, 1, GL_TEXTURE_WIDTH, &width);
+			CHECK(compressed == GL_FALSE);
+			CHECK(width == 64);
+			CHECK(glGetError() == GL_NO_ERROR);
+		}
+	}
+#endif
+	TEST_CASE("complete torus terrain working set survives repeated atlas sweeps [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		const auto sweep = [&]()
+		{
+			for (int y = 0; y < 256; y += 64)
+				for (int x = 0; x < 256; x += 64)
+				{
+					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 65, 65, x - 1, y - 1,
+						fixture.team->me, true, 19, true));
+					cache.draw(*globals->gfx);
+					CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+					CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+				}
+		};
+		sweep();
+		const auto rebuilds = cache.cacheRebuilds();
+		CHECK(rebuilds == 256);
+		sweep();
+		CHECK(cache.cacheRebuilds() == rebuilds);
+	}
 	TEST_CASE("tiled capture keeps whole-map density and warm pages at narrow edges [display]")
 	{
 		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR",
@@ -1142,12 +1249,14 @@ TEST_SUITE("TerrainPresentation")
 			gfx.drawableW = gfx.getW() * windowScale;
 			gfx.drawableH = gfx.getH() * windowScale;
 			// Torus captures compensate for the shown zoom: .25 * 4 gives
-			// 32 physical pixels per tile, irrespective of the window DPI.
+			// native raster scale, irrespective of the window DPI. The terrain
+			// working set still has to fit the complete capture budget.
 			gfx.setRenderTargetScale(4);
 			SoftwareTerrainCache cache;
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
 								  true, 19, true));
-			CHECK(chunkPixels(*cache.copies.front().chunk)->w == SoftwareTerrainCache::ChunkPixels);
+			CHECK(chunkPixels(*cache.copies.front().chunk)->w == SoftwareTerrainCache::ChunkPixels *
+				SoftwareTerrainCache::capturePixelsPerCell(scene.getW(), scene.getH()) / 32);
 			// The same map captured at 8px per cell needs reduced pages. A
 			// narrow edge must retain the complete capture's sampling density.
 			gfx.setRenderTargetScale(1);

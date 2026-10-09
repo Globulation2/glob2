@@ -24,6 +24,7 @@
 #include "TorusMapFixture.h"
 #include "render/scene/SceneExtract.h"
 #include "render/SoftwareTerrainCache.h"
+#include "render/OverviewTerrainCache.h"
 #include <algorithm>
 #include <cassert>
 #include <cstdio>
@@ -239,11 +240,14 @@ static int run(int argc, char **argv)
                         std::printf("FRAME_SCOPE frame=%d scope=%u elapsed_ms=%.6f\n", i, unsigned(id),
                             (scopes[unsigned(id)].time.total - scopesBefore[unsigned(id)].time.total) / 1e6);
                     if (auto *cache = gui.view.render.existingTerrainCache())
-                        std::printf("FRAME_CACHE frame=%d bytes=%zu rebuilds=%llu hits=%llu reductions=%llu resolution=%d downsample=%d\n", i,
-                            cache->bytes(), static_cast<unsigned long long>(cache->cacheRebuilds()),
+                        std::printf("FRAME_CACHE frame=%d bytes=%zu mask_bytes=%zu rebuilds=%llu hits=%llu reductions=%llu resolution=%d downsample=%d\n", i,
+                            cache->bytes(), cache->maskBytes(), static_cast<unsigned long long>(cache->cacheRebuilds()),
                             static_cast<unsigned long long>(cache->cacheHits()),
                             static_cast<unsigned long long>(cache->cacheReductions()),
                             cache->samplingResolution(), cache->samplingReduction());
+                    if (gui.view.render.overviewCache)
+                        std::printf("FRAME_OVERVIEW frame=%d composed_cells=%llu\n", i,
+                            static_cast<unsigned long long>(gui.view.render.overviewCache->composedCells()));
                 }
                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
                     std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
@@ -268,6 +272,7 @@ static int run(int argc, char **argv)
             }
 #endif
             std::fflush(stdout);
+            if (std::strncmp(label, "Torus", 5) == 0) captureFramebuffer();
         };
         if (std::getenv("GLOB2_BENCH_FLAT"))
         {
@@ -464,6 +469,7 @@ static int run(int argc, char **argv)
         else
         for (bool clouds : {false, true})
         {
+            const Uint32 initialChecksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
             globalContainer->settings.clouds = clouds;
             globalContainer->settings.cloudShadows = clouds;
             measure(clouds ? "2D clouds" : "2D no clouds", [&] {
@@ -490,8 +496,9 @@ static int run(int argc, char **argv)
             std::printf("capture=%dx%d tiles=%zu pixels/cell=%d texture_bytes=%zu cloud=%dx%d\n",
                         view.worldW * view.pixelsPerCell, view.worldH * view.pixelsPerCell,
                         view.tiles.size(), view.pixelsPerCell, bytes, view.cloudW, view.cloudH);
-            if (clouds) captureFramebuffer();
             view.reset();
+            assert(gui.game.checkSum(nullptr, nullptr, nullptr, true) == initialChecksum);
+            std::printf("simulation_checksum=%08x\n", initialChecksum);
         }
     }
 #endif
