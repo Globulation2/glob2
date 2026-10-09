@@ -439,12 +439,53 @@ void PreparedCoverage::prepareBorders(const Catalog &c, const Recipe &r)
 	if (delta.x * offset.y - delta.y * offset.x < 0)
 		std::reverse(std::begin(controls), std::end(controls));
 	auto &border = naturalBorder;
+	// Smooth noise along the contour adds uneven lobes and smaller scallops.
+	// Keep the primary coordinate monotone: sideways displacement cannot fold
+	// the contour or create detached regions. Salt by the pair and map look,
+	// independently of the order in which the materials occur in the cell.
+	const auto &profile = c.profiles[c.profileFor(a, b)];
+	const auto motif = hash(r.x, r.y, mapSeedSalt(r.seed) ^
+		c.materials[std::min(a, b)].salt ^ c.materials[std::max(a, b)].salt ^ 0x53ca110fu);
+	const auto scallop = [&](float t, unsigned intervals, unsigned salt)
+	{
+		const float scaled = t * intervals;
+		const unsigned index = std::min(unsigned(scaled), intervals - 1);
+		const float f = scaled - index, blend = f * f * (3 - 2 * f);
+		const auto value = [&](unsigned i)
+		{ return float(hash(i, salt, motif) & 65535) / 32767.5f - 1; };
+		return value(index) * (1 - blend) + value(index + 1) * blend;
+	};
+	const float detail = std::clamp(float(profile.roughness) / 256, 0.f, 1.5f);
 	for (unsigned i = 0; i < border.points.size(); ++i)
 	{
 		const float t = float(i) / (border.points.size() - 1), u = 1 - t;
 		auto &p = border.points[i];
 		p = {u*u*u*controls[0].x + 3*u*u*t*controls[1].x + 3*u*t*t*controls[2].x + t*t*t*controls[3].x,
 			u*u*u*controls[0].y + 3*u*u*t*controls[1].y + 3*u*t*t*controls[2].y + t*t*t*controls[3].y};
+		// Zero displacement and slope at the endpoints keep their guided tangent.
+		const float taper = std::min(1.f, 64 * t*t*u*u);
+		const float window = taper * taper * (3 - 2 * taper);
+		const float displacement = detail * window *
+			(9.f * scallop(t, 3, 0) + 6.f * scallop(t, 5, 1) + 1.2f * scallop(t, 9, 2));
+		if (vertical) p.x += displacement;
+		else p.y += displacement;
+		// A ten-pixel curve budget includes both smoothing and detail.
+		const float cross = chordVector.x * (p.y - center.from.y) -
+			chordVector.y * (p.x - center.from.x);
+		const float excess = cross - std::clamp(cross, -10 * chord, 10 * chord);
+		if (vertical) p.x += excess / chordVector.y;
+		else p.y -= excess / chordVector.x;
+		p.x = std::clamp(p.x, 0.f, 32.f);
+		p.y = std::clamp(p.y, 0.f, 32.f);
+		// Keep a pocket at each corner even when a deep lobe approaches it.
+		// The clearance relaxes smoothly towards the cell centre, where the
+		// full depth is available. Marching-square endpoints remain untouched.
+		const float primary = vertical ? p.y : p.x;
+		const float edge = std::min(primary, 32 - primary);
+		const float f = std::clamp((edge - 4) / 8, 0.f, 1.f);
+		const float clearance = 10 * (1 - f*f*(3 - 2*f));
+		if (vertical) p.x = std::clamp(p.x, clearance, 32 - clearance);
+		else p.y = std::clamp(p.y, clearance, 32 - clearance);
 	}
 	const auto first = border.points.front(), last = border.points.back();
 	border.vertical = std::abs(last.y - first.y) > std::abs(last.x - first.x);
@@ -453,7 +494,7 @@ void PreparedCoverage::prepareBorders(const Catalog &c, const Recipe &r)
 	const auto secondary = [&](Point p) { return border.vertical ? p.x : p.y; };
 	// Tabulate the monotone contour and its unit normal at logical pixel rows.
 	// Runtime samples interpolate this resolution-independent geometry instead
-	// of searching sixteen curve segments for every native/HD pixel.
+	// of searching the curve segments for every native/HD pixel.
 	for (unsigned coordinate = 0; coordinate < border.ordinate.size(); ++coordinate)
 	{
 		unsigned segment = 1;
@@ -485,9 +526,12 @@ Coverage PreparedCoverage::at(int px, int py) const
 		const auto d = layer.at(px, py);
 		dx += d[0]; dy += d[1];
 	}
-	// The authored field reaches at most six pixels. Scale it to two here,
-	// leaving four pixels for curve shaping without touching sharp profiles.
-	const Point sample{float(px + dx / 3) / 256, float(py + dy / 3) / 256};
+	// Reserve at most two pixels of vector displacement for the world field,
+	// leaving ten for curve shaping, including on diagonal boundaries.
+	const float warpSquared = float(dx) * dx + float(dy) * dy;
+	const float warpScale = warpSquared > 1536 * 1536 ? 512 / std::sqrt(warpSquared) : 1.f / 3;
+	const Point sample{float(px) / 256 + dx * warpScale / 256,
+		float(py) / 256 + dy * warpScale / 256};
 	const auto &border = naturalBorder;
 	const float coordinate = std::clamp(border.vertical ? sample.y : sample.x, 0.f, 32.f);
 	const unsigned index = std::min(unsigned(coordinate), 31u);
