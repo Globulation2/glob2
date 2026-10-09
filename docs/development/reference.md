@@ -2428,6 +2428,13 @@ PR merges. Retain failure artifacts, prioritize diagnosis and repair, document
 verification in repair PRs and confirm recovery with subsequent full master runs.
 Do not require master to become green before other PRs merge.
 
+For focused macOS qualification, dispatch `.github/workflows/ci-macos.yml`
+with an exact `revision` and `coverage_profile=full` (or `compatibility` for the
+selected compatibility inventory). It runs the same native build, regression,
+continuation, scripting and strict generator evidence steps as the reusable
+workflow, with a 90-minute job ceiling. This is macOS evidence, not a full
+development checkpoint.
+
 Nightly is a fallback with a separate concurrency group. Expensive nightly jobs
 are skipped only when a successful full hosted run already covers the exact master
 SHA under the current coverage policy and its evidence is available. Missing,
