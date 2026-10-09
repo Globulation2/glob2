@@ -1,0 +1,27 @@
+{
+  "source": "921e3825c88fe8b1766296ad3214ee35fe18f0f6",
+  "base": "ab15f96cd6ce1e0a80ab46983798b2ce2bc73bbe",
+  "prior_evidence": "f714518ac8614d33001af01e3000bfe10b3e8c1c",
+  "toolchain": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "native_flags": [
+    "dev_fast=1",
+    "linker=auto",
+    "-j8"
+  ],
+  "combined_flags": [
+    "dev_fast=1",
+    "pch=1",
+    "unity=1",
+    "linker=auto",
+    "-j8"
+  ],
+  "commands": [
+    "encoder-python -m unittest discover -s test/build_system -v",
+    "python3 -S -m unittest discover -s test/build_system -p test_shared_development_dependencies.py -v",
+    "python3 -S -m unittest discover -s test/build_system -p test_dev_build.py -v",
+    "python3 tools/dev_build.py -j8",
+    "python3 tools/dev_build.py pch=1 unity=1 -j8",
+    "glob2 --verify-match test/fixtures/multiplayer/FourSquares1.g2mr --map maps/FourSquares1.map.gz --out artifacts/dev-build/merge-match",
+    "cmp artifacts/dev-build/merge-match/checksums.txt test/fixtures/multiplayer/FourSquares1.verify-trace.txt"
+  ]
+}
