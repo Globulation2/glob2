@@ -6010,3 +6010,5 @@ Aturan skenario menentukan hasil.
 Batas waktu tercapai.
 [outcome reason probability]
 Ambang probabilitas kemenangan tercapai.
+[Destroy this building?]
+Hancurkan bangunan ini?

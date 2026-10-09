@@ -50,7 +50,7 @@ std::vector<ViewRect> GameGUITouch::lensRects(const MobileLayout &ui) const
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const double w = InGameTouchTheme::lensWidth * unit, h = InGameTouchTheme::lensHeight * unit,
 				 gap = InGameTouchTheme::gap * unit, inset = InGameTouchTheme::railInset * unit;
-	const double minimapBottom = ui.safe.y + ((ui.safe.h / unit < 400 ? 72 : 96) + 12) * unit;
+	const double minimapBottom = hudLayout(ui).minimap.y + hudLayout(ui).minimap.h + 8 * unit;
 	const double bottom = ui.actions.y - 8 * unit;
 	const int rows = std::max(1, int((bottom - minimapBottom + gap) / (h + gap)));
 	const bool left = ThumbSide::toolboxLeft();

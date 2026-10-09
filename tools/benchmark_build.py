@@ -6,6 +6,7 @@ Example: python3 tools/benchmark_build.py --configuration normal:dev_fast=0 \
 Reports are local review evidence, never repository documentation.
 """
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -50,7 +51,30 @@ def cache_stats(environment):
     return {name: int(value) for name, value in (line.split() for line in result.stdout.splitlines())}
 
 
+def compiler_metadata(database, environment):
+    compilers = {}
+    for entry in database:
+        words = shlex.split(entry['command'])
+        if words and Path(words[0]).name in ('ccache', 'ccache.exe'):
+            words = words[1:]
+        if not words or words[0] in compilers:
+            continue
+        binary = shutil.which(words[0], path=environment.get('PATH')) or words[0]
+        path = Path(binary)
+        version = subprocess.run([binary, '--version'], env=environment, capture_output=True, text=True, check=True).stdout
+        compilers[words[0]] = {'binary': str(path), 'version': version,
+                               'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    return compilers
+
+
 def snapshot(destination):
+    # Native harness registration reads Git provenance even when the requested
+    # target only provisions dependencies. Retain a lightweight repository,
+    # then overlay the candidate's working files without committing them.
+    subprocess.run(['git', 'clone', '--shared', '--quiet', '--no-checkout',
+                    str(ROOT), str(destination)], check=True)
+    subprocess.run(['git', 'reset', '--mixed', 'HEAD'], cwd=destination,
+                   stdout=subprocess.DEVNULL, check=True)
     files = subprocess.check_output(['git', 'ls-files', '-z'], cwd=ROOT).decode().split('\0')
     for name in filter(None, files):
         source, target = ROOT / name, destination / name
@@ -118,6 +142,12 @@ def main():
               'dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT)),
               'platform': sys.platform, 'samples': [], 'edits': [args.source, args.header],
               'note': 'Compile/link work totals sum command durations and are not parallel wall times.'}
+    report['dependency_input_hashes'] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in [*sorted((ROOT / 'scons').glob('*versions.json')), *sorted((ROOT / 'scons').glob('*vendored.json')),
+                     *sorted((ROOT / 'scons/vcpkg-ports').glob('**/*.patch')), ROOT / 'browser/toolchain.json', ROOT / 'vcpkg.json']}
+    report['external_manifests'] = {str(path): json.loads(path.read_text())
+        for prefix in filter(None, report['dependency_overrides'].values())
+        for path in Path(prefix).glob('*manifest.json')}
     frozen = tempfile.TemporaryDirectory(prefix='input-', dir=output)
     snapshot(Path(frozen.name))
     for configuration in configs:
@@ -151,8 +181,9 @@ def main():
                         object_bytes=sum(path.stat().st_size for path in build.rglob('*.o')) if build.exists() else 0)
                     report['samples'].append(sample)
                     (output / 'results.json').write_text(json.dumps(report, indent=2))
+                database = json.loads((build / 'compile_commands.json').read_text())
                 report.setdefault('build_inputs', []).append({'configuration': label, 'identity': identity,
-                    'compile_database': json.loads((build / 'compile_commands.json').read_text()),
+                    'compile_database': database, 'compilers': compiler_metadata(database, environment),
                     'dependencies': [json.loads(path.read_text()) for path in (logs / 'store/dependencies').glob('*/prefix/.shared-install.json')]})
     frozen.cleanup()
     report['medians'] = {label: {scenario: statistics.median(sample['wall_seconds'] for sample in report['samples'] if sample['configuration'] == label and sample['scenario'] == scenario)

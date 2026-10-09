@@ -6010,3 +6010,5 @@ Pravidla scénáře rozhodla o výsledku.
 Časový limit vypršel.
 [outcome reason probability]
 Prahová hodnota pravděpodobnosti vítězství byla dosažena.
+[Destroy this building?]
+Zničit tuto budovu?

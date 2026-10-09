@@ -724,6 +724,8 @@ class MobileGalleryGameplay
 		auto capture = [&](const std::string &name)
 		{
 			queueShot(name);
+			gui.game.snapshots().invalidateBoundary();
+			gui.prepareLocalPresentation();
 			gui.drawAll(0);
 			gfx->nextFrame();
 		};
@@ -897,7 +899,20 @@ class MobileGalleryGameplay
 			if (gui.game.teams[1]->myBuildings[i])
 				enemy = gui.game.teams[1]->myBuildings[i];
 		}
+		// Include a zero weight in the review fixture to show its reachable arc button.
+		if (!desktopPresentation)
+			gui.pendingFor(production->gid).pendingRatio = std::array<int, 3>{5, 0, 2};
 		inspect("game-inspector-production", production);
+		for (int i = 0; i < Unit::MAX_COUNT; ++i)
+			if (auto *unit = gui.localTeam->myUnits[i])
+			{
+				gui.setSelection(GameGUI::UNIT_SELECTION, unit);
+				gui.touch->panelOpen = true;
+				gui.touch->panelScroll = 0;
+				capture("game-inspector-unit");
+				break;
+			}
+		gui.setSelection(GameGUI::BUILDING_SELECTION, production);
 		if (!desktopPresentation)
 		{
 			// Phones: a real drag along the dial's worker ring, captured mid-gesture
@@ -941,6 +956,50 @@ class MobileGalleryGameplay
 		building->hp = std::max(1, hp / 2);
 		inspect("game-inspector-damaged", building);
 		building->hp = hp;
+		// Disposable inspector fixtures cover every other stock building family,
+		// including flag controls that are absent from the starting colony.
+		int inspectorSlot = 0;
+		while (inspectorSlot < Building::MAX_COUNT && gui.localTeam->myBuildings[inspectorSlot])
+			++inspectorSlot;
+		if (inspectorSlot == Building::MAX_COUNT)
+			throw std::runtime_error("No free building inspector fixture slot");
+		for (const char *family : {"inn", "hospital", "racetrack", "swimmingpool", "barracks", "school",
+			"defencetower", "market", "stonewall", "warflag", "clearingflag", "explorationflag"})
+		{
+			const int type = gui.game.buildingsTypes.getTypeNum(family, 0, false);
+			if (type < 0) throw std::runtime_error(std::string("Missing building fixture: ") + family);
+			auto fixture = std::make_unique<Building>(building->posX, building->posY, inspectorSlot, type,
+				gui.localTeam, &gui.game.buildingsTypes, 1, 1);
+			if (std::string(family) == "clearingflag")
+				for (int material = 0; material < MaterialCount; ++material)
+					fixture->clearingMaterials[material] = material % 2 == 0;
+			gui.localTeam->myBuildings[inspectorSlot] = fixture.get();
+			gui.localTeam->attachBuilding(inspectorSlot);
+			inspect(std::string("game-inspector-") + family, fixture.get());
+			if (std::string(family) == "clearingflag")
+			{
+				gui.touch->confirmDestroy = true;
+				capture("game-inspector-destroy-confirmation");
+				gui.touch->confirmDestroy = false;
+			}
+			gui.clearSelection();
+			gui.localTeam->detachBuilding(inspectorSlot);
+			gui.localTeam->myBuildings[inspectorSlot] = nullptr;
+			// Finished service buildings have no worker assignment. Show their
+			// real construction controls too, rather than inventing runtime lanes.
+			const int siteType = gui.game.buildingsTypes.getTypeNum(family, 0, true);
+			if (!fixture->type->maxUnitWorking && siteType >= 0)
+			{
+				fixture.reset(new Building(building->posX, building->posY, inspectorSlot, siteType,
+					gui.localTeam, &gui.game.buildingsTypes, 1, 1));
+				gui.localTeam->myBuildings[inspectorSlot] = fixture.get();
+				gui.localTeam->attachBuilding(inspectorSlot);
+				inspect(std::string("game-inspector-") + family + "-construction", fixture.get());
+				gui.clearSelection();
+				gui.localTeam->detachBuilding(inspectorSlot);
+				gui.localTeam->myBuildings[inspectorSlot] = nullptr;
+			}
+		}
 		gui.clearSelection();
 		gui.touch->panelOpen = false;
 		auto dialog = [&](const std::string &name, GameGUI::InGameMenu mode,
@@ -1066,6 +1125,8 @@ class MobileGalleryGameplay
 				const auto name =
 					std::string("gesture-build-") + (frame < 10 ? "0" : "") + std::to_string(frame);
 				queueShot(name);
+				gui.game.snapshots().invalidateBoundary();
+				gui.prepareLocalPresentation();
 				gui.drawAll(0);
 				gfx->drawCircle(int(p.x), int(p.y), int(10 * unit), GAGCore::Color(255, 220, 100));
 				gfx->nextFrame();

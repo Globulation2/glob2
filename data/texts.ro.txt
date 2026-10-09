@@ -6010,3 +6010,5 @@ Regulile scenariului au decis rezultatul.
 Limita de timp a fost atinsă.
 [outcome reason probability]
 Pragul probabilității de victorie a fost atins.
+[Destroy this building?]
+Distrugi această clădire?

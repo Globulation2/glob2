@@ -6010,3 +6010,5 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 انتهت المهلة الزمنية.
 [outcome reason probability]
 تم بلوغ عتبة احتمال الفوز.
+[Destroy this building?]
+هل تريد تدمير هذا المبنى؟
