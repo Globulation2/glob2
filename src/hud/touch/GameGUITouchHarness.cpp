@@ -451,9 +451,18 @@ class GameGUITouchHarness
 					"Tapping a locked registry resource enables it and selects it");
 			require(editor.experimentEnabled("foundation-resources"), "Silica's experiment is carried by the map");
 			if (wasLocked)
+			{
+				// This interaction also runs in German and Japanese. Check the
+				// active message's fixed text around the experiment-name slot.
+				const std::string message = GAGCore::Toolkit::getStringTable()->getString("[Enabled %0 for this map]");
+				const auto slot = message.find("%0");
+				require(slot != std::string::npos, "Experiment enablement message names its experiment");
 				require(editor.catalogRevision() != revision &&
-							editor.lastStatus().find("for this map") != std::string::npos,
+							editor.lastStatus().size() > message.size() - 2 &&
+							editor.lastStatus().starts_with(message.substr(0, slot)) &&
+							editor.lastStatus().ends_with(message.substr(slot + 2)),
 						"Enabling an experiment rebuilds the tray and says so");
+			}
 			touch.draw();
 			gfx->printScreen("touch-editor-tray-resources.bmp");
 			gfx->nextFrame();
