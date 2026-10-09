@@ -48,6 +48,10 @@ class RenderBackend
 	virtual void nativeLogicalSize(int width, int height) { logicalSize(width, height); }
 	virtual SDL_Surface *capture() = 0;
 	virtual void outputSize(int &width, int &height) = 0;
+    // Optional CPU path for tile edges already snapped to backing pixels.
+    // Retains the current clip and ordering without a logical-coordinate round trip.
+    virtual bool blitPixels(SDL_Surface*, const SDL_Rect&, const SDL_Rect&, Uint8) { return false; }
+    virtual bool fillPixels(const SDL_Rect&, SDL_Color) { return false; }
 };
 std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface *surface);
 std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int width, int height);

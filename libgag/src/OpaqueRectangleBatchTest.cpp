@@ -6,6 +6,7 @@
 #include <Toolkit.h>
 #include <SDL3/SDL.h>
 #include <cstring>
+#include <cmath>
 #include <memory>
 #include <stdexcept>
 #include <vector>
@@ -92,6 +93,68 @@ public:
         REQUIRE(failure->submittedVertices == 12);
     }
 
+    static void nativeFogPixels()
+    {
+        glob2test::ToolkitScope toolkit;
+        auto *gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "native fog seams");
+        struct TestSprite : GAGCore::Sprite { using Sprite::images; } sprite;
+        auto *shade = new GAGCore::DrawableSurface(32, 32);
+        shade->drawFilledRect(0, 0, 32, 32, GAGCore::Color(0, 0, 0));
+        sprite.images.push_back(shade);
+        sprite.rotated.resize(1);
+        sprite.experimentImages.resize(1);
+        sprite.experimentRotated.resize(1);
+        auto *surface = gfx->getSDLSurface();
+        for (float density : {1.f, 1.25f, 2.f})
+        {
+            // Exercise the persistent CPU backend used by native HiDPI windows,
+            // without relying on the display attached to the test machine.
+            gfx->nativeDesktop = true;
+            gfx->nativeSoftware = true;
+            gfx->desktopLogicalW = int(surface->w / density);
+            gfx->desktopLogicalH = int(surface->h / density);
+            gfx->drawableW = surface->w;
+            gfx->drawableH = surface->h;
+            gfx->softwareRasterizer = GAGCore::makeSoftwareRenderBackend(surface);
+            gfx->renderer = gfx->softwareRasterizer.get();
+            gfx->renderer->nativeLogicalSize(gfx->getW(), gfx->getH());
+            for (float zoom : {.125f, .33f, .38f, .57f, .75f, 1.f, 1.37f, 2.f, 5.f})
+                for (float offset : {-.5f, .25f, .5f})
+                {
+                    INFO("density=" << density << " zoom=" << zoom << " offset=" << offset);
+                    gfx->setClipRect();
+                    gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 255, 255, 255);
+                    gfx->beginMapTransform(zoom, offset, offset, 7, 5, gfx->getW() - 20, gfx->getH() - 20);
+                    for (int y = 0; y < 8; ++y)
+                    {
+                        // Fog joins uniform squares into horizontal runs, with
+                        // shade sprites meeting their ends at visibility edges.
+                        gfx->drawMapTileFill(0, y * 32, 192, (y + 1) * 32, GAGCore::Color(0, 0, 0, 128));
+                        for (int x = 6; x < 8; ++x)
+                            gfx->drawMapTileSprite(x * 32, y * 32, 32, &sprite, 0, 128);
+                    }
+                    gfx->endMapTransform();
+                    gfx->renderer->flush();
+                    const int endX = std::min(int((gfx->getW() - 13) * density), int((240 * zoom + offset) * density));
+                    const int endY = std::min(int((gfx->getH() - 15) * density), int((240 * zoom + offset) * density));
+                    unsigned bad = 0;
+                    for (int y = int(std::ceil(5 * density)); y < endY; ++y)
+                        for (int x = int(std::ceil(7 * density)); x < endX; ++x)
+                        {
+                            Uint32 value;
+                            std::memcpy(&value, static_cast<char *>(surface->pixels) + y * surface->pitch + x * 4, 4);
+                            Uint8 r, g, b;
+                            SDL_GetRGB(value, SDL_GetPixelFormatDetails(surface->format), nullptr, &r, &g, &b);
+                            bad += r < 126 || r > 128 || g != r || b != r;
+                        }
+                    REQUIRE(bad == 0);
+                    Uint32 outside;
+                    std::memcpy(&outside, surface->pixels, 4);
+                    REQUIRE(outside == SDL_MapSurfaceRGBA(surface, 255, 255, 255, 255));
+                }
+        }
+    }
+
     static void batchPixels(bool portable)
     {
         SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
@@ -163,6 +226,7 @@ public:
 
 TEST_SUITE("OpaqueRectangleBatch")
 {
+    TEST_CASE("native software fog runs meet shade tiles at fractional zoom") { OpaqueRectangleBatchTest::nativeFogPixels(); }
     TEST_CASE("recovers from submission errors") { OpaqueRectangleBatchTest::batchFailures(); }
 #ifdef HAVE_OPENGL
     TEST_CASE("retains OpenGL pixels [display]") { OpaqueRectangleBatchTest::batchPixels(false); }

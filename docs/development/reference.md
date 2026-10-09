@@ -2155,6 +2155,10 @@ allocation fails, an emergency composed-tile path preserves coverage but can dif
 in fractional resampling and HD mip filtering. None of these caches enter saves,
 simulation checksums or orders.
 
+Native software fog fills and shade tiles snap shared edges in backing pixels.
+Their pixel fill/blit operations retain clipping and flush queued geometry before
+direct writes, avoiding fractional zoom and HiDPI seams.
+
 `SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
 repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,
 including legacy callers that begin implicitly on their first drawing operation, copy
