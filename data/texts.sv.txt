@@ -6010,3 +6010,5 @@ Scenariots regler avgjorde resultatet.
 Tidsgränsen är nådd.
 [outcome reason probability]
 Tröskeln för vinstsannolikhet är uppnådd.
+[Destroy this building?]
+Förstöra den här byggnaden?

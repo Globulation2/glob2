@@ -6010,3 +6010,5 @@ Quy tắc kịch bản đã quyết định kết quả.
 Đã hết thời gian.
 [outcome reason probability]
 Đã đạt ngưỡng xác suất thắng.
+[Destroy this building?]
+Phá hủy công trình này?

@@ -6010,3 +6010,5 @@ Reguły scenariusza rozstrzygnęły wynik.
 Upłynął limit czasu.
 [outcome reason probability]
 Osiągnięto próg prawdopodobieństwa zwycięstwa.
+[Destroy this building?]
+Zniszczyć ten budynek?

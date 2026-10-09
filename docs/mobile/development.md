@@ -37,10 +37,12 @@ Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
-Tapping a resource in the touch HUD opens a compact information card with its
-localized name, resource sprite and current/maximum amount for granular resources.
-It sits opposite the selected thumb. Close dismisses it; choosing Build, Flags or
-Tools replaces it with that toolbox. A depleted resource closes its inspector. Resource cards do not dispatch tactical commands.
+Tapping a resource in the touch HUD opens an information header with its
+localized name, resource sprite and current/maximum material stocks. Compact
+resource inspection uses the shared building identity header below the top stats,
+with the same icon, centered text and close button layout. Close dismisses it;
+choosing Build, Flags or Tools replaces it with that toolbox. A depleted resource
+closes its inspector. Resource headers do not dispatch tactical commands.
 
 Objectives/Hints and Teams dialogs leave at least 16 screen points around the
 painted panel inside the safe, keyboard-adjusted area. Short objectives and hints
@@ -119,10 +121,12 @@ independent of zoom. Picking uses the last drawn Scene and its smooth-motion
 fraction, then validates the unit identity against the live simulation; a stale
 sprite cannot select a replacement unit. Exact unit hits win over nearby units; otherwise the nearest
 visible unit wins (ties use its ID). Building hits, discovered resource hits and
-existing flag targets keep their priority. Hidden units cannot be selected through fog. Unit selection opens
-a scrollable stats card with a close button, identity, health, food, speed and
-abilities, using the published Scene. Its fixed header stays above the scrollable
-body. Unit and resource cards share read-only inspection dismissal: close, a
+existing flag targets keep their priority. Hidden units cannot be selected through fog. Unit selection uses the same icon/name/owner header below the top stats as
+buildings and resources. A separate opaque statistics panel presents health,
+food, speed and abilities in alternating rows with label and value columns,
+using the published Scene. The statistics title stays above the scrollable
+body; the shared identity header owns the close button. Unit and resource
+inspectors share read-only inspection dismissal: close, a
 blank-map tap or an invalidated selection closes the card without restoring an
 older toolbox. Presentation tracks the last shown read-only card so invalidation
 in a threaded client step also closes it before rendering. Dragging near a unit
@@ -153,28 +157,57 @@ to satisfy the minimum ring radius.
 
 On compact layouts the building inspector is a thumb dial: concentric quarter
 rings centred on the thumb's bottom corner. Their roles never move: workers
-(0–20) outside, production proportions or flag range in the middle, and priority
-inside (Low at the bottom, High at the top), even when a building has no middle
-control. Thinner bands, narrower gaps and a larger preferred radius move the
+(0–20) outside, priority immediately inside them (Low at the bottom, High at
+the top), and production proportions or flag range on the third ring. Priority keeps
+its middle ring even when a building has no production or range control. Thinner bands, narrower gaps and a larger preferred radius move the
 controls away from the corner. Worker and range sliders have −/+ pads and commit
-once on release; a thin ink arc shows assigned workers.
+once on release; a thin gold edge shows assigned workers. Normal priority uses
+a neutral dot icon. The worker lane has a dark track and dark bronze target fill
+with a unit icon and pale assigned/target counts embedded in the arc. The compact
+“assigned / target” readout leaves room for larger numbers at every setting.
 
-Swarm production is one arc divided into worker, explorer and warrior shares.
-Drag either white divider to transfer share between its neighbors. The two grips
-are staggered across the band so a zero-width share remains recoverable. All
-three percentages are visible in a read-only color legend and sum to 100%.
-An edit rounds the initial weights to 16 total parts (largest remainder rounding)
-and preserves that total; the unchanged third share retains its rounded value.
-A stationary touch does nothing. Dragging previews locally and sends one existing
-swarm-ratio order on release; interruption or release away from the ring cancels.
-Pause sets all three weights to zero; pressing it again resumes worker-only
-production, or dragging a divider establishes a new mix.
+Swarm production is one arc divided into worker, explorer and warrior buttons.
+Tap a button to cycle its weight through 0, 1, 2, 3, 5 and back to 0; other
+weights stay unchanged. Each button occupies a fraction of the arc proportional
+to its weight plus one, so zero remains visible and reachable. The buttons and
+three readouts directly below the building header show the actual weights. Each
+ratio button pairs its number with a team-colored unit icon; both follow the arc
+and scale together to fit the sector. Zero-weight buttons show only the centered
+unit icon; the header readouts retain the numeric zero.
+All dial lanes use display-density antialiasing, softly rounded sector corners
+and subtle edge shading; a bounded inspector-owned texture cache reuses their
+shapes between draws. Existing weights outside the presets
+advance to the next higher preset, wrapping to zero above five. Each completed
+tap sends one existing swarm-ratio order. Interruption or dragging away cancels
+it. Setting all three weights to zero stops production; tapping any unit button
+establishes a new mix. There is no separate Pause button. All arc labels, ratio numbers and −/+ icons follow their curved centerlines
+and fit inside their buttons, including when the thumb side is mirrored. Worker
+and range readouts also follow the arc; worker readouts stay inside their own
+outer ring.
 
-Clearing resources, flag requirements, repair/upgrade and Destroy are action
-chips beside the dial, Destroy lowest. The compact read-only identity header sits below
-the stats, matching their width and aligning its bottom with the minimap in both
-orientations, including when controls use scrollable rows. While inspecting a building on short screens with two stat rows,
-the minimap uses its larger size so the header fits without overlap. Rings shrink
+Flag requirements occupy the fourth ring as radio buttons: minimum warrior or
+worker level, or exploration mode. Level buttons pair the number with a
+team-colored worker or warrior icon. Clearing materials occupy a fifth ring as
+independent toggle buttons. Selected radio and toggle segments have a brass
+fill with dark text and a brass accent along their inner edge. The rings use a larger preferred radius and sweep,
+falling back to rows when the full control cannot fit. Repair/upgrade and
+construction actions remain chips beside the dial in landscape and above its
+quadrant in portrait. Destroy confirmation replaces all dial controls and readouts
+with Cancel and Destroy arc buttons on the middle (third) ring, with
+“Destroy this building?” on the next outer ring. The preferred radius is 388 points, with a 256-point
+minimum before falling back to rows. Short landscape screens use a shallower
+sweep to keep the arcs below the header readouts on either thumb side. The center circle shows a
+trash icon and opens the existing Destroy confirmation; the confirmation button
+uses a stronger red fill and a curved trash icon. Cancel abandons it and
+only a separate confirmed action sends the destruction order. Tapping outside
+the two confirmation buttons cancels confirmation and consumes the tap, without
+activating the restored controls or map beneath it. The identity
+header's close button continues to dismiss the inspector.
+
+The compact identity header sits below the stats, matching their width and
+aligning its bottom with the minimap in both orientations, including when controls
+use scrollable rows. On short screens with two stat rows, the minimap uses its
+larger size so the header fits without overlap. Rings shrink
 to fit small screens; the map stays visible and is tappable outside the controls. Thin bands retain
 expanded touch areas, with the nearest band winning where targets overlap. `dialRegions()` is the single
 source for drawing, hit testing, keyboard focus and the harness, and every change
@@ -233,7 +266,7 @@ that a drag out of the rail places a building rather than navigating back.
   reading pending values through `GameGUI::displayed*` and using shared request
   methods for allocation, priority, range, construction and destruction. Enemy
   and replay selections are read-only. Specialized controls share the same panel.
-  Slider drags (workers, and on the dial production dividers or flag range) own a local
+  Slider drags (workers or flag range) own a local
   allocation session and emit one command on release; a second contact, selection
   change, focus loss or rotation cancels the preview. `GameGUITouchDial.cpp` and
   `TouchDial.h` hold the dial's layout, regions and sector drawing.

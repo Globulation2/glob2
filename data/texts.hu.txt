@@ -6010,3 +6010,5 @@ A forgatókönyv szabályai döntötték el az eredményt.
 Lejárt az időkorlát.
 [outcome reason probability]
 A győzelmi valószínűség elérte a küszöbértéket.
+[Destroy this building?]
+Lerombolod ezt az épületet?

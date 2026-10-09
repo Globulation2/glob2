@@ -6010,3 +6010,5 @@ Scenariets regler afgjorde udfaldet.
 Tidsgrænsen er nået.
 [outcome reason probability]
 Tærsklen for sejrsandsynlighed er nået.
+[Destroy this building?]
+Ødelæg denne bygning?

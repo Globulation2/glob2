@@ -3004,3 +3004,4 @@
 [outcome reason scenario]
 [outcome reason timer]
 [outcome reason probability]
+[Destroy this building?]
