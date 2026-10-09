@@ -5967,30 +5967,30 @@ Tirer à nouveau l’apparence du terrain
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Générateurs de cartes
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importez un paquet de générateur, puis sélectionnez son paysage lors de la création d’une carte ou d’une partie.
 [settings Import map generator]
-Import map generator
+Importer un générateur de cartes
 [settings No custom map generators installed.]
-No custom map generators installed.
+Aucun générateur de cartes personnalisé installé.
 [settings Replace package]
-Replace package
+Remplacer le paquet
 [settings Export package]
-Export package
+Exporter le paquet
 [settings Remove generator]
-Remove generator
+Supprimer le générateur
 [settings Saving generator library…]
-Saving generator library…
+Enregistrement de la bibliothèque de générateurs…
 [settings Could not read generator package.]
-Could not read generator package.
+Impossible de lire le paquet de générateur.
 [settings Generator library saved.]
-Generator library saved.
+Bibliothèque de générateurs enregistrée.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Impossible d’enregistrer les données. La bibliothèque précédente est conservée.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+En attente de la sélection d’un fichier ou de l’enregistrement…
 [settings File selection is unavailable.]
-File selection is unavailable.
+La sélection de fichiers est indisponible.
 [settings Package export is unavailable.]
-Package export is unavailable.
+L’exportation de paquets est indisponible.

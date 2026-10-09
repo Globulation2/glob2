@@ -5967,30 +5967,30 @@ Volver a sortear el aspecto del terreno
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Generadores de mapas
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importa un paquete de generador y selecciona su paisaje al crear un mapa o una partida.
 [settings Import map generator]
-Import map generator
+Importar generador de mapas
 [settings No custom map generators installed.]
-No custom map generators installed.
+No hay generadores de mapas personalizados instalados.
 [settings Replace package]
-Replace package
+Reemplazar paquete
 [settings Export package]
-Export package
+Exportar paquete
 [settings Remove generator]
-Remove generator
+Eliminar generador
 [settings Saving generator library…]
-Saving generator library…
+Guardando la biblioteca de generadores…
 [settings Could not read generator package.]
-Could not read generator package.
+No se pudo leer el paquete de generador.
 [settings Generator library saved.]
-Generator library saved.
+Biblioteca de generadores guardada.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+No se pudieron guardar los datos. Se conserva la biblioteca anterior.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Esperando la selección de un archivo o el almacenamiento…
 [settings File selection is unavailable.]
-File selection is unavailable.
+La selección de archivos no está disponible.
 [settings Package export is unavailable.]
-Package export is unavailable.
+La exportación de paquetes no está disponible.

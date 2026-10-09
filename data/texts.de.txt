@@ -5967,30 +5967,30 @@ Geländeaussehen neu auswürfeln
 [set library artwork]
 
 [settings Map generators]
-Map generators
+Kartengeneratoren
 [settings Import a generator package, then select its landscape when creating a map or game.]
-Import a generator package, then select its landscape when creating a map or game.
+Importiere ein Generatorpaket und wähle dann beim Erstellen einer Karte oder eines Spiels seine Landschaft aus.
 [settings Import map generator]
-Import map generator
+Kartengenerator importieren
 [settings No custom map generators installed.]
-No custom map generators installed.
+Keine benutzerdefinierten Kartengeneratoren installiert.
 [settings Replace package]
-Replace package
+Paket ersetzen
 [settings Export package]
-Export package
+Paket exportieren
 [settings Remove generator]
-Remove generator
+Generator entfernen
 [settings Saving generator library…]
-Saving generator library…
+Generatorbibliothek wird gespeichert…
 [settings Could not read generator package.]
-Could not read generator package.
+Generatorpaket konnte nicht gelesen werden.
 [settings Generator library saved.]
-Generator library saved.
+Generatorbibliothek gespeichert.
 [settings Storage could not be saved. The previous library is retained.]
-Storage could not be saved. The previous library is retained.
+Daten konnten nicht gespeichert werden. Die bisherige Bibliothek bleibt erhalten.
 [settings Waiting for file selection or storage…]
-Waiting for file selection or storage…
+Warten auf Dateiauswahl oder Speicherung…
 [settings File selection is unavailable.]
-File selection is unavailable.
+Die Dateiauswahl ist nicht verfügbar.
 [settings Package export is unavailable.]
-Package export is unavailable.
+Der Paketexport ist nicht verfügbar.
