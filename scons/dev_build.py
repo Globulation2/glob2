@@ -40,7 +40,9 @@ def dependency_identity(identity):
 
 def can_build_dependencies():
     from SCons.Script import GetOption, COMMAND_LINE_TARGETS
-    return not any(GetOption(name) for name in ('clean', 'no_exec', 'help')) and list(COMMAND_LINE_TARGETS) != ['compile_commands.json']
+    targets = list(COMMAND_LINE_TARGETS)
+    database_only = bool(targets) and all(Path(str(target)).name == 'compile_commands.json' for target in targets)
+    return not any(GetOption(name) for name in ('clean', 'no_exec', 'help')) and not database_only
 
 
 def dependency_jobs(arguments):

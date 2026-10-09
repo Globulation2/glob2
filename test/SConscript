@@ -89,7 +89,8 @@ def production_objects(entries):
             out.append(client_object_by_source[key])
         else:
             out += objects([entry], 'unit-')
-    return out
+    from dev_compile import unique
+    return unique(out)
 
 
 # Foundation's scoped activity prevents App Nap from throttling background

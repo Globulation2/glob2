@@ -30,6 +30,21 @@ scons target=web release=1 -j8
 python3 browser/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
 ```
 
+For routine editing, build one threaded runtime with basic debug symbols:
+
+```sh
+python3 tools/dev_build.py target=web
+python3 browser/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded
+```
+
+Use `web_variant=serial` for a serial-only development client. All game features
+and shared assets remain present; a threaded-only client reports an error when
+the host cannot support threads. Ordinary SCons defaults to both runtimes,
+and `web-package` requires both. Full browser compatibility verification also
+uses both. `pch=1` and `unity=1` are explicit experiments; see
+[development build profiles](../docs/development/reference.md#fast-development-builds)
+for cache controls and debugging limits.
+
 Open http://127.0.0.1:8765. The game starts automatically and fills the page.
 The pinned SDK is installed once per user and host/version; build outputs remain
 checkout-local and ignored by Git. Shared source manifests in
@@ -241,6 +256,11 @@ npm ci --ignore-scripts
 npx playwright install chromium firefox webkit
 npm test
 ```
+
+When testing a development output served separately, set `GLOB2_TEST_URL` to its
+origin and `GLOB2_TEST_BUILD_DIR` to the absolute build directory. The latter
+places temporary command-line host pages beside the selected runtime. Select
+tests for the available variant; the complete suite expects both runtimes.
 
 On Linux CI or a container without a desktop session, Firefox needs Xvfb for
 WebGL2 and an audio service for `AudioContext.resume()` to complete. After
