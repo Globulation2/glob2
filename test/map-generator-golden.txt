@@ -1,7 +1,7 @@
 # Golden map fingerprints, owner-specific resource placement (save format 152, SIM40).
 # platform id revision wDec hDec teams seed status hash
 # The 67 affected generator revisions account for SIM40 owner-specific resource placement/smoothing.
-# Current Linux rows were measured independently with GCC 11, 13 and 15; generator recipes are unchanged by the revision-only repair.
+# Current Linux rows were measured independently with GCC 11 and 13; generator recipes are unchanged by the revision-only repair.
 # Historical epoch-0 rows (including macos-arm64) are preserved in fixtures/map-generators/pre-resource-epoch-golden.txt.
 # macos-arm64 rows must be re-measured on macOS; earlier ones described the per-cell terrain model.
 # Generation fingerprints are platform-specific; acceptance does not imply cross-platform terrain equality.
