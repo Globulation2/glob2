@@ -10,7 +10,8 @@ import subprocess
 import sys
 from dev_paths import dependency_prefix
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
-from build_layout import build_identity, default_directory, write_if_changed
+from build_layout import PACKAGE_VERSION, build_identity, default_directory, write_if_changed
+from ios_release import marketing_version
 import official_instance
 from mobile_toolchain import ROOT, discover
 from sources import INCLUDE_DIRECTORIES
@@ -41,6 +42,7 @@ def main():
                         help='Isolated simulator device set for install/launch')
     parser.add_argument('--cmake',default='cmake')
     args=parser.parse_args()
+    release_marketing_version=marketing_version(PACKAGE_VERSION)
     if not args.build_number.isdecimal() or int(args.build_number) < 1:
         raise ValueError('--build-number must be a positive integer')
     if args.jobs < 1:
@@ -86,6 +88,7 @@ def main():
     info['CFBundleExecutable']=product
     info['CFBundleName']='Glob2 Script Tests' if args.script_tests else info['CFBundleName']
     info['CFBundleVersion']=args.build_number
+    info['CFBundleShortVersionString']=release_marketing_version
     if args.china:
         # The China edition builds without online play, so it claims no invite links.
         info.pop('CFBundleURLTypes',None)

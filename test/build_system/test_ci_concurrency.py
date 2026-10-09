@@ -23,8 +23,8 @@ STANDARD_CANCEL = ("${{ github.event_name == 'pull_request' || (github.event_nam
 RELEASE = {
     'amazon-appstore.yml', 'android-play-internal.yml', 'app-signing-fingerprints.yml', 'browser-release.yml',
     'epic-windows-release.yml', 'fdroid-publication.yml', 'fdroid-release-validation.yml',
-    'flathub-update.yml', 'github-release.yml', 'ios-testflight.yml', 'publish-desktop.yml',
-    'release.yml', 'server-image.yml', 'snap-release.yml', 'steam-windows-upload.yml',
+    'flathub-update.yml', 'github-release.yml', 'ios-testflight.yml', 'ios-production.yml', 'publish-desktop.yml',
+    'release.yml', 'promote-downloads.yml', 'server-image.yml', 'snap-release.yml', 'steam-windows-upload.yml',
     'windows-store-release.yml', 'windows-store-auth-check.yml', 'steam-windows-package.yml', 'mac-app-store.yml',
     'deploy-online.yml', 'gog-staging.yml', 'fdroid-buildserver-trial.yml',
 }

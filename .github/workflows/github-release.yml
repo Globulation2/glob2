@@ -1,10 +1,10 @@
-name: Publish GitHub desktop release
+name: Stage all-platform public release
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing public vVERSION tag
+        description: Existing immutable public vVERSION tag
         required: true
         type: string
   workflow_call:
@@ -17,8 +17,11 @@ permissions:
   contents: read
 
 concurrency:
-  group: github-desktop-release
+  group: github-all-platform-release
   cancel-in-progress: false
+
+env:
+  GLOB2_DEV_MODE: isolated
 
 jobs:
   context:
@@ -30,68 +33,440 @@ jobs:
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
+    outputs:
+      revision: ${{ steps.source.outputs.revision }}
+      version: ${{ steps.source.outputs.version }}
     steps:
-      - name: Require owner-controlled release repository and dispatch
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate immutable public source
+        id: source
         env:
-          REPOSITORY_ID: ${{ github.repository_id }}
-          ACTOR_ID: ${{ github.actor_id }}
-          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
-          EVENT_NAME: ${{ github.event_name }}
-          REF: ${{ github.ref }}
+          TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
-          if [[ "$REPOSITORY_ID" != 1397722696 || "$ACTOR_ID" != 6193625 || "$TRIGGERING_ACTOR" != genixpro || "$EVENT_NAME" != workflow_dispatch || "$REF" != refs/heads/master ]]; then
-            echo '::error::GitHub publication requires a manual dispatch from the release repository master by its owner.'
-            exit 1
-          fi
+          [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
+          version="$(python3 tools/release/release.py check --tag "$TAG")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-  credentials:
+  windows-preflight:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: windows-signing
+    steps:
+      - name: Require private mirror configuration
+        env:
+          AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_SIGNING_ENDPOINT: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          AZURE_SIGNING_ACCOUNT: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          AZURE_CERTIFICATE_PROFILE: ${{ vars.AZURE_CERTIFICATE_PROFILE }}
+        run: |
+          python3 - <<'PYCODE'
+          import os
+          required = ['AZURE_CLIENT_ID', 'AZURE_TENANT_ID', 'AZURE_SUBSCRIPTION_ID', 'AZURE_SIGNING_ENDPOINT', 'AZURE_SIGNING_ACCOUNT', 'AZURE_CERTIFICATE_PROFILE']
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing: raise SystemExit('Missing release configuration: ' + ', '.join(missing))
+          PYCODE
+
+  macos-preflight:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: macos-developer-id
+    steps:
+      - name: Require private mirror configuration
+        env:
+          MACOS_DEVELOPER_ID_P12_BASE64: ${{ secrets.MACOS_DEVELOPER_ID_P12_BASE64 }}
+          MACOS_DEVELOPER_ID_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_PASSWORD }}
+          MACOS_DEVELOPER_ID_IDENTITY: ${{ vars.MACOS_DEVELOPER_ID_IDENTITY }}
+          MACOS_NOTARY_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          MACOS_NOTARY_ISSUER_ID: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+          MACOS_NOTARY_KEY_P8_BASE64: ${{ secrets.MACOS_NOTARY_KEY_P8_BASE64 }}
+        run: |
+          python3 - <<'PYCODE'
+          import os
+          required = ['MACOS_DEVELOPER_ID_P12_BASE64', 'MACOS_DEVELOPER_ID_PASSWORD', 'MACOS_DEVELOPER_ID_IDENTITY', 'MACOS_NOTARY_KEY_ID', 'MACOS_NOTARY_ISSUER_ID', 'MACOS_NOTARY_KEY_P8_BASE64']
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing: raise SystemExit('Missing release configuration: ' + ', '.join(missing))
+          PYCODE
+
+  android-preflight:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: android-sideload
+    steps:
+      - name: Require private mirror configuration
+        env:
+          GLOB2_SIDELOAD_KEYSTORE_BASE64: ${{ secrets.GLOB2_SIDELOAD_KEYSTORE_BASE64 }}
+          GLOB2_SIDELOAD_STORE_PASSWORD: ${{ secrets.GLOB2_SIDELOAD_STORE_PASSWORD }}
+          GLOB2_SIDELOAD_KEY_PASSWORD: ${{ secrets.GLOB2_SIDELOAD_KEY_PASSWORD }}
+          GLOB2_SIDELOAD_ALIAS: ${{ vars.GLOB2_SIDELOAD_ALIAS }}
+          GLOB2_SIDELOAD_CERTIFICATE_SHA256: ${{ vars.GLOB2_SIDELOAD_CERTIFICATE_SHA256 }}
+        run: |
+          python3 - <<'PYCODE'
+          import os
+          required = ['GLOB2_SIDELOAD_KEYSTORE_BASE64', 'GLOB2_SIDELOAD_STORE_PASSWORD', 'GLOB2_SIDELOAD_KEY_PASSWORD', 'GLOB2_SIDELOAD_ALIAS', 'GLOB2_SIDELOAD_CERTIFICATE_SHA256']
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing: raise SystemExit('Missing release configuration: ' + ', '.join(missing))
+          PYCODE
+
+  publication-preflight:
     needs: context
     runs-on: ubuntu-24.04
     environment: github-release
     steps:
-      - name: Require public-release token
+      - name: Require private mirror configuration
         env:
-          RELEASE_TOKEN: ${{ secrets.PUBLIC_RELEASE_GH_TOKEN }}
+          PUBLIC_RELEASE_GH_TOKEN: ${{ secrets.PUBLIC_RELEASE_GH_TOKEN }}
         run: |
-          set -euo pipefail
-          if [[ -z "$RELEASE_TOKEN" ]]; then
-            echo '::error::Missing PUBLIC_RELEASE_GH_TOKEN in the github-release environment.'
-            exit 1
-          fi
+          python3 - <<'PYCODE'
+          import os
+          required = ['PUBLIC_RELEASE_GH_TOKEN']
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing: raise SystemExit('Missing release configuration: ' + ', '.join(missing))
+          PYCODE
+
+  play-preflight:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: google-play-internal
+    steps:
+      - name: Require private mirror configuration
+        env:
+          GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64: ${{ secrets.GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64 }}
+          GLOB2_PLAY_STORE_PASSWORD: ${{ secrets.GLOB2_PLAY_STORE_PASSWORD }}
+          GLOB2_PLAY_KEY_PASSWORD: ${{ secrets.GLOB2_PLAY_KEY_PASSWORD }}
+          GLOB2_PLAY_WIF_PROVIDER: ${{ vars.GLOB2_PLAY_WIF_PROVIDER }}
+          GLOB2_PLAY_SERVICE_ACCOUNT: ${{ vars.GLOB2_PLAY_SERVICE_ACCOUNT }}
+        run: |
+          python3 - <<'PYCODE'
+          import os
+          required = ['GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64', 'GLOB2_PLAY_STORE_PASSWORD', 'GLOB2_PLAY_KEY_PASSWORD', 'GLOB2_PLAY_WIF_PROVIDER', 'GLOB2_PLAY_SERVICE_ACCOUNT']
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing: raise SystemExit('Missing release configuration: ' + ', '.join(missing))
+          PYCODE
+
+  ios-preflight:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: ios-testflight
+    steps:
+      - name: Require private mirror configuration
+        env:
+          IOS_ASC_KEY_ID: ${{ secrets.IOS_ASC_KEY_ID }}
+          IOS_ASC_ISSUER_ID: ${{ secrets.IOS_ASC_ISSUER_ID }}
+          IOS_ASC_KEY_P8_BASE64: ${{ secrets.IOS_ASC_KEY_P8_BASE64 }}
+        run: |
+          python3 - <<'PYCODE'
+          import os
+          required = ['IOS_ASC_KEY_ID', 'IOS_ASC_ISSUER_ID', 'IOS_ASC_KEY_P8_BASE64']
+          missing = [name for name in required if not os.environ.get(name)]
+          if missing: raise SystemExit('Missing release configuration: ' + ', '.join(missing))
+          PYCODE
 
   packages:
-    needs: credentials
+    needs: [context, windows-preflight, macos-preflight, android-preflight, publication-preflight, play-preflight, ios-preflight]
     uses: ./.github/workflows/release.yml
     with:
       tag: ${{ inputs.tag }}
+      source_commit: ${{ needs.context.outputs.revision }}
       build_flatpak: true
-    permissions:
-      contents: read
 
-  publish:
-    needs: packages
-    runs-on: ubuntu-24.04
-    environment: github-release
+  android-packages:
+    needs: [context, windows-preflight, macos-preflight, android-preflight, publication-preflight, play-preflight, ios-preflight]
+    uses: ./.github/workflows/fdroid-release-validation.yml
+    with:
+      tag: ${{ inputs.tag }}
+      source_commit: ${{ needs.context.outputs.revision }}
+
+  play-candidate:
+    needs: [context, windows-preflight, macos-preflight, android-preflight, publication-preflight, play-preflight, ios-preflight]
+    uses: ./.github/workflows/android-play-internal.yml
     permissions:
       contents: read
+      id-token: write
+    with:
+      tag: ${{ inputs.tag }}
+      source_commit: ${{ needs.context.outputs.revision }}
+      track: internal
+      release_notes: Globulation 2 public-release qualification candidate.
+
+  ios-candidate:
+    needs: [context, windows-preflight, macos-preflight, android-preflight, publication-preflight, play-preflight, ios-preflight]
+    uses: ./.github/workflows/ios-testflight.yml
+    with:
+      tag: ${{ inputs.tag }}
+      source_commit: ${{ needs.context.outputs.revision }}
+      audience: external
+
+  windows-sign:
+    needs: [context, packages]
+    environment: windows-signing
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      VERSION: ${{ needs.context.outputs.version }}
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.context.outputs.revision }}
+          persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          pattern: release-*
+          name: unsigned-windows
+          path: artifacts/unsigned
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12'
+      - name: Extract verified portable stage
+        shell: pwsh
+        run: |
+          Expand-Archive "artifacts/unsigned/glob2-$env:VERSION-windows-x86_64.zip" artifacts/stage
+          New-Item -ItemType Directory -Force artifacts/release-output | Out-Null
+      - uses: Azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Timestamp and sign the game executable
+        uses: azure/trusted-signing-action@29de24bf030cfee71b1ad0207ab4d69e74514a42
+        with:
+          endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.AZURE_CERTIFICATE_PROFILE }}
+          files: ${{ github.workspace }}/artifacts/stage/Globulation2/glob2.exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+      - name: Verify signature and package the signed bytes
+        shell: pwsh
+        run: |
+          if ((Get-AuthenticodeSignature artifacts/stage/Globulation2/glob2.exe).Status -ne 'Valid') { throw 'Invalid game signature' }
+          choco install nsis --version=3.11 -y --no-progress
+          $env:PATH = "${env:ProgramFiles(x86)}/NSIS;$env:PATH"
+          python tools/release/package_nsis.py --stage artifacts/stage/Globulation2 --version $env:VERSION --output "artifacts/release-output/glob2-$env:VERSION-windows-x86_64-setup.exe"
+          if ($LASTEXITCODE -ne 0) { throw 'Installer packaging failed' }
+          python -c "import shutil; shutil.make_archive('artifacts/release-output/glob2-$env:VERSION-windows-x86_64','zip','artifacts/stage')"
+      - name: Timestamp and sign the final installer
+        uses: azure/trusted-signing-action@29de24bf030cfee71b1ad0207ab4d69e74514a42
+        with:
+          endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.AZURE_CERTIFICATE_PROFILE }}
+          files-folder: ${{ github.workspace }}/artifacts/release-output
+          files-folder-filter: exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+      - name: Verify the final installer
+        shell: pwsh
+        run: |
+          $installer = (Get-ChildItem artifacts/release-output/*-setup.exe).FullName
+          if ((Get-AuthenticodeSignature $installer).Status -ne 'Valid') { throw 'Invalid installer signature' }
+      - name: Install, upgrade and uninstall the final signed installer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = (Get-ChildItem artifacts/release-output/*-setup.exe).FullName
+          $install = Join-Path $PWD 'artifacts/final signed installation'
+          $process = Start-Process -FilePath $installer -ArgumentList "/S /D=$install" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw 'Final signed installation failed' }
+          $env:PATH = "$env:SystemRoot/System32;$env:SystemRoot"
+          if ((Get-AuthenticodeSignature "$install/glob2.exe").Status -ne 'Valid') { throw 'Installed game signature invalid' }
+          $client = Start-Process -FilePath "$install/glob2.exe" -ArgumentList '--version' -Wait -PassThru
+          if ($client.ExitCode -ne 0) { throw 'Final installed client cannot load its runtime' }
+          New-Item -ItemType Directory -Force "$install/games" | Out-Null
+          Set-Content "$install/games/user.game" 'user save'
+          $upgrade = Start-Process -FilePath $installer -ArgumentList "/S /D=$install" -Wait -PassThru
+          if ($upgrade.ExitCode -ne 0 -or !(Test-Path "$install/games/user.game")) { throw 'Signed upgrade failed or lost user data' }
+          $uninstall = Start-Process -FilePath "$install/glob2win32-uninst.exe" -ArgumentList "/S _?=$install" -Wait -PassThru
+          if ($uninstall.ExitCode -ne 0 -or (Test-Path "$install/glob2.exe") -or !(Test-Path "$install/games/user.game")) { throw 'Signed uninstall failed or lost user data' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: signed-windows
+          path: artifacts/release-output/*
+          if-no-files-found: error
+
+  macos-sign:
+    needs: [context, packages]
+    environment: macos-developer-id
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    runs-on: ${{ matrix.runner }}
+    env:
+      VERSION: ${{ needs.context.outputs.version }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.context.outputs.revision }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: unsigned-macos-${{ matrix.architecture }}
+          path: artifacts/unsigned
+      - name: Import temporary Developer ID identity and notarization key
+        env:
+          P12: ${{ secrets.MACOS_DEVELOPER_ID_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.MACOS_DEVELOPER_ID_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY_P8_BASE64 }}
+        run: |
+          python3 - <<'PYCODE'
+          import base64, os, secrets, subprocess
+          from pathlib import Path
+          temp=Path(os.environ['RUNNER_TEMP'])
+          keychain=temp/'glob2-signing.keychain-db'; password=secrets.token_urlsafe(32)
+          certificate=temp/'glob2-developer-id.p12'; certificate.write_bytes(base64.b64decode(os.environ['P12'],validate=True)); certificate.chmod(0o600)
+          key=temp/'glob2-notary.p8'; key.write_bytes(base64.b64decode(os.environ['NOTARY_KEY'],validate=True)); key.chmod(0o600)
+          subprocess.run(['security','create-keychain','-p',password,str(keychain)],check=True)
+          subprocess.run(['security','set-keychain-settings','-lut','21600',str(keychain)],check=True)
+          subprocess.run(['security','unlock-keychain','-p',password,str(keychain)],check=True)
+          subprocess.run(['security','import',str(certificate),'-k',str(keychain),'-P',os.environ['P12_PASSWORD'],'-T','/usr/bin/codesign'],check=True)
+          subprocess.run(['security','set-key-partition-list','-S','apple-tool:,apple:,codesign:','-s','-k',password,str(keychain)],check=True,stdout=subprocess.DEVNULL)
+          certificate.unlink()
+          PYCODE
+      - name: Restore app and produce notarized final DMG
+        env:
+          ARCH: ${{ matrix.architecture }}
+          IDENTITY: ${{ vars.MACOS_DEVELOPER_ID_IDENTITY }}
+          KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          ISSUER: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/stage "$RUNNER_TEMP/glob2-mount"
+          hdiutil attach "artifacts/unsigned/Glob2-$VERSION.dmg" -mountpoint "$RUNNER_TEMP/glob2-mount" -readonly -nobrowse
+          ditto "$RUNNER_TEMP/glob2-mount/Glob2.app" artifacts/stage/Glob2.app
+          hdiutil detach "$RUNNER_TEMP/glob2-mount"
+          python3 tools/release/sign_macos.py --app artifacts/stage/Glob2.app \
+            --output "artifacts/release-output/Glob2-$VERSION-macos-$ARCH.dmg" --architecture "$ARCH" \
+            --identity "$IDENTITY" --keychain "$RUNNER_TEMP/glob2-signing.keychain-db" \
+            --key "$RUNNER_TEMP/glob2-notary.p8" --key-id "$KEY_ID" --issuer "$ISSUER"
+      - name: Remove temporary signing material
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/glob2-signing.keychain-db" || true
+          rm -f "$RUNNER_TEMP/glob2-notary.p8" "$RUNNER_TEMP/glob2-developer-id.p12"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: signed-macos-${{ matrix.architecture }}
+          path: artifacts/release-output/*.dmg
+          if-no-files-found: error
+
+  android-sign:
+    needs: [context, android-packages]
+    environment: android-sideload
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64-v8a, armeabi-v7a, x86_64]
+    env:
+      VERSION: ${{ needs.context.outputs.version }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.context.outputs.revision }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: fdroid-${{ matrix.arch }}-${{ needs.context.outputs.version }}
+          path: artifacts/unsigned
+      - name: Install pinned Android tools
+        run: |
+          python3 mobile/setup_ndk.py
+          python3 mobile/setup_tools.py
+
+      - name: Accept SDK licenses and install Android packages
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess
+          root = pathlib.Path.cwd()
+          import sys; sys.path.insert(0, str(root/'scons'))
+          from dev_store import paths
+          dev=paths(root)
+          sdk=pathlib.Path(dev['android_sdk'])
+          lock = json.loads((root / 'mobile/toolchain.json').read_text())['android']
+          java=pathlib.Path(dev['java_home'])
+          env = dict(os.environ, JAVA_HOME=str(java), ANDROID_HOME=str(sdk), ANDROID_SDK_ROOT=str(sdk))
+          manager = sdk / 'cmdline-tools/19.0/bin/sdkmanager'
+          subprocess.run([str(manager), f'--sdk_root={sdk}', '--licenses'],
+                         input='y\n' * 100, text=True, env=env, check=True)
+          subprocess.run([str(manager), f'--sdk_root={sdk}',
+                          f"platforms;android-{lock['compile_api']}",
+                          f"build-tools;{lock['build_tools']}", 'platform-tools'],
+                         env=env, check=True)
+          PY
+
+      - name: Decode permanent sideload identity
+        env:
+          KEYSTORE: ${{ secrets.GLOB2_SIDELOAD_KEYSTORE_BASE64 }}
+        run: |
+          python3 - <<'PYCODE'
+          import base64, os
+          from pathlib import Path
+          key=Path(os.environ['RUNNER_TEMP'])/'glob2-sideload.p12'
+          key.write_bytes(base64.b64decode(os.environ['KEYSTORE'],validate=True)); key.chmod(0o600)
+          PYCODE
+      - name: Sign and verify each permanent sideload APK
+        env:
+          GLOB2_SIDELOAD_STORE_PASSWORD: ${{ secrets.GLOB2_SIDELOAD_STORE_PASSWORD }}
+          GLOB2_SIDELOAD_KEY_PASSWORD: ${{ secrets.GLOB2_SIDELOAD_KEY_PASSWORD }}
+          ALIAS: ${{ vars.GLOB2_SIDELOAD_ALIAS }}
+          CERTIFICATE: ${{ vars.GLOB2_SIDELOAD_CERTIFICATE_SHA256 }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          python3 mobile/sideload_release.py --original "artifacts/unsigned/glob2-$ARCH-unsigned.apk"             --output "artifacts/release-output/glob2-$VERSION-android-$ARCH.apk" --arch "$ARCH"             --keystore "$RUNNER_TEMP/glob2-sideload.p12" --alias "$ALIAS" --expected-certificate "$CERTIFICATE"
+      - name: Remove private sideload key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/glob2-sideload.p12"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: signed-android-${{ matrix.arch }}
+          path: artifacts/release-output/*.apk
+          if-no-files-found: error
+
+  draft:
+    needs: [context, packages, windows-sign, macos-sign, android-sign, play-candidate, ios-candidate]
+    runs-on: ubuntu-24.04
+    environment: github-release
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.context.outputs.revision }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: release-@(source|linux|rpm|flatpak|snap)
           merge-multiple: true
-          path: artifacts/release-output
-      - name: Publish tagged source and packages to public GitHub release
+          path: artifacts/packages
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: signed-*
+          merge-multiple: true
+          path: artifacts/packages
+      - name: Stage immutable packages in a public-source draft release
         env:
           GH_TOKEN: ${{ secrets.PUBLIC_RELEASE_GH_TOKEN }}
           TAG: ${{ inputs.tag }}
+          SOURCE_COMMIT: ${{ needs.context.outputs.revision }}
         run: |
           set -euo pipefail
-          test -n "$GH_TOKEN"
-          cd artifacts/release-output
-          rm -f SHA256SUMS
-          sha256sum glob2-*.tar.gz glob2-*.zip glob2-*.rpm glob2.flatpak globulation2_*.snap Glob2-*.dmg > SHA256SUMS
-          gh release create "$TAG" --repo Globulation2/glob2 \
-            --verify-tag --generate-notes \
-            glob2-*.tar.gz glob2-*.zip glob2-*.rpm glob2.flatpak globulation2_*.snap Glob2-*.dmg SHA256SUMS
-          echo "Published GitHub release from public tag $TAG" >> "$GITHUB_STEP_SUMMARY"
+          python3 tools/release/stage_downloads.py --artifacts artifacts/packages --tag "$TAG" --source-commit "$SOURCE_COMMIT" --publish-draft
+          echo "Draft staged. Qualify these exact bytes, obtain production store approval, then use promote-downloads.yml." >> "$GITHUB_STEP_SUMMARY"
