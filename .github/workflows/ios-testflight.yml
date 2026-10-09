@@ -32,6 +32,9 @@ on:
 permissions:
   contents: read
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 concurrency:
   group: ios-testflight
   cancel-in-progress: false

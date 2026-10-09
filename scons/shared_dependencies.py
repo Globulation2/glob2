@@ -69,7 +69,16 @@ def relocate(prefix, destination):
     for path in prefix.rglob('*'):
         if path.is_file() and path.suffix in ('.pc', '.cmake', '.la'):
             text = path.read_text()
-            path.write_text(text.replace(str(prefix), str(destination)).replace(prefix.as_posix(), destination.as_posix()))
+            installed = destination.as_posix() if path.suffix == '.pc' else str(destination)
+            if path.suffix == '.pc':
+                # pkg-config emits these values as shell/compiler arguments.
+                installed = ''.join('\\' + char if char.isspace() else char for char in installed)
+            # macOS resolves /tmp to /private/tmp inside upstream builders.
+            # Replace the longest alias first to avoid leaving /private behind.
+            aliases = {str(prefix), prefix.as_posix(), str(prefix.resolve()), prefix.resolve().as_posix()}
+            for alias in sorted(aliases, key=len, reverse=True):
+                text = text.replace(alias, installed)
+            path.write_text(text)
 
 
 def ensure(builder, local_prefix, work, *, explicit=False, execute=True, **arguments):
@@ -104,7 +113,11 @@ def ensure(builder, local_prefix, work, *, explicit=False, execute=True, **argum
         with store.Lease(entry, exclusive=True):
             if not verify(prefix, identity):
                 entry.parent.mkdir(parents=True, exist_ok=True)
-                with tempfile.TemporaryDirectory(prefix='.dependency-', dir=entry.parent) as temporary:
+                # Upstream Makefiles (notably x264) do not quote install prefixes.
+                # Build outside the managed home, whose macOS default contains
+                # "Application Support", then publish on the destination volume.
+                build_root = '/tmp' if os.name != 'nt' else None
+                with tempfile.TemporaryDirectory(prefix='glob2-dependency-', dir=build_root) as temporary:
                     staging = Path(temporary) / 'entry'
                     staged_prefix = staging / 'prefix'
                     builder(staged_prefix, Path(temporary) / 'sources', **arguments)
@@ -113,9 +126,14 @@ def ensure(builder, local_prefix, work, *, explicit=False, execute=True, **argum
                     if not files or not list(staged_prefix.glob('*manifest.json')):
                         raise ValueError('Dependency builder produced no validated installation')
                     (staged_prefix / '.shared-install.json').write_text(json.dumps({'identity': identity, 'files': files}, sort_keys=True, default=str))
-                    if entry.exists():
-                        shutil.rmtree(entry)
-                    staging.replace(entry)
+                    with tempfile.TemporaryDirectory(prefix='.dependency-', dir=entry.parent) as publication:
+                        published = Path(publication) / 'entry'
+                        shutil.copytree(staging, published)
+                        if not verify(published / 'prefix', identity):
+                            raise ValueError('Copied dependency installation failed verification')
+                        if entry.exists():
+                            shutil.rmtree(entry)
+                        published.replace(entry)
     log = os.environ.get('GLOB2_BUILD_TIMING_LOG')
     if log:
         with open(log, 'a') as output:

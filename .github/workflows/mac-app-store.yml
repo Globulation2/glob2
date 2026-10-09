@@ -16,6 +16,9 @@ on:
 permissions:
   contents: read
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 # Store release operations serialize and finish once started.
 concurrency:
   group: mac-app-store-release

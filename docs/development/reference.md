@@ -2783,7 +2783,11 @@ follows SCons `-j`.
 
 Recording and browser SDL/Opus installations are shared by recipe, pinned inputs,
 compiler, SDK, architecture and ABI configuration. Publication is staged and
-content verified under leases; active installations cannot be pruned. Explicit
+content verified under leases; active installations cannot be pruned. Upstream
+builds use temporary paths without spaces, then their verified installations are
+copied to the cache volume before atomic publication. This permits the macOS
+`Application Support` cache location without passing it to upstream Makefiles.
+Explicit
 prefix overrides and `GLOB2_DEV_MODE=isolated` remain supported. Clean, dry-run,
 help and compilation-database-only requests do not provision dependencies.
 A cold native dry-run can still require an existing SCons configure directory.
