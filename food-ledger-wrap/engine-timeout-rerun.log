@@ -1,0 +1,4 @@
+PASS Maxima.Economy/observed hunger expands feeding for an opening colony mix beyond nominal forecasts (35.3s)
+
+1 passed, 0 failed, 0 skipped (35.3s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/b625/glob2/artifacts/food-ledger-wrap/engine-timeout-rerun.xml (1 cases)

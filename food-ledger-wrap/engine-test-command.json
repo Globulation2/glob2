@@ -1,0 +1,12 @@
+[
+  "python3",
+  "test/run_tests.py",
+  "--build-dir",
+  "/home/bradley/.codex/worktrees/serial-opt-gcc13/glob2/build/serial-opt-gcc13",
+  "--binary",
+  "engine",
+  "--filter",
+  "Maxima.*/*",
+  "--junit",
+  "/home/bradley/.codex/worktrees/b625/glob2/artifacts/food-ledger-wrap/engine-tests.xml"
+]

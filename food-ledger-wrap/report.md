@@ -9,7 +9,7 @@ Precompute masks independently for positive power-of-two food-ledger dimensions.
 ## Correctness
 
 - 57 Maxima unit cases passed, including 29 FoodLedger cases and three new focused cases for signed/extreme coordinates, arbitrary dimensions, stale masks and equivalent ledger claims/queries.
-- The affected engine harness rebuild and focused Maxima engine checks are still running. No pass is claimed for these additional checks at acceptance.
+- The rebuilt affected engine harness passed 147 cases; one economy case exceeded the initial 120-second limit, then passed alone in 35.3 seconds with a 600-second limit. Original and rerun logs are retained.
 - Four 4,096-tick continuations: established and dense fixtures, one/four participants. Every per-tick checksum trace, replay byte and final binary save matches the canonical archived reference. These reference bytes were also validated by the preceding integration campaign. verification.json files record SHA-256 comparisons; download the canonical bytes from https://github.com/Globulation2/glob2/releases/tag/evidence-serial-loop-963.
 - The simulation-version contract passes without a golden or SIM_REVISION update. No dependencies or public game interfaces changed.
 
@@ -33,4 +33,4 @@ Optimized normalizeX/normalizeY disassembly shows an AND-and-return path after t
 
 ## Scope and next action
 
-The maintainer explicitly accepted this evidence and requested merging the experiment. The original five optimizations are already merged. Local GCC 13 evidence only: no new ARM64/GCC 15 run, complete engine suite, text-save matrix, or all-fixture timing campaign is claimed. The selected continuations stress recurring food searches and dense state, while unit tests exercise arbitrary dimensions and wrap seams. The previous merged-revision profiles and other candidates remain in serial-reanalysis/.
+Merged after explicit maintainer acceptance. The original five optimizations are already merged. Local GCC 13 evidence only: no new ARM64/GCC 15 run, complete engine suite, text-save matrix, or all-fixture timing campaign is claimed. The selected continuations stress recurring food searches and dense state, while unit tests exercise arbitrary dimensions and wrap seams. The previous merged-revision profiles and other candidates remain in serial-reanalysis/.
