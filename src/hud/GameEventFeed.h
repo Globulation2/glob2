@@ -46,7 +46,7 @@ public:
 	/// Attacks on the same unit or building type within this many tiles
 	/// (warp-safe) of a row's latest position are the same situation.
 	static constexpr int kRegionRadius = 16;
-	/// Game ticks a row lingers after its last report (25 ticks per second at
+	/// Game ticks a row lingers after its last report (30 ticks per second at
 	/// normal speed).
 	static constexpr std::uint32_t kAttackLingerTicks = 250;
 	static constexpr std::uint32_t kConversionLingerTicks = 250;

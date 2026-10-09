@@ -243,9 +243,11 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	// Continuous scrolling keeps its normal 25 Hz cadence at every game speed.
 
 	if (now < lastViewportStep) lastViewportStep = now;
-	const unsigned viewportSteps=std::min<Uint64>((now-lastViewportStep)/GAME_TICK_MS, 5);
+	// Camera speed is a presentation preference, independent of simulation TPS.
+	constexpr unsigned cameraStepMs = 40;
+	const unsigned viewportSteps=std::min<Uint64>((now-lastViewportStep)/cameraStepMs, 5);
 	if(viewportSteps)
-		lastViewportStep=now-(now-lastViewportStep)%GAME_TICK_MS;
+		lastViewportStep=now-(now-lastViewportStep)%cameraStepMs;
 	for(unsigned i=0; i<viewportSteps; ++i)
 	{
 		handleKeyAlways();
@@ -396,11 +398,11 @@ void GameGUI::syncStep(void)
 	assert(localTeam);
 
 	// Faster presets run more ticks per second, so they wait proportionally more ticks.
-	int stepMs = GAME_TICK_MS;
+	Uint64 stepNs = GAME_TICK_NS;
 	if (canChangeGameSpeed())
-		stepMs = (globalContainer->replaying && globalContainer->replayFastForward)
-			? REPLAY_FAST_FORWARD_MS : globalContainer->settings.getGameSpeedStepDuration();
-	const Sint64 autosaveInterval = AUTOSAVE_INTERVAL_TICKS * GAME_TICK_MS / std::max(stepMs, 1);
+		stepNs = (globalContainer->replaying && globalContainer->replayFastForward)
+			? 0 : globalContainer->settings.getGameSpeedStepDurationNs();
+	const Sint64 autosaveInterval = AUTOSAVE_INTERVAL_TICKS * GAME_TICK_NS / (stepNs ? stepNs : 1000000);
 	// Counting from the last save also keeps a paused game from saving every frame.
 	const bool autosaveDue = globalContainer->settings.autosaveGames && (lastAutosaveStep < 0
 		? game.stepCounter % AUTOSAVE_INTERVAL_TICKS == AUTOSAVE_PHASE_TICKS

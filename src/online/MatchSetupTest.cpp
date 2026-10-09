@@ -9,6 +9,7 @@
 // platform workspace is on this branch; once it is, the tests read the source and
 // also check that the copy has not drifted from it.
 
+#include "EngineTiming.h"
 #include "EngineFixtures.h"
 
 #include <algorithm>
@@ -362,7 +363,7 @@ TEST_SUITE("MatchSetup")
 			for (const auto& condition : header.getWinningConditions())
 				if (condition->getType() == WCSuddenDeath)
 					CHECK(static_cast<const WinningConditionSuddenDeath&>(*condition).endStepTick ==
-					      Uint32(r.suddenDeathMinutes) * 60 * 25);
+					      Uint32(r.suddenDeathMinutes) * 60 * GAME_TICKS_PER_SECOND);
 			CHECK(header.isMapDiscovered() == r.mapDiscovered);
 			CHECK(header.areAllyTeamsFixed() == r.allyTeamsFixed);
 			CHECK(header.isResourceGrowthDisabled() == r.resourceGrowthDisabled);

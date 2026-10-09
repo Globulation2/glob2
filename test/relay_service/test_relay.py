@@ -149,7 +149,7 @@ class RelayMatchTest(unittest.TestCase):
             welcome = c.of('welcome')[0]
             self.assertEqual(welcome['seat'], s)
             self.assertEqual(welcome['humanSeatMask'], 0b111)
-            self.assertEqual(welcome['tickRateMilliHz'], 25000)
+            self.assertEqual(welcome['tickRateMilliHz'], 30000)
             self.assertEqual(welcome['bundleInterval'], 1)
             self.assertEqual(welcome['resumeFromTick'], 0)
         for c in clients.values():
@@ -359,7 +359,7 @@ class RelayMatchTest(unittest.TestCase):
             (Path(evidence) / 'bundle-jitter.txt').write_text(
                 f'bundles={len(arrivals)} spread_ms p50={p50:.2f} p95={p95:.2f} max={spread_ms[-1]:.2f}\n')
         # Bundles must follow the tick clock, not a coarse batching timer: a timer
-        # of a tick or more (40 ms) would put the median far above this bound,
+        # of a tick or more (about 33 ms) would put the median far above this bound,
         # while a loaded shared runner stays well under it. The tight figure (a
         # fixed 10 ms timer spreads bundles over 10 ms, so p50 near 5 ms) is a
         # measurement, checked only with GLOB2_RELAY_TIMING_STRICT=1 on a quiet

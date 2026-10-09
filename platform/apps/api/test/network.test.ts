@@ -34,7 +34,7 @@ describe('participantNetwork', () => {
       seat: 0,
       quality: 'good',
       rttMs: { p50: 40, p95: 60 },
-      lagMs: { p50: 240, p95: 320 },
+      lagMs: { p50: 200, p95: 267 },
       disconnects: 0,
       offlineMs: 0,
       ordersSequenced: 200,
@@ -65,7 +65,7 @@ describe('participantNetwork', () => {
   it('uses the tick rate of the report', () => {
     expect(participantNetwork(0, seat(), 50_000)!.lagMs).toEqual({ p50: 120, p95: 160 });
     expect(reportTickRate({ network: { tick_rate_millihz: 50_000 } })).toBe(50_000);
-    expect(reportTickRate(null)).toBe(25_000);
+    expect(reportTickRate(null)).toBe(30_000);
   });
 
   it('labels fair and poor connections by any one condition', () => {
@@ -75,9 +75,9 @@ describe('participantNetwork', () => {
     expect(quality({ rtt_us: dist(100_000, 450_000) })).toBe('good');
     expect(quality({ rtt_us: dist(150_000, 250_000) })).toBe('fair');
     expect(quality({ rtt_us: dist(300_000, 450_000) })).toBe('poor');
-    expect(quality({ lag_ticks: dist(10, 60) })).toBe('good'); // 0.4 s typical
-    expect(quality({ lag_ticks: dist(25, 30) })).toBe('fair'); // 1 s behind
-    expect(quality({ lag_ticks: dist(50, 60) })).toBe('poor');
+    expect(quality({ lag_ticks: dist(10, 60) })).toBe('good'); // about 0.33 s typical
+    expect(quality({ lag_ticks: dist(30, 36) })).toBe('fair'); // 1 s behind
+    expect(quality({ lag_ticks: dist(60, 72) })).toBe('poor');
     expect(quality({ orders: { sequenced: 100, deferred: 6, defer_ticks: dist(1, 2, 6) } })).toBe(
       'fair',
     );

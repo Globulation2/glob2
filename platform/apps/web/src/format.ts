@@ -1,9 +1,14 @@
 // Display helpers shared by pages.
-import type { MatchParticipant, MatchSummary, QueueInfo } from '@glob2/protocol';
+import {
+  TICKS_PER_SECOND,
+  type MatchParticipant,
+  type MatchSummary,
+  type QueueInfo,
+} from '@glob2/protocol';
 import { gameTeamColor } from './colors.ts';
 
 /** Engine ticks per second (the relay clock). */
-export const TICKS_PER_SECOND = 25;
+export { TICKS_PER_SECOND };
 
 export function duration(ticks: number | undefined): string {
   if (ticks === undefined) return '–';

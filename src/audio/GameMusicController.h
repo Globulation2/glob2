@@ -23,7 +23,7 @@ struct GameMusicEvents
 
 //! Pure state machine that selects in-game music based on recent team events.
 //!
-//! Two timers count down at the simulation tick rate (40 ms). A "bad" event
+//! Two timers count down at the simulation tick rate (30 TPS). A "bad" event
 //! (unit/building under attack, unit lost to conversion) sets the war timer
 //! and queues the war track. A "good" event (building completed, unit
 //! converted to us) sets the building timer and queues the building track.
@@ -38,7 +38,7 @@ class GameMusicController
 {
 public:
 	//! Wall-clock duration of the post-event "stay on the event track"
-	//! window, in 40 ms simulation ticks (220 * 40 ms = 8.8 s).
+	//! window, in simulation ticks (220 / 30 ≈ 7.3 s).
 	static constexpr unsigned EVENT_TIMEOUT_TICKS = 220;
 
 	//! Reset both timers to 0. Called by GameGUI::init() at the start of

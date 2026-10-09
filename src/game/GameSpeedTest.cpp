@@ -10,6 +10,8 @@
 #include "SettingsScreen.h"
 #include "GameGUIDialog.h"
 #include "Engine.h"
+#include "EngineTiming.h"
+#include "TurnProtocol.h"
 #include "KeyboardManager.h"
 #include "ReplayReader.h"
 #include "GameGUIKeyActions.h"
@@ -55,15 +57,19 @@ TEST_CASE("presets; bounds; legacy settings and persistence")
     auto& settings=globalContainer->settings;
     settings=Settings();
     REQUIRE(settings.gameSpeed==Settings::GAME_SPEED_NORMAL);
-    REQUIRE(settings.getGameSpeedStepDuration()==40);
+    REQUIRE(Turn::DEFAULT_TICK_RATE_MILLIHZ==1000 * GAME_TICKS_PER_SECOND);
+    REQUIRE(settings.getGameSpeedStepDuration()==33);
+    REQUIRE(settings.getGameSpeedStepDurationNs()==GAME_TICK_NS);
+    REQUIRE(30 * settings.getGameSpeedStepDurationNs()==999999990ULL);
     REQUIRE(settings.getGameSpeedRenderInterval()==1);
     REQUIRE(settings.getGameSpeedText()=="1x");
-    int previous=161;
+    int previous=134;
     for(int i=Settings::GAME_SPEED_MINIMUM;i<=Settings::GAME_SPEED_MAXIMUM;++i) {
         settings.gameSpeed=i;
         REQUIRE(settings.getGameSpeedStepDuration()<previous);
         REQUIRE(settings.getGameSpeedRenderInterval()>=1);
         previous=settings.getGameSpeedStepDuration();
+        if(i==1) REQUIRE(settings.getGameSpeedStepDurationNs()==26666666ULL);
         settings.save("speed-roundtrip.txt");
         Settings loaded; loaded.load("speed-roundtrip.txt");
         REQUIRE(loaded.gameSpeed==i);
@@ -71,7 +77,7 @@ TEST_CASE("presets; bounds; legacy settings and persistence")
     REQUIRE(previous==0);
     for(int i=0;i<3;++i) {
         settings.gameSpeed=Settings::GAME_SPEED_MINIMUM+i;
-        const int durations[]={160,80,53};
+        const int durations[]={133,66,44};
         const char* labels[]={"0.25x","0.5x","0.75x"};
         REQUIRE(settings.getGameSpeedStepDuration()==durations[i]);
         REQUIRE(settings.getGameSpeedRenderInterval()==1);
@@ -196,7 +202,13 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         click.button.button=SDL_BUTTON_LEFT;
         gui.processEvent(&click); REQUIRE(settings.gameSpeed==0);
         gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_LOCAL;
+        REQUIRE(gui.targetTickRate()==doctest::Approx(30));
+        gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_IP;
+        gui.recordTick(SDL_GetTicks(), 40);
         REQUIRE(gui.targetTickRate()==25);
+        gui.recordTick(SDL_GetTicks(), GAME_TICK_MS);
+        REQUIRE(gui.targetTickRate()==doctest::Approx(1000.0 / GAME_TICK_MS));
+        gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_LOCAL;
         settings.gameSpeed=8;
         // Windowed edge scrolling is opt-in; changing it takes effect even
         // when the last motion event left an active edge velocity.
@@ -315,7 +327,8 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             SDL_RemoveTimer(timer);
             const Uint64 elapsed=SDL_GetTicks()-start;
             std::cout<<"Pause key="<<key<<" elapsed="<<elapsed<<"ms"<<std::endl;
-            REQUIRE((elapsed>=200 && elapsed<3000));
+            REQUIRE_MESSAGE((elapsed>=200 && elapsed<3000),
+                "pause key=" << key << " elapsed=" << elapsed << "ms");
         }
         std::cout<<"PASS: pause and hard pause accept resume input at Maximum\n";
         // The last run recorded a replay; stop playback before its end screen.

@@ -268,7 +268,7 @@ namespace Cortex
 	/// 1.5) reads food==0 < ADD_LO the very next decision cycle and spikes the
 	/// worker count upward immediately — chasing a buffer that simply has not been
 	/// filled yet. Hold the inn at its as-built worker count for this many ticks
-	/// (25 ticks/s × 60 s = one minute) so its first haulers can fill the buffer
+	/// (1500 / 30 = 50 seconds) so its first haulers can fill the buffer
 	/// before the loop is allowed to react to the level. Counted from when Cortex
 	/// first OBSERVES the inn finished (AICortex stamps it; up to one OBSERVE_INTERVAL
 	/// of detection latency, negligible against a 1500-tick window).

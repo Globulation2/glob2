@@ -23,7 +23,7 @@ leave the outputs it describes as they were, apart from the additions listed her
   unexecuted submissions.
 - **Clocks.** The client uses its session clock (the time the engine passes to
   `TurnSession::update`, steady milliseconds in the game). The relay uses its own
-  steady clock. Ticks are 40 ms at the default 25 ticks/s. Units are in every field
+  steady clock. Ticks are 33⅓ ms at the default 30 ticks/s. Units are in every field
   name: `_us` microseconds, `_ms` milliseconds, `_ticks` simulation ticks.
 - **Identity.** A client series belongs to one match and one local seat. It survives
   reconnects and in-place reloads; a client restart (a new process) starts a new

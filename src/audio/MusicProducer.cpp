@@ -218,7 +218,7 @@ void Producer::select(unsigned i, bool earlyChange, bool enabled)
 		return;
 
 	// A fade now spans many callbacks, so a track change can be asked for while
-	// one is still running — GameMusicController can emit on consecutive 40 ms
+	// one is still running — GameMusicController can emit on consecutive simulation
 	// ticks. Restarting the fade would cut the incoming track off mid-mix, so
 	// queue the request and let render() start it when this fade lands.
 	if (enabled && mode == MODE_EARLY_CHANGE)

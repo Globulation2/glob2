@@ -209,7 +209,7 @@ static int play(const Options& options, const fs::path& output)
 			firstTickAt = elapsed();
 		// One bot decision per executed tick in real time; none while catching up.
 		if (after > before && !session.catchingUp() && options.ordersPerSecond > 0 &&
-		    uniform(bot) < options.ordersPerSecond / 25.0)
+		    uniform(bot) < options.ordersPerSecond * 1000.0 / session.tickRateMilliHz())
 			if (auto order = botOrder(engine, bot))
 			{
 				engine.gui.orderQueue.push_back(order);

@@ -116,11 +116,14 @@ void GameGUI::cycleGameSpeed(bool forwards)
 
 double GameGUI::targetTickRate() const
 {
-	int stepMs = GAME_TICK_MS;
+	// Live network matches follow the relay's negotiated presentation interval.
+	if (!canChangeGameSpeed() && tickInterval > 0)
+		return 1000.0 / tickInterval;
+	Uint64 stepNs = GAME_TICK_NS;
 	if (canChangeGameSpeed())
-		stepMs = (globalContainer->replaying && globalContainer->replayFastForward)
-			? REPLAY_FAST_FORWARD_MS : globalContainer->settings.getGameSpeedStepDuration();
-	return stepMs > 0 ? 1000.0 / stepMs : 0;
+		stepNs = (globalContainer->replaying && globalContainer->replayFastForward)
+			? 0 : globalContainer->settings.getGameSpeedStepDurationNs();
+	return stepNs > 0 ? 1000000000.0 / stepNs : 0;
 }
 
 int GameGUI::tickRateShortfall() const

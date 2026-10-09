@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "EngineTiming.h"
 #include <FormatableString.h>
 #include <GUIStyle.h>
 #include <StringTable.h>
@@ -129,15 +130,15 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	globalContainer->gfx->drawSprite( x - inc*1, y, globalContainer->gamegui, (!gamePaused && globalContainer->replayFastForward ? REPLAY_BAR_FAST_FORWARD_BUTTON_ACTIVE_SPRITE : REPLAY_BAR_FAST_FORWARD_BUTTON_SPRITE));
 
 	// Calculate the time
-	// This is based on default speed 25 fps, not the actual Engine's speed
+	// This is based on normal simulation tick rate, not the actual Engine's speed
 	// because if we fast-forward we still want to see the old time
-	unsigned int time1_sec = (globalContainer->replayReader->getCurrentStep()/25)%60;
-	unsigned int time1_min = (globalContainer->replayReader->getCurrentStep()/(25*60))%60;
-	unsigned int time1_hour = (globalContainer->replayReader->getCurrentStep()/(25*3600));
+	unsigned int time1_sec = (globalContainer->replayReader->getCurrentStep()/GAME_TICKS_PER_SECOND)%60;
+	unsigned int time1_min = (globalContainer->replayReader->getCurrentStep()/(GAME_TICKS_PER_SECOND*60))%60;
+	unsigned int time1_hour = (globalContainer->replayReader->getCurrentStep()/(GAME_TICKS_PER_SECOND*3600));
 
-	unsigned int time2_sec = (globalContainer->replayReader->getNumStepsTotal()/25)%60;
-	unsigned int time2_min = (globalContainer->replayReader->getNumStepsTotal()/(25*60))%60;
-	unsigned int time2_hour = (globalContainer->replayReader->getNumStepsTotal()/(25*3600));
+	unsigned int time2_sec = (globalContainer->replayReader->getNumStepsTotal()/GAME_TICKS_PER_SECOND)%60;
+	unsigned int time2_min = (globalContainer->replayReader->getNumStepsTotal()/(GAME_TICKS_PER_SECOND*60))%60;
+	unsigned int time2_hour = (globalContainer->replayReader->getNumStepsTotal()/(GAME_TICKS_PER_SECOND*3600));
 
 	// Draw the time
 	if (time2_hour <= 99)

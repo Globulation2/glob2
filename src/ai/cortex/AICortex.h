@@ -86,8 +86,8 @@ private:
 
 	Cortex::CortexTuning runtimeTuning;
 	/// Ticks between policy invocations. The observation/policy run at this
-	/// cadence; Order emission stays at tick rate via the queue. 25 ticks = 1
-	/// second at the engine's 40 ms tick.
+	/// cadence; Order emission stays at tick rate via the queue. 30 ticks = 1
+	/// second at normal speed.
 	static const int OBSERVE_INTERVAL = 25;
 
 	/// Worker count forced onto the pre-placed starting swarm on the first decision

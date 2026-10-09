@@ -302,9 +302,10 @@ private:
 
 	struct MainLoopState
 	{
-		int speed;
+		int speed;           ///< Rounded presentation interval, in ms
+		Uint64 speedNs;       ///< Simulation tick interval, in ns
 		int nextGuiStep;      ///< Fast-forward draw countdown
-		Sint64 needToBeTime;  ///< Expected elapsed time for pacing, in ms
+		Sint64 needToBeTime;  ///< Expected elapsed time for pacing, in ns
 		Uint64 startTime;
 		bool wasReadyLastTick;
 		bool adjustableGameSpeed; ///< Speed presets apply; live network games stay at GAME_TICK_MS

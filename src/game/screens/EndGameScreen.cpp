@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "EngineTiming.h"
 #include "EndGameScreen.h"
 #include "FrontendTheme.h"
 #include "TeamStatChart.h"
@@ -126,7 +127,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::themeFor(fe::Surface::
 	// Save the step and order count
 	game = &(gui->game);
 	gameMetrics = Stats::catalogForBuildings(game->buildingsTypes);
-	durationSeconds = game->stepCounter / 25;
+	durationSeconds = game->stepCounter / GAME_TICKS_PER_SECOND;
 	if (Team *local = gui->getLocalTeam())
 	{
 		// Mark the player's own row, as the connection panel does ("Ana (you)").

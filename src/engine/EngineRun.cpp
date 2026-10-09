@@ -70,14 +70,16 @@ bool guardedSessionStep(Engine& engine, Step&& step)
 
 void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 {
-	const int previousSpeed = st.speed;
+	const Uint64 previousSpeed = st.speedNs;
 	int renderInterval = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedRenderInterval() : 1;
-	st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
+	st.speedNs = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDurationNs() : GAME_TICK_NS;
+	st.speed = st.speedNs == 0 ? 0 : std::max(1, int(st.speedNs / 1000000ULL));
 
 	// Replay fast-forward uses the uncapped preset.
 	if (globalContainer->replaying && globalContainer->replayFastForward
 		&& !gui.gamePaused && !gui.hardPause)
 	{
+		st.speedNs = REPLAY_FAST_FORWARD_MS * 1000000ULL;
 		st.speed = REPLAY_FAST_FORWARD_MS;
 		renderInterval = REPLAY_FAST_FORWARD_DRAW_RATIO;
 	}
@@ -86,6 +88,7 @@ void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 	// input should be rendered on every paused frame.
 	if (gui.gamePaused || gui.hardPause)
 	{
+		st.speedNs = GAME_TICK_NS;
 		st.speed = GAME_TICK_MS;
 		renderInterval = 1;
 	}
@@ -96,15 +99,17 @@ void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 	if (turn)
 	{
 		const std::uint64_t interval = turn->turn().tickIntervalMicros();
-		st.speed = interval == 0 ? REPLAY_FAST_FORWARD_MS : static_cast<int>((interval + 500) / 1000);
+		st.speedNs = interval * 1000ULL;
+		st.speed = st.speedNs == 0 ? 0 : std::max(1, int(st.speedNs / 1000000ULL));
 		renderInterval = interval == 0 ? REPLAY_FAST_FORWARD_DRAW_RATIO : 1;
 	}
 	if (st.nextGuiStep < 0 || st.nextGuiStep >= renderInterval)
 		st.nextGuiStep = renderInterval - 1;
 
-	// A preset change or pause starts a fresh timing budget.
-	if (st.speed != previousSpeed)
-		st.needToBeTime = static_cast<Sint64>(now - st.startTime);
+	// Local preset changes start a fresh budget. Relay delay adjustments
+	// retain the accumulated deadline; only entering/leaving catch-up resets it.
+	if (turn ? ((st.speedNs == 0) != (previousSpeed == 0)) : st.speedNs != previousSpeed)
+		st.needToBeTime = static_cast<Sint64>(now - st.startTime) * 1000000;
 }
 
 // Headless / scripted-test polling: under --nox automaticEndingGame, flip
@@ -528,17 +533,18 @@ Uint32 Engine::sessionDelay(Uint64 now)
     auto& st = *session;
 	// we compute timing
 
-	Sint64 currentTime = static_cast<Sint64>(now) - static_cast<Sint64>(st.startTime);
+	const Sint64 currentTime = (static_cast<Sint64>(now) - static_cast<Sint64>(st.startTime)) * 1000000;
 	//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 	//then truncate it. This is to avoid playing "catchup" for long
 	//periods of time if Glob2 received allmost no cpu time
 	// A turn session catching up runs uncapped, so the cap does not apply.
 	const bool turnCatchingUp = turn && turn->turn().catchingUp();
-	if (!turnCatchingUp && (currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
-		st.needToBeTime = currentTime - MAX_CATCHUP_MS;
+	if (!turnCatchingUp && (currentTime - st.needToBeTime) > MAX_CATCHUP_MS * 1000000LL)
+		st.needToBeTime = currentTime - MAX_CATCHUP_MS * 1000000LL;
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
-	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
+	const Uint64 remainingNs = std::max<Sint64>(0, st.needToBeTime - currentTime);
+	const Uint64 delay = (remainingNs + 999999) / 1000000;
 
     return delay > 0 ? delay : (!st.wasReadyLastTick ? 1 : 0);
 }
@@ -903,7 +909,8 @@ void Engine::beginSession(Uint64 now)
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();
-    st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
+    st.speedNs = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDurationNs() : GAME_TICK_NS;
+    st.speed = st.speedNs == 0 ? 0 : std::max(1, int(st.speedNs / 1000000ULL));
     st.wasReadyLastTick = true;
     st.nextGuiStep = 1;
     st.startTime = now;
@@ -1077,7 +1084,7 @@ void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::
 							: st.adjustableGameSpeed
 								? globalContainer->settings.getGameSpeedRenderInterval()
 								: 1;
-	const auto budget = globalContainer->runNoX ? 0ULL : std::uint64_t(st.speed) * 1000000ULL;
+	const auto budget = globalContainer->runNoX ? 0ULL : st.speedNs;
     // Intentional render limiting must not count as a missed presentation budget.
     const int fps = globalContainer->settings.targetRenderFps;
     const auto renderBudget = globalContainer->runNoX || fps == 0 ? 0ULL
@@ -1157,13 +1164,13 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     // 5% speed. A longer wait still catches up the rest at once.
     if (turn && readyNow && !st.wasReadyLastTick && !turn->turn().catchingUp())
     {
-        const Sint64 late = static_cast<Sint64>(now - st.startTime) - st.needToBeTime;
-        if (late > 0) st.needToBeTime += std::min<Sint64>(late, st.speed);
+        const Sint64 late = static_cast<Sint64>(now - st.startTime) * 1000000 - st.needToBeTime;
+        if (late > 0) st.needToBeTime += std::min<Sint64>(late, st.speedNs);
     }
     st.wasReadyLastTick = readyNow;
     // A turn game's budget advances only with executed ticks, so frames spent
     // waiting for the relay poll quickly instead of sleeping a whole tick.
-    if (turn ? readyNow : !globalContainer->runNoX) st.needToBeTime += st.speed;
+    if (turn ? readyNow : !globalContainer->runNoX) st.needToBeTime += st.speedNs;
     if (handleExit) handleExitRequest();
     if (gui.isRunning && !globalContainer->runNoX)
     {

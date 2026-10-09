@@ -867,7 +867,8 @@ TEST_SUITE("EngineSession")
 		            engine.drawSession();
 		            const Uint32 delay = engine.sessionDelay(now);
 		            require(delay == engine.sessionDelay(now), "Delay queries must not advance the timing budget");
-		            if (!delayed) require(delay == 40, "Regular callbacks must retain 25 Hz pacing");
+		            if (!delayed) require(now + delay == 1000 + ((iterations + 1) * 1000 + 29) / 30,
+		                "Regular callbacks must retain fractional 30 Hz pacing");
 		            now += delayed ? 1000 : delay;
 		            require(++iterations <= 100, "Session failed to terminate");
 		        } while (running);
@@ -919,11 +920,18 @@ TEST_SUITE("EngineSession")
 		                screens.suspendExecution();
 		                suspended = true;
 		            }
-		            screens.frame(1000 + frames * 40 + (suspended ? 60000 : 0), {});
+		            const Uint64 tickClock = 1000
+		                + (loadingFrames * 1000 + GAME_TICKS_PER_SECOND - 1) / GAME_TICKS_PER_SECOND
+		                + ((frames - loadingFrames) * 1000 + GAME_TICKS_PER_SECOND - 1) / GAME_TICKS_PER_SECOND;
+		            screens.frame(tickClock + (suspended ? 60000 : 0), {});
 		            require(++frames <= 2000, "Stack-driven loading/session failed to finish");
 		        }
-		        // Resumption keeps the pending 40ms tick deadline; hidden time is excluded.
-		        require(loadingFrames > 20 && frames == loadingFrames + 52 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
+		        // Resumption keeps the pending tick deadline; hidden time is excluded.
+		        // Fractional periods can leave one callback short of the ceil-rounded
+		        // host deadline after suspension, requiring one extra presentation frame.
+		        INFO("loading frames=" << loadingFrames << ", total frames=" << frames);
+		        require(loadingFrames > 20 && frames >= loadingFrames + 52 && frames <= loadingFrames + 53 &&
+		                screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
 		                "Suspension must exclude hidden time and retain the pending tick deadline");
 		        }
 		        {

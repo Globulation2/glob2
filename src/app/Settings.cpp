@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Settings.h"
+#include "EngineTiming.h"
 #include "BuildingType.h"
 #include <InterfacePresentation.h>
 #include "GUIBase.h"
@@ -387,15 +388,20 @@ bool Settings::dragUpZoomsIn(void) const
 
 int Settings::getGameSpeedStepDuration(void) const
 {
-	// Sub-normal presets lengthen the tick. The first five normal and faster
-	// presets increase both simulation and rendering frequency.
-	// Beyond that, rendering is capped near 60-100 fps while simulation keeps
-	// accelerating. The final preset is deliberately uncapped.
+	const auto interval = getGameSpeedStepDurationNs();
+	return interval == 0 ? 0 : std::max(1, int(interval / 1000000ULL));
+}
+
+std::uint64_t Settings::getGameSpeedStepDurationNs() const
+{
+	// Preserve the relative spacing of the legacy presets, scaling their
+	// 40 ms normal tick to 1/30 s. The final preset is deliberately uncapped.
 	static const int durations[GAME_SPEED_MAXIMUM-GAME_SPEED_MINIMUM+1] =
 		{160, 80, 53, 40, 32, 25, 20, 16, 10, 8, 5, 3, 1, 0};
 	const int level=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 		std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
-	return durations[level-GAME_SPEED_MINIMUM];
+	return std::uint64_t(durations[level-GAME_SPEED_MINIMUM]) * 1000000000ULL
+		/ (40 * GAME_TICKS_PER_SECOND);
 }
 
 

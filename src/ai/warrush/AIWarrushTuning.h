@@ -21,7 +21,7 @@ static constexpr int AI_WARRUSH_SAVE_FORMAT_CONTINUATION = 132;
 // at the top of AIWarrush.cpp).
 // ---------------------------------------------------------------------------
 
-// Cooldown (in 40ms ticks) after AIWarrush issues a build order. Prevents
+// Cooldown (in simulation ticks) after AIWarrush issues a build order. Prevents
 // the AI from spamming repeated build requests at the same target tile.
 static constexpr int AI_WARRUSH_BUILDING_DELAY_TICKS = 30;
 
