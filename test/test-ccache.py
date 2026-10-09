@@ -87,8 +87,9 @@ with tempfile.TemporaryDirectory(prefix='glob2-cross-cache-') as directory:
         (checkout / 'SConstruct').write_text(
             'import os, sys\n' + f'sys.path.insert(0, {str(root / "scons")!r})\n' +
             'import ccache\nfrom dev_build import configure\n' +
-            'env=Environment(ENV=dict(os.environ))\n' +
+            "env=Environment(ENV=dict(os.environ), CXX=ARGUMENTS.get('CXX','g++'))\n" +
             "configure(env, {'target':'native','toolchain':'linux','dev_fast':True})\n" +
+            "env.Append(CCFLAGS=ARGUMENTS.get('extra','').split())\n" +
             'ccache.enable(env)\nenv.Program("probe","probe.cpp")\n')
         subprocess.run(['scons', '-Q'], cwd=checkout, env=environment, capture_output=True, check=True)
         stats = subprocess.check_output([ccache, '--print-stats'], env=environment, text=True)
@@ -100,8 +101,23 @@ with tempfile.TemporaryDirectory(prefix='glob2-cross-cache-') as directory:
         if os.name != 'nt' and shutil.which('readelf'):
             debug = subprocess.check_output(['readelf', '--debug-dump=info', str(checkout / 'probe')], text=True)
             assert 'DW_AT_comp_dir' in debug and str(checkout) not in debug, debug
+        if os.name != 'nt' and shutil.which('gdb'):
+            debugger = subprocess.check_output(['gdb', '--batch', '-ex', 'list main', str(checkout / 'probe')], cwd=checkout, text=True)
+            assert 'int main()' in debugger, debugger
     # Changed content and flags must miss even when checkout paths normalize.
     (checkout / 'value.h').write_text('#define VALUE 9\n')
     subprocess.run(['scons', '-Q'], cwd=checkout, env=environment, capture_output=True, check=True)
     assert subprocess.run([str(checkout / 'probe')]).returncode == 9
-print('ccache: cross-checkout reuse, relative debugger paths and header changes PASS')
+    def misses():
+        stats = subprocess.check_output([ccache, '--print-stats'], env=environment, text=True)
+        return dict(line.split() for line in stats.splitlines())['cache_miss']
+    before = int(misses())
+    subprocess.run(['scons', '-Q', 'extra=-O2'], cwd=checkout, env=environment, capture_output=True, check=True)
+    assert int(misses()) > before
+    compiler = os.environ.get('GLOB2_TEST_CXX') or shutil.which('clang++')
+    if compiler:
+        before = int(misses())
+        subprocess.run(['scons', '-Q', 'extra=-O2', 'CXX='+compiler], cwd=checkout, env=environment, capture_output=True, check=True)
+        assert int(misses()) > before
+        assert subprocess.run([str(checkout / 'probe')]).returncode == 9
+print('ccache: cross-checkout reuse, debugger lookup, header/flag/compiler invalidation PASS')
