@@ -5,7 +5,7 @@ import type {
   StudioAccount,
   StudioDetail,
   StudioProject,
-  StudioRequest,
+  CodingStudioRequest,
   StudioRevision,
 } from './codingStudio.ts';
 export const AI_STUDIO_SOURCE_BYTES = 128 * 1024;
@@ -44,7 +44,7 @@ export const AiStudioRun = Strict({
 export const aiStudioSchemas = { AiStudioCreate, AiStudioSave, AiStudioCommand, AiStudioRun };
 export type AiStudioCommand = Static<typeof AiStudioCommand>;
 export type AiStudioRevision = StudioRevision;
-export type AiStudioRequest = StudioRequest;
+export type AiStudioRequest = CodingStudioRequest;
 export type AiStudioProject = StudioProject;
 export type AiStudioAccount = StudioAccount;
 export type AiStudioDetail = StudioDetail<{

@@ -6,7 +6,7 @@ export interface StudioRevision {
   reason: string;
   created_at: string;
 }
-export interface StudioRequest {
+export interface CodingStudioRequest {
   id: string;
   base_revision: number;
   prompt: string;
@@ -26,7 +26,7 @@ export interface StudioProject {
 export interface StudioDetail<Run = unknown> extends StudioProject {
   current: StudioRevision;
   revisions: Omit<StudioRevision, 'source'>[];
-  requests: StudioRequest[];
+  requests: CodingStudioRequest[];
   cursor: string;
   runs: Run[];
 }
