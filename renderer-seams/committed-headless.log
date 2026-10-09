@@ -1,0 +1,15 @@
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"build": "fresh focused release renderer tests", "compiler": "g++", "dirty": false, "flags": "-g -std=gnu++20 -Wall -fPIC -O3; repository compile command flags recorded in build-receipt.json", "revision": "64324bd260dcfd6a40d67ab3575946b1fc92ec66", "sourceStatus": [], "sourceTreeSha256": "b2eb185d528fd6b270b4e0f58a64061742a7e127bb601ebeb5c7266f5613842e"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+libgag/src/SpriteDrawBatchTest.cpp:229:
+TEST CASE:  resource sprite batch recovers from submission errors
+
+libgag/src/SpriteDrawBatchTest.cpp:63: FATAL ERROR: REQUIRE( sprite.load("data/gfx/ressource") ) is NOT correct!
+  values: REQUIRE( false )
+
+===============================================================================
+[doctest] test cases:    9 |    8 passed | 1 failed | 9 skipped
+[doctest] assertions: 1083 | 1082 passed | 1 failed |
+[doctest] Status: FAILURE!

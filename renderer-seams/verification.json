@@ -1,0 +1,14 @@
+{
+  "tested_commit": "64324bd260dcfd6a40d67ab3575946b1fc92ec66",
+  "base_revision": "5f50e60448e62264b8443dab97f4c1bed14a5a79",
+  "integration_base": "f650014effcbdb4e1c7eabcaab02c88a860c1faa",
+  "merge_tree": "4cd28e7162cf21e688921dfd06860fd2599a2632",
+  "environment": "macOS 26.6.2 arm64; Apple LLVM 21 clang-2100.3.34.2",
+  "dependencies": "SDL3 3.4.18; SDL3_image 3.4.8; SDL3_ttf 3.2.2",
+  "build": "Fresh compilation of libgag, libusl and focused test/support sources; exact flags, commands and source hashes in build-receipt.json",
+  "test_command": "SDL_VIDEODRIVER=cocoa SDL_AUDIODRIVER=dummy artifacts/renderer-seams/fog-seams-committed '-tce=*resource sprite*'",
+  "result": "14 cases and 1398 assertions passed; 4 resource sprite cases excluded because generated WebP artwork is absent",
+  "regression": "81 zoom/density/pan combinations; clipped pixel operations and queued draw order",
+  "captures": "Synthetic fog fixture at 38% zoom, density 2, offset 0.25. Before uses original GraphicContextDraw.cpp; after uses committed renderer. Captures are diagnostic, not gameplay screenshots.",
+  "limitations": "Full game build, Windows, Linux and browser renderers not verified. Initial missing-artwork failures retained in committed-headless.log and committed-display.log. Rendering-only change; simulation and serialization unchanged."
+}

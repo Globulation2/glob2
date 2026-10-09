@@ -1,0 +1,189 @@
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"build": "fresh focused release renderer tests", "compiler": "g++", "dirty": false, "flags": "-g -std=gnu++20 -Wall -fPIC -O3; repository compile command flags recorded in build-receipt.json", "revision": "64324bd260dcfd6a40d67ab3575946b1fc92ec66", "sourceStatus": [], "sourceTreeSha256": "b2eb185d528fd6b270b4e0f58a64061742a7e127bb601ebeb5c7266f5613842e"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:233:
+TEST SUITE: OpaqueRectangleBatch
+TEST CASE:  native software fog runs meet shade tiles at fractional zoom
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 24 == 0 )
+  logged: density=1 zoom=0.125 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 353 == 0 )
+  logged: density=1 zoom=0.33 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 358 == 0 )
+  logged: density=1 zoom=0.33 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 358 == 0 )
+  logged: density=1 zoom=0.33 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 166 == 0 )
+  logged: density=1 zoom=0.38 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 169 == 0 )
+  logged: density=1 zoom=0.38 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 169 == 0 )
+  logged: density=1 zoom=0.38 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 643 == 0 )
+  logged: density=1 zoom=0.57 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 130 == 0 )
+  logged: density=1 zoom=0.57 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 390 == 0 )
+  logged: density=1 zoom=0.57 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 345 == 0 )
+  logged: density=1 zoom=0.75 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 465 == 0 )
+  logged: density=1 zoom=1 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 2241 == 0 )
+  logged: density=1 zoom=1.37 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 2250 == 0 )
+  logged: density=1 zoom=1.37 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 2250 == 0 )
+  logged: density=1 zoom=1.37 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 931 == 0 )
+  logged: density=1 zoom=2 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 620 == 0 )
+  logged: density=1 zoom=5 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 29 == 0 )
+  logged: density=1.25 zoom=0.125 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 267 == 0 )
+  logged: density=1.25 zoom=0.33 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 90 == 0 )
+  logged: density=1.25 zoom=0.33 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 270 == 0 )
+  logged: density=1.25 zoom=0.33 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 312 == 0 )
+  logged: density=1.25 zoom=0.38 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 105 == 0 )
+  logged: density=1.25 zoom=0.38 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 315 == 0 )
+  logged: density=1.25 zoom=0.38 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 644 == 0 )
+  logged: density=1.25 zoom=0.57 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 969 == 0 )
+  logged: density=1.25 zoom=0.57 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1288 == 0 )
+  logged: density=1.25 zoom=0.57 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 431 == 0 )
+  logged: density=1.25 zoom=0.75 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 581 == 0 )
+  logged: density=1.25 zoom=1 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1604 == 0 )
+  logged: density=1.25 zoom=1.37 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 2409 == 0 )
+  logged: density=1.25 zoom=1.37 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 3208 == 0 )
+  logged: density=1.25 zoom=1.37 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1043 == 0 )
+  logged: density=1.25 zoom=2 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 614 == 0 )
+  logged: density=1.25 zoom=5 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 291 == 0 )
+  logged: density=2 zoom=0.33 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 503 == 0 )
+  logged: density=2 zoom=0.38 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 506 == 0 )
+  logged: density=2 zoom=0.38 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 509 == 0 )
+  logged: density=2 zoom=0.38 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1033 == 0 )
+  logged: density=2 zoom=0.57 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1041 == 0 )
+  logged: density=2 zoom=0.57 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1041 == 0 )
+  logged: density=2 zoom=0.57 offset=0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1800 == 0 )
+  logged: density=2 zoom=1.37 offset=-0.5
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 2237 == 0 )
+  logged: density=2 zoom=1.37 offset=0.25
+
+/Users/bradley/.codex/worktrees/de20/glob2/artifacts/renderer-seams/fog-capture.cpp:154: ERROR: CHECK( bad == 0 ) is NOT correct!
+  values: CHECK( 1800 == 0 )
+  logged: density=2 zoom=1.37 offset=0.5
+
+===============================================================================
+[doctest] test cases:   1 |   0 passed |  1 failed | 17 skipped
+[doctest] assertions: 162 | 118 passed | 44 failed |
+[doctest] Status: FAILURE!
