@@ -692,7 +692,8 @@ selects `2D no clouds` or `2D clouds`; otherwise both run. Set
 a controlled comparison. `GLOB2_BENCH_BARS=1` adds health/food bars. Unit count
 zero measures the same terrain without units. Retain executable hashes, commands,
 GPU identity, logs and captures with before/after comparisons. The flat fixture
-checks that rendering leaves the simulation checksum unchanged.
+checks that rendering leaves the simulation checksum unchanged. New fixture headers
+use seed 1; saved-game runs retain their saved seed.
 
 For an AI match, replace `GLOB2_BENCH_SIZE` and `GLOB2_BENCH_UNITS` with
 `GLOB2_BENCH_GAME=/absolute/path/to/checkpoint.game.gz`. The saved players and
@@ -704,6 +705,17 @@ the checkpoint's natural population from this deliberately seeded stress case.
 and can go below the interactive camera's minimum zoom.
 `GLOB2_BENCH_CAMERA_SWEEP=1` repeatedly changes zoom and pans across wrap seams.
 Sweep measurements mix those view sizes; use a fixed camera for paired timings.
+`GLOB2_BENCH_CAMERA_MOTION=1` instead pans four/two map pixels per frame and
+cycles smoothly between the selected zoom and four times that zoom over 120
+frames. It takes precedence over the seam sweep in the ordinary flat pass.
+`GLOB2_BENCH_CAMERA_PAN=1` uses the same scrolling at a fixed zoom.
+`GLOB2_BENCH_FRAME_TIMES=1` prints each measured and warmup frame; summaries
+include p99 and maximum latency as well as median and p95. The benchmark finishes
+deferred HD artwork loading before timing, so density changes compare identical
+source artwork rather than different asset-loader progress. Keep cold frames when
+investigating navigation stalls, and repeat cycles to distinguish first-use work
+from recurring hitches. The motion option does not change the paired comparison's
+camera; use the seam sweep for that comparison.
 `GLOB2_BENCH_COMPARE_RENDERER=1` additionally compares immediate and optimized
 native rendering in the same process, at the same camera and simulation state.
 It reports paired process CPU timings and checks pixel differences after timing
@@ -718,7 +730,9 @@ mixed unit queue, texture arrays and persistent map geometry.
 pair as `pair-immediate.ppm` and `pair-optimized.ppm` for visual review.
 
 Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
-input and simulation work. They are renderer measurements, not whole-game FPS.
+input, scene extraction and simulation work. Flat passes retain a prepared scene;
+AI comparisons refresh it before each timed pair. They are renderer measurements,
+not whole-game FPS.
 POSIX builds also report process CPU time separately from elapsed time.
 Scope timings separately report CPU submission and overlap; do not sum inclusive
 scopes. The fixture is native OpenGL only; mobile uses the SDL portable renderer,
@@ -2160,9 +2174,17 @@ cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game`
 the simulation neither reads nor writes it and each view animates independently. The
 terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
 software storage reservation including pixels, recipes and borrowed views, and a
-separate 128 MiB GPU-mode reservation with least-recently-used eviction. Kept
-coverage masks for mixed cells beside animated materials add at most a quarter of
-that budget. Native and
+separate 128 MiB allowance for GPU density selection and resident texture/mip
+reservations. The desktop GPU-mode cache has a 256 MiB total ceiling, including
+CPU pixels and bookkeeping; Android/browser builds retain the 128 MiB total limit.
+On desktop, the additional CPU retention allowance avoids evicting inactive
+zoom densities. GPU views retain pixels and textures across sampling
+changes, retiring idle textures first when needed. When the visible textures
+exceed the allowance but their CPU pages and one upload fit, drawing streams
+textures from those retained pixels rather than recomposing the entire view.
+Terrain, discovery and material revisions are checked when an old zoom level
+returns. Kept coverage masks for mixed cells beside animated materials add at
+most 8 MiB in software mode or 32 MiB in GPU mode. Native and
 HD rendering share CPU composition; GPU backends upload the resulting pages.
 The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
 boundary resolver, source preparation, budgets and asset pipeline.

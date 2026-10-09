@@ -19,6 +19,13 @@ class Surface : public GAGCore::DrawableSurface
 	{
 		highResolutionSampling = hd;
 	}
+	// Retire the renderer allocation while keeping expensive composed CPU pixels.
+	SDL_Surface *takePixels()
+	{
+		auto *pixels = sdlsurface;
+		sdlsurface = nullptr;
+		return pixels;
+	}
 };
 
 // Renderer-owned, never accessed from the simulation. Sources are immutable
