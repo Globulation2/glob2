@@ -127,7 +127,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	}
 	for (int i = 0; i < n; ++i)
 	{
-		const double x = t.offsetX(t.w / 2, i % t.w), y = t.offsetY(t.h / 2, i / t.w);
+		const double x = t.offsetX(t.w / 2, t.remainderX(i)), y = t.offsetY(t.h / 2, i / t.w);
 		const double rad = std::hypot(x, y);
 		double a = std::fmod(std::atan2(y, x) - L.phase + kTau * 2, kTau);
 		L.radius[i] = rad;
@@ -176,7 +176,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			}
 		}
 		if (L.homeOf[i] >= 0 && rad > g.outer + 13 && rad < g.rim - 9 &&
-			t.dist2(i % t.w, i / t.w, L.anchor[home] % t.w, L.anchor[home] / t.w) > 9 * 9 &&
+			t.dist2(t.remainderX(i), i / t.w, t.remainderX(L.anchor[home]), L.anchor[home] / t.w) > 9 * 9 &&
 			(rad > g.home + 7 || std::abs(rad * std::sin(local)) > 10))
 			L.farmRegion[i] = 1;
 	}
@@ -279,12 +279,12 @@ bool generate(Game &game, GenerationContext &c)
 		if (L.wall[i])
 			for (int dy = -1; dy <= 2; ++dy)
 				for (int dx = -1; dx <= 2; ++dx)
-					terrain[t.at(i % t.w + dx, i / t.w + dy)] = GRASS;
+					terrain[t.at(t.remainderX(i) + dx, i / t.w + dy)] = GRASS;
 	layBeaches(terrain, t);
 	writeVertices(map, terrain);
 	for (int i = 0; i < n; ++i)
-		if (L.wall[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		if (L.wall[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	c.stage = "gauntlet colonies";
 	const auto home = [&](int k)
 	{
@@ -298,7 +298,7 @@ bool generate(Game &game, GenerationContext &c)
 			[&](int team)
 			{
 				const int k = L.teamSlot[team];
-				return MapGeneratorPoint(L.anchor[k] % t.w - 2, L.anchor[k] / t.w - 2);
+				return MapGeneratorPoint(t.remainderX(L.anchor[k]) - 2, L.anchor[k] / t.w - 2);
 			}))
 		return false;
 	c.stage = "gauntlet towers";
@@ -331,12 +331,12 @@ bool generate(Game &game, GenerationContext &c)
 	const auto fertility = Fertility::forMap(map, false);
 	for (int k = 0; k < g.teams; ++k)
 	{
-		const int ax = L.anchor[k] % t.w, ay = L.anchor[k] / t.w;
+		const int ax = t.remainderX(L.anchor[k]), ay = L.anchor[k] / t.w;
 		const auto free = [&](int i)
 		{
 			return cropHome[i] == k && !L.wall[i] && !reserved[i] && farms[k].row[i] >= 0 &&
 				   farms[k].row[i] % 2 == 0 && !farms[k].plot[i] &&
-				   clearGround(map, i % t.w, i / t.w);
+				   clearGround(map, t.remainderX(i), i / t.w);
 		};
 		const KitFrame frame{ax, ay, L.phase + g.wedge * k};
 		const int wood = 30 + int(scaledCount(20, o.wood));
@@ -376,7 +376,7 @@ bool generate(Game &game, GenerationContext &c)
 	{
 		const int planted = plantFarm(
 			map, t, gardens[k], int(scaledCount(g.half * .6, o.wheat)), 0, [&](int i)
-			{ return cropCourt[i] == k && !L.wall[i] && clearGround(map, i % t.w, i / t.w); });
+			{ return cropCourt[i] == k && !L.wall[i] && clearGround(map, t.remainderX(i), i / t.w); });
 		c.telemetry.measure("gauntlet.court.wheat", planted, k);
 		for (int fruit = 0; fruit < 3; ++fruit)
 			plantContainedPlot(map, t, orchards[k], fertility, CHERRY + fruit,
@@ -404,11 +404,11 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	std::vector<unsigned char> cropSeeds(t.size(), 0), cropGround(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		cropSeeds[i] = type == WHEAT || type == WOOD;
-		cropGround[i] = (map.canResourcesGrow(i % t.w, i / t.w) &&
-			(map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))) && type != STONE;
+		cropGround[i] = (map.canResourcesGrow(t.remainderX(i), i / t.w) &&
+			(map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))) && type != STONE;
 	}
 	const auto growth = floodFrom(t, cropSeeds, cropGround);
 	auto permanentBuilding = buildableTiles(map);
@@ -418,7 +418,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		if (L.wall[i] && !permanentResourceBarrier(map, i))
-			return "A Gauntlet wall is missing at " + std::to_string(i % t.w) + ":" +
+			return "A Gauntlet wall is missing at " + std::to_string(t.remainderX(i)) + ":" +
 				   std::to_string(i / t.w);
 		if (L.frontOf[i] >= 0 && (!open[i] || growth.steps[i] >= 0))
 			return "A Gauntlet entrance is blocked.";
@@ -510,7 +510,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	const auto graph = checkGatePartition(t, permanent, labels, gates);
 	if (graph.leakTile >= 0)
 		return "The arena has an unintended route between regions at " +
-			   std::to_string(graph.leakTile % t.w) + ":" + std::to_string(graph.leakTile / t.w);
+			   std::to_string(t.remainderX(graph.leakTile)) + ":" + std::to_string(graph.leakTile / t.w);
 	if (graph.badGate >= 0)
 		return "An arena gate fails its two-region connection: " + std::to_string(graph.badGate);
 
@@ -520,7 +520,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 		if (L.courtOf[i] >= 0)
 		{
-			const int k = L.courtOf[i], type = map.getResource(i % t.w, i / t.w).type;
+			const int k = L.courtOf[i], type = map.getResource(t.remainderX(i), i / t.w).type;
 			courtRoom[k] += sites[i] && growth.steps[i] < 0;
 			if (type >= CHERRY && type <= PRUNE)
 				++fruitCount[k][type - CHERRY];
@@ -542,14 +542,14 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		{
 			if (distance[i] >= 0 && distance[i] <= 24 && sites[i] && growth.steps[i] < 0)
 				++room;
-			const int type = map.getResource(i % t.w, i / t.w).type;
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			if (type != WHEAT && type != WOOD)
 				continue;
 			int best = 100000;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					const int d = distance[t.at(i % t.w + dx, i / t.w + dy)];
+					const int d = distance[t.at(t.remainderX(i) + dx, i / t.w + dy)];
 					if (d >= 0)
 						best = std::min(best, d + 1);
 				}

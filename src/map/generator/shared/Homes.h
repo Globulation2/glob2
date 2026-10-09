@@ -268,13 +268,13 @@ inline RegionHome regionHome(const Torus &t, const std::vector<unsigned char> &r
 	home.site = siteAtDepth(depthIn, room, depth, minimumRoom, spread);
 	if (home.site < 0)
 		return home;
-	const int sx = home.site % t.w, sy = home.site / t.w;
+	const int sx = t.remainderX(home.site), sy = home.site / t.w;
 	// The door's middle, the short way round from the site.
 	double ox = 0, oy = 0;
 	for (int d : door)
 	{
 		::MapGeneration::generationCheckpoint();
-		ox += t.offsetX(sx, d % t.w);
+		ox += t.offsetX(sx, t.remainderX(d));
 		oy += t.offsetY(sy, d / t.w);
 	}
 	ox /= double(door.size());
@@ -321,7 +321,7 @@ void furnishGround(
 		if (eligible(i))
 		{
 			ground.push_back(i);
-			if (fertility.at(i % t.w, i / t.w) > 0)
+			if (fertility.at(t.remainderX(i), i / t.w) > 0)
 				levels.push_back(patchAt(i));
 		}
 	}
@@ -334,7 +334,7 @@ void furnishGround(
 	for (int i : ground)
 	{
 		::MapGeneration::generationCheckpoint();
-		const std::uint32_t f = fertility.at(i % t.w, i / t.w);
+		const std::uint32_t f = fertility.at(t.remainderX(i), i / t.w);
 		if (f > 0 && patchAt(i) >= cut)
 			farm.push_back({-double(f), i});
 	}
@@ -371,7 +371,7 @@ template <typename Room>
 WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int wanted,
 							const std::vector<unsigned char> &ambient, Room room)
 {
-	const int sx = site % t.w, sy = site / t.w;
+	const int sx = t.remainderX(site), sy = site / t.w;
 	int wheat = 0;
 	for (int dy = -reach; dy <= reach; ++dy)
 	{
@@ -387,7 +387,7 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 	if (missing <= 0)
 		return result;
 	result.needed = true;
-	const auto nearby = [&](int i) { return room(i) && t.chebyshev(sx, sy, i % t.w, i / t.w) <= reach; };
+	const auto nearby = [&](int i) { return room(i) && t.chebyshev(sx, sy, t.remainderX(i), i / t.w) <= reach; };
 	PatchBudgetResult topped = growPatchesNear(map, t, sx, sy, reach, WHEAT, missing, nearby);
 	if (topped.tiles < missing)
 	{
@@ -399,7 +399,7 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 			{
 				::MapGeneration::generationCheckpoint();
 				const int i = t.at(sx + dx, sy + dy);
-				const int type = map.getResource(i % t.w, i / t.w).type;
+				const int type = map.getResource(t.remainderX(i), i / t.w).type;
 				if (nearby(i) && ambient.at(i) && type != NO_RES_TYPE &&
 					!map.materialAmountAt(i, MaterialId::Food) &&
 					map.resourcePropertiesByIndex(type).clearable)
@@ -411,7 +411,7 @@ WheatTopUp topUpWheatNearby(Map &map, const Torus &t, int site, int reach, int w
 		for (size_t c = 0; c < clear; ++c)
 		{
 			::MapGeneration::generationCheckpoint();
-			map.setNoResource(standing.at(c).second % t.w, standing.at(c).second / t.w, 0);
+			map.setNoResource(t.remainderX(standing.at(c).second), standing.at(c).second / t.w, 0);
 		}
 		topped.tiles += growPatchesNear(map, t, sx, sy, reach, WHEAT, missing - topped.tiles, nearby).tiles;
 		result.clearedAmbient = true;

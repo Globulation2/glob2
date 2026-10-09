@@ -90,7 +90,7 @@ Territories growTerritories(const Torus &t, const std::vector<unsigned char> &el
 		for (const auto &s : kCardinalSteps)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int next = t.at(tile % t.w + s[0], tile / t.w + s[1]);
+			const int next = t.at(t.remainderX(tile) + s[0], tile / t.w + s[1]);
 			if (eligible.at(next) && result.labels.at(next) < 0 && !queued.at(k).at(next) &&
 				steps.at(k).at(next) >= 0)
 			{
@@ -341,7 +341,7 @@ inline void smoothLabels(const Torus &t, std::vector<int> &labels, int passes,
 				for (int dx = -radius; dx <= radius; ++dx)
 				{
 					::MapGeneration::generationCheckpoint();
-					const int label = labels.at(t.at(i % t.w + dx, i / t.w + dy));
+					const int label = labels.at(t.at(t.remainderX(i) + dx, i / t.w + dy));
 					if ((dx || dy) && label >= 0 && label != labels.at(i) &&
 						counts.at(label)++ == 0)
 						touched.push_back(label);
@@ -384,7 +384,7 @@ inline void separateTerritories(const Torus &t, std::vector<int> &labels, int ga
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				const int other = labels.at(t.at(i % t.w + dx, i / t.w + dy));
+				const int other = labels.at(t.at(t.remainderX(i) + dx, i / t.w + dy));
 				if (other >= 0 && other != labels.at(i))
 				{
 					border.at(i) = 1;
@@ -430,7 +430,7 @@ inline std::vector<unsigned char> fillToNearest(const Torus &t, std::vector<int>
 		for (int i : frontier)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int j : {t.at(x, y - 1), t.at(x - 1, y), t.at(x + 1, y), t.at(x, y + 1)})
 			{
 				::MapGeneration::generationCheckpoint();
@@ -518,7 +518,7 @@ int growFarLake(const Torus &t, std::vector<unsigned char> &water, const std::ve
 		[&](int i)
 		{
 			const double d = ::MapGeneration::Numeric::sqrt(
-				double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
+				double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
 			return std::int64_t(d * 1000) + (farthest - depth.at(i)) * 250LL +
 				   std::int64_t(noiseAt(i) * 2500);
 		},
@@ -541,9 +541,9 @@ int growLakeBeside(const Torus &t, std::vector<unsigned char> &water, const std:
 				   int side, int siteGap, int reach, NoiseAt noiseAt, std::vector<int> &queued,
 				   int stamp)
 {
-	const int n = t.size(), sx = site % t.w, sy = site / t.w;
+	const int n = t.size(), sx = t.remainderX(site), sy = site / t.w;
 	const auto away = [&](int i)
-	{ return ::MapGeneration::Numeric::sqrt(double(t.dist2(sx, sy, i % t.w, i / t.w))); };
+	{ return ::MapGeneration::Numeric::sqrt(double(t.dist2(sx, sy, t.remainderX(i), i / t.w))); };
 	const double hx = ::MapGeneration::Numeric::cos(heading),
 				 hy = ::MapGeneration::Numeric::sin(heading);
 	// How far a tile lies to the left of the line through the site along the heading (right is
@@ -551,7 +551,7 @@ int growLakeBeside(const Torus &t, std::vector<unsigned char> &water, const std:
 	// comes between the site and the way in.
 	const auto lateral = [&](int i)
 	{
-		const double dx = t.offsetX(sx, i % t.w), dy = t.offsetY(sy, i / t.w);
+		const double dx = t.offsetX(sx, t.remainderX(i)), dy = t.offsetY(sy, i / t.w);
 		return hx * dy - hy * dx;
 	};
 	std::vector<unsigned char> roomy(n, 0);
@@ -597,7 +597,7 @@ int growLakeBeside(const Torus &t, std::vector<unsigned char> &water, const std:
 		[&](int i)
 		{
 			const double d = ::MapGeneration::Numeric::sqrt(
-				double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
+				double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
 			return std::int64_t(d * 1000) + std::int64_t(noiseAt(i) * 2500);
 		},
 		queued, stamp);

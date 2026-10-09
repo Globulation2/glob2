@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
 #include <stdio.h>
@@ -360,7 +361,7 @@ void GameGUI::stepEventFeed(int viewedTeam)
 	const auto distanceSquared = [this](int px, int py, int qx, int qy) -> std::int64_t
 	{
         const int width = drawnScene().map.getW(), height = drawnScene().map.getH();
-        const int x = std::abs((px-qx) % width), y = std::abs((py-qy) % height);
+        const int x = std::abs(powerOfTwoRemainder(px-qx, width)), y = std::abs(powerOfTwoRemainder(py-qy, height));
         const int dx = std::min(x, width-x), dy = std::min(y, height-y);
         return dx * dx + dy * dy;
     };

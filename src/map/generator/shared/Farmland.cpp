@@ -41,7 +41,7 @@ std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
 			for (int dx = -margin; dx <= margin; ++dx)
 			{
 				::MapGeneration::generationCheckpoint();
-				sketch.at(t.at(i % t.w + dx, i / t.w + dy)) = SAND;
+				sketch.at(t.at(t.remainderX(i) + dx, i / t.w + dy)) = SAND;
 			}
 		}
 	}
@@ -54,8 +54,8 @@ std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
 	for (int i : inside)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (inside.count(t.at(i % t.w + 1, i / t.w)) && inside.count(t.at(i % t.w, i / t.w + 1)) &&
-			inside.count(t.at(i % t.w + 1, i / t.w + 1)))
+		if (inside.count(t.at(t.remainderX(i) + 1, i / t.w)) && inside.count(t.at(t.remainderX(i), i / t.w + 1)) &&
+			inside.count(t.at(t.remainderX(i) + 1, i / t.w + 1)))
 			tiles.push_back(i);
 	}
 	return tiles;
@@ -78,8 +78,8 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 		for (int i : shape)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (inside.at(t.at(i % t.w + 1, i / t.w)) && inside.at(t.at(i % t.w, i / t.w + 1)) &&
-				inside.at(t.at(i % t.w + 1, i / t.w + 1)))
+			if (inside.at(t.at(t.remainderX(i) + 1, i / t.w)) && inside.at(t.at(t.remainderX(i), i / t.w + 1)) &&
+				inside.at(t.at(t.remainderX(i) + 1, i / t.w + 1)))
 				tiles.push_back(i);
 		}
 		return tiles;
@@ -99,7 +99,7 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 			for (int x = -2; x <= 2 && fits; ++x)
 			{
 				::MapGeneration::generationCheckpoint();
-				const int q = t.at(i % t.w + x, i / t.w + y);
+				const int q = t.at(t.remainderX(i) + x, i / t.w + y);
 				fits = plotOf.at(q) < 0 && (terrain.at(q) != GRASS || allowed.at(q)) &&
 					   (std::abs(x) > 1 || std::abs(y) > 1 || terrain.at(q) != WATER);
 			}
@@ -141,7 +141,7 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 		{
 			::MapGeneration::generationCheckpoint();
 			if (anchors.at(i) &&
-				(best < 0 || fertility.at(i % t.w, i / t.w) > fertility.at(best % t.w, best / t.w)))
+				(best < 0 || fertility.at(t.remainderX(i), i / t.w) > fertility.at(t.remainderX(best), best / t.w)))
 				best = i;
 		}
 		if (best < 0)
@@ -154,7 +154,7 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 			for (int x = 0; x < 4; ++x)
 			{
 				::MapGeneration::generationCheckpoint();
-				int q = t.at(best % t.w + x, best / t.w + y);
+				int q = t.at(t.remainderX(best) + x, best / t.w + y);
 				parent.at(q) = -1;
 				queue.push_back(q);
 			}
@@ -166,7 +166,7 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 			for (auto step : kCardinalSteps)
 			{
 				::MapGeneration::generationCheckpoint();
-				int i = queue.at(head), q = t.at(i % t.w + step[0], i / t.w + step[1]);
+				int i = queue.at(head), q = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 				if (!inside.at(q))
 				{
 					// Open toward land, not into a beach enclosed by a ring of crops.
@@ -197,8 +197,8 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 		for (int i : field.tiles)
 		{
 			::MapGeneration::generationCheckpoint();
-			const bool court = t.x(i % t.w - best % t.w) < 4 && t.y(i / t.w - best / t.w) < 4;
-			const auto value = fertility.at(i % t.w, i / t.w);
+			const bool court = t.x(t.remainderX(i) - t.remainderX(best)) < 4 && t.y(i / t.w - best / t.w) < 4;
+			const auto value = fertility.at(t.remainderX(i), i / t.w);
 			if (!court && !opening.at(i) && value >= Fertility::kScale / 64)
 			{
 				field.seedTiles.push_back(i);
@@ -234,12 +234,12 @@ std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
 			field.seedTiles.erase(
 				std::remove_if(
 					field.seedTiles.begin(), field.seedTiles.end(), [&](int i)
-					{ return finalGrowth.at(i % t.w, i / t.w) < Fertility::kScale / 64; }),
+					{ return finalGrowth.at(t.remainderX(i), i / t.w) < Fertility::kScale / 64; }),
 				field.seedTiles.end());
 			for (int i : field.seedTiles)
 			{
 				::MapGeneration::generationCheckpoint();
-				field.growthPotential += finalGrowth.at(i % t.w, i / t.w);
+				field.growthPotential += finalGrowth.at(t.remainderX(i), i / t.w);
 				shore += distance.at(i) <= 3;
 			}
 			if (field.seedTiles.size() < 24 || shore < 6 ||
@@ -276,7 +276,7 @@ int plantShoreFields(Map &map, const Torus &t, const std::vector<ShoreField> &fi
 		for (int i : field.seedTiles)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (fertility.at(i % t.w, i / t.w) >= Fertility::kScale / 64)
+			if (fertility.at(t.remainderX(i), i / t.w) >= Fertility::kScale / 64)
 				fertile.push_back(i);
 		}
 		const int wanted = std::min(int(fertile.size()), int(scaledCount(fertile.size(), percent)));
@@ -284,7 +284,7 @@ int plantShoreFields(Map &map, const Torus &t, const std::vector<ShoreField> &fi
 		for (int i : fertile)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int dx = t.offsetX(field.court % t.w, i % t.w);
+			const int dx = t.offsetX(t.remainderX(field.court), t.remainderX(i));
 			const int dy = t.offsetY(field.court / t.w, i / t.w);
 			if (dx >= -1 && dx <= 4 && dy >= -1 && dy <= 4)
 				rim.push_back(i);
@@ -302,8 +302,8 @@ int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
 	for (int i : tiles)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int f = fertility.at(i % t.w, i / t.w);
-		if ((!renewable || f > 0) && clearGround(map, i % t.w, i / t.w))
+		const int f = fertility.at(t.remainderX(i), i / t.w);
+		if ((!renewable || f > 0) && clearGround(map, t.remainderX(i), i / t.w))
 			ranked.push_back({-f, i});
 	}
 	std::sort(ranked.begin(), ranked.end());
@@ -312,7 +312,7 @@ int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
 	{
 		::MapGeneration::generationCheckpoint();
 		const int i = ranked.at(k).second;
-		map.setResourceByIndex(i % t.w, i / t.w, resource, 1);
+		map.setResourceByIndex(t.remainderX(i), i / t.w, resource, 1);
 	}
 	return count;
 }
@@ -326,7 +326,7 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const int type = map.getResource(x, y).type;
 		if (plotOf.at(i) < 0)
 		{
@@ -347,7 +347,7 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 			{
 				::MapGeneration::generationCheckpoint();
 				const int j = t.at(x + dx, y + dy);
-				if (map.terrainSupportsResourceAtByIndex(j % t.w, j / t.w, WHEAT) &&
+				if (map.terrainSupportsResourceAtByIndex(t.remainderX(j), j / t.w, WHEAT) &&
 					plotOf.at(j) != plotOf.at(i))
 					return "A contained plot has a grass growth connection across its margin.";
 			}
@@ -566,7 +566,7 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 		if (!region.at(i))
 			continue;
 		const double across =
-			t.offsetX(ox, i % t.w) * nx + t.offsetY(oy, i / t.w) * ny + rows.crops / 2;
+			t.offsetX(ox, t.remainderX(i)) * nx + t.offsetY(oy, i / t.w) * ny + rows.crops / 2;
 		cycle.at(i) = int(::MapGeneration::Numeric::floor(across / period));
 		wet.at(i) = across - cycle.at(i) * period >= rows.crops;
 		lowest = any ? std::min(lowest, cycle.at(i)) : cycle.at(i);
@@ -622,7 +622,7 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 			::MapGeneration::generationCheckpoint();
 			if (!region.at(i) || fromEdge.at(i) < rim - 1 || !bridges.crosses(farm.water.at(i)))
 				continue;
-			const double along = t.offsetX(ox, i % t.w) * ax + t.offsetY(oy, i / t.w) * ay;
+			const double along = t.offsetX(ox, t.remainderX(i)) * ax + t.offsetY(oy, i / t.w) * ay;
 			const double off =
 				along - bridges.spacing * ::MapGeneration::Numeric::round(along / bridges.spacing);
 			if (std::abs(off) < kBridgeHalfWidth)
@@ -644,7 +644,7 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 				middle = i;
 		}
 		const int margin = plot->ring + 1;
-		const int x0 = middle % t.w - plot->width / 2, y0 = middle / t.w - plot->height / 2;
+		const int x0 = t.remainderX(middle) - plot->width / 2, y0 = middle / t.w - plot->height / 2;
 		// The grass tiles span vertices x0..x0+width by y0..y0+height; the ring and a vertex more
 		// round them must lie as far inside the region as its water rows, so the ring's sand never
 		// meets the region's own beach.
@@ -744,7 +744,7 @@ growFarmFields(const Torus &t, const std::vector<unsigned char> &occupied,
 		}
 		if (best < 0)
 			continue;
-		snapped.at(s) = {double(sx + t.offsetX(sx, best % t.w)),
+		snapped.at(s) = {double(sx + t.offsetX(sx, t.remainderX(best))),
 						 double(sy + t.offsetY(sy, best / t.w))};
 		starts.at(s).push_back(best);
 	}
@@ -839,7 +839,7 @@ growFarmFields(const Torus &t, const std::vector<unsigned char> &occupied,
 			::MapGeneration::generationCheckpoint();
 			if (labels.at(i) == int(s))
 			{
-				const int d = t.dist2(ax, ay, i % t.w, i / t.w);
+				const int d = t.dist2(ax, ay, t.remainderX(i), i / t.w);
 				if (nearest < 0 || d < best)
 				{
 					nearest = i;
@@ -856,7 +856,7 @@ growFarmFields(const Torus &t, const std::vector<unsigned char> &occupied,
 			otherFields.at(i) = labels.at(i) >= 0 && labels.at(i) != int(s);
 		}
 		const std::vector<int> fromOtherFields = stepsFrom(t, otherFields);
-		const double nx = ax + t.offsetX(ax, nearest % t.w), ny = ay + t.offsetY(ay, nearest / t.w);
+		const double nx = ax + t.offsetX(ax, t.remainderX(nearest)), ny = ay + t.offsetY(ay, nearest / t.w);
 		strokePath(neck, t,
 				   {{anchors.at(s).x, anchors.at(s).y, neckHalfWidth}, {nx, ny, neckHalfWidth}});
 		for (int i = 0; i < n; ++i)
@@ -881,7 +881,7 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm,
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		open.at(i) = map.terrainPropertiesAt(x, y).walkable && map.getBuilding(x, y) == NOGBID &&
 					 !permanentResourceBarrier(map, i);
 	}
@@ -894,7 +894,7 @@ double farmReachable(const Map &map, const Torus &t, const Farm &farm,
 			return 0;
 		// Crop land is the rows' grass: the sand lane outside a sealed coast is not the farm's to work.
 		if (farm.row.at(i) < 0 || farm.row.at(i) % 2 || !open.at(i) ||
-			!map.terrainSupportsMaterialAt(i % t.w, i / t.w, MaterialId::Food))
+			!map.terrainSupportsMaterialAt(t.remainderX(i), i / t.w, MaterialId::Food))
 			continue;
 		++land;
 		reached += steps.at(i) >= 0;
@@ -910,8 +910,8 @@ void clearFarmPlots(Map &map, const Torus &t, const std::vector<Farm> &farms)
 		for (int i = 0; i < t.size(); ++i)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (farm.plot.at(i) && map.isResource(i % t.w, i / t.w))
-				map.setNoResource(i % t.w, i / t.w, 1);
+			if (farm.plot.at(i) && map.isResource(t.remainderX(i), i / t.w))
+				map.setNoResource(t.remainderX(i), i / t.w, 1);
 		}
 	}
 }
@@ -935,7 +935,7 @@ std::vector<unsigned char> stampSealedOval(TerrainSketch &terrain, const Torus &
 		::MapGeneration::generationCheckpoint();
 		if (!ground.at(i))
 			continue;
-		const double dx = t.offsetX(int(::MapGeneration::Numeric::lround(oval.x)), i % t.w) -
+		const double dx = t.offsetX(int(::MapGeneration::Numeric::lround(oval.x)), t.remainderX(i)) -
 						  (oval.x - ::MapGeneration::Numeric::lround(oval.x));
 		const double dy = t.offsetY(int(::MapGeneration::Numeric::lround(oval.y)), i / t.w) -
 						  (oval.y - ::MapGeneration::Numeric::lround(oval.y));
@@ -955,7 +955,7 @@ std::pair<int, int> plantSealedGarden(Map &map, const Torus &t, GenerationContex
 									  const std::string &cropsStream, const std::string &splitStream)
 {
 	const int n = t.size();
-	const auto plot = [&](int i) { return garden.at(i) && clearGround(map, i % t.w, i / t.w); };
+	const auto plot = [&](int i) { return garden.at(i) && clearGround(map, t.remainderX(i), i / t.w); };
 	const int tiles = int(std::count(garden.begin(), garden.end(), 1));
 	const int wheatWanted = std::min(wheat, tiles / 2);
 	const int woodWanted = std::min(wood, tiles * 2 / 5);
@@ -993,7 +993,7 @@ int trimFieldsBeyondWater(Map &map, const Torus &t, const std::vector<unsigned c
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const int type = map.getResource(x, y).type;
 		if (type != WHEAT && type != WOOD)
 			continue;
@@ -1015,7 +1015,7 @@ int frayFieldEdges(Map &map, const Torus &t, const std::vector<unsigned char> &k
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		unplanted.at(i) = type != WHEAT && type != WOOD;
 	}
 	const std::vector<int> intoField = stepsFrom(t, unplanted);
@@ -1023,7 +1023,7 @@ int frayFieldEdges(Map &map, const Torus &t, const std::vector<unsigned char> &k
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const int type = map.getResource(x, y).type;
 		if ((type == WHEAT || type == WOOD) && !keep.at(i) &&
 			intoField.at(i) <= noise.at(i) * (depth + 1) / 65536)
@@ -1044,15 +1044,15 @@ int removeCropSlivers(Map &map, const Torus &t, const std::vector<unsigned char>
 		for (int i = 0; i < t.size(); ++i)
 		{
 			::MapGeneration::generationCheckpoint();
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			const int type = map.getResource(x, y).type;
 			if ((type != WHEAT && type != WOOD) || protect.at(i))
 				continue;
 			const auto open = [&](int dx, int dy)
 			{
 				const int j = t.at(x + dx, y + dy);
-				return map.terrainSupportsResourceAtByIndex(j % t.w,j / t.w,WHEAT) && !map.isResource(j % t.w, j / t.w) &&
-					   map.getBuilding(j % t.w, j / t.w) == NOGBID;
+				return map.terrainSupportsResourceAtByIndex(t.remainderX(j),j / t.w,WHEAT) && !map.isResource(t.remainderX(j), j / t.w) &&
+					   map.getBuilding(t.remainderX(j), j / t.w) == NOGBID;
 			};
 			if ((open(-1, 0) && open(1, 0)) || (open(0, -1) && open(0, 1)))
 			{

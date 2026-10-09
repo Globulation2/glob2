@@ -16,6 +16,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+#include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/UniformTraversal.h"
 #include "GameDiagnostics.h"
@@ -226,8 +227,8 @@ namespace
 				for(int dx=-1; dx<=1; ++dx)
 					if(dx || dy)
 					{
-						const int neighbor=((y+dy+height)%height)*width
-							+((x+dx+width)%width);
+						const int neighbor=(powerOfTwoRemainder(y+dy+height, height))*width
+							+(powerOfTwoRemainder(x+dx+width, width));
 						if(walkable[neighbor])
 							sources.push_back(neighbor);
 					}
@@ -290,8 +291,8 @@ namespace
 					for(int dx=-1; dx<=1; ++dx)
 						if(dx || dy)
 						{
-							const int neighbor=((y+dy+height)%height)*width
-								+((x+dx+width)%width);
+							const int neighbor=(powerOfTwoRemainder(y+dy+height, height))*width
+								+(powerOfTwoRemainder(x+dx+width, width));
 							walkingReach=walkingReach
 								|| walkingDistance[neighbor]!=PREEMPTIVE_UNREACHABLE;
 							swimmingReach=swimmingReach
@@ -814,18 +815,18 @@ void Maxima::initialize_topology_profile(Context& runtime)
 			fruit+=map.is_resource(x, y, materialIndex(MaterialId::Cherries))
 				|| map.is_resource(x, y, materialIndex(MaterialId::Oranges))
 				|| map.is_resource(x, y, materialIndex(MaterialId::Prunes)) ? 1 : 0;
-			shoreline_edges+=here!=map.is_water((x+1)%width, y) ? 1 : 0;
-			shoreline_edges+=here!=map.is_water(x, (y+1)%height) ? 1 : 0;
+			shoreline_edges+=here!=map.is_water(powerOfTwoRemainder(x+1, width), y) ? 1 : 0;
+			shoreline_edges+=here!=map.is_water(x, powerOfTwoRemainder(y+1, height)) ? 1 : 0;
 			if(map.is_walkable(x,y))
 			{
-				const bool horizontal=map.is_walkable((x+width-1)%width, y)
-					&& map.is_walkable((x+1)%width, y);
-				const bool vertical=map.is_walkable(x, (y+height-1)%height)
-					&& map.is_walkable(x, (y+1)%height);
-				const bool blocked_horizontal=!map.is_walkable((x+width-1)%width, y)
-					&& !map.is_walkable((x+1)%width, y);
-				const bool blocked_vertical=!map.is_walkable(x, (y+height-1)%height)
-					&& !map.is_walkable(x, (y+1)%height);
+				const bool horizontal=map.is_walkable(powerOfTwoRemainder(x+width-1, width), y)
+					&& map.is_walkable(powerOfTwoRemainder(x+1, width), y);
+				const bool vertical=map.is_walkable(x, powerOfTwoRemainder(y+height-1, height))
+					&& map.is_walkable(x, powerOfTwoRemainder(y+1, height));
+				const bool blocked_horizontal=!map.is_walkable(powerOfTwoRemainder(x+width-1, width), y)
+					&& !map.is_walkable(powerOfTwoRemainder(x+1, width), y);
+				const bool blocked_vertical=!map.is_walkable(x, powerOfTwoRemainder(y+height-1, height))
+					&& !map.is_walkable(x, powerOfTwoRemainder(y+1, height));
 				if((horizontal && blocked_vertical)
 				   || (vertical && blocked_horizontal))
 					chokepoints+=1;
@@ -854,10 +855,10 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				const int current=pending.front();
 				pending.pop_front();
 				size+=1;
-				const int cx=current%width;
+				const int cx=powerOfTwoRemainder(current, width);
 				const int cy=current/width;
-				const int nx[4]={ (cx+width-1)%width, (cx+1)%width, cx, cx };
-				const int ny[4]={ cy, cy, (cy+height-1)%height, (cy+1)%height };
+				const int nx[4]={ powerOfTwoRemainder(cx+width-1, width), powerOfTwoRemainder(cx+1, width), cx, cx };
+				const int ny[4]={ cy, cy, powerOfTwoRemainder(cy+height-1, height), powerOfTwoRemainder(cy+1, height) };
 				for(int direction=0; direction<4; ++direction)
 				{
 					const int next=ny[direction]*width+nx[direction];
@@ -910,8 +911,8 @@ void Maxima::initialize_topology_profile(Context& runtime)
 		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 		if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)
 			continue;
-		const int bx=(building->posX%width+width)%width;
-		const int by=(building->posY%height+height)%height;
+		const int bx=powerOfTwoRemainder(powerOfTwoRemainder(building->posX, width)+width, width);
+		const int by=powerOfTwoRemainder(powerOfTwoRemainder(building->posY, height)+height, height);
 		start_label=component[by*width+bx];
 		if(start_label>=0 && start_label<static_cast<int>(component_sizes.size()))
 			global_start_land_percent=land>0
@@ -2024,10 +2025,10 @@ void Maxima::plan_reconnaissance_objectives(Context& runtime)
 							const int distance=dx*dx+dy*dy;
 							if(distance<minimum*minimum || distance>maximum*maximum)
 								continue;
-							const int x=((center_x+dx)%(*map).width
-								+(*map).width)%(*map).width;
-							const int y=((center_y+dy)%(*map).height
-								+(*map).height)%(*map).height;
+							const int x=dimensionRemainder(dimensionRemainder((center_x+dx), (*map).width)
+								+(*map).width, (*map).width);
+							const int y=dimensionRemainder(dimensionRemainder((center_y+dy), (*map).height)
+								+(*map).height, (*map).height);
 							const int index=y*(*map).width+x;
 							if(!discovered[index] || !AIEngine::ObservationQueries::terrain((*map),index).walkable
 							   || (*map).resourceAt((*map).tileIndex(x, y)).resource.type==NO_RES_TYPE
@@ -6047,7 +6048,7 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 			runtime.cancel_or_destroy_building(flags[n],1u<<EXPLORER);
 		}
 		if(!keep)continue;
-		const int x=source%field.width,y=source/field.width;
+		const int x=dimensionRemainder(source, field.width),y=source/field.width;
 		if(!flags.empty())
 		{
             if(runtime.begin_attraction(flags[0],1u<<EXPLORER)) {

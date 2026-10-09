@@ -97,7 +97,7 @@ struct WedgeField
 	PeriodicNoise noise;
 	double operator()(int tile) const
 	{
-		const WedgeFrame::Cell c = frame.cell(tile % frame.t.w, tile / frame.t.w);
+		const WedgeFrame::Cell c = frame.cell(frame.t.remainderX(tile), tile / frame.t.w);
 		return noise.at(c.s, c.d);
 	}
 };

@@ -1,5 +1,6 @@
 #include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 
@@ -178,8 +179,8 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 
 	UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
 
-	x = (x + map.getW()) % map.getW();
-	y = (y + map.getH()) % map.getH();
+	x = powerOfTwoRemainder(x + map.getW(), map.getW());
+	y = powerOfTwoRemainder(y + map.getH(), map.getH());
 
 	bool fly=ut->performance[FLY];
 	bool free;

@@ -75,7 +75,7 @@ std::vector<unsigned char> inheritLabels(const Torus &t, const std::vector<unsig
 		if (!filled.at(i))
 			continue;
 		std::fill(std::begin(counts), std::end(counts), 0);
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (int dy = -1; dy <= 1; ++dy)
 		{
 			::MapGeneration::generationCheckpoint();

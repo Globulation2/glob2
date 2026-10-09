@@ -304,7 +304,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	const auto fertility = cropGrowthField(L.terrain, t);
 	for (int i = 0; i < n; ++i)
-		if ((L.protectedTiles[i] && !grass[i]) || (L.wood[i] && fertility.at(i % t.w, i / t.w)))
+		if ((L.protectedTiles[i] && !grass[i]) || (L.wood[i] && fertility.at(t.remainderX(i), i / t.w)))
 		{
 			L.failure =
 				"A farm reaches a ridge or waters a saddle; use larger valleys or smaller ponds.";
@@ -329,7 +329,7 @@ bool generate(Game &game, GenerationContext &context)
 	writeVertices(map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.protectedTiles[i])
-			map.setResourceByIndex(i % t.w, i / t.w, L.wood[i] ? WOOD : STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, L.wood[i] ? WOOD : STONE, 1);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "breachable colonies";
@@ -377,11 +377,11 @@ bool generate(Game &game, GenerationContext &context)
 				const int side = type == WHEAT ? 1 : -1;
 				const auto eligible = [&](int i)
 				{
-					const int ox = t.offsetX(cx, i % t.w), oy = t.offsetY(cy, i / t.w);
+					const int ox = t.offsetX(cx, t.remainderX(i)), oy = t.offsetY(cy, i / t.w);
 					return L.labels[i] == cell && !reserved[i] && !L.protectedTiles[i] &&
 						   ox * ox + oy * oy <= kFarmRadius * kFarmRadius &&
 						   (north ? oy <= -2 : oy >= 2 && side * ox >= 2) &&
-						   clearGround(map, i % t.w, i / t.w);
+						   clearGround(map, t.remainderX(i), i / t.w);
 				};
 				const int diagonal = (o.pondSize + 4) * 3 / 4;
 				const int seed = seedNear(t, cx + (north ? 0 : side * diagonal),
@@ -411,8 +411,8 @@ bool generate(Game &game, GenerationContext &context)
 			const auto eligible = [&](int i)
 			{
 				return L.labels[i] == cell && !L.protectedTiles[i] &&
-					   t.dist2(cx, cy, i % t.w, i / t.w) < 24 * 24 &&
-					   clearGround(map, i % t.w, i / t.w);
+					   t.dist2(cx, cy, t.remainderX(i), i / t.w) < 24 * 24 &&
+					   clearGround(map, t.remainderX(i), i / t.w);
 			};
 			const int seed = seedNear(t, cx + 19, cy + 6, 4, eligible);
 			if (seed >= 0)
@@ -439,10 +439,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto fertility = Fertility::forMap(map, false);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if (L.stone[i] && type != STONE)
 			return "A permanent ridge was cleared.";
-		if (L.wood[i] && (type != WOOD || fertility.at(i % t.w, i / t.w)))
+		if (L.wood[i] && (type != WOOD || fertility.at(t.remainderX(i), i / t.w)))
 			return "A wooded saddle is open or can regrow.";
 	}
 	const auto walk =
@@ -475,8 +475,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// invade wheat. The north half and both southern quarters must stay separate.
 	std::vector<unsigned char> grass(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD)));
+		grass[i] = (map.canResourcesGrow(t.remainderX(i), i / t.w) && (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD)));
 	const auto cropRegions = connectedRegions(grass, t.w, t.h, true, GridNeighbors::Eight);
 	std::vector<int> cropPlot(t.size(), -1);
 	for (int cell = 0; cell < L.cells.cellCount(); ++cell)

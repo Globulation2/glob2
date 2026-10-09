@@ -2,6 +2,7 @@
 #include "GenerationFertilityWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Planting.h"
 #include "Morphology.h"
 #include "GenerationContext.h"
@@ -48,8 +49,8 @@ int plantFieldInteriors(Map &map, const Torus &t, const std::vector<int> &tiles,
 	for (int i : tiles)
 	{
 		::MapGeneration::generationCheckpoint();
-		if (!mask.at(i) && clearGround(map, i % t.w, i / t.w) &&
-			map.isResourceAllowed(i % t.w, i / t.w, type))
+		if (!mask.at(i) && clearGround(map, t.remainderX(i), i / t.w) &&
+			map.isResourceAllowed(t.remainderX(i), i / t.w, type))
 		{
 			mask.at(i) = 1;
 			candidates.push_back(i);
@@ -62,7 +63,7 @@ int plantFieldInteriors(Map &map, const Torus &t, const std::vector<int> &tiles,
 	for (int k = 0; k < count; ++k)
 	{
 		::MapGeneration::generationCheckpoint();
-		map.setResourceByIndex(candidates.at(k) % t.w, candidates.at(k) / t.w, type, 1);
+		map.setResourceByIndex(t.remainderX(candidates.at(k)), candidates.at(k) / t.w, type, 1);
 	}
 	return count;
 }
@@ -114,7 +115,7 @@ int clearDeposits(Map &map, const Torus &t, const std::vector<unsigned char> &re
 	for (int i = 0; i < t.size(); ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (region.at(i) && map.isResource(x, y) && map.terrainPropertiesAt(x, y).walkable &&
 			!(keep && (*keep).at(i)))
 		{
@@ -174,8 +175,8 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 		for (int i = 0; i < n; ++i)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (map.isResourceAllowed(i % t.w, i / t.w, ALGA))
-				water.emplace_back(i % t.w, i / t.w);
+			if (map.isResourceAllowed(t.remainderX(i), i / t.w, ALGA))
+				water.emplace_back(t.remainderX(i), i / t.w);
 		}
 	}
 	else
@@ -196,7 +197,7 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 		{
 			::MapGeneration::generationCheckpoint();
 			if (offshore.at(i) >= band.nearestOffshore && offshore.at(i) <= band.farthestOffshore)
-				water.emplace_back(i % t.w, i / t.w);
+				water.emplace_back(t.remainderX(i), i / t.w);
 		}
 	}
 	if (water.empty())
@@ -238,7 +239,7 @@ void seedAlgaeIn(Map &map, GenerationContext &context, const Torus &t, const cha
 		{
 			::MapGeneration::generationCheckpoint();
 			const int i = group.at(context.bounded(stream, group.size())).second;
-			placeResourceClump(map, context, {i % t.w, i / t.w}, ALGA, band.clumpRadius);
+			placeResourceClump(map, context, {t.remainderX(i), i / t.w}, ALGA, band.clumpRadius);
 		}
 	}
 }
@@ -288,8 +289,8 @@ void stockIslands(Map &map, GenerationContext &context, const std::vector<Island
 		for (int i : island.tiles)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (acceptsStock(i % width, i / width))
-				grass.emplace_back(i % width, i / width);
+			if (acceptsStock(powerOfTwoRemainder(i, width), i / width))
+				grass.emplace_back(powerOfTwoRemainder(i, width), i / width);
 		}
 		if (grass.empty())
 			continue;

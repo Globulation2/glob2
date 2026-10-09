@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Repeating a map at game setup: see MapTiling.h.
+#include "PowerOfTwo.h"
 #include "Game.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -50,7 +51,7 @@ namespace
 	//! Signed offset from a to v on a ring of `size`, taking the shorter way round
 	int wrapOffset(int v, int a, int size)
 	{
-		int d = (v - a) % size;
+		int d = powerOfTwoRemainder(v - a, size);
 		if (d < 0)
 			d += size;
 		if (d >= size / 2)
@@ -224,9 +225,8 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 					continue;
 				// the anchor of this copy; offsets wrap on the repeated map
 				const int ax = colonies[t].anchorX + i * w0, ay = colonies[t].anchorY + j * h0;
-				const int W = map.getW(), H = map.getH();
-				auto wrapX = [&](int v) { return ((v % W) + W) % W; };
-				auto wrapY = [&](int v) { return ((v % H) + H) % H; };
+				auto wrapX = [&](int v) { return map.normalizeX(v); };
+				auto wrapY = [&](int v) { return map.normalizeY(v); };
 				for (const BuildingTemplate& bt : colonies[t].buildings)
 				{
 					Building* b = addBuilding(wrapX(ax + bt.x), wrapY(ay + bt.y), bt.typeNum, k, bt.maxUnitWorking, bt.maxUnitWorkingFuture);

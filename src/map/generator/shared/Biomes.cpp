@@ -231,7 +231,7 @@ BiomeTerrain sketchBiome(TerrainSketch &sketch, const Torus &t,
 			for (int s : seeds)
 			{
 				::MapGeneration::generationCheckpoint();
-				apart = apart && t.dist2(at % t.w, at / t.w, s % t.w, s / t.w) >= spacing2;
+				apart = apart && t.dist2(t.remainderX(at), at / t.w, t.remainderX(s), s / t.w) >= spacing2;
 			}
 			if (apart)
 			{
@@ -253,12 +253,12 @@ BiomeTerrain sketchBiome(TerrainSketch &sketch, const Torus &t,
 					: 0);
 		growWater(
 			t, terrain.water, seed, target, [&](int i) { return inner.at(i) != 0; }, [&](int i)
-			{ return t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w); }, queued, int(p) + 1);
+			{ return t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w); }, queued, int(p) + 1);
 		if (island)
 			for (int i = 0; i < n; ++i)
 			{
 				::MapGeneration::generationCheckpoint();
-				if (terrain.water.at(i) && t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w) <=
+				if (terrain.water.at(i) && t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w) <=
 											   kIslandRadius * kIslandRadius)
 				{
 					terrain.water.at(i) = 0;
@@ -294,8 +294,8 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	{
 		::MapGeneration::generationCheckpoint();
 		if (terrain.wall.at(i) && !keepClear.at(i) &&
-			map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	}
 	// Outcrops and groves are clumps a tile across (placeResourceClump), so everything keeps a tile in
 	// from the ground's edge, the wall, the island and the clear ground.
@@ -307,7 +307,7 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 			region.at(i) && !terrain.wall.at(i) && !terrain.island.at(i) && !keepClear.at(i);
 	}
 	const std::vector<unsigned char> inside = erode(t, ground, 1);
-	const auto eligible = [&](int i) { return inside.at(i) && clearGround(map, i % t.w, i / t.w); };
+	const auto eligible = [&](int i) { return inside.at(i) && clearGround(map, t.remainderX(i), i / t.w); };
 	generationFertilityMapWork(map);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 12, context.stream(stream + "-patch"));
@@ -316,7 +316,7 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		fertile += eligible(i) && fertility.at(i % t.w, i / t.w) > 0;
+		fertile += eligible(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	}
 	const int farm = fertile * kit.farmPerMille / 1000;
 	const std::string stoneStream = stream + "-stone", fruitStream = stream + "-fruit";
@@ -335,8 +335,8 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	{
 		::MapGeneration::generationCheckpoint();
 		if (terrain.island.at(i) && !keepClear.at(i) &&
-			map.isResourceAllowed(i % t.w, i / t.w, CHERRY))
-			map.setResourceByIndex(i % t.w, i / t.w, CHERRY + fruit++ % 3, 1);
+			map.isResourceAllowed(t.remainderX(i), i / t.w, CHERRY))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, CHERRY + fruit++ % 3, 1);
 	}
 	// The dry reserve: finite crops on the ground where nothing regrows, in the same patches (the
 	// top of the patch noise) so they read as fields and not speckle, dealt by the split noise.
@@ -347,7 +347,7 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 		for (int i = 0; i < n; ++i)
 		{
 			::MapGeneration::generationCheckpoint();
-			if (eligible(i) && fertility.at(i % t.w, i / t.w) == 0)
+			if (eligible(i) && fertility.at(t.remainderX(i), i / t.w) == 0)
 			{
 				dry.push_back(i);
 				levels.push_back(patch.at(i));

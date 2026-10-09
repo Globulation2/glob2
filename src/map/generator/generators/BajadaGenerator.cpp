@@ -1263,8 +1263,8 @@ bool generate(Game &game, GenerationContext &context)
 	layBeaches(terrain, t);
 	writeVertices(map, terrain);
 	for (int i = 0; i < n; ++i)
-		if (L.stone[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		if (L.stone[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "bajada colonies";
 	if (!settleColonies(
@@ -1273,7 +1273,7 @@ bool generate(Game &game, GenerationContext &context)
 			{
 				std::vector<unsigned char> home(n, 0);
 				for (int i = 0; i < n; ++i)
-					home[i] = L.townOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+					home[i] = L.townOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 				return home;
 			},
 			[&](int team) { return L.swarms[team]; }))
@@ -1281,7 +1281,7 @@ bool generate(Game &game, GenerationContext &context)
 
 	context.stage = "bajada resources";
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
-	const auto clear = [&](int i) { return !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto clear = [&](int i) { return !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	// Every home: the crops of its stencil (its kit and its share of farmland), turned as its tiles are.
 	for (int k = 0; k < teams; ++k)
 	{
@@ -1291,8 +1291,8 @@ bool generate(Game &game, GenerationContext &context)
 			{
 				const auto [x, y] = turnStencilTile(L.facing[k], s.dx, s.dy);
 				const int i = t.at(fan.x + x, fan.y + y);
-				if (clear(i) && map.isResourceAllowed(i % t.w, i / t.w, s.crop == 1 ? WHEAT : WOOD))
-					map.setResourceByIndex(i % t.w, i / t.w, s.crop == 1 ? WHEAT : WOOD, 1);
+				if (clear(i) && map.isResourceAllowed(t.remainderX(i), i / t.w, s.crop == 1 ? WHEAT : WOOD))
+					map.setResourceByIndex(t.remainderX(i), i / t.w, s.crop == 1 ? WHEAT : WOOD, 1);
 			}
 	}
 
@@ -1304,7 +1304,7 @@ bool generate(Game &game, GenerationContext &context)
 	{ return (L.green[i] || L.meadow[i]) && L.homeOf[i] < 0 && !L.stone[i] && clear(i); };
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
-		fertile += farmland(i) && fertility.at(i % t.w, i / t.w) > 0;
+		fertile += farmland(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, farmland, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -1320,9 +1320,9 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<int> desert, meadow;
 	const auto dryClear = [&](int i)
 	{
-		return clear(i) && fertility.at(i % t.w, i / t.w) == 0 && !L.ridge[i] && L.homeOf[i] < 0 &&
-			   (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
-				map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD));
+		return clear(i) && fertility.at(t.remainderX(i), i / t.w) == 0 && !L.ridge[i] && L.homeOf[i] < 0 &&
+			   (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
+				map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD));
 	};
 	for (int i = 0; i < n; ++i)
 	{
@@ -1376,11 +1376,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return mismatch;
 	const Torus &t = L.t;
 	const int teams = context.request.nbTeams;
-	const auto at = [&](int i) { return std::to_string(i % t.w) + ", " + std::to_string(i / t.w); };
+	const auto at = [&](int i) { return std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w); };
 	if (const std::string lost = homePondMissing(map, t, L.kits, teams, "spring", "pond"); !lost.empty())
 		return lost;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
+		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
 			!permanentResourceBarrier(map,i))
 			return "A range has lost its stone at (" + at(i) + ").";
 	// Every home's terrain is the first home's, tile for tile, turned as the stencil is, except where
@@ -1439,9 +1439,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	}
 	// No town starts with a crop.
 	for (int i = 0; i < t.size(); ++i)
-		if (L.townOf[i] >= 0 && map.isResource(i % t.w, i / t.w))
+		if (L.townOf[i] >= 0 && map.isResource(t.remainderX(i), i / t.w))
 		{
-			const int type = map.getResource(i % t.w, i / t.w).type;
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			if (type == WHEAT || type == WOOD)
 				return "Colony " + std::to_string(L.townOf[i]) + "'s town has a crop at (" + at(i) + ").";
 		}
@@ -1482,9 +1482,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		{
 			const bool inTown = L.townOf[i] >= 0;
 			ground[i] = inTown ? L.townOf[i] : teams;
-			grass[i] = (map.canResourcesGrow(i % t.w, i / t.w) &&
-				(map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
-				map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))) && (inTown || fertility.at(i % t.w, i / t.w) > 0);
+			grass[i] = (map.canResourcesGrow(t.remainderX(i), i / t.w) &&
+				(map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+				map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))) && (inTown || fertility.at(t.remainderX(i), i / t.w) > 0);
 		}
 		if (const RegionLeak leak = firstRegionLeak(t, grass, ground, [](int, int) { return false; });
 			leak.tile >= 0)

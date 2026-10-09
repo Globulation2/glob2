@@ -362,7 +362,7 @@ void stampPieces(Layout &L, const RadialShape &homeShape, const RadialShape &cou
 			if (band[i] && L.courtOf[i] < 0 && L.homeOf[i] < 0 && L.pathOf[i] != k &&
 				fromCourt[i] <= g.wall && fromHome[i] <= g.wall)
 			{
-				const double along = t.offsetX(int(std::lround(L.courts[k].x)), i % t.w) * ax +
+				const double along = t.offsetX(int(std::lround(L.courts[k].x)), t.remainderX(i)) * ax +
 									 t.offsetY(int(std::lround(L.courts[k].y)), i / t.w) * ay;
 				if (along <= 0)
 					continue;
@@ -406,13 +406,13 @@ std::string crowding(const Layout &L)
 			if (own < 0)
 				continue;
 			// Beside its own court a lane is the court's mouth, which the court wall parts from the home.
-			const bool mouth = std::hypot(t.offsetX(int(std::lround(L.courts[own].x)), i % t.w),
+			const bool mouth = std::hypot(t.offsetX(int(std::lround(L.courts[own].x)), t.remainderX(i)),
 										  t.offsetY(int(std::lround(L.courts[own].y)), i / t.w)) <
 							   g.courtR + g.corridorHalf;
 			if (own != k && !mouth && fromHome[i] < kLaneHomeGap)
 				return "Too many colonies for this map: a spoke or corridor passes too close to a "
 					   "home.";
-			const double d = std::hypot(i % t.w - L.cx, i / t.w - L.cy);
+			const double d = std::hypot(t.remainderX(i) - L.cx, i / t.w - L.cy);
 			if (teams > 1 && own == k && fromNextPath[i] < kLaneGap && d > g.plazaR + kLaneGap)
 				return "Too many colonies for this map: the spokes crowd each other.";
 		}
@@ -452,7 +452,7 @@ std::vector<FarmSet> claimFarmFields(Layout &L)
 	constexpr int kOuterSet = 1;
 	std::vector<unsigned char> outer(n, 0);
 	for (int i = 0; i < n; ++i)
-		outer[i] = std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w)) >=
+		outer[i] = std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w)) >=
 				   g.homeRadius;
 	std::vector<ShapePoint> seeds;
 	std::vector<int> owners;
@@ -518,7 +518,7 @@ void fillAndWall(Layout &L)
 		sea[i] = !L.land[i];
 		home[i] = L.homeOf[i] >= 0;
 		// Only the sea outside the ring fills in; inside it is the lagoon.
-		fillable[i] = sea[i] && std::hypot(t.offsetX(int(L.cx), i % t.w),
+		fillable[i] = sea[i] && std::hypot(t.offsetX(int(L.cx), t.remainderX(i)),
 										   t.offsetY(int(L.cy), i / t.w)) >= L.g.homeRadius;
 	}
 	std::vector<unsigned char> filled = fillToNearest(t, grown, fillable, kFillReach);
@@ -622,7 +622,7 @@ void finishRoads(Layout &L)
 	for (int i = 0; i < n; ++i)
 		for (int dy = -1; dy <= 0 && L.road[i]; ++dy)
 			for (int dx = -1; dx <= 0; ++dx)
-				if (L.wall[t.at(i % t.w + dx, i / t.w + dy)])
+				if (L.wall[t.at(t.remainderX(i) + dx, i / t.w + dy)])
 					L.road[i] = 0;
 	L.roadTile = roadTiles(t, L.road);
 }
@@ -712,7 +712,7 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	std::vector<unsigned char> stone =
 		sealedIslandStone(map, L.t, seaMargin(map, L), L.land, L.wall);
 	for (int i = 0; i < L.t.size(); ++i)
-		if (L.laneBand[i] && map.terrainSupportsResourceAtByIndex(i % L.t.w, i / L.t.w, STONE))
+		if (L.laneBand[i] && map.terrainSupportsResourceAtByIndex(L.t.remainderX(i), i / L.t.w, STONE))
 			stone[i] = 1;
 	return stone;
 }
@@ -739,7 +739,7 @@ void furnish(Map &map, const Layout &L, GenerationContext &context, const Carous
 	const auto free = [&](int i)
 	{
 		return !L.road[i] && !L.roadTile[i] && !reserved[i] && !pads[i] &&
-			   fromPaths[i] > kDoorClearance && clearGround(map, i % t.w, i / t.w);
+			   fromPaths[i] > kDoorClearance && clearGround(map, t.remainderX(i), i / t.w);
 	};
 	for (int k = 0; k < g.teams; ++k)
 	{
@@ -794,7 +794,7 @@ TowerPlan planTowers(const Map &map, const Layout &L, const GenerationContext &c
 	std::vector<unsigned char> buildable(n, 0), target(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		owner[i] = L.homeOf[i] >= 0    ? L.homeOf[i]
 				   : L.courtOf[i] >= 0 ? L.courtOf[i]
 				   : L.farmOf[i] >= 0  ? L.farmOf[i]
@@ -848,7 +848,7 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (stone[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "carousel colonies";
 	const auto home = [&](int team)
@@ -856,7 +856,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+				L.homeOf[i] == team && !stone[i] && !L.roadTile[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -871,7 +871,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> plazaHeart(n, 0);
 	for (int i = 0; i < n; ++i)
 		plazaHeart[i] =
-			L.plaza[i] && std::hypot(i % t.w - L.cx, i / t.w - L.cy) < L.g.plazaPondR + 3;
+			L.plaza[i] && std::hypot(t.remainderX(i) - L.cx, i / t.w - L.cy) < L.g.plazaPondR + 3;
 	if (!settleStartingTowers(game, context, towers, o.towers, o.towers > 0 && o.towerCount > 0,
 							  &plazaHeart))
 		return false;
@@ -892,8 +892,8 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<std::vector<int>> workers = unitTilesByTeam(map, teams);
 	std::vector<unsigned char> heart(n, 0);
 	for (int i = 0; i < n; ++i)
-		heart[i] = L.plaza[i] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !stone[i] &&
-				   std::hypot(i % t.w - L.cx, i / t.w - L.cy) < L.g.plazaPondR + 3;
+		heart[i] = L.plaza[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable && !stone[i] &&
+				   std::hypot(t.remainderX(i) - L.cx, i / t.w - L.cy) < L.g.plazaPondR + 3;
 	for (int team = 0; team < teams; ++team)
 	{
 		if (workers[team].empty())
@@ -901,7 +901,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> court(n, 0);
 		std::vector<int> courtTiles;
 		for (int i = 0; i < n; ++i)
-			if (L.courtOf[i] == team && !stone[i] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable)
+			if (L.courtOf[i] == team && !stone[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable)
 			{
 				court[i] = 1;
 				courtTiles.push_back(i);
@@ -948,10 +948,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
 	const auto where = [&](int i)
-	{ return "(" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ")"; };
+	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
 	const std::vector<unsigned char> stone = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
-		if (stone[i] && map.getResource(i % t.w, i / t.w).type != STONE)
+		if (stone[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
 			return "The stone at " + where(i) + " is missing.";
 	const ColonyWalk walk = walkFromFirstColony(map, teams, "the carousel", "");
 	if (!walk.error.empty())
@@ -978,7 +978,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				{
 					const int j = t.at(x + dx, y + dy);
 					if (L.side[j] >= 0 && L.side[j] < L.side[i] && !stone[j] &&
-						map.terrainPropertiesAt(j % t.w, j / t.w).walkable && !margin[i] && !margin[j] &&
+						map.terrainPropertiesAt(t.remainderX(j), j / t.w).walkable && !margin[i] && !margin[j] &&
 						!borderOpen(L, i, j))
 						return "The wall between two parts of the carousel has a gap at " +
 							   where(i) + ".";
@@ -1007,7 +1007,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		std::vector<unsigned char> court(n, 0), next(n, 0);
 		for (int i = 0; i < n; ++i)
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			court[i] = L.courtOf[i] == k && map.terrainPropertiesAt(x, y).walkable && !stone[i];
 			next[i] = L.homeOf[i] == (k + 1) % teams && map.terrainPropertiesAt(x, y).buildable && !stone[i] &&
 					  !map.isResource(x, y);

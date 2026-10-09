@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "field/Grid.h"
 #ifndef GLOB2_MAP_RENDER_GEOMETRY_H
 #define GLOB2_MAP_RENDER_GEOMETRY_H
 
@@ -10,8 +11,9 @@ template <typename Draw>
 void wrappedCopies(int x, int y, int left, int top, int right, int bottom,
                    int worldW, int worldH, int viewW, int viewH, Draw draw)
 {
-    x = ((x % worldW) + worldW) % worldW;
-    y = ((y % worldH) + worldH) % worldH;
+    const field::Grid grid(worldW,worldH);
+    x = grid.wrapX(x);
+    y = grid.wrapY(y);
     while (x + right > worldW) x -= worldW;
     while (y + bottom > worldH) y -= worldH;
     for (int py = y; py + top < viewH; py += worldH)

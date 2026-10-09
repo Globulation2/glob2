@@ -32,7 +32,7 @@ Reach reachFrom(const Torus &t, const std::vector<int> &sources, const std::vect
 		const int tile = reach.tiles.at(head), here = dist.at(tile);
 		if (here >= limit)
 			continue;
-		const int x = tile % t.w, y = tile / t.w, stepped = here + 1;
+		const int x = t.remainderX(tile), y = tile / t.w, stepped = here + 1;
 		for (int dy = -1; dy <= 1; ++dy)
 		{
 			::MapGeneration::generationCheckpoint();
@@ -94,7 +94,7 @@ Flood floodImpl(const Torus &t, const std::vector<unsigned char> &source,
 		const int tile = queue.at(head), here = dist.at(tile);
 		if (here >= limit)
 			continue;
-		const int x = tile % t.w, y = tile / t.w, stepped = here + 1;
+		const int x = t.remainderX(tile), y = tile / t.w, stepped = here + 1;
 		for (int dy = -1; dy <= 1; ++dy)
 		{
 			::MapGeneration::generationCheckpoint();

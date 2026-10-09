@@ -1,6 +1,7 @@
 #include "GenerationNumeric.h"
 #include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2006 Leo Wandersleb
 
 #include "HeightMap.h"
@@ -23,19 +24,19 @@ inline float faderLeftRight(
 	int x, int y, int w,
 	int h) /// to have 0 at top and bottom border and 1 at the middle of right and left border
 {
-	return (faderCenter((x + w / 2) % w, y, w, h));
+	return (faderCenter(dimensionRemainder(x + w / 2, w), y, w, h));
 }
 inline float faderTopBottom(
 	int x, int y, int w,
 	int h) /// to have 1 at the middle of top and bottom border and 0 at right and left border
 {
-	return (faderCenter(x, (y + h / 2) % h, w, h));
+	return (faderCenter(x, dimensionRemainder(y + h / 2, h), w, h));
 }
 inline float
 faderCorner(int x, int y, int w,
 			int h) /// to have 1 in the corners and 0 on a cross going through the center
 {
-	return (faderCenter((x + w / 2) % w, (y + h / 2) % h, w, h));
+	return (faderCenter(dimensionRemainder(x + w / 2, w), dimensionRemainder(y + h / 2, h), w, h));
 }
 
 HeightMap::HeightMap(unsigned int width, unsigned int height, std::mt19937 &rng)
@@ -94,8 +95,8 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 			for (unsigned int y = 0; y < 2 * _r + 1; y++)
 			{
 				::MapGeneration::generationCheckpoint();
-				unsigned int coord1d = (unsigned int)(_w + x - _r + coordX) % _w +
-									   ((unsigned int)(_h + y - _r + coordY) % _h) * _w;
+				unsigned int coord1d = dimensionRemainder((unsigned int)(_w + x - _r + coordX), _w) +
+									   (dimensionRemainder((unsigned int)(_h + y - _r + coordY), _h)) * _w;
 				if (_map.at(coord1d) > _stamp.at(x + y * (2 * _r + 1)))
 					_map.at(coord1d) = _stamp.at(x + y * (2 * _r + 1));
 			}
@@ -118,8 +119,8 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 			for (unsigned int y = 0; y < 2 * _r + 1; y++)
 			{
 				::MapGeneration::generationCheckpoint();
-				unsigned int coord1d = (unsigned int)(_w + x - _r + coordX) % _w +
-									   ((unsigned int)(_h + y - _r + coordY) % _h) * _w;
+				unsigned int coord1d = dimensionRemainder((unsigned int)(_w + x - _r + coordX), _w) +
+									   (dimensionRemainder((unsigned int)(_h + y - _r + coordY), _h)) * _w;
 				_map.at(coord1d) = fabs((1.0 - _stamp.at(x + y * (2 * _r + 1))) - _map.at(coord1d));
 			}
 		}
@@ -147,14 +148,14 @@ inline void HeightMap::addNoise(float weight, float smoothingFactor)
 				(faderCenter(x, y, _w, _h) *
 					 _pn.Noise((float)(x) / smoothingFactor, (float)(y) / smoothingFactor) +
 				 faderLeftRight(x, y, _w, _h) *
-					 _pn.Noise((float)((x + _w / 2) % _w + _w) / smoothingFactor,
+					 _pn.Noise((float)(dimensionRemainder(x + _w / 2, _w) + _w) / smoothingFactor,
 							   (float)(y + _h) / smoothingFactor) +
 				 faderTopBottom(x, y, _w, _h) *
 					 _pn.Noise((float)(x + 2 * _w) / smoothingFactor,
-							   (float)((y + _h / 2) % _h + 2 * _h) / smoothingFactor) +
+							   (float)(dimensionRemainder(y + _h / 2, _h) + 2 * _h) / smoothingFactor) +
 				 faderCorner(x, y, _w, _h) *
-					 _pn.Noise((float)((x + _w / 2) % _w + 3 * _w) / smoothingFactor,
-							   (float)((y + _h / 2) % _h + 3 * 4) / smoothingFactor) +
+					 _pn.Noise((float)(dimensionRemainder(x + _w / 2, _w) + 3 * _w) / smoothingFactor,
+							   (float)(dimensionRemainder(y + _h / 2, _h) + 3 * 4) / smoothingFactor) +
 				 +4.0) /
 					8.0 * weight;
 		}
@@ -178,8 +179,8 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 	float mindist = ::MapGeneration::Numeric::global_sqrt(_w * _h / count) / 2.0;
 	assert(mindist > 0);
 	makeStamp((unsigned int)(mindist * 2));
-	centerX.at(0) = static_cast<int>(random() & 0x7fffffffu) % _w;
-	centerY.at(0) = static_cast<int>(random() & 0x7fffffffu) % _h;
+	centerX.at(0) = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w);
+	centerY.at(0) = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h);
 	/// find spots with distance>min. distance
 	for (unsigned int i = 1; i < count; i++)
 	{
@@ -190,8 +191,8 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 		do
 		{
 			::MapGeneration::generationCheckpoint();
-			newPosX = static_cast<int>(random() & 0x7fffffffu) % _w;
-			newPosY = static_cast<int>(random() & 0x7fffffffu) % _h;
+			newPosX = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w);
+			newPosY = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h);
 			tries++;
 			foundSpot = true;
 			for (unsigned int j = 0; j < i; j++)
@@ -246,8 +247,8 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor, bool 
 	operator=(1.0);
 
 	/// find start for a random walk
-	float startingPointX = static_cast<int>(random() & 0x7fffffffu) % _w;
-	float startingPointY = static_cast<int>(random() & 0x7fffffffu) % _h;
+	float startingPointX = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w);
+	float startingPointY = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h);
 
 	/// the target=start+(w,h) is set now. tmprand(0,1,2)==position(+h,+w,+w+h)
 	float targetPointX;
@@ -321,8 +322,8 @@ void HeightMap::makeCraters(unsigned int craterCount, unsigned int craterRadius,
 	for (unsigned int t = 0; t < craterCount; t++)
 	{
 		::MapGeneration::generationCheckpoint();
-		lower(static_cast<int>(random() & 0x7fffffffu) % _w,
-			  static_cast<int>(random() & 0x7fffffffu) % _h);
+		lower(dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w),
+			  dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h));
 	}
 	addNoise(.8, smoothingFactor);
 	normalize();

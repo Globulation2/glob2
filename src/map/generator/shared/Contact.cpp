@@ -31,7 +31,7 @@ std::vector<int> costsFrom(const Map &map, const Torus &t, const std::vector<int
 	for (int i = 0; i < n; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		step.at(i) = stepCost(map, i % t.w, i / t.w, costs);
+		step.at(i) = stepCost(map, t.remainderX(i), i / t.w, costs);
 	}
 	using Entry = std::pair<int, int>;
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> heap;
@@ -51,7 +51,7 @@ std::vector<int> costsFrom(const Map &map, const Torus &t, const std::vector<int
 		heap.pop();
 		if (c > cost.at(i))
 			continue;
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (int dy = -1; dy <= 1; ++dy)
 		{
 			::MapGeneration::generationCheckpoint();

@@ -381,7 +381,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	}
 	const auto around = [&](int i, auto test)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 				if (test(t.at(x + dx, y + dy)))
@@ -435,7 +435,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	int craterAsh = 0, loam = 0, deep = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (L.terrain[i] != GRASS)
 			continue;
 		const ShapePoint q = L.stretch.undo(x - L.cx, y - L.cy);
@@ -461,7 +461,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 		const auto offshore = stepsFrom(t, ground);
 		for (int i = 0; i < t.size(); ++i)
 			if (L.terrain[i] == WATER &&
-				offshore[i] >= kDeepWater + kDeepSwing * (2 * seaFloor.at(i % t.w, i / t.w) - 1))
+				offshore[i] >= kDeepWater + kDeepSwing * (2 * seaFloor.at(t.remainderX(i), i / t.w) - 1))
 			{
 				L.terrain[i] = DEEP_WATER;
 				++deep;
@@ -473,7 +473,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	L.fords.assign(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const int corners[4] = {i, t.at(x + 1, y), t.at(x, y + 1), t.at(x + 1, y + 1)};
 		int hot = 0;
 		bool forded = false;
@@ -735,7 +735,7 @@ std::vector<unsigned char> furnishMargins(const Layout &L, TerrainSketch &terrai
 		const int d = fromFlow[i];
 		if (terrain[i] != GRASS || keep[i])
 			continue;
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		// The upper slopes are ashen in patches that thin out downhill.
 		const ShapePoint q = L.stretch.undo(x - L.cx, y - L.cy);
 		const double down =
@@ -769,7 +769,7 @@ std::vector<unsigned char> furnishMargins(const Layout &L, TerrainSketch &terrai
 	int stone = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		rock[i] = grass[i] && (crust[i] || crust[t.at(x + 1, y)] || crust[t.at(x, y + 1)] ||
 							   crust[t.at(x + 1, y + 1)]);
 		stone += rock[i];
@@ -801,21 +801,21 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	{
 		for (const auto &[dx, dy] : town.grass)
 		{
-			const int i = t.at(p % t.w + dx, p / t.w + dy);
+			const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
 			townGrass[i] = 1;
 			if (terrain[i] == LOAM || terrain[i] == MOSS)
 				terrain[i] = GRASS;
 		}
 		for (const auto &[dx, dy] : town.ring)
 		{
-			const int i = t.at(p % t.w + dx, p / t.w + dy);
+			const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
 			clearings.sand[i] = 1;
 			terrain[i] = SAND;
 		}
 	}
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		clearings.plot[i] = townGrass[i] && townGrass[t.at(x + 1, y)] &&
 							townGrass[t.at(x, y + 1)] && townGrass[t.at(x + 1, y + 1)];
 	}
@@ -837,13 +837,13 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	const PeriodicNoise trails(t.w, t.h, 24, context.stream("lava-trails"));
 	std::vector<int> trailCost(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		trailCost[i] = 100 + int(300 * trails.at(i % t.w, i / t.w));
+		trailCost[i] = 100 + int(300 * trails.at(t.remainderX(i), i / t.w));
 	std::vector<unsigned char> existingPassage; // populated only if a wide approach fails
 	for (int p : homes)
 	{
 		std::vector<int> sources;
 		for (const auto &[dx, dy] : town.departures)
-			sources.push_back(t.at(p % t.w + dx, p / t.w + dy));
+			sources.push_back(t.at(t.remainderX(p) + dx, p / t.w + dy));
 		const TerrainSketch before = terrain;
 		auto path = reserveSandRoute(terrain, t, sources, L.rim, protectedGround, 1, &trailCost,
 									 GridNeighbors::Eight);
@@ -865,10 +865,10 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 				existingPassage.assign(t.size(), 0);
 				for (int i = 0; i < t.size(); ++i)
 					existingPassage[i] =
-						!(game.map.canResourcesGrow(i % t.w, i / t.w) &&
-							(game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
-							game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))) &&
-						game.map.isHardSpaceForGroundUnit(i % t.w, i / t.w, false, 0);
+						!(game.map.canResourcesGrow(t.remainderX(i), i / t.w) &&
+							(game.map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+							game.map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))) &&
+						game.map.isHardSpaceForGroundUnit(t.remainderX(i), i / t.w, false, 0);
 			}
 			width = 1;
 			path = reserveSandRoute(terrain, t, sources, L.rim, protectedGround, 0, &trailCost,
@@ -890,7 +890,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	// The approaches become dirt tracks, except where they touch water: a beach stays sand.
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		bool shore = false;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -914,7 +914,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	Map &map = game.map;
 	for (int i = 0; i < t.size(); ++i)
 		if (rock[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
 		game.addTeam();
@@ -922,10 +922,10 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 		std::vector<unsigned char> own(t.size(), 0);
 		for (const auto &[dx, dy] : town.grass)
 		{
-			const int i = t.at(p % t.w + dx, p / t.w + dy);
+			const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
 			own[i] = clearings.plot[i];
 		}
-		if (!placeSettlement(game, context, team, own, {p % t.w - 2, p / t.w - 2}, "lava-settle"))
+		if (!placeSettlement(game, context, team, own, {t.remainderX(p) - 2, p / t.w - 2}, "lava-settle"))
 			return false;
 	}
 	context.stage = "lava resources";
@@ -947,12 +947,12 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 			for (int dy = -catchment; dy <= catchment; ++dy)
 				for (int dx = -catchment; dx <= catchment; ++dx)
 				{
-					const int i = t.at(p % t.w + dx, p / t.w + dy);
-					if (reserve[i] || rock[i] || !clearGround(map, i % t.w, i / t.w))
+					const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
+					if (reserve[i] || rock[i] || !clearGround(map, t.remainderX(i), i / t.w))
 						continue;
-					if (fertility.at(i % t.w, i / t.w) > best)
+					if (fertility.at(t.remainderX(i), i / t.w) > best)
 					{
-						best = fertility.at(i % t.w, i / t.w);
+						best = fertility.at(t.remainderX(i), i / t.w);
 						seed = i;
 					}
 				}
@@ -965,10 +965,10 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 			const auto eligible = [&](int i)
 			{
 				return !reserve[i] && !rock[i] &&
-					   clearGround(map, i % t.w, i / t.w) &&
-					   map.isResourceAllowed(i % t.w, i / t.w, type) &&
-					   fertility.at(i % t.w, i / t.w) > 0 &&
-					   t.chebyshev(p % t.w, p / t.w, i % t.w, i / t.w) <= town.half + 10;
+					   clearGround(map, t.remainderX(i), i / t.w) &&
+					   map.isResourceAllowed(t.remainderX(i), i / t.w, type) &&
+					   fertility.at(t.remainderX(i), i / t.w) > 0 &&
+					   t.chebyshev(t.remainderX(p), p / t.w, t.remainderX(i), i / t.w) <= town.half + 10;
 			};
 			int planted = growPatch(map, t, seed, type, target, eligible);
 			// The highest-fertility seed can sit on a tiny isolated tile beside a
@@ -983,8 +983,8 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 			for (int retry = 0; planted < target / 2 && retry < 3; ++retry)
 			{
 				const int extra = seedForPatchCapacity(
-					t, p % t.w, p / t.w, town.half + 8, 2, eligible,
-					[&](int i) { return double(fertility.at(i % t.w, i / t.w)); });
+					t, t.remainderX(p), p / t.w, town.half + 8, 2, eligible,
+					[&](int i) { return double(fertility.at(t.remainderX(i), i / t.w)); });
 				if (extra < 0)
 					break; // No legal fertile tile remains in the starter catchment.
 				const int gained = growPatch(map, t, extra, type, target - planted, eligible);
@@ -1014,21 +1014,21 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 		{
 			const int i =
 				t.at(x + context.bounded("lava-crops", 7), y + context.bounded("lava-crops", 7));
-			if (reserve[i] || rock[i] || !clearGround(map, i % t.w, i / t.w))
+			if (reserve[i] || rock[i] || !clearGround(map, t.remainderX(i), i / t.w))
 				continue;
 			const int type = rng() % 3 == 0 ? WOOD : WHEAT;
 			const int amount = type == WHEAT ? o.wheat : o.wood;
 			const int target = int(scaledCount(type == WHEAT ? 12 : 8, amount));
-			if (fertility.at(i % t.w, i / t.w) > 0 && target > 0)
+			if (fertility.at(t.remainderX(i), i / t.w) > 0 && target > 0)
 			{
 				const int planted =
 					growPatch(map, t, i, type, target,
 							  [&](int j)
 							  {
 								  return !reserve[j] && !rock[j] &&
-										 clearGround(map, j % t.w, j / t.w) &&
-										 fertility.at(j % t.w, j / t.w) > 0 &&
-										 t.chebyshev(i % t.w, i / t.w, j % t.w, j / t.w) <= 8;
+										 clearGround(map, t.remainderX(j), j / t.w) &&
+										 fertility.at(t.remainderX(j), j / t.w) > 0 &&
+										 t.chebyshev(t.remainderX(i), i / t.w, t.remainderX(j), j / t.w) <= 8;
 							  });
 				(type == WHEAT ? wheatPlaced : woodPlaced) += planted;
 			}
@@ -1040,20 +1040,20 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 		{
 			const int i =
 				t.at(x + context.bounded("lava-prizes", 5), y + context.bounded("lava-prizes", 5));
-			if (reserve[i] || rock[i] || !clearGround(map, i % t.w, i / t.w))
+			if (reserve[i] || rock[i] || !clearGround(map, t.remainderX(i), i / t.w))
 				continue;
-			const auto q = L.stretch.undo(i % t.w - L.cx, i / t.w - L.cy);
+			const auto q = L.stretch.undo(t.remainderX(i) - L.cx, i / t.w - L.cy);
 			const double radius = std::hypot(q.x, q.y);
 			if (radius > L.lakeRadius + 7 && radius < L.rootRadius + 3 &&
 				context.bounded("lava-prizes", 1000) < unsigned(scaledCount(450, o.fruit)))
 			{
-				map.setResourceByIndex(i % t.w, i / t.w, CHERRY + context.bounded("lava-prizes", 3), 1);
+				map.setResourceByIndex(t.remainderX(i), i / t.w, CHERRY + context.bounded("lava-prizes", 3), 1);
 				++fruitPlaced;
 			}
 			else if (radius > L.rootRadius &&
 					 context.bounded("lava-prizes", 10000) < unsigned(scaledCount(30, o.stone)))
 			{
-				map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+				map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 				++stonePlaced;
 			}
 		}
@@ -1066,7 +1066,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	auto blocked = rock;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		// NO_RES_TYPE is a high sentinel, not a fruit. Restrict the enum range.
 		if (type == STONE || (type >= CHERRY && type <= PRUNE))
 			blocked[i] = 1;
@@ -1083,7 +1083,7 @@ bool populate(Game &game, GenerationContext &context, const Layout &L, const Tow
 	// inside a growth-protected town. Such a trial is unsuitable, even if its score
 	// momentarily looks excellent; another complete proposal must carry the opening.
 	for (int i = 0; i < t.size(); ++i)
-		if (clearings.plot[i] && map.isResource(i % t.w, i / t.w))
+		if (clearings.plot[i] && map.isResource(t.remainderX(i), i / t.w))
 		{
 			context.detail = "Starter repair would plant inside a protected town.";
 			return false;
@@ -1147,7 +1147,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto sea = pureTiles(L.terrain, L.t, WATER);
 	for (int i = 0; i < L.t.size(); ++i)
 	{
-		const int x = i % L.t.w, y = i / L.t.w;
+		const int x = L.t.remainderX(i), y = i / L.t.w;
 		if (sea[i] && !game.map.isWater(x, y))
 			return "Lava shield lost part of its ocean.";
 		if (L.wall[i] && game.map.terrainPropertiesAt(x, y).walkable)
@@ -1168,7 +1168,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		bool reached = false;
 		for (int i : ford)
 			reached = reached || (walk.steps[i] >= 0 &&
-								  game.map.isHardSpaceForGroundUnit(i % L.t.w, i / L.t.w, false, 0));
+								  game.map.isHardSpaceForGroundUnit(L.t.remainderX(i), i / L.t.w, false, 0));
 		if (!reached)
 			return "A lava ford cannot be crossed on foot.";
 	}

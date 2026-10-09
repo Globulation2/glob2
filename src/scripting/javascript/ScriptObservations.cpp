@@ -1,5 +1,6 @@
 #include <bit>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "ScriptObservations.h"
 #include <bit>
 #include "ScriptBuildingCapabilities.h"
@@ -197,7 +198,7 @@ void Observations::observe()
             const auto cell = world().resourceAt(index);
             const auto& r = cell.resource;
             remember(unsigned(index)) = {world().tick, cell.fertility,
-                world().cellCorners(int(index % world().width), int(index / world().width)), r.type, r.variety, r.amount, true};
+                world().cellCorners(int(powerOfTwoRemainder(index, world().width)), int(index / world().width)), r.type, r.variety, r.amount, true};
             if (r.type != NO_RES_TYPE && std::popcount(world().resourceRegistry->properties(static_cast<ResourceId>(r.type)).materialMask) > 1)
                 rememberedStocks[unsigned(index)] = MapState::materialStocksAt(world().state(), index);
             else rememberedStocks.erase(unsigned(index));

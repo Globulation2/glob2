@@ -59,7 +59,7 @@ int growPatch(Map &map, const Torus &t, int seed, int type, int count, Eligible 
 	for (size_t head = 0; head < frontier.size() && placed < count; ++head)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int i = frontier.at(head), x = i % t.w, y = i / t.w;
+		const int i = frontier.at(head), x = t.remainderX(i), y = i / t.w;
 		if (!eligible(i) || !map.isResourceAllowed(x, y, type))
 			continue;
 		map.setResourceByIndex(x, y, type, 1);
@@ -121,8 +121,8 @@ PatchBudgetResult growPatchesNear(Map &map, const Torus &t, int ax, int ay, int 
 {
 	const auto vacant = [&](int i)
 	{
-		return eligible(i) && !map.isResource(i % t.w, i / t.w) &&
-			   map.isResourceAllowed(i % t.w, i / t.w, type);
+		return eligible(i) && !map.isResource(t.remainderX(i), i / t.w) &&
+			   map.isResourceAllowed(t.remainderX(i), i / t.w, type);
 	};
 	PatchBudgetResult result;
 	while (result.tiles < count)
@@ -227,7 +227,7 @@ void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &k
 		return;
 	if (const int seed = seedNear(t, kit.stone.x, kit.stone.y, kit.stone.within, eligible);
 		seed >= 0)
-		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+		placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w), STONE,
 						   kit.stoneRadius);
 }
 
@@ -245,7 +245,7 @@ void plantSplitKit(Map &map, const Torus &t, GenerationContext &context, const K
 		return;
 	if (const int seed = seedNear(t, kit.stone.x, kit.stone.y, kit.stone.within, stoneEligible);
 		seed >= 0)
-		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+		placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w), STONE,
 						   kit.stoneRadius);
 }
 
@@ -286,7 +286,7 @@ void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, in
 	for (int k = 0; k < total; ++k)
 	{
 		::MapGeneration::generationCheckpoint();
-		map.setResourceByIndex(tiles.at(k) % t.w, tiles.at(k) / t.w, k < wheatShare ? WHEAT : WOOD,
+		map.setResourceByIndex(t.remainderX(tiles.at(k)), tiles.at(k) / t.w, k < wheatShare ? WHEAT : WOOD,
 							   1);
 	}
 }
@@ -304,7 +304,7 @@ int plantCover(Map &map, const Torus &t, const std::vector<unsigned char> &regio
 	for (int i = 0; i < t.w * t.h; ++i)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (!region.at(i) || !eligible(i) || !map.isResourceAllowed(x, y, type))
 			continue;
 		map.setResourceByIndex(x, y, type, 1);
@@ -340,7 +340,7 @@ int plantCoverShare(Map &map, const Torus &t, const std::vector<int> &candidates
 	for (int i : candidates)
 	{
 		::MapGeneration::generationCheckpoint();
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (levelAt(i) < level || !map.isResourceAllowed(x, y, type))
 			continue;
 		map.setResourceByIndex(x, y, type, 1);
@@ -369,7 +369,7 @@ int plantRound(Map &map, const Torus &t, GenerationContext &context, double cx, 
 			within, eligible);
 		if (seed < 0)
 			continue;
-		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type,
+		placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w), type,
 						   clumpRadius);
 		++planted;
 	}
@@ -418,7 +418,7 @@ int scatterClumps(GenerationContext &context, const Torus &t, const std::vector<
 			const int at = ground.at(context.bounded(stream, std::uint32_t(ground.size())));
 			if (eligible(at))
 			{
-				place(MapGeneratorPoint(at % t.w, at / t.w));
+				place(MapGeneratorPoint(t.remainderX(at), at / t.w));
 				++placed;
 				break;
 			}
