@@ -161,6 +161,9 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	///Fills `needs[]` with the result; pass `wishedMaterials` to refresh the cached member.
 	void computeWishedMaterials(int needs[MaterialSlotCount]);
 	int totalWishedMaterial();
+	/// Material a construction site already holds and the total it needs, summed
+	/// over every material; both zero for anything that is not a site.
+	void constructionProgress(int* delivered, int* total) const;
 
 	///Launches construction. Provided with the number of units that should be working during the construction,
 	///and the number of units that should be working after the construction is finished.

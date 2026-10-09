@@ -102,6 +102,7 @@ ENGINE_TESTS = [
     ('#src/team/stats/WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
+    '#src/team/SiteProgressHarness.cpp',
     '#src/unit/HungryDefeatHarness.cpp',
     '#src/map/gradient/ImmobileUnitGradientHarness.cpp',
     '#src/building/InnSwapHarness.cpp',
