@@ -1352,11 +1352,11 @@ class GameGUITouchHarness
                         "Resource inspection shows registry name and all material stocks");
 					const auto panel = gui.touch->layout().panel;
 					const auto hud = gui.touch->hudLayout(gui.touch->layout());
-					auto near = [](double a, double b) { return std::abs(a - b) < .5; };
-					require(near(panel.x, hud.stats.x) && near(panel.w, hud.stats.w) &&
-						near(panel.y + panel.h, hud.minimap.y + hud.minimap.h) &&
+					auto nearlyEqual = [](double a, double b) { return std::abs(a - b) < .5; };
+					require(nearlyEqual(panel.x, hud.stats.x) && nearlyEqual(panel.w, hud.stats.w) &&
+						nearlyEqual(panel.y + panel.h, hud.minimap.y + hud.minimap.h) &&
 						panel.y >= hud.stats.y + hud.stats.h &&
-						near(panel.h, InGameTouchTheme::inspectorHeader * unit) && !gui.touch->lensVisible(),
+						nearlyEqual(panel.h, InGameTouchTheme::inspectorHeader * unit) && !gui.touch->lensVisible(),
 						"Resource identity shares the building header geometry below stats");
 					require(gui.touch->interfaceRegion({panel.x + 4 * unit, panel.y + panel.h / 2}) == 3,
 						"Resource header consumes taps before the map");
@@ -3506,9 +3506,9 @@ class GameGUITouchHarness
 				const auto ui = gui.touch->layout();
 				const auto identity = gui.touch->allocationRect();
 				const auto hud = gui.touch->hudLayout(ui);
-				auto near = [](double a, double b) { return std::abs(a - b) < .5; };
-				require(near(identity.x, hud.stats.x) && near(identity.w, hud.stats.w) &&
-					near(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+				auto nearlyEqual = [](double a, double b) { return std::abs(a - b) < .5; };
+				require(nearlyEqual(identity.x, hud.stats.x) && nearlyEqual(identity.w, hud.stats.w) &&
+					nearlyEqual(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
 					identity.y >= hud.stats.y + hud.stats.h && ui.panel.y >= identity.y + identity.h,
 					"Unit identity shares the selection header and stays separate from statistics");
 				const auto values = gui.touch->unitInfoRows();
