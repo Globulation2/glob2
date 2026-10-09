@@ -159,7 +159,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
 
         # Differential ownership preserves unrelated pre-existing guard areas.
         self.assertIn("preemptive_guard_tiles.find(*tile)", update)
-        self.assertIn("if(!map.is_guard_area(*tile%w, *tile/w))", update)
+        self.assertIn("if(!map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w))", update)
         self.assertNotIn("preemptive_diagnostics", function(
             self.state,
             "void Maxima::saveDirector",
