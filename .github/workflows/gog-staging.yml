@@ -21,6 +21,10 @@ concurrency:
   group: gog-release
   cancel-in-progress: false
 
+env:
+  GLOB2_DEV_MODE: isolated
+  GLOB2_SDL3_PREFIX: build/sdl3-ci/prefix
+
 jobs:
   preflight:
     if: >-
@@ -61,6 +65,15 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.12'
+      - name: Prepare pinned asset encoder
+        shell: pwsh
+        run: |
+          python -m pip install --only-binary=:all: Pillow==12.2.0
+          $encoder = (Get-Command python).Source
+          "GLOB2_ASSET_ENCODER_PYTHON=$encoder" >> $env:GITHUB_ENV
       - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e
         with:
           msystem: MINGW64
@@ -68,8 +81,8 @@ jobs:
           install: >-
             git make mingw-w64-x86_64-nasm mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python mingw-w64-x86_64-scons
-            mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image
-            mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-freetype mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo
             mingw-w64-x86_64-opusfile mingw-w64-x86_64-opus mingw-w64-x86_64-libogg
             mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
@@ -82,10 +95,12 @@ jobs:
           SOURCE_COMMIT: ${{ needs.preflight.outputs.source_commit }}
           WORKFLOW_COMMIT: ${{ needs.preflight.outputs.workflow_commit }}
         run: |
-          scons -j2 release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python tools/gog_release.py stage-windows \
-            --exe build/mingw/client/release/src/glob2.exe \
-            --runtime /mingw64/bin --output artifacts/gog/windows \
+            --exe build/mingw/client/release/lean-images/src/glob2.exe \
+            --runtime /mingw64/bin --sdl-runtime build/sdl3-ci/prefix/bin --output artifacts/gog/windows \
             --version "$VERSION" --source-commit "$SOURCE_COMMIT" \
             --workflow-commit "$WORKFLOW_COMMIT"
           tar -C artifacts/gog/windows -czf artifacts/gog/windows.tar.gz .
@@ -130,8 +145,10 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            g++ python3 scons pkg-config libsdl2-dev libsdl2-image-dev \
-            libsdl2-net-dev libsdl2-ttf-dev libopusfile-dev libopus-dev libogg-dev \
+            g++ python3 python3-venv scons pkg-config nasm libva-dev cmake ninja-build \
+            libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev \
+            libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev \
+            libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev \
             libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev \
             libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Build and stage Linux depot
@@ -142,7 +159,9 @@ jobs:
         run: |
           set -euo pipefail
           stage="$PWD/artifacts/gog/install"
-          scons -j2 release=1 server=0 BINDIR="$stage/usr/bin" \
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          scons -j2 release=1 server=0 lean_images=1 BINDIR="$stage/usr/bin" \
             INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
           python3 tools/gog_release.py stage-linux --stage "$stage" \
             --output artifacts/gog/linux --version "$VERSION" \
@@ -163,7 +182,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Install build tools
         run: |
-          brew install scons sdl2 sdl2_image sdl2_net sdl2_ttf \
+          brew install cmake freetype libpng jpeg-turbo scons \
             opusfile opus libogg speex boost openssl@3 fribidi pcre libepoxy
       - name: Build and stage macOS depot
         env:
@@ -172,6 +191,8 @@ jobs:
           WORKFLOW_COMMIT: ${{ needs.preflight.outputs.workflow_commit }}
         run: |
           set -euo pipefail
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 server=0 package
           python3 tools/gog_release.py stage-macos \
             --app build/darwin/client/release/Glob2.app \
