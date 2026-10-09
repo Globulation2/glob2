@@ -1,0 +1,7 @@
+test_active_consumers_share_reader_leases (test_shared_development_dependencies.SharedDevelopmentDependenciesTests.test_active_consumers_share_reader_leases) ... ok
+test_reuse_and_corruption_detection (test_shared_development_dependencies.SharedDevelopmentDependenciesTests.test_reuse_and_corruption_detection) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.066s
+
+OK
