@@ -1,0 +1,7 @@
+PR978 final verification
+Commit04a1a85ac9a561fada0b33930248ed3262ef8e22, integrated base2f3db465080eb9b9e1025c220edc8a0c4f5aa0fc fetched before final checks.
+Linux x86_64 Python3; text-only catalogs, no build flags/dependencies changed.
+python3 test/test_translations.py:5testsPASS. Original hosted failure448Englishfallbacks across14newsettingsstrings x32catalogs retained.
+python3 data/check_translations.py:0structuralerrors; no missing/obsoletekeys. Existing pending translation entries elsewhere remain reported by that tool and are outside this repair.
+git diff --check:PASS. Exactly14value substitutions in each32non-English catalogs,448translations; keys and placeholders unchanged. Integrated new area-upkeep labels from master without replacing them. Language-label review corrected repository-specific br=BrazilianPortuguese and confirmed si=Slovenian.
+Coverage: fallback audit, key/placeholder/catalog validity. Translations reviewed as text; no native-speaker review or in-game layout/screenshots performed, so wording and fit may need later localization refinement. No simulation/save/replay/network behavior changes; noSIM_REVISIONneeded. Audit and shared-vocabulary allowlist unchanged.
