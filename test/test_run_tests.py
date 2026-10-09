@@ -38,6 +38,12 @@ class WindowsCrashDiagnosticsTests(unittest.TestCase):
             </testsuites>''')
         self.assertEqual(list(windows_crash_diagnostics.crashed_cases(report)), [('LAN', 'crashed')])
 
+    def test_windows_crt_abort_is_replayed(self):
+        report = ET.fromstring('<testcase classname="ScriptGenerator" name="aborted">'
+                              '<error>exit status 3</error></testcase>')
+        self.assertEqual(list(windows_crash_diagnostics.crashed_cases(report)),
+                         [('ScriptGenerator', 'aborted')])
+
     def test_signed_windows_status_is_also_a_crash(self):
         report = ET.fromstring('''<testcase classname="LAN" name="crashed">
             <error>exit status -1073741819</error></testcase>''')
