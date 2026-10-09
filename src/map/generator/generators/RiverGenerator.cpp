@@ -89,7 +89,7 @@ GeneratorDefinition riverDefinition()
 			"river",
 			2,
 			"River",
-			4,
+			5,
 			false,
 			std::move(controls),
 			generate,

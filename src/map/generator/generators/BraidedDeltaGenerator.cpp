@@ -474,7 +474,7 @@ GeneratorDefinition braidedDeltaDefinition()
 	return {"braided-delta",
 			36,
 			"Braided Delta",
-			3,
+			4,
 			false,
 			{GeneratorControl{"braid-count", "Braid count", 2, 5, 1, 2, ControlGroup::Terrain}
 				 .withSearchRange(2, 4),

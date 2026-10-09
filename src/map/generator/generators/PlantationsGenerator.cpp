@@ -1044,7 +1044,7 @@ GeneratorDefinition plantationsDefinition()
 		"plantations",
 		48,
 		"Plantations",
-		3,
+		4,
 		false,
 		// A plot of 10 seats a swarm beside a pool with room for its level-1 upgrade and four rows
 		// left (10 is the least that seats both, 8 until 2026-09-16); 4 tiles of crops round it keep an island small enough to swim round and fertile to

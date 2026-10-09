@@ -592,7 +592,7 @@ GeneratorDefinition gauntletDefinition()
 	return {"gauntlet",
 			59,
 			"The Gauntlet",
-			2,
+			3,
 			false,
 			{GeneratorControl{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout}
 				 .withSearchRange(90, 120),

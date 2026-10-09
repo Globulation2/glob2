@@ -545,7 +545,7 @@ GeneratorDefinition evergladesDefinition()
 		"everglades",
 		19,
 		"Everglades",
-		2,
+		3,
 		false,
 		// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
 		// into sloughs; the clearings' radius in tiles; the levee is the share of each clearing's

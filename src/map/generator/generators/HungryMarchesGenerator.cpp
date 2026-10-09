@@ -677,7 +677,7 @@ GeneratorDefinition hungryMarchesDefinition()
 		"hungry-marches",
 		69,
 		"The Hungry Marches",
-		2,
+		3,
 		false,
 		{GeneratorControl{"opening-ration", "Opening ration", 20, 100, 10, 50, ControlGroup::Layout}
 			 .withSearchRange(40, 80),

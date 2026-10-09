@@ -595,7 +595,7 @@ GeneratorDefinition tidalFlatsDefinition()
 		"tidal-flats",
 		18,
 		"Tidal flats",
-		6,
+		7,
 		false,
 		// The home islands' radius as a share of the half side; extra islands (the oases) and
 		// sandbars (the green patches) per colony, six and eight since 2026-09-14; lagoons per

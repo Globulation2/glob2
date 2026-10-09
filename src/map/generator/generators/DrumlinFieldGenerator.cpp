@@ -529,7 +529,7 @@ GeneratorDefinition drumlinFieldDefinition()
 		"drumlin-field",
 		43,
 		"Drumlin field",
-		1,
+		2,
 		false,
 		// Sites 20 apart across the grain and drumlins two and a half times as long as wide give a
 		// 256 map some fifty drumlins of about 16 by 40 tiles round four homes of 22 by 55, with

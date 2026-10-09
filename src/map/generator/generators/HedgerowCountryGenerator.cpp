@@ -572,7 +572,7 @@ GeneratorDefinition hedgerowCountryDefinition()
 		"hedgerow-country",
 		38,
 		"Hedgerow Country",
-		7,
+		8,
 		false,
 		{GeneratorControl{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout}
 			 .withSearchRange(48, 80),

@@ -734,7 +734,7 @@ GeneratorDefinition combDefinition()
 		"comb",
 		62,
 		"The Comb",
-		4,
+		5,
 		false,
 		{GeneratorControl{"peninsulas", "Peninsulas per shore", 2, 4, 1, 3, ControlGroup::Layout}
 			 .withSearchRange(2, 4),

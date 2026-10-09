@@ -1202,7 +1202,7 @@ GeneratorDefinition lavaShieldDefinition()
 			// long tongue, the crater is a lava lake with vents, branches are cooled scree and
 			// gravel, stone is a crust along the flows, the rim is loam, roads are dirt tracks and
 			// the open sea is deep water.
-			5,
+			6,
 			false,
 			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
 				 .withSearchRange(4, 7),

@@ -1500,7 +1500,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			4,
+			5,
 			false,
 			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
 							  ControlGroup::Terrain}

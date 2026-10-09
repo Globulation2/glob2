@@ -496,7 +496,7 @@ GeneratorDefinition savannahDefinition()
 	return {"savannah",
 			45,
 			"Savannah",
-			2,
+			3,
 			false,
 			{GeneratorControl::choice("watering-holes", "Watering holes",
 									  {"Sparse", "Normal", "Many"}, 1, ControlGroup::Terrain)

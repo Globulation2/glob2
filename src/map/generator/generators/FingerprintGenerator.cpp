@@ -282,7 +282,7 @@ GeneratorDefinition fingerprintDefinition()
 		"fingerprint",
 		26,
 		"Fingerprint",
-		4,
+		5,
 		false,
 		{// FEEDBACK 2026-09-13: wavelength 30 and homes of 18 (were 20 and 12).
 		 GeneratorControl{"wavelength", "Wavelength", 12, 48, 2, 30, ControlGroup::Terrain}

@@ -636,7 +636,7 @@ GeneratorDefinition allotmentsDefinition()
 		"allotments",
 		40,
 		"Allotments",
-		2,
+		3,
 		false,
 		// Site size is the pitch of the parcel tiling: 36 gives a 256 map seven parcels a side.
 		// Plots four tiles wide are narrow enough to read as strips and wide enough to work.

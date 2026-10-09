@@ -925,7 +925,7 @@ GeneratorDefinition coralDefinition()
 		"coral",
 		21,
 		"Coral",
-		1,
+		2,
 		false,
 		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the

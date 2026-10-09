@@ -1211,7 +1211,7 @@ GeneratorDefinition evenGroundDefinition()
 		"even-ground",
 		60,
 		"Even Ground",
-		2,
+		3,
 		false,
 		// The sliders are the targets the solver is given, not the terrain it draws. Water share
 		// and the resource amounts are budgets it may arrange but never change; balance and

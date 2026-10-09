@@ -1191,7 +1191,7 @@ GeneratorDefinition honeycombIsleDefinition()
 		"honeycomb-isle",
 		53,
 		"Honeycomb isle",
-		2,
+		3,
 		false,
 		// Blocks of 18 with streets of 3 leave a block's inside about 15 tiles across, room for
 		// a cistern garden and a swarm's neighbourhood; eleven blocks a colony leave room for

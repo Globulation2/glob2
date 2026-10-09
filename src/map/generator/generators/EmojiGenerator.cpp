@@ -752,7 +752,7 @@ GeneratorDefinition emojiDefinition()
 	return {"emoji",
 			34,
 			"Emoji",
-			11,
+			12,
 			false,
 			{GeneratorControl::choice("character", "Emoji character",
 									  {"Random",       "Smiley",         "Sad face",
