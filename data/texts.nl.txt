@@ -5994,3 +5994,5 @@ Wachten op bestandsselectie of opslag…
 Bestandsselectie is niet beschikbaar.
 [settings Package export is unavailable.]
 Pakketexport is niet beschikbaar.
+[stat band area upkeep]
+Gebiedsonderhoud

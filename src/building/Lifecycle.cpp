@@ -141,6 +141,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 Building::~Building()
 {
+	owner->game->areaEffects.changed(gid);
 	freeGradients();
 }
 
@@ -434,6 +435,19 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		}
 	}
 	seenByMask = stream->readUint32("seenByMask");
+	areaFunded=false; areaFundingType=-1; areaFundingTeam=-1; areaFundingTick=0;
+	if (versionMinor>=FILE_FORMAT_VERSION_AREA_EFFECTS) {
+		const auto funded=stream->readUint8("areaFunded");
+		areaFundingType=stream->readSint32("areaFundingType");
+		areaFundingTick=stream->readUint32("areaFundingTick");
+		const auto fundingTeam=stream->readSint32("areaFundingTeam");
+		if (funded>1 || areaFundingType < -1 || areaFundingType>=Sint32(types->size()) ||
+			(funded && areaFundingType<0) || fundingTeam < -1 || fundingTeam>=Team::MAX_COUNT ||
+			(areaFundingType>=0 && ((areaFundingTick&15) || fundingTeam<0)))
+			throw std::runtime_error("Invalid area effect funding state");
+		areaFunded=funded;
+		areaFundingTeam=Sint8(fundingTeam);
+	}
 
 	inCanFeedUnit=LS_UNKNOWN;
 	inCanHealUnit=LS_UNKNOWN;
@@ -551,6 +565,10 @@ void Building::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeSint32(productionUnit, "productionUnit");
 	stream->writeUint32(seenByMask, "seenByMask");
+	stream->writeUint8(areaFunded, "areaFunded");
+	stream->writeSint32(areaFundingType, "areaFundingType");
+	stream->writeUint32(areaFundingTick, "areaFundingTick");
+	stream->writeSint32(areaFundingTeam, "areaFundingTeam");
 
 	stream->writeLeaveSection();
 }
@@ -759,4 +777,5 @@ void Building::bindType(Sint32 id, BuildingsTypes* catalog)
     typeNum=id;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
+    owner->game->areaEffects.changed(gid);
 }

@@ -5994,3 +5994,5 @@ Väntar på filval eller lagring…
 Filval är inte tillgängligt.
 [settings Package export is unavailable.]
 Paketexport är inte tillgänglig.
+[stat band area upkeep]
+Områdesunderhåll

@@ -5994,3 +5994,5 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Вибір файлу недоступний.
 [settings Package export is unavailable.]
 Експорт пакетів недоступний.
+[stat band area upkeep]
+Утримання області

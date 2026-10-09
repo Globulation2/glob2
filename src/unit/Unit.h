@@ -81,6 +81,8 @@ public:
 	void expelFromBuilding(int x, int y, int dx, int dy);
 	
 	int getRealArmor(bool isMagic) const;
+	int applyAreaAttack(int value) const;
+	void applyAreaServices();
 	int getRealAttackStrength(void) const; //!< Return the real attack strength for warriors
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);

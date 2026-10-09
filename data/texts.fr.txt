@@ -5994,3 +5994,5 @@ En attente de la sélection d’un fichier ou de l’enregistrement…
 La sélection de fichiers est indisponible.
 [settings Package export is unavailable.]
 L’exportation de paquets est indisponible.
+[stat band area upkeep]
+Entretien de zone

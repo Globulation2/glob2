@@ -369,6 +369,7 @@ bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		}
 		b->posX=omf.x;
 		b->posY=omf.y;
+		areaEffects.changed(b->gid);
 		if (b->type->runtimeSuppliesStock || b->type->runtimeSuppliesDirectStock)
 		{
 			map.invalidateSupplierLocations();

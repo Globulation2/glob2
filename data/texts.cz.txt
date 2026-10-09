@@ -5994,3 +5994,5 @@ Data se nepodařilo uložit. Předchozí knihovna zůstává zachována.
 Výběr souboru není dostupný.
 [settings Package export is unavailable.]
 Export balíčků není dostupný.
+[stat band area upkeep]
+Údržba oblasti

@@ -5994,3 +5994,5 @@ Oczekiwanie na wybór pliku lub zapis…
 Wybór pliku jest niedostępny.
 [settings Package export is unavailable.]
 Eksport pakietów jest niedostępny.
+[stat band area upkeep]
+Utrzymanie obszaru

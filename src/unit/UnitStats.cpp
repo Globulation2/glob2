@@ -22,14 +22,25 @@ int Unit::getRealArmor(bool isMagic) const
 		// Custom-game "glass cannon" rule: armor is reduced by the same
 		// factor attack strength is scaled up, below. Only the armor itself
 		// shrinks; the fruit penalty stays whole.
-		return performance[ARMOR] / owner->game->gameHeader.getGlassCannonScale() - fruitCount * armorReductionPerHappyness;
+		int armor = performance[ARMOR] / owner->game->gameHeader.getGlassCannonScale();
+		if (armor && owner->game->areaEffects.enabled() && insideTimeout >= 0 &&
+			displacement != DIS_INSIDE && displacement != DIS_ENTERING_BUILDING &&
+			!(displacement == DIS_EXITING_BUILDING && attachedBuilding))
+		{
+			const auto factor =
+				owner->game->areaEffects.at(BuildingAreaEffects::UnitArmor, owner->teamNumber,
+											owner->map->coordToIndex(posX, posY));
+			if (factor != BuildingAreaEffects::Neutral)
+				armor = BuildingAreaEffects::scale(armor, factor);
+		}
+		return armor - fruitCount * armorReductionPerHappyness;
 	}
 }
 
 //! Return the real attack strength, taking into account the experience level
 int Unit::getRealAttackStrength(void) const
 {
-	return (performance[ATTACK_STRENGTH] + experienceLevel) * owner->game->gameHeader.getGlassCannonScale();
+	return applyAreaAttack((performance[ATTACK_STRENGTH] + experienceLevel) * owner->game->gameHeader.getGlassCannonScale());
 }
 
 //! Return the amount of experience to level-up
@@ -64,3 +75,14 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 	return timeLeft;
 }
 
+int Unit::applyAreaAttack(int value) const
+{
+	if (!value || !owner->game->areaEffects.enabled() || insideTimeout < 0 ||
+		displacement == DIS_INSIDE || displacement == DIS_ENTERING_BUILDING ||
+		(displacement == DIS_EXITING_BUILDING && attachedBuilding))
+		return value;
+	const auto factor = owner->game->areaEffects.at(
+		BuildingAreaEffects::UnitAttack, owner->teamNumber, owner->map->coordToIndex(posX, posY));
+	return factor == BuildingAreaEffects::Neutral ? value
+												  : BuildingAreaEffects::scale(value, factor);
+}

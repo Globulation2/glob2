@@ -50,6 +50,8 @@ ENGINE_TESTS = [
     '#src/building/BuildingProductionCombatTest.cpp',
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
+    '#src/building/AreaEffectsTest.cpp',
+    '#src/building/AreaEffectsBenchmark.cpp',
     ('#src/map/ResourceGrowthBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/ResourceGrowthFixtures.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/ResourceGrowthTest.cpp', dict(cxxflags=['-fno-access-control'])),

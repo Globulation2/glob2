@@ -146,6 +146,7 @@ struct GameplayMeasurements
 		UPGRADE,
 		HEALING_COST,
 		TRAINING_COST,
+		AREA_UPKEEP,
 		PURPOSES
 	};
 	enum Completion

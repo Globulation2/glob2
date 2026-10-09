@@ -5994,3 +5994,5 @@ Odotetaan tiedoston valintaa tai tallennusta…
 Tiedoston valinta ei ole käytettävissä.
 [settings Package export is unavailable.]
 Pakettien vienti ei ole käytettävissä.
+[stat band area upkeep]
+Alueen ylläpito

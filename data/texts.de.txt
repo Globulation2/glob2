@@ -5994,3 +5994,5 @@ Warten auf Dateiauswahl oder Speicherung…
 Die Dateiauswahl ist nicht verfügbar.
 [settings Package export is unavailable.]
 Der Paketexport ist nicht verfügbar.
+[stat band area upkeep]
+Bereichsunterhalt

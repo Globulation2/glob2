@@ -441,6 +441,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		hasSavedRandomState = true;
 	}
 
+	areaEffects.beginTick(*this,false);
 	co_return true;
 }
 

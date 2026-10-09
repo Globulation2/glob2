@@ -28,7 +28,7 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::Entities)) result.entities = entities;
 	if (needs(requested, Component::Teams)) result.teams = teams;
 	if (needs(requested, Component::Rules)) result.rules = rules;
-	if (needs(requested, Component::Growth)) result.growth = growth;
+	if (needs(requested, Component::Growth)) { result.growth = growth; result.areaFertility=areaFertility; }
 	if (needs(requested, Component::ResourceFields)) result.resourceFields = resourceFields;
 	return result;
 }
@@ -44,6 +44,7 @@ MapState::View Handle::view() const
 	if (terrain) { v.cellRules = terrain->cellRules; v.rules = terrain->rules.get(); v.terrainRegistry = terrain->registry.get(); }
 	if (catalogs) v.resourceRegistry = catalogs->resources.get();
 	v.growth = growth.get();
+	if(areaFertility) v.areaFertility=areaFertility->values;
 	if (rules) { v.resourceGrowthDisabled = rules->values.resourceGrowthDisabled; v.resourceScarcityLevel = rules->configuration ? int(rules->configuration->getResourceScarcityLevel()) : 0; }
 	return v;
 }

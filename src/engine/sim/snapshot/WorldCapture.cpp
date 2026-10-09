@@ -476,14 +476,44 @@ Handle capture(const Game& game,
 		const auto oldCap=frozen->storageCapacities(), required=source.storageSizes();
 		if (storage) for(unsigned i=0;i<oldCap.size();++i) if(oldCap[i]<required[i]) ++storage->allocations;
 		*frozen=source; result->growth=std::move(frozen);
+
+	}
+	// Natural ecology can be reused while building coverage changes independently.
+	if (needs(result->requirements, Component::Growth) &&
+		!game.areaEffects.fertilityValues().empty())
+	{
+		if (previous && previous->areaFertility &&
+			previous->areaFertility->world == game.map.identity() &&
+			previous->areaFertility->generation == game.areaEffects.fertilityGeneration())
+			result->areaFertility = previous->areaFertility;
+		else
+		{
+			auto area = storage ? storage->areaFertility.acquire(
+									  storage->allocations,
+									  [&](const BuildingAreaEffects::FertilitySnapshot &buffer) {
+										  return buffer.world == game.map.identity()
+													 ? buffer.generation
+													 : Uint64(0);
+									  })
+								: std::make_shared<BuildingAreaEffects::FertilitySnapshot>();
+			if (storage && area->values.capacity() < game.areaEffects.fertilityValues().size())
+				++storage->allocations;
+			Uint64 copied = 0;
+			game.areaEffects.captureFertility(*area, copied);
+			if (storage)
+				storage->bytesCopied += copied;
+			result->areaFertility = std::move(area);
+		}
 	}
 	if (needs(requirements, Component::ResourceFields))
 	{
 		auto fields = acquire(&Storage::resourceFields, Component::ResourceFields);
 		fields->clear();
 		const auto planeCells = std::size_t(game.map.getW()) * game.map.getH();
-		const ResourceFields* kept = previous && previous->worldIdentity == result->worldIdentity ? previous->resourceFields.get() : nullptr;
-		for (const auto& plane : game.map.publishedResourceFields())
+		const ResourceFields *kept = previous && previous->worldIdentity == result->worldIdentity
+										 ? previous->resourceFields.get()
+										 : nullptr;
+		for (const auto &plane : game.map.publishedResourceFields())
 		{
 			if (storage && fields->planes.size() == fields->planes.capacity()) ++storage->allocations;
 			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) { fields->add(*same); continue; }

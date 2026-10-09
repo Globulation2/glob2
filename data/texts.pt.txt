@@ -5994,3 +5994,5 @@ A aguardar a seleção de um ficheiro ou o armazenamento…
 A seleção de ficheiros não está disponível.
 [settings Package export is unavailable.]
 A exportação de pacotes não está disponível.
+[stat band area upkeep]
+Manutenção da área

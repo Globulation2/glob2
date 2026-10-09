@@ -246,6 +246,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
+		owner->game->areaEffects.changed(gid);
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 			for (int r=0; r<MaterialSlotCount; ++r) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 		maxUnitWorking=0;
@@ -294,10 +295,12 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 		owner->buildingsTryToBuildingSiteRoom.remove(this);
 		buildingState=ALIVE;
+		owner->game->areaEffects.changed(gid);
 	}
 	else if (buildingState==WAITING_FOR_CONSTRUCTION)
 	{
 		buildingState=ALIVE;
+		owner->game->areaEffects.changed(gid);
 	}
 	else
 	{
@@ -363,6 +366,7 @@ void Building::launchDelete(void)
 	{
 		cancelProduction();
 		buildingState=WAITING_FOR_DESTRUCTION;
+		owner->game->areaEffects.changed(gid);
 		owner->stockSuppliers.remove(this);
 		owner->directStockSuppliers.remove(this);
 		if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
@@ -383,6 +387,7 @@ void Building::cancelDelete(void)
 {
 	if (buildingState!=WAITING_FOR_DESTRUCTION) return;
 	buildingState=ALIVE;
+	owner->game->areaEffects.changed(gid);
 	owner->addToStaticAbilitiesLists(this);
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int resource=0; resource<MaterialCount; ++resource) owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resource);
@@ -536,6 +541,7 @@ void Building::updateConstructionState(void)
 			if (buildingState!=WAITING_FOR_CONSTRUCTION_ROOM)
 			{
 				buildingState=WAITING_FOR_CONSTRUCTION_ROOM;
+				owner->game->areaEffects.changed(gid);
 				owner->buildingsTryToBuildingSiteRoom.push_front(this);
 				if(constructionResultState == UPGRADE)
 					addForbiddenZoneToUpgradeArea();

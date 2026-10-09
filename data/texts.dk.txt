@@ -5994,3 +5994,5 @@ Venter på filvalg eller lagring…
 Filvalg er ikke tilgængeligt.
 [settings Package export is unavailable.]
 Pakkeeksport er ikke tilgængelig.
+[stat band area upkeep]
+Områdevedligeholdelse

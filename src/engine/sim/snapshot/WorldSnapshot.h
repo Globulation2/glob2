@@ -3,6 +3,7 @@
 #include "WorldRecords.h"
 #include "ObservationRecords.h"
 #include "MapState.h"
+#include "AreaEffects.h"
 #include "Requirements.h"
 #include "GameHeader.h"
 #include "FertilityField.h"
@@ -140,6 +141,7 @@ struct Handle
 	std::shared_ptr<const Rules> rules;
 	std::shared_ptr<const ResourceFields> resourceFields;
 	std::shared_ptr<const Fertility::GrowthCache> growth;
+	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
 	std::array<Uint64, 5> mapGenerations{};
 	Handle project(Requirements requested) const;
