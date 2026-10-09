@@ -1,0 +1,25 @@
+Golden-only build and checks (${{ matrix.runner }})	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598582	
+Linux Clang compatibility	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598334	
+Linux GCC 11 build and tests	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598743	
+Linux GCC 13 build and tests	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003599379	
+Native Clang coverage	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598941	
+Primary Linux programs	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003599301	
+android	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598152	
+browser build (WebAssembly)	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003599164	
+browser native WSS server, router and transport	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003599564	
+browser self-hosting deployment	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003600276	
+browser tests (${{ matrix.name }})	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003600484	
+browser/native simulation equivalence	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003601492	
+linux (${{ matrix.image }})	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003601321	
+linux variants (${{ matrix.image }})	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598552	
+linux-build	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003600850	
+linux-map-generators	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003600852	
+macos	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003599310	
+music pipeline (Python)	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598377	
+self-hosted platform stack	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598793	
+tsan	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003599082	
+windows (mingw-w64)	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003598636	
+Relevant checks passed	pass	3s	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003600356	
+platform (TypeScript)	skipping	0	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114003599017	
+Select relevant checks	pass	4m13s	https://github.com/Globulation2/glob2/actions/runs/37984204825/job/114001973859	
+cancel	pass	9s	https://github.com/Globulation2/glob2/actions/runs/37984200015/job/114001959903	

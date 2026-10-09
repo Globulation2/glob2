@@ -1,0 +1,17 @@
+{
+  "tree": "5fc55eda385e0c97aa329dea766eda0d5f5819e8",
+  "head": "1cdcaf8454fefd0cb3ead321188b617a0afb3351",
+  "master": "c26a0a02aeef4993a7478c3651d6117b49dbc56c",
+  "command": [
+    "python3",
+    "tools/dev_build.py",
+    "-j8",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouch.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouchActions.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouchDial.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouchView.o",
+    "build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/TouchDial.o"
+  ],
+  "returncode": 0,
+  "seconds": 19.008461743593216
+}

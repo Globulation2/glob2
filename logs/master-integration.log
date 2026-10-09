@@ -1,0 +1,90 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... yes
+Checking whether the C++ compiler works... yes
+Checking for C library SDL3... yes
+Checking for C library SDL3_ttf... yes
+Checking for C library SDL3_image... yes
+Checking for C library SDL3_net... yes
+Checking for C library speex... yes
+Checking for C++ header file speex/speex.h... yes
+Checking for C library opusfile... yes
+Checking for C++ header file opusfile.h... yes
+Checking for C library opus... yes
+Checking for C library ogg... yes
+Checking for C++ header file zlib.h... yes
+Checking for C library z... yes
+Checking for C++ header file regex.h... yes
+Checking for C++ header file openssl/ssl.h... yes
+Checking for C library ssl... yes
+Checking for C library crypto... yes
+Checking for C++ header file boost/beast/websocket.hpp... yes
+Checking for C++ header file boost/asio/ssl.hpp... yes
+Checking for C library GL... yes
+Checking for C++ header file GL/gl.h... yes
+Checking for C library GLU... yes
+Checking for C++ header file GL/glu.h... yes
+Checking for C library epoxy... yes
+Checking for C++ header file epoxy/gl.h... yes
+Checking for C library fribidi... yes
+Checking for C++ header file fribidi/fribidi.h... yes
+Checking for C library portaudio... no
+scons: done reading SConscript files.
+scons: Building targets ...
+Generating build/linux/client/debug/dev-dev_fast-true-linker-auto/include/glob2/BuildConfig.h
+/usr/bin/ccache g++ -o build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouchView.o -c -std=gnu++20 -Wall -fPIC -O0 -g1 -fdebug-prefix-map=/tmp/glob2-master-integration-kou6f5i_/source=. -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -I/home/bradley/.local/share/glob2/development/dependencies/build-6883bfc317f7295117be6c6a/prefix/include -I/home/bradley/glob2-verify/integrator/sdl3/prefix/include -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/javascript -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -I/work/sdl3/prefix/include -I/work/sdl3/prefix/include/webp -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/src -Isrc -Ithird_party/quickjs-ng src/hud/touch/GameGUITouchView.cpp
+/usr/bin/ccache g++ -o build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/TouchDial.o -c -std=gnu++20 -Wall -fPIC -O0 -g1 -fdebug-prefix-map=/tmp/glob2-master-integration-kou6f5i_/source=. -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -I/home/bradley/.local/share/glob2/development/dependencies/build-6883bfc317f7295117be6c6a/prefix/include -I/home/bradley/glob2-verify/integrator/sdl3/prefix/include -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/javascript -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -I/work/sdl3/prefix/include -I/work/sdl3/prefix/include/webp -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/src -Isrc -Ithird_party/quickjs-ng src/hud/touch/TouchDial.cpp
+/usr/bin/ccache g++ -o build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouchDial.o -c -std=gnu++20 -Wall -fPIC -O0 -g1 -fdebug-prefix-map=/tmp/glob2-master-integration-kou6f5i_/source=. -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -I/home/bradley/.local/share/glob2/development/dependencies/build-6883bfc317f7295117be6c6a/prefix/include -I/home/bradley/glob2-verify/integrator/sdl3/prefix/include -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/javascript -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -I/work/sdl3/prefix/include -I/work/sdl3/prefix/include/webp -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/src -Isrc -Ithird_party/quickjs-ng src/hud/touch/GameGUITouchDial.cpp
+/usr/bin/ccache g++ -o build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouchActions.o -c -std=gnu++20 -Wall -fPIC -O0 -g1 -fdebug-prefix-map=/tmp/glob2-master-integration-kou6f5i_/source=. -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -I/home/bradley/.local/share/glob2/development/dependencies/build-6883bfc317f7295117be6c6a/prefix/include -I/home/bradley/glob2-verify/integrator/sdl3/prefix/include -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/javascript -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -I/work/sdl3/prefix/include -I/work/sdl3/prefix/include/webp -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/src -Isrc -Ithird_party/quickjs-ng src/hud/touch/GameGUITouchActions.cpp
+/usr/bin/ccache g++ -o build/linux/client/debug/dev-dev_fast-true-linker-auto/src/hud/touch/GameGUITouch.o -c -std=gnu++20 -Wall -fPIC -O0 -g1 -fdebug-prefix-map=/tmp/glob2-master-integration-kou6f5i_/source=. -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -I/home/bradley/.local/share/glob2/development/dependencies/build-6883bfc317f7295117be6c6a/prefix/include -I/home/bradley/glob2-verify/integrator/sdl3/prefix/include -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/javascript -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -I/work/sdl3/prefix/include -I/work/sdl3/prefix/include/webp -Ibuild/linux/client/debug/dev-dev_fast-true-linker-auto/src -Isrc -Ithird_party/quickjs-ng src/hud/touch/GameGUITouch.cpp
+In file included from src/hud/GameGUIInternal.h:15,
+                 from src/hud/touch/GameGUITouchActions.cpp:7:
+src/building/hud/BuildingPresentation.h: In function 'bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)':
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
+src/hud/touch/GameGUITouchActions.cpp: In member function 'std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const':
+src/hud/touch/GameGUITouchActions.cpp:91:35: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   91 |                 for (int i = 0; i < MaterialCount; ++i)
+      |                                 ~~^~~~~~~~~~~~~~~
+src/hud/touch/GameGUITouchActions.cpp: In member function 'void GameGUITouch::applyDiscreteAction(const SceneBuildingPanel&, const BuildingAction&)':
+src/hud/touch/GameGUITouchActions.cpp:483:35: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+  483 |                 for (int k = 0; k < MaterialCount; ++k)
+      |                                 ~~^~~~~~~~~~~~~~~
+In file included from src/hud/GameGUIInternal.h:15,
+                 from src/hud/touch/GameGUITouchDial.cpp:11:
+src/building/hud/BuildingPresentation.h: In function 'bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)':
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
+In file included from src/hud/touch/GameGUITouchView.cpp:2:
+src/building/hud/BuildingPresentation.h: In function 'bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)':
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
+In file included from src/hud/GameGUIInternal.h:15,
+                 from src/hud/touch/GameGUITouch.cpp:15:
+src/building/hud/BuildingPresentation.h: In function 'bool buildingFeedingUnfunded(const BuildingType&, const Sint32*)':
+src/building/hud/BuildingPresentation.h:67:34: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   67 |     for (int resource=0; resource<MaterialCount; ++resource)
+      |                          ~~~~~~~~^~~~~~~~~~~~~~
+src/building/hud/BuildingPresentation.h: In lambda function:
+src/building/hud/BuildingPresentation.h:78:38: warning: comparison of integer expressions of different signedness: 'int' and 'const unsigned int' [-Wsign-compare]
+   78 |         for (int resource=0; resource<MaterialCount; ++resource)
+      |                              ~~~~~~~~^~~~~~~~~~~~~~
+src/hud/touch/GameGUITouch.cpp: In member function 'bool GameGUITouch::process(SDL_Event&)':
+src/hud/touch/GameGUITouch.cpp:729:63: warning: comparison of integer expressions of different signedness: 'SDL_TouchID' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  729 |                         fingerIsTouch = event.tfinger.touchID != -1;
+      |                                         ~~~~~~~~~~~~~~~~~~~~~~^~~~~
+scons: done building targets.

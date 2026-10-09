@@ -21,5 +21,6 @@
     "build/linux/client/debug/dev-dev_fast-true-pch-true-unity-true-linker-auto/src/glob2": "5978dc07b585dc015d9a91b92656aa4977a0c1cb9791019e6e493cf0b27c6951",
     "build/android/device/x86_64/24/client/debug/dev-dev_fast-true-linker-auto/lib/libmain.so": "48ae8dcc6d71953985c1ee0cd522c14586480b5a4f10aea3b890814ec80a78f3",
     "build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded/threaded/index.wasm": "531264a00190b9b5c8fafe75c66230265fbc1a251ed3395f76aabba4738a3cb9"
-  }
+  },
+  "hosted_cheap_run": "https://github.com/Globulation2/glob2/actions/runs/37984204825"
 }

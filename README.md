@@ -1,6 +1,6 @@
 # Development build series: local verification
 
-Code revision: 1cdcaf845 (full SHA in provenance.json). Base: d912223f4bf6c76961e84c3698b4d44884daea2a. Final integration inspection fetched master 9bc7a7005 and merge-tree completed without conflicts. The shared documentation change is in a separate mobile UX section; no build input overlaps were found. No merge or rebase was required.
+Code revision: 1cdcaf845 (full SHA in provenance.json). Base: d912223f4bf6c76961e84c3698b4d44884daea2a. Final integration inspection fetched master c26a0a02a and merge-tree completed without conflicts. Five touch UI objects compile against the combined tree, covering master changes that include the cleaned central headers. The mobile guide changes are in a separate UX section. The latest master browser change only repairs ImageAssets expected-case inventory; executing that complete browser harness remains outstanding. No merge or rebase was required.
 
 This is a draft series. The implementation spans all requested build environments; local evidence covers Linux and Android x86_64, with browser validation recorded separately. It is not all-platform release qualification.
 
@@ -94,3 +94,5 @@ The final Android invocation reseeded recording dependencies after the orchestra
 Hosted cheap contracts initially failed because a newly added pure policy test imported SCons in a lane without it. The fixture now mocks that narrow interface and passes `python3 -S -m unittest discover -s test/build_system -p test_dev_build.py -v` (12 tests) without site packages. The original hosted failure log is retained; the rerun status is separate from engine evidence.
 
 Final cache contract invocation set `GLOB2_TEST_CXX` to the same LLVM 22 binary listed above and passes compiler/optimization-flag invalidation as well as actual GDB source lookup in both checkouts. Native GDB command: `gdb --batch -ex "set pagination off" -ex "info line main" -ex "list main" build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2`.
+
+Final hosted cheap contracts pass at 1cdcaf845: https://github.com/Globulation2/glob2/actions/runs/37984204825 . This is cheap-contract evidence only. `master-integration.json` records the successful five-object compile against exact merge tree 5fc55eda385e0c97aa329dea766eda0d5f5819e8 (master c26a0a02a).
