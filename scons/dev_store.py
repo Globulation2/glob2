@@ -9,7 +9,14 @@ import shutil
 import time
 from pathlib import Path
 
-BUDGET = 15 * 1024**3
+BUDGET = 32 * 1024**3
+
+
+def budget():
+    value = os.environ.get("GLOB2_DEV_BUDGET_GIB", "32")
+    if not value.isdecimal() or int(value) < 1:
+        raise ValueError("GLOB2_DEV_BUDGET_GIB must be a positive integer")
+    return int(value) * 1024**3
 _HELD = {}
 _USED_HOMES = set()
 
@@ -291,7 +298,8 @@ def paths(root):
         else "",
         "gradle": str(tools / lock["gradle"]["directory"] / "bin/gradle"),
         "browser_sdk": str(browser_sdk(root, lease=False)),
-        "budget_bytes": BUDGET,
+        "budget_bytes": budget(),
+        "compiler_cache_limit": os.environ.get("CCACHE_MAXSIZE", "4G"),
     }
 
 
@@ -395,12 +403,12 @@ def command_path(path):
     return shlex.quote(str(path))
 
 
-def prune(dry_run=False, budget=BUDGET):
+def prune(dry_run=False, budget=None):
     """Evict complete idle entries; never unlink lock files or active resources."""
     if isolated():
         raise ValueError("Shared-store pruning requires GLOB2_DEV_MODE=shared")
     with Lease(home() / "state/prune", exclusive=True):
-        return _prune_entries(dry_run, budget)
+        return _prune_entries(dry_run, globals()["budget"]() if budget is None else budget)
 
 
 def _prune_entries(dry_run=False, budget=BUDGET):
@@ -436,28 +444,9 @@ def _prune_entries(dry_run=False, budget=BUDGET):
 
 
 def finish():
-    used = home().resolve() in _USED_HOMES
     for lease in list(_HELD.values()):
         lease.close()
     _HELD.clear()
-    if not used or isolated() or not home().exists():
-        return
-    try:
-        with Lease(home() / "state/prune", exclusive=True, blocking=False):
-            stamp = home() / "state/last-prune"
-            if stamp.exists() and time.time() - stamp.stat().st_mtime < 86400:
-                return
-            result = _prune_entries()
-            stamp.touch()
-            if result["after_bytes"] > BUDGET:
-                import sys
-
-                print(
-                    "Glob2 cache budget temporarily exceeded; active resources were retained.",
-                    file=sys.stderr,
-                )
-    except (OSError, ValueError):
-        pass
 
 
 atexit.register(finish)
