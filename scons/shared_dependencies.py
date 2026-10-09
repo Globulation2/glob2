@@ -73,7 +73,12 @@ def relocate(prefix, destination):
             if path.suffix == '.pc':
                 # pkg-config emits these values as shell/compiler arguments.
                 installed = ''.join('\\' + char if char.isspace() else char for char in installed)
-            path.write_text(text.replace(str(prefix), installed).replace(prefix.as_posix(), installed))
+            # macOS resolves /tmp to /private/tmp inside upstream builders.
+            # Replace the longest alias first to avoid leaving /private behind.
+            aliases = {str(prefix), prefix.as_posix(), str(prefix.resolve()), prefix.resolve().as_posix()}
+            for alias in sorted(aliases, key=len, reverse=True):
+                text = text.replace(alias, installed)
+            path.write_text(text)
 
 
 def ensure(builder, local_prefix, work, *, explicit=False, execute=True, **arguments):

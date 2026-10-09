@@ -38,6 +38,20 @@ class SharedDevelopmentDependenciesTests(unittest.TestCase):
                 self.assertEqual(installed, reused)
                 self.assertEqual(len(seen), 1)
 
+    def test_relocation_handles_resolved_temporary_directory_alias(self):
+        with tempfile.TemporaryDirectory() as task:
+            root = Path(task)
+            real = root / 'real'
+            real.mkdir()
+            alias = root / 'alias'
+            alias.symlink_to(real, target_is_directory=True)
+            prefix = alias / 'prefix'
+            prefix.mkdir()
+            (prefix / 'library.pc').write_text('prefix=' + str(prefix.resolve()) + '\n')
+            destination = root / 'Application Support' / 'prefix'
+            shared_dependencies.relocate(prefix, destination)
+            self.assertEqual((prefix / 'library.pc').read_text(), 'prefix=' + str(destination).replace(' ', '\\ ') + '\n')
+
     def test_reuse_and_corruption_detection(self):
         with tempfile.TemporaryDirectory() as task, patch.dict(os.environ, {'GLOB2_DEV_HOME': task, 'GLOB2_DEV_MODE': 'shared'}), patch.object(shared_dependencies, 'fingerprint', return_value={'version': 1}):
             first = shared_dependencies.ensure(build, Path(task) / 'one', Path(task) / 'work')
