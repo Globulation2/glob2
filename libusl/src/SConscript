@@ -11,4 +11,7 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
             PackTar(env["TARFILE"], file)
     PackTar(env["TARFILE"], "SConscript")
     
-env.Library("usl", usl_sources)
+from dev_compile import objects as development_objects, unique
+mapping = development_objects(env, usl_sources,
+    lambda source: env.File(source.removeprefix('#libusl/src/')[:-4] + '.o').abspath)
+env.Library("usl", unique(mapping.values()))

@@ -85,6 +85,41 @@ permanent docs.
   same change. CI fails when the committed `--verify-match` trace moves without a new
   sim version; see [Simulation version](docs/multiplayer/turn-protocol.md#simulation-version).
 
+## Development and release builds
+
+Use `python3 tools/dev_build.py` for routine editing and smoke checks. It builds
+all features supported by the selected platform, enables compiler caching, and
+selects a separate fast-development output directory (`dev_fast=1`, `-O0 -g1`).
+Basic symbols support backtraces but provide limited variable inspection. Pass
+SCons options and targets directly, for example `target=web`, `target=android
+arch=arm64-v8a`, `target=ios environment=simulator`, or `engine-tests`.
+
+Use ordinary `scons` (or `tools/dev_build.py dev_fast=0 linker=default`) for full
+debug information and detailed debugger variable inspection. `pch=1` and
+`unity=1` are opt-in development experiments, usable separately or together;
+verify their result against ordinary compilation. They are not release options.
+PCH consumers compile directly because the repository forbids the ccache
+sloppiness settings required for PCH caching. Other objects remain cacheable.
+
+Browser development defaults to `web_variant=threaded`; use `web_variant=serial`
+when the browser cannot provide cross-origin isolation and worker rendering.
+Normal browser builds and `web-package` use both variants. Single-variant builds
+retain recording, music, scripting, Hive and other supported browser features.
+
+Use `scons release=1` and the platform's existing packaging workflow for shipping,
+package verification, and representative performance measurements. Never ship a
+fast/PCH/unity development build or compare its runtime performance to release.
+Fast-build success alone does not establish release readiness or waive simulation
+determinism, save/load continuity, replay/network acceptance, numeric guards, or
+platform checks. Keep incomplete platform coverage explicit in review evidence.
+
+The development command uses a 12 GiB compiler-cache ceiling; `CCACHE_MAXSIZE`
+overrides it. Shared cache/dependency pruning defaults to 32 GiB, configurable
+with `GLOB2_DEV_BUDGET_GIB`. Builds never prune the managed store automatically;
+inspect `tools/dev_environment.py status` and explicitly run its `prune` command.
+See [Development reference](docs/development/reference.md#fast-development-builds)
+for configuration, dependency reuse, profiling and validation details.
+
 ## Dependencies
 
 Treat runtime and development dependencies differently.

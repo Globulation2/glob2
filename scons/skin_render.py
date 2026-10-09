@@ -51,4 +51,4 @@ def configure(env):
     header = env.Command('SkinRenderRecipe.h', [str(p) for p in inputs], generate,
                          source_scanner=Scanner(lambda node, env, path: []))
     env.Append(CPPPATH=[env.Dir('.').abspath])
-    env.Depends(env.Object('app/cli/RenderSkin.cpp'), header)
+    env.Depends(env.File('app/cli/RenderSkin.o'), header)

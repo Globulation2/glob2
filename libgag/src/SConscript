@@ -7,7 +7,10 @@ if env["PLATFORM"] == "darwin" and not env.get("mingw") and not env.get("mingwcr
 
     
 Import("env")
-l1 = env.StaticLibrary("gag", libgag_sources)
+from dev_compile import objects as development_objects, unique
+mapping = development_objects(env, libgag_sources,
+    lambda source: env.File(source.removeprefix('#libgag/src/').rsplit('.', 1)[0] + '.o').abspath)
+l1 = env.StaticLibrary("gag", unique(mapping.values()))
 if env.get("RUNTIME_ASSET_STAMP"):
     env.Requires(l1, env["RUNTIME_ASSET_STAMP"])
 
