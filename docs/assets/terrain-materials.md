@@ -101,7 +101,12 @@ For animation, a variant's effective frame is `frame + phase * animation_stride`
 renderer's animation clock, and the stride must be positive when there is more
 than one phase. Every effective frame must exist and remain below 65536.
 All cells of a material share the phase, so a texture that moves must move the
-same way in every variant.
+same way in every variant. Between phases the renderer linearly crossfades the
+current and next textures using the remainder of `animation_ticks`, including
+last-to-first at the loop boundary. It keeps two prepared endpoints and one
+blended texture per variant, without adding sprite frames. The existing visual
+clock and pause behavior are unchanged. Materials with a one-tick phase duration
+still select a discrete frame.
 
 ## Material production
 
@@ -277,11 +282,11 @@ The visible pattern repeats every four cells instead of every cell. Dark water
 is static. All three are opaque and blend through the ordinary soft profile.
 Marsh pools are opaque too.
 
-Each sixteen-phase material is 256 native and 256 HD frames. A material whose
-phase changes every few ticks also recomposes the terrain pages that show it at
-that rate; see [Caches and compatibility](#caches-and-compatibility) for the
-kept coverage that keeps this cheap, and check the terrain cache cost when
-adding faster or wider animation.
+Each sixteen-phase material is 256 native and 256 HD frames. Animated materials
+crossfade on every visual tick and recompose the terrain pages that show them at
+that cadence; see [Caches and compatibility](#caches-and-compatibility) for the
+kept coverage that avoids resampling boundaries, and check the terrain cache cost
+when adding animation over larger areas.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded
@@ -669,7 +674,9 @@ These are maximum memory allowances, not up-front allocations.
 Generated/edited pages keep alpha-weighted mip filtering but upload uncompressed
 textures. Driver-side DXT encoding is reserved for artwork with prepared mip
 chains; repeating that encoding on animated terrain updates stalls rendering.
-Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
+Crossfades update material revisions on each visual tick, so pages containing
+animated materials recompose at that cadence. Repeating the same animation time
+reuses their pixels. Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
 composed pixel), so a phase change re-blends their textures instead of
 re-sampling the boundary; coverage depends only on the cell, never on the phase.
 These masks have their own budget (8 MiB software, 32 MiB GPU, or 128 MiB for
