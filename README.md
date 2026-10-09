@@ -10,7 +10,7 @@ The two subsequent master commits change release NASM installation and browser i
 Linux 7.0.0-31-generic, x86_64; GCC 15.2.0 (Ubuntu 15.2.0-16ubuntu1).
 Existing SDL prefix: SDL 3.4.16, SDL_ttf 3.2.2, SDL_image 3.4.6, SDL_net 3.2.0.
 Native release: gnu++20, -Wall -fPIC -O3 -s, HAVE_CONFIG_H, SDL_MAIN_HANDLED.
-No runtime dependencies were added. Final native binaries were rebuilt after committing; test XML includes build provenance.
+No runtime dependencies were added. Final native binaries were rebuilt after committing; the final engine log includes build provenance.
 
 ```sh
 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix scons release=1 tests build/linux/client/release/src/glob2 -j12

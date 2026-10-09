@@ -1,0 +1,13 @@
+{
+  "compiler": "g++",
+  "dirty": false,
+  "flags": {
+    "CCFLAGS": "",
+    "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED",
+    "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s",
+    "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/tmp/glob2-sdl3/prefix/lib -Wl,--enable-new-dtags"
+  },
+  "revision": "8ef46a8462d0821eae2a056cd77bec2bbb8e8f8a",
+  "sourceStatus": [],
+  "sourceTreeSha256": "047430886a33779733e4eb7bf7457bddd8afc88be4763e847912001d2545ea22"
+}
