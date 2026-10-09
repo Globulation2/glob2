@@ -653,16 +653,24 @@ pixels. View caches hold 16×16-cell composed pages and compare recipes includin
 the surrounding lattice, so edits update neighboring tiles and wrapped chunks.
 Each page and tile tracks revisions only for materials used by its discovered
 recipes; an animation outside that dependency set does not rebuild the page.
-Changes to the overall page sampling density still invalidate view pages.
+Sampling density is part of the page key. Old densities retain their composed
+CPU pixels inside the cache budget. Renderer allocations also remain reusable
+until memory pressure retires them. Returning to a density revalidates terrain,
+discovery and material revisions before reusing its pixels.
 The historical `SoftwareTerrainCache` name is retained for benchmark controls,
 but the cache also draws GPU pages. Software page storage stays bounded by
-32 MiB; GPU pages have a separate 128 MiB budget. Pages also keep the coverage of
-mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
+32 MiB. GPU density selection retains its 128 MiB allowance, and resident
+textures remain bounded by 128 MiB of conservative texture/mip reservations.
+On desktop, the total GPU-page cache has a 256 MiB ceiling including CPU pixels,
+bookkeeping and resident texture reservations. The additional 128 MiB lets
+inactive zoom densities retain their CPU pixels without sacrificing sampling
+quality. Android and browser builds retain the 128 MiB total ceiling.
+These are maximum memory allowances, not up-front allocations.
+Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
 composed pixel), so a phase change re-blends their textures instead of
 re-sampling the boundary; coverage depends only on the cell, never on the phase.
-These masks have their own budget of a quarter of the page budget (8 MiB software,
-32 MiB GPU); when it is full, masks of pages not drawn in the current frame are
-released oldest first, and cells that still do not fit compose without one.
+These masks have their own budget (8 MiB software, 32 MiB GPU); when it is full,
+masks of pages not drawn in the current frame are released oldest first, and cells that still do not fit compose without one.
 Composition always blends through the same mask encoding, so a kept mask and a
 fresh one give identical pixels. HD oversampling falls from 4× to 2× or
 1× when necessary to fit the visible pages or the device texture limit. If native
@@ -670,7 +678,8 @@ pages still exceed the budget in a zoomed-out GPU view, the cache reduces them b
 powers of two as needed, going no coarser than the nearest level to the display's
 physical pixel density (at most √2 magnification). Reduction averages composed
 native pixels with alpha-weighted colors, so undiscovered (transparent) cells
-do not darken their neighbours.
+do not darken their neighbours. A valid retained native page supplies these
+pixels directly; reduction does not sample its terrain boundaries again.
 This keeps terrain reusable during the detailed-to-overview crossfade, instead of
 recomposing the entire visible map every frame. The reduced detail can soften
 texture grain at distant zooms. Software pages retain native density. Prepared
@@ -683,6 +692,11 @@ view and shared by cached and streamed pages; tiled map captures also share the
 whole capture's density at narrow edges. The budget includes a fixed allowance
 for recipes and bookkeeping plus density-dependent pixel storage. Increasing it
 can retain more detail but does not remove the need to handle oversized views.
+If the complete view cannot retain all of its textures simultaneously, but its
+CPU pages and one texture upload fit, the cache keeps those CPU pages and retires
+textures in drawing order as needed. This preserves the selected sampling and
+avoids repeated boundary composition near page-alignment budget thresholds.
+Only a view whose CPU pages and one upload cannot fit uses composition streaming.
 First-time composition still evaluates native terrain before reduction; this
 policy removes repeated work on warm frames, not the cost of a cold frame.
 
