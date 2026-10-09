@@ -59,6 +59,15 @@ class WindowsCrashDiagnosticsTests(unittest.TestCase):
         self.assertIn('break _wassert', command)
         self.assertIn('break abort', command)
         self.assertLess(command.index('break _assert'), command.index('run'))
+        script = windows_crash_diagnostics.debugger_script()
+        self.assertIn('break JS_FreeRuntime', script)
+        self.assertIn('JS_SetDumpFlags', script)
+        self.assertIn('$rcx', script)
+        self.assertIn('0x4000', script)
+        self.assertLess(script.index('commands'), script.index('\nrun\n'))
+        replay = windows_crash_diagnostics.debugger_command('gdb', Path('engine.exe'),
+                                                           'LAN', name, Path('replay.gdb'))
+        self.assertEqual(replay[replay.index('-x') + 1], 'replay.gdb')
 
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">

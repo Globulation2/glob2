@@ -91,6 +91,14 @@ programs keep their normal release stripping. Logs appear in
 `artifacts/tests/crash-diagnostics/`. Diagnostic replays are bounded to 180 seconds
 per case and never replace the original failed result. CRT assertion/abort entry
 points have pending breakpoints so the stack is captured before process exit.
+For generator teardown leaks, the Windows x64 replay also enables QuickJS leak
+reporting at runtime destruction; this affects only the replay under GDB, not
+the original test or the shipped program.
+The manual `windows-generator-diagnostics.yml` workflow takes an exact `revision`,
+builds the engine harness with the normal MinGW release flags/dependencies, and
+runs only the optional generator example case before retaining the GDB replay.
+It preserves that case's failure and is focused diagnostic evidence, not a full
+Windows or development checkpoint.
 
 Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
 and selects the dummy drivers when the environment does not, so
