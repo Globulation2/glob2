@@ -203,8 +203,8 @@ TEST_SUITE("CortexActionCoverage")
                 const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
                 Cortex::QueryScratch scratch;Cortex::PlanningIntent intents;
                 const auto* observedTeam=&view->teams[world.team->teamNumber];
-                ordinaryCount[supplied]=placeCandidates(view.get(),observedTeam,scratch,intents,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
-                forwardCount[supplied]=placeForwardCandidate(view.get(),observedTeam,scratch,intents,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
+                ordinaryCount[supplied]=placeCandidates(syncRandEngine(), view.get(),observedTeam,scratch,intents,CORTEX_BUILD_HEAL,0,ordinary[supplied],-1,current);
+                forwardCount[supplied]=placeForwardCandidate(syncRandEngine(), view.get(),observedTeam,scratch,intents,CORTEX_BUILD_HEAL,16,16,0,31,forward[supplied],current);
                 randomEnd[supplied]=getSyncRandState();
             }
             CHECK(ordinaryCount[0]==ordinaryCount[1]);
@@ -217,7 +217,7 @@ TEST_SUITE("CortexActionCoverage")
             CHECK((forwardCount[0]>0)==(qualification==1));
             MersenneTwister random(713);
             SyncRandScope scope(random);
-            const auto observation=observe(world.game.players[0],0,NOGBID);
+            const auto observation=observe(syncRandEngine(), world.game.players[0],0,NOGBID);
             CHECK(observation.maxBuildLevel==qualification);
             CHECK((observation.buildCandidates[CORTEX_BUILD_HEAL][0].valid!=0)==(qualification==1));
         }
@@ -235,11 +235,11 @@ TEST_SUITE("CortexActionCoverage")
         Cortex::QueryScratch scratch;Cortex::PlanningIntent intents;
         MersenneTwister random(713); SyncRandScope scope(random);
         const auto state=getSyncRandState();
-        const auto first=Cortex::observeWorld(view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
+        const auto first=Cortex::observeWorld(syncRandEngine(), view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
         swarm->maxUnitWorking=99; worker->constructionLevel=3; worker->posX=23;
         fixture.game.stepCounter+=8;
         setSyncRandState(state);
-        const auto second=Cortex::observeWorld(view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
+        const auto second=Cortex::observeWorld(syncRandEngine(), view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
         CHECK(first.tick==second.tick);
         CHECK(first.maxBuildLevel==second.maxBuildLevel);
         CHECK(first.trackedSwarms[0].maxUnitWorking==second.trackedSwarms[0].maxUnitWorking);
@@ -376,7 +376,7 @@ TEST_SUITE("CortexActionCoverage")
             for(int cycle=0;cycle<4 && !created;++cycle) {
                 world.game.stepCounter+=300;
                 refreshStats(*world.team);
-                const auto obs=Cortex::observe(world.game.players[0],0,NOGBID);
+                const auto obs=Cortex::observe(syncRandEngine(), world.game.players[0],0,NOGBID);
                 Sint32 requested[3];Cortex::CortexPolicy::productionTargets(obs,requested);
                 CAPTURE(unit);CAPTURE(cycle);CAPTURE(obs.totalUnit);CAPTURE(obs.workers);CAPTURE(obs.hungerDisabled);CAPTURE(obs.productionMask);CAPTURE(obs.productionPlannedMask);CAPTURE(requested[0]);CAPTURE(requested[1]);CAPTURE(requested[2]);
                 REQUIRE(obs.productionPlacementType==ids[unit]);
@@ -408,22 +408,22 @@ TEST_SUITE("CortexActionCoverage")
         auto* producer=world.addBuilding("swarm",4,4);
         for(int i=0;i<10;++i) REQUIRE(world.addUnit(WORKER));
         refreshStats(*world.team);
-        auto obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        auto obs=Cortex::observe(syncRandEngine(), world.game.players[0],0,NOGBID);
         Sint32 target[3];Cortex::CortexPolicy::productionTargets(obs,target);
         for(int unit=0;unit<3;++unit)producer->ratio[unit]=target[unit]>0?target[unit]+7:0;
-        obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        obs=Cortex::observe(syncRandEngine(), world.game.players[0],0,NOGBID);
         CHECK_FALSE(obs.productionNeedsRetune);
         Cortex::CortexPolicy policy;
         const auto initial=policy.decide(obs);
         CHECK(initial.kind!=Cortex::ACTION_SET_PRODUCTION);
         ObservedCortex ai(world.game.players[0]);ai.translateAction(initial,obs);drain(ai,world.game);
         for(int unit=0;unit<3;++unit)producer->ratio[unit]=0;
-        obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        obs=Cortex::observe(syncRandEngine(), world.game.players[0],0,NOGBID);
         REQUIRE(obs.productionNeedsRetune);
         const auto action=policy.decide(obs);
         REQUIRE(action.kind==Cortex::ACTION_SET_PRODUCTION);
         ai.translateAction(action,obs);drain(ai,world.game);
-        obs=Cortex::observe(world.game.players[0],0,NOGBID);
+        obs=Cortex::observe(syncRandEngine(), world.game.players[0],0,NOGBID);
         CHECK_FALSE(obs.productionNeedsRetune);
         CHECK(policy.decide(obs).kind!=Cortex::ACTION_SET_PRODUCTION);
     }

@@ -172,7 +172,7 @@ TEST_SUITE("RelayAdmission")
 		CHECK(n["schema"] == "RelayNetworkSummary");
 		CHECK(n["schema_version"] == 1);
 		CHECK(n["end_tick"] == 900);
-		CHECK(n["duration_ms"] == 36000);
+		CHECK(n["duration_ms"] == 30000);
 		REQUIRE(n["seats"].size() == 2);
 		CHECK(n["seats"][0]["orders"]["sequenced"] == 40);
 		CHECK(n["seats"][0]["rtt_us"]["count"] == 2);

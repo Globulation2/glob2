@@ -84,9 +84,9 @@ namespace glob2test
 		// Install a GameHeader with one local player per team, the way the game
 		// loader does: orders then apply to the team, painted areas reach the
 		// displayed view, and a save of the game reloads to the same checksums.
-		// The seed and experiments below only take effect with it.
+		// Experiments below only take effect with it.
 		bool header = false;
-		Uint32 seed = 1;              // GameHeader otherwise seeds from the wall clock
+		Uint32 seed = 1;              // deterministic entity seed, also without a player header
 		ExperimentSet experiments;    // the experiments the game carries (ExperimentalFeatures.h)
 	};
 

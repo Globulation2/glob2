@@ -57,6 +57,7 @@ struct Fixture
 
     Fixture() : game(NULL)
     {
+        game.gameHeader.setRandomSeed(5489);
         // This fixture skips setGameHeader, which normally initializes the
         // player-wait state. syncStep must actually advance the simulation.
         game.setWaitingOnMask(0);

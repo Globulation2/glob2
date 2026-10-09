@@ -367,8 +367,9 @@ private:
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
     std::atomic<Sint64> sessionClockOffset{0};
     void publishSessionClock(Uint64 now);
-    // Live while a session runs: synchronized draws must use the game's bound stream.
-    std::optional<SyncRandRequirement> randomRequirement;
+    // Private setup draws never consume a simulation owner's stream.
+    EntityRandom mapSelectionRandom;
+    bool mapSelectionInitialized = false;
     int sessionEndingTarget = 0;
     GAGCore::EventQueue sessionInput;
 

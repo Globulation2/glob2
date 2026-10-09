@@ -18,6 +18,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "EntityRandomIO.h"
 #include "Bullet.h"
 #include "BuildingGradientSearch.h"
 #include "BuildingGradientStats.h"
@@ -35,6 +36,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	this->gid=gid;
 	owner=team;
 	scriptIdentity=owner->game->allocateScriptIdentity(true,gid);
+	entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
 
 	// type
 	bindType(typeNum,types);
@@ -262,6 +264,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		throw std::runtime_error("Invalid building identity");
 	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
 	this->owner = owner;
+	if (versionMinor >= FILE_FORMAT_VERSION_ENTITY_RANDOM)
+		loadEntityRandom(stream, entityRandom);
+	else
+		entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
 
 	// position
 	posX = stream->readSint32("posX");
@@ -483,6 +489,7 @@ void Building::save(GAGCore::OutputStream *stream)
 	// identity
 	stream->writeUint16(gid, "gid");
 	stream->writeUint32(scriptIdentity, "scriptIdentity");
+	saveEntityRandom(stream, entityRandom);
 	// we drop team
 
 	// position

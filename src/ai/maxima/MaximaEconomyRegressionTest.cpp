@@ -63,6 +63,7 @@ struct Fixture
     std::unique_ptr<AIMaxima::Maxima> ai;
     Fixture() : game(NULL)
     {
+        game.gameHeader.setRandomSeed(5489);
         game.setWaitingOnMask(0);
         game.map.setSize(6,6,GRASS);
         game.map.setGame(&game);

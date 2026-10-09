@@ -65,18 +65,11 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 		result.detail = "Generation requires a fresh Game";
 		return finish();
 	}
-	// General engine mutation APIs still use the synchronized gameplay stream.
-	// This synchronous, scoped bridge is not a concurrency API.
-	struct EngineRandomScope
-	{
-		MersenneTwister saved = syncRandEngine();
-		~EngineRandomScope() { syncRandEngine() = saved; }
-	} rngScope;
-	setSyncRandSeed(GenerationContext::deriveSeed(request.seed, "engine"));
 	game.gameHeader.setRandomSeed(request.seed);
+	game.map.worldRandom.initialize(request.seed);
 	game.map.setSize(request.wDec, request.hDec);
 	// The drawn terrain look follows the request seed too, without touching the
-	// synchronized stream, so a regenerated map is identical on every client.
+	// simulation streams, so a regenerated map is identical on every client.
 	game.map.setTerrainSeed(GenerationContext::deriveSeed(request.seed, "terrain-look"));
 	game.map.setGame(&game);
 	bool generated = false;

@@ -66,9 +66,10 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 		int y;
 		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 
-		Unit *unit=game.addUnit(x, y, team, type, level, rand()%256, 0, 0);
+		Unit *unit=game.addUnit(x, y, team, type, level, 0, 0, 0);
 		if (unit)
 		{
+			unit->delta = unit->entityRandom.nextU32() & 255;
 			if (game.teams[team]->startPosSet<Team::START_POS_FROM_UNIT)
 			{
 				game.teams[team]->startPosX=viewportX;

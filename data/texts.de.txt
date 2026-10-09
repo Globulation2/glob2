@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Schließe die Anmeldung im Browser ab. Das Spiel fährt anschließend automatisch fort.
 [hub browser did not open]
-
+Dein Browser wurde nicht geöffnet. Öffne die Anmeldeseite, um fortzufahren.
 [hub compare code %0]
-
+Falls die Seite danach fragt, prüfe, ob sie %0 anzeigt.
 [hub code copied]
-
+Code kopiert
 [settings Finish in your browser. The game continues by itself.]
-
+Im Browser abschließen. Das Spiel fährt automatisch fort.
 [music set]
-
+Musikpaket
 [random music set]
-
+Bei jeder Partie zufällig
 [playing music set %0]
-
+Wiedergabe: %0
 [music set failed]
-
+Dieses Musikpaket konnte nicht geladen werden.
 [settings Music set]
-
+Musikpaket
 [settings Random each match]
-
+Wähle Zufällig, um zu Beginn jeder Partie einen Soundtrack auszuwählen.
 [settings Edge scrolling]
-
+Scrollen am Rand
 [settings Edge scrolling in fullscreen]
-
+Scrollen am Rand im Vollbildmodus
 [settings Edge scrolling in windowed mode]
-
+Scrollen am Rand im Fenstermodus
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Die Spiel- und Editorkarten bewegen, wenn die Maus den Fensterrand erreicht.
 [AI strategy]
 KI-Strategie
 [start recording]
@@ -4625,9 +4625,9 @@ Aufnahme
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Nehmen Sie Ihre Spiele als MP4-Videos mit Ton auf. Die Aufnahme benötigt FFmpeg mit den Encodern libx264 und AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Spiele als MP4-Videos mit Ton aufnehmen.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Die Aufnahme nutzt die volle gerenderte Auflösung bei 30 Bildern/s.
 [settings FFmpeg is ready.]
 FFmpeg ist bereit.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Verwundete ziehen sich zurück
 [Units can die]
 Einheiten können sterben
 [Upgrades]
-
+Verbesserungen
 [No stockpile]
 Keiner
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Verletzte Einheiten ziehen sich zum Heilen zurück, statt bis zum Tod zu kämpfe
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Einheiten sterben, wenn ihre Trefferpunkte aufgebraucht sind. Ausschalten, damit sie bei 1 Trefferpunkt stehen bleiben.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Einheiten steigen in Ausbildungsgebäuden auf, und Gebäude können verbessert werden. Reparaturen bleiben auch bei deaktivierter Option verfügbar.
 [stat group work]
 Arbeitszeit
 [stat worker time]
@@ -5309,235 +5309,235 @@ Stärke
 [stat view by place]
 Nach Ort
 [AI Library]
-
+KI-Bibliothek
 [Authoring guide]
-
+Leitfaden für Autoren
 [Beginner-friendly]
-
+Für Anfänger geeignet
 [Defensive]
-
+Defensiv
 [Discover]
-
+Entdecken
 [Download & install]
-
+Herunterladen & installieren
 [Downloading AI…]
-
+KI wird heruntergeladen…
 [Expansion]
-
+Expansion
 [Experimental]
-
+Experimentell
 [Favourite]
-
+Favorisieren
 [Favourited]
-
+Favorisiert
 [Favourites]
-
+Favoriten
 [Got it]
-
+Verstanden
 [How AIs work]
-
+So funktionieren KIs
 [Install selected version]
-
+Ausgewählte Version installieren
 [Installed]
-
+Installiert
 [Invalid AI catalogue response]
-
+Ungültige Antwort des KI-Katalogs
 [JavaScript API reference]
-
+JavaScript-API-Referenz
 [Like]
-
+Gefällt mir
 [Liked]
-
+Gefällt dir
 [Loading AI library…]
-
+KI-Bibliothek wird geladen…
 [Most downloaded]
-
+Meist heruntergeladen
 [Most liked]
-
+Meist gemocht
 [Newest]
-
+Neueste
 [No AIs match these filters.]
-
+Keine KIs entsprechen diesen Filtern.
 [Not validated for this game version]
-
+Für diese Spielversion nicht geprüft
 [Open AI Library]
-
+KI-Bibliothek öffnen
 [Open AI page]
-
+KI-Seite öffnen
 [Passed compatibility checks]
-
+Kompatibilitätsprüfungen bestanden
 [Recently updated]
-
+Kürzlich aktualisiert
 [Rush]
-
+Früher Angriff
 [Search]
-
+Suchen
 [Share your AI]
-
+Deine KI teilen
 [Show more]
-
+Mehr anzeigen
 [Sign in through Online settings to like and favourite AIs.]
-
+Melde dich über die Online-Einstellungen an, um KIs zu mögen und zu favorisieren.
 [Starter project]
-
+Einstiegsprojekt
 [downloads of this version]
-
+Downloads dieser Version
 [downloads]
-
+Downloads
 [Update available]
-
+Aktualisierung verfügbar
 [Browse versions]
-
+Versionen durchsuchen
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Lade eine KI herunter und wähle sie dann für einen Computerplatz in einer lokalen Partie. Installierte Versionen funktionieren offline. Aktualisierungen betreffen künftige Partien; Spielstände behalten ihren ursprünglichen Code.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Kompatibilitätsprüfungen bestätigen weder Sicherheit noch Spielstärke. Führe nur Code von Autoren aus, denen du vertraust.
 [Back to results]
-
+Zurück zu den Ergebnissen
 [music 2–5 minutes]
-
+2–5 Minuten
 [music 5–15 minutes]
-
+5–15 Minuten
 [music AI-generated]
-
+KI-generiert
 [music All music]
-
+Alle Musik
 [music All open licences]
-
+Alle offenen Lizenzen
 [music Any duration]
-
+Beliebige Dauer
 [music Audition each mood for eight seconds]
-
+Jede Stimmung acht Sekunden probehören
 [music Back]
-
+Zurück
 [music Browse]
-
+Durchsuchen
 [music Building]
-
+Spannungsaufbau
 [music Calm]
-
+Ruhe
 [music Calm → Building → Combat]
-
+Ruhe → Spannungsaufbau → Kampf
 [music Choose Building]
-
+Spannungsaufbau wählen
 [music Choose Calm]
-
+Ruhe wählen
 [music Choose Combat]
-
+Kampf wählen
 [music Choose ZIP]
-
+ZIP wählen
 [music Choose a music file.]
-
+Wähle eine Musikdatei.
 [music Combat]
-
+Kampf
 [music Could not open this music set.]
-
+Dieses Musikpaket konnte nicht geöffnet werden.
 [music Credits, downloads and reporting]
-
+Mitwirkende, Downloads und Meldungen
 [music Downloading music…]
-
+Musik wird heruntergeladen…
 [music Export recovery files]
-
+Wiederherstellungsdateien exportieren
 [music Fade duration]
-
+Überblenddauer
 [music File selection cancelled or failed.]
-
+Dateiauswahl abgebrochen oder fehlgeschlagen.
 [music Import ZIP]
-
+ZIP importieren
 [music Import ZIP or three tracks]
-
+ZIP oder drei Stücke importieren
 [music Import music]
-
+Musik importieren
 [music Import three tracks]
-
+Drei Stücke importieren
 [music Includes AI-generated audio]
-
+Enthält KI-generierte Musik
 [music Install]
-
+Installieren
 [music Install selected]
-
+Auswahl installieren
 [music Installed]
-
+Installiert
 [music Load more]
-
+Mehr laden
 [music Loading music…]
-
+Musik wird geladen…
 [music Most downloaded]
-
+Meist heruntergeladen
 [music Most liked]
-
+Meist gemocht
 [music Music decoding failed.]
-
+Musik konnte nicht dekodiert werden.
 [music Music download failed.]
-
+Musik konnte nicht heruntergeladen werden.
 [music Music installed.]
-
+Musik installiert.
 [music Music installed. It is now available in Audio settings.]
-
+Musik installiert. Sie ist jetzt in den Audioeinstellungen verfügbar.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Die Musik ist noch nicht dauerhaft gespeichert. Versuche vor dem Verlassen erneut zu speichern.
 [music Music library]
-
+Musikbibliothek
 [music Music request failed.]
-
+Musikanfrage fehlgeschlagen.
 [music Newest]
-
+Neueste
 [music No community music installed yet. Import files or browse the online library.]
-
+Noch keine Musik aus der Community installiert. Importiere Dateien oder durchsuche die Online-Bibliothek.
 [music No music found.]
-
+Keine Musik gefunden.
 [music Not AI-generated]
-
+Nicht KI-generiert
 [music Pause]
-
+Pause
 [music Play]
-
+Abspielen
 [music Playback position]
-
+Wiedergabeposition
 [music Preview]
-
+Vorschau
 [music Ready to import.]
-
+Bereit zum Importieren.
 [music Remove]
-
+Entfernen
 [music Reset to game behavior]
-
+Auf Spielverhalten zurücksetzen
 [music Retry saving]
-
+Speichern erneut versuchen
 [music Saved.]
-
+Gespeichert.
 [music Saving music…]
-
+Musik wird gespeichert…
 [music Search]
-
+Suchen
 [music Search title, artist, description…]
-
+Titel, Künstler, Beschreibung suchen…
 [music Select for installation]
-
+Zur Installation auswählen
 [music Share music on the web]
-
+Musik im Web teilen
 [music Some catalogue entries could not be read.]
-
+Einige Katalogeinträge konnten nicht gelesen werden.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Die Daten konnten nicht gespeichert werden. Versuche es erneut oder exportiere deine Dateien vor dem Verlassen.
 [music Tag]
-
+Schlagwort
 [music Test crossfades]
-
+Überblendungen testen
 [music Up to 2 minutes]
-
+Bis zu 2 Minuten
 [music Use this music]
-
+Diese Musik verwenden
 [music Validating music…]
-
+Musik wird geprüft…
 [settings Music library · Browse, install and import]
-
+Musikbibliothek · Durchsuchen, installieren und importieren
 [music Filters]
-
+Filter
 [music Leave without saving]
-
+Ohne Speichern verlassen
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importiere ein heruntergeladenes Musik-ZIP oder die drei Opus-Stücke. Metadaten und Cover werden aus dem Stück Ruhe gelesen; zusätzliche Dateien sind nicht erforderlich.
 [settings Target render FPS]
 Zielbildrate für die Darstellung
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Fische
 [Reroll terrain look]
 Geländeaussehen neu auswürfeln
 [boulders]
-
+Felsblöcke
 [hedge]
-
+Hecke
 [thicket]
-
+Dickicht
 [ridge_rock]
-
+Felsrücken
 [outcrop]
-
+Felsvorsprung
 [dirt]
-
+Erde
 [clay]
-
+Ton
 [gravel]
-
+Kies
 [flower_meadow]
-
+Blumenwiese
 [mud]
-
+Schlamm
 [marsh]
-
+Sumpf
 [deep_snow]
-
+Tiefer Schnee
 [scree]
-
+Geröll
 [dirt_track]
-
+Feldweg
 [boardwalk]
-
+Bohlenweg
 [lava]
-
+Lava
 [ember_field]
-
+Glutfeld
 [loam]
-
+Fruchtbarer Lehm
 [moss]
-
+Moos
 [spring_meadow]
-
+Frühlingswiese
 [deep_water]
-
+Tiefes Wasser
 [dark_water]
-
+Dunkles Wasser
 [void_hole]
-
+Loch
 [chasm]
-
+Abgrund
 [terrain group water]
-
+Wasser
 [terrain group sand]
-
+Sand
 [terrain group grass]
-
+Gras
 [terrain group ice]
-
+Eis
 [terrain group paths]
-
+Wege
 [terrain group obstacles]
-
+Hindernisse
 [terrain group ridges]
-
+Felsrücken
 [terrain group barren]
-
+Unfruchtbarer Boden
 [terrain group rough]
-
+Unwegsamer Boden
 [terrain group lava]
-
+Lava
 [terrain group fertile]
-
+Fruchtbarer Boden
 [terrain group deep-water]
-
+Tiefes Wasser
 [terrain group void]
-
+Leere
 [experiment obstacle-terrain]
-
+Hindernisgelände
 [experiment obstacle-terrain help]
-
+Fügt dem Karteneditor Felsblöcke, Hecken und Dickicht hinzu. Bodeneinheiten können sie nicht überqueren, und sie stoppen Geschosse; fliegende Einheiten passieren sie. Weder Gebäude noch Ressourcen können dort stehen.
 [experiment ridge-terrain]
-
+Felsrückengelände
 [experiment ridge-terrain help]
-
+Fügt dem Karteneditor Felsrücken und Felsvorsprünge hinzu. Bodeneinheiten können sie nicht überqueren, doch Türme schießen darüber und fliegende Einheiten passieren sie. Weder Gebäude noch Ressourcen können dort stehen.
 [experiment barren-terrain]
-
+Unfruchtbarer Boden
 [experiment barren-terrain help]
-
+Fügt dem Karteneditor Erde, Ton, Kies und Blumenwiesen hinzu. Gebäude können darauf stehen, nichts wächst darauf oder daneben, und sie zählen nicht als Ufer.
 [experiment rough-terrain]
-
+Unwegsamer Boden
 [experiment rough-terrain help]
-
+Fügt dem Karteneditor Schlamm, Sumpf, tiefen Schnee und Geröll hinzu. Bodeneinheiten bewegen sich mit etwa zwei Dritteln der Geschwindigkeit. Weder Gebäude noch Ressourcen können dort stehen.
 [experiment path-terrain]
-
+Weggelände
 [experiment path-terrain help]
-
+Fügt dem Karteneditor Feldwege und Bohlenwege hinzu. Wie auf Pfaden bewegen sich Bodeneinheiten doppelt so schnell. Gebäude sind erlaubt, aber nichts wächst.
 [experiment lava-terrain]
-
+Lavagelände
 [experiment lava-terrain help]
-
+Fügt dem Karteneditor Lava und Glutfelder hinzu. Bodeneinheiten können sie nicht betreten; fliegende Einheiten verlieren beim Überqueren schnell Gesundheit. Geschosse passieren sie.
 [experiment fertile-terrain]
-
+Fruchtbarer Boden
 [experiment fertile-terrain help]
-
+Fügt dem Karteneditor fruchtbaren Lehm, Moos und Frühlingswiesen hinzu. Sie erlauben Gebäude und Pflanzen und bewässern umliegendes Land stärker als Wasser.
 [experiment deep-water-terrain]
-
+Tiefes Wasser
 [experiment deep-water-terrain help]
-
+Fügt dem Karteneditor tiefes und dunkles Wasser hinzu. Schwimmer überqueren es langsamer, keine Algen wachsen darin, und es bewässert weiterhin nahe Felder.
 [experiment void-terrain]
-
+Leeres Gelände
 [experiment void-terrain help]
-
+Fügt dem Karteneditor Löcher und Abgründe hinzu. Nichts kann sie überqueren, auch keine fliegenden Einheiten, und Geschosse stoppen an ihrem Rand.
 [terrain group custom]
-
+Benutzerdefiniert
 [terrain group classic]
-
+Klassischer Boden
 [terrain rule walkable]
-
+Begehbar
 [terrain rule swimmable]
-
+Durchschwimmbar
 [terrain rule impassable]
-
+Unpassierbar
 [terrain rule no flying]
-
+Kein Fliegen
 [terrain rule buildable]
-
+Bebaubar
 [terrain rule speed %0]
-
+Geschwindigkeit %0%
 [terrain rule crops grow]
-
+Pflanzen wachsen
 [terrain rule irrigates]
-
+Bewässert umliegendes Land
 [terrain rule stops nearby growth]
-
+Verhindert Wachstum in der Nähe
 [terrain rule blocks shots]
-
+Blockiert Geschosse
 [terrain rule hurts walkers]
-
+Schädigt Bodeneinheiten
 [terrain rule hurts fliers]
-
+Schädigt fliegende Einheiten
 [terrain palette hint]
-
+Wähle einen Pinsel. Die Geländearten innerhalb einer Gruppe haben dieselben Regeln und unterscheiden sich nur im Aussehen.
 [terrain rule algae grow]
-
+Algen wachsen
 [terrain palette experiments hint]
-
+Wähle einen Pinsel. Weitere Geländegruppen erscheinen hier, sobald ihre Experimente unter Einstellungen > Experimente aktiviert sind.
 [brush valid on %0]
-
+Gültig auf: %0
 [brush valid nowhere]
-
+Kann auf keinem Gelände dieser Karte platziert werden
 [brush requires experiment %0]
-
+Benötigt das Experiment %0
 [brush resources custom]
-
+Importierte Ressourcen
 [brush section zones]
-
+Zonen
 [brush section areas]
-
+Bereiche
 [brush section tools]
-
+Werkzeuge
 [brush clearing area]
-
+Rodungsbereich
 [editor unsaved title]
-
+Ungespeicherte Änderungen
 [editor quit unsaved]
-
+Änderungen an dieser Karte speichern, bevor du den Editor verlässt?
 [editor load unsaved]
-
+Änderungen an dieser Karte speichern, bevor du eine andere öffnest?
 [editor save]
-
+Speichern…
 [editor discard]
-
+Nicht speichern
 [editor share never saved]
-
+Karten werden über ihre gespeicherte Datei geteilt. Speichere diese Karte zuerst und teile sie dann.
 [editor share unsaved]
-
+Diese Karte enthält ungespeicherte Änderungen. Beim Teilen wird die gespeicherte Datei hochgeladen.
 [editor save and share]
-
+Speichern und teilen…
 [editor share saved version]
-
+Gespeicherte Version teilen
 [editor reroll confirm]
-
+Jeder Geländekachel ein neues zufälliges Aussehen geben? Geländearten und Spielablauf bleiben gleich. Dies kann nicht rückgängig gemacht werden.
 [editor reroll]
-
+Neu auswürfeln
 [editor map saved]
-
+Karte gespeichert
 [editor map shared]
-
+Karte online geteilt
 [editor save needs fertility]
-
+Zum Speichern wird die Fruchtbarkeitskarte benötigt; daher wurde das Speichern abgebrochen. Drücke OK, um es erneut zu versuchen.
 [editor fertility stale]
-
+Fruchtbarkeitskarte veraltet · Zum Aktualisieren klicken
 [No definition files found in %0]
-
+Keine Definitionsdateien in %0 gefunden
 [From device…]
-
+Vom Gerät…
 [replace existing file %0?]
-
+Eine Datei namens „%0“ ist bereits vorhanden. Ersetzen?
 [Replace]
-
+Ersetzen
 [Keep existing file]
-
+Vorhandene Datei behalten
 [editor menu save]
-
+Karte speichern
 [editor menu load]
-
+Karte öffnen…
 [editor menu import terrain]
-
+Geländedefinitionen importieren…
 [editor menu import resources]
-
+Ressourcendefinitionen importieren…
 [editor menu teams]
-
+Teams…
 [editor menu scenario]
-
+Szenario…
 [editor menu reroll]
-
+Geländeaussehen neu auswürfeln…
 [editor menu file]
-
+Datei
 [editor menu map]
-
+Karte
 [no resource growth areas]
-
+Bereiche ohne Wachstum
 [dock flags and units]
-
+Flaggen & Einheiten
 [dock minimap]
-
+Minikarte
 [dock search brushes]
-
+Pinsel suchen
 [dock brush shape %0]
-
+Pinselform %0
 [dock brush]
-
+Pinsel
 [dock brush paint]
-
+Malen
 [dock brush erase]
-
+Löschen
 [dock enable for map]
-
+Für diese Karte aktivieren
 [dock enable experiment %0]
-
+%0 aktivieren
 [dock enable experiment hint %0]
-
+Aktiviert das Experiment %0 nur für diese Karte.
 [dock area number]
-
+Bereich
 [dock building level]
-
+Stufe
 [dock unit level]
-
+Einheitenstufe
 [dock no brushes match]
-
+Keine Pinsel entsprechen der Suche.
 [dock active team]
-
+Aktives Team
 [dock team count %0]
-
+Teams auf dieser Karte: %0
 [dock add team]
-
+Team hinzufügen
 [dock remove team]
-
+Team entfernen
 [dock nothing selected]
-
+Nichts ausgewählt.
 [dock no properties]
-
+Dieses Objekt hat keine bearbeitbaren Eigenschaften.
 [focus brush search]
-
+Pinsel suchen
 [switch to resources view]
-
+Zur Ressourcenansicht wechseln
 [dock resources base]
-
+Standardressourcen
 [dock fertility stale]
-
+Die Fruchtbarkeitskarte ist veraltet.
 [dock fertility refresh]
-
+Fruchtbarkeit aktualisieren
 [Enabled %0 for this map]
-
+%0 für diese Karte aktiviert
 [editor fertility tap refresh]
-
+Fruchtbarkeitskarte veraltet: Zum Aktualisieren tippen
 [editor menu import set]
-
+Gelände- & Ressourcenpaket importieren
 [editor menu set library]
-
+Paketbibliothek
 [set library loading]
-
+Pakete werden geladen…
 [set library downloading]
-
+Gewählte Veröffentlichung wird heruntergeladen…
 [set library connection error]
-
+Pakete können nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.
 [set library hash error]
-
+Die Hash-Prüfung des heruntergeladenen Pakets ist fehlgeschlagen.
 [set library package error]
-
+Ungültiges Paketarchiv.
 [set library listing error]
-
+Ungültige Paketliste.
 [set library release error]
-
+Ungültige Paketveröffentlichung.
 [set library selection help]
-
+Wähle Einträge zum Importieren. Erforderliche benutzerdefinierte Ressourcen werden automatisch einbezogen.
 [set library empty]
-
+Keine Pakete gefunden.
 [set library release help]
-
+Wähle eine bestimmte Veröffentlichung zum Prüfen und Importieren.
 [set library heading]
-
+Gelände- & Ressourcenpakete
 [set library browse]
-
+Online-Bibliothek durchsuchen
 [set library local]
-
+Karteninhalt, Mitwirkende & lokale Änderungen
 [set library local help]
-
+Bearbeite die Kopie der importierten Inhalte in dieser Karte. Die ursprünglichen Mitwirkenden bleiben angegeben. Änderungen betreffen weder andere Karten noch die Online-Veröffentlichung.
 [set library apply]
-
+Lokale Änderungen anwenden
 [set library updated]
-
+Lokaler Inhalt aktualisiert.
 [set library search hint]
-
+Themen und Ersteller suchen
 [set library search]
-
+Suchen
 [set library set]
-
+Paket
 [set library update help]
-
+Ersetzt ausdrücklich passende platzierte Gelände und Ressourcen einschließlich lokaler Änderungen. Entfernte Einträge bleiben bei der alten Veröffentlichung. Vorhandene Materialmengen werden auf die neuen Kapazitäten begrenzt.
 [set library import]
-
+Ausgewählte Einträge importieren
 [set library next]
-
+Nächste Seite
 [set library back]
-
+Zurück zu den Ergebnissen
 [set library license %0]
-
+Lizenz: %0
 [set library release %0]
-
+Veröffentlichung %0
 [set library replace %0]
-
+Platzierte Einträge aus Veröffentlichung %0 ersetzen
 [set library preview limit]
-
+Vorschauen werden für die ersten 64 Einträge angezeigt. Alle Einträge bleiben auswählbar.
 [set library definition]
-
+Eigenschaftsdefinition (JSON)
 [set library artwork]
-
+Zuordnung der Geländegrafiken (JSON)
 [settings Map generators]
 Kartengeneratoren
 [settings Import a generator package, then select its landscape when creating a map or game.]

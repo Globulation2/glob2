@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Slutför inloggningen i din webbläsare. Spelet fortsätter automatiskt när du är klar.
 [hub browser did not open]
-
+Din webbläsare öppnades inte. Öppna inloggningssidan för att fortsätta.
 [hub compare code %0]
-
+Om sidan frågar, kontrollera att den visar %0.
 [hub code copied]
-
+Koden kopierad
 [settings Finish in your browser. The game continues by itself.]
-
+Slutför i din webbläsare. Spelet fortsätter automatiskt.
 [music set]
-
+Musikuppsättning
 [random music set]
-
+Slumpmässig varje match
 [playing music set %0]
-
+Spelar: %0
 [music set failed]
-
+Kunde inte läsa in denna musikuppsättning.
 [settings Music set]
-
+Musikuppsättning
 [settings Random each match]
-
+Välj Slumpmässig för att välja ett soundtrack vid varje matchstart.
 [settings Edge scrolling]
-
+Kantrullning
 [settings Edge scrolling in fullscreen]
-
+Kantrullning i helskärm
 [settings Edge scrolling in windowed mode]
-
+Kantrullning i fönsterläge
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Flytta spel- och redigerarkartorna när musen når fönstrets kant.
 [AI strategy]
 AI-strategi
 [start recording]
@@ -4625,9 +4625,9 @@ Inspelning
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Spela in dina spel som MP4-videor med ljud. Inspelning kräver FFmpeg med kodarna libx264 och AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Spela in dina matcher som MP4-videor med ljud.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Inspelningen använder full renderingsupplösning vid 30 bilder per sekund.
 [settings FFmpeg is ready.]
 FFmpeg är redo.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Sårade enheter retirerar
 [Units can die]
 Enheter kan dö
 [Upgrades]
-
+Uppgraderingar
 [No stockpile]
 Inget
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Skadade enheter går tillbaka för att läkas i stället för att slåss till d�
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Enheter dör när träffpoängen tar slut. Stäng av för att stoppa dem vid 1 träffpoäng.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Enheter går upp i nivå vid träningsbyggnader och byggnader kan uppgraderas. Reparationer förblir tillgängliga när detta är avstängt.
 [stat group work]
 Arbetarnas tid
 [stat worker time]
@@ -5309,235 +5309,235 @@ styrka
 [stat view by place]
 Efter plats
 [AI Library]
-
+AI-bibliotek
 [Authoring guide]
-
+Skaparguide
 [Beginner-friendly]
-
+Nybörjarvänlig
 [Defensive]
-
+Defensiv
 [Discover]
-
+Upptäck
 [Download & install]
-
+Ladda ned och installera
 [Downloading AI…]
-
+Laddar ned AI…
 [Expansion]
-
+Expansion
 [Experimental]
-
+Experimentell
 [Favourite]
-
+Markera som favorit
 [Favourited]
-
+Markerad som favorit
 [Favourites]
-
+Favoriter
 [Got it]
-
+Uppfattat
 [How AIs work]
-
+Så fungerar AI:er
 [Install selected version]
-
+Installera vald version
 [Installed]
-
+Installerad
 [Invalid AI catalogue response]
-
+Ogiltigt svar från AI-katalogen
 [JavaScript API reference]
-
+Referens för JavaScript-API
 [Like]
-
+Gilla
 [Liked]
-
+Gillad
 [Loading AI library…]
-
+Läser in AI-bibliotek…
 [Most downloaded]
-
+Mest nedladdade
 [Most liked]
-
+Mest gillade
 [Newest]
-
+Nyaste
 [No AIs match these filters.]
-
+Inga AI:er matchar dessa filter.
 [Not validated for this game version]
-
+Inte validerad för denna spelversion
 [Open AI Library]
-
+Öppna AI-bibliotek
 [Open AI page]
-
+Öppna AI-sida
 [Passed compatibility checks]
-
+Godkänd i kompatibilitetskontroller
 [Recently updated]
-
+Nyligen uppdaterade
 [Rush]
-
+Snabbattack
 [Search]
-
+Sök
 [Share your AI]
-
+Dela din AI
 [Show more]
-
+Visa fler
 [Sign in through Online settings to like and favourite AIs.]
-
+Logga in via onlineinställningarna för att gilla och favoritmarkera AI:er.
 [Starter project]
-
+Startprojekt
 [downloads of this version]
-
+nedladdningar av denna version
 [downloads]
-
+nedladdningar
 [Update available]
-
+Uppdatering tillgänglig
 [Browse versions]
-
+Bläddra bland versioner
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Ladda ned en AI och välj den sedan för en datorplats i ett lokalt spel. Installerade versioner fungerar offline. Uppdateringar påverkar framtida spel; sparfiler behåller sin ursprungliga kod.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Kompatibilitetskontroller garanterar inte säkerhet eller spelstyrka. Kör bara kod från skapare du litar på.
 [Back to results]
-
+Tillbaka till resultaten
 [music 2–5 minutes]
-
+2–5 minuter
 [music 5–15 minutes]
-
+5–15 minuter
 [music AI-generated]
-
+AI-genererad
 [music All music]
-
+All musik
 [music All open licences]
-
+Alla öppna licenser
 [music Any duration]
-
+Valfri längd
 [music Audition each mood for eight seconds]
-
+Lyssna på varje stämning i åtta sekunder
 [music Back]
-
+Tillbaka
 [music Browse]
-
+Bläddra
 [music Building]
-
+Stegring
 [music Calm]
-
+Lugn
 [music Calm → Building → Combat]
-
+Lugn → Stegring → Strid
 [music Choose Building]
-
+Välj stegring
 [music Choose Calm]
-
+Välj lugn
 [music Choose Combat]
-
+Välj strid
 [music Choose ZIP]
-
+Välj ZIP
 [music Choose a music file.]
-
+Välj en musikfil.
 [music Combat]
-
+Strid
 [music Could not open this music set.]
-
+Kunde inte öppna denna musikuppsättning.
 [music Credits, downloads and reporting]
-
+Medverkande, nedladdningar och rapportering
 [music Downloading music…]
-
+Laddar ned musik…
 [music Export recovery files]
-
+Exportera återställningsfiler
 [music Fade duration]
-
+Toningslängd
 [music File selection cancelled or failed.]
-
+Filvalet avbröts eller misslyckades.
 [music Import ZIP]
-
+Importera ZIP
 [music Import ZIP or three tracks]
-
+Importera ZIP eller tre spår
 [music Import music]
-
+Importera musik
 [music Import three tracks]
-
+Importera tre spår
 [music Includes AI-generated audio]
-
+Innehåller AI-genererat ljud
 [music Install]
-
+Installera
 [music Install selected]
-
+Installera valda
 [music Installed]
-
+Installerad
 [music Load more]
-
+Läs in fler
 [music Loading music…]
-
+Läser in musik…
 [music Most downloaded]
-
+Mest nedladdade
 [music Most liked]
-
+Mest gillade
 [music Music decoding failed.]
-
+Avkodning av musiken misslyckades.
 [music Music download failed.]
-
+Nedladdning av musiken misslyckades.
 [music Music installed.]
-
+Musiken installerad.
 [music Music installed. It is now available in Audio settings.]
-
+Musiken installerad. Den finns nu i ljudinställningarna.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Musiken är ännu inte permanent sparad. Försök spara igen innan du lämnar.
 [music Music library]
-
+Musikbibliotek
 [music Music request failed.]
-
+Musikförfrågan misslyckades.
 [music Newest]
-
+Nyaste
 [music No community music installed yet. Import files or browse the online library.]
-
+Ingen musik från gemenskapen är installerad än. Importera filer eller bläddra i onlinebiblioteket.
 [music No music found.]
-
+Ingen musik hittades.
 [music Not AI-generated]
-
+Inte AI-genererad
 [music Pause]
-
+Pausa
 [music Play]
-
+Spela
 [music Playback position]
-
+Uppspelningsposition
 [music Preview]
-
+Förhandslyssna
 [music Ready to import.]
-
+Redo att importera.
 [music Remove]
-
+Ta bort
 [music Reset to game behavior]
-
+Återställ till spelets beteende
 [music Retry saving]
-
+Försök spara igen
 [music Saved.]
-
+Sparat.
 [music Saving music…]
-
+Sparar musik…
 [music Search]
-
+Sök
 [music Search title, artist, description…]
-
+Sök titel, artist, beskrivning…
 [music Select for installation]
-
+Välj för installation
 [music Share music on the web]
-
+Dela musik på webben
 [music Some catalogue entries could not be read.]
-
+Vissa katalogposter kunde inte läsas.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Data kunde inte sparas. Försök igen eller exportera dina filer innan du lämnar.
 [music Tag]
-
+Etikett
 [music Test crossfades]
-
+Testa övertoningar
 [music Up to 2 minutes]
-
+Upp till 2 minuter
 [music Use this music]
-
+Använd denna musik
 [music Validating music…]
-
+Validerar musik…
 [settings Music library · Browse, install and import]
-
+Musikbibliotek · Bläddra, installera och importera
 [music Filters]
-
+Filter
 [music Leave without saving]
-
+Lämna utan att spara
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importera en nedladdad musik-ZIP eller de tre Opus-spåren. Metadata och omslagsbild läses från spåret Lugn; inga extra filer krävs.
 [settings Target render FPS]
 Önskad bildfrekvens
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Fisk
 [Reroll terrain look]
 Slumpa terrängens utseende igen
 [boulders]
-
+Stenblock
 [hedge]
-
+Häck
 [thicket]
-
+Snår
 [ridge_rock]
-
+Ås
 [outcrop]
-
+Klippa
 [dirt]
-
+Jord
 [clay]
-
+Lera
 [gravel]
-
+Grus
 [flower_meadow]
-
+Blomsteräng
 [mud]
-
+Gyttja
 [marsh]
-
+Kärr
 [deep_snow]
-
+Djup snö
 [scree]
-
+Rasbrant
 [dirt_track]
-
+Jordstig
 [boardwalk]
-
+Spång
 [lava]
-
+Lava
 [ember_field]
-
+Glödfält
 [loam]
-
+Mylla
 [moss]
-
+Mossa
 [spring_meadow]
-
+Våräng
 [deep_water]
-
+Djupt vatten
 [dark_water]
-
+Mörkt vatten
 [void_hole]
-
+Hål
 [chasm]
-
+Avgrund
 [terrain group water]
-
+Vatten
 [terrain group sand]
-
+Sand
 [terrain group grass]
-
+Gräs
 [terrain group ice]
-
+Is
 [terrain group paths]
-
+Stigar
 [terrain group obstacles]
-
+Hinder
 [terrain group ridges]
-
+Åsar
 [terrain group barren]
-
+Obördig mark
 [terrain group rough]
-
+Svårframkomlig mark
 [terrain group lava]
-
+Lava
 [terrain group fertile]
-
+Bördig mark
 [terrain group deep-water]
-
+Djupt vatten
 [terrain group void]
-
+Tomrum
 [experiment obstacle-terrain]
-
+Hinderterräng
 [experiment obstacle-terrain help]
-
+Lägger till stenblock, häckar och snår i kartredigeraren. Markenheter kan inte passera dem och de stoppar projektiler; flygande enheter passerar över. De rymmer varken byggnader eller resurser.
 [experiment ridge-terrain]
-
+Åsterräng
 [experiment ridge-terrain help]
-
+Lägger till klippåsar och klippor i kartredigeraren. Markenheter kan inte passera dem, men torn skjuter över dem och flygande enheter passerar. De rymmer varken byggnader eller resurser.
 [experiment barren-terrain]
-
+Obördig mark
 [experiment barren-terrain help]
-
+Lägger till jord, lera, grus och blomsterängar i kartredigeraren. Byggnader kan stå på dem, inget växer på eller intill dem och de räknas inte som strand.
 [experiment rough-terrain]
-
+Svårframkomlig mark
 [experiment rough-terrain help]
-
+Lägger till gyttja, kärr, djup snö och rasbranter i kartredigeraren. Markenheter rör sig med ungefär två tredjedels hastighet. Svårframkomlig mark rymmer varken byggnader eller resurser.
 [experiment path-terrain]
-
+Stigterräng
 [experiment path-terrain help]
-
+Lägger till jordstigar och spänger i kartredigeraren. Precis som på andra stigar rör sig markenheter med dubbel hastighet och byggnader tillåts, men inget växer.
 [experiment lava-terrain]
-
+Lavaterräng
 [experiment lava-terrain help]
-
+Lägger till lava och glödfält i kartredigeraren. Markenheter kan inte beträda dem; flygande enheter som passerar förlorar hälsa snabbt. Projektiler passerar över.
 [experiment fertile-terrain]
-
+Bördig mark
 [experiment fertile-terrain help]
-
+Lägger till mylla, mossa och vårängar i kartredigeraren. De stöder byggnader och grödor och bevattnar omgivande mark starkare än vatten.
 [experiment deep-water-terrain]
-
+Djupt vatten
 [experiment deep-water-terrain help]
-
+Lägger till djupt och mörkt vatten i kartredigeraren. Simmare passerar långsammare, inga alger växer där och de bevattnar fortfarande närliggande fält.
 [experiment void-terrain]
-
+Tomrumsterräng
 [experiment void-terrain help]
-
+Lägger till hål och avgrunder i kartredigeraren. Ingenting kan passera dem, inte ens flygande enheter, och projektiler stannar vid kanten.
 [terrain group custom]
-
+Anpassad
 [terrain group classic]
-
+Klassisk mark
 [terrain rule walkable]
-
+Gångbar
 [terrain rule swimmable]
-
+Simbar
 [terrain rule impassable]
-
+Ofarbar
 [terrain rule no flying]
-
+Flygning förbjuden
 [terrain rule buildable]
-
+Byggbar
 [terrain rule speed %0]
-
+Hastighet %0%
 [terrain rule crops grow]
-
+Grödor växer
 [terrain rule irrigates]
-
+Bevattnar närliggande mark
 [terrain rule stops nearby growth]
-
+Hindrar tillväxt i närheten
 [terrain rule blocks shots]
-
+Blockerar skott
 [terrain rule hurts walkers]
-
+Skadar gående
 [terrain rule hurts fliers]
-
+Skadar flygande
 [terrain palette hint]
-
+Välj en pensel. Terrängtyperna inom varje grupp har samma regler och skiljer sig bara i utseende.
 [terrain rule algae grow]
-
+Alger växer
 [terrain palette experiments hint]
-
+Välj en pensel. Fler terränggrupper visas här när deras experiment aktiveras under Inställningar > Experiment.
 [brush valid on %0]
-
+Giltig på: %0
 [brush valid nowhere]
-
+Kan inte placeras på någon terräng på denna karta
 [brush requires experiment %0]
-
+Kräver experimentet %0
 [brush resources custom]
-
+Importerade resurser
 [brush section zones]
-
+Zoner
 [brush section areas]
-
+Områden
 [brush section tools]
-
+Verktyg
 [brush clearing area]
-
+Röjningsområde
 [editor unsaved title]
-
+Osparade ändringar
 [editor quit unsaved]
-
+Spara dina ändringar på denna karta innan du lämnar redigeraren?
 [editor load unsaved]
-
+Spara dina ändringar på denna karta innan du öppnar en annan?
 [editor save]
-
+Spara…
 [editor discard]
-
+Spara inte
 [editor share never saved]
-
+Kartor delas från sin sparade fil. Spara denna karta först och dela den sedan.
 [editor share unsaved]
-
+Denna karta har ändringar som ännu inte sparats. Delning laddar upp den sparade filen.
 [editor save and share]
-
+Spara och dela…
 [editor share saved version]
-
+Dela sparad version
 [editor reroll confirm]
-
+Ge varje terrängruta ett nytt slumpmässigt utseende? Terrängtyper och spelmekanik förblir samma. Detta kan inte ångras.
 [editor reroll]
-
+Slumpa om
 [editor map saved]
-
+Kartan sparad
 [editor map shared]
-
+Kartan delad online
 [editor save needs fertility]
-
+Sparandet kräver bördighetskartan och avbröts därför. Tryck på OK för att försöka igen.
 [editor fertility stale]
-
+Bördighetskartan är inaktuell · Klicka för att uppdatera
 [No definition files found in %0]
-
+Inga definitionsfiler hittades i %0
 [From device…]
-
+Från enheten…
 [replace existing file %0?]
-
+En fil med namnet "%0" finns redan. Ersätta den?
 [Replace]
-
+Ersätt
 [Keep existing file]
-
+Behåll befintlig fil
 [editor menu save]
-
+Spara karta
 [editor menu load]
-
+Öppna karta…
 [editor menu import terrain]
-
+Importera terrängdefinitioner…
 [editor menu import resources]
-
+Importera resursdefinitioner…
 [editor menu teams]
-
+Lag…
 [editor menu scenario]
-
+Scenario…
 [editor menu reroll]
-
+Slumpa om terrängutseende…
 [editor menu file]
-
+Fil
 [editor menu map]
-
+Karta
 [no resource growth areas]
-
+Områden utan tillväxt
 [dock flags and units]
-
+Flaggor och enheter
 [dock minimap]
-
+Minikarta
 [dock search brushes]
-
+Sök penslar
 [dock brush shape %0]
-
+Penselform %0
 [dock brush]
-
+Pensel
 [dock brush paint]
-
+Måla
 [dock brush erase]
-
+Sudda
 [dock enable for map]
-
+Aktivera för denna karta
 [dock enable experiment %0]
-
+Aktivera %0
 [dock enable experiment hint %0]
-
+Aktiverar experimentet %0 endast för denna karta.
 [dock area number]
-
+Område
 [dock building level]
-
+Nivå
 [dock unit level]
-
+Enhetsnivå
 [dock no brushes match]
-
+Inga penslar matchar sökningen.
 [dock active team]
-
+Aktivt lag
 [dock team count %0]
-
+Lag på denna karta: %0
 [dock add team]
-
+Lägg till lag
 [dock remove team]
-
+Ta bort lag
 [dock nothing selected]
-
+Ingenting är valt.
 [dock no properties]
-
+Detta objekt har inga redigerbara egenskaper.
 [focus brush search]
-
+Sök penslar
 [switch to resources view]
-
+Växla till resursvy
 [dock resources base]
-
+Standardresurser
 [dock fertility stale]
-
+Bördighetskartan är inaktuell.
 [dock fertility refresh]
-
+Uppdatera bördighet
 [Enabled %0 for this map]
-
+Aktiverade %0 för denna karta
 [editor fertility tap refresh]
-
+Bördighetskartan inaktuell: tryck för att uppdatera
 [editor menu import set]
-
+Importera terräng- och resursuppsättning
 [editor menu set library]
-
+Uppsättningsbibliotek
 [set library loading]
-
+Läser in uppsättningar…
 [set library downloading]
-
+Laddar ned exakt utgåva…
 [set library connection error]
-
+Kan inte läsa in uppsättningar. Kontrollera anslutningen och försök igen.
 [set library hash error]
-
+Den nedladdade uppsättningen klarade inte kontrollsumman.
 [set library package error]
-
+Ogiltigt uppsättningspaket.
 [set library listing error]
-
+Ogiltig uppsättningslista.
 [set library release error]
-
+Ogiltig utgåva av uppsättningen.
 [set library selection help]
-
+Välj poster att importera. Nödvändiga anpassade resurser tas med automatiskt.
 [set library empty]
-
+Inga uppsättningar hittades.
 [set library release help]
-
+Välj en exakt utgåva att granska och importera.
 [set library heading]
-
+Terräng- och resursuppsättningar
 [set library browse]
-
+Bläddra i onlinebiblioteket
 [set library local]
-
+Kartinnehåll, medverkande och lokala ändringar
 [set library local help]
-
+Redigera kopian av det importerade innehållet i denna karta. Den ursprungliga utgåvans upphovsuppgifter behålls. Ändringar uppdaterar inte andra kartor eller onlineutgåvan.
 [set library apply]
-
+Tillämpa lokala ändringar
 [set library updated]
-
+Lokalt innehåll uppdaterat.
 [set library search hint]
-
+Sök teman och skapare
 [set library search]
-
+Sök
 [set library set]
-
+Uppsättning
 [set library update help]
-
+Detta ersätter uttryckligen matchande placerad terräng och resurser, även lokala ändringar. Borttagna poster behåller den gamla utgåvan. Befintliga materialmängder begränsas till de nya kapaciteterna.
 [set library import]
-
+Importera valda poster
 [set library next]
-
+Nästa sida
 [set library back]
-
+Tillbaka till resultaten
 [set library license %0]
-
+Licens: %0
 [set library release %0]
-
+utgåva %0
 [set library replace %0]
-
+Ersätt placerade poster från utgåva %0
 [set library preview limit]
-
+Förhandsvisningar visas för de första 64 posterna. Alla poster kan fortfarande väljas.
 [set library definition]
-
+Egenskapsdefinition (JSON)
 [set library artwork]
-
+Mappning av terränggrafik (JSON)
 [settings Map generators]
 Kartgeneratorer
 [settings Import a generator package, then select its landscape when creating a map or game.]

@@ -12,7 +12,7 @@
 
 // Material pathfinding and idle ground movement.
 
-bool Map::pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
+bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets)
 {
 	PERF_SCOPE_TIME(PathResource);
 	assert(resourceType<MaterialCount);
@@ -33,9 +33,9 @@ bool Map::pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, in
 	*stopWork=false;
 	if (here==GRADIENT_AT_GOAL)
 		return false; // standing where the resource was: it is gone, wander until the gradient is rebuilt
-	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
+	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
-	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
+	return directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false);
 }
 
 
@@ -97,7 +97,7 @@ void Map::pathfindRandom(Unit *unit)
 			unit->direction=8;
 			return;
 		}
-		int dir=syncRand()%count;
+		int dir=unit->entityRandom.nextU32()%count;
 		for (int di=0; di<8; di++)
 			if (da[di] && dir--==0)
 			{

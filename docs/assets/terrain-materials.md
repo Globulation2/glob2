@@ -456,15 +456,25 @@ non-monotone handles fall back to a straight contour. Ambiguous diagonal cells a
 three/four-material junctions retain the patch resolver and its connection choice.
 Uniform cells remain uniform, and neighbours never add materials to a cell's palette.
 
+The guided curves also carry smooth seeded variation at three scales: broad
+uneven lobes, smaller scallops and fine edge undulations. The material pair,
+cell position and map look seed select the pattern; profile roughness scales
+its strength. Detail tapers to zero displacement and slope at the endpoints.
+Only the secondary coordinate moves, preserving monotonicity and connected
+regions, and the combined smoothing and scalloping stays within a
+ten-pixel curve budget. Sixty-four segments resolve the smallest scallops.
+Corner clearance limits deep lobes near the cell's corners and relaxes smoothly
+towards its centre, preserving small terrain pockets and narrow strips.
+
 Curves are sampled into a monotone row/column table once per cell. Native, HD and
 overview samples interpolate that same geometry, with distance-based feathering
 and seam shading. Contextual interiors use one-third of the world-space warp
-(at most two pixels), leaving four pixels for shaping. A one-pixel band at tile
-edges retains the existing mask's displaced crossings and feather weights, then
+(bounded to two pixels of vector displacement), leaving ten pixels for shaping.
+A one-pixel band at tile edges retains the existing mask's displaced crossings and feather weights, then
 smoothly blends to the new geometry by four pixels. This compatibility band joins
 natural curves to existing complex junctions without introducing tile seams.
 It retains the existing edge detail rather than shifting every crossing to the
-marching-square midpoint. The six-pixel displacement limit applies to contextual
+marching-square midpoint. The twelve-pixel displacement limit applies to contextual
 interiors; existing masks in compatibility bands and fallback cells keep their
 original limits.
 

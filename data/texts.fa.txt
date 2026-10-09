@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+ورود را در مرورگرتان کامل کنید. پس از پایان، بازی خودکار ادامه می‌یابد.
 [hub browser did not open]
-
+مرورگر باز نشد. برای ادامه صفحهٔ ورود را باز کنید.
 [hub compare code %0]
-
+اگر صفحه درخواست کرد، بررسی کنید که %0 را نشان می‌دهد.
 [hub code copied]
-
+کد کپی شد
 [settings Finish in your browser. The game continues by itself.]
-
+کار را در مرورگرتان کامل کنید. بازی خودکار ادامه می‌یابد.
 [music set]
-
+مجموعهٔ موسیقی
 [random music set]
-
+تصادفی در هر مسابقه
 [playing music set %0]
-
+در حال پخش: %0
 [music set failed]
-
+بارگذاری این مجموعهٔ موسیقی ممکن نشد.
 [settings Music set]
-
+مجموعهٔ موسیقی
 [settings Random each match]
-
+«تصادفی» را انتخاب کنید تا در آغاز هر مسابقه موسیقی زمینه انتخاب شود.
 [settings Edge scrolling]
-
+پیمایش در لبه‌ها
 [settings Edge scrolling in fullscreen]
-
+پیمایش در لبه‌ها در حالت تمام‌صفحه
 [settings Edge scrolling in windowed mode]
-
+پیمایش در لبه‌ها در حالت پنجره‌ای
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+وقتی ماوس به لبهٔ پنجره می‌رسد، نقشهٔ بازی و ویرایشگر جابه‌جا شود.
 [AI strategy]
 راهبرد هوش مصنوعی
 [start recording]
@@ -4625,9 +4625,9 @@ Emoji
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 بازی‌هایتان را به‌صورت ویدیوی MP4 با صدا ضبط کنید. ضبط به FFmpeg با رمزگذارهای libx264 و AAC نیاز دارد.
 [settings Record your games as MP4 videos with sound.]
-
+بازی‌هایتان را به‌صورت ویدیوی MP4 همراه با صدا ضبط کنید.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+ضبط با وضوح کامل تصویر و ۳۰ فریم در ثانیه انجام می‌شود.
 [settings FFmpeg is ready.]
 FFmpeg آماده است.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [Units can die]
 افراد می‌توانند بمیرند
 [Upgrades]
-
+ارتقاها
 [No stockpile]
 هیچ
 [No glass cannon]
@@ -5193,7 +5193,7 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 افراد وقتی سلامتی‌شان تمام شود می‌میرند. خاموش کنید تا در ۱ سلامتی متوقف شوند.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+یگان‌ها در ساختمان‌های آموزشی سطح می‌گیرند و ساختمان‌ها قابل ارتقا هستند. با خاموش بودن این گزینه نیز تعمیر ممکن است.
 [stat group work]
 زمان کارگرها
 [stat worker time]
@@ -5309,235 +5309,235 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [stat view by place]
 بر اساس مکان
 [AI Library]
-
+کتابخانهٔ هوش مصنوعی
 [Authoring guide]
-
+راهنمای ساخت
 [Beginner-friendly]
-
+مناسب تازه‌کارها
 [Defensive]
-
+دفاعی
 [Discover]
-
+کاوش
 [Download & install]
-
+دریافت و نصب
 [Downloading AI…]
-
+در حال دریافت هوش مصنوعی…
 [Expansion]
-
+گسترش‌گرا
 [Experimental]
-
+آزمایشی
 [Favourite]
-
+افزودن به علاقه‌مندی‌ها
 [Favourited]
-
+افزوده‌شده به علاقه‌مندی‌ها
 [Favourites]
-
+علاقه‌مندی‌ها
 [Got it]
-
+متوجه شدم
 [How AIs work]
-
+هوش مصنوعی چگونه کار می‌کند
 [Install selected version]
-
+نصب نسخهٔ انتخاب‌شده
 [Installed]
-
+نصب‌شده
 [Invalid AI catalogue response]
-
+پاسخ فهرست هوش مصنوعی نامعتبر است
 [JavaScript API reference]
-
+مرجع رابط برنامه‌نویسی JavaScript
 [Like]
-
+پسندیدن
 [Liked]
-
+پسندیده‌شده
 [Loading AI library…]
-
+در حال بارگذاری کتابخانهٔ هوش مصنوعی…
 [Most downloaded]
-
+بیشترین دریافت
 [Most liked]
-
+بیشترین پسند
 [Newest]
-
+جدیدترین
 [No AIs match these filters.]
-
+هیچ هوش مصنوعی با این فیلترها مطابقت ندارد.
 [Not validated for this game version]
-
+برای این نسخهٔ بازی بررسی نشده است
 [Open AI Library]
-
+باز کردن کتابخانهٔ هوش مصنوعی
 [Open AI page]
-
+باز کردن صفحهٔ هوش مصنوعی
 [Passed compatibility checks]
-
+آزمون‌های سازگاری را گذرانده است
 [Recently updated]
-
+تازه به‌روزرسانی‌شده
 [Rush]
-
+یورش سریع
 [Search]
-
+جست‌وجو
 [Share your AI]
-
+هوش مصنوعی خود را به اشتراک بگذارید
 [Show more]
-
+نمایش بیشتر
 [Sign in through Online settings to like and favourite AIs.]
-
+برای پسندیدن و افزودن هوش مصنوعی به علاقه‌مندی‌ها، از تنظیمات آنلاین وارد شوید.
 [Starter project]
-
+پروژهٔ آغازین
 [downloads of this version]
-
+دریافت‌های این نسخه
 [downloads]
-
+دریافت‌ها
 [Update available]
-
+به‌روزرسانی موجود است
 [Browse versions]
-
+مرور نسخه‌ها
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+هوش مصنوعی را دریافت کنید و سپس آن را برای جایگاه رایانه در بازی محلی انتخاب کنید. نسخه‌های نصب‌شده آفلاین کار می‌کنند. به‌روزرسانی‌ها بر بازی‌های آینده اثر دارند؛ بازی‌های ذخیره‌شده کد اصلی خود را نگه می‌دارند.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+آزمون‌های سازگاری ایمنی یا قدرت بازی را تضمین نمی‌کنند. فقط کد نویسندگانی را اجرا کنید که به آن‌ها اعتماد دارید.
 [Back to results]
-
+بازگشت به نتایج
 [music 2–5 minutes]
-
+۲ تا ۵ دقیقه
 [music 5–15 minutes]
-
+۵ تا ۱۵ دقیقه
 [music AI-generated]
-
+ساخته‌شده با هوش مصنوعی
 [music All music]
-
+همهٔ موسیقی‌ها
 [music All open licences]
-
+همهٔ مجوزهای آزاد
 [music Any duration]
-
+هر مدت
 [music Audition each mood for eight seconds]
-
+هر حال‌وهوا را هشت ثانیه گوش کنید
 [music Back]
-
+بازگشت
 [music Browse]
-
+مرور
 [music Building]
-
+اوج‌گیری
 [music Calm]
-
+آرامش
 [music Calm → Building → Combat]
-
+آرامش ← اوج‌گیری ← نبرد
 [music Choose Building]
-
+انتخاب موسیقی اوج‌گیری
 [music Choose Calm]
-
+انتخاب موسیقی آرامش
 [music Choose Combat]
-
+انتخاب موسیقی نبرد
 [music Choose ZIP]
-
+انتخاب ZIP
 [music Choose a music file.]
-
+یک فایل موسیقی انتخاب کنید.
 [music Combat]
-
+نبرد
 [music Could not open this music set.]
-
+باز کردن این مجموعهٔ موسیقی ممکن نشد.
 [music Credits, downloads and reporting]
-
+نام پدیدآورندگان، دریافت‌ها و گزارش
 [music Downloading music…]
-
+در حال دریافت موسیقی…
 [music Export recovery files]
-
+صدور فایل‌های بازیابی
 [music Fade duration]
-
+مدت محو شدن صدا
 [music File selection cancelled or failed.]
-
+انتخاب فایل لغو شد یا ناموفق بود.
 [music Import ZIP]
-
+وارد کردن ZIP
 [music Import ZIP or three tracks]
-
+وارد کردن ZIP یا سه قطعه
 [music Import music]
-
+وارد کردن موسیقی
 [music Import three tracks]
-
+وارد کردن سه قطعه
 [music Includes AI-generated audio]
-
+شامل صدای ساخته‌شده با هوش مصنوعی
 [music Install]
-
+نصب
 [music Install selected]
-
+نصب انتخاب‌شده‌ها
 [music Installed]
-
+نصب‌شده
 [music Load more]
-
+بارگذاری بیشتر
 [music Loading music…]
-
+در حال بارگذاری موسیقی…
 [music Most downloaded]
-
+بیشترین دریافت
 [music Most liked]
-
+بیشترین پسند
 [music Music decoding failed.]
-
+رمزگشایی موسیقی ناموفق بود.
 [music Music download failed.]
-
+دریافت موسیقی ناموفق بود.
 [music Music installed.]
-
+موسیقی نصب شد.
 [music Music installed. It is now available in Audio settings.]
-
+موسیقی نصب شد. اکنون در تنظیمات صدا در دسترس است.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+موسیقی هنوز به‌طور دائمی ذخیره نشده است. پیش از خروج دوباره ذخیره کنید.
 [music Music library]
-
+کتابخانهٔ موسیقی
 [music Music request failed.]
-
+درخواست موسیقی ناموفق بود.
 [music Newest]
-
+جدیدترین
 [music No community music installed yet. Import files or browse the online library.]
-
+هنوز موسیقی جامعه نصب نشده است. فایل وارد کنید یا کتابخانهٔ آنلاین را مرور کنید.
 [music No music found.]
-
+موسیقی پیدا نشد.
 [music Not AI-generated]
-
+ساخته‌شده بدون هوش مصنوعی
 [music Pause]
-
+مکث
 [music Play]
-
+پخش
 [music Playback position]
-
+موقعیت پخش
 [music Preview]
-
+پیش‌نمایش
 [music Ready to import.]
-
+آمادهٔ وارد کردن است.
 [music Remove]
-
+حذف
 [music Reset to game behavior]
-
+بازگرداندن رفتار پیش‌فرض بازی
 [music Retry saving]
-
+تلاش دوباره برای ذخیره
 [music Saved.]
-
+ذخیره شد.
 [music Saving music…]
-
+در حال ذخیرهٔ موسیقی…
 [music Search]
-
+جست‌وجو
 [music Search title, artist, description…]
-
+جست‌وجوی عنوان، هنرمند، توضیحات…
 [music Select for installation]
-
+انتخاب برای نصب
 [music Share music on the web]
-
+اشتراک موسیقی در وب
 [music Some catalogue entries could not be read.]
-
+خواندن برخی مدخل‌های فهرست ممکن نشد.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+ذخیرهٔ داده‌ها ممکن نشد. پیش از خروج دوباره تلاش کنید یا فایل‌هایتان را صادر کنید.
 [music Tag]
-
+برچسب
 [music Test crossfades]
-
+آزمایش گذار تدریجی
 [music Up to 2 minutes]
-
+تا ۲ دقیقه
 [music Use this music]
-
+استفاده از این موسیقی
 [music Validating music…]
-
+در حال بررسی موسیقی…
 [settings Music library · Browse, install and import]
-
+کتابخانهٔ موسیقی · مرور، نصب و وارد کردن
 [music Filters]
-
+فیلترها
 [music Leave without saving]
-
+خروج بدون ذخیره
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+فایل ZIP موسیقی دریافت‌شده یا سه قطعهٔ Opus را وارد کنید. فراداده و تصویر جلد از قطعهٔ آرامش خوانده می‌شوند؛ فایل اضافی لازم نیست.
 [settings Target render FPS]
 نرخ فریم هدف برای ترسیم
 [settings Unlimited]
@@ -5605,367 +5605,367 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [Cotton]
 پنبه
 [Jungle trees]
-
+درختان جنگل گرمسیری
 [Pine trees]
-
+درختان کاج
 [Dead trees]
-
+درختان خشکیده
 [Ruins]
-
+ویرانه‌ها
 [Camp-site]
-
+اردوگاه
 [Ancient debris]
-
+بقایای باستانی
 [Scrub]
-
+بوته‌زار
 [Tall grass]
-
+علف بلند
 [Maize]
-
+ذرت
 [Potatoes]
-
+سیب‌زمینی
 [Rice]
-
+برنج
 [Fish]
-
+ماهی
 [Reroll terrain look]
 انتخاب تصادفی دوبارهٔ ظاهر زمین
 [boulders]
-
+تخته‌سنگ‌ها
 [hedge]
-
+پرچین
 [thicket]
-
+بیشه
 [ridge_rock]
-
+یال سنگی
 [outcrop]
-
+رخنمون سنگی
 [dirt]
-
+خاک
 [clay]
-
+رس
 [gravel]
-
+شن
 [flower_meadow]
-
+چمنزار گل
 [mud]
-
+گل‌ولای
 [marsh]
-
+مرداب
 [deep_snow]
-
+برف عمیق
 [scree]
-
+دامنهٔ سنگ‌ریزه
 [dirt_track]
-
+راه خاکی
 [boardwalk]
-
+گذرگاه چوبی
 [lava]
-
+گدازه
 [ember_field]
-
+زمین اخگر
 [loam]
-
+خاک لومی
 [moss]
-
+خزه
 [spring_meadow]
-
+چمنزار بهاری
 [deep_water]
-
+آب عمیق
 [dark_water]
-
+آب تیره
 [void_hole]
-
+گودال
 [chasm]
-
+شکاف ژرف
 [terrain group water]
-
+آب
 [terrain group sand]
-
+ماسه
 [terrain group grass]
-
+چمن
 [terrain group ice]
-
+یخ
 [terrain group paths]
-
+راه‌ها
 [terrain group obstacles]
-
+موانع
 [terrain group ridges]
-
+یال‌ها
 [terrain group barren]
-
+زمین بایر
 [terrain group rough]
-
+زمین ناهموار
 [terrain group lava]
-
+گدازه
 [terrain group fertile]
-
+زمین حاصلخیز
 [terrain group deep-water]
-
+آب عمیق
 [terrain group void]
-
+خلأ
 [experiment obstacle-terrain]
-
+زمین موانع
 [experiment obstacle-terrain help]
-
+تخته‌سنگ، پرچین و بیشه را به ویرایشگر نقشه اضافه می‌کند. یگان‌های زمینی نمی‌توانند از آن‌ها عبور کنند و پرتابه‌ها متوقف می‌شوند؛ یگان‌های پرنده عبور می‌کنند. ساختمان و منابع روی آن‌ها قرار نمی‌گیرند.
 [experiment ridge-terrain]
-
+زمین یال‌ها
 [experiment ridge-terrain help]
-
+یال و رخنمون سنگی را به ویرایشگر نقشه اضافه می‌کند. یگان‌های زمینی عبور نمی‌کنند، ولی تیر برج‌ها و یگان‌های پرنده از بالای آن‌ها می‌گذرند. ساختمان و منابع روی آن‌ها قرار نمی‌گیرند.
 [experiment barren-terrain]
-
+زمین بایر
 [experiment barren-terrain help]
-
+خاک، رس، شن و چمنزار گل را به ویرایشگر نقشه اضافه می‌کند. ساختمان می‌تواند روی آن‌ها قرار گیرد، چیزی روی آن‌ها یا کنارشان رشد نمی‌کند و ساحل محسوب نمی‌شوند.
 [experiment rough-terrain]
-
+زمین ناهموار
 [experiment rough-terrain help]
-
+گل‌ولای، مرداب، برف عمیق و دامنهٔ سنگ‌ریزه را به ویرایشگر نقشه اضافه می‌کند. یگان‌های زمینی با حدود دوسوم سرعت حرکت می‌کنند. ساختمان و منابع روی آن‌ها قرار نمی‌گیرند.
 [experiment path-terrain]
-
+زمین راه‌ها
 [experiment path-terrain help]
-
+راه خاکی و گذرگاه چوبی را به ویرایشگر نقشه اضافه می‌کند. مانند کوره‌راه، یگان‌های زمینی با سرعت دوبرابر حرکت می‌کنند و ساختمان مجاز است، ولی چیزی رشد نمی‌کند.
 [experiment lava-terrain]
-
+زمین گدازه
 [experiment lava-terrain help]
-
+گدازه و زمین اخگر را به ویرایشگر نقشه اضافه می‌کند. یگان‌های زمینی نمی‌توانند وارد شوند؛ یگان‌های پرنده هنگام عبور سریع آسیب می‌بینند. پرتابه‌ها عبور می‌کنند.
 [experiment fertile-terrain]
-
+زمین حاصلخیز
 [experiment fertile-terrain help]
-
+خاک لومی، خزه و چمنزار بهاری را به ویرایشگر نقشه اضافه می‌کند. ساختمان و کشت را پشتیبانی می‌کنند و زمین اطراف را بیشتر از آب آبیاری می‌کنند.
 [experiment deep-water-terrain]
-
+آب عمیق
 [experiment deep-water-terrain help]
-
+آب عمیق و تیره را به ویرایشگر نقشه اضافه می‌کند. شناگران کندتر عبور می‌کنند، جلبک رشد نمی‌کند و همچنان زمین‌های اطراف آبیاری می‌شوند.
 [experiment void-terrain]
-
+زمین خلأ
 [experiment void-terrain help]
-
+گودال و شکاف ژرف را به ویرایشگر نقشه اضافه می‌کند. هیچ چیز، حتی یگان پرنده، عبور نمی‌کند و پرتابه‌ها در لبه متوقف می‌شوند.
 [terrain group custom]
-
+سفارشی
 [terrain group classic]
-
+زمین کلاسیک
 [terrain rule walkable]
-
+قابل پیاده‌روی
 [terrain rule swimmable]
-
+قابل شنا
 [terrain rule impassable]
-
+غیرقابل عبور
 [terrain rule no flying]
-
+پرواز ممنوع
 [terrain rule buildable]
-
+قابل ساخت‌وساز
 [terrain rule speed %0]
-
+سرعت %0%
 [terrain rule crops grow]
-
+محصولات رشد می‌کنند
 [terrain rule irrigates]
-
+زمین اطراف را آبیاری می‌کند
 [terrain rule stops nearby growth]
-
+رشد اطراف را متوقف می‌کند
 [terrain rule blocks shots]
-
+تیرها را مسدود می‌کند
 [terrain rule hurts walkers]
-
+به یگان‌های پیاده آسیب می‌زند
 [terrain rule hurts fliers]
-
+به یگان‌های پرنده آسیب می‌زند
 [terrain palette hint]
-
+قلم‌مو انتخاب کنید. اعضای هر گروه قوانین یکسان دارند و فقط ظاهرشان متفاوت است.
 [terrain rule algae grow]
-
+جلبک رشد می‌کند
 [terrain palette experiments hint]
-
+قلم‌مو انتخاب کنید. پس از فعال کردن آزمایش‌ها در تنظیمات > آزمایش‌ها، گروه‌های زمینی بیشتری ظاهر می‌شوند.
 [brush valid on %0]
-
+قابل قرارگیری روی: %0
 [brush valid nowhere]
-
+روی هیچ زمین این نقشه قابل قرارگیری نیست
 [brush requires experiment %0]
-
+نیازمند آزمایش %0
 [brush resources custom]
-
+منابع واردشده
 [brush section zones]
-
+ناحیه‌ها
 [brush section areas]
-
+محدوده‌ها
 [brush section tools]
-
+ابزارها
 [brush clearing area]
-
+محدودهٔ پاک‌سازی
 [editor unsaved title]
-
+تغییرات ذخیره‌نشده
 [editor quit unsaved]
-
+پیش از خروج از ویرایشگر، تغییرات این نقشه ذخیره شوند؟
 [editor load unsaved]
-
+پیش از باز کردن نقشهٔ دیگر، تغییرات این نقشه ذخیره شوند؟
 [editor save]
-
+ذخیره…
 [editor discard]
-
+ذخیره نکن
 [editor share never saved]
-
+نقشه‌ها از فایل ذخیره‌شده به اشتراک گذاشته می‌شوند. ابتدا این نقشه را ذخیره و سپس به اشتراک بگذارید.
 [editor share unsaved]
-
+این نقشه تغییرات ذخیره‌نشده دارد. اشتراک‌گذاری فایل ذخیره‌شده را بارگذاری می‌کند.
 [editor save and share]
-
+ذخیره و اشتراک‌گذاری…
 [editor share saved version]
-
+اشتراک نسخهٔ ذخیره‌شده
 [editor reroll confirm]
-
+ظاهر همهٔ خانه‌های زمین دوباره تصادفی انتخاب شود؟ نوع زمین و روند بازی تغییری نمی‌کند. این کار برگشت‌پذیر نیست.
 [editor reroll]
-
+انتخاب دوبارهٔ ظاهر
 [editor map saved]
-
+نقشه ذخیره شد
 [editor map shared]
-
+نقشه آنلاین به اشتراک گذاشته شد
 [editor save needs fertility]
-
+ذخیره به نقشهٔ حاصلخیزی نیاز دارد، بنابراین لغو شد. برای تلاش دوباره تأیید را بزنید.
 [editor fertility stale]
-
+نقشهٔ حاصلخیزی قدیمی است · برای تازه‌سازی کلیک کنید
 [No definition files found in %0]
-
+فایل تعریف در %0 یافت نشد
 [From device…]
-
+از دستگاه…
 [replace existing file %0?]
-
+فایلی به نام «%0» وجود دارد. جایگزین شود؟
 [Replace]
-
+جایگزینی
 [Keep existing file]
-
+نگه‌داشتن فایل موجود
 [editor menu save]
-
+ذخیرهٔ نقشه
 [editor menu load]
-
+باز کردن نقشه…
 [editor menu import terrain]
-
+وارد کردن تعریف‌های زمین…
 [editor menu import resources]
-
+وارد کردن تعریف‌های منابع…
 [editor menu teams]
-
+تیم‌ها…
 [editor menu scenario]
-
+سناریو…
 [editor menu reroll]
-
+انتخاب دوبارهٔ ظاهر زمین…
 [editor menu file]
-
+فایل
 [editor menu map]
-
+نقشه
 [no resource growth areas]
-
+محدوده‌های منع رشد
 [dock flags and units]
-
+پرچم‌ها و یگان‌ها
 [dock minimap]
-
+نقشهٔ کوچک
 [dock search brushes]
-
+جست‌وجوی قلم‌مو
 [dock brush shape %0]
-
+شکل قلم‌مو %0
 [dock brush]
-
+قلم‌مو
 [dock brush paint]
-
+رنگ‌آمیزی
 [dock brush erase]
-
+پاک کردن
 [dock enable for map]
-
+فعال کردن برای این نقشه
 [dock enable experiment %0]
-
+فعال کردن %0
 [dock enable experiment hint %0]
-
+آزمایش %0 را فقط برای این نقشه فعال می‌کند.
 [dock area number]
-
+محدوده
 [dock building level]
-
+سطح
 [dock unit level]
-
+سطح یگان
 [dock no brushes match]
-
+هیچ قلم‌مویی با جست‌وجو مطابقت ندارد.
 [dock active team]
-
+تیم فعال
 [dock team count %0]
-
+تیم‌های این نقشه: %0
 [dock add team]
-
+افزودن تیم
 [dock remove team]
-
+حذف تیم
 [dock nothing selected]
-
+چیزی انتخاب نشده است.
 [dock no properties]
-
+این شیء ویژگی قابل ویرایش ندارد.
 [focus brush search]
-
+جست‌وجوی قلم‌مو
 [switch to resources view]
-
+رفتن به نمای منابع
 [dock resources base]
-
+منابع استاندارد
 [dock fertility stale]
-
+نقشهٔ حاصلخیزی قدیمی است.
 [dock fertility refresh]
-
+تازه‌سازی حاصلخیزی
 [Enabled %0 for this map]
-
+%0 برای این نقشه فعال شد
 [editor fertility tap refresh]
-
+نقشهٔ حاصلخیزی قدیمی است: برای تازه‌سازی بزنید
 [editor menu import set]
-
+وارد کردن مجموعهٔ زمین و منابع
 [editor menu set library]
-
+کتابخانهٔ مجموعه‌ها
 [set library loading]
-
+در حال بارگذاری مجموعه‌ها…
 [set library downloading]
-
+در حال دریافت انتشار مشخص‌شده…
 [set library connection error]
-
+بارگذاری مجموعه‌ها ممکن نشد. اتصال را بررسی و دوباره تلاش کنید.
 [set library hash error]
-
+مجموعهٔ دریافت‌شده در بررسی هش ناموفق بود.
 [set library package error]
-
+بستهٔ مجموعه نامعتبر است.
 [set library listing error]
-
+فهرست مجموعه نامعتبر است.
 [set library release error]
-
+انتشار مجموعه نامعتبر است.
 [set library selection help]
-
+مدخل‌های مورد نظر را برای وارد کردن انتخاب کنید. منابع سفارشی مورد نیاز خودکار افزوده می‌شوند.
 [set library empty]
-
+مجموعه‌ای یافت نشد.
 [set library release help]
-
+انتشار مشخصی را برای بررسی و وارد کردن انتخاب کنید.
 [set library heading]
-
+مجموعه‌های زمین و منابع
 [set library browse]
-
+مرور کتابخانهٔ آنلاین
 [set library local]
-
+محتوای نقشه، نام پدیدآورندگان و ویرایش‌های محلی
 [set library local help]
-
+نسخهٔ محتوای ذخیره‌شده در این نقشه را ویرایش کنید. نام پدیدآورندگان انتشار اصلی حفظ می‌شود. تغییرات نقشه‌های دیگر یا انتشار آنلاین را به‌روزرسانی نمی‌کنند.
 [set library apply]
-
+اعمال تغییرات محلی
 [set library updated]
-
+محتوای محلی به‌روزرسانی شد.
 [set library search hint]
-
+جست‌وجوی مضمون‌ها و سازندگان
 [set library search]
-
+جست‌وجو
 [set library set]
-
+مجموعه
 [set library update help]
-
+این کار زمین و منابع قرارگرفتهٔ منطبق، از جمله ویرایش‌های محلی، را صریحاً جایگزین می‌کند. مدخل‌های حذف‌شده روی انتشار قدیمی می‌مانند. مقدار مواد موجود به ظرفیت‌های جدید محدود می‌شود.
 [set library import]
-
+وارد کردن مدخل‌های انتخاب‌شده
 [set library next]
-
+صفحهٔ بعد
 [set library back]
-
+بازگشت به نتایج
 [set library license %0]
-
+مجوز: %0
 [set library release %0]
-
+انتشار %0
 [set library replace %0]
-
+جایگزینی مدخل‌های قرارگرفته از انتشار %0
 [set library preview limit]
-
+پیش‌نمایش برای ۶۴ مدخل اول نمایش داده می‌شود. همهٔ مدخل‌ها همچنان قابل انتخاب هستند.
 [set library definition]
-
+تعریف ویژگی‌ها (JSON)
 [set library artwork]
-
+نگاشت تصاویر زمین (JSON)
 [settings Map generators]
 مولدهای نقشه
 [settings Import a generator package, then select its landscape when creating a map or game.]

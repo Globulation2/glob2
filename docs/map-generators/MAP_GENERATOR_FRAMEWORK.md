@@ -413,9 +413,9 @@ UI thread for the snapshot, so a large map with many colonies no longer freezes 
 its candidates roll. Any later edit to
 the draft drops the remembered seed and returns to candidate sampling. The picker takes only a
 list of localized names and requests, so the editor or a multiplayer lobby can run it too.
-Background rolls are safe because `syncRand()`'s state is per thread: a worker seeds its own
-stream inside `GenerationService::generate` and never touches the menu's live colony on the UI
-thread.
+Background rolls own independent target Games. `GenerationService::generate` seeds each
+target map's private streams from the request; it never binds a global/thread-local RNG
+or touches the menu's live colony. Named generation streams remain request-owned.
 
 ### The worker count
 

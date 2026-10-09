@@ -20,8 +20,13 @@ recorded before version 137 became incompatible and network protocol 57 separate
 clients using those rules. Format 146 stores terrain per map vertex and derives each
 cell's rules from its corners. Format 147 makes resource fetching greedy only, without
 round-trip routing, and format 148 schedules building walking fields; the current
-replay floor is 150, adding building area-effect funding and fractional services
-to the delayed resource growth introduced in 149.
+replay floor is 152: units, buildings, world operations and legacy stories use
+salted private PCG32 streams. AI helpers consume their controller streams explicitly.
+Earlier replay trajectories are incompatible. Existing saves remain loadable: each
+missing owner stream is initialized once from the saved seed, domain and identity;
+subsequent saves retain its exact progress. Existing AI, JavaScript, generation and
+presentation streams remain private. Ecology, legacy summons and generated resource
+placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 

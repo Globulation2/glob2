@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Dokončite prihlásenie v prehliadači. Hra potom bude automaticky pokračovať.
 [hub browser did not open]
-
+Prehliadač sa neotvoril. Pokračujte otvorením prihlasovacej stránky.
 [hub compare code %0]
-
+Ak vás stránka vyzve, overte, že zobrazuje %0.
 [hub code copied]
-
+Kód skopírovaný
 [settings Finish in your browser. The game continues by itself.]
-
+Dokončite akciu v prehliadači. Hra bude automaticky pokračovať.
 [music set]
-
+Hudobná sada
 [random music set]
-
+Náhodná pre každú hru
 [playing music set %0]
-
+Hrá: %0
 [music set failed]
-
+Túto hudobnú sadu sa nepodarilo načítať.
 [settings Music set]
-
+Hudobná sada
 [settings Random each match]
-
+Zvoľte „Náhodná“, aby sa hudba vyberala na začiatku každej hry.
 [settings Edge scrolling]
-
+Posúvanie pri okraji
 [settings Edge scrolling in fullscreen]
-
+Posúvanie pri okraji na celej obrazovke
 [settings Edge scrolling in windowed mode]
-
+Posúvanie pri okraji v okne
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Posúvať mapu hry aj editora, keď myš dosiahne okraj okna.
 [AI strategy]
 Stratégia UI
 [start recording]
@@ -4625,9 +4625,9 @@ Nahrávanie
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Nahrávajte svoje hry ako videá MP4 so zvukom. Nahrávanie vyžaduje FFmpeg s kódovačmi libx264 a AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Nahrávajte svoje hry ako videá MP4 so zvukom.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Nahrávanie používa plné rozlíšenie obrazu pri 30 snímkach za sekundu.
 [settings FFmpeg is ready.]
 FFmpeg je pripravený.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Zranené jednotky ustupujú
 [Units can die]
 Jednotky môžu zomrieť
 [Upgrades]
-
+Vylepšenia
 [No stockpile]
 Žiadne
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Zranené jednotky sa vracajú liečiť namiesto boja na život a na smrť.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Jednotky zomrú, keď im dôjde zdravie. Po vypnutí sa zastavia na 1 bode zdravia.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Jednotky získavajú úrovne vo výcvikových budovách a budovy možno vylepšovať. Opravy zostávajú dostupné aj po vypnutí.
 [stat group work]
 Čas robotníkov
 [stat worker time]
@@ -5309,235 +5309,235 @@ sila
 [stat view by place]
 Podľa miesta
 [AI Library]
-
+Knižnica UI
 [Authoring guide]
-
+Príručka pre autorov
 [Beginner-friendly]
-
+Vhodné pre začiatočníkov
 [Defensive]
-
+Obranná
 [Discover]
-
+Objavovať
 [Download & install]
-
+Stiahnuť a nainštalovať
 [Downloading AI…]
-
+Sťahovanie UI…
 [Expansion]
-
+Expanzia
 [Experimental]
-
+Experimentálna
 [Favourite]
-
+Pridať medzi obľúbené
 [Favourited]
-
+Medzi obľúbenými
 [Favourites]
-
+Obľúbené
 [Got it]
-
+Rozumiem
 [How AIs work]
-
+Ako fungujú UI
 [Install selected version]
-
+Nainštalovať vybranú verziu
 [Installed]
-
+Nainštalované
 [Invalid AI catalogue response]
-
+Neplatná odpoveď katalógu UI
 [JavaScript API reference]
-
+Referenčná príručka API JavaScriptu
 [Like]
-
+Páči sa mi
 [Liked]
-
+Páči sa vám
 [Loading AI library…]
-
+Načítavanie knižnice UI…
 [Most downloaded]
-
+Najsťahovanejšie
 [Most liked]
-
+Najviac lajkov
 [Newest]
-
+Najnovšie
 [No AIs match these filters.]
-
+Týmto filtrom nezodpovedá žiadna UI.
 [Not validated for this game version]
-
+Neoverené pre túto verziu hry
 [Open AI Library]
-
+Otvoriť knižnicu UI
 [Open AI page]
-
+Otvoriť stránku UI
 [Passed compatibility checks]
-
+Kontroly kompatibility úspešné
 [Recently updated]
-
+Nedávno aktualizované
 [Rush]
-
+Rýchly útok
 [Search]
-
+Hľadať
 [Share your AI]
-
+Zdieľať svoju UI
 [Show more]
-
+Zobraziť viac
 [Sign in through Online settings to like and favourite AIs.]
-
+Prihláste sa v nastaveniach online hry, aby ste mohli hodnotiť UI a pridávať ich medzi obľúbené.
 [Starter project]
-
+Východiskový projekt
 [downloads of this version]
-
+stiahnutí tejto verzie
 [downloads]
-
+stiahnutí
 [Update available]
-
+Dostupná aktualizácia
 [Browse versions]
-
+Prechádzať verzie
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Stiahnite UI a vyberte ju pre počítačového hráča v miestnej hre. Nainštalované verzie fungujú bez pripojenia. Aktualizácie ovplyvnia budúce hry; uložené hry si ponechajú pôvodný kód.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Kontroly kompatibility nezaručujú bezpečnosť ani hernú silu. Spúšťajte iba kód autorov, ktorým dôverujete.
 [Back to results]
-
+Späť k výsledkom
 [music 2–5 minutes]
-
+2–5 minút
 [music 5–15 minutes]
-
+5–15 minút
 [music AI-generated]
-
+Vytvorené UI
 [music All music]
-
+Všetka hudba
 [music All open licences]
-
+Všetky otvorené licencie
 [music Any duration]
-
+Ľubovoľná dĺžka
 [music Audition each mood for eight seconds]
-
+Vypočuť každú náladu po osem sekúnd
 [music Back]
-
+Späť
 [music Browse]
-
+Prechádzať
 [music Building]
-
+Stúpajúce napätie
 [music Calm]
-
+Pokoj
 [music Calm → Building → Combat]
-
+Pokoj → Stúpajúce napätie → Boj
 [music Choose Building]
-
+Vybrať stúpajúce napätie
 [music Choose Calm]
-
+Vybrať Pokoj
 [music Choose Combat]
-
+Vybrať Boj
 [music Choose ZIP]
-
+Vybrať ZIP
 [music Choose a music file.]
-
+Vyberte hudobný súbor.
 [music Combat]
-
+Boj
 [music Could not open this music set.]
-
+Túto hudobnú sadu sa nepodarilo otvoriť.
 [music Credits, downloads and reporting]
-
+Autori, sťahovanie a hlásenia
 [music Downloading music…]
-
+Sťahovanie hudby…
 [music Export recovery files]
-
+Exportovať súbory na obnovu
 [music Fade duration]
-
+Dĺžka prelínania
 [music File selection cancelled or failed.]
-
+Výber súboru bol zrušený alebo zlyhal.
 [music Import ZIP]
-
+Importovať ZIP
 [music Import ZIP or three tracks]
-
+Importovať ZIP alebo tri skladby
 [music Import music]
-
+Importovať hudbu
 [music Import three tracks]
-
+Importovať tri skladby
 [music Includes AI-generated audio]
-
+Obsahuje zvuk vytvorený UI
 [music Install]
-
+Nainštalovať
 [music Install selected]
-
+Nainštalovať vybrané
 [music Installed]
-
+Nainštalované
 [music Load more]
-
+Načítať viac
 [music Loading music…]
-
+Načítavanie hudby…
 [music Most downloaded]
-
+Najsťahovanejšie
 [music Most liked]
-
+Najviac lajkov
 [music Music decoding failed.]
-
+Dekódovanie hudby zlyhalo.
 [music Music download failed.]
-
+Stiahnutie hudby zlyhalo.
 [music Music installed.]
-
+Hudba nainštalovaná.
 [music Music installed. It is now available in Audio settings.]
-
+Hudba nainštalovaná. Teraz je dostupná v nastaveniach zvuku.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Hudba ešte nie je trvalo uložená. Pred odchodom skúste uloženie znova.
 [music Music library]
-
+Hudobná knižnica
 [music Music request failed.]
-
+Požiadavka na hudbu zlyhala.
 [music Newest]
-
+Najnovšie
 [music No community music installed yet. Import files or browse the online library.]
-
+Zatiaľ nie je nainštalovaná žiadna komunitná hudba. Importujte súbory alebo prechádzajte online knižnicu.
 [music No music found.]
-
+Žiadna hudba sa nenašla.
 [music Not AI-generated]
-
+Nevytvorené UI
 [music Pause]
-
+Pozastaviť
 [music Play]
-
+Prehrať
 [music Playback position]
-
+Pozícia prehrávania
 [music Preview]
-
+Náhľad
 [music Ready to import.]
-
+Pripravené na import.
 [music Remove]
-
+Odstrániť
 [music Reset to game behavior]
-
+Obnoviť správanie hry
 [music Retry saving]
-
+Skúsiť uloženie znova
 [music Saved.]
-
+Uložené.
 [music Saving music…]
-
+Ukladanie hudby…
 [music Search]
-
+Hľadať
 [music Search title, artist, description…]
-
+Hľadať názov, interpreta, opis…
 [music Select for installation]
-
+Vybrať na inštaláciu
 [music Share music on the web]
-
+Zdieľať hudbu na webe
 [music Some catalogue entries could not be read.]
-
+Niektoré položky katalógu sa nepodarilo prečítať.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Údaje sa nepodarilo uložiť. Pred odchodom skúste uloženie znova alebo exportujte súbory.
 [music Tag]
-
+Značka
 [music Test crossfades]
-
+Vyskúšať prelínanie
 [music Up to 2 minutes]
-
+Do 2 minút
 [music Use this music]
-
+Použiť túto hudbu
 [music Validating music…]
-
+Overovanie hudby…
 [settings Music library · Browse, install and import]
-
+Hudobná knižnica · Prechádzanie, inštalácia a import
 [music Filters]
-
+Filtre
 [music Leave without saving]
-
+Odísť bez uloženia
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importujte stiahnutý hudobný ZIP alebo tri skladby Opus. Metadáta a obal sa načítavajú zo skladby Pokoj; ďalšie súbory nie sú potrebné.
 [settings Target render FPS]
 Cieľové FPS vykresľovania
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Ryby
 [Reroll terrain look]
 Znova náhodne vybrať vzhľad terénu
 [boulders]
-
+Balvany
 [hedge]
-
+Živý plot
 [thicket]
-
+Húština
 [ridge_rock]
-
+Hrebeň
 [outcrop]
-
+Skalný výchoz
 [dirt]
-
+Hlina
 [clay]
-
+Íl
 [gravel]
-
+Štrk
 [flower_meadow]
-
+Kvetnatá lúka
 [mud]
-
+Blato
 [marsh]
-
+Močiar
 [deep_snow]
-
+Hlboký sneh
 [scree]
-
+Suť
 [dirt_track]
-
+Poľná cesta
 [boardwalk]
-
+Drevený chodník
 [lava]
-
+Láva
 [ember_field]
-
+Žeravé pole
 [loam]
-
+Úrodná hlina
 [moss]
-
+Mach
 [spring_meadow]
-
+Jarná lúka
 [deep_water]
-
+Hlboká voda
 [dark_water]
-
+Tmavá voda
 [void_hole]
-
+Diera
 [chasm]
-
+Priepasť
 [terrain group water]
-
+Voda
 [terrain group sand]
-
+Piesok
 [terrain group grass]
-
+Tráva
 [terrain group ice]
-
+Ľad
 [terrain group paths]
-
+Cesty
 [terrain group obstacles]
-
+Prekážky
 [terrain group ridges]
-
+Hrebene
 [terrain group barren]
-
+Neúrodná pôda
 [terrain group rough]
-
+Náročný terén
 [terrain group lava]
-
+Láva
 [terrain group fertile]
-
+Úrodná pôda
 [terrain group deep-water]
-
+Hlboká voda
 [terrain group void]
-
+Prázdnota
 [experiment obstacle-terrain]
-
+Terén s prekážkami
 [experiment obstacle-terrain help]
-
+Pridá do editora máp balvany, živé ploty a húštiny. Pozemné jednotky ich nemôžu prekonať a zastavujú strely; lietajúce jednotky preletia. Nemožno na ne umiestniť budovy ani suroviny.
 [experiment ridge-terrain]
-
+Skalnatý terén
 [experiment ridge-terrain help]
-
+Pridá do editora máp skalné hrebene a výchozy. Pozemné jednotky ich nemôžu prekonať, ale veže strieľajú ponad ne a lietajúce jednotky preletia. Nemožno na ne umiestniť budovy ani suroviny.
 [experiment barren-terrain]
-
+Neúrodná pôda
 [experiment barren-terrain help]
-
+Pridá do editora máp hlinu, íl, štrk a kvetnaté lúky. Možno na nich stavať budovy, ale na nich ani vedľa nich nič nerastie a nepočítajú sa ako breh.
 [experiment rough-terrain]
-
+Náročný terén
 [experiment rough-terrain help]
-
+Pridá do editora máp blato, močiare, hlboký sneh a suť. Pozemné jednotky sa pohybujú približne dvoma tretinami rýchlosti. Nemožno sem umiestniť budovy ani suroviny.
 [experiment path-terrain]
-
+Cestný terén
 [experiment path-terrain help]
-
+Pridá do editora máp poľné cesty a drevené chodníky. Rovnako ako na cestičkách sa pozemné jednotky pohybujú dvojnásobnou rýchlosťou a budovy sú povolené, ale nič tu nerastie.
 [experiment lava-terrain]
-
+Lávový terén
 [experiment lava-terrain help]
-
+Pridá do editora máp lávu a žeravé polia. Pozemné jednotky do nich nemôžu vstúpiť; lietajúce jednotky nad nimi rýchlo strácajú zdravie. Strely ich preletia.
 [experiment fertile-terrain]
-
+Úrodná pôda
 [experiment fertile-terrain help]
-
+Pridá do editora máp úrodnú hlinu, mach a jarné lúky. Umožňujú stavby aj pestovanie plodín a zavlažujú okolitú pôdu viac než voda.
 [experiment deep-water-terrain]
-
+Hlboká voda
 [experiment deep-water-terrain help]
-
+Pridá do editora máp hlbokú a tmavú vodu. Plavci ju prekonávajú pomalšie, nerastú v nej riasy, ale stále zavlažuje okolité polia.
 [experiment void-terrain]
-
+Prázdny terén
 [experiment void-terrain help]
-
+Pridá do editora máp diery a priepasti. Nič ich nemôže prekonať, ani lietajúce jednotky, a strely sa zastavia na okraji.
 [terrain group custom]
-
+Vlastné
 [terrain group classic]
-
+Klasický terén
 [terrain rule walkable]
-
+Priechodný
 [terrain rule swimmable]
-
+Možno preplávať
 [terrain rule impassable]
-
+Nepriechodný
 [terrain rule no flying]
-
+Zákaz lietania
 [terrain rule buildable]
-
+Možno stavať
 [terrain rule speed %0]
-
+Rýchlosť %0%
 [terrain rule crops grow]
-
+Plodiny rastú
 [terrain rule irrigates]
-
+Zavlažuje okolitú pôdu
 [terrain rule stops nearby growth]
-
+Bráni rastu v okolí
 [terrain rule blocks shots]
-
+Blokuje strely
 [terrain rule hurts walkers]
-
+Zraňuje pozemné jednotky
 [terrain rule hurts fliers]
-
+Zraňuje lietajúce jednotky
 [terrain palette hint]
-
+Vyberte štetec. Skupiny zdieľajú pravidlá; ich členovia sa líšia iba vzhľadom.
 [terrain rule algae grow]
-
+Riasy rastú
 [terrain palette experiments hint]
-
+Vyberte štetec. Ďalšie skupiny terénu sa tu objavia po zapnutí ich experimentov v Nastavenia > Experimenty.
 [brush valid on %0]
-
+Platné na: %0
 [brush valid nowhere]
-
+Nemožno umiestniť na žiadny terén tejto mapy
 [brush requires experiment %0]
-
+Vyžaduje experiment %0
 [brush resources custom]
-
+Importované suroviny
 [brush section zones]
-
+Zóny
 [brush section areas]
-
+Oblasti
 [brush section tools]
-
+Nástroje
 [brush clearing area]
-
+Oblasť na vyčistenie
 [editor unsaved title]
-
+Neuložené zmeny
 [editor quit unsaved]
-
+Uložiť zmeny tejto mapy pred opustením editora?
 [editor load unsaved]
-
+Uložiť zmeny tejto mapy pred otvorením inej?
 [editor save]
-
+Uložiť…
 [editor discard]
-
+Neukladať
 [editor share never saved]
-
+Mapy sa zdieľajú z uloženého súboru. Najprv mapu uložte a potom ju zdieľajte.
 [editor share unsaved]
-
+Táto mapa má neuložené zmeny. Zdieľanie nahrá uložený súbor.
 [editor save and share]
-
+Uložiť a zdieľať…
 [editor share saved version]
-
+Zdieľať uloženú verziu
 [editor reroll confirm]
-
+Dať každému políčku terénu nový náhodný vzhľad? Typy terénu a hrateľnosť zostanú rovnaké. Túto akciu nemožno vrátiť.
 [editor reroll]
-
+Nový náhodný vzhľad
 [editor map saved]
-
+Mapa uložená
 [editor map shared]
-
+Mapa zdieľaná online
 [editor save needs fertility]
-
+Uloženie vyžaduje mapu úrodnosti, preto bolo zrušené. Stlačte OK na ďalší pokus.
 [editor fertility stale]
-
+Mapa úrodnosti je zastaraná · Kliknutím obnovíte
 [No definition files found in %0]
-
+V %0 sa nenašli žiadne súbory definícií
 [From device…]
-
+Zo zariadenia…
 [replace existing file %0?]
-
+Súbor s názvom „%0“ už existuje. Nahradiť ho?
 [Replace]
-
+Nahradiť
 [Keep existing file]
-
+Ponechať existujúci súbor
 [editor menu save]
-
+Uložiť mapu
 [editor menu load]
-
+Otvoriť mapu…
 [editor menu import terrain]
-
+Importovať definície terénu…
 [editor menu import resources]
-
+Importovať definície surovín…
 [editor menu teams]
-
+Tímy…
 [editor menu scenario]
-
+Scenár…
 [editor menu reroll]
-
+Nový náhodný vzhľad terénu…
 [editor menu file]
-
+Súbor
 [editor menu map]
-
+Mapa
 [no resource growth areas]
-
+Oblasti bez rastu
 [dock flags and units]
-
+Vlajky a jednotky
 [dock minimap]
-
+Minimapa
 [dock search brushes]
-
+Hľadať štetce
 [dock brush shape %0]
-
+Tvar štetca %0
 [dock brush]
-
+Štetec
 [dock brush paint]
-
+Maľovať
 [dock brush erase]
-
+Mazať
 [dock enable for map]
-
+Zapnúť pre túto mapu
 [dock enable experiment %0]
-
+Zapnúť %0
 [dock enable experiment hint %0]
-
+Zapne experiment %0 iba pre túto mapu.
 [dock area number]
-
+Oblasť
 [dock building level]
-
+Úroveň
 [dock unit level]
-
+Úroveň jednotky
 [dock no brushes match]
-
+Vyhľadávaniu nezodpovedá žiadny štetec.
 [dock active team]
-
+Aktívny tím
 [dock team count %0]
-
+Tímy na tejto mape: %0
 [dock add team]
-
+Pridať tím
 [dock remove team]
-
+Odstrániť tím
 [dock nothing selected]
-
+Nič nie je vybrané.
 [dock no properties]
-
+Tento objekt nemá upraviteľné vlastnosti.
 [focus brush search]
-
+Hľadať štetce
 [switch to resources view]
-
+Prepnúť na zobrazenie surovín
 [dock resources base]
-
+Štandardné suroviny
 [dock fertility stale]
-
+Mapa úrodnosti je zastaraná.
 [dock fertility refresh]
-
+Obnoviť úrodnosť
 [Enabled %0 for this map]
-
+Zapnuté %0 pre túto mapu
 [editor fertility tap refresh]
-
+Mapa úrodnosti je zastaraná: ťuknutím obnovíte
 [editor menu import set]
-
+Importovať sadu terénu a surovín
 [editor menu set library]
-
+Knižnica sád
 [set library loading]
-
+Načítavanie sád…
 [set library downloading]
-
+Sťahovanie konkrétneho vydania…
 [set library connection error]
-
+Sady nemožno načítať. Skontrolujte pripojenie a skúste to znova.
 [set library hash error]
-
+Stiahnutá sada neprešla kontrolou kontrolného súčtu.
 [set library package error]
-
+Neplatný balíček sady.
 [set library listing error]
-
+Neplatný zoznam sád.
 [set library release error]
-
+Neplatné vydanie sady.
 [set library selection help]
-
+Vyberte položky na import. Potrebné vlastné suroviny sa zahrnú automaticky.
 [set library empty]
-
+Žiadne sady sa nenašli.
 [set library release help]
-
+Vyberte konkrétne vydanie na prezretie a import.
 [set library heading]
-
+Sady terénu a surovín
 [set library browse]
-
+Prechádzať online knižnicu
 [set library local]
-
+Obsah mapy, autori a miestne úpravy
 [set library local help]
-
+Upravte kópiu obsahu uloženú v tejto mape. Údaje o autoroch pôvodného vydania zostávajú pripojené. Zmeny neaktualizujú iné mapy ani online vydanie.
 [set library apply]
-
+Použiť miestne zmeny
 [set library updated]
-
+Miestny obsah aktualizovaný.
 [set library search hint]
-
+Hľadať témy a tvorcov
 [set library search]
-
+Hľadať
 [set library set]
-
+Sada
 [set library update help]
-
+Nahradí zodpovedajúci umiestnený terén a suroviny vrátane miestnych úprav. Odstránené položky zostávajú na starom vydaní. Množstvo existujúcich materiálov sa obmedzí na nové kapacity.
 [set library import]
-
+Importovať vybrané položky
 [set library next]
-
+Ďalšia stránka
 [set library back]
-
+Späť k výsledkom
 [set library license %0]
-
+Licencia: %0
 [set library release %0]
-
+vydanie %0
 [set library replace %0]
-
+Nahradiť umiestnené položky z vydania %0
 [set library preview limit]
-
+Náhľady sa zobrazujú pre prvých 64 položiek. Všetky položky možno vybrať.
 [set library definition]
-
+Definícia vlastností (JSON)
 [set library artwork]
-
+Priradenie grafiky terénu (JSON)
 [settings Map generators]
 Generátory máp
 [settings Import a generator package, then select its landscape when creating a map or game.]

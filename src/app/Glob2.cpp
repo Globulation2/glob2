@@ -126,8 +126,7 @@ int Glob2::runTestGames()
 		// runs produce byte-identical replays — the basis for the
 		// behavior-preservation harness used by C++ cleanup work.
 		const char* envSeed = getenv("GLOB2_TEST_SEED");
-		long t = envSeed ? atol(envSeed) : time(NULL);
-		setSyncRandSeed(t);
+		Uint32 t = envSeed ? static_cast<Uint32>(strtoull(envSeed, nullptr, 10)) : static_cast<Uint32>(time(NULL));
 		// Capture the seed so createRandomGame can mirror it into
 		// GameHeader::seed — otherwise a saved .game file (from
 		// --save-game-as or GLOB2_DUMP_GAME) would carry the wall-clock
@@ -150,14 +149,15 @@ int Glob2::runTestGames()
 int Glob2::runTestMapGeneration()
 {
 	long t = time(NULL);
-	setSyncRandSeed(t);
+	EntityRandom random;
+	random.initializeOwner(Uint32(t), unsigned(RandomDomain::GenerationExercise));
 	while(true)
 	{
 		GenerationRequest descriptor;
 		
 		using D = GenerationRequest;
 		const auto methods = GeneratorRegistry::active().methods(false);
-		auto method=methods[syncRand()%methods.size()];
+		auto method=methods[random.nextU32()%methods.size()];
 		descriptor.setMethodDefaults(method);
 		auto controls = D::sharedControls();
 		const auto& specific = D::controls(method);
@@ -165,7 +165,7 @@ int Glob2::runTestMapGeneration()
 		for (const auto& control : controls)
 		{
 			int choices = (control.maximum - control.minimum) / control.step + 1;
-			control.set(descriptor, control.minimum + (syncRand() % choices) * control.step);
+			control.set(descriptor, control.minimum + (random.nextU32() % choices) * control.step);
 		}
 		if (!descriptor.hasTerrainWeight())
 			continue;
@@ -173,7 +173,7 @@ int Glob2::runTestMapGeneration()
 		std::cout<<"Generating Map"<<std::endl;		
 		GenerationService generator;
 		Game game(NULL);
-		descriptor.seed=syncRand();
+		descriptor.seed=random.nextU32();
 		auto result=generator.generate(game, descriptor);
 		if(!result) std::cerr << result.diagnostic() << std::endl;
 	}
@@ -520,7 +520,6 @@ int Glob2::run(int argc, char *argv[])
 	if(scriptCommand>=0)return scriptCommand;
 	const int headless = runHeadlessCommand(argc, argv);
 	if (headless >= 0) return headless;
-	srand(time(NULL));
 
 	std::string buildingCatalog;
 	for (int i=1; i<argc; ++i)

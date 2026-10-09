@@ -100,7 +100,7 @@ namespace Cortex
 		};
 	}
 
-	static int placeCandidatesImpl(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
+	static int placeCandidatesImpl(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
 	                               BuildCandidate out[CORTEX_BUILD_CANDIDATES],
 	                               const ForwardBias* forward, int placementType = -1, int maxWorkerQualification = -1)
 	{
@@ -369,7 +369,7 @@ namespace Cortex
 		// Deterministic final tie-break among equal-(score) candidates that also
 		// share the same distance-to-colony: this only fires when two retained
 		// spots are genuinely indistinguishable by our heuristic. We perturb the
-		// stored score by a syncRand()-derived nudge keyed off the tile so the
+		// stored score by a random()-derived nudge keyed off the tile so the
 		// ordering is still identical on every client but does not always favour
 		// the lowest scan coordinate. We do NOT re-sort across distinct scores.
 		for (int i = 0; i + 1 < count; i++)
@@ -379,7 +379,7 @@ namespace Cortex
 			{
 				// Coin flip is drawn from the lockstep RNG, so identical on all
 				// machines. Swap (keep both, just order) on heads.
-				if ((syncRand() & 1) != 0)
+				if ((random() & 1) != 0)
 				{
 					ScoredSpot tmp = heap[i];
 					heap[i] = heap[i + 1];
@@ -407,13 +407,13 @@ namespace Cortex
 		return count;
 	}
 
-	int placeCandidates(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
+	int placeCandidates(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType, int level,
 	                    BuildCandidate out[CORTEX_BUILD_CANDIDATES], int placementType, int maxWorkerQualification)
 	{
-		return placeCandidatesImpl(game, team, scratch, intents, buildingType, level, out, NULL, placementType, maxWorkerQualification);
+		return placeCandidatesImpl(random, game, team, scratch, intents, buildingType, level, out, NULL, placementType, maxWorkerQualification);
 	}
 
-	int placeForwardCandidate(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType,
+	int placeForwardCandidate(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, int buildingType,
 	                          int targetX, int targetY,
 	                          int minTargetDist, int maxTargetDist,
 	                          BuildCandidate& out, int maxWorkerQualification)
@@ -438,7 +438,7 @@ namespace Cortex
 		bias.maxTargetDist = maxTargetDist;
 
 		BuildCandidate slots[CORTEX_BUILD_CANDIDATES];
-		const int n = placeCandidatesImpl(game, team, scratch, intents, buildingType, 0, slots, &bias, -1, maxWorkerQualification);
+		const int n = placeCandidatesImpl(random, game, team, scratch, intents, buildingType, 0, slots, &bias, -1, maxWorkerQualification);
 		if (n <= 0)
 			return 0;
 		out = slots[0];

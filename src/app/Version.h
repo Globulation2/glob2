@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 150
+#define VERSION_MINOR 152
+// version 152 gives world operations and legacy stories private streams.
+// version 151 gives units and buildings salted private PCG32 streams.
 // version 150 preserves building area-effect funding and fractional services.
 // version 149 adds delayed resource growth to vertex terrain and scheduled building gradients.
 // version 148 adds the match-wide building gradient delay rule and pending scheduled

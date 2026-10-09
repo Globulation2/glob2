@@ -13,6 +13,7 @@
 #include <nlohmann/json.hpp>
 #include <latch>
 #include <bit>
+#include <tuple>
 
 namespace
 {
@@ -50,6 +51,36 @@ void seed(Map &map, ResourceId id)
 } // namespace
 TEST_SUITE("ResourceGrowth")
 {
+    TEST_CASE("source decisions cannot shift scan sampling or another source")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto& map=world.game.map;
+        const auto id=crop(map);
+        auto definitions=nlohmann::json::parse(map.resourceRegistry().serialize());
+        for (auto& resource:definitions["resources"])
+            if (resource["key"]=="growth-test") {
+                resource["properties"]["spreadRate"]=0;
+                resource["properties"]["growthRate"]=ResourceRateScale/2;
+            }
+        map.installResourceDefinitions(definitions.dump());
+        seed(map,id);
+        ResourceGrowth::Batch dense, changed;
+        MersenneTwister first(991), second(991);
+        ResourceGrowth::calculate(map.stateView(),first,dense);
+        REQUIRE(!dense.proposals.empty());
+        const auto removed=dense.proposals.front().tile;
+        map.replaceResource(removed,Resource{});
+        ResourceGrowth::calculate(map.stateView(),second,changed);
+        CHECK(first==second);
+        CHECK(dense.sampled==changed.sampled);
+        std::vector<std::tuple<Uint32,Uint16,Uint8,Sint8>> expected,actual;
+        for (const auto& p:dense.proposals) if (p.tile!=removed)
+            expected.emplace_back(p.tile,p.type,p.material,p.delta);
+        for (const auto& p:changed.proposals) if (p.tile!=removed)
+            actual.emplace_back(p.tile,p.type,p.material,p.delta);
+        CHECK(actual==expected);
+    }
 	TEST_CASE("signed proposals use only current resource type and apply in order")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -139,12 +170,12 @@ TEST_SUITE("ResourceGrowth")
 		seed(m, crop(m, true));
 		m.resourceGrowthField();
 		ResourceGrowth::Batch b;
-		MersenneTwister rng(48);
+		MersenneTwister rng(991);
 		ResourceGrowth::calculate(m.stateView(), rng, b);
 		REQUIRE(b.proposals.size() > 0);
 		CHECK(b.capacityGrew);
 		const auto capacity = b.proposals.capacity();
-		rng.seed(48);
+		rng.seed(991);
 		ResourceGrowth::calculate(m.stateView(), rng, b);
 		CHECK_FALSE(b.capacityGrew);
 		CHECK(b.proposals.capacity() == capacity);
@@ -224,7 +255,7 @@ TEST_SUITE("ResourceGrowth")
 			world.game, ResourceGrowth::Pipeline::requirements());
 		const auto before = m.checkSum(true);
 		ResourceGrowth::Batch a, b;
-		MersenneTwister r1(18), r2(18);
+		MersenneTwister r1(991), r2(991);
 		ResourceGrowth::calculate(snapshot.view(), r1, a);
 		ResourceGrowth::calculate(snapshot.view(), r2, b);
 		REQUIRE(a.proposals.size() > 0);
@@ -404,7 +435,7 @@ TEST_SUITE("ResourceGrowth")
 
 		auto snapshot = world.game.snapshotStore().captureBoundary(
 			world.game, ResourceGrowth::Pipeline::requirements());
-		pipeline.stage(snapshot.tick, 48);
+		pipeline.stage(snapshot.tick, 991);
 		pipeline.prepare(snapshot, map.computeExecutor());
 		pipeline.finish();
 		REQUIRE(pipeline.metrics.proposals > 0);
@@ -569,7 +600,7 @@ TEST_CASE("configured seeds preserve rates variety collisions and saved output" 
             map.replaceResource(map.coordToIndex(x, y), Resource{Uint16(resourceIndex(id)), 3, 1, 0});
     auto snapshot = world.game.snapshotStore().captureBoundary(world.game, ResourceGrowth::Pipeline::requirements());
     ResourceGrowth::Batch batch;
-    MersenneTwister random(48);
+    MersenneTwister random(991);
     ResourceGrowth::calculate(snapshot.view(), random, batch);
     const auto found = std::find_if(batch.proposals.begin(), batch.proposals.end(),
         [](const auto &p) { return p.kind == ResourceGrowth::Proposal::Kind::Seed; });
@@ -580,7 +611,7 @@ TEST_CASE("configured seeds preserve rates variety collisions and saved output" 
     const auto at = seedProposal.tile;
     ResourceGrowth::Pipeline pipeline;
 
-    pipeline.stage(snapshot.tick, 48);
+    pipeline.stage(snapshot.tick, 991);
     pipeline.prepare(snapshot, map.computeExecutor());
     auto *bytes = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);

@@ -26,6 +26,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/unit/EntityRandomLifecycleTest.cpp',
     '#src/map/generator/javascript/ScriptGeneratorTest.cpp',
     '#src/map/generator/javascript/ToolkitBindingTest.cpp',
     '#src/map/generator/javascript/FertilityBindingTest.cpp',
@@ -298,6 +299,7 @@ UNIT_TESTS = [
     '#src/map/io/MapExploredAreaSaveLoadTest.cpp',
     '#src/map/preview/MapRenderGeometryTest.cpp',
     '#src/common/MersenneTwisterTest.cpp',
+    '#src/common/EntityRandomTest.cpp',
     '#src/render/torus/TorusGeometryTest.cpp',
     '#src/render/torus/TorusPickingTest.cpp',
     '#src/render/torus/TorusTextureTilesTest.cpp',

@@ -856,11 +856,11 @@ inline void lavaPrimitiveChecks()
 	int attempts = 0;
 	const auto rejected = chooseScoredSettlements(
 		context, {{}, {1}, {2}},
-		[&](Game &, GenerationContext &probe, const std::vector<int> &)
+		[&](Game &world, GenerationContext &probe, const std::vector<int> &)
 		{
 			assert(probe.bounded("builder", 10000) == expectedDraw);
 			assert(syncRandEngine() == engine);
-			syncRand();
+			world.privateRandom(RandomDomain::ResourcePlacement).nextU32();
 			++attempts;
 			probe.detail = "retained rejection";
 			return false;
@@ -872,9 +872,9 @@ inline void lavaPrimitiveChecks()
 	{
 		chooseScoredSettlements(
 			context, {{1}},
-			[](Game &, GenerationContext &, const std::vector<int> &) -> bool
+			[](Game &world, GenerationContext &, const std::vector<int> &) -> bool
 			{
-				syncRand();
+				world.privateRandom(RandomDomain::ResourcePlacement).nextU32();
 				throw std::runtime_error("builder failed");
 			},
 			[](const StartQualityReport &) { return std::string{}; });

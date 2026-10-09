@@ -134,7 +134,7 @@ class PreparedCoverage
 	struct Point { float x = 0, y = 0; };
 	struct Border
 	{
-		std::array<Point, 17> points{};
+		std::array<Point, 65> points{};
 		std::array<float, 33> ordinate{}, normal{};
 		bool vertical = false;
 		float direction = 1;

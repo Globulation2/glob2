@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Finalizează autentificarea în browser. Jocul va continua automat după aceea.
 [hub browser did not open]
-
+Browserul nu s-a deschis. Deschide pagina de autentificare pentru a continua.
 [hub compare code %0]
-
+Dacă pagina solicită, verifică dacă afișează %0.
 [hub code copied]
-
+Cod copiat
 [settings Finish in your browser. The game continues by itself.]
-
+Finalizează în browser. Jocul va continua automat.
 [music set]
-
+Set muzical
 [random music set]
-
+Aleatoriu la fiecare joc
 [playing music set %0]
-
+Se redă: %0
 [music set failed]
-
+Nu s-a putut încărca acest set muzical.
 [settings Music set]
-
+Set muzical
 [settings Random each match]
-
+Alege „Aleatoriu” pentru a selecta muzica la începutul fiecărui joc.
 [settings Edge scrolling]
-
+Derulare la margine
 [settings Edge scrolling in fullscreen]
-
+Derulare la margine pe tot ecranul
 [settings Edge scrolling in windowed mode]
-
+Derulare la margine în fereastră
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Deplasează hărțile jocului și editorului când mouse-ul ajunge la marginea ferestrei.
 [AI strategy]
 Strategia IA
 [start recording]
@@ -4625,9 +4625,9 @@ Oprește comandantul
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Înregistrați jocurile ca videoclipuri MP4 cu sunet. Înregistrarea necesită FFmpeg cu codificatoarele libx264 și AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Înregistrează jocurile ca videoclipuri MP4 cu sunet.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Înregistrarea folosește rezoluția completă a imaginii la 30 de cadre pe secundă.
 [settings FFmpeg is ready.]
 FFmpeg este pregătit.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Unitățile rănite se retrag
 [Units can die]
 Unitățile pot muri
 [Upgrades]
-
+Îmbunătățiri
 [No stockpile]
 Niciuna
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Unitățile rănite se întorc să se vindece în loc să lupte până la moarte
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Unitățile mor când rămân fără puncte de viață. Dezactivați pentru a le opri la 1 punct.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Unitățile câștigă niveluri în clădirile de antrenament, iar clădirile pot fi îmbunătățite. Reparațiile rămân disponibile când opțiunea este dezactivată.
 [stat group work]
 Timpul lucrătorilor
 [stat worker time]
@@ -5309,235 +5309,235 @@ forță
 [stat view by place]
 După loc
 [AI Library]
-
+Biblioteca IA
 [Authoring guide]
-
+Ghid pentru autori
 [Beginner-friendly]
-
+Potrivită pentru începători
 [Defensive]
-
+Defensivă
 [Discover]
-
+Descoperă
 [Download & install]
-
+Descarcă și instalează
 [Downloading AI…]
-
+Se descarcă IA…
 [Expansion]
-
+Expansiune
 [Experimental]
-
+Experimentală
 [Favourite]
-
+Adaugă la favorite
 [Favourited]
-
+În favorite
 [Favourites]
-
+Favorite
 [Got it]
-
+Am înțeles
 [How AIs work]
-
+Cum funcționează IA
 [Install selected version]
-
+Instalează versiunea selectată
 [Installed]
-
+Instalată
 [Invalid AI catalogue response]
-
+Răspuns nevalid de la catalogul IA
 [JavaScript API reference]
-
+Referință API JavaScript
 [Like]
-
+Apreciază
 [Liked]
-
+Apreciată
 [Loading AI library…]
-
+Se încarcă biblioteca IA…
 [Most downloaded]
-
+Cele mai descărcate
 [Most liked]
-
+Cele mai apreciate
 [Newest]
-
+Cele mai noi
 [No AIs match these filters.]
-
+Nicio IA nu corespunde acestor filtre.
 [Not validated for this game version]
-
+Neverificată pentru această versiune a jocului
 [Open AI Library]
-
+Deschide biblioteca IA
 [Open AI page]
-
+Deschide pagina IA
 [Passed compatibility checks]
-
+Verificări de compatibilitate trecute
 [Recently updated]
-
+Actualizate recent
 [Rush]
-
+Atac rapid
 [Search]
-
+Caută
 [Share your AI]
-
+Distribuie propria IA
 [Show more]
-
+Arată mai multe
 [Sign in through Online settings to like and favourite AIs.]
-
+Autentifică-te din setările online pentru a aprecia IA și a le adăuga la favorite.
 [Starter project]
-
+Proiect inițial
 [downloads of this version]
-
+descărcări ale acestei versiuni
 [downloads]
-
+descărcări
 [Update available]
-
+Actualizare disponibilă
 [Browse versions]
-
+Răsfoiește versiunile
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Descarcă o IA, apoi alege-o pentru un jucător controlat de calculator într-un joc local. Versiunile instalate funcționează fără internet. Actualizările afectează jocurile viitoare; salvările păstrează codul original.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Verificările de compatibilitate nu garantează siguranța sau puterea de joc. Rulează cod numai de la autori în care ai încredere.
 [Back to results]
-
+Înapoi la rezultate
 [music 2–5 minutes]
-
+2–5 minute
 [music 5–15 minutes]
-
+5–15 minute
 [music AI-generated]
-
+Generată de IA
 [music All music]
-
+Toată muzica
 [music All open licences]
-
+Toate licențele deschise
 [music Any duration]
-
+Orice durată
 [music Audition each mood for eight seconds]
-
+Ascultă fiecare atmosferă timp de opt secunde
 [music Back]
-
+Înapoi
 [music Browse]
-
+Răsfoiește
 [music Building]
-
+Intensificare
 [music Calm]
-
+Calm
 [music Calm → Building → Combat]
-
+Calm → Intensificare → Luptă
 [music Choose Building]
-
+Alege Intensificare
 [music Choose Calm]
-
+Alege Calm
 [music Choose Combat]
-
+Alege Luptă
 [music Choose ZIP]
-
+Alege ZIP
 [music Choose a music file.]
-
+Alege un fișier muzical.
 [music Combat]
-
+Luptă
 [music Could not open this music set.]
-
+Nu s-a putut deschide acest set muzical.
 [music Credits, downloads and reporting]
-
+Autori, descărcări și raportări
 [music Downloading music…]
-
+Se descarcă muzica…
 [music Export recovery files]
-
+Exportă fișierele de recuperare
 [music Fade duration]
-
+Durata tranziției
 [music File selection cancelled or failed.]
-
+Selectarea fișierului a fost anulată sau a eșuat.
 [music Import ZIP]
-
+Importă ZIP
 [music Import ZIP or three tracks]
-
+Importă ZIP sau trei piese
 [music Import music]
-
+Importă muzică
 [music Import three tracks]
-
+Importă trei piese
 [music Includes AI-generated audio]
-
+Include sunet generat de IA
 [music Install]
-
+Instalează
 [music Install selected]
-
+Instalează selecția
 [music Installed]
-
+Instalată
 [music Load more]
-
+Încarcă mai multe
 [music Loading music…]
-
+Se încarcă muzica…
 [music Most downloaded]
-
+Cele mai descărcate
 [music Most liked]
-
+Cele mai apreciate
 [music Music decoding failed.]
-
+Decodarea muzicii a eșuat.
 [music Music download failed.]
-
+Descărcarea muzicii a eșuat.
 [music Music installed.]
-
+Muzica a fost instalată.
 [music Music installed. It is now available in Audio settings.]
-
+Muzica a fost instalată. Acum este disponibilă în setările audio.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Muzica nu este încă salvată permanent. Reîncearcă salvarea înainte de a pleca.
 [music Music library]
-
+Biblioteca muzicală
 [music Music request failed.]
-
+Solicitarea de muzică a eșuat.
 [music Newest]
-
+Cele mai noi
 [music No community music installed yet. Import files or browse the online library.]
-
+Nu este instalată încă muzică din comunitate. Importă fișiere sau răsfoiește biblioteca online.
 [music No music found.]
-
+Nu s-a găsit muzică.
 [music Not AI-generated]
-
+Negenerată de IA
 [music Pause]
-
+Pauză
 [music Play]
-
+Redă
 [music Playback position]
-
+Poziția redării
 [music Preview]
-
+Previzualizare
 [music Ready to import.]
-
+Pregătită pentru import.
 [music Remove]
-
+Elimină
 [music Reset to game behavior]
-
+Restabilește comportamentul jocului
 [music Retry saving]
-
+Reîncearcă salvarea
 [music Saved.]
-
+Salvată.
 [music Saving music…]
-
+Se salvează muzica…
 [music Search]
-
+Caută
 [music Search title, artist, description…]
-
+Caută titlu, artist, descriere…
 [music Select for installation]
-
+Selectează pentru instalare
 [music Share music on the web]
-
+Distribuie muzica pe web
 [music Some catalogue entries could not be read.]
-
+Unele intrări din catalog nu au putut fi citite.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Datele stocate nu au putut fi salvate. Reîncearcă sau exportă fișierele înainte de a pleca.
 [music Tag]
-
+Etichetă
 [music Test crossfades]
-
+Testează tranzițiile
 [music Up to 2 minutes]
-
+Până la 2 minute
 [music Use this music]
-
+Folosește această muzică
 [music Validating music…]
-
+Se verifică muzica…
 [settings Music library · Browse, install and import]
-
+Biblioteca muzicală · Răsfoire, instalare și import
 [music Filters]
-
+Filtre
 [music Leave without saving]
-
+Pleacă fără salvare
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importă arhiva ZIP muzicală descărcată sau cele trei piese Opus. Metadatele și coperta sunt citite din piesa Calm; nu sunt necesare alte fișiere.
 [settings Target render FPS]
 FPS țintă pentru randare
 [settings Unlimited]
@@ -5631,341 +5631,341 @@ Pești
 [Reroll terrain look]
 Alege din nou aleatoriu aspectul terenului
 [boulders]
-
+Bolovani
 [hedge]
-
+Gard viu
 [thicket]
-
+Desiș
 [ridge_rock]
-
+Creastă
 [outcrop]
-
+Afloriment
 [dirt]
-
+Pământ
 [clay]
-
+Argilă
 [gravel]
-
+Pietriș
 [flower_meadow]
-
+Pajiște cu flori
 [mud]
-
+Noroi
 [marsh]
-
+Mlaștină
 [deep_snow]
-
+Zăpadă adâncă
 [scree]
-
+Grohotiș
 [dirt_track]
-
+Drum de pământ
 [boardwalk]
-
+Podeț de lemn
 [lava]
-
+Lavă
 [ember_field]
-
+Câmp de jăratic
 [loam]
-
+Pământ fertil
 [moss]
-
+Mușchi
 [spring_meadow]
-
+Pajiște de primăvară
 [deep_water]
-
+Apă adâncă
 [dark_water]
-
+Apă întunecată
 [void_hole]
-
+Groapă
 [chasm]
-
+Prăpastie
 [terrain group water]
-
+Apă
 [terrain group sand]
-
+Nisip
 [terrain group grass]
-
+Iarbă
 [terrain group ice]
-
+Gheață
 [terrain group paths]
-
+Drumuri
 [terrain group obstacles]
-
+Obstacole
 [terrain group ridges]
-
+Creste
 [terrain group barren]
-
+Pământ sterp
 [terrain group rough]
-
+Teren dificil
 [terrain group lava]
-
+Lavă
 [terrain group fertile]
-
+Pământ fertil
 [terrain group deep-water]
-
+Apă adâncă
 [terrain group void]
-
+Vid
 [experiment obstacle-terrain]
-
+Teren cu obstacole
 [experiment obstacle-terrain help]
-
+Adaugă bolovani, garduri vii și desișuri în editorul de hărți. Unitățile terestre nu le pot traversa și proiectilele sunt oprite; unitățile zburătoare trec pe deasupra. Nu permit clădiri sau resurse.
 [experiment ridge-terrain]
-
+Teren cu creste
 [experiment ridge-terrain help]
-
+Adaugă creste stâncoase și aflorimente în editorul de hărți. Unitățile terestre nu le pot traversa, dar turnurile trag peste ele și unitățile zburătoare trec. Nu permit clădiri sau resurse.
 [experiment barren-terrain]
-
+Pământ sterp
 [experiment barren-terrain help]
-
+Adaugă pământ, argilă, pietriș și pajiști cu flori în editorul de hărți. Permit clădiri, dar nimic nu crește pe ele sau alături și nu sunt considerate țărm.
 [experiment rough-terrain]
-
+Teren dificil
 [experiment rough-terrain help]
-
+Adaugă noroi, mlaștini, zăpadă adâncă și grohotiș în editorul de hărți. Unitățile terestre se deplasează cu aproximativ două treimi din viteză. Nu permit clădiri sau resurse.
 [experiment path-terrain]
-
+Teren cu drumuri
 [experiment path-terrain help]
-
+Adaugă drumuri de pământ și podețe de lemn în editorul de hărți. Ca pe poteci, unitățile terestre se deplasează cu viteză dublă și clădirile sunt permise, dar nimic nu crește.
 [experiment lava-terrain]
-
+Teren cu lavă
 [experiment lava-terrain help]
-
+Adaugă lavă și câmpuri de jăratic în editorul de hărți. Unitățile terestre nu pot intra; cele zburătoare pierd rapid sănătate când trec pe deasupra. Proiectilele trec.
 [experiment fertile-terrain]
-
+Pământ fertil
 [experiment fertile-terrain help]
-
+Adaugă pământ fertil, mușchi și pajiști de primăvară în editorul de hărți. Permit clădiri și culturi și irigă terenul înconjurător mai puternic decât apa.
 [experiment deep-water-terrain]
-
+Apă adâncă
 [experiment deep-water-terrain help]
-
+Adaugă apă adâncă și întunecată în editorul de hărți. Înotătorii o traversează mai lent, algele nu cresc în ea, dar continuă să irige câmpurile din apropiere.
 [experiment void-terrain]
-
+Teren cu vid
 [experiment void-terrain help]
-
+Adaugă gropi și prăpăstii în editorul de hărți. Nimic nu le poate traversa, nici măcar unitățile zburătoare, iar proiectilele se opresc la margine.
 [terrain group custom]
-
+Personalizat
 [terrain group classic]
-
+Teren clasic
 [terrain rule walkable]
-
+Traversabil pe jos
 [terrain rule swimmable]
-
+Traversabil înot
 [terrain rule impassable]
-
+De netraversat
 [terrain rule no flying]
-
+Zbor interzis
 [terrain rule buildable]
-
+Construibil
 [terrain rule speed %0]
-
+Viteză %0%
 [terrain rule crops grow]
-
+Culturile cresc
 [terrain rule irrigates]
-
+Irigă terenul din apropiere
 [terrain rule stops nearby growth]
-
+Oprește creșterea din apropiere
 [terrain rule blocks shots]
-
+Blochează proiectilele
 [terrain rule hurts walkers]
-
+Rănește unitățile terestre
 [terrain rule hurts fliers]
-
+Rănește unitățile zburătoare
 [terrain palette hint]
-
+Alege o pensulă. Terenurile din fiecare grup au aceleași reguli și diferă numai prin aspect.
 [terrain rule algae grow]
-
+Algele cresc
 [terrain palette experiments hint]
-
+Alege o pensulă. Mai multe grupuri de teren apar aici după activarea experimentelor lor în Setări > Experimente.
 [brush valid on %0]
-
+Valid pe: %0
 [brush valid nowhere]
-
+Nu se poate amplasa pe niciun teren al acestei hărți
 [brush requires experiment %0]
-
+Necesită experimentul %0
 [brush resources custom]
-
+Resurse importate
 [brush section zones]
-
+Zone
 [brush section areas]
-
+Arii
 [brush section tools]
-
+Instrumente
 [brush clearing area]
-
+Arie de curățare
 [editor unsaved title]
-
+Modificări nesalvate
 [editor quit unsaved]
-
+Salvezi modificările acestei hărți înainte de a părăsi editorul?
 [editor load unsaved]
-
+Salvezi modificările acestei hărți înainte de a deschide alta?
 [editor save]
-
+Salvează…
 [editor discard]
-
+Nu salva
 [editor share never saved]
-
+Hărțile sunt distribuite din fișierul salvat. Salvează mai întâi această hartă, apoi distribuie-o.
 [editor share unsaved]
-
+Această hartă are modificări nesalvate. Distribuirea încarcă fișierul salvat.
 [editor save and share]
-
+Salvează și distribuie…
 [editor share saved version]
-
+Distribuie versiunea salvată
 [editor reroll confirm]
-
+Oferi fiecărei celule de teren un aspect aleatoriu nou? Tipurile de teren și jocul rămân la fel. Acțiunea nu poate fi anulată.
 [editor reroll]
-
+Generează din nou aspectul
 [editor map saved]
-
+Hartă salvată
 [editor map shared]
-
+Hartă distribuită online
 [editor save needs fertility]
-
+Salvarea necesită harta fertilității, așa că a fost anulată. Apasă OK pentru a reîncerca.
 [editor fertility stale]
-
+Harta fertilității este învechită · Clic pentru actualizare
 [No definition files found in %0]
-
+Nu s-au găsit fișiere de definiții în %0
 [From device…]
-
+De pe dispozitiv…
 [replace existing file %0?]
-
+Un fișier numit „%0” există deja. Îl înlocuiești?
 [Replace]
-
+Înlocuiește
 [Keep existing file]
-
+Păstrează fișierul existent
 [editor menu save]
-
+Salvează harta
 [editor menu load]
-
+Deschide harta…
 [editor menu import terrain]
-
+Importă definiții de teren…
 [editor menu import resources]
-
+Importă definiții de resurse…
 [editor menu teams]
-
+Echipe…
 [editor menu scenario]
-
+Scenariu…
 [editor menu reroll]
-
+Generează din nou aspectul terenului…
 [editor menu file]
-
+Fișier
 [editor menu map]
-
+Hartă
 [no resource growth areas]
-
+Arii fără creștere
 [dock flags and units]
-
+Steaguri și unități
 [dock minimap]
-
+Minihartă
 [dock search brushes]
-
+Caută pensule
 [dock brush shape %0]
-
+Forma pensulei %0
 [dock brush]
-
+Pensulă
 [dock brush paint]
-
+Pictează
 [dock brush erase]
-
+Șterge
 [dock enable for map]
-
+Activează pentru această hartă
 [dock enable experiment %0]
-
+Activează %0
 [dock enable experiment hint %0]
-
+Activează experimentul %0 numai pentru această hartă.
 [dock area number]
-
+Arie
 [dock building level]
-
+Nivel
 [dock unit level]
-
+Nivelul unității
 [dock no brushes match]
-
+Nicio pensulă nu corespunde căutării.
 [dock active team]
-
+Echipă activă
 [dock team count %0]
-
+Echipe pe această hartă: %0
 [dock add team]
-
+Adaugă echipă
 [dock remove team]
-
+Elimină echipă
 [dock nothing selected]
-
+Nu este selectat nimic.
 [dock no properties]
-
+Acest obiect nu are proprietăți editabile.
 [focus brush search]
-
+Caută pensule
 [switch to resources view]
-
+Treci la vizualizarea resurselor
 [dock resources base]
-
+Resurse standard
 [dock fertility stale]
-
+Harta fertilității este învechită.
 [dock fertility refresh]
-
+Actualizează fertilitatea
 [Enabled %0 for this map]
-
+%0 activat pentru această hartă
 [editor fertility tap refresh]
-
+Harta fertilității este învechită: atinge pentru actualizare
 [editor menu import set]
-
+Importă set de teren și resurse
 [editor menu set library]
-
+Biblioteca de seturi
 [set library loading]
-
+Se încarcă seturile…
 [set library downloading]
-
+Se descarcă ediția exactă…
 [set library connection error]
-
+Nu se pot încărca seturile. Verifică conexiunea și încearcă din nou.
 [set library hash error]
-
+Setul descărcat nu a trecut verificarea sumei de control.
 [set library package error]
-
+Pachet de set nevalid.
 [set library listing error]
-
+Listă de seturi nevalidă.
 [set library release error]
-
+Ediție de set nevalidă.
 [set library selection help]
-
+Selectează intrările de importat. Resursele personalizate necesare sunt incluse automat.
 [set library empty]
-
+Nu s-au găsit seturi.
 [set library release help]
-
+Alege o ediție exactă pentru examinare și import.
 [set library heading]
-
+Seturi de teren și resurse
 [set library browse]
-
+Răsfoiește biblioteca online
 [set library local]
-
+Conținutul hărții, autori și modificări locale
 [set library local help]
-
+Editează copia conținutului importat în această hartă. Informațiile despre autorii ediției originale rămân atașate. Modificările nu actualizează alte hărți sau ediția online.
 [set library apply]
-
+Aplică modificările locale
 [set library updated]
-
+Conținut local actualizat.
 [set library search hint]
-
+Caută teme și creatori
 [set library search]
-
+Caută
 [set library set]
-
+Set
 [set library update help]
-
+Înlocuiește explicit terenul și resursele amplasate corespunzătoare, inclusiv modificările locale. Intrările eliminate rămân la ediția veche. Cantitățile de materiale existente sunt limitate la noile capacități.
 [set library import]
-
+Importă intrările selectate
 [set library next]
-
+Pagina următoare
 [set library back]
-
+Înapoi la rezultate
 [set library license %0]
-
+Licență: %0
 [set library release %0]
-
+ediția %0
 [set library replace %0]
-
+Înlocuiește intrările amplasate din ediția %0
 [set library preview limit]
-
+Previzualizările sunt afișate pentru primele 64 de intrări. Toate intrările rămân selectabile.
 [set library definition]
-
+Definiția proprietăților (JSON)
 [set library artwork]
-
+Asocierea graficii terenului (JSON)
 [settings Map generators]
 Generatoare de hărți
 [settings Import a generator package, then select its landscape when creating a map or game.]

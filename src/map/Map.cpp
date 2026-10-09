@@ -726,3 +726,9 @@ void Map::setTerrainSeed(Uint32 seed)
     terrainSeedValue = seed;
     if (game) game->snapshots().invalidateBoundary();
 }
+
+EntityRandom& Map::privateRandom(RandomDomain domain)
+{
+    // Standalone authoring maps have a fixed seed until a request sets one.
+    return worldRandom.get(game ? game->gameHeader.getRandomSeed() : 0, domain);
+}

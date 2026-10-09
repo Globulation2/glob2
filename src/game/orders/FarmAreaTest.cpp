@@ -219,6 +219,10 @@ TEST_SUITE("FarmAreas")
 			addWater(map);
 			paintFarm(map, 10, 10, 19, 19);
 			// Every tile at its one-grain seed, and none allowed to regrow.
+			// Block spread destinations too: this fixture has no natural growth.
+			for (int y = 0; y < map.getH(); ++y)
+				for (int x = 0; x < map.getW(); ++x)
+					map.setResourcesGrow(x, y, 0);
 			for (int y = 12; y < 18; y++)
 				for (int x = 12; x < 18; x++)
 				{
