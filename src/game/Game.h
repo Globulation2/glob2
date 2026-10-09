@@ -6,7 +6,6 @@
 #include <array>
 #include <CooperativeTask.h>
 
-#include <iostream>
 #include <memory>
 #include <span>
 
@@ -16,7 +15,6 @@
 #include "OwnerRandom.h"
 #include "SGSL.h"
 #include <string>
-#include <valarray>
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "GameObjectives.h"
