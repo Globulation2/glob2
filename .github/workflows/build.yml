@@ -875,6 +875,8 @@ jobs:
             build/emscripten/client/release/generator-studio.html
             build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
             build/emscripten/client/release/hive-runtime.wasm
@@ -914,6 +916,8 @@ jobs:
             build/emscripten/client/release/generator-studio.html
             build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
             build/emscripten/client/release/hive-runtime.wasm
