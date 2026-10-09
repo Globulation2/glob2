@@ -16,6 +16,7 @@ Builds:
     rm:
       - test/fixtures
       - test/maxima/fixtures
+      - platform/apps/engine-agent/fixtures/ais
       - datasrc
       - games
     # Legacy game maps are gzip-compressed data. colony.bin is a menu save
@@ -38,6 +39,7 @@ Builds:
     rm:
       - test/fixtures
       - test/maxima/fixtures
+      - platform/apps/engine-agent/fixtures/ais
       - datasrc
       - games
     scanignore:
@@ -58,6 +60,7 @@ Builds:
     rm:
       - test/fixtures
       - test/maxima/fixtures
+      - platform/apps/engine-agent/fixtures/ais
       - datasrc
       - games
     scanignore:
