@@ -5996,3 +5996,17 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Экспорт пакетов недоступен.
 [stat band area upkeep]
 Содержание области
+[outcome reason eliminated]
+Колония уничтожена.
+[outcome reason opponents defeated]
+Все противники побеждены.
+[outcome reason ally won]
+Союзная колония победила.
+[outcome reason prestige]
+Цель по престижу достигнута.
+[outcome reason scenario]
+Правила сценария определили исход.
+[outcome reason timer]
+Лимит времени истёк.
+[outcome reason probability]
+Порог вероятности победы достигнут.

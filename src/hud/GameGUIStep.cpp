@@ -457,11 +457,13 @@ void GameGUI::checkWonConditions(void)
         const auto& hud=scene.panels.hud;
         const char* message=nullptr;
         bool won=false;
+        std::string reasonKey=hud.localState().outcomeReasonKey;
         auto color=presentationColor(scene.panels.local.state().color);
         if (globalContainer->liveSpectating)
         {
             if (hud.winningTeam<0) return;
             message=hud.drawn ? "[game draw]" : "[Match finished]";
+            reasonKey=scene.entities.teams[hud.winningTeam].outcomeReasonKey;
             won=!hud.drawn; color=presentationColor(scene.entities.teams[hud.winningTeam].color);
         }
         else if (networkMatch.active && hud.localState().won)
@@ -471,7 +473,10 @@ void GameGUI::checkWonConditions(void)
             isRunning=false; return;
         }
         else if (hud.state().totalPrestigeReached && hud.state().prestigeWinCondition)
-        { message=hud.localDraw ? "[game draw]" : "[Total prestige reached]"; won=hud.localState().won && !hud.localDraw; }
+        {
+            message=hud.localDraw ? "[game draw]" : hud.localState().won ? "[you have won]" : "[you have lost]";
+            won=hud.localState().won && !hud.localDraw;
+        }
         else if (hud.localState().lost) message="[you have lost]";
         else if (hud.localState().won)
         {
@@ -480,7 +485,9 @@ void GameGUI::checkWonConditions(void)
         }
         if (message && inGameMenu==IGM_NONE)
         {
-            openDialog(IGM_END_OF_GAME,std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(message),true,color,won));
+            const auto reason=reasonKey.empty() ? std::string{} : Toolkit::getStringTable()->getString(reasonKey);
+            openDialog(IGM_END_OF_GAME,std::make_unique<InGameEndOfGameScreen>(
+                Toolkit::getStringTable()->getString(message),true,color,won,reason));
             hasEndOfGameDialogBeenShown=true; miniMapPushed=false;
         }
         return;

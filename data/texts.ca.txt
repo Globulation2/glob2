@@ -5996,3 +5996,17 @@ La selecció de fitxers no està disponible.
 L’exportació de paquets no està disponible.
 [stat band area upkeep]
 Manteniment de l’àrea
+[outcome reason eliminated]
+Colònia eliminada.
+[outcome reason opponents defeated]
+Tots els adversaris han estat derrotats.
+[outcome reason ally won]
+Una colònia aliada ha guanyat.
+[outcome reason prestige]
+Objectiu de prestigi assolit.
+[outcome reason scenario]
+Les regles de l’escenari han determinat el resultat.
+[outcome reason timer]
+Límit de temps assolit.
+[outcome reason probability]
+Llindar de probabilitat de victòria assolit.

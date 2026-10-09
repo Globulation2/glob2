@@ -5996,3 +5996,17 @@ Dosierelekto ne estas disponebla.
 Pakaĵeksporto ne estas disponebla.
 [stat band area upkeep]
 Prizorgado de la areo
+[outcome reason eliminated]
+Kolonio ekstermita.
+[outcome reason opponents defeated]
+Ĉiuj kontraŭuloj venkitaj.
+[outcome reason ally won]
+Aliancita kolonio venkis.
+[outcome reason prestige]
+Celo de prestiĝo atingita.
+[outcome reason scenario]
+La reguloj de la scenaro decidis la rezulton.
+[outcome reason timer]
+Tempolimo atingita.
+[outcome reason probability]
+Sojlo de venkoprobablo atingita.

@@ -5996,3 +5996,17 @@ File selection is unavailable.
 Package export is unavailable.
 [stat band area upkeep]
 Area upkeep
+[outcome reason eliminated]
+Colony eliminated.
+[outcome reason opponents defeated]
+All opponents defeated.
+[outcome reason ally won]
+An allied colony won.
+[outcome reason prestige]
+Prestige goal reached.
+[outcome reason scenario]
+Scenario rules decided the outcome.
+[outcome reason timer]
+Time limit reached.
+[outcome reason probability]
+Win probability threshold reached.

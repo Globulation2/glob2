@@ -5996,3 +5996,17 @@ A fájlválasztás nem érhető el.
 A csomagexportálás nem érhető el.
 [stat band area upkeep]
 Terület fenntartása
+[outcome reason eliminated]
+A kolónia elpusztult.
+[outcome reason opponents defeated]
+Minden ellenfél vereséget szenvedett.
+[outcome reason ally won]
+Egy szövetséges kolónia győzött.
+[outcome reason prestige]
+A presztízscél teljesült.
+[outcome reason scenario]
+A forgatókönyv szabályai döntötték el az eredményt.
+[outcome reason timer]
+Lejárt az időkorlát.
+[outcome reason probability]
+A győzelmi valószínűség elérte a küszöbértéket.

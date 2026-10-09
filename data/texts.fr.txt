@@ -5996,3 +5996,17 @@ La sélection de fichiers est indisponible.
 L’exportation de paquets est indisponible.
 [stat band area upkeep]
 Entretien de zone
+[outcome reason eliminated]
+Colonie éliminée.
+[outcome reason opponents defeated]
+Tous les adversaires ont été vaincus.
+[outcome reason ally won]
+Une colonie alliée a gagné.
+[outcome reason prestige]
+Objectif de prestige atteint.
+[outcome reason scenario]
+Les règles du scénario ont déterminé le résultat.
+[outcome reason timer]
+Limite de temps atteinte.
+[outcome reason probability]
+Seuil de probabilité de victoire atteint.

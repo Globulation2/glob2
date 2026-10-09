@@ -5996,3 +5996,17 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 صدور بسته در دسترس نیست.
 [stat band area upkeep]
 نگهداری منطقه
+[outcome reason eliminated]
+مستعمره از بین رفت.
+[outcome reason opponents defeated]
+همهٔ حریفان شکست خوردند.
+[outcome reason ally won]
+یک مستعمرهٔ متحد پیروز شد.
+[outcome reason prestige]
+هدف اعتبار محقق شد.
+[outcome reason scenario]
+قواعد سناریو نتیجه را تعیین کردند.
+[outcome reason timer]
+مهلت زمانی به پایان رسید.
+[outcome reason probability]
+آستانهٔ احتمال پیروزی محقق شد.

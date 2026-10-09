@@ -5996,3 +5996,17 @@ Dosya seçimi kullanılamıyor.
 Paket dışa aktarma kullanılamıyor.
 [stat band area upkeep]
 Alan bakımı
+[outcome reason eliminated]
+Koloni yok oldu.
+[outcome reason opponents defeated]
+Tüm rakipler yenildi.
+[outcome reason ally won]
+Müttefik bir koloni kazandı.
+[outcome reason prestige]
+Prestij hedefine ulaşıldı.
+[outcome reason scenario]
+Senaryo kuralları sonucu belirledi.
+[outcome reason timer]
+Süre sınırına ulaşıldı.
+[outcome reason probability]
+Kazanma olasılığı eşiğine ulaşıldı.

@@ -5996,3 +5996,17 @@ Pemilihan berkas tidak tersedia.
 Ekspor paket tidak tersedia.
 [stat band area upkeep]
 Pemeliharaan area
+[outcome reason eliminated]
+Koloni telah musnah.
+[outcome reason opponents defeated]
+Semua lawan telah dikalahkan.
+[outcome reason ally won]
+Koloni sekutu menang.
+[outcome reason prestige]
+Target prestise tercapai.
+[outcome reason scenario]
+Aturan skenario menentukan hasil.
+[outcome reason timer]
+Batas waktu tercapai.
+[outcome reason probability]
+Ambang probabilitas kemenangan tercapai.

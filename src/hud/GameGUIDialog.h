@@ -89,7 +89,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 	const std::string title;
 	const bool canContinue;
 	InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor = {},
-						  bool won = false);
+						  bool won = false, std::string reason = {});
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
   protected:
@@ -98,6 +98,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 
   private:
 	std::optional<GAGCore::Color> teamColor;
+	std::string reason;
 	bool won;
 };
 

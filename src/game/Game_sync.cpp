@@ -204,7 +204,9 @@ void Game::prestigeSyncStep()
 	{
 		totalPrestige += teams[i]->prestige;
 	}
-	if(totalPrestige >= prestigeToReach)
+	// The threshold is an end condition only when prestige victory is enabled.
+	// Headless clients and result screens also consume this flag.
+	if(isPrestigeWinCondition() && totalPrestige >= prestigeToReach)
 	{
 		totalPrestigeReached=true;
 	}

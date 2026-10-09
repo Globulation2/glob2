@@ -5996,3 +5996,17 @@ Không thể sử dụng chức năng chọn tệp.
 Không thể sử dụng chức năng xuất gói.
 [stat band area upkeep]
 Duy trì khu vực
+[outcome reason eliminated]
+Thuộc địa đã bị diệt.
+[outcome reason opponents defeated]
+Tất cả đối thủ đã bị đánh bại.
+[outcome reason ally won]
+Một thuộc địa đồng minh đã thắng.
+[outcome reason prestige]
+Đã đạt mục tiêu uy danh.
+[outcome reason scenario]
+Quy tắc kịch bản đã quyết định kết quả.
+[outcome reason timer]
+Đã hết thời gian.
+[outcome reason probability]
+Đã đạt ngưỡng xác suất thắng.

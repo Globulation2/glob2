@@ -5996,3 +5996,17 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Експорт пакетів недоступний.
 [stat band area upkeep]
 Утримання області
+[outcome reason eliminated]
+Колонію знищено.
+[outcome reason opponents defeated]
+Усіх супротивників переможено.
+[outcome reason ally won]
+Союзна колонія перемогла.
+[outcome reason prestige]
+Мету престижу досягнуто.
+[outcome reason scenario]
+Правила сценарію визначили результат.
+[outcome reason timer]
+Ліміт часу вичерпано.
+[outcome reason probability]
+Поріг імовірності перемоги досягнуто.

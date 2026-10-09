@@ -5996,3 +5996,17 @@ Bestandsselectie is niet beschikbaar.
 Pakketexport is niet beschikbaar.
 [stat band area upkeep]
 Gebiedsonderhoud
+[outcome reason eliminated]
+Kolonie uitgeschakeld.
+[outcome reason opponents defeated]
+Alle tegenstanders verslagen.
+[outcome reason ally won]
+Een geallieerde kolonie heeft gewonnen.
+[outcome reason prestige]
+Roemdoel bereikt.
+[outcome reason scenario]
+De scenarioregels hebben de uitkomst bepaald.
+[outcome reason timer]
+Tijdslimiet bereikt.
+[outcome reason probability]
+Drempel voor de winstkans bereikt.

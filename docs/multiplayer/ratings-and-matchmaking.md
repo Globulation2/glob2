@@ -73,11 +73,13 @@ it automatically could punish the wrong player.
 ### Shared wins are draws
 
 The engine marks a team won when any winning condition says so, and ties count.
-When the prestige goal is reached, or the sudden-death timer runs out, every team
-tied for the most prestige has won, whatever its alliance; the in-game end screen
-tells each of those players "you have won". A sudden-death game in which every team is on
-the same prestige at the buzzer (often none at all) therefore ends with every team
-won, which
+When enabled prestige victory reaches its goal, or the sudden-death timer runs
+out, surviving teams tied for the most prestige have won, whatever their alliance.
+Eliminated colonies cannot set the winning prestige score. The in-game end screen
+shows a draw when winning teams belong to different alliances, and a shared win
+when they are mutually allied. A sudden-death game in which every surviving team
+is on the same prestige at the buzzer (often none at all) therefore marks every
+survivor won, which
 `result.json` and the verify-match verdict report as such.
 
 The platform reads a win as a win only when one side holds it.

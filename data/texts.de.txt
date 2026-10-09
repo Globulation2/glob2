@@ -5996,3 +5996,17 @@ Die Dateiauswahl ist nicht verfügbar.
 Der Paketexport ist nicht verfügbar.
 [stat band area upkeep]
 Bereichsunterhalt
+[outcome reason eliminated]
+Kolonie ausgelöscht.
+[outcome reason opponents defeated]
+Alle Gegner besiegt.
+[outcome reason ally won]
+Eine verbündete Kolonie hat gewonnen.
+[outcome reason prestige]
+Prestigeziel erreicht.
+[outcome reason scenario]
+Die Szenarioregeln haben den Ausgang entschieden.
+[outcome reason timer]
+Zeitlimit erreicht.
+[outcome reason probability]
+Schwellenwert der Siegwahrscheinlichkeit erreicht.

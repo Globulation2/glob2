@@ -5996,3 +5996,17 @@ Fitxategiak hautatzea ez dago erabilgarri.
 Paketeak esportatzea ez dago erabilgarri.
 [stat band area upkeep]
 Eremuaren mantentzea
+[outcome reason eliminated]
+Kolonia suntsitu da.
+[outcome reason opponents defeated]
+Aurkari guztiak garaitu dira.
+[outcome reason ally won]
+Kolonia aliatu batek irabazi du.
+[outcome reason prestige]
+Ospearen helburua lortu da.
+[outcome reason scenario]
+Agertokiaren arauek emaitza erabaki dute.
+[outcome reason timer]
+Denbora agortu da.
+[outcome reason probability]
+Irabazteko probabilitatearen atalasea lortu da.
