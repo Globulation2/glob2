@@ -5996,3 +5996,5 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Експорт пакетів недоступний.
 [stat band area upkeep]
 Утримання області
+[Destroy this building?]
+Destroy this building?

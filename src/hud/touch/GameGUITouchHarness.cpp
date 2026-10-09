@@ -1351,7 +1351,15 @@ class GameGUITouchHarness
                     require(info && info->name == getResourceDisplayName(catalog.presentation(id).name) && info->amount == expectedAmount,
                         "Resource inspection shows registry name and all material stocks");
 					const auto panel = gui.touch->layout().panel;
-					require(panel.h <= 112 * unit && !gui.touch->lensVisible(), "Resource inspection is a compact card, not Tools");
+					const auto hud = gui.touch->hudLayout(gui.touch->layout());
+					auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+					require(near(panel.x, hud.stats.x) && near(panel.w, hud.stats.w) &&
+						near(panel.y + panel.h, hud.minimap.y + hud.minimap.h) &&
+						panel.y >= hud.stats.y + hud.stats.h &&
+						near(panel.h, InGameTouchTheme::inspectorHeader * unit) && !gui.touch->lensVisible(),
+						"Resource identity shares the building header geometry below stats");
+					require(gui.touch->interfaceRegion({panel.x + 4 * unit, panel.y + panel.h / 2}) == 3,
+						"Resource header consumes taps before the map");
 					gfx->printScreen(std::string("resource-") + std::to_string(type) + "-" + (portrait ? "portrait.bmp" : "landscape.bmp"));
 					gfx->nextFrame();
 					tap(panel.x + panel.w / 2, panel.y + panel.h * .7);
@@ -2535,9 +2543,9 @@ class GameGUITouchHarness
 				gui.touch->confirmDestroy = true;
 				glob2test::drawGUI(gui,0);
 				const auto packed = gui.touch->dialChips(gui.touch->dialLayout(gui.touch->layout()));
-				require(!packed.fits && !gui.touch->usesDial(),
-					"Confirmation chips cannot overlap the production legend; use scrolling rows");
-				checkFallbackHeader();
+				require(packed.fits || !gui.touch->usesDial(),
+					"Confirmation chips must fit before the dial can be used");
+				if (!gui.touch->usesDial()) checkFallbackHeader();
 				const auto rows = gui.touch->buildingActions();
 				require(std::any_of(rows.begin(), rows.end(), [](const auto &r) { return r.kind == 5; }),
 					"The fallback retains the Cancel confirmation action");
@@ -2596,9 +2604,17 @@ class GameGUITouchHarness
 				tap(close.x, close.y);
 				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(), "Moved close dismisses without an order");
 				openActions(swarm);
+				const auto dial = gui.touch->dialLayout(ui);
+				const auto legend = gui.touch->dialChips(dial).legend;
+				require(approx(legend.x, dial.header.x) && approx(legend.w, dial.header.w) &&
+					approx(legend.y, dial.header.y + dial.header.h + 4 * gfx->logicalUnitsPerPoint()),
+					"Production readouts align directly below the building header");
+				if (width > height)
+					require(TouchDial::point(dial.geometry, dial.geometry.rings[0].outer, dial.geometry.sweepEnd).y >= legend.y + legend.h,
+						"The landscape dial clears the header readouts on either thumb side");
 				const auto regions = gui.touch->dialRegions();
-				require(regions.size() >= 3 + 1 + 3 + 1,
-						"Swarm dial offers workers, one shared production control, fixed priority and pause");
+				require(regions.size() >= 3 + 3 + 3,
+						"Swarm dial offers workers, three production buttons and fixed priority");
 				for (const auto &region : regions)
 				{
 					const auto &box = region.box;
@@ -2639,6 +2655,21 @@ class GameGUITouchHarness
 				for (auto *other : {building, rangeFlag, clearing, exploring})
 				{
 					openActions(other);
+					for (const auto &region : gui.touch->dialRegions())
+					{
+						if (region.action.kind == 6)
+							require(region.ring == 0, "Assigned units stay on the outermost ring");
+						if (region.action.kind == 7)
+							require(region.ring == 1, "Priority stays immediately inside assigned units");
+						if (region.action.kind == 0 || region.action.kind == 8)
+							require(region.ring == 2, "Production and flag range use the third ring");
+						if (region.action.kind == 2 || region.action.kind == 12 || region.action.kind == 11)
+							require(region.ring == 3 && region.part == GameGUITouch::DialRegion::Radio,
+								"Flag requirements use radio segments on the fourth ring");
+						if (region.action.kind == 1)
+							require(region.ring == 4 && region.part == GameGUITouch::DialRegion::Toggle,
+								"Clearing materials use toggle segments on the fifth ring");
+					}
 					const auto p = gui.touch->dialActionPoint(7, 0, 0);
 					require(std::hypot(p.x - priority.x, p.y - priority.y) < .01,
 							"Priority stays at the same position for every building");
@@ -2663,81 +2694,106 @@ class GameGUITouchHarness
 			{
 				globalContainer->settings.thumbSide = thumbSide;
 				glob2test::drawGUI(gui,0);
-				require(TouchDial::shares({6, 2, 2}, 16) == std::array<int, 3>{10, 3, 3},
-						"Relative weights round to a complete production budget");
-				require(TouchDial::shares({1, 1, 1}, 100) == std::array<int, 3>{34, 33, 33},
-						"Displayed percentages always total 100");
+				const auto dial = gui.touch->dialLayout(gui.touch->layout());
+				const auto close = dial.destroy;
+				const GAGCore::ViewPoint center{close.x + close.w / 2, close.y + close.h / 2};
+				require(gui.touch->interfaceRegion(center) == 3 &&
+					gui.touch->interfaceRegion({close.x + 1, close.y + 1}) == 0 &&
+					std::hypot(center.x - dial.geometry.center.x, center.y - dial.geometry.center.y) + close.w / 2 <
+						dial.geometry.rings[4].inner * dial.geometry.unit,
+					"Circular destroy is reachable inside the hollow dial and its corners remain map");
+				const auto targets = gui.touch->keyboardTargets();
+				require(std::any_of(targets.begin(), targets.end(), [&](const auto &box) {
+					return box.x == close.x && box.y == close.y && box.w == close.w && box.h == close.h;
+				}), "Circular destroy participates in keyboard focus");
+				tap(center.x, center.y);
+				require(gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.touch->confirmDestroy && gui.orderQueue.empty() &&
+					gui.game.checkSum() == checksum, "Circular destroy opens confirmation without sending a destruction order");
+				const auto confirmation = gui.touch->dialRegions();
+				require(confirmation.size() == 2 && std::all_of(confirmation.begin(), confirmation.end(),
+					[](const auto &region) { return region.ring == 2 && region.part == GameGUITouch::DialRegion::Segment &&
+						(region.action.kind == 4 || region.action.kind == 5); }),
+					"Confirmation replaces all dial controls with Cancel and Destroy on the middle ring");
+				pressAction(5);
+				require(!gui.touch->confirmDestroy && gui.orderQueue.empty(), "Destroy confirmation can be canceled on either thumb side");
+				const auto confirmationLayout = gui.touch->layout();
+				for (const auto outside : {
+					TouchDial::point(dial.geometry, dial.geometry.rings[0].middle(),
+						(dial.geometry.sweepStart + dial.geometry.sweepEnd) / 2),
+					GAGCore::ViewPoint{confirmationLayout.safe.x + confirmationLayout.safe.w / 2, confirmationLayout.safe.y + 160 * dial.geometry.unit},
+					GAGCore::ViewPoint{confirmationLayout.actions.x + confirmationLayout.actions.w / 2, confirmationLayout.actions.y + confirmationLayout.actions.h / 2}})
+				{
+					pressAction(4);
+					tap(outside.x, outside.y);
+					require(!gui.touch->confirmDestroy && gui.orderQueue.empty() &&
+						gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.game.checkSum() == checksum,
+						"Outside confirmation taps restore the controls without activating the map, toolbar or worker arc");
+				}
+				openActions(swarm);
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{0, 0, 0};
+				for (int type = 0; type < 3; ++type)
+				{
+					for (int expected : {1, 2, 3, 5, 0})
+					{
+						const auto before = gui.displayedRatio(*swarm);
+						pressAction(0, type);
+						auto after = before;
+						after[type] = expected;
+						require(gui.orderQueue.size() == 1 && gui.displayedRatio(*swarm) == after,
+							"Production button cycles presets and preserves other weights");
+						const auto order = std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
+						require(order && order->gid == swarm->gid && order->ratio[type] == expected,
+							"Production buttons use the existing swarm order");
+						gui.orderQueue.clear();
+					}
+				}
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{4, 8, 16};
+				pressAction(0, 0);
+				pressAction(0, 1);
+				pressAction(0, 2);
+				require(gui.orderQueue.size() == 3 && gui.displayedRatio(*swarm) == std::array<int, 3>{5, 0, 0},
+					"Legacy weights advance to a preset without changing untouched weights");
+				gui.orderQueue.clear();
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{5, 0, 2};
 				const auto g = gui.touch->dialLayout(gui.touch->layout()).geometry;
-				const auto &ring = g.rings[1];
-				auto at = [&](int value, int divider) {
-					return TouchDial::point(g, divider == 0 ? ring.inner + 4 : ring.outer - 4,
-						TouchDial::angleOf(value, g.sweepStart, g.sweepEnd, 16));
-				};
-				auto drag = [&](int divider, int from, int to, bool cancel = false) {
-					const auto start = at(from, divider), end = at(to, divider);
-					finger(SDL_EVENT_FINGER_DOWN, 1, start.x, start.y);
-					require(gui.touch->allocation && gui.touch->allocation->divider == divider,
-							("Production divider " + std::to_string(divider) + " at " + std::to_string(from) + " picked " + std::to_string(gui.touch->allocation ? gui.touch->allocation->divider : -2)).c_str());
-					finger(SDL_EVENT_FINGER_MOTION, 1, end.x, end.y);
-					require(gui.orderQueue.empty(), "Proportion dragging previews without orders");
-					if (cancel)
-						gui.suspendInput();
-					finger(SDL_EVENT_FINGER_UP, 1, end.x, end.y);
-				};
-				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
-				drag(0, 8, 4);
-				require(gui.orderQueue.size() == 1 && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
-						"One release transfers production between neighbors in one order");
-				const auto order = std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
-				require(order && order->gid == swarm->gid && order->ratio[0] == 4 && order->ratio[1] == 8 && order->ratio[2] == 4,
-						"Production proportions use the existing swarm order");
-				gui.orderQueue.clear();
-				drag(1, 12, 8, true);
-				require(gui.orderQueue.empty() && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
-						"Interrupted production adjustment is discarded");
-				const auto held = at(4, 0), moved = at(8, 0);
+				for (const auto &region : gui.touch->dialRegions())
+					if (region.part == GameGUITouch::DialRegion::RatioButton)
+					{
+						require(region.ring == 2, "Swarm ratio buttons occupy the third ring on either thumb side");
+						const auto weights = gui.displayedRatio(*swarm);
+						const double expected = (g.sweepEnd - g.sweepStart) * (weights[region.action.value] + 1) / 10;
+						require(std::abs(region.to - region.from - expected) < .001,
+							"Arc button widths use weight plus one, including zero");
+					}
+				const auto held = gui.touch->dialActionPoint(0, 1, 0);
 				finger(SDL_EVENT_FINGER_DOWN, 1, held.x, held.y);
-				finger(SDL_EVENT_FINGER_MOTION, 1, moved.x, moved.y);
-				finger(SDL_EVENT_FINGER_DOWN, 2, moved.x, moved.y);
-				finger(SDL_EVENT_FINGER_UP, 1, moved.x, moved.y);
-				finger(SDL_EVENT_FINGER_UP, 2, moved.x, moved.y);
-				require(gui.orderQueue.empty() && !gui.touch->allocation &&
-					gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
-					"A second finger cancels production adjustment without changing shares");
+				require(gui.orderQueue.empty() && !gui.touch->allocation, "Production down does not drag or send an order");
+				gui.suspendInput();
+				finger(SDL_EVENT_FINGER_UP, 1, held.x, held.y);
+				require(gui.orderQueue.empty(), "Interrupted production tap sends no order");
+				const auto other = gui.touch->dialActionPoint(0, 2, 0);
 				finger(SDL_EVENT_FINGER_DOWN, 1, held.x, held.y);
-				finger(SDL_EVENT_FINGER_MOTION, 1, moved.x, moved.y);
-				const auto wrongRing = TouchDial::point(g, g.rings[0].middle(), (g.sweepStart + g.sweepEnd) / 2);
-				finger(SDL_EVENT_FINGER_UP, 1, wrongRing.x, wrongRing.y);
-				require(gui.orderQueue.empty() && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
-					"Releasing on a neighboring thin ring cancels the production edit");
-				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{16, 0, 0};
-				drag(0, 16, 8);
-				require(gui.displayedRatio(*swarm) == std::array<int, 3>{8, 8, 0}, "A zero middle share can be restored");
+				finger(SDL_EVENT_FINGER_DOWN, 2, other.x, other.y);
+				finger(SDL_EVENT_FINGER_UP, 1, held.x, held.y);
+				finger(SDL_EVENT_FINGER_UP, 2, other.x, other.y);
+				require(gui.orderQueue.empty(), "A second finger cancels the production tap");
+				const auto regions = gui.touch->dialRegions();
+				require(std::none_of(regions.begin(), regions.end(),
+					[](const auto &region) { return region.action.kind == 10; }), "The redundant Pause button is absent");
+				pressAction(0, 0);
+				for (int i = 0; i < 3; ++i) pressAction(0, 2);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{0, 0, 0}, "Cycling every ratio to zero stops production");
 				gui.orderQueue.clear();
-				drag(1, 16, 12);
-				require(gui.displayedRatio(*swarm) == std::array<int, 3>{8, 4, 4}, "A zero last share can be restored");
+				pressAction(0, 2);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{0, 0, 1}, "A zero button resumes production");
 				gui.orderQueue.clear();
-				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{0, 8, 8};
-				drag(0, 0, 4);
-				require(gui.displayedRatio(*swarm) == std::array<int, 3>{4, 4, 8}, "A zero first share can be restored");
-				gui.orderQueue.clear();
-				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
-				const auto stationary = at(8, 0);
-				tap(stationary.x, stationary.y);
-				require(gui.orderQueue.empty(), "A stationary production touch is a no-op");
-				pressAction(10, 0);
-				require(gui.displayedRatio(*swarm) == std::array<int, 3>{0, 0, 0}, "Production can still be paused");
-				gui.orderQueue.clear();
-				drag(1, 0, 8);
-				require(gui.orderQueue.size() == 1, "A paused production arc can resume by dragging");
-				gui.orderQueue.clear();
-				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{5, 0, 2};
 				glob2test::drawGUI(gui,0);
 				gfx->printScreen(thumbSide == Settings::THUMB_LEFT
 					? (width < height ? "touch-proportions-left-portrait.bmp" : "touch-proportions-left-landscape.bmp")
 					: (width < height ? "touch-proportions-portrait.bmp" : "touch-proportions-landscape.bmp"));
 				gfx->nextFrame();
-				std::cout << "PASS fixed priority and unified production proportions " << width << "x" << height << " thumb=" << thumbSide << "\n";
+				std::cout << "PASS fixed priority and cycling production buttons " << width << "x" << height << " thumb=" << thumbSide << "\n";
 			}
 			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
 
@@ -2765,7 +2821,7 @@ class GameGUITouchHarness
 								"Clearing toggle uses pending state");
 					}
 				}
-			for (auto *flag : {rangeFlag, exploring})
+			for (auto *flag : {rangeFlag, exploring, clearing})
 			{
 				openActions(flag);
 				const bool explorer = flag == exploring;
@@ -2773,8 +2829,8 @@ class GameGUITouchHarness
 				for (int level = 0; level < count; ++level)
 				{
 					const int previous = explorer ? int(gui.displayedExplorersRequireBombing(*flag))
-												  : gui.displayedMinLevelToFlag(*flag);
-					pressAction(explorer ? 11 : 2, level);
+						: flag == clearing ? gui.displayedMinWorkerLevelToFlag(*flag) : gui.displayedMinLevelToFlag(*flag);
+					pressAction(explorer ? 11 : flag == clearing ? 12 : 2, level);
 					require(gui.orderQueue.size() == size_t(previous != level),
 							"Requirement changes suppress no-ops");
 					if (previous != level)
@@ -2783,7 +2839,7 @@ class GameGUITouchHarness
 							gui.orderQueue.front());
 						gui.orderQueue.clear();
 						require(order && order->gid == flag->gid && order->minLevelToFlag == level &&
-									order->targetRole == (explorer ? 1 : 0),
+									order->targetRole == (explorer ? 1 : flag == clearing ? 2 : 0),
 								"Flag requirement preserves its role-specific shared order format");
 					}
 				}
@@ -3436,6 +3492,19 @@ class GameGUITouchHarness
 				require(gui.selectionMode == GameGUI::UNIT_SELECTION && gui.selectionUnit() == worker, "Real near-unit touch selects unit");
 				glob2test::drawGUI(gui,0);
 				require(gui.drawnScene().panels.unit.valid && gui.touch->unitInfoRows().size() >= 7, "Selected unit has scene-backed stats");
+				const auto ui = gui.touch->layout();
+				const auto identity = gui.touch->allocationRect();
+				const auto hud = gui.touch->hudLayout(ui);
+				auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+				require(near(identity.x, hud.stats.x) && near(identity.w, hud.stats.w) &&
+					near(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+					identity.y >= hud.stats.y + hud.stats.h && ui.panel.y >= identity.y + identity.h,
+					"Unit identity shares the selection header and stays separate from statistics");
+				const auto values = gui.touch->unitInfoRows();
+				require(values.front().second == "200 / 200" && values.back().second.find("8") != std::string::npos,
+					"Structured stats preserve health and ability values");
+				tap(identity.x + 8 * scale, identity.y + identity.h / 2);
+				require(gui.selectionUnit() == worker, "Unit header consumes taps without changing selection");
 				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait.bmp" : "unit-landscape.bmp"); gfx->nextFrame(); }
 				const auto panel = gui.touch->layout().panel;
 				tap(panel.x+panel.w/2,panel.y+70*scale);
@@ -3445,7 +3514,8 @@ class GameGUITouchHarness
 				finger(SDL_EVENT_FINGER_UP,panel.x+panel.w/2,panel.y+55*scale);
 				glob2test::drawGUI(gui,0);
 				if (zoom == .5) { gfx->printScreen(width<height ? "unit-portrait-scrolled.bmp" : "unit-landscape-scrolled.bmp"); gfx->nextFrame(); }
-				tap(panel.x+panel.w-24*scale,panel.y+24*scale);
+				const auto close = gui.touch->readOnlyCloseRect();
+				tap(close.x + close.w / 2, close.y + close.h / 2);
 				require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Close dismisses unit stats");
 				const auto origin = gui.camera.originX;
 				finger(SDL_EVENT_FINGER_DOWN,c.first+28*scale,c.second);

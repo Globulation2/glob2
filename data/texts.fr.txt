@@ -5996,3 +5996,5 @@ La sélection de fichiers est indisponible.
 L’exportation de paquets est indisponible.
 [stat band area upkeep]
 Entretien de zone
+[Destroy this building?]
+Destroy this building?

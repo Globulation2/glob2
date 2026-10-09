@@ -19,6 +19,7 @@ class UIDialog;
 namespace GAGCore
 {
 class DrawableSurface;
+class Sprite;
 }
 #include "sim/EntityRef.h"
 class GameGUI;
@@ -60,6 +61,7 @@ class GameGUITouch
 	friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
 	GameGUI &gui;
+	TouchDial::Painter dialPainter;
 	// The dialog GameGUI is showing (menu, chat composer or history); the HUD
 	// yields to it and never synthesizes its input.
 	GAGGUI::ui::UIDialog *activeDialog() const;
@@ -71,6 +73,8 @@ class GameGUITouch
 	GAGCore::ViewRect allocationRect() const;
 	GAGCore::ViewRect panelContent() const;
 	void drawAllocation();
+	void drawSelectionHeader(GAGCore::ViewRect rect, GAGCore::Sprite *sprite, int frame,
+		const std::string &text);
 	bool showsBuildPalette() const;
 	struct PaletteItem
 	{
@@ -180,7 +184,7 @@ class GameGUITouch
 	void drawResourceInfo();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();
-	std::vector<std::string> unitInfoRows() const;
+	std::vector<std::pair<std::string, std::string>> unitInfoRows() const;
 	void drawUnitPanel();
 	bool inspectingReadOnly() const;
 	GAGCore::ViewRect readOnlyCloseRect() const;
@@ -213,12 +217,12 @@ class GameGUITouch
 	struct DialLayout
 	{
 		TouchDial::Geometry geometry;
-		GAGCore::ViewRect header, chips, bounds;
+		GAGCore::ViewRect header, chips, destroy, bounds;
 		bool portrait = true;
 	};
 	struct DialRegion
 	{
-		enum Part { Arc, Minus, Plus, Segment, Proportions, Chip } part = Chip;
+		enum Part { Arc, Minus, Plus, Segment, RatioButton, Toggle, Radio, Destroy, Chip } part = Chip;
 		BuildingAction action;
 		int ring = -1, maximum = 0;
 		double from = 0, to = 0; // Sweep angles covered by the region.

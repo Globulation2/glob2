@@ -5996,3 +5996,5 @@ Filval är inte tillgängligt.
 Paketexport är inte tillgänglig.
 [stat band area upkeep]
 Områdesunderhåll
+[Destroy this building?]
+Destroy this building?

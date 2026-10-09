@@ -5996,3 +5996,5 @@ Die Dateiauswahl ist nicht verfügbar.
 Der Paketexport ist nicht verfügbar.
 [stat band area upkeep]
 Bereichsunterhalt
+[Destroy this building?]
+Destroy this building?

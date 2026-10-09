@@ -5996,3 +5996,5 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 تصدير الحزم غير متاح.
 [stat band area upkeep]
 صيانة المنطقة
+[Destroy this building?]
+Destroy this building?

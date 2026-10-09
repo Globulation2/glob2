@@ -5996,3 +5996,5 @@ La selezione dei file non è disponibile.
 L’esportazione dei pacchetti non è disponibile.
 [stat band area upkeep]
 Mantenimento dell’area
+[Destroy this building?]
+Destroy this building?

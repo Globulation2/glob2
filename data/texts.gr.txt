@@ -5996,3 +5996,5 @@ CPU %0%
 Η εξαγωγή πακέτων δεν είναι διαθέσιμη.
 [stat band area upkeep]
 Συντήρηση περιοχής
+[Destroy this building?]
+Destroy this building?

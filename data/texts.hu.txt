@@ -5996,3 +5996,5 @@ A fájlválasztás nem érhető el.
 A csomagexportálás nem érhető el.
 [stat band area upkeep]
 Terület fenntartása
+[Destroy this building?]
+Destroy this building?

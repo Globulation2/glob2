@@ -5996,3 +5996,5 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 صدور بسته در دسترس نیست.
 [stat band area upkeep]
 نگهداری منطقه
+[Destroy this building?]
+Destroy this building?

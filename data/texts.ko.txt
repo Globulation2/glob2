@@ -5996,3 +5996,5 @@ AI 생성 아님
 패키지 내보내기를 사용할 수 없습니다.
 [stat band area upkeep]
 영역 유지비
+[Destroy this building?]
+Destroy this building?

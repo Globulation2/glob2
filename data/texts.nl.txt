@@ -5996,3 +5996,5 @@ Bestandsselectie is niet beschikbaar.
 Pakketexport is niet beschikbaar.
 [stat band area upkeep]
 Gebiedsonderhoud
+[Destroy this building?]
+Destroy this building?

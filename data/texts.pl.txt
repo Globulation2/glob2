@@ -5996,3 +5996,5 @@ Wybór pliku jest niedostępny.
 Eksport pakietów jest niedostępny.
 [stat band area upkeep]
 Utrzymanie obszaru
+[Destroy this building?]
+Destroy this building?

@@ -5996,3 +5996,5 @@ La selecció de fitxers no està disponible.
 L’exportació de paquets no està disponible.
 [stat band area upkeep]
 Manteniment de l’àrea
+[Destroy this building?]
+Destroy this building?

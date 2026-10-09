@@ -5996,3 +5996,5 @@ Selectarea fișierelor nu este disponibilă.
 Exportul pachetelor nu este disponibil.
 [stat band area upkeep]
 Întreținerea zonei
+[Destroy this building?]
+Destroy this building?

@@ -5996,3 +5996,5 @@ Không thể sử dụng chức năng chọn tệp.
 Không thể sử dụng chức năng xuất gói.
 [stat band area upkeep]
 Duy trì khu vực
+[Destroy this building?]
+Destroy this building?

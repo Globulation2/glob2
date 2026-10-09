@@ -5996,3 +5996,5 @@ AI 生成ではない
 パッケージのエクスポートは利用できません。
 [stat band area upkeep]
 範囲効果の維持費
+[Destroy this building?]
+Destroy this building?

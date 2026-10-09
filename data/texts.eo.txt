@@ -5996,3 +5996,5 @@ Dosierelekto ne estas disponebla.
 Pakaĵeksporto ne estas disponebla.
 [stat band area upkeep]
 Prizorgado de la areo
+[Destroy this building?]
+Destroy this building?

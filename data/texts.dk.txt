@@ -5996,3 +5996,5 @@ Filvalg er ikke tilgængeligt.
 Pakkeeksport er ikke tilgængelig.
 [stat band area upkeep]
 Områdevedligeholdelse
+[Destroy this building?]
+Destroy this building?

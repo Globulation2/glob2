@@ -5996,3 +5996,5 @@ Tiedoston valinta ei ole käytettävissä.
 Pakettien vienti ei ole käytettävissä.
 [stat band area upkeep]
 Alueen ylläpito
+[Destroy this building?]
+Destroy this building?

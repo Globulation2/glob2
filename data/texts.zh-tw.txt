@@ -5996,3 +5996,5 @@ AI 生成
 無法使用套件匯出功能。
 [stat band area upkeep]
 區域維護
+[Destroy this building?]
+Destroy this building?

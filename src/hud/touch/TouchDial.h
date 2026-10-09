@@ -3,10 +3,14 @@
 #include <ViewportTransform.h>
 #include <array>
 #include <optional>
+#include <memory>
+#include <string>
 
 namespace GAGCore
 {
 struct Color;
+class Font;
+class Sprite;
 }
 
 // Geometry for the phone inspector's thumb dial: concentric quarter rings
@@ -26,7 +30,7 @@ struct Geometry
 	GAGCore::ViewPoint center;
 	bool mirrored = false; // Left thumb: rings open to the right of the centre.
 	double unit = 1;	   // Drawable units per point.
-	std::array<Ring, 3> rings{};
+	std::array<Ring, 5> rings{};
 	double sweepStart = 0, sweepEnd = 90;
 };
 struct Polar
@@ -45,7 +49,23 @@ int value(double angle, double from, double to, int maximum);
 double angleOf(int value, double from, double to, int maximum);
 //! Round relative weights to a fixed budget; largest remainders preserve the total.
 std::array<int, 3> shares(const std::array<int, 3> &weights, int budget);
-//! Fills the annular sector between two radii (points) and two angles.
-void fill(const Geometry &geometry, double inner, double outer, double from, double to,
-		  const GAGCore::Color &color);
+//! Display-density, antialiased sectors. Owned by the inspector so cached
+//! textures are released with its renderer, and never retained across games.
+class Painter
+{
+	struct Cache;
+	std::unique_ptr<Cache> cache;
+public:
+	Painter();
+	~Painter();
+	void fill(const Geometry &geometry, double inner, double outer, double from, double to,
+		const GAGCore::Color &color);
+	//! Smooth circular button, with the same display-density cache as sectors.
+	void circle(GAGCore::ViewPoint center, double radius, const GAGCore::Color &color,
+		const GAGCore::Color *trashInk = nullptr);
+	//! Curved, upright text and icons fitted inside an annular button.
+	void label(const Geometry &geometry, const Ring &ring, double from, double to,
+		const std::string &text, GAGCore::Font *font, double textScale, const GAGCore::Color &color,
+		GAGCore::Sprite *icon = nullptr, int iconFrame = 0, const GAGCore::Color *iconTint = nullptr, bool trashIcon = false);
+};
 } // namespace TouchDial

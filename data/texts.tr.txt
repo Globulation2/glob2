@@ -5996,3 +5996,5 @@ Dosya seçimi kullanılamıyor.
 Paket dışa aktarma kullanılamıyor.
 [stat band area upkeep]
 Alan bakımı
+[Destroy this building?]
+Destroy this building?

@@ -5996,3 +5996,5 @@ A seleção de arquivos não está disponível.
 A exportação de pacotes não está disponível.
 [stat band area upkeep]
 Trezalc’h an takad
+[Destroy this building?]
+Destroy this building?

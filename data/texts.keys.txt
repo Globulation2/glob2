@@ -2997,3 +2997,4 @@
 [settings File selection is unavailable.]
 [settings Package export is unavailable.]
 [stat band area upkeep]
+[Destroy this building?]

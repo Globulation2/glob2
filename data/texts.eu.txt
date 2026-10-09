@@ -5996,3 +5996,5 @@ Fitxategiak hautatzea ez dago erabilgarri.
 Paketeak esportatzea ez dago erabilgarri.
 [stat band area upkeep]
 Eremuaren mantentzea
+[Destroy this building?]
+Destroy this building?

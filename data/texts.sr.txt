@@ -5996,3 +5996,5 @@ FFmpeg није доступан, па је снимање искључено. �
 Извоз пакета није доступан.
 [stat band area upkeep]
 Одржавање области
+[Destroy this building?]
+Destroy this building?

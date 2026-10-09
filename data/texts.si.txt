@@ -5996,3 +5996,5 @@ Izbira datotek ni na voljo.
 Izvoz paketov ni na voljo.
 [stat band area upkeep]
 Vzdrževanje območja
+[Destroy this building?]
+Destroy this building?

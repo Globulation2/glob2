@@ -5996,3 +5996,5 @@ File selection is unavailable.
 Package export is unavailable.
 [stat band area upkeep]
 Area upkeep
+[Destroy this building?]
+Destroy this building?

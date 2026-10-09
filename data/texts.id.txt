@@ -5996,3 +5996,5 @@ Pemilihan berkas tidak tersedia.
 Ekspor paket tidak tersedia.
 [stat band area upkeep]
 Pemeliharaan area
+[Destroy this building?]
+Destroy this building?

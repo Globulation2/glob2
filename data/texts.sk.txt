@@ -5996,3 +5996,5 @@ Výber súboru nie je dostupný.
 Export balíkov nie je dostupný.
 [stat band area upkeep]
 Údržba oblasti
+[Destroy this building?]
+Destroy this building?
