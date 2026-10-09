@@ -342,7 +342,10 @@ TEST_SUITE("EngineSession")
         const auto boundary=engine.gui.simulationAccess;
         unsigned parked=0;
         engine.gui.simulationAccess=[&](const auto& work){++parked;boundary(work);};
-        for(unsigned i=0;i<80;++i)
+        // Snapshot publication is asynchronous; retain the input exercise while
+        // allowing instrumented builds to publish their first world.
+        const auto readyBy=SDL_GetTicks()+10000;
+        for(unsigned i=0;i<80 || (engine.gui.drawnScene().map.getW()==0 && SDL_GetTicks()<readyBy);++i)
         {
             SDL_Event motion{}; motion.type=SDL_EVENT_MOUSE_MOTION;
             motion.motion.x=200+i; motion.motion.y=250;
