@@ -17,6 +17,8 @@ def build_identity(arguments, host=None):
     if size_profile not in ('none', 'gc', 'lto', 'size'):
         raise ValueError('size_optimization must be none, gc, lto, or size')
     target = arguments.get('target', 'native')
+    from dev_build import development_identity
+    development = development_identity(arguments, target, enabled(arguments.get('release', 0)), enabled(arguments.get('profile', 0)))
     if size_profile != 'none' and target != 'native':
         raise ValueError('size_optimization experiments require a native release build')
     if target not in ('native', 'web', 'android', 'ios'):
@@ -61,6 +63,7 @@ def build_identity(arguments, host=None):
             identity['china'] = True
         if amazon:
             identity['amazon'] = True
+        identity.update(development)
         return identity
     if target == 'web' and (role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0))):
         raise ValueError('web supports only the client role and cannot use a native cross compiler')
@@ -81,10 +84,16 @@ def build_identity(arguments, host=None):
         identity['lean_images'] = True
     if china:
         identity['china'] = True
+    identity.update(development)
     return identity
 
 
 def default_directory(identity):
+    from dev_build import DEVELOPMENT_KEYS
+    suffix = [key + '-' + str(identity[key]).lower() for key in DEVELOPMENT_KEYS if key in identity]
+    if suffix:
+        base = {key: value for key, value in identity.items() if key not in DEVELOPMENT_KEYS}
+        return default_directory(base) / ('dev-' + '-'.join(suffix))
     if identity['target'] in ('android', 'ios'):
         path = (Path('build') / identity['toolchain'] / identity['environment'] /
                 identity['arch'] / identity['api'] / identity['role'] / identity['mode'])

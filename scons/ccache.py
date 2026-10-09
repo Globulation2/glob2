@@ -16,11 +16,11 @@ import shlex
 # time_macros would let it cache the __DATE__/__TIME__ build banner in
 # GlobalContainerArgs.cpp. Both trade correctness for hit rate.
 _FORWARDED = ('CCACHE_COMPILERCHECK', 'CCACHE_MAXSIZE',
-              'CCACHE_DISABLE', 'CCACHE_LOGFILE', 'HOME')
+              'CCACHE_DISABLE', 'CCACHE_LOGFILE', 'CCACHE_DEBUG', 'CCACHE_DEBUGDIR', 'HOME')
 
 
 def enabled():
-    return bool(os.environ.get('CCACHE'))
+    return os.environ.get('CCACHE', '').lower() not in ('', '0', 'false', 'no', 'off')
 
 
 def enable(env):
@@ -47,6 +47,8 @@ def enable(env):
             value = env.get(command)
             if value and not str(value).startswith(binary + ' '):
                 env[command] = binary + ' ' + str(value)
+    from dev_build import cache_flags
+    cache_flags(env)
     for var in _FORWARDED:
         if var in os.environ:
             env['ENV'][var] = os.environ[var]

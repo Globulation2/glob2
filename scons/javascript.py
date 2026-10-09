@@ -26,6 +26,8 @@ def javascript_objects(env, directory, release, shared=False):
     math = sorted(Path(env.Dir('#third_party/openlibm/src').abspath).glob('*.c'))
     objects += [object_builder(str(output / 'openlibm' / (p.stem + '.o')),
                              '#third_party/openlibm/src/' + p.name) for p in math]
+    from build_timing import record
+    record(local, objects, "compile")
     numeric_guard(local, objects)
     return objects
 
