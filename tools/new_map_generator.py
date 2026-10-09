@@ -156,7 +156,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "{id} terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "{id} colonies";
 	const auto homeMask = [&](int team)

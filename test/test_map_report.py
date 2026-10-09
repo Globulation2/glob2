@@ -83,6 +83,17 @@ def contract_rejections(report):
 
     rejected('unexpected root property', lambda j: j.update(unexpected=True))
     rejected('map width type', lambda j: j['map'].update(width='128'))
+    credited = json.loads(json.dumps(report))
+    credited['map']['setCredits'] = [{
+        'setId': '11111111-1111-4111-8111-111111111111',
+        'versionId': '22222222-2222-4222-8222-222222222222',
+        'title': 'Example', 'license': 'CC-BY-4.0',
+        'authors': [{'author': 'Artist', 'license': 'CC-BY-4.0'}],
+        'sourceHash': 'a'*64, 'entries': ['terrain/example'],
+    }]
+    contract(credited)
+    rejected('credits array type', lambda j: j['map'].update(setCredits={}))
+    rejected('incomplete credit', lambda j: j['map'].update(setCredits=[{'title':'Example'}]))
     rejected('telemetry kind enum', lambda j: telemetry(j)['records'][0].update(kind='unknown'))
     rejected('telemetry value type', lambda j: telemetry(j)['records'][0].update(value={}))
     rejected('negative subject', lambda j: telemetry(j)['records'][0].update(subject=-1))
@@ -258,14 +269,14 @@ def main():
         assert grass['movement']['walking']['between_colonies'] == [[0,1],[1,0]]
         assert grass['start_position_euclidean_distances'] == [[0,1],[1,0]]
         assert grass['movement']['walking']['colonies'][0]['resources']['wood']['nearest_gather_cost'] == 5
-        # Additive material keys preserve the established version-2 border names.
-        # Walking/buildability come from capabilities; colors/sprite IDs never
-        # participate in the partition or spatial calculations.
+        # Terrain composition counts vertices. Walking/buildability come from the
+        # cell rules; each lone vertex makes four mixed, unbuildable cells.
         materials=fixtures['materials']
         assert materials['terrain']['grass']['tiles']==4092
-        for name in ('ice','road','grass_sand_border','sand_water_border'):
+        for name in ('ice','road','sand','water'):
             assert materials['terrain'][name]['tiles']==1
-        assert materials['space']['buildable']['tiles']==4089
+        assert 'grass_sand_border' not in materials['terrain']
+        assert materials['space']['buildable']['tiles']==4076
         assert materials['space']['growth_disabled']['tiles']==0
         assert materials['space']['land_regions']['passable']['tiles']==4096
         legacy=json.loads(json.dumps(grass))

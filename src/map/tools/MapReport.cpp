@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
+#include "MapAssetBundle.h"
 #include "MapReport.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
@@ -373,7 +375,7 @@ StartQualityReport canonicalQuality(Game &game)
 		~RestoreFertility()
 		{
 			for (size_t i = 0; i < values.size(); ++i)
-				map.setFertility(i % map.getW(), i / map.getW(), values[i]);
+				map.setFertility(powerOfTwoRemainder(i, map.getW()), i / map.getW(), values[i]);
 			map.fertilityMaximum = maximum;
 		}
 	} restore(game.map);
@@ -409,6 +411,10 @@ const char *generationErrorName(GenerationError error)
 		return "placement_failed";
 	case GenerationError::InvalidWorld:
 		return "invalid_world";
+	case GenerationError::ScriptFailed:
+		return "script_failed";
+	case GenerationError::BudgetExceeded:
+		return "budget_exceeded";
 	}
 	return "unknown";
 }
@@ -420,7 +426,8 @@ J generationJson(const GenerationRequest *request, const GenerationResult *resul
 			 {"parameters", J()},
 			 {"telemetry", J()},
 			 {"reason", "Map/save files do not store the complete original generator request"}});
-	const auto *definition = GeneratorRegistry::builtins().find(request->method);
+	const auto *definition =
+		(request->catalog ? *request->catalog : GeneratorRegistry::active()).find(request->method);
 	std::vector<std::pair<std::string, J>> parameters, rawOptions;
 	for (const auto &entry : request->options)
 		rawOptions.push_back({entry.first, entry.second});
@@ -448,35 +455,39 @@ J generationJson(const GenerationRequest *request, const GenerationResult *resul
 	std::vector<J> legacyAmounts;
 	for (int n : request->resourceAmounts)
 		legacyAmounts.push_back(n);
-	return J::object(
-		{{"available", true},
-		 {"generator", result && !result->generatorId.empty() ? J(result->generatorId)
-					   : definition                           ? J(definition->id)
-															  : J()},
-		 {"legacy_id", request->method},
-		 {"revision", result       ? result->revision
-					  : definition ? definition->revision
-								   : 0},
-		 {"seed", request->seed},
-		 {"parameters", resolved ? J::object(parameters) : J()},
-		 {"raw_request", J::object({{"method", request->method},
-									{"width_exponent", request->wDec},
-									{"height_exponent", request->hDec},
-									{"teams", request->nbTeams},
-									{"workers", request->nbWorkers},
-									{"options", J::object(rawOptions)}})},
-		 {"legacy_terrain_type", int(request->terrainType)},
-		 {"legacy_resource_amounts", J::array(legacyAmounts)},
-		 {"telemetry", result ? telemetryJson(result->telemetry) : J()},
-		 {"outcome", result ? J::object({{"success", bool(*result)},
-										 {"stage", result->stage},
-										 {"error", generationErrorName(result->error)},
-										 {"detail", result->detail}})
-							: J()},
-		 {"selection_quality",
-		  result && *result && definition
-			  ? qualityJson(result->quality, {})
-			  : J()}});
+	return J::object({{"available", true},
+					  {"generator", result && !result->generatorId.empty() ? J(result->generatorId)
+									: definition                           ? J(definition->id)
+																		   : J()},
+					  {"legacy_id", request->method},
+					  {"revision", result       ? result->revision
+								   : definition ? definition->revision
+												: 0},
+					  {"seed", request->seed},
+					  {"package_hash", result       ? J(result->packageHash)
+									   : definition ? J(definition->packageHash)
+													: J()},
+					  {"api_version", result       ? result->apiVersion
+									  : definition ? definition->apiVersion
+												   : 0},
+					  {"toolkit_version", result && result->apiVersion ? 1 : 0},
+					  {"parameters", resolved ? J::object(parameters) : J()},
+					  {"raw_request", J::object({{"method", request->method},
+												 {"width_exponent", request->wDec},
+												 {"height_exponent", request->hDec},
+												 {"teams", request->nbTeams},
+												 {"workers", request->nbWorkers},
+												 {"options", J::object(rawOptions)}})},
+					  {"legacy_terrain_type", int(request->terrainType)},
+					  {"legacy_resource_amounts", J::array(legacyAmounts)},
+					  {"telemetry", result ? telemetryJson(result->telemetry) : J()},
+					  {"outcome", result ? J::object({{"success", bool(*result)},
+													  {"stage", result->stage},
+													  {"error", generationErrorName(result->error)},
+													  {"detail", result->detail}})
+										 : J()},
+					  {"selection_quality",
+					   result && *result && definition ? qualityJson(result->quality, {}) : J()}});
 }
 
 J movementReport(const Game &game, const StepCosts &costs,
@@ -490,8 +501,8 @@ J movementReport(const Game &game, const StepCosts &costs,
 	std::vector<unsigned char> passable(t.size());
 	for (int p = 0; p < t.size(); ++p)
 		passable[p] = clearing
-						  ? stepCost(map, p % t.w, p / t.w, costs) >= 0
-						  : map.isHardSpaceForGroundUnit(p % t.w, p / t.w, costs.water >= 0, 0);
+						  ? stepCost(map, t.remainderX(p), p / t.w, costs) >= 0
+						  : map.isHardSpaceForGroundUnit(t.remainderX(p), p / t.w, costs.water >= 0, 0);
 	std::vector<std::vector<int>> fields;
 	for (const auto &sources : units)
 		fields.push_back(clearing ? costsFrom(map, t, sources, costs)
@@ -585,7 +596,7 @@ J movementReport(const Game &game, const StepCosts &costs,
 				{
 					if (!dx && !dy)
 						continue;
-					const int d = field[t.at(p % t.w + dx, p / t.w + dy)];
+					const int d = field[t.at(t.remainderX(p) + dx, p / t.w + dy)];
 					if (d >= 0 && (approach < 0 || d < approach))
 						approach = d;
 				}
@@ -669,11 +680,12 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	int fertileGrass = 0;
 	for (int p = 0; p < t.size(); ++p)
 	{
-        const auto material = map.terrainTypeAt(p);
+        // Terrain composition counts vertices: each cell's top-left corner.
+        const auto material = map.vertexTerrainAt(size_t(p));
         const auto &properties = map.terrainPropertiesAt(p);
         ++terrain[material];
-		const int um = map.getUMTerrain(p % t.w, p / t.w);
-		++underlying[um >= 0 && um <= 2 ? um : 3];
+		// The classic grass/sand/water view of the same vertex.
+		++underlying[material <= GRASS ? unsigned(material) : 3u];
 		water[p] = properties.swimmable;
         land[p] = properties.walkable;
 		const auto &r = map.getResource(p);
@@ -690,7 +702,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		}
 		else if (r.type != NO_RES_TYPE)
 			++unknownResources;
-		buildingTiles += map.getBuilding(p % t.w, p / t.w) != NOGBID;
+		buildingTiles += map.getBuilding(t.remainderX(p), p / t.w) != NOGBID;
 		noGrowth += !map.resourceState()[p].mayGrow;
 		fertilityAll.push_back(fertility.values()[p]);
 		if (map.isGrass(p))
@@ -786,6 +798,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		resourceExperiments.push_back(J::object({{"key", experiment.key}, {"label", experiment.label}, {"help", experiment.help}}));
 	for (const auto& key : map.requiredResourceExperiments().keys())
 		requiredResourceExperiments.emplace_back(key);
+	J setCredits; setCredits.text = map.frozenAssetBundle()->credits.dump();
 	const std::string text = pretty(
 			   J::object(
 				   {{"schema_version", 2},
@@ -804,6 +817,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 									   {"buildingCatalog", J::object({{"snapshot", game.buildingsTypes.snapshotJson()},
 																	 {"hash", game.buildingsTypes.fingerprint()}})},
 									   {"resourceExperiments", J::array(resourceExperiments)},
+                                       {"setCredits", setCredits},
 									   {"requiredResourceExperiments", J::array(requiredResourceExperiments)},
 									   {"format_version_minor", game.mapHeader.getVersionMinor()},
 									   {"tick", game.stepCounter},

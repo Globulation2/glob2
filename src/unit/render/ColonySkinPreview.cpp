@@ -315,7 +315,7 @@ const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type,int action) const
     const auto clip=unitClip(type,action);
     return clip<clips.size()?&clips[clip]:nullptr;
 }
-void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene,
+void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const PresentationFrame &scene,
     int left, int top, int right, int bottom, int viewportX, int viewportY,
     int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion, bool drawUnits, bool drawBuildings, const FogFade *fogFade)
 {
@@ -348,8 +348,8 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                 if (!drawBuildings) continue;
                 const auto *building = entities.building(map.getBuilding(mx,my));
                 if (!building || building->team<0 || building->team>=32 || !textures[building->team] ||
-                    building->type->isBuildingSite ||
-                    building->type->presentation.skinSlot != "swarm") continue;
+                    entities.type(*building)->isBuildingSite ||
+                    entities.type(*building)->presentation.skinSlot != "swarm") continue;
                 const auto *swarm = swarmMesh(building->team);
                 if (swarm && (wholeMap || building->team==localTeam || (building->seenByMask&visibleTeams) ||
                     map.isFOWDiscovered(mx,my,visibleTeams)))

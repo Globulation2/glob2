@@ -1,5 +1,6 @@
 #include <climits>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "scene/Scene.h"
@@ -39,7 +40,7 @@
 // Bullets/explosions/death animations, fog of war, and overlay maps. Split from Game_render.cpp.
 
 
-void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene)
+void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene)
 {
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
@@ -49,7 +50,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 
 	Sprite *bulletSprite = globalContainer->bullet;
 
-	Uint32 visibleTeams = entities.teams[localTeam].me;
+	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	int mapPixW=(map.getW())<<5;
@@ -118,7 +119,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				int frame = globalContainer->deathAnimation->getFrameCount() - a->ticksLeft - 1;
 				int decX = globalContainer->deathAnimation->getW(frame)>>1;
 				int decY = globalContainer->deathAnimation->getH(frame)>>1;
-				globalContainer->deathAnimation->setBaseColor(entities.teams[a->team].color);
+				globalContainer->deathAnimation->setBaseColor(presentationColor(entities.teams[a->team].color));
 				const int px = x+16-decX, py = y+16-decY-frame;
 				forEachMapCopy(px, py, px+globalContainer->deathAnimation->getW(frame)-1,
 					py+globalContainer->deathAnimation->getH(frame)-1, mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
@@ -166,14 +167,14 @@ void drawFogShadeSquare(int x, int y, const unsigned corner[4], unsigned lowest,
 }
 }
 
-void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const Scene& scene)
+void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const PresentationFrame& scene)
 {
 	const SceneMap &sceneMap = scene.map;
 	PERF_SCOPE_TIME(RenderFog);
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
 		// we have decrease on because we do unaligned lookup
-		Uint32 visibleTeams = scene.entities.teams[localTeam].me;
+		Uint32 visibleTeams = scene.entities.teams[localTeam].mask;
 		if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 		// How far a tile is into the fog, 0 in sight to FogFade::FOGGED. Without the
 		// smooth fog fade a tile is only ever one or the other, which draws the
@@ -278,11 +279,11 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 		{
 			for (int x=0; x<width; x++)
 			{
-				Uint32 visibleTeams = view.drawnScene().entities.teams[localTeam].me;
+				Uint32 visibleTeams = view.drawnScene().entities.teams[localTeam].mask;
 				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-				int rx=(x+viewportX-1+map.getW())%map.getW();
-				int ry=(y+viewportY-1+map.getH())%map.getH();
+				int rx=powerOfTwoRemainder(x+viewportX-1+map.getW(), map.getW());
+				int ry=powerOfTwoRemainder(y+viewportY-1+map.getH(), map.getH());
 				if(!view.drawnScene().editor && !map.isMapDiscovered(rx, ry, visibleTeams))
 					continue;
 				if(overlays->getValue(rx, ry))

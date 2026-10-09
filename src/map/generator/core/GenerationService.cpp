@@ -29,7 +29,8 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	};
 	result.seed = request.seed;
 	result.stage = "validation";
-	const auto *definition = registry.find(request.method);
+	const auto *definition =
+		(useRequestCatalog && request.catalog ? *request.catalog : registry).find(request.method);
 	if (!definition)
 	{
 		result.error = GenerationError::InvalidRequest;
@@ -38,7 +39,21 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	}
 	result.generatorId = definition->id;
 	result.revision = definition->revision;
-	result.detail = validateGenerationRequest(request, *definition);
+	result.packageHash = definition->packageHash;
+	result.apiVersion = definition->apiVersion;
+	try
+	{
+		auto contract=*definition;
+        contract.validateRequest={};
+        result.detail=validateGenerationRequest(request,contract);
+        if(result.detail.empty() && definition->validateRequest)result.detail=definition->validateRequest(request);
+	}
+	catch (const ScriptGenerationFailure &error)
+	{
+		result.error = error.error;
+		result.detail = error.what();
+		return finish();
+	}
 	if (!result.detail.empty())
 	{
 		result.error = GenerationError::InvalidRequest;
@@ -50,24 +65,24 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 		result.detail = "Generation requires a fresh Game";
 		return finish();
 	}
-	// General engine mutation APIs still use the synchronized gameplay stream.
-	// This synchronous, scoped bridge is not a concurrency API.
-	struct EngineRandomScope
-	{
-		MersenneTwister saved = syncRandEngine();
-		~EngineRandomScope() { syncRandEngine() = saved; }
-	} rngScope;
-	setSyncRandSeed(GenerationContext::deriveSeed(request.seed, "engine"));
 	game.gameHeader.setRandomSeed(request.seed);
+	game.map.worldRandom.initialize(request.seed);
 	game.map.setSize(request.wDec, request.hDec);
 	// The drawn terrain look follows the request seed too, without touching the
-	// synchronized stream, so a regenerated map is identical on every client.
+	// simulation streams, so a regenerated map is identical on every client.
 	game.map.setTerrainSeed(GenerationContext::deriveSeed(request.seed, "terrain-look"));
 	game.map.setGame(&game);
 	bool generated = false;
 	try
 	{
 		generated = definition->generate(game, context);
+	}
+	catch (const ScriptGenerationFailure &error)
+	{
+		result.error = error.error;
+		result.detail = error.what();
+		result.stage = context.stage;
+		return finish();
 	}
 	catch (const GenerationFailure &error)
 	{
@@ -91,7 +106,16 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	if (definition->validateWorld)
 	{
 		result.stage = "generator validation";
-		result.detail = definition->validateWorld(game, context);
+		try
+		{
+			result.detail = definition->validateWorld(game, context);
+		}
+		catch (const ScriptGenerationFailure &error)
+		{
+			result.error = error.error;
+			result.detail = error.what();
+			return finish();
+		}
 		if (!result.detail.empty())
 		{
 			result.error = GenerationError::InvalidWorld;

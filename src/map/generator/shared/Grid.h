@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "PowerOfTwo.h"
+#include "GenerationNumeric.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -17,13 +19,31 @@ struct Torus
 	Torus(int width, int height) : w(width), h(height) {}
 	explicit Torus(const Map &);
 	int size() const { return w * h; }
-	// The double remainder below is the general wraparound formula for any v, including one far
-	// outside [0, w) or negative past a single wrap. Almost every caller here offsets an in-range
-	// coordinate by a small amount (a neighbour step, a kernel radius), so it is already in range
-	// far more often than not; that common case returns directly, at the cost of one comparison,
-	// instead of two integer divisions. Both branches return the identical value for in-range v.
-	int x(int v) const { return v >= 0 && v < w ? v : ((v % w) + w) % w; }
-	int y(int v) const { return v >= 0 && v < h ? v : ((v % h) + h) % h; }
+	// Keep the two-integer layout: script memory budgets include sizeof(Torus).
+	// Map dimensions use masks; standalone grids retain general wrapping.
+	int x(int v) const
+	{
+		const unsigned mask = unsigned(w) - 1u;
+		if (w > 0 && (unsigned(w) & mask) == 0) return unsigned(v) & mask;
+		const int r = v % w;
+		return r < 0 ? r + w : r;
+	}
+	int y(int v) const
+	{
+		const unsigned mask = unsigned(h) - 1u;
+		if (h > 0 && (unsigned(h) & mask) == 0) return unsigned(v) & mask;
+		const int r = v % h;
+		return r < 0 ? r + h : r;
+	}
+	// Index decoding preserves the operand's signedness, unlike normalization.
+	template<class T> auto remainderX(T v) const -> decltype(v % w)
+	{
+		return dimensionRemainder(v, w);
+	}
+	template<class T> auto remainderY(T v) const -> decltype(v % h)
+	{
+		return dimensionRemainder(v, h);
+	}
 	int at(int px, int py) const { return y(py) * w + x(px); }
 	/// Signed shortest offset from one column to another across the wrap.
 	int offsetX(int from, int to) const
@@ -71,15 +91,16 @@ struct Axes
 		const Torus t{width, height};
 		return alongX ? t.at(u, v) : t.at(v, u);
 	}
-	int uOf(int tile) const { return alongX ? tile % width : tile / width; }
-	int vOf(int tile) const { return alongX ? tile / width : tile % width; }
+	int uOf(int tile) const { return alongX ? dimensionRemainder(tile, width) : tile / width; }
+	int vOf(int tile) const { return alongX ? tile / width : dimensionRemainder(tile, width); }
 	/// A frame point as map coordinates (unwrapped, as Drawing.h takes them).
 	double mapX(double u, double v) const { return alongX ? u : v; }
 	double mapY(double u, double v) const { return alongX ? v : u; }
 	/// A frame heading (du along, dv across) as a map heading, in radians.
 	double heading(double du, double dv) const
 	{
-		return alongX ? std::atan2(dv, du) : std::atan2(du, dv);
+		return alongX ? ::MapGeneration::Numeric::atan2(dv, du)
+					  : ::MapGeneration::Numeric::atan2(du, dv);
 	}
 };
 inline Axes axesFor(int width, int height)

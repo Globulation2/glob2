@@ -12,7 +12,7 @@ A generator is a registered module, not a new branch in a central dispatch switc
 
 Extract on the second use. When a routine you are about to write already exists in another generator, move it into `shared/` and call it from both rather than copying it: every helper that was once copied between generators (the beach pass, the kit patch and its frame, the farmland split, the random clumps, the swarm clearance, the algae seeding, the road opener, the wedge frame) is now a shared module, and the next copy is a regression. A routine that genuinely only makes sense for one map stays in that generator.
 
-`Map` retains general terrain-editing operations, including `rebuildTerrain()` for bulk undermap edits. `Game` retains team, unit and building mutation APIs. Neither dispatches generation algorithms.
+`Map` retains general terrain-editing operations on vertices: `setVertexTerrain`, `paintVertices` and `paintVertexSquare` (which lay sand between painted grass and water), `assignVertexTerrain` for a whole map at once, `fillTerrain` and `layBeaches()`; batch scattered writes inside `editTerrain()`. See [terrain rules](GAME_RULES_FOR_MAP_DESIGN.md#the-rules-of-the-terrain). `Game` retains team, unit and building mutation APIs. Neither dispatches generation algorithms.
 
 ## Register a module
 
@@ -83,7 +83,7 @@ bool generate(Game &game, GenerationContext &context)
     TerrainSketch terrain(L.t.size(), GRASS);          // stamp the design
     for (int i = 0; i < L.t.size(); ++i) if (L.water[i]) terrain[i] = WATER;
     layBeaches(terrain, L.t);
-    writeUndermap(game.map, terrain);
+    writeVertices(game.map, terrain);
     if (!settleColonies(game, context, "starts", homeMaskFor(L), anchorFor(L))) return false;
     for (int team = 0; team < context.request.nbTeams; ++team)
         plantKit(game.map, L.t, context, kitFor(L, team), eligibleFor(L, team));
@@ -108,11 +108,11 @@ Everything named here is in `shared/`; `homeMaskFor`, `anchorFor`, `kitFor` and 
 
 ## Generation, randomness and failure
 
-The stages are shared functions; call them in the order the map needs. A designed generator usually runs: `design()`, which deals its home sites to the colonies with `dealStarts` before anything is keyed by colony index (a fixed order would give the same team the same ground every map); stamp the layout into a `TerrainSketch`, `layBeaches` and `writeUndermap` (`Sketch.h`); `settleColonies` (`Pipeline.h`; `settleRoundColonies` for round homes on their own grass); the kits and ambient layers (`growPatch`, `seedNear`, `scatterResources`, `seedAlgae`, `stockIslands`); `clearAroundSwarms`; `guaranteeStartingResources`; `openRoad` for any walk the deposits closed; then `reopenCrampedStarts` at non-default amounts. The height-field modes run `generateHeightField`'s stages (`Terrain.h`) then `placeStarts`; the legacy point-dispersion modes place colonies before their final resource pass and interleave region division, resources and starts. Nothing forces one order, but a generator that needs a different one should say why in its header comment.
+The stages are shared functions; call them in the order the map needs. A designed generator usually runs: `design()`, which deals its home sites to the colonies with `dealStarts` before anything is keyed by colony index (a fixed order would give the same team the same ground every map); stamp the layout into a `TerrainSketch`, `layBeaches` and `writeVertices` (`Sketch.h`); `settleColonies` (`Pipeline.h`; `settleRoundColonies` for round homes on their own grass); the kits and ambient layers (`growPatch`, `seedNear`, `scatterResources`, `seedAlgae`, `stockIslands`); `clearAroundSwarms`; `guaranteeStartingResources`; `openRoad` for any walk the deposits closed; then `reopenCrampedStarts` at non-default amounts. The height-field modes run `generateHeightField`'s stages (`Terrain.h`) then `placeStarts`; the legacy point-dispersion modes place colonies before their final resource pass and interleave region division, resources and starts. Nothing forces one order, but a generator that needs a different one should say why in its header comment.
 
 Use `context.stream("name")` for a per-attempt `std::mt19937` stream, or `context.bounded("name", count)` for a rejection-sampled bounded choice. Seed derivation is defined in `GenerationContext.cpp`: unsigned FNV-1a mixed with the root seed, followed by a fixed integer avalanche. Do not use `std::hash`, wall-clock reseeding, `rand()`, `srand()` or the gameplay RNG in generator algorithms. Noise tables and stamp caches belong to each height-map instance.
 
-General engine mutation functions still consume the synchronized gameplay RNG. `GenerationService` seeds and restores it with an RAII scope. This bridge is synchronous; this refactor does not make `Game` generation thread-safe. Independent processes can generate concurrently.
+General map mutation APIs use private map-owned streams initialized from the request seed. Generation and scored trial maps never seed or bind a shared gameplay RNG. Independent target Games isolate random consumption; each target still requires exclusive ownership of its mutable state.
 
 The same seed, generator revision and settings reproduce a world within this implementation on the same platform. Historical seeds intentionally do not promise the same maps, and cross-platform floating-point identity is not a supported contract. Bump a generator's revision when its output changes deliberately after this framework lands.
 
@@ -146,7 +146,7 @@ python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
 ```
 
-The `MapGeneratorDefaults` suite injects a test-only generator at ID 101, constructs its actual editor controls, edits its custom option, and generates a map. It also checks defaults, ranges, mode memory, codec roundtrips, legacy sentinels, interleaved repeatability, gameplay RNG restoration and structured failures.
+The `MapGeneratorDefaults` suite injects a test-only generator at ID 101, constructs its actual editor controls, edits its custom option, and generates a map. It also checks defaults, ranges, mode memory, codec roundtrips, legacy sentinels, interleaved repeatability, private RNG isolation and structured failures.
 
 Run all registered playable defaults without maintaining another generator list:
 

@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Завершіть вхід у браузері. Після цього гра продовжиться автоматично.
 [hub browser did not open]
-
+Браузер не відкрився. Відкрийте сторінку входу, щоб продовжити.
 [hub compare code %0]
-
+Якщо сторінка попросить, переконайтеся, що на ній показано код %0.
 [hub code copied]
-
+Код скопійовано
 [settings Finish in your browser. The game continues by itself.]
-
+Завершіть дію в браузері. Гра продовжиться автоматично.
 [music set]
-
+Музичний набір
 [random music set]
-
+Випадковий для кожної гри
 [playing music set %0]
-
+Зараз грає: %0
 [music set failed]
-
+Не вдалося завантажити цей музичний набір.
 [settings Music set]
-
+Музичний набір
 [settings Random each match]
-
+Виберіть «Випадковий», щоб вибирати музику на початку кожної гри.
 [settings Edge scrolling]
-
+Прокручування біля краю екрана
 [settings Edge scrolling in fullscreen]
-
+Прокручування біля краю в повноекранному режимі
 [settings Edge scrolling in windowed mode]
-
+Прокручування біля краю у віконному режимі
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Прокручувати мапу гри й редактора, коли миша досягає краю вікна.
 [AI strategy]
 Стратегія ШІ
 [start recording]
@@ -4625,9 +4625,9 @@ OpenGL недоступний у цій збірці.
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Записуйте свої ігри як відео MP4 зі звуком. Для запису потрібен FFmpeg із кодерами libx264 та AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Записуйте ігри як відео MP4 зі звуком.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Запис ведеться з повною роздільністю зображення і частотою 30 кадрів за секунду.
 [settings FFmpeg is ready.]
 FFmpeg готовий.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [Units can die]
 Істоти можуть гинути
 [Upgrades]
-
+Поліпшення
 [No stockpile]
 Немає
 [No glass cannon]
@@ -5193,7 +5193,7 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Істоти гинуть, коли здоров’я закінчується. Вимкніть, щоб у них залишалася 1 одиниця здоров’я.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Істоти підвищують рівень у навчальних будівлях, а будівлі можна поліпшувати. Після вимкнення ремонт залишається доступним.
 [stat group work]
 Час робітників
 [stat worker time]
@@ -5309,235 +5309,235 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 [stat view by place]
 За місцем
 [AI Library]
-
+Бібліотека ШІ
 [Authoring guide]
-
+Посібник для авторів
 [Beginner-friendly]
-
+Для початківців
 [Defensive]
-
+Оборонний
 [Discover]
-
+Огляд
 [Download & install]
-
+Завантажити й установити
 [Downloading AI…]
-
+Завантаження ШІ…
 [Expansion]
-
+Розвиток
 [Experimental]
-
+Експериментальний
 [Favourite]
-
+До обраного
 [Favourited]
-
+В обраному
 [Favourites]
-
+Обране
 [Got it]
-
+Зрозуміло
 [How AIs work]
-
+Як працюють ШІ
 [Install selected version]
-
+Установити вибрану версію
 [Installed]
-
+Установлено
 [Invalid AI catalogue response]
-
+Некоректна відповідь каталогу ШІ
 [JavaScript API reference]
-
+Довідник API JavaScript
 [Like]
-
+Подобається
 [Liked]
-
+Вам подобається
 [Loading AI library…]
-
+Завантаження бібліотеки ШІ…
 [Most downloaded]
-
+Найчастіше завантажувані
 [Most liked]
-
+Найбільше вподобань
 [Newest]
-
+Найновіші
 [No AIs match these filters.]
-
+Немає ШІ, що відповідають цим фільтрам.
 [Not validated for this game version]
-
+Не перевірено для цієї версії гри
 [Open AI Library]
-
+Відкрити бібліотеку ШІ
 [Open AI page]
-
+Відкрити сторінку ШІ
 [Passed compatibility checks]
-
+Перевірки сумісності пройдено
 [Recently updated]
-
+Нещодавно оновлені
 [Rush]
-
+Швидка атака
 [Search]
-
+Пошук
 [Share your AI]
-
+Поділитися своїм ШІ
 [Show more]
-
+Показати більше
 [Sign in through Online settings to like and favourite AIs.]
-
+Увійдіть через налаштування мережевої гри, щоб уподобувати ШІ й додавати їх до обраного.
 [Starter project]
-
+Початковий проєкт
 [downloads of this version]
-
+завантажень цієї версії
 [downloads]
-
+завантажень
 [Update available]
-
+Доступне оновлення
 [Browse versions]
-
+Переглянути версії
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Завантажте ШІ та виберіть його для комп'ютерного гравця в локальній грі. Установлені версії працюють без мережі. Оновлення застосовуються до майбутніх ігор; збережені ігри зберігають початковий код.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Перевірки сумісності не гарантують безпеку чи силу гри. Запускайте код лише тих авторів, яким довіряєте.
 [Back to results]
-
+Назад до результатів
 [music 2–5 minutes]
-
+2–5 хвилин
 [music 5–15 minutes]
-
+5–15 хвилин
 [music AI-generated]
-
+Створено ШІ
 [music All music]
-
+Уся музика
 [music All open licences]
-
+Усі відкриті ліцензії
 [music Any duration]
-
+Будь-яка тривалість
 [music Audition each mood for eight seconds]
-
+Прослухати кожен настрій протягом восьми секунд
 [music Back]
-
+Назад
 [music Browse]
-
+Огляд
 [music Building]
-
+Наростання напруги
 [music Calm]
-
+Спокій
 [music Calm → Building → Combat]
-
+Спокій → Наростання напруги → Бій
 [music Choose Building]
-
+Вибрати «Наростання напруги»
 [music Choose Calm]
-
+Вибрати «Спокій»
 [music Choose Combat]
-
+Вибрати «Бій»
 [music Choose ZIP]
-
+Вибрати ZIP
 [music Choose a music file.]
-
+Виберіть музичний файл.
 [music Combat]
-
+Бій
 [music Could not open this music set.]
-
+Не вдалося відкрити цей музичний набір.
 [music Credits, downloads and reporting]
-
+Автори, завантаження та скарги
 [music Downloading music…]
-
+Завантаження музики…
 [music Export recovery files]
-
+Експортувати файли для відновлення
 [music Fade duration]
-
+Тривалість плавного переходу
 [music File selection cancelled or failed.]
-
+Вибір файлу скасовано або завершено з помилкою.
 [music Import ZIP]
-
+Імпортувати ZIP
 [music Import ZIP or three tracks]
-
+Імпортувати ZIP або три композиції
 [music Import music]
-
+Імпортувати музику
 [music Import three tracks]
-
+Імпортувати три композиції
 [music Includes AI-generated audio]
-
+Містить звук, створений ШІ
 [music Install]
-
+Установити
 [music Install selected]
-
+Установити вибране
 [music Installed]
-
+Установлено
 [music Load more]
-
+Завантажити більше
 [music Loading music…]
-
+Завантаження музики…
 [music Most downloaded]
-
+Найчастіше завантажувані
 [music Most liked]
-
+Найбільше вподобань
 [music Music decoding failed.]
-
+Не вдалося декодувати музику.
 [music Music download failed.]
-
+Не вдалося завантажити музику.
 [music Music installed.]
-
+Музику встановлено.
 [music Music installed. It is now available in Audio settings.]
-
+Музику встановлено. Тепер вона доступна в налаштуваннях звуку.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Музику ще не збережено остаточно. Повторіть збереження перед виходом.
 [music Music library]
-
+Музична бібліотека
 [music Music request failed.]
-
+Запит музики завершився з помилкою.
 [music Newest]
-
+Найновіші
 [music No community music installed yet. Import files or browse the online library.]
-
+Музику спільноти ще не встановлено. Імпортуйте файли або відкрийте мережеву бібліотеку.
 [music No music found.]
-
+Музику не знайдено.
 [music Not AI-generated]
-
+Створено без ШІ
 [music Pause]
-
+Пауза
 [music Play]
-
+Відтворити
 [music Playback position]
-
+Позиція відтворення
 [music Preview]
-
+Попередній перегляд
 [music Ready to import.]
-
+Готово до імпорту.
 [music Remove]
-
+Видалити
 [music Reset to game behavior]
-
+Відновити поведінку гри
 [music Retry saving]
-
+Повторити збереження
 [music Saved.]
-
+Збережено.
 [music Saving music…]
-
+Збереження музики…
 [music Search]
-
+Пошук
 [music Search title, artist, description…]
-
+Пошук за назвою, виконавцем, описом…
 [music Select for installation]
-
+Вибрати для встановлення
 [music Share music on the web]
-
+Поділитися музикою в інтернеті
 [music Some catalogue entries could not be read.]
-
+Деякі записи каталогу не вдалося прочитати.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Не вдалося зберегти дані. Повторіть спробу або експортуйте файли перед виходом.
 [music Tag]
-
+Мітка
 [music Test crossfades]
-
+Перевірити плавні переходи
 [music Up to 2 minutes]
-
+До 2 хвилин
 [music Use this music]
-
+Використати цю музику
 [music Validating music…]
-
+Перевірка музики…
 [settings Music library · Browse, install and import]
-
+Музична бібліотека · Огляд, установлення та імпорт
 [music Filters]
-
+Фільтри
 [music Leave without saving]
-
+Вийти без збереження
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Імпортуйте завантажений музичний ZIP або три композиції Opus. Метадані й обкладинка беруться з композиції «Спокій»; додаткові файли не потрібні.
 [settings Target render FPS]
 Цільова частота кадрів
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Кремнезем
 [Cotton]
 Бавовна
+[Jungle trees]
+Тропічні дерева
+[Pine trees]
+Сосни
+[Dead trees]
+Мертві дерева
+[Ruins]
+Руїни
+[Camp-site]
+Стоянка
+[Ancient debris]
+Стародавні уламки
+[Scrub]
+Чагарник
+[Tall grass]
+Висока трава
+[Maize]
+Кукурудза
+[Potatoes]
+Картопля
+[Rice]
+Рис
+[Fish]
+Риба
 [Reroll terrain look]
 Заново вибрати випадковий вигляд ландшафту
 [boulders]
-
+Валуни
 [hedge]
-
+Живопліт
 [thicket]
-
+Зарості
 [ridge_rock]
-
+Кам'яне пасмо
 [outcrop]
-
+Відслонення
 [dirt]
-
+Ґрунт
 [clay]
-
+Глина
 [gravel]
-
+Гравій
 [flower_meadow]
-
+Квіткова лука
 [mud]
-
+Багно
 [marsh]
-
+Болото
 [deep_snow]
-
+Глибокий сніг
 [scree]
-
+Осип
 [dirt_track]
-
+Ґрунтова дорога
 [boardwalk]
-
+Дерев'яний настил
 [lava]
-
+Лава
 [ember_field]
-
+Поле жару
 [loam]
-
+Суглинок
 [moss]
-
+Мох
 [spring_meadow]
-
+Весняна лука
 [deep_water]
-
+Глибока вода
 [dark_water]
-
+Темна вода
 [void_hole]
-
+Провалля
 [chasm]
-
+Прірва
 [terrain group water]
-
+Вода
 [terrain group sand]
-
+Пісок
 [terrain group grass]
-
+Трава
 [terrain group ice]
-
+Лід
 [terrain group paths]
-
+Дороги
 [terrain group obstacles]
-
+Перешкоди
 [terrain group ridges]
-
+Пасма
 [terrain group barren]
-
+Неродюча земля
 [terrain group rough]
-
+Важкопрохідна земля
 [terrain group lava]
-
+Лава
 [terrain group fertile]
-
+Родюча земля
 [terrain group deep-water]
-
+Глибока вода
 [terrain group void]
-
+Порожнеча
 [experiment obstacle-terrain]
-
+Земля з перешкодами
 [experiment obstacle-terrain help]
-
+Додає до редактора мап валуни, живоплоти й зарості. Наземні істоти не можуть їх перетнути, снаряди зупиняються, а літальні істоти пролітають над ними. Будівлі та ресурси розміщувати не можна.
 [experiment ridge-terrain]
-
+Скеляста земля
 [experiment ridge-terrain help]
-
+Додає до редактора мап кам'яні пасма й відслонення. Наземні істоти не можуть їх перетнути, але вежі стріляють поверх них, а літальні істоти пролітають. Будівлі та ресурси розміщувати не можна.
 [experiment barren-terrain]
-
+Неродюча земля
 [experiment barren-terrain help]
-
+Додає до редактора мап ґрунт, глину, гравій і квіткові луки. На них можна будувати, але на них і поруч нічого не росте. Вони не вважаються берегом.
 [experiment rough-terrain]
-
+Важкопрохідна земля
 [experiment rough-terrain help]
-
+Додає до редактора мап багно, болота, глибокий сніг та осипи. Наземні істоти рухаються приблизно з двома третинами звичайної швидкості. Будівлі та ресурси розміщувати не можна.
 [experiment path-terrain]
-
+Дорожнє покриття
 [experiment path-terrain help]
-
+Додає до редактора мап ґрунтові дороги й дерев'яні настили. Як на стежках, наземні істоти рухаються вдвічі швидше й будівлі дозволені, але нічого не росте.
 [experiment lava-terrain]
-
+Лавова земля
 [experiment lava-terrain help]
-
+Додає до редактора мап лаву й поля жару. Наземні істоти не можуть увійти; літальні істоти швидко втрачають здоров'я над ними. Снаряди пролітають поверх них.
 [experiment fertile-terrain]
-
+Родюча земля
 [experiment fertile-terrain help]
-
+Додає до редактора мап суглинок, мох і весняні луки. Вони дозволяють будівництво й вирощування рослин та зрошують сусідню землю сильніше, ніж вода.
 [experiment deep-water-terrain]
-
+Глибока вода
 [experiment deep-water-terrain help]
-
+Додає до редактора мап глибоку й темну воду. Плавці перетинають її повільніше, водорості в ній не ростуть, але вона й далі зрошує сусідні поля.
 [experiment void-terrain]
-
+Порожнеча
 [experiment void-terrain help]
-
+Додає до редактора мап провалля й прірви. Жодні істоти, навіть літальні, не можуть їх перетнути; снаряди зупиняються біля краю.
 [terrain group custom]
-
+Користувацьке
 [terrain group classic]
-
+Класична земля
 [terrain rule walkable]
-
+Можна ходити
 [terrain rule swimmable]
-
+Можна плавати
 [terrain rule impassable]
-
+Непрохідне
 [terrain rule no flying]
-
+Політ заборонено
 [terrain rule buildable]
-
+Можна будувати
 [terrain rule speed %0]
-
+Швидкість %0%
 [terrain rule crops grow]
-
+Рослини ростуть
 [terrain rule irrigates]
-
+Зрошує сусідню землю
 [terrain rule stops nearby growth]
-
+Зупиняє ріст поблизу
 [terrain rule blocks shots]
-
+Блокує постріли
 [terrain rule hurts walkers]
-
+Шкодить наземним істотам
 [terrain rule hurts fliers]
-
+Шкодить літальним істотам
 [terrain palette hint]
-
+Виберіть пензель. Група має спільні правила; її елементи відрізняються лише виглядом.
 [terrain rule algae grow]
-
+Водорості ростуть
 [terrain palette experiments hint]
-
+Виберіть пензель. Нові групи землі з'являться тут після ввімкнення їхніх експериментів у «Налаштування > Експерименти».
 [brush valid on %0]
-
+Дозволено на: %0
 [brush valid nowhere]
-
+Неможливо розмістити на жодному типі землі цієї мапи
 [brush requires experiment %0]
-
+Потрібен експеримент %0
 [brush resources custom]
-
+Імпортовані ресурси
 [brush section zones]
-
+Зони
 [brush section areas]
-
+Області
 [brush section tools]
-
+Інструменти
 [brush clearing area]
-
+Область розчищення
 [editor unsaved title]
-
+Незбережені зміни
 [editor quit unsaved]
-
+Зберегти зміни цієї мапи перед виходом із редактора?
 [editor load unsaved]
-
+Зберегти зміни цієї мапи перед відкриттям іншої?
 [editor save]
-
+Зберегти…
 [editor discard]
-
+Не зберігати
 [editor share never saved]
-
+Мапи публікуються зі збереженого файлу. Спочатку збережіть цю мапу, а потім поділіться нею.
 [editor share unsaved]
-
+Мапа має незбережені зміни. Під час публікації завантажується збережений файл.
 [editor save and share]
-
+Зберегти й поділитися…
 [editor share saved version]
-
+Поділитися збереженою версією
 [editor reroll confirm]
-
+Надати кожній клітинці землі нового випадкового вигляду? Типи землі й перебіг гри збережуться. Цю дію неможливо скасувати.
 [editor reroll]
-
+Заново вибрати випадковий вигляд
 [editor map saved]
-
+Мапу збережено
 [editor map shared]
-
+Мапу опубліковано в мережі
 [editor save needs fertility]
-
+Для збереження потрібна мапа родючості, тому збереження скасовано. Натисніть OK, щоб повторити спробу.
 [editor fertility stale]
-
+Мапа родючості застаріла · Натисніть для оновлення
 [No definition files found in %0]
-
+У %0 не знайдено файлів визначень
 [From device…]
-
+Із пристрою…
 [replace existing file %0?]
-
+Файл «%0» уже існує. Замінити його?
 [Replace]
-
+Замінити
 [Keep existing file]
-
+Залишити наявний файл
 [editor menu save]
-
+Зберегти мапу
 [editor menu load]
-
+Відкрити мапу…
 [editor menu import terrain]
-
+Імпортувати визначення землі…
 [editor menu import resources]
-
+Імпортувати визначення ресурсів…
 [editor menu teams]
-
+Команди…
 [editor menu scenario]
-
+Сценарій…
 [editor menu reroll]
-
+Заново вибрати випадковий вигляд місцевості…
 [editor menu file]
-
+Файл
 [editor menu map]
-
+Мапа
 [no resource growth areas]
-
+Області без росту
 [dock flags and units]
-
+Прапори та істоти
 [dock minimap]
-
+Мінімапа
 [dock search brushes]
-
+Пошук пензлів
 [dock brush shape %0]
-
+Форма пензля %0
 [dock brush]
-
+Пензель
 [dock brush paint]
-
+Малювати
 [dock brush erase]
-
+Стирати
 [dock enable for map]
-
+Увімкнути для цієї мапи
 [dock enable experiment %0]
-
+Увімкнути %0
 [dock enable experiment hint %0]
-
+Умикає експеримент %0 лише для цієї мапи.
 [dock area number]
-
+Область
 [dock building level]
-
+Рівень
 [dock unit level]
-
+Рівень істоти
 [dock no brushes match]
-
+Немає пензлів, що відповідають запиту.
 [dock active team]
-
+Активна команда
 [dock team count %0]
-
+Команд на цій мапі: %0
 [dock add team]
-
+Додати команду
 [dock remove team]
-
+Видалити команду
 [dock nothing selected]
-
+Нічого не вибрано.
 [dock no properties]
-
+Цей об'єкт не має редагованих властивостей.
 [focus brush search]
-
+Пошук пензлів
 [switch to resources view]
-
+Перейти до вигляду ресурсів
 [dock resources base]
-
+Стандартні ресурси
 [dock fertility stale]
-
+Мапа родючості застаріла.
 [dock fertility refresh]
-
+Оновити родючість
 [Enabled %0 for this map]
-
+Увімкнено %0 для цієї мапи
 [editor fertility tap refresh]
-
+Мапа родючості застаріла: натисніть для оновлення
+[editor menu import set]
+Імпортувати набір землі та ресурсів
+[editor menu set library]
+Бібліотека наборів
+[set library loading]
+Завантаження наборів…
+[set library downloading]
+Завантаження конкретного випуску…
+[set library connection error]
+Не вдалося завантажити набори. Перевірте з'єднання та повторіть спробу.
+[set library hash error]
+Завантажений набір не пройшов перевірку хешу.
+[set library package error]
+Некоректний пакет набору.
+[set library listing error]
+Некоректний список наборів.
+[set library release error]
+Некоректний випуск набору.
+[set library selection help]
+Виберіть елементи для імпорту. Потрібні користувацькі ресурси додаються автоматично.
+[set library empty]
+Наборів не знайдено.
+[set library release help]
+Виберіть конкретний випуск для перегляду й імпорту.
+[set library heading]
+Набори землі та ресурсів
+[set library browse]
+Відкрити мережеву бібліотеку
+[set library local]
+Вміст мапи, автори та локальні зміни
+[set library local help]
+Редагуйте копію вмісту, збережену в цій мапі. Відомості про авторів початкового випуску зберігаються. Зміни не оновлюють інших мап або мережевого випуску.
+[set library apply]
+Застосувати локальні зміни
+[set library updated]
+Локальний вміст оновлено.
+[set library search hint]
+Пошук тем і авторів
+[set library search]
+Пошук
+[set library set]
+Набір
+[set library update help]
+Замінює відповідну розміщену землю й ресурси, включно з локальними змінами. Видалені елементи залишаються на старому випуску. Кількість наявних матеріалів обмежується новою місткістю.
+[set library import]
+Імпортувати вибрані елементи
+[set library next]
+Наступна сторінка
+[set library back]
+Назад до результатів
+[set library license %0]
+Ліцензія: %0
+[set library release %0]
+випуск %0
+[set library replace %0]
+Замінити розміщені елементи випуску %0
+[set library preview limit]
+Попередній перегляд доступний для перших 64 елементів. Вибирати можна всі елементи.
+[set library definition]
+Визначення властивостей (JSON)
+[set library artwork]
+Відповідність зображень землі (JSON)
+[settings Map generators]
+Генератори карт
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Імпортуйте пакет генератора, а потім виберіть його ландшафт під час створення карти або гри.
+[settings Import map generator]
+Імпортувати генератор карт
+[settings No custom map generators installed.]
+Користувацькі генератори карт не встановлено.
+[settings Replace package]
+Замінити пакет
+[settings Export package]
+Експортувати пакет
+[settings Remove generator]
+Видалити генератор
+[settings Saving generator library…]
+Збереження бібліотеки генераторів…
+[settings Could not read generator package.]
+Не вдалося прочитати пакет генератора.
+[settings Generator library saved.]
+Бібліотеку генераторів збережено.
+[settings Storage could not be saved. The previous library is retained.]
+Не вдалося зберегти дані. Попередню бібліотеку збережено.
+[settings Waiting for file selection or storage…]
+Очікування вибору файлу або збереження…
+[settings File selection is unavailable.]
+Вибір файлу недоступний.
+[settings Package export is unavailable.]
+Експорт пакетів недоступний.
+[stat band area upkeep]
+Утримання області

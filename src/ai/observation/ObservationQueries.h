@@ -13,7 +13,7 @@
 namespace AIEngine::ObservationQueries
 {
 inline const TerrainProperties& terrain(const AIEngine::AIWorldView& world,std::size_t index)
-{return world.terrain->properties(world.terrainAt(index).type);}
+{return world.terrainPropertiesAt(index);}
 inline const TerrainProperties& terrain(const AIEngine::AIWorldView& world,int x,int y)
 {return terrain(world,world.tileIndex(x,y));}
 inline bool resourceTakeable(const AIEngine::AIWorldView& world,int x,int y,int material)
@@ -36,10 +36,10 @@ inline int distanceMax(const AIEngine::AIWorldView& world,int x,int y,int a,int 
 inline AIEngine::TileView spatialTile(const AIEngine::AIWorldView& world,int x,int y)
 {
     const auto index=world.tileIndex(x,y);
-    const auto t=world.terrainAt(index);const auto& r=world.resourceAt(index);
+    const auto& r=world.resourceAt(index);
     const auto& o=world.occupancyAt(index);const auto& a=world.areasAt(index);const auto v=world.visibilityAt(index);
     AIEngine::TileView result;
-    result.terrain=t.type;result.legacyTerrain=t.legacy;
+    result.cellRule=world.cellRuleAt(index);
     result.resource=r.resource;result.fertility=r.fertility;result.resourcesMayGrow=r.mayGrow;
     result.building=o.building;result.groundUnit=o.groundUnit;result.airUnit=o.airUnit;result.immobileUnit=o.immobileUnit;
     result.forbidden=a.forbidden;result.guard=a.guard;result.clear=a.clear;result.farm=a.farm;
@@ -193,7 +193,7 @@ inline bool hardBuildingSpace(const AIEngine::AIWorldView& world,int x,int y,int
         const auto resource=world.resourceAt(index).resource;
         const auto occupancy=world.occupancyAt(index);
         if(resource.type!=NO_RES_TYPE || (occupancy.building!=Uint16(-1) && occupancy.building!=ignore)
-            || !world.terrain->properties(world.terrainAt(index).type).buildable) return false;
+            || !world.terrainPropertiesAt(index).buildable) return false;
     }
     return true;
 }
@@ -212,7 +212,7 @@ inline bool roomForBuilding(const AIEngine::AIWorldView& world,int x,int y,const
         const auto resource=world.resourceAt(index).resource;
         const auto occupancy=world.occupancyAt(index);
         if(resource.type!=NO_RES_TYPE || occupancy.building!=Uint16(-1) || occupancy.groundUnit!=Uint16(-1)
-            || !world.terrain->properties(world.terrainAt(index).type).buildable) return false;
+            || !world.terrainPropertiesAt(index).buildable) return false;
         discovered|=(world.visibilityAt(index).discovered&world.teams[team].mask)!=0;
     }
     return !checkFow || discovered;

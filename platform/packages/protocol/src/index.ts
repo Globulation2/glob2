@@ -10,6 +10,7 @@ export * from './history.ts';
 export * from './realtime.ts';
 export * from './jobs.ts';
 export * from './admin.ts';
+export * from './adminConsole.ts';
 export * from './validate.ts';
 export * from './registry.ts';
 export * from './document.ts';
@@ -20,3 +21,14 @@ export * from './ais.ts';
 export * from './music.ts';
 export * from './musicStudio.ts';
 export * from './aiStudio.ts';
+export * from './codingStudio.ts';
+export * from './buildings.ts';
+export * from './sets.ts';
+export * from './terrainStudio.ts';
+export * from './setAuthoring.ts';
+
+export * from './buildingStudio.ts';
+
+export * from './generators.ts';
+
+export * from './generatorStudio.ts';

@@ -81,6 +81,8 @@ public:
 	void expelFromBuilding(int x, int y, int dx, int dy);
 	
 	int getRealArmor(bool isMagic) const;
+	int applyAreaAttack(int value) const;
+	void applyAreaServices();
 	int getRealAttackStrength(void) const; //!< Return the real attack strength for warriors
 	int getNextLevelThreshold(void) const;
 	void incrementExperience(int increment);
@@ -180,9 +182,6 @@ public:
 	Building *ownExchangeBuilding;
 	void receiveCarriedMaterial(int resource, MaterialPacket packet);
 	
-	// gui
-	int levelUpAnimation;
-	int magicActionAnimation;
 	
 	// (x, y) of the clearing-area cell this unit has claimed on the map. nullopt =
 	// no current claim. The pre-tick reset in handleMovement() releases the claim

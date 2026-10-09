@@ -131,6 +131,8 @@ void customGameReady(bool canStart);
 void studioProgress(std::uint32_t tick, bool ended, bool disabled,
                     const std::string &diagnostic, bool won, bool lost);
 void studioError(const std::string &message);
+void studioGenerated(const std::string &report);
+bool studioWatchRequested();
 // Read-only presentation diagnostic: the interactive controls of one element
 // host (a screen or dialog) after layout, as JSON keyed by control key with
 // logical-pixel bounds, or null when the host goes away. Tests drive the real

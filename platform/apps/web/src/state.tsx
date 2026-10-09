@@ -1,3 +1,4 @@
+import { useLocale } from './i18n.tsx';
 // App-wide state: the instance description and the signed-in web session,
 // plus a small hook for loading data that refetches when its key changes.
 import {
@@ -64,6 +65,7 @@ interface Session {
 const SessionContext = createContext<Session | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
+  useLocale();
   const instance = useLoad((signal) => fetchInstance(signal), []);
   const me = useLoad(
     (signal) =>

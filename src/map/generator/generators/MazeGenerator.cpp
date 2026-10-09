@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "MazeGenerator.h"
 #include "Drawing.h"
 #include "Game.h"
@@ -28,8 +29,8 @@ using namespace MapGeneration;
 // channel. Passages fill their cells with grass, so colonies farm and build their way out into the
 // maze, and every colony starts in its own cul-de-sac.
 //
-// Terrain is designed in a TerrainSketch, one undermap corner at a time. Each tile's terrain comes
-// from its four undermap corners (Map::regenerateMap), so the whole map is drawn from one distance
+// Terrain is designed in a TerrainSketch, one terrain vertex at a time. Each tile's terrain comes
+// from its four corner vertices, so the whole map is drawn from one distance
 // field: steps from the corners of every wall's stone line. Walking out from a wall, the corners one
 // step out stay land, the next channel-width + 1 are water and everything further is land again;
 // layBeaches turns the land beside that water to sand. In tiles, that is the stone spine, two sandy
@@ -55,7 +56,7 @@ using namespace MapGeneration;
 namespace
 {
 
-// The undermap corners one step from a wall's stone line stay land (its flank); the channel's
+// The terrain vertices one step from a wall's stone line stay land (its flank); the channel's
 // water starts one step further out.
 constexpr int kFlankSteps = 1;
 
@@ -254,7 +255,7 @@ std::vector<CellTile> resourceTilesOfCell(const Map &map, const Torus &t, const 
 	back = side = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (d.labels[i] != cell || map.isResource(x, y))
 			continue;
 		const bool habitat = resourceType >= 0 ? map.terrainSupportsResourceAtByIndex(x, y, resourceType) :
@@ -394,7 +395,7 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 		for (int attempt = 0; attempt < 32 && seed < 0; ++attempt)
 		{
 			const int candidate = pool[context.bounded("resources", pool.size())];
-			if (free[candidate] && map.terrainSupportsResourceAtByIndex(candidate % w, candidate / w, resourceType))
+			if (free[candidate] && map.terrainSupportsResourceAtByIndex(powerOfTwoRemainder(candidate, w), candidate / w, resourceType))
 				seed = candidate;
 		}
 		if (seed < 0)
@@ -405,12 +406,12 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeDesign &
 		int placed = 0;
 		for (size_t head = 0; head < frontier.size() && placed < size; ++head, ++placed)
 		{
-			const int x = frontier[head] % w, y = frontier[head] / w;
+			const int x = powerOfTwoRemainder(frontier[head], w), y = frontier[head] / w;
 			map.setResourceByIndex(x, y, resourceType, 1);
 			for (const auto &s : steps)
 			{
 				const size_t n = size_t(map.normalizeY(y + s[1])) * w + map.normalizeX(x + s[0]);
-				if (free[n] && map.terrainSupportsResourceAtByIndex(n % w, n / w, resourceType))
+				if (free[n] && map.terrainSupportsResourceAtByIndex(powerOfTwoRemainder(n, w), n / w, resourceType))
 				{
 					free[n] = 0;
 					frontier.push_back(int(n));
@@ -496,7 +497,7 @@ std::vector<unsigned char> openCorners(const Torus &t, const MazeDesign &d)
 }
 
 // A sand road down every open edge, from each cell's centre through the edge's middle to the
-// next centre: undermap sand on the corners of every tile a sealed line passes, so each road tile is
+// next centre: sand vertices on the corners of every tile a sealed line passes, so each road tile is
 // pure sand and consecutive ones share a side. At a home it stops against the swarm's 4x4
 // footprint (the settlement is anchored on the centre), so the swarm still stands on grass. Only
 // grass corners take sand, so a road can never reach into a channel. Returns the tiles the road
@@ -525,7 +526,7 @@ std::vector<unsigned char> layRoads(TerrainSketch &sketch, const Torus &t, const
 		if (road[i] && sketch[i] == GRASS)
 		{
 			sketch[i] = SAND;
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			onRoad[i] = onRoad[t.at(x - 1, y)] = onRoad[t.at(x, y - 1)] =
 				onRoad[t.at(x - 1, y - 1)] = 1;
 		}
@@ -538,7 +539,7 @@ bool generate(Game &game, GenerationContext &context)
 	const MazeOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(WATER);
+	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const MazeDesign d = designMaze(context.request, context);
@@ -567,7 +568,7 @@ bool generate(Game &game, GenerationContext &context)
 	// built on one: a road links every cell to the maze and can never be closed.
 	const std::vector<unsigned char> onRoad =
 		o.sandRoads ? layRoads(sketch, t, d) : std::vector<unsigned char>(size_t(t.size()), 0);
-	writeUndermap(map, sketch);
+	writeVertices(map, sketch);
 	const DesignedStone stone = designedStone(map, t, spine);
 	if (stone.gaps)
 	{
@@ -576,13 +577,13 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < t.size(); ++i)
 		if (stone.stone[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	const auto chamber = [&](int team)
 	{
 		std::vector<unsigned char> home(size_t(t.size()), 0);
 		for (int i = 0; i < t.size(); ++i)
-			home[i] = d.labels[i] == homes[team] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
+			home[i] = d.labels[i] == homes[team] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 		return home;
 	};
 	// placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
@@ -672,7 +673,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const RegionLeak leak = firstRegionLeak(t, reached, d.labels, [&](int a, int b)
 											{ return joined[size_t(a) * n + b] != 0; });
 	if (leak.tile >= 0)
-		return "A maze wall leaks at (" + std::to_string(leak.tile % t.w) + ", " +
+		return "A maze wall leaks at (" + std::to_string(t.remainderX(leak.tile)) + ", " +
 			   std::to_string(leak.tile / t.w) + ").";
 	return "";
 }
@@ -710,7 +711,7 @@ GeneratorDefinition mazeDefinition()
 		"maze",
 		11,
 		"Maze",
-		15,
+		16,
 		false,
 		{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons", "Random"}, 2)
 			 .withSearchValues({0, 1}),

@@ -1,4 +1,7 @@
+#include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
 #include "Resources.h"
@@ -34,8 +37,11 @@ int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint c
 		throw GenerationFailure("Resource clump placement mask does not match the map size");
 	int placed = 0;
 	for (int dy = -radius; dy <= radius; ++dy)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dx = -radius; dx <= radius; ++dx)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int d2 = dx * dx + dy * dy;
 			if (d2 > radius * radius ||
 				(d2 > (radius - 1) * (radius - 1) && context.bounded("resources", 4) == 0))
@@ -44,7 +50,7 @@ int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint c
 			// The centre can be legal while a clump's edge crosses a sand cap or
 			// summit. Check each wrapped tile before placing it. Null keeps every
 			// old caller's branch and RNG sequence exactly as it was.
-			if (allowed && !(*allowed)[size_t(y) * map.getW() + x])
+			if (allowed && !(*allowed).at(size_t(y) * map.getW() + x))
 				continue;
 			const int existingType = map.getResource(x, y).type;
 			if (map.isResourceAllowed(x, y, resourceType) &&
@@ -54,6 +60,7 @@ int placeResourceClump(Map &map, GenerationContext &context, MapGeneratorPoint c
 				++placed;
 			}
 		}
+	}
 	return placed;
 }
 
@@ -70,7 +77,10 @@ void setScaledResource(Map &map, int x, int y, int resourceType, int size, int p
 		return;
 	int reach = 0;
 	while ((2 * reach + 1) * (2 * reach + 1) < target)
+	{
+		::MapGeneration::generationCheckpoint();
 		++reach;
+	}
 	const int side = 2 * reach + 1;
 	// Offset i is column i / side, row i % side, the order setResource visits its square in. Keep
 	// the `target` offsets nearest the centre (by ring, then by distance round it).
@@ -79,17 +89,27 @@ void setScaledResource(Map &map, int x, int y, int resourceType, int size, int p
 		const int dx = std::abs(i / side - reach), dy = std::abs(i % side - reach);
 		return std::make_pair(std::max(dx, dy), dx + dy);
 	};
+	generationAllocation(std::uint64_t(side) * side * (sizeof(int) + sizeof(unsigned char)));
 	std::vector<int> order(size_t(side) * side);
 	for (size_t i = 0; i < order.size(); ++i)
-		order[i] = int(i);
+	{
+		::MapGeneration::generationCheckpoint();
+		order.at(i) = int(i);
+	}
 	std::stable_sort(order.begin(), order.end(), [&](int a, int b) { return rank(a) < rank(b); });
 	std::vector<unsigned char> chosen(order.size(), 0);
 	for (int k = 0; k < target; ++k)
-		chosen[size_t(order[size_t(k)])] = 1;
+	{
+		::MapGeneration::generationCheckpoint();
+		chosen.at(size_t(order.at(size_t(k)))) = 1;
+	}
 	for (int i = 0; i < int(chosen.size()); ++i)
-		if (chosen[size_t(i)])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (chosen.at(size_t(i)))
 			map.setResourceByIndex(map.normalizeX(x + i / side - reach),
-							map.normalizeY(y + i % side - reach), resourceType, 1);
+								   map.normalizeY(y + i % side - reach), resourceType, 1);
+	}
 }
 
 int placeResourceClumpInArea(Map &map, GenerationContext &context,
@@ -105,9 +125,10 @@ int placeResourceClumpInArea(Map &map, GenerationContext &context,
 	const size_t first = context.bounded("resources", points.size());
 	for (size_t offset = 0; offset < points.size(); ++offset)
 	{
-		const MapGeneratorPoint &center = points[(first + offset) % points.size()];
-		if (allowed && !(*allowed)[size_t(map.normalizeY(center.y)) * map.getW() +
-										map.normalizeX(center.x)])
+		::MapGeneration::generationCheckpoint();
+		const MapGeneratorPoint &center = points.at((first + offset) % points.size());
+		if (allowed && !(*allowed).at(size_t(map.normalizeY(center.y)) * map.getW() +
+									  map.normalizeX(center.x)))
 			continue;
 		if (!map.isResourceAllowed(center.x, center.y, resourceType))
 			continue;
@@ -155,13 +176,22 @@ std::vector<int> computeComponents(const Map &map, bool water, int &numComponent
 	const int w = map.getW(), h = map.getH();
 	std::vector<unsigned char> kind(size_t(w) * h);
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
-			kind[size_t(y) * w + x] = water ? map.terrainSupportsResourceAtByIndex(x,y,ALGA)
-				: map.terrainPropertiesAt(x,y).walkable;
+		{
+			::MapGeneration::generationCheckpoint();
+			kind.at(size_t(y) * w + x) = water ? map.terrainSupportsResourceAtByIndex(x, y, ALGA)
+											   : map.terrainPropertiesAt(x, y).walkable;
+		}
+	}
 	const std::vector<int> component = connectedRegions(kind, w, h, true, GridNeighbors::Eight);
 	numComponents = 0;
 	for (int c : component)
+	{
+		::MapGeneration::generationCheckpoint();
 		numComponents = std::max(numComponents, c + 1);
+	}
 	return component;
 }
 
@@ -172,31 +202,38 @@ void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
 		return;
 	const int width = map.getW(), height = map.getH();
 	constexpr unsigned kBuckets = 2048;
+	generationAllocation(std::uint64_t(numComponents) *
+						 (kBuckets * sizeof(int) + 3 * sizeof(std::vector<int>)));
 	std::vector<std::vector<MapGeneratorPoint>> candidates(numComponents);
 	std::vector<std::vector<unsigned>> level(numComponents);
 	std::vector<std::vector<int>> histogram(numComponents, std::vector<int>(kBuckets, 0));
 	int totalCandidates = 0;
 	for (int y = 0; y < height; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < width; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (map.getResource(x, y).type != NO_RES_TYPE)
 				continue;
 			if (!map.isResourceAllowed(x, y, resourceType))
 				continue;
-			const int comp = component[y * width + x];
+			const int comp = component.at(y * width + x);
 			if (comp < 0)
 				continue;
 			const unsigned lvl = noise.uiLevel(x, y, kBuckets);
-			candidates[comp].emplace_back(x, y);
-			level[comp].push_back(lvl);
-			++histogram[comp][lvl];
+			candidates.at(comp).emplace_back(x, y);
+			level.at(comp).push_back(lvl);
+			++histogram.at(comp).at(lvl);
 			++totalCandidates;
 		}
+	}
 	if (totalCandidates == 0)
 		return;
 	for (int c = 0; c < numComponents; ++c)
 	{
-		const auto &compCandidates = candidates[c];
+		::MapGeneration::generationCheckpoint();
+		const auto &compCandidates = candidates.at(c);
 		if (compCandidates.empty())
 			continue;
 		const int share = int((std::int64_t(targetTiles) * std::int64_t(compCandidates.size())) /
@@ -206,7 +243,8 @@ void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
 		int accumulated = 0;
 		for (unsigned b = 0; b < kBuckets; ++b)
 		{
-			accumulated += histogram[c][b];
+			::MapGeneration::generationCheckpoint();
+			accumulated += histogram.at(c).at(b);
 			if (accumulated >= wanted)
 			{
 				threshold = b;
@@ -214,8 +252,12 @@ void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
 			}
 		}
 		for (size_t i = 0; i < compCandidates.size(); ++i)
-			if (level[c][i] <= threshold)
-				map.setResourceByIndex(compCandidates[i].x, compCandidates[i].y, resourceType, 1);
+		{
+			::MapGeneration::generationCheckpoint();
+			if (level.at(c).at(i) <= threshold)
+				map.setResourceByIndex(compCandidates.at(i).x, compCandidates.at(i).y, resourceType,
+									   1);
+		}
 	}
 }
 
@@ -241,13 +283,18 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 	const int width = map.getW(), height = map.getH();
 	constexpr unsigned kBuckets = 2048;
 	constexpr int kWiden = 3; // the fertile region reaches roughly 3x past the requested tile count
+	generationAllocation(std::uint64_t(numComponents) *
+						 (kBuckets * sizeof(int) + 3 * sizeof(std::vector<int>)));
 	std::vector<std::vector<MapGeneratorPoint>> candidates(numComponents);
 	std::vector<std::vector<unsigned>> fertLevel(numComponents);
 	std::vector<std::vector<int>> fertHistogram(numComponents, std::vector<int>(kBuckets, 0));
 	int totalCandidates = 0;
 	for (int y = 0; y < height; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < width; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (map.getResource(x, y).type != NO_RES_TYPE)
 				continue;
 			// Wood and wheat share the same terrain requirement (grass), so either stands in for
@@ -258,22 +305,24 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 			const std::uint32_t f = fertility.at(x, y);
 			if (f == 0)
 				continue;
-			const int comp = landComponent[y * width + x];
+			const int comp = landComponent.at(y * width + x);
 			if (comp < 0)
 				continue;
 			const unsigned lvl =
 				kBuckets - 1 -
 				std::min<unsigned>(kBuckets - 1, unsigned((f * kBuckets) / Fertility::kScale));
-			candidates[comp].emplace_back(x, y);
-			fertLevel[comp].push_back(lvl);
-			++fertHistogram[comp][lvl];
+			candidates.at(comp).emplace_back(x, y);
+			fertLevel.at(comp).push_back(lvl);
+			++fertHistogram.at(comp).at(lvl);
 			++totalCandidates;
 		}
+	}
 	if (totalCandidates == 0)
 		return;
 	for (int c = 0; c < numComponents; ++c)
 	{
-		const auto &compCandidates = candidates[c];
+		::MapGeneration::generationCheckpoint();
+		const auto &compCandidates = candidates.at(c);
 		if (compCandidates.empty())
 			continue;
 		const int share = int((std::int64_t(totalTarget) * std::int64_t(compCandidates.size())) /
@@ -291,7 +340,8 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 		int accumulated = 0;
 		for (unsigned b = 0; b < kBuckets; ++b)
 		{
-			accumulated += fertHistogram[c][b];
+			::MapGeneration::generationCheckpoint();
+			accumulated += fertHistogram.at(c).at(b);
 			if (accumulated >= regionWanted)
 			{
 				threshold = b;
@@ -300,8 +350,11 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 		}
 		std::vector<MapGeneratorPoint> region;
 		for (size_t i = 0; i < compCandidates.size(); ++i)
-			if (fertLevel[c][i] <= threshold)
-				region.push_back(compCandidates[i]);
+		{
+			::MapGeneration::generationCheckpoint();
+			if (fertLevel.at(c).at(i) <= threshold)
+				region.push_back(compCandidates.at(i));
+		}
 		if (region.empty())
 			continue;
 		// Split the region by an independent noise field instead of fertility - sort it into that
@@ -310,12 +363,15 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 		// wheat's band always sitting closer to the water than wood's.
 		std::vector<size_t> order(region.size());
 		for (size_t i = 0; i < order.size(); ++i)
-			order[i] = i;
+		{
+			::MapGeneration::generationCheckpoint();
+			order.at(i) = i;
+		}
 		std::sort(order.begin(), order.end(),
 				  [&](size_t a, size_t b)
 				  {
-					  return splitNoise.uiLevel(region[a].x, region[a].y, kBuckets) <
-							 splitNoise.uiLevel(region[b].x, region[b].y, kBuckets);
+					  return splitNoise.uiLevel(region.at(a).x, region.at(a).y, kBuckets) <
+							 splitNoise.uiLevel(region.at(b).x, region.at(b).y, kBuckets);
 				  });
 		const int wheatWanted = std::min<int>(
 			region.size(),
@@ -326,9 +382,15 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
 						  std::max(0, int((std::int64_t(woodTarget) * std::int64_t(region.size())) /
 										  totalTarget)));
 		for (int i = 0; i < wheatWanted; ++i)
-			map.setResourceByIndex(region[order[i]].x, region[order[i]].y, WHEAT, 1);
+		{
+			::MapGeneration::generationCheckpoint();
+			map.setResourceByIndex(region.at(order.at(i)).x, region.at(order.at(i)).y, WHEAT, 1);
+		}
 		for (int i = wheatWanted; i < wheatWanted + woodWanted; ++i)
-			map.setResourceByIndex(region[order[i]].x, region[order[i]].y, WOOD, 1);
+		{
+			::MapGeneration::generationCheckpoint();
+			map.setResourceByIndex(region.at(order.at(i)).x, region.at(order.at(i)).y, WOOD, 1);
+		}
 	}
 }
 } // namespace
@@ -337,6 +399,7 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 {
 	Map &map = game.map;
 	const int width = map.getW(), height = map.getH(), area = width * height;
+	generationFertilityMapWork(map);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	HeightMap noise(width, height, context.stream("scatter-noise"));
 	noise.makePlain(24);
@@ -378,11 +441,13 @@ void scatterResources(Game &game, GenerationContext &context, const ResourceDens
 	int fruitClumpsPlaced = 0;
 	for (int i = 0; i < density.fruit; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int type = CHERRY + context.bounded("resources", 3);
 		MapGeneratorPoint center(0, 0);
 		bool found = false;
 		for (int attempt = 0; attempt < 100 && !found; ++attempt)
 		{
+			::MapGeneration::generationCheckpoint();
 			center = {int(context.bounded("resources", width)),
 					  int(context.bounded("resources", height))};
 			found = map.isResourceAllowed(center.x, center.y, type);
@@ -405,8 +470,9 @@ void fillInResource(Map &map, GenerationContext &context, std::vector<MapGenerat
 		throw GenerationFailure("Invalid resource patch size");
 	for (unsigned int n = 0; n < points.size(); ++n)
 	{
-		map.setResourceByIndex(points[n].x, points[n].y, resourceType,
-						1 + context.stream("regions")() % maxFillSize);
+		::MapGeneration::generationCheckpoint();
+		map.setResourceByIndex(points.at(n).x, points.at(n).y, resourceType,
+							   1 + context.stream("regions")() % maxFillSize);
 	}
 }
 
@@ -433,22 +499,27 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 	r.dist = flood.steps;
 	for (int p : flood.visited)
 	{
-		const int x = p % t.w, y = p / t.w;
-		if (map.getUMTerrain(x, y) == GRASS && r.dist[p] >= clearRadius &&
-			r.dist[p] <= exploreLimit)
-			(r.dist[p] <= closeRange ? r.closeGrass : r.farGrass)
+		::MapGeneration::generationCheckpoint();
+		const int x = t.remainderX(p), y = p / t.w;
+		if (map.vertexTerrainAt(x, y) == GRASS && r.dist.at(p) >= clearRadius &&
+			r.dist.at(p) <= exploreLimit)
+			(r.dist.at(p) <= closeRange ? r.closeGrass : r.farGrass)
 				.push_back(MapGeneratorPoint(x, y));
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				if (dx == 0 && dy == 0)
 					continue;
 				const auto index = map.coordToIndex(x + dx, y + dy);
 				if (map.materialAmountAt(index, MaterialId::Food) && r.foodSourceDistance < 0)
-					r.foodSourceDistance = r.dist[p] + 1;
+					r.foodSourceDistance = r.dist.at(p) + 1;
 				if (map.materialAmountAt(index, MaterialId::Wood) && r.woodDist < 0)
-					r.woodDist = r.dist[p] + 1;
+					r.woodDist = r.dist.at(p) + 1;
 			}
+		}
 	}
 	return r;
 }
@@ -464,7 +535,11 @@ std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
 	const Torus t(map);
 	std::vector<unsigned char> open(size_t(t.size()));
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = map.terrainPropertiesAt(i).walkable && !(protectedWalls && (*protectedWalls)[i]);
+	{
+		::MapGeneration::generationCheckpoint();
+		open.at(i) =
+			map.terrainPropertiesAt(i).walkable && !(protectedWalls && (*protectedWalls).at(i));
+	}
 	return floodFrom(t, tileMask(t, {bootY * t.w + bootX}), open, limit).steps;
 }
 
@@ -483,32 +558,41 @@ bool clearResourceWall(Map &map, const std::vector<int> &boxedDist,
 	int cleared = 0;
 	std::vector<std::pair<int, int>> toClear;
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			int p = y * w + x;
-			if (boxedDist[p] >= 0 || openDist[p] < 0 || !map.isResource(x, y) ||
-				(protectedWalls && (*protectedWalls)[p]))
+			if (boxedDist.at(p) >= 0 || openDist.at(p) < 0 || !map.isResource(x, y) ||
+				(protectedWalls && (*protectedWalls).at(p)))
 				continue;
 			bool touchesBoxed = false;
 			for (int dy = -1; dy <= 1 && !touchesBoxed; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					if (dx == 0 && dy == 0)
 						continue;
 					int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-					if (boxedDist[ny * w + nx] >= 0)
+					if (boxedDist.at(ny * w + nx) >= 0)
 					{
 						touchesBoxed = true;
 						break;
 					}
 				}
+			}
 			if (touchesBoxed)
 				toClear.push_back({x, y});
 		}
+	}
 	if ((int)toClear.size() < minGain)
 		return false;
 	for (auto [x, y] : toClear)
 	{
+		::MapGeneration::generationCheckpoint();
 		map.setNoResource(x, y, 1);
 		++cleared;
 	}
@@ -526,17 +610,19 @@ struct CropReplant
 // general guarantee but erase a generator's protected layout. Trade a small
 // accessible patch of the surplus crop instead. The ordinary guarantee keeps
 // its historical behavior because this runs only with `allowedTopup`.
-CropReplant replantAccessibleCrop(Map &map, GenerationContext &context,
-							   const ReachResult &reach, int resourceType, MaterialId desired, int range,
-							   const std::vector<unsigned char> &allowedTopup,
-							   const std::vector<unsigned char> *protectedWalls)
+CropReplant replantAccessibleCrop(Map &map, GenerationContext &context, const ReachResult &reach,
+								  int resourceType, MaterialId desired, int range,
+								  const std::vector<unsigned char> &allowedTopup,
+								  const std::vector<unsigned char> *protectedWalls)
 {
 	const Torus t(map);
 	const auto surplus = desired == MaterialId::Food ? MaterialId::Wood : MaterialId::Food;
-	const auto expendable = [&](int i) {
-		const auto& deposit = map.getResource(i);
-		return deposit.type != NO_RES_TYPE && map.resourcePropertiesByIndex(deposit.type).clearable &&
-			map.materialAmountAt(i, surplus) && !map.materialAmountAt(i, desired);
+	const auto expendable = [&](int i)
+	{
+		const auto &deposit = map.getResource(i);
+		return deposit.type != NO_RES_TYPE &&
+			   map.resourcePropertiesByIndex(deposit.type).clearable &&
+			   map.materialAmountAt(i, surplus) && !map.materialAmountAt(i, desired);
 	};
 	int best = -1, bestDistance = range + 1;
 	// A resource tile itself blocks walking. Score its accessible neighbouring
@@ -544,22 +630,26 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context,
 	// crop is gatherable immediately rather than merely Euclidean-near town.
 	for (int p = 0; p < t.size(); ++p)
 	{
-		const int d = reach.dist[p];
+		::MapGeneration::generationCheckpoint();
+		const int d = reach.dist.at(p);
 		if (d < 0 || d + 1 > range || d + 1 >= bestDistance)
 			continue;
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				if (!dx && !dy)
 					continue;
-				const int i = t.at(p % t.w + dx, p / t.w + dy);
-				if (!allowedTopup[i] || (protectedWalls && (*protectedWalls)[i]) ||
-					!expendable(i) ||
-					!map.isResourceAllowed(i % t.w, i / t.w, resourceType))
+				const int i = t.at(t.remainderX(p) + dx, p / t.w + dy);
+				if (!allowedTopup.at(i) || (protectedWalls && (*protectedWalls).at(i)) ||
+					!expendable(i) || !map.isResourceAllowed(t.remainderX(i), i / t.w, resourceType))
 					continue;
 				best = i;
 				bestDistance = d + 1;
 			}
+		}
 	}
 	if (best < 0)
 		return {};
@@ -571,27 +661,34 @@ CropReplant replantAccessibleCrop(Map &map, GenerationContext &context,
 		// Intersect only on this rare fallback, preserving both contracts.
 		cropGround = allowedTopup;
 		for (int i = 0; i < t.size(); ++i)
-			if ((*protectedWalls)[i])
-				cropGround[i] = 0;
+		{
+			::MapGeneration::generationCheckpoint();
+			if ((*protectedWalls).at(i))
+				cropGround.at(i) = 0;
+		}
 		placement = &cropGround;
 	}
 	CropReplant result;
 	for (int dy = -2; dy <= 2; ++dy)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dx = -2; dx <= 2; ++dx)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (dx * dx + dy * dy > 4)
 				continue;
-			const int i = t.at(best % t.w + dx, best / t.w + dy);
-			if (!(*placement)[i] || !expendable(i))
+			const int i = t.at(t.remainderX(best) + dx, best / t.w + dy);
+			if (!(*placement).at(i) || !expendable(i))
 				continue;
-			map.setNoResource(i % t.w, i / t.w, 1);
+			map.setNoResource(t.remainderX(i), i / t.w, 1);
 			++result.cleared;
 		}
+	}
 	// The chosen centre was verified above and cleared, so the clipped clump
 	// always gives at least one immediately accessible tile. Only opposite
 	// crops are traded, within two tiles and within the supplied farm mask.
-	result.placed = placeResourceClump(map, context, {best % t.w, best / t.w}, resourceType,
-										2, placement);
+	result.placed =
+		placeResourceClump(map, context, {t.remainderX(best), best / t.w}, resourceType, 2, placement);
 	return result;
 }
 } // namespace
@@ -623,22 +720,26 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 	const int minPocketTiles = 60;
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
+		::MapGeneration::generationCheckpoint();
 		// A caller can hand over a boot tile it has not wrapped onto the map yet: the height-field
 		// generators' fallback site search does, before placeStarts normalizes it. The floods below
 		// index by it directly.
 		int bootX = map.normalizeX(context.bootX[team]),
 			bootY = map.normalizeY(context.bootY[team]);
 		ReachResult reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
-		context.telemetry.measure("resources.starting_wheat.before_distance", reach.foodSourceDistance,
-								  team);
+		context.telemetry.measure("resources.starting_wheat.before_distance",
+								  reach.foodSourceDistance, team);
 		context.telemetry.measure("resources.starting_wood.before_distance", reach.woodDist, team);
 		int wallClearRounds = 0;
 		auto pocketSize = [&]
 		{
 			int n = 0;
 			for (int v : reach.dist)
+			{
+				::MapGeneration::generationCheckpoint();
 				if (v >= 0)
 					++n;
+			}
 			return n;
 		};
 		bool underServed = reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange ||
@@ -649,6 +750,7 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 		for (int attempt = 0; underServed && pocketSize() < minPocketTiles && attempt < 6;
 			 ++attempt)
 		{
+			::MapGeneration::generationCheckpoint();
 			std::vector<int> open =
 				terrainOnlyReach(map, bootX, bootY, exploreLimit, protectedWalls);
 			if (!clearResourceWall(map, reach.dist, open, /*minGain=*/1, protectedWalls))
@@ -669,31 +771,32 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 			CropReplant replanted;
 			if (!reach.closeGrass.empty())
 				placed = placeResourceClumpInArea(map, context, reach.closeGrass, resourceType, 2,
-										 allowedTopup);
+												  allowedTopup);
 			if (!placed && !reach.farGrass.empty())
 			{
 				placed = placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2,
-										 allowedTopup);
+												  allowedTopup);
 				triedFar = true;
 			}
 			if (!placed && allowedTopup)
 			{
-				replanted = replantAccessibleCrop(map, context, reach, resourceType, material,
-										 material == MaterialId::Food ? wheatRange : woodRange,
-										 *allowedTopup, protectedWalls);
+				replanted =
+					replantAccessibleCrop(map, context, reach, resourceType, material,
+										  material == MaterialId::Food ? wheatRange : woodRange,
+										  *allowedTopup, protectedWalls);
 				placed = replanted.placed;
 			}
 			if (context.telemetry.enabled())
 			{
-				const std::string key =
-					material == MaterialId::Food ? "resources.starting_wheat" : "resources.starting_wood";
+				const std::string key = material == MaterialId::Food ? "resources.starting_wheat"
+																	 : "resources.starting_wood";
 				if (replanted.placed)
 				{
-					context.telemetry.fallback(key + ".topup_replant",
-										   "accessible surplus crop traded within allowed farmland",
-										   team);
-					context.telemetry.measure(key + ".topup_replant_cleared",
-										  replanted.cleared, team);
+					context.telemetry.fallback(
+						key + ".topup_replant",
+						"accessible surplus crop traded within allowed farmland", team);
+					context.telemetry.measure(key + ".topup_replant_cleared", replanted.cleared,
+											  team);
 				}
 				else if (triedFar)
 					context.telemetry.fallback(key + ".topup_region", "far", team);
@@ -705,7 +808,8 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 											   team);
 			}
 		};
-		const bool needsWheat = reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange;
+		const bool needsWheat =
+			reach.foodSourceDistance < 0 || reach.foodSourceDistance > wheatRange;
 		const bool needsWood = reach.woodDist < 0 || reach.woodDist > woodRange;
 		context.telemetry.measure("resources.starting_wheat.topup_needed", needsWheat, team);
 		context.telemetry.measure("resources.starting_wood.topup_needed", needsWood, team);
@@ -729,13 +833,16 @@ struct WorkerReach
 WorkerReach reachFromWorkers(Map &map, int team, int range)
 {
 	const Torus t(map);
-	const Flood flood = floodFrom(t, tileMask(t, unitTilesByTeam(map, team + 1)[team]),
+	const Flood flood = floodFrom(t, tileMask(t, unitTilesByTeam(map, team + 1).at(team)),
 								  groundUnitTiles(map), range);
 	WorkerReach r;
 	r.dist = flood.steps;
 	for (int p : flood.visited)
-		if (map.isFreeForBuilding(p % t.w, p / t.w, 4, 4))
+	{
+		::MapGeneration::generationCheckpoint();
+		if (map.isFreeForBuilding(t.remainderX(p), p / t.w, 4, 4))
 			++r.sites;
+	}
 	return r;
 }
 } // namespace
@@ -749,6 +856,7 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 		throw GenerationFailure("Protected wall mask does not match the map size");
 	for (int team = 0; team < context.request.nbTeams; ++team)
 	{
+		::MapGeneration::generationCheckpoint();
 		WorkerReach reach = reachFromWorkers(map, team, range);
 		context.telemetry.measure("resources.cramped.target_sites", sites, team);
 		context.telemetry.measure("resources.cramped.range", range, team);
@@ -770,20 +878,25 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 		const std::vector<int> open = terrainOnlyReach(map, bootX, bootY, range, protectedWalls);
 		std::vector<std::vector<int>> rings(size_t(range) + 1);
 		for (int p = 0; p < w * h; ++p)
-			if (open[p] >= 1 && open[p] <= range && map.isResource(p % w, p / w) &&
-				!(protectedWalls && (*protectedWalls)[p]))
-				rings[open[p]].push_back(p);
+		{
+			::MapGeneration::generationCheckpoint();
+			if (open.at(p) >= 1 && open.at(p) <= range && map.isResource(powerOfTwoRemainder(p, w), p / w) &&
+				!(protectedWalls && (*protectedWalls).at(p)))
+				rings.at(open.at(p)).push_back(p);
+		}
 		// One ring at a time, nearest first, re-measuring after each: the ring that finally gives
 		// the colony its room is the last one cleared, so nothing further out is touched. A colony
 		// on a genuinely small spot — a real islet, with nothing to open up — just runs out of
 		// rings.
 		for (int ring = 1; ring <= range && reach.sites < sites; ++ring)
 		{
-			if (rings[ring].empty())
+			::MapGeneration::generationCheckpoint();
+			if (rings.at(ring).empty())
 				continue;
-			for (const int p : rings[ring])
+			for (const int p : rings.at(ring))
 			{
-				map.setNoResource(p % w, p / w, 1);
+				::MapGeneration::generationCheckpoint();
+				map.setNoResource(powerOfTwoRemainder(p, w), p / w, 1);
 				++clearedTiles;
 			}
 			++clearedRings;
@@ -798,39 +911,45 @@ void openCrampedStarts(Game &game, GenerationContext &context, int sites, int ra
 
 namespace
 {
-bool renewableMaterialAt(const Map& map, size_t index, MaterialId material)
+bool renewableMaterialAt(const Map &map, size_t index, MaterialId material)
 {
-    if (!map.materialAmountAt(index, material)) return false;
-    const auto& deposit = map.getResource(index);
-    const auto& yield = map.resourceRegistry().yields(static_cast<ResourceId>(deposit.type))[materialIndex(material)];
-    return yield.consumption == ResourceConsumption::Infinite ||
-        map.materialRenewalPotentialAt(index, material) > 0;
+	if (!map.materialAmountAt(index, material))
+		return false;
+	const auto &deposit = map.getResource(index);
+	const auto &yield = map.resourceRegistry().yields(
+		static_cast<ResourceId>(deposit.type))[materialIndex(material)];
+	return yield.consumption == ResourceConsumption::Infinite ||
+		   map.materialRenewalPotentialAt(index, material) > 0;
 }
-}
+} // namespace
 
-std::map<MaterialId, ResourceFrontage> materialFrontages(const Map& map, const Flood& access,
-                                                       int maximumSteps, bool renewal)
+std::map<MaterialId, ResourceFrontage> materialFrontages(const Map &map, const Flood &access,
+														 int maximumSteps, bool renewal)
 {
-    const Torus t(map);
-    std::map<MaterialId, ResourceFrontage> result;
-    for (int i : access.visited)
-    {
-        if (access.steps[i] < 0 || access.steps[i] > maximumSteps) continue;
-        for (const auto& step : kCardinalSteps)
-        {
-            const auto index = map.coordToIndex(i % t.w + step[0], i / t.w + step[1]);
-            for (unsigned mask = map.materialMaskAt(index); mask; mask &= mask - 1)
-            {
-                const auto material = static_cast<MaterialId>(std::countr_zero(mask));
-                auto& front = result[material];
-                ++front.edges;
-                if (front.nearestStep < 0 || access.steps[i] < front.nearestStep)
-                    front.nearestStep = access.steps[i];
-                front.renewableEdges += renewal && renewableMaterialAt(map, index, material);
-            }
-        }
-    }
-    return result;
+	const Torus t(map);
+	std::map<MaterialId, ResourceFrontage> result;
+	for (int i : access.visited)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (access.steps.at(i) < 0 || access.steps.at(i) > maximumSteps)
+			continue;
+		for (const auto &step : kCardinalSteps)
+		{
+			::MapGeneration::generationCheckpoint();
+			const auto index = map.coordToIndex(t.remainderX(i) + step[0], i / t.w + step[1]);
+			for (unsigned mask = map.materialMaskAt(index); mask; mask &= mask - 1)
+			{
+				::MapGeneration::generationCheckpoint();
+				const auto material = static_cast<MaterialId>(std::countr_zero(mask));
+				auto &front = result[material];
+				++front.edges;
+				if (front.nearestStep < 0 || access.steps.at(i) < front.nearestStep)
+					front.nearestStep = access.steps.at(i);
+				front.renewableEdges += renewal && renewableMaterialAt(map, index, material);
+			}
+		}
+	}
+	return result;
 }
 
 std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &access,
@@ -841,23 +960,30 @@ std::map<int, ResourceFrontage> resourceFrontages(const Map &map, const Flood &a
 	std::map<int, ResourceFrontage> result;
 	for (int i : access.visited)
 	{
-		if (access.steps[i] < 0 || access.steps[i] > maximumSteps)
+		::MapGeneration::generationCheckpoint();
+		if (access.steps.at(i) < 0 || access.steps.at(i) > maximumSteps)
 			continue;
 		for (const auto &step : kCardinalSteps)
 		{
-			const int x = t.x(i % t.w + step[0]), y = t.y(i / t.w + step[1]);
+			::MapGeneration::generationCheckpoint();
+			const int x = t.x(t.remainderX(i) + step[0]), y = t.y(i / t.w + step[1]);
 			if (!map.isResource(x, y))
 				continue;
 			const int type = map.getResource(x, y).type;
 			auto &front = result[type];
 			++front.edges;
-			if (front.nearestStep < 0 || access.steps[i] < front.nearestStep)
-				front.nearestStep = access.steps[i];
+			if (front.nearestStep < 0 || access.steps.at(i) < front.nearestStep)
+				front.nearestStep = access.steps.at(i);
 			// Renewal belongs to the deposit's compiled ecology and stocks.
-            bool renewable=false;
-            if (fertility) for (unsigned material=0;material<MaterialCount;++material)
-                renewable |= renewableMaterialAt(map, map.coordToIndex(x,y), static_cast<MaterialId>(material));
-            front.renewableEdges += renewable;
+			bool renewable = false;
+			if (fertility)
+				for (unsigned material = 0; material < MaterialCount; ++material)
+				{
+					::MapGeneration::generationCheckpoint();
+					renewable |= renewableMaterialAt(map, map.coordToIndex(x, y),
+													 static_cast<MaterialId>(material));
+				}
+			front.renewableEdges += renewable;
 		}
 	}
 	return result;

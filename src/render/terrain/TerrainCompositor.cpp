@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
+#include "map/TerrainRegistry.h"
 #include "TerrainCompiledPack.h"
 #include "TerrainPresentation.h"
 #include "render/scene/SceneMap.h"
@@ -10,21 +11,23 @@
 
 namespace TerrainVisual
 {
-Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
+Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
+    : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
+	hasContextualProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
+		[](const auto &profile) { return profile.contextual; });
 	pack = CompiledPack::load(definitions);
 	for (unsigned type = 0; type < TERRAIN_COUNT; ++type)
 	{
 		const auto found =
 			definitions.bindings.find(terrainPresentation(static_cast<TerrainType>(type)).name);
-		if (found != definitions.bindings.end())
-			terrainBindings[type] = found->second;
-		else if (!terrainUsesLegacyCorners(static_cast<TerrainType>(type)))
+		if (found == definitions.bindings.end())
 			throw std::runtime_error("Missing terrain material binding");
+		terrainBindings[type] = found->second;
 	}
 	for (const auto &m : definitions.materials)
 	{
-		auto *sprite = GAGCore::Toolkit::getSprite(m.sprite);
+		auto *sprite = customSprites.resolve(m.sprite);
 		if (!sprite)
 			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
 		for (const auto &v : m.variants)
@@ -40,21 +43,24 @@ Compositor::Compositor(Catalog catalog) : definitions(std::move(catalog))
 			}
 		if (!m.decor.sprite.empty())
 		{
-			auto *decor = GAGCore::Toolkit::getSprite(m.decor.sprite);
-			if (!decor || (decorSprite_ && decor != decorSprite_))
-				throw std::runtime_error("Terrain decor must share one loadable sprite: " + m.key);
+			auto *decor = customSprites.resolve(m.decor.sprite);
+			if (!decor)
+				throw std::runtime_error("Missing terrain decor sprite: " + m.key);
 			for (const auto &frames : {m.decor.full, m.decor.edge})
 				for (int frame : frames)
 					if (frame >= decor->getFrameCount() || decor->getW(frame) > 64 ||
 						decor->getH(frame) > 64)
 						throw std::runtime_error("Terrain decor frame missing or larger than 64x64: " +
 												 m.key);
-			decorSprite_ = decor;
+			if (sharedDecorSprite && sharedDecorSprite != decor) mixedDecorSprites = true;
+            sharedDecorSprite = decor;
 		}
-		sprites.push_back(sprite);
+		decorSprites.push_back(m.decor.sprite.empty() ? nullptr : customSprites.resolve(m.decor.sprite));
+        sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
 		materialRevisions.push_back(0);
 	}
+    if (mixedDecorSprites) sharedDecorSprite = nullptr;
 }
 void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 {
@@ -174,20 +180,48 @@ void Compositor::prepare(bool hd, int time)
 	}
 	resolution = nextResolution;
 }
+MaterialId Compositor::materialFor(const SceneMap& map, TerrainType type) const {
+    // Custom terrain with its own artwork binds by key; anything else draws its appearance.
+    if (unsigned(type) >= TERRAIN_COUNT)
+        if (const auto found = definitions.bindings.find(map.terrainRegistry().key(type)); found != definitions.bindings.end())
+            return found->second;
+    return terrainBindings[unsigned(map.terrainRegistry().appearance(type))];
+}
+std::pair<MaterialId, unsigned> Compositor::decorMaterial(const SceneMap &map, int x, int y) const
+{
+	// The decorated material most corners share: all four draw its full decor,
+	// two or three its edge decor, a single corner none.
+	MaterialId best = 0;
+	unsigned count = 0;
+	const auto corners = map.cellCorners(x & map.getMaskW(), y & map.getMaskH());
+	std::array<MaterialId, 4> materials;
+	for (unsigned k = 0; k < corners.size(); ++k)
+		materials[k] = materialFor(map, corners[k]);
+	for (const auto id : materials)
+	{
+		if (definitions.materials[id].decor.full.empty())
+			continue;
+		const auto same = unsigned(std::count(materials.begin(), materials.end(), id));
+		if (same > count)
+		{
+			best = id;
+			count = same;
+		}
+	}
+	return {best, count};
+}
+GAGCore::Sprite *Compositor::decorSprite(const SceneMap &map, int x, int y) const
+{
+    return decorSprites[decorMaterial(map, x, y).first];
+}
 int Compositor::decorFrame(const SceneMap &map, int x, int y) const
 {
 	x &= map.getMaskW();
 	y &= map.getMaskH();
-	const auto type = map.appearanceAt(x, y);
-	if (unsigned(type) >= TERRAIN_COUNT || terrainUsesLegacyCorners(type))
+	const auto [best, count] = decorMaterial(map, x, y);
+	if (count < 2)
 		return -1;
-	const auto id = terrainBindings[unsigned(type)];
-	if (definitions.materials[id].decor.full.empty())
-		return -1;
-	bool edge = false;
-	for (const auto [dx, dy] : {std::pair{-1, 0}, {1, 0}, {0, -1}, {0, 1}})
-		edge |= map.appearanceAt((x + dx) & map.getMaskW(), (y + dy) & map.getMaskH()) != type;
-	return definitions.decorFrame(id, x, y, edge, map.terrainSeed());
+	return definitions.decorFrame(best, x, y, count < 4, map.terrainSeed());
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 {
@@ -197,21 +231,26 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 	r.width = map.getW();
 	r.height = map.getH();
 	r.seed = map.terrainSeed();
-	for (int j = 0; j < 4; ++j)
-		for (int i = 0; i < 4; ++i)
-		{
-			const int qx = (r.x * 2 + i - 1) & (r.width * 2 - 1),
-					  qy = (r.y * 2 + j - 1) & (r.height * 2 - 1);
-			const int cx = qx / 2, cy = qy / 2;
-			auto type = map.terrainTypeAt(cx, cy);
-			unsigned material = unsigned(map.appearanceAt(cx, cy));
-			if (unsigned(type) < TERRAIN_COUNT && terrainUsesLegacyCorners(type))
-				material = legacyCorners(map.getTerrain(cx, cy))[(qx & 1) + 2 * (qy & 1)];
-			r.samples[j * 4 + i] = terrainBindings[material];
-		}
+	const auto corners = map.cellCorners(r.x, r.y);
+	for (unsigned k = 0; k < corners.size(); ++k)
+		r.corners[k] = materialFor(map, corners[k]);
+	const auto first = r.corners[0];
+	MaterialId other = first;
+	for (const auto id : r.corners)
+		if (id != first) other = id;
+	if (other == first || !definitions.contextualFor(first, other) ||
+		std::any_of(r.corners.begin(), r.corners.end(),
+			[first, other](auto id) { return id != first && id != other; }))
+		return r;
+	r.hasNeighborhood = true;
+	for (int y = -1; y <= 2; ++y)
+		for (int x = -1; x <= 2; ++x)
+			r.neighborhood[(y + 1) * 4 + x + 1] =
+				materialFor(map, map.vertexTerrainAt(r.x + x, r.y + y));
 	return r;
 }
-void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale) const
+void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
+						 const CellMask *mask) const
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
@@ -225,17 +264,17 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 	};
 	std::vector<Source> selected(definitions.materials.size());
 	auto *sources = selected.data();
-	for (auto id : r.samples)
+	for (auto id : r.corners)
 		if (!sources[id].pixels)
 		{
 			const auto &texture = textures[id][definitions.variantIndex(id, r.x, r.y, r.seed)];
 			sources[id] = {texture.pixels.data(), texture.size};
 		}
-	const bool uniform = std::all_of(r.samples.begin(), r.samples.end(),
-									 [&](auto id) { return id == r.samples[0]; });
+	const bool uniform = std::all_of(r.corners.begin(), r.corners.end(),
+									 [&](auto id) { return id == r.corners[0]; });
 	if (uniform)
 	{
-		const auto &texture = sources[r.samples[0]];
+		const auto &texture = sources[r.corners[0]];
 		for (int y = 0; y < size; ++y)
 		{
 			auto *row = reinterpret_cast<Uint32 *>(static_cast<unsigned char *>(target->pixels) +
@@ -256,21 +295,35 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 		}
 		return;
 	}
-	const PreparedCoverage prepared(definitions, r);
+	// Uncached composition reuses one mask per thread rather than allocating.
+	thread_local CellMask scratch;
+	if (!mask)
+		this->mask(r, scale, scratch);
+	const auto &cell = mask ? *mask : scratch;
+	if (cell.recipe != r || cell.scale != scale)
+		throw std::runtime_error("Terrain cell mask does not match its recipe");
+	const auto *sample = cell.samples.data();
 	for (int y = 0; y < size; ++y)
-		for (int x = 0; x < size; ++x)
+		for (int x = 0; x < size; ++x, ++sample)
 		{
-			const auto mask = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
-			const auto *weights = mask.weight.data();
-			const auto *materials = mask.material.data();
+			unsigned weights[4];
+			const unsigned largest = sample->slots & 3;
+			unsigned rest = 65536;
+			for (unsigned slot = 0, other = 0; slot < 4; ++slot)
+				if (slot != largest)
+				{
+					weights[slot] = sample->others[other++];
+					rest -= weights[slot];
+				}
+			weights[largest] = rest;
 			std::uint64_t rgb[3] = {};
 			unsigned alpha = 0;
-			for (int i = 0; i < 4; ++i)
-				if (weights[i] && sources[materials[i]].pixels)
+			for (unsigned slot = 0; slot < cell.colors; ++slot)
+				if (weights[slot] && sources[cell.palette[slot]].pixels)
 				{
-					const auto &t = sources[materials[i]];
+					const auto &t = sources[cell.palette[slot]];
 					const auto *p = t.pixels[(y * t.size / size) * t.size + x * t.size / size].data();
-					const unsigned a = weights[i] * p[3];
+					const unsigned a = weights[slot] * p[3];
 					alpha += a;
 					for (int k = 0; k < 3; ++k)
 						rgb[k] += std::uint64_t(p[k]) * a;
@@ -281,19 +334,18 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 			// Seam treatment: the dominant material darkens under a higher
 			// neighbor's edge and takes that neighbor's fringe tint. Textures are
 			// never blended across the seam; only the contact band is toned.
-			unsigned dominant = 0;
-			for (unsigned i = 1; i < 4; ++i)
-				if (mask.weight[i] > mask.weight[dominant])
-					dominant = i;
-			const auto &self = definitions.materials[mask.material[dominant]].seam;
-			const auto &other = definitions.materials[mask.neighbor].seam;
+			const auto dominant = cell.palette[sample->slots >> 2 & 3];
+			const auto neighbor = cell.palette[sample->slots >> 4 & 3];
+			const int margin = sample->margin;
+			const auto &self = definitions.materials[dominant].seam;
+			const auto &other = definitions.materials[neighbor].seam;
 			int shade = 256, tint = 0;
-			if (mask.neighbor != mask.material[dominant])
+			if (neighbor != dominant)
 			{
-				if (other.cast && other.height > self.height && int(mask.margin) < other.castWidth)
-					shade = 256 - other.cast * (other.castWidth - int(mask.margin)) / other.castWidth;
-				if (other.fringe && int(mask.margin) < other.fringeWidth)
-					tint = other.fringe * (other.fringeWidth - int(mask.margin)) / other.fringeWidth;
+				if (other.cast && other.height > self.height && margin < other.castWidth)
+					shade = 256 - other.cast * (other.castWidth - margin) / other.castWidth;
+				if (other.fringe && margin < other.fringeWidth)
+					tint = other.fringe * (other.fringeWidth - margin) / other.fringeWidth;
 			}
 			const auto channel = [&](int k)
 			{
@@ -304,21 +356,79 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
 				 channel(2);
 		}
 }
+Compositor::CellMask Compositor::mask(const Recipe &r, int scale) const
+{
+	CellMask cell;
+	mask(r, scale, cell);
+	return cell;
+}
+void Compositor::mask(const Recipe &r, int scale, CellMask &cell) const
+{
+	cell.palette = {};
+	cell.colors = 0;
+	cell.recipe = r;
+	cell.scale = scale;
+	const auto slotOf = [&](MaterialId id)
+	{
+		for (unsigned slot = 0; slot < cell.colors; ++slot)
+			if (cell.palette[slot] == id)
+				return slot;
+		throw std::runtime_error("Terrain coverage names a material outside its cell");
+	};
+	for (auto id : r.corners)
+		if (std::find(cell.palette.begin(), cell.palette.begin() + cell.colors, id) ==
+			cell.palette.begin() + cell.colors)
+			cell.palette[cell.colors++] = id;
+	const int size = 32 * scale;
+	cell.samples.resize(std::size_t(size) * size);
+	auto *sample = cell.samples.data();
+	const PreparedCoverage prepared(definitions, r);
+	for (int y = 0; y < size; ++y)
+		for (int x = 0; x < size; ++x, ++sample)
+		{
+			const auto coverage = prepared.at((x * 256 + 128) / scale, (y * 256 + 128) / scale);
+			// Entries of one material add linearly in the blend, so they merge.
+			unsigned weights[4] = {};
+			for (int i = 0; i < 4; ++i)
+				if (coverage.weight[i])
+					weights[slotOf(coverage.material[i])] += coverage.weight[i];
+			unsigned dominant = 0, largest = 0;
+			for (unsigned i = 1; i < 4; ++i)
+				if (coverage.weight[i] > coverage.weight[dominant])
+					dominant = i;
+			for (unsigned slot = 1; slot < 4; ++slot)
+				if (weights[slot] > weights[largest])
+					largest = slot;
+			for (unsigned slot = 0, other = 0; slot < 4; ++slot)
+				if (slot != largest)
+					sample->others[other++] = std::uint16_t(weights[slot]);
+			sample->margin = std::uint16_t(std::min(coverage.margin, 65535u));
+			sample->slots = std::uint8_t(largest | slotOf(coverage.material[dominant]) << 2 |
+										 slotOf(coverage.neighbor) << 4);
+		}
+}
 void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,
-								 const std::array<unsigned char, 3> *cellColor) const
+								 const CornerColors *cornerColors) const
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain overview requires ARGB8888");
 	const auto packed = [](const auto &color)
 	{ return 0xFF000000u | (unsigned(color[0]) << 16) | (unsigned(color[1]) << 8) | color[2]; };
-	// Saved custom whole-cell aliases may carry their own overview palette.
+	// Saved custom terrain may carry its own overview palette: a material takes
+	// the colour of the first corner drawn with it that names one.
 	const auto colorOf = [&](MaterialId id) -> const std::array<unsigned char, 3> &
-	{ return cellColor && id == r.samples[5] ? *cellColor : definitions.materials[id].preview; };
-	if (std::all_of(r.samples.begin(), r.samples.end(),
-					[&](auto id) { return id == r.samples[0]; }))
+	{
+		if (cornerColors)
+			for (unsigned k = 0; k < r.corners.size(); ++k)
+				if (r.corners[k] == id && (*cornerColors)[k])
+					return *(*cornerColors)[k];
+		return definitions.materials[id].preview;
+	};
+	if (std::all_of(r.corners.begin(), r.corners.end(),
+					[&](auto id) { return id == r.corners[0]; }))
 	{
 		SDL_Rect area{ox, oy, OverviewSamples, OverviewSamples};
-		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.samples[0])));
+		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.corners[0])));
 		return;
 	}
 	const PreparedCoverage prepared(definitions, r);

@@ -386,6 +386,6 @@ TEST_SUITE("TurnTelemetry")
 		REQUIRE(fromRecord.at("seats").size() == 2);
 		CHECK(fromRecord.at("seats")[1].at("disconnects") == 1);
 		CHECK(fromRecord.at("seats")[1].at("left_by") == "grace");
-		CHECK(fromRecord.at("seats")[1].at("disconnected_ticks") == 75);
+		CHECK(fromRecord.at("seats")[1].at("disconnected_ticks") == 3 * DEFAULT_TICK_RATE_MILLIHZ / 1000);
 	}
 }

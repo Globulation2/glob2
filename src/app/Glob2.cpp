@@ -44,6 +44,7 @@
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
+#include "GeneratorPackage.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
@@ -125,8 +126,7 @@ int Glob2::runTestGames()
 		// runs produce byte-identical replays — the basis for the
 		// behavior-preservation harness used by C++ cleanup work.
 		const char* envSeed = getenv("GLOB2_TEST_SEED");
-		long t = envSeed ? atol(envSeed) : time(NULL);
-		setSyncRandSeed(t);
+		Uint32 t = envSeed ? static_cast<Uint32>(strtoull(envSeed, nullptr, 10)) : static_cast<Uint32>(time(NULL));
 		// Capture the seed so createRandomGame can mirror it into
 		// GameHeader::seed — otherwise a saved .game file (from
 		// --save-game-as or GLOB2_DUMP_GAME) would carry the wall-clock
@@ -149,14 +149,15 @@ int Glob2::runTestGames()
 int Glob2::runTestMapGeneration()
 {
 	long t = time(NULL);
-	setSyncRandSeed(t);
+	EntityRandom random;
+	random.initializeOwner(Uint32(t), unsigned(RandomDomain::GenerationExercise));
 	while(true)
 	{
 		GenerationRequest descriptor;
 		
 		using D = GenerationRequest;
-		const auto methods=GeneratorRegistry::builtins().methods(false);
-		auto method=methods[syncRand()%methods.size()];
+		const auto methods = GeneratorRegistry::active().methods(false);
+		auto method=methods[random.nextU32()%methods.size()];
 		descriptor.setMethodDefaults(method);
 		auto controls = D::sharedControls();
 		const auto& specific = D::controls(method);
@@ -164,7 +165,7 @@ int Glob2::runTestMapGeneration()
 		for (const auto& control : controls)
 		{
 			int choices = (control.maximum - control.minimum) / control.step + 1;
-			control.set(descriptor, control.minimum + (syncRand() % choices) * control.step);
+			control.set(descriptor, control.minimum + (random.nextU32() % choices) * control.step);
 		}
 		if (!descriptor.hasTerrainWeight())
 			continue;
@@ -172,7 +173,7 @@ int Glob2::runTestMapGeneration()
 		std::cout<<"Generating Map"<<std::endl;		
 		GenerationService generator;
 		Game game(NULL);
-		descriptor.seed=syncRand();
+		descriptor.seed=random.nextU32();
 		auto result=generator.generate(game, descriptor);
 		if(!result) std::cerr << result.diagnostic() << std::endl;
 	}
@@ -483,6 +484,29 @@ public:
 
 int Glob2::run(int argc, char *argv[])
 {
+	// Freeze explicitly supplied local packages before dispatching any CLI mode.
+	std::vector<char *> filtered{argv[0]};
+	Online::MemoryStorage generatorStorage;
+	MapGeneration::JavaScript::Library generatorLibrary(generatorStorage);
+	bool suppliedGenerators = false;
+	for (int i = 1; i < argc; ++i)
+	{
+		if (std::string(argv[i]) == "--generator-package")
+		{
+			if (++i >= argc)
+				throw std::invalid_argument("--generator-package requires a package or directory");
+			generatorLibrary.put(MapGeneration::JavaScript::Package::load(argv[i])->canonical);
+			suppliedGenerators = true;
+		}
+		else
+			filtered.push_back(argv[i]);
+	}
+	if (suppliedGenerators)
+		generatorLibrary.publish();
+	argc = int(filtered.size());
+	filtered.push_back(nullptr);
+	argv = filtered.data();
+
 	const int skinCommand = runRenderSkin(argc, argv);
 	if (skinCommand >= 0) return skinCommand;
 	// --generate-map has a native file/report interface and a structured job interface.
@@ -496,7 +520,6 @@ int Glob2::run(int argc, char *argv[])
 	if(scriptCommand>=0)return scriptCommand;
 	const int headless = runHeadlessCommand(argc, argv);
 	if (headless >= 0) return headless;
-	srand(time(NULL));
 
 	std::string buildingCatalog;
 	for (int i=1; i<argc; ++i)
@@ -509,6 +532,19 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer->parseArgs(argc, argv);
     globalContainer->deferAssetLoading = !globalContainer->runNoX && !globalContainer->runTestGames && !globalContainer->runTestMapGeneration;
 	globalContainer->load();
+	if (!suppliedGenerators)
+	{
+		try
+		{
+			auto storage = Online::makeUserDirectoryStorage();
+			MapGeneration::JavaScript::Library(*storage).publish();
+		}
+		catch (const std::exception &error)
+		{
+			fprintf(stderr, "Custom generators: %s\n", error.what());
+		}
+	}
+
 	if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty())
 	{
 		if (globalContainer->runNoX)
@@ -627,10 +663,11 @@ int main(int argc, char *argv[])
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
 #if defined(__APPLE__) && !defined(GLOB2_MOBILE)
-	// Map tools resolve input and output paths relative to the caller.
+	// Content tools resolve input and output paths relative to the caller.
 	if (!(argc > 1 &&
-		  (isMapCommand(argv[1]) || std::string(argv[1]) == "--check-script" ||
-		   std::string(argv[1]) == "--check-ai" || std::string(argv[1]) == "--check-ai-json" || std::string(argv[1]) == "--attach-map-script")))
+		  (isMapCommand(argv[1]) || std::string(argv[1]) == "--generator-package" || std::string(argv[1]) == "--check-script" ||
+		   std::string(argv[1]) == "--check-ai" || std::string(argv[1]) == "--check-ai-json" || std::string(argv[1]) == "--attach-map-script" ||
+		   std::string(argv[1]) == "--compose-buildings")))
 	{
 		/* SDL has this annoying "feature" of setting working directory to parent
 		   of bundle during static initialization.  We want to set it back to the

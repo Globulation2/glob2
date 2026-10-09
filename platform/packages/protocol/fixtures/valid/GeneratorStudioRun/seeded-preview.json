@@ -1,0 +1,15 @@
+{
+  "id": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "expectedRevision": 1,
+  "settings": {
+    "seed": 19,
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 4,
+      "workers": 4
+    },
+    "candidates": 1,
+    "startingUnitLevel": 0
+  }
+}

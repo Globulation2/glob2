@@ -1,3 +1,6 @@
+#include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Biomes.h"
 #include "FertilityField.h"
@@ -200,58 +203,83 @@ BiomeTerrain sketchBiome(TerrainSketch &sketch, const Torus &t,
 	terrain.island.assign(size_t(n), 0);
 	int tiles = 0;
 	for (unsigned char r : region)
+	{
+		::MapGeneration::generationCheckpoint();
 		tiles += r;
+	}
 	// Ponds keep four tiles inside the region (past the wall), so their beaches stay inside it.
 	const std::vector<unsigned char> inner = erode(t, region, 4 + kit.wallThickness);
 	std::vector<int> candidates;
 	for (int i = 0; i < n; ++i)
-		if (inner[i])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (inner.at(i))
 			candidates.push_back(i);
+	}
 	const int ponds = kit.pondsPer10000 > 0 ? std::max(1, tiles * kit.pondsPer10000 / 10000) : 0;
-	const double pondRadius = std::sqrt(std::max(1, kit.pondTiles) / kPi);
-	const int spacing2 = int(std::lround(9 * pondRadius * pondRadius));
+	const double pondRadius = ::MapGeneration::Numeric::sqrt(std::max(1, kit.pondTiles) / kPi);
+	const int spacing2 = int(::MapGeneration::Numeric::lround(9 * pondRadius * pondRadius));
 	std::vector<int> seeds;
 	for (int p = 0; p < ponds && !candidates.empty(); ++p)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int attempt = 0; attempt < 50; ++attempt)
 		{
-			const int at = candidates[context.bounded(stream, std::uint32_t(candidates.size()))];
+			::MapGeneration::generationCheckpoint();
+			const int at = candidates.at(context.bounded(stream, std::uint32_t(candidates.size())));
 			bool apart = true;
 			for (int s : seeds)
-				apart = apart && t.dist2(at % t.w, at / t.w, s % t.w, s / t.w) >= spacing2;
+			{
+				::MapGeneration::generationCheckpoint();
+				apart = apart && t.dist2(t.remainderX(at), at / t.w, t.remainderX(s), s / t.w) >= spacing2;
+			}
 			if (apart)
 			{
 				seeds.push_back(at);
 				break;
 			}
 		}
+	}
 	std::vector<int> queued(size_t(n), 0);
 	constexpr double kIslandRadius = 4.5;
 	for (size_t p = 0; p < seeds.size(); ++p)
 	{
-		const int seed = seeds[p];
+		::MapGeneration::generationCheckpoint();
+		const int seed = seeds.at(p);
 		const bool island = kit.orchardIsland && p == 0;
 		const int target =
-			kit.pondTiles + (island ? int(std::lround(kPi * kIslandRadius * kIslandRadius)) : 0);
+			kit.pondTiles +
+			(island ? int(::MapGeneration::Numeric::lround(kPi * kIslandRadius * kIslandRadius))
+					: 0);
 		growWater(
-			t, terrain.water, seed, target, [&](int i) { return inner[i] != 0; }, [&](int i)
-			{ return t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w); }, queued, int(p) + 1);
+			t, terrain.water, seed, target, [&](int i) { return inner.at(i) != 0; }, [&](int i)
+			{ return t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w); }, queued, int(p) + 1);
 		if (island)
 			for (int i = 0; i < n; ++i)
-				if (terrain.water[i] && t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w) <=
-											kIslandRadius * kIslandRadius)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (terrain.water.at(i) && t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w) <=
+											   kIslandRadius * kIslandRadius)
 				{
-					terrain.water[i] = 0;
-					terrain.island[i] = 1;
+					terrain.water.at(i) = 0;
+					terrain.island.at(i) = 1;
 				}
+			}
 	}
 	for (int i = 0; i < n; ++i)
-		if (terrain.water[i])
-			sketch[i] = WATER;
+	{
+		::MapGeneration::generationCheckpoint();
+		if (terrain.water.at(i))
+			sketch.at(i) = WATER;
+	}
 	if (kit.wallThickness > 0)
 	{
 		const std::vector<int> depth = clearance(t, region);
 		for (int i = 0; i < n; ++i)
-			terrain.wall[i] = region[i] && depth[i] <= kit.wallThickness && !doors[i];
+		{
+			::MapGeneration::generationCheckpoint();
+			terrain.wall.at(i) = region.at(i) && depth.at(i) <= kit.wallThickness && !doors.at(i);
+		}
 	}
 	return terrain;
 }
@@ -263,26 +291,38 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 {
 	const int n = t.size();
 	for (int i = 0; i < n; ++i)
-		if (terrain.wall[i] && !keepClear[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+	{
+		::MapGeneration::generationCheckpoint();
+		if (terrain.wall.at(i) && !keepClear.at(i) &&
+			map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+	}
 	// Outcrops and groves are clumps a tile across (placeResourceClump), so everything keeps a tile in
 	// from the ground's edge, the wall, the island and the clear ground.
 	std::vector<unsigned char> ground(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
-		ground[i] = region[i] && !terrain.wall[i] && !terrain.island[i] && !keepClear[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		ground.at(i) =
+			region.at(i) && !terrain.wall.at(i) && !terrain.island.at(i) && !keepClear.at(i);
+	}
 	const std::vector<unsigned char> inside = erode(t, ground, 1);
-	const auto eligible = [&](int i) { return inside[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto eligible = [&](int i) { return inside.at(i) && clearGround(map, t.remainderX(i), i / t.w); };
+	generationFertilityMapWork(map);
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 12, context.stream(stream + "-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 6, context.stream(stream + "-split"));
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
-		fertile += eligible(i) && fertility.at(i % t.w, i / t.w) > 0;
+	{
+		::MapGeneration::generationCheckpoint();
+		fertile += eligible(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
+	}
 	const int farm = fertile * kit.farmPerMille / 1000;
 	const std::string stoneStream = stream + "-stone", fruitStream = stream + "-fruit";
 	furnishGround(
-		map, t, context, fertility, eligible, [&](int i) { return float(patch[i]); },
-		[&](int i) { return split[i]; },
+		map, t, context, fertility, eligible, [&](int i) { return float(patch.at(i)); },
+		[&](int i) { return split.at(i); },
 		[&](int area)
 		{
 			return GroundAmounts{farm * (100 - kit.woodPercent) / 100, farm * kit.woodPercent / 100,
@@ -292,8 +332,12 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 		stoneStream.c_str(), fruitStream.c_str());
 	int fruit = 0;
 	for (int i = 0; i < n; ++i)
-		if (terrain.island[i] && !keepClear[i] && map.isResourceAllowed(i % t.w, i / t.w, CHERRY))
-			map.setResourceByIndex(i % t.w, i / t.w, CHERRY + fruit++ % 3, 1);
+	{
+		::MapGeneration::generationCheckpoint();
+		if (terrain.island.at(i) && !keepClear.at(i) &&
+			map.isResourceAllowed(t.remainderX(i), i / t.w, CHERRY))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, CHERRY + fruit++ % 3, 1);
+	}
 	// The dry reserve: finite crops on the ground where nothing regrows, in the same patches (the
 	// top of the patch noise) so they read as fields and not speckle, dealt by the split noise.
 	if (kit.dryFarmPerMille > 0)
@@ -301,11 +345,14 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 		std::vector<int> dry;
 		std::vector<int> levels;
 		for (int i = 0; i < n; ++i)
-			if (eligible(i) && fertility.at(i % t.w, i / t.w) == 0)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (eligible(i) && fertility.at(t.remainderX(i), i / t.w) == 0)
 			{
 				dry.push_back(i);
-				levels.push_back(patch[i]);
+				levels.push_back(patch.at(i));
 			}
+		}
 		const int reserve = int(dry.size()) * kit.dryFarmPerMille / 1000;
 		if (reserve > 0)
 		{
@@ -313,16 +360,19 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 			const int cut = percentile(levels, 55);
 			std::vector<int> fields;
 			for (int i : dry)
-				if (patch[i] >= cut)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (patch.at(i) >= cut)
 					fields.push_back(i);
+			}
 			// Patchiest first: plantFields keeps the head of the list, and in row order that head was
 			// the ground's top rows, so a reserve smaller than its fields lay in a band across the top
 			// of the map (Central Quarry review, 2026-09-17: 17% wheat in a 512 map's top eighth, 2% in
 			// its bottom half).
 			std::stable_sort(fields.begin(), fields.end(),
-							 [&](int a, int b) { return patch[a] > patch[b]; });
+							 [&](int a, int b) { return patch.at(a) > patch.at(b); });
 			plantFields(map, t, fields, reserve * (100 - kit.woodPercent) / 100,
-						reserve * kit.woodPercent / 100, [&](int i) { return split[i]; });
+						reserve * kit.woodPercent / 100, [&](int i) { return split.at(i); });
 		}
 	}
 	if (kit.coverPercent <= 0)
@@ -330,12 +380,15 @@ void furnishBiome(Map &map, const Torus &t, GenerationContext &context,
 	const std::vector<int> cover = periodicNoise(t.w, t.h, 10, context.stream(stream + "-cover"));
 	std::vector<int> open;
 	for (int i = 0; i < n; ++i)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (eligible(i))
-			open.push_back(cover[i]);
+			open.push_back(cover.at(i));
+	}
 	if (open.empty())
 		return;
 	const int level = percentile(open, 100 - std::clamp(kit.coverPercent, 0, 100));
 	plantCover(map, t, region, kit.coverResource, [&](int i)
-			   { return eligible(i) && cover[i] >= level && !(noCover && (*noCover)[i]); });
+			   { return eligible(i) && cover.at(i) >= level && !(noCover && (*noCover).at(i)); });
 }
 } // namespace MapGeneration

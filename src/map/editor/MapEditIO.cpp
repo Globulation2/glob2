@@ -1,3 +1,4 @@
+#include "MapAssetBundle.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
@@ -49,6 +50,9 @@ GAGCore::CooperativeTask MapEdit::loadTask(std::string filename)
     hasMapBeenModified = false;
     savedFilename = filename;
     fertilityStale = false;
+    view.selectedBuilding = nullptr; view.selectedUnit = nullptr;
+    selectedBuildingGID = NOGBID; selectedUnitGID = NOGUID;
+    preparePresentation();
     co_return true;
 }
 
@@ -75,7 +79,7 @@ bool MapEdit::save(const std::string filename, const std::string name)
 void MapEdit::beginEditing()
 {
 	FrontendScope editor(false);
-	minimap.setGame(game);
+	minimap.setMapSize(game.map.getW(), game.map.getH());
 	globalContainer->gfx->setClipRect();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 	drawMiniMap();
@@ -251,7 +255,7 @@ bool MapEdit::finishFertility(bool completed)
         pendingSaveFilename.clear(); pendingSaveName.clear();
     } else if (completed) {
         overlay.forceRecompute();
-        overlay.compute(game, OverlayArea::Fertility, team);
+        overlay.compute(game.captureReadBoundary({},true,SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)), OverlayArea::Fertility, team,game.map.fertilityMaximum);
         fertilityStale = false;
     } else if (!fertilityStale) isFertilityOn = false;
     return true;
@@ -301,4 +305,15 @@ void MapEdit::importResourceFile(const std::string& filename)
 	std::string json(bytes, '\0');
 	if (bytes && !input->readExact(json.data(), bytes)) throw std::runtime_error("Cannot read resource definitions");
 	importResourceJson(json);
+}
+
+void MapEdit::importSetFile(const std::string& filename)
+{
+    std::unique_ptr<GAGCore::StreamBackend> input(Toolkit::getFileManager()->openInputStreamBackend(filename));
+    if (!input || !input->isValid()) throw std::runtime_error("Cannot open set package");
+    input->seekFromEnd(0); const auto bytes = input->getPosition(); input->seekFromStart(0);
+    if (bytes > MapAssetBundle::MaximumBytes) throw std::runtime_error("Set exceeds 16 MiB");
+    std::string json(bytes, '\0');
+    if (bytes && !input->readExact(json.data(), bytes)) throw std::runtime_error("Cannot read set package");
+    importSetJson(json);
 }

@@ -37,7 +37,11 @@
         3
       ]
     },
-    "minimumSectionRadiusScale": 0.65
+    "minimumSectionRadiusScale": 0.65,
+    "paintChart": {
+      "file": "datasrc/gfx/authored/skins/limb-paint-charts.json",
+      "model": "worker"
+    }
   },
   "warrior": {
     "bodyAxes": [
@@ -73,6 +77,11 @@
         -1
       ]
     },
-    "minimumSectionRadiusScale": 0.65
+    "minimumSectionRadiusScale": 0.65,
+    "paintChart": {
+      "file": "datasrc/gfx/authored/skins/limb-paint-charts.json",
+      "model": "warrior"
+    },
+    "torsoFairing": 1
   }
 }

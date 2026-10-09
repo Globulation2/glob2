@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
+#include "ResourceGrowth.h"
+#include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include "scripting/javascript/ScriptValue.h"
@@ -10,12 +12,15 @@
 #include "Engine.h"
 #include "GameDiagnostics.h"
 #include "GlobalContainer.h"
+#include "BuildingArtwork.h"
+#include "Sha256.h"
 #include "AINames.h"
 #include "AIJavaScript.h"
-#include "AIThreading.h"
+#include "ComputeThreads.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
+#include "gradient/BuildingGradientStats.h"
 #include "GameRuleOverrides.h"
 #include "Player.h"
 #include "TeamStat.h"
@@ -31,6 +36,7 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <chrono>
+#include <cstdlib>
 #include <ctime>
 #ifdef WIN32
 #ifndef NOMINMAX
@@ -105,7 +111,7 @@ void isolateEnvironment()
 		"GLOB2_MAXIMA_FORMAT", "GLOB2_MAXIMA_OVERRIDES", "GLOB2_MAXIMA_TEAM_OVERRIDES",
 		"GLOB2_MAXIMA_PLAYER_OVERRIDES", "GLOB2_MAXIMA_TUNING", "GLOB2_NICOWAR_V3_OVERRIDES",
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
-		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS",
+		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS", "GLOB2_GRADIENT_STATS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR", "GLOB2_USER_DATA_DIR",
 		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
@@ -232,7 +238,7 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 			<< ",\"units\":" << units << ",\"workers\":" << workers << ",\"explorers\":" << explorers
 			<< ",\"warriors\":" << warriors << ",\"warrior_hp\":" << warriorHP << ",\"warrior_attack\":" << warriorAttack
 			<< ",\"buildings\":" << buildings << ",\"sites\":" << sites;
-		const TeamStat &stats=*team->stats.getLatestStat();
+		const TeamStat &stats=*std::as_const(team->stats).getLatestStat();
 		result << ",\"standard_statistics\":"; standardStatistics(result,stats);
 		result << ",\"statistics\":{\"total_units\":" << stats.totalUnit << ",\"total_buildings\":" << stats.totalBuilding
 			<< ",\"total_hp\":" << stats.totalHP << ",\"total_attack_power\":" << stats.totalAttackPower
@@ -274,7 +280,6 @@ struct HeadlessRunner
 			setHeadlessEnvironment("SDL_VIDEODRIVER","dummy");
 			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
 		}
-		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "2"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str(), one(options, "--building-catalog"));
 		globalContainer=&globals;
@@ -294,6 +299,7 @@ struct HeadlessRunner
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
+			else if(telemetry=="gradient-stats") setHeadlessEnvironment("GLOB2_GRADIENT_STATS", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
 		globals.load();
@@ -308,6 +314,9 @@ struct HeadlessRunner
 			else throw std::invalid_argument("unknown save request: " + save);
 		}
 		auto mapFile=one(options,"--map-file"); auto saved=one(options,"--load-game");
+		std::vector<std::string> forkSettings;
+		if(saved.empty() && options.count("--fork-rule"))
+			throw std::invalid_argument("--fork-rule requires --load-game");
 		if(mapFile.empty() == saved.empty()) throw std::invalid_argument("choose exactly one of --map-file and --load-game");
 		auto &requested = mapFile.empty() ? saved : mapFile;
 		// A bare ".map"/".game" path prefers an existing ".gz" sibling, matching how
@@ -320,6 +329,22 @@ struct HeadlessRunner
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
+			// An explicit fork, never a silent continuation: the loaded match's
+			// rules change before its first tick, the recorded replay starts
+			// here and result.json lists the fork. Only settings whose change
+			// needs no pending work to be remapped are accepted.
+			auto& header=engine.gui.game.gameHeader;
+			for(const auto &rule : many(options,"--fork-rule"))
+			{
+				if(rule.rfind("buildingGradientDelay=",0)!=0) throw std::invalid_argument("--fork-rule accepts only buildingGradientDelay=N");
+				applyGameRule(header, rule);
+				forkSettings.push_back("rule:"+rule);
+			}
+			const auto buildings=engine.gui.game.map.buildingGradientPipelineStatus();
+			if(!forkSettings.empty() && (buildings.pending || buildings.queued))
+				throw std::invalid_argument("cannot fork a saved game with pending building gradients");
+			// Apply the forked delay now, so a save before the first tick records it.
+			engine.gui.game.map.ensureBuildingGradientPipeline();
 		}
 		else
 		{
@@ -423,26 +448,19 @@ struct HeadlessRunner
 			auto& script=engine.gui.game.mapscript;script.setMapScriptMode(MapScript::JavaScript);script.setMapScript(Script::readSource(one(options,"--map-script")));if(!script.compileCode())throw std::invalid_argument(script.getError().getMessage());
 		}
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
-		const unsigned computeThreads = integer(one(options, "--compute-threads",
-			std::to_string(options.count("--gradient-workers") && gradientWorkers
-                ? gradientWorkers+1 : defaultAIThreadCount(engine.gui.game))), 1, 64);
-		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
-		unsigned experimentMask = 0;
-		if (computeExperiments == "all") experimentMask = 15;
-		else if (computeExperiments == "areas") experimentMask = Map::ComputeAreas;
-		else if (computeExperiments == "initialize") experimentMask = Map::ComputeInitialize;
-		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
-		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
-		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
-		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
+		const std::string requestedSizing = one(options, "--compute-threads", "auto");
+		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
+		engine.gui.game.map.configureCompute(computeThreads);
+        engine.gui.game.map.setResourceGrowthDelay(integer(
+            one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));
 		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
-		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
 		else {
 			if (options.count("--gradient-delay") && gradientDelay != pipeline.delay) {
 				if (pipeline.pending) throw std::invalid_argument("cannot change the delay with pending gradients");
-				engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+				engine.gui.game.map.configureGradientPipeline(1, gradientDelay);
 			}
-			engine.gui.game.map.setGradientWorkerCount(gradientWorkers);
+			engine.gui.game.map.setGradientWorkerCount(1);
 		}
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
@@ -461,6 +479,7 @@ struct HeadlessRunner
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
         std::array<Uint64,64> tickHistogram{};
+        std::vector<Uint64> tickDurations;
 		if(benchmark)
 		{
 			const uint64_t first=engine.gui.game.stepCounter;
@@ -477,16 +496,17 @@ struct HeadlessRunner
                 if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
                     const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
+                    tickDurations.push_back(duration);
                 }
 				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
 			}
 			engine.finishSession();
-			engine.gui.game.map.finishGradientPipeline();
+			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
 			runCpu=processCpuNs()-measureStart;
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
-		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); }
+		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
 		if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
@@ -496,6 +516,9 @@ struct HeadlessRunner
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
 		const auto pipelineResult = game.map.gradientPipelineStatus();
+		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+        std::sort(tickDurations.begin(),tickDurations.end());
+        const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		// A game the win probability model called is reported distinctly from one
@@ -519,6 +542,28 @@ struct HeadlessRunner
 			<< ",\"benchmark_measured_ticks\":" << measuredTicks
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
 			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
+			<< ",\"growth_submitted\":" << game.map.resourceGrowthMetrics().submitted
+			<< ",\"growth_published\":" << game.map.resourceGrowthMetrics().published
+			<< ",\"growth_sampled\":" << game.map.resourceGrowthMetrics().sampled
+			<< ",\"growth_proposals\":" << game.map.resourceGrowthMetrics().proposals
+			<< ",\"growth_publishedProposals\":" << game.map.resourceGrowthMetrics().publishedProposals
+			<< ",\"growth_accepted\":" << game.map.resourceGrowthMetrics().accepted
+			<< ",\"growth_rejected\":" << game.map.resourceGrowthMetrics().rejected
+			<< ",\"growth_clamped\":" << game.map.resourceGrowthMetrics().clamped
+			<< ",\"growth_stockAdded\":" << game.map.resourceGrowthMetrics().stockAdded
+			<< ",\"growth_tilesAdded\":" << game.map.resourceGrowthMetrics().tilesAdded
+			<< ",\"growth_capacityGrowthBatches\":" << game.map.resourceGrowthMetrics().capacityGrowthBatches
+			<< ",\"growth_maxProposals\":" << game.map.resourceGrowthMetrics().maxProposals
+			<< ",\"growth_maxPending\":" << game.map.resourceGrowthMetrics().maxPending
+			<< ",\"growth_maxProposalBytes\":" << game.map.resourceGrowthMetrics().maxProposalBytes
+			<< ",\"growth_computeNs\":" << game.map.resourceGrowthMetrics().computeNs
+			<< ",\"growth_queueNs\":" << game.map.resourceGrowthMetrics().queueNs
+			<< ",\"growth_waitNs\":" << game.map.resourceGrowthMetrics().waitNs
+			<< ",\"growth_publicationNs\":" << game.map.resourceGrowthMetrics().publicationNs
+			<< ",\"growth_delay\":" << game.map.resourceGrowthDelay()
+            << ",\"tick_p50_ns\":" << percentile(50)
+            << ",\"tick_p95_ns\":" << percentile(95)
+            << ",\"tick_p99_ns\":" << percentile(99)
 			<< ",\"gradient_pipeline\":" << "true"
 			<< ",\"gradient_workers\":" << pipelineResult.workers
 			<< ",\"gradient_delay\":" << pipelineResult.delay
@@ -530,10 +575,33 @@ struct HeadlessRunner
 			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
-			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
-			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries
+			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
+			<< ",\"building_gradient_published\":" << buildingResult.published
+			<< ",\"building_gradient_discarded\":" << buildingResult.discarded
+			<< ",\"building_gradient_synchronous\":" << buildingResult.synchronous
+			<< ",\"building_gradient_max_pending\":" << buildingResult.maxPending
+			<< ",\"building_gradient_wait_ns\":" << buildingResult.waitNs
+			<< ",\"building_gradient_pending\":" << buildingResult.pending
+			<< ",\"building_gradient_synchronous_by_reason\":{";
+		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
+			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
+				<< ':' << buildingResult.synchronousByReason[reason];
+		result << '}';
+		if (auto *stats = game.map.gradientStats.get())
+		{
+			// Diagnostics only: close the live field lifetimes and export them.
+			stats->finish(game);
+			result << ",\"building_gradient\":";
+			stats->writeJson(result);
+			std::ofstream csv(output/"gradient-stats.csv");
+			stats->writeCsv(csv);
+			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
+		}
+		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
-			<< ",\"compute_experiments\":" << quote(computeExperiments)
+			<< ",\"compute_requested_threads\":" << quote(requestedSizing)
+			<< ",\"compute_resolved_threads\":" << computeThreads
+			<< ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
 			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
 			<< ",\"compute_jobs\":" << game.map.computeExecutor().metrics().jobs
 			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
@@ -543,7 +611,6 @@ struct HeadlessRunner
 			<< ",\"compute_deferred_jobs\":" << game.map.computeExecutor().metrics().deferredJobs
 			<< ",\"compute_owner_jobs\":" << game.map.computeExecutor().metrics().ownerJobs
 			<< ",\"compute_worker_jobs\":" << game.map.computeExecutor().metrics().workerJobs
-			<< ",\"compute_lane_wait_ns\":" << game.map.computeExecutor().metrics().laneWaitNs
 			<< ",\"compute_join_wait_ns\":" << game.map.computeExecutor().metrics().joinWaitNs
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
@@ -571,7 +638,15 @@ struct HeadlessRunner
 		comma=false;
 		for(const auto& [name,value]:gameRuleValues(game.gameHeader))
 		{ if(comma)result<<','; comma=true; result<<quote(name)<<':'<<value; }
-		result << "}},";
+		result << "}";
+		if(!saved.empty())
+		{
+			result << ",\"fork\":[";
+			comma=false;
+			for(const auto& setting:forkSettings) { if(comma)result<<','; comma=true; result<<quote(setting); }
+			result << ']';
+		}
+		result << "},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		result << ",\"javascriptControllers\":[";
 		bool scriptComma = false;
@@ -603,13 +678,88 @@ int runHeadlessCommand(int argc,char **argv)
 	if(argc<2) return -1;
 	const std::string command=argv[1];
 	if(command!="--headless-catalog" && command!="--run-game" && command!="--generate-map"
-		&& command!="--verify-match" && command!="--sim-version" && command!="--turn-client") return -1;
+		&& command!="--verify-match" && command!="--sim-version" && command!="--turn-client" && command!="--compose-buildings") return -1;
 	fs::path output;
 	try
 	{
 		isolateEnvironment();
 		if(command=="--verify-match") return runVerifyMatch(argc,argv);
 		if(command=="--turn-client") return runTurnClient(argc,argv);
+        if(command=="--compose-buildings")
+        {
+            std::string base, artwork;
+            bool hasArtwork=false;
+            std::vector<std::string> packages;
+            std::size_t packageBytes=0;
+            for(int i=2; i<argc; ++i)
+            {
+                const std::string option=argv[i];
+                if(++i>=argc) throw std::invalid_argument("missing value for " + option);
+                if(option=="--base")
+                {
+                    if(!base.empty()) throw std::invalid_argument("duplicate --base");
+                    base=argv[i];
+                }
+                else if(option=="--artwork-bundle")
+                {
+                    if(hasArtwork) throw std::invalid_argument("duplicate --artwork-bundle");
+                    hasArtwork=true;
+                    std::ifstream input(argv[i],std::ios::binary);
+                    if(!input) throw std::invalid_argument("cannot read building artwork bundle");
+                    char chunk[8192];
+                    while(input) {
+                        input.read(chunk,sizeof(chunk));artwork.append(chunk,input.gcount());
+                        if(artwork.size()>BuildingArtwork::MaxBytes) throw std::invalid_argument("artwork bundle exceeds 72 MiB");
+                    }
+                    if(input.bad()) throw std::invalid_argument("artwork bundle read failed");
+                }
+                else if(option=="--package")
+                {
+                    std::ifstream input(argv[i], std::ios::binary);
+                    if(!input) throw std::invalid_argument("cannot read building package");
+                    std::string text;
+                    char chunk[8192];
+                    while(input)
+                    {
+                        input.read(chunk, sizeof(chunk));
+                        text.append(chunk, input.gcount());
+                        if(text.size()>8u*1024u*1024u) throw std::invalid_argument("building package exceeds 8 MiB");
+                    }
+                    if(input.bad()) throw std::invalid_argument("building package read failed");
+                    packageBytes+=text.size();
+                    if(packageBytes>8u*1024u*1024u || packages.size()>=4096)
+                        throw std::invalid_argument("combined building packages exceed their limits");
+                    packages.push_back(std::move(text));
+                }
+                else throw std::invalid_argument("unknown composition option: " + option);
+            }
+            GlobalContainer globals("glob2-building-composition", base);
+            globalContainer=&globals; globals.runNoX=true;
+            const auto baseHash=globals.buildingsTypes.fingerprint();
+            const auto baseSize=globals.buildingsTypes.size();
+            globals.buildingsTypes.composePackages(packages);
+            for(std::size_t id=baseSize;id<globals.buildingsTypes.size();++id) {
+                const auto& type=*globals.buildingsTypes.get(id);
+                const auto installedFrames=[&](const std::string& path,int first,int count) {
+                    if(!path.starts_with("data/gfx/"))return;
+                    for(int frame=first;frame<first+count;++frame) {
+                        std::unique_ptr<GAGCore::StreamBackend> input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(path+std::to_string(frame)+".webp"));
+                        if(!input || !input->isValid())throw std::invalid_argument("Installed building frame is missing: "+path+std::to_string(frame));
+                    }
+                };
+                installedFrames(type.gameSprite,type.gameSpriteImage,type.crossConnectMultiImage?16:type.gameSpriteCount);
+                if(type.miniSpriteImage>=0)installedFrames(type.miniSprite,type.miniSpriteImage,1);
+            }
+            nlohmann::json result={{"schemaVersion",1},{"baseHash",baseHash},
+                {"catalog",{{"snapshot",globals.buildingsTypes.snapshotJson()},{"hash",globals.buildingsTypes.fingerprint()}}}};
+            if(hasArtwork) {
+                const auto hash=Online::Sha256::hex(artwork);
+                BuildingArtwork::decode(std::move(artwork),globals.buildingsTypes);
+                result["artworkHash"]=hash;
+            }
+            std::cout << result.dump() << std::endl;
+            return 0;
+        }
 		if(command=="--sim-version")
 		{
 			if(argc!=2) throw std::invalid_argument("--sim-version takes no arguments");
@@ -624,7 +774,8 @@ int runHeadlessCommand(int argc,char **argv)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
+
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{
@@ -640,17 +791,20 @@ int runHeadlessCommand(int argc,char **argv)
 			char a[]="study",b[]="--catalog";char *args[]={a,b};runMapStudy(2,args);
 			std::cout << "}" << std::endl;return 0;
 		}
-		const std::set<std::string> common={"--output-dir","--profile","--building-catalog"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)
 		{
 			std::string key=argv[i];
+			if (isRemovedComputeOption(key)) throw std::invalid_argument(key + " has been removed; use --compute-threads auto|N");
 			if(!common.count(key) && !(command=="--run-game"?gameKeys:mapKeys).count(key)) throw std::invalid_argument("unknown option: " + key);
 			if(++i>=argc)throw std::invalid_argument("missing value for " + key);
 			options[key].push_back(argv[i]);
 		}
+		if(command=="--run-game" && options.count("--building-artwork") && !options.count("--generator"))
+			throw std::invalid_argument("--building-artwork requires --generator; loaded maps carry their own artwork");
 		if(one(options,"--output-dir").empty())throw std::invalid_argument("--output-dir is required");
 		output=fs::absolute(one(options,"--output-dir"));
 		fs::create_directories(output);
@@ -665,10 +819,10 @@ int runHeadlessCommand(int argc,char **argv)
 			{
 				if(options.count("--map-file") || options.count("--load-game")) throw std::invalid_argument("generator conflicts with file input");
 				std::vector<std::string> generation={"glob2","--generate-map","--output-dir",(output/"generated").string(),"--write-map","true"};
-				for(const auto &key : {"--generator","--map-seed","--param","--candidates","--building-catalog"})
+				for(const auto &key : {"--generator","--map-seed","--param","--candidates","--building-catalog","--building-artwork"})
 				{
 					for(const auto &value : many(options,key)){generation.push_back(key);generation.push_back(value);}
-					if (std::string(key) != "--building-catalog") options.erase(key);
+					if (std::string(key) != "--building-catalog" && std::string(key) != "--building-artwork") options.erase(key);
 				}
 				std::vector<char*> raw;for(auto &value:generation)raw.push_back(&value[0]);
 				const int generated=runHeadlessCommand(raw.size(),raw.data());
@@ -687,11 +841,15 @@ int runHeadlessCommand(int argc,char **argv)
 		}
 		else
 		{
-			int method=integer(one(options,"--generator"),0,INT32_MAX);
-			if(!GeneratorRegistry::builtins().find(method))throw std::invalid_argument("unknown generator");
+			const auto generator=one(options,"--generator");
+            int method=generator.find_first_not_of("0123456789")==std::string::npos
+                ? int(integer(generator,0,INT32_MAX)) : GeneratorRegistry::active().idOf(generator);
+			if (!GeneratorRegistry::active().find(method))
+				throw std::invalid_argument("unknown generator");
 			integer(one(options,"--map-seed"),0,UINT32_MAX);
 			std::vector<std::string> args={"study",std::to_string(method),one(options,"--map-seed"),one(options,"--profile","glob2-tournament"),"tuning","quality","result="+(output/"result.json").string()};
 			if (options.count("--building-catalog")) args.push_back("building-catalog="+one(options,"--building-catalog"));
+            if (options.count("--building-artwork")) args.push_back("building-artwork="+one(options,"--building-artwork"));
 			std::set<std::string> seen;
 			for(const auto &param:many(options,"--param"))
 			{

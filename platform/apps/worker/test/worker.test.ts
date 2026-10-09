@@ -16,6 +16,61 @@ afterAll(async () => {
 });
 
 describe('maintenance', () => {
+  it('retains a building release verdict until the family is removed', async () => {
+    const db = database.as('api').db;
+    const account = await db
+      .insertInto('accounts')
+      .values({ kind: 'registered', display_name: 'Building author' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const old = new Date(Date.now() - 40 * 24 * 3600_000);
+    const job = await db
+      .insertInto('engine_jobs')
+      .values({
+        kind: 'validate-buildings',
+        sim_version: SIM,
+        payload: JSON.stringify({ blobHash: 'aa'.repeat(32), baseHash: 'bb'.repeat(32), suite: 1 }),
+        status: 'succeeded',
+        result: JSON.stringify({ valid: false, reason: 'Invalid recipe' }),
+        completed_at: old,
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('blobs')
+      .values({
+        sha256: 'aa'.repeat(32),
+        size: 1,
+        storage_key: 'content/test-building',
+        content_type: 'application/octet-stream',
+      })
+      .execute();
+    const family = await db
+      .insertInto('building_families')
+      .values({ owner_account_id: account.id, namespace: crypto.randomUUID(), name: 'Family' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('building_releases')
+      .values({
+        family_id: family.id,
+        archive_hash: 'aa'.repeat(32),
+        job_id: job.id,
+        sim_version: SIM,
+        base_hash: 'bb'.repeat(32),
+        suite: 1,
+      })
+      .execute();
+    expect((await runMaintenance(database.db)).deletedEngineJobs).toBe(0);
+    expect(
+      await db.selectFrom('engine_jobs').select('id').where('id', '=', job.id).executeTakeFirst(),
+    ).toBeDefined();
+    await db.deleteFrom('building_families').where('id', '=', family.id).execute();
+    expect((await runMaintenance(database.db)).deletedEngineJobs).toBe(1);
+    expect(
+      await db.selectFrom('engine_jobs').select('id').where('id', '=', job.id).executeTakeFirst(),
+    ).toBeUndefined();
+  });
   it('expires stale sign-ins and queue tickets and purges old refresh tokens', async () => {
     // Fixtures are written as the API writes them; maintenance runs as the worker.
     const db = database.as('api').db;

@@ -13,6 +13,9 @@
 #include "Player.h"
 #include "Order.h"
 #include "Brush.h"
+#include "BuildingGradientSearch.h"
+#include "BuildingGradientStats.h"
+#include <sstream>
 #include <PerformanceTelemetry.h>
 #include <memory>
 #include <vector>
@@ -122,7 +125,7 @@ TEST_SUITE("MapGradientInvalidation")
 	  m.setResourceByIndex(20,20,WHEAT,1);m.setResourceAmount(m.coordToIndex(20,20), 3);
 	  if(mutation==4)m.markImmobileUnit(21,20,0);
 	  if(mutation==6)m.setBuilding(21,20,1,1,42);
-	  if(mutation==8)m.setTerrain(21,20,256);
+	  if(mutation==8)m.paintCell(21, 20, WATER);
 	  auto* g=m.getForbiddenGradient(0,swim);std::vector<Uint16> old(g,g+4096);
 	  switch(mutation){
 	   case 0:m.setResourceAmount(m.coordToIndex(20,20), 1);m.decResource(20,20);break;
@@ -132,8 +135,8 @@ TEST_SUITE("MapGradientInvalidation")
 	   case 4:m.clearImmobileUnit(21,20);break;
 	   case 5:m.setBuilding(21,20,1,1,42);break;
 	   case 6:m.setBuilding(21,20,1,1,NOGBID);break;
-	   case 7:m.setTerrain(21,20,256);break;
-	   case 8:m.setTerrain(21,20,0);break;
+	   case 7:m.paintCell(21, 20, WATER);break;
+	   case 8:m.paintCell(21, 20, GRASS);break;
 	   case 9:edit(f,20,20,true);break; // no-op forbidden brush
 	   case 10:edit(f,20,20,false);break; // resource-only mask edit
 	   case 11:{auto resource=m.getResource(20,20);resource.type=WOOD;m.replaceResource(20,20,resource);break;}
@@ -181,5 +184,90 @@ TEST_SUITE("MapGradientInvalidation")
 	  REQUIRE(maxGap>=cycle);
 	  std::cout<<"FOUR_TEAM_WRAP slots="<<slots<<" cycle="<<cycle<<" tested_ticks="<<4*cycle<<" maximum_gap="<<maxGap<<" strict_bound="<<2*cycle<<" builds="<<totalBuilds<<" PASS\n";
 	 }
+	}
+
+	TEST_CASE("gradient stats record field lifetimes without changing fields")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+		using Stats = BuildingGradientStats;
+		Fixture f(1); auto& m=f.game.map;
+		m.gradientStats=std::make_unique<Stats>();
+		auto& stats=*m.gradientStats;
+		auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);
+		REQUIRE(b);
+		const int n=m.getW()*m.getH();
+		// Cold build: a Null rebuild row without a previous lifetime.
+		m.buildingGradient(b,0);
+		REQUIRE(stats.rows().size()==1);
+		CHECK(stats.rows().back().reason==Stats::Reason::Null);
+		CHECK(!stats.rows().back().hasPrevious);
+		// Advance past the dirty-rebuild throttle and let the next use rebuild.
+		auto rebuildAfter=[&](auto change) {
+			change();
+			f.game.stepCounter+=200;
+			const auto before=stats.rows().size();
+			int distance=0;
+			// Prepares the field and settles only the layers up to a nearby cell.
+			m.buildingAvailable(b,0,11,11,&distance);
+			REQUIRE(stats.rows().size()==before+1);
+			CHECK(stats.rows().back().reason==Stats::Reason::Generation);
+		};
+		// The previous lifetime was the completed cold field.
+		rebuildAfter([&]{ m.addForbidden(30,30,1); });
+		CHECK(stats.rows().back().prevComplete);
+		CHECK(stats.rows().back().prevSettledCost>0);
+		CHECK(stats.rows().back().lifetimeReason==Stats::Reason::Null);
+		// The next lifetime was only settled near the building.
+		REQUIRE(!b->globalGradientSearch[0]->complete());
+		rebuildAfter([&]{ m.addForbidden(40,40,0); });
+		CHECK(!stats.rows().back().prevComplete);
+		CHECK(stats.rows().back().prevQueries>=1);
+		CHECK(stats.rows().back().prevExtensions>=1);
+		CHECK(stats.rows().back().lifetimeReason==Stats::Reason::Generation);
+		CHECK(stats.rebuilds(Stats::Reason::Generation)==2);
+
+		// The depth histogram partitions popped entries; settled cost advances.
+		m.finishBuildingGradient(b,0);
+		const auto& search=*b->globalGradientSearch[0];
+		std::uint64_t binned=0;
+		for(auto v:search.poppedAtDepth) binned+=v;
+		CHECK(binned==search.poppedEntries());
+		CHECK(search.settledCost()>0);
+
+		// Drops and evictions close lifetimes; the end of a run closes the rest.
+		b->resetPathfindGradients();
+		CHECK(stats.rows().back().event==Stats::Event::Drop);
+		m.buildingGradient(b,0);
+		f.game.stepCounter+=1000;
+		b->freeIdleGradients();
+		CHECK(stats.rows().back().event==Stats::Event::Evict);
+		m.buildingGradient(b,0);
+		stats.finish(f.game);
+		CHECK(stats.rows().back().event==Stats::Event::End);
+		std::ostringstream csv, json;
+		stats.writeCsv(csv); stats.writeJson(json);
+		const auto parsed=nlohmann::json::parse(json.str());
+		CHECK(parsed["rebuilds"]["generation"]==2);
+		CHECK(parsed["rows"]==stats.rows().size());
+		std::istringstream lines(csv.str()); std::string line; size_t rows=0, columns=0;
+		while(std::getline(lines,line)) {
+			const auto commas=size_t(std::count(line.begin(),line.end(),','));
+			if(!rows) columns=commas;
+			CHECK(commas==columns);
+			++rows;
+		}
+		CHECK(rows==stats.rows().size()+1);
+		// Owner inputs of the lifetime a row closes, captured when it started.
+		CHECK(csv.str().find(",width,height,level,is_site,construction_state,progress,team_units,team_buildings,staged,previous_hint,serving_settled\n")!=std::string::npos);
+		const auto& closed=stats.rows().back();
+		CHECK(closed.context.known);
+		CHECK(closed.context.buildings==f.game.teams[0]->liveBuildings.size());
+		CHECK((!closed.context.site && closed.context.progress==-1 && closed.context.level==0));
+
+		// Statistics never change the field itself.
+		std::vector<Uint16> withStats(b->globalGradient[0],b->globalGradient[0]+n);
+		m.gradientStats.reset();
+		m.updateGlobalGradient(b,0); m.finishBuildingGradient(b,0);
+		CHECK(std::equal(withStats.begin(),withStats.end(),b->globalGradient[0]));
 	}
 }

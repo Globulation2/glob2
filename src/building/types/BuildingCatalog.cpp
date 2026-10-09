@@ -15,6 +15,7 @@
 #include <unordered_set>
 #include <type_traits>
 #include <tuple>
+#include <regex>
 
 namespace
 {
@@ -201,7 +202,7 @@ BuildingSemantics semantics(const Json& j)
 {
     keys(j, {"replenishMaterials", "ammunitionMaterial", "replenishResources", "requiredWorkerLevel", "assignmentLimit", "regenerationPerTick", "repairable", "constructionCost", "repairCost", "placeable", "instantPlacement", "relocatable", "occupiesGround",
         "admittedUnitMask", "workPriorityBias", "sightSharing", "feeding", "healing", "training", "trainingInParallel",
-        "production", "market", "projectileDamage", "projectileBuildingDamage", "ammunitionResource", "ammunitionCost"}, "semantics");
+        "production", "market", "projectileDamage", "projectileBuildingDamage", "ammunitionResource", "ammunitionCost", "areaEffects"}, "semantics");
     BuildingSemantics s;
     if (j.contains("replenishMaterials") && j.contains("replenishResources")) fail("semantics", "conflicting replenishment aliases");
     if (j.contains("ammunitionMaterial") && j.contains("ammunitionResource")) fail("semantics", "conflicting ammunition aliases");
@@ -219,6 +220,18 @@ BuildingSemantics semantics(const Json& j)
     if (sight == "food") s.sightSharing = BuildingSightSharing::Food;
     else if (sight == "exchange") s.sightSharing = BuildingSightSharing::Exchange;
     else if (sight != "other") fail("sightSharing", "unknown category");
+    if (j.contains("areaEffects"))
+    {
+        const auto& a = j.at("areaEffects"); auto& out = s.areaEffects;
+        keys(a, {"radius", "cost", "healingQ8", "damageQ8", "feedingQ8", "attackBuffBps",
+            "attackWeaknessBps", "armorBuffBps", "armorWeaknessBps", "fertilityBuffBps", "fertilityWeaknessBps"}, "areaEffects");
+#define READ_AREA(n) optional(a, #n, out.n)
+        READ_AREA(radius); READ_AREA(healingQ8); READ_AREA(damageQ8); READ_AREA(feedingQ8);
+        READ_AREA(attackBuffBps); READ_AREA(attackWeaknessBps); READ_AREA(armorBuffBps); READ_AREA(armorWeaknessBps);
+        READ_AREA(fertilityBuffBps); READ_AREA(fertilityWeaknessBps);
+#undef READ_AREA
+        if (a.contains("cost")) out.cost = cost(a.at("cost"));
+    }
     if (j.contains("feeding")) s.feeding = service(j.at("feeding"));
     if (j.contains("healing")) s.healing = service(j.at("healing"));
     if (j.contains("projectileDamage")) array(j.at("projectileDamage"), s.projectileDamage, "projectileDamage");
@@ -299,6 +312,16 @@ Json semanticsJson(const BuildingSemantics& s)
     j["repairCost"] = costJson(s.repairCost);
     j["sightSharing"] = s.sightSharing == BuildingSightSharing::Food ? "food" : s.sightSharing == BuildingSightSharing::Exchange ? "exchange" : "other";
     j["feeding"] = serviceJson(s.feeding); j["healing"] = serviceJson(s.healing);
+    // Omit default data to preserve canonical bytes and hashes of existing catalogs.
+    if (s.areaEffects != BuildingAreaEffectsSpec{})
+    {
+        const auto& a = s.areaEffects;
+        j["areaEffects"] = {{"radius", a.radius}, {"cost", costJson(a.cost)},
+            {"healingQ8", a.healingQ8}, {"damageQ8", a.damageQ8}, {"feedingQ8", a.feedingQ8},
+            {"attackBuffBps", a.attackBuffBps}, {"attackWeaknessBps", a.attackWeaknessBps},
+            {"armorBuffBps", a.armorBuffBps}, {"armorWeaknessBps", a.armorWeaknessBps},
+            {"fertilityBuffBps", a.fertilityBuffBps}, {"fertilityWeaknessBps", a.fertilityWeaknessBps}};
+    }
     auto& training = j["training"] = Json::object();
     for (int a = 0; a < NB_ABILITY; ++a)
     {
@@ -417,6 +440,11 @@ Json parseFile(const std::string& path)
 void BuildingsTypes::loadManifest(const std::string& path)
 {
     Json manifest = parseFile(path);
+    if (manifest.contains("variants"))
+    {
+        loadSnapshotJson(manifest.dump());
+        return;
+    }
     keys(manifest, {"schemaVersion", "catalogKey", "startingBuilding", "experiments", "files"}, "manifest");
     Json snapshot = manifest;
     snapshot.erase("files"); snapshot["variants"] = Json::array();
@@ -446,6 +474,154 @@ void BuildingsTypes::loadManifest(const std::string& path)
         if (snapshot["variants"].size() > MAX_CATALOG_VARIANTS) fail(path, "too many variants");
     }
     withContext(path, [&] { loadSnapshotJson(snapshot.dump(), variantSources); });
+}
+
+void BuildingsTypes::composePackages(const std::vector<std::string>& packages)
+{
+    if (packages.empty()) return;
+    if (packages.size() > MAX_CATALOG_VARIANTS) fail("packages", "too many packages");
+    std::map<std::string, Json> ordered;
+    const std::regex uuid("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+    const std::regex localKey("^[a-z0-9][a-z0-9._-]{0,63}$");
+    const std::regex hash("^[0-9a-f]{64}$");
+    const std::regex installed("^data/gfx/[a-zA-Z0-9_-]+$");
+    std::size_t decodedBytes = 0, inputBytes = 0;
+    for (const auto& text : packages)
+    {
+        inputBytes += text.size();
+        if (inputBytes > MAX_CATALOG_BYTES) fail("packages", "combined manifests exceed 8 MiB");
+        auto package = parse(text);
+        keys(package, {"schemaVersion", "namespace", "variants", "experiments", "sprites"}, "package");
+        if (integer(package.at("schemaVersion"), "package.schemaVersion") != 1)
+            fail("package", "unsupported schemaVersion");
+        const auto name = string(package.at("namespace"), "package.namespace");
+        if (!std::regex_match(name, uuid)) fail("package.namespace", "must be a lowercase UUID");
+        if (!ordered.emplace(name, std::move(package)).second) fail("packages", "duplicate namespace");
+    }
+    Json snapshot = Json::parse(snapshotJson());
+    Json identity = {{"base", fingerprint()}, {"packages", Json::array()}};
+    for (const auto& [name, package] : ordered)
+    {
+        const auto prefix = "b-" + name + "-";
+        for (const auto& existing : *entries_)
+            if (existing.key.starts_with(prefix)) fail("packages", "namespace is already present in the base catalog");
+        const auto scoped = [&](const std::string& key) {
+            stableKey(key, "package.key");
+            if (!key.starts_with(prefix)) fail("package.key", "must use namespace " + prefix);
+        };
+        const auto& variants = package.at("variants");
+        const auto& experiments = package.at("experiments");
+        const auto& sprites = package.at("sprites");
+        if (!variants.is_array() || variants.empty() || variants.size() > MAX_CATALOG_VARIANTS)
+            fail("package.variants", "invalid variant count");
+        if (!experiments.is_array() || experiments.size() > 64) fail("package.experiments", "invalid count");
+        if (!sprites.is_array() || sprites.size() > 256) fail("package.sprites", "invalid count");
+        std::set<std::string> variantKeys, experimentKeys;
+        std::map<std::string, std::pair<std::string, std::size_t>> spritePaths;
+        for (const auto& v : variants)
+        {
+            const auto key = string(v.at("key"), "package.variant.key");
+            scoped(key);
+            if (!variantKeys.insert(key).second) fail("package.variants", "duplicate key");
+        }
+        for (const auto& e : experiments)
+        {
+            keys(e, {"key", "label", "help"}, "package.experiment");
+            const auto key = string(e.at("key"), "package.experiment.key");
+            scoped(key);
+            if (!experimentKeys.insert(key).second) fail("package.experiments", "duplicate key");
+            snapshot["experiments"].push_back(e);
+        }
+        std::size_t images = 0;
+        for (const auto& sprite : sprites)
+        {
+            keys(sprite, {"key", "frames"}, "package.sprite");
+            const auto key = string(sprite.at("key"), "package.sprite.key");
+            if (!std::regex_match(key, localKey)) fail("package.sprite.key", "invalid local key");
+            const auto& frames = sprite.at("frames");
+            if (!frames.is_array() || frames.empty() || frames.size() > 256) fail("package.sprite.frames", "invalid count");
+            for (const auto& frame : frames)
+            {
+                keys(frame, {"imageHash", "width", "height", "teamColorHash"}, "package.frame");
+                if (!std::regex_match(string(frame.at("imageHash"), "imageHash"), hash)) fail("imageHash", "invalid hash");
+                const auto w = integer(frame.at("width"), "width"), h = integer(frame.at("height"), "height");
+                if (w < 1 || h < 1 || w > 512 || h > 512) fail("package.frame", "dimensions outside 1..512");
+                std::size_t layers = 1;
+                if (frame.contains("teamColorHash"))
+                {
+                    if (!std::regex_match(string(frame.at("teamColorHash"), "teamColorHash"), hash)) fail("teamColorHash", "invalid hash");
+                    layers = 2;
+                }
+                images += layers;
+                decodedBytes += std::size_t(w) * h * 4 * layers;
+                if (images > 256) fail("package.frames", "too many images");
+                if (decodedBytes > 64u * 1024u * 1024u) fail("packages", "artwork exceeds 64 MiB decoded");
+            }
+            const auto path = "community/buildings/" + Online::Sha256::hex(sprite.dump()) + "/sprite";
+            if (!spritePaths.emplace(key, std::pair{path, frames.size()}).second) fail("package.sprites", "duplicate key");
+        }
+        for (auto v : variants)
+        {
+            keys(v, {"key", "previous", "next", "requiredExperiment", "properties", "semantics", "presentation"}, "package.variant");
+            for (const auto* field : {"previous", "next"}) if (v.contains(field))
+            {
+                const auto key = string(v.at(field), field);
+                if (!key.empty() && !variantKeys.contains(key)) fail(field, "unresolved package building reference");
+            }
+            if (v.contains("requiredExperiment"))
+            {
+                const auto key = string(v.at("requiredExperiment"), "requiredExperiment");
+                if (!key.empty() && !experimentKeys.contains(key)) fail("requiredExperiment", "unresolved package experiment");
+            }
+            const auto& semantics = v.at("semantics");
+            if (semantics.contains("market") && semantics["market"].is_object())
+                for (const auto* field : {"suppliesStockExperiment", "fetchesStockExperiment"})
+                    if (semantics["market"].contains(field))
+                    {
+                        const auto key = string(semantics["market"][field], field);
+                        if (key.starts_with("b-") && !experimentKeys.contains(key))
+                            fail(field, "unresolved package experiment");
+                    }
+            if (v.contains("presentation") && v["presentation"].contains("connectionGroup"))
+            {
+                const auto group = string(v["presentation"]["connectionGroup"], "connectionGroup");
+                if (!group.empty()) scoped(group);
+            }
+            // Resolved catalog defaults deliberately support headless authoring;
+            // a published package must instead have artwork that can be rendered.
+            if (!v.at("properties").contains("gameSprite")) fail("gameSprite", "a building package requires game artwork");
+            if (v.at("properties").value("miniSpriteImage", 0) >= 0 && !v.at("properties").contains("miniSprite"))
+                fail("miniSprite", "provide mini artwork or disable it with miniSpriteImage=-1");
+            for (const auto* field : {"gameSprite", "miniSprite"}) if (v.at("properties").contains(field))
+            {
+                const auto ref = string(v["properties"][field], field);
+                if (ref.starts_with("package:"))
+                {
+                    const auto found = spritePaths.find(ref.substr(8));
+                    if (found == spritePaths.end()) fail(field, "unresolved package sprite");
+                    const auto& [path, count] = found->second;
+                    if (std::string(field) == "gameSprite")
+                    {
+                        const auto first = v["properties"].value("gameSpriteImage", 0);
+                        const auto needed = v["properties"].value("crossConnectMultiImage", 0) ? 16 : v["properties"].value("gameSpriteCount", 1);
+                        if (first < 0 || needed < 1 || std::size_t(first) + needed > count) fail(field, "sprite frame range is unavailable");
+                    }
+                    else
+                    {
+                        const auto frame = v["properties"].value("miniSpriteImage", 0);
+                        if (frame >= 0 && std::size_t(frame) >= count) fail(field, "sprite frame is unavailable");
+                    }
+                    v["properties"][field] = path;
+                }
+                else if (!std::regex_match(ref, installed)) fail(field, "use installed artwork or a package sprite");
+            }
+            v["id"] = snapshot["variants"].size();
+            snapshot["variants"].push_back(std::move(v));
+        }
+        identity["packages"].push_back(package);
+    }
+    snapshot["catalogKey"] = "composed-" + Online::Sha256::hex(identity.dump());
+    loadSnapshotJson(snapshot.dump()); // Atomic validation and installation.
 }
 
 void BuildingsTypes::loadSnapshotJson(const std::string& text)
@@ -637,6 +813,14 @@ void BuildingsTypes::resolveAndValidate()
             if (!b.isBuildingSite && s.constructionCost[r]) fail(b.key, "constructionCost belongs to a construction site");
         }
         compileCost(s.feeding); compileCost(s.healing);
+        compileCost(s.areaEffects);
+        const auto& a = s.areaEffects;
+        range(a.radius, 0, 65535, b.key + ".areaEffects.radius");
+        for (auto value : {a.healingQ8, a.damageQ8, a.feedingQ8}) range(value, 0, 65535, b.key + ".areaEffects.serviceQ8");
+        for (auto value : {a.attackBuffBps, a.armorBuffBps, a.fertilityBuffBps}) range(value, 0, 30000, b.key + ".areaEffects.buffBps");
+        for (auto value : {a.attackWeaknessBps, a.armorWeaknessBps, a.fertilityWeaknessBps}) range(value, 0, 10000, b.key + ".areaEffects.weaknessBps");
+        if (a.enabled() && (b.isBuildingSite || b.isVirtual)) fail(b.key, "areaEffects require a completed physical building");
+
         for (int ability=0; ability<WALK; ++ability)
             if (s.training[ability].enabled) fail(b.key, "idle movement primitives cannot be trained; configure walk, swim, or fly instead");
         s.trainingCostMask = 0;

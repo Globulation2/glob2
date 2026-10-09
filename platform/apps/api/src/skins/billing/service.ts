@@ -1,5 +1,6 @@
 import { sql, type Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
+import { recordPaymentFact, type ProviderDisputeFact } from '@glob2/billing';
 import { apiError } from '../../errors.ts';
 
 export const PRODUCTS = {
@@ -10,6 +11,16 @@ export const PRODUCTS = {
 export type Sku = keyof typeof PRODUCTS;
 export type PaymentState = 'pending' | 'paid' | 'refunded' | 'disputed' | 'failed';
 export interface PaymentSnapshot {
+  monetary?: {
+    paid: number;
+    refunded: number;
+    disputed: boolean;
+    currency: string;
+    live: boolean;
+    createdAt: number;
+    refunds?: { id: string; amount: number; at: Date }[];
+    disputes?: ProviderDisputeFact[];
+  };
   purchaseId: string;
   accountId: string;
   sessionId: string;
@@ -207,6 +218,23 @@ export class SkinBilling {
       )
         throw apiError('conflict', 'Checkout does not match this purchase.');
       let grantId = purchase.entitlement_id;
+      if (current.monetary && current.monetary.paid > 0 && current.paymentIntentId) {
+        const m = current.monetary;
+        await recordPaymentFact(trx, {
+          product: 'skins',
+          purchaseId: purchase.id,
+          providerId: current.paymentIntentId,
+          mode: m.live ? 'live' : 'test',
+          currency: m.currency,
+          paid: m.paid,
+          refunded: m.refunded,
+          disputed: m.disputed,
+          occurredAt: new Date(),
+          paymentAt: new Date(m.createdAt * 1000),
+          refunds: m.refunds,
+          disputes: m.disputes,
+        });
+      }
       if (current.state === 'paid' && !grantId) {
         const grant = await trx
           .insertInto('entitlements')

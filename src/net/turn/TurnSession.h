@@ -288,7 +288,7 @@ namespace Turn
 		int seat = -1;
 		std::uint32_t humanMask = 0;
 		std::uint32_t tickRate = DEFAULT_TICK_RATE_MILLIHZ;
-		std::uint64_t tickPeriod = 40000;
+		std::uint64_t tickPeriod = ticksToMicros(1, DEFAULT_TICK_RATE_MILLIHZ);
 		std::uint16_t checksumInterval = DEFAULT_CHECKSUM_INTERVAL;
 		std::uint32_t bundleInterval = DEFAULT_BUNDLE_INTERVAL;
 

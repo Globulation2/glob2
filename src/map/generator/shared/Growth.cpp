@@ -1,4 +1,7 @@
+#include "GenerationWork.h"
+#include "GenerationFertilityWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Growth.h"
 #include "Map.h"
 #include "Morphology.h"
@@ -26,11 +29,14 @@ int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
 		throw std::invalid_argument("cropSeedsIn requires one mask entry per map tile");
 	int seeds = 0;
 	for (int i = 0; i < t.size(); ++i)
-		if (region[i])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (region.at(i))
 		{
-			const int type = map.getResource(i % t.w, i / t.w).type;
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			seeds += spreadingCrop(map, type);
 		}
+	}
 	return seeds;
 }
 
@@ -40,22 +46,25 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 	std::vector<unsigned char> seeds(t.size(), 0), grass(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		::MapGeneration::generationCheckpoint();
+		const int x = t.remainderX(i), y = i / t.w;
 		const int type = map.getResource(x, y).type;
-		seeds[i] = (spreadingCrop(map, type)) && (!fertility || fertility->at(x, y) > 0);
+		seeds.at(i) = (spreadingCrop(map, type)) && (!fertility || fertility->at(x, y) > 0);
 		// A tile whose growth flag is off never takes a crop, so the envelope stops at it as
 		// the engine does. No generated map sets the flag; loaded scenario maps may.
-		grass[i] = map.terrainSupportsMaterialAt(x,y,MaterialId::Food) && map.canResourcesGrow(x, y);
+		grass.at(i) =
+			map.terrainSupportsMaterialAt(x, y, MaterialId::Food) && map.canResourcesGrow(x, y);
 	}
 	// Reuse the same toroidal eight-neighbour topology as the other region operations.
 	auto result = floodFrom(t, seeds, grass);
 	if (fertility)
 		for (int i = 0; i < t.size(); ++i)
 		{
-			const int type = map.getResource(i % t.w, i / t.w).type;
-			if ((spreadingCrop(map, type)) && result.steps[i] < 0)
+			::MapGeneration::generationCheckpoint();
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
+			if ((spreadingCrop(map, type)) && result.steps.at(i) < 0)
 			{
-				result.steps[i] = 0;
+				result.steps.at(i) = 0;
 				result.visited.push_back(i);
 			}
 		}
@@ -69,25 +78,33 @@ std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::
 	std::vector<int> queue;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		::MapGeneration::generationCheckpoint();
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if (spreadingCrop(map, type))
 		{
-			reached[i] = 1;
-			if (fertility.at(i % t.w, i / t.w) > 0) queue.push_back(i);
+			reached.at(i) = 1;
+			if (fertility.at(t.remainderX(i), i / t.w) > 0) queue.push_back(i);
 		}
 	}
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
-		const int i = queue[head];
+		::MapGeneration::generationCheckpoint();
+		const int i = queue.at(head);
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int q = t.at(i % t.w + dx, i / t.w + dy);
-				if (reached[q] || !map.terrainSupportsMaterialAt(q % t.w,q / t.w,MaterialId::Food) ||
-					!map.canResourcesGrow(q % t.w, q / t.w)) continue;
-				reached[q] = 1;
-				if (fertility.at(q % t.w, q / t.w) > 0) queue.push_back(q);
+				::MapGeneration::generationCheckpoint();
+				const int q = t.at(t.remainderX(i) + dx, i / t.w + dy);
+				if (reached.at(q) ||
+					!map.terrainSupportsMaterialAt(t.remainderX(q), q / t.w, MaterialId::Food) ||
+					!map.canResourcesGrow(t.remainderX(q), q / t.w))
+					continue;
+				reached.at(q) = 1;
+				if (fertility.at(t.remainderX(q), q / t.w) > 0) queue.push_back(q);
 			}
+		}
 	}
 	return reached;
 }
@@ -98,16 +115,22 @@ Fertility::Field cropGrowthField(const TerrainSketch &sketch, const Torus &t)
 	std::vector<std::uint16_t> inhibition(t.size(),0), growth(t.size(),256);
 	for (unsigned id=0; id<TERRAIN_COUNT; ++id)
 	{
+		::MapGeneration::generationCheckpoint();
 		const auto& properties=terrainProperties(static_cast<TerrainType>(id));
 		const auto pure=pureTiles(sketch,t,static_cast<TerrainType>(id));
-		for (int i=0; i<t.size(); ++i) if(pure[i])
+		for (int i = 0; i < t.size(); ++i)
 		{
-			contribution[i]=properties.fertilitySource ? properties.fertilityQ8 : 0;
-			inhibition[i]=properties.inhibitionQ8;
-			growth[i]=properties.growthQ8;
+			::MapGeneration::generationCheckpoint();
+			if (pure.at(i))
+			{
+				contribution.at(i) = properties.fertilitySource ? properties.fertilityQ8 : 0;
+				inhibition.at(i) = properties.inhibitionQ8;
+				growth.at(i) = properties.growthQ8;
+			}
 		}
 	}
 	Fertility::Field field;
+	generationFertilityRebuildWork(t.w, t.h);
 	field.rebuildWeighted(t.w,t.h,contribution,inhibition);
 	// The public sketch field measures potential before habitat gating, just
 	// like the ungated map field; local modifiers are applied for crop habitats.
@@ -121,11 +144,14 @@ double wateredShare(const Fertility::Field &field, const std::vector<unsigned ch
 	const int w = field.getW();
 	long long tiles = 0, watered = 0;
 	for (size_t i = 0; i < region.size(); ++i)
-		if (region[i])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (region.at(i))
 		{
 			++tiles;
-			watered += field.at(int(i % w), int(i / w)) >= minimum;
+			watered += field.at(int(dimensionRemainder(i, w)), int(i / w)) >= minimum;
 		}
+	}
 	return tiles ? double(watered) / double(tiles) : 0.0;
 }
 
@@ -134,7 +160,10 @@ int wetTiles(const Fertility::Field &field, const std::vector<unsigned char> &re
 	const int w = field.getW();
 	int wet = 0;
 	for (size_t i = 0; i < region.size(); ++i)
-		wet += region[i] && field.at(int(i % w), int(i / w)) > 0;
+	{
+		::MapGeneration::generationCheckpoint();
+		wet += region.at(i) && field.at(int(dimensionRemainder(i, w)), int(i / w)) > 0;
+	}
 	return wet;
 }
 
@@ -147,11 +176,14 @@ int drainWithin(TerrainSketch &sketch, const std::vector<unsigned char> &zone)
 {
 	int drained = 0;
 	for (size_t i = 0; i < sketch.size(); ++i)
-		if (zone[i] && sketch[i] == WATER)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (zone.at(i) && sketch.at(i) == WATER)
 		{
-			sketch[i] = GRASS;
+			sketch.at(i) = GRASS;
 			++drained;
 		}
+	}
 	return drained;
 }
 
@@ -162,11 +194,17 @@ namespace MapGeneration
 std::uint32_t meanFertilityAround(const Fertility::Field &field, const Torus &t, int site,
 								  int radius)
 {
-	const int sx = site % t.w, sy = site / t.w;
+	const int sx = t.remainderX(site), sy = site / t.w;
 	std::uint64_t sum = 0;
 	for (int dy = -radius; dy <= radius; ++dy)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dx = -radius; dx <= radius; ++dx)
+		{
+			::MapGeneration::generationCheckpoint();
 			sum += field.at(t.x(sx + dx), t.y(sy + dy));
+		}
+	}
 	const std::uint64_t tiles = std::uint64_t(2 * radius + 1) * (2 * radius + 1);
 	return std::uint32_t(sum / tiles);
 }
@@ -180,12 +218,17 @@ std::vector<std::uint32_t> meanFertilityField(const Fertility::Field &field, con
 	std::vector<std::uint64_t> rows(size_t(n), 0);
 	for (int y = 0; y < t.h; ++y)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::uint64_t sum = 0;
 		for (int dx = -radius; dx <= radius; ++dx)
+		{
+			::MapGeneration::generationCheckpoint();
 			sum += field.at(t.x(dx), y);
+		}
 		for (int x = 0; x < t.w; ++x)
 		{
-			rows[size_t(y * t.w + x)] = sum;
+			::MapGeneration::generationCheckpoint();
+			rows.at(size_t(y * t.w + x)) = sum;
 			sum += field.at(t.x(x + radius + 1), y);
 			sum -= field.at(t.x(x - radius), y);
 		}
@@ -194,14 +237,19 @@ std::vector<std::uint32_t> meanFertilityField(const Fertility::Field &field, con
 	const std::uint64_t tiles = std::uint64_t(span) * span;
 	for (int x = 0; x < t.w; ++x)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::uint64_t sum = 0;
 		for (int dy = -radius; dy <= radius; ++dy)
-			sum += rows[size_t(t.y(dy) * t.w + x)];
+		{
+			::MapGeneration::generationCheckpoint();
+			sum += rows.at(size_t(t.y(dy) * t.w + x));
+		}
 		for (int y = 0; y < t.h; ++y)
 		{
-			means[size_t(y * t.w + x)] = std::uint32_t(sum / tiles);
-			sum += rows[size_t(t.y(y + radius + 1) * t.w + x)];
-			sum -= rows[size_t(t.y(y - radius) * t.w + x)];
+			::MapGeneration::generationCheckpoint();
+			means.at(size_t(y * t.w + x)) = std::uint32_t(sum / tiles);
+			sum += rows.at(size_t(t.y(y + radius + 1) * t.w + x));
+			sum -= rows.at(size_t(t.y(y - radius) * t.w + x));
 		}
 	}
 	return means;

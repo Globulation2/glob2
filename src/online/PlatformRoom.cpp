@@ -72,7 +72,10 @@ std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCa
 	room->automaticMap = automaticMap && !catalogMap;
 	room->listen();
 	Json params{{"name", name.substr(0, 64)}, {"visibility", listed ? "public" : "link"}};
-	if (catalogMap)
+	if (catalogMap && catalogMap->scriptDescriptor)
+		params["map"] =
+			Json{{"kind", "scripted"}, {"generator", Json::parse(*catalogMap->scriptDescriptor)}};
+	else if (catalogMap)
 		params["map"] = Json{{"kind", "catalog"}, {"hash", catalogMap->hash}, {"mapId", catalogMap->mapId}};
 	else
 	{
@@ -317,8 +320,12 @@ void PlatformRoom::systemLinesFor(const Json &previous, const Json &next)
 	// it is not announced twice.
 	auto choice = [](const Json &room) {
 		Json map = room.value("map", Json());
-		if (map.is_object() && map.value("kind", "") == "generated")
+		if (map.is_object() &&
+			(map.value("kind", "") == "generated" || map.value("kind", "") == "scripted"))
+		{
 			map.erase("hash");
+			map.erase("chosenSeed");
+		}
 		return map;
 	};
 	// Why the last start did not happen (e.g. the server reopened a room whose
@@ -440,6 +447,9 @@ std::string PlatformRoom::mapName() const
 		return text("[room no map]");
 	const Json &map = state["map"];
 	const std::string kind = map.value("kind", "");
+	if (kind == "scripted" && map.contains("generator"))
+		return map["generator"].value("generatorId", "") + " · revision " +
+			   std::to_string(map["generator"].value("revision", 0u));
 	if (kind == "generated" && map.contains("generator"))
 	{
 		const Json &g = map["generator"];
@@ -1032,6 +1042,23 @@ void PlatformRoom::useMapBytes(std::string bytes, const std::string &title, cons
 		});
 }
 
+void PlatformRoom::useScriptGenerator(const std::string &descriptor)
+{
+	Json selection = {{"kind", "scripted"}, {"generator", Json::parse(descriptor)}};
+	if (!canEditSetup())
+		return;
+	automaticMap = false;
+	call("room.update",
+		 Json{{"roomId", state["id"]},
+			  {"revision", state["revision"]},
+			  {"changes", {{"map", selection}}}},
+		 [this](const Json &result)
+		 {
+			 if (result.contains("room"))
+				 adopt(result["room"]);
+		 });
+}
+
 void PlatformRoom::useCatalogMap(const std::string &hash, const std::string &mapId)
 {
 	if (!canEditSetup() || hash.empty())
@@ -1051,4 +1078,25 @@ std::shared_ptr<OnlineMatch> PlatformRoom::takeMatch()
 {
 	return match;
 }
+} // namespace Online
+
+namespace Online
+{
+std::optional<std::string> PlatformRoom::scriptGenerator() const
+{
+	if (!state.contains("map") || !state["map"].is_object() ||
+		state["map"].value("kind", "") != "scripted")
+		return std::nullopt;
+	return state["map"].at("generator").dump();
+}
+void PlatformRoom::rerollScriptGenerator()
+{
+	const auto current = scriptGenerator();
+	if (!current || !canEditSetup())
+		return;
+	auto descriptor = Json::parse(*current);
+	descriptor["seed"] = descriptor.at("seed").get<std::uint32_t>() + 1u;
+	useScriptGenerator(descriptor.dump());
+}
+
 } // namespace Online

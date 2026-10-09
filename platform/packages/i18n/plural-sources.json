@@ -1,0 +1,110 @@
+[
+  {
+    "singular": "{slot0} day",
+    "plural": "{slot0} days"
+  },
+  {
+    "singular": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+    "plural": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only."
+  },
+  {
+    "singular": "Current {slot0} day and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+    "plural": "Current {slot0} days and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules."
+  },
+  {
+    "singular": "{slot0}  {slot1} credit available",
+    "plural": "{slot0}  {slot1} credits available"
+  },
+  {
+    "singular": "{slot0} · {slot1} second",
+    "plural": "{slot0} · {slot1} seconds"
+  },
+  {
+    "singular": "Buy {slot0} credit · {slot1}",
+    "plural": "Buy {slot0} credits · {slot1}"
+  },
+  {
+    "singular": "{slot0} credit available · {slot1} reserved",
+    "plural": "{slot0} credits available · {slot1} reserved"
+  },
+  {
+    "singular": "{slot0} credit · {slot1}  {slot2}",
+    "plural": "{slot0} credits · {slot1}  {slot2}"
+  },
+  {
+    "singular": "{slot0} credit available",
+    "plural": "{slot0} credits available"
+  },
+  {
+    "singular": "{slot0} credit reserved for work in progress.",
+    "plural": "{slot0} credits reserved for work in progress."
+  },
+  {
+    "singular": "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+    "plural": "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates."
+  },
+  {
+    "singular": "{slot0}: {slot1} · {slot2} credit",
+    "plural": "{slot0}: {slot1} · {slot2} credits"
+  },
+  {
+    "singular": "{slot0} credit — {slot1}",
+    "plural": "{slot0} credits — {slot1}"
+  },
+  {
+    "singular": "Last {slot0} day",
+    "plural": "Last {slot0} days"
+  },
+  {
+    "singular": "Win rate, {slot0} day",
+    "plural": "Win rate, {slot0} days"
+  },
+  {
+    "singular": "{slot0} terrain · {slot1} resources · revision {slot2}",
+    "plural": "{slot0} terrains · {slot1} resources · revision {slot2}"
+  },
+  {
+    "singular": "{slot0} × {slot1} · {slot2} player",
+    "plural": "{slot0} × {slot1} · {slot2} players"
+  },
+  {
+    "singular": "{slot0} × {slot1} · {slot2} player · Private until published",
+    "plural": "{slot0} × {slot1} · {slot2} players · Private until published"
+  },
+  {
+    "singular": "By {slot0} · {slot1} terrain · {slot2} resources",
+    "plural": "By {slot0} · {slot1} terrains · {slot2} resources"
+  },
+  {
+    "singular": "{slot0} terrain · {slot1} resources · {slot2}",
+    "plural": "{slot0} terrains · {slot1} resources · {slot2}"
+  },
+  {
+    "singular": " · {slot0} disconnect",
+    "plural": " · {slot0} disconnects"
+  },
+  {
+    "singular": "{count} team · ",
+    "plural": "{count} teams · "
+  },
+  {
+    "singular": " · {count} team",
+    "plural": " · {count} teams"
+  },
+  {
+    "singular": "{count} player on this page",
+    "plural": "{count} players on this page"
+  },
+  {
+    "singular": "{count} version",
+    "plural": "{count} versions"
+  },
+  {
+    "singular": "{count} credit",
+    "plural": "{count} credits"
+  },
+  {
+    "singular": "{slot0} · {count} image",
+    "plural": "{slot0} · {count} images"
+  }
+]

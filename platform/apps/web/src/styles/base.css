@@ -115,3 +115,24 @@ img {
     scroll-behavior: auto !important;
   }
 }
+
+/* Source text and editor coordinates retain their writing direction in RTL locales. */
+pre,
+code,
+.monaco-editor {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.as-source,
+.building-json,
+input[type='url'],
+input[name='code'] {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Hue gradients, playback time and numeric slider axes retain the same orientation. */
+input[type='range'] {
+  direction: ltr;
+}

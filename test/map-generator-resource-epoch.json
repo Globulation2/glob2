@@ -1,66 +1,67 @@
 {
   "resource_epoch": 1,
-  "description": "Full map hashes after resource sprites stopped consuming simulation RNG. Topology hashes exclude stock quantities but include terrain, source identities and colony starts. Historical full hashes retain the pre-epoch reference. Rows require independently verified archived map comparisons.",
+  "description": "Full map hashes for resource epoch 1 at simulation revision 40, after placement stocks moved to map-owned ResourcePlacement RNG. Topology hashes exclude stock quantities but include vertex terrain, source identities and colony starts. Historical full and topology references are unchanged; all five topology checks passed on GCC 11 and GCC 13, with identical current full hashes. These five checks do not establish historical topology equivalence for every generator golden row. macOS full rows await a macOS run.",
   "platforms": {
     "linux-x86_64": {
       "canals": {
         "historical_full": 16622643961647829752,
-        "topology": 1342704325069643704,
-        "full": 11099226097251723814
+        "topology": 6348996818089081022,
+        "full": 6840133876837962579
       },
       "caravanserai": {
         "historical_full": 6244602504248136250,
-        "topology": 16571860465599968285,
-        "full": 7881860256827117520
+        "topology": 3089921906549973481,
+        "full": 3708140998014682865
       },
       "fingerprint": {
         "historical_full": 5648058033288605271,
-        "topology": 8437600554994148324,
-        "full": 3308641788709647431
+        "topology": 13975002589605011184,
+        "full": 13107344764269446218
       },
       "honeycomb-isle": {
         "historical_full": 5908701397362810997,
-        "topology": 10559024323253052986,
-        "full": 9145829052127692952
+        "topology": 10716426061597934434,
+        "full": 3103427619339799392
       },
       "maze": {
         "historical_full": 6132248727033081699,
-        "topology": 401563344924014212,
-        "full": 5504856400217732380
+        "topology": 8061784440331878678,
+        "full": 251410384669209409
       }
     },
     "macos-arm64": {
       "canals": {
         "historical_full": 16622643961647829752,
-        "topology": 1342704325069643704,
-        "full": 11099226097251723814
+        "topology": 6348996818089081022,
+        "full": 6840133876837962579
       },
       "caravanserai": {
         "historical_full": 6244602504248136250,
-        "topology": 16571860465599968285,
-        "full": 7881860256827117520
+        "topology": 3089921906549973481,
+        "full": 3708140998014682865
       },
       "fingerprint": {
         "historical_full": 15850274609968439542,
-        "topology": 11062457841233645806,
-        "full": 16881829834589485263
+        "topology": 12595387656138280966,
+        "full": 9431081131420941301
       },
       "honeycomb-isle": {
         "historical_full": 5908701397362810997,
-        "topology": 10559024323253052986,
-        "full": 9145829052127692952
+        "topology": 10716426061597934434,
+        "full": 3103427619339799392
       },
       "maze": {
         "historical_full": 6132248727033081699,
-        "topology": 401563344924014212,
-        "full": 5504856400217732380
+        "topology": 8061784440331878678,
+        "full": 251410384669209409
       }
     }
   },
   "portable_topology": {
-    "maze": 401563344924014212,
-    "canals": 1342704325069643704,
-    "caravanserai": 16571860465599968285,
-    "honeycomb-isle": 10559024323253052986
-  }
+    "maze": 8061784440331878678,
+    "canals": 6348996818089081022,
+    "caravanserai": 3089921906549973481,
+    "honeycomb-isle": 10716426061597934434
+  },
+  "simulation_revision": 40
 }

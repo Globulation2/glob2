@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+vi.mock('../src/state.tsx', () => ({ useSession: () => ({ account: { id: 'owner' } }) }));
 import { act, cleanup, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { StudioProgress, StudioRequest } from '@glob2/protocol';

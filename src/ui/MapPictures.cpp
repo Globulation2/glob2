@@ -40,7 +40,7 @@ GAGCore::DrawableSurface *MapPictures::generator(const std::string &generatorId)
 		try
 		{
 			GenerationRequest request;
-			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(generatorId));
+			request.setMethodDefaults(GeneratorRegistry::active().idOf(generatorId));
 			request.wDec = request.hDec = 7;
 			request.nbTeams = 2;
 			request.seed = 1;

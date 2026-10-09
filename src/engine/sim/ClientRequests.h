@@ -46,6 +46,7 @@ public:
 		Uint8 overlay = 0;
 		//! Bit mask of debug layers the client displays.
 		Uint32 debugLayers = 0;
+        bool operator==(const ClientView&) const = default;
 	};
 
 	// The view is written by the client while drawing and read by the simulation

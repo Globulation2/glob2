@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Selesaikan proses masuk di peramban Anda. Permainan akan berlanjut otomatis setelah selesai.
 [hub browser did not open]
-
+Peramban Anda tidak terbuka. Buka halaman masuk untuk melanjutkan.
 [hub compare code %0]
-
+Jika diminta, pastikan halaman menampilkan %0.
 [hub code copied]
-
+Kode disalin
 [settings Finish in your browser. The game continues by itself.]
-
+Selesaikan di peramban Anda. Permainan akan berlanjut otomatis.
 [music set]
-
+Paket musik
 [random music set]
-
+Acak tiap pertandingan
 [playing music set %0]
-
+Sedang diputar: %0
 [music set failed]
-
+Tidak dapat memuat paket musik ini.
 [settings Music set]
-
+Paket musik
 [settings Random each match]
-
+Pilih Acak untuk memilih musik latar pada awal tiap pertandingan.
 [settings Edge scrolling]
-
+Gulir di tepi
 [settings Edge scrolling in fullscreen]
-
+Gulir di tepi dalam layar penuh
 [settings Edge scrolling in windowed mode]
-
+Gulir di tepi dalam mode jendela
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Geser peta permainan dan editor saat tetikus mencapai tepi jendela.
 [AI strategy]
 Strategi AI
 [start recording]
@@ -4625,9 +4625,9 @@ Perekaman
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Rekam permainan Anda sebagai video MP4 bersuara. Perekaman memerlukan FFmpeg dengan enkoder libx264 dan AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Rekam permainan sebagai video MP4 dengan suara.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Perekaman menggunakan resolusi render penuh pada 30 bingkai per detik.
 [settings FFmpeg is ready.]
 FFmpeg siap.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Unit terluka mundur
 [Units can die]
 Unit dapat mati
 [Upgrades]
-
+Peningkatan
 [No stockpile]
 Tidak ada
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Unit yang terluka kembali untuk dirawat alih-alih bertarung sampai mati.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Unit mati saat HP-nya habis. Nonaktifkan agar berhenti di 1 HP.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Unit naik level di bangunan pelatihan dan bangunan dapat ditingkatkan. Perbaikan tetap tersedia saat opsi ini dimatikan.
 [stat group work]
 Waktu pekerja
 [stat worker time]
@@ -5309,235 +5309,235 @@ kekuatan
 [stat view by place]
 Per tempat
 [AI Library]
-
+Pustaka AI
 [Authoring guide]
-
+Panduan pembuatan
 [Beginner-friendly]
-
+Ramah pemula
 [Defensive]
-
+Bertahan
 [Discover]
-
+Jelajahi
 [Download & install]
-
+Unduh dan pasang
 [Downloading AI…]
-
+Mengunduh AI…
 [Expansion]
-
+Ekspansi
 [Experimental]
-
+Eksperimental
 [Favourite]
-
+Favoritkan
 [Favourited]
-
+Difavoritkan
 [Favourites]
-
+Favorit
 [Got it]
-
+Mengerti
 [How AIs work]
-
+Cara kerja AI
 [Install selected version]
-
+Pasang versi yang dipilih
 [Installed]
-
+Terpasang
 [Invalid AI catalogue response]
-
+Respons katalog AI tidak valid
 [JavaScript API reference]
-
+Referensi API JavaScript
 [Like]
-
+Sukai
 [Liked]
-
+Disukai
 [Loading AI library…]
-
+Memuat pustaka AI…
 [Most downloaded]
-
+Paling banyak diunduh
 [Most liked]
-
+Paling banyak disukai
 [Newest]
-
+Terbaru
 [No AIs match these filters.]
-
+Tidak ada AI yang cocok dengan filter ini.
 [Not validated for this game version]
-
+Belum divalidasi untuk versi permainan ini
 [Open AI Library]
-
+Buka Pustaka AI
 [Open AI page]
-
+Buka halaman AI
 [Passed compatibility checks]
-
+Lulus pemeriksaan kompatibilitas
 [Recently updated]
-
+Baru diperbarui
 [Rush]
-
+Serangan cepat
 [Search]
-
+Cari
 [Share your AI]
-
+Bagikan AI Anda
 [Show more]
-
+Tampilkan lagi
 [Sign in through Online settings to like and favourite AIs.]
-
+Masuk melalui pengaturan Daring untuk menyukai dan memfavoritkan AI.
 [Starter project]
-
+Proyek awal
 [downloads of this version]
-
+unduhan versi ini
 [downloads]
-
+unduhan
 [Update available]
-
+Pembaruan tersedia
 [Browse versions]
-
+Jelajahi versi
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Unduh AI, lalu pilih untuk slot komputer dalam permainan lokal. Versi terpasang dapat digunakan luring. Pembaruan memengaruhi permainan berikutnya; permainan tersimpan tetap menggunakan kode aslinya.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Pemeriksaan kompatibilitas tidak menjamin keamanan atau kemampuan bermain. Hanya jalankan kode dari pembuat yang Anda percayai.
 [Back to results]
-
+Kembali ke hasil
 [music 2–5 minutes]
-
+2–5 menit
 [music 5–15 minutes]
-
+5–15 menit
 [music AI-generated]
-
+Dihasilkan AI
 [music All music]
-
+Semua musik
 [music All open licences]
-
+Semua lisensi terbuka
 [music Any duration]
-
+Semua durasi
 [music Audition each mood for eight seconds]
-
+Dengarkan tiap suasana selama delapan detik
 [music Back]
-
+Kembali
 [music Browse]
-
+Jelajahi
 [music Building]
-
+Meningkat
 [music Calm]
-
+Tenang
 [music Calm → Building → Combat]
-
+Tenang → Meningkat → Pertempuran
 [music Choose Building]
-
+Pilih suasana Meningkat
 [music Choose Calm]
-
+Pilih suasana Tenang
 [music Choose Combat]
-
+Pilih suasana Pertempuran
 [music Choose ZIP]
-
+Pilih ZIP
 [music Choose a music file.]
-
+Pilih berkas musik.
 [music Combat]
-
+Pertempuran
 [music Could not open this music set.]
-
+Tidak dapat membuka paket musik ini.
 [music Credits, downloads and reporting]
-
+Kredit, unduhan, dan pelaporan
 [music Downloading music…]
-
+Mengunduh musik…
 [music Export recovery files]
-
+Ekspor berkas pemulihan
 [music Fade duration]
-
+Durasi pemudaran
 [music File selection cancelled or failed.]
-
+Pemilihan berkas dibatalkan atau gagal.
 [music Import ZIP]
-
+Impor ZIP
 [music Import ZIP or three tracks]
-
+Impor ZIP atau tiga lagu
 [music Import music]
-
+Impor musik
 [music Import three tracks]
-
+Impor tiga lagu
 [music Includes AI-generated audio]
-
+Memuat audio yang dihasilkan AI
 [music Install]
-
+Pasang
 [music Install selected]
-
+Pasang pilihan
 [music Installed]
-
+Terpasang
 [music Load more]
-
+Muat lagi
 [music Loading music…]
-
+Memuat musik…
 [music Most downloaded]
-
+Paling banyak diunduh
 [music Most liked]
-
+Paling banyak disukai
 [music Music decoding failed.]
-
+Gagal mendekode musik.
 [music Music download failed.]
-
+Pengunduhan musik gagal.
 [music Music installed.]
-
+Musik terpasang.
 [music Music installed. It is now available in Audio settings.]
-
+Musik terpasang. Kini tersedia di pengaturan Audio.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Musik belum tersimpan secara permanen. Coba simpan lagi sebelum keluar.
 [music Music library]
-
+Pustaka musik
 [music Music request failed.]
-
+Permintaan musik gagal.
 [music Newest]
-
+Terbaru
 [music No community music installed yet. Import files or browse the online library.]
-
+Belum ada musik komunitas yang terpasang. Impor berkas atau jelajahi pustaka daring.
 [music No music found.]
-
+Tidak ada musik yang ditemukan.
 [music Not AI-generated]
-
+Tidak dihasilkan AI
 [music Pause]
-
+Jeda
 [music Play]
-
+Putar
 [music Playback position]
-
+Posisi pemutaran
 [music Preview]
-
+Pratinjau
 [music Ready to import.]
-
+Siap diimpor.
 [music Remove]
-
+Hapus
 [music Reset to game behavior]
-
+Kembalikan ke perilaku permainan
 [music Retry saving]
-
+Coba simpan lagi
 [music Saved.]
-
+Tersimpan.
 [music Saving music…]
-
+Menyimpan musik…
 [music Search]
-
+Cari
 [music Search title, artist, description…]
-
+Cari judul, artis, deskripsi…
 [music Select for installation]
-
+Pilih untuk dipasang
 [music Share music on the web]
-
+Bagikan musik di web
 [music Some catalogue entries could not be read.]
-
+Beberapa entri katalog tidak dapat dibaca.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Penyimpanan gagal. Coba lagi atau ekspor berkas Anda sebelum keluar.
 [music Tag]
-
+Tag
 [music Test crossfades]
-
+Uji transisi silang
 [music Up to 2 minutes]
-
+Hingga 2 menit
 [music Use this music]
-
+Gunakan musik ini
 [music Validating music…]
-
+Memvalidasi musik…
 [settings Music library · Browse, install and import]
-
+Pustaka musik · Jelajahi, pasang, dan impor
 [music Filters]
-
+Filter
 [music Leave without saving]
-
+Keluar tanpa menyimpan
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Impor ZIP musik yang diunduh atau tiga lagu Opus. Metadata dan sampul dibaca dari lagu Tenang; tidak perlu berkas tambahan.
 [settings Target render FPS]
 Target FPS rendering
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ Bijih besi
 Silika
 [Cotton]
 Kapas
+[Jungle trees]
+Pohon rimba
+[Pine trees]
+Pohon pinus
+[Dead trees]
+Pohon mati
+[Ruins]
+Reruntuhan
+[Camp-site]
+Perkemahan
+[Ancient debris]
+Puing kuno
+[Scrub]
+Semak belukar
+[Tall grass]
+Rumput tinggi
+[Maize]
+Jagung
+[Potatoes]
+Kentang
+[Rice]
+Padi
+[Fish]
+Ikan
 [Reroll terrain look]
 Acak ulang tampilan medan
 [boulders]
-
+Batu besar
 [hedge]
-
+Pagar tanaman
 [thicket]
-
+Semak lebat
 [ridge_rock]
-
+Punggung batu
 [outcrop]
-
+Singkapan batu
 [dirt]
-
+Tanah
 [clay]
-
+Tanah liat
 [gravel]
-
+Kerikil
 [flower_meadow]
-
+Padang bunga
 [mud]
-
+Lumpur
 [marsh]
-
+Rawa
 [deep_snow]
-
+Salju tebal
 [scree]
-
+Lereng berbatu
 [dirt_track]
-
+Jalan tanah
 [boardwalk]
-
+Jalan papan
 [lava]
-
+Lava
 [ember_field]
-
+Padang bara
 [loam]
-
+Tanah lempung
 [moss]
-
+Lumut
 [spring_meadow]
-
+Padang musim semi
 [deep_water]
-
+Air dalam
 [dark_water]
-
+Air gelap
 [void_hole]
-
+Lubang
 [chasm]
-
+Jurang
 [terrain group water]
-
+Air
 [terrain group sand]
-
+Pasir
 [terrain group grass]
-
+Rumput
 [terrain group ice]
-
+Es
 [terrain group paths]
-
+Jalan
 [terrain group obstacles]
-
+Penghalang
 [terrain group ridges]
-
+Punggung bukit
 [terrain group barren]
-
+Tanah tandus
 [terrain group rough]
-
+Tanah sulit dilalui
 [terrain group lava]
-
+Lava
 [terrain group fertile]
-
+Tanah subur
 [terrain group deep-water]
-
+Air dalam
 [terrain group void]
-
+Kehampaan
 [experiment obstacle-terrain]
-
+Medan penghalang
 [experiment obstacle-terrain help]
-
+Menambahkan batu besar, pagar tanaman, dan semak lebat ke editor peta. Unit darat tidak dapat melintasinya dan proyektil terhalang; unit terbang dapat melewatinya. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
 [experiment ridge-terrain]
-
+Medan punggung bukit
 [experiment ridge-terrain help]
-
+Menambahkan punggung batu dan singkapan batu ke editor peta. Unit darat tidak dapat melintasinya, tetapi tembakan menara dan unit terbang dapat lewat di atasnya. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
 [experiment barren-terrain]
-
+Tanah tandus
 [experiment barren-terrain help]
-
+Menambahkan tanah, tanah liat, kerikil, dan padang bunga ke editor peta. Bangunan dapat didirikan di sana, tetapi tidak ada yang tumbuh di atas atau di sekitarnya, dan medan ini tidak dianggap sebagai tepi air.
 [experiment rough-terrain]
-
+Tanah sulit dilalui
 [experiment rough-terrain help]
-
+Menambahkan lumpur, rawa, salju tebal, dan lereng berbatu ke editor peta. Unit darat bergerak dengan sekitar dua pertiga kecepatan normal. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
 [experiment path-terrain]
-
+Medan jalan
 [experiment path-terrain help]
-
+Menambahkan jalan tanah dan jalan papan ke editor peta. Seperti jalur, unit darat bergerak dua kali lebih cepat dan bangunan dapat didirikan, tetapi tidak ada yang tumbuh.
 [experiment lava-terrain]
-
+Medan lava
 [experiment lava-terrain help]
-
+Menambahkan lava dan padang bara ke editor peta. Unit darat tidak dapat masuk; unit terbang yang melintas kehilangan kesehatan dengan cepat. Proyektil dapat lewat di atasnya.
 [experiment fertile-terrain]
-
+Tanah subur
 [experiment fertile-terrain help]
-
+Menambahkan tanah lempung, lumut, dan padang musim semi ke editor peta. Mendukung bangunan dan tanaman serta mengairi tanah di sekitarnya lebih kuat daripada air.
 [experiment deep-water-terrain]
-
+Air dalam
 [experiment deep-water-terrain help]
-
+Menambahkan air dalam dan air gelap ke editor peta. Perenang melintas lebih lambat, ganggang tidak tumbuh, dan medan ini tetap mengairi lahan di sekitarnya.
 [experiment void-terrain]
-
+Medan kehampaan
 [experiment void-terrain help]
-
+Menambahkan lubang dan jurang ke editor peta. Tidak ada yang dapat melintasinya, termasuk unit terbang, dan proyektil berhenti di tepinya.
 [terrain group custom]
-
+Kustom
 [terrain group classic]
-
+Tanah klasik
 [terrain rule walkable]
-
+Dapat dilalui pejalan
 [terrain rule swimmable]
-
+Dapat direnangi
 [terrain rule impassable]
-
+Tidak dapat dilalui
 [terrain rule no flying]
-
+Tidak dapat diterbangi
 [terrain rule buildable]
-
+Dapat dibangun
 [terrain rule speed %0]
-
+Kecepatan %0%
 [terrain rule crops grow]
-
+Tanaman tumbuh
 [terrain rule irrigates]
-
+Mengairi tanah sekitar
 [terrain rule stops nearby growth]
-
+Menghentikan pertumbuhan sekitar
 [terrain rule blocks shots]
-
+Menghalangi tembakan
 [terrain rule hurts walkers]
-
+Melukai pejalan
 [terrain rule hurts fliers]
-
+Melukai unit terbang
 [terrain palette hint]
-
+Pilih kuas. Anggota kelompok memiliki aturan yang sama dan hanya berbeda tampilannya.
 [terrain rule algae grow]
-
+Ganggang tumbuh
 [terrain palette experiments hint]
-
+Pilih kuas. Kelompok medan tambahan muncul setelah eksperimennya diaktifkan di Pengaturan > Eksperimen.
 [brush valid on %0]
-
+Dapat ditempatkan di: %0
 [brush valid nowhere]
-
+Tidak dapat ditempatkan di medan mana pun pada peta ini
 [brush requires experiment %0]
-
+Memerlukan eksperimen %0
 [brush resources custom]
-
+Sumber daya yang diimpor
 [brush section zones]
-
+Zona
 [brush section areas]
-
+Area
 [brush section tools]
-
+Alat
 [brush clearing area]
-
+Area pembersihan
 [editor unsaved title]
-
+Perubahan belum tersimpan
 [editor quit unsaved]
-
+Simpan perubahan peta ini sebelum keluar dari editor?
 [editor load unsaved]
-
+Simpan perubahan peta ini sebelum membuka peta lain?
 [editor save]
-
+Simpan…
 [editor discard]
-
+Jangan simpan
 [editor share never saved]
-
+Peta dibagikan dari berkas tersimpan. Simpan peta ini dahulu, lalu bagikan.
 [editor share unsaved]
-
+Peta ini memiliki perubahan yang belum tersimpan. Berbagi akan mengunggah berkas tersimpan.
 [editor save and share]
-
+Simpan dan bagikan…
 [editor share saved version]
-
+Bagikan versi tersimpan
 [editor reroll confirm]
-
+Acak ulang tampilan setiap petak medan? Jenis medan dan permainan tetap sama. Tindakan ini tidak dapat dibatalkan.
 [editor reroll]
-
+Acak ulang
 [editor map saved]
-
+Peta tersimpan
 [editor map shared]
-
+Peta dibagikan secara daring
 [editor save needs fertility]
-
+Penyimpanan memerlukan peta kesuburan, sehingga dibatalkan. Tekan OK untuk mencoba lagi.
 [editor fertility stale]
-
+Peta kesuburan kedaluwarsa · Klik untuk memperbarui
 [No definition files found in %0]
-
+Tidak ada berkas definisi yang ditemukan di %0
 [From device…]
-
+Dari perangkat…
 [replace existing file %0?]
-
+Berkas bernama "%0" sudah ada. Ganti?
 [Replace]
-
+Ganti
 [Keep existing file]
-
+Pertahankan berkas lama
 [editor menu save]
-
+Simpan peta
 [editor menu load]
-
+Buka peta…
 [editor menu import terrain]
-
+Impor definisi medan…
 [editor menu import resources]
-
+Impor definisi sumber daya…
 [editor menu teams]
-
+Tim…
 [editor menu scenario]
-
+Skenario…
 [editor menu reroll]
-
+Acak ulang tampilan medan…
 [editor menu file]
-
+Berkas
 [editor menu map]
-
+Peta
 [no resource growth areas]
-
+Area tanpa pertumbuhan
 [dock flags and units]
-
+Bendera dan unit
 [dock minimap]
-
+Peta mini
 [dock search brushes]
-
+Cari kuas
 [dock brush shape %0]
-
+Bentuk kuas %0
 [dock brush]
-
+Kuas
 [dock brush paint]
-
+Lukis
 [dock brush erase]
-
+Hapus
 [dock enable for map]
-
+Aktifkan untuk peta ini
 [dock enable experiment %0]
-
+Aktifkan %0
 [dock enable experiment hint %0]
-
+Mengaktifkan eksperimen %0 hanya untuk peta ini.
 [dock area number]
-
+Area
 [dock building level]
-
+Level
 [dock unit level]
-
+Level unit
 [dock no brushes match]
-
+Tidak ada kuas yang cocok dengan pencarian.
 [dock active team]
-
+Tim aktif
 [dock team count %0]
-
+Tim pada peta ini: %0
 [dock add team]
-
+Tambah tim
 [dock remove team]
-
+Hapus tim
 [dock nothing selected]
-
+Tidak ada yang dipilih.
 [dock no properties]
-
+Objek ini tidak memiliki properti yang dapat disunting.
 [focus brush search]
-
+Cari kuas
 [switch to resources view]
-
+Beralih ke tampilan sumber daya
 [dock resources base]
-
+Sumber daya standar
 [dock fertility stale]
-
+Peta kesuburan kedaluwarsa.
 [dock fertility refresh]
-
+Perbarui kesuburan
 [Enabled %0 for this map]
-
+%0 diaktifkan untuk peta ini
 [editor fertility tap refresh]
-
+Peta kesuburan kedaluwarsa: ketuk untuk memperbarui
+[editor menu import set]
+Impor Paket Medan dan Sumber Daya
+[editor menu set library]
+Pustaka Paket
+[set library loading]
+Memuat paket…
+[set library downloading]
+Mengunduh rilis yang ditentukan…
+[set library connection error]
+Tidak dapat memuat paket. Periksa koneksi Anda dan coba lagi.
+[set library hash error]
+Paket unduhan gagal dalam pemeriksaan hash.
+[set library package error]
+Paket tidak valid.
+[set library listing error]
+Daftar paket tidak valid.
+[set library release error]
+Rilis paket tidak valid.
+[set library selection help]
+Pilih entri yang akan diimpor. Sumber daya kustom yang diperlukan disertakan otomatis.
+[set library empty]
+Tidak ada paket yang ditemukan.
+[set library release help]
+Pilih rilis tertentu untuk diperiksa dan diimpor.
+[set library heading]
+Paket medan dan sumber daya
+[set library browse]
+Jelajahi pustaka daring
+[set library local]
+Konten peta, kredit, dan suntingan lokal
+[set library local help]
+Sunting salinan konten yang tersimpan pada peta ini. Kredit rilis asli tetap disertakan. Perubahan tidak memperbarui peta lain atau rilis daring.
+[set library apply]
+Terapkan perubahan lokal
+[set library updated]
+Konten lokal diperbarui.
+[set library search hint]
+Cari tema dan pembuat
+[set library search]
+Cari
+[set library set]
+Paket
+[set library update help]
+Ini mengganti medan dan sumber daya yang cocok yang sudah ditempatkan, termasuk suntingan lokal. Entri yang dihapus tetap memakai rilis lama. Jumlah bahan yang ada dibatasi sesuai kapasitas baru.
+[set library import]
+Impor entri yang dipilih
+[set library next]
+Halaman berikutnya
+[set library back]
+Kembali ke hasil
+[set library license %0]
+Lisensi: %0
+[set library release %0]
+rilis %0
+[set library replace %0]
+Ganti entri yang ditempatkan dari rilis %0
+[set library preview limit]
+Pratinjau ditampilkan untuk 64 entri pertama. Semua entri tetap dapat dipilih.
+[set library definition]
+Definisi properti (JSON)
+[set library artwork]
+Pemetaan gambar medan (JSON)
+[settings Map generators]
+Generator peta
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Impor paket generator, lalu pilih bentang alamnya saat membuat peta atau permainan.
+[settings Import map generator]
+Impor generator peta
+[settings No custom map generators installed.]
+Belum ada generator peta khusus yang terpasang.
+[settings Replace package]
+Ganti paket
+[settings Export package]
+Ekspor paket
+[settings Remove generator]
+Hapus generator
+[settings Saving generator library…]
+Menyimpan pustaka generator…
+[settings Could not read generator package.]
+Tidak dapat membaca paket generator.
+[settings Generator library saved.]
+Pustaka generator disimpan.
+[settings Storage could not be saved. The previous library is retained.]
+Data tidak dapat disimpan. Pustaka sebelumnya dipertahankan.
+[settings Waiting for file selection or storage…]
+Menunggu pemilihan berkas atau penyimpanan…
+[settings File selection is unavailable.]
+Pemilihan berkas tidak tersedia.
+[settings Package export is unavailable.]
+Ekspor paket tidak tersedia.
+[stat band area upkeep]
+Pemeliharaan area

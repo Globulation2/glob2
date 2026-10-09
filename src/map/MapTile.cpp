@@ -16,13 +16,11 @@ void Map::tile(int rx, int ry)
 
 	const int oldW = w, oldH = h, oldWDec = wDec;
 	const auto oldResources = resourceCells;
-	const auto oldLegacyTerrain = legacyTerrain;
 	const auto oldScriptAreas = scriptAreaCells;
-	const auto oldTerrain = terrainIds;
+	const auto oldTerrain = vertexTerrain;
     const auto oldStockIndices=resourceStockIndices;
     const auto oldStocks=resourceStocks;
 	const std::vector<Uint32> oldDiscovered = mapDiscovered;
-	const std::vector<Uint8> oldUndermap(undermap, undermap + size);
 	std::string names[9];
 	for (int n = 0; n < 9; n++)
 		names[n] = getAreaName(n);
@@ -37,9 +35,8 @@ void Map::tile(int rx, int ry)
 			// units and buildings are placed again per colony, and the
 			// per-team zones belong to teams that are rebuilt
 			resourceCells[dst] = oldResources[src];
-			legacyTerrain[dst] = oldLegacyTerrain[src];
 			scriptAreaCells[dst] = oldScriptAreas[src];
-			terrainIds[dst] = oldTerrain[src];
+			vertexTerrain[dst] = oldTerrain[src];
 			occupancyCells[dst].building = NOGBID;
 			occupancyCells[dst].groundUnit = NOGUID;
 			occupancyCells[dst].airUnit = NOGUID;
@@ -48,7 +45,6 @@ void Map::tile(int rx, int ry)
 			areaCells[dst].clear = 0;
 			areaCells[dst].farm = 0;
 			mapDiscovered[dst] = oldDiscovered[src];
-			undermap[dst] = oldUndermap[src];
 		}
 	markAllChanges();
     rebuildResourceState();

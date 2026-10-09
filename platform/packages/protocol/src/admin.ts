@@ -36,7 +36,7 @@ export const AdminMuteRequest = Strict({
 /** POST /api/v1/admin/accounts/{id}/ban (administrators only); banned false lifts a ban. */
 export const AdminBanRequest = Strict({ banned: Type.Boolean(), reason: Type.Optional(Reason) });
 /** POST /api/v1/admin/accounts/{id}/role (administrators only). */
-export const AdminRoleRequest = Strict({ role: AccountRole });
+export const AdminRoleRequest = Strict({ role: AccountRole, reason: Type.Optional(Reason) });
 
 export type AdminRenameRequest = Static<typeof AdminRenameRequest>;
 export type AdminMuteRequest = Static<typeof AdminMuteRequest>;

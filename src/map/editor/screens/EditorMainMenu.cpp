@@ -32,18 +32,32 @@ Element EditorMainMenu::build(const Presentation &p)
 
 void EditorMainMenu::newMap()
 {
-    screens.push(std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &screens), [this](GAGGUI::Screen& screen, int result) {
-        if (result != NewMapScreen::OK) return;
-        screens.push(std::make_unique<EditorGenerateScreen>(static_cast<NewMapScreen&>(screen).descriptor,
-            static_cast<Uint32>(std::time(nullptr))), [this](GAGGUI::Screen& generated, int result) {
-                if (result == 1)
-                    screens.push(std::make_unique<MapEditorScreen>(screens, static_cast<EditorGenerateScreen&>(generated).takeEditor()));
-                else if (result == 2) {
-                    screens.push(std::make_unique<MessageScreen>(tr("[ERROR_CANT_GENERATE_MAP]"),
-                        std::vector<std::string>{tr("[ok]")}), [this](GAGGUI::Screen&, int) { newMap(); });
-                } else newMap();
-            });
-    });
+	screens.push(
+		std::make_unique<NewMapScreen>(GeneratorRegistry::activeSnapshot(), &screens),
+		[this](GAGGUI::Screen &screen, int result)
+		{
+			if (result != NewMapScreen::OK)
+				return;
+			screens.push(
+				std::make_unique<EditorGenerateScreen>(
+					static_cast<NewMapScreen &>(screen).descriptor,
+					static_cast<Uint32>(std::time(nullptr))),
+				[this](GAGGUI::Screen &generated, int result)
+				{
+					if (result == 1)
+						screens.push(std::make_unique<MapEditorScreen>(
+							screens, static_cast<EditorGenerateScreen &>(generated).takeEditor()));
+					else if (result == 2)
+					{
+						screens.push(
+							std::make_unique<MessageScreen>(tr("[ERROR_CANT_GENERATE_MAP]"),
+															std::vector<std::string>{tr("[ok]")}),
+							[this](GAGGUI::Screen &, int) { newMap(); });
+					}
+					else
+						newMap();
+				});
+		});
 }
 
 void EditorMainMenu::loadMap()

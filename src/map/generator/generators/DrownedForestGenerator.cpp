@@ -70,19 +70,19 @@ int localTile(const Torus &t, const Clearing &g, int x, int y)
 		x = -y;
 		y = old;
 	}
-	return t.at(g.site % t.w + x, g.site / t.w + y);
+	return t.at(t.remainderX(g.site) + x, g.site / t.w + y);
 }
 int homeAnchor(const Torus &t, const Clearing &g)
 {
-	const int dx = t.offsetX(g.site % t.w, g.wheatSite % t.w);
+	const int dx = t.offsetX(t.remainderX(g.site), t.remainderX(g.wheatSite));
 	const int dy = t.offsetY(g.site / t.w, g.wheatSite / t.w);
 	const double length = std::max(1.0, std::hypot(dx, dy));
-	return t.at(g.site % t.w + int(std::lround(10 * dx / length)),
+	return t.at(t.remainderX(g.site) + int(std::lround(10 * dx / length)),
 				g.site / t.w + int(std::lround(10 * dy / length)));
 }
 ShapePoint point(const Torus &t, int i)
 {
-	return {double(i % t.w), double(i / t.w)};
+	return {double(t.remainderX(i)), double(i / t.w)};
 }
 std::string requestFailure(const GenerationRequest &r)
 {
@@ -119,7 +119,7 @@ std::vector<int> plot(Layout &L, int site, double rx, double ry, const std::vect
 {
 	std::vector<int> corners;
 	const auto excluded = dilate(L.t, tileCorners(L.t, tileMask(L.t, avoid)), 2);
-	const int cx = site % L.t.w, cy = site / L.t.w;
+	const int cx = L.t.remainderX(site), cy = site / L.t.w;
 	for (int dy = -int(ry) - 3; dy <= int(ry) + 3; ++dy)
 		for (int dx = -int(rx) - 3; dx <= int(rx) + 3; ++dx)
 		{
@@ -153,7 +153,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	std::vector<unsigned char> boundary(n, 0);
 	for (int i = 0; i < n; ++i)
 		for (const auto &d : kCardinalSteps)
-			if (L.labels[i] != L.labels[t.at(i % t.w + d[0], i / t.w + d[1])])
+			if (L.labels[i] != L.labels[t.at(t.remainderX(i) + d[0], i / t.w + d[1])])
 				boundary[i] = 1;
 	const auto inland = stepsFrom(t, boundary);
 	const auto noise = periodicNoise(t.w, t.h, 5, c.stream("drowned-grain"));
@@ -165,7 +165,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	for (int i = 0; i < n; ++i)
 	{
 		const int j = L.labels[i];
-		const int dx = t.offsetX(sites[j].x, i % t.w), dy = t.offsetY(sites[j].y, i / t.w);
+		const int dx = t.offsetX(sites[j].x, t.remainderX(i)), dy = t.offsetY(sites[j].y, i / t.w);
 		const double radius = coast[j].radiusAt(std::atan2(dy, dx));
 		if (inland[i] > 3 + noise[i] * 3 / 65536 && dx * dx + dy * dy < radius * radius)
 			L.terrain[i] = GRASS;
@@ -190,14 +190,14 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 					continue;
 				for (int f = 0; f < 8; ++f)
 				{
-					const int farm = t.at(p % t.w + offsets[f][0], p / t.w + offsets[f][1]);
+					const int farm = t.at(t.remainderX(p) + offsets[f][0], p / t.w + offsets[f][1]);
 					if (L.labels[farm] != island || room[farm] < 7)
 						continue;
 					for (int w = 0; w < 8; ++w)
 					{
-						const int timber = t.at(p % t.w + offsets[w][0], p / t.w + offsets[w][1]);
+						const int timber = t.at(t.remainderX(p) + offsets[w][0], p / t.w + offsets[w][1]);
 						if (L.labels[timber] != island || room[timber] < 5 ||
-							t.dist2(farm % t.w, farm / t.w, timber % t.w, timber / t.w) < 18 * 18)
+							t.dist2(t.remainderX(farm), farm / t.w, t.remainderX(timber), timber / t.w) < 18 * 18)
 							continue;
 						const long score = std::min(room[p], 17) * 100 +
 										   std::min(room[farm], 10) * 80 +
@@ -235,7 +235,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		for (size_t j = 1; j < candidates.size(); ++j)
 		{
 			const int a = candidates[0].site, b = candidates[j].site;
-			const int distance = t.dist2(a % t.w, a / t.w, b % t.w, b / t.w);
+			const int distance = t.dist2(t.remainderX(a), a / t.w, t.remainderX(b), b / t.w);
 			if (distance > best)
 			{
 				best = distance;
@@ -265,15 +265,15 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		for (int i : clearing.wood)
 			keep[i] = 1;
 		keep = dilate(t, tileCorners(t, keep), 1);
-		const int fx = t.offsetX(best % t.w, clearing.wheatSite % t.w),
+		const int fx = t.offsetX(t.remainderX(best), t.remainderX(clearing.wheatSite)),
 				  fy = t.offsetY(best / t.w, clearing.wheatSite / t.w);
 		const double length = std::hypot(fx, fy);
-		const int pond = t.at(clearing.wheatSite % t.w + int(std::lround(11 * fx / length)),
+		const int pond = t.at(t.remainderX(clearing.wheatSite) + int(std::lround(11 * fx / length)),
 							  clearing.wheatSite / t.w + int(std::lround(11 * fy / length)));
 		for (int dy = -7; dy <= 7; ++dy)
 			for (int dx = -7; dx <= 7; ++dx)
 			{
-				const int i = t.at(pond % t.w + dx, pond / t.w + dy);
+				const int i = t.at(t.remainderX(pond) + dx, pond / t.w + dy);
 				if (dx * dx + dy * dy < 45 && L.labels[i] == island && ground[i] && !keep[i])
 					L.terrain[i] = WATER;
 			}
@@ -394,20 +394,20 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			neighbours.begin(), neighbours.end(),
 			[&](int a, int b)
 			{
-				return t.dist2(glade.site % t.w, glade.site / t.w, sites[a].x, sites[a].y) <
-					   t.dist2(glade.site % t.w, glade.site / t.w, sites[b].x, sites[b].y);
+				return t.dist2(t.remainderX(glade.site), glade.site / t.w, sites[a].x, sites[a].y) <
+					   t.dist2(t.remainderX(glade.site), glade.site / t.w, sites[b].x, sites[b].y);
 			});
 		if (neighbours.size() > 2)
 		{
 			const auto first = sites[neighbours.front()];
-			const double ax = t.offsetX(glade.site % t.w, first.x),
+			const double ax = t.offsetX(t.remainderX(glade.site), first.x),
 						 ay = t.offsetY(glade.site / t.w, first.y);
 			double least = 2;
 			size_t opposite = 1;
 			for (size_t j = 1; j < neighbours.size(); ++j)
 			{
 				const auto other = sites[neighbours[j]];
-				const double bx = t.offsetX(glade.site % t.w, other.x),
+				const double bx = t.offsetX(t.remainderX(glade.site), other.x),
 							 by = t.offsetY(glade.site / t.w, other.y);
 				const double dot =
 					(ax * bx + ay * by) / std::sqrt((ax * ax + ay * ay) * (bx * bx + by * by));
@@ -449,7 +449,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			for (int dy = -6; dy <= 6; ++dy)
 				for (int dx = -6; dx <= 6; ++dx)
 				{
-					const int i = t.at(shore % t.w + dx, shore / t.w + dy);
+					const int i = t.at(t.remainderX(shore) + dx, shore / t.w + dy);
 					if (allowed[i] && distance[i] > 0 && dx * dx + dy * dy < best)
 					{
 						landing = i;
@@ -461,16 +461,16 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			glade.exits.push_back(landing);
 			std::vector<StrokePoint> route;
 			int current = landing;
-			const double sx = glade.site % t.w, sy = glade.site / t.w;
+			const double sx = t.remainderX(glade.site), sy = glade.site / t.w;
 			while (distance[current] > 0)
 			{
-				route.push_back({sx + t.offsetX(glade.site % t.w, current % t.w),
+				route.push_back({sx + t.offsetX(t.remainderX(glade.site), t.remainderX(current)),
 								 sy + t.offsetY(glade.site / t.w, current / t.w), kRoadWidth});
 				int next = -1;
 				for (int dy = -1; dy <= 1; ++dy)
 					for (int dx = -1; dx <= 1; ++dx)
 					{
-						const int i = t.at(current % t.w + dx, current / t.w + dy);
+						const int i = t.at(t.remainderX(current) + dx, current / t.w + dy);
 						if (allowed[i] && distance[i] == distance[current] - 1 &&
 							(next < 0 || i < next))
 							next = i;
@@ -479,7 +479,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 					break;
 				current = next;
 			}
-			route.push_back({sx + t.offsetX(glade.site % t.w, current % t.w),
+			route.push_back({sx + t.offsetX(t.remainderX(glade.site), t.remainderX(current)),
 							 sy + t.offsetY(glade.site / t.w, current / t.w), kRoadWidth});
 			strokePath(lane, t, route);
 		}
@@ -540,7 +540,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 					const int b = landings[k].second;
 					if (distance[b] < 0)
 						continue;
-					const int straight = std::max(std::abs(t.offsetX(a % t.w, b % t.w)),
+					const int straight = std::max(std::abs(t.offsetX(t.remainderX(a), t.remainderX(b))),
 												  std::abs(t.offsetY(a / t.w, b / t.w)));
 					const int saving = distance[b] - straight;
 					if (saving > best)
@@ -553,12 +553,12 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			}
 			const int firstLanding = landings[first].second, lastLanding = landings[second].second;
 			g.site =
-				t.at(firstLanding % t.w + t.offsetX(firstLanding % t.w, lastLanding % t.w) / 2,
+				t.at(t.remainderX(firstLanding) + t.offsetX(t.remainderX(firstLanding), t.remainderX(lastLanding)) / 2,
 					 firstLanding / t.w + t.offsetY(firstLanding / t.w, lastLanding / t.w) / 2);
 			g.exits = {landings[first].second, landings[second].second};
 			const int firstTile = g.exits[0];
 			const double angle = std::atan2(t.offsetY(g.site / t.w, firstTile / t.w),
-											t.offsetX(g.site % t.w, firstTile % t.w));
+											t.offsetX(t.remainderX(g.site), t.remainderX(firstTile)));
 			g.turn = (int(std::lround(angle / (3.14159265358979323846 / 2))) + 6) % 4;
 			woodedIslands.push_back(g);
 		}
@@ -610,7 +610,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		const auto mouthA = point(t, shortcut.a);
 		strokePath(inlets, t,
 				   {{mouthA.x, mouthA.y, 1.3},
-					{mouthA.x + t.offsetX(shortcut.a % t.w, shortcut.b % t.w),
+					{mouthA.x + t.offsetX(t.remainderX(shortcut.a), t.remainderX(shortcut.b)),
 					 mouthA.y + t.offsetY(shortcut.a / t.w, shortcut.b / t.w), 1.3}});
 		for (int i = 0; i < n; ++i)
 			if (inlets[i] && L.labels[i] == glade.island && L.terrain[i] != WATER &&
@@ -700,7 +700,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 			bool shortcut = false;
 			for (const auto &s : L.shortcuts)
 				shortcut |=
-					t.dist2(glade.site % t.w, glade.site / t.w, s.a % t.w, s.a / t.w) < 100 * 100;
+					t.dist2(t.remainderX(glade.site), glade.site / t.w, t.remainderX(s.a), s.a / t.w) < 100 * 100;
 			if (shortcut && glade.town.size() >= 320 && glade.wheat.size() >= 60 &&
 				glade.wood.size() >= 20)
 				viable.push_back(glade);
@@ -856,7 +856,7 @@ BuildingArrangement nearbyBuildingGrid(const Torus &t, const std::vector<unsigne
 	std::vector<int> roots;
 	for (int i : entrances)
 	{
-		const int x = t.offsetX(t.at(ox, oy) % t.w, i % t.w);
+		const int x = t.offsetX(t.remainderX(t.at(ox, oy)), t.remainderX(i));
 		const int y = t.offsetY(t.at(ox, oy) / t.w, i / t.w);
 		if (x > 0 && x < 63 && y > 0 && y < 63)
 			roots.push_back(local.at(x, y));
@@ -919,7 +919,7 @@ void addJunctions(Layout &L, const std::vector<int> &homes, int size)
 		const auto &g = L.clearings[j];
 		if (g.wheat.size() < 30 || g.town.size() < 140)
 			continue;
-		const int x = g.site % t.w, y = g.site / t.w, radius = std::max(g.radius, 13);
+		const int x = t.remainderX(g.site), y = g.site / t.w, radius = std::max(g.radius, 13);
 		const auto room = nearbyBuildingGrid(
 			t, tileMask(t, g.town), walking,
 			{{x - radius, y - radius, x + radius + 1, y + radius + 1}, 4, 4, 2, 1},
@@ -950,8 +950,8 @@ void addJunctions(Layout &L, const std::vector<int> &homes, int size)
 	necks = dilate(t, necks, 3);
 	const auto connect = [&](Layout &layout, int from, int to)
 	{
-		const double x = from % t.w, y = from / t.w;
-		const int dx = t.offsetX(from % t.w, to % t.w), dy = t.offsetY(from / t.w, to / t.w);
+		const double x = t.remainderX(from), y = from / t.w;
+		const int dx = t.offsetX(t.remainderX(from), t.remainderX(to)), dy = t.offsetY(from / t.w, to / t.w);
 		const std::vector<StrokePoint> path{
 			{x, y, 2}, {x + dx * .5 - dy * .08, y + dy * .5 + dx * .08, 2}, {x + dx, y + dy, 2}};
 		if (strokeIntersectsMask(t, path, necks))
@@ -1001,7 +1001,7 @@ void addJunctions(Layout &L, const std::vector<int> &homes, int size)
 		{
 			bool nearbyJunction = false;
 			for (int q : attachments)
-				if (t.dist2(i % t.w, i / t.w, q % t.w, q / t.w) < 64)
+				if (t.dist2(t.remainderX(i), i / t.w, t.remainderX(q), q / t.w) < 64)
 					nearbyJunction = true;
 			if (!nearbyJunction)
 				attachments.push_back(i);
@@ -1020,7 +1020,7 @@ void addJunctions(Layout &L, const std::vector<int> &homes, int size)
 					int landing = -1, length = INT_MAX;
 					for (int tile : L.clearings[j].town)
 					{
-						const int d = t.dist2(q % t.w, q / t.w, tile % t.w, tile / t.w);
+						const int d = t.dist2(t.remainderX(q), q / t.w, t.remainderX(tile), tile / t.w);
 						if (d < length)
 						{
 							length = d;
@@ -1119,7 +1119,7 @@ void addJunctions(Layout &L, const std::vector<int> &homes, int size)
 				const int radius = std::max(g.radius, 13);
 				const auto arrangement =
 					arrangeBuildingGrid(t, tileMask(t, g.town), passable,
-										{{q % t.w - radius, q / t.w - radius, q % t.w + radius + 1,
+										{{t.remainderX(q) - radius, q / t.w - radius, t.remainderX(q) + radius + 1,
 										  q / t.w + radius + 1},
 										 4,
 										 4,
@@ -1164,7 +1164,7 @@ std::vector<int> occupiedClearings(const Game &game, const GenerationContext &c,
 			for (int i : team)
 			{
 				const int p = L.clearings[j].site;
-				const int d = L.t.dist2(p % L.t.w, p / L.t.w, i % L.t.w, i / L.t.w);
+				const int d = L.t.dist2(L.t.remainderX(p), p / L.t.w, L.t.remainderX(i), i / L.t.w);
 				if (d < distance)
 				{
 					best = j;
@@ -1183,10 +1183,10 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 	const DrownedForestOptions o(c.request);
 	Map &map = game.map;
 	const Torus &t = L.t;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int i = 0; i < t.size(); ++i)
 		if (L.forest[i])
-			map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 	const auto fertility = Fertility::forMap(map, false);
 	for (int j = 0; j < int(L.clearings.size()); ++j)
 	{
@@ -1201,16 +1201,16 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 			std::stable_sort(nearby.begin(), nearby.end(),
 							 [&](int a, int b)
 							 {
-								 return t.dist2(from % t.w, from / t.w, a % t.w, a / t.w) <
-										t.dist2(from % t.w, from / t.w, b % t.w, b / t.w);
+								 return t.dist2(t.remainderX(from), from / t.w, t.remainderX(a), a / t.w) <
+										t.dist2(t.remainderX(from), from / t.w, t.remainderX(b), b / t.w);
 							 });
 			int kit = 0;
 			for (int i : nearby)
-				if (fertility.at(i % t.w, i / t.w) > 0)
+				if (fertility.at(t.remainderX(i), i / t.w) > 0)
 				{
-					if (!map.isResource(i % t.w, i / t.w))
+					if (!map.isResource(t.remainderX(i), i / t.w))
 					{
-						map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+						map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 						++wheat;
 					}
 					if (++kit == 8)
@@ -1221,7 +1221,7 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 											(home ? kFarmWood : 0) + int(scaledCount(10, o.wood)));
 		double growth = 0;
 		for (int i : g.wheat)
-			growth += double(fertility.at(i % t.w, i / t.w)) / Fertility::kScale;
+			growth += double(fertility.at(t.remainderX(i), i / t.w)) / Fertility::kScale;
 		c.telemetry.measure(home ? "drowned-forest.home.wheat-growth-potential"
 								 : "drowned-forest.meadow.wheat-growth-potential",
 							growth, j);
@@ -1236,7 +1236,7 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 		}
 		// Preserve complete forward-base footprints and their immediate gathering
 		// faces even at maximum mineral and orchard abundance.
-		const int radius = std::max(g.radius, 13), gx = g.site % t.w, gy = g.site / t.w;
+		const int radius = std::max(g.radius, 13), gx = t.remainderX(g.site), gy = g.site / t.w;
 		// Reservation only needs the grid's complete rectangles; circulation is
 		// checked after settlement. Avoid a discarded whole-world flood per meadow.
 		const auto townMask = tileMask(t, g.town);
@@ -1267,7 +1267,7 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 		}
 		std::vector<int> edge;
 		for (int i : g.town)
-			if (!construction[i] && t.dist2(gx, gy, i % t.w, i / t.w) >
+			if (!construction[i] && t.dist2(gx, gy, t.remainderX(i), i / t.w) >
 										std::max(3, g.radius - 4) * std::max(3, g.radius - 4))
 				edge.push_back(i);
 		// Fractional rounding across meadows lets every 25% step affect the
@@ -1288,7 +1288,7 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 	{
 		const auto &g = L.clearings[homes[k]];
 		if (!placeSettlement(game, c, k, tileMask(t, g.town),
-							 MapGeneratorPoint(homeAnchor(t, g) % t.w, homeAnchor(t, g) / t.w),
+							 MapGeneratorPoint(t.remainderX(homeAnchor(t, g)), homeAnchor(t, g) / t.w),
 							 "drowned-settlements"))
 			return false;
 	}
@@ -1306,21 +1306,21 @@ bool buildWorld(Game &game, GenerationContext &c, const Layout &source,
 		for (int tile : reached.tiles)
 			for (const auto &d : kCardinalSteps)
 			{
-				const int i = t.at(tile % t.w + d[0], tile / t.w + d[1]);
-				if (!seen[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ALGA))
+				const int i = t.at(t.remainderX(tile) + d[0], tile / t.w + d[1]);
+				if (!seen[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ALGA))
 				{
 					seen[i] = 1;
 					shore.push_back(i);
-					placed += map.getResource(i % t.w, i / t.w).type == ALGA;
+					placed += map.getResource(t.remainderX(i), i / t.w).type == ALGA;
 				}
 			}
 		for (int i : shore)
 		{
 			if (placed >= 3)
 				break;
-			if (!map.isResource(i % t.w, i / t.w))
+			if (!map.isResource(t.remainderX(i), i / t.w))
 			{
-				map.setResourceByIndex(i % t.w, i / t.w, ALGA, 1);
+				map.setResourceByIndex(t.remainderX(i), i / t.w, ALGA, 1);
 				++placed;
 			}
 		}
@@ -1359,7 +1359,7 @@ bool independentExits(const Torus &t, const std::vector<unsigned char> &permanen
 			for (int dy = -2; dy <= 2; ++dy)
 				for (int dx = -2; dx <= 2; ++dx)
 				{
-					const int i = t.at(shore % t.w + dx, shore / t.w + dy);
+					const int i = t.at(t.remainderX(shore) + dx, shore / t.w + dy);
 					if (wide[i] && d[i] >= 1 && d[i] <= 60 && (goal < 0 || d[i] < d[goal]))
 						goal = i;
 				}
@@ -1376,7 +1376,7 @@ bool independentExits(const Torus &t, const std::vector<unsigned char> &permanen
 				for (int dy = -1; dy <= 1; ++dy)
 					for (int dx = -1; dx <= 1; ++dx)
 					{
-						const int i = t.at(goal % t.w + dx, goal / t.w + dy);
+						const int i = t.at(t.remainderX(goal) + dx, goal / t.w + dy);
 						if (wide[i] && d[i] == d[goal] - 1 && (next < 0 || i < next))
 							next = i;
 					}
@@ -1454,11 +1454,11 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		if (std::none_of(g.town.begin(), g.town.end(), [&](int i) { return reached[i] >= 0; }))
 			return "A neutral meadow is disconnected.";
 		for (int i : g.town)
-			if (map.getResource(i % t.w, i / t.w).type == WHEAT ||
-				map.getResource(i % t.w, i / t.w).type == WOOD)
+			if (map.getResource(t.remainderX(i), i / t.w).type == WHEAT ||
+				map.getResource(t.remainderX(i), i / t.w).type == WOOD)
 				return "A crop has invaded a building clearing at " + std::to_string(g.site) +
 					   " tile " + std::to_string(i) + " type " +
-					   std::to_string(map.getResource(i % t.w, i / t.w).type);
+					   std::to_string(map.getResource(t.remainderX(i), i / t.w).type);
 	}
 	const auto homes = occupiedClearings(game, c, L);
 	const auto building = potentialBuildingTiles(map);
@@ -1468,13 +1468,13 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		const auto &g = L.clearings[j];
 		int food = 0;
 		for (int i : g.wheat)
-			food += map.getResource(i % t.w, i / t.w).type == WHEAT;
+			food += map.getResource(t.remainderX(i), i / t.w).type == WHEAT;
 		if (food < 20 || g.town.size() < 100)
 			continue;
 		auto eligible = tileMask(t, g.town);
 		for (int i : g.town)
 			eligible[i] = building[i];
-		const int x = g.site % t.w, y = g.site / t.w, radius = std::max(g.radius, 13);
+		const int x = t.remainderX(g.site), y = g.site / t.w, radius = std::max(g.radius, 13);
 		const BuildingGrid grid{
 			{x - radius, y - radius, x + radius + 1, y + radius + 1}, 4, 4, 2, 1};
 		auto room = nearbyBuildingGrid(t, eligible, walk, grid, units[0], reached);
@@ -1490,9 +1490,9 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		const auto &g = L.clearings[homes[k]];
 		int grain = 0, timber = 0, algae = 0;
 		for (int i : g.wheat)
-			grain += map.getResource(i % t.w, i / t.w).type == WHEAT;
+			grain += map.getResource(t.remainderX(i), i / t.w).type == WHEAT;
 		for (int i : g.wood)
-			timber += map.getResource(i % t.w, i / t.w).type == WOOD;
+			timber += map.getResource(t.remainderX(i), i / t.w).type == WOOD;
 		if (grain < kFarmWheat || timber < kFarmWood)
 			return "A colony lost its guaranteed renewable crops.";
 		std::vector<unsigned char> seen(t.size(), 0);
@@ -1500,8 +1500,8 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 			if (distances.back()[i] >= 0 && distances.back()[i] <= 32)
 				for (const auto &d : kCardinalSteps)
 				{
-					const int q = t.at(i % t.w + d[0], i / t.w + d[1]);
-					if (!seen[q] && map.getResource(q % t.w, q / t.w).type == ALGA)
+					const int q = t.at(t.remainderX(i) + d[0], i / t.w + d[1]);
+					if (!seen[q] && map.getResource(t.remainderX(q), q / t.w).type == ALGA)
 					{
 						seen[q] = 1;
 						++algae;
@@ -1513,7 +1513,7 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 		const auto town = tileMask(t, g.town);
 		for (int i = 0; i < t.size(); ++i)
 			eligible[i] = eligible[i] && town[i];
-		const int x = g.site % t.w, y = g.site / t.w;
+		const int x = t.remainderX(g.site), y = g.site / t.w;
 		const BuildingGrid grid{{x - 14, y - 15, x + 15, y + 16}, 4, 4, 2, 1};
 		auto arrangement = nearbyBuildingGrid(t, eligible, walk, grid, units[k], distances.back());
 		if (!arrangement.failure.empty())
@@ -1526,8 +1526,8 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 				return "A meadow exit is blocked.";
 		auto permanent = walk;
 		for (int i = 0; i < t.size(); ++i)
-			if ((map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
-				map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))) && !town[i])
+			if ((map.canResourcesGrow(t.remainderX(i), i / t.w) && (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+				map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))) && !town[i])
 				permanent[i] = 0;
 		if (!independentExits(t, permanent, g))
 			return "A meadow lacks two independent three-wide exits.";
@@ -1561,8 +1561,8 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 	// join a town, its woodlot, or the surrounding woods even through a diagonal seam.
 	std::vector<int> plots(t.size(), -1);
 	for (int i = 0; i < t.size(); ++i)
-		if ((map.canResourcesGrow(i % t.w, i / t.w) && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) ||
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))))
+		if ((map.canResourcesGrow(t.remainderX(i), i / t.w) && (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) ||
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))))
 			plots[i] = 0;
 	for (int k = 0; k < int(L.clearings.size()); ++k)
 	{
@@ -1585,7 +1585,7 @@ std::string checkWorld(const Game &game, const GenerationContext &c, const Layou
 	for (const auto &s : L.shortcuts)
 	{
 		for (int i : s.plug)
-			if (map.getResource(i % t.w, i / t.w).type != WOOD)
+			if (map.getResource(t.remainderX(i), i / t.w).type != WOOD)
 				return "A timber neck is already open.";
 		const auto fromA = stepsFrom(t, tileMask(t, {s.a}), shortcutWalk);
 		const int before = fromA[s.b];
@@ -1808,7 +1808,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	if (!L.failure.empty())
 		return L.failure;
 	for (int i = 0; i < L.t.size(); ++i)
-		if (game.map.getUMTerrain(i % L.t.w, i / L.t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(L.t.remainderX(i), i / L.t.w) != L.terrain[i])
 			return "The drowned landscape changed after design.";
 	return checkWorld(game, c, L);
 }
@@ -1825,7 +1825,7 @@ GeneratorDefinition drownedForestDefinition()
 	return {"drowned-forest",
 			67,
 			"Drowned Forest",
-			1,
+			2,
 			false,
 			{GeneratorControl{"sandbar-connections", "Sandbar connections", 0, 100, 10, 30,
 							  ControlGroup::Layout}

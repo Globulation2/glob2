@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2006 Leo Wandersleb
 
 #pragma once
+#include "GenerationWork.h"
 
 #include "Noise.h"
 #include <algorithm>
@@ -34,16 +36,16 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 	HeightMap &operator=(const HeightMap &) = delete;
 	inline unsigned int uiLevel(unsigned int i, unsigned int scale)
 	{
-		return std::min(scale - 1, (unsigned int)(_map[i] * scale));
+		return std::min(scale - 1, (unsigned int)(_map.at(i) * scale));
 	}
 	inline unsigned int uiLevel(unsigned int x, unsigned int y, unsigned int scale)
 	{
-		return std::min(scale - 1, (unsigned int)(_map[x % _w + (y % _h) * _w] * scale));
+		return std::min(scale - 1, (unsigned int)(_map.at(dimensionRemainder(x, _w) + (dimensionRemainder(y, _h)) * _w) * scale));
 	}
-	inline float operator()(unsigned int i) { return _map[i]; }
+	inline float operator()(unsigned int i) { return _map.at(i); }
 	inline float operator()(const unsigned int x, const unsigned int y)
 	{
-		return _map[x % _w + (y % _h) * _w];
+		return _map.at(dimensionRemainder(x, _w) + (dimensionRemainder(y, _h)) * _w);
 	}
 
 	void makePlain(float smoothingFactor); /// a plain perlin height field

@@ -1,3 +1,4 @@
+import { ScriptGeneratorDescriptor } from './generators.ts';
 // MatchSetup: the complete, engine-independent description of a match. One C++
 // function turns it (plus the map bytes named by `map.hash`) into a GameHeader,
 // for live clients and for the verifier alike, so the platform never has to
@@ -95,9 +96,18 @@ export const GeneratedMapSource = Strict({
  * The map a match is played on. `hash` is always the SHA-256 of the decompressed
  * bytes every client loads, whichever way the map was obtained.
  */
-export const MapSource = Type.Union([CatalogMapSource, UploadedMapSource, GeneratedMapSource], {
-  description: 'Map a match is played on; clients fetch the blob named by `hash`.',
+export const ScriptedMapSource = Strict({
+  kind: Type.Literal('scripted'),
+  generator: ScriptGeneratorDescriptor,
+  hash: Sha256Hex,
+  chosenSeed: Type.Optional(Uint32),
 });
+export const MapSource = Type.Union(
+  [CatalogMapSource, UploadedMapSource, GeneratedMapSource, ScriptedMapSource],
+  {
+    description: 'Map a match is played on; clients fetch the blob named by `hash`.',
+  },
+);
 export type MapSource = Static<typeof MapSource>;
 
 export const SetupTeam = Strict(
@@ -177,6 +187,14 @@ export const MatchRules = Strict(
         minimum: 0,
         maximum: 8,
         description: 'Engine-wide AI decision delay in ticks; absent means zero.',
+      }),
+    ),
+    buildingGradientDelay: Type.Optional(
+      Type.Integer({
+        minimum: 1,
+        maximum: 8,
+        description:
+          'Ticks between capturing and publishing a scheduled building walking field; absent means eight.',
       }),
     ),
     instantConstruction: Type.Boolean(),
@@ -352,6 +370,7 @@ export const STANDARD_RULES: MatchRules = {
   resourceGrowthDisabled: false,
   resourceScarcityLevel: 0,
   aiOrderDelay: 8,
+  buildingGradientDelay: 8,
   instantConstruction: false,
   stockpileStartLevel: 0,
   hungerDisabled: false,
@@ -469,7 +488,7 @@ export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
     }
     closedTeams.add(seat.team);
   });
-  if (setup.map.kind === 'generated') {
+  if (setup.map.kind === 'generated' || setup.map.kind === 'scripted') {
     const teams = setup.map.generator.params['teams'];
     if (teams !== undefined && teams !== teamCount) {
       problems.push({

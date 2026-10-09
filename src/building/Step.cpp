@@ -135,33 +135,25 @@ bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist
 		return false;
 	}
 
-	// Score by the whole job: the round-trip field when a fetcher has already
-	// built one. Without one, estimate the carry leg rather than reach for the
-	// building distance alone: a unit standing at the building carries as far
-	// as it walked out, and one standing at the resource carries the building
-	// distance. Building a field here instead would cost one per material of
-	// every hiring building, nearly all of them never fetched.
-	int roundTrip = 0;
-	if(!owner->map->roundTripDistanceSlot(this, wantedMaterial, unit->swimClass(), unit->posX, unit->posY, &roundTrip))
-		roundTrip = distMaterial + std::max(distBuilding, distMaterial);
-	*dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
+	// Score by the whole job, estimating the carry leg rather than reaching
+	// for the building distance alone: a unit standing at the building carries
+	// as far as it walked out, and one standing at the resource carries the
+	// building distance.
+	const int wholeTrip = distMaterial + std::max(distBuilding, distMaterial);
+	*dist = wholeTrip<<Q8_FIXED_POINT_SHIFT;
 	return true;
 }
 
 int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial)
 {
-	owner->map->advanceHiringGradients(this);
 	// The tallies count units, and the same unit is offered every material the
 	// building tries to staff, so start each scan from zero: what the info panel
 	// ends up showing is one coherent pass, for the last material attempted.
 	resetFailureTallies();
 
 	int count=0;
-	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	for(Unit* unit : owner->liveUnits.entries())
 	{
-		Unit* unit=owner->myUnits[n];
-		if(!unit)
-			continue;
 		if(!unit->performance[HARVEST])
 			continue;
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
@@ -206,11 +198,8 @@ bool Building::wantsAnotherDelivery(int r, const int* targets, const int* served
 
 void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel)
 {
-	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	for(Unit* unit : owner->liveUnits.entries())
 	{
-		Unit* unit=owner->myUnits[n];
-		if(!unit)
-			continue;
 		if(!unit->performance[HARVEST])
 			continue;
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
@@ -492,7 +481,7 @@ bool Building::subscribeForFlagingStep()
 		const Map& map = *owner->map;
 		field::AirDistanceField airRoutes(map.getW(),map.getH(),posX,posY,
 			[&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
-			[&map](int x,int y) { return map.terrainRegistry().airCost(map.terrainTypeAt(x,y)); },
+			[&map](int x,int y) { return map.cellRule(map.coordToIndex(x,y)).airCost; },
 			runtime->attracts(EXPLORER) && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
 			field::AirDistanceDirection::ToDestination);
 		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))

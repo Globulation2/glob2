@@ -20,17 +20,17 @@ import (see [the former YOG lobby](#the-former-yog-lobby)).
          └──────────────── blob volume ────────────┘          (no database, no blob volume)
 ```
 
-| Service | Image (Dockerfile target) | Replicas | Role |
-| --- | --- | --- | --- |
-| `caddy` | `caddy` | 1 | TLS (ACME or local CA), static web app and web client, routing. The only service with published ports. |
-| `postgres` | `postgres:16-alpine` | 1 | All state, the job queue, pub/sub and the matchmaker's leader lock. |
-| `init` | `platform` | one-shot | Creates the first signing key, the relay and engine-agent keys and the database role passwords, creates or updates the [database roles](#database-roles) as the Postgres superuser, then applies migrations as `glob2_migrator`. Runs before the platform starts on every `up`; the only process that uses the superuser. |
-| `platform-api` | `platform` | `GLOB2_API_REPLICAS` (2) | REST, realtime WebSocket, sign-in pages, JWKS, and `/internal` for relays. Stateless. |
-| `skin-render-worker` | `skin-render-worker` | 1 | Transparent colony sprite generation using the current client, meshes, Mesa/llvmpipe and Xvfb. |
-| `music-worker` | `music-worker` | 1 | Community music inspection, conversion and final media storage. |
-| `platform-worker` | `platform` | `GLOB2_WORKER_REPLICAS` (1) | Engine-job results, ratings, matchmaker and schedules (the scheduler runs on one replica at a time). |
-| `engine-agent` | `engine-agent` | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. It runs the engine on uploaded files, so it has no database access and no blob volume: it leases jobs and moves blobs through `platform-api`'s `/internal/v1/engine` with a bearer agent key. |
-| `relay` | `relay` | `GLOB2_RELAY_REPLICAS` (1) | Match WebSockets ([relay](../multiplayer/relay.md)). |
+| Service              | Image (Dockerfile target) | Replicas                          | Role                                                                                                                                                                                                                                                                                                                      |
+| -------------------- | ------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `caddy`              | `caddy`                   | 1                                 | TLS (ACME or local CA), static web app and web client, routing. The only service with published ports.                                                                                                                                                                                                                    |
+| `postgres`           | `postgres:16-alpine`      | 1                                 | All state, the job queue, pub/sub and the matchmaker's leader lock.                                                                                                                                                                                                                                                       |
+| `init`               | `platform`                | one-shot                          | Creates the first signing key, the relay and engine-agent keys and the database role passwords, creates or updates the [database roles](#database-roles) as the Postgres superuser, then applies migrations as `glob2_migrator`. Runs before the platform starts on every `up`; the only process that uses the superuser. |
+| `platform-api`       | `platform`                | `GLOB2_API_REPLICAS` (2)          | REST, realtime WebSocket, sign-in pages, JWKS, and `/internal` for relays. Stateless.                                                                                                                                                                                                                                     |
+| `skin-render-worker` | `skin-render-worker`      | 1                                 | Transparent colony sprite generation using the current client, meshes, Mesa/llvmpipe and Xvfb.                                                                                                                                                                                                                            |
+| `music-worker`       | `music-worker`            | 1                                 | Community music inspection, conversion and final media storage.                                                                                                                                                                                                                                                           |
+| `platform-worker`    | `platform`                | `GLOB2_WORKER_REPLICAS` (1)       | Engine-job results, ratings, matchmaker and schedules (the scheduler runs on one replica at a time).                                                                                                                                                                                                                      |
+| `engine-agent`       | `engine-agent`            | `GLOB2_ENGINE_AGENT_REPLICAS` (1) | Map generation, validation, previews and match verification with the headless `glob2` binary of one sim version. It runs the engine on uploaded files, so it has no database access and no blob volume: it leases jobs and moves blobs through `platform-api`'s `/internal/v1/engine` with a bearer agent key.            |
+| `relay`              | `relay`                   | `GLOB2_RELAY_REPLICAS` (1)        | Match WebSockets ([relay](../multiplayer/relay.md)).                                                                                                                                                                                                                                                                      |
 
 Networks:
 
@@ -48,16 +48,16 @@ Networks:
 
 Volumes (Compose project `glob2-platform`, so named `glob2-platform_<volume>`):
 
-| Volume | Contents | Back up? |
-| --- | --- | --- |
-| `postgres-data` | The database | Yes, with `pg_dump` (below) |
-| `blobs` | Maps, saves, previews, match records, replays and community music (content-addressed) | Yes |
-| `signing-keys` | Ed25519 private keys (`<kid>.pem`) for access tokens and match tickets | Yes, encrypted |
-| `relay-secret` | `relay.key`, the bearer key relays use on `/internal` | Yes, encrypted (or regenerate) |
-| `engine-agent-secret` | `agent.key`, the bearer key engine agents use on `/internal/v1/engine` | Optional (regenerate: delete it and `up`) |
-| `db-migrator-secret`, `db-api-secret`, `db-worker-secret` | `password` of `glob2_migrator`, `glob2_api` and `glob2_worker`, each mounted only by the service that uses it | Optional (regenerate: delete it and `up`) |
-| `relay-spool` | Match records a relay has not uploaded yet, one directory per relay id (`relay-1`, `relay-2`, …), and the relays' slot locks | Optional |
-| `caddy-data`, `caddy-config` | Certificates, ACME account, local CA | Optional (Caddy re-issues) |
+| Volume                                                    | Contents                                                                                                                     | Back up?                                  |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `postgres-data`                                           | The database                                                                                                                 | Yes, with `pg_dump` (below)               |
+| `blobs`                                                   | Maps, saves, previews, match records, replays and community music (content-addressed)                                        | Yes                                       |
+| `signing-keys`                                            | Ed25519 private keys (`<kid>.pem`) for access tokens and match tickets                                                       | Yes, encrypted                            |
+| `relay-secret`                                            | `relay.key`, the bearer key relays use on `/internal`                                                                        | Yes, encrypted (or regenerate)            |
+| `engine-agent-secret`                                     | `agent.key`, the bearer key engine agents use on `/internal/v1/engine`                                                       | Optional (regenerate: delete it and `up`) |
+| `db-migrator-secret`, `db-api-secret`, `db-worker-secret` | `password` of `glob2_migrator`, `glob2_api` and `glob2_worker`, each mounted only by the service that uses it                | Optional (regenerate: delete it and `up`) |
+| `relay-spool`                                             | Match records a relay has not uploaded yet, one directory per relay id (`relay-1`, `relay-2`, …), and the relays' slot locks | Optional                                  |
+| `caddy-data`, `caddy-config`                              | Certificates, ACME account, local CA                                                                                         | Optional (Caddy re-issues)                |
 
 ### Database roles
 
@@ -65,13 +65,13 @@ No long-running service connects as a Postgres superuser. `POSTGRES_PASSWORD` is
 superuser's password (the `postgres` image's `glob2`); only `postgres` itself and
 `init` see it, and it is blanked in the other services' environment.
 
-| Role | Used by | Privileges |
-| --- | --- | --- |
-| `glob2` (superuser) | `init` only | Creates the roles below, sets their passwords, hands a database created before roles existed to `glob2_migrator`. |
-| `glob2_migrator` | `init` | Owns every table, view, function and type in `public` and `graphile_worker`; runs the platform's and graphile-worker's migrations, then re-applies the grants. Not a superuser. |
-| `glob2_api` | `platform-api`, the `platform` CLI | `SELECT`/`INSERT`/`UPDATE`/`DELETE` on the platform tables and the job queue; no DDL, no `TRUNCATE`. The admin audit log is append-only (`scrub_audit_log_account()`, owned by the migrator, is the one change allowed: account deletion). |
-| `glob2_worker` | `platform-worker` | As `glob2_api`, minus `identities`, `device_credentials` and `admin_audit_log`; on `refresh_tokens`, `web_sessions` and `auth_flows` only the retention deletes. |
-| none | `engine-agent` | Uses `platform-api`'s internal engine API instead. |
+| Role                | Used by                            | Privileges                                                                                                                                                                                                                                 |
+| ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `glob2` (superuser) | `init` only                        | Creates the roles below, sets their passwords, hands a database created before roles existed to `glob2_migrator`.                                                                                                                          |
+| `glob2_migrator`    | `init`                             | Owns every table, view, function and type in `public` and `graphile_worker`; runs the platform's and graphile-worker's migrations, then re-applies the grants. Not a superuser.                                                            |
+| `glob2_api`         | `platform-api`, the `platform` CLI | `SELECT`/`INSERT`/`UPDATE`/`DELETE` on the platform tables and the job queue; no DDL, no `TRUNCATE`. The admin audit log is append-only (`scrub_audit_log_account()`, owned by the migrator, is the one change allowed: account deletion). |
+| `glob2_worker`      | `platform-worker`                  | As `glob2_api`, minus `identities`, `device_credentials` and `admin_audit_log`; on `refresh_tokens`, `web_sessions` and `auth_flows` only the retention deletes.                                                                           |
+| none                | `engine-agent`                     | Uses `platform-api`'s internal engine API instead.                                                                                                                                                                                         |
 
 `init` writes a random password per role into its own volume (`db-<role>-secret`);
 each service mounts only its own and reads it through `DATABASE_PASSWORD_FILE`. To
@@ -136,6 +136,7 @@ cp ../platform/instance.example.yaml instance.yaml
    On the first start `init` writes a signing key and the relay key into their
    volumes and creates the database schema. `docker compose logs init` shows what
    it did.
+
 5. Open the origin (`https://localhost:8443` locally). For a local instance, trust
    Caddy's local CA in the browser or device you test with:
 
@@ -202,10 +203,10 @@ URLs (`wss://app.example.org/relay/<id>`), the token issuer, the JWKS, the
 `/.well-known` app-link files and the game's instance setting all use it. The
 website stays static and links into the app:
 
-| Website link | Goes to |
-| --- | --- |
-| Play in browser | `https://app.example.org/play/` |
-| Sign in, online hub | `https://app.example.org/signin`, `https://app.example.org/` |
+| Website link                         | Goes to                                                                     |
+| ------------------------------------ | --------------------------------------------------------------------------- |
+| Play in browser                      | `https://app.example.org/play/`                                             |
+| Sign in, online hub                  | `https://app.example.org/signin`, `https://app.example.org/`                |
 | Leaderboards, matches, players, maps | the app's pages (`/leaderboard`, `/matches/<id>`, `/players/<id>`, `/maps`) |
 
 The app links back with `GLOB2_WEBSITE_URL` and `GLOB2_DOWNLOAD_URL` (build-time,
@@ -266,13 +267,13 @@ opener behaviour.
 
 ### Routes
 
-| Path | Goes to |
-| --- | --- |
-| `/api/*`, `/realtime`, `/signin`, `/signin/*`, `/auth/*`, `/.well-known/*`, `/j/*` (invite pages) | `platform-api`, round robin over healthy replicas |
-| `/relay/<relay id>` | that relay's WebSocket (path rewritten to `/relay`) |
-| `/play/*` | the WebAssembly client, `GLOB2_WEB_CLIENT_DIR`: precompressed `.br`/`.gz` copies when present; `assets/*.data` (content-addressed) cached as immutable, everything else revalidated |
-| everything else | the web app (single-page app with `index.html` fallback) |
-| `/internal/*`, `/healthz`, `/readyz`, `/metrics` | `404` at the edge |
+| Path                                                                                              | Goes to                                                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/*`, `/realtime`, `/signin`, `/signin/*`, `/auth/*`, `/.well-known/*`, `/j/*` (invite pages) | `platform-api`, round robin over healthy replicas                                                                                                                                   |
+| `/relay/<relay id>`                                                                               | that relay's WebSocket (path rewritten to `/relay`)                                                                                                                                 |
+| `/play/*`                                                                                         | the WebAssembly client, `GLOB2_WEB_CLIENT_DIR`: precompressed `.br`/`.gz` copies when present; `assets/*.data` (content-addressed) cached as immutable, everything else revalidated |
+| everything else                                                                                   | the web app (single-page app with `index.html` fallback)                                                                                                                            |
+| `/internal/*`, `/healthz`, `/readyz`, `/metrics`                                                  | `404` at the edge                                                                                                                                                                   |
 
 `/internal` is the relays' API (registration, heartbeats, match setup, record
 upload, match end; see [rooms and matches](../multiplayer/rooms-and-matches.md#internal-api-for-relays))
@@ -338,12 +339,12 @@ declare neither invite links nor associated domains.
 Apple's CDN); `assetlinks.json` answers 404 until the Play app-signing SHA-256 is
 added. The values the maintainer supplies:
 
-| Value | Where it comes from |
-| --- | --- |
-| Google Play app-signing certificate SHA-256 | Play Console > the app > Test and release > App integrity > App signing key certificate, "SHA-256 certificate fingerprint" (uppercase hex with colons, as the config expects). Play re-signs every installed copy with this key, so it is the one phones check; the upload key is not. |
-| Other Android signing keys (optional) | F-Droid signs its own APKs. Add F-Droid's certificate SHA-256 (`apksigner verify --print-certs <F-Droid APK>`) for F-Droid installs to get verified links; without it they open the invite page, whose "Open in the Globulation 2 app" button still works. Up to eight fingerprints are allowed. |
-| Apple Team ID | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page. |
-| Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
+| Value                                       | Where it comes from                                                                                                                                                                                                                                                                                  |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Google Play app-signing certificate SHA-256 | Play Console > the app > Test and release > App integrity > App signing key certificate, "SHA-256 certificate fingerprint" (uppercase hex with colons, as the config expects). Play re-signs every installed copy with this key, so it is the one phones check; the upload key is not.               |
+| Other Android signing keys (optional)       | F-Droid signs its own APKs. Add F-Droid's certificate SHA-256 (`apksigner verify --print-certs <F-Droid APK>`) for F-Droid installs to get verified links; without it they open the invite page, whose "Open in the Globulation 2 app" button still works. Up to eight fingerprints are allowed.     |
+| Apple Team ID                               | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page.                                                                                                                                                                                   |
+| Associated Domains capability               | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
 
 The release mirror's **App signing fingerprints** workflow reads these values with
 the release credentials, enables Associated Domains on the App ID when it is
@@ -385,36 +386,38 @@ Everything is configured in `deploy/.env` (Compose variables, and the environmen
 `platform-api`) and `deploy/instance.yaml`. `.env.example` lists every variable with
 its default.
 
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `GLOB2_DOMAIN` | `localhost` | Site name Caddy serves and certifies |
-| `GLOB2_ADDITIONAL_DOMAIN` | unset | Optional second served hostname during cutover; does not change the canonical origin |
-| `GLOB2_WEBSITE_URL`, `GLOB2_DOWNLOAD_URL` | unset | Web app links to a separately hosted public website and its download page (build-time) |
-| `GLOB2_PUBLIC_ORIGIN` | `https://localhost:8443` | Origin clients use; also the relays' URL base |
-| `GLOB2_BIND`, `GLOB2_HTTP_PORT`, `GLOB2_HTTPS_PORT` | `127.0.0.1`, `8080`, `8443` | Published address and ports |
-| `GLOB2_TLS_MODE` | `auto` | `auto` or `internal` |
-| `GLOB2_EDGE_TRUSTED_PROXIES` | `127.0.0.1/32` | Load balancer ranges Caddy trusts for client addresses |
-| `POSTGRES_PASSWORD` | required | Password of the Postgres superuser (letters and digits); only `postgres` and `init` use it, the services have their own [roles](#database-roles) |
-| `GLOB2_HSTS_MAX_AGE` | `31536000` | `Strict-Transport-Security` max-age Caddy sends (`0`: off) |
-| `GLOB2_API_REPLICAS`, `GLOB2_WORKER_REPLICAS`, `GLOB2_ENGINE_AGENT_REPLICAS`, `GLOB2_RELAY_REPLICAS` | `2`, `1`, `1`, `1` | Replica counts |
-| `ENGINE_CONCURRENCY`, `GLOB2_ENGINE_SCRATCH_SIZE` | `1`, `1g` | Jobs per agent, and its scratch tmpfs |
-| `WARM_MAPS_PER_ENTRY`, `WARM_MAPS_MAX_PER_ENTRY` | `2`, `8` | Pre-generated quick-match maps per map pool entry (0: off), and the ceiling the pool rises to while an entry is busy |
-| `GLOB2_BACKUP_DIR`, `GLOB2_BACKUP_KEEP` | `backups/` beside the env file's directory, `5` | Where `deploy/update-host.sh` keeps its pre-upgrade backups, and how many |
-| `GLOB2_BACKUP_BUCKET` | unset | Cloud Storage bucket of the [scheduled backups](#scheduled-backups) |
-| `GLOB2_DEPLOYED_REVISION_FILE` | `deployed-revision` beside the env file's directory | Where `deploy/update-host.sh` records the revision of each successful deployment, its rollback target |
-| `GLOB2_RELAY_REGION` | `default` | Region these relays report |
-| `GLOB2_RELAY_MAX_MATCHES` | `200` | Matches per relay |
-| `GLOB2_RELAY_DRAIN_SECONDS`, `GLOB2_RELAY_STOP_GRACE` | `1800`, `31m` | Longest relay drain, and Compose's stop timeout (keep it longer) |
-| `UPLOAD_MAX_BYTES`, `RECORD_MAX_BYTES` | 16 MiB, 64 MiB | Largest map/save upload, and largest match record |
-| `RELAY_KEYS` | unset | Extra relay keys, `<relayId>:<key>` comma-separated (relays on other hosts, rotation) |
-| `JWT_ACTIVE_KID` | unset | Signing key id, needed while several keys exist ([rotation](#signing-keys-and-rotation)) |
-| `LOG_LEVEL` | `info` | Platform log level |
-| `GLOB2_WEB_CLIENT_DIR` | `./web-client` | Built WebAssembly client for `/play/` |
-| `GLOB2_INSTANCE_CONFIG` | `./instance.yaml` | Instance settings file |
-| `GLOB2_*_IMAGE` | local `:development` tags | Images to run ([Images](#images)) |
-| `GLOB2_SIM_VERSION` | unset | Label for locally built engine-agent images; the build fails if it does not match the source |
-| `GLOB2_BACKEND_SUBNET`, `GLOB2_BACKEND_IP_RANGE`, `GLOB2_PROXY_ADDRESS` | `172.30.89.0/24`, `172.30.89.128/25`, `172.30.89.10` | Backend subnet, automatic allocation pool, fixed proxy address; change together for a custom subnet, keeping the proxy outside the pool |
-| provider secrets | | Named in `instance.yaml`, e.g. `GOOGLE_CLIENT_SECRET` |
+| Variable                                                                                             | Default                                              | Meaning                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GLOB2_DOMAIN`                                                                                       | `localhost`                                          | Site name Caddy serves and certifies                                                                                                             |
+| `GLOB2_ADDITIONAL_DOMAIN`                                                                            | unset                                                | Optional second served hostname during cutover; does not change the canonical origin                                                             |
+| `GLOB2_WEBSITE_URL`, `GLOB2_DOWNLOAD_URL`                                                            | unset                                                | Web app links to a separately hosted public website and its download page (build-time)                                                           |
+| `GLOB2_PUBLIC_ORIGIN`                                                                                | `https://localhost:8443`                             | Origin clients use; also the relays' URL base                                                                                                    |
+| `GLOB2_BIND`, `GLOB2_HTTP_PORT`, `GLOB2_HTTPS_PORT`                                                  | `127.0.0.1`, `8080`, `8443`                          | Published address and ports                                                                                                                      |
+| `GLOB2_TLS_MODE`                                                                                     | `auto`                                               | `auto` or `internal`                                                                                                                             |
+| `GLOB2_EDGE_TRUSTED_PROXIES`                                                                         | `127.0.0.1/32`                                       | Load balancer ranges Caddy trusts for client addresses                                                                                           |
+| `POSTGRES_PASSWORD`                                                                                  | required                                             | Password of the Postgres superuser (letters and digits); only `postgres` and `init` use it, the services have their own [roles](#database-roles) |
+| `GLOB2_HSTS_MAX_AGE`                                                                                 | `31536000`                                           | `Strict-Transport-Security` max-age Caddy sends (`0`: off)                                                                                       |
+| `GLOB2_API_REPLICAS`, `GLOB2_WORKER_REPLICAS`, `GLOB2_ENGINE_AGENT_REPLICAS`, `GLOB2_RELAY_REPLICAS` | `2`, `1`, `1`, `1`                                   | Replica counts                                                                                                                                   |
+| `ENGINE_CONCURRENCY`, `GLOB2_ENGINE_SCRATCH_SIZE`                                                    | `1`, `1g`                                            | Jobs per agent, and its scratch tmpfs                                                                                                            |
+| `ENGINE_SET_VALIDATION`                                                                              | `0`                                                  | Enable set publication checks after the Linux isolation probe succeeds ([rollout](#terrain-and-resource-set-validation-rollout))                 |
+| `ENGINE_SET_LIBRARY_PATH`                                                                            | unset                                                | Optional trusted shared-library directories for a custom validator build; add to the engine-agent environment in a Compose override              |
+| `WARM_MAPS_PER_ENTRY`, `WARM_MAPS_MAX_PER_ENTRY`                                                     | `2`, `8`                                             | Pre-generated quick-match maps per map pool entry (0: off), and the ceiling the pool rises to while an entry is busy                             |
+| `GLOB2_BACKUP_DIR`, `GLOB2_BACKUP_KEEP`                                                              | `backups/` beside the env file's directory, `5`      | Where `deploy/update-host.sh` keeps its pre-upgrade backups, and how many                                                                        |
+| `GLOB2_BACKUP_BUCKET`                                                                                | unset                                                | Cloud Storage bucket of the [scheduled backups](#scheduled-backups)                                                                              |
+| `GLOB2_DEPLOYED_REVISION_FILE`                                                                       | `deployed-revision` beside the env file's directory  | Where `deploy/update-host.sh` records the revision of each successful deployment, its rollback target                                            |
+| `GLOB2_RELAY_REGION`                                                                                 | `default`                                            | Region these relays report                                                                                                                       |
+| `GLOB2_RELAY_MAX_MATCHES`                                                                            | `200`                                                | Matches per relay                                                                                                                                |
+| `GLOB2_RELAY_DRAIN_SECONDS`, `GLOB2_RELAY_STOP_GRACE`                                                | `1800`, `31m`                                        | Longest relay drain, and Compose's stop timeout (keep it longer)                                                                                 |
+| `UPLOAD_MAX_BYTES`, `RECORD_MAX_BYTES`                                                               | 64 MiB, 64 MiB                                       | Largest map/save upload, and largest match record                                                                                                |
+| `RELAY_KEYS`                                                                                         | unset                                                | Extra relay keys, `<relayId>:<key>` comma-separated (relays on other hosts, rotation)                                                            |
+| `JWT_ACTIVE_KID`                                                                                     | unset                                                | Signing key id, needed while several keys exist ([rotation](#signing-keys-and-rotation))                                                         |
+| `LOG_LEVEL`                                                                                          | `info`                                               | Platform log level                                                                                                                               |
+| `GLOB2_WEB_CLIENT_DIR`                                                                               | `./web-client`                                       | Built WebAssembly client for `/play/`                                                                                                            |
+| `GLOB2_INSTANCE_CONFIG`                                                                              | `./instance.yaml`                                    | Instance settings file                                                                                                                           |
+| `GLOB2_*_IMAGE`                                                                                      | local `:development` tags                            | Images to run ([Images](#images))                                                                                                                |
+| `GLOB2_SIM_VERSION`                                                                                  | unset                                                | Label for locally built engine-agent images; the build fails if it does not match the source                                                     |
+| `GLOB2_BACKEND_SUBNET`, `GLOB2_BACKEND_IP_RANGE`, `GLOB2_PROXY_ADDRESS`                              | `172.30.89.0/24`, `172.30.89.128/25`, `172.30.89.10` | Backend subnet, automatic allocation pool, fixed proxy address; change together for a custom subnet, keeping the proxy outside the pool          |
+| provider secrets                                                                                     |                                                      | Named in `instance.yaml`, e.g. `GOOGLE_CLIENT_SECRET`                                                                                            |
 
 `instance.yaml` holds the settings players see: name, guests, sign-in providers,
 local accounts, rate limits, the access policy and quick-match queues. Its format
@@ -430,16 +433,22 @@ Every provider's redirect URI is `<GLOB2_PUBLIC_ORIGIN>/auth/<id>/callback`, whe
 secrets go in `.env` under the name the provider's `clientSecretEnv` gives.
 Details of each flow are in [identity and sign-in](../multiplayer/identity.md).
 
-**Google.** In the Google Cloud console, under *APIs & Services → Credentials*,
-create an *OAuth client ID* of type *Web application*. Add the redirect URI
+**Google.** In the Google Cloud console, under _APIs & Services → Credentials_,
+create an _OAuth client ID_ of type _Web application_. Add the redirect URI
 `https://play.example.org/auth/google/callback`. Configure the consent screen with
 the `openid`, `email` and `profile` scopes. Then:
 
 ```yaml
 auth:
   providers:
-    - {id: google, kind: oidc, preset: google, displayName: Google,
-       clientId: 1234-abc.apps.googleusercontent.com, clientSecretEnv: GOOGLE_CLIENT_SECRET}
+    - {
+        id: google,
+        kind: oidc,
+        preset: google,
+        displayName: Google,
+        clientId: 1234-abc.apps.googleusercontent.com,
+        clientSecretEnv: GOOGLE_CLIENT_SECRET,
+      }
 ```
 
 On a single host, `deploy/configure-signin.py` makes both edits and restarts the
@@ -459,26 +468,40 @@ With only the `openid`, `email` and `profile` scopes, which Google counts as
 non-sensitive, the app needs no scope verification; publish it ("In production")
 so that any Google account can sign in, not only listed test users.
 
-**Microsoft.** In the Microsoft Entra admin center, *App registrations → New
-registration*. Choose the account types (personal and work accounts: tenant
-`common`; personal only: `consumers`; one organization: its tenant id). Add a *Web*
+**Microsoft.** In the Microsoft Entra admin center, _App registrations → New
+registration_. Choose the account types (personal and work accounts: tenant
+`common`; personal only: `consumers`; one organization: its tenant id). Add a _Web_
 redirect URI `https://play.example.org/auth/microsoft/callback`, then create a
-client secret under *Certificates & secrets*:
+client secret under _Certificates & secrets_:
 
 ```yaml
-    - {id: microsoft, kind: oidc, preset: microsoft, tenant: common, displayName: Microsoft,
-       clientId: 00000000-0000-0000-0000-000000000000, clientSecretEnv: MICROSOFT_CLIENT_SECRET}
+- {
+    id: microsoft,
+    kind: oidc,
+    preset: microsoft,
+    tenant: common,
+    displayName: Microsoft,
+    clientId: 00000000-0000-0000-0000-000000000000,
+    clientSecretEnv: MICROSOFT_CLIENT_SECRET,
+  }
 ```
 
-**Apple.** In the Apple Developer portal: an App ID with *Sign in with Apple*, a
-*Services ID* (its identifier is the `clientId`) configured with the domain
+**Apple.** In the Apple Developer portal: an App ID with _Sign in with Apple_, a
+_Services ID_ (its identifier is the `clientId`) configured with the domain
 `play.example.org` and return URL `https://play.example.org/auth/apple/callback`,
-and a *Sign in with Apple* key (download the `.p8` file, note its key id). Put the
+and a _Sign in with Apple_ key (download the `.p8` file, note its key id). Put the
 key into `.env` with literal `\n` between lines:
 
 ```yaml
-    - {id: apple, kind: apple, displayName: Apple, clientId: org.example.glob2.signin,
-       teamId: ABCDE12345, keyId: KEY1234567, privateKeyEnv: APPLE_SIGNIN_KEY}
+- {
+    id: apple,
+    kind: apple,
+    displayName: Apple,
+    clientId: org.example.glob2.signin,
+    teamId: ABCDE12345,
+    keyId: KEY1234567,
+    privateKeyEnv: APPLE_SIGNIN_KEY,
+  }
 ```
 
 ```dotenv
@@ -493,8 +516,14 @@ create a confidential client with the authorization code flow, the redirect URI
 above and the `openid profile email` scopes, then
 
 ```yaml
-    - {id: forgejo, kind: oidc, issuer: https://code.example.org, displayName: Example Code,
-       clientId: glob2, clientSecretEnv: FORGEJO_CLIENT_SECRET}
+- {
+    id: forgejo,
+    kind: oidc,
+    issuer: https://code.example.org,
+    displayName: Example Code,
+    clientId: glob2,
+    clientSecretEnv: FORGEJO_CLIENT_SECRET,
+  }
 ```
 
 The issuer must serve `/.well-known/openid-configuration`; `platform-api` reaches it
@@ -548,6 +577,31 @@ docker compose up -d --force-recreate init platform-api   # init writes a new re
 sed -i '/^RELAY_KEYS=/d' .env && docker compose up -d platform-api
 ```
 
+## Building-family library rollout
+
+Apply migrations through `0050_building_library.sql` before updating the API and
+worker. Migration 0049 adds private account drafts; 0050 adds published families,
+immutable archives, social activity and the `validate-buildings` engine job kind.
+Rebuild and deploy the engine-agent image from the matching engine source, then
+deploy the website. The agent enables this job kind only when its binary's
+`--headless-catalog` advertises `compose_buildings`; a recent heartbeat must also
+advertise the same stock catalog hash used for publication.
+
+Publication is unavailable until a compatible agent is present. Existing agents
+continue serving their advertised kinds and simulation versions. Pending releases
+become downloadable after native validation succeeds; failed jobs can be retried
+by publishing the same saved draft again. A published release pins its archive,
+stock catalog and simulation version, so a new engine does not silently replace
+old validation. Keep agents for simulation versions the instance still supports.
+
+Format 145 maps, saves and replays include custom building artwork alongside their catalog.
+The earlier terrain/resource asset bundle retains its format-144 loading gate.
+Network protocol 62 prevents mixed header layouts in one match. The save-support
+floor remains 58. Authors share generated maps through the existing map library;
+server-side room generation does not read a player's locally installed families.
+See [building catalogs](../features/building-catalogs.md#online-library-and-installed-families)
+for quotas, package limits, moderation and the author workflow.
+
 ## JavaScript AI validation rollout
 
 Apply database migrations through `0040_ai_library.sql`, then deploy the engine
@@ -574,6 +628,67 @@ retry through the existing engine queue. Published validation history remains bo
 to its original engine; the scheduler requests new evidence as agents for new
 versions appear. A newly deployed engine must pass checks before native clients can
 install a release. These checks establish compatibility, not a security certificate.
+
+## Terrain and resource set validation rollout
+
+Apply migrations through `0048_sets.sql` and deploy the platform API, worker, web
+workspace and a matching engine agent that supports file format 144 or later and
+advertises the `validate_set` command. Install the matching WebAssembly client,
+including `/play/set-preview.html`, to enable workspace previews. Browser previews
+are temporary local checks; publication requires server validation.
+
+Install the engine's scoped AppArmor profile before recreating its container:
+
+```sh
+sudo install -m 644 deploy/security/glob2-engine.apparmor /etc/apparmor.d/glob2-engine
+sudo apparmor_parser -r /etc/apparmor.d/glob2-engine
+```
+
+Compose uses the shared `deploy/security/ai-music-seccomp.json` namespace policy
+and `glob2-engine` AppArmor profile. These permit Bubblewrap's private mounts and
+namespace creation while retaining container confinement, dropped outer
+capabilities, a read-only root and no new privileges. System-path masks are
+removed so Bubblewrap can mount its private proc filesystem; AppArmor still
+denies sensitive proc/sys access. Custom profile paths and names use
+`GLOB2_ENGINE_SECCOMP_PROFILE` and `GLOB2_ENGINE_APPARMOR_PROFILE`. On hosts without
+AppArmor, explicitly set `GLOB2_ENGINE_APPARMOR_PROFILE=unconfined`; seccomp and
+the same isolated startup probe remain required.
+
+Set `ENGINE_SET_VALIDATION=1` in `.env`, then recreate the engine agent:
+
+```sh
+docker compose up -d --force-recreate engine-agent
+docker compose logs --tail=100 engine-agent
+```
+
+An engine agent with asset-capable file format 144 or later must pass its Linux
+Bubblewrap probe, including rendering a small set, before starting. This applies
+even while `ENGINE_SET_VALIDATION=0`: map uploads, previews and match verification
+can contain bundled PNGs and use the same isolated launcher. The publishing flag
+additionally enables `validate-set` in its heartbeat. Verify the rollout by saving a
+small draft in the workspace, running checks and confirming a passing result and
+preview before publishing it. A failed isolation probe stops that modern agent
+from starting; it cannot advertise unsafe map jobs. The workspace preserves drafts and says no validator is available
+until a capable agent returns. Keep publication disabled until the probe and an
+actual draft check pass.
+
+Validation requires user, PID, mount and network namespaces and a dedicated
+scratch tmpfs of at most 4 GiB (Compose defaults to 1 GiB). Standalone set checks have a 120-second
+wall/CPU bound, 2 GiB address-space bound and 64 MiB per-file bound. There is no
+unsandboxed fallback. Use an isolated worker host if the container security policy
+prevents nested namespaces; do not run the agent privileged to bypass the probe.
+For custom dynamically linked builds, supply `ENGINE_SET_LIBRARY_PATH` as trusted,
+read-only directories in the engine-agent environment. The validator also discovers
+the installed binary's `lib/glob2` directory.
+
+To pause new publication checks, restore `ENGINE_SET_VALIDATION=0` and recreate the
+agent. Existing releases and self-contained shared maps retain their assets and
+credits. An old queued check whose agent no longer advertises this capability is
+failed by the stale-job sweep after six hours, allowing the author to retry when a
+validator returns. A package is limited to 16 MiB; each set retains at most 100
+drafts and 50 immutable releases. See
+[set architecture](../multiplayer/architecture.md#terrain-and-resource-set-library)
+for ownership, visibility and blob retention.
 
 ## Scaling
 
@@ -657,11 +772,11 @@ minutes; a run missed while the host was down happens at the next boot). Each ru
 The bucket's lifecycle rules ([`deploy/gcs-backup-lifecycle.json`](../../deploy/gcs-backup-lifecycle.json))
 do the rotation:
 
-| Tier | Kept |
-| --- | --- |
-| `daily/` | 7 days (lifecycle deletion can lag by up to a day) |
-| `weekly/` | 35 days, so about five weekly backups |
-| `monthly/` | indefinitely, one per calendar month |
+| Tier       | Kept                                               |
+| ---------- | -------------------------------------------------- |
+| `daily/`   | 7 days (lifecycle deletion can lag by up to a day) |
+| `weekly/`  | 35 days, so about five weekly backups              |
+| `monthly/` | indefinitely, one per calendar month               |
 
 Object names are never reused, so the host only creates and lists objects; it
 cannot delete or overwrite a backup. These backups hold the database only. The blob
@@ -765,8 +880,8 @@ one command, in an order that never leaves a half-upgraded instance:
    pool change still requires the downtime described above.
 4. **Web client last:** only once the new stack is healthy is the new client
    installed at `/play/`, so browsers never load a client newer than the platform
-   and engine agents behind it. Both `index.html` and the AI Studio entry page
-   `studio.html` are installed with their available precompressed copies.
+   and engine agents behind it. The `index.html`, `studio.html` and `generator-studio.html` entries
+   are installed with their available precompressed copies.
 
 If the new stack does not become healthy, the script starts the `:previous`
 images of the previous revision again, recreating containers to restore network
@@ -861,10 +976,10 @@ To serve an additional (older) version, add a second agent service in
 ```yaml
 services:
   engine-agent-125-48:
-    extends: {file: compose.yaml, service: engine-agent}
+    extends: { file: compose.yaml, service: engine-agent }
     image: ghcr.io/<owner>/<repository>-engine-agent:simver-125-48-<data hash>
     build: !reset null
-    deploy: {replicas: 1}
+    deploy: { replicas: 1 }
 ```
 
 Released engine-agent images are tagged `simver-<sim version>`. To build one for an
@@ -1005,14 +1120,14 @@ see [Upgrades](#upgrades).
 
 **Google Cloud identity.** Each piece, and why it exists:
 
-| Resource | Scope | Why |
-| --- | --- | --- |
-| Provider `glob2-online-deploy` in pool `github-actions` | the pool | Accepts only GitHub OIDC tokens whose repository is `genixpro/glob2-release` (and its id), actor id the owner's, ref `refs/heads/master`, event `workflow_dispatch` or `push`, environment `online-production`, a GitHub-hosted runner and workflow `deploy-online.yml@refs/heads/master`. It maps `attribute.online_deploy_repository_id`, which no other provider in the pool sets. |
-| Service account `glob2-online-deployer` | | The identity of the workflow; no keys. |
-| `roles/iam.workloadIdentityUser` on the service account for `principalSet://…/github-actions/attribute.online_deploy_repository_id/1397722696` | the service account | Lets tokens from that provider act as it. |
-| Custom role `glob2OnlineDeployInstance` (`compute.instances.get`, `compute.instances.setMetadata`) | the VM only | Read the VM and add or remove the short-lived SSH key in its own metadata. Nothing project-wide: `gcloud compute ssh` is not used because it also reads and tries to write project metadata. |
-| `roles/iap.tunnelResourceAccessor` | the VM's IAP tunnel resource only | Open the IAP TCP tunnel to port 22. |
-| Firewall rule `glob2-staging-iap-ssh`: tcp:22 from `35.235.240.0/20` to tag `glob2-staging` | the network | IAP's forwarding range, so SSH keeps working through IAP if the open `default-allow-ssh` rule is ever removed. |
+| Resource                                                                                                                                       | Scope                             | Why                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Provider `glob2-online-deploy` in pool `github-actions`                                                                                        | the pool                          | Accepts only GitHub OIDC tokens whose repository is `genixpro/glob2-release` (and its id), actor id the owner's, ref `refs/heads/master`, event `workflow_dispatch` or `push`, environment `online-production`, a GitHub-hosted runner and workflow `deploy-online.yml@refs/heads/master`. It maps `attribute.online_deploy_repository_id`, which no other provider in the pool sets. |
+| Service account `glob2-online-deployer`                                                                                                        |                                   | The identity of the workflow; no keys.                                                                                                                                                                                                                                                                                                                                                |
+| `roles/iam.workloadIdentityUser` on the service account for `principalSet://…/github-actions/attribute.online_deploy_repository_id/1397722696` | the service account               | Lets tokens from that provider act as it.                                                                                                                                                                                                                                                                                                                                             |
+| Custom role `glob2OnlineDeployInstance` (`compute.instances.get`, `compute.instances.setMetadata`)                                             | the VM only                       | Read the VM and add or remove the short-lived SSH key in its own metadata. Nothing project-wide: `gcloud compute ssh` is not used because it also reads and tries to write project metadata.                                                                                                                                                                                          |
+| `roles/iap.tunnelResourceAccessor`                                                                                                             | the VM's IAP tunnel resource only | Open the IAP TCP tunnel to port 22.                                                                                                                                                                                                                                                                                                                                                   |
+| Firewall rule `glob2-staging-iap-ssh`: tcp:22 from `35.235.240.0/20` to tag `glob2-staging`                                                    | the network                       | IAP's forwarding range, so SSH keeps working through IAP if the open `default-allow-ssh` rule is ever removed.                                                                                                                                                                                                                                                                        |
 
 Setting instance metadata is root-equivalent on the VM (as is the deploy user's
 `docker` group), so the account is as powerful as a person deploying by hand, but
@@ -1070,23 +1185,24 @@ To revoke the pipeline, delete the provider (or disable it with
 The worker leader deletes old rows every minute (`apps/worker/src/maintenance.ts`,
 at most 1000 rows per table and run) and collects blobs every six hours:
 
-| Data | Kept |
-| --- | --- |
-| Refresh tokens | rotated or revoked: 7 days (reuse detection); expired: 30 days after expiry |
-| Web sessions, provider sign-in flows | 30 days after expiry or revocation; 24 hours after expiry |
-| Browser sign-in attempts | 7 days once finished |
-| Guest accounts | deleted when unused for 90 days (no sign-in or realtime session, no device use) and they never played a match, host no open room and own no catalog map |
-| Room chat | 30 days |
-| Engine jobs | 30 days after completion; each match's latest succeeded verify job stays |
-| Match proposals, finished queue tickets | 30 days |
-| Engine agents not seen | 7 days |
-| Spilled NOTIFY payloads | 1 hour |
-| Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
+| Data                                    | Kept                                                                                                                                                                                                                              |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Refresh tokens                          | rotated or revoked: 7 days (reuse detection); expired: 30 days after expiry                                                                                                                                                       |
+| Web sessions, provider sign-in flows    | 30 days after expiry or revocation; 24 hours after expiry                                                                                                                                                                         |
+| Browser sign-in attempts                | 7 days once finished                                                                                                                                                                                                              |
+| Guest accounts                          | deleted when unused for 90 days (no sign-in or realtime session, no device use) and they never played a match, host no open room and own no catalog map                                                                           |
+| Room chat                               | 30 days                                                                                                                                                                                                                           |
+| Engine jobs                             | 30 days after completion; each match's latest succeeded verify job stays                                                                                                                                                          |
+| Match proposals, finished queue tickets | 30 days                                                                                                                                                                                                                           |
+| Engine agents not seen                  | 7 days                                                                                                                                                                                                                            |
+| Spilled NOTIFY payloads                 | 1 hour                                                                                                                                                                                                                            |
+| Blobs                                   | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
 
 Matches, participants, ratings, rating history, catalog maps, map download counts
 (by account, or by IP address for downloads without an account) and the audit log
 are kept. The official instance's [privacy policy](../mobile/privacy-policy.md)
 states these periods to players; change it together with `maintenance.ts`.
+
 - Migrations: `docker compose run --rm --no-deps init node packages/db/src/cli.ts status`.
 - Stopping: `docker compose stop` drains relays (up to `GLOB2_RELAY_STOP_GRACE`);
   `docker compose down` keeps volumes; `down --volumes` deletes all data.
@@ -1226,7 +1342,7 @@ the VM only.
    added later by registering it ([Sign-in providers](#sign-in-providers)), adding
    it to `instance.yaml` and its secret to the env file, and redeploying.
 5. **Deploy and redeploy.** `deploy/update-host.sh /path/to/deployment.env
-   origin/<branch>` builds and starts everything; run it again for each new
+origin/<branch>` builds and starts everything; run it again for each new
    revision. The first build takes about half an hour on four vCPUs; later builds
    reuse the BuildKit caches. The official instance is redeployed from GitHub Actions instead;
    see [Automatic deployment](#automatic-deployment).
@@ -1431,3 +1547,235 @@ URLs never grant credits. Model usage, candidate reports and source revisions
 are retained in the request journal; monitor failures, uncertain requests,
 reserved credits, worker health and daily provider capacity. Reconcile uncertain
 requests through the administrator endpoint documented in the architecture guide.
+
+## AI Terrain Studio
+
+Terrain Studio is optional and disabled when `terrainStudio` is absent. Apply
+platform migrations before starting the API or its worker. Configure:
+
+```yaml
+terrainStudio:
+  enabled: true
+  salesEnabled: false
+  textModel: <structured-output text model>
+  imageModel: <image model supporting transparent PNG generation and edits>
+  pipelineVersion: terrain-v1
+  providerCallsPerDay: 200
+  chatPerHour: 60
+  maxOutputTokens: 16000
+  timeoutSeconds: 1800
+```
+
+Use a model supporting the configured image options described in the
+[OpenAI image API](https://developers.openai.com/api/reference/resources/images/methods/edit).
+Set `TERRAIN_OPENAI_API_KEY` only on the authoring worker; `deploy/.env.example`
+lists its credentials and optional pinned image. Start the worker with
+`docker compose --profile ai-terrain up -d --build ai-terrain-worker`.
+The `ai-terrain-worker` image shares the matching
+native engine, includes the artwork converter and pins Pillow through
+`tools/asset-requirements.txt`. Local workers additionally require `ENGINE_BINARY`,
+`GLOB2_SOURCE_DIR`, and `TERRAIN_PYTHON`; use the pinned asset encoder interpreter.
+Start with `npm run start --workspace @glob2/ai-terrain-worker` in `platform/`.
+
+Terrain credits have independent wallets. Configure `packs`, enable
+`salesEnabled`, and set `TERRAIN_STRIPE_SECRET_KEY` and
+`TERRAIN_STRIPE_WEBHOOK_SECRET` on the API for sales. Expose the signed webhook
+`/api/v1/terrain-studio/stripe`. A build reserves one credit and settles only
+when its exact validated package is saved privately. Provider-call limits pause
+work until capacity becomes available; they include anonymous daily totals so
+account deletion cannot reset service capacity.
+
+Requests and provider stages are durable, with leases and heartbeats. Completed
+stages are reused after restarts. Ambiguous provider outcomes retain the reservation
+and require operator reconciliation; they never dispatch a duplicate automatically.
+After confirming a request cannot be recovered, an administrator can use
+`POST /api/v1/admin/terrain-studio/requests/<id>/fail` to return its reservation.
+Cancellation waits for an in-flight provider outcome. Ordinary set or draft
+deletion rejects active Terrain Studio work so its reservation and provider journal
+remain available; finish, cancel, or reconcile the request before deleting.
+Account export includes
+project and request history, artifact metadata and hashes, reports, and candidate
+package documents. It does not bundle uploaded references or source-image bytes;
+download those through the project's private artifact links before deletion.
+Account deletion removes private project records and their blob references;
+unreferenced bytes are subsequently collected under the normal blob-GC grace
+period. Financial ledger history follows existing retention policy.
+
+Serve `/api/v1/terrain-studio/threads/<id>/events` as an unbuffered authenticated
+SSE stream, as for Map Studio. Keep the matching browser game runtime deployed:
+the scene preview uses the optional `--validate-set --gallery 1` renderer path.
+Existing packages, save formats, and simulation rules are unchanged by this studio.
+
+### AI Building Studio deployment
+
+AI building authoring is optional and independent of the manual building library.
+Migrate the database before enabling its API or worker. Use the `ai-building`
+Compose profile and `ai-building-worker` Docker target; its engine and stock
+building definitions must come from the same build. The worker requires
+`ENGINE_BINARY`, `GLOB2_SOURCE_DIR` (including building-catalog documentation and
+stock definitions) and `BUILDING_OPENAI_API_KEY`.
+Artwork generation also needs stock camera sprites: the Docker target supplies
+them under `studio/building-references/`, while source checkouts use `data/gfx/`.
+A properties-only edit does not require these image references.
+Configure the instance:
+
+```yaml
+buildingStudio:
+  enabled: true
+  salesEnabled: false
+  textModel: <configured text model>
+  imageModel: <configured image model with transparent PNG support>
+  pipelineVersion: building-v1
+  providerCallsPerDay: 100
+  chatPerHour: 60
+  maxOutputTokens: 16000
+  timeoutSeconds: 1800
+```
+
+Model names and service budgets are operator choices. Generation uses a separate
+building wallet: one credit per validated delivery; discussion and restoration
+are free. Enable sales with the existing credit-pack structure and
+`BUILDING_STRIPE_SECRET_KEY` / `BUILDING_STRIPE_WEBHOOK_SECRET`; the signed webhook
+is `/api/v1/ai-building-studio/stripe`. Disabling generation retains access to saved
+projects and candidates. An administrator can reconcile an unrecoverable uncertain
+request through `POST /api/v1/admin/ai-building-studio/requests/:id/fail`, returning
+its reservation and recording an audit entry. Inspect provider records before
+reconciliation; never redispatch an ambiguous paid call automatically.
+
+Validate a configured provider before enabling sales. The opt-in worker test
+requires a disposable PostgreSQL test database, `BUILDING_OPENAI_API_KEY`,
+`BUILDING_LIVE_TEXT_MODEL`, `BUILDING_LIVE_IMAGE_MODEL` and
+`BUILDING_NATIVE_BINARY` pointing to this revision's built engine. From `platform/`,
+run:
+
+```sh
+npx vitest run apps/ai-building-worker/test/pipeline.test.ts -t 'live paid provider'
+```
+
+This makes paid model calls through the real worker pipeline. It retains the
+building archive, native validation report and composited stage previews in
+`artifacts/building-studio/live/`. Inspect the finished and construction images at
+game scale, the requested capabilities and the construction links. A passing
+mock-provider test alone does not establish provider compatibility or art quality.
+The native-decoder test can also consume previously generated PNGs with
+`BUILDING_VALIDATION_IMAGE` and `BUILDING_VALIDATION_SITE_IMAGE`; this checks sprite
+conversion and team-color layers without making provider calls.
+
+## Admin reporting
+
+`/admin` opens Overview for administrators and Reports for moderators. Unified
+reports cover all six libraries; Content permits restoration without an open
+report. Legacy moderation URLs remain available. Roles and deletion follow the
+existing self-role and hierarchy rules. The deletion form explains consequences
+and requires the current account name. Match verification filters expose pending
+and failed outcomes; force is a separate confirmation that remains audited.
+
+Operations shows uncertain studio requests, current reservations per product,
+queued/failed engine jobs, queue age and last-seen worker leases/engine agents.
+Inspect details to see safe metadata and available metering evidence. Returning a
+generation reservation requires a reason and confirmation that delivery cannot
+be recovered. AI Studio and Hive reconciliation charges measured usage up to the
+original reservation, releases the remainder, and requires evidence. Inspect the
+request details first, explicitly enter or copy measured token counts, and confirm
+them against provider evidence. Unknown usage must not be submitted as zero. Wallet and
+request locks make repeat/concurrent resolution idempotent. There are no automatic
+provider retries or arbitrary credit adjustments. Audit can be filtered by actor,
+action, target and dates; moderators only see moderation actions.
+
+Set `analytics` in the instance JSON to independently control collection and
+admin display (both default true):
+
+```json
+"analytics": { "collection": true, "display": true }
+```
+
+All replicas of an instance must use the same collection setting. Activity is one
+conflict-safe marker per account per UTC day for a successful authenticated
+non-admin request or realtime action, including activity across UTC midnight.
+Guests and registered accounts are shown separately. Service credentials,
+anonymous visitors, health checks and dashboard polling are excluded. Identifiable
+markers are kept for 90 days, included in export and erased on account deletion;
+anonymous daily totals are kept for 24 months. Daily counters update transactionally
+with source changes, survive source cleanup, and handle repeated/late completions.
+Opaque contribution snapshots remember only the last source state actually counted.
+When a source changes after a collection pause, reconciliation applies the difference
+from that snapshot
+without subtracting events that were never recorded. This bookkeeping follows source
+retention; anonymous daily totals remain after the source is removed.
+Worker maintenance applies retention. Stopping collection creates a history gap;
+it does not manufacture activity when restarted. Historical source backfills are
+explicitly incomplete and never use `last_seen_at` to infer active users.
+
+Analytics uses UTC 7/30/90-day periods with previous-period comparisons, accessible
+charts/tables and CSV downloads. Status trends are cohorts by request creation day;
+completion duration uses creation-to-completion time for successful deliveries
+with known completion timestamps. Completion comparisons show mean seconds and
+sample counts. Charts keep the selected UTC date range, show individual observations,
+and break lines across unrecorded days; a gap is not a recorded zero. The current
+period includes the unfinished UTC day, whereas the previous period contains
+complete calendar days. Lifetime top-download rankings are independent of the
+selected reporting range. Download counts follow
+library counting rules and are not unique users; skin download history is unavailable.
+All admin responses disable public caching; aggregate endpoints cache internally
+for 60 seconds and display their updated time.
+
+Finances defaults to live payments. Verified payment paths write an idempotent
+reporting journal of actual monetary amounts; currencies and live/test/unclassified
+modes stay separate. Locally verified historical credit purchases retain their
+original pack amounts with unknown mode. Historical skin cash amounts remain
+unknown. Credit reversals are never used to infer cash refunds. Credits are shown
+in separate product units, including purchased/granted/consumed/returned/reserved.
+Disputes are separate from refunds. Payment, refund and dispute-opening times
+come from verified provider facts. If only a closed dispute’s current state is
+available, its closure is initially dated when reconciliation observes it; a
+verified closure webhook replaces that observed timestamp. Fees, hosting bills,
+exchange rates and profit
+are outside this report. Cash is formatted using
+[Stripe charge/refund currency units](https://docs.stripe.com/currencies#special-cases),
+including zero-decimal currencies and the ISK/UGX API exceptions; CSV preserves
+exact integer minor units. The payment-mode filter applies only to cash. Credit
+flows cover the current selected UTC range across all modes; reservations are
+current snapshots. Provider costs include attempts across all modes and estimates
+cover only attempts with available usage and pricing; partial subtotals are labeled.
+
+Provider attempts retain metering even when saving the result later fails. Supply
+`analytics.providerRates` as an array of immutable rate versions with `version`,
+`model`, `currency`, `effectiveAt`, `inputMicros`, `cachedInputMicros`, `outputMicros`
+and `callMicros`. Token rates are millionths of currency per million tokens; the
+fixed call rate is millionths of currency per attempt. Rates are monetary prices,
+independent of customer credit rates. Measured cache-write tokens are retained,
+but attempts with cache-write usage remain unpriced because this version has no
+separate cache-write monetary rate. Recovery still honors existing customer credit
+cache-write rates. A model uses the latest effective version at
+attempt time. To change a price, add a new version; editing a persisted version
+fails startup. Missing usage or pricing remains unavailable, never zero. No provider
+rates are preconfigured: the operator must enter verified contract prices.
+
+Roll out additive migrations and backend before the dependent web build. Verify
+live dashboard totals against source tables using read-only queries; test destructive
+actions on a disposable database. Schema rollback is unnecessary for a UI rollback;
+collection/display can each be disabled independently.
+
+### Generator Studio rollout
+
+Deploy migration `0058_generator_studio.sql` and API support before installing the
+web client. Generator Studio is independently opt-in: leave
+`generatorStudio.enabled` false until a maintainer has played through authoring,
+preview, checks and publication. The flag gates project and tool APIs as well as
+model requests; account export remains available for recovery when disabled.
+Configure its `model`, versioned token `rate`,
+`maxRequestCredits` and `maxOutputTokens` as for AI Studio, with
+`GENERATOR_STUDIO_OPENAI_API_KEY`. Optional sales additionally require packs,
+`salesEnabled`, `GENERATOR_STUDIO_STRIPE_SECRET_KEY` and
+`GENERATOR_STUDIO_STRIPE_WEBHOOK_SECRET`. Webhook and reconciliation paths are
+`/api/v1/generator-studio/stripe` and `/api/v1/generator-studio/reconcile`.
+Generator credits, reservations, purchases and financial reporting are separate.
+
+Serve `/generator-studio` and its project routes with COOP/COEP, including the
+Monaco editor, TypeScript and JSON worker responses. Only the dedicated
+`/play/generator-studio.html` entry permits same-origin framing. The installer
+copies the entry and available precompressed versions before the main index;
+ordinary game and account pages remain unframeable. Keep the existing isolated
+Generator Library engine validators available for checks and publication; browser
+reports are untrusted development summaries. Monitor generator request leases,
+uncertain calls, validator queue age and browser launch failures.

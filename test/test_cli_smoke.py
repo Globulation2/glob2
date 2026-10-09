@@ -68,6 +68,51 @@ class CliSmoke(unittest.TestCase):
         self.assertTrue(records)
         return records
 
+    def test_unified_compute_pool_preserves_trace_with_auto_sizing(self):
+        source = self.generated()
+        serial = self.game(self.root / 'serial', source, workers=1)
+        automatic = self.game(self.root / 'auto', source, workers='auto')
+        shared = self.game(self.root / 'shared', source, workers=2)
+        self.assertEqual(serial, automatic)
+        self.assertEqual(serial, shared)
+        report = json.loads((self.root / 'auto/result.json').read_text())
+        self.assertGreaterEqual(report['compute_resolved_threads'], 1)
+        self.assertEqual(report['compute_requested_threads'], 'auto')
+        self.assertIn(report['compute_threads'], (1, report['compute_resolved_threads']))
+        self.assertEqual(report['compute_workers'], report['compute_threads'] - 1)
+        self.assertEqual(report['gradient_workers'], report['compute_threads'] - 1)
+        self.assertNotIn('compute_experiments', report)
+
+    def test_removed_compute_options_point_to_unified_setting(self):
+        for flag, value in (('--ai-threads', '2'), ('--gradient-workers', '2'),
+                            ('--compute-experiments', 'ai')):
+            for prefix, status in (([], 1), (['--run-game'], 2),
+                                   (['--verify-match', 'missing.record'], 2),
+                                   (['--turn-client', 'missing.json'], 2)):
+                with self.subTest(flag=flag, command=prefix):
+                    result = self.command(*prefix, flag, value, status=status)
+                    self.assertIn('has been removed', result.stderr)
+                    self.assertIn('--compute-threads auto|N', result.stderr)
+
+    def test_match_verification_preserves_trace_across_compute_sizes(self):
+        reference = None
+        # Git may check out the golden text with CRLF on Windows.
+        golden = (ROOT / 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_text(encoding='utf-8')
+        for count in (1, 2, 4, 8, 'auto'):
+            output = self.root / f'verify-{count}'
+            self.command('--verify-match', ROOT / 'test/fixtures/multiplayer/FourSquares1.g2mr',
+                         '--map', ROOT / 'maps/FourSquares1.map.gz', '--out', output,
+                         '--compute-threads', count)
+            self.assertEqual((output / 'checksums.txt').read_text(encoding='utf-8'), golden)
+            result = (output / 'result.json').read_bytes()
+            if reference is None:
+                reference = result
+            self.assertEqual(result, reference)
+            compute = json.loads((output / 'compute.json').read_text())
+            self.assertEqual(compute['compute_requested_threads'], str(count))
+            self.assertIn(compute['compute_threads'], (1, compute['compute_resolved_threads']))
+            self.assertEqual(compute['compute_workers'], compute['compute_threads'] - 1)
+
     def test_help_and_catalog_describe_real_commands(self):
         self.assertIn('-nox',self.command('--help').stdout)
         catalog=json.loads(self.command('--headless-catalog').stdout)
@@ -83,6 +128,7 @@ class CliSmoke(unittest.TestCase):
 
     def test_headless_numeric_and_missing_input_errors_are_structured(self):
         for index, extra in enumerate([['--ticks','0'],['--compute-threads','-1'],
+                                       ['--compute-threads','4294967296'],
                                        ['--map-file',self.root/'missing.map','--game-seed','713','--player','castor']]):
             output=self.root/f'invalid-{index}'
             self.command('--run-game','--output-dir',output,*extra,status=2)

@@ -272,7 +272,7 @@ void NewNicowar::tick(Runtime& runtime)
 	timer++;
 	if(timer==AI_NICOWAR_INIT_TICK)
 	{
-		selectStrategy();
+		selectStrategy(runtime);
 		check_phases(runtime);
 		initialize(runtime);
 	}
@@ -408,9 +408,9 @@ void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 
 
 
-void NewNicowar::selectStrategy()
+void NewNicowar::selectStrategy(AISharedRuntime::Runtime& runtime)
 {
-	strategy = strategyDefinitions->chooseRandomStrategy();
+	strategy = strategyDefinitions->chooseRandomStrategy(runtime.privateRandomEngine());
 	//strategy = loader.getParticularStrategy("default");
 }
 

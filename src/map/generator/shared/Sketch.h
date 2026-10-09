@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Grid.h"
 #include "TerrainType.h"
 #include <algorithm>
@@ -12,33 +14,37 @@ class Map;
 struct GenerationContext;
 namespace MapGeneration
 {
-/// A map's undermap as one TerrainType per tile, designed in memory before anything is written
-/// to the Map: the buffer a designed generator stamps its terrain into, lays beaches on, carves
-/// lakes and raises islands in, and finally writes out with writeUndermap.
+/// A map's terrain as one TerrainType per vertex (vertex (x, y) is the top-left corner of tile
+/// (x, y)), designed in memory before anything is written to the Map: the buffer a designed
+/// generator stamps its terrain into, lays beaches on, carves lakes and raises islands in, and
+/// finally writes out with writeVertices.
 using TerrainSketch = std::vector<unsigned char>;
 
-/// Grass may never touch water (Map::regenerateMap reads each tile from its four undermap
-/// corners), so every land tile beside water becomes sand. Unlike Map::controlSand() this reads
-/// only the original terrain, so the result doesn't depend on scan order and water is never
-/// eaten away.
+/// Grass may never touch water (each tile takes its rules from its four corner vertices), so every
+/// land vertex beside water becomes sand. Like Map::layBeaches() this reads only the original
+/// terrain, so the result doesn't depend on scan order; unlike it, water is never eaten away.
 void layBeaches(TerrainSketch &, const Torus &);
 
-/// Writes the sketch to the map's undermap and rebuilds the tiles from it.
-void writeUndermap(Map &, const TerrainSketch &);
+/// Writes the sketch to the map's vertices, re-deriving every tile from its corners.
+void writeVertices(Map &, const TerrainSketch &);
+
+/// Every corner vertex of tile (x, y) takes `type`, with no beach laid: the tile becomes pure
+/// `type`, and the eight tiles sharing those corners mix it with their own.
+void paintTile(Map &, int x, int y, TerrainType type);
 
 int countTiles(const TerrainSketch &, TerrainType);
 
-/// The undermap corners of every tile in `tiles`: the reverse of pureTiles, the vertices a design must
+/// The corner vertices of every tile in `tiles`: the reverse of pureTiles, the vertices a design must
 /// set for those tiles to take a terrain of their own.
 std::vector<unsigned char> tileCorners(const Torus &, const std::vector<unsigned char> &tiles);
 
-/// The tiles whose four undermap corners all hold `type` (Map::regenerateMap reads tile (x, y) from
-/// corners (x, y), (x + 1, y), (x, y + 1) and (x + 1, y + 1)): what the sketch will draw as pure grass,
+/// The tiles whose four corner vertices all hold `type` (tile (x, y) takes its rules from vertices
+/// (x, y), (x + 1, y), (x, y + 1) and (x + 1, y + 1)): what the sketch will draw as pure grass,
 /// sand or water. Buildings and deposits need pure grass, and the engine's growth tests read pure
 /// water and pure sand, so this is the sketch as the game will see it.
 std::vector<unsigned char> pureTiles(const TerrainSketch &, const Torus &, TerrainType type);
 
-/// The same pure-terrain mask from a finished map's rendered tiles. Use after all terrain repairs
+/// The same pure-terrain mask from a finished map's corner-derived tiles. Use after all terrain repairs
 /// when validating a growth or shoreline promise; mixed beach tiles belong to none of the masks.
 std::vector<unsigned char> pureTiles(const Map &, TerrainType);
 
@@ -55,16 +61,26 @@ void sprinkleSand(TerrainSketch &sketch, const Torus &t, const std::vector<unsig
 {
 	std::vector<unsigned char> water(sketch.size(), 0);
 	for (size_t i = 0; i < sketch.size(); ++i)
-		water[i] = sketch[i] == WATER;
+	{
+		::MapGeneration::generationCheckpoint();
+		water.at(i) = sketch.at(i) == WATER;
+	}
 	const std::vector<int> steps = stepsFrom(t, water);
 	std::vector<std::pair<double, int>> ranked;
 	for (int i = 0; i < t.size(); ++i)
-		if (eligible[i] && sketch[i] == GRASS && steps[i] >= inland)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (eligible.at(i) && sketch.at(i) == GRASS && steps.at(i) >= inland)
 			ranked.push_back({-noiseAt(i), i});
+	}
 	std::stable_sort(ranked.begin(), ranked.end());
-	const size_t patches = size_t(std::lround(ranked.size() * std::clamp(share, 0.0, 1.0)));
+	const size_t patches =
+		size_t(::MapGeneration::Numeric::lround(ranked.size() * std::clamp(share, 0.0, 1.0)));
 	for (size_t k = 0; k < patches; ++k)
-		sketch[ranked[k].second] = SAND;
+	{
+		::MapGeneration::generationCheckpoint();
+		sketch.at(ranked.at(k).second) = SAND;
+	}
 }
 
 /// A sand road kept inland: clears every road vertex fewer than `gap` steps from `water`. Sand that
@@ -92,22 +108,24 @@ int growWater(const Torus &t, std::vector<unsigned char> &water, int seed, int t
 	using Entry = std::pair<long long, int>;
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> frontier;
 	frontier.push({key(seed), seed});
-	queued[seed] = stamp;
+	queued.at(seed) = stamp;
 	int grown = 0;
 	while (!frontier.empty() && grown < target)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int tile = frontier.top().second;
 		frontier.pop();
-		if (water[tile])
+		if (water.at(tile))
 			continue;
-		water[tile] = 1;
+		water.at(tile) = 1;
 		++grown;
 		for (const auto &s : kCardinalSteps)
 		{
-			const int next = t.at(tile % t.w + s[0], tile / t.w + s[1]);
-			if (eligible(next) && !water[next] && queued[next] != stamp)
+			::MapGeneration::generationCheckpoint();
+			const int next = t.at(t.remainderX(tile) + s[0], tile / t.w + s[1]);
+			if (eligible(next) && !water.at(next) && queued.at(next) != stamp)
 			{
-				queued[next] = stamp;
+				queued.at(next) = stamp;
 				frontier.push({key(next), next});
 			}
 		}

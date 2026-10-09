@@ -1,3 +1,10 @@
+import type { GeneratorExecutor } from './generatorValidation.ts';
+import {
+  readBuildingArchive,
+  writeBuildingArtworkBundle,
+  buildingAssetHash,
+} from '@glob2/protocol/node';
+import type { SetValidator } from './setValidation.ts';
 import type { AiValidator } from './aiValidation.ts';
 // The real EngineRunner: each job kind as glob2 headless commands plus blob
 // store I/O. Inputs arrive already checked against the job schema (the agent
@@ -46,6 +53,8 @@ export const DEFAULT_RUNNER_LIMITS: RunnerLimits = {
 export interface HeadlessRunnerOptions {
   engine: GlobEngine;
   aiValidator?: AiValidator;
+  generatorExecutor?: GeneratorExecutor;
+  setValidator?: SetValidator;
   catalog: EngineCatalog;
   simVersion: SimVersion;
   /** Blob access for run() calls that pass none (tests); the agent passes each lease's own. */
@@ -82,6 +91,11 @@ export class HeadlessEngineRunner implements EngineRunner {
 
   constructor(options: HeadlessRunnerOptions) {
     this.options = options;
+    if (options.catalog.commands.includes('compose_buildings'))
+      this.kinds.push('validate-buildings');
+    if (options.setValidator && options.catalog.commands.includes('validate_set'))
+      this.kinds.push('validate-set');
+    if (options.generatorExecutor) this.kinds.push('validate-generator', 'generate-script-map');
     if (options.aiValidator) this.kinds.push('validate-ai');
     this.limits = { ...DEFAULT_RUNNER_LIMITS, ...options.limits };
   }
@@ -92,6 +106,115 @@ export class HeadlessEngineRunner implements EngineRunner {
     let result: unknown;
     try {
       switch (job.kind) {
+        case 'validate-buildings': {
+          const bytes = await blobs.read(job.payload.blobHash, 32 * 1024 * 1024);
+          if (buildingAssetHash(bytes) !== job.payload.blobHash)
+            throw new EngineInputError('Archive hash mismatch');
+          let archive: ReturnType<typeof readBuildingArchive>;
+          let artwork: Buffer;
+          try {
+            archive = readBuildingArchive(Buffer.from(bytes));
+            artwork = writeBuildingArtworkBundle([archive.package], archive.assets);
+          } catch (error) {
+            result = {
+              valid: false,
+              reason: message(error instanceof Error ? error.message : 'Invalid building family'),
+            };
+            break;
+          }
+          try {
+            const composed = await this.options.engine.composeBuildings(
+              [archive.package],
+              signal,
+              artwork.length ? artwork : undefined,
+            );
+            if (composed.baseHash !== job.payload.baseHash)
+              throw new EngineOutputError(
+                'Stock catalog changed; validate with the matching engine',
+              );
+            result = {
+              valid: true,
+              archiveHash: job.payload.blobHash,
+              baseHash: composed.baseHash,
+              catalog: composed.catalog,
+              suite: 1,
+              ...(composed.artworkHash ? { artworkHash: composed.artworkHash } : {}),
+            };
+          } catch (error) {
+            // Only deterministic package errors are terminal rejections. A
+            // broken engine response, filesystem failure or cancellation must
+            // remain a failed/retryable job rather than poisoning the release.
+            if (signal.aborted || !(error instanceof EngineInputError)) throw error;
+            result = {
+              valid: false,
+              reason: message(error instanceof Error ? error.message : 'Invalid building family'),
+            };
+          }
+          break;
+        }
+        case 'validate-set': {
+          if (!this.options.setValidator)
+            throw new EngineJobError('unavailable', 'Isolated set validation is unavailable');
+          const validation = await this.options.setValidator(
+            await blobs.read(job.payload.blobHash, 16 * 1024 * 1024),
+            signal,
+          );
+          if (validation.report.hash !== job.payload.blobHash)
+            throw new EngineOutputError('set validation hash mismatch');
+          result = {
+            ...validation.report,
+            ...(validation.png
+              ? { previewHash: await blobs.write(validation.png, CONTENT_TYPES.png) }
+              : {}),
+          };
+          break;
+        }
+        case 'validate-generator': {
+          if (!this.options.generatorExecutor)
+            throw new EngineJobError('unavailable', 'Isolated generator validation unavailable');
+          const validation = await this.options.generatorExecutor.validate(
+            await blobs.read(job.payload.blobHash, 4 * 1024 * 1024),
+            job.payload.example,
+            signal,
+          );
+          if (validation.report.sourceHash !== job.payload.blobHash)
+            throw new EngineOutputError('Generator source hash mismatch');
+          result = {
+            ...validation.report,
+            ...(validation.canonical
+              ? {
+                  fileHash: await blobs.write(
+                    validation.canonical,
+                    'application/x-glob2-generator',
+                  ),
+                }
+              : {}),
+            ...(validation.png
+              ? { previewHash: await blobs.write(validation.png, CONTENT_TYPES.png) }
+              : {}),
+          };
+          break;
+        }
+        case 'generate-script-map': {
+          if (!this.options.generatorExecutor)
+            throw new EngineJobError('unavailable', 'Isolated generator generation unavailable');
+          const generated = await this.options.generatorExecutor.generate(
+            await blobs.read(job.payload.generator.fileHash, 4 * 1024 * 1024),
+            job.payload.generator,
+            signal,
+          );
+          const problem = this.checkFacts(generated.map);
+          if (problem) throw new EngineInputError(problem);
+          result = {
+            mapHash: await blobs.write(generated.bytes, CONTENT_TYPES.map),
+            size: generated.bytes.byteLength,
+            map: generated.map,
+            chosenSeed: generated.chosenSeed,
+            packageHash: generated.packageHash,
+            ...(generated.startQuality ? { startQuality: generated.startQuality } : {}),
+          };
+          break;
+        }
         case 'validate-ai':
           if (!this.options.aiValidator)
             throw new EngineJobError('unavailable', 'Isolated AI validation is unavailable');
@@ -265,6 +388,7 @@ export class HeadlessEngineRunner implements EngineRunner {
         width: report.width,
         height: report.height,
         teamCount: report.teamCount,
+        ...(report.setCredits ? { setCredits: report.setCredits } : {}),
         ...(report.buildingCatalog ? { buildingCatalog: report.buildingCatalog } : {}),
         ...(report.resourceExperiments ? { resourceExperiments: report.resourceExperiments } : {}),
         ...(report.requiredResourceExperiments

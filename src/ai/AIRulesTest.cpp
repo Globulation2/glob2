@@ -451,6 +451,10 @@ TEST_CASE("rule parser and script observations use effective match values")
     CHECK_THROWS_AS(applyGameRule(h,"scarcity=4"),std::invalid_argument);
     CHECK_THROWS_AS(applyGameRule(h,"missing=1"),std::invalid_argument);
     CHECK_THROWS_AS(applyGameRule(h,"noHunger="),std::invalid_argument);
+    applyGameRule(h,"buildingGradientDelay=2");CHECK(h.getBuildingGradientDelay()==2);
+    for(const char* invalid:{"buildingGradientDelay=0","buildingGradientDelay=9","buildingGradientDelay=-1"})
+        CHECK_THROWS_AS(applyGameRule(h,invalid),std::invalid_argument);
+    CHECK(h.getBuildingGradientDelay()==2);
     Script::Observations obs(w.game,0);auto r=obs.query("rules",{},{});
     CHECK(r.get("noUpgrades").number==1);CHECK(r.get("scarcity").number==3);
     CHECK(r.get("suddenDeathTick").number==500);
@@ -529,7 +533,7 @@ TEST_CASE("renewable material potential survives saturation and honors yield pol
     const auto food=materialIndex(MaterialId::Food);
     const auto wheat=*map.resourceRegistry().find("wheat");
     // All-grass fixture maps have zero land fertility until a water donor exists.
-    map.setCellTerrain(9,8,WATER);
+    map.paintCell(9,8,WATER);
     map.setResource(8,8,wheat,0);
     const auto ecology=map.resourceGrowthRateAt(index,resourceIndex(wheat));
     REQUIRE(ecology>0);

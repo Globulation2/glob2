@@ -1,3 +1,6 @@
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
+import { generatedMapState } from '@glob2/play';
+import { usableGenerator } from '@glob2/core';
 // Rooms: a host, members, seats (human, AI, open or locked), map, teams and
 // alliances, rules, chat, and the start of a match. State lives in Postgres;
 // every change bumps the room revision and publishes `{t: "room"}` so each
@@ -351,6 +354,7 @@ export class RoomService {
     hostId: string,
     db: Db,
   ): Promise<string | undefined> {
+    if (map?.kind === 'scripted') return map.generator.generatorId;
     if (!map?.hash || map.kind === 'generated') return undefined;
     if (map.kind === 'catalog') {
       const title = (await catalogTitles(db, [map.hash])).get(map.hash)?.title;
@@ -588,16 +592,18 @@ export class RoomService {
         .executeTakeFirst();
       if (!row) throw apiError('bad_request', 'Upload the map first (POST /api/v1/uploads).');
       if (row.status === 'invalid') {
-        throw apiError(
-          'bad_request',
-          `The uploaded file is not usable: ${row.failure ?? 'invalid'}.`,
-        );
+        throw apiError('bad_request', 'The uploaded file is not usable: {p0}.', undefined, {
+          p0: String(row.failure ?? 'invalid'),
+        });
       }
       const teamCount = row.team_count ?? undefined;
       if (teamCount !== undefined) {
         for (const entry of selection.reteaming ?? []) {
           if (entry.team >= teamCount) {
-            throw apiError('bad_request', `Reteaming names team ${entry.team} of ${teamCount}.`);
+            throw apiError('bad_request', 'Reteaming names team {p0} of {p1}.', undefined, {
+              p0: String(entry.team),
+              p1: String(teamCount),
+            });
           }
         }
       }
@@ -614,16 +620,48 @@ export class RoomService {
           }
         : { selection, status: 'pending', ...(row.job_id ? { jobId: row.job_id } : {}) };
     }
+    if (selection.kind === 'scripted') {
+      if (!(await usableGenerator(this.db, selection.generator, hostId, simVersion)))
+        throw apiError(
+          'bad_request',
+          'This generator release is unavailable, editor-only, or not validated for this engine.',
+        );
+      const agent = await this.db
+        .selectFrom('engine_agents')
+        .select('id')
+        .where('sim_version', '=', simVersion)
+        .where('last_seen_at', '>', new Date(Date.now() - 120000))
+        .where(sql<boolean>`'generate-script-map'=ANY(kinds)`)
+        .executeTakeFirst();
+      if (!agent) throw apiError('unavailable', 'No isolated generator worker is available.');
+    }
     const teams = selection.generator.params['teams'];
     if (teams === undefined || teams < 1 || teams > 12) {
       throw apiError('bad_request', 'A generated room map needs params.teams between 1 and 12.');
     }
     const withoutHash = { ...selection };
     delete withoutHash.hash;
+    const cached =
+      selection.kind === 'scripted'
+        ? await generatedMapState(this.db, selection.generator, simVersion)
+        : undefined;
+    if (selection.kind === 'scripted' && (!cached || cached.status === 'failed'))
+      await enforce(
+        new SharedLimit(this.db, 'script-map-generation', 20, 3600000),
+        hostId,
+        undefined,
+        'Too many generator requests; wait a while.',
+      );
     const state = await requestGeneratedMap(this.db, this.jobs, selection.generator, simVersion);
     if (state.status === 'ready') {
       return {
-        selection: { ...withoutHash, hash: state.mapHash },
+        selection: {
+          ...withoutHash,
+          hash: state.mapHash,
+          ...(selection.kind === 'scripted' && state.chosenSeed !== undefined
+            ? { chosenSeed: state.chosenSeed }
+            : {}),
+        },
         resourceExperiments: state.resourceExperiments,
         requiredResourceExperiments: state.requiredResourceExperiments,
         ...(state.buildingCatalog ? { buildingCatalog: state.buildingCatalog } : {}),
@@ -841,7 +879,10 @@ export class RoomService {
       experiments?: string[];
       regions?: RegionRtt[];
     },
+    generatorSupport = false,
   ): Promise<RoomState> {
+    if (params.map?.kind === 'scripted' && !generatorSupport)
+      throw apiError('update_required', 'Update the game to use shared generators.');
     const subject = await accessSubject(this.db, caller.id);
     if (!subject) throw apiError('forbidden', 'Your account cannot host rooms.');
     const decision = await this.access.canHost(subject, {
@@ -893,6 +934,7 @@ export class RoomService {
         .values({
           room_id: room.id,
           account_id: caller.id,
+          generator_support: generatorSupport,
           region_rtts: JSON.stringify(params.regions ?? []),
         })
         .execute();
@@ -968,8 +1010,8 @@ export class RoomService {
     const setup = readStored(STORED_MATCH_SETUP, match.setup);
     const source = setup.map;
     const map: RoomMapSelection =
-      source.kind === 'generated'
-        ? { kind: 'generated', generator: source.generator, hash: source.hash }
+      source.kind === 'generated' || source.kind === 'scripted'
+        ? { ...source }
         : source.kind === 'upload'
           ? { kind: 'upload', format: source.format, hash: source.hash }
           : {
@@ -998,6 +1040,7 @@ export class RoomService {
     simVersion: SimVersion,
     code: string,
     regions: RegionRtt[] | undefined,
+    generatorSupport = false,
   ): Promise<RoomState> {
     const found = await this.db
       .selectFrom('rooms')
@@ -1044,6 +1087,8 @@ export class RoomService {
     }
     await this.db.transaction().execute(async (trx) => {
       const room = await this.lock(trx, found.id);
+      if (readRoomSettings(room.settings).map?.kind === 'scripted' && !generatorSupport)
+        throw apiError('update_required', 'Update the game to join rooms using shared generators.');
       if (room.status === 'closed') {
         throw apiError('not_found', 'This room has closed. Ask the host for a new invite.');
       }
@@ -1060,11 +1105,13 @@ export class RoomService {
         .values({
           room_id: room.id,
           account_id: caller.id,
+          generator_support: generatorSupport,
           region_rtts: JSON.stringify(regions ?? []),
         })
         .onConflict((oc) =>
           oc.columns(['room_id', 'account_id']).doUpdateSet({
             connected: true,
+            generator_support: generatorSupport,
             last_seen_at: sql<Date>`now()`,
             ...(regions ? { region_rtts: JSON.stringify(regions) } : {}),
           }),
@@ -1205,12 +1252,35 @@ export class RoomService {
     if (current.host_account_id !== caller.id) {
       throw apiError('forbidden', 'Only the host can change the room.');
     }
+    if (changes.map?.kind === 'scripted') {
+      const older = await this.db
+        .selectFrom('room_members')
+        .select('account_id')
+        .where('room_id', '=', roomId)
+        .where('generator_support', '=', false)
+        .executeTakeFirst();
+      if (older)
+        throw apiError(
+          'update_required',
+          'Every room member must update before using a shared generator.',
+        );
+    }
     // Resolve outside the row lock: it may start a generation job.
     const resolution = changes.map
       ? await this.resolveMap(changes.map, current.sim_version, caller.id)
       : undefined;
     await this.db.transaction().execute(async (trx) => {
       const room = await this.lock(trx, roomId);
+      if (
+        changes.map?.kind === 'scripted' &&
+        (await trx
+          .selectFrom('room_members')
+          .select('account_id')
+          .where('room_id', '=', roomId)
+          .where('generator_support', '=', false)
+          .executeTakeFirst())
+      )
+        throw apiError('update_required', 'Every member needs generator sharing support.');
       if (room.host_account_id !== caller.id) {
         throw apiError('forbidden', 'Only the host can change the room.');
       }
@@ -1240,7 +1310,9 @@ export class RoomService {
         if (!valid) {
           throw apiError(
             'bad_request',
-            `teams must list the map's ${settings.teams.length} teams in order 0..${settings.teams.length - 1}.`,
+            "teams must list the map's {p0} teams in order 0..{p1}.",
+            undefined,
+            { p0: String(settings.teams.length), p1: String(settings.teams.length - 1) },
           );
         }
         settings = { ...settings, teams };
@@ -1288,7 +1360,10 @@ export class RoomService {
         .where('room_id', '=', roomId)
         .where('seat', '=', seatIndex)
         .executeTakeFirst()) as SeatRow | undefined;
-      if (!seat) throw apiError('not_found', `The room has no seat ${seatIndex}.`);
+      if (!seat)
+        throw apiError('not_found', 'The room has no seat {p0}.', undefined, {
+          p0: String(seatIndex),
+        });
       const setSeat = (values: {
         occupant?: 'open' | 'human' | 'ai';
         account_id?: string | null;
@@ -1438,6 +1513,29 @@ export class RoomService {
       }
       if (room.status !== 'open') throw apiError('conflict', 'The room is already starting.');
       const settings = readRoomSettings(room.settings);
+      if (
+        settings.map?.kind === 'scripted' &&
+        !(await usableGenerator(
+          trx,
+          settings.map.generator,
+          room.host_account_id,
+          room.sim_version,
+        ))
+      )
+        throw apiError(
+          'conflict',
+          'The selected generator release is no longer available for this room.',
+        );
+      if (
+        settings.map?.kind === 'scripted' &&
+        (await trx
+          .selectFrom('room_members')
+          .select('account_id')
+          .where('room_id', '=', roomId)
+          .where('generator_support', '=', false)
+          .executeTakeFirst())
+      )
+        throw apiError('update_required', 'Every member needs generator sharing support.');
       if (!settings.map) throw apiError('conflict', 'Choose a map first.');
       if (settings.mapStatus !== 'ready' || !settings.map.hash) {
         throw apiError(
@@ -1455,7 +1553,9 @@ export class RoomService {
         .execute()) as SeatRow[];
       const occupied = seats.filter((s) => s.occupant !== 'open');
       if (occupied.length < ROOM_RULES.minOccupiedSeats) {
-        throw apiError('conflict', `At least ${ROOM_RULES.minOccupiedSeats} seats must be taken.`);
+        throw apiError('conflict', 'At least {p0} seats must be taken.', undefined, {
+          p0: String(ROOM_RULES.minOccupiedSeats),
+        });
       }
       const unready = seats.filter(
         (s) =>
@@ -1591,7 +1691,7 @@ export class RoomService {
    * This replica holds a socket of the account: records it and marks the
    * account connected in its rooms.
    */
-  async markConnected(accountId: string): Promise<void> {
+  async markConnected(accountId: string, generatorSupport?: boolean): Promise<void> {
     await this.db.transaction().execute(async (trx) => {
       if (this.presence) {
         await this.presence.lockAccount(trx, accountId);
@@ -1599,9 +1699,12 @@ export class RoomService {
       }
       const rows = await trx
         .updateTable('room_members')
-        .set({ connected: true, last_seen_at: sql<Date>`now()` })
+        .set({
+          connected: true,
+          last_seen_at: sql<Date>`now()`,
+          ...(generatorSupport !== undefined ? { generator_support: generatorSupport } : {}),
+        })
         .where('account_id', '=', accountId)
-        .where('connected', '=', false)
         .returning('room_id')
         .execute();
       for (const row of rows) await this.bump(trx, row.room_id);
@@ -1693,6 +1796,7 @@ export class RoomService {
         sql<Date>`now() - make_interval(secs => ${ROOM_RULES.memberGraceSeconds})`,
       )
       .execute();
+    let removed = 0;
     for (const member of gone) {
       await this.db.transaction().execute(async (trx) => {
         const deleted = await trx
@@ -1700,8 +1804,14 @@ export class RoomService {
           .where('room_id', '=', member.room_id)
           .where('account_id', '=', member.account_id)
           .where('connected', '=', false)
+          .where(
+            'last_seen_at',
+            '<',
+            sql<Date>`now() - make_interval(secs => ${ROOM_RULES.memberGraceSeconds})`,
+          )
           .executeTakeFirst();
         if (deleted.numDeletedRows === 0n) return;
+        removed++;
         await trx
           .updateTable('room_seats')
           .set({ occupant: 'open', account_id: null, ready: false })
@@ -1721,7 +1831,7 @@ export class RoomService {
       .deleteFrom('room_kicks')
       .where('until', '<=', sql<Date>`now()`)
       .execute();
-    return { closed, removed: gone.length, recovered };
+    return { closed, removed, recovered };
   }
 
   /**
@@ -1796,7 +1906,9 @@ export function mapSource(selection: RoomMapSelection): MatchSetup['map'] {
     return { kind: 'upload', format: selection.format, hash: selection.hash };
   }
   if (!selection.hash) throw new Error('generated map has no hash yet');
-  return { kind: 'generated', generator: selection.generator, hash: selection.hash };
+  return selection.kind === 'scripted'
+    ? { ...selection, hash: selection.hash }
+    : { kind: 'generated', generator: selection.generator, hash: selection.hash };
 }
 
 /** Keeps existing alliances; new teams start on their own alliance. */

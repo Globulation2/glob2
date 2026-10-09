@@ -1,3 +1,5 @@
+import { ScriptGeneratorDescriptor } from './generators.ts';
+import { MapSetCredits } from './sets.ts';
 import { ResourceExperimentDefinitions, BuildingCatalog } from './matchSetup.ts';
 // REST resource shapes for /api/v1. Accounts and auth are complete for M3;
 // rooms, matches, maps and leaderboards define the shapes later milestones
@@ -214,6 +216,7 @@ export const AccountExport = Open(
         programs: ExportRows,
       }),
     ),
+    generatorStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     aiStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     mapStudio: Type.Optional(
       Open({
@@ -229,6 +232,8 @@ export const AccountExport = Open(
         artifacts: Type.Optional(ExportRows),
       }),
     ),
+    buildingStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
+    terrainStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     musicStudio: Type.Optional(
       Open({
         wallets: ExportRows,
@@ -241,6 +246,36 @@ export const AccountExport = Open(
         attempts: ExportRows,
         events: Type.Optional(ExportRows),
         artifacts: Type.Optional(ExportRows),
+      }),
+    ),
+    buildings: Type.Optional(
+      Open({
+        drafts: ExportRows,
+        families: Type.Optional(ExportRows),
+        releases: Type.Optional(ExportRows),
+        likes: Type.Optional(ExportRows),
+        favourites: Type.Optional(ExportRows),
+        reports: Type.Optional(ExportRows),
+      }),
+    ),
+    sets: Type.Optional(
+      Open({
+        published: ExportRows,
+        drafts: ExportRows,
+        versions: ExportRows,
+        likes: ExportRows,
+        reports: ExportRows,
+        downloads: ExportRows,
+      }),
+    ),
+    generators: Type.Optional(
+      Open({
+        published: ExportRows,
+        likes: ExportRows,
+        favourites: ExportRows,
+        reports: ExportRows,
+        uploads: ExportRows,
+        downloads: ExportRows,
       }),
     ),
     ais: Type.Optional(
@@ -357,6 +392,12 @@ export const RoomVisibility = Type.Union([Type.Literal('public'), Type.Literal('
 
 export const RoomMapSelection = Type.Union(
   [
+    Strict({
+      kind: Type.Literal('scripted'),
+      generator: ScriptGeneratorDescriptor,
+      hash: Type.Optional(Sha256Hex),
+      chosenSeed: Type.Optional(Type.Integer({ minimum: 0, maximum: 4294967295 })),
+    }),
     Strict({ kind: Type.Literal('catalog'), hash: Sha256Hex, mapId: Type.Optional(Uuid) }),
     Strict({
       kind: Type.Literal('upload'),
@@ -702,6 +743,14 @@ const ValidationState = Type.Union([
  * engine agent validated it. Rooms choose it as {kind: "catalog", hash}.
  */
 export const MapVersionInfo = Open({
+  generatorProvenance: Type.Optional(
+    Open({
+      verified: Type.Boolean(),
+      generator: ScriptGeneratorDescriptor,
+      chosenSeed: Type.Optional(Type.Integer({ minimum: 0, maximum: 4294967295 })),
+    }),
+  ),
+  setCredits: Type.Optional(MapSetCredits),
   hash: Sha256Hex,
   size: Type.Integer({ minimum: 0 }),
   width: Type.Optional(Type.Integer({ minimum: 1 })),

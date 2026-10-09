@@ -23,7 +23,11 @@ class NewMapScreen : public Glob2UI::Screen
 	};
 	GenerationRequest descriptor;
 
-	explicit NewMapScreen(const GeneratorRegistry &registry = GeneratorRegistry::builtins(), GAGGUI::ScreenStack *screens = nullptr);
+	explicit NewMapScreen(
+		std::shared_ptr<const GeneratorRegistry> registry = GeneratorRegistry::activeSnapshot(),
+		GAGGUI::ScreenStack *screens = nullptr);
+	explicit NewMapScreen(const GeneratorRegistry &registry,
+						  GAGGUI::ScreenStack *screens = nullptr);
 	~NewMapScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32) override;
@@ -37,6 +41,7 @@ class NewMapScreen : public Glob2UI::Screen
 	friend class MapGeneratorDefaultsTest;
 	friend struct MobileGallerySetup;
 	GenerationHistory history;
+	std::shared_ptr<const GeneratorRegistry> registryOwner;
 	const GeneratorRegistry &registry;
 	std::unique_ptr<MapPreview> preview;
 	bool parameters = false, previewDirty = true;

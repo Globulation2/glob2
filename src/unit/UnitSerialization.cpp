@@ -16,6 +16,7 @@
 
 #include "FileFormatVersions.h"
 #include "Utilities.h"
+#include "EntityRandomIO.h"
 #include <Stream.h>
 
 void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
@@ -42,6 +43,10 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		throw std::runtime_error("Invalid unit identity");
 	scriptIdentity=versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(false,gid);
 	this->owner = owner;
+	if (versionMinor >= FILE_FORMAT_VERSION_ENTITY_RANDOM)
+		loadEntityRandom(stream, entityRandom);
+	else
+		entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, gid, scriptIdentity);
 	isDead = stream->readSint32("isDead");
 	diagnosticDeathCause = GameplayMeasurements::UNKNOWN;
 	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
@@ -64,6 +69,17 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	terrainHealthRemainder = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES ? stream->readSint32("terrainHealthRemainder") : 0;
 	if (terrainHealthRemainder <= -256 || terrainHealthRemainder >= 256) throw std::runtime_error("Invalid terrain exposure remainder");
 
+	areaServiceRemainders.fill(0);
+	areaLastPulseTick=Uint32(-1);
+	if (versionMinor>=FILE_FORMAT_VERSION_AREA_EFFECTS) {
+		areaLastPulseTick=stream->readUint32("areaLastPulseTick");
+		if (areaLastPulseTick!=Uint32(-1) && (areaLastPulseTick&15)) throw std::runtime_error("Invalid area pulse tick");
+		for (int i=0;i<3;++i) {
+			const auto remainder=stream->readUint16(("areaServiceRemainder"+std::to_string(i)).c_str());
+			if (remainder>=256) throw std::runtime_error("Invalid area service remainder");
+			areaServiceRemainders[i]=Uint8(remainder);
+		}
+	}
 	// states
 	needToRecheckMedical = (bool)stream->readUint32("needToRecheckMedical");
 	auto readState = [&](const char* name, Uint32 maximum) {
@@ -191,6 +207,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	// identity
 	stream->writeUint16(gid, "gid");
 	stream->writeUint32(scriptIdentity, "scriptIdentity");
+	saveEntityRandom(stream, entityRandom);
 	stream->writeSint32(isDead, "isDead");
 	stream->writeSint32(diagnosticDeathCause, "diagnosticDeathCause");
 
@@ -204,6 +221,8 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(insideTimeout, "insideTimeout");
 	stream->writeSint32(speed, "speed");
 	stream->writeSint32(terrainHealthRemainder, "terrainHealthRemainder");
+	stream->writeUint32(areaLastPulseTick,"areaLastPulseTick");
+	for (int i=0;i<3;++i) stream->writeUint16(areaServiceRemainders[i],("areaServiceRemainder"+std::to_string(i)).c_str());
 
 	// states
 	stream->writeUint32((Uint32)needToRecheckMedical, "needToRecheckMedical");
@@ -323,6 +342,8 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 {
 	Uint32 cs=(serviceResourcesReserved ? 0x73657276u : 0) ^ (Uint32(constructionLevel) << 20);
 
+	if(areaLastPulseTick!=Uint32(-1)) cs ^= areaLastPulseTick ^ 0x70756c73u;
+	cs ^= Uint32(areaServiceRemainders[0]) | (Uint32(areaServiceRemainders[1])<<8) | (Uint32(areaServiceRemainders[2])<<16);
 	cs^=typeNum;
 	if (checkSumsVector)
 		checkSumsVector->push_back(typeNum);// [0]
@@ -471,5 +492,15 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(0);// [39]
 
+	if (checkSumsVector)
+	{
+		const auto random = entityRandom.exportState();
+		checkSumsVector->push_back(Uint32(random.value >> 32));
+		checkSumsVector->push_back(Uint32(random.value));
+		checkSumsVector->push_back(Uint32(random.increment >> 32));
+		checkSumsVector->push_back(Uint32(random.increment));
+	}
+
+	cs ^= entityRandom.checksum();
 	return cs;
 }

@@ -32,7 +32,8 @@ class Pipeline
  std::weak_ptr<GameDiagnostics::Session> diagnosticsSession;
 public:
  std::vector<std::pair<unsigned,std::shared_ptr<Order>>> prepare(Game& game,
-  std::span<const unsigned> eligible, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics);
+  std::span<const unsigned> eligible, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics,
+  const SimulationSnapshot::Handle& captured);
  std::shared_ptr<Order> validate(Game& game, std::shared_ptr<Order> order, unsigned player);
  void settle(Game& game, const std::shared_ptr<Order>& order, bool accepted);
  void cancel(unsigned player);

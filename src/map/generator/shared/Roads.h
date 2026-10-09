@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Contact.h"
 #include "Grid.h"
 #include "Sketch.h"
@@ -28,44 +29,58 @@ std::vector<int> cheapestWalk(const Torus &t, GridNeighbors neighbours,
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> heap;
 	for (int i : sources)
 	{
-		cost[i] = 0;
+		::MapGeneration::generationCheckpoint();
+		cost.at(i) = 0;
 		heap.push({0, i});
 	}
 	int reached = -1;
 	while (!heap.empty() && reached < 0)
 	{
+		::MapGeneration::generationCheckpoint();
 		const auto [c, i] = heap.top();
 		heap.pop();
-		if (c > cost[i])
+		if (c > cost.at(i))
 			continue;
-		if (goal[i])
+		if (goal.at(i))
 		{
 			reached = i;
 			break;
 		}
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const auto consider = [&](int dx, int dy)
 		{
 			const int m = t.at(x + dx, y + dy);
 			const int step = stepCost(i, m, dx, dy);
-			if (step < 0 || c + step >= cost[m])
+			if (step < 0 || c + step >= cost.at(m))
 				return;
-			cost[m] = c + step;
-			from[m] = i;
-			heap.push({cost[m], m});
+			cost.at(m) = c + step;
+			from.at(m) = i;
+			heap.push({cost.at(m), m});
 		};
 		if (neighbours == GridNeighbors::Cardinal)
 			for (const auto &step : kCardinalSteps)
+			{
+				::MapGeneration::generationCheckpoint();
 				consider(step[0], step[1]);
+			}
 		else
 			for (int dy = -1; dy <= 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
+				{
+					::MapGeneration::generationCheckpoint();
 					if (dx || dy)
 						consider(dx, dy);
+				}
+			}
 	}
 	std::vector<int> route;
-	for (int i = reached; i >= 0; i = from[i])
+	for (int i = reached; i >= 0; i = from.at(i))
+	{
+		::MapGeneration::generationCheckpoint();
 		route.push_back(i);
+	}
 	return route;
 }
 

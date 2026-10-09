@@ -72,9 +72,9 @@ void BuildingSelectorWidget::draw()
 {
 	std::string &type = building_type;
 
-	const int id=me.buildingSelectionType(type);
+	const int id=me.displayedBuildingSelectionType(type);
 	if (id<0) return;
-	BuildingType *bt=me.game.buildingsTypes.get(id);
+	const auto* bt=&me.view.scene->buildingTypes->at(id);
 	if (!bt) return;
 
 	int imgid = bt->miniSpriteImage;
@@ -94,7 +94,7 @@ void BuildingSelectorWidget::draw()
 		imgid = bt->gameSpriteImage;
 	}
 		
-	buildingSprite->setBaseColor(me.game.teams[me.team]->color);
+	buildingSprite->setBaseColor(presentationColor(me.view.scene->entities.teams[me.team].color));
 	globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
 	// draw selection if needed
@@ -121,22 +121,14 @@ TeamColorSelector::TeamColorSelector(MapEdit& me, const widgetRectangle& area, c
 
 void TeamColorSelector::draw()
 {
-	for(int n=0; n<Team::MAX_COUNT; ++n)
-	{
-		const int xpos = area.x + (n % COLUMNS) * SWATCH_SIZE;
-		const int ypos = area.y + (n / COLUMNS) * SWATCH_SIZE;
-		if(me.game.teams[n])
-		{
-			if(me.team==n)
-				globalContainer->gfx->drawFilledRect(xpos, ypos, SWATCH_SIZE, SWATCH_SIZE, Color(me.game.teams[n]->color.r, me.game.teams[n]->color.g, me.game.teams[n]->color.b, 128));
-			else
-				globalContainer->gfx->drawFilledRect(xpos, ypos, SWATCH_SIZE, SWATCH_SIZE, me.game.teams[n]->color);
-
-		}
-	}
+    for (const auto& team:me.view.scene->entities.teams) {
+        const int x=area.x+(team.number%COLUMNS)*SWATCH_SIZE;
+        const int y=area.y+(team.number/COLUMNS)*SWATCH_SIZE;
+        auto color=presentationColor(team.color);
+        if (me.team==team.number) color.a=128;
+        globalContainer->gfx->drawFilledRect(x,y,SWATCH_SIZE,SWATCH_SIZE,color);
+    }
 }
-
-
 
 SingleLevelSelector::SingleLevelSelector(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int level, int& levelNum, bool catalogPages)
 	: MapEditorWidget(me, area, group, name, action), level(level), levelNum(levelNum), catalogPages(catalogPages)

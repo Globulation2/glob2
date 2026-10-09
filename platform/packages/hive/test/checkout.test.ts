@@ -41,6 +41,8 @@ async function purchase() {
   const session = {
     id: 'cs_' + id,
     mode: 'payment',
+    created: Math.floor(Date.now() / 1000),
+    livemode: false,
     payment_status: 'paid',
     client_reference_id: id,
     payment_intent: 'pi_' + id,

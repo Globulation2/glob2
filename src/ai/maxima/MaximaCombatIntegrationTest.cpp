@@ -57,6 +57,7 @@ struct Fixture
 
     Fixture() : game(NULL)
     {
+        game.gameHeader.setRandomSeed(5489);
         // This fixture skips setGameHeader, which normally initializes the
         // player-wait state. syncStep must actually advance the simulation.
         game.setWaitingOnMask(0);
@@ -134,7 +135,7 @@ struct Fixture
     {
         for(int y=0; y<64; ++y) for(int x=0; x<64; ++x) {
             const bool land=y>=5 && y<=55 && ((x>=5 && x<=19) || (x>=26 && x<=45));
-            game.map.setTerrain(x,y,land ? 0 : 256);
+            game.map.paintCell(x, y, land ? GRASS : WATER);
         }
         ai->context.gradients.invalidate();
     }
@@ -253,7 +254,7 @@ static void forbiddenDefenseZones()
     for(bool amphibious:{false,true}) {
         Fixture f;
         for(int y=0;y<64;++y) for(int x=0;x<64;++x)
-            f.game.map.setTerrain(x,y,(x>=5&&x<=50&&y>=20&&y<=27)?0:256);
+            f.game.map.paintCell(x,y,(x>=5&&x<=50&&y>=20&&y<=27)?GRASS:WATER);
         f.building(10,22,0);
         f.building(42,22,1)->seenByMask|=f.player.team->me;
         auto& a=*f.ai; auto& c=a.context; c.initialize();

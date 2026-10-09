@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
@@ -280,7 +281,7 @@ void Gradient::recalculate(Map* map, field::Frontier& frontier)
     {
 		field::expandTerrainTravel(
 			gradient, width, map->getH(), gradient_info.terrainTravel,
-			[&](std::size_t i) { return map->terrainTypeAt(i); }, map->terrainRegistry());
+			[&](std::size_t i) { return map->cellRuleAt(i); }, map->cellRuleTableRef());
 		frontier.clear();
     }
     else expand_bfs(frontier);
@@ -307,7 +308,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& 
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
 				frontier.push_back(get_pos(x,y));
 			}
-			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrain->properties(world.terrainAt(world.tileIndex(x,y)).type),gradient_info.terrainTravel))
+			else if(gradient_info.match_obstacle(world, x, y) || !field::terrainTravelAllowed(world.terrainPropertiesAt(world.tileIndex(x,y)),gradient_info.terrainTravel))
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
@@ -316,7 +317,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world, field::Frontier& 
     {
 		field::expandTerrainTravel(
 			gradient, width, world.height, gradient_info.terrainTravel,
-			[&](std::size_t i) { return world.terrainAt(i).type; }, *world.terrain);
+			[&](std::size_t i) { return world.cellRuleAt(i); }, *world.cellRules);
 		frontier.clear();
     }
     else expand_bfs(frontier);
@@ -329,8 +330,8 @@ int Gradient::get_height(int posx, int posy) const
 	// step off the map edge; unwrapped, y=-1 indexed before the buffer and read
 	// uninitialized heap, making farming decisions non-deterministic run-to-run.
 	const int height = static_cast<int>(gradient.size()) / width;
-	posx = (posx + width) % width;
-	posy = (posy + height) % height;
+	posx = powerOfTwoRemainder(posx + width, width);
+	posy = powerOfTwoRemainder(posy + height, height);
 	// Reverses the +SOURCE_SEED offset applied at recalculate(): source tiles
 	// (internal value 2) → height 0; obstacles (1) → -1; unreached (0) → -2.
 	return gradient[get_pos(posx, posy)]-AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;

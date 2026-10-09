@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>
 
@@ -46,16 +47,18 @@ namespace
 // inside texture runs, and select the exact source tile range with binary
 // searches. Splitting rectangles vertically would change the painter order.
 // Partial discovery uses the ordinary path below instead.
-bool drawCachedResources(const void *mapIdentity, const SceneMap& map, int left, int top,
+bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int top,
     int right, int bottom, int viewportX, int viewportY)
 {
-    const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry());
+    const auto& presentation = ResourceSprites::resolve(map.frozenResourceRegistry(), map.frozenAssetBundle());
     auto *gfx = globalContainer->gfx;
     auto *batch = gfx->getRenderBatch();
     if (!batch) return false;
     auto *sprite = globalContainer->resources;
-    const auto &compositor = globalContainer->terrainCompositor();
+    const auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
     auto *decorSprite = compositor.decorSprite();
+    if (!decorSprite && std::any_of(compositor.catalog().materials.begin(), compositor.catalog().materials.end(),
+        [](const auto &m) { return !m.decor.sprite.empty(); })) return false;
     std::vector<int> frames, decorFrames;
     GAGCore::MapGeometryCache *cache;
     try { frames.resize(map.getW()); decorFrames.resize(map.getW()); cache = &batch->geometryCache(); }
@@ -156,9 +159,8 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
     if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
             right, bot, viewportX, viewportY)) return;
-    const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry());
-    const auto &compositor = globalContainer->terrainCompositor();
-    Sprite *decorSprite = compositor.decorSprite();
+    const auto& catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
+    const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
     Sprite* pendingSprite = nullptr;
     const auto flush = [&] {
         if (pendingSprite) globalContainer->gfx->finishDrawingSprite(pendingSprite, 255);
@@ -175,6 +177,7 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 						y+viewportY+1,
 						visibleTeams))
 			{
+                auto *decorSprite = compositor.decorSprite(sceneMap, x + viewportX, y + viewportY);
 				if (decorSprite)
 				{
 					const int decor = compositor.decorFrame(sceneMap, x + viewportX, y + viewportY);
@@ -216,7 +219,7 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
-	auto &compositor = globalContainer->terrainCompositor();
+	auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
 	constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
 	const int columns = right-left+1, rows = bot-top+1;
 	if (!render.overview)
@@ -224,17 +227,27 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
 		render.overview->setRes(columns*samples, rows*samples);
 	auto *pixels = render.overview->getSDLSurface();
-	// Sample the same corner/whole-cell partition as the textured terrain. A
-	// whole-tile corner hue moves legacy coasts half a tile during the fade.
+	// Sample the same corner partition as the textured terrain. A whole-tile
+	// hue would move coasts half a tile during the fade.
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
 		{
 			const int ox = (x-left)*samples, oy = (y-top)*samples;
-			const auto type = sceneMap.terrainTypeAt(x+viewportX, y+viewportY);
-			const auto color = sceneMap.terrainPresentation(type).overview;
-			const std::array<unsigned char, 3> cellColor{color.r, color.g, color.b};
+			// Custom terrain corners keep their saved overview colours.
+			const auto corners = sceneMap.cellCorners(x+viewportX, y+viewportY);
+			std::array<std::array<unsigned char, 3>, 4> colors{};
+			TerrainVisual::Compositor::CornerColors custom{};
+			bool anyCustom = false;
+			for (unsigned k = 0; k < corners.size(); ++k)
+				if (unsigned(corners[k]) >= TERRAIN_COUNT)
+				{
+					const auto color = sceneMap.terrainPresentation(corners[k]).overview;
+					colors[k] = {color.r, color.g, color.b};
+					custom[k] = &colors[k];
+					anyCustom = true;
+				}
 			compositor.composeOverview(compositor.describe(sceneMap, x+viewportX, y+viewportY),
-									   pixels, ox, oy, unsigned(type) < TERRAIN_COUNT ? nullptr : &cellColor);
+									   pixels, ox, oy, anyCustom ? &custom : nullptr);
 			const auto &resource = sceneMap.getResource(x+viewportX, y+viewportY);
 			if (resource.type != NO_RES_TYPE && ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
 				sceneMap.isMapPartiallyDiscovered(x+viewportX-1, y+viewportY-1, x+viewportX+1, y+viewportY+1, visibleTeams)))
@@ -259,7 +272,7 @@ void Game::drawMapOverview(int left, int top, int right, int bot, int viewportX,
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 
-void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, float opacity)
+void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)
 {
 	// A wash strong enough to read over the terrain colours, inside a solid
 	// border: the edge of a colour shows where a faint tint of it does not.
@@ -270,7 +283,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	PERF_SCOPE_TIME(Overlay);
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &sceneMap = scene.map;
-	Uint32 visibleTeams = entities.teams[localTeam].me;
+	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 	// Each cell of a coarse grid belongs to the team with the nearest building
 	// within reach. Rebuilt per frame: a few hundred buildings stamp a few
@@ -279,17 +292,17 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	const int gridW = std::max(1, sceneMap.getW()/Cell), gridH = std::max(1, sceneMap.getH()/Cell);
 	static std::vector<Uint16> owner; // team in the high byte, squared distance in the low
 	owner.assign(size_t(gridW)*gridH, 0xFFFF);
-	for (const SceneBuilding &sceneBuilding : entities.buildings)
+	for (const SnapshotBuilding &sceneBuilding : entities.buildings)
 		{
-			const SceneBuilding *building = &sceneBuilding;
+			const SnapshotBuilding *building = &sceneBuilding;
 			const int teamNumber = building->team;
-			if (!building->type || building->type->isVirtual)
+			if (!entities.type(*building) || entities.type(*building)->isVirtual)
 				continue;
-			if (!(drawOptions & DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].me & visibleTeams)
+			if (!(drawOptions & DRAW_WHOLE_MAP) && !(entities.teams[teamNumber].mask & visibleTeams)
 				&& !(building->seenByMask & visibleTeams))
 				continue;
-			const int centerX = (building->posX + building->type->width/2)/Cell;
-			const int centerY = (building->posY + building->type->height/2)/Cell;
+			const int centerX = (building->posX + entities.type(*building)->width/2)/Cell;
+			const int centerY = (building->posY + entities.type(*building)->height/2)/Cell;
 			const int reach = Reach/Cell;
 			for (int dy=-reach; dy<=reach; dy++)
 				for (int dx=-reach; dx<=reach; dx++)
@@ -304,8 +317,8 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 		}
 	const auto teamAt = [&](int x, int y) -> int
 	{
-		const int cellX = ((x+viewportX)%sceneMap.getW()+sceneMap.getW())%sceneMap.getW()/Cell;
-		const int cellY = ((y+viewportY)%sceneMap.getH()+sceneMap.getH())%sceneMap.getH()/Cell;
+		const int cellX = powerOfTwoRemainder(powerOfTwoRemainder((x+viewportX), sceneMap.getW())+sceneMap.getW(), sceneMap.getW())/Cell;
+		const int cellY = powerOfTwoRemainder(powerOfTwoRemainder((y+viewportY), sceneMap.getH())+sceneMap.getH(), sceneMap.getH())/Cell;
 		const Uint16 cell = owner[size_t(std::min(cellY, gridH-1))*gridW + std::min(cellX, gridW-1)];
 		return cell==0xFFFF ? -1 : cell >> 8;
 	};
@@ -313,7 +326,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 	// brought up to the same brightness, keeping its hue.
 	const auto washColor = [&](int team, Uint8 a)
 	{
-		const GAGCore::Color &color = entities.teams[team].color;
+		const GAGCore::Color &color = presentationColor(entities.teams[team].color);
 		const int brightest = std::max({int(color.r), int(color.g), int(color.b), 1});
 		const auto lift = [&](Uint8 channel) { return Uint8(std::min(255, 40 + channel * 215 / brightest)); };
 		return GAGCore::Color(lift(color.r), lift(color.g), lift(color.b), a);
@@ -362,7 +375,7 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	const Scene& scene = view.drawnScene();
+	const PresentationFrame& scene = view.drawnScene();
 	const SceneMap& map = scene.map;
 	const auto& selected = scene.entities.selectedBuilding;
 	if (!selected.verbose) return;

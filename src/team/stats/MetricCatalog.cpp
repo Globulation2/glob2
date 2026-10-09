@@ -263,7 +263,7 @@ std::vector<Metric> build()
 		Metric &m = add({.id = "spending", .group = Group::Materials, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
 						 .value = [](const M &s) { return total(s.consumed); }});
 		const char *keys[M::PURPOSES] = {"[stat band meals]", "[stat band new units]", "[stat band ammunition]",
-										 "[stat band construction]", "[stat band upgrades]", "[stat band healing]", "[stat band training]"};
+										 "[stat band construction]", "[stat band upgrades]", "[stat band healing]", "[stat band training]", "[stat band area upkeep]"};
 		for (int purpose = 0; purpose < M::PURPOSES; ++purpose)
 			m.bands.push_back({keys[purpose], [purpose](const M &s) { return total(s.consumed[purpose]); }});
 		m.composition = true;
@@ -681,11 +681,16 @@ const std::vector<Metric> &catalog()
 
 std::vector<Metric> catalogForBuildings(const BuildingsTypes& buildings)
 {
+    return catalogForBuildings(*buildings.retainTypes());
+}
+
+std::vector<Metric> catalogForBuildings(std::span<const BuildingType> buildings)
+{
     auto metrics=catalog();
     auto& metric=metrics[findMetric("buildings")];
     for (size_t id=0; id<buildings.size(); ++id)
     {
-        const auto& type=*buildings.get(id);
+        const auto& type=buildings[id];
         if (type.isBuildingSite || !type.semantics.occupiesGround) continue;
         // The key disambiguates same-name stages and survives translation changes.
         const std::string label=type.presentation.displayName.empty() ? type.key :

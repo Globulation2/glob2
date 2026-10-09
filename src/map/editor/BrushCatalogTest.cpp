@@ -20,7 +20,10 @@ using Json = nlohmann::json;
 
 glob2test::GlobalsOptions display()
 {
-	return {.display = true, .width = 1024, .height = 768, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+	return {.display = true,
+			.width = 1024,
+			.height = 768,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
 }
 
 void blank(MapEdit &editor)
@@ -35,17 +38,24 @@ void blank(MapEdit &editor)
 	editor.viewportX = 0;
 	editor.viewportY = 0;
 	editor.updateCamera();
-	editor.minimap.setGame(editor.game);
+	editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
+	editor.preparePresentation();
 }
 
 void importTerrain(MapEdit &editor, const Json &terrains)
 {
-	editor.game.map.importTerrainDefinitions(Json{{"schemaVersion", 1}, {"terrains", terrains}}.dump());
+	editor.game.map.importTerrainDefinitions(
+		Json{{"schemaVersion", 1}, {"terrains", terrains}}.dump());
+	editor.preparePresentation();
 }
 
 Json customTerrain(const std::string &key, const std::string &name, const char *appearance = "sand")
 {
-	return {{"key", key}, {"name", name}, {"base", "grass"}, {"properties", {{"groundSpeedQ8", 192}}}, {"appearance", appearance}};
+	return {{"key", key},
+			{"name", name},
+			{"base", "grass"},
+			{"properties", {{"groundSpeedQ8", 192}}},
+			{"appearance", appearance}};
 }
 
 std::vector<std::string> ids(const BrushGroup &group)
@@ -73,7 +83,8 @@ Pixel pixel(GAGCore::DrawableSurface &surface, int x, int y)
 	auto *sdl = surface.getSDLSurface();
 	REQUIRE(sdl);
 	REQUIRE(sdl->format == SDL_PIXELFORMAT_ARGB8888);
-	const auto value = reinterpret_cast<const Uint32 *>(static_cast<const unsigned char *>(sdl->pixels) + y * sdl->pitch)[x];
+	const auto value = reinterpret_cast<const Uint32 *>(
+		static_cast<const unsigned char *>(sdl->pixels) + y * sdl->pitch)[x];
 	return {int((value >> 16) & 255), int((value >> 8) & 255), int(value & 255), int(value >> 24)};
 }
 // Mean absolute deviation of the luminance: zero for a flat colour.
@@ -108,7 +119,8 @@ bool fullyOpaque(GAGCore::DrawableSurface &surface)
 
 TEST_SUITE("BrushCatalog")
 {
-	TEST_CASE("catalogue lists classic ground every catalogue member and every registry resource [display]")
+	TEST_CASE("catalogue lists classic ground every catalogue member and every registry resource "
+			  "[display]")
 	{
 		glob2test::HeadlessGlobals globals(display());
 		MapEdit editor;
@@ -117,7 +129,8 @@ TEST_SUITE("BrushCatalog")
 		REQUIRE_FALSE(catalog.empty());
 		CHECK(catalog.front().section == BrushSection::Terrain);
 		CHECK(catalog.front().key == "classic");
-		CHECK(ids(catalog.front()) == std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass"});
+		CHECK(ids(catalog.front()) ==
+			  std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass"});
 		// Every selectable built-in type is listed, locked exactly when the editor
 		// would not offer it; all members of an expanded group appear inline.
 		const auto &registry = editor.game.map.terrainRegistry();
@@ -141,8 +154,10 @@ TEST_SUITE("BrushCatalog")
 		}
 		const auto *obstacles = findBrushGroup(catalog, BrushSection::Terrain, "obstacles");
 		REQUIRE(obstacles);
-		CHECK(ids(*obstacles) == std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket"});
-		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(), [](const BrushEntry &e) { return e.locked; }));
+		CHECK(ids(*obstacles) ==
+			  std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket"});
+		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
+						  [](const BrushEntry &e) { return e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
 
 		// Resources: every registry entry, foundation ones included, with placement
@@ -182,6 +197,14 @@ TEST_SUITE("BrushCatalog")
 		// Enabling a locked experiment for the map unlocks its entries, marks the
 		// map modified, advances the revision and makes the brush selectable.
 		REQUIRE(experiments.count("foundation-resources"));
+		REQUIRE(experiments.count("landscape-resources"));
+		REQUIRE(editor.findBrush("resource/scrub"));
+		CHECK(editor.findBrush("resource/scrub")->locked);
+		CHECK(editor.findBrush("resource/scrub")->group == "landscape-resources");
+		// Fish live in water, scrub on grass.
+		const auto &fish = editor.findBrush("resource/fish")->validOn;
+		CHECK(std::find(fish.begin(), fish.end(), WATER) != fish.end());
+		CHECK(std::find(fish.begin(), fish.end(), GRASS) == fish.end());
 		editor.performAction("select resource gold-ore");
 		CHECK(editor.currentBrushId().empty());
 		editor.hasMapBeenModified = false;
@@ -213,7 +236,8 @@ TEST_SUITE("BrushCatalog")
 		CHECK_FALSE(editor.findBrush("zone/farm")->locked);
 	}
 
-	TEST_CASE("imported terrain joins the custom group in natural order and refreshes the catalogue [display]")
+	TEST_CASE("imported terrain joins the custom group in natural order and refreshes the "
+			  "catalogue [display]")
 	{
 		glob2test::HeadlessGlobals globals(display());
 		MapEdit editor;
@@ -226,7 +250,8 @@ TEST_SUITE("BrushCatalog")
 		CHECK(editor.catalogRevision() > revision);
 		const auto *custom = findBrushGroup(editor.brushCatalog(), BrushSection::Terrain, "custom");
 		REQUIRE(custom);
-		CHECK(ids(*custom) == std::vector<std::string>{"terrain/example:a", "terrain/example:t2", "terrain/example:t10"});
+		CHECK(ids(*custom) == std::vector<std::string>{"terrain/example:a", "terrain/example:t2",
+													   "terrain/example:t10"});
 		CHECK(custom->entries[1].label == "Terrain 2");
 		CHECK_FALSE(custom->entries[1].rules.empty());
 		CHECK_FALSE(custom->entries[1].locked);
@@ -241,7 +266,8 @@ TEST_SUITE("BrushCatalog")
 		const auto type = *editor.game.map.terrainRegistry().find("example:t2");
 		const auto &wheat = editor.findBrush("resource/wheat")->validOn;
 		CHECK((std::find(wheat.begin(), wheat.end(), type) != wheat.end()) ==
-			  editor.game.map.terrainSupportsResourceType(type, *editor.game.map.resourceRegistry().find("wheat")));
+			  editor.game.map.terrainSupportsResourceType(
+				  type, *editor.game.map.resourceRegistry().find("wheat")));
 		editor.performAction("select terrain example:t2");
 		CHECK(editor.currentBrushId() == "terrain/example:t2");
 	}
@@ -254,7 +280,8 @@ TEST_SUITE("BrushCatalog")
 		importTerrain(editor, Json::array({customTerrain("example:one", "One")}));
 		auto custom = Json::parse(editor.game.map.resourceRegistry().serialize())["resources"][1];
 		custom["key"] = "example:berries";
-		editor.game.map.installResourceDefinitions(Json{{"schemaVersion", 1}, {"resources", Json::array({custom})}}.dump());
+		editor.game.map.installResourceDefinitions(
+			Json{{"schemaVersion", 1}, {"resources", Json::array({custom})}}.dump());
 		enableEverything(editor);
 		std::set<BrushSection> sections;
 		std::size_t checked = 0;
@@ -285,7 +312,8 @@ TEST_SUITE("BrushCatalog")
 		const auto wheat = editor.terrainType;
 		editor.performAction("select resource wheat");
 		CHECK(editor.terrainType == wheat);
-		CHECK(editor.terrainType == TerrainSelector::selectorForResource(*editor.game.map.resourceRegistry().find("wheat")));
+		CHECK(editor.terrainType == TerrainSelector::selectorForResource(
+										*editor.game.map.resourceRegistry().find("wheat")));
 		CHECK(editor.canonicalSelector(TerrainSelector::Wheat) == wheat);
 		editor.performAction("select stone");
 		CHECK(editor.currentBrushId() == "resource/rocks");
@@ -304,7 +332,8 @@ TEST_SUITE("BrushCatalog")
 		glob2test::HeadlessGlobals globals(display());
 		MapEdit editor;
 		blank(editor);
-		importTerrain(editor, Json::array({customTerrain("example:stone", "stone"), customTerrain("example:wheat", "wheat"),
+		importTerrain(editor, Json::array({customTerrain("example:stone", "stone"),
+										   customTerrain("example:wheat", "wheat"),
 										   customTerrain("example:grass", "grass")}));
 		editor.performAction("select stone");
 		CHECK(editor.currentBrushId() == "resource/rocks");
@@ -331,8 +360,8 @@ TEST_SUITE("BrushCatalog")
 		enableEverything(editor);
 		auto &swatches = editor.brushSwatches();
 		const auto &registry = editor.game.map.terrainRegistry();
-		for (auto type : {WATER, DEEP_WATER, DARK_WATER, SAND, GRASS, VOID_HOLE, *registry.find("example:dune"),
-						  *registry.find("example:pond")})
+		for (auto type : {WATER, DEEP_WATER, DARK_WATER, SAND, GRASS, VOID_HOLE,
+						  *registry.find("example:dune"), *registry.find("example:pond")})
 		{
 			CAPTURE(registry.key(type));
 			auto *surface = swatches.terrain(type, 64);
@@ -357,7 +386,8 @@ TEST_SUITE("BrushCatalog")
 		const auto *dune = swatches.terrain(*registry.find("example:dune"), 64);
 		const auto *sand = swatches.terrain(SAND, 64);
 		CHECK(std::memcmp(const_cast<GAGCore::DrawableSurface *>(dune)->getSDLSurface()->pixels,
-						  const_cast<GAGCore::DrawableSurface *>(sand)->getSDLSurface()->pixels, 64 * 4) == 0);
+						  const_cast<GAGCore::DrawableSurface *>(sand)->getSDLSurface()->pixels,
+						  64 * 4) == 0);
 		// Cached per size; resource swatches draw the sprite over valid ground.
 		CHECK(swatches.terrain(GRASS, 64) == swatches.terrain(GRASS, 64));
 		CHECK(swatches.terrain(GRASS, 40)->getW() == 40);
@@ -365,7 +395,8 @@ TEST_SUITE("BrushCatalog")
 		auto *wheat = swatches.get(*wheatEntry, 64);
 		REQUIRE(wheat);
 		CHECK(fullyOpaque(*wheat));
-		CHECK(std::memcmp(wheat->getSDLSurface()->pixels, swatches.terrain(wheatEntry->swatch.terrain, 64)->getSDLSurface()->pixels,
+		CHECK(std::memcmp(wheat->getSDLSurface()->pixels,
+						  swatches.terrain(wheatEntry->swatch.terrain, 64)->getSDLSurface()->pixels,
 						  std::size_t(wheat->getSDLSurface()->pitch) * 64) != 0);
 		for (const auto &group : editor.brushCatalog())
 			for (const auto &entry : group.entries)
@@ -377,19 +408,49 @@ TEST_SUITE("BrushCatalog")
 					CHECK(fullyOpaque(*surface));
 				}
 		CHECK_FALSE(swatches.get(*editor.findBrush("tool/delete"), 64));
+		// Gallery inspection composes mixed terrain and resource stock stages
+		// without changing simulation state.
+		const auto checksum = editor.game.map.checkSum(true);
+		for (unsigned phase = 0; phase < 4; ++phase)
+		{
+			auto *scene =
+				swatches.terrainScene(*registry.find("example:dune"), GRASS, phase, phase, 192);
+			REQUIRE(scene);
+			CHECK(scene->getW() == 192);
+			CHECK(fullyOpaque(*scene));
+			CHECK(variation(*scene) > 2.0);
+			for (unsigned stock : {0u, 1u, 2u})
+			{
+				auto *stage = swatches.resourceStage(
+					wheatEntry->swatch.resource, wheatEntry->swatch.terrain, stock, phase, phase);
+				REQUIRE(stage);
+				CHECK(fullyOpaque(*stage));
+				auto *ground = swatches.terrain(wheatEntry->swatch.terrain, 64);
+				CHECK(std::memcmp(stage->getSDLSurface()->pixels, ground->getSDLSurface()->pixels,
+								  std::size_t(ground->getSDLSurface()->pitch) * 64) != 0);
+			}
+		}
+		CHECK(editor.game.map.checkSum(true) == checksum);
+		SDL_SaveBMP(
+			swatches.terrainScene(SAND, WATER, 0, 0)->getSDLSurface(),
+			(glob2test::artifactDirFromWorkingDirectory() + "/terrain-gallery.bmp").c_str());
 
 		// Contact sheet of every terrain and resource swatch for review.
 		std::vector<const BrushEntry *> shown;
 		for (const auto &group : editor.brushCatalog())
 			for (const auto &entry : group.entries)
-				if (entry.section == BrushSection::Terrain || entry.section == BrushSection::Resources)
+				if (entry.section == BrushSection::Terrain ||
+					entry.section == BrushSection::Resources)
 					shown.push_back(&entry);
 		const int columns = 12;
-		GAGCore::DrawableSurface sheet(columns * 68, int((shown.size() + columns - 1) / columns) * 68);
+		GAGCore::DrawableSurface sheet(columns * 68,
+									   int((shown.size() + columns - 1) / columns) * 68);
 		sheet.drawFilledRect(0, 0, sheet.getW(), sheet.getH(), GAGCore::Color(0, 0, 0));
 		for (std::size_t i = 0; i < shown.size(); ++i)
-			sheet.drawSurface(int(i % columns) * 68 + 2, int(i / columns) * 68 + 2, swatches.get(*shown[i], 64));
-		SDL_SaveBMP(sheet.getSDLSurface(), (glob2test::artifactDirFromWorkingDirectory() + "/brush-swatches.bmp").c_str());
+			sheet.drawSurface(int(i % columns) * 68 + 2, int(i / columns) * 68 + 2,
+							  swatches.get(*shown[i], 64));
+		SDL_SaveBMP(sheet.getSDLSurface(),
+					(glob2test::artifactDirFromWorkingDirectory() + "/brush-swatches.bmp").c_str());
 
 		// A changed registry or a device reset drops cached swatches.
 		CHECK(swatches.size() > 0);

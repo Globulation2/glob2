@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ClearingLandscape.h"
 #include "GenerationContext.h"
@@ -39,8 +41,8 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 						   context.bounded("growth-layout", std::uint32_t(t.h)))
 				  .sites;
 	L.spacing = nearestSiteDistance(t, L.homes);
-	L.homeRadius =
-		std::min<double>(o.homeSize, std::floor(L.spacing / 3 - kClearingMargin - kSandRing));
+	L.homeRadius = std::min<double>(
+		o.homeSize, ::MapGeneration::Numeric::floor(L.spacing / 3 - kClearingMargin - kSandRing));
 	// Only a failing layout gets the vacancy search. This keeps successful maps, their
 	// seed streams, and every Old Growth layout byte-for-byte stable. A composite lattice
 	// with empty sites can rescue awkward prime counts on rectangles; it cannot force a
@@ -51,8 +53,8 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 		const LatticeSites roomy =
 			roomyLatticeSites(t.w, t.h, teams, L.homes.front().x, L.homes.front().y);
 		const double spacing = nearestSiteDistance(t, roomy.sites);
-		const double radius =
-			std::min<double>(o.homeSize, std::floor(spacing / 3 - kClearingMargin - kSandRing));
+		const double radius = std::min<double>(
+			o.homeSize, ::MapGeneration::Numeric::floor(spacing / 3 - kClearingMargin - kSandRing));
 		if (roomy.vacancies && homeHasRoom(radius))
 		{
 			L.homes = roomy.sites;
@@ -80,18 +82,25 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 	L.clearing.assign(n, 0);
 	L.sand.assign(n, 0);
 	for (const ShapePoint &home : L.homes)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int i = 0; i < n; ++i)
 		{
-			const double d =
-				std::hypot(t.offsetX(int(home.x), i % t.w), t.offsetY(int(home.y), i / t.w));
+			::MapGeneration::generationCheckpoint();
+			const double d = ::MapGeneration::Numeric::hypot(t.offsetX(int(home.x), t.remainderX(i)),
+															 t.offsetY(int(home.y), i / t.w));
 			if (d <= L.homeRadius + kClearingMargin)
-				L.clearing[i] = 1;
+				L.clearing.at(i) = 1;
 			else if (d <= L.homeRadius + kClearingMargin + kSandRing)
-				L.sand[i] = 1;
+				L.sand.at(i) = 1;
 		}
+	}
 	for (int i = 0; i < n; ++i)
-		if (L.clearing[i])
-			L.sand[i] = 0;
+	{
+		::MapGeneration::generationCheckpoint();
+		if (L.clearing.at(i))
+			L.sand.at(i) = 0;
+	}
 	L.homeOf.assign(n, -1);
 	L.water.assign(n, 0);
 	const RadialShape home(L.homeRadius, 0.15, context, "growth-home");
@@ -101,10 +110,12 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 	const RadialShape pool(kPoolRadius, 0.3, context, "growth-pools");
 	for (const ShapePoint &home : L.homes)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::vector<ShapePoint> ring;
 		const double phase = context.bounded("growth-pools", 3600) / 3600.0 * 2 * kPi;
 		for (int p = 0; p < o.homePools; ++p)
 		{
+			::MapGeneration::generationCheckpoint();
 			const ShapePoint at = polarPoint(home.x, home.y, kPoolRingShare * L.homeRadius,
 											 phase + 2 * kPi * p / o.homePools);
 			ring.push_back(at);
@@ -120,44 +131,57 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 	L.lake.assign(n, 0);
 	// Area scaling makes the control mean the same density on squares and rectangles;
 	// round to the nearest whole lake, rather than adding fractional or undersized lakes.
-	const int lakes = int(std::lround(o.lakes * double(n) / (128.0 * 128.0)));
+	const int lakes = int(::MapGeneration::Numeric::lround(o.lakes * double(n) / (128.0 * 128.0)));
 	std::vector<unsigned char> settled(n, 0);
 	for (int i = 0; i < n; ++i)
-		settled[i] = L.clearing[i] || L.sand[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		settled.at(i) = L.clearing.at(i) || L.sand.at(i);
+	}
 	std::vector<unsigned char> keepClear = dilate(t, settled, kLakeGap);
 	const std::vector<int> ripple = periodicNoise(t.w, t.h, 6, context.stream("growth-lakes"));
 	std::vector<int> queued(n, 0);
 	for (int lake = 0; lake < lakes; ++lake)
 	{
+		::MapGeneration::generationCheckpoint();
 		const std::vector<std::int64_t> clearance = distanceSquaredTo(t, keepClear);
 		int seed = -1;
 		for (int i = 0; i < n; ++i)
-			if (!keepClear[i] && (seed < 0 || clearance[i] > clearance[seed]))
+		{
+			::MapGeneration::generationCheckpoint();
+			if (!keepClear.at(i) && (seed < 0 || clearance.at(i) > clearance.at(seed)))
 				seed = i;
+		}
 		if (seed < 0)
 			break;
 		const int grown = growWater(
-			t, L.water, seed, o.lakeSize, [&](int i) { return !keepClear[i]; },
+			t, L.water, seed, o.lakeSize, [&](int i) { return !keepClear.at(i); },
 			[&](int i)
 			{
-				const double d =
-					std::sqrt(double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
+				const double d = ::MapGeneration::Numeric::sqrt(
+					double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
 				// Integer priority: distance in thousandths of a tile plus up to 2.5 tiles
 				// of periodic-noise perturbation (noise spans 0..65535). This roughens the
 				// shore without letting noise defeat the distance-led compact lake shape.
-				return std::int64_t(d * 1000) + std::int64_t(ripple[i]) * 2500 / 65536;
+				return std::int64_t(d * 1000) + std::int64_t(ripple.at(i)) * 2500 / 65536;
 			},
 			queued, lake + 1);
 		if (grown <= 0)
 			break;
 		L.lakeCentres.push_back(seed);
 		for (int i = 0; i < n; ++i)
-			if (L.water[i] && !L.clearing[i])
-				L.lake[i] = 1;
+		{
+			::MapGeneration::generationCheckpoint();
+			if (L.water.at(i) && !L.clearing.at(i))
+				L.lake.at(i) = 1;
+		}
 		keepClear = dilate(t, settled, kLakeGap);
 		const std::vector<unsigned char> shores = dilate(t, L.lake, kLakeGap);
 		for (int i = 0; i < n; ++i)
-			keepClear[i] = keepClear[i] || shores[i];
+		{
+			::MapGeneration::generationCheckpoint();
+			keepClear.at(i) = keepClear.at(i) || shores.at(i);
+		}
 	}
 	context.telemetry.measure(std::string(o.telemetryPrefix) + ".lakes.requested", lakes);
 	context.telemetry.measure(std::string(o.telemetryPrefix) + ".lakes.actual",
@@ -168,7 +192,10 @@ ClearingLandscape clearingLandscape(const GenerationRequest &request, Generation
 	// The forest: everything that is not a clearing or water.
 	L.forest.assign(n, 0);
 	for (int i = 0; i < n; ++i)
-		L.forest[i] = !L.clearing[i] && !L.sand[i] && !L.water[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		L.forest.at(i) = !L.clearing.at(i) && !L.sand.at(i) && !L.water.at(i);
+	}
 	return L;
 }
 

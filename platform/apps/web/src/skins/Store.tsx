@@ -1,3 +1,9 @@
+import { statusLabel } from '../i18n.tsx';
+import { MessageError } from '../i18n.tsx';
+import { message as sourceMessage } from '../i18n.tsx';
+import { translateError } from '../i18n.tsx';
+import { getLocale } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { useState } from 'react';
 import { request } from '../api.ts';
 import { useLoad, useSession } from '../state.tsx';
@@ -28,10 +34,11 @@ const ZERO_DECIMAL = new Set([
   'xpf',
 ]);
 function price(product: Product) {
-  if (product.amount === null || !product.currency) return 'Not available yet';
-  return new Intl.NumberFormat(undefined, { style: 'currency', currency: product.currency }).format(
-    product.amount / (ZERO_DECIMAL.has(product.currency) ? 1 : 100),
-  );
+  if (product.amount === null || !product.currency) return t('Not available yet');
+  return new Intl.NumberFormat(getLocale(), {
+    style: 'currency',
+    currency: product.currency,
+  }).format(product.amount / (ZERO_DECIMAL.has(product.currency) ? 1 : 100));
 }
 export function SkinStore({
   onChange,
@@ -40,11 +47,12 @@ export function SkinStore({
   onChange: () => void;
   beforeCheckout?: () => boolean | Promise<boolean>;
 }) {
+  useLocale();
   const { account } = useSession();
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(() =>
       new URLSearchParams(window.location.search).has('purchase')
-        ? 'Checkout returned. Check the payment below to confirm your purchase.'
+        ? t('Checkout returned. Check the payment below to confirm your purchase.')
         : '',
     );
   const products = useLoad(
@@ -61,7 +69,11 @@ export function SkinStore({
   );
   async function buy(sku: string) {
     if (beforeCheckout && !(await beforeCheckout())) {
-      setMessage('Save your draft before leaving for checkout. Device storage is unavailable.');
+      setMessage(
+        sourceMessage(
+          'Save your draft before leaving for checkout. Device storage is unavailable.',
+        ),
+      );
       return;
     }
     setBusy(true);
@@ -70,10 +82,10 @@ export function SkinStore({
         body: { sku, requestId: crypto.randomUUID() },
       });
       if (new URL(checkout.url).origin !== 'https://checkout.stripe.com')
-        throw new Error('Unexpected checkout address.');
+        throw new MessageError('Unexpected checkout address.');
       window.location.assign(checkout.url);
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Checkout failed.');
+      setMessage(e instanceof Error ? e.message : t('Checkout failed.'));
       setBusy(false);
     }
   }
@@ -87,25 +99,25 @@ export function SkinStore({
       );
       setMessage(
         result.status === 'paid'
-          ? 'Purchase confirmed. Your skin is ready to use in game.'
-          : `Payment status: ${result.status}.`,
+          ? t('Purchase confirmed. Your skin is ready to use in game.')
+          : t('Payment status: {value0}.', { value0: result.status }),
       );
       purchases.reload();
       onChange();
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Could not check payment.');
+      setMessage(e instanceof Error ? e.message : t('Could not check payment.'));
     } finally {
       setBusy(false);
     }
   }
   return (
-    <section aria-label="Skin shop">
-      <h2>Skin shop</h2>
-      <p>One-time purchases stay with your account. Preview and paint before buying.</p>
-      {products.status === 'error' && <p role="alert">{products.error.message}</p>}
+    <section aria-label={t('Skin shop')}>
+      <h2>{t('Skin shop')}</h2>
+      <p>{t('One-time purchases stay with your account. Preview and paint before buying.')}</p>
+      {products.status === 'error' && <p role="alert">{translateError(products.error)}</p>}
       {products.status === 'ready' && (
         <>
-          {products.data.testMode && <p>Test store — real-money checkout is not enabled.</p>}
+          {products.data.testMode && <p>{t('Test store — real-money checkout is not enabled.')}</p>}
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             {products.data.items.map((product) => (
               <article
@@ -118,7 +130,7 @@ export function SkinStore({
                   disabled={busy || !product.available || account?.kind !== 'registered'}
                   onClick={() => void buy(product.sku)}
                 >
-                  Buy {product.name}
+                  <RichMessage source={'Buy {slot0}'} slots={{ slot0: product.name }} />
                 </button>
               </article>
             ))}
@@ -127,20 +139,23 @@ export function SkinStore({
       )}
       {account?.kind !== 'registered' && (
         <p>
-          <a href="/signin">Sign in or link your account</a> before buying so you can recover your
-          purchases.
+          <RichMessage
+            source={'{slot0} before buying so you can recover your purchases.'}
+            slots={{ slot0: <a href="/signin">{t('Sign in or link your account')}</a> }}
+          />
         </p>
       )}
       <p role="status">{message}</p>
       {purchases.status === 'ready' && purchases.data.items.length > 0 && (
         <>
-          <h3>Your purchases</h3>
+          <h3>{t('Your purchases')}</h3>
           <ul>
             {purchases.data.items.map((p) => (
               <li key={p.id}>
-                {p.sku} — {p.status}{' '}
+                {p.sku} {t(' — ')}
+                {statusLabel(p.status)}{' '}
                 <button disabled={busy} onClick={() => void reconcile(p.id)}>
-                  Check payment
+                  {t('Check payment')}
                 </button>
               </li>
             ))}

@@ -15,19 +15,20 @@
 
 // Miscellaneous helpers: checkSum, warpDist*, dumpGradient
 
-Uint32 Map::checkSum(bool heavy)
+Uint32 Map::checkSum(bool heavy, bool includePending)
 {
-	Uint32 cs = size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum();
+	preparePendingWorld();
+    Uint32 cs = size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
 	if (heavy)
 	{
 		for (size_t index = 0; index < cellCount(); ++index)
 		{
 
 			cs+=
-				static_cast<Uint32>(terrainIds[index]) +
-				legacyTerrain[index] +
+				static_cast<Uint32>(vertexTerrain[index]) +
 				occupancyCells[index].building +
 				resourceCells[index].resource.getUint32() +
+                resourceCells[index].mayGrow +
 				occupancyCells[index].groundUnit +
 				occupancyCells[index].airUnit +
 				areaCells[index].forbidden +
@@ -59,6 +60,9 @@ Uint32 Map::checkSum(bool heavy)
 		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];
 	}
 
+	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
+	for (const auto& random : worldRandom.streams)
+		cs = rotr1(cs) ^ random.checksum();
 	return cs;
 }
 

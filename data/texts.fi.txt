@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Viimeistele kirjautuminen selaimessasi. Peli jatkaa automaattisesti, kun olet valmis.
 [hub browser did not open]
-
+Selaimesi ei avautunut. Avaa kirjautumissivu jatkaaksesi.
 [hub compare code %0]
-
+Jos sivu kysyy, tarkista että siinä näkyy %0.
 [hub code copied]
-
+Koodi kopioitu
 [settings Finish in your browser. The game continues by itself.]
-
+Viimeistele selaimessasi. Peli jatkaa automaattisesti.
 [music set]
-
+Musiikkikokoelma
 [random music set]
-
+Satunnainen joka ottelussa
 [playing music set %0]
-
+Toistetaan: %0
 [music set failed]
-
+Musiikkikokoelmaa ei voitu ladata.
 [settings Music set]
-
+Musiikkikokoelma
 [settings Random each match]
-
+Valitse Satunnainen, niin ääniraita valitaan jokaisen ottelun alussa.
 [settings Edge scrolling]
-
+Reunavieritys
 [settings Edge scrolling in fullscreen]
-
+Reunavieritys koko näytössä
 [settings Edge scrolling in windowed mode]
-
+Reunavieritys ikkunatilassa
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Siirrä pelin ja editorin karttaa, kun hiiri saavuttaa ikkunan reunan.
 [AI strategy]
 Tekoälyn strategia
 [start recording]
@@ -4625,9 +4625,9 @@ Videotallennus
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Tallenna pelisi äänellisinä MP4-videoina. Tallennus vaatii FFmpegin, jossa on libx264- ja AAC-kooderit.
 [settings Record your games as MP4 videos with sound.]
-
+Tallenna pelisi MP4-videoiksi äänen kanssa.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Tallennus käyttää täyttä renderöintitarkkuutta ja 30 kuvaa sekunnissa.
 [settings FFmpeg is ready.]
 FFmpeg on valmis.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Haavoittuneet vetäytyvät
 [Units can die]
 Yksiköt voivat kuolla
 [Upgrades]
-
+Parannukset
 [No stockpile]
 Ei mitään
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Loukkaantuneet yksiköt palaavat parantumaan sen sijaan, että taistelisivat kuo
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Yksiköt kuolevat, kun niiden HP loppuu. Poista käytöstä, niin ne pysähtyvät 1 HP:hen.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Yksiköt kehittyvät koulutusrakennuksissa, ja rakennuksia voi parantaa. Korjaukset ovat käytettävissä myös tämän ollessa pois päältä.
 [stat group work]
 Työläisten aika
 [stat worker time]
@@ -5309,235 +5309,235 @@ voima
 [stat view by place]
 Paikoittain
 [AI Library]
-
+Tekoälykirjasto
 [Authoring guide]
-
+Tekijän opas
 [Beginner-friendly]
-
+Aloittelijaystävällinen
 [Defensive]
-
+Puolustava
 [Discover]
-
+Tutustu
 [Download & install]
-
+Lataa ja asenna
 [Downloading AI…]
-
+Ladataan tekoälyä…
 [Expansion]
-
+Laajentuminen
 [Experimental]
-
+Kokeellinen
 [Favourite]
-
+Lisää suosikiksi
 [Favourited]
-
+Lisätty suosikiksi
 [Favourites]
-
+Suosikit
 [Got it]
-
+Selvä
 [How AIs work]
-
+Miten tekoälyt toimivat
 [Install selected version]
-
+Asenna valittu versio
 [Installed]
-
+Asennettu
 [Invalid AI catalogue response]
-
+Virheellinen vastaus tekoälyluettelosta
 [JavaScript API reference]
-
+JavaScript-rajapinnan ohje
 [Like]
-
+Tykkää
 [Liked]
-
+Tykätty
 [Loading AI library…]
-
+Ladataan tekoälykirjastoa…
 [Most downloaded]
-
+Ladatuimmat
 [Most liked]
-
+Tykätyimmät
 [Newest]
-
+Uusimmat
 [No AIs match these filters.]
-
+Mikään tekoäly ei vastaa näitä suodattimia.
 [Not validated for this game version]
-
+Ei tarkistettu tälle peliversiolle
 [Open AI Library]
-
+Avaa tekoälykirjasto
 [Open AI page]
-
+Avaa tekoälyn sivu
 [Passed compatibility checks]
-
+Läpäissyt yhteensopivuustarkistukset
 [Recently updated]
-
+Äskettäin päivitetyt
 [Rush]
-
+Rynnäkkö
 [Search]
-
+Haku
 [Share your AI]
-
+Jaa tekoälysi
 [Show more]
-
+Näytä lisää
 [Sign in through Online settings to like and favourite AIs.]
-
+Kirjaudu Verkko-asetuksista tykätäksesi tekoälyistä ja lisätäksesi niitä suosikeiksi.
 [Starter project]
-
+Aloitusprojekti
 [downloads of this version]
-
+tämän version latauksia
 [downloads]
-
+latauksia
 [Update available]
-
+Päivitys saatavilla
 [Browse versions]
-
+Selaa versioita
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Lataa tekoäly ja valitse se tietokonepelaajaksi paikalliseen peliin. Asennetut versiot toimivat ilman verkkoyhteyttä. Päivitykset koskevat tulevia pelejä; tallennukset säilyttävät alkuperäisen koodinsa.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Yhteensopivuustarkistukset eivät takaa turvallisuutta tai pelitaitoa. Suorita vain sellaisten tekijöiden koodia, joihin luotat.
 [Back to results]
-
+Takaisin tuloksiin
 [music 2–5 minutes]
-
+2–5 minuuttia
 [music 5–15 minutes]
-
+5–15 minuuttia
 [music AI-generated]
-
+Tekoälyn luoma
 [music All music]
-
+Kaikki musiikki
 [music All open licences]
-
+Kaikki avoimet lisenssit
 [music Any duration]
-
+Mikä tahansa kesto
 [music Audition each mood for eight seconds]
-
+Kuuntele kutakin tunnelmaa kahdeksan sekuntia
 [music Back]
-
+Takaisin
 [music Browse]
-
+Selaa
 [music Building]
-
+Voimistuva
 [music Calm]
-
+Rauhallinen
 [music Calm → Building → Combat]
-
+Rauhallinen → Voimistuva → Taistelu
 [music Choose Building]
-
+Valitse voimistuva
 [music Choose Calm]
-
+Valitse rauhallinen
 [music Choose Combat]
-
+Valitse taistelu
 [music Choose ZIP]
-
+Valitse ZIP
 [music Choose a music file.]
-
+Valitse musiikkitiedosto.
 [music Combat]
-
+Taistelu
 [music Could not open this music set.]
-
+Musiikkikokoelmaa ei voitu avata.
 [music Credits, downloads and reporting]
-
+Tekijät, lataukset ja ilmoitukset
 [music Downloading music…]
-
+Ladataan musiikkia…
 [music Export recovery files]
-
+Vie palautustiedostot
 [music Fade duration]
-
+Häivytyksen kesto
 [music File selection cancelled or failed.]
-
+Tiedoston valinta peruttiin tai epäonnistui.
 [music Import ZIP]
-
+Tuo ZIP
 [music Import ZIP or three tracks]
-
+Tuo ZIP tai kolme raitaa
 [music Import music]
-
+Tuo musiikkia
 [music Import three tracks]
-
+Tuo kolme raitaa
 [music Includes AI-generated audio]
-
+Sisältää tekoälyn luomaa ääntä
 [music Install]
-
+Asenna
 [music Install selected]
-
+Asenna valitut
 [music Installed]
-
+Asennettu
 [music Load more]
-
+Lataa lisää
 [music Loading music…]
-
+Ladataan musiikkia…
 [music Most downloaded]
-
+Ladatuimmat
 [music Most liked]
-
+Tykätyimmät
 [music Music decoding failed.]
-
+Musiikin purkaminen epäonnistui.
 [music Music download failed.]
-
+Musiikin lataus epäonnistui.
 [music Music installed.]
-
+Musiikki asennettu.
 [music Music installed. It is now available in Audio settings.]
-
+Musiikki asennettu. Se on nyt käytettävissä ääniasetuksissa.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Musiikkia ei ole vielä tallennettu pysyvästi. Yritä tallennusta uudelleen ennen poistumista.
 [music Music library]
-
+Musiikkikirjasto
 [music Music request failed.]
-
+Musiikkipyyntö epäonnistui.
 [music Newest]
-
+Uusimmat
 [music No community music installed yet. Import files or browse the online library.]
-
+Yhteisön musiikkia ei ole vielä asennettu. Tuo tiedostoja tai selaa verkkokirjastoa.
 [music No music found.]
-
+Musiikkia ei löytynyt.
 [music Not AI-generated]
-
+Ei tekoälyn luoma
 [music Pause]
-
+Tauko
 [music Play]
-
+Toista
 [music Playback position]
-
+Toistokohta
 [music Preview]
-
+Esikuuntele
 [music Ready to import.]
-
+Valmis tuotavaksi.
 [music Remove]
-
+Poista
 [music Reset to game behavior]
-
+Palauta pelin mukainen toiminta
 [music Retry saving]
-
+Yritä tallennusta uudelleen
 [music Saved.]
-
+Tallennettu.
 [music Saving music…]
-
+Tallennetaan musiikkia…
 [music Search]
-
+Haku
 [music Search title, artist, description…]
-
+Hae nimeä, esittäjää, kuvausta…
 [music Select for installation]
-
+Valitse asennettavaksi
 [music Share music on the web]
-
+Jaa musiikkia verkossa
 [music Some catalogue entries could not be read.]
-
+Joitakin luettelon kohteita ei voitu lukea.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Tietoja ei voitu tallentaa. Yritä uudelleen tai vie tiedostosi ennen poistumista.
 [music Tag]
-
+Tunniste
 [music Test crossfades]
-
+Testaa ristihäivytyksiä
 [music Up to 2 minutes]
-
+Enintään 2 minuuttia
 [music Use this music]
-
+Käytä tätä musiikkia
 [music Validating music…]
-
+Tarkistetaan musiikkia…
 [settings Music library · Browse, install and import]
-
+Musiikkikirjasto · Selaa, asenna ja tuo
 [music Filters]
-
+Suodattimet
 [music Leave without saving]
-
+Poistu tallentamatta
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Tuo ladattu musiikki-ZIP tai kolme Opus-raitaa. Metatiedot ja kansikuva luetaan rauhallisesta raidasta; lisätiedostoja ei tarvita.
 [settings Target render FPS]
 Piirron tavoitekuvataajuus
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ Rautamalmi
 Kvartsihiekka
 [Cotton]
 Puuvilla
+[Jungle trees]
+Viidakkopuut
+[Pine trees]
+Männyt
+[Dead trees]
+Kuolleet puut
+[Ruins]
+Rauniot
+[Camp-site]
+Leiripaikka
+[Ancient debris]
+Muinaiset jäänteet
+[Scrub]
+Pensaikko
+[Tall grass]
+Korkea ruoho
+[Maize]
+Maissi
+[Potatoes]
+Perunat
+[Rice]
+Riisi
+[Fish]
+Kalat
 [Reroll terrain look]
 Arvo maaston ulkoasu uudelleen
 [boulders]
-
+Lohkareet
 [hedge]
-
+Pensasaita
 [thicket]
-
+Tiheikkö
 [ridge_rock]
-
+Harjanne
 [outcrop]
-
+Kalliopaljastuma
 [dirt]
-
+Multa
 [clay]
-
+Savi
 [gravel]
-
+Sora
 [flower_meadow]
-
+Kukkaniitty
 [mud]
-
+Muta
 [marsh]
-
+Suo
 [deep_snow]
-
+Syvä lumi
 [scree]
-
+Kivirakka
 [dirt_track]
-
+Maapolku
 [boardwalk]
-
+Pitkospuut
 [lava]
-
+Laava
 [ember_field]
-
+Hiilloskenttä
 [loam]
-
+Multava maa
 [moss]
-
+Sammal
 [spring_meadow]
-
+Kevätniitty
 [deep_water]
-
+Syvä vesi
 [dark_water]
-
+Tumma vesi
 [void_hole]
-
+Kuoppa
 [chasm]
-
+Kuilu
 [terrain group water]
-
+Vesi
 [terrain group sand]
-
+Hiekka
 [terrain group grass]
-
+Ruoho
 [terrain group ice]
-
+Jää
 [terrain group paths]
-
+Polut
 [terrain group obstacles]
-
+Esteet
 [terrain group ridges]
-
+Harjanteet
 [terrain group barren]
-
+Karuton maa
 [terrain group rough]
-
+Vaikeakulkuinen maa
 [terrain group lava]
-
+Laava
 [terrain group fertile]
-
+Hedelmällinen maa
 [terrain group deep-water]
-
+Syvä vesi
 [terrain group void]
-
+Tyhjyys
 [experiment obstacle-terrain]
-
+Estemaasto
 [experiment obstacle-terrain help]
-
+Lisää karttaeditoriin lohkareita, pensasaitoja ja tiheikköjä. Maayksiköt eivät voi ylittää niitä ja ne pysäyttävät ammukset; lentävät yksiköt kulkevat niiden yli. Niillä ei voi olla rakennuksia tai resursseja.
 [experiment ridge-terrain]
-
+Harjannemaasto
 [experiment ridge-terrain help]
-
+Lisää karttaeditoriin kallioharjanteita ja kalliopaljastumia. Maayksiköt eivät voi ylittää niitä, mutta tornit ampuvat niiden yli ja lentävät yksiköt voivat ylittää ne. Niillä ei voi olla rakennuksia tai resursseja.
 [experiment barren-terrain]
-
+Karuton maa
 [experiment barren-terrain help]
-
+Lisää karttaeditoriin multaa, savea, soraa ja kukkaniittyjä. Niille voi rakentaa, mutta mikään ei kasva niillä tai niiden vieressä eivätkä ne toimi rantana.
 [experiment rough-terrain]
-
+Vaikeakulkuinen maa
 [experiment rough-terrain help]
-
+Lisää karttaeditoriin mutaa, soita, syvää lunta ja kivirakkaa. Maayksiköt liikkuvat noin kahden kolmasosan nopeudella. Vaikeakulkuisella maalla ei voi olla rakennuksia tai resursseja.
 [experiment path-terrain]
-
+Polkumaasto
 [experiment path-terrain help]
-
+Lisää karttaeditoriin maapolkuja ja pitkospuita. Kuten muillakin poluilla, maayksiköt liikkuvat kaksinkertaisella nopeudella ja rakentaminen on sallittua, mutta mikään ei kasva.
 [experiment lava-terrain]
-
+Laavamaasto
 [experiment lava-terrain help]
-
+Lisää karttaeditoriin laavaa ja hiilloskenttiä. Maayksiköt eivät voi mennä niille; niiden yli lentävät yksiköt menettävät nopeasti terveyttä. Ammukset kulkevat yli.
 [experiment fertile-terrain]
-
+Hedelmällinen maa
 [experiment fertile-terrain help]
-
+Lisää karttaeditoriin multavaa maata, sammalta ja kevätniittyjä. Niille voi rakentaa ja niillä kasvaa viljaa. Ne kastelevat ympäröivää maata tehokkaammin kuin vesi.
 [experiment deep-water-terrain]
-
+Syvä vesi
 [experiment deep-water-terrain help]
-
+Lisää karttaeditoriin syvää ja tummaa vettä. Uimarit ylittävät ne hitaammin, levää ei kasva niissä, ja ne kastelevat silti läheisiä peltoja.
 [experiment void-terrain]
-
+Tyhjyysmaasto
 [experiment void-terrain help]
-
+Lisää karttaeditoriin kuoppia ja kuiluja. Mikään ei voi ylittää niitä, eivät edes lentävät yksiköt, ja ammukset pysähtyvät niiden reunaan.
 [terrain group custom]
-
+Mukautettu
 [terrain group classic]
-
+Klassinen maa
 [terrain rule walkable]
-
+Käveltävä
 [terrain rule swimmable]
-
+Uitava
 [terrain rule impassable]
-
+Läpipääsemätön
 [terrain rule no flying]
-
+Lentäminen estetty
 [terrain rule buildable]
-
+Rakentaminen sallittu
 [terrain rule speed %0]
-
+Nopeus %0%
 [terrain rule crops grow]
-
+Vilja kasvaa
 [terrain rule irrigates]
-
+Kastelee läheistä maata
 [terrain rule stops nearby growth]
-
+Estää läheisen kasvun
 [terrain rule blocks shots]
-
+Estää ammukset
 [terrain rule hurts walkers]
-
+Vahingoittaa kävelijöitä
 [terrain rule hurts fliers]
-
+Vahingoittaa lentäjiä
 [terrain palette hint]
-
+Valitse sivellin. Ryhmän jäsenillä on yhteiset säännöt; vain ulkonäkö vaihtelee.
 [terrain rule algae grow]
-
+Levä kasvaa
 [terrain palette experiments hint]
-
+Valitse sivellin. Lisää maastoryhmiä ilmestyy tänne, kun niiden kokeilut otetaan käyttöön kohdassa Asetukset > Kokeilut.
 [brush valid on %0]
-
+Sopii alustalle: %0
 [brush valid nowhere]
-
+Ei voi sijoittaa mihinkään tämän kartan maastoon
 [brush requires experiment %0]
-
+Vaatii kokeilun %0
 [brush resources custom]
-
+Tuodut resurssit
 [brush section zones]
-
+Vyöhykkeet
 [brush section areas]
-
+Alueet
 [brush section tools]
-
+Työkalut
 [brush clearing area]
-
+Raivausalue
 [editor unsaved title]
-
+Tallentamattomat muutokset
 [editor quit unsaved]
-
+Tallennetaanko tämän kartan muutokset ennen editorista poistumista?
 [editor load unsaved]
-
+Tallennetaanko tämän kartan muutokset ennen toisen kartan avaamista?
 [editor save]
-
+Tallenna…
 [editor discard]
-
+Älä tallenna
 [editor share never saved]
-
+Kartat jaetaan tallennetusta tiedostosta. Tallenna kartta ensin ja jaa se sitten.
 [editor share unsaved]
-
+Tässä kartassa on tallentamattomia muutoksia. Jakaminen lähettää tallennetun tiedoston.
 [editor save and share]
-
+Tallenna ja jaa…
 [editor share saved version]
-
+Jaa tallennettu versio
 [editor reroll confirm]
-
+Arvotaanko jokaisen maastoruudun ulkonäkö uudelleen? Maastotyypit ja pelin toiminta pysyvät samoina. Tätä ei voi perua.
 [editor reroll]
-
+Arvo uudelleen
 [editor map saved]
-
+Kartta tallennettu
 [editor map shared]
-
+Kartta jaettu verkossa
 [editor save needs fertility]
-
+Tallennus vaatii hedelmällisyyskartan, joten tallennus peruttiin. Yritä uudelleen painamalla OK.
 [editor fertility stale]
-
+Hedelmällisyyskartta on vanhentunut · Päivitä napsauttamalla
 [No definition files found in %0]
-
+Määrittelytiedostoja ei löytynyt kohteesta %0
 [From device…]
-
+Laitteelta…
 [replace existing file %0?]
-
+Tiedosto nimeltä "%0" on jo olemassa. Korvataanko se?
 [Replace]
-
+Korvaa
 [Keep existing file]
-
+Säilytä nykyinen tiedosto
 [editor menu save]
-
+Tallenna kartta
 [editor menu load]
-
+Avaa kartta…
 [editor menu import terrain]
-
+Tuo maastomäärittelyt…
 [editor menu import resources]
-
+Tuo resurssimäärittelyt…
 [editor menu teams]
-
+Joukkueet…
 [editor menu scenario]
-
+Skenaario…
 [editor menu reroll]
-
+Arvo maaston ulkonäkö uudelleen…
 [editor menu file]
-
+Tiedosto
 [editor menu map]
-
+Kartta
 [no resource growth areas]
-
+Kasvuttomat alueet
 [dock flags and units]
-
+Liput ja yksiköt
 [dock minimap]
-
+Pienoiskartta
 [dock search brushes]
-
+Hae siveltimiä
 [dock brush shape %0]
-
+Siveltimen muoto %0
 [dock brush]
-
+Sivellin
 [dock brush paint]
-
+Maalaa
 [dock brush erase]
-
+Pyyhi
 [dock enable for map]
-
+Ota käyttöön tässä kartassa
 [dock enable experiment %0]
-
+Ota %0 käyttöön
 [dock enable experiment hint %0]
-
+Ottaa kokeilun %0 käyttöön vain tässä kartassa.
 [dock area number]
-
+Alue
 [dock building level]
-
+Taso
 [dock unit level]
-
+Yksikön taso
 [dock no brushes match]
-
+Hakua vastaavia siveltimiä ei löytynyt.
 [dock active team]
-
+Aktiivinen joukkue
 [dock team count %0]
-
+Joukkueita tässä kartassa: %0
 [dock add team]
-
+Lisää joukkue
 [dock remove team]
-
+Poista joukkue
 [dock nothing selected]
-
+Mitään ei ole valittu.
 [dock no properties]
-
+Tällä kohteella ei ole muokattavia ominaisuuksia.
 [focus brush search]
-
+Hae siveltimiä
 [switch to resources view]
-
+Vaihda resurssinäkymään
 [dock resources base]
-
+Vakioresurssit
 [dock fertility stale]
-
+Hedelmällisyyskartta on vanhentunut.
 [dock fertility refresh]
-
+Päivitä hedelmällisyys
 [Enabled %0 for this map]
-
+%0 otettu käyttöön tässä kartassa
 [editor fertility tap refresh]
-
+Hedelmällisyyskartta on vanhentunut: päivitä napauttamalla
+[editor menu import set]
+Tuo maasto- ja resurssikokoelma
+[editor menu set library]
+Kokoelmakirjasto
+[set library loading]
+Ladataan kokoelmia…
+[set library downloading]
+Ladataan valittua julkaisua…
+[set library connection error]
+Kokoelmia ei voi ladata. Tarkista yhteys ja yritä uudelleen.
+[set library hash error]
+Ladatun kokoelman tiivistetarkistus epäonnistui.
+[set library package error]
+Virheellinen kokoelmapaketti.
+[set library listing error]
+Virheellinen kokoelmaluettelo.
+[set library release error]
+Virheellinen kokoelman julkaisu.
+[set library selection help]
+Valitse tuotavat kohteet. Tarvittavat mukautetut resurssit sisällytetään automaattisesti.
+[set library empty]
+Kokoelmia ei löytynyt.
+[set library release help]
+Valitse tietty julkaisu tarkasteltavaksi ja tuotavaksi.
+[set library heading]
+Maasto- ja resurssikokoelmat
+[set library browse]
+Selaa verkkokirjastoa
+[set library local]
+Kartan sisältö, tekijät ja paikalliset muokkaukset
+[set library local help]
+Muokkaa tähän karttaan tuodun sisällön kopiota. Alkuperäisen julkaisun tekijätiedot säilyvät. Muutokset eivät päivitä muita karttoja tai verkkojulkaisua.
+[set library apply]
+Käytä paikallisia muutoksia
+[set library updated]
+Paikallinen sisältö päivitetty.
+[set library search hint]
+Hae teemoja ja tekijöitä
+[set library search]
+Haku
+[set library set]
+Kokoelma
+[set library update help]
+Tämä korvaa vastaavat sijoitetut maastot ja resurssit, myös paikalliset muokkaukset. Poistetut kohteet säilyvät vanhassa julkaisussa. Nykyiset materiaalimäärät rajoitetaan uusiin kapasiteetteihin.
+[set library import]
+Tuo valitut kohteet
+[set library next]
+Seuraava sivu
+[set library back]
+Takaisin tuloksiin
+[set library license %0]
+Lisenssi: %0
+[set library release %0]
+julkaisu %0
+[set library replace %0]
+Korvaa julkaisusta %0 sijoitetut kohteet
+[set library preview limit]
+Esikatselu näytetään ensimmäisistä 64 kohteesta. Kaikki kohteet ovat edelleen valittavissa.
+[set library definition]
+Ominaisuuksien määrittely (JSON)
+[set library artwork]
+Maaston kuvamääritykset (JSON)
+[settings Map generators]
+Karttageneraattorit
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Tuo generaattoripaketti ja valitse sen maisema luodessasi karttaa tai peliä.
+[settings Import map generator]
+Tuo karttageneraattori
+[settings No custom map generators installed.]
+Mukautettuja karttageneraattoreita ei ole asennettu.
+[settings Replace package]
+Korvaa paketti
+[settings Export package]
+Vie paketti
+[settings Remove generator]
+Poista generaattori
+[settings Saving generator library…]
+Tallennetaan generaattorikirjastoa…
+[settings Could not read generator package.]
+Generaattoripakettia ei voitu lukea.
+[settings Generator library saved.]
+Generaattorikirjasto tallennettu.
+[settings Storage could not be saved. The previous library is retained.]
+Tietoja ei voitu tallentaa. Aiempi kirjasto säilytetään.
+[settings Waiting for file selection or storage…]
+Odotetaan tiedoston valintaa tai tallennusta…
+[settings File selection is unavailable.]
+Tiedoston valinta ei ole käytettävissä.
+[settings Package export is unavailable.]
+Pakettien vienti ei ole käytettävissä.
+[stat band area upkeep]
+Alueen ylläpito

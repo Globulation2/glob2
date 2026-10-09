@@ -36,7 +36,9 @@ Element MapEditMenuScreen::build(const Presentation &p)
 						 {"load", "[editor menu load]", LOAD_MAP},
 						 {"share", "[maps share online]", SHARE_MAP},
 						 {"terrain/import", "[editor menu import terrain]", IMPORT_TERRAIN},
-						 {"resource/import", "[editor menu import resources]", IMPORT_RESOURCES}};
+						 {"resource/import", "[editor menu import resources]", IMPORT_RESOURCES},
+                         {"set/import", "[editor menu import set]", IMPORT_SET},
+                         {"set/library", "[editor menu set library]", SET_LIBRARY}};
 	const Item map[] = {{"teams", "[editor menu teams]", OPEN_TEAMS_EDITOR},
 						{"script", "[editor menu scenario]", OPEN_SCRIPT_EDITOR},
 						{"terrain/reroll", "[editor menu reroll]", REROLL_TERRAIN_LOOK}};

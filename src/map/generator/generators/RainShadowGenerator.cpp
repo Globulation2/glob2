@@ -270,12 +270,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			int nearest = -1;
 			for (int i = 0; i < n; ++i)
 				if (streams[i] &&
-					(nearest < 0 || t.dist2(site.x, site.y, i % t.w, i / t.w) <
-										t.dist2(site.x, site.y, nearest % t.w, nearest / t.w)))
+					(nearest < 0 || t.dist2(site.x, site.y, t.remainderX(i), i / t.w) <
+										t.dist2(site.x, site.y, t.remainderX(nearest), nearest / t.w)))
 					nearest = i;
 			if (nearest < 0)
 				continue;
-			const ShapePoint mouth{site.x + 0.5 + t.offsetX(site.x, nearest % t.w),
+			const ShapePoint mouth{site.x + 0.5 + t.offsetX(site.x, t.remainderX(nearest)),
 								   site.y + 0.5 + t.offsetY(site.y, nearest / t.w)};
 			strokePath(L.water, t,
 					   wanderingPath(t, {site.x + 0.5, site.y + 0.5}, mouth, kRiverHalfWidth,
@@ -304,7 +304,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		site.y = std::fmod(site.y + shortfall * ny + t.h, t.h);
 		L.homes.push_back(site);
 		for (int i = 0; i < n; ++i)
-			if (std::hypot(t.offsetX(int(site.x), i % t.w), t.offsetY(int(site.y), i / t.w)) <=
+			if (std::hypot(t.offsetX(int(site.x), t.remainderX(i)), t.offsetY(int(site.y), i / t.w)) <=
 				L.homeRadius + kHomeMargin)
 				L.clearing[i] = 1;
 	}
@@ -361,12 +361,12 @@ bool generate(Game &game, GenerationContext &context)
 					 [&](int i) { return patches[i]; });
 	}
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	// Stone stands only on pure grass; a ridge tile the beaches or the lee sand spoiled is left out,
 	// which is why the pools keep kFootGap from the stone and the sand lies on the far side.
 	for (int i = 0; i < n; ++i)
-		if (L.stone[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		if (L.stone[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "rain shadow colonies";
 	if (!settleRoundColonies(game, context, "rain-starts", L.homeOf, L.homes, L.homeRadius))
@@ -378,7 +378,7 @@ bool generate(Game &game, GenerationContext &context)
 		plantOpenHomeKit(
 			map, t, context, L.kits[k], 0.0, L.homeRadius, kHomeWheat, kHomeWood, kHomeQuarry,
 			[&](int i)
-			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
+			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); });
 	// The fields: crops on the fertile ground, which the pools make the windward side of every valley
 	// (the growth probe reaches 15 tiles from water and refuses beside sand, so the lee band grows
 	// nothing). A third of the fertile ground under wheat and a fifth under wood is a working
@@ -389,11 +389,11 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<int> split = periodicNoise(t.w, t.h, 5, context.stream("rain-split"));
 	const auto eligible = [&](int i)
 	{
-		return L.homeOf[i] < 0 && !reserved[i] && !L.stone[i] && clearGround(map, i % t.w, i / t.w);
+		return L.homeOf[i] < 0 && !reserved[i] && !L.stone[i] && clearGround(map, t.remainderX(i), i / t.w);
 	};
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
-		fertile += eligible(i) && fertility.at(i % t.w, i / t.w) > 0;
+		fertile += eligible(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, eligible, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -430,9 +430,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return lost;
 	// Every designed ridge tile that could hold stone does: the ridges are the map's walls.
 	for (int i = 0; i < t.size(); ++i)
-		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
-			map.getResource(i % t.w, i / t.w).type != STONE)
-			return "A ridge has lost its stone at (" + std::to_string(i % t.w) + ", " +
+		if (L.stone[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
+			map.getResource(t.remainderX(i), i / t.w).type != STONE)
+			return "A ridge has lost its stone at (" + std::to_string(t.remainderX(i)) + ", " +
 				   std::to_string(i / t.w) + ").";
 	return walkFromFirstColony(map, context.request.nbTeams, "the valleys", "through the passes")
 		.error;
@@ -456,7 +456,7 @@ GeneratorDefinition rainShadowDefinition()
 		"rain-shadow",
 		27,
 		"Rain shadow",
-		4,
+		5,
 		false,
 		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
 		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three

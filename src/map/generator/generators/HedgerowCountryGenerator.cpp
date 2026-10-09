@@ -436,7 +436,7 @@ bool generate(Game &game, GenerationContext &c)
 	const Village v = villageFor(o.fieldSize);
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	c.stage = "hedgerow villages";
@@ -476,8 +476,8 @@ bool generate(Game &game, GenerationContext &c)
 			const auto eligible = [&](int i)
 			{
 				return L.plot[i] && !reserved[i] &&
-					   t.chebyshev(x, y, i % t.w, i / t.w) < v.plot - 1 &&
-					   t.offsetX(x, i % t.w) * side > 1 && clearGround(map, i % t.w, i / t.w);
+					   t.chebyshev(x, y, t.remainderX(i), i / t.w) < v.plot - 1 &&
+					   t.offsetX(x, t.remainderX(i)) * side > 1 && clearGround(map, t.remainderX(i), i / t.w);
 			};
 			const int seed = seedNear(t, x + side * 5, y, 4, eligible);
 			if (seed >= 0)
@@ -495,7 +495,7 @@ bool generate(Game &game, GenerationContext &c)
 			for (int dx = -v.plot; dx <= v.plot; ++dx)
 			{
 				const int i = t.at(x + dx, y + dy);
-				const auto &resource = map.getResource(i % t.w, i / t.w);
+				const auto &resource = map.getResource(t.remainderX(i), i / t.w);
 				if (L.plot[i] && (resource.type == WHEAT || resource.type == WOOD))
 					map.setResourceAmount(i, 2 + ((dx + dy + 2 * v.plot) % 2));
 			}
@@ -507,8 +507,8 @@ bool generate(Game &game, GenerationContext &c)
 			const auto eligible = [&](int i)
 			{
 				return !reserved[i] && !L.hedge[i] && !L.plot[i] && !L.road[i] &&
-					   t.chebyshev(px, py, i % t.w, i / t.w) <= 2 &&
-					   clearGround(map, i % t.w, i / t.w);
+					   t.chebyshev(px, py, t.remainderX(i), i / t.w) <= 2 &&
+					   clearGround(map, t.remainderX(i), i / t.w);
 			};
 			const int seed = seedNear(t, px, py, 2, eligible);
 			if (seed >= 0)
@@ -517,7 +517,7 @@ bool generate(Game &game, GenerationContext &c)
 						  eligible);
 		}
 	}
-	plantCover(map, t, L.hedge, WOOD, [&](int i) { return clearGround(map, i % t.w, i / t.w); });
+	plantCover(map, t, L.hedge, WOOD, [&](int i) { return clearGround(map, t.remainderX(i), i / t.w); });
 	// Algae in the ponds (maintainer review 2026-09-16: "a distinct lack of algae in any pond on the
 	// default parameters"; the map seeded none and had no algae control).
 	seedAlgae(map, c, t, "hedgerow-algae", o.algae, AlgaeBand::anyWater(25));
@@ -543,7 +543,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		return walk.error;
 	for (int i = 0; i < L.t.size(); ++i)
 	{
-		const int x = i % L.t.w, y = i / L.t.w;
+		const int x = L.t.remainderX(i), y = i / L.t.w;
 		if (L.hedge[i] && (fertility.at(x, y) > 0 || game.map.getResource(x, y).type != WOOD))
 			return std::string(fertility.at(x, y) > 0 ? "A hedge is fertile at " : "A hedge is missing at ") +
 				std::to_string(x) + "," + std::to_string(y) + "; breaches must remain permanent.";
@@ -572,7 +572,7 @@ GeneratorDefinition hedgerowCountryDefinition()
 		"hedgerow-country",
 		38,
 		"Hedgerow Country",
-		7,
+		8,
 		false,
 		{GeneratorControl{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout}
 			 .withSearchRange(48, 80),

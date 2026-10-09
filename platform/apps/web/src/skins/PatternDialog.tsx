@@ -1,6 +1,8 @@
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 /* Canvas creation validates the 2D context. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
+import { ColorPicker } from './ColorPicker.tsx';
 import { MeshPreview, type SceneView } from './MeshPreview.tsx';
 import { StudioDialog, MaterialSwatches } from './StudioControls.tsx';
 import { cloneSkin, paintCanvas, type SkinData } from './useSkinDocument.ts';
@@ -37,6 +39,7 @@ export function PatternDialog({
   onApply: (data: SkinData) => void;
   onClose: () => void;
 }) {
+  useLocale();
   const [color, setColor] = useState(initialColor),
     [material, setMaterial] = useState(initialMaterial);
   const [base] = useState(() => cloneSkin(data)),
@@ -115,28 +118,28 @@ export function PatternDialog({
   ]);
   const patterns: [PatternKind, string][] = options.whole
     ? [
-        ['solid', 'Solid'],
-        ['stripes', 'Mirrored bands'],
-        ['spots', 'Mirrored spots'],
-        ['speckles', 'Mottled'],
+        ['solid', t('Solid')],
+        ['stripes', t('Mirrored bands')],
+        ['spots', t('Mirrored spots')],
+        ['speckles', t('Mottled')],
       ]
     : [
-        ['stripes', 'Stripes'],
-        ['spots', 'Spots'],
-        ['checker', 'Checker'],
-        ['chevrons', 'Chevrons'],
-        ['waves', 'Waves'],
-        ['speckles', 'Speckles'],
+        ['stripes', t('Stripes')],
+        ['spots', t('Spots')],
+        ['checker', t('Checker')],
+        ['chevrons', t('Chevrons')],
+        ['waves', t('Waves')],
+        ['speckles', t('Speckles')],
       ];
   const solid = options.kind === 'solid';
   const bandPattern = ['stripes', 'chevrons', 'waves'].includes(options.kind);
   const densityLabel = bandPattern
-    ? 'Band width'
+    ? t('Band width')
     : options.kind === 'spots'
-      ? 'Spot size'
-      : 'Density';
+      ? t('Spot size')
+      : t('Density');
   return (
-    <StudioDialog title="Patterns & fills" onClose={onClose} wide>
+    <StudioDialog title={t('Patterns & fills')} onClose={onClose} wide>
       <div className="skin-pattern-layout">
         <div className="skin-pattern-stage">
           <MeshPreview
@@ -158,16 +161,19 @@ export function PatternDialog({
             }}
           />
           <span className="skin-stage-caption">
-            Drag to choose your {options.whole ? 'inspection' : 'projection'} angle
+            <RichMessage
+              source={'Drag to choose your {slot0} angle'}
+              slots={{ slot0: options.whole ? t('inspection') : t('projection') }}
+            />
           </span>
         </div>
         <div className="skin-pattern-controls">
-          <div className="skin-segment" role="group" aria-label="Pattern coverage">
+          <div className="skin-segment" role="group" aria-label={t('Pattern coverage')}>
             <button
               aria-pressed={!options.whole}
               onClick={() => setOptions({ ...DEFAULT_PATTERN })}
             >
-              From this view
+              {t('From this view')}
             </button>
             <button
               aria-pressed={options.whole}
@@ -175,14 +181,11 @@ export function PatternDialog({
                 setOptions({ ...DEFAULT_PATTERN, whole: true, kind: 'solid', scale: 64 })
               }
             >
-              Whole model
+              {t('Whole model')}
             </button>
           </div>
           {mode === 'colour' ? (
-            <label>
-              Pattern color
-              <input type="color" value={color} onChange={(e) => setColor(e.target.value)} />
-            </label>
+            <ColorPicker label={t('Pattern color')} value={color} onChange={setColor} />
           ) : (
             <MaterialSwatches color={data.building} selected={material} onSelect={setMaterial} />
           )}
@@ -201,20 +204,20 @@ export function PatternDialog({
           {!solid &&
             (options.whole ? (
               <label>
-                Pattern size
+                {t('Pattern size')}
                 <select
                   value={options.scale}
                   onChange={(e) => setOptions({ ...options, scale: Number(e.target.value) })}
                 >
-                  <option value={32}>Small</option>
-                  <option value={64}>Medium</option>
-                  <option value={96}>Large</option>
+                  <option value={32}>{t('Small')}</option>
+                  <option value={64}>{t('Medium')}</option>
+                  <option value={96}>{t('Large')}</option>
                 </select>
               </label>
             ) : (
               <>
                 <label>
-                  Scale
+                  {t('Scale')}
                   <input
                     type="range"
                     min={16}
@@ -224,10 +227,13 @@ export function PatternDialog({
                   />
                 </label>
                 <label>
-                  Rotation <span className="skin-value">{options.rotation}°</span>
+                  {t('Rotation ')}
+                  <span className="skin-value">
+                    <RichMessage source={'{slot0}°'} slots={{ slot0: options.rotation }} />
+                  </span>
                   <input
                     type="range"
-                    aria-label="Pattern rotation"
+                    aria-label={t('Pattern rotation')}
                     min={0}
                     max={359}
                     value={options.rotation}
@@ -235,7 +241,7 @@ export function PatternDialog({
                   />
                 </label>
                 <label>
-                  Across
+                  {t('Across')}
                   <input
                     type="range"
                     min={-160}
@@ -245,7 +251,7 @@ export function PatternDialog({
                   />
                 </label>
                 <label>
-                  Up / down
+                  {t('Up / down')}
                   <input
                     type="range"
                     min={-160}
@@ -266,11 +272,11 @@ export function PatternDialog({
                   onChange={(e) => setOptions({ ...options, density: Number(e.target.value) })}
                 >
                   <option value={0.3}>
-                    {bandPattern ? 'Thin' : options.kind === 'spots' ? 'Small' : 'Light'}
+                    {bandPattern ? t('Thin') : options.kind === 'spots' ? t('Small') : t('Light')}
                   </option>
-                  <option value={0.5}>Balanced</option>
+                  <option value={0.5}>{t('Balanced')}</option>
                   <option value={0.7}>
-                    {bandPattern ? 'Wide' : options.kind === 'spots' ? 'Large' : 'Dense'}
+                    {bandPattern ? t('Wide') : options.kind === 'spots' ? t('Large') : t('Dense')}
                   </option>
                 </select>
               </label>
@@ -289,7 +295,7 @@ export function PatternDialog({
             ))}
           {options.kind === 'speckles' && (
             <button onClick={() => setOptions({ ...options, seed: options.seed + 1 })}>
-              Shuffle pattern · {options.seed}
+              <RichMessage source={'Shuffle pattern · {slot0}'} slots={{ slot0: options.seed }} />
             </button>
           )}
           {!solid && (
@@ -299,23 +305,20 @@ export function PatternDialog({
                 checked={background}
                 onChange={(e) => setBackground(e.target.checked)}
               />
-              Replace the gaps too
+              {t('Replace the gaps too')}
             </label>
           )}
           {!solid &&
             background &&
             (mode === 'colour' ? (
-              <label>
-                Background color
-                <input
-                  type="color"
-                  value={secondColor}
-                  onChange={(e) => setSecondColor(e.target.value)}
-                />
-              </label>
+              <ColorPicker
+                label={t('Background color')}
+                value={secondColor}
+                onChange={setSecondColor}
+              />
             ) : (
               <label>
-                Background material
+                {t('Background material')}
                 <select
                   value={secondMaterial}
                   onChange={(e) => setSecondMaterial(Number(e.target.value))}
@@ -333,21 +336,25 @@ export function PatternDialog({
               </label>
             ))}
           <p className="skin-muted">
-            {options.whole
-              ? 'Fills repeat across the model’s matching surfaces.'
-              : 'Projects onto visible surfaces. Shared surfaces repeat the paint.'}{' '}
-            The preview shows exactly what will be saved.
+            <RichMessage
+              source={'{slot0} The preview shows exactly what will be saved.'}
+              slots={{
+                slot0: options.whole
+                  ? t('Fills repeat across the model’s matching surfaces.')
+                  : t('Projects onto visible surfaces. Shared surfaces repeat the paint.'),
+              }}
+            />
           </p>
         </div>
       </div>
       <footer>
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={onClose}>{t('Cancel')}</button>
         <button
           className="skin-primary"
           disabled={!cameraReady || completedKey !== buildKey}
           onClick={() => onApply(candidate)}
         >
-          Apply to {model.name}
+          <RichMessage source={'Apply to {slot0}'} slots={{ slot0: model.name }} />
         </button>
       </footer>
     </StudioDialog>

@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include "OwnerRandom.h"
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
 #include "sim/snapshot/Requirements.h"
@@ -15,6 +16,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <string_view>
 #include <span>
 #include <vector>
 #include <assert.h>
@@ -23,7 +25,7 @@
 #include "Ressource.h"
 #include "MapState.h"
 #include "ResourceRegistry.h"
-#include "ResourceHabitats.h"
+#include "CellRules.h"
 #include "MapStateView.h"
 #include "ResourcePlaneKey.h"
 #include "MapChangeTracking.h"
@@ -33,6 +35,7 @@
 #include "FertilityField.h"
 #include "TerrainProperties.h"
 #include "TerrainRegistry.h"
+class MapAssetBundle;
 #include "TerrainExperiments.h"
 #include "BitArray.h"
 
@@ -51,6 +54,8 @@ class Game;
 class SessionGame;
 class MapHeader;
 struct GradientRuntime;
+class BuildingGradientStats;
+namespace ResourceGrowth { struct Metrics; }
 
 //! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
 //! dx and dy are each in {-1, 0, +1}.
@@ -63,7 +68,6 @@ struct Offset
 // a 1x1 piece of map
 struct Tile
 {
-	Uint16 terrain = 0; // default, not really meaningful.
 	Uint16 building = NOGBID;
 
 	Resource resource;
@@ -107,7 +111,14 @@ class Map
 	void seedMaterialGradientWithSuppliers(int team, Uint8 resource, int swim, Uint16 *output, const Building* consumer, unsigned modes);
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
-	unsigned computeExperiments = 0;
+	// Scheduled building gradients (MapGradientScheduling.cpp).
+	void stageBuildingGradientPreparation();
+	SimulationSnapshot::Requirements pendingBuildingRequirements() const;
+	void prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation);
+	void resetBuildingGradientPipeline() noexcept;
+	Building *buildingGradientDestination(int team, int id, Uint32 identity) const;
+	void saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const;
+	void loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed);
 	// The live cell view minus the game's growth settings, rebound by
 	// refreshLiveView() whenever an input is replaced. Per-cell queries read
 	// it directly instead of assembling a view on every call.
@@ -134,35 +145,42 @@ class Map
 	}
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
-	mutable std::shared_ptr<const std::vector<TerrainType>> terrainSnapshot;
+	mutable std::shared_ptr<const std::vector<TerrainType>> vertexSnapshot;
 	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
-    std::shared_ptr<const ResourceHabitats> resourceHabitatsValue=std::make_shared<const ResourceHabitats>();
-    void rebuildResourceHabitats();
+    void installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
+        std::shared_ptr<const ResourceRegistry> resources, std::shared_ptr<const MapAssetBundle> assets);
 	std::vector<Uint32> resourceStockIndices;
 	std::vector<std::array<Uint16, MaterialCount>> resourceStocks;
 	std::vector<Uint32> freeResourceStocks;
 	std::array<Uint32, MaterialCount> materialSourceCounts{};
-	void initializeResourceStock(size_t index);
+	void initializeResourceStock(size_t index, const std::array<Uint16, MaterialCount> *stocks = nullptr);
 	void releaseResourceStock(size_t index);
 	void refreshResourceTotal(size_t index);
 	void rebuildResourceState();
 	void materialStockChanged(size_t index, MaterialMask before);
 	bool harvestMaterial(size_t index, int material);
-	std::vector<TerrainType> terrainIds;
+	// Terrain is stored once per vertex, and only there: vertex (x,y) is the
+	// top-left corner of cell (x,y). Each cell's rules are derived from its four
+	// corners (CellRules.h); cells keep only the index of their rule.
+	std::vector<TerrainType> vertexTerrain;
+	std::vector<Uint16> cellRules;
 	std::shared_ptr<const TerrainRegistry> terrainRegistryValue = TerrainRegistry::builtins();
-	std::vector<Uint16> terrainPropertyIndices;
-	const TerrainProperties *terrainPropertyTable = terrainRegistryValue->propertyProfiles().data();
+    std::shared_ptr<const MapAssetBundle> assetBundleValue;
+	std::shared_ptr<CellRuleTable> cellRuleTable;
+	const CellRule *cellRuleData = nullptr;
+	// Vertices per terrain type, and cells per cell rule.
 	std::vector<std::size_t> terrainCounts = std::vector<std::size_t>(TERRAIN_COUNT);
+	std::vector<std::size_t> cellRuleCounts;
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
 	std::array<std::array<unsigned, 182>, 7> terrainGroundCostCounts{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
 	std::array<unsigned, 7> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
 	unsigned terrainMinimumAir = GRADIENT_STEP;
-	void adjustTerrainFeatures(TerrainType type, bool add);
+	void adjustTerrainFeatures(std::uint16_t rule, bool add);
 	std::uint64_t terrainGenerationValue = 1;
     // Explicit availability changes of intrinsically static material sources.
     // Shared AI gradients persist only whether this generation is current.
@@ -172,12 +190,27 @@ class Map
         // Zero is reserved for a stale shared-runtime gradient after loading.
         if (++staticMaterialSourceGenerationValue == 0) ++staticMaterialSourceGenerationValue;
     }
-	void changeTerrainIdentity(size_t index, TerrainType type);
-	void rebuildTerrainCounts();
+	// The rule of cell index for its corners, interned on demand; a table shared with a snapshot
+	// (use_count above one) is cloned before it gains a rule.
+	std::uint16_t deriveCellRule(size_t index);
+	void changeCellRule(size_t index, std::uint16_t rule);
+	void writeVertex(size_t index, TerrainType type);
+	// Re-derives every cell after a bulk vertex change, keeping the rule table.
+	void rederiveAllCells();
+	void bindCellRules();
+	// Loading formats before 146: vertices under whole-cell terrain take it on.
+	void convertLegacyCellTerrain(const std::vector<TerrainType> &cells);
+	// Re-derives every cell rule from the vertices, with table or else a fresh
+	// table for the current registries, and recounts terrain and features.
+	void rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table = {});
 	unsigned terrainEditDepth = 0;
 	bool terrainEditChanged = false, terrainRoutesChanged = false;
 	bool terrainHealthEffects = false;
 	bool terrainMovementModifiers = false, airTerrainConstraints = false, projectileBlockingTerrain = false;
+	// Load-only discriminator, grouped with flags to preserve hot storage offsets.
+	Sint32 loadedHistoricalGrowthVersion = 0;
+	bool loadedLegacyGrowth144 = false;
+	bool loadedLegacyGrowth145 = false;
 	void updateTerrainSummary();
 	void finishTerrainEdit();
 	// Storage only: an idle building still drops its field and saved null state.
@@ -189,6 +222,8 @@ class Map
 	std::mutex gradientBufferPoolMutex;
 	void clearGradientBufferPool();
 public:
+	WorldRandomStreams worldRandom;
+	EntityRandom& privateRandom(RandomDomain domain);
 	std::array<Uint64, 5> snapshotGenerations() const
 	{ return {terrainChanges.generation, resourceChanges.generation, occupancyChanges.generation, areaChanges.generation, visibilityChanges.generation}; }
 	const MapState::ChunkGeometry& chunks() const { return chunkGeometry; }
@@ -207,22 +242,14 @@ public:
 	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
-	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
-	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
-	void configureCompute(unsigned threads, unsigned experiments);
+	void configureCompute(unsigned threads);
 	ComputeExecutor &computeExecutor() { return compute; }
-	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
-	// Fixed chunks and synchronous barriers: thresholds affect execution only.
+	// Live field seeding retains its serial production order.
 	template<class Function> void initializeGradientCells(Function function) const
 	{
-		constexpr size_t chunk = 4096;
-		if (!computeEnabled(ComputeInitialize) || size < 16384)
-		{ function(0, size); return; }
-		compute.run((size + chunk - 1) / chunk, [&](size_t part) {
-			const size_t begin = part * chunk;
-			function(begin, std::min(begin + chunk, size));
-		});
+		function(0, size);
 	}
+
 	struct GradientPipelineStatus
 	{
 		bool enabled = false;
@@ -236,6 +263,14 @@ public:
 	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
 	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
+    SimulationSnapshot::Requirements pendingWorldRequirements() const;
+    void preparePendingWorld();
+    void preparePendingWorld(const SimulationSnapshot::Handle&);
+    void stageResourceGrowth();
+    void finishResourceGrowth();
+    void setResourceGrowthDelay(unsigned delay);
+    unsigned resourceGrowthDelay() const;
+    const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
 	bool hasPendingGradientPreparation() const;
 	SimulationSnapshot::Requirements pendingGradientRequirements() const;
 	void preparePendingGradient();
@@ -245,15 +280,56 @@ public:
 	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
+	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
+	// requests refreshes of existing fields and keeps serving the old ones;
+	// after the tick up to MaxJobsPerTick requests are staged, captured at the
+	// observation boundary, built on workers and published
+	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
+	// team-wide resets keep old walking fields serving instead of making them
+	// cold (Building::keepsStaleGradients).
+	//! Why a building walking field was built on the owner. cold_* name what
+	//! last dropped the field (never built, idle eviction, the building's own
+	//! reset, a team-wide reset, an area edit).
+	enum class BuildingSyncReason : unsigned char
+	{
+		Inactive, ColdNew, ColdIdle, ColdOwn, ColdTeam, ColdArea, Overflow, Other, Count
+	};
+	static const char *buildingSyncReasonName(BuildingSyncReason reason);
+	struct BuildingGradientPipelineStatus
+	{
+		bool enabled = false;
+		unsigned delay = 0;
+		std::size_t pending = 0, queued = 0;
+		std::uint64_t jobs = 0, published = 0, discarded = 0, synchronous = 0, maxPending = 0, waitNs = 0;
+		std::array<std::uint64_t, std::size_t(BuildingSyncReason::Count)> synchronousByReason{};
+	};
+	//! Tags the next synchronous building build for the counters above.
+	void noteBuildingSyncReason(BuildingSyncReason reason);
+	//! A team-local edit moves current fields to the new topology generation;
+	//! pending results captured at the old one move with them.
+	void carryPendingBuildingGenerations(Uint32 from, Uint32 to);
+	BuildingGradientPipelineStatus buildingGradientPipelineStatus() const;
+	//! Follow the header's buildingGradientDelay now; throws with pending work.
+	void ensureBuildingGradientPipeline();
+	bool buildingGradientPipelineActive() const;
+	//! Queue a refresh of an existing walking field (slot = routeSlot). False
+	//! when the caller must rebuild synchronously (no pipeline: a map without
+	//! a game, or no existing field).
+	bool requestBuildingRefresh(Building *building, int slot);
+	//! Worker depth for a scheduled walking field: every reader still resolves
+	//! its cell first, so the prediction moves CPU, never values.
+	int predictBuildingDepth(const Building *building, int slot) const;
+	//! "table" (the model's default point), a point name such as "l0300",
+	//! "full" or "lazy" (seeds only): CPU placement for timing comparisons,
+	//! never results. GLOB2_BUILDING_DEPTH sets it too.
+	void setBuildingGradientDepth(std::string_view mode);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
 	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
-	void advanceHiringGradients(Building *building);
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
 	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);
-	//! Type of terrain (used for undermap)
 
 	// === Tile geometry (cross-slice) ===
 	//! Bit-shift converting a tile index to its top-left pixel coordinate
@@ -265,9 +341,8 @@ public:
 	//! Half-tile in pixels — used when centring sprites / bullets on a tile.
 	static constexpr int HALF_TILE_PX = 16;
 
-	//! Sentinel returned by Map::getTerrainType when the underlying terrain
-	//! sprite ID does not fall in any of the registered terrain ranges
-	//! (GRASS / SAND / WATER). Callers test for `< 0` / `== TERRAIN_TYPE_UNKNOWN`.
+	//! Sentinel returned by Map::getTerrainType for a cell whose corners hold
+	//! different terrains. Callers test for `< 0` / `== TERRAIN_TYPE_UNKNOWN`.
 	static constexpr int TERRAIN_TYPE_UNKNOWN = -1;
 
 	//! "Infinity" / "unvisited" sentinel for the A* algorithm's Uint16 cost fields
@@ -491,19 +566,12 @@ public:
 		return getTile(size_t(coordToIndex(x, y)));
 	}
 
-	//! Return the terrain for a given coordinate
-	inline Uint16 getTerrain(int x, int y) const
-	{
-		return legacyTerrain[coordToIndex(x, y)];
-	}
-	
-	//! Return the terrain for a given position in tile array
-	inline Uint16 getTerrain(size_t pos) const
-	{
-		return legacyTerrain[pos];
-	}
 
 	//! Canonical gameplay identity; never inferred from art in a simulation query.
+	std::shared_ptr<const MapAssetBundle> frozenAssetBundle() const { return assetBundleValue; }
+    void editCustomEntry(std::string_view key, std::string_view definition, std::string_view artwork);
+    void updateSet(std::string_view source, std::string_view oldVersion, const std::vector<std::string>& selected = {});
+    void importSet(std::string_view json, const std::vector<std::string>& selected = {});
 	const TerrainRegistry &terrainRegistry() const { return *terrainRegistryValue; }
 	std::shared_ptr<const TerrainRegistry> frozenTerrainRegistry() const
 	{
@@ -519,16 +587,52 @@ public:
 		return terrainRegistryValue->presentation(type);
 	}
 	bool validTerrainType(unsigned type) const { return terrainRegistryValue->valid(type); }
-	bool terrainUsesLegacyCorners(TerrainType type) const
-	{
-		return terrainRegistry().compatibility(type).legacyCorners;
-	}
 	void importTerrainDefinitions(std::string_view json);
-	TerrainType terrainTypeAt(size_t index) const { return terrainIds[index]; }
-	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(coordToIndex(x,y)); }
+	// === Vertex terrain ===
+	TerrainType vertexTerrainAt(size_t index) const { return vertexTerrain[index]; }
+	TerrainType vertexTerrainAt(int x, int y) const { return vertexTerrain[coordToIndex(x, y)]; }
+	std::span<const TerrainType> vertexTerrainState() const { return vertexTerrain; }
+	//! The corners of cell (x,y): top-left, top-right, bottom-left, bottom-right.
+	std::array<TerrainType, 4> cellCorners(int x, int y) const
+	{
+		return {vertexTerrainAt(x, y), vertexTerrainAt(x + 1, y), vertexTerrainAt(x, y + 1), vertexTerrainAt(x + 1, y + 1)};
+	}
+	std::array<TerrainType, 4> cellCorners(size_t index) const { return cellCorners(int(index & wMask), int(index >> wDec)); }
+	//! Write one vertex; the four cells around it are re-derived immediately.
+	void setVertexTerrain(size_t index, TerrainType type);
+	void setVertexTerrain(int x, int y, TerrainType type) { setVertexTerrain(size_t(coordToIndex(x, y)), type); }
+	//! Replace every vertex at once.
+	void assignVertexTerrain(std::span<const TerrainType> vertices);
+	void fillTerrain(TerrainType type);
+	//! Paints the listed vertices (unwrapped coordinates allowed) with type.
+	//! With beaches, grass and water never meet: an opposite vertex next to a
+	//! painted grass or water vertex, outside the painted set, becomes sand.
+	//! Returns every vertex index that changed, beaches included.
+	std::vector<size_t> paintVertices(const std::vector<std::pair<int, int>> &vertices, TerrainType type,
+									  bool beaches = true);
+	//! Paints the square of 2*(l/2)+1 vertices a side centred on (x,y), with
+	//! beaches; l of 0 or 1 paints the single vertex.
+	void paintVertexSquare(int x, int y, TerrainType type, int l);
+	//! Turns every grass vertex next to water, and every water vertex next to
+	//! grass, into sand. Reads the terrain as it was, so the order of the scan
+	//! does not matter.
+	void layBeaches();
+	// === Cell rules ===
+	std::uint16_t cellRuleAt(size_t index) const { return cellRules[index]; }
+	const CellRule &cellRule(size_t index) const { return cellRuleData[cellRules[index]]; }
+	const CellRuleTable &cellRuleTableRef() const { return *cellRuleTable; }
+	std::shared_ptr<const CellRuleTable> frozenCellRules() const { return cellRuleTable; }
+	std::span<const Uint16> cellRuleState() const { return cellRules; }
+	//! A cell's terrain when all four corners agree, otherwise MIXED_TERRAIN.
+	TerrainType terrainTypeAt(size_t index) const
+	{
+		const auto &corners = cellRuleData[cellRules[index]].corners;
+		return corners[0] == corners[3] ? corners[0] : MIXED_TERRAIN;
+	}
+	TerrainType terrainTypeAt(int x, int y) const { return terrainTypeAt(size_t(coordToIndex(x,y))); }
 	const TerrainProperties &terrainPropertiesAt(size_t index) const
 	{
-		return terrainPropertyTable[terrainPropertyIndices[index]];
+		return cellRuleData[cellRules[index]].properties;
 	}
 	const TerrainProperties& terrainPropertiesAt(int x, int y) const { return terrainPropertiesAt(coordToIndex(x,y)); }
 	// Terrain habitat only: ignores deposits, buildings and units already here.
@@ -547,10 +651,9 @@ public:
     std::uint64_t materialRenewalPotentialAt(size_t index,MaterialId material) const { return materialRenewalPotentialAtSlot(index,materialIndex(material)); }
     std::uint64_t materialExpansionRateAtSlot(size_t index,int material) const;
     std::uint64_t materialExpansionRateAt(size_t index,MaterialId material) const { return materialExpansionRateAtSlot(index,materialIndex(material)); }
-	const std::vector<TerrainType>& terrainTypes() const { return terrainIds; }
 	std::uint64_t terrainGeneration() const { return terrainGenerationValue; }
     std::uint64_t staticMaterialSourceGeneration() const { return staticMaterialSourceGenerationValue; }
-	std::shared_ptr<const std::vector<TerrainType>> frozenTerrainSnapshot() const;
+	std::shared_ptr<const std::vector<TerrainType>> frozenVertexSnapshot() const;
 	std::shared_ptr<const TerrainMovementSnapshot>
 	frozenTerrainMovementSnapshot(unsigned swim) const;
 	bool hasTerrainMovementModifiers() const { return terrainMovementModifiers; }
@@ -570,20 +673,18 @@ public:
 		TerrainEditBatch& operator=(const TerrainEditBatch&) = delete;
 	};
 	TerrainEditBatch editTerrain() { return TerrainEditBatch(*this); }
-	void setCellTerrain(size_t index, TerrainType type);
-	void setCellTerrain(int x, int y, TerrainType type) { setCellTerrain(coordToIndex(x,y), type); }
-	// Explicit adapter for old serialized state and legacy test/import fixtures.
-	void importLegacyTerrain();
+	//! Paints the four corner vertices of a cell, so the cell becomes uniform
+	//! and the cells around it transitions. No beaches are laid.
+	void paintCell(size_t index, TerrainType type);
+	void paintCell(int x, int y, TerrainType type) { paintCell(coordToIndex(x,y), type); }
 	int getTerrainType(int x, int y) const
 	{
 		const auto type = terrainTypeAt(x,y);
-		return type == GRASS_SAND_SHORE || type == SAND_WATER_SHORE ? TERRAIN_TYPE_UNKNOWN : int(type);
+		return type == MIXED_TERRAIN ? TERRAIN_TYPE_UNKNOWN : int(type);
 	}
 
 	const ResourceRegistry& resourceRegistry() const { return *resourceRegistryValue; }
     std::shared_ptr<const ResourceRegistry> frozenResourceRegistry() const { return resourceRegistryValue; }
-    std::shared_ptr<const ResourceHabitats> frozenResourceHabitats() const { return resourceHabitatsValue; }
-    const ResourceHabitats& resourceHabitats() const { return *resourceHabitatsValue; }
     std::span<const Uint32> resourceStockIndexState() const { return resourceStockIndices; }
     std::span<const std::array<Uint16, MaterialCount>> resourceStockState() const { return resourceStocks; }
     int resourceScarcityLevel() const;
@@ -635,11 +736,9 @@ public:
 	std::span<const MapState::ResourceCell> resourceState() const { return resourceCells; }
 	std::span<const MapState::OccupancyCell> occupancyState() const { return occupancyCells; }
 	std::span<const MapState::AreaCell> areaState() const { return areaCells; }
-	std::span<const Uint16> legacyTerrainState() const { return legacyTerrain; }
 	const Tile getTile(size_t index) const
 	{
 		Tile tile;
-		tile.terrain = legacyTerrain[index];
 		tile.resource = resourceCells[index].resource;
 		tile.fertility = resourceCells[index].fertility;
 		tile.canResourcesGrow = resourceCells[index].mayGrow;
@@ -653,11 +752,11 @@ public:
 		tile.scriptAreas = scriptAreaCells[index];
 		return tile;
 	}
-	// Restores stored cell data (including its sprite), not canonical terrain
-	// identity. Terrain changes still use setCellTerrain/importLegacyTerrain.
+	// Restores stored cell data. Terrain lives on vertices and is not part of a Tile.
 	void replaceTile(size_t index, const Tile &tile);
 	void replaceTile(int x, int y, const Tile &tile) { replaceTile(coordToIndex(x, y), tile); }
-	void replaceResource(size_t index, const Resource &resource);
+	// Optional initial stocks seed explicit material units instead of catalog initial stocks.
+	void replaceResource(size_t index, const Resource &resource, const std::array<Uint16, MaterialCount> *stocks = nullptr);
 	void replaceResource(int x, int y, const Resource &resource) { replaceResource(coordToIndex(x, y), resource); }
 	void setResourceAmount(size_t index, Uint32 amount);
 	void setFertility(int x, int y, Uint16 value)
@@ -691,8 +790,6 @@ public:
 		return exploredArea[team][coordToIndex(x, y)];
 	}
 	
-	// Legacy corner/sprite authoring adapter. Gameplay mutations use setCellTerrain.
-	void setTerrain(int x, int y, Uint16 terrain);
 
 	//! A bump throws away every cached route field in the game, so only paint
 	//! a tile that is not already in the state being asked for.
@@ -721,11 +818,6 @@ public:
 	bool isGrass(int x, int y) const { return terrainTypeAt(x,y) == GRASS; }
 	bool isGrass(unsigned pos) const { return terrainTypeAt(pos) == GRASS; }
 	bool isSand(int x, int y) const { return terrainTypeAt(x,y) == SAND; }
-	bool hasSand(int x, int y) const
-	{
-		const auto type = terrainTypeAt(x,y);
-		return type == SAND || type == GRASS_SAND_SHORE || type == SAND_WATER_SHORE;
-	}
 
 	bool isResource(int x, int y) const
 	{
@@ -812,7 +904,7 @@ private:
 	//! Read or move on a prepared field. Both settle their input cell first;
 	//! neither refreshes the field or changes its use timestamp.
 	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
-	bool buildingGradientDirection(Building *building, int swimClass, int x, int y,
+	bool buildingGradientDirection(EntityRandom& random, Building *building, int swimClass, int x, int y,
 		int *dx, int *dy, bool strict, BuildingRoute route = BuildingRoute::Automatic) const;
 	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
 	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
@@ -908,26 +1000,6 @@ public:
 	//! Return a sector in the sector array. It is not clean because too high level
 	Sector *getSector(int i) { assert(i>=0); assert(i<sizeSector); return sectors+i; }
 
-	//! Set undermap terrain type at (x,y) (undermap positions)
-	void setUMTerrain(int x, int y, TerrainType t)
-    {
-        const auto index = coordToIndex(x,y);
-        if (undermap[index] != Uint8(t)) { undermap[index] = Uint8(t); markTerrain(index); }
-    }
-    std::span<const Uint8> undermapState() const { return {undermap, size_t(w)*h}; }
-	//! Return undermap terrain type at (x,y)
-	TerrainType getUMTerrain(int x, int y) const { return (TerrainType)undermap[coordToIndex(x, y)]; }
-	//! Set undermap terrain type at (x,y) (undermap positions) on an area
-	void setUMatPos(int x, int y, TerrainType t, int l);
-	//! Map-editor brush: paints whole cells of a legacy corner terrain (GRASS,
-	//! SAND or WATER). Only the listed cells lose an authored whole-cell
-	//! identity; all four undermap corners of every listed cell become t; the
-	//! grass/water sand-shore rule of setUMatPos is applied only to corners
-	//! outside that written set; tiles are rebuilt over the cells' bounding box
-	//! plus two. Cells are unwrapped map coordinates and wrap on the torus.
-	//! Editor authoring only: no generator, script, order or simulation path
-	//! uses it, so it does not take part in match determinism.
-	void paintLegacyCells(const std::vector<std::pair<int, int>> &cells, TerrainType t);
 
 	//! With l==0, it will remove no resource. (Unaligned coordinates)
 	void setNoResource(int x, int y, int l);
@@ -943,6 +1015,7 @@ public:
 	///The following is for script areas, which are named areas for map scripts set in the editor
 	///@{
 	///Returns whether area #n is set for a particular point. n can be from 0 to 8
+	std::span<const Uint16> scriptAreaState() const { return scriptAreaCells; }
 	bool isPointSet(int n, int x, int y) const;
 	///Sets a particular point on area #n
 	void setPoint(int n, int x, int y);
@@ -972,7 +1045,7 @@ public:
 	//! simulation code. Generators derive it from their request seed, the editor
 	//! rerolls it, and maps saved before format 138 load with seed 0.
 	Uint32 terrainSeed() const { return terrainSeedValue; }
-	void setTerrainSeed(Uint32 seed) { terrainSeedValue = seed; }
+	void setTerrainSeed(Uint32 seed);
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a path line to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
@@ -1052,7 +1125,7 @@ public:
 	bool getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 	//! Whether (x, y) is a local maximum of gradient: no neighbour holds a strictly higher
 	//! value. True at any tile getGlobalGradientDestination's ascent could end on, including
-	//! gradients like a round-trip field whose seeded goal is a finite cost, not the type's max.
+	//! gradients like a market-seeded field whose goal is a finite cost, not the type's max.
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
@@ -1080,12 +1153,11 @@ public:
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	//! With guardAreaMask, only neighbours painted as a guard area for those teams count
 	//! (guard-area balancing: stepping within an area).
-	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
+	bool directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask = 0) const;
 	void updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
-	//! Direction toward a resource of resourceType. With a target building the round-trip
-	//! gradient is descended, so the unit heads for the resource that is nearest for
-	//! fetching and carrying it there; without one, for the resource nearest to itself.
-	bool pathfindMaterial(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
+	//! Direction toward the resource of resourceType nearest to (x, y). A target building
+	//! selects which suppliers (markets, stock) its resource gradient includes.
+	bool pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 	void pathfindRandom(Unit *unit);
 	//! Idle escape toward non-damaging terrain using a lazily shared field.
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
@@ -1094,17 +1166,6 @@ public:
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Rebuild the building's round-trip gradient for a resource type and swim class:
-	//! every tile of that resource is seeded with its distance to the building, so a
-	//! cell's value is the cheapest fetch-and-carry trip from there.
-	void updateRoundTripGradientSlot(Building *building, int resourceType, int swimClass);
-	//! The building's round-trip gradient, built or refreshed on demand. NULL when the
-	//! building cannot be reached.
-	const Uint16 *roundTripGradientSlot(Building *building, int resourceType, int swimClass);
-	//! Tiles of the cheapest trip from (x, y) to a resource of resourceType and on to the
-	//! building, read from a round-trip gradient a fetcher's walk has already built. False
-	//! when there is none or no such trip; the caller then scores by the plain distances.
-	bool roundTripDistanceSlot(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
 	//! Complete field, refreshed as needed; NULL when locked. Point queries use
 	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
@@ -1112,7 +1173,7 @@ public:
 	void finishBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
-	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
+	bool pathfindBuilding(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
 
 	//! Bumped whenever a footprint or a forbidden mask changes. A route field
 	//! spans the map, so any such change may cross it: each field records the
@@ -1121,10 +1182,12 @@ public:
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
 	void bumpTopologyGeneration() { topologyGeneration++; }
+	//! Diagnostics only (--telemetry gradient-stats); null otherwise.
+	std::unique_ptr<BuildingGradientStats> gradientStats;
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.
-	bool pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
+	bool pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, int swimClass);
 	void updateForbiddenGradient(int teamNumber);
@@ -1161,7 +1224,6 @@ private:
 	std::vector<MapState::ResourceCell> resourceCells;
 	std::vector<MapState::OccupancyCell> occupancyCells;
 	std::vector<MapState::AreaCell> areaCells;
-	std::vector<Uint16> legacyTerrain;
 	std::vector<Uint16> scriptAreaCells;
 public:
 	Uint64 identityValue = 0;
@@ -1170,16 +1232,7 @@ public:
 	Sint32 wMask, hMask;
 	Sint32 wDec, hDec;
 	
-protected:
-	// private functions, used for edition
-
-	void regenerateMap(int x, int y, int w, int h);
-	
-	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const;
-
 public:
-	// Rebuild rendered terrain after bulk undermap edits.
-	void rebuildTerrain() { regenerateMap(0, 0, w, h); }
     // here we handle terrain
 	// mapDiscovered
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
@@ -1292,7 +1345,6 @@ protected:
 	//Used for scheduling computation time on the clear area gradients
 	bool clearGradientUpdated[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	
-	Uint8 *undermap;
 	Uint8 **listedAddr;
 	size_t size;
 
@@ -1342,16 +1394,13 @@ protected:
 	std::vector<int> aStarExaminedPoints;
 
 public:
-	Uint32 checkSum(bool heavy);
+	Uint32 checkSum(bool heavy, bool includePending = true);
 	Sint32 warpDist1d(int p, int q, int l);///distance of coordinates p and q on a loop of length l
 	Sint32 warpDistSquare(int px, int py, int qx, int qy); //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
 	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 
 public:
-	void makeHomogenMap(TerrainType terrainType);
-    GAGCore::CooperativeTask makeHomogenMapTask(TerrainType terrainType);
-	void controlSand(void);
 	void smoothResources(int times);
 
 private:

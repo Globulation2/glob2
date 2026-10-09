@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "PowerOfTwo.h"
+#include "map/generator/shared/Grid.h"
 #include "field/UniformTraversal.h"
 #include "field/Influence.h"
 #include "field/GradientPropagation.h"
@@ -272,5 +274,66 @@ TEST_CASE("Depth first traversal preserves stack discovery order")
         });
     CHECK(visited==std::vector<int>{0,2,1});
     CHECK(stack.empty());
+}
+}
+
+TEST_SUITE("FieldGradient")
+{
+TEST_CASE("Power of two remainders preserve signed and mixed integer arithmetic")
+{
+    const auto check = [](auto value, auto divisor) {
+        CHECK(powerOfTwoRemainder(value, divisor) == value % divisor);
+        CHECK(dimensionRemainder(value, divisor) == value % divisor);
+    };
+    for (unsigned shift=0; shift<31; ++shift)
+    {
+        const int size=int(1u<<shift);
+        for (const int value : {INT_MIN, INT_MIN+1, -65537, -129, -1, 0, 1, 129, 65537, INT_MAX})
+        {
+            check(value,size);
+            check(value,unsigned(size));
+            check(unsigned(value),size);
+            check(std::int64_t(value),unsigned(size));
+            check(std::uint64_t(unsigned(value)),size);
+        }
+    }
+    for (unsigned shift=0; shift<64; ++shift)
+    {
+        const auto size=std::uint64_t{1}<<shift;
+        check(INT64_MIN,size);check(INT64_MAX,size);check(UINT64_MAX,size);
+    }
+    for (const int size : {3,7,15,17,129})
+        for (const int value : {INT_MIN,-65537,-1,0,1,65537,INT_MAX})
+        {
+            CHECK(dimensionRemainder(value,size) == value%size);
+            CHECK(dimensionRemainder(value,unsigned(size)) == value%unsigned(size));
+        }
+    static_assert(powerOfTwoRemainder(-129,128)==-1);
+    static_assert(powerOfTwoRemainder(-129,128u)==127u);
+}
+}
+
+TEST_SUITE("FieldGradient")
+{
+TEST_CASE("Generator torus masks retain general and mutated grid wrapping")
+{
+    static_assert(sizeof(MapGeneration::Torus)==2*sizeof(int), "Script budget accounting must stay unchanged");
+    for (const int w : {1,2,7,16,129}) for (const int h : {1,3,8,17})
+    {
+        MapGeneration::Torus torus(w,h);
+        const auto check = [&] {
+            for (const int v : {INT_MIN, -65537, -129, -1, 0, 1, 129, 65537, INT_MAX})
+            {
+                const auto wrap = [](int value,int size) {
+                    const int r=value%size;return r<0?r+size:r;
+                };
+                CHECK(torus.x(v)==wrap(v,torus.w));
+                CHECK(torus.y(v)==wrap(v,torus.h));
+                CHECK(torus.remainderX(v)==v%torus.w);
+                CHECK(torus.remainderY(unsigned(v))==unsigned(v)%torus.h);
+            }
+        };
+        check();torus.w=13;torus.h=16;check();
+    }
 }
 }

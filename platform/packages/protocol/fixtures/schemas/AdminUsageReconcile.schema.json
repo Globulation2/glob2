@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminUsageReconcile",
+  "title": "AdminUsageReconcile",
+  "type": "object",
+  "required": [
+    "evidence",
+    "usage"
+  ],
+  "properties": {
+    "evidence": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "usage": {
+      "type": "object",
+      "required": [
+        "input",
+        "cachedInput",
+        "output"
+      ],
+      "properties": {
+        "input": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cachedInput": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cacheWrite": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

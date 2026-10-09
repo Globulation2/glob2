@@ -1,3 +1,6 @@
+import { MessageError } from '../i18n.tsx';
+import { message as sourceMessage } from '../i18n.tsx';
+import { t, useLocale } from '../i18n.tsx';
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -55,6 +58,7 @@ export type ViewportProps = {
   onScene?: (scene: SceneView) => void;
 };
 export function MeshPreview(props: ViewportProps) {
+  useLocale();
   const canvas = useRef<HTMLCanvasElement>(null),
     latest = useRef(props),
     scene = useRef<SceneView | null>(null);
@@ -109,7 +113,7 @@ export function MeshPreview(props: ViewportProps) {
       pointers.current.clear();
       pen.current = null;
       setReady(false);
-      setError('The 3D canvas was interrupted. Your painting is safe.');
+      setError(sourceMessage('The 3D canvas was interrupted. Your painting is safe.'));
     };
     const restored = () => setAttempt((n) => n + 1);
     target.addEventListener('webglcontextlost', lost);
@@ -124,7 +128,7 @@ export function MeshPreview(props: ViewportProps) {
     });
     async function start() {
       if (!gl)
-        throw new Error(
+        throw new MessageError(
           'Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.',
         );
       const { mesh, view } = await loadMesh(asset);
@@ -136,11 +140,11 @@ export function MeshPreview(props: ViewportProps) {
           gl.VERTEX_SHADER,
           // Fur shells push the body outward along the normal and slightly
           // nearer, as the game's tile renderer does.
-          `#version 300 es\nin vec3 position;in vec3 normal;in vec2 uv;out vec3 n;out vec2 tex;uniform float shell;uniform vec2 fur;uniform float shellDepth;void main(){gl_Position=vec4(position.xy+normalize(normal).xy*shell*fur,position.z-shell*shellDepth,1.);n=normal;tex=uv;}`,
+          `#version 300 es\nin vec3 position;in vec3 normal;in vec2 uv;in vec2 detailUV;out vec3 n;out vec2 tex;out vec2 detail;uniform float shell;uniform vec2 fur;uniform float shellDepth;void main(){gl_Position=vec4(position.xy+normalize(normal).xy*shell*fur,position.z-shell*shellDepth,1.);n=normal;tex=uv;detail=detailUV;}`,
         ],
         [
           gl.FRAGMENT_SHADER,
-          `#version 300 es\nprecision highp float;\n#define SKIN_TEXTURE texture\nin vec3 n;in vec2 tex;out vec4 color;uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec4 shaded=skinShadeAtlas(paint,material,region,n,tex,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
+          `#version 300 es\nprecision highp float;\n#define SKIN_TEXTURE texture\nin vec3 n;in vec2 tex;in vec2 detail;out vec4 color;uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;uniform float shell;\n${SKIN_MATERIAL_GLSL}\nvoid main(){vec4 shaded=skinShadeAtlas(paint,material,region,n,tex,detail,shell);if(shaded.a<.5)discard;color=vec4(shaded.rgb,1.);}`,
         ],
       ] as const) {
         const shader = gl.createShader(kind)!;
@@ -148,12 +152,12 @@ export function MeshPreview(props: ViewportProps) {
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-          throw new Error('The 3D shader could not compile.');
+          throw new MessageError('The 3D shader could not compile.');
         gl.attachShader(program, shader);
       }
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS))
-        throw new Error('The 3D canvas could not start.');
+        throw new MessageError('The 3D canvas could not start.');
       gl.useProgram(program);
       const buffer = (kind: number, values: ArrayBufferView) => {
         const b = gl.createBuffer()!;
@@ -175,6 +179,10 @@ export function MeshPreview(props: ViewportProps) {
       const loc = gl.getAttribLocation(program, 'uv');
       gl.enableVertexAttribArray(loc);
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      buffer(gl.ARRAY_BUFFER, mesh.detailUV ?? mesh.uv);
+      const detailLoc = gl.getAttribLocation(program, 'detailUV');
+      gl.enableVertexAttribArray(detailLoc);
+      gl.vertexAttribPointer(detailLoc, 2, gl.FLOAT, false, 0, 0);
       buffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indices);
       const textures = [0, 1].map((unit) => {
         const t = gl.createTexture()!;
@@ -300,7 +308,7 @@ export function MeshPreview(props: ViewportProps) {
       requestDraw();
     }
     void start().catch((e: unknown) => {
-      if (!disposed) setError(e instanceof Error ? e.message : 'Preview unavailable.');
+      if (!disposed) setError(e instanceof Error ? e.message : t('Preview unavailable.'));
     });
     return () => {
       disposed = true;
@@ -326,7 +334,7 @@ export function MeshPreview(props: ViewportProps) {
       if (current.camera.game) return;
       current.onCamera?.({
         ...current.camera,
-        zoom: Math.max(0.45, Math.min(4, current.camera.zoom * Math.exp(-event.deltaY * 0.001))),
+        zoom: Math.max(0.225, Math.min(4, current.camera.zoom * Math.exp(-event.deltaY * 0.001))),
       });
     };
     target.addEventListener('wheel', wheel, { passive: false });
@@ -369,7 +377,8 @@ export function MeshPreview(props: ViewportProps) {
       <canvas
         ref={canvas}
         aria-label={
-          props.label ?? `Paint directly on the 3D ${props.model.name.toLowerCase()} model`
+          props.label ??
+          t('Paint directly on the 3D {value0} model', { value0: props.model.name.toLowerCase() })
         }
         onContextMenu={(e) => e.preventDefault()}
         onPointerDown={(e) => {
@@ -429,7 +438,7 @@ export function MeshPreview(props: ViewportProps) {
             if (!props.camera.game && before > 1)
               props.onCamera?.({
                 ...props.camera,
-                zoom: Math.max(0.45, Math.min(4, (props.camera.zoom * after) / before)),
+                zoom: Math.max(0.225, Math.min(4, (props.camera.zoom * after) / before)),
               });
           } else if (gesture.current) {
             const previous = gesture.current.last;
@@ -470,14 +479,14 @@ export function MeshPreview(props: ViewportProps) {
         )}
       {!ready && !error && (
         <div className="skin-canvas-message" role="status">
-          Preparing your model…
+          {t('Preparing your model…')}
         </div>
       )}
       {error && (
         <div className="skin-canvas-message" role="alert">
-          <p>{props.interactive === false ? 'Preview unavailable' : error}</p>
+          <p>{props.interactive === false ? t('Preview unavailable') : error}</p>
           {props.interactive !== false && (
-            <button onClick={() => setAttempt((n) => n + 1)}>Retry 3D canvas</button>
+            <button onClick={() => setAttempt((n) => n + 1)}>{t('Retry 3D canvas')}</button>
           )}
         </div>
       )}

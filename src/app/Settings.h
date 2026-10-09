@@ -6,6 +6,7 @@
 #include "Header.h"
 #include "ExperimentalFeatures.h"
 #include <string>
+#include <cstdint>
 #include <map>
 #include "IntBuildingType.h"
 class BuildingType;
@@ -96,7 +97,7 @@ public:
 	/// hosts (Settings > Experiments). Saved as comma-separated keys; a key this
 	/// build no longer knows is dropped on load.
 	ExperimentSet experiments;
-	/// Simulation speed preset. Zero is the original 25 ticks/second;
+	/// Simulation speed preset. Zero is the normal 30 ticks/second;
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
     std::string interfacePresentation = "automatic";
@@ -145,8 +146,10 @@ public:
 		GAME_SPEED_MAXIMUM = 10,
 	};
 
-	/// Milliseconds allotted to each simulation step for the selected preset.
+	/// Rounded milliseconds for presentation; simulation pacing uses nanoseconds.
 	int getGameSpeedStepDuration(void) const;
+	/// Fractional tick interval, accumulated before rounding host waits.
+	std::uint64_t getGameSpeedStepDurationNs() const;
 	/// Number of simulation steps between rendered frames for the selected preset.
 	int getGameSpeedRenderInterval(void) const;
 	/// Human-readable multiplier used by settings, in-game options and notifications.

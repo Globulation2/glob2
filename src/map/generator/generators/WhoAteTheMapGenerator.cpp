@@ -81,7 +81,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	int original = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const double x = (i % t.w - cx) / t.w, y = (i / t.w - cy) / t.h;
+		const double x = (t.remainderX(i) - cx) / t.w, y = (i / t.w - cy) / t.h;
 		land[i] = std::hypot(x, y) < radius(std::atan2(y, x));
 		original += land[i];
 	}
@@ -142,7 +142,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			for (const Bite &b : bites)
 			{
 				// The mouth's rotation is fixed for the whole raster, not recalculated per tile.
-				const double dx = i % t.w - b.frame.x, dy = i / t.w - b.frame.y;
+				const double dx = t.remainderX(i) - b.frame.x, dy = i / t.w - b.frame.y;
 				const ShapePoint p{dx * b.cosine + dy * b.sine, -dx * b.sine + dy * b.cosine};
 				bool cut = p.x * p.x / (b.depth * b.depth) + p.y * p.y / (b.width * b.width) <= 1;
 				for (const Tooth &tooth : b.teeth)
@@ -211,13 +211,13 @@ std::vector<int> spacedPlots(const Torus &t, const std::vector<unsigned char> &u
 			bool clear = true;
 			for (int dy = 0; dy < 6; ++dy)
 				for (int dx = 0; dx < 6; ++dx)
-					clear &= !used[t.at(i % t.w + dx, i / t.w + dy)];
+					clear &= !used[t.at(t.remainderX(i) + dx, i / t.w + dy)];
 			if (!clear)
 				continue;
 			++counts[labels[i]];
 			for (int dy = 0; dy < 6; ++dy)
 				for (int dx = 0; dx < 6; ++dx)
-					used[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+					used[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 		}
 	return counts;
 }
@@ -251,7 +251,7 @@ IslandCapacity islandCapacity(const Layout &L)
 	for (int i = 0; i < t.size(); ++i)
 		for (int dy = 0; dy <= 1; ++dy)
 			for (int dx = 0; dx <= 1; ++dx)
-				sand[i] |= L.terrain[t.at(i % t.w + dx, i / t.w + dy)] == SAND;
+				sand[i] |= L.terrain[t.at(t.remainderX(i) + dx, i / t.w + dy)] == SAND;
 	const auto dw = stepsFrom(t, water), ds = stepsFrom(t, sand);
 	for (int i = 0; i < t.size(); ++i)
 		if (grass[i])
@@ -285,7 +285,7 @@ std::vector<int> chooseSites(const Layout &L, GenerationContext &context)
 	const auto fertility = meanFertilityField(cropGrowthField(L.terrain, t), t, 12);
 	std::vector<int> candidates;
 	for (int i = 0; i < t.size(); ++i)
-		if (room[t.at(i % t.w - 6, i / t.w - 6)] && fertility[i] >= 1900 &&
+		if (room[t.at(t.remainderX(i) - 6, i / t.w - 6)] && fertility[i] >= 1900 &&
 			sizes[labels[i]] >= 900 && islands.capacity[labels[i]] > 0)
 			candidates.push_back(i);
 	if (candidates.empty())
@@ -334,7 +334,7 @@ std::vector<int> chooseSites(const Layout &L, GenerationContext &context)
 						continue;
 					int direct = t.size();
 					for (int s : sites)
-						direct = std::min(direct, t.dist2(i % t.w, i / t.w, s % t.w, s / t.w));
+						direct = std::min(direct, t.dist2(t.remainderX(i), i / t.w, t.remainderX(s), s / t.w));
 					if (direct < separation * separation)
 						continue;
 					const int d = std::min(distance[i], int(std::sqrt(double(direct))) * 2);
@@ -400,13 +400,13 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	if (!settleColonies(
 			game, context, "eaten-settlement", [&](int) { return grass; },
-			[&](int k) { return MapGeneratorPoint(sites[k] % t.w - 2, sites[k] / t.w - 2); }))
+			[&](int k) { return MapGeneratorPoint(t.remainderX(sites[k]) - 2, sites[k] / t.w - 2); }))
 		return false;
 	const auto bare = walkableTiles(map);
 	const auto labels = connectedRegions(bare, t.w, t.h, true, GridNeighbors::Eight);
@@ -417,7 +417,7 @@ bool generate(Game &game, GenerationContext &context)
 		for (int dy = -14; dy <= 14; ++dy)
 			for (int dx = -14; dx <= 14; ++dx)
 			{
-				const int i = t.at(s % t.w + dx, s / t.w + dy);
+				const int i = t.at(t.remainderX(s) + dx, s / t.w + dy);
 				if (dx * dx + dy * dy <= 14 * 14)
 					ambient[i] = 0;
 				if (dx * dx + dy * dy < 6 * 6)
@@ -431,21 +431,21 @@ bool generate(Game &game, GenerationContext &context)
 		for (int type : {WHEAT, WOOD})
 		{
 			const auto kit =
-				growPatchesNear(map, t, s % t.w, s / t.w, 20, type, type == WHEAT ? 100 : 65,
+				growPatchesNear(map, t, t.remainderX(s), s / t.w, 20, type, type == WHEAT ? 100 : 65,
 								[&](int i)
 								{
 									return !reserved[i] && walk[i] >= 0 && walk[i] <= 24 &&
-										   fertility.at(i % t.w, i / t.w) > 0 &&
-										   clearGround(map, i % t.w, i / t.w);
+										   fertility.at(t.remainderX(i), i / t.w) > 0 &&
+										   clearGround(map, t.remainderX(i), i / t.w);
 								});
 			context.telemetry.measure(type == WHEAT ? "eaten.home.wheat" : "eaten.home.wood",
 									  kit.tiles, k);
 		}
-		plantOpenHomeKit(map, t, context, {double(s % t.w), double(s / t.w)}, 0, 12, 0, 0, 1,
+		plantOpenHomeKit(map, t, context, {double(t.remainderX(s)), double(s / t.w)}, 0, 12, 0, 0, 1,
 						 [&](int i)
 						 {
 							 return !reserved[i] && walk[i] >= 0 && walk[i] <= 24 &&
-									clearGround(map, i % t.w, i / t.w);
+									clearGround(map, t.remainderX(i), i / t.w);
 						 });
 	}
 	context.stage = "wooded heartland";
@@ -454,17 +454,17 @@ bool generate(Game &game, GenerationContext &context)
 	// Finite inland reserves form woods too: fertility alone would paint only a coastal fringe.
 	std::vector<int> woodOrder;
 	for (int i = 0; i < t.size(); ++i)
-		if (ambient[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w))
+		if (ambient[i] && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w))
 			woodOrder.push_back(i);
 	std::stable_sort(woodOrder.begin(), woodOrder.end(),
 					 [&](int a, int b) { return patch[a] > patch[b]; });
 	const int woodBudget =
 		std::min(int(woodOrder.size() * 0.58), int(scaledCount(woodOrder.size() / 5, o.wood)));
 	for (int j = 0; j < woodBudget; ++j)
-		map.setResourceByIndex(woodOrder[j] % t.w, woodOrder[j] / t.w, WOOD, 1);
+		map.setResourceByIndex(t.remainderX(woodOrder[j]), woodOrder[j] / t.w, WOOD, 1);
 	furnishGround(
 		map, t, context, fertility,
-		[&](int i) { return ambient[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w); },
+		[&](int i) { return ambient[i] && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); },
 		[&](int i) { return float(split[i]); }, [&](int i) { return patch[i]; },
 		[&](int area)
 		{
@@ -500,7 +500,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		return L.failure;
 	const auto &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
-		if (game.map.getUMTerrain(i % t.w, i / t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(t.remainderX(i), i / t.w) != L.terrain[i])
 			return "Settlement changed the bitten coastline or ponds.";
 	const auto buildable = buildableTiles(game.map);
 	const auto anchors = buildAnchors(t, buildable);
@@ -530,11 +530,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			for (const auto &d : kCardinalSteps)
 			{
 				const int type =
-					game.map.getResource(t.x(i % t.w + d[0]), t.y(i / t.w + d[1])).type;
-				const int j = t.at(i % t.w + d[0], i / t.w + d[1]);
-				if (type == WHEAT && wheat.insert(j).second && fertility.at(j % t.w, j / t.w) > 0)
+					game.map.getResource(t.x(t.remainderX(i) + d[0]), t.y(i / t.w + d[1])).type;
+				const int j = t.at(t.remainderX(i) + d[0], i / t.w + d[1]);
+				if (type == WHEAT && wheat.insert(j).second && fertility.at(t.remainderX(j), j / t.w) > 0)
 					++fertileWheat;
-				if (type == WOOD && wood.insert(j).second && fertility.at(j % t.w, j / t.w) > 0)
+				if (type == WOOD && wood.insert(j).second && fertility.at(t.remainderX(j), j / t.w) > 0)
 					++fertileWood;
 			}
 		}
@@ -564,7 +564,7 @@ GeneratorDefinition whoAteTheMapDefinition()
 	return {"who-ate-the-map",
 			66,
 			"Who Ate the Map?",
-			1,
+			2,
 			false,
 			{GeneratorControl::choice("appetite", "Appetite",
 									  {"A Little Nibble", "Hungry", "Who Ate the Map?"}, 1)

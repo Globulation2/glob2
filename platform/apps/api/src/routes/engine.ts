@@ -45,6 +45,7 @@ const SHA256 = /^[0-9a-f]{64}$/;
 /** Content types an agent may store (engine-agent blobs.ts CONTENT_TYPES). */
 const AGENT_CONTENT_TYPES = new Set([
   'application/x-glob2-map',
+  'application/x-glob2-generator',
   'application/x-glob2-save',
   'application/x-glob2-match-record',
   'application/x-glob2-replay',
@@ -83,14 +84,18 @@ export async function engineAgentRoutes(app: FastifyInstance): Promise<void> {
 
   function actAs(key: EngineAgentKey, agentId: string): void {
     if (key.agentId && key.agentId !== agentId) {
-      throw apiError('forbidden', `This key belongs to engine agent ${key.agentId}.`);
+      throw apiError('forbidden', 'This key belongs to engine agent {p0}.', undefined, {
+        p0: String(key.agentId),
+      });
     }
   }
 
   function leaseToken(request: FastifyRequest): string {
     const value = request.headers[ENGINE_LEASE_HEADER];
     if (typeof value !== 'string' || !/^[A-Za-z0-9_-]{32,128}$/.test(value)) {
-      throw apiError('unauthenticated', `Send the job's lease token in ${ENGINE_LEASE_HEADER}.`);
+      throw apiError('unauthenticated', "Send the job's lease token in {p0}.", undefined, {
+        p0: String(ENGINE_LEASE_HEADER),
+      });
     }
     return value;
   }

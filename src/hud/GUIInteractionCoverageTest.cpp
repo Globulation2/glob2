@@ -21,7 +21,7 @@ Uint64 renderPanel(GameGUI& gui)
     gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
     gfx->setClipRect();
     gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(0,0,0));
-    gui.extractScene(gui.frameScene);
+    gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
     gui.drawUnitInfos(); gfx->nextFrame();
     auto* frame=gfx->completedFrame(); REQUIRE(frame);
     Uint64 hash=1469598103934665603ull;
@@ -77,7 +77,7 @@ TEST_SUITE("GUIInteractionCoverage")
             world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
             auto* building=world.game.addBuilding(8,8,typeId,0,0,0);REQUIRE(building);
             auto& gui=world.gui;gui.localTeamNo=0;gui.localPlayer=0;gui.localTeam=world.team;
-            gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.extractScene(gui.frameScene);
+            gui.setSelection(GameGUI::BUILDING_SELECTION,building);gui.prepareLocalPresentation(gui.frameScene);
             auto& panel=gui.frameScene.panels.building;REQUIRE(panel.valid);
             const auto checksum=world.checksum();
             const int rowY=YPOS_BASE_BUILDING+YOFFSET_NAME+YOFFSET_ICON+YOFFSET_B_SEP+YOFFSET_INFOS;
@@ -86,14 +86,24 @@ TEST_SUITE("GUIInteractionCoverage")
                 gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
                 gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
             };
-            // Render valid visit clocks into the extracted presentation snapshot only.
+            // Counterfactual immutable records exercise visit clocks without changing the simulation.
+            std::array<SnapshotUnit,3> visits{};
+            std::array<UnitRef,3> visitRefs{};
+            std::array<Uint32,3> visitIndices{0,1,2};
+            for (unsigned i=0;i<visits.size();++i) {
+                visits[i].identity=UnitRef{Uint16(i),1}; visits[i].gid=i;
+                visits[i].displacement=UnitState::DIS_INSIDE; visitRefs[i]=visits[i].identity;
+            }
+            gui.frameScene.entities.units=visits; gui.frameScene.entities.unitIndex=visitIndices;
+            // Render valid visit clocks into the presentation snapshot only.
             // Calling the real row helper without the outer panel clip exposes overflow.
             for(bool smooth : {false,true})for(int duration : {feed,heal,training})
                 for(int remaining : {duration,0})for(int delta : {0,127,255})
             {
                 CAPTURE(smooth);CAPTURE(duration);CAPTURE(remaining);CAPTURE(delta);
                 globals->settings.smoothProgressIndicators=smooth;
-                panel.insideUnits={{true,-remaining,delta}};
+                visits[0].insideTimeout=-remaining; visits[0].delta=delta;
+                panel.insideUnits=std::span<const UnitRef>(visitRefs).first(1);
                 begin();int y=rowY;unsigned rowHeight=0;
                 gui.drawBuildingTimeToLeaveBar(&panel,building->type,y,rowHeight);gfx->nextFrame();
                 CHECK(y==rowY+(instant?0:YOFFSET_PROGRESS_BAR));
@@ -113,7 +123,11 @@ TEST_SUITE("GUIInteractionCoverage")
             }
             // Full actual panel capture and actual production-slider click, with
             // both a present row and the existing all-zero/no-row behavior.
-            panel.insideUnits={{true,-feed,64},{true,-heal,127},{true,-training,0}};panel.unitsInside=3;
+            SnapshotBuilding panelRecord=panel.state(); panelRecord.inside.count=3; panel.record=&panelRecord;
+            visits[0].insideTimeout=-feed; visits[0].delta=64;
+            visits[1].insideTimeout=-heal; visits[1].delta=127;
+            visits[2].insideTimeout=-training; visits[2].delta=0;
+            panel.insideUnits=visitRefs;
             begin();gui.drawBuildingInfos();gfx->nextFrame();
             REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/(instant?"instant-services.bmp":"mixed-service-progress.bmp")).string().c_str()));
             const int productionY=rowY+(instant?0:YOFFSET_PROGRESS_BAR)+YOFFSET_B_SEP+YOFFSET_RESOURCE_SECTION_PAD+YOFFSET_SWARM_PROGRESS_BAR;
@@ -137,7 +151,7 @@ TEST_SUITE("GUIInteractionCoverage")
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
             gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
-            gui.extractScene(gui.frameScene);
+            gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
             gui.drawChoiceInfoPanel("inn"); gfx->nextFrame();
             auto* frame=gfx->completedFrame(); REQUIRE(frame);
             Uint64 hash=1469598103934665603ull;
@@ -199,7 +213,7 @@ TEST_SUITE("GUIInteractionCoverage")
             const auto before=world.checksum();
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
-            if(extract)gui.extractScene(gui.frameScene);
+            if(extract) { gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene); }
             gui.drawBuildingInfos();gfx->nextFrame();
             CHECK(world.checksum()==before);REQUIRE(gfx->completedFrame());
         };
@@ -330,7 +344,7 @@ TEST_SUITE("GUIInteractionCoverage")
             gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
             gfx->setClipRect();
             gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(24,35,28));
-            gui.extractScene(gui.frameScene);
+            gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
             gui.drawBuildingInfos();
             gfx->nextFrame();
             CHECK(world.checksum()==before);
@@ -384,7 +398,7 @@ TEST_SUITE("GUIInteractionCoverage")
         auto* inn=world.addBuilding("inn",4,4);
         gui.init();
         gui.setSelection(GameGUI::BUILDING_SELECTION,inn);
-        gui.drawAll(0); // The menu describes the scene currently drawn.
+        glob2test::drawGUI(gui,0); // The menu describes the scene currently drawn.
         const int original=inn->maxUnitWorking;
         const int content=(GAME_GUI_RIGHT_MENU_WIDTH-128)/2;
         // Real desktop sidebar coordinates: worker bar at y=292..308,
@@ -438,12 +452,38 @@ TEST_SUITE("GUIInteractionCoverage")
         CHECK(gui.orderQueue.empty());
     }
 
+    TEST_CASE("initial camera survives waiting for the first presentation [display]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.width=640,.height=480});
+        glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& gui=w.gui;
+        gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=w.team;
+        w.team->startPosX=31; w.team->startPosY=31;
+        gui.adjustInitialViewport();
+        const int x=gui.viewportX, y=gui.viewportY;
+        PresentationFrame unavailable;
+        gui.setPublishedScene(&unavailable);
+        gui.updateCamera();
+        // The client scrolling loop copies these coordinates back even while
+        // asynchronous extraction has not supplied map dimensions yet.
+        CHECK(gui.camera.tileX()==x);
+        CHECK(gui.camera.tileY()==y);
+        gui.viewportX=gui.camera.tileX(); gui.viewportY=gui.camera.tileY();
+        gui.setPublishedScene(nullptr);
+        gui.prepareLocalPresentation();
+        gui.updateCamera();
+        CHECK(gui.viewportX==x);
+        CHECK(gui.viewportY==y);
+    }
+
     TEST_CASE("home keyboard action wraps the camera and script messages preserve history [display]")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.width=640,.height=480});
         glob2test::HeadlessGame w(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true,.header=true});
         auto& gui=w.gui; gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=w.team;
         w.team->startPosX=31; w.team->startPosY=31;
+        gui.game.snapshots().invalidateBoundary();
+        gui.prepareLocalPresentation();
         gui.keyboardManager.getKeyboardShortcuts().clear();
         SDL_KeyboardEvent symbol{}; symbol.key=SDLK_F9;
         KeyboardShortcut shortcut; shortcut.addKeyPress(KeyPress(symbol,true)); shortcut.setAction(GameGUIKeyActions::GoToHome);
@@ -532,7 +572,7 @@ TEST_CASE("resource inspectors show infinity only for stocked infinite yields [d
     gui.setSelection(GameGUI::RESOURCE_SELECTION,unsigned(index));
     auto* gfx=globals->gfx;
     const auto inspect=[&](const std::string& expected) {
-        gui.extractScene(gui.frameScene);
+        gui.game.snapshots().invalidateCatalog(); gui.prepareLocalPresentation(gui.frameScene);
         const auto info=gui.touch->resourceInfo();REQUIRE(info.has_value());CHECK(info->amount==expected);
         gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);gfx->setClipRect();
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(0,0,0));

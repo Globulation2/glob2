@@ -137,11 +137,12 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
         planner = function(self.combat, "void Maxima::plan_offense")
         self.assertIn("get_building(tactical_mission.flagId)", planner)
         # Warriors already enrolled on the live flag stay eligible for it.
-        self.assertRegex(planner, r"tactical_warrior_available\([^)]*, flag,")
+        self.assertIn("tactical_warrior_available(runtime.observation(),warrior, flag,", planner)
         eligibility = function(
             self.combat, "bool tactical_warrior_available"
         )
-        self.assertIn("warrior->attachedBuilding==continuingFlag", eligibility)
+        self.assertIn("attached=world.building(warrior->attached)", eligibility)
+        self.assertIn("if(continuingFlag && attached==continuingFlag)", eligibility)
 
     def test_preemptive_defense_remains_active_under_pressure(self) -> None:
         update = function(
@@ -158,7 +159,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
 
         # Differential ownership preserves unrelated pre-existing guard areas.
         self.assertIn("preemptive_guard_tiles.find(*tile)", update)
-        self.assertIn("if(!map.is_guard_area(*tile%w, *tile/w))", update)
+        self.assertIn("if(!map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w))", update)
         self.assertNotIn("preemptive_diagnostics", function(
             self.state,
             "void Maxima::saveDirector",

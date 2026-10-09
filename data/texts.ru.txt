@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Завершите вход в браузере. После этого игра продолжится автоматически.
 [hub browser did not open]
-
+Браузер не открылся. Откройте страницу входа, чтобы продолжить.
 [hub compare code %0]
-
+Если страница попросит, убедитесь, что на ней показан код %0.
 [hub code copied]
-
+Код скопирован
 [settings Finish in your browser. The game continues by itself.]
-
+Завершите действие в браузере. Игра продолжится автоматически.
 [music set]
-
+Музыкальный набор
 [random music set]
-
+Случайный для каждой игры
 [playing music set %0]
-
+Сейчас играет: %0
 [music set failed]
-
+Не удалось загрузить этот музыкальный набор.
 [settings Music set]
-
+Музыкальный набор
 [settings Random each match]
-
+Выберите «Случайный», чтобы выбирать музыку в начале каждой игры.
 [settings Edge scrolling]
-
+Прокрутка у края экрана
 [settings Edge scrolling in fullscreen]
-
+Прокрутка у края в полноэкранном режиме
 [settings Edge scrolling in windowed mode]
-
+Прокрутка у края в оконном режиме
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Прокручивать карту игры и редактора, когда мышь достигает края окна.
 [AI strategy]
 Стратегия ИИ
 [start recording]
@@ -4625,9 +4625,9 @@ OpenGL недоступен в этой сборке.
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Записывайте игры в видео MP4 со звуком. Для записи нужен FFmpeg с кодировщиками libx264 и AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Записывайте игры как видео MP4 со звуком.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Запись ведётся в полном разрешении изображения с частотой 30 кадров в секунду.
 [settings FFmpeg is ready.]
 FFmpeg готов.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [Units can die]
 Юниты смертны
 [Upgrades]
-
+Улучшения
 [No stockpile]
 Нет
 [No glass cannon]
@@ -5193,7 +5193,7 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Юниты погибают, когда здоровье кончается. Выключите, чтобы оно не опускалось ниже 1.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Юниты повышают уровень в учебных зданиях, а здания можно улучшать. При отключении ремонт остаётся доступным.
 [stat group work]
 Время рабочих
 [stat worker time]
@@ -5309,235 +5309,235 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [stat view by place]
 По месту
 [AI Library]
-
+Библиотека ИИ
 [Authoring guide]
-
+Руководство для авторов
 [Beginner-friendly]
-
+Для начинающих
 [Defensive]
-
+Оборонительный
 [Discover]
-
+Обзор
 [Download & install]
-
+Скачать и установить
 [Downloading AI…]
-
+Загрузка ИИ…
 [Expansion]
-
+Развитие
 [Experimental]
-
+Экспериментальный
 [Favourite]
-
+В избранное
 [Favourited]
-
+В избранном
 [Favourites]
-
+Избранное
 [Got it]
-
+Понятно
 [How AIs work]
-
+Как работают ИИ
 [Install selected version]
-
+Установить выбранную версию
 [Installed]
-
+Установлено
 [Invalid AI catalogue response]
-
+Некорректный ответ каталога ИИ
 [JavaScript API reference]
-
+Справочник API JavaScript
 [Like]
-
+Нравится
 [Liked]
-
+Вам нравится
 [Loading AI library…]
-
+Загрузка библиотеки ИИ…
 [Most downloaded]
-
+Самые скачиваемые
 [Most liked]
-
+Больше всего отметок «Нравится»
 [Newest]
-
+Новейшие
 [No AIs match these filters.]
-
+Нет ИИ, соответствующих этим фильтрам.
 [Not validated for this game version]
-
+Не проверено для этой версии игры
 [Open AI Library]
-
+Открыть библиотеку ИИ
 [Open AI page]
-
+Открыть страницу ИИ
 [Passed compatibility checks]
-
+Проверки совместимости пройдены
 [Recently updated]
-
+Недавно обновлённые
 [Rush]
-
+Быстрая атака
 [Search]
-
+Поиск
 [Share your AI]
-
+Поделиться своим ИИ
 [Show more]
-
+Показать ещё
 [Sign in through Online settings to like and favourite AIs.]
-
+Войдите через настройки онлайн-игры, чтобы отмечать понравившиеся ИИ и добавлять их в избранное.
 [Starter project]
-
+Начальный проект
 [downloads of this version]
-
+скачиваний этой версии
 [downloads]
-
+скачиваний
 [Update available]
-
+Доступно обновление
 [Browse versions]
-
+Просмотреть версии
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Скачайте ИИ и выберите его для компьютерного игрока в локальной игре. Установленные версии работают без сети. Обновления применяются к новым играм; сохранённые игры сохраняют исходный код.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Проверки совместимости не гарантируют безопасность или силу игры. Запускайте код только тех авторов, которым доверяете.
 [Back to results]
-
+Назад к результатам
 [music 2–5 minutes]
-
+2–5 минут
 [music 5–15 minutes]
-
+5–15 минут
 [music AI-generated]
-
+Создано ИИ
 [music All music]
-
+Вся музыка
 [music All open licences]
-
+Все открытые лицензии
 [music Any duration]
-
+Любая длительность
 [music Audition each mood for eight seconds]
-
+Прослушать каждое настроение по восемь секунд
 [music Back]
-
+Назад
 [music Browse]
-
+Обзор
 [music Building]
-
+Нарастание напряжения
 [music Calm]
-
+Покой
 [music Calm → Building → Combat]
-
+Покой → Нарастание напряжения → Бой
 [music Choose Building]
-
+Выбрать «Нарастание напряжения»
 [music Choose Calm]
-
+Выбрать «Покой»
 [music Choose Combat]
-
+Выбрать «Бой»
 [music Choose ZIP]
-
+Выбрать ZIP
 [music Choose a music file.]
-
+Выберите музыкальный файл.
 [music Combat]
-
+Бой
 [music Could not open this music set.]
-
+Не удалось открыть этот музыкальный набор.
 [music Credits, downloads and reporting]
-
+Авторы, скачивания и жалобы
 [music Downloading music…]
-
+Загрузка музыки…
 [music Export recovery files]
-
+Экспортировать файлы для восстановления
 [music Fade duration]
-
+Длительность плавного перехода
 [music File selection cancelled or failed.]
-
+Выбор файла отменён или завершился ошибкой.
 [music Import ZIP]
-
+Импортировать ZIP
 [music Import ZIP or three tracks]
-
+Импортировать ZIP или три композиции
 [music Import music]
-
+Импортировать музыку
 [music Import three tracks]
-
+Импортировать три композиции
 [music Includes AI-generated audio]
-
+Содержит звук, созданный ИИ
 [music Install]
-
+Установить
 [music Install selected]
-
+Установить выбранное
 [music Installed]
-
+Установлено
 [music Load more]
-
+Загрузить ещё
 [music Loading music…]
-
+Загрузка музыки…
 [music Most downloaded]
-
+Самые скачиваемые
 [music Most liked]
-
+Больше всего отметок «Нравится»
 [music Music decoding failed.]
-
+Не удалось декодировать музыку.
 [music Music download failed.]
-
+Не удалось скачать музыку.
 [music Music installed.]
-
+Музыка установлена.
 [music Music installed. It is now available in Audio settings.]
-
+Музыка установлена. Теперь она доступна в настройках звука.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Музыка ещё не сохранена окончательно. Повторите сохранение перед выходом.
 [music Music library]
-
+Музыкальная библиотека
 [music Music request failed.]
-
+Запрос музыки завершился ошибкой.
 [music Newest]
-
+Новейшие
 [music No community music installed yet. Import files or browse the online library.]
-
+Музыка сообщества ещё не установлена. Импортируйте файлы или откройте онлайн-библиотеку.
 [music No music found.]
-
+Музыка не найдена.
 [music Not AI-generated]
-
+Создано без ИИ
 [music Pause]
-
+Пауза
 [music Play]
-
+Воспроизвести
 [music Playback position]
-
+Позиция воспроизведения
 [music Preview]
-
+Предпросмотр
 [music Ready to import.]
-
+Готово к импорту.
 [music Remove]
-
+Удалить
 [music Reset to game behavior]
-
+Вернуть игровое поведение
 [music Retry saving]
-
+Повторить сохранение
 [music Saved.]
-
+Сохранено.
 [music Saving music…]
-
+Сохранение музыки…
 [music Search]
-
+Поиск
 [music Search title, artist, description…]
-
+Поиск по названию, исполнителю, описанию…
 [music Select for installation]
-
+Выбрать для установки
 [music Share music on the web]
-
+Поделиться музыкой в интернете
 [music Some catalogue entries could not be read.]
-
+Некоторые записи каталога не удалось прочитать.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Не удалось сохранить данные. Повторите попытку или экспортируйте файлы перед выходом.
 [music Tag]
-
+Метка
 [music Test crossfades]
-
+Проверить плавные переходы
 [music Up to 2 minutes]
-
+До 2 минут
 [music Use this music]
-
+Использовать эту музыку
 [music Validating music…]
-
+Проверка музыки…
 [settings Music library · Browse, install and import]
-
+Музыкальная библиотека · Обзор, установка и импорт
 [music Filters]
-
+Фильтры
 [music Leave without saving]
-
+Выйти без сохранения
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Импортируйте скачанный музыкальный ZIP или три композиции Opus. Метаданные и обложка берутся из композиции «Покой»; дополнительные файлы не нужны.
 [settings Target render FPS]
 Целевая частота кадров
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Кремнезём
 [Cotton]
 Хлопок
+[Jungle trees]
+Тропические деревья
+[Pine trees]
+Сосны
+[Dead trees]
+Мёртвые деревья
+[Ruins]
+Руины
+[Camp-site]
+Стоянка
+[Ancient debris]
+Древние обломки
+[Scrub]
+Кустарник
+[Tall grass]
+Высокая трава
+[Maize]
+Кукуруза
+[Potatoes]
+Картофель
+[Rice]
+Рис
+[Fish]
+Рыба
 [Reroll terrain look]
 Заново выбрать случайный вид ландшафта
 [boulders]
-
+Валуны
 [hedge]
-
+Живая изгородь
 [thicket]
-
+Заросли
 [ridge_rock]
-
+Гряда
 [outcrop]
-
+Выход породы
 [dirt]
-
+Грунт
 [clay]
-
+Глина
 [gravel]
-
+Гравий
 [flower_meadow]
-
+Цветочный луг
 [mud]
-
+Грязь
 [marsh]
-
+Болото
 [deep_snow]
-
+Глубокий снег
 [scree]
-
+Осыпь
 [dirt_track]
-
+Грунтовая дорога
 [boardwalk]
-
+Деревянный настил
 [lava]
-
+Лава
 [ember_field]
-
+Поле углей
 [loam]
-
+Суглинок
 [moss]
-
+Мох
 [spring_meadow]
-
+Весенний луг
 [deep_water]
-
+Глубокая вода
 [dark_water]
-
+Тёмная вода
 [void_hole]
-
+Провал
 [chasm]
-
+Пропасть
 [terrain group water]
-
+Вода
 [terrain group sand]
-
+Песок
 [terrain group grass]
-
+Трава
 [terrain group ice]
-
+Лёд
 [terrain group paths]
-
+Дороги
 [terrain group obstacles]
-
+Препятствия
 [terrain group ridges]
-
+Гряды
 [terrain group barren]
-
+Бесплодная земля
 [terrain group rough]
-
+Труднопроходимая земля
 [terrain group lava]
-
+Лава
 [terrain group fertile]
-
+Плодородная земля
 [terrain group deep-water]
-
+Глубокая вода
 [terrain group void]
-
+Пустота
 [experiment obstacle-terrain]
-
+Земля с препятствиями
 [experiment obstacle-terrain help]
-
+Добавляет в редактор карт валуны, живые изгороди и заросли. Наземные юниты не могут их пересечь, снаряды задерживаются, а летающие юниты пролетают над ними. Здания и ресурсы размещать нельзя.
 [experiment ridge-terrain]
-
+Скалистая земля
 [experiment ridge-terrain help]
-
+Добавляет в редактор карт каменные гряды и выходы породы. Наземные юниты не могут их пересечь, но башни стреляют поверх них, а летающие юниты пролетают. Здания и ресурсы размещать нельзя.
 [experiment barren-terrain]
-
+Бесплодная земля
 [experiment barren-terrain help]
-
+Добавляет в редактор карт грунт, глину, гравий и цветочные луга. На них можно строить здания, но на них и рядом ничего не растёт. Они не считаются берегом.
 [experiment rough-terrain]
-
+Труднопроходимая земля
 [experiment rough-terrain help]
-
+Добавляет в редактор карт грязь, болота, глубокий снег и осыпи. Наземные юниты движутся со скоростью около двух третей обычной. Здания и ресурсы размещать нельзя.
 [experiment path-terrain]
-
+Дорожное покрытие
 [experiment path-terrain help]
-
+Добавляет в редактор карт грунтовые дороги и деревянные настилы. Как на тропах, наземные юниты движутся вдвое быстрее и здания разрешены, но ничего не растёт.
 [experiment lava-terrain]
-
+Лавовая земля
 [experiment lava-terrain help]
-
+Добавляет в редактор карт лаву и поля углей. Наземные юниты не могут войти; пролетающие юниты быстро теряют здоровье. Снаряды пролетают поверх них.
 [experiment fertile-terrain]
-
+Плодородная земля
 [experiment fertile-terrain help]
-
+Добавляет в редактор карт суглинок, мох и весенние луга. Они позволяют строить здания и выращивать растения, а соседнюю землю орошают сильнее, чем вода.
 [experiment deep-water-terrain]
-
+Глубокая вода
 [experiment deep-water-terrain help]
-
+Добавляет в редактор карт глубокую и тёмную воду. Пловцы пересекают их медленнее, водоросли в них не растут, но они по-прежнему орошают соседние поля.
 [experiment void-terrain]
-
+Пустота
 [experiment void-terrain help]
-
+Добавляет в редактор карт провалы и пропасти. Никакие юниты, даже летающие, не могут их пересечь; снаряды останавливаются у края.
 [terrain group custom]
-
+Пользовательское
 [terrain group classic]
-
+Классическая земля
 [terrain rule walkable]
-
+Можно ходить
 [terrain rule swimmable]
-
+Можно плавать
 [terrain rule impassable]
-
+Непроходимо
 [terrain rule no flying]
-
+Полёт запрещён
 [terrain rule buildable]
-
+Можно строить
 [terrain rule speed %0]
-
+Скорость %0%
 [terrain rule crops grow]
-
+Растения растут
 [terrain rule irrigates]
-
+Орошает соседнюю землю
 [terrain rule stops nearby growth]
-
+Останавливает рост поблизости
 [terrain rule blocks shots]
-
+Блокирует выстрелы
 [terrain rule hurts walkers]
-
+Повреждает наземных юнитов
 [terrain rule hurts fliers]
-
+Повреждает летающих юнитов
 [terrain palette hint]
-
+Выберите кисть. У группы общие правила; её элементы отличаются только внешним видом.
 [terrain rule algae grow]
-
+Водоросли растут
 [terrain palette experiments hint]
-
+Выберите кисть. Новые группы земли появятся здесь после включения их экспериментов в «Настройки > Эксперименты».
 [brush valid on %0]
-
+Допустимо на: %0
 [brush valid nowhere]
-
+Нельзя разместить ни на одном типе земли этой карты
 [brush requires experiment %0]
-
+Требуется эксперимент %0
 [brush resources custom]
-
+Импортированные ресурсы
 [brush section zones]
-
+Зоны
 [brush section areas]
-
+Области
 [brush section tools]
-
+Инструменты
 [brush clearing area]
-
+Область расчистки
 [editor unsaved title]
-
+Несохранённые изменения
 [editor quit unsaved]
-
+Сохранить изменения этой карты перед выходом из редактора?
 [editor load unsaved]
-
+Сохранить изменения этой карты перед открытием другой?
 [editor save]
-
+Сохранить…
 [editor discard]
-
+Не сохранять
 [editor share never saved]
-
+Карты публикуются из сохранённого файла. Сначала сохраните эту карту, затем поделитесь ею.
 [editor share unsaved]
-
+На карте есть несохранённые изменения. При публикации загружается сохранённый файл.
 [editor save and share]
-
+Сохранить и поделиться…
 [editor share saved version]
-
+Поделиться сохранённой версией
 [editor reroll confirm]
-
+Задать каждой клетке земли новый случайный вид? Типы земли и игровой процесс сохранятся. Действие нельзя отменить.
 [editor reroll]
-
+Заново выбрать случайный вид
 [editor map saved]
-
+Карта сохранена
 [editor map shared]
-
+Карта опубликована в сети
 [editor save needs fertility]
-
+Для сохранения нужна карта плодородия, поэтому сохранение отменено. Нажмите OK для повторной попытки.
 [editor fertility stale]
-
+Карта плодородия устарела · Нажмите, чтобы обновить
 [No definition files found in %0]
-
+В %0 не найдены файлы определений
 [From device…]
-
+С устройства…
 [replace existing file %0?]
-
+Файл «%0» уже существует. Заменить его?
 [Replace]
-
+Заменить
 [Keep existing file]
-
+Оставить существующий файл
 [editor menu save]
-
+Сохранить карту
 [editor menu load]
-
+Открыть карту…
 [editor menu import terrain]
-
+Импортировать определения земли…
 [editor menu import resources]
-
+Импортировать определения ресурсов…
 [editor menu teams]
-
+Команды…
 [editor menu scenario]
-
+Сценарий…
 [editor menu reroll]
-
+Заново выбрать случайный вид местности…
 [editor menu file]
-
+Файл
 [editor menu map]
-
+Карта
 [no resource growth areas]
-
+Области без роста
 [dock flags and units]
-
+Флаги и юниты
 [dock minimap]
-
+Мини-карта
 [dock search brushes]
-
+Поиск кистей
 [dock brush shape %0]
-
+Форма кисти %0
 [dock brush]
-
+Кисть
 [dock brush paint]
-
+Рисовать
 [dock brush erase]
-
+Стирать
 [dock enable for map]
-
+Включить для этой карты
 [dock enable experiment %0]
-
+Включить %0
 [dock enable experiment hint %0]
-
+Включает эксперимент %0 только для этой карты.
 [dock area number]
-
+Область
 [dock building level]
-
+Уровень
 [dock unit level]
-
+Уровень юнита
 [dock no brushes match]
-
+Нет кистей, соответствующих запросу.
 [dock active team]
-
+Активная команда
 [dock team count %0]
-
+Команд на этой карте: %0
 [dock add team]
-
+Добавить команду
 [dock remove team]
-
+Удалить команду
 [dock nothing selected]
-
+Ничего не выбрано.
 [dock no properties]
-
+У этого объекта нет редактируемых свойств.
 [focus brush search]
-
+Поиск кистей
 [switch to resources view]
-
+Переключиться на вид ресурсов
 [dock resources base]
-
+Стандартные ресурсы
 [dock fertility stale]
-
+Карта плодородия устарела.
 [dock fertility refresh]
-
+Обновить плодородие
 [Enabled %0 for this map]
-
+Включено %0 для этой карты
 [editor fertility tap refresh]
-
+Карта плодородия устарела: нажмите, чтобы обновить
+[editor menu import set]
+Импортировать набор земли и ресурсов
+[editor menu set library]
+Библиотека наборов
+[set library loading]
+Загрузка наборов…
+[set library downloading]
+Загрузка конкретного выпуска…
+[set library connection error]
+Не удалось загрузить наборы. Проверьте подключение и повторите попытку.
+[set library hash error]
+Скачанный набор не прошёл проверку хеша.
+[set library package error]
+Некорректный пакет набора.
+[set library listing error]
+Некорректный список наборов.
+[set library release error]
+Некорректный выпуск набора.
+[set library selection help]
+Выберите элементы для импорта. Необходимые пользовательские ресурсы включаются автоматически.
+[set library empty]
+Наборы не найдены.
+[set library release help]
+Выберите конкретный выпуск для просмотра и импорта.
+[set library heading]
+Наборы земли и ресурсов
+[set library browse]
+Открыть онлайн-библиотеку
+[set library local]
+Содержимое карты, авторы и локальные изменения
+[set library local help]
+Редактируйте копию содержимого, сохранённую в этой карте. Сведения об авторах исходного выпуска сохраняются. Изменения не обновляют другие карты или онлайн-выпуск.
+[set library apply]
+Применить локальные изменения
+[set library updated]
+Локальное содержимое обновлено.
+[set library search hint]
+Поиск тем и авторов
+[set library search]
+Поиск
+[set library set]
+Набор
+[set library update help]
+Заменяет соответствующую размещённую землю и ресурсы, включая локальные изменения. Удалённые элементы остаются на старом выпуске. Количество существующих материалов ограничивается новой вместимостью.
+[set library import]
+Импортировать выбранные элементы
+[set library next]
+Следующая страница
+[set library back]
+Назад к результатам
+[set library license %0]
+Лицензия: %0
+[set library release %0]
+выпуск %0
+[set library replace %0]
+Заменить размещённые элементы выпуска %0
+[set library preview limit]
+Предпросмотр доступен для первых 64 элементов. Выбирать можно все элементы.
+[set library definition]
+Определение свойств (JSON)
+[set library artwork]
+Соответствие изображений земли (JSON)
+[settings Map generators]
+Генераторы карт
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Импортируйте пакет генератора, затем выберите его ландшафт при создании карты или игры.
+[settings Import map generator]
+Импортировать генератор карт
+[settings No custom map generators installed.]
+Пользовательские генераторы карт не установлены.
+[settings Replace package]
+Заменить пакет
+[settings Export package]
+Экспортировать пакет
+[settings Remove generator]
+Удалить генератор
+[settings Saving generator library…]
+Сохранение библиотеки генераторов…
+[settings Could not read generator package.]
+Не удалось прочитать пакет генератора.
+[settings Generator library saved.]
+Библиотека генераторов сохранена.
+[settings Storage could not be saved. The previous library is retained.]
+Не удалось сохранить данные. Предыдущая библиотека сохранена.
+[settings Waiting for file selection or storage…]
+Ожидание выбора файла или сохранения…
+[settings File selection is unavailable.]
+Выбор файла недоступен.
+[settings Package export is unavailable.]
+Экспорт пакетов недоступен.
+[stat band area upkeep]
+Содержание области

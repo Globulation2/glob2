@@ -81,8 +81,8 @@ def main():
     exported=OUT/'export.png'; run('--export-map-image',dest,'--output',exported)
     ew,eh,pixels=png(exported); assert (ew,eh)==(64,64)
     for color in COLORS[3:11]: assert bytes(color) in [pixels[i:i+3] for i in range(0,len(pixels),3)],color
-    # Whole-cell materials survive authoring, save/load, and image round trips.
-    # Their adjacency must not turn neighboring grass/water into legacy shores.
+    # Catalogue vertices survive authoring, save/load, and image round trips.
+    # Beaches reshape only grass/water contact: ice and road keep their vertices.
     materials=[0]*(64*64)
     for y in range(20,36):
         for x in range(12,20): materials[y*64+x]=12  # ice
@@ -212,7 +212,7 @@ def main():
     run(*args,'--image-seam-width',8,'--output',OUT/'protected.map','--json',OUT/'protected.json')
     protected=json.loads((OUT/'protected.json').read_text())['map']['colonies'][0]['start']
     assert (protected['x'],protected['y'])==(62,62)
-    # Shore rebuilding must not undo midpoint agreement, including the four corners.
+    # Laying beaches must not undo midpoint agreement, including the four corners.
     for orientation in range(3):
         corner=[2 if ((x<32) if orientation==0 else (x>=32) if orientation==1 else (x<32 and y<32)) else 0
                 for y in range(64) for x in range(64)]

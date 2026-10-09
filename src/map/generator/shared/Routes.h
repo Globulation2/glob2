@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Geometry.h"
 #include "Grid.h"
 #include <algorithm>
@@ -17,13 +19,15 @@ namespace MapGeneration
 inline ShapePoint midpointAcross(const Torus &t, ShapePoint a, ShapePoint b)
 {
 	const double dx = t.offsetX(int(a.x), int(b.x)), dy = t.offsetY(int(a.y), int(b.y));
-	return {std::fmod(a.x + dx / 2 + t.w, t.w), std::fmod(a.y + dy / 2 + t.h, t.h)};
+	return {::MapGeneration::Numeric::fmod(a.x + dx / 2 + t.w, t.w),
+			::MapGeneration::Numeric::fmod(a.y + dy / 2 + t.h, t.h)};
 }
 
 /// The straight-line distance between two sites, the short way round.
 inline double siteDistance(const Torus &t, ShapePoint a, ShapePoint b)
 {
-	return std::hypot(t.offsetX(int(a.x), int(b.x)), t.offsetY(int(a.y), int(b.y)));
+	return ::MapGeneration::Numeric::hypot(t.offsetX(int(a.x), int(b.x)),
+										   t.offsetY(int(a.y), int(b.y)));
 }
 
 /// Each site's `count` nearest other sites, nearest first (ties to the lower index), as pairs
@@ -36,15 +40,20 @@ inline std::vector<std::pair<int, int>> nearestPairs(const Torus &t,
 	std::vector<std::pair<int, int>> pairs;
 	for (size_t a = 0; a < sites.size(); ++a)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::vector<std::pair<double, int>> others;
 		for (size_t b = 0; b < sites.size(); ++b)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (b != a)
-				others.push_back({siteDistance(t, sites[a], sites[b]), int(b)});
+				others.push_back({siteDistance(t, sites.at(a), sites.at(b)), int(b)});
+		}
 		std::stable_sort(others.begin(), others.end());
 		for (int k = 0; k < count && k < int(others.size()); ++k)
 		{
-			const std::pair<int, int> pair{std::min(int(a), others[k].second),
-										   std::max(int(a), others[k].second)};
+			::MapGeneration::generationCheckpoint();
+			const std::pair<int, int> pair{std::min(int(a), others.at(k).second),
+										   std::max(int(a), others.at(k).second)};
 			if (std::find(pairs.begin(), pairs.end(), pair) == pairs.end())
 				pairs.push_back(pair);
 		}
@@ -60,12 +69,15 @@ inline std::vector<ShapePoint> waypointsAlong(const Torus &t, ShapePoint from, S
 {
 	std::vector<ShapePoint> points;
 	const double dx = t.offsetX(int(from.x), int(to.x)), dy = t.offsetY(int(from.y), int(to.y));
-	const double length = std::hypot(dx, dy);
+	const double length = ::MapGeneration::Numeric::hypot(dx, dy);
 	if (length <= 0 || spacing <= 0)
 		return points;
 	for (double along = fromGap; along <= length - toGap; along += spacing)
-		points.push_back({std::fmod(from.x + dx * along / length + t.w, t.w),
-						  std::fmod(from.y + dy * along / length + t.h, t.h)});
+	{
+		::MapGeneration::generationCheckpoint();
+		points.push_back({::MapGeneration::Numeric::fmod(from.x + dx * along / length + t.w, t.w),
+						  ::MapGeneration::Numeric::fmod(from.y + dy * along / length + t.h, t.h)});
+	}
 	return points;
 }
 
@@ -73,11 +85,12 @@ inline std::vector<ShapePoint> waypointsAlong(const Torus &t, ShapePoint from, S
 /// nearest quarter turn: 0 for +x, 1 for +y, 2 for -x, 3 for -y (a stencil's facing, Orbits.h).
 inline double headingAcross(const Torus &t, ShapePoint from, ShapePoint to)
 {
-	return std::atan2(t.offsetY(int(from.y), int(to.y)), t.offsetX(int(from.x), int(to.x)));
+	return ::MapGeneration::Numeric::atan2(t.offsetY(int(from.y), int(to.y)),
+										   t.offsetX(int(from.x), int(to.x)));
 }
 inline int quarterTurn(double heading)
 {
-	const int turn = int(std::lround(heading / (kPi / 2)));
+	const int turn = int(::MapGeneration::Numeric::lround(heading / (kPi / 2)));
 	return ((turn % 4) + 4) % 4;
 }
 } // namespace MapGeneration

@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminReportList",
+  "title": "AdminReportList",
+  "allOf": [
+    {
+      "type": "object",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "library",
+              "contentId",
+              "name",
+              "href",
+              "previewHref",
+              "hidden",
+              "reporterId",
+              "reporterName",
+              "reason",
+              "details",
+              "createdAt",
+              "status",
+              "resolution",
+              "resolvedAt"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "library": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "maps"
+                  },
+                  {
+                    "type": "string",
+                    "const": "ais"
+                  },
+                  {
+                    "type": "string",
+                    "const": "generators"
+                  },
+                  {
+                    "type": "string",
+                    "const": "buildings"
+                  },
+                  {
+                    "type": "string",
+                    "const": "sets"
+                  },
+                  {
+                    "type": "string",
+                    "const": "skins"
+                  },
+                  {
+                    "type": "string",
+                    "const": "music"
+                  }
+                ]
+              },
+              "contentId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "name": {
+                "type": "string"
+              },
+              "href": {
+                "type": "string"
+              },
+              "previewHref": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "hidden": {
+                "type": "boolean"
+              },
+              "reporterId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                    "description": "Lowercase UUID."
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reporterName": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "details": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                "description": "RFC 3339 date-time."
+              },
+              "status": {
+                "type": "string"
+              },
+              "resolution": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "resolvedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                    "description": "RFC 3339 date-time."
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "nextCursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "counts"
+      ],
+      "properties": {
+        "counts": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  ]
+}

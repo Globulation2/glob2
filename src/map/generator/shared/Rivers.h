@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Channels.h"
 #include "Drawing.h"
 #include "Geometry.h"
@@ -17,7 +18,7 @@ namespace MapGeneration
 // and lakes. Marchland uses this instead of asking its terrain search to discover a river from
 // positional water-share targets, which did not constrain the channel's shape.
 
-/// The shape of a river bed. Widths are in undermap corners, and a tile is pure water only when its
+/// The shape of a river bed. Widths are in terrain vertices, and a tile is pure water only when its
 /// four corners are, so a bed of half width `w` leaves about 2w - 1 tiles of open water and spoils
 /// kChannelSpoiledTiles more to beach either side (Channels.h).
 struct RiverStyle
@@ -88,6 +89,7 @@ RiverChoice bestRiverAcross(const Torus &t, GenerationContext &context, const st
 	const double across = vertical ? t.w : t.h;
 	for (int bed = 0; bed < beds; ++bed)
 	{
+		::MapGeneration::generationCheckpoint();
 		River candidate =
 			drawRiver(t, context, stream, vertical, across * (double(bed) + 0.5) / double(beds),
 					  style);

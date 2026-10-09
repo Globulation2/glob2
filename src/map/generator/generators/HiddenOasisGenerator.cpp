@@ -314,7 +314,7 @@ std::vector<unsigned char> tilesTouching(const Torus &t, const std::vector<unsig
 		if (corners[i])
 			for (int dy = -1; dy <= 0; ++dy)
 				for (int dx = -1; dx <= 0; ++dx)
-					tiles[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+					tiles[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 	return tiles;
 }
 
@@ -324,7 +324,7 @@ std::vector<unsigned char> tilesWithin(const Torus &t, const std::vector<unsigne
 	std::vector<unsigned char> tiles(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		tiles[i] = corners[i] && corners[t.at(x + 1, y)] && corners[t.at(x, y + 1)] && corners[t.at(x + 1, y + 1)];
 	}
 	return tiles;
@@ -371,7 +371,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 	const double bx = cx - ax * (front - back) / 2, by = cy - ay * (front - back) / 2;
 	const auto offsetFrom = [&](double ox, double oy, int i)
 	{
-		return std::pair<double, double>{t.offsetX(int(std::lround(ox)), i % t.w) - (ox - std::lround(ox)),
+		return std::pair<double, double>{t.offsetX(int(std::lround(ox)), t.remainderX(i)) - (ox - std::lround(ox)),
 										 t.offsetY(int(std::lround(oy)), i / t.w) - (oy - std::lround(oy))};
 	};
 
@@ -601,7 +601,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 				}
 				const auto footprint = [&](int i)
 				{
-					const int x = i % t.w, y = i / t.w;
+					const int x = t.remainderX(i), y = i / t.w;
 					return onLedge[i] && onLedge[t.at(x + 1, y)] && onLedge[t.at(x, y + 1)] && onLedge[t.at(x + 1, y + 1)];
 				};
 				// The tower sites that cover the pinch at the least tower's range, out of
@@ -609,16 +609,16 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 				std::vector<std::pair<int, int>> towerSites;
 				for (int i : ledge)
 				{
-					if (!footprint(i) || nearBasin[i] || nearBasin[t.at(i % t.w + 1, i / t.w)] ||
-						nearBasin[t.at(i % t.w, i / t.w + 1)] || nearBasin[t.at(i % t.w + 1, i / t.w + 1)])
+					if (!footprint(i) || nearBasin[i] || nearBasin[t.at(t.remainderX(i) + 1, i / t.w)] ||
+						nearBasin[t.at(t.remainderX(i), i / t.w + 1)] || nearBasin[t.at(t.remainderX(i) + 1, i / t.w + 1)])
 						continue;
 					int worst = 0;
 					for (int c : post.cover)
-						worst = std::max(worst, beyondFootprint(t, i % t.w, i / t.w, c % t.w, c / t.w));
+						worst = std::max(worst, beyondFootprint(t, t.remainderX(i), i / t.w, t.remainderX(c), c / t.w));
 					for (const Post &other : posts)
 						for (int dy = 0; dy <= 1; ++dy)
 							for (int dx = 0; dx <= 1; ++dx)
-								if (beyondFootprint(t, i % t.w, i / t.w, other.tower % t.w + dx, other.tower / t.w + dy) <=
+								if (beyondFootprint(t, t.remainderX(i), i / t.w, t.remainderX(other.tower) + dx, other.tower / t.w + dy) <=
 									kGreatestTowerRange)
 									worst = INT_MAX;
 					if (worst <= kCoverTowerRange)
@@ -670,7 +670,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 					std::vector<unsigned char> open = onLedge;
 					for (int dy = 0; dy <= 1; ++dy)
 						for (int dx = 0; dx <= 1; ++dx)
-							open[t.at(site % t.w + dx, site / t.w + dy)] = 0;
+							open[t.at(t.remainderX(site) + dx, site / t.w + dy)] = 0;
 					if (!open[door])
 						continue;
 					const Reach flood = reachFrom(t, {door}, open, INT_MAX);
@@ -679,16 +679,16 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 						walked[i] = 1;
 					const auto walkedFootprint = [&](int i)
 					{
-						const int x = i % t.w, y = i / t.w;
+						const int x = t.remainderX(i), y = i / t.w;
 						return walked[i] && walked[t.at(x + 1, y)] && walked[t.at(x, y + 1)] && walked[t.at(x + 1, y + 1)];
 					};
 					int farthest = -1;
 					pad = -1;
 					for (int i : ledge)
-						if (walkedFootprint(i) && t.chebyshev(site % t.w, site / t.w, i % t.w, i / t.w) >= 2 &&
-							t.dist2(site % t.w, site / t.w, i % t.w, i / t.w) > farthest)
+						if (walkedFootprint(i) && t.chebyshev(t.remainderX(site), site / t.w, t.remainderX(i), i / t.w) >= 2 &&
+							t.dist2(t.remainderX(site), site / t.w, t.remainderX(i), i / t.w) > farthest)
 						{
-							farthest = t.dist2(site % t.w, site / t.w, i % t.w, i / t.w);
+							farthest = t.dist2(t.remainderX(site), site / t.w, t.remainderX(i), i / t.w);
 							pad = i;
 						}
 					if (pad < 0)
@@ -718,7 +718,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 			for (int i : post.ledge)
 				for (int dy = 0; dy <= 1; ++dy)
 					for (int dx = 0; dx <= 1; ++dx)
-						taken[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+						taken[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 			strokePath(taken, t, post.canyon);
 			// Two ledges need no seal between them, only rock enough to stay two places.
 			taken = dilate(t, taken, kLedgeGap);
@@ -762,7 +762,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 			ledgeTiles[i] = 1;
 			for (int dy = 0; dy <= 1; ++dy)
 				for (int dx = 0; dx <= 1; ++dx)
-					keepOut[t.at(i % t.w + dx, i / t.w + dy)] = ledgeCorners[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+					keepOut[t.at(t.remainderX(i) + dx, i / t.w + dy)] = ledgeCorners[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 		}
 		strokePath(canyonCorners, t, post.canyon);
 		strokePath(keepOut, t, post.canyon);
@@ -889,7 +889,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 					L.terrain[i] = WATER;
 					for (int dy = -kSpringGap; dy <= kSpringGap; ++dy)
 						for (int dx = -kSpringGap; dx <= kSpringGap; ++dx)
-							taken[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+							taken[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 				}
 				++placed;
 				break;
@@ -985,7 +985,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 					L.buttes[i] = 1;
 					for (int dy = -kButteGap; dy <= kButteGap; ++dy)
 						for (int dx = -kButteGap; dx <= kButteGap; ++dx)
-							noButte[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+							noButte[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 				}
 				++placed;
 				break;
@@ -1080,11 +1080,11 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 	// No tower within a level-3 tower's range of another's, or of the basin.
 	for (size_t a = 0; a < posts.size(); ++a)
 	{
-		const int ax = posts[a].tower % t.w, ay = posts[a].tower / t.w;
+		const int ax = t.remainderX(posts[a].tower), ay = posts[a].tower / t.w;
 		for (size_t b = a + 1; b < posts.size(); ++b)
 			for (int dy = 0; dy <= 1; ++dy)
 				for (int dx = 0; dx <= 1; ++dx)
-					if (beyondFootprint(t, ax, ay, posts[b].tower % t.w + dx, posts[b].tower / t.w + dy) <= kGreatestTowerRange)
+					if (beyondFootprint(t, ax, ay, t.remainderX(posts[b].tower) + dx, posts[b].tower / t.w + dy) <= kGreatestTowerRange)
 					{
 						L.failure = "Two towers stand within range of each other.";
 						return L;
@@ -1192,7 +1192,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 			for (int dy = -kHomeGreen; dy <= kHomeGreen; ++dy)
 				for (int dx = -kHomeGreen; dx <= kHomeGreen; ++dx)
 				{
-					const int i = t.at(site % t.w + dx, site / t.w + dy);
+					const int i = t.at(t.remainderX(site) + dx, site / t.w + dy);
 					if (dx * dx + dy * dy <= kHomeGreen * kHomeGreen && L.terrain[i] == SAND && desertCorners[i] &&
 						!washCorners[i])
 						L.terrain[i] = GRASS;
@@ -1216,7 +1216,7 @@ Layout designAttempt(const GenerationRequest &request, GenerationContext &contex
 				if (toMouth[i] >= 0 && fromSite.steps[i] + toMouth[i] <= longest)
 					for (int dy = -kRouteKeepMargin; dy <= kRouteKeepMargin; ++dy)
 						for (int dx = -kRouteKeepMargin; dx <= kRouteKeepMargin; ++dx)
-							keepDry[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+							keepDry[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 			const DryStartWatering watered = waterDrySite(
 				L.terrain, t, L.sites[k], kRoomRadius, kFertilityFloor, plan,
 				[&](int i)
@@ -1285,18 +1285,18 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "hidden-oasis terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "hidden-oasis colonies";
 	const auto homeMask = [&](int team)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && !L.buttes[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			ground[i] = L.territory[i] == team && !L.buttes[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
-	{ return MapGeneratorPoint(L.sites[team] % t.w - 2, L.sites[team] / t.w - 2); };
+	{ return MapGeneratorPoint(t.remainderX(L.sites[team]) - 2, L.sites[team] / t.w - 2); };
 	if (!settleColonies(game, context, "hidden-oasis-starts", homeMask, anchor))
 		return false;
 
@@ -1307,14 +1307,14 @@ bool generate(Game &game, GenerationContext &context)
 	if (o.school)
 		for (int k = 0; k < teams; ++k)
 		{
-			const int sx = L.sites[k] % t.w, sy = L.sites[k] / t.w;
+			const int sx = t.remainderX(L.sites[k]), sy = L.sites[k] / t.w;
 			std::vector<unsigned char> allowed(n, 0);
 			for (int dy = -kSchoolReach; dy <= kSchoolReach; ++dy)
 				for (int dx = -kSchoolReach; dx <= kSchoolReach; ++dx)
 				{
 					const int i = t.at(sx + dx, sy + dy);
 					allowed[i] = L.territory[i] == k && std::max(std::abs(dx), std::abs(dy)) >= kSchoolClearance &&
-								 clearGround(map, i % t.w, i / t.w);
+								 clearGround(map, t.remainderX(i), i / t.w);
 				}
 			if (placeStartingBuilding(game, k, "school", 0, sx, sy, kSchoolReach, allowed) < 0)
 			{
@@ -1327,15 +1327,15 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "hidden-oasis rock";
 	std::vector<unsigned char> stone(n, 0);
 	for (int i = 0; i < n; ++i)
-		if ((L.rock[i] || L.buttes[i]) && clearGround(map, i % t.w, i / t.w))
+		if ((L.rock[i] || L.buttes[i]) && clearGround(map, t.remainderX(i), i / t.w))
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 			stone[i] = 1;
 		}
 	for (int i = 0; i < n; ++i)
 		if (L.rock[i] && !stone[i])
 		{
-			context.detail = "The massif's wall has a gap at (" + std::to_string(i % t.w) + ", " +
+			context.detail = "The massif's wall has a gap at (" + std::to_string(t.remainderX(i)) + ", " +
 							 std::to_string(i / t.w) + ").";
 			return false;
 		}
@@ -1353,12 +1353,12 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> country(n, 0), ambientClear(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		country[i] = !nearMassif[i] && !L.buttes[i] && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE));
+		country[i] = !nearMassif[i] && !L.buttes[i] && (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, PRUNE));
 		ambientClear[i] = reserved[i] || L.noFields[i] || nearMouth[i] || L.washes[i];
 	}
 	const std::vector<unsigned char> none(n, 0);
@@ -1380,13 +1380,13 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		int dry = 0;
 		for (int i = 0; i < n; ++i)
-			dry += country[i] && watered.at(i % t.w, i / t.w) == 0;
+			dry += country[i] && watered.at(t.remainderX(i), i / t.w) == 0;
 		const int wanted = scaledCount(dry / kTilesPerScrub, o.wood);
 		int planted = 0;
 		for (int attempt = 0; attempt < wanted * 4 && planted < wanted; ++attempt)
 		{
 			const int i = int(context.bounded("hidden-oasis-scrub", std::uint32_t(n)));
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			if (!country[i] || ambientClear[i] || watered.at(x, y) != 0 || !clearGround(map, x, y) ||
 				!map.isResourceAllowed(x, y, WOOD))
 				continue;
@@ -1397,7 +1397,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	std::vector<unsigned char> ambient(n, 0);
 	for (int i = 0; i < n; ++i)
-		ambient[i] = map.isResource(i % t.w, i / t.w);
+		ambient[i] = map.isResource(t.remainderX(i), i / t.w);
 	// Every colony's shortest way to the mouth, widened: no kit is planted on it.
 	std::vector<unsigned char> corridor(n, 0);
 	{
@@ -1410,7 +1410,7 @@ bool generate(Game &game, GenerationContext &context)
 				cheapestWalk(t, GridNeighbors::Eight, workers[k], L.mouth,
 							 [&](int, int to, int, int)
 							 {
-								 const int x = to % t.w, y = to / t.w;
+								 const int x = t.remainderX(to), y = to / t.w;
 								 if (!map.terrainPropertiesAt(x, y).walkable || map.getBuilding(x, y) != NOGBID || stone[to])
 									 return -1;
 								 return map.isResource(x, y) ? 11 : 10;
@@ -1418,7 +1418,7 @@ bool generate(Game &game, GenerationContext &context)
 			for (int i : route)
 				for (int dy = -kTrailCorridor; dy <= kTrailCorridor; ++dy)
 					for (int dx = -kTrailCorridor; dx <= kTrailCorridor; ++dx)
-						corridor[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+						corridor[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 		}
 	}
 	// Every kit's wheat faces the water nearest its site, so it regrows and no two homes are one stamp.
@@ -1426,8 +1426,8 @@ bool generate(Game &game, GenerationContext &context)
 	const double mapFacing = context.bounded("hidden-oasis-kit", 3600) / 3600.0 * 2 * kPi;
 	for (int k = 0; k < teams; ++k)
 	{
-		const ShapePoint site{double(L.sites[k] % t.w), double(L.sites[k] / t.w)};
-		const int sx = L.sites[k] % t.w, sy = L.sites[k] / t.w;
+		const ShapePoint site{double(t.remainderX(L.sites[k])), double(L.sites[k] / t.w)};
+		const int sx = t.remainderX(L.sites[k]), sy = L.sites[k] / t.w;
 		int nearest = -1, nearestDistance = INT_MAX;
 		for (int dy = -kKitWaterReach; dy <= kKitWaterReach; ++dy)
 			for (int dx = -kKitWaterReach; dx <= kKitWaterReach; ++dx)
@@ -1437,13 +1437,13 @@ bool generate(Game &game, GenerationContext &context)
 					nearestDistance = dx * dx + dy * dy;
 				}
 		const double facing = nearest < 0 ? mapFacing
-										  : std::atan2(double(t.offsetY(sy, nearest / t.w)), double(t.offsetX(sx, nearest % t.w)));
+										  : std::atan2(double(t.offsetY(sy, nearest / t.w)), double(t.offsetX(sx, t.remainderX(nearest))));
 		// plantOpenHomeKit lays the wheat a quarter turn clockwise of its axis.
 		plantOpenHomeKit(map, t, context, site, facing + kPi / 2, kHomeRadius, kKitWheat, kKitWood, -1,
 						 [&](int i)
 						 {
 							 return L.territory[i] == k && !reserved[i] && !corridor[i] && !L.washes[i] &&
-									clearGround(map, i % t.w, i / t.w);
+									clearGround(map, t.remainderX(i), i / t.w);
 						 });
 	}
 	for (int k = 0; k < teams; ++k)
@@ -1458,7 +1458,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	std::vector<unsigned char> kit(n, 0);
 	for (int i = 0; i < n; ++i)
-		kit[i] = !ambient[i] && map.isResource(i % t.w, i / t.w);
+		kit[i] = !ambient[i] && map.isResource(t.remainderX(i), i / t.w);
 
 	// The basin: its garden, unscaled, and the pond's algae, the only algae on the map.
 	context.stage = "hidden-oasis basin";
@@ -1476,7 +1476,7 @@ bool generate(Game &game, GenerationContext &context)
 		const std::vector<int> order = fractalNoise(t.w, t.h, 6, 2, context.stream("hidden-oasis-algae"));
 		std::vector<int> water;
 		for (int i = 0; i < n; ++i)
-			if (L.pond[i] && fromBeach[i] <= kAlgaeShallows && map.isResourceAllowed(i % t.w, i / t.w, ALGA))
+			if (L.pond[i] && fromBeach[i] <= kAlgaeShallows && map.isResourceAllowed(t.remainderX(i), i / t.w, ALGA))
 				water.push_back(i);
 		context.shuffle(water.begin(), water.end(), "hidden-oasis-algae");
 		std::stable_sort(water.begin(), water.end(), [&](int a, int b)
@@ -1487,7 +1487,7 @@ bool generate(Game &game, GenerationContext &context)
 			return false;
 		}
 		for (int k = 0; k < o.algae; ++k)
-			map.setResourceByIndex(water[k] % t.w, water[k] / t.w, ALGA, 1);
+			map.setResourceByIndex(t.remainderX(water[k]), water[k] / t.w, ALGA, 1);
 		context.telemetry.measure("hidden-oasis.algae.tiles", o.algae);
 		// The forward base's room: the basin's free 3x3 footprints (an inn, a tower and a school fit one).
 		int room = 0;
@@ -1497,8 +1497,8 @@ bool generate(Game &game, GenerationContext &context)
 			for (int dy = 0; dy < 3 && free; ++dy)
 				for (int dx = 0; dx < 3 && free; ++dx)
 				{
-					const int j = t.at(i % t.w + dx, i / t.w + dy);
-					free = L.basin[j] && !L.garden[j] && clearGround(map, j % t.w, j / t.w);
+					const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
+					free = L.basin[j] && !L.garden[j] && clearGround(map, t.remainderX(j), j / t.w);
 				}
 			room += free;
 		}
@@ -1514,11 +1514,11 @@ bool generate(Game &game, GenerationContext &context)
 			std::vector<unsigned char> allowed(n, 0);
 			for (int dy = 0; dy <= 1; ++dy)
 				for (int dx = 0; dx <= 1; ++dx)
-					allowed[t.at(post.tower % t.w + dx, post.tower / t.w + dy)] = 1;
+					allowed[t.at(t.remainderX(post.tower) + dx, post.tower / t.w + dy)] = 1;
 			std::vector<MapGeneratorPoint> cover;
 			for (int i : post.cover)
-				cover.push_back(MapGeneratorPoint(i % t.w, i / t.w));
-			if (placeTower(game, k, 0, post.tower % t.w + 1, post.tower / t.w + 1, 2, allowed, true, cover,
+				cover.push_back(MapGeneratorPoint(t.remainderX(i), i / t.w));
+			if (placeTower(game, k, 0, t.remainderX(post.tower) + 1, post.tower / t.w + 1, 2, allowed, true, cover,
 						   true) < 0)
 			{
 				context.detail = "Colony " + std::to_string(k) + "'s ledge has no room for its tower.";
@@ -1550,7 +1550,7 @@ bool generate(Game &game, GenerationContext &context)
 				continue;
 			std::vector<unsigned char> ledge(n, 0);
 			for (int i : L.posts[k].ledge)
-				ledge[i] = map.getBuilding(i % t.w, i / t.w) == NOGBID;
+				ledge[i] = map.getBuilding(t.remainderX(i), i / t.w) == NOGBID;
 			if (again)
 			{
 				std::vector<unsigned char> open = walkableTiles(map);
@@ -1664,13 +1664,13 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const HiddenOasisOptions o(context.request);
 	const Torus &t = L.t;
 	const int n = t.size(), teams = context.request.nbTeams;
-	const auto at = [&](int i) { return "(" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ")"; };
+	const auto at = [&](int i) { return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
 
 	// The only algae is the pond's, of the amount asked; the basin's crops are its garden's.
 	int algae = 0, gardenWheat = 0, gardenWood = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if (type == ALGA)
 		{
 			if (!L.pond[i])
@@ -1697,9 +1697,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			for (int dy = 0; dy < 3 && free; ++dy)
 				for (int dx = 0; dx < 3 && free; ++dx)
 				{
-					const int j = t.at(i % t.w + dx, i / t.w + dy);
-					free = L.basin[j] && !L.garden[j] && map.terrainPropertiesAt(j % t.w, j / t.w).buildable &&
-						!map.isResource(j % t.w, j / t.w);
+					const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
+					free = L.basin[j] && !L.garden[j] && map.terrainPropertiesAt(t.remainderX(j), j / t.w).buildable &&
+						!map.isResource(t.remainderX(j), j / t.w);
 				}
 			room += free;
 		}
@@ -1718,7 +1718,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<int> basinGround;
 	for (int i = 0; i < n; ++i)
 	{
-		ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !permanentResourceBarrier(map, i);
+		ground[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable && !permanentResourceBarrier(map, i);
 		if (L.basin[i] && ground[i])
 			basinGround.push_back(i);
 	}
@@ -1741,29 +1741,29 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		for (int k = 0; k < teams; ++k)
 		{
 			const Post &post = L.posts[k];
-			const int tx = post.tower % t.w, ty = post.tower / t.w;
+			const int tx = t.remainderX(post.tower), ty = post.tower / t.w;
 			const Uint16 gbid = map.getBuilding(tx, ty);
 			if (gbid == NOGBID || Building::GIDtoTeam(gbid) != k || countBuildings(game, k, "defencetower") != 1)
 				return "Colony " + std::to_string(k) + " has no tower on its ledge.";
 			for (int c : post.cover)
-				if (beyondFootprint(t, tx, ty, c % t.w, c / t.w) > range)
+				if (beyondFootprint(t, tx, ty, t.remainderX(c), c / t.w) > range)
 					return "Colony " + std::to_string(k) + "'s tower does not reach its pinch at " + at(c) + ".";
 			// Nor does it reach another colony's ledge: an owner at work on its own tower is not shot at.
 			for (int other = 0; other < teams; ++other)
 				if (other != k)
 					for (int i : L.posts[other].ledge)
-						if (beyondFootprint(t, tx, ty, i % t.w, i / t.w) <= range)
+						if (beyondFootprint(t, tx, ty, t.remainderX(i), i / t.w) <= range)
 							return "Colony " + std::to_string(k) + "'s tower reaches colony " + std::to_string(other) +
 								   "'s ledge at " + at(i) + ".";
 			for (int other = k + 1; other < teams; ++other)
 				for (int dy = 0; dy <= 1; ++dy)
 					for (int dx = 0; dx <= 1; ++dx)
-						if (beyondFootprint(t, tx, ty, L.posts[other].tower % t.w + dx, L.posts[other].tower / t.w + dy) <=
+						if (beyondFootprint(t, tx, ty, t.remainderX(L.posts[other].tower) + dx, L.posts[other].tower / t.w + dy) <=
 							kGreatestTowerRange)
 							return "Colonies " + std::to_string(k) + " and " + std::to_string(other) +
 								   " start with towers in range of each other.";
 			for (int i = 0; i < n; ++i)
-				if (L.basin[i] && !L.pond[i] && beyondFootprint(t, tx, ty, i % t.w, i / t.w) <= range)
+				if (L.basin[i] && !L.pond[i] && beyondFootprint(t, tx, ty, t.remainderX(i), i / t.w) <= range)
 					return "Colony " + std::to_string(k) + "'s tower reaches the basin at " + at(i) + ".";
 		}
 	}
@@ -1778,7 +1778,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				ledges[i] = 1;
 		const std::vector<unsigned char> nearLedge = dilate(t, ledges, kFrontReach);
 		for (int i = 0; i < n; ++i)
-			if (nearLedge[i] && !ledges[i] && !L.massif[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable &&
+			if (nearLedge[i] && !ledges[i] && !L.massif[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable &&
 				!permanentResourceBarrier(map, i, true))
 				return "Ground outside the plateau at " + at(i) + " is within a tower's reach of a ledge.";
 	}
@@ -1838,11 +1838,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	}
 	for (int k = 0; k < teams; ++k)
 	{
-		const int wx = firstWorkers[k] % t.w, wy = firstWorkers[k] / t.w;
+		const int wx = t.remainderX(firstWorkers[k]), wy = firstWorkers[k] / t.w;
 		int wheat = 0;
 		for (int dy = -kNearbyReach; dy <= kNearbyReach; ++dy)
 			for (int dx = -kNearbyReach; dx <= kNearbyReach; ++dx)
-				wheat += map.getResource(t.at(wx + dx, wy + dy) % t.w, t.at(wx + dx, wy + dy) / t.w).type == WHEAT;
+				wheat += map.getResource(t.remainderX(t.at(wx + dx, wy + dy)), t.at(wx + dx, wy + dy) / t.w).type == WHEAT;
 		if (wheat < kLeastWheatNearby)
 			return "Colony " + std::to_string(k) + " has only " + std::to_string(wheat) + " wheat tiles near its swarm.";
 	}
@@ -1873,7 +1873,7 @@ GeneratorDefinition hiddenOasisDefinition()
 		"hidden-oasis",
 		57,
 		"Hidden Oasis",
-		1,
+		2,
 		false,
 		{GeneratorControl{"pond-size", "Pond size", 5, 12, 1, 8, ControlGroup::Terrain}
 			 .withSearchRange(7, 11),

@@ -1,3 +1,5 @@
+import { MessageError } from '../messages.ts';
+
 import { COLONY_SKIN_MATERIALS, type ColonySkinMaterial } from '@glob2/protocol';
 
 // colony-v2 skins: a 512px colour atlas and a 512px material map, each holding
@@ -36,7 +38,7 @@ export function encodeMaterials(map: Uint8Array): string {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = ATLAS_SIZE;
   const context = canvas.getContext('2d');
-  if (!context) throw new Error('Painting is unavailable in this browser.');
+  if (!context) throw new MessageError('Painting is unavailable in this browser.');
   const image = context.createImageData(ATLAS_SIZE, ATLAS_SIZE);
   for (let i = 0; i < map.length; i++) {
     const id = map[i] ?? 0;
@@ -51,17 +53,17 @@ export async function decodeMaterials(src: string): Promise<Uint8Array> {
   image.src = src;
   await image.decode();
   if (image.width !== ATLAS_SIZE || image.height !== ATLAS_SIZE)
-    throw new Error('Invalid material map dimensions.');
+    throw new MessageError('Invalid material map dimensions.');
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = ATLAS_SIZE;
   const context = canvas.getContext('2d', { willReadFrequently: true });
-  if (!context) throw new Error('Painting is unavailable in this browser.');
+  if (!context) throw new MessageError('Painting is unavailable in this browser.');
   context.drawImage(image, 0, 0);
   const pixels = context.getImageData(0, 0, ATLAS_SIZE, ATLAS_SIZE).data;
   const map = new Uint8Array(ATLAS_SIZE * ATLAS_SIZE);
   for (let i = 0; i < map.length; i++) {
     const id = pixels[i * 4] ?? 0;
-    if (id >= MATERIALS.length) throw new Error('Invalid material map.');
+    if (id >= MATERIALS.length) throw new MessageError('Invalid material map.');
     map[i] = id;
   }
   return map;

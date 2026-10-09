@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapThumbnail.h"
+#include "GeneratorStudioScreen.h"
+#include "Game.h"
+#include <nlohmann/json.hpp>
 #include <vector>
 #include <string>
 #include <utility>
@@ -71,7 +74,7 @@ MapThumbnail terrain(int wDec, int hDec, bool noise = false)
 		for (int x = 0; x < map.getW(); ++x)
 		{
 			int kind = noise ? random() % 3 : (x < map.getW() / 2 ? 0 : 1);
-			map.setUMatPos(x, y, kind == 0 ? GRASS : kind == 1 ? WATER : SAND, 1);
+			map.paintVertexSquare(x, y, kind == 0 ? GRASS : kind == 1 ? WATER : SAND, 1);
 		}
 	MapThumbnail image;
 	image.loadFromMap(map);
@@ -82,6 +85,101 @@ MapThumbnail terrain(int wDec, int hDec, bool noise = false)
 // Named in friend declarations, so it stays at global scope.
 struct MapPreviewHarness
 {
+	static void generatorStudio()
+	{
+		using Json = nlohmann::json;
+		const auto directory = std::filesystem::path(glob2test::artifactDirFromWorkingDirectory()) /
+							   "generator-studio";
+		std::filesystem::create_directories(directory);
+		std::ifstream manifestFile(glob2test::sourceRoot() /
+								   "data/generators/examples/swamp/manifest.json");
+		auto manifest = Json::parse(manifestFile);
+		manifest["entry"] = "generator.js";
+		std::ifstream scriptFile(glob2test::sourceRoot() /
+								 "data/generators/examples/swamp/generator.js");
+		const std::string script{std::istreambuf_iterator<char>(scriptFile),
+								 std::istreambuf_iterator<char>()};
+		const auto packagePath = (directory / "package.json").string();
+		const auto settingsPath = (directory / "settings.json").string();
+		std::ofstream(packagePath) << Json{
+			{"formatVersion", 1}, {"manifest", manifest}, {"modules", {{"generator.js", script}}}};
+		const auto settings =
+			Json{{"seed", 19},
+				 {"candidates", 1},
+				 {"startingUnitLevel", 0},
+				 {"params", {{"width", 7}, {"height", 7}, {"teams", 4}, {"workers", 4}}}};
+		std::ofstream(settingsPath) << settings;
+		GeneratorStudioScreen screen(packagePath, settingsPath);
+		screen.generate();
+		INFO(screen.error);
+		REQUIRE(screen.error.empty());
+		REQUIRE(screen.playable);
+		REQUIRE(screen.snapshot);
+		REQUIRE(screen.terrain.isLoaded());
+		const auto report = Json::parse(screen.report);
+		REQUIRE(report.at("success") == true);
+		REQUIRE(report.at("seed") == 19);
+		REQUIRE(screen.players.getNumberOfPlayers() == 4);
+		std::ofstream(directory / "native-report.json") << report.dump(2);
+		std::filesystem::copy_file(packagePath, directory / "frozen-package.json",
+								   std::filesystem::copy_options::overwrite_existing);
+		std::filesystem::copy_file(settingsPath, directory / "frozen-settings.json",
+								   std::filesystem::copy_options::overwrite_existing);
+		std::ofstream(directory / "initial.world", std::ios::binary) << *screen.snapshot;
+		Game game(nullptr);
+		BinaryInputStream input(
+			new MemoryStreamBackend(screen.snapshot->data(), screen.snapshot->size()));
+		input.seekFromStart(0);
+		REQUIRE(game.load(&input));
+		REQUIRE(game.checkSum(nullptr, nullptr, nullptr, true) ==
+				report.at("checksum").get<Uint32>());
+		for (int tick = 0; tick < 16; ++tick)
+			game.syncStep(0);
+		auto *memory = new MemoryStreamBackend;
+		BinaryOutputStream out(memory);
+		game.save(&out, false, "Studio checkpoint");
+		auto bytes = memory->takeContents();
+		Game restored(nullptr);
+		BinaryInputStream saved(new MemoryStreamBackend(bytes.data(), bytes.size()));
+		saved.seekFromStart(0);
+		REQUIRE(restored.load(&saved));
+		for (int tick = 0; tick < 16; ++tick)
+		{
+			game.syncStep(0);
+			restored.syncStep(0);
+			REQUIRE(game.checkSum(nullptr, nullptr, nullptr, true) ==
+					restored.checkSum(nullptr, nullptr, nullptr, true));
+		}
+		// Freezing controls produces a different new world without touching the old snapshot.
+		std::ofstream(settingsPath)
+			<< Json{{"seed", 20},
+					{"candidates", 1},
+					{"startingUnitLevel", 0},
+					{"params", {{"width", 6}, {"height", 7}, {"teams", 4}, {"workers", 4}}}};
+		GeneratorStudioScreen different(packagePath, settingsPath);
+		different.generate();
+		INFO(different.error);
+		REQUIRE(different.error.empty());
+		REQUIRE(different.snapshot);
+		REQUIRE(*different.snapshot != *screen.snapshot);
+		manifest["editorOnly"] = true;
+		manifest["hasStartingColonies"] = false;
+		std::ofstream(packagePath)
+			<< Json{{"formatVersion", 1},
+					{"manifest", manifest},
+					{"modules",
+					 {{"generator.js", "export function "
+									   "generate(c){c.addTeams();c.toolkit.Sketch.writeVertices(c."
+									   "mask(c.torus.size(),2));}"}}}};
+		GeneratorStudioScreen terrainOnly(packagePath, settingsPath);
+		terrainOnly.generate();
+		INFO(terrainOnly.error);
+		REQUIRE(terrainOnly.error.empty());
+		REQUIRE_FALSE(terrainOnly.playable);
+		REQUIRE(terrainOnly.starts.empty());
+		REQUIRE(terrainOnly.players.getNumberOfPlayers() == 0);
+	}
+
 	static void codec()
 	{
 		auto image = terrain(9, 8);
@@ -468,6 +566,10 @@ struct MapPreviewHarness
 
 TEST_SUITE("MapPreview")
 {
+    TEST_CASE("generator Studio freezes playable worlds and preserves save continuation") {
+        glob2test::HeadlessGlobals globals({.loadStrings = true});
+        MapPreviewHarness::generatorStudio();
+    }
 	TEST_CASE("preview geometry")
 	{
 		glob2test::HeadlessGlobals globals({.loadStrings = true});

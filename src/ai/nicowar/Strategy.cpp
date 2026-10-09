@@ -113,9 +113,9 @@ NicowarStrategyLoader::NicowarStrategyLoader()
 
 
 	
-NicowarStrategy NicowarStrategyLoader::chooseRandomStrategy()
+NicowarStrategy NicowarStrategyLoader::chooseRandomStrategy(MersenneTwister& random)
 {
-	int chosen = syncRand() % entries.size();
+	int chosen = random() % entries.size();
 	entries[chosen]->setStrategyName(entriesToName[chosen]);
 	return *entries[chosen];
 }

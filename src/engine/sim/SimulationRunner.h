@@ -21,15 +21,15 @@ class Engine;
 //! handles input and draws.
 //!
 //! - The simulation thread paces and runs ticks (Engine::simulationStep) and,
-//!   whenever the main thread has taken the previous Scene, captures immutable
+//!   whenever the main thread has taken the previous PresentationFrame, captures immutable
 //!   inputs for a compute-worker presentation task. That task publishes a complete
-//!   Scene without participating in simulation barriers.
+//!   PresentationFrame without participating in simulation barriers.
 //! - withGame() protects exceptional live-state access (save capture, dialogs,
 //!   settings and diagnostics). Routine input and rendering use immutable Scenes.
 //! - Drawing reads only acquireScene() and GUI state.
 //!
 //! The simulation's results do not depend on this: ticks, orders and the
-//! synchronized RNG are the same as in serial execution.
+//! owner RNG streams are the same as in serial execution.
 class SimulationRunner
 {
 public:
@@ -50,8 +50,10 @@ public:
 	void suspend();
 	void resume();
 	void requestScene(SceneRequest request);
-	//! The newest published Scene, or null before the first one.
-	const Scene *acquireScene();
+    std::optional<SceneRequest> admitPresentation();
+    void publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request);
+	//! The newest published PresentationFrame, or null before the first one.
+	const PresentationFrame *acquireScene();
 	bool sceneReady() const { return haveScene; }
 	//! True once the simulation ended the session or failed.
 	bool ended() const { return finished.load(); }
@@ -61,17 +63,21 @@ public:
 	//! thread absorbs the mailbox while running, or this collector after stop().
 	PerformanceTelemetry::Collector telemetry;
     void absorbTelemetry(PerformanceTelemetry::Collector& target);
+    Uint32 latestTelemetryTick();
 
 
 private:
 	void run();
     std::mutex telemetryMutex;
     PerformanceTelemetry::Collector telemetryMailbox;
+    Uint32 completedTelemetryTick = 0;
 	void park(std::unique_lock<std::mutex> &lock);
 
 	Engine &engine;
-	SceneBuffer<Scene> scenes;
+	SceneBuffer<PresentationFrame> scenes;
 	SceneRequest requestedScene;
+    Uint64 requestedSceneGeneration = 1;
+    Uint64 admittedSceneGeneration = 0, publishedSceneGeneration = 0;
 	SceneExtractor presentationExtractor;
 	ComputeExecutor::PresentationTicket presentation;
 	std::thread thread;

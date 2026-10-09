@@ -53,6 +53,7 @@ ErrorReport MapScriptSGSL::parseScript(Acquisition *donnees, Game *game)
 		}
 		thisone.instructionStarts.insert(thisone.line.size());
 		thisone.line.push_back(SGSLToken(SGSLToken::S_STORY));
+		thisone.random.initializeOwner(game->gameHeader.getRandomSeed(), unsigned(RandomDomain::LegacyStory), stories.size());
 		stories.push_back(thisone);
 		ctx.nextToken();
 	}

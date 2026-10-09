@@ -78,8 +78,8 @@ private:
 	ComputeExecutor* executor = nullptr;
 	bool shared = false;
 	// Smoothed decision work of recent batches. A delay-zero batch is handed to
-	// the workers only when it carries enough work to repay waking them; the
-	// placement never changes a decision, only which thread runs it.
+	// the workers only when it carries enough work to repay waking them;
+	// otherwise the owner decides it inline. Neither changes a decision.
 	Uint64 recentWorkNs = SharedWorkThresholdNs;
 	std::atomic<Uint64> computationNs{0};
 	std::map<unsigned, RequestId> lastSubmitted;
@@ -99,9 +99,9 @@ public:
 	OrderScheduler(const OrderScheduler&) = delete;
 	// Joins every admitted decision; the executor must outlive the scheduler.
 	~OrderScheduler();
-	// Shared execution dispatches batches to the executor's workers with the
-	// submitter participating at the deadline; otherwise the submitter runs the
-	// identical schedule serially at the deadline.
+	// Shared execution hands batches to the executor's workers and the
+	// submitter waits for them at the deadline; otherwise the submitter decides
+	// when it dispatches. Either way decisions are delivered at the deadline.
 	void configure(unsigned delayTicks, ComputeExecutor& executor, bool sharedExecution);
 	void configureExecution(ComputeExecutor& executor, bool sharedExecution);
 	unsigned delayTicks() const { return delay; }

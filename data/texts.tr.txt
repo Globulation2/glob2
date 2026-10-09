@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Tarayıcınızda oturum açmayı tamamlayın. İşiniz bittiğinde oyun kendiliğinden devam eder.
 [hub browser did not open]
-
+Tarayıcınız açılmadı. Devam etmek için oturum açma sayfasını açın.
 [hub compare code %0]
-
+Sayfa sorarsa, %0 gösterdiğini kontrol edin.
 [hub code copied]
-
+Kod kopyalandı
 [settings Finish in your browser. The game continues by itself.]
-
+Tarayıcınızda tamamlayın. Oyun kendiliğinden devam eder.
 [music set]
-
+Müzik seti
 [random music set]
-
+Her maçta rastgele
 [playing music set %0]
-
+Çalıyor: %0
 [music set failed]
-
+Bu müzik seti yüklenemedi.
 [settings Music set]
-
+Müzik seti
 [settings Random each match]
-
+Her maç başında bir müzik seçilmesi için Rastgele seçeneğini kullanın.
 [settings Edge scrolling]
-
+Kenar kaydırma
 [settings Edge scrolling in fullscreen]
-
+Tam ekranda kenar kaydırma
 [settings Edge scrolling in windowed mode]
-
+Pencere modunda kenar kaydırma
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Fare pencere kenarına ulaştığında oyun ve düzenleyici haritalarını kaydırın.
 [AI strategy]
 YZ stratejisi
 [start recording]
@@ -4625,9 +4625,9 @@ Video kaydı
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Oyunlarınızı sesli MP4 videoları olarak kaydedin. Kayıt için libx264 ve AAC kodlayıcılarına sahip FFmpeg gerekir.
 [settings Record your games as MP4 videos with sound.]
-
+Oyunlarınızı sesli MP4 videoları olarak kaydedin.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Kayıt, saniyede 30 kare ile tam görüntü çözünürlüğünü kullanır.
 [settings FFmpeg is ready.]
 FFmpeg hazır.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Yaralılar geri çekilir
 [Units can die]
 Birimler ölebilir
 [Upgrades]
-
+Yükseltmeler
 [No stockpile]
 Yok
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Yaralı birimler ölümüne savaşmak yerine iyileşmeye döner.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Birimler canları bitince ölür. 1 canda durmaları için kapatın.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Birimler eğitim binalarında seviye kazanır ve binalar yükseltilebilir. Bu seçenek kapalıyken onarımlar kullanılabilir.
 [stat group work]
 İşçilerin zamanı
 [stat worker time]
@@ -5309,235 +5309,235 @@ güç
 [stat view by place]
 Yere göre
 [AI Library]
-
+Yapay zekâ kütüphanesi
 [Authoring guide]
-
+Geliştirme kılavuzu
 [Beginner-friendly]
-
+Yeni başlayanlara uygun
 [Defensive]
-
+Savunmacı
 [Discover]
-
+Keşfet
 [Download & install]
-
+İndir ve kur
 [Downloading AI…]
-
+Yapay zekâ indiriliyor…
 [Expansion]
-
+Genişleme
 [Experimental]
-
+Deneysel
 [Favourite]
-
+Favorilere ekle
 [Favourited]
-
+Favorilere eklendi
 [Favourites]
-
+Favoriler
 [Got it]
-
+Anladım
 [How AIs work]
-
+Yapay zekâlar nasıl çalışır
 [Install selected version]
-
+Seçili sürümü kur
 [Installed]
-
+Kurulu
 [Invalid AI catalogue response]
-
+Geçersiz yapay zekâ kataloğu yanıtı
 [JavaScript API reference]
-
+JavaScript API başvuru kaynağı
 [Like]
-
+Beğen
 [Liked]
-
+Beğenildi
 [Loading AI library…]
-
+Yapay zekâ kütüphanesi yükleniyor…
 [Most downloaded]
-
+En çok indirilenler
 [Most liked]
-
+En çok beğenilenler
 [Newest]
-
+En yeniler
 [No AIs match these filters.]
-
+Bu filtrelere uyan yapay zekâ yok.
 [Not validated for this game version]
-
+Bu oyun sürümü için doğrulanmadı
 [Open AI Library]
-
+Yapay zekâ kütüphanesini aç
 [Open AI page]
-
+Yapay zekâ sayfasını aç
 [Passed compatibility checks]
-
+Uyumluluk kontrollerini geçti
 [Recently updated]
-
+Yakın zamanda güncellenenler
 [Rush]
-
+Hızlı saldırı
 [Search]
-
+Ara
 [Share your AI]
-
+Yapay zekânızı paylaşın
 [Show more]
-
+Daha fazla göster
 [Sign in through Online settings to like and favourite AIs.]
-
+Yapay zekâları beğenmek ve favorilere eklemek için Çevrimiçi ayarlarından oturum açın.
 [Starter project]
-
+Başlangıç projesi
 [downloads of this version]
-
+bu sürümün indirilme sayısı
 [downloads]
-
+indirilme sayısı
 [Update available]
-
+Güncelleme mevcut
 [Browse versions]
-
+Sürümlere göz at
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Bir yapay zekâ indirin, ardından yerel oyunda bir bilgisayar oyuncusu için seçin. Kurulu sürümler çevrimdışı çalışır. Güncellemeler gelecekteki oyunları etkiler; kayıtlar özgün kodlarını korur.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Uyumluluk kontrolleri güvenliği veya oyun gücünü garanti etmez. Yalnızca güvendiğiniz geliştiricilerin kodunu çalıştırın.
 [Back to results]
-
+Sonuçlara dön
 [music 2–5 minutes]
-
+2–5 dakika
 [music 5–15 minutes]
-
+5–15 dakika
 [music AI-generated]
-
+Yapay zekâ üretimi
 [music All music]
-
+Tüm müzikler
 [music All open licences]
-
+Tüm açık lisanslar
 [music Any duration]
-
+Herhangi bir süre
 [music Audition each mood for eight seconds]
-
+Her atmosferi sekiz saniye dinleyin
 [music Back]
-
+Geri
 [music Browse]
-
+Göz at
 [music Building]
-
+Yükseliş
 [music Calm]
-
+Sakin
 [music Calm → Building → Combat]
-
+Sakin → Yükseliş → Çatışma
 [music Choose Building]
-
+Yükselişi seç
 [music Choose Calm]
-
+Sakini seç
 [music Choose Combat]
-
+Çatışmayı seç
 [music Choose ZIP]
-
+ZIP seç
 [music Choose a music file.]
-
+Bir müzik dosyası seçin.
 [music Combat]
-
+Çatışma
 [music Could not open this music set.]
-
+Bu müzik seti açılamadı.
 [music Credits, downloads and reporting]
-
+Emeği geçenler, indirmeler ve bildirimler
 [music Downloading music…]
-
+Müzik indiriliyor…
 [music Export recovery files]
-
+Kurtarma dosyalarını dışa aktar
 [music Fade duration]
-
+Geçiş süresi
 [music File selection cancelled or failed.]
-
+Dosya seçimi iptal edildi veya başarısız oldu.
 [music Import ZIP]
-
+ZIP içe aktar
 [music Import ZIP or three tracks]
-
+ZIP veya üç parça içe aktar
 [music Import music]
-
+Müzik içe aktar
 [music Import three tracks]
-
+Üç parça içe aktar
 [music Includes AI-generated audio]
-
+Yapay zekâ üretimi ses içerir
 [music Install]
-
+Kur
 [music Install selected]
-
+Seçilenleri kur
 [music Installed]
-
+Kurulu
 [music Load more]
-
+Daha fazla yükle
 [music Loading music…]
-
+Müzik yükleniyor…
 [music Most downloaded]
-
+En çok indirilenler
 [music Most liked]
-
+En çok beğenilenler
 [music Music decoding failed.]
-
+Müziğin kodu çözülemedi.
 [music Music download failed.]
-
+Müzik indirilemedi.
 [music Music installed.]
-
+Müzik kuruldu.
 [music Music installed. It is now available in Audio settings.]
-
+Müzik kuruldu. Artık Ses ayarlarından kullanılabilir.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Müzik henüz kalıcı olarak kaydedilmedi. Ayrılmadan önce kaydetmeyi yeniden deneyin.
 [music Music library]
-
+Müzik kütüphanesi
 [music Music request failed.]
-
+Müzik isteği başarısız oldu.
 [music Newest]
-
+En yeniler
 [music No community music installed yet. Import files or browse the online library.]
-
+Henüz topluluk müziği kurulmadı. Dosyaları içe aktarın veya çevrimiçi kütüphaneye göz atın.
 [music No music found.]
-
+Müzik bulunamadı.
 [music Not AI-generated]
-
+Yapay zekâ üretimi değil
 [music Pause]
-
+Duraklat
 [music Play]
-
+Çal
 [music Playback position]
-
+Çalma konumu
 [music Preview]
-
+Ön dinleme
 [music Ready to import.]
-
+İçe aktarmaya hazır.
 [music Remove]
-
+Kaldır
 [music Reset to game behavior]
-
+Oyun davranışına sıfırla
 [music Retry saving]
-
+Kaydetmeyi yeniden dene
 [music Saved.]
-
+Kaydedildi.
 [music Saving music…]
-
+Müzik kaydediliyor…
 [music Search]
-
+Ara
 [music Search title, artist, description…]
-
+Başlık, sanatçı, açıklama ara…
 [music Select for installation]
-
+Kurulum için seç
 [music Share music on the web]
-
+Müziği web üzerinde paylaş
 [music Some catalogue entries could not be read.]
-
+Bazı katalog girdileri okunamadı.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Veriler kaydedilemedi. Ayrılmadan önce yeniden deneyin veya dosyalarınızı dışa aktarın.
 [music Tag]
-
+Etiket
 [music Test crossfades]
-
+Çapraz geçişleri dene
 [music Up to 2 minutes]
-
+En fazla 2 dakika
 [music Use this music]
-
+Bu müziği kullan
 [music Validating music…]
-
+Müzik doğrulanıyor…
 [settings Music library · Browse, install and import]
-
+Müzik kütüphanesi · Göz at, kur ve içe aktar
 [music Filters]
-
+Filtreler
 [music Leave without saving]
-
+Kaydetmeden ayrıl
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+İndirdiğiniz müzik ZIP dosyasını veya üç Opus parçasını içe aktarın. Üst veriler ve kapak resmi Sakin parçasından okunur; ek dosya gerekmez.
 [settings Target render FPS]
 Hedef çizim FPS değeri
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ Demir cevheri
 Silika
 [Cotton]
 Pamuk
+[Jungle trees]
+Tropik ağaçlar
+[Pine trees]
+Çam ağaçları
+[Dead trees]
+Kuru ağaçlar
+[Ruins]
+Harabeler
+[Camp-site]
+Kamp yeri
+[Ancient debris]
+Antik kalıntılar
+[Scrub]
+Çalılık
+[Tall grass]
+Uzun otlar
+[Maize]
+Mısır
+[Potatoes]
+Patates
+[Rice]
+Pirinç
+[Fish]
+Balık
 [Reroll terrain look]
 Arazi görünümünü yeniden rastgele seç
 [boulders]
-
+Kaya blokları
 [hedge]
-
+Bitki çiti
 [thicket]
-
+Çalılık
 [ridge_rock]
-
+Sırt
 [outcrop]
-
+Kaya çıkıntısı
 [dirt]
-
+Toprak
 [clay]
-
+Kil
 [gravel]
-
+Çakıl
 [flower_meadow]
-
+Çiçekli çayır
 [mud]
-
+Çamur
 [marsh]
-
+Bataklık
 [deep_snow]
-
+Derin kar
 [scree]
-
+Taş döküntüsü
 [dirt_track]
-
+Toprak yol
 [boardwalk]
-
+Ahşap yol
 [lava]
-
+Lav
 [ember_field]
-
+Kor alanı
 [loam]
-
+Verimli toprak
 [moss]
-
+Yosun
 [spring_meadow]
-
+Bahar çayırı
 [deep_water]
-
+Derin su
 [dark_water]
-
+Karanlık su
 [void_hole]
-
+Çukur
 [chasm]
-
+Uçurum
 [terrain group water]
-
+Su
 [terrain group sand]
-
+Kum
 [terrain group grass]
-
+Çimen
 [terrain group ice]
-
+Buz
 [terrain group paths]
-
+Yollar
 [terrain group obstacles]
-
+Engeller
 [terrain group ridges]
-
+Sırtlar
 [terrain group barren]
-
+Çorak arazi
 [terrain group rough]
-
+Engebeli arazi
 [terrain group lava]
-
+Lav
 [terrain group fertile]
-
+Verimli arazi
 [terrain group deep-water]
-
+Derin su
 [terrain group void]
-
+Boşluk
 [experiment obstacle-terrain]
-
+Engel arazisi
 [experiment obstacle-terrain help]
-
+Harita düzenleyicisine kaya blokları, bitki çitleri ve çalılıklar ekler. Kara birimleri bunları aşamaz ve bunlar mermileri durdurur; uçan birimler üzerinden geçer. Üzerlerinde bina veya kaynak bulunamaz.
 [experiment ridge-terrain]
-
+Sırt arazisi
 [experiment ridge-terrain help]
-
+Harita düzenleyicisine kayalık sırtlar ve kaya çıkıntıları ekler. Kara birimleri bunları aşamaz, ancak kuleler üzerlerinden ateş eder ve uçan birimler geçer. Üzerlerinde bina veya kaynak bulunamaz.
 [experiment barren-terrain]
-
+Çorak arazi
 [experiment barren-terrain help]
-
+Harita düzenleyicisine toprak, kil, çakıl ve çiçekli çayırlar ekler. Üzerlerine bina kurulabilir; üzerlerinde veya yanlarında hiçbir şey büyümez ve kıyı sayılmazlar.
 [experiment rough-terrain]
-
+Engebeli arazi
 [experiment rough-terrain help]
-
+Harita düzenleyicisine çamur, bataklık, derin kar ve taş döküntüsü ekler. Kara birimleri yaklaşık üçte iki hızla ilerler. Engebeli arazide bina veya kaynak bulunamaz.
 [experiment path-terrain]
-
+Yol arazisi
 [experiment path-terrain help]
-
+Harita düzenleyicisine toprak ve ahşap yollar ekler. Patikalar gibi, kara birimleri iki kat hızla ilerler ve bina kurulabilir, ancak hiçbir şey büyümez.
 [experiment lava-terrain]
-
+Lav arazisi
 [experiment lava-terrain help]
-
+Harita düzenleyicisine lav ve kor alanları ekler. Kara birimleri bunlara giremez; üzerinden geçen uçan birimler hızla sağlık kaybeder. Mermiler üzerinden geçer.
 [experiment fertile-terrain]
-
+Verimli arazi
 [experiment fertile-terrain help]
-
+Harita düzenleyicisine verimli toprak, yosun ve bahar çayırları ekler. Binaları ve ekinleri destekler, çevrelerindeki araziyi sudan daha güçlü sularlar.
 [experiment deep-water-terrain]
-
+Derin su
 [experiment deep-water-terrain help]
-
+Harita düzenleyicisine derin ve karanlık su ekler. Yüzücüler daha yavaş geçer, içlerinde alg büyümez ve yine de yakındaki tarlaları sularlar.
 [experiment void-terrain]
-
+Boşluk arazisi
 [experiment void-terrain help]
-
+Harita düzenleyicisine çukurlar ve uçurumlar ekler. Uçan birimler dâhil hiçbir şey bunları aşamaz ve mermiler kenarlarında durur.
 [terrain group custom]
-
+Özel
 [terrain group classic]
-
+Klasik arazi
 [terrain rule walkable]
-
+Yürünebilir
 [terrain rule swimmable]
-
+Yüzülebilir
 [terrain rule impassable]
-
+Geçilemez
 [terrain rule no flying]
-
+Uçuş yasak
 [terrain rule buildable]
-
+İnşa edilebilir
 [terrain rule speed %0]
-
+Hız %0%
 [terrain rule crops grow]
-
+Ekinler büyür
 [terrain rule irrigates]
-
+Yakındaki araziyi sular
 [terrain rule stops nearby growth]
-
+Yakındaki büyümeyi engeller
 [terrain rule blocks shots]
-
+Atışları engeller
 [terrain rule hurts walkers]
-
+Yürüyenlere zarar verir
 [terrain rule hurts fliers]
-
+Uçanlara zarar verir
 [terrain palette hint]
-
+Bir fırça seçin. Her grubun arazi türleri aynı kuralları paylaşır ve yalnızca görünüm bakımından farklıdır.
 [terrain rule algae grow]
-
+Algler büyür
 [terrain palette experiments hint]
-
+Bir fırça seçin. Ayarlar > Deneyler altında ilgili deneyler etkinleştirildiğinde burada daha fazla arazi grubu görünür.
 [brush valid on %0]
-
+Geçerli olduğu arazi: %0
 [brush valid nowhere]
-
+Bu haritanın hiçbir arazisine yerleştirilemez
 [brush requires experiment %0]
-
+%0 deneyini gerektirir
 [brush resources custom]
-
+İçe aktarılan kaynaklar
 [brush section zones]
-
+Bölgeler
 [brush section areas]
-
+Alanlar
 [brush section tools]
-
+Araçlar
 [brush clearing area]
-
+Temizleme alanı
 [editor unsaved title]
-
+Kaydedilmemiş değişiklikler
 [editor quit unsaved]
-
+Düzenleyiciden ayrılmadan önce bu haritadaki değişiklikleriniz kaydedilsin mi?
 [editor load unsaved]
-
+Başka bir harita açmadan önce bu haritadaki değişiklikleriniz kaydedilsin mi?
 [editor save]
-
+Kaydet…
 [editor discard]
-
+Kaydetme
 [editor share never saved]
-
+Haritalar kayıtlı dosyalarından paylaşılır. Önce bu haritayı kaydedin, ardından paylaşın.
 [editor share unsaved]
-
+Bu haritada henüz kaydedilmemiş değişiklikler var. Paylaşım kayıtlı dosyayı yükler.
 [editor save and share]
-
+Kaydet ve paylaş…
 [editor share saved version]
-
+Kayıtlı sürümü paylaş
 [editor reroll confirm]
-
+Her arazi karesine yeni bir rastgele görünüm verilsin mi? Arazi türleri ve oynanış aynı kalır. Bu işlem geri alınamaz.
 [editor reroll]
-
+Yeniden rastgeleleştir
 [editor map saved]
-
+Harita kaydedildi
 [editor map shared]
-
+Harita çevrimiçi paylaşıldı
 [editor save needs fertility]
-
+Kaydetmek için verimlilik haritası gerektiğinden kayıt iptal edildi. Yeniden denemek için Tamam düğmesine basın.
 [editor fertility stale]
-
+Verimlilik haritası güncel değil · Yenilemek için tıklayın
 [No definition files found in %0]
-
+%0 içinde tanım dosyası bulunamadı
 [From device…]
-
+Cihazdan…
 [replace existing file %0?]
-
+"%0" adlı bir dosya zaten var. Değiştirilsin mi?
 [Replace]
-
+Değiştir
 [Keep existing file]
-
+Mevcut dosyayı koru
 [editor menu save]
-
+Haritayı kaydet
 [editor menu load]
-
+Harita aç…
 [editor menu import terrain]
-
+Arazi tanımlarını içe aktar…
 [editor menu import resources]
-
+Kaynak tanımlarını içe aktar…
 [editor menu teams]
-
+Takımlar…
 [editor menu scenario]
-
+Senaryo…
 [editor menu reroll]
-
+Arazi görünümünü yeniden rastgeleleştir…
 [editor menu file]
-
+Dosya
 [editor menu map]
-
+Harita
 [no resource growth areas]
-
+Büyüme olmayan alanlar
 [dock flags and units]
-
+Bayraklar ve birimler
 [dock minimap]
-
+Mini harita
 [dock search brushes]
-
+Fırça ara
 [dock brush shape %0]
-
+Fırça şekli %0
 [dock brush]
-
+Fırça
 [dock brush paint]
-
+Boya
 [dock brush erase]
-
+Sil
 [dock enable for map]
-
+Bu harita için etkinleştir
 [dock enable experiment %0]
-
+%0 etkinleştir
 [dock enable experiment hint %0]
-
+%0 deneyini yalnızca bu harita için etkinleştirir.
 [dock area number]
-
+Alan
 [dock building level]
-
+Seviye
 [dock unit level]
-
+Birim seviyesi
 [dock no brushes match]
-
+Aramayla eşleşen fırça yok.
 [dock active team]
-
+Etkin takım
 [dock team count %0]
-
+Bu haritadaki takımlar: %0
 [dock add team]
-
+Takım ekle
 [dock remove team]
-
+Takımı kaldır
 [dock nothing selected]
-
+Hiçbir şey seçili değil.
 [dock no properties]
-
+Bu nesnenin düzenlenebilir özelliği yok.
 [focus brush search]
-
+Fırça ara
 [switch to resources view]
-
+Kaynak görünümüne geç
 [dock resources base]
-
+Standart kaynaklar
 [dock fertility stale]
-
+Verimlilik haritası güncel değil.
 [dock fertility refresh]
-
+Verimliliği yenile
 [Enabled %0 for this map]
-
+%0 bu harita için etkinleştirildi
 [editor fertility tap refresh]
-
+Verimlilik haritası güncel değil: yenilemek için dokunun
+[editor menu import set]
+Arazi ve kaynak setini içe aktar
+[editor menu set library]
+Set kütüphanesi
+[set library loading]
+Setler yükleniyor…
+[set library downloading]
+Seçilen yayın indiriliyor…
+[set library connection error]
+Setler yüklenemiyor. Bağlantınızı kontrol edip yeniden deneyin.
+[set library hash error]
+İndirilen setin özet doğrulaması başarısız oldu.
+[set library package error]
+Geçersiz set paketi.
+[set library listing error]
+Geçersiz set listesi.
+[set library release error]
+Geçersiz set yayını.
+[set library selection help]
+İçe aktarılacak girdileri seçin. Gerekli özel kaynaklar otomatik olarak eklenir.
+[set library empty]
+Set bulunamadı.
+[set library release help]
+İncelemek ve içe aktarmak için belirli bir yayın seçin.
+[set library heading]
+Arazi ve kaynak setleri
+[set library browse]
+Çevrimiçi kütüphaneye göz at
+[set library local]
+Harita içeriği, emeği geçenler ve yerel düzenlemeler
+[set library local help]
+Bu haritadaki içe aktarılmış içeriğin kopyasını düzenleyin. Özgün yayının katkıda bulunanları korunur. Değişiklikler diğer haritaları veya çevrimiçi yayını güncellemez.
+[set library apply]
+Yerel değişiklikleri uygula
+[set library updated]
+Yerel içerik güncellendi.
+[set library search hint]
+Tema ve oluşturucu ara
+[set library search]
+Ara
+[set library set]
+Set
+[set library update help]
+Bu işlem, yerel düzenlemeler dâhil eşleşen yerleştirilmiş arazileri ve kaynakları değiştirir. Kaldırılan girdiler eski yayında kalır. Mevcut malzeme miktarları yeni kapasitelere göre sınırlandırılır.
+[set library import]
+Seçili girdileri içe aktar
+[set library next]
+Sonraki sayfa
+[set library back]
+Sonuçlara dön
+[set library license %0]
+Lisans: %0
+[set library release %0]
+yayın %0
+[set library replace %0]
+%0 yayınından yerleştirilen girdileri değiştir
+[set library preview limit]
+İlk 64 girdinin ön izlemesi gösterilir. Tüm girdiler seçilebilir durumda kalır.
+[set library definition]
+Özellik tanımı (JSON)
+[set library artwork]
+Arazi görsel eşlemesi (JSON)
+[settings Map generators]
+Harita oluşturucuları
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Bir oluşturucu paketi içe aktarın, ardından harita veya oyun oluştururken paketin arazisini seçin.
+[settings Import map generator]
+Harita oluşturucusunu içe aktar
+[settings No custom map generators installed.]
+Yüklü özel harita oluşturucusu yok.
+[settings Replace package]
+Paketi değiştir
+[settings Export package]
+Paketi dışa aktar
+[settings Remove generator]
+Oluşturucuyu kaldır
+[settings Saving generator library…]
+Oluşturucu kitaplığı kaydediliyor…
+[settings Could not read generator package.]
+Oluşturucu paketi okunamadı.
+[settings Generator library saved.]
+Oluşturucu kitaplığı kaydedildi.
+[settings Storage could not be saved. The previous library is retained.]
+Veriler kaydedilemedi. Önceki kitaplık korunuyor.
+[settings Waiting for file selection or storage…]
+Dosya seçimi veya depolama bekleniyor…
+[settings File selection is unavailable.]
+Dosya seçimi kullanılamıyor.
+[settings Package export is unavailable.]
+Paket dışa aktarma kullanılamıyor.
+[stat band area upkeep]
+Alan bakımı

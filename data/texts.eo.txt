@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Finu la ensaluton en via retumilo. La ludo aŭtomate daŭros kiam vi finos.
 [hub browser did not open]
-
+Via retumilo ne malfermiĝis. Malfermu la ensalutan paĝon por daŭrigi.
 [hub compare code %0]
-
+Se la paĝo petas, kontrolu ke ĝi montras %0.
 [hub code copied]
-
+Kodo kopiita
 [settings Finish in your browser. The game continues by itself.]
-
+Finu en via retumilo. La ludo aŭtomate daŭras.
 [music set]
-
+Muzikaro
 [random music set]
-
+Hazarda ĉe ĉiu ludo
 [playing music set %0]
-
+Ludata: %0
 [music set failed]
-
+Ne eblis ŝargi ĉi tiun muzikaron.
 [settings Music set]
-
+Muzikaro
 [settings Random each match]
-
+Elektu Hazarda por elekti sontrakon ĉe la komenco de ĉiu ludo.
 [settings Edge scrolling]
-
+Rulumado ĉe la rando
 [settings Edge scrolling in fullscreen]
-
+Rulumado ĉe la rando en plena ekrano
 [settings Edge scrolling in windowed mode]
-
+Rulumado ĉe la rando en fenestra reĝimo
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Movu la ludajn kaj redaktilajn mapojn kiam la muso atingas la fenestrorandon.
 [AI strategy]
 AI-strategio
 [start recording]
@@ -4625,9 +4625,9 @@ Registrado
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Registri viajn ludojn kiel MP4-videojn kun sono. Registrado bezonas FFmpeg kun la kodiloj libx264 kaj AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Registru viajn ludojn kiel MP4-filmetojn kun sono.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+La registrado uzas la plenan bildigan distingivon je 30 kadroj/s.
 [settings FFmpeg is ready.]
 FFmpeg pretas.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Vunditaj globuloj retiriĝas
 [Units can die]
 Globuloj povas morti
 [Upgrades]
-
+Plibonigoj
 [No stockpile]
 Neniu
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Vunditaj globuloj iras kuraciĝi anstataŭ batali ĝis la morto.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Globuloj mortas kiam iliaj vivpoentoj elĉerpiĝas. Malŝaltu por haltigi ilin je 1 vivpoento.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Unuoj altniveliĝas ĉe trejnaj konstruaĵoj, kaj konstruaĵoj povas esti plibonigitaj. Riparoj restas disponeblaj kiam la opcio estas malŝaltita.
 [stat group work]
 Tempo de laboristoj
 [stat worker time]
@@ -5309,235 +5309,235 @@ forto
 [stat view by place]
 Laŭ loko
 [AI Library]
-
+AI-biblioteko
 [Authoring guide]
-
+Gvidilo por aŭtoroj
 [Beginner-friendly]
-
+Taŭga por komencantoj
 [Defensive]
-
+Defenda
 [Discover]
-
+Malkovru
 [Download & install]
-
+Elŝutu kaj instalu
 [Downloading AI…]
-
+Elŝutante AI…
 [Expansion]
-
+Ekspansio
 [Experimental]
-
+Eksperimenta
 [Favourite]
-
+Aldonu al favoratoj
 [Favourited]
-
+Aldonita al favoratoj
 [Favourites]
-
+Favoratoj
 [Got it]
-
+Komprenite
 [How AIs work]
-
+Kiel AI-oj funkcias
 [Install selected version]
-
+Instalu la elektitan version
 [Installed]
-
+Instalita
 [Invalid AI catalogue response]
-
+Nevalida respondo de la AI-katalogo
 [JavaScript API reference]
-
+Referenco de la JavaScript-API
 [Like]
-
+Ŝatu
 [Liked]
-
+Ŝatita
 [Loading AI library…]
-
+Ŝargante la AI-bibliotekon…
 [Most downloaded]
-
+Plej elŝutitaj
 [Most liked]
-
+Plej ŝatitaj
 [Newest]
-
+Plej novaj
 [No AIs match these filters.]
-
+Neniu AI kongruas kun ĉi tiuj filtriloj.
 [Not validated for this game version]
-
+Ne validigita por ĉi tiu ludversio
 [Open AI Library]
-
+Malfermu la AI-bibliotekon
 [Open AI page]
-
+Malfermu la AI-paĝon
 [Passed compatibility checks]
-
+Trapasis kongruecajn kontrolojn
 [Recently updated]
-
+Lastatempe ĝisdatigitaj
 [Rush]
-
+Rapida atako
 [Search]
-
+Serĉu
 [Share your AI]
-
+Kunhavigu vian AI
 [Show more]
-
+Montru pli
 [Sign in through Online settings to like and favourite AIs.]
-
+Ensalutu per la agordoj Rete por ŝati AI-ojn kaj aldoni ilin al favoratoj.
 [Starter project]
-
+Komenca projekto
 [downloads of this version]
-
+Elŝutoj de ĉi tiu versio
 [downloads]
-
+Elŝutoj
 [Update available]
-
+Ĝisdatigo disponebla
 [Browse versions]
-
+Foliumu versiojn
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Elŝutu AI, poste elektu ĝin por komputila ludanto en loka ludo. Instalitaj versioj funkcias senrete. Ĝisdatigoj influas estontajn ludojn; konservitaj ludoj gardas sian originalan kodon.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Kongruecaj kontroloj atestas nek sekurecon nek ludforton. Rulu nur kodon de aŭtoroj, kiujn vi fidas.
 [Back to results]
-
+Reen al rezultoj
 [music 2–5 minutes]
-
+2–5 minutoj
 [music 5–15 minutes]
-
+5–15 minutoj
 [music AI-generated]
-
+AI-generita
 [music All music]
-
+Ĉia muziko
 [music All open licences]
-
+Ĉiuj malfermaj permesiloj
 [music Any duration]
-
+Ajna daŭro
 [music Audition each mood for eight seconds]
-
+Aŭskultu ĉiun etoson dum ok sekundoj
 [music Back]
-
+Reen
 [music Browse]
-
+Foliumu
 [music Building]
-
+Intensiĝo
 [music Calm]
-
+Trankvilo
 [music Calm → Building → Combat]
-
+Trankvilo → Intensiĝo → Batalo
 [music Choose Building]
-
+Elektu Intensiĝon
 [music Choose Calm]
-
+Elektu Trankvilon
 [music Choose Combat]
-
+Elektu Batalon
 [music Choose ZIP]
-
+Elektu ZIP
 [music Choose a music file.]
-
+Elektu muzikdosieron.
 [music Combat]
-
+Batalo
 [music Could not open this music set.]
-
+Ne eblis malfermi ĉi tiun muzikaron.
 [music Credits, downloads and reporting]
-
+Agnoskoj, elŝutoj kaj raportado
 [music Downloading music…]
-
+Elŝutante muzikon…
 [music Export recovery files]
-
+Eksportu restaŭrajn dosierojn
 [music Fade duration]
-
+Daŭro de sonfado
 [music File selection cancelled or failed.]
-
+Dosierelekto nuligita aŭ malsukcesa.
 [music Import ZIP]
-
+Importu ZIP
 [music Import ZIP or three tracks]
-
+Importu ZIP aŭ tri trakojn
 [music Import music]
-
+Importu muzikon
 [music Import three tracks]
-
+Importu tri trakojn
 [music Includes AI-generated audio]
-
+Enhavas AI-generitan sonon
 [music Install]
-
+Instalu
 [music Install selected]
-
+Instalu la elektitajn
 [music Installed]
-
+Instalita
 [music Load more]
-
+Ŝargu pli
 [music Loading music…]
-
+Ŝargante muzikon…
 [music Most downloaded]
-
+Plej elŝutitaj
 [music Most liked]
-
+Plej ŝatitaj
 [music Music decoding failed.]
-
+Muzika malkodigo malsukcesis.
 [music Music download failed.]
-
+Muzika elŝuto malsukcesis.
 [music Music installed.]
-
+Muziko instalita.
 [music Music installed. It is now available in Audio settings.]
-
+Muziko instalita. Ĝi nun disponeblas en la agordoj Sono.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+La muziko ankoraŭ ne estas konstante konservita. Reprovu konservi antaŭ foriri.
 [music Music library]
-
+Muzika biblioteko
 [music Music request failed.]
-
+Muzika peto malsukcesis.
 [music Newest]
-
+Plej novaj
 [music No community music installed yet. Import files or browse the online library.]
-
+Ankoraŭ neniu komunuma muziko estas instalita. Importu dosierojn aŭ foliumu la retan bibliotekon.
 [music No music found.]
-
+Neniu muziko trovita.
 [music Not AI-generated]
-
+Ne AI-generita
 [music Pause]
-
+Paŭzu
 [music Play]
-
+Ludu
 [music Playback position]
-
+Ludpozicio
 [music Preview]
-
+Antaŭvido
 [music Ready to import.]
-
+Preta por importo.
 [music Remove]
-
+Forigu
 [music Reset to game behavior]
-
+Restarigu la ludan konduton
 [music Retry saving]
-
+Reprovu konservi
 [music Saved.]
-
+Konservita.
 [music Saving music…]
-
+Konservante muzikon…
 [music Search]
-
+Serĉu
 [music Search title, artist, description…]
-
+Serĉu titolon, artiston, priskribon…
 [music Select for installation]
-
+Elektu por instalado
 [music Share music on the web]
-
+Kunhavigu muzikon en la reto
 [music Some catalogue entries could not be read.]
-
+Kelkaj katalogeroj ne povis esti legitaj.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Ne eblis konservi la datumojn. Reprovu aŭ eksportu viajn dosierojn antaŭ foriri.
 [music Tag]
-
+Etikedo
 [music Test crossfades]
-
+Provu krucajn sonfadojn
 [music Up to 2 minutes]
-
+Ĝis 2 minutoj
 [music Use this music]
-
+Uzu ĉi tiun muzikon
 [music Validating music…]
-
+Validigante muzikon…
 [settings Music library · Browse, install and import]
-
+Muzika biblioteko · Foliumu, instalu kaj importu
 [music Filters]
-
+Filtriloj
 [music Leave without saving]
-
+Foriru sen konservi
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importu elŝutitan muzikan ZIP aŭ la tri Opus-trakojn. Metadatumoj kaj kovrilbildo estas legitaj el la trako Trankvilo; neniuj kromaj dosieroj necesas.
 [settings Target render FPS]
 Cela bildfrekvenco
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ Fera erco
 Kvarco
 [Cotton]
 Kotono
+[Jungle trees]
+Ĝangalaj arboj
+[Pine trees]
+Pinoj
+[Dead trees]
+Mortintaj arboj
+[Ruins]
+Ruinoj
+[Camp-site]
+Tendaro
+[Ancient debris]
+Antikvaj rubaĵoj
+[Scrub]
+Arbustaro
+[Tall grass]
+Alta herbo
+[Maize]
+Maizo
+[Potatoes]
+Terpomoj
+[Rice]
+Rizo
+[Fish]
+Fiŝoj
 [Reroll terrain look]
 Denove hazardigi la aspekton de la tereno
 [boulders]
-
+Rokegoj
 [hedge]
-
+Heĝo
 [thicket]
-
+Densejo
 [ridge_rock]
-
+Roka kresto
 [outcrop]
-
+Elstara roko
 [dirt]
-
+Tero
 [clay]
-
+Argilo
 [gravel]
-
+Gruzo
 [flower_meadow]
-
+Flora herbejo
 [mud]
-
+Koto
 [marsh]
-
+Marĉo
 [deep_snow]
-
+Profunda neĝo
 [scree]
-
+Rokrompaĵoj
 [dirt_track]
-
+Terpado
 [boardwalk]
-
+Tabulpado
 [lava]
-
+Lafo
 [ember_field]
-
+Braĝokampo
 [loam]
-
+Argilhumusa grundo
 [moss]
-
+Musko
 [spring_meadow]
-
+Printempa herbejo
 [deep_water]
-
+Profunda akvo
 [dark_water]
-
+Malhela akvo
 [void_hole]
-
+Truo
 [chasm]
-
+Abismo
 [terrain group water]
-
+Akvo
 [terrain group sand]
-
+Sablo
 [terrain group grass]
-
+Herbo
 [terrain group ice]
-
+Glacio
 [terrain group paths]
-
+Padoj
 [terrain group obstacles]
-
+Obstakloj
 [terrain group ridges]
-
+Krestoj
 [terrain group barren]
-
+Malfekunda grundo
 [terrain group rough]
-
+Malglata grundo
 [terrain group lava]
-
+Lafo
 [terrain group fertile]
-
+Fekunda grundo
 [terrain group deep-water]
-
+Profunda akvo
 [terrain group void]
-
+Malpleno
 [experiment obstacle-terrain]
-
+Obstakla tereno
 [experiment obstacle-terrain help]
-
+Aldonas rokegojn, heĝojn kaj densejojn al la mapredaktilo. Teraj unuoj ne povas trairi ilin, kaj ili haltigas pafaĵojn; flugantaj unuoj pasas super ili. Ili enhavas nek konstruaĵojn nek rimedojn.
 [experiment ridge-terrain]
-
+Kresta tereno
 [experiment ridge-terrain help]
-
+Aldonas rokajn krestojn kaj elstarajn rokojn al la mapredaktilo. Teraj unuoj ne povas trairi ilin, sed turoj pafas super ili kaj flugantaj unuoj pasas. Ili enhavas nek konstruaĵojn nek rimedojn.
 [experiment barren-terrain]
-
+Malfekunda grundo
 [experiment barren-terrain help]
-
+Aldonas teron, argilon, gruzon kaj florajn herbejojn al la mapredaktilo. Konstruaĵoj povas stari sur ili, nenio kreskas sur aŭ apud ili, kaj ili ne kalkuliĝas kiel bordo.
 [experiment rough-terrain]
-
+Malglata grundo
 [experiment rough-terrain help]
-
+Aldonas koton, marĉon, profundan neĝon kaj rokrompaĵojn al la mapredaktilo. Teraj unuoj moviĝas je ĉirkaŭ du trionoj de la rapido. Malglata grundo enhavas nek konstruaĵojn nek rimedojn.
 [experiment path-terrain]
-
+Pada tereno
 [experiment path-terrain help]
-
+Aldonas terpadojn kaj tabulpadojn al la mapredaktilo. Kiel sur vojetoj, teraj unuoj moviĝas je duobla rapido kaj konstruaĵoj estas permesataj, sed nenio kreskas.
 [experiment lava-terrain]
-
+Lafa tereno
 [experiment lava-terrain help]
-
+Aldonas lafon kaj braĝokampojn al la mapredaktilo. Teraj unuoj ne povas eniri ilin; flugantaj unuoj rapide perdas sanon dum la transiro. Pafaĵoj pasas super ili.
 [experiment fertile-terrain]
-
+Fekunda grundo
 [experiment fertile-terrain help]
-
+Aldonas argilhumusan grundon, muskon kaj printempajn herbejojn al la mapredaktilo. Ili subtenas konstruaĵojn kaj kultivaĵojn kaj irigacias la ĉirkaŭan teron pli forte ol akvo.
 [experiment deep-water-terrain]
-
+Profunda akvo
 [experiment deep-water-terrain help]
-
+Aldonas profundan kaj malhelan akvon al la mapredaktilo. Naĝantoj transiras ĝin pli malrapide, neniuj algoj kreskas en ĝi, kaj ĝi ankoraŭ irigacias proksimajn kampojn.
 [experiment void-terrain]
-
+Malplena tereno
 [experiment void-terrain help]
-
+Aldonas truojn kaj abismojn al la mapredaktilo. Nenio povas trairi ilin, eĉ ne flugantaj unuoj, kaj pafaĵoj haltas ĉe ilia rando.
 [terrain group custom]
-
+Propra
 [terrain group classic]
-
+Klasika grundo
 [terrain rule walkable]
-
+Piedirebla
 [terrain rule swimmable]
-
+Naĝebla
 [terrain rule impassable]
-
+Netrairebla
 [terrain rule no flying]
-
+Flugado malpermesita
 [terrain rule buildable]
-
+Konstruebla
 [terrain rule speed %0]
-
+Rapido %0%
 [terrain rule crops grow]
-
+Kultivaĵoj kreskas
 [terrain rule irrigates]
-
+Irigacias proksiman teron
 [terrain rule stops nearby growth]
-
+Haltigas proksiman kreskadon
 [terrain rule blocks shots]
-
+Blokas pafojn
 [terrain rule hurts walkers]
-
+Vundas irantajn unuojn
 [terrain rule hurts fliers]
-
+Vundas flugantajn unuojn
 [terrain palette hint]
-
+Elektu penikon. La terenoj en ĉiu grupo havas la samajn regulojn kaj malsamas nur laŭ aspekto.
 [terrain rule algae grow]
-
+Algoj kreskas
 [terrain palette experiments hint]
-
+Elektu penikon. Pliaj terengrupoj aperas ĉi tie kiam iliaj eksperimentoj estas ŝaltitaj sub Agordoj > Eksperimentoj.
 [brush valid on %0]
-
+Valida sur: %0
 [brush valid nowhere]
-
+Ne povas esti metita sur iun ajn terenon de ĉi tiu mapo
 [brush requires experiment %0]
-
+Postulas la eksperimenton %0
 [brush resources custom]
-
+Importitaj rimedoj
 [brush section zones]
-
+Zonoj
 [brush section areas]
-
+Areoj
 [brush section tools]
-
+Iloj
 [brush clearing area]
-
+Forviŝa areo
 [editor unsaved title]
-
+Nekonservitaj ŝanĝoj
 [editor quit unsaved]
-
+Ĉu konservi viajn ŝanĝojn al ĉi tiu mapo antaŭ forlasi la redaktilon?
 [editor load unsaved]
-
+Ĉu konservi viajn ŝanĝojn al ĉi tiu mapo antaŭ malfermi alian?
 [editor save]
-
+Konservu…
 [editor discard]
-
+Ne konservu
 [editor share never saved]
-
+Mapoj estas kunhavigataj el sia konservita dosiero. Unue konservu ĉi tiun mapon, poste kunhavigu ĝin.
 [editor share unsaved]
-
+Ĉi tiu mapo havas ankoraŭ nekonservitajn ŝanĝojn. Kunhavigo alŝutas la konservitan dosieron.
 [editor save and share]
-
+Konservu kaj kunhavigu…
 [editor share saved version]
-
+Kunhavigu la konservitan version
 [editor reroll confirm]
-
+Ĉu doni novan hazardan aspekton al ĉiu terenĉelo? Terentipoj kaj ludado restas samaj. Ĉi tio ne povas esti malfarita.
 [editor reroll]
-
+Rehazardigu
 [editor map saved]
-
+Mapo konservita
 [editor map shared]
-
+Mapo kunhavigita rete
 [editor save needs fertility]
-
+Konservado postulas la fekundecomapon, do la konservado estis nuligita. Premu Bone por reprovi.
 [editor fertility stale]
-
+Fekundecomapo malaktuala · Klaku por ĝisdatigi
 [No definition files found in %0]
-
+Neniuj difinaj dosieroj trovitaj en %0
 [From device…]
-
+El aparato…
 [replace existing file %0?]
-
+Dosiero nomata "%0" jam ekzistas. Ĉu anstataŭigi ĝin?
 [Replace]
-
+Anstataŭigu
 [Keep existing file]
-
+Gardu la ekzistantan dosieron
 [editor menu save]
-
+Konservu mapon
 [editor menu load]
-
+Malfermu mapon…
 [editor menu import terrain]
-
+Importu terendifinojn…
 [editor menu import resources]
-
+Importu rimeddifinojn…
 [editor menu teams]
-
+Teamoj…
 [editor menu scenario]
-
+Scenaro…
 [editor menu reroll]
-
+Rehazardigu la terenaspekton…
 [editor menu file]
-
+Dosiero
 [editor menu map]
-
+Mapo
 [no resource growth areas]
-
+Areoj sen kreskado
 [dock flags and units]
-
+Flagoj kaj unuoj
 [dock minimap]
-
+Mapeto
 [dock search brushes]
-
+Serĉu penikojn
 [dock brush shape %0]
-
+Penikformo %0
 [dock brush]
-
+Peniko
 [dock brush paint]
-
+Pentru
 [dock brush erase]
-
+Forviŝu
 [dock enable for map]
-
+Ŝaltu por ĉi tiu mapo
 [dock enable experiment %0]
-
+Ŝaltu %0
 [dock enable experiment hint %0]
-
+Ŝaltas la eksperimenton %0 nur por ĉi tiu mapo.
 [dock area number]
-
+Areo
 [dock building level]
-
+Nivelo
 [dock unit level]
-
+Unuonivelo
 [dock no brushes match]
-
+Neniuj penikoj kongruas kun la serĉo.
 [dock active team]
-
+Aktiva teamo
 [dock team count %0]
-
+Teamoj sur ĉi tiu mapo: %0
 [dock add team]
-
+Aldonu teamon
 [dock remove team]
-
+Forigu teamon
 [dock nothing selected]
-
+Nenio estas elektita.
 [dock no properties]
-
+Ĉi tiu objekto ne havas redakteblajn ecojn.
 [focus brush search]
-
+Serĉu penikojn
 [switch to resources view]
-
+Ŝanĝu al la rimedovido
 [dock resources base]
-
+Normaj rimedoj
 [dock fertility stale]
-
+La fekundecomapo estas malaktuala.
 [dock fertility refresh]
-
+Ĝisdatigu fekundecon
 [Enabled %0 for this map]
-
+%0 ŝaltita por ĉi tiu mapo
 [editor fertility tap refresh]
-
+Fekundecomapo malaktuala: tuŝu por ĝisdatigi
+[editor menu import set]
+Importu teren- kaj rimedaron
+[editor menu set library]
+Arbiblioteko
+[set library loading]
+Ŝargante arojn…
+[set library downloading]
+Elŝutante la elektitan eldonon…
+[set library connection error]
+Ne eblas ŝargi arojn. Kontrolu vian konekton kaj reprovu.
+[set library hash error]
+La elŝutita aro malsukcesis la haketkontrolon.
+[set library package error]
+Nevalida arpakaĵo.
+[set library listing error]
+Nevalida arlisto.
+[set library release error]
+Nevalida areldono.
+[set library selection help]
+Elektu erojn por importi. Bezonataj propraj rimedoj estas aŭtomate inkluzivitaj.
+[set library empty]
+Neniuj aroj trovitaj.
+[set library release help]
+Elektu specifan eldonon por ekzameni kaj importi.
+[set library heading]
+Teren- kaj rimedaroj
+[set library browse]
+Foliumu la retan bibliotekon
+[set library local]
+Mapenhavo, agnoskoj kaj lokaj redaktoj
+[set library local help]
+Redaktu la kopion de la importita enhavo en ĉi tiu mapo. La agnoskoj de la originala eldono restas ligitaj. Ŝanĝoj ne ĝisdatigas aliajn mapojn aŭ la retan eldonon.
+[set library apply]
+Apliku lokajn ŝanĝojn
+[set library updated]
+Loka enhavo ĝisdatigita.
+[set library search hint]
+Serĉu temojn kaj kreintojn
+[set library search]
+Serĉu
+[set library set]
+Aro
+[set library update help]
+Tio eksplicite anstataŭigas kongruajn metitajn terenojn kaj rimedojn, inkluzive de lokaj redaktoj. Forigitaj eroj restas ĉe la malnova eldono. Ekzistantaj materialkvantoj estas limigitaj al la novaj kapacitoj.
+[set library import]
+Importu la elektitajn erojn
+[set library next]
+Sekva paĝo
+[set library back]
+Reen al rezultoj
+[set library license %0]
+Permesilo: %0
+[set library release %0]
+Eldono %0
+[set library replace %0]
+Anstataŭigu metitajn erojn el eldono %0
+[set library preview limit]
+Antaŭvidoj estas montrataj por la unuaj 64 eroj. Ĉiuj eroj restas elekteblaj.
+[set library definition]
+Ecodifino (JSON)
+[set library artwork]
+Mapado de terenbildoj (JSON)
+[settings Map generators]
+Mapgeneriloj
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Importu generilan pakaĵon, poste elektu ĝian pejzaĝon kiam vi kreas mapon aŭ ludon.
+[settings Import map generator]
+Importi mapgenerilon
+[settings No custom map generators installed.]
+Neniuj propraj mapgeneriloj estas instalitaj.
+[settings Replace package]
+Anstataŭigi pakaĵon
+[settings Export package]
+Eksporti pakaĵon
+[settings Remove generator]
+Forigi generilon
+[settings Saving generator library…]
+Konservado de la generila biblioteko…
+[settings Could not read generator package.]
+Ne eblis legi la generilan pakaĵon.
+[settings Generator library saved.]
+La generila biblioteko estas konservita.
+[settings Storage could not be saved. The previous library is retained.]
+Ne eblis konservi la datumojn. La antaŭa biblioteko estas retenita.
+[settings Waiting for file selection or storage…]
+Atendante dosierelekton aŭ konservadon…
+[settings File selection is unavailable.]
+Dosierelekto ne estas disponebla.
+[settings Package export is unavailable.]
+Pakaĵeksporto ne estas disponebla.
+[stat band area upkeep]
+Prizorgado de la areo

@@ -67,7 +67,7 @@ std::vector<unsigned char> glyph(const Torus &t, int character, bool outline, do
 						  const std::function<bool(double, double)> &inside)
 	{
 		for (int i = 0; i < t.size(); ++i)
-			if (inside((i % t.w - cx) / radius, (i / t.w - cy) / radius))
+			if (inside((t.remainderX(i) - cx) / radius, (i / t.w - cy) / radius))
 				mask[i] = 1;
 	};
 	const auto polygon = [&](std::vector<unsigned char> &mask,
@@ -201,7 +201,7 @@ std::vector<unsigned char> glyph(const Torus &t, int character, bool outline, do
 	}
 	default:
 		for (int i = 0; i < t.size(); ++i)
-			body[i] = std::hypot(i % t.w - cx, i / t.w - cy) <= radius;
+			body[i] = std::hypot(t.remainderX(i) - cx, i / t.w - cy) <= radius;
 	}
 	if (outline)
 	{
@@ -213,7 +213,7 @@ std::vector<unsigned char> glyph(const Torus &t, int character, bool outline, do
 	{
 		for (int i = 0; i < t.size(); ++i)
 		{
-			const double dx = ((i % t.w - cx) / radius - x) / rx,
+			const double dx = ((t.remainderX(i) - cx) / radius - x) / rx,
 						 dy = ((i / t.w - cy) / radius - y) / ry;
 			if (dx * dx + dy * dy <= 1)
 				features[i] = 1;
@@ -406,7 +406,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const bool outside =
-			std::hypot(t.offsetX(int(cx), i % t.w), t.offsetY(int(cy), i / t.w)) > radius + 1;
+			std::hypot(t.offsetX(int(cx), t.remainderX(i)), t.offsetY(int(cy), i / t.w)) > radius + 1;
 		if (L.roads[i] && !outside && L.terrain[i] != WATER)
 			L.roads[i] = 0;
 		if (land[i])
@@ -458,7 +458,7 @@ std::vector<MapGeneratorPoint> existingStarts(Map &map, const Layout &L,
 				{
 					const int j = t.at(x + dx, y + dy);
 					if (grass[j])
-						food += fertility.at(j % t.w, j / t.w);
+						food += fertility.at(t.remainderX(j), j / t.w);
 				}
 			if (food < 12000)
 				continue;
@@ -512,7 +512,7 @@ std::vector<MapGeneratorPoint> existingStarts(Map &map, const Layout &L,
 						const int i = t.at(x + 2 + dx, y + 2 + dy);
 						room += anchors[i];
 						if (dx * dx + dy * dy > kCloseClearance * kCloseClearance && grass[i])
-							growing.push_back(fertility.at(i % t.w, i / t.w));
+							growing.push_back(fertility.at(t.remainderX(i), i / t.w));
 					}
 				std::sort(growing.begin(), growing.end(), std::greater<int>());
 				int supply = 0;
@@ -549,7 +549,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	const auto fertility = Fertility::forMap(map, false);
 	context.stage = "emoji existing-land starts";
 	const auto sites = existingStarts(map, L, fertility, context);
@@ -585,8 +585,8 @@ bool generate(Game &game, GenerationContext &context)
 			const auto eligible = [&](int i)
 			{
 				return walk[i] >= 0 && walk[i] <= 24 && !reserved[i] &&
-					   fertility.at(i % t.w, i / t.w) > 0 && clearGround(map, i % t.w, i / t.w) &&
-					   (first < 0 || t.dist2(first % t.w, first / t.w, i % t.w, i / t.w) >= 64);
+					   fertility.at(t.remainderX(i), i / t.w) > 0 && clearGround(map, t.remainderX(i), i / t.w) &&
+					   (first < 0 || t.dist2(t.remainderX(first), first / t.w, t.remainderX(i), i / t.w) >= 64);
 			};
 			int placed = 0, firstSeed = -1;
 			// Follow the natural shore in several patches when a bay or narrow strip
@@ -598,7 +598,7 @@ bool generate(Game &game, GenerationContext &context)
 				for (int i = 0; i < t.size(); ++i)
 					if (eligible(i))
 					{
-						const double score = double(fertility.at(i % t.w, i / t.w)) / (8 + walk[i]);
+						const double score = double(fertility.at(t.remainderX(i), i / t.w)) / (8 + walk[i]);
 						if (score > best)
 						{
 							best = score;
@@ -637,7 +637,7 @@ bool generate(Game &game, GenerationContext &context)
 			const auto eligible = [&](int i)
 			{
 				return walk[i] >= 0 && walk[i] <= kCloseRange && !starterReserved[i] &&
-					   fertility.at(i % t.w, i / t.w) > 0 && clearGround(map, i % t.w, i / t.w);
+					   fertility.at(t.remainderX(i), i / t.w) > 0 && clearGround(map, t.remainderX(i), i / t.w);
 			};
 			const int target = type == WHEAT ? kCloseWheat : kCloseWood;
 			int placed = 0;
@@ -648,7 +648,7 @@ bool generate(Game &game, GenerationContext &context)
 				for (int i = 0; i < t.size(); ++i)
 					if (eligible(i))
 					{
-						const double score = double(fertility.at(i % t.w, i / t.w)) / (4 + walk[i]);
+						const double score = double(fertility.at(t.remainderX(i), i / t.w)) / (4 + walk[i]);
 						if (score > best)
 						{
 							best = score;
@@ -672,7 +672,7 @@ bool generate(Game &game, GenerationContext &context)
 	const auto split = periodicNoise(t.w, t.h, 6, context.stream("emoji-crops"));
 	furnishGround(
 		map, t, context, fertility,
-		[&](int i) { return !reserved[i] && !L.roads[i] && clearGround(map, i % t.w, i / t.w); },
+		[&](int i) { return !reserved[i] && !L.roads[i] && clearGround(map, t.remainderX(i), i / t.w); },
 		[&](int i) { return float(patch[i]); }, [&](int i) { return split[i]; },
 		[&](int area)
 		{
@@ -706,9 +706,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Layout L = design(context.request, replay);
 	if (auto error = designMismatch(L, game.map, "emoji"); !error.empty())
 		return error;
-	// Stronger than checking the silhouette: every single undermap corner must survive settlement.
+	// Stronger than checking the silhouette: every single terrain vertex must survive settlement.
 	for (int i = 0; i < L.t.size(); ++i)
-		if (game.map.getUMTerrain(i % L.t.w, i / L.t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(L.t.remainderX(i), i / L.t.w) != L.terrain[i])
 			return "Emoji terrain changed during colony placement.";
 	const auto anchors = buildAnchors(L.t, buildableTiles(game.map));
 	const auto units = unitTilesByTeam(game.map, context.request.nbTeams);
@@ -725,7 +725,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
 					const int type =
-						game.map.getResource(L.t.x(i % L.t.w + dx), L.t.y(i / L.t.w + dy)).type;
+						game.map.getResource(L.t.x(L.t.remainderX(i) + dx), L.t.y(i / L.t.w + dy)).type;
 					wheat |= type == WHEAT;
 					wood |= type == WOOD;
 				}
@@ -752,7 +752,7 @@ GeneratorDefinition emojiDefinition()
 	return {"emoji",
 			34,
 			"Emoji",
-			11,
+			12,
 			false,
 			{GeneratorControl::choice("character", "Emoji character",
 									  {"Random",       "Smiley",         "Sad face",

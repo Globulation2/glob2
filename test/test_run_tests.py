@@ -38,6 +38,12 @@ class WindowsCrashDiagnosticsTests(unittest.TestCase):
             </testsuites>''')
         self.assertEqual(list(windows_crash_diagnostics.crashed_cases(report)), [('LAN', 'crashed')])
 
+    def test_windows_crt_abort_is_replayed(self):
+        report = ET.fromstring('<testcase classname="ScriptGenerator" name="aborted">'
+                              '<error>exit status 3</error></testcase>')
+        self.assertEqual(list(windows_crash_diagnostics.crashed_cases(report)),
+                         [('ScriptGenerator', 'aborted')])
+
     def test_signed_windows_status_is_also_a_crash(self):
         report = ET.fromstring('''<testcase classname="LAN" name="crashed">
             <error>exit status -1073741819</error></testcase>''')
@@ -49,6 +55,20 @@ class WindowsCrashDiagnosticsTests(unittest.TestCase):
         self.assertIn('-tc=' + run_tests.doctest_pattern(name), command)
         self.assertEqual(command[command.index('--args') + 1], 'engine.exe')
         self.assertIn('--nx', command)
+        self.assertIn('break _assert', command)
+        self.assertIn('break _wassert', command)
+        self.assertIn('break abort', command)
+        self.assertLess(command.index('break _assert'), command.index('run'))
+        script = windows_crash_diagnostics.debugger_script()
+        self.assertIn('break *JS_FreeRuntime', script)
+        self.assertIn('JS_GetDumpFlags', script)
+        self.assertIn('JS_SetDumpFlags', script)
+        self.assertIn('$rcx', script)
+        self.assertIn('0x4000', script)
+        self.assertLess(script.index('commands'), script.index('\nrun\n'))
+        replay = windows_crash_diagnostics.debugger_command('gdb', Path('engine.exe'),
+                                                           'LAN', name, Path('replay.gdb'))
+        self.assertEqual(replay[replay.index('-x') + 1], 'replay.gdb')
 
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">

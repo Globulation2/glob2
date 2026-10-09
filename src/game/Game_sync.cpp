@@ -214,8 +214,7 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
-	const auto random = bindRandom();
-	map.preparePendingGradient();
+	map.preparePendingWorld();
 	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
@@ -230,6 +229,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
 		map.advanceGradientPipeline();
 
+		areaEffects.beginTick(*this);
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 
@@ -246,8 +246,6 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		// Normally polled controllers already observed this logical tick in their
 		// ordered worker stream. Only replica/replay seats need this boundary.
 		observeUnpolledAI();
-
-		syncRand();
 
 		if ((stepCounter&FOW_SWITCH_TICK_MASK)==FOW_SWITCH_TICK_PHASE)
 		{
@@ -286,7 +284,8 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		// All world mutations, including script/fog/project tail work, are done.
 		// Selection stays ordered; only private preparation can join AI decisions.
 		map.stagePeriodicGradientPreparation();
-		if (completion == PreparationCompletion::Complete) map.preparePendingGradient();
+        map.stageResourceGrowth();
+		if (completion == PreparationCompletion::Complete) map.preparePendingWorld();
 	}
 }
 

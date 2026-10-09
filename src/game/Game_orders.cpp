@@ -48,8 +48,10 @@ Building* Game::lookupBuilding(Uint16 gid) const
 
 bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 {
-	const auto random = bindRandom();
+	const bool wasWaiting=anyPlayerWaited;
 	const auto finish = [&](bool accepted) {
+        if (wasWaiting!=anyPlayerWaited || (accepted && order && order->getOrderType()!=ORDER_NULL && order->getOrderType()!=ORDER_TEXT_MESSAGE))
+            snapshots().invalidateBoundary();
 		settleAIOrder(order, accepted);
 		return accepted;
 	};
@@ -366,6 +368,7 @@ bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		}
 		b->posX=omf.x;
 		b->posY=omf.y;
+		areaEffects.changed(b->gid);
 		if (b->type->runtimeSuppliesStock || b->type->runtimeSuppliesDirectStock)
 		{
 			map.invalidateSupplierLocations();
@@ -421,7 +424,7 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 			const bool ownTeam = team == oaa.teamNumber;
 			const bool clearingFlag = building->type->zonable[WORKER];
 			if (ownTeam && (walkingChanged || clearingFlag))
-				building->resetPathfindGradients();
+				building->resetPathfindGradients(Building::GradientDrop::Area);
 			else
 			{
 				// A team-local edit must not newly stale unrelated walking fields.
@@ -429,9 +432,9 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				for (int swim=0; swim<BUILDING_GRADIENT_COUNT; ++swim)
 					if (building->gradientGeneration[swim] == oldGeneration)
 						building->gradientGeneration[swim] = map.topologyGeneration;
-				if (ownTeam) building->resetRoundTripGradients();
 			}
 		}
+	map.carryPendingBuildingGenerations(oldGeneration, map.topologyGeneration);
 	if (walkingChanged)
 	{
 		map.updateForbiddenGradient(oaa.teamNumber);

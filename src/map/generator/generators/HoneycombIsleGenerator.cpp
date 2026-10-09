@@ -210,7 +210,7 @@ std::vector<unsigned char> scatterDisc(const Torus &t, const std::vector<unsigne
 	for (int i = 0; i < t.size(); ++i)
 		if (mask[i])
 			for (const auto &[dx, dy] : offsets)
-				result[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+				result[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 	return result;
 }
 
@@ -531,7 +531,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	std::vector<unsigned char> border(n, 0), inCity(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		inCity[i] = L.kind[L.cell[i]] != Block::Outside;
 		for (const auto &s : kCardinalSteps)
 			if (L.cell[t.at(x + s[0], y + s[1])] != L.cell[i])
@@ -571,7 +571,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		for (int dy = -2; dy <= 2; ++dy)
 			for (int dx = -2; dx <= 2; ++dx)
 			{
-				const int other = L.homeOf[t.at(i % t.w + dx, i / t.w + dy)];
+				const int other = L.homeOf[t.at(t.remainderX(i) + dx, i / t.w + dy)];
 				if (other >= 0 && other != L.homeOf[i])
 					return true;
 			}
@@ -588,7 +588,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		return ShapePoint{(a.x + b.x) / 2, (a.y + b.y) / 2};
 	};
 	const auto nearPoint = [&](int i, ShapePoint p, double r)
-	{ return t.dist2(i % t.w, i / t.w, int(std::lround(p.x)), int(std::lround(p.y))) <= r * r; };
+	{ return t.dist2(t.remainderX(i), i / t.w, int(std::lround(p.x)), int(std::lround(p.y))) <= r * r; };
 	// The tiles of a cell, row-major; collected once.
 	std::vector<std::vector<int>> tilesOf(cells);
 	for (int i = 0; i < n; ++i)
@@ -619,7 +619,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 				return false;
 			for (const auto &[dx, dy] : sharedMargin)
 			{
-				const int j = t.at(i % t.w + dx, i / t.w + dy);
+				const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
 				if (L.street[j] && L.homeOf[j] != k)
 					return false;
 			}
@@ -646,7 +646,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			// fell.
 			for (int i : tilesOf[L.homeCell[k]])
 			{
-				const double dx = t.offsetX(int(home.x), i % t.w), dy = t.offsetY(int(home.y), i / t.w);
+				const double dx = t.offsetX(int(home.x), t.remainderX(i)), dy = t.offsetY(int(home.y), i / t.w);
 				if (depth[i] == 1 && dx * std::cos(axis) + dy * std::sin(axis) < -2.0)
 					L.stone[i] = 1;
 			}
@@ -675,7 +675,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		{
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
-					if (!inside(t.at(i % t.w + dx, i / t.w + dy)))
+					if (!inside(t.at(t.remainderX(i) + dx, i / t.w + dy)))
 						return false;
 			return true;
 		};
@@ -725,7 +725,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		{
 			if (!interior[i])
 				continue;
-			const int dx = t.offsetX(int(centre.x), i % t.w), dy = t.offsetY(int(centre.y), i / t.w);
+			const int dx = t.offsetX(int(centre.x), t.remainderX(i)), dy = t.offsetY(int(centre.y), i / t.w);
 			bool wall = false;
 			switch (L.landmarkDesign)
 			{
@@ -891,7 +891,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	{
 		const bool usable = grass[i] && L.plotOf[i] < 0 && !L.river[i] && !landing[i];
 		L.stone[i] = L.stone[i] && usable && !L.street[i];
-		const bool dry = fertility.at(i % t.w, i / t.w) == 0;
+		const bool dry = fertility.at(t.remainderX(i), i / t.w) == 0;
 		if (rubbleShare[i] && usable && L.homeOf[i] < 0 && !L.stone[i])
 		{
 			L.rubble[i] = 1;
@@ -987,12 +987,12 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "honeycomb isle terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	// Standing stone and rubble go down before the colonies: neither is ever on a home.
 	int stoneTiles = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (L.stone[i] && map.isResourceAllowed(x, y, STONE))
 		{
 			map.setResourceByIndex(x, y, STONE, 1);
@@ -1048,7 +1048,7 @@ bool generate(Game &game, GenerationContext &context)
 				std::vector<std::pair<int, int>> order;
 				for (int i : p.tiles)
 					order.push_back(
-						{t.dist2(i % t.w, i / t.w, int(std::lround(to.x)), int(std::lround(to.y))), i});
+						{t.dist2(t.remainderX(i), i / t.w, int(std::lround(to.x)), int(std::lround(to.y))), i});
 				std::sort(order.begin(), order.end());
 				return order;
 			};
@@ -1056,7 +1056,7 @@ bool generate(Game &game, GenerationContext &context)
 			const double ux = std::cos(p.heading), uy = std::sin(p.heading);
 			const auto wheatSide = [&](int i)
 			{
-				return t.offsetX(int(std::lround(well.x)), i % t.w) * ux +
+				return t.offsetX(int(std::lround(well.x)), t.remainderX(i)) * ux +
 						   t.offsetY(int(std::lround(well.y)), i / t.w) * uy >=
 					   0;
 			};
@@ -1066,7 +1066,7 @@ bool generate(Game &game, GenerationContext &context)
 			// wheat).
 			for (const auto &[distance, i] : byDistanceTo(p.wheatToward))
 			{
-				const int x = i % t.w, y = i / t.w;
+				const int x = t.remainderX(i), y = i / t.w;
 				if (plantedWheat < wheat && wheatSide(i) && clearGround(map, x, y) &&
 					map.isResourceAllowed(x, y, WHEAT))
 				{
@@ -1076,7 +1076,7 @@ bool generate(Game &game, GenerationContext &context)
 			}
 			for (const auto &[distance, i] : order)
 			{
-				const int x = i % t.w, y = i / t.w;
+				const int x = t.remainderX(i), y = i / t.w;
 				if (plantedWood < wood && !wheatSide(i) && clearGround(map, x, y) &&
 					map.isResourceAllowed(x, y, WOOD))
 				{
@@ -1088,7 +1088,7 @@ bool generate(Game &game, GenerationContext &context)
 			// could not hold goes on the nearest clear tiles left.
 			for (const auto &[distance, i] : order)
 			{
-				const int x = i % t.w, y = i / t.w;
+				const int x = t.remainderX(i), y = i / t.w;
 				if (!clearGround(map, x, y))
 					continue;
 				if (plantedWood < wood && map.isResourceAllowed(x, y, WOOD))
@@ -1133,7 +1133,7 @@ bool generate(Game &game, GenerationContext &context)
 			plantOrchard(map, t, context, c.x, c.y, 2.0 + std::max(0, groves - kOrchardGroves) * 0.5,
 						 angles, 2.5, 3, 1,
 						 [&](int i)
-						 { return L.orchard[i] && clearGround(map, i % t.w, i / t.w); });
+						 { return L.orchard[i] && clearGround(map, t.remainderX(i), i / t.w); });
 		}
 	seedAlgae(map, context, t, "honeycomb-isle-algae", o.algae, AlgaeBand::shallows(0, 4, 60));
 	// No generic crop or route repair: an unrestricted top-up would break the gardens' seal and
@@ -1159,9 +1159,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		!error.empty())
 		return error;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.street[i] && L.homeOf[i] < 0 && map.terrainPropertiesAt(i % t.w, i / t.w).walkable &&
-			map.getResource(i % t.w, i / t.w).type != NO_RES_TYPE)
-			return "A street is blocked by a deposit at " + std::to_string(i % t.w) + "," +
+		if (L.street[i] && L.homeOf[i] < 0 && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable &&
+			map.getResource(t.remainderX(i), i / t.w).type != NO_RES_TYPE)
+			return "A street is blocked by a deposit at " + std::to_string(t.remainderX(i)) + "," +
 				   std::to_string(i / t.w) + ".";
 	if (const std::string error =
 			walkFromFirstColony(map, teams, "the city", "along the streets").error;
@@ -1191,7 +1191,7 @@ GeneratorDefinition honeycombIsleDefinition()
 		"honeycomb-isle",
 		53,
 		"Honeycomb isle",
-		2,
+		3,
 		false,
 		// Blocks of 18 with streets of 3 leave a block's inside about 15 tiles across, room for
 		// a cistern garden and a swarm's neighbourhood; eleven blocks a colony leave room for

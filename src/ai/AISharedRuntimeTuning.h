@@ -20,7 +20,7 @@ namespace AISharedRuntime
 	// 2000-tick master cycle. The offsets are coupled — change BIG_CYCLE_TICKS
 	// and you must shift the offsets too, or staggering breaks.
 
-	/// Master cycle period for the RTI scheduler (~80s at 25 ticks/s).
+	/// Master cycle period for the RTI scheduler (~67s at 30 ticks/s).
 	/// (Econo.cpp: 375, 445, 500, 543, 591.)
 	static constexpr int AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS = 2000;
 
@@ -238,7 +238,7 @@ namespace AISharedRuntime
 	// (Gradient.cpp:265, 297, 308, 326, 329; Construction.cpp:802.)
 
 	/// Maximum age (ticks) before a referenced gradient is force-recalculated.
-	/// (~6s at 25 ticks/s; doc-string at Gradients.h:299-302.)
+	/// (~5s at 30 ticks/s; doc-string at Gradients.h:299-302.)
 	static constexpr int AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS = 150;
 	/// Pre-stale value seeded for newly-queued gradients so they age past the
 	/// QUEUE_MIN_AGE gate immediately and recompute on the next update tick.
@@ -246,7 +246,7 @@ namespace AISharedRuntime
 	/// Min age (ticks) before a queued gradient is actually recomputed.
 	static constexpr int AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS = 50;
 	/// Tick timeout — drop a pending building if the engine hasn't placed it
-	/// within this many ticks (~12s at 25 ticks/s).
+	/// within this many ticks (~10s at 30 ticks/s).
 	/// (Construction.cpp:802.)
 	static constexpr int AI_SHARED_RUNTIME_PENDING_BUILDING_TIMEOUT_TICKS = 300;
 

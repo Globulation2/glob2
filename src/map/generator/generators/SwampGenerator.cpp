@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SwampGenerator.h"
 #include "Game.h"
@@ -13,7 +14,7 @@ using namespace MapGeneration;
 //
 // Swamp has no sand or desert weight: water is water / (1 + water + grass) of the map, 36% at the
 // defaults, and the rest is grass (the 1 only guards against both weights at 0). Its only sand is
-// the beaches controlSand has to lay, because grass may not touch water, so every pond is ringed
+// the beaches layBeaches has to lay, because grass may not touch water, so every pond is ringed
 // in sand. With water everywhere, wheat and wood can regrow almost anywhere, and a swamp's economy
 // is rich; the cost is that movement and building room are broken up by ponds a colony must walk
 // round until it can swim. Smoothing defaults to 6 (features about 30 tiles) so ponds are big
@@ -61,7 +62,10 @@ GeneratorDefinition swampDefinition()
 		GeneratorControl{"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources, false}
 			.withSearchRange(2, 8)};
 	for (auto &c : heightFieldResourceControls())
+	{
+		::MapGeneration::generationCheckpoint();
 		controls.push_back(std::move(c));
+	}
 	controls.push_back(
 		GeneratorControl{"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true}
 			.withSearchRange(0, 1));
@@ -69,7 +73,7 @@ GeneratorDefinition swampDefinition()
 			"swamp",
 			1,
 			"Swamp",
-			4,
+			5,
 			false,
 			std::move(controls),
 			generate,

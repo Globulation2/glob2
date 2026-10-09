@@ -11,8 +11,13 @@ import {
 } from '../src/index.ts';
 
 describe('queue config', () => {
-  it('serves the Caravanserai revision with seeded Random designs', () => {
-    expect(defaultMapPool('1v1').find((m) => m.generatorId === 'caravanserai')?.revision).toBe(3);
+  it('serves the current Even Ground revision in every queue mode', () => {
+    for (const mode of ['1v1', '2v2'] as const) {
+      expect(defaultMapPool(mode).find((m) => m.generatorId === 'even-ground')?.revision).toBe(3);
+    }
+  });
+  it('serves the Caravanserai revision with owner-specific resource placement', () => {
+    expect(defaultMapPool('1v1').find((m) => m.generatorId === 'caravanserai')?.revision).toBe(4);
   });
   it('fills defaults: ranked accept step, casual none, fair 128x128 map pool', () => {
     const ranked = resolveQueue({ id: 'r', name: 'R', mode: '1v1', rated: true });

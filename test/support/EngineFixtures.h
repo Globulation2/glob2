@@ -17,6 +17,8 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <tuple>
+#include <utility>
 
 namespace glob2test
 {
@@ -27,8 +29,25 @@ namespace glob2test
 	// Extract the scene a draw pass reads, as Game::drawMap does for callers without a
 	// published scene. Without `into`, the result lives in shared storage that the next
 	// call overwrites; use it within the statement.
-	const Scene &sceneOf(const Game &game, const Game::ViewState &view, int localTeam = 0, Scene *into = nullptr);
-	const Scene &sceneOf(const Game &game);
+	const PresentationFrame &sceneOf(const Game &game, const Game::ViewState &view, int localTeam = 0, PresentationFrame *into = nullptr);
+	const PresentationFrame &sceneOf(const Game &game);
+    void observeMap(const Map& map,SceneMap& view);
+    void drawGUI(GameGUI& gui,int team);
+
+    template<class... Args> void drawMap(Game& game,Args&&... args)
+    {
+        auto arguments=std::forward_as_tuple(args...);
+        auto& view=std::get<9>(arguments);
+        const auto* previous=view.scene;
+        PresentationFrame frame;
+        if (!previous) {
+            sceneOf(game,view,std::get<8>(arguments),&frame);
+            view.scene=&frame;
+        }
+        struct Restore { Game::ViewState& view;const PresentationFrame* previous;
+            ~Restore(){view.scene=previous;} } restore{view,previous};
+        Game::drawMap(std::forward<Args>(args)...);
+    }
 
 	// Binds a game's synchronized stream on this thread, as the engine does around
 	// simulation entry points, for fixtures that call game functions directly. The
@@ -65,9 +84,9 @@ namespace glob2test
 		// Install a GameHeader with one local player per team, the way the game
 		// loader does: orders then apply to the team, painted areas reach the
 		// displayed view, and a save of the game reloads to the same checksums.
-		// The seed and experiments below only take effect with it.
+		// Experiments below only take effect with it.
 		bool header = false;
-		Uint32 seed = 1;              // GameHeader otherwise seeds from the wall clock
+		Uint32 seed = 1;              // deterministic entity seed, also without a player header
 		ExperimentSet experiments;    // the experiments the game carries (ExperimentalFeatures.h)
 	};
 

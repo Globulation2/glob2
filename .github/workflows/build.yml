@@ -85,6 +85,8 @@ jobs:
         run: |
           python3 -m unittest discover -s test -p test_check_sim_revision.py -v
           python3 test/check_sim_revision.py --base "$BASE_SHA"
+      - name: Check private RNG ownership
+        run: python3 test/check_entity_random.py
       - name: Verify pinned scripting vendors once
         run: python3 tools/javascript/verify-vendor.py
       - name: Select checks for changed paths
@@ -136,7 +138,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.coverage == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:
@@ -870,7 +872,11 @@ jobs:
             build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
             build/emscripten/client/release/studio.html
+            build/emscripten/client/release/generator-studio.html
+            build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
             build/emscripten/client/release/hive-runtime.wasm
@@ -907,7 +913,11 @@ jobs:
           path: |
             build/emscripten/client/release/index.html
             build/emscripten/client/release/studio.html
+            build/emscripten/client/release/generator-studio.html
+            build/emscripten/client/release/set-preview.html
             build/emscripten/client/release/loader.js
+            build/emscripten/client/release/i18n.js
+            build/emscripten/client/release/locales/
             build/emscripten/client/release/hive-worker.js
             build/emscripten/client/release/hive-runtime.js
             build/emscripten/client/release/hive-runtime.wasm
@@ -1140,7 +1150,7 @@ jobs:
   web-test:
     name: browser tests (${{ matrix.name }})
     needs: [changes, web-build, web-native]
-    if: ${{ needs.changes.outputs.browser == 'true' }}
+    if: ${{ !cancelled() && needs.changes.outputs.browser == 'true' && needs.web-build.result == 'success' && needs.web-native.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
@@ -1338,6 +1348,7 @@ jobs:
           --health-retries 20
     env:
       TEST_DATABASE_URL: postgres://glob2:glob2@localhost:5432/postgres
+      TERRAIN_PYTHON: /usr/bin/python3
     defaults:
       run:
         working-directory: platform
@@ -1352,11 +1363,11 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: platform/package-lock.json
-      - name: Install music upload processing tools
+      - name: Install music and terrain artwork processing tools
         id: install_music_upload_processing_tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg
+          sudo apt-get install -y --no-install-recommends ffmpeg python3-pil
       - name: Install platform dependencies
         id: install_platform_dependencies
         run: npm ci
@@ -1432,6 +1443,10 @@ jobs:
         id: actions_checkout_v4_1
         with:
           ref: ${{ inputs.revision || github.sha }}
+      - name: Load the scoped Compose AppArmor profiles
+        run: |
+          sudo apparmor_parser -r deploy/security/glob2-engine.apparmor
+          sudo apparmor_parser -r deploy/security/glob2-ai-music.apparmor
       - name: Build the images and smoke-test deploy/compose.yaml
         id: smoke_test_the_platform_stack
         continue-on-error: true

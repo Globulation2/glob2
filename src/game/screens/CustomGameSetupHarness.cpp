@@ -122,6 +122,16 @@ struct CustomGameSetupHarness
         REQUIRE(screen.setup.premadeMap == screen.sourceFile());
         REQUIRE(screen.getMapHeader().getNumberOfTeams() == 4);
         REQUIRE(!screen.generatedSnapshot);
+        const auto catalogBefore=screen.getGameHeader().getBuildingCatalogSnapshot();
+        screen.buildingSelectionChanged();
+        CHECK(screen.validMap);
+        CHECK_FALSE(screen.previewPending);
+        CHECK(screen.getGameHeader().getBuildingCatalogSnapshot()==catalogBefore);
+        screen.setup.random=true;
+        screen.buildingSelectionChanged();
+        CHECK_FALSE(screen.validMap);
+        CHECK(screen.previewPending);
+        screen.setup.random=false;
         const auto brokenHash = Online::Sha256::hex("not a map");
         REQUIRE(services.maps.insert(brokenHash, "not a map"));
         screen.loadCatalogMap({{"5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", brokenHash, "Broken map"}, Online::OFFICIAL_INSTANCE_ORIGIN, Online::MapPlayRequest::Mode::Local});
@@ -139,8 +149,8 @@ struct CustomGameSetupHarness
             world.game.players[t]->name = "Long colony name " + std::to_string(t + 1);
             world.game.teams[t]->stats.getLatestStat()->totalUnit = 10 + t;
         }
-        Scene scene;
-        world.gui.extractScene(scene);
+        PresentationFrame scene;
+        world.gui.prepareLocalPresentation(scene);
         world.gui.setPublishedScene(&scene);
         globalContainer->liveSpectating = true;
         world.gui.measurementPage = world.gui.statisticsPages() - 1;
@@ -236,10 +246,22 @@ struct CustomGameSetupHarness
 		checkExtraRules(restored.setup);
 		REQUIRE(restored.setup.mapRevision == 0);
 		REQUIRE(restored.landscapeSortOrder == 1);
-		// Format 5 retains custom AI identities but predates probability victory.
+		// Versions 1–7 predate the custom-generator identity row. Synthesized
+		// historical fixtures must omit it, rather than only changing the header.
+		const auto previousFormat = [&](int version)
 		{
 			auto old = encoded;
-			old.replace(0, std::string("glob2-custom-game 6").size(), "glob2-custom-game 5");
+			const auto identity = old.find("\ncustom-generator ");
+			REQUIRE(identity != std::string::npos);
+			const auto end = old.find('\n', identity + 1);
+			REQUIRE(end != std::string::npos);
+			old.erase(identity, end - identity);
+			old.replace(0, old.find('\n'), "glob2-custom-game " + std::to_string(version));
+			return old;
+		};
+		// Format 5 retains custom AI identities but predates probability victory.
+		{
+			auto old = previousFormat(5);
 			const auto at = old.find("probability ");
 			REQUIRE(at != std::string::npos);
 			old.erase(at, old.find('\n', at) - at + 1);
@@ -251,7 +273,7 @@ struct CustomGameSetupHarness
 		// Older formats omit library identities; their rules retain their defaults.
 		for (int version : {1, 2, 3, 4})
 		{
-			auto old = encoded;
+			auto old = previousFormat(version);
 			auto removeLine = [&](const std::string &prefix)
 			{
 				const auto at = old.find("\n" + prefix), eol = old.find('\n', at + 1);
@@ -263,8 +285,6 @@ struct CustomGameSetupHarness
 				removeLine("rules ");
 			if (version == 1)
 				removeLine("picker ");
-			old.replace(0, std::string("glob2-custom-game 6").size(),
-						"glob2-custom-game " + std::to_string(version));
 			// Reproduce the old twelve-record wire layout, including its draft capacity.
 			const auto coloniesAt = old.find("colonies 16\n");
 			REQUIRE(coloniesAt != std::string::npos);
@@ -309,8 +329,7 @@ struct CustomGameSetupHarness
 				 {"6", "Open book", "open-book"}, {"6", "Standard", "standard"},
 				 {"6", "Custom", "standard"}, {"7", "blitz", "blitz"}, {"7", "no-such-ruleset", "standard"}})
 		{
-			auto old = encoded;
-			old.replace(0, std::string("glob2-custom-game 7").size(), "glob2-custom-game " + version);
+			auto old = previousFormat(std::stoi(version));
 			const auto at = old.find("\"quick-clash\"");
 			REQUIRE(at != std::string::npos);
 			old.replace(at, std::string("\"quick-clash\"").size(), "\"" + label + "\"");
@@ -324,7 +343,7 @@ struct CustomGameSetupHarness
 			REQUIRE(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-				 {"glob2-custom-game 7", "glob2-custom-game 8"},
+				 {"glob2-custom-game 8", "glob2-custom-game 9"},
 				 {"rules 1 3", "rules 2 3"},
 				 {"rules 1 3", "rules 1 4"},
 				 {"2 3 90\nprobability", "2 4 90\nprobability"},
@@ -608,7 +627,7 @@ struct CustomGameSetupHarness
 		map.setSize(8, 8, GRASS);
 		for (int y = 0; y < 256; ++y)
 			for (int x = 128; x < 256; ++x)
-				map.setUMatPos(x, y, WATER, 1);
+				map.paintVertexSquare(x, y, WATER, 1);
 		MapThumbnail image;
 		image.loadFromMap(map);
 		{
@@ -925,7 +944,7 @@ struct CustomGameSetupHarness
 			engine.run();
 			{
 				FrontendScope gameplay(false);
-				engine.gui.drawAll(engine.gui.localTeamNo);
+				glob2test::drawGUI(engine.gui,engine.gui.localTeamNo);
 				globalContainer->gfx->printScreen(output + "/live-control-" +
 												  std::to_string(control) + ".bmp");
 			}
@@ -2649,7 +2668,7 @@ TEST_SUITE("CustomGameSetup")
 		for (int y = 0; y < g.map.getH(); ++y)
 			for (int x = 0; x < g.map.getW(); ++x)
 			{
-				REQUIRE(g.map.getTerrain(x, y) == loaded.map.getTerrain(x, y));
+				REQUIRE(g.map.vertexTerrainAt(x, y) == loaded.map.vertexTerrainAt(x, y));
 				REQUIRE(g.map.getResource(x, y).type == loaded.map.getResource(x, y).type);
 			}
 		for (int i = 0; i < 4; ++i)

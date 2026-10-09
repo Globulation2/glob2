@@ -16,7 +16,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 ENTRY_FILES = ('threaded/index.wasm', 'threaded/index.js', 'index.wasm', 'index.js', 'loader.js',
-               'studio.html', 'index.html')
+               'studio.html', 'generator-studio.html', 'index.html')
 
 FAKE_DOCKER = r'''#!/bin/sh
 # Logs each call; behaviour from FAKE_* variables.
@@ -106,6 +106,7 @@ class UpdateHostTests(unittest.TestCase):
         # Installed after the new stack was up.
         self.assertEqual((self.web / 'index.html').read_text(), 'new index.html')
         self.assertEqual((self.web / 'studio.html').read_text(), 'new studio.html')
+        self.assertEqual((self.web / 'generator-studio.html').read_text(), 'new generator-studio.html')
         self.assertIn('glob2-platform:development glob2-platform:previous', '\n'.join(self.calls()))
 
     def test_keeps_only_the_newest_backups(self):

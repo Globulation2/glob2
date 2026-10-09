@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Shared production map study operations and legacy argument adapter.
 #define SDL_MAIN_HANDLED
+#include "PowerOfTwo.h"
 #include <SDL3/SDL_main.h>
 #include "MapReport.h"
 #include "Material.h"
@@ -12,6 +13,7 @@
 #include "FairnessModel.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
+#include "BuildingArtwork.h"
 #include "IntBuildingType.h"
 #include "MapGenerator.h"
 #include "Race.h"
@@ -229,7 +231,7 @@ std::uint64_t worldHash(const Game &game)
 	for (std::size_t index=0; index<game.map.cellCount(); ++index)
 	{
         const auto tile=game.map.getTile(index);
-		hash = fnv(hash, tile.terrain);
+		hash = fnv(hash, game.map.vertexTerrainAt(index));
 		hash = fnv(hash, tile.resource.getUint64());
 		for (const auto stock : game.map.materialStocksAt(index))
 			hash = fnv(hash, stock);
@@ -500,7 +502,7 @@ static bool writeOverlay(Game &game, int teams, const std::string &kind, const s
 	{
 		const Fertility::Field field = Fertility::forMap(map, false);
 		for (int i = 0; i < t.size(); ++i)
-			value[i] = int(std::min<std::uint32_t>(255, field.at(i % t.w, i / t.w) * 255 / 8000));
+			value[i] = int(std::min<std::uint32_t>(255, field.at(t.remainderX(i), i / t.w) * 255 / 8000));
 	}
 	else if (kind == "sites")
 	{
@@ -546,16 +548,16 @@ int runMapStudy(int argc, char **argv)
 	{
 		using D = GenerationRequest;
 		std::puts("[");
-		const auto methods = GeneratorRegistry::builtins().methods();
+		const auto methods = GeneratorRegistry::active().methods();
 		for (int m : methods)
 		{
 			const int method = m;
 			std::printf("{\"method\":%d,\"id\":\"%s\",\"revision\":%u,\"editorOnly\":%s,"
-						"\"nameKey\":\"%s\",\"controls\":[",
-						m, GeneratorRegistry::builtins().at(m).id,
-						GeneratorRegistry::builtins().at(m).revision,
-						GeneratorRegistry::builtins().at(m).editorOnly ? "true" : "false",
-						D::methodName(method));
+						"\"nameKey\":%s,\"api_version\":%u,\"package_hash\":%s,\"controls\":[",
+						m, GeneratorRegistry::active().at(m).id,
+						GeneratorRegistry::active().at(m).revision,
+						GeneratorRegistry::active().at(m).editorOnly ? "true" : "false",
+						Headless::quote(D::methodName(method)).c_str(), GeneratorRegistry::active().at(m).apiVersion, Headless::quote(GeneratorRegistry::active().at(m).packageHash).c_str());
 			auto controls = D::sharedControls();
 			const auto &specific = D::controls(method);
 			controls.insert(controls.end(), specific.begin(), specific.end());
@@ -563,10 +565,10 @@ int runMapStudy(int argc, char **argv)
 			{
 				const auto &c = controls[i];
 				std::printf(
-					"%s{\"id\":\"%s\",\"label\":\"%s\",\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
+					"%s{\"id\":\"%s\",\"label\":%s,\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
 					"\"step\":%d,\"default\":%d,"
 					"\"group\":%d,\"powerOfTwo\":%s,\"values\":[",
-					i ? "," : "", c.id.c_str(), c.label,
+					i ? "," : "", c.id.c_str(), Headless::quote(c.label).c_str(),
 					c.isToggle() ? "toggle" : c.isChoice() ? "choice" : "range",
 					c.minimum, c.maximum, c.step, c.defaultValue, int(c.group),
 					c.powerOfTwo ? "true" : "false");
@@ -583,7 +585,7 @@ int runMapStudy(int argc, char **argv)
 				{
 					std::printf(",\"labels\":[");
 					for (size_t j = 0; j < domain.size(); ++j)
-						std::printf("%s\"%s\"", j ? "," : "", c.valueLabel(domain[j]));
+						std::printf("%s%s", j ? "," : "", Headless::quote(c.valueLabel(domain[j])).c_str());
 					std::printf("]");
 				}
 				std::printf("}");
@@ -599,9 +601,13 @@ int runMapStudy(int argc, char **argv)
 	const unsigned seed = std::strtoul(argv[2], nullptr, 10);
 
 	SDL_SetMainReady();
-	std::string buildingCatalog;
+	std::string buildingCatalog, buildingArtwork;
 	for (int i=4; i<argc; ++i)
-		if (std::string(argv[i]).starts_with("building-catalog=")) buildingCatalog=std::string(argv[i]).substr(17);
+		{
+        const std::string arg=argv[i];
+        if(arg.starts_with("building-catalog=")) buildingCatalog=arg.substr(17);
+        if(arg.starts_with("building-artwork=")) buildingArtwork=arg.substr(17);
+    }
 	GlobalContainer globals(argv[3], buildingCatalog);
 	globalContainer = &globals;
 	globals.runNoX = true;
@@ -611,7 +617,7 @@ int runMapStudy(int argc, char **argv)
 	Race::loadDefault();
 	Game game(nullptr);
 	GenerationRequest descriptor;
-	if (!GeneratorRegistry::builtins().find(method))
+	if (!GeneratorRegistry::active().find(method))
 		return 2;
 	descriptor.setMethodDefaults(method);
 	descriptor.seed = seed;
@@ -658,7 +664,7 @@ int runMapStudy(int argc, char **argv)
 				return 2;
 			std::string id = arg.substr(0, eq);
 			// Consumed before GlobalContainer construction, not a numeric generator control.
-			if (id == "building-catalog") continue;
+			if (id == "building-catalog" || id == "building-artwork") continue;
 			if (id == "dump" || id == "save" || id == "name" || id == "overlay" || id == "result")
 			{
 				(id == "dump"   ? dump
@@ -703,6 +709,13 @@ int runMapStudy(int argc, char **argv)
 	const auto start = std::chrono::steady_clock::now();
 	const auto result = GenerationService().generate(game, descriptor, !resultPath.empty());
 	const bool success = bool(result);
+    if(success && !buildingArtwork.empty()) {
+        std::ifstream input(buildingArtwork,std::ios::binary|std::ios::ate);
+        if(!input || input.tellg()<0 || static_cast<std::size_t>(input.tellg())>BuildingArtwork::MaxBytes) throw std::runtime_error("Cannot read bounded building artwork bundle");
+        std::string bytes(static_cast<std::size_t>(input.tellg()),'\0'); input.seekg(0);
+        if(!input.read(bytes.data(),bytes.size())) throw std::runtime_error("Cannot read building artwork bundle");
+        game.gameHeader.setBuildingArtwork(bytes);
+    }
 	if (!success)
 		std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
 	const double seconds =
@@ -724,7 +737,7 @@ int runMapStudy(int argc, char **argv)
 	const std::string timingJson = timing ? metricTimingJson(game, descriptor, result) : "";
 	auto &map = game.map;
 	int grass = 0, sand = 0, water = 0, shore = 0, free = 0, fit4 = 0;
-	int umGrass = 0, umSand = 0, umWater = 0;
+	int vertexGrass = 0, vertexSand = 0, vertexWater = 0;
 	std::vector<int> materialCounts(map.terrainRegistry().size());
 	std::uint64_t hash = 14695981039346656037ULL;
 	std::vector<int> footprint(map.getW() * map.getH(), 0);
@@ -733,7 +746,9 @@ int runMapStudy(int argc, char **argv)
 		for (int x = 0; x < map.getW(); ++x)
 		{
 			const auto material = map.terrainTypeAt(x,y);
-            ++materialCounts[material];
+            // Terrain counts are per vertex; the buckets below are per cell, with
+            // mixed cells (shores among them) counted as shore.
+            ++materialCounts[map.vertexTerrainAt(x,y)];
             // Classic buckets by group: catalogue types report through materialCounts.
             const auto group = unsigned(material) < TERRAIN_COUNT ? std::optional(terrainGroup(material)) : std::nullopt;
             if (group == TerrainGroup::Grass)
@@ -742,7 +757,7 @@ int runMapStudy(int argc, char **argv)
 				++sand;
 			else if (group == TerrainGroup::Water)
 				++water;
-			else if (group == TerrainGroup::Shore)
+			else if (material == MIXED_TERRAIN)
 				++shore;
 			if (map.isFreeForBuilding(x, y))
 				++free;
@@ -754,28 +769,30 @@ int runMapStudy(int argc, char **argv)
 			const auto sources = map.materialMaskAt(y * map.getW() + x);
 			for (unsigned material = 0; material < MaterialCount; ++material)
 				if (sources & (MaterialMask(1) << material)) ++materialSources[material];
-			switch (map.getUMTerrain(x, y))
+			switch (map.vertexTerrainAt(x, y))
 			{
 			case GRASS:
-				++umGrass;
+				++vertexGrass;
 				break;
 			case SAND:
-				++umSand;
+				++vertexSand;
 				break;
 			case WATER:
-				++umWater;
+				++vertexWater;
+				break;
+			default:
 				break;
 			}
-			hash ^= map.getTerrain(x, y);
+			hash ^= map.vertexTerrainAt(x, y);
 			hash *= 1099511628211ULL;
 			hash ^= map.getResource(x, y).getUint64();
 			hash *= 1099511628211ULL;
 		}
 	std::printf("STUDY,%d,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.6f,%llu\n", method, seed, success,
-				map.getW() * map.getH(), grass, sand, water, shore, free, fit4, umGrass, umSand,
-				umWater, seconds, (unsigned long long)hash);
+				map.getW() * map.getH(), grass, sand, water, shore, free, fit4, vertexGrass, vertexSand,
+				vertexWater, seconds, (unsigned long long)hash);
 	for (int type = 0; type < int(materialCounts.size()); ++type)
-		if (!map.terrainUsesLegacyCorners(static_cast<TerrainType>(type)) && materialCounts[type])
+		if (type != GRASS && type != SAND && type != WATER && materialCounts[type])
 			std::printf("STUDY_TERRAIN,%s,%d\n", map.terrainPresentation(TerrainType(type)).name,
 						materialCounts[type]);
 	if (tuning)
@@ -804,7 +821,7 @@ int runMapStudy(int argc, char **argv)
 				{
 					int p = q.front();
 					q.pop();
-					int x = p % map.getW(), y = p / map.getW();
+					int x = powerOfTwoRemainder(p, map.getW()), y = p / map.getW();
 					// Expansion space within 24 walking steps of a starting worker.
 					if (dist[p] <= 24 && footprint[p])
 						++local;
@@ -1044,7 +1061,7 @@ int runMapStudy(int argc, char **argv)
 				int c = group == TerrainGroup::Grass ? 0
 						: group == TerrainGroup::Sand  ? 1
 						: group == TerrainGroup::Water ? 2
-						: group == TerrainGroup::Shore ? 3
+						: type == MIXED_TERRAIN ? 3
 													   : 10 + int(type);
 				if (map.materialMaskAt(y * map.getW() + x) & materialBit(MaterialId::Food))
 					c = 4;
@@ -1173,6 +1190,10 @@ int runMapStudy(int argc, char **argv)
 			const auto status = resultJson.find("\"status\":\"completed\"");
 			if (status != std::string::npos) resultJson.replace(status, 20, "\"status\":\"artifact_failure\"");
 		}
+        if(!resultJson.empty()&&resultJson.back()=='}') {
+            resultJson.pop_back();
+            resultJson+=",\"package_hash\":"+Headless::quote(result.packageHash)+",\"api_version\":"+std::to_string(result.apiVersion)+",\"toolkit_version\":"+std::to_string(result.apiVersion?1:0)+"}";
+        }
 		Headless::writeJson(resultPath, resultJson);
 	}
 	return code;

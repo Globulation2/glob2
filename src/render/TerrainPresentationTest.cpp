@@ -9,6 +9,7 @@
 #include <fstream>
 #include "TerrainPresentation.h"
 #include "TerrainRegistry.h"
+#include "TerrainCornerPresentation.h"
 #include "terrain/TerrainCompositor.h"
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
@@ -37,6 +38,11 @@
 
 namespace
 {
+SDL_Surface *chunkPixels(const SoftwareTerrainCache::Chunk &chunk)
+{
+	return chunk.image ? chunk.image->getSDLSurface() : chunk.parked.get();
+}
+
 void importBeforeMatch(Game &game, std::string_view definitions)
 {
 	// Detached maps permit pre-match authoring; active games reject registry replacement.
@@ -207,14 +213,14 @@ void layeredCache(bool gpu, bool hd = false)
 		for (int x = 0; x < 32; ++x)
 		{
 			if (x < 3)
-				map.setTerrain(x, y, 256);
+				map.paintCell(x, y, WATER);
 			if ((x + y * 3) % 7 == 0)
-				map.setCellTerrain(x, y, ICE);
+				map.paintCell(x, y, ICE);
 			else if ((x * 5 + y) % 11 == 0)
-				map.setCellTerrain(x, y, TRAIL);
+				map.paintCell(x, y, TRAIL);
 		}
 	SceneMap scene;
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 
 	SoftwareTerrainCache cache;
 	auto clear = [&]
@@ -260,16 +266,17 @@ void layeredCache(bool gpu, bool hd = false)
 		compare();
 		compare();
 		globals->gfx->endMapTransform();
-		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUBudget);
+		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+		CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
 	}
 	CHECK(fixture.checksum() == checksum);
 	if (!gpu)
 		CHECK(cache.cacheHits() > 0);
 	auto &compositor = globals->terrainCompositor();
 	const auto before = compositor.describe(scene, 0, 0);
-	map.setCellTerrain(0, 0, TRAIL);
+	map.paintCell(0, 0, TRAIL);
 	CHECK(compositor.describe(scene, 0, 0) == before);
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 	compare();
 	// A scene retains its registry snapshot. Reimport changes material bindings
 	// only on extraction, and invalidates both software and GPU composed pages.
@@ -277,8 +284,8 @@ void layeredCache(bool gpu, bool hd = false)
 		game,
 		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom ice","base":"grass","properties":{},"appearance":"ice"}]})");
 	const auto custom = *map.terrainRegistry().find("test:custom");
-	map.setCellTerrain(0, 0, custom);
-	scene.extract(map);
+	map.paintCell(0, 0, custom);
+	glob2test::observeMap(map,scene);
 	compare();
 	compare();
 	const auto previousRegistry = scene.frozenTerrainRegistry();
@@ -288,7 +295,7 @@ void layeredCache(bool gpu, bool hd = false)
 		R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom trail","base":"grass","properties":{},"appearance":"road"}]})");
 	CHECK(scene.frozenTerrainRegistry() == previousRegistry);
 	CHECK(compositor.describe(scene, 0, 0) == previousRecipe);
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 	CHECK(scene.appearanceAt(0, 0) == TRAIL);
 	CHECK_FALSE(compositor.describe(scene, 0, 0) == previousRecipe);
 	compare();
@@ -297,7 +304,7 @@ void layeredCache(bool gpu, bool hd = false)
 	const auto seededRecipe = compositor.describe(scene, 0, 0);
 	map.setTerrainSeed(map.terrainSeed() + 1);
 	CHECK(compositor.describe(scene, 0, 0) == seededRecipe);
-	scene.extract(map);
+	glob2test::observeMap(map,scene);
 	CHECK(compositor.describe(scene, 0, 0).seed == map.terrainSeed());
 	CHECK_FALSE(compositor.describe(scene, 0, 0) == seededRecipe);
 	compare();
@@ -322,11 +329,11 @@ TEST_SUITE("TerrainPresentation")
 		auto &map = fixture.game.map;
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
-				map.setUMTerrain(x, y, x < 4 || y < 4 ? WATER : x < 7 || y < 7 ? SAND : GRASS);
-		map.regenerateMap(0, 0, 16, 16);
-		map.setCellTerrain(10, 10, ICE);
+				map.setVertexTerrain(x, y, x < 4 || y < 4 ? WATER : x < 7 || y < 7 ? SAND : GRASS);
+		// Away from (9,9), where wheat needs pure grass.
+		map.paintCell(12, 12, ICE);
 		SceneMap scene;
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		auto &compositor = globals->terrainCompositor();
 		compositor.prepare(false, 0);
 		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
@@ -362,12 +369,14 @@ TEST_SUITE("TerrainPresentation")
 							CHECK(((pixel >> (16 - 8 * k)) & 255) == (expected[k] + 32768) / 65536);
 					}
 			}
-		// Custom saved whole-cell palettes still override their appearance colour.
+		// Custom saved terrain palettes still override their appearance colour.
 		auto custom = compositor.describe(scene, 10, 10);
-		custom.samples.fill(compositor.catalog().bindings.at("ice"));
+		custom.corners.fill(compositor.catalog().bindings.at("ice"));
 		const std::array<unsigned char, 3> customColor{17, 31, 47};
+		const TerrainVisual::Compositor::CornerColors customCorners{&customColor, &customColor,
+																   &customColor, &customColor};
 		GAGCore::DrawableSurface customOverview(samples, samples);
-		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, &customColor);
+		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, &customCorners);
 		for (int y = 0; y < samples; ++y)
 			for (int x = 0; x < samples; ++x)
 				CHECK(reinterpret_cast<const Uint32 *>(
@@ -376,7 +385,7 @@ TEST_SUITE("TerrainPresentation")
 		MapRenderState render;
 		render.detail.terrainOverview = .5f;
 		map.setResourceByIndex(9, 9, WHEAT, 1);
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		Game::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		REQUIRE(render.overview->getW() == overview.getW());
 		REQUIRE(render.overview->getH() == overview.getH());
@@ -445,7 +454,7 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(restored.game.load(&input));
 		CHECK(restored.game.map.terrainSeed() == 0x1234abcdu);
 		SceneMap scene;
-		scene.extract(restored.game.map);
+		glob2test::observeMap(restored.game.map,scene);
 		CHECK(scene.terrainSeed() == 0x1234abcdu);
 	}
 	TEST_CASE("catalog palettes preserve distinct legacy shores and independent preview colors")
@@ -468,11 +477,6 @@ TEST_SUITE("TerrainPresentation")
 		check(overview[WATER], {4, 5, 6});
 		check(minimap[GRASS], minimap[ICE]);
 		check(overview[GRASS], overview[ICE]);
-		for (auto shore : {GRASS_SAND_SHORE, SAND_WATER_SHORE})
-		{
-			check(minimap[shore], terrainPresentation(shore).minimap);
-			check(overview[shore], terrainPresentation(shore).overview);
-		}
 	}
 	TEST_CASE("custom aliases share material recipes and keep whole-cell identity [display]")
 	{
@@ -490,35 +494,37 @@ TEST_SUITE("TerrainPresentation")
 		auto &compositor = globals->terrainCompositor();
 		constexpr int dx[4] = {0, 1, 0, -1}, dy[4] = {-1, 0, 1, 0};
 		const TerrainType aliases[] = {ICE, a, b, a};
-		map.setCellTerrain(0, 0, TRAIL);
+		map.paintCell(0, 0, TRAIL);
 		for (unsigned mask = 0; mask < 16; ++mask)
 		{
 			CAPTURE(mask);
 			for (int side = 0; side < 4; ++side)
-				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? ICE : TRAIL);
+				map.paintCell(dx[side], dy[side], mask & (1u << side) ? ICE : TRAIL);
 			SceneMap expected;
-			expected.extract(map);
+			glob2test::observeMap(map,expected);
 			for (int side = 0; side < 4; ++side)
-				map.setCellTerrain(dx[side], dy[side], mask & (1u << side) ? aliases[side] : TRAIL);
+				map.paintCell(dx[side], dy[side], mask & (1u << side) ? aliases[side] : TRAIL);
 			SceneMap actual;
-			actual.extract(map);
+			glob2test::observeMap(map,actual);
 			for (int y = -1; y <= 1; ++y)
 				for (int x = -1; x <= 1; ++x)
 					CHECK(compositor.describe(actual, x, y) == compositor.describe(expected, x, y));
+			// A vertex only the side's own cell writes: later sides share the others.
+			constexpr int vx[4] = {0, 2, 0, -1}, vy[4] = {-1, 0, 2, 0};
 			for (int side = 0; side < 4; ++side)
-				CHECK(actual.terrainTypeAt(dx[side], dy[side]) ==
+				CHECK(actual.vertexTerrainAt(vx[side], vy[side]) ==
 					  (mask & (1u << side) ? aliases[side] : TRAIL));
 		}
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
-				map.setCellTerrain(x, y, sand);
+				map.paintCell(x, y, sand);
 		SceneMap scene;
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		CHECK(scene.presentationTypeAt(0, 0) == sand);
 		CHECK(scene.appearanceAt(0, 0) == SAND);
 		const auto material = compositor.catalog().bindings.at("sand");
-		for (const auto sample : compositor.describe(scene, 0, 0).samples)
-			CHECK(sample == material);
+		for (const auto corner : compositor.describe(scene, 0, 0).corners)
+			CHECK(corner == material);
 	}
 	TEST_CASE("custom thumbnail palettes retain embedded colors alongside catalog builtins")
 	{
@@ -529,8 +535,8 @@ TEST_SUITE("TerrainPresentation")
 			fixture.game,
 			R"({"schemaVersion":1,"terrains":[{"key":"test:custom","name":"Custom","base":"grass","properties":{},"appearance":"sand"}]})");
 		const auto custom = *map.terrainRegistry().find("test:custom");
-		map.setCellTerrain(0, 0, custom);
-		map.setCellTerrain(1, 0, ICE);
+		map.paintCell(0, 0, custom);
+		map.paintCell(1, 0, ICE);
 		MapThumbnail thumbnail;
 		thumbnail.loadFromMap(map);
 		REQUIRE(thumbnail.pixels());
@@ -589,12 +595,12 @@ TEST_SUITE("TerrainPresentation")
 					auto &map = fixture.game.map;
 					for (int y = 0; y < map.getH(); ++y)
 						for (int x = 0; x < map.getW(); ++x)
-							map.setCellTerrain(
+							map.paintCell(
 								x, y,
 								x < 3 ? WATER : (y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS)));
 					GAGCore::Sprite::setHighResolution(hd);
 					SceneMap scene;
-					scene.extract(map);
+					glob2test::observeMap(map,scene);
 					const int vx = map.getW() - 3, vy = map.getH() - 2;
 					const auto begin = [&]
 					{
@@ -641,11 +647,11 @@ TEST_SUITE("TerrainPresentation")
 				glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
 				for (int y = 0; y < 32; ++y)
 					for (int x = 0; x < 32; ++x)
-						fixture.game.map.setCellTerrain(
+						fixture.game.map.paintCell(
 							x, y, y == 4 ? TRAIL : ((x + y) % 3 ? ICE : GRASS));
 				GAGCore::Sprite::setHighResolution(hd);
 				SceneMap scene;
-				scene.extract(fixture.game.map);
+				glob2test::observeMap(fixture.game.map,scene);
 				const auto checksum = fixture.checksum();
 				const auto draw = [&](float zoom, bool emergency)
 				{
@@ -698,7 +704,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
 		GAGCore::Sprite::setHighResolution(true);
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		// An independently sized strip fits HD pages, unlike its whole capture.
 		SoftwareTerrainCache independent;
 		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
@@ -732,7 +738,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
 		GAGCore::Sprite::setHighResolution(true);
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		ScopedTerrainDeviceLimit device(*globals->gfx);
 		auto &backend = device.backend();
 		for (int limit : {1024, 512, 128, 32})
@@ -768,6 +774,141 @@ TEST_SUITE("TerrainPresentation")
 						std::runtime_error);
 		CHECK(backend.largestTexture == 0);
 	}
+#ifdef HAVE_OPENGL
+	TEST_CASE("GPU terrain retains CPU pages when the visible textures exceed its budget [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 1600, .height = 1280,
+			.screenFlags = GAGCore::GraphicContext::USEGPU});
+		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		auto &gfx = *globals->gfx;
+		const auto draw = [&](bool cached)
+		{
+			gfx.drawFilledRect(0, 0, 1600, 1280, 17, 29, 41);
+			gfx.beginMapTransform(.75f, .375f, .625f, 0, 0, 1600, 1280);
+			if (cached)
+			{
+				REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 125, 100, 15, 15,
+					fixture.team->me, true, 19));
+				cache.draw(gfx);
+			}
+			else SoftwareTerrainCache::drawUncached(scene, *globals->terrain, 0, 0, 125, 100,
+				15, 15, fixture.team->me, true, 19);
+			gfx.endMapTransform();
+			return terrainPixels(true);
+		};
+		const auto checksum = fixture.checksum();
+		const auto expected = draw(false);
+		CHECK(draw(true) == expected);
+		const auto rebuilt = cache.cacheRebuilds();
+		CHECK(draw(true) == expected);
+		CHECK(cache.cacheRebuilds() == rebuilt);
+		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+		CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+		CHECK(std::any_of(cache.chunks.begin(), cache.chunks.end(),
+			[](const auto &chunk) { return bool(chunk->parked); }));
+		CHECK(fixture.checksum() == checksum);
+	}
+#endif
+
+	TEST_CASE("GPU terrain zoom round trips reuse pixels and refresh parked pages [display]")
+	{
+		for (Uint32 flags : {Uint32(GAGCore::GraphicContext::PORTABLEGPU),
+							 Uint32(GAGCore::GraphicContext::USEGPU)})
+		{
+#ifndef HAVE_OPENGL
+			if (flags == GAGCore::GraphicContext::USEGPU) continue;
+#endif
+			CAPTURE(flags);
+			glob2test::HeadlessGlobals globals({.display = true, .width = 512, .height = 512,
+				.screenFlags = flags});
+			glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+			auto &map = fixture.game.map;
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 3; ++x) map.paintCell(x, y, WATER);
+			SceneMap scene;
+			glob2test::observeMap(map, scene);
+			auto &gfx = *globals->gfx;
+			SoftwareTerrainCache cache;
+			const auto draw = [&](SoftwareTerrainCache &pages, int scale, int time, int reduction = 0, bool whole = true)
+			{
+				gfx.drawFilledRect(0, 0, 512, 512, 17, 29, 41);
+				gfx.beginMapTransform(.75f, .375f, .625f, 0, 0, 512, 512);
+				REQUIRE(pages.prepareAtResolution(scene, *globals->terrain, 0, 0, 15, 15,
+					31, 31, fixture.team->me, whole, time, scale, false, reduction));
+				pages.draw(gfx);
+				gfx.endMapTransform();
+				CHECK(pages.bytes() <= SoftwareTerrainCache::GPUBudget);
+			};
+			const auto pixels = [&]
+			{
+				if (flags == GAGCore::GraphicContext::USEGPU) return terrainPixels(true);
+				std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(
+					gfx.renderer->capture(), SDL_DestroySurface);
+				REQUIRE(captured);
+				std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+					SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+				REQUIRE(rgba);
+				std::vector<Uint8> result(size_t(rgba->w) * rgba->h * 4);
+				for (int y = 0; y < rgba->h; ++y)
+					std::memcpy(result.data() + size_t(y) * rgba->w * 4,
+						static_cast<Uint8 *>(rgba->pixels) + y * rgba->pitch, rgba->w * 4);
+				return result;
+			};
+			draw(cache, 2, 19);
+			const auto original = pixels();
+			const auto *resident = cache.copies.front().chunk->image.get();
+			draw(cache, 1, 19);
+			CHECK(std::any_of(cache.chunks.begin(), cache.chunks.end(),
+				[resident](const auto &chunk) { return chunk->image.get() == resident; }));
+			const auto rebuilt = cache.cacheRebuilds();
+			draw(cache, 2, 19);
+			CHECK(cache.cacheRebuilds() == rebuilt);
+			CHECK(pixels() == original);
+			CHECK(cache.copies.front().chunk->image.get() == resident);
+			// Exercise retirement explicitly even when this small view fits all
+			// textures; the large-view test also retires them under real pressure.
+			draw(cache, 1, 19);
+			for (auto &chunk : cache.chunks)
+				if (chunk->scale == 2 && chunk->image)
+				{
+					chunk->parked.reset(chunk->image->takePixels());
+					chunk->image.reset();
+				}
+			CHECK(std::any_of(cache.chunks.begin(), cache.chunks.end(),
+				[](const auto &chunk) { return bool(chunk->parked); }));
+			// Terrain edits and animation changes must invalidate a parked level.
+			map.paintCell(0, 0, SAND);
+			glob2test::observeMap(map, scene);
+			const auto checksum = fixture.checksum();
+			draw(cache, 2, 25);
+			CHECK(cache.cacheRebuilds() > rebuilt);
+			const auto refreshed = pixels();
+			SoftwareTerrainCache fresh;
+			draw(fresh, 2, 25);
+			CHECK(pixels() == refreshed);
+			draw(cache, 1, 25);
+			draw(cache, 1, 25, 2);
+			const auto reduced = pixels();
+			CHECK(cache.cacheReductions() > 0);
+			SoftwareTerrainCache reducedFresh;
+			draw(reducedFresh, 1, 25, 2);
+			CHECK(pixels() == reduced);
+			CHECK(reducedFresh.cacheReductions() == 0);
+			CHECK(fixture.checksum() == checksum);
+			map.unsetMapDiscovered();
+			map.setMapDiscovered(0, 0, 8, 16, fixture.team->me);
+			glob2test::observeMap(map, scene);
+			draw(cache, 2, 25, 0, false);
+			const auto hidden = pixels();
+			SoftwareTerrainCache freshHidden;
+			draw(freshHidden, 2, 25, 0, false);
+			CHECK(pixels() == hidden);
+		}
+	}
+
 	TEST_CASE("zoomed-out GPU terrain retains pages across frames and wrapped views [display] "
 			  "[artifacts]")
 	{
@@ -789,12 +930,12 @@ TEST_SUITE("TerrainPresentation")
 				for (int y = 0; y < map.getH(); ++y)
 					for (int x = 0; x < map.getW(); ++x)
 						if (x % 32 < 4)
-							map.setCellTerrain(x, y, WATER);
+							map.paintCell(x, y, WATER);
 						else if (y % 32 < 4)
-							map.setCellTerrain(x, y, ICE);
+							map.paintCell(x, y, ICE);
 			}
 			SceneMap scene;
-			scene.extract(map);
+			glob2test::observeMap(map,scene);
 			const auto checksum = fixture.checksum();
 			auto &gfx = *globals->gfx;
 			SoftwareTerrainCache cache;
@@ -857,15 +998,16 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(admitted);
 			if (!admitted)
 				continue;
-			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUBudget);
+			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
 			CHECK(cache.cacheRebuilds() == rebuilds);
 			CHECK(cache.cacheHits() >= rebuilds * 5);
 			REQUIRE(!cache.chunks.empty());
-			CHECK(cache.chunks.front()->image->getW() < SoftwareTerrainCache::ChunkPixels);
+			CHECK(chunkPixels(*cache.copies.front().chunk)->w < SoftwareTerrainCache::ChunkPixels);
 			// Check the reduced pixels against independent area averages of native
 			// composition, including partially transparent coast tiles.
-			const auto &chunk = *cache.chunks.front();
-			const int divisor = SoftwareTerrainCache::ChunkPixels / chunk.image->getW();
+			const auto &chunk = *cache.copies.front().chunk;
+			const int divisor = SoftwareTerrainCache::ChunkPixels / chunkPixels(chunk)->w;
 			const int tileSize = 32 / divisor, count = divisor * divisor;
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> tile(
 				SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
@@ -893,7 +1035,7 @@ TEST_SUITE("TerrainPresentation")
 									green += ((p >> 8) & 255) * alpha;
 									blue += (p & 255) * alpha;
 								}
-							const auto *surface = chunk.image->getSDLSurface();
+							const auto *surface = chunkPixels(chunk);
 							const auto *row = reinterpret_cast<const Uint32 *>(
 								static_cast<const Uint8 *>(surface->pixels) +
 								(ty * tileSize + y) * surface->pitch);
@@ -928,17 +1070,17 @@ TEST_SUITE("TerrainPresentation")
 			draw(-7, -6);
 			CHECK(pixels() == expected);
 			cache.enabled = true;
-			map.setCellTerrain(0, 0, TRAIL);
-			scene.extract(map);
+			map.paintCell(0, 0, TRAIL);
+			glob2test::observeMap(map,scene);
 			draw(-7, -6);
 			CHECK(cache.cacheRebuilds() > rebuilds);
 			CHECK(pixels() != expected);
-			map.setCellTerrain(0, 0, WATER);
+			map.paintCell(0, 0, WATER);
 			CHECK(fixture.checksum() == checksum);
 			// Returning to a close view restores native page density.
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
 								  true, 19));
-			CHECK(cache.chunks.front()->image->getW() >= SoftwareTerrainCache::ChunkPixels);
+			CHECK(chunkPixels(*cache.copies.front().chunk)->w >= SoftwareTerrainCache::ChunkPixels);
 			const int drawableW = gfx.drawableW, drawableH = gfx.drawableH;
 			// The upper half of the crossfade on a 2x display lies just above
 			// half native density. It must still cache the nearest density.
@@ -960,7 +1102,11 @@ TEST_SUITE("TerrainPresentation")
 			gfx.endMapTransform();
 			gfx.drawableW = drawableW;
 			gfx.drawableH = drawableH;
-			CHECK_FALSE(hidpiAdmitted);
+			CHECK(hidpiAdmitted);
+			if (hidpiAdmitted)
+				CHECK(chunkPixels(*cache.copies.front().chunk)->w == SoftwareTerrainCache::ChunkPixels);
+			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
 		}
 	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
@@ -973,7 +1119,7 @@ TEST_SUITE("TerrainPresentation")
 			 .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
 		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		auto &gfx = *globals->gfx;
 		// Restore all process-wide drawing state even if a REQUIRE aborts.
 		struct RestoreTarget
@@ -1001,13 +1147,13 @@ TEST_SUITE("TerrainPresentation")
 			SoftwareTerrainCache cache;
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0, fixture.team->me,
 								  true, 19, true));
-			CHECK(cache.chunks.front()->image->getW() == SoftwareTerrainCache::ChunkPixels);
+			CHECK(chunkPixels(*cache.copies.front().chunk)->w == SoftwareTerrainCache::ChunkPixels);
 			// The same map captured at 8px per cell needs reduced pages. A
 			// narrow edge must retain the complete capture's sampling density.
 			gfx.setRenderTargetScale(1);
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 31, 0, 0, fixture.team->me,
 								  true, 19, true));
-			const auto side = cache.chunks.front()->image->getW();
+			const auto side = chunkPixels(*cache.copies.front().chunk)->w;
 			CHECK(side < SoftwareTerrainCache::ChunkPixels);
 			const auto rebuilds = cache.cacheRebuilds();
 			for (const auto &strip : {SDL_Rect{0, 0, 7, 32}, SDL_Rect{0, 0, 32, 7}})
@@ -1015,9 +1161,10 @@ TEST_SUITE("TerrainPresentation")
 				REQUIRE(cache.prepare(scene, *globals->terrain, strip.x, strip.y,
 									  strip.x + strip.w - 1, strip.y + strip.h - 1, 0, 0,
 									  fixture.team->me, true, 19, true));
-				CHECK(cache.chunks.front()->image->getW() == side);
+				CHECK(chunkPixels(*cache.copies.front().chunk)->w == side);
 				CHECK(cache.cacheRebuilds() == rebuilds);
-				CHECK(cache.bytes() <= SoftwareTerrainCache::GPUBudget);
+				CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+				CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
 			}
 		}
 	}
@@ -1028,7 +1175,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGame fixture(
 			{.wDec = 5, .hDec = 5, .terrain = WATER, .discovered = false});
 		SceneMap scene;
-		scene.extract(fixture.game.map);
+		glob2test::observeMap(fixture.game.map,scene);
 		SoftwareTerrainCache cache;
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
 			SDL_CreateSurface(256, 256, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
@@ -1051,12 +1198,12 @@ TEST_SUITE("TerrainPresentation")
 				// compose to empty tiles and submit nothing.
 				CHECK(draw(false) == 0);
 				fixture.game.map.setMapDiscovered(2, 2, 3, 3, fixture.team->me);
-				scene.extract(fixture.game.map);
+				glob2test::observeMap(fixture.game.map,scene);
 				CHECK(draw(false) > 0);
 				CHECK(draw(true) > 0);
 			});
 	}
-	TEST_CASE("image import keeps whole-cell material edges out of legacy gameplay [artifacts]")
+	TEST_CASE("image import reads each pixel as a terrain vertex [artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .teams = 0});
@@ -1088,27 +1235,25 @@ TEST_SUITE("TerrainPresentation")
 		MapImageImportReport report;
 		importMapImage(fixture.game, filename, request, 1, report, 0);
 		const auto &map = fixture.game.map;
-		CHECK(map.terrainTypeAt(8, 8) == TRAIL);
-		CHECK(map.terrainTypeAt(7, 8) == WATER);
-		CHECK(map.terrainTypeAt(8, 7) == WATER);
-		CHECK(map.terrainTypeAt(7, 7) == WATER);
-		CHECK_FALSE(map.terrainPropertiesAt(7, 8).walkable);
-		CHECK(map.terrainTypeAt(0, 10) == ICE);
-		CHECK(map.terrainTypeAt(63, 10) == WATER);
-		CHECK(map.terrainTypeAt(20, 10) == TRAIL);
-		CHECK(map.terrainTypeAt(19, 10) == GRASS);
-		CHECK(map.terrainPropertiesAt(19, 10).buildable);
-		CHECK(map.terrainTypeAt(30, 30) == DARK_WATER);
-		CHECK(map.terrainTypeAt(34, 30) == WATER);
+		// Each pixel is a vertex; a lone pixel colours the four cells around it.
+		CHECK(map.vertexTerrainAt(8, 8) == TRAIL);
+		CHECK(map.vertexTerrainAt(7, 8) == WATER);
+		CHECK(map.vertexTerrainAt(8, 7) == WATER);
+		CHECK(map.vertexTerrainAt(7, 7) == WATER);
+		CHECK(map.terrainPropertiesAt(7, 7).walkable);
+		CHECK_FALSE(map.terrainPropertiesAt(6, 6).walkable);
+		CHECK(map.vertexTerrainAt(0, 10) == ICE);
+		CHECK(map.vertexTerrainAt(63, 10) == WATER);
+		CHECK(map.vertexTerrainAt(20, 10) == TRAIL);
+		CHECK(map.vertexTerrainAt(19, 10) == GRASS);
+		CHECK(map.terrainPropertiesAt(18, 10).buildable);
+		CHECK_FALSE(map.terrainPropertiesAt(19, 10).buildable);
+		CHECK(map.vertexTerrainAt(30, 30) == DARK_WATER);
+		CHECK(map.vertexTerrainAt(34, 30) == WATER);
 		CHECK(map.requiredTerrainExperiments().has(ExperimentId::DeepWaterTerrain));
-		// An ordinary grass/water boundary still receives the legacy shore repair.
-		CHECK(map.terrainTypeAt(15, 5) != WATER);
-		fixture.game.map.rebuildTerrain();
-		CHECK(map.terrainTypeAt(7, 8) == WATER);
-		CHECK(map.terrainTypeAt(8, 7) == WATER);
-		CHECK(map.terrainTypeAt(7, 7) == WATER);
-		CHECK(map.terrainTypeAt(63, 10) == WATER);
-		CHECK(map.terrainTypeAt(19, 10) == GRASS);
+		// An ordinary grass/water boundary still receives a sand beach.
+		CHECK(map.vertexTerrainAt(15, 5) == SAND);
+		CHECK(map.vertexTerrainAt(16, 5) == SAND);
 	}
 	TEST_CASE("every paintable built-in binds a material, has an editor icon and exports its own colour [display][artifacts]")
 	{
@@ -1128,11 +1273,11 @@ TEST_SUITE("TerrainPresentation")
 			const auto [sprite, frame] = compositor.editorIcon(type);
 			CHECK(sprite != nullptr);
 			CHECK(frame < 65536);
-			// Classic corner terrain exports through the undermap; whole-cell types
-			// export their registered colour.
-			if (terrainUsesLegacyCorners(type))
+			// Each vertex exports its registered colour; the classic ones are
+			// already covered by the ordinary map around them.
+			if (classicTerrain(type))
 				continue;
-			map.setCellTerrain(int(painted.size()) + 1, 1, type);
+			map.paintCell(int(painted.size()) + 1, 1, type);
 			painted.push_back(type);
 		}
 		(void)minimap;
@@ -1159,8 +1304,8 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 0});
 		auto &map = fixture.game.map;
-		map.setCellTerrain(1, 1, ICE);
-		map.setCellTerrain(2, 1, TRAIL);
+		map.paintCell(1, 1, ICE);
+		map.paintCell(2, 1, TRAIL);
 		const auto filename = (glob2test::artifactDir() / "terrain-colors.png").string();
 		exportMapImage(fixture.game, filename);
 		auto *source = IMG_Load(filename.c_str());
@@ -1200,14 +1345,14 @@ TEST_SUITE("TerrainValidation")
 			for (int x = 0; x < 32; ++x)
 			{
 				if (x < 5)
-					map.setTerrain(x, y, 128);
+					map.paintCell(x, y, SAND);
 				if (x < 2)
-					map.setTerrain(x, y, 256);
+					map.paintCell(x, y, WATER);
 			}
 		// Every catalogue type as a 3x3 island on grass with a detached diagonal cell,
 		// five per row, so interior variants, boundaries and seams are all visible.
 		std::vector<TerrainType> types;
-		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				types.push_back(TerrainType(i));
 		REQUIRE(types.size() == 24);
@@ -1216,23 +1361,23 @@ TEST_SUITE("TerrainValidation")
 			const int ox = 6 + int(n % 5) * 5, oy = int(n / 5) * 5; // rows 0..23 are rendered
 			for (int dy = 0; dy < 3; ++dy)
 				for (int dx = 0; dx < 3; ++dx)
-					map.setCellTerrain(ox + dx, oy + dy, types[n]);
-			map.setCellTerrain(ox + 3, oy + 3, types[n]);
+					map.paintCell(ox + dx, oy + dy, types[n]);
+			map.paintCell(ox + 3, oy + 3, types[n]);
 		}
 		// Water-side samples: deep and dark water meet open water and the beach; lava
 		// and a hole sit on the beach edge.
 		for (int y = 2; y < 6; ++y)
 			for (int x = 2; x < 4; ++x)
-				map.setCellTerrain(x, y, DEEP_WATER);
+				map.paintCell(x, y, DEEP_WATER);
 		for (int y = 8; y < 12; ++y)
 			for (int x = 2; x < 4; ++x)
-				map.setCellTerrain(x, y, DARK_WATER);
+				map.paintCell(x, y, DARK_WATER);
 		for (int y = 14; y < 17; ++y)
-			map.setCellTerrain(4, y, LAVA);
+			map.paintCell(4, y, LAVA);
 		for (int y = 19; y < 22; ++y)
-			map.setCellTerrain(4, y, VOID_HOLE);
+			map.paintCell(4, y, VOID_HOLE);
 		SceneMap scene;
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		// Raised obstacle decor is drawn with the resources, row by row.
 		fixture.game.drawMapResources(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
@@ -1240,8 +1385,8 @@ TEST_SUITE("TerrainValidation")
 		REQUIRE(IMG_SavePNG(
 			globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "terrain-catalogue-gallery.png").string().c_str()));
-		// Obstacle islands carry decor: interior cells use full frames, cells
-		// with an open neighbour the smaller edge frames; open ground has none.
+		// Obstacle islands carry decor: cells with four obstacle corners use full
+		// frames, cells with two or three the smaller edge frames; open ground has none.
 		auto &compositor = globals->terrainCompositor();
 		REQUIRE(compositor.decorSprite());
 		const auto &catalog = compositor.catalog();
@@ -1259,8 +1404,10 @@ TEST_SUITE("TerrainValidation")
 				continue;
 			}
 			CHECK(contains(decor.full, compositor.decorFrame(scene, ox + 1, oy + 1)));
-			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox, oy + 1)));
-			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 3)));
+			// Painted cells cover vertices ox..ox+3, so the cells just outside
+			// the island have two of its corners.
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox - 1, oy + 1)));
+			CHECK(contains(decor.edge, compositor.decorFrame(scene, ox + 3, oy + 1)));
 		}
 		CHECK(compositor.decorFrame(scene, 5, 30) == -1);
 		// Painted islands keep their identity and the map declares every group painted.
@@ -1289,7 +1436,7 @@ TEST_SUITE("TerrainValidation")
 		compositor.prepare(true, 0);
 		const auto &catalog = compositor.catalog();
 		std::vector<std::string> keys;
-		for (unsigned i = TERRAIN_COUNT_BEFORE_CATALOGUE; i < TERRAIN_COUNT; ++i)
+		for (unsigned i = BOULDERS; i < TERRAIN_COUNT; ++i)
 			if (terrainPaintable(TerrainType(i)))
 				keys.push_back(terrainPresentation(TerrainType(i)).name);
 		REQUIRE(keys.size() == 24);
@@ -1310,7 +1457,7 @@ TEST_SUITE("TerrainValidation")
 				CHECK(hd->getH() == 128);
 			}
 			TerrainVisual::Recipe recipe;
-			recipe.samples.fill(id);
+			recipe.corners.fill(id);
 			recipe.width = recipe.height = 1;
 			compositor.compose(recipe, sheet.getSDLSurface(), int(n % 6) * 128, int(n / 6) * 128, 4);
 		}
@@ -1336,16 +1483,16 @@ TEST_SUITE("TerrainValidation")
 			for (int x = 0; x < 32; ++x)
 			{
 				if (x < 8)
-					map.setTerrain(x, y, 128);
+					map.paintCell(x, y, SAND);
 				if (x < 3)
-					map.setTerrain(x, y, 256);
+					map.paintCell(x, y, WATER);
 				if ((x - 17) * (x - 17) + (y - 10) * (y - 10) < 42)
-					map.setCellTerrain(x, y, ICE);
+					map.paintCell(x, y, ICE);
 				if (y == 20 || x == 25 || (x > 9 && x < 24 && y == x - 5))
-					map.setCellTerrain(x, y, TRAIL);
+					map.paintCell(x, y, TRAIL);
 			}
-		map.setCellTerrain(31, 0, ICE);
-		map.setCellTerrain(0, 0, TRAIL);
+		map.paintCell(31, 0, ICE);
+		map.paintCell(0, 0, TRAIL);
 		fixture.addUnit(WORKER, 17, 10);
 		fixture.addUnit(WORKER, 25, 20);
 		std::ofstream trace(glob2test::artifactDir() / "checksums.txt");
@@ -1355,7 +1502,7 @@ TEST_SUITE("TerrainValidation")
 			fixture.step();
 		}
 		SceneMap scene;
-		scene.extract(map);
+		glob2test::observeMap(map,scene);
 		auto *gfx = globals->gfx;
 		fixture.game.drawMapTerrain(0, 0, 31, 23, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
 		REQUIRE(IMG_SavePNG(gfx->getSDLSurface(),
@@ -1388,12 +1535,12 @@ TEST_SUITE("TerrainValidation")
 			for (int y = 0; y < 32; ++y)
 				for (int x = 0; x < 32; ++x)
 				{
-					map.setCellTerrain(
+					map.paintCell(
 						x, y,
 						pattern ? ((x + y) % 3 == 0 ? ICE : ((x * 3 + y) % 5 == 0 ? TRAIL : GRASS))
 								: GRASS);
 				}
-			scene.extract(map);
+			glob2test::observeMap(map,scene);
 			SoftwareTerrainCache measured;
 			auto begin = std::chrono::steady_clock::now();
 			REQUIRE(measured.prepare(scene, *globals->terrain, 0, 0, 31, 23, 0, 0, fixture.team->me,

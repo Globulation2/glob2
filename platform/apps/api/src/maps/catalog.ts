@@ -71,6 +71,8 @@ export type MapRow = {
 };
 
 export type VersionRow = {
+  generator_provenance?: MapVersionInfo['generatorProvenance'] | null;
+  set_credits: Selectable<Database['map_versions']>['set_credits'];
   building_catalog: Selectable<Database['map_versions']>['building_catalog'];
   resource_experiments: Selectable<Database['map_versions']>['resource_experiments'];
   required_resource_experiments: string[];
@@ -189,6 +191,8 @@ export function versionView(origin: string, row: VersionRow): MapVersionInfo {
   const urls = versionUrls(origin, row.map_id, row.hash);
   const sim = row.sim_version ? storedSimVersion(row.sim_version) : undefined;
   return {
+    ...(row.generator_provenance ? { generatorProvenance: row.generator_provenance } : {}),
+    setCredits: row.set_credits,
     hash: row.hash,
     size: Number(row.size),
     ...(row.width !== null ? { width: row.width } : {}),

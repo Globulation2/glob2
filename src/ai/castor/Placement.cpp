@@ -182,8 +182,8 @@ void AICastor::updateGlobalGradient(Uint8 *gradient)
     if(observation->terrainMovementModifiers)
     {
 		field::expandTerrainInfluence(
-			gradient, observation->width, observation->height, [&](std::size_t i) { return observation->terrainAt(i).type; },
-			*observation->terrain);
+			gradient, observation->width, observation->height, [&](std::size_t i) { return observation->cellRuleAt(i); },
+			*observation->cellRules);
 		return;
     }
 	field::directionalInfluence(gradient,{observation->width,observation->height},

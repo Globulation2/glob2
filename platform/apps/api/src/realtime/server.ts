@@ -2,6 +2,7 @@
 // address), heartbeat, and the session and sign-in methods. Room, queue and
 // match methods come from play/realtime.ts (`extraHandlers`).
 import type { FastifyInstance } from 'fastify';
+import { sql } from 'kysely';
 import type { WebSocket } from 'ws';
 import {
   REALTIME_PROTOCOL_VERSION,
@@ -97,11 +98,39 @@ export async function realtimeRoutes(
       if (params.protocol !== REALTIME_PROTOCOL_VERSION) {
         throw apiError('update_required', 'Unsupported realtime protocol version.');
       }
+      const generatorSharing = params.client.generatorSharing === true;
       if (params.accessToken) {
         const { account, claims } = await identity.tokens.verifyAccess(params.accessToken);
+        if (!generatorSharing) {
+          const [room, match] = await Promise.all([
+            services.db
+              .selectFrom('room_members as m')
+              .innerJoin('rooms as r', 'r.id', 'm.room_id')
+              .select('r.id')
+              .where('m.account_id', '=', account.id)
+              .where('r.status', '!=', 'closed')
+              .where(sql<boolean>`r.settings->'map'->>'kind' = 'scripted'`)
+              .executeTakeFirst(),
+            services.db
+              .selectFrom('match_participants as p')
+              .innerJoin('matches as m', 'm.id', 'p.match_id')
+              .select('m.id')
+              .where('p.account_id', '=', account.id)
+              .where('p.kind', '=', 'human')
+              .where('m.status', 'in', ['starting', 'running'])
+              .where(sql<boolean>`m.setup->'map'->>'kind' = 'scripted'`)
+              .executeTakeFirst(),
+          ]);
+          if (room || match)
+            throw apiError(
+              'update_required',
+              'Update the game to reconnect to your shared generator room or match.',
+            );
+        }
+        connection.generatorSharing = generatorSharing;
         connection.authenticate(account, claims.sid);
         await identity.accounts.touch(account.id);
-      }
+      } else connection.generatorSharing = generatorSharing;
       connection.helloDone = true;
       connection.platform = params.client.platform;
       connection.simVersion = params.client.simVersion;
@@ -134,7 +163,9 @@ export async function realtimeRoutes(
         params.provider !== 'local' &&
         !identity.providers.get(params.provider)
       ) {
-        throw apiError('not_found', `No sign-in provider ${params.provider}.`);
+        throw apiError('not_found', 'No sign-in provider {p0}.', undefined, {
+          p0: String(params.provider),
+        });
       }
       if (connection.pendingAttempts.size >= MAX_PENDING_ATTEMPTS) {
         throw apiError('rate_limited', 'Too many sign-ins in progress on this connection.');
@@ -219,6 +250,13 @@ export async function realtimeRoutes(
         burst: identity.limits.realtimeBurst,
       });
       connection.onAccountChange = (c) => hub.setAccount(c, c.account?.id);
+      connection.onActivity = (account) =>
+        identity.activity
+          .record(account)
+          .catch((error) => services.logger.warn({ error }, 'activity collection failed'));
+      socket.on('pong', () => {
+        if (connection.account) void connection.onActivity?.(connection.account);
+      });
       hub.add(connection);
       socket.on('message', (data, isBinary) => {
         if (isBinary) {

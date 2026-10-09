@@ -23,6 +23,7 @@
 #include "LANFindScreen.h"
 #include "MessageScreen.h"
 #include "SettingsScreen.h"
+#include "GeneratorPackage.h"
 #include "CustomGameScreen.h"
 #include "CustomGameOtherOptions.h"
 #include "StartQualityScreen.h"
@@ -134,6 +135,49 @@ struct MobileGallerySetup
 	static void run()
 	{
 		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		if (SDL_getenv_unsafe("GLOB2_GALLERY_GENERATORS_ONLY"))
+		{
+			auto storage = Online::makeUserDirectoryStorage();
+			MapGeneration::JavaScript::Library library(*storage);
+			library.publish();
+			const int method = GeneratorRegistry::active().idOf("examples:swamp");
+			auto settings = std::make_unique<SettingsScreen>();
+			settings->selectCategory(SettingsScreen::Category::CustomGenerators);
+			screenShot(stack, "settings-generators", std::move(settings));
+			auto editor = std::make_unique<NewMapScreen>(GeneratorRegistry::active(), &stack);
+			editor->chooseMethod(method);
+			auto *creation = editor.get();
+			stack.push(std::move(editor));
+			frame(stack);
+			const auto editorStarted = SDL_GetTicks();
+			do
+			{
+				frame(stack);
+				SDL_Delay(16);
+			} while (!creation->preview->isPresentationSettled() &&
+					 SDL_GetTicks() - editorStarted < 45000);
+			if (!creation->preview->isPresentationSettled())
+				throw std::runtime_error("Scripted editor preview did not settle");
+			stackShot(stack, "new-map-scripted");
+			creation->endExecute(NewMapScreen::CANCEL);
+			frame(stack);
+			auto owned = std::make_unique<CustomGameScreen>(stack);
+			auto *lobby = owned.get();
+			stack.push(std::move(owned));
+			frame(stack);
+			lobby->setMapMode(true);
+			lobby->applyLandscape(method, 91);
+			const auto started = SDL_GetTicks();
+			do
+			{
+				frame(stack);
+				SDL_Delay(16);
+			} while (lobby->previewBusy() && SDL_GetTicks() - started < 45000);
+			if (!lobby->validMap)
+				throw std::runtime_error("Scripted lobby preview did not generate");
+			stackShot(stack, "setup-scripted");
+			return;
+		}
 		if (SDL_getenv_unsafe("GLOB2_GALLERY_EDITOR_ONLY"))
 		{
 			stack.push(std::make_unique<MainMenuScreen>());
@@ -283,50 +327,83 @@ struct MobileGallerySetup
 		// Online play (fixed models, no network): hub states, rooms, starting a match.
 		screenShot(stack, "online-hub", OnlineUIFixtures::hubFixture(stack));
 		screenShot(stack, "online-hub-searching", OnlineUIFixtures::hubSearching(stack));
-		screenShot(stack, "online-hub-registered", OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Play));
-		screenShot(stack, "online-hub-rooms", OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Rooms));
-		screenShot(stack, "online-hub-leaderboard", OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Leaderboard));
-		screenShot(stack, "online-hub-signin", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
-					   m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
-					   m.confirmationCode = "KXQ742";
-				   }));
-		screenShot(stack, "online-hub-offline", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
-					   m.link = OnlineHubScreen::Model::Link::Offline;
-					   m.retryInSeconds = 8;
-					   m.displayName = "Bradley";
-					   m.accountKind = "registered";
-					   m.rooms = Online::Json::array();
-				   }));
-		screenShot(stack, "online-hub-update", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
-					   m.link = OnlineHubScreen::Model::Link::UpdateRequired;
-					   m.outdated = OnlineHubScreen::Model::Outdated::Client;
-				   }));
-		screenShot(stack, "online-hub-server-behind", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
-					   m.link = OnlineHubScreen::Model::Link::UpdateRequired;
-					   m.outdated = OnlineHubScreen::Model::Outdated::Server;
-				   }));
+		screenShot(stack, "online-hub-registered",
+				   OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Play));
+		screenShot(stack, "online-hub-rooms",
+				   OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Rooms));
+		screenShot(stack, "online-hub-leaderboard",
+				   OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Leaderboard));
+		screenShot(stack, "online-hub-signin",
+				   OnlineUIFixtures::hubFixture(stack,
+												[](OnlineHubScreen::Model &m)
+												{
+													m.signIn =
+														OnlineHubScreen::Model::SignIn::Waiting;
+													m.confirmationCode = "KXQ742";
+												}));
+		screenShot(stack, "online-hub-offline",
+				   OnlineUIFixtures::hubFixture(stack,
+												[](OnlineHubScreen::Model &m)
+												{
+													m.link = OnlineHubScreen::Model::Link::Offline;
+													m.retryInSeconds = 8;
+													m.displayName = "Bradley";
+													m.accountKind = "registered";
+													m.rooms = Online::Json::array();
+												}));
+		screenShot(
+			stack, "online-hub-update",
+			OnlineUIFixtures::hubFixture(stack,
+										 [](OnlineHubScreen::Model &m)
+										 {
+											 m.link = OnlineHubScreen::Model::Link::UpdateRequired;
+											 m.outdated = OnlineHubScreen::Model::Outdated::Client;
+										 }));
+		screenShot(
+			stack, "online-hub-server-behind",
+			OnlineUIFixtures::hubFixture(stack,
+										 [](OnlineHubScreen::Model &m)
+										 {
+											 m.link = OnlineHubScreen::Model::Link::UpdateRequired;
+											 m.outdated = OnlineHubScreen::Model::Outdated::Server;
+										 }));
 		{
 			auto hub = OnlineUIFixtures::hubFixture(stack);
-			static_cast<OnlineHubScreen &>(*hub).acceptInvite("https://play.lanparty.net", "7HD21QABCD");
+			static_cast<OnlineHubScreen &>(*hub).acceptInvite("https://play.lanparty.net",
+															  "7HD21QABCD");
 			screenShot(stack, "online-hub-trust", std::move(hub));
 		}
-		screenShot(stack, "room-host", std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat())));
+		screenShot(stack, "room-host",
+				   std::make_unique<RoomScreen>(
+					   stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(),
+															OnlineUIFixtures::HOST_ID,
+															OnlineUIFixtures::roomChat())));
 		{
-			auto room = std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::GUEST_ID, OnlineUIFixtures::roomChat()));
+			auto room = std::make_unique<RoomScreen>(
+				stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(),
+													 OnlineUIFixtures::GUEST_ID,
+													 OnlineUIFixtures::roomChat()));
 			room->selectTab(RoomScreen::MapTab);
 			screenShot(stack, "room-guest-map", std::move(room));
 		}
 		{
-			auto room = std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat()));
+			auto room = std::make_unique<RoomScreen>(
+				stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(),
+													 OnlineUIFixtures::HOST_ID,
+													 OnlineUIFixtures::roomChat()));
 			room->selectTab(RoomScreen::ChatTab);
 			screenShot(stack, "room-chat", std::move(room));
 		}
-		screenShot(stack, "room-lan", std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
+		screenShot(stack, "room-lan",
+				   std::make_unique<RoomScreen>(
+					   stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
 		{
 			// The room's "Change map…": the simple picker, its previews generated.
-			for (int tab : {RoomMapPickerScreen::GeneratedTab, RoomMapPickerScreen::PremadeTab, RoomMapPickerScreen::CatalogTab})
+			for (int tab : {RoomMapPickerScreen::GeneratedTab, RoomMapPickerScreen::PremadeTab,
+							RoomMapPickerScreen::CatalogTab})
 			{
-				auto picker = std::make_unique<RoomMapPickerScreen>(2, Online::defaultRoomSetup(2, 0));
+				auto picker =
+					std::make_unique<RoomMapPickerScreen>(2, Online::defaultRoomSetup(2, 0));
 				auto *view = picker.get();
 				view->selectTab(tab);
 				if (tab == RoomMapPickerScreen::PremadeTab)
@@ -335,24 +412,28 @@ struct MobileGallerySetup
 				const Uint32 started = SDL_GetTicks();
 				do
 					frame(stack);
-				while ((view->previewsBusy() || (tab == RoomMapPickerScreen::PremadeTab && !view->premadesLoaded())) &&
+				while ((view->previewsBusy() ||
+						(tab == RoomMapPickerScreen::PremadeTab && !view->premadesLoaded())) &&
 					   SDL_GetTicks() - started < 45000);
 				frame(stack);
 				stackShot(stack, tab == RoomMapPickerScreen::GeneratedTab ? "room-map-picker"
-								 : tab == RoomMapPickerScreen::PremadeTab ? "room-map-picker-premade"
-																		  : "room-map-picker-catalog");
+								 : tab == RoomMapPickerScreen::PremadeTab
+									 ? "room-map-picker-premade"
+									 : "room-map-picker-catalog");
 				view->endExecute(0);
 				frame(stack);
 			}
 			auto close = std::make_unique<MessageScreen>(
 				GAGCore::Toolkit::getStringTable()->getString("[room close title]"),
 				GAGCore::Toolkit::getStringTable()->getString("[room close body one]"),
-				std::vector<std::string>{GAGCore::Toolkit::getStringTable()->getString("[room close confirm]"),
-										 GAGCore::Toolkit::getStringTable()->getString("[room stay]")});
+				std::vector<std::string>{
+					GAGCore::Toolkit::getStringTable()->getString("[room close confirm]"),
+					GAGCore::Toolkit::getStringTable()->getString("[room stay]")});
 			close->setPrimary(1);
 			screenShot(stack, "room-host-leave", std::move(close));
 		}
-		screenShot(stack, "match-starting", std::make_unique<MatchStartScreen>(stack, OnlineUIFixtures::startingMatch()));
+		screenShot(stack, "match-starting",
+				   std::make_unique<MatchStartScreen>(stack, OnlineUIFixtures::startingMatch()));
 		{
 			auto settings = std::make_unique<SettingsScreen>();
 			settings->selectCategory(SettingsScreen::Category::Online);
@@ -369,13 +450,17 @@ struct MobileGallerySetup
 			status.queueId = OnlineUIFixtures::queues()[2].id;
 			casual.presentSearching(OnlineUIFixtures::queues()[2], status, now - 65000);
 			screenShot(stack, "quick-match-searching-casual",
-					   std::make_unique<QuickMatchScreen>(stack, casual, OnlineUIFixtures::queues(), "https://app.glob2online.com", "Bradley"));
+					   std::make_unique<QuickMatchScreen>(stack, casual, OnlineUIFixtures::queues(),
+														  "https://app.glob2online.com",
+														  "Bradley"));
 		}
 		screenShot(stack, "match-found", OnlineUIFixtures::matchFound(true));
 		screenShot(stack, "match-found-ai", OnlineUIFixtures::matchFound(false));
 		screenShot(stack, "online-profile", OnlineUIFixtures::profile(stack));
-		screenShot(stack, "online-maps", OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Browse, ""));
-		screenShot(stack, "online-my-maps", OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Mine, ""));
+		screenShot(stack, "online-maps",
+				   OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Browse, ""));
+		screenShot(stack, "online-my-maps",
+				   OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Mine, ""));
 		screenShot(stack, "online-maps-empty", OnlineUIFixtures::mapsEmpty(stack));
 		screenShot(stack, "map-share", OnlineUIFixtures::share(0));
 		screenShot(stack, "map-share-checking", OnlineUIFixtures::share(1));
@@ -395,6 +480,9 @@ struct MobileGallerySetup
 	// no overflow intentionally has identical top/bottom images.
 	static void captureSettings(GAGGUI::ScreenStack &stack)
 	{
+		auto generators = std::make_unique<SettingsScreen>();
+		generators->selectCategory(SettingsScreen::Category::CustomGenerators);
+		screenShot(stack, "settings-generators", std::move(generators));
 		const char *categories[] = {"display",   "audio",    "gameplay",
 									"buildings", "controls", "player"};
 		for (int i = 0; i < 6; ++i)
@@ -485,9 +573,12 @@ struct MobileGallerySetup
 		// not just the Ready enum, before capturing any subsequent child pages.
 		// generatedSnapshot lives in memory (CustomGameScreen::generateMap); write it to a
 		// disposable scratch file so the string-keyed thumbnail loader can read it back.
-		Toolkit::getFileManager()->writeAtomically("gallery-thumbnail-scratch.map",
-			[&](OutputStream &stream)
-			{ stream.write(lobby->generatedSnapshot->data(), lobby->generatedSnapshot->size(), "bytes"); });
+		Toolkit::getFileManager()->writeAtomically(
+			"gallery-thumbnail-scratch.map",
+			[&](OutputStream &stream) {
+				stream.write(lobby->generatedSnapshot->data(), lobby->generatedSnapshot->size(),
+							 "bytes");
+			});
 		lobby->preview->setMapThumbnail("gallery-thumbnail-scratch.map");
 		lobby->invalidate();
 		const auto restored = SDL_GetTicks();
@@ -727,7 +818,8 @@ class MobileGalleryGameplay
 			capture("game-zoom-drag");
 			gui.touch->cancel();
 			globalContainer->settings.oneFingerZoomDirection = direction;
-			gui.zoomMap(std::log(zoomBefore / gui.camera.zoom) / std::log(1.1), int(pressX), int(pressY));
+			gui.zoomMap(std::log(zoomBefore / gui.camera.zoom) / std::log(1.1), int(pressX),
+						int(pressY));
 			gui.clearSelection();
 		}
 		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
@@ -815,8 +907,9 @@ class MobileGalleryGameplay
 			{
 				const auto g = gui.touch->dialLayout(gui.touch->layout()).geometry;
 				const auto regions = gui.touch->dialRegions();
-				const auto arc = std::find_if(regions.begin(), regions.end(), [](const auto &r)
-											  { return r.part == GameGUITouch::DialRegion::Arc && r.action.kind == 6; });
+				const auto arc = std::find_if(
+					regions.begin(), regions.end(), [](const auto &r)
+					{ return r.part == GameGUITouch::DialRegion::Arc && r.action.kind == 6; });
 				if (arc != regions.end())
 				{
 					Uint32 ticks = SDL_GetTicks();
@@ -833,7 +926,8 @@ class MobileGalleryGameplay
 					};
 					const double radius = g.rings[arc->ring].middle();
 					send(SDL_EVENT_FINGER_DOWN, TouchDial::point(g, radius, arc->from + 1));
-					send(SDL_EVENT_FINGER_MOTION, TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
+					send(SDL_EVENT_FINGER_MOTION,
+						 TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
 				}
 			}
 			capture("game-inspector-dial-drag");
@@ -854,7 +948,8 @@ class MobileGalleryGameplay
 		{
 			gui.openDialog(mode, std::move(screen));
 			if (objectivesTab)
-				static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get())->showTab(objectivesTab);
+				static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get())
+					->showTab(objectivesTab);
 			capture(name);
 			gui.closeDialog();
 		};
@@ -863,9 +958,11 @@ class MobileGalleryGameplay
 		dialog("game-alliances", GameGUI::IGM_ALLIANCE,
 			   std::make_unique<InGameAllianceScreen>(&gui));
 		dialog("game-objectives", GameGUI::IGM_OBJECTIVES,
-			   std::make_unique<InGameObjectivesScreen>(&gui, false), InGameObjectivesScreen::OBJECTIVES);
+			   std::make_unique<InGameObjectivesScreen>(&gui, false),
+			   InGameObjectivesScreen::OBJECTIVES);
 		dialog("game-briefing", GameGUI::IGM_OBJECTIVES,
-			   std::make_unique<InGameObjectivesScreen>(&gui, true), InGameObjectivesScreen::BRIEFING);
+			   std::make_unique<InGameObjectivesScreen>(&gui, true),
+			   InGameObjectivesScreen::BRIEFING);
 		dialog("game-save", GameGUI::IGM_SAVE,
 			   std::make_unique<LoadSaveDialog>("games", "game", false, "Save game", "Review game",
 												glob2FilenameToName, glob2NameToFilename));
@@ -873,8 +970,9 @@ class MobileGalleryGameplay
 			   std::make_unique<LoadSaveDialog>("games", "game", true, "Load game", "",
 												glob2FilenameToName, glob2NameToFilename));
 		gui.localTeam->hasWon = true;
-		dialog("game-victory", GameGUI::IGM_END_OF_GAME,
-			   std::make_unique<InGameEndOfGameScreen>("Victory", true, gui.localTeam->color, true));
+		dialog(
+			"game-victory", GameGUI::IGM_END_OF_GAME,
+			std::make_unique<InGameEndOfGameScreen>("Victory", true, gui.localTeam->color, true));
 		gui.localTeam->hasWon = false;
 		{
 			// Production path: a tie at the top with a non-allied team reads as a draw.
@@ -987,8 +1085,9 @@ class MobileGalleryGameplay
 			// on both sides of the shared thresholds (ConnectionQuality.h): Ping good
 			// under 150 ms, Behind good under 1 s, Delay good under 200 ms.
 			ConnectionSnapshot snapshot;
-			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state, int pingMs,
-						   int behindMs, bool local = false) {
+			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state,
+						   int pingMs, int behindMs, bool local = false)
+			{
 				ConnectionRow row;
 				row.seat = seat;
 				row.name = name;
@@ -1060,7 +1159,8 @@ class MobileGalleryGameplay
 			// menu with this player's pauses left.
 			snapshot.rows[1].state = ConnectionRow::State::Connected;
 			gui.networkMatch.active = true;
-			gui.pauseState = [] {
+			gui.pauseState = []
+			{
 				GameGUI::PauseState state;
 				state.limited = true;
 				state.pausesLeft = 2;
@@ -1105,7 +1205,9 @@ class MobileGalleryGameplay
 			view->inspectValue();
 			stackShot(stack, "game-results-value");
 			// Online results: the rating card while verifying, verified, and a room match.
-			auto online = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000001", OnlineUIFixtures::HOST_ID);
+			auto online = std::make_shared<Online::OnlineMatchResult>(
+				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000001",
+				OnlineUIFixtures::HOST_ID);
 			online->label = "1 vs 1 · Ranked";
 			online->mapTitle = "Even Ground 128×128";
 			online->fromRoom = false;
@@ -1123,7 +1225,9 @@ class MobileGalleryGameplay
 			online->outcome = "won";
 			++online->revision;
 			stackShot(stack, "game-results-verified");
-			auto room = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000002", OnlineUIFixtures::HOST_ID);
+			auto room = std::make_shared<Online::OnlineMatchResult>(
+				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000002",
+				OnlineUIFixtures::HOST_ID);
 			room->label = "Room · Sunday 2v2";
 			room->mapTitle = "Marchland";
 			room->verification = Online::OnlineMatchResult::Verification::NotApplicable;
@@ -1132,14 +1236,18 @@ class MobileGalleryGameplay
 			stackShot(stack, "game-results-room");
 			// The winner of a match the opponent left, before the platform settles
 			// it, and the player who left: their loss at once, the record later.
-			auto opponentLeft = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000003", OnlineUIFixtures::HOST_ID);
+			auto opponentLeft = std::make_shared<Online::OnlineMatchResult>(
+				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000003",
+				OnlineUIFixtures::HOST_ID);
 			opponentLeft->label = "Room · Bradley's room";
 			opponentLeft->mapTitle = "balanced for 2";
 			view->setOnlineResult(opponentLeft);
 			view->setOutcome(EndGameScreen::Outcome::Victory);
 			view->setReason("Ana_M left the match.");
 			stackShot(stack, "game-results-opponent-left");
-			auto leaver = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000004", OnlineUIFixtures::GUEST_ID);
+			auto leaver = std::make_shared<Online::OnlineMatchResult>(
+				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000004",
+				OnlineUIFixtures::GUEST_ID);
 			leaver->label = "1 vs 1 · Ranked";
 			leaver->mapTitle = "Even Ground 128×128";
 			leaver->fromRoom = false;
@@ -1178,9 +1286,11 @@ class MobileGalleryGameplay
 		editor.beginEditing();
 		// Desktop captures always dock; touch captures follow the live rule
 		// (MapEditPresentation.h): phones get the tray, tablets the dock.
-		if ((desktopPresentation && editor.phone) || editor.presentation() != editor.wantedPresentation())
+		if ((desktopPresentation && editor.phone) ||
+			editor.presentation() != editor.wantedPresentation())
 			throw std::runtime_error("Unexpected editor presentation");
-		std::cerr << "EDITOR PRESENTATION " << editorPresentationName(editor.presentation()) << "\n";
+		std::cerr << "EDITOR PRESENTATION " << editorPresentationName(editor.presentation())
+				  << "\n";
 		auto editCapture = [&](const std::string &name)
 		{
 			queueShot(name);
@@ -1220,8 +1330,8 @@ class MobileGalleryGameplay
 			phone.chooseMode(2);
 			phone.prepare();
 			editor.updateCamera();
-			const auto inn = std::find_if(phone.rows.begin(), phone.rows.end(),
-										  [](const auto &row) { return row.id.starts_with("building/inn."); });
+			const auto inn = std::find_if(phone.rows.begin(), phone.rows.end(), [](const auto &row)
+										  { return row.id.starts_with("building/inn."); });
 			if (inn == phone.rows.end())
 				throw std::runtime_error("The editor tray has no inn card");
 			const auto icon = inn->rect;
@@ -1417,12 +1527,13 @@ class MobileGalleryGameplay
 			editor.performAction(close);
 		};
 		withDialog("open menu screen", "close menu screen", [&] { editCapture("editor-pause"); });
-		withDialog("open area name", "close area name",
-				   [&]
-				   {
-					   static_cast<AskForTextInput *>(editor.activeDialog())->setText("Northern passage");
-					   editCapture("editor-area-name");
-				   });
+		withDialog(
+			"open area name", "close area name",
+			[&]
+			{
+				static_cast<AskForTextInput *>(editor.activeDialog())->setText("Northern passage");
+				editCapture("editor-area-name");
+			});
 		withDialog("open teams editor", "close teams editor", [&] { editCapture("editor-teams"); });
 		withDialog("open scenario editor", "close scenario editor",
 				   [&]
@@ -1431,7 +1542,8 @@ class MobileGalleryGameplay
 					   if (!script)
 						   throw std::runtime_error("Missing scenario editor fixture");
 					   editCapture("editor-script");
-					   for (auto [load, name] : {std::pair{true, "editor-script-load"}, std::pair{false, "editor-script-save"}})
+					   for (auto [load, name] : {std::pair{true, "editor-script-load"},
+												 std::pair{false, "editor-script-save"}})
 					   {
 						   script->loadSave(load, "scripts", "sgsl");
 						   auto *child = script->fileDialog();
@@ -1443,9 +1555,10 @@ class MobileGalleryGameplay
 						   idle.type = SDL_EVENT_USER;
 						   editor.delegateMenu(idle);
 					   }
-					   for (auto [tab, name] : {std::pair{ScriptEditorScreen::TAB_OBJECTIVES, "objectives"},
-												{ScriptEditorScreen::TAB_BRIEFING, "briefing"},
-												{ScriptEditorScreen::TAB_HINTS, "hints"}})
+					   for (auto [tab, name] :
+							{std::pair{ScriptEditorScreen::TAB_OBJECTIVES, "objectives"},
+							 {ScriptEditorScreen::TAB_BRIEFING, "briefing"},
+							 {ScriptEditorScreen::TAB_HINTS, "hints"}})
 					   {
 						   script->showTab(tab);
 						   editCapture(std::string("editor-script-") + name);
@@ -1490,10 +1603,11 @@ int main(int argc, char **argv)
 		return 2;
 	}
 	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI",
-			   desktopPresentation                                            ? "0"
-			   : argc == 4 && std::string_view(argv[3]).starts_with("touch-") ? argv[3]
-																			  : "1",
-			   1);
+								   desktopPresentation ? "0"
+								   : argc == 4 && std::string_view(argv[3]).starts_with("touch-")
+									   ? argv[3]
+									   : "1",
+								   1);
 	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
 	try
 	{
@@ -1527,7 +1641,8 @@ int main(int argc, char **argv)
 			FrontendTheme theme;
 			if (!SDL_getenv_unsafe("GLOB2_GALLERY_GAME_ONLY"))
 				MobileGallerySetup::run();
-			MobileGalleryGameplay::run();
+			if (!SDL_getenv_unsafe("GLOB2_GALLERY_GENERATORS_ONLY"))
+				MobileGalleryGameplay::run();
 		}
 		globals.reset();
 		globalContainer = nullptr;

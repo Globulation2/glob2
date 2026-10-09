@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "PowerOfTwo.h"
 #include "TerrainMovementCosts.h"
 #include "map/TerrainRegistry.h"
 #include <limits>
@@ -38,8 +39,9 @@ static_assert(gradient_kernel::scaledTerrainStep(GRADIENT_STEP,64)<TERRAIN_TRAVE
 // neighbor steps cost the same before terrain scaling. A distant road must not
 // change diagonal distances on routes that never touch modified terrain.
 // Saturate only the public short distance; never the queue's ordering key.
-template<class Values,class TerrainAt>
-void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt,const TerrainRegistry& registry=*TerrainRegistry::builtins())
+// Costs is a TerrainRegistry indexed by terrain type, or a CellRuleTable indexed by cell rule.
+template<class Values,class TerrainAt,class Costs=TerrainRegistry>
+void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,TerrainAt terrainAt,const Costs& registry=*TerrainRegistry::builtins())
 {
     constexpr unsigned infinity=std::numeric_limits<unsigned>::max();
     std::vector<unsigned> costs(values.size(),infinity);
@@ -64,7 +66,7 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
             // This is a reverse field: index is the destination of the forward
             // move from next. Charge entry to index, not entry to next.
             const unsigned candidate=cost+(mode==TerrainTravel::Fly ? registry.airCost(terrainAt(index)) : registry.groundTravelCost(terrainAt(index)));
-            const int x=index%width,y=index/width;
+            const int x=dimensionRemainder(index, width),y=index/width;
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
             {
                 if(!dx&&!dy)continue;
@@ -92,8 +94,8 @@ void expandTerrainTravel(Values& values,int width,int height,TerrainTravel mode,
 // Forward, byte-valued reach/influence fields retain 0 obstacles and 1 floor.
 // Keep sub-tile costs in the queue so two half-cost road steps consume one
 // strength unit. Only publish rounded strength after the full expansion.
-template<class Value,class TerrainAt>
-void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt,const TerrainRegistry& registry=*TerrainRegistry::builtins())
+template<class Value,class TerrainAt,class Costs=TerrainRegistry>
+void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrainAt,const Costs& registry=*TerrainRegistry::builtins())
 {
     const int size=width*height;
     std::vector<unsigned> strength(size);
@@ -105,7 +107,7 @@ void expandTerrainInfluence(Value* values,int width,int height,TerrainAt terrain
     {
         const auto [remaining,index]=queue.top();queue.pop();
         if(strength[index]!=remaining)continue;
-        const int x=index%width,y=index/width;
+        const int x=dimensionRemainder(index, width),y=index/width;
         for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
         {
             if(!dx&&!dy)continue;

@@ -90,7 +90,7 @@ inline void run()
 	const Torus t(plain.map);
 	TerrainSketch terrain(t.size());
 	for (int i = 0; i < t.size(); ++i)
-		terrain[i] = plain.map.getUMTerrain(i % t.w, i / t.w);
+		terrain[i] = plain.map.vertexTerrainAt(i % t.w, i / t.w);
 	const auto fertility = cropGrowthField(terrain, t);
 	std::vector<unsigned char> renewable(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
@@ -168,18 +168,20 @@ inline void run()
 			break;
 	}
 	assert(tx >= 0);
-	// Include an explicit sand rim: controlSand erodes an unbuffered tiny pool.
-	for (int dy = -3; dy <= 3; ++dy)
-		for (int dx = -3; dx <= 3; ++dx)
-		{
-			irrigated.map.setUMTerrain(t.x(tx + 7 * vx + dx), t.y(ty + 7 * vy + dy),
-									   std::abs(dx) <= 2 && std::abs(dy) <= 2 ? WATER : SAND);
-			irrigated.map.setUMTerrain(t.x(tx - 7 * vx + dx), t.y(ty - 7 * vy + dy), GRASS);
-		}
-	irrigated.map.controlSand();
-	irrigated.map.rebuildTerrain();
+	// Include an explicit sand rim: layBeaches erodes an unbuffered tiny pool.
+	{
+		auto batch = irrigated.map.editTerrain();
+		for (int dy = -3; dy <= 3; ++dy)
+			for (int dx = -3; dx <= 3; ++dx)
+			{
+				irrigated.map.setVertexTerrain(t.x(tx + 7 * vx + dx), t.y(ty + 7 * vy + dy),
+											   std::abs(dx) <= 2 && std::abs(dy) <= 2 ? WATER : SAND);
+				irrigated.map.setVertexTerrain(t.x(tx - 7 * vx + dx), t.y(ty - 7 * vy + dy), GRASS);
+			}
+	}
+	irrigated.map.layBeaches();
 	for (int i = 0; i < t.size(); ++i)
-		terrain[i] = irrigated.map.getUMTerrain(i % t.w, i / t.w);
+		terrain[i] = irrigated.map.vertexTerrainAt(i % t.w, i / t.w);
 	assert(cropGrowthField(terrain, t).at(tx, ty) > 0);
 	assert(definition.validateWorld(irrigated, context) ==
 		   "A spreading crop was planted outside its contained plot.");

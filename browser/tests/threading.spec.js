@@ -31,7 +31,7 @@ test(`${variant} runtime executes shared compute, gradients and save lifecycle t
         locateFile:name=>name.endsWith('.data')?'/'+name:'/${variant==='threaded'?'threaded/':''}'+name,
         async onRuntimeInitialized(){
           window.heartbeats=0;const timer=setInterval(()=>++window.heartbeats,10);
-          window.result=await Module.start(['--test-suite=ComputeExecutor,GradientPipeline,SharedWorkerLifecycle,BuildingGradientInvalidation,PathGradient']);
+          window.result=await Module.start(['--test-suite=EntityRandom,EntityRandomLifecycle,LegacyScriptCoverage,ComputeExecutor,GradientPipeline,SharedWorkerLifecycle,SimulationReadPhase,WorldSnapshot,SceneBuffer,SceneExtract,OverlayFill,BuildingGradientInvalidation,PathGradient','--test-case-exclude=*[display*']);
           clearInterval(timer);
         }};
     </script><script src="/${variant==='threaded'?'threaded/':''}script-tests.js"></script>`);

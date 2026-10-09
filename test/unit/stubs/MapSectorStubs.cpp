@@ -51,3 +51,29 @@ void Map::finishGradientPipeline() {
     preparePendingGradient();
     gradientRuntime->pipeline.finish();
 }
+// Unit fixtures never schedule building fields; clearing only drops storage.
+void Map::resetBuildingGradientPipeline() noexcept {
+    gradientRuntime->stagedBuildings.clear();
+    gradientRuntime->buildingRequests.clear();
+    gradientRuntime->buildings.reset();
+}
+
+
+// Growth scheduling belongs to engine fixtures. Lightweight maps never submit
+// jobs; reject accidental use rather than silently simulating a fake pipeline.
+void Map::finishResourceGrowth() {
+    if (gradientRuntime->growth.count() || gradientRuntime->growth.needsPreparation()) std::abort();
+}
+void ResourceGrowth::Pipeline::reset() noexcept {
+    if (!pending.empty() || reservation) std::abort();
+    spare.clear();
+    executor = nullptr;
+    proposalReserve = 0;
+    metrics = {};
+    delay = 8;
+}
+
+#include "AreaEffects.h"
+// Standalone map tests never attach a Game; satisfy Map::clear's optional
+// simulation-owned sidecar reset without linking the complete game.
+void BuildingAreaEffects::Runtime::reset() { std::abort(); }

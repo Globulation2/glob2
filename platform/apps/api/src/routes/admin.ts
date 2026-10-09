@@ -12,6 +12,7 @@ import {
 import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';
 import { requireRole, type Identity } from '../identity.ts';
+import { decodeCursor, encodeCursor } from '../admin/cursor.ts';
 
 const PAGE_SIZE = 50;
 
@@ -27,10 +28,20 @@ export async function adminRoutes(app: FastifyInstance, identity: Identity): Pro
     async (request): Promise<AdminAccountList> => {
       await requireRole(identity, request, 'moderator');
       const { q = '', cursor } = request.query;
-      let before: Date | undefined;
+      let before: Date | { at: Date; id: string } | undefined;
       if (cursor) {
-        before = new Date(Buffer.from(cursor, 'base64url').toString('utf8'));
-        if (Number.isNaN(before.getTime())) throw apiError('bad_request', 'Invalid cursor.');
+        const raw = Buffer.from(cursor, 'base64url').toString('utf8');
+        if (raw.startsWith('[')) {
+          before = decodeCursor(cursor);
+          if (
+            before &&
+            !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(before.id)
+          )
+            throw apiError('bad_request', 'Invalid account cursor.');
+        } else {
+          before = new Date(raw);
+          if (Number.isNaN(before.getTime())) throw apiError('bad_request', 'Invalid cursor.');
+        }
       }
       const rows = await identity.admin.search(String(q).slice(0, 200), PAGE_SIZE + 1, before);
       const page = rows.slice(0, PAGE_SIZE);
@@ -39,7 +50,7 @@ export async function adminRoutes(app: FastifyInstance, identity: Identity): Pro
       return {
         items,
         ...(rows.length > PAGE_SIZE && last
-          ? { nextCursor: Buffer.from(last.created_at.toISOString()).toString('base64url') }
+          ? { nextCursor: encodeCursor(last.cursorAt, last.id) }
           : {}),
       };
     },
@@ -114,7 +125,12 @@ export async function adminRoutes(app: FastifyInstance, identity: Identity): Pro
     async (request): Promise<AdminAccount> => {
       const { account: actor } = await requireRole(identity, request, 'admin');
       const input = body(AdminRoleRequest, request.body);
-      const updated = await identity.admin.setRole(actor, await target(request), input.role);
+      const updated = await identity.admin.setRole(
+        actor,
+        await target(request),
+        input.role,
+        input.reason,
+      );
       return identity.admin.view(updated);
     },
   );

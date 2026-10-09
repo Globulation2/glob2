@@ -19,7 +19,388 @@
         },
         "kind": {
           "type": "string",
+          "const": "validate-generator"
+        },
+        "simVersion": {
+          "type": "object",
+          "required": [
+            "versionMinor",
+            "netProtocol",
+            "dataHash"
+          ],
+          "properties": {
+            "versionMinor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+            },
+            "netProtocol": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+            },
+            "dataHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Identity of a deterministic simulation build."
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "blobHash",
+            "suite",
+            "example"
+          ],
+          "properties": {
+            "blobHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "suite": {
+              "type": "number",
+              "const": 1
+            },
+            "example": {
+              "type": "object",
+              "required": [
+                "seed",
+                "params",
+                "candidates",
+                "startingUnitLevel"
+              ],
+              "properties": {
+                "seed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4294967295
+                },
+                "params": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^[A-Za-z0-9_-]{1,64}$": {
+                      "type": "integer"
+                    }
+                  },
+                  "maxProperties": 72
+                },
+                "candidates": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5,
+                  "default": 1
+                },
+                "startingUnitLevel": {
+                  "type": "number",
+                  "const": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "jobId",
+        "kind",
+        "simVersion",
+        "payload"
+      ],
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "kind": {
+          "type": "string",
+          "const": "generate-script-map"
+        },
+        "simVersion": {
+          "type": "object",
+          "required": [
+            "versionMinor",
+            "netProtocol",
+            "dataHash"
+          ],
+          "properties": {
+            "versionMinor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+            },
+            "netProtocol": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+            },
+            "dataHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Identity of a deterministic simulation build."
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "generator"
+          ],
+          "properties": {
+            "generator": {
+              "type": "object",
+              "required": [
+                "libraryId",
+                "versionId",
+                "packageHash",
+                "fileHash",
+                "generatorId",
+                "revision",
+                "seed",
+                "params",
+                "candidates",
+                "startingUnitLevel"
+              ],
+              "properties": {
+                "libraryId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "description": "Lowercase UUID."
+                },
+                "versionId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "description": "Lowercase UUID."
+                },
+                "packageHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hexadecimal SHA-256 digest."
+                },
+                "fileHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hexadecimal SHA-256 digest."
+                },
+                "generatorId": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_.-]+:[a-z0-9_.:-]+$",
+                  "maxLength": 128
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4294967295
+                },
+                "seed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 4294967295
+                },
+                "params": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^[A-Za-z0-9_-]{1,64}$": {
+                      "type": "integer"
+                    }
+                  },
+                  "maxProperties": 72
+                },
+                "candidates": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5,
+                  "default": 1
+                },
+                "startingUnitLevel": {
+                  "type": "number",
+                  "const": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "jobId",
+        "kind",
+        "simVersion",
+        "payload"
+      ],
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "kind": {
+          "type": "string",
+          "const": "validate-buildings"
+        },
+        "simVersion": {
+          "type": "object",
+          "required": [
+            "versionMinor",
+            "netProtocol",
+            "dataHash"
+          ],
+          "properties": {
+            "versionMinor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+            },
+            "netProtocol": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+            },
+            "dataHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Identity of a deterministic simulation build."
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "blobHash",
+            "baseHash",
+            "suite"
+          ],
+          "properties": {
+            "blobHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "baseHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "suite": {
+              "type": "number",
+              "const": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "jobId",
+        "kind",
+        "simVersion",
+        "payload"
+      ],
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "kind": {
+          "type": "string",
           "const": "validate-ai"
+        },
+        "simVersion": {
+          "type": "object",
+          "required": [
+            "versionMinor",
+            "netProtocol",
+            "dataHash"
+          ],
+          "properties": {
+            "versionMinor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+            },
+            "netProtocol": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+            },
+            "dataHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Identity of a deterministic simulation build."
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "blobHash",
+            "suite"
+          ],
+          "properties": {
+            "blobHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "suite": {
+              "type": "number",
+              "const": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "jobId",
+        "kind",
+        "simVersion",
+        "payload"
+      ],
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "kind": {
+          "type": "string",
+          "const": "validate-set"
         },
         "simVersion": {
           "type": "object",
@@ -688,6 +1069,103 @@
                         }
                       },
                       "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "kind",
+                        "generator",
+                        "hash"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "scripted"
+                        },
+                        "generator": {
+                          "type": "object",
+                          "required": [
+                            "libraryId",
+                            "versionId",
+                            "packageHash",
+                            "fileHash",
+                            "generatorId",
+                            "revision",
+                            "seed",
+                            "params",
+                            "candidates",
+                            "startingUnitLevel"
+                          ],
+                          "properties": {
+                            "libraryId": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                              "description": "Lowercase UUID."
+                            },
+                            "versionId": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                              "description": "Lowercase UUID."
+                            },
+                            "packageHash": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{64}$",
+                              "description": "Lowercase hexadecimal SHA-256 digest."
+                            },
+                            "fileHash": {
+                              "type": "string",
+                              "pattern": "^[0-9a-f]{64}$",
+                              "description": "Lowercase hexadecimal SHA-256 digest."
+                            },
+                            "generatorId": {
+                              "type": "string",
+                              "pattern": "^[a-z0-9_.-]+:[a-z0-9_.:-]+$",
+                              "maxLength": 128
+                            },
+                            "revision": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            },
+                            "seed": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            },
+                            "params": {
+                              "type": "object",
+                              "patternProperties": {
+                                "^[A-Za-z0-9_-]{1,64}$": {
+                                  "type": "integer"
+                                }
+                              },
+                              "maxProperties": 72
+                            },
+                            "candidates": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 5,
+                              "default": 1
+                            },
+                            "startingUnitLevel": {
+                              "type": "number",
+                              "const": 0
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "hash": {
+                          "type": "string",
+                          "pattern": "^[0-9a-f]{64}$",
+                          "description": "Lowercase hexadecimal SHA-256 digest."
+                        },
+                        "chosenSeed": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4294967295
+                        }
+                      },
+                      "additionalProperties": false
                     }
                   ],
                   "description": "Map a match is played on; clients fetch the blob named by `hash`."
@@ -923,6 +1401,12 @@
                       "minimum": 0,
                       "maximum": 8,
                       "description": "Engine-wide AI decision delay in ticks; absent means zero."
+                    },
+                    "buildingGradientDelay": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 8,
+                      "description": "Ticks between capturing and publishing a scheduled building walking field; absent means eight."
                     },
                     "instantConstruction": {
                       "type": "boolean"

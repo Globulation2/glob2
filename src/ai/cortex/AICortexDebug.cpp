@@ -1,3 +1,4 @@
+#include "EngineTiming.h"
 #include "CortexSnapshotQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
@@ -36,7 +37,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 
 	cerr << "CORTEX_DUMP ==== first-under-attack snapshot ====\n";
 	cerr << "CORTEX_DUMP team=" << me << " tick=" << obs.tick
-	     << " (~" << (obs.tick / 25) << "s)"
+	     << " (~" << (obs.tick / GAME_TICKS_PER_SECOND) << "s)"
 	     << " buildingsUnderAttack=" << obs.buildingsUnderAttack
 	     << " unitsUnderAttack=" << obs.unitsUnderAttack << "\n";
 

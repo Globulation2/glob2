@@ -26,6 +26,7 @@ struct Fixture {
     int id;
     explicit Fixture(int resource = WOOD, int purpose = FEED) {
         setSyncRandSeed(180);
+        game.gameHeader.setRandomSeed(180);
         game.setWaitingOnMask(0);
         game.map.setSize(6, 6, GRASS);
         game.map.setGame(&game);

@@ -11,7 +11,8 @@ void MapEdit::refreshSelectedUnitPerformance(int stat)
 	Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 	UnitType *ut = u->race->getUnitType(u->typeNum, u->level[stat]);
 	u->performance[stat] = ut->performance[stat];
-	hasMapBeenModified = true;
+	game.snapshots().invalidateBoundary();
+		hasMapBeenModified = true;
 }
 
 bool MapEdit::performUnitAction(const std::string& action, float relMouseX, float relMouseY)
@@ -65,9 +66,10 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 		int y;
 		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 
-		Unit *unit=game.addUnit(x, y, team, type, level, rand()%256, 0, 0);
+		Unit *unit=game.addUnit(x, y, team, type, level, 0, 0, 0);
 		if (unit)
 		{
+			unit->delta = unit->entityRandom.nextU32() & 255;
 			if (game.teams[team]->startPosSet<Team::START_POS_FROM_UNIT)
 			{
 				game.teams[team]->startPosX=viewportX;
@@ -75,7 +77,8 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 				game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
 			}
 			game.regenerateDiscoveryMap();
-			hasMapBeenModified = true;
+			game.snapshots().invalidateBoundary();
+		hasMapBeenModified = true;
 		}
 	}
 	else if(action=="select map unit")
@@ -99,22 +102,20 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 			view.selectedUnit=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 			selectionMode=EditingUnit;
 			panelMode=UnitEditor;
-			unitInfoTitle->setUnit(view.selectedUnit);
-			unitPicture->setUnit(view.selectedUnit);
-			unitHPLabel->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP]);
-			unitHPScrollBox ->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP]);
-			unitWalkLevelLabel->setValues(&view.selectedUnit->level[WALK]);
-			unitWalkLevelScrollBox->setValues(&view.selectedUnit->level[WALK]);
-			unitSwimLevelLabel->setValues(&view.selectedUnit->level[SWIM]);
-			unitSwimLevelScrollBox->setValues(&view.selectedUnit->level[SWIM]);
-			unitBuildLevelLabel->setValues(&view.selectedUnit->level[BUILD]);
-			unitBuildLevelScrollBox->setValues(&view.selectedUnit->level[BUILD]);
-			unitAttackSpeedLevelLabel->setValues(&view.selectedUnit->level[ATTACK_SPEED]);
-			unitAttackSpeedLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_SPEED]);
-			unitAttackStrengthLevelLabel->setValues(&view.selectedUnit->level[ATTACK_STRENGTH]);
-			unitAttackStrengthLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_STRENGTH]);
-			unitMagicGroundAttackLevelLabel->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND]);
-			unitMagicGroundAttackLevelScrollBox->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND]);
+			unitHPLabel->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->performance[HP]) : 0; });
+			unitHPScrollBox ->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->performance[HP]) : 0; });
+			unitWalkLevelLabel->setValues(&view.selectedUnit->level[WALK], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[WALK]) : 0; });
+			unitWalkLevelScrollBox->setValues(&view.selectedUnit->level[WALK], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[WALK]) : 0; });
+			unitSwimLevelLabel->setValues(&view.selectedUnit->level[SWIM], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[SWIM]) : 0; });
+			unitSwimLevelScrollBox->setValues(&view.selectedUnit->level[SWIM], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[SWIM]) : 0; });
+			unitBuildLevelLabel->setValues(&view.selectedUnit->level[BUILD], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[BUILD]) : 0; });
+			unitBuildLevelScrollBox->setValues(&view.selectedUnit->level[BUILD], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[BUILD]) : 0; });
+			unitAttackSpeedLevelLabel->setValues(&view.selectedUnit->level[ATTACK_SPEED], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_SPEED]) : 0; });
+			unitAttackSpeedLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_SPEED], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_SPEED]) : 0; });
+			unitAttackStrengthLevelLabel->setValues(&view.selectedUnit->level[ATTACK_STRENGTH], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_STRENGTH]) : 0; });
+			unitAttackStrengthLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_STRENGTH], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_STRENGTH]) : 0; });
+			unitMagicGroundAttackLevelLabel->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[MAGIC_ATTACK_GROUND]) : 0; });
+			unitMagicGroundAttackLevelScrollBox->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[MAGIC_ATTACK_GROUND]) : 0; });
 			enableOnlyGroup("unit editor");
 			if(!view.selectedUnit->canLearn[WALK])
 			{
@@ -161,6 +162,7 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 		// One worker level: the build box drives harvest as well.
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		u->setWorkerLevel(u->level[BUILD]);
+		game.snapshots().invalidateBoundary();
 		hasMapBeenModified = true;
 	}
 	else if(action=="update unit attack speed level")
@@ -177,6 +179,7 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 	}
 	else if(action=="update unit")
 	{
+		game.snapshots().invalidateBoundary();
 		hasMapBeenModified = true;
 	}
 	else

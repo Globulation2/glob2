@@ -133,7 +133,7 @@ Layout design(const GenerationRequest &r, GenerationContext &context)
 	int riverCorners = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const NearestSites nearest = nearestTwoSites(t, sites, x, y);
 		const int h = nearest.first;
 		const double first = std::sqrt(double(nearest.firstDistanceSquared));
@@ -228,13 +228,13 @@ bool generate(Game &game, GenerationContext &context)
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	context.stage = "hills summits";
 	const auto home = [&](int k)
 	{
 		std::vector<unsigned char> mask(n, 0);
 		for (int i = 0; i < n; ++i)
-			mask[i] = L.homeOf[i] == k && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			mask[i] = L.homeOf[i] == k && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return mask;
 	};
 	const auto anchor = [&](int k)
@@ -290,7 +290,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.telemetry.measure("rice.towers.per-colony", o.towers > 0 ? o.stairs : 0);
 	context.telemetry.choice("rice.towers.supplies", "magazine-and-stone-reserve");
 	context.stage = "hills crops";
-	const auto free = [&](int i) { return clearGround(map, i % t.w, i / t.w); };
+	const auto free = [&](int i) { return clearGround(map, t.remainderX(i), i / t.w); };
 	// Seed food beside EVERY stair, on the inner edge of the first crop band.
 	// A single starter patch made a summit inn's opening haul depend on which
 	// side of town the AI chose. Telemetry showed an empty first inn and early
@@ -336,7 +336,7 @@ bool generate(Game &game, GenerationContext &context)
 			context.detail = "A summit quarry does not fit.";
 			return false;
 		}
-		map.setResourceByIndex(quarry % t.w, quarry / t.w, STONE, 1);
+		map.setResourceByIndex(t.remainderX(quarry), quarry / t.w, STONE, 1);
 	}
 	// Separate each hill's budget so raster ordering cannot give one hill all the wood.
 	// A small starter guarantee survives 0%; all additional terrace crops scale normally.
@@ -346,8 +346,8 @@ bool generate(Game &game, GenerationContext &context)
 		int area = 0;
 		for (int i = 0; i < n; ++i)
 			area += L.hillOf[i] == k && L.farm.row[i] >= 0 && L.farm.row[i] % 2 == 0 &&
-					(map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
-						map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD));
+					(map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) &&
+						map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD));
 		const int wheat = int(scaledCount(area * 45 / 100, o.wheat));
 		const int wood = int(scaledCount(area * 8 / 100, o.wood));
 		const int actual = plantFarm(map, t, L.farm, wheat, wood,
@@ -440,7 +440,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// must survive beaches, planting, colony placement and all later repair stages.
 	const auto sand = pureTiles(L.terrain, t, SAND);
 	for (int i = 0; i < t.size(); ++i)
-		if (L.stairs[i] && sand[i] && (!open[i] || !map.isSand(i % t.w, i / t.w)))
+		if (L.stairs[i] && sand[i] && (!open[i] || !map.isSand(t.remainderX(i), i / t.w)))
 			return "A hill stair is blocked.";
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
@@ -458,9 +458,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		{
 			if (fromHome[i] >= 0 && L.farm.row[i] >= 0)
 				return "Terrace crops could grow into a summit.";
-			if (home[i] && map.isResource(i % t.w, i / t.w) &&
-				(map.getResource(i % t.w, i / t.w).type == WHEAT ||
-				 map.getResource(i % t.w, i / t.w).type == WOOD))
+			if (home[i] && map.isResource(t.remainderX(i), i / t.w) &&
+				(map.getResource(t.remainderX(i), i / t.w).type == WHEAT ||
+				 map.getResource(t.remainderX(i), i / t.w).type == WOOD))
 				return "A crop repair entered the protected summit.";
 			if (L.hillOf[i] == k && L.stairs[i] && sand[i] && fromWorkers[i] < 0)
 				return "A colony cannot walk the full length of every stair.";
@@ -488,7 +488,7 @@ GeneratorDefinition hillsDefinition()
 	return {"hills",
 			46,
 			"Hills",
-			7,
+			8,
 			false,
 			{GeneratorControl{"extra-hills", "Unoccupied hills", 0, 4, 1, 0, ControlGroup::Layout}
 				 .withSearchRange(0, 2),

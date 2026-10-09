@@ -141,7 +141,7 @@ void Unit::handleMovementRemovingBlackAround()
 			dy=cdy;
 		}
 	}
-	else if ((movement!=MOV_GOING_DX_DY)||((syncRand()&0xFF)<0xEF))
+	else if ((movement!=MOV_GOING_DX_DY)||((entityRandom.nextU32()&0xFF)<0xEF))
 	{
 		// "c" is the center of the unit, "x" are the sample spots:
 		// oxoooxo
@@ -292,7 +292,7 @@ void Unit::handleMovementAttackingAround()
 				return owner->map->isGuardArea(x, y, owner->me);
 			return owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(x, y)] == GRADIENT_AT_GOAL;
 		};
-		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
+		if (!attachedBuilding && owner->map->pathfindArea(entityRandom, Map::AreaKind::Guard, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
 		{
 			directionFromDxDy();
 			movement = MOV_GOING_DX_DY;
@@ -411,7 +411,7 @@ void Unit::handleMovementClearingResources()
 		}
 	bool canSwim=performance[SWIM];
 	assert(attachedBuilding);
-	if (map->pathfindBuilding(attachedBuilding, swimClass(), posX, posY, &dx, &dy, BuildingRoute::Clearing))
+	if (map->pathfindBuilding(entityRandom, attachedBuilding, swimClass(), posX, posY, &dx, &dy, BuildingRoute::Clearing))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -474,7 +474,7 @@ void Unit::handleMovementRandom()
 			{
 				dx=0;
 				dy=0;
-				owner->map->pathfindArea(Map::AreaKind::Clear, owner->teamNumber, swimClass(), posX, posY, &dx, &dy);
+				owner->map->pathfindArea(entityRandom, Map::AreaKind::Clear, owner->teamNumber, swimClass(), posX, posY, &dx, &dy);
 
 				targetX = tempTargetX;
 				targetY = tempTargetY;
@@ -527,7 +527,7 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(targetBuilding, swimClass(), posX, posY, &dx, &dy,
+	else if (map->pathfindBuilding(entityRandom, targetBuilding, swimClass(), posX, posY, &dx, &dy,
 		activity == ACT_FLAG ? (typeNum == WORKER ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint))
 	{
 		movement=MOV_GOING_DX_DY;
@@ -580,23 +580,18 @@ void Unit::handleMovementGoingToResource()
 	int swim=swimClass();
 	bool stopWork;
 	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
-	if (map->pathfindMaterial(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding, withMarkets))
+	if (map->pathfindMaterial(entityRandom, teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding, withMarkets))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
 		// targetX/Y (also the debug path line, hotkey T) were set once, by
-		// ascending a gradient, when the fetch task started. pathfindResource
-		// above re-reads whichever gradient actually governs the step fresh
-		// every action -- the round-trip field when attachedBuilding has one
-		// and it is valid here, the plain resource gradient otherwise -- and
-		// either field can be rebuilt, or the preference between them can
-		// flip, while the unit is still walking. Re-ascend from here whenever
-		// the stored target has stopped being a peak of that same gradient;
-		// isGradientPeak is a cheap check to run every action, the ascent
-		// itself only when it actually goes stale.
-		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradientSlot(attachedBuilding, destinationPurpose, swim) : NULL;
-		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
-			? roundTrip : map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
+		// ascending a gradient, when the fetch task started. pathfindMaterial
+		// above re-reads the resource gradient that governs the step fresh
+		// every action, and that field can be rebuilt while the unit is still
+		// walking. Re-ascend from here whenever the stored target has stopped
+		// being a peak of that same gradient; isGradientPeak is a cheap check
+		// to run every action, the ascent itself only when it actually goes stale.
+		const Uint16 *gradient = map->getMaterialGradientSlot(teamNumber, destinationPurpose, swim, withMarkets, attachedBuilding);
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

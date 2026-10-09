@@ -1,5 +1,12 @@
+import { generatorLibraryRoutes } from './generators/routes.ts';
+import { buildingLibraryRoutes } from './buildings/library.ts';
+import { buildingDraftRoutes } from './buildings/drafts.ts';
+import { buildingStudioRoutes } from './buildings/studio.ts';
+import { terrainStudioRoutes } from './terrain/studio.ts';
+import { setLibraryRoutes } from './sets/routes.ts';
 import { musicStudioRoutes } from './music/studio.ts';
 import { aiStudioRoutes } from './ai-studio/routes.ts';
+import { generatorStudioRoutes } from './generator-studio/routes.ts';
 import { aiLibraryRoutes } from './ais/routes.ts';
 import { musicRoutes } from './music/routes.ts';
 import { skinBillingRoutes } from './skins/billing/routes.ts';
@@ -28,11 +35,20 @@ import {
   type SimVersion,
 } from '@glob2/protocol';
 import { HttpError, apiError } from './errors.ts';
-import { createIdentity, type Identity } from './identity.ts';
+import {
+  createIdentity,
+  authenticatedAccounts,
+  isAdministrativeRequest,
+  type Identity,
+} from './identity.ts';
 import type { ApiServices } from './services.ts';
 import { skinRoutes } from './skins/routes.ts';
 import { accountRoutes } from './routes/accounts.ts';
 import { adminRoutes } from './routes/admin.ts';
+import { adminConsoleRoutes } from './admin/routes.ts';
+import { operationsRoutes } from './admin/operations.ts';
+import { analyticsRoutes } from './admin/analytics.ts';
+import { financeRoutes } from './admin/finances.ts';
 import { authRoutes } from './routes/auth.ts';
 import { signinRoutes } from './routes/signin.ts';
 import { internalRoutes } from './routes/internal.ts';
@@ -42,7 +58,7 @@ import { playRoutes } from './routes/play.ts';
 import { mapCatalogRoutes } from './maps/routes.ts';
 import { historyRoutes } from './history/routes.ts';
 import { appLinkRoutes } from './web/appLinks.ts';
-import { pageAssetRoutes } from './web/pages.ts';
+import { pageAssetRoutes, setPageLocale } from './web/pages.ts';
 import { Assignments } from './play/assignments.ts';
 import { PlayRealtime } from './play/realtime.ts';
 import { RoomService } from './play/rooms.ts';
@@ -79,6 +95,8 @@ function errorBodyFor(
       body: {
         code: 'bad_request',
         message: `This file is too big: uploads are limited to ${readableSize(uploadMaxBytes)}.`,
+        messageKey: 'This file is too big: uploads are limited to {p0}.',
+        messageParams: { p0: readableSize(uploadMaxBytes) },
         details: { problem: 'too_large' },
       },
     };
@@ -90,12 +108,12 @@ function errorBodyFor(
     };
   }
   if (error.statusCode === 429) {
-    return { status: 429, body: { code: 'rate_limited', message: 'Too many requests.' } };
+    return { status: 429, body: apiError('rate_limited', 'Too many requests.').body };
   }
   if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500) {
     return { status: error.statusCode, body: { code: 'bad_request', message: error.message } };
   }
-  return { status: 500, body: { code: 'internal', message: 'Internal server error.' } };
+  return { status: 500, body: apiError('internal', 'Internal server error.').body };
 }
 
 /** Sim versions with a recently seen engine agent: the versions this instance can serve. */
@@ -114,14 +132,33 @@ export async function buildApp(
     bodyLimit: 1024 * 1024,
     requestIdHeader: 'x-request-id',
   });
+  app.addHook('onRequest', async (request, reply) => {
+    setPageLocale(request, reply);
+  });
   const identity = createIdentity(services);
+  await sql`UPDATE admin_analytics_settings SET collection=${services.config.instance.analytics?.collection !== false} WHERE id`.execute(
+    services.db,
+  );
+  app.addHook('onResponse', async (request, reply) => {
+    const account = authenticatedAccounts.get(request);
+    if (
+      account &&
+      reply.statusCode < 400 &&
+      request.url.startsWith('/api/v1/') &&
+      !isAdministrativeRequest(identity, request) &&
+      !request.url.endsWith('/reconcile')
+    )
+      await identity.activity
+        .record(account)
+        .catch((error) => services.logger.warn({ error }, 'activity collection failed'));
+  });
   app.decorate('services', services);
   app.decorate('identity', identity);
 
   app.setErrorHandler((error: FastifyError, request, reply) => {
     const { status, body } = errorBodyFor(
       error,
-      services.config.uploadMaxBytes ?? 16 * 1024 * 1024,
+      services.config.uploadMaxBytes ?? 64 * 1024 * 1024,
     );
     if (status >= 500) request.log.error({ err: error }, 'request failed');
     void reply.status(status).send(body);
@@ -151,7 +188,7 @@ export async function buildApp(
     {
       parseAs: 'buffer',
       bodyLimit: Math.max(
-        services.config.uploadMaxBytes ?? 16 * 1024 * 1024,
+        services.config.uploadMaxBytes ?? 64 * 1024 * 1024,
         services.config.recordMaxBytes ?? 64 * 1024 * 1024,
       ),
     },
@@ -249,14 +286,25 @@ export async function buildApp(
   await accountRoutes(app, identity, services.db);
   await hiveRoutes(app);
   await aiStudioRoutes(app);
+  await generatorStudioRoutes(app);
   await studioRoutes(app, rooms);
   await musicStudioRoutes(app);
+  await terrainStudioRoutes(app);
+  await buildingStudioRoutes(app);
   await adminRoutes(app, identity);
+  await adminConsoleRoutes(app, identity);
+  await operationsRoutes(app, identity);
+  await analyticsRoutes(app, identity);
+  await financeRoutes(app, identity);
   await pageAssetRoutes(app);
   await signinRoutes(app, identity);
   await playRoutes(app, identity, rooms);
   await mapCatalogRoutes(app, identity);
   await aiLibraryRoutes(app, identity);
+  await generatorLibraryRoutes(app, identity);
+  await buildingDraftRoutes(app, identity);
+  await buildingLibraryRoutes(app, identity);
+  await setLibraryRoutes(app, identity);
   await musicRoutes(app, identity);
   await skinRoutes(app, identity);
   await skinBillingRoutes(app, identity);

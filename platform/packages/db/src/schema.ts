@@ -1,14 +1,26 @@
+import type {
+  ScriptGeneratorDescriptor,
+  GeneratorValidationReport,
+  GeneratorMetadata,
+  GeneratorSettings,
+} from '@glob2/protocol';
 // Typed view of the schema in migrations/*.sql, for Kysely. Keep it in step
 // with the migrations: test/schema.test.ts writes and reads every table through
 // these types and compares the column lists with information_schema.
 import type { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely';
 import type {
   ResourceExperimentDefinitions,
+  BuildingPackage,
+  BuildingStudioReport,
   MusicMetadata,
   MusicRelease,
   MusicTrack,
   MusicConvert,
   AiValidationReport,
+  SetPackage,
+  ValidateSetResult,
+  SetCredit,
+  MapSetCredits,
 } from '@glob2/protocol';
 
 /** Column with a database default: optional on insert. */
@@ -188,7 +200,11 @@ export interface EngineAgentsTable {
 export interface EngineJobsTable {
   id: Generated<string>;
   kind:
+    | 'validate-generator'
+    | 'generate-script-map'
     | 'validate-ai'
+    | 'validate-buildings'
+    | 'validate-set'
     | 'generate-map'
     | 'validate-map'
     | 'render-preview'
@@ -249,6 +265,12 @@ export interface MapsTable {
 }
 
 export interface MapVersionsTable {
+  generator_provenance: NullableJson<{
+    verified: boolean;
+    generator: ScriptGeneratorDescriptor;
+    chosenSeed?: number;
+  }>;
+  set_credits: DefaultedJson<MapSetCredits>;
   building_catalog: NullableJson<JsonValue>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
   required_resource_experiments: DefaultedJson<string[]>;
@@ -328,6 +350,7 @@ export interface RoomKicksTable {
 }
 
 export interface RoomMembersTable {
+  generator_support: Defaulted<boolean>;
   room_id: string;
   account_id: string;
   connected: Defaulted<boolean>;
@@ -414,6 +437,7 @@ export interface MapUploadsTable {
 }
 
 export interface GeneratedMapsTable {
+  chosen_seed: Nullable<number>;
   building_catalog: NullableJson<JsonValue>;
   resource_experiments: DefaultedJson<ResourceExperimentDefinitions>;
   required_resource_experiments: DefaultedJson<string[]>;
@@ -817,6 +841,7 @@ export interface HiveLedgerTable {
   created_at: Timestamp;
 }
 export interface HiveCallsTable {
+  completed_at: NullableTimestamp;
   id: string;
   account_id: string;
   reserved: number;
@@ -1013,6 +1038,74 @@ export interface AiReportsTable {
   resolution_note: Nullable<string>;
 }
 
+export interface GeneratorsTable {
+  deleted_at: Nullable<Date>;
+  id: Generated<string>;
+  owner_account_id: string;
+  name: string;
+  description: Defaulted<string>;
+  tags: Defaulted<string[]>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: Nullable<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface GeneratorValidationsTable {
+  request_hash: string;
+  example: Json<GeneratorSettings>;
+  id: Generated<string>;
+  hash: string;
+  sim_version: string;
+  suite: number;
+  job_id: Nullable<string>;
+  status: Defaulted<'pending' | 'valid' | 'invalid' | 'error'>;
+  report: Json<GeneratorValidationReport>;
+  error: Nullable<string>;
+  created_at: Timestamp;
+}
+export interface GeneratorUploadsTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  validation_id: string;
+  expires_at: Timestamp;
+  published_generator_id: Nullable<string>;
+  published_version_id: Nullable<string>;
+}
+export interface GeneratorVersionsTable {
+  source_hash: string;
+  package_hash: string;
+  metadata: Json<GeneratorMetadata>;
+  example: Json<GeneratorSettings>;
+  revision: number;
+  id: Generated<string>;
+  generator_id: string;
+  hash: string;
+  label: string;
+  notes: Defaulted<string>;
+  profile: number;
+  created_at: Timestamp;
+}
+export interface GeneratorSocialTable {
+  generator_id: string;
+  account_id: string;
+}
+export interface GeneratorDownloadsTable {
+  version_id: string;
+  downloader: string;
+  day: Defaulted<string>;
+}
+export interface GeneratorReportsTable {
+  id: Generated<string>;
+  generator_id: string;
+  reporter_account_id: string;
+  reason: string;
+  details: string;
+  status: Defaulted<'open' | 'resolved' | 'dismissed'>;
+  created_at: Timestamp;
+  resolution_note: Nullable<string>;
+}
+
 export interface MusicReleasesTable {
   authoring: Generated<Record<string, unknown> | null>;
   id: string;
@@ -1046,6 +1139,7 @@ export interface AiStudioRevisionsTable {
   created_at: Timestamp;
 }
 export interface AiStudioRequestsTable {
+  completed_at: NullableTimestamp;
   id: string;
   project_id: string;
   base_revision: number;
@@ -1077,7 +1171,179 @@ export interface AiStudioRunsTable {
   summary: Defaulted<string>;
   created_at: Timestamp;
 }
+export interface BuildingDraftsTable {
+  id: Generated<string>;
+  owner_account_id: string;
+  revision: Defaulted<string>;
+  name: string;
+  archive: Buffer;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+
+export interface BuildingFamiliesTable {
+  download_count: Defaulted<number>;
+  id: Generated<string>;
+  owner_account_id: string;
+  namespace: string;
+  name: string;
+  description: Defaulted<string>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: string | null;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface BuildingReleasesTable {
+  id: Generated<string>;
+  family_id: string;
+  archive_hash: string;
+  job_id: string;
+  sim_version: string;
+  base_hash: string;
+  suite: number;
+  created_at: Timestamp;
+}
+export interface BuildingSocialTable {
+  family_id: string;
+  account_id: string;
+}
+export interface BuildingReportsTable {
+  id: Generated<string>;
+  family_id: string;
+  reporter_account_id: string | null;
+  reason: string;
+  resolved: Defaulted<boolean>;
+  created_at: Timestamp;
+}
+interface AssetSetsTable {
+  id: string;
+  owner_account_id: string;
+  title: string;
+  description: Defaulted<string>;
+  tags: Defaulted<string[]>;
+  visibility: Defaulted<'public' | 'unlisted' | 'private'>;
+  hidden: Defaulted<boolean>;
+  hidden_reason: string | null;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+interface SetDraftsTable {
+  id: string;
+  set_id: string;
+  revision: Defaulted<number>;
+  document: Json<SetPackage>;
+  hash: string | null;
+  validation_job_id: string | null;
+  sim_version: string | null;
+  report: NullableJson<ValidateSetResult>;
+  status: 'pending' | 'valid' | 'invalid' | 'error' | null;
+  error: string | null;
+  published_version_id: string | null;
+  updated_at: Timestamp;
+}
+interface SetVersionsTable {
+  id: string;
+  set_id: string;
+  hash: string;
+  label: string;
+  notes: Defaulted<string>;
+  license: 'CC0-1.0' | 'CC-BY-4.0';
+  credits: Json<SetCredit[]>;
+  sim_version: string;
+  min_version_minor: number;
+  report: Json<ValidateSetResult>;
+  preview_hash: string | null;
+  created_at: Timestamp;
+}
+interface SetReportsTable {
+  id: Generated<string>;
+  set_id: string;
+  reporter_account_id: string;
+  reason: string;
+  details: string;
+  resolved: Defaulted<boolean>;
+  resolution: string | null;
+  created_at: Timestamp;
+}
 export interface Database {
+  admin_payment_totals: {
+    product: string;
+    purchase_id: string;
+    provider_id: string | null;
+    mode: string;
+    currency: string | null;
+    paid_amount: number | null;
+    refunded_amount: number;
+    disputed: boolean;
+    revision: number;
+    historical: boolean;
+  };
+  admin_financial_events: {
+    id: string;
+    product: string;
+    purchase_id: string;
+    provider_id: string | null;
+    mode: string;
+    currency: string;
+    kind: string;
+    amount: number;
+    occurred_at: Timestamp;
+    recorded_at: Timestamp;
+    historical: boolean;
+  };
+  admin_provider_attempts: {
+    product: string;
+    attempt_id: string;
+    request_id: string;
+    model: string;
+    stage: string;
+    status: string;
+    usage: NullableJson<JsonValue>;
+    created_at: Timestamp;
+  };
+  admin_provider_rates: {
+    version: string;
+    model: string;
+    currency: string;
+    effective_at: Timestamp;
+    input_micros: number;
+    cached_input_micros: number;
+    output_micros: number;
+    call_micros: number;
+  };
+  admin_library_publications: { library: string; version_id: string; day: string };
+  account_activity_days: { account_id: string; day: string; kind: 'guest' | 'registered' };
+  admin_metric_sources: {
+    product: string;
+    source_id: string;
+    created_at: Timestamp;
+    status: string;
+    duration_seconds: number | null;
+  };
+  admin_daily_metrics: { day: string; metric: string; dimension: string; value: number };
+  admin_metric_coverage: { metric: string; since: string; historical_incomplete: boolean };
+  admin_analytics_settings: { id: boolean; collection: boolean; started_at: Timestamp };
+  admin_report_resolutions: {
+    library: string;
+    report_id: string;
+    resolution: string;
+    reason: string;
+    actor_id: string | null;
+    resolved_at: Timestamp;
+  };
+  building_families: BuildingFamiliesTable;
+  building_releases: BuildingReleasesTable;
+  building_likes: BuildingSocialTable;
+  building_favourites: BuildingSocialTable;
+  building_reports: BuildingReportsTable;
+  building_drafts: BuildingDraftsTable;
+  asset_sets: AssetSetsTable;
+  set_drafts: SetDraftsTable;
+  set_versions: SetVersionsTable;
+  set_likes: { set_id: string; account_id: string };
+  set_downloads: { version_id: string; downloader: string; day: Defaulted<string> };
+  set_reports: SetReportsTable;
   ai_studio_projects: AiStudioProjectsTable;
   ai_studio_revisions: AiStudioRevisionsTable;
   ai_studio_requests: AiStudioRequestsTable;
@@ -1087,6 +1353,25 @@ export interface Database {
   ai_studio_ledger: HiveLedgerTable;
   ai_studio_calls: HiveCallsTable;
   ai_studio_purchases: HivePurchasesTable;
+  generator_studio_projects: AiStudioProjectsTable;
+  generator_studio_revisions: AiStudioRevisionsTable;
+  generator_studio_requests: AiStudioRequestsTable;
+  generator_studio_events: AiStudioEventsTable;
+  generator_studio_runs: GeneratorStudioRunsTable;
+  generator_studio_wallets: HiveWalletsTable;
+  generator_studio_ledger: HiveLedgerTable;
+  generator_studio_calls: HiveCallsTable;
+  generator_studio_purchases: HivePurchasesTable;
+  generator_studio_checks: GeneratorStudioChecksTable;
+  generators: GeneratorsTable;
+  generator_ids: { manifest_id: string; generator_id: Nullable<string> };
+  generator_versions: GeneratorVersionsTable;
+  generator_validations: GeneratorValidationsTable;
+  generator_uploads: GeneratorUploadsTable;
+  generator_likes: GeneratorSocialTable;
+  generator_favourites: GeneratorSocialTable;
+  generator_downloads: GeneratorDownloadsTable;
+  generator_reports: GeneratorReportsTable;
   ais: AisTable;
   ai_versions: AiVersionsTable;
   ai_validations: AiValidationsTable;
@@ -1121,6 +1406,77 @@ export interface Database {
   colony_skin_equipment: ColonySkinEquipmentTable;
   match_colony_skins: MatchColonySkinsTable;
 
+  building_wallets: HiveWalletsTable;
+  building_ledger: HiveLedgerTable;
+  building_calls: HiveCallsTable;
+  building_purchases: HivePurchasesTable;
+  building_studio_threads: StudioThreadsTable & {
+    draft_id: string;
+  };
+  building_studio_messages: StudioMessagesTable;
+  building_studio_requests: Omit<StudioRequestsTable, 'map_id' | 'map_hash'>;
+  building_studio_attempts: StudioAttemptsTable;
+  building_studio_events: StudioEventsTable;
+  // Uploaded references belong to a project before any generation request exists.
+  building_studio_artifacts: Omit<StudioArtifactsTable, 'width' | 'height' | 'request_id'> & {
+    request_id: Nullable<string>;
+  };
+  building_studio_provider_usage: StudioProviderUsageTable;
+  building_studio_revisions: {
+    request_id: string;
+    thread_id: string;
+    base_revision: string;
+    title: string;
+    document: Json<BuildingPackage>;
+    archive: Buffer;
+    hash: string;
+    report: Json<BuildingStudioReport>;
+    sim_version: string;
+    applied: Generated<boolean>;
+    created_at: Generated<Date>;
+  };
+  building_studio_draft_history: {
+    thread_id: string;
+    revision: string;
+    title: string;
+    archive: Buffer;
+    created_at: Generated<Date>;
+  };
+  terrain_studio_draft_history: {
+    thread_id: string;
+    revision: number;
+    document: Json<SetPackage>;
+    hash: Nullable<string>;
+    report: Nullable<Json<ValidateSetResult>>;
+    sim_version: Nullable<string>;
+    status: Nullable<string>;
+    created_at: Generated<Date>;
+  };
+  terrain_wallets: HiveWalletsTable;
+  terrain_ledger: HiveLedgerTable;
+  terrain_calls: HiveCallsTable;
+  terrain_purchases: HivePurchasesTable;
+  terrain_studio_threads: StudioThreadsTable & {
+    draft_id: string;
+    source_version_id: Nullable<string>;
+  };
+  terrain_studio_messages: StudioMessagesTable;
+  terrain_studio_requests: Omit<StudioRequestsTable, 'map_id' | 'map_hash'>;
+  terrain_studio_attempts: StudioAttemptsTable;
+  terrain_studio_events: StudioEventsTable;
+  terrain_studio_artifacts: Omit<StudioArtifactsTable, 'width' | 'height'>;
+  terrain_studio_provider_usage: StudioProviderUsageTable;
+  terrain_studio_revisions: {
+    request_id: string;
+    thread_id: string;
+    base_revision: number;
+    document: Json<SetPackage>;
+    hash: string;
+    report: Json<ValidateSetResult>;
+    sim_version: string;
+    applied: Generated<boolean>;
+    created_at: Generated<Date>;
+  };
   music_wallets: HiveWalletsTable;
   music_ledger: HiveLedgerTable;
   music_calls: HiveCallsTable;
@@ -1211,3 +1567,18 @@ export type Match = Selectable<MatchesTable>;
 export type NewMatch = Insertable<MatchesTable>;
 export type Room = Selectable<RoomsTable>;
 export type WarmMap = Selectable<WarmMapsTable>;
+
+export interface GeneratorStudioRunsTable {
+  id: string;
+  project_id: string;
+  revision: number;
+  settings: Json<GeneratorSettings>;
+  source_hash: string;
+  summary: Defaulted<string>;
+  created_at: Timestamp;
+}
+export interface GeneratorStudioChecksTable {
+  project_id: string;
+  revision: number;
+  upload_id: string;
+}

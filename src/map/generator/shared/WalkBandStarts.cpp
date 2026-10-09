@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WalkBandStarts.h"
 #include "GenerationContext.h"
@@ -22,8 +23,11 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 	WalkBandStarts found;
 	std::vector<int> distances;
 	for (int i = 0; i < n; ++i)
-		if (roomy[i])
-			distances.push_back(toGoal[i]);
+	{
+		::MapGeneration::generationCheckpoint();
+		if (roomy.at(i))
+			distances.push_back(toGoal.at(i));
+	}
 	if (int(distances.size()) < teams)
 		return found;
 	// Both preferences flood from the site, and farthestSites asks them of the same tiles again and
@@ -36,9 +40,12 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 	{
 		const std::vector<std::uint32_t> means = meanFertilityField(field, t, request.roomRadius);
 		for (int i = 0; i < n; ++i)
-			wateredSite[i] = roomy[i] && means[i] >= request.fertilityFloor;
+		{
+			::MapGeneration::generationCheckpoint();
+			wateredSite.at(i) = roomy.at(i) && means.at(i) >= request.fertilityFloor;
+		}
 	}
-	const auto watered = [&](int site) { return wateredSite[site] != 0; };
+	const auto watered = [&](int site) { return wateredSite.at(site) != 0; };
 	const std::function<bool(int)> roomyEnough = [&](int site)
 	{
 		if (!watered(site))
@@ -59,7 +66,10 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 		const Reach reach = reachFrom(t, {site}, walkable, request.yieldSteps);
 		std::int64_t yield = 0;
 		for (int i : reach.tiles)
-			yield += field.at(i % t.w, i / t.w);
+		{
+			::MapGeneration::generationCheckpoint();
+			yield += field.at(t.remainderX(i), i / t.w);
+		}
 		return yieldOf[site] = yield;
 	};
 	std::int64_t yieldLow = 0, yieldHigh = INT64_MAX;
@@ -73,8 +83,11 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 	int lastTarget = -1;
 	bool spread = false;
 	for (const double stretch : {1.0, request.walkStretch})
+	{
+		::MapGeneration::generationCheckpoint();
 		for (const int percentile : request.percentiles)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (spread)
 				break;
 			const int greatestWalk = int(
@@ -96,9 +109,10 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 			int count = 0;
 			for (int i = 0; i < n; ++i)
 			{
-				candidates[i] = roomy[i] && std::abs(toGoal[i] - target) <= band &&
-								swimToGoal[i] * 100 >= target * request.leastSwimPercent;
-				count += candidates[i];
+				::MapGeneration::generationCheckpoint();
+				candidates.at(i) = roomy.at(i) && std::abs(toGoal.at(i) - target) <= band &&
+								   swimToGoal.at(i) * 100 >= target * request.leastSwimPercent;
+				count += candidates.at(i);
 			}
 			context.telemetry.measure(candidatesKey, count, target);
 			if (count < teams)
@@ -108,11 +122,14 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 			const int stride = std::max(1, count / request.yieldSamples);
 			std::vector<std::int64_t> yields;
 			for (int i = 0, seen = 0; i < n; ++i)
-				if (candidates[i] && seen++ % stride == 0)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (candidates.at(i) && seen++ % stride == 0)
 					yields.push_back(yieldAt(i));
+			}
 			std::sort(yields.begin(), yields.end());
-			yieldLow = yields[(yields.size() - 1) * request.yieldLowPercentile / 100];
-			yieldHigh = yields[(yields.size() - 1) * request.yieldHighPercentile / 100];
+			yieldLow = yields.at((yields.size() - 1) * request.yieldLowPercentile / 100);
+			yieldHigh = yields.at((yields.size() - 1) * request.yieldHighPercentile / 100);
 			// The picks prefer evenly fed, roomy sites; where that crowds the colonies together (the
 			// accepted ground can lie in one part of the band), roomy sites, then any.
 			const struct
@@ -122,6 +139,7 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 			} preferences[] = {{&evenlyFed, "evenly-fed"}, {&roomyEnough, "roomy"}, {nullptr, "any"}};
 			for (const auto &preference : preferences)
 			{
+				::MapGeneration::generationCheckpoint();
 				const std::vector<int> sites = farthestSites(t, candidates, walkable, teams, context, stream,
 															 request.trials, preference.prefer);
 				if (int(sites.size()) < teams)
@@ -144,6 +162,7 @@ WalkBandStarts spreadInWalkBand(const Torus &t, const std::vector<unsigned char>
 				}
 			}
 		}
+	}
 	return found;
 }
 
@@ -155,29 +174,41 @@ std::vector<int> firstWalkTerritories(const Torus &t, const std::vector<unsigned
 	std::vector<int> queue;
 	queue.reserve(n);
 	for (int k = 0; k < int(sites.size()); ++k)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dy = -room; dy <= room; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -room; dx <= room; ++dx)
 			{
-				const int i = t.at(sites[k] % t.w + dx, sites[k] / t.w + dy);
-				if (land[i] && territory[i] < 0)
+				::MapGeneration::generationCheckpoint();
+				const int i = t.at(t.remainderX(sites.at(k)) + dx, sites.at(k) / t.w + dy);
+				if (land.at(i) && territory.at(i) < 0)
 				{
-					territory[i] = k;
+					territory.at(i) = k;
 					queue.push_back(i);
 				}
 			}
+		}
+	}
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
-		const int i = queue[head];
+		::MapGeneration::generationCheckpoint();
+		const int i = queue.at(head);
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int j = t.at(i % t.w + dx, i / t.w + dy);
-				if (land[j] && territory[j] < 0)
+				::MapGeneration::generationCheckpoint();
+				const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
+				if (land.at(j) && territory.at(j) < 0)
 				{
-					territory[j] = territory[i];
+					territory.at(j) = territory.at(i);
 					queue.push_back(j);
 				}
 			}
+		}
 	}
 	return territory;
 }

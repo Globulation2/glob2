@@ -274,13 +274,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		const int at = ridgeline[size_t(next)];
-		L.homes.push_back({at % t.w + 0.5, at / t.w + 0.5});
+		L.homes.push_back({t.remainderX(at) + 0.5, at / t.w + 0.5});
 		int farthest = 0;
 		for (size_t c = 0; c < ridgeline.size(); ++c)
 		{
 			const int i = ridgeline[c];
 			nearestTown[c] = std::min<std::int64_t>(nearestTown[c],
-													t.dist2(at % t.w, at / t.w, i % t.w, i / t.w));
+													t.dist2(t.remainderX(at), at / t.w, t.remainderX(i), i / t.w));
 			if (nearestTown[c] > nearestTown[size_t(farthest)])
 				farthest = int(c);
 		}
@@ -336,7 +336,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				int width = 1;
 				for (int dir : {-1, 1})
 				{
-					int x = i % t.w, y = i / t.w;
+					int x = t.remainderX(i), y = i / t.w;
 					for (;;)
 					{
 						x += dir * sx;
@@ -382,17 +382,17 @@ bool generate(Game &game, GenerationContext &context)
 	const int n = t.size(), teams = context.request.nbTeams;
 	for (int k = 0; k < teams; ++k)
 		game.addTeam();
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "rice terraces towns";
 	if (!settleRoundColonies(game, context, "rice-starts", L.homeOf, L.homes, L.homeRadius))
 		return false;
-	const auto free = [&](int i) { return clearGround(map, i % t.w, i / t.w); };
+	const auto free = [&](int i) { return clearGround(map, t.remainderX(i), i / t.w); };
 	const auto home = [&](int k)
 	{
 		std::vector<unsigned char> mask(n, 0);
 		for (int i = 0; i < n; ++i)
-			mask[i] = L.homeOf[i] == k && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			mask[i] = L.homeOf[i] == k && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return mask;
 	};
 	const double normal = stripeNormal(t, L.across);
@@ -412,7 +412,7 @@ bool generate(Game &game, GenerationContext &context)
 			context.detail = "A town has no room for its quarry.";
 			return false;
 		}
-		map.setResourceByIndex(quarry % t.w, quarry / t.w, STONE, 1);
+		map.setResourceByIndex(t.remainderX(quarry), quarry / t.w, STONE, 1);
 	}
 
 	context.stage = "rice terraces crops";
@@ -432,7 +432,7 @@ bool generate(Game &game, GenerationContext &context)
 			std::vector<int> seen{seed};
 			for (size_t q = 0; q < queue.size() && int(queue.size()) < count; ++q)
 			{
-				const int x = queue[q] % t.w, y = queue[q] / t.w;
+				const int x = t.remainderX(queue[q]), y = queue[q] / t.w;
 				for (const auto &[ox, oy] : {std::pair{1, 0}, {-1, 0}, {0, 1}, {0, -1}})
 				{
 					const int j = t.at(x + ox, y + oy);
@@ -455,7 +455,7 @@ bool generate(Game &game, GenerationContext &context)
 					const int i = t.at(hx + dx, hy + dy);
 					if (!firstStrip(i) || bool(L.upper[i]) != upper ||
 						(awayFrom >= 0 &&
-						 t.dist2(i % t.w, i / t.w, awayFrom % t.w, awayFrom / t.w) < 100))
+						 t.dist2(t.remainderX(i), i / t.w, t.remainderX(awayFrom), awayFrom / t.w) < 100))
 						continue;
 					const std::int64_t distance = std::int64_t(dx) * dx + std::int64_t(dy) * dy;
 					if ((best < 0 || distance < bestDistance) && roomFor(i, count))
@@ -492,7 +492,7 @@ bool generate(Game &game, GenerationContext &context)
 	const auto strip = [&](int i) { return L.row[i] >= 0 && L.row[i] % 2 == 0 && free(i); };
 	int stripArea = 0;
 	for (int i = 0; i < n; ++i)
-		stripArea += strip(i) && fertility.at(i % t.w, i / t.w) > 0;
+		stripArea += strip(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, strip, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -582,7 +582,7 @@ GeneratorDefinition riceTerracesDefinition()
 		"rice-terraces",
 		52,
 		"Rice terraces",
-		3,
+		4,
 		false,
 		// One hillside at a slant of one is a single terraced slope spiralling round the torus: on
 		// a 256 map it crosses twice. Terraces should be most of the map (a first render with two

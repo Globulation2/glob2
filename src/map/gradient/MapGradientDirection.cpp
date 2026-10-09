@@ -35,11 +35,11 @@ int Map::minStepCost(int swimClass) const
 
 int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 {
-	const auto cost = terrainRegistry().movement(swimClass).entries[terrainTypeAt(targetIndex)];
+	const auto cost = cellRule(targetIndex).ground[swimClass];
 	return dx != 0 && dy != 0 ? cost.diagonal : cost.cardinal;
 }
 
-bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
+bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict, Uint32 guardAreaMask) const
 {
 	PERF_SCOPE_TIME(PathDirection);
 	const bool canSwim = swimClass > 0;
@@ -90,9 +90,9 @@ bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, cons
 	if (strict || sidestepCount == 0)
 		return false;
 	// Blocked: sidestep to a random neighbour no farther from the goal, so two
-	// units blocking each other do not mirror each other forever. syncRand
+	// units blocking each other do not mirror each other forever. The caller's private stream
 	// keeps the choice deterministic.
-	int pick = sidesteps[syncRand() % sidestepCount];
+	int pick = sidesteps[random.nextU32() % sidestepCount];
 	*dx = tabClose[pick][0];
 	*dy = tabClose[pick][1];
 	return true;

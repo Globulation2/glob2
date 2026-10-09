@@ -23,15 +23,15 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
 {
     static_assert(MersenneTwister::min()==0 && MersenneTwister::max()==UINT32_MAX);
     assert(scarcity>=1);
-    const unsigned opportunities=growthOpportunities(rate,[]{return syncRand();});
+    const unsigned opportunities=growthOpportunities(rate,[&]{return map.privateRandom(RandomDomain::ReferenceGrowth).nextU32();});
     for(unsigned attempt=0;attempt<opportunities;++attempt)
     {
-        if(scarcity!=1 && syncRand()%scarcity!=0) continue;
+        if(scarcity!=1 && map.privateRandom(RandomDomain::ReferenceGrowth).nextU32()%scarcity!=0) continue;
         // Re-read the source after each attempt: growth can change its amount.
         const Resource& resource=map.getResource(x,y);
         if(resource.type==NO_RES_TYPE) break;
         const auto& properties=map.resourcePropertiesByIndex(resource.type);
-        const bool growsHere=!properties.stockDependentGrowth || resource.amount <= syncRand()%properties.stockBranchDivisor;
+        const bool growsHere=!properties.stockDependentGrowth || resource.amount <= map.privateRandom(RandomDomain::ReferenceGrowth).nextU32()%properties.stockBranchDivisor;
         if(growsHere)
         {
             if(map.canResourcesGrow(x,y))
@@ -44,11 +44,11 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
         }
         if(properties.spreadRate && (!properties.stockDependentGrowth || !growsHere))
         {
-            const auto spreads=Fertility::growthOpportunities(properties.spreadRate,[]{return syncRand();});
+            const auto spreads=Fertility::growthOpportunities(properties.spreadRate,[&]{return map.privateRandom(RandomDomain::ReferenceGrowth).nextU32();});
             for (unsigned spread=0;spread<spreads;++spread)
             {
                 int dx,dy;
-                Unit::dxDyFromDirection(syncRand()&7,&dx,&dy);
+                Unit::dxDyFromDirection(map.privateRandom(RandomDomain::ReferenceGrowth).nextU32()&7,&dx,&dy);
                 const int nx=x+dx,ny=y+dy;
                 if(map.canResourcesGrow(nx,ny))
                 {
@@ -63,15 +63,17 @@ void Fertility::applyGrowthOpportunities(Map& map,int x,int y,std::uint32_t rate
     }
 }
 
+// Immediate reference path for tests and benchmarks. Production ticks use the
+// snapshot pipeline; calling both would apply growth twice.
 void Map::growResources(void)
 {
     if(game->gameHeader.isResourceGrowthDisabled()) return;
     rebuildGrowthCoverage();
     static constexpr int scarcityDivisor[]={1,2,4,8};
     const int scarcity=scarcityDivisor[game->gameHeader.getResourceScarcityLevel()];
-    const int firstY=syncRand()&3;
+    const int firstY=privateRandom(RandomDomain::ReferenceGrowth).nextU32()&3;
     for(int y=firstY;y<h;y+=4)
-        for(int x=syncRand()&15;x<w;x+=syncRand()&31)
+        for(int x=privateRandom(RandomDomain::ReferenceGrowth).nextU32()&15;x<w;x+=privateRandom(RandomDomain::ReferenceGrowth).nextU32()&31)
         {
             const auto& resource=getResource(x,y);
             if(resource.type!=NO_RES_TYPE)
@@ -234,7 +236,10 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
 }
 
-bool Map::hasPendingGradientPreparation() const { return gradientRuntime->preparation.job != nullptr; }
+bool Map::hasPendingGradientPreparation() const
+{
+	return gradientRuntime->preparation.job != nullptr || !gradientRuntime->stagedBuildings.empty();
+}
 namespace {
 gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation& p, const Map& map)
 {
@@ -250,7 +255,9 @@ gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation
 }
 SimulationSnapshot::Requirements Map::pendingGradientRequirements() const
 {
-    return hasPendingGradientPreparation() ? gradientRequest(gradientRuntime->preparation, *this).requirements() : 0;
+    // One capture serves the periodic job and every staged building job.
+    const auto periodic=gradientRuntime->preparation.job ? gradientRequest(gradientRuntime->preparation, *this).requirements() : 0;
+    return periodic | pendingBuildingRequirements();
 }
 void Map::preparePendingGradient()
 {
@@ -263,11 +270,13 @@ void Map::preparePendingGradient()
 void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
 {
     if (!hasPendingGradientPreparation()) return;
-    const auto request=gradientRequest(gradientRuntime->preparation, *this);
     if (!foundation.terrain || foundation.terrain->revision != terrainGeneration() ||
         foundation.worldIdentity != identity() || foundation.tick != game->stepCounter ||
         foundation.width != getW() || foundation.height != getH())
         throw std::invalid_argument("Gradient preparation requires the current observation boundary");
+    prepareStagedBuildingGradients(foundation);
+    if (!gradientRuntime->preparation.job) return;
+    const auto request=gradientRequest(gradientRuntime->preparation, *this);
     auto projected=foundation.project(request.requirements());
     auto* job=std::exchange(gradientRuntime->preparation, {}).job;
     job->request=request;
@@ -277,16 +286,47 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
     });
 }
 
-void Map::advanceGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.advance(); }
-void Map::finishGradientPipeline() { preparePendingGradient(); gradientRuntime->pipeline.finish(); }
-void Map::resetGradientPipeline() noexcept { gradientRuntime->preparation={}; gradientRuntime->pipeline.reset(); }
-void Map::setGradientWorkerCount(unsigned workers) { preparePendingGradient(); gradientRuntime->pipeline.setWorkerCount(workers); }
+void Map::advanceGradientPipeline()
+{
+	preparePendingGradient();
+	ensureBuildingGradientPipeline();
+	gradientRuntime->pipeline.advance();
+	// Building fields publish after the periodic planes, before teams step.
+	if (gradientRuntime->buildings.enabled()) gradientRuntime->buildings.advance();
+}
+void Map::finishGradientPipeline()
+{
+	preparePendingGradient();
+	gradientRuntime->pipeline.finish();
+	gradientRuntime->buildings.finish();
+}
+void Map::resetGradientPipeline() noexcept
+{
+	gradientRuntime->preparation={};
+	gradientRuntime->pipeline.reset();
+	resetBuildingGradientPipeline();
+}
+void Map::setGradientWorkerCount(unsigned workers)
+{
+	preparePendingGradient();
+	gradientRuntime->pipeline.setWorkerCount(workers);
+	gradientRuntime->buildingShared = workers != 0;
+	gradientRuntime->buildings.setWorkerCount(workers);
+}
 
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
+	gradientRuntime->buildingShared = workers != 0;
+	if (gradientRuntime->buildings.enabled()) gradientRuntime->buildings.setWorkerCount(workers);
+	ensureBuildingGradientPipeline();
 	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
+	// Staged after tick c-1's step counter advanced to c, a job published
+	// `remaining` advances later is joined at the start of step c+remaining-1.
+	gradientRuntime->pipeline.deadline = [this](unsigned remaining) {
+		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining - 1);
+	};
 	gradientRuntime->pipeline.configure(compute, workers != 0, delay, size,
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
             gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
@@ -297,7 +337,7 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 {
 	preparePendingGradient();
 	PERF_SCOPE_TIME(Map);
-	growResources();
+	gradientRuntime->growth.publish(*this, stepCounter);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
 	game->animations->step();
@@ -362,6 +402,8 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 void Map::stagePeriodicGradientPreparation()
 {
 	preparePendingGradient();
+	// Building requests are admitted first; the periodic job below may return early.
+	stageBuildingGradientPreparation();
 	using Kind = GradientRuntime::Preparation::Kind;
 	// Queue membership and round-robin flags belong to the simulation owner.
 	// Reserve before AI lazy refreshes so invalidation can supersede this job

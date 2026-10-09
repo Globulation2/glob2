@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Grid.h"
 #include "Geometry.h"
 #include <cstdint>
@@ -71,14 +72,20 @@ int MapGeneration::growUntilSites(const Torus &t, std::vector<unsigned char> &re
 								  const std::vector<unsigned char> &eligible, int target,
 								  int maximumTiles, Key key, int size)
 {
-	const auto usable = [&](int i) { return region[i] && buildable[i]; };
+	const auto usable = [&](int i) { return region.at(i) && buildable.at(i); };
 	// Whether the footprint anchored at (ax, ay) lies wholly on usable ground.
 	const auto complete = [&](int ax, int ay)
 	{
 		for (int dy = 0; dy < size; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = 0; dx < size; ++dx)
+			{
+				::MapGeneration::generationCheckpoint();
 				if (!usable(t.at(ax + dx, ay + dy)))
 					return false;
+			}
+		}
 		return true;
 	};
 	int sites = buildSites(t, buildable, region, size);
@@ -87,31 +94,42 @@ int MapGeneration::growUntilSites(const Torus &t, std::vector<unsigned char> &re
 	std::vector<unsigned char> queued(region.size(), 0);
 	const auto offer = [&](int i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (const auto &s : kCardinalSteps)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int n = t.at(x + s[0], y + s[1]);
-			if (!region[n] && !queued[n] && eligible[n])
+			if (!region.at(n) && !queued.at(n) && eligible.at(n))
 			{
-				queued[n] = 1;
+				queued.at(n) = 1;
 				frontier.push({std::int64_t(key(n)), n});
 			}
 		}
 	};
 	for (int i = 0; i < t.size(); ++i)
-		if (region[i])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (region.at(i))
 			offer(i);
+	}
 	for (int added = 0; sites < target && added < maximumTiles && !frontier.empty(); ++added)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int i = frontier.top().second;
 		frontier.pop();
-		region[i] = 1;
-		if (buildable[i])
+		region.at(i) = 1;
+		if (buildable.at(i))
 		{
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int ay = y - size + 1; ay <= y; ++ay)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int ax = x - size + 1; ax <= x; ++ax)
+				{
+					::MapGeneration::generationCheckpoint();
 					sites += complete(ax, ay);
+				}
+			}
 		}
 		offer(i);
 	}

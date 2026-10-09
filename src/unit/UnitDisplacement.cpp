@@ -202,9 +202,7 @@ void Unit::handleDisplacement(void)
 								const int need=needs[r];
 								if (need<=0) continue;
 								int distance;
-								bool available=map->roundTripDistanceSlot(attachedBuilding,r,swimClass(),posX,posY,&distance);
-								if (available) distance=(distance+1)/2;
-								else available=map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								const bool available=map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
 								if (!available || (distance<<1)>=timeLeft) continue;
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }
@@ -350,6 +348,7 @@ void Unit::handleDisplacement(void)
 					if (destinationPurpose==FEED)
 					{
 						hungry=HUNGRY_MAX;
+						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 						needToRecheckMedical=true;
 					}
@@ -360,6 +359,7 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->owner->stats.measurements.hpRestored +=
 							std::max(0, performance[HP] - hp);
 						hp=performance[HP];
+						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 						needToRecheckMedical=true;
 					}
 					// Restored units already inside exit safely without gaining a level.
@@ -501,6 +501,7 @@ void Unit::applyPartialInsideBenefit()
 	{
 		if (attachedBuilding->type->semantics.feeding.partial == BuildingPartialService::None) return;
 		hungry+=(Sint64(HUNGRY_MAX-hungry)*elapsed)/total;
+		if (hungry>=HUNGRY_MAX && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 		fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 	}
 	else
@@ -510,6 +511,7 @@ void Unit::applyPartialInsideBenefit()
 		const int restored = (Sint64(performance[HP] - hp) * elapsed) / total;
 		attachedBuilding->owner->stats.measurements.hpRestored += std::max(0, restored);
 		hp += restored;
+		if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 	}
 }
 

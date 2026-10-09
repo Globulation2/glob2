@@ -18,17 +18,12 @@ namespace GAGCore
 	class OutputStream;
 }
 
-// The synchronized gameplay stream. One state per thread, with a temporary
-// per-AI override while a controller decides. Background map generation seeds
-// its own thread's game stream and does not disturb the UI thread's stream.
-// Reached through a function rather than an `extern thread_local` object: a thread_local
-// with a constructor that other translation units name directly is initialised through a
-// weak per-unit wrapper, which mingw's emulated TLS does not get right, and the savegame
-// harness saw the engine stream change state under it on Windows. A function-local
-// thread_local is initialised in one place, in this unit.
+// Historical test diagnostics only. Production simulation, generation, setup
+// and AI use explicit owner streams; test/check_entity_random.py enforces this.
+// Keep the function-local TLS wrapper for portable legacy test state access.
 MersenneTwister &syncRandEngine();
 
-// Route synchronized draws made while an AI is deciding to its own stream.
+// Bind historical RNG state in compatibility test fixtures.
 // The scope is thread-local and restores the previous stream on exit.
 class SyncRandScope
 {

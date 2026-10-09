@@ -12,8 +12,10 @@ documented in [Distributed tournaments](../tools/tournaments.md).
 
 All shipped AI controllers decide from an immutable engine snapshot through
 `AIEngine::AIWorldView`. The simulation owner captures a union of required
-components at the polling boundary. `Game::snapshots()` owns the shared Store;
-the AI pipeline borrows it rather than owning a separate capture cache. Explicit
+components through `Game::captureReadBoundary()`. The engine declares AI, gradient,
+admitted presentation and diagnostic requirements before publishing their union.
+`Game::snapshots()` owns the shared Store; the AI pipeline receives a projection
+of that published handle and does not initiate capture. Explicit
 `Store::invalidateBoundary()` revisions allow an owner to publish same-tick edits
 without advancing game time; existing leases stay immutable. Engine snapshot records live under
 `src/engine/sim/snapshot/`; the AI adapter and shared queries live under
@@ -30,13 +32,16 @@ coverage when extending them.
 
 Map storage and snapshots use the same trivially copyable records from
 `src/map/MapState.h`. Resource, occupancy and area arrays are authoritative;
-there is no maintained `Tile` mirror. Legacy terrain sprites and visibility
-remain contiguous scalar arrays. The live `Map` and every snapshot expose the same
+there is no maintained `Tile` mirror. Vertex terrain, cell rule indices and
+visibility remain contiguous scalar arrays. The live `Map` and every snapshot expose the same
 borrowed `MapState::View` (`src/map/MapStateView.h`), and each cell query has one
 inline implementation there; `Map` members forward to it. Every cell write stamps
 its 16x16 chunk (`src/map/MapChangeTracking.h`); capture compares whole-array
-generations to share unchanged components and copies only the chunks a reused
-pooled buffer does not already mirror, without per-cell translation. Writes that
+generations to share unchanged components. Reused pooled buffers copy changed
+chunks when at most half are dirty; denser changes use contiguous whole-array
+copies to avoid many strided row copies. Both paths copy the same authoritative
+records without per-cell translation. Copy-byte metrics include the multi-material
+stock sidecar, which is copied whole when resources are refreshed. Writes that
 bypass the marked setters are caught by `GLOB2_SNAPSHOT_VERIFY=1`, which
 byte-compares every capture with the live game. Published material gradient planes
 sit in a dense registry keyed like the snapshot's plane table
@@ -87,17 +92,29 @@ acquire fence that orders the consumer's final reads before the owner's next wri
 including inputs retired by delayed gradient jobs. Reads need no locking, and a
 buffer outlives the capture Store while any consumer holds it. Memory metrics are
 computed on telemetry query, never on the capture path. Component pools permit
-22 buffers: the existing 17-epoch simulation horizon plus five presentation
-leases (active input, pending input and three Scene slots). Buffers allocate only
-on demand. The resource-plane pool retains its original 17-epoch bound because
+22 buffers, retaining the existing safety ceiling until the combined consumer
+horizon is measured. Buffers allocate only on demand. Retired frame slots release
+their world leases immediately while preserving reusable derived arrays; the
+current frame, admitted preparation, retained view-refresh input and diagnostic
+publication each have explicit ownership. The resource-plane pool retains its original 17-epoch bound because
 presentation does not lease resource-gradient fields.
 
 All parallel simulation work shares the map's `ComputeExecutor`
 (`src/common/ComputeExecutor.h`): blocking `run()` batches for map computation and
-deferred batches for AI decisions and periodic gradients. AI controller lanes
-preserve decision order; gradient jobs need no lane. `AIEngine::Pipeline` submits one batch per
-tick with one job per controller on that controller's lane, and joins it at the
-deadline, executing remaining jobs itself from the oldest live batch forward. The
+deferred batches for AI decisions, periodic gradients, scheduled building
+gradients and resource growth. Each deferred batch carries the tick it is due. Workers run deferred
+jobs earliest due first, in submission order within a lane. The owner never runs
+deferred work while a worker exists: at a join it only waits, even when the only
+worker also runs presentation, which that worker interleaves with simulation jobs
+(so a join may wait out one presentation chunk). Only an executor with no workers
+runs deferred jobs on the owner, at the join, because nothing else can. This keeps
+owner time split cleanly into owner work and owner wait (`compute_owner_jobs` is
+zero whenever workers exist). A cheap AI batch at delay 0 computes
+inline when it submits, outside the executor, and still publishes at the deadline.
+AI controller lanes preserve decision order;
+gradient and growth jobs need no lane.
+`AIEngine::Pipeline` submits one batch per tick with one job per controller on
+that controller's lane, and joins it at the deadline. The
 match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
 to 8 for new games. An order observed at logical tick `t` is delivered at `t + delay`. Thread
 count and completion time never choose that deadline or which decision a
@@ -114,7 +131,10 @@ cancellation and failures without joining. Simulation `run()`, `join()` and
 thread calls `pumpPresentation()` explicitly. Reconfiguration and teardown cancel
 pending work and wait for the active chunk without executing it on the caller.
 Captured inputs are released on completion, even if a caller retains its ticket.
-These scheduling APIs do not yet move the existing Scene extractor off simulation.
+Presentation preparation uses these jobs and only the published world handle.
+Data-dependent operations can yield and resume the same chunk: large defence
+footprints visit at most 1024 positions per claim, and overlay clearing is sliced
+into 1024-cell ranges. This also bounds cooperative work on serial browser hosts.
 
 Commands own encoded order bytes, target incarnation, diagnostics and telemetry.
 The owner validates current identities and normal order rules at delivery and
@@ -672,7 +692,8 @@ selects `2D no clouds` or `2D clouds`; otherwise both run. Set
 a controlled comparison. `GLOB2_BENCH_BARS=1` adds health/food bars. Unit count
 zero measures the same terrain without units. Retain executable hashes, commands,
 GPU identity, logs and captures with before/after comparisons. The flat fixture
-checks that rendering leaves the simulation checksum unchanged.
+checks that rendering leaves the simulation checksum unchanged. New fixture headers
+use seed 1; saved-game runs retain their saved seed.
 
 For an AI match, replace `GLOB2_BENCH_SIZE` and `GLOB2_BENCH_UNITS` with
 `GLOB2_BENCH_GAME=/absolute/path/to/checkpoint.game.gz`. The saved players and
@@ -684,6 +705,17 @@ the checkpoint's natural population from this deliberately seeded stress case.
 and can go below the interactive camera's minimum zoom.
 `GLOB2_BENCH_CAMERA_SWEEP=1` repeatedly changes zoom and pans across wrap seams.
 Sweep measurements mix those view sizes; use a fixed camera for paired timings.
+`GLOB2_BENCH_CAMERA_MOTION=1` instead pans four/two map pixels per frame and
+cycles smoothly between the selected zoom and four times that zoom over 120
+frames. It takes precedence over the seam sweep in the ordinary flat pass.
+`GLOB2_BENCH_CAMERA_PAN=1` uses the same scrolling at a fixed zoom.
+`GLOB2_BENCH_FRAME_TIMES=1` prints each measured and warmup frame; summaries
+include p99 and maximum latency as well as median and p95. The benchmark finishes
+deferred HD artwork loading before timing, so density changes compare identical
+source artwork rather than different asset-loader progress. Keep cold frames when
+investigating navigation stalls, and repeat cycles to distinguish first-use work
+from recurring hitches. The motion option does not change the paired comparison's
+camera; use the seam sweep for that comparison.
 `GLOB2_BENCH_COMPARE_RENDERER=1` additionally compares immediate and optimized
 native rendering in the same process, at the same camera and simulation state.
 It reports paired process CPU timings and checks pixel differences after timing
@@ -698,7 +730,9 @@ mixed unit queue, texture arrays and persistent map geometry.
 pair as `pair-immediate.ppm` and `pair-optimized.ppm` for visual review.
 
 Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
-input and simulation work. They are renderer measurements, not whole-game FPS.
+input, scene extraction and simulation work. Flat passes retain a prepared scene;
+AI comparisons refresh it before each timed pair. They are renderer measurements,
+not whole-game FPS.
 POSIX builds also report process CPU time separately from elapsed time.
 Scope timings separately report CPU submission and overlap; do not sum inclusive
 scopes. The fixture is native OpenGL only; mobile uses the SDL portable renderer,
@@ -877,6 +911,16 @@ seeds, binaries, captures and timing data under `artifacts/` for review.
 
 ### Skin materials
 
+Procedural pattern repeats are set in `skinMaterialRepeat` in the shared GLSL:
+classic glossy uses 4×, wood 3×, leather 5×, and woven fabric, stone, scales and
+honeycomb 2×; other materials use 1×. The scale applies to material detail after
+sampling the paint and material atlas, so painted markings retain their placement.
+Studio, native rendering and sprite baking use these same settings. Worker and
+warrior meshes retain the established paint UVs and carry a separate bounded
+GUV1 sidecar for procedural detail, so rebuilding the surface does not move saved
+paint. Both renderers use the paint UVs when a sidecar is absent; malformed
+sidecars are rejected. See the [unit asset pipeline](../../tools/unit-animation/README.md#experimental-live-colony-skins).
+
 Colony-skin materials are declared once in `libgag/shaders/skin-materials.json`
 (ids, keys, display names, picker groups, which materials grow fur shells, the
 shell count and the fur length and depth bias every renderer uses) and shaded
@@ -917,25 +961,40 @@ sprite render revision and re-bakes every published skin.
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
 For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/EngineRun.cpp`.
 
-- Use `Utilities::syncRand()` for simulation randomness. Keep iteration and tie
-  breaking deterministic; never depend on pointer ordering, hash-table iteration,
-  thread scheduling or wall-clock budgets for simulation decisions.
-- Each AI controller has a saved random stream derived from the game seed and player
-  number. AI implementations receive that stream when created or loaded. During
-  `AI::getOrder()`, legacy helper calls to `syncRand()` are routed to the same AI
-  stream. This keeps one AI's random draws independent of other controllers' poll
-  order, but does not make their shared map and caches safe for concurrent access.
-  A controller must still have at most one `getOrder()` in flight; its stream
-  and decision state are mutable.
-- Each `Game` owns its synchronized stream (`Game::syncRandom`), saved and restored
-  with the game. `Game::syncStep`, `Game::executeOrder`, load and save bind it with
-  `SyncRandScope`, so the simulation draws from the game it advances on whichever
-  thread runs it. Other code that advances a game's simulation must bind it with
-  `Game::bindRandom()`. Outside a bound scope, `syncRand()` uses a `thread_local`
-  default stream that map generation and other tools seed for themselves; a new
-  thread starts from the default seed. During an engine session an unbound draw is
-  a determinism bug: it is counted (`unboundSyncRandDraws()`), and
-  `GLOB2_SYNC_RAND_STRICT=1` aborts on it.
+- Units and buildings own saved private `EntityRandom` PCG32 streams (format 151).
+  Entity decisions use `entityRandom.nextU32()`; randomized map pathfinding takes
+  the moving unit's stream explicitly. Initialization salts the game seed with
+  kind, full GID and slot generation without consuming another stream. Upgrades,
+  repairs and ownership conversion preserve progress; reused slots get fresh streams.
+  Both state words participate in entity checksums and snapshot records. Older
+  saves initialize missing streams once and then run only the new behavior.
+  Starting maps are reseeded with the final match header; saved resumes retain state.
+  Team has no independent draws or stream. `python3 test/check_entity_random.py`
+  checks that production code cannot implicitly draw `syncRand()` or process-global `rand()`.
+- Format 152 adds separate saved PCG32 streams owned by the map for growth-job
+  seeds, immediate reference growth, resource stocks, placement and smoothing.
+  Each SGSL story has its own stream, salted by its source-order index. All streams
+  are seeded directly with the match/request seed and fixed domains; no parent
+  stream is consumed. Both words participate in ordinary simulation checksums.
+  Older saves initialize missing streams once. Fresh match headers reset template
+  progress; resumed saves retain it. Resource-growth jobs retain a private MT19937
+  scan stream, with separate PCG32 decisions per source tile. Additional decisions
+  at one source cannot change another source's draws or the scan schedule.
+- AI controllers already own saved MT19937 streams derived from game seed and
+  player number. Helpers now take that stream explicitly, including placement,
+  shuffling and strategy selection; no thread-local binding chooses their owner.
+  Each controller still permits at most one decision in flight.
+- Generation mutates only its target map's streams, and scored trial maps initialize
+  independently. Test-game map selection and each AI seat use distinct domains.
+  The historical `Game::syncRandom` record is retained for save/test diagnostics
+  but has no production consumers or per-tick advancement. The source contract
+  rejects implicit RNG calls throughout production code; legacy utility bindings
+  remain only to support older test diagnostics.
+- Random consumption is isolated, but map mutations, interactions and execution
+  order remain sequential. Keep iteration and tie breaking deterministic; never
+  depend on pointer ordering, hash-table iteration or thread scheduling. These changes alter resource ecology, map placement and
+  legacy summons, in addition to the entity trajectory changes in format 151.
+  Gameplay review remains necessary.
 - Keep rendering, particles, animation and other presentation-only randomness off
   `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
   so visual effects can change, run at any frame rate or move to another thread
@@ -1022,8 +1081,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   difference and test the intended behavior rather than claiming old/new equivalence.
 - Terrain simulation properties retain the fixed layout in `src/map/TerrainProperties.h`,
   indexed by stable 16-bit `TerrainType` IDs in a map-owned immutable `TerrainRegistry`.
-  Use `map.terrainProperties(type)` or `map.terrainPropertiesAt(...)`; the global
-  constexpr table defines only the seven built-ins. Walking, swimming, flying, building eligibility,
+  Use `map.terrainProperties(type)` for a terrain or `map.terrainPropertiesAt(...)`
+  for a cell; the global constexpr table defines only the built-ins. Walking, swimming, flying, building eligibility,
   resource habitats, irrigation, movement rates, health and projectile obstruction
   are independent capabilities. Use a property predicate when asking what a cell
   permits; compare IDs only when its identity is the actual question (for example,
@@ -1032,44 +1091,70 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   the terrain material hashes so maps look distinct; generators derive it from their
   request seed and the editor can reroll it. It is never read by simulation code and
   is not in `checkSum()`; see [terrain materials](../assets/terrain-materials.md#map-seed).
-- `Map::terrainTypeAt` reads the canonical ID plane. `Tile::terrain` is presentation
-  state: its sprite frame must never determine gameplay. Use `setCellTerrain` and
-  batch edits with `editTerrain()` so snapshots, topology and ecology caches stay
-  consistent with the canonical IDs. The compatibility `getTerrainType` query returns an
-  unknown category for legacy shores; never use it to index the property table.
-  The old corner editor and old-file importer are explicit
-  adapters; legacy shores have their own walkable, unbuildable profiles.
-- Saved sprite ranges, corner semantics and authoring frame selection are frozen in
-  `TerrainCompatibility.h`. Detailed terrain rendering resolves shipped appearances
-  through a presentation-only material catalog, corner coverage resolver and CPU
-  compositor. `data/terrain/tileset.json` defines those materials independently of
-  gameplay IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
+- Terrain is stored once per map vertex (`Map::vertexTerrain`, save format 146).
+  Vertex (x,y) is the top-left corner of cell (x,y); `cellCorners(x, y)` returns the
+  top-left, top-right, bottom-left and bottom-right corners. A cell's rules come
+  from its corners through `combineCornerRules` (`TerrainPropertiesLayout.h`):
+  equal corners keep their terrain's exact profile; mixed corners are walkable when
+  any corner is, never swimmable or buildable, block projectiles and count as a
+  shoreline when any corner does, and are otherwise as permissive as their weakest
+  corner (speed and ground damage from the walkable corners). Mixed grass/sand and sand/water cells reproduce the retired shore
+  profiles exactly, which is why no shore terrain types exist.
+- A per-map `CellRuleTable` (`src/map/CellRules.h`) compiles each corner combination
+  once: properties, movement costs per swimming class, air costs and resource
+  habitat. Cells store only a rule index; rule t is the uniform cell of type t, and
+  mixed combinations follow in the order the map first needs them, up to 65536.
+  Snapshots, gradient preparation and AI observations share the table immutably.
+- `Map::terrainTypeAt` returns a cell's terrain when its corners agree and
+  `MIXED_TERRAIN` otherwise. That sentinel is never stored; never index a table
+  with it. The script-facing `getTerrainType` maps mixed cells to the unknown
+  category. Write vertices with `setVertexTerrain`, `paintVertices`,
+  `paintVertexSquare`, `assignVertexTerrain` or `fillTerrain`, and batch edits with
+  `editTerrain()` so snapshots, topology and ecology caches stay consistent.
+- Grass directly against water is legal: the cells between are walkable and
+  unbuildable. Beaches are a painting and generation convention. `paintVertices`
+  (by default) and `paintVertexSquare` turn an opposite vertex next to painted
+  grass or water into sand. `Map::layBeaches()` handles a whole map independently
+  of scan order and turns both sides of every grass/water contact into sand, a
+  two-vertex beach. Editor terrain brushes stamp vertices; the smallest
+  figure is one vertex.
+- Files older than format 146 convert at load. Their classic corner grid gives the
+  vertices; then a vertex touching a cell that held a non-classic terrain takes it,
+  preferring the cell it is the top-left corner of, then the cells to its top-left,
+  top and left. A classic ID that disagrees with its cell's corners (an older direct
+  cell edit) is kept the same way. Where two different whole-cell terrains touch,
+  the cell converted first loses corners and becomes a transition. Saved sprite
+  frames are skipped.
+- Detailed terrain rendering resolves shipped appearances through a
+  presentation-only material catalog, corner coverage resolver and CPU compositor.
+  `data/terrain/tileset.json` defines those materials independently of gameplay
+  IDs; `TerrainPresentation.h` retains semantic editor and image-interchange
   metadata. See [terrain material authoring](../assets/terrain-materials.md) for
   variants, boundary profiles, asset validation and cache behavior. Visual catalog
-  changes must not change saved frames or simulation RNG use.
+  changes must not change saved state or simulation RNG use.
 - Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
   gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
-  name, string-table label, semantic colours and frozen saved-frame range, and the
-  `TerrainProperties.h`, `TerrainPresentation.h`, `TerrainCompatibility.h` and
-  `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
+  name, string-table label and semantic colours, and the `TerrainProperties.h`,
+  `TerrainPresentation.h` and `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
   profiles, so the registry deduplicates them into one property index; use
   `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
   Adding a type is one enumerator, one row, one label and one material binding;
   adding a group is one profile and, when gated, one `ExperimentId`.
-- Format 141 raised `TERRAIN_COUNT` from 7 to 31. Custom definitions and tile IDs in
-  older files start at 7, so `Map::loadTask` remaps IDs at or above the file's built-in
-  count (`TERRAIN_COUNT_BEFORE_CATALOGUE`) to follow the current built-ins, and
-  `TerrainRegistry::deserialize` takes that count. Built-in-only files are unchanged
-  byte for byte; custom registries re-serialize with shifted IDs, so their digest
-  changes and replays from formats 136 to 140 that embed one no longer verify.
-- Runtime types inherit a shipped appearance and use full tiles; legacy corner
-  adapters apply only to built-ins. Any paintable built-in is a valid `base` or
-  `appearance`. Import definitions through
+- Format 141 raised the built-in count from 7 to 31; format 146 retired the two
+  shore types (IDs 5 and 6), moving the catalogue down by two to `TERRAIN_COUNT` 29.
+  `TerrainRegistry::savedBuiltinCount` gives a file's built-in count
+  (`TERRAIN_COUNT_BEFORE_CATALOGUE` or `TERRAIN_COUNT_BEFORE_VERTEX` for older files),
+  `TerrainRegistry::currentTerrainId` remaps its saved IDs, and
+  `TerrainRegistry::deserialize` takes that count. Custom registries re-serialize
+  with shifted IDs, so their digest changes and replays that embed one no longer
+  verify.
+- Runtime types inherit a shipped appearance and occupy vertices like built-ins.
+  Any paintable built-in is a valid `base` or `appearance`. Import definitions through
   `Map::importTerrainDefinitions` before a match or in the editor. It validates and
   compiles the complete replacement before publishing it, preserves existing IDs,
   and appends new keys in sorted order. Scenes and gradient jobs retain the same
-  registry snapshot; inner loops borrow indexed data. Scenes cache the shipped
-  appearance in a two-byte cell plane; the compositor resolves equivalent aliases
+  registry snapshot; inner loops borrow indexed data. Scenes resolve each
+  vertex's shipped appearance through the registry; the compositor resolves equivalent aliases
   to the same material without scanning custom definitions. Render caches bind the
   registry snapshot and actual asset revisions. Saved custom colors remain
   authoritative for previews and minimaps; built-ins use catalog palettes.
@@ -1081,13 +1166,12 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 - Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
   (`TrailTerrain`). Its external name, translation keys and serialized experiment
   key remain `road` / `road-terrain` for scripting, reports, editor actions and
-  existing files. Classic frames 288–303 come from `datasrc/gfx/trail/`; the
-  material catalog independently chooses the detailed appearance for that ID.
+  existing files. The material catalog chooses the detailed appearance for that ID.
 - Ecology caches terrain-only land and aquatic fields for the map's lifetime.
   Normal growth, harvesting, unit movement and building placement do not rebuild
   them. Map replacement invalidates them; terrain edits invalidate them only when
   effective fertility contributions, inhibition, shore support or local growth
-  factors change. Habitat-only edits update one cell's resource mask, and other
+  factors change. Habitat-only edits update the resource masks of the cells around the vertex, and other
   capability changes retain the fields. A query inside an edit batch observes all
   preceding changes; closing the batch does not discard an already-current field.
   The weighted kernels preserve the classic paired water/inhibition and rotated
@@ -1113,8 +1197,11 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   The completed-tick observation phase introduced replay floor 139. Runtime resource
   catalogs introduced replay floor 140 and network protocol 59.
   Damage-weighted routing and idle safety introduced replay floor 142 and network protocol 60.
-  The current replay floor is 143 and network protocol is 61 for engine snapshots and
-  scheduled AI decisions.
+  Engine snapshots and scheduled AI decisions introduced replay floor 143 and network
+  protocol 61; building artwork raised the protocol to 62. Vertex terrain set replay
+  floor 146; greedy-only fetching (format 147) and scheduled building gradients
+  (format 148) set the current replay floor before growth integration. Delayed resource growth sets
+  replay floor 149 and network protocol 67; building area effects set replay floor 150 and network protocol 68; private entity RNGs raise the replay floor to 151 and private world/story RNGs raise it to 152.
   Loading earlier saves rebuilds cached routes on maps with terrain health effects;
   current saves retain their completed and pending fields for exact continuation.
   Custom registry checksums hash canonical serialized fields, not struct padding.
@@ -1199,8 +1286,28 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   the existing field/deadline representation. Reconfiguration drains work before
   resizing scratch; teardown drains callbacks and discards reservations. Job-owned
   errors survive executor batch retirement and surface at save/publication.
-- The executor ring holds 36 batches for the combined AI/gradient horizon.
-  Gradient jobs use no AI controller lane and submit no nested deferred work.
+- Stale building walking fields are refreshed by `BuildingGradientPipeline`
+  (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
+  refresh and keeps serving the old field; after the tick up to four requests are
+  staged, captured at the observation boundary with the periodic job, built on
+  workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
+  default 8), before team stepping. Publication swaps the field and its search on
+  the owner; it is discarded if a synchronous rebuild or a reset superseded it.
+  Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
+  the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
+  walking fields serving until the refresh publishes, so units may follow a
+  pre-edit field for up to the delay. Fields a building has never had (or lost to
+  idle eviction or its own move, type or range change), queue overflow (more than
+  64 waiting requests) and maps without a game build synchronously.
+  `Map::predictBuildingDepth` reads the generated
+  [depth model](../building-gradient-depth-model.md) from the field's own past
+  reader demand (its serving search's required cost and `settledCostHint`). It only moves
+  search work between worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy`
+  or an operating point name overrides it for timing.
+- The executor ring holds 65 batches: each deferred producer holds at most its
+  horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16),
+  plus headroom. Gradient jobs use no AI controller lane and submit no nested
+  deferred work.
   Thread counts change execution only. Review scratch ownership, input lifetimes,
   RNG and shared caches before adding another producer.
 - Periodic snapshot seeding uses `SnapshotGradient` and shared `SeedCells`
@@ -1298,6 +1405,160 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   coverage and its limits.
 
 
+### Delayed resource growth
+
+Natural growth reads the completed-tick engine observation through `MapState::View`.
+The snapshot store captures resource, occupancy, terrain, ecology, catalog and rule
+requirements together with AI and periodic gradients. One batch per advancing tick
+uses one owner-drawn seed and a private MT19937 stream; calculation never reads or
+writes live map state. Every attempt sees the original snapshot, so proposals do
+not seed further growth within the same pass.
+
+The shared compute executor runs whole batches concurrently. Publication occurs
+at `snapshot.tick + delay`, after team stepping, with eight ticks as the default.
+A late worker is joined at its deadline. With zero workers, the executor runs
+the same calculation on the simulation owner at the join. The mutation pass visits the compact proposal list rather than scanning
+the map. Each 12-byte proposal stores its tile, resource type, source variety and
+operation. Replenishment carries one signed material delta. A seed carries
+worker-calculated replenishment choices for a matching destination at publication.
+If the destination remains empty, it receives the configured initial stock of every
+material and the source variety, just as the immediate growth pass did. Seed stocks
+do not depend on replenishment rates. If a matching deposit is already present,
+only the precomputed replenishment increments apply, capped independently; initial
+stocks never replace existing stocks. Publication makes no new random choices.
+
+There is no incarnation tracking. A positive replenishment whose deposit disappears
+can create a new deposit with configured stocks. Publication retains growth
+permissions, habitat and empty-destination occupancy checks. Disabling growth rejects
+a complete due batch; incompatible resource catalogs or worlds invalidate it.
+Mutations use authoritative resource setters and preserve cache invalidation.
+
+Stock statistics record actual added/removed units. As in immediate growth, a seeded
+tile is credited to every material with positive starting stock; those per-material
+tile counters must not be summed to count physical deposits. Diagnostic `tilesAdded`
+counts physical deposits. Global growth measurements are duplicated into each team;
+they must not be summed across teams. With no teams, measure world stocks directly.
+
+Diagnostic `growth_proposals` counts newly computed work, including future batches.
+`growth_publishedProposals` includes restored work and equals accepted plus rejected
+proposals. One accepted seed can add multiple stock units. `growth_clamped` counts
+wholly rejected positive proposals with attempted replenishment; partially accepted
+seed collisions may contain saturated materials without increasing this counter.
+Diagnostic counters restart on load; team statistics retain their saved history.
+
+`ResourceGrowthBenchmark/player-free*` reconciles stock scans with statistics,
+using two passive teams and no players, units, buildings or harvesting. Zero-worker/shared
+states and statistics must match. `GLOB2_GROWTH_PLAYER_FREE_OUTPUT` selects a JSON
+output path and expands testing from two seeds/64 ticks/32² to 20 seeds/512 ticks/64².
+`GLOB2_GROWTH_PLAYER_FREE_DELAY` selects 1–16 ticks (default 8) for this test only.
+Reports include 128-tick checkpoints and a separate diagnostic terminal flush that
+applies pending proposals without calculating more batches. The immediate reference
+calls the retained old growth pass, not the latest master executable. Snapshot timing,
+within-pass feedback and random streams remain different; configured seed stocks,
+material rates and variety follow the original business rules. Heavy checksums join
+pending work, so these checks establish correctness and ecology, not throughput.
+
+`ResourceGrowthBenchmark/generated landscapes*` exercises the actual River, Swamp,
+Crater Lakes and Islands generators with their default controls and two colonies,
+on 128²/256² maps. It removes colony entities for a no-harvesting comparison, keeping
+the generated terrain and resource placement. Each execution variant loads the same
+serialized starting world. Every tick reconciles material stocks and deposit counts
+with growth statistics and compares zero-worker/shared heavy checksums. Set
+`GLOB2_GROWTH_GENERATED_OUTPUT` to a JSON path to expand from one seed/32 ticks to
+20 seeds/512 ticks per generator (`GLOB2_GROWTH_GENERATED_TICKS` can select a longer
+1–16384 tick horizon) and save representative generated worlds with their original colonies,
+empty-colony inputs and endpoints beside the report. Results include per-material
+stocks, deposit counts, checkpoints and a separate terminal-queue flush. These are
+no-player ecology measurements, not throughput or sustainable-harvesting tests.
+
+`GLOB2_GROWTH_GENERATED_DELAYS` selects a comma-separated list of delays from 1–16
+(default `8`). `GLOB2_GROWTH_GENERATED_WIDE=1` adds Rain Shadow, Old Growth, Braided
+River, Fjord Continent, Stone Highlands, Tidal Flats, Canals and Continents, including
+512² and rectangular maps. `GLOB2_GROWTH_GENERATED_CASE` selects one generator ID
+for independent process execution. `GLOB2_GROWTH_GENERATED_SEED_BEGIN` and
+`GLOB2_GROWTH_GENERATED_SEED_END` select an inclusive seed range for sharding
+large-map campaigns; default coverage is unchanged. Refused generation seeds are recorded rather
+than replaced; a selected case with no successful samples fails.
+
+For comparisons across incompatible save formats, `GLOB2_GROWTH_GENERATED_INPUT`
+selects a directory of exported master fixtures, one subdirectory per generator
+and `fixture-<seed>.json` per world. This mode requires case selection and an output
+path. It imports classic terrain vertices, the canonical resource catalog and
+exact deposit types, varieties and material stocks, then verifies habitat,
+growth permission and ecology rates at every cell for all exported renewable
+types. Mismatches fail before stepping. Zero-worker/shared arms load identical native
+saves of that imported world; the retained immediate-growth pass is omitted in
+this mode. Master reference results must come from a separately pinned master
+executable using full simulation ticks, and every missing fixture must be
+reconciled against its generation-failure report. Report both delay-versus-delay
+and delay-versus-master comparisons: only the former isolates scheduling.
+
+
+Proposal buffers are pooled for the full delay horizon. Initial reservation is
+`max(128, cellCount / 16)` entries per buffer, approximately four proposals per
+expected sampled cell. Completed batches raise the reservation to their observed
+size plus 25% headroom. This is a heuristic, not a guaranteed 99th percentile;
+rare overflows grow the vector normally. Headless results expose
+`growth_capacityGrowthBatches` and `growth_maxProposals` to measure its coverage.
+Capacity and pooling decisions do not affect simulation results.
+
+Resource-growth integration introduced save format 149 and network protocol 67.
+The current writer and replay floor are 152, with private entity, map and legacy-story RNG state after area-effect funding and fractional services in format 150. The save compatibility floor remains 58. Released master layouts
+146–148 and historical growth-draft layouts with the same numbers are resolved
+before loading game state: the map catalog or a bounded terrain-block probe
+identifies vertex versus legacy corner storage. Historical growth layouts retain
+their raw proposal version while older terrain, routing and AI-memory readers
+use the pre-vertex layout. Format 149 stores scheduled building-gradient state
+followed by pending growth outputs; loading never publishes either queue early.
+
+Historical growth gates in `FileFormatVersions.h` intentionally overlap released
+artwork/terrain versions. Resolve the layout before interpreting those gates;
+`FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH` identifies the unambiguous format 149.
+
+The historical growth draft format 148 added typed proposals and restored configured natural seed stocks.
+Pending unit proposals from formats 144–147 retain their old mutation semantics until
+their existing deadlines, including through resave; new batches use the restored rules.
+The historical growth draft format 147 combined embedded map/building artwork and pending growth. Older formats
+remain readable.
+Released format 145 adds building artwork; its bounded header is distinguished
+from the earlier compact-growth format 145, including empty artwork. Two
+independent formats used version 144: released artwork saves have an artwork
+length before map arrays and no growth queue; the earlier growth prototype has a
+packed map-array header there, incarnation counters and pending material masks.
+The loader distinguishes their bounded headers (or named text fields), discards
+legacy incarnations, and converts masks to positive deltas in material order.
+The durable save floor remains 58. Saves without pending growth start with an
+empty queue. Saving
+drains computation without publishing early. Registry/world replacement cancels
+pending batches. Routine checksums include seeds and deadlines without waiting;
+heavy verification joins and includes proposal contents. Worker placement is local
+execution configuration; delay and pending output are simulation state.
+
+`--resource-growth-delay 1..16` controls the headless publication delay.
+Growth always uses the shared executor. `--compute-threads 1` leaves zero workers
+and exercises its fallback; larger values include the owner plus worker threads. A loaded queue cannot change delay while work is pending.
+No growth passes are scheduled while regrowth is disabled. Disabling regrowth also
+rejects pending proposals when they reach publication.
+
+For attribution, set `GLOB2_GROWTH_EXISTING_CAPTURE=1` when running the paired
+`ResourceGrowthBenchmark` case. Every variant then captures the full shared
+component union once per observation, including the legacy control; new growth
+uses that existing handle. This separates the standalone cost of introducing
+snapshots from growth on an already captured world. It does not simulate AI worker
+contention or retained AI leases, and old/new growth trajectories still differ.
+Compare full-engine capture counts, capture time and copied bytes as well; total
+shared capture time must not be attributed entirely to growth. Worker compute,
+queue residence and owner wait timings overlap and must not be added as if they
+were sequential costs.
+
+The opt-in `identical live and snapshot kernel inputs` case in
+`ResourceGrowthBenchmark` isolates read access: it runs the same pure kernel over
+live and captured views of the same unchanged map, compares ordered proposals and
+RNG continuation, then times paired runs. Capture, input setup and RNG construction
+are outside timing. Set `GLOB2_GROWTH_KERNEL_OUTPUT` to an output JSON path to retain
+samples. This measures kernel access costs; it does not measure capture, delayed
+publication, retention or contention with other engine jobs.
+
 ### Terrain gradient benchmarks
 
 `TerrainHazardBenchmark` provides opt-in CPU and wall-time measurements for idle
@@ -1322,13 +1583,17 @@ fixtures with the older build so both readers accept exactly the same bytes. Use
 from whole-engine CPU time per tick. Alternate revision order across repeats and
 report distributions; changed routes also change the later simulation workload.
 
-Engine movement profiles are prepared once from the compiled terrain table in
-`src/field/PreparedTerrainCosts.h`. Terrain identities with the same cardinal and
-diagonal entry costs share a cost class; equal edge costs share queue destinations,
-including cardinal/diagonal aliases. Eager propagation can select a one-class
-kernel only after checking every non-forbidden cell, including source cells.
-Lazy searches retain the profile selected by their captured swimming class and
-an immutable terrain snapshot. Each search or worker owns its mutable queue;
+Engine movement profiles come from the map's cell rules: each `CellRuleTable`
+entry (`src/map/CellRules.h`) carries its entry costs per swim class, and
+`Map::frozenTerrainMovementSnapshot` compacts the profiles its cells use, in cell
+order, into `PreparedTerrainCosts` (`src/field/PreparedTerrainCosts.h`). Rules with
+the same cardinal and diagonal entry costs share a cost class; equal edge costs
+share queue destinations, including cardinal/diagonal aliases. Eager propagation can
+select a one-class kernel only after checking every non-forbidden cell, including
+source cells. Lazy searches retain the profile snapshot of their captured swimming
+class. A swim class supports at most 256 distinct cost profiles; mixed cells take
+their speed and health from different corners, so an imported registry whose
+combinations exceed that limit is rejected when a cell first needs the rule. Each search or worker owns its mutable queue;
 prepared profiles contain no search state and introduce no serialized cache.
 
 Strategic AI travel fields in `src/field/TerrainTravel.h` use a separate bounded
@@ -1350,7 +1615,8 @@ python3 tools/gradient_benchmark.py \
   --output artifacts/gradient-bench --suite representative --repeats 11
 ```
 
-The runner copies candidate headers and harness source before compiling, records
+The runner copies candidate headers (the field kernels and the header-only
+terrain and resource tables they include) and harness source before compiling, records
 compiler/flags and SHA-256 hashes, and writes raw JSONL samples plus per-case
 median comparisons. `--cpu N` pins the subprocess on Linux. `--scalar` forces the
 scalar implementation; otherwise the compiler target selects SSE2 or NEON.
@@ -1371,8 +1637,10 @@ uses the current Trail terrain identity with the same movement cost.
 Cases cover classic terrain, uniform Trail/ice, sparse/connected trails, mixed
 terrain and enclosed modifiers; all seven swimming profiles; dense/deferred
 seeds and capped propagation; thin and rectangular tori; and synthetic registries
-of 8, 32 and 64 identities with equivalent or distinct movement costs. The real
-registry is measured separately. Synthetic registries call the generic prepared
+of 32 and 64 identities with equivalent or distinct movement costs. The real
+registry (`TERRAIN_COUNT` built-in types, read from `src/map/TerrainType.h`) is
+measured separately. Each cell takes one terrain identity directly, as a cell
+whose four corners agree would; corner-mixed rules are outside this harness. Synthetic registries call the generic prepared
 profile API; they do not add game terrain definitions. `--bucket-count 256`
 is an isolated future-cost experiment that changes only copied headers.
 
@@ -1546,50 +1814,81 @@ a supported open-file checker and is conservatively skipped there.
 
 ## Scene renderer
 
-Drawing reads an immutable `Scene` (`src/render/scene/`), never live simulation objects, so it
-runs while the simulation advances on another thread. `Game::drawSceneMap` accepts
-an extracted Scene directly; `Game::drawMap` supplies extraction for legacy callers.
-Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
-bounded software target. Asset loading is shared with normal game startup.
+Drawing reads an immutable `PresentationFrame` (`src/render/scene/`). It retains
+the shared world snapshot, view request, captured timing and derived presentation
+results. Unit, building, team, relationship, entity-index, effect and map data are
+borrowed from standard snapshot components. There is no second entity extraction
+or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
+`Game::drawSceneMap` accepts it directly.
 
-- Native threaded sessions capture immutable inputs at a simulation boundary using
-  `SceneExtractor::capture`. A presentation task on the shared compute executor
-  prepares entity records, connections, panels and overlays, then publishes the
-  complete Scene through a triple buffer. Simulation barriers never join that task.
-  One preparation is in flight; a slow consumer retains its previous complete Scene.
-  After eight simulation claims, the designated worker gives a pending presentation
-  chunk a turn, preventing starvation under a continuous compute backlog.
-  Without a compute worker, the graphics owner explicitly pumps preparation.
-- Serial simulation hosts (including turn matches and both browser runtimes) use
-  `ScenePreparation` to submit the same immutable inputs to the compute executor.
-  Transport polling stays on the host thread. Pthread builds prepare on a worker;
-  without workers the host explicitly pumps the task. Cancellation retains only
-  the active task's immutable storage and does not wait on the browser event loop.
-  World replacement discards the outgoing producer and its published Scene.
-- `SceneExtractor::extract(game, request, scene)` remains the synchronous path for
-  the editor, standalone rendering and direct GUI test callers. `Game::ViewState::drawnScene()`
-  returns the Scene supplied by the session or extracted for the current draw.
-- Snapshot-backed `SceneMap` retains terrain, resources, occupancy and visibility
-  component leases instead of copying their full arrays into each Scene. The terrain
-  component includes the map's undermap corner values (one byte per cell); unchanged
-  terrain is shared across frames, while changed versions remain alive until their
-  consumers release them. Displayed areas and optional script areas are captured
-  separately. Queries preserve the synchronous `SceneMap` behavior.
-- `SceneEntities` contains presentation records with lookup by gid and generation,
-  per-sector bullets and animations, and the selected building's map-view data.
-  Scenes retain their building definitions and a stateless Race facade, so preparation
-  does not hold pointers into live teams or entities.
-- Preparation calculates overlay maps from frozen inputs; the cache refreshes when
-  the requested type or team changes and once per 25-tick window. Worker preparation
-  owns a separate cache from synchronous extraction.
-- Adding something drawn on the map: extract what the drawing needs in
-  `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
-  `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
-  `test/build_system/test_scene_boundary.py` rejects live entity reads in the render
-  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/render/scene/` headers.
-- Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
-  tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
-  handlers still act on the game, and validate against it before issuing an order.
+- The engine admits presentation only when its bounded producer has capacity,
+  declares requirements with AI and gradients, and publishes one shared capture.
+  `SceneExtractor::prepare` accepts an immutable handle and request, never live
+  simulation objects. Preparation runs on the shared compute executor. A complete
+  frame is published through `SceneBuffer`; drawing keeps the previous complete
+  frame while work is in flight. Simulation barriers do not join presentation.
+  Interactive sessions open the next completed world's shared read boundary
+  before waiting for tick pacing. AI polling and order delivery stay at their
+  existing deadlines and reuse that publication; presentation does not wait a
+  whole tick interval before starting. The native mailbox admits at most one
+  preparation per client request and can replace an unconsumed completed frame.
+- Serial hosts and browsers use the same preparation path. Hosts without a compute
+  worker pump bounded chunks between simulation work; cancellation does not wait
+  on the browser event loop. Camera and selection updates can prepare from a retained
+  world without capturing again. Its timing and executed-order revision remain
+  associated with that exact world.
+- Map views retain standard terrain, resource, occupancy, area and visibility
+  components; vertex terrain is the authoritative, editable map state. Optional
+  script areas use tracked chunks. Display-area masks, material availability,
+  connections and overlays are derived in resumable preparation chunks. Cached
+  display data is keyed by world identity, relevant revisions and view settings.
+- Unit animation and building shooting fields live in the normal pointer-free state
+  records. Selected panels borrow those records and immutable catalogs; presentation
+  calculations and formatting belong in frame storage. Catalog definitions are frozen
+  once per revision, so a later owner reconfiguration cannot change a retained frame.
+  AI telemetry, debug gradients, failure histories, and statistics histories are requested
+  separately from ordinary frames. Statistics histories share immutable samples
+  between observations until the next history revision; the compact HUD sample
+  ring remains independent. Alliance controls read session player identities and
+  team masks; objective and hint dialogs retain immutable narrative payloads that
+  are reused until mutation. Opening these dialogs does not park simulation.
+  Shift-click diagnostic dumps select the displayed generation and serialize it
+  only if that same entity still exists at the explicit owner boundary.
+- The editor and standalone tools explicitly obtain an owner-boundary snapshot before
+  preparing a frame. Offline map images and diagnostic PNGs use the same drawing
+  passes and graphics-thread asset ownership. Diagnostic preparation consumes the
+  published union rather than recapturing from the live game. A bounded diagnostic
+  batch owns its fields and snapshot independently; PNG preparation and export do
+  not park the simulation. Occupied publication slots stop further diagnostic
+  admission, with skipped or superseded output reported explicitly.
+- The animated menu colony includes admitted presentation requirements in its AI
+  boundary and uses the same bounded preparation producer. Drawing and resizing
+  never capture another world; headless menu simulations admit no presentation.
+- `test/build_system/test_scene_boundary.py` checks the rendering dependency boundary;
+  compile-time preparation tests reject live `Game`, `Map`, `Unit` and `Building`
+  inputs. New authoritative values belong in the owning standard snapshot component,
+  with capture/lifetime tests; view-dependent calculations belong in preparation.
+- Routine selection resolves generation-checked snapshot identities. Command
+  admission still validates targets on the simulation owner. Exceptional editing,
+  saving and diagnostic actions retain explicit owner access.
+
+### Simulation tick rate
+
+Normal speed is 30 simulation ticks per second, independently of render FPS.
+Per-tick movement, production, combat, hunger and AI rules retain their existing
+values, so normal play progresses 20% faster than the former 25 TPS clock.
+Speed presets scale relative to this new normal. Engine deadlines accumulate
+nanoseconds before rounding host waits to milliseconds; the relay advertises
+30,000 millihertz and clients use its negotiated interval. Game clocks,
+statistics rates and newly configured minute-based winning conditions use 30 TPS.
+Autosaves retain approximately one-minute real-time spacing, and camera panning
+retains its presentation cadence.
+
+Save bytes and the supported save/replay format floors are unchanged. Existing
+saves retain their tick counters, pending orders and timers and resume at the new
+pace; existing replays play their recorded ticks faster. The simulation revision
+separates online matches from older engines, including the changed conversion of
+new minute-based winning conditions to ticks.
 
 ### Target render FPS
 
@@ -1625,15 +1924,20 @@ creating the simulation thread fails, run the same session serially (`Engine::st
 also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
-  (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
-  thread has taken the previous Scene, it captures frozen inputs and submits
-  preparation. A compute worker publishes the result into a `SceneBuffer`
-  (lock-free triple buffer); only one preparation is in flight.
-- The main thread draws the newest Scene when the render ceiling permits a frame.
-  Routine input, selection, client events and script highlights use the Scene and
+  (`Engine::simulationStep`: orders, network, `Game::syncStep`). Before pacing,
+  the engine publishes the completed world's shared read boundary with the union
+  of AI, gradient and admitted presentation requirements. Presentation preparation
+  borrows that publication and runs on the compute executor. A worker publishes
+  the completed `PresentationFrame` into a `SceneBuffer` (lock-free triple buffer);
+  only one preparation is in flight, and a newer complete frame can supersede an
+  unconsumed one. Neither capture nor presentation admission depends on drawing
+  completing first.
+- The main thread draws the newest complete frame when the render ceiling permits.
+  Routine input, selection, client events and script highlights use the frame and
   client-owned state without parking the simulation. Exceptional live-state work
-  (save capture, dialogs, settings, viewpoint changes and diagnostic dumps) uses
+  (save capture, owner-backed settings, viewpoint changes and diagnostic dumps) uses
   `GameGUI::parkForClient` / `SimulationRunner::withGame` at a tick boundary.
+  Alliance, objective and hint dialogs read immutable snapshot payloads.
   Autosave scheduling publishes an atomic pending request; the client owns the
   writer and captures the save at that explicit boundary. Telemetry windows cross
   a locked mailbox after simulation work finishes.
@@ -1651,7 +1955,8 @@ also remains the headless default and the equivalence reference.
   over the Scene: active strokes and queued paint remain visible until an execution
   acknowledgement is included in the acquired Scene. Farm paint eligibility reads
   retained growth/rules inputs when the experiment is enabled.
-- The synchronized RNG belongs to the game, so results do not depend on the thread.
+- Simulation RNG state belongs to units, buildings, map operations, stories and AI
+  controllers. Explicit ownership keeps draws independent of the executing thread.
   `GLOB2_SIM_THREAD=1` runs headless sessions on the simulation thread for
   `check_sim_thread.py --candidate-env GLOB2_SIM_THREAD=1`; `GLOB2_SIM_THREAD=0` keeps
   any session serial, for tests that count frames against a scripted host clock.
@@ -1660,7 +1965,7 @@ also remains the headless default and the equivalence reference.
   background is therefore not caught up after resuming, as in serial execution.
   GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
   must share the SDL clock, including after the session clock has been suspended.
-- Values the client sets while drawing and extraction reads (viewport, drawn map size,
+- Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
@@ -1687,9 +1992,9 @@ off by default) draws units between ticks, so threaded play at display rate uses
 32 animation frames per direction instead of repeating one pose per tick.
 
 - A unit's drawn position and animation frame follow `delta`, which the simulation
-  advances by `SceneUnit::stepSpeed` each tick. Each frame, `GameGUI::drawAll` sets
+  advances by `unitActionStepSpeed` computed from the captured unit record each tick. Each frame, `GameGUI::drawAll` sets
   `MapRenderState::unitMotion` to the elapsed fraction of the tick interval since the
-  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/unit/render/UnitMotion.h`).
+  captured tick (`PresentationFrame::tickTime`, `PresentationFrame::tickInterval`; `src/unit/render/UnitMotion.h`).
   Unit drawing, path lines, off-screen markers and worker circles add that fraction of
   `stepSpeed` to `delta`, stopping at the end of the current action.
 - Motion is 0 when the setting is off, when the game is paused, and when the simulation
@@ -1782,8 +2087,7 @@ it is saved, checksummed or read by the simulation.
   leaves hairline seams.
   The outline stroke stops thickening at two points.
 - In the cross-fade `Game::drawMapOverview` fades in terrain palette colours sampled
-  from the detailed compositor's material coverage, including legacy corner shores
-  and whole-cell materials. Four samples per tile axis keep coastlines aligned
+  from the detailed compositor's material coverage of each cell's corners. Four samples per tile axis keep coastlines aligned
   during the fade; resource minimap colours tint their gameplay cells over that
   ground. In the overview this replaces the water, terrain and resource passes.
   The reusable image stretches over the map in a single draw, avoiding thousands
@@ -1870,7 +2174,17 @@ cache — lives in `MapRenderState`, owned by `Game::ViewState`, never on `Game`
 the simulation neither reads nor writes it and each view animates independently. The
 terrain cache is transient presentation state: 16×16-cell composed pages, a 32 MiB
 software storage reservation including pixels, recipes and borrowed views, and a
-separate 128 MiB GPU-mode reservation with least-recently-used eviction. Native and
+separate 128 MiB allowance for GPU density selection and resident texture/mip
+reservations. The desktop GPU-mode cache has a 256 MiB total ceiling, including
+CPU pixels and bookkeeping; Android/browser builds retain the 128 MiB total limit.
+On desktop, the additional CPU retention allowance avoids evicting inactive
+zoom densities. GPU views retain pixels and textures across sampling
+changes, retiring idle textures first when needed. When the visible textures
+exceed the allowance but their CPU pages and one upload fit, drawing streams
+textures from those retained pixels rather than recomposing the entire view.
+Terrain, discovery and material revisions are checked when an old zoom level
+returns. Kept coverage masks for mixed cells beside animated materials add at
+most 8 MiB in software mode or 32 MiB in GPU mode. Native and
 HD rendering share CPU composition; GPU backends upload the resulting pages.
 The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
 boundary resolver, source preparation, budgets and asset pipeline.
@@ -1896,6 +2210,10 @@ at the same sampling density as the full view. If a page cannot fit the device o
 allocation fails, an emergency composed-tile path preserves coverage but can differ
 in fractional resampling and HD mip filtering. None of these caches enter saves,
 simulation checksums or orders.
+
+Native software fog fills and shade tiles snap shared edges in backing pixels.
+Their pixel fill/blit operations retain clipping and flush queued geometry before
+direct writes, avoiding fractional zoom and HiDPI seams.
 
 `SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
 repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,
@@ -2109,6 +2427,13 @@ CI detects regressions asynchronously; existing master failures do not restrict
 PR merges. Retain failure artifacts, prioritize diagnosis and repair, document
 verification in repair PRs and confirm recovery with subsequent full master runs.
 Do not require master to become green before other PRs merge.
+
+For focused macOS qualification, dispatch `.github/workflows/ci-macos.yml`
+with an exact `revision` and `coverage_profile=full` (or `compatibility` for the
+selected compatibility inventory). It runs the same native build, regression,
+continuation, scripting and strict generator evidence steps as the reusable
+workflow, with a 90-minute job ceiling. This is macOS evidence, not a full
+development checkpoint.
 
 Nightly is a fallback with a separate concurrency group. Expensive nightly jobs
 are skipped only when a successful full hosted run already covers the exact master

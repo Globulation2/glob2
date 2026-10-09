@@ -10,15 +10,16 @@ export const SKIN_MATERIAL_COUNT = COLONY_SKIN_MATERIALS.length;
 function decodeUpload(encoded: string, maxBytes: number, what: string): Buffer {
   const bytes = Buffer.from(encoded, 'base64');
   if (bytes.length > maxBytes || bytes.toString('base64') !== encoded) {
-    throw apiError(
-      'bad_request',
-      `Use a PNG or WebP ${what} no larger than ${Math.round(maxBytes / 1024)} KiB.`,
-    );
+    throw apiError('bad_request', 'Use a PNG or WebP {p0} no larger than {p1} KiB.', undefined, {
+      p0: String(what),
+      p1: String(Math.round(maxBytes / 1024)),
+    });
   }
   const png = bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
   const webp =
     bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP';
-  if (!png && !webp) throw apiError('bad_request', `Use a PNG or WebP ${what}.`);
+  if (!png && !webp)
+    throw apiError('bad_request', 'Use a PNG or WebP {p0}.', undefined, { p0: String(what) });
   return bytes;
 }
 
@@ -83,7 +84,9 @@ export async function canonicalMaterialMap(encoded: string): Promise<Buffer> {
     if (value >= SKIN_MATERIAL_COUNT)
       throw apiError(
         'bad_request',
-        `Material map pixels must be material ids 0 to ${SKIN_MATERIAL_COUNT - 1}.`,
+        'Material map pixels must be material ids 0 to {p0}.',
+        undefined,
+        { p0: String(SKIN_MATERIAL_COUNT - 1) },
       );
     ids[i] = value;
   }

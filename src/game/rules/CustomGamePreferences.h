@@ -21,6 +21,7 @@ struct CustomGamePreferences
 {
 	static constexpr const char *filename = "custom-game-settings.txt";
 	CustomGameSetup setup;
+    std::string missingGeneratorId;
 	bool userMaps = false;
 	std::string librarySelection[2];
 	bool expanded[3] = {false, false, false};
@@ -66,13 +67,17 @@ struct CustomGamePreferences
 	}
 	std::string encode() const
 	{
-		// The wire format still describes the legacy fixed-field descriptor;
-		// the modular GenerationRequest converts through the compatibility
-		// adapter so the persisted format and its corruption-recovery bounds
-		// stay unchanged regardless of which generator module is selected.
-		const auto legacy = toLegacyDescriptor(setup.generator);
+		// Keep the legacy descriptor fields and corruption-recovery bounds for old
+		// native preferences. Version 8 adds a custom string ID and stores every
+		// custom option separately; it never persists a session numeric handle.
+		auto legacy = toLegacyDescriptor(setup.generator);
+		const auto &selected = setup.generator.definition();
+		const bool custom = !selected.packageHash.empty();
+		if (custom)
+			legacy.method = MapGenerationDescriptor::Method(
+				GeneratorRegistry::builtins().methods(false).front());
 		std::ostringstream out;
-		out << "glob2-custom-game 7\n"
+		out << "glob2-custom-game 8\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' ' << setup.prestige << ' '
 			<< setup.revealed << ' ' << setup.locked << ' ' << setup.speed << ' ' << userMaps
 			<< '\n'
@@ -83,13 +88,16 @@ struct CustomGamePreferences
 			<< ' ' << setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
 			<< setup.suddenDeathMinutes << '\n'
 			<< "probability " << setup.winProbabilityPermille << '\n'
-			<< "labels " << std::quoted(std::string(setup.legacyFormat())) << ' ' << std::quoted(setup.rulesetId) << '\n'
+			<< "labels " << std::quoted(std::string(setup.legacyFormat())) << ' '
+			<< std::quoted(setup.rulesetId) << '\n'
 			<< "map " << std::quoted(setup.premadeMap) << '\n'
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
 			<< std::quoted(librarySelection[1]) << '\n'
 			<< "sections " << expanded[0] << ' ' << expanded[1] << ' ' << expanded[2] << '\n'
 			<< "picker " << landscapeSortOrder << '\n'
 			<< "generator " << int(legacy.method) << ' ' << legacy.logRepeatAreaTimes << '\n';
+		out << "custom-generator " << std::quoted(custom ? std::string(selected.id) : std::string{})
+			<< '\n';
 		for (const auto &f : fields())
 			out << f.name << ' ' << legacy.*(f.member) << '\n';
 		out << "resources";
@@ -97,8 +105,8 @@ struct CustomGamePreferences
 		// Every control the legacy fields can't hold (newer generators' options, switches
 		// included). Files written before this section still load, with those at defaults.
 		std::vector<const GeneratorControl *> options;
-		for (const auto &c : GenerationRequest::controls(setup.generator.method))
-			if (!hasLegacyField(setup.generator.method, c.id))
+		for (const auto &c : setup.generator.definition().controls)
+			if (custom || !hasLegacyField(setup.generator.method, c.id))
 				options.push_back(&c);
 		out << "\noptions " << options.size() << '\n';
 		for (const auto *c : options)
@@ -144,7 +152,7 @@ struct CustomGamePreferences
 			return true;
 		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 7) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 8) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
 			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1))
@@ -186,6 +194,10 @@ struct CustomGamePreferences
 		// retired. Uniform is editor-only and never a valid lobby selection.
 		const auto playable = GeneratorRegistry::builtins().methods(false);
 		if (std::find(playable.begin(), playable.end(), method) == playable.end()) return false;
+		std::string customId;
+		if (version >= 8 &&
+			(!word("custom-generator") || !(in >> std::quoted(customId)) || customId.size() > 128))
+			return false;
 		MapGenerationDescriptor legacy;
 		legacy.method = MapGenerationDescriptor::Method(method);
 		for (const auto &f : fields()) {
@@ -238,13 +250,29 @@ struct CustomGamePreferences
 		draft.userMaps = user;
 		legacy.logRepeatAreaTimes = repeat;
 		s.generator = fromLegacyDescriptor(legacy, 0);
-		const auto &controls = GenerationRequest::controls(method);
+		bool missingCustom = false;
+		if (!customId.empty())
+		{
+			try
+			{
+				const auto catalog = GeneratorRegistry::activeSnapshot();
+				method = catalog->idOf(customId);
+				s.generator.setMethodDefaults(method, catalog);
+			}
+			catch (const std::exception &)
+			{
+				missingCustom = true; draft.missingGeneratorId=customId;
+			}
+		}
+		const auto &controls = s.generator.definition().controls;
 		for (const auto &[id, value] : options) {
 			const auto c = std::find_if(controls.begin(), controls.end(),
 				[&](const GeneratorControl &control) { return control.id == id; });
 			// An option this build no longer has is dropped; a value outside its control's
 			// domain means the file is corrupt.
-			if (c == controls.end() || hasLegacyField(method, id)) continue;
+			if (missingCustom || c == controls.end() ||
+				(customId.empty() && hasLegacyField(method, id)))
+				continue;
 			if (c->normalize(value) != value) return false;
 			c->set(s.generator, value);
 		}

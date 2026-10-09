@@ -420,11 +420,23 @@ void skinMaterial_slime(inout SkinSurface s, vec2 uv, float shell) {
   s.emissive = 0.08 * s.albedo;
 }
 
+// Pattern density shared by Studio, the sprite baker and the game. Scale
+// procedural detail only: painted colour and material ids keep their atlas UVs.
+float skinMaterialRepeat(float material) {
+  int m = int(material + 0.5);
+  if (m == 0) return 4.0; // classic glossy
+  if (m == 7) return 3.0; // wood
+  if (m == 10) return 5.0; // leather
+  if (m == 5 || m == 8 || m == 9 || m == 16) return 2.0;
+  return 1.0;
+}
+
 // Shades one texel: the painted albedo, its material id, the camera-space
 // surface normal, the mesh UV and the shell fraction. Unknown ids are matte.
 // Alpha is 0 where a shell pass has no strand, including on back faces, whose
 // pushed-out copies would otherwise fringe the silhouette.
 vec4 skinShade(vec3 albedo, float material, vec3 surfaceNormal, vec2 uv, float shell) {
+  uv *= skinMaterialRepeat(material);
   SkinSurface s = skinDefault(albedo, normalize(surfaceNormal), uv);
   int m = int(material + 0.5);
   if (m == 0) skinMaterial_glossy(s, uv, shell);
@@ -456,10 +468,13 @@ vec4 skinShade(vec3 albedo, float material, vec3 surfaceNormal, vec2 uv, float s
 // quadrant of the colony atlas; material noise keeps the mesh UV. Wrappers
 // define SKIN_TEXTURE as texture (ES 3.00) or texture2D (GLSL 1.20).
 #ifdef SKIN_TEXTURE
-vec4 skinShadeAtlas(sampler2D paint, sampler2D material, vec2 region, vec3 normal, vec2 uv, float shell) {
+vec4 skinShadeAtlas(sampler2D paint, sampler2D material, vec2 region, vec3 normal, vec2 uv, vec2 detailUV, float shell) {
   vec2 atlasUv = uv * 0.5 + region;
   float id = floor(SKIN_TEXTURE(material, atlasUv).r * 255.0 + 0.5);
-  return skinShade(SKIN_TEXTURE(paint, atlasUv).rgb, id, normal, uv, shell);
+  return skinShade(SKIN_TEXTURE(paint, atlasUv).rgb, id, normal, detailUV, shell);
+}
+vec4 skinShadeAtlas(sampler2D paint, sampler2D material, vec2 region, vec3 normal, vec2 uv, float shell) {
+  return skinShadeAtlas(paint, material, region, normal, uv, uv, shell);
 }
 #endif
 // The swatch sphere: q is the fragment's position within the unit disc of a

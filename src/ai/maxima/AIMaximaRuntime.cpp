@@ -1,3 +1,4 @@
+#include "PowerOfTwo.h"
 #include "Material.h"
 #include "AIStateSerialization.h"
 #include "field/UniformTraversal.h"
@@ -310,7 +311,7 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world,unsigned observerT
     {
 		field::expandTerrainTravel(
 			values, width, height, info.terrainTravel,
-			[&](std::size_t i) { return map->terrainAt(i).type; }, *map->terrain);
+			[&](std::size_t i) { return map->cellRuleAt(i); }, *map->cellRules);
 		queue.clear();
     }
     else field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
@@ -319,11 +320,11 @@ void Gradient::recalculate(const AIEngine::AIWorldView& world,unsigned observerT
 int Gradient::get_height(int x,int y) const
 {
 	if(width<=0 || values.empty()) return -2;
-	if(x<0 || x>=width) x=(x%width+width)%width;
+	if(x<0 || x>=width) x=powerOfTwoRemainder(powerOfTwoRemainder(x, width)+width, width);
 	if(y<0 || size_t(y)*width>=values.size())
 	{
 		const int height=values.size()/width;
-		y=(y%height+height)%height;
+		y=powerOfTwoRemainder(powerOfTwoRemainder(y, height)+height, height);
 	}
 	return values[y*width+x]-SourceCell;
 }
@@ -1060,7 +1061,7 @@ PlacementResult BuildingOrder::find_location(Context& context,int cellBudget,
 	{
 		// Preserve the legacy x-major/y-minor traversal exactly so ties select the
 		// same coordinate when the world is unchanged during the bounded search.
-		const int x=searchCursor/height,y=searchCursor%height;int score=0;
+		const int x=searchCursor/height,y=powerOfTwoRemainder(searchCursor, height);int score=0;
 		if(score_location(context,bt,flag,x,y,score)&&score>searchBestScore)
 		{searchBest=position(x,y);searchBestScore=score;}
 	}

@@ -147,6 +147,7 @@ void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
 void Team::updateAllBuildingTasks()
 {
 	PERF_SCOPE_TIME(Tasks);
+	std::vector<Building*> pending, hiring;
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
 		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
@@ -155,10 +156,10 @@ void Team::updateAllBuildingTasks()
 		// reordered and resized while it is being walked. Keep "hired last round,
 		// so ask again" attached to the building instead of to a position in a
 		// vector that does not hold still.
-		std::vector<Building*> pending(i->second.begin(), i->second.end());
+		pending.assign(i->second.begin(), i->second.end());
 		while(!pending.empty())
 		{
-			std::vector<Building*> hiring;
+			hiring.clear();
 			for(std::vector<Building*>::iterator b=pending.begin(); b!=pending.end(); ++b)
 			{
 				bool thisFound = (*b)->subscribeWorkStep();
@@ -199,9 +200,7 @@ namespace
 			return false;
 		if (u->carriedMaterial >= 0)
 			return u->carriedMaterial == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
-		if (map->roundTripDistanceSlot(b, resource, swimClass, u->posX, u->posY, cost))
-			return true;
-		// No round-trip field for this class yet: the plain distances, as hiring uses them.
+		// Fetch and carry: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
 		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
 			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
@@ -356,6 +355,9 @@ void Team::syncStep(void)
 	int nbUsefulUnitsAlone = 0;
 	bool hasFedOrFeedingUnit = false;
 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
+	// Select once per team. The usual loop has no aura branch per unit;
+	// pulse services still run immediately before that unit's normal update.
+	const auto stepUnits = [&]<bool areaPulse>() {
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *u = myUnits[i];
@@ -367,6 +369,7 @@ void Team::syncStep(void)
 				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->destinationPurpose==FEED && u->attachedBuilding && u->attachedBuilding->type->semantics.feeding.enabled))
 					nbUsefulUnitsAlone++;
 			}
+			if constexpr (areaPulse) u->applyAreaServices();
 			u->syncStep();
 			// Check after the step: admission lists and medical status can lag a meal.
 			if (!u->isDead && u->owner == this && u->typeNum != EXPLORER
@@ -384,6 +387,11 @@ void Team::syncStep(void)
 			}
 		}
 	}
+	};
+	if (game->areaEffects.enabled() && !(game->stepCounter & (BuildingAreaEffects::PulseTicks-1)))
+		stepUnits.template operator()<true>();
+	else
+		stepUnits.template operator()<false>();
 
 	unitTime.stop();
 	PerformanceTelemetry::Scope buildingTime(PerformanceTelemetry::Id::Buildings);
@@ -509,7 +517,7 @@ void Team::dirtyGlobalGradient()
 	{
 		Building *b=myBuildings[id];
 		if (b)
-			b->resetPathfindGradients();
+			b->resetPathfindGradients(Building::GradientDrop::Team);
 	}
 }
 

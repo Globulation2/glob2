@@ -428,7 +428,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 	std::vector<unsigned char> islandCorners(n, 0), lakeCorners(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		islandCorners[i] = insideOutline(t, islandShape, ix, iy, 1, 0, x, y);
 		lakeCorners[i] = insideOutline(t, lakeShape, lx, ly, lakeStretch, lakeAxis, x, y);
 	}
@@ -437,8 +437,8 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 	for (int i = 0; i < n; ++i)
 		if ((lakeCorners[i] || moat[i]) && !islandCorners[i])
 			L.terrain[i] = WATER;
-	L.quarryX = int(std::lround(ix)) % t.w;
-	L.quarryY = int(std::lround(iy)) % t.h;
+	L.quarryX = t.remainderX(int(std::lround(ix)));
+	L.quarryY = t.remainderY(int(std::lround(iy)));
 	if (L.quarryX < 0)
 		L.quarryX += t.w;
 	if (L.quarryY < 0)
@@ -656,7 +656,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		++streamsDrawn;
 		streamKeepOut = dilate(t, L.streams, kStreamGap);
 		for (int i = 0; i < n; ++i)
-			if (std::hypot(t.offsetX(int(lx), i % t.w), t.offsetY(int(ly), i / t.w)) <
+			if (std::hypot(t.offsetX(int(lx), t.remainderX(i)), t.offsetY(int(ly), i / t.w)) <
 				lakeR * lakeStretch * (1 + kLakeRoughness) + kStreamGap)
 				streamKeepOut[i] = 0;
 	}
@@ -666,7 +666,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		if (barCorners[i])
 			for (int dy = -1; dy <= 0; ++dy)
 				for (int dx = -1; dx <= 0; ++dx)
-					L.bars[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+					L.bars[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 
 	// The country round the lake: woodland where a noise field is highest, farmland elsewhere, each
 	// with its ponds, kept off the lake.
@@ -685,7 +685,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		for (int i = 0; i < n; ++i)
 		{
 			const double away =
-				std::hypot(t.offsetX(int(lx), i % t.w), t.offsetY(int(ly), i / t.w)) / farthest;
+				std::hypot(t.offsetX(int(lx), t.remainderX(i)), t.offsetY(int(ly), i / t.w)) / farthest;
 			woods[i] = int(woods[i] + kEdgeWoods * 65535 * away);
 			if (fromStreams[i] >= 0 && fromStreams[i] < kStreamMeadow)
 				woods[i] = 0;
@@ -748,7 +748,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 				L.terrain[i] = WATER;
 				for (int dy = -kLakeGap; dy <= kLakeGap; ++dy)
 					for (int dx = -kLakeGap; dx <= kLakeGap; ++dx)
-						taken[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+						taken[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 			}
 			++placed;
 			break;
@@ -808,12 +808,12 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 		const int cx = int(std::lround(ix)), cy = int(std::lround(iy));
 		int nearest = -1, best = INT_MAX;
 		for (int i = 0; i < n; ++i)
-			if (L.quarryGround[i] && t.dist2(cx, cy, i % t.w, i / t.w) < best)
+			if (L.quarryGround[i] && t.dist2(cx, cy, t.remainderX(i), i / t.w) < best)
 			{
-				best = t.dist2(cx, cy, i % t.w, i / t.w);
+				best = t.dist2(cx, cy, t.remainderX(i), i / t.w);
 				nearest = i;
 			}
-		L.quarryX = nearest % t.w;
+		L.quarryX = t.remainderX(nearest);
 		L.quarryY = nearest / t.w;
 	}
 	const std::vector<int> toIsle = stepsFrom(t, L.island, walkable);
@@ -893,7 +893,7 @@ Layout designAfresh(const GenerationRequest &request, GenerationContext &context
 			if (toIsle[i] >= 0 && fromSite.steps[i] + toIsle[i] <= longest)
 				for (int dy = -kRouteKeepMargin; dy <= kRouteKeepMargin; ++dy)
 					for (int dx = -kRouteKeepMargin; dx <= kRouteKeepMargin; ++dx)
-						keepDry[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+						keepDry[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 		const DryStartWatering watered = waterDrySite(
 			L.terrain, t, L.sites[k], kRoomRadius, kFertilityFloor, plan,
 			[&](int i)
@@ -955,18 +955,18 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "central-quarry terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "central-quarry colonies";
 	const auto homeMask = [&](int team)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.territory[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			ground[i] = L.territory[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
-	{ return MapGeneratorPoint(L.sites[team] % t.w - 2, L.sites[team] / t.w - 2); };
+	{ return MapGeneratorPoint(t.remainderX(L.sites[team]) - 2, L.sites[team] / t.w - 2); };
 	if (!settleColonies(game, context, "central-quarry-starts", homeMask, anchor))
 		return false;
 
@@ -986,7 +986,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Fertility::Field watered = Fertility::forMap(map, false);
 	std::vector<unsigned char> noCover = L.noCover;
 	for (int i = 0; i < n; ++i)
-		noCover[i] = noCover[i] || watered.at(i % t.w, i / t.w) > 0;
+		noCover[i] = noCover[i] || watered.at(t.remainderX(i), i / t.w) > 0;
 	furnishBiome(map, t, context, L.woodland, L.woodPonds, scaledBiome(woodlandKit(), amounts),
 				 ambientClear, "central-quarry-woodland", &noCover);
 	furnishBiome(map, t, context, L.open, L.farmPonds, scaledBiome(farmlandKit(), amounts),
@@ -1007,7 +1007,7 @@ bool generate(Game &game, GenerationContext &context)
 	seedAlgae(map, context, t, "central-quarry-algae", o.algae, AlgaeBand::shallows(1, 8).thriving(0.5));
 	std::vector<unsigned char> kit(n, 0);
 	for (int i = 0; i < n; ++i)
-		kit[i] = map.isResource(i % t.w, i / t.w);
+		kit[i] = map.isResource(t.remainderX(i), i / t.w);
 	// Every colony's shortest way to the isle over land, deposits and all, widened by kTrailCorridor: no
 	// kit is planted on it, so the trail cut later never has to go round a kit it may not clear (a
 	// 512x256 roll's colony walked 86 steps to the isle over terrain 73 steps long).
@@ -1022,7 +1022,7 @@ bool generate(Game &game, GenerationContext &context)
 				t, GridNeighbors::Eight, workers[k], L.island,
 				[&](int, int to, int, int)
 				{
-					const int x = to % t.w, y = to / t.w;
+					const int x = t.remainderX(to), y = to / t.w;
 					if (!map.terrainPropertiesAt(x, y).walkable || map.getBuilding(x, y) != NOGBID)
 						return -1;
 					return map.isResource(x, y) ? 11 : 10;
@@ -1030,7 +1030,7 @@ bool generate(Game &game, GenerationContext &context)
 			for (int i : route)
 				for (int dy = -kTrailCorridor; dy <= kTrailCorridor; ++dy)
 					for (int dx = -kTrailCorridor; dx <= kTrailCorridor; ++dx)
-						corridor[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+						corridor[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 		}
 	}
 	// Every kit's wheat faces the water nearest its site, so it regrows and no two homes are the same
@@ -1040,8 +1040,8 @@ bool generate(Game &game, GenerationContext &context)
 	const double mapFacing = context.bounded("central-quarry-kit", 3600) / 3600.0 * 2 * kPi;
 	for (int k = 0; k < teams; ++k)
 	{
-		const ShapePoint site{double(L.sites[k] % t.w), double(L.sites[k] / t.w)};
-		const int sx = L.sites[k] % t.w, sy = L.sites[k] / t.w;
+		const ShapePoint site{double(t.remainderX(L.sites[k])), double(L.sites[k] / t.w)};
+		const int sx = t.remainderX(L.sites[k]), sy = L.sites[k] / t.w;
 		int nearest = -1, nearestDistance = INT_MAX;
 		for (int dy = -kKitWaterReach; dy <= kKitWaterReach; ++dy)
 			for (int dx = -kKitWaterReach; dx <= kKitWaterReach; ++dx)
@@ -1052,13 +1052,13 @@ bool generate(Game &game, GenerationContext &context)
 				}
 		const double facing =
 			nearest < 0 ? mapFacing
-						: std::atan2(t.offsetY(sy, nearest / t.w), t.offsetX(sx, nearest % t.w));
+						: std::atan2(t.offsetY(sy, nearest / t.w), t.offsetX(sx, t.remainderX(nearest)));
 		// plantOpenHomeKit lays the wheat a quarter turn clockwise of its axis.
 		plantOpenHomeKit(map, t, context, site, facing + kPi / 2, kHomeRadius, kKitWheat, kKitWood, -1,
 						 [&](int i)
 						 {
 							 return L.territory[i] == k && !reserved[i] && !nearBars[i] && !corridor[i] &&
-									clearGround(map, i % t.w, i / t.w);
+									clearGround(map, t.remainderX(i), i / t.w);
 						 });
 	}
 
@@ -1079,7 +1079,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.telemetry.measure("central-quarry.kit.top-up-tiles", topped.tiles, k);
 	}
 	for (int i = 0; i < n; ++i)
-		kit[i] = !kit[i] && map.isResource(i % t.w, i / t.w);
+		kit[i] = !kit[i] && map.isResource(t.remainderX(i), i / t.w);
 
 	// The island's garden, unscaled: a holder's foothold whatever the amounts say.
 	context.stage = "central-quarry garden";
@@ -1093,7 +1093,7 @@ bool generate(Game &game, GenerationContext &context)
 
 	// The quarry: the only stone, on the island's middle.
 	context.stage = "central-quarry quarry";
-	const auto rock = [&](int i) { return L.quarryGround[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto rock = [&](int i) { return L.quarryGround[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	const int span = 2 * kQuarryDrift + 1;
 	int first = seedNear(
 		t,
@@ -1120,7 +1120,7 @@ bool generate(Game &game, GenerationContext &context)
 			int touching = 0;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
-					touching += outcrop[t.at(i % t.w + dx, i / t.w + dy)] != 0;
+					touching += outcrop[t.at(t.remainderX(i) + dx, i / t.w + dy)] != 0;
 			if (touching == 0 || touching < mostTouching)
 				continue;
 			if (touching > mostTouching)
@@ -1138,7 +1138,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	for (int i = 0; i < n; ++i)
 		if (outcrop[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 	context.telemetry.measure("central-quarry.quarry.tiles", quarryTilesPlaced);
 	if (quarryTilesPlaced != o.quarrySize)
 	{
@@ -1154,7 +1154,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> quarryTiles(n, 0), protect(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		quarryTiles[i] = map.getResource(i % t.w, i / t.w).type == STONE;
+		quarryTiles[i] = map.getResource(t.remainderX(i), i / t.w).type == STONE;
 		protect[i] = quarryTiles[i] || kit[i] || L.garden[i];
 	}
 	// Whether a flood from `from` over `open` reaches the island within `limit` steps.
@@ -1227,7 +1227,7 @@ bool generate(Game &game, GenerationContext &context)
 		const std::vector<unsigned char> open = walkableTiles(map);
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
+			ground[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 		for (int k = 0; k < teams; ++k)
 		{
 			const std::vector<int> walked = stepsFrom(t, tileMask(t, workers[k]), open);
@@ -1275,10 +1275,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const int n = t.size(), teams = context.request.nbTeams;
 	int stone = 0;
 	for (int i = 0; i < n; ++i)
-		if (map.getResource(i % t.w, i / t.w).type == STONE)
+		if (map.getResource(t.remainderX(i), i / t.w).type == STONE)
 		{
 			if (!L.island[i])
-				return "Stone at (" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) +
+				return "Stone at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
 					   ") is off the isle.";
 			++stone;
 		}
@@ -1289,9 +1289,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	int gardenWheat = 0, gardenWood = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if ((type == WHEAT || type == WOOD) && L.island[i] && !L.garden[i])
-			return "A crop at (" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) +
+			return "A crop at (" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) +
 				   ") lies on the isle outside its garden.";
 		gardenWheat += L.garden[i] && type == WHEAT;
 		gardenWood += L.garden[i] && type == WOOD;
@@ -1306,14 +1306,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// With the bars shut, the island is out of reach on foot (terrain alone: deposits come and go).
 	std::vector<unsigned char> ground(n, 0), sources(n, 0);
 	for (int i = 0; i < n; ++i)
-		ground[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable && !L.bars[i];
+		ground[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable && !L.bars[i];
 	for (const std::vector<int> &tiles : walk.workers)
 		for (int i : tiles)
 			sources[i] = 1;
 	const Flood shut = floodFrom(t, sources, ground);
 	for (int i : shut.visited)
 		if (L.island[i])
-			return "The isle can be walked to without a sand bar, at (" + std::to_string(i % t.w) +
+			return "The isle can be walked to without a sand bar, at (" + std::to_string(t.remainderX(i)) +
 				   ", " + std::to_string(i / t.w) + ").";
 
 	// Every colony's walk to the isle: to the nearest open island tile its workers reach.
@@ -1341,7 +1341,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// measured over the terrain alone from each colony's workers.
 	std::vector<unsigned char> land(n, 0);
 	for (int i = 0; i < n; ++i)
-		land[i] = map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
+		land[i] = map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 	const std::vector<int> swim = stepsFrom(t, L.island);
 	std::vector<int> firstWorkers;
 	for (int k = 0; k < teams; ++k)
@@ -1356,11 +1356,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	}
 	for (int k = 0; k < teams; ++k)
 	{
-		const int wx = firstWorkers[k] % t.w, wy = firstWorkers[k] / t.w;
+		const int wx = t.remainderX(firstWorkers[k]), wy = firstWorkers[k] / t.w;
 		int wheat = 0;
 		for (int dy = -kNearbyReach; dy <= kNearbyReach; ++dy)
 			for (int dx = -kNearbyReach; dx <= kNearbyReach; ++dx)
-				wheat += map.getResource(t.at(wx + dx, wy + dy) % t.w, t.at(wx + dx, wy + dy) / t.w).type == WHEAT;
+				wheat += map.getResource(t.remainderX(t.at(wx + dx, wy + dy)), t.at(wx + dx, wy + dy) / t.w).type == WHEAT;
 		if (wheat < kLeastWheatNearby)
 			return "Colony " + std::to_string(k) + " has only " + std::to_string(wheat) +
 				   " wheat tiles near its swarm.";
@@ -1388,7 +1388,7 @@ GeneratorDefinition centralQuarryDefinition()
 		"central-quarry",
 		56,
 		"Central Quarry",
-		1,
+		2,
 		false,
 		{GeneratorControl{"lake-size", "Lake size", 14, 30, 2, 24, ControlGroup::Terrain}
 			 .withSearchRange(20, 28),

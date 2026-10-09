@@ -47,7 +47,7 @@
 //
 // Determinism (this runs inside lockstep): we iterate the team building array by
 // index (never an std::set), scan map tiles in fixed (x, y) order, break ties
-// strictly by scan order (first-seen wins on equal score), and use syncRand()
+// strictly by scan order (first-seen wins on equal score), and use random()
 // only as a final, fully-deterministic tie-break when even the score AND the
 // distance-to-colony are identical, so two equally good far-apart spots do not
 // always collapse to the lowest coordinate. We never read wall-clock or pointer
@@ -148,9 +148,9 @@ namespace Cortex
 	//
 	// DETERMINISM: teams are iterated by index over game->teams[], buildings by
 	// index over game->buildingSlots(other->number)[] (never an std::set); ties break first by scan
-	// order (strict-greater insert) and finally by syncRand() — never rand(), never
+	// order (strict-greater insert) and finally by random() — never rand(), never
 	// wall-clock — exactly as placeCandidates does.
-	int placeFlagTargetsWorld(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
+	int placeFlagTargetsWorld(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
@@ -214,7 +214,7 @@ namespace Cortex
 			if (heap[i].score == heap[i + 1].score &&
 			    heap[i].distToColony == heap[i + 1].distToColony)
 			{
-				if ((syncRand() & 1) != 0)
+				if ((random() & 1) != 0)
 				{
 					ScoredSpot tmp = heap[i];
 					heap[i] = heap[i + 1];
@@ -237,10 +237,10 @@ namespace Cortex
 } // namespace Cortex
 
 namespace Cortex {
-int placeFlagTargets(::Game* game,::Team* team,BuildCandidate out[CORTEX_FLAG_TARGETS],Sint32 owners[CORTEX_FLAG_TARGETS])
+int placeFlagTargets(MersenneTwister& random, ::Game* game,::Team* team,BuildCandidate out[CORTEX_FLAG_TARGETS],Sint32 owners[CORTEX_FLAG_TARGETS])
 {
     const auto view=AIEngine::AIWorldView::capture(*game, AIEngine::AIWorldView::captureCatalog(*game));
     QueryScratch scratch; PlanningIntent intents;
-    return placeFlagTargetsWorld(view.get(),&view->teams[team->teamNumber],intents,out,owners);
+    return placeFlagTargetsWorld(random, view.get(),&view->teams[team->teamNumber],intents,out,owners);
 }
 }

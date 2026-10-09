@@ -125,6 +125,7 @@ also offer **Share online…**.
 | Match found | `src/online/screens/QuickMatchScreen.cpp` | Ranked queues: both players accept within the countdown, each player's answer shown live. AI-backfilled and casual matches: who you play, then a 3-second start countdown. |
 | Profile | `src/online/screens/OnlineProfileScreen.cpp` | Rating of each queue with its trend and provisional flag, win rate, typical game length and best map over recent games, the match list (filters All, Ranked, Rooms, vs AI) with Replay and the match page. |
 | Maps | `src/online/screens/OnlineMapsScreen.cpp` | Browse (search, size, colonies, sort, detail with the server preview, Use in a room, Like, map page, Report) and My maps (upload, checking, rejected with the reason, visibility, update, delete). Opened from the hub, Use in a room closes it and the hub opens a room with the map; opened from a room's map chooser, it gives the map to that room and closes. Back names where it returns to. |
+| Generators | `src/online/screens/OnlineGeneratorsScreen.cpp` | The Generators tab in Maps, also linked from Settings → Map generators: search/tags/type filters, exact releases, manifest controls, server preview, explicit installation/replacement and Use in a room. Packages are hash-checked and persisted with rollback and release provenance. |
 | Share a map | `src/online/screens/OnlineMapsScreen.cpp` (`MapShareScreen`) | Title, description and visibility (Unlisted by default), then the upload and the server's validation and preview. |
 
 **Search state.** `Online::QuickMatch` (`src/online/QuickMatch.h`) holds the one
@@ -298,6 +299,29 @@ build/darwin/client/release/src/OnlinePlayHarness guest https://app.glob2online.
 build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2online.com artifacts/e2e-quick
 ```
 
+## Building-family installation
+
+**Building families** on local new-game and editor new-map screens opens
+`src/online/screens/BuildingLibraryScreen.cpp`. It browses the selected instance's
+public library, installs compatible validated releases and lets the player choose
+which families to add to stock buildings. **Family link or ID** also opens an
+unlisted family directly; page links must use the selected instance's origin.
+Private families require that owner's sign-in through Online. Online browsing needs that instance;
+already installed families remain available offline. Selection is stored in the
+local profile and applies to subsequent new maps in both flows.
+
+`src/building/BuildingLibrary.cpp` writes pinned releases and the selection index
+under `online/buildings/` through `OnlineStorage`. Installation verifies the exact
+package, artwork, stock catalog, simulation version and resolved catalog hashes
+before publishing the new index. Updates preserve the previous release on failure;
+damaged cache entries are reported rather than silently substituted.
+
+Loaded maps, saves and replays use their embedded catalog and frames. Local
+selection does not alter those files or server-side room generation. To use a
+family online, generate and share a map through the map library, then choose that
+map in the room. See [building catalogs](../features/building-catalogs.md#online-library-and-installed-families)
+for the website editor, package format and limits.
+
 ## Map cache
 
 `MapCache` stores platform maps by the SHA-256 of their decompressed bytes as
@@ -441,3 +465,35 @@ reported complete until the host persistence request succeeds. A failed flush
 retains recovery bytes and offers retry/export. Local removal cannot delete
 bundled sets. Changes affect local music and presentation only; they do not alter
 simulation, saved games, replays or the match protocol.
+
+## Custom terrain and resource sets
+
+The map editor's **Set Library** uses the configured instance and signed-in account.
+It downloads an exact release with a bounded response and verifies its hash before
+import. The dialog previews its terrain/resources, allows selecting individual
+entries, and shows license and creator credit. Disk import accepts the same JSON
+package offline. The map owns all custom images and definitions after import;
+built-in graphics are referenced from installed game data.
+
+The same dialog exposes copied map content and attribution, local edits and an
+explicit replacement action for a newer release. Updates are never automatic.
+See [resource catalogs](../features/resource-catalogs.md#themed-terrain-and-resource-sets)
+for package bounds, compatibility and update behavior. Maps and replays do not
+contact the set library during play.
+
+## Shared JavaScript generators
+
+The Generators library pins immutable releases for local installation and custom
+rooms. A scripted room sends `ScriptGeneratorDescriptor` in its selection and match
+setup; every player downloads the resulting ordinary map through `MapCache`.
+Joining does not require installing code. Host settings changes clear readiness;
+rerolls request a fresh preview, and older results cannot replace the latest choice.
+Unavailable workers and rejected settings remain visible failures. The server
+rechecks access, moderation and exact engine validation before starting. A new
+published release never changes an existing selection.
+
+Clients advertise `generatorSharing: true` in `session.hello.client`. Older clients
+receive an update-required response before unsupported room contracts. Ranked
+matchmaking retains native generation. See the
+[generator publishing guide](../map-generators/JAVASCRIPT.md#publish-and-discover-online)
+for visibility, technical validation, installation and explicit updates.

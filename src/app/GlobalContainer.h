@@ -11,6 +11,7 @@
 #include "BuildingType.h"
 #include "Settings.h"
 #include "TerrainType.h"
+class MapAssetBundle;
 #include <array>
 
 namespace GAGCore
@@ -84,6 +85,9 @@ public:
 	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
 	TerrainVisual::Compositor &terrainCompositor();
+    TerrainVisual::Compositor &terrainCompositor(std::shared_ptr<const MapAssetBundle> assets);
+    std::shared_ptr<const MapAssetBundle> compositorAssets;
+    std::unique_ptr<TerrainVisual::Compositor> customTerrainCompositor;
     std::unique_ptr<TerrainVisual::Compositor> terrainCompositor_;
 	Sprite *terrain = nullptr;
 
@@ -121,9 +125,9 @@ public:
 	bool networkInitialized = false;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
-	// Zero selects the bounded hardware/AI-count default. Structured
+	// Zero selects the reported logical CPU count (one if unavailable). Structured
 	// --run-game configures its own compute executor instead.
-	unsigned aiThreads = 0;
+	unsigned computeThreads = 0;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;
@@ -158,12 +162,7 @@ public:
 	//! one captured in testGamesSeed below.
 	std::string testGamesSaveGameAs;
 
-	//! Seed actually passed to setSyncRandSeed() at the top of runTestGames().
-	//! createRandomGame() mirrors this into GameHeader::seed so the saved
-	//! .game file (via --save-game-as or GLOB2_DUMP_GAME) loads with the same
-	//! syncRand state. Without this mirror, GameHeader's constructor default
-	//! (time(NULL) at header-construction time) wins and the loaded game
-	//! diverges from the original -test-games-nox run.
+	//! Match setup seed captured by runTestGames; also initializes map/seat streams.
 	Uint32 testGamesSeed;
 	bool testGamesSeedSet;
 

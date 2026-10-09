@@ -286,7 +286,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	const int offsetY = int(context.bounded("caravanserai-layout", std::uint32_t(t.h)));
 	L.homes = latticeSites(t.w, t.h, teams, offsetX, offsetY).sites;
 	for (ShapePoint &h : L.homes)
-		h = {double(int(std::lround(h.x)) % t.w), double(int(std::lround(h.y)) % t.h)};
+		h = {double(t.remainderX(int(std::lround(h.x)))), double(t.remainderY(int(std::lround(h.y))))};
 	dealStarts(context, L.homes);
 	// One facing for every colony, drawn once per map. A home stencil turned by different quarter
 	// turns covers identical tiles, but the AIs scan along the map's axes: with a facing per colony,
@@ -492,7 +492,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	{
 		const int i = int(context.bounded("caravanserai-scatter", std::uint32_t(n)));
 		const double r = kLeastOasis + context.bounded("caravanserai-scatter", kMostOasis - kLeastOasis + 1);
-		const ShapePoint p{double(i % t.w), double(i / t.w)};
+		const ShapePoint p{double(t.remainderX(i)), double(i / t.w)};
 		if (!clearOf(p, r))
 			continue;
 		stampOasis(p, r);
@@ -543,7 +543,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	int mesaTiles = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		bool rock = fromKept[i] >= kMesaClearance;
 		for (const int j : {i, t.at(x + 1, y), t.at(x, y + 1), t.at(x + 1, y + 1)})
 			rock = rock && L.sketch[j] == GRASS && !feature[j] && fromKept[j] >= kMesaClearance;
@@ -564,7 +564,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	int scrub = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const bool hollow = (phase[i] * bands) % 65536 < 65536 * kHollowPercent / 100;
 		if (L.sketch[i] != SAND || fromKept[i] < 2)
 			continue;
@@ -619,7 +619,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "caravanserai terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	const DesignedStone walls = designedStone(map, t, L.wall);
 	if (walls.gaps)
 	{
@@ -629,7 +629,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> structural = walls.stone;
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		if (walls.stone[i])
 			map.setResourceByIndex(x, y, STONE, 1);
 		else if (L.mesa[i] && map.terrainSupportsResourceAtByIndex(x, y, STONE))
@@ -659,10 +659,10 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "caravanserai resources";
 	std::vector<unsigned char> waterTiles(n, 0);
 	for (int i = 0; i < n; ++i)
-		waterTiles[i] = terrainProvidesFertility(map.terrainPropertiesAt(i % t.w, i / t.w));
+		waterTiles[i] = terrainProvidesFertility(map.terrainPropertiesAt(t.remainderX(i), i / t.w));
 	const std::vector<int> fromWater = stepsFrom(t, waterTiles);
 	const auto open = [&](int i, int type)
-	{ return map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, type) && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	{ return map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, type) && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	// Plant `count` of `type` on the tiles `where` allows, nearest the water first.
 	const auto plantNearWater = [&](int type, int count, auto where)
 	{
@@ -676,7 +676,7 @@ bool generate(Game &game, GenerationContext &context)
 		{
 			if (placed >= count)
 				break;
-			map.setResourceByIndex(i % t.w, i / t.w, type, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, type, 1);
 			++placed;
 		}
 		return placed;
@@ -695,13 +695,13 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<std::pair<int, int>> ring;
 		for (int i = 0; i < n; ++i)
 			if (L.homeOf[i] == k && L.homeKind[i] == kFields && open(i, WHEAT))
-				ring.push_back({t.dist2(i % t.w, i / t.w, sx, sy), i});
+				ring.push_back({t.dist2(t.remainderX(i), i / t.w, sx, sy), i});
 		std::stable_sort(ring.begin(), ring.end());
 		int w = 0;
 		for (const auto &[d, i] : ring)
 			if (w < wheat)
 			{
-				map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+				map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 				++w;
 			}
 		const int p = plantNearWater(WOOD, palms, [&](int i) { return L.homeOf[i] == k && L.homeKind[i] == kGrove; });
@@ -732,11 +732,11 @@ bool generate(Game &game, GenerationContext &context)
 				growPatch(map, t, seed, CHERRY + fruit, int(scaledCount(kGroveTiles, o.fruit)),
 						  [&](int i) { return inOasis(i) && open(i, fruit < 3 ? CHERRY + fruit : STONE); });
 			else if (scaledCount(1, o.stone) > 0)
-				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+				placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w), STONE,
 								   kQuarryRadius);
 		}
-		plantNearWater(WHEAT, int(scaledCount(kSeraiWheat, o.wheat)), [&](int i) { return inOasis(i) && t.chebyshev(i % t.w, i / t.w, cx, cy) > kSeraiWall + 1; });
-		plantNearWater(WOOD, int(scaledCount(kSeraiPalms, o.wood)), [&](int i) { return inOasis(i) && t.chebyshev(i % t.w, i / t.w, cx, cy) > kSeraiWall + 1; });
+		plantNearWater(WHEAT, int(scaledCount(kSeraiWheat, o.wheat)), [&](int i) { return inOasis(i) && t.chebyshev(t.remainderX(i), i / t.w, cx, cy) > kSeraiWall + 1; });
+		plantNearWater(WOOD, int(scaledCount(kSeraiPalms, o.wood)), [&](int i) { return inOasis(i) && t.chebyshev(t.remainderX(i), i / t.w, cx, cy) > kSeraiWall + 1; });
 	}
 	// The oases: palms by the pond, a little grain.
 	for (size_t q = 0; q < L.oases.size(); ++q)
@@ -762,7 +762,7 @@ std::vector<int> grassReach(const Map &map, const Torus &t, const std::vector<un
 	std::vector<unsigned char> open(n, 0), source(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		open[i] = (map.canResourcesGrow(x, y) && (map.terrainSupportsResourceAtByIndex(x, y, WHEAT) ||
 			map.terrainSupportsResourceAtByIndex(x, y, WOOD))) && !permanentResourceBarrier(map, i);
 		source[i] = from[i] && open[i];
@@ -839,7 +839,7 @@ GeneratorDefinition caravanseraiDefinition()
 	return {"caravanserai",
 			41,
 			"Caravanserai",
-			3,
+			4,
 			false,
 			// Home oasis size is the town's radius: 24 holds a lake, its field ring and a town of
 			// 60-odd build sites. Two caravanserais per colony: one to each of its two nearest

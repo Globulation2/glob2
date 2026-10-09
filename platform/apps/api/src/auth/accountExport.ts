@@ -14,6 +14,7 @@ import { ACCOUNT_EXPORT_FORMAT, type AccountExport } from '@glob2/protocol';
 /** Tables with account data this export reads, by the column naming the account. */
 export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   accounts: ['id'],
+  account_activity_days: ['account_id'],
   identities: ['account_id'],
   device_credentials: ['account_id'],
   refresh_tokens: ['account_id'],
@@ -37,6 +38,21 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   match_colony_skins: ['account_id'],
   skin_purchases: ['account_id'],
   colony_skin_reports: ['reporter_account_id'],
+  building_families: ['owner_account_id'],
+  building_likes: ['account_id'],
+  building_favourites: ['account_id'],
+  building_reports: ['reporter_account_id'],
+  building_drafts: ['owner_account_id'],
+  asset_sets: ['owner_account_id'],
+  set_likes: ['account_id'],
+  set_reports: ['reporter_account_id'],
+  set_downloads: ['downloader'],
+  generators: ['owner_account_id'],
+  generator_uploads: ['owner_account_id'],
+  generator_likes: ['account_id'],
+  generator_favourites: ['account_id'],
+  generator_reports: ['reporter_account_id'],
+  generator_downloads: ['downloader'],
   ais: ['owner_account_id'],
   ai_uploads: ['owner_account_id'],
   ai_likes: ['account_id'],
@@ -60,6 +76,18 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   music_ledger: ['account_id'],
   music_calls: ['account_id'],
   music_purchases: ['account_id'],
+  terrain_wallets: ['account_id'],
+  terrain_ledger: ['account_id'],
+  terrain_calls: ['account_id'],
+  terrain_purchases: ['account_id'],
+  building_studio_threads: ['account_id'],
+  building_studio_requests: ['account_id'],
+  building_wallets: ['account_id'],
+  building_ledger: ['account_id'],
+  building_calls: ['account_id'],
+  building_purchases: ['account_id'],
+  terrain_studio_threads: ['account_id'],
+  terrain_studio_requests: ['account_id'],
   music_studio_threads: ['account_id'],
   music_studio_requests: ['account_id'],
   map_wallets: ['account_id'],
@@ -73,6 +101,11 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   ai_studio_ledger: ['account_id'],
   ai_studio_calls: ['account_id'],
   ai_studio_purchases: ['account_id'],
+  generator_studio_projects: ['account_id'],
+  generator_studio_wallets: ['account_id'],
+  generator_studio_ledger: ['account_id'],
+  generator_studio_calls: ['account_id'],
+  generator_studio_purchases: ['account_id'],
 };
 
 /**
@@ -81,6 +114,8 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
  * account beyond what the export already lists.
  */
 export const UNEXPORTED_ACCOUNT_COLUMNS: Record<string, string> = {
+  'admin_report_resolutions.actor_id':
+    'the moderator who resolved a report, not the reporting account',
   'admin_audit_log.actor_account_id': 'the moderator who acted, not the account',
   'blobs.owner_account_id': 'the files are listed through maps, uploads, music and skins',
   'colony_skin_reports.resolved_by_account_id': 'the moderator who resolved a report',
@@ -448,6 +483,34 @@ export async function exportAccount(
         .orderBy('day')
         .execute();
 
+      const assetSets = await tx
+        .selectFrom('asset_sets')
+        .selectAll()
+        .where('owner_account_id', '=', id)
+        .execute();
+      const setIds = assetSets.map((s) => s.id);
+      const setDrafts = setIds.length
+        ? await tx.selectFrom('set_drafts').selectAll().where('set_id', 'in', setIds).execute()
+        : [];
+      const setVersions = setIds.length
+        ? await tx.selectFrom('set_versions').selectAll().where('set_id', 'in', setIds).execute()
+        : [];
+      const setLikes = await tx
+        .selectFrom('set_likes')
+        .selectAll()
+        .where('account_id', '=', id)
+        .execute();
+      const setReports = await tx
+        .selectFrom('set_reports')
+        .selectAll()
+        .where('reporter_account_id', '=', id)
+        .execute();
+      const setDownloads = await tx
+        .selectFrom('set_downloads')
+        .select(['version_id', sql<string>`day::text`.as('day')])
+        .where('downloader', '=', `a:${id}`)
+        .execute();
+
       const ais = await tx
         .selectFrom('ais')
         .select([
@@ -496,6 +559,71 @@ export async function exportAccount(
         .execute();
       const aiDownloads = await tx
         .selectFrom('ai_downloads')
+        .select(['version_id', sql<string>`day::text`.as('day')])
+        .where('downloader', '=', `a:${id}`)
+        .execute();
+      const generators = await tx
+        .selectFrom('generators')
+        .select([
+          'id',
+          'name',
+          'description',
+          'tags',
+          'visibility',
+          'hidden',
+          'hidden_reason',
+          'created_at',
+          'updated_at',
+        ])
+        .where('owner_account_id', '=', id)
+        .execute();
+      const generatorVersions = generators.length
+        ? await tx
+            .selectFrom('generator_versions')
+            .selectAll()
+            .where(
+              'generator_id',
+              'in',
+              generators.map((a) => a.id),
+            )
+            .execute()
+        : [];
+      const generatorLikes = await tx
+        .selectFrom('generator_likes')
+        .select('generator_id')
+        .where('account_id', '=', id)
+        .execute();
+      const generatorFavourites = await tx
+        .selectFrom('generator_favourites')
+        .select('generator_id')
+        .where('account_id', '=', id)
+        .execute();
+      const generatorReports = await tx
+        .selectFrom('generator_reports')
+        .select([
+          'id',
+          'generator_id',
+          'reason',
+          'details',
+          'status',
+          'created_at',
+          'resolution_note',
+        ])
+        .where('reporter_account_id', '=', id)
+        .execute();
+      const generatorUploads = await tx
+        .selectFrom('generator_uploads')
+        .select([
+          'id',
+          'validation_id',
+          'expires_at',
+          'published_generator_id',
+          'published_version_id',
+        ])
+        .where('owner_account_id', '=', id)
+        .execute();
+      const generatorDownloads = await tx
+        .selectFrom('generator_downloads')
         .select(['version_id', sql<string>`day::text`.as('day')])
         .where('downloader', '=', `a:${id}`)
         .execute();
@@ -678,6 +806,40 @@ export async function exportAccount(
           ).rows,
         );
       }
+      const generatorStudio: Record<string, Row[]> = {};
+      for (const name of ['wallets', 'ledger', 'calls', 'purchases']) {
+        generatorStudio[name] = rows(
+          (
+            await sql<Row>`SELECT * FROM ${sql.table('generator_studio_' + name)} WHERE account_id=${id}`.execute(
+              tx,
+            )
+          ).rows,
+        );
+      }
+      generatorStudio['projects'] = rows(
+        (await sql<Row>`SELECT * FROM generator_studio_projects WHERE account_id=${id}`.execute(tx))
+          .rows,
+      );
+      for (const name of ['revisions', 'requests', 'events', 'runs']) {
+        generatorStudio[name] = rows(
+          (
+            await sql<Row>`SELECT r.* FROM ${sql.table('generator_studio_' + name)} r JOIN generator_studio_projects p ON p.id=r.project_id WHERE p.account_id=${id}`.execute(
+              tx,
+            )
+          ).rows,
+        );
+      }
+      generatorStudio['checks'] = rows(
+        (
+          await sql<Row>`
+        SELECT c.*,v.report,v.status,v.error,u.expires_at
+        FROM generator_studio_checks c
+        JOIN generator_studio_projects p ON p.id=c.project_id
+        JOIN generator_uploads u ON u.id=c.upload_id
+        JOIN generator_validations v ON v.id=u.validation_id
+        WHERE p.account_id=${id}`.execute(tx)
+        ).rows,
+      );
       const studioWallets = await tx
         .selectFrom('map_wallets')
         .select(['balance', 'reserved'])
@@ -770,6 +932,220 @@ export async function exportAccount(
         .where('r.account_id', '=', id)
         .orderBy('a.created_at')
         .execute();
+      const terrainStudioWallets = await tx
+        .selectFrom('terrain_wallets')
+        .select(['balance', 'reserved'])
+        .where('account_id', '=', id)
+        .execute();
+      const terrainStudioLedger = await tx
+        .selectFrom('terrain_ledger')
+        .select(['id', 'amount', 'kind', 'details', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const terrainStudioCalls = await tx
+        .selectFrom('terrain_calls')
+        .select(['id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const terrainStudioPurchases = await tx
+        .selectFrom('terrain_purchases')
+        .select(['id', 'checkout_id', 'payment_id', 'pack', 'paid', 'reversed', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const terrainStudioThreads = await tx
+        .selectFrom('terrain_studio_threads')
+        .select([
+          'id',
+          'brief',
+          'title',
+          'created_at',
+          'updated_at',
+          'draft_id',
+          'source_version_id',
+        ])
+        .where('account_id', '=', id)
+        .execute();
+      const terrainStudioRequests = await tx
+        .selectFrom('terrain_studio_requests')
+        .select([
+          'id',
+          'thread_id',
+          'kind',
+          'status',
+          'input',
+          'checkpoints',
+          'error',
+          'charged',
+          'created_at',
+          'completed_at',
+        ])
+        .where('account_id', '=', id)
+        .execute();
+      const terrainStudioMessages = await tx
+        .selectFrom('terrain_studio_messages as m')
+        .innerJoin('terrain_studio_threads as t', 't.id', 'm.thread_id')
+        .select(['m.id', 'm.thread_id', 'm.role', 'm.text', 'm.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('m.created_at')
+        .orderBy('m.id')
+        .execute();
+      const terrainStudioEvents = await tx
+        .selectFrom('terrain_studio_events as e')
+        .innerJoin('terrain_studio_threads as t', 't.id', 'e.thread_id')
+        .select(['e.thread_id', 'e.cursor', 'e.request_id', 'e.type', 'e.payload', 'e.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('e.cursor')
+        .execute();
+      const terrainStudioArtifacts = await tx
+        .selectFrom('terrain_studio_artifacts as a')
+        .innerJoin('terrain_studio_threads as t', 't.id', 'a.thread_id')
+        .select([
+          'a.id',
+          'a.thread_id',
+          'a.request_id',
+          'a.stage',
+          'a.kind',
+          'a.label',
+          'a.hash',
+          'a.created_at',
+        ])
+        .where('t.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
+      const terrainStudioAttempts = await tx
+        .selectFrom('terrain_studio_attempts as a')
+        .innerJoin('terrain_studio_requests as r', 'r.id', 'a.request_id')
+        .select([
+          'a.id',
+          'a.request_id',
+          'a.stage',
+          'a.model',
+          'a.status',
+          'a.input',
+          'a.output',
+          'a.created_at',
+        ])
+        .where('r.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
+
+      const terrainStudioRevisions = await tx
+        .selectFrom('terrain_studio_revisions as v')
+        .innerJoin('terrain_studio_threads as t', 't.id', 'v.thread_id')
+        .selectAll('v')
+        .where('t.account_id', '=', id)
+        .execute();
+      const buildingStudioWallets = await tx
+        .selectFrom('building_wallets')
+        .select(['balance', 'reserved'])
+        .where('account_id', '=', id)
+        .execute();
+      const buildingStudioLedger = await tx
+        .selectFrom('building_ledger')
+        .select(['id', 'amount', 'kind', 'details', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const buildingStudioCalls = await tx
+        .selectFrom('building_calls')
+        .select(['id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const buildingStudioPurchases = await tx
+        .selectFrom('building_purchases')
+        .select(['id', 'checkout_id', 'payment_id', 'pack', 'paid', 'reversed', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const buildingStudioThreads = await tx
+        .selectFrom('building_studio_threads')
+        .select(['id', 'brief', 'title', 'created_at', 'updated_at', 'draft_id'])
+        .where('account_id', '=', id)
+        .execute();
+      const buildingStudioRequests = await tx
+        .selectFrom('building_studio_requests')
+        .select([
+          'id',
+          'thread_id',
+          'kind',
+          'status',
+          'input',
+          'checkpoints',
+          'error',
+          'charged',
+          'created_at',
+          'completed_at',
+        ])
+        .where('account_id', '=', id)
+        .execute();
+      const buildingStudioMessages = await tx
+        .selectFrom('building_studio_messages as m')
+        .innerJoin('building_studio_threads as t', 't.id', 'm.thread_id')
+        .select(['m.id', 'm.thread_id', 'm.role', 'm.text', 'm.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('m.created_at')
+        .orderBy('m.id')
+        .execute();
+      const buildingStudioEvents = await tx
+        .selectFrom('building_studio_events as e')
+        .innerJoin('building_studio_threads as t', 't.id', 'e.thread_id')
+        .select(['e.thread_id', 'e.cursor', 'e.request_id', 'e.type', 'e.payload', 'e.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('e.cursor')
+        .execute();
+      const buildingStudioArtifacts = await tx
+        .selectFrom('building_studio_artifacts as a')
+        .innerJoin('building_studio_threads as t', 't.id', 'a.thread_id')
+        .select([
+          'a.id',
+          'a.thread_id',
+          'a.request_id',
+          'a.stage',
+          'a.kind',
+          'a.label',
+          'a.hash',
+          'a.created_at',
+        ])
+        .where('t.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
+      const buildingStudioAttempts = await tx
+        .selectFrom('building_studio_attempts as a')
+        .innerJoin('building_studio_requests as r', 'r.id', 'a.request_id')
+        .select([
+          'a.id',
+          'a.request_id',
+          'a.stage',
+          'a.model',
+          'a.status',
+          'a.input',
+          'a.output',
+          'a.created_at',
+        ])
+        .where('r.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
+
+      const buildingStudioRevisions = await tx
+        .selectFrom('building_studio_revisions as v')
+        .innerJoin('building_studio_threads as t', 't.id', 'v.thread_id')
+        .selectAll('v')
+        .where('t.account_id', '=', id)
+        .execute();
+      const buildingDraftHistory = (
+        await sql<{
+          archive: Buffer;
+          thread_id: string;
+          revision: string;
+          title: string;
+          created_at: Date;
+        }>`SELECT h.* FROM building_studio_draft_history h JOIN building_studio_threads t ON t.id=h.thread_id WHERE t.account_id=${id}`.execute(
+          tx,
+        )
+      ).rows;
+      const terrainDraftHistory = (
+        await sql<Row>`SELECT h.* FROM terrain_studio_draft_history h JOIN terrain_studio_threads t ON t.id=h.thread_id WHERE t.account_id=${id}`.execute(
+          tx,
+        )
+      ).rows;
       const musicStudioWallets = await tx
         .selectFrom('music_wallets')
         .select(['balance', 'reserved'])
@@ -860,8 +1236,53 @@ export async function exportAccount(
         .orderBy('a.created_at')
         .execute();
 
+      const buildingDrafts = await tx
+        .selectFrom('building_drafts')
+        .selectAll()
+        .where('owner_account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const buildingFamilies = await tx
+        .selectFrom('building_families')
+        .selectAll()
+        .where('owner_account_id', '=', id)
+        .execute();
+      const buildingReleases = buildingFamilies.length
+        ? await tx
+            .selectFrom('building_releases')
+            .selectAll()
+            .where(
+              'family_id',
+              'in',
+              buildingFamilies.map((f) => f.id),
+            )
+            .execute()
+        : [];
+      const buildingLikes = await tx
+        .selectFrom('building_likes')
+        .selectAll()
+        .where('account_id', '=', id)
+        .execute();
+      const buildingFavourites = await tx
+        .selectFrom('building_favourites')
+        .selectAll()
+        .where('account_id', '=', id)
+        .execute();
+      const buildingReports = await tx
+        .selectFrom('building_reports')
+        .selectAll()
+        .where('reporter_account_id', '=', id)
+        .execute();
       return {
         format: ACCOUNT_EXPORT_FORMAT,
+        activityDays: rows(
+          await tx
+            .selectFrom('account_activity_days')
+            .select(['day', 'kind'])
+            .where('account_id', '=', id)
+            .orderBy('day')
+            .execute(),
+        ),
         exportedAt: new Date().toISOString(),
         instance: origin,
         account: clean({
@@ -883,6 +1304,17 @@ export async function exportAccount(
           refreshTokens: rows(refreshTokens),
           webSessions: rows(webSessions),
           signInAttempts: rows(signInAttempts),
+        },
+        buildings: {
+          families: rows(buildingFamilies),
+          releases: rows(buildingReleases),
+          likes: rows(buildingLikes),
+          favourites: rows(buildingFavourites),
+          reports: rows(buildingReports),
+          drafts: buildingDrafts.map(({ archive, ...draft }) => ({
+            ...clean(draft),
+            archiveBase64: archive.toString('base64'),
+          })),
         },
         skins: {
           published: skins.map((skin) => ({
@@ -936,6 +1368,7 @@ export async function exportAccount(
           programs: rows(hivePrograms),
         },
         aiStudio,
+        generatorStudio,
         mapStudio: {
           wallets: rows(studioWallets),
           ledger: rows(studioLedger),
@@ -947,6 +1380,40 @@ export async function exportAccount(
           attempts: rows(studioAttempts),
           events: rows(studioEvents),
           artifacts: rows(studioArtifacts),
+        },
+        terrainStudio: {
+          draftHistory: rows(terrainDraftHistory),
+          wallets: rows(terrainStudioWallets),
+          ledger: rows(terrainStudioLedger),
+          calls: rows(terrainStudioCalls),
+          purchases: rows(terrainStudioPurchases),
+          threads: rows(terrainStudioThreads),
+          messages: rows(terrainStudioMessages),
+          requests: rows(terrainStudioRequests),
+          attempts: rows(terrainStudioAttempts),
+          events: rows(terrainStudioEvents),
+          artifacts: rows(terrainStudioArtifacts),
+          revisions: rows(terrainStudioRevisions),
+        },
+        buildingStudio: {
+          draftHistory: buildingDraftHistory.map(({ archive, ...draft }) => ({
+            ...draft,
+            archiveBase64: archive.toString('base64'),
+          })),
+          wallets: rows(buildingStudioWallets),
+          ledger: rows(buildingStudioLedger),
+          calls: rows(buildingStudioCalls),
+          purchases: rows(buildingStudioPurchases),
+          threads: rows(buildingStudioThreads),
+          messages: rows(buildingStudioMessages),
+          requests: rows(buildingStudioRequests),
+          attempts: rows(buildingStudioAttempts),
+          events: rows(buildingStudioEvents),
+          artifacts: rows(buildingStudioArtifacts),
+          revisions: buildingStudioRevisions.map(({ archive, ...revision }) => ({
+            ...revision,
+            archiveBase64: archive.toString('base64'),
+          })),
         },
         musicStudio: {
           wallets: rows(musicStudioWallets),
@@ -960,6 +1427,14 @@ export async function exportAccount(
           events: rows(musicStudioEvents),
           artifacts: rows(musicStudioArtifacts),
         },
+        sets: {
+          published: rows(assetSets),
+          drafts: rows(setDrafts),
+          versions: rows(setVersions),
+          likes: rows(setLikes),
+          reports: rows(setReports),
+          downloads: rows(setDownloads),
+        },
         ais: {
           published: ais.map((a) => ({
             ...clean(a),
@@ -972,6 +1447,19 @@ export async function exportAccount(
           reports: rows(aiReports),
           uploads: rows(aiUploads),
           downloads: rows(aiDownloads),
+        },
+        generators: {
+          published: generators.map((a) => ({
+            ...clean(a),
+            versions: rows(generatorVersions.filter((v) => v.generator_id === a.id)).map(
+              ({ generatorId: _generatorId, ...v }) => v,
+            ),
+          })),
+          likes: rows(generatorLikes),
+          favourites: rows(generatorFavourites),
+          reports: rows(generatorReports),
+          uploads: rows(generatorUploads),
+          downloads: rows(generatorDownloads),
         },
         music: { releases: rows(music), likes: rows(musicLikes), reports: rows(musicReports) },
         maps: {

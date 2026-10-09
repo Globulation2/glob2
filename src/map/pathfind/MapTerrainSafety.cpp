@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Map.h"
 #include "MapInternal.h"
 #include "Unit.h"
@@ -23,13 +24,13 @@ struct EscapeProfile
 
     unsigned entryCost(const Map& map, size_t index, bool diagonal) const
     {
-        const auto terrain = map.terrainTypeAt(index);
+        const auto& rule = map.cellRule(index);
         if (air)
         {
-            const auto cardinal = map.terrainRegistry().airRouteCost(terrain);
+            const auto cardinal = rule.airRouteCost;
             return diagonal ? cardinal * 14 / 10 : cardinal;
         }
-        const auto cost = map.terrainRegistry().movement(swim).entries[terrain];
+        const auto cost = rule.ground[swim];
         return diagonal ? cost.diagonal : cost.cardinal;
     }
 
@@ -97,7 +98,7 @@ void buildEscapeField(const Map& map, const EscapeProfile& profile, SafetyField&
         {
             --pending;
             if (costs[index] != current) continue; // Superseded queue entry.
-            const int x = index % width, y = index / width;
+            const int x = powerOfTwoRemainder(index, width), y = index / width;
             const auto cardinal = profile.entryCost(map, index, false);
             const auto diagonal = profile.entryCost(map, index, true);
             for (const auto& offset : tabClose)

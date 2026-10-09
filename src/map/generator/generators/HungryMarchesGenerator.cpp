@@ -283,7 +283,7 @@ Layout designAfresh(const GenerationRequest &r, GenerationContext &c)
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					const int j = t.at(i % t.w + dx, i / t.w + dy);
+					const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
 					if (L.field[j] < 0 && !L.roads[j] && beforeCap[j] == GRASS)
 					{
 						L.terrain[i] = SAND;
@@ -391,10 +391,10 @@ std::string foodAccess(const Game &game, const Layout &L, int teams, bool future
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					const int i = t.at(at % t.w + dx, at / t.w + dy), p = L.field[i];
+					const int i = t.at(t.remainderX(at) + dx, at / t.w + dy), p = L.field[i];
 					if (p >= 0 && !L.timber[i] &&
 						((future && L.fertility.values()[i] > 0) ||
-						 (!future && game.map.getResource(i % t.w, i / t.w).type == WHEAT)) &&
+						 (!future && game.map.getResource(t.remainderX(i), i / t.w).type == WHEAT)) &&
 						distances[p] < 0)
 					{
 						distances[p] = reach.steps[j] + 1;
@@ -445,7 +445,7 @@ std::string foodAccess(const Game &game, const Layout &L, int teams, bool future
 				const int team = nearest[k].second, at = harvests[team][p];
 				const auto &home = L.sites[team];
 				detail += " home(" + std::to_string(home.x) + "," + std::to_string(home.y) +
-						  ") grain(" + std::to_string(at % t.w) + "," + std::to_string(at / t.w) +
+						  ") grain(" + std::to_string(t.remainderX(at)) + "," + std::to_string(at / t.w) +
 						  ")";
 			}
 			return "A shared field is too private: district " + std::to_string(p) + " walks " +
@@ -475,7 +475,7 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	const auto &t = L.t;
 	HungryMarchesOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	for (int k = 0; k < c.request.nbTeams; ++k)
@@ -496,21 +496,21 @@ bool generate(Game &game, GenerationContext &c)
 		const auto dry = [&](int i)
 		{
 			return L.field[i] < 0 && !L.fertility.values()[i] &&
-				   t.chebyshev(s.x, s.y, i % t.w, i / t.w) >= 6 &&
-				   t.chebyshev(s.x, s.y, i % t.w, i / t.w) <= 16;
+				   t.chebyshev(s.x, s.y, t.remainderX(i), i / t.w) >= 6 &&
+				   t.chebyshev(s.x, s.y, t.remainderX(i), i / t.w) <= 16;
 		};
 		const int ration = o.ration;
 		const auto food = growPatchesNear(game.map, t, ax, ay, 24, WHEAT, ration, dry);
 		const auto timberGround = [&](int i)
 		{
 			return L.field[i] < 0 && !L.fertility.values()[i] &&
-				   t.chebyshev(s.x, s.y, i % t.w, i / t.w) >= 6 &&
-				   t.chebyshev(s.x, s.y, i % t.w, i / t.w) <= 24;
+				   t.chebyshev(s.x, s.y, t.remainderX(i), i / t.w) >= 6 &&
+				   t.chebyshev(s.x, s.y, t.remainderX(i), i / t.w) <= 24;
 		};
 		const auto quarryGround = [&](int i)
 		{
-			return L.field[i] < 0 && t.chebyshev(s.x, s.y, i % t.w, i / t.w) >= 8 &&
-				   t.chebyshev(s.x, s.y, i % t.w, i / t.w) <= 24;
+			return L.field[i] < 0 && t.chebyshev(s.x, s.y, t.remainderX(i), i / t.w) >= 8 &&
+				   t.chebyshev(s.x, s.y, t.remainderX(i), i / t.w) <= 24;
 		};
 		const auto wood = growPatchesNear(game.map, t, s.x - int(9 * std::sin(s.angle)),
 										  s.y + int(9 * std::cos(s.angle)), 24, WOOD,
@@ -551,9 +551,9 @@ bool generate(Game &game, GenerationContext &c)
 		for (int i : tiles)
 		{
 			potential += L.fertility.values()[i];
-			if (!seeded[L.component[i]] && game.map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
+			if (!seeded[L.component[i]] && game.map.isResourceAllowed(t.remainderX(i), i / t.w, WHEAT))
 			{
-				game.map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+				game.map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 				seeded[L.component[i]] = 1;
 				++planted;
 			}
@@ -561,10 +561,10 @@ bool generate(Game &game, GenerationContext &c)
 		const int wanted =
 			std::min(int(tiles.size()), planted + int(tiles.size()) * o.wheat * 65 / 20000);
 		for (int i : tiles)
-			if (planted < wanted && !game.map.isResource(i % t.w, i / t.w) &&
-				game.map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
+			if (planted < wanted && !game.map.isResource(t.remainderX(i), i / t.w) &&
+				game.map.isResourceAllowed(t.remainderX(i), i / t.w, WHEAT))
 			{
-				game.map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+				game.map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 				++planted;
 			}
 		c.telemetry.measure("hungry-marches.field.wheat", planted, p);
@@ -583,7 +583,7 @@ bool generate(Game &game, GenerationContext &c)
 	{
 		bool home = false;
 		for (const auto &site : L.sites)
-			if (t.chebyshev(site.x, site.y, i % t.w, i / t.w) < 20)
+			if (t.chebyshev(site.x, site.y, t.remainderX(i), i / t.w) < 20)
 				home = true;
 		const bool renewable = L.field[i] >= 0 && L.timber[i] && L.fertility.values()[i] > 0;
 		if (renewable)
@@ -593,10 +593,10 @@ bool generate(Game &game, GenerationContext &c)
 			!home && L.field[i] < 0 && !L.fertility.values()[i] && L.scenery[i] > 51000;
 		if ((renewable || dry) &&
 			(c.bounded("hungry-marches.timber", 100) < unsigned(10 + o.wood * 40 / 100) || seed) &&
-			!game.map.isResource(i % t.w, i / t.w) &&
-			game.map.isResourceAllowed(i % t.w, i / t.w, WOOD))
+			!game.map.isResource(t.remainderX(i), i / t.w) &&
+			game.map.isResourceAllowed(t.remainderX(i), i / t.w, WOOD))
 		{
-			game.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
+			game.map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 			if (renewable)
 			{
 				++timber;
@@ -632,7 +632,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			shared[components[i]] = 1;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int resource = game.map.getResource(i % t.w, i / t.w).type;
+		const int resource = game.map.getResource(t.remainderX(i), i / t.w).type;
 		if (resource == WHEAT && L.field[i] < 0)
 			++privateWheat;
 		if (L.field[i] >= 0 && components[i] >= 0)
@@ -641,13 +641,13 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			if (kinds[components[i]] == 3)
 				return "Timber and wheat share a growing bank.";
 		}
-		if (game.map.getUMTerrain(i % t.w, i / t.w) != L.terrain[i])
+		if (game.map.vertexTerrainAt(t.remainderX(i), i / t.w) != L.terrain[i])
 			return "The floodplain terrain changed after design.";
-		if (L.roads[i] && game.map.isResource(i % t.w, i / t.w))
+		if (L.roads[i] && game.map.isResource(t.remainderX(i), i / t.w))
 			return "A harvest crossing is blocked.";
 		if (L.field[i] < 0 && components[i] >= 0 && shared[components[i]])
 			return "A shared field can spread into the surrounding country.";
-		if (game.map.getResource(i % t.w, i / t.w).type == WHEAT && L.field[i] < 0 &&
+		if (game.map.getResource(t.remainderX(i), i / t.w).type == WHEAT && L.field[i] < 0 &&
 			L.fertility.values()[i])
 			return "Private wheat must be a finite, dry opening ration.";
 	}
@@ -677,7 +677,7 @@ GeneratorDefinition hungryMarchesDefinition()
 		"hungry-marches",
 		69,
 		"The Hungry Marches",
-		2,
+		3,
 		false,
 		{GeneratorControl{"opening-ration", "Opening ration", 20, 100, 10, 50, ControlGroup::Layout}
 			 .withSearchRange(40, 80),

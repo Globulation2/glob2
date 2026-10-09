@@ -73,8 +73,8 @@ TEST_SUITE("WinProbability")
         slots = WinProbability::slotsOf(game, allianceOf);
         CHECK(slots[0].units == 10);
         CHECK(slots[0].alive);
-        Scene scene;
-        SceneExtractor().extract(game, SceneRequest{}, scene);
+        PresentationFrame scene;
+        SceneExtractor().prepare((game).captureReadBoundary({},true,SceneExtractor::requirements(SceneRequest{})), SceneRequest{}, scene);
         REQUIRE(scene.panels.hud.winChances.size() == 3);
         CHECK(scene.panels.hud.winChances[0].permille == scene.panels.hud.winChances[1].permille);
         CHECK(scene.panels.hud.winChances[2].permille > scene.panels.hud.winChances[0].permille);

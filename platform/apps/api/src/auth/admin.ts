@@ -1,10 +1,11 @@
 // Moderation actions shared by the admin REST endpoints and the `platform
 // admin` CLI. Every action is written to admin_audit_log; a null actor means
 // the server's command line.
-import { sql, type Kysely } from 'kysely';
+import { sql, type Kysely, type Transaction } from 'kysely';
 import type { Account, Database, JsonValue } from '@glob2/db';
 import type { AdminAccount } from '@glob2/protocol';
 import { scrubMatchNames } from '@glob2/play';
+import { cursorTimeSql } from '../http/cursorTime.ts';
 import { apiError } from '../errors.ts';
 import type { AccountService } from './accounts.ts';
 
@@ -41,8 +42,9 @@ export class AdminService {
     action: string,
     target: Account,
     details: Record<string, JsonValue> = {},
+    db: Kysely<Database> | Transaction<Database> = this.db,
   ): Promise<void> {
-    await this.db
+    await db
       .insertInto('admin_audit_log')
       .values({
         actor_account_id: actor?.id ?? null,
@@ -63,8 +65,15 @@ export class AdminService {
   }
 
   /** Accounts whose name contains `query` (or whose id or linked email equals it), newest first. */
-  async search(query: string, limit: number, before?: Date): Promise<Account[]> {
-    let select = this.db.selectFrom('accounts').selectAll('accounts');
+  async search(
+    query: string,
+    limit: number,
+    before?: Date | { at: Date; id: string; exactAt?: string },
+  ): Promise<(Account & { cursorAt: string })[]> {
+    let select = this.db
+      .selectFrom('accounts')
+      .selectAll('accounts')
+      .select(cursorTimeSql(sql<Date>`accounts.created_at`).as('cursorAt'));
     const q = query.trim();
     if (q) {
       const pattern = `%${q.toLowerCase().replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
@@ -82,27 +91,61 @@ export class AdminService {
         ]),
       );
     }
-    if (before) select = select.where('accounts.created_at', '<', before);
-    return select.orderBy('accounts.created_at', 'desc').limit(limit).execute();
+    if (before instanceof Date) select = select.where('accounts.created_at', '<', before);
+    else if (before)
+      select = select.where(
+        sql<boolean>`(accounts.created_at, accounts.id) < (${before.exactAt ?? before.at}, ${before.id}::uuid)`,
+      );
+    return select
+      .orderBy('accounts.created_at', 'desc')
+      .orderBy('accounts.id', 'desc')
+      .limit(limit)
+      .execute();
   }
 
-  async setRole(actor: Account | undefined, target: Account, role: Role): Promise<Account> {
+  async setRole(
+    actor: Account | undefined,
+    target: Account,
+    role: Role,
+    reason?: string,
+  ): Promise<Account> {
     if (actor && actor.id === target.id)
       throw apiError('forbidden', 'You cannot change your own role.');
-    if (role !== 'user' && target.kind !== 'registered') {
-      throw apiError(
-        'bad_request',
-        'Only registered accounts can be moderators or administrators.',
+    return this.db.transaction().execute(async (tx) => {
+      // Re-read under the lock: another role change or deletion may have occurred
+      // since the account list was loaded. Audit and role change commit together.
+      const current = await tx
+        .selectFrom('accounts')
+        .selectAll()
+        .where('id', '=', target.id)
+        .forUpdate()
+        .executeTakeFirstOrThrow();
+      if (current.status === 'deleted') throw apiError('not_found', 'No such account.');
+      if (role !== 'user' && current.kind !== 'registered') {
+        throw apiError(
+          'bad_request',
+          'Only registered accounts can be moderators or administrators.',
+        );
+      }
+      const updated = await tx
+        .updateTable('accounts')
+        .set({ role, updated_at: sql<Date>`now()` })
+        .where('id', '=', current.id)
+        .returningAll()
+        .executeTakeFirstOrThrow();
+      await this.audit(
+        actor,
+        'account.role',
+        current,
+        {
+          from: current.role,
+          to: role,
+          ...(reason ? { reason } : {}),
+        },
+        tx,
       );
-    }
-    const updated = await this.db
-      .updateTable('accounts')
-      .set({ role, updated_at: sql<Date>`now()` })
-      .where('id', '=', target.id)
-      .returningAll()
-      .executeTakeFirstOrThrow();
-    await this.audit(actor, 'account.role', target, { from: target.role, to: role });
-    return updated;
+      return updated;
+    });
   }
 
   async setBanned(actor: Account | undefined, target: Account, banned: boolean, reason?: string) {
@@ -199,6 +242,12 @@ export class AdminService {
         .where('account_id', '=', id)
         .forUpdate()
         .execute();
+      await tx
+        .selectFrom('terrain_wallets')
+        .select('account_id')
+        .where('account_id', '=', id)
+        .forUpdate()
+        .execute();
       // Skin publication and draft saves lock this account before committing.
       const current = await tx
         .selectFrom('accounts')
@@ -207,6 +256,12 @@ export class AdminService {
         .forUpdate()
         .executeTakeFirstOrThrow();
       if (current.status === 'deleted') throw apiError('not_found', 'No such account.');
+      await tx.deleteFrom('account_activity_days').where('account_id', '=', id).execute();
+      await tx
+        .updateTable('admin_report_resolutions')
+        .set({ actor_id: null })
+        .where('actor_id', '=', id)
+        .execute();
       // Fence leased workers before removing their private state. A completion
       // that already holds the wallet finishes first; later completions can no
       // longer find a request or publish a map. Keep financial audit rows.
@@ -239,6 +294,66 @@ export class AdminService {
           )
           .execute();
       }
+      const terrainStudioRequests = await tx
+        .selectFrom('terrain_studio_requests')
+        .select(['id', 'kind', 'status'])
+        .where('account_id', '=', id)
+        .orderBy('id')
+        .forUpdate()
+        .execute();
+      const reservedTerrain = terrainStudioRequests.filter(
+        (r) => r.kind === 'generate' && !['ready', 'failed'].includes(r.status),
+      );
+      if (reservedTerrain.length) {
+        await tx
+          .updateTable('terrain_wallets')
+          .set({ reserved: sql`reserved - ${reservedTerrain.length}` })
+          .where('account_id', '=', id)
+          .execute();
+        await tx
+          .insertInto('terrain_ledger')
+          .values(
+            reservedTerrain.map((r) => ({
+              id: `generation:${r.id}`,
+              account_id: id,
+              amount: 0,
+              kind: 'usage' as const,
+              details: { requestId: r.id, delivered: false, returned: true, accountDeleted: true },
+            })),
+          )
+          .execute();
+      }
+      await tx.deleteFrom('terrain_studio_threads').where('account_id', '=', id).execute();
+      const buildingStudioRequests = await tx
+        .selectFrom('building_studio_requests')
+        .select(['id', 'kind', 'status'])
+        .where('account_id', '=', id)
+        .orderBy('id')
+        .forUpdate()
+        .execute();
+      const reservedBuildings = buildingStudioRequests.filter(
+        (r) => r.kind === 'generate' && !['ready', 'failed'].includes(r.status),
+      );
+      if (reservedBuildings.length) {
+        await tx
+          .updateTable('building_wallets')
+          .set({ reserved: sql`reserved - ${reservedBuildings.length}` })
+          .where('account_id', '=', id)
+          .execute();
+        await tx
+          .insertInto('building_ledger')
+          .values(
+            reservedBuildings.map((r) => ({
+              id: `generation:${r.id}`,
+              account_id: id,
+              amount: 0,
+              kind: 'usage' as const,
+              details: { requestId: r.id, delivered: false, returned: true, accountDeleted: true },
+            })),
+          )
+          .execute();
+      }
+      await tx.deleteFrom('building_studio_threads').where('account_id', '=', id).execute();
       const musicStudioRequests = await tx
         .selectFrom('music_studio_requests')
         .select(['id', 'kind', 'status'])
@@ -283,6 +398,14 @@ export class AdminService {
         tx,
       );
       await tx.deleteFrom('ai_studio_projects').where('account_id', '=', id).execute();
+      await sql`SELECT id FROM generator_studio_projects WHERE account_id=${id} ORDER BY id FOR UPDATE`.execute(
+        tx,
+      );
+      await sql`UPDATE generator_studio_wallets SET reserved=0 WHERE account_id=${id}`.execute(tx);
+      await sql`UPDATE generator_studio_calls SET status='settled',charged=0,usage='{"input":0,"cachedInput":0,"output":0}'::jsonb WHERE account_id=${id} AND status<>'settled'`.execute(
+        tx,
+      );
+      await tx.deleteFrom('generator_studio_projects').where('account_id', '=', id).execute();
       // Every name the account went by: now, in its matches, and in renames.
       const pastNames = await tx
         .selectFrom('match_participants')
@@ -313,6 +436,11 @@ export class AdminService {
           tx.selectFrom('colony_skins').select('id').where('owner_account_id', '=', id),
         )
         .execute();
+      await tx.deleteFrom('building_families').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('building_likes').where('account_id', '=', id).execute();
+      await tx.deleteFrom('building_favourites').where('account_id', '=', id).execute();
+      await tx.deleteFrom('building_reports').where('reporter_account_id', '=', id).execute();
+      await tx.deleteFrom('building_drafts').where('owner_account_id', '=', id).execute();
       await tx.deleteFrom('colony_skin_drafts').where('account_id', '=', id).execute();
       await tx.deleteFrom('colony_skin_equipment').where('account_id', '=', id).execute();
       // Keep immutable version ids for match history, but stop serving the paint.
@@ -323,10 +451,20 @@ export class AdminService {
         .execute();
       await tx.deleteFrom('ai_uploads').where('owner_account_id', '=', id).execute();
       await tx.deleteFrom('ais').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('generator_uploads').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('generators').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('generator_likes').where('account_id', '=', id).execute();
+      await tx.deleteFrom('generator_favourites').where('account_id', '=', id).execute();
+      await tx.deleteFrom('generator_reports').where('reporter_account_id', '=', id).execute();
       await tx.deleteFrom('ai_likes').where('account_id', '=', id).execute();
       await tx.deleteFrom('ai_favourites').where('account_id', '=', id).execute();
       await tx.deleteFrom('ai_reports').where('reporter_account_id', '=', id).execute();
+      await tx.deleteFrom('asset_sets').where('owner_account_id', '=', id).execute();
+      await tx.deleteFrom('set_likes').where('account_id', '=', id).execute();
+      await tx.deleteFrom('set_reports').where('reporter_account_id', '=', id).execute();
+      await tx.deleteFrom('set_downloads').where('downloader', '=', `a:${id}`).execute();
       await tx.deleteFrom('ai_downloads').where('downloader', '=', `a:${id}`).execute();
+      await tx.deleteFrom('generator_downloads').where('downloader', '=', `a:${id}`).execute();
       // Music has no match-history dependency. Removing releases cascades their
       // assets/likes/reports; private source blobs expire within 24 hours.
       await tx.deleteFrom('music_releases').where('owner_id', '=', id).execute();

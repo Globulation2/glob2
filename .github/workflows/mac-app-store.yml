@@ -112,9 +112,12 @@ jobs:
           BUNDLE_ID: ${{ vars.APPLE_BUNDLE_ID }}
         run: |
           app="$PWD/artifacts/mac-app-store/Glob2.app"
+          generators="$PWD/artifacts/mac-app-store/generators.txt"
           codesign --verify --deep --strict "$app"
-          "$app/Contents/MacOS/glob2" --list-map-generators > artifacts/mac-app-store/generators.txt
-          test -s artifacts/mac-app-store/generators.txt
+          # Installed tools must find bundle assets without the source checkout.
+          cd "$(mktemp -d)"
+          "$app/Contents/MacOS/glob2" --list-map-generators > "$generators"
+          test -s "$generators"
           map="$HOME/Library/Containers/${BUNDLE_ID:-org.globulation2.glob2}/Data/release-smoke.map.gz"
           "$app/Contents/MacOS/glob2" --generate-map maze --seed 7 \
             --width 64 --height 64 --teams 2 --output "$map"

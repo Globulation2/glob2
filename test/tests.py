@@ -26,6 +26,11 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/unit/EntityRandomLifecycleTest.cpp',
+    '#src/map/generator/javascript/ScriptGeneratorTest.cpp',
+    '#src/map/generator/javascript/ToolkitBindingTest.cpp',
+    '#src/map/generator/javascript/FertilityBindingTest.cpp',
+    ('#src/map/MapSetTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/unit/render/ColonySkinPreviewTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/audio/MusicSetTest.cpp',
     '#src/audio/MusicStreamTest.cpp',
@@ -46,6 +51,11 @@ ENGINE_TESTS = [
     '#src/building/BuildingProductionCombatTest.cpp',
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
+    '#src/building/AreaEffectsTest.cpp',
+    '#src/building/AreaEffectsBenchmark.cpp',
+    ('#src/map/ResourceGrowthBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/ResourceGrowthFixtures.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/ResourceGrowthTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/resource/ResourceRuntimeBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/BuildingGradientBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingServicesTest.cpp',
@@ -100,11 +110,13 @@ ENGINE_TESTS = [
     '#src/unit/ResourceFetchTargetHarness.cpp',
     '#src/unit/MarketFetchHarness.cpp',
     ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control'])),
-    '#src/unit/RoundTripHungerGateHarness.cpp',
+    '#src/unit/FetchHiringScoreHarness.cpp',
+    '#src/unit/LegacyRoundTripSaveTest.cpp',
     '#src/map/TerrainResourcesHarness.cpp',
     '#src/map/pathfind/TerrainHazardBenchmark.cpp',
     '#src/map/TerrainEcologyHarness.cpp',
     ('#src/map/TerrainPropertiesTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/map/VertexTerrainTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/net/LockstepSessionTest.cpp',
     '#src/game/orders/OrderValidationTest.cpp',
     '#src/online/MatchSetupTest.cpp',
@@ -288,6 +300,7 @@ UNIT_TESTS = [
     '#src/map/io/MapExploredAreaSaveLoadTest.cpp',
     '#src/map/preview/MapRenderGeometryTest.cpp',
     '#src/common/MersenneTwisterTest.cpp',
+    '#src/common/EntityRandomTest.cpp',
     '#src/render/torus/TorusGeometryTest.cpp',
     '#src/render/torus/TorusPickingTest.cpp',
     '#src/render/torus/TorusTextureTilesTest.cpp',
@@ -340,6 +353,10 @@ UNIT_TESTS = [
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
     '#src/map/TerrainRegistry.cpp',
+    '#src/map/CellRules.cpp',
+    '#src/map/MapAssetBundle.cpp',
+    '#src/render/terrain/TerrainCatalogIO.cpp',
+    '#src/render/terrain/TerrainMaterials.cpp',
     '#src/scripting/javascript/ScriptValue.cpp',
     '#src/scripting/javascript/ScriptRuntime.cpp',
     '#src/hive/HiveWorker.cpp',
@@ -372,6 +389,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/editor/MapEditKeyActions.cpp',
     '#src/map/generator/shared/Noise.cpp',
     '#src/map/gradient/BuildingGradientSearch.cpp',
+    '#src/map/gradient/BuildingGradientStats.cpp',
     '#src/map/gradient/MapGradientDirection.cpp',
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',
@@ -389,6 +407,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/game/Bullet.cpp',
     '#src/game/ExperimentalFeatures.cpp',
     '#src/game/GameHeader.cpp',
+    '#src/building/BuildingArtwork.cpp',
     '#src/building/types/BuildingCatalog.cpp',
     '#src/building/types/Buildings.cpp',
     '#src/building/types/BuildingTypesColony.cpp',
@@ -541,7 +560,7 @@ def scripting_entries():
     cases. Its unrelated registered cases are excluded by the JavaScript* suite
     filter. Both desktop binaries and Android use the full registry above.
     """
-    selected = {'#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
+    selected = {'#src/map/generator/javascript/ScriptGeneratorTest.cpp', '#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
                 '#src/scripting/javascript/ScriptRealisticTest.cpp', '#src/scripting/javascript/ScriptSessionTest.cpp', '#src/scripting/javascript/ScriptSimulationTest.cpp',
                 '#src/team/stats/TeamStatsSaveHarness.cpp', '#src/scripting/javascript/ScriptRuntimeTest.cpp', '#src/scripting/javascript/ScriptNumericTest.cpp', '#libgag/src/ImageAssetTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS

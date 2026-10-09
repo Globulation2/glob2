@@ -33,13 +33,13 @@ UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cp
 TEST_SOURCE = re.compile(r'(Test|Harness|Benchmark|Fixture)\.(cpp|mm|py)$')
 TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_contracts.py', 'MapGeneratorStudy.cpp',
                      'RecordingMultiplayerPeer.cpp', 'OnlineProbeFileManager.cpp', 'PlatformClientProbe.cpp',
-                     'OnlineScreensProbe.cpp', 'RelayTestMain.cpp'}
+                     'OnlineScreensProbe.cpp', 'RelayTestMain.cpp', 'ResourceGrowthFixtures.cpp'}
 # Build-system and service suites: unknown to the selector, so every check.
 TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/', 'test/online_service/')
 TEST_ROOTS = ('src/', 'libgag/', 'libusl/', 'natsort/', 'mobile/')
 SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
-THREAD_FILES = {'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
+THREAD_FILES = {'src/map/ResourceGrowth.cpp', 'src/map/ResourceGrowth.h', 'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
                 'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
                 'libgag/src/PerformanceTelemetry.cpp', 'libgag/src/AssetLoader.cpp',
                 'libgag/include/AssetLoader.h', 'libgag/src/SpriteLoad.cpp',
@@ -86,7 +86,7 @@ def unclassified(path):
 def cheap_path(path):
     return (path.startswith(('docs/', 'test/build_system/test_ci', 'fdroid/', 'fastlane/'))
             or path.endswith('.md') or path in MIRROR_DEPLOY_FILES or path in {
-                'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
+                'requirements-dev.txt', 'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
                 'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
                 'mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
                 '.github/workflows/mac-app-store.yml'})

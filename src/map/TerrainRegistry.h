@@ -40,6 +40,10 @@ class TerrainRegistry
 	// The TERRAIN_COUNT a file of the given format version was written with: its
 	// custom IDs start there and are renumbered to follow the current built-ins.
 	static unsigned savedBuiltinCount(int versionMinor);
+	// The current ID of a terrain ID a file with that built-in count wrote, or
+	// nullopt for the retired shore profiles (5 and 6 before format 146). The
+	// result still needs validating against the loaded registry.
+	static std::optional<unsigned> currentTerrainId(unsigned savedBuiltinCount, unsigned saved);
 	static std::shared_ptr<const TerrainRegistry> deserialize(std::string_view source,
 																	  unsigned savedBuiltinCount = TERRAIN_COUNT);
 	// Saved definitions are resolved and authoritative: no authoring inheritance
@@ -61,12 +65,6 @@ class TerrainRegistry
 	{
 		assert(valid(id));
 		return presentations_[id];
-	}
-	// Saved-frame identity is independent of the current drawing catalog.
-	const TerrainCompatibility &compatibility(TerrainType id) const
-	{
-		assert(valid(id));
-		return savedPresentations_[id];
 	}
 	const std::string &key(TerrainType id) const { return keys_[id]; }
 	// Absent means capability-based habitats. An engaged empty list permits no
@@ -98,18 +96,6 @@ class TerrainRegistry
 	std::vector<TerrainProperties> properties_, propertyProfiles_;
 	std::vector<std::uint16_t> propertyIndices_;
 	std::vector<TerrainPresentation> presentations_;
-	// Format 136 predates material catalogs. Retain these resolved fields verbatim
-	// for saved definitions and their canonical digest; rendering uses appearance().
-	struct SavedPresentation : TerrainCompatibility
-	{
-		int editorFrame;
-		bool animatedBackdrop;
-		int edgeFirstFrame = -1, layerPriority = 0;
-		int animationFrames = 1, animationTicks = 1;
-		int backdropFirstFrame = 0, backdropFrames = 1, backdropTicks = 1;
-	};
-	static SavedPresentation savedPreset(TerrainType appearance);
-	std::vector<SavedPresentation> savedPresentations_;
 	std::vector<std::string> keys_, names_;
 	std::vector<std::optional<std::vector<std::string>>> resourceKeys_;
 	std::vector<TerrainType> appearances_;

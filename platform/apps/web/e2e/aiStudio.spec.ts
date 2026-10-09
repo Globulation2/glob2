@@ -19,6 +19,7 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   const delayedSubmission = new Promise<void>((resolve) => {
     acknowledgeSubmission = resolve;
   });
+  let enabled = true;
   let mapFetches = 0,
     detailReads = 0;
   const history = [
@@ -51,7 +52,7 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
     if (path.endsWith('/account'))
       return r.fulfill({
         json: {
-          enabled: true,
+          enabled,
           model: 'Studio coding model',
           maxRequestCredits: 100,
           balance: 100,
@@ -124,6 +125,7 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
           error: null,
           charged: 1,
         },
+        ...requests,
       ];
       return r.fulfill({ json: { accepted: true } });
     }
@@ -186,6 +188,10 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   await page.route('**/play/studio.html?*', (r) =>
     r.fulfill({
       contentType: 'text/html',
+      headers: {
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+        'Cross-Origin-Resource-Policy': 'same-origin',
+      },
       body: `<html><body style="background:#213d29;color:white"><h2>Live colony test</h2><script>const q=new URLSearchParams(location.search),base={channel:'glob2-ai-studio',version:1,runId:q.get('run'),revision:Number(q.get('revision'))};addEventListener('message',e=>{if(e.data.type==='launch')parent.postMessage({...base,type:'progress',tick:100},location.origin);});parent.postMessage({...base,type:'ready'},location.origin);</script></body></html>`,
     }),
   );
@@ -193,10 +199,15 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   await expect(page.getByRole('heading', { name: 'My Colony', exact: true })).toBeVisible();
   if (info.project.name === 'desktop')
     await expect(page.locator('.monaco-editor').first()).toBeVisible();
-  else
+  else {
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
     await expect(
       page.getByRole('textbox', { name: 'AI JavaScript source', exact: true }),
     ).toBeVisible();
+  }
   const projectName = page.getByRole('textbox', { name: 'Project', exact: true });
   await projectName.fill('A name still being typed');
   const readsBeforePoll = detailReads;
@@ -214,8 +225,11 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
       .first()
       .click({ position: { x: 30, y: 10 } });
   else await sourceInput.focus();
-  await page.keyboard.press('ControlOrMeta+A');
-  await page.keyboard.press('Backspace');
+  if (info.project.name === 'phone') await sourceInput.fill('');
+  else {
+    await page.keyboard.press('Control+A');
+    await page.keyboard.press('Backspace');
+  }
   await expect(page.getByText('Draft is temporarily empty', { exact: false })).toBeVisible();
   if (info.project.name === 'phone') await expect(sourceInput).toBeEditable();
   if (info.project.name === 'desktop')
@@ -224,7 +238,10 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
       .first()
       .click({ position: { x: 30, y: 10 } });
   else await sourceInput.focus();
-  await page.keyboard.insertText(initial);
+  if (info.project.name === 'phone') await sourceInput.fill(initial);
+  else await page.keyboard.insertText(initial);
+  if (info.project.name === 'phone')
+    await page.getByRole('tab', { name: 'Chat', exact: true }).click();
   await page
     .getByRole('textbox', { name: 'Describe a change or ask a question' })
     .fill('Give every building three workers.');
@@ -232,6 +249,8 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   await expect(page.getByText('Submission response lost')).toBeVisible();
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect.poll(() => submissions.length).toBe(2);
+  if (info.project.name === 'phone')
+    await page.getByRole('tab', { name: 'Chat', exact: true }).click();
   const composer = page.getByRole('textbox', { name: 'Describe a change or ask a question' });
   await composer.fill('My next question');
   acknowledgeSubmission();
@@ -240,23 +259,37 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   await composer.fill('');
   expect(submissions).toHaveLength(2);
   expect(submissions[0]).toBe(submissions[1]);
+  if (info.project.name === 'phone')
+    await expect(
+      page.getByRole('tab', { name: 'Preview · Ready', exact: true }).first(),
+    ).toBeVisible();
+  if (info.project.name === 'phone')
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await expect(page.getByRole('button', { name: 'Publish', exact: true })).toBeDisabled();
-  await page.getByRole('button', { name: 'Changes', exact: true }).click();
+  await page.getByRole('tab', { name: 'Changes', exact: true }).first().click();
+  if (info.project.name === 'phone')
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await page.getByRole('button', { name: 'Run checks', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Publish', exact: true })).toBeEnabled();
   const testedRevision = revision;
-  await page.getByRole('button', { name: 'Playtest', exact: true }).first().click();
+  await page.getByRole('tab', { name: 'Playtest', exact: true }).first().first().click();
   await expect(page.getByText(`Revision ${testedRevision} · tick 100 · live`)).toBeVisible();
   if (info.project.name === 'desktop') {
     // Inspecting a diff and launching a match must preserve the assistant edit's undo step.
-    await page.getByRole('button', { name: 'Code', exact: true }).click();
+    await page.getByRole('tab', { name: 'Code', exact: true }).first().click();
     const lines = page.locator('.monaco-editor .view-lines').first();
     await lines.click({ position: { x: 30, y: 10 } });
-    await page.keyboard.press('ControlOrMeta+Z');
+    await page.keyboard.press('Control+Z');
     await expect(lines).toContainText(/workers\s*=\s*2/);
-    await page.keyboard.press('ControlOrMeta+Shift+Z');
+    await page.keyboard.press('Control+Shift+Z');
     await expect(lines).toContainText(/workers\s*=\s*3/);
-    await page.getByRole('button', { name: 'Playtest', exact: true }).last().click();
+    await page.getByRole('tab', { name: 'Playtest', exact: true }).first().last().click();
   }
   const previousFetches = mapFetches;
   await page.locator('iframe').evaluate((el) => {
@@ -300,18 +333,82 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
   expect(submissions).toHaveLength(2);
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect.poll(() => submissions.length).toBe(3);
+  if (info.project.name === 'phone')
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await page.getByRole('button', { name: 'Run checks', exact: true }).click();
   await page.getByRole('button', { name: 'Stop game', exact: true }).click();
   await expect(page.locator('iframe')).toHaveCount(0);
-  await page.getByRole('button', { name: 'Code', exact: true }).click();
+  await page.getByRole('tab', { name: 'Code', exact: true }).first().click();
   await page.getByRole('button', { name: 'Publish', exact: true }).click();
-  await page.getByRole('button', { name: 'Create library release', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Publish', exact: true }).click();
   await expect.poll(() => published).toBe(true);
   const restoredRevision = revision + 1;
+  page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: 'Undo revision', exact: true }).click();
-  await expect(page.getByText(`Saved · revision ${restoredRevision}`)).toBeVisible();
+  await expect(page.getByText(`Saved · revision ${restoredRevision}`).first()).toBeVisible();
+  // Detail snapshots use the API's descending request order. An uncertain newest
+  // request must not expose the older completed result as ready or send another call.
+  requests.unshift({
+    id: 'uncertain-latest',
+    base_revision: revision,
+    prompt: 'A pending provider request',
+    diagnostics: '',
+    budget: 100,
+    status: 'uncertain',
+    response: '',
+    error: 'Provider delivery outcome is unknown.',
+    charged: null,
+  });
+  const stoppedRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname.endsWith('/stop')) stoppedRequests.push(request.url());
+  });
   await page.reload();
-  await expect(page.getByText(`Saved · revision ${restoredRevision}`)).toBeVisible();
+  await expect(
+    page.getByText(/Cancellation is unavailable while the provider outcome/),
+  ).toBeVisible();
+  const uncertainPrompt = page.getByRole('textbox', {
+    name: 'Describe a change or ask a question',
+  });
+  await uncertainPrompt.fill('A second paid request must wait.');
+  await uncertainPrompt.press('Enter');
+  const unavailableSend = page.getByRole('button', { name: 'Send', exact: true });
+  await expect(unavailableSend).toHaveAttribute('aria-disabled', 'true');
+  await unavailableSend.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('button', { name: 'Stop request' })).toHaveAttribute(
+    'aria-disabled',
+    'true',
+  );
+  await page.getByRole('button', { name: 'Stop request' }).focus();
+  await page.keyboard.press('Enter');
+  expect(submissions).toHaveLength(3);
+  expect(stoppedRequests).toEqual([]);
+  if (info.project.name === 'phone')
+    await page
+      .getByRole('tab', { name: /Preview/ })
+      .first()
+      .click();
+  await expect(page.getByRole('button', { name: 'Download', exact: true })).toBeEnabled();
+  if (info.project.name === 'phone')
+    await expect(page.getByRole('textbox', { name: 'AI JavaScript source' })).toBeEditable();
+  requests.shift();
+  enabled = false;
+  await page.reload();
+  await expect(
+    page.getByText(
+      'Generation is unavailable. Saved code, export and local tools remain accessible.',
+    ),
+  ).toBeVisible();
+  if (info.project.name === 'phone')
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
+  await expect(page.getByText(`Saved · revision ${restoredRevision}`).first()).toBeVisible();
   if (info.project.name === 'desktop')
     await expect(page.locator('.monaco-editor').first()).toBeVisible();
   if (process.env['SCREENSHOT_DIR']) {

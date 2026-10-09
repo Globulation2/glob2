@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Voltooi het aanmelden in je browser. Het spel gaat vanzelf verder wanneer je klaar bent.
 [hub browser did not open]
-
+Je browser is niet geopend. Open de aanmeldpagina om verder te gaan.
 [hub compare code %0]
-
+Controleer als de pagina erom vraagt of deze %0 toont.
 [hub code copied]
-
+Code gekopieerd
 [settings Finish in your browser. The game continues by itself.]
-
+Voltooi in je browser. Het spel gaat vanzelf verder.
 [music set]
-
+Muziekpakket
 [random music set]
-
+Willekeurig per spel
 [playing music set %0]
-
+Speelt: %0
 [music set failed]
-
+Dit muziekpakket kon niet worden geladen.
 [settings Music set]
-
+Muziekpakket
 [settings Random each match]
-
+Kies Willekeurig om aan het begin van elk spel een soundtrack te selecteren.
 [settings Edge scrolling]
-
+Scrollen aan de rand
 [settings Edge scrolling in fullscreen]
-
+Scrollen aan de rand bij volledig scherm
 [settings Edge scrolling in windowed mode]
-
+Scrollen aan de rand in venstermodus
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Verplaats de spel- en editorkaarten wanneer de muis de vensterrand bereikt.
 [AI strategy]
 AI-strategie
 [start recording]
@@ -4625,9 +4625,9 @@ Opnemen
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Neem je spellen op als MP4-video's met geluid. Opnemen vereist FFmpeg met de encoders libx264 en AAC.
 [settings Record your games as MP4 videos with sound.]
-
+Neem je spellen op als MP4-video's met geluid.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Opnamen gebruiken de volledige gerenderde resolutie bij 30 FPS.
 [settings FFmpeg is ready.]
 FFmpeg is klaar.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Gewonden trekken terug
 [Units can die]
 Eenheden kunnen sterven
 [Upgrades]
-
+Verbeteringen
 [No stockpile]
 Geen
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Gewonde eenheden gaan terug om te genezen in plaats van tot de dood te vechten.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Eenheden sterven als hun levenspunten op zijn. Zet uit om ze op 1 levenspunt te laten stoppen.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Eenheden stijgen in niveau in trainingsgebouwen en gebouwen kunnen worden verbeterd. Reparaties blijven beschikbaar wanneer deze optie uitstaat.
 [stat group work]
 Tijd van werkers
 [stat worker time]
@@ -5309,235 +5309,235 @@ kracht
 [stat view by place]
 Per plaats
 [AI Library]
-
+AI-bibliotheek
 [Authoring guide]
-
+Handleiding voor makers
 [Beginner-friendly]
-
+Geschikt voor beginners
 [Defensive]
-
+Verdedigend
 [Discover]
-
+Ontdekken
 [Download & install]
-
+Downloaden en installeren
 [Downloading AI…]
-
+AI wordt gedownload…
 [Expansion]
-
+Uitbreiding
 [Experimental]
-
+Experimenteel
 [Favourite]
-
+Als favoriet markeren
 [Favourited]
-
+Als favoriet gemarkeerd
 [Favourites]
-
+Favorieten
 [Got it]
-
+Begrepen
 [How AIs work]
-
+Hoe AI's werken
 [Install selected version]
-
+Geselecteerde versie installeren
 [Installed]
-
+Geïnstalleerd
 [Invalid AI catalogue response]
-
+Ongeldig antwoord van de AI-catalogus
 [JavaScript API reference]
-
+JavaScript-API-referentie
 [Like]
-
+Vind ik leuk
 [Liked]
-
+Vind je leuk
 [Loading AI library…]
-
+AI-bibliotheek wordt geladen…
 [Most downloaded]
-
+Meest gedownload
 [Most liked]
-
+Meest gewaardeerd
 [Newest]
-
+Nieuwste
 [No AIs match these filters.]
-
+Geen AI's voldoen aan deze filters.
 [Not validated for this game version]
-
+Niet gevalideerd voor deze spelversie
 [Open AI Library]
-
+AI-bibliotheek openen
 [Open AI page]
-
+AI-pagina openen
 [Passed compatibility checks]
-
+Compatibiliteitscontroles doorstaan
 [Recently updated]
-
+Onlangs bijgewerkt
 [Rush]
-
+Snelle aanval
 [Search]
-
+Zoeken
 [Share your AI]
-
+Deel je AI
 [Show more]
-
+Meer tonen
 [Sign in through Online settings to like and favourite AIs.]
-
+Meld je aan via de online-instellingen om AI's leuk te vinden en als favoriet te markeren.
 [Starter project]
-
+Startproject
 [downloads of this version]
-
+Downloads van deze versie
 [downloads]
-
+Downloads
 [Update available]
-
+Update beschikbaar
 [Browse versions]
-
+Versies bekijken
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Download een AI en kies deze vervolgens voor een computerspeler in een lokaal spel. Geïnstalleerde versies werken offline. Updates gelden voor toekomstige spellen; opgeslagen spellen behouden hun oorspronkelijke code.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Compatibiliteitscontroles garanderen geen veiligheid of speelsterkte. Voer alleen code uit van makers die je vertrouwt.
 [Back to results]
-
+Terug naar resultaten
 [music 2–5 minutes]
-
+2–5 minuten
 [music 5–15 minutes]
-
+5–15 minuten
 [music AI-generated]
-
+Door AI gegenereerd
 [music All music]
-
+Alle muziek
 [music All open licences]
-
+Alle open licenties
 [music Any duration]
-
+Elke duur
 [music Audition each mood for eight seconds]
-
+Elke sfeer acht seconden beluisteren
 [music Back]
-
+Terug
 [music Browse]
-
+Bladeren
 [music Building]
-
+Spanningsopbouw
 [music Calm]
-
+Rust
 [music Calm → Building → Combat]
-
+Rust → Spanningsopbouw → Gevecht
 [music Choose Building]
-
+Spanningsopbouw kiezen
 [music Choose Calm]
-
+Rust kiezen
 [music Choose Combat]
-
+Gevecht kiezen
 [music Choose ZIP]
-
+ZIP kiezen
 [music Choose a music file.]
-
+Kies een muziekbestand.
 [music Combat]
-
+Gevecht
 [music Could not open this music set.]
-
+Dit muziekpakket kon niet worden geopend.
 [music Credits, downloads and reporting]
-
+Credits, downloads en meldingen
 [music Downloading music…]
-
+Muziek wordt gedownload…
 [music Export recovery files]
-
+Herstelbestanden exporteren
 [music Fade duration]
-
+Overgangsduur
 [music File selection cancelled or failed.]
-
+Bestandsselectie geannuleerd of mislukt.
 [music Import ZIP]
-
+ZIP importeren
 [music Import ZIP or three tracks]
-
+ZIP of drie nummers importeren
 [music Import music]
-
+Muziek importeren
 [music Import three tracks]
-
+Drie nummers importeren
 [music Includes AI-generated audio]
-
+Bevat door AI gegenereerde audio
 [music Install]
-
+Installeren
 [music Install selected]
-
+Selectie installeren
 [music Installed]
-
+Geïnstalleerd
 [music Load more]
-
+Meer laden
 [music Loading music…]
-
+Muziek wordt geladen…
 [music Most downloaded]
-
+Meest gedownload
 [music Most liked]
-
+Meest gewaardeerd
 [music Music decoding failed.]
-
+Muziek decoderen mislukt.
 [music Music download failed.]
-
+Muziek downloaden mislukt.
 [music Music installed.]
-
+Muziek geïnstalleerd.
 [music Music installed. It is now available in Audio settings.]
-
+Muziek geïnstalleerd. Deze is nu beschikbaar in de geluidsinstellingen.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+De muziek is nog niet permanent opgeslagen. Probeer opnieuw op te slaan voordat je vertrekt.
 [music Music library]
-
+Muziekbibliotheek
 [music Music request failed.]
-
+Muziekverzoek mislukt.
 [music Newest]
-
+Nieuwste
 [music No community music installed yet. Import files or browse the online library.]
-
+Er is nog geen muziek van de gemeenschap geïnstalleerd. Importeer bestanden of blader door de online-bibliotheek.
 [music No music found.]
-
+Geen muziek gevonden.
 [music Not AI-generated]
-
+Niet door AI gegenereerd
 [music Pause]
-
+Pauzeren
 [music Play]
-
+Afspelen
 [music Playback position]
-
+Afspeelpositie
 [music Preview]
-
+Voorbeeld
 [music Ready to import.]
-
+Klaar om te importeren.
 [music Remove]
-
+Verwijderen
 [music Reset to game behavior]
-
+Spelgedrag herstellen
 [music Retry saving]
-
+Opnieuw opslaan proberen
 [music Saved.]
-
+Opgeslagen.
 [music Saving music…]
-
+Muziek wordt opgeslagen…
 [music Search]
-
+Zoeken
 [music Search title, artist, description…]
-
+Titel, artiest, beschrijving zoeken…
 [music Select for installation]
-
+Selecteren voor installatie
 [music Share music on the web]
-
+Muziek delen op het web
 [music Some catalogue entries could not be read.]
-
+Sommige catalogusitems konden niet worden gelezen.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+De gegevens konden niet worden opgeslagen. Probeer opnieuw of exporteer je bestanden voordat je vertrekt.
 [music Tag]
-
+Label
 [music Test crossfades]
-
+Overgangen testen
 [music Up to 2 minutes]
-
+Tot 2 minuten
 [music Use this music]
-
+Deze muziek gebruiken
 [music Validating music…]
-
+Muziek wordt gevalideerd…
 [settings Music library · Browse, install and import]
-
+Muziekbibliotheek · Bladeren, installeren en importeren
 [music Filters]
-
+Filters
 [music Leave without saving]
-
+Vertrekken zonder op te slaan
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Importeer een gedownload muziek-ZIP of de drie Opus-nummers. Metadata en hoesafbeelding worden uit het nummer Rust gelezen; extra bestanden zijn niet nodig.
 [settings Target render FPS]
 Gewenste beeldfrequentie
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ IJzererts
 Kwartszand
 [Cotton]
 Katoen
+[Jungle trees]
+Junglebomen
+[Pine trees]
+Dennen
+[Dead trees]
+Dode bomen
+[Ruins]
+Ruïnes
+[Camp-site]
+Kampeerplaats
+[Ancient debris]
+Oud puin
+[Scrub]
+Struikgewas
+[Tall grass]
+Hoog gras
+[Maize]
+Maïs
+[Potatoes]
+Aardappelen
+[Rice]
+Rijst
+[Fish]
+Vissen
 [Reroll terrain look]
 Terreinuiterlijk opnieuw loten
 [boulders]
-
+Rotsblokken
 [hedge]
-
+Haag
 [thicket]
-
+Struikgewas
 [ridge_rock]
-
+Rotskam
 [outcrop]
-
+Rotsuitsteeksel
 [dirt]
-
+Aarde
 [clay]
-
+Klei
 [gravel]
-
+Grind
 [flower_meadow]
-
+Bloemenweide
 [mud]
-
+Modder
 [marsh]
-
+Moeras
 [deep_snow]
-
+Diepe sneeuw
 [scree]
-
+Puinhelling
 [dirt_track]
-
+Aarden pad
 [boardwalk]
-
+Vlonderpad
 [lava]
-
+Lava
 [ember_field]
-
+Gloeiveld
 [loam]
-
+Leem
 [moss]
-
+Mos
 [spring_meadow]
-
+Lenteweide
 [deep_water]
-
+Diep water
 [dark_water]
-
+Donker water
 [void_hole]
-
+Gat
 [chasm]
-
+Kloof
 [terrain group water]
-
+Water
 [terrain group sand]
-
+Zand
 [terrain group grass]
-
+Gras
 [terrain group ice]
-
+IJs
 [terrain group paths]
-
+Paden
 [terrain group obstacles]
-
+Obstakels
 [terrain group ridges]
-
+Rotskammen
 [terrain group barren]
-
+Onvruchtbare grond
 [terrain group rough]
-
+Ruwe grond
 [terrain group lava]
-
+Lava
 [terrain group fertile]
-
+Vruchtbare grond
 [terrain group deep-water]
-
+Diep water
 [terrain group void]
-
+Leegte
 [experiment obstacle-terrain]
-
+Terrein met obstakels
 [experiment obstacle-terrain help]
-
+Voegt rotsblokken, hagen en struikgewas aan de kaarteditor toe. Landeenheden kunnen er niet doorheen en projectielen worden tegengehouden; vliegende eenheden gaan eroverheen. Ze bieden geen plaats aan gebouwen of grondstoffen.
 [experiment ridge-terrain]
-
+Terrein met rotskammen
 [experiment ridge-terrain help]
-
+Voegt rotskammen en rotsuitsteeksels aan de kaarteditor toe. Landeenheden kunnen er niet doorheen, maar torens schieten eroverheen en vliegende eenheden passeren. Ze bieden geen plaats aan gebouwen of grondstoffen.
 [experiment barren-terrain]
-
+Onvruchtbare grond
 [experiment barren-terrain help]
-
+Voegt aarde, klei, grind en bloemenweiden aan de kaarteditor toe. Gebouwen zijn toegestaan, er groeit niets op of naast deze grond en deze telt niet als oever.
 [experiment rough-terrain]
-
+Ruwe grond
 [experiment rough-terrain help]
-
+Voegt modder, moeras, diepe sneeuw en puinhellingen aan de kaarteditor toe. Landeenheden bewegen met ongeveer twee derde van hun snelheid. Ruwe grond biedt geen plaats aan gebouwen of grondstoffen.
 [experiment path-terrain]
-
+Terrein met paden
 [experiment path-terrain help]
-
+Voegt aarden paden en vlonderpaden aan de kaarteditor toe. Net als op wegen bewegen landeenheden met dubbele snelheid en zijn gebouwen toegestaan, maar groeit er niets.
 [experiment lava-terrain]
-
+Lavaterrein
 [experiment lava-terrain help]
-
+Voegt lava en gloeivelden aan de kaarteditor toe. Landeenheden kunnen er niet in; vliegende eenheden verliezen snel gezondheid wanneer ze eroverheen vliegen. Projectielen passeren.
 [experiment fertile-terrain]
-
+Vruchtbare grond
 [experiment fertile-terrain help]
-
+Voegt leem, mos en lenteweiden aan de kaarteditor toe. Gebouwen en gewassen zijn toegestaan en ze bevloeien omliggende grond sterker dan water.
 [experiment deep-water-terrain]
-
+Diep water
 [experiment deep-water-terrain help]
-
+Voegt diep en donker water aan de kaarteditor toe. Zwemmers steken het langzamer over, er groeien geen algen en het bevloeit nog steeds nabijgelegen velden.
 [experiment void-terrain]
-
+Leeg terrein
 [experiment void-terrain help]
-
+Voegt gaten en kloven aan de kaarteditor toe. Niets kan ze oversteken, zelfs vliegende eenheden niet, en projectielen stoppen aan de rand.
 [terrain group custom]
-
+Aangepast
 [terrain group classic]
-
+Klassieke grond
 [terrain rule walkable]
-
+Beloopbaar
 [terrain rule swimmable]
-
+Bezwembaar
 [terrain rule impassable]
-
+Onbegaanbaar
 [terrain rule no flying]
-
+Vliegen verboden
 [terrain rule buildable]
-
+Bebouwbaar
 [terrain rule speed %0]
-
+Snelheid %0%
 [terrain rule crops grow]
-
+Gewassen groeien
 [terrain rule irrigates]
-
+Bevloeit nabijgelegen grond
 [terrain rule stops nearby growth]
-
+Stopt groei in de buurt
 [terrain rule blocks shots]
-
+Blokkeert schoten
 [terrain rule hurts walkers]
-
+Beschadigt landeenheden
 [terrain rule hurts fliers]
-
+Beschadigt vliegende eenheden
 [terrain palette hint]
-
+Kies een penseel. De terreintypen binnen elke groep delen dezelfde regels en verschillen alleen in uiterlijk.
 [terrain rule algae grow]
-
+Algen groeien
 [terrain palette experiments hint]
-
+Kies een penseel. Meer terreingroepen verschijnen hier zodra hun experimenten zijn ingeschakeld onder Instellingen > Experimenten.
 [brush valid on %0]
-
+Geldig op: %0
 [brush valid nowhere]
-
+Kan op geen enkel terrein van deze kaart worden geplaatst
 [brush requires experiment %0]
-
+Vereist het experiment %0
 [brush resources custom]
-
+Geïmporteerde grondstoffen
 [brush section zones]
-
+Zones
 [brush section areas]
-
+Gebieden
 [brush section tools]
-
+Gereedschappen
 [brush clearing area]
-
+Ontruimingsgebied
 [editor unsaved title]
-
+Niet-opgeslagen wijzigingen
 [editor quit unsaved]
-
+Wijzigingen aan deze kaart opslaan voordat je de editor verlaat?
 [editor load unsaved]
-
+Wijzigingen aan deze kaart opslaan voordat je een andere opent?
 [editor save]
-
+Opslaan…
 [editor discard]
-
+Niet opslaan
 [editor share never saved]
-
+Kaarten worden gedeeld vanuit hun opgeslagen bestand. Sla deze kaart eerst op en deel deze daarna.
 [editor share unsaved]
-
+Deze kaart bevat wijzigingen die nog niet zijn opgeslagen. Delen uploadt het opgeslagen bestand.
 [editor save and share]
-
+Opslaan en delen…
 [editor share saved version]
-
+Opgeslagen versie delen
 [editor reroll confirm]
-
+Elke terreintegel een nieuw willekeurig uiterlijk geven? Terreintypen en spelverloop blijven hetzelfde. Dit kan niet ongedaan worden gemaakt.
 [editor reroll]
-
+Opnieuw loten
 [editor map saved]
-
+Kaart opgeslagen
 [editor map shared]
-
+Kaart online gedeeld
 [editor save needs fertility]
-
+Opslaan vereist de vruchtbaarheidskaart, dus het opslaan is geannuleerd. Druk op OK om opnieuw te proberen.
 [editor fertility stale]
-
+Vruchtbaarheidskaart verouderd · Klik om te vernieuwen
 [No definition files found in %0]
-
+Geen definitiebestanden gevonden in %0
 [From device…]
-
+Vanaf apparaat…
 [replace existing file %0?]
-
+Er bestaat al een bestand met de naam "%0". Vervangen?
 [Replace]
-
+Vervangen
 [Keep existing file]
-
+Bestaand bestand behouden
 [editor menu save]
-
+Kaart opslaan
 [editor menu load]
-
+Kaart openen…
 [editor menu import terrain]
-
+Terreindefinities importeren…
 [editor menu import resources]
-
+Grondstofdefinities importeren…
 [editor menu teams]
-
+Teams…
 [editor menu scenario]
-
+Scenario…
 [editor menu reroll]
-
+Terreinuiterlijk opnieuw loten…
 [editor menu file]
-
+Bestand
 [editor menu map]
-
+Kaart
 [no resource growth areas]
-
+Gebieden zonder groei
 [dock flags and units]
-
+Vlaggen en eenheden
 [dock minimap]
-
+Minikaart
 [dock search brushes]
-
+Penselen zoeken
 [dock brush shape %0]
-
+Penseelvorm %0
 [dock brush]
-
+Penseel
 [dock brush paint]
-
+Schilderen
 [dock brush erase]
-
+Wissen
 [dock enable for map]
-
+Inschakelen voor deze kaart
 [dock enable experiment %0]
-
+%0 inschakelen
 [dock enable experiment hint %0]
-
+Schakelt het experiment %0 alleen voor deze kaart in.
 [dock area number]
-
+Gebied
 [dock building level]
-
+Niveau
 [dock unit level]
-
+Eenheidsniveau
 [dock no brushes match]
-
+Geen penselen komen overeen met de zoekopdracht.
 [dock active team]
-
+Actief team
 [dock team count %0]
-
+Teams op deze kaart: %0
 [dock add team]
-
+Team toevoegen
 [dock remove team]
-
+Team verwijderen
 [dock nothing selected]
-
+Er is niets geselecteerd.
 [dock no properties]
-
+Dit object heeft geen bewerkbare eigenschappen.
 [focus brush search]
-
+Penselen zoeken
 [switch to resources view]
-
+Naar grondstoffenweergave wisselen
 [dock resources base]
-
+Standaardgrondstoffen
 [dock fertility stale]
-
+De vruchtbaarheidskaart is verouderd.
 [dock fertility refresh]
-
+Vruchtbaarheid vernieuwen
 [Enabled %0 for this map]
-
+%0 ingeschakeld voor deze kaart
 [editor fertility tap refresh]
-
+Vruchtbaarheidskaart verouderd: tik om te vernieuwen
+[editor menu import set]
+Terrein- en grondstoffenpakket importeren
+[editor menu set library]
+Pakketbibliotheek
+[set library loading]
+Pakketten worden geladen…
+[set library downloading]
+Gekozen uitgave wordt gedownload…
+[set library connection error]
+Pakketten kunnen niet worden geladen. Controleer je verbinding en probeer opnieuw.
+[set library hash error]
+De hashcontrole van het gedownloade pakket is mislukt.
+[set library package error]
+Ongeldig pakketarchief.
+[set library listing error]
+Ongeldige pakketlijst.
+[set library release error]
+Ongeldige pakketuitgave.
+[set library selection help]
+Selecteer items om te importeren. Vereiste aangepaste grondstoffen worden automatisch opgenomen.
+[set library empty]
+Geen pakketten gevonden.
+[set library release help]
+Kies een specifieke uitgave om te bekijken en te importeren.
+[set library heading]
+Terrein- en grondstoffenpakketten
+[set library browse]
+Online-bibliotheek doorzoeken
+[set library local]
+Kaartinhoud, credits en lokale wijzigingen
+[set library local help]
+Bewerk de kopie van de geïmporteerde inhoud in deze kaart. Credits van de oorspronkelijke uitgave blijven gekoppeld. Wijzigingen werken andere kaarten of de online-uitgave niet bij.
+[set library apply]
+Lokale wijzigingen toepassen
+[set library updated]
+Lokale inhoud bijgewerkt.
+[set library search hint]
+Thema's en makers zoeken
+[set library search]
+Zoeken
+[set library set]
+Pakket
+[set library update help]
+Vervangt expliciet overeenkomend geplaatst terrein en grondstoffen, inclusief lokale wijzigingen. Verwijderde items blijven op de oude uitgave. Bestaande materiaalhoeveelheden worden beperkt tot de nieuwe capaciteiten.
+[set library import]
+Geselecteerde items importeren
+[set library next]
+Volgende pagina
+[set library back]
+Terug naar resultaten
+[set library license %0]
+Licentie: %0
+[set library release %0]
+Uitgave %0
+[set library replace %0]
+Geplaatste items uit uitgave %0 vervangen
+[set library preview limit]
+Voorbeelden worden voor de eerste 64 items getoond. Alle items blijven selecteerbaar.
+[set library definition]
+Eigenschapsdefinitie (JSON)
+[set library artwork]
+Toewijzing van terreinafbeeldingen (JSON)
+[settings Map generators]
+Kaartgeneratoren
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Importeer een generatorpakket en selecteer het landschap bij het maken van een kaart of spel.
+[settings Import map generator]
+Kaartgenerator importeren
+[settings No custom map generators installed.]
+Geen aangepaste kaartgeneratoren geïnstalleerd.
+[settings Replace package]
+Pakket vervangen
+[settings Export package]
+Pakket exporteren
+[settings Remove generator]
+Generator verwijderen
+[settings Saving generator library…]
+Generatorbibliotheek opslaan…
+[settings Could not read generator package.]
+Kan het generatorpakket niet lezen.
+[settings Generator library saved.]
+Generatorbibliotheek opgeslagen.
+[settings Storage could not be saved. The previous library is retained.]
+Kan de gegevens niet opslaan. De vorige bibliotheek blijft behouden.
+[settings Waiting for file selection or storage…]
+Wachten op bestandsselectie of opslag…
+[settings File selection is unavailable.]
+Bestandsselectie is niet beschikbaar.
+[settings Package export is unavailable.]
+Pakketexport is niet beschikbaar.
+[stat band area upkeep]
+Gebiedsonderhoud

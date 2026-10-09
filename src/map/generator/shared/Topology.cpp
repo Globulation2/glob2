@@ -1,4 +1,6 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Topology.h"
 #include <algorithm>
 #include <map>
@@ -16,50 +18,65 @@ void checkGrid(size_t size, int width, int height)
 template <class F> void neighbors(int i, int w, int h, bool wrap, GridNeighbors kind, F visit)
 {
 	for (int dy = -1; dy <= 1; ++dy)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dx = -1; dx <= 1; ++dx)
 		{
+			::MapGeneration::generationCheckpoint();
 			if ((!dx && !dy) || (kind == GridNeighbors::Cardinal && dx && dy))
 				continue;
-			int x = i % w + dx, y = i / w + dy;
+			int x = dimensionRemainder(i, w) + dx, y = i / w + dy;
 			if (wrap)
 			{
-				x = (x + w) % w;
-				y = (y + h) % h;
+				x = dimensionRemainder(x + w, w);
+				y = dimensionRemainder(y + h, h);
 			}
 			else if (x < 0 || x >= w || y < 0 || y >= h)
 				continue;
 			visit(y * w + x);
 		}
+	}
 }
 } // namespace
 std::vector<int> graphDistances(const RegionGraph &graph, const std::vector<int> &sources)
 {
 	for (const auto &edges : graph)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int v : edges)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (v < 0 || size_t(v) >= graph.size())
 				throw std::invalid_argument("Invalid graph edge");
+		}
+	}
 	std::vector<int> distances(graph.size(), -1);
 	std::queue<int> pending;
 	for (int v : sources)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (v < 0 || size_t(v) >= graph.size())
 			throw std::invalid_argument("Invalid graph source");
-		if (distances[v] < 0)
+		if (distances.at(v) < 0)
 		{
-			distances[v] = 0;
+			distances.at(v) = 0;
 			pending.push(v);
 		}
 	}
 	while (!pending.empty())
 	{
+		::MapGeneration::generationCheckpoint();
 		int u = pending.front();
 		pending.pop();
-		for (int v : graph[u])
-			if (distances[v] < 0)
+		for (int v : graph.at(u))
+		{
+			::MapGeneration::generationCheckpoint();
+			if (distances.at(v) < 0)
 			{
-				distances[v] = distances[u] + 1;
+				distances.at(v) = distances.at(u) + 1;
 				pending.push(v);
 			}
+		}
 	}
 	return distances;
 }
@@ -72,20 +89,22 @@ std::vector<int> connectedRegions(const std::vector<unsigned char> &passable, in
 	std::vector<int> pending;
 	for (size_t i = 0; i < passable.size(); ++i)
 	{
-		if (!passable[i] || regions[i] >= 0)
+		::MapGeneration::generationCheckpoint();
+		if (!passable.at(i) || regions.at(i) >= 0)
 			continue;
-		regions[i] = next;
+		regions.at(i) = next;
 		pending.push_back(int(i));
 		while (!pending.empty())
 		{
+			::MapGeneration::generationCheckpoint();
 			int u = pending.back();
 			pending.pop_back();
 			neighbors(u, w, h, wrap, kind,
 					  [&](int v)
 					  {
-						  if (passable[v] && regions[v] < 0)
+						  if (passable.at(v) && regions.at(v) < 0)
 						  {
-							  regions[v] = next;
+							  regions.at(v) = next;
 							  pending.push_back(v);
 						  }
 					  });
@@ -101,17 +120,18 @@ ComponentLabels labelComponents(const std::vector<int> &components, const std::v
 	ComponentLabels result;
 	for (size_t i = 0; i < components.size(); ++i)
 	{
-		const int component = components[i];
+		::MapGeneration::generationCheckpoint();
+		const int component = components.at(i);
 		if (component < 0)
 			continue;
 		if (size_t(component) >= components.size())
 			throw std::invalid_argument("Component ID outside dense grid range");
 		if (component >= int(result.owners.size()))
 			result.owners.resize(component + 1, -1);
-		if (labels[i] < 0)
+		if (labels.at(i) < 0)
 			continue;
-		int &owner = result.owners[component];
-		if (owner >= 0 && owner != labels[i])
+		int &owner = result.owners.at(component);
+		if (owner >= 0 && owner != labels.at(i))
 		{
 			// Retain the first owner and conflict: callers can inspect a deterministic
 			// witness without changing the labels of the remaining components.
@@ -119,7 +139,7 @@ ComponentLabels labelComponents(const std::vector<int> &components, const std::v
 				result.conflictTile = int(i);
 		}
 		else
-			owner = labels[i];
+			owner = labels.at(i);
 	}
 	return result;
 }
@@ -130,24 +150,29 @@ RegionGraph regionAdjacency(const std::vector<int> &labels, int w, int h,
 	checkGrid(labels.size(), w, h);
 	std::map<int, int> indices;
 	for (size_t i = 0; i < ids.size(); ++i)
-		if (!indices.emplace(ids[i], int(i)).second)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (!indices.emplace(ids.at(i), int(i)).second)
 			throw std::invalid_argument("Duplicate region ID");
+	}
 	RegionGraph graph(ids.size());
 	for (size_t i = 0; i < labels.size(); ++i)
 	{
-		auto u = indices.find(labels[i]);
+		::MapGeneration::generationCheckpoint();
+		auto u = indices.find(labels.at(i));
 		if (u == indices.end())
 			continue;
 		neighbors(int(i), w, h, wrap, GridNeighbors::Cardinal,
 				  [&](int n)
 				  {
-					  auto v = indices.find(labels[n]);
+					  auto v = indices.find(labels.at(n));
 					  if (v != indices.end() && u->second != v->second)
-						  graph[u->second].push_back(v->second);
+						  graph.at(u->second).push_back(v->second);
 				  });
 	}
 	for (auto &edges : graph)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::sort(edges.begin(), edges.end());
 		edges.erase(std::unique(edges.begin(), edges.end()), edges.end());
 	}

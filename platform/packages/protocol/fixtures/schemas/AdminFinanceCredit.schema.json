@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminFinanceCredit",
+  "title": "AdminFinanceCredit",
+  "type": "object",
+  "required": [
+    "product",
+    "kind",
+    "amount"
+  ],
+  "properties": {
+    "product": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    }
+  }
+}

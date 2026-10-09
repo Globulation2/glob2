@@ -18,6 +18,7 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "BuildingArtwork.h"
 #include "ai/BuildingCapabilities.h"
 #include <stdexcept>
 #include "GameUtilities.h"
@@ -64,6 +65,7 @@ const AIPlanning::BuildingCapabilityIndex& Game::buildingCapabilities() const
 
 void Game::configureBuildingCatalog()
 {
+    worldSnapshots.invalidateCatalog();
 	const auto routingFlags=[](const BuildingType* type) {
 		return Uint8(type->runtimeSuppliesStock | (type->runtimeFetchesStock<<1) |
 			(type->runtimeSuppliesDirectStock<<2) | (type->runtimeFetchesDirectStock<<3));
@@ -73,6 +75,7 @@ void Game::configureBuildingCatalog()
 	for (size_t id=0; id<buildingsTypes.size(); ++id) previous.push_back(routingFlags(buildingsTypes.get(id)));
 	buildingsTypes.configureExperiments(gameHeader.getExperiments().keys());
     buildingCapabilityIndex = std::make_unique<const AIPlanning::BuildingCapabilityIndex>(buildingsTypes);
+	areaEffects.configure(*this);
 	bool routingChanged=false;
 	for (size_t id=0; id<previous.size(); ++id) routingChanged |= previous[id]!=routingFlags(buildingsTypes.get(id));
 	if (routingChanged) map.invalidateSupplierLocations();
@@ -142,6 +145,7 @@ void Game::clearGame()
 	scriptGenerations.fill(0);
 	recordingFailingUnits=BuildingRef();
 	hasSavedRandomState = false;
+	map.worldRandom.initialized = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
@@ -160,6 +164,7 @@ void Game::clearGame()
 		}
 	}
 
+	areaEffects.reset();
 	// Clear build projects
 	buildProjects.clear();
 
@@ -168,8 +173,6 @@ void Game::clearGame()
 	totalPrestigeReached=false;
 	isGameEnded=false;
 
-	highlightBuildingType=0;
-	highlightUnitType=0;
 }
 
 
@@ -189,6 +192,12 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		drainAI();
 		if (aiPipeline && gameHeader.getAIOrderDelay()!=newGameHeader.getAIOrderDelay())
 			throw std::logic_error("A saved match cannot change its AI delay");
+		// Pending building fields carry deadlines from the old delay. Without
+		// any, the next tick reconfigures the pipeline from the new header.
+		const auto buildings=map.buildingGradientPipelineStatus();
+		if ((buildings.pending || buildings.queued)
+			&& gameHeader.getBuildingGradientDelay()!=newGameHeader.getBuildingGradientDelay())
+			throw std::logic_error("A saved match cannot change its building gradient delay with pending fields");
 	} else clearAI();
 	const GameHeader previousHeader = gameHeader;
 	GameHeader resolvedHeader = newGameHeader;
@@ -196,6 +205,9 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		&& resolvedHeader.getBuildingCatalogSnapshot() != buildingsTypes.snapshotJson())
 		throw std::runtime_error("Game setup building catalog does not match the map catalog");
 	resolvedHeader.setBuildingCatalogSnapshot(buildingsTypes.snapshotJson());
+    if (resolvedHeader.getBuildingArtwork() && (!gameHeader.getBuildingArtwork() || resolvedHeader.getBuildingArtwork()->bytes()!=gameHeader.getBuildingArtwork()->bytes()))
+        throw std::runtime_error("Game setup artwork does not match the map");
+    resolvedHeader.setBuildingArtwork(gameHeader.getBuildingArtwork() ? gameHeader.getBuildingArtwork()->bytes() : std::string{});
 	resolvedHeader.setResourceExperiments(map.resourceRegistry().experiments());
 	for (int p=0; p<Team::MAX_COUNT; ++p)
 	{
@@ -229,11 +241,28 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		teams[tn]->playersMask |= Team::teamNumberToMask(i);
 	}
 
-	// A loaded saved game already restored the live RNG. New maps and old
-	// saves retain the seed-based initialization used by earlier versions.
+	// Preserve the historical continuation record for save/test diagnostics.
+	// Active owner streams are initialized or restored separately below.
 	const bool gameSeedChanged = newGameHeader.getRandomSeed() != previousHeader.getRandomSeed();
 	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() || gameSeedChanged)
 		syncRandom.seed(newGameHeader.getRandomSeed());
+	// Starting maps carry template state, not a match's private stream progress.
+	// Saved-game resumes always retain their restored/migrated entity streams.
+	if (!mapHeader.getIsSavedGame())
+	{
+		map.worldRandom.initialize(newGameHeader.getRandomSeed());
+		sgslScript.initializeRandom(newGameHeader.getRandomSeed());
+	}
+	if (!mapHeader.getIsSavedGame())
+		for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		{
+			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
+				if (Unit* unit = teams[t]->myUnits[slot])
+					unit->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);
+			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+				if (Building* building = teams[t]->myBuildings[slot])
+					building->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Building, building->gid, building->scriptIdentity);
+		}
 	if (gameSeedChanged)
 		for (int p=0; p<newGameHeader.getNumberOfPlayers(); ++p)
 			if (players[p] && players[p]->ai)
@@ -355,6 +384,7 @@ void Game::applyStartingRules(void)
 
 void Game::setWaitingOnMask(Uint32 mask)
 {
+    if (maskAwayPlayer!=mask || anyPlayerWaited!=(mask!=0)) snapshots().invalidateBoundary();
 	maskAwayPlayer = mask;
 	anyPlayerWaited = (mask != 0);
 }
@@ -454,8 +484,11 @@ Unit *Game::resolveUnit(UnitRef ref) const
 
 void Game::publishClientEvent(ClientEventVariant event)
 {
-	if (clientEvents)
-		clientEvents->push(std::move(event));
+    if (clientEvents) {
+        const bool acknowledgement=std::holds_alternative<ClientEvent::OrderExecuted>(event);
+        clientEvents->push(std::move(event));
+        if (acknowledgement) snapshots().invalidateBoundary();
+    }
 }
 
 Uint32 Game::allocateScriptIdentity(bool building, Uint16 gid)

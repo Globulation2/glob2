@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "Engine.h"
+#include "sim/presentation/SceneInputs.h"
 #include "field/GradientConstants.h"
 #include <BackgroundFileWriter.h>
 #include <BinaryStream.h>
@@ -92,7 +93,7 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     REQUIRE(source.loadFromHeaders(mapHeader, header, true, true));
     auto &map = source.game.map;
     map.getClearAreasGradient(0, 0);
-    map.configureCompute(4,0);
+    map.configureCompute(4);
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
     map.syncStep(0, false);
@@ -147,7 +148,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
         game->map.configureGradientPipeline(0, 8);
     }
     for (unsigned threads : {1, 4}) {
-        deferred.game.map.configureCompute(threads, Map::ComputeAI);
+        deferred.game.map.configureCompute(threads);
         for (unsigned tick = 0; tick < 64; ++tick) {
             direct.game.syncStep(0);
             CHECK_FALSE(direct.game.map.hasPendingGradientPreparation());
@@ -165,7 +166,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
     }
     deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
     REQUIRE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.map.configureCompute(1, 0);
+    deferred.game.map.configureCompute(1);
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
     deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
     deferred.game.map.setGradientWorkerCount(2);
@@ -208,7 +209,7 @@ TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]" 
         GAGCore::BinaryInputStream reader(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
         reader.seekFromStart(0);
         REQUIRE(game.load(&reader));
-        game.game.map.configureCompute(threads,0);
+        game.game.map.configureCompute(threads);
         std::vector<Uint32> actual;
         for (unsigned tick=0; tick<96; ++tick) {
             game.game.syncStep(0,Game::PreparationCompletion::Deferred);
@@ -219,4 +220,98 @@ TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]" 
         REQUIRE(game.game.map.gradientPipelineStatus().published>0);
         if (threads==1) expected=actual; else CHECK(actual==expected);
     }
+}
+
+TEST_CASE("presentation borrows the published no-AI read boundary without recapture" * doctest::test_suite("SimulationReadPhase"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.clearImmobile=true,.loadDefaultRace=true});
+    auto& game=fixture.game;
+    auto* unit=fixture.addUnit(WORKER,10,10);
+    const auto identity=Game::refOf(unit);
+    SceneRequest request;
+    request.selectedUnit=identity;
+    const auto required=SceneExtractor::requirements(request);
+    const auto captures=game.snapshots().metrics.captures;
+    const auto published=game.captureReadBoundary({},false,required);
+    REQUIRE(game.snapshots().metrics.captures==captures+1);
+    REQUIRE(game.prepareAIOrders({},false,nullptr,&published).empty());
+    SceneExtractor preparer;
+    PresentationFrame frame;
+    preparer.prepare(SceneInputs{published.project(required),request},frame);
+    CHECK(game.snapshots().metrics.captures==captures+1);
+    CHECK(frame.entities.units.data()==published.entities->units.data());
+    CHECK(frame.entities.buildings.data()==published.entities->buildings.data());
+    CHECK(frame.entities.unitIndex.data()==published.entities->unitSlotIndices.data());
+    CHECK(frame.entities.buildingIndex.data()==published.entities->buildingSlotIndices.data());
+    CHECK(frame.entities.sectors.data()==published.effects->sectors.data());
+    REQUIRE(frame.panels.unit.record);
+    CHECK(frame.panels.unit.record==frame.entities.unit(identity.gid));
+    const auto hp=frame.panels.unit.state().hp;
+    unit->hp=1;
+    game.snapshots().invalidateBoundary();
+    const auto edited=game.captureReadBoundary({},true,required);
+    CHECK(edited.observationRevision!=published.observationRevision);
+    CHECK(frame.panels.unit.state().hp==hp);
+    request.view.viewportX=7;
+    preparer.prepare(SceneInputs{published,request},frame);
+    CHECK(frame.panels.unit.state().hp==hp);
+    CHECK(game.snapshots().metrics.captures==captures+2);
+}
+
+#include "AI.h"
+#include "AIImplementation.h"
+#include "Player.h"
+#include "ai/engine/AIDecision.h"
+namespace {
+class BoundaryObserver final : public AIImplementation
+{
+public:
+    SimulationSnapshot::Handle observed;
+    bool load(GAGCore::InputStream*,Player*,Sint32) override { return true; }
+    void save(GAGCore::OutputStream*) override {}
+    bool supportsObservation() const override { return true; }
+    SimulationSnapshot::Requirements observationRequirements() const override
+    { return SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)|SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain); }
+    std::shared_ptr<Order> getOrder() override { throw std::logic_error("live AI observation"); }
+    std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext& context) override
+    { observed=context.world.components(); return std::make_shared<NullOrder>(); }
+};
+}
+TEST_CASE("AI and pending gradients consume the presentation union without another capture" * doctest::test_suite("SimulationReadPhase"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    fixture.addBuilding("swarm",4,4); fixture.addUnit(WORKER,12,12);
+    game.gameHeader.setAIOrderDelay(0);
+    game.players[0]->makeItAI(AI::NUMBI);
+    auto* observer=new BoundaryObserver;
+    delete game.players[0]->ai->aiImplementation;
+    game.players[0]->ai->aiImplementation=observer;
+    game.map.configureCompute(2);
+    game.map.configureGradientPipeline(0,8);
+    game.map.getClearAreasGradient(0,0);
+    game.syncStep(0,Game::PreparationCompletion::Deferred);
+    REQUIRE(game.map.hasPendingGradientPreparation());
+    const auto gradientRequirements=game.map.pendingGradientRequirements();
+    REQUIRE(gradientRequirements!=0);
+    constexpr std::array<unsigned,1> players{0};
+    SceneRequest request;
+    const auto rendering=SceneExtractor::requirements(request);
+    const auto captures=game.snapshots().metrics.captures;
+    const auto published=game.captureReadBoundary(players,false,rendering);
+    CHECK((published.requirements&gradientRequirements)==gradientRequirements);
+    REQUIRE(game.prepareAIOrders(players,false,{},&published).size()==1);
+    game.drainAI();
+    CHECK_FALSE(game.map.hasPendingGradientPreparation());
+    REQUIRE(observer->observed.entities);
+    CHECK(observer->observed.entities==published.entities);
+    CHECK(observer->observed.terrain==published.terrain);
+    CHECK_FALSE(observer->observed.session); // projection excludes presentation-only state
+    PresentationFrame frame;
+    SceneExtractor().prepare(published.project(rendering),request,frame);
+    CHECK(frame.world.entities==observer->observed.entities);
+    CHECK(frame.world.terrain==observer->observed.terrain);
+    CHECK(game.snapshots().metrics.captures==captures+1);
 }

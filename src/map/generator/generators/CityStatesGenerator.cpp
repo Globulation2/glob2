@@ -73,8 +73,8 @@ using namespace MapGeneration;
 // just feels lame when you receive it"), so a home is one of four kinds.
 //
 // The whole design is a pure function of the request, so validateWorld rebuilds it and checks the
-// finished world. Terrain is written straight to the undermap with an order-independent beach
-// pass, as Ring world does.
+// finished world. Terrain is written straight to the map's vertices with an order-independent
+// beach pass, as Ring world does.
 //
 // GAME RULES BEHIND IT (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md): stone can never be
 // cleared, so a stone wall is permanent, which is what makes the causeway the only door; water
@@ -314,7 +314,7 @@ struct Layout
 	std::vector<signed char> region;
 	std::vector<int> homeOf; // HomeLand tiles: which home, else -1
 	std::vector<unsigned char> lake, river, ford, sand, ridge, strip, causeway, road, clear;
-	// The sand roads: undermap vertices turned to sand, and the tiles with a corner on one.
+	// The sand roads: terrain vertices turned to sand, and the tiles with a corner on one.
 	std::vector<unsigned char> sandRoad, roadTile;
 	std::vector<double> radius, angle;
 	// The islets' middles, where their 10x4 building plots are stamped.
@@ -959,12 +959,12 @@ void planSandRoads(Layout &L, const Features &f)
 		if (line[i])
 			for (int dy = 0; dy < kRoadWidth; ++dy)
 				for (int dx = 0; dx < kRoadWidth; ++dx)
-					wide[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+					wide[t.at(t.remainderX(i) + dx, i / t.w + dy)] = 1;
 	for (int i = 0; i < n; ++i)
 	{
 		if (!wide[i] || water[i] || fromWater[i] < kRoadWaterGap)
 			continue;
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		// A home's lakes can be walled too, where their beach joins the sea's, so inside a home a
 		// road keeps the wall's distance from every water.
 		// A sand patch that touches a beach is walled as part of the shore, so a home's roads also
@@ -1064,7 +1064,7 @@ std::vector<unsigned char> heartTiles(const Map &map, const Layout &L)
 						 : L.heartKind == Crag      ? L.ringR - 1
 													: L.lakeR + kOrchardReach + 3;
 	for (int i = 0; i < n; ++i)
-		heart[i] = L.region[i] == Commons && L.radius[i] < reach && map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
+		heart[i] = L.region[i] == Commons && L.radius[i] < reach && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 	return heart;
 }
 
@@ -1078,7 +1078,7 @@ std::vector<unsigned char> seaMargin(const Map &map, const Layout &L)
 	std::vector<unsigned char> sea(n, 0);
 	for (int i = 0; i < n; ++i)
 		sea[i] =
-			map.getUMTerrain(i % t.w, i / t.w) == WATER && !L.lake[i] && L.region[i] != Commons;
+			map.vertexTerrainAt(t.remainderX(i), i / t.w) == WATER && !L.lake[i] && L.region[i] != Commons;
 	return MapGeneration::seaMargin(map, t, sea, L.roadTile);
 }
 
@@ -1099,7 +1099,7 @@ std::vector<unsigned char> stoneTiles(const Map &map, const Layout &L)
 	stone = sealCoasts(map, t, seaMargin(map, L), wallable);
 	for (int i = 0; i < n; ++i)
 		if ((L.strip[i] || L.ridge[i]) && !L.road[i] &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE))
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE))
 			stone[i] = 1;
 	return stone;
 }
@@ -1144,7 +1144,7 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 		// into long valleys.
 		if (int(context.bounded("city-valleys", 100)) >= 25 + int(75 * inward))
 			continue;
-		const int x = at % t.w, y = at / t.w;
+		const int x = t.remainderX(at), y = at / t.w;
 		const double stretch = 1.2 + context.bounded("city-valleys", 81) / 100.0;
 		const double turn = context.bounded("city-valleys", 3600) / 3600.0 * kPi;
 		const RadialShape shape((3 + context.bounded("city-valleys", 4)) * scale, 0.35, context,
@@ -1190,7 +1190,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 	std::vector<unsigned char> water(n), dry(n);
 	for (int i = 0; i < n; ++i)
 	{
-		water[i] = terrainProvidesFertility(map.terrainPropertiesAt(i % t.w, i / t.w));
+		water[i] = terrainProvidesFertility(map.terrainPropertiesAt(t.remainderX(i), i / t.w));
 		dry[i] = map.terrainPropertiesAt(i).walkable;
 	}
 	const std::vector<int> shore = stepsFrom(t, water, dry);
@@ -1205,7 +1205,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		const auto eligible = [&](int i)
 		{
 			return L.homeOf[i] == team && !L.causeway[i] && !L.clear[i] && !reserved[i] &&
-				   clearGround(map, i % t.w, i / t.w);
+				   clearGround(map, t.remainderX(i), i / t.w);
 		};
 		// The kit: wheat and wood beside the lake on the swarm's side, on the flank away from any
 		// creek, and the quarry behind the lake.
@@ -1233,8 +1233,8 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		// single grove - self-sufficient but not rich, so the commons is worth the trip. The patch
 		// field has 12-tile cells.
 		furnishGround(
-			map, t, context, fertility, eligible, [&](int i) { return patch(i % t.w, i / t.w); },
-			[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); },
+			map, t, context, fertility, eligible, [&](int i) { return patch(t.remainderX(i), i / t.w); },
+			[&](int i) { return split.uiLevel(t.remainderX(i), i / t.w, 2048); },
 			[&](int area)
 			{
 				return GroundAmounts{int(scaledCount(area * 4 / 100, o.wheat)),
@@ -1263,7 +1263,7 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	const auto eligible = [&](int i)
 	{
 		return L.region[i] == Commons && !L.clear[i] && !L.causeway[i] &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	HeightMap patch(t.w, t.h, context.stream("city-patch"));
@@ -1276,8 +1276,8 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 		if (eligible(i))
 		{
 			ground.push_back(i);
-			if (fertility.at(i % t.w, i / t.w) > 0)
-				levels.push_back(patch(i % t.w, i / t.w));
+			if (fertility.at(t.remainderX(i), i / t.w) > 0)
+				levels.push_back(patch(t.remainderX(i), i / t.w));
 		}
 	if (ground.empty())
 		return;
@@ -1290,8 +1290,8 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	std::vector<std::pair<double, int>> farm;
 	for (int i : ground)
 	{
-		const std::uint32_t f = fertility.at(i % t.w, i / t.w);
-		if (f > 0 && patch(i % t.w, i / t.w) >= cut)
+		const std::uint32_t f = fertility.at(t.remainderX(i), i / t.w);
+		if (f > 0 && patch(t.remainderX(i), i / t.w) >= cut)
 			farm.push_back({-double(f) * weight(i), i});
 	}
 	std::stable_sort(farm.begin(), farm.end());
@@ -1303,7 +1303,7 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	// one outcrop per 2000 tiles and one grove per 2500, sampled by the same weight.
 	plantFields(map, t, chosen, int(scaledCount(area * 7 / 100, o.wheat)),
 				int(scaledCount(area * 4 / 100, o.wood)),
-				[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
+				[&](int i) { return split.uiLevel(t.remainderX(i), i / t.w, 2048); });
 
 	const auto pick = [&](const char *stream)
 	{
@@ -1320,12 +1320,12 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	const int outcrops = int(scaledCount(std::max(2, area / 2000), o.stone));
 	for (int k = 0; k < outcrops; ++k)
 		if (const int at = pick("city-stone"); at >= 0)
-			placeResourceClump(map, context, {at % t.w, at / t.w}, STONE,
+			placeResourceClump(map, context, {t.remainderX(at), at / t.w}, STONE,
 							   1 + int(context.bounded("city-stone", 2)));
 	const int groves = int(scaledCount(std::max(3, area / 2500), o.fruit));
 	for (int k = 0; k < groves; ++k)
 		if (const int at = pick("city-fruit"); at >= 0)
-			placeResourceClump(map, context, {at % t.w, at / t.w},
+			placeResourceClump(map, context, {t.remainderX(at), at / t.w},
 							   CHERRY + int(context.bounded("city-fruit", 3)),
 							   1 + int(context.bounded("city-fruit", 2)));
 	// The orchard: three groves of the three fruits round the central lake's shore, on the island,
@@ -1356,7 +1356,7 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 					}
 				}
 			if (seed >= 0)
-				placeResourceClump(map, context, {seed % t.w, seed / t.w}, CHERRY + f, 2);
+				placeResourceClump(map, context, {t.remainderX(seed), seed / t.w}, CHERRY + f, 2);
 		}
 	}
 	// The forest heart: a belt of wood round the orchard that has to be cut through, and that the
@@ -1364,7 +1364,7 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 	if (L.heartKind == ForestHeart)
 		for (int i = 0; i < n; ++i)
 			if (eligible(i) && L.radius[i] >= L.lakeR + 2 && L.radius[i] < L.forestR)
-				map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
+				map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 }
 
 // Wheat covers every plantable islet tile outside the sand-bordered building plot.
@@ -1374,8 +1374,8 @@ void stockIslets(Map &map, const Layout &L, const Farm &plots)
 	const Torus &t = L.t;
 	for (int i = 0; i < t.size(); ++i)
 		if (L.region[i] == Islet && !plots.plot[i] && !plots.sand[i] &&
-			map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
-			map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+			map.isResourceAllowed(t.remainderX(i), i / t.w, WHEAT))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 }
 
 // Causeways and their approaches hold nothing but the causeways' own stone lines.
@@ -1383,8 +1383,8 @@ void clearRoads(Map &map, const Layout &L, const std::vector<unsigned char> &lin
 {
 	const Torus &t = L.t;
 	for (int i = 0; i < t.w * t.h; ++i)
-		if ((L.causeway[i] || L.clear[i]) && !line[i] && map.isResource(i % t.w, i / t.w))
-			map.setNoResource(i % t.w, i / t.w, 1);
+		if ((L.causeway[i] || L.clear[i]) && !line[i] && map.isResource(t.remainderX(i), i / t.w))
+			map.setNoResource(t.remainderX(i), i / t.w, 1);
 }
 
 // Deposits may land anywhere, and a band of them could close a home's swarm off from its causeway
@@ -1421,7 +1421,7 @@ bool generate(Game &game, GenerationContext &context)
 	const CityStatesOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(GRASS);
+	map.fillTerrain(GRASS);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);
@@ -1458,11 +1458,11 @@ bool generate(Game &game, GenerationContext &context)
 		stampFarmPlot(terrain, t, isletPlots, site.x - plot.width / 2, site.y - plot.height / 2,
 					  plot);
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	const std::vector<unsigned char> line = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 		if (line[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "city colonies";
 	const auto home = [&](int team)
@@ -1470,7 +1470,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground(n, 0);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				L.homeOf[i] == team && !L.strip[i] && !L.clear[i] && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+				L.homeOf[i] == team && !L.strip[i] && !L.clear[i] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return ground;
 	};
 	// The swarm stands between the causeway's home end and the lake, a short walk from the lake's
@@ -1527,16 +1527,16 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Torus &t = L.t;
 	const int n = t.w * t.h, teams = context.request.nbTeams;
 	const auto where = [&](int i)
-	{ return "(" + std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ")"; };
+	{ return "(" + std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ")"; };
 	const auto walkable = [&](int i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		return map.terrainPropertiesAt(x, y).walkable && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 	};
 	const std::vector<unsigned char> line = stoneTiles(map, L);
 	for (int i = 0; i < n; ++i)
 	{
-		if (line[i] && map.getResource(i % t.w, i / t.w).type != STONE)
+		if (line[i] && map.getResource(t.remainderX(i), i / t.w).type != STONE)
 			return "The stone at " + where(i) + " is missing.";
 		if (L.road[i] && !walkable(i))
 			return "The causeway at " + where(i) + " is blocked.";
@@ -1572,8 +1572,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	}
 
 	for (int i = 0; i < n; ++i)
-		if (L.region[i] == Islet && !isletPlot[i] && map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT) &&
-			map.getResource(i % t.w, i / t.w).type != WHEAT)
+		if (L.region[i] == Islet && !isletPlot[i] && map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT) &&
+			map.getResource(t.remainderX(i), i / t.w).type != WHEAT)
 			return "The islet grass at " + where(i) + " is not covered with wheat.";
 
 	// Shut every causeway road: with the walls up, nothing landing from the sea may get in.
@@ -1632,7 +1632,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		10,
+		11,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of

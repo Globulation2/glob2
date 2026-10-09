@@ -74,13 +74,13 @@ with those screens also apply to CLI exports; there is no separate CLI renderer.
 
 | Representation | Purpose | Contents and usage |
 | --- | --- | --- |
-| **Categorical map image** (`--map-image`, `--export-map-image`) | Edit geography and recreate a playable map | One pixel per underlying terrain-grid location, fixed terrain/resource colors and white colony markers. Use an image editor without antialiasing, then `--import-map-image`. |
+| **Categorical map image** (`--map-image`, `--export-map-image`) | Edit geography and recreate a playable map | One pixel per terrain vertex, fixed terrain/resource colors and white colony markers. Use an image editor without antialiasing, then `--import-map-image`. |
 | **Map preview** (`--preview`, `--preview-map`) | Browse, compare and illustrate maps | The lobby's overview renderer, with thumbnail sampling and numbered colony markers. Useful for judging overall geography; its display colors, markers and possible averaging are not the import contract. |
 | **Full map render / game-view screenshot** | Inspect how the map actually appears in play | Terrain transitions, resource sprites and their amounts, buildings and units as rendered by the game. Capture the game view or use a dedicated rendering/debugging tool. This CLI does not add a full game-view renderer. |
 
 Increasing `--preview-scale` enlarges a preview's retained thumbnail pixels; it
 never turns that preview into a detailed game-view render. Terrain-dump diagnostic
-renderers can additionally distinguish mixed shore tiles, but their palettes are
+renderers can additionally distinguish mixed-corner tiles, but their palettes are
 analysis conventions, not categorical import colors.
 
 Categorical images are a deliberately lossy interchange format. Export/import
@@ -211,8 +211,10 @@ resource amounts, alliances or scenario scripts. Ordinary previews are unchanged
   --json artifacts/imported.json
 ```
 
-Exports have one pixel per underlying terrain-grid location, top-left origin,
-without frames, labels or shading. Resource pixels imply grass, except algae
+Exports have one pixel per terrain vertex, top-left origin, without frames,
+labels or shading. Vertex (x,y) is the top-left corner of tile (x,y); each tile's
+rules come from its four corners. A resource pixel stands for the resource on
+the tile whose top-left corner it is, and implies a grass vertex, except algae
 which implies water. The palette is:
 
 | Meaning | RGB hex |
@@ -232,9 +234,12 @@ which implies water. The palette is:
 | Ice | `#BEE1F0` |
 | Trail (legacy name `road`) | `#B08A62` |
 
-Ice and Trail are whole-cell materials. Import retains them after legacy shore
-repair and records their required terrain experiments in the map; adjacent water
-is not converted into sand. Their colors are distinct from resource colors.
+Ice, Trail and the catalogue types keep their imported vertices: seam repair and
+beaches reshape only grass, sand and water, and adjacent water is not converted
+into sand. Import records their required terrain experiments in the map. Their
+colors are distinct from resource colors. Images exported before terrain moved
+to vertices used one pixel per whole tile for these types; they import as
+vertices, so a lone such pixel makes four mixed tiles rather than one whole tile.
 
 The terrain catalogue types export with the `image` colour of their row in
 `src/map/TerrainTypeTable.h` (boulders `#585A5C`, hedge `#264E28`, thicket `#364222`,
@@ -252,35 +257,36 @@ Import defaults to 256×256, four workers per colony and seed 1. Width/height
 accept 64, 128, 256 or 512 tiles. Input dimensions may differ, but the aspect
 ratio must match and each input axis must be at most 8192 pixels. Every pixel
 must be fully opaque. Source pixels are classified by squared RGB distance to
-the palette; each target cell takes the majority category in its source box.
+the palette; each target vertex takes the majority category in its source box.
 Ties use palette order in the table. Smaller images repeat source samples.
 
 Exported colony markers are solid 7×7 white squares centered two tiles right and
 down from the swarm anchor. Import joins white cells with eight-neighbor
 connectivity, including across opposite edges; the unwrapped component centroid,
 rounded to the nearest integer, minus two tiles determines its preferred swarm
-anchor. Components smaller than four target cells are ignored. There must be
+anchor. Components smaller than four target pixels are ignored. There must be
 1–16 markers. `--teams` optionally asserts the detected count; it does not add
 colonies. Team order follows component discovery in row order.
 
-Before engine shoreline correction, the importer repairs terrain in a narrow
+Before laying beaches, the importer repairs terrain in a narrow
 strip on each side of both wrap seams. It interpolates signed terrain distances
 along opposing cross-sections, using integer weights and a shared midpoint for
-the two edge cells. Interpolation is skipped on already matching cross-sections, even when another
+the two edge vertices. Interpolation is skipped on already matching cross-sections, even when another
 part of the same edge differs. The strip defaults to the
 shorter map dimension divided by 32, clamped to 2–12 tiles (8 at 256×256).
 `--image-seam-width 0..16` overrides it; zero preserves decoded edge terrain.
-The two axes are processed in order, using a shared corner profile. After shore
-correction, differing unprotected edge cells are reconciled to sand (all four
-corner cells together), preventing scan-order shore differences. The square within 20 tiles of each colony anchor is protected from interpolation,
-edge reconciliation and resource relocation. Mandatory shoreline legalization
-can still alter terrain or drop illegal resources in that region. This local heuristic can move shorelines or change
+The two axes are processed in order, using a shared corner profile. After beaches
+are laid, differing unprotected edge vertices are reconciled to sand (all four
+map-corner vertices together), since a beach depends on each vertex's own
+neighbours. The square within 20 tiles of each colony anchor is protected from interpolation,
+edge reconciliation and resource relocation. Beaches can still alter terrain or
+drop illegal resources in that region. This local heuristic can move shorelines or change
 crossings; it does not guarantee continuity for large feature offsets or preserve
-route topology. Engine shores can change cells just beyond the strip.
+route topology. Beaches can change vertices just beyond the strip.
 
 The image palette is a legacy content adapter for named built-in resources;
 custom resource definitions and compound stock quantities cannot be represented
-losslessly by these colors. After terrain rebuilding, resources with configured
+losslessly by these colors. After beaches are laid, resources with configured
 spreading, growth and ecology are interpolated across the same seam strip.
 With the shipped catalog these are trees, wheat and algae; rocks, fruit trees and
 papyrus remain fixed. Suitability and budget-restoration groups use each palette
@@ -297,10 +303,11 @@ budget in the available strip, all resource stitching is rolled back; terrain
 repair remains. This fallback does not prove that no valid arrangement exists. Protected or fixed deposits may leave
 resource mismatches at the edge. Zero seam width disables both stitching passes.
 
-Only the 7×7 patch around each recovered anchor is cleared and set to grass.
-Overlapping patches fail. Engine shoreline correction and terrain rebuilding
-can alter boundaries; pending resources that cannot legally occupy their final
-tiles are dropped. The swarm and workers must fit within that patch, or import
+Only the 7×7 patch of vertices around each recovered anchor is cleared and set to
+grass. Overlapping patches fail. Grass and water vertices that touch, including
+at a patch edge, both become sand, as `Map::layBeaches` does for generated maps;
+pending resources that cannot legally occupy their final tiles, judged by each
+tile's combined corner rules, are dropped. The swarm and workers must fit within that patch, or import
 fails. The importer does not add starter supplies or guarantee connections between colonies. Imported
 resources use seeded amounts from 1 through the resource type's `sizesCount - 1`,
 as normal generator deposits do. Dense wood/wheat interiors use amounts 2–4;
@@ -312,13 +319,13 @@ balanced or sustainable game.
 and supports normal preview and JSON outputs. Its JSON report adds
 `image_import` with marker counts, ignored marker components, terrain changes,
 cleared resources, dropped resources, `seam_width` and `seam_terrain_changes`
-(terrain cells changed by interpolation before engine shores), and
-`seam_shore_changes` (edge cells reconciled to sand after shore correction),
+(terrain vertices changed by interpolation before beaches), and
+`seam_shore_changes` (edge vertices reconciled to sand after beaches),
 `seam_resource_changes` (legal resource labels changed by stitching), and
 `resource_seam_fallback` (true when resource stitching was rolled back). Import failures return nonzero, write
 no map, and, if requested, write an `image_import_failure` JSON containing those
-counts; the error reason is printed on stderr. Terrain changes count underlying
-cells differing from the decoded image, including colony clearing and shores.
+counts; the error reason is printed on stderr. Terrain changes count vertices
+differing from the decoded image, including colony clearing and beaches.
 No display or network access is needed for image conversion.
 
 Run `python3 test/test_map_image.py` to verify the conversion contract. Fixtures,
@@ -371,3 +378,11 @@ accepts components 0–255 and defaults to `0,192,255`. Missing values, extra to
 overflow and invalid dimensions are errors. A separately supplied saved game must
 represent the field's geography; automatic [Maxima field captures](../ai/telemetry.md#maxima-placement-fields)
 retain their own matching Scene for PNG output.
+
+## Custom generator packages
+
+Use the repeatable `--generator-package PATH` launch option with a portable JSON
+package or authoring directory. Select its namespaced ID in `--generate-map`,
+`--headless` or catalog output. `--export-generator-package FILE` with
+`--generate-map` saves the exact package used for that run. See
+[JavaScript generators](JAVASCRIPT.md) for the manifest and authoring API.

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
 #include "OnlineServices.h"
+#include "BuildingLibraryScreen.h"
+#include "BuildingLibrary.h"
+#include "OnlineStorage.h"
 #include "PlatformClient.h"
 #include "InstanceConfig.h"
 #include "ChooseMapScreen.h"
@@ -11,6 +14,7 @@
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
+#include "GeneratorText.h"
 #include "GlobalContainer.h"
 #include "LandscapePickerScreen.h"
 #include "LandscapePreviewer.h"
@@ -138,6 +142,7 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 	if (preferences.load(*files))
 	{
 		setup = preferences.setup;
+        if(!preferences.missingGeneratorId.empty())message="Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
 		userMaps = preferences.userMaps && separateMapLibraries;
 		landscapeSortOrder = preferences.landscapeSortOrder;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
@@ -184,6 +189,11 @@ void CustomGameScreen::useForRoom(const CustomGameSetup &draft, int tab)
 {
 	forRoom = true;
 	setup = draft;
+	const auto nativeCatalog = CustomGameSetup::landscapeCatalog(true);
+	if (!nativeCatalog->find(setup.generator.method))
+		setup.generator.setMethodDefaults(nativeCatalog->methods(false).front(), nativeCatalog);
+	else
+		setup.generator.catalog = nativeCatalog;
 	for (auto &colony : setup.colonies)
 		if (colony.ai == AI::JAVASCRIPT)
 		{
@@ -327,10 +337,11 @@ void CustomGameScreen::savePreferences()
 std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
 {
 	std::vector<std::pair<int, GenerationRequest>> entries;
-	for (int method : GeneratorRegistry::builtins().methods(false))
+	const auto catalog = CustomGameSetup::landscapeCatalog(forRoom);
+	for (int method : catalog->methods(false))
 	{
 		auto draft = setup;
-		draft.generatorHistory.select(draft.generator, method);
+		draft.generatorHistory.select(draft.generator, method, catalog);
 		draft.generator.nbTeams = setup.capacity;
 		entries.emplace_back(method, draft.generator);
 	}
@@ -346,10 +357,8 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 	{
 		if (method == setup.generator.method)
 			selected = int(shown.size());
-		LandscapePickerScreen::Entry entry{tr(GenerationRequest::methodName(method)), request,
-										   method};
-		if (const auto *definition = GeneratorRegistry::builtins().find(method))
-			entry.tags = definition->tags;
+		LandscapePickerScreen::Entry entry{generatorName(request), request, method};
+		entry.tags = request.definition().tags;
 		shown.push_back(std::move(entry));
 	}
 	auto picker = std::make_unique<LandscapePickerScreen>(
@@ -394,7 +403,10 @@ void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> s
 	// The parameters the picker rolled the map with come along, so the lobby shows the map it
 	// showed: the landscape's own, or a random set from "Randomize parameters".
 	if (shown && shown->method == method)
+	{
+		setup.generator.catalog = shown->catalogSnapshot();
 		setup.generator.options = shown->options;
+	}
 	chosenSeed = seed;
 	randomAttempts = 0;
 	++setup.mapRevision;
@@ -451,7 +463,7 @@ void CustomGameScreen::repeatCurrentMap()
 void CustomGameScreen::resetParameters()
 {
 	GenerationRequest reset;
-	reset.setMethodDefaults(setup.generator.method);
+	reset.setMethodDefaults(setup.generator.method, setup.generator.catalogSnapshot());
 	reset.nbWorkers = setup.generator.nbWorkers;
 	reset.terrainType = setup.generator.terrainType;
 	reset.seed = setup.generator.seed;
@@ -523,6 +535,13 @@ void CustomGameScreen::invalidatePreview()
 	invalidate();
 }
 
+void CustomGameScreen::buildingSelectionChanged()
+{
+	// Rebuild generated previews, but retain a loaded map's immutable catalog.
+	if (setup.random) invalidatePreview();
+	invalidate();
+}
+
 std::string CustomGameScreen::teamsLabel(const TeamLayout::Layout &layout) const
 {
 	const int lone = setup.loneColony(layout);
@@ -587,6 +606,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 			entry.bytes = bytes;
 			entry.header = world->mapHeader;
 			entry.buildingCatalogSnapshot = world->gameHeader.getBuildingCatalogSnapshot();
+			entry.buildingArtwork = world->gameHeader.getBuildingArtwork();
 			entry.terrain.loadFromMap(world->map);
 			if (!entry.terrain.isLoaded())
 				throw std::runtime_error("map terrain");
@@ -597,6 +617,8 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 		int old = setup.capacity;
 		mapHeader = entry.header;
 		gameHeader.setBuildingCatalogSnapshot(entry.buildingCatalogSnapshot);
+		gameHeader.setBuildingArtwork(entry.buildingArtwork ? entry.buildingArtwork->bytes()
+															: std::string{});
 		setup.setCapacity(mapHeader.getNumberOfTeams());
 		source = path;
 		generatedSnapshot.reset();
@@ -646,6 +668,18 @@ bool CustomGameScreen::generateMap()
 	try
 	{
 		std::unique_ptr<Game> game;
+		BuildingLibrary::Selection buildings{globalContainer->buildingsTypes, {}};
+		// Keep this choice fixed across candidate rolls; installed releases never
+		// replace the immutable definitions in a loaded map or save.
+		if (Online::servicesCreated())
+			buildings = BuildingLibrary(Online::services().storage)
+							.compose(globalContainer->buildingsTypes);
+		else
+		{
+			auto storage = Online::makeUserDirectoryStorage();
+			if (storage)
+				buildings = BuildingLibrary(*storage).compose(globalContainer->buildingsTypes);
+		}
 		GenerationService generator;
 		const auto rootSeed = GenerationContext::randomSeed();
 		GenerationResult generationResult;
@@ -661,6 +695,9 @@ bool CustomGameScreen::generateMap()
 		for (int attempt = 0; attempt < candidates; ++attempt)
 		{
 			auto roll = std::make_unique<Game>(nullptr);
+			roll->buildingsTypes = buildings.catalog;
+			roll->gameHeader.setBuildingCatalogSnapshot(buildings.catalog.snapshotJson());
+			roll->configureBuildingCatalog();
 			auto request = setup.generator;
 			request.seed =
 				shown
@@ -682,6 +719,8 @@ bool CustomGameScreen::generateMap()
 		}
 		if (!game)
 			throw std::runtime_error(generationResult.diagnostic());
+		game->gameHeader.setBuildingArtwork(buildings.artwork ? buildings.artwork->bytes()
+															  : std::string{});
 		// Veteran/Fast start: the generators place level-0 workers; raise the chosen world's
 		// before it is saved, so the snapshot every client loads carries them.
 		if (setup.startingUnitLevel != 0)
@@ -696,6 +735,9 @@ bool CustomGameScreen::generateMap()
 		Engine::applyLocalExperiments(initial, game->mapHeader);
 		game->setGameHeader(initial);
 		gameHeader.setBuildingCatalogSnapshot(initial.getBuildingCatalogSnapshot());
+		gameHeader.setBuildingArtwork(game->gameHeader.getBuildingArtwork()
+										  ? game->gameHeader.getBuildingArtwork()->bytes()
+										  : std::string{});
 		// GameLoadScreen reads these bytes directly (Engine::initCustomFromBytesTask): a map
 		// this process just generated and is about to load right back gets no benefit from a
 		// round trip through disk, so the serialized bytes just move to another in-memory owner.
@@ -997,8 +1039,10 @@ Element CustomGameScreen::build(const Presentation &p)
 																			 : std::vector<std::string>{"Map", "Players & Teams", "Game Rules"});
 	const std::string rulesetTitle = setup.rulesetTitle(forRoom);
 	const std::vector<std::string> details = {
-		setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName(),
-		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + teamsLabel(setup.teamLayout()), rulesetTitle};
+		setup.random ? generatorName(setup.generator) : mapHeader.getMapName(),
+		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " +
+			teamsLabel(setup.teamLayout()),
+		rulesetTitle};
 	std::vector<Element> tabs;
 	for (int i = 0; i < 3; ++i)
 	{
@@ -1155,9 +1199,11 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			++setup.mapRevision;
 			invalidatePreview();
 		};
-		left.push_back(fe::field(tr("Landscape"), fe::chooser("generator/landscape", tr(GenerationRequest::methodName(g.method)), [this] { chooseLandscape(); })));
+		left.push_back(
+			fe::field(tr("Landscape"), fe::chooser("generator/landscape", generatorName(g),
+												   [this] { chooseLandscape(); })));
 		GenerationRequest defaults;
-		defaults.setMethodDefaults(g.method);
+		defaults.setMethodDefaults(g.method, g.catalogSnapshot());
 		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec && g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
 		left.push_back(fe::wrap({fe::button("generator/reset", tr("Reset to defaults"), [this] { resetParameters(); },
 											{.enabled = !atDefaults, .icon = fe::uiIcon(fe::UIIcon::Reset)}),
@@ -1168,15 +1214,17 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		{
 			std::vector<std::string> options;
 			for (int v : c.values())
-				options.push_back(c.isChoice() ? tr(c.valueLabel(v)) : std::to_string(c.displayValue(v)));
-			left.push_back(fe::field(tr(c.label), fe::choice(id, options, c.indexOf(c.get(g)),
-															 [this, c, changed](int i)
-															 {
-																 c.set(setup.generator, c.valueAt(i));
-																 if (c.id == "teams")
-																	 setup.setCapacity(setup.generator.nbTeams);
-																 changed();
-															 }),
+				options.push_back(c.isChoice() ? generatorText(g.definition(), c.valueLabel(v))
+											   : std::to_string(c.displayValue(v)));
+			left.push_back(fe::field(generatorText(g.definition(), c.label),
+									 fe::choice(id, options, c.indexOf(c.get(g)),
+												[this, c, changed](int i)
+												{
+													c.set(setup.generator, c.valueAt(i));
+													if (c.id == "teams")
+														setup.setCapacity(setup.generator.nbTeams);
+													changed();
+												}),
 									 {"", 160}));
 		};
 		for (const auto &c : GenerationRequest::sharedControls())
@@ -1203,7 +1251,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			if (!expanded[section])
 				continue;
 			bool any = false;
-			for (const auto &c : GenerationRequest::controls(g.method))
+			for (const auto &c : g.definition().controls)
 			{
 				if (static_cast<int>(c.group) != section)
 					continue;
@@ -1211,7 +1259,8 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				const std::string id = "generator/" + c.id;
 				if (c.isToggle())
 				{
-					left.push_back(fe::toggle(id, tr(c.label), c.get(g) != 0,
+					left.push_back(fe::toggle(id, generatorText(g.definition(), c.label),
+											  c.get(g) != 0,
 											  [this, c, changed](bool on)
 											  {
 												  c.set(setup.generator, on ? 1 : 0);
@@ -1236,7 +1285,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				{
 					fe::SliderOptions options;
 					options.valueText = std::to_string(c.get(g));
-					options.caption = tr(c.label);
+					options.caption = generatorText(g.definition(), c.label);
 					left.push_back(fe::slider(id, (c.get(g) - c.minimum) / c.step, 0, (c.maximum - c.minimum) / c.step,
 											  [c, apply](int i) { apply(c.minimum + i * c.step); }, options));
 				}
@@ -1244,7 +1293,10 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				{
 					fe::StepperOptions options;
 					options.step = c.step;
-					left.push_back(fe::field(tr(c.label), fe::stepper(id, c.get(g), c.minimum, c.maximum, apply, options), {"", 160}));
+					left.push_back(
+						fe::field(generatorText(g.definition(), c.label),
+								  fe::stepper(id, c.get(g), c.minimum, c.maximum, apply, options),
+								  {"", 160}));
 				}
 			}
 			if (!any)
@@ -1256,12 +1308,31 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 					{.enabled = validMap && !previewBusy(), .flat = true, .alignLeft = true, .icon = fe::uiIcon(fe::UIIcon::Settings)}));
 		}
 	}
+	// Room generators run on the server and cannot consult this profile's selection.
+	// A locally generated map can still be shared through the map library.
+	if (!forRoom)
+		left.push_back(fe::button("map/buildings", "Building families",
+								  [this]
+								  {
+									  screens.push(std::make_unique<BuildingLibraryScreen>(),
+												   [this](GAGGUI::Screen &, int result)
+												   {
+													   if (result == QUIT_APPLICATION)
+													   {
+														   endExecute(QUIT_APPLICATION);
+														   return;
+													   }
+													   buildingSelectionChanged();
+												   });
+								  }));
 	auto leftParts = left;
 	auto leftColumn = fe::column(std::move(left), {p.pt(8)});
 
 	std::vector<Element> right;
-	right.push_back(narrow ? fe::paragraph(setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName())
-						   : fe::heading(setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName()));
+	right.push_back(
+		narrow
+			? fe::paragraph(setup.random ? generatorName(setup.generator) : mapHeader.getMapName())
+			: fe::heading(setup.random ? generatorName(setup.generator) : mapHeader.getMapName()));
 	const std::string dimensions = validMap ? std::to_string(preview->getLastWidth()) + " x " + std::to_string(preview->getLastHeight())
 							   : setup.random ? std::to_string(1 << setup.generator.wDec) + " x " + std::to_string(1 << setup.generator.hDec)
 											  : "";

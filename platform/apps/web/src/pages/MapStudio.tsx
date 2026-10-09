@@ -1,8 +1,14 @@
+import { MessageError } from '../i18n.tsx';
+import { displayMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
+import { useVersionApplication } from '../components/studio/useVersionApplication.ts';
+import { studioSession } from '../components/studio/storage.ts';
+import { StudioShell, StudioHeader, ReleaseDialog } from '../components/studio/Studio.tsx';
+import { Icon } from '../icons.tsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError, api, request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useSession } from '../state.tsx';
-import { MapStudioLanding } from './MapStudioLanding.tsx';
 import { StudioWorkspace } from './studio/StudioWorkspace.tsx';
 import { useStudioStream } from './studio/useStudioStream.ts';
 import { useStudioDraft, type Pending } from './studio/useStudioDraft.ts';
@@ -11,34 +17,36 @@ import { ROOT, mergeThread, type Delivered, type Thread, type Wallet } from './s
 import '../styles/studio.css';
 
 export function MapStudio({ id }: { id?: string }) {
+  useLocale();
   const { account } = useSession();
   if (account === undefined)
     return (
       <div className="ms-gate" role="status">
-        Opening your studio…
+        {t('Opening your studio…')}
       </div>
     );
   if (account?.kind !== 'registered')
     return (
       <div className="ms-gate">
-        <span className="ms-eyebrow">AI MAP STUDIO</span>
-        <h1>Your next world starts with an idea.</h1>
-        <p>Sign in with a registered account to design, refine, and play your own maps.</p>
+        <span className="ms-eyebrow">{t('AI MAP STUDIO')}</span>
+        <h1>{t('Your next world starts with an idea.')}</h1>
+        <p>{t('Sign in with a registered account to design, refine, and play your own maps.')}</p>
         <a className="btn primary" href="/signin">
-          Sign in to create
+          {t('Sign in to create')}
         </a>
       </div>
     );
   return <RegisteredStudio key={`${account.id}:${id ?? 'new'}`} id={id} accountId={account.id} />;
 }
 function RegisteredStudio({ id, accountId }: { id?: string; accountId: string }) {
+  useLocale();
   const { navigate } = useRouter();
   const [wallet, setWallet] = useState<Wallet>();
   const [threads, setThreads] = useState<{ id: string; title: string }[]>([]);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [credits, setCredits] = useState(false);
-  const [hidden, setHidden] = useState(document.hidden);
+  const [, setHidden] = useState(document.hidden);
   useEffect(() => {
     const change = () => setHidden(document.hidden);
     document.addEventListener('visibilitychange', change);
@@ -59,7 +67,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
   const previousDelivery = useRef<string | undefined>(undefined);
   const payment = new URLSearchParams(window.location.search).get('payment');
   const checkoutBalance = Number(
-    sessionStorage.getItem(`studio-checkout-balance:${accountId}`) ?? 0,
+    studioSession.getItem(`studio-checkout-balance:${accountId}`) ?? 0,
   );
   const refreshWallet = useCallback(() => {
     void request<Wallet>('GET', `${ROOT}/account`)
@@ -117,9 +125,9 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
   }, [refreshWallet]);
   useEffect(() => {
     if (id) return;
-    const returnProject = sessionStorage.getItem(`studio-checkout:${accountId}`);
+    const returnProject = studioSession.getItem(`studio-checkout:${accountId}`);
     if (new URLSearchParams(window.location.search).has('payment') && returnProject) {
-      sessionStorage.removeItem(`studio-checkout:${accountId}`);
+      studioSession.removeItem(`studio-checkout:${accountId}`);
       navigate(
         `/map-studio/${returnProject}?payment=${payment === 'cancelled' ? 'cancelled' : 'returned'}`,
         { replace: true },
@@ -180,7 +188,7 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
         text: string;
         settings: typeof settings;
       };
-      const stored = sessionStorage.getItem(createdKey);
+      const stored = studioSession.getItem(createdKey);
       const creation: Creation = stored
         ? (JSON.parse(stored) as Creation)
         : {
@@ -190,13 +198,13 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
             text: draft.trim(),
             settings,
           };
-      sessionStorage.setItem(createdKey, JSON.stringify(creation));
+      studioSession.setItem(createdKey, JSON.stringify(creation));
       try {
         await request<{ id: string }>('POST', `${ROOT}/threads`, {
           body: { id: creation.id, title: creation.title },
         });
       } catch (error) {
-        if (isRejectedSubmission(error)) sessionStorage.removeItem(createdKey);
+        if (isRejectedSubmission(error)) studioSession.removeItem(createdKey);
         throw error;
       }
       const created = creation.id;
@@ -204,22 +212,22 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
         path: `${ROOT}/threads/${created}/turns`,
         body: { id: creation.messageId, text: creation.text, settings: creation.settings },
       };
-      sessionStorage.setItem(`studio-draft:${accountId}:${created}`, creation.text);
-      sessionStorage.setItem(`studio-pending:${accountId}:${created}`, JSON.stringify(pending));
-      sessionStorage.setItem(`studio-autosend:${accountId}:${created}`, '1');
-      sessionStorage.setItem(
+      studioSession.setItem(`studio-draft:${accountId}:${created}`, creation.text);
+      studioSession.setItem(`studio-pending:${accountId}:${created}`, JSON.stringify(pending));
+      studioSession.setItem(`studio-autosend:${accountId}:${created}`, '1');
+      studioSession.setItem(
         `studio-settings:${accountId}:${created}`,
         JSON.stringify({ settings: creation.settings }),
       );
-      if (sessionStorage.getItem(key)?.trim() === creation.text) sessionStorage.removeItem(key);
-      sessionStorage.removeItem(createdKey);
+      if (studioSession.getItem(key)?.trim() === creation.text) studioSession.removeItem(key);
+      studioSession.removeItem(createdKey);
       navigate(`/map-studio/${created}`);
     });
   }
   // Only the prompt-first navigation marks a request for automatic submission. Reloaded failures remain explicit retries.
   useEffect(() => {
-    if (!id || !pending || !sessionStorage.getItem(`studio-autosend:${accountId}:${id}`)) return;
-    sessionStorage.removeItem(`studio-autosend:${accountId}:${id}`);
+    if (!id || !pending || !studioSession.getItem(`studio-autosend:${accountId}:${id}`)) return;
+    studioSession.removeItem(`studio-autosend:${accountId}:${id}`);
     queueMicrotask(() => {
       void action(() => submitPending(pending));
     });
@@ -228,16 +236,13 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
   }, []);
   function buy(pack: string) {
     void action(async () => {
-      if (id) sessionStorage.setItem(`studio-checkout:${accountId}`, id);
-      else sessionStorage.removeItem(`studio-checkout:${accountId}`);
-      sessionStorage.setItem(
-        `studio-checkout-balance:${accountId}`,
-        String(wallet?.available ?? 0),
-      );
+      if (id) studioSession.setItem(`studio-checkout:${accountId}`, id);
+      else studioSession.removeItem(`studio-checkout:${accountId}`);
+      studioSession.setItem(`studio-checkout-balance:${accountId}`, String(wallet?.available ?? 0));
       const result = await request<{ url: string }>('POST', `${ROOT}/checkout`, { body: { pack } });
       const url = new URL(result.url);
       if (url.protocol !== 'https:' || url.hostname !== 'checkout.stripe.com')
-        throw new Error('Invalid checkout destination.');
+        throw new MessageError('Invalid checkout destination.');
       window.location.assign(url.href);
     });
   }
@@ -263,28 +268,26 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
         window.location.assign(`/play/?join=${encodeURIComponent(result.code)}`);
       }
     });
-  const landing = !id && wallet && !wallet.available && !wallet.activeRequest;
+  const [release, setRelease] = useState<Delivered>();
+  const versionUndo = useVersionApplication(
+    `map-version-undo:${accountId}:${id}`,
+    thread?.requests,
+    parent,
+    (v) => {
+      setParent(v?.id);
+      if (v?.input.settings) setSettings(v.input.settings);
+    },
+    setParent,
+  );
   return (
-    <div
-      className={`map-studio ms-root ${landing ? 'ms-landing-root' : 'ms-workspace-root'}`}
-      data-hidden={hidden}
-    >
-      <header className="ms-header">
-        <div className="ms-brand">
-          <span className="ms-emblem" aria-hidden="true">
-            ✧
-          </span>
-          <div>
-            <span className="ms-eyebrow">GLOBULATION 2</span>
-            <h1>AI Map Studio</h1>
-          </div>
-        </div>
+    <StudioShell className="map-studio ms-root ms-workspace-root">
+      <StudioHeader title={t('AI Map Studio')} icon="map">
         <details className="ms-projects">
           <summary>
-            {thread?.title ?? 'Your projects'} <span aria-hidden="true">⌄</span>
+            {thread?.title ?? t('Your projects')} <Icon name="chevron-down" size={18} />
           </summary>
-          <nav aria-label="Map projects">
-            <Link to="/map-studio">＋ New map</Link>
+          <nav aria-label={t('Map projects')}>
+            <Link to="/map-studio">{t('New map')}</Link>
             {threads.map((t) => (
               <Link
                 key={t.id}
@@ -294,27 +297,28 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
                 {t.title}
               </Link>
             ))}
-            {!threads.length && <p>Your projects will be saved here.</p>}
+            {!threads.length && <p>{t('Your projects will be saved here.')}</p>}
           </nav>
         </details>
         <button
           className="ms-credit-button"
+          aria-label={t('{value0} Map credits', { value0: wallet?.available ?? '…' })}
           onClick={() => setCredits(!credits)}
           aria-expanded={credits}
         >
-          <span aria-hidden="true">✦</span> {wallet?.available ?? '…'} <span>credits</span>
+          <Icon name="coins" size={18} /> {wallet?.available ?? '…'} <span>{t('Map credits')}</span>
         </button>
-      </header>
+      </StudioHeader>
       {payment === 'returned' && (
         <div className="ms-banner" role="status">
           {wallet && wallet.available > checkoutBalance
-            ? 'Your credits are ready. Let’s create.'
-            : 'Confirming your payment. Your credits appear once payment is confirmed.'}
+            ? t('Your credits are ready. Let’s create.')
+            : t('Confirming your payment. Your credits appear once payment is confirmed.')}
         </div>
       )}
       {payment === 'cancelled' && (
         <div className="ms-banner" role="status">
-          Checkout was cancelled. Your project and draft are saved.
+          {t('Checkout was cancelled. Your project and draft are saved.')}
         </div>
       )}
       {connection && (
@@ -324,42 +328,47 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
       )}
       {error && (
         <div className="ms-banner ms-error" role="alert">
-          {error}
+          {displayMessage(error)}
         </div>
       )}
       {pending && (
         <div className="ms-banner">
-          A saved request is ready to send again safely.{' '}
+          {t('A saved request is ready to send again safely.')}{' '}
           <button disabled={busy} onClick={() => void action(() => submitPending(pending))}>
-            Retry the same request
+            {t('Retry the same request')}
           </button>
         </div>
       )}
-      {credits && (
-        <CreditControls wallet={wallet} busy={busy} buy={buy} close={() => setCredits(false)} />
+      {versionUndo.version && (
+        <div className="studio-revisions" role="status">
+          <span>{t('Generated version accepted as your current edit target.')}</span>
+          <button aria-disabled={!versionUndo.canUndo} onClick={versionUndo.undo}>
+            <Icon name="restore" size={18} /> {t(' Undo')}
+          </button>
+          {!versionUndo.canUndo && (
+            <span>{t('The edit target changed. Choose a saved version in history.')}</span>
+          )}
+        </div>
       )}
+      <ReleaseDialog open={credits} onClose={() => setCredits(false)} title={t('Map credits')}>
+        <CreditControls wallet={wallet} busy={busy} buy={buy} close={() => setCredits(false)} />
+      </ReleaseDialog>
       {wallet && !wallet.enabled && (
         <div className="ms-banner">
-          AI Map Studio is not enabled on this instance. Your saved projects remain available.
+          {t(
+            'AI Map Studio is not enabled on this instance. Your saved projects remain available.',
+          )}
         </div>
       )}
       {!id && !wallet ? (
         <div className="ms-gate" role="status">
-          <p>Opening your studio…</p>
-          {error && <button onClick={refreshWallet}>Retry loading studio</button>}
+          <p>{t('Opening your studio…')}</p>
+          {error && <button onClick={refreshWallet}>{t('Retry loading studio')}</button>}
         </div>
-      ) : landing ? (
-        <MapStudioLanding
-          wallet={wallet}
-          busy={busy}
-          buy={buy}
-          threads={threads}
-          draft={draft}
-          setDraft={setDraft}
-        />
       ) : (
         <StudioWorkspace
           id={id}
+          openCredits={() => setCredits(true)}
           thread={thread}
           wallet={wallet}
           busy={busy || !!pending}
@@ -379,14 +388,40 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
           revision={revision}
           celebrate={celebrate}
           loadEarlier={() => void action(loadEarlier)}
-          versionAction={onVersionAction}
+          versionAction={(kind, version) =>
+            kind === 'publish' ? setRelease(version) : onVersionAction(kind, version)
+          }
         />
       )}
-    </div>
+      <ReleaseDialog
+        open={!!release}
+        onClose={() => setRelease(undefined)}
+        title={t('Publish map version')}
+      >
+        {release && (
+          <>
+            <p>
+              <RichMessage
+                source={'Publish the selected saved map ({slot0}) to the public Map library.'}
+                slots={{ slot0: release.map_hash.slice(0, 12) }}
+              />
+            </p>
+            <p>{t('This changes the map’s visibility. Conversation history remains private.')}</p>
+            <button
+              className="primary"
+              disabled={busy}
+              onClick={() => onVersionAction('publish', release)}
+            >
+              <Icon name="share" size={18} /> {t(' Publish')}
+            </button>
+          </>
+        )}
+      </ReleaseDialog>
+    </StudioShell>
   );
 }
 function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : 'The request could not be completed.';
+  return error instanceof Error ? error.message : t('The request could not be completed.');
 }
 function isRejectedSubmission(error: unknown) {
   return error instanceof ApiError && [400, 401, 403, 404, 409, 422, 429].includes(error.status);

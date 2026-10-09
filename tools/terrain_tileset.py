@@ -129,6 +129,11 @@ def _validate(document, root):
             or not 0 <= p["roughness_q8"] <= 512
         ):
             raise ValueError("Invalid or duplicate profile")
+        shape = p.get("shape", "patch")
+        if shape not in ("patch", "contextual"):
+            raise ValueError("Unknown boundary shape")
+        if version < 3 and shape != "patch":
+            raise ValueError("Contextual shape requires catalog version 3")
         if version == 1 and "feather_q8" in p:
             raise ValueError("Boundary feather requires catalog version 2")
         integer(p.get("feather_q8", 256), 128, 512, "Boundary feather")
@@ -228,6 +233,10 @@ def _validate(document, root):
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
+        if "variant_grid" in m:
+            grid = integer(m["variant_grid"], 1, 16, "Variant grid")
+            if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid:
+                raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid variants")
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")

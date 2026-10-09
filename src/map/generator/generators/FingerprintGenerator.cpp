@@ -129,7 +129,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.clearing.assign(n, 0);
 	for (const ShapePoint &home : L.homes)
 		for (int i = 0; i < n; ++i)
-			if (std::hypot(t.offsetX(int(home.x), i % t.w), t.offsetY(int(home.y), i / t.w)) <=
+			if (std::hypot(t.offsetX(int(home.x), t.remainderX(i)), t.offsetY(int(home.y), i / t.w)) <=
 				L.homeRadius + kClearingMargin)
 				L.clearing[i] = 1;
 	for (int i = 0; i < n; ++i)
@@ -154,7 +154,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 					[&](int j)
 					{
 						return std::int64_t(field[j]) +
-							   t.dist2(i % t.w, i / t.w, j % t.w, j / t.w) * 50;
+							   t.dist2(t.remainderX(i), i / t.w, t.remainderX(j), j / t.w) * 50;
 					},
 					queued, ++pools);
 		// A pool's beach takes the stone off its shore, so no stone stands within two of a pool.
@@ -193,10 +193,10 @@ bool generate(Game &game, GenerationContext &context)
 		if (L.water[i])
 			terrain[i] = WATER;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	for (int i = 0; i < n; ++i)
-		if (L.stone[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		if (L.stone[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "fingerprint colonies";
 	if (!settleRoundColonies(game, context, "fingerprint-starts", L.homeOf, L.homes, L.homeRadius))
@@ -208,17 +208,17 @@ bool generate(Game &game, GenerationContext &context)
 		plantOpenHomeKit(
 			map, t, context, L.kits[k], 0.0, L.homeRadius, kHomeWheat, kHomeWood, kHomeQuarry,
 			[&](int i)
-			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
+			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); });
 	// The ambient layer over all the land: a share of the fertile ground under crops, in patches, with
 	// outcrops and groves; on a water map that is nearly everything.
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	const std::vector<int> patch = periodicNoise(t.w, t.h, 10, context.stream("fingerprint-patch"));
 	const std::vector<int> split = periodicNoise(t.w, t.h, 5, context.stream("fingerprint-split"));
 	const auto eligible = [&](int i)
-	{ return L.homeOf[i] < 0 && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	{ return L.homeOf[i] < 0 && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
-		fertile += eligible(i) && fertility.at(i % t.w, i / t.w) > 0;
+		fertile += eligible(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, eligible, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -282,7 +282,7 @@ GeneratorDefinition fingerprintDefinition()
 		"fingerprint",
 		26,
 		"Fingerprint",
-		4,
+		5,
 		false,
 		{// FEEDBACK 2026-09-13: wavelength 30 and homes of 18 (were 20 and 12).
 		 GeneratorControl{"wavelength", "Wavelength", 12, 48, 2, 30, ControlGroup::Terrain}

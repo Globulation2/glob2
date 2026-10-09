@@ -37,7 +37,8 @@ void blank(MapEdit &editor)
 	editor.viewportX = 0;
 	editor.viewportY = 0;
 	editor.updateCamera();
-	editor.minimap.setGame(editor.game);
+	editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
+    editor.preparePresentation();
 }
 
 void collect(Node *node, bool inScroll, std::vector<std::pair<Node *, bool>> &out)
@@ -211,21 +212,22 @@ TEST_SUITE("EditorDockLayout")
 		auto cellAt = [&](int x)
 		{
 			int cx = 0, cy = 0;
-			editor.game.map.displayToMapCaseAligned(editor.mapMouseX(x), editor.mapMouseY(y), &cx, &cy,
-													editor.viewportX, editor.viewportY);
+			// Terrain brushes paint the vertex nearest the pointer.
+			editor.game.map.displayToMapCaseUnaligned(editor.mapMouseX(x), editor.mapMouseY(y), &cx, &cy,
+													  editor.viewportX, editor.viewportY);
 			return std::pair{cx, cy};
 		};
 		const auto [mx, my] = cellAt(area.x - 1);
-		REQUIRE(editor.game.map.terrainTypeAt(mx, my) == GRASS);
+		REQUIRE(editor.game.map.vertexTerrainAt(mx, my) == GRASS);
 		click(editor, area.x - 1, y);
-		CHECK(editor.game.map.terrainTypeAt(mx, my) == SAND);
+		CHECK(editor.game.map.vertexTerrainAt(mx, my) == SAND);
 		CHECK_FALSE(editor.isDraggingTerrain);
 		// Inside the dock the same click belongs to the dock: the map is untouched
 		// and the brush preview is hidden.
 		const auto [ix, iy] = cellAt(area.x + 1);
-		const auto before = editor.game.map.terrainTypeAt(ix, iy);
+		const auto before = editor.game.map.vertexTerrainAt(ix, iy);
 		click(editor, area.x + 1, y);
-		CHECK(editor.game.map.terrainTypeAt(ix, iy) == before);
+		CHECK(editor.game.map.vertexTerrainAt(ix, iy) == before);
 		CHECK(editor.pointerOverInterface());
 		// A stroke that starts on the map keeps painting when it crosses into the dock.
 		auto down = mouse(SDL_EVENT_MOUSE_BUTTON_DOWN, area.x - 40, y);

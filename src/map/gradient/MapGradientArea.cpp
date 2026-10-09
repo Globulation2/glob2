@@ -103,7 +103,10 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 		}
 	}
 
-	propagateGradient(gradient, swimClass);
+	{
+		PERF_SCOPE_TIME(PropagationArea);
+		propagateGradient(gradient, swimClass);
+	}
 }
 
 void Map::updateForbiddenGradient(int teamNumber)
@@ -208,7 +211,10 @@ void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 	gradientRuntime->pipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
 	seedGuardAreasGradient(teamNumber, swimClass, gradient);
-	propagateGradient(gradient, swimClass);
+	{
+		PERF_SCOPE_TIME(PropagationArea);
+		propagateGradient(gradient, swimClass);
+	}
 }
 
 void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
@@ -240,7 +246,10 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 	gradientRuntime->pipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
 	seedClearAreasGradient(teamNumber, swimClass, gradient);
-	propagateGradient(gradient, swimClass);
+	{
+		PERF_SCOPE_TIME(PropagationArea);
+		propagateGradient(gradient, swimClass);
+	}
 }
 
 void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
@@ -264,29 +273,9 @@ void Map::updateClearAreasGradient()
 		updateClearAreasGradient(i);
 }
 
-// These refreshes already share a simulation boundary. Only allocated fields
-// participate; no worker changes cache ownership or refresh scheduling.
 void Map::updateTeamAreaGradients(int teamNumber)
 {
-	if (!computeEnabled(ComputeAreas))
-	{
-		updateForbiddenGradient(teamNumber);
-		updateGuardAreasGradient(teamNumber);
-		updateClearAreasGradient(teamNumber);
-		return;
-	}
-	std::vector<std::pair<int, int>> jobs;
-	for (int kind = 0; kind < 3; ++kind)
-		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-		{
-			const auto field = kind == 0 ? forbiddenGradient[teamNumber][swim]
-				: kind == 1 ? guardAreasGradient[teamNumber][swim] : clearAreasGradient[teamNumber][swim];
-			if (field) jobs.emplace_back(kind, swim);
-		}
-	computeExecutor().run(jobs.size(), [&](size_t i) {
-		const auto [kind, swim] = jobs[i];
-		if (kind == 0) updateForbiddenGradient(teamNumber, swim);
-		else if (kind == 1) updateGuardAreasGradient(teamNumber, swim);
-		else updateClearAreasGradient(teamNumber, swim);
-	});
+	updateForbiddenGradient(teamNumber);
+	updateGuardAreasGradient(teamNumber);
+	updateClearAreasGradient(teamNumber);
 }

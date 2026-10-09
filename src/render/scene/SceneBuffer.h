@@ -22,6 +22,7 @@ public:
 	{
 		const std::uint8_t previous = middle.exchange(std::uint8_t(backIndex | Fresh), std::memory_order_acq_rel);
 		backIndex = previous & Index;
+        retire(slots[backIndex]);
 	}
 
 	//! True while the consumer has not taken the last published value yet.
@@ -33,6 +34,7 @@ public:
 	{
 		if (!(middle.load(std::memory_order_acquire) & Fresh))
 			return false;
+        retire(slots[frontIndex]);
 		const std::uint8_t previous = middle.exchange(frontIndex, std::memory_order_acq_rel);
 		frontIndex = previous & Index;
 		hasFront = true;
@@ -45,6 +47,10 @@ public:
 	bool ready() const { return hasFront; }
 
 private:
+    static void retire(T& value)
+    {
+        if constexpr (requires { value.releaseWorld(); }) value.releaseWorld();
+    }
 	static constexpr std::uint8_t Index = 0x3, Fresh = 0x4;
 	std::array<T, 3> slots{};
 	std::uint8_t backIndex = 0;              // producer only

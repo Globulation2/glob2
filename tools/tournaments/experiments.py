@@ -1,4 +1,4 @@
-"""Four experiment planners. All execution goes through Coordinator."""
+"""Experiment planners. All execution goes through Coordinator."""
 import argparse
 import itertools
 import json
@@ -120,6 +120,51 @@ class Planner:
                 self.sampled_game(rng, build, ais, [method], sizes, ['1v1'],
                                   (players if side == 0 else players[::-1], map_seed, game_seed))
 
+    # Map sizes a depth model must cover: 64, 128 and 256 tiles a side. Four
+    # colonies do not fit every generator at 64x64, so that size is duel-only.
+    GRADIENT_DEPTH_SIZES = [{'width': 6, 'height': 6, 'formats': ['1v1']},
+                            {'width': 7, 'height': 7}, {'width': 8, 'height': 8}]
+
+    def gradient_depth(self, methods):
+        """Sampled games recording building-field lifetimes (--telemetry gradient-stats).
+
+        Each game independently draws its format, AIs, generator and map size, so
+        the dataset spans the inputs a depth prediction may key on. The AI order
+        delay is pinned to the engine default the model is fitted for."""
+        config = self.config
+        count = config.get('sample_games', 48)
+        if type(count) is not int or count <= 0:
+            raise ValueError('sample_games must be a positive integer')
+        ais = config.get('ais') or [a['name'] for a in self.bundles[self.builds[0]]['capabilities']['ais'] if a['id'] != 0]
+        formats = config.get('formats', ['1v1', '2v2', 'ffa'])
+        if not ais or not methods or not formats or set(formats) - {'1v1', '2v2', 'ffa'}:
+            raise ValueError('gradient_depth needs AIs, generators and known formats')
+        sizes = config.get('sizes', self.GRADIENT_DEPTH_SIZES)
+        config.setdefault('ticks', 18048)
+        config['rules'] = {'aiOrderDelay': 8, **config.get('rules', {})}
+        outputs = config.setdefault('outputs', {})
+        outputs['telemetry'] = sorted(set(outputs.get('telemetry', [])) | {'gradient-stats'})
+        rng = random.Random(config.get('sample_seed', 1))
+        for size in sizes:
+            if not set(size.get('formats', formats)) & set(formats):
+                raise ValueError(f'map size {size} admits none of the formats')
+        # Size first, so every size gets an equal share of games whatever
+        # formats it admits; then a format that size admits.
+        # A size's optional `generators` restricts the pool at that size, for
+        # generators a preflight found unable to generate there.
+        pools = []
+        for size in sizes:
+            pool = [m for m in methods if m in size['generators']] if 'generators' in size else methods
+            if not pool:
+                raise ValueError(f'map size {size} admits none of the generators')
+            pools.append(pool)
+        for _ in range(count):
+            index = rng.randrange(len(sizes))  # the same draw as rng.choice(sizes)
+            size = sizes[index]
+            fmt = rng.choice([f for f in formats if f in size.get('formats', formats)])
+            params = {k: v for k, v in size.items() if k not in ('formats', 'generators')}
+            self.sampled_game(rng, rng.choice(self.builds), ais, pools[index], [params], [fmt])
+
     def game(self, generated, build, seed, players, rotation, fmt, variant='baseline', overrides=None, pair=None, held_out=False, alliances=None):
         config = self.config
         map_seed = generated['seeds']['map']
@@ -142,7 +187,7 @@ class Planner:
     def plan(self):
         config = self.config
         default_methods = ([g['method'] for g in self.bundles[self.builds[0]]['capabilities']['generators']
-                            if not g.get('editorOnly')] if self.kind == 'ai_comparison' else [15])
+                            if not g.get('editorOnly')] if self.kind in ('ai_comparison', 'gradient_depth') else [15])
         methods = config.get('generators', default_methods)
         seeds = config.get('map_seeds', [1001])
         game_seeds = config.get('game_seeds', [1])
@@ -165,6 +210,8 @@ class Planner:
                             config={'generator':method,'params':params,'candidates':config.get('candidates',0)},
                             outputs=config.get('outputs',{}), limits={'timeout_seconds':config.get('timeout_seconds',60)},
                             labels={'variant':f'catalog-{i}','map_seed':seed,'generator':method}))
+        elif self.kind == 'gradient_depth':
+            self.gradient_depth(methods)
         elif self.kind == 'fairness':
             n = config.get('colonies',4)
             for method, map_seed in itertools.product(methods,seeds):

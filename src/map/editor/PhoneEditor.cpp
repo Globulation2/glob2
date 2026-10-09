@@ -618,7 +618,7 @@ void PhoneEditor::act(const TouchAction &action)
 	{
 		// Brush modes show their size here; the rail changes it.
 		if (objects)
-			editor.selectActiveTeam((editor.team + 1) % editor.game.teamsCount());
+			editor.selectActiveTeam((editor.team + 1) % editor.view.scene->entities.teamCount);
 		return;
 	}
 	if (held == -4)
@@ -1029,7 +1029,7 @@ void PhoneEditor::draw()
 		TerrainSelector::isBaseTerrain(editor.terrainType))
 	{
 		const auto type = TerrainSelector::baseTerrain(editor.terrainType);
-		const auto *label = editor.game.map.terrainPresentation(type).label;
+		const auto *label = editor.view.scene->map.terrainPresentation(type).label;
 		labels[2] = unsigned(type) < TERRAIN_COUNT
 						? GAGCore::Toolkit::getStringTable()->getString(label)
 						: label;
@@ -1052,7 +1052,7 @@ void PhoneEditor::draw()
 		label(r, labels[i]);
 		if (i == 1 && objects)
 			gfx->drawFilledRect(int(r.x + 4 * unit), int(r.y + r.h - 5 * unit), int(r.w - 8 * unit),
-								int(3 * unit), editor.game.teams[editor.team]->color);
+								int(3 * unit), presentationColor(editor.view.scene->entities.teams[editor.team].color));
 	}
 	drawInteractionPreview();
 	if (undo && (!paintMode() || SDL_GetTicks() >= undo->expires))
@@ -1101,12 +1101,12 @@ void PhoneEditor::draw()
 		// One wide card opens the teams editor.
 		const ViewRect card{tray.x + 8 * unit, tray.y + 6 * unit, tray.w - 16 * unit, tray.h - 14 * unit};
 		gfx->drawFilledRect(int(card.x), int(card.y), int(card.w), int(card.h), InGameTouchTheme::field());
-		for (int i = 0; i < editor.game.teamsCount() && i < 16; ++i)
+		for (int i = 0; i < editor.view.scene->entities.teamCount && i < 16; ++i)
 			gfx->drawFilledRect(int(card.x + (10 + 22 * i) * unit), int(card.y + card.h - 12 * unit), int(16 * unit),
-								int(5 * unit), editor.game.teams[i]->color);
+								int(5 * unit), presentationColor(editor.view.scene->entities.teams[i].color));
 		centredLabel({card.x, card.y, card.w, card.h - 10 * unit},
 					 GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Manage teams (%0)]"))
-						 .arg(editor.game.teamsCount()));
+						 .arg(editor.view.scene->entities.teamCount));
 	}
 	drawTray();
 	drawStatusToast();

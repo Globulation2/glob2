@@ -12,6 +12,192 @@
     "createdAt"
   ],
   "properties": {
+    "generatorProvenance": {
+      "type": "object",
+      "required": [
+        "verified",
+        "generator"
+      ],
+      "properties": {
+        "verified": {
+          "type": "boolean"
+        },
+        "generator": {
+          "type": "object",
+          "required": [
+            "libraryId",
+            "versionId",
+            "packageHash",
+            "fileHash",
+            "generatorId",
+            "revision",
+            "seed",
+            "params",
+            "candidates",
+            "startingUnitLevel"
+          ],
+          "properties": {
+            "libraryId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "versionId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "packageHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "fileHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "generatorId": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_.:-]+$",
+              "maxLength": 128
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "seed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "params": {
+              "type": "object",
+              "patternProperties": {
+                "^[A-Za-z0-9_-]{1,64}$": {
+                  "type": "integer"
+                }
+              },
+              "maxProperties": 72
+            },
+            "candidates": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "default": 1
+            },
+            "startingUnitLevel": {
+              "type": "number",
+              "const": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "chosenSeed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      }
+    },
+    "setCredits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "setId",
+          "versionId",
+          "title",
+          "license",
+          "authors",
+          "sourceHash",
+          "entries"
+        ],
+        "properties": {
+          "setId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "versionId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "\\S"
+          },
+          "license": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "CC0-1.0"
+              },
+              {
+                "type": "string",
+                "const": "CC-BY-4.0"
+              }
+            ]
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "author",
+                "license"
+              ],
+              "properties": {
+                "author": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "\\S"
+                },
+                "source": {
+                  "type": "string",
+                  "maxLength": 2000
+                },
+                "license": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "CC0-1.0"
+                    },
+                    {
+                      "type": "string",
+                      "const": "CC-BY-4.0"
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 64
+          },
+          "sourceHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Lowercase hexadecimal SHA-256 digest."
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "maxItems": 32768
+          }
+        },
+        "additionalProperties": false
+      },
+      "maxItems": 256
+    },
     "hash": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$",

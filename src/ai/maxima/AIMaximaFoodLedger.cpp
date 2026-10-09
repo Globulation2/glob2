@@ -68,9 +68,21 @@ Input::Input(): width(0), height(0)
 {
 }
 
+void Input::setDimensions(int newWidth, int newHeight)
+{
+	width=newWidth; height=newHeight;
+	const auto mask=[](int size) {
+		const unsigned value=static_cast<unsigned>(size);
+		return size>0 && (value & (value-1u))==0 ? value-1u : ~0u;
+	};
+	widthMask=mask(width); heightMask=mask(height);
+}
+
 int Input::normalizeX(int x) const
 {
 	if(width<=0)return 0;
+	if(widthMask==static_cast<unsigned>(width)-1u)
+		return static_cast<int>(static_cast<unsigned>(x) & widthMask);
 	const int value=x%width;
 	return value<0?value+width:value;
 }
@@ -78,6 +90,8 @@ int Input::normalizeX(int x) const
 int Input::normalizeY(int y) const
 {
 	if(height<=0)return 0;
+	if(heightMask==static_cast<unsigned>(height)-1u)
+		return static_cast<int>(static_cast<unsigned>(y) & heightMask);
 	const int value=y%height;
 	return value<0?value+height:value;
 }

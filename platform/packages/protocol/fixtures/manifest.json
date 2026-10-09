@@ -7,10 +7,29 @@
     "AccountExport": "schemas/AccountExport.schema.json",
     "AdminAccount": "schemas/AdminAccount.schema.json",
     "AdminAccountList": "schemas/AdminAccountList.schema.json",
+    "AdminAnalytics": "schemas/AdminAnalytics.schema.json",
+    "AdminAuditEntry": "schemas/AdminAuditEntry.schema.json",
+    "AdminAuditList": "schemas/AdminAuditList.schema.json",
     "AdminBanRequest": "schemas/AdminBanRequest.schema.json",
+    "AdminContent": "schemas/AdminContent.schema.json",
+    "AdminContentList": "schemas/AdminContentList.schema.json",
+    "AdminFinanceCash": "schemas/AdminFinanceCash.schema.json",
+    "AdminFinanceCost": "schemas/AdminFinanceCost.schema.json",
+    "AdminFinanceCredit": "schemas/AdminFinanceCredit.schema.json",
+    "AdminFinances": "schemas/AdminFinances.schema.json",
+    "AdminLibrary": "schemas/AdminLibrary.schema.json",
+    "AdminMetric": "schemas/AdminMetric.schema.json",
+    "AdminModerateContent": "schemas/AdminModerateContent.schema.json",
     "AdminMuteRequest": "schemas/AdminMuteRequest.schema.json",
+    "AdminOperation": "schemas/AdminOperation.schema.json",
+    "AdminOperationDetail": "schemas/AdminOperationDetail.schema.json",
+    "AdminOperations": "schemas/AdminOperations.schema.json",
     "AdminRenameRequest": "schemas/AdminRenameRequest.schema.json",
+    "AdminReport": "schemas/AdminReport.schema.json",
+    "AdminReportList": "schemas/AdminReportList.schema.json",
+    "AdminResolveReport": "schemas/AdminResolveReport.schema.json",
     "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
+    "AdminUsageReconcile": "schemas/AdminUsageReconcile.schema.json",
     "AiCheck": "schemas/AiCheck.schema.json",
     "AiDetail": "schemas/AiDetail.schema.json",
     "AiInfo": "schemas/AiInfo.schema.json",
@@ -27,6 +46,11 @@
     "AiValidationReport": "schemas/AiValidationReport.schema.json",
     "AiVersion": "schemas/AiVersion.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
+    "BuildingAiStudioAdopt": "schemas/BuildingAiStudioAdopt.schema.json",
+    "BuildingAiStudioConfig": "schemas/BuildingAiStudioConfig.schema.json",
+    "BuildingAiStudioCreate": "schemas/BuildingAiStudioCreate.schema.json",
+    "BuildingAiStudioTurn": "schemas/BuildingAiStudioTurn.schema.json",
+    "BuildingPackage": "schemas/BuildingPackage.schema.json",
     "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "ColonySkinClaims": "schemas/ColonySkinClaims.schema.json",
     "ColonySkinVersion": "schemas/ColonySkinVersion.schema.json",
@@ -37,7 +61,25 @@
     "ErrorBody": "schemas/ErrorBody.schema.json",
     "GenerateMapPayload": "schemas/GenerateMapPayload.schema.json",
     "GenerateMapResult": "schemas/GenerateMapResult.schema.json",
+    "GenerateScriptMapPayload": "schemas/GenerateScriptMapPayload.schema.json",
+    "GenerateScriptMapResult": "schemas/GenerateScriptMapResult.schema.json",
+    "GeneratorControlInfo": "schemas/GeneratorControlInfo.schema.json",
     "GeneratorDescriptor": "schemas/GeneratorDescriptor.schema.json",
+    "GeneratorDetail": "schemas/GeneratorDetail.schema.json",
+    "GeneratorInfo": "schemas/GeneratorInfo.schema.json",
+    "GeneratorList": "schemas/GeneratorList.schema.json",
+    "GeneratorMetadata": "schemas/GeneratorMetadata.schema.json",
+    "GeneratorSample": "schemas/GeneratorSample.schema.json",
+    "GeneratorSettings": "schemas/GeneratorSettings.schema.json",
+    "GeneratorSocialResult": "schemas/GeneratorSocialResult.schema.json",
+    "GeneratorStudioCommand": "schemas/GeneratorStudioCommand.schema.json",
+    "GeneratorStudioConfig": "schemas/GeneratorStudioConfig.schema.json",
+    "GeneratorStudioCreate": "schemas/GeneratorStudioCreate.schema.json",
+    "GeneratorStudioRun": "schemas/GeneratorStudioRun.schema.json",
+    "GeneratorStudioSave": "schemas/GeneratorStudioSave.schema.json",
+    "GeneratorUpload": "schemas/GeneratorUpload.schema.json",
+    "GeneratorValidationReport": "schemas/GeneratorValidationReport.schema.json",
+    "GeneratorVersion": "schemas/GeneratorVersion.schema.json",
     "GuestSignInRequest": "schemas/GuestSignInRequest.schema.json",
     "HiveCheckout": "schemas/HiveCheckout.schema.json",
     "HiveClientPoll": "schemas/HiveClientPoll.schema.json",
@@ -96,11 +138,15 @@
     "MusicStudioProgress": "schemas/MusicStudioProgress.schema.json",
     "MusicStudioSettings": "schemas/MusicStudioSettings.schema.json",
     "MusicStudioStageProgress": "schemas/MusicStudioStageProgress.schema.json",
+    "MusicStudioTurn": "schemas/MusicStudioTurn.schema.json",
     "PlatformJwks": "schemas/PlatformJwks.schema.json",
     "PlayerDirectory": "schemas/PlayerDirectory.schema.json",
     "PlayerProfile": "schemas/PlayerProfile.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
     "PublishAiRequest": "schemas/PublishAiRequest.schema.json",
+    "PublishBuildingRequest": "schemas/PublishBuildingRequest.schema.json",
+    "PublishGeneratorRequest": "schemas/PublishGeneratorRequest.schema.json",
+    "PublishSetRequest": "schemas/PublishSetRequest.schema.json",
     "PublishSkinRequest": "schemas/PublishSkinRequest.schema.json",
     "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
     "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
@@ -179,8 +225,13 @@
     "RoomList": "schemas/RoomList.schema.json",
     "RoomMapSelection": "schemas/RoomMapSelection.schema.json",
     "RoomState": "schemas/RoomState.schema.json",
+    "SaveBuildingDraftRequest": "schemas/SaveBuildingDraftRequest.schema.json",
+    "SaveSetDraftRequest": "schemas/SaveSetDraftRequest.schema.json",
     "SaveSkinDraftRequest": "schemas/SaveSkinDraftRequest.schema.json",
+    "ScriptGeneratorDescriptor": "schemas/ScriptGeneratorDescriptor.schema.json",
     "SelfAccount": "schemas/SelfAccount.schema.json",
+    "SetPackage": "schemas/SetPackage.schema.json",
+    "SetSheet": "schemas/SetSheet.schema.json",
     "SignInResponse": "schemas/SignInResponse.schema.json",
     "SignOutRequest": "schemas/SignOutRequest.schema.json",
     "SimVersion": "schemas/SimVersion.schema.json",
@@ -198,16 +249,57 @@
     "StudioSettings": "schemas/StudioSettings.schema.json",
     "StudioStageProgress": "schemas/StudioStageProgress.schema.json",
     "StudioTurn": "schemas/StudioTurn.schema.json",
+    "TerrainStudioAdopt": "schemas/TerrainStudioAdopt.schema.json",
+    "TerrainStudioConfig": "schemas/TerrainStudioConfig.schema.json",
+    "TerrainStudioCreate": "schemas/TerrainStudioCreate.schema.json",
+    "TerrainStudioTurn": "schemas/TerrainStudioTurn.schema.json",
     "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
     "UpdateAiRequest": "schemas/UpdateAiRequest.schema.json",
+    "UpdateBuildingFamilyRequest": "schemas/UpdateBuildingFamilyRequest.schema.json",
+    "UpdateGeneratorRequest": "schemas/UpdateGeneratorRequest.schema.json",
     "UpdateMapRequest": "schemas/UpdateMapRequest.schema.json",
+    "UpdateSetRequest": "schemas/UpdateSetRequest.schema.json",
     "ValidateAiPayload": "schemas/ValidateAiPayload.schema.json",
+    "ValidateGeneratorPayload": "schemas/ValidateGeneratorPayload.schema.json",
     "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
     "ValidateMapResult": "schemas/ValidateMapResult.schema.json",
+    "ValidateSetPayload": "schemas/ValidateSetPayload.schema.json",
+    "ValidateSetResult": "schemas/ValidateSetResult.schema.json",
     "VerifyMatchPayload": "schemas/VerifyMatchPayload.schema.json",
     "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
   },
   "fixtures": [
+    {
+      "file": "valid/GeneratorStudioCreate/starter.json",
+      "schema": "GeneratorStudioCreate",
+      "valid": true,
+      "note": "Create a generator Studio project with its working starter."
+    },
+    {
+      "file": "valid/GeneratorStudioSave/incomplete-manifest.json",
+      "schema": "GeneratorStudioSave",
+      "valid": true,
+      "note": "Both editable files persist atomically, including incomplete manifest JSON."
+    },
+    {
+      "file": "valid/GeneratorStudioCommand/bounded-edit.json",
+      "schema": "GeneratorStudioCommand",
+      "valid": true,
+      "note": "A revision-checked coding request reserves no more than its cap."
+    },
+    {
+      "file": "valid/GeneratorStudioRun/seeded-preview.json",
+      "schema": "GeneratorStudioRun",
+      "valid": true,
+      "note": "Freeze one exact seed and settings for a local preview."
+    },
+    {
+      "file": "invalid/GeneratorStudioRun/no-inline-package.json",
+      "schema": "GeneratorStudioRun",
+      "valid": false,
+      "stage": "schema",
+      "note": "Runs select a stored revision; clients cannot replace its package."
+    },
     {
       "file": "valid/AiStudioCreate/starter.json",
       "schema": "AiStudioCreate",
@@ -256,6 +348,31 @@
       "schema": "AiUpload",
       "valid": true,
       "note": "A private staging receipt binds compatibility checks to exact source bytes."
+    },
+    {
+      "file": "valid/ValidateSetPayload/exact-package.json",
+      "schema": "ValidateSetPayload",
+      "valid": true,
+      "note": "Validate exactly these immutable package bytes."
+    },
+    {
+      "file": "valid/ValidateSetResult/checked-release.json",
+      "schema": "ValidateSetResult",
+      "valid": true,
+      "note": "Engine validation binds artwork and properties to the package hash."
+    },
+    {
+      "file": "valid/PublishSetRequest/public-release.json",
+      "schema": "PublishSetRequest",
+      "valid": true,
+      "note": "Publication requires a checked draft revision."
+    },
+    {
+      "file": "invalid/PublishSetRequest/unsaved-draft.json",
+      "schema": "PublishSetRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "An unsaved revision cannot be published."
     },
     {
       "file": "invalid/AiValidationReport/partial-checks.json",
@@ -405,6 +522,39 @@
       "valid": false,
       "stage": "schema",
       "note": "AI order delay must be an integer from zero through eight."
+    },
+    {
+      "file": "valid/MatchSetup/building-gradient-delay-two.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "A two-tick building gradient delay instead of the default eight."
+    },
+    {
+      "file": "valid/MatchSetup/building-gradient-delay-omitted.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Setup documents may omit the building gradient delay; the engine uses eight ticks."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-zero.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Building gradient delay must be an integer from one through eight."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-too-large.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Building gradient delay must be an integer from one through eight."
+    },
+    {
+      "file": "invalid/MatchSetup/building-gradient-delay-fractional.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Building gradient delay must be an integer from one through eight."
     },
     {
       "file": "valid/MatchSetup/catalog-1v1.json",
@@ -1270,6 +1420,68 @@
       "note": "The client cannot supply an agent build decision."
     },
     {
+      "file": "valid/TerrainStudioCreate/new-project.json",
+      "schema": "TerrainStudioCreate",
+      "valid": true,
+      "note": "Create an idempotent terrain project."
+    },
+    {
+      "file": "valid/TerrainStudioTurn/focused-revision.json",
+      "schema": "TerrainStudioTurn",
+      "valid": true,
+      "note": "A turn freezes the base revision and selected references."
+    },
+    {
+      "file": "invalid/TerrainStudioTurn/no-client-build-decision.json",
+      "schema": "TerrainStudioTurn",
+      "valid": false,
+      "stage": "schema",
+      "note": "The server selects discussion or one build."
+    },
+    {
+      "file": "valid/TerrainStudioAdopt/current-revision.json",
+      "schema": "TerrainStudioAdopt",
+      "valid": true,
+      "note": "Adoption explicitly replaces current draft content."
+    },
+    {
+      "file": "valid/TerrainStudioConfig/disabled.json",
+      "schema": "TerrainStudioConfig",
+      "valid": true,
+      "note": "Terrain generation is opt-in."
+    },
+    {
+      "file": "valid/BuildingAiStudioCreate/new-project.json",
+      "schema": "BuildingAiStudioCreate",
+      "valid": true,
+      "note": "Create an idempotent building project."
+    },
+    {
+      "file": "valid/BuildingAiStudioTurn/focused-revision.json",
+      "schema": "BuildingAiStudioTurn",
+      "valid": true,
+      "note": "A turn freezes the base revision and selected references."
+    },
+    {
+      "file": "invalid/BuildingAiStudioTurn/no-client-build-decision.json",
+      "schema": "BuildingAiStudioTurn",
+      "valid": false,
+      "stage": "schema",
+      "note": "The server selects discussion or one build."
+    },
+    {
+      "file": "valid/BuildingAiStudioAdopt/current-revision.json",
+      "schema": "BuildingAiStudioAdopt",
+      "valid": true,
+      "note": "Adoption explicitly replaces current draft content."
+    },
+    {
+      "file": "valid/BuildingAiStudioConfig/disabled.json",
+      "schema": "BuildingAiStudioConfig",
+      "valid": true,
+      "note": "Terrain generation is opt-in."
+    },
+    {
       "file": "valid/MusicStudioGenerate/acoustic-revision.json",
       "schema": "MusicStudioGenerate",
       "valid": true,
@@ -1294,6 +1506,117 @@
       "valid": false,
       "stage": "schema",
       "note": "Unknown statuses cannot masquerade as validation."
+    },
+    {
+      "file": "valid/UpdateBuildingFamilyRequest/withdraw-from-public-listing.json",
+      "schema": "UpdateBuildingFamilyRequest",
+      "valid": true,
+      "note": "Visibility can change independently of release validation."
+    },
+    {
+      "file": "invalid/UpdateBuildingFamilyRequest/empty-update.json",
+      "schema": "UpdateBuildingFamilyRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "A metadata update changes at least one field."
+    },
+    {
+      "file": "invalid/UpdateBuildingFamilyRequest/cannot-clear-moderation.json",
+      "schema": "UpdateBuildingFamilyRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Authors cannot change moderation state."
+    },
+    {
+      "file": "valid/PublishBuildingRequest/saved-family.json",
+      "schema": "PublishBuildingRequest",
+      "valid": true,
+      "note": "Publish the saved immutable package."
+    },
+    {
+      "file": "invalid/PublishBuildingRequest/bad-visibility.json",
+      "schema": "PublishBuildingRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only catalog visibility choices are accepted."
+    },
+    {
+      "file": "valid/BuildingPackage/field-kitchen.json",
+      "schema": "BuildingPackage",
+      "valid": true,
+      "note": "An additive building family using installed artwork."
+    },
+    {
+      "file": "invalid/BuildingPackage/stock-override.json",
+      "schema": "BuildingPackage",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Packages cannot override stock keys."
+    },
+    {
+      "file": "invalid/BuildingPackage/runtime-id.json",
+      "schema": "BuildingPackage",
+      "valid": false,
+      "stage": "schema",
+      "note": "Runtime IDs belong to resolved catalogs, not authored packages."
+    },
+    {
+      "file": "valid/SaveBuildingDraftRequest/family-draft.json",
+      "schema": "SaveBuildingDraftRequest",
+      "valid": true,
+      "note": "A revision-bound family draft save."
+    },
+    {
+      "file": "invalid/SaveBuildingDraftRequest/missing-revision.json",
+      "schema": "SaveBuildingDraftRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Draft saves must bind a revision."
+    },
+    {
+      "file": "invalid/SaveBuildingDraftRequest/stock-override.json",
+      "schema": "SaveBuildingDraftRequest",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Draft manifests cannot override stock building keys."
+    },
+    {
+      "file": "valid/ScriptGeneratorDescriptor/exact-release.json",
+      "schema": "ScriptGeneratorDescriptor",
+      "valid": true,
+      "note": "Pin the release, canonical package and downloadable bytes."
+    },
+    {
+      "file": "invalid/ScriptGeneratorDescriptor/native-id.json",
+      "schema": "ScriptGeneratorDescriptor",
+      "valid": false,
+      "stage": "schema",
+      "note": "Shared packages require namespaced IDs."
+    },
+    {
+      "file": "valid/RoomMapSelection/scripted-pending.json",
+      "schema": "RoomMapSelection",
+      "valid": true,
+      "note": "Room generation waits on an exact release."
+    },
+    {
+      "file": "valid/MatchSetup/scripted-world.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "All players load an ordinary world generated by this exact package."
+    },
+    {
+      "file": "invalid/MatchSetup/scripted-team-count.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Scripted maps retain the generator team count contract."
+    },
+    {
+      "file": "valid/ValidateGeneratorPayload/bounded-example.json",
+      "schema": "ValidateGeneratorPayload",
+      "valid": true,
+      "note": "The engine parses source and tests the author example."
     }
   ],
   "tickets": {

@@ -24,7 +24,7 @@ and Terrain take a `Game` because placing buildings and units needs its mutation
 | `Geometry` | `kPi`; `ShapeTransform` (invertible stretch and rotation); `Stretch`, which places a layout designed in a circle on a map's shorter side onto a rectangular map as an ellipse touching all four sides (`toFill`, `apply`, `undo`, `heading`), exactly the identity on a square map; `RadialShape`, a seeded rough outline with a per-angle `radiusAt()`; `stampShape` and `stampRoughDisc` into a label grid; `AxisFrame`, a frame along a heading from an origin (`at(along, across)` and `project`), in which a colony's trail, gates or towers are designed once; `Teardrop`, a blunt-headed tapering outline (two half-ellipses sharing the widest cross-section) with `halfWidthAt`, `contains`, `reach` under a stretch and `fitting` a packed radius |
 | `Drawing` | Drawing on the torus: `strokePath`, a thick path of points each with its own half width, rasterized through the wrap; `tracePath`, a path traced one tile thick with no gaps (a sand road); `bezierPath`, a quadratic curve as such a path; `polarPoint`; `forEachTileInShape` and `fillShape`, a `RadialShape` filled at any centre and turned to any heading within its bounding box, optionally stretched into an oval; `stretchPath`, a designed path placed on the map by a `Stretch` with its half widths kept in tiles; `bentPath`, a tapered path leaving a point along a heading and bowing sideways; `wanderingPath` and `carveCorridor`, a path (and its stroke) that wanders from one point to another the short way round the torus, leaving and arriving exactly where asked, its width swelling and narrowing (a tunnel, a lane, a trail that doesn't look ruled); `pathClearance` and `pathBounds`, the water between two stroked paths (optionally ignoring a branch's root) and a cheap bounding circle; `growBranches`, a tree grown level by level by forking in two at every tip to a `ForkStyle`, every branch offered to a caller's `accept` before it is kept and a refused one retried once at half length; `arcPath`, a circular arc as a stroke; `zigzagPath`, a switchback trail in an `AxisFrame` with each leg's straight run returned apart from its turns; `ringWithGates`, every tile of a ring visited with the gate it lies in (a wall with ramps, a moat with bridges); exact fixed-point geometry for designs that must rasterize the same everywhere: `SubtilePoint` (16 units a tile), `sealedSegmentTiles` and `traceSealedPath` (a line no unit can cross even diagonally, at any slant), `forEachTileInPolygon` and `fillPolygon` (tile centres inside a polygon, shared edges split exactly, through the wrap); `traceSealedLap`, a sealed line right round the torus along one axis (a wall of bluffs at the back of a belt); `forEachTileInTeardrop` and `fillTeardrop`, a `Teardrop` the same way with each tile's place along and across its axis; `traceRay`, such a line traced along a heading until a stop (a lane from a plot to the shore); `downhillPath`, a radially monotone walk with correlated angular drift, bounded heading and tapered width (lava/root/drainage flows); `splinePath`, a Catmull-Rom curve through waypoints for a stream, a gorge or a wash |
 | `Wedge` | `WedgeFrame`: the map as one equal wedge per colony round the centre, so a feature designed once in a wedge's frame is stamped into every wedge alike; given a `Stretch` it measures every cell in the round design frame, so the same design fills a rectangular map; `Blob`, a stretched, turned rough disc in that frame; `WedgeField`, periodic noise sampled in the wedge frame so a layer planted by it comes out the same in every wedge |
-| `Sketch` | `TerrainSketch`, the undermap designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeUndermap`; `pureTiles`, the tiles whose four corners all hold one terrain (the sketch as the game will draw it; also available directly from a finished map), and `tileCorners`, the reverse; `growWater`, one body of water grown to an exact tile count by a caller's key (Stone highlands' ponds, Amphitheatre's bays); `keepRoadInland` and `roadTiles`, a sand road kept off every beach and the tiles its vertices spoil |
+| `Sketch` | `TerrainSketch`, the map's vertex terrain designed in memory; `layBeaches`, the order-independent beach pass; `raiseIslands`; `sprinkleSand`, decorative sand patches on inland grass following a caller's noise, kept a strip of grass away from every beach; `writeVertices`; `pureTiles`, the tiles whose four corners all hold one terrain (the sketch as the game will draw it; also available directly from a finished map), and `tileCorners`, the reverse; `growWater`, one body of water grown to an exact tile count by a caller's key (Stone highlands' ponds, Amphitheatre's bays); `keepRoadInland` and `roadTiles`, a sand road kept off every beach and the tiles its vertices spoil |
 | `LatticeNoise` | `PeriodicNoise`, value noise that tiles the torus exactly and samples anywhere, with `periodicNoise`/`fractalNoise` (integer fields per tile, octaves) and `torusNoise` (four octaves in [-1, 1]) sampled from it, plus `percentile` and `noisyShare` (the given share of a region where a noise field is highest, as a mask: cover in patches rather than speckle) |
 | `RecursiveGeometry` | Integer recursive halves/thirds, retained region hierarchy and stop reasons; uniformly spaced rectangular Hilbert paths |
 | `HierarchicalCrossings` | Required connectivity, marginal travel-benefit shortcuts, seeded ties and explicit budget shortfalls |
@@ -93,7 +93,7 @@ river) follow one shape, and the newest of them are little more than a sequence 
 1. `design(request, context)` computes the whole layout from the request and the context's
    named streams without touching the map, and returns it with a `failure` string when the
    request leaves no room.
-2. `generate` stamps the layout into a `TerrainSketch`, calls `layBeaches` and `writeUndermap`,
+2. `generate` stamps the layout into a `TerrainSketch`, calls `layBeaches` and `writeVertices`,
    then `settleColonies` with a home mask and an anchor per colony. The design has already dealt its
    start sites to the colonies at random (`dealStarts`), so which team gets which home is a draw:
    without it, farthest-point spreading and lattices hand team 0 the same ground on every map.
@@ -151,7 +151,7 @@ restores whatever landscape it had.
 | `plantations` | 48 | Plantations | Its own — see below |
 | `sierpinski-gardens` | 49 | Sierpiński Gardens | [Recursive lakes, home districts and orchard causeways](FRACTAL_MAPS.md) |
 | `hilbert-river` | 50 | Hilbert River | [Folded river, contained bank farms and hierarchical shortcuts](FRACTAL_MAPS.md) |
-| `lava-shield` | 51 | Lava shield | [Volcanic island: crater rim, lava tongues, scored coastal towns](LAVA_SHIELD.md) |
+| `lava-shield` | 51 | Lava shield | [Volcanic island: lava crater, live lava tongues with cooled fords, scored coastal towns](LAVA_SHIELD.md) |
 | `honeycomb-isle` | 53 | Honeycomb isle | [Hexagon city on an island: street-sealed blocks, a river, wheat edges, ruins](HONEYCOMB_ISLE.md) |
 | `karst-towers` | 54 | Karst towers | [Tower thickets, rivers between rows of homes, terraced paddies, gated bowls](KARST_TOWERS.md) |
 | `bajada` | 55 | Bajada | [Desert ranges with rows of alluvial fans, stamped home fans, playa lakes](BAJADA.md) |
@@ -413,9 +413,9 @@ UI thread for the snapshot, so a large map with many colonies no longer freezes 
 its candidates roll. Any later edit to
 the draft drops the remembered seed and returns to candidate sampling. The picker takes only a
 list of localized names and requests, so the editor or a multiplayer lobby can run it too.
-Background rolls are safe because `syncRand()`'s state is per thread: a worker seeds its own
-stream inside `GenerationService::generate` and never touches the menu's live colony on the UI
-thread.
+Background rolls own independent target Games. `GenerationService::generate` seeds each
+target map's private streams from the request; it never binds a global/thread-local RNG
+or touches the menu's live colony. Named generation streams remain request-owned.
 
 ### The worker count
 
@@ -438,15 +438,15 @@ The richest generator, and the one most of this framework's resource work was pr
   the continent is stretched along the longer side by `Stretch` on top of its own transform, so it
   fills the map as an oval; square maps are unchanged.
 - **Central lake.** `lake-size` (0–90%, of `coreR`; 0 disables it) carves a lake at the exact
-  center, ringed by a sandy no-man's-land wider than `Map::controlSand()`'s own coastal fringe
+  center, ringed by a sandy no-man's-land wider than an ordinary beach
   (`sandy-lake-shore`, on by default; off, the lake has an ordinary beach).
   `lake-connected` (a switch, default off) decides whether the fjords actually cut through into the lake —
   every peninsula then water-isolated from its neighbors, boats required — or stop short behind a
   solid land ring, keeping mutual land connectivity; the latter is verified with an explicit
   flood-fill after construction rather than assumed, and only runs in that mode, since a
   lake-connected map is *supposed* to fail a same-landmass check by design. A fjord's carved tip
-  is widened specifically in connected mode, since `controlSand()` erases any water tile with a
-  grass neighbor in its own 3x3 neighborhood and a narrow tip is entirely coastal by that rule.
+  is widened specifically in connected mode, since the beach pass turns any water vertex with a
+  grass neighbor in its own 3x3 neighborhood into sand and a narrow tip is entirely coastal by that rule.
 - **Core resources.** The ring around the lake carries several stone clumps and a grove of every
   fruit type — a genuinely rich destination, not a single token deposit. The lake itself gets a
   center-anchored algae clump plus bonus clumps drawn from well inside its shoreline, so a
@@ -493,7 +493,7 @@ cul-de-sac.
   stay cul-de-sacs.
 - **Terrain from one distance field.** Only walls are drawn. Every closed edge gets a stone spine,
   a sealed line (`traceSealedPath`) from its corner tile to the next, so walls meeting at a corner
-  share its tile and none can be slipped between at any angle. The undermap is then designed from
+  share its tile and none can be slipped between at any angle. The vertices are then designed from
   the steps to the nearest spine corner: one step out stays land, the next `channel-width` + 1 are
   water, and everything further out is grass, which `layBeaches` edges with sand. In tiles that
   is the spine, two sandy flank tiles, `channel-width` all-water tiles (default 2), a two-tile
@@ -547,8 +547,8 @@ dry sandy uplands, and sand fords across the channels.
   with the other distributaries still planned so the rest of the network is unchanged). Every
   path meanders (`meanders`, on by default; off, rivers run without their meanders).
 - **Channels that keep their water.** Channels are stamped wide enough to keep a four-connected
-  water core under an all-at-once version of `controlSand`'s grass-to-sand rule;
-  `Map::controlSand()` is then required to change nothing.
+  water core under the beach rule of `Map::layBeaches()`; `layBeaches()` is then required to
+  change nothing.
 - **Fords and uplands.** `fords` sets the spacing of sand strips laid across straight stretches
   clear of every other channel. Ground farther from water than `dryness` allows turns to sand,
   never within 11 tiles of water. Springs rise inland, so a ford is the shortest crossing between
@@ -604,8 +604,7 @@ colonies identical starting ground.
   noise summed over the orbit, the integer squared radius) or is made once for colony 0 (home,
   pond, starting kit, shortest route to its causeways, swarm and workers) and stamped onto every
   image, with the swarm's top-left anchor recomputed per image. Terrain is written with
-  `controlSand`'s rule applied to every corner at once, because the engine's row-order pass is
-  order dependent, and resource amounts drawn from the engine RNG are equalised across each orbit.
+  the beach rule applied to every vertex at once, so it does not depend on scan order, and resource amounts drawn from the engine RNG are equalised across each orbit.
 - **Centre.** `centre-size` sets the island's radius and `moat-width` the water around it;
   `causeways` and `causeway-width` choose one gate straight towards each colony or two flanking it.
   With `moat` off (on by default) the island joins the land around it, with no causeways; the
@@ -633,7 +632,7 @@ exactly two land neighbours.
   centre line and one shared coast budget keep the belt a single landmass and the ocean a band
   whatever `belt-width` (a percentage of the map's breadth) and `coast-roughness` ask for. With
   `winding-belt` off (on by default) the centre line runs straight round the map. Terrain
-  is stamped with an order-independent beach pass rather than `Map::controlSand()`.
+  is stamped with the order-independent beach pass (`layBeaches`).
 - **Lakes and islands.** `lake-density` adds inland lakes that keep land between them and the
   ocean and stay off the spine; `resource-islands` (per 128×128) adds themed islands out at sea.
 - **Colonies and resources.** Evenly spaced, jittered slots alternate coasts (`both-coasts`, on
@@ -678,7 +677,7 @@ shape.
   leaves a sand lane outside the stone that a unit can land on and walk along but never leave; the
   causeway as a barrier, and as the ground kept clear of deposits with both its approaches,
   includes its lanes. Home lakes keep seven tiles from the sea so the two beaches never meet.
-- **Sand roads.** With `sand-roads` (on), a line of sand two undermap vertices thick, which nothing
+- **Sand roads.** With `sand-roads` (on), a line of sand two vertices thick, which nothing
   can grow over or be built on, runs from the heart of the commons along every home's axis, over
   its causeway, to a main street seven tiles inside the gate that follows the strait out to both
   flanks. Side streets turn inland from it past both sides of the swarm and at its ends, stopping a
@@ -1617,7 +1616,7 @@ that the continent looks like itself.
 - **The fit.** The region is fitted inside a sea margin (a 32nd of the shorter side, at least 3
   tiles: 4 on a 128 map, 8 on a 256, 16 on a 512), centred, turned a quarter turn when that fits a
   rectangle larger (`orientation`: Turn to fit, or Upright), and resampled by majority to the
-  undermap's corners (`Raster`). The margin is the torus's seam, so a continent never meets itself
+  map's vertices (`Raster`). The margin is the torus's seam, so a continent never meets itself
   across the wrap. The rest of a rectangle is sea; round islets in it (`islets`, off by default)
   are invented for whoever wants swimming prizes, not drawn from the atlas.
 - **The coast.** Land narrower than three tiles, specks of sea and islets under twelve tiles go
@@ -1852,7 +1851,13 @@ crater approaches, and `chooseScoredSettlements` ranks fully furnished proposals
 starter patch finds too little usable area, it ranks nearby legal seeds by
 eligible frontage, then caller-supplied preference such as fertility. It neither
 changes the patch-growth predicate nor spends work on already sufficient fields.
-The resource and terrain rules of other generators are unchanged.
+Since revision 5 it is the first stock generator built on the terrain catalogue: the
+tongues and the crater are lava-group terrain (walls on foot, a hazard to fliers), each
+coast-reaching tongue keeps one scree ford, branches are cooled scree and gravel, the rim
+is loam and moss, roads are dirt tracks and the far sea is deep water. The stone crust,
+scree aprons and ash along the flows are laid only after the towns, rings and roads are
+fixed, so they never take a town's room. Maps carry the matching terrain experiments in
+their headers automatically.
 
 ## Honeycomb isle
 

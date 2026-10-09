@@ -33,6 +33,8 @@ Each material supplies:
 - `profile`, the key of its boundary family, and `preview`, three overview RGB channels;
 - optional `minimap` RGB channels for minimaps and thumbnails (defaults to `preview`);
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
+- optional `edges` (`blend` or `periodic`, see [Periodic edges](#periodic-edges))
+  and `variant_grid`, see [Positional variants](#positional-variants);
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
   `fringe_q8` and `fringe_width_q8`, see [Seams](#seams).
 
@@ -98,6 +100,8 @@ For animation, a variant's effective frame is `frame + phase * animation_stride`
 `animation_frames` is 1–256, `animation_ticks` is a positive integer duration in the
 renderer's animation clock, and the stride must be positive when there is more
 than one phase. Every effective frame must exist and remain below 65536.
+All cells of a material share the phase, so a texture that moves must move the
+same way in every variant.
 
 ## Material production
 
@@ -141,8 +145,10 @@ the style targets that keep the new art low-contrast and painterly beside them:
 ground materials aim at a luma spread of 6–14 and a grain of 3–10 at 32 px.
 
 Each recipe renders at 128×128, is area-averaged to 32×32 and pulled toward its
-luma targets by one affine transform computed from variant 0, so all variants of
-a material share one tone. Joins work with the runtime's border preparation
+luma targets by one affine transform computed from the pooled statistics of all
+sixteen variants, so all variants of a material share one tone. Periodic and grid
+materials (below) skip the border preparation and none of the perimeter treatment
+in this paragraph applies to them. Joins work with the runtime's border preparation
 rather than against it: `seamless_sources` (and `TerrainCompositor::prepare`)
 blend the outer four native pixels of every variant toward variant 0's
 *reflected* pixel (`min(x, 31 - x)`, `min(y, 31 - y)`) with weights 1, 3/4, 1/2
@@ -181,10 +187,11 @@ A material opts in with a `decor` block:
 "decor": {"sprite": "data/gfx/terrain-decor", "full": [0, 1, 2], "edge": [8, 9]}
 ```
 
-- `full` frames are used for cells whose four neighbours share the cell's
+- `full` frames are used for cells whose four corners share a decorated
   appearance.
-- `edge` frames are smaller and pulled toward the cell centre, for cells with an
-  open neighbour, so clusters do not spill far onto open ground.
+- `edge` frames are smaller and pulled toward the cell centre, for cells where two
+  or three corners share it, so clusters do not spill far onto open ground. A
+  single decorated corner draws no decor.
 - The frame is chosen by a coordinate hash salted with the map's terrain seed.
 - All decor blocks share one sprite, so the cached GPU path batches decor rows
   like resource rows.
@@ -241,13 +248,40 @@ Lava and ember field are animated: four phases per variant, frame
 `animation_stride 16` and `animation_ticks 8`. The crust layout is shared by the
 phases; only the glow ramp moves.
 
+### Positional variants
+
+`"variant_grid": G` (a power of two up to 16, with `"edges": "periodic"` and
+exactly G×G variants) picks a cell's variant from its position instead of the
+hash: cell (x, y) shows variant `(y mod G) * G + (x mod G)`, and variant
+weights are ignored. The variants are then one periodic block G cells across
+that repeats over the map; map sizes are powers of two no smaller than G, so the
+block also wraps across the torus seams. The map seed does not move the block. Each variant only ever meets its block neighbours, so its
+edges continue theirs rather than a shared band, and the border blend is skipped
+as for periodic edges. Use it for a field that must be larger than one cell, such
+as travelling waves. Map artwork bundles do not accept the key, so maps that
+carry custom art still load in older clients.
+
 Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
-keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)):
-gentle swells carry two Worley ripple networks that cross-fade over four phases
-(`animation_ticks 24`), so glints rise and fade rather than the whole surface
-sliding. Deep water uses the same loop in a darker value; dark water is static.
-Both are opaque and blend with regular water through the ordinary soft profile.
+keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
+Water and deep water are `variant_grid 4` materials with sixteen phases
+(`animation_ticks 6`, the same 96-tick loop as the four-phase water before). The
+recipe renders one 512×512 periodic block, a sum of plane waves whose wave
+numbers are whole cycles per block and whose phases advance a whole number of
+cycles per loop (at most four, a quarter wavelength per phase, so fine chop
+moves rather than flickers), and slices it into the sixteen variants. Every cell animates
+locally on the shared clock and the field is continuous across all cell edges,
+so the swell's crests roll toward the lower right across open water, and finer
+cross chop breaks them into moving glints. Deep water reads the same field in a
+darker value with less chop, so crests carry on across the shallow/deep blend.
+The visible pattern repeats every four cells instead of every cell. Dark water
+is static. All three are opaque and blend through the ordinary soft profile.
 Marsh pools are opaque too.
+
+Each sixteen-phase material is 256 native and 256 HD frames. A material whose
+phase changes every few ticks also recomposes the terrain pages that show it at
+that rate; see [Caches and compatibility](#caches-and-compatibility) for the
+kept coverage that keeps this cheap, and check the terrain cache cost when
+adding faster or wider animation.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded
@@ -310,20 +344,50 @@ existing artwork.
 
 | Profile | roughness / amplitude / feather / speckle / bridge (Q8) | Curves | Materials |
 | --- | --- | --- | --- |
-| `rock` | 384 / 896 / 192 / 448 / 192 | 16 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
-| `soft` | 160 / 512 / 448 / 128 / 640 | 12 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
-| `crisp` | 96 / 256 / 128 / 0 / 256 | 8 × 9 | void_hole, boardwalk |
-| `brush` | 320 / 768 / 320 / 384 / 512 | 16 × 17 | hedge, thicket, flower_meadow, spring_meadow |
-| `sand` (existing) | | | dirt_track |
-| `fractured` (existing) | | | lava, ember_field |
+| `rock` | 384 / 896 / 192 / 448 / 192 | 48 × 9, angular | boulders, ridge_rock, outcrop, scree, gravel, chasm |
+| `soft` | 160 / 512 / 448 / 128 / 640 | 40 × 17, gentle | mud, marsh, loam, moss, deep_snow, deep_water, dark_water, clay, dirt |
+| `crisp` | 96 / 256 / 128 / 0 / 256 | 24 × 9 | void_hole, boardwalk |
+| `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, flower_meadow, spring_meadow |
+| `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass, dirt_track |
+| `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice, lava, ember_field |
+| `cobblestone` (existing) | 256 / 640 / 224 / 320 / 384 | 24 × 9 | road |
+| `shore` | 256 / 832 / 320 / 384 / 704 | 48 × 33, lobed with ripple | pair treatments only |
+| `liquid` | 256 / 1024 / 448 / 128 / 640 | 40 × 33, broad and smooth | pair treatments only |
+| `organic` | 288 / 896 / 320 / 320 / 512 | 48 × 17, lobed and noisy | pair treatments only |
 
 `tools/terrain_profile_curves.py --write` generates the curves with seeded random
 walks and appends a missing profile with these parameters; never author curves by
-hand. Pair treatments: boulders, ridge_rock and outcrop against grass use `rock`;
-hedge and thicket against grass use `brush`; water/deep_water and
-deep_water/dark_water use `soft`; lava and ember_field against grass, sand, dirt
-and gravel use `fractured`; void_hole and chasm against every other material use
-`crisp` (the default rule would otherwise let the rougher neighbour win).
+hand. The script still emits the earlier, shorter curve sets and lacks the
+`shore`, `liquid` and `organic` profiles, so `--write` would shrink the shipped
+sets; bring it up to date before regenerating. `sand` uses every distinct traced
+edge of the original grass/sand tiles, so the classic coast keeps its look with
+less repetition. `shore`, `liquid` and
+`organic` are sine series with a weak fundamental plus a detrended ripple; the
+weak fundamental keeps edge crossings near the vertex lattice so lone cells stay
+round. Their feather and speckle are unused, since softness and pebbles come from
+the material's own profile.
+
+Pair treatments cover material pairs that meet inside one cell now that terrain
+is stored per vertex. Entries are needed only where the choice differs from the
+default rule (the rougher profile wins):
+
+- `rock`: boulders, ridge_rock and outcrop against grass.
+- `brush`: hedge and thicket against grass.
+- `shore`: grass, moss, loam, spring_meadow and flower_meadow against water,
+  deep_water and dark_water.
+- `liquid`: water/deep_water, deep_water/dark_water, water/dark_water, ice/water,
+  and marsh and mud against the three waters.
+- `organic`: moss, loam, mud, marsh, dirt, clay and deep_snow against grass and
+  sand; moss/loam, moss/marsh, loam/dirt, loam/mud, mud/marsh, dirt/clay,
+  dirt/mud, clay/mud, deep_snow/ice, and spring_meadow against moss, loam,
+  flower_meadow and dirt, and flower_meadow/dirt.
+- `crisp`: boardwalk against grass, sand, the three waters, marsh, mud, moss,
+  dirt, loam, clay, gravel, dirt_track and road; void_hole and chasm against
+  every other material.
+- `cobblestone`: road against grass, sand, dirt_track, gravel, scree,
+  flower_meadow and spring_meadow.
+- `fractured`: lava and ember_field against grass, sand, dirt, gravel and scree;
+  lava against hedge and flower_meadow.
 
 ### Seam ranks
 
@@ -350,18 +414,17 @@ model, which only tones neighbours; it would need an engine-side self-lip.
 
 ## Boundaries and masks
 
-The presentation resolver uses a 16-pixel lattice. Whole-cell terrains fill their
-four quadrants; legacy sprites decode into their original TL/TR/BL/BR material
-configuration, including the reversed diagonal groups in the sand/water atlas.
-A test verifies both profiles against the engine's frozen lookup. The resolver
+The presentation resolver uses a 16-pixel lattice. Terrain is stored per map
+vertex, so a tile's four corner vertices give its TL/TR/BL/BR materials directly; a
+tile whose corners agree fills all four quadrants with one material. The resolver
 reads the scene snapshot, never the live simulation. `PreparedCoverage` resolves
 the nine patches needed by a tile once, including shared contour choices and
 side-connected corner groups, then samples them at native or HD pixel centers.
 
 The optional catalog-level `boundary_warp_q8` array controls world-space bends at
-64-, 32- and 8-pixel scales. The shipped values `[640, 256, 96]` allow about four
-pixels of combined displacement per axis: a broad meander, a medium ripple and a
-faint angular grit. The first two scales interpolate smoothly; the finest adds
+64-, 32- and 8-pixel scales. The shipped values `[960, 352, 120]` allow about
+five and a half pixels of combined displacement per axis: a broad meander, a
+medium ripple and a faint angular grit. The first two scales interpolate smoothly; the finest adds
 angular irregularity. Pebbly detail comes from the authored profiles below. These bends continue across tile
 boundaries instead of restarting a motif in every patch. Values are nonnegative
 integers, bounded by `[1024, 384, 128]`; omitting the array disables the field
@@ -371,6 +434,54 @@ for less fine detail.
 All materials share this field so multi-material junctions remain joined. Wrapped
 world coordinates determine its control points, independently of texture variants,
 camera position, animation and simulation randomness.
+
+### Contextual natural borders
+
+Version-3 profiles may set `"shape": "contextual"`; omission or `"patch"` retains
+existing patch geometry. The shipped sand, shore, organic, soft, rock, brush,
+liquid and frozen profiles use contextual geometry. Ice uses frozen, which shares
+fractured's authored detail but enables natural curves; lava retains fractured.
+Chasm uses the cliff profile, which preserves rock's authored detail with patch
+geometry and prevents new natural materials from rounding a chasm boundary.
+Both materials' own profiles and their selected pair treatment must opt in.
+Constructed paths, lava, and crisp holes/chasm borders therefore retain their
+existing treatment even against a rougher natural material.
+
+The compositor reads a 4×4 vertex neighbourhood, including one vertex beyond each
+side of the cell. Ordinary two-material cells use marching-square edge midpoints
+and cubic curves with tangents guided by the adjacent cells' contour endpoints.
+Handles start at one-third of the shorter adjoining segment. Their control hull
+stays inside the cell and within four logical pixels of the straight contour;
+non-monotone handles fall back to a straight contour. Ambiguous diagonal cells and
+three/four-material junctions retain the patch resolver and its connection choice.
+Uniform cells remain uniform, and neighbours never add materials to a cell's palette.
+
+The guided curves also carry smooth seeded variation at three scales: broad
+uneven lobes, smaller scallops and fine edge undulations. The material pair,
+cell position and map look seed select the pattern; profile roughness scales
+its strength. Detail tapers to zero displacement and slope at the endpoints.
+Only the secondary coordinate moves, preserving monotonicity and connected
+regions, and the combined smoothing and scalloping stays within a
+ten-pixel curve budget. Sixty-four segments resolve the smallest scallops.
+Corner clearance limits deep lobes near the cell's corners and relaxes smoothly
+towards its centre, preserving small terrain pockets and narrow strips.
+
+Curves are sampled into a monotone row/column table once per cell. Native, HD and
+overview samples interpolate that same geometry, with distance-based feathering
+and seam shading. Contextual interiors use one-third of the world-space warp
+(bounded to two pixels of vector displacement), leaving ten pixels for shaping.
+A one-pixel band at tile edges retains the existing mask's displaced crossings and feather weights, then
+smoothly blends to the new geometry by four pixels. This compatibility band joins
+natural curves to existing complex junctions without introducing tile seams.
+It retains the existing edge detail rather than shifting every crossing to the
+marching-square midpoint. The twelve-pixel displacement limit applies to contextual
+interiors; existing masks in compatibility bands and fallback cells keep their
+original limits.
+
+Recipes and page-cache source windows include the halo, so painting, undoing, or
+rerolling a look refreshes affected neighbouring cells, including across map wraps.
+These are transient presentation inputs; terrain storage, saves, pathfinding,
+simulation randomness and checksums are unchanged.
 
 ### Map seed
 
@@ -524,16 +635,17 @@ source surface revisions invalidate cached pixels; catalog file edits do not
 trigger a live catalog reload.
 
 Review the gallery at normal play scale and enlarged detail: isolated cells,
-one-cell roads, bends, holes, mixed junctions, legacy shore orientation, torus
+one-cell roads, bends, holes, mixed junctions, grass/sand/water corner mixes, torus
 edges, translucent water borders and fractional zoom. The current gallery case
 also writes a 256-tick simulation checksum trace and cold/warm cache timings.
 Compare that trace with the same fixture built against the base revision.
 
 ## Caches and compatibility
 
-`TerrainCompatibility.h` freezes old frame ranges, corner semantics and the frame
-hash used by map authoring. Legacy lookup keeps its synchronized random calls.
-Changing visual variants in the catalog cannot change those contracts.
+Saved maps hold terrain IDs per vertex, not sprite frames, so changing visual
+variants in the catalog cannot change saved state, checksums or simulation RNG use.
+Files older than format 146 also stored sprite frames; the loader skips them, and
+only `LegacyTerrainFrames.h` still decodes classic frames, for old script memories.
 
 `TerrainVisual::Compositor` owns prepared material sources. Source lifetime and
 content revisions, animation phase and native/HD selection invalidate prepared
@@ -541,16 +653,33 @@ pixels. View caches hold 16×16-cell composed pages and compare recipes includin
 the surrounding lattice, so edits update neighboring tiles and wrapped chunks.
 Each page and tile tracks revisions only for materials used by its discovered
 recipes; an animation outside that dependency set does not rebuild the page.
-Changes to the overall page sampling density still invalidate view pages.
+Sampling density is part of the page key. Old densities retain their composed
+CPU pixels inside the cache budget. Renderer allocations also remain reusable
+until memory pressure retires them. Returning to a density revalidates terrain,
+discovery and material revisions before reusing its pixels.
 The historical `SoftwareTerrainCache` name is retained for benchmark controls,
-but the cache also draws GPU pages. Software storage stays bounded by 32 MiB;
-GPU pages have a separate 128 MiB budget. HD oversampling falls from 4× to 2× or
+but the cache also draws GPU pages. Software page storage stays bounded by
+32 MiB. GPU density selection retains its 128 MiB allowance, and resident
+textures remain bounded by 128 MiB of conservative texture/mip reservations.
+On desktop, the total GPU-page cache has a 256 MiB ceiling including CPU pixels,
+bookkeeping and resident texture reservations. The additional 128 MiB lets
+inactive zoom densities retain their CPU pixels without sacrificing sampling
+quality. Android and browser builds retain the 128 MiB total ceiling.
+These are maximum memory allowances, not up-front allocations.
+Pages also keep the coverage of mixed cells that touch an animated material (`Compositor::CellMask`, 10 bytes per
+composed pixel), so a phase change re-blends their textures instead of
+re-sampling the boundary; coverage depends only on the cell, never on the phase.
+These masks have their own budget (8 MiB software, 32 MiB GPU); when it is full,
+masks of pages not drawn in the current frame are released oldest first, and cells that still do not fit compose without one.
+Composition always blends through the same mask encoding, so a kept mask and a
+fresh one give identical pixels. HD oversampling falls from 4× to 2× or
 1× when necessary to fit the visible pages or the device texture limit. If native
 pages still exceed the budget in a zoomed-out GPU view, the cache reduces them by
 powers of two as needed, going no coarser than the nearest level to the display's
 physical pixel density (at most √2 magnification). Reduction averages composed
 native pixels with alpha-weighted colors, so undiscovered (transparent) cells
-do not darken their neighbours.
+do not darken their neighbours. A valid retained native page supplies these
+pixels directly; reduction does not sample its terrain boundaries again.
 This keeps terrain reusable during the detailed-to-overview crossfade, instead of
 recomposing the entire visible map every frame. The reduced detail can soften
 texture grain at distant zooms. Software pages retain native density. Prepared
@@ -563,6 +692,11 @@ view and shared by cached and streamed pages; tiled map captures also share the
 whole capture's density at narrow edges. The budget includes a fixed allowance
 for recipes and bookkeeping plus density-dependent pixel storage. Increasing it
 can retain more detail but does not remove the need to handle oversized views.
+If the complete view cannot retain all of its textures simultaneously, but its
+CPU pages and one texture upload fit, the cache keeps those CPU pages and retires
+textures in drawing order as needed. This preserves the selected sampling and
+avoids repeated boundary composition near page-alignment budget thresholds.
+Only a view whose CPU pages and one upload cannot fit uses composition streaming.
 First-time composition still evaluates native terrain before reduction; this
 policy removes repeated work on warm frames, not the cost of a cold frame.
 
@@ -591,3 +725,20 @@ decoding. Map image interchange colors and editor experiment gates remain semant
 metadata.
 Keep reference screenshots, benchmark output and temporary compiled tilesets under
 `artifacts/`; publish review evidence separately from durable documentation.
+
+## Map-owned custom artwork
+
+The online set workspace and editor import use the same terrain material parser
+and compositor, with sprite paths resolved from the immutable map bundle rather
+than the global Toolkit cache. Custom materials bind by stable terrain key, can
+use the installed boundary profiles and have independent decor sheets. Built-in
+artwork stays installed; it is never copied into a map bundle. See
+[themed sets](../features/resource-catalogs.md#themed-terrain-and-resource-sets) for
+authoring, frame bounds, attribution and offline sharing.
+
+Sheets are identified by their PNG content hash. When combining sets, identical
+PNG bytes must use the same frame width and height; conflicting frame grids are
+rejected without changing the map. Use a distinct sheet image when the same art
+needs a different grid. Missing bundled sheets are validation errors. Older
+manually imported definitions that reference installed artwork retain their
+ordinary missing-art fallback.

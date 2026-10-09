@@ -1,3 +1,5 @@
+import { displayMessage } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import type { SkinCollection, SkinDesign } from '@glob2/protocol';
 import { skinAssetUrl } from './assetUrls.ts';
 /* WebGL previews use the same texture and material renderer as the workspace. */
@@ -33,6 +35,7 @@ export function SkinLibrary({
   onRetry: () => void;
   message: string;
 }) {
+  useLocale();
   // Bound simultaneous WebGL previews, including on accounts with many designs.
   const [page, setPage] = useState(0);
   const count = (collection?.designs.length ?? 0) + (collection?.presets.length ?? 0);
@@ -42,51 +45,55 @@ export function SkinLibrary({
     end = start + 6;
   const designCount = collection?.designs.length ?? 0;
   return (
-    <section className="skin-collection" aria-label="My skins">
+    <section className="skin-collection" aria-label={t('My skins')}>
       <header className="skin-collection-header">
         <div>
-          <span className="skin-eyebrow">YOUR COLONY</span>
-          <h1>My skins</h1>
-          <p className="skin-muted">Create a look. Use it in your next match.</p>
+          <span className="skin-eyebrow">{t('YOUR COLONY')}</span>
+          <h1>{t('My skins')}</h1>
+          <p className="skin-muted">{t('Create a look. Use it in your next match.')}</p>
         </div>
         <div>
-          <button onClick={onShop}>Shop</button>
+          <button onClick={onShop}>{t('Shop')}</button>
           <button className="skin-primary" disabled={busy || !collection} onClick={onNew}>
-            New skin
+            {t('New skin')}
           </button>
         </div>
       </header>
       {collection?.activeArtworkStatus && collection.activeArtworkStatus !== 'ready' && (
         <details className="skin-artwork-note">
-          <summary>Compatibility of your active skin</summary>
+          <summary>{t('Compatibility of your active skin')}</summary>
           <p>
             {collection.activeArtworkStatus === 'pending'
-              ? 'Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.'
-              : 'Artwork could not be prepared for some older devices. Those devices will use the default colony.'}
+              ? t(
+                  'Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.',
+                )
+              : t(
+                  'Artwork could not be prepared for some older devices. Those devices will use the default colony.',
+                )}
           </p>
         </details>
       )}
       {error && (
         <div>
-          <p role="alert">{error}</p>
-          <button onClick={onRetry}>Retry loading skins</button>
+          <p role="alert">{displayMessage(error)}</p>
+          <button onClick={onRetry}>{t('Retry loading skins')}</button>
         </div>
       )}
-      {!collection && !error && <p role="status">Loading your skins…</p>}
+      {!collection && !error && <p role="status">{t('Loading your skins…')}</p>}
       <div className="skin-library-grid">
         <article>
           <div className="skin-thumbnail skin-default-preview">
-            <img src="/skins/thumbs/swarm.png" alt="Default colony" />
+            <img src="/skins/thumbs/swarm.png" alt={t('Default colony')} />
           </div>
-          <h3>Default colony</h3>
+          <h3>{t('Default colony')}</h3>
           <p className="skin-card-state">
-            {collection?.activeSkinId === null ? 'In use' : 'Original game artwork'}
+            {collection?.activeSkinId === null ? t('In use') : t('Original game artwork')}
           </p>
           <button
             disabled={busy || !collection || collection.activeSkinId === null}
             onClick={() => onUse(null)}
           >
-            {collection?.activeSkinId === null ? 'In use' : 'Use in game'}
+            {collection?.activeSkinId === null ? t('In use') : t('Use in game')}
           </button>
         </article>
         {collection?.designs.slice(start, end).map((s) => {
@@ -99,13 +106,13 @@ export function SkinLibrary({
                 className="skin-card-open"
                 disabled={busy}
                 onClick={() => onOpen(s)}
-                aria-label={`Edit ${s.name}`}
+                aria-label={t('Edit {value0}', { value0: s.name })}
               >
                 <DraftThumbnail skin={s} />
                 <h3>{s.name}</h3>
               </button>
               <p className="skin-card-state">
-                {active ? (changed ? 'In use · changes not applied' : 'In use') : 'Saved'}
+                {active ? (changed ? t('In use · changes not applied') : t('In use')) : t('Saved')}
               </p>
               <div className="skin-card-actions">
                 <button
@@ -113,15 +120,17 @@ export function SkinLibrary({
                   disabled={busy || (active && !changed)}
                   onClick={() => onUse(s)}
                 >
-                  {active && !changed ? 'In use' : 'Use in game'}
+                  {active && !changed ? t('In use') : t('Use in game')}
                 </button>
                 <details>
-                  <summary aria-label={`More actions for ${s.name}`}>•••</summary>
+                  <summary aria-label={t('More actions for {value0}', { value0: s.name })}>
+                    {t('•••')}
+                  </summary>
                   <button disabled={busy} onClick={() => onDuplicate(s.skinId, s.name)}>
-                    Duplicate
+                    {t('Duplicate')}
                   </button>
                   <button disabled={busy} onClick={() => onDelete(s)}>
-                    Delete
+                    {t('Delete')}
                   </button>
                 </details>
               </div>
@@ -135,17 +144,17 @@ export function SkinLibrary({
               <SkinThumbnail skin={{ ...s, kind: 'preset', entitlement: '' }} />
               <h3>{s.name}</h3>
               <p className="skin-card-state">
-                {collection.activeSkinId === s.skinId ? 'In use' : 'Owned'}
+                {collection.activeSkinId === s.skinId ? t('In use') : t('Owned')}
               </p>
               <div className="skin-card-actions">
                 <button
                   disabled={busy || collection.equippedVersionId === s.id}
                   onClick={() => onUse(s.id)}
                 >
-                  {collection.equippedVersionId === s.id ? 'In use' : 'Use in game'}
+                  {collection.equippedVersionId === s.id ? t('In use') : t('Use in game')}
                 </button>
                 <button disabled={busy} onClick={() => onDuplicate(s.skinId, s.name)}>
-                  Customize
+                  {t('Customize')}
                 </button>
               </div>
             </article>
@@ -153,22 +162,25 @@ export function SkinLibrary({
       </div>
       {collection && !collection.designs.length && (
         <p className="skin-muted">
-          Your first design starts with New skin. Your work saves automatically.
+          {t('Your first design starts with New skin. Your work saves automatically.')}
         </p>
       )}
       {pages > 1 && (
-        <nav className="skin-pagination" aria-label="Skin collection pages">
+        <nav className="skin-pagination" aria-label={t('Skin collection pages')}>
           <button disabled={busy || currentPage === 0} onClick={() => setPage(currentPage - 1)}>
-            Previous
+            {t('Previous')}
           </button>
           <span>
-            {currentPage + 1} / {pages}
+            <RichMessage
+              source={'{slot0} / {slot1}'}
+              slots={{ slot0: currentPage + 1, slot1: pages }}
+            />
           </span>
           <button
             disabled={busy || currentPage + 1 >= pages}
             onClick={() => setPage(currentPage + 1)}
           >
-            Next
+            {t('Next')}
           </button>
         </nav>
       )}
@@ -177,6 +189,7 @@ export function SkinLibrary({
   );
 }
 function DraftThumbnail({ skin }: { skin: SkinDesign }) {
+  useLocale();
   const [loaded, setLoaded] = useState<{ canvas: HTMLCanvasElement; materials: Uint8Array } | null>(
     null,
   );
@@ -217,15 +230,16 @@ function DraftThumbnail({ skin }: { skin: SkinDesign }) {
           action=""
           phase={0}
           interactive={false}
-          label={`${skin.name} rendered preview`}
+          label={t('{value0} rendered preview', { value0: skin.name })}
         />
       ) : (
-        <span>{error ? 'Preview unavailable' : 'Loading preview…'}</span>
+        <span>{error ? t('Preview unavailable') : t('Loading preview…')}</span>
       )}
     </div>
   );
 }
 function SkinThumbnail({ skin }: { skin: Skin }) {
+  useLocale();
   const textureUrl = skinAssetUrl(skin, 'texture');
   const materialUrl = skinAssetUrl(skin, 'material');
   const [loaded, setLoaded] = useState<{ canvas: HTMLCanvasElement; materials: Uint8Array } | null>(
@@ -268,10 +282,10 @@ function SkinThumbnail({ skin }: { skin: Skin }) {
           action=""
           phase={0}
           interactive={false}
-          label={`${skin.name} rendered preview`}
+          label={t('{value0} rendered preview', { value0: skin.name })}
         />
       ) : (
-        <span>{error ? 'Preview unavailable' : 'Loading preview…'}</span>
+        <span>{error ? t('Preview unavailable') : t('Loading preview…')}</span>
       )}
     </div>
   );

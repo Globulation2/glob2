@@ -244,12 +244,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				site = i;
 		if (site < 0 || clearance[site] < std::int64_t(kPlotMargin) * kPlotMargin)
 			break;
-		const int x0 = site % t.w - plot.width / 2, y0 = site / t.w - plot.height / 2;
+		const int x0 = t.remainderX(site) - plot.width / 2, y0 = site / t.w - plot.height / 2;
 		stampFarmPlot(L.sketch, t, L.farm, x0, y0, plot);
 		++plotsPlaced;
 		for (int dy = -kPlotMargin; dy <= kPlotMargin; ++dy)
 			for (int dx = -kPlotMargin; dx <= kPlotMargin; ++dx)
-				keepClear[t.at(site % t.w + dx, site / t.w + dy)] = 1;
+				keepClear[t.at(t.remainderX(site) + dx, site / t.w + dy)] = 1;
 	}
 	context.telemetry.measure("polder.hamlets.actual", L.hamlets.size());
 	context.telemetry.measure("polder.dykes.actual", dykes);
@@ -280,7 +280,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "polder terrain";
 	TerrainSketch terrain = L.sketch;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "polder colonies";
 	if (!settleRoundColonies(game, context, "polder-starts", L.homeOf, L.homes, L.villageRadius))
@@ -291,7 +291,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		plantOpenHomeKit(
 			map, t, context, L.kits[k], 0.0, L.villageRadius, 0, 0, kHomeQuarry, [&](int i)
-			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
+			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); });
 	// The fields: crops on the rows' grass, nearly all of it. Wheat on 55% of the fertile row ground
 	// and wood on 8% (15% until 2026-09-14: "turn down the default amount of wood"), in patches, so
 	// the rows are mostly under crop (this is the polder) while the gaps between patches leave room to
@@ -303,11 +303,11 @@ bool generate(Game &game, GenerationContext &context)
 	const auto rowGround = [&](int i)
 	{
 		return !L.village[i] && !L.hamlet[i] && !L.farm.plot[i] && !reserved[i] &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
-		fertile += rowGround(i) && fertility.at(i % t.w, i / t.w) > 0;
+		fertile += rowGround(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, rowGround, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -323,9 +323,9 @@ bool generate(Game &game, GenerationContext &context)
 		for (const ShapePoint &hamlet : L.hamlets)
 			if (const int seed =
 					seedNear(t, int(hamlet.x), int(hamlet.y), 3, [&](int i)
-							 { return L.hamlet[i] && clearGround(map, i % t.w, i / t.w); });
+							 { return L.hamlet[i] && clearGround(map, t.remainderX(i), i / t.w); });
 				seed >= 0)
-				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
+				placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w),
 								   CHERRY + int(context.bounded("polder-fruit", 3)), 1);
 	seedAlgae(map, context, t, "polder-algae", o.algae, AlgaeBand::anyWater(60));
 	clearFarmPlots(map, t, {L.farm});
@@ -365,7 +365,7 @@ GeneratorDefinition polderDefinition()
 		"polder",
 		30,
 		"Polder",
-		5,
+		6,
 		false,
 		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and

@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "field/Grid.h"
+#include "PowerOfTwo.h"
 #include "WatershedGenerator.h"
 #include "FertilityField.h"
 #include "Game.h"
@@ -37,9 +39,9 @@ using namespace MapGeneration;
 // own named streams and never reads the map, so validateWorld can plan the same layout again and
 // check every ford and channel against the finished world.
 //
-// Terrain is stamped on the undermap with a symmetric version of Map::controlSand's shoreline
-// rule, then controlSand itself is run and must change nothing: the shores are already what it
-// would make of them, without its row-order raster pass silting narrow channels unevenly.
+// Terrain is stamped on the map's vertices with Map::layBeaches' shoreline rule already applied,
+// then layBeaches itself is run and must change nothing: the shores are already what it would
+// make of them.
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Rivers are the map's
 // walls and its wealth at once: wheat and wood regrow only near water, so the best land is right
@@ -61,7 +63,7 @@ constexpr const char *kLayoutStream = "watershed-layout";
 constexpr const char *kRiverStream = "watershed-rivers";
 constexpr const char *kStartStream = "watershed-starts";
 
-// Channel radius, in undermap vertices, before the shores are sanded. Sanding takes up to about
+// Channel radius, in terrain vertices, before the shores are sanded. Sanding takes up to about
 // 1.5 vertices off a diagonal channel, and a tile is water only when all four corners are, so this
 // is the narrowest channel whose water tiles still form a 4-connected core in every direction: a
 // line no unit can step across.
@@ -127,7 +129,7 @@ double centred(double delta, double period)
 }
 int wrapIndex(int value, int period)
 {
-	return ((value % period) + period) % period;
+	return field::Grid(period, 1).wrapX(value);
 }
 
 double unit(GenerationContext &context, const char *stream)
@@ -1091,7 +1093,7 @@ std::vector<int> waterDistance(const std::vector<unsigned char> &terrain, int w,
 		{
 			if (distance[p] != current)
 				continue;
-			const int x = p % w, y = p / w;
+			const int x = powerOfTwoRemainder(p, w), y = p / w;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
@@ -1165,9 +1167,9 @@ std::vector<unsigned char> stampTerrain(const Layout &layout, const WatershedOpt
 			}
 	}
 
-	// Map::controlSand's rule, applied to every vertex at once instead of in raster order: water
-	// touching grass and grass touching water both become sand, so every shore gets the same sand
-	// on both sides and the result is already a fixed point of controlSand.
+	// Map::layBeaches' rule, applied to every vertex at once: water touching grass and grass
+	// touching water both become sand, so every shore gets the same sand on both sides and the
+	// result is already a fixed point of layBeaches.
 	const std::vector<unsigned char> before = terrain;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -1323,7 +1325,7 @@ std::vector<MapGeneratorPoint> chooseSites(const Layout &layout, const Tiles &t,
 	for (int y = 0; y < h; y += 2)
 		for (int x = 0; x < w; x += 2)
 		{
-			const size_t c = size_t((y + 2) % h) * w + (x + 2) % w;
+			const size_t c = size_t(powerOfTwoRemainder(y + 2, h)) * w + powerOfTwoRemainder(x + 2, w);
 			if (t.component[c] != t.mainComponent || regions[c] < 0 ||
 				t.waterSteps[c] < kColonyWaterNear || t.waterSteps[c] > kColonyWaterFar)
 				continue;
@@ -1613,7 +1615,7 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 	{
 		std::int64_t wheatCandidates = 0;
 		for (const Candidate &c : order)
-			wheatCandidates += crop.at(c.index % w + 0.5, c.index / w + 0.5) < 0.62;
+			wheatCandidates += crop.at(powerOfTwoRemainder(c.index, w) + 0.5, c.index / w + 0.5) < 0.62;
 		const int wheatShare = int(budget * wheatCandidates / std::int64_t(order.size()));
 		wheatBudget = int(scaledCount(wheatShare, o.wheat));
 		woodBudget = int(scaledCount(budget - wheatShare, o.wood));
@@ -1622,7 +1624,7 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
 	{
 		if (shared ? budget <= 0 : wheatBudget <= 0 && woodBudget <= 0)
 			break;
-		const int x = c.index % w, y = c.index / w;
+		const int x = powerOfTwoRemainder(c.index, w), y = c.index / w;
 		// Two clumps in five are the larger radius 3 where the grass is deep enough to hold one.
 		const int radius = context.bounded("resources", 5) < 2 && t.grassDepth[c.index] > 3 ? 3 : 2;
 		if (!reservations.free(x, y, radius))
@@ -1669,7 +1671,7 @@ void placeStone(Game &game, GenerationContext &context, const Tiles &t,
 		 attempt < outcrops * 20 && int(placed.size()) < outcrops && !candidates.empty(); ++attempt)
 	{
 		const int i = candidates[context.bounded("resources", candidates.size())];
-		const int x = i % w, y = i / w, radius = 1 + int(context.bounded("resources", 2));
+		const int x = powerOfTwoRemainder(i, w), y = i / w, radius = 1 + int(context.bounded("resources", 2));
 		bool apart = reservations.free(x, y, radius) && map.isResourceAllowed(x, y, STONE);
 		for (const auto &p : placed)
 			apart = apart &&
@@ -1747,7 +1749,7 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
 		for (int clump = 0; clump < scaledCount(3, algaePercent) && !water.empty(); ++clump)
 		{
 			const int i = water[context.bounded("resources", water.size())];
-			placeResourceClump(map, context, MapGeneratorPoint(i % w, i / w), ALGA, 2);
+			placeResourceClump(map, context, MapGeneratorPoint(powerOfTwoRemainder(i, w), i / w), ALGA, 2);
 		}
 	}
 	std::vector<int> shallows;
@@ -1771,7 +1773,7 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
 	for (int clump = 0; clump < scaledCount(int(shallows.size()) / 60, algaePercent); ++clump)
 	{
 		const int i = shallows[context.bounded("resources", shallows.size())];
-		placeResourceClump(map, context, MapGeneratorPoint(i % w, i / w), ALGA, 1);
+		placeResourceClump(map, context, MapGeneratorPoint(powerOfTwoRemainder(i, w), i / w), ALGA, 1);
 	}
 }
 
@@ -1792,18 +1794,15 @@ bool generate(Game &game, GenerationContext &context)
 		context.detail = checkChannels(layout, stampedWater);
 	if (!context.detail.empty())
 		return false;
+	writeVertices(map, terrain);
+	map.layBeaches();
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-			map.setUMTerrain(x, y, TerrainType(terrain[size_t(y) * w + x]));
-	map.controlSand();
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			if (map.getUMTerrain(x, y) != terrain[size_t(y) * w + x])
+			if (map.vertexTerrainAt(x, y) != terrain[size_t(y) * w + x])
 			{
-				context.detail = "Map::controlSand changed the stamped shoreline";
+				context.detail = "Map::layBeaches changed the stamped shoreline";
 				return false;
 			}
-	map.rebuildTerrain();
 
 	context.stage = "watershed colonies";
 	const Tiles tiles = tileView(terrain, w, h);
@@ -1938,7 +1937,7 @@ GeneratorDefinition watershedDefinition()
 		"watershed",
 		13,
 		"Watershed",
-		1,
+		2,
 		false,
 		{// Springs per area of land; each one that finds its way to the network is a tributary.
 		 GeneratorControl{"river-density", "River density", 1, 10, 1, 5, ControlGroup::Terrain}

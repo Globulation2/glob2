@@ -8,6 +8,8 @@
 #include "Stream.h"
 #include <list>
 #include <optional>
+#include <memory>
+class BuildingArtwork;
 #include <vector>
 #include "WinningConditions.h"
 #include <assert.h>
@@ -27,7 +29,7 @@ public:
 	void reset();	
 
 	///Loads game header information from the stream
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor, Sint32 historicalGrowthVersion = 0);
 	
 	///Saves game header information to the stream
 	void save(GAGCore::OutputStream *stream) const;
@@ -57,6 +59,10 @@ public:
 	Uint64 observationRevision() const { return observationRevisionValue; }
 	unsigned getAIOrderDelay() const { return aiOrderDelay; }
 	void setAIOrderDelay(unsigned ticks) { if (ticks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks"); aiOrderDelay = ticks; ++observationRevisionValue; }
+	///Ticks between capturing a scheduled building walking field and publishing it (1..8).
+	static constexpr unsigned DEFAULT_BUILDING_GRADIENT_DELAY = 8;
+	unsigned getBuildingGradientDelay() const { return buildingGradientDelay; }
+	void setBuildingGradientDelay(unsigned ticks) { if (ticks < 1 || ticks > 8) throw std::invalid_argument("Building gradient delay must be 1..8 ticks"); buildingGradientDelay = ticks; ++observationRevisionValue; }
 	inline void setGameLatency(Sint32 latency) { gameLatency = latency;  ++observationRevisionValue; }
 	
 	///Returns the order rate. 1 means an order is sent across the net for every frame,
@@ -120,7 +126,7 @@ public:
 	void setDefaultAlliances(std::optional<int> humanColor, const std::vector<int>& aiColors);
 	
 	///Returns whether allying and de-allying are allowed mid-game
-	inline bool areAllyTeamsFixed() { return allyTeamsFixed; }
+	inline bool areAllyTeamsFixed() const { return allyTeamsFixed; }
 	
 	///Sets whether ally-teams are fixed during the game
 	inline void setAllyTeamsFixed(bool fixed) { allyTeamsFixed = fixed;  ++observationRevisionValue; }
@@ -252,12 +258,15 @@ public:
 	// before saving or sending its setup so later local edits cannot change it.
 	const std::string& getBuildingCatalogSnapshot() const { return buildingCatalogSnapshot; }
 	void setBuildingCatalogSnapshot(const std::string& snapshot);
+	const std::shared_ptr<const BuildingArtwork>& getBuildingArtwork() const { return buildingArtwork; }
+	void setBuildingArtwork(const std::string& bytes);
 	const std::vector<std::string>& buildingExperimentKeys() const { return buildingCatalogExperimentKeys; }
 	const std::vector<CatalogExperimentDefinition>& resourceExperiments() const { return resourceCatalogExperiments; }
 	void setResourceExperiments(const std::vector<CatalogExperimentDefinition>& definitions);
 	std::vector<std::string> catalogExperimentKeys() const;
 private:
 	std::string buildingCatalogSnapshot;
+	std::shared_ptr<const BuildingArtwork> buildingArtwork;
 	std::vector<std::string> buildingCatalogExperimentKeys;
 	std::vector<CatalogExperimentDefinition> resourceCatalogExperiments;
 	std::string aiConfig[Team::MAX_COUNT];
@@ -270,6 +279,7 @@ private:
 	///Used for net games to hide latency.
 	Sint32 gameLatency;
 	Uint8 aiOrderDelay = 8;
+	Uint8 buildingGradientDelay = DEFAULT_BUILDING_GRADIENT_DELAY;
 
 	///Sets the order rate
 	Uint8 orderRate;

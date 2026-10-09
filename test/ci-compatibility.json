@@ -3,13 +3,17 @@
   "description": "Portable regressions run completely on primary GCC 13. These suites repeat on secondary native toolchains to protect serialization, scheduling and scripting boundaries. CLI continuation and per-tick evidence run separately on each selected platform.",
   "engine_filters": [
     "*Save*/*",
+    "BuildingAreaEffects/*",
     "MapTiling/*",
     "*Replay*/*",
     "*Gradient*/*",
     "ComputeExecutor/*",
+    "EntityRandomLifecycle/*",
     "ReadOnlyPhase/*",
     "SimulationReadPhase/*",
     "*Script*/*",
+    "ScriptGenerator/*",
+    "MapPreview/generator Studio*",
     "AITelemetryUI/*",
     "SettingsAILibrary/*",
     "*Stream*/*",
@@ -45,6 +49,9 @@
     "MarketFetch/*",
     "MarketsV2/*",
     "BuildingCatalog/*",
+    "BuildingPackages/*",
+    "BuildingArtwork/*",
+    "BuildingLibrary/*",
     "BuildingServices/*",
     "BuildingProductionCombat/*",
     "BuildingCapabilities/*",
@@ -55,6 +62,8 @@
     "AIPipeline/*",
     "WorldSnapshot/*",
     "SharedWorkerLifecycle/*",
+    "ResourceGrowth/*",
+    "ResourceGrowthBenchmark/player-free*",
     "AIStateContinuation/*",
     "AIRecoveryCoverage/*",
     "AIDecisionCoverage/*",
@@ -65,7 +74,8 @@
     "CastorContinuation/*",
     "Maxima.Continuation/*",
     "RuntimeResources/*",
-    "TerrainResources/*"
+    "TerrainResources/*",
+    "MapSets/*"
   ],
   "unit_filters": [
     "*"

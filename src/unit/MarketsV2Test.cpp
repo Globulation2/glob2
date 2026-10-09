@@ -234,6 +234,7 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
     CHECK(scene.panels.building.showLevel);
     // Presentation is explicit even when upgrades are experiment-gated.
     market->type->presentation.showLevel=false;
+    g.snapshots().invalidateCatalog(); // The fixture edits the type table directly.
     CHECK_FALSE(glob2test::sceneOf(g,Game::ViewState{.selectedBuilding=market}).panels.building.showLevel);
 }
 
@@ -274,7 +275,7 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x) world.game.map.addForbidden(x,y,0);
 	for (int sw=0;sw<SWIM_CLASS_COUNT;++sw) CHECK_FALSE(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true));
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x)
-	{ world.game.map.removeForbidden(x,y,0); world.game.map.setTerrain(x,y,256); }
+	{ world.game.map.removeForbidden(x,y,0); world.game.map.paintCell(x, y, WATER); }
 	world.game.map.bumpTopologyGeneration();
 	for (int sw=0;sw<SWIM_CLASS_COUNT;++sw)
 	{
@@ -383,7 +384,7 @@ TEST_CASE("market panels show gated upgrades and shared stock [display][artifact
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI",touch ? "1" : "0",1);
 			globals->gfx->setResponsiveViewport(touch,800,600);
 			world.gui.touch->panelOpen=touch;
-			world.gui.drawAll(0);
+			glob2test::drawGUI(world.gui,0);
 			CHECK(world.gui.drawnScene().panels.building.hardSpaceForUpgrade==enabled);
 			const std::string name=std::string("market-")+(enabled ? "v2-" : "legacy-")+(touch ? "touch.bmp" : "desktop.bmp");
 			globals->gfx->printScreen(name);

@@ -6,7 +6,7 @@
 #include "EngineTiming.h"
 #include "GraphicContext.h"
 
-class Game;
+struct PresentationFrame;
 class MapCamera;
 
 //! Length (in pixels at scale 1.0) of each cross-arm in the four-line
@@ -47,10 +47,10 @@ private:
 	///This draws the mark in a minimap where s is the size of the minimap (in pixels),
 	///local is the local team number, x and y are the locations of the minimap in
 	///pixels, and g is the game
-	void drawInMinimap(int s, int local, int x, int y, Game& game) const;
+	void drawInMinimap(int s, int local, int x, int y, const PresentationFrame& scene) const;
 	///Draws this mark on the screen, where viewport x and viewport y are the
 	///positions of the viewport and game is the game
-	void drawInMainView(int viewportX, int viewportY, Game& game, const MapCamera *camera = nullptr) const;
+	void drawInMainView(int viewportX, int viewportY, const PresentationFrame& scene, const MapCamera *camera = nullptr) const;
 	int showTicks;
 	int totalTime;
 	int px;
@@ -67,7 +67,7 @@ public:
 	MarkManager();
 	
 	///Draw all marks
-	void drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, Game& game, const MapCamera *camera = nullptr);
+	void drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, const PresentationFrame& scene, const MapCamera *camera = nullptr);
 
 	///Add another mark to the manager
 	void addMark(const Mark& mark);

@@ -631,7 +631,7 @@ void furnishPads(Map &map, const Layout &L, GenerationContext &context)
 	for (int team = 0; team < L.g.teams; ++team)
 	{
 		const auto eligible = [&](int i)
-		{ return L.padOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.padOf[i] == team && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		// Facing in, towards the trunk.
 		const KitFrame frame{int(std::lround(L.pads[team].x)), int(std::lround(L.pads[team].y)),
 							 L.padAngle[team] + kPi};
@@ -670,7 +670,7 @@ void stockCoral(Map &map, const Layout &L, GenerationContext &context, const Cor
 	const auto onBranch = [&](int i)
 	{
 		return coral[i] && L.padOf[i] < 0 && L.budOf[i] < 0 && !L.bridge[i] &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 
 	const int colonies = L.g.teams;
@@ -695,7 +695,7 @@ void stockCoral(Map &map, const Layout &L, GenerationContext &context, const Cor
 			const ShapePoint at = L.place(bud.at, k);
 			const int id = k * budsPerColony + b;
 			const auto onBud = [&](int i)
-			{ return L.budOf[i] == id && clearGround(map, i % t.w, i / t.w); };
+			{ return L.budOf[i] == id && clearGround(map, t.remainderX(i), i / t.w); };
 			const int tiles = int(scaledCount(
 				std::lround(kBudFruitNear + (kBudFruitFar - kBudFruitNear) * remote(at.x, at.y)),
 				o.fruit));
@@ -718,7 +718,7 @@ void stockCoral(Map &map, const Layout &L, GenerationContext &context, const Cor
 	for (int i = 0; i < n; ++i)
 		if (onBranch(i))
 		{
-			const WedgeFrame::Cell cell = wedges.cell(i % t.w, i / t.w);
+			const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
 			const double home = steps[i] >= 0 ? 1 - std::min(1.0, double(steps[i]) / farthest) : 0;
 			ranked.push_back({-(patch.at(cell.s, cell.d) + kHomeLean * home), i});
 			splitKey[i] = split.at(cell.s, cell.d);
@@ -739,7 +739,7 @@ bool generate(Game &game, GenerationContext &context)
 	const CoralOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(WATER);
+	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);
@@ -768,7 +768,7 @@ bool generate(Game &game, GenerationContext &context)
 		sprinkleSand(terrain, t, branches, kSandShare, kSandInland,
 					 [&](int i)
 					 {
-						 const WedgeFrame::Cell cell = wedges.cell(i % t.w, i / t.w);
+						 const WedgeFrame::Cell cell = wedges.cell(t.remainderX(i), i / t.w);
 						 return dry.at(cell.s, cell.d);
 					 });
 	}
@@ -786,14 +786,14 @@ bool generate(Game &game, GenerationContext &context)
 				terrain[i] = SAND;
 	}
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "coral colonies";
 	const auto pad = [&](int team)
 	{
 		std::vector<unsigned char> home(n, 0);
 		for (int i = 0; i < n; ++i)
-			home[i] = L.padOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			home[i] = L.padOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return home;
 	};
 	// The swarm stands a little seaward of the pad's middle, so the kit and the trunk lie in front
@@ -925,7 +925,7 @@ GeneratorDefinition coralDefinition()
 		"coral",
 		21,
 		"Coral",
-		1,
+		2,
 		false,
 		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the

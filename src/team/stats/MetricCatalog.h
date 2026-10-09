@@ -10,10 +10,12 @@
 #pragma once
 #include "TeamStat.h"
 #include <functional>
+#include <span>
 #include <string>
 #include <vector>
 
 class BuildingsTypes;
+class BuildingType;
 
 namespace Stats
 {
@@ -126,6 +128,7 @@ struct Metric
 const std::vector<Metric> &catalog();
 //! Per-game building bands, with owned labels and concrete variant counters.
 std::vector<Metric> catalogForBuildings(const BuildingsTypes& buildings);
+std::vector<Metric> catalogForBuildings(std::span<const BuildingType> buildings);
 //! Index into catalog() of the metric with this id, or -1.
 int findMetric(const std::string &id);
 //! The metric with this id, for ids written in the code: it must exist.

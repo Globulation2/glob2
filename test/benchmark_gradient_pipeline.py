@@ -88,7 +88,7 @@ def main():
         if '--save' in s['args'] or '--replay' in s['args']:
             p.error('pipeline scenarios must omit save/replay exports')
     output.mkdir(parents=True, exist_ok=False)
-    variants = [(f'd{d}-w{w}', binary, ['--gradient-workers', str(w), '--gradient-delay', str(d)]) for d in a.delays for w in a.workers]
+    variants = [(f'd{d}-w{w}', binary, ['--compute-threads', str(w + 1), '--gradient-delay', str(d)]) for d in a.delays for w in a.workers]
     if a.baseline and not a.verify:
         variants.insert(0, ('legacy', a.baseline.resolve(), []))
     metadata = {'platform': platform.platform(), 'manifest': manifest, 'binaries': {str(exe): digest(exe) for _, exe, _ in variants},
@@ -113,7 +113,9 @@ def main():
                     if a.verify:
                         # Same delay must match even if the worker finished much earlier/later.
                         signature = {'trace': digest(dest/'game.replay.checksums'),
-                                     'result': {k: row['result'][k] for k in ('ticks', 'termination', 'teams', 'gradient_jobs', 'gradient_published', 'gradient_discarded')}}
+                                     'result': {k: row['result'][k] for k in ('ticks', 'termination', 'teams', 'gradient_jobs', 'gradient_published', 'gradient_discarded',
+                                                'building_gradient_jobs', 'building_gradient_published', 'building_gradient_discarded',
+                                                'building_gradient_synchronous', 'building_gradient_max_pending') if k in row['result']}}
                         delay = label.split('-w')[0]
                         if delay in references:
                             assert signature == references[delay], (scenario['id'], label, 'determinism mismatch')

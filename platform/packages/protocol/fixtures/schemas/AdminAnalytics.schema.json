@@ -1,0 +1,336 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminAnalytics",
+  "title": "AdminAnalytics",
+  "type": "object",
+  "required": [
+    "attention",
+    "days",
+    "generatedAt",
+    "live",
+    "metrics",
+    "active",
+    "participants",
+    "coverage",
+    "topContent",
+    "collection"
+  ],
+  "properties": {
+    "attention": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "days": {
+      "type": "integer"
+    },
+    "generatedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "live": {
+      "type": "object",
+      "required": [
+        "playersOnline",
+        "activeWindowMinutes",
+        "liveMatches",
+        "matchesToday",
+        "generatedAt"
+      ],
+      "properties": {
+        "playersOnline": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Accounts connected in the last activeWindowMinutes, in a room, or playing a match that has not ended."
+        },
+        "activeWindowMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "liveMatches": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Matches starting or running now."
+        },
+        "matchesToday": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Matches created in the last 24 hours, cancelled ones excluded."
+        },
+        "generatedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+          "description": "RFC 3339 date-time."
+        },
+        "queues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "searching"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
+              },
+              "searching": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Players waiting in the queue or answering a match prompt, any sim version."
+              }
+            }
+          },
+          "maxItems": 64,
+          "description": "Every configured queue with how many players are searching it, so a client can say whether a search is likely to find a person."
+        }
+      },
+      "description": "GET /api/v1/stats."
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "day",
+          "metric",
+          "dimension",
+          "value"
+        ],
+        "properties": {
+          "day": {
+            "type": "string"
+          },
+          "metric": {
+            "type": "string"
+          },
+          "dimension": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "active": {
+      "type": "object",
+      "required": [
+        "daily",
+        "weekly",
+        "monthly",
+        "registered",
+        "guests"
+      ],
+      "properties": {
+        "daily": {
+          "type": "integer"
+        },
+        "weekly": {
+          "type": "integer"
+        },
+        "monthly": {
+          "type": "integer"
+        },
+        "registered": {
+          "type": "object",
+          "required": [
+            "daily",
+            "weekly",
+            "monthly"
+          ],
+          "properties": {
+            "daily": {
+              "type": "integer"
+            },
+            "weekly": {
+              "type": "integer"
+            },
+            "monthly": {
+              "type": "integer"
+            }
+          }
+        },
+        "guests": {
+          "type": "object",
+          "required": [
+            "daily",
+            "weekly",
+            "monthly"
+          ],
+          "properties": {
+            "daily": {
+              "type": "integer"
+            },
+            "weekly": {
+              "type": "integer"
+            },
+            "monthly": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "participants": {
+      "type": "object",
+      "required": [
+        "current",
+        "previous"
+      ],
+      "properties": {
+        "current": {
+          "type": "integer"
+        },
+        "previous": {
+          "type": "integer"
+        }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "metric",
+          "since",
+          "historicalIncomplete"
+        ],
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "since": {
+            "type": "string"
+          },
+          "historicalIncomplete": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "topContent": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "library",
+          "name",
+          "ownerId",
+          "hidden",
+          "reason",
+          "createdAt",
+          "href",
+          "previewHref",
+          "downloads"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "library": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "maps"
+              },
+              {
+                "type": "string",
+                "const": "ais"
+              },
+              {
+                "type": "string",
+                "const": "generators"
+              },
+              {
+                "type": "string",
+                "const": "buildings"
+              },
+              {
+                "type": "string",
+                "const": "sets"
+              },
+              {
+                "type": "string",
+                "const": "skins"
+              },
+              {
+                "type": "string",
+                "const": "music"
+              }
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "ownerId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "href": {
+            "type": "string"
+          },
+          "previewHref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "downloads": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "collection": {
+      "type": "boolean"
+    }
+  }
+}

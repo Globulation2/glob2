@@ -40,8 +40,9 @@ using namespace MapGeneration;
 // generate(). Newer generators design structure first and texture second; this one is all texture.
 //
 // GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
-// - Grass may not touch water, so Map::controlSand turns every grass corner beside water into sand
-//   after painting. Heavy smoothing leaves long coasts and so a lot of that forced sand.
+// - Grass may not touch water, so Map::layBeaches turns every grass corner beside water, and every
+//   water corner beside grass, into sand after painting. Heavy smoothing leaves long coasts and so
+//   a lot of that forced sand.
 // - Wheat and wood only regrow near water. The fine patchwork keeps water close to almost every
 //   grass tile, which is why this map's farmland regrows well despite its randomness.
 // - Buildings need pure grass: the widest grass patches become homes (placeColonies), and each home
@@ -72,7 +73,7 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 	int h = w;
 	int s = w * h;
 	int m = s - 1;
-	std::vector<int> undermap(w * h);
+	std::vector<int> vertices(w * h);
 
 	// context.stream() looks up a named std::mt19937 by string key on every call; every use
 	// here names the same "simulation" stream, so looking it up once and reusing the reference
@@ -106,19 +107,19 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 			r -= waterRatio;
 			if (r < 0)
 			{
-				undermap[y * w + x] = 0;
+				vertices[y * w + x] = 0;
 				continue;
 			}
 			r -= sandRatio;
 			if (r < 0)
 			{
-				undermap[y * w + x] = 1;
+				vertices[y * w + x] = 1;
 				continue;
 			}
 			r -= grassRatio;
 			if (r < 0)
 			{
-				undermap[y * w + x] = 2;
+				vertices[y * w + x] = 2;
 				continue;
 			}
 			assert(false); // Want's to sing ?
@@ -133,81 +134,81 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 			{
 				if (rng() & 4)
 				{
-					int a = undermap[(y * w + x + 1 + s) & m];
-					int b = undermap[(y * w + x - 1 + s) & m];
+					int a = vertices[(y * w + x + 1 + s) & m];
+					int b = vertices[(y * w + x - 1 + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
 				else
 				{
-					int a = undermap[(y * w + x + w + s) & m];
-					int b = undermap[(y * w + x - w + s) & m];
+					int a = vertices[(y * w + x + w + s) & m];
+					int b = vertices[(y * w + x - w + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
 				if (rng() & 4)
 				{
-					int a = undermap[(y * w + x + w + 1 + s) & m];
-					int b = undermap[(y * w + x - w - 1 + s) & m];
+					int a = vertices[(y * w + x + w + 1 + s) & m];
+					int b = vertices[(y * w + x - w - 1 + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
 				else
 				{
-					int a = undermap[(y * w + x + w - 1 + s) & m];
-					int b = undermap[(y * w + x - w + 1 + s) & m];
+					int a = vertices[(y * w + x + w - 1 + s) & m];
+					int b = vertices[(y * w + x - w + 1 + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
 				if (rng() & 4)
 				{
-					int a = undermap[(y * w + x + w - 2 + s) & m];
-					int b = undermap[(y * w + x - w + 2 + s) & m];
+					int a = vertices[(y * w + x + w - 2 + s) & m];
+					int b = vertices[(y * w + x - w + 2 + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
 				else
 				{
-					int a = undermap[(y * w + x + w - (h << 1) + s) & m];
-					int b = undermap[(y * w + x - w + (h << 1) + s) & m];
+					int a = vertices[(y * w + x + w - (h << 1) + s) & m];
+					int b = vertices[(y * w + x - w + (h << 1) + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
 				if (rng() & 4)
 				{
-					int a = undermap[(y * w + x + w + 2 + (h << 1) + s) & m];
-					int b = undermap[(y * w + x - w - 2 - (h << 1) + s) & m];
+					int a = vertices[(y * w + x + w + 2 + (h << 1) + s) & m];
+					int b = vertices[(y * w + x - w - 2 - (h << 1) + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
 				else
 				{
-					int a = undermap[(y * w + x + w + 2 - (h << 1) + s) & m];
-					int b = undermap[(y * w + x - w - 2 + (h << 1) + s) & m];
+					int a = vertices[(y * w + x + w + 2 - (h << 1) + s) & m];
+					int b = vertices[(y * w + x - w - 2 + (h << 1) + s) & m];
 					if (a == b)
 					{
-						undermap[y * w + x] = a;
+						vertices[y * w + x] = a;
 						continue;
 					}
 				}
@@ -218,7 +219,7 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 	int grassCount = 0;
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
-			switch (undermap[y * w + x])
+			switch (vertices[y * w + x])
 			{
 			case 0:
 				waterCount++;
@@ -250,7 +251,7 @@ static void countTerrain(const Map &map, int &waterCount, int &sandCount, int &g
 	for (int y = 0; y < map.getH(); y++)
 		for (int x = 0; x < map.getW(); x++)
 		{
-			switch (map.getUMTerrain(x, y))
+			switch (map.vertexTerrainAt(x, y))
 			{
 			case WATER:
 				waterCount++;
@@ -414,19 +415,19 @@ static void paintPatchwork(Map &map, std::mt19937 &rng, const TerrainMix &mix)
 			r -= waterRatio;
 			if (r < 0)
 			{
-				map.setUMTerrain(x, y, WATER);
+				map.setVertexTerrain(x, y, WATER);
 				continue;
 			}
 			r -= sandRatio;
 			if (r < 0)
 			{
-				map.setUMTerrain(x, y, SAND);
+				map.setVertexTerrain(x, y, SAND);
 				continue;
 			}
 			r -= grassRatio;
 			if (r < 0)
 			{
-				map.setUMTerrain(x, y, GRASS);
+				map.setVertexTerrain(x, y, GRASS);
 				continue;
 			}
 			assert(false); // Want's to sing ?
@@ -494,11 +495,11 @@ static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const Terra
 				{
 					const int d = (rng() & 4) ? 2 * pair : 2 * pair + 1;
 					const int dx = kSmoothingDirections[d][0], dy = kSmoothingDirections[d][1];
-					const int a = map.getUMTerrain(x + dx, y + dy);
-					const int b = map.getUMTerrain(x - dx, y - dy);
+					const int a = map.vertexTerrainAt(x + dx, y + dy);
+					const int b = map.vertexTerrainAt(x - dx, y - dy);
 					if ((a == b) && (allowed[a] <= rng()))
 					{
-						map.setUMTerrain(x, y, (TerrainType)a);
+						map.setVertexTerrain(x, y, (TerrainType)a);
 						break;
 					}
 				}
@@ -544,7 +545,7 @@ static bool placeColonies(Map &map, GenerationContext &context,
 			int startX = 0;
 			for (int x = 0; x < w; x++)
 			{
-				int a = map.getUMTerrain(x, y);
+				int a = map.vertexTerrainAt(x, y);
 				if (a == GRASS)
 					width++;
 				else
@@ -554,10 +555,10 @@ static bool placeColonies(Map &map, GenerationContext &context,
 						int centerX = ((x + startX) >> 1);
 						int top, bot;
 						for (top = 0; top < h; top++)
-							if (map.getUMTerrain(centerX, y - top) != GRASS)
+							if (map.vertexTerrainAt(centerX, y - top) != GRASS)
 								break;
 						for (bot = 0; bot < h; bot++)
-							if (map.getUMTerrain(centerX, y + bot) != GRASS)
+							if (map.vertexTerrainAt(centerX, y + bot) != GRASS)
 								break;
 						int height = top + bot - 1;
 						int surface = height * width;
@@ -619,7 +620,7 @@ static bool placeColonies(Map &map, GenerationContext &context,
 		// workers, so the swarm always fits whatever the patch's real outline.
 		for (int dx = -1; dx < 6; dx++)
 			for (int dy = 0; dy < 6; dy++)
-				map.setUMTerrain(maxX + dx, maxY + dy, GRASS);
+				map.setVertexTerrain(maxX + dx, maxY + dy, GRASS);
 	}
 
 	// The meadow: two overlapping grass squares, 5 tiles plus a fraction of the colony spacing a
@@ -630,8 +631,8 @@ static bool placeColonies(Map &map, GenerationContext &context,
 	int squareSize = 5 + (int)(sqrt((double)minDistSquare) / 4.5);
 	for (int team = 0; team < nbTeams && options.colony_meadows; team++)
 	{
-		map.setUMatPos(context.bootX[team] + 2, context.bootY[team] + 0, GRASS, squareSize);
-		map.setUMatPos(context.bootX[team] + 2, context.bootY[team] + 2, GRASS, squareSize);
+		map.paintVertexSquare(context.bootX[team] + 2, context.bootY[team] + 0, GRASS, squareSize);
+		map.paintVertexSquare(context.bootX[team] + 2, context.bootY[team] + 2, GRASS, squareSize);
 	}
 	return true;
 }
@@ -639,6 +640,9 @@ static bool placeColonies(Map &map, GenerationContext &context,
 static bool terrain(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
 {
 	Map &map = game.map;
+	// Each vertex write re-derives its four tiles at once; the batch holds the map-wide follow-up
+	// (terrain generation, route invalidation) until the terrain is finished.
+	auto batch = map.editTerrain();
 	// Every draw below names the "terrain" stream; one lookup serves all of them.
 	std::mt19937 &rng = context.stream("terrain");
 
@@ -660,11 +664,10 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 	// Sand control twice: once so the patches colonies are measured on are real grass (grass beside
 	// water has just become beach), and again because the grass stamped for each swarm and meadow
 	// may itself touch water.
-	map.controlSand();
+	map.layBeaches();
 	if (!placeColonies(map, context, options, grassCount, totalCount))
 		return false;
-	map.controlSand();
-	map.rebuildTerrain();
+	map.layBeaches();
 	return true;
 }
 
@@ -918,7 +921,7 @@ GeneratorDefinition shatteredCoastDefinition()
 		"shattered-coast",
 		7,
 		"Old random",
-		5,
+		6,
 		false,
 		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the

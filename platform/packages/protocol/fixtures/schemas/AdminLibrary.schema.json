@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminLibrary",
+  "title": "AdminLibrary",
+  "anyOf": [
+    {
+      "type": "string",
+      "const": "maps"
+    },
+    {
+      "type": "string",
+      "const": "ais"
+    },
+    {
+      "type": "string",
+      "const": "generators"
+    },
+    {
+      "type": "string",
+      "const": "buildings"
+    },
+    {
+      "type": "string",
+      "const": "sets"
+    },
+    {
+      "type": "string",
+      "const": "skins"
+    },
+    {
+      "type": "string",
+      "const": "music"
+    }
+  ]
+}

@@ -81,7 +81,7 @@ static void tiledCapture(bool hd = false)
     view.toggle();
     int vx = 17, vy = 21; // Initial capture origin is (0,0), boundaries are at cells 30 and 60.
     const unsigned options = Game::DRAW_AREA;
-    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
     if (hd) REQUIRE(globalContainer->terrainCompositor().scale() == 4);
     REQUIRE(view.tiles.size() == 9);
     REQUIRE(view.pixelsPerCell == 32);
@@ -104,7 +104,7 @@ static void tiledCapture(bool hd = false)
     Game::ViewState baseline;
     baseline.render.animationTime = view.standaloneRender.animationTime;
     baseline.render.areaAnimationTick = 0;
-    game.drawMap(0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
+    glob2test::drawMap(game,0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
                  baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
     Sprite::flushBatches(globalContainer->gfx);
     std::vector<unsigned char> pixels(2048 * 2048 * 4);
@@ -134,13 +134,13 @@ static void tiledCapture(bool hd = false)
     glMatrixMode(GL_MODELVIEW); glPopMatrix(); glMatrixMode(GL_PROJECTION); glPopMatrix(); glMatrixMode(GL_MODELVIEW);
     glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
     REQUIRE(glGetError() == GL_NO_ERROR);
-    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
     REQUIRE(view.standaloneRender.animationTime == 2);
     REQUIRE(view.standaloneRender.areaAnimationTick == 2);
     view.reset();
     view.allocationPixelLimit = 1500000; // Some native tiles allocate before retrying.
     view.toggle();
-    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
     REQUIRE(view.pixelsPerCell == 16);
     REQUIRE(view.tiles.size() == 4);
     std::vector<GLuint> oldTextures;
@@ -149,20 +149,20 @@ static void tiledCapture(bool hd = false)
     for (GLuint texture : oldTextures) REQUIRE(glIsTexture(texture) == GL_FALSE);
     view.allocationPixelLimit = 5000;
     view.toggle();
-    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
     REQUIRE(view.pixelsPerCell == 1);
-    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
     REQUIRE(view.pixelsPerCell == 1); // Retain the successful level until reset.
     view.reset();
     view.allocationPixelLimit = 1;
     view.toggle();
-    REQUIRE(!view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(!view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
     REQUIRE(view.tiles.empty());
     REQUIRE(view.framebuffer == 0);
     REQUIRE(!view.active());
     view.reset(); view.allocationPixelLimit = 0;
     view.toggle();
-    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
     REQUIRE(view.pixelsPerCell == 32);
     REQUIRE(glGetError() == GL_NO_ERROR);
     // Preview opacity is frame state too: a region that cannot see the mouse
@@ -171,19 +171,20 @@ static void tiledCapture(bool hd = false)
     gui.init();
     makeTorusMapFixture(gui.game, 64, 64);
     for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x)
-        gui.game.map.setUMatPos(x, y, GRASS, 1);
+        gui.game.map.paintVertexSquare(x, y, GRASS, 1);
     gui.localPlayer = gui.localTeamNo = 0;
     gui.adjustLocalTeam();
+    gui.prepareLocalPresentation();
     gui.selectionMode = GameGUI::TOOL_SELECTION;
     gui.toolManager.activateBuildingTool("swarm");
     gui.mouseX = 480; gui.mouseY = 368;
     gui.torusView.textureLimit = 1024;
     gui.torusView.toggle();
     int gx = 17, gy = 21;
-    REQUIRE(gui.torusView.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
-    REQUIRE(gui.torusView.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
+    REQUIRE(gui.torusView.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
+    REQUIRE(gui.torusView.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
     REQUIRE(std::abs(gui.toolManager.highlightStrength - .1f) < .00001f);
-    REQUIRE(gui.torusView.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
+    REQUIRE(gui.torusView.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
     REQUIRE(std::abs(gui.toolManager.highlightStrength - .2f) < .00001f);
     REQUIRE(glGetError() == GL_NO_ERROR);
 #endif
@@ -209,6 +210,7 @@ static void run(bool gpu, int width, int height)
         REQUIRE(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
+        gui.prepareLocalPresentation();
         gui.updateCamera();
         // A drag beginning on empty ground moves the map with the pointer.
         // Find an actual empty visible tile so the fixture can change freely.
@@ -439,9 +441,9 @@ static void run(bool gpu, int width, int height)
             REQUIRE(!view.active());
             globalContainer->settings.automaticTorus = false;
             int x = 0, y = 0, px, py;
-            REQUIRE(!view.draw(gui.game, 0, 0, x, y, 960, 720));
+            REQUIRE(!view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, 0, x, y, 960, 720));
             REQUIRE(!view.pick(480, 560, px, py));
-            gui.drawAll(0);
+            glob2test::drawGUI(gui,0);
             std::cout << "Software game rendering and inactive torus controls passed\n";
         }
         else
@@ -521,7 +523,7 @@ static void run(bool gpu, int width, int height)
                 view.lastFrame = SDL_GetTicks();
                 const auto randomState=syncRandEngine();
                 const auto gameRandom=gui.game.syncRandom;
-                REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
+                REQUIRE(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
                 REQUIRE(glGetError() == GL_NO_ERROR);
                 REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
             };
@@ -570,7 +572,8 @@ static void run(bool gpu, int width, int height)
                 REQUIRE(selected);
                 gui.showUnitWorkingToBuilding = true;
                 gui.setSelection(GameGUI::BUILDING_SELECTION, selected);
-                REQUIRE(gui.view.selectedBuilding == selected);
+                REQUIRE(std::get<BuildingRef>(gui.selection) == Game::refOf(selected));
+                REQUIRE(gui.view.selectedBuilding == nullptr);
                 const int worldW = gui.game.map.getW() * 32, worldH = gui.game.map.getH() * 32;
                 std::vector<std::vector<unsigned char>> atlas;
                 // The atlas holds one upright copy of the world; GL hands rows back bottom-up.
@@ -588,11 +591,12 @@ static void run(bool gpu, int width, int height)
                     }
                     return static_cast<unsigned char *>(nullptr);
                 };
-                // Drawing reads the GUI's Scene; drawAll would extract it first.
-                Scene scene;
+                // Drawing reads the GUI's PresentationFrame; drawAll would extract it first.
+                PresentationFrame scene;
                 auto capture = [&]()
                 {
-                    gui.extractScene(scene);
+                    gui.game.snapshots().invalidateBoundary();
+                    gui.prepareLocalPresentation(scene);
                     gui.setPublishedScene(&scene);
                     draw(1);
                     gui.setPublishedScene(nullptr);
@@ -680,7 +684,7 @@ static void run(bool gpu, int width, int height)
             view.toggle();
             view.lastFrame = SDL_GetTicks() - 100;
             view.amount = .04f;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
+            REQUIRE(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(!view.active());
             // Automatic motion opens slowly and returns quickly after inactivity.
             globalContainer->settings.automaticTorus = true;
@@ -690,18 +694,18 @@ static void run(bool gpu, int width, int height)
             view.amount = .25f;
             view.lastMove = SDL_GetTicks();
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
+            REQUIRE(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE((view.amount > .25f && view.amount <= .28f));
             // Neither folding nor automatic return changes an active gesture's projection.
             view.setPointerHeld(true);
             float heldAmount = view.amount;
             view.lastMove = SDL_GetTicks() - 300;
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
+            REQUIRE(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(view.amount == heldAmount);
             view.setPointerHeld(false);
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
+            REQUIRE(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(view.amount < heldAmount - .2f);
             // G pins the overview even when no movement notifications arrive.
             view.toggle();
@@ -711,17 +715,17 @@ static void run(bool gpu, int width, int height)
             view.toggle();
             view.amount = .1f;
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
+            REQUIRE(view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(!view.active());
             // Disabling the preference clears an automatic reveal before its first frame.
             view.notifyMove();
             globalContainer->settings.automaticTorus = false;
-            REQUIRE(!view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(!view.draw(glob2test::sceneOf(gui.game),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
             REQUIRE(!view.active());
             view.notifyMove();
             REQUIRE(!view.active());
             globalContainer->gfx->setClipRect();
-            gui.drawAll(0);
+            glob2test::drawGUI(gui,0);
             // Preserve the map focus when entering from shared 2D zoom.
             for (double flatZoom : {.5, 1.0, 2.0})
             {
@@ -738,7 +742,7 @@ static void run(bool gpu, int width, int height)
                 {
                     gui.torusView.amount = phase;
                     gui.torusView.lastFrame = SDL_GetTicks();
-                    gui.drawAll(0);
+                    glob2test::drawGUI(gui,0);
                     int px, py;
                     REQUIRE(gui.torusView.pick(cx, cy, px, py));
                     REQUIRE(std::abs(TorusGeometry::wrappedDelta(px, int(center.first), gui.game.map.getW()*32)) <= 2);
@@ -746,7 +750,7 @@ static void run(bool gpu, int width, int height)
                     REQUIRE(glGetError() == GL_NO_ERROR);
                 }
                 gui.torusView.reset();
-                gui.drawAll(0);
+                glob2test::drawGUI(gui,0);
             }
             // One zoom for both views: the wheel on the ring zooms the 2D
             // camera about the ring's focus, the ring draws the detail of that
@@ -762,7 +766,7 @@ static void run(bool gpu, int width, int height)
                 {
                     gui.torusView.amount = phase;
                     gui.torusView.lastFrame = SDL_GetTicks();
-                    gui.drawAll(0);
+                    glob2test::drawGUI(gui,0);
                 }
                 REQUIRE(gui.view.render.detail.strategic == 0);
                 int beforeX, beforeY, afterX, afterY;
@@ -777,7 +781,7 @@ static void run(bool gpu, int width, int height)
                     gui.processEvent(&wheel);
                 REQUIRE(gui.camera.zoom == gui.camera.minimumZoom());
                 gui.torusView.lastFrame = SDL_GetTicks();
-                gui.drawAll(0);
+                glob2test::drawGUI(gui,0);
                 REQUIRE(gui.torusView.meshKey[2] < closeUp);
                 REQUIRE(gui.view.render.detail.strategic == 1);
                 REQUIRE(gui.torusView.pick(cx, cy, afterX, afterY));
@@ -786,7 +790,7 @@ static void run(bool gpu, int width, int height)
                 REQUIRE(glGetError() == GL_NO_ERROR);
                 saveFrame("torus-overview.bmp");
                 gui.torusView.reset();
-                gui.drawAll(0);
+                glob2test::drawGUI(gui,0);
                 REQUIRE(gui.camera.zoom == gui.camera.minimumZoom());
                 const auto center = gui.camera.screenToWorld(cx, cy);
                 REQUIRE(std::abs(TorusGeometry::wrappedDelta(beforeX, int(center.first), gui.game.map.getW()*32)) <= 34);
@@ -794,7 +798,7 @@ static void run(bool gpu, int width, int height)
                 saveFrame("flat-overview.bmp");
                 gui.camera.zoom = 1;
                 gui.updateCamera();
-                gui.drawAll(0);
+                glob2test::drawGUI(gui,0);
             }
             std::cout << "Manual/automatic modes, saved option and pointer hold passed\n";
             std::cout << "Navigation, GL state, picking and reload lifecycle passed\n";
@@ -819,7 +823,7 @@ static void run(bool gpu, int width, int height)
                 {
                     rectangularView.amount = phase;
                     rectangularView.lastFrame = SDL_GetTicks();
-                    REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720, farthest));
+                    REQUIRE(rectangularView.draw(glob2test::sceneOf(rectangular.game),rectangular.game.gui, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720, farthest));
                     REQUIRE(glGetError() == GL_NO_ERROR);
                     // Picking the original screen center must still reach the
                     // same map location after each step of the transition.
@@ -839,7 +843,7 @@ static void run(bool gpu, int width, int height)
                     REQUIRE((x >= 0 && x <= 960)); // The distant rim may crop vertically.
                 }
                 rectangularView.setViewport(size.first - 1, size.second - 1);
-                REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720, farthest));
+                REQUIRE(rectangularView.draw(glob2test::sceneOf(rectangular.game),rectangular.game.gui, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720, farthest));
                 int hits = 0;
                 for (int y = 100; y < 700; y += 40)
                     for (int x = 100; x < 900; x += 40)

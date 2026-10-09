@@ -7,7 +7,9 @@
 #include "Game.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientStats.h"
 #include <algorithm>
 #include <array>
 #include "Team.h"
@@ -21,8 +23,6 @@ void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRout
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
 // flag's zone or, for a clearing flag, the clearable resources in its range.
-// updateRoundTripGradient: the gradient of the trip to a resource and on to
-// the building.
 
 void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute route)
 {
@@ -41,6 +41,13 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 
 	Uint16 *gradient=building->globalGradient[slot];
 	assert(gradient);
+	// Diagnostics read the replaced field and its search before reinitialization.
+	if (gradientStats) gradientStats->fieldRebuilding(*this, *building, slot, access, game->stepCounter, topologyGeneration);
+	// A synchronous build supersedes any queued or pending scheduled refresh.
+	building->supersedeGradient(slot);
+	gradientRuntime->countSynchronous();
+	if (const auto &previous = building->globalGradientSearch[slot])
+		building->settledCostHint[slot] = Uint16(std::min(previous->requiredCost(), 0xFFFE));
 	// A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;
@@ -171,85 +178,4 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();
 	search->begin(*this, gradient, swimClass);
-}
-
-
-void Map::updateRoundTripGradientSlot(Building *building, int resourceType, int swimClass)
-{
-	PERF_SCOPE_TIME(RoundTripGradient);
-	// Only construction needs the parent in full; reading a cached round-trip
-	// field must not force a newly refreshed walking field to finish.
-	finishBuildingGradient(building, swimClass, BuildingRoute::Footprint);
-	Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
-	assert(gradient);
-	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
-	const Uint16 *toBuilding=building->globalGradient[swimClass];
-	// Markets replenish from natural resource tiles; other buildings may use stock.
-	const unsigned modes=materialSupplyModesSlot(building,resourceType);
-	const bool withMarkets=modes!=0;
-	const Uint16 *toResource=getMaterialGradientSlot(building->owner->teamNumber, resourceType, swimClass, withMarkets, building);
-	// Same obstacles as the resource gradient. A resource tile is seeded with
-	// the cost of carrying from the cheapest free cell next to it, where the
-	// unit harvests, to the building. A stocked market's tile is a goal as
-	// well, its seed the detour dearer.
-	const auto visitSuppliers=[&](auto visit) {
-		if (modes&1) for (const Building* supplier : building->owner->stockSuppliers) visit(supplier);
-		if (modes&2) for (const Building* supplier : building->owner->directStockSuppliers)
-			if (!(modes&1) || !(supplier->runtime->suppliesStockMask&(1u<<resourceType))) visit(supplier);
-	};
-	std::array<int, Building::MAX_COUNT> supplierPenalties;
-	if (withMarkets)
-	{
-		supplierPenalties.fill(0);
-		visitSuppliers([&](const Building* supplier) { supplierPenalties[Building::GIDtoID(supplier->gid)] = supplier->type->semantics.market.pickupPenalty * GRADIENT_STEP; });
-	}
-	Uint16 bestSeed=GRADIENT_UNREACHABLE;
-	for (size_t i=0; i<size; i++)
-	{
-		const bool marketGoal=withMarkets && occupancyCells[i].building!=NOGBID && toResource[i]>GRADIENT_UNREACHABLE;
-		if (toResource[i]!=GRADIENT_AT_GOAL && !marketGoal)
-		{
-			gradient[i]=toResource[i]==GRADIENT_FORBIDDEN ? GRADIENT_FORBIDDEN : GRADIENT_UNREACHABLE;
-			continue;
-		}
-		size_t x=i&wMask;
-		size_t y=i>>wDec;
-		Uint16 best=GRADIENT_UNREACHABLE;
-		for (int d=0; d<8; d++)
-		{
-			size_t n=coordToIndex(x+tabClose[d][0], y+tabClose[d][1]);
-			if (toResource[n]>GRADIENT_UNREACHABLE && toBuilding[n]>best)
-				best=toBuilding[n];
-		}
-		if (marketGoal && best>GRADIENT_UNREACHABLE)
-			best=std::max<int>(GRADIENT_UNREACHABLE+1, best-supplierPenalties[Building::GIDtoID(occupancyCells[i].building)]);
-		gradient[i]=best;
-		if (best>bestSeed)
-			bestSeed=best;
-	}
-	if (withMarkets && ((modes&2) || game->buildingsTypes.usesOverlaySuppliers()))
-		visitSuppliers([&](const Building* supplier) {
-			if (supplier->runtime->has(BuildingRuntimeTraits::OccupiesGround) || !stockSupplierEligibleSlot(supplier,building,resourceType,modes)) return;
-			for (int y=0; y<supplier->type->height; ++y)
-				for (int x=0; x<supplier->type->width; ++x)
-				{
-					const size_t i = coordToIndex(supplier->posX+x, supplier->posY+y);
-					if (toResource[i] <= GRADIENT_UNREACHABLE) continue;
-					Uint16 best = GRADIENT_UNREACHABLE;
-					for (int d=0; d<8; ++d)
-					{
-						const size_t n = coordToIndex(supplier->posX+x+tabClose[d][0], supplier->posY+y+tabClose[d][1]);
-						if (toResource[n] > GRADIENT_UNREACHABLE) best = std::max(best, toBuilding[n]);
-					}
-					if (best > GRADIENT_UNREACHABLE)
-						best = std::max<int>(GRADIENT_UNREACHABLE+1, best-supplierPenalties[Building::GIDtoID(supplier->gid)]);
-					gradient[i] = std::max(gradient[i], best);
-					bestSeed = std::max(bestSeed, best);
-				}
-		});
-	// Units farther than this from the cheapest fetch are scored by the plain
-	// distances instead (the callers fall back when a cell is unreachable
-	// here), which keeps the build small on big maps.
-	constexpr int ROUND_TRIP_RANGE=128*GRADIENT_STEP;
-	propagateGradient(gradient, swimClass, GRADIENT_AT_GOAL-bestSeed+ROUND_TRIP_RANGE);
 }

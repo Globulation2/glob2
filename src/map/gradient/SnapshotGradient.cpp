@@ -4,6 +4,7 @@
 #include "MapInternal.h"
 #include "Building.h"
 #include "Unit.h"
+#include "BuildingType.h"
 #include "field/RuntimeTerrainGradient.h"
 #include <array>
 #include <bit>
@@ -47,11 +48,6 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                 resourceTraits[id]=p.materialMask | (p.blocksGround?0x10000:0)
                     | (std::has_single_bit(p.materialMask)?0:0x20000);
             }
-            terrainTraits.resize(view.terrainRegistry->size());
-            for (size_t id=0; id<terrainTraits.size(); ++id) {
-                const auto& p=view.terrainRegistry->properties(static_cast<TerrainType>(id));
-                terrainTraits[id]=(p.walkable?1:0)|((p.walkable||p.swimmable)?2:0);
-            }
             for (auto& values:base) values.resize(cells);
             signatures.assign(cells,0);
             forbiddenMasks.assign(cells,0);
@@ -85,7 +81,8 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                         const bool open=mobile && !(traits&0x10000);
                         const MaterialMask mask=!mobile?0:(traits&0x20000)?MapState::materialMaskAt(view,i)
                             :deposit.amount?MaterialMask(traits&AllMaterials):0;
-                        const Uint8 terrain=terrainTraits[view.terrainIds[i]];
+                        const auto& rules=view.terrainProperties(i);
+                        const Uint8 terrain=(rules.walkable?1:0)|((rules.walkable||rules.swimmable)?2:0);
                         // Only facts that affect seeds: moving units, animation and positive
                         // stock changes do not alter this template. All twelve materials fit.
                         static_assert(MaterialCount==12);
@@ -263,7 +260,46 @@ void propagate(const Request& request, const SimulationSnapshot::Handle& snapsho
 {
     gradient_kernel::propagateTerrainField(out, request.swim, gradient_kernel::COST_LIMIT,
         {snapshot.width, snapshot.height}, scratch,
-        [types=snapshot.terrain->identity->data()](size_t i) { return types[i]; },
-        snapshot.terrain->movementModifiers, *snapshot.terrain->registry, request.terrainBuckets);
+        [rules=snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
+        snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets);
+}
+
+SimulationSnapshot::Requirements buildingRequirements()
+{
+    using namespace SimulationSnapshot;
+    return bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
+        | bit(Component::Occupancy) | bit(Component::Areas);
+}
+
+BuildingSeed captureBuildingSeed(const Building& building, int swim, BuildingRoute route)
+{
+    BuildingSeed seed;
+    seed.posX=building.posX; seed.posY=building.posY;
+    seed.width=building.type->width; seed.height=building.type->height;
+    seed.unitStayRange=building.unitStayRange; seed.swim=swim;
+    seed.gid=Uint16(building.gid);
+    seed.route=building.resolveRoute(route);
+    seed.occupiesGround=building.type->semantics.occupiesGround;
+    seed.teamMask=building.owner->me; seed.allies=building.owner->allies;
+    std::copy(std::begin(building.clearingMaterials), std::end(building.clearingMaterials), seed.clearingMaterials.begin());
+    return seed;
+}
+
+BuildingSeedResult seedBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot, Uint16* out)
+{
+    const auto view=snapshot.view();
+    const auto size=size_t(view.width)*view.height;
+    return buildingCells(view, building, out, [size](auto fn) { fn(0, size); });
+}
+
+BuildingSeedResult buildBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot,
+    const BuildingGradientSearch::Inputs& inputs, Uint16* out, BuildingGradientSearch& search, int depthTarget)
+{
+    const auto result=seedBuilding(building, snapshot, out);
+    if (result.locked) return result;
+    search.begin(inputs, out, building.swim, snapshot.width, snapshot.height);
+    // resolveToCost records no owner telemetry; COST_LIMIT drains every queue.
+    search.resolveToCost(depthTarget);
+    return result;
 }
 }

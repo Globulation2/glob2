@@ -1,4 +1,4 @@
-import { maintainAiLibrary } from '@glob2/core';
+import { maintainAiLibrary, maintainGeneratorLibrary, retainAnalytics } from '@glob2/core';
 // Housekeeping and retention (docs/hosting/README.md, "Retention"). Runs on
 // the scheduler leader every minute; every delete is bounded (RETENTION_BATCH
 // rows per table and run) and served by an index, so a backlog drains over a
@@ -50,6 +50,7 @@ export const CHAT_RETENTION_DAYS = 30;
 /**
  * Finished engine jobs are kept this long. The newest succeeded verify job of
  * each match is kept for good (the match page shows its verdict details).
+ * Building releases retain their referenced validation job as their verdict.
  */
 export const ENGINE_JOB_RETENTION_DAYS = 30;
 /** Resolved match proposals and finished queue tickets are kept this long. */
@@ -79,7 +80,9 @@ export const RATE_LIMIT_IDLE_HOURS = 24;
 
 /** Housekeeping that must run on exactly one worker (the scheduler leader). */
 export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceResult> {
+  await retainAnalytics(db);
   await maintainAiLibrary(db);
+  await maintainGeneratorLibrary(db);
   const signins = await db
     .updateTable('signin_attempts')
     .set({ status: 'expired', failure_reason: 'expired', completed_at: sql<Date>`now()` })
@@ -146,6 +149,7 @@ export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceR
     sql`SELECT a.id FROM accounts a
         WHERE a.kind = 'guest'
           AND NOT EXISTS (SELECT 1 FROM ais WHERE owner_account_id=a.id)
+          AND NOT EXISTS (SELECT 1 FROM generators WHERE owner_account_id=a.id)
           AND COALESCE(a.last_seen_at, a.created_at) < ${days(GUEST_RETENTION_DAYS)}
           AND NOT EXISTS (SELECT 1 FROM match_participants p WHERE p.account_id = a.id)
           AND NOT EXISTS (SELECT 1 FROM rooms r WHERE r.host_account_id = a.id AND r.status <> 'closed')
@@ -168,6 +172,7 @@ export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceR
     'id',
     sql`SELECT j.id FROM engine_jobs j
         WHERE j.status <> 'queued' AND j.completed_at < ${days(ENGINE_JOB_RETENTION_DAYS)}
+          AND NOT EXISTS (SELECT 1 FROM building_releases v WHERE v.job_id=j.id)
           AND NOT (
             j.kind = 'verify-match' AND j.status = 'succeeded' AND NOT EXISTS (
               SELECT 1 FROM engine_jobs n

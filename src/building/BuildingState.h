@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "EntityRandom.h"
+
 #include "Material.h"
 #include "UnitConsts.h"
 #include <type_traits>
@@ -25,6 +27,10 @@ struct BuildingStateRecord
 		REPAIR=3
 	};
 
+	// Presentation clocks remain excluded from legacy simulation checksums.
+	Uint32 lastShootStep;
+	Sint32 lastShootSpeedX, lastShootSpeedY;
+
 	Sint32 typeNum;
 	int shortTypeNum;
 	BuildingState buildingState;
@@ -36,6 +42,7 @@ struct BuildingStateRecord
 	// Authoritative order-applied priority (-1/0/+1). Pending GUI values live
 	// in BuildingGuiState, outside simulation state.
 	Sint32 priority;
+	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Excluded from legacy simulation checksums.
 	Uint16 gid;
 	Sint32 posX, posY;
@@ -56,11 +63,18 @@ struct BuildingStateRecord
 	// Authoritative order-applied production ratios; pending slider values
 	// live in BuildingGuiState.
 	Sint32 ratio[NB_UNIT_TYPE];
+	Sint32 percentUsed[NB_UNIT_TYPE];
+	Uint32 unitsFailingRequirements[8];
 	Uint32 receiveMaterialMask, sendMaterialMask;
 	Sint32 bullets;
 	Uint32 seenByMask;
 	// Footprint, clearing and combat access, each without/with swimming.
 	bool locked[6];
+	// Keep optional funding bookkeeping after existing hot simulation fields.
+	bool areaFunded = false;
+	Sint8 areaFundingTeam = -1;
+	Sint32 areaFundingType = -1;
+	Uint32 areaFundingTick = 0;
 	bool operator==(const BuildingStateRecord&) const = default;
 };
 static_assert(std::is_trivially_copyable_v<BuildingStateRecord>);

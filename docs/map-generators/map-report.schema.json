@@ -233,6 +233,87 @@
           "items": {
             "type": "string"
           }
+        },
+        "setCredits": {
+          "type": "array",
+          "description": "Frozen artwork-set attribution carried by the map asset bundle; empty for maps without custom sets.",
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "properties": {
+              "setId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "versionId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "license": {
+                "enum": [
+                  "CC0-1.0",
+                  "CC-BY-4.0"
+                ]
+              },
+              "authors": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 64,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "author": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "source": {
+                      "type": "string",
+                      "maxLength": 2000
+                    },
+                    "license": {
+                      "enum": [
+                        "CC0-1.0",
+                        "CC-BY-4.0"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "author",
+                    "license"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "sourceHash": {
+                "type": "string",
+                "pattern": "^[a-fA-F0-9]{64}$"
+              },
+              "entries": {
+                "type": "array",
+                "maxItems": 32768,
+                "items": {
+                  "type": "string",
+                  "maxLength": 128
+                }
+              }
+            },
+            "required": [
+              "setId",
+              "versionId",
+              "title",
+              "license",
+              "authors",
+              "sourceHash",
+              "entries"
+            ],
+            "additionalProperties": false
+          }
         }
       },
       "required": [
@@ -415,9 +496,7 @@
       },
       "required": [
         "grass",
-        "grass_sand_border",
         "sand",
-        "sand_water_border",
         "water",
         "unknown"
       ],
@@ -1676,6 +1755,21 @@
                 "options"
               ],
               "additionalProperties": false
+            },
+            "package_hash": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "JavaScript generator package hash; empty for built-in generators, null when unavailable."
+            },
+            "api_version": {
+              "type": "integer",
+              "description": "JavaScript generator API version; zero for built-in generators."
+            },
+            "toolkit_version": {
+              "type": "integer",
+              "description": "JavaScript toolkit version; zero for built-in generators."
             }
           },
           "required": [

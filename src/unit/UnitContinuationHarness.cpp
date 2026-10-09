@@ -69,6 +69,7 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     setSyncRandSeed(731);
     GameGUI original;
     Game& game = original.game;
+    game.gameHeader.setRandomSeed(731);
     glob2test::BoundGameRandom bound(game);
     game.map.setSize(5, 5, GRASS);
     game.map.setGame(&game);
@@ -77,7 +78,7 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     game.setWaitingOnMask(0);
     if (hazards) {
         auto edit=game.map.editTerrain();
-        for (int y=8;y<18;++y) for(int x=6;x<15;++x) game.map.setCellTerrain(x,y,ICE);
+        for (int y=8;y<18;++y) for(int x=6;x<15;++x) game.map.paintCell(x,y,ICE);
     }
     for (int y = 0; y < 32; ++y)
         for (int x = 0; x < 32; ++x) game.map.clearImmobileUnit(x, y);

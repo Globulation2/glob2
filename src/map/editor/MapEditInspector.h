@@ -9,14 +9,13 @@
 // maximumValue() and edit through setValue().
 
 #include "ui/FrontendUI.h"
+#include "render/scene/Scene.h"
 #include <functional>
 #include <string>
 #include <vector>
 
 class MapEdit;
 class ValueScrollBox;
-class Building;
-class Unit;
 
 struct InspectorRow
 {
@@ -46,8 +45,9 @@ struct InspectorModel
 	int identity = -1;
 	// Translated object name and "Team n / Level m".
 	std::string title, detail;
-	Building *building = nullptr;
-	Unit *unit = nullptr;
+	SimulationSnapshot::Handle world;
+	const SnapshotBuilding *building = nullptr;
+	const SnapshotUnit *unit = nullptr;
 	// Only the rows that apply to the selected object, in display order.
 	std::vector<InspectorRow> rows;
 };

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "GenerationRequest.h"
 struct GenerationContext;
 #include "Geometry.h"
@@ -47,7 +48,7 @@ int plantShoreFields(Map &, const Torus &, const std::vector<ShoreField> &,
 					 const Fertility::Field &, int percent);
 
 /// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
-/// undermap vertices; a Chebyshev margin seals diagonal growth across the wrap.
+/// terrain vertices; a Chebyshev margin seals diagonal growth across the wrap.
 /// The default two rows preserve existing gardens; one row is a thinner, still sealed bund.
 /// margin must be positive.
 /// Returns the pure grass tiles inside it, suitable for a crop eligibility list. The caller must
@@ -95,7 +96,7 @@ FarmRows bestFarmRows(double angle);
 /// need areas in the inverse ratio.
 double farmYield(double angle);
 
-/// A farm laid over a region: which undermap vertices are water, and for every vertex of the region
+/// A farm laid over a region: which terrain vertices are water, and for every vertex of the region
 /// the row it lies in (even rows are crops, odd rows water; -1 outside the region).
 struct Farm
 {
@@ -120,7 +121,7 @@ struct ContourWobble
 	double at(double angle) const;
 };
 
-/// Contour rows around a central clearing, circular or wobbled. Widths are undermap CORNERS, as
+/// Contour rows around a central clearing, circular or wobbled. Widths are terrain VERTICES, as
 /// in layFarm; beaches and four-corner conversion consume crop ground at every boundary.
 /// The inner and outer caps contain eight-neighbour crop spread. Every radial crossing
 /// cuts BOTH crop and water rows, keeping circulation open after crops fill the bands.
@@ -161,7 +162,7 @@ ContourFarm layContourFarm(TerrainSketch &, const Torus &, const std::vector<Sha
 						   const ContourFarmStyle &);
 
 /// A clearing in the middle of a farm for buildings: `width` by `height` tiles of pure grass with a
-/// ring of sand `ring` undermap vertices wide round it (two vertices make a full tile of sand), so
+/// ring of sand `ring` terrain vertices wide round it (two vertices make a full tile of sand), so
 /// no crop grows onto it and nothing but the clearing is buildable. 10 by 4 seats a swarm or an inn
 /// with room to walk round it.
 struct FarmPlot
@@ -321,14 +322,18 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 	std::vector<std::pair<int, int>> crops;
 	std::vector<int> rowRoom;
 	for (int i = 0; i < t.size(); ++i)
-		if (farm.row[i] >= 0 && farm.row[i] % 2 == 0 && fromWater[i] >= 0 && !farm.plot[i] &&
-			eligible(i) && map.terrainSupportsResourceAtByIndex(i % t.w,i / t.w,WHEAT))
+	{
+		::MapGeneration::generationCheckpoint();
+		if (farm.row.at(i) >= 0 && farm.row.at(i) % 2 == 0 && fromWater.at(i) >= 0 &&
+			!farm.plot.at(i) && eligible(i) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT))
 		{
-			crops.push_back({fromWater[i], i});
-			if (farm.row[i] >= int(rowRoom.size()))
-				rowRoom.resize(farm.row[i] + 1, 0);
-			++rowRoom[farm.row[i]];
+			crops.push_back({fromWater.at(i), i});
+			if (farm.row.at(i) >= int(rowRoom.size()))
+				rowRoom.resize(farm.row.at(i) + 1, 0);
+			++rowRoom.at(farm.row.at(i));
 		}
+	}
 	std::stable_sort(crops.begin(), crops.end());
 	// The woodlot's row: the crop row with the most room, the first on a tie.
 	const int woodRow =
@@ -337,22 +342,24 @@ int MapGeneration::plantFarm(Map &map, const Torus &t, const Farm &farm, int whe
 	int planted = 0, woods = 0, wheats = 0;
 	for (const auto &entry : crops)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int i = entry.second;
-		if (woods < wood && farm.row[i] == woodRow)
+		if (woods < wood && farm.row.at(i) == woodRow)
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 			++woods;
 			++planted;
 		}
 	}
 	for (const auto &entry : crops)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int i = entry.second;
 		if (wheats >= wheat)
 			break;
-		if (map.isResource(i % t.w, i / t.w))
+		if (map.isResource(t.remainderX(i), i / t.w))
 			continue;
-		map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+		map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 		++wheats;
 		++planted;
 	}

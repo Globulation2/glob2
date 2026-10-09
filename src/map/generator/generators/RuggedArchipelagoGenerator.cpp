@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
+#include "PowerOfTwo.h"
 #include "RuggedArchipelagoGenerator.h"
 #include "Distances.h"
 #include "Game.h"
@@ -36,7 +37,7 @@ using namespace MapGeneration;
 //
 // GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
 // - Water blocks walking until a colony can swim, so separate islands delay all contact.
-// - Grass may not touch water: Map::controlSand rings every island in sand, and spreadBeaches can
+// - Grass may not touch water: Map::layBeaches rings every island in sand, and spreadBeaches can
 //   widen that ring. Sand is walkable but unbuildable, so wide beaches shrink a colony's room.
 // - Wheat and wood regrow only near water; on an island of this size every field is near the sea.
 // - Algae needs water with sand in reach, which a beach right beside it gives.
@@ -82,8 +83,8 @@ static int plantBootstraps(Map &map, GenerationContext &context,
 	int c = 0;
 	for (int i = 0; i < nbIslands; i++)
 	{
-		int x = rng() % w;
-		int y = rng() % h;
+		int x = powerOfTwoRemainder(rng(), w);
+		int y = powerOfTwoRemainder(rng(), h);
 		bool failed = false;
 		int j;
 		for (j = 0; j < i; j++)
@@ -115,7 +116,7 @@ static int plantBootstraps(Map &map, GenerationContext &context,
 			// workers.
 			for (int dx = -1; dx < 6; dx++)
 				for (int dy = 0; dy < 6; dy++)
-					map.setUMTerrain(x + dx, y + dy, GRASS);
+					map.setVertexTerrain(x + dx, y + dy, GRASS);
 		}
 	}
 	context.telemetry.measure("rugged-archipelago.islands.growth-passes", islandsSize);
@@ -142,15 +143,15 @@ static void expandIslands(Map &map, std::mt19937 &rng, int passes)
 			for (int y = oddEven; y < h; y += 2)
 				for (int x = oddEven; x < w; x += 2)
 				{
-					if (map.getUMTerrain(x, y) == GRASS)
+					if (map.vertexTerrainAt(x, y) == GRASS)
 						continue;
 					const unsigned draw = rng() & 15;
 					if (draw >= 8)
 						continue;
 					const int dx = kGrowthDirections[draw][0], dy = kGrowthDirections[draw][1];
-					if (map.getUMTerrain(x + dx, y + dy) == GRASS ||
-						map.getUMTerrain(x - dx, y - dy) == GRASS)
-						map.setUMTerrain(x, y, GRASS);
+					if (map.vertexTerrainAt(x + dx, y + dy) == GRASS ||
+						map.vertexTerrainAt(x - dx, y - dy) == GRASS)
+						map.setVertexTerrain(x, y, GRASS);
 				}
 }
 
@@ -166,10 +167,10 @@ static void smoothGrass(Map &map)
 				for (int d = 0; d < 4; d++)
 				{
 					const int dx = kGrowthDirections[d][0], dy = kGrowthDirections[d][1];
-					if (map.getUMTerrain(x + dx, y + dy) == GRASS &&
-						map.getUMTerrain(x - dx, y - dy) == GRASS)
+					if (map.vertexTerrainAt(x + dx, y + dy) == GRASS &&
+						map.vertexTerrainAt(x - dx, y - dy) == GRASS)
 					{
-						map.setUMTerrain(x, y, GRASS);
+						map.setVertexTerrain(x, y, GRASS);
 						break;
 					}
 				}
@@ -195,32 +196,31 @@ static void spreadBeaches(Map &map, std::mt19937 &rng, int passes)
 						const unsigned draw = rng() & 7;
 						const int ddx = kGrowthDirections[draw & 3][0],
 								  ddy = kGrowthDirections[draw & 3][1];
-						const int a = map.getUMTerrain(x + ddx, y + ddy),
-								  b = map.getUMTerrain(x - ddx, y - ddy);
+						const int a = map.vertexTerrainAt(x + ddx, y + ddy),
+								  b = map.vertexTerrainAt(x - ddx, y - ddy);
 						const bool shore =
 							draw < 4 ? (a == SAND && b == WATER) || (a == WATER && b == SAND)
 									 : a == SAND && b == SAND;
 						if (shore)
-							map.setUMTerrain(x, y, SAND);
+							map.setVertexTerrain(x, y, SAND);
 					}
 }
 
 static bool terrain(Game &game, GenerationContext &context, const RuggedArchipelagoOptions &options)
 {
 	Map &map = game.map;
-	const int w = map.getW(), h = map.getH();
 	// Every draw below names the "terrain" stream; one lookup serves all of them.
 	std::mt19937 &rng = context.stream("terrain");
 
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-			map.setUMTerrain(x, y, WATER);
+	// Each vertex write re-derives its four tiles at once; the batch holds the map-wide follow-up
+	// until the terrain is finished.
+	auto batch = map.editTerrain();
+	map.fillTerrain(WATER);
 	const int passes = plantBootstraps(map, context, options, rng);
 	expandIslands(map, rng, passes);
 	smoothGrass(map);
-	map.controlSand();
+	map.layBeaches();
 	spreadBeaches(map, rng, options.beach_size);
-	map.rebuildTerrain();
 	return true;
 }
 
@@ -364,7 +364,7 @@ GeneratorDefinition ruggedArchipelagoDefinition()
 		"rugged-archipelago",
 		8,
 		"Old islands",
-		3,
+		4,
 		false,
 		// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
 		// beach size is the number of beach-widening passes.

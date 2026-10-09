@@ -230,13 +230,16 @@ class SoftwareRenderBenchmark
 				// Isolate the retention-copy cost without a production graphics setting.
 				if (getenv("PROFILE_PRESERVE_FRAME"))
 					gfx->beginFrame(GraphicContext::FrameMode::PreserveContent);
+				// Standalone tools observe through the production snapshot boundary.
+				gui.game.snapshots().invalidateBoundary();
+				gui.prepareLocalPresentation();
 				if (std::string(mode) == "gui")
 					gui.drawAll(0);
 				else
 				{
 					gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 					gfx->setClipRect();
-					gui.game.drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
+					Game::drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
 									 gui.viewportY, 0, gui.view, Game::DRAW_AREA);
 				}
 				Uint64 b = SDL_GetPerformanceCounter();
@@ -290,8 +293,8 @@ class SoftwareRenderBenchmark
 				   (unsigned long long)(ops.blits - initialOps.blits),
 				   (unsigned long long)(ops.fills - initialOps.fills),
 				   (unsigned long long)(ops.triangles - initialOps.triangles));
-			printf("terrain_cache bytes=%zu hits=%llu rebuilds=%llu\n",
-				   terrainCache.bytes(),
+			printf("terrain_cache bytes=%zu mask_bytes=%zu hits=%llu rebuilds=%llu\n",
+				   terrainCache.bytes(), terrainCache.maskBytes(),
 				   (unsigned long long)(terrainCache.cacheHits() - initialHits),
 				   (unsigned long long)(terrainCache.cacheRebuilds() -
 										initialRebuilds));

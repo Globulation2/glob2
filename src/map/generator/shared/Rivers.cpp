@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Rivers.h"
 #include "GenerationContext.h"
@@ -37,29 +39,39 @@ River drawRiver(const Torus &t, GenerationContext &context, const std::string &s
 	double total = 0;
 	for (int k = 0; k < harmonics; ++k)
 	{
-		amplitude[k] = (0.35 + 0.65 * unitDraw(context, stream)) / double(k + 1);
-		phase[k] = unitDraw(context, stream) * 2.0 * kPi;
-		total += amplitude[k];
+		::MapGeneration::generationCheckpoint();
+		amplitude.at(k) = (0.35 + 0.65 * unitDraw(context, stream)) / double(k + 1);
+		phase.at(k) = unitDraw(context, stream) * 2.0 * kPi;
+		total += amplitude.at(k);
 	}
 	const double reach = style.wander * across;
 	for (double &a : amplitude)
+	{
+		::MapGeneration::generationCheckpoint();
 		a *= total > 0 ? reach / total : 0.0;
+	}
 	const double swellPhase = unitDraw(context, stream) * 2.0 * kPi;
 
-	const int points = std::max(8, int(std::lround(along / std::max(0.5, style.step))));
+	const int points =
+		std::max(8, int(::MapGeneration::Numeric::lround(along / std::max(0.5, style.step))));
 	river.line.reserve(points);
 	river.radius.reserve(points);
 	for (int i = 0; i < points; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double s = along * double(i) / double(points); // 0 to just short of a full crossing
 		double stray = 0;
 		for (int k = 0; k < harmonics; ++k)
-			stray += amplitude[k] * std::sin(2.0 * kPi * double(k + 1) * s / along + phase[k]);
+		{
+			::MapGeneration::generationCheckpoint();
+			stray += amplitude.at(k) * ::MapGeneration::Numeric::sin(
+										   2.0 * kPi * double(k + 1) * s / along + phase.at(k));
+		}
 		const double lateral = offset + stray;
 		river.line.push_back(vertical ? ShapePoint{lateral, s} : ShapePoint{s, lateral});
-		river.radius.push_back(
-			style.halfWidth *
-			(1.0 + style.swell * std::sin(2.0 * kPi * 2.0 * s / along + swellPhase)));
+		river.radius.push_back(style.halfWidth *
+							   (1.0 + style.swell * ::MapGeneration::Numeric::sin(
+														2.0 * kPi * 2.0 * s / along + swellPhase)));
 	}
 	return river;
 }
@@ -73,7 +85,10 @@ std::vector<unsigned char> riverWater(const Torus &t, const River &river)
 	std::vector<StrokePoint> stroke;
 	stroke.reserve(river.line.size() + 1);
 	for (size_t i = 0; i < river.line.size(); ++i)
-		stroke.push_back({river.line[i].x, river.line[i].y, river.radius[i]});
+	{
+		::MapGeneration::generationCheckpoint();
+		stroke.push_back({river.line.at(i).x, river.line.at(i).y, river.radius.at(i)});
+	}
 	// Closed across the seam by running past it, not by strokePath's `closed`.
 	//
 	// strokePath works in continuous coordinates and wraps only its writes - its own contract is
@@ -83,8 +98,9 @@ std::vector<unsigned char> riverWater(const Torus &t, const River &river)
 	// the bed. The meander is periodic over the crossing, so the point one step past the end is
 	// exactly the first point shifted by a whole map, and stepping to it closes the loop over the
 	// seam with an ordinary segment.
-	stroke.push_back({river.line[0].x + (river.vertical ? 0.0 : double(t.w)),
-					  river.line[0].y + (river.vertical ? double(t.h) : 0.0), river.radius[0]});
+	stroke.push_back({river.line.at(0).x + (river.vertical ? 0.0 : double(t.w)),
+					  river.line.at(0).y + (river.vertical ? double(t.h) : 0.0),
+					  river.radius.at(0)});
 	std::vector<unsigned char> water(t.size(), 0);
 	strokePath(water, t, stroke, 1, false);
 	return water;
@@ -102,16 +118,17 @@ std::vector<RiverFord> fordSites(const Torus &t, const River &river,
 	int lastTaken = -apart;
 	for (int i = 0; i < n; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (i - lastTaken < apart)
 			continue;
 		const ShapePoint tangent = ChannelDetail::tangentAt(t, river.line, i, true);
-		const double nx = -tangent.y, ny = tangent.x, probe = river.radius[i] + reach;
-		const ShapePoint p = river.line[i];
+		const double nx = -tangent.y, ny = tangent.x, probe = river.radius.at(i) + reach;
+		const ShapePoint p = river.line.at(i);
 		const int a = ChannelDetail::tileOf(t, p.x + nx * probe, p.y + ny * probe);
 		const int b = ChannelDetail::tileOf(t, p.x - nx * probe, p.y - ny * probe);
-		if (!walkable[a] || !walkable[b])
+		if (!walkable.at(a) || !walkable.at(b))
 			continue;
-		sites.push_back({i, components[a], components[b]});
+		sites.push_back({i, components.at(a), components.at(b)});
 		lastTaken = i;
 	}
 	return sites;
@@ -123,25 +140,32 @@ FordConnections fordsToRejoin(const std::vector<RiverFord> &sites, int component
 		throw std::invalid_argument("Negative river component count");
 	std::vector<int> parent(components);
 	for (size_t i = 0; i < parent.size(); ++i)
-		parent[i] = int(i);
+	{
+		::MapGeneration::generationCheckpoint();
+		parent.at(i) = int(i);
+	}
 	const auto find = [&parent](int a)
 	{
-		while (parent[a] != a)
-			a = parent[a] = parent[parent[a]];
+		while (parent.at(a) != a)
+		{
+			::MapGeneration::generationCheckpoint();
+			a = parent.at(a) = parent.at(parent.at(a));
+		}
 		return a;
 	};
 	FordConnections result;
 	result.remainingComponents = int(parent.size());
 	for (size_t i = 0; i < sites.size(); ++i)
 	{
-		const RiverFord &site = sites[i];
+		::MapGeneration::generationCheckpoint();
+		const RiverFord &site = sites.at(i);
 		if (site.firstBank < 0 || site.secondBank < 0 || site.firstBank >= components ||
 			site.secondBank >= components)
 			continue;
 		const int a = find(site.firstBank), b = find(site.secondBank);
 		if (a == b)
 			continue;
-		parent[a] = b;
+		parent.at(a) = b;
 		result.sites.push_back(int(i));
 		--result.remainingComponents;
 	}
@@ -154,31 +178,45 @@ std::vector<int> fordsSpreadAlong(const std::vector<RiverFord> &sites, std::vect
 	if (points <= 0 || wanted < 0)
 		throw std::invalid_argument("Invalid river crossing budget");
 	for (const auto &site : sites)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (site.index < 0 || site.index >= points)
 			throw std::invalid_argument("Ford point is outside the river");
+	}
 	for (const int index : taken)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (index < 0 || index >= int(sites.size()))
 			throw std::invalid_argument("Selected ford is outside the candidates");
+	}
 
 	const auto apart = [&](int a, int b)
 	{
-		const int gap = std::abs(sites[a].index - sites[b].index);
+		const int gap = std::abs(sites.at(a).index - sites.at(b).index);
 		return std::min(gap, points - gap);
 	};
 	std::vector<unsigned char> chosen(sites.size(), 0);
 	for (const int i : taken)
-		chosen[i] = 1;
+	{
+		::MapGeneration::generationCheckpoint();
+		chosen.at(i) = 1;
+	}
 	while (int(taken.size()) < wanted && taken.size() < sites.size())
 	{
+		::MapGeneration::generationCheckpoint();
 		int best = -1, bestGap = -1;
 		for (size_t i = 0; i < sites.size(); ++i)
 		{
-			if (chosen[i])
+			::MapGeneration::generationCheckpoint();
+			if (chosen.at(i))
 				continue;
 			// The first ford of all has nothing to stand clear of, so it takes the whole river.
 			int gap = points;
 			for (const int have : taken)
+			{
+				::MapGeneration::generationCheckpoint();
 				gap = std::min(gap, apart(int(i), have));
+			}
 			if (gap > bestGap)
 			{
 				bestGap = gap;
@@ -187,7 +225,7 @@ std::vector<int> fordsSpreadAlong(const std::vector<RiverFord> &sites, std::vect
 		}
 		if (best < 0)
 			break;
-		chosen[best] = 1;
+		chosen.at(best) = 1;
 		taken.push_back(best);
 	}
 	return taken;

@@ -119,8 +119,11 @@ class WebAssetPlanTests(unittest.TestCase):
         for resource in json.loads((ROOT / 'data/resources/registry.json').read_text())['resources']:
             prefix = resource['presentation']['sprite']
             self.assertIn(prefix.removeprefix('data/gfx/'), web_assets.game_sprites(ROOT))
-        for key in ('gold-ore', 'iron-ore', 'silica', 'cotton'):
-            self.assertEqual(self.owner['data/gfx/resource-' + key + '0.png'], 'game')
+            if prefix != 'data/gfx/ressource':
+                frames = sorted((ROOT / 'data/gfx').glob(Path(prefix).name + '[0-9]*.png'))
+                self.assertTrue(frames, prefix)
+                for frame in frames:
+                    self.assertEqual(self.owner[frame.relative_to(ROOT).as_posix()], 'game')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'src/app').mkdir(parents=True)
@@ -324,7 +327,7 @@ class InstallWebClientTests(unittest.TestCase):
                 path = base / name
                 (path / 'assets').mkdir(parents=True)
                 (path / 'threaded').mkdir()
-                for file in ('index.html', 'studio.html', 'index.js', 'index.wasm', 'loader.js', 'threaded/index.js', 'threaded/index.wasm'):
+                for file in ('index.html', 'studio.html', 'generator-studio.html', 'index.js', 'index.wasm', 'loader.js', 'threaded/index.js', 'threaded/index.wasm'):
                     (path / file).write_text(name + file)
                     if compressed and file != 'index.html':
                         (path / (file + '.br')).write_text(name + file + '.br')
@@ -345,6 +348,8 @@ class InstallWebClientTests(unittest.TestCase):
             self.assertEqual((served / 'index.html').read_text(), 'threeindex.html')
             self.assertEqual((served / 'studio.html').read_text(), 'threestudio.html')
             self.assertEqual((served / 'studio.html.br').read_text(), 'threestudio.html.br')
+            self.assertEqual((served / 'generator-studio.html').read_text(), 'threegenerator-studio.html')
+            self.assertEqual((served / 'generator-studio.html.br').read_text(), 'threegenerator-studio.html.br')
             self.assertEqual(sorted(p.name for p in (served / 'assets').iterdir()),
                              ['core.2222222222222222.data', 'core.3333333333333333.data'])
             self.assertEqual(json.loads((served / '.installed-assets.json').read_text()), ['core.3333333333333333.data'])

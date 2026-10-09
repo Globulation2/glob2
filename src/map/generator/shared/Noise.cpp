@@ -1,3 +1,5 @@
+#include "GenerationNumeric.h"
+#include "GenerationWork.h"
 // perlinNoise.cpp
 // Class to implement coherent noise over 1, 2, or 3 dimensions.
 // Implementation based on the Perlin noise function. Thanks to
@@ -64,7 +66,8 @@ inline float GenerationNoise::randNoiseFloat()
 
 void GenerationNoise::normalize2d(float vector[2])
 {
-	float length = sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]));
+	float length =
+		::MapGeneration::Numeric::global_sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]));
 	if (length == 0)
 	{
 		vector[0] = 1;
@@ -78,8 +81,8 @@ void GenerationNoise::normalize2d(float vector[2])
 
 void GenerationNoise::normalize3d(float vector[3])
 {
-	float length =
-		sqrt((vector[0] * vector[0]) + (vector[1] * vector[1]) + (vector[2] * vector[2]));
+	float length = ::MapGeneration::Numeric::global_sqrt(
+		(vector[0] * vector[0]) + (vector[1] * vector[1]) + (vector[2] * vector[2]));
 	if (length == 0)
 	{
 		vector[0] = 1;
@@ -269,6 +272,7 @@ void GenerationNoise::generateLookupTables()
 
 	for (i = 0; i < NOISE_WRAP_INDEX; i++)
 	{
+		::MapGeneration::generationCheckpoint();
 		// put index into permutationTable[index], we will shuffle later
 		permutationTable[i] = i;
 
@@ -276,12 +280,14 @@ void GenerationNoise::generateLookupTables()
 
 		for (j = 0; j < 2; j++)
 		{
+			::MapGeneration::generationCheckpoint();
 			gradientTable2d[i][j] = randNoiseFloat();
 		}
 		normalize2d(gradientTable2d[i]);
 
 		for (j = 0; j < 3; j++)
 		{
+			::MapGeneration::generationCheckpoint();
 			gradientTable3d[i][j] = randNoiseFloat();
 		}
 		normalize3d(gradientTable3d[i]);
@@ -290,6 +296,7 @@ void GenerationNoise::generateLookupTables()
 	// Shuffle permutation table up to NOISE_WRAP_INDEX
 	for (i = 0; i < NOISE_WRAP_INDEX; i++)
 	{
+		::MapGeneration::generationCheckpoint();
 		j = static_cast<int>(random() & 0x7fffffffu) & NOISE_MOD_MASK;
 		temp = permutationTable[i];
 		permutationTable[i] = permutationTable[j];
@@ -304,17 +311,20 @@ void GenerationNoise::generateLookupTables()
 
 	for (i = 0; i < NOISE_WRAP_INDEX + 2; i++)
 	{
+		::MapGeneration::generationCheckpoint();
 		permutationTable[NOISE_WRAP_INDEX + i] = permutationTable[i];
 
 		gradientTable1d[NOISE_WRAP_INDEX + i] = gradientTable1d[i];
 
 		for (j = 0; j < 2; j++)
 		{
+			::MapGeneration::generationCheckpoint();
 			gradientTable2d[NOISE_WRAP_INDEX + i][j] = gradientTable2d[i][j];
 		}
 
 		for (j = 0; j < 3; j++)
 		{
+			::MapGeneration::generationCheckpoint();
 			gradientTable3d[NOISE_WRAP_INDEX + i][j] = gradientTable3d[i][j];
 		}
 	}

@@ -1,5 +1,6 @@
 #include <set>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "ScriptSpatial.h"
 #include "TerrainProperties.h"
 #include "field/TerrainMovementCosts.h"
@@ -17,10 +18,16 @@ namespace Script
 {
 namespace
 {
+// A remembered cell's rules, combined from its corners as the map combines them.
+TerrainProperties cellTerrain(const Observations::Cell &cell, const TerrainRegistry &registry)
+{
+	return combineCornerRules(registry.properties(cell.corners[0]), registry.properties(cell.corners[1]),
+							  registry.properties(cell.corners[2]), registry.properties(cell.corners[3]));
+}
 bool passable(const Observations::Cell &cell, const std::string &mode,
 			  const TerrainRegistry &registry, const ResourceRegistry& resources)
 {
-	const auto &terrain = registry.properties(cell.terrainType);
+	const auto terrain = cellTerrain(cell, registry);
 	const auto* deposit=cell.resource==NO_RES_TYPE ? nullptr : &resources.properties(static_cast<ResourceId>(cell.resource));
 	if (mode == "fly") return terrain.flyable && (!deposit || !deposit->blocksAir);
 	return !cell.building && !cell.forbidden && (!deposit || !deposit->blocksGround) &&
@@ -158,7 +165,7 @@ std::vector<int> Spatial::sources(const Value &selector, const QueryBudget &budg
 			const auto& cell = cells[i];
 			if (!cell.known || cell.resource == NO_RES_TYPE || (harvestable &&
 				(cell.forbidden || (observations.world().state().resourceProperties(cell.resource).visibleToHarvest && !cell.visible)))) continue;
-			const auto amount = observations.materialStock(i % width, i / width, material);
+			const auto amount = observations.materialStock(powerOfTwoRemainder(i, width), i / width, material);
 			if (amount) out[i] = amountWeight ? amount : 1;
 		}
 	}
@@ -241,9 +248,8 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 					  (c.known && ::Script::passable(c, mode, *observations.world().terrain, *observations.world().resourceRegistry));
 		if(metric=="path")
         {
-			const auto &registry = *observations.world().terrain;
-			entryCosts[i] = mode == "fly" ? registry.airCost(c.terrainType)
-										  : registry.groundTravelCost(c.terrainType);
+			const auto rules = cellTerrain(c, *observations.world().terrain);
+			entryCosts[i] = gradient_kernel::scaledTerrainStep(GRADIENT_STEP, mode == "fly" ? rules.airSpeedQ8 : rules.groundSpeedQ8);
 		}
 	}
 	const auto key = spec.encode();
@@ -278,7 +284,7 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
             for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
             {
                 if(!dx&&!dy) continue;
-                const int to=index(from%width+dx,from/width+dy);
+                const int to=index(powerOfTwoRemainder(from, width)+dx,from/width+dy);
                 if(!field->passable[to]) continue;
                 const unsigned cardinal=field->entryCosts[from];
                 const int candidate=cost+cardinal;
@@ -294,7 +300,7 @@ std::shared_ptr<Spatial::Field> Spatial::distanceField(const Value &spec, const 
 		for (std::size_t head = 0; head < frontier.size(); ++head)
 		{
 			const auto from = frontier[head];
-			int x = from % width, y = from / width;
+			int x = powerOfTwoRemainder(from, width), y = from / width;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
@@ -489,12 +495,12 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 			bool nearby = false;
 			for (const auto &old : result.items)
 				nearby |=
-					std::max(std::abs(displacement(i % width, int(old.get("x").number), width)),
+					std::max(std::abs(displacement(powerOfTwoRemainder(i, width), int(old.get("x").number), width)),
 							 std::abs(displacement(i / width, int(old.get("y").number), height))) <=
 					radius;
 			if (!nearby && int(result.items.size()) < limit)
 				result.items.push_back(Value::object()
-										   .set("x", i % width)
+										   .set("x", powerOfTwoRemainder(i, width))
 										   .set("y", i / width)
 										   .set("score", double(-negative)));
 			if (int(result.items.size()) >= limit)
@@ -530,7 +536,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 					for (int dy = -1; dy <= 1; ++dy)
 						for (int dx = -1; dx <= 1; ++dx)
 						{
-							int to = index(f % width + dx, f / width + dy);
+							int to = index(powerOfTwoRemainder(f, width) + dx, f / width + dy);
 							if (labels[to] < 0 && open(to))
 							{
 								labels[to] = label;
@@ -541,7 +547,7 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 				if (!pointQuery)
 					components.items.push_back(Value::object()
 												   .set("id", label)
-												   .set("x", int(i) % width)
+												   .set("x", powerOfTwoRemainder(int(i), width))
 												   .set("y", int(i) / width)
 												   .set("tiles", unsigned(frontier.size())));
 				if (components.items.size() > 1024)
@@ -765,7 +771,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						bool inside = xx >= 0 && xx < bw && yy >= 0 && yy < bh;
 						if (!c.known || c.building || reserved[at] ||
 							(inside &&
-							 (!c.visible || !observations.world().terrain->properties(c.terrainType).buildable ||
+							 (!c.visible || !cellTerrain(c, *observations.world().terrain).buildable ||
 							  (c.resource != NO_RES_TYPE && observations.world().resourceRegistry->properties(static_cast<ResourceId>(c.resource)).blocksBuilding))))
 						{
 							valid = false;
@@ -832,7 +838,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 									   .set("value", m.values[i])
 									   .set("weight", m.weight));
 		candidates.items.push_back(Value::object()
-									   .set("x", i % width)
+									   .set("x", powerOfTwoRemainder(i, width))
 									   .set("y", i / width)
 									   .set("score", double(-negative))
 									   .set("scores", scores));
@@ -840,7 +846,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 	result.set("candidates", candidates);
 	if (!best.empty())
 	{
-		int x = best[0].second % width, y = best[0].second / width;
+		int x = powerOfTwoRemainder(best[0].second, width), y = best[0].second / width;
 		Value order = Value::object()
 						  .set("type", "create")
 						  .set("buildingType", type)

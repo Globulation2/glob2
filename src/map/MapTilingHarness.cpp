@@ -25,6 +25,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <set>
 
 
 namespace
@@ -136,6 +137,14 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 	require(game.tileForPlay(rx, ry, teams, 1), "tileForPlay succeeds");
 	require(game.map.getW() == w0 * rx && game.map.getH() == h0 * ry, "the map is repeated 2 x 2");
 	require(game.mapHeader.getNumberOfTeams() == teams, "one team per colony");
+	std::set<std::uint64_t> selectors;
+	for (int t = 0; t < teams; ++t) {
+		for (const auto* unit : game.teams[t]->liveUnits.entries())
+			require(selectors.insert(unit->entityRandom.exportState().increment).second, "tiled units have distinct streams");
+		for (const auto* building : game.teams[t]->liveBuildings.entries())
+			require(selectors.insert(building->entityRandom.exportState().increment).second, "tiled buildings have distinct streams");
+	}
+
 
 	int n = 0;
 	for (int j = 0; j < ry; j++)
@@ -248,7 +257,7 @@ TEST_CASE("wraps swimmers, buildings and team areas together across the source s
 	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .loadDefaultRace = true});
 	auto &game = world.game;
 	REQUIRE(world.addBuilding("swarm", 2, 10));
-	game.map.setTerrain(63, 10, 256);
+	game.map.paintCell(63, 10, WATER);
 	auto *swimmer = game.addUnit(63, 10, 0, WORKER, 3, 0, 0, 0);
 	REQUIRE(swimmer);
 	swimmer->level[WALK] = 0;

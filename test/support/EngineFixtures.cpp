@@ -36,23 +36,42 @@ namespace glob2test
 		return orders;
 	}
 
-	const Scene &sceneOf(const Game &game, const Game::ViewState &view, int localTeam, Scene *into)
+	const PresentationFrame &sceneOf(const Game &game, const Game::ViewState &view, int localTeam, PresentationFrame *into)
 	{
-		static Scene shared;
-		Scene &scene = into ? *into : shared;
-		SceneRequest request;
+		static PresentationFrame shared;
+		PresentationFrame &scene = into ? *into : shared;
+        SceneRequest request=game.gui ? game.gui->sceneRequest() : SceneRequest{};
 		request.localTeam = localTeam;
-		request.selectedBuilding = Game::refOf(view.selectedBuilding);
-		request.selectedUnit = Game::refOf(view.selectedUnit);
-		extractScene(game, request, scene);
+        if (view.selectedBuilding) request.selectedBuilding=Game::refOf(view.selectedBuilding);
+        if (view.selectedUnit) request.selectedUnit=Game::refOf(view.selectedUnit);
+		game.snapshots().invalidateBoundary(); // Fixture helpers may directly edit public state.
+		SceneExtractor().prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,scene);
 		return scene;
 	}
 
-	const Scene &sceneOf(const Game &game)
+	const PresentationFrame &sceneOf(const Game &game)
 	{
 		static const Game::ViewState none;
 		return sceneOf(game, none);
 	}
+
+    void drawGUI(GameGUI& gui,int team)
+    {
+        if (!gui.simulationThreaded) {
+            gui.game.snapshots().invalidateBoundary(); // Test scripts can edit public records.
+            gui.prepareLocalPresentation();
+        }
+        gui.drawAll(team);
+    }
+
+    void observeMap(const Map& map,SceneMap& view)
+    {
+        REQUIRE(map.game);
+        SceneRequest request;request.includePanels=false;
+        const auto world=map.game->captureReadBoundary({},true,SceneExtractor::requirements(request));
+        view.bindSnapshot(world,map.displayViewportW,map.displayViewportH,map.displayedTeam);
+        view.prepareChunk(0,size_t(world.width)*world.height);
+    }
 
 	HeadlessGlobals::HeadlessGlobals(Options options)
 		: globals(options.profileName.c_str())
@@ -97,6 +116,7 @@ namespace glob2test
 	{
 		REQUIRE_MESSAGE(globalContainer != nullptr, "HeadlessGame needs a live HeadlessGlobals");
 		random.emplace(game);
+		game.gameHeader.setRandomSeed(options.seed);
 		game.map.setSize(options.wDec, options.hDec, options.terrain);
 		game.map.setGame(&game);
 		if (options.clearImmobile)

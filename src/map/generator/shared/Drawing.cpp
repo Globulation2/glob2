@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Drawing.h"
 #include <algorithm>
@@ -10,8 +12,11 @@ bool strokeIntersectsMask(const Torus &t, const std::vector<StrokePoint> &path,
 	std::vector<unsigned char> stroke(t.size(), 0);
 	strokePath(stroke, t, path);
 	for (int i = 0; i < t.size(); ++i)
-		if (stroke[i] && protectedMask[i])
+	{
+		::MapGeneration::generationCheckpoint();
+		if (stroke.at(i) && protectedMask.at(i))
 			return true;
+	}
 	return false;
 }
 
@@ -19,8 +24,14 @@ void fillRectangle(std::vector<unsigned char> &mask, const Torus &t, RegionBound
 				   unsigned char value)
 {
 	for (int y = b.y0; y < b.y1; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = b.x0; x < b.x1; ++x)
-			mask[t.at(x, y)] = value;
+		{
+			::MapGeneration::generationCheckpoint();
+			mask.at(t.at(x, y)) = value;
+		}
+	}
 }
 
 std::vector<StrokePoint> downhillPath(ShapePoint centre, double fromRadius, double toRadius,
@@ -31,15 +42,18 @@ std::vector<StrokePoint> downhillPath(ShapePoint centre, double fromRadius, doub
 	for (double v :
 		 {centre.x, centre.y, fromRadius, toRadius, heading, fromHalfWidth, toHalfWidth, style.step,
 		  style.memory, style.angularNoise, style.maxDrift, stretch.sx, stretch.sy})
+	{
+		::MapGeneration::generationCheckpoint();
 		if (!std::isfinite(v))
 			return {};
+	}
 	if (fromRadius < 0 || toRadius <= fromRadius || style.step <= 0 || style.memory < 0 ||
 		style.memory >= 1 || style.angularNoise < 0 || style.maxDrift < 0 || fromHalfWidth <= 0 ||
 		toHalfWidth <= 0 || stretch.sx <= 0 || stretch.sy <= 0)
 		return {};
 	// A defensive cap prevents an accidentally microscopic step allocating unbounded
 	// memory. 65536 segments already exceed a full diagonal of any supported map.
-	const double needed = std::ceil((toRadius - fromRadius) / style.step);
+	const double needed = ::MapGeneration::Numeric::ceil((toRadius - fromRadius) / style.step);
 	if (needed > 65536)
 		return {};
 	const int segments = int(needed);
@@ -48,6 +62,7 @@ std::vector<StrokePoint> downhillPath(ShapePoint centre, double fromRadius, doub
 	double turn = 0, angle = heading;
 	for (int k = 0; k <= segments; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double radius = std::min(toRadius, fromRadius + k * style.step);
 		const double progress = (radius - fromRadius) / (toRadius - fromRadius);
 		if (k)
@@ -70,22 +85,26 @@ void strokeSegment(std::vector<unsigned char> &mask, const Torus &t, const Strok
 				   const StrokePoint &b, unsigned char value)
 {
 	const double reach = std::max(a.halfWidth, b.halfWidth);
-	const int x0 = int(std::floor(std::min(a.x, b.x) - reach)),
-			  x1 = int(std::ceil(std::max(a.x, b.x) + reach));
-	const int y0 = int(std::floor(std::min(a.y, b.y) - reach)),
-			  y1 = int(std::ceil(std::max(a.y, b.y) + reach));
+	const int x0 = int(::MapGeneration::Numeric::floor(std::min(a.x, b.x) - reach)),
+			  x1 = int(::MapGeneration::Numeric::ceil(std::max(a.x, b.x) + reach));
+	const int y0 = int(::MapGeneration::Numeric::floor(std::min(a.y, b.y) - reach)),
+			  y1 = int(::MapGeneration::Numeric::ceil(std::max(a.y, b.y) + reach));
 	const double ux = b.x - a.x, uy = b.y - a.y, length2 = ux * ux + uy * uy;
 	for (int y = y0; y <= y1; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = x0; x <= x1; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const double px = x - a.x, py = y - a.y;
 			const double along =
 				length2 > 0 ? std::clamp((px * ux + py * uy) / length2, 0.0, 1.0) : 0.0;
 			const double dx = px - along * ux, dy = py - along * uy;
 			const double halfWidth = a.halfWidth + along * (b.halfWidth - a.halfWidth);
 			if (dx * dx + dy * dy < halfWidth * halfWidth)
-				mask[t.at(x, y)] = value;
+				mask.at(t.at(x, y)) = value;
 		}
+	}
 }
 } // namespace
 
@@ -95,9 +114,12 @@ void strokePath(std::vector<unsigned char> &mask, const Torus &t,
 	if (path.empty())
 		return;
 	if (path.size() == 1)
-		strokeSegment(mask, t, path[0], path[0], value);
+		strokeSegment(mask, t, path.at(0), path.at(0), value);
 	for (size_t i = 0; i + 1 < path.size(); ++i)
-		strokeSegment(mask, t, path[i], path[i + 1], value);
+	{
+		::MapGeneration::generationCheckpoint();
+		strokeSegment(mask, t, path.at(i), path.at(i + 1), value);
+	}
 	if (closed && path.size() > 2)
 		strokeSegment(mask, t, path.back(), path.front(), value);
 }
@@ -107,19 +129,23 @@ void tracePath(std::vector<unsigned char> &mask, const Torus &t,
 {
 	for (size_t i = 0; i < path.size(); ++i)
 	{
-		int x0 = int(std::lround(path[i].x)), y0 = int(std::lround(path[i].y));
+		::MapGeneration::generationCheckpoint();
+		int x0 = int(::MapGeneration::Numeric::lround(path.at(i).x)),
+			y0 = int(::MapGeneration::Numeric::lround(path.at(i).y));
 		if (i + 1 == path.size())
 		{
-			mask[t.at(x0, y0)] = value;
+			mask.at(t.at(x0, y0)) = value;
 			break;
 		}
-		const int x1 = int(std::lround(path[i + 1].x)), y1 = int(std::lround(path[i + 1].y));
+		const int x1 = int(::MapGeneration::Numeric::lround(path.at(i + 1).x)),
+				  y1 = int(::MapGeneration::Numeric::lround(path.at(i + 1).y));
 		const int dx = std::abs(x1 - x0), dy = -std::abs(y1 - y0);
 		const int sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
 		int error = dx + dy;
 		while (x0 != x1 || y0 != y1)
 		{
-			mask[t.at(x0, y0)] = value;
+			::MapGeneration::generationCheckpoint();
+			mask.at(t.at(x0, y0)) = value;
 			const int twice = 2 * error;
 			if (twice >= dy)
 			{
@@ -149,6 +175,7 @@ std::vector<std::pair<long long, long long>> sealedSegmentTiles(SubtilePoint a, 
 	const long long limit = (endX > x ? endX - x : x - endX) + (endY > y ? endY - y : y - endY);
 	for (long long step = 0; step < limit && (x != endX || y != endY); ++step)
 	{
+		::MapGeneration::generationCheckpoint();
 		// Distance along each axis to the boundary the segment crosses next, in subtile units.
 		const long long toX = adx ? (sx > 0 ? (x + 1) * kSubtile - a.x : a.x - x * kSubtile) : 0;
 		const long long toY = ady ? (sy > 0 ? (y + 1) * kSubtile - a.y : a.y - y * kSubtile) : 0;
@@ -177,16 +204,22 @@ void traceSealedPath(std::vector<unsigned char> &mask, const Torus &t,
 {
 	const size_t n = points.size();
 	if (n == 1)
-		mask[t.at(int(subtileTile(points[0].x)), int(subtileTile(points[0].y)))] = value;
+		mask.at(t.at(int(subtileTile(points.at(0).x)), int(subtileTile(points.at(0).y)))) = value;
 	for (size_t k = 0; k + 1 < n || (closed && n > 2 && k < n); ++k)
-		for (const auto &tile : sealedSegmentTiles(points[k], points[(k + 1) % n]))
-			mask[t.at(int(tile.first), int(tile.second))] = value;
+	{
+		::MapGeneration::generationCheckpoint();
+		for (const auto &tile : sealedSegmentTiles(points.at(k), points.at((k + 1) % n)))
+		{
+			::MapGeneration::generationCheckpoint();
+			mask.at(t.at(int(tile.first), int(tile.second))) = value;
+		}
+	}
 }
 
 void fillPolygon(std::vector<unsigned char> &mask, const Torus &t,
 				 const std::vector<SubtilePoint> &outline, unsigned char value)
 {
-	forEachTileInPolygon(t, outline, [&](int tile) { mask[tile] = value; });
+	forEachTileInPolygon(t, outline, [&](int tile) { mask.at(tile) = value; });
 }
 
 std::vector<StrokePoint> bezierPath(ShapePoint from, ShapePoint control, ShapePoint to,
@@ -196,6 +229,7 @@ std::vector<StrokePoint> bezierPath(ShapePoint from, ShapePoint control, ShapePo
 	segments = std::max(1, segments);
 	for (int k = 0; k <= segments; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double s = double(k) / segments, r = 1 - s;
 		path.push_back({r * r * from.x + 2 * r * s * control.x + s * s * to.x,
 						r * r * from.y + 2 * r * s * control.y + s * s * to.y,
@@ -206,7 +240,8 @@ std::vector<StrokePoint> bezierPath(ShapePoint from, ShapePoint control, ShapePo
 std::vector<StrokePoint> bentPath(ShapePoint from, double heading, double length, double bend,
 								  double fromHalfWidth, double toHalfWidth, int segments)
 {
-	const double ux = std::cos(heading), uy = std::sin(heading);
+	const double ux = ::MapGeneration::Numeric::cos(heading),
+				 uy = ::MapGeneration::Numeric::sin(heading);
 	const ShapePoint to{from.x + length * ux, from.y + length * uy};
 	// A quadratic Bezier's middle sits halfway between the chord's middle and its control point,
 	// so the control goes twice the bow off the chord, to the left of the heading (-uy, ux).
@@ -221,7 +256,7 @@ std::vector<StrokePoint> wanderingPath(const Torus &t, ShapePoint from, ShapePoi
 {
 	const auto nearest = [](double d, int period)
 	{
-		d = std::fmod(d, double(period));
+		d = ::MapGeneration::Numeric::fmod(d, double(period));
 		if (d > period / 2.0)
 			d -= period;
 		else if (d < -period / 2.0)
@@ -229,7 +264,7 @@ std::vector<StrokePoint> wanderingPath(const Torus &t, ShapePoint from, ShapePoi
 		return d;
 	};
 	const double dx = nearest(to.x - from.x, t.w), dy = nearest(to.y - from.y, t.h);
-	const double length = std::hypot(dx, dy);
+	const double length = ::MapGeneration::Numeric::hypot(dx, dy);
 	// A draw in [-1, 1) straight from the generator's bits: std::uniform_real_distribution differs
 	// between standard libraries.
 	const auto unit = [](std::mt19937 &r) { return (double(r()) - 2147483648.0) / 2147483648.0; };
@@ -237,21 +272,29 @@ std::vector<StrokePoint> wanderingPath(const Torus &t, ShapePoint from, ShapePoi
 	// finer), and three phases for the width.
 	double bend[3], phase[3];
 	for (double &b : bend)
+	{
+		::MapGeneration::generationCheckpoint();
 		b = unit(random);
+	}
 	for (double &p : phase)
+	{
+		::MapGeneration::generationCheckpoint();
 		p = unit(random) * kPi;
-	const int segments = std::max(1, int(std::ceil(length)));
+	}
+	const int segments = std::max(1, int(::MapGeneration::Numeric::ceil(length)));
 	const double nx = length > 0 ? -dy / length : 0, ny = length > 0 ? dx / length : 0;
 	std::vector<StrokePoint> path;
 	path.reserve(size_t(segments) + 1);
 	for (int i = 0; i <= segments; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double s = double(i) / segments;
 		double side = 0, swell = 0;
 		for (int h = 0; h < 3; ++h)
 		{
-			side += bend[h] * std::sin(kPi * (h + 1) * s) / (h + 1);
-			swell += std::sin(2 * kPi * (h + 1) * s + phase[h]) / 3;
+			::MapGeneration::generationCheckpoint();
+			side += bend[h] * ::MapGeneration::Numeric::sin(kPi * (h + 1) * s) / (h + 1);
+			swell += ::MapGeneration::Numeric::sin(2 * kPi * (h + 1) * s + phase[h]) / 3;
 		}
 		const double offset = wander * side / (1 + 1 / 2.0 + 1 / 3.0);
 		path.push_back({from.x + dx * s + nx * offset, from.y + dy * s + ny * offset,
@@ -275,15 +318,18 @@ double gapToPath(double x, double y, const std::vector<StrokePoint> &path)
 {
 	double best = INFINITY;
 	if (path.size() == 1)
-		return std::hypot(x - path[0].x, y - path[0].y) - path[0].halfWidth;
+		return ::MapGeneration::Numeric::hypot(x - path.at(0).x, y - path.at(0).y) -
+			   path.at(0).halfWidth;
 	for (size_t i = 0; i + 1 < path.size(); ++i)
 	{
-		const StrokePoint &a = path[i], &b = path[i + 1];
+		::MapGeneration::generationCheckpoint();
+		const StrokePoint &a = path.at(i), &b = path.at(i + 1);
 		const double ux = b.x - a.x, uy = b.y - a.y, length2 = ux * ux + uy * uy;
 		const double along =
 			length2 > 0 ? std::clamp(((x - a.x) * ux + (y - a.y) * uy) / length2, 0.0, 1.0) : 0.0;
-		const double gap = std::hypot(x - a.x - along * ux, y - a.y - along * uy) -
-						   (a.halfWidth + along * (b.halfWidth - a.halfWidth));
+		const double gap =
+			::MapGeneration::Numeric::hypot(x - a.x - along * ux, y - a.y - along * uy) -
+			(a.halfWidth + along * (b.halfWidth - a.halfWidth));
 		best = std::min(best, gap);
 	}
 	return best;
@@ -304,10 +350,14 @@ double pathClearance(const std::vector<StrokePoint> &a, const std::vector<Stroke
 		points.push_back(path.front());
 		for (size_t i = 0; i + 1 < path.size(); ++i)
 		{
-			const StrokePoint &p = path[i], &q = path[i + 1];
-			const int steps = std::max(1, int(std::ceil(std::hypot(q.x - p.x, q.y - p.y))));
+			::MapGeneration::generationCheckpoint();
+			const StrokePoint &p = path.at(i), &q = path.at(i + 1);
+			const int steps =
+				std::max(1, int(::MapGeneration::Numeric::ceil(
+								::MapGeneration::Numeric::hypot(q.x - p.x, q.y - p.y))));
 			for (int k = 1; k <= steps; ++k)
 			{
+				::MapGeneration::generationCheckpoint();
 				const double f = double(k) / steps;
 				points.push_back({p.x + f * (q.x - p.x), p.y + f * (q.y - p.y),
 								  p.halfWidth + f * (q.halfWidth - p.halfWidth)});
@@ -318,15 +368,24 @@ double pathClearance(const std::vector<StrokePoint> &a, const std::vector<Stroke
 	std::vector<StrokePoint> measured;
 	if (!a.empty())
 		for (const StrokePoint &p : dense(a))
-			if (std::hypot(p.x - a.front().x, p.y - a.front().y) >= skip)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (::MapGeneration::Numeric::hypot(p.x - a.front().x, p.y - a.front().y) >= skip)
 				measured.push_back(p);
+		}
 	if (measured.empty() || b.empty())
 		return INFINITY;
 	double best = INFINITY;
 	for (const StrokePoint &p : measured)
+	{
+		::MapGeneration::generationCheckpoint();
 		best = std::min(best, gapToPath(p.x, p.y, b) - p.halfWidth);
+	}
 	for (const StrokePoint &p : dense(b))
+	{
+		::MapGeneration::generationCheckpoint();
 		best = std::min(best, gapToPath(p.x, p.y, measured) - p.halfWidth);
+	}
 	return best;
 }
 
@@ -334,9 +393,10 @@ PathBounds pathBounds(const std::vector<StrokePoint> &path)
 {
 	if (path.empty())
 		return {0, 0, 0};
-	double x0 = path[0].x, x1 = x0, y0 = path[0].y, y1 = y0;
+	double x0 = path.at(0).x, x1 = x0, y0 = path.at(0).y, y1 = y0;
 	for (const StrokePoint &p : path)
 	{
+		::MapGeneration::generationCheckpoint();
 		x0 = std::min(x0, p.x);
 		x1 = std::max(x1, p.x);
 		y0 = std::min(y0, p.y);
@@ -344,8 +404,12 @@ PathBounds pathBounds(const std::vector<StrokePoint> &path)
 	}
 	PathBounds bounds{(x0 + x1) / 2, (y0 + y1) / 2, 0};
 	for (const StrokePoint &p : path)
+	{
+		::MapGeneration::generationCheckpoint();
 		bounds.radius =
-			std::max(bounds.radius, std::hypot(p.x - bounds.x, p.y - bounds.y) + p.halfWidth);
+			std::max(bounds.radius,
+					 ::MapGeneration::Numeric::hypot(p.x - bounds.x, p.y - bounds.y) + p.halfWidth);
+	}
 	return bounds;
 }
 
@@ -362,6 +426,7 @@ Zigzag zigzagPath(const AxisFrame &frame, double start, double firstLeg, double 
 	point(start, side);
 	for (int j = 0; j < legs; ++j)
 	{
+		::MapGeneration::generationCheckpoint();
 		const double along = firstLeg - j * pitch;
 		point(along, side);
 		const ShapePoint a = frame.at(along, side - (side > 0 ? halfWidth : -halfWidth));
@@ -385,10 +450,14 @@ std::vector<StrokePoint> splinePath(const std::vector<ShapePoint> &waypoints, do
 	knots.push_back(waypoints.back());
 	for (size_t w = 1; w + 2 < knots.size(); ++w)
 	{
-		const ShapePoint &p0 = knots[w - 1], &p1 = knots[w], &p2 = knots[w + 1], &p3 = knots[w + 2];
-		const int samples = std::max(2, int(std::hypot(p2.x - p1.x, p2.y - p1.y) / step));
+		::MapGeneration::generationCheckpoint();
+		const ShapePoint &p0 = knots.at(w - 1), &p1 = knots.at(w), &p2 = knots.at(w + 1),
+						 &p3 = knots.at(w + 2);
+		const int samples =
+			std::max(2, int(::MapGeneration::Numeric::hypot(p2.x - p1.x, p2.y - p1.y) / step));
 		for (int q = (w == 1 ? 0 : 1); q <= samples; ++q)
 		{
+			::MapGeneration::generationCheckpoint();
 			const double u = double(q) / samples, u2 = u * u, u3 = u2 * u;
 			const auto blend = [&](double a, double b, double c, double d)
 			{

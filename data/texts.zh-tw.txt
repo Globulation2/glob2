@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+請在瀏覽器中完成登入。完成後遊戲會自動繼續。
 [hub browser did not open]
-
+瀏覽器未能開啟。請開啟登入頁面以繼續。
 [hub compare code %0]
-
+如果頁面要求核對，請確認顯示的是 %0。
 [hub code copied]
-
+程式碼已複製
 [settings Finish in your browser. The game continues by itself.]
-
+請在瀏覽器中完成操作。遊戲會自動繼續。
 [music set]
-
+音樂套組
 [random music set]
-
+每局隨機
 [playing music set %0]
-
+正在播放：%0
 [music set failed]
-
+無法載入此音樂套組。
 [settings Music set]
-
+音樂套組
 [settings Random each match]
-
+選擇“隨機”可在每局開始時隨機選擇配樂。
 [settings Edge scrolling]
-
+邊緣滾動
 [settings Edge scrolling in fullscreen]
-
+全屏模式下的邊緣滾動
 [settings Edge scrolling in windowed mode]
-
+視窗模式下的邊緣滾動
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+滑鼠到達視窗邊緣時，移動遊戲和編輯器中的地圖。
 [AI strategy]
 AI 策略
 [start recording]
@@ -4625,9 +4625,9 @@ AI 對手：%0
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 將你的遊戲錄製為有聲音的 MP4 影片。錄影需要含 libx264 和 AAC 編碼器的 FFmpeg。
 [settings Record your games as MP4 videos with sound.]
-
+將遊戲錄製為帶聲音的 MP4 影片。
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+以完整渲染解析度和每秒30幀錄製。
 [settings FFmpeg is ready.]
 FFmpeg 已就緒。
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ AI 遙測
 [Units can die]
 單位會死亡
 [Upgrades]
-
+升級
 [No stockpile]
 無
 [No glass cannon]
@@ -5193,7 +5193,7 @@ AI 遙測
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 單位生命值耗盡時會死亡。關閉後單位會停在 1 點生命值。
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+單位可在訓練建築中提升等級，建築也可以升級。關閉此項後仍可維修。
 [stat group work]
 工人時間
 [stat worker time]
@@ -5309,235 +5309,235 @@ AI 遙測
 [stat view by place]
 依地點
 [AI Library]
-
+AI 庫
 [Authoring guide]
-
+製作指南
 [Beginner-friendly]
-
+適合新手
 [Defensive]
-
+防守型
 [Discover]
-
+發現
 [Download & install]
-
+下載並安裝
 [Downloading AI…]
-
+正在下載 AI…
 [Expansion]
-
+擴張型
 [Experimental]
-
+實驗性
 [Favourite]
-
+收藏
 [Favourited]
-
+已收藏
 [Favourites]
-
+收藏夾
 [Got it]
-
+明白了
 [How AIs work]
-
+AI 的工作原理
 [Install selected version]
-
+安裝所選版本
 [Installed]
-
+已安裝
 [Invalid AI catalogue response]
-
+AI 目錄響應無效
 [JavaScript API reference]
-
+JavaScript API 參考
 [Like]
-
+點贊
 [Liked]
-
+已點贊
 [Loading AI library…]
-
+正在載入 AI 庫…
 [Most downloaded]
-
+下載最多
 [Most liked]
-
+點贊最多
 [Newest]
-
+最新
 [No AIs match these filters.]
-
+沒有符合這些篩選條件的 AI。
 [Not validated for this game version]
-
+未經此遊戲版本驗證
 [Open AI Library]
-
+開啟 AI 庫
 [Open AI page]
-
+開啟 AI 頁面
 [Passed compatibility checks]
-
+已透過相容性檢查
 [Recently updated]
-
+最近更新
 [Rush]
-
+速攻型
 [Search]
-
+搜尋
 [Share your AI]
-
+分享你的 AI
 [Show more]
-
+顯示更多
 [Sign in through Online settings to like and favourite AIs.]
-
+請透過線上設定登入，以點贊和收藏 AI。
 [Starter project]
-
+入門專案
 [downloads of this version]
-
+此版本的下載次數
 [downloads]
-
+下載次數
 [Update available]
-
+有可用更新
 [Browse versions]
-
+瀏覽版本
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+下載 AI 後，在本地遊戲的電腦玩家席位中選擇它。安裝的版本可離線使用。更新僅影響之後的遊戲；存檔會保留原始程式碼。
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+相容性檢查不保證安全性或遊戲實力。只執行你信任的作者提供的程式碼。
 [Back to results]
-
+返回結果
 [music 2–5 minutes]
-
+2至5分鐘
 [music 5–15 minutes]
-
+5至15分鐘
 [music AI-generated]
-
+AI 生成
 [music All music]
-
+所有音樂
 [music All open licences]
-
+所有開放許可
 [music Any duration]
-
+不限時長
 [music Audition each mood for eight seconds]
-
+每種氛圍試聽8秒
 [music Back]
-
+返回
 [music Browse]
-
+瀏覽
 [music Building]
-
+漸強
 [music Calm]
-
+平靜
 [music Calm → Building → Combat]
-
+平靜 → 漸強 → 戰鬥
 [music Choose Building]
-
+選擇漸強音樂
 [music Choose Calm]
-
+選擇平靜音樂
 [music Choose Combat]
-
+選擇戰鬥音樂
 [music Choose ZIP]
-
+選擇 ZIP
 [music Choose a music file.]
-
+請選擇音樂檔案。
 [music Combat]
-
+戰鬥
 [music Could not open this music set.]
-
+無法開啟此音樂套組。
 [music Credits, downloads and reporting]
-
+製作名單、下載和舉報
 [music Downloading music…]
-
+正在下載音樂…
 [music Export recovery files]
-
+匯出恢復檔案
 [music Fade duration]
-
+漸變時長
 [music File selection cancelled or failed.]
-
+檔案選擇已取消或失敗。
 [music Import ZIP]
-
+匯入 ZIP
 [music Import ZIP or three tracks]
-
+匯入 ZIP 或三首曲目
 [music Import music]
-
+匯入音樂
 [music Import three tracks]
-
+匯入三首曲目
 [music Includes AI-generated audio]
-
+包含 AI 生成的音訊
 [music Install]
-
+安裝
 [music Install selected]
-
+安裝所選項
 [music Installed]
-
+已安裝
 [music Load more]
-
+載入更多
 [music Loading music…]
-
+正在載入音樂…
 [music Most downloaded]
-
+下載最多
 [music Most liked]
-
+點贊最多
 [music Music decoding failed.]
-
+音樂解碼失敗。
 [music Music download failed.]
-
+音樂下載失敗。
 [music Music installed.]
-
+音樂已安裝。
 [music Music installed. It is now available in Audio settings.]
-
+音樂已安裝，現在可在音訊設定中使用。
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+音樂尚未永久儲存。請在離開前重試儲存。
 [music Music library]
-
+音樂庫
 [music Music request failed.]
-
+音樂請求失敗。
 [music Newest]
-
+最新
 [music No community music installed yet. Import files or browse the online library.]
-
+尚未安裝社群音樂。請匯入檔案或瀏覽線上音樂庫。
 [music No music found.]
-
+未找到音樂。
 [music Not AI-generated]
-
+非 AI 生成
 [music Pause]
-
+暫停
 [music Play]
-
+播放
 [music Playback position]
-
+播放位置
 [music Preview]
-
+預覽
 [music Ready to import.]
-
+可以匯入。
 [music Remove]
-
+移除
 [music Reset to game behavior]
-
+恢復遊戲預設行為
 [music Retry saving]
-
+重試儲存
 [music Saved.]
-
+已儲存。
 [music Saving music…]
-
+正在儲存音樂…
 [music Search]
-
+搜尋
 [music Search title, artist, description…]
-
+搜尋標題、藝術家、描述…
 [music Select for installation]
-
+選擇以安裝
 [music Share music on the web]
-
+在網上分享音樂
 [music Some catalogue entries could not be read.]
-
+無法讀取部分目錄條目。
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+無法儲存儲存內容。請在離開前重試或匯出檔案。
 [music Tag]
-
+標籤
 [music Test crossfades]
-
+測試交叉淡化
 [music Up to 2 minutes]
-
+不超過2分鐘
 [music Use this music]
-
+使用此音樂
 [music Validating music…]
-
+正在驗證音樂…
 [settings Music library · Browse, install and import]
-
+音樂庫 · 瀏覽、安裝和匯入
 [music Filters]
-
+篩選
 [music Leave without saving]
-
+不儲存並離開
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+匯入已下載的音樂 ZIP 或三首 Opus 曲目。後設資料和封面從平靜曲目中讀取，無需額外檔案。
 [settings Target render FPS]
 目標繪製幀率
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ AI 遙測
 矽砂
 [Cotton]
 棉花
+[Jungle trees]
+叢林樹木
+[Pine trees]
+松樹
+[Dead trees]
+枯樹
+[Ruins]
+廢墟
+[Camp-site]
+營地
+[Ancient debris]
+古代殘骸
+[Scrub]
+灌木叢
+[Tall grass]
+高草
+[Maize]
+玉米
+[Potatoes]
+馬鈴薯
+[Rice]
+水稻
+[Fish]
+魚
 [Reroll terrain look]
 重新隨機產生地形外觀
 [boulders]
-
+巨石
 [hedge]
-
+樹籬
 [thicket]
-
+灌木叢
 [ridge_rock]
-
+巖脊
 [outcrop]
-
+岩石露頭
 [dirt]
-
+泥土
 [clay]
-
+黏土
 [gravel]
-
+礫石
 [flower_meadow]
-
+花草地
 [mud]
-
+泥濘
 [marsh]
-
+沼澤
 [deep_snow]
-
+深雪
 [scree]
-
+碎石坡
 [dirt_track]
-
+土路
 [boardwalk]
-
+木棧道
 [lava]
-
+熔岩
 [ember_field]
-
+餘燼地
 [loam]
-
+壤土
 [moss]
-
+苔蘚
 [spring_meadow]
-
+春日草地
 [deep_water]
-
+深水
 [dark_water]
-
+暗水
 [void_hole]
-
+坑洞
 [chasm]
-
+深淵
 [terrain group water]
-
+水
 [terrain group sand]
-
+沙地
 [terrain group grass]
-
+草地
 [terrain group ice]
-
+冰
 [terrain group paths]
-
+路徑
 [terrain group obstacles]
-
+障礙物
 [terrain group ridges]
-
+巖脊
 [terrain group barren]
-
+貧瘠地面
 [terrain group rough]
-
+崎嶇地面
 [terrain group lava]
-
+熔岩
 [terrain group fertile]
-
+肥沃地面
 [terrain group deep-water]
-
+深水
 [terrain group void]
-
+虛空
 [experiment obstacle-terrain]
-
+障礙地形
 [experiment obstacle-terrain help]
-
+向地圖編輯器新增巨石、樹籬和灌木叢。地面單位無法穿越，彈射物也會被阻擋；飛行單位可以透過。不能放置建築或資源。
 [experiment ridge-terrain]
-
+巖脊地形
 [experiment ridge-terrain help]
-
+向地圖編輯器新增巖脊和岩石露頭。地面單位無法穿越，但防禦塔的射擊和飛行單位可以透過。不能放置建築或資源。
 [experiment barren-terrain]
-
+貧瘠地面
 [experiment barren-terrain help]
-
+向地圖編輯器新增泥土、黏土、礫石和花草地。可以放置建築，但其上及周圍不會生長任何東西，也不算作岸邊。
 [experiment rough-terrain]
-
+崎嶇地面
 [experiment rough-terrain help]
-
+向地圖編輯器新增泥濘、沼澤、深雪和碎石坡。地面單位的移動速度約為正常速度的三分之二。不能放置建築或資源。
 [experiment path-terrain]
-
+路徑地形
 [experiment path-terrain help]
-
+向地圖編輯器新增土路和木棧道。與小徑一樣，地面單位以雙倍速度移動，並且可以放置建築，但不會生長任何東西。
 [experiment lava-terrain]
-
+熔岩地形
 [experiment lava-terrain help]
-
+向地圖編輯器新增熔岩和餘燼地。地面單位無法進入；飛行單位穿越時會迅速損失生命值。彈射物可以透過。
 [experiment fertile-terrain]
-
+肥沃地面
 [experiment fertile-terrain help]
-
+向地圖編輯器新增壤土、苔蘚和春日草地。可以放置建築並種植作物，對周圍土地的灌溉效果比水更強。
 [experiment deep-water-terrain]
-
+深水
 [experiment deep-water-terrain help]
-
+向地圖編輯器新增深水和暗水。游泳單位透過時較慢，其中不生長藻類，但仍可灌溉附近的田地。
 [experiment void-terrain]
-
+虛空地形
 [experiment void-terrain help]
-
+向地圖編輯器新增坑洞和深淵。任何單位都無法穿越，包括飛行單位；彈射物會在邊緣停止。
 [terrain group custom]
-
+自定義
 [terrain group classic]
-
+經典地面
 [terrain rule walkable]
-
+可步行
 [terrain rule swimmable]
-
+可游泳
 [terrain rule impassable]
-
+無法通行
 [terrain rule no flying]
-
+禁止飛行
 [terrain rule buildable]
-
+可建造
 [terrain rule speed %0]
-
+速度 %0%
 [terrain rule crops grow]
-
+作物生長
 [terrain rule irrigates]
-
+灌溉附近土地
 [terrain rule stops nearby growth]
-
+阻止附近生長
 [terrain rule blocks shots]
-
+阻擋射擊
 [terrain rule hurts walkers]
-
+傷害步行單位
 [terrain rule hurts fliers]
-
+傷害飛行單位
 [terrain palette hint]
-
+選擇筆刷。同組地形的規則相同，只在外觀上有所區別。
 [terrain rule algae grow]
-
+藻類生長
 [terrain palette experiments hint]
-
+選擇筆刷。在“設定 > 實驗功能”中啟用對應實驗後，這裡會顯示更多地形組。
 [brush valid on %0]
-
+可放置於：%0
 [brush valid nowhere]
-
+無法放置在此地圖的任何地形上
 [brush requires experiment %0]
-
+需要啟用實驗功能 %0
 [brush resources custom]
-
+已匯入的資源
 [brush section zones]
-
+區域
 [brush section areas]
-
+範圍
 [brush section tools]
-
+工具
 [brush clearing area]
-
+清理區域
 [editor unsaved title]
-
+未儲存的更改
 [editor quit unsaved]
-
+離開編輯器前，是否儲存對此地圖的更改？
 [editor load unsaved]
-
+開啟另一張地圖前，是否儲存對此地圖的更改？
 [editor save]
-
+儲存…
 [editor discard]
-
+不儲存
 [editor share never saved]
-
+地圖透過已儲存的檔案分享。請先儲存此地圖，然後再分享。
 [editor share unsaved]
-
+此地圖有尚未儲存的更改。分享會上傳已儲存的檔案。
 [editor save and share]
-
+儲存並分享…
 [editor share saved version]
-
+分享已儲存的版本
 [editor reroll confirm]
-
+為每個地形格重新隨機選擇外觀？地形型別和遊戲玩法保持不變。此操作無法撤銷。
 [editor reroll]
-
+重新隨機外觀
 [editor map saved]
-
+地圖已儲存
 [editor map shared]
-
+地圖已線上分享
 [editor save needs fertility]
-
+儲存需要肥沃度地圖，因此已取消儲存。請按“確定”重試。
 [editor fertility stale]
-
+肥沃度地圖已過期 · 點選重新整理
 [No definition files found in %0]
-
+%0 中未找到定義檔案
 [From device…]
-
+從裝置…
 [replace existing file %0?]
-
+名為“%0”的檔案已存在。是否替換？
 [Replace]
-
+替換
 [Keep existing file]
-
+保留現有檔案
 [editor menu save]
-
+儲存地圖
 [editor menu load]
-
+開啟地圖…
 [editor menu import terrain]
-
+匯入地形定義…
 [editor menu import resources]
-
+匯入資源定義…
 [editor menu teams]
-
+隊伍…
 [editor menu scenario]
-
+場景…
 [editor menu reroll]
-
+重新隨機地形外觀…
 [editor menu file]
-
+檔案
 [editor menu map]
-
+地圖
 [no resource growth areas]
-
+禁止生長區域
 [dock flags and units]
-
+旗幟與單位
 [dock minimap]
-
+小地圖
 [dock search brushes]
-
+搜尋筆刷
 [dock brush shape %0]
-
+筆刷形狀 %0
 [dock brush]
-
+筆刷
 [dock brush paint]
-
+繪製
 [dock brush erase]
-
+擦除
 [dock enable for map]
-
+對此地圖啟用
 [dock enable experiment %0]
-
+啟用 %0
 [dock enable experiment hint %0]
-
+僅對此地圖啟用實驗功能 %0。
 [dock area number]
-
+區域
 [dock building level]
-
+等級
 [dock unit level]
-
+單位等級
 [dock no brushes match]
-
+沒有符合搜尋條件的筆刷。
 [dock active team]
-
+當前隊伍
 [dock team count %0]
-
+此地圖上的隊伍：%0
 [dock add team]
-
+新增隊伍
 [dock remove team]
-
+移除隊伍
 [dock nothing selected]
-
+未選擇任何物件。
 [dock no properties]
-
+此物件沒有可編輯的屬性。
 [focus brush search]
-
+搜尋筆刷
 [switch to resources view]
-
+切換到資源檢視
 [dock resources base]
-
+標準資源
 [dock fertility stale]
-
+肥沃度地圖已過期。
 [dock fertility refresh]
-
+重新整理肥沃度
 [Enabled %0 for this map]
-
+已對此地圖啟用 %0
 [editor fertility tap refresh]
-
+肥沃度地圖已過期：點選重新整理
+[editor menu import set]
+匯入地形與資源套組
+[editor menu set library]
+套組庫
+[set library loading]
+正在載入套組…
+[set library downloading]
+正在下載指定版本…
+[set library connection error]
+無法載入套組。請檢查連線後重試。
+[set library hash error]
+下載的套組未透過雜湊檢查。
+[set library package error]
+套組包無效。
+[set library listing error]
+套組列表無效。
+[set library release error]
+套組版本無效。
+[set library selection help]
+選擇要匯入的條目。所需的自定義資源會自動包含在內。
+[set library empty]
+未找到套組。
+[set library release help]
+選擇一個確切的釋出版本以檢視和匯入。
+[set library heading]
+地形與資源套組
+[set library browse]
+瀏覽線上庫
+[set library local]
+地圖內容、製作名單與本地編輯
+[set library local help]
+編輯儲存在此地圖中的內容副本。原始版本的製作名單會保留。變更不會更新其他地圖或線上版本。
+[set library apply]
+應用本地更改
+[set library updated]
+本地內容已更新。
+[set library search hint]
+搜尋主題和創作者
+[set library search]
+搜尋
+[set library set]
+套組
+[set library update help]
+這將明確替換已放置的匹配地形和資源，包括本地編輯。已移除的條目仍保留舊版本。現有資源數量會限制在新容量以內。
+[set library import]
+匯入所選條目
+[set library next]
+下一頁
+[set library back]
+返回結果
+[set library license %0]
+許可：%0
+[set library release %0]
+版本 %0
+[set library replace %0]
+替換已放置的版本 %0 條目
+[set library preview limit]
+僅顯示前64個條目的預覽。所有條目仍可選擇。
+[set library definition]
+屬性定義（JSON）
+[set library artwork]
+地形影象對映（JSON）
+[settings Map generators]
+地圖產生器
+[settings Import a generator package, then select its landscape when creating a map or game.]
+匯入產生器套件，然後在建立地圖或遊戲時選擇其地形。
+[settings Import map generator]
+匯入地圖產生器
+[settings No custom map generators installed.]
+尚未安裝自訂地圖產生器。
+[settings Replace package]
+取代套件
+[settings Export package]
+匯出套件
+[settings Remove generator]
+移除產生器
+[settings Saving generator library…]
+正在儲存產生器庫…
+[settings Could not read generator package.]
+無法讀取產生器套件。
+[settings Generator library saved.]
+產生器庫已儲存。
+[settings Storage could not be saved. The previous library is retained.]
+無法儲存資料。已保留原有產生器庫。
+[settings Waiting for file selection or storage…]
+正在等待檔案選取或儲存操作…
+[settings File selection is unavailable.]
+無法使用檔案選取功能。
+[settings Package export is unavailable.]
+無法使用套件匯出功能。
+[stat band area upkeep]
+區域維護

@@ -87,7 +87,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 		terrain[i] = L.water[i] ? WATER : L.sand[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "locust colonies";
@@ -98,7 +98,7 @@ bool generate(Game &game, GenerationContext &context)
 	// would incorrectly call unplanted but irrigated ground dry.
 	const auto fertility = Fertility::forMap(map, false);
 	const auto shore = dilate(t, pureTiles(map, WATER), kShoreReach);
-	const auto free = [&](int i) { return !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+	const auto free = [&](int i) { return !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 	context.stage = "locust starting rations";
 	context.telemetry.measure("locust.starter.requested-wheat-tiles", kStarterWheat);
 	context.telemetry.measure("locust.starter.requested-wood-tiles", kStarterWood);
@@ -107,7 +107,7 @@ bool generate(Game &game, GenerationContext &context)
 		// Resource eligibility is a hard constraint, not a score: never repair a failed food kit
 		// by watering it. Search can cross the home boundary when a compact clearing is mostly wet;
 		// final walking validation rejects a geometrically close but inaccessible patch.
-		const auto dry = [&](int i) { return free(i) && fertility.at(i % t.w, i / t.w) == 0; };
+		const auto dry = [&](int i) { return free(i) && fertility.at(t.remainderX(i), i / t.w) == 0; };
 		const auto wet = [&](int i) { return free(i) && L.homeOf[i] == k && shore[i]; };
 		// A compact home can have a tiny dry sliver and a larger exterior field separated by
 		// sand. Spend the budget across both instead of failing after the first tiny component.
@@ -159,7 +159,7 @@ bool generate(Game &game, GenerationContext &context)
 	const auto noise = periodicNoise(t.w, t.h, kFieldOctaves, context.stream("vultures-fields"));
 	std::vector<int> levels;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.forest[i] && fertility.at(i % t.w, i / t.w) == 0 && free(i))
+		if (L.forest[i] && fertility.at(t.remainderX(i), i / t.w) == 0 && free(i))
 			levels.push_back(noise[i]);
 	const int cover = std::min(100, int(scaledCount(kWheatCover, o.wheat)));
 	const int threshold = percentile(levels, 100 - cover);
@@ -167,7 +167,7 @@ bool generate(Game &game, GenerationContext &context)
 								 [&](int i)
 								 {
 									 return cover > 0 && noise[i] >= threshold && free(i) &&
-											fertility.at(i % t.w, i / t.w) == 0;
+											fertility.at(t.remainderX(i), i / t.w) == 0;
 								 });
 	const int wood = plantCover(map, t, shore, WOOD,
 								[&](int i)
@@ -217,7 +217,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int i = 0; i < t.size(); ++i)
 	{
 		const auto &r = map.getResource(i);
-		if (r.type == WHEAT && (fertility.at(i % t.w, i / t.w) != 0 || r.amount < kLeastRations ||
+		if (r.type == WHEAT && (fertility.at(t.remainderX(i), i / t.w) != 0 || r.amount < kLeastRations ||
 								r.amount > kMostRations))
 			return "Wheat must be dry and hold three to five rations.";
 		if (r.type == WOOD && !shore[i])
@@ -248,7 +248,7 @@ GeneratorDefinition locustDefinition()
 	return {"locust",
 			47,
 			"Locust",
-			4,
+			5,
 			false,
 			{GeneratorControl{"home-size", "Home size", 16, 30, 1, 24, ControlGroup::Layout}
 				 .withSearchRange(24, 30),

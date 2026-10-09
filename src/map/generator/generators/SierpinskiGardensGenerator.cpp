@@ -380,7 +380,7 @@ GeneratorDefinition sierpinskiGardensDefinition()
 			49,
 			"Sierpiński Gardens",
 			// Revision 8: one of four home garden designs per map (FractalMapSupport.h).
-			8,
+			9,
 			false,
 			controls,
 			generate,

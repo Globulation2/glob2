@@ -1,3 +1,5 @@
+import { getLocale } from '../i18n.tsx';
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { ProfilePhoto } from '../components/ProfilePhoto.tsx';
 import { useState, type FormEvent } from 'react';
 import type { SelfAccount } from '@glob2/protocol';
@@ -12,18 +14,20 @@ import { useSession } from '../state.tsx';
  * ("Download or delete my data") open this page.
  */
 export function Account() {
+  useLocale();
   const { account, refresh } = useSession();
   const [deleted, setDeleted] = useState(false);
   if (deleted) {
     return (
       <div className="card" role="status">
-        <h1>Your account was deleted</h1>
+        <h1>{t('Your account was deleted')}</h1>
         <p>
-          You are signed out everywhere. Your name is gone from your past matches, which now show
-          “Deleted player”. Thanks for playing.
+          {t(
+            'You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing.',
+          )}
         </p>
         <Link className="btn primary" to="/">
-          Back to the home page
+          {t('Back to the home page')}
         </Link>
       </div>
     );
@@ -32,10 +36,10 @@ export function Account() {
   if (!account) {
     return (
       <div className="card">
-        <h1>Your account</h1>
-        <p>Sign in to see your account or to delete it.</p>
+        <h1>{t('Your account')}</h1>
+        <p>{t('Sign in to see your account or to delete it.')}</p>
         <a className="btn primary" href="/signin">
-          Sign in
+          {t('Sign in')}
         </a>
       </div>
     );
@@ -44,27 +48,33 @@ export function Account() {
     <>
       <div className="page-head">
         <div className="grow">
-          <h1>Your account</h1>
+          <h1>{t('Your account')}</h1>
           <p className="sub">
-            {account.displayName} · {account.kind === 'guest' ? 'Guest' : 'Registered'} since{' '}
-            {new Date(account.createdAt).toLocaleDateString()}
+            <RichMessage
+              source={'{slot0} · {slot1} since {slot2}'}
+              slots={{
+                slot0: account.displayName,
+                slot1: account.kind === 'guest' ? t('Guest') : t('Registered'),
+                slot2: new Date(account.createdAt).toLocaleDateString(getLocale()),
+              }}
+            />
           </p>
         </div>
         <Link className="btn" to={`/players/${account.id}`}>
-          Your profile
+          {t('Your profile')}
         </Link>
       </div>
       <div className="account-settings">
         {account.kind === 'registered' && <ProfilePhoto account={account} onSaved={refresh} />}
         <div className="card">
-          <h2 className="card-title">Sign-in methods</h2>
+          <h2 className="card-title">{t('Sign-in methods')}</h2>
           {account.identities.length === 0 ? (
-            <p>None: this guest account lives on the device that created it.</p>
+            <p>{t('None: this guest account lives on the device that created it.')}</p>
           ) : (
             <ul>
               {account.identities.map((identity) => (
                 <li key={identity.provider}>
-                  {identity.provider === 'local' ? 'Username and password' : identity.provider}
+                  {identity.provider === 'local' ? t('Username and password') : identity.provider}
                   {identity.email ? ` (${identity.email})` : ''}
                 </li>
               ))}
@@ -72,21 +82,21 @@ export function Account() {
           )}
         </div>
         <div className="card">
-          <h2 className="card-title">Download my data</h2>
+          <h2 className="card-title">{t('Download my data')}</h2>
           <p>
-            A JSON file with everything this server stores about your account: your profile, sign-in
-            methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps
-            and moderation records.
+            {t(
+              'A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.',
+            )}
           </p>
           <a className="btn" href={ACCOUNT_EXPORT_PATH} download>
-            Download my data
+            {t('Download my data')}
           </a>
         </div>
         <div className="card">
-          <h2 className="card-title">Hive Mind</h2>
-          <p>Manage the credits for your in-game AI commander.</p>
+          <h2 className="card-title">{t('Hive Mind')}</h2>
+          <p>{t('Manage the credits for your in-game AI commander.')}</p>
           <Link className="btn" to="/commander">
-            Hive Mind credits
+            {t('Hive Mind credits')}
           </Link>
         </div>
         <DeleteAccount
@@ -102,6 +112,7 @@ export function Account() {
 }
 
 function DeleteAccount({ account, onDeleted }: { account: SelfAccount; onDeleted: () => void }) {
+  useLocale();
   const [typed, setTyped] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<Error>();
@@ -122,21 +133,31 @@ function DeleteAccount({ account, onDeleted }: { account: SelfAccount; onDeleted
   return (
     <form className="card" onSubmit={submit} aria-labelledby="delete-title">
       <h2 className="card-title" id="delete-title">
-        Delete my account
+        {t('Delete my account')}
       </h2>
-      <p>This cannot be undone. Deleting your account:</p>
+      <p>{t('This cannot be undone. Deleting your account:')}</p>
       <ul>
-        <li>signs you out on every device and removes your sign-in methods and e-mail address;</li>
-        <li>replaces your name with “Deleted player” in your past matches, chat and records;</li>
-        <li>deletes your maps, likes, uploads and your rating’s place on the leaderboards.</li>
+        <li>
+          {t('signs you out on every device and removes your sign-in methods and e-mail address;')}
+        </li>
+        <li>
+          {t('replaces your name with “Deleted player” in your past matches, chat and records;')}
+        </li>
+        <li>
+          {t('deletes your maps, likes, uploads and your rating’s place on the leaderboards.')}
+        </li>
       </ul>
       <p className="muted">
-        Matches you played stay in other players’ history, and their replay files still contain the
-        name you had in the game.
+        {t(
+          'Matches you played stay in other players’ history, and their replay files still contain the name you had in the game.',
+        )}
       </p>
       <label className="field">
-        Type your name, {account.displayName}, to confirm
+        {t('Type your name, ')}
+        <bdi dir="auto">{account.displayName}</bdi>
+        {t(', to confirm')}
         <input
+          dir="auto"
           value={typed}
           onChange={(e) => setTyped(e.target.value)}
           autoComplete="off"
@@ -147,7 +168,7 @@ function DeleteAccount({ account, onDeleted }: { account: SelfAccount; onDeleted
       </label>
       {error && <ErrorNotice error={error} />}
       <button className="danger" type="submit" disabled={!matches || busy}>
-        {busy ? 'Deleting…' : 'Delete my account for good'}
+        {busy ? t('Deleting…') : t('Delete my account for good')}
       </button>
     </form>
   );

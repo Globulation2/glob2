@@ -1,5 +1,6 @@
 #include <bit>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "ScriptObservations.h"
 #include <bit>
 #include "ScriptBuildingCapabilities.h"
@@ -7,6 +8,7 @@
 #include "TerrainProperties.h"
 #include "TerrainPresentation.h"
 #include "TerrainExperiments.h"
+#include "LegacyTerrainFrames.h"
 #include "Game.h"
 #include "GameRuleOverrides.h"
 #include "Team.h"
@@ -193,11 +195,10 @@ void Observations::observe()
     for (std::size_t index = 0; index < std::size_t(world().width) * world().height; ++index)
         if (world().visibilityAt(index).visible & mask)
         {
-            const auto terrain = world().terrainAt(index);
             const auto cell = world().resourceAt(index);
             const auto& r = cell.resource;
-            remember(unsigned(index)) = {world().tick, terrain.legacy, cell.fertility,
-                terrain.type, r.type, r.variety, r.amount, true};
+            remember(unsigned(index)) = {world().tick, cell.fertility,
+                world().cellCorners(int(powerOfTwoRemainder(index, world().width)), int(index / world().width)), r.type, r.variety, r.amount, true};
             if (r.type != NO_RES_TYPE && std::popcount(world().resourceRegistry->properties(static_cast<ResourceId>(r.type)).materialMask) > 1)
                 rememberedStocks[unsigned(index)] = MapState::materialStocksAt(world().state(), index);
             else rememberedStocks.erase(unsigned(index));
@@ -215,8 +216,7 @@ Value Observations::tile(int x, int y) const
 	if (current)
 	{
 		const auto c = world().resourceAt(index);
-        const auto terrain = world().terrainAt(index);
-		t = {world().tick, terrain.legacy, c.fertility, terrain.type,
+		t = {world().tick, c.fertility, world().cellCorners(x, y),
 			 c.resource.type, c.resource.variety, c.resource.amount};
 	}
 	else
@@ -228,8 +228,11 @@ Value Observations::tile(int x, int y) const
 	}
 	v.set("explored", true)
 		.set("observedTick", t.tick)
-		.set("terrain", int(t.terrain))
-		.set("terrainType", int(t.terrainType))
+		.set("corners", [&] {
+			Value corners = Value::array();
+			for (const auto corner : t.corners) corners.items.emplace_back(int(corner));
+			return corners;
+		}())
 		.set("resource", Value::object()
 							 .set("type", int(t.type))
 							 .set("variety", int(t.variety))
@@ -638,12 +641,16 @@ void Observations::save(GAGCore::OutputStream *s) const
 		s->writeEnterSection(n++);
 		s->writeUint32(index, "index");
 		s->writeUint32(t.tick, "tick");
-		s->writeUint16(t.terrain, "terrain");
 		s->writeUint16(t.fertility, "fertility");
 		s->writeUint16(t.type, "type");
 		s->writeUint8(t.variety, "variety");
 		s->writeUint32(t.amount, "amount");
-		s->writeUint16(t.terrainType, "terrainType");
+		for (unsigned corner = 0; corner < 4; ++corner)
+		{
+			s->writeEnterSection(corner);
+			s->writeUint16(t.corners[corner], "corner");
+			s->writeLeaveSection();
+		}
 		const auto stocks=rememberedStocks.find(index);
 		s->writeUint8(stocks!=rememberedStocks.end(),"multiStock");
 		if (stocks != rememberedStocks.end())
@@ -679,7 +686,7 @@ void Observations::load(GAGCore::InputStream *s, int version)
 		unsigned index = s->readUint32("index");
 		RememberedTile t;
 		t.tick = s->readUint32("tick");
-		t.terrain = s->readUint16("terrain");
+		const Uint16 frame = version < FILE_FORMAT_VERSION_VERTEX_TERRAIN ? s->readUint16("terrain") : 0;
 		t.fertility = s->readUint16("fertility");
 		t.type = version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? s->readUint16("type") : s->readUint8("type");
 		if (version < FILE_FORMAT_VERSION_RUNTIME_RESOURCES && t.type==255) t.type=NO_RES_TYPE;
@@ -689,11 +696,35 @@ void Observations::load(GAGCore::InputStream *s, int version)
         // setting the no-resource sentinel; they are not inventory or map stock.
         if (version < FILE_FORMAT_VERSION_RUNTIME_RESOURCES && t.type == NO_RES_TYPE)
         { t.variety = 0; t.amount = 0; }
-		const unsigned terrainType = version >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES
-			? s->readUint16("terrainType") : unsigned(legacyTerrainType(t.terrain));
-		if (!world().terrain->valid(terrainType))
-			throw std::runtime_error("Invalid remembered terrain type");
-		t.terrainType = static_cast<TerrainType>(terrainType);
+		if (version >= FILE_FORMAT_VERSION_VERTEX_TERRAIN)
+			for (unsigned corner = 0; corner < 4; ++corner)
+			{
+				s->readEnterSection(corner);
+				const auto type = s->readUint16("corner");
+				s->readLeaveSection();
+				if (!world().terrain->valid(type))
+					throw std::runtime_error("Invalid remembered terrain type");
+				t.corners[corner] = static_cast<TerrainType>(type);
+			}
+		else
+		{
+			// Older memories kept the cell's sprite frame and (from format 134) its
+			// terrain ID; a whole-cell terrain covers all four corners.
+			const auto corners = legacyFrameCorners(frame);
+			std::optional<unsigned> type;
+			if (version >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+				type = TerrainRegistry::currentTerrainId(TerrainRegistry::savedBuiltinCount(version), s->readUint16("terrainType"));
+			else if (!corners)
+				throw std::runtime_error("Invalid remembered terrain type");
+			if (type && !world().terrain->valid(*type))
+				throw std::runtime_error("Invalid remembered terrain type");
+			if (type && *type != WATER && *type != SAND && *type != GRASS)
+				t.corners.fill(static_cast<TerrainType>(*type));
+			else if (corners)
+				t.corners = *corners;
+			else
+				throw std::runtime_error("Invalid remembered terrain type");
+		}
 		if (index >= size || lookup(index))
 			throw std::runtime_error("Invalid terrain memory");
 		if(t.type!=NO_RES_TYPE && !game.map.resourceRegistry().valid(t.type)) throw std::runtime_error("Invalid remembered resource");
@@ -760,12 +791,10 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 	if (out.visible)
 	{
 		const auto tile = world().resourceAt(index);
-        const auto terrain = world().terrainAt(index);
         const auto occupancy = world().occupancyAt(index);
 		out.known = true;
 		out.tick = world().tick;
-		out.terrain = terrain.legacy;
-		out.terrainType = terrain.type;
+		out.corners = world().cellCorners(x, y);
 		out.fertility = tile.fertility;
 		out.resource = tile.resource.type;
 		out.amount = tile.resource.amount;
@@ -779,8 +808,7 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 	{
 		out.known = true;
 		out.tick = old->tick;
-		out.terrain = old->terrain;
-		out.terrainType = old->terrainType;
+		out.corners = old->corners;
 		out.fertility = old->fertility;
 		out.resource = old->type;
 		out.amount = old->amount;

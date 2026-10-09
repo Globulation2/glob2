@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "FertilityField.h"
 #include "Map.h"
 #include "TerrainProperties.h"
@@ -11,7 +12,7 @@
 
 namespace
 {
-int wrap(int value, int size) { const int r = value % size; return r < 0 ? r + size : r; }
+int wrap(int value, int size) { const int r = dimensionRemainder(value, size); return r < 0 ? r + size : r; }
 
 // Four running-box passes produce the triangular kernel in O(width*height).
 // Signed 64-bit intermediates cover the largest map and every allowed Q8 value.
@@ -121,7 +122,7 @@ public:
     DiagonalSamples(const std::vector<T>& source,int w,int h,bool alongX)
         :stride((alongX?w:h)+90),values(std::size_t(alongX?h:w)*stride)
     {
-        const int length=alongX?w:h,lines=alongX?h:w,step=2%lines;
+        const int length=alongX?w:h,lines=alongX?h:w,step=dimensionRemainder(2, lines);
         for(int line=0;line<lines;++line)
         {
             int forward=wrap(-45,length),other=wrap(line+90,lines);
@@ -372,8 +373,8 @@ void Field::gate(const std::vector<std::uint8_t>& keep)
 std::uint32_t Field::at(int x, int y) const
 {
 	assert(fertility.size() == size_t(width) * height);
-	if (x < 0 || x >= width) x = (x % width + width) % width;
-	if (y < 0 || y >= height) y = (y % height + height) % height;
+	if (x < 0 || x >= width) x = dimensionRemainder(dimensionRemainder(x, width) + width, width);
+	if (y < 0 || y >= height) y = dimensionRemainder(dimensionRemainder(y, height) + height, height);
 	return fertility[y * width + x];
 }
 
@@ -422,7 +423,7 @@ Field forMap(const Map& map, bool gateOnReachableDeposits)
 	{
 		auto keep=depositReach(map);
 		for (std::size_t i=0; i<keep.size(); ++i)
-			if (!map.terrainSupportsMaterialAt(int(i%w),int(i/w),MaterialId::Food)) keep[i]=0;
+			if (!map.terrainSupportsMaterialAt(int(dimensionRemainder(i, w)),int(i/w),MaterialId::Food)) keep[i]=0;
 		field.gate(keep);
 	}
 	return field;

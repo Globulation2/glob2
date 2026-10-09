@@ -14,6 +14,7 @@ import {
   type MatchSetup,
 } from '@glob2/protocol';
 import { EngineJobError } from '../src/agent.ts';
+import { runProcess } from '@glob2/engine/process';
 import { EngineCrashError } from '../src/engine.ts';
 import { createRunner, fakeMap, SIM, type RunnerHarness } from './support.ts';
 
@@ -82,7 +83,7 @@ describe('generate-map', () => {
   it('refuses descriptors the binary cannot honour, without running it', async () => {
     expect(
       (await failure('generate-map', { generator: { ...ARENA, revision: 9 } })).message,
-    ).toMatch(/revision 1 in this engine, not 9/);
+    ).toMatch(/revision 2 in this engine, not 9/);
     expect(
       (await failure('generate-map', { generator: { ...ARENA, generatorId: 'atlantis' } })).code,
     ).toBe('bad_request');
@@ -124,13 +125,33 @@ describe('validate-map', () => {
         { key: 'custom-crop', label: 'Custom crop', help: 'A custom renewable food source.' },
       ];
       const requiredResourceExperiments = ['custom-crop'];
+      const setCredits = [
+        {
+          setId: '11111111-1111-4111-8111-111111111111',
+          versionId: '22222222-2222-4222-8222-222222222222',
+          title: 'Custom crop set',
+          license: 'CC-BY-4.0' as const,
+          authors: [{ author: 'Artist', license: 'CC-BY-4.0' as const }],
+          sourceHash: 'ab'.repeat(32),
+          entries: ['custom-crop'],
+        },
+      ];
       const inspection = vi.spyOn(h.engine, 'inspect').mockResolvedValueOnce({
         ...inspected,
-        report: { ...inspected.report, resourceExperiments, requiredResourceExperiments },
+        report: {
+          ...inspected.report,
+          resourceExperiments,
+          requiredResourceExperiments,
+          setCredits,
+        },
       });
       try {
         const result = await run('validate-map', { blobHash: await store(bytes), format });
-        expect(result['map']).toMatchObject({ resourceExperiments, requiredResourceExperiments });
+        expect(result['map']).toMatchObject({
+          resourceExperiments,
+          requiredResourceExperiments,
+          setCredits,
+        });
       } finally {
         inspection.mockRestore();
       }
@@ -404,4 +425,62 @@ describe('verify-match', () => {
       (await failure('verify-match', await verify({ verdict: 'verified' }, other))).message,
     ).toMatch(/this verifier runs/);
   });
+});
+
+it('routes uploaded map inspection, rendering and verification through the configured launcher', async () => {
+  const commands: { args: readonly string[]; scratch: string }[] = [];
+  const isolated = await createRunner({
+    engine: {
+      processLauncher: (options, scratch) => {
+        commands.push({ args: options.args, scratch });
+        return runProcess(options);
+      },
+    },
+  });
+  try {
+    // The fake binary models command routing, not the native asset decoder.
+    const map = (await putContent(isolated.store, fakeMap({ name: 'Custom set map' }))).sha256;
+    commands.length = 0;
+    expect(
+      await isolated.runner.run(job('validate-map', { blobHash: map, format: 'map' }), signal),
+    ).toMatchObject({ valid: true });
+    expect(
+      await isolated.runner.run(job('render-preview', { mapHash: map, maxSizePx: 256 }), signal),
+    ).toMatchObject({ contentType: 'image/png' });
+    const record = (
+      await putContent(
+        isolated.store,
+        Buffer.from(JSON.stringify({ verdict: 'verified', outcomes: ['won', 'lost'] })),
+      )
+    ).sha256;
+    const setup = JSON.parse(
+      readFileSync(
+        new URL(
+          '../../../packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json',
+          import.meta.url,
+        ),
+        'utf8',
+      ),
+    ) as MatchSetup;
+    expect(
+      await isolated.runner.run(
+        job('verify-match', {
+          matchId: randomUUID(),
+          recordHash: record,
+          setup: { ...setup, simVersion: SIM, map: { kind: 'catalog', hash: map } },
+        }),
+        signal,
+      ),
+    ).toMatchObject({ verdict: 'verified' });
+    expect(commands).toHaveLength(3);
+    expect(commands.map((c) => c.args[0])).toEqual([
+      '--preview-map',
+      '--preview-map',
+      '--verify-match',
+    ]);
+    for (const command of commands)
+      expect(command.args.some((a) => a.startsWith(command.scratch + '/'))).toBe(true);
+  } finally {
+    await isolated.close();
+  }
 });

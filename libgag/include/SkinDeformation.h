@@ -27,7 +27,8 @@ void main() {
     // The CPU camera is affine. Do not let roundoff in sum(weights) scale
     // its translation through the blended homogeneous coordinate.
     vec4 projected = view * vec4(p, 1.0);
-    uv = texcoord;
+    uv = texcoord.xy;
+    detailUV = texcoord.zw;
     normal = rigNormal(normalView * rigNormal(n));
     gl_Position = vec4(projected.xy / 1.25 + normal.xy * shell * furLength,
                        projected.z - shell * shellDepth, 1.0);

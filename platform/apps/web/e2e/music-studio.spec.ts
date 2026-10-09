@@ -179,7 +179,11 @@ test('music workspace exposes revision checks and keeps publication explicit', a
   const narrow = (page.viewportSize()?.width ?? 1280) < 850;
   await page.goto(`/music-studio/${id}`);
   await expect(page.getByRole('heading', { name: 'AI Music Studio' })).toBeVisible();
-  if (narrow) await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  if (narrow)
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
   const seek = page.getByRole('slider', { name: 'Playback position' });
   await seek.scrollIntoViewIfNeeded();
@@ -202,7 +206,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
       .locator('.music-technical')
       .getByText('A little warmth in the low mids. Listen under game effects.'),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'V1 ready' }).click();
+  await page.getByRole('button', { name: 'V1 Ready' }).click();
   await expect(page.getByRole('heading', { name: 'Version 1', exact: true })).toBeVisible();
   await page.getByRole('combobox', { name: 'Compare revision' }).selectOption(second);
   await expect(page.getByRole('heading', { name: 'Version 2 · comparing' })).toBeVisible();
@@ -241,7 +245,11 @@ test('music workspace exposes revision checks and keeps publication explicit', a
     'Keep the melody and soften the drums.',
   );
   await expect(page.getByRole('heading', { name: 'Refine your soundtrack' })).toBeVisible();
-  if (narrow) await page.getByRole('button', { name: 'Listen & inspect' }).click();
+  if (narrow)
+    await page
+      .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
+      .first()
+      .click();
   expect(writes).toHaveLength(0);
   await expect(page.getByRole('button', { name: 'Publish to music library' })).toBeVisible();
   expect(await page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')).toBe(

@@ -1,0 +1,35 @@
+# Development-only Python environment for the repository's scripts: tests, analysis
+# and plotting tools, asset and artwork pipelines, build helpers and the music
+# pipeline core. Nothing here ships with or is loaded by the game, the relay or the
+# online platform; see "Dependencies" in AGENTS.md for the dev/runtime split.
+#
+#   uv venv --python 3.11 .venv
+#   uv pip install --python .venv/bin/python -r requirements-dev.txt
+#
+# Included sets keep their own pins and remain the source of truth for them:
+-r tools/asset-requirements.txt
+-r tools/music/requirements.txt
+#
+# Kept out on purpose:
+# - mobile/play-api-requirements.txt: hash-pinned, isolated venv for Play uploads.
+# - tools/music/requirements-{synth,samples,separation,genai}.txt: large or
+#   hardware-specific extras (pedalboard, torch/Demucs, ACE-Step).
+# - bpy, bmesh, mathutils (Blender), gimpfu (GIMP) and gi (PyGObject) come from the
+#   host application or system packages, not pip.
+
+# Data analysis and plotting. numpy and scipy repeat the music pipeline's pins;
+# change both files together.
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.1
+pandas==3.0.6
+matplotlib==3.11.2
+
+# Build, web asset and deployment helpers
+scons==4.11.1
+fonttools==4.66.1
+brotli==1.2.0
+PyYAML==6.0.3
+
+# Map toolkit binding generation; pair with the system libclang 18 library.
+clang==18.1.8

@@ -4,6 +4,9 @@
 #include "field/GradientWorkspace.h"
 #include <vector>
 #include "Team.h"
+#include "BuildingGradientSearch.h"
+#include "Building.h"
+#include "SeedCells.h"
 
 namespace gradient_preparation
 {
@@ -30,7 +33,6 @@ struct MaterialSeedCache
     std::array<std::vector<Uint16>, 2> base;
     std::vector<Uint16> signatures;
     std::vector<Uint32> resourceTraits;
-    std::vector<Uint8> terrainTraits;
     std::vector<Uint32> forbiddenMasks;
     std::array<Bits, MaterialCount> goals;
     std::array<Bits, Team::MAX_COUNT> forbidden;
@@ -50,4 +52,17 @@ struct CrowdingScratch
 void boxSum(Uint16* grid, int width, int height, CrowdingScratch& scratch);
 void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, GradientWorkspace& scratch);
+
+// The snapshot components a building field reads: terrain, resources,
+// occupancy and areas, without visibility or entities.
+SimulationSnapshot::Requirements buildingRequirements();
+// Owner side, O(1) per field: the scalars a worker needs instead of the
+// Building. route may be Automatic.
+BuildingSeed captureBuildingSeed(const Building& building, int swim, BuildingRoute route);
+// Worker side, reading only the captured map (buildingRequirements()).
+BuildingSeedResult seedBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot, Uint16* output);
+// Seeds the walking field and, unless it is locked, begins the search on it and
+// settles cost layers up to depthTarget (COST_LIMIT or more finishes it).
+BuildingSeedResult buildBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot,
+    const BuildingGradientSearch::Inputs& inputs, Uint16* output, BuildingGradientSearch& search, int depthTarget);
 }

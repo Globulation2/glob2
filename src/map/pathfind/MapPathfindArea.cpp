@@ -50,7 +50,7 @@ bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int sw
 	return false;
 }
 
-bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
+bool Map::pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
 {
 	PERF_SCOPE_TIME(PathArea);
 	const Uint16 *gradient = (kind == AreaKind::Guard)
@@ -71,16 +71,16 @@ bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int 
 		// move and let the caller's in-area wander take over.
 		if (here == GRADIENT_AT_GOAL)
 			return false;
-		if ((syncRand() & ((1 << GUARD_LEAVE_CHANCE_SHIFT) - 1)) == 0)
-			return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true);
-		return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true, teamMask);
+		if ((random.nextU32() & ((1 << GUARD_LEAVE_CHANCE_SHIFT) - 1)) == 0)
+			return directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, true);
+		return directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, true, teamMask);
 	}
 	if (here == GRADIENT_AT_GOAL)
 		return false; // we already are in an area.
 
-	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
+	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
-	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false))
+	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false))
 		return true;
 
 	// we are in a blocked situation, so we have to regenerate the gradient

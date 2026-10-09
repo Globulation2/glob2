@@ -208,7 +208,7 @@ void stampContinent(Game &game, const FjordLayout &layout)
 			double theta = atan2(v, u);
 			double r = sqrt(u * u + v * v);
 			if (r < layout.coast.radiusAt(theta))
-				game.map.setUMatPos(x, y, GRASS, 1);
+				game.map.paintVertexSquare(x, y, GRASS, 1);
 		}
 	}
 }
@@ -252,9 +252,9 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 		double phase = randomAngle(context);
 		// The mouth's radius: fjord width plus 0.6 to 2.0, so fjords differ a little from each
 		// other (the default 4 gives mouths 9 to 12 tiles across). Water that wide survives
-		// controlSand, and ground units cannot cross it until the colony can swim.
+		// layBeaches, and ground units cannot cross it until the colony can swim.
 		double mouthWidth = options.fjordWidth + 0.6 + context.bounded("layout", 1400) / 1000.0;
-		// Map::controlSand (MapTerrain.cpp) converts any water tile with a grass neighbor in its
+		// Map::layBeaches (MapTerrain.cpp) converts any water tile with a grass neighbor in its
 		// own 3x3 neighborhood to sand - not just a coastal decoration, it can erase a channel
 		// outright. The disconnected-mode tip (0.65, ~1.3 tiles across) is entirely coastal by that
 		// rule and gets sanded over - an intentional dead end there, but it would silently close
@@ -299,7 +299,7 @@ std::vector<std::vector<MapGeneratorPoint>> carveFjords(Game &game, GenerationCo
 					double dd = (u2 - u) * (u2 - u) + (v2 - v) * (v2 - v);
 					if (dd <= width * width)
 					{
-						game.map.setUMatPos(nx, ny, WATER, 1);
+						game.map.paintVertexSquare(nx, ny, WATER, 1);
 					}
 				}
 			}
@@ -326,11 +326,11 @@ void carveLake(Game &game, const FjordLayout &layout, bool sandyShore)
 			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
 			if (u * u + v * v <= layout.lakeR * layout.lakeR)
-				game.map.setUMatPos(x, y, WATER, 1);
+				game.map.paintVertexSquare(x, y, WATER, 1);
 		}
 	}
 
-	// A sandy no-man's-land ring just outside the lake - wider than controlSand's own thin
+	// A sandy no-man's-land ring just outside the lake - wider than layBeaches' own thin
 	// coastal fringe would give it, so the open ground around the lake reads as a deliberate
 	// contested space rather than an ordinary beach. Only touches tiles the lake/fjord carving
 	// above left as land, so it never overwrites water. Without it, the lake has an ordinary
@@ -349,7 +349,7 @@ void carveLake(Game &game, const FjordLayout &layout, bool sandyShore)
 			const auto shaped = layout.toShape({double(x), double(y)});
 			double u = shaped.x, v = shaped.y;
 			if (u * u + v * v <= sandOuterR * sandOuterR)
-				game.map.setUMatPos(x, y, SAND, 1);
+				game.map.paintVertexSquare(x, y, SAND, 1);
 		}
 	}
 }
@@ -422,7 +422,7 @@ void placeOutlierIslands(Game &game, GenerationContext &context, const FjordLayo
 			if (islandPts.empty())
 				continue;
 			for (unsigned int p = 0; p < islandPts.size(); ++p)
-				game.map.setUMatPos(islandPts[p].x, islandPts[p].y, GRASS, 1);
+				game.map.paintVertexSquare(islandPts[p].x, islandPts[p].y, GRASS, 1);
 
 			// Each island leans on one resource theme, so finding one feels like a
 			// distinct little prize rather than an interchangeable resource dump.
@@ -781,7 +781,7 @@ static bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "continent";
 	const FjordContinentOptions options(context.request);
-	game.map.makeHomogenMap(WATER);
+	game.map.fillTerrain(WATER);
 	for (int i = 0; i < context.request.nbTeams; ++i)
 		game.addTeam();
 
@@ -803,7 +803,7 @@ static bool generate(Game &game, GenerationContext &context)
 	carveLake(game, layout, options.sandyLakeShore);
 	placeOutlierIslands(game, context, layout, options, grid, areaNumber);
 
-	game.map.controlSand();
+	game.map.layBeaches();
 
 	std::vector<MapGeneratorPoint> teamPts = anchorTeams(game, layout);
 	if (!verifyConnectivity(game, layout, teamPts))
@@ -886,7 +886,7 @@ GeneratorDefinition fjordContinentDefinition()
 		"fjord-continent",
 		12,
 		"Fjord continent",
-		13,
+		14,
 		false,
 		{GeneratorControl{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain}
 			 .withSearchRange(34, 38),

@@ -119,7 +119,7 @@ replicas then re-check rooms with a pending map, and the room moves to
 generation may be requested again after a minute.
 
 **Uploads.** `POST /api/v1/uploads?format=map|save&simVersion=<key>&fileName=…`
-takes the raw file as `application/octet-stream`, up to `UPLOAD_MAX_BYTES` (16 MiB by
+takes the raw file as `application/octet-stream`, up to `UPLOAD_MAX_BYTES` (64 MiB by
 default). Without `simVersion` (the web app's upload form), the newest version the
 instance serves is used. Each replica allows 30 uploads per account per hour. The
 bytes become a private blob, and an engine agent of that sim version validates them

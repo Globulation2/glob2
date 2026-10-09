@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Drawing.h"
 #include "FertilityField.h"
 #include "Grid.h"
@@ -83,29 +85,35 @@ template <typename Eligible, typename NoiseAt>
 int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int farthest, int corners,
 			Eligible eligible, NoiseAt noiseAt, std::vector<int> &queued, int stamp)
 {
-	const int n = t.size(), sx = site % t.w, sy = site / t.w;
+	const int n = t.size(), sx = t.remainderX(site), sy = site / t.w;
 	std::vector<unsigned char> roomy(size_t(n), 0), water(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
 	{
-		water[i] = sketch[i] == WATER;
-		roomy[i] = !water[i] && eligible(i) && t.chebyshev(sx, sy, i % t.w, i / t.w) >= nearest;
+		::MapGeneration::generationCheckpoint();
+		water.at(i) = sketch.at(i) == WATER;
+		roomy.at(i) =
+			!water.at(i) && eligible(i) && t.chebyshev(sx, sy, t.remainderX(i), i / t.w) >= nearest;
 	}
 	// Room is steps from anything the pond may not touch, so the seed sits away from the site's
 	// ground's edge and the pond grows into open ground rather than along a coast.
 	std::vector<unsigned char> blocked(size_t(n), 0);
 	for (int i = 0; i < n; ++i)
-		blocked[i] = !roomy[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		blocked.at(i) = !roomy.at(i);
+	}
 	const std::vector<int> room = stepsFrom(t, blocked);
-	const int enough = 1 + int(std::sqrt(corners / 3.14159265358979));
+	const int enough = 1 + int(::MapGeneration::Numeric::sqrt(corners / 3.14159265358979));
 	const int middle = (nearest + farthest) / 2;
 	int seed = -1;
 	long long seedScore = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		const int d = t.chebyshev(sx, sy, i % t.w, i / t.w);
-		if (!roomy[i] || d > farthest)
+		::MapGeneration::generationCheckpoint();
+		const int d = t.chebyshev(sx, sy, t.remainderX(i), i / t.w);
+		if (!roomy.at(i) || d > farthest)
 			continue;
-		const long long score = 4LL * std::min(room[i], enough) - std::abs(d - middle);
+		const long long score = 4LL * std::min(room.at(i), enough) - std::abs(d - middle);
 		if (seed < 0 || score > seedScore)
 		{
 			seed = i;
@@ -115,10 +123,11 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 	if (seed < 0)
 		return 0;
 	const int grown = growWater(
-		t, water, seed, corners, [&](int i) { return roomy[i] != 0; },
+		t, water, seed, corners, [&](int i) { return roomy.at(i) != 0; },
 		[&](int i)
 		{
-			const double d = std::sqrt(double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
+			const double d = ::MapGeneration::Numeric::sqrt(
+				double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
 			return std::int64_t(d * 1000) + std::int64_t(noiseAt(i) * 2500);
 		},
 		queued, stamp);
@@ -126,11 +135,14 @@ int digPond(TerrainSketch &sketch, const Torus &t, int site, int nearest, int fa
 		return 0;
 	int dug = 0;
 	for (int i = 0; i < n; ++i)
-		if (water[i] && sketch[i] != WATER)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (water.at(i) && sketch.at(i) != WATER)
 		{
-			sketch[i] = WATER;
+			sketch.at(i) = WATER;
 			++dug;
 		}
+	}
 	return dug;
 }
 /// How a dry start is watered (waterDrySite): up to `ponds` ponds of `corners` corners each, the
@@ -173,11 +185,18 @@ DryStartWatering waterDrySite(TerrainSketch &sketch, const Torus &t, int site, i
 			return meanFertilityAround(cropGrowthField(drawn, t), t, site, radius);
 		}
 		const Torus window(2 * half + 1, 2 * half + 1);
-		const int sx = site % t.w, sy = site / t.w;
+		const int sx = t.remainderX(site), sy = site / t.w;
 		TerrainSketch drawn(size_t(window.size()));
 		for (int y = 0; y < window.h; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = 0; x < window.w; ++x)
-				drawn[size_t(y * window.w + x)] = sketch[size_t(t.at(sx - half + x, sy - half + y))];
+			{
+				::MapGeneration::generationCheckpoint();
+				drawn.at(size_t(y * window.w + x)) =
+					sketch.at(size_t(t.at(sx - half + x, sy - half + y)));
+			}
+		}
 		layBeaches(drawn, window);
 		return meanFertilityAround(cropGrowthField(drawn, window), window, half * window.w + half, radius);
 	};
@@ -185,6 +204,7 @@ DryStartWatering waterDrySite(TerrainSketch &sketch, const Torus &t, int site, i
 	result.before = result.after = mean();
 	for (int p = 0; result.after < floor && p < plan.ponds; ++p)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int dug = digPond(sketch, t, site, plan.nearest + p * plan.step,
 								plan.farthest + p * plan.step, plan.corners, eligible, noiseAt,
 								queued, stampBase + p);

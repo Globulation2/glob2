@@ -18,7 +18,7 @@ void Map::invalidateResourceSeeds()
 	gradientRuntime->safety.invalidate(true, true);
 }
 
-void Map::replaceResource(size_t index, const Resource &resource)
+void Map::replaceResource(size_t index, const Resource &resource, const std::array<Uint16, MaterialCount> *stocks)
 {
 	const bool blockedGround = resourceBlocksGround(index);
 	const bool blockedAir = resourceBlocksAir(index);
@@ -26,7 +26,7 @@ void Map::replaceResource(size_t index, const Resource &resource)
 	releaseResourceStock(index);
 	resourceCells[index].resource = resource;
 	markResource(index);
-	initializeResourceStock(index);
+	initializeResourceStock(index, stocks);
 	materialStockChanged(index, before);
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
@@ -48,7 +48,6 @@ void Map::replaceTile(size_t index, const Tile &tile)
 	unsigned changes = 0;
 	if (old.building != tile.building) changes |= ResourceSeedCache::Building;
 	if (old.forbidden != tile.forbidden) changes |= ResourceSeedCache::Forbidden;
-	legacyTerrain[index] = tile.terrain;
 	resourceCells[index] = {resolved, tile.fertility, tile.canResourcesGrow};
 	occupancyCells[index].building = tile.building;
 	occupancyCells[index].groundUnit = tile.groundUnit;

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminFinanceCost",
+  "title": "AdminFinanceCost",
+  "type": "object",
+  "required": [
+    "product",
+    "model",
+    "period",
+    "currency",
+    "rateVersion",
+    "attempts",
+    "metered",
+    "priced",
+    "estimatedMicros"
+  ],
+  "properties": {
+    "product": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "currency": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "rateVersion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "attempts": {
+      "type": "integer"
+    },
+    "metered": {
+      "type": "integer"
+    },
+    "priced": {
+      "type": "integer"
+    },
+    "estimatedMicros": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

@@ -280,7 +280,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		}
 		const int sites = growUntilSites(
 			t, region, buildable, eligible, o.queenRoom, kQueenGrowthLimit,
-			[&](int i) { return t.dist2(L.sites[site].x, L.sites[site].y, i % t.w, i / t.w); });
+			[&](int i) { return t.dist2(L.sites[site].x, L.sites[site].y, t.remainderX(i), i / t.w); });
 		context.telemetry.measure("anthill.queen.build-sites", sites, k);
 		if (sites < o.queenRoom)
 			context.telemetry.fallback("anthill.queen.room-shortfall",
@@ -326,13 +326,13 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.water[i] ? WATER : L.road[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	// The rock: stone on every tile that is not carved, wherever pure grass allows it.
 	std::vector<unsigned char> rock(n, 0);
 	for (int i = 0; i < n; ++i)
-		if (!L.open[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
+		if (!L.open[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 			rock[i] = 1;
 		}
 
@@ -341,7 +341,7 @@ bool generate(Game &game, GenerationContext &context)
 	{
 		std::vector<unsigned char> ground(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
-			ground[i] = L.homeOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable && !rock[i];
+			ground[i] = L.homeOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable && !rock[i];
 		return ground;
 	};
 	// The swarm stands at the chamber's middle, a tile towards the door.
@@ -358,7 +358,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		const auto eligible = [&](int i)
-		{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		// Wheat and wood on the flanks behind the swarm (the axis points away from the door), and a
 		// second wheat patch straight behind it.
 		const KitFrame frame{int(std::lround(L.kits[k].x)), int(std::lround(L.kits[k].y)),
@@ -396,7 +396,7 @@ bool generate(Game &game, GenerationContext &context)
 		const auto here = [&](int i)
 		{
 			return L.open[i] && L.label[i] == site && !reserved[i] &&
-				   clearGround(map, i % t.w, i / t.w);
+				   clearGround(map, t.remainderX(i), i / t.w);
 		};
 		if (L.kind[site] == QueenChamber)
 			continue;
@@ -409,7 +409,7 @@ bool generate(Game &game, GenerationContext &context)
 		{
 			if (scaledCount(1, o.fruit) > 0)
 				if (const int seed = seedNear(t, s.x - int(shore) - 2, s.y, 3, here); seed >= 0)
-					placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w),
+					placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w),
 									   CHERRY + int(context.bounded("anthill-fruit", 3)), 1);
 			ringPlant(site, shore, WHEAT, int(scaledCount(kTreasureWheat, o.wheat)), here);
 		}
@@ -460,7 +460,7 @@ GeneratorDefinition anthillDefinition()
 		"anthill",
 		32,
 		"Anthill",
-		4,
+		5,
 		false,
 		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4

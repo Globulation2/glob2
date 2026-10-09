@@ -20,6 +20,8 @@
 #include "sim/ClientCommandSink.h"
 #include "sim/ClientRequests.h"
 #include "SGSL.h"
+#include "EntityRandomIO.h"
+#include "FileFormatVersions.h"
 #include <limits>
 
 std::optional<int> mapAreaNumber(const Game *game, const std::string &name)
@@ -101,6 +103,8 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 		stories[i].lineSelector = stream->readSint32("ProgramCounter");
 		if (!stories[i].instructionStarts.count(stories[i].lineSelector)) return false;
 		stories[i].internTimer = stream->readSint32("internTimer");
+		if (game->mapHeader.loadingVersion() >= FILE_FORMAT_VERSION_PRIVATE_RANDOM)
+			loadEntityRandom(stream, stories[i].random);
 		if (stories[i].internTimer < 0 || (stories[i].line[stories[i].lineSelector].type == SGSLToken::INT && stories[i].internTimer == 0)) throw std::runtime_error("Invalid SGSL internal timer: " + std::to_string(stories[i].internTimer));
 		stream->readLeaveSection();
 	}
@@ -172,6 +176,7 @@ void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 		stream->writeEnterSection(i);
 		stream->writeSint32(stories[i].lineSelector, "ProgramCounter");
 		stream->writeSint32(stories[i].internTimer, "internTimer");
+		saveEntityRandom(stream, stories[i].random);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -245,9 +250,15 @@ void MapScriptSGSL::syncStep(Game &game, ClientCommandSink &client, ClientReques
 	}
 }
 
+void MapScriptSGSL::initializeRandom(Uint32 seed)
+{
+	for (unsigned i = 0; i < stories.size(); ++i)
+		stories[i].random.initializeOwner(seed, unsigned(RandomDomain::LegacyStory), i);
+}
+
 Sint32 MapScriptSGSL::checkSum()
 {
-	Sint32 cs=0;
+	Uint32 cs=0; // Logical rotate: random-state hashes can set the high bit.
 	for (std::vector<Story>::iterator it=stories.begin(); it!=stories.end(); ++it)
 	{
 		cs^=it->checkSum();

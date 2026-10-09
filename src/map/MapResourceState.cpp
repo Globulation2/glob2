@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "MapAssetBundle.h"
 #include "gradient/ResourceSeedCache.h"
 #include "gradient/GradientRuntime.h"
 #include "Utilities.h"
@@ -24,14 +25,17 @@ void Map::installResourceDefinitions(const std::string& json)
 {
     if (game && !game->edit && game->stepCounter != 0)
         throw std::logic_error("Resource definitions are frozen during a match");
-    const auto next=resourceRegistry().importJson(json);
+    installCatalogs(terrainRegistryValue, resourceRegistry().importJson(json), assetBundleValue);
+}
+
+void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
+    std::shared_ptr<const ResourceRegistry> next, std::shared_ptr<const MapAssetBundle> assets)
+{
+    assets->validate(*terrain, *next);
     // Stage every allocating operation against the replacement catalog before
     // publishing it. A malformed import or allocation failure leaves the map
     // and its running readers on the original immutable snapshot.
-    Map staged;
-    staged.resourceRegistryValue=next;
-    staged.terrainRegistryValue=terrainRegistryValue;
-    staged.rebuildResourceHabitats();
+    auto rules=std::make_shared<CellRuleTable>(terrain,next);
     std::vector<Resource> deposits(cellCount());
     std::vector<Uint32> stockIndices;
     std::vector<std::array<Uint16,MaterialCount>> stocks;
@@ -65,19 +69,31 @@ void Map::installResourceDefinitions(const std::string& json)
         deposits[i]=r;
     }
     finishGradientPipeline();
+    gradientRuntime->growth.reset();
+    terrainRegistryValue = std::move(terrain);
+    assetBundleValue = std::move(assets);
     resourceRegistryValue=next;
     bumpStaticMaterialSourceGeneration();
-    resourceHabitatsValue=staged.resourceHabitatsValue;
     resourceStockIndices=std::move(stockIndices);
     resourceStocks=std::move(stocks);
     freeResourceStocks.clear();
     materialSourceCounts=counts;
-    refreshLiveView();
     for (size_t i=0;i<cellCount();++i) resourceCells[i].resource=deposits[i];
+    // The vertices keep their IDs; every cell is re-derived against the new catalogs.
+    rebuildTerrainCounts(std::move(rules));
     resourceChanges.markAll();
-    growthCache.invalidate();
     invalidateResourceSeeds();
     bumpTopologyGeneration();
+    if (arraysBuilt && marketsV2Enabled())
+        for (int team = 0; team < Team::MAX_COUNT; ++team)
+            for (int material = 0; material < MaterialCount; ++material)
+                for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim) {
+                    gradientRuntime->pipeline.invalidate(&marketMaterialGradients[team][material][swim]);
+                    marketGradientUpdated[team][material][swim] = false;
+                    marketGradientDirty[team][material][swim] = true;
+                }
+    terrainEditChanged = terrainRoutesChanged = true;
+    finishTerrainEdit();
 }
 
 ExperimentSet Map::requiredResourceExperiments() const
@@ -134,7 +150,7 @@ void Map::releaseResourceStock(size_t index)
     }
 }
 
-void Map::initializeResourceStock(size_t index)
+void Map::initializeResourceStock(size_t index, const std::array<Uint16, MaterialCount> *initialStocks)
 {
     markResource(index);
     auto& r=resourceCells[index].resource;
@@ -144,7 +160,7 @@ void Map::initializeResourceStock(size_t index)
     const auto& yields=resourceRegistry().yields(static_cast<ResourceId>(r.type));
     if (std::has_single_bit(p.materialMask))
     {
-        r.amount=std::min<Uint32>(r.amount,yields[materialIndex(p.primaryMaterial)].capacity);
+        r.amount=std::min<Uint32>(initialStocks ? (*initialStocks)[materialIndex(p.primaryMaterial)] : r.amount,yields[materialIndex(p.primaryMaterial)].capacity);
         if (!r.amount && !p.persistsWhenEmpty) r.clear();
         return;
     }
@@ -154,7 +170,7 @@ void Map::initializeResourceStock(size_t index)
     else { slot=freeResourceStocks.back(); freeResourceStocks.pop_back(); }
     resourceStockIndices[index]=slot;
     auto& stocks=resourceStocks[slot-1];
-    for (unsigned m=0; m<MaterialCount; ++m) stocks[m]=yields[m].initial;
+    for (unsigned m=0; m<MaterialCount; ++m) stocks[m]=initialStocks ? std::min((*initialStocks)[m], yields[m].capacity) : yields[m].initial;
     refreshResourceTotal(index);
 }
 
@@ -263,91 +279,6 @@ void Map::decResource(int x,int y)
 }
 
 
-void Map::rebuildResourceHabitats()
-{
-    ResourceHabitats h;
-    // Compile compact distinct permission profiles. Historical resource-name
-    // restrictions are normalized by TerrainRegistry's import adapter.
-    struct Habitat { unsigned mask; bool growth,permanent; bool operator==(const Habitat&) const = default; };
-    std::vector<Habitat> profiles;
-    h.resourceHabitatProfiles.resize(resourceRegistry().size());
-    for (unsigned id=0;id<resourceRegistry().size();++id)
-    {
-        const auto& p=resourcePropertiesByIndex(id);
-        const Habitat profile{p.habitatMask,p.requiresGrowthTerrain,p.requiresPermanentDepositsTerrain};
-        auto it=std::find(profiles.begin(),profiles.end(),profile);
-        if (it==profiles.end()) { h.resourceHabitatProfiles[id]=profiles.size(); profiles.push_back(profile); }
-        else h.resourceHabitatProfiles[id]=it-profiles.begin();
-    }
-    h.resourceHabitatProfileCount=profiles.size();
-    const auto& terrains=terrainRegistry().propertyProfiles();
-    h.resourceHabitatPermissions.assign(terrains.size()*profiles.size(),0);
-    for (size_t t=0;t<terrains.size();++t)
-    {
-        const auto& terrain=terrains[t];
-        unsigned habitats=0;
-        if (terrain.walkable && !terrain.shoreline) habitats|=ResourceLand;
-        if (terrain.swimmable) habitats|=ResourceAquatic;
-        if (terrain.shoreline) habitats|=ResourceShore|ResourceDesert;
-        for (size_t p=0;p<profiles.size();++p)
-            h.resourceHabitatPermissions[t*profiles.size()+p]=bool(habitats&profiles[p].mask) &&
-                (!profiles[p].growth || terrain.resourcesGrow) && (!profiles[p].permanent || terrain.nonGrowingResources);
-    }
-    std::vector<MaterialMask> habitatMaterials(profiles.size(),0);
-    std::vector<std::array<int,MaterialCount>> habitatCrops(profiles.size());
-    for (auto& crops:habitatCrops) crops.fill(NO_RES_TYPE);
-    for (unsigned id=0;id<resourceRegistry().size();++id)
-    {
-        const auto& p=resourcePropertiesByIndex(id);
-        const auto profile=h.resourceHabitatProfiles[id];
-        habitatMaterials[profile]|=p.materialMask;
-        if (p.farmable)
-            for (unsigned m=0;m<MaterialCount;++m)
-                if ((p.materialMask&(1u<<m)) && habitatCrops[profile][m]==NO_RES_TYPE) habitatCrops[profile][m]=id;
-    }
-    h.terrainMaterialPermissions.assign(terrains.size(),0);
-    std::vector<int> profileCrops(terrains.size(),NO_RES_TYPE);
-    for (size_t t=0;t<terrains.size();++t)
-        for (size_t p=0;p<profiles.size();++p)
-            if (h.resourceHabitatPermissions[t*profiles.size()+p])
-            {
-                h.terrainMaterialPermissions[t]|=habitatMaterials[p];
-                const unsigned crop=terrains[t].farmMaterial;
-                if (crop<MaterialCount) profileCrops[t]=std::min(profileCrops[t],habitatCrops[p][crop]);
-            }
-    h.terrainResourceAllowLists.assign(terrainRegistry().size(),nullptr);
-    h.explicitTerrainMaterialPermissions.assign(terrainRegistry().size(),0);
-    h.terrainFarmResources.resize(terrainRegistry().size());
-    std::map<std::vector<Uint64>,std::shared_ptr<const std::vector<Uint64>>> uniqueLists;
-    for (unsigned t=0;t<terrainRegistry().size();++t)
-    {
-        const auto terrain=static_cast<TerrainType>(t);
-        h.terrainFarmResources[t]=profileCrops[terrainRegistry().propertyIndex(terrain)];
-        const auto& keys=terrainRegistry().resourceKeys(terrain);
-        if (!keys) continue;
-        h.terrainFarmResources[t]=NO_RES_TYPE;
-        const unsigned crop=terrainRegistry().properties(terrain).farmMaterial;
-        auto bits=std::make_shared<std::vector<Uint64>>((resourceRegistry().size()+63)/64,0);
-        MaterialMask materials=0;
-        for (const auto& key:*keys)
-        {
-            const auto id=resourceRegistry().find(key);
-            if (!id) throw std::invalid_argument("Unknown resource in terrain whitelist: "+key);
-            const auto n=resourceIndex(*id);
-            if (!h.resourceHabitatPermissions[size_t(terrainRegistry().propertyIndex(terrain))*profiles.size()+h.resourceHabitatProfiles[n]]) continue;
-            (*bits)[n/64]|=Uint64(1)<<(n%64);
-            const auto& p=resourcePropertiesByIndex(n);
-            materials|=p.materialMask;
-            if (crop<MaterialCount && p.farmable && (p.materialMask&(1u<<crop))) h.terrainFarmResources[t]=std::min<int>(h.terrainFarmResources[t],n);
-        }
-        auto [it,inserted]=uniqueLists.emplace(*bits,bits);
-        h.terrainResourceAllowLists[t]=it->second;
-        h.explicitTerrainMaterialPermissions[t]=materials;
-    }
-    resourceHabitatsValue=std::make_shared<const ResourceHabitats>(std::move(h));
-    refreshLiveView();
-}
-
 bool Map::terrainSupportsMaterialAtSlot(int x,int y,int material) const
 {
     return MapState::terrainSupportsMaterial(liveCells,coordToIndex(x,y),material);
@@ -389,9 +320,9 @@ void Map::refreshLiveView()
     MapState::View view;
     view.width=w; view.height=h; view.wDec=unsigned(wDec); view.wMask=Uint32(wMask); view.hMask=Uint32(hMask);
     view.resources=resourceCells; view.occupancy=occupancyCells; view.areas=areaCells;
-    view.terrainIds=terrainIds; view.legacyTerrain=legacyTerrain;
+    view.cellRules=cellRules;
     view.stockIndices=&resourceStockIndices; view.stocks=&resourceStocks; view.materialSourceCounts=materialSourceCounts;
-    view.terrainRegistry=terrainRegistryValue.get(); view.resourceRegistry=resourceRegistryValue.get(); view.habitats=resourceHabitatsValue.get();
+    view.terrainRegistry=terrainRegistryValue.get(); view.resourceRegistry=resourceRegistryValue.get(); view.rules=cellRuleTable.get();
     liveCells=view;
 }
 
@@ -406,6 +337,7 @@ MapState::View Map::stateView() const
 {
     auto view=cellView();
     view.growth=&resourceGrowthField();
+    if(game) view.areaFertility=game->areaEffects.fertilityValues();
     return view;
 }
 std::uint32_t Map::resourceGrowthRateAt(size_t index,int resourceType) const

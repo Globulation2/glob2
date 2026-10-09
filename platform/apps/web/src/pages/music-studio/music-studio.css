@@ -2,17 +2,6 @@
   --mu-gold: var(--gold-ink);
   --mu-teal: var(--success);
 }
-/* Music inspection grows with the player and validation results. The map
-   editor's fixed-height workspace would clip these controls below the fold. */
-.music-studio.ms-workspace-root {
-  height: auto;
-  overflow: visible;
-}
-.mu-workspace {
-  display: grid;
-  grid-template-columns: var(--chat-width, 36%) 8px minmax(0, 1fr);
-  min-height: 75vh;
-}
 .mu-chat {
   display: flex;
   flex-direction: column;
@@ -43,7 +32,7 @@
   background: var(--surface);
 }
 .mu-message.user {
-  margin-left: 1rem;
+  margin-inline-start: 1rem;
   background: var(--surface);
 }
 .mu-message p {
@@ -229,7 +218,7 @@
 }
 .mu-prompt {
   display: block;
-  text-align: left;
+  text-align: start;
   width: 100%;
   margin: 0.7rem 0;
   padding: 1rem;
@@ -282,7 +271,7 @@
 }
 .mu-idea-grid button {
   padding: 1.4rem;
-  text-align: left;
+  text-align: start;
   background: linear-gradient(135deg, #708d5022, #28332d22);
   border: 1px solid var(--line);
 }
@@ -436,7 +425,7 @@
   color: var(--ink-2);
   font-size: var(--text-xs);
   font-weight: 500;
-  margin-left: 8px;
+  margin-inline-start: 8px;
 }
 .mu-history-versions {
   display: flex;

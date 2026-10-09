@@ -89,6 +89,62 @@ whose relay sent no summary.
 that is not routed to the API or the browser client, and lays out for phone
 width (320 px up).
 
+### AI workspaces
+
+Maps, generators, music, colony AI, buildings and terrain share React primitives in
+`apps/web/src/components/studio/`. Explicit route metadata selects the compact
+workspace shell and the shared navigation preference. The shell fits the visual
+viewport, with independent conversation and artifact scrolling and a reachable
+composer. The split defaults to 40% chat, has an 8px keyboard-adjustable separator,
+minimum pane widths of 320/360px, and account-scoped width presets. Available
+workspace widths below 760px use Chat/Preview tabs; viewport widths below 600px
+use drawer navigation. New results show request-bound Ready/Needs attention cues
+until Preview is opened, without switching the active phone pane. Responsive
+layout changes preserve the focused pane. Navigation expansion is account-scoped.
+
+Enter sends a prompt and Shift+Enter inserts a line break; IME composition does
+not submit. Session storage preserves account/project drafts and frozen retry
+payloads, while manual editors retain their existing recovery copies. Storage
+failure leaves in-memory editing available. Account/project changes remount private
+workspace state. The map/music durable event and history merging logic is shared;
+building, terrain and colony transports keep their different contracts.
+
+Inspection does not change the edit target. Historical building/terrain editing
+uses revision-checked adoption; replaced manual drafts are retained privately in
+`building_studio_draft_history` / `terrain_studio_draft_history`, including their
+original archive or definition and version-bound validation. Restoring a saved
+draft preserves the replaced draft again, creates a new current revision and
+never changes charges. Backups are owner-only, included in account exports and
+deleted with project history. Each account has a separate 64 MiB draft-history
+limit per studio; generation cannot silently discard history to make room.
+Historical colony AI and generator editing use immutable restoration. Generator
+revisions retain manifest text and JavaScript together, including invalid manifest
+JSON, and generated-edit Undo restores both atomically. The coding workspaces share
+request recovery and editor mechanics with separate declarations, prompts and
+credits. Generator previews and isolated checks are explicit actions; settings
+changes do not mutate an already previewed world.
+Map/music edits preserve parent versions; accepting a delivery advances the edit
+target without unpinning inspection, and Undo returns the target to its previous
+parent, including parents outside the loaded history page. Deliveries completed
+while away are recognized on return; discussion does not replace the previous
+generated edit’s Undo. Apply migration `0053_studio_draft_history.sql` and additive backend
+support before deploying the updated client. Building/terrain generated-edit Undo is
+an optimistic restore bound to the delivered draft revision, without removing
+history or refunding charges. Newer work disables that undo. Source acceptance
+in Colony AI remains distinct from engine compatibility checks and playtests.
+Manual building/set editors are embedded and remain available at their standalone
+routes. Release side panels require a final Publish action and retain domain
+validation, licensing and visibility rules. Wallets and billing remain separate.
+Asset discussion spends no credits, but existing admission rules require one
+available credit in that studio to chat or build; zero-balance controls open the
+credit panel and preserve the unsent prompt.
+
+The shared controls use pinned Tabler icons, theme tokens, labelled logs, native
+modal focus handling with Tab/Shift+Tab boundary trapping, manual-activation
+keyboard tabs, concise terminal-response announcements, reduced motion and
+forced-colors styling. Monaco follows the selected theme. Keep browser, keyboard,
+screen-reader and phone-keyboard checks alongside automated accessibility tests.
+
 ### Look
 
 The app keeps the game's sprites (globs, buildings, flags, resources), wordmark,
@@ -138,7 +194,32 @@ pages carry an OpenGraph image for link previews.
 | `/matches`, `/matches/{id}` | Recent matches; match page with replay actions, players, rating changes and timelines; verification and connection diagnostics are expandable |
 | `/maps`, `/maps/mine`, `/maps/new`, `/maps/{id}` | Map catalog, my maps, upload, map page (preview, versions, like, report, owner edits) |
 | `/account` | The signed-in account: sign-in methods, data export, Hive Mind credit link, delete |
-| `/admin/accounts`, `/admin/matches`, `/admin/reports` | Moderation: account search, rename, mute and (administrators) ban; match lookup; map report queue with hide and unhide |
+| `/admin`, `/admin/overview` | Administrators: current activity, trends, coverage and CSV export; default landing page |
+| `/admin/reports`, `/admin/content` | Moderators: reports across maps, AIs, buildings, sets, skins and music; hide/disable, restore, resolve and dismiss |
+| `/admin/accounts`, `/admin/matches` | Account search and moderation; administrators also change roles/delete accounts and request verification with separately confirmed forced verification |
+| `/admin/operations`, `/admin/finances` | Administrators: uncertain requests, credit reservations, workers/jobs and recovery; confirmed cash and estimated provider costs |
+| `/admin/audit` | Searchable action history; administrators see all actions, moderators see moderation only |
+
+The existing `/admin/music`, `/admin/skins` and `/sets/reports` routes remain
+available. Reports and content can be filtered by library; accounts, matches,
+reports, content, operations and audit retain filters/cursors in their URLs.
+Lists use timestamp plus identifier ordering. Reports display the reporter,
+reason, status and recorded resolution; content restoration does not require an
+open report. “Not hidden” describes moderation status and does not imply that
+private or unpublished content is publicly available. Restoring content preserves
+each library’s publication rules. Audit date filters use UTC: a date-only “through”
+value includes that whole day, while API timestamp upper bounds remain exclusive.
+Mutations are checked on the server and recorded with reasons.
+Resolution holds a report row lock, including through the legacy endpoints.
+
+Read endpoints under `/api/v1/admin` include `/reports`, `/content`, `/audit`,
+`/operations`, `/operations/:product/:id`, `/analytics` and `/finances`. Analytics,
+finances and operations are admin-only. Analytics and finances accept `days=7`,
+`30` (default), or `90`; finances also accepts `mode=live` (default), `test`, or
+`unclassified`. Results are cached for 60 seconds and display their generation
+time. No private prompts/source are returned by operations lists or details.
+See [hosting](../hosting/README.md#admin-reporting) for collection, coverage,
+recovery and rate configuration.
 
 Map detail previews show one complete map period at its native aspect ratio.
 Drag with a mouse or touch, or focus the preview and use arrow keys, to pan

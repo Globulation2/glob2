@@ -102,22 +102,51 @@ export class StripePayments implements Payments {
     const payment = session.payment_intent;
     let state: PaymentSnapshot['state'] = session.status === 'expired' ? 'failed' : 'pending';
     if (session.payment_status === 'paid') state = 'paid';
-    if (payment && typeof payment !== 'string') {
-      const charge = payment.latest_charge;
-      if (charge && typeof charge !== 'string') {
-        if (charge.amount_refunded > 0) state = 'refunded';
-        else if (charge.disputed) {
-          const disputes = await this.stripe.disputes.list({ charge: charge.id, limit: 100 });
-          if (
-            disputes.has_more ||
-            disputes.data.some((d) => d.status !== 'won' && d.status !== 'warning_closed')
-          )
-            state = 'disputed';
-        }
-      }
+    const latest =
+      payment &&
+      typeof payment !== 'string' &&
+      payment.latest_charge &&
+      typeof payment.latest_charge !== 'string'
+        ? payment.latest_charge
+        : null;
+    let disputes: NonNullable<NonNullable<PaymentSnapshot['monetary']>['disputes']> = [];
+    if (latest?.disputed) {
+      const page = await this.stripe.disputes.list({ charge: latest.id, limit: 100 });
+      if (page.has_more) throw new Error('Dispute history requires manual reconciliation.');
+      if (page.data.some((d) => d.currency !== session.currency))
+        throw new Error('Dispute currency does not match the purchase.');
+      disputes = page.data.map((d) => ({
+        id: d.id,
+        amount: d.amount,
+        at: new Date(d.created * 1000),
+        active: d.status !== 'won' && d.status !== 'warning_closed',
+      }));
+    }
+    const disputed = disputes.some((d) => d.active);
+    // Entitlement rules keep their existing refund precedence; monetary facts
+    // retain an overlapping dispute independently, including partial amounts.
+    if (latest?.amount_refunded) state = 'refunded';
+    else if (disputed) state = 'disputed';
+    let refunds: { id: string; amount: number; at: Date }[] | undefined;
+    if (latest?.amount_refunded) {
+      const page = await this.stripe.refunds.list({ charge: latest.id, limit: 100 });
+      if (page.has_more) throw new Error('Refund history requires manual reconciliation.');
+      refunds = page.data
+        .filter((r) => r.status === 'succeeded')
+        .map((r) => ({ id: r.id, amount: r.amount, at: new Date(r.created * 1000) }));
     }
     return {
       purchaseId: session.metadata.purchaseId,
+      monetary: {
+        paid: session.payment_status === 'paid' ? (session.amount_total ?? 0) : 0,
+        refunded: latest?.amount_refunded ?? 0,
+        disputed,
+        currency: session.currency ?? '',
+        live: session.livemode,
+        createdAt: latest?.created ?? session.created,
+        refunds,
+        disputes,
+      },
       accountId: session.metadata.accountId,
       sessionId: session.id,
       priceId: item.price.id,

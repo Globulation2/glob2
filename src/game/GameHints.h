@@ -4,6 +4,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <vector>
 #include <SDL3_net/SDL_net.h>
 #include "ScriptNumber.h"
@@ -56,7 +57,14 @@ public:
 	void encodeData(GAGCore::OutputStream* stream) const;
 	///Decodes this GameObjectives from a bit stream
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+    //! Immutable value payload reused until an owner mutation; never serialized.
+    std::shared_ptr<const GameHints> frozen() const
+    {
+        if (!frozenValue) frozenValue = std::make_shared<const GameHints>(*this);
+        return frozenValue;
+    }
 private:
+    mutable std::shared_ptr<const GameHints> frozenValue;
 	std::vector<std::string> texts;
 	std::vector<bool> hidden;
 	std::vector<int> scriptNumbers;

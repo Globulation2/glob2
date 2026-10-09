@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationNumeric.h"
 #include "Regions.h"
 #include "Grid.h"
 #include "Material.h"
@@ -33,7 +34,8 @@ inline int scaledRadius(int radius, int percent)
 {
 	if (percent == 100 || radius <= 0)
 		return radius;
-	return int(std::lround(radius * std::sqrt(std::max(0, percent) / 100.0)));
+	return int(::MapGeneration::Numeric::lround(
+		radius * ::MapGeneration::Numeric::sqrt(std::max(0, percent) / 100.0)));
 }
 struct ResourceDensities
 {

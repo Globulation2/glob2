@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+vi.mock('../src/state.tsx', () => ({ useSession: () => ({ account: { id: 'owner' } }) }));
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import { MusicWorkspace } from '../src/pages/music-studio/Workspace.tsx';
@@ -150,7 +151,7 @@ it('keeps an active last-credit generation inspectable but disables new paid wor
   );
   await screen.findByText('Your composer is working…');
   expect(
-    (screen.getByRole('button', { name: /Compose soundtrack/ }) as HTMLButtonElement).disabled,
+    screen.getByRole('button', { name: 'Send' }).getAttribute('aria-disabled') === 'true',
   ).toBe(true);
   await waitFor(() => expect(screen.queryByTestId('music-player')).toBeNull());
 });
@@ -158,10 +159,10 @@ it('provides keyboard resizing and keeps edits unsent until explicitly submitted
   render(<MusicWorkspace {...props} draft="Make the calm arrangement more spacious" />);
   const separator = screen.getByRole('separator');
   fireEvent.keyDown(separator, { key: 'ArrowRight' });
-  expect(separator.getAttribute('aria-valuenow')).toBe('38');
+  expect(separator.getAttribute('aria-valuenow')).toBe('42');
   expect(
-    (screen.getByRole('button', { name: /Compose soundtrack/ }) as HTMLButtonElement).disabled,
-  ).toBe(true);
+    screen.getByRole('button', { name: 'Send' }).getAttribute('aria-disabled') === 'true',
+  ).toBe(false);
 });
 
 it('aligns comparisons only when both duration and musical timeline match', async () => {
@@ -280,7 +281,7 @@ it('clears an older candidate preview when following a live revision without del
       }}
     />,
   );
-  fireEvent.click(screen.getByRole('button', { name: 'V1 ready' }));
+  fireEvent.click(screen.getByRole('button', { name: 'V1 Ready' }));
   await screen.findByText('music1');
   fireEvent.click(screen.getByText('v1 preview'));
   expect(view.container.querySelector('audio')?.getAttribute('src')).toBe('/v1.opus');
@@ -334,7 +335,7 @@ it('keeps manually selected history audible when a new delivery arrives', async 
     <MusicWorkspace {...props} thread={{ ...thread, requests: [version, secondVersion] }} />,
   );
   await screen.findByText('music2');
-  fireEvent.click(screen.getByRole('button', { name: 'V1 ready' }));
+  fireEvent.click(screen.getByRole('button', { name: 'V1 Ready' }));
   await screen.findByText('music1');
   view.rerender(
     <MusicWorkspace
@@ -379,7 +380,7 @@ it('ignores a stale release response after switching versions', async () => {
   );
   render(<MusicWorkspace {...props} thread={{ ...thread, requests: [version, secondVersion] }} />);
   await waitFor(() => expect(finish).toBeDefined());
-  fireEvent.click(screen.getByRole('button', { name: 'V1 ready' }));
+  fireEvent.click(screen.getByRole('button', { name: 'V1 Ready' }));
   await screen.findByText('music1');
   finish?.(
     new Response(
@@ -388,3 +389,31 @@ it('ignores a stale release response after switching versions', async () => {
   );
   await waitFor(() => expect(screen.getByTestId('music-player').textContent).toContain('music1'));
 });
+
+it.each(['click', 'Enter'])(
+  'opens Music credits on zero-balance %s and retains the prompt',
+  (method) => {
+    const openCredits = vi.fn();
+    const send = vi.fn();
+    render(
+      <MusicWorkspace
+        {...props}
+        wallet={{ ...props.wallet, available: 0 }}
+        draft="Make this melody calmer."
+        send={send}
+        openCredits={openCredits}
+      />,
+    );
+    if (method === 'click') fireEvent.click(screen.getByRole('button', { name: /^Send$/ }));
+    else
+      fireEvent.keyDown(screen.getByRole('textbox', { name: 'Your idea or next change' }), {
+        key: 'Enter',
+      });
+    expect(openCredits).toHaveBeenCalledOnce();
+    expect(send).not.toHaveBeenCalled();
+    expect(
+      (screen.getByRole('textbox', { name: 'Your idea or next change' }) as HTMLTextAreaElement)
+        .value,
+    ).toBe('Make this melody calmer.');
+  },
+);

@@ -42,7 +42,8 @@ bool MatchRules::operator==(const MatchRules& o) const
 	       hungerDisabled == o.hungerDisabled && unitUpgradesDisabled == o.unitUpgradesDisabled &&
 	       glassCannonLevel == o.glassCannonLevel && unitsFearless == o.unitsFearless &&
 	       permadeathDisabled == o.permadeathDisabled && peacefulMode == o.peacefulMode &&
-	       buildingHpLevel == o.buildingHpLevel && aiOrderDelay == o.aiOrderDelay;
+	       buildingHpLevel == o.buildingHpLevel && aiOrderDelay == o.aiOrderDelay &&
+	       buildingGradientDelay == o.buildingGradientDelay;
 }
 
 bool GeneratorDescriptor::operator==(const GeneratorDescriptor& o) const
@@ -53,7 +54,9 @@ bool GeneratorDescriptor::operator==(const GeneratorDescriptor& o) const
 
 bool MapSource::operator==(const MapSource& o) const
 {
-	return kind == o.kind && hash == o.hash && mapId == o.mapId && format == o.format && generator == o.generator;
+	return kind == o.kind && hash == o.hash && mapId == o.mapId && format == o.format &&
+		   generator == o.generator && scriptGenerator == o.scriptGenerator &&
+		   chosenSeed == o.chosenSeed;
 }
 
 namespace
@@ -205,6 +208,35 @@ MapSource parseMap(const json& value, const std::string& path)
 		else
 			schemaError(path + "/format", "must be map or save");
 	}
+	else if (kind == "scripted")
+	{
+		strictObject(value, path, {"kind", "generator", "hash"}, {"chosenSeed"});
+		const auto &g = value["generator"];
+		const std::string gp = path + "/generator";
+		strictObject(g, gp,
+					 {"libraryId", "versionId", "packageHash", "fileHash", "generatorId",
+					  "revision", "params", "seed", "candidates", "startingUnitLevel"});
+		uuid(g["libraryId"], gp + "/libraryId");
+		uuid(g["versionId"], gp + "/versionId");
+		hashString(g["packageHash"], gp + "/packageHash");
+		hashString(g["fileHash"], gp + "/fileHash");
+		const auto id = string(g["generatorId"], gp + "/generatorId");
+		if (id.size() > 128 || !matches(id, "^[a-z0-9_.-]+:[a-z0-9_.:-]+$"))
+			schemaError(gp + "/generatorId", "must be a namespaced generator id");
+		auto native = g;
+		for (const char *key : {"libraryId", "versionId", "packageHash", "fileHash"})
+			native.erase(key);
+		native["generatorId"] = "script";
+		const auto descriptor = parseGenerator(native, gp);
+		if (descriptor.candidates > 5 || descriptor.startingUnitLevel != 0 ||
+			descriptor.params.size() > 72)
+			schemaError(gp, "unsupported scripted generation settings");
+		map.kind = MapSource::Kind::Scripted;
+		map.scriptGenerator = g.dump();
+		if (value.contains("chosenSeed"))
+			map.chosenSeed =
+				std::uint32_t(integer(value["chosenSeed"], path + "/chosenSeed", 0, UINT32_MAX));
+	}
 	else if (kind == "generated")
 	{
 		strictObject(value, path, {"kind", "generator", "hash"});
@@ -223,7 +255,7 @@ MatchRules parseRules(const json& value, const std::string& path)
 	             {"prestigeVictory", "suddenDeathMinutes", "mapDiscovered", "allyTeamsFixed", "resourceGrowthDisabled",
 	              "resourceScarcityLevel", "instantConstruction", "stockpileStartLevel", "hungerDisabled",
 	              "unitUpgradesDisabled", "glassCannonLevel", "unitsFearless", "permadeathDisabled", "peacefulMode",
-	              "buildingHpLevel"}, {"aiOrderDelay"});
+	              "buildingHpLevel"}, {"aiOrderDelay", "buildingGradientDelay"});
 	MatchRules r;
 	auto b = [&](const char* key) { return boolean(value[key], path + "/" + key); };
 	auto i = [&](const char* key, int max) { return static_cast<int>(integer(value[key], path + "/" + key, 0, max)); };
@@ -234,6 +266,9 @@ MatchRules parseRules(const json& value, const std::string& path)
 	r.resourceGrowthDisabled = b("resourceGrowthDisabled");
 	r.resourceScarcityLevel = i("resourceScarcityLevel", 3);
 	r.aiOrderDelay = value.contains("aiOrderDelay") ? i("aiOrderDelay", 8) : 0;
+	r.buildingGradientDelay = value.contains("buildingGradientDelay")
+	                              ? static_cast<int>(integer(value["buildingGradientDelay"], path + "/buildingGradientDelay", 1, 8))
+	                              : int(GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY);
 	r.instantConstruction = b("instantConstruction");
 	r.stockpileStartLevel = i("stockpileStartLevel", 3);
 	r.hungerDisabled = b("hungerDisabled");
@@ -435,6 +470,12 @@ void MatchSetup::validateSemantics() const
 		if (!closedTeams.insert(seat.team).second)
 			semanticError(path + "/team", "team " + std::to_string(seat.team) + " is closed twice");
 	}
+	if (map.kind == MapSource::Kind::Scripted && map.scriptGenerator)
+	{
+		const auto g = json::parse(*map.scriptGenerator);
+		if (!g["params"].contains("teams") || g["params"]["teams"] != teams.size())
+			semanticError("/map/generator/params/teams", "must equal setup team count");
+	}
 	if (map.kind == MapSource::Kind::Generated && map.generator)
 	{
 		auto it = map.generator->params.find("teams");
@@ -513,6 +554,12 @@ json MatchSetup::toJson() const
 		m["kind"] = "upload";
 		m["format"] = map.format == MapSource::Format::Save ? "save" : "map";
 		break;
+	case MapSource::Kind::Scripted:
+		m["kind"] = "scripted";
+		m["generator"] = json::parse(*map.scriptGenerator);
+		if (map.chosenSeed)
+			m["chosenSeed"] = *map.chosenSeed;
+		break;
 	case MapSource::Kind::Generated:
 	{
 		m["kind"] = "generated";
@@ -557,6 +604,7 @@ json MatchSetup::toJson() const
 	                {"resourceGrowthDisabled", r.resourceGrowthDisabled},
 	                {"resourceScarcityLevel", r.resourceScarcityLevel},
 	                {"aiOrderDelay", r.aiOrderDelay},
+	                {"buildingGradientDelay", r.buildingGradientDelay},
 	                {"instantConstruction", r.instantConstruction},
 	                {"stockpileStartLevel", r.stockpileStartLevel},
 	                {"hungerDisabled", r.hungerDisabled},
@@ -642,6 +690,7 @@ GameHeader MatchSetup::toGameHeader(const MapHeader& mapHeader) const
 	header.setResourceGrowthDisabled(rules.resourceGrowthDisabled);
 	header.setResourceScarcityLevel(static_cast<Uint8>(rules.resourceScarcityLevel));
 	header.setAIOrderDelay(rules.aiOrderDelay);
+	header.setBuildingGradientDelay(rules.buildingGradientDelay);
 	header.setInstantConstructionEnabled(rules.instantConstruction);
 	header.setStockpileStartLevel(static_cast<Uint8>(rules.stockpileStartLevel));
 	header.setHungerDisabled(rules.hungerDisabled);
@@ -738,6 +787,7 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 	r.resourceGrowthDisabled = header.isResourceGrowthDisabled();
 	r.resourceScarcityLevel = header.getResourceScarcityLevel();
 	r.aiOrderDelay = header.getAIOrderDelay();
+	r.buildingGradientDelay = static_cast<int>(header.getBuildingGradientDelay());
 	r.instantConstruction = header.isInstantConstructionEnabled();
 	r.stockpileStartLevel = header.getStockpileStartLevel();
 	r.hungerDisabled = header.isHungerDisabled();

@@ -1,3 +1,4 @@
+import { applySetJobResult } from '../sets.ts';
 // Verified results → ratings and history. The verify-match verdict arrives
 // through the engine-job result task (applyEngineJobResult);
 // handleEngineJobResult records it (outcomes, team statistics and timelines,
@@ -6,7 +7,12 @@
 // under a row lock), so a re-delivered verdict or a sweep never applies a
 // rating change twice.
 import { sql, type Kysely, type Transaction } from 'kysely';
-import { applyAiValidation, applyEngineJobResult, type Logger } from '@glob2/core';
+import {
+  applyAiValidation,
+  applyGeneratorValidation,
+  applyEngineJobResult,
+  type Logger,
+} from '@glob2/core';
 import { notify, type Database } from '@glob2/db';
 import { applyMapJobResult } from '../play/maps.ts';
 import type { VerifyVerdict } from '@glob2/protocol';
@@ -74,6 +80,8 @@ export async function handleEngineJobResult(
       // uploads; a no-op for verify-match jobs.
       await applyMapJobResult(trx, jobId);
       await applyAiValidation(trx, jobId);
+      await applyGeneratorValidation(trx, jobId);
+      await applySetJobResult(trx, jobId);
     }
     return applied;
   });

@@ -19,7 +19,8 @@
     "monaco-editor": "^0.55.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-easy-crop": "^6.2.3"
+    "react-easy-crop": "^6.2.3",
+    "@glob2/i18n": "0.1.0"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

@@ -37,7 +37,7 @@ struct Field
 
 	int index(int x,int y) const
 	{
-		return ((y%height+height)%height)*width+(x%width+width)%width;
+		return field::Grid(width,height).index(x,y);
 	}
 
 	void build()
@@ -58,10 +58,11 @@ struct Field
 			// Empty/default fields have no geometry to traverse. Keep their
 			// arrays initialized above, as for an initialized field without sources.
 			if(queue.empty())continue;
-			field::traverse(queue,{width,height},field::Surrounding,
+			const field::Grid grid(width,height);
+			field::traverse(queue,grid,field::Surrounding,
 				[](int){ return field::Visit::Expand; },
 				[&](int at,int x,int y) {
-					const int next=index(x,y);
+					const int next=grid.index(x,y);
 					if(!tiles[next].passable || distances[variety][next]>=0)return;
 					distances[variety][next]=distances[variety][at]+1;
 					sources[variety][next]=sources[variety][at];

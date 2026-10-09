@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <array>
+
+#include "EntityRandom.h"
 
 #include "MaterialPacket.h"
 #include "UnitConsts.h"
@@ -7,7 +10,7 @@
 
 // Authoritative pointer-free unit state. Both live units and captured units use
 // this exact record; capture copies it without translating fields or arrays.
-// Relationships, query caches and rendering state remain outside the record.
+// Relationships and query caches remain outside the record.
 struct UnitState
 {
 	enum Medical
@@ -77,6 +80,7 @@ struct UnitState
 	};
 
 	Sint32 typeNum;
+	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	Uint16 gid;
 	Sint32 isDead;
@@ -106,7 +110,12 @@ struct UnitState
 	Sint32 destinationPurpose;
 	int carriedMaterial;
 	MaterialPacket carriedPacket{};
+	// Authoritative animation clocks; copied with the rest of unit state.
+	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
 	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
+	// Keep optional aura bookkeeping after existing hot simulation fields.
+	std::array<Uint8,3> areaServiceRemainders{};
+	Uint32 areaLastPulseTick = Uint32(-1);
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);
 static_assert(std::is_standard_layout_v<UnitState>);

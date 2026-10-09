@@ -249,12 +249,12 @@ TEST_SUITE("GradientPreparation")
 			switch (phase % 10)
 			{
 			case 0: m.replaceResource(index, Resource{WHEAT, 0, 1, 0}); break;
-			case 1: m.setCellTerrain(index, WATER); break;
+			case 1: m.paintCell(index, WATER); break;
 			case 2: m.setBuilding(x, y, 1, 1, 42); break;
 			case 3: m.markImmobileUnit(x, y, 0); break;
 			case 4: m.addForbidden(x, y, phase % Team::MAX_COUNT); break;
 			case 5: m.replaceResource(index, Resource{WOOD, 0, 1, 0}); m.decResource(x, y); break;
-			case 6: m.setCellTerrain(index, GRASS); m.incResourceByIndex(x, y, WHEAT, 0); break;
+			case 6: m.paintCell(index, GRASS); m.incResourceByIndex(x, y, WHEAT, 0); break;
 			case 7: m.setResourceByIndex(x, y, WHEAT, 0); m.setNoResource(x, y, 0); break;
 			case 8: m.clearImmobileUnit(x, y); m.removeForbidden(x, y, phase % Team::MAX_COUNT); break;
 			case 9:
@@ -273,7 +273,7 @@ TEST_SUITE("GradientPreparation")
 		// between preparations alone would not detect a missing removal notice.
 		const size_t at = m.coordToIndex(11, 11);
 		m.replaceTile(at, Tile{});
-		m.setCellTerrain(at, GRASS);
+		m.paintCell(at, GRASS);
 		m.clearImmobileUnit(11, 11);
 		m.replaceResource(at, Resource{WHEAT, 0, 1, 0});
 		compare(0);
@@ -297,7 +297,7 @@ TEST_SUITE("GradientPreparation")
 		compare(0);
 		m.replaceResource(at, Resource{WHEAT, 0, 1, 0});
 		compare(0);
-		m.setCellTerrain(at, WATER);
+		m.paintCell(at, WATER);
 		compare(0);
 		m.removeUnallowedResources(11, 11, 1, 1);
 		compare(0);
@@ -356,7 +356,7 @@ TEST_SUITE("GradientPreparation")
 			const Uint32 mask = Team::teamNumberToMask(0);
 			std::vector<Uint16> expected(m.size), actual(m.size);
 			m.replaceTile(at, Tile{});
-			m.setCellTerrain(at, GRASS);
+			m.paintCell(at, GRASS);
 			m.clearImmobileUnit(x, y);
 			m.fogOfWar[at] = mask;
 			m.replaceResource(at, Resource{WHEAT, 0, 1, 0});
@@ -419,7 +419,7 @@ TEST_SUITE("GradientPreparation")
 			compare(WOOD, GRADIENT_UNREACHABLE);
 			// Goals still override terrain/buildings, with fog live and paint last.
 			m.replaceResource(at, Resource{static_cast<Uint8>(hiddenResource), 0, 1, 0});
-			m.setCellTerrain(at, WATER);
+			m.paintCell(at, WATER);
 			m.setBuilding(x, y, 1, 1, 42);
 			m.fogOfWar[at] = 0;
 			compare(hiddenResource, GRADIENT_FORBIDDEN);
@@ -476,10 +476,10 @@ TEST_SUITE("GradientPreparation")
 			m.seedMaterialGradient(0, WHEAT, 0, expected.data(), false);
 		REQUIRE(m.gradientRuntime->resourceSeeds.valid);
 		m.replaceResource(0, Resource{WHEAT, 0, 1, 0});
-		m.setCellTerrain(1, WATER);
+		m.paintCell(1, WATER);
 		m.addForbidden(0, 0, 1);
 		std::vector<std::vector<Uint16>> outputs(16, std::vector<Uint16>(m.size));
-		m.configureCompute(4, Map::ComputeInitialize);
+		m.configureCompute(4);
 		m.computeExecutor().run(outputs.size(), [&](size_t job) {
 			m.seedMaterialGradient(job % 2, job % MaterialCount, job % SWIM_CLASS_COUNT,
 				outputs[job].data(), false);
@@ -505,9 +505,9 @@ TEST_SUITE("GradientPreparation")
 		};
 		importTerrain(R"({"schemaVersion":1,"terrains":[{"key":"test:seed","name":"Seed terrain","base":"grass","appearance":"sand","properties":{"walkable":false,"swimmable":true}}]})");
 		const auto terrain = *m.terrainRegistry().find("test:seed");
-		m.setCellTerrain(0, terrain);
+		m.paintCell(0, terrain);
 		m.replaceResource(1, Resource{WHEAT, 0, 1, 0});
-		m.setCellTerrain(1, terrain);
+		m.paintCell(1, terrain);
 		m.addFarmArea(1, 0, 0);
 		world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, true);
 		std::vector<Uint16> expected(m.size), actual(m.size);
@@ -592,7 +592,7 @@ TEST_SUITE("GradientPreparation")
 		{
 			REQUIRE(i < m.size);
 
-			m.setCellTerrain(i, static_cast<TerrainType>(terrain));
+			m.paintCell(i, static_cast<TerrainType>(terrain));
 			m.resourceCells[i].resource.type = resource == 8 ? NO_RES_TYPE : resource;
             m.resourceCells[i].resource.amount = resource == 8 ? 0 : 1;
 			m.areaCells[i].forbidden = forbidden;
@@ -608,7 +608,7 @@ TEST_SUITE("GradientPreparation")
 		std::vector<Uint16> expected(m.size), actual(m.size);
 		for (unsigned threads : {1, 2, 4})
 		{
-			m.configureCompute(threads, Map::ComputeInitialize);
+			m.configureCompute(threads);
 			for (int phase=0; phase<4; ++phase)
 			{
 				world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, phase & 1);
@@ -667,7 +667,7 @@ TEST_SUITE("GradientPreparation")
 		{
 
 			const Uint32 mask = Team::teamNumberToMask(i % Team::MAX_COUNT);
-			m.setCellTerrain(i, static_cast<TerrainType>(i % TERRAIN_COUNT));
+			m.paintCell(i, static_cast<TerrainType>(i % TERRAIN_COUNT));
 			m.resourceCells[i].resource.type = i % (8 + 1) == 8 ? NO_RES_TYPE : i % (8 + 1);
             m.resourceCells[i].resource.amount = m.resourceCells[i].resource.type==NO_RES_TYPE ? 0 : 1;
 			m.areaCells[i].forbidden = i & 1 ? mask : ~mask;
@@ -704,7 +704,7 @@ TEST_SUITE("GradientPreparation")
 		for (TerrainType terrain : {GRASS, WATER})
 		{
 			CAPTURE(terrain);
-			m.setCellTerrain(0, terrain);
+			m.paintCell(0, terrain);
 			m.resourceCells[0].resource.type = terrainProperties(terrain).farmMaterial;
 			REQUIRE(m.resourcePropertiesByIndex(m.resourceCells[0].resource.type).clearable);
 			m.areaCells[0].farm = teamMask;
@@ -785,7 +785,7 @@ TEST_SUITE("GradientPreparation")
 			scalarResource(m, 0, resource, 0, expected.data(), false);
 			m.propagateGradient(expected.data(), 0);
 			m.configureGradientPipeline(workers, 8);
-			m.configureCompute(4, Map::ComputeAI);
+			m.configureCompute(4);
 			std::vector<Uint16 *> requests(8);
 			m.computeExecutor().run(requests.size(), [&](size_t j) {
 				requests[j] = m.getMaterialGradientSlot(0, resource, 0);
@@ -998,7 +998,7 @@ TEST_CASE("compact clearing traits preserve custom high-ID property combinations
         const auto id=*map.resourceRegistry().find("clearing-traits-"+std::to_string(1000+n));
         REQUIRE(resourceIndex(id)>255);
         const auto index=map.coordToIndex(8+n-264,8);
-        map.setCellTerrain(index,GRASS);
+        map.paintCell(index,GRASS);
         map.setResource(8+n-264,8,id,0);
         // Empty persistent stocks remain clearable according to properties.
         map.resourceCells[index].resource.amount=0;
@@ -1097,7 +1097,7 @@ TEST_CASE("snapshot seeds preserve every periodic kind after the live world chan
     game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, true);
     game.configureBuildingCatalog();
     for (size_t i=0; i<m.size; ++i) {
-        m.setCellTerrain(i, static_cast<TerrainType>(i%TERRAIN_COUNT));
+        m.paintCell(i, static_cast<TerrainType>(i%TERRAIN_COUNT));
         m.resourceCells[i].resource=Resource{Uint16(i%3==0 ? WHEAT : NO_RES_TYPE),0,1,0};
         m.areaCells[i].forbidden=i%7==0?1:0;
         m.areaCells[i].guard=i%5==0?3:0;
@@ -1107,7 +1107,7 @@ TEST_CASE("snapshot seeds preserve every periodic kind after the live world chan
         m.fogOfWar[i]=i%2?1:3;
     }
     for (int pos : {32,33}) {
-        m.setCellTerrain(pos,pos,GRASS); m.resourceCells[m.coordToIndex(pos,pos)].resource=Resource{}; m.clearImmobileUnit(pos,pos);
+        m.paintCell(pos,pos,GRASS); m.resourceCells[m.coordToIndex(pos,pos)].resource=Resource{}; m.clearImmobileUnit(pos,pos);
     }
     REQUIRE(world.addUnit(WARRIOR,32,32));
     REQUIRE(world.addUnit(WARRIOR,33,33,1));
@@ -1173,7 +1173,7 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     glob2test::HeadlessGame world({.wDec=7,.hDec=7,.teams=2,.discovered=true,.clearImmobile=true,.header=true});
     auto& game=world.game; auto& map=game.map;
     for (size_t i=0;i<map.size;++i) {
-        map.setCellTerrain(i,static_cast<TerrainType>(i%TERRAIN_COUNT));
+        map.paintCell(i,static_cast<TerrainType>(i%TERRAIN_COUNT));
         map.replaceResource(i,Resource{Uint16(i%3==0?WHEAT:i%5==0?WOOD:NO_RES_TYPE),0,1,0});
     }
     using namespace gradient_preparation;
@@ -1197,7 +1197,7 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     CHECK(initial==size_t(map.size));
     check(before); CHECK(scratch.materials.refreshedCells==initial);
     map.replaceResource(0,Resource{});
-    map.setCellTerrain(1,WATER);
+    map.setVertexTerrain(1,1,WATER); // cells (0..1,0..1), all in the first chunk
     map.areaCells[2].forbidden=3; map.markArea(2);
     map.areaCells[5].guard=1; map.markArea(5);
     map.areaCells[6].clear=1; map.markArea(6);

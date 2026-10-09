@@ -284,7 +284,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				for (int dy = -1; dy <= 1; ++dy)
 					for (int dx = -1; dx <= 1; ++dx)
 					{
-						const int next = t.at(i % t.w + dx, i / t.w + dy);
+						const int next = t.at(t.remainderX(i) + dx, i / t.w + dy);
 						if (L.terrain[next] != WATER && !townCorners[next])
 						{
 							L.terrain[next] = SAND;
@@ -346,7 +346,7 @@ bool generate(Game &game, GenerationContext &context)
 	}
 	const Torus &t = L.t;
 	Map &map = game.map;
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 		game.addTeam();
 	context.stage = "braided delta colonies";
@@ -377,7 +377,7 @@ bool generate(Game &game, GenerationContext &context)
 		plantKit(
 			map, t, context,
 			{{int(wheat.x), int(wheat.y), 5}, {int(wood.x), int(wood.y), 5}, {0, 0, 0}, 18, 18, -1},
-			[&](int i) { return !L.towns.plot[i] && clearGround(map, i % t.w, i / t.w); });
+			[&](int i) { return !L.towns.plot[i] && clearGround(map, t.remainderX(i), i / t.w); });
 	}
 
 	// Bank crops occupy short separated patches, not an unbroken wall. Town rims and coastal
@@ -386,10 +386,10 @@ bool generate(Game &game, GenerationContext &context)
 	int planted = 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (L.towns.plot[i] || !clearGround(map, i % t.w, i / t.w))
+		if (L.towns.plot[i] || !clearGround(map, t.remainderX(i), i / t.w))
 			continue;
-		const int u = L.transpose ? i / t.w : i % t.w;
-		const int v = L.transpose ? i % t.w : i / t.w;
+		const int u = L.transpose ? i / t.w : t.remainderX(i);
+		const int v = L.transpose ? t.remainderX(i) : i / t.w;
 		const int patch = (u / 8 + v / 8) % 4;
 		int type = -1, chance = 0;
 		if (distance[i] >= 2 && distance[i] <= 10 && u % 16 < 10)
@@ -403,9 +403,9 @@ bool generate(Game &game, GenerationContext &context)
 			chance = int(scaledCount(2, type == STONE ? o.stone : o.fruit));
 		}
 		if (type >= 0 && context.bounded("braided-delta-resources", 100) < unsigned(chance) &&
-			map.isResourceAllowed(i % t.w, i / t.w, type))
+			map.isResourceAllowed(t.remainderX(i), i / t.w, type))
 		{
-			map.setResourceByIndex(i % t.w, i / t.w, type, 1);
+			map.setResourceByIndex(t.remainderX(i), i / t.w, type, 1);
 			++planted;
 		}
 	}
@@ -436,8 +436,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const auto water = pureTiles(L.terrain, L.t, WATER);
 	for (int i = 0; i < L.t.size(); ++i)
 	{
-		if (bool(grass[i]) != game.map.isGrass(i % L.t.w, i / L.t.w) ||
-			bool(water[i]) != game.map.isWater(i % L.t.w, i / L.t.w))
+		if (bool(grass[i]) != game.map.isGrass(L.t.remainderX(i), i / L.t.w) ||
+			bool(water[i]) != game.map.isWater(L.t.remainderX(i), i / L.t.w))
 			return "The delta shoreline or a crossing has changed.";
 	}
 	const auto buildable = buildableTiles(game.map);
@@ -474,7 +474,7 @@ GeneratorDefinition braidedDeltaDefinition()
 	return {"braided-delta",
 			36,
 			"Braided Delta",
-			3,
+			4,
 			false,
 			{GeneratorControl{"braid-count", "Braid count", 2, 5, 1, 2, ControlGroup::Terrain}
 				 .withSearchRange(2, 4),

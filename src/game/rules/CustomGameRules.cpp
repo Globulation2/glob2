@@ -27,7 +27,7 @@ template <std::size_t N> int indexOf(const std::array<int, N> &choices, int valu
 
 const GeneratorControl &workerControl(const CustomGameSetup &setup)
 {
-	return GenerationRequest::control(setup.generator.method, "workers");
+	return setup.generator.control("workers");
 }
 
 std::vector<Rule> makeRules()

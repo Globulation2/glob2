@@ -1,4 +1,7 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Settlements.h"
 #include "StartingLayout.h"
 #include "Building.h"
@@ -31,23 +34,32 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	if (!buildingType || !buildingType->runtimeAvailable)
 		return fail("catalog has no available starting building");
 	auto inside = [&](int x, int y)
-	{ return home[game.map.normalizeY(y) * w + game.map.normalizeX(x)] != 0; };
+	{ return home.at(game.map.normalizeY(y) * w + game.map.normalizeX(x)) != 0; };
 	std::vector<MapGeneratorPoint> candidates;
 	std::vector<std::pair<int, MapGeneratorPoint>> eligible;
 	int nearest = std::numeric_limits<int>::max();
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (!inside(x, y) || !game.checkRoomForBuilding(x, y, buildingType, team, false))
 				continue;
 			bool fits = true;
 			for (int dy = 0; dy < buildingType->height && fits; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = 0; dx < buildingType->width; ++dx)
+				{
+					::MapGeneration::generationCheckpoint();
 					if (!inside(x + dx, y + dy))
 					{
 						fits = false;
 						break;
 					}
+				}
+			}
 			if (!fits)
 				continue;
 			int distance = game.map.warpDistSquare(x, y, game.map.normalizeX(anchor.x),
@@ -61,6 +73,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 			if (distance <= nearest)
 				candidates.emplace_back(x, y);
 		}
+	}
 	context.telemetry.measure("settlement.eligible_sites", int(eligible.size()), team);
 	context.telemetry.measure("settlement.nearest_ties", int(candidates.size()), team);
 	if (!candidates.empty())
@@ -78,8 +91,11 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	{
 		int room = 0;
 		for (int y = at.y - 1; y <= at.y + buildingType->height; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = at.x - 1; x <= at.x + buildingType->width; ++x)
 			{
+				::MapGeneration::generationCheckpoint();
 				if (x >= at.x && x < at.x + buildingType->width && y >= at.y &&
 					y < at.y + buildingType->height)
 					continue;
@@ -88,9 +104,10 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 												 false, 1u << team))
 					++room;
 			}
+		}
 		return room;
 	};
-	MapGeneratorPoint p = candidates[context.bounded(stream, candidates.size())];
+	MapGeneratorPoint p = candidates.at(context.bounded(stream, candidates.size()));
 	const int initialWorkerRoom = workerRoom(p);
 	context.telemetry.measure("settlement.requested_workers", context.request.nbWorkers, team);
 	context.telemetry.measure("settlement.initial_worker_room", initialWorkerRoom, team);
@@ -99,11 +116,14 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		const MapGeneratorPoint *roomier = nullptr;
 		int roomiestDistance = std::numeric_limits<int>::max();
 		for (const auto &[distance, at] : eligible)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (distance < roomiestDistance && workerRoom(at) >= context.request.nbWorkers)
 			{
 				roomiestDistance = distance;
 				roomier = &at;
 			}
+		}
 		context.telemetry.fallback("settlement.worker_room_search", "nearest site too cramped",
 								   team);
 		context.telemetry.measure("settlement.roomier_site_found", roomier != nullptr, team);
@@ -119,19 +139,28 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		return fail("swarm placement failed");
 	std::vector<MapGeneratorPoint> workers;
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
+		{
+			::MapGeneration::generationCheckpoint();
 			if (inside(x, y) && game.map.isFreeForGroundUnit(x, y, false, 1u << team) &&
-				touchesStartingFootprint(x,y,building->posX,building->posY,buildingType->width,buildingType->height,game.map.getMaskW(),game.map.getMaskH()))
+				touchesStartingFootprint(x, y, building->posX, building->posY, buildingType->width,
+										 buildingType->height, game.map.getMaskW(),
+										 game.map.getMaskH()))
 				workers.emplace_back(x, y);
+		}
+	}
 	context.telemetry.measure("settlement.worker_tiles", int(workers.size()), team);
 	if (workers.size() < size_t(context.request.nbWorkers))
 		return fail("need " + std::to_string(context.request.nbWorkers) + " worker tiles; found " +
 					std::to_string(workers.size()));
 	for (int i = 0; i < context.request.nbWorkers; ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		size_t selected = i + context.bounded(stream, workers.size() - i);
-		std::swap(workers[i], workers[selected]);
-		if (!game.addUnit(workers[i].x, workers[i].y, team, WORKER, 0, 0, 0, 0))
+		std::swap(workers.at(i), workers.at(selected));
+		if (!game.addUnit(workers.at(i).x, workers.at(i).y, team, WORKER, 0, 0, 0, 0))
 			return fail("worker placement failed");
 	}
 	game.teams[team]->startPosX = building->posX;
@@ -159,27 +188,44 @@ int startingBuildingSite(Game &game, int team, const BuildingType *buildingType,
 	const Map &map = game.map;
 	const Torus torus(map);
 	const int w = map.getW(), h = map.getH();
-	const int cx = int(std::lround(x)), cy = int(std::lround(y));
+	const int cx = int(::MapGeneration::Numeric::lround(x)),
+			  cy = int(::MapGeneration::Numeric::lround(y));
 	int best = -1;
 	double nearest = std::numeric_limits<double>::max();
 	for (int dy = -within; dy <= within; ++dy)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int dx = -within; dx <= within; ++dx)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int px = map.normalizeX(cx + dx), py = map.normalizeY(cy + dy);
 			bool fits = true;
 			for (int fy = 0; fy < buildingType->height && fits; ++fy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int fx = 0; fx < buildingType->width && fits; ++fx)
-					fits = allowed[map.normalizeY(py + fy) * w + map.normalizeX(px + fx)] != 0;
+				{
+					::MapGeneration::generationCheckpoint();
+					fits = allowed.at(map.normalizeY(py + fy) * w + map.normalizeX(px + fx)) != 0;
+				}
+			}
 			// Scan the real footprint and range, not a centre-distance approximation.
 			// The optional constraint costs only candidate footprint × cover points;
 			// existing callers pass no points and keep their exact selection order.
 			for (const MapGeneratorPoint &point : cover)
 			{
+				::MapGeneration::generationCheckpoint();
 				int reach = std::numeric_limits<int>::max();
 				for (int fy = 0; fy < buildingType->height; ++fy)
+				{
+					::MapGeneration::generationCheckpoint();
 					for (int fx = 0; fx < buildingType->width; ++fx)
+					{
+						::MapGeneration::generationCheckpoint();
 						reach =
 							std::min(reach, torus.chebyshev(px + fx, py + fy, point.x, point.y));
+					}
+				}
 				fits = fits && reach <= buildingType->shootingRange;
 			}
 			if (!fits || !game.checkRoomForBuilding(px, py, buildingType, team, false))
@@ -193,6 +239,7 @@ int startingBuildingSite(Game &game, int team, const BuildingType *buildingType,
 				best = py * w + px;
 			}
 		}
+	}
 	(void)h;
 	if (best < 0)
 		return -1;
@@ -209,7 +256,7 @@ int placeBuilding(Game &game, int team, const char *typeName, int level, double 
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(best % w, best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
+	Building *building = game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	game.teams[team]->addToStaticAbilitiesLists(building);
@@ -222,9 +269,12 @@ int countBuildings(const Game &game, int team, const char *typeName)
 		return 0;
 	int count = 0;
 	for (int i = 0; i < Building::MAX_COUNT; ++i)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (const Building *b = game.teams[team]->myBuildings[i])
 			if (b->type && b->type->type == typeName && !b->type->isBuildingSite)
 				++count;
+	}
 	return count;
 }
 
@@ -239,7 +289,7 @@ int placeTower(Game &game, int team, int level, double x, double y, int within,
 	if (best < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(best % w, best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
+	Building *building = game.addBuilding(powerOfTwoRemainder(best, w), best / w, type, team, std::min(1, game.buildingsTypes.get(type)->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	building->bullets = stocked ? tower->maxBullets : 0;
@@ -264,17 +314,23 @@ int placeStartingBuilding(Game &game, int team, const char *name, int level, dou
 	// Validate supplies before mutation. Callers choose resource kinds explicitly:
 	// filling an inn's whole table would silently give away the contested fruit.
 	for (int resource : supplies)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (resource < 0 || resource >= MaterialCount)
 			return -1;
+	}
 	const int site = startingBuildingSite(game, team, buildingType, x, y, within, allowed);
 	if (site < 0)
 		return -1;
 	const int w = game.map.getW();
-	Building *building = game.addBuilding(site % w, site / w, type, team, std::min(1, buildingType->semantics.assignmentLimit), 0);
+	Building *building = game.addBuilding(powerOfTwoRemainder(site, w), site / w, type, team, std::min(1, buildingType->semantics.assignmentLimit), 0);
 	if (!building)
 		return -1;
 	for (int resource : supplies)
+	{
+		::MapGeneration::generationCheckpoint();
 		building->materials[resource] = buildingType->maxMaterial[resource];
+	}
 	game.teams[team]->addToStaticAbilitiesLists(building);
 	// Register this building's feeding/work services, leaving existing task
 	// order alone. Normal tick logic resumes deliveries as supplies run out.

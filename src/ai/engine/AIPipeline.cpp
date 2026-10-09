@@ -45,7 +45,8 @@ bool Pipeline::wasPolled(unsigned player, Uint32 tick) const {
  return scheduler.wasSubmitted(player,actors.at(player).generation,tick);
 }
 std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& game,
- std::span<const unsigned> eligible,bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics) {
+ std::span<const unsigned> eligible,bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics,
+ const SimulationSnapshot::Handle& captured) {
  std::vector<std::pair<unsigned,std::shared_ptr<Order>>> result;
  std::array<bool,32> requested{},newlyDelivered{};
  if(diagnostics && diagnosticsSession.lock()!=diagnostics) scheduler.adoptDiagnostics(*diagnostics);
@@ -55,15 +56,15 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   if(requested[p])throw std::invalid_argument("Duplicate AI poll player");
   requested[p]=true;
  }
- // Decisions run on the map's compute executor; with the AI experiment on,
- // its workers share them and the owner joins at the deadline.
- const bool shared=game.map.computeEnabled(Map::ComputeAI);
+ // Decisions use the shared executor; the owner joins at the deadline.
+ // Without workers, the executor runs deferred work on the owner at its join.
+ constexpr bool shared=true;
  if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor(),shared);configured=true;}
  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
  else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
  if(paused) {
-  const auto gradientRequirements=game.map.pendingGradientRequirements();
-  if(gradientRequirements) game.map.preparePendingGradient(game.snapshotStore().captureBoundary(game,gradientRequirements));
+  const auto worldRequirements=game.map.pendingWorldRequirements();
+  if(worldRequirements) game.map.preparePendingWorld(captured.project(worldRequirements));
   for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
   return result;
  }
@@ -94,12 +95,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   std::vector<unsigned> polls(eligible.begin(),eligible.end());
   std::sort(polls.begin(),polls.end());
   if(std::adjacent_find(polls.begin(),polls.end())!=polls.end()) throw std::invalid_argument("Duplicate AI poll");
-  // Controller requirements determine the shared capture union. The union
-  // is declared before capture; each consumer receives its own projection.
-  const auto gradientRequirements=game.map.pendingGradientRequirements();
-  SimulationSnapshot::Requirements requirements=gradientRequirements;
-  for(auto p:polls) if(game.players[p]&&game.players[p]->ai&&game.players[p]->team->isAlive) requirements|=game.players[p]->ai->observationRequirements();
-  const auto captured=game.snapshotStore().captureBoundary(game,requirements);
+  const auto worldRequirements=game.map.pendingWorldRequirements();
   for(auto p:polls) {
    auto* player=game.players[p]; auto& actor=actors[p]; actor.published.reset();
    if(!player||!player->ai||!player->team->isAlive) continue;
@@ -116,7 +112,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    });
   }
   scheduler.dispatch();
-  if(gradientRequirements)game.map.preparePendingGradient(captured.project(gradientRequirements));
+  if(worldRequirements)game.map.preparePendingWorld(captured.project(worldRequirements));
   for(auto& delivery:scheduler.takeDue(game.stepCounter)) {
    newlyDelivered[delivery.request.player]=true;
    auto& actor=actors[delivery.request.player];
@@ -141,7 +137,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
     actor.admitted=std::move(delivery);
    }
   }
-  if(diagnostics) diagnostics->completeTick(game);
+  if(diagnostics) diagnostics->completeTick(captured);
   boundary=game.stepCounter;
  }
  // Poll eligibility controls new observations, never a submitted deadline.

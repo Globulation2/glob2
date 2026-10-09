@@ -1,3 +1,4 @@
+#include <utility>
 #include "DatasetWriter.h"
 
 #include <algorithm>
@@ -141,7 +142,7 @@ void DatasetWriter::writeRecord(Uint32 tick, Order& order, Game& game)
 void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 {
 	Team* senderTeam = game.teams[senderTeamNum];
-	const TeamStat* stat = const_cast<TeamStats&>(senderTeam->stats).getLatestStat();
+	const TeamStat* stat = std::as_const(senderTeam->stats).getLatestStat();
 
 	// num_teams = 1 — bot-team-only by design (kyle approved). Enemy
 	// internal state would leak omniscient info; the spatial grid encodes
@@ -198,10 +199,10 @@ void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 		{
 			int x0 = gx * stepX;
 
-			// Terrain: take the top-left source cell (categorical; we'd
-			// need a histogram to do better and the model can learn around
-			// downsample artifacts).
-			const auto tt = map.terrainTypeAt(x0, y0);
+			// Terrain: take the top-left source vertex, the top-left corner
+			// of the top-left source cell (categorical; we'd need a histogram
+			// to do better and the model can learn around downsample artifacts).
+			const auto tt = map.vertexTerrainAt(x0, y0);
 			Uint8 terrain = unsigned(tt) >= 255 ? 255 : static_cast<Uint8>(tt);
 
 			Uint32 resourceSum = 0;

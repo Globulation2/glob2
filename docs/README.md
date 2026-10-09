@@ -83,3 +83,4 @@ change merges, and add those conclusions to the appropriate durable guide above.
 - [AI ratings](ai/ratings.md): measured opponent strength and interpretation.
 
 - [Win probability model](win-probability-model.md): fitted live-state predictions, calibration limits and optional early victory.
+- [Building-field depth model](building-gradient-depth-model.md): how deep scheduled building fields are settled, fitted from tournament field statistics.

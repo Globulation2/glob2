@@ -149,7 +149,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		for (int i = 0; i < t.size(); ++i)
 			if (water[i])
 			{
-				const int along = vertical ? i / t.w : i % t.w;
+				const int along = vertical ? i / t.w : t.remainderX(i);
 				bool ford = false;
 				for (int x : fords)
 					ford |= std::abs(along - x) <= 4 || std::abs(along - x) >= length - 4;
@@ -238,7 +238,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		for (int i = 0; i < t.size(); ++i)
 			if (water[i])
 			{
-				const int along = vertical ? i / t.w : i % t.w;
+				const int along = vertical ? i / t.w : t.remainderX(i);
 				L.terrain[i] = along % 32 < 8 ? SAND : WATER;
 			}
 	}
@@ -285,17 +285,17 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	const int threshold = sorted[sorted.size() * 55 / 100];
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const double along = vertical ? i / t.w : i % t.w, across = vertical ? i % t.w : i / t.w;
+		const double along = vertical ? i / t.w : t.remainderX(i), across = vertical ? t.remainderX(i) : i / t.w;
 		int homeDistance2 = t.size();
 		for (const ShapePoint h : L.homes)
-			homeDistance2 = std::min(homeDistance2, t.dist2(i % t.w, i / t.w, int(h.x), int(h.y)));
+			homeDistance2 = std::min(homeDistance2, t.dist2(t.remainderX(i), i / t.w, int(h.x), int(h.y)));
 		const double outer =
 			std::min(1., std::max(0., (std::abs(across - valley(along)) - 40.) / 26.));
 		const double away =
 			std::min(1., std::max(0., (std::sqrt(double(homeDistance2)) - 38.) / 20.));
 		const double freedom = outer * away;
 		const double dry = uplands.at(along, 2 * across + 8 * std::sin(along * 2 * kPi / length));
-		const bool swale = std::abs(swales.at(i % t.w, i / t.w) - .5) < .065;
+		const bool swale = std::abs(swales.at(t.remainderX(i), i / t.w) - .5) < .065;
 		if (freedom > 0 && L.terrain[i] == GRASS)
 		{
 			if (basins[i] < 65536 * .36 * freedom)
@@ -379,7 +379,7 @@ bool generate(Game &game, GenerationContext &c)
 	}
 	const Torus &t = L.t;
 	const OrchardCommonsOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (int k = 0; k < c.request.nbTeams; ++k)
 		game.addTeam();
 	c.stage = "orchard resources";
@@ -400,7 +400,7 @@ bool generate(Game &game, GenerationContext &c)
 			std::vector<int> opening;
 			for (int anchor : p.tiles)
 			{
-				const int x = anchor % t.w, y = anchor / t.w;
+				const int x = t.remainderX(anchor), y = anchor / t.w;
 				const int distance = t.dist2(x + 1, y + 1, int(h.x), int(h.y));
 				if (distance >= best)
 					continue;
@@ -427,7 +427,7 @@ bool generate(Game &game, GenerationContext &c)
 				}
 				int remaining = 0;
 				for (int i : p.tiles)
-					remaining += fertility.at(i % t.w, i / t.w) > 0 &&
+					remaining += fertility.at(t.remainderX(i), i / t.w) > 0 &&
 								 std::find(clear.begin(), clear.end(), i) == clear.end();
 				if (remaining < p.minimum)
 					continue;
@@ -444,11 +444,11 @@ bool generate(Game &game, GenerationContext &c)
 					seedTiles.end());
 				const auto eligible = [&](int i)
 				{
-					return L.plotOf[i] == int(k) && fertility.at(i % t.w, i / t.w) > 0 &&
+					return L.plotOf[i] == int(k) && fertility.at(t.remainderX(i), i / t.w) > 0 &&
 						   std::find(opening.begin(), opening.end(), i) == opening.end() &&
-						   clearGround(game.map, i % t.w, i / t.w);
+						   clearGround(game.map, t.remainderX(i), i / t.w);
 				};
-				const int seed = seedNear(t, court % t.w + 1, court / t.w + 1, 8, eligible);
+				const int seed = seedNear(t, t.remainderX(court) + 1, court / t.w + 1, 8, eligible);
 				if (seed >= 0)
 					nearby = growPatch(game.map, t, seed, WHEAT, 24, eligible);
 			}
@@ -467,7 +467,7 @@ bool generate(Game &game, GenerationContext &c)
 		{
 			double potential = 0;
 			for (int i : p.tiles)
-				potential += fertility.at(i % t.w, i / t.w) / double(Fertility::kScale);
+				potential += fertility.at(t.remainderX(i), i / t.w) / double(Fertility::kScale);
 			c.telemetry.measure("orchard.plot.growth-potential", potential, int(k));
 			c.telemetry.measure("orchard.plot.resource", p.type, int(k));
 		}
@@ -509,14 +509,14 @@ bool generate(Game &game, GenerationContext &c)
 		std::stable_sort(tiles.begin(), tiles.end(),
 						 [&](int a, int b)
 						 {
-							 return t.dist2(a % t.w, a / t.w, int(g.centre.x), int(g.centre.y)) <
-									t.dist2(b % t.w, b / t.w, int(g.centre.x), int(g.centre.y));
+							 return t.dist2(t.remainderX(a), a / t.w, int(g.centre.x), int(g.centre.y)) <
+									t.dist2(t.remainderX(b), b / t.w, int(g.centre.x), int(g.centre.y));
 						 });
 		int placed = 0;
 		for (int i : tiles)
-			if (placed < wanted && clearGround(game.map, i % t.w, i / t.w))
+			if (placed < wanted && clearGround(game.map, t.remainderX(i), i / t.w))
 			{
-				game.map.setResourceByIndex(i % t.w, i / t.w, g.kind, 1);
+				game.map.setResourceByIndex(t.remainderX(i), i / t.w, g.kind, 1);
 				++placed;
 			}
 		c.telemetry.measure("orchard.grove.fruit-tiles", placed, int(k));
@@ -530,8 +530,8 @@ bool generate(Game &game, GenerationContext &c)
 	const auto treeNoise = periodicNoise(t.w, t.h, 9, c.stream("orchard-tree-density"));
 	std::vector<std::pair<int, int>> treeSites;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.woodland[i] && fertility.at(i % t.w, i / t.w) == 0 &&
-			game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD) && clearGround(game.map, i % t.w, i / t.w))
+		if (L.woodland[i] && fertility.at(t.remainderX(i), i / t.w) == 0 &&
+			game.map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD) && clearGround(game.map, t.remainderX(i), i / t.w))
 			treeSites.push_back({treeNoise[i], i});
 	std::sort(treeSites.begin(), treeSites.end());
 	const int wantedTrees =
@@ -539,7 +539,7 @@ bool generate(Game &game, GenerationContext &c)
 	for (int n = 0; n < wantedTrees; ++n)
 	{
 		int i = treeSites[n].second;
-		game.map.setResourceByIndex(i % t.w, i / t.w, WOOD, 1);
+		game.map.setResourceByIndex(t.remainderX(i), i / t.w, WOOD, 1);
 		++trees;
 	}
 	// Fill clean, renewable field sections against the outer lakes and streams.
@@ -559,15 +559,15 @@ bool generate(Game &game, GenerationContext &c)
 	for (auto &mask : fruitFaces)
 		mask.assign(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = stepCost(game.map, i % t.w, i / t.w, StepCosts::walking()) >= 0;
+		open[i] = stepCost(game.map, t.remainderX(i), i / t.w, StepCosts::walking()) >= 0;
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int type = game.map.getResource(i % t.w, i / t.w).type;
+		const int type = game.map.getResource(t.remainderX(i), i / t.w).type;
 		if (type < CHERRY || type > PRUNE)
 			continue;
 		for (const auto &step : kCardinalSteps)
 		{
-			int n = t.at(i % t.w + step[0], i / t.w + step[1]);
+			int n = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 			if (open[n])
 				fruitFaces[type - CHERRY][n] = 1;
 		}
@@ -667,11 +667,11 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	std::vector<unsigned char> future(t.size(), 0), walking(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		walking[i] = stepCost(map, i % t.w, i / t.w, StepCosts::walking()) >= 0;
+		walking[i] = stepCost(map, t.remainderX(i), i / t.w, StepCosts::walking()) >= 0;
 		future[i] = walking[i] && L.plotOf[i] < 0 && !spread[i];
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if ((type == WHEAT || type == WOOD) && L.plotOf[i] < 0 && !L.wheatland[i] &&
-			fertility.at(i % t.w, i / t.w) > 0)
+			fertility.at(t.remainderX(i), i / t.w) > 0)
 			return "An uncontained renewable crop threatens orchard routes.";
 	}
 	const auto broad = erode(t, future, 1);
@@ -695,7 +695,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	std::vector<int> stocks(L.groves.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int type = map.getResource(i % t.w, i / t.w).type;
+		const int type = map.getResource(t.remainderX(i), i / t.w).type;
 		if (type < CHERRY || type > PRUNE)
 			continue;
 		const int g = L.groveOf[i];
@@ -704,8 +704,8 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		++stocks[g];
 		for (const auto &step : kCardinalSteps)
 		{
-			int n = t.at(i % t.w + step[0], i / t.w + step[1]);
-			if (stepCost(map, n % t.w, n / t.w, StepCosts::walking()) >= 0)
+			int n = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
+			if (stepCost(map, t.remainderX(n), n / t.w, StepCosts::walking()) >= 0)
 				targets[type - CHERRY].push_back(n);
 		}
 	}
@@ -727,7 +727,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 				if (dx >= 0 && dx < 4 && dy >= 0 && dy < 4)
 					continue;
 				const int i = t.at(sx + dx, sy + dy);
-				if (stepCost(map, i % t.w, i / t.w, StepCosts::walking()) >= 0)
+				if (stepCost(map, t.remainderX(i), i / t.w, StepCosts::walking()) >= 0)
 					exits.push_back(i);
 			}
 		// Every traversable step has cost one: the shared BFS is equivalent to Dijkstra.
@@ -749,13 +749,13 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		for (const Plot &p : L.plots)
 			if (p.type == WHEAT || p.type == WOOD)
 				for (int i : p.tiles)
-					if (fertility.at(i % t.w, i / t.w) > 0 &&
-						map.getResource(i % t.w, i / t.w).type == p.type)
+					if (fertility.at(t.remainderX(i), i / t.w) > 0 &&
+						map.getResource(t.remainderX(i), i / t.w).type == p.type)
 					{
 						int reach = t.size();
 						for (const auto &step : kCardinalSteps)
 						{
-							const int n = t.at(i % t.w + step[0], i / t.w + step[1]);
+							const int n = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 							if (d[n] >= 0)
 								reach = std::min(reach, d[n]);
 						}
@@ -821,7 +821,7 @@ GeneratorDefinition orchardCommonsDefinition()
 	return {"orchard-commons",
 			58,
 			"Orchard Commons",
-			3,
+			4,
 			false,
 			{GeneratorControl::choice("orchard-spacing", "Orchard spacing",
 									  {"Compact", "Balanced", "Spread"}, 1, ControlGroup::Layout)

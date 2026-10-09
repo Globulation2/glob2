@@ -355,10 +355,11 @@ TEST_SUITE("SoftwareRenderer")
 		Game::ViewState view;
 		const auto cache = [&]() -> SoftwareTerrainCache & { return view.render.terrainCache(game.map.identity()); };
 		SceneMap extracted;
-		const auto sceneOf = [&](const Map &map) -> const SceneMap & { extracted.extract(map); return extracted; };
+		const auto sceneOf = [&](const Map &map) -> const SceneMap & { glob2test::observeMap(map,extracted); return extracted; };
+		// Every classic corner pattern, on the vertex lattice.
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
-				game.map.setTerrain(x, y, (x + y * 32) % 272);
+				game.map.setVertexTerrain(x, y, TerrainType((x * 7 + y * 3 + x * y) % 3));
 		auto compare = [&](int vx, int vy, int team)
 		{
 			const auto checksum = fixture.checksum();
@@ -369,7 +370,7 @@ TEST_SUITE("SoftwareRenderer")
 				globals->gfx->setClipRect();
 				globals->gfx->drawFilledRect(0, 0, 640, 480, Color(11, 22, 33));
 				globals->gfx->beginMapTransform(1, 1, 1, 0, 0, 640, 480);
-				game.drawMap(0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
+				glob2test::drawMap(game,0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
 							 nullptr, nullptr, true);
 				globals->gfx->endMapTransform();
 				auto image = snapshot(globals->gfx->getSDLSurface());
@@ -389,6 +390,15 @@ TEST_SUITE("SoftwareRenderer")
 			view.render.animationTime = phase;
 			compare(29, 30, 0);
 		}
+		// Every water phase: kept coverage of mixed water cells re-blends to the
+		// same pixels as uncached composition.
+		for (int time = 0; time < 96; time += 6)
+		{
+			view.render.animationTime = time;
+			compare(29, 30, 0);
+		}
+		CHECK(cache().maskBytes() > 0);
+		CHECK(cache().maskBytes() <= SoftwareTerrainCache::MaskBudget);
 		game.map.unsetMapDiscovered();
 		game.map.setMapDiscovered(0, 0, 16, 32, game.teams[0]->me);
 		game.map.setMapDiscovered(16, 0, 16, 32, game.teams[1]->me);
@@ -398,9 +408,10 @@ TEST_SUITE("SoftwareRenderer")
 		REQUIRE(asset);
 		asset->drawPixel(0, 0, Color(17, 33, 51, 127));
 		compare(29, 30, 0);
-		game.map.setTerrain(0, 0, 256);
+		game.map.paintCell(0, 0, WATER);
 		compare(29, 30, 1);
 		game.map.setSize(8, 8, GRASS);
+		game.map.setGame(&game); // Rebind sectors and animation storage after replacement.
 		REQUIRE(cache().bytes() == 0); // a replaced map starts an empty cache
 		for (int chunk = 0; chunk < 40; ++chunk)
 		{
@@ -412,10 +423,11 @@ TEST_SUITE("SoftwareRenderer")
 		CHECK_FALSE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 127, 127,
 													   0, 0, game.teams[0]->me, true));
 		game.map.setSize(4, 4, GRASS);
+		game.map.setGame(&game);
 		compare(0, 0, 0);
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
-				game.map.setTerrain(x, y, 256);
+				game.map.paintCell(x, y, WATER);
 		REQUIRE(cache().prepare(sceneOf(game.map), *globals->terrain, 0, 0, 159, 159, 0,
 												   0, game.teams[0]->me, true));
 		// Water is an ordinary opaque tile material; restore the deliberately

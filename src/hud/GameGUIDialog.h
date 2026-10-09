@@ -252,7 +252,7 @@ class InGameObjectivesScreen : public Glob2UI::InGameDialog
 	bool hasSecondary = false;
 };
 
-// Reads only access-filtered immutable Scene data.
+// Reads only access-filtered immutable PresentationFrame data.
 class InGameAITelemetryScreen : public Glob2UI::InGameDialog
 {
   public:

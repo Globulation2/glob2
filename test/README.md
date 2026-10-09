@@ -85,11 +85,26 @@ collects a bounded GDB backtrace before cleanup when available. To opt in when i
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
-Windows CI replays native engine access violations under GDB with a fresh profile
+Windows CI replays native engine access violations and CRT aborts under GDB with a fresh profile
 and separate artifacts. Harnesses retain function names for backtraces; shipped
 programs keep their normal release stripping. Logs appear in
 `artifacts/tests/crash-diagnostics/`. Diagnostic replays are bounded to 180 seconds
-per case and never replace the original failed result.
+per case and never replace the original failed result. CRT assertion/abort entry
+points have pending breakpoints so the stack is captured before process exit.
+For generator teardown leaks, the Windows x64 replay also enables QuickJS leak
+reporting at the exact runtime-destruction entry point and prints the resulting
+dump flags to verify activation. It flushes the named Windows CRT used by the
+assertion so a different loaded CRT cannot hide buffered output. This affects only
+the replay under GDB, not
+the original test or the shipped program.
+The manual `windows-generator-diagnostics.yml` workflow takes an exact `revision`,
+builds the engine harness with the normal MinGW release flags/dependencies, and
+runs the ScriptGenerator suite, including optional examples and prototype ownership,
+before retaining a GDB replay of any failed case.
+It enables `GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS=1` to retain prototype cache
+insertion/release types and addresses; ordinary runs leave this trace disabled.
+It preserves that case's failure and is focused diagnostic evidence, not a full
+Windows or development checkpoint.
 
 Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
 and selects the dummy drivers when the environment does not, so
@@ -298,7 +313,7 @@ normal build. This is a direct method regression, not an interactive replay test
 ## Terrain resource regression
 
 The `TerrainResources` suite (`python3 test/run_tests.py --filter 'TerrainResources/*'`)
-links the actual client objects and exercises terrain regeneration and resource clearing for all eight
+links the actual client objects and exercises terrain edits and resource clearing for all eight
 resource types, all three base terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 These are headless map-operation tests; they do not drive editor mouse events.
@@ -313,14 +328,15 @@ to compare this platform's rows of `test/map-generator-golden.txt` against fresh
 with no rows reports and passes, so a new machine can run the check before its rows exist;
 `--require-rows` makes that a failure instead, which is what CI runs, so the table must carry
 rows for every platform running that check in CI (`linux-x86_64` today). The current
-table records runtime-resource RNG epoch 1: resource sprite selection no longer consumes
-simulation RNG, so initial stock quantities and full fingerprints can change without
-individual generator recipe revisions. The complete pre-epoch table, including historical
-`macos-arm64` rows, is retained in
-`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. Current macOS full rows are
-unverified and must be measured on macOS before `--require-rows` can pass there; do not copy
-Linux hashes. The five separately verified explicit-design topology comparisons below do
-not establish topology equivalence for every changed golden. The framework reference under
+table records vertex terrain (save format 146): every generated map changed when terrain
+moved to map vertices, without individual generator recipe revisions. The complete
+pre-resource-epoch table, including historical `macos-arm64` rows, is retained in
+`test/fixtures/map-generators/pre-resource-epoch-golden.txt`. The current table includes
+native macOS arm64 rows; Linux hashes must not be used to bootstrap macOS coverage.
+The five separately verified explicit-design topology comparisons below do
+not establish topology equivalence for every changed golden. The five explicit-design full
+hashes include simulation-revision-40 map-owned placement stocks; their historical
+topology references remain unchanged. The framework reference under
 `docs/map-generators/` describes the remaining rules it enforces.
 
 `MapGeneratorGoldenTest <profile> --telemetry` compares telemetry enabled/disabled and repeated
@@ -398,8 +414,13 @@ struct GrassMap : Map {
         wDec = 3; hDec = 3; w = 8; h = 8;  // 8x8 map
         wMask = 7; hMask = 7;
         size = 64;
-        cases.assign(64, Case{});           // default sprite=0 (grass), no bldg/unit
-        importLegacyTerrain();            // initialize canonical terrain IDs
+        resourceCells.assign(size, {});    // no resource, no building, no unit
+        occupancyCells.assign(size, {});
+        areaCells.assign(size, {});
+        scriptAreaCells.assign(size, 0);
+        vertexTerrain.assign(size, GRASS); // one terrain per vertex
+        bindBootstrappedArrays();
+        rebuildTerrainCounts();            // compile the cell rules
         // No Sector or auxiliary arrays are allocated.
     }
     ~GrassMap() {
@@ -410,7 +431,7 @@ struct GrassMap : Map {
 };
 ```
 
-`cases`, `w` / `h` / `wMask` / `hMask` / `wDec` / `hDec` are all public on `Map`. `arraysBuilt` is also public. Default-constructed `Case` is "grass tile, no occupant, terrain=0, ressource.type=NO_RES_TYPE".
+`w` / `h` / `wMask` / `hMask` / `wDec` / `hDec` and `arraysBuilt` are public on `Map`; the cell arrays are private, so `MapQueryTest.cpp` (the complete fixture, which also loads a resource registry) builds with test-only private access.
 
 ### Stubs for `Sector`
 
@@ -422,12 +443,13 @@ Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sour
 
 ### Terrain encoding for tests
 
-Use `Map::setCellTerrain(x, y, TerrainType)` for semantic terrain edits. Batch larger
-edits with `auto batch = map.editTerrain()` to invalidate derived fields once.
-`Case::terrain` is a sprite frame, not a terrain ID. Legacy-import fixtures that
-write frames directly must call `importLegacyTerrain()` afterwards; this adapter
-accepts only classic frames (grass 0–15, sand 128–143, water 256–271 and their
-intervening shore frames). Tests should not use frame ranges as gameplay predicates.
+Terrain is stored per vertex: vertex (x,y) is the top-left corner of cell (x,y), and a
+cell is wholly one terrain only when all four of its corners are. Use
+`Map::setVertexTerrain(x, y, type)` for one vertex, `paintVertices(vertices, type, false)`
+for a set without beaches, and `assignVertexTerrain` or `fillTerrain` for a whole map.
+A lone vertex makes the four cells around it mixed. Batch larger edits with
+`auto batch = map.editTerrain()` to invalidate derived fields once. Test gameplay with
+`terrainPropertiesAt`, not with terrain IDs.
 
 ### When to use this pattern
 
@@ -660,6 +682,20 @@ elapse before it can judge a field, and takes the constant from that header rath
 than copying it — when the interval was raised from 25 to 100, a local copy here
 silently stopped covering it and the regression passed stale fields.
 
+The scheduled cases run the suite's worlds with the default scheduled building
+pipeline: worker kernels match the synchronous seeding and search for every route,
+swim class and terrain-cost branch; fields publish at fixed deadlines across workers
+0/1/2/4/8 and delays 1/4/8; requests are captured at the observation boundary;
+partial fields resume from transferred buckets with every depth setting; synchronous
+rebuilds, resets, evictions and reused destinations supersede; pending results
+survive saves at every phase; access metadata follows the newest capture, in request
+order within one tick; area and team-wide resets keep stale fields serving; a
+team-local forbidden edit carries pending generations forward; and slow or failing
+workers never move publication. `GradientPipeline/*` covers the pipeline template
+alone, and `python3 test/check_gradient_pipeline.py BINARY` adds a building pass
+forked with `--fork-rule buildingGradientDelay=N` (delays 1/4/8, workers 0/1/2/4/8,
+save/resume at every phase, full/table/lazy depth, rejected delays 0 and 9).
+
 To see the harness fail, drop `gradientGeneration[swimClass] != topologyGeneration`
 from `Map::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` all
 fail. `ring-before` passes either way by construction — nothing is cached before
@@ -672,6 +708,13 @@ The `MapGradientInvalidation` suite (`python3 test/run_tests.py --filter
 brushes, including resource-only edits, clearing goals, other teams and previously
 stale caches. It also checks resource, terrain, building and immobility transitions,
 a depleted escape exit, unreachable pockets and the refresh budget across tick wrap.
+Its gradient-stats case checks the lifetime rows of `BuildingGradientStats` (cold,
+generation, drop, eviction and end rows with their previous-search figures), the CSV
+and JSON exports, and that the statistics leave fields unchanged. `python3 test/test_gradient_depth_fit.py` checks the
+[depth model](../docs/building-gradient-depth-model.md) fitter on synthetic rows,
+that regenerating `BuildingGradientDepthPolicy.h` from the committed summary is a
+no-op, and, when a C++ compiler is present, that the header's lookup agrees with the
+fitter.
 
 Forbidden edits preserve unaffected walking fields and pending searches; own-team
 harvest round trips and clearing destinations still invalidate. Escape fields have
@@ -821,7 +864,19 @@ The real-engine movement-method fixture checks every swim class: a valid resourc
 target remains unchanged, and a depleted target is refreshed after its resource
 gradient is rebuilt. It invokes the movement method directly, rather than running
 an entire match. The runner isolates the profile and working directory and checks that preferences
-remain unchanged. Linux CI runs this regression.
+remain unchanged. Linux CI runs this regression. Fetching is greedy: the unit
+heads for the resource nearest to itself, even when another is a cheaper carry.
+
+`FetchHiringScore/*` checks hiring a fetcher: the hunger check measures the walk
+to the resource rather than the whole trip, and the score estimates the walk out
+plus the carry home.
+
+`LegacyRoundTripSave/*` loads
+[`greedy-fetching/round-trip-143.game.gz`](fixtures/greedy-fetching/README.md), a
+mid-game save written when fetching still routed by round trip, with round-trip
+fields live. The loader discards those fields; the game plays 1,000 more ticks
+against a golden per-tick trace and continues identically after a binary or text
+save in the current format.
 
 ## Hiring bucket iteration
 
@@ -1254,8 +1309,14 @@ icon opacity. It catches an opaque building disappearing abruptly at the fade's 
 Build `scons release=1 server=0 unit-tests path-gradient-test
 building-gradient-invalidation-test`. The `ComputeExecutor` unit suite checks exclusive
 slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
-It also gates presentation work while simulation batches and deadline joins finish,
-and verifies pending replacement, cancellation, serial pumping and capture release.
+For deferred batches it checks earliest-due ordering (ties and lane order by
+submission), that the owner only waits at a join whenever a worker exists, that an
+executor with no workers runs the jobs due no later than the join inline, and that
+with one worker shared with presentation a join waits out the running chunk and then
+completes in due order with no owner jobs. Producers that opt out of sharing compute
+inline at submission (`GradientPipeline` owner-only case). It also gates presentation
+work while simulation batches and deadline joins finish, and verifies pending
+replacement, cancellation, serial pumping and capture release.
 The path oracle also exercises independent eager/lazy searches at 1/2/4/8 threads;
 the building invalidation harness compares real area/building seed fields and
 frozen hiring advancement. Linux/Windows CI run the executor and path oracle.
@@ -1440,8 +1501,9 @@ pass `--output artifacts/released-compatibility` to
 `test/check_telemetry_simulation.py`. Fresh-load traces compare complete bytes;
 the legacy checkpoint comparison also checks complete bytes, including the
 aggregate checksum and every stored team/entity record. The current references
-include simulation revision 20's capability state; historical version-123
-references remain separate. CI retains these artifacts even when verification fails.
+record simulation revision 34's delayed resource growth, scheduled building gradients
+and greedy fetching;
+historical version-123 references remain separate. CI retains these artifacts even when verification fails.
 
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
@@ -1865,6 +1927,13 @@ runtime. The seeded combinations exercise mixed services, split recipes, shared
 stock, rectangular overlays and missing capabilities. Per-tick save continuation,
 resource conservation and retained custom-rule traces complement the focused
 `BuildingCatalog`, `BuildingServices` and `BuildingProductionCombat` suites.
+`BuildingAreaEffects` compares cached coverage with an independent evaluator and
+covers pulse services, combat, lifecycle transitions, growth snapshots and save
+continuation. `BuildingAreaEffectsBenchmark` is opt-in (`--tag benchmark --filter
+'BuildingAreaEffectsBenchmark/*'`); it separates stationary coverage, funding
+pulses, dirty rebuilds and memory across map/team sizes. Its populated-match
+fixture measures one team with healthy, nonhungry workers and walls, rather than
+combat or active resource growth.
 `AICustomCatalog` checks actual replacement-provider selection and split-production
 orders across the native controllers. These custom traces do not establish stock
 behavior parity.

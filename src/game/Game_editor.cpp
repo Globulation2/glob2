@@ -1,4 +1,6 @@
+#include <utility>
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 
@@ -48,7 +50,7 @@ int Game::unitsCount(int team, int type)
 		(team >= 0) && (team < mapHeader.getNumberOfTeams()) &&
 		(type >= 0) && (type < NB_UNIT_TYPE)
 	)
-		return teams[team]->stats.getLatestStat()->numberUnitPerType[type];
+		return std::as_const(teams[team]->stats).getLatestStat()->numberUnitPerType[type];
 	else
 		return 0;
 }
@@ -61,7 +63,7 @@ int Game::unitsUpgradesCount(int team, int type, int ability, int level)
 		(ability >= 0) && (ability < NB_ABILITY) &&
 		(level >= 0) && (level < NB_UNIT_LEVELS)
 	)
-		return teams[team]->stats.getLatestStat()->upgradeStatePerType[type][ability][level];
+		return std::as_const(teams[team]->stats).getLatestStat()->upgradeStatePerType[type][ability][level];
 	else
 		return 0;
 }
@@ -73,7 +75,7 @@ int Game::buildingsCount(int team, int type, int level)
 		(type >= 0) && (type < IntBuildingType::NB_BUILDING) &&
 		(level >= 0) && (level < MAX_BUILDING_LEVELS)
 	)
-		return teams[team]->stats.getLatestStat()->numberBuildingPerTypePerLevel[type][level];
+		return std::as_const(teams[team]->stats).getLatestStat()->numberBuildingPerTypePerLevel[type][level];
 	else
 		return 0;
 }
@@ -177,8 +179,8 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 
 	UnitType *ut=teams[team]->race.getUnitType(typeNum, level);
 
-	x = (x + map.getW()) % map.getW();
-	y = (y + map.getH()) % map.getH();
+	x = powerOfTwoRemainder(x + map.getW(), map.getW());
+	y = powerOfTwoRemainder(y + map.getH(), map.getH());
 
 	bool fly=ut->performance[FLY];
 	bool free;
@@ -216,6 +218,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
     const auto &terrain = map.terrainPropertiesAt(x,y);
     auto *unit = teams[team]->myUnits[id];
     unit->speed = unitTerrainMovementSpeed(unit->speed,fly ? terrain.airSpeedQ8 : terrain.groundSpeedQ8);
+	snapshots().invalidateBoundary();
 	return teams[team]->myUnits[id];
 }
 
@@ -268,7 +271,9 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	else
 		map.setBuilding(x, y, w, h, gid);
 	team->myBuildings[id]=b;
+	areaEffects.changed(gid);
 	team->attachBuilding(id);
+	snapshots().invalidateBoundary();
 	return b;
 }
 
@@ -333,6 +338,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 					break;
 				}
 	}
+	if (found) snapshots().invalidateBoundary();
 	return found;
 }
 

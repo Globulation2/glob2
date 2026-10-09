@@ -86,8 +86,8 @@ private:
 
 	Cortex::CortexTuning runtimeTuning;
 	/// Ticks between policy invocations. The observation/policy run at this
-	/// cadence; Order emission stays at tick rate via the queue. 25 ticks = 1
-	/// second at the engine's 40 ms tick.
+	/// cadence; Order emission stays at tick rate via the queue. 30 ticks = 1
+	/// second at normal speed.
 	static const int OBSERVE_INTERVAL = 25;
 
 	/// Worker count forced onto the pre-placed starting swarm on the first decision
@@ -468,7 +468,7 @@ private:
 
 	/// Per-game food open-margin N: the first N rows of food nearest the harvest
 	/// source stay unpainted; the checkerboard starts at depth N+1. Drawn ONCE via
-	/// syncRand on the first decision cycle (sentinel -1 = not yet drawn) and then
+	/// the controller stream on the first decision cycle (sentinel -1 = not yet drawn) and then
 	/// persisted (NOT redrawn on load) so same-seed replays stay byte-identical.
 	/// The draw consumes one AI random value, advancing this controller's stream, so this
 	/// is replay-relevant (validated against the deterministic harness).

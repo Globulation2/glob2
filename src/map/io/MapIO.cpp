@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "MapAssetBundle.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BuildingGradientSearch.h"
 #include "Map.h"
-#include "TerrainCompatibility.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
 #include "Version.h"
 #include "MapInternal.h"
+#include "MapSaveLayout.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -18,6 +19,7 @@
 #include <bit>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <PackedArray.h>
 #include <limits>
 #include <memory>
@@ -31,6 +33,30 @@ namespace
 constexpr std::size_t RegistryChunkBytes = 64 * 1024;
 constexpr std::size_t MaximumRegistryChunks =
 	TerrainRegistry::MaximumDefinitionBytes / RegistryChunkBytes;
+
+// Released formats 144/145 begin this region with an artwork byte count. The earlier
+// growth prototype instead begins with the packed Uint8 undermap. Its first block
+// is unambiguous: maps have at least 256 cells, raw lengths are powers of two,
+// constant blocks have length 1, and delta tags exceed the 16 MiB artwork limit.
+// Peek only the bounded header; the ordinary readers still validate the payload.
+bool legacyGrowthMapLayout(GAGCore::InputStream *stream, size_t cells)
+{
+	static_assert(MapAssetBundle::MaximumBytes == 16 * 1024 * 1024);
+	if (auto *text = dynamic_cast<GAGCore::TextInputStream *>(stream))
+	{
+		if (text->hasField("customAssets.length")) return false;
+		if (text->hasField("resourceIncarnations.0.incarnation") || text->hasField("undermap")) return true;
+		throw std::ios_base::failure("Missing format-144/145 map layout fields");
+	}
+	if (!GAGCore::PackedArray::binary(stream) || !stream->canSeek())
+		throw std::ios_base::failure("Cannot identify format-144/145 map layout");
+	const auto position = stream->getPosition();
+	const auto tag = stream->readUint8("encoding");
+	const auto bytes = stream->readUint32("bytes");
+	stream->seekFromStart(position);
+	static_assert(GAGCore::PackedArray::blockSize == 4096);
+	return MapSaveLayout::legacyGrowthMapHeader(tag, bytes, cells);
+}
 }
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
@@ -44,10 +70,13 @@ try
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	assert(header.getVersionMinor()>=16);
 
-	Sint32 versionMinor = header.getVersionMinor();
+	header.resolveGrowthLayout(stream);
+	Sint32 versionMinor = header.loadingVersion();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 
+    assetBundleValue = MapAssetBundle::empty();
 	clear();
+	loadedHistoricalGrowthVersion = header.historicalGrowthLayout ? header.getVersionMinor() : 0;
 	terrainRegistryValue = TerrainRegistry::builtins();
     resourceRegistryValue = versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES
         ? ResourceRegistry::empty() : ResourceRegistry::legacy();
@@ -74,12 +103,10 @@ try
 	hMask = h-1;
 	size = w*h;
 
-	// Files older than the catalogue were written with seven built-ins: their custom
-	// definitions and tile IDs start at 7 and move behind the current built-ins.
+	// Older files numbered their built-ins differently (TerrainRegistry::currentTerrainId);
+	// their custom definitions and terrain IDs move behind the current built-ins.
 	const unsigned savedBuiltins = TerrainRegistry::savedBuiltinCount(versionMinor);
-	// Returns a value the registry rejects when the renumbered ID would not fit.
-	auto remapTerrainId = [savedBuiltins](Uint16 v) -> unsigned
-	{ return v < savedBuiltins ? v : unsigned(v) - savedBuiltins + TERRAIN_COUNT; };
+	const bool vertexTerrainFormat = versionMinor >= FILE_FORMAT_VERSION_VERTEX_TERRAIN;
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_TERRAIN)
 	{
 		stream->readEnterSection("terrainRegistry");
@@ -133,6 +160,24 @@ try
             throw std::ios_base::failure(std::string("Invalid resource registry: ")+error.what());
         }
     }
+    loadedLegacyGrowth144 = versionMinor == FILE_FORMAT_VERSION_RESOURCE_GROWTH && legacyGrowthMapLayout(stream, size);
+    loadedLegacyGrowth145 = !loadedHistoricalGrowthVersion && versionMinor == FILE_FORMAT_VERSION_SIMPLE_RESOURCE_GROWTH && legacyGrowthMapLayout(stream, size);
+    if (versionMinor >= FILE_FORMAT_VERSION_ASSETS_AND_RESOURCE_GROWTH ||
+        (versionMinor == FILE_FORMAT_VERSION_MAP_ASSETS && !loadedLegacyGrowth144) ||
+        (versionMinor == FILE_FORMAT_VERSION_BUILDING_ARTWORK && !loadedLegacyGrowth145)) {
+        stream->readEnterSection("customAssets");
+        const auto length = stream->readUint32("length");
+        if (length > MapAssetBundle::MaximumBytes) throw std::ios_base::failure("Custom artwork exceeds 16 MiB");
+        if (length) {
+            std::string assets(length, '\0');
+            stream->read(assets.data(), length, "bytes");
+            try { assetBundleValue = MapAssetBundle::deserialize(assets); }
+            catch (const std::exception& error) { throw std::ios_base::failure(error.what()); }
+        }
+        stream->readLeaveSection();
+        try { assetBundleValue->validate(terrainRegistry(), resourceRegistry()); }
+        catch (const std::exception& error) { throw std::ios_base::failure(error.what()); }
+    }
 	terrainCounts.assign(terrainRegistry().size(), 0);
 
 	// We allocate memory:
@@ -144,33 +189,77 @@ try
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
 	displayedFarmAreaView.resize(size, false);
-	resourceCells.resize(size);
+	resourceCells.assign(size, {});
 	occupancyCells.resize(size);
 	areaCells.resize(size);
-	legacyTerrain.resize(size);
 	scriptAreaCells.resize(size);
 	for (auto &cell : resourceCells) cell.mayGrow = 1;
 	for (auto &cell : occupancyCells) cell.immobileUnit = 255;
-	terrainIds.assign(size, GRASS);
+	vertexTerrain.assign(size, GRASS);
 	resetChangeTracking();
 	refreshLiveView();
-	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
 
+	// Before format 146 a cell kept its own terrain ID (from format 134) besides
+	// the classic corners; these are the converted IDs, MIXED_TERRAIN where the
+	// cell was drawn by its classic corners.
+	std::vector<TerrainType> legacyCellTerrain;
+	if (!vertexTerrainFormat && versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+		legacyCellTerrain.assign(size, MIXED_TERRAIN);
+	auto readLegacyCellTerrain = [&](size_t i, Uint16 saved)
+	{
+		const auto id = TerrainRegistry::currentTerrainId(savedBuiltins, saved);
+		if (id && !validTerrainType(*id)) throw std::ios_base::failure("Unknown terrain identity");
+		if (!id) return; // a shore: drawn from its corners
+		const auto type = static_cast<TerrainType>(*id);
+		if (type != WATER && type != SAND && type != GRASS)
+		{
+			legacyCellTerrain[i] = type;
+			return;
+		}
+		// A classic ID normally matches its corners: uniform corners, or grass
+		// beside water, which drew grass. One set directly on the cell (an older
+		// whole-cell edit) disagrees, and the game ruled it by the ID.
+		const int x = int(i & wMask), y = int(i >> wDec);
+		const TerrainType corners[4] = {vertexTerrain[coordToIndex(x, y)], vertexTerrain[coordToIndex(x + 1, y)],
+										vertexTerrain[coordToIndex(x, y + 1)], vertexTerrain[coordToIndex(x + 1, y + 1)]};
+		const bool uniform = corners[0] == corners[1] && corners[0] == corners[2] && corners[0] == corners[3];
+		const bool grassWater = std::find(std::begin(corners), std::end(corners), GRASS) != std::end(corners) &&
+								std::find(std::begin(corners), std::end(corners), WATER) != std::end(corners);
+		const bool drawn = uniform ? corners[0] == type : grassWater && type == GRASS;
+		if (!drawn) legacyCellTerrain[i] = type;
+	};
 
-	// We read what's inside the map:
-	if (packed) GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){undermap[i]=v;});
-    else stream->read(undermap, size, "undermap");
-	for (size_t i = 0; i < size; ++i)
-		if (undermap[i] > GRASS) co_return false;
+	// We read what's inside the map: the terrain of every vertex, then the cells.
+	if (vertexTerrainFormat)
+	{
+		if (packed)
+			GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ if (!validTerrainType(v)) throw std::ios_base::failure("Unknown terrain identity"); vertexTerrain[i]=static_cast<TerrainType>(v); });
+	}
+	else
+	{
+		// The classic corners: water, sand or grass.
+		std::vector<Uint8> undermap(size);
+		if (packed) GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){undermap[i]=v;});
+		else stream->read(undermap.data(), size, "undermap");
+		for (size_t i = 0; i < size; ++i)
+		{
+			if (undermap[i] > GRASS) co_return false;
+			vertexTerrain[i] = static_cast<TerrainType>(undermap[i]);
+		}
+	}
 	stream->readEnterSection("cases");
     if(packed)
     {
         GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
-        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){legacyTerrain[i]=v;});
-        if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
-            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){ const auto id=remapTerrainId(v); if (!validTerrainType(id)) throw std::ios_base::failure("Unknown terrain identity"); terrainIds[i]=static_cast<TerrainType>(id); });
+        if (!vertexTerrainFormat)
+        {
+            // Classic sprite frames, derived from the corners: no longer read.
+            GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t,Uint16){});
+            if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+                GAGCore::PackedArray::read<Uint16>(stream,size,readLegacyCellTerrain);
+        }
         GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){occupancyCells[i].building=v;});
         if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
             GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){resourceCells[i].resource.type=v;});
@@ -197,22 +286,17 @@ try
 		stream->readEnterSection(i);
 		if (!packed) mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
-		if (!packed) legacyTerrain[i] = stream->readUint16("terrain");
-		if (versionMinor < FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+		if (!packed && vertexTerrainFormat)
 		{
-			if (legacyTerrain[i] >= 272) co_return false;
-			terrainIds[i] = legacyTerrainType(legacyTerrain[i]);
+			const auto v = stream->readUint16("vertexTerrain");
+			if (!validTerrainType(v)) co_return false;
+			vertexTerrain[i] = static_cast<TerrainType>(v);
 		}
-		else
+		else if (!packed)
 		{
-			if (!packed)
-			{
-				const auto id = remapTerrainId(stream->readUint16("terrainType"));
-				if (!validTerrainType(id)) co_return false;
-				terrainIds[i] = static_cast<TerrainType>(id);
-			}
-			const auto& visual = terrainRegistry().compatibility(terrainIds[i]);
-			if (legacyTerrain[i] < visual.firstFrame || legacyTerrain[i] >= visual.firstFrame + visual.variants) co_return false;
+			stream->readUint16("terrain");
+			if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
+				readLegacyCellTerrain(i, stream->readUint16("terrainType"));
 		}
 		if (!packed) occupancyCells[i].building = stream->readUint16("building");
 		if (occupancyCells[i].building != NOGBID && occupancyCells[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
@@ -272,12 +356,13 @@ try
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if (!legacyCellTerrain.empty()) convertLegacyCellTerrain(legacyCellTerrain);
 
     std::vector<Uint32> savedMultiTotals;
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
         for (const auto& cell:resourceCells)
             if (cell.resource.type!=NO_RES_TYPE && !std::has_single_bit(resourcePropertiesByIndex(cell.resource.type).materialMask)) savedMultiTotals.push_back(cell.resource.amount);
-    rebuildResourceHabitats();
+    rebuildTerrainCounts();
     rebuildResourceState();
     if (versionMinor>=FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
     {
@@ -310,6 +395,12 @@ try
         stream->readLeaveSection();
     }
 
+    if(loadedLegacyGrowth144) {
+        stream->readEnterSection("resourceIncarnations");
+        if(packed) GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 value){(void)i; (void)value;});
+        else for(size_t i=0;i<size;++i) { stream->readEnterSection(i); stream->readUint32("incarnation"); stream->readLeaveSection(); }
+        stream->readLeaveSection();
+    }
 	for(int n=0; n<9; ++n)
 	{
 		stream->readEnterSection(n);
@@ -321,7 +412,6 @@ try
 	if (restoreExploredArea)
 		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL, versionMinor);
 
-	rebuildTerrainCounts();
 	this->game = game;
 
 	// We load sectors:
@@ -400,7 +490,7 @@ catch (const std::ios_base::failure& error)
 
 void Map::save(GAGCore::OutputStream *stream)
 {
-	preparePendingGradient();
+	preparePendingWorld();
 	stream->writeEnterSection("Map");
 	stream->write("MapB", 4, "signatureStart");
 	
@@ -438,15 +528,18 @@ void Map::save(GAGCore::OutputStream *stream)
         stream->writeLeaveSection();
     }
 
-	// We write what's inside the map:
-	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});
-    else stream->write(undermap, size, "undermap");
+    stream->writeEnterSection("customAssets");
+    const auto assets = assetBundleValue->isEmpty() ? std::string{} : assetBundleValue->serialize();
+    stream->writeUint32(assets.size(), "length");
+    if (!assets.empty()) stream->write(assets.data(), assets.size(), "bytes");
+    stream->writeLeaveSection();
+
+	// We write what's inside the map: the terrain of every vertex, then the cells.
+	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return static_cast<Uint16>(vertexTerrain[i]);});
 	stream->writeEnterSection("cases");
     if(GAGCore::PackedArray::binary(stream))
     {
         GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return mapDiscovered[i];});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return legacyTerrain[i];});
-        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return static_cast<Uint16>(terrainIds[i]);});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return occupancyCells[i].building;});
         GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return resourceCells[i].resource.type;});
         GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return resourceCells[i].resource.variety;});
@@ -467,8 +560,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeEnterSection(i);
 		stream->writeUint32(mapDiscovered[i], "mapDiscovered");
 
-		stream->writeUint16(legacyTerrain[i], "terrain");
-		stream->writeUint16(static_cast<Uint16>(terrainIds[i]), "terrainType");
+		stream->writeUint16(static_cast<Uint16>(vertexTerrain[i]), "vertexTerrain");
 		stream->writeUint16(occupancyCells[i].building, "building");
 		
 		stream->writeUint16(resourceCells[i].resource.type,"resourceType");
@@ -644,11 +736,148 @@ void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size, boo
 }
 }
 
+// Scheduled building gradients: the request queue in FIFO order (stale entries
+// kept, so the overflow fallback sees the same length after loading) and the
+// pending jobs in publication order. Each pending search is finished first, as
+// lazy fields are below, so no bucket queue is serialized; a restored job is
+// complete with no search. Supersession is resolved here into a flag, since
+// slot epochs are owner-only. Saves before 148 carry none of this.
+void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
+{
+	auto &rt=*gradientRuntime;
+	stream->writeEnterSection("buildingGradientPipeline");
+	stream->writeUint8(rt.buildings.delayTicks(), "delay");
+	stream->writeEnterSection("queue");
+	stream->writeUint16(rt.buildingRequests.size(), "count");
+	unsigned index=0;
+	for (const auto &request : rt.buildingRequests)
+	{
+		const Building *b=buildingGradientDestination(request.team, request.building, request.identity);
+		const bool stale=request.stale || !b || b->refreshEpoch[request.slot]!=request.epoch || !b->globalGradient[request.slot];
+		stream->writeEnterSection(index++);
+		stream->writeUint8(request.team, "team");
+		stream->writeUint16(request.building, "building");
+		stream->writeUint32(request.identity, "identity");
+		stream->writeUint8(request.slot, "slot");
+		stream->writeUint8(stale, "stale");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("pending");
+	stream->writeUint8(rt.buildings.pendingCount(), "count");
+	index=0;
+	rt.buildings.visitPending([&](BuildingGradientJobPipeline::Job &job, unsigned remaining) {
+		auto &p=job.payload;
+		const Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
+		const bool superseded=job.superseded || !b || b->refreshEpoch[p.slot]!=p.epoch || !b->globalGradient[p.slot];
+		if (!superseded && p.search && !p.locked) p.search->finish();
+		stream->writeEnterSection(index++);
+		stream->writeUint8(p.team, "team");
+		stream->writeUint16(p.buildingId, "building");
+		stream->writeUint32(p.scriptIdentity, "identity");
+		stream->writeUint8(p.slot, "slot");
+		stream->writeUint32(p.captureTick, "captured");
+		stream->writeUint32(p.generation, "generation");
+		stream->writeUint8(remaining, "remaining");
+		stream->writeUint8(superseded, "superseded");
+		stream->writeUint8(p.locked, "locked");
+		stream->writeUint8(p.resourceState, "resourceState");
+		saveGradient(stream, superseded ? nullptr : p.data.get(), size);
+		stream->writeLeaveSection();
+	});
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed)
+{
+	auto &rt=*gradientRuntime;
+	stream->readEnterSection("buildingGradientPipeline");
+	const unsigned delay=stream->readUint8("delay");
+	stream->readEnterSection("queue");
+	const unsigned requests=stream->readUint16("count");
+	ensureBuildingGradientPipeline();
+	// An empty pipeline carries no deadlines, so it follows the header even when
+	// the saved delay predates a fork or a header change; saved work must match.
+	const bool otherDelay=delay!=rt.buildings.delayTicks();
+	if (otherDelay && requests)
+		throw std::runtime_error("Saved building gradient delay does not match the match rules");
+	if (requests && !buildingGradientPipelineActive())
+		throw std::runtime_error("Saved building gradient requests require the pipeline");
+	const auto validDestination=[&](unsigned team, unsigned building, unsigned slot) {
+		if (team>=unsigned(game->teamsCount()) || building>=unsigned(Building::MAX_COUNT) || slot>=unsigned(BUILDING_GRADIENT_COUNT))
+			throw std::runtime_error("Invalid saved building gradient destination");
+	};
+	for (unsigned i=0; i<requests; ++i)
+	{
+		stream->readEnterSection(i);
+		GradientRuntime::BuildingRequest request;
+		request.team=stream->readUint8("team");
+		request.building=stream->readUint16("building");
+		request.identity=stream->readUint32("identity");
+		request.slot=stream->readUint8("slot");
+		request.stale=loadFlag(stream, "stale");
+		stream->readLeaveSection();
+		validDestination(request.team, request.building, request.slot);
+		Building *b=buildingGradientDestination(request.team, request.building, request.identity);
+		if (!b) request.stale=true;
+		if (!request.stale)
+		{
+			if (b->refreshRequested.test(request.slot)) throw std::runtime_error("Duplicate saved building gradient request");
+			request.epoch=b->refreshEpoch[request.slot];
+			b->refreshRequested.set(request.slot);
+		}
+		rt.buildingRequests.push_back(request);
+	}
+	stream->readLeaveSection();
+	stream->readEnterSection("pending");
+	const unsigned count=stream->readUint8("count");
+	if (otherDelay && count)
+		throw std::runtime_error("Saved building gradient delay does not match the match rules");
+	for (unsigned i=0; i<count; ++i)
+	{
+		stream->readEnterSection(i);
+		building_gradient::Job p;
+		p.team=stream->readUint8("team");
+		p.buildingId=stream->readUint16("building");
+		p.scriptIdentity=stream->readUint32("identity");
+		p.slot=stream->readUint8("slot");
+		validDestination(p.team, p.buildingId, p.slot);
+		p.swim=p.slot%SWIM_CLASS_COUNT;
+		p.route=BuildingRoute(p.slot/SWIM_CLASS_COUNT);
+		p.captureTick=stream->readUint32("captured");
+		p.generation=stream->readUint32("generation");
+		const unsigned remaining=stream->readUint8("remaining");
+		bool superseded=loadFlag(stream, "superseded");
+		p.locked=loadFlag(stream, "locked");
+		p.resourceState=stream->readUint8("resourceState");
+		if (p.resourceState>2) throw std::runtime_error("Invalid saved resource state");
+		Uint16 *field=nullptr;
+		loadGradient(stream, field, size, packed);
+		p.data.reset(field);
+		stream->readLeaveSection();
+		if (!superseded && !p.data) throw std::runtime_error("Missing saved building gradient result");
+		Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
+		if (!b) superseded=true;
+		if (!superseded)
+		{
+			if (b->refreshRequested.test(p.slot)) throw std::runtime_error("Duplicate saved building gradient job");
+			p.epoch=b->refreshEpoch[p.slot];
+			b->refreshRequested.set(p.slot);
+		}
+		rt.buildings.restoreCompleted(remaining, superseded, std::move(p));
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+}
+
 // Cached routing fields deliberately lag map edits. Recomputing them on load
 // changes decisions before their scheduled refresh, even with an identical RNG.
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
-	const_cast<Map*>(this)->preparePendingGradient();
+	// A header changed since the last tick (a fork) reconfigures an empty pipeline first.
+	const_cast<Map*>(this)->ensureBuildingGradientPipeline();
+	const_cast<Map*>(this)->preparePendingWorld();
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
 	stream->writeUint32(topologyGeneration, "topologyGeneration");
@@ -733,19 +962,11 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeUint32(building->gradientGeneration[sw], "generation");
 				stream->writeLeaveSection();
 			}
-			stream->writeEnterSection("roundTrip");
+			stream->writeEnterSection("gradientUse");
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
 				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
-				for (int r=0; r<MaterialSlotCount; ++r)
-				{
-					stream->writeEnterSection(r);
-					saveGradient(stream, building->roundTripGradient[r][sw], size);
-					stream->writeUint32(building->roundTripGradientStep[r][sw], "step");
-					stream->writeUint32(building->roundTripGradientUsedStep[r][sw], "usedStep");
-					stream->writeLeaveSection();
-				}
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -811,6 +1032,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	});
 	stream->writeLeaveSection();
 	saveMaterialRoutingCache(stream);
+	// Last, so streams of older layouts (and tests replaying them) read unchanged.
+	saveBuildingGradientPipeline(stream);
+    gradientRuntime->growth.save(stream,game->stepCounter);
 	stream->writeLeaveSection();
 }
 
@@ -820,6 +1044,10 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 	gradientRuntime->preparation={};
 	gradientRuntime->pipeline.reset();
+	resetBuildingGradientPipeline();
+	for (int t=0; t<game->teamsCount(); ++t)
+		for (int b=0; b<Building::MAX_COUNT; ++b)
+			if (auto *building=game->teams[t]->myBuildings[b]) building->refreshRequested.reset();
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
 	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
@@ -912,8 +1140,22 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					? stream->readUint32("generation") : topologyGeneration;
 				stream->readLeaveSection();
 			}
-			if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			if (versionMinor >= FILE_FORMAT_VERSION_GREEDY_FETCHING)
 			{
+				stream->readEnterSection("gradientUse");
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				{
+					stream->readEnterSection(sw);
+					building->globalGradientUsedStep[building->routeSlot(sw, savedRoute)]=stream->readUint32("usedStep");
+					stream->readLeaveSection();
+				}
+				stream->readLeaveSection();
+			}
+			else if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			{
+				// Formats 95-146 also carry the retired round-trip fields beside each
+				// walking field's last-use step. Read and discard them; resource
+				// fetching never consults one now.
 				stream->readEnterSection("roundTrip");
 				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 				{
@@ -922,9 +1164,11 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					for (int r=0; r<MaterialSlotCount; ++r)
 					{
 						stream->readEnterSection(r);
-						loadGradient(stream, building->roundTripGradient[r][sw], size, packed);
-						building->roundTripGradientStep[r][sw]=stream->readUint32("step");
-						building->roundTripGradientUsedStep[r][sw]=stream->readUint32("usedStep");
+						Uint16 *retired=nullptr;
+						loadGradient(stream, retired, size, packed);
+						delete[] retired;
+						stream->readUint32("step");
+						stream->readUint32("usedStep");
 						stream->readLeaveSection();
 					}
 					stream->readLeaveSection();
@@ -1001,6 +1245,10 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
+	// Older saves restore no scheduled building work.
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed);
+    if(versionMinor>=FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH || loadedHistoricalGrowthVersion || loadedLegacyGrowth144 || loadedLegacyGrowth145)
+        gradientRuntime->growth.load(stream,*this,game->stepCounter,loadedHistoricalGrowthVersion ? loadedHistoricalGrowthVersion : versionMinor);
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.
@@ -1117,4 +1365,23 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
         stream->readLeaveSection();
     }
     stream->readLeaveSection();
+}
+
+void Map::convertLegacyCellTerrain(const std::vector<TerrainType> &cells)
+{
+	// A vertex takes the terrain of a touching cell that had a whole-cell terrain,
+	// so such a cell keeps it at all four corners. Where several touch, prefer the
+	// cell the vertex is the top-left corner of, then the cells to its top-left,
+	// top and left.
+	std::vector<TerrainType> vertices(vertexTerrain);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			for (const auto& [dx, dy] : {std::pair{0, 0}, {-1, -1}, {0, -1}, {-1, 0}})
+			{
+				const auto cell = cells[coordToIndex(x + dx, y + dy)];
+				if (cell == MIXED_TERRAIN) continue;
+				vertices[coordToIndex(x, y)] = cell;
+				break;
+			}
+	vertexTerrain = std::move(vertices);
 }

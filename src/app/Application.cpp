@@ -164,6 +164,8 @@ Application::Application()
 						 std::vector<std::string>{strings.getString("[continue]")}),
 					 [this](GAGGUI::Screen &, int) { mainMenu(); });
 	}
+	else if (std::getenv("GLOB2_GENERATOR_STUDIO"))
+		singlePlayer.generatorStudio();
 	else if (std::getenv("GLOB2_STUDIO_PLAYTEST"))
 		singlePlayer.studio();
 	else if (globalContainer->replaying)

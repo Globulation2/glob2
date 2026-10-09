@@ -9,6 +9,7 @@
 // platform workspace is on this branch; once it is, the tests read the source and
 // also check that the copy has not drifted from it.
 
+#include "EngineTiming.h"
 #include "EngineFixtures.h"
 
 #include <algorithm>
@@ -117,6 +118,37 @@ TEST_SUITE("MatchSetup")
         }
     }
 
+    TEST_CASE("Building gradient delay is optional bounded integer data and round trips through headers")
+    {
+        CHECK(MatchRules{}.buildingGradientDelay == 8);
+        CHECK(MatchRules{}.buildingGradientDelay == int(GameHeader::DEFAULT_BUILDING_GRADIENT_DELAY));
+        glob2test::HeadlessGlobals globals;
+        auto document=json::parse(glob2test::readFile(fixtureRoot()/"valid/MatchSetup/room-closed-seats.json"));
+        document["rules"].erase("buildingGradientDelay");
+        const auto absent=MatchSetup::fromJson(document);
+        CHECK(absent.rules.buildingGradientDelay==8);
+        CHECK(absent.toGameHeader(mapWithTeams(4)).getBuildingGradientDelay()==8);
+        for(unsigned delay : {1u,2u,4u}) {
+            CAPTURE(delay);
+            document["rules"]["buildingGradientDelay"]=delay;
+            const auto setup=MatchSetup::fromJson(document);
+            CHECK(setup.rules.buildingGradientDelay==delay);
+            CHECK(MatchSetup::parse(setup.dump()).rules.buildingGradientDelay==delay);
+            CHECK_FALSE(setup.rules==absent.rules);
+            auto map=mapWithTeams(4);
+            auto header=setup.toGameHeader(map);
+            CHECK(header.getBuildingGradientDelay()==delay);
+            const auto restored=MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion);
+            CHECK(restored.rules.buildingGradientDelay==delay);
+            CHECK(restored.toJson()["rules"]["buildingGradientDelay"]==delay);
+        }
+        for(const auto& invalid : {json(0),json(-1),json(9),json(1.5),json(4.0),json("4"),json(true),json(nullptr)}) {
+            CAPTURE(invalid);
+            document["rules"]["buildingGradientDelay"]=invalid;
+            CHECK_THROWS_AS(MatchSetup::fromJsonSchemaOnly(document),MatchSetupError);
+        }
+    }
+
 	TEST_CASE("embedded catalogs carry dynamic experiments independently of installed definitions")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -216,11 +248,13 @@ TEST_SUITE("MatchSetup")
 			{
 				MatchSetup setup;
 				CHECK_NOTHROW(setup = MatchSetup::parse(text));
-				// Older setup documents omit the optional delay. Canonical output
-				// spells out its engine default while preserving every other field.
+				// Older setup documents omit the optional delays. Canonical output
+				// spells out their engine defaults while preserving every other field.
 				json canonical = document;
 				if (!canonical["rules"].contains("aiOrderDelay"))
 					canonical["rules"]["aiOrderDelay"] = 0;
+				if (!canonical["rules"].contains("buildingGradientDelay"))
+					canonical["rules"]["buildingGradientDelay"] = 8;
 				CHECK(setup.toJson() == canonical);
 				CHECK(MatchSetup::parse(setup.dump()).toJson() == canonical);
 				++valid;
@@ -329,7 +363,7 @@ TEST_SUITE("MatchSetup")
 			for (const auto& condition : header.getWinningConditions())
 				if (condition->getType() == WCSuddenDeath)
 					CHECK(static_cast<const WinningConditionSuddenDeath&>(*condition).endStepTick ==
-					      Uint32(r.suddenDeathMinutes) * 60 * 25);
+					      Uint32(r.suddenDeathMinutes) * 60 * GAME_TICKS_PER_SECOND);
 			CHECK(header.isMapDiscovered() == r.mapDiscovered);
 			CHECK(header.areAllyTeamsFixed() == r.allyTeamsFixed);
 			CHECK(header.isResourceGrowthDisabled() == r.resourceGrowthDisabled);
@@ -564,4 +598,31 @@ TEST_SUITE("MatchSetup")
 		CHECK_FALSE(SimVersion::parseKey("125-" + version.dataHash, parsed));
 		MESSAGE("sim version " << version.key());
 	}
+}
+
+TEST_CASE("Scripted map sources preserve exact provenance and enforce team count" *
+		  doctest::test_suite("MatchSetup"))
+{
+	auto document =
+		json::parse(glob2test::readFile(fixtureRoot() / "valid/MatchSetup/room-closed-seats.json"));
+	const auto count = document["teams"].size();
+	document["map"] = {{"kind", "scripted"},
+					   {"hash", std::string(64, 'a')},
+					   {"chosenSeed", 91},
+					   {"generator",
+						{{"libraryId", "11111111-1111-4111-8111-111111111111"},
+						 {"versionId", "22222222-2222-4222-8222-222222222222"},
+						 {"packageHash", std::string(64, 'b')},
+						 {"fileHash", std::string(64, 'c')},
+						 {"generatorId", "author:landscape"},
+						 {"revision", 2},
+						 {"seed", 19},
+						 {"candidates", 1},
+						 {"startingUnitLevel", 0},
+						 {"params", {{"teams", count}, {"width", 7}, {"height", 7}}}}}};
+	const auto setup = Online::MatchSetup::fromJson(document);
+	CHECK(setup.map.kind == Online::MapSource::Kind::Scripted);
+	CHECK(setup.toJson()["map"] == document["map"]);
+	document["map"]["generator"]["params"]["teams"] = count + 1;
+	CHECK_THROWS(Online::MatchSetup::fromJson(document));
 }

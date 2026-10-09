@@ -17,7 +17,16 @@ bytes, with no dependency on local authoring JSON. The existing map-content hash
 binds distributed matches to the definitions.
 Building format 137 adds configurable services and capability-driven AI; replays
 recorded before version 137 became incompatible and network protocol 57 separated
-clients using those rules. The current replay floor is 143 for engine snapshots and scheduled AI decisions.
+clients using those rules. Format 146 stores terrain per map vertex and derives each
+cell's rules from its corners. Format 147 makes resource fetching greedy only, without
+round-trip routing, and format 148 schedules building walking fields; the current
+replay floor is 152: units, buildings, world operations and legacy stories use
+salted private PCG32 streams. AI helpers consume their controller streams explicitly.
+Earlier replay trajectories are incompatible. Existing saves remain loadable: each
+missing owner stream is initialized once from the saved seed, domain and identity;
+subsequent saves retain its exact progress. Existing AI, JavaScript, generation and
+presentation streams remain private. Ecology, legacy summons and generated resource
+placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
@@ -28,6 +37,30 @@ sets the same rule. Saved games retain their original setting; do not override i
 when continuing a save. Delay 8 intentionally changes response pacing compared
 with delay 0. Compare the same initial state, seed, delay and orders across worker
 counts and platforms when checking determinism.
+
+`--rule buildingGradientDelay=N` (1 through 8, default 8) sets how many ticks a
+scheduled building walking field waits between capture and publication. It cannot
+change while scheduled building fields are pending. Format 148 saves the pending
+fields and the request queue; older saves restore none and start the pipeline at
+the delay their header implies (8 before format 148).
+
+To compare delays from one checkpoint, fork it explicitly:
+`--load-game busy.game --fork-rule buildingGradientDelay=N`. A fork changes the
+loaded match's rules before its first tick; it is a different match from the saved
+one, not a continuation. Its replay (`--replay true`) starts at the fork and
+`result.json` lists the changes under `resolved.fork` (empty for a plain
+continuation). Only this rule can be forked, and only from a save with no pending
+scheduled building fields (a save from before format 148, or one taken before any
+refresh was requested); to measure another delay later in a game, save the
+checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
+overrides of a saved game, including `--experiment`, `--rule` and
+`--ai-order-delay`, are still rejected.
+
+`GLOB2_BUILDING_DEPTH=full|table|lazy` chooses how far a worker settles a scheduled
+building field before publication: the generated depth model (`table`, the
+default), the whole field, or only its seeds. Readers resolve unsettled cells on the
+owner either way, so the setting moves CPU between workers and the simulation thread
+and never changes a result; use it only for timing comparisons.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
@@ -58,6 +91,15 @@ suffix) keep loading unchanged. Replays are unaffected and stay uncompressed.
 For optional JavaScript controllers and map scripts, see
 [JavaScript scripting](javascript.md).
 
+Format 149 preserves embedded artwork, vertex terrain, scheduled building fields
+and typed delayed growth proposals. The loader also distinguishes released
+formats 144–148 from the older growth-draft layouts that reused those version
+numbers, converting legacy pending work on load. Use
+`--resource-growth-delay 1..16` (default 8) to set publication timing.
+Growth always uses the shared executor; `--compute-threads 1` leaves zero workers
+and runs its fallback on the simulation owner. Publication deadlines are identical; changing the delay changes
+simulation behavior and is rejected while a loaded queue is pending.
+
 ## CLI Flags
 
 ### `--nox <game-file> <steps> <runs>`
@@ -76,7 +118,7 @@ To create a `.game` file with specific AI players: start the game with GUI, set 
 
 ### `-test-games-nox [count]`
 
-Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~60 minutes of game time at 25 ticks/sec), or after `GLOB2_TEST_MAX_TICKS` ticks when that environment variable is a positive integer; a game stopped at the cap reports `winner_team=-1`. The cap only decides when the driver stops the game, not how ticks are simulated. An optional `count` parameter controls how many games to run (default: infinite).
+Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~50 minutes of game time at 30 ticks/sec), or after `GLOB2_TEST_MAX_TICKS` ticks when that environment variable is a positive integer; a game stopped at the cap reports `winner_team=-1`. The cap only decides when the driver stops the game, not how ticks are simulated. An optional `count` parameter controls how many games to run (default: infinite).
 
 ```bash
 ./glob2 -test-games-nox 1    # run one game and exit
@@ -109,6 +151,7 @@ Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as c
 | `noPermadeath` | 0-1 | No permadeath |
 | `peaceful` | 0-1 | Peaceful mode |
 | `fortress` | 0-2 | Fortress buildings (x5, x10 building HP) |
+| `buildingGradientDelay` | 1-8 | Ticks between capturing and publishing a scheduled building walking field (default 8) |
 | `suddenDeathTick` | 0-100000000 | Sudden-death timer at this tick (0 = off; the lobby offers 30-90 minutes, 45,000-135,000 ticks) |
 | `winProbabilityPermille` | 0 or 501-1000 | Estimated win-probability condition (0 = off); distinct from the sudden-death timer |
 | `<experiment key>` | 0-1 | An [experimental feature](../features/experimental-features.md) by its key, e.g. `guard-area-balancing`. The profile's Settings > Experiments apply first; a rule here overrides that one experiment |
@@ -186,9 +229,15 @@ Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI 
 ## Verifying a match record
 
 ```sh
-glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> [--profile <name>]
+glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> \
+  [--profile <name>] [--compute-threads auto|N]
 glob2 --sim-version
 ```
+
+`--verify-match` accepts the same compute sizing as game sessions. Its `compute.json`
+records requested, resolved and actual sizing separately from deterministic
+verification results. Headless `--turn-client` also accepts this setting and
+reports sizing in its result telemetry.
 
 `--verify-match` replays a relay match record (the format is in the
 [turn protocol](../multiplayer/turn-protocol.md#match-record)) headlessly and judges the
@@ -415,15 +464,18 @@ that replay floor. Network protocol 51 requires compact-map readers and rejects
 older and newer clients. Background save finalization owns a captured state and
 does not advance simulation; continuation checks must still compare the same
 captured tick, seed and orders. Routing worker availability affects wall time only:
-the serial fallback publishes on the same ticks. Headless `--gradient-workers 0` is the deterministic owner-only seeding and propagation control.
+the serial fallback publishes on the same ticks. `--compute-threads 1` is the
+owner-only control; all deferred producers submit to the same executor and the
+owner computes their jobs at joins when there are no workers.
 
 Periodic material, market, guard and clear gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
-The deprecated positive `--gradient-workers N` selects shared execution and uses
-`N+1` total threads only when `--compute-threads` is absent. Zero keeps gradient
-jobs on the owner. Saving drains private work without publishing it early and
-continues to serialize completed fields with their remaining deadlines.
+`--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
+reported logical CPU threads (one if unavailable), and N is a positive unsigned
+participant count including the owner. Saving drains
+private work without publishing it early and continues to serialize completed
+fields with their remaining deadlines.
 
 
 Version 139 / simulation revision 21 selects periodic preparation after the whole
@@ -454,3 +506,7 @@ selection and weights. The save floor stays 58 and replay floor stays 127;
 fresh-game decision behavior is unchanged. Older saves use historical defaults
 for omitted state, whose original values cannot be recovered. Protocol 54 carries
 the additional continuation fields.
+
+Headless diagnostic exports wait for each pending output batch before advancing
+the simulation, including with `GLOB2_SIM_THREAD=1`. This keeps capture intervals
+from being lost while PNGs are written; it affects export wall time only.

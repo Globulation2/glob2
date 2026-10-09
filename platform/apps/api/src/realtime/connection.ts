@@ -17,6 +17,12 @@ import {
 } from '@glob2/protocol';
 import { HttpError, apiError } from '../errors.ts';
 
+function scriptedContract(data: unknown): boolean {
+  if (!data || typeof data !== 'object') return false;
+  const value = data as { room?: { map?: { kind?: string } }; setup?: { map?: { kind?: string } } };
+  return value.room?.map?.kind === 'scripted' || value.setup?.map?.kind === 'scripted';
+}
+
 export interface RateLimit {
   perSecond: number;
   burst: number;
@@ -41,6 +47,7 @@ export class RealtimeConnection {
   private rejected = 0;
 
   helloDone = false;
+  generatorSharing = false;
   platform: ClientPlatform = 'desktop';
   simVersion: SimVersion | undefined;
   simSupported = false;
@@ -49,6 +56,7 @@ export class RealtimeConnection {
   familyId: string | undefined;
   readonly pendingAttempts = new Set<string>();
   onAccountChange: ((connection: RealtimeConnection) => void) | undefined;
+  onActivity: ((account: Account) => Promise<void>) | undefined;
 
   constructor(socket: WebSocket, ip: string, logger: Logger, limit: RateLimit) {
     this.socket = socket;
@@ -67,6 +75,10 @@ export class RealtimeConnection {
   }
 
   sendEvent(event: RealtimeEventName, data: object): void {
+    if (!this.generatorSharing && scriptedContract(data)) {
+      this.close(4000, 'Update required: shared generator support');
+      return;
+    }
     this.send({ type: 'event', event, data });
   }
 
@@ -178,6 +190,12 @@ export class RealtimeConnection {
     }
     try {
       const result = await handler(this, request.params as Record<string, unknown>);
+      if (!this.generatorSharing && scriptedContract(result))
+        throw apiError(
+          'update_required',
+          'Update the game to use shared generator rooms and matches.',
+        );
+      if (this.account) await this.onActivity?.(this.account);
       this.send({ type: 'response', id: request.id, ok: true, result });
     } catch (error) {
       if (error instanceof HttpError) {

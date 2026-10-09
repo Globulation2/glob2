@@ -90,6 +90,7 @@ static constexpr int FILE_FORMAT_VERSION_PENDING_CONSTRUCTION = 90;
 static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
 
 //! A building's round-trip fields and gradient use stamps join the cached routing fields.
+//! The round-trip fields are read and discarded from FILE_FORMAT_VERSION_GREEDY_FETCHING on.
 static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
 
 //! The map's topology generation and each cached field's generation stamp
@@ -220,3 +221,48 @@ static constexpr int FILE_FORMAT_VERSION_HAZARD_ROUTING = 142;
 
 //! Shared AI scheduling and pending command execution state.
 static constexpr int FILE_FORMAT_VERSION_AI_PIPELINE = 143;
+
+// Historical growth-draft gates below overlap released artwork/terrain versions.
+// Resolve the save lineage before using these gates; integrated saves start at 149.
+// Immutable growth batches and per-deposit incarnation counters.
+static constexpr int FILE_FORMAT_VERSION_RESOURCE_GROWTH = 144;
+
+// Compact signed resource deltas; no per-cell incarnation plane.
+static constexpr int FILE_FORMAT_VERSION_SIMPLE_RESOURCE_GROWTH = 145;
+//! Map-owned custom artwork and attribution.
+static constexpr int FILE_FORMAT_VERSION_MAP_ASSETS = 144;
+
+// Combined artwork and compact growth. Formats 144/145 predate integration.
+static constexpr int FILE_FORMAT_VERSION_ASSETS_AND_RESOURCE_GROWTH = 146;
+//! Portable, content-addressed building sprite frames in maps, saves and replays.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_ARTWORK = 145;
+
+//! Terrain is stored once per map vertex; cells derive their rules from their
+//! four corners. Earlier files carry an undermap, per-cell sprites and (from 134)
+//! per-cell terrain IDs, converted to vertices on load. The two shore types are
+//! retired and the catalogue IDs behind TRAIL move down by two.
+static constexpr int FILE_FORMAT_VERSION_VERTEX_TERRAIN = 146;
+
+//! Resource fetching is greedy only: buildings save their walking fields' last-use
+//! steps without the retired round-trip fields that formats 95-146 carried.
+static constexpr int FILE_FORMAT_VERSION_GREEDY_FETCHING = 147;
+
+//! Scheduled building gradients: the match-wide delay (GameHeader::buildingGradientDelay)
+//! and the pending building gradient pipeline state.
+static constexpr int FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE = 148;
+// Building artwork and both resource-growth save lineages.
+static constexpr int FILE_FORMAT_VERSION_ALL_ARTWORK_AND_RESOURCE_GROWTH = 147;
+
+// Typed delayed growth proposals preserve configured seed stocks and variety.
+static constexpr int FILE_FORMAT_VERSION_CONFIGURED_GROWTH_SEEDS = 148;
+
+//! Integrated vertex terrain, scheduled building gradients and delayed resource growth.
+static constexpr int FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH = 149;
+
+//! Building area-effect funding and fractional pulse services.
+static constexpr int FILE_FORMAT_VERSION_AREA_EFFECTS = 150;
+
+//! Salted, persistent private PCG32 streams for units and buildings.
+static constexpr int FILE_FORMAT_VERSION_ENTITY_RANDOM = 151;
+//! Private PCG32 streams for map operations and legacy stories.
+static constexpr int FILE_FORMAT_VERSION_PRIVATE_RANDOM = 152;

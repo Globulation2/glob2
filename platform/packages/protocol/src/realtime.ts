@@ -133,6 +133,7 @@ export const realtimeMethods = {
       protocol: Type.Literal(REALTIME_PROTOCOL_VERSION),
       client: Strict({
         platform: ClientPlatform,
+        generatorSharing: Type.Optional(Type.Boolean()),
         version: Type.String({ maxLength: 64 }),
         simVersion: SimVersion,
       }),

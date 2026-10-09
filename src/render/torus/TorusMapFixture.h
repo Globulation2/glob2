@@ -18,5 +18,5 @@ inline void makeTorusMapFixture(Game &game, int width, int height)
     game.gameHeader.setNumberOfPlayers(1);
     for (int y = 0; y < height; ++y)
         for (int x = 0; x < width; ++x)
-            game.map.setUMatPos(x, y, ((x / 4 + y / 4) & 1) ? SAND : GRASS, 1);
+            game.map.paintVertexSquare(x, y, ((x / 4 + y / 4) & 1) ? SAND : GRASS, 1);
 }

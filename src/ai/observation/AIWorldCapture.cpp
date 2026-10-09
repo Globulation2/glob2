@@ -33,9 +33,11 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
     } else if (SimulationSnapshot::needs(lease.requirements, SimulationSnapshot::Component::Visibility))
         throw std::logic_error("AI observation is missing requested visibility");
 	if (lease.terrain) {
-		if (!lease.terrain->identity || lease.terrain->identity->size() != cells || lease.terrain->legacy.size() != cells)
+		if (!lease.terrain->rules || lease.terrain->cellRules.size() != cells
+			|| !lease.terrain->vertices || lease.terrain->vertices->size() != cells)
 			throw std::logic_error("AI observation terrain component size mismatch");
-		terrainCells = lease.terrain->identity->data(); legacyTerrainCells = lease.terrain->legacy.data();
+		cellRuleCells = lease.terrain->cellRules.data();
+		vertexCells = lease.terrain->vertices->data();
 	} else if (SimulationSnapshot::needs(lease.requirements, SimulationSnapshot::Component::Terrain))
 		throw std::logic_error("AI observation is missing requested terrain");
 	growth = lease.growth;
@@ -44,8 +46,8 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 	tick = lease.tick;
 	if (lease.catalogs) { observedUnitTypes = &lease.catalogs->unitTypes; catalog = lease.catalogs->buildings; resourceRegistry = lease.catalogs->resources; }
 	view = lease.view();
-	farmInputs = resourceCells && terrainCells && view.resourceRegistry && view.habitats && view.growth && lease.rules;
-	if (lease.terrain) { terrain = lease.terrain->registry; terrainRevision = lease.terrain->revision; terrainMovementModifiers = lease.terrain->movementModifiers; airTerrainConstraints = lease.terrain->airConstraints; }
+	farmInputs = resourceCells && cellRuleCells && view.resourceRegistry && view.rules && view.growth && lease.rules;
+	if (lease.terrain) { terrain = lease.terrain->registry; cellRules = lease.terrain->rules; terrainRevision = lease.terrain->revision; terrainMovementModifiers = lease.terrain->movementModifiers; airTerrainConstraints = lease.terrain->airConstraints; }
 	if (lease.rules) { configuration = lease.rules->configuration; rules = lease.rules->values; ruleValues = lease.rules->named; experimentKeys = lease.rules->experiments; }
 	if (lease.areas) farmAreasEnabled = lease.areas->farmEnabled;
 	if (lease.teams) { teams = lease.teams->values; totalPrestige = lease.teams->totalPrestige; }
@@ -62,5 +64,5 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 std::shared_ptr<const AIWorldView::Catalog> AIWorldView::captureCatalog(const Game& game)
 { return SimulationSnapshot::captureCatalog(game); }
 std::shared_ptr<const AIWorldView> AIWorldView::capture(const Game& game, std::shared_ptr<const Catalog> catalog)
-{ return std::make_shared<AIWorldView>(SimulationSnapshot::capture(game, std::move(catalog))); }
+{ return std::make_shared<AIWorldView>(SimulationSnapshot::capture(game, std::move(catalog), SimulationSnapshot::Simulation)); }
 } // namespace AIEngine

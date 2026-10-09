@@ -1,3 +1,4 @@
+import { validationMessage } from '../messages.ts';
 // SPDX-License-Identifier: GPL-3.0-or-later
 /* GSR1 contract; keep in agreement with libgag/src/SkinModel.cpp.
  *
@@ -105,7 +106,7 @@ function readTransform(reader: ByteReader): RigTransform {
   const norm = rotation.reduce((sum, v) => sum + v * v, 0);
   requireAsset(
     Math.abs(norm - 1) <= TOLERANCE && scale >= MINIMUM_SCALE && scale <= MAX_SCALAR,
-    'Invalid rig transform',
+    validationMessage('Invalid rig transform'),
   );
   return Object.freeze({
     translation: Object.freeze(translation),
@@ -124,20 +125,20 @@ function readVertices(reader: ByteReader, count: number, boneCount: number) {
       weights = reader.f32s(4);
     requireAsset(
       Math.abs(vertex.slice(3).reduce((sum, n) => sum + n * n, 0) - 1) < TOLERANCE,
-      'Invalid rig normal',
+      validationMessage('Invalid rig normal'),
     );
     requireAsset(
       coords.every((c) => c >= 0 && c <= 1),
-      'Invalid rig UV',
+      validationMessage('Invalid rig UV'),
     );
     requireAsset(
       bones.every((b) => b < boneCount),
-      'Invalid rig influence bone',
+      validationMessage('Invalid rig influence bone'),
     );
     const sum = weights.reduce((a, b) => a + b, 0);
     requireAsset(
       weights.every((w) => w >= 0 && w <= 1) && Math.abs(sum - 1) < TOLERANCE,
-      'Invalid rig weights',
+      validationMessage('Invalid rig weights'),
     );
     rest.set(vertex, v * 6);
     uv.set(coords, v * 2);
@@ -155,7 +156,7 @@ function readBones(reader: ByteReader, boneCount: number): RigBone[] {
     global: number[][] = [];
   for (let b = 0; b < boneCount; b++) {
     const parent = reader.u32();
-    requireAsset(parent === NO_PARENT || parent < b, 'Invalid rig hierarchy');
+    requireAsset(parent === NO_PARENT || parent < b, validationMessage('Invalid rig hierarchy'));
     const rest = readTransform(reader),
       inverseBind = readTransform(reader);
     global[b] = parent === NO_PARENT ? matrix(rest) : multiply(global[parent]!, matrix(rest));
@@ -165,7 +166,7 @@ function readBones(reader: ByteReader, boneCount: number): RigBone[] {
         (v, i) =>
           Number.isFinite(v) && Math.abs(v - (i % 5 === 0 ? 1 : 0)) < INVERSE_BIND_TOLERANCE,
       ),
-      'Invalid rig inverse bind',
+      validationMessage('Invalid rig inverse bind'),
     );
     bones.push(Object.freeze({ parent, rest, inverseBind }));
   }
@@ -177,26 +178,26 @@ function readClip(reader: ByteReader, bones: readonly RigBone[], taken: Set<numb
     duration = reader.f32();
   requireAsset(
     samples >= 1 && samples <= MAX_SAMPLES && duration >= MINIMUM_DURATION,
-    'Invalid rig track dimensions',
+    validationMessage('Invalid rig track dimensions'),
   );
-  requireAsset(!taken.has(id), 'Duplicate rig clip');
+  requireAsset(!taken.has(id), validationMessage('Duplicate rig clip'));
   taken.add(id);
   const camera = readClipCamera(reader, 'rig');
   const pivot = reader.f32s(3),
     radius = reader.f32();
-  requireAsset(radius > 0, 'Invalid rig radius');
+  requireAsset(radius > 0, validationMessage('Invalid rig radius'));
   const frames = Array.from({ length: CLIP_FRAMES }, () => {
     const heading = reader.f32(),
       time = reader.f32();
     requireAsset(
       Math.abs(heading) <= MAX_HEADING && time >= 0 && time < duration,
-      'Invalid rig frame mapping',
+      validationMessage('Invalid rig frame mapping'),
     );
     return Object.freeze({ heading, time });
   });
   requireAsset(
     samples * bones.length * TRANSFORM_BYTES <= reader.remaining,
-    'Truncated rig tracks',
+    validationMessage('Truncated rig tracks'),
   );
   const tracks = Array.from({ length: samples * bones.length }, () => readTransform(reader));
   // Bound every interpolated hierarchy, including combinations between keys:
@@ -216,7 +217,7 @@ function readClip(reader: ByteReader, bones: readonly RigBone[], taken: Set<numb
         hi[b]! <= MAX_SCALAR &&
         lo[b]! * inverse >= MINIMUM_SCALE &&
         hi[b]! * inverse <= MAX_SCALAR,
-      'Unbounded rig scale',
+      validationMessage('Unbounded rig scale'),
     );
   });
   return Object.freeze({
@@ -233,10 +234,10 @@ function readClip(reader: ByteReader, bones: readonly RigBone[], taken: Set<numb
 export function decodeRig(bytes: ArrayBuffer): RigModel {
   requireAsset(
     bytes.byteLength >= HEADER_BYTES && bytes.byteLength <= MAX_ASSET_BYTES,
-    'Invalid rig size',
+    validationMessage('Invalid rig size'),
   );
   const reader = new ByteReader(bytes, 'rig');
-  requireAsset(reader.u32() === 0x31525347, 'Unsupported rig format');
+  requireAsset(reader.u32() === 0x31525347, validationMessage('Unsupported rig format'));
   const count = reader.u32(),
     indexCount = reader.u32(),
     boneCount = reader.u32(),
@@ -246,7 +247,7 @@ export function decodeRig(bytes: ArrayBuffer): RigModel {
   requireGeometryCounts(count, indexCount, clipCount, logicalSize, 'rig');
   requireAsset(
     boneCount >= 1 && boneCount <= MAX_BONES && payload === bytes.byteLength - HEADER_BYTES,
-    'Invalid rig dimensions',
+    validationMessage('Invalid rig dimensions'),
   );
   // Fixed geometry and every clip header must fit before allocating.
   requireAsset(
@@ -256,13 +257,13 @@ export function decodeRig(bytes: ArrayBuffer): RigModel {
       boneCount * BONE_BYTES +
       clipCount * CLIP_HEADER_BYTES <=
       bytes.byteLength,
-    'Truncated rig geometry',
+    validationMessage('Truncated rig geometry'),
   );
   const { rest, uv, influences } = readVertices(reader, count, boneCount);
   const indices = new Uint32Array(indexCount);
   for (let i = 0; i < indexCount; i++) {
     indices[i] = reader.u32();
-    requireAsset(indices[i]! < count, 'Invalid rig index');
+    requireAsset(indices[i]! < count, validationMessage('Invalid rig index'));
   }
   const bones = readBones(reader, boneCount);
   const taken = new Set<number>();
@@ -311,7 +312,7 @@ export function paletteAtTime(
   const clip = model.clips[clipIndex];
   requireAsset(
     Number.isInteger(clipIndex) && !!clip && Number.isFinite(time) && Number.isFinite(heading),
-    'Invalid rig pose',
+    validationMessage('Invalid rig pose'),
   );
   let wrapped = time % clip.duration;
   if (wrapped < 0) wrapped += clip.duration;
@@ -348,9 +349,12 @@ export function paletteAtTime(
 }
 /** Bone matrices for one of the 256 gameplay frames of a clip. */
 export function paletteAtFrame(model: RigModel, clip: number, frame: number): RigPalette {
-  requireAsset(Number.isInteger(frame) && frame >= 0 && frame < CLIP_FRAMES, 'Invalid rig sample');
+  requireAsset(
+    Number.isInteger(frame) && frame >= 0 && frame < CLIP_FRAMES,
+    validationMessage('Invalid rig sample'),
+  );
   const mapping = model.clips[clip]?.frames[frame];
-  requireAsset(!!mapping, 'Invalid rig clip');
+  requireAsset(!!mapping, validationMessage('Invalid rig clip'));
   return paletteAtTime(model, clip, mapping.time, mapping.heading);
 }
 /** Deforms the rest mesh for one frame as xyz, normal xyz per vertex: in

@@ -8,13 +8,22 @@
 #include <stdexcept>
 namespace TerrainVisual
 {
-Catalog loadCatalog()
+Catalog loadCatalog(std::shared_ptr<const MapAssetBundle> assets)
 {
 	std::unique_ptr<std::ifstream> input(
 		GAGCore::Toolkit::getFileManager()->openIFStream("data/terrain/tileset.json"));
 	if (!input || !*input)
 		throw std::runtime_error("Cannot read data/terrain/tileset.json");
-	return Catalog::parse(nlohmann::json::parse(*input));
+	auto document = nlohmann::json::parse(*input);
+    if (assets && !assets->terrains.empty()) {
+        document.erase("compiled_pack");
+        for (const auto& [key, value] : assets->terrains.items()) {
+            auto material = value; material["key"] = key;
+            document["materials"].push_back(material);
+            document["bindings"][key] = key;
+        }
+    }
+    return Catalog::parse(document);
 }
 namespace
 {

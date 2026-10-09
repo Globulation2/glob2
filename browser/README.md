@@ -122,7 +122,8 @@ The rest follows in the background once the main menu is up, most needed first:
   before it arrives shows missing glyphs until it does.
 - `translations`, the other languages' full catalogs; English stands in until
   they arrive. An interface in another language loads them before the game starts;
-  on a first visit with no saved language, that is the browser's preferred language
+  on a first visit with no saved game language, that follows the online language choice,
+  or the browser's preferred language when no online choice has been saved
   when the game has a catalog for it (`src/app/SystemLanguage.cpp`).
 - `music-sets`: all nine soundtrack sets beyond the original, encoded as stereo
   Opus at 48 kbps VBR. Until it arrives the
@@ -457,3 +458,12 @@ The deployment stack smoke test also checks isolation and framing policies for
 both Studio routes, the embedded game, the ordinary game entry, and the Monaco
 worker path policy. Firefox and WebKit explicitly include the Studio suite in
 the browser CI matrix; Chromium discovers it through the full-suite shards.
+
+The loading page uses the online application's shared translation catalogs and language
+selector, including right-to-left Arabic and Persian. Its `glob2_locale` cookie is
+shared with the online application. A saved game language takes priority for the
+game interface; the online selection supplies SDL's initial preferred locale only
+when the game profile has no saved language. The browser build installs `i18n.js`
+and `locales/*.json`, and the static packager includes them and their gzip sidecars
+in the release checksums and identity. Regenerate those assets with the platform
+translation tooling (`cd platform && npm run i18n:browser`) when catalogs change.

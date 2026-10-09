@@ -1,4 +1,7 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Patterns.h"
 #include "GenerationContext.h"
 #include "LatticeNoise.h"
@@ -23,7 +26,10 @@ class SpanDivide
 	{
 		int bits = 0;
 		while ((std::int64_t(1) << bits) < span)
+		{
+			::MapGeneration::generationCheckpoint();
 			++bits;
+		}
 		shift = 31 + bits;
 		reciprocal = std::uint32_t((std::uint64_t(1) << shift) / std::uint64_t(span) + 1);
 		lift = peak + 1;
@@ -67,8 +73,9 @@ void boxBlurWith(const Torus &t, const std::vector<int> &field, std::vector<int>
 	result.resize(field.size());
 	for (int y = 0; y < h; ++y)
 	{
-		const int *in = &field[size_t(y) * w];
-		int *out = &rows[size_t(y) * w];
+		::MapGeneration::generationCheckpoint();
+		const int *in = &field.at(size_t(y) * w);
+		int *out = &rows.at(size_t(y) * w);
 		if (rx <= 0)
 		{
 			std::copy(in, in + w, out);
@@ -76,21 +83,27 @@ void boxBlurWith(const Torus &t, const std::vector<int> &field, std::vector<int>
 		}
 		std::int64_t sum = 0;
 		for (int d = -rx; d <= rx; ++d)
-			sum += in[((d % w) + w) % w];
+		{
+			::MapGeneration::generationCheckpoint();
+			sum += in[dimensionRemainder((dimensionRemainder(d, w)) + w, w)];
+		}
 		// i - rx and i + rx + 1 leave [0, w) only in the two end ranges; the middle indexes plainly.
 		int i = 0;
 		for (; i < rx; ++i)
 		{
+			::MapGeneration::generationCheckpoint();
 			out[i] = floorX(sum);
 			sum += std::int64_t(in[i + rx + 1]) - in[i - rx + w];
 		}
 		for (; i < w - rx - 1; ++i)
 		{
+			::MapGeneration::generationCheckpoint();
 			out[i] = floorX(sum);
 			sum += std::int64_t(in[i + rx + 1]) - in[i - rx];
 		}
 		for (; i < w; ++i)
 		{
+			::MapGeneration::generationCheckpoint();
 			out[i] = floorX(sum);
 			sum += std::int64_t(in[i + rx + 1 - w]) - in[i - rx];
 		}
@@ -103,19 +116,30 @@ void boxBlurWith(const Torus &t, const std::vector<int> &field, std::vector<int>
 	std::vector<std::int64_t> sums(w, 0);
 	for (int d = -ry; d <= ry; ++d)
 	{
-		const int *row = &rows[size_t(((d % h) + h) % h) * w];
+		::MapGeneration::generationCheckpoint();
+		const int *row = &rows.at(size_t(dimensionRemainder((dimensionRemainder(d, h)) + h, h)) * w);
 		for (int x = 0; x < w; ++x)
-			sums[x] += row[x];
+		{
+			::MapGeneration::generationCheckpoint();
+			sums.at(x) += row[x];
+		}
 	}
 	for (int y = 0; y < h; ++y)
 	{
-		int *out = &result[size_t(y) * w];
+		::MapGeneration::generationCheckpoint();
+		int *out = &result.at(size_t(y) * w);
 		for (int x = 0; x < w; ++x)
-			out[x] = floorY(sums[x]);
-		const int *leaving = &rows[size_t(((y - ry) % h + h) % h) * w];
-		const int *entering = &rows[size_t((y + ry + 1) % h) * w];
+		{
+			::MapGeneration::generationCheckpoint();
+			out[x] = floorY(sums.at(x));
+		}
+		const int *leaving = &rows.at(size_t(dimensionRemainder(dimensionRemainder((y - ry), h) + h, h)) * w);
+		const int *entering = &rows.at(size_t(dimensionRemainder(y + ry + 1, h)) * w);
 		for (int x = 0; x < w; ++x)
-			sums[x] += std::int64_t(entering[x]) - leaving[x];
+		{
+			::MapGeneration::generationCheckpoint();
+			sums.at(x) += std::int64_t(entering[x]) - leaving[x];
+		}
 	}
 }
 
@@ -124,7 +148,10 @@ void boxBlur(const Torus &t, const std::vector<int> &field, std::vector<int> &ro
 {
 	std::int64_t peak = 0;
 	for (int v : field)
+	{
+		::MapGeneration::generationCheckpoint();
 		peak = std::max(peak, std::abs(std::int64_t(v)));
+	}
 	const SpanDivide divideX(2 * std::max(0, rx) + 1, peak), divideY(2 * std::max(0, ry) + 1, peak);
 	if (divideX.exact() && divideY.exact())
 		boxBlurWith<true>(t, field, rows, result, rx, ry, divideX, divideY);
@@ -146,13 +173,19 @@ std::vector<int> turingPattern(const Torus &t, const TuringStyle &style, std::mt
 	const int wavelength = std::max(4, style.wavelength);
 	std::vector<int> field = periodicNoise(t.w, t.h, std::max(2, wavelength / 2), rng);
 	for (int &v : field)
+	{
+		::MapGeneration::generationCheckpoint();
 		v -= 32768;
+	}
 	// Two box passes of radius r spread about as far as a Gaussian of deviation 0.8 r, and a difference
 	// of two such blurs, one twice as wide, picks out waves a few radii long. Near radii of a tenth of
 	// the wavelength and far radii of a fifth give bands within about 15% of the wavelength (measured
 	// on 128-tile maps from 8 to 32 tiles).
 	const auto radius = [&](int stretch, double share)
-	{ return std::max(1, int(std::lround(wavelength * share * std::max(10, stretch) / 100.0))); };
+	{
+		return std::max(1, int(::MapGeneration::Numeric::lround(wavelength * share *
+																std::max(10, stretch) / 100.0)));
+	};
 	const int nearX = radius(style.stretchX, 1 / 10.5), nearY = radius(style.stretchY, 1 / 10.5);
 	const int farX = std::max(nearX + 1, radius(style.stretchX, 2 / 10.5));
 	const int farY = std::max(nearY + 1, radius(style.stretchY, 2 / 10.5));
@@ -160,26 +193,32 @@ std::vector<int> turingPattern(const Torus &t, const TuringStyle &style, std::mt
 	std::vector<int> rows, once, nearBlur, farBlur; // reused by every pass
 	for (int pass = 0; pass < style.iterations; ++pass)
 	{
+		::MapGeneration::generationCheckpoint();
 		smooth(t, field, rows, once, nearBlur, nearX, nearY);
 		smooth(t, field, rows, once, farBlur, farX, farY);
 		std::int64_t total = 0;
 		for (size_t i = 0; i < field.size(); ++i)
 		{
+			::MapGeneration::generationCheckpoint();
 			// Activation where the near blur beats the far one, inhibition where it doesn't: in
 			// proportion, so crests grow smoothly rather than into flat plateaus.
-			field[i] += int(std::int64_t(nearBlur[i] - farBlur[i]) * kGain / 4);
-			total += field[i];
+			field.at(i) += int(std::int64_t(nearBlur.at(i) - farBlur.at(i)) * kGain / 4);
+			total += field.at(i);
 		}
 		// Recentre on the mean and rescale to the peak, so the field neither drifts nor saturates.
 		const int mean = int(total / std::int64_t(field.size()));
 		int peak = 1;
 		for (int &v : field)
 		{
+			::MapGeneration::generationCheckpoint();
 			v -= mean;
 			peak = std::max(peak, std::abs(v));
 		}
 		for (int &v : field)
+		{
+			::MapGeneration::generationCheckpoint();
 			v = int(std::int64_t(v) * 32768 / peak);
+		}
 	}
 	return field;
 }
@@ -192,16 +231,20 @@ std::vector<int> stripePhase(const Torus &t, const StripeStyle &style, std::mt19
 						  : std::vector<int>(size_t(area), 32768);
 	std::vector<int> phase(static_cast<size_t>(area));
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const size_t i = size_t(y) * t.w + x;
 			// (acrossX * x / w + acrossY * y / h) whole turns, in 65536ths, exactly.
 			std::int64_t turns =
 				(std::int64_t(style.acrossX) * x * t.h + std::int64_t(style.acrossY) * y * t.w) *
 				65536 / area;
-			turns += std::int64_t(warp[i] - 32768) * style.warpPercent / 100;
-			phase[i] = int(((turns % 65536) + 65536) % 65536);
+			turns += std::int64_t(warp.at(i) - 32768) * style.warpPercent / 100;
+			phase.at(i) = int(((turns % 65536) + 65536) % 65536);
 		}
+	}
 	return phase;
 }
 
@@ -225,13 +268,14 @@ StripeStyle alongStripes(const Torus &t, const StripeStyle &across)
 double stripeSpacing(const Torus &t, const StripeStyle &style)
 {
 	const double kx = double(style.acrossX) / t.w, ky = double(style.acrossY) / t.h;
-	const double k = std::hypot(kx, ky);
+	const double k = ::MapGeneration::Numeric::hypot(kx, ky);
 	return k > 0 ? 1.0 / k : double(std::max(t.w, t.h));
 }
 
 double stripeNormal(const Torus &t, const StripeStyle &style)
 {
-	return std::atan2(double(style.acrossY) / t.h, double(style.acrossX) / t.w);
+	return ::MapGeneration::Numeric::atan2(double(style.acrossY) / t.h,
+										   double(style.acrossX) / t.w);
 }
 
 double stripeHeading(const Torus &t, const StripeStyle &style)
@@ -247,7 +291,10 @@ std::vector<int> upwindSteps(const Torus &t, const std::vector<unsigned char> &m
 	if (!length)
 	{
 		for (int i = 0; i < n; ++i)
-			steps[i] = mask[i] ? 0 : -1;
+		{
+			::MapGeneration::generationCheckpoint();
+			steps.at(i) = mask.at(i) ? 0 : -1;
+		}
 		return steps;
 	}
 	// The upwind offset k Chebyshev steps back, rounded half away from zero, in integers.
@@ -257,21 +304,28 @@ std::vector<int> upwindSteps(const Torus &t, const std::vector<unsigned char> &m
 		return -(num >= 0 ? (num + length) / (2 * length) : -((-num + length) / (2 * length)));
 	};
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = y * t.w + x;
-			if (mask[i])
+			if (mask.at(i))
 			{
-				steps[i] = 0;
+				steps.at(i) = 0;
 				continue;
 			}
 			for (int k = 1; k <= reach; ++k)
-				if (mask[t.at(x + back(k, dx), y + back(k, dy))])
+			{
+				::MapGeneration::generationCheckpoint();
+				if (mask.at(t.at(x + back(k, dx), y + back(k, dy))))
 				{
-					steps[i] = k;
+					steps.at(i) = k;
 					break;
 				}
+			}
 		}
+	}
 	return steps;
 }
 std::vector<unsigned char> runsAndGaps(int length, int runLow, int runHigh, int gapLow, int gapHigh,
@@ -280,10 +334,14 @@ std::vector<unsigned char> runsAndGaps(int length, int runLow, int runHigh, int 
 	std::vector<unsigned char> on(size_t(std::max(0, length)), 0);
 	for (int u = 0; u < length;)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int run = runLow + int(context.bounded(stream, std::uint32_t(runHigh - runLow + 1)));
 		const int gap = gapLow + int(context.bounded(stream, std::uint32_t(gapHigh - gapLow + 1)));
 		for (int k = 0; k < run && u < length; ++k)
-			on[u++] = 1;
+		{
+			::MapGeneration::generationCheckpoint();
+			on.at(u++) = 1;
+		}
 		u += gap;
 	}
 	return on;

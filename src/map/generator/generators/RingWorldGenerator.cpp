@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "RingWorldGenerator.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -28,9 +29,8 @@ using namespace MapGeneration;
 //
 // Everything that shapes the belt is periodic in the map's own size - whole-number harmonics for
 // its centre line and width, lattice noise whose cells tile the torus for its coastline - so the
-// seam can't be seen. Terrain is written straight to the undermap with an order-independent beach
-// pass rather than Map::controlSand(), whose in-place raster scan makes shorelines depend on scan
-// order.
+// seam can't be seen. Terrain is written straight to the map's vertices after an order-independent
+// beach pass that, unlike Map::layBeaches(), leaves the water whole.
 //
 // WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Every colony has the same
 // situation: one neighbour each way along the belt, sea behind it, and colonies alternating between
@@ -220,7 +220,7 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 	for (int attempt = 0; int(lakes.size()) < wanted && attempt < wanted * 40; ++attempt)
 	{
 		const int at = dry[context.bounded("lakes", dry.size())];
-		const int x = at % width, y = at / width;
+		const int x = powerOfTwoRemainder(at, width), y = at / width;
 		const RadialShape shape((4 + context.bounded("lakes", 5)) * scale, 0.35, context, "lakes");
 		const double reach = shape.maximumRadius();
 		// The centre line leans at most kMaxBendSlope per tile, so a lake's far side can sit that
@@ -241,7 +241,7 @@ void carveLakes(std::vector<unsigned char> &terrain, const Belt &belt, Generatio
 			for (int dx = -r; dx <= r; ++dx)
 				if (std::hypot(double(dx), double(dy)) <
 					shape.radiusAt(std::atan2(double(dy), double(dx))))
-					terrain[size_t((y + dy + height) % height) * width + (x + dx + width) % width] =
+					terrain[size_t(powerOfTwoRemainder(y + dy + height, height)) * width + powerOfTwoRemainder(x + dx + width, width)] =
 						WATER;
 		lakes.push_back({x, y, reach});
 	}
@@ -396,7 +396,7 @@ void furnishHomes(Game &game, GenerationContext &context)
 	const std::vector<unsigned char> reserved = swarmSurroundings(t, context);
 	const std::vector<int> shore = stepsFrom(t, water, dry);
 	const auto eligible = [&](int i)
-	{ return !reserved[i] && clearGround(map, i % width, i / width); };
+	{ return !reserved[i] && clearGround(map, powerOfTwoRemainder(i, width), i / width); };
 	for (int team = 0; team < teams; ++team)
 	{
 		std::vector<unsigned char> footprint(area, 0);
@@ -413,7 +413,7 @@ void furnishHomes(Game &game, GenerationContext &context)
 			{
 				if (walk[i] < nearest || walk[i] > farthest || !eligible(i))
 					continue;
-				if (avoid >= 0 && t.dist2(i % width, i / width, avoid % width, avoid / width) < 36)
+				if (avoid >= 0 && t.dist2(powerOfTwoRemainder(i, width), i / width, powerOfTwoRemainder(avoid, width), avoid / width) < 36)
 					continue;
 				const bool better = best < 0 ||
 									(wet ? shore[i] < shore[best] : shore[i] > shore[best]) ||
@@ -466,7 +466,7 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
 	std::vector<int> goal(area);
 	// The winding that puts tile i nearest to a position along the unrolled belt.
 	const auto windingNear = [&](int i, double position)
-	{ return int(std::lround((position - axes.u(i % width, i / width)) / length)); };
+	{ return int(std::lround((position - axes.u(powerOfTwoRemainder(i, width), i / width)) / length)); };
 	for (int k = 0; k < teams; ++k)
 	{
 		const double fromU = order[k].first;
@@ -496,7 +496,7 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
 			if (done[node])
 				continue;
 			done[node] = 1;
-			const int w = node / area - 1, i = node % area, x = i % width, y = i / width;
+			const int w = node / area - 1, i = node % area, x = powerOfTwoRemainder(i, width), y = i / width;
 			if (goal[i] == w)
 			{
 				reached = node;
@@ -536,8 +536,8 @@ bool openBeltRoad(Game &game, GenerationContext &context, const Axes &axes)
 		for (int node = reached; node >= 0; node = parent[node])
 		{
 			const int i = node % area;
-			if (map.isResource(i % width, i / width))
-				map.setNoResource(i % width, i / width, 1);
+			if (map.isResource(powerOfTwoRemainder(i, width), i / width))
+				map.setNoResource(powerOfTwoRemainder(i, width), i / width, 1);
 		}
 	}
 	return true;
@@ -549,7 +549,7 @@ bool generate(Game &game, GenerationContext &context)
 	const RingWorldOptions options(context.request);
 	Map &map = game.map;
 	const int width = map.getW(), height = map.getH(), teams = context.request.nbTeams;
-	map.makeHomogenMap(WATER);
+	map.fillTerrain(WATER);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Axes axes = axesFor(width, height);
@@ -583,7 +583,7 @@ bool generate(Game &game, GenerationContext &context)
 		context.telemetry.fallback("ring-world.islands.omitted",
 								   "Candidate budget or water clearance limited islands.");
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "ring colonies";
 	if (!placeColonies(game, context, belt, options.bothCoasts))
@@ -636,20 +636,20 @@ bool floodAround(const Map &map, const Axes &axes, const std::vector<int> &sourc
 	reached.clear();
 	if (sources.empty())
 		return false;
-	const int anchor = axes.u(sources[0] % width, sources[0] / width);
+	const int anchor = axes.u(powerOfTwoRemainder(sources[0], width), sources[0] / width);
 	for (int i : sources)
 	{
 		if (winding[i] != kUnreached)
 			continue;
 		// Each source starts at its image nearest the first, so a colony astride the seam is
 		// consistent.
-		winding[i] = int(std::lround(double(anchor - axes.u(i % width, i / width)) / length));
+		winding[i] = int(std::lround(double(anchor - axes.u(powerOfTwoRemainder(i, width), i / width)) / length));
 		reached.push_back(i);
 	}
 	bool wraps = false;
 	for (size_t head = 0; head < reached.size(); ++head)
 	{
-		const int i = reached[head], x = i % width, y = i / width, w = winding[i];
+		const int i = reached[head], x = powerOfTwoRemainder(i, width), y = i / width, w = winding[i];
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
@@ -710,7 +710,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::fill(winding.begin(), winding.end(), kUnreached);
 	bool oceanWraps = false;
 	for (int i = 0; i < int(area) && !oceanWraps; ++i)
-		if (winding[i] == kUnreached && map.isWater(i % width, i / width))
+		if (winding[i] == kUnreached && map.isWater(powerOfTwoRemainder(i, width), i / width))
 			oceanWraps = floodAround(
 				map, axes, {i}, [&map](int x, int y) { return map.isWater(x, y); }, winding,
 				reached);
@@ -735,7 +735,7 @@ GeneratorDefinition ringWorldDefinition()
 	return {"ring-world",
 			16,
 			"Ring world",
-			1,
+			2,
 			false,
 			// Belt width is the share of the map's breadth the belt covers on average; lake density
 			// is lakes per 4096 tiles of belt; resource islands are counted per 128x128 of map.

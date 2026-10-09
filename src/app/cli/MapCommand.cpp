@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "MapCommand.h"
+#include "MapAssetBundle.h"
+#include "BrushSwatches.h"
+#include "online/Sha256.h"
+#include <nlohmann/json.hpp>
 #include "MapReport.h"
 #include "MapImage.h"
 #include "GUIMapPreview.h"
@@ -19,6 +23,7 @@
 #include "GenerationService.h"
 #include "GenerationValidation.h"
 #include "GeneratorRegistry.h"
+#include "GeneratorPackage.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Race.h"
@@ -62,7 +67,7 @@ std::uint32_t number(const std::string &text)
 }
 int method(const std::string &name)
 {
-	const auto &registry = GeneratorRegistry::builtins();
+	const auto &registry = GeneratorRegistry::active();
 	for (int id : registry.methods())
 		if (name == registry.at(id).id || name == std::to_string(id))
 			return id;
@@ -96,14 +101,14 @@ void configure(GenerationRequest &request, const MapSettings &settings)
 		if (value == values.end())
 			throw std::runtime_error("Invalid value for " + entry.first + ": " + entry.second +
 									 "; use --list-map-generators " +
-									 GeneratorRegistry::builtins().at(request.method).id);
+									 GeneratorRegistry::active().at(request.method).id);
 		c->set(request, *value);
 	}
 	// Relationship validation runs in GenerationService so failures retain JSON diagnostics.
 }
 void catalog(const std::string &name)
 {
-	const auto &registry = GeneratorRegistry::builtins();
+	const auto &registry = GeneratorRegistry::active();
 	const auto methods = name.empty() ? registry.methods() : std::vector<int>{method(name)};
 	for (int id : methods)
 	{
@@ -226,14 +231,19 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 bool isMapCommand(const char *arg)
 {
 	const std::string s = arg;
-	return s == "--generate-map" || s == "--preview-map" || s == "--list-map-generators" ||
-		   s == "--render-game" || s == "--export-map-image" || s == "--import-map-image";
+	return s == "--inspect-generator-package" || s == "--validate-set" || s == "--generate-map" ||
+		   s == "--preview-map" || s == "--list-map-generators" || s == "--render-game" ||
+		   s == "--export-map-image" || s == "--import-map-image";
 }
 void printMapCommandHelp()
 {
 	std::cout
 		<< "  --render-game <file.map|file.game> --output file.png [--render-max-pixels 1..8192]\n"
 		   "    [--render-field file.field] [--field-color r,g,b]\n"
+		<< "  --validate-set <package.json> --json report.json [--preview preview.png] [--gallery "
+		   "1] [--phase 0..3] [--variation 0..3]\n"
+		<< "  --inspect-generator-package package.json --output canonical.json --json "
+		   "metadata.json\n"
 		<< "Map launch modes (put the mode first; no display required):\n"
 		   "  --generate-map <generator> [--output file.map] [--preview file.png] [--json "
 		   "report.json]\n"
@@ -247,6 +257,9 @@ void printMapCommandHelp()
 		   "    [--image-seam-width 0..16] (default: map short side / 32, clamped 2..12)\n"
 		   "  --generate-map <generator> --map-image image.png [other outputs/settings]\n"
 		   "  --list-map-generators [generator]  List IDs, or settings and allowed values\n"
+		   "  --generator-package PATH  Load a custom generator package or development directory\n"
+		   "  --export-generator-package FILE  Export the selected custom package with a generated "
+		   "map\n"
 		   "Preview scale: --preview-scale 2|4|8 (default 2, relative to retained thumbnail "
 		   "pixels).\n"
 		   "Or --preview-size 128..4096 (explicit longest side; cannot combine with scale).\n"
@@ -267,6 +280,225 @@ int runMapCommand(int argc, char **argv)
 			printMapCommandHelp();
 			return 0;
 		}
+		if (mode == "--inspect-generator-package")
+		{
+			if (argc != 7 || std::string(argv[3]) != "--output" || std::string(argv[5]) != "--json")
+				throw std::runtime_error("Expected --inspect-generator-package input --output "
+										 "canonical --json metadata");
+			if (samePath(argv[2], argv[4]) || samePath(argv[2], argv[6]) ||
+				samePath(argv[4], argv[6]))
+				throw std::runtime_error("Input and output paths must be distinct");
+			const auto package = MapGeneration::JavaScript::Package::load(argv[2]);
+			auto metadata = nlohmann::json::parse(package->canonical).at("manifest");
+			metadata["description"] = package->description;
+			metadata["editorOnly"] = package->editorOnly;
+			metadata["controls"] = nlohmann::json::array();
+			for (const auto &c : package->controls)
+			{
+				nlohmann::json control{{"id", c.id},
+									   {"label", c.label},
+									   {"group", c.group == ControlGroup::Terrain     ? "terrain"
+												 : c.group == ControlGroup::Resources ? "resources"
+																					  : "layout"},
+									   {"kind", c.isChoice()   ? "choice"
+												: c.isToggle() ? "toggle"
+															   : "range"},
+									   {"minimum", c.minimum},
+									   {"maximum", c.maximum},
+									   {"step", c.step},
+									   {"default", c.defaultValue},
+									   {"values", c.values()},
+									   {"powerOfTwo", c.powerOfTwo}};
+				if (c.isChoice())
+				{
+					control["choices"] = nlohmann::json::array();
+					for (const auto *label : c.valueLabels)
+						control["choices"].push_back(label);
+				}
+				metadata["controls"].push_back(std::move(control));
+			}
+			metadata["toolkitVersion"] = 1;
+			metadata["packageHash"] = package->hash;
+			for (const char *path : {argv[4], argv[6]})
+				parentDirectory(path);
+			std::ofstream canonical(argv[4], std::ios::binary), report(argv[6], std::ios::binary);
+			canonical << package->canonical;
+			report << metadata.dump();
+			canonical.close();
+			report.close();
+			if (!canonical || !report)
+				throw std::runtime_error("Cannot write generator inspection");
+			return 0;
+		}
+		if (mode == "--validate-set")
+		{
+			if (argc < 5)
+				throw std::runtime_error("Expected --validate-set package.json --json report.json");
+			std::string reportPath, previewPath;
+			bool gallery = false;
+			unsigned phase = 0, variation = 0;
+			for (int i = 3; i < argc; i += 2)
+			{
+				if (i + 1 >= argc)
+					throw std::runtime_error("Missing set output argument");
+				const std::string option = argv[i];
+				if (option == "--json")
+					reportPath = argv[i + 1];
+				else if (option == "--preview")
+					previewPath = argv[i + 1];
+				else if (option == "--gallery")
+				{
+					const auto n = number(argv[i + 1]);
+					if (n > 1)
+						throw std::runtime_error("Gallery must be zero or one");
+					gallery = n == 1;
+				}
+				else if (option == "--phase")
+				{
+					phase = number(argv[i + 1]);
+					if (phase > 3)
+						throw std::runtime_error("Phase exceeds three");
+				}
+				else if (option == "--variation")
+				{
+					variation = number(argv[i + 1]);
+					if (variation > 3)
+						throw std::runtime_error("Variation exceeds three");
+				}
+				else
+					throw std::runtime_error("Unknown set argument");
+			}
+			if (reportPath.empty() || samePath(argv[2], reportPath) ||
+				samePath(argv[2], previewPath) || samePath(reportPath, previewPath))
+				throw std::runtime_error("Set input and output paths must be distinct");
+			std::ifstream input(argv[2], std::ios::binary | std::ios::ate);
+			if (!input || input.tellg() < 0 ||
+				input.tellg() > std::streamoff(MapAssetBundle::MaximumBytes))
+				throw std::runtime_error("Cannot read set or set exceeds 16 MiB");
+			std::string bytes(std::size_t(input.tellg()), '\0');
+			input.seekg(0);
+			if (!input.read(bytes.data(), bytes.size()))
+				throw std::runtime_error("Cannot read set");
+			nlohmann::json report{{"hash", Online::Sha256::hex(bytes)},
+								  {"suite", 1},
+								  {"valid", false},
+								  {"minVersionMinor", 144},
+								  {"terrainCount", 0},
+								  {"resourceCount", 0}};
+			struct Reset
+			{
+				~Reset() { globalContainer = nullptr; }
+			} reset;
+			try
+			{
+				GlobalContainer globals;
+				globalContainer = &globals;
+				globals.runNoX = true;
+				Map map;
+				map.setSize(5, 5, GRASS);
+				map.importSet(bytes);
+				const auto package = nlohmann::json::parse(bytes);
+				report["terrainCount"] = package.at("terrains").size();
+				report["resourceCount"] = package.at("resources").size();
+				if (!previewPath.empty())
+				{
+					GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
+					GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
+					GAGCore::setProcessEnvironment("GLOB2_UI_SCALE", "1", 1);
+					globals.loadOffscreenGraphics();
+					BrushSwatches swatches;
+					swatches.bind(map.frozenTerrainRegistry(), map.frozenResourceRegistry(),
+								  map.frozenAssetBundle());
+					const int count = std::min(
+						64, int(package.at("terrains").size() + package.at("resources").size()));
+					GAGCore::DrawableSurface preview(gallery ? 768 : 512,
+													 gallery ? std::max(1, count) * 192 : 512);
+					preview.drawFilledRect(0, 0, preview.getW(), preview.getH(),
+										   GAGCore::Color(28, 36, 30));
+					unsigned index = 0;
+					for (const auto &entry : package.at("terrains"))
+					{
+						if (index == 64)
+							break;
+						const auto type =
+							map.terrainRegistry().find(entry.at("key").get<std::string>());
+						if (gallery)
+						{
+							TerrainType neighbor = GRASS;
+							for (const auto &other : package.at("terrains"))
+								if (other.at("key") != entry.at("key"))
+								{
+									neighbor = *map.terrainRegistry().find(
+										other.at("key").get<std::string>());
+									break;
+								}
+							if (auto *image =
+									swatches.terrainScene(*type, neighbor, phase, variation))
+								preview.drawSurface(0, int(index * 192), image);
+							if (auto *image = swatches.terrainScene(*type, WATER, phase, variation))
+								preview.drawSurface(192, int(index * 192), image);
+							if (auto *image = swatches.terrainScene(*type, SAND, phase, variation))
+								preview.drawSurface(384, int(index * 192), image);
+							if (auto *image = swatches.terrain(*type, 192))
+								preview.drawSurface(576, int(index * 192), image);
+						}
+						else if (auto *image = swatches.terrain(*type, 64))
+							preview.drawSurface(int((index % 8) * 64), int((index / 8) * 64),
+												image);
+						++index;
+					}
+					for (const auto &entry : package.at("resources"))
+					{
+						if (index == 64)
+							break;
+						const auto type =
+							map.resourceRegistry().find(entry.at("key").get<std::string>());
+						if (gallery)
+						{
+							TerrainType backdrop = GRASS;
+							if (!package.at("terrains").empty())
+								backdrop = *map.terrainRegistry().find(
+									package.at("terrains").front().at("key").get<std::string>());
+							const auto &levels = map.resourceRegistry().presentation(*type).levels;
+							unsigned column = 0;
+							for (const auto &level : levels)
+							{
+								if (column >= 12)
+									break;
+								if (auto *image = swatches.resourceStage(
+										*type, backdrop, level.stock, phase, variation, 64))
+									preview.drawSurface(int(column * 64), int(index * 192 + 64),
+														image);
+								++column;
+							}
+						}
+						else if (auto *image = swatches.resource(*type, GRASS, 64))
+							preview.drawSurface(int((index % 8) * 64), int((index / 8) * 64),
+												image);
+						++index;
+					}
+					if (!IMG_SavePNG(preview.getSDLSurface(), previewPath.c_str()))
+						throw std::runtime_error("Cannot write set preview");
+				}
+				report["valid"] = true;
+			}
+			catch (const std::exception &error)
+			{
+				std::string reason(error.what());
+				if (reason.size() > 1900)
+				{
+					// Preserve a valid UTF-8 prefix when an author-supplied
+					// field name appears in a bounded validation diagnostic.
+					std::size_t length = 1900;
+					while (length && (static_cast<unsigned char>(reason[length]) & 0xc0) == 0x80)
+						--length;
+					reason.resize(length);
+				}
+				report["reason"] = std::move(reason);
+			}
+			writeJsonReport(reportPath, report.dump());
+			return 0;
+		}
 		if (mode == "--list-map-generators")
 		{
 			if (argc > 3)
@@ -281,7 +513,8 @@ int runMapCommand(int argc, char **argv)
 		const bool importing = mode == "--import-map-image";
 		const bool exporting = mode == "--export-map-image";
 		const bool writesMap = generate || importing;
-		std::string output, preview, config, json, mapImage, renderField, fieldColor;
+		std::string output, preview, config, json, mapImage, renderField, fieldColor,
+			generatorExport;
 		int renderPixels = MapRender::DefaultPixels;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
@@ -303,9 +536,18 @@ int runMapCommand(int argc, char **argv)
 			if (arg == "--output")
 				output = value;
 			else if (arg == "--render-max-pixels" && render)
-			{ const auto n = number(value); if (!n || n > MapRender::MaximumPixels) throw std::runtime_error("Render limit must be 1..8192"); renderPixels = int(n); }
-			else if (arg == "--render-field" && render) renderField = value;
-			else if (arg == "--field-color" && render) fieldColor = value;
+			{
+				const auto n = number(value);
+				if (!n || n > MapRender::MaximumPixels)
+					throw std::runtime_error("Render limit must be 1..8192");
+				renderPixels = int(n);
+			}
+			else if (arg == "--render-field" && render)
+				renderField = value;
+			else if (arg == "--field-color" && render)
+				fieldColor = value;
+			else if (arg == "--export-generator-package" && generate)
+				generatorExport = value;
 			else if (arg == "--json" && !render)
 				json = value;
 			else if (arg == "--preview" && writesMap)
@@ -315,7 +557,8 @@ int runMapCommand(int argc, char **argv)
 			else if (arg == "--image-seam-width" && importing)
 			{
 				const auto n = number(value);
-				if (n > 16) throw std::runtime_error("Image seam width must be 0..16 tiles");
+				if (n > 16)
+					throw std::runtime_error("Image seam width must be 0..16 tiles");
 				imageSeamWidth = int(n);
 			}
 			else if (arg == "--config" && generate)
@@ -357,7 +600,8 @@ int runMapCommand(int argc, char **argv)
 		if (sizeSpecified && scaleSpecified)
 			throw std::runtime_error("Choose --preview-size or --preview-scale, not both");
 		// Compare the actual gzip destination as well as the user-supplied name.
-		std::vector<std::string> paths{output, writesMap ? preview : "", config, json, mapImage, renderField};
+		std::vector<std::string> paths{
+			output, writesMap ? preview : "", config, json, mapImage, renderField, generatorExport};
 		if (!generate)
 		{
 			paths.push_back(argv[2]);
@@ -376,6 +620,20 @@ int runMapCommand(int argc, char **argv)
 		{
 			request.setMethodDefaults(method(argv[2]));
 			request.seed = 1;
+			if (!generatorExport.empty())
+			{
+				const auto &definition = request.definition();
+				if (!definition.apiVersion || !definition.owner)
+					throw std::runtime_error("Package export requires a custom generator");
+				auto package = std::static_pointer_cast<const MapGeneration::JavaScript::Package>(
+					definition.owner);
+				parentDirectory(generatorExport);
+				std::ofstream file(generatorExport, std::ios::binary);
+				file << package->canonical;
+				file.close();
+				if (!file)
+					throw std::runtime_error("Cannot export generator package");
+			}
 			if (!config.empty())
 			{
 				std::ifstream in(config);
@@ -418,8 +676,10 @@ int runMapCommand(int argc, char **argv)
 		} clear;
 		if (render)
 		{
-			if (output.empty()) throw std::runtime_error("--render-game requires --output");
-			if (!fieldColor.empty() && renderField.empty()) throw std::runtime_error("--field-color requires --render-field");
+			if (output.empty())
+				throw std::runtime_error("--render-game requires --output");
+			if (!fieldColor.empty() && renderField.empty())
+				throw std::runtime_error("--field-color requires --render-field");
 			GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
 			GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
 		}
@@ -479,15 +739,22 @@ int runMapCommand(int argc, char **argv)
 		if (render)
 		{
 			MapRender::Field field;
-			if (!renderField.empty()) field = MapRender::readField(renderField);
+			if (!renderField.empty())
+				field = MapRender::readField(renderField);
 			if (!fieldColor.empty())
 			{
-				std::istringstream color(fieldColor); char a=0, b=0;
-				if (!(color >> field.red >> a >> field.green >> b >> field.blue) || a != ',' || b != ',' || !(color >> std::ws).eof())
+				std::istringstream color(fieldColor);
+				char a = 0, b = 0;
+				if (!(color >> field.red >> a >> field.green >> b >> field.blue) || a != ',' ||
+					b != ',' || !(color >> std::ws).eof())
 					throw std::runtime_error("Expected --field-color r,g,b");
 			}
-			Scene scene; SceneRequest request; request.includePanels = false;
-			extractScene(game, request, scene);
+			PresentationFrame scene;
+			SceneRequest request;
+			request.includePanels = false;
+			SceneExtractor().prepare(
+				(game).captureReadBoundary({}, true, SceneExtractor::requirements(request)),
+				request, scene);
 			MapRender::toPng(scene, output, renderPixels, renderField.empty() ? nullptr : &field);
 			return 0;
 		}

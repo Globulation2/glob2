@@ -26,7 +26,7 @@ struct KeyHash
 {
     std::size_t operator()(const MapGeometryCache::Key& key) const
     {
-        std::size_t value = std::hash<const void*>{}(key.map);
+        std::size_t value = std::hash<decltype(key.map)>{}(key.map);
         for (int component : {key.layer, key.x, key.y, key.width, key.height})
             value ^= std::hash<int>{}(component) + 0x9e3779b9u + (value << 6) + (value >> 2);
         return value;

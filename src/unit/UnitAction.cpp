@@ -73,8 +73,8 @@ void Unit::handleActionRandomFly()
 	{
 		for(int q = 0; q < RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS; ++q)
 		{
-			dx=-1+syncRand()%3;
-			dy=-1+syncRand()%3;
+			dx=-1+entityRandom.nextU32()%3;
+			dy=-1+entityRandom.nextU32()%3;
 			if(!locationIsInEnemyGuardTowerRange(posX + dx, posY + dy))
 				break;
 		}

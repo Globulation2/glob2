@@ -11,125 +11,148 @@ using namespace AISharedRuntime::SearchTools;
 MapInfo::MapInfo(Runtime& runtime) : runtime(&runtime)
 {
     teamMask=runtime.observedTeam().mask;
-    world=&runtime.observation();
 }
 
 
 MapInfo::MapInfo(const AIEngine::AIWorldView& view, Uint32 mask)
     : world(&view), teamMask(mask) {}
 
+// An owner refresh can replace the runtime's lease while this adapter survives.
+// Explicit snapshot adapters continue borrowing the caller's immutable view.
+const AIEngine::AIWorldView& MapInfo::observation() const
+{
+    return runtime ? runtime->observation() : *world;
+}
+
 int MapInfo::get_width()
 {
-    return world->width;
+    const auto& observed=observation();
+    return observed.width;
 }
 
 
 
 int MapInfo::get_height()
 {
-    return world->height;
+    const auto& observed=observation();
+    return observed.height;
 }
 
 
 
 bool MapInfo::is_forbidden_area(int x, int y)
 {
-    return (world->areasAt(world->tileIndex(x,y)).forbidden & teamMask)!=0;
+    const auto& observed=observation();
+    return (observed.areasAt(observed.tileIndex(x,y)).forbidden & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_guard_area(int x, int y)
 {
-    return (world->areasAt(world->tileIndex(x,y)).guard & teamMask)!=0;
+    const auto& observed=observation();
+    return (observed.areasAt(observed.tileIndex(x,y)).guard & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_clearing_area(int x, int y)
 {
-    return (world->areasAt(world->tileIndex(x,y)).clear & teamMask)!=0;
+    const auto& observed=observation();
+    return (observed.areasAt(observed.tileIndex(x,y)).clear & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_farm_area(int x, int y)
 {
-    return (world->areasAt(world->tileIndex(x,y)).farm & teamMask)!=0;
+    const auto& observed=observation();
+    return (observed.areasAt(observed.tileIndex(x,y)).farm & teamMask)!=0;
 }
 
 
 
 bool MapInfo::farm_areas_enabled()
 {
-    return world->farmAreasEnabled;
+    const auto& observed=observation();
+    return observed.farmAreasEnabled;
 }
 
 
 
 bool MapInfo::can_paint_farm(int x, int y)
 {
-    return world->canPaintFarmAt(world->tileIndex(x,y));
+    const auto& observed=observation();
+    return observed.canPaintFarmAt(observed.tileIndex(x,y));
 }
 
 
 
 bool MapInfo::is_discovered(int x, int y)
 {
-    return (world->visibilityAt(world->tileIndex(x,y)).discovered & teamMask)!=0;
+    const auto& observed=observation();
+    return (observed.visibilityAt(observed.tileIndex(x,y)).discovered & teamMask)!=0;
 }
 
 
 
 bool MapInfo::is_resource(int x, int y, int type)
 {
-    return MapState::hasMaterialSlot(world->state(),world->tileIndex(x,y),type);
+    const auto& observed=observation();
+    return MapState::hasMaterialSlot(observed.state(),observed.tileIndex(x,y),type);
 }
 
 
 
 bool MapInfo::is_resource(int x, int y)
 {
-    return world->resourceAt(world->tileIndex(x,y)).resource.type!=NO_RES_TYPE;
+    const auto& observed=observation();
+    return observed.resourceAt(observed.tileIndex(x,y)).resource.type!=NO_RES_TYPE;
 }
 
 
 
 bool MapInfo::is_water(int x, int y)
 {
-    return world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type).swimmable;
+    const auto& observed=observation();
+    return observed.terrainPropertiesAt(observed.tileIndex(x,y)).swimmable;
 }
 
 
 
 bool MapInfo::is_sand(int x, int y)
 {
-    return world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type).inhibitionQ8!=0;
+    const auto& observed=observation();
+    return observed.terrainPropertiesAt(observed.tileIndex(x,y)).inhibitionQ8!=0;
 }
 
 
 
 bool MapInfo::is_resource_habitat(int x, int y, int resource)
 {
-    return MapState::terrainSupportsMaterial(world->state(),world->tileIndex(x,y),resource);
+    const auto& observed=observation();
+    return MapState::terrainSupportsMaterial(observed.state(),observed.tileIndex(x,y),resource);
 }
 
 bool MapInfo::is_crop_habitat(int x, int y)
 {
-    return MapState::terrainSupportsMaterial(world->state(),world->tileIndex(x,y),MaterialId::Food);
+    const auto& observed=observation();
+    return MapState::terrainSupportsMaterial(observed.state(),observed.tileIndex(x,y),MaterialId::Food);
 }
 
 bool MapInfo::is_grass(int x, int y)
 {
-    return world->terrain->properties(world->terrainAt(world->tileIndex(x,y)).type).buildable;
+    const auto& observed=observation();
+    return observed.terrainPropertiesAt(observed.tileIndex(x,y)).buildable;
 }
 
 
 
 bool MapInfo::backs_onto_sand(int x, int y)
 {
+    const auto& observed=observation();
         for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-            if((dx || dy) && world->terrain->properties(world->terrainAt(world->tileIndex(x+dx,y+dy)).type).shoreline)
+            if((dx || dy) && observed.terrainPropertiesAt(observed.tileIndex(x+dx,y+dy)).shoreline)
                 return true;
         return false;
 
@@ -139,5 +162,6 @@ bool MapInfo::backs_onto_sand(int x, int y)
 
 int MapInfo::get_amount_resource(int x, int y)
 {
-    return world->resourceAt(world->tileIndex(x,y)).resource.amount;
+    const auto& observed=observation();
+    return observed.resourceAt(observed.tileIndex(x,y)).resource.amount;
 }

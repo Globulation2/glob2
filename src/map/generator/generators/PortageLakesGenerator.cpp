@@ -77,7 +77,7 @@ void disc(std::vector<unsigned char> &mask, const Torus &t, int p, int radius)
 	for (int y = -radius; y <= radius; ++y)
 		for (int x = -radius; x <= radius; ++x)
 			if (x * x + y * y <= radius * radius)
-				mask[t.at(p % t.w + x, p / t.w + y)] = 1;
+				mask[t.at(t.remainderX(p) + x, p / t.w + y)] = 1;
 }
 std::vector<unsigned char> land(const Layout &L)
 {
@@ -112,7 +112,7 @@ int distance(const Torus &t, const std::vector<unsigned char> &open, int a, int 
 			{
 				if (!dx && !dy)
 					continue;
-				const int q = t.at(i % t.w + dx, i / t.w + dy);
+				const int q = t.at(t.remainderX(i) + dx, i / t.w + dy);
 				if (steps[q] < 0 && open[q])
 				{
 					steps[q] = d + 1;
@@ -149,14 +149,14 @@ struct BayGrowth
 		for (int y = 0; y < window.h; ++y)
 			for (int x = 0; x < window.w; ++x)
 				drawn[y * window.w + x] =
-					terrain[t.at(centre % t.w - half + x, centre / t.w - half + y)];
+					terrain[t.at(t.remainderX(centre) - half + x, centre / t.w - half + y)];
 		field = cropGrowthField(drawn, window);
 	}
 	std::uint32_t at(int tile) const
 	{
 		if (whole)
-			return field.at(tile % t.w, tile / t.w);
-		return field.at(half + t.offsetX(centre % t.w, tile % t.w),
+			return field.at(t.remainderX(tile), tile / t.w);
+		return field.at(half + t.offsetX(t.remainderX(centre), t.remainderX(tile)),
 						half + t.offsetY(centre / t.w, tile / t.w));
 	}
 };
@@ -260,7 +260,7 @@ Layout landscape(const GenerationRequest &r, GenerationContext &c)
 	auto room = buildAnchors(t, grass, 9);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		int anchor = t.at(i % t.w - 4, i / t.w - 4);
+		int anchor = t.at(t.remainderX(i) - 4, i / t.w - 4);
 		if (room[anchor] && shoreDistance[i] >= 10 && shoreDistance[i] <= (L.compact ? 19 : 15))
 			L.candidates.push_back(i);
 	}
@@ -291,11 +291,11 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 	const auto &t = L.t;
 	// Grow a patch ALONG the shore, clipped by existing ground and reservations.
 	// This makes farms fit bays instead of drawing a row of identical round gardens.
-	const int cx = centre % t.w, cy = centre / t.w;
+	const int cx = t.remainderX(centre), cy = centre / t.w;
 	const double phase = c.bounded("portage-field-shapes", 6283) / 1000.;
 	auto eligible = [&](int i)
 	{
-		int dx = t.offsetX(cx, i % t.w), dy = t.offsetY(cy, i / t.w);
+		int dx = t.offsetX(cx, t.remainderX(i)), dy = t.offsetY(cy, i / t.w);
 		if (dx * dx + dy * dy > radius * radius * 5)
 			return false;
 		if (L.terrain[i] != GRASS || (shoreDistance && ((*shoreDistance)[i] < 0 || (*shoreDistance)[i] > 8)))
@@ -304,7 +304,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 		for (int y = -margin; y <= margin; ++y)
 			for (int x = -margin; x <= margin; ++x)
 			{
-				int q = t.at(i % t.w + x, i / t.w + y);
+				int q = t.at(t.remainderX(i) + x, i / t.w + y);
 				if (L.reserved[q] || L.rock[q] || L.roads[q] ||
 					(shoreDistance ? L.terrain[q] == WATER : L.terrain[q] != GRASS))
 					return false;
@@ -339,10 +339,10 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 		corners.push_back(i);
 		for (auto step : kCardinalSteps)
 		{
-			int q = t.at(i % t.w + step[0], i / t.w + step[1]);
+			int q = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 			if (!queued.insert(q).second)
 				continue;
-			int x = t.offsetX(cx, q % t.w), y = t.offsetY(cy, q / t.w);
+			int x = t.offsetX(cx, t.remainderX(q)), y = t.offsetY(cy, q / t.w);
 			double across = x * nx + y * ny, along = -x * ny + y * nx;
 			frontier.push(
 				{across * across * 1.9 + along * along * .55 + (shoreDistance ? 0 : 4 * std::sin(along * .4 + phase)),
@@ -381,7 +381,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 						for (int x = -1; x <= 4; ++x)
 							if (x < 0 || x == 4 || y < 0 || y == 4)
 							{
-								int q = t.at(a % t.w + x, a / t.w + y);
+								int q = t.at(t.remainderX(a) + x, a / t.w + y);
 								if (inside[q])
 									nearby += fertility.at(q);
 							}
@@ -390,8 +390,8 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 						for (int dy : {0, 3})
 							for (int dx : {0, 3})
 								distance = std::max(
-									distance, t.chebyshev(serviceHome % t.w, serviceHome / t.w,
-														  a % t.w + dx, a / t.w + dy));
+									distance, t.chebyshev(t.remainderX(serviceHome), serviceHome / t.w,
+														  t.remainderX(a) + dx, a / t.w + dy));
 					if (nearby &&
 						(distance < bestDistance || (distance == bestDistance && nearby > best)))
 					{
@@ -412,7 +412,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 			for (int y = 0; y < 4; ++y)
 				for (int x = 0; x < 4; ++x)
 				{
-					int q = t.at(court % t.w + x, court / t.w + y);
+					int q = t.at(t.remainderX(court) + x, court / t.w + y);
 					parent[q] = -1;
 					queue.push_back(q);
 				}
@@ -422,13 +422,13 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 				int i = queue[head];
 				for (auto step : kCardinalSteps)
 				{
-					int q = t.at(i % t.w + step[0], i / t.w + step[1]);
+					int q = t.at(t.remainderX(i) + step[0], i / t.w + step[1]);
 					if (!inside[q])
 					{
 						if (exit < 0 ||
 							(serviceHome >= 0 &&
-							 t.dist2(serviceHome % t.w, serviceHome / t.w, i % t.w, i / t.w) <
-								 t.dist2(serviceHome % t.w, serviceHome / t.w, exit % t.w,
+							 t.dist2(t.remainderX(serviceHome), serviceHome / t.w, t.remainderX(i), i / t.w) <
+								 t.dist2(t.remainderX(serviceHome), serviceHome / t.w, t.remainderX(exit),
 										 exit / t.w)))
 							exit = i;
 						if (serviceHome < 0)
@@ -447,7 +447,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 		for (int i : tiles)
 		{
 			const bool inCourt =
-				court >= 0 && t.x(i % t.w - court % t.w) < 4 && t.y(i / t.w - court / t.w) < 4;
+				court >= 0 && t.x(t.remainderX(i) - t.remainderX(court)) < 4 && t.y(i / t.w - court / t.w) < 4;
 			const bool inAccess = std::find(access.begin(), access.end(), i) != access.end();
 			const auto value = inCourt || inAccess ? 0 : fertility.at(i);
 			fertile += value > 0;
@@ -474,7 +474,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 bool furnishBay(Layout &L, GenerationContext &c, int home, bool starter)
 {
 	const auto &t = L.t;
-	const int hx = home % t.w, hy = home / t.w;
+	const int hx = t.remainderX(home), hy = home / t.w;
 	const int radii[2] = {L.compact ? (t.size() == 4096 ? 6 : 7)
 									: (t.size() / int(L.homes.size()) < 8192 ? 7 : 9),
 						  L.compact ? 3 : 4};
@@ -541,7 +541,7 @@ bool extraShoreFields(Layout &L, GenerationContext &c, bool opening)
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int q = t.at(i % t.w + dx, i / t.w + dy);
+				const int q = t.at(t.remainderX(i) + dx, i / t.w + dy);
 				if (depth[q] >= 0)
 					continue;
 				depth[q] = depth[i] + 1;
@@ -590,14 +590,14 @@ bool expansion(Layout &L, int endpoint)
 	for (int dy = -10; dy <= 10; ++dy)
 		for (int dx = -10; dx <= 10; ++dx)
 		{
-			int p = t.at(endpoint % t.w + dx, endpoint / t.w + dy), d = dx * dx + dy * dy;
+			int p = t.at(t.remainderX(endpoint) + dx, endpoint / t.w + dy), d = dx * dx + dy * dy;
 			if (d >= bestDistance)
 				continue;
 			bool fits = true;
 			for (int y = -radius; y <= radius && fits; ++y)
 				for (int x = -radius; x <= radius && fits; ++x)
 				{
-					int i = t.at(p % t.w + x, p / t.w + y);
+					int i = t.at(t.remainderX(p) + x, p / t.w + y);
 					if (!grass[i] || L.reserved[i] || L.roads[i] ||
 						std::find(L.portage.cut.begin(), L.portage.cut.end(), i) !=
 							L.portage.cut.end())
@@ -627,7 +627,7 @@ bool expansion(Layout &L, int endpoint)
 	for (int y = -radius; y <= radius; ++y)
 		for (int x = -radius; x <= radius; ++x)
 		{
-			int i = t.at(best % t.w + x, best / t.w + y);
+			int i = t.at(t.remainderX(best) + x, best / t.w + y);
 			L.forest[i] = L.rock[i] = 0;
 			L.reserved[i] = 1;
 		}
@@ -653,24 +653,24 @@ bool findPortage(Layout &L, GenerationContext &c, const PortageLakesOptions &o)
 			for (auto d : std::array<std::array<int, 2>, 2>{{{1, 0}, {0, 1}}})
 			{
 				int dx = d[0], dy = d[1], left = 0, right = 0;
-				while (left < 24 && L.forest[t.at(i % t.w - dx * left, i / t.w - dy * left)])
+				while (left < 24 && L.forest[t.at(t.remainderX(i) - dx * left, i / t.w - dy * left)])
 					++left;
-				while (right < 24 && L.forest[t.at(i % t.w + dx * right, i / t.w + dy * right)])
+				while (right < 24 && L.forest[t.at(t.remainderX(i) + dx * right, i / t.w + dy * right)])
 					++right;
 				if (left + right - 1 < o.depth || left >= 24 || right >= 24)
 					continue;
-				int a = t.at(i % t.w - dx * (left + 2), i / t.w - dy * (left + 2));
-				int b = t.at(i % t.w + dx * (right + 2), i / t.w + dy * (right + 2));
+				int a = t.at(t.remainderX(i) - dx * (left + 2), i / t.w - dy * (left + 2));
+				int b = t.at(t.remainderX(i) + dx * (right + 2), i / t.w + dy * (right + 2));
 				bool safe = open[a] && open[b];
 				for (int j = -left - 2; j <= right + 2 && safe; ++j)
 					for (int side = -2; side <= 2; ++side)
 					{
-						int q = t.at(i % t.w + dx * j - dy * side, i / t.w + dy * j + dx * side);
+						int q = t.at(t.remainderX(i) + dx * j - dy * side, i / t.w + dy * j + dx * side);
 						if (!grass[q] || L.reserved[q] || L.rock[q])
 							safe = false;
 					}
 				if (safe && left + right + 4 >= o.depth + (L.compact ? 8 : 14))
-					proposals.push_back({a, b, i % t.w, i / t.w, dx, dy, left + right + 4});
+					proposals.push_back({a, b, t.remainderX(i), i / t.w, dx, dy, left + right + 4});
 			}
 	c.shuffle(proposals.begin(), proposals.end(), "portage-cut-candidates");
 	std::vector<std::pair<int, Proposal>> ranked;
@@ -682,8 +682,8 @@ bool findPortage(Layout &L, GenerationContext &c, const PortageLakesOptions &o)
 			for (int side = -1; side <= 1; ++side)
 			{
 				int q =
-					t.at(p.a % t.w + p.dx * j - p.dy * side, p.a / t.w + p.dy * j + p.dx * side);
-				dryPlug &= growth.at(q % t.w, q / t.w) == 0;
+					t.at(t.remainderX(p.a) + p.dx * j - p.dy * side, p.a / t.w + p.dy * j + p.dx * side);
+				dryPlug &= growth.at(t.remainderX(q), q / t.w) == 0;
 			}
 		if (!dryPlug)
 			continue;
@@ -698,7 +698,7 @@ bool findPortage(Layout &L, GenerationContext &c, const PortageLakesOptions &o)
 	{
 		auto saved = L;
 		L.portage = {p.a, p.b, gain + p.len, p.len, {}};
-		int ax = p.a % t.w, ay = p.a / t.w;
+		int ax = t.remainderX(p.a), ay = p.a / t.w;
 		int length = p.len;
 		std::vector<unsigned char> approach(t.size(), 0);
 		int mid = length / 2;
@@ -726,7 +726,7 @@ bool findPortage(Layout &L, GenerationContext &c, const PortageLakesOptions &o)
 				bool touches = false;
 				for (int dy = -1; dy <= 0; ++dy)
 					for (int dx = -1; dx <= 0; ++dx)
-						touches |= protect[t.at(i % t.w + dx, i / t.w + dy)];
+						touches |= protect[t.at(t.remainderX(i) + dx, i / t.w + dy)];
 				if (!touches)
 					L.terrain[i] = SAND;
 			}
@@ -773,19 +773,19 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 				{
 					if (dx * dx + dy * dy < 100 || dx * dx + dy * dy > reach * reach)
 						continue;
-					int p = t.at(h % t.w + dx, h / t.w + dy);
+					int p = t.at(t.remainderX(h) + dx, h / t.w + dy);
 					bool fits = true;
 					for (int yy = -5; yy <= 5; ++yy)
 						for (int xx = -5; xx <= 5; ++xx)
 						{
-							int q = t.at(p % t.w + xx, p / t.w + yy);
+							int q = t.at(t.remainderX(p) + xx, p / t.w + yy);
 							if (L.reserved[q] || L.terrain[q] != GRASS)
 								fits = false;
 						}
 					if (!fits)
 						continue;
 					RadialShape shape(L.compact ? 2.5 : 3.5, .15, c, "portage-pool-shapes");
-					fillShape(L.terrain, t, p % t.w, p / t.w, shape, 0, WATER);
+					fillShape(L.terrain, t, t.remainderX(p), p / t.w, shape, 0, WATER);
 					disc(L.reserved, t, p, 6);
 					L.algaePools.push_back(p);
 					placed = true;
@@ -809,7 +809,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		bool away = true;
 		for (int home : homes)
 			away &=
-				t.dist2(h % t.w, h / t.w, home % t.w, home / t.w) > (L.compact ? 20 * 20 : 32 * 32);
+				t.dist2(t.remainderX(h), h / t.w, t.remainderX(home), home / t.w) > (L.compact ? 20 * 20 : 32 * 32);
 		if (!away || L.reserved[h])
 			continue;
 		if (++neutralTries > 64)
@@ -820,7 +820,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		{
 			for (int f = 0; f < 3; ++f)
 				for (int radius = 8; radius <= 17; ++radius)
-					if (makePlot(L, c, t.at(h % t.w + radius, h / t.w + (f - 1) * 6), 2, CHERRY + f,
+					if (makePlot(L, c, t.at(t.remainderX(h) + radius, h / t.w + (f - 1) * 6), 2, CHERRY + f,
 								 0, 2))
 						break;
 			neutralBays.push_back(h);
@@ -839,7 +839,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	for (int h : homes)
 		disc(homeBuffer, t, h, L.compact ? 12 : (t.size() / int(homes.size()) < 8192 ? 18 : 24));
 	for (int i = 0; i < t.size(); ++i)
-		dry[i] = grass[i] && !L.reserved[i] && !homeBuffer[i] && growth.at(i % t.w, i / t.w) == 0;
+		dry[i] = grass[i] && !L.reserved[i] && !homeBuffer[i] && growth.at(t.remainderX(i), i / t.w) == 0;
 	L.forest = noisyShare(dry, noise, 75);
 	// Small rock knots in the deepest forest leave the wooded route options dominant.
 	auto rockNoise = periodicNoise(t.w, t.h, 9, c.stream("portage-rock"));
@@ -864,7 +864,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		for (int y = -12; y <= 12; ++y)
 			for (int x = -12; x <= 12; ++x)
 				if (x * x + y * y >= 81 && x * x + y * y <= 144)
-					options.push_back(t.at(h % t.w + x, h / t.w + y));
+					options.push_back(t.at(t.remainderX(h) + x, h / t.w + y));
 		doorsteps.push_back(std::move(options));
 	}
 	struct Edge
@@ -875,7 +875,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	for (size_t a = 0; a < endpoints.size(); ++a)
 		for (size_t b = a + 1; b < endpoints.size(); ++b)
 			edges.push_back({int(a), int(b),
-							 t.dist2(endpoints[a] % t.w, endpoints[a] / t.w, endpoints[b] % t.w,
+							 t.dist2(t.remainderX(endpoints[a]), endpoints[a] / t.w, t.remainderX(endpoints[b]),
 									 endpoints[b] / t.w)});
 	std::stable_sort(edges.begin(), edges.end(), [](auto a, auto b) { return a.d < b.d; });
 	DisjointSets joins(int(endpoints.size()));
@@ -919,10 +919,10 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 				bool separated = true;
 				for (int home : homes)
 					separated &=
-						t.dist2(candidate % t.w, candidate / t.w, home % t.w, home / t.w) >= 400;
+						t.dist2(t.remainderX(candidate), candidate / t.w, t.remainderX(home), home / t.w) >= 400;
 				for (int bay : neutralBays)
 					separated &=
-						t.dist2(candidate % t.w, candidate / t.w, bay % t.w, bay / t.w) >= 256;
+						t.dist2(t.remainderX(candidate), candidate / t.w, t.remainderX(bay), bay / t.w) >= 256;
 				if (separated)
 					neutralBays.push_back(candidate);
 				if (neutralBays.size() == 2)
@@ -938,7 +938,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 				for (int y = -12; y <= 12; ++y)
 					for (int x = -12; x <= 12; ++x)
 						if (x * x + y * y >= 81 && x * x + y * y <= 144)
-							goals.push_back(t.at(bay % t.w + x, bay / t.w + y));
+							goals.push_back(t.at(t.remainderX(bay) + x, bay / t.w + y));
 				auto route = reserveSandRoute(L.terrain, t, doorsteps[k], tileMask(t, goals),
 											  protectedTiles, 0, &costs, GridNeighbors::Eight);
 				int newlyOpened = 0;
@@ -967,7 +967,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	growth = cropGrowthField(L.terrain, t);
 	grass = pureTiles(L.terrain, t, GRASS);
 	for (int i = 0; i < t.size(); ++i)
-		if (!grass[i] || growth.at(i % t.w, i / t.w) > 0)
+		if (!grass[i] || growth.at(t.remainderX(i), i / t.w) > 0)
 			L.forest[i] = L.rock[i] = 0;
 	const int minimumPortages = L.compact ? 1 : 2;
 	const int wantedPortages = L.compact ? 1 : std::clamp(t.size() / 65536, 2, 4);
@@ -1006,14 +1006,14 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 				for (int j = 1; j < 52; ++j)
 				{
 					int sign = side ? 1 : -1;
-					int q = t.at(centre % t.w + int(std::lround(sign * dx * j)),
+					int q = t.at(t.remainderX(centre) + int(std::lround(sign * dx * j)),
 								 centre / t.w + int(std::lround(sign * dy * j)));
 					bool fits = true;
 					int radius = L.compact ? 2 : (t.size() / int(homes.size()) < 8192 ? 3 : 4);
 					for (int y = -radius; y <= radius && fits; ++y)
 						for (int x = -radius; x <= radius && fits; ++x)
 						{
-							int v = t.at(q % t.w + x, q / t.w + y);
+							int v = t.at(t.remainderX(q) + x, q / t.w + y);
 							fits = grass[v] && !L.reserved[v] && !L.rock[v] &&
 								   (!homeBuffer[v] || L.compact);
 						}
@@ -1042,7 +1042,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	c.telemetry.measure("portage-lakes.bays.neutral", neutral);
 	for (size_t k = 0; k < L.expansions.size(); ++k)
 	{
-		c.telemetry.measure("portage-lakes.expansion.x", L.expansions[k] % t.w, int(k));
+		c.telemetry.measure("portage-lakes.expansion.x", t.remainderX(L.expansions[k]), int(k));
 		c.telemetry.measure("portage-lakes.expansion.y", L.expansions[k] / t.w, int(k));
 	}
 	if (!L.failure.empty())
@@ -1079,7 +1079,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 	for (int i : centres)
 	{
 		bool apart = true;
-		for (int other : used) apart &= t.dist2(i % t.w, i / t.w, other % t.w, other / t.w) >= 24 * 24;
+		for (int other : used) apart &= t.dist2(t.remainderX(i), i / t.w, t.remainderX(other), other / t.w) >= 24 * 24;
 		if (!apart) continue;
 		used.push_back(i);
 		std::vector<int> clump;
@@ -1087,7 +1087,7 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		for (int dy = -radius; dy <= radius; ++dy)
 			for (int dx = -radius; dx <= radius; ++dx)
 				if (dx * dx + dy * dy <= radius * radius && !(dx == radius && dy >= 0))
-					clump.push_back(t.at(i % t.w + dx, i / t.w + dy));
+					clump.push_back(t.at(t.remainderX(i) + dx, i / t.w + dy));
 		L.countryClumps.push_back(std::move(clump));
 		if (used.size() >= size_t(t.size() / 1800)) break;
 	}
@@ -1120,7 +1120,7 @@ std::string mechanismFailure(const Map &map, const Layout &L, bool checkOpeningA
 		bool room = false;
 		for (int y = -3; y <= 1; ++y)
 			for (int x = -3; x <= 1; ++x)
-				room |= anchors[t.at(p % t.w + x, p / t.w + y)];
+				room |= anchors[t.at(t.remainderX(p) + x, p / t.w + y)];
 		if (!room)
 			return "A Portage Lakes expansion has no building room.";
 	}
@@ -1203,7 +1203,7 @@ int farmServiceSites(const Map &map, const Torus &t, const Plot &plot)
 	for (int oy = 0; oy < 2; ++oy)
 		for (int ox = 0; ox < 2; ++ox)
 		{
-			const int x = plot.court % t.w + ox, y = plot.court / t.w + oy;
+			const int x = t.remainderX(plot.court) + ox, y = plot.court / t.w + oy;
 			if (!map.isHardSpaceForBuilding(x, y, 3, 3))
 				continue;
 			int adjacent[2] = {0, 0}, nearby[2] = {0, 0};
@@ -1232,7 +1232,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 	}
 	const auto &t = L.t;
 	const PortageLakesOptions o(c.request);
-	writeUndermap(game.map, L.terrain);
+	writeVertices(game.map, L.terrain);
 	for (size_t k = 0; k < L.homes.size(); ++k)
 		game.addTeam();
 	for (size_t k = 0; k < L.homes.size(); ++k)
@@ -1240,7 +1240,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		int h = L.homes[k];
 		std::vector<unsigned char> mask(t.size(), 0);
 		disc(mask, t, h, 6);
-		if (!placeSettlement(game, c, int(k), mask, {t.x(h % t.w - 2), t.y(h / t.w - 2)},
+		if (!placeSettlement(game, c, int(k), mask, {t.x(t.remainderX(h) - 2), t.y(h / t.w - 2)},
 							 "portage-settlements"))
 			return false;
 	}
@@ -1255,7 +1255,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 			plantable.erase(std::remove_if(plantable.begin(), plantable.end(),
 										   [&](int i)
 										   {
-											   return (t.x(i % t.w - plot.court % t.w) < 4 &&
+											   return (t.x(t.remainderX(i) - t.remainderX(plot.court)) < 4 &&
 													   t.y(i / t.w - plot.court / t.w) < 4) ||
 													  std::find(plot.access.begin(),
 																plot.access.end(),
@@ -1270,7 +1270,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 			std::vector<int> rim;
 			for (int i : plantable)
 			{
-				int dx = t.offsetX(plot.court % t.w, i % t.w);
+				int dx = t.offsetX(t.remainderX(plot.court), t.remainderX(i));
 				int dy = t.offsetY(plot.court / t.w, i / t.w);
 				if (dx >= -1 && dx <= 4 && dy >= -1 && dy <= 4)
 					rim.push_back(i);
@@ -1284,12 +1284,12 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		if (count > 0 && plot.court >= 0 && !farmServiceSites(game.map, t, plot))
 		{
 			for (int i : plantable)
-				if (game.map.getResource(i % t.w, i / t.w).type == WHEAT)
-					game.map.setNoResource(i % t.w, i / t.w, 0);
+				if (game.map.getResource(t.remainderX(i), i / t.w).type == WHEAT)
+					game.map.setNoResource(t.remainderX(i), i / t.w, 0);
 			std::vector<int> rim;
 			for (int i : plantable)
 			{
-				int dx = t.offsetX(plot.court % t.w, i % t.w);
+				int dx = t.offsetX(t.remainderX(plot.court), t.remainderX(i));
 				int dy = t.offsetY(plot.court / t.w, i / t.w);
 				if (dx >= -1 && dx <= 4 && dy >= -1 && dy <= 4)
 					rim.push_back(i);
@@ -1310,12 +1310,12 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 								count, int(p));
 		std::uint64_t potential = 0;
 		for (int i : plantable)
-			potential += growth.at(i % t.w, i / t.w);
+			potential += growth.at(t.remainderX(i), i / t.w);
 		if (plot.court >= 0)
 		{
 			const int sites = farmServiceSites(game.map, t, plot);
 			c.telemetry.measure("portage-lakes.farm.service-sites", sites, int(p));
-			c.telemetry.measure("portage-lakes.farm.court-x", plot.court % t.w, int(p));
+			c.telemetry.measure("portage-lakes.farm.court-x", t.remainderX(plot.court), int(p));
 			c.telemetry.measure("portage-lakes.farm.court-y", plot.court / t.w, int(p));
 			if (!sites && (plot.minimum > 0 || count > 0))
 			{
@@ -1333,8 +1333,8 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		}
 	}
 	for (int i = 0; i < t.size(); ++i)
-		if ((L.forest[i] || L.rock[i]) && clearGround(game.map, i % t.w, i / t.w))
-			game.map.setResourceByIndex(i % t.w, i / t.w, L.rock[i] ? STONE : WOOD, 1);
+		if ((L.forest[i] || L.rock[i]) && clearGround(game.map, t.remainderX(i), i / t.w))
+			game.map.setResourceByIndex(t.remainderX(i), i / t.w, L.rock[i] ? STONE : WOOD, 1);
 	for (size_t k = 0; k < L.countryClumps.size(); ++k)
 	{
 		const int kind = k % 3 == 0 ? STONE : CHERRY + int(k % 3);
@@ -1345,8 +1345,8 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 	{
 		auto waterEligible = [&](int i)
 		{
-			return t.dist2(pool % t.w, pool / t.w, i % t.w, i / t.w) <= 36 &&
-				   game.map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ALGA);
+			return t.dist2(t.remainderX(pool), pool / t.w, t.remainderX(i), i / t.w) <= 36 &&
+				   game.map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ALGA);
 		};
 		growPatch(game.map, t, pool, ALGA, 8 + scaledCount(8, o.algae), waterEligible);
 	}
@@ -1355,10 +1355,10 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		auto eligible = [&](int i)
 		{
 			return !L.reserved[i] && L.plotOf[i] < 0 && !L.forest[i] && !L.rock[i] && !L.roads[i] &&
-				   t.dist2(h % t.w, h / t.w, i % t.w, i / t.w) >= 64 &&
-				   clearGround(game.map, i % t.w, i / t.w);
+				   t.dist2(t.remainderX(h), h / t.w, t.remainderX(i), i / t.w) >= 64 &&
+				   clearGround(game.map, t.remainderX(i), i / t.w);
 		};
-		int q = seedNear(t, h % t.w, h / t.w, 16, eligible);
+		int q = seedNear(t, t.remainderX(h), h / t.w, 16, eligible);
 		if (q >= 0)
 			growPatch(game.map, t, q, STONE, 4 + scaledCount(3, o.stone), eligible);
 	}
@@ -1367,11 +1367,11 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		int h = L.expansions[k];
 		auto eligible = [&](int i)
 		{
-			int d = t.chebyshev(h % t.w, h / t.w, i % t.w, i / t.w);
+			int d = t.chebyshev(t.remainderX(h), h / t.w, t.remainderX(i), i / t.w);
 			return d >= 6 && d <= 9 && !L.reserved[i] && L.plotOf[i] < 0 && !L.roads[i] &&
-				   !L.forest[i] && !L.rock[i] && clearGround(game.map, i % t.w, i / t.w);
+				   !L.forest[i] && !L.rock[i] && clearGround(game.map, t.remainderX(i), i / t.w);
 		};
-		int seed = seedNear(t, h % t.w, h / t.w, 9, eligible);
+		int seed = seedNear(t, t.remainderX(h), h / t.w, 9, eligible);
 		if (seed >= 0)
 			growPatch(game.map, t, seed, CHERRY + int(k % 3), scaledCount(3, o.fruit), eligible);
 	}
@@ -1458,7 +1458,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			continue;
 		matched = true;
 		for (int i = 0; i < actual.size(); ++i)
-			matched &= candidate.terrain[i] == game.map.getUMTerrain(i % actual.w, i / actual.w);
+			matched &= candidate.terrain[i] == game.map.vertexTerrainAt(actual.remainderX(i), i / actual.w);
 		if (matched)
 			L = std::move(candidate);
 	}
@@ -1472,7 +1472,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 
 	for (const auto &crossing : L.portages)
 		for (int i : crossing.cut)
-			if (map.getResource(i % t.w, i / t.w).type != WOOD || growth.at(i % t.w, i / t.w) != 0)
+			if (map.getResource(t.remainderX(i), i / t.w).type != WOOD || growth.at(t.remainderX(i), i / t.w) != 0)
 				return "A Portage Lakes woodland shortcut is missing or can regrow.";
 	if (auto e = mechanismFailure(map, L); !e.empty())
 		return e;
@@ -1500,7 +1500,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			4,
+			5,
 			false,
 			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
 							  ControlGroup::Terrain}

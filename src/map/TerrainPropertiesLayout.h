@@ -53,3 +53,59 @@ constexpr bool sameTerrainProperties(const TerrainProperties& a, const TerrainPr
 		a.inhibitionQ8 == b.inhibitionQ8 && a.shoreSupportQ8 == b.shoreSupportQ8 &&
 		a.allowedResources == b.allowedResources && a.farmMaterial == b.farmMaterial;
 }
+
+// A cell's rules come from its four corner terrains. Corners with equal
+// profiles keep that exact profile, so members of one terrain group still
+// combine into their group's mechanic. Otherwise the cell is a transition:
+// walkable when any corner is, never swimmable or buildable, and otherwise as
+// permissive as its weakest corner. Ground speed and health only consider the
+// walkable corners (all of them when none is walkable), since a unit crossing
+// the cell walks on those. Grass with sand, or sand with water, therefore gives
+// the classic shore: walkable, a shoreline, and nothing else.
+constexpr TerrainProperties combineCornerRules(const TerrainProperties& a, const TerrainProperties& b,
+	const TerrainProperties& c, const TerrainProperties& d)
+{
+	const TerrainProperties* corners[] = {&a, &b, &c, &d};
+	bool uniform = true;
+	bool anyWalkable = false;
+	for (const auto* p : corners)
+	{
+		uniform = uniform && sameTerrainProperties(*p, a);
+		anyWalkable = anyWalkable || p->walkable;
+	}
+	if (uniform) return a;
+	TerrainProperties result;
+	result.walkable = anyWalkable;
+	result.swimmable = result.buildable = false;
+	result.projectileBlocks = result.shoreline = false;
+	result.flyable = result.resourcesGrow = result.nonGrowingResources = result.fertilitySource = true;
+	result.farmMaterial = 255;
+	result.groundSpeedQ8 = result.airSpeedQ8 = 1024;
+	result.groundHealthQ8 = result.airHealthQ8 = 1024;
+	result.growthQ8 = result.inhibitionQ8 = result.shoreSupportQ8 = 1024;
+	result.fertilityQ8 = 1024;
+	result.allowedResources = 0xff;
+	auto lower = [](auto& value, auto candidate) { if (candidate < value) value = candidate; };
+	for (const auto* p : corners)
+	{
+		result.flyable = result.flyable && p->flyable;
+		result.resourcesGrow = result.resourcesGrow && p->resourcesGrow;
+		result.nonGrowingResources = result.nonGrowingResources && p->nonGrowingResources;
+		result.fertilitySource = result.fertilitySource && p->fertilitySource;
+		result.projectileBlocks = result.projectileBlocks || p->projectileBlocks;
+		result.shoreline = result.shoreline || p->shoreline;
+		if (p->walkable || !anyWalkable)
+		{
+			lower(result.groundSpeedQ8, p->groundSpeedQ8);
+			lower(result.groundHealthQ8, p->groundHealthQ8);
+		}
+		lower(result.airSpeedQ8, p->airSpeedQ8);
+		lower(result.airHealthQ8, p->airHealthQ8);
+		lower(result.growthQ8, p->growthQ8);
+		lower(result.fertilityQ8, p->fertilityQ8);
+		lower(result.inhibitionQ8, p->inhibitionQ8);
+		lower(result.shoreSupportQ8, p->shoreSupportQ8);
+		result.allowedResources = std::uint16_t(result.allowedResources & p->allowedResources);
+	}
+	return result;
+}

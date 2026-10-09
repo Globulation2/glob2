@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:SaveBuildingDraftRequest",
+  "title": "SaveBuildingDraftRequest",
+  "type": "object",
+  "required": [
+    "revision",
+    "name",
+    "package"
+  ],
+  "properties": {
+    "revision": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "package": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "namespace",
+        "variants",
+        "experiments",
+        "sprites"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "namespace": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "properties",
+              "semantics"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]*$",
+                "maxLength": 128
+              },
+              "previous": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]*$",
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "string",
+                    "const": ""
+                  }
+                ]
+              },
+              "next": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]*$",
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "string",
+                    "const": ""
+                  }
+                ]
+              },
+              "requiredExperiment": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]*$",
+                    "maxLength": 128
+                  },
+                  {
+                    "type": "string",
+                    "const": ""
+                  }
+                ]
+              },
+              "properties": {
+                "type": "object",
+                "patternProperties": {
+                  "^.*$": {}
+                }
+              },
+              "semantics": {
+                "type": "object",
+                "patternProperties": {
+                  "^.*$": {}
+                }
+              },
+              "presentation": {
+                "type": "object",
+                "patternProperties": {
+                  "^.*$": {}
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 4096
+        },
+        "experiments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "help"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]*$",
+                "maxLength": 128
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "help": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 64
+        },
+        "sprites": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "frames"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]*$",
+                "maxLength": 64
+              },
+              "frames": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "imageHash",
+                    "width",
+                    "height"
+                  ],
+                  "properties": {
+                    "imageHash": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$",
+                      "description": "Lowercase hexadecimal SHA-256 digest."
+                    },
+                    "width": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 512
+                    },
+                    "height": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 512
+                    },
+                    "teamColorHash": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$",
+                      "description": "Lowercase hexadecimal SHA-256 digest."
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "minItems": 1,
+                "maxItems": 256
+              }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 256
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

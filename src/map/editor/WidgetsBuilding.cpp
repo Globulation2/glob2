@@ -12,8 +12,8 @@
 #include "Unit.h"
 #include <SDL3/SDL.h>
 
-BuildingInfoTitle::BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building)
-	: MapEditorWidget(me, area, group, name, action), building(building)
+BuildingInfoTitle::BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -22,8 +22,10 @@ BuildingInfoTitle::BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, c
 
 void BuildingInfoTitle::draw()
 {
-	Building* selBuild = building;
-	BuildingType *buildingType = selBuild->type;
+    const auto& frame=*me.view.scene;
+    const auto* selBuild=frame.entities.building(frame.entities.selectedBuilding.ref);
+    if (!selBuild) return;
+    const auto* buildingType=frame.entities.type(*selBuild);
 	Uint8 r, g, b;
 
 	// draw "building" of "player"
@@ -31,7 +33,7 @@ void BuildingInfoTitle::draw()
 	title += buildingDisplayName(*buildingType);
 	{
 		title += " (";
-		title += displayPlayerName(*selBuild->owner);
+		title += displayPlayerName(frame.entities.teams[selBuild->team].firstPlayerName);
 		title += ")";
 	}
 
@@ -48,15 +50,12 @@ void BuildingInfoTitle::draw()
 
 
 
-void BuildingInfoTitle::setBuilding(Building* aBuilding)
-{
-	building=aBuilding;
-}
 
 
 
-BuildingPicture::BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building)
-	: MapEditorWidget(me, area, group, name, action), building(building)
+
+BuildingPicture::BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action)
+	: MapEditorWidget(me, area, group, name, action)
 {
 
 }
@@ -65,8 +64,10 @@ BuildingPicture::BuildingPicture(MapEdit& me, const widgetRectangle& area, const
 
 void BuildingPicture::draw()
 {
-	Building* selBuild = building;
-	BuildingType *buildingType = selBuild->type;
+    const auto& frame=*me.view.scene;
+    const auto* selBuild=frame.entities.building(frame.entities.selectedBuilding.ref);
+    if (!selBuild) return;
+    const auto* buildingType=frame.entities.type(*selBuild);
 
 	// building icon
 	Sprite *miniSprite;
@@ -83,7 +84,7 @@ void BuildingPicture::draw()
 	}
 	int dx = (56-miniSprite->getW(imgid))/2;
 	int dy = (46-miniSprite->getH(imgid))/2;
-	miniSprite->setBaseColor(selBuild->owner->color);
+	miniSprite->setBaseColor(presentationColor(frame.entities.teams[selBuild->team].color));
 	globalContainer->gfx->drawSprite(area.x+dx, area.y+dy, miniSprite, imgid);
 	globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 18);
 	globalContainer->gfx->finishDrawingSprite(miniSprite, 255);
@@ -92,10 +93,7 @@ void BuildingPicture::draw()
 
 
 
-void BuildingPicture::setBuilding(Building* aBuilding)
-{
-	building=aBuilding;
-}
+
 
 
 

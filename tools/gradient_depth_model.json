@@ -1,0 +1,39 @@
+{
+ "version": 5,
+ "games": 1472,
+ "lifetimes": 3408777,
+ "default": "l0100",
+ "points": [
+  {
+   "name": "l0100",
+   "lambda": 0.1,
+   "offset": 166,
+   "slope256": 292
+  },
+  {
+   "name": "l0200",
+   "lambda": 0.2,
+   "offset": 88,
+   "slope256": 268
+  },
+  {
+   "name": "l0300",
+   "lambda": 0.3,
+   "offset": 56,
+   "slope256": 266
+  },
+  {
+   "name": "l0500",
+   "lambda": 0.5,
+   "offset": 38,
+   "slope256": 257
+  }
+ ],
+ "cross_validated": {
+  "lifetimes": 3408777,
+  "hit_rate": 0.9686,
+  "query_weighted_coverage": 0.9702,
+  "extra_cpu": 1.3641,
+  "owner_saving": 0.9415
+ }
+}

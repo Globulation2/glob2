@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:SetSheet",
+  "title": "SetSheet",
+  "type": "object",
+  "required": [
+    "hash",
+    "png",
+    "frameWidth",
+    "frameHeight"
+  ],
+  "properties": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "png": {
+      "type": "string",
+      "maxLength": 16777216,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "frameWidth": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64
+    },
+    "frameHeight": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64
+    }
+  },
+  "additionalProperties": false
+}

@@ -116,7 +116,6 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 		return shared_ptr<Order>(new NullOrder());
 	assert(aiImplementation);
 	initializeRandom();
-	SyncRandScope randomScope(randomEngine);
 	bindTelemetry();
 	aiImplementation->telemetry.tick = player->game->stepCounter;
 	aiImplementation->telemetry.count(AITelemetry::Polls);
@@ -171,7 +170,6 @@ void AI::prepareDecision()
 AIEngine::Command AI::decide(const AIEngine::DecisionContext& context)
 {
 	if (!decisionTelemetry) throw std::logic_error("AI decision dispatch was not prepared by owner");
-	SyncRandScope randomScope(randomEngine);
 	auto& sink = aiImplementation->telemetry;
 	sink.series = decisionTelemetry.get(); sink.tick = context.world.tick;
 	sink.count(AITelemetry::Polls);

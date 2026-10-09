@@ -6,7 +6,7 @@ import re
 import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, prepare_directory, PACKAGE_VERSION
-from javascript import javascript_objects, numeric_guard
+from javascript import javascript_objects, numeric_guard, strict_numeric_source, guarded_numeric_source
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import web_assets
@@ -158,12 +158,12 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     objects = []
     for f in files:
-        local = strict if f.startswith('src/scripting/javascript/') or f == 'src/ai/javascript/AIJavaScript.cpp' else env
+        local = strict if strict_numeric_source(f) else env
         if f == 'src/app/Glob2.cpp':
             local = local.Clone()
             local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
         objects.append(local.Object(str(output / 'obj' / (f + '.o')), f))
-    numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp'])
+    numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
     objects += javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
     env.Requires(objects, ports)
     env.Depends(objects, str(config))
@@ -189,8 +189,11 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                                '--preload-file', 'examples/javascript@/examples/javascript',
                                '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
-        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/ComputeExecutorHarness.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
+        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/EntityRandomTest.cpp', '#src/unit/EntityRandomLifecycleTest.cpp', ('#src/scripting/sgsl/LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])), '#src/common/ComputeExecutorHarness.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
                 '#src/game/SharedWorkerLifecycleTest.cpp', '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
+                ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
+                '#src/render/scene/SceneExtractTest.cpp', '#src/render/scene/SceneBufferTest.cpp',
+                '#src/render/overlay/OverlayFillTest.cpp',
                 ('#src/map/gradient/PathGradientHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/ai/cortex/CortexActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -244,7 +247,7 @@ def build_web(directory, identity, arguments):
     env, serial, database, packaged = _build_variant(directory, identity, arguments)
     _, threaded, _, _ = _build_variant(Path(directory) / 'threaded', identity, arguments, True, packaged)
     def shell(target, source, env):
-        page = Path('browser/shell.html').read_text().replace('/* AI_STUDIO_BRIDGE */', Path('browser/studio.js').read_text()).replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
+        page = Path('browser/shell.html').read_text().replace('/* AI_STUDIO_BRIDGE */', Path('browser/studio-envelope.js').read_text() + '\n' + Path('browser/generator-studio.js').read_text() + '\n' + Path('browser/studio.js').read_text() + '\n' + Path('browser/set-preview.js').read_text()).replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>')
         # The page shows WebAssembly download progress against these sizes.
         sizes = {'index.wasm': Path(directory) / 'index.wasm', 'threaded/index.wasm': Path(directory) / 'threaded/index.wasm'}
         sizes = json.dumps({name: path.stat().st_size for name, path in sizes.items()}, separators=(',', ':'), sort_keys=True)
@@ -253,9 +256,11 @@ def build_web(directory, identity, arguments):
             raise ValueError('browser/shell.html lacks the data-wasm-bytes placeholder')
         write_if_changed(str(target[0]), page)
         write_if_changed(str(target[1]), page)
+        write_if_changed(str(target[2]), page)
+        write_if_changed(str(target[3]), page)
         return 0
-    page = env.Command([str(Path(directory) / 'index.html'), str(Path(directory) / 'studio.html')],
-        ['browser/shell.html', 'browser/studio.js', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
+    page = env.Command([str(Path(directory) / 'index.html'), str(Path(directory) / 'studio.html'), str(Path(directory) / 'set-preview.html'), str(Path(directory) / 'generator-studio.html')],
+        ['browser/shell.html', 'browser/studio-envelope.js', 'browser/generator-studio.js', 'browser/studio.js', 'browser/set-preview.js', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
     # The music decoder has independent Wasm memory in both browser variants.
     music = env.Clone()
     music['LIBS'] = [music.File(str(Path(directory).resolve() / 'opus/prefix/lib' / ('lib' + name + '.a')))
@@ -314,7 +319,9 @@ def build_web(directory, identity, arguments):
     hive_worker = env.Install(directory, 'browser/hive-worker.js')
     env.Depends(page, [hive_program, hive_worker])
     loader = env.Install(directory, 'browser/loader.js')
-    env.Depends(page, loader)
+    localization = env.Install(directory, 'browser/i18n.js')
+    localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('platform/packages/i18n/locales').glob('*.json'))])
+    env.Depends(page, [loader, localization])
     env.Alias('web-package', [page, loader])
     env.Alias('web-threaded', threaded)
     env.Alias('web-serial', serial)

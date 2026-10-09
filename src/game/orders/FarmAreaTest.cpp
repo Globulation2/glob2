@@ -85,7 +85,7 @@ namespace
 	{
 		for (int y = 0; y < map.getH(); y++)
 			for (int x = 0; x < width; x++)
-				map.setUMatPos(x, y, WATER, 1);
+				map.paintVertexSquare(x, y, WATER, 1);
 	}
 
 	//! A worker at (x,y) finishing a harvest against the tile at (x+dx,y+dy).
@@ -219,6 +219,10 @@ TEST_SUITE("FarmAreas")
 			addWater(map);
 			paintFarm(map, 10, 10, 19, 19);
 			// Every tile at its one-grain seed, and none allowed to regrow.
+			// Block spread destinations too: this fixture has no natural growth.
+			for (int y = 0; y < map.getH(); ++y)
+				for (int x = 0; x < map.getW(); ++x)
+					map.setResourcesGrow(x, y, 0);
 			for (int y = 12; y < 18; y++)
 				for (int x = 12; x < 18; x++)
 				{
@@ -485,9 +489,9 @@ TEST_SUITE("FarmAreas")
 			for (int y = 0; y < map.getH(); y++)
 			{
 				for (int x = 0; x < 8; x++)
-					map.setUMatPos(x, y, WATER, 1);
+					map.paintVertexSquare(x, y, WATER, 1);
 				for (int x = 8; x < 16; x++)
-					map.setUMatPos(x, y, SAND, 1);
+					map.paintVertexSquare(x, y, SAND, 1);
 			}
 			const int water = 3, sand = 11, grass = 19;
 			REQUIRE(map.getTerrainType(water, 10) == WATER);
@@ -540,6 +544,7 @@ TEST_SUITE("FarmAreas")
 		Map& map = world.game.map;
 		addWater(map, 8);
 		CHECK_FALSE(map.farmAreasEnabled());
+		world.gui.prepareLocalPresentation();
 		CHECK_FALSE(world.gui.toolManager.farmAreasAvailable());
 		CHECK(world.gui.toolManager.zoneTypeCount() == 3);
 
@@ -564,6 +569,7 @@ TEST_SUITE("FarmAreas")
 
 		glob2test::HeadlessGame withExperiment(options(true));
 		CHECK(OrderValidation::validate(withExperiment.game, 0, order).verdict == OrderValidation::Verdict::Accepted);
+		withExperiment.gui.prepareLocalPresentation();
 		CHECK(withExperiment.gui.toolManager.zoneTypeCount() == 4);
 	}
 
@@ -658,7 +664,7 @@ TEST_CASE("farm overlay beside the other zones at every zoom tier [display:1024x
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.updateCamera();
-			gui.drawAll(0);
+			glob2test::drawGUI(gui,0);
 			gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/zones-" + (hd ? "hd" : "classic") +
 							 "-" + std::to_string(int(zoom * 100)) + ".bmp");
 			gfx->nextFrame();

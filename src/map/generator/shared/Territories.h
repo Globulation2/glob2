@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Grid.h"
 #include "Morphology.h"
 #include "Sketch.h"
@@ -22,16 +24,22 @@ struct Territories
 	std::vector<int> areas;
 	int smallest() const
 	{
-		int least = areas.empty() ? 0 : areas[0];
+		int least = areas.empty() ? 0 : areas.at(0);
 		for (int a : areas)
+		{
+			::MapGeneration::generationCheckpoint();
 			least = std::min(least, a);
+		}
 		return least;
 	}
 	int largest() const
 	{
 		int most = 0;
 		for (int a : areas)
+		{
+			::MapGeneration::generationCheckpoint();
 			most = std::max(most, a);
+		}
 		return most;
 	}
 };
@@ -64,6 +72,11 @@ Territories growTerritories(const Torus &t, const std::vector<unsigned char> &el
 							const std::vector<double> *worth = nullptr)
 {
 	const int n = t.w * t.h, claimants = int(seeds.size());
+	// Per-claimant distance, queue flags and worst-case frontier storage.
+	generationAllocation(std::uint64_t(claimants) *
+						 (std::uint64_t(n) * (sizeof(int) + sizeof(unsigned char) +
+											  sizeof(std::pair<std::int64_t, int>)) +
+						  128));
 	Territories result;
 	result.labels.assign(n, -1);
 	result.areas.assign(claimants, 0);
@@ -76,57 +89,72 @@ Territories growTerritories(const Torus &t, const std::vector<unsigned char> &el
 	{
 		for (const auto &s : kCardinalSteps)
 		{
-			const int next = t.at(tile % t.w + s[0], tile / t.w + s[1]);
-			if (eligible[next] && result.labels[next] < 0 && !queued[k][next] &&
-				steps[k][next] >= 0)
+			::MapGeneration::generationCheckpoint();
+			const int next = t.at(t.remainderX(tile) + s[0], tile / t.w + s[1]);
+			if (eligible.at(next) && result.labels.at(next) < 0 && !queued.at(k).at(next) &&
+				steps.at(k).at(next) >= 0)
 			{
-				queued[k][next] = 1;
-				frontier[k].push({std::int64_t(steps[k][next]) * 1000 + cost(next), next});
+				queued.at(k).at(next) = 1;
+				frontier.at(k).push({std::int64_t(steps.at(k).at(next)) * 1000 + cost(next), next});
 			}
 		}
 	};
 	for (int k = 0; k < claimants; ++k)
 	{
-		steps[k] = stepsFrom(t, tileMask(t, seeds[k]), eligible);
-		queued[k].assign(n, 0);
-		for (int tile : seeds[k])
-			if (eligible[tile] && result.labels[tile] < 0)
+		::MapGeneration::generationCheckpoint();
+		steps.at(k) = stepsFrom(t, tileMask(t, seeds.at(k)), eligible);
+		queued.at(k).assign(n, 0);
+		for (int tile : seeds.at(k))
+		{
+			::MapGeneration::generationCheckpoint();
+			if (eligible.at(tile) && result.labels.at(tile) < 0)
 			{
-				result.labels[tile] = k;
-				++result.areas[k];
+				result.labels.at(tile) = k;
+				++result.areas.at(k);
 			}
+		}
 	}
 	for (int k = 0; k < claimants; ++k)
-		for (int tile : seeds[k])
-			if (result.labels[tile] == k)
+	{
+		::MapGeneration::generationCheckpoint();
+		for (int tile : seeds.at(k))
+		{
+			::MapGeneration::generationCheckpoint();
+			if (result.labels.at(tile) == k)
 				offer(k, tile);
+		}
+	}
 	std::vector<unsigned char> growing(claimants, 1);
 	for (;;)
 	{
+		::MapGeneration::generationCheckpoint();
 		int k = -1;
 		for (int c = 0; c < claimants; ++c)
 		{
-			const double value = result.areas[c] * (worth ? (*worth)[c] : 1.0);
-			if (growing[c] && (k < 0 || value < result.areas[k] * (worth ? (*worth)[k] : 1.0)))
+			::MapGeneration::generationCheckpoint();
+			const double value = result.areas.at(c) * (worth ? (*worth).at(c) : 1.0);
+			if (growing.at(c) &&
+				(k < 0 || value < result.areas.at(k) * (worth ? (*worth).at(k) : 1.0)))
 				k = c;
 		}
 		if (k < 0)
 			break;
 		int taken = -1;
-		while (!frontier[k].empty() && taken < 0)
+		while (!frontier.at(k).empty() && taken < 0)
 		{
-			const int tile = frontier[k].top().second;
-			frontier[k].pop();
-			if (result.labels[tile] < 0)
+			::MapGeneration::generationCheckpoint();
+			const int tile = frontier.at(k).top().second;
+			frontier.at(k).pop();
+			if (result.labels.at(tile) < 0)
 				taken = tile;
 		}
 		if (taken < 0)
 		{
-			growing[k] = 0;
+			growing.at(k) = 0;
 			continue;
 		}
-		result.labels[taken] = k;
-		++result.areas[k];
+		result.labels.at(taken) = k;
+		++result.areas.at(k);
 		offer(k, taken);
 	}
 	return result;
@@ -157,6 +185,11 @@ inline Territories balancedTerritories(const Torus &t, const std::vector<unsigne
 									   int rounds = 80, double tolerance = 0.01)
 {
 	const int n = t.w * t.h, claimants = int(sites.size());
+	// Per-claimant distance, queue flags and worst-case frontier storage.
+	generationAllocation(std::uint64_t(claimants) *
+						 (std::uint64_t(n) * (sizeof(int) + sizeof(unsigned char) +
+											  sizeof(std::pair<std::int64_t, int>)) +
+						  128));
 	Territories result;
 	result.labels.assign(n, -1);
 	result.areas.assign(claimants, 0);
@@ -166,24 +199,35 @@ inline Territories balancedTerritories(const Torus &t, const std::vector<unsigne
 	std::vector<int> own(n, -1); // the ground kept round each site, the lowest claimant's on a tie
 	for (int k = 0; k < claimants; ++k)
 	{
-		d2[k] = distanceSquaredTo(t, tileMask(t, {sites[k]}));
+		::MapGeneration::generationCheckpoint();
+		d2.at(k) = distanceSquaredTo(t, tileMask(t, {sites.at(k)}));
 		for (int i = 0; i < n; ++i)
-			if (own[i] < 0 && double(d2[k][i]) <= keep * keep)
-				own[i] = k;
+		{
+			::MapGeneration::generationCheckpoint();
+			if (own.at(i) < 0 && double(d2.at(k).at(i)) <= keep * keep)
+				own.at(i) = k;
+		}
 	}
 	// Twice the distance from each site to the nearest other: the weight that moves a border a tile.
 	std::vector<double> reach(claimants, 1.0);
 	for (int k = 0; k < claimants; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		double nearest = -1;
 		for (int j = 0; j < claimants; ++j)
-			if (j != k && (nearest < 0 || d2[j][sites[k]] < nearest))
-				nearest = double(d2[j][sites[k]]);
-		reach[k] = nearest > 0 ? 2 * std::sqrt(nearest) : 1.0;
+		{
+			::MapGeneration::generationCheckpoint();
+			if (j != k && (nearest < 0 || d2.at(j).at(sites.at(k)) < nearest))
+				nearest = double(d2.at(j).at(sites.at(k)));
+		}
+		reach.at(k) = nearest > 0 ? 2 * ::MapGeneration::Numeric::sqrt(nearest) : 1.0;
 	}
 	int total = 0;
 	for (int i = 0; i < n; ++i)
-		total += eligible[i] != 0;
+	{
+		::MapGeneration::generationCheckpoint();
+		total += eligible.at(i) != 0;
+	}
 	const double target = double(total) / claimants;
 	std::vector<double> weight(claimants, 0.0);
 	const auto assign = [&](const std::vector<double> &w)
@@ -191,50 +235,65 @@ inline Territories balancedTerritories(const Torus &t, const std::vector<unsigne
 		std::fill(result.areas.begin(), result.areas.end(), 0);
 		for (int i = 0; i < n; ++i)
 		{
-			result.labels[i] = -1;
-			if (!eligible[i])
+			::MapGeneration::generationCheckpoint();
+			result.labels.at(i) = -1;
+			if (!eligible.at(i))
 				continue;
 			double best = 0;
-			if (own[i] >= 0)
-				result.labels[i] = own[i];
+			if (own.at(i) >= 0)
+				result.labels.at(i) = own.at(i);
 			else
 				for (int k = 0; k < claimants; ++k)
 				{
-					const double value = double(d2[k][i]) - w[k];
-					if (result.labels[i] < 0 || value < best)
+					::MapGeneration::generationCheckpoint();
+					const double value = double(d2.at(k).at(i)) - w.at(k);
+					if (result.labels.at(i) < 0 || value < best)
 					{
-						result.labels[i] = k;
+						result.labels.at(i) = k;
 						best = value;
 					}
 				}
-			++result.areas[result.labels[i]];
+			++result.areas.at(result.labels.at(i));
 		}
 		double error = 0;
 		for (int k = 0; k < claimants; ++k)
-			error = std::max(error, std::abs(result.areas[k] - target));
+		{
+			::MapGeneration::generationCheckpoint();
+			error = std::max(error, std::abs(result.areas.at(k) - target));
+		}
 		return error;
 	};
 	double error = assign(weight), gain = 0.5;
 	for (int round = 0; round < rounds && error > tolerance * target; ++round)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::vector<int> border(claimants, 0);
 		for (int y = 0; y < t.h; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = 0; x < t.w; ++x)
 			{
-				const int k = result.labels[y * t.w + x];
+				::MapGeneration::generationCheckpoint();
+				const int k = result.labels.at(y * t.w + x);
 				if (k < 0)
 					continue;
 				bool edge = false;
 				for (const auto &s : kCardinalSteps)
 				{
-					const int other = result.labels[t.at(x + s[0], y + s[1])];
+					::MapGeneration::generationCheckpoint();
+					const int other = result.labels.at(t.at(x + s[0], y + s[1]));
 					edge = edge || (other >= 0 && other != k);
 				}
-				border[k] += edge;
+				border.at(k) += edge;
 			}
+		}
 		std::vector<double> tried(weight);
 		for (int k = 0; k < claimants; ++k)
-			tried[k] += gain * (target - result.areas[k]) / std::max(1, border[k]) * reach[k];
+		{
+			::MapGeneration::generationCheckpoint();
+			tried.at(k) +=
+				gain * (target - result.areas.at(k)) / std::max(1, border.at(k)) * reach.at(k);
+		}
 		const double after = assign(tried);
 		if (after < error)
 		{
@@ -260,34 +319,49 @@ inline void smoothLabels(const Torus &t, std::vector<int> &labels, int passes,
 	std::vector<int> counts;
 	for (int pass = 0; pass < passes; ++pass)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::vector<int> smoothed = labels;
 		int top = 0;
 		for (int label : labels)
+		{
+			::MapGeneration::generationCheckpoint();
 			top = std::max(top, label + 1);
+		}
 		counts.assign(top, 0);
 		const int window = (2 * radius + 1) * (2 * radius + 1) - 1;
 		for (int i = 0; i < t.size(); ++i)
 		{
-			if (labels[i] < 0 || keep[i])
+			::MapGeneration::generationCheckpoint();
+			if (labels.at(i) < 0 || keep.at(i))
 				continue;
 			std::vector<int> touched;
 			for (int dy = -radius; dy <= radius; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -radius; dx <= radius; ++dx)
 				{
-					const int label = labels[t.at(i % t.w + dx, i / t.w + dy)];
-					if ((dx || dy) && label >= 0 && label != labels[i] && counts[label]++ == 0)
+					::MapGeneration::generationCheckpoint();
+					const int label = labels.at(t.at(t.remainderX(i) + dx, i / t.w + dy));
+					if ((dx || dy) && label >= 0 && label != labels.at(i) &&
+						counts.at(label)++ == 0)
 						touched.push_back(label);
 				}
+			}
 			int best = -1;
 			for (int label : touched)
 			{
-				if (counts[label] > share * window && (best < 0 || counts[label] > counts[best]))
+				::MapGeneration::generationCheckpoint();
+				if (counts.at(label) > share * window &&
+					(best < 0 || counts.at(label) > counts.at(best)))
 					best = label;
 			}
 			if (best >= 0)
-				smoothed[i] = best;
+				smoothed.at(i) = best;
 			for (int label : touched)
-				counts[label] = 0;
+			{
+				::MapGeneration::generationCheckpoint();
+				counts.at(label) = 0;
+			}
 		}
 		labels.swap(smoothed);
 	}
@@ -301,24 +375,32 @@ inline void separateTerritories(const Torus &t, std::vector<int> &labels, int ga
 	std::vector<unsigned char> border(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		if (labels[i] < 0)
+		::MapGeneration::generationCheckpoint();
+		if (labels.at(i) < 0)
 			continue;
-		for (int dy = -1; dy <= 1 && !border[i]; ++dy)
+		for (int dy = -1; dy <= 1 && !border.at(i); ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
 			{
-				const int other = labels[t.at(i % t.w + dx, i / t.w + dy)];
-				if (other >= 0 && other != labels[i])
+				::MapGeneration::generationCheckpoint();
+				const int other = labels.at(t.at(t.remainderX(i) + dx, i / t.w + dy));
+				if (other >= 0 && other != labels.at(i))
 				{
-					border[i] = 1;
+					border.at(i) = 1;
 					break;
 				}
 			}
+		}
 	}
 	// Every tile fewer than half the gap from the border goes.
 	const std::vector<unsigned char> band = dilate(t, border, (gap + 1) / 2 - 1);
 	for (int i = 0; i < t.size(); ++i)
-		if (labels[i] >= 0 && band[i] && (gap + 1) / 2 > 0)
-			labels[i] = -1;
+	{
+		::MapGeneration::generationCheckpoint();
+		if (labels.at(i) >= 0 && band.at(i) && (gap + 1) / 2 > 0)
+			labels.at(i) = -1;
+	}
 }
 
 /// Closes the gaps between labelled regions: every `eligible` tile with no label, within `reach` steps
@@ -333,25 +415,33 @@ inline std::vector<unsigned char> fillToNearest(const Torus &t, std::vector<int>
 	std::vector<unsigned char> filled(t.size(), 0);
 	std::vector<int> steps(t.size(), -1), frontier, next;
 	for (int i = 0; i < t.size(); ++i)
-		if (labels[i] >= 0)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (labels.at(i) >= 0)
 		{
-			steps[i] = 0;
+			steps.at(i) = 0;
 			frontier.push_back(i);
 		}
+	}
 	for (int step = 1; step <= reach && !frontier.empty(); ++step)
 	{
+		::MapGeneration::generationCheckpoint();
 		next.clear();
 		for (int i : frontier)
 		{
-			const int x = i % t.w, y = i / t.w;
+			::MapGeneration::generationCheckpoint();
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int j : {t.at(x, y - 1), t.at(x - 1, y), t.at(x + 1, y), t.at(x, y + 1)})
-				if (steps[j] < 0 && eligible[j] && labels[j] < 0)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (steps.at(j) < 0 && eligible.at(j) && labels.at(j) < 0)
 				{
-					steps[j] = step;
-					labels[j] = labels[i];
-					filled[j] = 1;
+					steps.at(j) = step;
+					labels.at(j) = labels.at(i);
+					filled.at(j) = 1;
 					next.push_back(j);
 				}
+			}
 		}
 		std::sort(next.begin(), next.end());
 		frontier.swap(next);
@@ -368,7 +458,10 @@ inline std::vector<unsigned char> strandedGround(const Torus &t, const std::vect
 	const std::vector<int> reach = stepsFrom(t, tileMask(t, sources), ground);
 	std::vector<unsigned char> stranded(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		stranded[i] = ground[i] && reach[i] < 0;
+	{
+		::MapGeneration::generationCheckpoint();
+		stranded.at(i) = ground.at(i) && reach.at(i) < 0;
+	}
 	return stranded;
 }
 
@@ -389,32 +482,44 @@ int growFarLake(const Torus &t, std::vector<unsigned char> &water, const std::ve
 	const int n = t.size();
 	std::vector<unsigned char> roomy(n, 0);
 	for (int i = 0; i < n; ++i)
-		roomy[i] = depth[i] >= 0 && room[i] >= gap && !water[i];
+	{
+		::MapGeneration::generationCheckpoint();
+		roomy.at(i) = depth.at(i) >= 0 && room.at(i) >= gap && !water.at(i);
+	}
 	const std::vector<int> stretch = connectedRegions(roomy, t.w, t.h, true);
 	std::vector<int> stretchSize;
 	for (int label : stretch)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (label >= 0)
 		{
 			if (label >= int(stretchSize.size()))
 				stretchSize.resize(label + 1, 0);
-			++stretchSize[label];
+			++stretchSize.at(label);
 		}
-	const int enough = gap + int(std::ceil(std::sqrt(target / 3.14159265358979)));
-	const auto score = [&](int i) { return depth[i] + 2 * std::min(room[i], enough); };
+	}
+	const int enough = gap + int(::MapGeneration::Numeric::ceil(
+								 ::MapGeneration::Numeric::sqrt(target / 3.14159265358979)));
+	const auto score = [&](int i) { return depth.at(i) + 2 * std::min(room.at(i), enough); };
 	int seed = -1;
 	for (int i = 0; i < n; ++i)
-		if (roomy[i] && stretchSize[stretch[i]] >= target && (seed < 0 || score(i) > score(seed)))
+	{
+		::MapGeneration::generationCheckpoint();
+		if (roomy.at(i) && stretchSize.at(stretch.at(i)) >= target &&
+			(seed < 0 || score(i) > score(seed)))
 			seed = i;
+	}
 	if (seed < 0)
 		return 0;
 	// Not `far`: like `near`, a legacy macro in Windows' windef.h that expands to nothing.
-	const int farthest = depth[seed];
+	const int farthest = depth.at(seed);
 	return growWater(
-		t, water, seed, target, [&](int i) { return roomy[i] != 0; },
+		t, water, seed, target, [&](int i) { return roomy.at(i) != 0; },
 		[&](int i)
 		{
-			const double d = std::sqrt(double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
-			return std::int64_t(d * 1000) + (farthest - depth[i]) * 250LL +
+			const double d = ::MapGeneration::Numeric::sqrt(
+				double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
+			return std::int64_t(d * 1000) + (farthest - depth.at(i)) * 250LL +
 				   std::int64_t(noiseAt(i) * 2500);
 		},
 		queued, stamp);
@@ -436,39 +541,49 @@ int growLakeBeside(const Torus &t, std::vector<unsigned char> &water, const std:
 				   int side, int siteGap, int reach, NoiseAt noiseAt, std::vector<int> &queued,
 				   int stamp)
 {
-	const int n = t.size(), sx = site % t.w, sy = site / t.w;
-	const auto away = [&](int i) { return std::sqrt(double(t.dist2(sx, sy, i % t.w, i / t.w))); };
-	const double hx = std::cos(heading), hy = std::sin(heading);
+	const int n = t.size(), sx = t.remainderX(site), sy = site / t.w;
+	const auto away = [&](int i)
+	{ return ::MapGeneration::Numeric::sqrt(double(t.dist2(sx, sy, t.remainderX(i), i / t.w))); };
+	const double hx = ::MapGeneration::Numeric::cos(heading),
+				 hy = ::MapGeneration::Numeric::sin(heading);
 	// How far a tile lies to the left of the line through the site along the heading (right is
 	// negative). The whole lake keeps to its side, clear of the line by half the site gap, so it never
 	// comes between the site and the way in.
 	const auto lateral = [&](int i)
 	{
-		const double dx = t.offsetX(sx, i % t.w), dy = t.offsetY(sy, i / t.w);
+		const double dx = t.offsetX(sx, t.remainderX(i)), dy = t.offsetY(sy, i / t.w);
 		return hx * dy - hy * dx;
 	};
 	std::vector<unsigned char> roomy(n, 0);
 	for (int i = 0; i < n; ++i)
-		roomy[i] = depth[i] >= 0 && room[i] >= gap && !water[i] && away(i) >= siteGap &&
-				   lateral(i) * side >= siteGap;
+	{
+		::MapGeneration::generationCheckpoint();
+		roomy.at(i) = depth.at(i) >= 0 && room.at(i) >= gap && !water.at(i) && away(i) >= siteGap &&
+					  lateral(i) * side >= siteGap;
+	}
 	const std::vector<int> stretch = connectedRegions(roomy, t.w, t.h, true);
 	std::vector<int> stretchSize;
 	for (int label : stretch)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (label >= 0)
 		{
 			if (label >= int(stretchSize.size()))
 				stretchSize.resize(label + 1, 0);
-			++stretchSize[label];
+			++stretchSize.at(label);
 		}
-	const int enough = gap + int(std::ceil(std::sqrt(target / 3.14159265358979)));
+	}
+	const int enough = gap + int(::MapGeneration::Numeric::ceil(
+								 ::MapGeneration::Numeric::sqrt(target / 3.14159265358979)));
 	const double ideal = (siteGap + reach) / 2.0;
 	int seed = -1;
 	double seedScore = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		if (!roomy[i] || stretchSize[stretch[i]] < target || away(i) > reach)
+		::MapGeneration::generationCheckpoint();
+		if (!roomy.at(i) || stretchSize.at(stretch.at(i)) < target || away(i) > reach)
 			continue;
-		const double score = 4 * std::min(room[i], enough) - std::abs(away(i) - ideal);
+		const double score = 4 * std::min(room.at(i), enough) - std::abs(away(i) - ideal);
 		if (seed < 0 || score > seedScore)
 		{
 			seed = i;
@@ -478,10 +593,11 @@ int growLakeBeside(const Torus &t, std::vector<unsigned char> &water, const std:
 	if (seed < 0)
 		return 0;
 	return growWater(
-		t, water, seed, target, [&](int i) { return roomy[i] != 0; },
+		t, water, seed, target, [&](int i) { return roomy.at(i) != 0; },
 		[&](int i)
 		{
-			const double d = std::sqrt(double(t.dist2(seed % t.w, seed / t.w, i % t.w, i / t.w)));
+			const double d = ::MapGeneration::Numeric::sqrt(
+				double(t.dist2(t.remainderX(seed), seed / t.w, t.remainderX(i), i / t.w)));
 			return std::int64_t(d * 1000) + std::int64_t(noiseAt(i) * 2500);
 		},
 		queued, stamp);
@@ -497,11 +613,15 @@ inline int siteAtDepth(const std::vector<int> &depth, const std::vector<int> &ro
 {
 	for (int within = 0; within <= spread; ++within)
 	{
+		::MapGeneration::generationCheckpoint();
 		int best = -1;
 		for (size_t i = 0; i < depth.size(); ++i)
-			if (depth[i] >= 0 && std::abs(depth[i] - target) <= within && room[i] >= minimumRoom &&
-				(best < 0 || room[i] > room[best]))
+		{
+			::MapGeneration::generationCheckpoint();
+			if (depth.at(i) >= 0 && std::abs(depth.at(i) - target) <= within &&
+				room.at(i) >= minimumRoom && (best < 0 || room.at(i) > room.at(best)))
 				best = int(i);
+		}
 		if (best >= 0)
 			return best;
 	}

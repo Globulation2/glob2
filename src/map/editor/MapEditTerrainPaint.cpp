@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-// Terrain and resource brushes. Every brush is centred on the map cell under
-// the pointer, and the preview draws the same cells the stroke changes. Legacy
-// corner terrains (grass, sand, water) paint whole cells with
-// Map::paintLegacyCells; catalogue and imported terrains set each cell. After a
-// stroke only the resources, units and buildings the new terrain disallows go.
+// Terrain and resource brushes. Terrain lives on map vertices, so a terrain
+// brush is centred on the vertex nearest the pointer and stamps vertices, down
+// to a single one; a resource brush is centred on the cell under the pointer.
+// The preview draws the same squares the stroke changes: a cell, or the square
+// a vertex colours, centred on it. Painting grass or water lays a sand beach
+// where they would meet. After a stroke only the resources, units and buildings
+// the new terrain disallows go.
 
+#include "PowerOfTwo.h"
 #include "BrushCoverage.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -19,11 +22,6 @@
 
 namespace
 {
-bool legacySelector(TerrainSelector::TerrainType type)
-{
-	return type >= TerrainSelector::Grass && type <= TerrainSelector::Water;
-}
-
 std::string terrainLabel(const TerrainPresentation &presentation)
 {
 	const std::string label = presentation.label ? presentation.label : presentation.name;
@@ -34,10 +32,18 @@ std::string terrainLabel(const TerrainPresentation &presentation)
 }
 } // namespace
 
+bool MapEdit::brushOnVertices() const
+{
+	return TerrainSelector::isBaseTerrain(terrainType);
+}
+
 MapEdit::BrushCell MapEdit::brushCellAt(int mx, int my) const
 {
 	int x, y;
-	game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
+	if (brushOnVertices())
+		game.map.displayToMapCaseUnaligned(mx, my, &x, &y, viewportX, viewportY);
+	else
+		game.map.displayToMapCaseAligned(mx, my, &x, &y, viewportX, viewportY);
 	return {x, y};
 }
 
@@ -47,15 +53,6 @@ std::vector<MapEdit::BrushCell> MapEdit::terrainBrushCells(int mapX, int mapY) c
 	const BrushCell origin = firstPlacement ? BrushCell{firstPlacement->x, firstPlacement->y} : BrushCell{mapX, mapY};
 	const auto cells = BrushCoverage::stamp(brush.getFigure(), {mapX, mapY}, origin);
 	return {cells.begin(), cells.end()};
-}
-
-std::vector<MapEdit::BrushCell> MapEdit::terrainStrokeCells(int mapX, int mapY) const
-{
-	auto cells = terrainBrushCells(mapX, mapY);
-	if (!legacySelector(terrainType))
-		return cells;
-	const auto closed = BrushCoverage::cornerClosure({cells.begin(), cells.end()});
-	return {closed.begin(), closed.end()};
 }
 
 std::vector<MapEdit::BrushCell> MapEdit::invalidResourceCells(const std::vector<BrushCell> &footprint)
@@ -150,50 +147,33 @@ void MapEdit::handleTerrainClick(int mx, int my)
 		return;
 
 	const auto material = TerrainSelector::baseTerrain(terrainType);
-	const bool legacy = legacySelector(terrainType);
-	std::vector<BrushCell> changed;
+	std::vector<size_t> changed;
 	if (adding)
-	{
-		if (legacy)
-		{
-			changed = terrainStrokeCells(mapX, mapY);
-			map.paintLegacyCells(changed, material);
-		}
-		else
-		{
-			changed = cells;
-			for (const auto &[x, y] : cells)
-				map.setCellTerrain(x, y, material);
-		}
-	}
+		changed = map.paintVertices(cells, material);
 	else if (material != GRASS)
 	{
-		// Del reverts the cells of the selected terrain to grass: for a corner
-		// terrain, the corner-drawn cells with any corner of it.
+		// Del turns the stamped vertices of the selected terrain back to grass.
+		std::vector<BrushCell> matching;
 		for (const auto &[x, y] : cells)
-		{
-			const auto type = map.terrainTypeAt(x, y);
-			bool matches = type == material;
-			if (legacy && map.terrainUsesLegacyCorners(type))
-				for (int corner = 0; corner < 4 && !matches; ++corner)
-					matches = map.getUMTerrain(x + (corner & 1), y + (corner >> 1)) == material;
-			if (matches)
-				changed.push_back({x, y});
-		}
-		map.paintLegacyCells(changed, GRASS);
+			if (map.vertexTerrainAt(x, y) == material)
+				matching.push_back({x, y});
+		changed = map.paintVertices(matching, GRASS);
 	}
 	if (changed.empty())
 		return;
-	// Remove only what the new terrain disallows. Corner painting also turns
-	// the cells up to two away into shore, so their contents are checked too.
-	const int ring = legacy || !adding ? 2 : 0;
-	int minX = changed.front().first, maxX = minX, minY = changed.front().second, maxY = minY;
-	for (const auto &[x, y] : changed)
+	// Remove only what the new terrain disallows, in every cell touching a
+	// changed vertex: cells x-1..x and y-1..y of vertex (x,y). Work in the
+	// stamp's unwrapped frame so a stroke across the map edge stays one box.
+	const int width = map.getW(), height = map.getH();
+	auto unwrap = [](int value, int centre, int size) { return centre + powerOfTwoRemainder(powerOfTwoRemainder(value - centre, size) + size + size / 2, size) - size / 2; };
+	int minX = mapX, maxX = mapX, minY = mapY, maxY = mapY;
+	for (const auto vertex : changed)
 	{
+		const int x = unwrap(dimensionRemainder(int(vertex), width), mapX, width), y = unwrap(int(vertex) / width, mapY, height);
 		minX = std::min(minX, x); maxX = std::max(maxX, x);
 		minY = std::min(minY, y); maxY = std::max(maxY, y);
 	}
-	const int x = minX - ring, y = minY - ring, w = maxX - minX + 1 + 2 * ring, h = maxY - minY + 1 + 2 * ring;
+	const int x = minX - 1, y = minY - 1, w = maxX - minX + 2, h = maxY - minY + 2;
 	map.removeUnallowedResources(x, y, w, h);
 	game.removeUnallowedUnitsAndBuildings(x, y, w, h);
 }
@@ -210,13 +190,18 @@ void MapEdit::finishTerrainStroke()
 void MapEdit::drawTerrainBrushPreview()
 {
 	auto *gfx = globalContainer->gfx;
-	const int mx = int(MapCamera::wrap(mapMouseX(mouseX), game.map.getW() * 32));
-	const int my = int(MapCamera::wrap(mapMouseY(mouseY), game.map.getH() * 32));
-	const auto [centreX, centreY] = brushCellAt(mx, my);
+	const int mx = int(MapCamera::wrap(mapMouseX(mouseX), view.scene->map.getW() * 32));
+	const int my = int(MapCamera::wrap(mapMouseY(mouseY), view.scene->map.getH() * 32));
+	// The same lattice point a click takes (brushCellAt): the nearest vertex
+	// for a terrain brush, so checkerboard figures keep the stroke's parity.
+	const int offset = brushSquareOffset();
+	int centreX, centreY;
+    view.scene->map.displayToMapCaseAligned(mx - offset, my - offset, &centreX, &centreY, viewportX, viewportY);
 	const bool adding = brush.getType() != BrushTool::MODE_DEL;
-	const auto cells = adding ? terrainStrokeCells(centreX, centreY) : terrainBrushCells(centreX, centreY);
-	// Same cell layout as BrushTool::drawBrush: the pointer's cell, then offsets.
-	const int baseX = mx & ~0x1f, baseY = my & ~0x1f;
+	const auto cells = terrainBrushCells(centreX, centreY);
+	// Same layout as BrushTool::drawBrush: the pointer's lattice point, then
+	// offsets. A vertex's square is centred on it, half a cell up and left.
+	const int baseX = ((mx - offset) & ~0x1f) + offset, baseY = ((my - offset) & ~0x1f) + offset;
 	constexpr int cellSize = 32, inset = 2;
 	auto cellRect = [&](const BrushCell &cell, auto draw)
 	{
@@ -224,7 +209,23 @@ void MapEdit::drawTerrainBrushPreview()
 			 cellSize - inset, cellSize - inset);
 	};
 	if (adding)
-		for (const auto &cell : invalidResourceCells(cells))
+		for (const auto &cell : [&] {
+            std::vector<BrushCell> invalid;
+            if (!TerrainSelector::isResource(terrainType)) return invalid;
+            const auto& world = view.scene->world;
+            const auto& registry = view.scene->map.resourceRegistry();
+            const auto resource = TerrainSelector::resourceType(terrainType, registry);
+            if (!registry.valid(resource)) return cells;
+            const auto& properties = registry.properties(resource);
+            for (const auto& cell : cells) {
+                const auto [x, y] = cell;
+                if (!MapState::terrainSupportsResource(world.view(), view.scene->map.coordToIndex(x, y), resource)
+                    || (properties.blocksBuilding && view.scene->map.getBuilding(x, y) != NOGBID)
+                    || (properties.blocksGround && view.scene->map.getGroundUnit(x, y) != NOGUID)
+                    || (properties.blocksAir && view.scene->map.getAirUnit(x, y) != NOGUID)) invalid.push_back(cell);
+            }
+            return invalid;
+        }())
 			cellRect(cell, [&](int x, int y, int w, int h) { gfx->drawFilledRect(x, y, w, h, Color(220, 40, 40, 110)); });
 	const int intensity = adding ? 255 : 170;
 	for (const auto &cell : cells)

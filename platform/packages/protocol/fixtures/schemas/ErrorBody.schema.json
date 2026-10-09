@@ -60,7 +60,26 @@
       "type": "string",
       "maxLength": 2000
     },
-    "details": {}
+    "details": {},
+    "messageKey": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "messageParams": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        }
+      }
+    }
   },
   "description": "Error payload: REST error responses and failed realtime responses."
 }

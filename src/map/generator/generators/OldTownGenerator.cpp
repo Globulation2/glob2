@@ -236,7 +236,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	std::vector<unsigned char> border(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		const double d = std::hypot(t.offsetX(int(L.cx), x), t.offsetY(int(L.cy), y));
 		L.city[i] = d < L.cityRadius;
 		for (const auto &s : kCardinalSteps)
@@ -297,7 +297,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.farmRegion.assign(n, 0);
 	for (int i = 0; i < n; ++i)
 	{
-		const double d = std::hypot(t.offsetX(int(L.cx), i % t.w), t.offsetY(int(L.cy), i / t.w));
+		const double d = std::hypot(t.offsetX(int(L.cx), t.remainderX(i)), t.offsetY(int(L.cy), i / t.w));
 		L.farmRegion[i] = d > L.cityRadius + kFarmMargin;
 	}
 	TerrainSketch rows(n, GRASS);
@@ -318,12 +318,12 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				site = i;
 		if (site < 0)
 			break;
-		const int x0 = site % t.w - plot.width / 2, y0 = site / t.w - plot.height / 2;
+		const int x0 = t.remainderX(site) - plot.width / 2, y0 = site / t.w - plot.height / 2;
 		stampFarmPlot(rows, t, L.farm, x0, y0, plot);
 		++plotsPlaced;
 		for (int dy = -kPlotMargin; dy <= kPlotMargin; ++dy)
 			for (int dx = -kPlotMargin; dx <= kPlotMargin; ++dx)
-				keepClear[t.at(site % t.w + dx, site / t.w + dy)] = 1;
+				keepClear[t.at(t.remainderX(site) + dx, site / t.w + dy)] = 1;
 	}
 	for (int i = 0; i < n; ++i)
 		if (L.farm.water[i])
@@ -381,11 +381,11 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.water[i] ? WATER : (L.farm.sand[i] || L.road[i]) ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 	// The blocks are stone, wherever the beaches left pure grass.
 	for (int i = 0; i < n; ++i)
-		if (L.block[i] && map.isResourceAllowed(i % t.w, i / t.w, STONE))
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+		if (L.block[i] && map.isResourceAllowed(t.remainderX(i), i / t.w, STONE))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
 
 	context.stage = "old town colonies";
 	const auto homeMask = [&](int team) { return homeGrassMask(map, t, L.homeOf, team); };
@@ -403,7 +403,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 		plantHomeKit(
 			map, t, context, L.kits[k], L.axes[k], L.homeRadius, kHomeWheat, kHomeWood, [&](int i)
-			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
+			{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); });
 	// The cathedral square's orchard round its fountain, and a grove of one fruit in turn beside every
 	// other plaza's pool (FEEDBACK 2026-09-13: "more of them need to contain fruits"). A pool fills its
 	// plaza to a tile short of the streets, so the fruit stands on the ground round it.
@@ -413,9 +413,9 @@ bool generate(Game &game, GenerationContext &context)
 		return [&, c](int i)
 		{
 			return !L.block[i] && L.homeOf[i] < 0 &&
-				   std::hypot(t.offsetX(int(c.x), i % t.w), t.offsetY(int(c.y), i / t.w)) <=
+				   std::hypot(t.offsetX(int(c.x), t.remainderX(i)), t.offsetY(int(c.y), i / t.w)) <=
 					   o.blockSize / 2.0 + 2 &&
-				   clearGround(map, i % t.w, i / t.w);
+				   clearGround(map, t.remainderX(i), i / t.w);
 		};
 	};
 	if (scaledCount(1, o.fruit) > 0)
@@ -443,11 +443,11 @@ bool generate(Game &game, GenerationContext &context)
 	const auto fields = [&](int i)
 	{
 		return L.farmRegion[i] && !L.farm.sand[i] && !L.farm.plot[i] &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 	int fertile = 0;
 	for (int i = 0; i < n; ++i)
-		fertile += fields(i) && fertility.at(i % t.w, i / t.w) > 0;
+		fertile += fields(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, fields, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -461,11 +461,11 @@ bool generate(Game &game, GenerationContext &context)
 	const auto plazas = [&](int i)
 	{
 		return L.city[i] && !L.block[i] && !L.street[i] && L.homeOf[i] < 0 &&
-			   clearGround(map, i % t.w, i / t.w);
+			   clearGround(map, t.remainderX(i), i / t.w);
 	};
 	int plazaFertile = 0;
 	for (int i = 0; i < n; ++i)
-		plazaFertile += plazas(i) && fertility.at(i % t.w, i / t.w) > 0;
+		plazaFertile += plazas(i) && fertility.at(t.remainderX(i), i / t.w) > 0;
 	furnishGround(
 		map, t, context, fertility, plazas, [&](int i) { return float(patch[i]); },
 		[&](int i) { return split[i]; },
@@ -522,7 +522,7 @@ GeneratorDefinition oldTownDefinition()
 		"old-town",
 		31,
 		"Old town",
-		7,
+		8,
 		false,
 		// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
 		// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide

@@ -3,10 +3,11 @@
 
 #include <atomic>
 #include "Map.h"
-#include "TerrainCompatibility.h"
+#include "MapAssetBundle.h"
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "gradient/BuildingGradientStats.h"
 #include "Game.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Utilities.h"
@@ -42,9 +43,11 @@ const int tabClose[8][2]={
 	{-1,  1},
 	{-1,  0}};
 
-Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
+Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>()), assetBundleValue(MapAssetBundle::empty())
 {
-    rebuildResourceHabitats();
+	if (BuildingGradientStats::enabledByEnvironment())
+		gradientStats = std::make_unique<BuildingGradientStats>();
+    rebuildTerrainCounts();
 	topologyGeneration=1;
 	game=NULL;
 
@@ -73,7 +76,6 @@ Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
 	
-	undermap=NULL;
 	sectors=NULL;
 	listedAddr=NULL;
 	
@@ -118,11 +120,11 @@ std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 	return waterSnapshot;
 }
 
-std::shared_ptr<const std::vector<TerrainType>> Map::frozenTerrainSnapshot() const
+std::shared_ptr<const std::vector<TerrainType>> Map::frozenVertexSnapshot() const
 {
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-	if (!terrainSnapshot) terrainSnapshot = std::make_shared<const std::vector<TerrainType>>(terrainIds);
-	return terrainSnapshot;
+	if (!vertexSnapshot) vertexSnapshot = std::make_shared<const std::vector<TerrainType>>(vertexTerrain);
+	return vertexSnapshot;
 }
 
 std::shared_ptr<const TerrainMovementSnapshot>
@@ -134,31 +136,37 @@ Map::frozenTerrainMovementSnapshot(unsigned swim) const
 	{
 		auto snapshot = std::make_shared<TerrainMovementSnapshot>();
 		snapshot->cells.resize(size);
-		const auto &source = terrainRegistry().movement(swim);
 		auto &movement = snapshot->movement;
-		movement.profiles.reserve(source.profiles.size());
 		movement.steps.reserve(256);
-		std::array<unsigned, 256> remap;
-		remap.fill(256);
+		// Distinct entry costs in order of first use, so the profile numbering
+		// depends only on the cells, never on the order rules were interned.
+		std::vector<unsigned> remap(cellRuleTable->size(), 256);
 		std::array<bool, 256> usedSteps{};
 		for (std::size_t i = 0; i < size; ++i)
 		{
-			const auto original = source.profileIds[terrainIds[i]];
-			auto &profile = remap[original];
+			auto &profile = remap[cellRules[i]];
 			if (profile == 256)
 			{
-				profile = movement.profiles.size();
-				const auto costs = source.profiles[original];
-				movement.profiles.push_back(costs);
-				for (auto step : {costs.cardinal, costs.diagonal})
-					if (!usedSteps[step])
-					{
-						usedSteps[step] = true;
-						movement.steps.push_back(step);
-					}
+				const auto costs = cellRuleData[cellRules[i]].ground[swim];
+				profile = 0;
+				while (profile < movement.profiles.size() && (movement.profiles[profile].cardinal != costs.cardinal ||
+															  movement.profiles[profile].diagonal != costs.diagonal))
+					++profile;
+				if (profile == movement.profiles.size())
+				{
+					if (profile == 256) throw std::logic_error("Too many terrain movement profiles");
+					movement.profiles.push_back(costs);
+					for (auto step : {costs.cardinal, costs.diagonal})
+						if (!usedSteps[step])
+						{
+							usedSteps[step] = true;
+							movement.steps.push_back(step);
+						}
+				}
 			}
 			snapshot->cells[i] = static_cast<Uint8>(profile);
 		}
+		if (movement.profiles.empty()) movement.profiles.push_back(gradient_kernel::LAND_STEPS);
 		movement.prepare();
 		cached = std::move(snapshot);
 	}
@@ -204,15 +212,15 @@ ExperimentSet Map::requiredTerrainExperiments() const
 	return required;
 }
 
-void Map::adjustTerrainFeatures(TerrainType type, bool add)
+void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 {
-	const auto &p = terrainProperties(type);
-	const unsigned edge = terrainRegistry().movement(p.swimmable ? SWIM_CLASS_COUNT - 1 : 0).entries[type].diagonal;
+	const auto &rule = cellRuleData[ruleIndex];
+	const auto &p = rule.properties;
+	const unsigned edge = rule.ground[p.swimmable ? SWIM_CLASS_COUNT - 1 : 0].diagonal;
 	for (unsigned sw = 0; sw < 7; ++sw)
 		if (p.walkable || (sw && p.swimmable))
 		{
-			auto &count =
-				terrainGroundCostCounts[sw][terrainRegistry().movement(sw).entries[type].cardinal];
+			auto &count = terrainGroundCostCounts[sw][rule.ground[sw].cardinal];
 			if (add)
 				++count;
 			else
@@ -223,7 +231,7 @@ void Map::adjustTerrainFeatures(TerrainType type, bool add)
 		}
 	if (p.flyable)
 	{
-		auto &count = terrainAirCostCounts[terrainRegistry().airCost(type)];
+		auto &count = terrainAirCostCounts[rule.airCost];
 		if (add)
 			++count;
 		else
@@ -278,87 +286,53 @@ void Map::importTerrainDefinitions(std::string_view json)
 {
 	if (game && !game->edit)
 		throw std::logic_error("Terrain definitions can only change in the map editor");
-	auto next = terrainRegistry().importJson(json);
-	Map staged;
-	staged.terrainRegistryValue = next;
-	staged.resourceRegistryValue = resourceRegistryValue;
-	staged.rebuildResourceHabitats();
-	// Compilation/validation and allocation happen before publishing a replacement.
-	std::vector<std::size_t> counts(next->size());
-	std::vector<Uint16> propertyIndices(terrainIds.size());
-	for (std::size_t i = 0; i < terrainIds.size(); ++i)
-	{
-		++counts[terrainIds[i]];
-		propertyIndices[i] = next->propertyIndex(terrainIds[i]);
-	}
-	finishGradientPipeline();
-	terrainRegistryValue = std::move(next);
-	invalidateResourceSeeds();
-	terrainPropertyIndices = std::move(propertyIndices);
-	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
-    resourceHabitatsValue=staged.resourceHabitatsValue;
-    refreshLiveView();
-	terrainCounts = std::move(counts);
-	terrainFeatures.fill(0);
-	terrainGroundCostCounts = {};
-	terrainAirCostCounts = {};
-	for (unsigned t = 0; t < terrainCounts.size(); ++t)
-		if (terrainCounts[t])
-			adjustTerrainFeatures(TerrainType(t), true);
-	for (std::size_t i = 0; i < terrainIds.size(); ++i)
-	{
-		const auto &p = terrainRegistry().compatibility(terrainIds[i]);
-		if (!p.legacyCorners)
-			legacyTerrain[i] =
-				p.firstFrame + terrainVisualHash(int(i & wMask), int(i >> wDec)) % p.variants;
-	}
-	terrainChanges.markAll();
-	{
-		std::lock_guard<std::mutex> lock(growthCacheMutex);
-		growthCache.invalidate();
-	}
-	{
-		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-		terrainSnapshot.reset();
-		terrainMovementSnapshots = {};
-		waterSnapshot.reset();
-	}
-	if (arraysBuilt && marketsV2Enabled())
-		for (int team = 0; team < Team::MAX_COUNT; ++team)
-			for (int resource = 0; resource < MaterialCount; ++resource)
-				for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-				{
-					gradientRuntime->pipeline.invalidate(
-						&marketMaterialGradients[team][resource][swim]);
-					marketGradientUpdated[team][resource][swim] = false;
-					marketGradientDirty[team][resource][swim] = true;
-				}
-	terrainEditChanged = terrainRoutesChanged = true;
-	finishTerrainEdit();
+    installCatalogs(terrainRegistry().importJson(json), resourceRegistryValue, assetBundleValue);
 }
 
-void Map::rebuildTerrainCounts()
+void Map::bindCellRules()
+{
+	cellRuleData = cellRuleTable->data();
+	cellRuleCounts.resize(cellRuleTable->size(), 0);
+	refreshLiveView();
+}
+
+void Map::rebuildTerrainCounts(std::shared_ptr<CellRuleTable> table)
 {
 	invalidateResourceSeeds();
-	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
-    rebuildResourceHabitats();
-	terrainPropertyIndices.resize(terrainIds.size());
-	for (std::size_t i = 0; i < terrainIds.size(); ++i)
-		terrainPropertyIndices[i] = terrainRegistry().propertyIndex(terrainIds[i]);
+	// A fresh table numbers uniform rules by terrain ID and mixed ones in
+	// row-major order; a table passed in keeps the rules it already holds.
+	cellRuleTable = table ? std::move(table) : std::make_shared<CellRuleTable>(terrainRegistryValue, resourceRegistryValue);
+	cellRuleCounts.assign(cellRuleTable->size(), 0);
+	// Size the cells before binding: the live view spans this array.
+	cellRules.resize(vertexTerrain.size());
+	bindCellRules();
+	for (std::size_t i = 0; i < cellRules.size(); ++i)
+	{
+		const auto corners = cellCorners(i);
+		auto rule = cellRuleTable->find(CellRuleTable::key(corners[0], corners[1], corners[2], corners[3]));
+		if (!rule)
+		{
+			rule = cellRuleTable->intern(corners[0], corners[1], corners[2], corners[3]);
+			bindCellRules();
+		}
+		cellRules[i] = *rule;
+	}
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
 	terrainAirCostCounts = {};
-	for (const auto type : terrainIds) ++terrainCounts[type];
-	for (unsigned t = 0; t < terrainCounts.size(); ++t)
-		if (terrainCounts[t])
-			adjustTerrainFeatures(TerrainType(t), true);
+	for (const auto type : vertexTerrain) ++terrainCounts[type];
+	for (const auto rule : cellRules) ++cellRuleCounts[rule];
+	for (unsigned r = 0; r < cellRuleCounts.size(); ++r)
+		if (cellRuleCounts[r])
+			adjustTerrainFeatures(std::uint16_t(r), true);
 	updateTerrainSummary();
 	++terrainGenerationValue;
+	terrainChanges.markAll();
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		waterSnapshot.reset();
-		terrainSnapshot.reset();
+		vertexSnapshot.reset();
 		terrainMovementSnapshots = {};
 	}
 	{
@@ -367,34 +341,29 @@ void Map::rebuildTerrainCounts()
 	}
 }
 
-void Map::importLegacyTerrain()
+std::uint16_t Map::deriveCellRule(size_t index)
 {
-	// This adapter may also be used by imports on an existing map. Validate
-	// first, then pass every semantic change through the normal invalidation.
-	for (const auto sprite : legacyTerrain)
-		if (sprite >= 272) throw std::invalid_argument("Invalid legacy terrain sprite");
-	if (terrainIds.size()!=cellCount())
-	{
-		terrainIds.assign(cellCount(),GRASS);
-		refreshLiveView();
-		rebuildTerrainCounts();
-	}
-	auto batch = editTerrain();
-	for (size_t i = 0; i < cellCount(); ++i)
-		changeTerrainIdentity(i, legacyTerrainType(legacyTerrain[i]));
+	const auto corners = cellCorners(index);
+	const auto key = CellRuleTable::key(corners[0], corners[1], corners[2], corners[3]);
+	if (const auto rule = cellRuleTable->find(key)) return *rule;
+	// Snapshots may still read the shared table: give the map its own copy.
+	if (cellRuleTable.use_count() > 1)
+		cellRuleTable = std::make_shared<CellRuleTable>(*cellRuleTable);
+	const auto rule = cellRuleTable->intern(key);
+	bindCellRules();
+	return rule;
 }
 
-void Map::changeTerrainIdentity(size_t index, TerrainType type)
+void Map::changeCellRule(size_t index, std::uint16_t rule)
 {
-	if (!validTerrainType(type)) throw std::invalid_argument("Unknown terrain identity");
-	const TerrainType old = terrainIds[index];
-	if (old == type) return;
-	if (--terrainCounts[old] == 0)
+	const auto old = cellRules[index];
+	if (old == rule) return;
+	if (--cellRuleCounts[old] == 0)
 		adjustTerrainFeatures(old, false);
-	if (terrainCounts[type]++ == 0)
-		adjustTerrainFeatures(type, true);
-	terrainIds[index] = type;
-	terrainPropertyIndices[index] = terrainRegistry().propertyIndex(type);
+	if (cellRuleCounts[rule]++ == 0)
+		adjustTerrainFeatures(rule, true);
+	cellRules[index] = rule;
+	markTerrain(index);
 	resourceSeedChanged(index, ResourceSeedCache::Terrain);
 	terrainEditChanged = true;
 	// Queries inside a batch may have materialized a partial snapshot. Every
@@ -402,21 +371,73 @@ void Map::changeTerrainIdentity(size_t index, TerrainType type)
 	// outside caches can never retain that partial state after the batch ends.
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
-		terrainSnapshot.reset();
 		terrainMovementSnapshots = {};
 		waterSnapshot.reset();
 	}
+	const auto &before = cellRuleData[old].properties, &after = cellRuleData[rule].properties;
 	{
 		std::lock_guard<std::mutex> lock(growthCacheMutex);
-		growthCache.terrainChanged(index, terrainProperties(old), terrainProperties(type));
+		growthCache.terrainChanged(index, before, after);
 	}
-	const auto &before = terrainProperties(old), &after = terrainProperties(type);
 	if (before.walkable != after.walkable || before.swimmable != after.swimmable ||
 		before.groundSpeedQ8 != after.groundSpeedQ8 || before.flyable != after.flyable ||
 		before.airSpeedQ8 != after.airSpeedQ8 ||
 		before.groundHealthQ8 != after.groundHealthQ8 || before.airHealthQ8 != after.airHealthQ8)
 		terrainRoutesChanged = true;
+}
+
+void Map::writeVertex(size_t index, TerrainType type)
+{
+	const auto old = vertexTerrain[index];
+	--terrainCounts[old];
+	++terrainCounts[type];
+	vertexTerrain[index] = type;
+	// The vertex is drawn by the four cells around it, even when their rules hold.
+	terrainEditChanged = true;
+	{
+		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+		vertexSnapshot.reset();
+	}
+	const int x = int(index & wMask), y = int(index >> wDec);
+	for (int dy = -1; dy <= 0; ++dy)
+		for (int dx = -1; dx <= 0; ++dx)
+		{
+			const auto cell = size_t(coordToIndex(x + dx, y + dy));
+			markTerrain(cell);
+			changeCellRule(cell, deriveCellRule(cell));
+		}
+}
+
+void Map::setVertexTerrain(size_t index, TerrainType type)
+{
+	if (index >= vertexTerrain.size()) throw std::out_of_range("Terrain vertex index");
+	if (!validTerrainType(type)) throw std::invalid_argument("Unknown terrain identity");
+	if (vertexTerrain[index] == type) return;
+	writeVertex(index, type);
 	if (!terrainEditDepth) finishTerrainEdit();
+}
+
+void Map::assignVertexTerrain(std::span<const TerrainType> vertices)
+{
+	if (vertices.size() != vertexTerrain.size()) throw std::invalid_argument("Terrain vertex count");
+	for (const auto type : vertices)
+		if (!validTerrainType(type)) throw std::invalid_argument("Unknown terrain identity");
+	std::copy(vertices.begin(), vertices.end(), vertexTerrain.begin());
+	rederiveAllCells();
+}
+
+void Map::rederiveAllCells()
+{
+	// Keep the table: its rules stay valid, and snapshots may share it.
+	auto table = cellRuleTable.use_count() > 1 ? std::make_shared<CellRuleTable>(*cellRuleTable) : cellRuleTable;
+	rebuildTerrainCounts(std::move(table));
+	terrainEditChanged = terrainRoutesChanged = true;
+	if (!terrainEditDepth) finishTerrainEdit();
+}
+
+void Map::fillTerrain(TerrainType type)
+{
+	assignVertexTerrain(std::vector<TerrainType>(vertexTerrain.size(), type));
 }
 
 void Map::finishTerrainEdit()
@@ -456,23 +477,14 @@ void Map::finishTerrainEdit()
 	}
 }
 
-void Map::setTerrain(int x, int y, Uint16 sprite)
-{
-	if (sprite >= 272) throw std::invalid_argument("Legacy terrain setter requires a legacy frame");
-	const auto index = coordToIndex(x,y);
-	changeTerrainIdentity(index, legacyTerrainType(sprite));
-	legacyTerrain[index] = sprite;
-	markTerrain(index);
-}
-
-void Map::setCellTerrain(size_t index, TerrainType type)
+void Map::paintCell(size_t index, TerrainType type)
 {
 	if (index >= size) throw std::out_of_range("Terrain cell index");
-	markTerrain(index);
-	changeTerrainIdentity(index, type);
-	const auto &p = terrainRegistry().compatibility(type);
-	legacyTerrain[index] =
-		p.firstFrame + terrainVisualHash(int(index & wMask), int(index >> wDec)) % p.variants;
+	auto batch = editTerrain();
+	const int x = int(index & wMask), y = int(index >> wDec);
+	for (int dy = 0; dy <= 1; ++dy)
+		for (int dx = 0; dx <= 1; ++dx)
+			setVertexTerrain(x + dx, y + dy, type);
 }
 
 Uint16 *Map::acquireBuildingGradientBuffer()
@@ -509,17 +521,22 @@ void Map::clearGradientBufferPool()
 		delete[] idleGradientBuffers[--idleGradientBufferCount];
 }
 
-void Map::configureCompute(unsigned threads, unsigned experiments)
+void Map::configureCompute(unsigned threads)
 {
 	finishGradientPipeline();
+	finishResourceGrowth();
 	compute.configure(threads);
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
-	computeExperiments = experiments;
 }
 
 void Map::clear()
 {
+	if (game) game->areaEffects.reset();
+	loadedHistoricalGrowthVersion = 0;
+	loadedLegacyGrowth144 = false;
+	loadedLegacyGrowth145 = false;
+	gradientRuntime->growth.reset();
 	markAllChanges();
 	clearPlaneRegistry();
     bumpStaticMaterialSourceGeneration();
@@ -528,6 +545,10 @@ void Map::clear()
 	terrainSeedValue = 0;
 	gradientRuntime->preparation={};
 	gradientRuntime->pipeline.reset();
+	// Retires into the buffer pool, so before the pool is cleared below.
+	resetBuildingGradientPipeline();
+	gradientRuntime->buildingSynchronous=0;
+	gradientRuntime->synchronousByReason={};
 	gradientRuntime->overlaySupplierLocations.clear();
 	gradientRuntime->supplierLocationsDirty=true;
 	gradientRuntime->resourceSeeds.reset();
@@ -537,16 +558,17 @@ void Map::clear()
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		waterSnapshot.reset();
-		terrainSnapshot.reset();
+		vertexSnapshot.reset();
 		terrainMovementSnapshots = {};
 	}
 	resourceStockIndices.clear();
 	resourceStocks.clear();
 	freeResourceStocks.clear();
 	materialSourceCounts.fill(0);
-	terrainIds.clear();
+	vertexTerrain.clear();
+	cellRules.clear();
 	refreshLiveView();
-	terrainPropertyIndices.clear();
+	cellRuleCounts.assign(cellRuleCounts.size(), 0);
 	terrainCounts.assign(terrainRegistry().size(), 0);
 	terrainFeatures.fill(0);
 	terrainGroundCostCounts = {};
@@ -598,8 +620,6 @@ void Map::clear()
 		delete[] clearingAreaClaims[t];
 		clearingAreaClaims[t] = NULL;
 	}
-	delete[] undermap;
-	undermap = NULL;
 	delete[] sectors;
 	sectors = NULL;
 	delete[] listedAddr;
@@ -630,7 +650,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
     {
         resourceRegistryValue = ResourceRegistry::builtins();
         refreshLiveView();
-        rebuildResourceHabitats();
+        rebuildTerrainCounts();
     }
 	if (!validTerrainType(terrainType)) throw std::invalid_argument("Unknown terrain identity");
 
@@ -659,30 +679,16 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	for (auto &cell : resourceCells) cell.mayGrow = 1;
 	occupancyCells.assign(size, {});
 	areaCells.assign(size, {});
-	legacyTerrain.assign(size, 0);
 	scriptAreaCells.assign(size, 0);
-	terrainIds.assign(size, GRASS);
-	terrainPropertyIndices.assign(size, terrainRegistry().propertyIndex(GRASS));
+	vertexTerrain.assign(size, terrainType);
 	resetChangeTracking();
-	refreshLiveView();
-	terrainPropertyTable = terrainRegistry().propertyProfiles().data();
-    rebuildResourceHabitats();
-	terrainCounts[GRASS] = size;
-	adjustTerrainFeatures(GRASS, true);
+	rebuildTerrainCounts();
 
 	mapDiscovered.assign(size, 0);
-	
-	undermap=new Uint8[size];
-	memset(undermap, terrainType <= GRASS ? terrainType : GRASS, size);
 	
 	listedAddr = new Uint8*[size];
 
 	//numberOfTeam=0, then resourcesGradient[][][] is empty. This is done by clear();
-
-	auto terrainBatch = editTerrain();
-	regenerateMap(0, 0, w, h);
-	if (terrainType > GRASS)
-		for (size_t i = 0; i < size; ++i) setCellTerrain(i, terrainType);
 
 	wSector=w>>Sector::SECTOR_SHIFT;
 	hSector=h>>Sector::SECTOR_SHIFT;
@@ -698,6 +704,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 
 	arraysBuilt=true;
+	finishTerrainEdit();
 }
 
 
@@ -711,4 +718,17 @@ void Map::setGame(Game *game)
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].setGame(game);
 	game->animations->resize(sizeSector);
+}
+
+void Map::setTerrainSeed(Uint32 seed)
+{
+    if (terrainSeedValue == seed) return;
+    terrainSeedValue = seed;
+    if (game) game->snapshots().invalidateBoundary();
+}
+
+EntityRandom& Map::privateRandom(RandomDomain domain)
+{
+    // Standalone authoring maps have a fixed seed until a request sets one.
+    return worldRandom.get(game ? game->gameHeader.getRandomSeed() : 0, domain);
 }

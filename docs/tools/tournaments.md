@@ -74,11 +74,13 @@ startup diagnostics go to stderr. It enumerates selectable AIs (excluding None),
 Cortex and Maxima parameter schemas, generators, controls, revisions, telemetry,
 and save/network versions, plus map-report and generation-telemetry schema versions.
 Its `commands` list names the structured commands this build supports (`game`,
-`generate_map`, `verify_match`, `sim_version`), and `sim_version` holds the build's
+`generate_map`, `verify_match`, `sim_version`, `compose_buildings`), and `sim_version` holds the build's
 simulation version (see [verifying a match record](../development/headless-replays.md#verifying-a-match-record)),
 so a job runner can probe a binary without passing it flags it may not know.
-Structured commands require `--output-dir DIR`; an existing
-`result.json` is rejected. Values are separate ordinary arguments, not JSON.
+Game and generation commands require `--output-dir DIR`; an existing
+`result.json` is rejected. Building-family composition writes JSON to stdout; see
+[portable building families](../features/building-catalogs.md#portable-building-families).
+Values are separate ordinary arguments, not JSON.
 
 ```sh
 build/src/glob2 --generate-map --generator 15 --map-seed 42 \
@@ -139,11 +141,10 @@ Game options:
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
-| `--compute-threads N` | Execution threads, 1–64 including main; default minimum of AI controllers, available hardware threads and 4 (at least 1) |
-| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `ai`; map modes remain experimental |
+| `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs; explicit N is a positive unsigned integer |
 | `--replay true/false` | false |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
-| `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
+| `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, gradient-stats ([building field statistics](../development/performance-telemetry.md#building-field-statistics)); default none |
 | `--profile NAME` | Optional isolated profile name |
 
 GUI autosaving defaults off for tournament/headless runs, independently of the
@@ -374,7 +375,8 @@ plausible computation errors from faulty RAM. pharaoh-dev-1 is a normal pilot ho
 
 ## Experiment designs and reanalysis
 
-All four modules support `plan CONFIG --bundle DIR --output FILE`,
+All experiment modules (`ai_comparison`, `fairness`, `generator_stress`, `ablations`,
+`gradient_depth`) support `plan CONFIG --bundle DIR --output FILE`,
 `submit CONFIG --bundle DIR --output RESULTS`, and
 `reanalyze RESULTS [--policy prestige|survivor_draw|military] [--seed 1] [--draws 1000]
 [--k 32] [--output DIR]`. Reports are JSON, CSV and Markdown; no rerun is required.
@@ -472,6 +474,21 @@ unsupported combinations remain reported failures rather than being filtered out
   exact map artifacts. format defaults to 1v1 for two players, otherwise ffa;
   alliances is optional. Paired effects, raw pairs, intervals, configurations and
   failure rates are exported. No automatic best-variant selection occurs.
+* `gradient_depth`: data for the [building-field depth model](../building-gradient-depth-model.md).
+  `sample_games` (default 48) independently drawn games; each draws a map size
+  first, then a format that size admits, then AIs and a generator, all from
+  `sample_seed`. `sizes` defaults to 64x64 (duels only, since four colonies do not
+  fit every generator there), 128x128 and 256x256; an entry's optional `formats`
+  list restricts its formats, and its optional `generators` list its generator pool.
+  `formats` defaults to 1v1, 2v2 and ffa, `ais` to every active
+  AI, `generators` to every playable generator and `ticks` to 18048. The planner
+  pins the `aiOrderDelay` rule to 8 and adds `gradient-stats` to
+  `outputs.telemetry` (which publishes scheduled building fields at lazy depth, so
+  rows record what readers needed), and workers then require `gradient-stats.csv`
+  in each game's artifacts. Preflight the generator list against the sizes and colony
+  counts (two colonies for duels, four for 2v2 and ffa), give each size the
+  generators that passed there, and publish exclusions. `reanalyze` is not the analysis here; read the
+  results with `tools/gradient_depth_fit.py dataset RESULTS`.
 
 Engine-declared winners are authoritative under every policy. Capped games rank
 survivors by prestige, unit count, then finished buildings; exact ties stay tied.
@@ -683,12 +700,24 @@ ticks, workload size, platform, and all commands rather than extrapolating one r
 to every tournament.
 
 
-Periodic gradient propagation uses two background workers and an eight-tick
-publication delay by default, including normal games. `--gradient-workers N`
-selects 0–16 background workers for headless runs; zero is the serial control
-with identical simulation behavior. `--gradient-delay D` selects 1–16 ticks for
-experiments before work is pending. A loaded game preserves its saved delay;
-worker count may change without altering decisions. Save and replay exports
-retain pending fields and deadlines. See
-[performance experiments](../development/performance-telemetry.md) for the
+Periodic gradient propagation shares the session's compute executor and uses an
+eight-tick publication delay by default. `--compute-threads auto|N` selects the
+whole pool; one participant is the serial control with identical simulation
+behavior. `--gradient-delay D` selects 1–16 ticks for experiments before work is
+pending. A loaded game preserves its saved delay; worker count may change without
+altering decisions. Save and replay exports retain pending fields and deadlines.
+See [performance experiments](../development/performance-telemetry.md) for the
 benchmark procedure and interpretation of CPU and wall time.
+
+
+New generated maps can carry normalized custom building frames with
+`--building-catalog CATALOG_JSON --building-artwork BUNDLE_G2BA`. Use the canonical
+snapshot produced by `--compose-buildings` as the catalog file. The artwork bundle
+is verified against that catalog and embedded in the generated map (format 145).
+Families selected in the graphical picker do not affect headless generation.
+
+Custom JavaScript generator jobs may use a namespaced string `generator` ID. Attach
+the frozen portable package as an input named `generator-package` (or numbered
+`generator-package-*` inputs for several packages). The adapter supplies them through
+`--generator-package`; package artifacts therefore participate in job identity and
+travel with the request. See [generator authoring](../map-generators/JAVASCRIPT.md).

@@ -97,6 +97,10 @@ COPY platform/packages/billing/package.json packages/billing/
 COPY platform/packages/map-studio/package.json packages/map-studio/
 COPY platform/packages/music/package.json packages/music/
 COPY platform/packages/music-studio/package.json packages/music-studio/
+COPY platform/packages/terrain-studio/package.json packages/terrain-studio/
+COPY platform/packages/building-studio/package.json packages/building-studio/
+COPY platform/apps/ai-building-worker/package.json apps/ai-building-worker/
+COPY platform/apps/ai-terrain-worker/package.json apps/ai-terrain-worker/
 COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
 COPY platform/apps/music-worker/package.json apps/music-worker/
 COPY platform/apps/skin-render-worker/package.json apps/skin-render-worker/
@@ -118,10 +122,13 @@ ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
 COPY platform/ ./
 COPY examples/javascript /app/examples/javascript
+COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
 # The navigation shares the game's Tabler icon sources (src/icons.tsx).
 COPY datasrc/icons/tabler /app/datasrc/icons/tabler
+# Set authoring and Terrain Studio import the shared resource registry.
+COPY data/resources/registry.json /app/data/resources/registry.json
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \
@@ -138,6 +145,8 @@ COPY platform/apps/skin-render-worker apps/skin-render-worker
 COPY platform/apps/engine-agent apps/engine-agent
 COPY platform/apps/ai-map-worker apps/ai-map-worker
 COPY platform/apps/ai-music-worker apps/ai-music-worker
+COPY platform/apps/ai-terrain-worker apps/ai-terrain-worker
+COPY platform/apps/ai-building-worker apps/ai-building-worker
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -154,7 +163,11 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY examples/javascript /app/examples/javascript
+COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
+COPY docs/map-generators/JAVASCRIPT.md /app/docs/map-generators/JAVASCRIPT.md
+COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
+COPY data/generators/examples/swamp /app/data/generators/examples/swamp
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
 RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform && \
     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init
@@ -199,6 +212,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY examples/javascript /app/examples/javascript
+COPY data/resources/registry.json /app/data/resources/registry.json
 COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
@@ -226,6 +240,30 @@ COPY --from=engine-source /.agents/skills/glob2-map-design/references /opt/glob2
 ENV GLOB2_SOURCE_DIR=/opt/glob2/share
 USER 10001:10001
 CMD ["node", "apps/ai-map-worker/src/main.ts"]
+
+# Terrain Studio shares the engine validator and pinned material production helpers.
+FROM engine-agent AS ai-terrain-worker
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv \
+    && rm -rf /var/lib/apt/lists/* \
+    && python3 -m venv /opt/terrain
+COPY tools/asset-requirements.txt /tmp/terrain-requirements.txt
+RUN /opt/terrain/bin/pip install --no-cache-dir -r /tmp/terrain-requirements.txt
+COPY tools/artwork/material_tiles.py tools/artwork/terrain_studio.py /opt/glob2/share/tools/artwork/
+ENV GLOB2_SOURCE_DIR=/opt/glob2/share TERRAIN_PYTHON=/opt/terrain/bin/python
+USER 10001:10001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-terrain-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
+CMD ["node", "apps/ai-terrain-worker/src/main.ts"]
+
+# Building authoring uses the matching native catalog validator and source examples.
+FROM engine-agent AS ai-building-worker
+USER root
+COPY docs/features/building-catalogs.md /opt/glob2/share/docs/features/building-catalogs.md
+COPY data/gfx/inn0b0.png data/gfx/inn0b0r.png data/gfx/hosp0b0.png data/gfx/hosp0b0r.png data/gfx/defencetower0b0.png data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
+ENV GLOB2_SOURCE_DIR=/opt/glob2/share
+USER 10001:10001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-building-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
+CMD ["node", "apps/ai-building-worker/src/main.ts"]
 
 FROM ${CADDY_IMAGE} AS caddy
 RUN setcap -r /usr/bin/caddy && chown -R 10001:10001 /data /config
@@ -287,6 +325,8 @@ COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
 COPY --from=platform-runtime-deps /app/platform /app/platform
+# Shared protocol set-authoring imports the registry when the worker starts.
+COPY data/resources/registry.json /app/data/resources/registry.json
 ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs
 WORKDIR /app/platform
 USER 10001:10001

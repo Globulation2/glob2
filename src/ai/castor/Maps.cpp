@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "PowerOfTwo.h"
 #include "Material.h"
 #include "AIResourcePolicy.h"
 #include <PerformanceTelemetry.h>
@@ -36,7 +37,7 @@ void AICastor::computeObstacleUnitMap()
 			obstacleUnitMap[i]=0;
 		else
 		{
-			const auto& terrain=observation->terrain->properties(observation->terrainAt(i).type);
+			const auto& terrain=observation->terrainPropertiesAt(i);
 			if (!terrain.walkable && !(canSwim && terrain.swimmable))
 				obstacleUnitMap[i]=0;
 			else
@@ -56,7 +57,7 @@ void AICastor::computeObstacleBuildingMap()
 	{
 		if (observation->occupancyAt(i).building!=NOGBID)
 			obstacleBuildingMap[i]=0;
-		else  if (!observation->terrain->properties(observation->terrainAt(i).type).buildable)
+		else  if (!observation->terrainPropertiesAt(i).buildable)
 			obstacleBuildingMap[i]=0;
 		else if (MapState::resourceBlocksBuilding(observation->state(),i))
 			obstacleBuildingMap[i]=0;
@@ -483,7 +484,7 @@ void AICastor::computeNotGrassMap()
 	{
 		// Habitat replaces the historical >16 sprite test, including its
 		// accidental treatment of transition sprite 16 as a wheat tile.
-		if (!MapState::terrainSupportsMaterial(observation->state(),observation->tileIndex(i%observation->width,i/observation->width),MaterialId::Food))
+		if (!MapState::terrainSupportsMaterial(observation->state(),observation->tileIndex(dimensionRemainder(i, observation->width),i/observation->width),MaterialId::Food))
 			notGrassMap[i]=AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE;
 	}
 	
@@ -508,7 +509,7 @@ void AICastor::computeWheatCareMap()
 		if (wheatCareMap[0][i]!=0
 			&& ((wheatCareMap[1][i]>AI_CASTOR_WHEATCARE_PREV_HIGH_THRESHOLD)
 				|| ((oldWheatGradient[3][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[2][i]==AI_CASTOR_WHEAT_GRADIENT_PEAK) && (oldWheatGradient[1][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK || oldWheatGradient[0][i]<AI_CASTOR_WHEAT_GRADIENT_PEAK)))
-			&& AIResourcePolicy::canRecoverAt(observation->state(),i%w,i/w,MaterialId::Food))
+			&& AIResourcePolicy::canRecoverAt(observation->state(),powerOfTwoRemainder(i, w),i/w,MaterialId::Food))
 		{
 			if (oldWheatGradient[1][i]<AI_CASTOR_WHEAT_GRADIENT_NEAR_PEAK || oldWheatGradient[0][i]<AI_CASTOR_WHEAT_GRADIENT_NEAR_PEAK)
 				wheatCareMap[0][i]=AI_CASTOR_WHEATCARE_HIGH;

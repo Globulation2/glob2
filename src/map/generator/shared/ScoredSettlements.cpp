@@ -1,19 +1,15 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScoredSettlements.h"
 #include "Game.h"
 #include "GenerationContext.h"
-#include "Utilities.h"
+#include <memory>
 namespace MapGeneration
 {
 ScoredSettlementChoice
 chooseScoredSettlements(GenerationContext &context, const std::vector<std::vector<int>> &proposals,
 						const SettlementBuilder &build, const SettlementCheck &check)
 {
-	struct EngineScope
-	{
-		MersenneTwister initial = syncRandEngine();
-		~EngineScope() { syncRandEngine() = initial; }
-	} engine;
 	GenerationContext initial(context);
 	initial.telemetry = GenerationTelemetry(false);
 	ScoredSettlementChoice result;
@@ -21,17 +17,22 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 	context.telemetry.measure("starts.scored.proposals", proposals.size());
 	for (size_t k = 0; k < proposals.size(); ++k)
 	{
-		if (int(proposals[k].size()) != context.request.nbTeams)
+		::MapGeneration::generationCheckpoint();
+		if (int(proposals.at(k).size()) != context.request.nbTeams)
 		{
 			context.telemetry.choice("starts.scored.outcome", "incomplete proposal", int(k));
 			continue;
 		}
-		Game trial(nullptr);
+		// Preview workers have smaller stacks than the main thread. Keep the
+		// candidate simulation on the heap, as with the final generated game.
+		auto trialStorage = std::make_unique<Game>(nullptr);
+		Game &trial = *trialStorage;
 		trial.map.setSize(context.request.wDec, context.request.hDec);
 		trial.map.setGame(&trial);
 		GenerationContext probe(initial);
-		syncRandEngine() = engine.initial;
-		if (!build(trial, probe, proposals[k]))
+		trial.gameHeader.setRandomSeed(context.request.seed);
+		trial.map.worldRandom.initialize(context.request.seed);
+		if (!build(trial, probe, proposals.at(k)))
 		{
 			result.failure =
 				probe.detail.empty() ? "Settlement construction failed." : probe.detail;
@@ -56,7 +57,7 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 		{
 			bestScore = quality.score;
 			result.selected = int(k);
-			result.sites = proposals[k];
+			result.sites = proposals.at(k);
 			result.quality = quality;
 		}
 	}

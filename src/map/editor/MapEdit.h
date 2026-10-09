@@ -7,6 +7,7 @@
 #include <BackgroundFileWriter.h>
 #include <InputState.h>
 #include <utility>
+#include <functional>
 
 #include "Brush.h"
 #include "BrushCatalog.h"
@@ -27,6 +28,7 @@
 #include "OverlayAreas.h"
 #include "ScriptEditorScreen.h"
 #include "EditorDialogs.h"
+#include "SetLibraryDialog.h"
 #include <string>
 #include <vector>
 
@@ -319,11 +321,8 @@ public:
 class UnitInfoTitle : public MapEditorWidget
 {
 public:
-	UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit);
+	UnitInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setUnit(Unit* unit);
-private:
-	Unit* unit;
 };
 
 
@@ -332,17 +331,16 @@ private:
 class UnitPicture : public MapEditorWidget
 {
 public:
-	UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Unit* unit);
+	UnitPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setUnit(Unit* unit);
-private:
-	Unit* unit;
 };
 
 
 
 ///This is a small text object. It shows two values and a label, like "label 1/2". The denominator can be fixed or variable. Either way, the numerator is done 
 ///by pointer because this class is used for the convenient editing of values in a Unit or Building
+using EditorValueReader=std::function<Sint32(const PresentationFrame&)>;
+
 class FractionValueText : public MapEditorWidget
 {
 public:
@@ -350,11 +348,12 @@ public:
 	FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32* numerator, Sint32 denominator);
 	~FractionValueText();
 	void draw();
-	void setValues(Sint32* numerator, Sint32* denominator);
-	void setValues(Sint32* numerator);
+	void setValues(Sint32* numerator, Sint32* denominator, EditorValueReader readValue, EditorValueReader readMax);
+	void setValues(Sint32* numerator, EditorValueReader readValue);
 private:
 	std::string label;
 	Sint32* numerator;
+    EditorValueReader readValue,readMax;
 	Sint32* denominator;
 	bool isDenominatorPreset;
 };
@@ -370,14 +369,15 @@ public:
 	~ValueScrollBox();
 	void draw();
 	void handleClick(int relMouseX, int relMouseY);
-	void setValues(Sint32* value, Sint32* max);
+	void setValues(Sint32* value, Sint32* max, EditorValueReader readValue, EditorValueReader readMax);
     // Semantic value access shared by desktop and touch presentations.
-    int currentValue() const { return *value; }
-    int maximumValue() const { return *max; }
+    int currentValue() const;
+    int maximumValue() const;
     void setValue(int requested);
-	void setValues(Sint32* value);
+	void setValues(Sint32* value, EditorValueReader readValue);
 private:
 	Sint32* value;
+    EditorValueReader readValue,readMax;
 	Sint32* max;
 	bool isMaxPreset;
 };
@@ -388,11 +388,8 @@ private:
 class BuildingInfoTitle : public MapEditorWidget
 {
 public:
-	BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building);
+	BuildingInfoTitle(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setBuilding(Building* building);
-private:
-	Building* building;
 };
 
 
@@ -401,11 +398,8 @@ private:
 class BuildingPicture : public MapEditorWidget
 {
 public:
-	BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Building* building);
+	BuildingPicture(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action);
 	void draw();
-	void setBuilding(Building* building);
-private:
-	Building* building;
 };
 
 
@@ -862,6 +856,7 @@ private:
 	int buildingLevel;
 	///Returns whether the particular type of building is upgradable
 	int buildingSelectionType(const std::string& key);
+    int displayedBuildingSelectionType(const std::string& key) const;
 	void rebuildBuildingSelectors();
 	void layoutBuildingSelectors();
 	bool scrollBuildingSelectors(double delta);
@@ -918,6 +913,8 @@ private:
 	///Tells whether the menu screen is being drawn right now
 	bool showingMenuScreen;
 	std::unique_ptr<MapEditMenuScreen> menuScreen;
+    std::unique_ptr<SetLibraryDialog> setLibraryDialog;
+    bool importingSet = false;
 
 	///Tells whether the load-game menu screen is being drawn right now
 	bool showingLoad;
@@ -975,17 +972,20 @@ private:
 	bool isDraggingTerrain;
 	// --- WS-B brush painting ---
 public:
+	//! A point of the brush lattice: a map cell, or a vertex for terrain brushes.
 	using BrushCell = std::pair<int, int>;
-	//! Map cell under a map-local pointer position. Every brush, terrain or
-	//! resource, is centred on this cell; preview and commit share it.
+	//! Terrain is stored per vertex, so base-terrain brushes stamp vertices
+	//! (the smallest figure is a single vertex); resource brushes stamp cells.
+	bool brushOnVertices() const;
+	//! Lattice point under a map-local pointer position: the cell under it, or
+	//! for a vertex brush the nearest vertex. Preview and commit share it.
 	BrushCell brushCellAt(int mx, int my) const;
-	//! The brush figure's cells centred on a map cell, in unwrapped coordinates
+	//! Pixels a lattice point's square starts at, relative to its cell's origin:
+	//! a vertex's square is centred on the vertex.
+	int brushSquareOffset() const { return brushOnVertices() ? -16 : 0; }
+	//! The brush figure's lattice points centred on one, in unwrapped coordinates
 	//! around it, aligned to the current stroke's checkerboard origin.
 	std::vector<BrushCell> terrainBrushCells(int mapX, int mapY) const;
-	//! Cells whose terrain identity an Add stroke stamped at this cell sets. A
-	//! legacy corner terrain also fills any cell all of whose corners it writes,
-	//! as the checkerboard figures do; otherwise this is terrainBrushCells.
-	std::vector<BrushCell> terrainStrokeCells(int mapX, int mapY) const;
 	//! The cells of a footprint where the selected resource cannot be placed.
 	std::vector<BrushCell> invalidResourceCells(const std::vector<BrushCell> &footprint);
 	//! "<Resource> can only be placed on: <terrains>" for the selected resource.
@@ -999,6 +999,10 @@ private:
 	int strokeCoveredCells = 0, strokePlacedResources = 0;
 	void finishTerrainStroke();
 	void drawTerrainBrushPreview();
+public:
+    // Explicit owner observation for editor drawing and standalone editor tools.
+    void preparePresentation();
+private:
 	void drawStatus();
 	// --- end WS-B brush painting ---
 	///Handles a click or drag of the mouse when removing objects
@@ -1109,6 +1113,8 @@ private:
 	void beginDeviceImport();
 	void pollDeviceImport();
 	void importTerrainJson(const std::string &json);
+    void importSetJson(const std::string& json, const std::vector<std::string>& selected = {});
+    void importSetFile(const std::string& filename);
 	void importResourceJson(const std::string &json);
 	// Snapshots taken when the teams or scenario editor opens; OK marks the map
 	// modified only when the result differs.

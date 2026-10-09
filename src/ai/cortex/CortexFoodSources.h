@@ -30,8 +30,8 @@ class Player;
 //     Orders — the action layer (AICortex::translateAction) does that.
 //
 // Determinism (this runs inside lockstep): index-ordered scans, a 0-1 BFS with a
-// fixed neighbour order, parity by (x+y)&1, and no rand()/syncRand() — N (the
-// open margin) is supplied by the caller (drawn once, upstream, via syncRand).
+// fixed neighbour order, parity by (x+y)&1, and no random draws — N (the
+// open margin) is supplied by the caller (drawn once, upstream, from the controller stream).
 
 namespace Cortex
 {

@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+ブラウザーでログインを完了してください。完了するとゲームは自動的に再開します。
 [hub browser did not open]
-
+ブラウザーが開きませんでした。ログインページを開いて続行してください。
 [hub compare code %0]
-
+ページで確認を求められたら、%0 が表示されていることを確認してください。
 [hub code copied]
-
+コードをコピーしました
 [settings Finish in your browser. The game continues by itself.]
-
+ブラウザーで操作を完了してください。ゲームは自動的に再開します。
 [music set]
-
+音楽セット
 [random music set]
-
+試合ごとにランダム
 [playing music set %0]
-
+再生中：%0
 [music set failed]
-
+この音楽セットを読み込めませんでした。
 [settings Music set]
-
+音楽セット
 [settings Random each match]
-
+「ランダム」を選ぶと、試合開始時にサウンドトラックを選びます。
 [settings Edge scrolling]
-
+画面端でスクロール
 [settings Edge scrolling in fullscreen]
-
+全画面表示で画面端スクロール
 [settings Edge scrolling in windowed mode]
-
+ウィンドウ表示で画面端スクロール
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+マウスがウィンドウの端に達すると、ゲームやエディターのマップを移動します。
 [AI strategy]
 AIの戦略
 [start recording]
@@ -4625,9 +4625,9 @@ AIの相手：%0
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 ゲームを音声付きのMP4動画として録画します。録画にはlibx264とAACエンコーダーを含むFFmpegが必要です。
 [settings Record your games as MP4 videos with sound.]
-
+ゲームを音声付きの MP4 動画として録画します。
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+描画される解像度のまま毎秒30フレームで録画します。
 [settings FFmpeg is ready.]
 FFmpegを利用できます。
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [Units can die]
 ユニットの死亡
 [Upgrades]
-
+アップグレード
 [No stockpile]
 なし
 [No glass cannon]
@@ -5193,7 +5193,7 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 体力がなくなるとユニットは死亡します。オフにすると体力1で止まります。
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+ユニットは訓練施設でレベルが上がり、建物はアップグレードできます。無効にしても修理は可能です。
 [stat group work]
 労働者の時間
 [stat worker time]
@@ -5309,235 +5309,235 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 [stat view by place]
 場所別
 [AI Library]
-
+AI ライブラリー
 [Authoring guide]
-
+制作ガイド
 [Beginner-friendly]
-
+初心者向け
 [Defensive]
-
+防御重視
 [Discover]
-
+探す
 [Download & install]
-
+ダウンロードしてインストール
 [Downloading AI…]
-
+AI をダウンロード中…
 [Expansion]
-
+拡張重視
 [Experimental]
-
+実験的
 [Favourite]
-
+お気に入りに追加
 [Favourited]
-
+お気に入りに追加済み
 [Favourites]
-
+お気に入り
 [Got it]
-
+了解
 [How AIs work]
-
+AI の仕組み
 [Install selected version]
-
+選択したバージョンをインストール
 [Installed]
-
+インストール済み
 [Invalid AI catalogue response]
-
+AI カタログの応答が不正です
 [JavaScript API reference]
-
+JavaScript API リファレンス
 [Like]
-
+いいね
 [Liked]
-
+いいね済み
 [Loading AI library…]
-
+AI ライブラリーを読み込み中…
 [Most downloaded]
-
+ダウンロード数順
 [Most liked]
-
+いいね数順
 [Newest]
-
+新着順
 [No AIs match these filters.]
-
+この絞り込み条件に一致する AI はありません。
 [Not validated for this game version]
-
+このゲームバージョンでは未検証
 [Open AI Library]
-
+AI ライブラリーを開く
 [Open AI page]
-
+AI のページを開く
 [Passed compatibility checks]
-
+互換性チェックに合格
 [Recently updated]
-
+最近更新
 [Rush]
-
+速攻
 [Search]
-
+検索
 [Share your AI]
-
+自作 AI を共有
 [Show more]
-
+もっと表示
 [Sign in through Online settings to like and favourite AIs.]
-
+AI にいいねしたりお気に入りに追加したりするには、オンライン設定からログインしてください。
 [Starter project]
-
+スタータープロジェクト
 [downloads of this version]
-
+このバージョンのダウンロード数
 [downloads]
-
+ダウンロード数
 [Update available]
-
+更新あり
 [Browse versions]
-
+バージョンを表示
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+AI をダウンロードして、ローカルゲームのコンピューター席で選択してください。インストールしたバージョンはオフラインでも使えます。更新は今後のゲームに適用され、セーブデータは元のコードを保持します。
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+互換性チェックは安全性や強さを保証するものではありません。信頼できる作者のコードだけを実行してください。
 [Back to results]
-
+検索結果に戻る
 [music 2–5 minutes]
-
+2～5分
 [music 5–15 minutes]
-
+5～15分
 [music AI-generated]
-
+AI 生成
 [music All music]
-
+すべての音楽
 [music All open licences]
-
+すべてのオープンライセンス
 [music Any duration]
-
+長さを問わない
 [music Audition each mood for eight seconds]
-
+各雰囲気を8秒ずつ試聴
 [music Back]
-
+戻る
 [music Browse]
-
+閲覧
 [music Building]
-
+盛り上がり
 [music Calm]
-
+静穏
 [music Calm → Building → Combat]
-
+静穏 → 盛り上がり → 戦闘
 [music Choose Building]
-
+盛り上がり用を選択
 [music Choose Calm]
-
+静穏用を選択
 [music Choose Combat]
-
+戦闘用を選択
 [music Choose ZIP]
-
+ZIP を選択
 [music Choose a music file.]
-
+音楽ファイルを選択してください。
 [music Combat]
-
+戦闘
 [music Could not open this music set.]
-
+この音楽セットを開けませんでした。
 [music Credits, downloads and reporting]
-
+クレジット、ダウンロード、通報
 [music Downloading music…]
-
+音楽をダウンロード中…
 [music Export recovery files]
-
+復元用ファイルをエクスポート
 [music Fade duration]
-
+フェード時間
 [music File selection cancelled or failed.]
-
+ファイルの選択がキャンセルされたか、失敗しました。
 [music Import ZIP]
-
+ZIP をインポート
 [music Import ZIP or three tracks]
-
+ZIP または3曲をインポート
 [music Import music]
-
+音楽をインポート
 [music Import three tracks]
-
+3曲をインポート
 [music Includes AI-generated audio]
-
+AI 生成の音声を含む
 [music Install]
-
+インストール
 [music Install selected]
-
+選択項目をインストール
 [music Installed]
-
+インストール済み
 [music Load more]
-
+さらに読み込む
 [music Loading music…]
-
+音楽を読み込み中…
 [music Most downloaded]
-
+ダウンロード数順
 [music Most liked]
-
+いいね数順
 [music Music decoding failed.]
-
+音楽のデコードに失敗しました。
 [music Music download failed.]
-
+音楽のダウンロードに失敗しました。
 [music Music installed.]
-
+音楽をインストールしました。
 [music Music installed. It is now available in Audio settings.]
-
+音楽をインストールしました。音声設定で利用できます。
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+音楽はまだ永続保存されていません。終了前に保存を再試行してください。
 [music Music library]
-
+音楽ライブラリー
 [music Music request failed.]
-
+音楽の取得に失敗しました。
 [music Newest]
-
+新着順
 [music No community music installed yet. Import files or browse the online library.]
-
+コミュニティーの音楽はまだインストールされていません。ファイルをインポートするか、オンラインライブラリーを閲覧してください。
 [music No music found.]
-
+音楽が見つかりませんでした。
 [music Not AI-generated]
-
+AI 生成ではない
 [music Pause]
-
+一時停止
 [music Play]
-
+再生
 [music Playback position]
-
+再生位置
 [music Preview]
-
+プレビュー
 [music Ready to import.]
-
+インポートの準備ができました。
 [music Remove]
-
+削除
 [music Reset to game behavior]
-
+ゲーム標準の動作に戻す
 [music Retry saving]
-
+保存を再試行
 [music Saved.]
-
+保存しました。
 [music Saving music…]
-
+音楽を保存中…
 [music Search]
-
+検索
 [music Search title, artist, description…]
-
+タイトル、アーティスト、説明を検索…
 [music Select for installation]
-
+インストール対象に選択
 [music Share music on the web]
-
+ウェブで音楽を共有
 [music Some catalogue entries could not be read.]
-
+カタログの一部の項目を読み込めませんでした。
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+ストレージに保存できませんでした。終了前に再試行するか、ファイルをエクスポートしてください。
 [music Tag]
-
+タグ
 [music Test crossfades]
-
+クロスフェードをテスト
 [music Up to 2 minutes]
-
+2分以内
 [music Use this music]
-
+この音楽を使用
 [music Validating music…]
-
+音楽を検証中…
 [settings Music library · Browse, install and import]
-
+音楽ライブラリー · 閲覧、インストール、インポート
 [music Filters]
-
+絞り込み
 [music Leave without saving]
-
+保存せずに終了
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+ダウンロードした音楽 ZIP または3つの Opus トラックをインポートします。メタデータとカバー画像は静穏用トラックから読み込むため、追加ファイルは不要です。
 [settings Target render FPS]
 目標描画フレームレート
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 珪砂
 [Cotton]
 綿花
+[Jungle trees]
+ジャングルの木
+[Pine trees]
+松の木
+[Dead trees]
+枯れ木
+[Ruins]
+遺跡
+[Camp-site]
+野営地
+[Ancient debris]
+古代の残骸
+[Scrub]
+低木の茂み
+[Tall grass]
+背の高い草
+[Maize]
+トウモロコシ
+[Potatoes]
+ジャガイモ
+[Rice]
+稲
+[Fish]
+魚
 [Reroll terrain look]
 地形の外観を再抽選
 [boulders]
-
+巨石
 [hedge]
-
+生け垣
 [thicket]
-
+茂み
 [ridge_rock]
-
+岩稜
 [outcrop]
-
+露頭
 [dirt]
-
+土
 [clay]
-
+粘土
 [gravel]
-
+砂利
 [flower_meadow]
-
+花畑
 [mud]
-
+泥
 [marsh]
-
+湿地
 [deep_snow]
-
+深い雪
 [scree]
-
+岩屑地
 [dirt_track]
-
+土の道
 [boardwalk]
-
+木道
 [lava]
-
+溶岩
 [ember_field]
-
+熾火の地
 [loam]
-
+壌土
 [moss]
-
+苔
 [spring_meadow]
-
+春の草地
 [deep_water]
-
+深水
 [dark_water]
-
+暗い水
 [void_hole]
-
+穴
 [chasm]
-
+深淵
 [terrain group water]
-
+水
 [terrain group sand]
-
+砂
 [terrain group grass]
-
+草
 [terrain group ice]
-
+氷
 [terrain group paths]
-
+道
 [terrain group obstacles]
-
+障害物
 [terrain group ridges]
-
+岩稜
 [terrain group barren]
-
+不毛な地面
 [terrain group rough]
-
+悪路
 [terrain group lava]
-
+溶岩
 [terrain group fertile]
-
+肥沃な地面
 [terrain group deep-water]
-
+深水
 [terrain group void]
-
+虚空
 [experiment obstacle-terrain]
-
+障害物地形
 [experiment obstacle-terrain help]
-
+マップエディターに巨石、生け垣、茂みを追加します。地上ユニットは通れず、飛び道具も遮りますが、飛行ユニットは通過できます。建物や資源は置けません。
 [experiment ridge-terrain]
-
+岩稜地形
 [experiment ridge-terrain help]
-
+マップエディターに岩稜と露頭を追加します。地上ユニットは通れませんが、塔の攻撃と飛行ユニットは上を通過できます。建物や資源は置けません。
 [experiment barren-terrain]
-
+不毛な地面
 [experiment barren-terrain help]
-
+マップエディターに土、粘土、砂利、花畑を追加します。建物を置けますが、その上や周囲では何も育たず、水際としても扱われません。
 [experiment rough-terrain]
-
+悪路
 [experiment rough-terrain help]
-
+マップエディターに泥、湿地、深い雪、岩屑地を追加します。地上ユニットの移動速度は約3分の2になります。建物や資源は置けません。
 [experiment path-terrain]
-
+道の地形
 [experiment path-terrain help]
-
+マップエディターに土の道と木道を追加します。小道と同じく地上ユニットは2倍の速度で移動でき、建物も置けますが、何も育ちません。
 [experiment lava-terrain]
-
+溶岩地形
 [experiment lava-terrain help]
-
+マップエディターに溶岩と熾火の地を追加します。地上ユニットは進入できず、上を通る飛行ユニットは急速に体力を失います。飛び道具は通過します。
 [experiment fertile-terrain]
-
+肥沃な地面
 [experiment fertile-terrain help]
-
+マップエディターに壌土、苔、春の草地を追加します。建物や作物を置け、水よりも強く周囲の土地を潤します。
 [experiment deep-water-terrain]
-
+深水
 [experiment deep-water-terrain help]
-
+マップエディターに深水と暗い水を追加します。泳ぐユニットの移動は遅くなり、藻は育ちませんが、近くの畑を潤します。
 [experiment void-terrain]
-
+虚空地形
 [experiment void-terrain help]
-
+マップエディターに穴と深淵を追加します。飛行ユニットを含め、何も通過できません。飛び道具はその縁で止まります。
 [terrain group custom]
-
+カスタム
 [terrain group classic]
-
+従来の地面
 [terrain rule walkable]
-
+歩行可能
 [terrain rule swimmable]
-
+遊泳可能
 [terrain rule impassable]
-
+通行不可
 [terrain rule no flying]
-
+飛行不可
 [terrain rule buildable]
-
+建築可能
 [terrain rule speed %0]
-
+速度 %0%
 [terrain rule crops grow]
-
+作物が育つ
 [terrain rule irrigates]
-
+周囲の土地を潤す
 [terrain rule stops nearby growth]
-
+周囲の成長を止める
 [terrain rule blocks shots]
-
+射撃を遮る
 [terrain rule hurts walkers]
-
+歩行ユニットにダメージ
 [terrain rule hurts fliers]
-
+飛行ユニットにダメージ
 [terrain palette hint]
-
+ブラシを選んでください。同じグループの地形は共通のルールを持ち、見た目だけが異なります。
 [terrain rule algae grow]
-
+藻が育つ
 [terrain palette experiments hint]
-
+ブラシを選んでください。「設定 > 実験」で有効にすると、地形グループがここに追加されます。
 [brush valid on %0]
-
+配置可能：%0
 [brush valid nowhere]
-
+このマップのどの地形にも配置できません
 [brush requires experiment %0]
-
+実験「%0」が必要です
 [brush resources custom]
-
+インポートした資源
 [brush section zones]
-
+ゾーン
 [brush section areas]
-
+エリア
 [brush section tools]
-
+ツール
 [brush clearing area]
-
+伐採エリア
 [editor unsaved title]
-
+未保存の変更
 [editor quit unsaved]
-
+エディターを終了する前に、このマップの変更を保存しますか？
 [editor load unsaved]
-
+別のマップを開く前に、このマップの変更を保存しますか？
 [editor save]
-
+保存…
 [editor discard]
-
+保存しない
 [editor share never saved]
-
+マップは保存されたファイルから共有されます。まずこのマップを保存してから共有してください。
 [editor share unsaved]
-
+このマップには未保存の変更があります。共有時には保存済みのファイルがアップロードされます。
 [editor save and share]
-
+保存して共有…
 [editor share saved version]
-
+保存済みのバージョンを共有
 [editor reroll confirm]
-
+各地形タイルの見た目をランダムに変更しますか？地形の種類とゲームプレイは変わりません。この操作は取り消せません。
 [editor reroll]
-
+見た目を再抽選
 [editor map saved]
-
+マップを保存しました
 [editor map shared]
-
+マップをオンラインで共有しました
 [editor save needs fertility]
-
+保存には肥沃度マップが必要なため、保存を中止しました。「OK」を押して再試行してください。
 [editor fertility stale]
-
+肥沃度マップが古くなっています · クリックして更新
 [No definition files found in %0]
-
+%0 に定義ファイルがありません
 [From device…]
-
+端末から…
 [replace existing file %0?]
-
+「%0」というファイルは既に存在します。置き換えますか？
 [Replace]
-
+置き換える
 [Keep existing file]
-
+既存のファイルを保持
 [editor menu save]
-
+マップを保存
 [editor menu load]
-
+マップを開く…
 [editor menu import terrain]
-
+地形定義をインポート…
 [editor menu import resources]
-
+資源定義をインポート…
 [editor menu teams]
-
+チーム…
 [editor menu scenario]
-
+シナリオ…
 [editor menu reroll]
-
+地形の見た目を再抽選…
 [editor menu file]
-
+ファイル
 [editor menu map]
-
+マップ
 [no resource growth areas]
-
+成長禁止エリア
 [dock flags and units]
-
+旗とユニット
 [dock minimap]
-
+ミニマップ
 [dock search brushes]
-
+ブラシを検索
 [dock brush shape %0]
-
+ブラシの形状 %0
 [dock brush]
-
+ブラシ
 [dock brush paint]
-
+描画
 [dock brush erase]
-
+消去
 [dock enable for map]
-
+このマップで有効にする
 [dock enable experiment %0]
-
+%0 を有効にする
 [dock enable experiment hint %0]
-
+このマップでのみ実験「%0」を有効にします。
 [dock area number]
-
+エリア
 [dock building level]
-
+レベル
 [dock unit level]
-
+ユニットのレベル
 [dock no brushes match]
-
+検索に一致するブラシはありません。
 [dock active team]
-
+選択中のチーム
 [dock team count %0]
-
+このマップのチーム数：%0
 [dock add team]
-
+チームを追加
 [dock remove team]
-
+チームを削除
 [dock nothing selected]
-
+何も選択されていません。
 [dock no properties]
-
+このオブジェクトに編集可能なプロパティーはありません。
 [focus brush search]
-
+ブラシを検索
 [switch to resources view]
-
+資源表示に切り替え
 [dock resources base]
-
+標準の資源
 [dock fertility stale]
-
+肥沃度マップが古くなっています。
 [dock fertility refresh]
-
+肥沃度を更新
 [Enabled %0 for this map]
-
+このマップで %0 を有効にしました
 [editor fertility tap refresh]
-
+肥沃度マップが古くなっています：タップして更新
+[editor menu import set]
+地形・資源セットをインポート
+[editor menu set library]
+セットライブラリー
+[set library loading]
+セットを読み込み中…
+[set library downloading]
+指定のリリースをダウンロード中…
+[set library connection error]
+セットを読み込めません。接続を確認して再試行してください。
+[set library hash error]
+ダウンロードしたセットのハッシュ検証に失敗しました。
+[set library package error]
+セットのパッケージが不正です。
+[set library listing error]
+セットの一覧が不正です。
+[set library release error]
+セットのリリースが不正です。
+[set library selection help]
+インポートする項目を選択してください。必要なカスタム資源は自動的に含まれます。
+[set library empty]
+セットが見つかりませんでした。
+[set library release help]
+確認してインポートするリリースを指定してください。
+[set library heading]
+地形・資源セット
+[set library browse]
+オンラインライブラリーを閲覧
+[set library local]
+マップの内容、クレジット、ローカル編集
+[set library local help]
+このマップに保存された内容のコピーを編集します。元のリリースのクレジットは保持されます。変更は他のマップやオンラインのリリースには適用されません。
+[set library apply]
+ローカルの変更を適用
+[set library updated]
+ローカルの内容を更新しました。
+[set library search hint]
+テーマと作者を検索
+[set library search]
+検索
+[set library set]
+セット
+[set library update help]
+配置済みの一致する地形と資源を、ローカルの編集も含めて置き換えます。削除された項目は古いリリースのまま残ります。既存の資源量は新しい容量を上限に制限されます。
+[set library import]
+選択した項目をインポート
+[set library next]
+次のページ
+[set library back]
+検索結果に戻る
+[set library license %0]
+ライセンス：%0
+[set library release %0]
+リリース %0
+[set library replace %0]
+リリース %0 の配置済み項目を置き換え
+[set library preview limit]
+最初の64項目のプレビューを表示します。すべての項目を選択できます。
+[set library definition]
+プロパティー定義（JSON）
+[set library artwork]
+地形画像の対応付け（JSON）
+[settings Map generators]
+マップ生成器
+[settings Import a generator package, then select its landscape when creating a map or game.]
+生成器パッケージをインポートし、マップやゲームの作成時にその地形を選択してください。
+[settings Import map generator]
+マップ生成器をインポート
+[settings No custom map generators installed.]
+カスタムマップ生成器はインストールされていません。
+[settings Replace package]
+パッケージを置き換え
+[settings Export package]
+パッケージをエクスポート
+[settings Remove generator]
+生成器を削除
+[settings Saving generator library…]
+生成器ライブラリを保存中…
+[settings Could not read generator package.]
+生成器パッケージを読み込めませんでした。
+[settings Generator library saved.]
+生成器ライブラリを保存しました。
+[settings Storage could not be saved. The previous library is retained.]
+データを保存できませんでした。以前のライブラリは保持されます。
+[settings Waiting for file selection or storage…]
+ファイルの選択または保存処理を待機中…
+[settings File selection is unavailable.]
+ファイル選択は利用できません。
+[settings Package export is unavailable.]
+パッケージのエクスポートは利用できません。
+[stat band area upkeep]
+範囲効果の維持費

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorSocialResult",
+  "title": "GeneratorSocialResult",
+  "type": "object",
+  "required": [
+    "active",
+    "likes"
+  ],
+  "properties": {
+    "active": {
+      "type": "boolean"
+    },
+    "likes": {
+      "type": "integer"
+    }
+  }
+}

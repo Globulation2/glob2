@@ -79,8 +79,8 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
         }
         (evidence / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
-    compute = (["--compute-threads", "4", "--compute-experiments", "ai"] if parallel_ai
-               else ["--compute-threads", "1", "--compute-experiments", "ai"])
+    compute = (["--compute-threads", "4"] if parallel_ai
+               else ["--compute-threads", "1"])
     for save, ticks, fixture in SCENARIOS:
         with run_directory(evidence, save.stem) as directory:
             output = Path(directory)
@@ -110,7 +110,7 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
             with gzip.open(fixture, "rb") as stream:
                 expected = stream.read()
             if actual != expected:
-                print(f"{save.name}: per-tick checksums differ from the resource-era serial reference",
+                print(f"{save.name}: per-tick checksums differ from the current simulation serial reference",
                       file=sys.stderr)
                 print(f"expected SHA-256 {hashlib.sha256(expected).hexdigest()}", file=sys.stderr)
                 print(f"actual   SHA-256 {hashlib.sha256(actual).hexdigest()}", file=sys.stderr)
@@ -145,7 +145,7 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
         with gzip.open(PARENT_RELOAD, "rb") as stream:
             expected = stream.read()
         if actual != expected:
-            print("legacy checkpoint differs from complete resource-era reference", file=sys.stderr)
+            print("legacy checkpoint differs from complete current simulation reference", file=sys.stderr)
             return 1
         print("PASS v108 checkpoint: 256 reloaded ticks, identical complete checksum sidecar")
     if evidence is not None:
@@ -161,7 +161,7 @@ if __name__ == "__main__":
     parser.add_argument("binary")
     parser.add_argument("--parallel-ai", action="store_true")
     parser.add_argument("--update-fixtures", action="store_true",
-                        help="Regenerate only resource-era traces from retained legacy saves")
+                        help="Regenerate current simulation traces from retained legacy saves")
     parser.add_argument("--output", type=Path, help="Retain traces, replays, saves, commands and logs")
     args = parser.parse_args()
     if args.update_fixtures and args.parallel_ai:

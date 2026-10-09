@@ -125,7 +125,7 @@ constexpr int kFrayPeriod = 9;
 /// enough that every candidate is scored outright rather than annealed - a search over fourteen
 /// things is a search that should have been a loop.
 constexpr int kRiverBeds = 14;
-/// The bed itself, in undermap corners: wide enough that no unit steps over it, even diagonally.
+/// The bed itself, in terrain vertices: wide enough that no unit steps over it, even diagonally.
 /// The wander is a share of the side the bed crosses, and it has to be read against that side: at
 /// 0.17 over 256 tiles the beds came out as canals, which is the ruled line the head of Rivers.h
 /// argues a positional constraint would give. A fourth harmonic wrinkles the long bends.
@@ -425,7 +425,7 @@ bool placeHomelandHomes(Layout &L, int teams)
 		{
 			if (!home[i])
 				continue;
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			// The rim of the homeland, whatever lies beyond it. Asking specifically for a tile
 			// touching the commons fails a homeland whose whole edge happens to be shore, which
 			// bounding the homelands to a core made reachable: they are small enough now to sit
@@ -479,7 +479,7 @@ void placeHomelandLakes(Layout &L, int teams, const std::vector<int> &relief,
 			home[i] = L.ownerOf[i] == k;
 			blocked[i] = L.ownerOf[i] != k;
 		}
-		const int sx = L.homes[k].site % t.w, sy = L.homes[k].site / t.w;
+		const int sx = t.remainderX(L.homes[k].site), sy = L.homes[k].site / t.w;
 		for (int dy = -kHomeRoom; dy <= kHomeRoom; ++dy)
 			for (int dx = -kHomeRoom; dx <= kHomeRoom; ++dx)
 				blocked[t.at(sx + dx, sy + dy)] = 1;
@@ -611,7 +611,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	{
 		const int dx = int(context.bounded("marchland-homes", 2 * jostle + 1)) - jostle;
 		const int dy = int(context.bounded("marchland-homes", 2 * jostle + 1)) - jostle;
-		const int moved = t.at(site % t.w + dx, site / t.w + dy);
+		const int moved = t.at(t.remainderX(site) + dx, site / t.w + dy);
 		if (mainlandMask[moved])
 			site = moved;
 	}
@@ -759,7 +759,7 @@ struct RopeSearch
 	{
 		for (size_t p = 0; p < rope.prize.size(); ++p)
 			if (int(p) != ignore &&
-				t.dist2(site % t.w, site / t.w, rope.prize[p] % t.w, rope.prize[p] / t.w) < gap * gap)
+				t.dist2(t.remainderX(site), site / t.w, t.remainderX(rope.prize[p]), rope.prize[p] / t.w) < gap * gap)
 				return false;
 		return true;
 	}
@@ -851,14 +851,14 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "marchland terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 
 	context.stage = "marchland colonies";
 	const auto homeMask = [&](int team)
 	{
 		std::vector<unsigned char> home(size_t(t.size()), 0);
 		for (int i = 0; i < t.size(); ++i)
-			home[i] = L.ownerOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			home[i] = L.ownerOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return home;
 	};
 	const auto anchor = [&](int team) { return L.homes[team].swarm; };
@@ -890,7 +890,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		const auto ownGround = [&](int i)
-		{ return L.ownerOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.ownerOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		const auto openCountry = [&](int i) { return ownGround(i) && !towns[i]; };
 		// The kit's crops round the pond. Its quarry is placed separately and with a far wider
 		// search than the kit frame's own: on ground this irregular the frame's ten-tile box can
@@ -902,7 +902,7 @@ bool generate(Game &game, GenerationContext &context)
 										int(std::lround(L.homes[k].kitCentre.y)), kQuarryReach,
 										ownGround);
 			quarry >= 0)
-			placeResourceClump(map, context, MapGeneratorPoint(quarry % t.w, quarry / t.w), STONE,
+			placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(quarry), quarry / t.w), STONE,
 							   kKitQuarry);
 		std::vector<int> ground;
 		for (int i = 0; i < t.size(); ++i)
@@ -925,11 +925,11 @@ bool generate(Game &game, GenerationContext &context)
 	const std::vector<std::vector<int>> cost = colonyCosts(map, t, teams);
 	std::vector<unsigned char> open(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		open[i] = L.march[i] && (map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, STONE) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, CHERRY) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, ORANGE) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, PRUNE)) &&
-			clearGround(map, i % t.w, i / t.w);
+		open[i] = L.march[i] && (map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, STONE) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, CHERRY) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, ORANGE) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, PRUNE)) &&
+			clearGround(map, t.remainderX(i), i / t.w);
 	const std::vector<int> room = clearance(t, open);
 	// Only genuinely contested ground is a candidate at all. A prize is required to sit on a front,
 	// so a site that no search could ever make contested has no business being proposed: filtering
@@ -1005,7 +1005,7 @@ bool generate(Game &game, GenerationContext &context)
 	std::vector<unsigned char> clearing(t.size(), 0);
 	for (const int site : rope.prize)
 	{
-		const int sx = site % t.w, sy = site / t.w;
+		const int sx = t.remainderX(site), sy = site / t.w;
 		for (int dy = -kPrizeClearing; dy <= kPrizeClearing; ++dy)
 			for (int dx = -kPrizeClearing; dx <= kPrizeClearing; ++dx)
 				if (dx * dx + dy * dy <= kPrizeClearing * kPrizeClearing)
@@ -1028,7 +1028,7 @@ bool generate(Game &game, GenerationContext &context)
 			++sanded;
 		}
 	layBeaches(dry, t);
-	writeUndermap(map, dry);
+	writeVertices(map, dry);
 	context.telemetry.measure("marchland.march.sand-tiles", sanded);
 
 	// Every prize is the same prize: a grove of one fruit with a quarry beside it, on the one patch
@@ -1043,7 +1043,7 @@ bool generate(Game &game, GenerationContext &context)
 		// everywhere, which quietly undoes the levelling the search just did. Planted solid at this
 		// radius it moved one colony 43 steps out of step on seed 21.
 		const int fruit = CHERRY + int(context.bounded("marchland-prizes", 3));
-		const int sx = site % t.w, sy = site / t.w;
+		const int sx = t.remainderX(site), sy = site / t.w;
 		// The grove answers to the fruit slider, like every other resource on the map answers to
 		// its own. The radius is scaled by area rather than directly, so the slider delivers the
 		// proportion of fruit it says; scaled directly, 300 per cent would ring each prize with a
@@ -1055,17 +1055,17 @@ bool generate(Game &game, GenerationContext &context)
 			{
 				const int i = t.at(sx + dx, sy + dy);
 				if (dx * dx + dy * dy <= groveRadius * groveRadius && (dx + dy) % 2 == 0 &&
-					clearGround(map, i % t.w, i / t.w) &&
-					map.isResourceAllowed(i % t.w, i / t.w, fruit))
-					map.setResourceByIndex(i % t.w, i / t.w, fruit, 1);
+					clearGround(map, t.remainderX(i), i / t.w) &&
+					map.isResourceAllowed(t.remainderX(i), i / t.w, fruit))
+					map.setResourceByIndex(t.remainderX(i), i / t.w, fruit, 1);
 			}
 		const double angle = context.bounded("marchland-prizes", 360) * kPi / 180.0;
-		const int qx = t.x(site % t.w + int(std::lround(kQuarryOffset * std::cos(angle))));
+		const int qx = t.x(t.remainderX(site) + int(std::lround(kQuarryOffset * std::cos(angle))));
 		const int qy = t.y(site / t.w + int(std::lround(kQuarryOffset * std::sin(angle))));
 		if (const int seed = seedNear(t, qx, qy, 4, [&](int i)
-									  { return clearGround(map, i % t.w, i / t.w); });
+									  { return clearGround(map, t.remainderX(i), i / t.w); });
 			seed >= 0)
-			placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+			placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w), STONE,
 							   scaledRadius(kQuarryRadius, o.stone));
 	}
 
@@ -1074,8 +1074,8 @@ bool generate(Game &game, GenerationContext &context)
 	// expansion ground the map was missing.
 	std::vector<int> open2;
 	for (int i = 0; i < t.size(); ++i)
-		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WHEAT))
+		if (L.march[i] && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WHEAT))
 			open2.push_back(i);
 	context.telemetry.measure(
 		"marchland.commons.wheat-tiles",
@@ -1083,8 +1083,8 @@ bool generate(Game &game, GenerationContext &context)
 						[&](int i) { return wheatGrain[i]; }));
 	open2.clear();
 	for (int i = 0; i < t.size(); ++i)
-		if (L.march[i] && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
-			map.terrainSupportsResourceAtByIndex(i % t.w, i / t.w, WOOD))
+		if (L.march[i] && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w) &&
+			map.terrainSupportsResourceAtByIndex(t.remainderX(i), i / t.w, WOOD))
 			open2.push_back(i);
 	context.telemetry.measure(
 		"marchland.commons.wood-tiles",
@@ -1144,7 +1144,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	// with none has a larder that empties and never refills, however much wheat it started with.
 	std::vector<unsigned char> wet(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		wet[i] = terrainProvidesFertility(game.map.terrainPropertiesAt(i % t.w, i / t.w));
+		wet[i] = terrainProvidesFertility(game.map.terrainPropertiesAt(t.remainderX(i), i / t.w));
 	const std::vector<std::int64_t> toWater = distanceSquaredTo(t, wet);
 	const std::vector<std::vector<int>> units = unitTilesByTeam(game.map, teams);
 	for (int k = 0; k < teams; ++k)
@@ -1160,7 +1160,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<unsigned char> fruit(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		const int type = game.map.getResource(i % t.w, i / t.w).type;
+		const int type = game.map.getResource(t.remainderX(i), i / t.w).type;
 		fruit[i] = type >= CHERRY && type < CHERRY + 3;
 	}
 	const std::vector<int> grove = connectedRegions(fruit, t.w, t.h, true, GridNeighbors::Eight);
@@ -1192,7 +1192,7 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		{
 			if (grove[i] != g)
 				continue;
-			const int x = i % t.w, y = i / t.w;
+			const int x = t.remainderX(i), y = i / t.w;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
@@ -1248,7 +1248,7 @@ GeneratorDefinition marchlandDefinition()
 		"marchland",
 		61,
 		"Marchland",
-		2,
+		3,
 		false,
 		// Levelling controls the search for contested, evenly shared prizes. Zero keeps
 		// the initial random selection; telemetry records the result at every setting.

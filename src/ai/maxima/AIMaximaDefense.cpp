@@ -1,3 +1,4 @@
+#include "PowerOfTwo.h"
 #include "field/UniformTraversal.h"
 #include "AIMaximaDefense.h"
 
@@ -169,15 +170,15 @@ ModeResult analyzeMode(const ModeInput& input, const Policy& policy)
 			++stamp;
 			int corridorWidth=0;
 			int terrainWidth=0;
-			const int x=index%input.width;
+			const int x=dimensionRemainder(index, input.width);
 			const int y=index/input.width;
 			for(int dy=-policy.probeRadius; dy<=policy.probeRadius; ++dy)
 				for(int dx=-policy.probeRadius; dx<=policy.probeRadius; ++dx)
 				{
 					// A configured probe may span several laps of a small map.
 					// C++ remainder stays negative for negative dividends.
-					const int neighbor=(((y+dy)%input.height+input.height)%input.height)
-						*input.width+(((x+dx)%input.width+input.width)%input.width);
+					const int neighbor=(dimensionRemainder(dimensionRemainder((y+dy), input.height)+input.height, input.height))
+						*input.width+(dimensionRemainder(dimensionRemainder((x+dx), input.width)+input.width, input.width));
 					if(result.homeDistance[neighbor]==result.homeDistance[index]
 					   && seen[neighbor]!=stamp)
 					{
@@ -239,7 +240,7 @@ ModeResult analyzeMode(const ModeInput& input, const Policy& policy)
 
 				return field::Visit::Expand;
 			},[&](int,int x,int y) {
-				const int neighbor=((y+input.height)%input.height)*input.width+(x+input.width)%input.width;
+				const int neighbor=(dimensionRemainder(y+input.height, input.height))*input.width+dimensionRemainder(x+input.width, input.width);
 				if(result.qualified[neighbor] && !visited[neighbor])
 				{visited[neighbor]=1;component.push_back(neighbor);}
 			});
@@ -266,7 +267,7 @@ std::vector<int> buildFootprint(const ModeResult& mode, int center, int radius)
 			footprint.push_back(index);
 			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
 		},[&](int index,int x,int y) {
-			const int neighbor=((y+mode.height)%mode.height)*mode.width+(x+mode.width)%mode.width;
+			const int neighbor=(dimensionRemainder(y+mode.height, mode.height))*mode.width+dimensionRemainder(x+mode.width, mode.width);
 			if(mode.walkable[neighbor] && distance[neighbor]==Unreachable)
 			{distance[neighbor]=distance[index]+1;queue.push_back(neighbor);}
 		});

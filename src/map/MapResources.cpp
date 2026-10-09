@@ -186,7 +186,7 @@ bool Map::growResourceStock(size_t index)
         if (!y.growthRate) continue;
         const auto amount=materialAmountAtSlot(index,m);
         if (amount>=y.capacity) continue;
-        const auto increment=Fertility::growthOpportunities(y.growthRate,[]{return syncRand();});
+        const auto increment=Fertility::growthOpportunities(y.growthRate,[&]{return privateRandom(RandomDomain::ResourceStocks).nextU32();});
         if (increment) { setMaterialAmountSlot(index,m,std::min<unsigned>(y.capacity,unsigned(amount)+increment)); changed=true; }
     }
     return changed;
@@ -247,7 +247,7 @@ void Map::setResource(int x,int y,ResourceId resourceId,int l)
                 r.amount=yld.initial;
                 // Stock is simulation state; variant selection is deterministic presentation.
                 if (std::has_single_bit(p.materialMask) && yld.placementMaximum>yld.initial)
-                    r.amount+=syncRand()%(yld.placementMaximum-yld.initial+1);
+                    r.amount+=privateRandom(RandomDomain::ResourcePlacement).nextU32()%(yld.placementMaximum-yld.initial+1);
                 replaceResource(dx,dy,r);
             }
 }
@@ -266,12 +266,16 @@ bool Map::isPointSet(int n, int x, int y) const
 
 void Map::setPoint(int n, int x, int y)
 {
-	scriptAreaCells[coordToIndex(x, y)] |= 1<<n;
+	const auto i = coordToIndex(x,y);
+	const auto value = Uint16(scriptAreaCells[i] | (1<<n));
+	if (value != scriptAreaCells[i]) { scriptAreaCells[i] = value; markArea(i); }
 }
 
 void Map::unsetPoint(int n, int x, int y)
 {
-	scriptAreaCells[coordToIndex(x, y)] ^= scriptAreaCells[coordToIndex(x, y)] & (1<<n);
+	const auto i = coordToIndex(x,y);
+	const auto value = Uint16(scriptAreaCells[i] & ~(1<<n));
+	if (value != scriptAreaCells[i]) { scriptAreaCells[i] = value; markArea(i); }
 }
 
 std::string Map::getAreaName(int n) const
@@ -281,7 +285,7 @@ std::string Map::getAreaName(int n) const
 
 void Map::setAreaName(int n, std::string name)
 {
-	areaNames[n]=name;
+	if (areaNames[n] != name) { areaNames[n] = std::move(name); areaChanges.markAll(); }
 }
 
 
@@ -379,7 +383,7 @@ template bool Map::getGlobalGradientDestination<Uint16>(const Uint16 *gradient, 
 template<typename T>
 bool Map::isGradientPeak(const T *gradient, int x, int y) const
 {
-	// A round-trip gradient's goal is seeded at a finite cost, not the type's
+	// A market-seeded gradient's goal starts at a finite cost, not the type's
 	// max the way GRADIENT_AT_GOAL is, so getGlobalGradientDestination's own
 	// "reached exact goal" check does not generalize to it. This is the
 	// weaker, gradient-agnostic property an ascent target actually needs:

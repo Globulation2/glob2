@@ -1,3 +1,4 @@
+import { t, useLocale } from '../i18n.tsx';
 import type { MusicRelease } from '@glob2/protocol';
 const PALETTES = [
   ['#29203f', '#425653', '#62816b', '#b5bd79'],
@@ -5,9 +6,14 @@ const PALETTES = [
   ['#30213f', '#67435a', '#987166', '#d4ae7a'],
 ];
 export function Cover({ release }: { release: MusicRelease }) {
+  useLocale();
   if (release.coverUrl)
     return (
-      <img className="music-cover" src={release.coverUrl} alt={`${release.metadata.title} cover`} />
+      <img
+        className="music-cover"
+        src={release.coverUrl}
+        alt={t('{value0} cover', { value0: release.metadata.title })}
+      />
     );
   const seed = [...release.id].reduce(
     (hash, c) => (Math.imul(hash, 31) + c.charCodeAt(0)) >>> 0,
@@ -20,7 +26,7 @@ export function Cover({ release }: { release: MusicRelease }) {
       className="music-cover music-cover-terrain"
       viewBox="0 0 240 240"
       role="img"
-      aria-label={`${release.metadata.title} terrain illustration`}
+      aria-label={t('{value0} terrain illustration', { value0: release.metadata.title })}
     >
       <rect width="240" height="240" fill={palette[0]} />
       <circle cx={170 + shift / 3} cy="54" r="25" fill="#ecd08a" opacity="0.85" />

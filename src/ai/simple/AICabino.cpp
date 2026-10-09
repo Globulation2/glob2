@@ -1144,15 +1144,9 @@ void Gradient::update(field::Frontier& frontier)
 
 int Gradient::getHeight(int x, int y) const
 {
-	// Modulo wraparound (not a single +/- width|height) because callers can
-	// probe a multi-tile building footprint's far corner (x+buildingWidth-1),
-	// which a single correction doesn't always bring back in range.
-	x %= static_cast<int>(width);
-	if(x<0)
-		x+=width;
-	y %= static_cast<int>(height);
-	if(y<0)
-		y+=height;
+	// Map dimensions are powers of two; unsigned masking also wraps negatives.
+	x = static_cast<unsigned>(x) & (width - 1u);
+	y = static_cast<unsigned>(y) & (height - 1u);
 	return gradient[y*width+x]-1;
 }
 
@@ -1178,7 +1172,7 @@ bool Gradient::isSource(unsigned x, unsigned y)
 		if(building!=NOGBID && getBuildingFromGid(map, building)->team==team->number)
 			return true;
 	}
-	if(sources&Water && terrainProvidesFertility(map->terrain->properties(map->terrainAt(index).type)))
+	if(sources&Water && terrainProvidesFertility(map->terrainPropertiesAt(index)))
 		return true;
 	return false;
 }

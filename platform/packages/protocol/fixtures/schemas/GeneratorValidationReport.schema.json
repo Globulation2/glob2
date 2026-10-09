@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:GeneratorValidationReport",
+  "title": "GeneratorValidationReport",
+  "type": "object",
+  "required": [
+    "sourceHash",
+    "simVersion",
+    "suite",
+    "valid",
+    "samples"
+  ],
+  "properties": {
+    "sourceHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "simVersion": {
+      "type": "string"
+    },
+    "suite": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "packageHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "fileHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "revision",
+        "apiVersion",
+        "toolkitVersion",
+        "editorOnly",
+        "tags",
+        "controls"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_.:-]{1,128}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "apiVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "toolkitVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "editorOnly": {
+          "type": "boolean"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "group",
+              "kind",
+              "default"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "group": {
+                "type": "string"
+              },
+              "kind": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "range"
+                  },
+                  {
+                    "type": "string",
+                    "const": "toggle"
+                  },
+                  {
+                    "type": "string",
+                    "const": "choice"
+                  }
+                ]
+              },
+              "minimum": {
+                "type": "integer"
+              },
+              "maximum": {
+                "type": "integer"
+              },
+              "step": {
+                "type": "integer"
+              },
+              "default": {
+                "type": "integer"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "maxItems": 4096
+              },
+              "powerOfTwo": {
+                "type": "boolean"
+              },
+              "choices": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "samples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "settings",
+          "status"
+        ],
+        "properties": {
+          "settings": {
+            "type": "object",
+            "required": [
+              "seed",
+              "params",
+              "candidates",
+              "startingUnitLevel"
+            ],
+            "properties": {
+              "seed": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4294967295
+              },
+              "params": {
+                "type": "object",
+                "patternProperties": {
+                  "^[A-Za-z0-9_-]{1,64}$": {
+                    "type": "integer"
+                  }
+                },
+                "maxProperties": 72
+              },
+              "candidates": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5,
+                "default": 1
+              },
+              "startingUnitLevel": {
+                "type": "number",
+                "const": 0
+              }
+            },
+            "additionalProperties": false
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "passed"
+              },
+              {
+                "type": "string",
+                "const": "refused"
+              },
+              {
+                "type": "string",
+                "const": "failed"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "fingerprint": {
+            "type": "string"
+          }
+        }
+      },
+      "maxItems": 160
+    },
+    "error": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "previewHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    }
+  }
+}

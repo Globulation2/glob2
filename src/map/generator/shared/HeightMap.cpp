@@ -1,4 +1,7 @@
+#include "GenerationNumeric.h"
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 // Copyright (C) 2006 Leo Wandersleb
 
 #include "HeightMap.h"
@@ -13,26 +16,27 @@
 inline float faderCenter(int x, int y, int w,
 						 int h) /// to have zero at the borders and 1 in the center
 {
-	return (1.0 - cos(2.0 * 3.14159265 * (float)x / (float)w)) *
-		   (1.0 - cos(2.0 * 3.14159265 * (float)y / (float)h)) / 4.0;
+	return (1.0 - ::MapGeneration::Numeric::global_cos(2.0 * 3.14159265 * (float)x / (float)w)) *
+		   (1.0 - ::MapGeneration::Numeric::global_cos(2.0 * 3.14159265 * (float)y / (float)h)) /
+		   4.0;
 }
 inline float faderLeftRight(
 	int x, int y, int w,
 	int h) /// to have 0 at top and bottom border and 1 at the middle of right and left border
 {
-	return (faderCenter((x + w / 2) % w, y, w, h));
+	return (faderCenter(dimensionRemainder(x + w / 2, w), y, w, h));
 }
 inline float faderTopBottom(
 	int x, int y, int w,
 	int h) /// to have 1 at the middle of top and bottom border and 0 at right and left border
 {
-	return (faderCenter(x, (y + h / 2) % h, w, h));
+	return (faderCenter(x, dimensionRemainder(y + h / 2, h), w, h));
 }
 inline float
 faderCorner(int x, int y, int w,
 			int h) /// to have 1 in the corners and 0 on a cross going through the center
 {
-	return (faderCenter((x + w / 2) % w, (y + h / 2) % h, w, h));
+	return (faderCenter(dimensionRemainder(x + w / 2, w), dimensionRemainder(y + h / 2, h), w, h));
 }
 
 HeightMap::HeightMap(unsigned int width, unsigned int height, std::mt19937 &rng)
@@ -45,6 +49,7 @@ void HeightMap::init(unsigned int width, unsigned int height)
 {
 	_w = width;
 	_h = height;
+	::MapGeneration::generationAllocation(std::uint64_t(_w) * _h * sizeof(float));
 	_map.assign(size_t(_w) * _h, 0.f);
 	_stamp.clear();
 }
@@ -56,17 +61,23 @@ void HeightMap::makeStamp(unsigned int radius)
 {
 	_r = std::max(1u, radius);
 	oldLowerX = oldLowerY = oldDifferenceX = oldDifferenceY = ~0u;
+	::MapGeneration::generationAllocation((2ULL * _r + 1) * (2ULL * _r + 1) * sizeof(float));
 	_stamp.assign(size_t(2 * _r + 1) * (2 * _r + 1), 0.f);
 	for (unsigned int x = 0; x < 2 * _r + 1; x++)
 	{
+		::MapGeneration::generationCheckpoint();
 		for (unsigned int y = 0; y < 2 * _r + 1; y++)
 		{
+			::MapGeneration::generationCheckpoint();
 			unsigned int dSquare = (x - _r) * (x - _r) + (y - _r) * (y - _r);
 			if (dSquare < _r * _r)
-				_stamp[x + y * (2 * _r + 1)] =
-					(1.0 - cos(sqrt(dSquare) * 3.14159265 / (float)_r)) / 2.0;
+				_stamp.at(x + y * (2 * _r + 1)) =
+					(1.0 -
+					 ::MapGeneration::Numeric::global_cos(
+						 ::MapGeneration::Numeric::global_sqrt(dSquare) * 3.14159265 / (float)_r)) /
+					2.0;
 			else
-				_stamp[x + y * (2 * _r + 1)] = .9999;
+				_stamp.at(x + y * (2 * _r + 1)) = .9999;
 		}
 	}
 }
@@ -79,13 +90,15 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 		assert(!_stamp.empty());
 		for (unsigned int x = 0; x < 2 * _r + 1; x++)
 		{
+			::MapGeneration::generationCheckpoint();
 			/// this loop can be replaced by a somehow complicated memcpy
 			for (unsigned int y = 0; y < 2 * _r + 1; y++)
 			{
-				unsigned int coord1d = (unsigned int)(_w + x - _r + coordX) % _w +
-									   ((unsigned int)(_h + y - _r + coordY) % _h) * _w;
-				if (_map[coord1d] > _stamp[x + y * (2 * _r + 1)])
-					_map[coord1d] = _stamp[x + y * (2 * _r + 1)];
+				::MapGeneration::generationCheckpoint();
+				unsigned int coord1d = dimensionRemainder((unsigned int)(_w + x - _r + coordX), _w) +
+									   (dimensionRemainder((unsigned int)(_h + y - _r + coordY), _h)) * _w;
+				if (_map.at(coord1d) > _stamp.at(x + y * (2 * _r + 1)))
+					_map.at(coord1d) = _stamp.at(x + y * (2 * _r + 1));
 			}
 		}
 		oldLowerX = coordX;
@@ -102,11 +115,13 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 		assert(!_stamp.empty());
 		for (unsigned int x = 0; x < 2 * _r + 1; x++)
 		{
+			::MapGeneration::generationCheckpoint();
 			for (unsigned int y = 0; y < 2 * _r + 1; y++)
 			{
-				unsigned int coord1d = (unsigned int)(_w + x - _r + coordX) % _w +
-									   ((unsigned int)(_h + y - _r + coordY) % _h) * _w;
-				_map[coord1d] = fabs((1.0 - _stamp[x + y * (2 * _r + 1)]) - _map[coord1d]);
+				::MapGeneration::generationCheckpoint();
+				unsigned int coord1d = dimensionRemainder((unsigned int)(_w + x - _r + coordX), _w) +
+									   (dimensionRemainder((unsigned int)(_h + y - _r + coordY), _h)) * _w;
+				_map.at(coord1d) = fabs((1.0 - _stamp.at(x + y * (2 * _r + 1))) - _map.at(coord1d));
 			}
 		}
 		oldDifferenceX = coordX;
@@ -124,21 +139,23 @@ inline void HeightMap::addNoise(float weight, float smoothingFactor)
 	assert((weight > 0) && (weight <= 1.0));
 	for (int x = 0; (unsigned int)x < _w; x++)
 	{
+		::MapGeneration::generationCheckpoint();
 		for (int y = 0; (unsigned int)y < _h; y++)
 		{
-			_map[x + _w * y] =
-				_map[x + _w * y] * (1.0 - weight) +
+			::MapGeneration::generationCheckpoint();
+			_map.at(x + _w * y) =
+				_map.at(x + _w * y) * (1.0 - weight) +
 				(faderCenter(x, y, _w, _h) *
 					 _pn.Noise((float)(x) / smoothingFactor, (float)(y) / smoothingFactor) +
 				 faderLeftRight(x, y, _w, _h) *
-					 _pn.Noise((float)((x + _w / 2) % _w + _w) / smoothingFactor,
+					 _pn.Noise((float)(dimensionRemainder(x + _w / 2, _w) + _w) / smoothingFactor,
 							   (float)(y + _h) / smoothingFactor) +
 				 faderTopBottom(x, y, _w, _h) *
 					 _pn.Noise((float)(x + 2 * _w) / smoothingFactor,
-							   (float)((y + _h / 2) % _h + 2 * _h) / smoothingFactor) +
+							   (float)(dimensionRemainder(y + _h / 2, _h) + 2 * _h) / smoothingFactor) +
 				 faderCorner(x, y, _w, _h) *
-					 _pn.Noise((float)((x + _w / 2) % _w + 3 * _w) / smoothingFactor,
-							   (float)((y + _h / 2) % _h + 3 * 4) / smoothingFactor) +
+					 _pn.Noise((float)(dimensionRemainder(x + _w / 2, _w) + 3 * _w) / smoothingFactor,
+							   (float)(dimensionRemainder(y + _h / 2, _h) + 3 * 4) / smoothingFactor) +
 				 +4.0) /
 					8.0 * weight;
 		}
@@ -159,29 +176,32 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 	GenerationNoise pn(random());
 	std::vector<int> centerX(count);
 	std::vector<int> centerY(count);
-	float mindist = sqrt(_w * _h / count) / 2.0;
+	float mindist = ::MapGeneration::Numeric::global_sqrt(_w * _h / count) / 2.0;
 	assert(mindist > 0);
 	makeStamp((unsigned int)(mindist * 2));
-	centerX[0] = static_cast<int>(random() & 0x7fffffffu) % _w;
-	centerY[0] = static_cast<int>(random() & 0x7fffffffu) % _h;
+	centerX.at(0) = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w);
+	centerY.at(0) = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h);
 	/// find spots with distance>min. distance
 	for (unsigned int i = 1; i < count; i++)
 	{
+		::MapGeneration::generationCheckpoint();
 		bool foundSpot = false;
 		unsigned int tries = 0;
 		int newPosX, newPosY;
 		do
 		{
-			newPosX = static_cast<int>(random() & 0x7fffffffu) % _w;
-			newPosY = static_cast<int>(random() & 0x7fffffffu) % _h;
+			::MapGeneration::generationCheckpoint();
+			newPosX = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w);
+			newPosY = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h);
 			tries++;
 			foundSpot = true;
 			for (unsigned int j = 0; j < i; j++)
 			{
+				::MapGeneration::generationCheckpoint();
 				int distX =
-					std::min(abs(newPosX - centerX[j]), (int)_w - abs(newPosX - centerX[j]));
+					std::min(abs(newPosX - centerX.at(j)), (int)_w - abs(newPosX - centerX.at(j)));
 				int distY =
-					std::min(abs(newPosY - centerY[j]), (int)_h - abs(newPosY - centerY[j]));
+					std::min(abs(newPosY - centerY.at(j)), (int)_h - abs(newPosY - centerY.at(j)));
 				if (distX < mindist && distY < mindist)
 					foundSpot = false;
 			}
@@ -190,14 +210,15 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 		{
 			throw GenerationFailure("Cannot space the requested islands");
 		}
-		centerX[i] = newPosX;
-		centerY[i] = newPosY;
+		centerX.at(i) = newPosX;
+		centerY.at(i) = newPosY;
 	}
 	/// level the terrain
 	operator=(0.0);
 	for (unsigned int i = 0; i < count; i++)
 	{
-		differenceStamp(centerX[i], centerY[i]);
+		::MapGeneration::generationCheckpoint();
+		differenceStamp(centerX.at(i), centerY.at(i));
 	}
 	addNoise(.7, smoothingFactor);
 	normalize();
@@ -226,8 +247,8 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor, bool 
 	operator=(1.0);
 
 	/// find start for a random walk
-	float startingPointX = static_cast<int>(random() & 0x7fffffffu) % _w;
-	float startingPointY = static_cast<int>(random() & 0x7fffffffu) % _h;
+	float startingPointX = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w);
+	float startingPointY = dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h);
 
 	/// the target=start+(w,h) is set now. tmprand(0,1,2)==position(+h,+w,+w+h)
 	float targetPointX;
@@ -248,27 +269,34 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor, bool 
 		targetPointX = startingPointX + (static_cast<int>(random() & 0x7fffffffu) % (_h / _w)) * _w;
 		targetPointY = startingPointY + _h;
 	}
-	float targetDirection =
-		asin((targetPointY - startingPointY) /
-			 sqrt(pow(targetPointX - startingPointX, 2) + pow(targetPointY - startingPointY, 2)));
-	float targetDirectionX = cos(targetDirection);
-	float targetDirectionY = sin(targetDirection);
+	float targetDirection = ::MapGeneration::Numeric::global_asin(
+		(targetPointY - startingPointY) /
+		::MapGeneration::Numeric::global_sqrt(
+			::MapGeneration::Numeric::global_pow(targetPointX - startingPointX, 2) +
+			::MapGeneration::Numeric::global_pow(targetPointY - startingPointY, 2)));
+	float targetDirectionX = ::MapGeneration::Numeric::global_cos(targetDirection);
+	float targetDirectionY = ::MapGeneration::Numeric::global_sin(targetDirection);
 	/// length of direct line
-	float straightRiverLength =
-		sqrt(pow(targetPointX - startingPointX, 2) + pow(targetPointY - startingPointY, 2));
+	float straightRiverLength = ::MapGeneration::Numeric::global_sqrt(
+		::MapGeneration::Numeric::global_pow(targetPointX - startingPointX, 2) +
+		::MapGeneration::Numeric::global_pow(targetPointY - startingPointY, 2));
 	for (float t = 0; t < straightRiverLength; t += straightRiverLength / 10.0 / (_w + _h))
 	{
+		::MapGeneration::generationCheckpoint();
 		// The meander is a pure function of t, so leaving it out changes nothing else.
 		float offset = 0;
 		if (winding)
 		{
-			offset = (1.0 - cos(t / straightRiverLength * 2 * 3.14159265)) *
+			offset = (1.0 - ::MapGeneration::Numeric::global_cos(t / straightRiverLength * 2 *
+																 3.14159265)) *
 					 (_pn.Noise(t / 153.3) * 300.0 + _pn.Noise(t / 13.3) * 50.0 - 175.0);
 			if (t < straightRiverLength / 2.0)
-				offset += (1 + cos(t / straightRiverLength * 2 * 3.14159265)) *
+				offset += (1 + ::MapGeneration::Numeric::global_cos(t / straightRiverLength * 2 *
+																	3.14159265)) *
 						  (_pn.Noise(t / 153.3) * 300.0 + _pn.Noise(t / 13.3) * 50.0 - 175.0);
 			else
-				offset += (1 + cos(t / straightRiverLength * 2 * 3.14159265)) *
+				offset += (1 + ::MapGeneration::Numeric::global_cos(t / straightRiverLength * 2 *
+																	3.14159265)) *
 						  (_pn.Noise((straightRiverLength - t) / 153.3) * 300.0 +
 						   _pn.Noise((straightRiverLength - t) / 13.3) * 50.0 - 175.0);
 		}
@@ -292,8 +320,11 @@ void HeightMap::makeCraters(unsigned int craterCount, unsigned int craterRadius,
 	makeStamp(craterRadius);
 	operator=(1.0);
 	for (unsigned int t = 0; t < craterCount; t++)
-		lower(static_cast<int>(random() & 0x7fffffffu) % _w,
-			  static_cast<int>(random() & 0x7fffffffu) % _h);
+	{
+		::MapGeneration::generationCheckpoint();
+		lower(dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _w),
+			  dimensionRemainder(static_cast<int>(random() & 0x7fffffffu), _h));
+	}
 	addNoise(.8, smoothingFactor);
 	normalize();
 }
@@ -318,12 +349,16 @@ void HeightMap::normalize()
 	float max = -100000.0;
 	for (unsigned int i = 0; i < _w * _h; i++)
 	{
-		min = _map[i] < min ? _map[i] : min;
-		max = _map[i] > max ? _map[i] : max;
+		::MapGeneration::generationCheckpoint();
+		min = _map.at(i) < min ? _map.at(i) : min;
+		max = _map.at(i) > max ? _map.at(i) : max;
 	}
 	min -= .01;
 	max += .01;
 	float range = max - min;
 	for (unsigned int i = 0; i < _w * _h; i++)
-		_map[i] = (_map[i] - min) / range;
+	{
+		::MapGeneration::generationCheckpoint();
+		_map.at(i) = (_map.at(i) - min) / range;
+	}
 }

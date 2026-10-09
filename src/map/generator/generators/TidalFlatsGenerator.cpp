@@ -347,7 +347,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 	for (int team = 0; team < L.g.teams; ++team)
 	{
 		const auto eligible = [&](int i)
-		{ return L.islandOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.islandOf[i] == team && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		const double a = std::atan2(double(t.offsetY(L.cy, L.pondY[team])),
 									double(t.offsetX(L.cx, L.pondX[team])));
 		const KitFrame frame{L.pondX[team], L.pondY[team], a};
@@ -363,7 +363,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 			if (eligible(i))
 			{
 				ground.push_back(i);
-				if (const std::uint32_t f = fertility.at(i % t.w, i / t.w); f > 0)
+				if (const std::uint32_t f = fertility.at(t.remainderX(i), i / t.w); f > 0)
 					farm.push_back({-double(f), i});
 			}
 		std::stable_sort(farm.begin(), farm.end());
@@ -376,7 +376,7 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 		// build on.
 		plantFields(map, t, byFertility, int(scaledCount(area * 4 / 100, o.wheat)),
 					int(scaledCount(area * 2 / 100, o.wood)),
-					[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
+					[&](int i) { return split.uiLevel(t.remainderX(i), i / t.w, 2048); });
 		scatterClumps(context, t, ground, int(scaledCount(1, o.stone)), "flats-home-stone",
 					  eligible,
 					  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, STONE, 1); });
@@ -409,20 +409,20 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 		double sx = 0, sy = 0;
 		for (int i : tiles)
 		{
-			sx += t.offsetX(start, i % t.w);
+			sx += t.offsetX(start, t.remainderX(i));
 			sy += t.offsetY(start / t.w, i / t.w);
 		}
-		const int mx = t.x(start % t.w + int(std::lround(sx / tiles.size())));
+		const int mx = t.x(t.remainderX(start) + int(std::lround(sx / tiles.size())));
 		const int my = t.y(start / t.w + int(std::lround(sy / tiles.size())));
 		const auto eligible = [&](int i)
-		{ return L.islandOf[i] == -3 && clearGround(map, i % t.w, i / t.w); };
+		{ return L.islandOf[i] == -3 && clearGround(map, t.remainderX(i), i / t.w); };
 		// The prize, on the far side of the pond from the map's centre.
 		const double a = std::atan2(double(t.offsetY(L.cy, my)), double(t.offsetX(L.cx, mx)));
 		if (const int seed = seedNear(t, mx + int(std::lround(6 * std::cos(a))),
 									  my + int(std::lround(6 * std::sin(a))), 8, eligible);
 			seed >= 0)
 		{
-			const MapGeneratorPoint centre(seed % t.w, seed / t.w);
+			const MapGeneratorPoint centre(t.remainderX(seed), seed / t.w);
 			if (L.prizeOf[start] == 0)
 			{
 				if (scaledCount(1, o.fruit) > 0)
@@ -436,13 +436,13 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 		}
 		// The oasis: every other tile of the island under wheat, unscaled, so it has to be cleared.
 		for (int i : tiles)
-			if (eligible(i) && map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
-				map.setResourceByIndex(i % t.w, i / t.w, WHEAT, 1);
+			if (eligible(i) && map.isResourceAllowed(t.remainderX(i), i / t.w, WHEAT))
+				map.setResourceByIndex(t.remainderX(i), i / t.w, WHEAT, 1);
 	}
 	if (L.g.centralRadius > 0)
 	{
 		const auto eligible = [&](int i)
-		{ return L.islandOf[i] == -2 && clearGround(map, i % t.w, i / t.w); };
+		{ return L.islandOf[i] == -2 && clearGround(map, t.remainderX(i), i / t.w); };
 		// The orchard's three groves sit a third of a turn apart, 4 tiles out from the central
 		// pond's edge, where fruit is beside water; the quarry near the island's rim.
 		const double rho = std::max(1.5, 0.22 * L.g.centralRadius) + 4;
@@ -455,7 +455,7 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 					t, L.cx + int(std::lround(rho * std::cos(a) * L.stretch.sx)),
 					L.cy + int(std::lround(rho * std::sin(a) * L.stretch.sy)), 8, eligible);
 				if (seed >= 0)
-					placeResourceClump(map, context, {seed % t.w, seed / t.w}, CHERRY + f, 2);
+					placeResourceClump(map, context, {t.remainderX(seed), seed / t.w}, CHERRY + f, 2);
 			}
 		if (scaledCount(1, o.stone) > 0)
 			if (const int seed =
@@ -466,7 +466,7 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 													std::sin(spin + kPi / 3) * L.stretch.sy)),
 							 8, eligible);
 				seed >= 0)
-				placeResourceClump(map, context, {seed % t.w, seed / t.w}, STONE, 2);
+				placeResourceClump(map, context, {t.remainderX(seed), seed / t.w}, STONE, 2);
 	}
 }
 
@@ -476,7 +476,7 @@ bool generate(Game &game, GenerationContext &context)
 	const TidalFlatsOptions o(context.request);
 	Map &map = game.map;
 	const int teams = context.request.nbTeams;
-	map.makeHomogenMap(SAND);
+	map.fillTerrain(SAND);
 	for (int i = 0; i < teams; ++i)
 		game.addTeam();
 	const Layout L = design(context.request, context);
@@ -498,14 +498,14 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = WATER;
 	}
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "flats colonies";
 	const auto island = [&](int team)
 	{
 		std::vector<unsigned char> home(n, 0);
 		for (int i = 0; i < n; ++i)
-			home[i] = L.islandOf[i] == team && map.terrainPropertiesAt(i % t.w, i / t.w).buildable;
+			home[i] = L.islandOf[i] == team && map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable;
 		return home;
 	};
 	// The swarm stands on the far side of the pond from the map's centre, a short walk from the
@@ -595,7 +595,7 @@ GeneratorDefinition tidalFlatsDefinition()
 		"tidal-flats",
 		18,
 		"Tidal flats",
-		6,
+		7,
 		false,
 		// The home islands' radius as a share of the half side; extra islands (the oases) and
 		// sandbars (the green patches) per colony, six and eight since 2026-09-14; lagoons per

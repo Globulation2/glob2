@@ -61,7 +61,9 @@ export function checkDisplayName(name: string): void {
     throw apiError('bad_request', 'Display names cannot contain control characters.');
   }
   if (utf8ByteLength(name) > MAX_PLAYER_NAME_BYTES) {
-    throw apiError('bad_request', `Display names are at most ${MAX_PLAYER_NAME_BYTES} bytes.`);
+    throw apiError('bad_request', 'Display names are at most {p0} bytes.', undefined, {
+      p0: String(MAX_PLAYER_NAME_BYTES),
+    });
   }
 }
 
@@ -182,7 +184,9 @@ export class AccountService {
         .execute();
       const removing = linked.filter((identity) => identity.provider === provider);
       if (removing.length === 0) {
-        throw apiError('not_found', `No ${provider} sign-in is linked to this account.`);
+        throw apiError('not_found', 'No {p0} sign-in is linked to this account.', undefined, {
+          p0: String(provider),
+        });
       }
       if (account.kind === 'registered' && removing.length === linked.length) {
         throw apiError(

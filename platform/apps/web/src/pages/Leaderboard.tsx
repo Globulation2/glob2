@@ -1,3 +1,4 @@
+import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { aiHref, versionLabel } from '../playerLinks.ts';
 import { useState } from 'react';
 import type { LeaderboardEntry } from '@glob2/protocol';
@@ -9,6 +10,7 @@ import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
 function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: string }) {
+  useLocale();
   return (
     <TableWrap label={caption}>
       <table className="data ladder">
@@ -16,17 +18,17 @@ function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: stri
         <thead>
           <tr>
             <th className="num" scope="col">
-              Rank
+              {t('Rank')}
             </th>
-            <th scope="col">Player</th>
+            <th scope="col">{t('Player')}</th>
             <th className="num" scope="col">
-              Rating
+              {t('Rating')}
             </th>
             <th className="num" scope="col">
-              Games
+              {t('Games')}
             </th>
             <th className="num hide-phone" scope="col">
-              Win rate
+              {t('Win rate')}
             </th>
           </tr>
         </thead>
@@ -52,11 +54,11 @@ function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: stri
                     <Link to={aiHref(e.entity.ai, versionKey(e.entity.simVersion))}>
                       {aiName(e.entity.ai)}
                     </Link>{' '}
-                    <span className="badge">AI</span>
+                    <span className="badge">{t('AI')}</span>
                     <span className="caption">{versionLabel(e.entity.simVersion)}</span>
                   </>
                 )}
-                {e.provisional && <span className="badge warn">provisional</span>}
+                {e.provisional && <span className="badge warn">{t('provisional')}</span>}
               </td>
               <td className="num rating">{rating(e.rating)}</td>
               <td className="num">{e.games}</td>
@@ -70,6 +72,7 @@ function Rows({ entries, caption }: { entries: LeaderboardEntry[]; caption: stri
 }
 
 export function Leaderboard({ queueId }: { queueId: string | undefined }) {
+  useLocale();
   const { instance } = useSession();
   const rated = instance?.queues.filter((q) => q.rated) ?? [];
   const ladder = queueId ?? rated[0]?.id;
@@ -98,15 +101,16 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
       <div className="page-head">
         <GameArt name="warFlag" size={72} className="head-art" />
         <div className="grow">
-          <h1>Leaderboard</h1>
+          <h1>{t('Leaderboard')}</h1>
           <p className="sub">
-            Players and AI opponents, ranked by their conservative rating: it rises as the game
-            becomes sure of your skill. Guests are not ranked.
+            {t(
+              'Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.',
+            )}
           </p>
         </div>
       </div>
       {rated.length > 1 && (
-        <nav className="seg" aria-label="Ladders" style={{ marginBottom: 'var(--sp-4)' }}>
+        <nav className="seg" aria-label={t('Ladders')} style={{ marginBottom: 'var(--sp-4)' }}>
           {rated.map((q) => (
             <Link
               key={q.id}
@@ -121,14 +125,14 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
         </nav>
       )}
       {!ladder ? (
-        <p className="muted">This instance has no rated queues.</p>
+        <p className="muted">{t('This instance has no rated queues.')}</p>
       ) : (
         <>
           <div className="toolbar">
-            <div className="seg" role="group" aria-label="Leaderboard participants">
+            <div className="seg" role="group" aria-label={t('Leaderboard participants')}>
               {[
-                ['all', 'All'],
-                ['humans', 'Humans'],
+                ['all', t('All')],
+                ['humans', t('Humans')],
                 ['ai', 'AI'],
               ].map(([value, label]) => (
                 <button
@@ -156,7 +160,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
                   setCursor([]);
                 }}
               />
-              Hide provisional ratings
+              {t('Hide provisional ratings')}
             </label>
           </div>
           <Loaded load={load}>
@@ -164,9 +168,11 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
               !page || page.entries.length === 0 ? (
                 <div className="ladder-empty">
                   <GameArt name="warFlag" size={40} />
-                  <p>No rated players in this view yet. Play a ranked match to start climbing.</p>
+                  <p>
+                    {t('No rated players in this view yet. Play a ranked match to start climbing.')}
+                  </p>
                   <a className="btn small" href="/play/">
-                    Play in browser
+                    {t('Play in browser')}
                   </a>
                 </div>
               ) : (
@@ -175,7 +181,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
                   <div className="pager">
                     {cursor.length > 0 && (
                       <button className="small" onClick={() => setCursor(cursor.slice(0, -1))}>
-                        Previous
+                        {t('Previous')}
                       </button>
                     )}
                     {page.nextCursor && (
@@ -183,7 +189,7 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
                         className="small"
                         onClick={() => setCursor([...cursor, page.nextCursor ?? ''])}
                       >
-                        Next
+                        {t('Next')}
                       </button>
                     )}
                   </div>
@@ -192,8 +198,10 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
             }
           </Loaded>
           <p className="caption">
-            AI ratings belong to a game version.{' '}
-            <Link to="/players">Explore player and AI profiles</Link> to see older versions.
+            <RichMessage
+              source={'AI ratings belong to a game version. {slot0} to see older versions.'}
+              slots={{ slot0: <Link to="/players">{t('Explore player and AI profiles')}</Link> }}
+            />
           </p>
         </>
       )}

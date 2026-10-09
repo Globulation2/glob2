@@ -9,6 +9,7 @@
 #include "Glob2Test.h"
 
 #include <vector>
+#include <algorithm>
 #include "OverlayFill.h"
 
 class OverlayFillTest
@@ -82,4 +83,27 @@ TEST_SUITE("OverlayFill")
 	TEST_CASE_FIXTURE(OverlayFillTest, "SpreadWeightsByValue") { testSpreadWeightsByValue(); }
 	TEST_CASE_FIXTURE(OverlayFillTest, "SpreadValueOneMatchesUnitBumpShape") { testSpreadValueOneMatchesUnitBumpShape(); }
 	TEST_CASE_FIXTURE(OverlayFillTest, "SpreadNoUint16Overflow") { testSpreadNoUint16Overflow(); }
+    TEST_CASE("large wrapped kernels yield and match an independent radial sum")
+    {
+        constexpr int radius=65, width=16, height=8, power=7;
+        std::vector<Uint32> expected(width*height), actual(width*height);
+        for (int dx=-radius;dx<=radius;++dx) for (int dy=-radius;dy<=radius;++dy) {
+            const int squared=dx*dx+dy*dy;
+            if (squared>radius*radius) continue;
+            const int x=(dx%width+width)%width, y=(dy%height+height)%height;
+            expected[x*height+y]+=power*(radius-squared/radius);
+        }
+        Uint32 maximum=0;size_t cursor=0, claims=0;
+        bool complete=false;
+        while (!complete) {
+            const auto previous=cursor;
+            complete=OverlayFill::spreadPointChunk(0,0,power,radius,width,height,actual,maximum,cursor,97);
+            CHECK(cursor-previous<=97);
+            REQUIRE(++claims<1000);
+        }
+        CHECK(claims>100);
+        CHECK(actual==expected);
+        CHECK(maximum==*std::max_element(expected.begin(),expected.end()));
+    }
+
 }

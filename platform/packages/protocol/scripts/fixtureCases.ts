@@ -731,6 +731,57 @@ const AI_INFO = {
 
 export const fixtureCases: FixtureCase[] = [
   {
+    schema: 'GeneratorStudioCreate',
+    name: 'starter',
+    valid: true,
+    note: 'Create a generator Studio project with its working starter.',
+    value: { title: 'My landscape' },
+  },
+  {
+    schema: 'GeneratorStudioSave',
+    name: 'incomplete-manifest',
+    valid: true,
+    note: 'Both editable files persist atomically, including incomplete manifest JSON.',
+    value: { expectedRevision: 1, source: JSON.stringify({ manifest: '{', script: '' }) },
+  },
+  {
+    schema: 'GeneratorStudioCommand',
+    name: 'bounded-edit',
+    valid: true,
+    note: 'A revision-checked coding request reserves no more than its cap.',
+    value: { id: JOB_ID, expectedRevision: 1, text: 'Add a river', budget: 100 },
+  },
+  {
+    schema: 'GeneratorStudioRun',
+    name: 'seeded-preview',
+    valid: true,
+    note: 'Freeze one exact seed and settings for a local preview.',
+    value: {
+      id: JOB_ID,
+      expectedRevision: 1,
+      settings: {
+        seed: 19,
+        params: { width: 7, height: 7, teams: 4, workers: 4 },
+        candidates: 1,
+        startingUnitLevel: 0,
+      },
+    },
+  },
+  {
+    schema: 'GeneratorStudioRun',
+    name: 'no-inline-package',
+    valid: false,
+    stage: 'schema',
+    note: 'Runs select a stored revision; clients cannot replace its package.',
+    value: {
+      id: JOB_ID,
+      expectedRevision: 1,
+      source: '{}',
+      settings: { seed: 19, params: {}, candidates: 1, startingUnitLevel: 0 },
+    },
+  },
+
+  {
     schema: 'AiStudioCreate',
     name: 'starter',
     valid: true,
@@ -794,6 +845,42 @@ export const fixtureCases: FixtureCase[] = [
     valid: true,
     note: 'A private staging receipt binds compatibility checks to exact source bytes.',
     value: { id: JOB_ID, sourceHash: HASH_A, status: 'valid', report: AI_REPORT, expiresAt: NOW },
+  },
+  {
+    schema: 'ValidateSetPayload',
+    name: 'exact-package',
+    valid: true,
+    note: 'Validate exactly these immutable package bytes.',
+    value: { blobHash: HASH_A, suite: 1 },
+  },
+  {
+    schema: 'ValidateSetResult',
+    name: 'checked-release',
+    valid: true,
+    note: 'Engine validation binds artwork and properties to the package hash.',
+    value: {
+      hash: HASH_A,
+      suite: 1,
+      valid: true,
+      minVersionMinor: 144,
+      terrainCount: 2,
+      resourceCount: 1,
+    },
+  },
+  {
+    schema: 'PublishSetRequest',
+    name: 'public-release',
+    valid: true,
+    note: 'Publication requires a checked draft revision.',
+    value: { revision: 2, visibility: 'public', label: '1.0', notes: '' },
+  },
+  {
+    schema: 'PublishSetRequest',
+    name: 'unsaved-draft',
+    valid: false,
+    stage: 'schema',
+    note: 'An unsaved revision cannot be published.',
+    value: { revision: 0, visibility: 'public', label: '1.0', notes: '' },
   },
   {
     schema: 'AiValidationReport',
@@ -1045,6 +1132,33 @@ export const fixtureCases: FixtureCase[] = [
     stage: 'schema' as const,
     note: 'AI order delay must be an integer from zero through eight.',
     value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, aiOrderDelay: delay } },
+  })),
+  {
+    schema: 'MatchSetup',
+    name: 'building-gradient-delay-two',
+    valid: true,
+    note: 'A two-tick building gradient delay instead of the default eight.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, buildingGradientDelay: 2 } },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'building-gradient-delay-omitted',
+    valid: true,
+    note: 'Setup documents may omit the building gradient delay; the engine uses eight ticks.',
+    value: {
+      ...SETUP_CATALOG_1V1,
+      rules: Object.fromEntries(
+        Object.entries(STANDARD_RULES).filter(([key]) => key !== 'buildingGradientDelay'),
+      ),
+    },
+  },
+  ...[0, 9, 1.5].map((delay) => ({
+    schema: 'MatchSetup' as const,
+    name: `building-gradient-delay-${delay === 0 ? 'zero' : delay === 9 ? 'too-large' : 'fractional'}`,
+    valid: false,
+    stage: 'schema' as const,
+    note: 'Building gradient delay must be an integer from one through eight.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, buildingGradientDelay: delay } },
   })),
   {
     schema: 'MatchSetup',
@@ -2819,6 +2933,100 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
   {
+    schema: 'TerrainStudioCreate',
+    name: 'new-project',
+    valid: true,
+    note: 'Create an idempotent terrain project.',
+    value: { id: JOB_ID, title: 'Fungal swamp' },
+  },
+  {
+    schema: 'TerrainStudioTurn',
+    name: 'focused-revision',
+    valid: true,
+    note: 'A turn freezes the base revision and selected references.',
+    value: {
+      id: JOB_ID,
+      text: 'Make only the marsh faster.',
+      expectedRevision: 2,
+      references: ['a'.repeat(64)],
+    },
+  },
+  {
+    schema: 'TerrainStudioTurn',
+    name: 'no-client-build-decision',
+    valid: false,
+    stage: 'schema',
+    note: 'The server selects discussion or one build.',
+    value: {
+      id: JOB_ID,
+      text: 'Create marsh.',
+      expectedRevision: 0,
+      references: [],
+      action: 'build',
+    },
+  },
+  {
+    schema: 'TerrainStudioAdopt',
+    name: 'current-revision',
+    valid: true,
+    note: 'Adoption explicitly replaces current draft content.',
+    value: { expectedRevision: 3 },
+  },
+  {
+    schema: 'TerrainStudioConfig',
+    name: 'disabled',
+    valid: true,
+    note: 'Terrain generation is opt-in.',
+    value: { enabled: false, salesEnabled: false },
+  },
+  {
+    schema: 'BuildingAiStudioCreate',
+    name: 'new-project',
+    valid: true,
+    note: 'Create an idempotent building project.',
+    value: { id: JOB_ID, title: 'Mushroom hospital' },
+  },
+  {
+    schema: 'BuildingAiStudioTurn',
+    name: 'focused-revision',
+    valid: true,
+    note: 'A turn freezes the base revision and selected references.',
+    value: {
+      id: JOB_ID,
+      text: 'Make only the hospital cheaper.',
+      expectedRevision: JOB_ID,
+      references: ['a'.repeat(64)],
+    },
+  },
+  {
+    schema: 'BuildingAiStudioTurn',
+    name: 'no-client-build-decision',
+    valid: false,
+    stage: 'schema',
+    note: 'The server selects discussion or one build.',
+    value: {
+      id: JOB_ID,
+      text: 'Create marsh.',
+      expectedRevision: JOB_ID,
+      references: [],
+      action: 'build',
+    },
+  },
+  {
+    schema: 'BuildingAiStudioAdopt',
+    name: 'current-revision',
+    valid: true,
+    note: 'Adoption explicitly replaces current draft content.',
+    value: { expectedRevision: JOB_ID },
+  },
+  {
+    schema: 'BuildingAiStudioConfig',
+    name: 'disabled',
+    valid: true,
+    note: 'Terrain generation is opt-in.',
+    value: { enabled: false, salesEnabled: false },
+  },
+  {
     schema: 'MusicStudioGenerate',
     name: 'acoustic-revision',
     valid: true,
@@ -2880,3 +3088,201 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
 ];
+
+const BUILDING_PACKAGE_FIXTURE = {
+  schemaVersion: 1,
+  namespace: '11111111-1111-4111-8111-111111111111',
+  experiments: [],
+  sprites: [],
+  variants: [
+    {
+      key: 'b-11111111-1111-4111-8111-111111111111-kitchen',
+      properties: { width: 2, height: 2, gameSprite: 'data/gfx/inn0b' },
+      semantics: { placeable: true, instantPlacement: true },
+    },
+  ],
+};
+fixtureCases.push(
+  {
+    schema: 'UpdateBuildingFamilyRequest',
+    name: 'withdraw-from-public-listing',
+    valid: true,
+    note: 'Visibility can change independently of release validation.',
+    value: { visibility: 'private' },
+  },
+  {
+    schema: 'UpdateBuildingFamilyRequest',
+    name: 'empty-update',
+    valid: false,
+    stage: 'schema',
+    note: 'A metadata update changes at least one field.',
+    value: {},
+  },
+  {
+    schema: 'UpdateBuildingFamilyRequest',
+    name: 'cannot-clear-moderation',
+    valid: false,
+    stage: 'schema',
+    note: 'Authors cannot change moderation state.',
+    value: { hidden: false },
+  },
+  {
+    schema: 'PublishBuildingRequest',
+    name: 'saved-family',
+    valid: true,
+    note: 'Publish the saved immutable package.',
+    value: { revision: ACCOUNT_1, description: 'A shared family', visibility: 'public' },
+  },
+  {
+    schema: 'PublishBuildingRequest',
+    name: 'bad-visibility',
+    valid: false,
+    stage: 'schema',
+    note: 'Only catalog visibility choices are accepted.',
+    value: { revision: ACCOUNT_1, description: '', visibility: 'everyone' },
+  },
+  {
+    schema: 'BuildingPackage',
+    name: 'field-kitchen',
+    valid: true,
+    note: 'An additive building family using installed artwork.',
+    value: BUILDING_PACKAGE_FIXTURE,
+  },
+  {
+    schema: 'BuildingPackage',
+    name: 'stock-override',
+    valid: false,
+    stage: 'semantic',
+    note: 'Packages cannot override stock keys.',
+    value: {
+      ...BUILDING_PACKAGE_FIXTURE,
+      variants: [{ ...BUILDING_PACKAGE_FIXTURE.variants[0], key: 'inn.0.finished' }],
+    },
+  },
+  {
+    schema: 'BuildingPackage',
+    name: 'runtime-id',
+    valid: false,
+    stage: 'schema',
+    note: 'Runtime IDs belong to resolved catalogs, not authored packages.',
+    value: {
+      ...BUILDING_PACKAGE_FIXTURE,
+      variants: [{ ...BUILDING_PACKAGE_FIXTURE.variants[0], id: 0 }],
+    },
+  },
+);
+
+fixtureCases.push(
+  {
+    schema: 'SaveBuildingDraftRequest',
+    name: 'family-draft',
+    valid: true,
+    note: 'A revision-bound family draft save.',
+    value: {
+      revision: '22222222-2222-4222-8222-222222222222',
+      name: 'Field kitchen',
+      package: BUILDING_PACKAGE_FIXTURE,
+    },
+  },
+  {
+    schema: 'SaveBuildingDraftRequest',
+    name: 'missing-revision',
+    valid: false,
+    stage: 'schema',
+    note: 'Draft saves must bind a revision.',
+    value: { name: 'Field kitchen', package: BUILDING_PACKAGE_FIXTURE },
+  },
+  {
+    schema: 'SaveBuildingDraftRequest',
+    name: 'stock-override',
+    valid: false,
+    stage: 'semantic',
+    note: 'Draft manifests cannot override stock building keys.',
+    value: {
+      revision: '22222222-2222-4222-8222-222222222222',
+      name: 'Field kitchen',
+      package: {
+        ...BUILDING_PACKAGE_FIXTURE,
+        variants: [{ ...BUILDING_PACKAGE_FIXTURE.variants[0], key: 'inn.0.finished' }],
+      },
+    },
+  },
+);
+
+const SHARED_GENERATOR = {
+  libraryId: '11111111-1111-4111-8111-111111111111',
+  versionId: '22222222-2222-4222-8222-222222222222',
+  packageHash: 'ab'.repeat(32),
+  fileHash: 'cd'.repeat(32),
+  generatorId: 'author:river',
+  revision: 1,
+  seed: 19,
+  params: { width: 7, height: 7, teams: 4, workers: 4 },
+  candidates: 1,
+  startingUnitLevel: 0,
+};
+fixtureCases.push(
+  {
+    schema: 'ScriptGeneratorDescriptor',
+    name: 'exact-release',
+    valid: true,
+    note: 'Pin the release, canonical package and downloadable bytes.',
+    value: SHARED_GENERATOR,
+  },
+  {
+    schema: 'ScriptGeneratorDescriptor',
+    name: 'native-id',
+    valid: false,
+    stage: 'schema',
+    note: 'Shared packages require namespaced IDs.',
+    value: { ...SHARED_GENERATOR, generatorId: 'river' },
+  },
+  {
+    schema: 'RoomMapSelection',
+    name: 'scripted-pending',
+    valid: true,
+    note: 'Room generation waits on an exact release.',
+    value: { kind: 'scripted', generator: SHARED_GENERATOR },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'scripted-world',
+    valid: true,
+    note: 'All players load an ordinary world generated by this exact package.',
+    value: {
+      ...SETUP_GENERATED_FFA,
+      map: { kind: 'scripted', generator: SHARED_GENERATOR, hash: 'ef'.repeat(32), chosenSeed: 19 },
+    },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'scripted-team-count',
+    valid: false,
+    stage: 'semantic',
+    note: 'Scripted maps retain the generator team count contract.',
+    value: {
+      ...SETUP_GENERATED_FFA,
+      map: {
+        kind: 'scripted',
+        generator: { ...SHARED_GENERATOR, params: { ...SHARED_GENERATOR.params, teams: 3 } },
+        hash: 'ef'.repeat(32),
+      },
+    },
+  },
+  {
+    schema: 'ValidateGeneratorPayload',
+    name: 'bounded-example',
+    valid: true,
+    note: 'The engine parses source and tests the author example.',
+    value: {
+      blobHash: 'ab'.repeat(32),
+      suite: 1,
+      example: {
+        seed: 19,
+        params: { width: 7, height: 7, teams: 4, workers: 4 },
+        candidates: 1,
+        startingUnitLevel: 0,
+      },
+    },
+  },
+);

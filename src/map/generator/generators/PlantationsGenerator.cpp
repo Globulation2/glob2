@@ -76,7 +76,7 @@ using namespace MapGeneration;
 namespace
 {
 
-// THE PLOT. Its ring is one undermap vertex of sand (kPlotRing, as Canals' pads): a tile takes its
+// THE PLOT. Its ring is one terrain vertex of sand (kPlotRing, as Canals' pads): a tile takes its
 // terrain from its four corners, so the ring spoils the two tiles either side of it (kRingBand) for
 // crops and buildings alike, a walkable band round every plot where workers wait and units pass, while
 // a single sand vertex is already enough to stop the crops, which spread only onto pure grass
@@ -446,8 +446,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			const int s = L.cell[i];
 			int &b = best[s];
 			if (b < 0 || room[i] > room[b] ||
-				(room[i] == room[b] && t.dist2(i % t.w, i / t.w, L.sites[s].x, L.sites[s].y) <
-										   t.dist2(b % t.w, b / t.w, L.sites[s].x, L.sites[s].y)))
+				(room[i] == room[b] && t.dist2(t.remainderX(i), i / t.w, L.sites[s].x, L.sites[s].y) <
+										   t.dist2(t.remainderX(b), b / t.w, L.sites[s].x, L.sites[s].y)))
 				b = i;
 		}
 		for (int s = 0; s < cells; ++s)
@@ -457,7 +457,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			island.room = hasLand[s] ? room[best[s]] : 0;
 			hasPlot[s] = island.room >= leastRoom;
 			full[s] = hasPlot[s] && island.room >= fullRoom;
-			island.plotX = hasPlot[s] ? t.x(best[s] % t.w - L.plotSize / 2) : -1;
+			island.plotX = hasPlot[s] ? t.x(t.remainderX(best[s]) - L.plotSize / 2) : -1;
 			island.plotY = hasPlot[s] ? t.y(best[s] / t.w - L.plotSize / 2) : -1;
 		}
 	};
@@ -736,8 +736,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				if (g >= home.laneEnd.size() || outer.laneEnd.empty())
 					continue;
 				const int a = home.laneEnd[g], b = outer.laneEnd[0];
-				const ShapePoint from{double(a % t.w), double(a / t.w)};
-				const ShapePoint to{from.x + t.offsetX(a % t.w, b % t.w),
+				const ShapePoint from{double(t.remainderX(a)), double(a / t.w)};
+				const ShapePoint to{from.x + t.offsetX(t.remainderX(a), t.remainderX(b)),
 									from.y + t.offsetY(a / t.w, b / t.w)};
 				causeways += bridgeAcross(L.sketch, t, from, to, kCausewayHalfWidth) > 0;
 			}
@@ -764,7 +764,7 @@ bool generate(Game &game, GenerationContext &context)
 		game.addTeam();
 
 	context.stage = "plantations terrain";
-	writeUndermap(map, L.sketch);
+	writeVertices(map, L.sketch);
 
 	// THE GRANTED BUILDINGS, before the colonies. Every island a colony holds - its home and each
 	// granted island - carries a swarm and a completed swimming pool packed side by side along the
@@ -852,7 +852,7 @@ bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> ground = dilate(t, plotGrass(home), kRingBand);
 		for (int i = 0; i < n; ++i)
 			ground[i] =
-				ground[i] && L.cell[i] == L.homeCell[team] && map.terrainPropertiesAt(i % t.w, i / t.w).walkable;
+				ground[i] && L.cell[i] == L.homeCell[team] && map.terrainPropertiesAt(t.remainderX(i), i / t.w).walkable;
 		return ground;
 	};
 	const auto anchor = [&](int team)
@@ -894,7 +894,7 @@ bool generate(Game &game, GenerationContext &context)
 		const bool plantation = island.kind == Mixed || island.kind == Wheat ||
 								island.kind == Wood || island.kind == Field;
 		if (!plantation || !L.land[i] || L.plots.plot[i] || reserved[i] ||
-			!clearGround(map, i % t.w, i / t.w))
+			!clearGround(map, t.remainderX(i), i / t.w))
 			continue;
 		const bool wheat = island.kind == Wheat ||
 						   ((island.kind == Mixed || island.kind == Field) && split[i] >= 32768);
@@ -925,7 +925,7 @@ bool generate(Game &game, GenerationContext &context)
 		if (island.kind != Rock && island.kind != Orchard)
 			continue;
 		const auto onIslet = [&](int i)
-		{ return L.cell[i] == int(s) && L.land[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.cell[i] == int(s) && L.land[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		std::vector<unsigned char> islet(size_t(n), 0);
 		for (int i = 0; i < n; ++i)
 			islet[i] = onIslet(i);
@@ -936,7 +936,7 @@ bool generate(Game &game, GenerationContext &context)
 									   int(s));
 			continue;
 		}
-		const int mx = middle % t.w, my = middle / t.w;
+		const int mx = t.remainderX(middle), my = middle / t.w;
 		if (island.kind == Rock)
 			rocksStocked +=
 				placeResourceClump(map, context, MapGeneratorPoint(mx, my), STONE, kRockRadius) > 0;
@@ -973,8 +973,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const int n = t.size(), teams = context.request.nbTeams;
 	// Every plot is buildable ground: pure grass with no deposit on any of its tiles.
 	for (int i = 0; i < n; ++i)
-		if (L.plots.plot[i] && (!map.terrainPropertiesAt(i % t.w, i / t.w).buildable || map.isResource(i % t.w, i / t.w)))
-			return "A plot is not clear grass at (" + std::to_string(i % t.w) + ", " +
+		if (L.plots.plot[i] && (!map.terrainPropertiesAt(t.remainderX(i), i / t.w).buildable || map.isResource(t.remainderX(i), i / t.w)))
+			return "A plot is not clear grass at (" + std::to_string(t.remainderX(i)) + ", " +
 				   std::to_string(i / t.w) + ").";
 	// Every plantation carries wheat and wood and nothing else.
 	for (int i = 0; i < n; ++i)
@@ -982,12 +982,12 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		const int kind = L.islands[L.cell[i]].kind;
 		if (!L.land[i] || (kind != Mixed && kind != Wheat && kind != Wood && kind != Field))
 			continue;
-		if (map.isResource(i % t.w, i / t.w))
+		if (map.isResource(t.remainderX(i), i / t.w))
 		{
-			const int type = map.getResource(i % t.w, i / t.w).type;
+			const int type = map.getResource(t.remainderX(i), i / t.w).type;
 			if (type != WHEAT && type != WOOD)
 				return "A plantation carries a deposit that is neither wheat nor wood at (" +
-					   std::to_string(i % t.w) + ", " + std::to_string(i / t.w) + ").";
+					   std::to_string(t.remainderX(i)) + ", " + std::to_string(i / t.w) + ").";
 		}
 	}
 	// Every colony kept the pools it was granted: one on its home and one per granted island.
@@ -1044,7 +1044,7 @@ GeneratorDefinition plantationsDefinition()
 		"plantations",
 		48,
 		"Plantations",
-		3,
+		4,
 		false,
 		// A plot of 10 seats a swarm beside a pool with room for its level-1 upgrade and four rows
 		// left (10 is the least that seats both, 8 until 2026-09-16); 4 tiles of crops round it keep an island small enough to swim round and fertile to

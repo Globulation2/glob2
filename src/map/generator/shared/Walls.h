@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationWork.h"
 #include "Grid.h"
 #include <array>
 #include <climits>
@@ -16,8 +17,8 @@ namespace MapGeneration
 // diagonally, and the walks and tower ranges that a validator checks the result against.
 
 /// The land a unit landing from the sea can reach without crossing solid grass: every land tile
-/// with a `sea` undermap vertex in the box its four corners touch, and every beach (land that is
-/// not pure grass) joined to one. `sea` marks undermap vertices, so a generator decides which
+/// with a `sea` terrain vertex in the box its four corners touch, and every beach (land that is
+/// not pure grass) joined to one. `sea` marks terrain vertices, so a generator decides which
 /// water is sea and which (a home's lake) is not. `notBeach` marks sand that must not carry the
 /// margin inland, such as a sand road.
 std::vector<unsigned char> seaMargin(const Map &, const Torus &,
@@ -76,22 +77,30 @@ std::vector<unsigned char> labelBorders(const Torus &t, const std::vector<int> &
 {
 	std::vector<unsigned char> wall(t.size(), 0);
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = y * t.w + x;
-			if (labels[i] < 0)
+			if (labels.at(i) < 0)
 				continue;
-			for (int dy = -1; dy <= 1 && !wall[i]; ++dy)
+			for (int dy = -1; dy <= 1 && !wall.at(i); ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					const int j = t.at(x + dx, y + dy);
-					if (labels[j] >= 0 && labels[j] < labels[i] && !open(i, j))
+					if (labels.at(j) >= 0 && labels.at(j) < labels.at(i) && !open(i, j))
 					{
-						wall[i] = 1;
+						wall.at(i) = 1;
 						break;
 					}
 				}
+			}
 		}
+	}
 	return wall;
 }
 
@@ -148,7 +157,7 @@ GatePartitionCheck checkGatePartition(const Torus &, const std::vector<unsigned 
 /// is not stone, crops and buildings counted as the ground they will leave (only water, stone and
 /// the shut tiles part two colonies for good): {-1, -1} when every colony keeps to itself. The
 /// check for a map whose causeways, bridges or gates are meant to be the only ways between
-/// colonies: shut them and nobody should reach anybody. A shut sand line is undermap corners, so
+/// colonies: shut them and nobody should reach anybody. A shut sand line is terrain vertices, so
 /// pass the tiles it makes walkable (Sketch.h's roadTiles), not the corners alone.
 std::array<int, 2> colonyLeak(const Map &, const Torus &, int teams,
 							  const std::vector<unsigned char> &shut);
@@ -196,22 +205,30 @@ RegionLeak firstRegionLeak(const Torus &t, const std::vector<unsigned char> &rea
 						   const std::vector<int> &labels, Allowed allowed)
 {
 	for (int y = 0; y < t.h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < t.w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = y * t.w + x;
-			if (!reached[i] || labels[i] < 0)
+			if (!reached.at(i) || labels.at(i) < 0)
 				continue;
 			for (int dy = 0; dy <= 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
+					::MapGeneration::generationCheckpoint();
 					if (dy == 0 && dx <= 0)
 						continue;
 					const int j = t.at(x + dx, y + dy);
-					if (reached[j] && labels[j] >= 0 && labels[j] != labels[i] &&
-						!allowed(labels[i], labels[j]))
+					if (reached.at(j) && labels.at(j) >= 0 && labels.at(j) != labels.at(i) &&
+						!allowed(labels.at(i), labels.at(j)))
 						return {i, j};
 				}
+			}
 		}
+	}
 	return {};
 }
 

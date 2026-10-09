@@ -100,7 +100,7 @@ namespace
 		{
             // Unit binaries do not initialize Toolkit or an installed asset search path.
             resourceRegistryValue = ResourceRegistry::loadFile((glob2test::sourceRoot() / "data/resources/registry.json").string());
-            rebuildResourceHabitats();
+            rebuildTerrainCounts();
 			wDec = hDec = kMapDec;
 			w = h = 1 << kMapDec;
 			wMask = hMask = w - 1;
@@ -110,15 +110,15 @@ namespace
 			for (auto &cell : resourceCells) cell.mayGrow = 1;
 			occupancyCells.assign(size, {});
 			areaCells.assign(size, {});
-			legacyTerrain.assign(size, 0);
 			scriptAreaCells.assign(size, 0);
+			vertexTerrain.assign(size, GRASS);
 			bindBootstrappedArrays();
-			importLegacyTerrain();
+			rebuildTerrainCounts();
 		}
 		~TinyMap() { w = h = wMask = hMask = wDec = hDec = 0; size = 0; }
 
-		void makeWater(int x, int y) { setCellTerrain(x,y,WATER); }
-		void makeSand(int x, int y) { setCellTerrain(x,y,SAND); }
+		void makeWater(int x, int y) { paintCell(x,y,WATER); }
+		void makeSand(int x, int y) { paintCell(x,y,SAND); }
 		void putResource(int x, int y, int type)
 		{
 			replaceResource(x, y, Resource{static_cast<Uint8>(type), 0, 1, 0});
@@ -235,22 +235,25 @@ void FertilityFieldTest::testForMapZeroesNonGrass()
 	map.makeSand(6, 6);
 	map.putResource(10, 10, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
-	CHECK_EQ(std::uint32_t(0), field.at(4, 4));
+	// Fish make open water food habitat; sand never is.
+	CHECK(field.at(4, 4) > 0u);
 	CHECK_EQ(std::uint32_t(0), field.at(6, 6));
 	CHECK(field.at(5, 4) > 0u);
 }
 
 void FertilityFieldTest::testForMapZeroesGrassNoDepositReaches()
 {
-	// An island of grass ringed by water, with the only deposit outside the ring.
+	// An island of grass ringed by sand, with the only deposit outside the ring.
 	TinyMap map;
 	for (int d = -2; d <= 2; ++d)
 	{
-		map.makeWater(14 + d, 14 - 2);
-		map.makeWater(14 + d, 14 + 2);
-		map.makeWater(14 - 2, 14 + d);
-		map.makeWater(14 + 2, 14 + d);
+		map.makeSand(14 + d, 14 - 2);
+		map.makeSand(14 + d, 14 + 2);
+		map.makeSand(14 - 2, 14 + d);
+		map.makeSand(14 + 2, 14 + d);
 	}
+	// Water outside the ring keeps the deposit's own field fertile.
+	map.makeWater(27, 25);
 	map.putResource(25, 25, WHEAT);
 	const Fertility::Field field = Fertility::forMap(map);
 	CHECK_EQ(std::uint32_t(0), field.at(14, 14));
@@ -317,12 +320,13 @@ TEST_CASE("cached ecology changes after canonical terrain mutation")
     TinyMap map;
     const auto initial=map.resourceGrowthField().landField().at(8,8);
     CHECK(initial==0);
-    map.makeWater(9,8);
+    // Cell (10,8) shares no vertex with (8,8), so repainting (8,8) keeps the water.
+    map.makeWater(10,8);
     const auto watered=map.resourceGrowthField().landField().at(8,8);
     CHECK(watered>initial);
-    map.setCellTerrain(8,8,TRAIL);
+    map.paintCell(8,8,TRAIL);
     CHECK(map.resourceGrowthRateAt(map.coordToIndex(8,8),WHEAT)==0);
-    map.setCellTerrain(8,8,GRASS);
+    map.paintCell(8,8,GRASS);
     CHECK(map.resourceGrowthRateAt(map.coordToIndex(8,8),WHEAT)>0);
 }
 
@@ -330,14 +334,17 @@ TEST_CASE("habitat and movement edits reuse exact ecology fields")
 {
     TinyMap map;
     map.makeWater(9,8);
-    const auto index=map.coordToIndex(8,8);
+    // Two cells away, so this cell's corners never touch the water's.
+    const auto index=map.coordToIndex(7,8);
     const auto& cache=map.resourceGrowthField();
     const auto land=cache.landField().values(), aquatic=cache.aquaticField();
     const auto wheat=map.resourceGrowthRateAt(index,WHEAT);
     REQUIRE(wheat>0);
-    for(const auto type : {TRAIL,ICE,GRASS_SAND_SHORE,GRASS})
+    // A lone sand vertex makes the four cells around it shore, without sand's inhibition.
+    for(const auto type : {TRAIL,ICE,SAND,GRASS})
     {
-        map.setCellTerrain(index,type);
+        if (type==SAND) { map.paintCell(index,GRASS); map.setVertexTerrain(7,8,SAND); }
+        else map.paintCell(index,type);
         // This also checks validity after each edit's terrain-generation bump.
         REQUIRE(cache.validFor(map));
         CHECK(map.resourceGrowthField().landField().values()==land);

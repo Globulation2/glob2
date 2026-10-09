@@ -119,8 +119,9 @@ struct RelayFixture
 	RecordingOutput out;
 	std::uint64_t now = 1000000;
 	TurnSequencer relay;
+	// These injected-clock cases also exercise negotiated legacy 25 TPS timing.
 	explicit RelayFixture(std::uint32_t mask = 0b111, SequencerConfig config = {})
-		: relay(config, mask, ticketSeat, out, 1000000) {}
+		: relay([&] { config.tickRateMilliHz = 25000; return config; }(), mask, ticketSeat, out, 1000000) {}
 
 	void at(std::uint64_t micros)
 	{
@@ -152,6 +153,29 @@ struct RelayFixture
 	}
 	void raw(PeerId peer, const NetMessage& m) { relay.onReceive(peer, TurnCodec::encode(m), now); }
 };
+}
+
+TEST_SUITE("TurnSequencer")
+{
+TEST_CASE("turn defaults use 30 TPS and retain fractional tick periods")
+{
+    CHECK(DEFAULT_TICK_RATE_MILLIHZ == 30000);
+    CHECK(ticksToMicros(30, DEFAULT_TICK_RATE_MILLIHZ) == SECOND);
+    RecordingOutput out;
+    TurnSequencer relay({}, 1, ticketSeat, out, SECOND);
+    relay.onConnect(1, SECOND);
+    Hello hello;
+    hello.ticket = "seat:0";
+    relay.onReceive(1, TurnCodec::encode(hello), SECOND);
+    const auto welcome = out.take<Welcome>(1, MSG_WELCOME);
+    REQUIRE(welcome.size() == 1);
+    CHECK(welcome[0]->tickRateMilliHz == 30000);
+    relay.update(2 * SECOND - 1);
+    // Tick one is emitted at match start, before the first full period.
+    CHECK(relay.horizon() == 30);
+    relay.update(2 * SECOND);
+    CHECK(relay.horizon() == 31);
+}
 }
 
 TEST_SUITE("TurnMessages")

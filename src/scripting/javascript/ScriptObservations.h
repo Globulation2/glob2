@@ -25,8 +25,9 @@ class Observations
 	struct RememberedTile
 	{
 		unsigned tick = 0;
-		unsigned short terrain = 0, fertility = 0;
-		TerrainType terrainType = GRASS;
+		unsigned short fertility = 0;
+		// Corner terrains: top-left, top-right, bottom-left, bottom-right.
+		std::array<TerrainType, 4> corners{GRASS, GRASS, GRASS, GRASS};
 		unsigned short type = 65535;
 		unsigned char variety = 0;
 		unsigned amount = 0;
@@ -65,8 +66,8 @@ class Observations
 	struct Cell
 	{
 		unsigned tick = 0;
-		unsigned short terrain = 0, fertility = 0;
-		TerrainType terrainType = GRASS;
+		unsigned short fertility = 0;
+		std::array<TerrainType, 4> corners{GRASS, GRASS, GRASS, GRASS};
 		unsigned short resource = 65535;
 		unsigned amount = 0;
 		bool known = false, visible = false, forbidden = false, building = false;

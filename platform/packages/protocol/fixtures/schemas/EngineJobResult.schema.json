@@ -22,7 +22,23 @@
           "anyOf": [
             {
               "type": "string",
+              "const": "validate-generator"
+            },
+            {
+              "type": "string",
+              "const": "generate-script-map"
+            },
+            {
+              "type": "string",
+              "const": "validate-buildings"
+            },
+            {
+              "type": "string",
               "const": "validate-ai"
+            },
+            {
+              "type": "string",
+              "const": "validate-set"
             },
             {
               "type": "string",
@@ -79,7 +95,23 @@
           "anyOf": [
             {
               "type": "string",
+              "const": "validate-generator"
+            },
+            {
+              "type": "string",
+              "const": "generate-script-map"
+            },
+            {
+              "type": "string",
+              "const": "validate-buildings"
+            },
+            {
+              "type": "string",
               "const": "validate-ai"
+            },
+            {
+              "type": "string",
+              "const": "validate-set"
             },
             {
               "type": "string",
@@ -166,7 +198,26 @@
               "type": "string",
               "maxLength": 2000
             },
-            "details": {}
+            "details": {},
+            "messageKey": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "messageParams": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "description": "Error payload: REST error responses and failed realtime responses."
         },

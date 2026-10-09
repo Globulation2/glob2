@@ -41,6 +41,19 @@ tools/artwork/export_material.py are AI-generated images disclosed as such in
 datasrc/gfx/<name>/provenance.json, with the prompt and reference hashes. See
 [terrain materials](terrain-materials.md#material-production).
 
+Foundation deposit sprites (data/gfx/resource-gold-ore0.png, resource-iron-ore0.png,
+resource-silica0.png, resource-cotton0.png and their HD frames):
+Original procedural painting by tools/artwork/paint_resources.py (faceted height
+fields, noise and palette ramps; no pixels derived from other artwork),
+GPL-3.0-or-later like the rest of the project.
+
+Landscape resource sprites (data/gfx/resource-<key><frame>.png for jungle-trees,
+pine-trees, dead-trees, ruins, camp-site, ancient-debris, scrub, tall-grass,
+maize, potatoes, rice and fish, and their HD frames):
+Original procedural painting by tools/artwork/paint_landscape.py (shaded
+primitives and palette ramps; no pixels derived from other artwork),
+GPL-3.0-or-later like the rest of the project.
+
 Music (data/zik/; each set directory also holds a LICENSE.txt with full details):
 - `original`: Jacques-Paul Grivaz, original Globulation 2 soundtrack.
 - `woodland`: adapted from "Woodland Music - Vol 1" (Level theme) by JC Sounds, CC BY 4.0, https://opengameart.org/content/woodland-music-vol-1. Remixed from the author's stems into calm/building/combat arrangements.

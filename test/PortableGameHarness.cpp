@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <stdexcept>
 #include <filesystem>
+#include <SDL3/SDL_timer.h>
 
 TEST_SUITE("PortableGame")
 {
@@ -22,14 +23,24 @@ TEST_SUITE("PortableGame")
 		    Uint64 now=1000;
 		    engine.beginSession(now);
 		    unsigned frames=0;
+		    const auto screenshot = std::filesystem::path(SDL_getenv_unsafe("GLOB2_USER_DATA_DIR"))/"portable-scene.bmp";
 		    while(engine.stepSession(now,{})) {
 		        if(++frames>1000) throw std::runtime_error("Fixture stalled");
-		        if(frames==40) globalContainer->gfx->printScreen("portable-scene.bmp");
+		        if(frames==40) {
+		            globalContainer->gfx->printScreen("portable-scene.bmp");
+		            // Scene preparation can outlive several synthetic simulation ticks.
+		            // Give the presentation owner time to publish and capture this frame.
+		            const auto deadline=SDL_GetTicks()+10000;
+		            while(!std::filesystem::exists(screenshot) && SDL_GetTicks()<deadline) {
+		                engine.drawSession(true);
+		                SDL_Delay(1);
+		            }
+		        }
 		        engine.drawSession();
 		        now+=40;
 		    }
-		    if(!std::filesystem::exists(std::filesystem::path(SDL_getenv_unsafe("GLOB2_USER_DATA_DIR"))/"portable-scene.bmp"))
-		        throw std::runtime_error("Scene screenshot was not produced");
+		    if(!std::filesystem::exists(screenshot))
+		        throw std::runtime_error("PresentationFrame screenshot was not produced");
 		    engine.finishSession();
 		}
 		NET_Quit();

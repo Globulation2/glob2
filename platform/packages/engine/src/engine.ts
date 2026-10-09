@@ -5,9 +5,14 @@
 import { readFile, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { gunzipSync } from 'node:zlib';
+import { checkBuildingPackage, type BuildingPackage } from '@glob2/protocol';
+import { canonicalBuildingJson, buildingAssetHash } from '@glob2/protocol/node';
 import type { GeneratorDescriptor, ImportAiMapPayload, SimVersion } from '@glob2/protocol';
+import { parse, ValidateSetResult } from '@glob2/protocol';
 import {
   CATALOG_ARGS,
+  parseBuildingComposition,
+  type BuildingCompositionResult,
   EngineInputError,
   EngineOutputError,
   GENERATED_MAP_FILE,
@@ -34,6 +39,7 @@ import {
   withScratchDir,
   type ProcessLimits,
   type RunResult,
+  type RunOptions,
 } from './process.ts';
 
 export type EngineCommand = 'catalog' | 'generate' | 'inspect' | 'verify';
@@ -47,6 +53,8 @@ export interface EngineOptions {
   scratchRoot?: string;
   /** Limits per command. */
   limits: Record<EngineCommand, ProcessLimits>;
+  /** Optional isolation boundary; installed before leasing untrusted jobs. */
+  processLauncher?: (options: RunOptions, scratch: string) => Promise<RunResult>;
   /** Largest file the agent reads back from a command's output directory. */
   maxOutputBytes: number;
 }
@@ -98,23 +106,27 @@ export class GlobEngine {
     scratch: string,
     signal?: AbortSignal,
   ): Promise<RunResult> {
-    const result = await runProcess({
-      binary: this.options.binary,
-      args,
-      cwd: this.options.workdir,
-      env: {
-        // Keep profiles, settings and logs inside the job's scratch directory.
-        HOME: scratch,
-        GLOB2_USER_DIR: join(scratch, 'profile'),
-        SDL_VIDEODRIVER: 'dummy',
-        SDL_AUDIODRIVER: 'dummy',
+    const launch = this.options.processLauncher ?? ((options: RunOptions) => runProcess(options));
+    const result = await launch(
+      {
+        binary: this.options.binary,
+        args,
+        cwd: this.options.workdir,
+        env: {
+          // Keep profiles, settings and logs inside the job's scratch directory.
+          HOME: scratch,
+          GLOB2_USER_DIR: join(scratch, 'profile'),
+          SDL_VIDEODRIVER: 'dummy',
+          SDL_AUDIODRIVER: 'dummy',
+        },
+        limits: this.options.limits[command],
+        // The catalog is read from stdout (a few hundred KiB); other commands
+        // write files and their output is only kept for diagnostics.
+        maxCaptureBytes: command === 'catalog' ? 32 * 1024 * 1024 : 64 * 1024,
+        ...(signal ? { signal } : {}),
       },
-      limits: this.options.limits[command],
-      // The catalog is read from stdout (a few hundred KiB); other commands
-      // write files and their output is only kept for diagnostics.
-      maxCaptureBytes: command === 'catalog' ? 16 * 1024 * 1024 : 64 * 1024,
-      ...(signal ? { signal } : {}),
-    });
+      scratch,
+    );
     if (result.timedOut) {
       throw new EngineCrashError(
         `${args[0]} timed out after ${this.options.limits[command].timeoutMs} ms`,
@@ -142,6 +154,40 @@ export class GlobEngine {
     return readFile(path);
   }
 
+  async validateSet(bytes: Uint8Array, signal?: AbortSignal, gallery = false) {
+    return this.scratch(async (dir) => {
+      const input = join(dir, 'set.json'),
+        reportPath = join(dir, 'report.json'),
+        preview = join(dir, 'preview.png');
+      await writeFile(input, bytes);
+      const result = await this.run(
+        'inspect',
+        [
+          '--validate-set',
+          input,
+          '--json',
+          reportPath,
+          '--preview',
+          preview,
+          ...(gallery ? ['--gallery', '1'] : []),
+        ],
+        dir,
+        signal,
+      );
+      if (result.code !== 0) this.fail('set validation', result);
+      const reportBytes = await this.output(reportPath);
+      if (!reportBytes) throw new EngineOutputError('set validator omitted its report');
+      const report = parse(
+        ValidateSetResult,
+        JSON.parse(Buffer.from(reportBytes).toString()),
+        'set validation',
+      );
+      const png = report.valid ? await this.output(preview) : undefined;
+      if (report.valid && !png) throw new EngineOutputError('set validator omitted its preview');
+      return { report, png };
+    });
+  }
+
   private fail(what: string, result: RunResult): never {
     const detail = outputTail(result);
     if (result.code === null) {
@@ -163,6 +209,45 @@ export class GlobEngine {
       const result = await this.run('catalog', [...CATALOG_ARGS], dir, signal);
       if (result.code !== 0) this.fail('headless catalog', result);
       return parseCatalog(result.stdout);
+    });
+  }
+
+  /** Capability-gated composition; retains the engine's exact canonical bytes. */
+  async composeBuildings(
+    packages: readonly BuildingPackage[],
+    signal?: AbortSignal,
+    artwork?: Uint8Array,
+  ): Promise<BuildingCompositionResult> {
+    const checked = packages.map(checkBuildingPackage);
+    if (
+      checked.length > 4096 ||
+      checked.reduce((bytes, pkg) => bytes + Buffer.byteLength(canonicalBuildingJson(pkg)), 0) >
+        8 * 1024 * 1024
+    )
+      throw new EngineInputError('Combined building manifests exceed their limits');
+    const catalog = await this.catalog(signal);
+    const baseHash = catalog.buildingCatalogHash;
+    if (!catalog.commands.includes('compose_buildings') || !baseHash)
+      throw new EngineInputError('This engine does not support building packages');
+    return this.scratch(async (dir) => {
+      const args = ['--compose-buildings'];
+      for (let index = 0; index < checked.length; index++) {
+        const path = join(dir, `package-${index}.json`);
+        await writeFile(path, canonicalBuildingJson(checked[index]));
+        args.push('--package', path);
+      }
+      let artworkHash: string | undefined;
+      if (artwork !== undefined) {
+        if (artwork.byteLength > 72 * 1024 * 1024)
+          throw new EngineInputError('Artwork bundle exceeds 72 MiB');
+        artworkHash = buildingAssetHash(artwork);
+        const path = join(dir, 'artwork.g2ba');
+        await writeFile(path, artwork);
+        args.push('--artwork-bundle', path);
+      }
+      const result = await this.run('catalog', args, dir, signal);
+      if (result.code !== 0) this.fail('building composition', result);
+      return parseBuildingComposition(result.stdout, baseHash, artworkHash);
     });
   }
 

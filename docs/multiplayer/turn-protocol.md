@@ -25,7 +25,7 @@ opaque bytes. The only exceptions are the few order type ids in the
 
 MatchSetup's optional `rules.aiOrderDelay` is an integer from 0 through 8;
 omitting it means 0 for backward compatibility. New match defaults explicitly set
-it to 8 (320 ms at the normal 40 ms tick interval). This delays AI responses to
+it to 8 (about 267 ms at the normal 33⅓ ms tick interval). This delays AI responses to
 observed changes and allows decisions to overlap subsequent simulation ticks. The engine stores it in GameHeader and uses the same delay
 for every AI seat. A decision at tick `t` yields an order for `t + delay`, with
 due computation completed before delivery. This logical AI delay is independent
@@ -43,8 +43,8 @@ for save and lifecycle boundaries.
 
 ## Model
 
-- The relay owns the clock. Tick `t` starts `t × 40 ms` after the match starts
-  (25 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
+- The relay owns the clock. Tick `t` starts `t × 1000 / 30 ms` after the match starts
+  (30 ticks/s, or `tickRateMilliHz / 1000` ticks per second).
 - **Load barrier.** Clients connect once they have loaded the game, so the match
   starts when every human seat has said `Hello`: until then the relay sends no bundle,
   answers `Welcome` with `relayTick` 0 and runs no grace. After
@@ -362,7 +362,7 @@ online relay sets its match timer to `nextBundleMicros()` ([relay](relay.md)).
 
 ## Timing model and per-client delay
 
-Let `P` be the tick period (40 ms) and `B` the bundle interval. The relay emits horizon
+Let `P` be the tick period (33⅓ ms) and `B` the bundle interval. The relay emits horizon
 `H` at time `(H − 1) × P` after match start, on a tick boundary.
 
 ### Input delay
@@ -420,7 +420,7 @@ oscillating:
   worse than a little extra delay.
 - **Down:** when `required < target` has held continuously for 5 s, the target falls
   by one tick, and the hold timer restarts. The target therefore drains back to
-  baseline at no more than one tick (40 ms) per 5 s once jitter subsides. Any update
+  baseline at no more than one tick (33⅓ ms) per 5 s once jitter subsides. Any update
   in which `required ≥ target` cancels the hold.
 
 ### Rate control
@@ -559,7 +559,7 @@ then show "reconnecting" instead of stalling silently.
 ## Desync arbitration
 
 Each client sends `ChecksumReport(t, checksum)` for every tick `t` with
-`t % checksumInterval == 0` (every 25 ticks, once per second). The reports travel out
+`t % checksumInterval == 0` (every 25 ticks, about every 0.83 seconds). The reports travel out
 of band and never block execution. For each tick, the relay arbitrates once every seat
 that is not left, reconnecting or resyncing has reported. If some reports are still
 missing 250 ticks after tick `t`, it arbitrates with what it has.
@@ -743,8 +743,34 @@ given kind, and teams no human or AI seat controls (closed teams) are cleared as
 new map. The rules, seed and
 experiments come from the setup like any other match, so a platform that wants to
 continue a save unchanged builds the setup with `fromGameHeader` from the save's
-header. If the seed equals the saved one, the saved random state is kept; otherwise
-the simulation is reseeded.
+header. Saved unit, building, map-operation and story RNG streams retain their
+progress even when a replacement setup changes the seed. New entities use the
+replacement seed. AI controllers are newly created for the replacement seats and
+use their own streams derived from that seed.
+
+### Shared scripted generator sources
+
+Schema 1 also accepts `map.kind = "scripted"`. It carries the resulting ordinary map's
+`hash`, the worker's `chosenSeed`, and a separate `ScriptGeneratorDescriptor`: immutable
+`libraryId`/`versionId`, `fileHash`/`packageHash`, namespaced `generatorId`/`revision`,
+requested `seed`, complete `params`, `candidates`, and `startingUnitLevel = 0`.
+The native generator descriptor remains unchanged. The scripted descriptor's `teams`
+must match the setup teams. Clients load the resulting map by hash; joining a match
+never executes or requires installing the package.
+
+Clients advertise `client.generatorSharing = true` in `hello`. Creating, joining or
+reconnecting to a scripted room or match requires this support; older clients
+receive an update-required response before a scripted contract is delivered. Hosts pin an
+exact release, and the platform checks visibility, moderation, playable status and
+validation for the room's exact simulation version on selection and before starting.
+Changing settings clears readiness and starts or reuses generation for the complete
+request. Pending results apply only to the currently selected generation job.
+
+Generated maps and previews use existing room/match access checks, including cache
+hits. Match history retains the release descriptor and chosen seed, and blob cleanup
+retains packages referenced by match setups after catalogue deletion. See the
+[JavaScript generator guide](../map-generators/JAVASCRIPT.md) for publication and
+validation coverage.
 
 ### Simulation version
 
@@ -759,7 +785,8 @@ record. `glob2 --sim-version` prints the JSON.
   followed by the simulation data files. The revision is hashed first as a pseudo-file
   with path `#sim-revision` and the revision in decimal ASCII as its content. The data
   files are those listed in `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
-  Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`), the default building
+  Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`), the default resource
+  registry (`data/resources/registry.json`), the default building
   manifest (`data/buildings/manifest.json`) and every definition it references, and the USL runtime
   (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. For each file the hash
   takes the path bytes, one zero byte, the content length as a big-endian 64-bit number

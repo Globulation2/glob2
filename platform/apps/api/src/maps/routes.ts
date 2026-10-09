@@ -1,3 +1,5 @@
+import { ScriptGeneratorDescriptor, schemaIssues } from '@glob2/protocol';
+import { resolveReport } from '../admin/moderation.ts';
 // REST for the map catalog (/api/v1/maps) and its moderation
 // (/api/v1/admin/maps, /api/v1/admin/map-reports). Rules and views are in
 // catalog.ts; engine-job results are applied by the worker (play/catalog.ts).
@@ -59,7 +61,11 @@ function intParam(value: string | undefined, name: string, min: number, max: num
   if (value === undefined || value === '') return undefined;
   const n = Number(value);
   if (!Number.isInteger(n) || n < min || n > max) {
-    throw apiError('bad_request', `${name} must be an integer from ${min} to ${max}.`);
+    throw apiError('bad_request', '{p0} must be an integer from {p1} to {p2}.', undefined, {
+      p0: String(name),
+      p1: String(min),
+      p2: String(max),
+    });
   }
   return n;
 }
@@ -216,7 +222,9 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
     }
     const sort = (query.sort ?? 'recent') as MapSort;
     if (!SORTS.includes(sort))
-      throw apiError('bad_request', `sort must be one of ${SORTS.join(', ')}.`);
+      throw apiError('bad_request', 'sort must be one of {p0}.', undefined, {
+        p0: String(SORTS.join(', ')),
+      });
     if (
       query.madeWith !== undefined &&
       query.madeWith !== 'hand' &&
@@ -356,10 +364,13 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
 
   // ----------------------------------------------------- owner: versions
 
-  app.post<{ Params: { id: string }; Querystring: { simVersion?: string; notes?: string } }>(
+  app.post<{
+    Params: { id: string };
+    Querystring: { simVersion?: string; notes?: string; generator?: string };
+  }>(
     '/api/v1/maps/:id/versions',
     {
-      bodyLimit: services.config.uploadMaxBytes ?? 16 * 1024 * 1024,
+      bodyLimit: services.config.uploadMaxBytes ?? 64 * 1024 * 1024,
     },
     async (request, reply) => {
       const viewer = await signedIn(request);
@@ -384,6 +395,14 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
           throw apiError('unavailable', 'No engine agent can validate maps right now.');
       }
       const notes = (request.query.notes ?? '').slice(0, 2000);
+      let claimedGenerator: ScriptGeneratorDescriptor | undefined;
+      if (request.query.generator) {
+        try {
+          claimedGenerator = body(ScriptGeneratorDescriptor, JSON.parse(request.query.generator));
+        } catch {
+          throw apiError('bad_request', 'Invalid claimed generator provenance.');
+        }
+      }
       // The quota is taken before the file is unpacked, so a flood of
       // compressed files costs the sender, not the server.
       await enforce(uploads, viewer.account.id, reply, 'Too many uploads; wait a while.');
@@ -416,7 +435,9 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       if (count.n >= CATALOG_RULES.maxVersionsPerMap) {
         throw apiError(
           'conflict',
-          `A map keeps at most ${CATALOG_RULES.maxVersionsPerMap} versions; delete old ones first.`,
+          'A map keeps at most {p0} versions; delete old ones first.',
+          undefined,
+          { p0: String(CATALOG_RULES.maxVersionsPerMap) },
         );
       }
 
@@ -446,10 +467,30 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       const validateJobId = same?.validate_job_id ?? checked?.job_id ?? randomUUID();
       const reusePreview = same && same.preview_status !== 'failed';
       const previewJobId = reusePreview ? (same.preview_job_id ?? randomUUID()) : randomUUID();
+      const generated = await db
+        .selectFrom('generated_maps')
+        .select(['descriptor', 'chosen_seed'])
+        .where('map_hash', '=', stored.sha256)
+        .where('sim_version', '=', sim)
+        .where('status', '=', 'ready')
+        .executeTakeFirst();
+      const provenance =
+        generated && schemaIssues(ScriptGeneratorDescriptor, generated.descriptor).length === 0
+          ? {
+              verified: true,
+              generator: generated.descriptor,
+              ...(generated.chosen_seed !== null
+                ? { chosenSeed: Number(generated.chosen_seed) }
+                : {}),
+            }
+          : claimedGenerator
+            ? { verified: false, generator: claimedGenerator }
+            : undefined;
       const inserted = await db
         .insertInto('map_versions')
         .values({
           map_id: map.id,
+          ...(provenance ? { generator_provenance: JSON.stringify(provenance) } : {}),
           hash: stored.sha256,
           size: stored.size,
           sim_version: sim,
@@ -825,31 +866,21 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       const actor = (await requireRole(identity, request, 'moderator')).account;
       const input = body(ResolveMapReportRequest, request.body);
       if (!UUID.test(request.params.id)) throw apiError('not_found', 'No such report.');
-      const report = await db
-        .updateTable('map_reports')
-        .set({
-          status: input.status,
-          resolved_by_account_id: actor.id,
-          resolved_at: sql<Date>`now()`,
-          resolution_note: input.note ?? null,
-        })
-        .where('id', '=', request.params.id)
-        .returning(['id', 'map_id', 'reason'])
-        .executeTakeFirst();
-      if (!report) throw apiError('not_found', 'No such report.');
-      await audit(actor, `map.report.${input.status}`, report.map_id, {
-        report: report.id,
-        ...(input.note ? { note: input.note } : {}),
-      });
-      if (input.hideMap) {
-        await setHidden(
-          actor,
-          report.map_id,
-          true,
-          input.hideReason ?? input.note ?? `Reported: ${report.reason}`,
-        );
-      }
-      const row = await reportQuery().where('r.id', '=', report.id).executeTakeFirstOrThrow();
+      await resolveReport(
+        db,
+        'maps',
+        request.params.id,
+        {
+          resolution: input.status,
+          reason: input.hideReason ?? input.note ?? 'Reviewed through map moderation',
+          hide: input.hideMap,
+        },
+        actor.id,
+        { action: 'map.report.' + input.status, targetType: 'map', reportTarget: false },
+      );
+      const row = await reportQuery()
+        .where('r.id', '=', request.params.id)
+        .executeTakeFirstOrThrow();
       const [view] = await reportViews([row], { account: actor });
       if (!view) throw apiError('not_found', 'No such report.');
       return view;

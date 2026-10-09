@@ -103,24 +103,22 @@ void PhoneEditor::drawInspector()
 	MapEditorWidget *picture = nullptr;
 	if (editor.panelMode == MapEdit::BuildingEditor)
 	{
-		auto *b = editor.game.teams[Building::GIDtoTeam(editor.selectedBuildingGID)]
-					  ->myBuildings[Building::GIDtoID(editor.selectedBuildingGID)];
+		const auto* b=editor.view.scene->entities.building(editor.view.scene->entities.selectedBuilding.ref);
 		if (!b)
 		{
 			clearTool();
 			return;
 		}
-		title = buildingDisplayName(*b->type);
+		title = buildingDisplayName(*editor.view.scene->entities.type(*b));
 		detail = GAGCore::FormattableString(
 					 GAGCore::Toolkit::getStringTable()->getString("[Team %0 / Level %1]"))
-					 .arg(b->owner->teamNumber + 1)
-					 .arg(b->type->level + 1);
+					 .arg(b->team + 1)
+					 .arg(editor.view.scene->entities.type(*b)->level + 1);
 		picture = editor.buildingPicture;
 	}
 	else
 	{
-		auto *unit = editor.game.teams[Unit::GIDtoTeam(editor.selectedUnitGID)]
-						 ->myUnits[Unit::GIDtoID(editor.selectedUnitGID)];
+		const auto* unit=editor.view.scene->entities.unit(editor.view.scene->entities.selectedUnit);
 		if (!unit)
 		{
 			clearTool();
@@ -129,7 +127,7 @@ void PhoneEditor::drawInspector()
 		title = getUnitName(unit->typeNum);
 		detail =
 			GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
-				.arg(unit->owner->teamNumber + 1);
+				.arg(unit->team + 1);
 		picture = editor.unitPicture;
 	}
 	label({inspector.x + 64 * u, inspector.y + 4 * u, inspector.w - 116 * u, 30 * u}, title);
@@ -184,27 +182,26 @@ void PhoneEditor::drawInteractionPreview()
 	{
 		// Preview brush coverage without mutating terrain. The same brush mask
 		// drives the committed editor operation; screen/world conversion wraps.
-		// Terrain brushes are cell-centred like every other brush.
+		// Terrain brushes stamp the vertex nearest each point, other brushes the
+		// cell under it; a vertex's square is centred on the vertex.
+		const bool vertices = editor.selectionMode == MapEdit::PlaceTerrain && editor.brushOnVertices();
+		const int offset = vertices ? editor.brushSquareOffset() : 0;
 		std::vector<BrushCoverage::Cell> centres;
 		for (auto p : pending)
 		{
 			auto [wx, wy] = editor.camera.screenToWorld(p.x, p.y);
-			centres.push_back(BrushCoverage::cellAt(wx, wy));
+			centres.push_back(BrushCoverage::cellAt(wx, wy, -offset));
 		}
 		const bool erase = editor.brush.getType() == BrushTool::MODE_DEL ||
 						   editor.selectionMode == MapEdit::RemoveObject;
 		auto cells = BrushCoverage::cells(editor.brush.getFigure(), centres);
-		// A corner terrain also fills the cells whose corners it all writes.
-		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain &&
-			editor.terrainType >= TerrainSelector::Grass && editor.terrainType <= TerrainSelector::Water)
-			cells = BrushCoverage::cornerClosure(cells);
 		Color fill = erase ? Color(220, 80, 65, 115) : Color(240, 208, 110, 110);
 		if (!erase && editor.selectionMode == MapEdit::PlaceTerrain)
 		{
             if (TerrainSelector::isBaseTerrain(editor.terrainType))
             {
 				const auto color =
-					editor.game.map
+					editor.view.scene->map
 						.terrainPresentation(TerrainSelector::baseTerrain(editor.terrainType))
 						.preview;
 				fill = Color(color.r, color.g, color.b, 130);
@@ -214,7 +211,7 @@ void PhoneEditor::drawInteractionPreview()
 		const int size = std::max(2, int(32 * editor.camera.zoom));
 		for (auto [x, y] : cells)
 		{
-			auto [sx, sy] = editor.camera.worldToScreen(x * 32, y * 32);
+			auto [sx, sy] = editor.camera.worldToScreen(x * 32 + offset, y * 32 + offset);
 			gfx->drawFilledRect(int(sx), int(sy), size, size, fill);
 			gfx->drawRect(int(sx), int(sy), size, size, edge);
 		}
@@ -232,32 +229,37 @@ void PhoneEditor::drawInteractionPreview()
 		int width = 1, height = 1;
 		if (editor.selectionMode == MapEdit::PlaceBuilding)
 		{
-			int type=editor.buildingSelectionType(editor.selectionName);
+			int type=editor.displayedBuildingSelectionType(editor.selectionName);
 			if (type<0) return;
-			auto *b=editor.game.buildingsTypes.get(type);
+			const auto* b=&editor.view.scene->buildingTypes->at(type);
 			if (!b) return;
 			width = b->width;
 			height = b->height;
 			int x, y, bx, by;
-			editor.game.map.cursorToBuildingPos(editor.mapMouseX(editor.mouseX),
+			editor.view.scene->map.cursorToBuildingPos(editor.mapMouseX(editor.mouseX),
 												editor.mapMouseY(editor.mouseY), width, height, &x,
 												&y, editor.viewportX, editor.viewportY);
-			valid =
-				valid && editor.game.checkRoomForBuilding(x, y, b, &bx, &by, editor.team, false);
+            bx=x+b->decLeft;by=y+b->decTop;
+            const auto& frame=*editor.view.scene;
+            if (b->isVirtual) {
+                for (const auto ref:frame.entities.teams[editor.team].virtualBuildings) {
+                    const auto* other=frame.entities.building(ref);
+                    if (other && other->posX==(bx&frame.map.getMaskW()) && other->posY==(by&frame.map.getMaskH())) valid=false;
+                }
+            } else valid=valid && frame.map.isFreeForBuilding(bx,by,b->width,b->height);
 		}
 		else if (editor.selectionMode == MapEdit::PlaceUnit)
 		{
 			int x, y;
-			editor.game.map.displayToMapCaseAligned(editor.mapMouseX(editor.mouseX),
+			editor.view.scene->map.displayToMapCaseAligned(editor.mapMouseX(editor.mouseX),
 													editor.mapMouseY(editor.mouseY), &x, &y,
 													editor.viewportX, editor.viewportY);
 			int type = editor.placingUnit == MapEdit::Worker    ? WORKER
 					   : editor.placingUnit == MapEdit::Warrior ? WARRIOR
 																: EXPLORER;
-			auto *unit =
-				editor.game.teams[editor.team]->race.getUnitType(type, editor.placingUnitLevel);
-			valid = valid && (unit->performance[FLY] ? editor.game.map.isFreeForAirUnit(x, y)
-													 : editor.game.map.isFreeForGroundUnit(
+			const auto* unit=&editor.view.scene->world.catalogs->unitTypes[type][editor.placingUnitLevel];
+			valid = valid && (unit->performance[FLY] ? editor.view.scene->map.isFreeForAirUnit(x, y)
+													 : editor.view.scene->map.isFreeForGroundUnit(
 														   x, y, unit->performance[SWIM],
 														   Team::teamNumberToMask(editor.team)));
 		}
@@ -335,9 +337,9 @@ void PhoneEditor::navigatePeek(ViewPoint point)
 	peekMinimap->convertToMap(globalContainer->gfx->getW() - size + int((point.x - rect.x) * size / rect.w),
 							  int((point.y - rect.y) * size / rect.h), x, y);
 	editor.updateCamera();
-	auto &map = editor.game.map;
-	editor.viewportX = (x - int(editor.camera.visibleW() / 64)) & map.wMask;
-	editor.viewportY = (y - int(editor.camera.visibleH() / 64)) & map.hMask;
+	auto &map = editor.view.scene->map;
+	editor.viewportX = (x - int(editor.camera.visibleW() / 64)) & map.getMaskW();
+	editor.viewportY = (y - int(editor.camera.visibleH() / 64)) & map.getMaskH();
 	editor.updateCamera();
 }
 void PhoneEditor::drawPeek()
@@ -359,7 +361,7 @@ void PhoneEditor::drawPeek()
 	{
 		peekMinimap = std::make_unique<Minimap>(globalContainer->runNoX, size, size, 0, 0, size, size,
 												Minimap::HideFOW);
-		peekMinimap->setGame(editor.game);
+		peekMinimap->setMapSize(editor.view.scene->map.getW(), editor.view.scene->map.getH());
 	}
 	surface(content, Color(0, 0, 0, 120));
 	const auto rect = peekRect();

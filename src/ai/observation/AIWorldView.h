@@ -58,8 +58,8 @@ class AIWorldView
 {
 	SimulationSnapshot::Handle lease;
 	const decltype(SimulationSnapshot::Catalogs::unitTypes)* observedUnitTypes = nullptr;
-	const TerrainType* terrainCells = nullptr;
-	const Uint16* legacyTerrainCells = nullptr;
+	const Uint16* cellRuleCells = nullptr;
+	const TerrainType* vertexCells = nullptr;
 	const SimulationSnapshot::ResourceCell* resourceCells = nullptr;
 	const SimulationSnapshot::OccupancyCell* occupancyCells = nullptr;
 	const SimulationSnapshot::AreaCell* areaCells = nullptr;
@@ -98,6 +98,8 @@ public:
 	std::span<const std::string> experimentKeys;
 	bool farmAreasEnabled = false;
 	std::shared_ptr<const TerrainRegistry> terrain;
+	// Every captured cell rule indexes this table.
+	std::shared_ptr<const CellRuleTable> cellRules;
 	std::shared_ptr<const ResourceRegistry> resourceRegistry;
 	std::shared_ptr<const Catalog> catalog;
 	std::shared_ptr<const GameHeader> configuration;
@@ -151,8 +153,14 @@ public:
 	}
 	// Binding validates component sizes once. Scalar reads require the named
 	// component and an index produced by this observation's geometry.
-	SimulationSnapshot::TerrainCell terrainAt(std::size_t index) const
-	{ return {terrainCells[index], legacyTerrainCells[index]}; }
+	Uint16 cellRuleAt(std::size_t index) const { return cellRuleCells[index]; }
+	// Corner terrains of a cell: top-left, top-right, bottom-left, bottom-right.
+	std::array<TerrainType, 4> cellCorners(int x, int y) const
+	{
+		return {vertexCells[tileIndex(x, y)], vertexCells[tileIndex(x + 1, y)],
+				vertexCells[tileIndex(x, y + 1)], vertexCells[tileIndex(x + 1, y + 1)]};
+	}
+	const TerrainProperties& terrainPropertiesAt(std::size_t index) const { return (*cellRules)[cellRuleCells[index]].properties; }
 	const SimulationSnapshot::ResourceCell& resourceAt(std::size_t index) const { return resourceCells[index]; }
 	const SimulationSnapshot::OccupancyCell& occupancyAt(std::size_t index) const { return occupancyCells[index]; }
 	const SimulationSnapshot::AreaCell& areasAt(std::size_t index) const { return areaCells[index]; }

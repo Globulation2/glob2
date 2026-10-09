@@ -45,7 +45,7 @@ support envelope and any unresolved failures.
 | River control | Range | Default | Meaning |
 | --- | --- | --- | --- |
 | `maximum-fold-depth` | 1–4 | 3 | Maximum uniform Hilbert order |
-| `river-width` | 4–10 | 6 | Full stroke width in undermap-corner units |
+| `river-width` | 4–10 | 6 | Full stroke width in vertices |
 | `minimum-land-spacing` | 24–40, step 2 | 28 | Bank separation before beaches |
 | `local-crossings` | 0–2 | 1 | Optional shortcuts per eligible recursive parent |
 | `major-shortcuts` | 0–4 | 2 | Optional regional shortcuts over the whole map |

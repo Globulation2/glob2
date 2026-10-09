@@ -1,3 +1,4 @@
+#include "GenerationWork.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Contact.h"
 #include "Map.h"
@@ -28,37 +29,51 @@ std::vector<int> costsFrom(const Map &map, const Torus &t, const std::vector<int
 	const int n = t.w * t.h;
 	std::vector<int> step(n), cost(n, INT_MAX);
 	for (int i = 0; i < n; ++i)
-		step[i] = stepCost(map, i % t.w, i / t.w, costs);
+	{
+		::MapGeneration::generationCheckpoint();
+		step.at(i) = stepCost(map, t.remainderX(i), i / t.w, costs);
+	}
 	using Entry = std::pair<int, int>;
 	std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> heap;
 	for (int i : sources)
-		if (cost[i] > 0)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (cost.at(i) > 0)
 		{
-			cost[i] = 0;
+			cost.at(i) = 0;
 			heap.push({0, i});
 		}
+	}
 	while (!heap.empty())
 	{
+		::MapGeneration::generationCheckpoint();
 		const auto [c, i] = heap.top();
 		heap.pop();
-		if (c > cost[i])
+		if (c > cost.at(i))
 			continue;
-		const int x = i % t.w, y = i / t.w;
+		const int x = t.remainderX(i), y = i / t.w;
 		for (int dy = -1; dy <= 1; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -1; dx <= 1; ++dx)
 			{
+				::MapGeneration::generationCheckpoint();
 				if ((!dx && !dy) || (neighbours == GridNeighbors::Cardinal && dx && dy))
 					continue;
 				const int m = t.at(x + dx, y + dy);
-				if (step[m] < 0 || c + step[m] >= cost[m])
+				if (step.at(m) < 0 || c + step.at(m) >= cost.at(m))
 					continue;
-				cost[m] = c + step[m];
-				heap.push({cost[m], m});
+				cost.at(m) = c + step.at(m);
+				heap.push({cost.at(m), m});
 			}
+		}
 	}
 	for (int &c : cost)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (c == INT_MAX)
 			c = -1;
+	}
 	return cost;
 }
 
@@ -66,10 +81,16 @@ std::vector<int> ContactReport::nearestRival() const
 {
 	std::vector<int> nearest(cost.size(), -1);
 	for (size_t from = 0; from < cost.size(); ++from)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (size_t to = 0; to < cost.size(); ++to)
-			if (from != to && cost[from][to] >= 0 &&
-				(nearest[from] < 0 || cost[from][to] < nearest[from]))
-				nearest[from] = cost[from][to];
+		{
+			::MapGeneration::generationCheckpoint();
+			if (from != to && cost.at(from).at(to) >= 0 &&
+				(nearest.at(from) < 0 || cost.at(from).at(to) < nearest.at(from)))
+				nearest.at(from) = cost.at(from).at(to);
+		}
+	}
 	return nearest;
 }
 
@@ -86,15 +107,20 @@ ContactReport contactMatrix(const Map &map, int teams, const StepCosts &costs)
 	report.cost.assign(size_t(teams), std::vector<int>(size_t(teams), -1));
 	for (int from = 0; from < teams; ++from)
 	{
-		const std::vector<int> field = costsFrom(map, t, units[from], costs);
+		::MapGeneration::generationCheckpoint();
+		const std::vector<int> field = costsFrom(map, t, units.at(from), costs);
 		for (int to = 0; to < teams; ++to)
 		{
+			::MapGeneration::generationCheckpoint();
 			int best = from == to ? 0 : -1;
 			if (from != to)
-				for (int i : units[to])
-					if (field[i] >= 0 && (best < 0 || field[i] < best))
-						best = field[i];
-			report.cost[from][to] = best;
+				for (int i : units.at(to))
+				{
+					::MapGeneration::generationCheckpoint();
+					if (field.at(i) >= 0 && (best < 0 || field.at(i) < best))
+						best = field.at(i);
+				}
+			report.cost.at(from).at(to) = best;
 		}
 	}
 	return report;
@@ -108,10 +134,15 @@ std::vector<int> costsToTarget(const Map &map, int teams, const std::vector<unsi
 	std::vector<int> result(size_t(teams), -1);
 	for (int team = 0; team < teams; ++team)
 	{
-		const std::vector<int> field = costsFrom(map, t, units[team], costs);
+		::MapGeneration::generationCheckpoint();
+		const std::vector<int> field = costsFrom(map, t, units.at(team), costs);
 		for (size_t i = 0; i < targets.size(); ++i)
-			if (targets[i] && field[i] >= 0 && (result[team] < 0 || field[i] < result[team]))
-				result[team] = field[i];
+		{
+			::MapGeneration::generationCheckpoint();
+			if (targets.at(i) && field.at(i) >= 0 &&
+				(result.at(team) < 0 || field.at(i) < result.at(team)))
+				result.at(team) = field.at(i);
+		}
 	}
 	return result;
 }
@@ -129,8 +160,11 @@ int costSpread(const std::vector<int> &costs)
 std::string unevenCosts(const std::vector<int> &costs, int tolerance, const std::string &what)
 {
 	for (size_t team = 0; team < costs.size(); ++team)
-		if (costs[team] < 0)
+	{
+		::MapGeneration::generationCheckpoint();
+		if (costs.at(team) < 0)
 			return "Colony " + std::to_string(team) + " cannot reach " + what + ".";
+	}
 	const int spread = costSpread(costs);
 	if (spread <= tolerance)
 		return "";
@@ -147,22 +181,27 @@ std::vector<int> equalCostSites(const std::vector<std::vector<int>> &costs,
 	std::vector<int> sites(size_t(teams), -1);
 	for (int k = 0; k < teams; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		int bestGap = tolerance + 1;
 		for (size_t i = 0; i < eligible.size(); ++i)
 		{
-			const int own = costs[k][i];
-			if (!eligible[i] || own < 0)
+			::MapGeneration::generationCheckpoint();
+			const int own = costs.at(k).at(i);
+			if (!eligible.at(i) || own < 0)
 				continue;
 			const int gap = std::abs(own - target);
 			if (gap >= bestGap)
 				continue;
 			bool nearest = true;
 			for (int j = 0; j < teams && nearest; ++j)
-				nearest = j == k || costs[j][i] < 0 || costs[j][i] > own;
+			{
+				::MapGeneration::generationCheckpoint();
+				nearest = j == k || costs.at(j).at(i) < 0 || costs.at(j).at(i) > own;
+			}
 			if (nearest)
 			{
 				bestGap = gap;
-				sites[k] = int(i);
+				sites.at(k) = int(i);
 			}
 		}
 	}

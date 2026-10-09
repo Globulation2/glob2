@@ -1,3 +1,4 @@
+import { useLocale } from './i18n.tsx';
 // A small history-API router: the app has a handful of routes, all listed in
 // routes.tsx. Paths the game links to (/players/<id>, /matches/<id>,
 // /maps/<id>, /leaderboard/<queueId>) must keep working as deep links; the
@@ -8,6 +9,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type AnchorHTMLAttributes,
   type MouseEvent,
@@ -31,20 +33,56 @@ function current(): Location {
 }
 
 export function RouterProvider({ children }: { children: ReactNode }) {
+  useLocale();
   const [location, setLocation] = useState<Location>(current);
+  const historyIndex = useRef<number>(window.history.state?.glob2HistoryIndex ?? 0);
+  const restoringHistory = useRef(false);
   useEffect(() => {
-    const onPop = () => setLocation(current());
+    window.history.replaceState(
+      { ...window.history.state, glob2HistoryIndex: historyIndex.current },
+      '',
+      window.location.href,
+    );
+    const onPop = (event: PopStateEvent) => {
+      const target =
+        typeof event.state?.glob2HistoryIndex === 'number'
+          ? event.state.glob2HistoryIndex
+          : historyIndex.current - 1;
+      // A cancelled Back/Forward already moved the browser URL. Restore its original
+      // history entry without unmounting the editor or prompting a second time.
+      if (restoringHistory.current) {
+        restoringHistory.current = false;
+        return;
+      }
+      if (!window.dispatchEvent(new Event('glob2-before-navigate', { cancelable: true }))) {
+        restoringHistory.current = true;
+        window.history.go(historyIndex.current - target);
+        return;
+      }
+      historyIndex.current = target;
+      setLocation(current());
+    };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
   }, []);
   const navigate = useCallback((to: string, options: { replace?: boolean } = {}) => {
+    if (
+      !options.replace &&
+      !window.dispatchEvent(new Event('glob2-before-navigate', { cancelable: true }))
+    )
+      return;
     // Studio needs document-level COOP/COEP headers before embedding the threaded game.
-    if (to.startsWith('/ai-studio') !== window.location.pathname.startsWith('/ai-studio')) {
+    if (
+      /^\/(ai-studio|generator-studio)(\/|$)/.test(to) !==
+      /^\/(ai-studio|generator-studio)(\/|$)/.test(window.location.pathname)
+    ) {
       window.location.assign(to);
       return;
     }
-    if (options.replace) window.history.replaceState(null, '', to);
-    else window.history.pushState(null, '', to);
+    if (!options.replace) historyIndex.current++;
+    const state = { ...window.history.state, glob2HistoryIndex: historyIndex.current };
+    if (options.replace) window.history.replaceState(state, '', to);
+    else window.history.pushState(state, '', to);
     setLocation(current());
     if (!options.replace) window.scrollTo(0, 0);
   }, []);
@@ -82,6 +120,7 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { to: string };
 
 /** An in-app link: plain clicks navigate without reloading. */
 export function Link({ to, onClick, children, ...rest }: LinkProps) {
+  useLocale();
   const { navigate } = useRouter();
   const handle = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);

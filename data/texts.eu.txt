@@ -1,33 +1,33 @@
 [hub finish in browser, game continues]
-
+Amaitu saioa hasteko prozesua arakatzailean. Amaitzean, jokoak automatikoki jarraituko du.
 [hub browser did not open]
-
+Arakatzailea ez da ireki. Ireki saioa hasteko orria jarraitzeko.
 [hub compare code %0]
-
+Orriak eskatzen badu, egiaztatu %0 erakusten duela.
 [hub code copied]
-
+Kodea kopiatuta
 [settings Finish in your browser. The game continues by itself.]
-
+Amaitu arakatzailean. Jokoak automatikoki jarraituko du.
 [music set]
-
+Musika multzoa
 [random music set]
-
+Ausaz partida bakoitzean
 [playing music set %0]
-
+Erreproduzitzen: %0
 [music set failed]
-
+Ezin izan da musika multzo hau kargatu.
 [settings Music set]
-
+Musika multzoa
 [settings Random each match]
-
+Aukeratu Ausaz partida bakoitzaren hasieran soinu-banda bat hautatzeko.
 [settings Edge scrolling]
-
+Ertzeko desplazamendua
 [settings Edge scrolling in fullscreen]
-
+Ertzeko desplazamendua pantaila osoan
 [settings Edge scrolling in windowed mode]
-
+Ertzeko desplazamendua leiho moduan
 [settings Move the game and editor maps when the mouse reaches the window edge.]
-
+Mugitu jokoaren eta editorearen mapak sagua leihoaren ertzera iristean.
 [AI strategy]
 AI-aren estrategia
 [start recording]
@@ -4625,9 +4625,9 @@ Grabazioa
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Grabatu zure partidak soinudun MP4 bideo gisa. Grabatzeko FFmpeg behar da, libx264 eta AAC kodetzaileekin.
 [settings Record your games as MP4 videos with sound.]
-
+Grabatu partidak MP4 bideo gisa, soinuarekin.
 [settings Recording uses the full rendered resolution at 30 FPS.]
-
+Grabazioak errendatutako bereizmen osoa erabiltzen du, segundoko 30 fotogramatan.
 [settings FFmpeg is ready.]
 FFmpeg prest dago.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5099,7 +5099,7 @@ Zaurituak erretiratzen dira
 [Units can die]
 Unitateak hil daitezke
 [Upgrades]
-
+Hobekuntzak
 [No stockpile]
 Bat ere ez
 [No glass cannon]
@@ -5193,7 +5193,7 @@ Unitate zaurituak sendatzera itzultzen dira hil arte borrokatu beharrean.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Unitateak hil egiten dira bizi-puntuak agortzean. Desaktibatu bizi-puntu 1ean gelditzeko.
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
-
+Unitateek mailak irabazten dituzte entrenamendu-eraikinetan, eta eraikinak hobetu daitezke. Konponketek erabilgarri jarraitzen dute aukera desaktibatuta ere.
 [stat group work]
 Langileen denbora
 [stat worker time]
@@ -5309,235 +5309,235 @@ indarra
 [stat view by place]
 Lekuka
 [AI Library]
-
+AI liburutegia
 [Authoring guide]
-
+Sorkuntza-gida
 [Beginner-friendly]
-
+Hasiberrientzat egokia
 [Defensive]
-
+Defentsiboa
 [Discover]
-
+Arakatu
 [Download & install]
-
+Deskargatu eta instalatu
 [Downloading AI…]
-
+AI deskargatzen…
 [Expansion]
-
+Hedapena
 [Experimental]
-
+Esperimentala
 [Favourite]
-
+Gehitu gogokoetara
 [Favourited]
-
+Gogokoetan gehituta
 [Favourites]
-
+Gogokoak
 [Got it]
-
+Ulertuta
 [How AIs work]
-
+Nola funtzionatzen duten AIk
 [Install selected version]
-
+Instalatu hautatutako bertsioa
 [Installed]
-
+Instalatuta
 [Invalid AI catalogue response]
-
+AI katalogoaren erantzuna baliogabea da
 [JavaScript API reference]
-
+JavaScript APIaren erreferentzia
 [Like]
-
+Atsegin dut
 [Liked]
-
+Atsegin markatuta
 [Loading AI library…]
-
+AI liburutegia kargatzen…
 [Most downloaded]
-
+Gehien deskargatuak
 [Most liked]
-
+Atsegin gehien dituztenak
 [Newest]
-
+Berrienak
 [No AIs match these filters.]
-
+Ez dago iragazki hauekin bat datorren AIrik.
 [Not validated for this game version]
-
+Ez da jokoaren bertsio honetarako balioztatu
 [Open AI Library]
-
+Ireki AI liburutegia
 [Open AI page]
-
+Ireki AIren orria
 [Passed compatibility checks]
-
+Bateragarritasun-probak gaindituta
 [Recently updated]
-
+Duela gutxi eguneratua
 [Rush]
-
+Eraso azkarra
 [Search]
-
+Bilatu
 [Share your AI]
-
+Partekatu zure AI
 [Show more]
-
+Erakutsi gehiago
 [Sign in through Online settings to like and favourite AIs.]
-
+Hasi saioa Lineako ezarpenen bidez AIk atsegin markatzeko eta gogokoetara gehitzeko.
 [Starter project]
-
+Hasierako proiektua
 [downloads of this version]
-
+bertsio honen deskargak
 [downloads]
-
+deskargak
 [Update available]
-
+Eguneratzea eskuragarri
 [Browse versions]
-
+Arakatu bertsioak
 [Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
-
+Deskargatu AI bat, eta hautatu ordenagailuaren eserlekurako tokiko partida batean. Instalatutako bertsioek lineaz kanpo funtzionatzen dute. Eguneratzeek etorkizuneko partidetan eragiten dute; gordetako partidek jatorrizko kodea mantentzen dute.
 [Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
-
+Bateragarritasun-probek ez dute segurtasuna edo jokatzeko indarra bermatzen. Exekutatu fidagarriak zaizkizun egileen kodea soilik.
 [Back to results]
-
+Itzuli emaitzetara
 [music 2–5 minutes]
-
+2–5 minutu
 [music 5–15 minutes]
-
+5–15 minutu
 [music AI-generated]
-
+AIk sortua
 [music All music]
-
+Musika guztia
 [music All open licences]
-
+Lizentzia ireki guztiak
 [music Any duration]
-
+Edozein iraupen
 [music Audition each mood for eight seconds]
-
+Entzun giro bakoitza zortzi segundoz
 [music Back]
-
+Atzera
 [music Browse]
-
+Arakatu
 [music Building]
-
+Areagotzea
 [music Calm]
-
+Lasaitasuna
 [music Calm → Building → Combat]
-
+Lasaitasuna → Areagotzea → Borroka
 [music Choose Building]
-
+Aukeratu Areagotzea
 [music Choose Calm]
-
+Aukeratu Lasaitasuna
 [music Choose Combat]
-
+Aukeratu Borroka
 [music Choose ZIP]
-
+Aukeratu ZIP
 [music Choose a music file.]
-
+Aukeratu musika-fitxategi bat.
 [music Combat]
-
+Borroka
 [music Could not open this music set.]
-
+Ezin izan da musika multzo hau ireki.
 [music Credits, downloads and reporting]
-
+Kredituak, deskargak eta salaketak
 [music Downloading music…]
-
+Musika deskargatzen…
 [music Export recovery files]
-
+Esportatu berreskuratze-fitxategiak
 [music Fade duration]
-
+Desagertze-iraupena
 [music File selection cancelled or failed.]
-
+Fitxategi-hautaketa bertan behera utzi da edo huts egin du.
 [music Import ZIP]
-
+Inportatu ZIP
 [music Import ZIP or three tracks]
-
+Inportatu ZIP edo hiru pista
 [music Import music]
-
+Inportatu musika
 [music Import three tracks]
-
+Inportatu hiru pista
 [music Includes AI-generated audio]
-
+AIk sortutako audioa du
 [music Install]
-
+Instalatu
 [music Install selected]
-
+Instalatu hautatutakoa
 [music Installed]
-
+Instalatuta
 [music Load more]
-
+Kargatu gehiago
 [music Loading music…]
-
+Musika kargatzen…
 [music Most downloaded]
-
+Gehien deskargatuak
 [music Most liked]
-
+Atsegin gehien dituztenak
 [music Music decoding failed.]
-
+Musika deskodetzeak huts egin du.
 [music Music download failed.]
-
+Musika deskargatzeak huts egin du.
 [music Music installed.]
-
+Musika instalatuta.
 [music Music installed. It is now available in Audio settings.]
-
+Musika instalatuta. Orain Audio ezarpenetan dago eskuragarri.
 [music Music is not yet saved permanently. Retry saving before leaving.]
-
+Musika ez da oraindik behin betiko gorde. Saiatu berriro gordetzen irten aurretik.
 [music Music library]
-
+Musika liburutegia
 [music Music request failed.]
-
+Musika-eskaerak huts egin du.
 [music Newest]
-
+Berrienak
 [music No community music installed yet. Import files or browse the online library.]
-
+Ez dago komunitateko musikarik instalatuta. Inportatu fitxategiak edo arakatu lineako liburutegia.
 [music No music found.]
-
+Ez da musikarik aurkitu.
 [music Not AI-generated]
-
+Ez du AIk sortu
 [music Pause]
-
+Pausatu
 [music Play]
-
+Erreproduzitu
 [music Playback position]
-
+Erreprodukzio-posizioa
 [music Preview]
-
+Aurrebista
 [music Ready to import.]
-
+Inportatzeko prest.
 [music Remove]
-
+Kendu
 [music Reset to game behavior]
-
+Berrezarri jokoaren portaera
 [music Retry saving]
-
+Saiatu berriro gordetzen
 [music Saved.]
-
+Gordeta.
 [music Saving music…]
-
+Musika gordetzen…
 [music Search]
-
+Bilatu
 [music Search title, artist, description…]
-
+Bilatu izenburua, artista, deskribapena…
 [music Select for installation]
-
+Hautatu instalatzeko
 [music Share music on the web]
-
+Partekatu musika webean
 [music Some catalogue entries could not be read.]
-
+Ezin izan dira katalogoko sarrera batzuk irakurri.
 [music Storage could not be saved. Retry or export your files before leaving.]
-
+Ezin izan dira biltegiko datuak gorde. Saiatu berriro edo esportatu fitxategiak irten aurretik.
 [music Tag]
-
+Etiketa
 [music Test crossfades]
-
+Probatu gurutzatutako trantsizioak
 [music Up to 2 minutes]
-
+Gehienez 2 minutu
 [music Use this music]
-
+Erabili musika hau
 [music Validating music…]
-
+Musika balioztatzen…
 [settings Music library · Browse, install and import]
-
+Musika liburutegia · Arakatu, instalatu eta inportatu
 [music Filters]
-
+Iragazkiak
 [music Leave without saving]
-
+Irten gorde gabe
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
-
+Inportatu deskargatutako musika ZIPa edo hiru Opus pistak. Metadatuak eta azaleko irudia Lasaitasuna pistatik irakurtzen dira; ez da fitxategi gehigarririk behar.
 [settings Target render FPS]
 Helburuko errendatze-FPS
 [settings Unlimited]
@@ -5604,279 +5604,395 @@ Burdin mea
 Silizea
 [Cotton]
 Kotoia
+[Jungle trees]
+Oihaneko zuhaitzak
+[Pine trees]
+Pinuak
+[Dead trees]
+Zuhaitz hilak
+[Ruins]
+Hondakinak
+[Camp-site]
+Kanpalekua
+[Ancient debris]
+Antzinako hondakinak
+[Scrub]
+Sastrakak
+[Tall grass]
+Belar garaia
+[Maize]
+Artoa
+[Potatoes]
+Patatak
+[Rice]
+Arroza
+[Fish]
+Arrainak
 [Reroll terrain look]
 Ausaz aukeratu berriro lurraren itxura
 [boulders]
-
+Harkaitz handiak
 [hedge]
-
+Hesia
 [thicket]
-
+Sastrakadia
 [ridge_rock]
-
+Harkaitz-gandorra
 [outcrop]
-
+Azaleratzea
 [dirt]
-
+Lurra
 [clay]
-
+Buztina
 [gravel]
-
+Legarra
 [flower_meadow]
-
+Lore-belardia
 [mud]
-
+Lokatza
 [marsh]
-
+Padura
 [deep_snow]
-
+Elur sakona
 [scree]
-
+Harrizko malda
 [dirt_track]
-
+Lurrezko bidea
 [boardwalk]
-
+Zurezko pasabidea
 [lava]
-
+Laba
 [ember_field]
-
+Txingar-eremua
 [loam]
-
+Lur frankoa
 [moss]
-
+Goroldioa
 [spring_meadow]
-
+Udaberriko belardia
 [deep_water]
-
+Ur sakona
 [dark_water]
-
+Ur iluna
 [void_hole]
-
+Zuloa
 [chasm]
-
+Leizea
 [terrain group water]
-
+Ura
 [terrain group sand]
-
+Harea
 [terrain group grass]
-
+Belarra
 [terrain group ice]
-
+Izotza
 [terrain group paths]
-
+Bideak
 [terrain group obstacles]
-
+Oztopoak
 [terrain group ridges]
-
+Gandorrak
 [terrain group barren]
-
+Lur antzua
 [terrain group rough]
-
+Lur malkartsua
 [terrain group lava]
-
+Laba
 [terrain group fertile]
-
+Lur emankorra
 [terrain group deep-water]
-
+Ur sakona
 [terrain group void]
-
+Hutsa
 [experiment obstacle-terrain]
-
+Oztopo-lurrak
 [experiment obstacle-terrain help]
-
+Harkaitz handiak, hesiak eta sastrakadiak gehitzen ditu mapa-editorera. Lurreko unitateek ezin dituzte zeharkatu, eta jaurtigaiak geldiarazten dituzte; unitate hegalariak gainetik igarotzen dira. Ezin da eraikinik edo baliabiderik jarri.
 [experiment ridge-terrain]
-
+Gandor-lurrak
 [experiment ridge-terrain help]
-
+Harkaitz-gandorrak eta azaleratzeak gehitzen ditu mapa-editorera. Lurreko unitateek ezin dituzte zeharkatu, baina dorreek gainetik tiro egiten dute eta unitate hegalariak igarotzen dira. Ezin da eraikinik edo baliabiderik jarri.
 [experiment barren-terrain]
-
+Lur antzua
 [experiment barren-terrain help]
-
+Lurra, buztina, legarra eta lore-belardiak gehitzen ditu mapa-editorera. Eraikinak jar daitezke, baina ez da ezer hazten bertan edo inguruan, eta ez dira urertzetzat hartzen.
 [experiment rough-terrain]
-
+Lur malkartsua
 [experiment rough-terrain help]
-
+Lokatza, padurak, elur sakona eta harrizko maldak gehitzen ditu mapa-editorera. Lurreko unitateak ohiko abiaduraren bi heren inguruan mugitzen dira. Ezin da eraikinik edo baliabiderik jarri.
 [experiment path-terrain]
-
+Bide-lurrak
 [experiment path-terrain help]
-
+Lurrezko bideak eta zurezko pasabideak gehitzen ditu mapa-editorera. Bidexketan bezala, lurreko unitateak abiadura bikoitzean mugitzen dira eta eraikinak jar daitezke, baina ez da ezer hazten.
 [experiment lava-terrain]
-
+Laba-lurrak
 [experiment lava-terrain help]
-
+Laba eta txingar-eremuak gehitzen ditu mapa-editorera. Lurreko unitateak ezin dira sartu; gainetik igarotzen diren unitate hegalariek osasuna azkar galtzen dute. Jaurtigaiak gainetik igarotzen dira.
 [experiment fertile-terrain]
-
+Lur emankorra
 [experiment fertile-terrain help]
-
+Lur frankoa, goroldioa eta udaberriko belardiak gehitzen ditu mapa-editorera. Eraikinak eta laboreak onartzen dituzte, eta inguruko lurrak urak baino indar handiagoz ureztatzen dituzte.
 [experiment deep-water-terrain]
-
+Ur sakona
 [experiment deep-water-terrain help]
-
+Ur sakona eta iluna gehitzen ditu mapa-editorera. Igerilariak motelago igarotzen dira, ez da algarik hazten, eta inguruko soroak ureztatzen jarraitzen dute.
 [experiment void-terrain]
-
+Huts-lurrak
 [experiment void-terrain help]
-
+Zuloak eta leizeak gehitzen ditu mapa-editorera. Ezerk ezin ditu zeharkatu, ezta unitate hegalariek ere, eta jaurtigaiak ertzean gelditzen dira.
 [terrain group custom]
-
+Pertsonalizatua
 [terrain group classic]
-
+Lur klasikoa
 [terrain rule walkable]
-
+Oinez ibiltzeko modukoa
 [terrain rule swimmable]
-
+Igeri egiteko modukoa
 [terrain rule impassable]
-
+Igaroezina
 [terrain rule no flying]
-
+Hegan egitea debekatuta
 [terrain rule buildable]
-
+Eraikitzeko modukoa
 [terrain rule speed %0]
-
+Abiadura %0%
 [terrain rule crops grow]
-
+Laboreak hazten dira
 [terrain rule irrigates]
-
+Inguruko lurrak ureztatzen ditu
 [terrain rule stops nearby growth]
-
+Inguruko hazkundea geldiarazten du
 [terrain rule blocks shots]
-
+Tiroak geldiarazten ditu
 [terrain rule hurts walkers]
-
+Oinezkoei kalte egiten die
 [terrain rule hurts fliers]
-
+Hegalariei kalte egiten die
 [terrain palette hint]
-
+Aukeratu pintzel bat. Taldeko kideek arau berak dituzte eta itxuran bakarrik desberdintzen dira.
 [terrain rule algae grow]
-
+Algak hazten dira
 [terrain palette experiments hint]
-
+Aukeratu pintzel bat. Lur-talde gehiago agertzen dira haien esperimentuak Ezarpenak > Esperimentuak atalean aktibatzean.
 [brush valid on %0]
-
+Hemen jar daiteke: %0
 [brush valid nowhere]
-
+Ezin da mapa honetako inolako lurretan jarri
 [brush requires experiment %0]
-
+%0 esperimentua behar du
 [brush resources custom]
-
+Inportatutako baliabideak
 [brush section zones]
-
+Zonak
 [brush section areas]
-
+Eremuak
 [brush section tools]
-
+Tresnak
 [brush clearing area]
-
+Garbiketa-eremua
 [editor unsaved title]
-
+Gorde gabeko aldaketak
 [editor quit unsaved]
-
+Gorde mapa honen aldaketak editoretik irten aurretik?
 [editor load unsaved]
-
+Gorde mapa honen aldaketak beste mapa bat ireki aurretik?
 [editor save]
-
+Gorde…
 [editor discard]
-
+Ez gorde
 [editor share never saved]
-
+Mapak gordetako fitxategitik partekatzen dira. Gorde mapa hau lehenik eta partekatu gero.
 [editor share unsaved]
-
+Mapa honek gorde gabeko aldaketak ditu. Partekatzean gordetako fitxategia igotzen da.
 [editor save and share]
-
+Gorde eta partekatu…
 [editor share saved version]
-
+Partekatu gordetako bertsioa
 [editor reroll confirm]
-
+Lur-lauza bakoitzari ausazko itxura berria eman? Lur motak eta jokatzeko modua ez dira aldatzen. Ezin da desegin.
 [editor reroll]
-
+Berriz ausaztu
 [editor map saved]
-
+Mapa gordeta
 [editor map shared]
-
+Mapa linean partekatuta
 [editor save needs fertility]
-
+Gordetzeko emankortasun-mapa behar da; horregatik, gordetzea bertan behera utzi da. Sakatu Ados berriro saiatzeko.
 [editor fertility stale]
-
+Emankortasun-mapa zaharkituta dago · Egin klik freskatzeko
 [No definition files found in %0]
-
+Ez da definizio-fitxategirik aurkitu hemen: %0
 [From device…]
-
+Gailutik…
 [replace existing file %0?]
-
+"%0" izeneko fitxategia badago. Ordeztu?
 [Replace]
-
+Ordeztu
 [Keep existing file]
-
+Mantendu dagoen fitxategia
 [editor menu save]
-
+Gorde mapa
 [editor menu load]
-
+Ireki mapa…
 [editor menu import terrain]
-
+Inportatu lur-definizioak…
 [editor menu import resources]
-
+Inportatu baliabide-definizioak…
 [editor menu teams]
-
+Taldeak…
 [editor menu scenario]
-
+Agertokia…
 [editor menu reroll]
-
+Ausaztu berriz lurraren itxura…
 [editor menu file]
-
+Fitxategia
 [editor menu map]
-
+Mapa
 [no resource growth areas]
-
+Hazkunderik gabeko eremuak
 [dock flags and units]
-
+Banderak eta unitateak
 [dock minimap]
-
+Minimapa
 [dock search brushes]
-
+Bilatu pintzelak
 [dock brush shape %0]
-
+Pintzelaren forma %0
 [dock brush]
-
+Pintzela
 [dock brush paint]
-
+Margotu
 [dock brush erase]
-
+Ezabatu
 [dock enable for map]
-
+Aktibatu mapa honetarako
 [dock enable experiment %0]
-
+Aktibatu %0
 [dock enable experiment hint %0]
-
+%0 esperimentua mapa honetarako soilik aktibatzen du.
 [dock area number]
-
+Eremua
 [dock building level]
-
+Maila
 [dock unit level]
-
+Unitatearen maila
 [dock no brushes match]
-
+Ez dago bilaketarekin bat datorren pintzelik.
 [dock active team]
-
+Talde aktiboa
 [dock team count %0]
-
+Mapa honetako taldeak: %0
 [dock add team]
-
+Gehitu taldea
 [dock remove team]
-
+Kendu taldea
 [dock nothing selected]
-
+Ez dago ezer hautatuta.
 [dock no properties]
-
+Objektu honek ez du propietate editagarririk.
 [focus brush search]
-
+Bilatu pintzelak
 [switch to resources view]
-
+Aldatu baliabideen ikuspegira
 [dock resources base]
-
+Baliabide estandarrak
 [dock fertility stale]
-
+Emankortasun-mapa zaharkituta dago.
 [dock fertility refresh]
-
+Freskatu emankortasuna
 [Enabled %0 for this map]
-
+%0 aktibatuta mapa honetarako
 [editor fertility tap refresh]
-
+Emankortasun-mapa zaharkituta dago: ukitu freskatzeko
+[editor menu import set]
+Inportatu lur eta baliabide multzoa
+[editor menu set library]
+Multzoen liburutegia
+[set library loading]
+Multzoak kargatzen…
+[set library downloading]
+Argitalpen zehatza deskargatzen…
+[set library connection error]
+Ezin dira multzoak kargatu. Egiaztatu konexioa eta saiatu berriro.
+[set library hash error]
+Deskargatutako multzoak ez du hash egiaztapena gainditu.
+[set library package error]
+Multzoaren paketea baliogabea da.
+[set library listing error]
+Multzoaren zerrenda baliogabea da.
+[set library release error]
+Multzoaren argitalpena baliogabea da.
+[set library selection help]
+Hautatu inportatu beharreko sarrerak. Beharrezko baliabide pertsonalizatuak automatikoki sartzen dira.
+[set library empty]
+Ez da multzorik aurkitu.
+[set library release help]
+Aukeratu argitalpen zehatza ikuskatzeko eta inportatzeko.
+[set library heading]
+Lur eta baliabide multzoak
+[set library browse]
+Arakatu lineako liburutegia
+[set library local]
+Maparen edukia, kredituak eta tokiko aldaketak
+[set library local help]
+Editatu mapa honetan gordetako edukiaren kopia. Jatorrizko argitalpenaren kredituak mantentzen dira. Aldaketek ez dituzte beste mapak edo lineako argitalpena eguneratzen.
+[set library apply]
+Aplikatu tokiko aldaketak
+[set library updated]
+Tokiko edukia eguneratuta.
+[set library search hint]
+Bilatu gaiak eta sortzaileak
+[set library search]
+Bilatu
+[set library set]
+Multzoa
+[set library update help]
+Honek bat datozen kokatutako lurrak eta baliabideak berariaz ordezten ditu, tokiko aldaketak barne. Kendutako sarrerak argitalpen zaharrean mantentzen dira. Dauden material-kopuruak edukiera berrietara mugatzen dira.
+[set library import]
+Inportatu hautatutako sarrerak
+[set library next]
+Hurrengo orria
+[set library back]
+Itzuli emaitzetara
+[set library license %0]
+Lizentzia: %0
+[set library release %0]
+argitalpena %0
+[set library replace %0]
+Ordeztu %0 argitalpenetik kokatutako sarrerak
+[set library preview limit]
+Lehen 64 sarreren aurrebistak erakusten dira. Sarrera guztiak hauta daitezke oraindik.
+[set library definition]
+Propietateen definizioa (JSON)
+[set library artwork]
+Lurraren irudien esleipena (JSON)
+[settings Map generators]
+Mapa-sortzaileak
+[settings Import a generator package, then select its landscape when creating a map or game.]
+Inportatu sortzaile-pakete bat, eta hautatu haren paisaia mapa edo partida bat sortzean.
+[settings Import map generator]
+Inportatu mapa-sortzailea
+[settings No custom map generators installed.]
+Ez dago mapa-sortzaile pertsonalizaturik instalatuta.
+[settings Replace package]
+Ordeztu paketea
+[settings Export package]
+Esportatu paketea
+[settings Remove generator]
+Kendu sortzailea
+[settings Saving generator library…]
+Sortzaileen liburutegia gordetzen…
+[settings Could not read generator package.]
+Ezin izan da sortzaile-paketea irakurri.
+[settings Generator library saved.]
+Sortzaileen liburutegia gorde da.
+[settings Storage could not be saved. The previous library is retained.]
+Ezin izan dira datuak gorde. Aurreko liburutegia mantendu da.
+[settings Waiting for file selection or storage…]
+Fitxategia hautatzeko edo gordetzeko zain…
+[settings File selection is unavailable.]
+Fitxategiak hautatzea ez dago erabilgarri.
+[settings Package export is unavailable.]
+Paketeak esportatzea ez dago erabilgarri.
+[stat band area upkeep]
+Eremuaren mantentzea

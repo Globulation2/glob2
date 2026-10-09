@@ -13,6 +13,7 @@ import {
 import { currentCatalogRulesVersions, displayRating, PROVISIONAL_SIGMA } from '@glob2/play';
 import { avatarUrl } from '../avatars/urls.ts';
 import { overallRanks } from './rankings.ts';
+import { cursorTimeSql } from '../http/cursorTime.ts';
 import { apiError } from '../errors.ts';
 import {
   catalogTitles,
@@ -309,6 +310,7 @@ export class PublicPlayers {
     if (cursor)
       query = query.where(sql<boolean>`(${MATCH_TIME}, m.id) < (${cursor.at}, ${cursor.id})`);
     const rows = await query
+      .select(cursorTimeSql(MATCH_TIME).as('cursorAt'))
       .orderBy(MATCH_TIME, 'desc')
       .orderBy('m.id', 'desc')
       .limit(options.limit + 1)
@@ -320,7 +322,7 @@ export class PublicPlayers {
       ...(rows.length > options.limit && last
         ? {
             nextCursor: encodeCursor({
-              at: last.ended_at ?? last.started_at ?? last.created_at,
+              at: last.cursorAt,
               id: last.id,
             }),
           }

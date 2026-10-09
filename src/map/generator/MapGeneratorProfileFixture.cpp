@@ -138,11 +138,11 @@ int main(int argc, char **argv)
 		}
 	}
 	std::vector<int> methods;
-	for (int method : GeneratorRegistry::builtins().methods(true))
+	for (int method : GeneratorRegistry::active().methods(true))
 	{
 		bool named = !hasNamedGenerator;
 		for (int i = 4; i < argc; ++i)
-			named |= std::string(GeneratorRegistry::builtins().at(method).id) == argv[i];
+			named |= std::string(GeneratorRegistry::active().at(method).id) == argv[i];
 		if (named)
 			methods.push_back(method);
 	}
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
 	std::vector<GeneratorStats> stats;
 	stats.reserve(methods.size());
 	for (int method : methods)
-		stats.push_back({GeneratorRegistry::builtins().at(method).id});
+		stats.push_back({GeneratorRegistry::active().at(method).id});
 
 	const GenerationService service;
 	const auto start = std::chrono::steady_clock::now();

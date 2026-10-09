@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminMetric",
+  "title": "AdminMetric",
+  "type": "object",
+  "required": [
+    "day",
+    "metric",
+    "dimension",
+    "value"
+  ],
+  "properties": {
+    "day": {
+      "type": "string"
+    },
+    "metric": {
+      "type": "string"
+    },
+    "dimension": {
+      "type": "string"
+    },
+    "value": {
+      "type": "number"
+    }
+  }
+}

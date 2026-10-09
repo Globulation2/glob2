@@ -87,7 +87,7 @@ GeneratorDefinition craterLakesDefinition()
 			"crater-lakes",
 			4,
 			"Crater lakes",
-			4,
+			5,
 			false,
 			std::move(controls),
 			generate,

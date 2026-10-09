@@ -11,6 +11,8 @@
 // Cross-validated McFadden R2 0.0278, 0.0282 in sample.
 // See docs/map-generators/FAIRNESS_MODEL.md.
 #pragma once
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 #include "Ressource.h"
 #include "StartQuality.h"
 #include <algorithm>
@@ -63,7 +65,7 @@ inline const FairnessModelTerm *fairnessModelTerms()
 inline double fairnessModelMeasurement(const std::vector<ColonyQuality> &colonies,
 									   std::size_t index, int term)
 {
-	const ColonyQuality &colony = colonies[index];
+	const ColonyQuality &colony = colonies.at(index);
 	switch (term)
 	{
 	case 0: return (0.6872892787909722 * (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT])) + 0.32465246735834974 * ((double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT]))) + 0.10539922456186433 * ((double(colony.distanceBands[2].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT]))));
@@ -79,18 +81,33 @@ inline double fairnessModelMeasurement(const std::vector<ColonyQuality> &colonie
 inline double fairnessModelContribution(const std::vector<ColonyQuality> &colonies,
 										std::size_t index, int term)
 {
-	const ColonyQuality &colony = colonies[index];
+	const ColonyQuality &colony = colonies.at(index);
 	switch (term)
 	{
 	case 0:
 	{
 		double total = 0;
 		for (const ColonyQuality &other : colonies)
-			total += (0.6872892787909722 * (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT])) + 0.32465246735834974 * ((double(other.distanceBands[1].exclusiveStoredAmount[WHEAT])) - (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT]))) + 0.10539922456186433 * ((double(other.distanceBands[2].exclusiveStoredAmount[WHEAT])) - (double(other.distanceBands[1].exclusiveStoredAmount[WHEAT]))));
+		{
+			::MapGeneration::generationCheckpoint();
+			total += (0.6872892787909722 *
+						  (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT])) +
+					  0.32465246735834974 *
+						  ((double(other.distanceBands[1].exclusiveStoredAmount[WHEAT])) -
+						   (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT]))) +
+					  0.10539922456186433 *
+						  ((double(other.distanceBands[2].exclusiveStoredAmount[WHEAT])) -
+						   (double(other.distanceBands[1].exclusiveStoredAmount[WHEAT]))));
+		}
 		return FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE * (total > 0 ? ((0.6872892787909722 * (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT])) + 0.32465246735834974 * ((double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT]))) + 0.10539922456186433 * ((double(colony.distanceBands[2].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT]))))) / total : 0.0);
 	}
-	case 1: return FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT * std::sqrt(std::max(double(colony.distanceBands[1].tiedNearestTiles), 0.0));
-	case 2: return FAIRNESS_MODEL_BUILD_SITES_4X4_LOG * std::log1p(std::max(double(colony.buildSites), 0.0));
+	case 1:
+		return FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT *
+			   ::MapGeneration::Numeric::sqrt(
+				   std::max(double(colony.distanceBands[1].tiedNearestTiles), 0.0));
+	case 2:
+		return FAIRNESS_MODEL_BUILD_SITES_4X4_LOG *
+			   ::MapGeneration::Numeric::log1p(std::max(double(colony.buildSites), 0.0));
 	case 3: return FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY * double(colony.rivalsWithinThreat);
 	case 4: return FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY * double(colony.distanceBands[2].storedAmount[WOOD]);
 	}
@@ -100,16 +117,29 @@ inline double fairnessModelContribution(const std::vector<ColonyQuality> &coloni
 /// The fitness of one colony, given every colony on the same map.
 inline double startFitness(const std::vector<ColonyQuality> &colonies, std::size_t index)
 {
-	const ColonyQuality &colony = colonies[index];
+	const ColonyQuality &colony = colonies.at(index);
 	double fitness = FAIRNESS_MODEL_INTERCEPT;
 	{ // d_wheat_decayed, as this colony's share of the map's total
 		double total = 0;
 		for (const ColonyQuality &other : colonies)
-			total += (0.6872892787909722 * (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT])) + 0.32465246735834974 * ((double(other.distanceBands[1].exclusiveStoredAmount[WHEAT])) - (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT]))) + 0.10539922456186433 * ((double(other.distanceBands[2].exclusiveStoredAmount[WHEAT])) - (double(other.distanceBands[1].exclusiveStoredAmount[WHEAT]))));
+		{
+			::MapGeneration::generationCheckpoint();
+			total += (0.6872892787909722 *
+						  (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT])) +
+					  0.32465246735834974 *
+						  ((double(other.distanceBands[1].exclusiveStoredAmount[WHEAT])) -
+						   (double(other.distanceBands[0].exclusiveStoredAmount[WHEAT]))) +
+					  0.10539922456186433 *
+						  ((double(other.distanceBands[2].exclusiveStoredAmount[WHEAT])) -
+						   (double(other.distanceBands[1].exclusiveStoredAmount[WHEAT]))));
+		}
 		fitness += FAIRNESS_MODEL_D_WHEAT_DECAYED_SHARE * (total > 0 ? ((0.6872892787909722 * (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT])) + 0.32465246735834974 * ((double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[0].exclusiveStoredAmount[WHEAT]))) + 0.10539922456186433 * ((double(colony.distanceBands[2].exclusiveStoredAmount[WHEAT])) - (double(colony.distanceBands[1].exclusiveStoredAmount[WHEAT]))))) / total : 0.0);
 	}
-	fitness += FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT * std::sqrt(std::max(double(colony.distanceBands[1].tiedNearestTiles), 0.0));
-	fitness += FAIRNESS_MODEL_BUILD_SITES_4X4_LOG * std::log1p(std::max(double(colony.buildSites), 0.0));
+	fitness += FAIRNESS_MODEL_BAND24_TIED_NEAREST_TILES_SQRT *
+			   ::MapGeneration::Numeric::sqrt(
+				   std::max(double(colony.distanceBands[1].tiedNearestTiles), 0.0));
+	fitness += FAIRNESS_MODEL_BUILD_SITES_4X4_LOG *
+			   ::MapGeneration::Numeric::log1p(std::max(double(colony.buildSites), 0.0));
 	fitness += FAIRNESS_MODEL_RIVALS_WITHIN_THREAT_IDENTITY * double(colony.rivalsWithinThreat);
 	fitness += FAIRNESS_MODEL_BAND48_WOOD_AMOUNT_IDENTITY * double(colony.distanceBands[2].storedAmount[WOOD]);
 	return fitness;

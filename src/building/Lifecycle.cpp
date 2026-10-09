@@ -18,17 +18,14 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include "EntityRandomIO.h"
 #include "Bullet.h"
 #include "BuildingGradientSearch.h"
+#include "BuildingGradientStats.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-			roundTripGradient[r][i]=NULL;
-	}
 	freeGradients();
 	load(stream, types, owner, versionMinor);
 }
@@ -39,6 +36,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	this->gid=gid;
 	owner=team;
 	scriptIdentity=owner->game->allocateScriptIdentity(true,gid);
+	entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
 
 	// type
 	bindType(typeNum,types);
@@ -128,11 +126,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		inUpgrade[i]=LS_UNKNOWN;
 
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; ++i) globalGradient[i]=NULL;
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-			roundTripGradient[r][i]=NULL;
-	}
 	freeGradients();
 
 	verbose=false;
@@ -150,6 +143,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 Building::~Building()
 {
+	owner->game->areaEffects.changed(gid);
 	freeGradients();
 }
 
@@ -172,30 +166,41 @@ void Building::dirtyGradients()
 		locked[i] = false;
 }
 
-void Building::resetPathfindGradients()
+// With scheduled building gradients, an edit elsewhere (a team-wide reset or a
+// forbidden-area paint) leaves this building's goals in place: its walking
+// fields keep serving, stale, and the next use requests a scheduled refresh at
+// once (the dirty throttle counts as spent). Only a field without a usable old
+// value (none, or locked) is dropped and rebuilt cold. The building's own
+// changes (moves, types, ranges) still drop everything.
+bool Building::keepsStaleGradients(GradientDrop cause) const
 {
+	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->game->map.buildingGradientPipelineActive();
+}
+
+void Building::resetPathfindGradients(GradientDrop cause)
+{
+	const bool keep = keepsStaleGradients(cause);
+	const Uint32 now = owner->game->stepCounter;
+	const Uint32 due = now >= GRADIENT_DIRTY_REBUILD_TICKS ? now - GRADIENT_DIRTY_REBUILD_TICKS : 0;
+	std::bitset<BUILDING_GRADIENT_COUNT> kept;
+	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
+		kept[i] = keep && globalGradient[i] && !locked[routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT))];
 	dirtyGradients();
+	auto *stats = owner->game->map.gradientStats.get();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
+		if (kept[i])
+		{
+			supersedeGradient(i);
+			lastGlobalGradientUpdateStepCounter[i] = std::min(lastGlobalGradientUpdateStepCounter[i], due);
+			continue;
+		}
+		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
+		dropGradientSlot(i, cause);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
-	}
-	resetRoundTripGradients();
-}
-
-void Building::resetRoundTripGradients()
-{
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-		{
-			owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][i]);
-			roundTripGradient[r][i] = NULL;
-			roundTripGradientStep[r][i] = 0;
-			roundTripGradientUsedStep[r][i] = 0;
-		}
 	}
 }
 
@@ -208,19 +213,13 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
+			if (auto *stats = owner->game->map.gradientStats.get())
+				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
+			dropGradientSlot(c, GradientDrop::Idle);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
 		}
-	}
-	for (int c=0; c<SWIM_CLASS_COUNT; c++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+IDLE_TICKS<now)
-			{
-				owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][c]);
-				roundTripGradient[r][c] = NULL;
-			}
 	}
 }
 
@@ -231,20 +230,11 @@ void Building::freeGradients()
 	dirtyGradients();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
+		dropGradientSlot(i, GradientDrop::New);
 		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
-	}
-	for (int i=0; i<SWIM_CLASS_COUNT; i++)
-	{
-		for (int r=0; r<MaterialSlotCount; r++)
-		{
-			delete[] roundTripGradient[r][i];
-			roundTripGradient[r][i] = NULL;
-			roundTripGradientStep[r][i] = 0;
-			roundTripGradientUsedStep[r][i] = 0;
-		}
 	}
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
@@ -274,6 +264,10 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		throw std::runtime_error("Invalid building identity");
 	scriptIdentity = versionMinor >= FILE_FORMAT_VERSION_JAVASCRIPT ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(true,gid);
 	this->owner = owner;
+	if (versionMinor >= FILE_FORMAT_VERSION_ENTITY_RANDOM)
+		loadEntityRandom(stream, entityRandom);
+	else
+		entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Building, gid, scriptIdentity);
 
 	// position
 	posX = stream->readSint32("posX");
@@ -447,6 +441,19 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		}
 	}
 	seenByMask = stream->readUint32("seenByMask");
+	areaFunded=false; areaFundingType=-1; areaFundingTeam=-1; areaFundingTick=0;
+	if (versionMinor>=FILE_FORMAT_VERSION_AREA_EFFECTS) {
+		const auto funded=stream->readUint8("areaFunded");
+		areaFundingType=stream->readSint32("areaFundingType");
+		areaFundingTick=stream->readUint32("areaFundingTick");
+		const auto fundingTeam=stream->readSint32("areaFundingTeam");
+		if (funded>1 || areaFundingType < -1 || areaFundingType>=Sint32(types->size()) ||
+			(funded && areaFundingType<0) || fundingTeam < -1 || fundingTeam>=Team::MAX_COUNT ||
+			(areaFundingType>=0 && ((areaFundingTick&15) || fundingTeam<0)))
+			throw std::runtime_error("Invalid area effect funding state");
+		areaFunded=funded;
+		areaFundingTeam=Sint8(fundingTeam);
+	}
 
 	inCanFeedUnit=LS_UNKNOWN;
 	inCanHealUnit=LS_UNKNOWN;
@@ -482,6 +489,7 @@ void Building::save(GAGCore::OutputStream *stream)
 	// identity
 	stream->writeUint16(gid, "gid");
 	stream->writeUint32(scriptIdentity, "scriptIdentity");
+	saveEntityRandom(stream, entityRandom);
 	// we drop team
 
 	// position
@@ -564,6 +572,10 @@ void Building::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeSint32(productionUnit, "productionUnit");
 	stream->writeUint32(seenByMask, "seenByMask");
+	stream->writeUint8(areaFunded, "areaFunded");
+	stream->writeSint32(areaFundingType, "areaFundingType");
+	stream->writeUint32(areaFundingTick, "areaFundingTick");
+	stream->writeSint32(areaFundingTeam, "areaFundingTeam");
 
 	stream->writeLeaveSection();
 }
@@ -772,4 +784,5 @@ void Building::bindType(Sint32 id, BuildingsTypes* catalog)
     typeNum=id;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
+    owner->game->areaEffects.changed(gid);
 }

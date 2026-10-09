@@ -14,7 +14,7 @@ export const MAX_TEAMS = 12;
 /** BasePlayer::MAX_NAME_LENGTH, in UTF-8 bytes. */
 export const MAX_PLAYER_NAME_BYTES = 32;
 /** GAME_TICKS_PER_SECOND in src/engine/EngineTiming.h. */
-export const TICKS_PER_SECOND = 25;
+export const TICKS_PER_SECOND = 30;
 
 /** An object that rejects unknown properties. */
 export function Strict<P extends TProperties>(
@@ -97,6 +97,10 @@ export const ErrorBody = Open(
     code: ErrorCode,
     message: Type.String({ maxLength: 2000 }),
     details: Type.Optional(Type.Unknown()),
+    messageKey: Type.Optional(Type.String({ maxLength: 2000 })),
+    messageParams: Type.Optional(
+      Type.Record(Type.String(), Type.Union([Type.String(), Type.Number()])),
+    ),
   },
   { description: 'Error payload: REST error responses and failed realtime responses.' },
 );

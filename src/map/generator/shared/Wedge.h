@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationNumeric.h"
 #include "Geometry.h"
 #include "Grid.h"
 #include "LatticeNoise.h"
@@ -45,16 +46,17 @@ struct WedgeFrame
 		// Distance and angle are taken in the design's round frame, so a feature designed at a
 		// radius lands on the stretched ellipse; on a square map this divides by exactly 1.
 		const ShapePoint round = stretch.undo(c.dx, c.dy);
-		c.d = std::hypot(round.x, round.y);
-		c.theta = std::atan2(round.y, round.x);
-		c.turn = std::fmod(c.theta - phase + 4 * kPi, 2 * kPi);
+		c.d = ::MapGeneration::Numeric::hypot(round.x, round.y);
+		c.theta = ::MapGeneration::Numeric::atan2(round.y, round.x);
+		c.turn = ::MapGeneration::Numeric::fmod(c.theta - phase + 4 * kPi, 2 * kPi);
 		place(c);
 		return c;
 	}
 	/// Bows the wedge boundaries sideways by `arc` tiles at the cell's radius.
 	void bend(Cell &c, double arc) const
 	{
-		c.turn = std::fmod(c.turn - arc / std::max(1.0, c.d) + 4 * kPi, 2 * kPi);
+		c.turn =
+			::MapGeneration::Numeric::fmod(c.turn - arc / std::max(1.0, c.d) + 4 * kPi, 2 * kPi);
 		place(c);
 	}
 
@@ -79,9 +81,11 @@ struct Blob
 	bool holds(double ds, double dr) const
 	{
 		// Rotate into the shape's own frame and undo its stretch.
-		const double c = std::cos(turn), sn = std::sin(turn);
+		const double c = ::MapGeneration::Numeric::cos(turn),
+					 sn = ::MapGeneration::Numeric::sin(turn);
 		const double px = (ds * c + dr * sn) / stretch, py = (-ds * sn + dr * c) * stretch;
-		return std::hypot(px, py) < shape.radiusAt(std::atan2(py, px));
+		return ::MapGeneration::Numeric::hypot(px, py) <
+			   shape.radiusAt(::MapGeneration::Numeric::atan2(py, px));
 	}
 };
 /// A noise field every wedge sees alike: periodic noise sampled at a tile's arc offset and radius in
@@ -93,7 +97,7 @@ struct WedgeField
 	PeriodicNoise noise;
 	double operator()(int tile) const
 	{
-		const WedgeFrame::Cell c = frame.cell(tile % frame.t.w, tile / frame.t.w);
+		const WedgeFrame::Cell c = frame.cell(frame.t.remainderX(tile), tile / frame.t.w);
 		return noise.at(c.s, c.d);
 	}
 };

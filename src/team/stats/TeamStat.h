@@ -146,6 +146,7 @@ struct GameplayMeasurements
 		UPGRADE,
 		HEALING_COST,
 		TRAINING_COST,
+		AREA_UPKEEP,
 		PURPOSES
 	};
 	enum Completion
@@ -320,16 +321,21 @@ public:
 
   void step(Team *team, bool reloaded = false);
 
-  void drawText(int posx, int posy);
-  void drawStat(int posx, int posy);
-  int getFreeUnits(int type);
-  int getTotalUnits(int type);
-  int getWorkersNeeded();
-  int getWorkersBalance();
-  int getWorkersLevel(int level);
-  int getStarvingUnits();
+  std::shared_ptr<const TeamStats> frozenDisplay() const;
+  std::shared_ptr<const TeamStats> frozenHistory() const;
+  size_t displayCapacityBytes() const;
+  void drawText(int posx, int posy) const;
+  void drawStat(int posx, int posy) const;
+  int getFreeUnits(int type) const;
+  int getTotalUnits(int type) const;
+  int getWorkersNeeded() const;
+  int getWorkersBalance() const;
+  int getWorkersLevel(int level) const;
+  int getStarvingUnits() const;
 
 private:
+    mutable std::weak_ptr<const TeamStats> displaySnapshot;
+    mutable std::weak_ptr<const TeamStats> historySnapshot;
 	// Derived reset index for the live per-variant count, never serialized.
 	// Counts are maintained by begin/observe; cold refresh/import rebuilds this
 	// index when replacing externally supplied diagnostic measurements.
@@ -360,7 +366,7 @@ private:
 	void save(GAGCore::OutputStream *stream);
 
 public:
-	TeamStat *getLatestStat(void) { return &(stats[statsIndex]); }
+	TeamStat *getLatestStat(void) { displaySnapshot.reset(); return &(stats[statsIndex]); }
 	//! Read-only access for code that only measures, such as the win probability
 	//! model, so it does not need friendship to reach the sample ring.
 	const TeamStat *getLatestStat(void) const { return &(stats[statsIndex]); }

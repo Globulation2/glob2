@@ -1,0 +1,54 @@
+{
+  "purpose": "Preserve released and historical growth save layouts through integrated format149.",
+  "growth144": {
+    "source_revision": "5925e3fe6ed2d00d4ff96c50f9124128de25a6a3",
+    "source": "prior resource-growth evidence, 17-tick multi-material checkpoint"
+  },
+  "growth145": {
+    "source_revision": "5430ef31c135667deeb8043c827d79b3fec4cda4",
+    "source": "prior resource-growth migration evidence; continue growth144 for 64 ticks and save"
+  },
+  "sha256": {
+    "growth144.game.gz": "17f495095d01a1585106c74f94bc66641b818d4612ad1f148b1e96fb0052e5a5",
+    "growth145.game.gz": "0efaf8ae23e360460c9ffc9aada2405c285c1f8ef158288c85f10e8ab3e063ed",
+    "empty-artwork144.game.gz": "7b0b141d3c6f54a1cd7b656bb859feeb258cd54b3c46912191c2b0337872f667",
+    "artwork144.game.gz": "6e4866108e421d2e1bf5fbacf5677a0d6a26a5ddd4346ec6f7f79316880c9a11",
+    "growth146.game.gz": "7e8b7d7635b94d65501245b054f376b6f08f7b07a124accec3c062d68badf883",
+    "building145.game.gz": "2826d2c20f3ac29cb2cdf8faf642bb887f34faa5d1a110047eaa2c9b27669b59",
+    "empty-building145.game.gz": "91654abac06777c432abd41c3ef277ac4f9fb88e33803b5edc7e018c1686c4bf",
+    "growth148.game.gz": "f573550ace487e979a6a304736fbf8e766b4b64c2596f013d89396fb606268d1",
+    "vertex148.game.gz": "e674bfd4cbca46c592b17ff4972c3e719b4b12e32712af422029908554a1e23c"
+  },
+  "artwork144": {
+    "source_revision": "6487b873dd3f29ad3ab75c7513597fa47905c132",
+    "generator": "MapSets/custom artwork properties and credits survive offline save and load",
+    "output": "custom-set.game"
+  },
+  "empty-artwork144": {
+    "source_revision": "6487b873dd3f29ad3ab75c7513597fa47905c132",
+    "generator": "load frozen sparse128 fixture, advance one tick, --save final"
+  },
+  "building145": {
+    "source_revision": "67fd5b935c98c3d6d0c5ba9d25754ce7df0f83f9",
+    "generator": "BuildingArtwork/portable bundle verifies image bytes and catalog frame references; export the binary MemoryStreamBackend after Game::save",
+    "fixture_writer": "final-master-fixture.patch in resource-growth PR evidence",
+    "binary_sha256": "4f329b0ab9fbfb6203c6db7c4b7642fc0192c1be70ba07a28992f69a88431fb7"
+  },
+  "empty-building145": {
+    "source_revision": "67fd5b935c98c3d6d0c5ba9d25754ce7df0f83f9",
+    "generator": "load frozen sparse128 fixture, advance one tick, --save final",
+    "binary_sha256": "d1443bd51706dfee5d6f816e902f520af659f218c1d0fdd2d309f2b66efcbb3b"
+  },
+  "growth146": {
+    "source_revision": "9e9497d7151effae8fdd00a48db515511d30077a",
+    "generator": "frozen sparse128 fixture, advance1024ticks, delay8/shared4, --save final"
+  },
+  "growth148": {
+    "source_revision": "dd7391a1eaa9a0877af73e5eaa1aabf9a567bad1",
+    "source": "Generated River seed1,4096 ticks, shared delay8; typed pending proposals with classic terrain"
+  },
+  "vertex148": {
+    "source_revision": "68aa1075b365efab78083fe5587051e689cb7ed1",
+    "source": "Current-master production engine,dense benchmark fixture,1024 ticks"
+  }
+}

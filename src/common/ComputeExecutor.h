@@ -25,20 +25,17 @@
 //  * run(): a blocking fork/join batch submitted and joined by one thread. Jobs
 //    may nest batches; nested work stays on its current thread. No simulation
 //    state may escape the barrier.
-//  * submit()/join(): deferred batches of plain jobs with a due tick decided by
-//    the submitter. Workers drain live batches oldest first; the submitting
-//    thread participates when it joins, claiming from the oldest live batch
-//    forward, so a join never idles while work remains. Lanes serialize the
-//    successive jobs of one producer (one AI controller's decisions) without
-//    overlap; because claiming is FIFO, a lane wait always waits on a job that
-//    is already running, so lanes cannot deadlock.
+//  * submit()/join(): deferred batches (AI decisions, gradients). The owner
+//    thread submits each batch tagged with the tick it is due. Workers run
+//    deferred jobs earliest due first, in submission order within a lane. At a
+//    join the owner only waits: it never runs deferred work while any worker
+//    exists, even when the only worker also runs presentation, which it
+//    interleaves with these jobs. With no workers the owner runs the jobs due
+//    no later than the batch at its join, because nothing else can.
 //
-// Only one thread submits and joins deferred batches, and never from inside a
-// job. Placement::OwnerOnly batches are invisible to workers: joining executes
-// them serially on the submitter in the same order, so a game without compute
-// threads follows the identical schedule. A lane's live batches must share one
-// placement: a worker holding a Shared lane job would otherwise wait on an
-// OwnerOnly predecessor until the submitter joins. submit() enforces this.
+// Jobs compute only from inputs fixed at submission, so the schedule never
+// changes a result. Joins always end: a worker claims a lane job only after its
+// predecessor completed, and neither jobs nor presentation chunks wait on the owner.
 class ComputeExecutor
 {
 public:
@@ -60,7 +57,7 @@ public:
 	private:
 		std::atomic<Status> state{Status::Pending};
 		std::atomic<bool> canceled{false};
-		std::function<void(std::size_t)> job;
+		std::function<bool(std::size_t)> job;
 		std::size_t next = 0, count = 0;
 		std::exception_ptr error;
 	};
@@ -74,7 +71,7 @@ public:
 		std::size_t batches = 0, jobs = 0, parallelBatches = 0;
 		std::uint64_t batchNs = 0, waitNs = 0;
 		std::size_t deferredBatches = 0, deferredJobs = 0, ownerJobs = 0, workerJobs = 0;
-		std::uint64_t laneWaitNs = 0, joinWaitNs = 0;
+		std::uint64_t joinWaitNs = 0;
 	};
 	struct Job
 	{
@@ -89,7 +86,6 @@ public:
 		Job job;
 		unsigned lane = NoLane;
 	};
-	enum class Placement { Shared, OwnerOnly };
 	class Batch
 	{
 		friend class ComputeExecutor;
@@ -98,9 +94,17 @@ public:
 	public:
 		bool empty() const { return serial == 0; }
 	};
-	// Two deferred producers (AI and gradients), up to sixteen ticks each,
-	// plus current submissions and retirement boundary headroom.
-	static constexpr std::size_t Slots = 36;
+	// Join order within one simulation tick: the observation boundary of tick t
+	// (AI deliveries) precedes the publications at the start of tick t's step.
+	static constexpr std::uint64_t boundaryDue(std::uint64_t tick) { return 2 * tick; }
+	static constexpr std::uint64_t advanceDue(std::uint64_t tick) { return 2 * tick + 1; }
+	// A batch occupies a slot from submission until its join. Each deferred
+	// producer submits at most one batch per tick and joins it at its horizon,
+	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
+	// gradients (16), building gradients (8) and growth (16), plus headroom for tests and
+	// teardown. The producers static_assert their horizons against these.
+	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16;
+	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + 13;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;
@@ -108,17 +112,18 @@ private:
 	struct Slot
 	{
 		std::uint64_t serial = 0; // zero: free
-		Placement placement = Placement::Shared;
+		std::uint64_t due = 0;
 		std::vector<Group> groups;
 		std::vector<std::size_t> starts; // first job index of each group
 		std::vector<std::uint64_t> laneBases; // lane sequence of each group's first job
-		std::size_t total = 0, next = 0, completed = 0;
+		std::vector<char> claimed;
+		std::size_t total = 0, unclaimed = 0, completed = 0, firstUnclaimed = 0;
 		std::exception_ptr error;
 	};
 	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; };
 	std::vector<std::thread> workers;
 	mutable std::mutex mutex;
-	std::condition_variable ready, runFinished, slotDone, laneChanged;
+	std::condition_variable ready, runFinished, slotDone;
 	bool stopping = false;
 	// run(): one blocking batch at a time. inFlight counts workers inside
 	// invoke() for the current generation; the batch state changes only when
@@ -127,18 +132,20 @@ private:
 	std::atomic<std::size_t> next{0};
 	std::function<void(std::size_t)> job;
 	std::exception_ptr error;
-	// submit()/join(): a ring of deferred batches, oldest first.
+	// submit()/join(): live batches, each held from submission to its join.
 	std::array<Slot, Slots> slots;
-	std::size_t oldest = 0, live = 0;
+	std::size_t live = 0;
 	std::uint64_t nextSerial = 1;
-	std::array<std::uint64_t, Lanes> laneIssued{}, laneCompleted{};
+	std::array<std::uint64_t, Lanes> laneIssued{}, laneCompleted{}, laneDue{};
 	Metrics totals;
 	struct WorkerMetrics { std::uint64_t jobs = 0, activeNs = 0; };
 	std::vector<WorkerMetrics> workerMetrics{1};
 	PresentationTicket presentation, presentationPending;
 	bool presentationRunning = false;
 	// Set before launching workers, never inferred from the vector while it grows.
+	// Zero means there are no workers, so the owner runs deferred jobs itself.
 	unsigned presentationWorker = 0;
+	bool ownerRunsDeferred() const { return presentationWorker == 0; }
 	PresentationMetrics presentationTotals;
 	std::condition_variable presentationDone;
 
@@ -164,7 +171,7 @@ private:
 		{
 			if (!work->canceled.load(std::memory_order_acquire))
 			{
-				work->job(work->next++);
+				if (work->job(work->next)) ++work->next;
 				ran = true;
 			}
 		}
@@ -214,49 +221,71 @@ private:
 		active = previous;
 		activeSlot = previousSlot;
 	}
-	// Under mutex: the oldest live batch with unclaimed jobs, respecting
-	// placement; owners may claim from any live batch. claimable() has no side
-	// effect and is what wait predicates use.
-	bool claimable(bool owner) const
+	// Under mutex: the earliest due, then earliest submitted, live batch with a
+	// claimable job. Only workers claim, unless there are none: then the owner
+	// claims the jobs due no later than limit. claimable() has no side effect.
+	static bool before(const Slot& a, const Slot& b) { return a.due != b.due ? a.due < b.due : a.serial < b.serial; }
+	std::size_t group(const Slot& slot, std::size_t index) const
 	{
-		for (std::size_t n = 0; n < live; ++n)
-		{
-			const auto& slot = slots[(oldest + n) % Slots];
-			if (!owner && slot.placement == Placement::OwnerOnly) continue;
-			if (slot.next < slot.total) return true;
-		}
-		return false;
+		return std::size_t(std::upper_bound(slot.starts.begin(), slot.starts.end(), index) - slot.starts.begin()) - 1;
 	}
-	Claim claim(bool owner)
+	// A job is ready when its lane predecessor has completed.
+	bool laneReady(const Slot& slot, std::size_t index) const
 	{
-		for (std::size_t n = 0; n < live; ++n)
+		const auto g = group(slot, index);
+		const auto lane = slot.groups[g].lane;
+		return lane == NoLane || laneCompleted[lane] >= slot.laneBases[g] + (index - slot.starts[g]);
+	}
+	// The first unclaimed job of the slot this thread may claim, or total. An
+	// inline owner runs every lane predecessor first (due no later, submitted
+	// earlier), so it needs no readiness check.
+	std::size_t firstClaimable(const Slot& slot, bool owner) const
+	{
+		for (std::size_t i = slot.firstUnclaimed; i < slot.total; ++i)
+			if (!slot.claimed[i] && (owner || laneReady(slot, i))) return i;
+		return slot.total;
+	}
+	Claim pick(bool owner, const Slot* limit) const
+	{
+		Claim best;
+		for (std::size_t i = 0; i < Slots; ++i)
 		{
-			auto& slot = slots[(oldest + n) % Slots];
-			if (!owner && slot.placement == Placement::OwnerOnly) continue;
-			if (slot.next < slot.total) return {(oldest + n) % Slots, slot.next++, true};
+			const auto& slot = slots[i];
+			if (!slot.serial || !slot.unclaimed) continue;
+			if (owner && limit && before(*limit, slot)) continue;
+			if (best.valid && !before(slot, slots[best.slot])) continue;
+			const auto index = firstClaimable(slot, owner);
+			if (index != slot.total) best = {i, index, true};
 		}
-		return {};
+		return best;
+	}
+	bool claimable(bool owner, const Slot* limit = nullptr) const { return pick(owner, limit).valid; }
+	Claim claim(bool owner, const Slot* limit = nullptr)
+	{
+		assert(owner == ownerRunsDeferred());
+		const auto best = pick(owner, limit);
+		if (!best.valid) return best;
+		auto& slot = slots[best.slot];
+		slot.claimed[best.index] = 1; --slot.unclaimed;
+		while (slot.firstUnclaimed < slot.total && slot.claimed[slot.firstUnclaimed]) ++slot.firstUnclaimed;
+		return best;
+	}
+	void freeSlot(Slot& slot)
+	{
+		slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear(); slot.claimed.clear();
+		slot.total = slot.unclaimed = slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
+		--live;
 	}
 	// Outside the mutex: run one claimed deferred job, then record completion.
 	void execute(const Claim& claim, std::size_t thread)
 	{
-		Group group; std::size_t offset = 0; std::uint64_t laneSequence = 0;
+		Group group; std::size_t offset = 0;
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			auto& slot = slots[claim.slot];
-			const auto g = std::size_t(std::upper_bound(slot.starts.begin(), slot.starts.end(), claim.index) - slot.starts.begin()) - 1;
+			const auto g = this->group(slot, claim.index);
 			group = slot.groups[g]; offset = claim.index - slot.starts[g];
-			laneSequence = slot.laneBases[g] + offset;
-		}
-		if (group.lane != NoLane)
-		{
-			const auto waitStart = Clock::now();
-			std::unique_lock<std::mutex> lock(mutex);
-			if (laneCompleted[group.lane] < laneSequence)
-			{
-				laneChanged.wait(lock, [&] { return laneCompleted[group.lane] >= laneSequence; });
-				totals.laneWaitNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - waitStart).count();
-			}
+			assert(group.lane == NoLane || laneCompleted[group.lane] == slot.laneBases[g] + offset);
 		}
 		auto *previous = active;
 		const auto previousSlot = activeSlot;
@@ -273,7 +302,7 @@ private:
 			auto& slot = slots[claim.slot];
 			if (failure && !slot.error) slot.error = failure;
 			if (thread) ++totals.workerJobs; else ++totals.ownerJobs;
-			if (group.lane != NoLane) { ++laneCompleted[group.lane]; laneChanged.notify_all(); }
+			if (group.lane != NoLane) { ++laneCompleted[group.lane]; ready.notify_all(); }
 			if (++slot.completed == slot.total) slotDone.notify_all();
 		}
 	}
@@ -285,9 +314,9 @@ private:
 		{
 			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot); });
 			if (stopping) return;
-			// The designated worker lends capacity to simulation, but must not
-			// starve presentation under a continuous deferred backlog. The owner
-			// and other workers remain available to every simulation barrier.
+			// The designated worker interleaves presentation chunks with
+			// simulation jobs, so neither starves the other: a join waits at
+			// most one chunk for it, and other workers keep claiming meanwhile.
 			if (simulationClaims >= 8 && presentationClaimable(slot))
 			{
 				const auto work = claimPresentation();
@@ -325,17 +354,6 @@ private:
 			lock.lock();
 		}
 	}
-	// Under mutex: release completed batches from the oldest end of the ring.
-	void release()
-	{
-		while (live && slots[oldest].completed == slots[oldest].total)
-		{
-			auto& slot = slots[oldest];
-			slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear();
-			slot.total = slot.next = slot.completed = 0; slot.error = nullptr;
-			oldest = (oldest + 1) % Slots; --live;
-		}
-	}
 	void stop()
 	{
 		cancelPresentationAndWait();
@@ -359,7 +377,7 @@ public:
 		const std::function<std::thread(std::function<void()>)> &launch =
 			[](std::function<void()> function) { return GAGCore::ThreadSupport::launch(std::move(function)); })
 	{
-		assert(!active && threads >= 1 && threads <= 64);
+		assert(!active && threads >= 1);
 		stop();
 		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)
@@ -380,6 +398,17 @@ public:
 	// The submitting thread owns admission. Replacing pending work releases its
 	// captures immediately; active work finishes its current chunk on its worker.
 	PresentationTicket submitPresentation(std::size_t chunks, std::function<void(std::size_t)> function)
+	{
+		if (!function) throw std::invalid_argument("Presentation needs nonempty work");
+		return submitResumablePresentation(chunks, [function=std::move(function)](std::size_t chunk) {
+			function(chunk);
+			return true;
+		});
+	}
+	// Returning false yields to simulation jobs, then resumes the same chunk.
+	// This keeps data-dependent operations bounded without inspecting the world
+	// or constructing an operation list on the submitting thread.
+	PresentationTicket submitResumablePresentation(std::size_t chunks, std::function<bool(std::size_t)> function)
 	{
 		if (active) throw std::logic_error("Presentation cannot be submitted from inside a job");
 		if (!chunks || !function) throw std::invalid_argument("Presentation needs nonempty work");
@@ -492,9 +521,9 @@ public:
 		}
 		totals.batchNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count();
 	}
-	// Queue a batch of groups; groups are copied. Returns an empty batch when
-	// nothing was submitted. Never call from inside a job.
-	Batch submit(std::span<const Group> groups, Placement placement = Placement::Shared)
+	// Queue a batch of groups, due at the given tick key; groups are copied.
+	// Returns an empty batch when nothing was submitted. Never call from inside a job.
+	Batch submit(std::span<const Group> groups, std::uint64_t due = 0)
 	{
 		if (active) throw std::logic_error("Deferred batches cannot be submitted from inside a job");
 		Batch batch;
@@ -507,21 +536,17 @@ public:
 		if (!total) return batch;
 		std::unique_lock<std::mutex> lock(mutex);
 		if (live == Slots) throw std::logic_error("Compute executor exceeded its deferred batch horizon");
-		// Validate everything before touching executor state: a partial
-		// submission would leave lane sequences nobody completes.
+		// Validate before touching executor state: a partial submission would
+		// leave lane sequences nobody completes. Due order never contradicts
+		// lane order, so an inline owner can run lanes in due order.
 		for (const auto& group : groups)
-			if (group.lane != NoLane)
-				for (std::size_t n = 0; n < live; ++n)
-				{
-					const auto& other = slots[(oldest + n) % Slots];
-					if (other.placement == placement || other.completed == other.total) continue;
-					for (const auto& candidate : other.groups)
-						if (candidate.lane == group.lane) throw std::logic_error("Compute lane mixes placements across live batches");
-				}
-		const auto index = (oldest + live) % Slots;
+			if (group.lane != NoLane && laneCompleted[group.lane] < laneIssued[group.lane] && due < laneDue[group.lane])
+				throw std::logic_error("Compute lane job due before an earlier one");
+		std::size_t index = 0;
+		while (slots[index].serial) ++index;
 		auto& slot = slots[index];
 		slot.serial = nextSerial++;
-		slot.placement = placement;
+		slot.due = due;
 		slot.groups.assign(groups.begin(), groups.end());
 		slot.starts.clear(); slot.laneBases.clear();
 		std::size_t start = 0;
@@ -529,17 +554,18 @@ public:
 		{
 			slot.starts.push_back(start); start += group.count;
 			slot.laneBases.push_back(group.lane == NoLane ? 0 : laneIssued[group.lane]);
-			if (group.lane != NoLane) laneIssued[group.lane] += group.count;
+			if (group.lane != NoLane) { laneIssued[group.lane] += group.count; laneDue[group.lane] = due; }
 		}
-		slot.total = total; slot.next = 0; slot.completed = 0; slot.error = nullptr;
+		slot.total = slot.unclaimed = total; slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
+		slot.claimed.assign(total, 0);
 		++live;
 		++totals.deferredBatches; totals.deferredJobs += total;
 		batch.slot = index; batch.serial = slot.serial;
 		lock.unlock();
-		if (placement == Placement::Shared && !workers.empty()) ready.notify_all();
+		if (!ownerRunsDeferred()) ready.notify_all();
 		return batch;
 	}
-	// True once every job of the batch has completed (or the batch was released).
+	// True once every job of the batch has completed (or the batch was joined).
 	bool finished(const Batch& batch) const
 	{
 		if (batch.empty()) return true;
@@ -547,50 +573,49 @@ public:
 		const auto& slot = slots[batch.slot];
 		return slot.serial != batch.serial || slot.completed == slot.total;
 	}
-	// Complete the batch, executing remaining jobs oldest batch first, then
-	// rethrow the batch's first error. The batch becomes empty.
+	// Wait for the batch (with no workers, first run the jobs due no later than
+	// it), then rethrow the batch's first error. The batch becomes empty and its
+	// slot free.
 	void join(Batch& batch)
 	{
 		if (batch.empty()) return;
 		if (active) throw std::logic_error("Deferred batches cannot be joined from inside a job");
 		std::unique_lock<std::mutex> lock(mutex);
-		auto current = [&]() -> Slot* { auto& slot = slots[batch.slot]; return slot.serial == batch.serial ? &slot : nullptr; };
-		while (auto* slot = current())
+		auto& slot = slots[batch.slot];
+		if (slot.serial != batch.serial) { batch = {}; return; }
+		for (Claim claimed; ownerRunsDeferred() && (claimed = claim(true, &slot)).valid; lock.lock())
 		{
-			if (slot->completed == slot->total) break;
-			const auto claimed = claim(true);
-			if (claimed.valid)
-			{
-				lock.unlock();
-				execute(claimed, 0);
-				lock.lock();
-				continue;
-			}
+			lock.unlock();
+			execute(claimed, 0);
+		}
+		if (slot.completed != slot.total)
+		{
 			const auto waitStart = Clock::now();
-			slotDone.wait(lock, [&] { auto* s = current(); return !s || s->completed == s->total || claimable(true); });
+			slotDone.wait(lock, [&] { return slot.completed == slot.total; });
 			totals.joinWaitNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - waitStart).count();
 		}
-		std::exception_ptr failure;
-		if (auto* slot = current()) failure = slot->error;
-		release();
+		const auto failure = slot.error;
+		freeSlot(slot);
 		batch = {};
 		lock.unlock();
 		if (failure) std::rethrow_exception(failure);
 	}
-	// Complete every live batch; errors of individual batches are discarded
-	// here, since the batches' owners have given up their handles.
+	// Complete and free every live batch; errors of individual batches are
+	// discarded here, since the batches' owners have given up their handles.
 	void joinAll()
 	{
 		if (active) return;
 		std::unique_lock<std::mutex> lock(mutex);
-		for (;;)
+		for (Claim claimed; ownerRunsDeferred() && (claimed = claim(true)).valid; lock.lock())
 		{
-			const auto claimed = claim(true);
-			if (claimed.valid) { lock.unlock(); execute(claimed, 0); lock.lock(); continue; }
-			release();
-			if (!live) break;
-			slotDone.wait(lock, [&] { return claimable(true) || slots[oldest].completed == slots[oldest].total; });
+			lock.unlock();
+			execute(claimed, 0);
 		}
+		slotDone.wait(lock, [&] {
+			for (const auto& slot : slots) if (slot.serial && slot.completed != slot.total) return false;
+			return true;
+		});
+		for (auto& slot : slots) if (slot.serial) freeSlot(slot);
 	}
 	std::size_t liveBatches() const { std::lock_guard<std::mutex> lock(mutex); return live; }
 };

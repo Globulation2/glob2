@@ -102,6 +102,67 @@ async function dropListener(instance: Instance): Promise<void> {
   await waitUntil(() => instance.app.identity.hub.resyncCount > before, 10_000);
 }
 
+describe('member expiry races', () => {
+  it.each(['reconnected', 'recently disconnected'] as const)(
+    'preserves a %s member after the sweep snapshots expired members',
+    async (change) => {
+      const { guest, roomId } = await readyRoom();
+      const db = harness.database.db;
+      await db
+        .updateTable('room_members')
+        .set({ connected: false, last_seen_at: new Date(Date.now() - 3_600_000) })
+        .where('room_id', '=', roomId)
+        .where('account_id', '=', guest.accountId)
+        .execute();
+      let changed = false;
+      // Reconnect after the candidate query but before its guarded deletion.
+      const racingDb = db.withPlugin({
+        transformQuery: (args) => args.node,
+        transformResult: async ({ result }) => {
+          if (
+            !changed &&
+            result.rows.some((row) => row.room_id === roomId && row.account_id === guest.accountId)
+          ) {
+            changed = true;
+            if (change === 'reconnected') await rooms.markConnected(guest.accountId);
+            else
+              await db
+                .updateTable('room_members')
+                .set({ last_seen_at: new Date() })
+                .where('room_id', '=', roomId)
+                .where('account_id', '=', guest.accountId)
+                .execute();
+          }
+          return result;
+        },
+      });
+      const racingRooms = new RoomService({
+        db: racingDb,
+        jobs: harness.jobs,
+        access: allowAllPolicy,
+        origin: ORIGIN,
+        logger,
+      });
+      expect((await racingRooms.sweep()).removed).toBe(0);
+      expect(changed).toBe(true);
+      const member = await db
+        .selectFrom('room_members')
+        .select('connected')
+        .where('room_id', '=', roomId)
+        .where('account_id', '=', guest.accountId)
+        .executeTakeFirstOrThrow();
+      expect(member.connected).toBe(change === 'reconnected');
+      const seat = await db
+        .selectFrom('room_seats')
+        .select('occupant')
+        .where('room_id', '=', roomId)
+        .where('account_id', '=', guest.accountId)
+        .executeTakeFirstOrThrow();
+      expect(seat.occupant).toBe('human');
+    },
+  );
+});
+
 describe('rooms stuck in starting', () => {
   it('reopens a room whose start was interrupted before its match existed, with a notice', async () => {
     const { host, guest, roomId } = await readyRoom();

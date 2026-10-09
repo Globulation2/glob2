@@ -17,6 +17,7 @@
  */
 
 // Combat control for Maxima: objectives, waves, and defensive flags.
+#include "PowerOfTwo.h"
 #include "Material.h"
 #include "field/UniformTraversal.h"
 #include "AIMaxima.h"
@@ -161,7 +162,7 @@ namespace
 			std::vector<int>& field=components[swimming];
 			field.assign(w*h,-1);
 			for(int i=0; i<w*h; ++i)
-				if(((*map).resourceAt((*map).tileIndex(i%w,i/w)).resource.type!=NO_RES_TYPE) || (!AIEngine::ObservationQueries::terrain((*map),i).walkable && !(swimming && AIEngine::ObservationQueries::terrain((*map),i).swimmable)))
+				if(((*map).resourceAt((*map).tileIndex(powerOfTwoRemainder(i, w),i/w)).resource.type!=NO_RES_TYPE) || (!AIEngine::ObservationQueries::terrain((*map),i).walkable && !(swimming && AIEngine::ObservationQueries::terrain((*map),i).swimmable)))
 					field[i]=-2;
 			std::vector<int> queue;
 			for(int start=0; start<w*h; ++start)
@@ -170,7 +171,7 @@ namespace
 				queue.clear(); queue.push_back(start); field[start]=start;
 				field::traverse(queue,{w,h},field::Surrounding,[](int){return field::Visit::Expand;},
 					[&](int,int x,int y) {
-						const int next=((y+h)%h)*w+(x+w)%w;
+						const int next=(powerOfTwoRemainder(y+h, h))*w+powerOfTwoRemainder(x+w, w);
 						if(field[next]==-1){field[next]=start;queue.push_back(next);}
 					});
 			}
@@ -232,8 +233,8 @@ namespace
 	{
 		for(int dy=0; dy<building.height; ++dy)
 			for(int dx=0; dx<building.width; ++dx)
-				walkable[((building.y+dy+h)%h)*w
-					+((building.x+dx+w)%w)]=0;
+				walkable[(powerOfTwoRemainder(building.y+dy+h, h))*w
+					+(powerOfTwoRemainder(building.x+dx+w, w))]=0;
 	}
 
 	void collect_building_perimeter(const PreemptiveBuilding& building, int w,
@@ -247,8 +248,8 @@ namespace
 				if(dx!=-1 && dx!=building.width
 				   && dy!=-1 && dy!=building.height)
 					continue;
-				const int x=(building.x+dx+w)%w;
-				const int y=(building.y+dy+h)%h;
+				const int x=powerOfTwoRemainder(building.x+dx+w, w);
+				const int y=powerOfTwoRemainder(building.y+dy+h, h);
 				const int index=y*w+x;
 				if(walkable[index])
 					unique.insert(index);
@@ -265,7 +266,7 @@ namespace
 {
 	int wrapped_center(int origin, int size, int extent)
 	{
-		return (origin+size/2+extent)%extent;
+		return powerOfTwoRemainder(origin+size/2+extent, extent);
 	}
 }
 
@@ -1278,8 +1279,8 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, AnyConstruction); ebi!=enemy_building_iterator(); ++ebi)
 	{
 		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(target)[Building::GIDtoID(*ebi)];
-		int bx = (b->posX + mi.get_width()) % mi.get_width();
-		int by = (b->posY + mi.get_height()) % mi.get_height();
+		int bx = powerOfTwoRemainder(b->posX + mi.get_width(), mi.get_width());
+		int by = powerOfTwoRemainder(b->posY + mi.get_height(), mi.get_height());
 		if(gradient.get_height(bx, by) == -2)
 			buildings_to_attack.push_back(*ebi);
 	}
@@ -1287,12 +1288,12 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	if(buildings_to_attack.size() == 0)
 		return false;
 
-	int num=syncRand() % buildings_to_attack.size();
+	int num=random() % buildings_to_attack.size();
 
 
 	int building=buildings_to_attack[num];
-	const int bx=(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posX) % mi.get_width();
-	const int by=(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posY) % mi.get_height();
+	const int bx=powerOfTwoRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posX, mi.get_width());
+	const int by=powerOfTwoRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posY, mi.get_height());
 
 	AIMaximaRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
@@ -1340,10 +1341,10 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	{
 		int nxpos = xpos;
 		int nypos = ypos;
-		int rx=(xpos+1+w) % w;
-		int lx=(xpos-1+w) % w;
-		int dy=(ypos+1+h) % h;
-		int uy=(ypos-1+h) % h;
+		int rx=powerOfTwoRemainder(xpos+1+w, w);
+		int lx=powerOfTwoRemainder(xpos-1+w, w);
+		int dy=powerOfTwoRemainder(ypos+1+h, h);
+		int uy=powerOfTwoRemainder(ypos-1+h, h);
 		int lowest_entity=gradient_pathfind.get_height(xpos, ypos)+2;
 
 		if(lowest_entity == 0)
@@ -1511,7 +1512,7 @@ void Maxima::clear_preemptive_defense(Context& runtime)
 	for(std::set<int>::const_iterator tile=preemptive_guard_tiles.begin();
 		tile!=preemptive_guard_tiles.end(); ++tile)
 	{
-		const int x=*tile%w;
+		const int x=powerOfTwoRemainder(*tile, w);
 		const int y=*tile/w;
 		if(map.is_guard_area(x, y))
 		{
@@ -1682,10 +1683,10 @@ void Maxima::update_preemptive_defense(Context& runtime)
 		if(desired.find(*tile)!=desired.end())
 		{
 			next_owned.insert(*tile);
-			if(!map.is_guard_area(*tile%w, *tile/w))
+			if(!map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w))
 				additions.push_back(*tile);
 		}
-		else if(map.is_guard_area(*tile%w, *tile/w))
+		else if(map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w))
 			removals.push_back(*tile);
 	}
 	for(std::set<int>::const_iterator tile=desired.begin(); tile!=desired.end();
@@ -1693,7 +1694,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 	{
 		if(preemptive_guard_tiles.find(*tile)!=preemptive_guard_tiles.end())
 			continue;
-		if(!map.is_guard_area(*tile%w, *tile/w))
+		if(!map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w))
 		{
 			additions.push_back(*tile);
 			next_owned.insert(*tile);
@@ -1704,7 +1705,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 		RemoveArea* remove=new RemoveArea(GuardArea);
 		for(std::vector<int>::const_iterator tile=removals.begin();
 			tile!=removals.end(); ++tile)
-			remove->add_location(*tile%w, *tile/w);
+			remove->add_location(powerOfTwoRemainder(*tile, w), *tile/w);
 		runtime.add_management_order(remove);
 	}
 	if(!additions.empty())
@@ -1712,7 +1713,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 		AddArea* add=new AddArea(GuardArea);
 		for(std::vector<int>::const_iterator tile=additions.begin();
 			tile!=additions.end(); ++tile)
-			add->add_location(*tile%w, *tile/w);
+			add->add_location(powerOfTwoRemainder(*tile, w), *tile/w);
 		runtime.add_management_order(add);
 	}
 	preemptive_guard_tiles.swap(next_owned);
@@ -1771,10 +1772,10 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
 		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] == NOGUID)
+		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
 		{
-			unitGID[(unit->posX+w)%w * h + (unit->posY+h)%h] = unit->gid;
-			modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, RADIUS, 1, locations);
+			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
+			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
 		}
 	}
 	for(int i=0; i<Building::MAX_COUNT; ++i)
@@ -1784,8 +1785,8 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		   && buildingGID[runtime.observation().normalizeX(building->posX) * h
 		       + runtime.observation().normalizeY(building->posY)] == NOGBID)
 		{
-			int nx = (building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w) %w;
-			int ny = (building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h) %h;
+			int nx = powerOfTwoRemainder(building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w, w);
+			int ny = powerOfTwoRemainder(building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h, h);
 			// Building origins can cross the toroidal seam during upgrades.
 			// Normalize before indexing, as we already do for units.
 			buildingGID[runtime.observation().normalizeX(building->posX) * h
@@ -1827,12 +1828,12 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			}
 			if(!near_colony)
 				continue;
-			const int pos=(unit->posX+w)%w*h+(unit->posY+h)%h;
+			const int pos=powerOfTwoRemainder(unit->posX+w, w)*h+powerOfTwoRemainder(unit->posY+h, h);
 			if(enemyGID[pos]==NOGUID)
 			{
 				enemyGID[pos]=unit->gid;
-				modify_points(counts, w, h, (unit->posX+w)%w,
-					(unit->posY+h)%h, RADIUS, 1, locations);
+				modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w),
+					powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
 			}
 		}
 	}
@@ -1876,7 +1877,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		std::vector<position>& covered_points=flagCoverage[maxPos];
 
 		int max_x = maxPos / h;
-		int max_y = maxPos % h;
+		int max_y = powerOfTwoRemainder(maxPos, h);
 
 		//test(runtime, counts, w, h, squareProtected, locations);
 
@@ -1889,24 +1890,24 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		// location
 		for(int px = -RADIUS-3; px <= RADIUS+3; ++px)
 		{
-			int nx = (max_x + px + w)%w;
+			int nx = powerOfTwoRemainder(max_x + px + w, w);
 			for(int py = -RADIUS-3; py<=RADIUS+3; ++py)
 			{
-				int ny = (max_y + py + h)%h;
+				int ny = powerOfTwoRemainder(max_y + py + h, h);
 				const bool covered=runtime.observation().distanceSquared(
 					max_x, max_y, nx, ny)<=RADIUS*RADIUS;
 				if(covered && unitGID[nx * h + ny] != NOGUID)
 				{
 					const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
 					covered_points.push_back(position(nx, ny));
-					modify_points(counts, w, h, (unit->posX+w)%w, (unit->posY+h)%h, RADIUS, -1, locations);
+					modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
 				{
 					const AIEngine::BuildingView* building = runtime.observation().buildingSlots(runtime.teamNumber())[Building::GIDtoID(buildingGID[nx * h + ny])];
-					int nx2 = (building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w) %w;
-					int ny2 = (building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h) %h;
+					int nx2 = powerOfTwoRemainder(building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w, w);
+					int ny2 = powerOfTwoRemainder(building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h, h);
 					if(runtime.observation().distanceSquared(max_x, max_y, nx2, ny2)
 					   <=RADIUS*RADIUS)
 					{
@@ -1921,8 +1922,8 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					const Uint16 gid=enemyGID[nx * h + ny];
 					const AIEngine::UnitView* enemy=runtime.observation().unitAtSlot(gid);
 					if(enemy)
-						modify_points(counts, w, h, (enemy->posX+w)%w,
-							(enemy->posY+h)%h, RADIUS, -1, locations);
+						modify_points(counts, w, h, powerOfTwoRemainder(enemy->posX+w, w),
+							powerOfTwoRemainder(enemy->posY+h, h), RADIUS, -1, locations);
 					enemyGID[nx * h + ny] = NOGUID;
 				}
 
@@ -1994,7 +1995,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 				for(std::vector<int>::iterator j = flagLocations.begin(); j!=flagLocations.end(); ++j)
 				{
 					int flag_x = (*j) / h;
-					int flag_y = (*j) % h;
+					int flag_y = powerOfTwoRemainder(*j, h);
 					int d = runtime.observation().distanceSquared(flag_x, flag_y, b->posX, b->posY);
 					if(d < min_dist)
 					{
@@ -2068,8 +2069,8 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 				{
 					if(px*px+py*py>RADIUS*RADIUS)
 						continue;
-					const int nx=(flag->posX+px+w)%w;
-					const int ny=(flag->posY+py+h)%h;
+					const int nx=powerOfTwoRemainder(flag->posX+px+w, w);
+					const int ny=powerOfTwoRemainder(flag->posY+py+h, h);
 					const Uint16 guid=runtime.observation().occupancyAt(runtime.observation().tileIndex(nx, ny)).groundUnit;
 					if(guid==NOGUID
 					   || !((1<<Unit::GIDtoTeam(guid))
@@ -2110,7 +2111,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	{
 		int enemy = enemyUnits[i - flagLocations.begin()];
 		int flag_x = *i / h;
-		int flag_y = *i % h;
+		int flag_y = powerOfTwoRemainder(*i, h);
 
 		//The main order for the war flag
 		BuildingOrder* bo_flag = new BuildingOrder(AIMaximaBuildings::WarriorAttraction, enemy);
@@ -2151,10 +2152,10 @@ void Maxima::modify_points(Uint16* counts, int w, int h, int x, int y, int dist,
 {
 	for(int px = -dist; px <= dist; ++px)
 	{
-		int nx = (x + px + w)%w;
+		int nx = powerOfTwoRemainder(x + px + w, w);
 		for(int py = -dist; py <= dist; ++py)
 		{
-			int ny = (y + py + h)%h;
+			int ny = powerOfTwoRemainder(y + py + h, h);
 			if(px * px + py * py <= dist * dist)
 			{
 				if(value>0)
@@ -2256,10 +2257,10 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 				yposs.pop();
 				for(int dx = -4; dx<=4; ++dx)
 				{
-					int nx = (top->posX + dx + w) % w;
+					int nx = powerOfTwoRemainder(top->posX + dx + w, w);
 					for(int dy = -4; dy<=4; ++dy)
 					{
-						int ny = (top->posY + dy + h) % h;
+						int ny = powerOfTwoRemainder(top->posY + dy + h, h);
 						if(runtime.observation().distanceSquared(group_x / group_size, group_y / group_size, nx, ny) < (6*6))
 						{
 							Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx, ny)).groundUnit;
@@ -2281,8 +2282,8 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 					}
 				}
 			}
-			group_x = (group_x / group_size + w)%w;
-			group_y = (group_y / group_size + h)%h;
+			group_x = powerOfTwoRemainder(group_x / group_size + w, w);
+			group_y = powerOfTwoRemainder(group_y / group_size + h, h);
 
 			groups.push_back(std::make_tuple(group_size, group_x, group_y));
 		}

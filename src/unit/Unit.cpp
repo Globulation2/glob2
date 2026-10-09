@@ -25,6 +25,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
 	init(x, y, gid, typeNum, team, level);
 	scriptIdentity = owner->game->allocateScriptIdentity(false, gid);
+	entityRandom.initialize(owner->game->gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, gid, scriptIdentity);
 }
 
 void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
@@ -52,6 +53,8 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	serviceResourcesReserved=false;
 	constructionLevel=level;
 	terrainHealthRemainder=0;
+	areaServiceRemainders[BuildingAreaEffects::Healing]=0;
+	areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 	speed=32;
 
 	// Custom-game "glass cannon" rule: cut HP once here, at the source,
@@ -268,9 +271,64 @@ void Unit::applyTerrainHealthRate(int rate)
 	terrainHealthRemainder %= 256;
 	if (change < 0) recordLethalDamage(-change, GameplayMeasurements::UNKNOWN);
 	hp = std::min(performance[HP], hp + change);
+	if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 	if (hp >= performance[HP] && terrainHealthRemainder > 0) terrainHealthRemainder = 0;
 	if (change) needToRecheckMedical = true;
 	resolveDeath();
+}
+
+void Unit::applyAreaServices()
+{
+	using namespace BuildingAreaEffects;
+	auto &game = *owner->game;
+	if (!game.areaEffects.enabled() || (game.stepCounter & (PulseTicks - 1)) ||
+		areaLastPulseTick == game.stepCounter || isDead || insideTimeout < 0 ||
+		displacement == DIS_INSIDE || displacement == DIS_ENTERING_BUILDING ||
+		(displacement == DIS_EXITING_BUILDING && attachedBuilding))
+		return;
+	const auto tile = owner->map->coordToIndex(posX, posY);
+	if (!game.areaEffects.at(Healing, owner->teamNumber, tile) &&
+		!game.areaEffects.at(Damage, owner->teamNumber, tile) &&
+		!game.areaEffects.at(Feeding, owner->teamNumber, tile))
+		return;
+	areaLastPulseTick = game.stepCounter;
+	const int beforeHp = hp, beforeHunger = hungry;
+	const auto amount = [&](Channel channel)
+	{
+		unsigned value =
+			areaServiceRemainders[channel] + game.areaEffects.at(channel, owner->teamNumber, tile);
+		areaServiceRemainders[channel] = value % 256;
+		return int(value / 256);
+	};
+	const int damage = amount(Damage);
+	if (damage)
+	{
+		recordLethalDamage(damage, GameplayMeasurements::COMBAT);
+		hp -= damage;
+	}
+	// Earlier teams may already have dealt a lethal hit this tick. Resolve it
+	// even when this unit's aura damage is zero, before allowing healing.
+	resolveDeath();
+	if (isDead)
+		return;
+	if (hp >= performance[HP])
+		areaServiceRemainders[Healing] = 0;
+	else
+	{
+		hp = std::min(performance[HP], hp + amount(Healing));
+		if (hp >= performance[HP])
+			areaServiceRemainders[Healing] = 0;
+	}
+	if (game.gameHeader.isHungerDisabled() || hungry >= HUNGRY_MAX)
+		areaServiceRemainders[Feeding] = 0;
+	else
+	{
+		hungry = std::min(int(HUNGRY_MAX), hungry + amount(Feeding));
+		if (hungry >= HUNGRY_MAX)
+			areaServiceRemainders[Feeding] = 0;
+	}
+	if (hp != beforeHp || hungry != beforeHunger)
+		needToRecheckMedical = true;
 }
 
 void Unit::syncStep(void)
@@ -311,7 +369,7 @@ void Unit::syncStep(void)
 				int enemyID=Building::GIDtoID(enemyGBID);
 				int enemyTeam=Building::GIDtoTeam(enemyGBID);
 				Building *enemy=owner->game->teams[enemyTeam]->myBuildings[enemyID];
-				int damage=getRealAttackStrength()-enemy->type->armor;
+				int damage=getRealAttackStrength()-enemy->getEffectiveArmor();
 				if (damage<=0)
 					damage=1;
 				++owner->stats.measurements.shots[GameplayMeasurements::MELEE];

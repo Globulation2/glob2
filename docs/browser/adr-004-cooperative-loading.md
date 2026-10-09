@@ -47,8 +47,8 @@ reviewed alongside the alternative of hand-written parser state machines.
 
 The editor entry flow owns a staging editor and its loading task in
 `EditorLoadScreen`. Only successful completion transfers the editor to
-`MapEditorScreen`. Cancellation/failure destroys partial data and restores the
-previous global RNG state. Map cleanup releases each allocation independently;
+`MapEditorScreen`. Cancellation/failure destroys partial data, including its privately owned RNG
+state; loading never consumes another game's streams. Map cleanup releases each allocation independently;
 it cannot assume every gradient array has been constructed. Error messages are
 owned screens rather than modal calls inside the loader.
 

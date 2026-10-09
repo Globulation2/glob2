@@ -1,4 +1,7 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PowerOfTwo.h"
 #include "Orbits.h"
 #include "Building.h"
 #include "BuildingType.h"
@@ -17,7 +20,7 @@ namespace
 {
 int wrap(int v, int n)
 {
-	v %= n;
+	v = dimensionRemainder(v, n);
 	return v < 0 ? v + n : v;
 }
 
@@ -29,7 +32,7 @@ std::string at(int x, int y)
 
 int Symmetry::tile(int e, int x, int y) const
 {
-	const Isometry &g = elements[e];
+	const Isometry &g = elements.at(e);
 	const int X = 2 * x + 1 - width, Y = 2 * y + 1 - height;
 	return wrap((g.c * X + g.d * Y + height - 1) / 2 + g.ty, height) * width +
 		   wrap((g.a * X + g.b * Y + width - 1) / 2 + g.tx, width);
@@ -37,7 +40,7 @@ int Symmetry::tile(int e, int x, int y) const
 
 int Symmetry::corner(int e, int u, int v) const
 {
-	const Isometry &g = elements[e];
+	const Isometry &g = elements.at(e);
 	const int U = 2 * u - width, V = 2 * v - height;
 	return wrap((g.c * U + g.d * V + height) / 2 + g.ty, height) * width +
 		   wrap((g.a * U + g.b * V + width) / 2 + g.tx, width);
@@ -45,7 +48,7 @@ int Symmetry::corner(int e, int u, int v) const
 
 std::pair<int, int> Symmetry::anchor(int e, int x, int y, int w, int h) const
 {
-	const Isometry &g = elements[e];
+	const Isometry &g = elements.at(e);
 	const int U0 = 2 * x - width, V0 = 2 * y - height;
 	const int U1 = 2 * (x + w) - width, V1 = 2 * (y + h) - height;
 	const int X = std::min(g.a * U0 + g.b * V0, g.a * U1 + g.b * V1);
@@ -57,7 +60,10 @@ int Symmetry::orbitKey(int x, int y) const
 {
 	int first = y * width + x;
 	for (int e = 1; e < order(); ++e)
+	{
+		::MapGeneration::generationCheckpoint();
 		first = std::min(first, tile(e, x, y));
+	}
 	return first;
 }
 
@@ -93,32 +99,47 @@ Symmetry translationSymmetry(int width, int height, int teams, long long *spacin
 	const Torus t(width, height);
 	for (int p = 1; p <= width; ++p)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (width % p)
 			continue;
 		for (int q = 1; q <= height; ++q)
 		{
+			::MapGeneration::generationCheckpoint();
 			if (height % q || (long long)(width / p) * (height / q) != teams)
 				continue;
 			const int columns = width / p, rows = height / q;
 			for (int s = 0; s < p; ++s)
 			{
+				::MapGeneration::generationCheckpoint();
 				if ((long long)s * rows % p)
 					continue;
 				long long spacing = LLONG_MAX;
 				for (int j = 0; j < rows; ++j)
+				{
+					::MapGeneration::generationCheckpoint();
 					for (int i = 0; i < columns; ++i)
+					{
+						::MapGeneration::generationCheckpoint();
 						if (i || j)
 						{
 							const int dx = t.offsetX(0, i * p + j * s), dy = t.offsetY(0, j * q);
 							spacing = std::min(spacing, (long long)dx * dx + (long long)dy * dy);
 						}
+					}
+				}
 				if (spacing <= bestSpacing)
 					continue;
 				bestSpacing = spacing;
 				best.elements.clear();
 				for (int j = 0; j < rows; ++j)
+				{
+					::MapGeneration::generationCheckpoint();
 					for (int i = 0; i < columns; ++i)
+					{
+						::MapGeneration::generationCheckpoint();
 						best.elements.push_back({1, 0, 0, 1, wrap(i * p + j * s, width), j * q});
+					}
+				}
 			}
 		}
 	}
@@ -132,6 +153,7 @@ int latticePeriod(const Symmetry &s)
 	int period = std::min(s.width, s.height);
 	for (const Isometry &g : s.elements)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (g.a != 1 || g.b != 0 || g.c != 0 || g.d != 1)
 			return std::min(s.width, s.height);
 		period = std::gcd(period, std::gcd(std::abs(g.tx), std::abs(g.ty)));
@@ -147,12 +169,13 @@ int jitterSites(const Torus &t, std::vector<ShapePoint> &sites, GenerationContex
 		return accepted;
 	for (size_t k = 0; k < sites.size(); ++k)
 	{
-		const ShapePoint before = sites[k];
-		sites[k] = {
+		::MapGeneration::generationCheckpoint();
+		const ShapePoint before = sites.at(k);
+		sites.at(k) = {
 			double(t.x(int(before.x) + int(context.bounded(stream, 2 * radius + 1)) - radius)),
 			double(t.y(int(before.y) + int(context.bounded(stream, 2 * radius + 1)) - radius))};
 		if (nearestSiteDistance(t, sites) < minimumSpacing)
-			sites[k] = before;
+			sites.at(k) = before;
 		else
 			++accepted;
 	}
@@ -169,7 +192,11 @@ LatticeSites latticeSites(int width, int height, int teams, double x0, double y0
 	{
 		result.exact = true;
 		for (const Isometry &g : exact.elements)
-			result.sites.push_back({std::fmod(x0 + g.tx, width), std::fmod(y0 + g.ty, height)});
+		{
+			::MapGeneration::generationCheckpoint();
+			result.sites.push_back({::MapGeneration::Numeric::fmod(x0 + g.tx, width),
+									::MapGeneration::Numeric::fmod(y0 + g.ty, height)});
+		}
 		return result;
 	}
 	// Rows of equal length: of the ways to split the colonies into equal rows, the one whose row
@@ -178,10 +205,11 @@ LatticeSites latticeSites(int width, int height, int teams, double x0, double y0
 	double bestError = 1e18;
 	for (int r = 1; r <= teams; ++r)
 	{
+		::MapGeneration::generationCheckpoint();
 		if (teams % r)
 			continue;
 		const double along = double(width) / (teams / r), across = double(height) / r;
-		const double error = std::fabs(std::log(across / (0.866 * along)));
+		const double error = std::fabs(::MapGeneration::Numeric::log(across / (0.866 * along)));
 		if (error < bestError - 1e-12)
 		{
 			bestError = error;
@@ -192,11 +220,18 @@ LatticeSites latticeSites(int width, int height, int teams, double x0, double y0
 	const double along = double(width) / columns, across = double(height) / rows;
 	// Each row is shifted from the last by the whole number of steps, over the rows, nearest half a
 	// step, so that after all the rows the shift is whole steps and the lattice wraps seamlessly.
-	const double shift = along * std::round(rows / 2.0) / rows;
+	const double shift = along * ::MapGeneration::Numeric::round(rows / 2.0) / rows;
 	for (int j = 0; j < rows; ++j)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int i = 0; i < columns; ++i)
+		{
+			::MapGeneration::generationCheckpoint();
 			result.sites.push_back(
-				{std::fmod(x0 + i * along + j * shift, width), std::fmod(y0 + j * across, height)});
+				{::MapGeneration::Numeric::fmod(x0 + i * along + j * shift, width),
+				 ::MapGeneration::Numeric::fmod(y0 + j * across, height)});
+		}
+	}
 	return result;
 }
 
@@ -220,15 +255,18 @@ LatticeSites roomyLatticeSites(int width, int height, int teams, double x0, doub
 	constexpr int vacancySearchBudget = 4;
 	for (int vacancies = 1; vacancies <= std::min(maxVacancies, vacancySearchBudget); ++vacancies)
 	{
+		::MapGeneration::generationCheckpoint();
 		LatticeSites candidate = latticeSites(width, height, teams + vacancies, x0, y0);
 		if (candidate.sites.size() != size_t(teams + vacancies))
 			continue;
 		for (int removed = 0; removed < vacancies; ++removed)
 		{
+			::MapGeneration::generationCheckpoint();
 			int choice = -1;
 			double choiceSpacing = -1;
 			for (size_t site = 0; site < candidate.sites.size(); ++site)
 			{
+				::MapGeneration::generationCheckpoint();
 				std::vector<ShapePoint> surviving = candidate.sites;
 				surviving.erase(surviving.begin() + site);
 				const double spacing = nearestSiteDistance(t, surviving);
@@ -257,13 +295,22 @@ std::vector<unsigned char> stampOrbits(const Symmetry &s, const std::vector<unsi
 {
 	std::vector<unsigned char> result(feature.size(), 0);
 	for (int y = 0; y < s.height; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < s.width; ++x)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int e = 0; e < s.order(); ++e)
-				if (feature[size_t(corners ? s.corner(e, x, y) : s.tile(e, x, y))])
+			{
+				::MapGeneration::generationCheckpoint();
+				if (feature.at(size_t(corners ? s.corner(e, x, y) : s.tile(e, x, y))))
 				{
-					result[size_t(y) * s.width + x] = 1;
+					result.at(size_t(y) * s.width + x) = 1;
 					break;
 				}
+			}
+		}
+	}
 	return result;
 }
 
@@ -271,10 +318,19 @@ std::vector<int> orbitSum(const Symmetry &s, const std::vector<int> &raw, bool c
 {
 	std::vector<int> summed(raw.size(), 0);
 	for (int y = 0; y < s.height; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < s.width; ++x)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int e = 0; e < s.order(); ++e)
-				summed[size_t(y) * s.width + x] +=
-					raw[size_t(corners ? s.corner(e, x, y) : s.tile(e, x, y))];
+			{
+				::MapGeneration::generationCheckpoint();
+				summed.at(size_t(y) * s.width + x) +=
+					raw.at(size_t(corners ? s.corner(e, x, y) : s.tile(e, x, y)));
+			}
+		}
+	}
 	return summed;
 }
 
@@ -286,10 +342,16 @@ std::vector<int> orbitNoise(GenerationContext &context, const Symmetry &s,
 	noise.makePlain(smoothing);
 	std::vector<int> raw(size_t(w) * h);
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
-			// Noise as integers (12 bits) so the sum over an orbit is exact: floating-point sums in
-			// different orders could differ in the last bit and break the symmetry.
-			raw[size_t(y) * w + x] = int(noise(x, y) * 4096);
+		// Noise as integers (12 bits) so the sum over an orbit is exact: floating-point sums in
+		// different orders could differ in the last bit and break the symmetry.
+		{
+			::MapGeneration::generationCheckpoint();
+			raw.at(size_t(y) * w + x) = int(noise(x, y) * 4096);
+		}
+	}
 	return orbitSum(s, raw, corners);
 }
 
@@ -299,17 +361,24 @@ std::vector<unsigned char> topShare(const std::vector<int> &value,
 {
 	std::vector<int> pool;
 	for (size_t i = 0; i < value.size(); ++i)
-		if (eligible[i])
-			pool.push_back(value[i]);
+	{
+		::MapGeneration::generationCheckpoint();
+		if (eligible.at(i))
+			pool.push_back(value.at(i));
+	}
 	std::vector<unsigned char> mask(value.size(), 0);
-	const size_t count =
-		std::min(pool.size(), size_t(std::lround(std::max(0.0, share) * pool.size())));
+	const size_t count = std::min(
+		pool.size(), size_t(::MapGeneration::Numeric::lround(std::max(0.0, share) * pool.size())));
 	if (!count)
 		return mask;
 	std::sort(pool.begin(), pool.end());
-	const int threshold = highest ? pool[pool.size() - count] : pool[count - 1];
+	const int threshold = highest ? pool.at(pool.size() - count) : pool.at(count - 1);
 	for (size_t i = 0; i < value.size(); ++i)
-		mask[i] = eligible[i] && (highest ? value[i] >= threshold : value[i] <= threshold);
+	{
+		::MapGeneration::generationCheckpoint();
+		mask.at(i) =
+			eligible.at(i) && (highest ? value.at(i) >= threshold : value.at(i) <= threshold);
+	}
 	return mask;
 }
 
@@ -317,8 +386,11 @@ bool equaliseDeposits(Map &map, const Symmetry &s, std::string &detail)
 {
 	const int w = s.width, h = s.height;
 	for (int y = 0; y < h; ++y)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int x = 0; x < w; ++x)
 		{
+			::MapGeneration::generationCheckpoint();
 			const int i = y * w + x;
 			const int first = s.orbitKey(x, y);
 			if (first == i)
@@ -333,6 +405,7 @@ bool equaliseDeposits(Map &map, const Symmetry &s, std::string &detail)
 			}
 			map.replaceResource(size_t(i), source);
 		}
+	}
 	return true;
 }
 
@@ -346,27 +419,35 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 	std::vector<std::vector<int>> images;
 	for (int e = 1; e < s.order(); ++e)
 	{
+		::MapGeneration::generationCheckpoint();
 		const std::string under = " is not symmetric under symmetry " + std::to_string(e) + ".";
 		std::vector<int> image(size_t(teams), -1);
 		const auto relate = [&](int from, int to)
 		{
 			if (from < 0 || from >= teams || to < 0 || to >= teams)
 				return false;
-			if (image[size_t(from)] < 0)
-				image[size_t(from)] = to;
-			return image[size_t(from)] == to;
+			if (image.at(size_t(from)) < 0)
+				image.at(size_t(from)) = to;
+			return image.at(size_t(from)) == to;
 		};
 		for (int v = 0; v < h; ++v)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int u = 0; u < w; ++u)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int c = s.corner(e, u, v);
-				if (map.getUMTerrain(u, v) != map.getUMTerrain(c % w, c / w))
-					return "Undermap corner" + at(u, v) + under;
+				if (map.vertexTerrainAt(u, v) != map.vertexTerrainAt(dimensionRemainder(c, w), c / w))
+					return "Terrain vertex" + at(u, v) + under;
 			}
+		}
 		for (int y = 0; y < h; ++y)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int x = 0; x < w; ++x)
 			{
-				const int q = s.tile(e, x, y), qx = q % w, qy = q / w;
+				::MapGeneration::generationCheckpoint();
+				const int q = s.tile(e, x, y), qx = dimensionRemainder(q, w), qy = q / w;
 				if (map.terrainTypeAt(x,y) != map.terrainTypeAt(qx,qy))
 					return "Terrain" + at(x, y) + under;
 				const Resource &ra = map.getResource(x, y), &rb = map.getResource(qx, qy);
@@ -391,26 +472,34 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 						 game.teams[Unit::GIDtoTeam(ub)]->myUnits[Unit::GIDtoID(ub)]->typeNum))
 					return "Unit" + at(x, y) + under;
 			}
+		}
 		std::vector<unsigned char> hit(size_t(teams), 0);
 		for (int team = 0; team < teams; ++team)
 		{
-			const int to = image[size_t(team)];
-			if (to < 0 || hit[size_t(to)])
+			::MapGeneration::generationCheckpoint();
+			const int to = image.at(size_t(team));
+			if (to < 0 || hit.at(size_t(to)))
 				return "Symmetry " + std::to_string(e) + " does not map colonies one to one.";
-			hit[size_t(to)] = 1;
+			hit.at(size_t(to)) = 1;
 		}
 		images.push_back(image);
 	}
 	std::vector<int> carried{0};
 	std::vector<unsigned char> seen(size_t(teams), 0);
-	seen[0] = 1;
+	seen.at(0) = 1;
 	for (size_t head = 0; head < carried.size(); ++head)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (const auto &image : images)
-			if (!seen[size_t(image[size_t(carried[head])])])
+		{
+			::MapGeneration::generationCheckpoint();
+			if (!seen.at(size_t(image.at(size_t(carried.at(head))))))
 			{
-				seen[size_t(image[size_t(carried[head])])] = 1;
-				carried.push_back(image[size_t(carried[head])]);
+				seen.at(size_t(image.at(size_t(carried.at(head))))) = 1;
+				carried.push_back(image.at(size_t(carried.at(head))));
 			}
+		}
+	}
 	if (int(carried.size()) != teams)
 		return "The symmetries do not carry colony 0 onto every other colony.";
 	if (permutations)

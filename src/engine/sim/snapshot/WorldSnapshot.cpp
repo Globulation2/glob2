@@ -12,6 +12,13 @@ Handle Handle::project(Requirements requested) const
 	result.tick = tick; result.width = width; result.height = height; result.requirements = requested;
 	result.observationRevision = observationRevision;
 	result.configurationRevision = configurationRevision; result.worldIdentity = worldIdentity; result.mapGenerations = mapGenerations;
+	if (needs(requested, Component::Session)) result.session = session;
+	if (needs(requested, Component::Effects)) result.effects = effects;
+	if (needs(requested, Component::Statistics)) result.statistics = statistics;
+	if (needs(requested, Component::History)) result.history = history;
+	if (needs(requested, Component::Telemetry)) result.telemetry = telemetry;
+	if (needs(requested, Component::EntityDiagnostics)) result.entityDiagnostics = entityDiagnostics;
+	if (needs(requested, Component::Annotations)) result.annotations = annotations;
 	if (needs(requested, Component::Catalogs)) result.catalogs = catalogs;
 	if (needs(requested, Component::Terrain)) result.terrain = terrain;
 	if (needs(requested, Component::Resources)) result.resources = resources;
@@ -21,7 +28,7 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::Entities)) result.entities = entities;
 	if (needs(requested, Component::Teams)) result.teams = teams;
 	if (needs(requested, Component::Rules)) result.rules = rules;
-	if (needs(requested, Component::Growth)) result.growth = growth;
+	if (needs(requested, Component::Growth)) { result.growth = growth; result.areaFertility=areaFertility; }
 	if (needs(requested, Component::ResourceFields)) result.resourceFields = resourceFields;
 	return result;
 }
@@ -34,16 +41,17 @@ MapState::View Handle::view() const
 	if (resources) { v.resources = resources->cells; v.stockIndices = &resources->stockIndices; v.stocks = &resources->stocks; v.materialSourceCounts = resources->materialSourceCounts; }
 	if (occupancy) v.occupancy = occupancy->cells;
 	if (areas) v.areas = areas->cells;
-	if (terrain) { if (terrain->identity) v.terrainIds = *terrain->identity; v.legacyTerrain = terrain->legacy; v.terrainRegistry = terrain->registry.get(); }
-	if (catalogs) { v.resourceRegistry = catalogs->resources.get(); v.habitats = catalogs->habitats.get(); }
+	if (terrain) { v.cellRules = terrain->cellRules; v.rules = terrain->rules.get(); v.terrainRegistry = terrain->registry.get(); }
+	if (catalogs) v.resourceRegistry = catalogs->resources.get();
 	v.growth = growth.get();
+	if(areaFertility) v.areaFertility=areaFertility->values;
 	if (rules) { v.resourceGrowthDisabled = rules->values.resourceGrowthDisabled; v.resourceScarcityLevel = rules->configuration ? int(rules->configuration->getResourceScarcityLevel()) : 0; }
 	return v;
 }
 bool Handle::canPaintFarmAt(std::size_t index) const
 {
 	checkTileIndex(index);
-	if (!resources || !terrain || !catalogs || !catalogs->resources || !catalogs->habitats || !growth || !rules) return false;
+	if (!resources || !terrain || !terrain->rules || !catalogs || !catalogs->resources || !growth || !rules) return false;
 	const auto v = view();
 	return MapState::canPaintFarmArea(v, int(index & v.wMask), int(index >> v.wDec));
 }
@@ -51,7 +59,7 @@ TileView Handle::tileAt(std::size_t index) const
 {
 	if (index >= std::size_t(width) * height) throw std::out_of_range("snapshot tile index");
 	TileView result;
-	if (terrain) { result.terrain = terrain->identity->at(index); result.legacyTerrain = terrain->legacy.at(index); }
+	if (terrain) result.cellRule = terrain->cellRules.at(index);
 	if (resources) { const auto& c = resources->cells.at(index); result.resource = c.resource; result.fertility = c.fertility; result.resourcesMayGrow = c.mayGrow; }
 	// Derived ecology is read from frozen inputs on demand. Extraction never
 	// invokes a growth-cache query (or takes its lock) once per map cell.

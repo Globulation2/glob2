@@ -7,10 +7,11 @@
 // colony behind a paper panel, its wordmark, and the same light and dark
 // themes. The few images and fonts they use are served from this API under
 // /signin/assets/ (built by platform/apps/web/art/build_art.py).
+import { t, resolveLocale, localeFromCookie, locales } from '@glob2/i18n/server';
 import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { FastifyInstance, FastifyReply } from 'fastify';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 export function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -40,6 +41,80 @@ export function html(strings: TemplateStringsArray, ...values: unknown[]): Html 
     out += text + (strings[i + 1] ?? '');
   });
   return new Html(out);
+}
+
+/** Locale belongs to one response; never mutate the browser runtime's global locale. */
+const pageLocales = new WeakMap<FastifyReply, string>();
+export function setPageLocale(request: FastifyRequest, reply: FastifyReply): void {
+  const cookieLocale = localeFromCookie(request.headers.cookie ?? '');
+  pageLocales.set(reply, cookieLocale ?? resolveLocale(request.headers['accept-language'] ?? 'en'));
+}
+export function pageLocale(reply: FastifyReply): string {
+  return pageLocales.get(reply) ?? 'en';
+}
+export function pageText(
+  reply: FastifyReply,
+  source: string,
+  params?: Record<string, string | number>,
+): string {
+  return t(source, params, pageLocale(reply));
+}
+
+/** Translate text nodes while keeping markup and interpolations HTML-escaped. */
+export function pageHtml(reply: FastifyReply) {
+  return (strings: TemplateStringsArray, ...values: unknown[]): Html => {
+    const marker = (index: number) => `\uE000${index}\uE001`;
+    let source = strings[0] ?? '';
+    values.forEach((_, index) => {
+      source += marker(index) + (strings[index + 1] ?? '');
+    });
+    const translateNode = (_: string, opening: string, node: string) => {
+      const trimmed = node.trim();
+      if (!trimmed || !/[A-Za-z]/.test(trimmed.replace(/\uE000\d+\uE001/g, '')))
+        return opening + node;
+      const params: Record<string, string | number> = {};
+      const key = trimmed
+        .replace(/\uE000(\d+)\uE001/g, (_: string, index: string) => {
+          // Slots remain opaque during translation. The final pass inserts their escaped
+          // text or trusted Html, allowing translators to move links and emphasis safely.
+          params[`p${index}`] = marker(Number(index));
+          return `{p${index}}`;
+        })
+        .replace(/\s+/g, ' ');
+      const translated = escapeHtml(pageText(reply, key, params)).replace(
+        /&#38;(#\d+|#x[\da-f]+|[a-z][a-z\d]+);/gi,
+        '&$1;',
+      );
+      return (
+        opening +
+        node.slice(0, node.indexOf(trimmed)) +
+        translated +
+        node.slice(node.indexOf(trimmed) + trimmed.length)
+      );
+    };
+    const rendered = source
+      .split(/(<(?:script|style)\b[^>]*>[\s\S]*?<\/(?:script|style)\s*>)/gi)
+      .map((part) =>
+        /^<(?:script|style)\b/i.test(part)
+          ? part
+          : part
+              .replace(
+                /\b(alt|title|aria-label|placeholder)=("|')([^"']*)\2/g,
+                (_: string, name: string, quote: string, text: string) => {
+                  if (/\uE000/.test(text)) return `${name}=${quote}${text}${quote}`;
+                  return `${name}=${quote}${escapeHtml(pageText(reply, text))}${quote}`;
+                },
+              )
+              .replace(/(^|>)([^<]*)(?=<|$)/g, translateNode),
+      )
+      .join('');
+    return new Html(
+      rendered.replace(
+        /\uE000(\d+)\uE001/g,
+        (_, index: string) => html`${values[Number(index)]}`.value,
+      ),
+    );
+  };
 }
 
 /** Public path of a page asset (images and fonts in ./static). */
@@ -142,6 +217,9 @@ export function sendPage(
 ): FastifyReply {
   // Chromium sends Origin: null on native form POSTs with no-referrer.
   // Preserve same-origin Origin for CSRF checks; external referrers stay hidden.
+  const locale = pageLocale(reply);
+  const direction = locales.find((item) => item.code === locale)?.dir ?? 'ltr';
+  title = pageText(reply, title);
   const nonce = extras.script ? randomBytes(16).toString('base64') : undefined;
   return reply
     .status(status)
@@ -156,7 +234,7 @@ export function sendPage(
     )
     .send(
       html`<!doctype html>
-        <html lang="en">
+        <html lang="${locale}" dir="${direction}">
           <head>
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -183,7 +261,7 @@ export function sendPage(
               <h1>${title}</h1>
               ${body}
             </main>
-            <footer><p>Globulation 2 is free software (GPL 3).</p></footer>
+            <footer><p>${pageText(reply, 'Globulation 2 is free software (GPL 3).')}</p></footer>
             ${
               nonce && extras.script
                 ? new Html(`<script nonce="${nonce}">${extras.script}</script>`)

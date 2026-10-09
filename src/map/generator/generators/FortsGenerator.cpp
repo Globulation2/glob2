@@ -1,3 +1,5 @@
+#include "GenerationWork.h"
+#include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FortsGenerator.h"
 #include "Game.h"
@@ -137,7 +139,10 @@ bool riverCountry(Layout &L, const FortsOptions &o, const GenerationRequest &req
 	{
 		std::vector<unsigned char> m(t.size());
 		for (int i = 0; i < t.size(); ++i)
-			m[i] = !L.buffer[i] && !L.towns[i];
+		{
+			::MapGeneration::generationCheckpoint();
+			m.at(i) = !L.buffer.at(i) && !L.towns.at(i);
+		}
 		return m;
 	}();
 	const auto space = clearance(t, outside);
@@ -146,15 +151,17 @@ bool riverCountry(Layout &L, const FortsOptions &o, const GenerationRequest &req
 	const int span = sideways ? t.h : t.w, length = sideways ? t.w : t.h;
 	const auto centreAt = [&](double along)
 	{
-		return span * (0.5 + 0.18 * std::sin(2 * kPi * along / length + phase) +
-					   0.06 * std::sin(4 * kPi * along / length - phase));
+		return span *
+			   (0.5 + 0.18 * ::MapGeneration::Numeric::sin(2 * kPi * along / length + phase) +
+				0.06 * ::MapGeneration::Numeric::sin(4 * kPi * along / length - phase));
 	};
 	std::vector<int> bends;
 	for (int k = 0; k < 8; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		const int along = k * length / 8, across = int(centreAt(along));
 		const int seed = seedNear(t, sideways ? along : across, sideways ? across : along, 2 * r,
-								  [&](int i) { return space[i] >= 2; });
+								  [&](int i) { return space.at(i) >= 2; });
 		if (seed < 0)
 		{
 			L.failure = "There is no room for the river between these forts.";
@@ -168,25 +175,33 @@ bool riverCountry(Layout &L, const FortsOptions &o, const GenerationRequest &req
 	{
 		for (int i : path)
 		{
-			const int radius = std::min(wanted / 2, space[i] - 1);
+			::MapGeneration::generationCheckpoint();
+			const int radius = std::min(wanted / 2, space.at(i) - 1);
 			narrowest = std::min(narrowest, 2 * radius + 1);
 			for (int dy = -radius; dy <= radius; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -radius; dx <= radius; ++dx)
-					river[t.at(i % t.w + dx, i / t.w + dy)] = 1;
+				{
+					::MapGeneration::generationCheckpoint();
+					river.at(t.at(t.remainderX(i) + dx, i / t.w + dy)) = 1;
+				}
+			}
 		}
 	};
 	for (size_t k = 0; k < bends.size(); ++k)
 	{
-		const auto goal = tileMask(t, {bends[(k + 1) % bends.size()]});
-		const auto path = cheapestWalk(t, GridNeighbors::Cardinal, {bends[k]}, goal,
+		::MapGeneration::generationCheckpoint();
+		const auto goal = tileMask(t, {bends.at((k + 1) % bends.size())});
+		const auto path = cheapestWalk(t, GridNeighbors::Cardinal, {bends.at(k)}, goal,
 									   [&](int, int to, int, int)
 									   {
-										   if (space[to] < 2)
+										   if (space.at(to) < 2)
 											   return -1;
-										   const int along = sideways ? to % t.w : to / t.w,
-													 across = sideways ? to / t.w : to % t.w;
+										   const int along = sideways ? t.remainderX(to) : to / t.w,
+													 across = sideways ? to / t.w : t.remainderX(to);
 										   return 10 + int(std::abs(across - centreAt(along)) / 3) +
-												  L.uplands[to] / 8192;
+												  L.uplands.at(to) / 8192;
 									   });
 		if (path.empty())
 		{
@@ -198,21 +213,27 @@ bool riverCountry(Layout &L, const FortsOptions &o, const GenerationRequest &req
 	const int mainNarrowest = narrowest;
 	std::vector<unsigned char> water(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
-		water[i] = river[i] || L.terrain[i] == WATER;
+	{
+		::MapGeneration::generationCheckpoint();
+		water.at(i) = river.at(i) || L.terrain.at(i) == WATER;
+	}
 	std::vector<int> queued(t.size(), 0);
 	const auto basin = fractalNoise(t.w, t.h, 32, 3, context.stream("forts-lake-basins"));
 	const int lakeTiles = std::max(48, t.size() / (16 * request.nbTeams));
 	for (int k = 0; k < request.nbTeams; ++k)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int lake = 0; lake < o.lakes; ++lake)
 		{
+			::MapGeneration::generationCheckpoint();
 			const double angle = context.bounded("forts-lake-sites", 65536) * 2 * kPi / 65536;
-			const int ax = int(L.homes[k].x + (r + 24) * std::cos(angle));
-			const int ay = int(L.homes[k].y + (r + 24) * std::sin(angle));
+			const int ax = int(L.homes.at(k).x + (r + 24) * ::MapGeneration::Numeric::cos(angle));
+			const int ay = int(L.homes.at(k).y + (r + 24) * ::MapGeneration::Numeric::sin(angle));
 			int seed =
-				seedNear(t, ax, ay, 2 * r, [&](int i) { return space[i] >= 5 && !water[i]; });
+				seedNear(t, ax, ay, 2 * r, [&](int i) { return space.at(i) >= 5 && !water.at(i); });
 			if (seed < 0)
-				seed =
-					seedNear(t, ax, ay, 2 * r, [&](int i) { return space[i] >= 2 && !water[i]; });
+				seed = seedNear(t, ax, ay, 2 * r,
+								[&](int i) { return space.at(i) >= 2 && !water.at(i); });
 			const bool longX = context.bounded("forts-lake-sites", 2);
 			const int subject = k * o.lakes + lake;
 			int placed = 0;
@@ -220,19 +241,19 @@ bool riverCountry(Layout &L, const FortsOptions &o, const GenerationRequest &req
 			{
 				placed = growWater(
 					t, water, seed, lakeTiles,
-					[&](int i) { return !L.buffer[i] && !L.towns[i] && !water[i]; },
+					[&](int i) { return !L.buffer.at(i) && !L.towns.at(i) && !water.at(i); },
 					[&](int i)
 					{
-						const long long dx = t.offsetX(seed % t.w, i % t.w),
+						const long long dx = t.offsetX(t.remainderX(seed), t.remainderX(i)),
 										dy = t.offsetY(seed / t.w, i / t.w);
 						return (longX ? dx * dx + 3 * dy * dy : 3 * dx * dx + dy * dy) +
-							   static_cast<long long>(lakeTiles) * basin[i] / 32768;
+							   static_cast<long long>(lakeTiles) * basin.at(i) / 32768;
 					},
 					queued, subject + 1);
 				// Tributaries connect the lake country to the main river through low ground.
 				const auto stream = cheapestWalk(
 					t, GridNeighbors::Cardinal, {seed}, river, [&](int, int to, int, int)
-					{ return space[to] < 2 ? -1 : 10 + L.uplands[to] / 4096; });
+					{ return space.at(to) < 2 ? -1 : 10 + L.uplands.at(to) / 4096; });
 				waterStroke(stream, 3);
 			}
 			context.telemetry.measure("forts.lake.target-water-corners", lakeTiles, subject);
@@ -241,9 +262,13 @@ bool riverCountry(Layout &L, const FortsOptions &o, const GenerationRequest &req
 				context.telemetry.fallback("forts.lake.capacity",
 										   "The countryside limits this lake.", subject);
 		}
+	}
 	for (int i = 0; i < t.size(); ++i)
-		if (water[i] || river[i])
-			L.terrain[i] = WATER;
+	{
+		::MapGeneration::generationCheckpoint();
+		if (water.at(i) || river.at(i))
+			L.terrain.at(i) = WATER;
+	}
 
 	context.telemetry.measure("forts.river.minimum-width-corners", mainNarrowest);
 	context.telemetry.choice("forts.river.direction", sideways ? "east-west" : "north-south");
@@ -259,40 +284,49 @@ void marketTowns(Layout &L, const FortsOptions &o, const GenerationRequest &requ
 	std::vector<unsigned char> blocked(t.size(), 0), allWater(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
-		allWater[i] = L.terrain[i] == WATER;
-		blocked[i] = L.buffer[i] || allWater[i];
+		::MapGeneration::generationCheckpoint();
+		allWater.at(i) = L.terrain.at(i) == WATER;
+		blocked.at(i) = L.buffer.at(i) || allWater.at(i);
 	}
 	const auto townRoom = stepsFrom(t, blocked), waterDistance = stepsFrom(t, allWater);
 	const int townRadius = o.villageSize;
 	for (int k = 0; k < request.nbTeams; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		int site = -1;
 		long long best = LLONG_MAX;
 		for (int i = 0; i < t.size(); ++i)
 		{
-			if (townRoom[i] < townRadius + 3)
+			::MapGeneration::generationCheckpoint();
+			if (townRoom.at(i) < townRadius + 3)
 				continue;
 			bool separated = true;
 			for (const auto &v : L.villages)
-				if (t.chebyshev(i % t.w, i / t.w, int(v.x), int(v.y)) < 2 * townRadius + 12)
+			{
+				::MapGeneration::generationCheckpoint();
+				if (t.chebyshev(t.remainderX(i), i / t.w, int(v.x), int(v.y)) < 2 * townRadius + 12)
 					separated = false;
+			}
 			if (!separated)
 				continue;
 			const long long homeDistance =
-				t.dist2(i % t.w, i / t.w, int(L.homes[k].x), int(L.homes[k].y));
+				t.dist2(t.remainderX(i), i / t.w, int(L.homes.at(k).x), int(L.homes.at(k).y));
 			const long long reach = o.homeSize + townRadius + 10;
 			const long long desired = reach * reach;
 			int rivalDistance = INT_MAX;
 			for (int other = 0; other < request.nbTeams; ++other)
+			{
+				::MapGeneration::generationCheckpoint();
 				if (other != k)
 					rivalDistance =
-						std::min(rivalDistance, t.dist2(i % t.w, i / t.w, int(L.homes[other].x),
-														int(L.homes[other].y)));
+						std::min(rivalDistance, t.dist2(t.remainderX(i), i / t.w, int(L.homes.at(other).x),
+														int(L.homes.at(other).y)));
+			}
 			const long long balance =
 				request.nbTeams > 1 ? 4 * std::max(0LL, homeDistance - rivalDistance) : 0;
 			const long long score = std::abs(homeDistance - desired) + balance +
-									40 * std::abs(waterDistance[i] - (townRadius + 4)) +
-									L.uplands[i] / 64;
+									40 * std::abs(waterDistance.at(i) - (townRadius + 4)) +
+									L.uplands.at(i) / 64;
 			if (score < best)
 			{
 				best = score;
@@ -305,12 +339,15 @@ void marketTowns(Layout &L, const FortsOptions &o, const GenerationRequest &requ
 									   k);
 			continue;
 		}
-		L.villages.push_back({double(site % t.w), double(site / t.w)});
+		L.villages.push_back({double(t.remainderX(site)), double(site / t.w)});
 		for (int dy = -townRadius; dy <= townRadius; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -townRadius; dx <= townRadius; ++dx)
 			{
-				const int i = t.at(site % t.w + dx, site / t.w + dy);
-				L.towns[i] = 1;
+				::MapGeneration::generationCheckpoint();
+				const int i = t.at(t.remainderX(site) + dx, site / t.w + dy);
+				L.towns.at(i) = 1;
 				// Streets in the town's own frame; every plan joins the centre, where the roads
 				// arrive, to the boundary street.
 				const int across = std::abs(L.design.townTurn ? dy : dx),
@@ -332,10 +369,11 @@ void marketTowns(Layout &L, const FortsOptions &o, const GenerationRequest &requ
 				}
 				if (street || ring == townRadius)
 				{
-					L.roads[i] = 1;
-					L.terrain[i] = SAND;
+					L.roads.at(i) = 1;
+					L.terrain.at(i) = SAND;
 				}
 			}
+		}
 	}
 }
 
@@ -350,43 +388,58 @@ bool countryRoads(Layout &L, const std::vector<int> &exits)
 		const auto path = cheapestWalk(t, GridNeighbors::Eight, {from}, goal,
 									   [&](int, int next, int dx, int dy)
 									   {
-										   if (L.buffer[next] && !goal[next])
+										   if (L.buffer.at(next) && !goal.at(next))
 											   return -1;
-										   if (L.towns[next] && !L.roads[next])
+										   if (L.towns.at(next) && !L.roads.at(next))
 											   return -1;
-										   if (L.roads[next])
+										   if (L.roads.at(next))
 											   return dx && dy ? 4 : 3;
-										   return (dx && dy ? 14 : 10) + L.uplands[next] / 2048 +
-												  (L.terrain[next] == WATER ? 70 : 0);
+										   return (dx && dy ? 14 : 10) + L.uplands.at(next) / 2048 +
+												  (L.terrain.at(next) == WATER ? 70 : 0);
 									   });
 		if (path.empty())
 			return false;
 		for (int i : path)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dy = -1; dy <= 1; ++dy)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					const int j = t.at(i % t.w + dx, i / t.w + dy);
-					if ((!L.buffer[j] && !L.towns[j]) || L.roads[j])
+					::MapGeneration::generationCheckpoint();
+					const int j = t.at(t.remainderX(i) + dx, i / t.w + dy);
+					if ((!L.buffer.at(j) && !L.towns.at(j)) || L.roads.at(j))
 					{
-						L.roads[j] = 1;
-						L.terrain[j] = SAND;
+						L.roads.at(j) = 1;
+						L.terrain.at(j) = SAND;
 					}
 				}
+			}
+		}
 		return true;
 	};
 	std::vector<int> hubs;
 	for (auto v : L.villages)
+	{
+		::MapGeneration::generationCheckpoint();
 		hubs.push_back(t.at(int(v.x), int(v.y)));
+	}
 	if (hubs.empty())
 		hubs = exits;
 	for (size_t k = 1; k < hubs.size(); ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		int closest = 0;
 		for (size_t j = 1; j < k; ++j)
-			if (t.dist2(hubs[k] % t.w, hubs[k] / t.w, hubs[j] % t.w, hubs[j] / t.w) <
-				t.dist2(hubs[k] % t.w, hubs[k] / t.w, hubs[closest] % t.w, hubs[closest] / t.w))
+		{
+			::MapGeneration::generationCheckpoint();
+			if (t.dist2(t.remainderX(hubs.at(k)), hubs.at(k) / t.w, t.remainderX(hubs.at(j)), hubs.at(j) / t.w) <
+				t.dist2(t.remainderX(hubs.at(k)), hubs.at(k) / t.w, t.remainderX(hubs.at(closest)),
+						hubs.at(closest) / t.w))
 				closest = int(j);
-		if (!road(hubs[k], hubs[closest]))
+		}
+		if (!road(hubs.at(k), hubs.at(closest)))
 		{
 			L.failure = "The towns could not be connected.";
 			return false;
@@ -394,18 +447,22 @@ bool countryRoads(Layout &L, const std::vector<int> &exits)
 	}
 	for (size_t k = 0; k < exits.size(); k += 2)
 	{
+		::MapGeneration::generationCheckpoint();
 		// Choose both gate destinations together. A fixed second-nearest rule can skip
 		// the nearby market on the very side where that fort has its useful expansion.
 		int west = hubs.front(), east = hubs.front();
 		long long best = LLONG_MAX;
 		for (int a : hubs)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int b : hubs)
 			{
+				::MapGeneration::generationCheckpoint();
 				if (a == b && hubs.size() > 1)
 					continue;
 				const long long distance =
-					t.dist2(exits[k] % t.w, exits[k] / t.w, a % t.w, a / t.w) +
-					t.dist2(exits[k + 1] % t.w, exits[k + 1] / t.w, b % t.w, b / t.w);
+					t.dist2(t.remainderX(exits.at(k)), exits.at(k) / t.w, t.remainderX(a), a / t.w) +
+					t.dist2(t.remainderX(exits.at(k + 1)), exits.at(k + 1) / t.w, t.remainderX(b), b / t.w);
 				if (distance < best)
 				{
 					best = distance;
@@ -413,7 +470,8 @@ bool countryRoads(Layout &L, const std::vector<int> &exits)
 					east = b;
 				}
 			}
-		if (!road(exits[k], west) || !road(exits[k + 1], east))
+		}
+		if (!road(exits.at(k), west) || !road(exits.at(k + 1), east))
 		{
 			L.failure = "A fort cannot reach the road network.";
 			return false;
@@ -450,13 +508,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	L.homes = latticeSites(t.w, t.h, request.nbTeams, offsetX, offsetY).sites;
 	dealStarts(context, L.homes);
 	for (size_t a = 0; a < L.homes.size(); ++a)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (size_t b = a + 1; b < L.homes.size(); ++b)
-			if (std::abs(t.offsetX(int(L.homes[a].x), int(L.homes[b].x))) < 2 * r + 16 &&
-				std::abs(t.offsetY(int(L.homes[a].y), int(L.homes[b].y))) < 2 * r + 16)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (std::abs(t.offsetX(int(L.homes.at(a).x), int(L.homes.at(b).x))) < 2 * r + 16 &&
+				std::abs(t.offsetY(int(L.homes.at(a).y), int(L.homes.at(b).y))) < 2 * r + 16)
 			{
 				L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
 				return L;
 			}
+		}
+	}
 	if (std::min(t.w, t.h) < 2 * r + 16)
 	{
 		L.failure = "Too many colonies for this map; use a bigger map or fewer colonies.";
@@ -481,7 +545,8 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	std::vector<int> exits;
 	for (int k = 0; k < request.nbTeams; ++k)
 	{
-		const int cx = int(L.homes[k].x), cy = int(L.homes[k].y);
+		::MapGeneration::generationCheckpoint();
+		const int cx = int(L.homes.at(k).x), cy = int(L.homes.at(k).y);
 		const auto at = [&](int u, int v) { return t.at(cx + d.x(u, v), cy + d.y(u, v)); };
 		const auto tower = [&](int u, int v)
 		{
@@ -504,68 +569,89 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			}
 		};
 		for (int v = -r - 5; v <= r + 5; ++v)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int u = -r - 5; u <= r + 5; ++u)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int i = at(u, v);
-				L.buffer[i] = 1;
-				L.terrain[i] = GRASS;
+				L.buffer.at(i) = 1;
+				L.terrain.at(i) = GRASS;
 				const int edge = std::max(std::abs(u), std::abs(v));
 				if (edge < r - 1)
-					L.homeOf[i] = k;
+					L.homeOf.at(i) = k;
 				// Two-tile ramparts with square corner bastions, and two broad opposite gateways.
 				const bool bastion = d.walls != FortWalls::Round && std::abs(u) >= r - 3 &&
 									 std::abs(v) >= r - 3 && edge <= r + 1;
-				L.wall[i] = (edge >= r - 1 && edge <= r) || bastion || tower(u, v);
+				L.wall.at(i) = (edge >= r - 1 && edge <= r) || bastion || tower(u, v);
 				if (std::abs(v) <= gate + 1)
 				{
-					L.wall[i] = 0;
+					L.wall.at(i) = 0;
 					if (std::abs(u) >= r - 1 && std::abs(u) <= r)
-						L.gates[i] = 1;
+						L.gates.at(i) = 1;
 				}
 				if (std::abs(v) <= gate && std::abs(u) <= r + 5)
 				{
-					L.wall[i] = 0;
+					L.wall.at(i) = 0;
 					if (std::abs(u) >= r - 1 && std::abs(u) <= r)
-						L.gates[i] = 1;
-					L.roads[i] = 1;
-					L.terrain[i] = SAND;
+						L.gates.at(i) = 1;
+					L.roads.at(i) = 1;
+					L.terrain.at(i) = SAND;
 				}
 			}
+		}
 		for (const FortPlot &p : plan.plots)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int b = p.b0; b <= p.b1; ++b)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int a = p.a0; a <= p.a1; ++a)
 				{
+					::MapGeneration::generationCheckpoint();
 					const int i = at(p.su * a, p.sv * b);
 					const bool rim = a == p.a0 || a == p.a1 || b == p.b0 || b == p.b1;
-					L.terrain[i] = rim ? SAND : GRASS;
+					L.terrain.at(i) = rim ? SAND : GRASS;
 					if (!rim)
-						L.plot[i] = 2 * k + p.timber;
+						L.plot.at(i) = 2 * k + p.timber;
 					const bool water = p.waterOnA ? a >= p.a1 - 5 && b >= p.b0 + 2 && b < p.b1
 												  : b <= p.b0 + 4 && a >= p.a0 + 2 && a <= p.a1 - 2;
 					if (water && !rim)
-						L.terrain[i] = WATER;
+						L.terrain.at(i) = WATER;
 				}
+			}
+		}
 		// A moat all the way round, broken only where the gate roads cross it. It keeps a corner
 		// clear of every rampart and tower, because a beach may not touch a tile of stone: where a
 		// tower stands out it narrows round it instead of stopping.
 		const auto nearStone = [&](int x, int y)
 		{
 			for (int ty = y - 2; ty <= y + 1; ++ty)
+			{
+				::MapGeneration::generationCheckpoint();
 				for (int tx = x - 2; tx <= x + 1; ++tx)
-					if (L.wall[t.at(tx, ty)])
+				{
+					::MapGeneration::generationCheckpoint();
+					if (L.wall.at(t.at(tx, ty)))
 						return true;
+				}
+			}
 			return false;
 		};
 		for (int v = -r - 5; v <= r + 5; ++v)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int u = -r - 5; u <= r + 5; ++u)
 			{
+				::MapGeneration::generationCheckpoint();
 				const int edge = std::max(std::abs(u), std::abs(v));
 				if (edge < r + 3 || std::abs(v) <= gate + 3)
 					continue;
 				const int x = cx + d.x(u, v), y = cy + d.y(u, v);
 				if (!nearStone(x, y))
-					L.terrain[t.at(x, y)] = WATER;
+					L.terrain.at(t.at(x, y)) = WATER;
 			}
+		}
 		exits.push_back(at(-r - 5, 0));
 		exits.push_back(at(r + 5, 0));
 	}
@@ -597,7 +683,7 @@ bool generate(Game &game, GenerationContext &context)
 	const Torus &t = L.t;
 	Map &map = game.map;
 	context.stage = "forts terrain";
-	writeUndermap(map, L.terrain);
+	writeVertices(map, L.terrain);
 	const auto stone = designedStone(map, t, L.wall);
 	if (stone.gaps)
 	{
@@ -605,10 +691,16 @@ bool generate(Game &game, GenerationContext &context)
 		return false;
 	}
 	for (int i = 0; i < t.size(); ++i)
-		if (L.wall[i])
-			map.setResourceByIndex(i % t.w, i / t.w, STONE, 1);
+	{
+		::MapGeneration::generationCheckpoint();
+		if (L.wall.at(i))
+			map.setResourceByIndex(t.remainderX(i), i / t.w, STONE, 1);
+	}
 	for (int k = 0; k < context.request.nbTeams; ++k)
+	{
+		::MapGeneration::generationCheckpoint();
 		game.addTeam();
+	}
 	const FortDesign &d = L.design;
 	const FortPlan plan = fortPlan(d.layout, o.homeSize);
 	context.stage = "forts colonies";
@@ -618,14 +710,17 @@ bool generate(Game &game, GenerationContext &context)
 			{
 				auto mask = homeGrassMask(map, t, L.homeOf, k);
 				for (int i = 0; i < t.size(); ++i)
-					if (L.plot[i] >= 0 || L.wall[i])
-						mask[i] = 0;
+				{
+					::MapGeneration::generationCheckpoint();
+					if (L.plot.at(i) >= 0 || L.wall.at(i))
+						mask.at(i) = 0;
+				}
 				return mask;
 			},
 			[&](int k)
 			{
-				return MapGeneratorPoint(int(L.homes[k].x) + d.x(plan.settleU, plan.settleV),
-										 int(L.homes[k].y) + d.y(plan.settleU, plan.settleV));
+				return MapGeneratorPoint(int(L.homes.at(k).x) + d.x(plan.settleU, plan.settleV),
+										 int(L.homes.at(k).y) + d.y(plan.settleU, plan.settleV));
 			}))
 		return false;
 	context.stage = "forts farms and countryside";
@@ -633,21 +728,26 @@ bool generate(Game &game, GenerationContext &context)
 	const auto fertility = cropGrowthField(L.terrain, t);
 	for (int p = 0; p < 2 * context.request.nbTeams; ++p)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::vector<int> tiles;
 		for (int i = 0; i < t.size(); ++i)
-			if (L.plot[i] == p && !reserved[i] && clearGround(map, i % t.w, i / t.w) &&
-				fertility.at(i % t.w, i / t.w) > 0)
+		{
+			::MapGeneration::generationCheckpoint();
+			if (L.plot.at(i) == p && !reserved.at(i) && clearGround(map, t.remainderX(i), i / t.w) &&
+				fertility.at(t.remainderX(i), i / t.w) > 0)
 				tiles.push_back(i);
+		}
 		std::stable_sort(
 			tiles.begin(), tiles.end(), [&](int a, int b)
-			{ return fertility.at(a % t.w, a / t.w) > fertility.at(b % t.w, b / t.w); });
+			{ return fertility.at(t.remainderX(a), a / t.w) > fertility.at(t.remainderX(b), b / t.w); });
 		const int wanted = 32 + int(scaledCount(p % 2 ? 16 : 32, p % 2 ? o.wood : o.wheat));
 		const int placed = std::min(wanted, int(tiles.size()));
 		std::uint64_t yield = 0;
 		for (int j = 0; j < placed; ++j)
 		{
-			map.setResourceByIndex(tiles[j] % t.w, tiles[j] / t.w, p % 2 ? WOOD : WHEAT, 1);
-			yield += fertility.at(tiles[j] % t.w, tiles[j] / t.w);
+			::MapGeneration::generationCheckpoint();
+			map.setResourceByIndex(t.remainderX(tiles.at(j)), tiles.at(j) / t.w, p % 2 ? WOOD : WHEAT, 1);
+			yield += fertility.at(t.remainderX(tiles.at(j)), tiles.at(j) / t.w);
 		}
 		context.telemetry.measure("forts.plot.target-tiles", wanted, p);
 		context.telemetry.measure("forts.plot.planted-tiles", placed, p);
@@ -664,16 +764,19 @@ bool generate(Game &game, GenerationContext &context)
 	// Small household orchards put every fruit within reach of every fort. The larger
 	// market orchards still reward expansion; the fruit control scales both layers.
 	for (int k = 0; k < context.request.nbTeams; ++k)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int fruit = 0; fruit < 3; ++fruit)
 		{
-			const int cx = int(L.homes[k].x), cy = int(L.homes[k].y);
+			::MapGeneration::generationCheckpoint();
+			const int cx = int(L.homes.at(k).x), cy = int(L.homes.at(k).y);
 			const int u = plan.orchardU + fruit * plan.orchardDu,
 					  v = plan.orchardV + fruit * plan.orchardDv;
 			const int seed = t.at(cx + d.x(u, v), cy + d.y(u, v));
 			const auto eligible = [&](int i)
 			{
-				return L.homeOf[i] == k && L.plot[i] < 0 && !L.roads[i] && !reserved[i] &&
-					   clearGround(map, i % t.w, i / t.w);
+				return L.homeOf.at(i) == k && L.plot.at(i) < 0 && !L.roads.at(i) &&
+					   !reserved.at(i) && clearGround(map, t.remainderX(i), i / t.w);
 			};
 			const int wanted = int(scaledCount(3, o.fruit));
 			const int placed =
@@ -686,31 +789,43 @@ bool generate(Game &game, GenerationContext &context)
 				return false;
 			}
 		}
-	const auto forestAt = [&](int i) { return L.uplands[i] / 65536.0; };
+	}
+	const auto forestAt = [&](int i) { return L.uplands.at(i) / 65536.0; };
 	const PeriodicNoise fields(t.w, t.h, 16, context.stream("forts-fields"));
 	std::vector<int> woods;
 	for (int i = 0; i < t.size(); ++i)
-		if (!L.buffer[i] && !L.towns[i] && !L.roads[i] && clearGround(map, i % t.w, i / t.w))
+	{
+		::MapGeneration::generationCheckpoint();
+		if (!L.buffer.at(i) && !L.towns.at(i) && !L.roads.at(i) &&
+			clearGround(map, t.remainderX(i), i / t.w))
 			woods.push_back(i);
+	}
 	std::stable_sort(woods.begin(), woods.end(),
 					 [&](int a, int b) { return forestAt(a) > forestAt(b); });
 	// Exposed rocky crowns inside the wooded uplands; roads remain reserved through them.
 	const int rocks = std::min(int(woods.size()), int(scaledCount(woods.size() / 100, o.stone)));
 	for (int j = 0; j < rocks; ++j)
-		map.setResourceByIndex(woods[j] % t.w, woods[j] / t.w, STONE, 1);
+	{
+		::MapGeneration::generationCheckpoint();
+		map.setResourceByIndex(t.remainderX(woods.at(j)), woods.at(j) / t.w, STONE, 1);
+	}
 	woods.erase(woods.begin(), woods.begin() + rocks);
 	context.telemetry.measure("forts.uplands.stone-tiles", rocks);
 	const int count = std::min(int(woods.size()), int(scaledCount(woods.size() / 6, o.wood)));
 	for (int j = 0; j < count; ++j)
-		map.setResourceByIndex(woods[j] % t.w, woods[j] / t.w, WOOD, 1);
+	{
+		::MapGeneration::generationCheckpoint();
+		map.setResourceByIndex(t.remainderX(woods.at(j)), woods.at(j) / t.w, WOOD, 1);
+	}
 	context.telemetry.measure("forts.forest.planted-tiles", count);
 	furnishGround(
 		map, t, context, fertility,
 		[&](int i)
 		{
-			return !L.buffer[i] && !L.towns[i] && !L.roads[i] && clearGround(map, i % t.w, i / t.w);
+			return !L.buffer.at(i) && !L.towns.at(i) && !L.roads.at(i) &&
+				   clearGround(map, t.remainderX(i), i / t.w);
 		},
-		[&](int i) { return fields.at(i % t.w, i / t.w); }, [&](int i) { return forestAt(i); },
+		[&](int i) { return fields.at(t.remainderX(i), i / t.w); }, [&](int i) { return forestAt(i); },
 		[&](int area)
 		{
 			return GroundAmounts{int(scaledCount(area / 18, o.wheat)), 0,
@@ -720,20 +835,24 @@ bool generate(Game &game, GenerationContext &context)
 		"forts-rocks", "forts-orchards");
 	// Try all three fruits on each market’s outskirts; crowded banks can limit these patches.
 	for (const auto &v : L.villages)
+	{
+		::MapGeneration::generationCheckpoint();
 		for (int fruit = 0; fruit < 3; ++fruit)
 		{
+			::MapGeneration::generationCheckpoint();
 			const double angle = fruit * 2 * kPi / 3;
 			const auto eligible = [&](int i)
 			{
-				return !L.buffer[i] && !L.towns[i] && !L.roads[i] &&
-					   clearGround(map, i % t.w, i / t.w);
+				return !L.buffer.at(i) && !L.towns.at(i) && !L.roads.at(i) &&
+					   clearGround(map, t.remainderX(i), i / t.w);
 			};
-			const int seed =
-				seedNear(t, int(v.x + (o.villageSize + 4) * std::cos(angle)),
-						 int(v.y + (o.villageSize + 4) * std::sin(angle)), 8, eligible);
+			const int seed = seedNear(
+				t, int(v.x + (o.villageSize + 4) * ::MapGeneration::Numeric::cos(angle)),
+				int(v.y + (o.villageSize + 4) * ::MapGeneration::Numeric::sin(angle)), 8, eligible);
 			if (seed >= 0)
 				growPatch(map, t, seed, CHERRY + fruit, int(scaledCount(5, o.fruit)), eligible);
 		}
+	}
 	seedAlgae(map, context, t, "forts-algae", o.algae, AlgaeBand::anyWater());
 	secureStartingCrops(game, context, t, 24, 32, 0, &L.wall);
 	reopenCrampedStarts(game, context, {o.wheat, o.wood, o.stone, o.algae, o.fruit}, 24, 32, 0,
@@ -751,38 +870,53 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	std::vector<int> orchard(3 * context.request.nbTeams, 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
+		::MapGeneration::generationCheckpoint();
 		const auto &resource = game.map.getResource(i);
-		if (L.homeOf[i] >= 0 && resource.type >= CHERRY && resource.type < CHERRY + 3)
-			++orchard[3 * L.homeOf[i] + resource.type - CHERRY];
-		if (L.wall[i] && !(game.map.isResource(i % t.w, i / t.w) &&
-						   game.map.getResource(i % t.w, i / t.w).type == STONE))
+		if (L.homeOf.at(i) >= 0 && resource.type >= CHERRY && resource.type < CHERRY + 3)
+			++orchard.at(3 * L.homeOf.at(i) + resource.type - CHERRY);
+		if (L.wall.at(i) && !(game.map.isResource(t.remainderX(i), i / t.w) &&
+							  game.map.getResource(t.remainderX(i), i / t.w).type == STONE))
 			return "A fort rampart is missing.";
-		if (L.roads[i] && game.map.isResource(i % t.w, i / t.w))
+		if (L.roads.at(i) && game.map.isResource(t.remainderX(i), i / t.w))
 			return "A fort road is obstructed.";
 	}
 	auto pieces = L.homeOf;
 	for (int i = 0; i < t.size(); ++i)
-		if (pieces[i] < 0 && !L.wall[i] && !L.gates[i])
-			pieces[i] = context.request.nbTeams;
+	{
+		::MapGeneration::generationCheckpoint();
+		if (pieces.at(i) < 0 && !L.wall.at(i) && !L.gates.at(i))
+			pieces.at(i) = context.request.nbTeams;
+	}
 	if (pieceLeak(game.map, t, pieces, L.gates) >= 0)
 		return "A fort has an unintended entrance.";
 	const auto buildable = buildableTiles(game.map);
 	for (int k = 0; k < context.request.nbTeams; ++k)
 	{
+		::MapGeneration::generationCheckpoint();
 		auto home = homeGrassMask(game.map, t, L.homeOf, k);
 		if (buildSites(t, buildable, home) < 64)
 			return "A fort has insufficient courtyard building room.";
 	}
 	const FortsOptions o(context.request);
 	for (int count : orchard)
+	{
+		::MapGeneration::generationCheckpoint();
 		if (count < int(scaledCount(3, o.fruit)))
 			return "A fort has lost its household orchard.";
+	}
 	for (const auto &v : L.villages)
 	{
+		::MapGeneration::generationCheckpoint();
 		std::vector<unsigned char> town(t.size(), 0);
 		for (int dy = -o.villageSize; dy <= o.villageSize; ++dy)
+		{
+			::MapGeneration::generationCheckpoint();
 			for (int dx = -o.villageSize; dx <= o.villageSize; ++dx)
-				town[t.at(int(v.x) + dx, int(v.y) + dy)] = 1;
+			{
+				::MapGeneration::generationCheckpoint();
+				town.at(t.at(int(v.x) + dx, int(v.y) + dy)) = 1;
+			}
+		}
 		if (buildSites(t, buildable, town) < 16)
 			return "A market town has lost its building plots.";
 	}
@@ -805,7 +939,7 @@ GeneratorDefinition fortsDefinition()
 		"Forts",
 		// Revision 7: one fort design per map (interior layout, wall style, quarter turn and
 		// mirror, market-town plan), moats all the way round, plots a tile clear of the stone.
-		7,
+		8,
 		false,
 		{GeneratorControl{"home-size", "Home size", 20, 26, 2, 22, ControlGroup::Layout}
 			 .withSearchRange(22, 26),
@@ -830,3 +964,5 @@ GeneratorDefinition fortsDefinition()
 		{"terrain:stronghold", "feature:stone-walls", "feature:river", "style:siege",
 		 "style:fortified", "fairness:stamped-lattice"}};
 }
+
+#include "FortsBlueprint.inc"

@@ -130,7 +130,7 @@ void hideGroves(Map &map, const Layout &L, GenerationContext &context, const Old
 	const int target = int(frontier / met * kGroveDepthPercent / 100);
 	std::vector<unsigned char> deep(n, 0);
 	for (int i = 0; i < n; ++i)
-		deep[i] = L.forest[i] && map.getResource(i % t.w, i / t.w).type == WOOD;
+		deep[i] = L.forest[i] && map.getResource(t.remainderX(i), i / t.w).type == WOOD;
 	const std::vector<int> sites = equalCostSites(costs, deep, target, std::max(8, target / 4));
 	context.telemetry.measure("old-growth.groves.target-cutting-cost", target);
 	if (context.telemetry.enabled())
@@ -143,7 +143,7 @@ void hideGroves(Map &map, const Layout &L, GenerationContext &context, const Old
 	{
 		if (sites[k] < 0)
 			continue;
-		const int gx = sites[k] % t.w, gy = sites[k] / t.w;
+		const int gx = t.remainderX(sites[k]), gy = sites[k] / t.w;
 		// The pocket: wood cut within kGroveRadius of the site.
 		for (int dy = -4; dy <= 4; ++dy)
 			for (int dx = -4; dx <= 4; ++dx)
@@ -151,7 +151,7 @@ void hideGroves(Map &map, const Layout &L, GenerationContext &context, const Old
 					map.getResource(t.x(gx + dx), t.y(gy + dy)).type == WOOD)
 					map.setNoResource(t.x(gx + dx), t.y(gy + dy), 1);
 		const auto pocket = [&](int i)
-		{ return t.dist2(gx, gy, i % t.w, i / t.w) <= 16 && clearGround(map, i % t.w, i / t.w); };
+		{ return t.dist2(gx, gy, t.remainderX(i), i / t.w) <= 16 && clearGround(map, t.remainderX(i), i / t.w); };
 		if (scaledCount(1, o.fruit) > 0)
 			placeResourceClump(map, context, MapGeneratorPoint(gx, gy),
 							   CHERRY + int(context.bounded("growth-fruit", 3)), 1);
@@ -159,7 +159,7 @@ void hideGroves(Map &map, const Layout &L, GenerationContext &context, const Old
 			growPatch(map, t, seed, WHEAT, int(scaledCount(kGroveWheat, o.wheat)), pocket);
 		if (scaledCount(1, o.stone) > 0)
 			if (const int seed = seedNear(t, gx + 2, gy + 2, 4, pocket); seed >= 0)
-				placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
+				placeResourceClump(map, context, MapGeneratorPoint(t.remainderX(seed), seed / t.w), STONE,
 								   kGroveStone);
 	}
 }
@@ -186,7 +186,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int i = 0; i < n; ++i)
 		terrain[i] = L.water[i] ? WATER : L.sand[i] ? SAND : GRASS;
 	layBeaches(terrain, t);
-	writeUndermap(map, terrain);
+	writeVertices(map, terrain);
 
 	context.stage = "old growth colonies";
 	if (!settleRoundColonies(game, context, "growth-starts", L.homeOf, L.homes, L.homeRadius))
@@ -199,7 +199,7 @@ bool generate(Game &game, GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		const auto eligible = [&](int i)
-		{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
+		{ return L.homeOf[i] == k && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); };
 		const KitFrame frame{int(std::lround(L.kits[k].x)), int(std::lround(L.kits[k].y)), 0.0};
 		const double reach = homePondRadius(L.homeRadius) * 1.2 + 3;
 		plantKit(map, t, context,
@@ -214,7 +214,7 @@ bool generate(Game &game, GenerationContext &context)
 			const auto shore = [&](int i)
 			{
 				return eligible(i) &&
-					   t.dist2(px, py, i % t.w, i / t.w) <= (kPoolRadius + 5) * (kPoolRadius + 5);
+					   t.dist2(px, py, t.remainderX(i), i / t.w) <= (kPoolRadius + 5) * (kPoolRadius + 5);
 			};
 			for (int q = 0; q < kPoolSeeds; ++q)
 			{
@@ -231,11 +231,11 @@ bool generate(Game &game, GenerationContext &context)
 	// round the water and an orchard of the three fruits a few tiles out.
 	for (int centre : L.lakeCentres)
 	{
-		const int cx = centre % t.w, cy = centre / t.w;
+		const int cx = t.remainderX(centre), cy = centre / t.w;
 		const auto shore = [&](int i)
 		{
-			return L.forest[i] && t.dist2(cx, cy, i % t.w, i / t.w) <= 400 &&
-				   clearGround(map, i % t.w, i / t.w);
+			return L.forest[i] && t.dist2(cx, cy, t.remainderX(i), i / t.w) <= 400 &&
+				   clearGround(map, t.remainderX(i), i / t.w);
 		};
 		if (const int seed = seedNear(t, cx, cy, 20, shore); seed >= 0)
 			growPatch(map, t, seed, WHEAT, int(scaledCount(kLakeWheat, o.wheat)), shore);
@@ -260,7 +260,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.telemetry.measure("old-growth.forest.eligible-corners", levels.size());
 	context.telemetry.choice("old-growth.contact.mode", o.trails ? "starting-trails" : "cutting");
 	plantCover(map, t, L.forest, WOOD, [&](int i)
-			   { return gaps[i] >= level && !reserved[i] && clearGround(map, i % t.w, i / t.w); });
+			   { return gaps[i] >= level && !reserved[i] && clearGround(map, t.remainderX(i), i / t.w); });
 	if (o.hiddenGroves)
 		hideGroves(map, L, context, o, teams);
 	seedAlgae(map, context, t, "growth-algae", o.algae, AlgaeBand::anyWater(30));
@@ -293,8 +293,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	const Fertility::Field fertility = Fertility::forMap(map, false);
 	std::vector<unsigned char> wateredBy = dilate(t, L.water, kCropProbeReach);
 	for (int i = 0; i < t.size(); ++i)
-		if (L.forest[i] && !wateredBy[i] && fertility.at(i % t.w, i / t.w) > 0)
-			return "The forest regrows away from any water at (" + std::to_string(i % t.w) + ", " +
+		if (L.forest[i] && !wateredBy[i] && fertility.at(t.remainderX(i), i / t.w) > 0)
+			return "The forest regrows away from any water at (" + std::to_string(t.remainderX(i)) + ", " +
 				   std::to_string(i / t.w) + ").";
 	// Every colony is reachable from the first: by walking with trails, by cutting without.
 	if (o.trails)
@@ -323,7 +323,7 @@ GeneratorDefinition oldGrowthDefinition()
 		"old-growth",
 		28,
 		"Old growth",
-		4,
+		5,
 		false,
 		// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
 		// tiles (four on a 256 map, each a few days' cutting from any home) keeps them rare enough

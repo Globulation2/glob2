@@ -3,6 +3,7 @@
 #include "TerrainGradient.h"
 #include "TerrainGradientWorkspace.h"
 #include "map/TerrainRegistry.h"
+#include "map/CellRules.h"
 #include <stdexcept>
 
 namespace gradient_kernel::runtime_terrain
@@ -166,6 +167,26 @@ inline void propagateTerrainProfiles(std::uint16_t *gradient, int swim, int maxC
 {
 	propagateTerrainProfiles(gradient, swim, maxCost, grid, workspace, profiles,
 							 registry.movement(swim), buckets);
+}
+// Cells described by rule: ruleAt gives each cell's index into rules.
+template <class RuleAt>
+void propagateTerrainField(std::uint16_t *gradient, int swim, int maxCost, field::Grid grid,
+						   GradientWorkspace &workspace, RuleAt ruleAt, bool modifiedCosts,
+						   const CellRuleTable &rules, unsigned buckets)
+{
+	runtime_terrain::validateQueueSize(buckets);
+	if (!modifiedCosts)
+	{
+		propagateField(gradient, swim, maxCost, grid, workspace,
+					   [&](std::size_t i) { return rules.swimming(ruleAt(i)); });
+		return;
+	}
+	if (buckets == 64)
+		runtime_terrain::propagate<64>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim));
+	else if (buckets == 128)
+		runtime_terrain::propagate<128>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim));
+	else
+		runtime_terrain::propagate<256>(gradient, maxCost, grid, workspace, ruleAt, rules.movement(swim));
 }
 template <class TerrainAt>
 void propagateTerrainField(std::uint16_t *gradient, int swim, int maxCost, field::Grid grid,
