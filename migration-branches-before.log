@@ -1,0 +1,53 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/platform
+
+ ❯ packages/db/test/migrationBranches.test.ts (2 tests | 1 failed) 3076ms
+   × integrates missing 0053_admin_console.sql, 0054_admin_analytics.sql, 0055_admin_finances.sql, 0056_admin_rollup_state.sql without renaming deployed migrations 1352ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/db/test/migrationBranches.test.ts > integrates missing 0053_admin_console.sql, 0054_admin_analytics.sql, 0055_admin_finances.sql, 0056_admin_rollup_state.sql without renaming deployed migrations
+AssertionError: expected error: relation "admin_report_resolutions… { …(15) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+error {
+  "message": "relation \"admin_report_resolutions\" does not exist",
+  "length": 122,
+  "name": "error",
+  "severity": "ERROR",
+  "code": "42P01",
+  "detail": undefined,
+  "hint": undefined,
+  "position": undefined,
+  "internalPosition": undefined,
+  "internalQuery": undefined,
+  "where": undefined,
+  "schema": undefined,
+  "table": undefined,
+  "column": undefined,
+  "dataType": undefined,
+  "constraint": undefined,
+  "file": "namespace.c",
+  "line": "434",
+  "routine": "RangeVarGetRelidExtended",
+}
+
+ ❯ packages/db/test/migrationBranches.test.ts:25:29
+     23|         await symlink(join(MIGRATIONS_DIR, file), join(directory, file…
+     24|       const initial = await createMigrator(database.db, directory).mig…
+     25|       expect(initial.error).toBeUndefined();
+       |                             ^
+     26|       expect(initial.results?.every((result) => result.status === 'Suc…
+     27|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  20:39:24
+   Duration  4.09s (tests 83%, import 12%, transform 5%)
+

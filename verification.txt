@@ -1,0 +1,9 @@
+PR976 verification
+Tested7b12ce886bbd85447bc3196708a4a575e913dba1; base5f50e60448e62264b8443dab97f4c1bed14a5a79, fetched unchanged before final validation.
+Linux x86_64, Node22.22.1, Vitest5.0.3, PostgreSQL16.15 Docker. Existing platform lockfile dependencies; real PostgreSQL, isolated temporary databases via createTestDatabase, no mocks. No native build flags apply.
+From platform directory:
+Baseline: npx vitest run packages/db/test/migrationBranches.test.ts =>1failed1passed, missing admin_report_resolutions matching hostedjob113605083043 run37863061399.
+Fixed: npx vitest run packages/db/test =>6files34testsPASS14.86s.
+Lint: npx eslint packages/db/test/migrationBranches.test.ts =>PASS.
+Formatting: npx prettier --check packages/db/test/migrationBranches.test.ts =>PASS.
+Coverage: historical Studio/admin branches, missing branch integration, all later migrations, preserved account, idempotent rerun, rejected missing applied history; rest of database suite including schema/roles. Test-only change; no production migration/SQL/schema change. No engine or save/replay/network behavior change. Full platform suite not repeated because change is isolated to migration test setup; full database suite exercises its actual boundary. Original hosted failure and local baseline retained.

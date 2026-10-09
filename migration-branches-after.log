@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/platform
+
+
+ Test Files  6 passed (6)
+      Tests  34 passed (34)
+   Start at  20:39:37
+   Duration  14.86s (tests 89%, import 8%, transform 3%)
+
