@@ -5,13 +5,14 @@
 JSON maps each of the 512 ticks from 30000 through 30511 to the SHA-256 of its
 complete checksum record (tick, aggregate, and ordered team/entity fields) when
 continuing that retained checkpoint with the current resource-property simulation and AI policy, including simulation
-revision 35. `expected-resources-30000-30512.json` is the active trajectory;
+revision 40. `expected-resources-30000-30512.json` is the active trajectory;
 `expected-terrain-30000-30512.json` retains the simulation-revision-20 baseline;
 `expected-scoped-gradients-30000-30512.json` and earlier expectations retain the
 historical team/entity-only hashes for their earlier simulation policies.
 The current baseline includes property-driven renewable Food seed protection,
 renewable Wood reserves, the runtime registry/material cache checksum state,
-scheduled building gradients, greedy fetching, and revision 35's delayed resource
+scheduled building gradients, greedy fetching, persistent owner-specific RNG
+streams, 30-tick normal timing, building area effects, and delayed resource
 growth integrated with the landscape resource catalog. CI compares platform continuations against this same trajectory. The original v115 checkpoint
 is retained to keep testing older-save loading. The test also saves at tick 30256,
 reloads, and compares all remaining records against the uninterrupted continuation
