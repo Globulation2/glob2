@@ -36,10 +36,13 @@ test('the loading page shows download progress and the game starts with core and
 });
 
 for (const name of ['core', 'game']) test(`a failed ${name} download says so and offers to try again`, async ({page}) => {
+  const errors = [];
+  page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
   await page.route(`**/assets/${name}*.data`, route => route.fulfill({status: 503, body: ''}));
   await page.goto(gameURL());
   await expect(page.locator('#loading-status')).toHaveText('The game could not be downloaded.');
-  await expect(page.locator('#loading-detail')).toContainText('HTTP 503');
+  await expect(page.locator('#loading-detail')).toHaveText('Check the connection, then try again.');
+  expect(errors.join('\n')).toContain('HTTP 503');
   await expect(page.locator('#loading-retry')).toBeVisible();
   expect((await snapshot(page)).assets[name]).toBe('failed');
   await page.unroute(`**/assets/${name}*.data`);
