@@ -38,9 +38,11 @@ and no GOG credentials.
 1. Publish an approved `vVERSION` tag in the main public repository. Mirror
    that tag's source into `genixpro/glob2-release`, then update its protected
    `master`. The preflight requires the tagged public commit to be an ancestor
-   and the game source tree to match it. Release workflows and packaging
-   helpers may be newer than the tag. If preflight reports a game-source diff,
-   reconcile it with the public repository before running the release.
+   of the reviewed workflow driver. Build jobs check out that exact public
+   commit separately and verify its identity and clean tracked tree. Packaging
+   helpers run from the driver but read assets from the tagged checkout; smoke
+   commands use the CLI version in that source. Unknown CLI versions fail
+   closed. Release workflows and packaging helpers may be newer than the tag.
 2. Manually start **GOG release candidate** in the mirror with the tag and
    `build` mode. It builds three depots, checks the complete file manifests,
    and runs headless game fixtures on all platforms. Each depot includes its

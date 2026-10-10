@@ -59,6 +59,45 @@ class ReleaseWorkflowTests(unittest.TestCase):
                     self.assertEqual(result.returncode,0,result.stderr)
                     self.assertEqual(result.stdout.splitlines(),list(expected))
 
+    def test_gog_builds_and_stages_the_resolved_public_source(self):
+        text=(ROOT/'.github/workflows/gog-staging.yml').read_text()
+        for platform,next_job in (('windows','windows-smoke'),('linux','macos'),('macos','upload-staging')):
+            block=text.split('\n  '+platform+':',1)[1].split('\n  '+next_job+':',1)[0]
+            with self.subTest(platform=platform):
+                self.assertIn('repository: Globulation2/glob2',block)
+                self.assertIn('ref: ${{ needs.preflight.outputs.source_commit }}',block)
+                self.assertIn('working-directory: source',block)
+                self.assertIn('test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"',block)
+                self.assertIn('../driver/tools/gog_release.py stage-'+platform+' --source-root "$PWD"',block)
+                self.assertIn('path: source/artifacts/gog/'+platform+'.tar.gz',block)
+        smoke=text.split('\n  windows-smoke:',1)[1].split('\n  linux:',1)[0]
+        self.assertIn('needs: [preflight, windows]',smoke)
+        self.assertIn('ref: ${{ needs.preflight.outputs.source_commit }}',smoke)
+        self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
+        self.assertIn("'1' { $repeatArgs = @('--nox', $save, '10', '1') }",smoke)
+        self.assertIn("'2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }",smoke)
+        self.assertIn('& .\\glob2.exe @repeatArgs',smoke)
+        self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
+
+    def test_gog_posix_repeat_selector_preserves_both_command_contracts(self):
+        text=(ROOT/'.github/workflows/gog-staging.yml').read_text()
+        for platform in ('linux','macos'):
+            block=text.split('\n  '+platform+':',1)[1]
+            selector='case "$CLI_VERSION" in'+block.split('case "$CLI_VERSION" in',1)[1].split('esac',1)[0]+'esac'
+            for version,expected in (('1',['--nox','SAVE','10','1']),
+                                     ('2',['game','repeat','SAVE','--ticks','10','--runs','1']),
+                                     ('3',None)):
+                with self.subTest(platform=platform,version=version), tempfile.TemporaryDirectory() as directory:
+                    script='set -euo pipefail\n'+selector+'\nprintf "%s\\n" "${repeat_args[@]}"'
+                    result=subprocess.run(['bash','-c',script],cwd=directory,
+                                          env={**os.environ,'CLI_VERSION':version},capture_output=True,text=True)
+                    if expected is None:
+                        self.assertNotEqual(result.returncode,0)
+                    else:
+                        expected=[str(Path(directory).resolve()/'games/cross-replay.game.gz') if arg=='SAVE' else arg for arg in expected]
+                        self.assertEqual(result.returncode,0,result.stderr)
+                        self.assertEqual(result.stdout.splitlines(),expected)
+
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
         for name in ('github-release.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
             text=(ROOT/'.github/workflows'/name).read_text()

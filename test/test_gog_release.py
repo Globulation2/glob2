@@ -137,6 +137,31 @@ class GOGReleaseTests(unittest.TestCase):
             extract_archive(archive, self.root / "extracted", "windows")
         self.assertFalse((self.root / "outside").exists())
 
+    def test_separate_source_checkout_requires_tag_commit_clean_tree_and_version(self):
+        source=self.root/'source'
+        (source/'scons').mkdir(parents=True)
+        layout=source/'scons/build_layout.py'
+        layout.write_text('PACKAGE_VERSION = "0.11.0.0"\n')
+        tag='v0.11.0.0'
+        for selected,dirty,package,error in (
+                ('b'*40,'','0.11.0.0',None),
+                ('c'*40,'','0.11.0.0','does not match public tag'),
+                ('b'*40,' M src/Game.cpp','0.11.0.0','tracked changes'),
+                ('b'*40,'','0.10.0.0','PACKAGE_VERSION')):
+            layout.write_text(f'PACKAGE_VERSION = "{package}"\n')
+            with self.subTest(error=error), \
+                 patch('gog_release.command',side_effect=['a'*40,'b'*40]), \
+                 patch('gog_release.version',return_value='0.11.0.0'), \
+                 patch('gog_release.subprocess.run'), \
+                 patch('gog_release.subprocess.check_output',side_effect=[selected,dirty]):
+                if error:
+                    with self.assertRaisesRegex(ValueError,error):
+                        preflight(tag,'refs/gog-upstream/'+tag,source)
+                else:
+                    result=preflight(tag,'refs/gog-upstream/'+tag,source)
+                    self.assertEqual(result['source_commit'],'b'*40)
+                    self.assertEqual(result['workflow_commit'],'a'*40)
+
     def test_public_tag_source_diff_blocks_release(self):
         tag = "v0.9.5.0"
         with patch("gog_release.command", side_effect=["a" * 40, "b" * 40, "SConstruct"]), \

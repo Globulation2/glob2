@@ -43,7 +43,7 @@ def version():
     return match.group(1)
 
 
-def preflight(tag, upstream_ref):
+def preflight(tag, upstream_ref, source_root=None):
     if not re.fullmatch(r"v[0-9]+(?:\.[0-9]+)+", tag):
         raise ValueError("tag must be vVERSION")
     if tag != f"v{version()}":
@@ -51,6 +51,20 @@ def preflight(tag, upstream_ref):
     head = command("git", "rev-parse", "HEAD")
     upstream = command("git", "rev-parse", f"{upstream_ref}^{{commit}}")
     subprocess.run(["git", "merge-base", "--is-ancestor", upstream, head], cwd=ROOT, check=True)
+    if source_root is not None:
+        source_root = Path(source_root).resolve()
+        selected = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source_root, text=True).strip()
+        if selected != upstream:
+            raise ValueError("source checkout does not match public tag")
+        changed = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"],
+                                          cwd=source_root, text=True).strip()
+        if changed:
+            raise ValueError("source checkout contains tracked changes")
+        match = VERSION_PATTERN.search((source_root / "scons/build_layout.py").read_text())
+        if not match or tag != f"v{match.group(1)}":
+            raise ValueError("source PACKAGE_VERSION does not match tag")
+        return {"tag": tag, "version": match.group(1), "source_commit": upstream,
+                "workflow_commit": head}
     # The mirror may carry release workflows, but game source must be identical
     # to the public tag selected for this release.
     game_paths = ("SConstruct", "scons", "src", "libgag", "libusl", "data",
@@ -245,8 +259,10 @@ def main():
     check.add_argument("--tag", required=True)
     check.add_argument("--upstream-ref", required=True)
     check.add_argument("--github-output", type=Path)
+    check.add_argument("--source-root", type=Path)
     for platform in ("windows", "linux", "macos"):
         part = sub.add_parser(f"stage-{platform}")
+        part.add_argument("--source-root", type=Path)
         part.add_argument("--output", type=Path, required=True)
         part.add_argument("--version", required=True)
         part.add_argument("--source-commit", required=True)
@@ -268,7 +284,7 @@ def main():
     extract.add_argument("--platform", choices=("windows", "linux", "macos"), required=True)
     args = parser.parse_args()
     if args.command == "preflight":
-        result = preflight(args.tag, args.upstream_ref)
+        result = preflight(args.tag, args.upstream_ref, args.source_root)
         if args.github_output:
             with args.github_output.open("a") as out:
                 for key, value in result.items():
@@ -279,6 +295,14 @@ def main():
     elif args.command == "extract":
         print(json.dumps(extract_archive(args.archive, args.depot, args.platform), sort_keys=True))
     else:
+        if args.source_root:
+            global ROOT
+            ROOT = args.source_root.resolve()
+            selected = command("git", "rev-parse", "HEAD")
+            if selected != args.source_commit:
+                raise ValueError("staging source checkout does not match source commit")
+            if command("git", "status", "--porcelain", "--untracked-files=no"):
+                raise ValueError("staging source checkout contains tracked changes")
         globals()[args.command.replace("-", "_")](args)
 
 
