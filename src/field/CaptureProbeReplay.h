@@ -247,6 +247,12 @@ public:
     Progress advance(Admission admission) noexcept {
         if(!state)return progress;
         auto& s=*state;
+        // Only the original coordinator may touch lane/events. Migration may
+        // request atomic cancellation, but leaves reaping to that coordinator.
+        if(s.producer!=std::this_thread::get_id()) {
+            s.receipt.clockValid=false;++s.receipt.invalidClocks;s.canceled=true;
+            return progress;
+        }
         const auto start=s.now();
         const bool comparisonAdvance=comparing;
         if(admission.requiredGeneration!=s.record->requiredGeneration() || admission.requiredBacklog ||
@@ -286,7 +292,7 @@ public:
     // destroys this wrapper, then settles with a qualified outer authorization.
     // Until then diagnostic defaults suppress inference and pay full credit.
     std::optional<GradientCpuCapture::Settlement> takeSettlement() noexcept {
-        if(!state || probe || state.use_count()!=1 ||
+        if(!state || state->producer!=std::this_thread::get_id() || probe || state.use_count()!=1 ||
            (progress!=Progress::ReadyToSettle && progress!=Progress::Declined))return {};
         const auto additionalCpu=state->additionalBackgroundCpu();
         auto token=GradientCpuCapture::takeSettlement(state->record);

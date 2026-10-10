@@ -2,6 +2,7 @@
 #include "CaptureProbeReplay.h"
 #include "GradientPropagation.h"
 #include "Glob2Test.h"
+#include "ThreadSupport.h"
 #include <vector>
 
 namespace
@@ -148,4 +149,23 @@ TEST_CASE("invalid captured replay clocks stop new commands and rejected readine
         replay.reset();CHECK(openCLProbeBytes()==baseline);
         CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
     }
+}
+
+TEST_CASE("migrated captured replay never advances or reaps a pending backend" * doctest::test_suite("OpenCLGradient"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    const auto baseline=openCLProbeBytes();Fixture fixture;CaptureProbeReplay::Receipt receipt;
+    fixture.driver->quarantine=true;auto replay=fixture.begin(receipt);REQUIRE(bool(replay));
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Quarantined);
+    const auto commands=fixture.driver->commands,cancels=fixture.driver->cancels,polls=fixture.driver->polls;
+    std::thread migrated([&]{
+        CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Quarantined);
+        CHECK_FALSE(replay->takeSettlement());
+    });migrated.join();
+    CHECK(fixture.driver->commands==commands);CHECK(fixture.driver->cancels==cancels);CHECK(fixture.driver->polls==polls);
+    CHECK_FALSE(replay->receipt().clockValid);CHECK(bool(fixture.driver->borrowed));
+    fixture.driver->terminal=true;
+    CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Declined);
+    auto token=replay->takeSettlement();REQUIRE(bool(token));replay.reset();token.reset();
+    CHECK(openCLProbeBytes()==baseline);CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
 }
