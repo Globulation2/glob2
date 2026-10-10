@@ -189,9 +189,10 @@ for (const variant of ["serial", "threaded"])
       page,
       variant,
       [
+        "game",
+        "run",
         "--generator-package",
         "/tmp/generator.json",
-        "game", "run",
         "--generator",
         "examples:swamp",
         "--map-seed",
