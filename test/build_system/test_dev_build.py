@@ -37,7 +37,7 @@ class DevelopmentBuildTests(unittest.TestCase):
                         ({'dev_fast': 1}, {'pch': 1}, {'unity': 1}, {'pch': 1, 'unity': 1})]
             self.assertEqual(len({default_directory(i) for i in [normal, *variants]}), 5)
             for identity in variants:
-                self.assertEqual(dev_build.dependency_identity(identity), normal)
+                self.assertEqual(dev_build.dependency_identity(identity), dev_build.dependency_identity(normal))
 
     def test_invalid_profiles(self):
         for args in ({'release': 1, 'pch': 1}, {'profile': 1, 'dev_fast': 1}, {'unity': 'maybe'},

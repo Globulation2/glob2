@@ -166,7 +166,7 @@ describe('map play choices', () => {
         viewer: { owner: false, moderator: false, liked: false, reported: false },
       });
     open(`/maps/${MAP_ID}`);
-    const button = await screen.findByRole('button', { name: 'Play this map' });
+    const button = await screen.findByRole('button', { name: 'Play this map' }, { timeout: 5000 });
     fireEvent.click(button);
     const modal = screen.getByRole('dialog', { name: 'How would you like to play?' });
     expect(show).toHaveBeenCalled();

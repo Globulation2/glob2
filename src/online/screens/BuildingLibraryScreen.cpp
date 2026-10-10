@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "BuildingLibraryScreen.h"
 #include "OnlineServices.h"
 #include "InstanceConfig.h"
@@ -374,5 +375,7 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 															"/building-studio");
 					  }},
 					 {"buildings/back", "Back", [this] { endExecute(1); }, false, SDLK_ESCAPE}};
+	if constexpr (!ClientFeatures::AuthoringLinks)
+		panel.actions.erase(panel.actions.begin());
 	return onlinePanel(std::move(panel), p);
 }

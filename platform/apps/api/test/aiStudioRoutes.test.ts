@@ -191,7 +191,7 @@ it('reconciles simultaneous operator submissions with one durable event', async 
   expect(await credits.balance(owner.accountId)).toEqual({ balance: 5, reserved: 0, available: 5 });
 });
 
-it('keeps owned saved projects and manual editing available when generation is disabled', async () => {
+it('keeps owned saved projects readable but blocks edits and generation when disabled', async () => {
   const disabled = await harness.start({
     instance: {
       auth: { providers: [], local: { enabled: true } },
@@ -217,7 +217,7 @@ it('keeps owned saved projects and manual editing available when generation is d
       headers,
       body: JSON.stringify({ expectedRevision: 1, source: 'function step() {}\n// manual edit' }),
     });
-    expect(saved.status).toBe(200);
+    expect(saved.status).toBe(503);
     const generation = await fetch(url + '/requests', {
       method: 'POST',
       headers,
@@ -228,7 +228,7 @@ it('keeps owned saved projects and manual editing available when generation is d
         budget: 1,
       }),
     });
-    expect(generation.status).toBe(404);
+    expect(generation.status).toBe(503);
   } finally {
     author.client.close();
   }

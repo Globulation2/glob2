@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "MusicUI.h"
 #include "MusicLibraryScreen.h"
 #include "MusicSetScreen.h"
@@ -451,7 +452,8 @@ Element MusicLibraryScreen::build(const Presentation &p)
 						   }
 					   },
 					   {.enabled = idle}));
-		body.push_back(button("music.create", musicText("Share music on the web"),
+		if constexpr (ClientFeatures::AuthoringLinks)
+			body.push_back(button("music.create", musicText("Share music on the web"),
 							  [this] { AH::openUrl(origin + "/music/new"); }));
 	}
 	else

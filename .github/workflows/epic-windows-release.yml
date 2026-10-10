@@ -105,11 +105,16 @@ jobs:
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           # package_windows.py also finds the SDL3 DLLs through this prefix.
           export GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix
-          scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          scons -j$(nproc) release=1 client_profile=free distribution=epic --build=build/mingw/client/release/lean-images mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
             --stage-dir artifacts/epic/windows \
             --manifest artifacts/epic/SHA256SUMS.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: client-build-epic-windows
+          path: build/mingw/client/release/lean-images/identity.json
+          if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: epic-windows-${{ needs.preflight.outputs.source_sha }}

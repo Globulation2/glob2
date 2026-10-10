@@ -63,6 +63,8 @@ def build_identity(arguments, host=None):
             identity['china'] = True
         if amazon:
             identity['amazon'] = True
+        from client_features import resolve
+        identity.update(resolve(arguments))
         identity.update(development)
         return identity
     if target == 'web' and (role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0))):
@@ -84,11 +86,22 @@ def build_identity(arguments, host=None):
         identity['lean_images'] = True
     if china:
         identity['china'] = True
+    if role == 'client':
+        from client_features import resolve
+        identity.update(resolve(arguments))
     identity.update(development)
     return identity
 
 
 def default_directory(identity):
+    from client_features import directory_suffix
+    feature_suffix = directory_suffix(identity)
+    if feature_suffix:
+        from client_features import resolve
+        base = dict(identity)
+        base.update(resolve({'target': identity['target'], 'release': identity['mode'] == 'release',
+                             'china': identity.get('china', False), 'amazon': identity.get('amazon', False)}))
+        return default_directory(base) / feature_suffix
     from dev_build import DEVELOPMENT_KEYS
     suffix = [key + '-' + str(identity[key]).lower() for key in DEVELOPMENT_KEYS if key in identity]
     if suffix:

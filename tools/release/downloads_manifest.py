@@ -25,6 +25,20 @@ REQUIRED = {
 }
 
 
+def validate_client_build(build):
+    if not isinstance(build, dict) or build.get('role') != 'client' or build.get('client_profile') != 'free' or build.get('mode') != 'release':
+        raise ValueError('staged packages require a free release clientBuild')
+    if any(build.get(key) for key in ('dev_fast', 'pch', 'unity')):
+        raise ValueError('development builds cannot be published')
+    features = build.get('client_features')
+    if not isinstance(features, dict) or set(features) != {'commander', 'authoring_links', 'community_ai', 'community_generators'}:
+        raise ValueError('clientBuild requires every resolved client feature')
+    if any(type(value) is not bool for value in features.values()) or features['commander'] or features['authoring_links']:
+        raise ValueError('free launch packages cannot enable Commander or authoring links')
+    if build.get('distribution') not in {'direct', 'browser', 'steam', 'epic', 'google_play', 'app_store', 'microsoft', 'amazon', 'china'}:
+        raise ValueError('clientBuild requires a recognized distribution')
+
+
 def file_metadata(directory, filename, base_url):
     if not isinstance(filename, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._+-]*", filename):
         raise ValueError("artifact filename must be a plain safe basename")
@@ -39,14 +53,14 @@ def file_metadata(directory, filename, base_url):
             "sha256": digest.hexdigest(), "url": base_url + quote(filename, safe="")}
 
 
-def generate(directory, inventory, evidence, tag, source_commit, repository="Globulation2/glob2"):
+def generate(directory, inventory, evidence, tag, source_commit, repository="Globulation2/glob2", staged=False):
     if not re.fullmatch(r"v[0-9]+(?:\.[0-9]+)+", tag):
         raise ValueError("release tag must be v followed by a numeric version")
     if not re.fullmatch(r"[0-9a-f]{40}", source_commit):
         raise ValueError("source commit must be a full lowercase Git SHA")
     if repository != "Globulation2/glob2":
         raise ValueError("public downloads must target Globulation2/glob2")
-    if not isinstance(inventory, dict) or inventory.get("schemaVersion") != 1 or inventory.get("sourceCommit") != source_commit:
+    if not isinstance(inventory, dict) or inventory.get("schemaVersion") != (2 if staged else 1) or inventory.get("sourceCommit") != source_commit:
         raise ValueError("inventory schemaVersion/sourceCommit must match the release")
     packages = inventory.get("packages")
     sources = inventory.get("sources", [])
@@ -75,13 +89,21 @@ def generate(directory, inventory, evidence, tag, source_commit, repository="Glo
             raise ValueError("duplicate artifact filename")
         seen_files.add(metadata["filename"])
         item = {**{key: descriptor[key] for key in ("platform", "architecture", "format", "minimumOs")}, **metadata}
+        if staged:
+            build = descriptor.get("clientBuild")
+            validate_client_build(build)
+            if build.get('target') != ('android' if identity[0] == 'android' else 'native'):
+                raise ValueError('clientBuild target does not match selected package')
+            item["clientBuild"] = build
         if "dependencies" in descriptor:
             dependencies = descriptor["dependencies"]
             if not isinstance(dependencies, list) or not all(isinstance(value, str) and value.strip() for value in dependencies):
                 raise ValueError("dependencies must be nonempty strings")
             item["dependencies"] = dependencies
         output_packages.append(item)
-    if seen_identities != REQUIRED:
+    if staged and not seen_identities:
+        raise ValueError("staged release requires at least one playable package")
+    if not staged and seen_identities != REQUIRED:
         raise ValueError(f"missing required packages: {sorted(REQUIRED - seen_identities)}")
     for descriptor in sources:
         if not isinstance(descriptor, dict):
@@ -94,8 +116,8 @@ def generate(directory, inventory, evidence, tag, source_commit, repository="Glo
         seen_files.add(metadata["filename"])
         output_sources.append(metadata)
     digests = {item["filename"]: item["sha256"] for item in output_packages + output_sources}
-    summary = qualification.validate(evidence, tag, source_commit, digests)
-    return {"schemaVersion": 1, "version": tag[1:], "tag": tag, "sourceCommit": source_commit,
+    summary = qualification.validate(evidence, tag, source_commit, digests, output_packages if staged else None)
+    return {"schemaVersion": 2 if staged else 1, "version": tag[1:], "tag": tag, "sourceCommit": source_commit,
             "releaseNotesUrl": f"https://github.com/{repository}/releases/tag/{tag}",
             "qualification": summary,
             "packages": sorted(output_packages, key=lambda p: (p["platform"], p["architecture"], p["format"])),
@@ -122,6 +144,7 @@ def atomic_write(path, text):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--staged", action="store_true", help="Qualify only the explicit schema-2 inventory cohort")
     parser.add_argument("--artifacts", required=True, type=Path)
     parser.add_argument("--inventory", required=True, type=Path)
     parser.add_argument("--qualification", required=True, type=Path)
@@ -135,7 +158,7 @@ def main():
         validate_checkout(args.tag, args.source_commit)
         manifest = generate(args.artifacts, json.loads(args.inventory.read_text()),
                             json.loads(args.qualification.read_text()), args.tag,
-                            args.source_commit, args.repository)
+                            args.source_commit, args.repository, staged=args.staged)
         atomic_write(args.output, json.dumps(manifest, indent=2) + "\n")
         if args.checksums:
             files = manifest["packages"] + manifest["sources"]

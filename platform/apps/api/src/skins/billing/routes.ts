@@ -14,6 +14,9 @@ const Checkout = Strict({
 });
 const Purchase = Strict({ purchaseId: Uuid });
 export async function skinBillingRoutes(app: FastifyInstance, identity: Identity) {
+  const salesEnabled =
+    !!app.services.config.instance.skinDesigner?.enabled &&
+    !!app.services.config.instance.skinDesigner.salesEnabled;
   const env = app.services.config.secrets ?? process.env;
   const key = env['STRIPE_SECRET_KEY'],
     webhookSecret = env['STRIPE_WEBHOOK_SECRET'];
@@ -70,7 +73,8 @@ export async function skinBillingRoutes(app: FastifyInstance, identity: Identity
     items: await Promise.all(
       (Object.keys(PRODUCTS) as Sku[]).map(async (sku) => {
         const priceId = prices[sku];
-        const price = stripe && priceId ? await stripe.prices.retrieve(priceId) : undefined;
+        const price =
+          salesEnabled && stripe && priceId ? await stripe.prices.retrieve(priceId) : undefined;
         const available =
           !!price &&
           price.active &&
@@ -100,6 +104,8 @@ export async function skinBillingRoutes(app: FastifyInstance, identity: Identity
   });
   app.post('/api/v1/skins/checkout', async (request) => {
     const { account } = await requireAccount(identity, request);
+    if (!salesEnabled)
+      throw apiError('unavailable', 'Skin purchases are not available on this instance.');
     const input = body(Checkout, request.body);
     if (!billing) throw apiError('unavailable', 'Purchases are not configured on this server yet.');
     return billing.checkout(account.id, input.sku, input.requestId);

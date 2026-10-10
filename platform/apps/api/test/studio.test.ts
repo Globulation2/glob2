@@ -35,7 +35,7 @@ it('requires a registered account and keeps generation and purchases disabled by
         body: JSON.stringify({ pack: 'small' }),
       })
     ).status,
-  ).toBe(403);
+  ).toBe(503);
   expect(
     (
       await fetch(api.url + '/api/v1/map-studio/threads', {
@@ -44,7 +44,7 @@ it('requires a registered account and keeps generation and purchases disabled by
         body: JSON.stringify({ title: 'River' }),
       })
     ).status,
-  ).toBe(403);
+  ).toBe(503);
 });
 
 it('keeps studio history and previews private while supporting owner download, room play and selected publication', async () => {

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
 #include "OnlineServices.h"
 #include "InstanceConfig.h"
@@ -43,6 +44,7 @@ void OnlineGeneratorsScreen::onEscape()
 }
 void OnlineGeneratorsScreen::fetch(bool more)
 {
+	if constexpr (!ClientFeatures::CommunityGenerators) return;
 	if (downloading || persistence)
 		return;
 	calls.cancelAll();
@@ -133,6 +135,7 @@ void OnlineGeneratorsScreen::selectRelease(int index)
 }
 void OnlineGeneratorsScreen::install()
 {
+	if constexpr (!ClientFeatures::CommunityGenerators) return;
 	if (downloading || persistence || !detail.is_object())
 		return;
 	const auto release = detail.at("versions").at(version);
@@ -227,6 +230,7 @@ void OnlineGeneratorsScreen::onTimer(Uint32)
 }
 void OnlineGeneratorsScreen::useInRoom()
 {
+	if constexpr (!ClientFeatures::CommunityGenerators) return;
 	if (!detail.is_object() || downloading || persistence)
 		return;
 	const auto &release = detail.at("versions").at(version);
