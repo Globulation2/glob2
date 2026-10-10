@@ -2,6 +2,7 @@
 #pragma once
 #include "ComputeExecutor.h"
 #include "ThreadCpuClock.h"
+#include "CpuSavingPolicy.h"
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -133,6 +134,7 @@ private:
     std::atomic<unsigned> configurationThreads{1};
     std::atomic<bool> wantsGPU{false};
     std::atomic<bool> externalInitialization{false};
+    std::shared_ptr<CpuSavingPolicy> learning;
     struct alignas(64) Buffer {
         std::array<GradientObservation,BufferSize> entries;
         std::atomic<unsigned> written{0}, read{0};
@@ -160,12 +162,34 @@ public:
     // Legacy synchronous harnesses retain their worker-maintenance path.
     void setExternalInitialization(bool value) { externalInitialization.store(value); }
     std::uint64_t currentGeneration() const { return generation.load(std::memory_order_acquire); }
+    // Configured with required work drained. Optional learning has no owner-loop
+    // processing pass and never adds a dependency to a required completion.
+    void configureLearning(bool enable) {
+        if(enable && !learning) learning=std::make_shared<CpuSavingPolicy>();
+        if(!enable) learning.reset();
+    }
+    std::shared_ptr<CpuSavingPolicy> learningPolicy() const { return learning; }
+    PlanDecision chooseWorkload(const WorkloadKey& key, Backend mode,
+                                Operation operation=Operation::CompleteField) const {
+        validateFamily(key.family);
+        PlanDecision result{Plan::CPU,0,currentGeneration()};
+        if(operation!=Operation::CompleteField || !ComputeExecutor::workerSlot() ||
+           mode==Backend::CPU || failed.load()) return result;
+        if(mode==Backend::OpenCL) result.plan=requestedOpenCLPlan();
+        else if(learning) {
+            const auto accepted=learning->lookup(key);
+            result.plan=accepted.plan; result.version=accepted.version;
+        }
+        if(result.plan!=Plan::CPU && !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(result.plan)))) result.plan=Plan::CPU;
+        return result;
+    }
     // Configure only after stopping the executor (including maintenance passes).
     // Replacing the map creates a new policy; reconfiguration invalidates all
     // previous observations while preserving established plans.
     void configure(unsigned threads, bool enable) {
         configurationThreads.store(threads);
         generation.store(nextGeneration.fetch_add(1),std::memory_order_release);
+        if(learning) learning->invalidate();
         if(enable && !accounting) accounting=std::make_unique<Accounting>();
         if(!enable) accounting.reset();
         const auto mode=backend();
