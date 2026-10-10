@@ -32,6 +32,11 @@
 
 namespace
 {
+// Second byte of each cold sampling qualification row: independent uniform
+// defender qualification and flag recruitment policy. Keep rows at two bytes.
+constexpr Uint8 SamplingAlwaysRecruitableDefender = 1u << 0;
+constexpr Uint8 SamplingAcceptsDefenderRecruitment = 1u << 1;
+
 void statValue(GAGCore::OutputStream* stream, const char* name, const int& value)
 {
     stream->writeSint32(value, name);
@@ -562,7 +567,9 @@ void TeamStats::step(Team *team, bool reloaded)
             if (builder) ++stat.workersByConstructionLevel[u->workerLevel()];
             const bool idle=u->medical==Unit::MED_FREE && u->activity==Unit::ACT_RANDOM;
             auto& counts=eligible[u->typeNum];
-            counts[0]+=carrier; counts[1]+=defender; counts[2]+=carrier && idle; counts[3]+=defender && idle;
+            counts[0]+=carrier; counts[1]+=defender; counts[2]+=carrier && idle;
+            counts[3]+=defender && idle
+                && (samplingQualifications[u->typeNum][1]&SamplingAcceptsDefenderRecruitment);
 
 			if (u->isUnitHungry())
 			{
@@ -642,7 +649,8 @@ void TeamStats::step(Team *team, bool reloaded)
     stat.idleCarriers=stat.idleDefenders=0;
     for (unsigned unit=0;unit<unitTypeCount;++unit) {
         const auto& qualification=samplingQualifications[unit];
-        const bool alwaysCarrier=qualification[0], alwaysDefender=qualification[1];
+        const bool alwaysCarrier=qualification[0];
+        const bool alwaysDefender=(qualification[1]&SamplingAlwaysRecruitableDefender)!=0;
         // Historical smoothing is safe only when every level and live cached
         // state qualifies. Otherwise a type's free count includes unusable units.
         const auto& counts=eligible[unit];
@@ -1693,7 +1701,10 @@ void TeamStats::configureSamplingCatalog(const std::shared_ptr<const UnitCatalog
                 || (traits.has(UnitRuntimeTraits::GuardIdle) && ((traits.has(UnitRuntimeTraits::MagicAir) && p[MAGIC_ATTACK_AIR]>0)
                     || (traits.has(UnitRuntimeTraits::MagicGround) && p[MAGIC_ATTACK_GROUND]>0))));
         }
-        samplingQualifications[unit]={Uint8(alwaysCarrier),Uint8(alwaysDefender)};
+        const bool recruitsDefender=traits.recruits(2);
+        samplingQualifications[unit]={Uint8(alwaysCarrier),Uint8(
+            (alwaysDefender && recruitsDefender ? SamplingAlwaysRecruitableDefender : 0)
+            | (recruitsDefender ? SamplingAcceptsDefenderRecruitment : 0))};
     }
     samplingCatalog=catalog;
 }
