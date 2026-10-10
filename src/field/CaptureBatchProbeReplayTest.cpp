@@ -248,7 +248,7 @@ TEST_CASE("isolated captured batch replay uses prepaid native arrays and exact e
         const auto baseline=openCLProbeBytes(),initializationCpu=configured.initializationThreadCPUNs;
         for(unsigned plan=1;plan<=6;++plan) {
             REQUIRE((readyPlans.load()&(1u<<plan))!=0);
-            for(unsigned count:{2u,4u,8u}) {
+            for(unsigned count:{1u,2u,4u,8u}) {
                 auto timer=std::make_shared<Timer>();auto policy=std::make_shared<CpuSavingPolicy>();
                 auto source=std::make_shared<int>(1);
                 std::vector<std::uint16_t> seeds(63,1);seeds[0]=65535;seeds[3]=0;seeds[19]=65300;
@@ -256,10 +256,15 @@ TEST_CASE("isolated captured batch replay uses prepaid native arrays and exact e
                 input.key={9,7,BUCKETS,3,1,Family::Clear,255,255};input.key.limit=COST_LIMIT;
                 input.scalarClassic=true;input.sourceIdentity=source;input.weakSourceBytes=sizeof(int)+256;
                 input.revision=21;input.variant=2;input.tick=1;input.due=17;input.optionalExpiry=101;
-                input.requiredGeneration=91;input.maximumMembers=count;input.alternativeReady=true;input.alternative=Plan(plan);
+                input.requiredGeneration=91;input.maximumMembers=count==1?2:count;input.alternativeReady=true;input.alternative=Plan(plan);
                 input.reservedCpuNs=64000000;input.captureCpuLimitNs=32000000;
                 input.slackNs=10000000000ull;input.conservativeElapsedNs=1000000;
                 auto key=input.key;key.batch=count;REQUIRE(policy->qualify(key,input.alternative,true));
+                if(count==1) {
+                    // Admit room for two, but freeze the one already completed
+                    // field immediately rather than waiting for a second offer.
+                    auto capacityKey=key;capacityKey.batch=2;REQUIRE(policy->qualify(capacityKey,input.alternative,true));
+                }
                 // Synthetic funding/packing clocks isolate admission and exactness;
                 // eager reference and actual backend producer clocks stay real.
                 policy->observeAccepted(input.key,Plan::CPU,1000000000000ull,1);

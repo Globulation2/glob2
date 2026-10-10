@@ -993,9 +993,10 @@ and quarantined transfers retain all storage and the global ticket until proof.
 
 Run `isolated captured batch replay uses prepaid native arrays and exact eager
 references` with `GLOB2_TEST_OPENCL_BATCH_REPLAY=1`, parity, direct upload and API
-CPU modes zero. Its 762 fixed assertions cover all six plans and batch sizes
-two/four/eight, complete Group/native future admission and actual eager CPU
-reference sums, indexed exact comparison, cleanup and full debt. Device setup
+CPU modes zero. Its 930 fixed assertions cover all six plans and batch sizes
+one/two/four/eight, complete Group/native future admission and actual eager CPU
+reference sums, indexed exact comparison, cleanup and full debt. The one-field rows reserve capacity
+for two but freeze and replay the single completed field immediately. Device setup
 belongs to the background coordinator. Synthetic funding and packing clocks
 keep this API/storage test ineligible for inference; it is separate from real
 production Auto learning and mode-wide performance qualification.
