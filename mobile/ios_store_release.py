@@ -143,9 +143,9 @@ def run(api, stage, provenance, draft_version_id=''):
         raise ValueError('Explicit draft differs from the existing tagged version')
     if draft_version_id and not versions:
         path=f'/v1/appStoreVersions/{draft_version_id}'
-        version=api.request('GET',path)['data']
-        owner=api.request('GET',path+'/relationships/app')['data']
-        if (version['id']!=draft_version_id or owner.get('id')!=app['id'] or
+        drafts=api.collect(f"/v1/apps/{app['id']}/appStoreVersions?"+urlencode({'filter[platform]':'IOS'}))
+        version=one([item for item in drafts if item['id']==draft_version_id],'explicit draft belonging to this app')
+        if (version['id']!=draft_version_id or
             version['attributes'].get('platform')!='IOS' or state(version)!='PREPARE_FOR_SUBMISSION'):
             raise ValueError('Explicit draft must be an editable iOS draft belonging to this app')
         if api.request('GET',path+'/relationships/build').get('data') is not None:

@@ -65,12 +65,11 @@ class IOSStoreTests(unittest.TestCase):
                 super().__init__(missing=True,attached=None)
                 self.version['attributes']['platform']='IOS'
                 self.owner='app-1'
-            def request(self,method,path,body=None):
-                if method=='GET' and path=='/v1/appStoreVersions/version-1':
-                    self.calls.append((method,path,body));return {'data':self.version}
-                if path.endswith('/relationships/app'):
-                    self.calls.append((method,path,body));return {'data':{'type':'apps','id':self.owner}}
-                return super().request(method,path,body)
+            def collect(self,path):
+                if path=='/v1/apps/app-1/appStoreVersions?filter%5Bplatform%5D=IOS':
+                    self.calls.append(('GET',path,None))
+                    return [self.version] if self.owner=='app-1' else []
+                return super().collect(path)
         return DraftAPI()
 
     def test_explicit_empty_draft_preserves_listing_and_binds_exact_verified_build(self):
