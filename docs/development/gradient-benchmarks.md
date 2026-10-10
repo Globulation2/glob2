@@ -39,9 +39,10 @@ sample; a requested backend does not prove that a field actually executed there.
 Check execution counters over the measured warm window and distinguish fallback
 from completed accelerator work. Tracked accelerator host/device payload limits
 are 64/128 MiB; driver memory must be measured separately through RSS/device tools.
-`GLOB2_OPENCL_POLL_US=1..1000` tests sleeping between transfer-event completion
-queries; zero (the default) uses blocking transfers. Keep this a separate
-candidate because CPU savings can trade against publication latency.
+`GLOB2_OPENCL_POLL_US=1..1000` selects the sleep between required transfer-event
+completion queries. Zero (the default) uses a 100 microsecond safety wait;
+required transfers remain nonblocking and cancellation is checked between queries.
+Retain the requested setting when measuring CPU and publication latency.
 `GLOB2_OPENCL_PROFILE=1` collects device upload/kernel/check/readback event time,
 separate from host waiting time; use it for diagnosis rather than comparing
 instrumented times to ordinary release samples.
@@ -53,10 +54,11 @@ device execution; bypassed fields are never counted as GPU completions.
 `GLOB2_OPENCL_ACTIVE_EPOCH=1` replaces per-dispatch tile-mask clears with
 epoch stamps; `GLOB2_OPENCL_PARITY_BOUND=1` retains opposite ping-pong bindings
 on two private kernel handles. Screen each separately before combining. Both
-default to zero, retain inactive buffer copies and original-seed recovery, and
-keep live capture and promotion disabled. The isolated epoch yielding
+default to zero and retain inactive buffer copies and original-seed recovery.
+Live capture remains a separate tuning override. The isolated epoch yielding
 implementation uses the same initialized program/check windows; parity still
-declines optional probes. Neither supplies qualified live promotion evidence. Check `active_epoch`, `tile_mask_clears`, `parity_bound`, and
+declines optional probes. Required-only measurements do not qualify live
+promotion. Check `active_epoch`, `tile_mask_clears`, `parity_bound`, and
 `kernel_argument_updates` in the warm-window OpenCL counters.
 
 `GLOB2_BENCHMARK_DIAGNOSTICS=1` enables optional thread inventories, per-tick
