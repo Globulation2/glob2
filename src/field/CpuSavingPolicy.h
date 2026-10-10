@@ -64,6 +64,7 @@ private:
     mutable std::mutex background;
     std::uint64_t generation=1, nextTicket=1, opportunities=0, latestTick=0;
     std::optional<ProbeTicket> active;
+    inline static std::atomic<bool> globalProbeBusy{false};
     Metrics totals;
 
     unsigned findOrCreate(const WorkloadKey& key) {
@@ -103,6 +104,11 @@ private:
         }
     }
 public:
+    ~CpuSavingPolicy() {
+        // Captured work retains its policy. Disposal follows cancellation and
+        // cannot leave another map permanently excluded from experimentation.
+        if(active) globalProbeBusy.store(false,std::memory_order_release);
+    }
     Choice lookup(const WorkloadKey& key) const noexcept {
         const auto count=published.load(std::memory_order_acquire);
         for(unsigned i=0;i<count;++i) if(profiles[i].key==key) {
@@ -160,6 +166,8 @@ public:
         std::uint64_t accepted=0, probes=0;
         for(const auto& c:credits) if(c.tick<=tick && tick-c.tick<WindowTicks) { accepted+=c.accepted; probes+=c.probes; }
         if(probes>accepted/100 || reserveCpuNs>accepted/100-probes) return {};
+        bool available=false;
+        if(!globalProbeBusy.compare_exchange_strong(available,true,std::memory_order_acq_rel)) return {};
         credit(tick).probes+=reserveCpuNs;
         active=ProbeTicket{nextTicket++,generation,tick,reserveCpuNs,index,alternative};
         ++totals.admitted;
@@ -175,6 +183,7 @@ public:
         const auto reservation=*active;
         settleCredit(reservation,actualProbeCpuNs);
         active.reset();
+        globalProbeBusy.store(false,std::memory_order_release);
         auto& profile=profiles[reservation.profile];
         if(!success || !exact || !referenceCpuNs || !alternativeCpuNs || actualProbeCpuNs>reservation.reservedCpuNs) {
             demote(profile); return false;
@@ -202,13 +211,13 @@ public:
         std::lock_guard lock(background);
         if(!active || active->id!=ticket.id) return;
         settleCredit(*active,actualCpuNs);
-        ++totals.canceled; active.reset();
+        ++totals.canceled; active.reset(); globalProbeBusy.store(false,std::memory_order_release);
     }
     // Invoke only after optional work is canceled. Published performance history
     // survives a terrain revision; immutable captured inputs use a separate gen.
     void invalidate() {
         std::lock_guard lock(background);
-        if(active) { ++totals.canceled; active.reset(); } // reserved credit remains charged
+        if(active) { ++totals.canceled; active.reset(); globalProbeBusy.store(false,std::memory_order_release); } // reserved credit remains charged
         ++generation;
     }
     Metrics metrics() const {

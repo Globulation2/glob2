@@ -101,3 +101,16 @@ TEST_CASE("CPU saving promotion requires both per field savings and deadline sla
     CHECK(policy.lookup(key).plan==Plan::CPU);
     CHECK_FALSE(policy.beginProbe(key,Plan::Frozen8,1,1000000,1000,1000,false));
 }
+
+TEST_CASE("optional probe ownership is global across map policies" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy first, second; const auto key=workload();
+    for(auto* policy:{&first,&second}) {
+        REQUIRE(policy->qualify(key,Plan::Frozen8,true));
+        policy->observeAccepted(key,Plan::CPU,100000000,1);
+    }
+    auto ticket=nextProbe(first,key); REQUIRE(ticket);
+    CHECK_FALSE(nextProbe(second,key));
+    first.cancelProbe(*ticket,0);
+    REQUIRE(nextProbe(second,key));
+}
