@@ -25,10 +25,6 @@ struct OpenCLStatus
 {
     bool available = false;
     std::string device, error;
-    // Immutable initialization metadata. Empty values decline exact offline
-    // configuration matching; status queries never call into the driver.
-    std::string platform, platformVendor, platformVersion;
-    std::string deviceVendor, driverVersion, deviceVersion, openCLCVersion;
     std::uint64_t fields = 0, calibrations = 0, cpuSelections = 0;
     std::uint64_t batches = 0, maxBatchFields = 0, costUploads = 0, costCacheHits = 0;
     std::uint64_t dispatches = 0, hostChecks = 0;
@@ -57,6 +53,11 @@ struct OpenCLStatus
     // retain fixed pingpong bindings, avoiding four argument setters/dispatch.
     bool parityBound = false;
     std::uint64_t kernelArgumentUpdates = 0;
+    // Appended to retain positional unavailable-platform initializers.
+    // Immutable initialization metadata. Empty values decline exact offline
+    // configuration matching; status queries never call into the driver.
+    std::string platform, platformVendor, platformVersion;
+    std::string deviceVendor, driverVersion, deviceVersion, openCLCVersion;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.
