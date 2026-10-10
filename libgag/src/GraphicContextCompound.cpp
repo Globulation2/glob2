@@ -304,6 +304,10 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
+#ifdef GLOB2_WEBGL2
+            if (surface->textureInfo && surface->textureInfo->sprite)
+                const_cast<DrawableSurface*>(surface->textureInfo->sprite->atlas.get())->prepareTexture();
+#endif
 			// upload
 			if (surface->glUploadedRevision != surface->contentRevision())
 			{
@@ -440,6 +444,11 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glColor4ub(255, 255, 255, alpha);
+#ifdef GLOB2_WEBGL2
+            // Atlas pixels remain immutable; only its owner-thread GPU cache
+            // changes when a lost texture is needed again.
+            const_cast<DrawableSurface*>(sprite->atlas.get())->prepareTexture();
+#endif
 			glState.setTexture(sprite->atlas->texture);
 #ifdef GLOB2_WEBGL2
             // The compatibility renderer packs client arrays into its own GPU buffer.

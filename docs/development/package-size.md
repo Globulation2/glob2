@@ -48,6 +48,28 @@ when a continuation captures inputs owned by its caller. Cancelling the caller
 then leaves those inputs valid until preparation finishes. New source
 mounts and pack changes invalidate future requests while existing consumers retain
 valid data. HD reloads prepare on workers and publish during frame polling.
+HD preparation adopts ready frames while other frames decode, and retires each
+matching prefetch subscription as its frame or atlas is adopted. The completed
+sprite still publishes atomically. Exclusively owned surfaces and upload buffers
+move into the drawable;
+independent consumers keep isolated copies. This avoids retaining the complete
+decoded mip chain alongside already published artwork during large sprite loads.
+Ready sprite pixels take priority over additional cooperative reads and decodes,
+and native preparation queues before optional HD work so adoption can begin early.
+Production HD loads prefetch eight frames at a time and defer packed atlases until
+frame adoption finishes; ready output cannot accumulate for an entire unit sheet
+while the application is busy with map generation or other work.
+Authored HD uploads consume the prepared mip chain directly, without an unused level-zero
+RGBA conversion. Mip filtering skips invisible footprints and averages opaque
+ones directly, preserving the alpha-weighted integer results for every pixel.
+WebGL2 prepares generated power-of-two HD surfaces on the GPU with the same
+integer alpha-weighted filter, including BGRA-to-RGBA conversion. This avoids
+rebuilding terrain mip chains on the application thread during animation. Arbitrary-sized surfaces and a failed shader
+initialization retain the CPU path. The GPU pass restores the renderer's program,
+framebuffer, texture/sampler bindings, viewport, pixel-store state and draw flags;
+its context-owned resources are recreated after context restoration.
+Browser restoration drops lost texture handles and recreates textures as needed
+by drawing, rather than rebuilding every resident HD frame in one blocking turn.
 Polling shares one deadline across cooperative work, sprite adoption and HD reloads;
 a single decode or upload remains indivisible and can exceed that deadline.
 Startup update turns advance preparation separately from progress painting; the

@@ -5,6 +5,7 @@
 #include "LossyAlphaFixture.h"
 #include "SpritePatternFixture.h"
 #include "ScopedEnvironment.h"
+#include "SpriteHighResolution.h"
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
@@ -124,6 +125,33 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     REQUIRE(sprite.load("data/gfx/terrain"));
     // Each requested frame contributes its base image; no four GL atlas mips.
     CHECK(GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16).size() == 16);
+    {
+        auto inputs = GAGCore::prefetchHighResolutionIncremental("data/gfx/terrain", 16);
+        CHECK(std::count_if(inputs.begin(), inputs.end(), [](const auto& input) {
+            return bool(input.dependency().subscription);
+        }) == 8);
+        GAGCore::highResolutionFrameReady("data/gfx/terrain", 8, inputs);
+        CHECK(inputs[8].dependency().subscription != nullptr);
+    }
+    for (bool shared : {false, true}) {
+        auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 1);
+        REQUIRE(GAGCore::Toolkit::assets().wait(inputs.front()));
+        std::weak_ptr<const GAGCore::AssetImage> decoded = inputs.front().get();
+        auto* pixels = inputs.front().get()->surface;
+        auto independent = shared ? inputs.front().retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
+        GAGCore::Sprite prepared;
+        sprite.appendHighResolutionFrame(0, prepared, inputs);
+        REQUIRE(prepared.experimentImages[0]);
+        CHECK(inputs.front().state() == GAGCore::AssetLoader::State::Cancelled);
+        if (shared) {
+            REQUIRE(independent.get());
+            CHECK(independent.get()->surface == pixels);
+            CHECK(prepared.experimentImages[0]->getSDLSurface() != pixels);
+        } else {
+            CHECK(decoded.expired());
+            CHECK(prepared.experimentImages[0]->getSDLSurface() == pixels);
+        }
+    }
     for (unsigned i = 0; i < 16; ++i) {
         REQUIRE(sprite.baseFrame(i));
         CHECK(sprite.baseFrame(i)->getW() == 16);
@@ -134,6 +162,23 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
 #ifdef HAVE_OPENGL
     CHECK(sprite.highResolutionAtlas == nullptr);
 #endif
+    // A failed optional frame is terminal for this prefetch, rather than
+    // restarting its decode on every readiness poll and hanging publication.
+    std::ofstream missing(hd / "frames.txt");
+    missing << "GLOB2_HIGHRES 1\n";
+    for (int i = 0; i < 16; ++i) missing << "terrain" << i << " 4 2 4 missing.webp -\n";
+    missing.close();
+    GAGCore::Sprite::requestHighResolution(true);
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+    bool complete = false;
+    while (std::chrono::steady_clock::now() < deadline) {
+        GAGCore::Toolkit::assets().poll();
+        if ((complete = GAGCore::Sprite::pollHighResolution(1))) break;
+        SDL_Delay(1);
+    }
+    REQUIRE(complete);
+    REQUIRE(sprite.baseFrame(0));
+    CHECK(sprite.baseFrame(0)->getW() == 4);
 }
 
 #ifdef HAVE_OPENGL

@@ -6,7 +6,7 @@ const {openRuntimeHost} = require('./runtime-host');
 
 // Run the compiled engine with the same fixture and orders as the native CI
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
-for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4]]) {
+for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4], ['threaded','auto']]) {
 test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${threads})`, async ({page}, info) => {
   const root = path.resolve(__dirname, '../..');
   const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));

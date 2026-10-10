@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SpriteLoad.h>
 #include "GraphicContextPrivate.h"
+#include "SpriteHighResolution.h"
 #include <Toolkit.h>
 #include <algorithm>
 #include <cstring>
@@ -200,15 +201,16 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
     if (impl->complete) return true;
     if (std::chrono::steady_clock::now() >= deadline) return false;
     auto &loader = Toolkit::assets();
-    loader.poll(std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
-    if (std::chrono::steady_clock::now() >= deadline) return false;
+    auto advanceInputs = [&] {
+        if (std::chrono::steady_clock::now() < deadline)
+            loader.poll(std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
+    };
     if (!impl->sources) {
-        if (impl->discovery.pending()) return false;
+        if (impl->discovery.pending()) { advanceInputs(); return false; }
         impl->sources = impl->discovery.get();
         if (!impl->sources || !impl->sources->frames) {
             impl->failure = "No frames for sprite: " + impl->name; impl->complete = true; return true;
         }
-        impl->highResolution = Sprite::prefetchHighResolution(impl->name, impl->sources->frames);
         std::vector<AssetLoader::Dependency> dependencies;
         for (const auto &source : impl->sources->entries) {
             impl->images.push_back(loader.requestImage(source.path));
@@ -219,9 +221,12 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
             [sources = impl->sources, images = impl->images, maximum = impl->maxTextureSize, variable = impl->variableAtlas] {
                 return preparedLayout(*sources, images, maximum, variable).workingBytes;
             });
+        // Establish native preparation before queuing the optional HD frames,
+        // so the private sprite can consume their output as decoding proceeds.
+        impl->highResolution = prefetchHighResolutionIncremental(impl->name, impl->sources->frames);
     }
     if (!impl->pixels) {
-        if (impl->prepared.pending()) return false;
+        if (impl->prepared.pending()) { advanceInputs(); return false; }
         impl->pixels = impl->prepared.take();
         if (!impl->pixels) impl->pixels = impl->prepared.get();
         if (!impl->pixels) {
@@ -240,8 +245,10 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         impl->sprite->fileName = impl->name;
         impl->sprite->dynamicTeamColor = impl->name == "data/gfx/unit";
     }
-    if (std::any_of(impl->highResolution.begin(), impl->highResolution.end(), [](const auto& handle) { return handle.pending(); })) return false;
     while (impl->frame < impl->sources->frames && std::chrono::steady_clock::now() < deadline) {
+        if (!highResolutionFrameReady(impl->name, impl->frame, impl->highResolution)) {
+            advanceInputs(); return false;
+        }
         auto adopt = [&](const std::shared_ptr<const AssetImage>& image) -> DrawableSurface* {
             if (!image) return nullptr;
             // Prepared frames can be shared by several requests; isolate mutable
@@ -255,9 +262,13 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         impl->sprite->images.push_back(adopt(impl->pixels->images[frame]));
         auto *rotated = adopt(impl->pixels->rotated[frame]);
         impl->sprite->rotated.push_back(rotated ? new Sprite::RotatedImage(rotated) : nullptr);
-        impl->sprite->appendHighResolutionFrame(frame, *impl->sprite);
+        impl->sprite->appendHighResolutionFrame(frame, *impl->sprite, impl->highResolution);
     }
     if (impl->frame != impl->sources->frames || std::chrono::steady_clock::now() >= deadline) return false;
+    if (!highResolutionAtlasReady(impl->name, impl->highResolution) ||
+        std::any_of(impl->highResolution.begin(), impl->highResolution.end(), [](const auto& handle) { return handle.pending(); })) {
+        advanceInputs(); return false;
+    }
     const bool uncolored = std::all_of(impl->sprite->rotated.begin(), impl->sprite->rotated.end(), [](auto p) { return !p; });
 #ifdef HAVE_OPENGL
     if (impl->pixels->atlas) {
@@ -276,7 +287,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
     } else
 #endif
     if (uncolored) impl->sprite->createTextureAtlas(impl->variableAtlas);
-    impl->sprite->recomputeBlockCompleteHD(); impl->sprite->createHighResolutionAtlas();
+    impl->sprite->recomputeBlockCompleteHD(); impl->sprite->createHighResolutionAtlas(impl->highResolution);
     impl->sprite->registerLoaded();
     impl->pixels.reset(); impl->sources.reset(); impl->prepared = {}; impl->images.clear(); impl->highResolution.clear();
     impl->complete = true;

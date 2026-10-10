@@ -10,11 +10,25 @@
 #include <set>
 #include <cstdlib>
 #include <GraphicContext.h>
+#include <Toolkit.h>
 #include <emscripten.h>
 #include <stdexcept>
 
 namespace GAGCore::ApplicationHost
 {
+bool prepareOpenGLMipmaps(unsigned texture, const void* pixels, int width, int height)
+{
+    return EM_ASM_INT({
+        try {
+            return Module.glob2GenerateMipmaps(GLctx, GL.textures[$0],
+                HEAPU8.subarray($1, $1 + $2 * $3 * 4), $2, $3, true);
+        } catch (error) {
+            console.warn('GPU mip preparation failed; using CPU: ' + error);
+            return false;
+        }
+    }, texture, pixels, width, height);
+}
+
 void initializeOpenGLContext()
 {
     // SDL3 uses the HTML5 context API, bypassing Browser.createContext and the
@@ -65,6 +79,7 @@ void publishDiagnostics(bool hostTurn = false) {
         if (imported) Module.importState = imported;
         if ($2) Module.glob2Tick = $3 >>> 0;
         Module.glob2Frames = (Module.glob2Frames || 0) + $4;
+        Module.glob2ArtworkReady = !!$15;
         if ($5 >= 0) Module.glob2Paused = !!$5;
         if ($6 >= 0) Module.glob2Torus = !!$6;
         if ($14 >= 0) Module.glob2TorusSettled = !!$14;
@@ -78,7 +93,8 @@ void publishDiagnostics(bool hostTurn = false) {
         }
     }, d.screen.c_str(), d.import.c_str(), d.hasTick, d.tick, d.frames,
        d.paused, d.torus, d.room, d.custom, d.screenClass.c_str(), hostTurn,
-       dimensions[0], dimensions[1], dimensions[2], d.torusSettled);
+       dimensions[0], dimensions[1], dimensions[2], d.torusSettled,
+       Toolkit::pollAssets(0));
     for (const auto &[owner, json] : d.controls) {
         MAIN_THREAD_EM_ASM({
             Module.glob2Controls ||= new Map();
@@ -186,6 +202,7 @@ void scheduledFrame(void* opaque)
             // Forget their handles rather than deleting them in the new context.
             GL.textures.fill(null);
             GL.buffers.fill(null);
+            Module.glob2ForgetMipmaps(GLctx);
             GLImmediate.currentRenderer = null;
             GLImmediate.lastRenderer = null;
             GLImmediate.lastArrayBuffer = null;
