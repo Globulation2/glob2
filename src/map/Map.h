@@ -259,6 +259,8 @@ public:
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
 		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0, publicationWaitNs = 0;
+        // Owner-only O(1) last-advance telemetry, no pending-job scan.
+        std::uint64_t lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;

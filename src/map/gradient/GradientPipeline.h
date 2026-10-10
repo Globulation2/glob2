@@ -76,7 +76,11 @@ public:
 	std::function<std::uint64_t(unsigned remaining)> deadline;
 	static constexpr unsigned MaxDelay = 16;
 	static_assert(MaxDelay <= ComputeExecutor::GradientHorizon);
-	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0, publicationWaitNs=0; } metrics;
+	struct Metrics {
+        std::uint64_t jobs=0,published=0,discarded=0,waitNs=0,maxPending=0,preparationNs=0,publicationWaitNs=0;
+        std::uint64_t gpuPublicationWaitCount=0,gpuPublicationWaitNs=0,gpuDeviceOverlapWaitNs=0;
+        std::uint64_t ownerCompletionCpuNs=0,lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
+    } metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
@@ -93,6 +97,8 @@ private:
     AsyncWork asyncWork;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
 	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0}, requestedGpu{0};
+    std::atomic<std::uint64_t> ownedInputCpu{0},handoffCpu{0},cleanupCpu{0};
+    bool diagnostics=false;
     std::array<std::atomic<std::uint64_t>,unsigned(CPUReason::Count)> cpuReasons{};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
@@ -112,6 +118,7 @@ private:
 			job.preparationNs = ns(preparationStart);
             seedCpu.fetch_add(glob2::threadCpuNs()-preparationCpu,std::memory_order_relaxed);
             timing.preparation=job.preparationNs;
+            const auto handoffStart=diagnostics ? glob2::threadCpuNs() : 0;
             const auto choice = gradient_kernel::backend();
             if(choice==gradient_kernel::Backend::OpenCL) requestedGpu.fetch_add(1,std::memory_order_relaxed);
             const auto family=gradient_preparation::backendFamily(job.request.kind);
@@ -131,16 +138,23 @@ private:
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
             if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
             if (selectedGPU && deviceService && asyncWork && executor->slot()) {
+                const auto ownedStart=diagnostics ? glob2::threadCpuNs() : 0;
                 job.deviceField=asyncWork(job,decision);
                 job.deviceField->workload=key;
                 job.deviceField->tick=job.snapshotLease ? job.snapshotLease->tick : job.due-delay;
                 job.deviceField->seedCpuNs=glob2::threadCpuNs()-preparationCpu;
+                const auto ownedEnd=diagnostics ? glob2::threadCpuNs() : 0;
                 job.deviceField->completion=executor->defer();
                 if(!deviceService->submit(job.deviceField)) {
                     // Admission failure still uses the original batch and worker.
                     deviceService->recoverOnWorker(job.deviceField);
                 }
+                if(diagnostics) {
+                    ownedInputCpu.fetch_add(ownedEnd-ownedStart,std::memory_order_relaxed);
+                    handoffCpu.fetch_add(ownedStart-handoffStart+glob2::threadCpuNs()-ownedEnd,std::memory_order_relaxed);
+                }
             } else if (selectedGPU && batchWork && gradient_kernel::canBatch(*backendSession)) {
+                if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuNs()-handoffStart,std::memory_order_relaxed);
                 const std::array jobs{&job};
                 batchWork(jobs, std::span(&scratch.propagation, 1));
             } else {
@@ -151,6 +165,7 @@ private:
                     : CPUReason::Unavailable;
                 cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed);
                 const auto cpuStart=glob2::threadCpuNs();
+                if(diagnostics)handoffCpu.fetch_add(cpuStart-handoffStart,std::memory_order_relaxed);
                 work(job,scratch.propagation);
                 const auto consumed=glob2::threadCpuNs()-cpuStart;
                 propagationCpu.fetch_add(consumed,std::memory_order_relaxed);
@@ -165,10 +180,12 @@ private:
 			job.error = std::current_exception();
 		}
 		// Completion releases all borrowed immutable inputs, including failures.
+        const auto cleanupStart=diagnostics ? glob2::threadCpuNs() : 0;
 		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
 		job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;
 		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
 		job.done = true;
+        if(diagnostics)cleanupCpu.fetch_add(glob2::threadCpuNs()-cleanupStart,std::memory_order_relaxed);
 	}
 	static void run(void* context, std::size_t) {
 		auto& job = *static_cast<Job*>(context);
@@ -177,18 +194,33 @@ private:
 	}
 	void wait(Job &job, bool publication = false) {
 		const auto start = Clock::now();
+        const auto waitStart=diagnostics ? gradient_kernel::monotonicNs() : 0;
+        const bool incomplete=diagnostics && publication && executor && !executor->finished(job.batch);
 		if (executor) executor->join(job.batch);
+        const auto joined=diagnostics ? gradient_kernel::monotonicNs() : 0;
+        const auto completionCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
         if(job.deviceField) {
+            if(incomplete && job.deviceField->executedGPU) {
+                const auto waited=joined-waitStart;
+                const auto from=std::max(waitStart,job.deviceField->deviceStartedWallNs);
+                const auto until=std::min(joined,job.deviceField->deviceCompletedWallNs);
+                const auto overlap=until>from ? until-from : 0;
+                ++metrics.gpuPublicationWaitCount;metrics.gpuPublicationWaitNs+=waited;
+                metrics.gpuDeviceOverlapWaitNs+=overlap;metrics.lastGpuPublicationWaitNs+=waited;
+                metrics.lastGpuDeviceOverlapWaitNs+=overlap;
+            }
             job.data=job.deviceField->takeData();
             if(job.deviceField->error) job.error=job.deviceField->error;
             propagationCpu.fetch_add(job.deviceField->fallbackCpuNs,std::memory_order_relaxed);
+            if(diagnostics)cleanupCpu.fetch_add(job.deviceField->fallbackCleanupCpuNs,std::memory_order_relaxed);
             (job.deviceField->executedGPU ? gpuFields : cpuFields).fetch_add(1,std::memory_order_relaxed);
             job.deviceField.reset();
         }
 		metrics.preparationNs += std::exchange(job.preparationNs, 0);
         const auto waited=ns(start);
 		metrics.waitNs += waited;
-        if(publication) metrics.publicationWaitNs += waited;
+        if(publication) {metrics.publicationWaitNs += waited;metrics.lastPublicationWaitNs+=waited;}
+        if(diagnostics)metrics.ownerCompletionCpuNs+=glob2::threadCpuNs()-completionCpuStart;
 		if (!job.done) throw std::logic_error("Unprepared gradient reservation");
 	}
 public:
@@ -210,6 +242,7 @@ public:
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
 		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
         for(auto& reason:cpuReasons) reason=0; cells = size; work = std::move(callback);
+        diagnostics=gradient_kernel::gradientDiagnosticsRequested();ownedInputCpu=0;handoffCpu=0;cleanupCpu=0;
 		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
@@ -221,6 +254,10 @@ public:
     std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
     std::uint64_t requiredPropagationCpuNs() const { return propagationCpu.load(); }
+    bool diagnosticsEnabled() const {return diagnostics;}
+    std::uint64_t requiredOwnedInputCpuNs() const {return ownedInputCpu.load();}
+    std::uint64_t requiredHandoffCpuNs() const {return handoffCpu.load();}
+    std::uint64_t requiredCleanupCpuNs() const {return cleanupCpu.load();}
     std::uint64_t cpuCompleteFields() const { return cpuFields.load(); }
     std::uint64_t gpuRequestedFields() const { return requestedGpu.load(); }
     std::uint64_t cpuReason(CPUReason reason) const { return cpuReasons[unsigned(reason)].load(); }
@@ -264,6 +301,7 @@ public:
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
 		++tick;
+        metrics.lastPublicationWaitNs=metrics.lastGpuPublicationWaitNs=metrics.lastGpuDeviceOverlapWaitNs=0;
 		while (!pending.empty() && pending.front()->due <= tick) {
 			auto &job = *pending.front(); wait(job,true);
 			if (job.error) std::rethrow_exception(job.error);

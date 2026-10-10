@@ -11,6 +11,9 @@
 
 namespace gradient_kernel
 {
+bool gradientDiagnosticsRequested() noexcept {
+    const auto* value=std::getenv("GLOB2_GRADIENT_DIAGNOSTICS");return value && std::strcmp(value,"1")==0;
+}
 struct GradientDeviceState
 {
     struct Queued {std::shared_ptr<OwnedGradientField> field;std::uint64_t serial;};
@@ -42,7 +45,9 @@ void recoverField(void* context,std::size_t) noexcept
     const auto cpuStart=glob2::threadCpuNs();
     try {field.cpu(field);} catch(...) {field.error=std::current_exception();}
     field.fallbackCpuNs=glob2::threadCpuNs()-cpuStart;
+    const auto cleanupStart=field.diagnostics ? glob2::threadCpuNs() : 0;
     field.inputs.reset();field.identity={};
+    if(field.diagnostics)field.fallbackCleanupCpuNs=glob2::threadCpuNs()-cleanupStart;
     if(auto service=field.observer.lock()) service->recordAccepted(field.session,field.workload,
         field.decision.plan,field.seedCpuNs+field.hostCpuNs+field.fallbackCpuNs,field.tick,true);
 }
@@ -96,6 +101,7 @@ class DeviceBroker
         state->totals.initializationNs=monotonicNs()-start;
     }
     void execute(const std::shared_ptr<GradientDeviceState>& state) noexcept {
+        const auto started=monotonicNs(),cpuStart=glob2::threadCpuNs();
         std::array<std::shared_ptr<OwnedGradientField>,8> held;std::size_t count=0;bool canceled=false;
         {
             std::lock_guard lock(state->mutex);canceled=state->canceled;
@@ -113,7 +119,9 @@ class DeviceBroker
             }
             ++state->totals.batches;state->totals.maxBatch=std::max<std::uint64_t>(state->totals.maxBatch,count);
         }
-        const std::span fields(held.data(),count);const auto started=monotonicNs(),cpuStart=glob2::threadCpuNs();bool handled=false;
+        const std::span fields(held.data(),count);bool handled=false,submissionStarted=false;
+        const bool diagnostics=state->totals.diagnostics;
+        std::uint64_t preparationEnd=cpuStart,submissionEnd=cpuStart;
         const bool stale=std::any_of(fields.begin(),fields.end(),[](const auto& field) {
             return field->decision.generation!=field->session->currentGeneration() || field->session->failed.load();
         });
@@ -126,15 +134,31 @@ class DeviceBroker
                         nullptr,field->identity,field->family});
                     requests.back().cpuBuckets=field->cpuBuckets;requests.back().executedOnDevice=&field->executedGPU;
                 }
+                if(diagnostics) {
+                    preparationEnd=glob2::threadCpuNs();
+                    const auto stamp=monotonicNs();for(const auto& field:fields) field->deviceStartedWallNs=stamp;
+                }
+                submissionStarted=true;
                 handled=state->hooks.execute ? state->hooks.execute(requests,fields.front()->decision.plan)
                     : executeOpenCLDevice(requests,fields.front()->decision.plan);
-            } catch(...) {handled=false;}
+                if(diagnostics) submissionEnd=glob2::threadCpuNs();
+            } catch(...) {
+                handled=false;
+                if(diagnostics) {submissionEnd=glob2::threadCpuNs();if(!submissionStarted)preparationEnd=submissionEnd;}
+            }
         }
+        if(diagnostics && submissionEnd<preparationEnd) submissionEnd=glob2::threadCpuNs();
         const auto elapsed=monotonicNs()-started,consumed=glob2::threadCpuNs()-cpuStart;
+        if(diagnostics) {
+            const auto stamp=monotonicNs();for(const auto& field:fields)field->deviceCompletedWallNs=stamp;
+        }
         std::size_t cells=0;for(const auto& field:fields) cells+=field->grid.cells();
         for(const auto& field:fields) {
             field->serviceNs=elapsed;field->hostCpuNs=(consumed/cells)*field->grid.cells()+(consumed%cells)*field->grid.cells()/cells;
-            if(handled) {field->inputs.reset();field->identity={};field->completion->complete();}
+            if(handled) {
+                field->inputs.reset();field->identity={};
+                field->completion->complete();
+            }
             else {
                 field->fallbackReason=canceled ? GradientFallbackReason::Shutdown : stale ? GradientFallbackReason::StaleGeneration
                     : field->session->failed.load() ? GradientFallbackReason::DriverFailure : GradientFallbackReason::BackendDecline;
@@ -147,6 +171,11 @@ class DeviceBroker
             observe(state,fields.front()->session,key,fields.front()->decision.plan,cpu,fields.front()->tick);
         }
         std::lock_guard lock(state->mutex);
+        if(diagnostics) {
+            state->totals.batchPreparationCpuNs+=preparationEnd-cpuStart;
+            state->totals.batchSubmissionCpuNs+=submissionEnd-preparationEnd;
+            state->totals.batchCompletionCpuNs+=glob2::threadCpuNs()-submissionEnd;
+        }
         if(handled) {
             state->totals.completed+=count;
             for(const auto& field:fields) field->executedGPU ? ++state->totals.executed : ++state->totals.trivial;
@@ -229,6 +258,7 @@ std::unique_ptr<std::uint16_t[]> OwnedGradientField::takeData(){releaseReservati
 std::shared_ptr<GradientDeviceState> GradientDeviceService::state() const {std::lock_guard lock(mutex);return registration;}
 void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
     stop();auto next=std::make_shared<GradientDeviceState>();next->hooks=hooks;
+    next->totals.diagnostics=gradientDiagnosticsRequested();
     if(const auto* value=std::getenv("GLOB2_GRADIENT_BATCH")) {
         unsigned parsed=0;const auto* end=value+std::strlen(value);const auto result=std::from_chars(value,end,parsed);
         if(result.ec!=std::errc{} || result.ptr!=end || !parsed || parsed>8)
@@ -251,7 +281,7 @@ void GradientDeviceService::stop() noexcept {
 bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& field) noexcept {
     try {
         auto current=state();if(!current) return false;std::unique_lock lock(current->mutex);
-        if(field) {field->observer=weak_from_this();field->executionState=current;}
+        if(field) {field->observer=weak_from_this();field->executionState=current;field->diagnostics=current->totals.diagnostics;}
         if(!field || !field->session || !field->data || !field->completion || !field->cpu || !field->costAt) {
             if(field) field->fallbackReason=GradientFallbackReason::InvalidRequest;
             ++current->totals.declined;return false;

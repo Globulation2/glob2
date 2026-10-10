@@ -11,6 +11,7 @@ namespace gradient_kernel
 {
 class GradientDeviceService;
 struct GradientDeviceState;
+bool gradientDiagnosticsRequested() noexcept;
 enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,Count};
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
@@ -31,6 +32,9 @@ struct OwnedGradientField
     ComputeExecutor::CompletionTicket completion;
     std::exception_ptr error;
     std::uint64_t serviceNs = 0, hostCpuNs = 0, fallbackCpuNs = 0;
+    // Published before the completion ticket resolves; owner reads after join.
+    std::uint64_t deviceStartedWallNs=0,deviceCompletedWallNs=0,fallbackCleanupCpuNs=0;
+    bool diagnostics=false;
     bool executedGPU = false;
     GradientFallbackReason fallbackReason=GradientFallbackReason::None;
     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
@@ -61,10 +65,12 @@ public:
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
         std::uint64_t batches=0, maxBatch=0, initializationNs=0, hostCpuNs=0;
         std::uint64_t stale=0, budgetDeclines=0, observationDrops=0;
+        std::uint64_t batchPreparationCpuNs=0,batchSubmissionCpuNs=0,batchCompletionCpuNs=0;
         std::size_t queued=0, retainedHostBytes=0;
         bool running=false, ready=false;
         unsigned configuredMaxBatch=8, deviceConcurrency=1;
         unsigned coordinatorThreads=0;
+        bool diagnostics=false;
         std::array<std::uint64_t,unsigned(GradientFallbackReason::Count)> fallbackReasons{};
     };
 private:
