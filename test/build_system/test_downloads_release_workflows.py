@@ -3,6 +3,7 @@ import importlib.util
 import json
 import os
 import re
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -36,6 +37,27 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('source-commit.txt)" = "$EXPECTED_COMMIT"',upload)
         self.assertIn('git rev-parse HEAD > artifacts/mac-app-store/source-commit.txt',build)
         self.assertIn('environment: mac-app-store',upload)
+
+    def test_mac_store_selects_commands_from_compiled_source_and_fails_closed(self):
+        workflow=(ROOT/'.github/workflows/mac-app-store.yml').read_text()
+        selector=workflow.split('          if test -f src/app/cli/CommandLine.h; then\n',1)[1].split('          # Installed tools',1)[0]
+        selector='if test -f src/app/cli/CommandLine.h; then\n'+selector
+        script='set -euo pipefail\n'+selector+'printf "%s\\n" "${catalog_args[*]}" "${generate_args[*]}"\n'
+        for version,expected in ((None,('--list-map-generators','--generate-map maze')),
+                                 (2,('map generators','map generate maze')),
+                                 (3,None)):
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as directory:
+                if version is not None:
+                    header=Path(directory)/'src/app/cli/CommandLine.h'
+                    header.parent.mkdir(parents=True)
+                    header.write_text(f'inline constexpr int Version = {version};\n')
+                result=subprocess.run(['bash','-c',script],cwd=directory,text=True,capture_output=True)
+                if expected is None:
+                    self.assertNotEqual(result.returncode,0)
+                    self.assertEqual(result.stdout,'')
+                else:
+                    self.assertEqual(result.returncode,0,result.stderr)
+                    self.assertEqual(result.stdout.splitlines(),list(expected))
 
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
         for name in ('github-release.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
