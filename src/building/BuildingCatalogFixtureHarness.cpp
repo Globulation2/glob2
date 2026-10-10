@@ -27,10 +27,10 @@ Building* place(glob2test::HeadlessGame& world, const char* key, int x, int y)
     for (int resource=0; resource<MaterialCount; ++resource) building->materials[resource]=64;
     return building;
 }
-std::vector<Uint32> components(Game& game)
+std::vector<Uint32> components(Game& game, bool legacy152Representation=false)
 {
     std::vector<Uint32> result, buildings, units;
-    game.checkSum(&result, &buildings, &units, true);
+    game.checkSum(&result, &buildings, &units, true, legacy152Representation);
     // Only map-header version metadata differs at an initial save boundary.
     // Keep every simulation, scheduling, unit and building component untouched.
     result.erase(result.begin());
@@ -38,6 +38,9 @@ std::vector<Uint32> components(Game& game)
     result.insert(result.end(), units.begin(), units.end());
     return result;
 }
+// Keep the historical trace representation while save/resume comparisons retain
+// current simulation components except the normalized map-header version.
+std::vector<Uint32> historicalGoldenState(Game& game) { return components(game, true); }
 void invariants(Game& game)
 {
     REQUIRE(game.integrity());
@@ -107,7 +110,7 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
             if (tick % 32 == 0)
             {
                 golden << tick+258;
-                for (const auto value : states.back()) golden << ' ' << value;
+                for (const auto value : historicalGoldenState(world.game)) golden << ' ' << value;
                 golden << '\n';
             }
         }
