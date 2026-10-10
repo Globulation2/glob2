@@ -153,3 +153,18 @@ TEST_CASE("probe costs cannot exceed predictable caps or falsify accepted refere
     CHECK_FALSE(policy.finishProbe(*ticket,2000000,100000,1000000,200000,100000000,true,true));
     CHECK(policy.lookup(key).plan==Plan::CPU);
 }
+
+TEST_CASE("generation invalidation retains global probe slot until background reaping" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy first, second; const auto key=workload();
+    for(auto* policy:{&first,&second}) {
+        REQUIRE(policy->qualify(key,Plan::Frozen8,true));
+        policy->observeAccepted(key,Plan::CPU,1000000000,1);
+    }
+    auto ticket=nextProbe(first,key); REQUIRE(ticket);
+    first.invalidate();
+    CHECK_FALSE(nextProbe(second,key));
+    first.cancelProbe(*ticket,0); // terminal background reaping, no owner join
+    CHECK(first.metrics().probeCpuNs>=ticket->reservedCpuNs);
+    REQUIRE(nextProbe(second,key));
+}

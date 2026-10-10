@@ -140,7 +140,7 @@ private:
     std::atomic<unsigned> configurationThreads{1};
     std::atomic<bool> wantsGPU{false};
     std::atomic<bool> externalInitialization{false};
-    std::shared_ptr<CpuSavingPolicy> learning;
+    std::atomic<std::shared_ptr<CpuSavingPolicy>> learning;
     struct alignas(64) Buffer {
         std::array<GradientObservation,BufferSize> entries;
         std::atomic<unsigned> written{0}, read{0};
@@ -171,10 +171,11 @@ public:
     // Configured with required work drained. Optional learning has no owner-loop
     // processing pass and never adds a dependency to a required completion.
     void configureLearning(bool enable) {
-        if(enable && !learning) learning=std::make_shared<CpuSavingPolicy>();
-        if(!enable) learning.reset();
+        if(enable && !learning.load(std::memory_order_acquire))
+            learning.store(std::make_shared<CpuSavingPolicy>(),std::memory_order_release);
+        if(!enable) learning.store({},std::memory_order_release);
     }
-    std::shared_ptr<CpuSavingPolicy> learningPolicy() const { return learning; }
+    std::shared_ptr<CpuSavingPolicy> learningPolicy() const { return learning.load(std::memory_order_acquire); }
     PlanDecision chooseWorkload(const WorkloadKey& key, Backend mode,
                                 Operation operation=Operation::CompleteField) const {
         validateFamily(key.family);
@@ -182,8 +183,8 @@ public:
         if(operation!=Operation::CompleteField || !ComputeExecutor::workerSlot() ||
            mode==Backend::CPU || failed.load()) return result;
         if(mode==Backend::OpenCL) result.plan=requestedOpenCLPlan();
-        else if(learning) {
-            const auto accepted=learning->lookup(key);
+        else if(const auto owner=learningPolicy()) {
+            const auto accepted=owner->lookup(key);
             result.plan=accepted.plan; result.version=accepted.version;
         }
         if(result.plan!=Plan::CPU && !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(result.plan)))) result.plan=Plan::CPU;
@@ -195,7 +196,7 @@ public:
     void configure(unsigned threads, bool enable) {
         configurationThreads.store(threads);
         generation.store(nextGeneration.fetch_add(1),std::memory_order_release);
-        if(learning) learning->invalidate();
+        if(const auto owner=learningPolicy()) owner->invalidate();
         if(enable && !accounting) accounting=std::make_unique<Accounting>();
         if(!enable) accounting.reset();
         const auto mode=backend();

@@ -66,7 +66,8 @@ private:
     std::atomic<unsigned> published{0};
     std::array<Credit,WindowTicks> credits;
     mutable std::mutex background;
-    std::uint64_t generation=1, nextTicket=1, latestTick=0;
+    std::atomic<std::uint64_t> generation{1};
+    std::uint64_t nextTicket=1, latestTick=0;
     std::optional<ProbeTicket> active;
     inline static std::atomic<bool> globalProbeBusy{false};
     inline static std::atomic<std::uint64_t> nextConfidenceEpoch{1};
@@ -180,7 +181,7 @@ public:
         bool available=false;
         if(!globalProbeBusy.compare_exchange_strong(available,true,std::memory_order_acq_rel)) return {};
         credit(tick).probes+=reserveCpuNs;
-        active=ProbeTicket{nextTicket++,generation,tick,reserveCpuNs,index,alternative,commonPreparationCpuNs,acceptedReferenceCpuNs};
+        active=ProbeTicket{nextTicket++,generation.load(std::memory_order_acquire),tick,reserveCpuNs,index,alternative,commonPreparationCpuNs,acceptedReferenceCpuNs};
         ++totals.admitted;
         return active;
     }
@@ -189,7 +190,7 @@ public:
                      bool exact, bool success) {
         const auto accountingStart=glob2::threadCpuNs();
         std::lock_guard lock(background);
-        if(!active || active->id!=ticket.id || ticket.generation!=generation) return false;
+        if(!active || active->id!=ticket.id) return false;
         // The reservation and captured accepted reference are predictable before
         // probe execution. Caller-modified ticket fields never affect inference.
         const auto reservation=*active;
@@ -205,6 +206,11 @@ public:
             active.reset(); globalProbeBusy.store(false,std::memory_order_release);
             return promoted;
         };
+        if(reservation.generation!=generation.load(std::memory_order_acquire)) {
+            ++totals.canceled;
+            actualProbeCpuNs=std::max(actualProbeCpuNs,reservation.reservedCpuNs);
+            return settle(false);
+        }
         // A reference already measured on this immutable accepted job is free
         // to optional accounting, but must match the value frozen at admission.
         // Otherwise both reference and alternative CPU must be paid by credits.
@@ -251,15 +257,16 @@ public:
     void cancelProbe(const ProbeTicket& ticket, std::uint64_t actualCpuNs) {
         std::lock_guard lock(background);
         if(!active || active->id!=ticket.id) return;
-        settleCredit(*active,actualCpuNs);
+        settleCredit(*active,active->generation!=generation.load(std::memory_order_acquire) ?
+            std::max(actualCpuNs,active->reservedCpuNs) : actualCpuNs);
         ++totals.canceled; active.reset(); globalProbeBusy.store(false,std::memory_order_release);
     }
-    // Invoke only after optional work is canceled. Published performance history
-    // survives a terrain revision; immutable captured inputs use a separate gen.
-    void invalidate() {
-        std::lock_guard lock(background);
-        if(active) { ++totals.canceled; active.reset(); globalProbeBusy.store(false,std::memory_order_release); } // reserved credit remains charged
-        ++generation;
+    // Owner-side cancellation is bounded metadata only. The background holder
+    // keeps the global probe slot until transfers/reference work are reaped;
+    // invalidation must not admit another probe while the old one still runs.
+    // Immutable captured inputs become stale; performance history remains useful.
+    void invalidate() noexcept {
+        generation.fetch_add(1,std::memory_order_release);
     }
     Metrics metrics() const {
         std::lock_guard lock(background);
