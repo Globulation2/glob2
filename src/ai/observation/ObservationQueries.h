@@ -5,6 +5,7 @@
 #include "BuildingCapabilities.h"
 #include "Building.h"
 #include "Unit.h"
+#include "UnitTraining.h"
 #include "Order.h"
 #include <algorithm>
 #include <climits>
@@ -211,9 +212,19 @@ inline WorkerTrainingProjection workerTrainingProjection(const AIEngine::AIWorld
 }
 inline bool needsTraining(const AIEngine::UnitView& unit, const BuildingTrainingSpec& training, int ability)
 {
-    return training.enabled && unit.canLearn[ability] && training.units.matches(unit.typeNum,training.unitMask)
-        && (unit.level[ability]<training.targetLevel
-            || ((unit.capabilityFlags&UnitRuntimeTraits::LearnConstruction) && unit.constructionLevel<training.constructionLevel));
+    return UnitTraining::needed(unit,training,ability);
+}
+inline bool trainingVisitSafe(const AIEngine::AIWorldView& world,const AIEngine::UnitView& unit,
+    const AIEngine::BuildingView& building,int purpose)
+{
+    if(unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies)return true;
+    const auto& type=buildingType(world,building);
+    const auto mask=UnitTraining::movementCourses(unit,type.semantics,purpose);
+    if(!mask)return true;
+    const unsigned before=UnitTraining::movementModes(unit);
+    const unsigned after=UnitTraining::movementAfter(unit,mask,type.semantics.training,world.unitCatalog().levels(unit.typeNum));
+    return UnitTraining::exitTerrainSafe(before,after,building.posX,building.posY,type.width,type.height,
+        [&](int x,int y)->const TerrainProperties& { return terrain(world,x,y); });
 }
 inline int maxBuildLevel(const AIEngine::AIWorldView& world, unsigned team)
 {

@@ -11,6 +11,7 @@
 
 #include "EngineTiming.h"
 #include "UnitTiming.h"
+#include "UnitTraining.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
@@ -573,11 +574,46 @@ void Unit::setWorkerLevel(Sint32 newLevel)
 
 bool Unit::needsTraining(const BuildingTrainingSpec& training, int ability) const
 {
-	return training.enabled && canLearn[ability] && training.units.matches(typeNum,training.unitMask)
-		&& (level[ability] < training.targetLevel || (hasCapability(UnitRuntimeTraits::LearnConstruction) && constructionLevel < training.constructionLevel));
+	return UnitTraining::needed(*this,training,ability);
 }
 
-void Unit::applyTraining(const BuildingTrainingSpec& training, int ability)
+bool Unit::trainingVisitSafe(const Building& building,int purpose) const
+{
+	if(hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies))return true;
+	const auto& spec=building.type->semantics;
+	const auto movementCourses=UnitTraining::movementCourses(*this,spec,purpose);
+	if(!movementCourses)return true;
+	const unsigned before=UnitTraining::movementModes(*this);
+	const unsigned after=UnitTraining::movementAfter(*this,movementCourses,spec.training,race->getCatalog()->levels(typeNum));
+	return UnitTraining::exitTerrainSafe(before,after,building.posX,building.posY,building.type->width,building.type->height,
+		[&](int x,int y)->const TerrainProperties& { return owner->map->terrainPropertiesAt(x,y); });
+}
+
+std::optional<Uint32> Unit::trainingVisitCourses(const Building& building,int purpose) const
+{
+	if(!trainingVisitSafe(building,purpose))return std::nullopt;
+	return UnitTraining::courses(*this,building.type->semantics,purpose);
+}
+
+bool Unit::applyTraining(const BuildingTrainingSpec& training,int ability)
+{
+	assert(ability>=0 && ability<NB_ABILITY);
+	if(ability>=WALK && ability<=FLY && !hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
+		&& UnitTraining::movementModes(*this)) {
+		// A single direct grant has no building terrain context. It must leave
+		// an effective movement mode; bundled visits use the prospective exit check.
+		const unsigned bit=1u<<(ability-WALK);
+		const int target=level[ability]<training.targetLevel
+			? race->getUnitType(typeNum,training.targetLevel)->performance[ability] : performance[ability];
+		const auto gate=ability==WALK?UnitRuntimeTraits::Walk:ability==SWIM?UnitRuntimeTraits::Swim:UnitRuntimeTraits::Fly;
+		const unsigned after=(UnitTraining::movementModes(*this)&~bit)|(target>0 && hasCapability(gate)?bit:0u);
+		if(!after)return false;
+	}
+	applyTrainingUnchecked(training,ability);
+	return true;
+}
+
+void Unit::applyTrainingUnchecked(const BuildingTrainingSpec& training, int ability)
 {
 	if (level[ability] < training.targetLevel)
 	{

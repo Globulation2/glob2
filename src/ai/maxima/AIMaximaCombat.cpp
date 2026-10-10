@@ -470,7 +470,8 @@ void Maxima::plan_offense(Context& runtime)
 		for(size_t b=0;b<barracks.size();++b)
 			for (int ability : {ATTACK_SPEED, ATTACK_STRENGTH})
 				if (AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnits.matches(trainees[u]->typeNum,AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnitMask)
-				   && AIEngine::ObservationQueries::needsTraining(*trainees[u],AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.training[ability], ability))
+				   && AIEngine::ObservationQueries::needsTraining(*trainees[u],AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.training[ability], ability)
+                   && AIEngine::ObservationQueries::trainingVisitSafe(runtime.observation(),*trainees[u],*barracks[b],ability))
 				{choices[u].push_back(int(b));break;}
 	std::function<bool(int,std::vector<bool>&)> assignTraining=
 		[&](int unit,std::vector<bool>& visited) {

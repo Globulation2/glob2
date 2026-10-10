@@ -5778,7 +5778,8 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 			for(int ability=0;ability<NB_ABILITY && !canTrain;++ability)
 				if((ability!=SWIM || swimming)
                     && (workerTraining.courseMasks[schools[b]->typeNum][u->typeNum]&(1u<<ability))
-                    && AIEngine::ObservationQueries::needsTraining(*u,AIEngine::ObservationQueries::buildingType(runtime.observation(),*schools[b]).semantics.training[ability],ability))
+                    && AIEngine::ObservationQueries::needsTraining(*u,AIEngine::ObservationQueries::buildingType(runtime.observation(),*schools[b]).semantics.training[ability],ability)
+                    && AIEngine::ObservationQueries::trainingVisitSafe(runtime.observation(),*u,*schools[b],ability))
 					canTrain=true;
 		if(canTrain) ++result.trainable;
 	}
