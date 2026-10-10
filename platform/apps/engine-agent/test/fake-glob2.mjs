@@ -15,7 +15,7 @@ import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
 const args = process.argv.slice(2);
-const command = args.slice(0,2).join(' ');
+const command = args.slice(0, 2).join(' ');
 
 function option(name) {
   const i = args.indexOf(name);
@@ -103,7 +103,10 @@ const GENERATORS = [
 ];
 
 switch (command) {
-  case 'help --format': { process.stdout.write(JSON.stringify({schema_version:1,cli_version:2,commands:[]}));break; }
+  case 'help --format': {
+    process.stdout.write(JSON.stringify({ schema_version: 1, cli_version: 2, commands: [] }));
+    break;
+  }
   case 'info catalog': {
     process.stderr.write('startup noise on stderr\n');
     process.stdout.write(

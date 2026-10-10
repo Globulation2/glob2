@@ -115,7 +115,8 @@ export async function createGeneratorExecutor(
     const result = await run(
       dir,
       [
-        'map', 'inspect-package',
+        'map',
+        'inspect-package',
         join(dir, 'input.json'),
         '--output',
         join(dir, 'canonical.json'),
@@ -152,7 +153,8 @@ export async function createGeneratorExecutor(
     const out = join(dir, name);
     await mkdir(out);
     const args = [
-      'map', 'study',
+      'map',
+      'study',
       metadata.id,
       '--generator-package',
       join(dir, 'canonical.json'),
@@ -204,7 +206,8 @@ export async function createGeneratorExecutor(
     const result = await run(
       dir,
       [
-        'map', 'preview',
+        'map',
+        'preview',
         join(dir, name, 'map-r0.map.gz'),
         '--report-file',
         join(dir, name, 'loaded.json'),

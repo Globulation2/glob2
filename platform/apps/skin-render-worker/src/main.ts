@@ -21,7 +21,13 @@ shutdown.installSignalHandlers();
 const abort = new AbortController();
 const binary = process.env['GLOB2_BINARY'] ?? '/opt/glob2/bin/glob2',
   cwd = process.env['GLOB2_DATA_DIR'] ?? '/opt/glob2/share';
-const cli = await runProcess({ binary, cwd, args: ['help', '--format', 'json'], limits: { timeoutMs: 10000, memoryMb: 2048 }, maxCaptureBytes: 1024 * 1024 });
+const cli = await runProcess({
+  binary,
+  cwd,
+  args: ['help', '--format', 'json'],
+  limits: { timeoutMs: 10000, memoryMb: 2048 },
+  maxCaptureBytes: 1024 * 1024,
+});
 if (cli.code !== 0) throw new Error('Glob2 CLI probe failed; deploy a CLI 2 binary');
 requireCliVersion(cli.stdout);
 const info = await runProcess({

@@ -90,7 +90,8 @@ export async function renderSkin(
           binary: renderer.binary,
           cwd: renderer.cwd,
           args: [
-            'assets', 'render-skin',
+            'assets',
+            'render-skin',
             '--manifest',
             join(work, 'input.json'),
             '--texture',

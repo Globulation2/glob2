@@ -143,7 +143,11 @@ export async function createSetValidator(
       },
       scratch,
     );
-    if ((result.code !== 0 && !(args[0] === 'map' && args[1] === 'validate-set' && result.code === 2)) || result.timedOut)
+    if (
+      (result.code !== 0 &&
+        !(args[0] === 'map' && args[1] === 'validate-set' && result.code === 2)) ||
+      result.timedOut
+    )
       throw Error('Isolated asset validator failed: ' + result.stderr.slice(-1000));
   }
   // Exercise rendering as well as startup before advertising the job.
@@ -176,7 +180,8 @@ export async function createSetValidator(
       }),
     );
     await run(dir, [
-      'map', 'validate-set',
+      'map',
+      'validate-set',
       '/job/probe.json',
       '--report-file',
       '/job/probe-report.json',
@@ -198,7 +203,8 @@ export async function createSetValidator(
       await run(
         dir,
         [
-          'map', 'validate-set',
+          'map',
+          'validate-set',
           '/job/set.json',
           '--report-file',
           '/job/report.json',

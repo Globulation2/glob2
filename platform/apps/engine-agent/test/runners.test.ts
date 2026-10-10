@@ -473,7 +473,7 @@ it('routes uploaded map inspection, rendering and verification through the confi
       ),
     ).toMatchObject({ verdict: 'verified' });
     expect(commands).toHaveLength(3);
-    expect(commands.map((c) => c.args.slice(0,2).join(' '))).toEqual([
+    expect(commands.map((c) => c.args.slice(0, 2).join(' '))).toEqual([
       'map preview',
       'map preview',
       'match verify',
