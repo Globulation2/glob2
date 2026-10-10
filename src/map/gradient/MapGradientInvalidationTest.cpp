@@ -10,6 +10,7 @@
 #include "Building.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
+#include "UnitCatalog.h"
 #include "Player.h"
 #include "Order.h"
 #include "Brush.h"
@@ -133,6 +134,21 @@ TEST_SUITE("MapGradientInvalidation")
 	 int transitions=0;
 	 for(int mutation=0;mutation<12;++mutation)for(int swim=0;swim<SWIM_CLASS_COUNT;++swim){
 	  Fixture f(1);player(f);f.game.gameHeader.setResourceGrowthDisabled(true);auto& m=f.game.map;
+      CAPTURE(swim); CAPTURE(mutation);
+      if(swim==WATER_ONLY_CLASS) {
+          // The extra escape-field schedule is enabled by actual catalog
+          // capabilities. A manually requested field alone keeps stock timing.
+          auto definitions=nlohmann::json::parse(f.game.unitCatalog().serialize());
+          auto swimmer=definitions["units"][WORKER]; swimmer["key"]="fixture:water-only";
+          swimmer["behaviors"]["walk"]=false; swimmer["behaviors"]["fly"]=false;
+          swimmer["behaviors"]["swim"]=true;
+          for(auto& level:swimmer["levels"]) level["performance"][SWIM]=20;
+          definitions["units"].push_back(swimmer);
+          f.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+          f.game.configureBuildingCatalog();
+          REQUIRE(f.game.hasWaterOnlyUnits());
+          prepareMovementTerrain(m,swim);
+      } else REQUIRE_FALSE(f.game.hasWaterOnlyUnits());
 	  for(int y=16;y<25;++y)for(int x=16;x<25;++x)m.addForbidden(x,y,0);
 	  m.setResourceByIndex(20,20,WHEAT,1);m.setResourceAmount(m.coordToIndex(20,20), 3);
 	  if(mutation==4)m.markImmobileUnit(21,20,0);
