@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/buildingStudio.test.ts apps/api/test/publicFeatures.test.ts apps/api/test/publicShutdown.test.ts apps/ai-building-worker/test/provider.test.ts apps/ai-building-worker/test/pipeline.test.ts apps/ai-building-worker/test/references.test.ts --maxWorkers=1
+
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/2a0e/glob2/platform
+
+
+ Test Files  6 passed (6)
+      Tests  23 passed | 2 skipped (25)
+   Start at  16:55:44
+   Duration  34.10s (import 45%, tests 43%, transform 12%)
+
