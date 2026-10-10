@@ -558,7 +558,7 @@ void Map::configureCompute(unsigned threads)
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	gradientRuntime->shareBackendSession();
     gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configureLearning(true);
+    gradientRuntime->backendSession->configureLearning(gradient_kernel::learningRequested());
     gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
     compute.setWorkerOnly(gradientRuntime->backendSession);
     gradientRuntime->deviceService->configure(compute.threadCount(),gradient_kernel::backend());
@@ -583,7 +583,7 @@ void Map::clear()
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();
     gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configureLearning(true);
+    gradientRuntime->backendSession->configureLearning(gradient_kernel::learningRequested());
     gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
     compute.setWorkerOnly(gradientRuntime->backendSession);
 	gradientRuntime->buildingSynchronous=0;

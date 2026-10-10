@@ -25,7 +25,9 @@ void GradientDeviceService::configure(unsigned computeThreads,Backend mode)
 {
     stop();
     if constexpr(!GAGCore::ThreadSupport::available) return;
-    if(computeThreads<2 || mode==Backend::CPU || (!prepareAccelerator && !hooks.initialize)) return;
+    if(computeThreads<2 || mode==Backend::CPU ||
+       (mode==Backend::Automatic && !learningRequested() && !hooks.initialize) ||
+       (!prepareAccelerator && !hooks.initialize)) return;
     {
         std::lock_guard lock(mutex);
         stopping=false; started=true; initialized=false; totals={};
