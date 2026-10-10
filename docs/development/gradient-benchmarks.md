@@ -879,6 +879,15 @@ because its two ushort arrays alone exhaust the 16 MiB subset. An injected
 adapter clock keeps this ownership test separate from timing qualification;
 neither it nor fake backend controls can promote a plan.
 
+Run `isolated real native replay attests exact identity bound candidate coverage`
+alone with `GLOB2_TEST_OPENCL_CANDIDATE_RECEIPT=1`, parity, direct upload and API
+CPU modes zero. Its 37 assertions use real background capture, eager reference
+and native producer clocks, immutable originals and exact comparison. Synthetic
+policy funding and a named fixture calibration enable this API proof only;
+settlement has no complete outer authorization, pays the full reservation and
+cannot promote. This gate does not qualify a production allowance or replace a
+real automatic learning experiment.
+
 Optional scalar batch capture must reserve its complete future replay graph
 before cloning the first input. `OpenCLProbeBatchStorage` transfers the group's
 real paired host/probe admission and separately reserves device bytes on an
