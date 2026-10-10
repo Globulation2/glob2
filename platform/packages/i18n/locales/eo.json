@@ -2910,5 +2910,9 @@
   "Presentation": "Prezento",
   "{value0} source": "Fonto de {value0}",
   "{value0} decor source": "Dekora fonto de {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Via malneto ŝanĝiĝis dum la dezajno ŝargiĝis. Viaj ŝanĝoj estis konservitaj; reprovu malfermi la dezajnon."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Via malneto ŝanĝiĝis dum la dezajno ŝargiĝis. Viaj ŝanĝoj estis konservitaj; reprovu malfermi la dezajnon.",
+  "More filters": "Pliaj filtriloj",
+  "Clear filters": "Forigi filtrilojn",
+  "No results match these filters.": "Neniuj rezultoj kongruas kun ĉi tiuj filtriloj.",
+  "Results: {value0}": "Rezultoj: {value0}"
 }

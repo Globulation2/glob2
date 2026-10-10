@@ -2910,5 +2910,9 @@
   "Presentation": "Παρουσίαση",
   "{value0} source": "Πηγή του {value0}",
   "{value0} decor source": "Πηγή διακόσμησης του {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Το προσχέδιό σου άλλαξε κατά τη φόρτωση του σχεδίου. Οι αλλαγές σου διατηρήθηκαν· δοκίμασε να ανοίξεις ξανά το σχέδιο."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Το προσχέδιό σου άλλαξε κατά τη φόρτωση του σχεδίου. Οι αλλαγές σου διατηρήθηκαν· δοκίμασε να ανοίξεις ξανά το σχέδιο.",
+  "More filters": "Περισσότερα φίλτρα",
+  "Clear filters": "Εκκαθάριση φίλτρων",
+  "No results match these filters.": "Κανένα αποτέλεσμα δεν αντιστοιχεί σε αυτά τα φίλτρα.",
+  "Results: {value0}": "Αποτελέσματα: {value0}"
 }

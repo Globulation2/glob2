@@ -2910,5 +2910,9 @@
   "Presentation": "Esitystapa",
   "{value0} source": "{value0}: lähde",
   "{value0} decor source": "{value0}: koristeiden lähde",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Luonnoksesi muuttui mallin lataamisen aikana. Muutoksesi säilytettiin; yritä avata malli uudelleen."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Luonnoksesi muuttui mallin lataamisen aikana. Muutoksesi säilytettiin; yritä avata malli uudelleen.",
+  "More filters": "Lisää suodattimia",
+  "Clear filters": "Tyhjennä suodattimet",
+  "No results match these filters.": "Mikään tulos ei vastaa näitä suodattimia.",
+  "Results: {value0}": "Tulokset: {value0}"
 }

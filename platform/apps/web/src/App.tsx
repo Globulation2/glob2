@@ -3,6 +3,7 @@ import { Generators, GeneratorPage, GeneratorPublish } from './pages/Generators.
 import { studioLocal } from './components/studio/storage.ts';
 import { Players } from './pages/Players.tsx';
 import './music/music.css';
+import { SkinWorkspaceContext } from './skins/workspace.ts';
 import { Skins } from './pages/Skins.tsx';
 import { CommanderCredits } from './pages/Commander.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
@@ -415,7 +416,8 @@ function Layout() {
   const section = found?.route.section;
   const name = instance?.name ?? 'Globulation 2';
   const home = section === 'home';
-  const studio = section === 'skins' || !!found?.route.workspace;
+  const [skinEditing, setSkinEditing] = useState(true);
+  const studio = section === 'skins' ? skinEditing : !!found?.route.workspace;
   const main = useRef<HTMLElement>(null);
   const navigationKey = `studio-navigation:${account?.id ?? 'anonymous'}`;
   const [navigationPreference, setNavigationPreference] = useState(() => ({
@@ -612,7 +614,11 @@ function Layout() {
           }
         >
           <div className="wrap">
-            <div className="page">{page}</div>
+            <div className="page">
+              <SkinWorkspaceContext.Provider value={setSkinEditing}>
+                {page}
+              </SkinWorkspaceContext.Provider>
+            </div>
           </div>
         </Suspense>
       </main>

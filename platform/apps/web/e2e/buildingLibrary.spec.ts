@@ -12,7 +12,7 @@ test('browses, downloads and forks a released family', async ({ page, request, b
     .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
   await page.goto('/buildings');
   await page.getByLabel('Search buildings').fill('Community kitchen');
-  await page.getByRole('button', { name: 'Search', exact: true }).click();
+  await page.getByRole('searchbox', { name: 'Search buildings' }).press('Enter');
   await page.getByRole('link', { name: 'Community kitchen', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Community kitchen', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Download family' })).toBeVisible();

@@ -2910,5 +2910,9 @@
   "Presentation": "Presentatie",
   "{value0} source": "Bron van {value0}",
   "{value0} decor source": "Bron van de decoratie van {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Je concept veranderde terwijl het ontwerp werd geladen. Je wijzigingen zijn behouden; probeer het ontwerp opnieuw te openen."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Je concept veranderde terwijl het ontwerp werd geladen. Je wijzigingen zijn behouden; probeer het ontwerp opnieuw te openen.",
+  "More filters": "Meer filters",
+  "Clear filters": "Filters wissen",
+  "No results match these filters.": "Geen resultaten komen overeen met deze filters.",
+  "Results: {value0}": "Resultaten: {value0}"
 }
