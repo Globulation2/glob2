@@ -1,0 +1,7 @@
+Head e4afdc0db08c7c0cbaffcbf939d5f9ec2a76e214; base0563d3f152d6aa893cbe876ed2741460b49c8d82. Fresh mastera560ed99b differs only in Steam workflow.
+Linux x86_64 GCC15.2 debug (-g), pinned local SDL3 prefix; exact build:
+GLOB2_DEV_MODE=isolated GLOB2_SDL3_PREFIX="$PWD/build/sdl3-ci/prefix" scons --build=build/native-coverage-torus release=0 -j8 build/native-coverage-torus/test/glob2-engine-tests
+Full engine harness builds including listener test doubles. Final revision test:
+build/native-coverage-torus/test/glob2-engine-tests --test-suite=WssTransport
+PASS1case30007assertions. Provenance dirty only due unrelated untracked build-software-terrain/, protected and unused.
+Windows hosted verification pending. No simulation computation, saves/replays or gameplay changed. Test exercises actual TLS listener bound to port0 and delivers all10000messages in order. Other native suites not repeated locally; hosted affected checks requested.
