@@ -172,13 +172,14 @@ public:
     // Charge that closing work explicitly before settling; callers must include
     // any additional queue/receipt/settlement-wrapper work in their outer cost.
     // This does not extend the empirical process tail or claim causal proof.
-    static FinishResult close(std::unique_ptr<CaptureProbeAccounting>& accounting,FinishResult result) noexcept {
+    static FinishResult close(std::unique_ptr<CaptureProbeAccounting>& accounting,FinishResult result,
+        std::uint64_t closingStartedCpuNs=0) noexcept {
         if(accounting && !accounting->sameProducer()) {
             result.authorization=CaptureSettlementAuthorization(false);result.outcome.clockValid=false;
             result.receipt.clockValid=false;result.receipt.inferenceEligible=false;++result.receipt.invalidClocks;
             return result; // Original producer still owns destruction.
         }
-        const auto start=glob2::threadCpuNs();accounting.reset();const auto end=glob2::threadCpuNs();
+        const auto start=closingStartedCpuNs?closingStartedCpuNs:glob2::threadCpuNs();accounting.reset();const auto end=glob2::threadCpuNs();
         const bool valid=start && end && end>=start;
         const auto cost=valid?end-start:0;
         result.receipt.closingCpuNs=cost;
