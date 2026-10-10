@@ -200,6 +200,11 @@ jobs:
       BUILD_NUMBER: ${{ needs.build.outputs.build_number }}
       ARCHIVE_PATH: ${{ github.workspace }}/artifacts/ios-testflight/Glob2.xcarchive
     steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.build.outputs.commit }}
+          persist-credentials: false
       - name: Check requested App Store eligibility
         env:
           AUDIENCE: ${{ inputs.audience }}
@@ -303,7 +308,16 @@ jobs:
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID"
 
-      - name: Record provenance only after eligible build upload succeeds
+      - name: Require Apple processing of the exact uploaded build
+        run: |
+          set -euo pipefail
+          marketing_version="$(plutil -extract CFBundleShortVersionString raw "$ARCHIVE_PATH/Products/Applications/Glob2.app/Info.plist")"
+          python3 mobile/ios_processing.py --key-path "$ASC_KEY_PATH" \
+            --key-id "$ASC_KEY_ID" --issuer-id "$ASC_ISSUER_ID" \
+            --build-number "$BUILD_NUMBER" --marketing-version "$marketing_version" \
+            --audience "$TESTFLIGHT_AUDIENCE"
+
+      - name: Record provenance only after Apple processing succeeds
         env:
           RELEASE_TAG: ${{ inputs.tag }}
           SOURCE_COMMIT: ${{ needs.build.outputs.commit }}

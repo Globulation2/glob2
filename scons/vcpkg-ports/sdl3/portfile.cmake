@@ -65,6 +65,12 @@ if (VCPKG_TARGET_IS_LINUX AND NOT "x11" IN_LIST FEATURES AND NOT "wayland" IN_LI
     message(WARNING "The selected features don't allow sdl3 to create windows, which is usually unintentional. You can get windowing support by installing the x11 and/or wayland features.")
 endif()
 
+# Glob2 does not use camera capture or SDL HID/Bluetooth device discovery on iOS.
+# Exclude those backends so the binary never requests unrelated privacy access.
+if (VCPKG_TARGET_IS_IOS)
+    list(APPEND FEATURE_OPTIONS -DSDL_CAMERA=OFF -DSDL_HIDAPI=OFF)
+endif()
+
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS

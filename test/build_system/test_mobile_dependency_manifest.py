@@ -12,11 +12,33 @@ sys.path.insert(0, str(ROOT / 'mobile'))
 sys.path.insert(0, str(ROOT / 'scons'))
 import dependencies
 import android
+import ios
 from build_layout import build_identity
 from dev_build import dependency_identity
 
 
 class MobileDependencyManifestTests(unittest.TestCase):
+    def test_ios_packaging_resolves_the_canonical_producer_identity(self):
+        class PrefixResolved(Exception): pass
+        for environment in ('device', 'simulator'):
+            for china in (False, True):
+                with self.subTest(environment=environment, china=china), tempfile.TemporaryDirectory() as task:
+                    root = Path(task)
+                    prefix = root / 'dependencies'
+                    prefix.mkdir()
+                    (prefix / 'manifest.json').write_text('{}')
+                    argv = ['ios.py', 'configure', '--environment', environment, '--release']
+                    if environment == 'device': argv += ['--unsigned']
+                    if china: argv += ['--china']
+                    expected = dependency_identity(build_identity({'target': 'ios', 'environment': environment,
+                                                                   'release': 1, 'china': int(china)}))
+                    with patch.object(sys, 'argv', argv), patch.object(ios, 'ROOT', root), \
+                         patch.object(ios, 'discover', return_value={'fingerprint': 'pinned'}) as discover, \
+                         patch.object(ios, 'dependency_prefix', return_value=prefix) as resolve, \
+                         patch.object(ios.shutil, 'which', side_effect=PrefixResolved):
+                        with self.assertRaises(PrefixResolved): ios.main()
+                        resolve.assert_called_once_with(root, expected, 'pinned')
+
     def test_android_packaging_accepts_producer_manifest_and_rejects_changed_bytes(self):
         class PackagingReached(Exception):
             pass
