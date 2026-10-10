@@ -51,6 +51,15 @@ TEST_SUITE("CommandLine")
 					 .get("--seed"),
 				 "4294967295");
 	}
+	TEST_CASE("saved games can use the normal presentation loop with explicit display")
+	{
+		const auto r = Cli::parse({"game", "repeat", "saved.game.gz", "--display",
+			"--renderer=software", "--window-size=960x720", "--compute-threads=2", "--ticks=4096"});
+		CHECK(r.has("--display")); CHECK_EQ(r.get("--renderer"), "software");
+		CHECK_EQ(r.get("--ticks"), "4096"); CHECK_EQ(r.positionals.at(0), "saved.game.gz");
+		CHECK_FALSE(Cli::parse({"game", "repeat", "saved.game.gz"}).has("--display"));
+		CHECK_THROWS_AS(Cli::parse({"game", "repeat", "saved.game.gz", "--record=out.mp4"}), std::invalid_argument);
+	}
 	TEST_CASE("malformed input fails before handlers")
 	{
 		const std::vector<std::vector<std::string>> invalid = {

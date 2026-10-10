@@ -79,7 +79,7 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	}
 	if (r.command == "game repeat")
 	{
-		runNoX = true;
+		runNoX = !r.has("--display");
 		automaticEndingGame = true;
 		runNoXGameName = r.positionals.at(0);
 		automaticEndingSteps = std::stoi(r.get("--ticks"));
