@@ -21,7 +21,9 @@ one command, in an order that never leaves a half-upgraded instance:
 
 1. **Backup.** A `pg_dump` and an archive of `GLOB2_WEB_CLIENT_DIR` go to
    `GLOB2_BACKUP_DIR/<UTC time>/` with the running revision; the newest
-   `GLOB2_BACKUP_KEEP` are kept.
+   `GLOB2_BACKUP_KEEP` are kept. Retention only prunes timestamped deployment
+   directories; manual and scheduled backup folders are preserved. The current
+   deployment's backup is always retained, including after a clock adjustment.
 2. **Build**, while the old stack keeps serving: the WebAssembly client (with
    `deploy/build-web-client.sh`; Emscripten runs in a container, so the host needs
    only Docker) into the build tree, and every image with the checkout's sim
