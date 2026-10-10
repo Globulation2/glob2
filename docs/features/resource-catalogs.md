@@ -9,6 +9,24 @@
 
 ## Importing resources
 
+The stock registry in `data/resources/registry.json` defines these basic deposits:
+
+| Resource key | Material supplied |
+| --- | --- |
+| `trees` | wood |
+| `wheat` | food |
+| `papyrus` | paper |
+| `rocks` | stone |
+| `algae` | algae |
+| `cherry-tree` | cherries |
+| `orange-tree` | oranges |
+| `prune-tree` | prunes |
+
+Assigned building workers harvest deposits that yield a material their building
+can replenish. Suitable deposits must exist on the map and be reachable; storage
+capacity alone does not create a source. Imported deposits may supply different
+materials according to their own `yields` definitions.
+
 Use **Map editor → Menu → Import Resource Definitions** to import a JSON file;
 its deposits appear in the **Resources** tab of the editor dock, which opens at
 the imported section. Each resource card names the terrains it may be placed on.
