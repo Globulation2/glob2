@@ -316,3 +316,36 @@ TEST_CASE("generation invalidation retains global probe slot until background re
     CHECK(first.metrics().probeCpuNs>=1200000);
     REQUIRE(nextProbe(second,key));
 }
+
+TEST_CASE("optional bootstrap does not use slow CPU time as a GPU completion bound" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload(512);
+    CHECK(policy.probeOffer(key).reservedCpuNs==0);
+    policy.observeAccepted(key,Plan::CPU,100000000,1);
+    CHECK(policy.probeOffer(key).reservedCpuNs==0);
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    const auto offer=policy.probeOffer(key);
+    CHECK(offer.plan==Plan::Frozen8);
+    CHECK(offer.elapsedNs==1000000); // Exploratory dispatch admission only.
+    CHECK(offer.reservedCpuNs==8000000);
+    CHECK(policy.lookup(key).plan==Plan::CPU);
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
+        CHECK_FALSE(policy.beginAcceptedCapture(key,offer.plan,1,offer.reservedCpuNs,1000000,
+            offer.elapsedNs,false,0,41,true));
+    CHECK(policy.metrics().admitted==0);
+    CHECK(policy.lookup(key).plan==Plan::CPU);
+}
+
+TEST_CASE("tuning debt cannot wrap around and restore probe admission" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload();
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,UINT64_MAX,1);
+    policy.observeAccepted(key,Plan::CPU,UINT64_MAX,1);
+    CHECK(policy.metrics().acceptedCpuNs==UINT64_MAX);
+    policy.recordTuningOverhead(1,UINT64_MAX);
+    policy.recordTuningOverhead(1,UINT64_MAX);
+    CHECK(policy.metrics().probeCpuNs==UINT64_MAX);
+    CHECK_FALSE(nextProbe(policy,key));
+    CHECK(policy.lookup(key).plan==Plan::CPU);
+}

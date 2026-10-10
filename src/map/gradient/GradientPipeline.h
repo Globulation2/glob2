@@ -220,6 +220,22 @@ private:
                     : choice==gradient_kernel::Backend::Automatic ? CPUReason::AutomaticPolicy
                     : CPUReason::Unavailable;
                 cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed);
+                gradient_kernel::GradientCpuCapture::Receipt captureReceipt;
+                std::unique_ptr<gradient_kernel::GradientCpuCapture> capture;
+                if(learningEnabled && deviceService && executor->slot() && job.snapshotLease &&
+                   job.snapshotLease->terrain && job.snapshotLease->terrain->rules) {
+                    gradient_kernel::GradientCpuCapture::Input input;
+                    input.original=std::span(job.data.get(),cells);input.key=key;input.swim=job.swim;
+                    input.tick=job.due-delay;input.due=job.due;input.requiredGeneration=backendSession->currentGeneration();
+                    input.commonPreparationCpuNs=glob2::threadCpuDeltaNs(preparationCpu,preparedCpu);
+                    input.modifiedCosts=job.snapshotLease->terrain->movementModifiers || key.cpuBuckets!=gradient_kernel::BUCKETS;
+                    input.waterContext=&job;
+                    input.waterAt=[](void* value,std::size_t cell)->std::uint8_t {
+                        const auto& terrain=*static_cast<Job*>(value)->snapshotLease->terrain;
+                        return terrain.rules->swimming(terrain.cellRules[cell]);
+                    };
+                    capture=deviceService->beginCapture(backendSession,input,captureReceipt);
+                }
                 const auto cpuStart=cpuNow();
                 if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
                 work(job,scratch.propagation);
@@ -227,8 +243,13 @@ private:
                 const auto consumed=glob2::threadCpuDeltaNs(cpuStart,cpuEnded);
                 const bool measured=preparationClockValid && cpuStart>=preparedCpu && cpuEnded>=cpuStart;
                 propagationCpu.fetch_add(consumed,std::memory_order_relaxed);
+                if(capture) {
+                    auto record=capture->complete(std::span(job.data.get(),cells),
+                        {backendSession->currentGeneration(),consumed,true,measured},captureReceipt);
+                    if(record)deviceService->submitCapture(std::move(record),backendSession);
+                }
                 if(learningEnabled && deviceService && executor->slot()) deviceService->recordAccepted(backendSession,key,
-                    gradient_kernel::Plan::CPU,measured ? glob2::threadCpuDeltaNs(preparationCpu,cpuEnded) : 0,
+                    gradient_kernel::Plan::CPU,measured ? glob2::threadCpuDeltaNs(preparationCpu,preparedCpu)+consumed : 0,
                     job.snapshotLease ? job.snapshotLease->tick : job.due-delay,!measured);
                 cpuFields.fetch_add(1,std::memory_order_relaxed);
             }
@@ -345,7 +366,7 @@ public:
         refreshDeviceConfiguration();
     }
     void refreshDeviceConfiguration() noexcept {
-        crossDueTiming=deviceService && deviceService->crossDueRequested();
+        crossDueTiming=deviceService && (deviceService->crossDueRequested() || deviceService->learningActive());
         cadenceStartedNs=cadenceOwnerCpuNs=cadenceWaitNs=0;
     }
     std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }

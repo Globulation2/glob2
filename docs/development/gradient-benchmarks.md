@@ -717,3 +717,53 @@ CPU diagnostics disabled, and the desired epoch/check configuration. The case
 requires all six plans and exact72 completed arrays (24 scalar,48 weighted),
 unchanged originals, one private cost upload each and no initialization CPU change.
 This receipt tests ownership/exactness; it does not qualify live promotion.
+
+### Controlled live automatic capture
+
+`GLOB2_GRADIENT_TUNING=1` attaches the captured-job protocol to automatic mode
+with at least two compute slots. CPU and one-slot configurations do not create
+learning policies. This remains opt-in pending native qualification of this
+complete configuration; historical forced-GPU measurements do not qualify it.
+Unknown profiles execute required work on CPU. A worker may reserve one sampled
+capture after seeding, then copies original and golden arrays around the accepted
+CPU propagation. The coordinator alone replays, compares, samples process CPU,
+retires storage and trains/promotes plans. Required scheduling and presentation
+never join optional replay or its post-cleanup accounting tails.
+
+The service has fixed64 ready-request slots,64 registrations,64 observation slots
+and128 cadence slots. Requests beyond those limits decline to the original CPU
+continuation. Its byte counter aliases the leased State so an escaped required
+holder cannot release the State credit early. Production hooks are empty; test
+hooks must own their captured state. Request-descriptor allocations are included
+in the fixed State allowance. Broker storage is separately precharged.
+
+Fused source/blocker counting uses stores already performed by supported seeders,
+without a classification scan or per-cell clock reads. It belongs to accepted-plan
+preparation and enters both the CPU credit/reference and common paired preparation.
+Its extra instructions still enter total process CPU and the complete tuning-on/off
+qualification; add an isolated classification ablation if that difference is material.
+
+An unseen qualified alternative uses a1ms exploratory dispatch admission quantum,
+not a predicted whole-job completion bound. Recheck generation, required backlog,
+tick and slack between every bounded setup/comparison block or dispatch. At actual
+completion another full measured completion interval must remain before the due
+estimate. Promotion retains the measured maximum and2x uncertainty margin; no
+unknown required job is selected from the exploratory quantum.
+
+Cold compiler/driver preparation is separately reported as an enclosing whole-process
+CPU upper bound. Charge it as startup debt on the first accepted observation.
+Concurrent process work may be overcharged, but readiness never means free startup.
+Further optional admission must fit both the rolling256-tick1% credit cap and the
+cumulative1% cap, so startup must be amortized before optional replay is admitted.
+Invalid startup clocks suppress further admission. Cold and warm qualification
+windows remain separate and include this actual initialization behavior.
+
+After complete envelope closure, add a predictable500us retirement allowance to
+both candidate cost and tuning credits for settlement/statistics/diagnostics. Measure
+the actual remaining work; an overshoot adds debt and demotes the plan. Diagnostic
+`gradient_probe` rows identify ticket/generations, admission/device/cleanup/tail
+endpoints, process CPU/known deduction/unknown upper bound, preparation/calling/
+comparison costs, reserved/charged CPU and inference eligibility. They are emitted
+only on the background coordinator. Required GPU observations include the valid
+narrow enclosing process window's unknown CPU upper bound for conservative demotion;
+these windows do not claim causal driver attribution or replace full-game qualification.

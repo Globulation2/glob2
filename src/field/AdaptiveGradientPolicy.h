@@ -14,6 +14,8 @@
 
 namespace gradient_kernel
 {
+bool reserveOpenCLHostBytes(std::size_t) noexcept;
+void releaseOpenCLHostBytes(std::size_t) noexcept;
 enum class Backend { Automatic, CPU, OpenCL };
 enum class Family { Generic, Materials, Markets, Guard, Clear, Forbidden, Count };
 enum class Operation { CompleteField, ResumableSearch };
@@ -171,8 +173,19 @@ public:
     // Configured with required work drained. Optional learning has no owner-loop
     // processing pass and never adds a dependency to a required completion.
     void configureLearning(bool enable) {
-        if(enable && !learning.load(std::memory_order_acquire))
-            learning.store(std::make_shared<CpuSavingPolicy>(),std::memory_order_release);
+        if(enable && !learning.load(std::memory_order_acquire)) {
+            // The reservation follows the policy beyond map disposal when a
+            // required DTO or optional capture still retains its session.
+            constexpr auto bytes=sizeof(CpuSavingPolicy)+128;
+            if(!reserveOpenCLHostBytes(bytes))return;
+            struct Admission {std::size_t bytes;~Admission(){if(bytes)releaseOpenCLHostBytes(bytes);}} admission{bytes};
+            {
+                auto dispose=[](CpuSavingPolicy* value){delete value;releaseOpenCLHostBytes(sizeof(CpuSavingPolicy)+128);};
+                std::unique_ptr<CpuSavingPolicy,decltype(dispose)> value(new CpuSavingPolicy,dispose);
+                admission.bytes=0;
+                learning.store(std::shared_ptr<CpuSavingPolicy>(std::move(value)),std::memory_order_release);
+            }
+        }
         if(!enable) learning.store({},std::memory_order_release);
     }
     std::shared_ptr<CpuSavingPolicy> learningPolicy() const { return learning.load(std::memory_order_acquire); }

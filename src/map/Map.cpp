@@ -569,6 +569,17 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"coordinator_batch_submission_cpu_ns",device.batchSubmissionCpuNs},
         {"coordinator_batch_completion_cpu_ns",device.batchCompletionCpuNs},
         {"coordinator_running",device.running},{"coordinator_ready",device.ready},
+        {"automatic_tuning_enabled",device.automaticTuning},
+        {"automatic_startup_upper_cpu_ns",device.tuningStartupUpperCpuNs},{"automatic_startup_clock_valid",device.tuningStartupClockValid},
+        {"automatic_captures",device.captures},{"automatic_capture_declines",device.captureDeclines},
+        {"automatic_probes_started",device.probesStarted},{"automatic_probes_exact",device.probesExact},
+        {"automatic_probes_canceled",device.probesCanceled},{"automatic_probes_retired",device.probeRetired},
+        {"automatic_probe_calling_cpu_ns",device.probeCallingCpuNs},{"automatic_probe_unknown_upper_cpu_ns",device.probeUnknownCpuNs},
+        {"automatic_probe_outer_process_cpu_ns",device.probeProcessCpuNs},
+        {"automatic_accepted_cpu_ns",device.automaticPolicy.acceptedCpuNs},{"automatic_tuning_charged_cpu_ns",device.automaticPolicy.probeCpuNs},
+        {"automatic_admitted",device.automaticPolicy.admitted},{"automatic_canceled",device.automaticPolicy.canceled},
+        {"automatic_promoted",device.automaticPolicy.promoted},{"automatic_demoted",device.automaticPolicy.demoted},
+        {"automatic_profiles",device.automaticPolicy.profiles},
         {"coordinator_threads",device.coordinatorThreads},{"coordinator_cpu_scope_process",1},
         {"coordinator_executed",device.executed},{"coordinator_trivial",device.trivial},
         {"coordinator_gpu_result_committed_fields",device.executed},
@@ -641,7 +652,7 @@ void Map::configureCompute(unsigned threads)
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	gradientRuntime->shareBackendSession();
     gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configureLearning(gradient_kernel::learningRequested());
+    gradientRuntime->backendSession->configureLearning(compute.threadCount()>=2 && gradient_kernel::backend()==gradient_kernel::Backend::Automatic && gradient_kernel::learningRequested());
     gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
     compute.setWorkerOnly(gradientRuntime->backendSession);
     gradientRuntime->deviceService->configure(compute.threadCount(),gradient_kernel::backend());
@@ -667,7 +678,7 @@ void Map::clear()
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();
     gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configureLearning(gradient_kernel::learningRequested());
+    gradientRuntime->backendSession->configureLearning(compute.threadCount()>=2 && gradient_kernel::backend()==gradient_kernel::Backend::Automatic && gradient_kernel::learningRequested());
     gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
     compute.setWorkerOnly(gradientRuntime->backendSession);
 	gradientRuntime->buildingSynchronous=0;

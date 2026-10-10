@@ -35,6 +35,7 @@ public:
     static constexpr unsigned MaxProfiles=64, MaxAlternatives=2, WindowTicks=256;
     static constexpr unsigned ProbePeriod=128, MinimumPairs=8, CooldownRequests=64;
     struct Choice { Plan plan=Plan(0); std::uint64_t version=0; };
+    struct ProbeOffer { Plan plan=Plan(0);std::uint64_t reservedCpuNs=0,elapsedNs=0; };
     enum class ProbeKind { PaidCpuReplay, AcceptedCpuCapture };
     enum class CapturePhase { AwaitingAcceptedReference, ReferenceBound, Running, Reaping };
     struct ProbeTicket {
@@ -105,6 +106,9 @@ private:
         const auto previous=profile.decision.load(std::memory_order_relaxed);
         profile.decision.store(((previous>>8)+1)*256+unsigned(plan),std::memory_order_release);
     }
+    static std::uint64_t saturatedAdd(std::uint64_t a,std::uint64_t b) noexcept {
+        return b>UINT64_MAX-a?UINT64_MAX:a+b;
+    }
     Credit& credit(std::uint64_t tick) {
         auto& slot=credits[tick%WindowTicks];
         if(slot.tick!=tick) slot={tick,0,0};
@@ -115,8 +119,8 @@ private:
         // recreate its expired slot and subtract a reservation from zero.
         auto& reserved=credits[ticket.tick%WindowTicks];
         if(reserved.tick==ticket.tick) reserved.probes-=ticket.reservedCpuNs;
-        credit(latestTick).probes+=actualCpuNs;
-        totals.probeCpuNs+=actualCpuNs;
+        auto& current=credit(latestTick);current.probes=saturatedAdd(current.probes,actualCpuNs);
+        totals.probeCpuNs=saturatedAdd(totals.probeCpuNs,actualCpuNs);
     }
     void demote(Profile& profile) {
         if((profile.decision.load(std::memory_order_relaxed)&255)!=0) {
@@ -145,7 +149,7 @@ private:
            conservativeElapsedNs>slackNs/2) return {};
         std::lock_guard lock(background);
         latestTick=std::max(latestTick,tick);
-        if(active) return {};
+        if(active || totals.probeCpuNs>totals.acceptedCpuNs/100) return {};
         const auto index=findOrCreate(key);
         if(index==MaxProfiles || profiles[index].cooldown) return {};
         unsigned alternative=MaxAlternatives;
@@ -153,11 +157,11 @@ private:
             if(profiles[index].alternatives[i].qualified && profiles[index].alternatives[i].plan==plan) alternative=i;
         if(alternative==MaxAlternatives) return {};
         std::uint64_t accepted=0, probes=0;
-        for(const auto& c:credits) if(c.tick<=tick && tick-c.tick<WindowTicks) { accepted+=c.accepted; probes+=c.probes; }
+        for(const auto& c:credits) if(c.tick<=tick && tick-c.tick<WindowTicks) { accepted=saturatedAdd(accepted,c.accepted); probes=saturatedAdd(probes,c.probes); }
         if(probes>accepted/100 || reserveCpuNs>accepted/100-probes) return {};
         bool available=false;
         if(!globalProbeBusy.compare_exchange_strong(available,true,std::memory_order_acq_rel)) return {};
-        credit(tick).probes+=reserveCpuNs;
+        auto& reserved=credit(tick);reserved.probes=saturatedAdd(reserved.probes,reserveCpuNs);
         active=Reservation{nextTicket.fetch_add(1,std::memory_order_relaxed),generation.load(std::memory_order_acquire),tick,reserveCpuNs,
             index,alternative,commonPreparationCpuNs,0,kind,
             kind==ProbeKind::AcceptedCpuCapture ? CapturePhase::AwaitingAcceptedReference : CapturePhase::Running,
@@ -179,6 +183,34 @@ public:
         }
         return {};
     }
+    // Worker/coordinator only. Caps are predictable before observing a new
+    // captured result; unknown references cannot fund an experiment.
+    ProbeOffer probeOffer(const WorkloadKey& key) const {
+        std::lock_guard lock(background);
+        const auto count=published.load(std::memory_order_acquire);
+        for(unsigned i=0;i<count;++i)if(profiles[i].key==key) {
+            const auto& p=profiles[i];if(p.cooldown || !p.cpuReference)return {};
+            for(const auto& a:p.alternatives)if(a.qualified) {
+                const auto cap=std::clamp(p.cpuReference/4,std::uint64_t(1000000),std::uint64_t(8000000));
+                // Before a measured alternative exists, this is only the
+                // admission quantum for exploratory optional dispatches. It is
+                // never a completion bound for required work or promotion.
+                return {a.plan,cap,a.maximumElapsed?a.maximumElapsed:std::uint64_t(1000000)};
+            }
+        }
+        return {};
+    }
+    // Admission attempts and background profile processing are tuning too.
+    // Charging debt instead of hiding rejected work suppresses further probes.
+    void recordTuningOverhead(std::uint64_t tick,std::uint64_t ns,bool valid=true) {
+        const auto start=glob2::threadCpuNs();std::lock_guard lock(background);
+        latestTick=std::max(latestTick,tick);
+        const auto end=glob2::threadCpuNs();
+        if(!valid || !start || end<start)ns=std::max(ns,totals.acceptedCpuNs/100+1);
+        else ns=ns>UINT64_MAX-(end-start)?UINT64_MAX:ns+end-start;
+        auto& c=credit(latestTick);c.probes=ns>UINT64_MAX-c.probes?UINT64_MAX:c.probes+ns;
+        totals.probeCpuNs=ns>UINT64_MAX-totals.probeCpuNs?UINT64_MAX:totals.probeCpuNs+ns;
+    }
     // Offline exact-array qualification is supplied by the experiment harness.
     // At most two qualified GPU alternatives may be retained for one class.
     bool qualify(const WorkloadKey& key, Plan plan, bool exactnessPassed) {
@@ -197,7 +229,8 @@ public:
                          std::uint64_t tick, bool failed=false, bool publicationStall=false) {
         std::lock_guard lock(background);
         latestTick=std::max(latestTick,tick);
-        credit(tick).accepted+=hostCpuNs; totals.acceptedCpuNs+=hostCpuNs;
+        auto& current=credit(tick);current.accepted=saturatedAdd(current.accepted,hostCpuNs);
+        totals.acceptedCpuNs=saturatedAdd(totals.acceptedCpuNs,hostCpuNs);
         const auto index=findOrCreate(key);
         if(index==MaxProfiles) return;
         auto& profile=profiles[index];
@@ -206,7 +239,7 @@ public:
             profile.cpuReference=profile.cpuReference ? profile.cpuReference-profile.cpuReference/8+hostCpuNs/8 : hostCpuNs;
         }
         if(failed || publicationStall) { demote(profile); return; }
-        if(unsigned(plan)!=0 && profile.cpuReference && hostCpuNs>profile.cpuReference*9/10) {
+        if(unsigned(plan)!=0 && profile.cpuReference && hostCpuNs>profile.cpuReference-profile.cpuReference/10) {
             if(++profile.expensive>=4) demote(profile);
         } else if(unsigned(plan)!=0) profile.expensive=0;
     }

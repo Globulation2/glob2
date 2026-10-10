@@ -762,6 +762,7 @@ struct HeadlessRunner
                 {"preparation_ns",status.preparationNs},{"upload_ns",status.uploadNs},
                 {"dispatch_wait_ns",status.dispatchWaitNs},{"readback_ns",status.readbackNs},
                 {"check_interval",status.checkInterval},{"poll_micros",status.pollMicros},
+                {"effective_required_poll_micros",status.pollMicros?status.pollMicros:100},{"required_cancellations",status.requiredCancellations},
                 {"device_profiling",status.deviceProfiling},{"device_upload_ns",status.deviceUploadNs},
                 {"device_kernel_ns",status.deviceKernelNs},{"device_readback_ns",status.deviceReadbackNs},
                 {"device_check_read_ns",status.deviceCheckReadNs},{"profiling_errors",status.profilingErrors}};

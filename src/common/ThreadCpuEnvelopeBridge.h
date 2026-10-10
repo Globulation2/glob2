@@ -12,7 +12,9 @@ namespace glob2
 inline bool (*cpuEnvelopeRoleRegistrar)(CpuThreadRole,bool) noexcept=nullptr;
 inline std::shared_ptr<CpuClockRegistry> (*cpuEnvelopeRegistryLookup)() noexcept=nullptr;
 inline bool cpuEnvelopeRequested() noexcept {
-    const auto* value=std::getenv("GLOB2_GRADIENT_CPU_ENVELOPE");return value && std::strcmp(value,"1")==0;
+    const auto* value=std::getenv("GLOB2_GRADIENT_CPU_ENVELOPE");
+    const auto* tuning=std::getenv("GLOB2_GRADIENT_TUNING");
+    return (value && std::strcmp(value,"1")==0) || (tuning && std::strcmp(tuning,"1")==0);
 }
 // True means this thread made its one registration attempt, even when that
 // native clock is unavailable. False permits O(1) retry when the background

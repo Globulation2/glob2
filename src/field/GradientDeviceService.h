@@ -4,6 +4,7 @@
 #include "GradientDeadlineBatch.h"
 #include "GradientSeedShape.h"
 #include "OpenCLGradient.h"
+#include "GradientCpuCapture.h"
 #include <condition_variable>
 #include <deque>
 #include <functional>
@@ -78,11 +79,16 @@ public:
     struct Metrics {
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
         std::uint64_t batches=0, maxBatch=0, initializationNs=0, hostCpuNs=0;
+        std::uint64_t tuningStartupUpperCpuNs=0;bool tuningStartupClockValid=false;
         // Fields with at least one confirmed completed GPU dispatch. This is
         // distinct from a fully converged, successfully committed GPU result.
         std::uint64_t deviceCompletedFields=0,fallbackAfterDeviceCompletionFields=0;
         std::uint64_t stale=0, budgetDeclines=0, observationDrops=0;
         std::uint64_t publicationStalls=0,clockInvalidMeasurements=0;
+        std::uint64_t captures=0,captureDeclines=0,probesStarted=0,probesExact=0,probesCanceled=0;
+        std::uint64_t probeCallingCpuNs=0,probeUnknownCpuNs=0,probeProcessCpuNs=0,probeRetired=0;
+        bool automaticTuning=false;
+        CpuSavingPolicy::Metrics automaticPolicy;
         std::uint64_t batchPreparationCpuNs=0,batchSubmissionCpuNs=0,batchCompletionCpuNs=0;
         std::size_t queued=0, retainedHostBytes=0;
         bool running=false, ready=false,automaticClockUnavailable=false;
@@ -130,5 +136,11 @@ public:
     // coordinator has no required device work. Overflow drops optional learning.
     void recordAccepted(std::shared_ptr<BackendSession>,const WorkloadKey&,Plan,
                         std::uint64_t hostCpuNs,std::uint64_t tick,bool failed=false,bool publicationStall=false) noexcept;
+    // These operations are called only from a CPU worker. They never dispatch,
+    // compile or join optional work; successful captures queue immutable bytes.
+    std::unique_ptr<GradientCpuCapture> beginCapture(std::shared_ptr<BackendSession>,
+        GradientCpuCapture::Input,GradientCpuCapture::Receipt&) noexcept;
+    bool submitCapture(std::shared_ptr<GradientCpuCapture::Record>,std::shared_ptr<BackendSession>) noexcept;
+    bool learningActive() const noexcept;
 };
 }
