@@ -478,8 +478,14 @@ Screen independent required-work controls before combining finalists:
   pingpong bindings, reducing repeated argument updates. Common shape/cost
   arguments are rebound for every batch. Report argument-update and dispatch
   counts separately from process CPU.
+- `GLOB2_OPENCL_DIRECT_SEED_UPLOAD=1` removes the seed-to-staging copy for an
+  entire singleton request. Upload completion still precedes release of original
+  seed ownership. Readback uses separate staging and commits only after all
+  session/device checks pass. Mixed batches, including a singleton tail chunk,
+  retain their staging copies. Report copied/uploaded byte counters as well as
+  process CPU; this control does not remove dispatches or convergence checks.
 
-All three default to zero. Required-only kernel ablations are declined by the
+All four default to zero. Required-only kernel ablations are declined by the
 optional yielding probe until matching probe execution is independently qualified.
 Do not enable automatic promotion from a required-only alternative's measurements.
 Changing check intervals, polling, batching or driver profiling changes the
@@ -501,7 +507,7 @@ The JSON profile uses schema 1, an immutable `source` evidence reference,
 configuration object, and at most 32 `profiles`. Backend identity includes device,
 platform/vendor/version, device vendor/version, driver version and OpenCL-C
 version, plus check interval, polling, epoch, uniform metadata, profiling and
-parity-binding settings. Missing identity or an executable/driver mismatch declines
+parity-binding and direct-seed-upload settings. Missing identity or an executable/driver mismatch declines
 the profile. The native executable SHA256 is streamed once in the background;
 the manifest/source hash counters are diagnostic fingerprints, not evidence
 qualification or cryptographic authentication.
@@ -524,3 +530,26 @@ forced and opt-in until integrated publication/tick/frame tail gates pass.
 `cross_due_requested`, `cross_due_ready` and `cross_due_batches` distinguish request,
 profile availability and actual execution; zero actual batches means no batching
 benefit was tested. Automatic cross-deadline execution remains disabled.
+
+### Background CPU envelope diagnostics
+
+`GLOB2_GRADIENT_CPU_ENVELOPE=1` enables a diagnostic process-CPU envelope around
+required coordinator batches. CPU workers initialize bounded role-clock storage;
+the simulation and rendering threads only register their actual roles after that
+storage is available. No optional sampler is joined by publication. With one
+compute slot and no coordinator, the registry can remain unavailable.
+
+The outer process interval encloses the sampled inner owned-thread intervals.
+Their difference is an **unknown CPU upper bound**, including unregistered
+threads, boundary differences and driver work. Missing/churned clocks are omitted;
+clock errors invalidate a window. Neither the difference nor the batch sum is a
+causal driver measurement or total process CPU for the simulation window. Driver
+cleanup may continue after device completion. Registration, storage and sampler
+CPU are reported, and sampler CPU is already included in process CPU. These
+diagnostics do not authorize automatic plan promotion.
+
+`device_observed_fields` counts fields with at least one kernel dispatch whose
+completion was proved by an in-order read. `committed_fields` counts successful
+transactional GPU outputs. A later failure can increase the former without the
+latter; publication still requires exact output or an original-seed CPU recovery.
+Coordinator diagnostics expose this distinction and fallback after observation.
