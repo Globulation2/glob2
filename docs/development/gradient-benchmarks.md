@@ -293,7 +293,7 @@ independent oracle. This avoids assumptions about device-wide publication from
 legacy relaxed atomics; see the [Khronos OpenCL C memory model](https://registry.khronos.org/OpenCL/specs/unified/html/OpenCL_C.html).
 
 The kernel initializes immutable ushort seeds into private uint state, then
-performs at most the configured pops and65536 epochs without stamp wrap. An
+performs at most the configured pops and 65536 epochs without stamp wrap. An
 entire epoch is rejected before work if its frontier exceeds the remaining pop
 budget. One successful metadata read proves device completion; only converged
 fields read/convert staged output. Bounded exits recover from the original seeds
@@ -315,9 +315,9 @@ process CPU remains diagnostic, and production dispatch/qualification and final
 holdouts stay unchanged.
 
 Screen correctness first with `--edges-only`, then repeat with `--pop-limit 1`
-to prove exact bounded recovery. Compare local sizes64/128/256 only when the
-compiled kernel supports them, and pop budgets64K/256K/1M. Small development
-screens give no eligibility evidence for512-square maps: include `--max-size
+to prove exact bounded recovery. Compare local sizes 64/128/256 only when the
+compiled kernel supports them, and pop budgets 64K/256K/1M. Small development
+screens give no eligibility evidence for 512-square maps: include `--max-size
 512` before any target CPU-benefit claim. Single-group underutilization can
 outweigh fewer host commands, particularly for singleton fields; prune the
 candidate if target-size completion and publication slack fail.

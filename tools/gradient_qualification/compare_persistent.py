@@ -25,6 +25,7 @@ class PersistentComparison(Comparison):
         super().__init__(directory,device,variants=())
         self.variants=('persistent',)
         self.threads,self.pops,self.epochs=threads,pops,epochs
+        self.directory=directory
         self.persistent=ctypes.CDLL(str(directory/'persistent.so'))
         self.persistent.run_persistent.argtypes=[ctypes.c_void_p]*5+[ctypes.c_uint32]*6+[ctypes.c_void_p]
         started=time.perf_counter_ns();cpu_started=time.process_time_ns()
@@ -39,6 +40,16 @@ class PersistentComparison(Comparison):
             log=self.persistent_program.get_build_info(self.gpu.device,cl.program_build_info.LOG)))
 
     def execute(self,name,field,scratch):
+        try:return self._execute(name,field,scratch)
+        except Exception as error:
+            failure=dict(plan=name,width=field['width'],height=field['height'],cap=field['cap'],
+                local_size=self.threads,pop_limit=self.pops,epoch_limit=self.epochs,error=str(error),
+                input_sha256=hashlib.sha256(field['seeds'].tobytes()+field['costs'].tobytes()).hexdigest())
+            with (self.directory/'failures.jsonl').open('a') as output:
+                output.write(json.dumps(failure)+'\n')
+            raise
+
+    def _execute(self,name,field,scratch):
         if name!='persistent':
             try:return super().execute(name,field,scratch)
             except Exception:
