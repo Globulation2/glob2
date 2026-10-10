@@ -335,6 +335,7 @@ class DeviceBroker
                         [](void* value,std::size_t cell){auto& field=*static_cast<OwnedGradientField*>(value);return field.costAt(field,cell);},
                         nullptr,field->identity,field->family});
                     requests.back().cpuBuckets=field->cpuBuckets;requests.back().executedOnDevice=&field->executedGPU;
+                    requests.back().deviceExecutionObserved=&field->deviceExecutionObserved;
                 }
                 if(diagnostics)preparationEnd=glob2::threadCpuNs();
                 if(trackCompletion) {
@@ -406,6 +407,10 @@ class DeviceBroker
             state->totals.batchPreparationCpuNs+=preparationEnd-cpuStart;
             state->totals.batchSubmissionCpuNs+=submissionEnd-preparationEnd;
             state->totals.batchCompletionCpuNs+=glob2::threadCpuNs()-submissionEnd;
+        }
+        for(const auto& field:fields)if(field->deviceExecutionObserved){
+            ++state->totals.deviceCompletedFields;
+            if(!handled)++state->totals.fallbackAfterDeviceCompletionFields;
         }
         if(handled) {
             state->totals.completed+=count;

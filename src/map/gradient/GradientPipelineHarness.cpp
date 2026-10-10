@@ -769,11 +769,14 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
     if constexpr(!GAGCore::ThreadSupport::available) return;
     struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
     readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
-    struct State {std::atomic<unsigned> cpu{0};std::atomic<bool> worker{false};};
-    auto state=std::make_shared<State>();std::weak_ptr<State> retained=state;
+    for(bool deviceCompleted:{false,true}){
+    struct State {std::atomic<unsigned> cpu{0};std::atomic<bool> worker{false};bool expectedDeviceCompletion=false;};
+    auto state=std::make_shared<State>();state->expectedDeviceCompletion=deviceCompleted;std::weak_ptr<State> retained=state;
     auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
-        []{return true;},[](std::span<const BackendRequest> requests,Plan){
-            CHECK(requests.front().gradient[0]==77);return false;
+        []{return true;},[deviceCompleted](std::span<const BackendRequest> requests,Plan){
+            CHECK(requests.front().gradient[0]==77);
+            REQUIRE(requests.front().deviceExecutionObserved);
+            *requests.front().deviceExecutionObserved=deviceCompleted;return false;
         }});
     service->configure(2,Backend::OpenCL);
     const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
@@ -788,15 +791,21 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
         owned->cpu=[](auto& owned){
             auto& state=*const_cast<State*>(static_cast<const State*>(owned.inputs.get()));
             state.worker=ComputeExecutor::workerSlot()!=0;++state.cpu;
-            CHECK(owned.data[0]==77);owned.data[0]=88;
+            CHECK(owned.data[0]==77);CHECK_FALSE(owned.executedGPU);
+            CHECK(owned.deviceExecutionObserved==state.expectedDeviceCompletion);owned.data[0]=88;
         };return owned;
     });
     auto* field=new std::uint16_t[1]{};pipeline.advance();pipeline.submit(&field,0,[](auto& job){job.data[0]=77;});
     pipeline.finish();CHECK(state->cpu==1);CHECK(state->worker);CHECK(field[0]==0);
     CHECK(service->metrics().fallbacks==1);CHECK(pipeline.cpuCompleteFields()==1);
+    while(deviceCompleted && service->metrics().deviceCompletedFields!=1 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+    CHECK(service->metrics().deviceCompletedFields==unsigned(deviceCompleted));
+    CHECK(service->metrics().fallbackAfterDeviceCompletionFields==unsigned(deviceCompleted));
+    CHECK(service->metrics().executed==0);CHECK(pipeline.gpuCompleteFields()==0);
     pipeline.advance();pipeline.advance();CHECK(field[0]==88);
     pipeline.setAsyncWork({});state.reset();CHECK(retained.expired());
     pipeline.reset();service->stop();delete[] field;
+    }
 }
 
 TEST_CASE("one-slot device configuration creates no driver activity" * doctest::test_suite("GradientPipeline"))

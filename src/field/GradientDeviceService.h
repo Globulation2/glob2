@@ -42,6 +42,9 @@ struct OwnedGradientField
     bool diagnostics=false;
     unsigned executedBatchCount=1;
     bool executedGPU = false;
+    // Diagnostic completion proof survives later rollback. Policy/publication
+    // still use executedGPU, which means the GPU result actually committed.
+    bool deviceExecutionObserved=false;
     GradientFallbackReason fallbackReason=GradientFallbackReason::None;
     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
     std::atomic<bool> admitted{false};
@@ -71,6 +74,7 @@ public:
     struct Metrics {
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
         std::uint64_t batches=0, maxBatch=0, initializationNs=0, hostCpuNs=0;
+        std::uint64_t deviceCompletedFields=0,fallbackAfterDeviceCompletionFields=0;
         std::uint64_t stale=0, budgetDeclines=0, observationDrops=0;
         std::uint64_t publicationStalls=0;
         std::uint64_t batchPreparationCpuNs=0,batchSubmissionCpuNs=0,batchCompletionCpuNs=0;
