@@ -59,6 +59,103 @@ class ReleaseWorkflowTests(unittest.TestCase):
                     self.assertEqual(result.returncode,0,result.stderr)
                     self.assertEqual(result.stdout.splitlines(),list(expected))
 
+    def test_gog_builds_and_stages_the_resolved_public_source(self):
+        text=(ROOT/'.github/workflows/gog-staging.yml').read_text()
+        for platform,next_job in (('windows','windows-smoke'),('linux','macos'),('macos','upload-staging')):
+            block=text.split('\n  '+platform+':',1)[1].split('\n  '+next_job+':',1)[0]
+            with self.subTest(platform=platform):
+                self.assertIn('repository: Globulation2/glob2',block)
+                self.assertIn('ref: ${{ needs.preflight.outputs.source_commit }}',block)
+                self.assertIn('working-directory: source',block)
+                self.assertIn('test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"',block)
+                self.assertIn('../driver/tools/gog_release.py stage-'+platform+' --source-root "$PWD"',block)
+                self.assertIn('path: source/artifacts/gog/'+platform+'.tar.gz',block)
+        smoke=text.split('\n  windows-smoke:',1)[1].split('\n  linux:',1)[0]
+        self.assertIn('needs: [preflight, windows]',smoke)
+        self.assertIn('ref: ${{ needs.preflight.outputs.source_commit }}',smoke)
+        self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
+        self.assertIn("'1' { $repeatArgs = @('--nox', $save, '10', '1') }",smoke)
+        self.assertIn("'2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }",smoke)
+        self.assertIn('& .\\glob2.exe @repeatArgs',smoke)
+        self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
+
+    def test_gog_posix_repeat_selector_preserves_both_command_contracts(self):
+        text=(ROOT/'.github/workflows/gog-staging.yml').read_text()
+        for platform in ('linux','macos'):
+            block=text.split('\n  '+platform+':',1)[1]
+            selector='case "$CLI_VERSION" in'+block.split('case "$CLI_VERSION" in',1)[1].split('esac',1)[0]+'esac'
+            for version,expected in (('1',['--nox','SAVE','10','1']),
+                                     ('2',['game','repeat','SAVE','--ticks','10','--runs','1']),
+                                     ('3',None)):
+                with self.subTest(platform=platform,version=version), tempfile.TemporaryDirectory() as directory:
+                    script='set -euo pipefail\n'+selector+'\nprintf "%s\\n" "${repeat_args[@]}"'
+                    result=subprocess.run(['bash','-c',script],cwd=directory,
+                                          env={**os.environ,'CLI_VERSION':version},capture_output=True,text=True)
+                    if expected is None:
+                        self.assertNotEqual(result.returncode,0)
+                    else:
+                        expected=[str(Path(directory).resolve()/'games/cross-replay.game.gz') if arg=='SAVE' else arg for arg in expected]
+                        self.assertEqual(result.returncode,0,result.stderr)
+                        self.assertEqual(result.stdout.splitlines(),expected)
+
+    def test_epic_build_only_skips_credential_bearing_upload(self):
+        text=(ROOT/'.github/workflows/epic-windows-release.yml').read_text()
+        inputs=text.split('    inputs:',1)[1].split('\npermissions:',1)[0]
+        self.assertIn('      upload:',inputs)
+        self.assertIn('        type: boolean\n        default: false',inputs)
+        upload=text.split('\n  upload-dev:',1)[1]
+        self.assertIn('    if: ${{ inputs.upload }}',upload)
+        self.assertIn('    needs: [preflight, smoke-test]',upload)
+        self.assertIn('    environment: epic-dev',upload)
+
+    def test_epic_smoke_uses_tag_cli_and_rejects_unknown_versions(self):
+        text=(ROOT/'.github/workflows/epic-windows-release.yml').read_text()
+        selector='if test -f src/app/cli/CommandLine.h; then'+text.split('if test -f src/app/cli/CommandLine.h; then',1)[1].split('fi',1)[0]+'fi'
+        for version,expected in ((None,'cli_version=1'),(2,'cli_version=2'),(3,None)):
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as directory:
+                if version is not None:
+                    header=Path(directory)/'src/app/cli/CommandLine.h'
+                    header.parent.mkdir(parents=True)
+                    header.write_text(f'inline constexpr int Version = {version};\n')
+                output=Path(directory)/'output'
+                result=subprocess.run(['bash','-c','set -euo pipefail\n'+selector],cwd=directory,
+                                      env={**os.environ,'GITHUB_OUTPUT':str(output)},capture_output=True,text=True)
+                if expected is None:
+                    self.assertNotEqual(result.returncode,0)
+                    self.assertFalse(output.exists())
+                else:
+                    self.assertEqual(result.returncode,0,result.stderr)
+                    self.assertEqual(output.read_text().strip(),expected)
+        smoke=text.split('\n  smoke-test:',1)[1].split('\n  upload-dev:',1)[0]
+        self.assertIn('CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}',smoke)
+        self.assertIn("'1' { $repeatArgs = @('--nox', $save, '10', '1') }",smoke)
+        self.assertIn("'2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }",smoke)
+        self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
+        self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
+
+    def test_steam_tag_identity_survives_package_smoke_and_upload(self):
+        package=(ROOT/'.github/workflows/steam-windows-package.yml').read_text()
+        upload=(ROOT/'.github/workflows/steam-windows-upload.yml').read_text()
+        self.assertEqual(package.count('description: Immutable public release tag'),1)
+        self.assertIn('workflow_call:\n    inputs:\n      tag:\n        required: true',package)
+        self.assertIn('value: ${{ jobs.package.outputs.source_sha }}',package)
+        build=package.split('\n  package:',1)[1].split('\n  smoke-test:',1)[0]
+        smoke=package.split('\n  smoke-test:',1)[1]
+        for block in (build,smoke):
+            self.assertIn('repository: Globulation2/glob2',block)
+            self.assertIn('ref: ${{ needs.preflight.outputs.source_sha }}',block)
+            self.assertIn('glob2-steam-windows-${{ needs.preflight.outputs.source_sha }}',block)
+        self.assertIn('git rev-parse HEAD > artifacts/steam/windows/source-commit.txt',build)
+        self.assertIn('sha256sum source-commit.txt >> SHA256SUMS.txt',build)
+        self.assertIn('test "$(git rev-parse HEAD)" = "${{ needs.preflight.outputs.source_sha }}"',build)
+        self.assertIn('CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}',smoke)
+        self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
+        self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
+        self.assertIn('tag: ${{ inputs.tag }}',upload)
+        self.assertIn('glob2-steam-windows-${{ needs.package.outputs.source_sha }}',upload)
+        self.assertIn("if ($source -ne '${{ needs.package.outputs.source_sha }}')",upload)
+        self.assertLess(upload.index('Depot source identity mismatch'),upload.index('Upload unpublished build'))
+
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
         for name in ('github-release.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
             text=(ROOT/'.github/workflows'/name).read_text()
@@ -87,6 +184,25 @@ class ReleaseWorkflowTests(unittest.TestCase):
             block=re.split(r'\n  (?=\S)',text.split('  '+job+':\n',1)[1],maxsplit=1)[0]
             self.assertNotIn('secrets:',block)
 
+    def test_downloaded_android_layout_checks_bytes_before_signing(self):
+        import hashlib
+        import subprocess
+        import textwrap
+        text=(ROOT/'.github/workflows/github-release.yml').read_text()
+        block=text.split('      - name: Verify the exact downloaded unsigned APK bytes\n',1)[1].split('      - name:',1)[0]
+        script=textwrap.dedent(block.split('        run: |\n',1)[1])
+        self.assertIn('--original "artifacts/unsigned/artifacts/fdroid/glob2-$ARCH-unsigned.apk"',text)
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'artifacts/unsigned/artifacts/fdroid';path.mkdir(parents=True)
+            apk=path/'glob2-x86_64-unsigned.apk';apk.write_bytes(b'verified-package')
+            checksum=path/'glob2-x86_64-unsigned.sha256'
+            checksum.write_text(hashlib.sha256(apk.read_bytes()).hexdigest()+'  artifacts/fdroid/'+apk.name+'\n')
+            command=['bash','-c',script]
+            environment=dict(os.environ,ARCH='x86_64')
+            self.assertEqual(subprocess.run(command,cwd=tmp,env=environment,capture_output=True).returncode,0)
+            apk.write_bytes(b'changed-package')
+            self.assertNotEqual(subprocess.run(command,cwd=tmp,env=environment,capture_output=True).returncode,0)
+
     def test_desktop_queue_is_scoped_to_the_immutable_release_tag(self):
         text=(ROOT/'.github/workflows/release.yml').read_text()
         self.assertIn('group: release-${{ github.ref }}-${{ inputs.tag }}',text)
@@ -110,6 +226,24 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertNotIn('files-folder-filter: glob2.exe',text)
         self.assertIn('Install, upgrade and uninstall the final signed installer',text)
         self.assertLess(text.index('Timestamp and sign the final installer'),text.index('Install, upgrade and uninstall the final signed installer'))
+
+    def test_ios_archive_qualification_does_not_require_upload_credentials(self):
+        text=(ROOT/'.github/workflows/ios-testflight.yml').read_text()
+        dispatch, call=text.split('  workflow_call:',1)
+        self.assertIn('default: false\n        type: boolean',dispatch)
+        self.assertIn('default: true\n        type: boolean',call)
+        self.assertIn("environment: ${{ inputs.upload && 'ios-testflight' || '' }}",text)
+        self.assertIn('Require channel configuration before building\n        if: ${{ inputs.upload }}',text)
+        self.assertIn('  upload:\n    if: ${{ inputs.upload }}\n    needs: build',text)
+        self.assertIn("github.repository_id == 1397722696",text)
+        self.assertIn('EXPECTED_COMMIT',text)
+        upload=text.split('\n  upload:\n',1)[1]
+        self.assertIn('ref: ${{ needs.build.outputs.commit }}',upload)
+        self.assertLess(upload.index('actions/checkout@'),upload.index('actions/download-artifact@'))
+        self.assertLess(upload.index('Require Apple processing of the exact uploaded build'),
+                        upload.index('Record provenance only after Apple processing succeeds'))
+        self.assertIn('--build-number "$BUILD_NUMBER" --marketing-version "$marketing_version"',upload)
+        self.assertIn('--audience "$TESTFLIGHT_AUDIENCE"',upload)
 
     def test_all_platform_jobs_receive_the_same_source_revision(self):
         text=(ROOT/'.github/workflows/github-release.yml').read_text()

@@ -1,6 +1,10 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import react from '@vitejs/plugin-react';
+import { syncDesignSystem, stageDesignAssets } from '../../scripts/design-system.mjs';
+
+const designSystem = syncDesignSystem();
+stageDesignAssets(fileURLToPath(new URL('./public', import.meta.url)), designSystem, false);
 
 export default defineConfig({
   plugins: [react()],

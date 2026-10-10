@@ -303,6 +303,13 @@ struct MobileGallerySetup
 		frame(stack);
 		stackShot(stack, "main-menu");
 		if (mainScreen->host().find("menu/more"))
+			press(stack, *mainScreen, "menu/more");
+		press(stack, *mainScreen, "menu/discord");
+		stackShot(stack, "discord-community");
+		press(stack, *mainScreen, "discord/back");
+		if (mainScreen->host().find("menu/back"))
+			press(stack, *mainScreen, "menu/back");
+		if (mainScreen->host().find("menu/more"))
 		{
 			// Phones keep the utilities one level away behind More.
 			press(stack, *mainScreen, "menu/more");

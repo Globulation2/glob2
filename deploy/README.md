@@ -21,6 +21,10 @@ explains how to run, configure, upgrade and back it up.
 `.github/workflows/server-image.yml` publishes the default service images for a `server-v*` tag
 in the release mirror only ([details](../docs/hosting/upgrades.md#images)).
 Deployment script tests: `python3 -m unittest discover -s test/deployment -v`.
+The web installer validates and installs the game runtimes and their music,
+recording, and Hive workers, translation catalogs, and licence notices before
+replacing the launcher. An incomplete worker runtime leaves the served release
+untouched; compressed copies are updated with their corresponding runtime files.
 Whole-stack smoke test: `test/deployment/platform_stack_smoke.py` (see the
 hosting guide).
 

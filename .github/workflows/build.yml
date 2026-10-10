@@ -1376,7 +1376,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends ffmpeg python3-pil
       - name: Install platform dependencies
         id: install_platform_dependencies
-        run: npm ci
+        run: npm ci && npm run design:sync
       - name: Lint and check formatting
         id: lint_and_check_formatting
         run: npm run lint

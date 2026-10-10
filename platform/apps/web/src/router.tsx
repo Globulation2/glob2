@@ -1,3 +1,4 @@
+import { pathAvailable, useFeatures } from './features.tsx';
 import { useLocale } from './i18n.tsx';
 // A small history-API router: the app has a handful of routes, all listed in
 // routes.tsx. Paths the game links to (/players/<id>, /matches/<id>,
@@ -122,6 +123,8 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { to: string };
 export function Link({ to, onClick, children, ...rest }: LinkProps) {
   useLocale();
   const { navigate } = useRouter();
+  const features = useFeatures();
+  if (!pathAvailable(to, features)) return null;
   const handle = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
     if (

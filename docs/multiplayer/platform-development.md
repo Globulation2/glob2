@@ -72,3 +72,36 @@ changes. AI drafts require independent review of meaning and terminology;
 structural validation alone does not establish translation quality.
 
 [Multiplayer index](README.md) · [Documentation index](../README.md).
+
+## Shared web design system
+
+The online application and sign-in/invite pages consume
+[`@glob2/design-system`](https://github.com/Globulation2/glob2-design-system).
+Reusable tokens, CSS, icons, fonts, brand imagery, accessible primitives and theme
+persistence live there. Application layouts, translations and workflows remain here.
+The native game and `/play/` runtime retain their own styling and assets.
+
+After `npm ci` in `platform/`, run `npm run design:sync`. Vite also bootstraps this
+at the start of development/builds. Each invocation resolves design-system `main`
+once and installs that exact commit in isolation, preserving other locked dependencies.
+For coordinated verification, set `GLOB2_DESIGN_SYSTEM_SHA` to a full published commit
+SHA before all checks and builds. The bootstrap fails on resolution/install errors;
+`.cache/design-system.json` records the revision and installed-file fingerprint,
+and the web build serves `/design-system.json`. CI resolves once and exports the SHA
+to later steps. No Git-install lifecycle scripts are needed.
+
+Import shared foundations before local CSS. Component styles opt in with `.g2-ui`;
+local CSS owns only product layout and domain-specific presentations. Use the app's
+thin translation wrappers for theme labels, loading text and wordmarks. For new
+components or tokens, change the shared repository and test its candidate SHA here.
+See its examples and downstream guide for HTML, Astro and React integrations.
+
+The external `/theme.js` bootstrap runs before paint. HTTPS production sites share
+`glob2-theme` on `glob2online.com` (one year, Secure, SameSite=Lax, Path=/), including
+an explicit `system` choice. It migrates the previous localStorage key after successful
+persistence. Localhost and unrelated previews use origin-local storage. Returning to
+a tab, restoring a page or navigating within the SPA re-reads the preference;
+the app's thin `useThemeNavigation` adapter calls the shared controller's `refresh`
+method after route changes. Blocked persistence preserves a
+usable in-memory choice. Server pages use the same package bootstrap and rebased CSS
+under `/signin/assets/`, allowed by their same-origin CSP.

@@ -21,7 +21,7 @@ Store listings must be publicly available in production. TestFlight, internal
 tracks and successful CI builds do not satisfy these requirements. Supplemental
 stores can be added after independently verifying their listings. Missing
 publisher verification, signing credentials, real-device evidence or store
-acceptance blocks launch; never fabricate an approval to unblock automation.
+acceptance blocks that channel's launch; never fabricate an approval to unblock automation.
 
 Signing, submission and publication run only from the release mirror; public
 release assets remain on `Globulation2/glob2`. Windows uses Azure Artifact
@@ -123,3 +123,59 @@ a reviewed website metadata PR then imports it without filename guessing or
 runtime GitHub requests. Stage packages as a draft while awaiting store review.
 
 [Release index](README.md) · [Documentation index](../README.md).
+
+## Staged free launch
+
+A free launch may publish an explicitly selected cohort without waiting for
+unselected platforms or mobile store acceptance. The schema-1 all-platform gate
+above remains strict. Schema 2 and `--staged` are an independent path: every
+selected package must still meet its signing, installation/gameplay and
+compatibility checks. Browser, Steam, Epic and mobile store publication retain
+their own existing workflows and qualification; this cohort path publishes
+selected direct-download packages only.
+
+Build each selected package from the same immutable public version tag using
+`release=1 client_profile=free`. Capture the producer's `identity.json`, finish
+signing/notarization, then collect the final package bytes plus tagged source
+archive into a clean directory. Create a JSON object mapping selected identities
+(such as `macos:arm64:dmg`) to those captured build identities:
+
+```sh
+python3 tools/release/stage_downloads.py \
+  --artifacts artifacts/free-final --tag vVERSION \
+  --source-commit FULL_PUBLIC_COMMIT_SHA \
+  --package macos:arm64:dmg --client-builds artifacts/client-builds.json
+python3 tools/release/downloads_manifest.py --staged \
+  --artifacts artifacts/free-final \
+  --inventory artifacts/free-final/package-inventory.json \
+  --qualification artifacts/free-qualification.json \
+  --tag vVERSION --source-commit FULL_PUBLIC_COMMIT_SHA \
+  --output artifacts/free-final/downloads-manifest.json
+```
+
+Staged inventories and qualification use `schemaVersion: 2`. Every package has
+`clientBuild` containing its resolved free release identity and all four
+`client_features` booleans. Commander and authoring links must be false;
+development/PCH/unity flags must be absent or false. Qualification adds
+`clientBuilds`, mapping each package filename to that exact identity. Its
+`artifacts` still describes every final package and source archive SHA-256.
+`platforms` requires gates for selected platforms; `testedTargets` requires the
+corresponding selected architectures/formats. All four compatibility assertions
+remain mandatory. `stores` may be `{}`; including a store requires its actual
+production listing and device qualification. Omitted channels are unavailable,
+not qualified by another platform's evidence.
+
+Dispatch `publish-free-cohort.yml` on mirror master after reviewer qualification.
+Supply HTTPS URLs and reviewed SHA-256 values for the final tar.gz bundle and
+schema-2 qualification. The bundle contains only flat regular files: selected
+packages, source archives and `package-inventory.json` (exclude generated
+manifest/checksums; the workflow regenerates them). It verifies the immutable
+source tag, exact bytes and profiles before accessing the publication token.
+The public manifest declares `qualification.scope: staged` and its selected
+`testedTargets`; download consumers must accept schema 2 and display only its
+listed packages and stores. Coordinate any external download-site deployment.
+
+A published cohort is immutable. Later cohorts need a new version and matching
+new tag; never add bytes to a published tag. Retries may resume only an identical
+unpublished draft. This workflow prepares publication; it does not submit a
+store build, deploy instance configuration or supply missing qualification.

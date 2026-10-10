@@ -653,7 +653,7 @@ describe('room REST and the invite page', () => {
     expect(html).toContain(`<meta property="og:url" content="${ORIGIN}/j/${room.code}"`);
     expect(html).not.toContain('<room>');
     const csp = page.headers.get('content-security-policy')!;
-    const nonce = /script-src 'nonce-([^']+)'/.exec(csp)?.[1];
+    const nonce = /'nonce-([^']+)'/.exec(csp)?.[1];
     expect(nonce).toBeTruthy();
     expect(html).toContain(`<script nonce="${nonce}">`);
     // Most people who get a link have no app: the browser comes first, the app
@@ -662,7 +662,7 @@ describe('room REST and the invite page', () => {
     const open = html.indexOf('id="open-app"');
     expect(play).toBeGreaterThan(0);
     expect(open).toBeGreaterThan(play);
-    expect(html.slice(html.lastIndexOf('<a', play), play)).toContain('class="button primary"');
+    expect(html.slice(html.lastIndexOf('<a', play), play)).toContain('class="btn button primary"');
     expect(html).toContain('Open in the Globulation 2 app');
     expect(html).toContain('id="app-fallback"');
     expect(html).not.toMatch(/location\.href\s*=/);
@@ -683,7 +683,8 @@ describe('room REST and the invite page', () => {
     expect(unknownHtml).toContain('expired or does not exist');
     expect(unknownHtml).toContain('<meta property="og:title" content="Invite not found"');
     expect(unknownHtml).toContain(`href="${ORIGIN}/play/"`);
-    expect(unknownHtml).not.toContain('<script');
+    expect(unknownHtml).toContain('<script src="/signin/assets/bootstrap.js"></script>');
+    expect(unknownHtml).not.toMatch(/<script nonce=/);
 
     // With verified app links (the official domain), a phone that still shows
     // the page gets the app first; on Android as an intent that falls back to

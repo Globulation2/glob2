@@ -1503,6 +1503,57 @@ TEST_CASE("Scripting conversion allocates fresh identity in a reused destination
  CHECK(restored.query("unit",{originalReference}).kind==Script::Value::Null);
 }
 
+TEST_CASE("Editor building deletion clears ability lists before save and slot reuse" * doctest::test_suite("TeamStatsSave"))
+{
+ glob2test::HeadlessGlobals globals;
+ TeamStatsMeasurementFixture w;
+ auto* swarm=w.building("swarm");
+ auto* team=w.game.teams[0];
+ team->addToStaticAbilitiesLists(swarm);
+ REQUIRE(std::find(team->swarms.begin(),team->swarms.end(),swarm)!=team->swarms.end());
+ swarm->maxUnitWorking=1;
+ swarm->updateCallLists();
+ REQUIRE(std::find(team->buildingsNeedingUnits[swarm->priority].begin(),team->buildingsNeedingUnits[swarm->priority].end(),swarm)!=team->buildingsNeedingUnits[swarm->priority].end());
+ const auto slot=Building::GIDtoID(swarm->gid);
+ team->buildingsTryToBuildingSiteRoom.push_back(swarm);
+ team->buildingsWaitingForDestruction.push_back(swarm);
+ team->buildingsToBeDestroyed.push_back(swarm);
+ REQUIRE(w.game.removeUnitAndBuildingAndFlags(8,8,Game::DEL_BUILDING));
+ CHECK(team->swarms.empty());
+ CHECK(team->buildingsTryToBuildingSiteRoom.empty());
+ CHECK(team->buildingsWaitingForDestruction.empty());
+ CHECK(team->buildingsToBeDestroyed.empty());
+ for(const auto& entry:team->buildingsNeedingUnits)
+  CHECK(std::find(entry.second.begin(),entry.second.end(),swarm)==entry.second.end());
+ auto loaded=roundTrip(w.game);
+ CHECK(loaded->game.teams[0]->myBuildings[slot]==nullptr);
+ CHECK(loaded->game.teams[0]->swarms.empty());
+ auto* inn=w.building("inn");
+ CHECK(Building::GIDtoID(inn->gid)==slot);
+ loaded=roundTrip(w.game);
+ CHECK(loaded->game.teams[0]->swarms.empty());
+ CHECK(loaded->game.teams[0]->myBuildings[slot]!=nullptr);
+ // Virtual flags do not occupy map cells; the physical-building fixture
+ // helper intentionally writes occupancy and is inappropriate here.
+ const auto flagType=globalContainer->buildingsTypes.getTypeNum("clearingflag",0,false);
+ REQUIRE(flagType>=0);
+ auto* flag=w.game.addBuilding(16,16,flagType,0);
+ REQUIRE(flag!=nullptr);
+ team->addToStaticAbilitiesLists(flag);
+ flag->maxUnitWorking=1;
+ flag->updateCallLists();
+ REQUIRE(std::find(team->buildingsNeedingUnits[flag->priority].begin(),team->buildingsNeedingUnits[flag->priority].end(),flag)!=team->buildingsNeedingUnits[flag->priority].end());
+ REQUIRE(std::find(team->clearingFlags.begin(),team->clearingFlags.end(),flag)!=team->clearingFlags.end());
+ REQUIRE(w.game.removeUnitAndBuildingAndFlags(16,16,Game::DEL_FLAG));
+ CHECK(team->clearingFlags.empty());
+ CHECK(team->virtualBuildings.empty());
+ for(const auto& entry:team->buildingsNeedingUnits)
+  CHECK(std::find(entry.second.begin(),entry.second.end(),flag)==entry.second.end());
+ loaded=roundTrip(w.game);
+ CHECK(loaded->game.teams[0]->clearingFlags.empty());
+ CHECK(loaded->game.teams[0]->virtualBuildings.empty());
+}
+
 TEST_CASE("Scripting editor deletion and reuse never revive a reference" * doctest::test_suite("JavaScriptLifecycle"))
 {
  glob2test::HeadlessGlobals globals;

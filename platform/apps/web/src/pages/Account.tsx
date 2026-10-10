@@ -1,3 +1,4 @@
+import { useFeatures } from '../features.tsx';
 import { getLocale } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import { ProfilePhoto } from '../components/ProfilePhoto.tsx';
@@ -16,6 +17,7 @@ import { useSession } from '../state.tsx';
 export function Account() {
   useLocale();
   const { account, refresh } = useSession();
+  const features = useFeatures();
   const [deleted, setDeleted] = useState(false);
   if (deleted) {
     return (
@@ -92,13 +94,15 @@ export function Account() {
             {t('Download my data')}
           </a>
         </div>
-        <div className="card">
-          <h2 className="card-title">{t('Hive Mind')}</h2>
-          <p>{t('Manage the credits for your in-game AI commander.')}</p>
-          <Link className="btn" to="/commander">
-            {t('Hive Mind credits')}
-          </Link>
-        </div>
+        {features.includes('commander') && (
+          <div className="card">
+            <h2 className="card-title">{t('Hive Mind')}</h2>
+            <p>{t('Manage the credits for your in-game AI commander.')}</p>
+            <Link className="btn" to="/commander">
+              {t('Hive Mind credits')}
+            </Link>
+          </div>
+        )}
         <DeleteAccount
           account={account}
           onDeleted={() => {

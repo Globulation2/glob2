@@ -17,7 +17,7 @@ release until the maintainer chooses to publish it.
 | Promotional text | Build a thriving colony, set priorities for your globs, and focus on the bigger picture in this open-source real-time strategy game. |
 | Keywords | strategy,RTS,colony,simulation,skirmish,offline,empire,map editor |
 | Support URL | https://github.com/Globulation2/glob2 |
-| Marketing URL | https://globulation2.org/wiki/Main_Page |
+| Marketing URL | https://glob2online.com/ |
 
 **Description**
 

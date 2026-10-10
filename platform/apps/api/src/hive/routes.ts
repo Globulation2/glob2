@@ -28,13 +28,14 @@ export async function hiveRoutes(app: FastifyInstance) {
         })
       : undefined;
   const checkout =
-    config?.enabled && config.salesEnabled && config.packs?.length
+    (config?.enabled && config.salesEnabled && config.packs?.length) ||
+    (process.env['HIVE_STRIPE_SECRET_KEY'] && process.env['HIVE_STRIPE_WEBHOOK_SECRET'])
       ? new Checkout(
           app.services.db,
           process.env['HIVE_STRIPE_SECRET_KEY'] ?? '',
           process.env['HIVE_STRIPE_WEBHOOK_SECRET'] ?? '',
           app.services.config.publicOrigin,
-          config.packs,
+          config?.packs ?? [],
         )
       : undefined;
   if (config?.enabled && !commander)
@@ -67,14 +68,15 @@ export async function hiveRoutes(app: FastifyInstance) {
         .orderBy('created_at', 'desc')
         .limit(30)
         .execute(),
-      packs: checkout
-        ? config?.packs?.map(({ id, credits, amount, currency }) => ({
-            id,
-            credits,
-            amount,
-            currency,
-          }))
-        : [],
+      packs:
+        config?.enabled && config.salesEnabled && checkout
+          ? config?.packs?.map(({ id, credits, amount, currency }) => ({
+              id,
+              credits,
+              amount,
+              currency,
+            }))
+          : [],
     };
   });
   // Errors remain player-facing; private interpreter diagnostics only travel in execution results.
@@ -209,7 +211,7 @@ export async function hiveRoutes(app: FastifyInstance) {
   app.post('/api/v1/hive/checkout', async (request) =>
     guarded(async () => {
       const { account } = await requireAccount(app.identity, request);
-      if (account.kind !== 'registered' || !checkout)
+      if (account.kind !== 'registered' || !config?.enabled || !config.salesEnabled || !checkout)
         throw apiError('forbidden', 'Credit purchases are not available.');
       return checkout.begin(account.id, body(HiveCheckout, request.body).pack);
     }),

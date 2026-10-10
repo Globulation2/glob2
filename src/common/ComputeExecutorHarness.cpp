@@ -39,12 +39,17 @@ TEST_CASE("startup thread identities distinguish pool slots and reset on reconfi
     CHECK(executor.threadIds()==std::vector<std::uint64_t>{owner});
 }
 
-TEST_CASE("automatic sizing follows hardware and supports unknown CPU counts")
+TEST_CASE("automatic sizing respects platform limits and supports unknown CPU counts")
 {
     CHECK(defaultComputeThreadCount(0) == 1);
     CHECK(defaultComputeThreadCount(1) == 1);
+#ifdef __EMSCRIPTEN__
+    CHECK(defaultComputeThreadCount(12) == 8);
+    CHECK(defaultComputeThreadCount(128) == 8);
+#else
     CHECK(defaultComputeThreadCount(12) == 12);
     CHECK(defaultComputeThreadCount(128) == 128);
+#endif
 }
 TEST_CASE("thread configuration accepts auto and rejects malformed or overflowing overrides")
 {
@@ -55,7 +60,11 @@ TEST_CASE("thread configuration accepts auto and rejects malformed or overflowin
     CHECK(parseComputeThreadCount("128") == 128);
     CHECK(parseComputeThreadCount(std::to_string(std::numeric_limits<unsigned>::max())) == std::numeric_limits<unsigned>::max());
     CHECK(resolveComputeThreadCount(0, 0) == 1);
+#ifdef __EMSCRIPTEN__
+    CHECK(resolveComputeThreadCount(0, 128) == 8);
+#else
     CHECK(resolveComputeThreadCount(0, 128) == 128);
+#endif
     CHECK(resolveComputeThreadCount(65, 8) == 65);
     for (const auto value : {"", "0", "-1", "+1", " 1", "1 ", "1x", "1.5", "999999999999999999999"})
         CHECK_THROWS_AS(parseComputeThreadCount(value), std::invalid_argument);

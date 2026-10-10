@@ -1,0 +1,1 @@
+Globulation 2 0.11.0.3 fixes mobile dependency manifest verification. Replays and multiplayer require matching simulation versions.

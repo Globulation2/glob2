@@ -4,13 +4,15 @@ The web app and the server-rendered sign-in and invite pages use the game's own
 artwork, compressed for the web by `build_art.py`:
 
 ```sh
-python3 platform/apps/web/art/build_art.py   # needs Pillow; run npm ci in platform/ first
+python3 platform/apps/web/art/build_art.py --design-system ../glob2-design-system  # Pillow; npm ci in platform/ first
 ```
 
-It writes `platform/apps/web/src/art/` (imported by the app, so Vite fingerprints
-the files) and `platform/apps/api/src/web/static/` (served by the API at
-`/signin/assets/`). The outputs are committed; rerun the script after changing a
-source.
+Reusable outputs belong to the shared design-system checkout's `assets/` directory.
+Commit them with its provenance manifest and run `npm run generate && npm test`
+there. Consumers obtain the published revision at build time; do not copy reusable
+art or fonts into either consumer repository. Studio-specific screenshots remain
+owned by this app and are maintained separately. The exporter reads native source
+art without changing it. Preserve the shared font and Tabler notices.
 
 | Output                                                                                                     | Source                                                                                                                                                                                                                         |
 | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -51,7 +53,7 @@ preview outputs. Preserve these labels when changing the marketing presentation.
 
 ## Contrast
 
-Text and control colours of both themes (`src/styles/tokens.css`) meet WCAG 2.2
+Text and control colours of both themes (the shared token source) meet WCAG 2.2
 AA; the browser smoke test runs axe on every page in both themes. Measured
 ratios:
 
@@ -85,18 +87,17 @@ python3 tools/record_menu_colony.py --harness build/native-tests/test/MenuColony
 
 Three lossless review frames stay in ignored `artifacts/menu-colony/frames`;
 pass `--keep-frames` to retain all capture frames. Commit the encoded
-video and posters. The public website's `public/brand/` receives identical copies
-of these three assets; its Astro homepage also plays the recording. Run the video
+video and posters in the shared design-system `assets/` directory and update their
+provenance hashes. Both consumers use those files; the website stages them at build time. Run the video
 capture after `build_art.py`, which otherwise restores the original still posters.
 
 ## Icons
 
-Navigation and other interface glyphs are not artwork: they are the game's Tabler
-outline icons, imported as SVG from `datasrc/icons/tabler/` by `src/icons.tsx` and
-drawn in the text colour, so they follow the theme. To add one, add it to that
-directory's `manifest.json` and rerun the exporter (see
-[UI framework](../../../../docs/development/ui-framework.md)), then import it in
-`src/icons.tsx`; `test/icons.test.tsx` checks the files against the manifest.
+Navigation and interface glyphs use the shared package's pinned Tabler SVG catalog.
+`src/icons.tsx` is a thin re-export; its contract test validates the package manifest.
+Add new glyphs to the design-system catalog with source revision, checksum and MIT
+attribution, regenerate its icon exports, and test the candidate revision here.
+Native UI icons and their exporter remain independent.
 
 Use game artwork for decoration: page headers, stat tiles and empty states. Pick a
 sprite that fits the page, and avoid giving two pages the same one.

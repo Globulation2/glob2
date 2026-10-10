@@ -32,6 +32,7 @@ from dev_store import (
 from mobile_artifacts import verify_android_library
 from mobile_toolchain import LOCK, ROOT, discover
 from tool_archives import install
+from dev_build import dependency_identity
 
 
 def validate_bundle(prefix, identity, fingerprint):
@@ -108,7 +109,9 @@ def main():
         options["android_sdk"] = args.android_sdk
     if args.developer_dir:
         options["developer_dir"] = args.developer_dir
-    identity = build_identity(options)
+    # Application feature profiles do not change the pinned native libraries.
+    # Use the same identity as the SCons consumer when publishing the manifest.
+    identity = dependency_identity(build_identity(options))
     toolchain = discover(identity, options)
     final = dependency_prefix(ROOT, identity, toolchain["fingerprint"], lease=False)
     output = ROOT / default_directory(identity)

@@ -1,19 +1,40 @@
 # Globulation 2 privacy policy
 
-This policy covers the Globulation 2 apps for Android and iOS (`org.globulation2.glob2`)
-and the official online service at [app.glob2online.com](https://app.glob2online.com/)
-that they, the desktop game and the browser game use. The Amazon Appstore edition for
-Fire tablets has no online play and its own
-[Fire tablet privacy policy](amazon-privacy-policy.md).
+This policy covers the public website at [glob2online.com](https://glob2online.com/),
+the Globulation 2 apps for Android and iOS (`org.globulation2.glob2`), the desktop
+and browser game, and the official online service at
+[app.glob2online.com](https://app.glob2online.com/). The Amazon Appstore edition for
+Fire tablets has no online service accounts; its specific practices are in
+[Fire tablet edition](#fire-tablet-edition). Website browsing, offline play and
+online play have different data practices, described separately below.
 
 The online service is operated by Bradley Arsenault, a sole proprietor, 349 Wheat
 Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
 questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
-Last updated: 8 October 2026.
+Last updated: 10 October 2026. Consolidated from the game and online service policy
+of 8 October 2026 and the Fire tablet policy of 4 October 2026.
 
-## In short
+## Public website browsing
+
+The public website does not use analytics, advertising trackers, or account
+cookies. Its pages and images are delivered by Firebase Hosting. Hosting
+providers may process request information, such as IP addresses and browser
+headers, to deliver and protect the service.
+
+Search runs in your browser using an index downloaded from the website. Search
+terms are not sent to an account service. The competition page downloads a
+public ratings snapshot from Google Cloud Storage without sending account
+credentials. Published ratings include public usernames, ratings and game counts.
+
+Choosing Play or Log in opens the separate online app at app.glob2online.com.
+The public website does not store your login credentials. Links to GitHub, the
+legacy wiki and other community services take you to those services, where
+their own privacy policies apply. Contact us privately using the address above;
+avoid posting private information in public repository issues.
+
+## Game and online service summary
 
 - Single-player games, the campaign, the map editor and LAN games work without an
   account and send nothing to us.
@@ -194,8 +215,37 @@ You can play without an account, play as a guest without an e-mail address, chan
 your display name in **Settings > Online** (once every 30 days), unlink a sign-in method
 on the account page (a registered account keeps at least one), and sign out on a device.
 
+## Optional purchases and AI features
+
+When offered, optional website purchases use Stripe checkout. Stripe processes
+payment information under its own privacy policy. We retain purchase references,
+payment and refund status, amounts and currencies, and credit or entitlement
+records for delivery, reconciliation and financial accounting. We do not retain
+card details. These financial records remain after account deletion, as described
+in [Deleting your account](#deleting-your-account).
+
+AI-assisted features process the prompts, conversations and relevant project
+material you submit, together with generated results and validation records.
+We use this information to deliver, edit and validate your requested content.
+The request inputs needed for generation are sent to OpenAI. Do not submit
+sensitive personal information. Saved project content remains until you delete
+it or your account; financial ledger records and anonymous operational counts
+remain as described above. Deleting a conversation does not delete content you
+have separately published in a library. Account deletion does not recall files
+other players have already downloaded.
+
+These optional tools are separate from public website browsing and offline
+play. The Fire tablet edition does not include these online features.
+
 ## Service providers
 
+- **Stripe** processes optional purchases. Its [privacy policy](https://stripe.com/privacy)
+  describes how it handles checkout information.
+- **OpenAI** processes inputs for optional AI-assisted generation. Its
+  [privacy policy](https://openai.com/policies/privacy-policy/) and
+  [API data controls](https://platform.openai.com/docs/guides/your-data)
+  describe provider data handling. We do not promise that deleting a project
+  from our service deletes records a provider retains under its own policies.
 - **Google Cloud** hosts the online service, its database, uploaded files and logs, in
   the `northamerica-northeast2` region (Toronto, Canada).
 - **Sign-in providers.** If you choose to sign in with a provider, you sign in on that
@@ -210,7 +260,8 @@ on the account page (a registered account keeps at least one), and sign out on a
   [glob2online.com](https://glob2online.com/) is a separate static site hosted on
   Firebase Hosting.
 
-The service sends your data to no one else.
+Apart from the service providers described here, we do not share your data
+for advertising or sell it.
 
 ## Children
 
@@ -223,7 +274,9 @@ service are built to collect as little as possible from anyone, children include
   An account with a username and password needs no e-mail address either. Signing
   in with Google is optional.
 - There is no advertising, no browser tracking, no tracking across apps or sites, no
-  in-app purchases, and we never sell data or use it for marketing.
+  tracking by advertisers, and we never sell data or use it for marketing.
+  Optional purchases and AI tools on the website are described above; they are
+  separate from offline gameplay.
 - Online play does include room chat and in-game text chat with other players,
   and a registered account chooses its own display name, which is public. Parents
   may want to tell children not to use their real name as a display name or share
@@ -258,8 +311,8 @@ Administrators also see verified payment and refund amounts, currencies and
 payment mode, product credit flows, and provider usage with estimated costs when
 usage and monetary rates are available. These records contain no card details,
 credentials, private studio prompts or generated source. Financial records
-already retained for purchase reconciliation remain subject to the retention
-rules in the payment sections above. Uncertain or unavailable facts are labeled;
+retained for purchase reconciliation remain after account deletion, as
+described in [Optional purchases and AI features](#optional-purchases-and-ai-features). Uncertain or unavailable facts are labeled;
 we do not infer historical activity from last-seen timestamps.
 
 ## Your rights
@@ -281,3 +334,44 @@ each instance separately and never sends one instance's credentials to another.
 We will update this policy, and the store data declarations, before the apps or the
 online service collect anything new. The history of this policy is in the
 [Globulation 2 source repository](https://github.com/Globulation2/glob2/commits/master/docs/mobile/privacy-policy.md).
+
+## Fire tablet edition
+
+The Amazon Appstore edition (`org.globulation2.glob2`) has the following
+edition-specific practices, carried forward from its policy of 4 October 2026.
+
+### Data on your tablet
+
+The game stores settings, maps, saved games and replays on your tablet. It has no ads,
+analytics, or in-app purchases, and does not include a crash-reporting SDK. It
+does not request access to contacts, location, camera, or microphone. Android
+backup is disabled. You can delete local game data through the tablet's app
+storage controls or by uninstalling the game.
+
+### Multiplayer connections
+
+The Fire tablet edition can discover games on a local network and also lets you
+enter a host address manually. A manually entered address can lead outside your
+local network. The game requests Android's Internet permission for these
+connections. When you choose to host or join a game, the host and participants
+exchange network addresses, player names chosen in the game, gameplay state,
+and any in-game chat messages. Other participants can retain data from a shared
+match on their own devices. The game does not collect this information for the
+Globulation 2 project.
+
+### No online play
+
+This edition leaves out online play: it has no online accounts or sign-in, does
+not connect to the Globulation 2 online service at app.glob2online.com, and does
+not open invite links. The game does not send gameplay
+or diagnostic data to a project-operated server. The online service, and the
+editions that use it, are described in the
+[online play section](#online-play).
+
+
+### Retention and changes
+
+The project does not retain data from this edition on a project-operated server.
+Local game data remains until you delete it. We will revise this policy, and the
+Appstore privacy questionnaire, before the Fire tablet edition's data practices
+change.

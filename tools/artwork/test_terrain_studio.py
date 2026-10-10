@@ -32,6 +32,29 @@ class TerrainStudioArtwork(unittest.TestCase):
             self.assertEqual(bbox[3], 62)
             self.assertLess(abs((bbox[0]+bbox[2])/2-32), 1)
 
+    def test_nonuniform_rows_preserve_all_six_objects_and_common_scale(self):
+        source = Image.new('RGBA', (256, 384))
+        draw = ImageDraw.Draw(source)
+        for y, (top, bottom) in enumerate([(30, 90), (120, 190), (225, 355)]):
+            for x in range(2):
+                draw.rectangle((x*128+40, top, x*128+88, bottom), fill=(80, 120, 64, 255))
+        tiles = frames(source, 'resource')
+        boxes = [tile.getchannel('A').getbbox() for tile in tiles]
+        self.assertEqual(len(boxes), 6)
+        self.assertTrue(all(box[3] == 62 for box in boxes))
+        self.assertEqual(len(set(box[2]-box[0] for box in boxes)), 1)
+        self.assertGreater(boxes[4][3]-boxes[4][1], boxes[2][3]-boxes[2][1])
+        self.assertEqual(process(source, 'resource').tobytes(), process(source, 'resource').tobytes())
+
+    def test_wrong_three_column_grid_is_not_reinterpreted_as_two(self):
+        source = Image.new('RGBA', (256, 384))
+        draw = ImageDraw.Draw(source)
+        for y in range(3):
+            for x in range(3):
+                draw.rectangle((x*85+25, y*128+35, x*85+65, y*128+95), fill=(80, 120, 64, 255))
+        with self.assertRaisesRegex(ValueError, 'edge'):
+            frames(source, 'resource')
+
     def test_rejects_opaque_or_clipped_resources(self):
         with self.assertRaisesRegex(ValueError, 'transparent'):
             frames(Image.new('RGBA', (128, 192), (10, 20, 30, 255)), 'resource')

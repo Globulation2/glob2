@@ -66,13 +66,14 @@ export async function codingStudioRoutes(
   if (config?.enabled && config.salesEnabled && !config.packs?.length)
     throw Error(`${generator ? 'Generator' : 'AI'} Studio sales require configured credit packs.`);
   const checkout =
-    config?.enabled && config.salesEnabled && config.packs?.length
+    (config?.enabled && config.salesEnabled && config.packs?.length) ||
+    (process.env[env + '_STRIPE_SECRET_KEY'] && process.env[env + '_STRIPE_WEBHOOK_SECRET'])
       ? new Checkout(
           db,
           process.env[env + '_STRIPE_SECRET_KEY'] ?? '',
           process.env[env + '_STRIPE_WEBHOOK_SECRET'] ?? '',
           app.services.config.publicOrigin,
-          config.packs,
+          config?.packs ?? [],
           domain,
         )
       : undefined;
@@ -95,7 +96,7 @@ export async function codingStudioRoutes(
   });
   const account = async (r: FastifyRequest, generation = false) => {
     const { account } = await requireAccount(app.identity, r);
-    if ((generator || generation) && !config?.enabled)
+    if (generation && !config?.enabled)
       throw apiError('not_found', '{p0} Studio is not enabled on this instance.', undefined, {
         p0: String(generator ? 'Generator' : 'AI'),
       });
@@ -122,14 +123,15 @@ export async function codingStudioRoutes(
       rate: config?.rate ?? null,
       maxRequestCredits: config?.maxRequestCredits ?? 0,
       ...(await credits.balance(a.id)),
-      packs: checkout
-        ? (config?.packs ?? []).map(({ id, credits, amount, currency }) => ({
-            id,
-            credits,
-            amount,
-            currency,
-          }))
-        : [],
+      packs:
+        config?.enabled && config.salesEnabled && checkout
+          ? (config?.packs ?? []).map(({ id, credits, amount, currency }) => ({
+              id,
+              credits,
+              amount,
+              currency,
+            }))
+          : [],
     };
   });
   app.get(ROOT + '/projects', async (r) => {
@@ -455,7 +457,7 @@ export async function codingStudioRoutes(
   app.post(ROOT + '/checkout', async (r) =>
     guard(async () => {
       const a = await account(r);
-      if (a.kind !== 'registered' || !checkout)
+      if (a.kind !== 'registered' || !config?.enabled || !config.salesEnabled || !checkout)
         throw apiError('forbidden', 'Studio credit purchases are not available.');
       const input = body(Strict({ id: Uuid, pack: Type.String({ maxLength: 64 }) }), r.body);
       return checkout.begin(a.id, input.pack, input.id);

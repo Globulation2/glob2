@@ -37,6 +37,10 @@ def establish_options(env):
     opts.Add("linker", "Development linker: default, auto, lld", "default")
     opts.Add("dependency_jobs", "Dependency build parallelism (defaults to SCons -j)", GetOption("num_jobs"))
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add("client_profile", "Client product profile: full or free", "free" if ARGUMENTS.get("release") == "1" else "full")
+    opts.Add("distribution", "Distribution channel", "direct")
+    for feature in ("commander", "authoring_links", "community_ai", "community_generators"):
+        opts.Add("feature_" + feature, "Override client feature (0 or 1)", "auto")
     opts.Add("size_optimization", "Opt-in GCC release experiment: none, gc, lto, size", "none")
     opts.Add(BoolVariable("lean_images", "Use private PNG/JPEG/WebP SDL_image for native release packages", 0))
     opts.Add("optimized_assets", "Offer lossy WebP artwork: auto (release), 0 (lossless), or 1", "auto")
@@ -101,6 +105,9 @@ def configure(env, server_only, relay=False):
     configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
     if env['china']:
         configfile.add("GLOB2_CHINA_RELEASE", "Mainland China local-play client", "1")
+
+    from client_features import header
+    configfile.f.write(header(build_identity(ARGUMENTS)))
 
     missing=[]
 

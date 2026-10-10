@@ -53,7 +53,9 @@ the installed assets and check their fit to the baked clips. See
 
 Asset pipeline checks live in `AssetLoader` and `SpriteLoad`, including independent
 continuation cancellation, cache metadata cleanup and variable atlas admission.
-`SpriteSheets` also checks renderer readiness and atomic HD reload publication. Build the
+`SpriteSheets` also checks renderer readiness, atomic HD reload publication and
+retention of unchanged artwork requests. `HighResolutionIntegration` checks that
+shared artwork survives screen creation and teardown. Build the
 `asset-loading-benchmark` target to compare worker configurations against the same
 runtime assets. See [asset loading](../docs/development/package-size.md#release-asset-and-bundle-sizes)
 for worker controls, scratch accounting and measurement limits.

@@ -152,7 +152,7 @@
 }
 .glob-icon {
   display: block;
-  background: url('../art/worker-east.webp') -136px 0 / 544px 34px no-repeat;
+  background: url('@glob2/design-system/assets/worker-east.webp') -136px 0 / 544px 34px no-repeat;
 }
 
 /* ----------------------------------------------------- the living colony */

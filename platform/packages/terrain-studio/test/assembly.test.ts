@@ -1,6 +1,13 @@
 import { expect, it } from 'vitest';
 import { newPackage, namespace } from '@glob2/protocol';
-import { assemble, validatePlan, type TerrainPlan, type EntryArtwork } from '../src/assembly.ts';
+import {
+  assemble,
+  validatePlan,
+  plannerPrompt,
+  preparePlan,
+  type TerrainPlan,
+  type EntryArtwork,
+} from '../src/assembly.ts';
 const base = () => newPackage('Test author');
 const entry = {
   kind: 'terrain' as const,
@@ -70,6 +77,74 @@ it('rejects discussion edits and foreign namespaces', () => {
   expect(() =>
     validatePlan({ ...plan, entries: [{ ...entry, key: 'other:set' }] }, base()),
   ).toThrow('slug');
+});
+it('identifies unsupported appearance fields without accepting provider sprite mappings', () => {
+  const b = base();
+  for (const field of ['color', 'sprite', 'variants']) {
+    expect(() =>
+      validatePlan(
+        {
+          ...plan,
+          entries: [{ ...entry, presentationJson: JSON.stringify({ [field]: true }) }],
+        },
+        b,
+      ),
+    ).toThrow(`Unsupported terrain appearance overrides: ${field}`);
+  }
+});
+it('gives the planner the exact appearance keys and value forms accepted by the engine', () => {
+  const prompt = plannerPrompt(base(), [], 'Arctic tundra');
+  expect(prompt).toContain('ONLY profile,edges,preview,minimap,seam');
+  expect(prompt).toContain('RGB arrays of three integers 0-255');
+  expect(prompt).toContain('seam is an OBJECT, never a boolean');
+  expect(prompt).toContain('ONLY name,minimap,animationFrames,animationStride,animationTicks');
+});
+it('repairs the observed color and boolean-seam planner output before artwork', async () => {
+  const b = base();
+  const invalid = {
+    ...plan,
+    entries: [{ ...entry, presentationJson: '{"color":"#e8edf0","seam":true}' }],
+  };
+  const errors: string[] = [];
+  const result = await preparePlan(JSON.stringify(invalid), b, async (_proposal, error) => {
+    errors.push(error);
+    return JSON.stringify(plan);
+  });
+  expect(result).toEqual(plan);
+  expect(errors).toHaveLength(1);
+  expect(errors[0]).toContain('Unsupported terrain appearance overrides: color');
+  expect(() =>
+    validatePlan({ ...plan, entries: [{ ...entry, presentationJson: '{"seam":true}' }] }, b),
+  ).toThrow('terrain appearance');
+});
+it('bounds planner repairs and prevents them changing authorization or entry scope', async () => {
+  const b = base();
+  const invalid = { ...plan, entries: [{ ...entry, presentationJson: '{"color":"white"}' }] };
+  let calls = 0;
+  await expect(
+    preparePlan(JSON.stringify(invalid), b, async () => {
+      calls++;
+      return JSON.stringify(invalid);
+    }),
+  ).rejects.toThrow('Unsupported terrain appearance');
+  expect(calls).toBe(2);
+  for (const changed of [
+    { ...plan, action: 'discuss', entries: [] },
+    { ...plan, entries: [{ ...entry, key: 'extra' }] },
+    { ...plan, entries: [{ ...entry, operation: 'remove' }] },
+  ]) {
+    await expect(
+      preparePlan(JSON.stringify(invalid), b, async () => JSON.stringify(changed)),
+    ).rejects.toThrow('Repair changed the requested scope');
+  }
+  let repaired = false;
+  expect(
+    await preparePlan(JSON.stringify(plan), b, async () => {
+      repaired = true;
+      return JSON.stringify(plan);
+    }),
+  ).toEqual(plan);
+  expect(repaired).toBe(false);
 });
 it('retains source credits and stock-stage resource frame mappings', () => {
   const b = base(),

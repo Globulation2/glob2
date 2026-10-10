@@ -42,8 +42,19 @@ def download(artifact, downloads, candidates=()):
                 with candidate.open("rb") as source:
                     shutil.copyfileobj(source, output)
             else:
-                with urllib.request.urlopen(artifact["url"], timeout=60) as source:
-                    shutil.copyfileobj(source, output)
+                for attempt in range(3):
+                    output.seek(0)
+                    output.truncate()
+                    try:
+                        with urllib.request.urlopen(artifact["url"], timeout=60) as source:
+                            shutil.copyfileobj(source, output)
+                        output.flush()
+                        if digest(temporary, algorithm) != expected:
+                            raise ValueError("Tool archive checksum mismatch: " + artifact["url"])
+                        break
+                    except (OSError, ValueError):
+                        if attempt == 2:
+                            raise
             output.close()
             if digest(temporary, algorithm) != expected:
                 raise ValueError("Tool archive checksum mismatch: " + artifact["url"])

@@ -108,6 +108,31 @@ is retained as an artifact for one day to cross the runner boundary; the signed
 AAB is never uploaded as an artifact. The workflow does not cache build outputs.
 GitHub Actions secret redaction is not a substitute for keeping secrets out of
 logs and artifacts.
+
+## Production channel and credential preflight
+
+The same workflow accepts an explicit `track: production`. Configure a separate
+`google-play-production` mirror environment with the same owner approval,
+master-only deployment policy and signing-secret names. Reuse the backed-up Play
+upload signing identity. Use a separate keyless service account and workload
+identity **pool** for production, restricted to that environment and the direct
+owner-dispatched Play workflow. Sharing a pool with a repository-only principal
+binding can allow an internal-channel identity to impersonate the production
+account, even when its provider has a different environment condition.
+
+Grant the production service account app-level read access and **Release to
+production, exclude devices, and use Play App Signing** for Globulation 2 only.
+Google includes related policy/deep-link permissions with that role. Review this
+grant deliberately; configuring credentials does not qualify a release or grant
+store approval.
+
+Before compiling, the protected credentials job authenticates to Google Play,
+creates a temporary edit, reads the selected app track, and deletes that edit.
+It does not upload, update a track or commit an edit. A denied API request fails
+before expensive builds. Dispatch with `preflight_only: true` to verify this
+path independently; build and release jobs then skip. Successful preflight proves
+app/track API access, while production rollout permissions, listing acceptance
+and installed-device qualification remain separate checks.
 The Play API client and its transitive Python packages are locked to reviewed
 wheel hashes in `mobile/play-api-requirements.txt`; update the lock deliberately
 when upgrading them.

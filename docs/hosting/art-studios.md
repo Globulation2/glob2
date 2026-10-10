@@ -39,6 +39,10 @@ when its exact validated package is saved privately. Provider-call limits pause
 work until capacity becomes available; they include anonymous daily totals so
 account deletion cannot reset service capacity.
 
+Authoring workers share the API's blob volume. Compose explicitly sets
+`BLOB_DIR=/var/lib/glob2/blobs` for these services; engine-derived worker images
+otherwise fall back to a relative directory on their read-only root filesystem.
+
 Requests and provider stages are durable, with leases and heartbeats. Completed
 stages are reused after restarts. Ambiguous provider outcomes retain the reservation
 and require operator reconciliation; they never dispatch a duplicate automatically.
@@ -68,6 +72,9 @@ Compose profile and `ai-building-worker` Docker target; its engine and stock
 building definitions must come from the same build. The worker requires
 `ENGINE_BINARY`, `GLOB2_SOURCE_DIR` (including building-catalog documentation and
 stock definitions) and `BUILDING_OPENAI_API_KEY`.
+The API and authoring worker must use the same blob store. Compose sets
+`BLOB_STORE=fs` and `BLOB_DIR=/var/lib/glob2/blobs` to match their shared volume;
+local workers must also point `BLOB_DIR` at the API's blob directory.
 Artwork generation also needs stock camera sprites: the Docker target supplies
 them under `studio/building-references/`, while source checkouts use `data/gfx/`.
 A properties-only edit does not require these image references.

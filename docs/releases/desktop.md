@@ -79,3 +79,13 @@ the mirror's `master` like every release workflow; publication requires the exac
 source checksum on a build-only run is for testing, not a release announcement.
 
 [Release index](README.md) · [Documentation index](../README.md).
+
+## Steam Windows depot source
+
+Dispatch `steam-windows-package.yml` or `steam-windows-upload.yml` with a
+required immutable public `tag`. Reusable packaging callers also pass `tag`.
+The workflow resolves that tag in the public repository and pins both the
+build and smoke fixture checkouts to its commit. Depot artifacts use the
+resolved source SHA, include a checksummed `source-commit.txt`, and the upload
+job verifies that identity before SteamPipe runs. The upload creates an
+unpublished build; it does not promote a live Steam branch.

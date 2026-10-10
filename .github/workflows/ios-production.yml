@@ -17,6 +17,11 @@ on:
         type: choice
         options: [prepare, submit, publish]
         default: prepare
+      draft_version_id:
+        description: Optional empty editable Apple draft ID to reuse during prepare only
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -114,9 +119,11 @@ jobs:
           SOURCE_COMMIT: ${{ needs.context.outputs.commit }}
           UPLOAD_RUN_ID: ${{ inputs.upload_run_id }}
           STAGE: ${{ inputs.stage }}
+          DRAFT_VERSION_ID: ${{ inputs.draft_version_id }}
         run: |
           set -euo pipefail
           test -n "$IOS_ASC_KEY_ID" && test -n "$IOS_ASC_ISSUER_ID" && test -n "$IOS_ASC_KEY_P8_BASE64"
           "$RUNNER_TEMP/ios-production-tools/bin/python" mobile/ios_store_release.py "$STAGE" \
             --provenance artifacts/ios-production/ios-upload-provenance.json \
-            --tag "$TAG" --source-commit "$SOURCE_COMMIT" --run-id "$UPLOAD_RUN_ID"
+            --tag "$TAG" --source-commit "$SOURCE_COMMIT" --run-id "$UPLOAD_RUN_ID" \
+            --draft-version-id "$DRAFT_VERSION_ID"

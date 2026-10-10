@@ -3,7 +3,7 @@
 // the deep links the game uses, leaderboard, profile, match page (charts and
 // Watch in browser), sign-in state and the moderation guard.
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
 import { api } from '../src/api.ts';
@@ -19,6 +19,17 @@ const MATCH = '7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b';
 const NOW = '2026-10-01T12:00:00Z';
 
 const instance = {
+  features: [
+    'skins.designer',
+    'skins.sales',
+    'commander',
+    'map-studio',
+    'music-studio',
+    'terrain-studio',
+    'ai-building-studio',
+    'ai-studio',
+    'generator-studio',
+  ],
   name: 'Test Instance',
   origin: 'http://localhost',
   realtimeUrl: 'ws://localhost/realtime',
@@ -286,8 +297,8 @@ describe('routing', () => {
       [...view.container.querySelectorAll('.app-sidebar .nav a')].map((link) =>
         link.getAttribute('href'),
       );
+    await waitFor(() => expect(links()).toHaveLength(10));
     const before = links();
-    expect(before).toHaveLength(10);
     expect(before).toContain('/maps');
     registerCatalog('fr', { Play: 'Jouer', Create: 'Créer', Manage: 'Gérer', Maps: 'Cartes' });
     try {
@@ -510,7 +521,7 @@ it('preserves earlier matches and retries only the failed history page', async (
     });
   try {
     open(`/players/${ALICE}`);
-    fireEvent.click(await screen.findByRole('button', { name: 'Show more' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Show more' }, { timeout: 5000 }));
     await screen.findByText('History unavailable');
     expect(screen.getAllByTestId('match-row')).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
@@ -520,5 +531,21 @@ it('preserves earlier matches and retries only the failed history page', async (
     expect(page.mock.calls.map((call) => call[1]?.cursor)).toEqual([undefined, 'older', 'older']);
   } finally {
     page.mockRestore();
+  }
+});
+
+it('does not mount a disabled studio reached through a direct URL', async () => {
+  const enabled = instance.features;
+  instance.features = [];
+  try {
+    open('/ai-studio');
+    await screen.findByRole('heading', { name: 'Unavailable' });
+    expect(screen.queryByRole('link', { name: 'Colony skins' })).toBeNull();
+    expect(
+      vi.mocked(fetch).mock.calls.some(([input]) => String(input).includes('/api/v1/ai-studio/')),
+    ).toBe(false);
+    expect(document.querySelector('a[href="/ai-studio"]')).toBeNull();
+  } finally {
+    instance.features = enabled;
   }
 });

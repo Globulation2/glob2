@@ -163,6 +163,7 @@ export const InstanceConfig = Strict({
       renameIntervalDays: Type.Optional(Type.Integer({ minimum: 0, maximum: 3650 })),
     }),
   ),
+  skinDesigner: Type.Optional(Strict({ enabled: Type.Boolean(), salesEnabled: Type.Boolean() })),
   web: Type.Optional(
     Strict({
       /**

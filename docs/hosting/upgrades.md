@@ -21,7 +21,9 @@ one command, in an order that never leaves a half-upgraded instance:
 
 1. **Backup.** A `pg_dump` and an archive of `GLOB2_WEB_CLIENT_DIR` go to
    `GLOB2_BACKUP_DIR/<UTC time>/` with the running revision; the newest
-   `GLOB2_BACKUP_KEEP` are kept.
+   `GLOB2_BACKUP_KEEP` are kept. Retention only prunes timestamped deployment
+   directories; manual and scheduled backup folders are preserved. The current
+   deployment's backup is always retained, including after a clock adjustment.
 2. **Build**, while the old stack keeps serving: the WebAssembly client (with
    `deploy/build-web-client.sh`; Emscripten runs in a container, so the host needs
    only Docker) into the build tree, and every image with the checkout's sim
@@ -35,7 +37,9 @@ one command, in an order that never leaves a half-upgraded instance:
 4. **Web client last:** only once the new stack is healthy is the new client
    installed at `/play/`, so browsers never load a client newer than the platform
    and engine agents behind it. The `index.html`, `studio.html` and `generator-studio.html` entries
-   are installed with their available precompressed copies.
+   are installed with their available precompressed copies. Localized launchers
+   install `i18n.js` and every supported translation catalog before the HTML;
+   incomplete localization inputs are rejected before changing the served client.
 
 If the new stack does not become healthy, the script starts the `:previous`
 images of the previous revision again, recreating containers to restore network

@@ -10,6 +10,12 @@ on:
         required: true
         type: string
 
+      upload:
+        description: Upload the tested candidate to Epic Dev
+        required: true
+        type: boolean
+        default: false
+
 permissions:
   contents: read
 
@@ -30,6 +36,7 @@ jobs:
       version: ${{ steps.check.outputs.version }}
       short_sha: ${{ steps.check.outputs.short_sha }}
       source_sha: ${{ steps.check.outputs.source_sha }}
+      cli_version: ${{ steps.check.outputs.cli_version }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -48,6 +55,12 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
           echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          if test -f src/app/cli/CommandLine.h; then
+            grep -Eq 'Version = 2;' src/app/cli/CommandLine.h
+            echo 'cli_version=2' >> "$GITHUB_OUTPUT"
+          else
+            echo 'cli_version=1' >> "$GITHUB_OUTPUT"
+          fi
 
   package:
     needs: preflight
@@ -92,11 +105,16 @@ jobs:
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           # package_windows.py also finds the SDL3 DLLs through this prefix.
           export GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix
-          scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          scons -j$(nproc) release=1 client_profile=free distribution=epic --build=build/mingw/client/release/lean-images mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
             --stage-dir artifacts/epic/windows \
             --manifest artifacts/epic/SHA256SUMS.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: client-build-epic-windows
+          path: build/mingw/client/release/lean-images/identity.json
+          if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: epic-windows-${{ needs.preflight.outputs.source_sha }}
@@ -122,16 +140,25 @@ jobs:
           path: ${{ runner.temp }}/epic-candidate
       - name: Run staged game without build tools
         shell: pwsh
+        env:
+          CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}
         run: |
           $ErrorActionPreference = 'Stop'
           $root = Join-Path $env:RUNNER_TEMP 'epic-candidate/windows'
           $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'glob2-profile'
           $env:GLOB2_ASSET_DIR = $root
           Set-Location $root
-          & .\glob2.exe game repeat "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" --ticks 10 --runs 1
+          $save = "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz"
+          switch ($env:CLI_VERSION) {
+            '1' { $repeatArgs = @('--nox', $save, '10', '1') }
+            '2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }
+            default { throw 'Unsupported source CLI version' }
+          }
+          & .\glob2.exe @repeatArgs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   upload-dev:
+    if: ${{ inputs.upload }}
     needs: [preflight, smoke-test]
     runs-on: windows-2022
     environment: epic-dev

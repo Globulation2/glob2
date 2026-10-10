@@ -314,6 +314,59 @@ class BrowserCopyTests(unittest.TestCase):
 
 
 class InstallWebClientTests(unittest.TestCase):
+    def localized_release(self, base):
+        release = base / 'release'
+        (release / 'assets').mkdir(parents=True)
+        (release / 'threaded').mkdir()
+        (release / 'locales').mkdir()
+        for name in ('studio.html', 'index.js', 'index.wasm', 'loader.js',
+                     'threaded/index.js', 'threaded/index.wasm', 'i18n.js'):
+            (release / name).write_text('new ' + name)
+        (release / 'index.html').write_text('<script src="i18n.js"></script>')
+        for catalog in (ROOT / 'platform/packages/i18n/locales').glob('*.json'):
+            (release / 'locales' / catalog.name).write_bytes(catalog.read_bytes())
+        return release
+
+    def test_localized_install_and_upgrade_replaces_compressed_catalogs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            release = self.localized_release(base)
+            served = base / 'served'
+            (release / 'i18n.js.gz').write_bytes(b'compressed runtime')
+            (release / 'locales/fr.json.br').write_bytes(b'compressed catalog')
+            command = [sys.executable, str(ROOT / 'deploy/install-web-client.py'),
+                       str(release), str(served)]
+            subprocess.run(command, check=True, capture_output=True)
+            self.assertEqual((served / 'i18n.js.gz').read_bytes(), b'compressed runtime')
+            self.assertEqual((served / 'locales/fr.json.br').read_bytes(), b'compressed catalog')
+            for source in (release / 'locales').glob('*.json'):
+                self.assertEqual((served / 'locales' / source.name).read_bytes(), source.read_bytes())
+            (release / 'i18n.js.gz').unlink()
+            (release / 'locales/fr.json.br').unlink()
+            (release / 'locales/fr.json').write_text('{"changed":"translation"}')
+            subprocess.run(command, check=True, capture_output=True)
+            self.assertFalse((served / 'i18n.js.gz').exists())
+            self.assertFalse((served / 'locales/fr.json.br').exists())
+            self.assertEqual((served / 'locales/fr.json').read_text(), '{"changed":"translation"}')
+
+    def test_incomplete_localization_leaves_served_release_untouched(self):
+        for missing in ('i18n.js', 'locales/fr.json'):
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory() as directory:
+                base = Path(directory)
+                release = self.localized_release(base)
+                (release / missing).unlink()
+                served = base / 'served'
+                served.mkdir()
+                (served / 'index.html').write_text('previous launcher')
+                (served / 'index.js').write_text('previous runtime')
+                result = subprocess.run(
+                    [sys.executable, str(ROOT / 'deploy/install-web-client.py'), str(release), str(served)],
+                    capture_output=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual((served / 'index.html').read_text(), 'previous launcher')
+                self.assertEqual((served / 'index.js').read_text(), 'previous runtime')
+                self.assertEqual(sorted(p.name for p in served.iterdir()), ['index.html', 'index.js'])
+
     def test_installs_entry_files_last_and_keeps_one_previous_release(self):
         script = ROOT / 'deploy/install-web-client.py'
         with tempfile.TemporaryDirectory() as directory:

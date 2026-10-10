@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "SettingsScreen.h"
 #include "ScriptLibrary.h"
 #include "OnlineServices.h"
@@ -42,6 +43,7 @@ struct SettingsScreen::CustomAIState
 };
 void SettingsScreen::selectCustomAIFile(bool linked, const std::string &replace)
 {
+	if constexpr (!ClientFeatures::CommunityAI) return;
 	if (!customAIs || customAIs->picker || customAIs->persistence)
 		return;
 	customAIs->replace = replace;
@@ -106,6 +108,7 @@ void SettingsScreen::pollCustomAIs()
 }
 void SettingsScreen::buildCustomAIs()
 {
+	if constexpr (!ClientFeatures::CommunityAI) return;
 	try
 	{
 		if (!customAIs)
@@ -249,6 +252,7 @@ void SettingsScreen::closeCustomAILibrary()
 }
 void SettingsScreen::openCustomAILibrary()
 {
+	if constexpr (!ClientFeatures::CommunityAI) return;
 	auto &s = *customAIs;
 	auto &services = Online::services();
 	if (services.client.origin().empty())
@@ -264,6 +268,7 @@ void SettingsScreen::openCustomAILibrary()
 }
 void SettingsScreen::fetchCustomAIs(bool more)
 {
+	if constexpr (!ClientFeatures::CommunityAI) return;
 	if (!customAIs || !customAIs->calls)
 		return;
 	auto &s = *customAIs;
@@ -433,6 +438,7 @@ void SettingsScreen::socialOnlineAI(bool favourite)
 }
 void SettingsScreen::installOnlineAI()
 {
+	if constexpr (!ClientFeatures::CommunityAI) return;
 	auto &s = *customAIs;
 	if (customAIBusy() || !s.detail.is_object())
 		return;

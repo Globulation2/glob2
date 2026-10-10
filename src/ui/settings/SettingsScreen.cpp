@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
@@ -199,13 +200,13 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 	result.push_back(Category::Player);
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 	result.push_back(Category::Online);
-	result.push_back(Category::HiveMind);
+	if constexpr (ClientFeatures::Commander) result.push_back(Category::HiveMind);
 #endif
 	if (GAGCore::Recording::supported())
 		result.push_back(Category::Recording);
 	result.push_back(Category::Experiments);
-	result.push_back(Category::CustomAIs);
-	result.push_back(Category::CustomGenerators);
+	if constexpr (ClientFeatures::CommunityAI) result.push_back(Category::CustomAIs);
+	if constexpr (ClientFeatures::CommunityGenerators) result.push_back(Category::CustomGenerators);
 	return result;
 }
 

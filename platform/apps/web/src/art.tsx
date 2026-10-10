@@ -1,27 +1,28 @@
+import { Wordmark as SharedWordmark } from '@glob2/design-system/react';
 import { t } from './i18n.tsx';
 import { useLocale } from './i18n.tsx';
 // The game's own artwork (data/gfx, data/highres), compressed by
 // art/build_art.py. Vite fingerprints these files, so they cache forever.
-import algae from './art/algae.webp';
-import clearingFlag from './art/clearing-flag.webp';
-import colony1600 from './art/colony-1600.webp';
-import colony960 from './art/colony-960.webp';
-import colonyVideo from './art/colony-loop.mp4';
-import explorationFlag from './art/exploration-flag.webp';
-import fruit from './art/fruit.webp';
-import globIcon from './art/glob-64.png';
-import hospital from './art/hospital.webp';
-import inn from './art/inn.webp';
-import papyrus from './art/papyrus.webp';
-import pool from './art/pool.webp';
-import racetrack from './art/racetrack.webp';
-import school from './art/school.webp';
-import stone from './art/stone.webp';
-import swarm from './art/swarm.webp';
-import warFlag from './art/war-flag.webp';
-import warrior from './art/warrior.webp';
-import wood from './art/wood.webp';
-import worker from './art/worker.webp';
+import algae from '@glob2/design-system/assets/algae.webp';
+import clearingFlag from '@glob2/design-system/assets/clearing-flag.webp';
+import colony1600 from '@glob2/design-system/assets/colony-1600.webp';
+import colony960 from '@glob2/design-system/assets/colony-960.webp';
+import colonyVideo from '@glob2/design-system/assets/colony-loop.mp4';
+import explorationFlag from '@glob2/design-system/assets/exploration-flag.webp';
+import fruit from '@glob2/design-system/assets/fruit.webp';
+import globIcon from '@glob2/design-system/assets/glob-64.png';
+import hospital from '@glob2/design-system/assets/hospital.webp';
+import inn from '@glob2/design-system/assets/inn.webp';
+import papyrus from '@glob2/design-system/assets/papyrus.webp';
+import pool from '@glob2/design-system/assets/pool.webp';
+import racetrack from '@glob2/design-system/assets/racetrack.webp';
+import school from '@glob2/design-system/assets/school.webp';
+import stone from '@glob2/design-system/assets/stone.webp';
+import swarm from '@glob2/design-system/assets/swarm.webp';
+import warFlag from '@glob2/design-system/assets/war-flag.webp';
+import warrior from '@glob2/design-system/assets/warrior.webp';
+import wood from '@glob2/design-system/assets/wood.webp';
+import worker from '@glob2/design-system/assets/worker.webp';
 
 export const ART = {
   algae,
@@ -82,9 +83,5 @@ export function Wordmark({
   className?: string;
 }) {
   useLocale();
-  return label ? (
-    <span className={`wordmark ${className}`} role="img" aria-label={label} />
-  ) : (
-    <span className={`wordmark ${className}`} aria-hidden="true" />
-  );
+  return <SharedWordmark label={label} className={className} />;
 }

@@ -7,6 +7,12 @@
       "group": "Menus & campaigns"
     },
     {
+      "id": "discord-community",
+      "title": "Discord community",
+      "description": "Community invitation with Join and Copy link actions.",
+      "group": "Menus & campaigns"
+    },
+    {
       "id": "campaign-menu",
       "title": "Campaign menu",
       "description": "Start a campaign or continue a campaign save.",

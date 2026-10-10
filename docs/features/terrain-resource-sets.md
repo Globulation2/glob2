@@ -123,6 +123,9 @@ four texture variants; generated resources get three stock stages and two varian
 per stage. Requested animation uses a gentle glow pulse, not articulated movement.
 The default style follows the game's painterly artwork; explicit alternate styles
 are supported subject to readability and technical asset limits.
+Invalid design overrides receive up to two automatic corrections before artwork
+generation. Corrections retain the original action and entry scope; they cannot
+turn a discussion into a build or add unrelated entries.
 
 The scene gallery uses the game compositor for isolated cells, narrow paths,
 mixed boundaries, raised decor, resource stock stages, and selected animation
@@ -144,3 +147,14 @@ the current draft content. Candidates can also be downloaded. Complete normal se
 publication to share a release or import the downloaded package into the map editor.
 
 Related: [features and content](README.md).
+
+Provider HTTP rejections stop the request and return its credit; they do not run
+design repairs. The bounded provider reason and HTTP status explain configuration
+errors such as unsupported transparent backgrounds. Configure an image model
+that accepts transparent PNG output for resources and raised decorations, as well
+as opaque terrain output. Verify both modes against the deployed provider account.
+
+Malformed source images receive at most two journalled image corrections for the
+affected entry. Those corrections keep the plan and gameplay definitions intact.
+Known conversion errors show a concise explanation; subprocess paths and Python
+tracebacks stay out of the creator conversation.

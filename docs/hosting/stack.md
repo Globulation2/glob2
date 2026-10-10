@@ -85,3 +85,22 @@ own UID 70 under the same restrictions. Health checks: `platform-api` `/readyz`
 (ticket keys loaded, not draining), Caddy `/livez`, Postgres `pg_isready`.
 
 [Hosting index](README.md) · [Documentation index](../README.md).
+
+## Web design-system revision
+
+`deploy/update-host.sh` resolves `Globulation2/glob2-design-system` main once before
+building the Node images, and passes `GLOB2_DESIGN_SYSTEM_SHA` to every relevant
+stage. An environment or host configuration override must be a full published SHA.
+Resolution failures stop the update before the running stack changes. The backup
+records the target revision in `target-design-system-revision`; rollback still restores
+the previous immutable image tags and browser package.
+
+For manual Compose/Docker builds, first export
+`GLOB2_DESIGN_SYSTEM_SHA=$(git ls-remote https://github.com/Globulation2/glob2-design-system.git refs/heads/main | cut -f1)`
+and require a nonempty full SHA. Pass it through `--build-arg GLOB2_DESIGN_SYSTEM_SHA`
+when using Docker directly. The Node dependency stage refuses an unset revision.
+The API/runtime and web-builder stages install the same SHA with lifecycle scripts
+disabled. Node-derived and Caddy images expose `org.glob2.design-system-revision`;
+the app serves `/design-system.json`. Keep these identities with verification evidence.
+Theme updates reach each product on its next build; rollback/reproduction can pin
+an older SHA without updating other dependency locks.

@@ -1,4 +1,5 @@
 """Mobile C++ artifacts; platform projects own application packaging."""
+from client_features import header as client_feature_header
 import hashlib
 import json
 import os
@@ -74,7 +75,7 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_NATIVE_WSS 1
 #define GLOB2_NO_VOICE 1
 ''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
-        + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
+        + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else '') + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
     env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/opus'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)), CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
@@ -183,7 +184,7 @@ def build_mobile(directory, identity, arguments):
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
         objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if strict_numeric_source(name) else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
-        numeric_guard(strict, [by_source[name] for name in files if guarded_numeric_source(name)])
+        numeric_guard(strict, [obj for name, obj in zip(files, objects) if guarded_numeric_source(name)])
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]

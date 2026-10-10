@@ -49,3 +49,29 @@ and [ratings and matchmaking](../multiplayer/ratings-and-matchmaking.md). Restar
 `docker compose up -d --force-recreate platform-api platform-worker`.
 
 [Hosting index](README.md) · [Documentation index](../README.md).
+
+## Disable unfinished paid features for a free launch
+
+Set `enabled: false` and `salesEnabled: false` for `hiveMind`, `mapStudio`,
+`musicStudio`, `terrainStudio`, `buildingStudio`, `aiStudio`, `generatorStudio`
+and `skinDesigner`. Keep other required fields in existing configured blocks.
+The example instance config already disables these services. An absent
+`skinDesigner` block disables its designer and sales.
+
+The API advertises enabled tools through `/api/v1/instance.features`. The web
+app hides their navigation and authoring links and refuses to mount disabled
+workspaces opened through direct URLs. Backend guards reject new studio edits,
+generation, publication through the studio, skin drafting/design changes and
+checkout, so hidden UI alone is not the enforcement boundary. Ordinary accounts,
+multiplayer, catalogs, manual community publishing and existing skin equipment
+remain available. Reads and deletion are not blocked by the new guard; existing
+route authorization still applies. Account data export remains available.
+
+Before changing a live instance, stop new sales, drain active creation/Commander
+work and reconcile pending provider requests and credit reservations. Back up
+the database and retain webhook credentials and payment reconciliation services
+for earlier purchases. Disabled sales do not erase balances, entitlements,
+projects or checkpoints. Creation worker shutdown is an operational step;
+disabling API routes does not stop already queued worker jobs. Restart the API
+with the reviewed config and smoke-test its advertised features and direct
+requests before advertising the free launch.

@@ -6,6 +6,8 @@ const {openRuntimeHost} = require('./runtime-host');
 const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);
 for (const variant of ['threaded','serial']) {
 test(`${variant} runtime executes shared compute, gradients and save lifecycle tests`,async({page},info)=>{
+  // This compiled corpus includes millions of assertions and save/load cycles.
+  test.setTimeout(300000);
   const evidence=path.resolve(__dirname,'../../artifacts/browser-determinism/worker-lifecycle');
   fs.mkdirSync(evidence,{recursive:true});
   const log=path.join(evidence,`${info.project.name}-${variant}.log`);

@@ -2,6 +2,15 @@
 
 Archive, sign and upload the iOS app for beta testing.
 
+## Archive qualification
+
+Manual dispatch defaults to `upload: false`: resolve the immutable public tag,
+build pinned dependencies and retain the unsigned iPhone archive and dSYMs. This
+mode requires no App Store Connect key or protected upload environment. It does
+not establish device gameplay or signing qualification. Set `upload: true` to
+request signing and TestFlight upload. Reusable release staging calls retain
+`upload: true` by default.
+
 ## TestFlight upload
 
 `.github/workflows/ios-testflight.yml` is kept in the public source repository,
@@ -15,7 +24,7 @@ and the registered `org.globulation2.glob2` App ID on
 team `CL2MNNYQX3`. Each run builds pinned iOS dependencies from source, compiles
 the game, archives the iPhone app, checks the bundle ID and build number, retains
 matching dSYMs, exports and validates an App Store signed IPA, and uploads a
-TestFlight build. Choose **internal** for an internal-only build, or **external**
+TestFlight build when `upload: true`. Choose **internal** for an internal-only build, or **external**
 for a build that can be submitted to external TestFlight review. Distribution
 signing occurs during export, so archiving does not require a registered test
 device. Its build

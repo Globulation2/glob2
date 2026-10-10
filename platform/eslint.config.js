@@ -9,8 +9,11 @@ export default tseslint.config(
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
+      '**/.cache/**',
       'packages/protocol/fixtures/**',
       'apps/web/public/music/decoder.js',
+      'apps/web/public/theme.js',
+      'apps/web/public/brand/**',
     ],
   },
   js.configs.recommended,

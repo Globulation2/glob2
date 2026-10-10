@@ -113,21 +113,27 @@ void AssetImage::prepareUpload(bool highResolution) {
         level = {nextWidth, nextHeight, std::vector<unsigned char>(size_t(nextWidth) * nextHeight * 4)};
         const auto &input = mips.back().pixels;
         for (int y = 0; y < nextHeight; ++y) for (int x = 0; x < nextWidth; ++x) {
-            unsigned sum[4] = {};
             const auto *top = input.data() + (size_t(y * 2) * width + x * 2) * 4;
             const auto *bottom = top + (height > 1 ? width * 4 : 0);
             const int right = width > 1 ? 4 : 0;
-            for (const auto *pixel : {top, top + right, bottom, bottom + right}) {
-                sum[3] += pixel[3]; for (int c = 0; c < 3; ++c) sum[c] += pixel[c] * pixel[3];
-            }
+            const unsigned alpha = top[3] + top[right + 3] + bottom[3] + bottom[right + 3];
+            // Most generated terrain footprints are opaque or undiscovered.
+            // Keep exactly the weighted filter's rounding without multiplying
+            // every channel by 255 or processing invisible RGB.
+            if (!alpha) continue; // The output was initialized to zero.
             auto *pixel = level.pixels.data() + (size_t(y) * nextWidth + x) * 4;
-            pixel[3] = (sum[3] + 2) / 4;
-            // Opaque footprints use a constant denominator, preserving the
-            // alpha-weighted rounding without three divisions on the render
-            // thread when a generated/animated surface prepares its mips.
+            pixel[3] = (alpha + 2) / 4;
+            if (alpha == 4u * 255) {
+                for (int c = 0; c < 3; ++c)
+                    pixel[c] = (unsigned(top[c]) + top[right + c] + bottom[c] + bottom[right + c] + 2) / 4;
+                continue;
+            }
+            unsigned sum[3] = {};
+            for (const auto *pixel : {top, top + right, bottom, bottom + right}) {
+                for (int c = 0; c < 3; ++c) sum[c] += pixel[c] * pixel[3];
+            }
             for (int c = 0; c < 3; ++c)
-                pixel[c] = sum[3] == 4u * 255 ? (sum[c] + 2u * 255) / (4u * 255)
-                    : (sum[3] ? (sum[c] + sum[3] / 2) / sum[3] : 0);
+                pixel[c] = (sum[c] + alpha / 2) / alpha;
         }
         width = nextWidth; height = nextHeight;
     }

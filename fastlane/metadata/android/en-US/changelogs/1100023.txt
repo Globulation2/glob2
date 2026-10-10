@@ -1,0 +1,1 @@
+Globulation 2 0.11.0.2 improves native packaging and release verification. Replays and multiplayer require matching simulation versions.
