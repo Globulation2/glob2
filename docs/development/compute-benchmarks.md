@@ -90,9 +90,11 @@ CPU-only. The coordinator is reported separately and its CPU belongs in process
 measurements; it is not an additional `--compute-threads` participant.
 
 Automatic offload learning is experimental and requires
-`GLOB2_GRADIENT_TUNING=1`. This control collects accepted-job metadata; production
-capture, live counterfactual probes and plan promotion are not enabled. The policy
-and yielding probe interfaces are qualified separately by development harnesses.
+`GLOB2_GRADIENT_TUNING=1`. This control enables accepted-job capture, yielding
+native counterfactual probes, exact comparison and background plan promotion.
+The release default remains disabled while the complete production path is
+qualified. `GLOB2_GRADIENT_TUNING_PROMOTION=0` keeps required work on CPU while exercising
+the real learning path for comparison; it does not skip probes or their costs.
 Unknown workload classes use CPU. Published choices are
 read without doing experiments on the simulation owner. Captured optional work
 must remain outside save/publication dependencies; qualifying online promotion
@@ -131,8 +133,10 @@ work is excluded from accepted CPU credits. Unbound captures cannot train or
 promote a plan. Unavailable/reversed timing charges the full reserved credit;
 cancellation keeps the global probe slot until background cleanup settles it.
 Initialized device/program readiness is required: admission never authorizes
-unreserved compiler startup. These interfaces do not enable live capture or
-promotion; worker ownership and complete accounting must be qualified first.
+unreserved compiler startup. The controlled live path uses these ownership and
+accounting checks. A requested probe or initialized device does not demonstrate
+successful comparison or promotion; inspect terminal probe rows and actual
+execution counters.
 
 Promotion is checked only at 8, 16, 32 and subsequent doubling sample counts.
 Separate conditional Hoeffding bounds test ten percent and ten microseconds per
