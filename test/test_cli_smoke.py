@@ -189,7 +189,7 @@ class CliSmoke(unittest.TestCase):
     def test_bash_completion_commands_enums_equals_and_paths(self):
         script = self.command("completion", "bash").stdout
         source = self.root / "completion.bash"
-        source.write_text(script)
+        source.write_text(script, encoding="utf-8", newline="\n")
 
         def complete(words):
             quoted = " ".join(__import__("shlex").quote(word) for word in words)
