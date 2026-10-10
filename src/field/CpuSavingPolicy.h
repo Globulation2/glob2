@@ -19,6 +19,8 @@ struct WorkloadKey {
     unsigned width=0, height=0, cpuBuckets=0, threads=1, batch=1;
     Family family{};
     std::uint8_t seedDensity=255, blockerDensity=255;
+    unsigned limit=65534;
+    std::uint64_t movement=0;
     bool operator==(const WorkloadKey&) const = default;
 };
 
@@ -60,7 +62,7 @@ private:
     std::atomic<unsigned> published{0};
     std::array<Credit,WindowTicks> credits;
     mutable std::mutex background;
-    std::uint64_t generation=1, nextTicket=1, opportunities=0;
+    std::uint64_t generation=1, nextTicket=1, opportunities=0, latestTick=0;
     std::optional<ProbeTicket> active;
     Metrics totals;
 
@@ -80,6 +82,14 @@ private:
         auto& slot=credits[tick%WindowTicks];
         if(slot.tick!=tick) slot={tick,0,0};
         return slot;
+    }
+    void settleCredit(const ProbeTicket& ticket,std::uint64_t actualCpuNs) {
+        // An experiment can be paused across a whole rolling window. Never
+        // recreate its expired slot and subtract a reservation from zero.
+        auto& reserved=credits[ticket.tick%WindowTicks];
+        if(reserved.tick==ticket.tick) reserved.probes-=ticket.reservedCpuNs;
+        credit(latestTick).probes+=actualCpuNs;
+        totals.probeCpuNs+=actualCpuNs;
     }
     void demote(Profile& profile) {
         if((profile.decision.load(std::memory_order_relaxed)&255)!=0) {
@@ -104,7 +114,7 @@ public:
     // Offline exact-array qualification is supplied by the experiment harness.
     // At most two qualified GPU alternatives may be retained for one class.
     bool qualify(const WorkloadKey& key, Plan plan, bool exactnessPassed) {
-        if(!exactnessPassed || unsigned(plan)==0 || unsigned(plan)>=32) return false;
+        if(!exactnessPassed || unsigned(plan)==0 || unsigned(plan)>=7) return false;
         std::lock_guard lock(background);
         const auto index=findOrCreate(key);
         if(index==MaxProfiles) return false;
@@ -117,6 +127,7 @@ public:
     void observeAccepted(const WorkloadKey& key, Plan plan, std::uint64_t hostCpuNs,
                          std::uint64_t tick, bool failed=false, bool publicationStall=false) {
         std::lock_guard lock(background);
+        latestTick=std::max(latestTick,tick);
         credit(tick).accepted+=hostCpuNs; totals.acceptedCpuNs+=hostCpuNs;
         const auto index=findOrCreate(key);
         if(index==MaxProfiles) return;
@@ -137,6 +148,7 @@ public:
                                          std::uint64_t reserveCpuNs, std::uint64_t slackNs,
                                          std::uint64_t conservativeElapsedNs, bool backlog) {
         std::lock_guard lock(background);
+        latestTick=std::max(latestTick,tick);
         if(++opportunities%ProbePeriod || active || backlog || !reserveCpuNs ||
            conservativeElapsedNs>slackNs/2) return {};
         const auto index=findOrCreate(key);
@@ -158,15 +170,16 @@ public:
                      bool exact, bool success) {
         std::lock_guard lock(background);
         if(!active || active->id!=ticket.id || ticket.generation!=generation) return false;
-        auto& c=credit(ticket.tick);
-        c.probes=c.probes-ticket.reservedCpuNs+actualProbeCpuNs;
-        totals.probeCpuNs+=actualProbeCpuNs;
+        // Tickets are opaque identifiers to callers. Accounting and indices use
+        // the trusted internal reservation, never caller-modified fields.
+        const auto reservation=*active;
+        settleCredit(reservation,actualProbeCpuNs);
         active.reset();
-        auto& profile=profiles[ticket.profile];
-        if(!success || !exact || !referenceCpuNs || !alternativeCpuNs || actualProbeCpuNs>ticket.reservedCpuNs) {
+        auto& profile=profiles[reservation.profile];
+        if(!success || !exact || !referenceCpuNs || !alternativeCpuNs || actualProbeCpuNs>reservation.reservedCpuNs) {
             demote(profile); return false;
         }
-        auto& alternative=profile.alternatives[ticket.alternative];
+        auto& alternative=profile.alternatives[reservation.alternative];
         // Paired differences retain covariance. Totals are measured for a
         // homogeneous batch; there is no invented amortization from singletons.
         const double delta=double(alternativeCpuNs)-double(referenceCpuNs);
@@ -188,9 +201,8 @@ public:
     void cancelProbe(const ProbeTicket& ticket, std::uint64_t actualCpuNs) {
         std::lock_guard lock(background);
         if(!active || active->id!=ticket.id) return;
-        auto& c=credit(ticket.tick);
-        c.probes=c.probes-ticket.reservedCpuNs+actualCpuNs;
-        totals.probeCpuNs+=actualCpuNs; ++totals.canceled; active.reset();
+        settleCredit(*active,actualCpuNs);
+        ++totals.canceled; active.reset();
     }
     // Invoke only after optional work is canceled. Published performance history
     // survives a terrain revision; immutable captured inputs use a separate gen.

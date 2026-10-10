@@ -71,6 +71,23 @@ TEST_CASE("CPU saving workload tables and qualified alternatives are bounded" * 
     CHECK(policy.lookup(workload(1024)).plan==Plan::CPU);
 }
 
+TEST_CASE("paused probes survive credit window rotation without underflow" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy; const auto key=workload();
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,100000000,1);
+    auto ticket=nextProbe(policy,key); REQUIRE(ticket);
+    policy.observeAccepted(key,Plan::CPU,200000000,257); // same ring slot
+    // A copied ticket cannot change the internal reservation or profile index.
+    ticket->profile=9999; ticket->alternative=9999; ticket->reservedCpuNs=UINT64_MAX;
+    ticket->tick=9999;
+    CHECK_FALSE(policy.finishProbe(*ticket,1000000,600000,1000000,1000000,100000000,true,true));
+    CHECK(policy.metrics().probeCpuNs==1000000);
+    ticket=nextProbe(policy,key,257); REQUIRE(ticket); // 2ms credit, 1ms spent
+    policy.cancelProbe(*ticket,1000000);
+    CHECK_FALSE(nextProbe(policy,key,257));
+}
+
 TEST_CASE("CPU saving promotion requires both per field savings and deadline slack" * doctest::test_suite("OpenCLGradient"))
 {
     CpuSavingPolicy policy; auto key=workload(); key.batch=8;
