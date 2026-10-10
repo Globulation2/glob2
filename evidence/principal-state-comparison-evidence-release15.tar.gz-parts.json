@@ -1,0 +1,82 @@
+{
+  "archive_sha256": "6d449b15e261f2070bafa747962a2bd2019722c6507b52bac34885535c45dc70",
+  "archive_bytes": 745911774,
+  "parts": [
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part00",
+      "bytes": 50331648,
+      "sha256": "2c60dd1237a9c351fc9d555bd9ae2cbd3dfbb5f4f21ab1c620d11c834e7f30fe"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part01",
+      "bytes": 50331648,
+      "sha256": "b947febf0d746d016986cdf572aca919cd383075b220cdd525499d348afe68fb"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part02",
+      "bytes": 50331648,
+      "sha256": "4ee252b89ee22bacec611af2f2ac3d26617360391ff554e3a43a276118349e0b"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part03",
+      "bytes": 50331648,
+      "sha256": "50ac15ddd4d23fbb766102b5b8dc2dd71ebfbef94134d577cb56f5930a10b12c"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part04",
+      "bytes": 50331648,
+      "sha256": "621551e9efc3eba434b151116fba835f5eb22b7d98ef1b3481c9d51ab627d949"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part05",
+      "bytes": 50331648,
+      "sha256": "d6810d4a55182440e49ac20994061f60b60f28fbd5fe99e0dd2259d3723399fb"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part06",
+      "bytes": 50331648,
+      "sha256": "e2c498e03f80a2f4479592ce61cc1722850dc0fc83f1d5fb669e303de46aea91"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part07",
+      "bytes": 50331648,
+      "sha256": "f55586303eb8cea1c5243f72a06817036827dc2315a45d800210afbaf19b0644"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part08",
+      "bytes": 50331648,
+      "sha256": "5f5ce93ee73e6087e618261ac9280be933cb9f3836b2241b81a79aea39b1c08e"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part09",
+      "bytes": 50331648,
+      "sha256": "c84b8bb3e404fcd6275e5f56794f019b5507e49b078bde56fa3eb8dd9156fb63"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part10",
+      "bytes": 50331648,
+      "sha256": "b2de470de44cc7b5d2dbe8a347d1dfe845d281849a34f53a89c2a383cd7f3aa8"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part11",
+      "bytes": 50331648,
+      "sha256": "baf158ffc5b3953028801c881bf14acfd5e3e18d2ffbdf50ab2362659563f78a"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part12",
+      "bytes": 50331648,
+      "sha256": "e7189b6e44655706a7fd9aa8a25e76fdc31d92d2e55bb603de157e9f03688d1d"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part13",
+      "bytes": 50331648,
+      "sha256": "2bb70f64710831049aeb06b45f43413d9e08c6c1b5db1d5e3a992dbc6949e1f3"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/principal-state-comparison-evidence-release15.tar.gz.part14",
+      "bytes": 41268702,
+      "sha256": "ec317e86fa18adcb9d3e88dad2d071cc215de559b660ece7b56569d9aa874ece"
+    }
+  ],
+  "restore": "Concatenate parts in index order into named archive; verify archive SHA256; extract tar."
+}
