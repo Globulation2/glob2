@@ -51,6 +51,10 @@ struct BudgetLease {
     BudgetLease(const BudgetLease&)=delete;
     BudgetLease& operator=(const BudgetLease&)=delete;
     ~BudgetLease(){budget.release(bytes);}
+    void transferTo(BudgetLease& destination) noexcept {
+        if(&budget!=&destination.budget || destination.bytes)std::terminate();
+        destination.bytes=bytes;bytes=0;
+    }
     void resize(std::size_t next) {
         if(next>bytes && !budget.reserve(next-bytes)) throw BudgetExceeded();
         if(next<bytes) budget.release(bytes-next);
@@ -613,6 +617,9 @@ struct Runtime
     std::shared_ptr<Device> shared;
     API& api;
     bool execution;
+    // Declared before payload so leases outlive all lane storage, including
+    // status strings retained by a concurrent snapshot's shared lane handle.
+    BudgetLease optionalObjectLease{hostBudget},optionalSubsetLease{probeBudget};
     std::uint64_t statusSequence = 0;
     Runtime(std::shared_ptr<Device> state = std::make_shared<Device>(), bool lane = false)
         : shared(std::move(state)), api(shared->api), execution(lane) {}
@@ -629,7 +636,6 @@ struct Runtime
     Handle tilesFirst = nullptr, tilesSecond = nullptr;
     // Optional lanes retain their own accounting even when a concurrent status
     // snapshot temporarily holds the lane after its probe owner is destroyed.
-    BudgetLease optionalObjectLease{hostBudget},optionalSubsetLease{probeBudget};
     BudgetLease valuesLease{hostBudget}, blockedLease{hostBudget};
     BudgetLease deviceLease{shared->deviceBudget};
     std::vector<std::uint16_t> values;
@@ -1345,14 +1351,16 @@ struct OpenCLProbe::Impl
     bool completionUnknown=false,untrackedCommand=false;
     static constexpr std::size_t controlBytes=256+sizeof(OpenCLBorrowedLifetime);
     static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime)+controlBytes;}
-    Impl(const BackendRequest& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue)
+    Impl(const BackendRequest& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue,
+         BudgetLease& objectAdmission,BudgetLease& laneAdmission,BudgetLease& subsetAdmission)
         :request(r),plan(p),keepAlive(std::move(owner)),clock(std::move(clockValue)),generation(r.session.currentGeneration()) {
         admission.parent=runtime().shared;
-        objectLease.resize(sizeof(OpenCLProbe)+sizeof(Impl)+controlBytes);
+        objectAdmission.transferTo(objectLease);
         lane=std::make_shared<Runtime>(runtime().shared,true);
+        laneAdmission.transferTo(lane->optionalObjectLease);
+        subsetAdmission.transferTo(lane->optionalSubsetLease);
         measured.activeEpoch=lane->shared->status.activeEpoch;
         measured.checkInterval=measured.activeEpoch ? lane->shared->status.checkInterval : 1;
-        lane->optionalObjectLease.resize(sizeof(Runtime));lane->optionalSubsetLease.resize(objectBytes());
         std::lock_guard lock(lane->shared->lanesMutex);
         lane->shared->lanes.erase(std::remove_if(lane->shared->lanes.begin(),lane->shared->lanes.end(),
             [](const auto& v){return v.expired();}),lane->shared->lanes.end());
@@ -1762,7 +1770,15 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
         if(!device.optionalLifetime.tryReserve())return {};
         struct Admission {OpenCLBorrowedLifetime& slot;bool transferred=false;
             ~Admission(){if(!transferred)slot.release();}} admission{device.optionalLifetime};
-        auto state=std::make_shared<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock);
+        // Reserve fixed objects/control storage before any shared allocation or
+        // constructor. Local guards retain admission if construction throws;
+        // successful construction transfers the leases without changing totals.
+        BudgetLease objectAdmission{hostBudget},laneAdmission{hostBudget},subsetAdmission{probeBudget};
+        objectAdmission.resize(sizeof(OpenCLProbe)+sizeof(OpenCLProbe::Impl)+OpenCLProbe::Impl::controlBytes);
+        laneAdmission.resize(sizeof(Runtime));
+        subsetAdmission.resize(OpenCLProbe::Impl::objectBytes());
+        auto state=std::make_shared<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock,
+            objectAdmission,laneAdmission,subsetAdmission);
         state->admission.owns=true;admission.transferred=true;
         auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::move(state)));
         admitted=value->state.get();timer.finish();

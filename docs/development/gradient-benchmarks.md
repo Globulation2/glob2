@@ -489,7 +489,8 @@ and live learning remain disabled, and full cold CPU cost is paid per probe.
 ### Optional probe completion quarantine
 
 Optional probe admission reserves one process-wide backend slot before state
-construction. Its shared state owns the Device/API parent, original/cost/session
+construction, including fixed object/control host and probe-subset reservations
+before `make_shared`/`new`. Its shared state owns the Device/API parent, original/cost/session
 keep-alive graph and all host/probe/device leases. Every accepted asynchronous
 command requests a trailing event on the in-order queue. Positive completion of
 the latest event proves all preceding borrowed transfers are finished. Negative
@@ -505,6 +506,12 @@ until their payload is destroyed. Cancellation and premature disposal never
 call blocking `clFinish` on the required coordinator. Ordinary shutdown cannot
 free an unproved graph because the retained state pins the slot's parent; this
 bounded cycle survives until proof or operating-system process reclamation.
+
+One stable background coordinator owns begin, advance, result/metrics access,
+destruction and reaping. These operations cannot overlap for the same probe;
+reaping mutates its trailing event without taking the lane mutex. Only atomic
+cancellation may originate elsewhere. A future broker must enforce this lifetime
+contract before attaching captures.
 
 An enqueue error preserves any returned event but latches unknown command
 acceptance. Neither that errored event nor an older event can reap the graph.

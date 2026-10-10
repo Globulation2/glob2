@@ -102,6 +102,10 @@ bool executeOpenCLDevice(std::span<const BackendRequest> requests, Plan plan);
 // It pins the backend/API library, without initializing or compiling a driver.
 std::shared_ptr<const void> retainOpenCLLifetime();
 enum class OpenCLProbeProgress { Pending, Complete, Declined, Quarantined };
+// The same stable background coordinator owns begin, advance, result/metrics,
+// destruction and quarantine reaping. They must never run concurrently for a
+// probe: positive reaping mutates/releases its trailing event without acquiring
+// the lane mutex. Only atomic cancel may be requested from another thread.
 // Background/coordinator only: poll an existing trailing event without waiting.
 // False leaves ambiguous state, all payload leases and admission retained.
 bool reapOpenCLProbeQuarantine() noexcept;
