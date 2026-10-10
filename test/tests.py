@@ -479,6 +479,7 @@ UNIT_PRODUCTION_SOURCES = [
 # Replacement definitions for production symbols the unit binary does not link.
 UNIT_STUBS = [
     'unit/stubs/MapSectorStubs.cpp',
+    'unit/stubs/SnapshotGradientStubs.cpp',
     'unit/stubs/MapHeaderStubs.cpp',
     'unit/stubs/OrderStubs.cpp',
     'unit/stubs/GameGUIStubs.cpp',
