@@ -43,6 +43,14 @@ def analyze(result, diagnostics):
         raise ValueError('diagnostic tick coverage differs from measured window')
     tails = sorted(ticks, key=lambda t: t['wall_ns'], reverse=True)[:max(1, (len(ticks)+99)//100)]
     totals = {k: sum(t[k] for t in tails) for k in ('wall_ns', 'publication_wait_ns', 'gpu_publication_wait_ns', 'gpu_backend_overlap_wait_ns', 'building_wait_ns')}
+    ai_tail_available = all('ai_deadline_wait_ns' in t and 'ai_deadline_misses' in t for t in ticks)
+    if ai_tail_available:
+        totals.update({k: sum(t[k] for t in tails) for k in ('ai_deadline_wait_ns', 'ai_deadline_misses')})
+    ai_start, ai_end = diagnostics.get('ai_metrics_at_start', {}), diagnostics.get('ai_metrics_at_end', {})
+    ai_deltas = {k: ai_end[k]-ai_start[k] for k in ai_start.keys() & ai_end.keys()
+                 if k.endswith('_ns') or k in ('jobs_completed', 'deadline_misses', 'job_cpu_invalid_measurements', 'failed_jobs')}
+    if any(value < 0 for value in ai_deltas.values()):
+        raise ValueError('AI diagnostic counter decreased')
     return dict(diagnostic_only=True, acceptance_eligible=False,
                 total_process_cpu_ns=result['benchmark_run_cpu_ns'],
                 known_counter_deltas={k: ge[k]-gs.get(k, 0) for k in ge if k.endswith('_cpu_ns')},
@@ -53,7 +61,12 @@ def analyze(result, diagnostics):
                                    start_failures=start.get('failed_threads'), end_failures=end.get('failed_threads'),
                                    clock_ticks_per_second=end.get('clock_ticks_per_second')),
                 owner_scopes=scopes,
+                ai_counters=dict(available=bool(ai_start and ai_end), deltas=ai_deltas,
+                    cpu_diagnostics_enabled=bool(ai_start.get('job_cpu_diagnostics') and ai_end.get('job_cpu_diagnostics')),
+                    note='Completed AI job lifetimes may cross the warm-start boundary; CPU scopes include AI plus command capture and are not disjoint process-window attribution.'),
                 slowest_one_percent=dict(ticks=len(tails), totals=totals,
+                    ai_deadline_wait_available=ai_tail_available,
+                    ai_deadline_majority_ticks=sum(2*t['ai_deadline_wait_ns'] >= t['wall_ns'] for t in tails) if ai_tail_available else None,
                     publication_majority_ticks=sum(2*t['publication_wait_ns'] >= t['wall_ns'] for t in tails),
                     gpu_publication_majority_ticks=sum(2*t['gpu_publication_wait_ns'] >= t['wall_ns'] for t in tails),
                     largest_examples=tails[:10]),

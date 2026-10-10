@@ -497,14 +497,16 @@ struct HeadlessRunner
         auto measuredGradientEnd=initialGradientPolicy;
         auto measuredOpenCLStart=gradient_kernel::openCLStatus();
         auto measuredOpenCLEnd=measuredOpenCLStart;
+        std::vector<std::pair<std::string,Uint64>> measuredAIStart,measuredAIEnd;
         nlohmann::json diagnosticThreadsStart,diagnosticThreadsEnd,diagnosticScopesStart,diagnosticScopesEnd;
-        struct TailTick { Uint64 tick,wall,publicationWait,buildingWait,gpuPublicationWait,gpuOverlapWait; };
+        struct TailTick { Uint64 tick,wall,publicationWait,buildingWait,gpuPublicationWait,gpuOverlapWait,aiDeadlineWait,aiDeadlineMisses; };
         std::vector<TailTick> diagnosticTicks;
         const auto startMeasurement=[&] {
             measuredGradientStart=engine.gui.game.map.adaptiveGradientMetrics();
             measuredOpenCLStart=gradient_kernel::openCLStatus();
             publicationWaitStart=engine.gui.game.map.gradientPipelineStatus().publicationWaitNs;
             if(benchmarkDiagnostics) {
+                measuredAIStart=engine.gui.game.aiMetrics();
                 diagnosticThreadsStart=benchmark_diagnostics::threads();
                 diagnosticScopesStart=benchmark_diagnostics::ownerScopes();
             }
@@ -529,6 +531,7 @@ struct HeadlessRunner
                 const auto tickStart=std::chrono::steady_clock::now();
                 const auto publicationBefore=benchmarkDiagnostics ? engine.gui.game.map.gradientPipelineStatus().publicationWaitNs : 0;
                 const auto buildingBefore=benchmarkDiagnostics ? engine.gui.game.map.buildingGradientPipelineStatus().waitNs : 0;
+                const auto aiBefore=benchmarkDiagnostics ? engine.gui.game.aiSchedulingCounters() : Game::AISchedulingCounters{};
 				engine.stepSession(SDL_GetTicks()); engine.drawSession();
                 if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
                     const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
@@ -537,8 +540,12 @@ struct HeadlessRunner
                     if(benchmarkDiagnostics) {
                         const auto p=engine.gui.game.map.gradientPipelineStatus();
                         const auto b=engine.gui.game.map.buildingGradientPipelineStatus();
+                        const auto aiAfter=engine.gui.game.aiSchedulingCounters();
+                        if(aiAfter.deadlineWaitNs<aiBefore.deadlineWaitNs || aiAfter.deadlineMisses<aiBefore.deadlineMisses)
+                            throw std::runtime_error("AI scheduling diagnostic counter decreased");
                         diagnosticTicks.push_back({beforeTick,duration,p.publicationWaitNs-publicationBefore,b.waitNs-buildingBefore,
-                            p.lastGpuPublicationWaitNs,p.lastGpuDeviceOverlapWaitNs});
+                            p.lastGpuPublicationWaitNs,p.lastGpuDeviceOverlapWaitNs,
+                            aiAfter.deadlineWaitNs-aiBefore.deadlineWaitNs,aiAfter.deadlineMisses-aiBefore.deadlineMisses});
                     }
                 }
 				if(!measureStart && engine.gui.game.stepCounter>=start) startMeasurement();
@@ -552,6 +559,7 @@ struct HeadlessRunner
             measuredOpenCLEnd=gradient_kernel::openCLStatus();
 			measuredTicks=engine.gui.game.stepCounter-start;
             if(benchmarkDiagnostics) {
+                measuredAIEnd=engine.gui.game.aiMetrics();
                 diagnosticScopesEnd=benchmark_diagnostics::ownerScopes();
                 diagnosticThreadsEnd=benchmark_diagnostics::threads();
             }
@@ -561,9 +569,14 @@ struct HeadlessRunner
             nlohmann::json records=nlohmann::json::array();
             for(const auto& t:diagnosticTicks) records.push_back({{"tick",t.tick},{"wall_ns",t.wall},
                 {"publication_wait_ns",t.publicationWait},{"building_wait_ns",t.buildingWait},
-                {"gpu_publication_wait_ns",t.gpuPublicationWait},{"gpu_backend_overlap_wait_ns",t.gpuOverlapWait}});
-            const nlohmann::json report={{"version",1},{"diagnostic_only",true},{"cpu_clock_available",diagnosticCpuAvailable},
-                {"note","CPU clock calls and per-tick record overhead are included; boundary proc scans and JSON writes excluded. Nested inclusive CPU scopes cannot be added. Backend overlap is not physical kernel time."},
+                {"gpu_publication_wait_ns",t.gpuPublicationWait},{"gpu_backend_overlap_wait_ns",t.gpuOverlapWait},
+                {"ai_deadline_wait_ns",t.aiDeadlineWait},{"ai_deadline_misses",t.aiDeadlineMisses}});
+            auto aiStart=nlohmann::json::object(),aiEnd=nlohmann::json::object();
+            for(const auto& [name,value]:measuredAIStart) aiStart[name]=value;
+            for(const auto& [name,value]:measuredAIEnd) aiEnd[name]=value;
+            const nlohmann::json report={{"version",2},{"diagnostic_only",true},{"cpu_clock_available",diagnosticCpuAvailable},
+                {"note","CPU clock calls and per-tick scalar record overhead are included; boundary AI/proc scans and JSON writes excluded. Nested inclusive CPU scopes cannot be added. Backend overlap is not physical kernel time. AI CPU counters cover completed job lifetimes, which may cross the warm-start boundary; they are not disjoint process-window CPU attribution."},
+                {"ai_metrics_at_start",aiStart},{"ai_metrics_at_end",aiEnd},
                 {"threads_at_start",diagnosticThreadsStart},{"threads_at_end",diagnosticThreadsEnd},
                 {"owner_scopes_at_start",diagnosticScopesStart},{"owner_scopes_at_end",diagnosticScopesEnd},{"ticks",records}};
             Headless::writeJson((output/"benchmark-diagnostics.json").string(),report.dump());

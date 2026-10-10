@@ -3,6 +3,20 @@ from analyze_gpu_offload_diagnostics import analyze
 
 
 class DiagnosticsTest(unittest.TestCase):
+    def test_ai_wait_and_cpu_lifetimes_are_explicitly_separate(self):
+        result, diagnostics = self.fixture()
+        diagnostics['ticks'][0].update(ai_deadline_wait_ns=0, ai_deadline_misses=0)
+        diagnostics['ticks'][1].update(ai_deadline_wait_ns=90, ai_deadline_misses=1)
+        diagnostics['ai_metrics_at_start'] = dict(job_cpu_diagnostics=1, decision_and_command_capture_cpu_ns=10, jobs_completed=1)
+        diagnostics['ai_metrics_at_end'] = dict(job_cpu_diagnostics=1, decision_and_command_capture_cpu_ns=70, jobs_completed=3)
+        report = analyze(result, diagnostics)
+        self.assertEqual(report['ai_counters']['deltas']['decision_and_command_capture_cpu_ns'], 60)
+        self.assertTrue(report['ai_counters']['cpu_diagnostics_enabled'])
+        self.assertEqual(report['slowest_one_percent']['ai_deadline_majority_ticks'], 1)
+        diagnostics['ai_metrics_at_end']['jobs_completed'] = 0
+        with self.assertRaises(ValueError):
+            analyze(result, diagnostics)
+
     def test_sampled_scope_cpu_never_claims_complete_call_coverage(self):
         result, diagnostics = self.fixture()
         initial = dict(scope='Sampled', inclusive_cpu_ns=10, self_cpu_ns=5,
