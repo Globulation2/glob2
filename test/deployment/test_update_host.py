@@ -72,7 +72,7 @@ class UpdateHostTests(unittest.TestCase):
         docker.write_text(FAKE_DOCKER)
         docker.chmod(docker.stat().st_mode | stat.S_IEXEC)
         self.log = self.dir / 'docker.log'
-        self.env = {**os.environ, 'PATH': f'{bin_dir}:{os.environ["PATH"]}', 'FAKE_LOG': str(self.log)}
+        self.env = {**os.environ, 'PATH': f'{bin_dir}:{os.environ["PATH"]}', 'FAKE_LOG': str(self.log), 'GLOB2_DESIGN_SYSTEM_SHA': 'ab' * 20}
 
     def tearDown(self):
         shutil.rmtree(self.dir, ignore_errors=True)
@@ -102,12 +102,18 @@ class UpdateHostTests(unittest.TestCase):
         self.assertIn('--force-recreate', self.calls()[self.index('up -d --wait')])
         [backup] = self.backups()
         self.assertEqual((backup / 'glob2.dump').read_text(), 'DUMP\n')
+        self.assertEqual((backup / 'target-design-system-revision').read_text().strip(), 'ab' * 20)
         self.assertTrue((backup / 'web-client.tar.gz').stat().st_size > 0)
         # Installed after the new stack was up.
         self.assertEqual((self.web / 'index.html').read_text(), 'new index.html')
         self.assertEqual((self.web / 'studio.html').read_text(), 'new studio.html')
         self.assertEqual((self.web / 'generator-studio.html').read_text(), 'new generator-studio.html')
         self.assertIn('glob2-platform:development glob2-platform:previous', '\n'.join(self.calls()))
+
+    def test_rejects_invalid_design_revision_before_building(self):
+        result = self.run_script(GLOB2_DESIGN_SYSTEM_SHA='main')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(any(' build' in call for call in self.calls()))
 
     def test_keeps_only_the_newest_backups(self):
         # Force three updates into the same timestamp, even on a slow runner.

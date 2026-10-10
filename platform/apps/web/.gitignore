@@ -1,0 +1,8 @@
+
+# Generated from the pinned design system at build time.
+/public/theme.js
+/public/brand/
+/public/fonts/
+/public/favicon-32.png
+/public/apple-touch-icon.png
+/public/design-system.json

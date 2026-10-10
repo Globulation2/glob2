@@ -139,6 +139,7 @@ test('home: navigation and play controls remain reachable beside the colony', as
     navigation.getByRole('link', { name: 'Sign in' }),
   ]) {
     await expect(target).toBeVisible();
+    await target.scrollIntoViewIfNeeded();
     const box = await target.boundingBox();
     expect(box).not.toBeNull();
     const x = (box?.x ?? 0) + (box?.width ?? 0) / 2;
