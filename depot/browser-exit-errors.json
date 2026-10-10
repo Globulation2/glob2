@@ -1,0 +1,602 @@
+[
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.254Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Pthread 0x00a7e358 sent an error! https://app.glob2online.com/play/threaded/index.js:1: Uncaught [object WebAssembly.Exception]",
+    "timestamp": "2026-10-10T19:02:18.254Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "ErrorEvent",
+    "timestamp": "2026-10-10T19:02:18.254Z",
+    "url": "https://app.glob2online.com/play/threaded/index.js"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.254Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.255Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.255Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.256Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.270Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Pthread 0x00a7e358 sent an error! https://app.glob2online.com/play/threaded/index.js:1: Uncaught [object WebAssembly.Exception]",
+    "timestamp": "2026-10-10T19:02:18.270Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "ErrorEvent",
+    "timestamp": "2026-10-10T19:02:18.270Z",
+    "url": "https://app.glob2online.com/play/threaded/index.js"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.270Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.271Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.271Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.271Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.271Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.271Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.287Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Pthread 0x00a7e358 sent an error! https://app.glob2online.com/play/threaded/index.js:1: Uncaught [object WebAssembly.Exception]",
+    "timestamp": "2026-10-10T19:02:18.287Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "ErrorEvent",
+    "timestamp": "2026-10-10T19:02:18.287Z",
+    "url": "https://app.glob2online.com/play/threaded/index.js"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.287Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.287Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.288Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.288Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.288Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.288Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.303Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Pthread 0x00a7e358 sent an error! https://app.glob2online.com/play/threaded/index.js:1: Uncaught [object WebAssembly.Exception]",
+    "timestamp": "2026-10-10T19:02:18.303Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "ErrorEvent",
+    "timestamp": "2026-10-10T19:02:18.303Z",
+    "url": "https://app.glob2online.com/play/threaded/index.js"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.303Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.303Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.304Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.304Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.305Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.305Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.319Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Pthread 0x00a7e358 sent an error! https://app.glob2online.com/play/threaded/index.js:1: Uncaught [object WebAssembly.Exception]",
+    "timestamp": "2026-10-10T19:02:18.319Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "ErrorEvent",
+    "timestamp": "2026-10-10T19:02:18.320Z",
+    "url": "https://app.glob2online.com/play/threaded/index.js"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.320Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.320Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.321Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.321Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.322Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147696640 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.322Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147622912 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.322Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Failure while closing game resources; session cannot continue",
+    "timestamp": "2026-10-10T19:02:18.322Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147622912 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.442Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Failure while closing game resources; session cannot continue",
+    "timestamp": "2026-10-10T19:02:18.442Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147622912 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.442Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Failure while closing game resources; session cannot continue",
+    "timestamp": "2026-10-10T19:02:18.442Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.467Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.467Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.467Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.467Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.467Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.467Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147586048 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.468Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147614720 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.469Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.481Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.481Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.482Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.482Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.482Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.482Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147586048 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.483Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147614720 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.483Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.487Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.488Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.488Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.488Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.501Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.501Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.501Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.501Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.501Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.501Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.502Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Pthread 0x00a7e358 sent an error! https://app.glob2online.com/play/threaded/index.js:1: Uncaught [object WebAssembly.Exception]",
+    "timestamp": "2026-10-10T19:02:18.502Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "ErrorEvent",
+    "timestamp": "2026-10-10T19:02:18.502Z",
+    "url": "https://app.glob2online.com/play/threaded/index.js"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.527Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.528Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.528Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.528Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.528Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.528Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.540Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.540Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.540Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.540Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.540Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2151677952 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.540Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.541Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.541Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Cannot enlarge memory, requested 2147549184 bytes, but the limit is 2147483648 bytes!",
+    "timestamp": "2026-10-10T19:02:18.541Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Game stopped: Assertion failed: dest, at: libgag/src/DrawableSurface.cpp,38,convertForUpload",
+    "timestamp": "2026-10-10T19:02:18.541Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Game stopped: Error: Assertion failed: dest, at: libgag/src/DrawableSurface.cpp,38,convertForUpload",
+    "timestamp": "2026-10-10T19:02:18.542Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Aborted(Assertion failed: dest, at: libgag/src/DrawableSurface.cpp,38,convertForUpload)",
+    "timestamp": "2026-10-10T19:02:18.542Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "Pthread 0x00a7e358 sent an error! https://app.glob2online.com/play/threaded/index.js:1: Uncaught RuntimeError: unreachable",
+    "timestamp": "2026-10-10T19:02:18.542Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "ErrorEvent",
+    "timestamp": "2026-10-10T19:02:18.542Z",
+    "url": "https://app.glob2online.com/play/threaded/index.js"
+  },
+  {
+    "level": "error",
+    "message": "user callback triggered after runtime exited or application aborted.  Ignoring.",
+    "timestamp": "2026-10-10T19:02:18.569Z",
+    "url": "https://app.glob2online.com/play/"
+  },
+  {
+    "level": "error",
+    "message": "user callback triggered after runtime exited or application aborted.  Ignoring.",
+    "timestamp": "2026-10-10T19:02:29.234Z",
+    "url": "https://app.glob2online.com/play/"
+  }
+]

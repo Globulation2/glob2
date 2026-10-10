@@ -1,0 +1,206 @@
+{
+  "experiments": [],
+  "namespace": "0bdfdf54-6ad1-478e-9da8-7a622cf45d06",
+  "schemaVersion": 1,
+  "sprites": [
+    {
+      "frames": [
+        {
+          "height": 128,
+          "imageHash": "a0432afa63edb0d2743f8349e559d6a275572e0e39e6063fd7476175a37d6527",
+          "teamColorHash": "bcce7c97b23a9f4ac854e0f28732a5417c24b76a21f7fca497cbd11836628878",
+          "width": 96
+        }
+      ],
+      "key": "variant-de54fb4a1f107f55dc551501-game"
+    },
+    {
+      "frames": [
+        {
+          "height": 64,
+          "imageHash": "2ea0dc6d8e5fc80b86b5eec856e4cd29aed82eacd5d839e2ed96393234a494cb",
+          "teamColorHash": "c97d00841836944a52a411345cebd5c8832840e2502b9c54ba2aed625899bc18",
+          "width": 48
+        }
+      ],
+      "key": "variant-de54fb4a1f107f55dc551501-mini"
+    },
+    {
+      "frames": [
+        {
+          "height": 128,
+          "imageHash": "a7d629b11ba05a120cf14d33633ab3b1433b33631269de11a7507630112a36a9",
+          "teamColorHash": "87de5cebaaec62e93e30216eb201180d04a6bb87f3c36c2be674977874d8ac09",
+          "width": 96
+        }
+      ],
+      "key": "variant-a5cc7b7f313148c8606b1139-game"
+    },
+    {
+      "frames": [
+        {
+          "height": 64,
+          "imageHash": "c8474aece5fe46308529e8e6872cfe952c17fe9c7b83cd4dffb29abb220e152a",
+          "teamColorHash": "6589272a852874a08a7191ef8c9aecd49e73f96727012090721b07d2ccece235",
+          "width": 48
+        }
+      ],
+      "key": "variant-a5cc7b7f313148c8606b1139-mini"
+    }
+  ],
+  "variants": [
+    {
+      "key": "b-0bdfdf54-6ad1-478e-9da8-7a622cf45d06-building",
+      "presentation": {
+        "defaultAssigned": 6,
+        "displayName": "Depot"
+      },
+      "previous": "b-0bdfdf54-6ad1-478e-9da8-7a622cf45d06-depot-site",
+      "properties": {
+        "decLeft": 0,
+        "decTop": 0,
+        "gameSprite": "package:variant-a5cc7b7f313148c8606b1139-game",
+        "gameSpriteCount": 1,
+        "gameSpriteImage": 0,
+        "height": 3,
+        "hpInit": 200,
+        "hpMax": 200,
+        "materialMultiplier": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "maxMaterial": [
+          200,
+          200,
+          200,
+          200,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "package:variant-a5cc7b7f313148c8606b1139-mini",
+        "miniSpriteImage": 0,
+        "width": 3
+      },
+      "semantics": {
+        "assignmentLimit": 6,
+        "instantPlacement": false,
+        "market": {
+          "fetchesDirectStock": false,
+          "fetchesDirectStockMaterials": [],
+          "fetchesStock": false,
+          "fetchesStockMaterials": [],
+          "interTeamFruitExchange": false,
+          "sharedStock": false,
+          "suppliesDirectStock": false,
+          "suppliesDirectStockMaterials": [],
+          "suppliesStock": true,
+          "suppliesStockExperiment": "markets-v2",
+          "suppliesStockMaterials": [
+            "wood",
+            "stone",
+            "food",
+            "paper"
+          ]
+        },
+        "placeable": false,
+        "repairCost": {
+          "stone": 10,
+          "wood": 20
+        },
+        "repairable": true,
+        "replenishMaterials": [
+          "wood",
+          "stone",
+          "food",
+          "paper"
+        ]
+      }
+    },
+    {
+      "key": "b-0bdfdf54-6ad1-478e-9da8-7a622cf45d06-depot-site",
+      "next": "b-0bdfdf54-6ad1-478e-9da8-7a622cf45d06-building",
+      "presentation": {
+        "defaultAssigned": 6,
+        "displayName": "Depot"
+      },
+      "properties": {
+        "decLeft": 0,
+        "decTop": 0,
+        "gameSprite": "package:variant-de54fb4a1f107f55dc551501-game",
+        "gameSpriteCount": 1,
+        "gameSpriteImage": 0,
+        "height": 3,
+        "hpInc": 40,
+        "hpInit": 1,
+        "hpMax": 200,
+        "isBuildingSite": 1,
+        "maxMaterial": [
+          20,
+          0,
+          0,
+          10,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "miniSprite": "package:variant-de54fb4a1f107f55dc551501-mini",
+        "miniSpriteImage": 0,
+        "width": 3
+      },
+      "semantics": {
+        "assignmentLimit": 6,
+        "constructionCost": {
+          "stone": 10,
+          "wood": 20
+        },
+        "instantPlacement": false,
+        "market": {
+          "fetchesDirectStock": false,
+          "fetchesDirectStockMaterials": [],
+          "fetchesStock": false,
+          "fetchesStockMaterials": [],
+          "sharedStock": false,
+          "suppliesDirectStock": false,
+          "suppliesDirectStockMaterials": [],
+          "suppliesStock": false,
+          "suppliesStockMaterials": []
+        },
+        "placeable": true,
+        "repairCost": {},
+        "repairable": false,
+        "replenishMaterials": [],
+        "requiredWorkerLevel": 0
+      }
+    }
+  ]
+}
