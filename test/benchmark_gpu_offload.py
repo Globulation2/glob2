@@ -45,10 +45,10 @@ def validate(config):
     if config['warmup_ticks'] < 0: raise ValueError('nonnegative warmup required')
 
 
-def execute(variant, scenario, output, warmup):
+def execute(variant, scenario, output, warmup, *, extra_args=()):
     output.mkdir(parents=True, exist_ok=False)
     threads = str(variant.get('compute_threads', '8'))
-    command = [variant['binary'], 'game', 'run', *scenario['args'], '--compute-threads', threads,
+    command = [variant['binary'], 'game', 'run', *scenario['args'], *extra_args, '--compute-threads', threads,
                '--benchmark-warmup', str(warmup), '--output-dir', str(output)]
     env = dict(os.environ, **variant.get('env', {}))
     started = time.monotonic_ns()

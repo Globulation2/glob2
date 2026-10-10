@@ -43,6 +43,8 @@ def cpu_ceiling(result):
         return {'available': False, 'reason': 'CPU diagnostics availability not established'}
     if total <= 0 or any(name not in start or name not in end for name in names):
         return {'available': False, 'reason': 'exact required-work CPU counters unavailable'}
+    if end.get('gpu_complete_fields', 0) != start.get('gpu_complete_fields', 0):
+        return {'available': False, 'reason': 'CPU-only reference required for an offload ceiling'}
     delta = {name: end[name] - start[name] for name in names}
     if any(v < 0 for v in delta.values()) or sum(delta.values()) > total:
         return {'available': False, 'reason': 'counter interval or overlap mismatch'}
