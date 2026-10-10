@@ -776,7 +776,11 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
     readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
     for(bool deviceCompleted:{false,true}){
     struct State {std::atomic<unsigned> cpu{0};std::atomic<bool> worker{false},attempted{false};bool expectedDeviceCompletion=false;};
-    auto state=std::make_shared<State>();state->expectedDeviceCompletion=deviceCompleted;std::weak_ptr<State> retained=state;
+    auto state=std::make_shared<State>();state->expectedDeviceCompletion=deviceCompleted;
+    // Backend test hooks also retain State. Observe only the independent owned
+    // recovery-input graph, so hook lifetime cannot mask its completion release.
+    struct Inputs {std::shared_ptr<State> state;};
+    auto inputs=std::make_shared<Inputs>(Inputs{state});std::weak_ptr<Inputs> retained=inputs;
     auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
         []{return true;},[deviceCompleted,state](std::span<const BackendRequest> requests,Plan){
             CHECK(requests.front().gradient[0]==77);
@@ -789,12 +793,12 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
     REQUIRE(service->metrics().ready);
     TestGradientPipeline pipeline;pipeline.configure(1,2,1,[](auto&,auto&){FAIL("unexpected synchronous execution");});
     pipeline.setDeviceService(service);
-    pipeline.setAsyncWork([state](auto& job,PlanDecision decision){
-        auto owned=std::make_shared<OwnedGradientField>();owned->inputs=state;
+    pipeline.setAsyncWork([inputs](auto& job,PlanDecision decision){
+        auto owned=std::make_shared<OwnedGradientField>();owned->inputs=inputs;
         owned->session=job.owner->session();owned->decision=decision;owned->data=std::move(job.data);
         owned->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
         owned->cpu=[](auto& owned){
-            auto& state=*const_cast<State*>(static_cast<const State*>(owned.inputs.get()));
+            auto& state=*static_cast<const Inputs*>(owned.inputs.get())->state;
             state.worker=ComputeExecutor::workerSlot()!=0;++state.cpu;
             CHECK(owned.data[0]==77);CHECK_FALSE(owned.executedGPU);
             CHECK(owned.deviceExecutionObserved==state.expectedDeviceCompletion);owned.data[0]=88;
@@ -810,7 +814,7 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
     CHECK(service->metrics().fallbackAfterDeviceCompletionFields==unsigned(deviceCompleted));
     CHECK(service->metrics().executed==0);CHECK(pipeline.gpuCompleteFields()==0);
     pipeline.advance();pipeline.advance();CHECK(field[0]==88);
-    pipeline.setAsyncWork({});state.reset();CHECK(retained.expired());
+    pipeline.setAsyncWork({});inputs.reset();CHECK(retained.expired());
     pipeline.reset();service->stop();delete[] field;
     }
 }
@@ -1292,7 +1296,14 @@ TEST_CASE("required GPU envelopes are opt-in enclosing diagnostics and release p
             field->cpu=[](auto&){FAIL("unexpected fallback");};return field;
         });
         auto* published=new std::uint16_t[1]{};
-        pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=7;});pipeline.advance();
+        pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=7;});
+        // This fixture covers successful envelopes. Advancing immediately to
+        // publication may cancel an unsubmitted/pending field and legitimately
+        // recover on CPU; that path has its own cancellation fixture.
+        while(service->metrics().completed+service->metrics().fallbacks!=1 &&
+              std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().completed==1);
+        pipeline.advance();
         CHECK(published[0]==91);pipeline.reset();
         // Required completion is independent of subsequent diagnostic sampling.
         // Wait for the background diagnostic here solely to inspect the fixture.
