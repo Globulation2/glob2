@@ -596,13 +596,14 @@ std::string saveRuntime(Map& map, bool text = false)
 
 void loadRuntime(Map& map, const std::string& bytes, bool text = false)
 {
-	auto* backend = new GAGCore::MemoryStreamBackend;
-	backend->write(bytes.data(), bytes.size());
-	backend->seekFromStart(0);
-	std::unique_ptr<GAGCore::InputStream> in(text
-		? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(backend))
-		: static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(backend)));
-	map.loadRuntimeState(in.get(), VERSION_MINOR);
+    auto backend=std::make_unique<GAGCore::MemoryStreamBackend>();
+    backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
+    // Text readers are nonowning; binary readers delete their backend.
+    if(text) {
+        GAGCore::TextInputStream input(backend.get()); map.loadRuntimeState(&input,VERSION_MINOR);
+    } else {
+        GAGCore::BinaryInputStream input(backend.release()); map.loadRuntimeState(&input,VERSION_MINOR);
+    }
 }
 
 // 1. Fixed-deadline publication across worker counts and delays.
