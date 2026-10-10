@@ -39,6 +39,8 @@ def cpu_ceiling(result):
     names = ('required_seed_cpu_ns', 'required_propagation_cpu_ns')
     if not start.get('thread_cpu_clock_available') or not end.get('thread_cpu_clock_available'):
         return {'available': False, 'reason': 'thread CPU clock availability not established'}
+    if not start.get('cpu_diagnostics_enabled') or not end.get('cpu_diagnostics_enabled'):
+        return {'available': False, 'reason': 'CPU diagnostics availability not established'}
     if total <= 0 or any(name not in start or name not in end for name in names):
         return {'available': False, 'reason': 'exact required-work CPU counters unavailable'}
     delta = {name: end[name] - start[name] for name in names}

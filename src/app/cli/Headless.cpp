@@ -17,6 +17,7 @@
 #include "AINames.h"
 #include "AIJavaScript.h"
 #include "ComputeThreads.h"
+#include "field/OpenCLGradient.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -482,8 +483,11 @@ struct HeadlessRunner
         std::chrono::steady_clock::time_point measureWallStart;
         auto measuredGradientStart=initialGradientPolicy;
         auto measuredGradientEnd=initialGradientPolicy;
+        auto measuredOpenCLStart=gradient_kernel::openCLStatus();
+        auto measuredOpenCLEnd=measuredOpenCLStart;
         const auto startMeasurement=[&] {
             measuredGradientStart=engine.gui.game.map.adaptiveGradientMetrics();
+            measuredOpenCLStart=gradient_kernel::openCLStatus();
             publicationWaitStart=engine.gui.game.map.gradientPipelineStatus().publicationWaitNs;
             measureWallStart=std::chrono::steady_clock::now();
             measureStart=processCpuNs();
@@ -517,6 +521,7 @@ struct HeadlessRunner
 			runCpu=processCpuNs()-measureStart;
             measuredWallNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-measureWallStart).count();
             measuredGradientEnd=engine.gui.game.map.adaptiveGradientMetrics();
+            measuredOpenCLEnd=gradient_kernel::openCLStatus();
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
@@ -649,7 +654,31 @@ struct HeadlessRunner
             if(measuredEndComma) result<<',';
             measuredEndComma=true; result<<quote(name)<<':'<<value;
         }
-        result << "},\"adaptive_gradient\":{";
+        const auto writeOpenCL=[&](const gradient_kernel::OpenCLStatus& status) {
+            result << "{\"available\":" << (status.available ? "true" : "false")
+                << ",\"device\":" << quote(status.device) << ",\"error\":" << quote(status.error);
+            const std::map<std::string,Uint64> values={
+                {"fields",status.fields},{"batches",status.batches},{"dispatches",status.dispatches},
+                {"host_checks",status.hostChecks},{"cost_uploads",status.costUploads},
+                {"cost_cache_hits",status.costCacheHits},{"execution_lanes",status.executionLanes},
+                {"max_concurrent_batches",status.maxConcurrentBatches},
+                {"host_bytes",status.hostBytes},{"peak_host_bytes",status.peakHostBytes},
+                {"device_bytes",status.deviceBytes},{"peak_device_bytes",status.peakDeviceBytes},
+                {"budget_declines",status.budgetDeclines},{"thread_cpu_ns",status.threadCPUNs},
+                {"initialization_thread_cpu_ns",status.initializationThreadCPUNs},
+                {"thread_cpu_clock_available",status.threadCPUAvailable},
+                {"preparation_ns",status.preparationNs},{"upload_ns",status.uploadNs},
+                {"dispatch_wait_ns",status.dispatchWaitNs},{"readback_ns",status.readbackNs},
+                {"check_interval",status.checkInterval},{"poll_micros",status.pollMicros},
+                {"device_profiling",status.deviceProfiling},{"device_upload_ns",status.deviceUploadNs},
+                {"device_kernel_ns",status.deviceKernelNs},{"device_readback_ns",status.deviceReadbackNs},
+                {"device_check_read_ns",status.deviceCheckReadNs},{"profiling_errors",status.profilingErrors}};
+            for(const auto& [name,value]:values) result << ',' << quote(name) << ':' << value;
+            result << '}';
+        };
+        result << "},\"benchmark_opencl_at_start\":"; writeOpenCL(measuredOpenCLStart);
+        result << ",\"benchmark_opencl_at_end\":"; writeOpenCL(measuredOpenCLEnd);
+        result << ",\"adaptive_gradient\":{";
         bool policyComma=false;
         for(const auto& [name,value]:game.map.adaptiveGradientMetrics()) {
             if(policyComma) result<<',';
