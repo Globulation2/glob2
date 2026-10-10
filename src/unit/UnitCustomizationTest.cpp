@@ -13,6 +13,7 @@
 #include <limits>
 #include <sstream>
 #include <climits>
+#include <cstddef>
 
 namespace {
 Uint32 trace(Game& game)
@@ -2179,12 +2180,97 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(world.team->findNearestFood(unit)==enemyInn);
             checkPhaseContinuation(world.game,64);
             CHECK(unit->owner==world.game.teams[1]); CHECK(unit->gid!=oldGid);
+            CHECK(unit->configuredVisionRadius==unit->runtimeTraits().visionRadius);
             CHECK_FALSE(world.game.unitCargo.find(oldGid)); CHECK(unit->carriedPacketCount()==2);
             CHECK(world.game.map.isClearingAreaClaimed(7,7,world.team->teamNumber)==NOGUID);
             // Other workers may be recruited while the converted carrier is
             // eating. Its old assignment must be gone without banning new work.
             CHECK(std::find(ownInn->unitsWorking.begin(),ownInn->unitsWorking.end(),unit)==ownInn->unitsWorking.end());
             checkPhaseContinuation(world.game,64);
+        }
+    }
+    TEST_CASE("catalog derived vision cache preserves padding wire state and visibility continuation [save-format]")
+    {
+        static_assert(std::is_trivially_copyable_v<UnitState>);
+        static_assert(std::is_standard_layout_v<UnitState>);
+        static_assert(offsetof(UnitState,configuredVisionRadius)==offsetof(UnitState,underAttackTimer)+1);
+        static_assert(offsetof(UnitState,hp)==offsetof(UnitState,underAttackTimer)+4);
+        // Native 64-bit layout guards; narrower targets still check the exact padding gap.
+        static_assert(sizeof(void*)!=8 || sizeof(UnitState)==360);
+        static_assert(sizeof(void*)!=8 || sizeof(Unit)==440);
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=4921});
+        auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto custom=definitions["units"][WORKER]; custom["key"]="fixture:vision-cache";
+        definitions["units"].push_back(custom);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+        world.game.configureBuildingCatalog();
+        auto* unit=world.addUnit(3,30,30); REQUIRE(unit);
+        CHECK(unit->configuredVisionRadius==unit->runtimeTraits().visionRadius);
+        for(int radius:{0,1,3,32}) {
+            CAPTURE(radius);
+            definitions["units"][3]["behaviors"]["visionRadius"]=radius;
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+            world.game.configureBuildingCatalog(); // Actual supported live setup rebinding.
+            REQUIRE(unit->configuredVisionRadius==radius);
+            unit->resetAtLevel(1); REQUIRE(unit->configuredVisionRadius==radius);
+            const auto serialized=[&] {
+                auto* memory=new GAGCore::MemoryStreamBackend;
+                GAGCore::BinaryOutputStream output(memory); unit->save(&output);
+                return memory->takeContents();
+            };
+            std::vector<Uint32> checksumBefore,checksumPoisoned;
+            const auto checksum=unit->checkSum(&checksumBefore);
+            const auto bytes=serialized();
+            unit->configuredVisionRadius=Uint8((radius+1)%33);
+            CHECK(serialized()==bytes); // Derived cache adds no saved field.
+            CHECK(unit->checkSum(&checksumPoisoned)==checksum);
+            CHECK(checksumPoisoned==checksumBefore); // Adds no checksum field.
+            unit->configuredVisionRadius=Uint8(radius);
+            {
+                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+                input.seekFromStart(0);
+                Unit restored(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
+                REQUIRE(restored.configuredVisionRadius==radius);
+            }
+            auto frozen=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+            const auto* observed=frozen->unitSlots(0)[Unit::GIDtoID(unit->gid)]; REQUIRE(observed);
+            CHECK(observed->configuredVisionRadius==radius);
+            unit->configuredVisionRadius=Uint8((radius+1)%33);
+            CHECK(observed->configuredVisionRadius==radius);
+            unit->configuredVisionRadius=Uint8(radius);
+
+            world.game.map.unsetMapDiscovered();
+            unit->delta=255;
+            { glob2test::BoundGameRandom bound(world.game); unit->syncStep(); }
+            // Independent rectangular torus oracle around the action's final position.
+            // This checks actual discoveries, including radius zero and wrapping at 32.
+            const auto& map=world.game.map;
+            for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) {
+                const int dx=std::min((x-unit->posX)&map.wMask,(unit->posX-x)&map.wMask);
+                const int dy=std::min((y-unit->posY)&map.hMask,(unit->posY-y)&map.hMask);
+                const bool expected=dx<=radius && dy<=radius;
+                CHECK(map.isMapDiscovered(x,y,world.team->me)==expected);
+            }
+            auto* memory=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(memory);
+            world.game.save(&output,false,"derived vision continuation");
+            const auto checkpoint=memory->takeContents();
+            GameGUI resumed;
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
+            input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+            const auto* loaded=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)]; REQUIRE(loaded);
+            REQUIRE(loaded->configuredVisionRadius==radius);
+            REQUIRE(resumed.game.unitCatalog().digest()==world.game.unitCatalog().digest());
+            for(int tick=0;tick<32;++tick) {
+                CAPTURE(tick);
+                world.game.syncStep(0); resumed.game.syncStep(0);
+                CHECK(unit->configuredVisionRadius==radius); CHECK(loaded->configuredVisionRadius==radius);
+                REQUIRE(continuationAudit(world.game)==continuationAudit(resumed.game));
+                REQUIRE(world.game.map.mapDiscovered==resumed.game.map.mapDiscovered);
+                REQUIRE(world.game.syncRandom==resumed.game.syncRandom);
+                REQUIRE(world.game.unitCargo.entries()==resumed.game.unitCargo.entries());
+            }
         }
     }
 }

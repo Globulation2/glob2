@@ -18,7 +18,10 @@ A game owns the resolved catalog. Race tables are per-game, snapshots share the
 immutable catalog, and two games can use different definitions simultaneously.
 Rich definitions contain stable keys and metadata. A separate contiguous runtime
 table contains numeric traits; units cache capability flags and effective ability,
-hunger and learning values. Simulation loops do not resolve keys, scan the catalog
+hunger and learning values. Vision radius uses an existing padding byte in unit
+state, so completed actions read it directly without growing the record. Loading
+and supported catalog setup rebuild this derived cache; saves and checksums
+continue to identify it through the catalog. Simulation loops do not resolve keys, scan the catalog
 for a type, allocate behavior objects or invoke virtual behavior dispatch.
 
 ## Authoring a definition
