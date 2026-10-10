@@ -209,9 +209,9 @@ jobs:
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" \
             DATADIR=/usr/share install
           python3 tools/release/release.py verify-install --stage "$stage"
-          scons -j2 release=1 client_profile=free server=0 lean_images=1 engine-tests
-          LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-engine-tests --test-suite=ImageAssets
-          env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" --version
+          scons -j2 release=1 client_profile=free server=0 lean_images=1 unit-tests
+          LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-unit-tests --test-suite=ImageAssets
+          env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" info version
           ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL3_image"
       - name: Measure original-assets Linux baseline
         run: |
@@ -340,7 +340,7 @@ jobs:
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0
-          build/linux/client/release/src/glob2 --version
+          build/linux/client/release/src/glob2 info version
 
   rpm-package:
     needs: [preflight, source]
@@ -437,17 +437,17 @@ jobs:
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 client_profile=free mingw=1 server=0 build/mingw/client/release/src/glob2.exe
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
-          scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 engine-tests
+          scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 unit-tests
           image_prefix="$(python3 -c 'import json; print(json.load(open("build/mingw/client/release/lean-images/image-runtime.json"))["prefix"])')"
-          PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-engine-tests.exe --test-suite=ImageAssets
-          ./build/mingw/client/release/lean-images/src/glob2.exe --version
+          PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-unit-tests.exe --test-suite=ImageAssets
+          ./build/mingw/client/release/lean-images/src/glob2.exe info version
           python3 tools/release/package_windows.py \
             build/mingw/client/release/lean-images/src/glob2.exe \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip" \
             --compression-report artifacts/package-sizes/windows-zip-compression.json
           python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall("artifacts/release-smoke")' \
             "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
-          ./artifacts/release-smoke/Globulation2/glob2.exe --version
+          ./artifacts/release-smoke/Globulation2/glob2.exe info version
           python3 tools/release/package_nsis.py --stage artifacts/release-smoke/Globulation2 \
             --output "artifacts/release-output/glob2-${VERSION}-windows-x86_64-setup.exe" --version "$VERSION"
           python3 tools/release/package_windows.py build/mingw/client/release/src/glob2.exe \
@@ -501,7 +501,7 @@ jobs:
           if ($process.ExitCode -ne 0) { throw "Installer failed: $($process.ExitCode)" }
           $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
           # glob2.exe is a GUI-subsystem program, so & leaves $LASTEXITCODE unset; wait for it.
-          $client = Start-Process -FilePath "$install/glob2.exe" -ArgumentList '--version' -NoNewWindow -Wait -PassThru
+          $client = Start-Process -FilePath "$install/glob2.exe" -ArgumentList @('info', 'version') -NoNewWindow -Wait -PassThru
           if ($client.ExitCode -ne 0) { throw ('Installed client could not load its runtime (exit 0x{0:X8})' -f $client.ExitCode) }
           New-Item -ItemType Directory -Force "$install/games" | Out-Null
           Set-Content "$install/games/user.game" 'user save'
@@ -662,7 +662,7 @@ jobs:
           SNAP: ${{ steps.snap.outputs.snap }}
         run: |
           sudo snap install --dangerous "$SNAP"
-          snap run globulation2 --version
+          snap run globulation2 info version
           python3 tools/release/package_sizes.py report --staged-root /snap/globulation2/current \
             --archive "$SNAP" --compiler unrecorded --output artifacts/package-sizes/snap.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
