@@ -23,6 +23,8 @@
 | `map.saved_game` | Whether the loaded header describes a saved game rather than a premade map. |
 | `map.format_version_minor` | The save-format version (`VERSION_MINOR`) the input file was written with; the executable's own for a freshly generated snapshot. Lets a platform check a map's age without parsing its header. |
 | `map.buildingCatalog` | Canonical building catalog `snapshot` JSON string and lowercase SHA-256 `hash`, including the legacy catalog for old input files. This optional schema-2 extension lets multiplayer retain the map's exact building rules. |
+| `map.unitCatalog` | Canonical unit catalog `snapshot` JSON string and lowercase SHA-256 `hash`. This optional schema-2 extension retains the map's exact unit definitions; the snapshot is bounded to 8 MiB. |
+| `map.requiredUnitExperiments` | Experiment keys required by units placed on this map. Optional in older schema-2 reports. |
 | `map.resourceExperiments` | Catalog-declared experiment metadata (`key`, `label`, `help`). |
 | `map.requiredResourceExperiments` | Experiment keys required by resources placed on this map. |
 | `map.tick` | Snapshot's simulation tick. Analyzing a save does not advance it. |
