@@ -224,4 +224,3 @@ only when it saves at least 1 MiB or 5%; xz level 9 must save a further 1 MiB ov
 level 6. Tar metadata is normalized using `SOURCE_DATE_EPOCH` (zero by default).
 These are build-time compression settings; decompressed application content is
 unchanged. Compression reports remain review evidence outside package payloads.
-

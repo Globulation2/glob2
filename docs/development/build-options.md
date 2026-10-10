@@ -68,4 +68,3 @@ Compile/link work totals sum command durations; they are not parallel wall times
 GNU time reports per-process peak RSS on Linux; unsupported hosts report missing
 memory coverage explicitly. Review evidence stays under `artifacts/dev-build`.
 No speedup is assumed before measuring matching source and toolchain inputs.
-

@@ -21,4 +21,3 @@ binding declaration, and the error points at the syntax rather than at the macro
 For unused-include cleanup, generate `compile_commands.json` and use
 `tools/remove-unused-includes.py`; do not apply blind bulk fixes. Rebuild client,
 relay and affected tests, then verify behavior-preserving simulation changes as above.
-

@@ -100,4 +100,3 @@ the harness uses `.glob2-lan-test-host` and `.glob2-lan-test-join` profiles cont
 only test data. Fixed input timers allow map transfer before leaving; the runner
 bounds startup, execution, and child cleanup. Logs and captures are written under
 `artifacts/lan-session-test` by default (`--output` overrides it).
-

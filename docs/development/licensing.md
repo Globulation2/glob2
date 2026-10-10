@@ -14,6 +14,9 @@ remain authoritative; this page does not replace them.
   [JSON notice](../../data/json-license.txt), and
   [image-codec notices](../../data/image-codec-licenses.txt) accompany runtime assets.
 
+- [AUTHORS](../../AUTHORS) retains core author attribution; Git history records
+  ongoing contributors.
+
 ## Assets
 
 - [Third-party asset attribution](../assets/source-attribution.md) records asset sources.

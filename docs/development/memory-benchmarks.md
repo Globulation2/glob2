@@ -47,4 +47,3 @@ measurement condition when reporting the gate.
 Use `--resume` with the same arguments to continue completed pairs after an
 interruption. Binary hashes, fixture hashes and measurement settings must match;
 the unfinished pair is rerun.
-

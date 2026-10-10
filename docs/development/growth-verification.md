@@ -71,4 +71,3 @@ RNG continuation, then times paired runs. Capture, input setup and RNG construct
 are outside timing. Set `GLOB2_GROWTH_KERNEL_OUTPUT` to an output JSON path to retain
 samples. This measures kernel access costs; it does not measure capture, delayed
 publication, retention or contention with other engine jobs.
-

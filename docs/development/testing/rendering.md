@@ -202,4 +202,3 @@ both the headless harness and this graphical regression.
 behavior, for comparison with a baseline build. It reports delivery and scrolling
 times for 67 completed 256×256 thumbnails, plus terrain hashes and colony positions
 for three generators with root seed 71. Timings are evidence, not pass/fail limits.
-

@@ -26,5 +26,3 @@ without starting the public IRC connection, so layout checks do not wait for
 external network timeouts during teardown. They complement
 Android/iOS device playtesting; they do not establish device lifecycle,
 performance, keyboard or cross-platform simulation compatibility.
-
-

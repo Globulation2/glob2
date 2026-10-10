@@ -88,4 +88,3 @@ starvation frames, maximum producer render time, callback time, and observed moo
 command latency. Browser diagnostics are available through `Module.glob2Music`.
 Do not log from the device callback. Queue diagnostics and dummy audio tests cover
 application supply; device-loopback capture and listening are separate evidence.
-

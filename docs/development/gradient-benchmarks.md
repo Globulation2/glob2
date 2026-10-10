@@ -157,4 +157,3 @@ starts with cold queues and later repeats retain search capacity.
 Every requested result is checked against the independent heap oracle. Run this
 on both revisions with matching inputs and compare it separately from full-field
 propagation; ordinary test runs exclude the benchmark tag.
-

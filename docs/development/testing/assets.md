@@ -83,5 +83,3 @@ Record browser/OS versions, priority, affinity, concurrent workloads, exact sour
 revision and device conditions with the result. These tests do not measure hardware
 underruns or replace loopback capture/listening. Keep logs in `artifacts/` and link
 review evidence externally when preparing a PR.
-
-

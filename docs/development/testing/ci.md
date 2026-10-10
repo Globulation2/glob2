@@ -109,4 +109,3 @@ It compares all 64 complete tick records, including aggregate and entity checksu
 The browser saved-match smoke checks resize, menu cancellation and resumed ticks;
 Android smoke also exercises Settings input and verifies application profile
 files survive background/resume and a fresh-process relaunch.
-

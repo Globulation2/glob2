@@ -116,4 +116,3 @@ historical version-123 references remain separate. CI retains these artifacts ev
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
 provenance failures; those comparisons do not satisfy the final acceptance gate.
-

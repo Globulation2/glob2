@@ -167,4 +167,3 @@ compare per-tick checksums and measure capture, retention and worker costs. Dela
 retains each controller's strategy and cadence, apart from the explicit pending
 intent, rejection and identity fixes listed in the
 [replay guide](../development/headless-replays.md).
-

@@ -231,4 +231,3 @@ The strategy profile cases run in English; to capture another catalog with its
 localized section headings, pass that language code to `setupOptions` in a local
 copy of the case. Text wrapping for unspaced CJK text and long words is covered by
 the `UILayout` unit suite.
-

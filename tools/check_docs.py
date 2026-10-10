@@ -88,7 +88,7 @@ def parse(text):
 
 def documents(root):
     result = subprocess.run(['git', 'ls-files', '--cached', '--others',
-                             '--exclude-standard', '-z', '--', '*.md', 'tools/README', 'debian/README.*'],
+                             '--exclude-standard', '-z', '--', '*.md', 'INSTALL', 'tools/README', 'debian/README.*'],
                             cwd=root, capture_output=True, check=True)
     # CLAUDE.md and .claude/skills are aliases, never separate canonical sources.
     return sorted({Path(p.decode()) for p in result.stdout.split(b'\0')

@@ -89,4 +89,3 @@ clip sampling its own model quadrant. Its `--validate-opacity` diagnostic captur
 composites and verifies that opacity changes reuse cached poses. The
 `--validate-cache` diagnostic checks cache hits, repainting, material-map and
 region changes, texture address reuse and atlas overflow, and saves images for pixel comparison.
-

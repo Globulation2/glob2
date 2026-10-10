@@ -91,6 +91,34 @@ scons role=relay release=1 relay
 
 Ordinary debug compilation provides detailed debugger symbols. Use `release=1` for representative performance and release packaging. Fast development success does not establish release readiness. [Native tests](../../test/README.md) explains test selection; [release guides](../releases/README.md) explain packaging and publication.
 
+## Install a Linux source build
+
+Use an ordinary optimized build for installation. Keep the selected compiler and dependency-prefix settings from setup; development fast/PCH/unity builds are not release artifacts. Run from the repository root:
+
+```sh
+scons release=1 install
+```
+
+On Linux the defaults install the executable to `/usr/local/bin/glob2` and verified runtime assets to `/usr/local/share/glob2`. Desktop entries, icons and AppStream metadata go under `/usr/local/share`. Writing the default destinations requires appropriate filesystem permissions. To install under your own account instead:
+
+```sh
+scons release=1 \
+  BINDIR="$HOME/.local/bin" \
+  INSTALLDIR="$HOME/.local/share" \
+  DATADIR="$HOME/.local/share/glob2" install
+"$HOME/.local/bin/glob2"
+```
+
+| Option | Linux default | Meaning |
+| --- | --- | --- |
+| `BINDIR` | `/usr/local/bin` | Executable installation directory. |
+| `INSTALLDIR` | `/usr/local/share` | Parent for `glob2/` runtime assets and desktop integration. |
+| `DATADIR` | `/usr/local/share` | Compiled data-search fallback; independent of `INSTALLDIR`. Set it to the actual `glob2/` asset root when overriding the layout. |
+
+On Linux the executable also discovers `<executable-prefix>/share/glob2`, so the standard `bin/` and `share/glob2/` layout remains relocatable. For staging a release package, keep `BINDIR` and `INSTALLDIR` at staging destinations and `DATADIR` at the intended runtime location; use the [desktop release procedure](../releases/desktop.md) for the package’s dependency and qualification requirements. With `GLOB2_SDL3_PREFIX`, Linux installation includes the selected SDL3 shared libraries under the executable prefix’s `lib/glob2` and removes the build-prefix runtime search path. Other system-library dependencies still belong to the selected distribution environment.
+
+`install` exports and installs the runtime asset tree. Run `dist` and `install` as separate SCons invocations. `scons -c` cleans the selected build configuration; it is not an uninstall command. macOS app bundles, Windows installers, browser publication and mobile packages use their [platform release workflows](../releases/README.md).
+
 ## Output and configuration
 
 Default outputs live under `build/<toolchain>/<role>/<mode>`; native toolchains are `darwin`, `linux` and `mingw`. `--build=PATH` selects an output directory with a matching build identity. Generated configuration is under that directory, never in the source root. Options are explicit on each invocation, not loaded from an earlier options cache. `scons -c` cleans the selected configuration. `GLOB2_BUILD_DIR` tells test tools about a nondefault directory.

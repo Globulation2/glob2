@@ -68,4 +68,3 @@ replacement: if it fails, the new local file remains available for export while
 the previously persisted browser copy remains intact. A retry creates a new save
 operation; each operation's terminal state is sticky and its success callback
 runs once. Other background string writers still keep the newest queued snapshot.
-

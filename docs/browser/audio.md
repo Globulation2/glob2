@@ -66,4 +66,3 @@ over an observation interval; startup/refill and actual starvation are different
 states. These counters establish application supply, not hardware continuity.
 See [audio verification](../development/testing/assets.md#audio-buffering-and-cpu-contention)
 for deterministic, browser and contention tests.
-

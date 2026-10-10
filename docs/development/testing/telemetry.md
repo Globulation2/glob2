@@ -61,5 +61,3 @@ coordinator. It checks log transfer, complete final telemetry, offline record
 counts, export-on/off per-tick checksums, and repeated save/load telemetry
 continuation. Host entries need absolute `bundle` paths; workers are stopped after
 collection. See [tournament telemetry](../../tools/tournaments.md#gameplay-ai-and-performance-telemetry).
-
-

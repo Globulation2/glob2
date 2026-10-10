@@ -179,4 +179,3 @@ them with matching available full evidence; `CI_TIER_BASELINE_RUN_ID` may specif
 a preferred baseline. Missing evidence or setting the flag false restores
 conservative affected-PR coverage. These settings never reduce master coverage or
 start expensive PR checks without an explicit request.
-

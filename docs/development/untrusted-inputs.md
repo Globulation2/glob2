@@ -59,4 +59,3 @@ Keep dependency review, sanitizer fuzzing of the complete load-and-step path,
 and platform replay/checksum comparisons separate from targeted rejection tests.
 See [JavaScript scripting](../scripting/javascript.md) for that interpreter's capability and
 resource boundaries.
-

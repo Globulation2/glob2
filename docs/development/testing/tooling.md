@@ -10,4 +10,3 @@ scripts compare full-game traces against retained fixtures and are documented wi
 their harness in the [verification hub](README.md). `test/build_system/`, `test/deployment/`,
 `test/transport/`, `test/relay_service/` and `test/online_service/` test the build
 system and the services.
-
