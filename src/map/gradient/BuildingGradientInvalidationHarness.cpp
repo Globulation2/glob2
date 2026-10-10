@@ -1036,6 +1036,30 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 
 }
 
+TEST_CASE("simple snapshot seed statistics match exact arrays and decline mutable overlays" * doctest::test_suite("BuildingGradientInvalidation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;map.addForbidden(3,4,0);map.addGuardArea(5,6,0);
+    map.replaceResource(7,8,Resource{WOOD,0,1,0});map.addClearArea(7,8,0);
+    using namespace gradient_preparation;
+    const auto cells=std::size_t(map.getW())*map.getH();std::vector<Uint16> original(cells),observed(cells);
+    for(auto kind:{Kind::Clear,Kind::Guard,Kind::Materials,Kind::Markets})for(bool crowding:{false,true}) {
+        Request request;request.kind=kind;request.crowding=crowding;request.allies=1;request.material=WOOD;
+        const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),request.requirements());
+        CrowdingScratch referenceScratch,observedScratch;gradient_kernel::GradientSeedShape shape;
+        seed(request,snapshot,original.data(),referenceScratch);seed(request,snapshot,observed.data(),observedScratch,&shape);
+        CHECK(original==observed);
+        const bool supported=kind==Kind::Clear || (kind==Kind::Guard && !crowding);
+        CHECK(shape.known==supported);
+        if(supported) {
+            CHECK(shape.cells==cells);
+            CHECK(shape.sources==std::size_t(std::count_if(original.begin(),original.end(),[](auto value){return value>1;})));
+            CHECK(shape.blockers==std::size_t(std::count(original.begin(),original.end(),0)));
+        } else {CHECK(shape.seedDensity()==255);CHECK(shape.blockerDensity()==255);}
+    }
+}
+
 TEST_SUITE("BuildingGradientInvalidation")
 {
 	TEST_CASE("prediction retains reader demand across rebuilds and save completion")

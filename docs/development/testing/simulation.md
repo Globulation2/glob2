@@ -353,3 +353,31 @@ and frozen traces in serial and threaded Wasm builds.
 
 
 See [save and file compatibility tests](persistence.md).
+
+## Optional gradient backend
+
+The `OpenCLGradient` unit suite compares complete fields with an independent heap
+oracle across movement classes, caps, seeds, obstacles, custom costs and wrapped
+grids. Every compiled GPU plan must produce exact results. It also covers
+immutable cost identities, concurrent lane isolation, batches larger than eight,
+and frozen-halo convergence across long tile-boundary paths. Unsupported devices
+exercise CPU recovery; a skipped GPU case does not establish GPU coverage.
+
+Shared policy tests cover conservative CPU defaults, explicit plan execution,
+owner and resumable-search exclusion, failed initialization, original-seed
+recovery, bounded observation drops and stale generation/version rejection.
+`ComputeExecutor` tests worker-only admission, required-work and presentation
+priority, thread-creation failure and owner exclusion. `GradientPipeline` tests
+fixed publication deadlines across backend and executor changes.
+
+Run the focused field suites with:
+
+```sh
+GLOB2_GRADIENT_BACKEND=opencl python3 test/run_tests.py --binary unit --filter '*Gradient*/*'
+```
+
+Measure accounting off/on with identical established plans, seeds and eight
+compute slots. Initialization, queue delay, execution and publication waits are
+distinct boundaries. Field equality does not replace per-tick replay and
+save-continuation checks. See [simulation architecture](../../architecture/simulation.md)
+and [compute benchmarks](../compute-benchmarks.md).

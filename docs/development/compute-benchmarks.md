@@ -2,6 +2,21 @@
 
 Measure scheduled AI, gradients, growth and scene preparation using retained inputs. Use [telemetry contracts](performance-telemetry.md) to interpret exported fields.
 
+## Optional barrier participation diagnosis
+
+`GLOB2_COMPUTE_BARRIER_DIAGNOSTICS=1` records fixed counters for worker
+participation in blocking `run()` generations. Empty invocations claimed no jobs;
+late completed generations were already complete when a worker first observed
+them. These distinct counters leave execution unchanged. Actual worker/owner
+parallel job counts normalize participation. Two CPU clock reads per invocation
+are enabled only with this flag; the default template path retains the original
+loop without added per-job counters or clock reads. Inclusive invocation CPU
+contains the empty-invocation component, so never add the two. Unavailable or
+reversed clocks count invalid measurements and contribute zero CPU. Deferred
+AI/gradient work is counted separately by existing deferred metrics. The fixed
+scalar copy is available through `ComputeExecutor::metrics()` and warm gradient
+metric exports; these diagnostic samples do not establish a scheduling benefit.
+
 ## Scheduled AI decisions and shared computation
 
 All shipped controllers borrow immutable engine snapshots for decisions. The simulation
@@ -33,6 +48,21 @@ than one decision and the smoothed decision work of recent batches is at least 1
 otherwise the owner decides it inline when it dispatches, outside the executor. That
 choice changes which thread runs a decision, never its result.
 
+`GLOB2_AI_SCHEDULER_DIAGNOSTICS=1` enables thread CPU measurement around
+`DecisionAndCommandCapture` (inclusive controller decision and command creation)
+and separate `InputRelease` (observation and closure cleanup). The flag is latched
+at scheduler construction; disabled callbacks perform no extra clock reads or
+counter updates. Unavailable or reversed clocks count an invalid measurement and
+contribute zero CPU. Counts include failed decisions. These counters are unsaved
+scheduler-lifetime totals across controller generations, not per-job event traces;
+independently read live scalars need not represent a coherent instant. Sample
+warm boundaries after settling work when exact aggregate attribution is needed.
+`Game::aiSchedulingCounters()` copies fixed scheduling and CPU scalars without
+constructing the full `aiMetrics()` vector or inspecting snapshots. Per-tick
+`deadlineWaitNs` and `deadlineMisses` deltas expose AI publication waits separately
+from GPU gradient publication. Thread CPU scopes remain components of total
+process CPU, and should not be added again to that process total.
+
 Orders carry observed target incarnations. The execution boundary rejects a missing or
 replaced target and queues immutable accepted/rejected feedback for a later decision.
 Controller replacement joins its work before destruction. Saving drains computation
@@ -49,6 +79,48 @@ The background pool has N−1 workers. AI, periodic/building gradients, resource
 growth and presentation share this pool. `--compute-threads 1` is the serial
 compute control. Thread creation failure and platforms without threads also leave
 no workers; the owner runs deferred batches at their joins.
+
+Forced OpenCL periodic gradients use one additional device coordinator when the
+actual participant count is at least two. It initializes the accelerator and owns
+submission, waits and readback. CPU workers seed immutable owned requests, hand
+off their original completion ticket and become available for unrelated jobs.
+Only completed output or one exact CPU recovery continuation completes that
+ticket; publication order and deadlines remain unchanged. One participant stays
+CPU-only. The coordinator is reported separately and its CPU belongs in process
+measurements; it is not an additional `--compute-threads` participant.
+
+Automatic offload learning is experimental and requires
+`GLOB2_GRADIENT_TUNING=1`. This control collects accepted-job metadata; production
+capture, live counterfactual probes and plan promotion are not enabled. The policy
+and yielding probe interfaces are qualified separately by development harnesses.
+Unknown workload classes use CPU. Published choices are
+read without doing experiments on the simulation owner. Captured optional work
+must remain outside save/publication dependencies; qualifying online promotion
+requires measured CPU savings and deadline slack. Enable default behavior only
+after the complete tuning-enabled configuration passes integrated qualification.
+Online comparisons use one global probe at most every 128 eligible requests and
+reserve at most one percent of accepted-gradient CPU over 256 ticks. Preparation
+shared by the accepted and counterfactual plans is included in both field costs,
+while only newly performed work spends optional CPU credits. An accepted CPU
+reference from the same immutable job must be frozen before admission; the
+independent resumable heap reference verifies arrays and cannot supply a faster
+or slower production CPU timing substitute.
+
+Promotion is checked only at 8, 16, 32 and subsequent doubling sample counts.
+Separate conditional Hoeffding bounds test ten percent and ten microseconds per
+field, using CPU caps reserved before execution. Alpha is spent across both tests,
+every look, and process-wide epochs that are never reused on demotion. This
+controls repeated online checks rather than applying a fixed-sample confidence
+interval repeatedly. The bound describes sampled conditional costs; subsequent
+execution failures, deadline stalls and expensive observations still demote a
+plan. Statistical completion work is included in optional CPU accounting.
+Captured references, comparison and promotion execute in the background.
+
+The default service batches only already-ready homogeneous requests with the
+same due key. Automatic mode also requires a separately accepted batch-size
+profile; a singleton decision does not qualify a larger batch. The development
+cross-deadline candidate below uses measured bounds rather than extrapolating
+singleton latency. No mode waits to fill a batch.
 
 `--ai-threads`, `--gradient-workers` and `--compute-experiments` have been removed;
 use `--compute-threads auto|N`. The optional area, initialization and hiring compute
@@ -231,9 +303,19 @@ immediately.
 `result.json` includes actual worker count, delay, jobs, published/discarded jobs,
 maximum pending buffers, deadline wait nanoseconds, and summed seeding-plus-propagation elapsed
 nanoseconds. `gradient_preparation_ns` records worker seed time collected at joins;
-snapshot capture remains part of the snapshot metrics. The latter is **not CPU time**. Whole-process user+system CPU must be
-measured externally. Timed runs drain outstanding work before stopping the timer;
-finishing work does not publish it early.
+snapshot capture remains part of the snapshot metrics. Summed elapsed time is
+**not CPU time**. Whole-process user+system CPU must be measured externally.
+Timed runs drain outstanding work before stopping the timer; finishing work does
+not publish it early.
+`benchmark_run_wall_ns` and `benchmark_run_cpu_ns` cover the interval after the
+requested warmup through the final required-work drain; `run_ns` also includes
+warmup. `benchmark_publication_wait_ns` covers publication waits in that measured
+interval. `benchmark_gradient_at_start` and `benchmark_gradient_at_end` snapshot
+bounded controller counters at its boundaries. Readiness at the measured start
+must be checked before calling a result a fixed-GPU comparison. These snapshots
+never wait for initialization or optional processing; a pass straddling a boundary
+is attributed when its counters are published. Keep cold-start results separate
+from warm-window accounting comparisons.
 
 `test/benchmark_gradient_pipeline.py` accepts the same scenario manifests as
 `test/benchmark_parallel_compute.py`. For example:
@@ -322,3 +404,227 @@ speedup even when the seed kernel uses less thread CPU time.
 
 
 See [resource benchmarks](resource-benchmarks.md) for corpus preparation, measurement isolation and growth pipeline comparisons.
+
+## Qualifying alternative gradient kernels
+
+`tools/gradient_qualification/` is an offline qualification tool, separate from the
+runtime plan portfolio and passive controller. Experimental kernels are not
+registered with `AdaptiveGradientPolicy`. A synthetic timing win cannot enable a
+new runtime plan.
+
+Install the pinned optional OpenCL Python dependency from
+`tools/gradient_qualification/requirements.txt` alongside `requirements-dev.txt`.
+A C++17 compiler, OpenCL loader and supported GPU are required. The runner builds
+its native dispatch loop and independent heap-Dijkstra oracle with `-O3`;
+Python generates fixtures, verifies outputs and records evidence outside the
+native execution timer. End-to-end samples also include host preparation,
+buffer allocation when cold, cost upload when cold, transfers and readback.
+Cold here means fresh buffer storage in an already compiled process, not a
+cold driver/process launch. Compilation is reported separately. Python orchestration remains in the total
+measurement, so these are screening measurements, not whole-game claims.
+
+```sh
+python3 -m unittest discover -s tools/gradient_qualification -p 'test_*.py'
+python3 tools/gradient_qualification/run.py --split development --device 0 \
+  --output artifacts/gradient-qualification/development
+python3 tools/gradient_qualification/analyze.py artifacts/gradient-qualification/development
+python3 tools/gradient_qualification/run.py --split stress --device 0 \
+  --output artifacts/gradient-qualification/stress
+python3 tools/gradient_qualification/analyze.py artifacts/gradient-qualification/stress
+python3 tools/gradient_qualification/check_edges.py --device 0 \
+  --output artifacts/gradient-qualification/edges
+```
+
+The deterministic development corpus has 40 independent layouts. The final
+corpus has 1,000: 200 each at 64², 128², 256², 512² and 1024². Seed domains are
+disjoint. Ridges and canals are reserved topology families. Other families vary
+patches, corridor widths, connectivity, islands and room boundaries. Each map
+supplies three chronological fields with changes to resources, buildings,
+obstacles, terrain, seed density/clustering, movement costs and propagation
+caps. Old solved fields are never reused after deletions. Stress cases add thin,
+rectangular, awkward and larger grids. Timings and related fields from the same
+map never increase the independent-map count.
+
+`protocol.json` declares candidate classes and gates before evaluation. A map
+wins only if every chronological field within its qualifying class beats every existing GPU plan
+in both cold and warm measurements, by more than 5%, 10 µs and three median
+absolute deviations. Five warm repetitions improve precision without creating
+new maps. No timing outliers are removed. Qualification needs at least 100
+held-out class maps and wins on at least 90% of them. Missing samples,
+inexactness, device failures and inconclusive results cannot qualify.
+
+A development survivor is required before opening final holdouts:
+
+```sh
+python3 tools/gradient_qualification/run.py --split final --device 0 \
+  --development-report artifacts/gradient-qualification/development/analysis.json \
+  --stress-report artifacts/gradient-qualification/stress/analysis.json \
+  --edge-report artifacts/gradient-qualification/edges/result.json \
+  --output artifacts/gradient-qualification/final
+python3 tools/gradient_qualification/analyze.py artifacts/gradient-qualification/final
+```
+
+The runner also requires matching-source stress and adversarial-edge reports.
+Only candidates that survived development can qualify in the final campaign;
+other candidates remain comparison controls. The runner records consumed holdouts
+after successful compilation and device setup, immediately before generating
+inputs, under `artifacts/gradient-qualification/consumed-holdouts`
+and refuses a second campaign on the same final roster.
+
+Freeze sources, protocol, corpus identity and workload classes before final
+inputs are generated. Do not tune against final results; a failed final campaign
+requires a newly designed independent evaluation, not rerunning the same seeds
+until they pass. Completion receipts bind the frozen protocol, source inventory, corpus and raw
+results, including exact record and execution counts. Analyze archived evidence
+with its archived source revision; a different analyzer must not silently
+reinterpret its gates. The artifacts contain every sample, input hashes, compilation
+options, source hashes and device metadata. The device lock is cooperative and
+does not establish exclusive GPU use.
+
+`backend.py` owns GPU execution and native compilation; `contracts.py` owns
+plan descriptors, source identity and evidence validation. `run.py` orchestrates
+the campaign, while `analyze.py` applies qualification policy without GPU access.
+Production plan parameters come from the shared runtime descriptor table.
+
+Offline qualification never sets `admitted`. Production admission additionally
+requires cheap, measured classification, useful coverage beyond all retained
+alternatives, and a removal ablation in stratified real simulations. Keep eight
+compute slots including the owner, verify checksums/save/replay/continuation,
+include early/middle/late segments and cold/warm/render contention, and measure
+total runtime, tick tails and publication waits. Runtime inputs and publication
+semantics must remain unchanged. A synthetic class absent from ordinary game
+work, or a class whose detection costs erase its advantage, is insufficient.
+
+## Development execution ablations
+
+Screen independent required-work controls before combining finalists:
+
+- `GLOB2_GRADIENT_WORKER_NOOP=1` checks already finished seed arrays on their
+  preparation worker and runs the existing validated CPU shortcut, avoiding an
+  accelerator request and coordinator wakeup. Requested/selected GPU counters can
+  increase while actual GPU execution remains zero for these fields.
+- `GLOB2_OPENCL_ACTIVE_EPOCH=1` replaces each next-active mask clear with an
+  epoch value. Both masks are initialized at every batch, and inactive pingpong
+  copies still preserve coherence. Report mask initialization/clear and dispatch
+  counts; the extra initialization can outweigh savings on short jobs.
+- `GLOB2_OPENCL_PARITY_BOUND=1` uses two lane-private kernels with opposite fixed
+  pingpong bindings, reducing repeated argument updates. Common shape/cost
+  arguments are rebound for every batch. Report argument-update and dispatch
+  counts separately from process CPU.
+- `GLOB2_OPENCL_DIRECT_SEED_UPLOAD=1` removes the seed-to-staging copy for an
+  entire singleton request. Upload completion still precedes release of original
+  seed ownership. Readback uses separate staging and commits only after all
+  session/device checks pass. Mixed batches, including a singleton tail chunk,
+  retain their staging copies. Report copied/uploaded byte counters as well as
+  process CPU; this control does not remove dispatches or convergence checks.
+
+All four default to zero. Required-only kernel ablations are declined by the
+optional yielding probe until matching probe execution is independently qualified.
+Do not enable automatic promotion from a required-only alternative's measurements.
+Changing check intervals, polling, batching or driver profiling changes the
+candidate configuration and requires a separate recorded comparison.
+
+### Offline-profile cross-deadline batching
+
+`GLOB2_GRADIENT_CROSS_DUE=1` together with
+`GLOB2_GRADIENT_BATCH_PROFILE=PATH` enables a forced-OpenCL development candidate.
+The profile is read, hashed and validated on the background coordinator. It admits
+only already-ready Clear/Guard fields with matching immutable cost owner,
+revision/variant, workload features and a directly measured homogeneous batch-size
+bound. Unknown seed classes, crowding, unmatched profiles and insufficient cadence
+history stay singleton. Seed/blocker density is counted during the existing seed
+stores when this mode is requested, without an additional classification scan.
+
+The JSON profile uses schema 1, an immutable `source` evidence reference,
+`native_binary_sha256`, `measurement="homogeneous-ready-batch"`, a `backend`
+configuration object, and at most 32 `profiles`. Backend identity includes device,
+the selected OpenCL GPU ordinal and physical `cl_khr_device_uuid` bytes as
+`device_uuid_hex`, platform/vendor/version, device vendor/version, driver version and OpenCL-C
+version, plus check interval, polling, epoch, uniform metadata, profiling and
+parity-binding and direct-seed-upload settings. Missing identity or an executable/driver mismatch declines
+the profile. An unavailable device UUID declines offline batching evidence but does not disable
+ordinary accelerator execution. Query constants follow the
+[Khronos OpenCL extension header](https://github.com/KhronosGroup/OpenCL-Headers/blob/main/CL/cl_ext.h).
+The native executable SHA256 is streamed once in the background;
+the manifest/source hash counters are diagnostic fingerprints, not evidence
+qualification or cryptographic authentication.
+
+Each profile declares dimensions, family, CPU bucket count, CPU participant count,
+batch size, cost limit, movement/modifier and seed/blocker density features, plan,
+cost revision/variant, `max_measured_elapsed_ns`, `completion_margin_ns`, and
+`measured_batches` of at least eight. Generate these values from retained actual
+batch measurements; do not manufacture a bound by multiplying singleton latency.
+The parser caps input at 64 KiB and depth eight; retained and temporary parsing
+storage are charged to the accelerator host budget.
+
+The owner sends only bounded cadence metadata. The coordinator retains a
+128-observation rolling minimum, requiring at least 16 valid observations. It
+admits a batch only if twice the measured maximum plus the completion margin fits
+its estimate of every field's publication deadline. Faster observed cadence
+invalidates queued estimates. Future ticks can accelerate after dispatch: this
+empirical gate is not a guarantee about an in-flight batch. Keep the candidate
+forced and opt-in until integrated publication/tick/frame tail gates pass.
+`cross_due_requested`, `cross_due_ready` and `cross_due_batches` distinguish request,
+profile availability and actual execution; zero actual batches means no batching
+benefit was tested. Automatic cross-deadline execution remains disabled.
+
+### Background CPU envelope diagnostics
+
+`GLOB2_GRADIENT_CPU_ENVELOPE=1` enables a diagnostic process-CPU envelope around
+required coordinator batches. CPU workers initialize bounded role-clock storage;
+the simulation and rendering threads only register their actual roles after that
+storage is available. No optional sampler is joined by publication. With one
+compute slot and no coordinator, the registry can remain unavailable.
+
+The outer process interval encloses the sampled inner owned-thread intervals.
+Their difference is an **unknown CPU upper bound**, including unregistered
+threads, boundary differences and driver work. Missing/churned clocks are omitted;
+clock errors invalidate a window. Neither the difference nor the batch sum is a
+causal driver measurement or total process CPU for the simulation window. Driver
+cleanup may continue after device completion. Registration, storage and sampler
+CPU are reported, and sampler CPU is already included in process CPU. These
+diagnostics do not authorize automatic plan promotion.
+
+`device_observed_fields` counts fields with at least one kernel dispatch whose
+completion was proved by an in-order read. `committed_fields` counts successful
+transactional GPU outputs. A later failure can increase the former without the
+latter; publication still requires exact output or an original-seed CPU recovery.
+Coordinator diagnostics expose this distinction and fallback after observation.
+
+### Normal presentation CPU boundaries
+
+For a fresh `game repeat FILE --display --runs 1 --ticks END` diagnostic run,
+`GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH` selects a JSON report written after the
+simulation stops. Set positive `GLOB2_RENDERED_CPU_WARMUP_TICKS` and
+`GLOB2_RENDERED_CPU_MEASURE_TICKS` explicitly. The requested boundaries are the
+loaded game's initial tick plus warmup, and that tick plus measure. Both must
+fit the existing absolute `--ticks` ending target; these variables never change
+simulation tick counts, publication deadlines or save/replay behavior.
+
+Two fixed endpoint slots record all-thread process CPU, simulation-owner CPU,
+monotonic wall time and scalar gradient/AI counters after the named completed
+ticks. Start metadata is captured before the process-clock reading; endpoint
+metadata is captured after the end reading. The simulation loop performs no
+report allocation, JSON, I/O, pending-job scan or device/service status query.
+This opt-in also enables diagnostic CPU clocks for normal performance scopes
+before the simulation thread starts and restores the previous clock afterward.
+To collect additional gradient stages and AI job CPU, independently set
+`GLOB2_GRADIENT_DIAGNOSTICS=1` and `GLOB2_AI_SCHEDULER_DIAGNOSTICS=1` before startup.
+The report records whether those counters were enabled.
+
+The interval is labelled `[start_tick,end_tick)`, with both boundaries after
+completed ticks. Completed-job counters can straddle these boundaries; their
+nontransactional deltas are approximate observations, not an exact CPU ceiling.
+Owner join and nested scope totals are inclusive and must not be summed with
+propagation or their child scopes. Missing endpoints and zero/reversed clocks
+produce invalid evidence and null CPU deltas. Warm committed GPU field counts
+are scalar pipeline observations; backend dispatch and coordinator totals are
+separately sampled after stop and explicitly describe cumulative process/session
+activity outside the measured window. They do not establish warm dispatch counts.
+Normal performance metadata and the post-stop `rendering_identity` object report
+the actual backend plus `gl_identity_available`, `gl_vendor` and `gl_renderer`.
+GL strings are read only on the presentation thread while its context is current;
+otherwise they are unavailable. An `opengl` backend alone does not establish
+hardware presentation: software implementations such as llvmpipe also use GL.
+Use matching assets, checksums/replay, renderer settings and external resource
+controls for comparisons; this diagnostic alone never qualifies automatic mode.

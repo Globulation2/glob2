@@ -11,6 +11,7 @@
 
 namespace gradient_preparation
 {
+struct IgnoreSeedValue {void operator()(Uint16) const noexcept {}};
 // Run supplies either the owner's fixed chunk barrier or one worker's range.
 // Both callers read the same plain records and preserve goal/obstacle precedence.
 template<class Run>
@@ -49,8 +50,8 @@ void materialCells(const MapState::View& view, const Uint32* fog, int team, int 
     if (suppliers) prepare(std::true_type{}); else prepare(std::false_type{});
     });
 }
-template<class Run>
-void clearCells(const MapState::View& view, bool farm, int team, int swim, Uint16* out, Run run)
+template<class Run,class Observe=IgnoreSeedValue>
+void clearCells(const MapState::View& view, bool farm, int team, int swim, Uint16* out, Run run,Observe observe={})
 {
     constexpr Uint8 blocked=1, clearable=2, farmClearable=4;
     std::array<Uint8, ResourceRegistry::Capacity> traits;
@@ -74,12 +75,13 @@ void clearCells(const MapState::View& view, bool farm, int team, int swim, Uint1
                 }
             }
             out[i]=value;
+            observe(value);
         }
     });
     });
 }
-template<class Run>
-bool guardCells(const MapState::View& view, Uint32 allies, int team, int swim, Uint16* out, Run run)
+template<class Run,class Observe=IgnoreSeedValue>
+bool guardCells(const MapState::View& view, Uint32 allies, int team, int swim, Uint16* out, Run run,Observe observe={})
 {
     std::array<Uint8, ResourceRegistry::Capacity> blocked;
     const auto& properties=view.resourceRegistry->propertyTable();
@@ -99,6 +101,7 @@ bool guardCells(const MapState::View& view, Uint32 allies, int team, int swim, U
                 if (terrainAt(i)!=GRADIENT_FORBIDDEN) value=(view.areas[i].guard&mask)?GRADIENT_AT_GOAL:GRADIENT_UNREACHABLE;
             }
             out[i]=value;
+            observe(value);
             count += value==GRADIENT_AT_GOAL;
         }
         painted.fetch_add(count,std::memory_order_relaxed);

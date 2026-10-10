@@ -8,6 +8,7 @@
 // must remain stable until the call finishes; pipelined jobs use a water snapshot.
 #include "GradientRelaxation.h"
 #include "GradientWorkspace.h"
+#include "GradientBackend.h"
 
 #include <algorithm>
 #include <cstddef>
@@ -23,7 +24,7 @@ namespace gradient_kernel
 // The cap limits propagation, not the supplied seed values. Preserve those
 // values even when a deferred seed lies beyond the last expandable cost layer.
 template<class IsWater>
-void propagateField(std::uint16_t *gradient, int swimClass, int maxCost,
+void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
 	field::Grid geometry, GradientWorkspace &workspace, IsWater isWater)
 {
 	auto *buckets = workspace.buckets.data();
@@ -75,4 +76,20 @@ void propagateField(std::uint16_t *gradient, int swimClass, int maxCost,
 		sweep(std::true_type(), waterSteps, isWater);
 	}
 }
+// Same entry point for CPU and optional exact full-field accelerators. Resumed
+// searches still use expandBucket, since their completed-layer state is observable.
+template<class IsWater>
+void propagateField(std::uint16_t* gradient, int swimClass, int maxCost,
+                    field::Grid grid, GradientWorkspace& workspace, IsWater isWater, CostIdentity identity = {})
+{
+    const auto costs = [&](std::size_t i) {
+        return weightedClass(swimClass) && isWater(i)
+            ? entrySteps(WATER_STEP[swimClass]) : LAND_STEPS;
+    };
+    const auto cpu = [&](std::uint16_t* out) {
+        propagateFieldCPU(out, swimClass, maxCost, grid, workspace, isWater);
+    };
+    if (!tryAcceleratedGradient(gradient, maxCost, grid, *workspace.backendSession, costs, cpu, std::move(identity), workspace.family)) cpu(gradient);
+}
+
 }

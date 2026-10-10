@@ -15,9 +15,30 @@
 #include <mutex>
 #include <limits>
 #include <string>
+#include <Environment.h>
+#include <future>
 
 TEST_SUITE("ComputeExecutor")
 {
+TEST_CASE("startup thread identities distinguish pool slots and reset on reconfiguration")
+{
+    const auto owner=glob2::nativeThreadId();
+    if(!owner || !GAGCore::ThreadSupport::available)return;
+    ComputeExecutor executor;executor.configure(3);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    auto ids=executor.threadIds();
+    REQUIRE(ids.size()==3);
+    while((ids[1]==0 || ids[2]==0) && std::chrono::steady_clock::now()<until) {
+        std::this_thread::yield();ids=executor.threadIds();
+    }
+    REQUIRE(ids[1]!=0);REQUIRE(ids[2]!=0);
+    CHECK(ids[0]==owner);CHECK(ids[1]!=owner);CHECK(ids[2]!=owner);CHECK(ids[1]!=ids[2]);
+    CHECK(executor.threadIds()==ids);
+    executor.configure(1);CHECK(executor.threadIds()==std::vector<std::uint64_t>{owner});
+    executor.configure(3,[](auto)->std::thread{throw std::runtime_error("launch failed");});
+    CHECK(executor.threadIds()==std::vector<std::uint64_t>{owner});
+}
+
 TEST_CASE("automatic sizing follows hardware and supports unknown CPU counts")
 {
     CHECK(defaultComputeThreadCount(0) == 1);
@@ -587,4 +608,222 @@ TEST_CASE("resumable presentation yields without advancing or retaining canceled
 }
 
 
+}
+
+TEST_CASE("worker only maintenance never uses the owner including creation failure" * doctest::test_suite("ComputeExecutor"))
+{
+    struct Service : ComputeExecutor::WorkerOnly {
+        std::atomic<unsigned> calls{0};
+        bool pending() const noexcept override { return calls.load()==0; }
+        void process() noexcept override { ++calls; }
+    };
+    for(bool fail:{false,true}) {
+        ComputeExecutor executor;
+        if(fail) executor.configure(8,[](auto)->std::thread {throw std::runtime_error("injected creation failure");});
+        else executor.configure(1);
+        REQUIRE(executor.threadCount()==1);
+        auto service=std::make_shared<Service>(); executor.setWorkerOnly(service);
+        unsigned required=0;
+        executor.run(1,[&](auto){++required;});
+        const ComputeExecutor::Group group{1,{[](void* p,std::size_t){++*static_cast<unsigned*>(p);},&required}};
+        auto batch=executor.submit(std::span(&group,1)); executor.join(batch);
+        executor.joinAll(); CHECK(required==2); CHECK(service->calls.load()==0);
+    }
+}
+TEST_CASE("worker only maintenance yields to required jobs and cannot delay their completed join" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    struct Service : ComputeExecutor::WorkerOnly {
+        std::atomic<bool> entered{false},release{false};
+        std::atomic<unsigned>& required;
+        std::atomic<unsigned>& presentation;
+        unsigned observed=0, observedPresentation=0; bool onWorker=false;
+        Service(std::atomic<unsigned>& required,std::atomic<unsigned>& presentation):required(required),presentation(presentation) {}
+        bool pending() const noexcept override { return !entered.load(); }
+        void process() noexcept override {
+            observed=required.load(); observedPresentation=presentation.load(); onWorker=ComputeExecutor::workerSlot()!=0; entered=true;
+            while(!release.load()) std::this_thread::yield(); // test-only held pass
+        }
+    };
+    ComputeExecutor executor; executor.configure(3); REQUIRE(executor.threadCount()==3);
+    std::atomic<unsigned> required{0},entered{0}; std::atomic<bool> release{false};
+    struct Context {std::atomic<unsigned>& required;std::atomic<unsigned>& entered;std::atomic<bool>& release;} context{required,entered,release};
+    const ComputeExecutor::Group first{2,{[](void* p,std::size_t){
+        auto& c=*static_cast<Context*>(p);++c.entered;while(!c.release.load())std::this_thread::yield();++c.required;
+    },&context}};
+    auto a=executor.submit(std::span(&first,1));
+    while(entered.load()!=2) std::this_thread::yield();
+    std::atomic<unsigned> presentation{0};
+    auto ticket=executor.submitPresentation(12,[&](auto){++presentation;});
+    auto service=std::make_shared<Service>(required,presentation); executor.setWorkerOnly(service);
+    const ComputeExecutor::Group second{1,{[](void* p,std::size_t){++*static_cast<std::atomic<unsigned>*>(p);},&required}};
+    auto b=executor.submit(std::span(&second,1)); release=true;
+    const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->entered.load() && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
+    const bool ran=service->entered.load();
+    if(ran) { executor.join(a); executor.join(b); }
+    service->release=true;
+    CHECK(ran); if(ran) { CHECK(service->observed==3); CHECK(service->observedPresentation==12); CHECK(service->onWorker); }
+    executor.join(a);executor.join(b);
+    CHECK(executor.threadCount()==3);
+}
+
+TEST_CASE("suspended device work releases the only worker and preserves lane completion" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context {
+        ComputeExecutor& executor;
+        std::mutex mutex;
+        std::condition_variable ready;
+        ComputeExecutor::CompletionTicket ticket;
+    } context{executor};
+    const ComputeExecutor::Group device{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        auto ticket = state.executor.defer();
+        { std::lock_guard lock(state.mutex); state.ticket = std::move(ticket); }
+        state.ready.notify_one();
+    }, &context}, 9};
+    auto first = executor.submit(std::span(&device, 1), 10);
+    ComputeExecutor::CompletionTicket ticket;
+    {
+        std::unique_lock lock(context.mutex);
+        REQUIRE(context.ready.wait_for(lock, std::chrono::seconds(5), [&] { return bool(context.ticket); }));
+        ticket = context.ticket;
+    }
+    std::atomic<unsigned> unrelated{0}, successor{0};
+    auto increment = [](void* value, std::size_t) { ++*static_cast<std::atomic<unsigned>*>(value); };
+    const ComputeExecutor::Group next{1, {increment, &successor}, 9}, other{1, {increment, &unrelated}};
+    auto second = executor.submit(std::span(&next, 1), 11);
+    auto loose = executor.submit(std::span(&other, 1), 11);
+    executor.join(loose);
+    CHECK(unrelated == 1); CHECK(successor == 0); CHECK_FALSE(executor.finished(first));
+    CHECK(ticket->complete()); CHECK_FALSE(ticket->complete());
+    executor.join(first); executor.join(second);
+    CHECK(successor == 1); CHECK_FALSE(ticket->complete());
+}
+
+TEST_CASE("early device failure resumes exactly once on the worker at its original lane position" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context {
+        ComputeExecutor& executor;
+        std::atomic<unsigned> recovered{0}, successor{0};
+        std::atomic<bool> resumed{false}, duplicate{false}, worker{false};
+    } context{executor};
+    const ComputeExecutor::Group first{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        auto ticket = state.executor.defer();
+        const ComputeExecutor::Job recover{[](void* value, std::size_t) {
+            auto& state = *static_cast<Context*>(value);
+            state.worker = ComputeExecutor::workerSlot() != 0;
+            ++state.recovered;
+        }, value};
+        state.resumed = ticket->resume(recover);
+        state.duplicate = ticket->resume(recover);
+    }, &context}, 10};
+    const ComputeExecutor::Group next{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        if (state.recovered == 1) ++state.successor;
+    }, &context}, 10};
+    auto a = executor.submit(std::span(&first, 1), 3);
+    auto b = executor.submit(std::span(&next, 1), 4);
+    executor.join(a); executor.join(b);
+    CHECK(context.resumed); CHECK_FALSE(context.duplicate); CHECK(context.worker);
+    CHECK(context.recovered == 1); CHECK(context.successor == 1);
+}
+
+TEST_CASE("early asynchronous completion cannot release an invoking callback's inputs" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context { ComputeExecutor& executor; std::atomic<bool> finishedInside{true}; } context{executor};
+    const ComputeExecutor::Group group{1, {[](void* value, std::size_t) {
+        auto& state = *static_cast<Context*>(value);
+        auto ticket = state.executor.defer();
+        if (!ticket->complete(std::make_exception_ptr(std::runtime_error("device failure")))) return;
+        state.finishedInside = state.executor.liveBatches() == 0;
+    }, &context}};
+    auto batch = executor.submit(std::span(&group, 1));
+    CHECK_THROWS_AS(executor.join(batch), std::runtime_error);
+    CHECK_FALSE(context.finishedInside);
+}
+
+TEST_CASE("continuation of a nonzero lane-group index keeps its original sequence" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor executor; executor.configure(2);
+    struct Context { ComputeExecutor& executor; std::vector<unsigned> order; } context{executor};
+    const ComputeExecutor::Group group{3, {[](void* value,std::size_t index) {
+        auto& state=*static_cast<Context*>(value);
+        if(index==1) {
+            auto ticket=state.executor.defer();
+            ticket->resume({[](void* value,std::size_t index) {
+                auto& state=*static_cast<Context*>(value);
+                CHECK(index==0); state.order.push_back(1);
+            },value});
+        } else state.order.push_back(unsigned(index));
+    },&context},12};
+    auto batch=executor.submit(std::span(&group,1)); executor.join(batch);
+    CHECK(context.order==std::vector<unsigned>{0,1,2});
+}
+
+TEST_CASE("retained completion tickets can be resolved after executor destruction" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    ComputeExecutor::CompletionTicket ticket;
+    {
+        ComputeExecutor executor; executor.configure(2);
+        struct Context { ComputeExecutor& executor; ComputeExecutor::CompletionTicket& ticket; } context{executor,ticket};
+        const ComputeExecutor::Group group{1,{[](void* value,std::size_t) {
+            auto& state=*static_cast<Context*>(value);
+            state.ticket=state.executor.defer(); state.ticket->complete();
+        },&context}};
+        auto batch=executor.submit(std::span(&group,1)); executor.join(batch);
+    }
+    CHECK_FALSE(ticket->complete());
+}
+
+
+TEST_CASE("optional barrier diagnostics distinguish completed late generations from useful worker claims" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Environment {
+        std::string previous=std::getenv("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS") ? std::getenv("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS") : "";
+        explicit Environment(bool enabled){GAGCore::setProcessEnvironment("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS",enabled ? "1" : "0",1);}
+        ~Environment(){GAGCore::setProcessEnvironment("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS",previous.c_str(),1);}
+    };
+    for(bool enabled:{false,true}){
+        Environment environment(enabled);ComputeExecutor executor;executor.configure(2);
+        struct Gate {std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();std::atomic<bool> opened{false};
+            void open(){if(!opened.exchange(true))release.set_value();}};
+        auto gate=std::make_shared<Gate>();struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} cleanup{gate};
+        auto entered=gate->entered.get_future();
+        const ComputeExecutor::Group held{1,{[](void* value,std::size_t){auto& gate=*static_cast<Gate*>(value);gate.entered.set_value();gate.released.wait();},gate.get()}};
+        auto ticket=executor.submit(std::span(&held,1),100);
+        const auto reached=entered.wait_for(std::chrono::seconds(5));if(reached!=std::future_status::ready)gate->open();
+        REQUIRE(reached==std::future_status::ready);
+        std::atomic<unsigned> calls{0};executor.run(2,[&](auto){++calls;});CHECK(calls==2);
+        // The sole worker missed this entire generation. Let it observe that
+        // completed generation and make its existing empty invoke unchanged.
+        gate->open();executor.join(ticket);
+        const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        if(enabled){while(executor.metrics().workerParallelInvokes!=1 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+            const auto first=executor.metrics();CHECK(first.workerParallelInvokes==1);CHECK(first.workerEmptyParallelInvokes==1);
+            CHECK(first.workerLateCompletedGenerations==1);CHECK(first.workerParallelJobs==0);CHECK(first.ownerParallelJobs==2);}
+        const auto simultaneousDeadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        std::atomic<unsigned> simultaneous{0};std::atomic<bool> overlapped{true};
+        executor.run(2,[&](auto){++calls;++simultaneous;
+            while(simultaneous.load()<2 && std::chrono::steady_clock::now()<simultaneousDeadline)std::this_thread::yield();
+            if(simultaneous.load()<2)overlapped=false;});
+        CHECK(overlapped);CHECK(calls==4);
+        const auto totals=executor.metrics();CHECK(totals.barrierDiagnostics==enabled);
+        if(enabled){CHECK(totals.workerParallelInvokes==2);CHECK(totals.workerEmptyParallelInvokes==1);
+            CHECK(totals.workerLateCompletedGenerations==1);CHECK(totals.workerParallelJobs==1);CHECK(totals.ownerParallelJobs==3);
+            CHECK(totals.workerEmptyParallelInvokeCpuNs<=totals.workerParallelInvokeCpuNs);
+            CHECK(totals.ownerEmptyParallelInvokeCpuNs<=totals.ownerParallelInvokeCpuNs);}
+        else {CHECK(totals.workerParallelInvokes==0);CHECK(totals.workerEmptyParallelInvokes==0);CHECK(totals.workerLateCompletedGenerations==0);
+            CHECK(totals.workerParallelJobs==0);CHECK(totals.ownerParallelJobs==0);CHECK(totals.workerParallelInvokeCpuNs==0);CHECK(totals.ownerParallelInvokeCpuNs==0);}
+    }
 }

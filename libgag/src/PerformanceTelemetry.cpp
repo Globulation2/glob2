@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <PerformanceTelemetry.h>
 #include <algorithm>
+#include <atomic>
+#include <bit>
+#include <limits>
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
@@ -23,6 +26,7 @@ constexpr Descriptor descriptors[] = {
 #undef PERF_SCOPE
 };
 thread_local Scope *top = nullptr;
+std::atomic<Clock> diagnosticClock{nullptr};
 unsigned index(Id id)
 {
 	return static_cast<unsigned>(id);
@@ -35,6 +39,8 @@ void printBudget(std::ostream &out, const char *name, const Budget &b)
 }
 void printMetric(std::ostream &out, const Metric &m, unsigned stride)
 {
+	if (m.cpuSamples) out << " cpu_observed_ns=" << m.cpu << " cpu_observed_self_ns=" << m.cpuSelf
+		<< " cpu_samples=" << m.cpuSamples << " cpu_self_complete=" << m.cpuSelfComplete;
 	out << " calls=" << m.calls << " samples=" << m.time.count << " stride=" << stride;
 	if (!m.time.count)
 	{
@@ -56,6 +62,12 @@ void printMetric(std::ostream &out, const Metric &m, unsigned stride)
 		out << " self_ns=na";
 }
 } // namespace
+Clock diagnosticCpuClock() { return diagnosticClock.load(std::memory_order_relaxed); }
+void setDiagnosticCpuClock(Clock clock) {
+	diagnosticClock.store(clock,std::memory_order_relaxed);
+	collector().cpuClock=clock;
+}
+const char *scopeName(Id id) { return descriptors[index(id)].name; }
 std::uint64_t now()
 {
 	return std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -88,12 +100,67 @@ void Moments::merge(const Moments &b)
 	total += b.total;
 	maximum = std::max(maximum, b.maximum);
 }
+void DurationDistribution::add(std::uint64_t duration)
+{
+	unsigned bin = unsigned(duration);
+	if (duration >= 256) {
+		const unsigned exponent = std::bit_width(duration) - 1;
+		bin = 256 + (exponent - 8) * 128 + unsigned(duration >> (exponent - 7)) - 128;
+	}
+	if (!bins[bin]) active[activeCount++] = std::uint16_t(bin);
+	++bins[bin]; ++count;
+}
+void DurationDistribution::merge(const DurationDistribution &other)
+{
+	for (unsigned i = 0; i < other.activeCount; ++i) {
+		const auto bin = other.active[i];
+		if (!bins[bin]) active[activeCount++] = bin;
+		bins[bin] += other.bins[bin];
+	}
+	count += other.count;
+}
+void DurationDistribution::clear()
+{
+	for (unsigned i = 0; i < activeCount; ++i) bins[active[i]] = 0;
+	activeCount = 0; count = 0;
+}
+std::pair<std::uint64_t, std::uint64_t> DurationDistribution::bounds(unsigned bin)
+{
+	if (bin < 256) return {bin, bin};
+	if (bin >= BinCount) return {0, std::numeric_limits<std::uint64_t>::max()};
+	const auto shift = (bin - 256) / 128 + 1;
+	const auto lower = std::uint64_t(128 + (bin - 256) % 128) << shift;
+	return {lower, lower + (std::uint64_t(1) << shift) - 1};
+}
+std::pair<std::uint64_t, std::uint64_t> DurationDistribution::percentile(unsigned percent) const
+{
+	if (!count || !percent || percent > 100) return {0, 0};
+	const auto rank = (count / 100) * percent + ((count % 100) * percent + 99) / 100;
+	std::uint64_t seen = 0;
+	for (unsigned bin = 0; bin < BinCount; ++bin) {
+		seen += bins[bin];
+		if (seen >= rank) return bounds(bin);
+	}
+	return {0, std::numeric_limits<std::uint64_t>::max()};
+}
+void Collector::enableDurationDistributions(bool enabled)
+{
+	if (enabled) distributions = std::make_unique<DurationDistributions>();
+	else distributions.reset();
+}
+void Collector::recordDistribution(Id id, std::uint64_t duration)
+{
+	if (!distributions) return;
+	if (id == Id::Tick) distributions->tick.add(duration);
+	else if (id == Id::FrameInterval) distributions->frame.add(duration);
+}
 void Metric::merge(const Metric &b)
 {
 	calls += b.calls;
 	self += b.self;
+	cpu += b.cpu; cpuSelf += b.cpuSelf; cpuSamples += b.cpuSamples;
 	time.merge(b.time);
-	selfComplete &= b.selfComplete;
+	selfComplete &= b.selfComplete; cpuSelfComplete &= b.cpuSelfComplete;
 }
 void Budget::add(std::uint64_t duration, std::uint64_t budget)
 {
@@ -156,6 +223,11 @@ void Collector::absorb(Collector &other)
 		}
 		a.window = {};
 	}
+	if (distributions && other.distributions) {
+		distributions->tick.merge(other.distributions->tick);
+		distributions->frame.merge(other.distributions->frame);
+		other.distributions->tick.clear(); other.distributions->frame.clear();
+	}
 	workBudget.merge(other.workBudget);
 	totalWorkBudget.merge(other.workBudget);
 	const auto streak = other.workBudget.streak;
@@ -175,6 +247,8 @@ void Collector::reset()
 	session = next;
 	enabled = std::getenv("GLOB2_PERF_DISABLE") == nullptr;
 	output = std::getenv("GLOB2_TEAM_TIMELINE") != nullptr;
+	const auto *distributionMode = std::getenv("GLOB2_PERF_DISTRIBUTIONS");
+	enableDurationDistributions(enabled && distributionMode && std::string(distributionMode) == "1");
 	started = windowStart = clock();
 }
 int Collector::actor(int player, int team, int implementation, std::uint32_t generation)
@@ -218,6 +292,7 @@ void Collector::record(Id id, std::uint64_t duration)
 	auto &m = window[index(id)];
 	++m.calls;
 	m.time.add(duration);
+	if (distributions) recordDistribution(id, duration);
 	m.self += duration;
 	threads[index(id)] |= 1;
 }
@@ -312,6 +387,26 @@ void Collector::write(std::ostream &out, const char *record, std::uint64_t tick,
 		printMetric(out, m, descriptors[i].stride);
 		out << '\n';
 	}
+	if (distributions) {
+		const auto writeDistribution = [&](const char *name, const DurationDistribution &hist) {
+			if (!hist.count) return;
+			prefix(); out << " scope=" << name << " distribution_count=" << hist.count
+				<< " quantile_encoding=log2_128 bounds=inclusive bins=";
+			bool first = true;
+			for (unsigned bin = 0; bin < DurationDistribution::BinCount; ++bin) if (hist.bins[bin]) {
+				if (!first) out << ',';
+				const auto [lower, upper] = DurationDistribution::bounds(bin);
+				out << lower << ':' << upper << ':' << hist.bins[bin]; first = false;
+			}
+			for (const unsigned p : {95u, 99u}) {
+				const auto [lower, upper] = hist.percentile(p);
+				out << " p" << p << "_lower_ns=" << lower << " p" << p << "_upper_ns=" << upper;
+			}
+			out << '\n';
+		};
+		writeDistribution("simulation.tick.distribution", cumulative ? distributions->totalTick : distributions->tick);
+		writeDistribution("pacing.presentation_interval.distribution", cumulative ? distributions->totalFrame : distributions->frame);
+	}
 	for (unsigned i = 0; i < actorCount; ++i)
 	{
 		const auto &a = actors[i];
@@ -353,6 +448,11 @@ void Collector::capture(std::uint64_t tick, bool force, bool final)
 	{
 		actors[i].total.merge(actors[i].window);
 		actors[i].window = {};
+	}
+	if (distributions) {
+		distributions->totalTick.merge(distributions->tick);
+		distributions->totalFrame.merge(distributions->frame);
+		distributions->tick.clear(); distributions->frame.clear();
 	}
 	const auto workStreak = workBudget.streak, frameStreak = frameBudget.streak;
 	workBudget = {};
@@ -408,6 +508,7 @@ Scope::Scope(Id scope, int actor) : id(scope), actorIndex(actor)
 		if (parent)
 			parent->complete = false;
 		m.selfComplete = false;
+		m.cpuSelfComplete = false;
 		if (call % stride != c->phase % stride)
 		{
 			c = nullptr;
@@ -416,6 +517,7 @@ Scope::Scope(Id scope, int actor) : id(scope), actorIndex(actor)
 	}
 	++c->depth;
 	start = c->clock();
+	if (c->cpuClock) cpuStart = c->cpuClock();
 	top = this;
 }
 Scope::~Scope()
@@ -426,12 +528,18 @@ void Scope::stop()
 {
 	if (!c)
 		return;
+	const auto cpuEnd = c->cpuClock ? c->cpuClock() : 0;
+    const bool cpuMeasured = c->cpuClock && cpuStart && cpuEnd>=cpuStart;
+    const auto cpuElapsed = cpuMeasured ? cpuEnd-cpuStart : 0;
 	const auto elapsed = c->clock() - start;
 	const auto duration = id == Id::Work ? elapsed - std::min(elapsed, excluded) : elapsed;
 	auto &m = c->window[index(id)];
 	m.time.add(duration);
+	if (c->distributions) c->recordDistribution(id, duration);
 	m.self += elapsed - std::min(elapsed, children);
 	m.selfComplete &= complete;
+    m.cpuSelfComplete &= cpuComplete && cpuMeasured && complete;
+	if (cpuMeasured) { m.cpu+=cpuElapsed; m.cpuSelf+=cpuElapsed-std::min(cpuElapsed,cpuChildren); ++m.cpuSamples; }
 	if (actorIndex >= 0)
 	{
 		auto &a = c->actors[unsigned(actorIndex)].window;
@@ -439,6 +547,8 @@ void Scope::stop()
 		a.time.add(duration);
 		a.self += elapsed - std::min(elapsed, children);
 		a.selfComplete &= complete;
+        a.cpuSelfComplete &= cpuComplete && cpuMeasured && complete;
+		if (cpuMeasured) { a.cpu+=cpuElapsed; a.cpuSelf+=cpuElapsed-std::min(cpuElapsed,cpuChildren); ++a.cpuSamples; }
 	}
 	if (id == Id::Work)
 	{
@@ -457,6 +567,8 @@ void Scope::stop()
 	if (parent)
 	{
 		parent->children += elapsed;
+		parent->cpuChildren += cpuElapsed;
+        parent->cpuComplete &= cpuComplete && (!c->cpuClock || cpuMeasured);
 		parent->complete &= complete;
 	}
 	--c->depth;

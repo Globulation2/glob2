@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SnapshotGradient.h"
+#include "ComputeExecutor.h"
 #include "SeedCells.h"
 #include "MapInternal.h"
 #include "Building.h"
 #include "Unit.h"
 #include "BuildingType.h"
 #include "field/RuntimeTerrainGradient.h"
+#include "field/GradientDeviceService.h"
 #include <array>
 #include <bit>
 #include <cstring>
@@ -187,8 +189,10 @@ void boxSum(Uint16* grid, int w, int h, CrowdingScratch& scratch)
 	}
 }
 
-void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, CrowdingScratch& scratch)
+void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, CrowdingScratch& scratch,
+    gradient_kernel::GradientSeedShape* shape)
 {
+    if(shape)*shape={};
     const auto view = snapshot.view();
     const auto size = size_t(view.width) * view.height;
     const Uint32 mask = Uint32(1) << request.team;
@@ -214,11 +218,16 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
                 out, request.kind==Kind::Markets ? suppliers.data() : nullptr, run);
         break;
     case Kind::Clear:
-        clearCells(view, snapshot.areas->farmEnabled, request.team, request.swim, out, run);
+        if(shape)clearCells(view,snapshot.areas->farmEnabled,request.team,request.swim,out,run,[&](Uint16 value){shape->observe(value);});
+        else clearCells(view, snapshot.areas->farmEnabled, request.team, request.swim, out, run);
         break;
     case Kind::Guard:
-        guardCells(view, request.allies, request.team, request.swim, out, run);
+        if(shape && !request.crowding)guardCells(view,request.allies,request.team,request.swim,out,run,[&](Uint16 value){shape->observe(value);});
+        else guardCells(view, request.allies, request.team, request.swim, out, run);
         break;
+    }
+    if(shape && (request.kind==Kind::Clear || (request.kind==Kind::Guard && !request.crowding))) {
+        shape->cells=size;shape->known=true;
     }
     if (request.kind == Kind::Markets)
         for (const auto& b : snapshot.entities->buildings)
@@ -256,12 +265,212 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
     }
 }
 
+namespace
+{
+std::size_t retainedTerrainBytes(const SimulationSnapshot::Terrain& terrain)
+{
+    // Supplied with the immutable lease, without scanning any map plane.
+    std::size_t bytes=sizeof(terrain)+terrain.cellRules.capacity()*sizeof(Uint16)
+        +terrain.stamps.chunks.capacity()*sizeof(Uint64);
+    if(terrain.vertices) bytes+=sizeof(*terrain.vertices)+terrain.vertices->capacity()*sizeof(TerrainType);
+    if(terrain.rules) {
+        bytes+=sizeof(*terrain.rules)+terrain.rules->capacityBytes();
+        for(unsigned swim=0;swim<std::size(gradient_kernel::WATER_STEP);++swim) {
+            const auto& movement=terrain.rules->movement(swim);
+            bytes+=movement.entries.capacity()*sizeof(gradient_kernel::EntrySteps)
+                +movement.profiles.capacity()*sizeof(gradient_kernel::EntrySteps)
+                +movement.profileIds.capacity()*sizeof(std::uint8_t)
+                +movement.steps.capacity()*sizeof(unsigned);
+        }
+    }
+    return bytes;
+}
+gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const SimulationSnapshot::Handle& snapshot)
+{
+    const auto& terrain = *snapshot.terrain;
+    // Snapshot lookups cover every cell. Valid terrain costs do not depend on
+    // this field's obstacle mask, even when movement modifiers are enabled.
+    bool allCells=!terrain.movementModifiers;
+    std::uint32_t uniform=0;
+    if(!terrain.movementModifiers) {
+        // Binary weighted swimming can vary across cells; proving it uniform
+        // would need a map scan, so leave it unknown. The land-only class is
+        // already uniform by construction.
+        if(!gradient_kernel::weightedClass(request.swim))
+            uniform=gradient_kernel::LAND_STEPS.cardinal|(gradient_kernel::LAND_STEPS.diagonal<<16);
+    } else {
+        const auto& profiles=terrain.rules->movement(request.swim).profiles;
+        allCells=true;
+        const auto first=profiles.empty() ? gradient_kernel::EntrySteps{} : profiles.front();
+        bool same=!profiles.empty();
+        // This replaces the existing validity pass: only compact cost profiles
+        // are inspected, never cells or original seed values.
+        for(const auto step:profiles) {
+            allCells=allCells && step.cardinal && step.diagonal && step.cardinal<=65535 && step.diagonal<=65535;
+            same=same && step.cardinal==first.cardinal && step.diagonal==first.diagonal;
+        }
+        if(allCells && same) uniform=first.cardinal|(first.diagonal<<16);
+    }
+    return {snapshot.terrain, std::uint64_t(request.swim), terrain.revision, allCells,retainedTerrainBytes(terrain),uniform};
+}
+}
+
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, GradientWorkspace& scratch)
 {
+    scratch.family = backendFamily(request.kind);
     gradient_kernel::propagateTerrainField(out, request.swim, gradient_kernel::COST_LIMIT,
         {snapshot.width, snapshot.height}, scratch,
         [rules=snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
-        snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets);
+        snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets,
+        snapshotCostIdentity(request, snapshot));
+}
+
+namespace
+{
+gradient_kernel::EntrySteps batchCosts(const PropagationField &field, std::size_t cell)
+{
+    using namespace gradient_kernel;
+    const auto &terrain = *field.snapshot->terrain;
+    if (!terrain.movementModifiers)
+        return weightedClass(field.request.swim) && terrain.rules->swimming(terrain.cellRules[cell])
+                   ? entrySteps(WATER_STEP[field.request.swim])
+                   : LAND_STEPS;
+    const auto &movement = terrain.rules->movement(field.request.swim);
+    return movement.profiles[movement.profileIds[terrain.cellRules[cell]]];
+}
+void batchCPU(const PropagationField &field, Uint16 *out)
+{
+    using namespace gradient_kernel;
+    const auto &terrain = *field.snapshot->terrain;
+    const field::Grid grid(field.snapshot->width, field.snapshot->height);
+    auto at = [&](std::size_t i) { return terrain.cellRules[i]; };
+    if (!terrain.movementModifiers)
+    {
+        propagateFieldCPU(out, field.request.swim, COST_LIMIT, grid, *field.scratch,
+                          [&](std::size_t i) { return terrain.rules->swimming(at(i)); });
+        return;
+    }
+    const auto &movement = terrain.rules->movement(field.request.swim);
+    if (field.request.terrainBuckets == 64)
+        runtime_terrain::propagate<64, false, false>(out, COST_LIMIT, grid, *field.scratch, at, movement);
+    else if (field.request.terrainBuckets == 128)
+        runtime_terrain::propagate<128, false, false>(out, COST_LIMIT, grid, *field.scratch, at, movement);
+    else
+        runtime_terrain::propagate<256, false, false>(out, COST_LIMIT, grid, *field.scratch, at, movement);
+}
+void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> requests,
+                   std::span<Uint16* const> destinations)
+{
+    const auto& first = *static_cast<const PropagationField*>(requests.front()->context);
+    first.executor->run(requests.size(), [&](std::size_t i) {
+        try { requests[i]->cpu(requests[i]->context, destinations[i]); }
+        catch(...) { if(requests[i]->failure) requests[i]->failure(requests[i]->context,std::current_exception()); else throw; }
+    });
+}
+} // namespace
+void propagateBatch(std::span<const PropagationField> fields)
+{
+    using namespace gradient_kernel;
+    std::vector<BackendRequest> requests;
+    requests.reserve(fields.size());
+    for (const auto &field : fields)
+    {
+        try
+        {
+            runtime_terrain::validateQueueSize(field.request.terrainBuckets);
+            const auto &terrain = *field.snapshot->terrain;
+            if (terrain.movementModifiers)
+            {
+                const auto &movement = terrain.rules->movement(field.request.swim);
+                if (std::any_of(movement.profiles.begin(), movement.profiles.end(),
+                                [&](auto cost)
+                                {
+                                    return !cost.cardinal || !cost.diagonal ||
+                                           cost.cardinal >= field.request.terrainBuckets ||
+                                           cost.diagonal >= field.request.terrainBuckets;
+                                }))
+                    for (std::size_t cell = 0;
+                         cell < std::size_t(field.snapshot->width) * field.snapshot->height; ++cell)
+                        if (field.output[cell])
+                            runtime_terrain::validateQueueEdge(batchCosts(field, cell),
+                                                               field.request.terrainBuckets);
+            }
+            requests.push_back(
+                {field.output,
+                 COST_LIMIT,
+                 {field.snapshot->width, field.snapshot->height},
+                 *field.scratch->backendSession,
+                 const_cast<PropagationField *>(&field),
+                 [](void *context, std::size_t cell)
+                 { return batchCosts(*static_cast<PropagationField *>(context), cell); },
+                 [](void *context, Uint16 *out) { batchCPU(*static_cast<PropagationField *>(context), out); },
+                 snapshotCostIdentity(field.request, *field.snapshot),
+                 backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr});
+            requests.back().cpuBuckets=field.request.terrainBuckets;
+            requests.back().failure=[](void* context,std::exception_ptr error) {
+                const auto& field=*static_cast<const PropagationField*>(context);
+                if(field.error) *field.error=error; else std::rethrow_exception(error);
+            };
+        }
+        catch (...)
+        {
+            if (field.error)
+                *field.error = std::current_exception();
+            else
+                throw;
+        }
+    }
+    executeGradientBatch(requests,backend());
+
+}
+
+namespace {
+struct OwnedPropagation {
+    Request request;
+    SimulationSnapshot::Handle snapshot;
+};
+}
+std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
+    const Request& request,const SimulationSnapshot::Handle& snapshot,std::unique_ptr<Uint16[]>& data,
+    std::shared_ptr<gradient_kernel::BackendSession> session,gradient_kernel::PlanDecision decision,std::uint64_t due)
+{
+    using namespace gradient_kernel;
+    runtime_terrain::validateQueueSize(request.terrainBuckets);
+    const auto& terrain=*snapshot.terrain;
+    if(terrain.movementModifiers) {
+        const auto& movement=terrain.rules->movement(request.swim);
+        if(std::any_of(movement.profiles.begin(),movement.profiles.end(),[&](auto cost) {
+            return !cost.cardinal || !cost.diagonal || cost.cardinal>=request.terrainBuckets || cost.diagonal>=request.terrainBuckets;
+        })) {
+            const PropagationField field{request,&snapshot,data.get(),nullptr};
+            for(std::size_t cell=0;cell<std::size_t(snapshot.width)*snapshot.height;++cell)
+                if(data[cell]) runtime_terrain::validateQueueEdge(batchCosts(field,cell),request.terrainBuckets);
+        }
+    }
+    auto inputs=std::make_shared<OwnedPropagation>(OwnedPropagation{
+        request,snapshot.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain))});
+    auto owned=std::make_shared<OwnedGradientField>();
+    owned->inputs=inputs;
+    // Conservative retained-lease charge. Shared planes may be charged more
+    // than once; the limit never assumes their external owners stay alive.
+    owned->retainedInputBytes=sizeof(OwnedPropagation)+retainedTerrainBytes(*snapshot.terrain);
+    owned->session=std::move(session);
+    owned->grid={snapshot.width,snapshot.height}; owned->identity=snapshotCostIdentity(request,snapshot);
+    owned->family=backendFamily(request.kind); owned->cpuBuckets=request.terrainBuckets;
+    owned->decision=decision; owned->due=due;
+    owned->costAt=[](const OwnedGradientField& owned,std::size_t cell) {
+        const auto& inputs=*static_cast<const OwnedPropagation*>(owned.inputs.get());
+        const PropagationField field{inputs.request,&inputs.snapshot,owned.data.get(),nullptr};
+        return batchCosts(field,cell);
+    };
+    owned->cpu=[](OwnedGradientField& owned) {
+        const auto& inputs=*static_cast<const OwnedPropagation*>(owned.inputs.get());
+        GradientWorkspace workspace; workspace.backendSession=owned.session;
+        const PropagationField field{inputs.request,&inputs.snapshot,owned.data.get(),&workspace};
+        batchCPU(field,owned.data.get());
+    };
+    owned->data=std::move(data);
+    return owned;
 }
 
 SimulationSnapshot::Requirements buildingRequirements()

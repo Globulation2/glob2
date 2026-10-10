@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "purpose": "Offline candidate screening and sealed final qualification; never live tuning",
+  "final_layouts": 1000,
+  "layouts_per_square_size": 200,
+  "sizes": [
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "held_out_topology_families": [
+    "ridges",
+    "canals"
+  ],
+  "chronological_workloads_per_layout": 3,
+  "cold_samples": 1,
+  "warm_repetitions": 5,
+  "minimum_held_out_class_maps": 100,
+  "minimum_win_fraction": 0.9,
+  "minimum_relative_advantage": 0.05,
+  "noise_multiplier_mad": 3.0,
+  "minimum_absolute_advantage_ns": 10000,
+  "independent_unit": "layout; all qualifying chronological fields must win; repetitions never count as maps",
+  "comparison": "Best median end-to-end result among all six existing GPU plans, cold and warm separately",
+  "global_class": "Complete fields at least 256*256 cells, propagation cap <=40",
+  "frontier_class": "Complete fields at least 256*256 cells, seed_count <=max(1,cells/1000)",
+  "selectability": "Existing dimensions/cap are cheap; frontier seed count requires separate cost evidence before admission; bounded minimum step must come from movement-profile preparation, never a new classification scan",
+  "integrated_gate": "Required separately: stratified independent simulations, early/middle/late segments, 8 compute slots including owner, candidate removal measurably worsens runtime or publication waits beyond paired timing noise",
+  "inconclusive": "Do not admit; never relax gates or redefine classes after final results",
+  "failures": "Any oracle mismatch, timeout, missing case or device failure blocks qualification; retain every failure",
+  "exclusions": "No timing outlier trimming; unavailable or incomplete runs are unqualified, not wins",
+  "final_freeze": "Freeze protocol, corpus manifest and all source hashes before generating final inputs; consume each final campaign only once",
+  "bounded_class": "Complete fields at least 256*256 cells, cap <=16*minimum entry step: at most 16 edges; single exact dependency-cone dispatch with 2/4/8/16 local steps sufficient for floor(cap/minimum_step)"
+}

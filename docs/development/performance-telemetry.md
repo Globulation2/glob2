@@ -212,3 +212,24 @@ Measure disabled and enabled collection on the same retained fixture when changi
 
 
 See [compute pipeline benchmarks](compute-benchmarks.md) for scheduled work and optimization comparisons.
+
+## Optional tick and presentation distributions
+
+`GLOB2_PERF_DISTRIBUTIONS=1` enables fixed, reusable histogram storage for
+`simulation.tick` and `pacing.presentation_interval`, including threaded sessions.
+Use `GLOB2_TEAM_TIMELINE=1` to export each existing capture window and session total.
+The normal collector allocates no histogram storage with this option absent.
+Transfers between simulation, mailbox and client collectors merge only occupied
+bins and clear the source; they do not retain or double-count events. Allocation
+happens before simulation starts. Histograms never enter simulation or saves.
+
+Distribution records retain counts and inclusive lower/upper nanosecond endpoints
+for every occupied bin. Durations below 256 ns are exact; larger bins have width
+at most 1/128 of their lower endpoint. Nearest-rank p95/p99 exports both endpoints,
+not an exact duration. Combine raw bins from complete phase windows before finding
+a phase quantile, and use the candidate upper endpoint versus baseline lower
+endpoint for conservative regression bounds. Exclude startup and mode-transition
+windows explicitly; session totals include them. Collection and export overhead
+must be measured with the option enabled and disabled before using it for a
+qualification campaign. Pure renderer runs do not replace loaded-game presentation
+measurements.

@@ -3,14 +3,32 @@
 #include "sim/snapshot/WorldSnapshot.h"
 #include "field/GradientWorkspace.h"
 #include <vector>
+#include <span>
+#include <exception>
+#include <stdexcept>
 #include "Team.h"
 #include "BuildingGradientSearch.h"
 #include "Building.h"
 #include "SeedCells.h"
+#include "field/GradientSeedShape.h"
+
+class ComputeExecutor;
+namespace gradient_kernel { struct OwnedGradientField; }
 
 namespace gradient_preparation
 {
 enum class Kind { Materials, Markets, Guard, Clear };
+inline gradient_kernel::Family backendFamily(Kind kind)
+{
+    using gradient_kernel::Family;
+    switch (kind) {
+    case Kind::Materials: return Family::Materials;
+    case Kind::Markets: return Family::Markets;
+    case Kind::Guard: return Family::Guard;
+    case Kind::Clear: return Family::Clear;
+    }
+    throw std::invalid_argument("unknown gradient family");
+}
 struct Request
 {
     Kind kind = Kind::Materials;
@@ -50,8 +68,25 @@ struct CrowdingScratch
     std::vector<size_t> positions, seeds;
 };
 void boxSum(Uint16* grid, int width, int height, CrowdingScratch& scratch);
-void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
+void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch,
+          gradient_kernel::GradientSeedShape* shape=nullptr);
+struct PropagationField {
+    Request request;
+    const SimulationSnapshot::Handle* snapshot;
+    Uint16* output;
+    GradientWorkspace* scratch;
+    std::exception_ptr* error = nullptr;
+    ComputeExecutor* executor = nullptr;
+};
+// Independent immutable fields; completes synchronously with original-seed CPU recovery.
+void propagateBatch(std::span<const PropagationField> fields);
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, GradientWorkspace& scratch);
+
+// Worker-side ownership transfer for the asynchronous device service. Only
+// terrain survives seed preparation; the DTO owns all inputs and original seeds.
+std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
+    const Request&, const SimulationSnapshot::Handle&, std::unique_ptr<Uint16[]>&,
+    std::shared_ptr<gradient_kernel::BackendSession>, gradient_kernel::PlanDecision, std::uint64_t due);
 
 // The snapshot components a building field reads: terrain, resources,
 // occupancy and areas, without visibility or entities.

@@ -13,6 +13,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <utility>
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
@@ -21,6 +22,7 @@
 #include "NetEngine.h"
 #include "TurnSession.h"
 #include "ChecksumSidecar.h"
+#include "RenderedCpuWindow.h"
 
 
 class SimulationRunner;
@@ -46,6 +48,19 @@ class Engine
 	friend struct TurnClient;
 	std::shared_ptr<GameDiagnostics::Session> diagnostics;
 	bool headlessDiagnosticsPending() const;
+    struct RenderedCpuState {
+        struct Counters {Map::GradientCpuCounters gradient;Game::AISchedulingCounters ai;};
+        RenderedCpuDiagnostics::Window<Counters> window;
+        std::string path;
+        std::uint64_t (*previousTelemetryClock)()=nullptr;
+        bool clockInstalled=false;
+        RenderedCpuState(RenderedCpuDiagnostics::Range range,std::string output)
+            :window(range),path(std::move(output)){}
+        ~RenderedCpuState();
+    };
+    std::unique_ptr<RenderedCpuState> renderedCpu;
+    void prepareRenderedCpuDiagnostics();
+    void finishRenderedCpuDiagnostics();
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
 	int headlessSaveInterval = 0;

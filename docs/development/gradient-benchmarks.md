@@ -2,6 +2,84 @@
 
 Measure individual field kernels and integrated game behavior separately; kernel speed alone does not establish an engine improvement.
 
+## Whole-process GPU offload qualification
+
+Use release binaries and retained identical saves/orders to measure CPU consumed
+per fixed simulation tick. Include every process thread: worker elapsed time
+includes device waits and is not a substitute for process CPU. Separate startup,
+fresh-storage dispatch and warmed gameplay. Run builds and timed experiments
+under one exclusive resource lock, selecting one GPU explicitly.
+
+`test/benchmark_gpu_offload.py` consumes a frozen JSON manifest with binary hashes,
+source revisions, build flags, environment overrides and hashed loaded-game
+fixtures. It retains every sample and failure, rotates paired execution order,
+and uses five screening rounds or ten confirmation rounds:
+
+```sh
+python3 test/benchmark_gpu_offload.py artifacts/offload/config.json \
+  --output artifacts/offload/screen --lock artifacts/offload/resources.lock
+python3 test/benchmark_gpu_offload.py artifacts/offload/confirmation.json \
+  --stage confirm --output artifacts/offload/confirmation \
+  --lock artifacts/offload/resources.lock
+```
+
+Freeze the confirmation manifest before measurement. Use independent games and
+sealed kernel holdouts for final acceptance; do not tune against their results.
+The runner's per-scenario intervals are screening evidence. Final acceptance also
+requires an aggregate analysis that weights workload strata equally and clusters
+phase windows by game, normal rendering/frame tails, per-tick checksums,
+save/replay continuation, failure injection and removal ablations. A kernel win or
+a headless-only pass does not establish an integrated benefit.
+
+The selectors remain `GLOB2_GRADIENT_BACKEND=cpu|opencl|automatic`. Forced OpenCL
+experiments can select `GLOB2_GRADIENT_PLAN=cpu|jacobi4|colored2|colored4|colored8|frozen8|frozen16`
+(default `frozen8`), `GLOB2_OPENCL_DEVICE=N` (zero-based GPU ordinal), and
+`GLOB2_OPENCL_CHECK_INTERVAL=1..32` (default 8). Retain these overrides with each
+sample; a requested backend does not prove that a field actually executed there.
+Check execution counters over the measured warm window and distinguish fallback
+from completed accelerator work. Tracked accelerator host/device payload limits
+are 64/128 MiB; driver memory must be measured separately through RSS/device tools.
+`GLOB2_OPENCL_POLL_US=1..1000` tests sleeping between transfer-event completion
+queries; zero (the default) uses blocking transfers. Keep this a separate
+candidate because CPU savings can trade against publication latency.
+`GLOB2_OPENCL_PROFILE=1` collects device upload/kernel/check/readback event time,
+separate from host waiting time; use it for diagnosis rather than comparing
+instrumented times to ordinary release samples.
+`GLOB2_GRADIENT_WORKER_NOOP=1` screens finishing already-fixed seeds on their
+preparation worker through the existing validated callback, avoiding an owned
+GPU request and coordinator wakeup. It is off by default. Retain its CPU scan
+cost in process measurements, and distinguish `cpu_reason_trivial` from actual
+device execution; bypassed fields are never counted as GPU completions.
+`GLOB2_OPENCL_ACTIVE_EPOCH=1` replaces per-dispatch tile-mask clears with
+epoch stamps; `GLOB2_OPENCL_PARITY_BOUND=1` retains opposite ping-pong bindings
+on two private kernel handles. Screen each separately before combining. Both
+default to zero, retain inactive buffer copies and original-seed recovery, and
+decline live optional probes because their yielding implementations have not
+been qualified. Check `active_epoch`, `tile_mask_clears`, `parity_bound`, and
+`kernel_argument_updates` in the warm-window OpenCL counters.
+
+`GLOB2_BENCHMARK_DIAGNOSTICS=1` enables optional thread inventories, per-tick
+publication waits, and inclusive/self CPU scope accounting for `game run`
+benchmark windows. Use it with `GLOB2_GRADIENT_DIAGNOSTICS=1` and
+`GLOB2_GRADIENT_ACCOUNTING=1` for attribution. Diagnostic windows include
+instrumentation overhead and are rejected as acceptance evidence; CPU scopes
+overlap and must not be summed. Thread names do not identify driver roles.
+
+Development fixtures can construct 1024² games through the `GpuOffloadFixture`
+engine harness. `GLOB2_BENCHMARK_LARGE_MAPS=1` enables a bounded, synchronous
+headless saved-game import scope for these fixtures. Ordinary loader, generator,
+lobby and network dimension limits remain unchanged. The scope supports at
+most exponent ten in each dimension and does not admit 2048² fixtures yet.
+
+Automatic selection requires valid, monotonic preparation and coordinator thread CPU clocks.
+Unavailable or reversed measurements contribute zero learning credits and demote
+the affected accepted plan; a committed device result still publishes exactly once.
+The coordinator disables automatic device execution until reconfiguration after
+such a measurement failure. Forced OpenCL remains available for diagnosis.
+Use `cpu_reason_clock_unavailable`, `fallback_reason_cpu_clock`,
+`cpu_clock_invalid_measurements` and `automatic_cpu_clock_unavailable` to identify
+this conservative fallback.
+
 ## Terrain gradient benchmarks
 
 `TerrainHazardBenchmark` provides opt-in CPU and wall-time measurements for idle
@@ -157,3 +235,108 @@ starts with cold queues and later repeats retain search capacity.
 Every requested result is checked against the independent heap oracle. Run this
 on both revisions with matching inputs and compare it separately from full-field
 propagation; ordinary test runs exclude the benchmark tag.
+
+## OpenCL calling-thread CPU diagnostic
+
+`GLOB2_OPENCL_API_CPU=0` is the default. It adds no diagnostic clock reads or
+per-API allocations. The predictable disabled scope gate is present in this
+candidate, so compare the mode-zero binary with the preceding clean binary
+before interpreting small changes.
+
+Mode `1` records guarded thread CPU intervals on the background required lane.
+The fixed categories are preparation, upload, arguments, fill, kernel enqueue,
+convergence read, output read, output copy and other. Preparation includes
+allocation/cache/seed work, subtracting instrumented nested calls. Upload/read
+categories measure the actual OpenCL calls; a blocking call includes its calling
+thread CPU while waiting. Polling/flush/profiling calls and unclassified command
+bookkeeping belong to other. Output copy includes transactional commit bookkeeping.
+Other also contains lane queue/kernel setup and uninstrumented command release.
+No device events or additional driver commands are introduced.
+
+Mode `2` makes the same number of clock reads at the same scope entry points,
+closing an empty bracket before the actual work. It reports `controlBracketNs`;
+category CPU and `coveredNs` remain zero. Its call counts match mode one for the
+same workload. Work remains included in the existing backend/coordinator CPU
+totals. Empty brackets estimate clock/scope perturbation, not a correction that
+may be subtracted to assert a speedup. Compare complete modes zero, one and two.
+
+`coveredNs` is the valid inclusive time of lane batch scopes; exclusive category
+CPU sums to it only when no scope is invalid and no reconciliation fails. The
+existing backend total additionally covers wrapper eligibility/lane setup outside
+these scopes. Zero/reversed endpoints invalidate their enclosing scopes; nested
+time exceeding an enclosing interval or counter overflow increments reconciliation
+errors. Partial valid category readings remain diagnostic and must not be called
+complete. Scope calls include host phase scopes as well as instrumented APIs;
+the upload/arguments/fill/kernel/read call counts each correspond to actual APIs.
+
+Initialization latches the requested mode and marks `apiCpuConfigured` only after
+successful setup. Status exports are scalar snapshots and invoke no driver calls.
+Counters are calling-thread CPU, not process/driver CPU attribution. They cannot
+qualify automatic promotion. Optional yielding probes decline modes one and two;
+offline batch profiles must decline them until a matching configuration is bound
+and independently measured. No production plan or algorithm changes accompany
+this diagnostic.
+
+Hardware-free tests cover nested conservation, unavailable/reversed clocks,
+reconciliation failures, equal empty-bracket read counts and zero disabled reads.
+Evidence owns all builds and real device measurements. Required protocol gates
+still include exact arrays, saved/replay outputs, actual command counts and complete
+process CPU/tick-tail controls; diagnostic stage times alone are not acceptance.
+## Single-work-group frontier development experiment
+
+The isolated `tools/gradient_qualification/compare_persistent.py` candidate uses
+one work-group per complete field, with uniform global/local barriers between
+compact frontier epochs. Each destination enters the following N-entry list at
+most once per epoch. Original zeros stay blocked, nonmaximum sources survive,
+and cap/toroidal semantics use the same monotone maximum fixed point as the
+independent oracle. This avoids assumptions about device-wide publication from
+legacy relaxed atomics; see the [Khronos OpenCL C memory model](https://registry.khronos.org/OpenCL/specs/unified/html/OpenCL_C.html).
+
+The kernel initializes immutable ushort seeds into private uint state, then
+performs at most the configured pops and 65536 epochs without stamp wrap. An
+entire epoch is rejected before work if its frontier exceeds the remaining pop
+budget. One successful metadata read proves device completion; only converged
+fields read/convert staged output. Bounded exits recover from the original seeds
+through the paid strongest compatible production CPU. Imported caps/costs beyond
+that CPU contract use the separately labeled independent oracle. API failures
+reap the queue before stack metadata, borrowed output or device storage expires.
+There is no promise of asynchronous host cancellation during a resident kernel:
+finite work and event completion protect ownership, and measured deadlines are
+still required. Neither work limits nor barriers guarantee a wall-time bound.
+
+The runner requires the shared campaign lock before compilers or device setup,
+freezes source/commit/binary hashes, configuration and compiler logs, and uses
+only development layouts and independent edge cases. It records one actual
+kernel submission, one metadata check, pop/round/update counts, queue high-water,
+output transfers and exact CPU recoveries. Device payload includes the original
+upload (22N+32 bytes); host payload and comparison GPU buffers are bounded and
+reported separately from CPU workspace and driver/allocator overhead. Interval
+process CPU remains diagnostic, and production dispatch/qualification and final
+holdouts stay unchanged.
+
+Screen correctness first with `--edges-only`, then repeat with `--pop-limit 1`
+to prove exact bounded recovery. Compare local sizes 64/128/256 only when the
+compiled kernel supports them, and pop budgets 64K/256K/1M. Small development
+screens give no eligibility evidence for 512-square maps: include `--max-size
+512` before any target CPU-benefit claim. Single-group underutilization can
+outweigh fewer host commands, particularly for singleton fields; prune the
+candidate if target-size completion and publication slack fail.
+
+The persistent prototype has a development-process-only fatal safeguard: if an
+OpenCL error is followed by a failed emergency `clFinish`, it writes an explicit
+stderr marker and best-effort `fatal-native.json`, then terminates without stack
+unwinding with exit code 86. This prevents borrowed stack/output storage from
+expiring while driver completion is unknown. It is not production recovery;
+retain the external process return code, freeze and partial result files and
+reject the entire run. Normal successful execution adds no safety `Finish`.
+
+Before real-device persistent screens, evidence can run the independent
+`check_persistent_failure.py --lock <shared-lock> --output <fresh-directory>`
+controlled subprocess test. It compiles the actual native helper against OpenCL
+stubs, loads no driver, and injects metadata-read failure. Successful drain
+writes borrowed native stack metadata while it is alive, returns the API error,
+and preserves seeds/output sentinels; a destructor marker proves ordinary
+unwinding works. Failed drain checks those same sentinels, requires exit code 86,
+exact fatal receipt/stderr markers, and absence of the destructor marker. The
+shared lock precedes compilation, source/binary hashes and all subprocess
+outputs/return codes are retained, and a completion receipt requires both cases.

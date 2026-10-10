@@ -59,6 +59,7 @@ ENGINE_TESTS = [
     ('#src/map/ResourceGrowthTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/resource/ResourceRuntimeBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/BuildingGradientBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/map/gradient/GpuOffloadFixture.cpp',
     '#src/building/BuildingServicesTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     '#libgag/src/ScreenExecutionHarness.cpp',
@@ -247,6 +248,10 @@ UNIT_TESTS = [
     '#src/hud/GhostBuildingOverlapTest.cpp',
     '#src/ai/shared_runtime/GradientBFSTest.cpp',
     '#src/field/FieldTraversalTest.cpp',
+    '#src/field/ResumableGradientReferenceTest.cpp',
+    '#src/field/ResumableProductionGradientTest.cpp',
+    '#src/field/OpenCLGradientTest.cpp',
+    '#src/field/CpuSavingPolicyTest.cpp',
     ('#src/map/gradient/GradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HelloWorldTest.cpp',
     '#libgag/src/Sha1Test.cpp',
@@ -322,6 +327,8 @@ UNIT_TESTS = [
     '#src/game/WinningConditionsHarness.cpp',
     '#libgag/src/BufferedFileStreamHarness.cpp',
     '#src/common/ComputeExecutorHarness.cpp',
+    '#src/common/ThreadCpuEnvelopeHarness.cpp',
+    '#src/engine/RenderedCpuWindowHarness.cpp',
     '#src/map/gradient/GradientPipelineHarness.cpp',
     ('#mobile/MobileCertificateHarness.cpp', dict(require={'wss'})),
     '#mobile/MobileDocumentsHarness.cpp',
@@ -352,6 +359,8 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/field/OpenCLGradient.cpp',
+    '#src/field/GradientDeviceService.cpp',
     '#src/app/cli/CommandLine.cpp',
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',

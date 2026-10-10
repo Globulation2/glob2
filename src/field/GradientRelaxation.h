@@ -35,6 +35,9 @@ namespace gradient_kernel
 	// four neighbors to one target bucket. Reserve 4 * CHUNK for every target
 	// before taking raw end pointers; no append in the inner loop may reallocate.
 	constexpr size_t CHUNK = 64;
+	struct DefaultGradientReserve {
+		void operator()(GradientBucket& bucket,std::size_t extra) const {bucket.reserveExtra(extra);}
+	};
 
 	// Expand one complete cost layer. queue holds cell indices, including stale
 	// entries for cells later reached more cheaply; pending counts entries, not
@@ -43,9 +46,10 @@ namespace gradient_kernel
 	// The search runs backward from goals: when expanding i, each neighbor is a
 	// possible predecessor, so all eight edges charge the cost of entering i.
 	// Weighted layers read isWater(i) for that cost; uniform layers omit the read.
-	template<bool Weighted, bool Masked, typename IsWater>
-	void expandBucketAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue, size_t &pending,
-		int cur, int limit, const field::Grid& grid, EntrySteps waterSteps, IsWater isWater)
+	template<bool Weighted, bool Masked, typename IsWater,typename Reserve=DefaultGradientReserve>
+	void expandBucketRangeAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue, size_t &pending,
+		int cur, int limit, const field::Grid& grid, EntrySteps waterSteps, IsWater isWater,
+		std::size_t begin,std::size_t end,Reserve reserve={})
 	{
 		GradientBucket &bucket = queue[unsigned(cur) % BUCKETS];
 		const size_t wMask = size_t(grid.width()-1), hMask = size_t(grid.height()-1);
@@ -121,17 +125,18 @@ namespace gradient_kernel
 		// No target bucket can be the current bucket, so reserving target capacity
 		// cannot invalidate this pointer even when a target vector reallocates.
 		const std::uint32_t *const cells = bucket.cells.data();
-		const size_t count = bucket.size;
-		for (size_t chunk = 0; chunk < count; chunk += CHUNK)
+		assert(begin<=end && end<=bucket.size);
+		const size_t count = end;
+		for (size_t chunk = begin; chunk < count; chunk += CHUNK)
 		{
 			const size_t chunkEnd = std::min(count, chunk + CHUNK);
 			const size_t room = 4 * (chunkEnd - chunk);
-			landCardinal.reserveExtra(room);
-			landDiagonal.reserveExtra(room);
+			reserve(landCardinal,room);
+			reserve(landDiagonal,room);
 			if constexpr (Weighted)
 			{
-				waterCardinal->reserveExtra(room);
-				waterDiagonal->reserveExtra(room);
+				reserve(*waterCardinal,room);
+				reserve(*waterDiagonal,room);
 			}
 			std::uint32_t *landCardinalEnd = landCardinal.cells.data() + landCardinal.size;
 			std::uint32_t *landDiagonalEnd = landDiagonal.cells.data() + landDiagonal.size;
@@ -276,8 +281,21 @@ namespace gradient_kernel
 		// Account for every appended entry, including duplicates that later
 		// become stale; consume exactly the original layer's entries.
 		pending += queued() - queuedBefore;
-		pending -= count;
-		bucket.clear();
+		pending -= count-begin;
+	}
+	// Optional full-field references may pause between <=CHUNK entries. Positive
+	// edge costs guarantee the current source bucket cannot be appended/reallocated
+	// while retaining its original count and read offset. Required searches still
+	// clear only after the complete layer, preserving their observable boundary.
+	template<bool Weighted,typename IsWater,typename Reserve=DefaultGradientReserve>
+	void expandBucketRange(std::uint16_t* gradient,GradientBucket* queue,size_t& pending,
+		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater,
+		std::size_t begin,std::size_t end,Reserve reserve={})
+	{
+		if(grid.powerOfTwo())
+			expandBucketRangeAddressed<Weighted,true>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+		else
+			expandBucketRangeAddressed<Weighted,false>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
 	}
 	// Choose geometry once for a complete layer; both paths share relaxation,
 	// bucket accounting and SIMD rules, including thin-grid aliasing.
@@ -285,10 +303,9 @@ namespace gradient_kernel
 	void expandBucket(std::uint16_t* gradient, GradientBucket* queue, size_t& pending,
 		int cur, int limit, const field::Grid& grid, EntrySteps waterSteps, IsWater isWater)
 	{
-		if(grid.powerOfTwo())
-			expandBucketAddressed<Weighted,true>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater);
-		else
-			expandBucketAddressed<Weighted,false>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater);
+		auto& bucket=queue[unsigned(cur)%BUCKETS];
+		expandBucketRange<Weighted>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,0,bucket.size);
+		bucket.clear();
 	}
 
 }

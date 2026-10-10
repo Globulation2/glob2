@@ -8,9 +8,16 @@
 #include <atomic>
 #include <chrono>
 #include <thread>
+#include <Environment.h>
+#include "common/ThreadCpuClock.h"
 
 namespace
 {
+struct SchedulerEnvironment {
+    const char* key;std::string previous;
+    SchedulerEnvironment(const char* key,const char* value):key(key),previous(std::getenv(key)?std::getenv(key):""){GAGCore::setProcessEnvironment(key,value,1);}
+    ~SchedulerEnvironment(){GAGCore::setProcessEnvironment(key,previous.c_str(),1);}
+};
 std::shared_ptr<const AIEngine::AIWorldView> observation(Uint32 tick)
 {
 	SimulationSnapshot::Handle handle;
@@ -311,4 +318,38 @@ TEST_CASE("Diagnostic captures do not change saved pending orders" * doctest::te
         return bytes;
     };
     CHECK(serialize(false) == serialize(true));
+}
+
+
+TEST_CASE("optional AI CPU scopes preserve deadlines and byte-identical pending saves" * doctest::test_suite("AIOrderScheduler"))
+{
+    std::vector<Uint8> reference;
+    for(bool enabled:{false,true}){
+        SchedulerEnvironment diagnostics("GLOB2_AI_SCHEDULER_DIAGNOSTICS",enabled ? "1" : "0");
+        TestScheduler scheduler;scheduler.configure(3,2);
+        scheduler.submit({0,9,0,41,0},observation(0),[](const auto&){return nullCommand();});
+        CHECK(scheduler.takeDue(0).empty());
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);scheduler.save(&output);output.flush();
+        const auto bytes=backend->takeContents();
+        if(!enabled)reference.assign(bytes.begin(),bytes.end());
+        else CHECK(std::vector<Uint8>(bytes.begin(),bytes.end())==reference);
+        const auto counters=scheduler.jobCpuCounters();CHECK(counters.enabled==enabled);
+        CHECK(counters.jobsCompleted==Uint64(enabled));CHECK(counters.failedJobs==0);
+        if(!enabled){CHECK(counters.decisionAndCommandCaptureCpuNs==0);CHECK(counters.inputReleaseCpuNs==0);CHECK(counters.invalidMeasurements==0);}
+        else if(glob2::threadCpuNs()){CHECK(counters.invalidMeasurements==0);}
+        CHECK(scheduler.takeDue(1).empty());CHECK(scheduler.takeDue(2).empty());
+        const auto due=scheduler.takeDue(3);REQUIRE(due.size()==1);
+        CHECK(due[0].request.generation==9);CHECK(due[0].dueTick==3);CHECK(due[0].command.bytes==std::vector<Uint8>{ORDER_NULL});
+        CHECK(scheduler.jobCpuCounters().jobsCompleted==Uint64(enabled)); // Saved work was not recomputed.
+    }
+}
+TEST_CASE("AI diagnostic CPU totals include failed jobs without publishing their commands" * doctest::test_suite("AIOrderScheduler"))
+{
+    SchedulerEnvironment diagnostics("GLOB2_AI_SCHEDULER_DIAGNOSTICS","1");
+    TestScheduler scheduler;scheduler.configure(1,2);
+    scheduler.submit({0,12,0,0,0},observation(0),[](const auto&) -> AIEngine::Command {throw std::runtime_error("AI failure");});
+    CHECK(scheduler.takeDue(0).empty());CHECK_THROWS_AS(scheduler.takeDue(1),std::runtime_error);
+    const auto counters=scheduler.jobCpuCounters();CHECK(counters.enabled);CHECK(counters.jobsCompleted==1);CHECK(counters.failedJobs==1);
+    CHECK(scheduler.metrics.delivered==0);
 }

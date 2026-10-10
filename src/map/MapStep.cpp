@@ -225,6 +225,16 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
 }
 
 
+Map::GradientCpuCounters Map::gradientCpuCounters() const noexcept
+{
+    const auto& p=gradientRuntime->pipeline;
+    return {p.diagnosticsEnabled(),p.requiredSeedCpuNs(),p.requiredPropagationCpuNs(),
+        p.requiredOwnedInputCpuNs(),p.requiredHandoffCpuNs(),p.requiredCleanupCpuNs(),
+        p.metrics.ownerCompletionCpuNs,p.metrics.ownerJoinCpuNs,p.cpuCompleteFields(),p.gpuCompleteFields(),
+        p.gpuRequestedFields(),p.gpuSelectedFields(),p.cpuReason(GradientPipeline::CPUReason::CpuClockUnavailable),
+        p.metrics.publicationWaitNs,p.metrics.gpuPublicationWaitNs,p.metrics.gpuDeviceOverlapWaitNs};
+}
+
 bool Map::gradientPipelineEnabled() const { return gradientRuntime->pipeline.enabled(); }
 
 Map::GradientPipelineStatus Map::gradientPipelineStatus() const
@@ -233,7 +243,8 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 	const auto &metrics = pipeline.metrics;
 	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
 		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
-		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
+		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs, metrics.publicationWaitNs,
+        metrics.lastPublicationWaitNs,metrics.lastGpuPublicationWaitNs,metrics.lastGpuDeviceOverlapWaitNs};
 }
 
 bool Map::hasPendingGradientPreparation() const
@@ -282,7 +293,8 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
     job->request=request;
     job->snapshotLease=std::move(projected);
     gradientRuntime->pipeline.prepare(job, [](GradientPipeline::Job& job) {
-        gradient_preparation::seed(job.request, *job.snapshotLease, job.data.get(), *job.crowding);
+        gradient_preparation::seed(job.request, *job.snapshotLease, job.data.get(), *job.crowding,
+            job.captureSeedShape ? &job.seedShape : nullptr);
     });
 }
 
@@ -331,6 +343,17 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
             gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
         });
+    gradientRuntime->pipeline.setAsyncWork([](GradientPipeline::Job& job,gradient_kernel::PlanDecision decision) {
+        return gradient_preparation::ownPropagation(job.request,*job.snapshotLease,job.data,
+            job.owner->session(),decision,job.executorDue);
+    });
+    gradientRuntime->pipeline.setBatchWork([this](std::span<GradientPipeline::Job* const> jobs,
+        std::span<GradientWorkspace> scratch) {
+        std::vector<gradient_preparation::PropagationField> fields;fields.reserve(jobs.size());
+        for(std::size_t i=0;i<jobs.size();++i)
+            fields.push_back({jobs[i]->request,&*jobs[i]->snapshotLease,jobs[i]->data.get(),&scratch[i],&jobs[i]->error,nullptr});
+        gradient_preparation::propagateBatch(fields);
+    });
 }
 
 void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)

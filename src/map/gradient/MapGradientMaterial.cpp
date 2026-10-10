@@ -60,7 +60,8 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	seedMaterialGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	{
 		PERF_SCOPE_TIME(PropagationResource);
-		propagateGradient(gradient, swimClass);
+		propagateGradient(gradient, swimClass, GRADIENT_COST_LIMIT,
+            withMarkets ? gradient_kernel::Family::Markets : gradient_kernel::Family::Materials);
 	}
 	publishPlane(&slot);
 	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
@@ -180,7 +181,7 @@ Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int resource, 
         seedMaterialGradient(team,resource,swim,entry.cells.get(),true,privateField ? consumer : nullptr,modes);
         {
             PERF_SCOPE_TIME(PropagationResource);
-            propagateGradient(entry.cells.get(),swim);
+            propagateGradient(entry.cells.get(),swim,GRADIENT_COST_LIMIT,gradient_kernel::Family::Markets);
         }
         entry.sourceRevision=runtime.stockRevision[team][resource]; entry.topology=topologyGeneration;
         entry.builtStep=game->stepCounter; entry.identity=privateField ? consumer->scriptIdentity : 0;

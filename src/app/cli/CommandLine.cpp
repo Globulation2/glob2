@@ -283,7 +283,7 @@ void constraints(const Request &r)
 									   [&](const auto &parent) { return r.has(parent); }))
 			throw std::invalid_argument(key + " requires " + join(parents, " or "));
 	}
-	if (r.command == "dev random-games" && !r.has("--display") &&
+	if ((r.command == "dev random-games" || r.command == "game repeat") && !r.has("--display") &&
 		(r.has("--record") || r.has("--videoshot")))
 		throw std::invalid_argument("Recording requires --display");
 	if (r.has("--videoshot"))
@@ -482,15 +482,19 @@ const std::vector<Command> &commands()
 			"Generation requires --map-seed", "Saved games reject new-match setup options",
 			"Structured jobs isolate engine tuning and diagnostic environment variables"};
 		auto repeat = assets();
+		append(repeat, display());
+		repeat.push_back(flag("--display", "Render the saved game through the normal presentation loop"));
 		append(repeat,
 			   {compute(),
 				integer("--ticks", "Steps per run; 0 runs until the game ends", 0, 2147483647, "0"),
 				integer("--runs", "Number of saved-game runs", 1, 2147483647, "1"),
 				value("--building-catalog", "file", "Building catalog")});
-		add("game repeat", "Repeat a saved game headlessly", {"FILE"}, 1, repeat,
+		add("game repeat", "Repeat a saved game, optionally with normal presentation", {"FILE"}, 1, repeat,
 			"Existing game summaries and opt-in environment telemetry")
 			.environment = {"GLOB2_REPLAY_PATH", "GLOB2_CHECKSUM_SIDECAR", "GLOB2_TEAM_RESULTS",
-							"GLOB2_TEAM_TIMELINE"};
+							"GLOB2_TEAM_TIMELINE", "GLOB2_PERF_DISTRIBUTIONS",
+                            "GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH", "GLOB2_RENDERED_CPU_WARMUP_TICKS",
+                            "GLOB2_RENDERED_CPU_MEASURE_TICKS"};
 		auto verify = profile();
 		verify.pop_back();
 		verify[1].defaultValue = "glob2-verify";
@@ -628,7 +632,7 @@ const std::vector<Command> &commands()
 				c.requirements["--diagnostic-png"] = {"--diagnostic-fields"};
 				c.requirements["--fork-rule"] = {"--load-game"};
 			}
-			if (c.path == "dev random-games")
+			if (c.path == "dev random-games" || c.path == "game repeat")
 				c.constraints.push_back("Recording requires --display");
 			for (auto &o : c.options)
 			{

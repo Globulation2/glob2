@@ -2,6 +2,9 @@
 #include <Environment.h>
 #include "Headless.h"
 #include "ResourceGrowth.h"
+#include "ThreadCpuClock.h"
+#include "BenchmarkDiagnostics.h"
+#include "io/BenchmarkMapImport.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
@@ -17,6 +20,7 @@
 #include "AINames.h"
 #include "AIJavaScript.h"
 #include "ComputeThreads.h"
+#include "field/OpenCLGradient.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -266,6 +270,10 @@ struct HeadlessRunner
 	{
 		const auto setupStart = std::chrono::steady_clock::now();
 		const bool benchmark=options.count("--benchmark-warmup")!=0;
+        const auto diagnosticEnvironment=std::getenv("GLOB2_BENCHMARK_DIAGNOSTICS");
+        const bool benchmarkDiagnostics=benchmark && diagnosticEnvironment && std::string(diagnosticEnvironment)=="1";
+        const bool diagnosticCpuAvailable=benchmarkDiagnostics && glob2::threadCpuNs()!=0;
+        if(diagnosticCpuAvailable) PerformanceTelemetry::setDiagnosticCpuClock(glob2::threadCpuNs);
 		const auto setupCpuStart=benchmark?processCpuNs():0;
 		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
 		const auto fields = one(options,"--diagnostic-fields");
@@ -315,6 +323,8 @@ struct HeadlessRunner
 			else throw std::invalid_argument("unknown save request: " + save);
 		}
 		auto mapFile=one(options,"--map-file"); auto saved=one(options,"--load-game");
+        const auto largeMapEnvironment=std::getenv("GLOB2_BENCHMARK_LARGE_MAPS");
+        const bool largeMapImport=!saved.empty() && largeMapEnvironment && std::string(largeMapEnvironment)=="1";
 		std::vector<std::string> forkSettings;
 		if(saved.empty() && options.count("--fork-rule"))
 			throw std::invalid_argument("--fork-rule requires --load-game");
@@ -328,7 +338,10 @@ struct HeadlessRunner
 		{
 			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule","--ai-order-delay"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
-			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
+			{
+                const ScopedBenchmarkMapImport fixtureImport(largeMapImport);
+                if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
+            }
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
 			// An explicit fork, never a silent continuation: the loaded match's
 			// rules change before its first tick, the recorded replay starts
@@ -476,8 +489,30 @@ struct HeadlessRunner
 				static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
 		}
 		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
+        const auto initialGradientPolicy=engine.gui.game.map.adaptiveGradientMetrics();
 		const auto runStart = std::chrono::steady_clock::now();
-		uint64_t setupCpu=0,runCpu=0,measureStart=0;
+		uint64_t setupCpu=0,runCpu=0,measureStart=0,measuredWallNs=0,publicationWaitStart=0;
+        std::chrono::steady_clock::time_point measureWallStart;
+        auto measuredGradientStart=initialGradientPolicy;
+        auto measuredGradientEnd=initialGradientPolicy;
+        auto measuredOpenCLStart=gradient_kernel::openCLStatus();
+        auto measuredOpenCLEnd=measuredOpenCLStart;
+        std::vector<std::pair<std::string,Uint64>> measuredAIStart,measuredAIEnd;
+        nlohmann::json diagnosticThreadsStart,diagnosticThreadsEnd,diagnosticScopesStart,diagnosticScopesEnd;
+        struct TailTick { Uint64 tick,wall,publicationWait,buildingWait,gpuPublicationWait,gpuOverlapWait,aiDeadlineWait,aiDeadlineMisses; };
+        std::vector<TailTick> diagnosticTicks;
+        const auto startMeasurement=[&] {
+            measuredGradientStart=engine.gui.game.map.adaptiveGradientMetrics();
+            measuredOpenCLStart=gradient_kernel::openCLStatus();
+            publicationWaitStart=engine.gui.game.map.gradientPipelineStatus().publicationWaitNs;
+            if(benchmarkDiagnostics) {
+                measuredAIStart=engine.gui.game.aiMetrics();
+                diagnosticThreadsStart=benchmark_diagnostics::threads();
+                diagnosticScopesStart=benchmark_diagnostics::ownerScopes();
+            }
+            measureWallStart=std::chrono::steady_clock::now();
+            measureStart=processCpuNs();
+        };
 		unsigned measuredTicks=0;
         std::array<Uint64,64> tickHistogram{};
         std::vector<Uint64> tickDurations;
@@ -488,27 +523,65 @@ struct HeadlessRunner
 			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
 			setupCpu=processCpuNs()-setupCpuStart;
 			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
-			if(benchmarkWarmup==0) measureStart=processCpuNs();
+			if(benchmarkDiagnostics) diagnosticTicks.reserve(std::min<std::uint64_t>(globals.automaticEndingSteps-start,1048576));
+            if(benchmarkWarmup==0) startMeasurement();
 			while(engine.gui.isRunning)
 			{
                 const auto beforeTick=engine.gui.game.stepCounter;
                 const auto tickStart=std::chrono::steady_clock::now();
+                const auto publicationBefore=benchmarkDiagnostics ? engine.gui.game.map.gradientPipelineStatus().publicationWaitNs : 0;
+                const auto buildingBefore=benchmarkDiagnostics ? engine.gui.game.map.buildingGradientPipelineStatus().waitNs : 0;
+                const auto aiBefore=benchmarkDiagnostics ? engine.gui.game.aiSchedulingCounters() : Game::AISchedulingCounters{};
 				engine.stepSession(SDL_GetTicks()); engine.drawSession();
                 if(beforeTick>=start && engine.gui.game.stepCounter>beforeTick) {
                     const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
                     tickDurations.push_back(duration);
+                    if(benchmarkDiagnostics) {
+                        const auto p=engine.gui.game.map.gradientPipelineStatus();
+                        const auto b=engine.gui.game.map.buildingGradientPipelineStatus();
+                        const auto aiAfter=engine.gui.game.aiSchedulingCounters();
+                        if(aiAfter.deadlineWaitNs<aiBefore.deadlineWaitNs || aiAfter.deadlineMisses<aiBefore.deadlineMisses)
+                            throw std::runtime_error("AI scheduling diagnostic counter decreased");
+                        diagnosticTicks.push_back({beforeTick,duration,p.publicationWaitNs-publicationBefore,b.waitNs-buildingBefore,
+                            p.lastGpuPublicationWaitNs,p.lastGpuDeviceOverlapWaitNs,
+                            aiAfter.deadlineWaitNs-aiBefore.deadlineWaitNs,aiAfter.deadlineMisses-aiBefore.deadlineMisses});
+                    }
                 }
-				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
+				if(!measureStart && engine.gui.game.stepCounter>=start) startMeasurement();
 			}
 			engine.finishSession();
 			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
 			runCpu=processCpuNs()-measureStart;
+            measuredWallNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-measureWallStart).count();
+            measuredGradientEnd=engine.gui.game.map.adaptiveGradientMetrics();
+            measuredOpenCLEnd=gradient_kernel::openCLStatus();
 			measuredTicks=engine.gui.game.stepCounter-start;
+            if(benchmarkDiagnostics) {
+                measuredAIEnd=engine.gui.game.aiMetrics();
+                diagnosticScopesEnd=benchmark_diagnostics::ownerScopes();
+                diagnosticThreadsEnd=benchmark_diagnostics::threads();
+            }
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
-		if (engine.diagnostics) engine.diagnostics->finish();
+		if(benchmarkDiagnostics) {
+            nlohmann::json records=nlohmann::json::array();
+            for(const auto& t:diagnosticTicks) records.push_back({{"tick",t.tick},{"wall_ns",t.wall},
+                {"publication_wait_ns",t.publicationWait},{"building_wait_ns",t.buildingWait},
+                {"gpu_publication_wait_ns",t.gpuPublicationWait},{"gpu_backend_overlap_wait_ns",t.gpuOverlapWait},
+                {"ai_deadline_wait_ns",t.aiDeadlineWait},{"ai_deadline_misses",t.aiDeadlineMisses}});
+            auto aiStart=nlohmann::json::object(),aiEnd=nlohmann::json::object();
+            for(const auto& [name,value]:measuredAIStart) aiStart[name]=value;
+            for(const auto& [name,value]:measuredAIEnd) aiEnd[name]=value;
+            const nlohmann::json report={{"version",2},{"diagnostic_only",true},{"cpu_clock_available",diagnosticCpuAvailable},
+                {"note","CPU clock calls and per-tick scalar record overhead are included; boundary AI/proc scans and JSON writes excluded. Nested inclusive CPU scopes cannot be added. Backend overlap is not physical kernel time. AI CPU counters cover completed job lifetimes, which may cross the warm-start boundary; they are not disjoint process-window CPU attribution."},
+                {"ai_metrics_at_start",aiStart},{"ai_metrics_at_end",aiEnd},
+                {"threads_at_start",diagnosticThreadsStart},{"threads_at_end",diagnosticThreadsEnd},
+                {"owner_scopes_at_start",diagnosticScopesStart},{"owner_scopes_at_end",diagnosticScopesEnd},{"ticks",records}};
+            Headless::writeJson((output/"benchmark-diagnostics.json").string(),report.dump());
+        }
+        if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
@@ -537,8 +610,12 @@ struct HeadlessRunner
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"initialChecksum\":" << initialChecksum
 			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
-			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
+			<< ",\"benchmark_large_map_import_enabled\":" << largeMapImport
+            << ",\"benchmark_diagnostics_enabled\":" << benchmarkDiagnostics
+            << ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
+            << ",\"benchmark_run_wall_ns\":" << measuredWallNs
+            << ",\"benchmark_publication_wait_ns\":" << (benchmark ? pipelineResult.publicationWaitNs-publicationWaitStart : 0)
 			<< ",\"benchmark_save_cpu_ns\":" << saveCpu
 			<< ",\"benchmark_measured_ticks\":" << measuredTicks
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
@@ -573,6 +650,7 @@ struct HeadlessRunner
 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << pipelineResult.waitNs
+            << ",\"gradient_publication_wait_ns\":" << pipelineResult.publicationWaitNs
 			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
@@ -616,6 +694,79 @@ struct HeadlessRunner
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
 		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}
+        result << "},\"adaptive_gradient_at_start\":{";
+        bool initialPolicyComma=false;
+        for(const auto& [name,value]:initialGradientPolicy) {
+            if(initialPolicyComma) result<<',';
+            initialPolicyComma=true; result<<quote(name)<<':'<<value;
+        }
+        result << "},\"benchmark_gradient_at_start\":{";
+        bool measuredStartComma=false;
+        for(const auto& [name,value]:measuredGradientStart) {
+            if(measuredStartComma) result<<',';
+            measuredStartComma=true; result<<quote(name)<<':'<<value;
+        }
+        result << "},\"benchmark_gradient_at_end\":{";
+        bool measuredEndComma=false;
+        for(const auto& [name,value]:measuredGradientEnd) {
+            if(measuredEndComma) result<<',';
+            measuredEndComma=true; result<<quote(name)<<':'<<value;
+        }
+        const auto writeOpenCL=[&](const gradient_kernel::OpenCLStatus& status) {
+            result << "{\"available\":" << (status.available ? "true" : "false")
+                << ",\"device\":" << quote(status.device) << ",\"error\":" << quote(status.error)
+                << ",\"device_uuid_hex\":" << quote(status.deviceUUIDHex);
+            const std::map<std::string,Uint64> values={
+                {"fields",status.fields},{"batches",status.batches},{"dispatches",status.dispatches},
+                {"device_ordinal",status.deviceOrdinal},{"device_ordinal_known",status.deviceOrdinalKnown},
+                {"device_observed_fields",status.deviceObservedFields},{"committed_fields",status.committedFields},
+                {"direct_seed_upload_requested",status.directSeedUploadRequested},{"direct_seed_upload",status.directSeedUpload},
+                {"direct_seed_uploads",status.directSeedUploads},{"seed_copied_bytes",status.seedCopiedBytes},
+                {"seed_uploaded_bytes",status.seedUploadedBytes},{"direct_seed_uploaded_bytes",status.directSeedUploadedBytes},
+                {"output_copied_bytes",status.outputCopiedBytes},
+                {"host_checks",status.hostChecks},{"cost_uploads",status.costUploads},
+                {"cost_cache_hits",status.costCacheHits},{"cost_identity_hits",status.costIdentityHits},
+                {"noop_fields",status.noopFields},{"max_batch_fields",status.maxBatchFields},
+                {"uniform_metadata",status.uniformMetadata},{"uniform_metadata_hits",status.uniformMetadataHits},
+                {"active_epoch",status.activeEpoch},{"tile_mask_initializations",status.tileMaskInitializations},
+                {"parity_bound",status.parityBound},{"kernel_argument_updates",status.kernelArgumentUpdates},
+                {"tile_mask_clears",status.tileMaskClears},{"execution_lanes",status.executionLanes},
+                {"max_concurrent_batches",status.maxConcurrentBatches},
+                {"host_bytes",status.hostBytes},{"peak_host_bytes",status.peakHostBytes},
+                {"device_bytes",status.deviceBytes},{"peak_device_bytes",status.peakDeviceBytes},
+                {"budget_declines",status.budgetDeclines},{"thread_cpu_ns",status.threadCPUNs},
+                {"initialization_thread_cpu_ns",status.initializationThreadCPUNs},
+                {"thread_cpu_invalid_measurements",status.threadCPUInvalidMeasurements},
+                {"api_cpu_mode",status.apiCpuMode},{"api_cpu_configured",status.apiCpuConfigured},
+                {"api_cpu_invalid_scopes",status.apiCpu.invalidScopes},
+                {"api_cpu_reconciliation_errors",status.apiCpu.reconciliationErrors},
+                {"api_cpu_control_bracket_ns",status.apiCpu.controlBracketNs},
+                {"api_cpu_clock_reads",status.apiCpu.clockReads},{"api_cpu_covered_ns",status.apiCpu.coveredNs},
+                {"thread_cpu_clock_available",status.threadCPUAvailable},
+                {"preparation_ns",status.preparationNs},{"upload_ns",status.uploadNs},
+                {"dispatch_wait_ns",status.dispatchWaitNs},{"readback_ns",status.readbackNs},
+                {"check_interval",status.checkInterval},{"poll_micros",status.pollMicros},
+                {"device_profiling",status.deviceProfiling},{"device_upload_ns",status.deviceUploadNs},
+                {"device_kernel_ns",status.deviceKernelNs},{"device_readback_ns",status.deviceReadbackNs},
+                {"device_check_read_ns",status.deviceCheckReadNs},{"profiling_errors",status.profilingErrors}};
+            for(const auto& [name,value]:values) result << ',' << quote(name) << ':' << value;
+            constexpr std::array<const char*,unsigned(gradient_kernel::OpenCLCpuCategory::Count)> apiCpuNames{
+                "preparation","upload","arguments","fill","kernel_enqueue","check_read","output_read","output_copy","other"};
+            for(unsigned i=0;i<apiCpuNames.size();++i) {
+                const auto prefix=std::string("api_cpu_")+apiCpuNames[i];
+                result << ',' << quote(prefix+"_ns") << ':' << status.apiCpu.ns[i]
+                    << ',' << quote(prefix+"_calls") << ':' << status.apiCpu.calls[i];
+            }
+            result << '}';
+        };
+        result << "},\"benchmark_opencl_at_start\":"; writeOpenCL(measuredOpenCLStart);
+        result << ",\"benchmark_opencl_at_end\":"; writeOpenCL(measuredOpenCLEnd);
+        result << ",\"adaptive_gradient\":{";
+        bool policyComma=false;
+        for(const auto& [name,value]:game.map.adaptiveGradientMetrics()) {
+            if(policyComma) result<<',';
+            policyComma=true; result<<quote(name)<<':'<<value;
+        }
         result << "},\"benchmark_tick_histogram\":[";
         for(unsigned i=0;i<tickHistogram.size();++i) {
             if(i) result<<',';

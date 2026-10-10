@@ -514,3 +514,15 @@ the additional continuation fields.
 Headless diagnostic exports wait for each pending output batch before advancing
 the simulation, including with `GLOB2_SIM_THREAD=1`. This keeps capture intervals
 from being lost while PNGs are written; it affects export wall time only.
+
+### Repeating saves with normal presentation
+
+`game repeat saved.game.gz --display --ticks 4096 --runs 1 --compute-threads 8`
+On native desktops, this loads the same saved simulation through the normal window, rendering, presentation
+preparation and frame pacing. Display options such as `--renderer=software` and
+`--window-size=960x720` apply. Without `--display`, saved-game repeats remain
+headless. The tick target is absolute, including the saved tick; zero retains the
+existing game-end behavior. Record the rendering driver, display environment,
+camera, settings and CPU/GPU selection alongside the save and executable hashes
+when comparing presentation responsiveness. A virtual display does not establish
+responsiveness on the user's physical desktop.

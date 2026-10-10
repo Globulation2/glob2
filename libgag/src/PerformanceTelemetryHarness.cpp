@@ -190,3 +190,98 @@ TEST_CASE("a bound simulation collector is absorbed with thread attribution, act
 	main.clock = originalClock;
 }
 }
+
+namespace {
+std::uint64_t cpuTimeNs=0;
+unsigned cpuReads=0;
+std::uint64_t fakeCpuClock() { ++cpuReads; return cpuTimeNs; }
+}
+TEST_CASE("diagnostic CPU scope nesting and merging preserve disjoint self work" * doctest::test_suite("PerformanceTelemetry"))
+{
+    auto& c=collector();
+    const auto oldWall=c.clock,oldCpu=diagnosticCpuClock();
+    setDiagnosticCpuClock(fakeCpuClock); c.reset(); c.clock=fakeClock;
+    timeNs=0; cpuTimeNs=1; cpuReads=0;
+    {
+        Scope parent(Id::Tasks); cpuTimeNs+=3; timeNs+=5;
+        { Scope child(Id::Units); cpuTimeNs+=12; timeNs+=30; }
+        cpuTimeNs+=5; timeNs+=10;
+    }
+    CHECK(metric(Id::Tasks).cpu==20);
+    CHECK(metric(Id::Tasks).cpuSelf==8);
+    CHECK(metric(Id::Units).cpu==12);
+    CHECK(metric(Id::Tasks).cpuSamples==1);
+    CHECK(metric(Id::Tasks).cpuSelfComplete);
+    Metric merged; merged.merge(metric(Id::Tasks)); merged.merge(metric(Id::Tasks));
+    CHECK(merged.cpu==40); CHECK(merged.cpuSelf==16); CHECK(merged.cpuSamples==2);
+    setDiagnosticCpuClock(nullptr); c.reset();
+    const auto reads=cpuReads;
+    { Scope disabledCpu(Id::Tasks); cpuTimeNs+=99; ++timeNs; }
+    CHECK(cpuReads==reads); CHECK(metric(Id::Tasks).cpuSamples==0);
+    setDiagnosticCpuClock(fakeCpuClock); c.reset(); cpuTimeNs=1;
+    {
+        Scope parent(Id::Tasks); cpuTimeNs=0;
+        { Scope failedClock(Id::Units); cpuTimeNs=15; }
+        cpuTimeNs=20;
+    }
+    CHECK(metric(Id::Units).cpuSamples==0);
+    CHECK_FALSE(metric(Id::Tasks).cpuSelfComplete);
+    CHECK(metric(Id::Tasks).selfComplete); // CPU failure does not invalidate wall coverage.
+    setDiagnosticCpuClock(oldCpu); c.clock=oldWall; c.reset();
+}
+
+TEST_CASE("bounded duration distributions preserve quantile endpoints and transfer each window once" * doctest::test_suite("PerformanceTelemetry"))
+{
+    DurationDistribution distribution;
+    for (unsigned exponent = 0; exponent < 64; ++exponent) {
+        const auto base = std::uint64_t(1) << exponent;
+        for (auto n : {base, base - 1, base + (base - 1) / 2}) {
+            distribution.clear(); distribution.add(n);
+            const auto [lower, upper] = distribution.percentile(99);
+            CHECK(lower <= n); CHECK(upper >= n);
+            if (n < 256) CHECK(lower == upper);
+            else CHECK(upper - lower <= lower / 128);
+        }
+    }
+    distribution.clear(); distribution.add(~std::uint64_t(0));
+    CHECK(distribution.percentile(100).second == ~std::uint64_t(0));
+    distribution.clear();
+    for (std::uint64_t n = 1; n <= 100; ++n) distribution.add(n);
+    CHECK(distribution.percentile(95) == std::make_pair(std::uint64_t(95), std::uint64_t(95)));
+    CHECK(distribution.percentile(99) == std::make_pair(std::uint64_t(99), std::uint64_t(99)));
+    distribution.add(101);
+    CHECK(distribution.percentile(95).first == 96); CHECK(distribution.percentile(99).first == 100);
+    DurationDistribution combined; combined.merge(distribution); combined.merge(distribution);
+    CHECK(combined.count == 202); CHECK(combined.percentile(99) == distribution.percentile(99));
+    auto &main = collector(); const auto oldClock = main.clock;
+    main.clock = fakeClock; timeNs = 100; main.reset(); main.output = false;
+    main.enableDurationDistributions(true);
+    Collector source; source.enableDurationDistributions(true);
+    Collector mailbox; mailbox.enableDurationDistributions(true);
+    source.record(Id::Tick, 1234); source.record(Id::Tick, 2345);
+    mailbox.absorb(source); mailbox.absorb(source); main.absorb(mailbox); main.absorb(mailbox);
+    CHECK(main.distributions->tick.count == 2); CHECK(source.distributions->tick.count == 0);
+    CHECK(mailbox.distributions->tick.count == 0);
+    main.presented(); timeNs += 16666667; main.presented();
+    CHECK(main.distributions->frame.count == 1);
+    std::ostringstream sample; main.write(sample, "TEST", 512, false);
+    CHECK(sample.str().find("scope=simulation.tick.distribution distribution_count=2") != std::string::npos);
+    CHECK(sample.str().find("bounds=inclusive") != std::string::npos);
+    CHECK(sample.str().find("p99_upper_ns=") != std::string::npos);
+    main.capture(512, true);
+    CHECK(main.distributions->tick.count == 0); CHECK(main.distributions->totalTick.count == 2);
+    CHECK(main.distributions->totalFrame.count == 1);
+    main.capture(1024, true); CHECK(main.distributions->totalTick.count == 2);
+    main.enableDurationDistributions(false); CHECK_FALSE(bool(main.distributions));
+    main.clock = oldClock; main.reset();
+}
+TEST_CASE("sampled CPU scopes cannot export complete self coverage" * doctest::test_suite("PerformanceTelemetry"))
+{
+    auto &c = collector(); const auto oldWall = c.clock, oldCpu = diagnosticCpuClock();
+    setDiagnosticCpuClock(fakeCpuClock); c.clock = fakeClock; c.reset(); c.output = false;
+    timeNs = 1; cpuTimeNs = 1;
+    for (unsigned i = 0; i < 128; ++i) { Scope sample(Id::PathPoint); ++timeNs; ++cpuTimeNs; }
+    CHECK(metric(Id::PathPoint).calls == 128); CHECK(metric(Id::PathPoint).cpuSamples == 2);
+    CHECK_FALSE(metric(Id::PathPoint).cpuSelfComplete);
+    setDiagnosticCpuClock(oldCpu); c.clock = oldWall; c.reset();
+}

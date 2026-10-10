@@ -1,3 +1,4 @@
+#include "field/OpenCLGradient.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "sim/snapshot/SnapshotStore.h"
 #include "EngineFixtures.h"
@@ -116,6 +117,21 @@ static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map 
 
 TEST_SUITE("GradientPreparation")
 {
+	TEST_CASE("map dimensions enforce power-of-two exponents before mutation")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=6, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .header=true});
+        auto& map = fixture.game.map;
+        CHECK(map.getW() == 64);
+        CHECK(map.getH() == 32);
+        for (auto dimensions : {std::pair{-1,5}, std::pair{6,-1}, std::pair{16,5}, std::pair{6,16}})
+        {
+            CHECK_THROWS_AS(map.setSize(dimensions.first, dimensions.second, GRASS), std::invalid_argument);
+            CHECK(map.getW() == 64);
+            CHECK(map.getH() == 32);
+            CHECK(map.coordToIndex(-1,-1) == 64*32-1);
+        }
+    }
 	TEST_CASE("warm preparation keeps custom supplier unions exclusions penalties and overlays live")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -1213,4 +1229,94 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     glob2test::HeadlessGame replacement({.wDec=7,.hDec=7,.teams=2,.discovered=true,.clearImmobile=true,.header=true});
     auto other=SimulationSnapshot::capture(replacement.game,SimulationSnapshot::captureCatalog(replacement.game),request.requirements());
     check(other);
+}
+
+TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output")
+{
+    using namespace gradient_kernel;
+    const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=fixture.game;auto& map=game.map;
+    map.setVertexTerrain(5,5,WATER);
+    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
+    std::array<std::vector<Uint16>,3> outputs,expected;
+    std::array<std::exception_ptr,3> errors{};
+    std::array<GradientWorkspace,3> scratch;
+    std::vector<gradient_preparation::PropagationField> fields;
+    setBackend(Backend::CPU);
+    for(unsigned i=0;i<3;++i){
+        outputs[i].assign(map.getW()*map.getH(),1);outputs[i][i]=65535;outputs[i][13]=0;
+        outputs[i][21]=65000;expected[i]=outputs[i];
+        map.propagateGradient(expected[i].data(),i==2?6:0);
+        gradient_preparation::Request request;request.swim=i==2?6:0;request.terrainBuckets=i==1?65:64;
+        fields.push_back({request,&snapshot,outputs[i].data(),&scratch[i],&errors[i]});
+    }
+    setBackend(Backend::OpenCL);gradient_preparation::propagateBatch(fields);
+    CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
+    CHECK_FALSE(errors[0]);CHECK_FALSE(errors[2]);REQUIRE(errors[1]);
+    CHECK_THROWS_AS(std::rethrow_exception(errors[1]),std::invalid_argument);
+    CHECK(outputs[1][1]==65535);CHECK(outputs[1][21]==65000); // Invalid field was never propagated.
+    // Unknown automatic categories execute CPU once; no batch-size discovery
+    // or CPU reference tournament is hidden in this synchronous caller.
+    auto session=std::make_shared<BackendSession>();
+    for(auto& workspace:scratch) workspace.backendSession=session;
+    const auto before=openCLStatus();
+    for(unsigned i:{0u,2u}) {
+        outputs[i].assign(map.getW()*map.getH(),1); outputs[i][i]=65535; outputs[i][13]=0; outputs[i][21]=65000;
+    }
+    setBackend(Backend::Automatic); gradient_preparation::propagateBatch(fields);
+    CHECK(outputs[0]==expected[0]); CHECK(outputs[2]==expected[2]);
+    CHECK(session->decision(Family::Materials,2).plan==Plan::CPU);
+    CHECK(openCLStatus().calibrations==before.calibrations);
+    CHECK(openCLStatus().tunings==before.tunings);
+
+
+}
+
+TEST_CASE("GradientPreparation/modified terrain costs stay resident when field obstacles change")
+{
+    using namespace gradient_kernel;
+    const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto& map=world.game.map;
+    map.game=nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:gpu-cost","name":"Slow ground","base":"grass","appearance":"grass","properties":{"groundSpeedQ8":192}}]})");
+    map.setGame(&world.game);
+    map.paintCell(3,*map.terrainRegistry().find("test:gpu-cost"));
+    const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),gradient_preparation::buildingRequirements());
+    REQUIRE(snapshot.terrain->movementModifiers);
+    gradient_preparation::Request request;
+    GradientWorkspace scratch;
+    setBackend(Backend::OpenCL);
+    map.configureCompute(3); // one eligible maintenance worker plus presentation
+    if constexpr(GAGCore::ThreadSupport::available) {
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(30);
+        while(initializationState.load()!=2 && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
+        REQUIRE(initializationState.load()==2);
+    }
+
+    for (unsigned entry=0;entry<3;++entry) {
+        std::uint64_t hits=0;
+        for(unsigned phase=0;phase<2;++phase) {
+            std::vector<Uint16> output(map.size,1);output[0]=65535;output[phase?37:13]=0;
+            auto expected=output;
+            setBackend(Backend::CPU);map.propagateGradient(expected.data(),0);
+            setBackend(Backend::OpenCL);
+            std::function<void()> work=[&] {
+                if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
+                else if(entry==1) {
+                    const gradient_preparation::PropagationField field{request,&snapshot,output.data(),&scratch};
+                    gradient_preparation::propagateBatch(std::span(&field,1));
+                } else map.propagateGradient(output.data(),0);
+            };
+            const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
+            auto batch=map.computeExecutor().submit(std::span(&group,1)); map.computeExecutor().join(batch);
+            CHECK(output==expected);
+            const auto status=openCLStatus();
+            if(phase && (readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) CHECK(status.costIdentityHits>hits);
+            hits=status.costIdentityHits;
+        }
+    }
 }

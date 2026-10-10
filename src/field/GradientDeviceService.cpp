@@ -1,0 +1,641 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "GradientDeviceService.h"
+#include "OpenCLGradient.h"
+#include "GradientBatchManifest.h"
+#include "common/ThreadCpuClock.h"
+#include <algorithm>
+#include <array>
+#include <charconv>
+#include <cstdlib>
+#include <cstring>
+#include <limits>
+#include <fstream>
+
+namespace gradient_kernel
+{
+bool gradientDiagnosticsRequested() noexcept {
+    const auto* value=std::getenv("GLOB2_GRADIENT_DIAGNOSTICS");return value && std::strcmp(value,"1")==0;
+}
+struct GradientBatchAdmissionState
+{
+    // First member releases last, after owned path/profile members die.
+    struct Lease {std::size_t bytes=0;~Lease(){if(bytes)releaseOpenCLHostBytes(bytes);}} lease;
+    std::string path;
+    GradientBatchManifest manifest;
+    std::array<GradientCadenceSample,128> cadenceQueue{};
+    std::size_t cadenceRead=0,cadenceWritten=0;
+    GradientCadenceFloor cadence;
+};
+struct GradientDeviceState
+{
+    struct Queued {std::shared_ptr<OwnedGradientField> field;std::uint64_t serial;};
+    struct Observation {
+        std::shared_ptr<BackendSession> session;
+        WorkloadKey key;
+        Plan plan=Plan::CPU;
+        std::uint64_t generation=0,cpuNs=0,tick=0;
+        bool failed=false,publicationStall=false;
+    };
+    mutable std::mutex mutex;
+    GradientDeviceService::Hooks hooks;
+    // Kept immutable through fallback continuations; canceled registrations clear
+    // backend hooks independently while required worker recovery can still run.
+    std::function<std::uint64_t()> cpuClock;
+    GradientDeviceService::Metrics totals;
+    std::deque<Queued> queue;
+    std::array<Observation,64> observations;
+    std::size_t observationRead=0,observationWritten=0;
+    std::uint64_t nextSerial=0;
+    unsigned maximumBatch=8,computeThreads=1;
+    Backend mode=Backend::CPU;
+    std::shared_ptr<GradientBatchAdmissionState> batching;
+    bool started=false,initialized=false,canceled=false,automaticClockUnavailable=false;
+    std::shared_ptr<std::atomic<std::size_t>> retained=std::make_shared<std::atomic<std::size_t>>(0);
+};
+namespace
+{
+std::uint64_t serviceCpuNow(const GradientDeviceState* state) noexcept {
+    try{return state && state->cpuClock ? state->cpuClock() : glob2::threadCpuNs();}catch(...){return 0;}
+}
+bool validCpuInterval(std::uint64_t start,std::uint64_t end) noexcept {return start && end>=start;}
+struct EnvelopeMemoryLease
+{
+    std::size_t bytes=0;bool probe=false;
+    EnvelopeMemoryLease()=default;
+    EnvelopeMemoryLease(std::size_t size,bool optional):probe(optional) {
+        if(optional ? reserveOpenCLProbeBytes(size) : reserveOpenCLHostBytes(size))bytes=size;
+    }
+    EnvelopeMemoryLease(EnvelopeMemoryLease&& other) noexcept:bytes(std::exchange(other.bytes,0)),probe(other.probe){}
+    EnvelopeMemoryLease& operator=(EnvelopeMemoryLease&& other) noexcept {
+        if(this!=&other){if(bytes){if(probe)releaseOpenCLProbeBytes(bytes);else releaseOpenCLHostBytes(bytes);}
+            bytes=std::exchange(other.bytes,0);probe=other.probe;}return *this;
+    }
+    EnvelopeMemoryLease(const EnvelopeMemoryLease&)=delete;
+    ~EnvelopeMemoryLease(){if(bytes){if(probe)releaseOpenCLProbeBytes(bytes);else releaseOpenCLHostBytes(bytes);}}
+};
+struct EnvelopeRegistryStorage {
+    EnvelopeMemoryLease memory;glob2::CpuClockRegistry registry;
+    explicit EnvelopeRegistryStorage(EnvelopeMemoryLease&& lease):memory(std::move(lease)){}
+};
+std::atomic<std::shared_ptr<glob2::CpuClockRegistry>> envelopeRegistry;
+std::mutex envelopeRegistryInitialization;
+std::atomic<std::uint64_t> envelopeRegistrySetupCpuNs{0},envelopeRoleRegistrationCpuNs{0};
+std::shared_ptr<glob2::CpuClockRegistry> lookupEnvelopeRegistry() noexcept {return envelopeRegistry.load(std::memory_order_acquire);}
+bool registerEnvelopeRole(glob2::CpuThreadRole role,bool initialize) noexcept {
+    if(unsigned(role)>=4)return true;
+    auto registry=lookupEnvelopeRegistry();
+    if(!registry && initialize) {
+        std::lock_guard lock(envelopeRegistryInitialization);registry=lookupEnvelopeRegistry();
+        if(!registry) {
+            const auto started=glob2::threadCpuNs();
+            try {
+                EnvelopeMemoryLease memory(sizeof(EnvelopeRegistryStorage)+128,false);
+                if(memory.bytes) {
+                    auto storage=std::make_shared<EnvelopeRegistryStorage>(std::move(memory));
+                    registry=std::shared_ptr<glob2::CpuClockRegistry>(storage,&storage->registry);
+                    envelopeRegistry.store(registry,std::memory_order_release);
+                }
+            } catch(...) {}
+            envelopeRegistrySetupCpuNs.fetch_add(glob2::threadCpuDeltaNs(started,glob2::threadCpuNs()),std::memory_order_relaxed);
+        }
+    }
+    if(!registry)return false; // Owner never initializes or waits for initialization.
+    struct ThreadRegistration {
+        // First member releases last, after clock leases retire and registry ownership dies.
+        EnvelopeMemoryLease memory;
+        std::shared_ptr<glob2::CpuClockRegistry> registry;
+        std::array<glob2::CpuClockRegistry::Lease,4> roles;
+        unsigned attempted=0;
+    };
+    thread_local ThreadRegistration current;
+    const auto bit=1u<<unsigned(role);
+    if(current.attempted&bit)return true;
+    const auto started=glob2::threadCpuNs();
+    if(!current.memory.bytes)current.memory=EnvelopeMemoryLease(sizeof(ThreadRegistration),false);
+    const bool admitted=current.memory.bytes!=0;
+    if(admitted){current.registry=registry;current.roles[unsigned(role)]=registry->registerCurrent(role);current.attempted|=bit;}
+    envelopeRoleRegistrationCpuNs.fetch_add(glob2::threadCpuDeltaNs(started,glob2::threadCpuNs()),std::memory_order_relaxed);
+    return admitted;
+}
+const bool installedEnvelopeBridge=[] {
+    glob2::cpuEnvelopeRoleRegistrar=&registerEnvelopeRole;glob2::cpuEnvelopeRegistryLookup=&lookupEnvelopeRegistry;return true;
+}();
+struct BatchCpuEnvelope {
+    std::shared_ptr<glob2::CpuClockRegistry> registry;
+    EnvelopeMemoryLease memory;
+    glob2::ProcessCpuEnvelope envelope;
+    BatchCpuEnvelope(std::shared_ptr<glob2::CpuClockRegistry> clocks,EnvelopeMemoryLease&& lease)
+        :registry(std::move(clocks)),memory(std::move(lease)),envelope(*registry) {}
+};
+std::unique_ptr<BatchCpuEnvelope> beginBatchCpuEnvelope() noexcept {
+    auto registry=lookupEnvelopeRegistry();if(!registry)return {};
+    try {
+        EnvelopeMemoryLease memory(sizeof(BatchCpuEnvelope)+128,true);if(!memory.bytes)return {};
+        auto result=std::make_unique<BatchCpuEnvelope>(std::move(registry),std::move(memory));
+        for(unsigned advance=0;advance<4;++advance)result->envelope.advance();return result;
+    } catch(...) {return {};}
+}
+void finishBatchCpuEnvelope(glob2::ProcessCpuEnvelope& envelope) noexcept {
+    if(envelope.finish())for(unsigned advance=0;advance<4;++advance)envelope.advance();
+}
+std::atomic<std::uint64_t> brokerCpuNs{0};
+std::atomic<unsigned> brokerThreads{0};
+std::atomic<std::uint64_t> brokerThreadId{0};
+void recoverField(void* context,std::size_t) noexcept
+{
+    auto& field=*static_cast<OwnedGradientField*>(context);
+    const auto cpuStart=serviceCpuNow(field.executionState.get());
+    try {field.cpu(field);} catch(...) {field.error=std::current_exception();}
+    const auto cpuEnd=serviceCpuNow(field.executionState.get());
+    field.fallbackCpuNs=glob2::threadCpuDeltaNs(cpuStart,cpuEnd);
+    const auto cleanupStart=field.diagnostics ? serviceCpuNow(field.executionState.get()) : 0;
+    field.inputs.reset();field.identity={};
+    if(field.diagnostics)field.fallbackCleanupCpuNs=glob2::threadCpuDeltaNs(cleanupStart,serviceCpuNow(field.executionState.get()));
+    bool measured=field.preparationCpuClockValid && field.hostCpuClockValid && validCpuInterval(cpuStart,cpuEnd);
+    auto cpu=field.seedCpuNs;
+    for(const auto part:{field.hostCpuNs,field.fallbackCpuNs}){if(part>UINT64_MAX-cpu)measured=false;else cpu+=part;}
+    if(!measured && field.executionState){std::lock_guard lock(field.executionState->mutex);++field.executionState->totals.clockInvalidMeasurements;}
+    if(auto service=field.observer.lock()) service->recordAccepted(field.session,field.workload,
+        field.decision.plan,measured ? cpu : 0,field.tick,true);
+}
+void fallbackField(const std::shared_ptr<OwnedGradientField>& field) noexcept
+{
+    if(auto state=field->executionState) {
+        std::lock_guard lock(state->mutex);++state->totals.fallbacks;
+        ++state->totals.fallbackReasons[unsigned(field->fallbackReason)];
+    }
+    field->completion->resume({&recoverField,field.get()});
+}
+bool observe(const std::shared_ptr<GradientDeviceState>& state,std::shared_ptr<BackendSession> session,
+    const WorkloadKey& key,Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failure=false,bool publicationStall=false) noexcept
+{
+    std::lock_guard lock(state->mutex);
+    if(!state->started || state->canceled || !session || !session->learningPolicy()) return false;
+    if(state->observationWritten-state->observationRead==state->observations.size()) {
+        ++state->totals.observationDrops;
+        if(!publicationStall && !failure)return false;
+        ++state->observationRead; // Retain failure/stall demotion over an older optional sample.
+    }
+    if(publicationStall)++state->totals.publicationStalls;
+    state->observations[state->observationWritten++%state->observations.size()]={
+        session,key,plan,session->currentGeneration(),cpuNs,tick,failure,publicationStall};return true;
+}
+
+// The broker is process-owned. Only process exit joins its thread. Holding the
+// backend lease until AFTER that join pins Device/API/library even if their
+// static root is destroyed first. No callback borrows a service, Map or pipeline.
+class DeviceBroker
+{
+    std::shared_ptr<const void> backendLifetime=retainOpenCLLifetime();
+    std::mutex mutex;
+    std::condition_variable wake;
+    std::vector<std::shared_ptr<GradientDeviceState>> registrations;
+    std::thread coordinator;
+    bool stopping=false,realInitialized=false,realReady=false;
+    bool pending() const {
+        for(const auto& state:registrations) {
+            std::lock_guard lock(state->mutex);
+            if(state->canceled || !state->started || !state->initialized || !state->queue.empty() ||
+               state->observationRead!=state->observationWritten || (state->batching && state->batching->cadenceRead!=state->batching->cadenceWritten)) return true;
+        }
+        return false;
+    }
+    static bool knownBatchShape(const OwnedGradientField& field,unsigned threads) noexcept {
+        const auto& key=field.workload;const auto& shape=field.seedShape;
+        return shape.known && shape.cells==field.grid.cells() && shape.sources<=shape.cells && shape.blockers<=shape.cells-shape.sources &&
+            key.width==unsigned(field.grid.width()) && key.height==unsigned(field.grid.height()) && key.threads==threads &&
+            key.cpuBuckets==field.cpuBuckets && field.limit>=0 && key.limit==unsigned(field.limit) && key.family==field.family &&
+            (key.family==Family::Clear || key.family==Family::Guard) && key.seedDensity==shape.seedDensity() &&
+            key.blockerDensity==shape.blockerDensity() && field.identity.owner && field.identity.allCells;
+    }
+    static void cadenceLocked(GradientDeviceState& state) noexcept {
+        if(!state.batching)return;
+        while(state.batching->cadenceRead!=state.batching->cadenceWritten)
+            state.batching->cadence.record(state.batching->cadenceQueue[state.batching->cadenceRead++%state.batching->cadenceQueue.size()]);
+        state.totals.cadenceFloorNs=state.batching->cadence.floorNs();state.totals.cadenceRevision=state.batching->cadence.version();
+    }
+    static void loadManifest(GradientDeviceState& state) noexcept {
+        if(!state.totals.crossDueRequested || !state.batching)return;
+        constexpr std::size_t transient=8*1024*1024;
+        const auto decline=[&]{std::lock_guard lock(state.mutex);++state.totals.batchProfileDeclines;};
+        // File reads, hashing and parsing belong exclusively to the broker.
+        if(!reserveOpenCLHostBytes(transient)){decline();return;}
+        struct Release {std::size_t bytes;~Release(){releaseOpenCLHostBytes(bytes);}} release{transient};
+        try {
+            std::ifstream file(state.batching->path,std::ios::binary);
+            if(!file)throw std::invalid_argument("batch manifest unavailable");
+            std::array<char,GradientBatchManifest::MaxBytes+1> buffer;
+            file.read(buffer.data(),std::streamsize(buffer.size()));const auto count=file.gcount();
+            if(!file.eof() || count<=0 || std::size_t(count)>GradientBatchManifest::MaxBytes)
+                throw std::invalid_argument("batch manifest size");
+            const auto backend=state.hooks.status ? state.hooks.status() : openCLStatus();
+            const auto manifest=GradientBatchManifest::parse(std::string_view(buffer.data(),std::size_t(count)),backend,
+                backend.parityBound,gradientNativeBuildIdentity());
+            std::lock_guard lock(state.mutex);state.batching->manifest=manifest;
+            state.totals.batchProfiles=manifest.count;state.totals.batchManifestHash=manifest.hash;
+            state.totals.batchSourceHash=manifest.sourceHash;state.totals.crossDueReady=true;
+        } catch(...) {
+            decline();
+        }
+    }
+    void initialize(const std::shared_ptr<GradientDeviceState>& state) noexcept {
+        const auto start=monotonicNs();bool ready=false;
+        if(state->totals.cpuEnvelopeRequested)glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Coordinator,true);
+        try {
+            if(state->hooks.initialize) ready=state->hooks.initialize();
+            else {
+                if(!realInitialized) {realReady=initializeOpenCL();realInitialized=true;}
+                ready=realReady && readyPlans.load(std::memory_order_acquire)!=0;
+            }
+        } catch(...) {}
+        if(ready)loadManifest(*state);
+        std::lock_guard lock(state->mutex);state->initialized=true;state->started=ready && !state->canceled;
+        state->totals.initializationNs=monotonicNs()-start;
+    }
+    void execute(const std::shared_ptr<GradientDeviceState>& state) noexcept {
+        const auto started=monotonicNs(),cpuStart=serviceCpuNow(state.get());
+        std::array<std::shared_ptr<OwnedGradientField>,8> held;std::size_t count=0;bool canceled=false;
+        {
+            std::lock_guard lock(state->mutex);canceled=state->canceled;
+            const auto earlier=[](const auto& a,const auto& b) {
+                return a.field->due!=b.field->due ? a.field->due<b.field->due : a.serial<b.serial;
+            };
+            auto earliest=std::min_element(state->queue.begin(),state->queue.end(),earlier);
+            if(earliest==state->queue.end()) return;
+            if(!state->totals.crossDueRequested && state->mode!=Backend::Automatic) {
+                auto first=earliest->field;held[count++]=first;state->queue.erase(earliest);
+                while(count<state->maximumBatch && !state->queue.empty()) {
+                    auto next=std::min_element(state->queue.begin(),state->queue.end(),earlier);const auto& field=next->field;
+                    if(field->due!=first->due || field->session!=first->session || field->decision.plan!=first->decision.plan ||
+                       !(field->workload==first->workload))break;
+                    held[count++]=field;state->queue.erase(next);
+                }
+            } else {
+                if(state->totals.crossDueRequested)cadenceLocked(*state);
+                auto first=earliest->field;
+                // Gather only already-ready compatible entries. Never wait for a
+                // second field, and never extrapolate a batch bound from singleton.
+                std::array<GradientDeviceState::Queued*,8> candidates{};
+                std::array<std::size_t,8> indices{};std::size_t available=0;
+                for(std::size_t i=0;i<state->queue.size();++i) {
+                    auto& queued=state->queue[i];const auto& field=queued.field;
+                    if(field->session!=first->session || field->decision.plan!=first->decision.plan ||
+                       !(field->workload==first->workload) ||
+                       (field->due!=first->due && !state->totals.crossDueRequested))continue;
+                    if(state->totals.crossDueRequested && (field->identity.owner!=first->identity.owner ||
+                       field->identity.revision!=first->identity.revision || field->identity.variant!=first->identity.variant ||
+                       !knownBatchShape(*field,state->computeThreads)))continue;
+                    std::size_t insert=available;
+                    while(insert && earlier(queued,*candidates[insert-1]))--insert;
+                    if(insert>=state->maximumBatch)continue;
+                    if(available<state->maximumBatch)++available;
+                    for(std::size_t j=available-1;j>insert;--j){candidates[j]=candidates[j-1];indices[j]=indices[j-1];}
+                    candidates[insert]=&queued;indices[insert]=i;
+                }
+                count=1;
+                for(std::size_t n=available;n>1;--n) {
+                    auto key=first->workload;key.batch=unsigned(n);
+                    if(state->totals.crossDueRequested && state->mode!=Backend::OpenCL)continue; // Development forced mode only.
+                    if(state->mode==Backend::Automatic) {
+                        const auto policy=first->session->learningPolicy();
+                        if(!policy || policy->lookup(key).plan!=first->decision.plan)continue;
+                    }
+                    if(state->totals.crossDueRequested) {
+                        if(!state->totals.crossDueReady || !knownBatchShape(*first,state->computeThreads))continue;
+                        const GradientBatchBound* bound=nullptr;
+                        for(unsigned i=0;i<state->batching->manifest.count;++i) {
+                            const auto& entry=state->batching->manifest.bounds[i];
+                            if(entry.workload==key && entry.plan==first->decision.plan &&
+                               entry.costRevision==first->identity.revision && entry.costVariant==first->identity.variant){bound=&entry;break;}
+                        }
+                        if(!bound)continue;
+                        const auto now=monotonicNs();bool fits=true;
+                        for(std::size_t i=0;i<n;++i) {
+                            const auto& field=candidates[i]->field;
+                            fits=fits && state->batching->cadence.fits(field->publicationTick,field->cadenceRevision,field->cadenceFloorNs,*bound,now);
+                        }
+                        if(!fits)continue;
+                    }
+                    count=n;break;
+                }
+                if(count==1) {held[0]=first;state->queue.erase(earliest);}
+                else {
+                    for(std::size_t i=0;i<count;++i)held[i]=candidates[i]->field;
+                    const bool crossDue=std::any_of(held.begin(),held.begin()+count,[&](const auto& field){return field->due!=first->due;});
+                    if(crossDue)++state->totals.crossDueBatches;
+                    std::sort(indices.begin(),indices.begin()+count,std::greater<>());
+                    for(std::size_t i=0;i<count;++i)state->queue.erase(state->queue.begin()+indices[i]);
+                }
+            }
+            ++state->totals.batches;state->totals.maxBatch=std::max<std::uint64_t>(state->totals.maxBatch,count);
+        }
+        const std::span fields(held.data(),count);bool handled=false,submissionStarted=false;
+        const bool diagnostics=state->totals.diagnostics;
+        const bool trackCompletion=diagnostics || bool(fields.front()->session->learningPolicy());
+        std::uint64_t preparationEnd=cpuStart,submissionEnd=cpuStart;
+        const auto envelopeSetupStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
+        auto envelope=state->totals.cpuEnvelopeRequested ? beginBatchCpuEnvelope() : nullptr;
+        const auto envelopeSetupCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeSetupStarted,glob2::threadCpuNs()) : 0;
+        const bool missingPreparationClock=std::any_of(fields.begin(),fields.end(),[](const auto& field){return !field->preparationCpuClockValid;});
+        const bool clockUnavailable=state->mode==Backend::Automatic && (state->automaticClockUnavailable || !cpuStart || missingPreparationClock);
+        const bool stale=std::any_of(fields.begin(),fields.end(),[](const auto& field) {
+            return field->decision.generation!=field->session->currentGeneration() || field->session->failed.load();
+        });
+        if(!canceled && !stale && !clockUnavailable) {
+            try {
+                std::vector<BackendRequest> requests;requests.reserve(count);
+                for(const auto& field:fields) {
+                    requests.push_back({field->data.get(),field->limit,field->grid,*field->session,field.get(),
+                        [](void* value,std::size_t cell){auto& field=*static_cast<OwnedGradientField*>(value);return field.costAt(field,cell);},
+                        nullptr,field->identity,field->family});
+                    requests.back().cpuBuckets=field->cpuBuckets;requests.back().executedOnDevice=&field->executedGPU;
+                    requests.back().deviceExecutionObserved=&field->deviceExecutionObserved;
+                }
+                if(diagnostics)preparationEnd=serviceCpuNow(state.get());
+                if(trackCompletion) {
+                    const auto stamp=monotonicNs();for(const auto& field:fields) field->deviceStartedWallNs=stamp;
+                }
+                submissionStarted=true;
+                handled=state->hooks.execute ? state->hooks.execute(requests,fields.front()->decision.plan)
+                    : executeOpenCLDevice(requests,fields.front()->decision.plan);
+                if(diagnostics) submissionEnd=serviceCpuNow(state.get());
+            } catch(...) {
+                handled=false;
+                if(diagnostics) {submissionEnd=serviceCpuNow(state.get());if(!submissionStarted)preparationEnd=submissionEnd;}
+            }
+        }
+        const auto cpuEnd=serviceCpuNow(state.get());
+        const bool hostClockValid=validCpuInterval(cpuStart,cpuEnd) && (!diagnostics ||
+            (validCpuInterval(cpuStart,preparationEnd) && validCpuInterval(preparationEnd,submissionEnd) && cpuEnd>=submissionEnd));
+        bool batchTimingInvalid=!hostClockValid || missingPreparationClock;
+        const auto elapsed=monotonicNs()-started,consumed=glob2::threadCpuDeltaNs(cpuStart,cpuEnd);
+        if(trackCompletion) {
+            const auto stamp=monotonicNs();for(const auto& field:fields)field->deviceCompletedWallNs=stamp;
+        }
+        std::size_t cells=0;for(const auto& field:fields) cells+=field->grid.cells();
+        for(const auto& field:fields) {
+            field->executedBatchCount=unsigned(count);field->hostCpuClockValid=hostClockValid;
+            field->serviceNs=elapsed;field->hostCpuNs=(consumed/cells)*field->grid.cells()+(consumed%cells)*field->grid.cells()/cells;
+            if(handled) {
+                field->inputs.reset();field->identity={};
+                field->completion->complete();
+            }
+            else {
+                field->fallbackReason=canceled ? GradientFallbackReason::Shutdown : stale ? GradientFallbackReason::StaleGeneration
+                    : clockUnavailable ? GradientFallbackReason::CpuClockUnavailable
+                    : field->session->failed.load() ? GradientFallbackReason::DriverFailure : GradientFallbackReason::BackendDecline;
+                fallbackField(field);
+            }
+        }
+        if(handled && std::any_of(fields.begin(),fields.end(),[](const auto& field){return field->executedGPU;})) {
+            auto key=fields.front()->workload;key.batch=unsigned(count);
+            const auto observationEnd=serviceCpuNow(state.get());
+            bool measured=hostClockValid && !missingPreparationClock && validCpuInterval(cpuStart,observationEnd) && observationEnd>=cpuEnd;
+            auto cpu=glob2::threadCpuDeltaNs(cpuStart,observationEnd);
+            for(const auto& field:fields){if(field->seedCpuNs>UINT64_MAX-cpu)measured=false;else cpu+=field->seedCpuNs;}
+            observe(state,fields.front()->session,key,fields.front()->decision.plan,measured ? cpu : 0,fields.front()->tick,!measured);
+            if(!measured){batchTimingInvalid=true;if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
+        }
+        const auto envelopeFinishStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
+        if(envelope)finishBatchCpuEnvelope(envelope->envelope);
+        // Retain only bounded scalar metadata; release optional storage before
+        // publishing telemetry. The original completion ticket is already done.
+        struct Summary {bool present=false,valid=false,churn=false;std::uint64_t process=0,known=0,unknown=0,sampler=0,omitted=0,resolution=0;} envelopeResult;
+        if(envelope){const auto& result=envelope->envelope.metrics();envelopeResult={true,result.valid,result.churn,
+            result.processCpuNs,result.knownInnerCpuNs,result.unknownUpperCpuNs,result.samplerCpuNs,result.omittedThreads,result.maxResolutionNs};}
+        envelope.reset();
+        const auto envelopeFinishCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeFinishStarted,glob2::threadCpuNs()) : 0;
+        std::lock_guard lock(state->mutex);
+        if(batchTimingInvalid){++state->totals.clockInvalidMeasurements;
+            if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
+        state->totals.automaticClockUnavailable=state->automaticClockUnavailable;
+        if(state->totals.cpuEnvelopeRequested) {
+            state->totals.cpuEnvelopeLifecycleNs+=envelopeSetupCpu+envelopeFinishCpu;
+            state->totals.cpuEnvelopeSetupOvershoots+=envelopeSetupCpu>500000;
+            state->totals.cpuEnvelopeFinishOvershoots+=envelopeFinishCpu>500000;
+            if(!envelopeResult.present)++state->totals.cpuEnvelopeDeclines;
+            else {
+                state->totals.cpuEnvelopeSamplerNs+=envelopeResult.sampler;
+                state->totals.cpuEnvelopeOmittedThreads+=envelopeResult.omitted;
+                state->totals.cpuEnvelopeChurn+=envelopeResult.churn;
+                state->totals.cpuEnvelopeMaxResolutionNs=std::max(state->totals.cpuEnvelopeMaxResolutionNs,envelopeResult.resolution);
+                if(!envelopeResult.valid)++state->totals.cpuEnvelopeInvalid;
+                else {
+                    ++state->totals.cpuEnvelopeWindows;
+                    state->totals.cpuEnvelopeProcessNs+=envelopeResult.process;
+                    state->totals.cpuEnvelopeKnownInnerNs+=envelopeResult.known;
+                    state->totals.cpuEnvelopeUnknownUpperNs+=envelopeResult.unknown;
+                }
+            }
+        }
+        if(diagnostics) {
+            state->totals.batchPreparationCpuNs+=glob2::threadCpuDeltaNs(cpuStart,preparationEnd);
+            state->totals.batchSubmissionCpuNs+=glob2::threadCpuDeltaNs(preparationEnd,submissionEnd);
+            state->totals.batchCompletionCpuNs+=glob2::threadCpuDeltaNs(submissionEnd,serviceCpuNow(state.get()));
+        }
+        for(const auto& field:fields)if(field->deviceExecutionObserved){
+            ++state->totals.deviceCompletedFields;
+            if(!handled)++state->totals.fallbackAfterDeviceCompletionFields;
+        }
+        if(handled) {
+            state->totals.completed+=count;
+            for(const auto& field:fields) field->executedGPU ? ++state->totals.executed : ++state->totals.trivial;
+        }
+    }
+    void run() noexcept {
+        brokerThreadId=glob2::nativeThreadId();brokerThreads=1;const auto cpuStart=glob2::threadCpuNs();
+        for(;;) {
+            std::shared_ptr<GradientDeviceState> selected;
+            enum class Work {Initialize,Required,Observation,Cadence};Work work=Work::Initialize;
+            {
+                std::unique_lock lock(mutex);wake.wait(lock,[&]{return stopping || pending();});
+                for(auto at=registrations.begin();at!=registrations.end();) {
+                    auto state=*at;std::lock_guard stateLock(state->mutex);
+                    if(stopping) state->canceled=true;
+                    if((state->canceled || (state->initialized && !state->started)) && state->queue.empty()) {
+                        // Destroy retained observations/hooks on the background thread.
+                        for(auto& observation:state->observations) observation={};
+                        state->observationRead=state->observationWritten=0;state->hooks={};
+                        state->batching.reset();
+                        at=registrations.erase(at);
+                    } else ++at;
+                }
+                if(stopping && registrations.empty()) break;
+                std::uint64_t due=std::numeric_limits<std::uint64_t>::max();
+                for(const auto& state:registrations) {
+                    std::lock_guard stateLock(state->mutex);
+                    for(const auto& queued:state->queue) if(!selected || queued.field->due<due) {
+                        selected=state;due=queued.field->due;work=Work::Required;
+                    }
+                }
+                if(!selected) for(const auto& state:registrations) {
+                    std::lock_guard stateLock(state->mutex);
+                    if(!state->initialized) {selected=state;work=Work::Initialize;break;}
+                }
+                if(!selected) for(const auto& state:registrations) {
+                    std::lock_guard stateLock(state->mutex);
+                    if(state->batching && state->batching->cadenceRead!=state->batching->cadenceWritten) {selected=state;work=Work::Cadence;break;}
+                }
+                if(!selected) for(const auto& state:registrations) {
+                    std::lock_guard stateLock(state->mutex);
+                    if(state->observationRead!=state->observationWritten) {selected=state;work=Work::Observation;break;}
+                }
+            }
+            brokerCpuNs=glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs());
+            if(!selected) continue;
+            if(work==Work::Required) execute(selected);
+            else if(work==Work::Initialize) initialize(selected);
+            else if(work==Work::Cadence){std::lock_guard lock(selected->mutex);cadenceLocked(*selected);}
+            else {
+                GradientDeviceState::Observation observation;
+                {std::lock_guard lock(selected->mutex);observation=std::move(selected->observations[
+                    selected->observationRead++%selected->observations.size()]);}
+                if(observation.session->currentGeneration()==observation.generation)
+                    if(auto policy=observation.session->learningPolicy()) policy->observeAccepted(
+                        observation.key,observation.plan,observation.cpuNs,observation.tick,observation.failed,observation.publicationStall);
+            }
+            brokerCpuNs=glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs());
+        }
+        brokerCpuNs=glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs());brokerThreads=0;
+    }
+public:
+    ~DeviceBroker() {
+        {std::lock_guard lock(mutex);stopping=true;}wake.notify_one();if(coordinator.joinable()) coordinator.join();
+    }
+    bool add(const std::shared_ptr<GradientDeviceState>& state) noexcept {
+        try {
+            std::lock_guard lock(mutex);if(stopping || registrations.size()>=64) return false;
+            if(!coordinator.joinable()) coordinator=GAGCore::ThreadSupport::launch([this]{run();});
+            registrations.push_back(state);wake.notify_one();return true;
+        } catch(...) {return false;}
+    }
+    // Producers release the session lock before taking this lock. Sharing the
+    // wait mutex prevents a notification being lost between predicate and wait.
+    void notify() noexcept {std::lock_guard lock(mutex);wake.notify_one();}
+};
+DeviceBroker& broker(){static DeviceBroker value;return value;}
+}
+OwnedGradientField::~OwnedGradientField(){releaseReservation();}
+void OwnedGradientField::releaseReservation() noexcept {
+    if(reservedHostBytes) {
+        releaseOpenCLHostBytes(reservedHostBytes);if(serviceRetained) serviceRetained->fetch_sub(reservedHostBytes);reservedHostBytes=0;
+    }
+}
+std::unique_ptr<std::uint16_t[]> OwnedGradientField::takeData(){releaseReservation();return std::move(data);}
+std::shared_ptr<GradientDeviceState> GradientDeviceService::state() const {std::lock_guard lock(mutex);return registration;}
+void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
+    stop();auto next=std::make_shared<GradientDeviceState>();next->hooks=hooks;next->cpuClock=hooks.cpuClock;
+    next->totals.diagnostics=gradientDiagnosticsRequested();
+    next->totals.cpuEnvelopeRequested=glob2::cpuEnvelopeRequested();
+    if(next->totals.cpuEnvelopeRequested)glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::OtherOwned);
+    next->mode=mode;next->computeThreads=computeThreads;
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_CROSS_DUE");value && *value) {
+        if(std::strcmp(value,"0") && std::strcmp(value,"1"))throw std::invalid_argument("GLOB2_GRADIENT_CROSS_DUE must be 0 or 1");
+        if(std::strcmp(value,"1")==0 && computeThreads>=2 && mode!=Backend::CPU) {
+            const auto* path=std::getenv("GLOB2_GRADIENT_BATCH_PROFILE");
+            std::size_t pathLength=0;if(path)while(pathLength<=4096 && path[pathLength])++pathLength;
+            if(!path || !pathLength || pathLength>4096)throw std::invalid_argument("cross-due batching requires a bounded batch profile path");
+            next->totals.crossDueRequested=true;
+            constexpr auto bytes=sizeof(GradientBatchAdmissionState)+8192+128;
+            if(!reserveOpenCLHostBytes(bytes))++next->totals.batchProfileDeclines;
+            else {
+                try {
+                    next->batching=std::make_shared<GradientBatchAdmissionState>();next->batching->lease.bytes=bytes;
+                    next->batching->path.assign(path,pathLength);
+                } catch(...) {
+                    if(next->batching)next->batching.reset();else releaseOpenCLHostBytes(bytes);
+                    ++next->totals.batchProfileDeclines;
+                }
+            }
+        }
+    }
+    if(const auto* value=std::getenv("GLOB2_GRADIENT_BATCH")) {
+        unsigned parsed=0;const auto* end=value+std::strlen(value);const auto result=std::from_chars(value,end,parsed);
+        if(result.ec!=std::errc{} || result.ptr!=end || !parsed || parsed>8)
+            throw std::invalid_argument("GLOB2_GRADIENT_BATCH must be 1 through 8");
+        next->maximumBatch=parsed;
+    }
+    next->totals.configuredMaxBatch=next->maximumBatch;{std::lock_guard lock(mutex);registration=next;}
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    if(computeThreads<2 || mode==Backend::CPU || (mode==Backend::Automatic && !learningRequested() && !hooks.initialize) ||
+       (!prepareAccelerator && !hooks.initialize)) return;
+    {std::lock_guard lock(next->mutex);next->started=true;}
+    if(!broker().add(next)) {std::lock_guard lock(next->mutex);next->started=false;}
+}
+void GradientDeviceService::stop() noexcept {
+    if(auto current=state()) {
+        bool registered=false;{std::lock_guard lock(current->mutex);registered=current->started;current->canceled=true;}
+        if(registered) broker().notify();
+    }
+}
+bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField>& field) noexcept {
+    try {
+        auto current=state();if(!current) return false;std::unique_lock lock(current->mutex);
+        if(field) {field->observer=weak_from_this();field->executionState=current;field->diagnostics=current->totals.diagnostics;}
+        if(!field || !field->session || !field->data || !field->completion || !field->cpu || !field->costAt) {
+            if(field) field->fallbackReason=GradientFallbackReason::InvalidRequest;
+            ++current->totals.declined;return false;
+        }
+        if(!current->started || current->canceled || !current->initialized) {
+            field->fallbackReason=current->canceled ? GradientFallbackReason::Shutdown : GradientFallbackReason::Unavailable;
+            ++current->totals.declined;return false;
+        }
+        if(field->decision.plan==Plan::CPU || field->decision.generation!=field->session->currentGeneration()) {
+            field->fallbackReason=GradientFallbackReason::StaleGeneration;
+            ++current->totals.stale;++current->totals.declined;return false;
+        }
+        bool unused=false;
+        if(!field->admitted.compare_exchange_strong(unused,true)) {
+            field->fallbackReason=GradientFallbackReason::Duplicate;++current->totals.declined;return false;
+        }
+        const auto cells=field->grid.cells();
+        const auto declineBudget=[&] {
+            field->admitted=false;field->fallbackReason=GradientFallbackReason::MemoryBudget;
+            ++current->totals.budgetDeclines;++current->totals.declined;return false;
+        };
+        if(cells>(OpenCLHostBudget-sizeof(OwnedGradientField))/sizeof(std::uint16_t)) return declineBudget();
+        const auto base=cells*sizeof(std::uint16_t)+sizeof(OwnedGradientField);
+        if(field->retainedInputBytes>OpenCLHostBudget-base) return declineBudget();
+        const auto bytes=base+field->retainedInputBytes;if(!reserveOpenCLHostBytes(bytes)) return declineBudget();
+        field->reservedHostBytes=bytes;field->serviceRetained=current->retained;current->retained->fetch_add(bytes);
+        try {current->queue.push_back({field,++current->nextSerial});}
+        catch(...) {
+            field->reservedHostBytes=0;current->retained->fetch_sub(bytes);releaseOpenCLHostBytes(bytes);return declineBudget();
+        }
+        if(current->batching){field->cadenceRevision=current->batching->cadence.version();field->cadenceFloorNs=current->batching->cadence.floorNs();}
+        ++current->totals.submitted;lock.unlock();broker().notify();return true;
+    } catch(...) {return false;}
+}
+void GradientDeviceService::fallback(const std::shared_ptr<OwnedGradientField>& field) noexcept {fallbackField(field);}
+void GradientDeviceService::recordAccepted(std::shared_ptr<BackendSession> session,const WorkloadKey& key,
+    Plan plan,std::uint64_t cpuNs,std::uint64_t tick,bool failed,bool publicationStall) noexcept {
+    if(auto current=state()) if(observe(current,std::move(session),key,plan,cpuNs,tick,failed,publicationStall)) broker().notify();
+}
+bool GradientDeviceService::crossDueRequested() const noexcept {
+    if(auto current=state()){std::lock_guard lock(current->mutex);return current->totals.crossDueRequested && current->batching && current->started && !current->canceled;}
+    return false;
+}
+void GradientDeviceService::recordCadence(GradientCadenceSample sample) noexcept {
+    auto current=state();if(!current)return;
+    {std::lock_guard lock(current->mutex);
+        if(!current->totals.crossDueRequested || !current->batching || current->canceled || !current->started)return;
+        if(current->batching->cadenceWritten-current->batching->cadenceRead==current->batching->cadenceQueue.size()) {
+            ++current->totals.cadenceDrops;++current->batching->cadenceRead;sample.nonWaitNs=0;
+        }
+        current->batching->cadenceQueue[current->batching->cadenceWritten++%current->batching->cadenceQueue.size()]=sample;++current->totals.cadenceSamples;
+    }
+    broker().notify();
+}
+GradientDeviceService::Metrics GradientDeviceService::metrics() const {
+    auto current=state();Metrics out;
+    if(current) {
+        std::lock_guard lock(current->mutex);out=current->totals;out.queued=current->queue.size();
+        out.running=current->started && !current->canceled;out.ready=out.running && current->initialized;
+        out.retainedHostBytes=current->retained->load();
+    }
+    out.cpuEnvelopeRegistryReady=bool(lookupEnvelopeRegistry());out.cpuEnvelopeRegistrySetupCpuNs=envelopeRegistrySetupCpuNs.load();
+    out.cpuEnvelopeRoleRegistrationCpuNs=envelopeRoleRegistrationCpuNs.load();
+    out.hostCpuNs=brokerCpuNs.load();out.coordinatorThreads=brokerThreads.load();
+    out.coordinatorThreadId=brokerThreadId.load();return out;
+}
+}

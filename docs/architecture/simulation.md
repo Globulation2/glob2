@@ -355,6 +355,160 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   `src/field/GradientConstants.h` owns the field encoding; `Map` keeps its pipeline and
   per-executor scratch in an opaque `GradientRuntime`. Save/load reaches pending
   work through snapshot views, not the pipeline's mutable jobs.
+- Full weighted-field entry points also support the optional native OpenCL
+  backend in `src/field/OpenCLGradient.cpp`, through `GradientBackend.h`.
+  `GLOB2_GRADIENT_BACKEND=auto|cpu|opencl` selects execution placement; `auto`
+  is the default. CPU execution retains scalar/SSE2/NEON dispatch. OpenCL uses
+  integer relaxation to convergence, preserving the same seeds, obstacles,
+  cost cap, reverse terrain-entry costs and wrapped geometry. Map dimensions
+  are powers of two by construction (`setSize` takes validated exponents), so
+  GPU map wrapping uses bit masks. General standalone field grids retain their
+  rectangular wrapping path. Workgroups load a core and a halo into shared
+  memory and perform several exact local steps before exchanging updates
+  through device memory. Changed tiles reactivate their neighbors across wrap
+  seams. Work-items share the completed change reduction and each publish one
+  neighbor activation, avoiding a serial scatter from a single work-item.
+  Inactive tiles copy their core to keep ping-pong buffers coherent.
+  Completed fields retire while other fields in the batch continue. Long paths
+  still require successive exchanges. Gradient buffers and shared values use
+  exact 16-bit storage; costs, descriptors and atomic masks remain 32-bit.
+  Uniform cost planes use descriptor flags to skip per-cell cost loads. Signed
+  candidate subtraction avoids unsigned underflow; each cell takes the largest
+  neighbor candidate before testing the common acceptance bound once.
+  Eight dispatches run between host checks. The field-change flags are cleared
+  immediately before the last dispatch, whose result determines convergence;
+  tile reactivation masks are still cleared before every dispatch.
+  The validated plan portfolio contains six GPU variants with 16×16
+  output cores: four-step shrinking-cone Jacobi with 256 threads; expanding-halo
+  four-color relaxation with two/four/eight sweeps and 128/128/256 threads; and
+  frozen-halo four-color relaxation with eight/sixteen sweeps and 128/64 threads.
+  Physical workgroups are one-dimensional and independent of output-core size.
+  Four-color relaxation updates nonadjacent parity classes with a barrier
+  between colors. Every update extends a valid path toward the same exact fixed
+  point, but a sweep need not equal a fixed number of Jacobi rounds. Expanding
+  halos stop after an unchanged first sweep. Frozen one-cell halos update only
+  the core and test for an unchanged complete sweep after every local iteration.
+  Their logical 18×18 patch uses a physical row pitch of 24 elements to reduce
+  repeated shared-memory bank conflicts; padding does not change cell ownership
+  or the halo and adds 648 bytes of shared storage per workgroup.
+  Later exchanges reactivate tiles when neighboring values improve. The
+  convergence guard permits 65,536 global dispatches regardless of local sweep
+  count: frozen halos can advance only one edge across a tile boundary per
+  dispatch. Jacobi swaps shared buffers and skips halo cells outside the final
+  core's dependency cone.
+  Device-axis limits, compilation success and each kernel's workgroup limit
+  determine which candidates are available. Unsupported candidates are skipped
+  internally. `AdaptiveGradientPolicy.h` owns complete, versioned execution
+  plans, indexed by field family and actual batch size (one through eight).
+  The shared descriptors are the single source of tile geometry, local sweep
+  counts, workgroup sizes and relaxation modes for both device compilation and
+  worker execution lanes; compile-time contracts keep plan ids and readiness
+  bits aligned. Direct execution groups accept at most eight requests sharing
+  a valid family, session and operation; dimensions, costs and caps can differ.
+  Invalid groups throw `std::invalid_argument` before execution or accounting,
+  while empty groups are no-ops. The batch entry point validates every family
+  before splitting heterogeneous inputs into eligible groups. Invalid optional
+  observations are dropped without throwing or indexing profile storage.
+  OpenCL executes an explicit variant; it never calibrates, benchmarks a CPU
+  reference or conducts a kernel tournament inside required work. Unknown
+  automatic categories use CPU. The first controller milestone does not learn
+  placement or explore alternatives. Explicit `opencl` requests frozen8 on
+  eligible workers; an unsupported or unready plan falls back to CPU.
+  Synchronous/owner execution stays on CPU, including deferred-job owner
+  fallback when there are no compute workers. Resumable searches are ineligible
+  for GPU plans: their continuation state and cost layers remain observable.
+  Initialization and compilation run on an existing worker-only maintenance
+  path; required work never waits for readiness. Driver compilation cannot be
+  preempted and its elapsed cost is reported separately. Lane-local queue and
+  scratch allocation remain part of required GPU execution, on workers.
+  Explicit callers can submit homogeneous batches, processed in groups of up to eight fields. Periodic jobs seed and propagate on their executor
+  workers as soon as dispatched, using immutable snapshots and retained per-worker
+  scratch. Each calling worker/thread lazily creates an OpenCL execution lane with
+  its own command queue, kernel instances, mutable gradient/mask/descriptor buffers
+  and host packing storage. The existing worker submits the field and waits for its
+  result; independent lanes submit concurrently without a global GPU execution
+  lock. Lanes share the device context and compiled programs, rather than sharing
+  mutable kernel arguments or dispatch buffers. The publication barrier only joins
+  completed work and publishes at the
+  original fixed deadline; it does not start a deferred propagation batch. Leases
+  remain alive through propagation, and errors retain the affected field's deadline.
+  Fields without sources, and fields containing only forbidden cells and maximal
+  goals, are already fixed points and bypass device work without choosing a class. Known CPU singleton classes bypass allocation and device
+  scheduling on their original workers. Explicit ready batches use the actual
+  homogeneous group size. No classification path scans seeds or builds GPU
+  inputs for a CPU choice. Resumable cost-layer searches retain their scheduling.
+  Terrain-derived cost planes remain resident in a shared eight-entry device
+  cache. Each entry owns an immutable device cost buffer; a dispatch retains leases
+  to every cost buffer and input owner it uses until its result completes. Kernels
+  receive up to eight shared cost buffers directly, avoiding copies into a private
+  packed cost arena. Eviction drops cache ownership without modifying buffers still
+  leased by another lane. Cost uploads complete before an entry becomes available
+  to other command queues. Short cache locks protect lookup and publication, not
+  field propagation or result waiting. Immutable snapshot owners, movement variants
+  and revisions identify reusable inputs. Standard movement costs cover every terrain cell and remain reusable
+  across obstacle changes. Modified snapshot/profile costs do too when every
+  terrain profile has valid device costs; their callbacks cover every cell.
+  Callbacks defined only for passable cells also require
+  an exact blocked-cell mask match. Cache ownership prevents pooled address reuse.
+  Identity hits avoid cost callbacks and rebuilding packed costs; unknown callers
+  retain exact content comparison. New terrain, movement classes or revisions
+  invalidate reuse, as do blocked-cell changes for passable-only callbacks. These optimizations preserve exact
+  distances; benchmark their benefit for the target hardware and workload.
+  Resumable searches
+  continue to use CPU cost layers; their frontier state is part of their contract.
+  The native backend loads an installed OpenCL driver through SDL without a
+  mandatory SDK or linked dependency. Browser, Android and iOS builds use CPU
+  execution. Automatic selection uses CPU when no supported device is available.
+  `gradient_kernel::openCLStatus()` reports the device,
+  failure reason and execution counters to native diagnostics and tests.
+  `GLOB2_GRADIENT_ACCOUNTING=1` enables optional passive accounting; it remains
+  opt-in until its overhead is qualified. Accounting off and on execute the same
+  established plans. A configured policy owns at most 32 worker-local rings of
+  32 scalar observations plus a fixed family/batch/plan profile table. Workers
+  sample one in 32 requests; slots beyond 31 and owner calls are not sampled.
+  A full ring drops the observation without waiting or retaining inputs. No
+  gradient, snapshot, reference output or probe is retained by the controller.
+  Map replacement installs a new policy. Executor configuration changes its
+  generation; plan publication changes its version; failures invalidate the
+  generation. Worker processing rejects obsolete observations and keeps bounded
+  recent execution estimates for the plan actually observed. Passive samples
+  say nothing about unexecuted alternatives and never change plan assignments.
+
+  `ComputeExecutor::WorkerOnly` is distinct from deferred groups: owner joins,
+  owner `run()` and presentation pumping cannot execute it. Existing worker
+  count/owner-slot semantics are unchanged. A single maintenance pass consumes
+  at most eight observations. Required jobs and presentation admission precede
+  maintenance; the designated presentation worker never claims maintenance.
+  No maintenance completion ticket is exposed. Observations do not wake the
+  pool: returning workers and ordinary required-work wakeups provide processing
+  opportunities. Idle tail samples may stay pending until another opportunity
+  or lifecycle disposal. With no eligible worker, optional work stays pending
+  or observations are dropped. Replacing a
+  service does not join it; a running worker holds the old service until the
+  pass ends. Normal executor teardown still joins its threads. Initialization
+  uses the same worker-only path once; CPU remains available during compilation.
+
+  Sample timing distinguishes submission-to-start queue delay, execution-to-
+  completion and submission-to-completion service latency. Periodic pipeline
+  execution includes seed preparation; synchronous worker calls have no queue
+  sample. GPU host preparation includes uploads, dispatch includes host checks,
+  and final readback is separate; upload duration is an overlapping subset of
+  preparation, not an additive cost. Pipeline `waitNs` measures actual owner
+  join time at publication/lifecycle boundaries separately from sampled work;
+  `gradient_publication_wait_ns` restricts this to fixed-deadline publication.
+  `game run --benchmark-warmup N` reports `adaptive_gradient` bounded counts, memory and
+  processing times alongside tick tails and publication waits. Summed gradient
+  execution/service times are not game latency or process CPU. There are no
+  tuning GPU dispatches or retained probe inputs in this milestone; passive
+  processing still consumes CPU/cache/memory bandwidth and must earn its cost
+  in fixed-plan accounting-on/off comparisons.
+
+  Unavailable hardware and execution errors preserve the original seeds for
+  CPU recovery. A failed device is quarantined process-wide. Session choices,
+  profiles and GPU scratch are local, unsaved execution state. Fixed-tick
+  publication, replay orders and save formats are unchanged. Advancing to learned
+  selection or live comparisons requires separate evidence and implementation.
+
 - `src/field/` is the Map-independent field library. Weighted paths retain
   bucket queues and scalar/SSE2/NEON relaxation; uniform four/eight-neighbour
   fields use an ordered FIFO with caller-owned payloads and admission rules.

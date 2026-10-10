@@ -20,6 +20,7 @@ bool SimulationRunner::start()
 	return false;
 #else
 	telemetry.reset();
+	telemetryMailbox.enableDurationDistributions(bool(telemetry.distributions));
 	requestedScene = engine.gui.sceneRequest(false);
 	engine.gui.startScriptClientChannel();
 	try
