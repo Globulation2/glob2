@@ -98,6 +98,31 @@ class ReleaseWorkflowTests(unittest.TestCase):
                         self.assertEqual(result.returncode,0,result.stderr)
                         self.assertEqual(result.stdout.splitlines(),expected)
 
+    def test_epic_smoke_uses_tag_cli_and_rejects_unknown_versions(self):
+        text=(ROOT/'.github/workflows/epic-windows-release.yml').read_text()
+        selector='if test -f src/app/cli/CommandLine.h; then'+text.split('if test -f src/app/cli/CommandLine.h; then',1)[1].split('fi',1)[0]+'fi'
+        for version,expected in ((None,'cli_version=1'),(2,'cli_version=2'),(3,None)):
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as directory:
+                if version is not None:
+                    header=Path(directory)/'src/app/cli/CommandLine.h'
+                    header.parent.mkdir(parents=True)
+                    header.write_text(f'inline constexpr int Version = {version};\n')
+                output=Path(directory)/'output'
+                result=subprocess.run(['bash','-c','set -euo pipefail\n'+selector],cwd=directory,
+                                      env={**os.environ,'GITHUB_OUTPUT':str(output)},capture_output=True,text=True)
+                if expected is None:
+                    self.assertNotEqual(result.returncode,0)
+                    self.assertFalse(output.exists())
+                else:
+                    self.assertEqual(result.returncode,0,result.stderr)
+                    self.assertEqual(output.read_text().strip(),expected)
+        smoke=text.split('\n  smoke-test:',1)[1].split('\n  upload-dev:',1)[0]
+        self.assertIn('CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}',smoke)
+        self.assertIn("'1' { $repeatArgs = @('--nox', $save, '10', '1') }",smoke)
+        self.assertIn("'2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }",smoke)
+        self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
+        self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
+
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
         for name in ('github-release.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
             text=(ROOT/'.github/workflows'/name).read_text()
