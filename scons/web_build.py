@@ -213,6 +213,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 ('#src/map/MapQueryTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/hud/GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/resource/ResourceRegistryTest.cpp', '#src/map/TerrainResourcesHarness.cpp',
+                '#src/unit/types/UnitCatalogTest.cpp',
+                ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
                 '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
                 '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',

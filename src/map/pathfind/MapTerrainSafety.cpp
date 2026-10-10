@@ -19,7 +19,7 @@ struct EscapeProfile
     bool safe(const TerrainProperties& terrain) const
     {
         return air ? terrain.flyable && terrain.airHealthQ8 >= 0
-            : (terrain.walkable || (swim > 0 && terrain.swimmable)) && terrain.groundHealthQ8 >= 0;
+            : gradient_kernel::terrainAllowsGround(terrain,swim) && terrain.groundHealthQ8 >= 0;
     }
 
     unsigned entryCost(const Map& map, size_t index, bool diagonal) const
@@ -40,7 +40,7 @@ struct EscapeProfile
         const auto& terrain = map.terrainPropertiesAt(index);
         const bool forbidden = !air && (map.getForbidden(x, y) & team);
         const bool passable = air ? terrain.flyable && !map.resourceBlocksAir(index)
-            : (terrain.walkable || (swim > 0 && terrain.swimmable)) &&
+            : gradient_kernel::terrainAllowsGround(terrain,swim) &&
               map.getBuilding(x, y) == NOGBID && !map.resourceBlocksGround(index) &&
               (!forbidden || escapeForbidden);
         if (!passable) return SafetyField::Blocked;
@@ -50,6 +50,7 @@ struct EscapeProfile
     bool freeNextStep(const Map& map, int x, int y) const
     {
         if (air) return map.isFreeForAirUnit(x, y);
+        if (!air && swim==WATER_ONLY_CLASS && !map.terrainPropertiesAt(x,y).swimmable) return false;
         return escapeForbidden ? map.isFreeForGroundUnitNoForbidden(x, y, swim > 0)
             : map.isFreeForGroundUnit(x, y, swim > 0, team);
     }

@@ -288,7 +288,7 @@ bool Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer
 bool Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 {
 	Building *b=lookupBuilding(omf.gid);
-	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->zonable[WORKER] || b->type->zonable[EXPLORER] || b->type->zonable[WARRIOR]))
+	if ((b) && (b->buildingState==Building::ALIVE) && (b->runtime->attractsRole(0) || b->runtime->attractsRole(1) || b->runtime->attractsRole(2)))
 	{
 		int oldRange=b->unitStayRange;
 		int newRange=omf.range;
@@ -312,7 +312,7 @@ bool Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 	Building *b=lookupBuilding(omcf.gid);
 	if (b
 		&& b->buildingState==Building::ALIVE
-		&& b->type->zonable[WORKER])
+		&& b->runtime->attractsRole(0))
 	{
 		memcpy(b->clearingMaterials, omcf.clearingMaterials, sizeof(bool)*MaterialCount);
 		return true;
@@ -326,12 +326,12 @@ bool Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, in
 	Building *b=lookupBuilding(omwf.gid);
 	if (b
 		&& b->buildingState==Building::ALIVE
-		&& (b->type->zonable[WORKER] || b->type->zonable[WARRIOR] || b->type->zonable[EXPLORER]))
+		&& (b->runtime->attractsRole(0) || b->runtime->attractsRole(1) || b->runtime->attractsRole(2)))
 	{
-		if (omwf.targetRole > 2 || (!b->type->zonable[omwf.targetRole == 1 ? EXPLORER : omwf.targetRole == 2 ? WORKER : WARRIOR]
-			&& !(omwf.legacyCombinedRole && b->type->zonable[EXPLORER]))) return false;
+		if (omwf.targetRole > 2 || (!b->runtime->attractsRole(omwf.targetRole == 1 ? 1 : omwf.targetRole == 2 ? 0 : 2)
+			&& !(omwf.legacyCombinedRole && b->runtime->attractsRole(1)))) return false;
 		if (omwf.targetRole > 2 || omwf.minLevelToFlag >= NB_UNIT_LEVELS || (omwf.targetRole == 1 && omwf.minLevelToFlag > 1)) return false;
-		if (omwf.targetRole == 1 || (omwf.legacyCombinedRole && b->type->zonable[EXPLORER]))
+		if (omwf.targetRole == 1 || (omwf.legacyCombinedRole && b->runtime->attractsRole(1)))
 			b->explorersRequireBombing = omwf.minLevelToFlag != 0;
 		if (omwf.targetRole == 0) b->minLevelToFlag = omwf.minLevelToFlag;
 		if (omwf.targetRole == 2) b->minWorkerLevelToFlag = omwf.minLevelToFlag;
@@ -422,7 +422,7 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 			Building* building = teams[team]->myBuildings[id];
 			if (!building) continue;
 			const bool ownTeam = team == oaa.teamNumber;
-			const bool clearingFlag = building->type->zonable[WORKER];
+			const bool clearingFlag = building->runtime->attractsRole(0);
 			if (ownTeam && (walkingChanged || clearingFlag))
 				building->resetPathfindGradients(Building::GradientDrop::Area);
 			else
@@ -524,10 +524,10 @@ bool Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
 {
 	for (int ratio : oms.ratio) if (ratio < 0 || ratio > 32767) return false;
 	Building *b=lookupBuilding(oms.gid);
-	if ((b) && (b->buildingState==Building::ALIVE) && (b->type->semantics.production.enabledUnitMask))
+	if ((b) && (b->buildingState==Building::ALIVE) && (!b->type->semantics.production.enabledUnits.empty()))
 	{
 		for (int j=0; j<NB_UNIT_TYPE; ++j)
-			if (!(b->type->semantics.production.enabledUnitMask & (1u<<j)) && oms.ratio[j]) return false;
+			if (!b->runtime->produces(j) && oms.ratio[j]) return false;
 		for (int j=0; j<NB_UNIT_TYPE; j++)
 		{
 			b->ratio[j]=oms.ratio[j];

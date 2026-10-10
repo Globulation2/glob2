@@ -4,6 +4,8 @@
 #include <array>
 #include <cstdint>
 #include <string>
+#include <vector>
+#include <map>
 #include "Ressource.h"
 #include "Material.h"
 #include "UnitConsts.h"
@@ -19,6 +21,19 @@ using BuildingMaterialCost = std::array<Sint32, MaterialSlotCount>;
 
 constexpr unsigned BUILDING_ALL_UNIT_TYPES = (1u << NB_UNIT_TYPE) - 1;
 
+// Authored stable keys resolve once against the match's immutable unit catalog.
+// The historical three-bit mask remains an import and presentation field only.
+struct BuildingUnitSelection
+{
+    bool specified = false;
+    std::vector<std::string> keys;
+    std::vector<Uint8> resolved;
+    bool matches(unsigned unit, unsigned legacyMask) const {
+        return specified ? unit<resolved.size() && resolved[unit]
+            : legacyMask==BUILDING_ALL_UNIT_TYPES || (unit<NB_UNIT_TYPE && (legacyMask&(1u<<unit)));
+    }
+};
+
 enum class BuildingProductionScheduling { WeightedLateChoice, WeightedCommittedJob };
 enum class BuildingPartialService { None, ProportionalFullCost };
 enum class BuildingSightSharing { Other, Food, Exchange };
@@ -27,6 +42,7 @@ struct BuildingServiceSpec
 {
 	bool enabled = false;
 	unsigned unitMask = BUILDING_ALL_UNIT_TYPES;
+	BuildingUnitSelection units;
 	Sint32 duration = 0;
 	BuildingMaterialCost cost{};
 	std::uint16_t costMask = 0; // compiled, excluded from authored snapshots
@@ -40,6 +56,7 @@ struct BuildingTrainingSpec
 {
 	bool enabled = false;
 	unsigned unitMask = BUILDING_ALL_UNIT_TYPES;
+	BuildingUnitSelection units;
 	Sint32 targetLevel = 0, duration = 0;
 	Sint32 constructionLevel = -1; // -1 leaves independent construction qualification unchanged
 	BuildingMaterialCost cost{};
@@ -52,15 +69,19 @@ struct BuildingProductionRecipe
 	Sint32 duration = 0;
 	BuildingMaterialCost cost{};
 	std::uint16_t costMask = 0; // compiled, excluded from authored snapshots
+	bool costExplicit = true; // omitted JSON cost inherits the unit's production cost
 };
 
 struct BuildingProductionSpec
 {
 	BuildingProductionScheduling scheduling = BuildingProductionScheduling::WeightedCommittedJob;
-	std::array<BuildingProductionRecipe, NB_UNIT_TYPE> recipes{};
+	std::vector<BuildingProductionRecipe> recipes = std::vector<BuildingProductionRecipe>(NB_UNIT_TYPE);
+	std::vector<Uint16> enabledUnits; // compiled cold iteration index
+	std::map<std::string,BuildingProductionRecipe> additionalRecipes;
 	unsigned enabledUnitMask = 0; // compiled, excluded from snapshots
 	Sint32 fallbackUnit = WORKER;
-	std::array<Sint32, NB_UNIT_TYPE> initialRatios{{1, 0, 0}};
+	std::vector<Sint32> initialRatios{1, 0, 0};
+	std::map<std::string,Sint32> additionalInitialRatios;
 };
 
 struct BuildingMarketSpec
@@ -118,6 +139,8 @@ struct BuildingSemantics
 	bool relocatable = false;
 	bool occupiesGround = true;
 	unsigned admittedUnitMask = BUILDING_ALL_UNIT_TYPES;
+	BuildingUnitSelection admittedUnits;
+	std::array<BuildingUnitSelection,3> attractionUnits; // clear, explore, defend jobs
 	Sint32 workPriorityBias = 1;
 	BuildingSightSharing sightSharing = BuildingSightSharing::Other;
 	BuildingServiceSpec feeding, healing;
@@ -127,18 +150,30 @@ struct BuildingSemantics
 	BuildingProductionSpec production;
 	BuildingMarketSpec market;
 	std::array<Sint32, NB_UNIT_TYPE> projectileDamage{};
+	std::map<std::string,Sint32> additionalProjectileDamage;
+	std::vector<Sint32> resolvedProjectileDamage;
 	Sint32 projectileBuildingDamage = 0;
 	Sint32 ammunitionMaterial = materialIndex(MaterialId::Stone), ammunitionCost = 1;
 	// This is independent of upgrade tier; each training output names its level.
 	bool trainingInParallel = false;
 };
 
+struct BuildingUnitInteraction
+{
+    enum Flag : Uint8 { Admitted=1,Feeds=2,Heals=4,Clear=8,Explore=16,Defend=32,Produces=64 };
+    Sint32 projectileDamage=0;
+    std::uint32_t trainingMask=0;
+    Uint8 flags=0;
+    bool has(Flag flag) const { return flags&flag; }
+};
+static_assert(sizeof(BuildingUnitInteraction)==12);
+
 // Immutable, dense simulation projection. No strings, graphics handles, recipes
 // or variable-size storage enter this single cache line.
 struct alignas(64) BuildingRuntimeTraits
 {
+    const BuildingUnitInteraction* interactions=nullptr;
     Sint32 hpMax=0, armor=0, regenerationPerTick=0;
-    std::array<Sint32,NB_UNIT_TYPE> projectileDamage{};
     Sint32 shootSpeed=0, projectileBuildingDamage=0, workPriorityBias=0;
     std::uint32_t trainingMask=0;
     Uint8 width=0,height=0;
@@ -146,12 +181,19 @@ struct alignas(64) BuildingRuntimeTraits
     Uint16 shootRhythm=0,assignmentLimit=0,shootingRange=0;
     MaterialMask suppliesStockMask=0,suppliesDirectStockMask=0,fetchesStockMask=0,fetchesDirectStockMask=0;
     MaterialMask replenishMaterialMask=0;
+    Uint16 unitCount=0;
     Uint8 flags=0,requiredWorkerLevel=0,productionEnabledMask=0;
-    Uint8 admittedUnitMask:NB_UNIT_TYPE;
-    Uint8 attractionMask:NB_UNIT_TYPE;
+    Uint8 admittedUnitMask=0,attractionMask=0,attractionRoles=0;
     enum Flag : Uint8 { OccupiesGround=1,SharedStock=2,Site=4,Feeds=8,Heals=16,TrainingParallel=32,Available=64,CommittedProduction=128 };
     bool has(Flag flag) const { return flags&flag; }
-    bool attracts(int unit) const { return attractionMask&(1u<<unit); }
+    const BuildingUnitInteraction& interaction(unsigned unit) const {
+        static constexpr BuildingUnitInteraction absent{};
+        return unit<unitCount ? interactions[unit] : absent;
+    }
+    Sint32 damage(unsigned unit) const { return interaction(unit).projectileDamage; }
+    bool attracts(unsigned unit) const { return interaction(unit).flags&(BuildingUnitInteraction::Clear|BuildingUnitInteraction::Explore|BuildingUnitInteraction::Defend); }
+    bool attractsRole(unsigned role) const { return role<3 && (attractionRoles&(1u<<role)); }
+    bool produces(unsigned unit) const { return interaction(unit).has(BuildingUnitInteraction::Produces); }
 };
 static_assert(sizeof(BuildingRuntimeTraits)==64);
-static_assert(NB_ABILITY<=32 && NB_UNIT_TYPE<=4 && MaterialCount<=16);
+static_assert(NB_ABILITY<=32 && MaterialCount<=16);

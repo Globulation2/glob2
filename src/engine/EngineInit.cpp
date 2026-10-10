@@ -18,6 +18,7 @@
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "Game.h"
+#include "UnitCatalog.h"
 #include "GameRuleOverrides.h"
 #include "GlobalContainer.h"
 #include "Player.h"
@@ -171,6 +172,17 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
             : "The match setup building catalog does not match the map's embedded catalog";
         co_return false;
     }
+    const auto authoritativeUnits = embedded.getUnitCatalogSnapshot();
+    const auto requestedUnits = start.setup.unitCatalogSnapshot.empty()
+        ? UnitCatalog::availableDefaults()->serialize() : start.setup.unitCatalogSnapshot;
+    const bool embeddedUnitDefinitions=state.map.loadingVersion()>=FILE_FORMAT_VERSION_UNIT_CATALOG;
+    if (embeddedUnitDefinitions && authoritativeUnits != requestedUnits)
+    {
+        initializationDiagnostic = start.setup.unitCatalogSnapshot.empty()
+            ? "The match setup omits the custom unit catalog embedded in this map"
+            : "The match setup unit catalog does not match the map's embedded catalog";
+        co_return false;
+    }
     try { state.header = start.setup.toGameHeader(state.map); }
     catch (const Online::MatchSetupError& error)
     {
@@ -194,6 +206,15 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     // ignoreGUIData: a saved game's own local player and viewport do not apply.
     const bool loaded = co_await initGameTask(state.map, state.header, true, true, false, state.mapFile);
     if (!loaded) co_return false;
+    // Older headers contain only a migration placeholder. The authoritative
+    // definitions are recovered from saved Race tables during the body load.
+    if(!embeddedUnitDefinitions && !start.setup.unitCatalogSnapshot.empty()
+        && state.header.getUnitCatalog()->digest()!=gui.game.gameHeader.getUnitCatalog()->digest())
+    {
+        initializationDiagnostic="The match setup unit catalog does not match the map's recovered catalog";
+        co_return false;
+    }
+    state.header.setUnitCatalog(gui.game.gameHeader.getUnitCatalog());
     // A match without human seats would otherwise start as a live-spectated
     // offline game, whose local AI orders would be submitted as human orders.
     globalContainer->liveSpectating = false;
@@ -380,7 +401,9 @@ void Engine::createRandomGame()
 	}
 
 	GameHeader game = createRandomGame(map.getNumberOfTeams());
-	game.setBuildingCatalogSnapshot(loadGameHeader(map.getFileName()).getBuildingCatalogSnapshot());
+	const auto mapRules = loadGameHeader(map.getFileName());
+	game.setBuildingCatalogSnapshot(mapRules.getBuildingCatalogSnapshot());
+	game.setUnitCatalog(mapRules.getUnitCatalog());
 	// Pin the final simulation header to the test-game setup seed.
 	if (globalContainer->testGamesSeedSet)
 	{

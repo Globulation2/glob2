@@ -112,7 +112,7 @@ private:
 		int hungry;
 		int critical_food;
 		int unserved_food;
-        int feeding_demand[3]{}; // recurring meals/tick, FoodLedger RateScale
+        std::vector<int> feeding_demand{0,0,0}; // recurring meals/tick, FoodLedger RateScale
 		int need_heal;
 		int buildings;
 		int building_sites;
@@ -630,7 +630,7 @@ private:
 	int preferred_profile(int role) const;
 	int feeding_capacity(int root,int position) const;
     int feeding_capacity_for_type(int concreteType) const;
-    int aggregate_feeding_capacity(const std::array<long long,8>& rates) const;
+    int aggregate_feeding_capacity(const std::vector<long long>& rates) const;
     long long recipient_meal_rate(const AIEngine::UnitView& unit) const;
     long long birth_food_acreage() const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&
@@ -655,7 +655,7 @@ private:
 		development_building_profiles;
 	mutable std::vector<int> development_profile_index;
 	mutable std::vector<int> development_feeding_visit_rate; // planned visits/tick, not headcount
-    mutable std::array<int,3> development_feeding_pause{};
+    mutable std::vector<int> development_feeding_pause;
 	mutable bool development_profiles_initialized=false;
 	AIMaximaPlacement::Planner development_planner;
 	bool development_planner_initialized;

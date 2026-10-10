@@ -7,6 +7,7 @@
 struct MaterialPacket
 {
 	Uint32 numerator = 1, denominator = 1;
+	bool operator==(const MaterialPacket&) const = default;
 };
 struct MaterialDeliveryResult
 {

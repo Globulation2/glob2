@@ -676,8 +676,8 @@ Result ChangeFlagMinimumLevel::wait(Context& c) const{return wait_for_building(c
 void ChangeFlagMinimumLevel::modify(Context& c)
 {
 	const auto* b=c.get_building_register().get_building(id);if(!b)return;
-	const bool explorers=targetRole==1 || (targetRole<0 && AIEngine::ObservationQueries::buildingType(c.observation(),*b).zonable[EXPLORER]
-		&& !AIEngine::ObservationQueries::buildingType(c.observation(),*b).zonable[WORKER] && !AIEngine::ObservationQueries::buildingType(c.observation(),*b).zonable[WARRIOR]);
+	const bool explorers=targetRole==1 || (targetRole<0 && AIEngine::ObservationQueries::buildingType(c.observation(),*b).attractsRole(1)
+		&& !AIEngine::ObservationQueries::buildingType(c.observation(),*b).attractsRole(0) && !AIEngine::ObservationQueries::buildingType(c.observation(),*b).attractsRole(2));
 	const int requirement=explorers ? (targetRole<0 ? level>1 : level!=0) : level-1;
 	c.push_order(std::make_shared<OrderModifyMinLevelToFlag>(b->gid,requirement,explorers ? 1 : 0));
 }

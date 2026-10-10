@@ -143,6 +143,7 @@ const std::vector<std::string>& simDataFiles()
 		"data/nicowar.default.txt",
 		"data/nicowar.txt",
 		"data/resources/registry.json",
+        "data/units/registry.json",
 		"data/usl/Glob2/Runtime/Game.usl",
 		"data/usl/Language/Runtime/Classes.usl",
 		"data/usl/Language/Runtime/Control.usl",
@@ -224,8 +225,17 @@ SimVersion currentSimVersion()
 	return version;
 }
 
-SimVersion catalogRulesVersion(const SimVersion& engine, const std::string& catalogHash)
+SimVersion catalogRulesVersion(const SimVersion& engine, const std::string& catalogHash, const std::string& unitCatalogHash)
 {
+    if(!unitCatalogHash.empty())
+    {
+        if(!lowercaseHex64(unitCatalogHash)||(!catalogHash.empty()&&!lowercaseHex64(catalogHash)))
+            throw std::invalid_argument("Invalid catalog hash");
+        Sha256 hash;
+        hash.update("glob2-composed-rules-v1\n");hash.update(engine.key());hash.update("\n");
+        hash.update(catalogHash);hash.update("\n");hash.update(unitCatalogHash);
+        SimVersion rules=engine;rules.dataHash=toHex(hash.finish());return rules;
+    }
 	if (catalogHash.empty()) return engine;
 	if (!lowercaseHex64(catalogHash)) throw std::invalid_argument("Invalid building catalog hash");
 	Sha256 hash;

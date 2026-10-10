@@ -502,6 +502,7 @@ CLIENT_SOURCES = (
     'render/overlay/OverlayFill.cpp',
     'game/player/Player.cpp',
     'unit/types/Race.cpp',
+    'unit/types/UnitCatalog.cpp',
     'replay/ReplayReader.cpp',
     'replay/ReplayWriter.cpp',
     'replay/ReplayTelemetry.cpp',

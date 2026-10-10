@@ -73,7 +73,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (occupancyCells[i].building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (!terrainPropertiesAt(i).walkable && !(canSwim && terrainPropertiesAt(i).swimmable))
+		else if (!gradient_kernel::terrainAllowsGround(terrainPropertiesAt(i),swimClass))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -140,7 +140,7 @@ bool Map::computeWarriorCrowding(int teamNumber, Uint16 *out) const
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		const Unit *u = team->myUnits[i];
-		if (!u || u->isDead || u->typeNum != WARRIOR || u->displacement == Unit::DIS_INSIDE)
+		if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::GuardIdle) || u->displacement == Unit::DIS_INSIDE)
 			continue;
 		crowdPositions.push_back(coordToIndex(u->posX, u->posY));
 	}

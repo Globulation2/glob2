@@ -508,6 +508,8 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
                 min_version_minor: same.min_version_minor,
                 file_title: same.file_title,
                 building_catalog: same.building_catalog,
+                unit_catalog: same.unit_catalog,
+                required_unit_experiments: JSON.stringify(same.required_unit_experiments),
                 resource_experiments: same.resource_experiments,
                 required_resource_experiments: same.required_resource_experiments,
               }
@@ -520,6 +522,8 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
                   min_version_minor: checked.version_minor,
                   file_title: checked.title,
                   building_catalog: checked.building_catalog,
+                  unit_catalog: checked.unit_catalog,
+                  required_unit_experiments: JSON.stringify(checked.required_unit_experiments),
                   resource_experiments: checked.resource_experiments,
                   required_resource_experiments: checked.required_resource_experiments,
                 }

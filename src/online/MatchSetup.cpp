@@ -1,3 +1,4 @@
+#include "UnitCatalog.h"
 #include "FileFormatVersions.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
@@ -345,7 +346,7 @@ const std::vector<std::string>& MatchSetup::aiIds()
 MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 {
 	strictObject(value, "", {"schemaVersion", "simVersion", "seed", "map", "teams", "seats", "rules", "experiments"},
-	             {"pauseLimit", "buildingCatalog", "resourceExperiments"});
+	             {"pauseLimit", "buildingCatalog", "unitCatalog", "resourceExperiments"});
 	if (!value["schemaVersion"].is_number_integer() || value["schemaVersion"].get<std::int64_t>() != SCHEMA_VERSION)
 		schemaError("/schemaVersion", "must be " + std::to_string(SCHEMA_VERSION));
 	MatchSetup setup;
@@ -375,6 +376,16 @@ MatchSetup MatchSetup::fromJsonSchemaOnly(const json& value)
 			schemaError("/buildingCatalog/snapshot", "must contain between 1 and 8388608 UTF-8 bytes");
 		setup.buildingCatalogHash = hashString(catalog["hash"], "/buildingCatalog/hash");
 	}
+
+    if(value.contains("unitCatalog"))
+    {
+        const auto& catalog=value["unitCatalog"];
+        strictObject(catalog,"/unitCatalog",{"snapshot","hash"});
+        setup.unitCatalogSnapshot=string(catalog["snapshot"],"/unitCatalog/snapshot");
+        if(setup.unitCatalogSnapshot.empty()||setup.unitCatalogSnapshot.size()>UnitCatalog::MaximumDefinitionBytes)
+            schemaError("/unitCatalog/snapshot","must contain between 1 and 8388608 UTF-8 bytes");
+        setup.unitCatalogHash=hashString(catalog["hash"],"/unitCatalog/hash");
+    }
 	setup.seed = static_cast<std::uint32_t>(integer(value["seed"], "/seed", 0, UINT32_MAX));
 	setup.map = parseMap(value["map"], "/map");
 
@@ -498,6 +509,19 @@ void MatchSetup::validateSemantics() const
 	}
 	else if (!buildingCatalogHash.empty())
 		semanticError("/buildingCatalog", "a catalog hash requires its snapshot");
+
+    if(!unitCatalogSnapshot.empty())
+    {
+        std::shared_ptr<const UnitCatalog> catalog;
+        try { catalog=UnitCatalog::deserialize(unitCatalogSnapshot); }
+        catch(const std::exception& error) { semanticError("/unitCatalog/snapshot",error.what()); }
+        if(catalog->serialize()!=unitCatalogSnapshot)
+            semanticError("/unitCatalog/snapshot","must use the canonical catalog encoding");
+        if(catalog->digest()!=unitCatalogHash)
+            semanticError("/unitCatalog/hash","does not match the embedded catalog");
+        for(const auto& experiment:catalog->experiments())catalogKeys.push_back(experiment.key);
+    }
+    else if(!unitCatalogHash.empty())semanticError("/unitCatalog","a catalog hash requires its snapshot");
 	try { validateCatalogExperiments(resourceExperiments); }
 	catch (const std::exception& error) { semanticError("/resourceExperiments", error.what()); }
 	for (const auto& definition : resourceExperiments) catalogKeys.push_back(definition.key);
@@ -535,6 +559,7 @@ MatchSetup MatchSetup::parse(const std::string& text)
 json MatchSetup::toJson() const
 {
 	json out = json::object();
+    if(!unitCatalogSnapshot.empty())out["unitCatalog"]={{"snapshot",unitCatalogSnapshot},{"hash",unitCatalogHash}};
 	if (!buildingCatalogSnapshot.empty())
 		out["buildingCatalog"] = {{"snapshot", buildingCatalogSnapshot}, {"hash", buildingCatalogHash}};
 	// nlohmann::json orders object keys alphabetically; dump() therefore has one
@@ -701,6 +726,7 @@ GameHeader MatchSetup::toGameHeader(const MapHeader& mapHeader) const
 	header.setPeacefulModeEnabled(rules.peacefulMode);
 	header.setBuildingHpLevel(static_cast<Uint8>(rules.buildingHpLevel));
 	if (!buildingCatalogSnapshot.empty()) header.setBuildingCatalogSnapshot(buildingCatalogSnapshot);
+    if(!unitCatalogSnapshot.empty())header.setUnitCatalogSnapshot(unitCatalogSnapshot);
 	const auto& mapExperiments = mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_RUNTIME_RESOURCES
 		? ResourceRegistry::legacy()->experiments() : mapHeader.resourceExperimentDefinitions;
 	if (!resourceExperiments.empty() && resourceExperiments != mapExperiments)
@@ -722,6 +748,13 @@ MatchSetup MatchSetup::fromGameHeader(GameHeader header, const MapHeader& mapHea
 	MatchSetup setup;
 	setup.simVersion = simVersion;
 	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
+    if(header.getUnitCatalogSnapshot()!=UnitCatalog::availableDefaults()->serialize() ||
+       !header.getUnitCatalog()->experiments().empty())
+    {
+        setup.unitCatalogSnapshot=header.getUnitCatalogSnapshot();
+        setup.unitCatalogHash=header.getUnitCatalog()->digest();
+    }
+
 	setup.resourceExperiments = mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? header.resourceExperiments() : mapHeader.resourceExperimentDefinitions;
 	header.setResourceExperiments(setup.resourceExperiments);
 	if (!setup.buildingCatalogSnapshot.empty())

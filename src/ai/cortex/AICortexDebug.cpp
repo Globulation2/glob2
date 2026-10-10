@@ -158,8 +158,8 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 		int sp3 = es->upgradeState[ATTACK_SPEED][3];
 		cerr << "CORTEX_DUMP TRUTH enemy team=" << et->number
 		     << " totalUnit=" << es->totalUnit
-		     << " warriors=" << es->numberUnitPerType[WARRIOR]
-		     << " workers=" << es->numberUnitPerType[WORKER]
+		     << " warriors=" << es->meleeUnits
+		     << " workers=" << es->carriers
 		     << " totalBuilding=" << es->totalBuilding
 		     << " atkStrengthLvls=[" << as0 << "," << as1 << "," << as2 << "," << as3 << "]"
 		     << " atkSpeedLvls=[" << sp0 << "," << sp1 << "," << sp2 << "," << sp3 << "]\n";

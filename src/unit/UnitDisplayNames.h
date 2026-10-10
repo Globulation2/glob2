@@ -6,6 +6,8 @@
 
 #include <string>
 
-//! Localized display name for a unit type (WORKER / WARRIOR / EXPLORER).
-//! UI/display layer only — sim code must use the UnitConsts enum value.
+//! Localized built-in name; developer definitions use their authored display name.
+class UnitCatalog;
 std::string getUnitName(int type);
+
+std::string getUnitName(int type, const UnitCatalog& catalog);

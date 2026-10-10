@@ -18,11 +18,11 @@ int Map::swimClass(int walkSpeed, int swimSpeed)
 	if (swimSpeed <= 0)
 		return 0;
 	if (walkSpeed <= 0)
-		return SWIM_CLASS_COUNT - 1;
+		return WATER_ONLY_CLASS;
 	// A water cell should cost walk/swim land cells: pick the closest class.
 	int wanted = (GRADIENT_STEP * walkSpeed + swimSpeed / 2) / swimSpeed;
 	int best = 1;
-	for (int c = 2; c < SWIM_CLASS_COUNT; c++)
+	for (int c = 2; c < LEGACY_SWIM_CLASS_COUNT; c++)
 		if (std::abs(WATER_STEP[c] - wanted) < std::abs(WATER_STEP[best] - wanted))
 			best = c;
 	return best;
@@ -64,7 +64,7 @@ bool Map::directionByGradient(EntityRandom& random, Uint32 teamMask, int swimCla
 		int ddy = tabClose[d][1];
 		size_t n = coordToIndex(x + ddx, y + ddy);
 		Uint16 g = gradient[n];
-		if (g <= GRADIENT_UNREACHABLE || !isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
+		if ((swimClass==WATER_ONLY_CLASS && !terrainPropertiesAt(n).swimmable) || g <= GRADIENT_UNREACHABLE || !isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
 			continue;
 		if (guardAreaMask && !(areaCells[n].guard & guardAreaMask))
 			continue;

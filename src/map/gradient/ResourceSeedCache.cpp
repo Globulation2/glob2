@@ -158,6 +158,7 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim,
 	Uint16 *output, const Uint16 *supplierSeeds)
 {
+	if (swim==WATER_ONLY_CLASS) return false;
 	// Avoid allocation and locking altogether on small maps and over budget.
 	if (map.size <= MinimumCells || map.size > MaximumBytes / MaximumBytesPerCell)
 		return false;

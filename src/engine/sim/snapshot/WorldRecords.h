@@ -24,6 +24,8 @@ namespace SimulationSnapshot
 struct UnitRange { Uint32 offset = 0, count = 0; };
 struct BuildingView : BuildingStateRecord
 {
+	Uint32 extraProductionOffset=0, extraProductionCount=0;
+    std::array<Sint32, 3> constructionOriginRatios{};
 	BuildingRef identity;
 	int team = 0;
 	int maxHp = 0;

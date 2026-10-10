@@ -90,10 +90,10 @@ void AssignWorkers::modify(Runtime& runtime)
  int requested=number_of_workers;
  const auto& spec=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics;
  int services=spec.feeding.enabled+spec.healing.enabled+(AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).shootingRange>0);
- services+=std::any_of(spec.production.recipes.begin(),spec.production.recipes.end(),[](const auto& recipe){return recipe.enabled;});
+ services+=!spec.production.enabledUnits.empty();
  services+=std::any_of(spec.training.begin(),spec.training.end(),[](const auto& training){return training.enabled;});
  services+=spec.market.interTeamFruitExchange || spec.market.suppliesStock || spec.market.suppliesDirectStock;
- services+=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WORKER] || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WARRIOR] || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[EXPLORER];
+ services+=AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).attractsRole(0) || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).attractsRole(2) || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).attractsRole(1);
  if(services>1 && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite) requested=std::max(requested,building->maxUnitWorking);
  runtime.push_order(std::make_shared<OrderModifyBuilding>(building->gid,std::clamp(requested,0,AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.assignmentLimit)));
 }

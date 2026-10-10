@@ -17,7 +17,7 @@ struct UnitSkin
 	Uint32 startImage[NB_MOVE];
 };
 
-// Per-unit-type skin table, indexed by WORKER/EXPLORER/WARRIOR.
+// Presentation mesh/skin slots, shared by definitions using the same mesh.
 // Sprite pointer is null until initUnitSkins() runs (skipped in headless mode).
 extern UnitSkin g_unitSkins[NB_UNIT_TYPE];
 

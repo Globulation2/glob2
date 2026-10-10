@@ -7,6 +7,7 @@
 #include "Unit.h"
 #include "Order.h"
 #include <algorithm>
+#include <climits>
 
 // These functions operate directly on canonical captured records. They retain
 // no entity storage, relationships or observation lease.
@@ -57,13 +58,53 @@ inline int constructionCompletionType(const AIEngine::AIWorldView& world, const 
 }
 inline int realAttackStrength(const AIEngine::AIWorldView& world, const AIEngine::UnitView& unit)
 {
-    return (unit.performance[ATTACK_STRENGTH]+unit.experienceLevel)*world.configuration->getGlassCannonScale();
+    return int(std::clamp<Sint64>((Sint64(unit.performance[ATTACK_STRENGTH])+unit.experienceLevel)
+        *world.configuration->getGlassCannonScale(), 0, INT_MAX));
+}
+// Preserve each controller's default head-count calibration while scaling
+// altered food clocks and the recipient's share of scarce feeding seats.
+// Called once per planning pass, outside entity scans.
+template<class Counts> inline int normalizedFoodPopulation(const AIEngine::AIWorldView& world,const Counts& counts)
+{
+    constexpr long long precision=65536;
+    long long demand=0;
+    for(unsigned id=0;id<world.unitTypeCount();++id) {
+        const auto& traits=world.unitTraits(id);
+        if(!counts[id] || !traits.hungerRate)continue;
+        // Old count-based controllers never adjusted their calibration for a
+        // saved Race food clock. Keep that policy for migrated definitions.
+        const int plannerHungerRate=traits.has(UnitRuntimeTraits::LegacyPerformancePolicies) ? 425 : traits.hungerRate;
+        const long long relative=static_cast<long long>(plannerHungerRate)*150000*256*precision
+            /(static_cast<long long>(traits.foodCapacity)*425*traits.feedingSpeedQ8);
+        demand+=static_cast<long long>(counts[id])*relative;
+    }
+    return int(std::min<long long>(INT_MAX,(demand+precision-1)/precision));
+}
+inline bool matchesStrategyUnitRole(const AIEngine::AIWorldView& world,const AIEngine::UnitView& unit,unsigned role)
+{
+    // The three built-ins name strategy ledger roles; recipient identity can
+    // differ. Enabled behaviors must have effective clocks to fulfill the role.
+    const bool mobile=unit.performance[FLY]>0 || unit.performance[WALK]>0 || unit.performance[SWIM]>0;
+    switch(role) {
+        case WORKER:
+            return mobile && (unit.capabilityFlags&UnitRuntimeTraits::Transport)
+                && unit.performance[BUILD]>0 && unit.performance[HARVEST]>0
+                && (!(unit.capabilityFlags&UnitRuntimeTraits::ExtendedCargo) || world.unitTraits(unit.typeNum).cargoCapacity>0);
+        case EXPLORER:
+            return mobile && (unit.capabilityFlags&UnitRuntimeTraits::Explore);
+        case WARRIOR:
+            // A stationary melee unit still contributes actual combat strength.
+            return (unit.capabilityFlags&UnitRuntimeTraits::Melee) && unit.performance[ATTACK_SPEED]>0
+                && realAttackStrength(world,unit)>0;
+        default:
+            return unit.typeNum==int(role);
+    }
 }
 inline bool needsTraining(const AIEngine::UnitView& unit, const BuildingTrainingSpec& training, int ability)
 {
-    return training.enabled && unit.canLearn[ability] && (training.unitMask&(1u<<unit.typeNum))
+    return training.enabled && unit.canLearn[ability] && training.units.matches(unit.typeNum,training.unitMask)
         && (unit.level[ability]<training.targetLevel
-            || (unit.typeNum==WORKER && unit.constructionLevel<training.constructionLevel));
+            || ((unit.capabilityFlags&UnitRuntimeTraits::LearnConstruction) && unit.constructionLevel<training.constructionLevel));
 }
 inline int maxBuildLevel(const AIEngine::AIWorldView& world, unsigned team)
 {
@@ -181,7 +222,7 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world,Order& order
         const auto* building=world.buildingAtSlot(gid);
         if(!building) return true;
         const auto& type=buildingType(world,*building);
-        return !type.zonable[WARRIOR] || type.zonable[WORKER] || type.zonable[EXPLORER];
+        return !(type.runtimeAttractionRoles&4) || (type.runtimeAttractionRoles&3);
     }
     return true;
 }

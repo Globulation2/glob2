@@ -30,7 +30,7 @@ void scalarResource(Map &m, int team, int resource, int swim, Uint16 *out, bool 
         else if (m.resourceBlocksGround(i)) out[i]=GRADIENT_FORBIDDEN;
         else if (m.occupancyCells[i].building!=NOGBID)
             out[i]=markets && m.isStockedMarketTile(m.occupancyCells[i].building,team,resource) ? GRADIENT_AT_GOAL-5*GRADIENT_STEP : GRADIENT_FORBIDDEN;
-        else if (!m.terrainPropertiesAt(i).walkable && !(swim>0 && m.terrainPropertiesAt(i).swimmable))
+        else if (swim==WATER_ONLY_CLASS ? !m.terrainPropertiesAt(i).swimmable : !m.terrainPropertiesAt(i).walkable && !(swim>0 && m.terrainPropertiesAt(i).swimmable))
             out[i]=GRADIENT_FORBIDDEN;
         else out[i]=GRADIENT_UNREACHABLE;
     }
@@ -52,7 +52,7 @@ void scalarClear(Map &m, int team, int swim, Uint16 *out)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.occupancyCells[i].building != NOGBID)
 			out[i] = GRADIENT_FORBIDDEN;
-		else if (!m.terrainPropertiesAt(i).walkable && !(swim > 0 && m.terrainPropertiesAt(i).swimmable))
+		else if ((swim==WATER_ONLY_CLASS ? !m.terrainPropertiesAt(i).swimmable : !m.terrainPropertiesAt(i).walkable && !(swim > 0 && m.terrainPropertiesAt(i).swimmable)))
 			out[i] = GRADIENT_FORBIDDEN;
 		else
 			out[i] = GRADIENT_UNREACHABLE;
@@ -74,7 +74,7 @@ void scalarGuard(Map &m, int team, int swim, Uint16 *out)
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.occupancyCells[i].building != NOGBID && ((1u << Building::GIDtoTeam(m.occupancyCells[i].building)) & m.game->teams[team]->allies))
 			out[i] = GRADIENT_FORBIDDEN;
-		else if (!m.terrainPropertiesAt(i).walkable && !(swim > 0 && m.terrainPropertiesAt(i).swimmable))
+		else if ((swim==WATER_ONLY_CLASS ? !m.terrainPropertiesAt(i).swimmable : !m.terrainPropertiesAt(i).walkable && !(swim > 0 && m.terrainPropertiesAt(i).swimmable)))
 			out[i] = GRADIENT_FORBIDDEN;
 		else if (m.areaCells[i].guard & mask)
 		{
@@ -116,6 +116,26 @@ static_assert(std::is_const_v<std::remove_reference_t<decltype(std::declval<Map 
 
 TEST_SUITE("GradientPreparation")
 {
+    TEST_CASE("material plane and cache keys retain legacy seven-class identity")
+    {
+        for (int team=0;team<Team::MAX_COUNT;++team)
+            for (int material=0;material<int(MaterialSlotCount);++material)
+                for (int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim)
+                    for (bool market:{false,true}) {
+                        const Uint16 legacy=((team*MaterialSlotCount+material)*LEGACY_SWIM_CLASS_COUNT+swim)*2+market;
+                        CHECK(MapState::planeKey(team,material,swim,market)==legacy);
+                        const auto decoded=MapState::decodePlaneKey(legacy);
+                        CHECK(decoded.team==team); CHECK(decoded.resource==material); CHECK(decoded.swim==swim); CHECK(decoded.market==market);
+                        if (material<int(MaterialCount))
+                            for (int excluded:{-1,0,65534}) for (unsigned modes=0;modes<4;++modes) {
+                                const Uint64 source=(Uint64(excluded+1)*Team::MAX_COUNT+team)*MaterialCount+material;
+                                const auto oldKey=(source*LEGACY_SWIM_CLASS_COUNT+swim)*4+modes;
+                                CHECK(MapState::materialFieldKey(excluded,team,material,swim,modes)==oldKey);
+                                CHECK(MapState::materialFieldKey(excluded,team,material,WATER_ONLY_CLASS,modes)!=oldKey);
+                            }
+                    }
+    }
+
 	TEST_CASE("warm preparation keeps custom supplier unions exclusions penalties and overlays live")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -1025,7 +1045,7 @@ TEST_CASE("compact clearing traits preserve custom high-ID property combinations
             CHECK(actual==expected);
             map.getForbiddenGradient(0,swim);
             map.updateForbiddenGradient(0,swim);
-            CHECK(map.forbiddenGradient[0][swim][index]==((n&1) ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL));
+            CHECK(map.forbiddenGradient[0][swim][index]==((n&1) || swim==WATER_ONLY_CLASS ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL));
         }
     }
 }

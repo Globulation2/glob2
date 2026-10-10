@@ -14,6 +14,8 @@ namespace
 {
 using M = GameplayMeasurements;
 
+template<class T,std::size_t N> double total(const std::array<T,N>&);
+template<class T> double total(const UnitStatistics<T>&);
 template <class T> double total(const T &value)
 {
 	return double(value);
@@ -24,6 +26,15 @@ template <class T, size_t N> double total(const T (&values)[N])
 	for (const auto &v : values)
 		sum += total(v);
 	return sum;
+}
+
+template<class T,std::size_t N> double total(const std::array<T,N>& values)
+{
+    double sum=0; for (const auto& value:values) sum+=total(value); return sum;
+}
+template<class T> double total(const UnitStatistics<T>& values)
+{
+    double sum=0; for (const auto& value:values) sum+=total(value); return sum;
 }
 
 double deathsBy(const M &m, int cause)

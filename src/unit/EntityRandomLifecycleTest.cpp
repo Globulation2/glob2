@@ -5,6 +5,7 @@
 #include "sim/snapshot/WorldSnapshot.h"
 #include "AI.h"
 #include "AIImplementation.h"
+#include "Race.h"
 #include "ai/observation/AIWorldView.h"
 #include <StreamBackend.h>
 #include <TextStream.h>
@@ -351,6 +352,32 @@ TEST_SUITE("EntityRandomLifecycle")
         };
         eraseSections("worldRandom");
         eraseSections("entityRandom");
+        eraseSections("unitCatalog");
+        // Historical Race tables were twelve flat UnitType records in Team,
+        // before format 153 introduced a catalog-sized nested collection.
+        const auto count=bytes.find("unitTypeCount = 3;");
+        REQUIRE(count!=std::string::npos);
+        const auto nested=bytes.find("unitTypes\n",count);
+        REQUIRE(nested!=std::string::npos);
+        const auto open=bytes.find('{',nested);
+        REQUIRE(open!=std::string::npos);
+        std::size_t end=open;
+        unsigned depth=0;
+        do {
+            REQUIRE(end<bytes.size());
+            if(bytes[end]=='{') ++depth;
+            if(bytes[end]=='}') --depth;
+            ++end;
+        } while(depth);
+        auto* flatBackend=new GAGCore::MemoryStreamBackend;
+        GAGCore::TextOutputStream flat(flatBackend);
+        for(unsigned type=0;type<BuiltinUnitCount;++type)
+            for(int level=0;level<NB_UNIT_LEVELS;++level) {
+                auto historical=*world.team->race.getUnitType(type,level);
+                historical.save(&flat);
+            }
+        flat.flush();
+        bytes.replace(count,end-count,flatBackend->takeContents());
         const auto version = bytes.find("versionMinor = " + std::to_string(VERSION_MINOR));
         REQUIRE(version != std::string::npos);
         bytes.replace(version, std::string("versionMinor = " + std::to_string(VERSION_MINOR)).size(),
@@ -375,7 +402,7 @@ TEST_SUITE("EntityRandomLifecycle")
         auto components = [](Game& game) {
             std::vector<Uint32> state, buildings, units;
             game.checkSum(&state, &buildings, &units, true);
-            // The loaded header retains 150 while the resave writes 152. Its
+            // The loaded header retains 150 while the resave writes the current format. Its
             // format checksum differs intentionally; authoritative state must not.
             state.erase(state.begin());
             state.insert(state.end(), buildings.begin(), buildings.end());

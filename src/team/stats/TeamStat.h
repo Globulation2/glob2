@@ -4,6 +4,8 @@
 #pragma once
 
 #include "UnitConsts.h"
+#include "UnitStatistics.h"
+#include <array>
 #include "IntBuildingType.h"
 #include "Ressource.h"
 
@@ -37,12 +39,14 @@ struct TeamStat
 {
 	TeamStat();
 	void reset();
+    void configureUnits(std::size_t count);
+    std::size_t capacityBytes() const { return buildingCountByVariant.capacity()*sizeof(int)+numberUnitPerType.extraCapacityBytes()+isFree.extraCapacityBytes()+upgradeStatePerType.extraCapacityBytes(); }
 
 	int totalUnit;
-	int numberUnitPerType[NB_UNIT_TYPE];
+	UnitStatistics<int> numberUnitPerType;
 	int workersByConstructionLevel[NB_UNIT_LEVELS];
 	int totalFree;
-	int isFree[NB_UNIT_TYPE];
+	UnitStatistics<int> isFree;
 	int totalNeeded;
 	int totalNeededPerLevel[NB_UNIT_LEVELS];
 
@@ -58,7 +62,7 @@ struct TeamStat
 	int needHeal;
 	int needNothing;
 	int upgradeState[NB_ABILITY][NB_UNIT_LEVELS];
-	int upgradeStatePerType[NB_UNIT_TYPE][NB_ABILITY][NB_UNIT_LEVELS];
+	UnitStatistics<std::array<std::array<int,NB_UNIT_LEVELS>,NB_ABILITY>> upgradeStatePerType;
 
 	int totalFood;
 	int totalFoodCapacity;
@@ -67,6 +71,7 @@ struct TeamStat
 
 	int totalHP;
 	int totalAttackPower;
+    int carriers=0,builders=0,meleeUnits=0,rangedUnits=0,scouts=0,idleCarriers=0,idleDefenders=0;
 	int totalDefensePower;
 		
 	int happiness[HAPPINESS_COUNT+1];
@@ -76,15 +81,17 @@ struct TeamSmoothedStat
 {
 	TeamSmoothedStat();
 	void reset();
+    void configureUnits(std::size_t count) { isFree.resize(count); }
 
 	int totalFree;
-	int isFree[NB_UNIT_TYPE];
+	UnitStatistics<int> isFree;
 	int totalNeeded;
 	int totalNeededPerLevel[NB_UNIT_LEVELS];
 };
 
 struct EndOfGameStat
 {
+    std::size_t capacityBytes() const { return 0; }
 	EndOfGameStat(int units, int buildings, int prestige, int hp, int attack, int defense);
 
 	enum Type
@@ -115,6 +122,24 @@ struct BuildingMeasurement
 // Diagnostic only: never used by AI, orders, RNG or simulation checksums.
 struct GameplayMeasurements
 {
+    std::size_t capacityBytes() const { return variants.capacity()*sizeof(BuildingMeasurement)+unitCapacityBytes(); }
+    void configureUnits(std::size_t count) {
+        births.resize(count); deaths.resize(count); conversionsIn.resize(count); conversionsOut.resize(count);
+        trainingVisits.resize(count); abilityGains.resize(count); combatDeathPlace.resize(count); combatDeathAssignment.resize(count);
+        for (auto& row:trappedUnits) row.resize(count);
+        for (auto& row:lowHP) row.resize(count);
+        for (auto& row:lowFood) row.resize(count);
+    }
+
+    std::size_t unitCapacityBytes() const {
+        std::size_t bytes=births.extraCapacityBytes()+deaths.extraCapacityBytes()+conversionsIn.extraCapacityBytes()+conversionsOut.extraCapacityBytes()
+            +trainingVisits.extraCapacityBytes()+abilityGains.extraCapacityBytes()+combatDeathPlace.extraCapacityBytes()+combatDeathAssignment.extraCapacityBytes();
+        for(const auto& row:trappedUnits)bytes+=row.extraCapacityBytes();
+        for(const auto& row:lowHP)bytes+=row.extraCapacityBytes();
+        for(const auto& row:lowFood)bytes+=row.extraCapacityBytes();
+        return bytes;
+    }
+
 	enum DeathCause
 	{
 		COMBAT,
@@ -221,10 +246,10 @@ struct GameplayMeasurements
 	bool operator==(const GameplayMeasurements &) const = default;
 	std::vector<BuildingMeasurement> variants;
 	Uint32 tick = 0;
-	Uint64 births[NB_UNIT_TYPE]{};
-	Uint64 deaths[NB_UNIT_TYPE][DEATH_CAUSES]{};
-	Uint64 conversionsIn[NB_UNIT_TYPE]{};
-	Uint64 conversionsOut[NB_UNIT_TYPE]{};
+	UnitStatistics<Uint64> births;
+	UnitStatistics<std::array<Uint64,DEATH_CAUSES>> deaths;
+	UnitStatistics<Uint64> conversionsIn;
+	UnitStatistics<Uint64> conversionsOut;
 	Uint64 harvested[MaterialSlotCount]{};
 	Uint64 cleared[MaterialSlotCount]{};
 	Uint64 delivered[MaterialSlotCount]{};
@@ -243,8 +268,8 @@ struct GameplayMeasurements
 	Uint64 impacts[DAMAGE_SOURCES][TARGETS]{};
 	Uint64 completed[COMPLETIONS][IntBuildingType::NB_BUILDING][NB_UNIT_LEVELS]{};
 	Uint64 removed[REMOVALS][IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
-	Uint64 trainingVisits[NB_UNIT_TYPE]{};
-	Uint64 abilityGains[NB_UNIT_TYPE][NB_ABILITY]{};
+	UnitStatistics<Uint64> trainingVisits;
+	UnitStatistics<std::array<Uint64,NB_ABILITY>> abilityGains;
 	Uint64 stock[MaterialSlotCount]{};
 	Uint64 carried[MaterialSlotCount]{};
 	Uint64 buildings[IntBuildingType::NB_BUILDING][NB_BUILDING_LONG_LEVELS]{};
@@ -253,10 +278,10 @@ struct GameplayMeasurements
 	Uint64 feeding{};
 	Uint64 healing{};
 	// Snapshot diagnostics. Structural counts ignore temporary unit occupancy.
-	Uint64 trappedUnits[2][NB_UNIT_TYPE]{};
+	std::array<UnitStatistics<Uint64>,2> trappedUnits;
 	Uint64 trappedBuildings[2][2][IntBuildingType::NB_BUILDING]{}; // blockage, swim ability, type
-	Uint64 lowHP[3][NB_UNIT_TYPE]{};
-	Uint64 lowFood[3][NB_UNIT_TYPE]{};
+	std::array<UnitStatistics<Uint64>,3> lowHP;
+	std::array<UnitStatistics<Uint64>,3> lowFood;
 	Uint32 trappedTick = 0;
 	// Cumulative natural map growth within 8, 16 and 32 tiles of this team.
 	Uint64 growthTiles[GROWTH_COVERAGE_BANDS][MaterialSlotCount]{};
@@ -272,8 +297,8 @@ struct GameplayMeasurements
 	Uint64 harvestSamples[LABOUR_JOBS]{};
 	Uint64 eatWalkDistance{};
 	Uint64 eatWalkSamples{};
-	Uint64 combatDeathPlace[NB_UNIT_TYPE][PLACES]{};
-	Uint64 combatDeathAssignment[NB_UNIT_TYPE][ASSIGNMENTS]{};
+	UnitStatistics<std::array<Uint64,PLACES>> combatDeathPlace;
+	UnitStatistics<std::array<Uint64,ASSIGNMENTS>> combatDeathAssignment;
 	// Defence snapshot at defenceTick: live warriors by place, their summed attack
 	// speed and strength levels, and enemy warriors at this team's home.
 	Uint64 warriors[PLACES]{};
@@ -291,6 +316,9 @@ class Team;
 class TeamStats
 {
 public:
+    std::size_t unitTypeCount=NB_UNIT_TYPE;
+    void configureUnits(std::size_t count);
+
   struct CoverageBuilding { int x, y, width, height; bool operator==(const CoverageBuilding &) const = default; };
   std::vector<CoverageBuilding> coverageBuildings;
   Uint32 coverageBuildingTick = 0;

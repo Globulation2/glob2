@@ -90,8 +90,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int imgid;
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
-	const UnitSkin &skin = g_unitSkins[unit->typeNum];
-	imgid=skin.startImage[unit->action];
+	const auto& definition = scene.world.catalogs->units->definition(unit->typeNum);
+	const int meshClass = definition.runtime.meshClass;
+	const UnitSkin &skin = g_unitSkins[meshClass];
+	imgid=definition.levels[0].startImage[unit->action];
 	// Anchor on the visible occurrence x/y rather than on unit->posX/posY, so a
 	// unit on a map seam keeps its opposite-edge copy, and recover the unit's
 	// own tile from it: while entering a building the map slot lags one square
@@ -137,12 +139,12 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// the marker is solid. Units at the fog edge fade, including painted meshes
 	// and their original ground shadows.
 	if (detail.unitSprite > 0 &&
-		!view.render.skinPreview().draw(*globalContainer->gfx, unit->typeNum, unit->team,
+		!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
 			unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid), fogAlpha))
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
 	if (detail.unitMarker > 0)
 	{
-		const bool warrior = unit->typeNum==WARRIOR, explorer = unit->typeNum==EXPLORER;
+		const bool warrior = meshClass==WARRIOR, explorer = meshClass==EXPLORER;
 		view.render.overlays.marker(*globalContainer->gfx, px+16, py+16,
 			warrior ? MapOverlayQueue::Triangle : explorer ? MapOverlayQueue::Diamond : MapOverlayQueue::Dot,
 			warrior ? 6.f : explorer ? 5.f : 3.f + 2.25f*detail.workerMarkerScale,
@@ -219,7 +221,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
 		// A hungry or hurt unit keeps a status pip once every bar has faded.
-		const int food=(unit->hungry*10)/Unit::HUNGRY_MAX;
+		const int food=int((Sint64(unit->hungry)*10)/definition.runtime.foodCapacity);
 		const bool hungry=food<=1;
 		const bool hurt=unit->hp*10<=unit->performance[HP]*6;
 		anchorBars(px+16, py+25, drawnRender, opacity);
@@ -252,7 +254,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, faded(127)));
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str(), 0, fogAlpha);
 	}
-	if(entities.highlightUnitType & (1<<unit->typeNum))
+	if(unit->typeNum < 32 && (entities.highlightUnitType & (1u<<unit->typeNum)))
 	{
 		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36, fogAlpha);
 	}

@@ -26,6 +26,8 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/unit/types/UnitCatalogTest.cpp',
+    ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/app/cli/CommandLineTest.cpp',
     '#src/unit/EntityRandomLifecycleTest.cpp',
     '#src/map/generator/javascript/ScriptGeneratorTest.cpp',
@@ -118,7 +120,7 @@ ENGINE_TESTS = [
     ('#src/map/TerrainPropertiesTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/VertexTerrainTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/net/LockstepSessionTest.cpp',
-    '#src/game/orders/OrderValidationTest.cpp',
+    ('#src/game/orders/OrderValidationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/online/MatchSetupTest.cpp',
     ('#src/net/turn/TurnEngineHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/net/LanIdentityTest.cpp', dict(require={'wss'})),
@@ -408,6 +410,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/game/Bullet.cpp',
     '#src/game/ExperimentalFeatures.cpp',
     '#src/game/GameHeader.cpp',
+    '#src/unit/types/UnitCatalog.cpp',
     '#src/building/BuildingArtwork.cpp',
     '#src/building/types/BuildingCatalog.cpp',
     '#src/building/types/Buildings.cpp',

@@ -75,9 +75,9 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)
 					{
-						if(isFreeForGroundUnit(nx, ny, canSwim, teamMask) ||
+						if((swimClass!=WATER_ONLY_CLASS || terrainPropertiesAt(nx,ny).swimmable) && (isFreeForGroundUnit(nx, ny, canSwim, teamMask) ||
                             (nx == targetX && ny == targetY &&
-                             (terrainPropertiesAt(nx,ny).walkable || (canSwim && terrainPropertiesAt(nx,ny).swimmable))))
+                             gradient_kernel::terrainAllowsGround(terrainPropertiesAt(nx,ny),swimClass))))
 						{
 							//If the parent cell is the starting cell, add in the starting direction
 							if(pos.dx == 0 && pos.dy == 0)

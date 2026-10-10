@@ -54,7 +54,7 @@ class BuildingCapabilityTables
 {
     friend class BuildingCapabilityIndex;
     static constexpr std::size_t IntentCount = static_cast<std::size_t>(BuildingIntent::Count);
-    using ServiceMasks = std::array<unsigned, IntentCount>;
+    using ServiceMasks = std::array<std::vector<std::uint8_t>, IntentCount>;
     std::vector<ServiceMasks> masks_;
     std::vector<std::uint64_t> intentMasks_;
     std::vector<int> lineageRoots_, lineagePositions_;
@@ -76,6 +76,7 @@ public:
     {
         std::size_t bytes=masks_.capacity()*sizeof(ServiceMasks)+intentMasks_.capacity()*sizeof(std::uint64_t)
             +(lineageRoots_.capacity()+lineagePositions_.capacity())*sizeof(int);
+        for (const auto& row:masks_) for (const auto& values:row) bytes+=values.capacity();
         for(std::size_t i=0;i<IntentCount;++i) bytes+=providers_[i].capacity()*sizeof(int)
             +(placements_[i].capacity()+placementsByCost_[i].capacity())*sizeof(BuildingCandidate);
         return bytes;

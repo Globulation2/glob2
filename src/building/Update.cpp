@@ -479,7 +479,7 @@ int Building::desiredNumberOfWorkers(void)
 {
 	//If It's virtual, then this building is a flag and always gets
 	//Full material inventory
-	if(type->zonable[WORKER] || type->zonable[EXPLORER] || type->zonable[WARRIOR])
+	if(runtime->attractionRoles!=0)
 	{
 		return std::min(maxUnitWorking, type->semantics.assignmentLimit);
 	}

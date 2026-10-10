@@ -232,7 +232,7 @@ _glob2_complete() {
     'game run|--resource-growth-delay') kind='integer'; values='';;
     'game run|--ai-order-delay') kind='integer'; values='';;
     'game run|--save') kind='string'; values='';;
-    'game run|--telemetry') kind='enum'; values='checksums team-timeline maxima gradient-stats';;
+    'game run|--telemetry') kind='enum'; values='checksums continuation-state team-timeline maxima gradient-stats';;
     'game run|--benchmark-warmup') kind='integer'; values='';;
     'game run|--diagnostic-fields') kind='enum'; values='maxima';;
     'game run|--diagnostic-interval') kind='integer'; values='';;

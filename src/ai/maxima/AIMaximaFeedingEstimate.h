@@ -39,7 +39,7 @@ struct FeedingEstimate
 
 // Rebuilt only when immutable catalog/strategy/rules profiles are initialized.
 // The bounded temporary array cannot allocate during a building observation.
-inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPlan& plan)
+inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPlan& plan,const UnitCatalog& units=*UnitCatalog::builtins())
 {
     using namespace AIMaximaBuildings;
     struct Flow {
@@ -50,23 +50,35 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         int outputMultiplier=1;
         long long seatTicks=0;
     };
-    constexpr int MaxFlows=2+NB_UNIT_TYPE*NB_ABILITY+NB_UNIT_TYPE+1;
-    std::array<Flow,MaxFlows> flows{};
+    const int MaxFlows=2+units.size()*NB_ABILITY+NB_UNIT_TYPE+1;
+    std::vector<Flow> flows(MaxFlows);
     int flowCount=0,seatFlows=0;
     const auto& s=type.semantics;
-    auto available=[&](const auto& spec){return spec.enabled && (spec.unitMask&s.admittedUnitMask) && type.maxUnitInside>0;};
-    auto service=[&](unsigned roles,const auto& spec,bool holdExit) {
+    auto available=[&](const auto& spec){
+        if(!spec.enabled || type.maxUnitInside<=0)return false;
+        for(unsigned id=0;id<units.size();++id)if(spec.units.matches(id,spec.unitMask) && s.admittedUnits.matches(id,s.admittedUnitMask))return true;
+        return false;
+    };
+    auto service=[&](unsigned roles,const auto& spec,bool holdExit,bool feeding) {
         if(!available(spec))return;
         auto& f=flows[flowCount++];f.roles=roles;
-        f.seatTicks=serviceTicks(type,spec.duration)+
+        long long totalTicks=0; unsigned recipients=0;
+        for(unsigned id=0;id<units.size();++id)if(spec.units.matches(id,spec.unitMask) && s.admittedUnits.matches(id,s.admittedUnitMask)) {
+            const auto& traits=units.runtime(id);
+            totalTicks+=serviceTicks(type,spec.duration,feeding?traits.feedingSpeedQ8:traits.healingSpeedQ8);
+            ++recipients;
+        }
+        // Uniform nominal recipient mix; all stock multipliers are 256,
+        // preserving the existing single shared service flow and rounding.
+        f.seatTicks=totalTicks/recipients+
             static_cast<long long>(std::max(0,plan.oneWayTravelTicks))*(holdExit?2:1);
         std::copy_n(spec.cost.begin(),MaterialCount,f.cost.begin());++seatFlows;
     };
-    if(plan.feeding)service(roleBit(Feeding),s.feeding,s.feeding.holdAdmissionUntilExit);
-    service(roleBit(Healing),s.healing,s.healing.holdAdmissionUntilExit);
-    auto trainingRole=[](const auto& spec,int ability,int unit) {
+    if(plan.feeding)service(roleBit(Feeding),s.feeding,s.feeding.holdAdmissionUntilExit,true);
+    service(roleBit(Healing),s.healing,s.healing.holdAdmissionUntilExit,false);
+    auto trainingRole=[&](const auto& spec,int ability,int unit) {
         unsigned roles=0;
-        if(unit==WORKER && spec.constructionLevel>0)roles|=roleBit(ConstructionTraining);
+        if(units.runtime(unit).has(UnitRuntimeTraits::LearnConstruction) && spec.constructionLevel>0)roles|=roleBit(ConstructionTraining);
         if(spec.targetLevel>0) {
             if(ability==WALK)roles|=roleBit(WalkTraining);
             if(ability==SWIM)roles|=roleBit(SwimTraining);
@@ -78,14 +90,15 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
     // formed for one recipient class at a time, using the same learnability
     // and improvement predicates as Unit::needsTraining. A worker-only course
     // can never inflate the cost or duration of a warrior's parallel visit.
-    if(plan.training && type.maxUnitInside>0)for(int unit=0;unit<NB_UNIT_TYPE;++unit) {
-        if(!(s.admittedUnitMask&(1u<<unit)))continue;
+    if(plan.training && type.maxUnitInside>0)for(unsigned unit=0;unit<units.size();++unit) {
+        if(!s.admittedUnits.matches(unit,s.admittedUnitMask))continue;
         Flow bundle;
         for(int ability=0;ability<NB_ABILITY;++ability) {
             const auto& spec=s.training[ability];
-            if(!spec.enabled || !(spec.unitMask&(1u<<unit)) || !Race::unitTypes[unit][3].performance[ability] ||
-                !(spec.targetLevel>0 || (unit==WORKER && spec.constructionLevel>0)))continue;
-            const int speed=std::clamp(type.insideSpeed/std::max(1,spec.targetLevel),1,UNIT_DELTA_QUANTUM);
+            if(!spec.enabled || !spec.units.matches(unit,spec.unitMask) || !units.levels(unit)[3].performance[ability] || !(units.runtime(unit).learnableMask&(1u<<ability)) ||
+                !(spec.targetLevel>0 || (units.runtime(unit).has(UnitRuntimeTraits::LearnConstruction) && spec.constructionLevel>0)))continue;
+            const int baseSpeed=std::max(1,type.insideSpeed/std::max(1,spec.targetLevel));
+            const int speed=int(std::clamp(static_cast<long long>(baseSpeed)*units.runtime(unit).trainingSpeedQ8/256,1LL,static_cast<long long>(UNIT_DELTA_QUANTUM)));
             const long long ticks=(static_cast<long long>(spec.duration+1)*UNIT_DELTA_QUANTUM+speed-1)/speed;
             if(s.trainingInParallel) {
                 bundle.roles|=trainingRole(spec,ability,unit);

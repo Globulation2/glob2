@@ -27,6 +27,7 @@
 #include "../../src/ai/maxima/AIMaxima.h"
 #include "../../src/building/Building.h"
 #include "BuildingType.h"
+#include <nlohmann/json.hpp>
 #include "../../src/building/IntBuildingType.h"
 #include "../../src/unit/Unit.h"
 #include <BinaryStream.h>
@@ -239,6 +240,31 @@ static void disconnectedArmy() {
     REQUIRE(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
 }
 
+static void flyingArmyAndNonexploringMagicThreat() {
+    Fixture f;
+    auto definitions=nlohmann::json::parse(UnitCatalog::builtins()->serialize());
+    auto fighter=definitions["units"][WARRIOR];fighter["key"]="fixture:fighter";
+    fighter["behaviors"]["fly"]=true;fighter["behaviors"]["swim"]=false;
+    for(auto& level:fighter["levels"]){level["performance"][FLY]=16;level["performance"][STOP_FLY]=8;}
+    auto caster=definitions["units"][WORKER];caster["key"]="fixture:caster";
+    caster["behaviors"]["magicGround"]=true;caster["behaviors"]["explore"]=false;
+    for(auto& level:caster["levels"])level["performance"][MAGIC_ATTACK_GROUND]=10;
+    definitions["units"].push_back(fighter);definitions["units"].push_back(caster);
+    f.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(definitions.dump()));f.game.configureBuildingCatalog();
+    f.building(10,10,0);f.building(27,30,0);
+    auto target=f.building(38,30,1);f.islands();
+    for(int i=0;i<12;++i){auto* unit=f.game.addUnit(6+i,6,0,3,1,0,0,0);REQUIRE(unit);unit->medical=Unit::MED_FREE;unit->activity=Unit::ACT_RANDOM;}
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.plan_offense(c);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+    CHECK(a.offense_diagnostics.eligibleWarriors>=4);
+    auto* threat=f.game.addUnit(14,12,1,4,0,0,0,0);REQUIRE(threat);
+    f.game.map.fogOfWar[f.game.map.coordToIndex(14,12)]|=f.player.team->me;
+    f.game.map.markVisibility(f.game.map.coordToIndex(14,12));
+    a.sample_reconnaissance_forces(c);
+    CHECK(a.reconnaissance.report().visibleAttackExplorers==1);
+}
+
 static void reusedOwnId() {
     for(bool sameLocation:{false,true}) {
         Fixture f; auto old=f.building(10,10,0); auto& c=f.ai->context;c.initialize();
@@ -405,6 +431,7 @@ TEST_SUITE("Maxima.Director")
 	TEST_CASE("cadence") { glob2test::HeadlessGlobals globals; director_regressions::cadence(); }
 	TEST_CASE("ally prestige") { glob2test::HeadlessGlobals globals; director_regressions::allyPrestige(); }
 	TEST_CASE("third party tower") { glob2test::HeadlessGlobals globals; director_regressions::thirdPartyTower(); }
+	TEST_CASE("flying defenders and nonexploring magic threats") { glob2test::HeadlessGlobals globals; director_regressions::flyingArmyAndNonexploringMagicThreat(); }
 	TEST_CASE("disconnected army") { glob2test::HeadlessGlobals globals; director_regressions::disconnectedArmy(); }
 	TEST_CASE("proactive protection") { glob2test::HeadlessGlobals globals; director_regressions::proactiveProtection(); }
 	TEST_CASE("reused own id") { glob2test::HeadlessGlobals globals; director_regressions::reusedOwnId(); }

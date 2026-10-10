@@ -2,6 +2,7 @@
 #pragma once
 
 #include "UnitConsts.h"
+#include <cstdint>
 
 // Per-tick delta advance. Only diagonal travel takes longer; work and attacks
 // keep their action speed even when the unit faces a diagonal direction.
@@ -10,12 +11,12 @@
 inline constexpr int unitActionStepSpeed(int speed, int action, int dx, int dy, bool inside = false)
 {
 	const int advance = dx != 0 && dy != 0 && (action == WALK || action == SWIM || action == FLY)
-		? (speed * 181) >> 8 : speed;
+		? int((std::int64_t(speed) * 181) >> 8) : speed;
 	// Entry retains its direction/action while inside. Even the smallest
 	// configured service speed must make progress after diagonal quantization.
 	// The action clock executes at most once per tick. Larger healing speeds
 	// must not accumulate surplus phase or overflow during a long visit.
-	if (!inside) return advance;
+	if (!inside) return speed>0 && advance<1 ? 1 : advance;
 	if (advance < 1) return 1;
 	return advance > UNIT_DELTA_QUANTUM ? UNIT_DELTA_QUANTUM : advance;
 }

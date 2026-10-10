@@ -122,8 +122,8 @@ void ChangeFlagMinimumLevel::modify(Runtime& runtime)
 {
 	const auto* building=runtime.get_building_register().get_building(building_id);
 	if(!building)return;
-	const bool explorers=targetRole==1 || (targetRole<0 && AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[EXPLORER]
-		&& !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WORKER] && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).zonable[WARRIOR]);
+	const bool explorers=targetRole==1 || (targetRole<0 && AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).attractsRole(1)
+		&& !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).attractsRole(0) && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).attractsRole(2));
 	const int requirement=explorers ? (targetRole<0 ? minimum_level>1 : minimum_level!=0)
 		: minimum_level-AI_SHARED_RUNTIME_LEVEL_OFFSET_USER_TO_ENGINE;
 	runtime.push_order(std::make_shared<OrderModifyMinLevelToFlag>(building->gid,requirement,explorers ? 1 : 0));

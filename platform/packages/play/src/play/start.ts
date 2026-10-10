@@ -1,4 +1,8 @@
-import { catalogRulesVersion, checkBuildingCatalogHash } from '@glob2/protocol/node';
+import {
+  catalogRulesVersion,
+  checkBuildingCatalogHash,
+  checkUnitCatalogHash,
+} from '@glob2/protocol/node';
 // The match start sequence shared by rooms (API) and quick-match queues
 // (worker): access checks, map, `matches` row with the setup and a seed the
 // platform chose, and relay placement. Tickets are signed by the API replica
@@ -18,6 +22,7 @@ import {
   playerSeats,
   type AiId,
   type BuildingCatalog,
+  type UnitCatalog,
   type GeneratorDescriptor,
   type MatchSetup,
 } from '@glob2/protocol';
@@ -155,24 +160,43 @@ function isUniqueViolation(error: unknown): boolean {
 export async function createMatch(db: Db, request: CreateMatchRequest): Promise<CreatedMatch> {
   const setup = { ...request.setup };
   let mapCatalog: BuildingCatalog | undefined;
+  let mapUnits: UnitCatalog | undefined;
   for (const table of ['map_versions', 'map_uploads', 'generated_maps'] as const) {
     const row =
       table === 'map_versions'
         ? await db
             .selectFrom(table)
-            .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
+            .select([
+              'building_catalog',
+              'unit_catalog',
+              'required_unit_experiments',
+              'resource_experiments',
+              'required_resource_experiments',
+            ])
             .where('hash', '=', setup.map.hash)
             .executeTakeFirst()
         : table === 'map_uploads'
           ? await db
               .selectFrom(table)
-              .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
+              .select([
+                'building_catalog',
+                'unit_catalog',
+                'required_unit_experiments',
+                'resource_experiments',
+                'required_resource_experiments',
+              ])
               .where('blob_sha256', '=', setup.map.hash)
               .where('sim_version', '=', simVersionKey(setup.simVersion))
               .executeTakeFirst()
           : await db
               .selectFrom(table)
-              .select(['building_catalog', 'resource_experiments', 'required_resource_experiments'])
+              .select([
+                'building_catalog',
+                'unit_catalog',
+                'required_unit_experiments',
+                'resource_experiments',
+                'required_resource_experiments',
+              ])
               .where('map_hash', '=', setup.map.hash)
               .where('sim_version', '=', simVersionKey(setup.simVersion))
               .executeTakeFirst();
@@ -180,11 +204,21 @@ export async function createMatch(db: Db, request: CreateMatchRequest): Promise<
       // These declarations were extracted from the map by its engine, never supplied by a room host.
       setup.resourceExperiments = row.resource_experiments;
       setup.experiments = [
-        ...new Set([...setup.experiments, ...row.required_resource_experiments]),
+        ...new Set([
+          ...setup.experiments,
+          ...row.required_resource_experiments,
+          ...row.required_unit_experiments,
+        ]),
       ];
       if (row.building_catalog) mapCatalog = row.building_catalog as BuildingCatalog;
+      if (row.unit_catalog) mapUnits = row.unit_catalog as UnitCatalog;
       break;
     }
+  }
+  if (mapUnits) {
+    if (setup.unitCatalog && setup.unitCatalog.hash !== mapUnits.hash)
+      throw new Error('match unit catalog differs from its validated map');
+    setup.unitCatalog = mapUnits;
   }
   if (mapCatalog) {
     if (setup.buildingCatalog && setup.buildingCatalog.hash !== mapCatalog.hash)
@@ -192,6 +226,7 @@ export async function createMatch(db: Db, request: CreateMatchRequest): Promise<
     setup.buildingCatalog = mapCatalog;
   }
   if (setup.buildingCatalog) checkBuildingCatalogHash(setup.buildingCatalog);
+  if (setup.unitCatalog) checkUnitCatalogHash(setup.unitCatalog);
   const problems = matchSetupProblems(setup);
   if (problems.length > 0) {
     throw new Error(`invalid setup: ${problems.map((p) => `${p.path} ${p.message}`).join('; ')}`);
@@ -209,7 +244,11 @@ export async function createMatch(db: Db, request: CreateMatchRequest): Promise<
         .values({
           sim_version: `${setup.simVersion.versionMinor}-${setup.simVersion.netProtocol}-${setup.simVersion.dataHash}`,
           rules_identity: simVersionKey(
-            catalogRulesVersion(setup.simVersion, setup.buildingCatalog?.hash),
+            catalogRulesVersion(
+              setup.simVersion,
+              setup.buildingCatalog?.hash,
+              setup.unitCatalog?.hash,
+            ),
           ),
           origin: request.origin,
           room_id: request.roomId ?? null,

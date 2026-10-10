@@ -133,12 +133,12 @@ void Team::removeFromAbilitiesLists(Building *building)
 	if (building->type->canExchange)
 		canExchange.remove(building);
 
-	if (building->type->semantics.production.enabledUnitMask)
+	if (!building->type->semantics.production.enabledUnits.empty())
 		swarms.remove(building);
 	if (building->type->shootingRange)
 		turrets.remove(building);
 
-	if (building->type->zonable[WORKER])
+	if (building->runtime->attractsRole(0))
 		clearingFlags.remove(building);
 
 	if (building->type->isVirtual)
@@ -151,7 +151,7 @@ void Team::removeFromAbilitiesLists(Building *building)
 void Team::addToStaticAbilitiesLists(Building *building)
 {
 	if (building->type->runtimeSuppliesDirectStock && building->buildingState == Building::ALIVE && std::find(directStockSuppliers.begin(),directStockSuppliers.end(),building)==directStockSuppliers.end()) directStockSuppliers.push_back(building);
-	if (building->type->zonable[WARRIOR] && std::find(combatFlags.begin(),combatFlags.end(),building)==combatFlags.end()) combatFlags.push_back(building);
+	if (building->runtime->attractsRole(2) && std::find(combatFlags.begin(),combatFlags.end(),building)==combatFlags.end()) combatFlags.push_back(building);
 	if (building->type->runtimeSuppliesStock || building->type->runtimeSuppliesDirectStock) map->invalidateSupplierLocations();
 	if (building->type->runtimeSuppliesStock && building->buildingState == Building::ALIVE &&
 		std::find(stockSuppliers.begin(), stockSuppliers.end(), building) == stockSuppliers.end())
@@ -159,13 +159,13 @@ void Team::addToStaticAbilitiesLists(Building *building)
 	if (building->type->canExchange)
 		if (std::find(canExchange.begin(), canExchange.end(), building) == canExchange.end()) canExchange.push_back(building);
 
-	if (building->type->semantics.production.enabledUnitMask)
+	if (!building->type->semantics.production.enabledUnits.empty())
 		if (std::find(swarms.begin(), swarms.end(), building) == swarms.end()) swarms.push_back(building);
 
 	if (building->type->shootingRange)
 		if (std::find(turrets.begin(), turrets.end(), building) == turrets.end()) turrets.push_back(building);
 
-	if (building->type->zonable[WORKER])
+	if (building->runtime->attractsRole(0))
 		if (std::find(clearingFlags.begin(), clearingFlags.end(), building) == clearingFlags.end()) clearingFlags.push_back(building);
 ;
 	if (building->type->isVirtual)

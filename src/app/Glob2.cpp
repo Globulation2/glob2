@@ -415,7 +415,7 @@ static void dumpTeams(const Game& game)
 			if (Building* b = team->myBuildings[i])
 			{
 				buildings++;
-				if (b->type->semantics.production.enabledUnitMask)
+				if (!b->type->semantics.production.enabledUnits.empty())
 				{
 					swarmCount++;
 					where += FormattableString(" (%0,%1)").arg(b->posX).arg(b->posY);

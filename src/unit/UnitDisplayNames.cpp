@@ -9,6 +9,7 @@
 
 #include "UnitConsts.h"
 #include "UnitDisplayNames.h"
+#include "UnitCatalog.h"
 
 using namespace GAGCore;
 
@@ -23,7 +24,14 @@ std::string getUnitName(int type)
 	case EXPLORER:
 		return Toolkit::getStringTable()->getString("[Explorer]");
 	default:
-		assert(false);
 		return {};
 	}
+}
+
+std::string getUnitName(int type, const UnitCatalog& catalog)
+{
+    if (type < 0 || static_cast<std::size_t>(type) >= catalog.size()) return {};
+    if (type < int(BuiltinUnitCount)) return getUnitName(type);
+    const auto& definition = catalog.definition(type);
+    return definition.name.empty() ? definition.key : definition.name;
 }

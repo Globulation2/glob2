@@ -271,7 +271,7 @@ complete -c glob2 -n "__glob2_at 'game run'" -l gradient-delay -r
 complete -c glob2 -n "__glob2_at 'game run'" -l resource-growth-delay -r
 complete -c glob2 -n "__glob2_at 'game run'" -l ai-order-delay -r
 complete -c glob2 -n "__glob2_at 'game run'" -l save -r
-complete -c glob2 -n "__glob2_at 'game run'" -l telemetry -r -f -a 'checksums team-timeline maxima gradient-stats'
+complete -c glob2 -n "__glob2_at 'game run'" -l telemetry -r -f -a 'checksums continuation-state team-timeline maxima gradient-stats'
 complete -c glob2 -n "__glob2_at 'game run'" -l write-replay
 complete -c glob2 -n "__glob2_at 'game run'" -l benchmark-warmup -r
 complete -c glob2 -n "__glob2_at 'game run'" -l diagnostic-fields -r -f -a 'maxima'

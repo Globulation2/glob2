@@ -8,6 +8,8 @@
 #include "GameHeader.h"
 #include "FertilityField.h"
 #include "UnitType.h"
+#include "UnitCatalog.h"
+#include "UnitCargo.h"
 #include "BuildingCapabilities.h"
 #include "ResourceRegistry.h"
 #include "CellRules.h"
@@ -22,13 +24,20 @@
 namespace SimulationSnapshot
 {
 
+struct UnitLevelTable
+{
+    std::shared_ptr<const UnitCatalog> catalog;
+    const auto& operator[](std::size_t id) const { return catalog->levels(id); }
+    std::size_t size() const { return catalog->size(); }
+};
 struct Catalogs
 {
 	std::string buildingFingerprint;
 	std::shared_ptr<const std::vector<BuildingKindView>> buildings;
 	std::shared_ptr<const std::vector<BuildingType>> typeDefinitions;
 	std::shared_ptr<const AIPlanning::BuildingCapabilityTables> capabilities;
-	std::array<std::array<UnitType, NB_UNIT_LEVELS>, NB_UNIT_TYPE> unitTypes;
+	std::shared_ptr<const UnitCatalog> units;
+	UnitLevelTable unitTypes;
 	// Immutable resource catalog, shared with the map. Habitats are compiled
 	// into the terrain's cell rules.
 	std::shared_ptr<const ResourceRegistry> resources;
@@ -77,8 +86,11 @@ static_assert(std::is_trivially_copyable_v<ResourceCell>);
 static_assert(std::is_trivially_copyable_v<OccupancyCell>);
 static_assert(std::is_trivially_copyable_v<AreaCell>);
 static_assert(std::is_trivially_copyable_v<VisibilityCell>);
+struct ExtraProductionState { Sint32 ratio=0, used=0, constructionOriginRatio=0; };
 struct Entities
 {
+    UnitCargoStore unitCargo;
+    std::vector<ExtraProductionState> extraProduction;
 	static constexpr Uint32 NoRecord = std::numeric_limits<Uint32>::max();
 	std::vector<BuildingView> buildings;
 	std::vector<UnitView> units;

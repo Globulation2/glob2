@@ -402,15 +402,19 @@ void MapEdit::drawPlacingUnitOnMap()
 	int ph=32;
 
 	bool isRoom;
-	if (type==EXPLORER)
+	if (frame.world.catalogs->units->runtime(type).has(UnitRuntimeTraits::Fly) && frame.world.catalogs->unitTypes[type][level].performance[FLY])
 		isRoom=map.isFreeForAirUnit(cx, cy);
 	else
 	{
 		const auto* ut=&frame.world.catalogs->unitTypes[type][level];
-		isRoom=map.isFreeForGroundUnit(cx, cy, ut->performance[SWIM], Team::teamNumberToMask(team));
+		const auto& traits=frame.world.catalogs->units->runtime(type);
+        const bool walks=traits.has(UnitRuntimeTraits::Walk) && ut->performance[WALK];
+        const bool swims=traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM];
+		isRoom=map.isFreeForGroundUnit(cx, cy, swims, Team::teamNumberToMask(team))
+            && (walks || !swims || map.terrainPropertiesAt(cx,cy).swimmable);
 	}
 
-	const int imgid=unitAnimationFrame(g_unitSkins[type].startImage[STOP_WALK], 0, 0);
+	const int imgid=unitAnimationFrame(frame.world.catalogs->unitTypes[type][0].startImage[STOP_WALK], 0, 0);
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(presentationColor(frame.entities.teams[team].color));

@@ -16,6 +16,7 @@
 
 namespace GAGCore { class Sprite; }
 using GAGCore::Sprite;
+class UnitCatalog;
 
 // Resolved descriptor of one concrete building variant. The catalog combines
 // authored properties, semantic capabilities and presentation, then derives
@@ -123,6 +124,13 @@ struct BuildingType
 	MaterialMask runtimeFetchesStockMask = 0, runtimeFetchesDirectStockMask = 0;
 	bool runtimeSuppliesDirectStock = false, runtimeFetchesDirectStock = false;
 	bool runtimeAvailable = true;
+    Sint32 runtimeDefenseDamage = 0;
+    bool runtimeFlyingCarriers = false;
+    bool runtimeFlyingAttractions = false;
+    Uint32 runtimeTrainingAbilities = 0;
+    Uint8 runtimeAttractionRoles = 0;
+    bool attractsRole(unsigned role) const { return role<3 && (runtimeAttractionRoles & (1u<<role)); }
+    bool runtimeFeeds = false, runtimeHeals = false, runtimeAnyProjectileDamage = false, runtimeConstructionTraining=false;
 	bool runtimeSuppliesStock = false;
 	bool runtimeFetchesStock = false;
 
@@ -167,6 +175,7 @@ public:
 	bool isAvailable(std::size_t id, const std::set<std::string>& enabledExperiments) const;
 	// Rebuild effective gates and compact runtime rows in place during setup.
 	void configureExperiments(const std::vector<std::string>& keys);
+	void configureUnits(const UnitCatalog& catalog);
 	MaterialMask stockSupplyMask() const { return stockSupplyMask_; }
 	MaterialMask directSupplyMask() const { return directSupplyMask_; }
 	MaterialMask extraDirectSupplyMask() const { return extraDirectSupplyMask_; }
@@ -191,6 +200,11 @@ private:
 	void resolveAndValidate();
 	void compileRuntimeTraits();
 	std::vector<BuildingRuntimeTraits> runtimeTypes_;
+    std::vector<Uint32> unitFlags_;
+	std::vector<BuildingUnitInteraction> unitInteractions_;
+	std::size_t unitCount_=NB_UNIT_TYPE;
+	std::vector<Uint8> unitAvailable_;
+	std::vector<std::string> unitExperiments_;
 	std::shared_ptr<std::vector<BuildingType>> entries_ = std::make_shared<std::vector<BuildingType>>();
 	std::vector<BuildingCatalogExperiment> experiments_;
 	std::string catalogKey_;

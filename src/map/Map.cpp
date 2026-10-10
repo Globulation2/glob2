@@ -216,7 +216,7 @@ void Map::adjustTerrainFeatures(std::uint16_t ruleIndex, bool add)
 {
 	const auto &rule = cellRuleData[ruleIndex];
 	const auto &p = rule.properties;
-	const unsigned edge = rule.ground[p.swimmable ? SWIM_CLASS_COUNT - 1 : 0].diagonal;
+	const unsigned edge = rule.ground[p.swimmable ? LEGACY_SWIM_CLASS_COUNT - 1 : 0].diagonal;
 	for (unsigned sw = 0; sw < 7; ++sw)
 		if (p.walkable || (sw && p.swimmable))
 		{

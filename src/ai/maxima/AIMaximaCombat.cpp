@@ -80,7 +80,7 @@ namespace
 	{
 		// Match the engine's flag subscription rule: the lower of the two combat
 		// abilities must reach the flag's minimum level (user level minus one).
-		if(!warrior || warrior->typeNum!=WARRIOR || warrior->isDead
+		if(!warrior || !(warrior->capabilityFlags&UnitRuntimeTraits::Melee) || warrior->isDead
 		   || warrior->medical!=Unit::MED_FREE
 		   || std::min(warrior->level[ATTACK_SPEED],
 			warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
@@ -112,7 +112,7 @@ namespace
 			for(int id=0; id<Unit::MAX_COUNT; ++id)
 			{
 				const AIEngine::UnitView* warrior=map->unitSlots(team->number)[id];
-				if(diagnostics && warrior && warrior->typeNum==WARRIOR && !warrior->isDead)
+				if(diagnostics && warrior && (warrior->capabilityFlags&UnitRuntimeTraits::Melee) && !warrior->isDead)
 				{
 					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
 						++(*diagnostics)["untrained"];
@@ -132,18 +132,26 @@ namespace
 				}
 				if(!tactical_warrior_available(*map,warrior,continuingFlag,minimumLevel,offenseFlags)) continue;
 				const bool swimming=warrior->performance[SWIM]>0;
-				if(swimmersOnly && !swimming)
+                const bool flying=warrior->performance[FLY]>0;
+                const bool walking=warrior->performance[WALK]>0;
+				if(swimmersOnly && !swimming && !flying)
 				{
 					if(diagnostics) ++(*diagnostics)["no_swim"];
 					continue;
 				}
-				if(components[swimming].empty()) label(swimming);
-				const std::vector<int>& field=components[swimming];
 				const int origin=(*map).normalizeY(warrior->posY)*(*map).width
 					+(*map).normalizeX(warrior->posX);
-				if(field[target]>=0 && field[origin]==field[target])
-					powers.push_back(warrior_power(*map,warrior));
-				else if(diagnostics) ++(*diagnostics)["disconnected"];
+				if(!flying && !walking && !swimming) {
+                    if(origin==target)powers.push_back(warrior_power(*map,warrior));
+                    else if(diagnostics)++(*diagnostics)["disconnected"];
+                    continue;
+                }
+                const unsigned movement=flying?2:walking?unsigned(swimming):3;
+                if(components[movement].empty())label(movement);
+                const auto& field=components[movement];
+                if(field[target]>=0 && field[origin]==field[target])
+                    powers.push_back(warrior_power(*map,warrior));
+                else if(diagnostics)++(*diagnostics)["disconnected"];
 
 			}
 			if(diagnostics) (*diagnostics)["reachable_before_reserve_cap"]=int(powers.size());
@@ -155,15 +163,18 @@ namespace
 		const AIEngine::AIWorldView* map;
 		int minimumLevel;
 		const std::vector<const AIEngine::BuildingView*>* offenseFlags;
-		std::vector<int> components[2];
-		void label(bool swimming)
+		std::vector<int> components[4];
+		void label(unsigned movement)
 		{
 			const int w=(*map).width, h=(*map).height;
-			std::vector<int>& field=components[swimming];
+			std::vector<int>& field=components[movement];
 			field.assign(w*h,-1);
-			for(int i=0; i<w*h; ++i)
-				if(((*map).resourceAt((*map).tileIndex(powerOfTwoRemainder(i, w),i/w)).resource.type!=NO_RES_TYPE) || (!AIEngine::ObservationQueries::terrain((*map),i).walkable && !(swimming && AIEngine::ObservationQueries::terrain((*map),i).swimmable)))
-					field[i]=-2;
+			for(int i=0; i<w*h; ++i) {
+                const auto& terrain=AIEngine::ObservationQueries::terrain(*map,i);
+                const bool traversable=movement==2?terrain.flyable:movement==3?terrain.swimmable:
+                    terrain.walkable || (movement==1 && terrain.swimmable);
+                if(!traversable || (movement!=2 && map->resourceAt(map->tileIndex(powerOfTwoRemainder(i,w),i/w)).resource.type!=NO_RES_TYPE))field[i]=-2;
+            }
 			std::vector<int> queue;
 			for(int start=0; start<w*h; ++start)
 			{
@@ -358,7 +369,7 @@ void Maxima::plan_offense(Context& runtime)
 					std::min(warrior->level[ATTACK_SPEED], warrior->level[ATTACK_STRENGTH])))];
 				trainees.push_back(warrior);
 			}
-			else if(warrior && warrior->typeNum==WARRIOR && !warrior->isDead
+			else if(warrior && (warrior->capabilityFlags&UnitRuntimeTraits::Melee) && !warrior->isDead
 				&& (warrior->medical!=Unit::MED_FREE
 					|| warrior->activity==Unit::ACT_UPGRADING))
 				++recovering;
@@ -410,7 +421,7 @@ void Maxima::plan_offense(Context& runtime)
 	for(size_t u=0;u<trainees.size();++u)
 		for(size_t b=0;b<barracks.size();++b)
 			for (int ability : {ATTACK_SPEED, ATTACK_STRENGTH})
-				if ((AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnitMask & (1u << WARRIOR))
+				if (AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnits.matches(trainees[u]->typeNum,AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnitMask)
 				   && AIEngine::ObservationQueries::needsTraining(*trainees[u],AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.training[ability], ability))
 				{choices[u].push_back(int(b));break;}
 	std::function<bool(int,std::vector<bool>&)> assignTraining=
@@ -559,7 +570,7 @@ void Maxima::plan_offense(Context& runtime)
 					if (defense.construction || defense.type < 0
 						|| size_t(defense.type) >= runtime.observation().catalog->size()) continue;
 					const auto& type = runtime.observation().catalog->at(defense.type).resolvedType;
-					if (type.shootRhythm > 0 && type.semantics.projectileDamage[WARRIOR] > 0
+					if (type.shootRhythm > 0 && type.runtimeDefenseDamage > 0
 						&& (*map).distanceSquared(sighting.x,sighting.y,defense.x,defense.y)
 							<= type.shootingRange * type.shootingRange)
 						++nearby_towers;
@@ -1772,7 +1783,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
 		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
+		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->performance[FLY]==0 && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
 		{
 			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
 			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
@@ -1810,7 +1821,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
 			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
-			if(!unit || unit->typeNum!=WARRIOR
+			if(!unit || !(unit->capabilityFlags&UnitRuntimeTraits::Melee)
 			   || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
@@ -1935,7 +1946,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 					{
 						const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
-						if(unit && unit->typeNum == WARRIOR)
+						if(unit && (unit->capabilityFlags&UnitRuntimeTraits::Melee))
 						{
 							covered_points.push_back(position(nx, ny));
 							enemy_count += 1;
@@ -2077,7 +2088,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 						& runtime.observedTeam().enemies))
 						continue;
 					const AIEngine::UnitView* enemy=runtime.observation().unitAtSlot(guid);
-					if(enemy && enemy->typeNum==WARRIOR)
+					if(enemy && (enemy->capabilityFlags&UnitRuntimeTraits::Melee))
 						local_enemy_count+=1;
 				}
 			}
@@ -2207,7 +2218,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 		{
 			const AIEngine::UnitView* unit = runtime.observation().unitSlots(strike_target)[i];
 			if(unit && AIEngine::ObservationQueries::visible(runtime.observation(),unit->posX, unit->posY,
-				runtime.observedTeam().mask) && unit->typeNum==WARRIOR
+				runtime.observedTeam().mask) && (unit->capabilityFlags&UnitRuntimeTraits::Melee)
 			   && unit->activity != Unit::ACT_UPGRADING)
 			{
 				if(!first)
@@ -2292,8 +2303,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	}
 
 	std::sort(groups.begin(), groups.end(), std::greater<std::tuple<int, int, int> >());
-	const int trained_explorers=runtime.observedTeam().statistics
-		.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3];
+	const int trained_explorers=runtime.observation().capabilityUpgradeCount(runtime.observedTeam().statistics,UnitRuntimeTraits::MagicGround,MAGIC_ATTACK_GROUND,3);
 	int total_attacks=budget.explorer_campaign_flags;
 
 	//Go through existing flags and see if they can be moved to be on top of new groups

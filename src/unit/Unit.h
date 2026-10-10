@@ -4,6 +4,8 @@
 #pragma once
 
 #include "UnitState.h"
+#include "UnitCatalog.h"
+#include "UnitCargo.h"
 #include <vector>
 #include <string>
 #include <optional>
@@ -38,7 +40,7 @@ class Unit : public UnitUtils, public UnitState
 public:
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
-	virtual ~Unit(void) { }
+	virtual ~Unit(void);
 	
 	void load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
@@ -48,7 +50,26 @@ public:
 	///This function is called by a Building that has subscribed this unit.
 	///If the unit has been subscribed for upgrading or for food, as opposed
 	///to being subscribed for work, inside is set to true.
-	void subscriptionSuccess(Building* building, bool inside, bool attraction = false);
+	void subscriptionSuccess(Building* building, bool inside, bool attraction = false,
+		UnitJobPurpose purpose = UnitJobPurpose::None);
+	bool hasCapability(UnitRuntimeTraits::Flag flag) const { return (capabilityFlags & flag)!=0; }
+	const UnitRuntimeTraits& runtimeTraits() const;
+	int foodCapacity() const;
+	void refreshEffectiveAbilities();
+	void rebindDefinitionForSetup();
+	int foodStepsLeft(int threshold = 0) const;
+	bool hasCarriedMaterial(int material) const;
+	bool hasDeliverableCargo(const Building& building, int material) const;
+	bool canCarryMaterial(int material) const;
+	unsigned carriedPacketCount() const;
+	void clearCargo();
+	bool deliverCargo(Building& building);
+	bool continueCargoCollection();
+	void receiveCargoPacket(int resource, WideMaterialPacket packet);
+	bool findAirGuardDestination(Sint32* x, Sint32* y);
+	bool findAirClearingDestination(const Building* zone, Sint32* x, Sint32* y, int* distance);
+	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
+		bool withMarkets=false, const Building* consumer=nullptr);
 	void syncStep(void);
 	
 	void directionFromDxDy(void);
@@ -204,7 +225,7 @@ public:
 
 public:
 	bool integrity();
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152=false);
     void setTargetBuilding(Building * b);
 	bool verbose;
 };

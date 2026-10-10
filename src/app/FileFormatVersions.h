@@ -266,3 +266,6 @@ static constexpr int FILE_FORMAT_VERSION_AREA_EFFECTS = 150;
 static constexpr int FILE_FORMAT_VERSION_ENTITY_RANDOM = 151;
 //! Private PCG32 streams for map operations and legacy stories.
 static constexpr int FILE_FORMAT_VERSION_PRIVATE_RANDOM = 152;
+
+//! Immutable unit catalogs, counted race tables and composable unit state.
+static constexpr int FILE_FORMAT_VERSION_UNIT_CATALOG = 153;

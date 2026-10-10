@@ -61,7 +61,7 @@ namespace
     int initialCarrierRequest(const BuildingType& type,const MaximaStrategy& strategy)
     {
         int requested=-1;
-        if(type.semantics.production.enabledUnitMask)requested=strategy.staffing.new_swarm_workers;
+        if(!type.semantics.production.enabledUnits.empty())requested=strategy.staffing.new_swarm_workers;
         if(type.maxUnitInside>0)requested=std::max(requested,strategy.staffing.new_inn_workers);
         if(type.shootingRange>0 && type.shootRhythm>0)requested=std::max(requested,strategy.staffing.completed_tower_workers);
         if(requested<0)requested=type.presentation.defaultAssigned<0?2:type.presentation.defaultAssigned;
@@ -82,7 +82,7 @@ namespace
         plan.carriers=initialCarrierRequest(type,strategy);
         plan.oneWayTravelTicks=strategy.farming.management_radius*strategy.food.carrier_ticks_per_tile;
         plan.handlingTicks=strategy.food.carrier_fixed_ticks_per_trip;
-        return estimateFeeding(type,plan);
+        return estimateFeeding(type,plan,*rules.getUnitCatalog());
     }
 
 
@@ -209,7 +209,7 @@ namespace
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
 			const AIEngine::UnitView* worker=world.unitSlots(observedTeam)[id];
-			if(!worker || worker->typeNum!=WORKER
+			if(!worker || !(worker->capabilityFlags&UnitRuntimeTraits::Transport)
 			   || (swimming && worker->performance[SWIM]<=0))
 				continue;
 			const int x=(*map).normalizeX(worker->posX);
@@ -644,17 +644,18 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
     auto ownerObservation=runtime.scopeOwnerObservation();
 	StrategicSnapshot state;
     collect_building_profiles();
-    std::array<long long,3> recurringMeals{};
+    state.feeding_demand.resize(runtime.observation().unitTypeCount());
+    std::vector<long long> recurringMeals(state.feeding_demand.size());
 	state.tick=timer;
 	const TeamStat* stat=&runtime.observedTeam().statistics;
 	state.population=stat->totalUnit;
-	state.workers=stat->numberUnitPerType[WORKER];
-	state.free_warriors=stat->isFree[WARRIOR];
-	state.explorers=stat->numberUnitPerType[EXPLORER];
+	state.workers=stat->carriers;
+	state.free_warriors=stat->idleDefenders;
+	state.explorers=stat->scouts;
 	state.trained_explorers=
-		stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3];
-	state.warriors=stat->numberUnitPerType[WARRIOR];
-	state.free_workers=stat->isFree[WORKER];
+		runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::MagicGround,MAGIC_ATTACK_GROUND,3);
+	state.warriors=stat->meleeUnits;
+	state.free_workers=stat->idleCarriers;
 	state.worker_jobs_open=stat->totalNeeded;
 	state.hungry=stat->needFood;
 	state.critical_food=stat->needFoodCritical;
@@ -693,13 +694,13 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 		if(level>=2)
 			state.trained_workers_level2+=
 				stat->workersByConstructionLevel[level];
-		state.trained_warriors+=stat->upgradeStatePerType[WARRIOR][ATTACK_SPEED][level];
+		state.trained_warriors+=runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::Melee,ATTACK_SPEED,level);
 		// Level zero means the unit cannot swim. Counting it here made Maxima
 		// treat every sizeable army as amphibious and issue impossible routes
 		// across water on maps such as G2.
-		state.swimming_workers+=stat->upgradeStatePerType[WORKER][SWIM][level];
-		state.swimming_explorers+=stat->upgradeStatePerType[EXPLORER][SWIM][level];
-		state.swimming_warriors+=stat->upgradeStatePerType[WARRIOR][SWIM][level];
+		state.swimming_workers+=runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::Transport,SWIM,level);
+		state.swimming_explorers+=runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::Explore,SWIM,level);
+		state.swimming_warriors+=runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::Melee,SWIM,level);
 	}
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
@@ -707,12 +708,12 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
         if(unit && !unit->isDead)recurringMeals[unit->typeNum]+=recipient_meal_rate(*unit);
 		if(unit && unit->underAttackTimer)
 			state.own_units_under_attack+=1;
-		if(unit && unit->typeNum==EXPLORER
+		if(unit && (unit->capabilityFlags&UnitRuntimeTraits::Explore)
 		   && unit->performance[SWIM]>0
 		   && unit->performance[MAGIC_ATTACK_GROUND]>0)
 			state.amphibious_attack_explorers+=1;
 	}
-    for(int unit=0;unit<3;++unit)state.feeding_demand[unit]=int(std::min<long long>(INT_MAX,(recurringMeals[unit]+MealRatePrecision/2)/MealRatePrecision));
+    for(unsigned unit=0;unit<state.feeding_demand.size();++unit)state.feeding_demand[unit]=int(std::min<long long>(INT_MAX,(recurringMeals[unit]+MealRatePrecision/2)/MealRatePrecision));
 
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
@@ -1029,11 +1030,11 @@ void Maxima::update_environment_model(Context& runtime)
 	observed.buildable_tiles=0;
 	observed.water_tiles=0;
     collect_building_profiles();
-	std::array<long long,8> feedingRates{};
+	std::vector<long long> feedingRates(runtime.observation().catalog->size());
 	for(int id=0;id<Building::MAX_COUNT;++id){const auto* b=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 	 if(!b||AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite||b->buildingState!=Building::ALIVE||!AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::Feeding))continue;
      const unsigned mask=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.feeding.unitMask&AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.admittedUnitMask&7u;
-     feedingRates[mask]+=development_feeding_visit_rate[b->typeNum];
+     feedingRates[b->typeNum]+=development_feeding_visit_rate[b->typeNum];
 	}
     observed.feeding_capacity=aggregate_feeding_capacity(feedingRates);
 	observed.terrain_abundance=global_terrain_abundance;
@@ -1433,18 +1434,15 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
-			const bool warrior=unit->typeNum==WARRIOR;
-			const bool explorer=unit->typeNum==EXPLORER;
+			const bool warrior=(unit->capabilityFlags&UnitRuntimeTraits::Melee);
+			const bool explorer=(unit->capabilityFlags&UnitRuntimeTraits::Explore) || unit->performance[MAGIC_ATTACK_GROUND]>0;
 			if(!warrior && !explorer)
 				continue;
-			const bool attack_explorer=explorer
-				&& unit->performance[MAGIC_ATTACK_GROUND]>0;
+			const bool attack_explorer=unit->performance[MAGIC_ATTACK_GROUND]>0;
 			if(warrior)
 				threats.push_back(Tactics::ThreatSighting(unit->gid, *team,
 					unit->posX, unit->posY,
-					std::max(1, AIEngine::ObservationQueries::realAttackStrength(runtime.observation(),*unit)
-						*unit->performance[ATTACK_SPEED]*unit->hp
-						/std::max(1, unit->performance[HP]))));
+					warrior_power(runtime.observation(),unit)));
 			bool colony_threat=false;
 			bool colony_explorer_threat=false;
 			if(warrior || attack_explorer)
@@ -1511,14 +1509,13 @@ void Maxima::update_reconnaissance(Context& runtime)
 				continue;
 			if(!unit->isDead)
 			{
-				if(unit->typeNum==WORKER) ++visible_workers[*team];
-				if(unit->typeNum==WARRIOR) visible_power[*team]+=warrior_power(runtime.observation(),unit);
+				if((unit->capabilityFlags&UnitRuntimeTraits::Transport)) ++visible_workers[*team];
+				if((unit->capabilityFlags&UnitRuntimeTraits::Melee)) visible_power[*team]+=warrior_power(runtime.observation(),unit);
 			}
-			const bool warrior=unit->typeNum==WARRIOR;
-			const bool explorer=unit->typeNum==EXPLORER;
-			const bool attack_explorer=explorer
-				&& unit->performance[MAGIC_ATTACK_GROUND]>0;
-			if(unit->typeNum==WORKER)
+			const bool warrior=(unit->capabilityFlags&UnitRuntimeTraits::Melee);
+			const bool explorer=(unit->capabilityFlags&UnitRuntimeTraits::Explore) || unit->performance[MAGIC_ATTACK_GROUND]>0;
+			const bool attack_explorer=unit->performance[MAGIC_ATTACK_GROUND]>0;
+			if((unit->capabilityFlags&UnitRuntimeTraits::Transport))
 			{
 				reconnaissance.observeEconomicActivity(*team,
 					unit->posX, unit->posY);
@@ -1540,9 +1537,7 @@ void Maxima::update_reconnaissance(Context& runtime)
 			if(warrior)
 				tactics.observeThreat(Tactics::ThreatSighting(unit->gid, *team,
 					unit->posX, unit->posY,
-					std::max(1, AIEngine::ObservationQueries::realAttackStrength(runtime.observation(),*unit)
-						*unit->performance[ATTACK_SPEED]*unit->hp
-						/std::max(1, unit->performance[HP]))));
+					warrior_power(runtime.observation(),unit)));
 			bool colony_threat=false;
 			bool colony_explorer_threat=false;
 			if(warrior || attack_explorer)
@@ -4072,7 +4067,7 @@ Maxima::collect_building_profiles() const
  const auto& game=context.observation();
  development_profile_index.assign(game.catalog->size(),-1);
  development_feeding_visit_rate.assign(game.catalog->size(),0);
- development_feeding_pause.fill(INT_MAX);
+ development_feeding_pause.assign(game.unitTypeCount(),INT_MAX);
  std::vector<FeedingEstimate> operations(game.catalog->size());
  for(size_t id=0;id<game.catalog->size();++id) {
   // Recipe/seat ceilings describe potential work. A separate shared hauling
@@ -4115,6 +4110,8 @@ Maxima::collect_building_profiles() const
    std::copy(operation.resourcePackets.begin(),operation.resourcePackets.end(),v.operatingMaterials);
    v.feedingRate=int(std::min<long long>(INT_MAX,operation.visitsPerTick));
    v.feedingMask=semantic.feeding.unitMask&semantic.admittedUnitMask;
+   v.feedingRecipients.resize(game.unitTypeCount());
+   for(unsigned id=0;id<game.unitTypeCount();++id)v.feedingRecipients[id]=semantic.feeding.enabled && semantic.feeding.units.matches(id,semantic.feeding.unitMask) && semantic.admittedUnits.matches(id,semantic.admittedUnitMask);
    std::copy(operation.feedingResourcePackets.begin(),operation.feedingResourcePackets.end(),v.feedingMaterials);
    const int nominalRatios[3]={1,1,1};
    const auto production=AIMaxima::productionPacketCeiling(v.productionRecipes,nominalRatios);
@@ -4127,15 +4124,15 @@ Maxima::collect_building_profiles() const
    v.productionMaterials[materialIndex(MaterialId::Food)]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.productionMaterials[materialIndex(MaterialId::Food)])*strategy.food.swarm_demand_percent/100));
    v.operatingMaterials[materialIndex(MaterialId::Food)]=int(std::min<long long>(INT_MAX,static_cast<long long>(otherWheat)+v.feedingMaterials[materialIndex(MaterialId::Food)]+v.productionMaterials[materialIndex(MaterialId::Food)]));
    if(position==1 && v.available && semantic.feeding.enabled && complete->maxUnitInside>0)
-       for(int unit=0;unit<3;++unit)if(v.feedingMask&(1u<<unit))
-           development_feeding_pause[unit]=std::min(development_feeding_pause[unit],serviceTicks(*complete,semantic.feeding.duration));
+       for(unsigned unit=0;unit<game.unitTypeCount();++unit)if(v.feedingRecipients[unit])
+           development_feeding_pause[unit]=std::min(development_feeding_pause[unit],serviceTicks(*complete,semantic.feeding.duration,game.unitTraits(unit).feedingSpeedQ8));
    std::copy(operation.services.begin(),operation.services.end(),v.serviceRates);
    for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled) {
     v.productionUnitMask|=1u<<unit;
     v.productionRates[unit]=operation.productionRates[unit];
    }
    if(v.roles&roleBit(ProjectileDefense)) {
-    const long long fullUtility=complete->shootingRange+static_cast<long long>(semantic.projectileDamage[WARRIOR])*std::max(1,complete->shootRhythm)/32;
+    const long long fullUtility=complete->shootingRange+static_cast<long long>(complete->runtimeDefenseDamage)*std::max(1,complete->shootRhythm)/32;
     const long long fullRate=FeedingEstimate::Scale*complete->shootRhythm/65536;
     v.serviceRates[ProjectileDefense]=int(std::min<long long>(1000000,fullUtility*operation.projectileRate/std::max(1LL,fullRate)));
    }
@@ -4172,8 +4169,8 @@ int Maxima::feeding_capacity(int root,int position) const
 long long Maxima::recipient_meal_rate(const AIEngine::UnitView& unit) const
 {
  if(context.observation().configuration->isHungerDisabled())return 0;
- const int action=unit.performance[FLY]>0?FLY:WALK;
- return recipientMealRate(Unit::HUNGRY_MAX,unit.trigHungry,unit.hungriness,
+ const int action=unit.performance[FLY]>0?FLY:unit.performance[WALK]>0?WALK:SWIM;
+ return recipientMealRate(context.observation().unitTraits(unit.typeNum).foodCapacity,unit.trigHungry,unit.hungriness,
      unit.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit.typeNum]);
 }
 
@@ -4182,22 +4179,23 @@ int Maxima::feeding_capacity_for_type(int type) const
  collect_building_profiles();
  const auto* definition=&context.observation().catalog->at(type).resolvedType;
  if(!definition || size_t(type)>=development_feeding_visit_rate.size())return 0;
- const unsigned admitted=definition->semantics.feeding.unitMask&definition->semantics.admittedUnitMask;
- const int populations[3]={snapshot.workers,snapshot.explorers,snapshot.warriors};
+ const auto& world=context.observation();
+ const auto& semantic=definition->semantics;
+ const auto& populations=world.teams[context.teamNumber()].statistics.numberUnitPerType;
+ auto admitted=[&](unsigned unit){return semantic.feeding.enabled && semantic.feeding.units.matches(unit,semantic.feeding.unitMask) && semantic.admittedUnits.matches(unit,semantic.admittedUnitMask);};
  long long demand=0,population=0;
- for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
-     population+=populations[unit];demand+=snapshot.feeding_demand[unit];
+ for(unsigned unit=0;unit<world.unitTypeCount();++unit)if(admitted(unit)) {
+     population+=populations[unit];if(unit<snapshot.feeding_demand.size())demand+=snapshot.feeding_demand[unit];
  }
  if(!demand) {
      population=0;
-     // Future recipients use the loaded game's race, including historical
-     // hunger and movement values; an empty colony is not a zero-cost meal.
-     for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
-         const auto* base=&context.observation().unitType(unit,0);
-         const int action=base->performance[FLY]>0?FLY:WALK;
-         const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
-         const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
-             base->performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
+     for(unsigned unit=0;unit<world.unitTypeCount();++unit)if(admitted(unit)) {
+         const auto& base=world.unitType(unit,0);
+         const auto& traits=world.unitTraits(unit);
+         const int action=base.performance[FLY]>0?FLY:base.performance[WALK]>0?WALK:SWIM;
+         const int trigger=static_cast<long long>(traits.foodCapacity)*traits.hungerTriggerNumerator/traits.hungerTriggerDenominator;
+         const long long rate=recipientMealRate(traits.foodCapacity,trigger,traits.hungerRate,
+             base.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
          const int count=std::max(1,populations[unit]);
          demand+=rate*count;population+=count;
      }
@@ -4207,24 +4205,32 @@ int Maxima::feeding_capacity_for_type(int type) const
  return int(std::min<long long>(1000000,static_cast<long long>(development_feeding_visit_rate[type])*population/demand));
 }
 
-int Maxima::aggregate_feeding_capacity(const std::array<long long,8>& rates) const
+int Maxima::aggregate_feeding_capacity(const std::vector<long long>& rates) const
 {
- std::array<int,3> demand{snapshot.feeding_demand[0],snapshot.feeding_demand[1],snapshot.feeding_demand[2]};
- if(demand==std::array<int,3>{} && !context.observation().configuration->isHungerDisabled()) {
-     // Empty or manually constructed planning observations use the loaded race;
-     // live observations already contain actual per-recipient recurring rates.
-     std::array<int,3> population{snapshot.workers,snapshot.explorers,snapshot.warriors};
-     if(population==std::array<int,3>{})population[WORKER]=snapshot.population;
-     for(int unit=0;unit<3;++unit)if(population[unit]) {
-         const auto* base=&context.observation().unitType(unit,0);
-         const int action=base->performance[FLY]>0?FLY:WALK;
-         const int trigger=base->performance[ATTACK_SPEED]>0?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
-         const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
-             base->performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
-         demand[unit]=int(std::min<long long>(INT_MAX,(rate*population[unit]+MealRatePrecision/2)/MealRatePrecision));
+ const auto& world=context.observation();
+ std::vector<int> demand=snapshot.feeding_demand;demand.resize(world.unitTypeCount());
+ if(std::all_of(demand.begin(),demand.end(),[](int rate){return rate==0;}) && !world.configuration->isHungerDisabled()) {
+     const auto& population=world.teams[context.teamNumber()].statistics.numberUnitPerType;
+     for(unsigned unit=0;unit<world.unitTypeCount();++unit) {
+         const auto& base=world.unitType(unit,0);const auto& traits=world.unitTraits(unit);
+         const int action=base.performance[FLY]>0?FLY:base.performance[WALK]>0?WALK:SWIM;
+         const int trigger=static_cast<long long>(traits.foodCapacity)*traits.hungerTriggerNumerator/traits.hungerTriggerDenominator;
+         const long long rate=recipientMealRate(traits.foodCapacity,trigger,traits.hungerRate,
+             base.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
+         const int legacyCounts[3]={snapshot.workers,snapshot.explorers,snapshot.warriors};
+         const bool none=std::all_of(population.begin(),population.end(),[](int count){return !count;});
+         const int count=population[unit] ? population[unit] : none && unit<3 ? (legacyCounts[unit] ? legacyCounts[unit] : unit==WORKER && !(snapshot.workers+snapshot.explorers+snapshot.warriors) ? snapshot.population : 0) : 0;
+         demand[unit]=int(std::min<long long>(INT_MAX,(rate*count+MealRatePrecision/2)/MealRatePrecision));
      }
  }
- return feedingPopulationCapacity(demand,snapshot.population,rates);
+ std::vector<FeedingCapacity> providers;
+ for(unsigned id=0;id<rates.size();++id)if(rates[id]>0) {
+     const auto& semantic=world.catalog->at(id).resolvedType.semantics;
+     FeedingCapacity provider{rates[id],std::vector<Uint8>(world.unitTypeCount())};
+     for(unsigned unit=0;unit<world.unitTypeCount();++unit)provider.admitted[unit]=semantic.feeding.enabled && semantic.feeding.units.matches(unit,semantic.feeding.unitMask) && semantic.admittedUnits.matches(unit,semantic.admittedUnitMask);
+     providers.push_back(std::move(provider));
+ }
+ return feedingPopulationCapacity(demand,snapshot.population,providers);
 }
 
 long long Maxima::birth_food_acreage() const
@@ -4357,7 +4363,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
 	{
 		const AIEngine::UnitView* worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
-		if(worker && worker->typeNum==WORKER && worker->performance[SWIM]>0)
+		if(worker && (worker->capabilityFlags&UnitRuntimeTraits::Transport) && worker->performance[SWIM]>0)
 			++world.swimmingBuilders;
 	}
 	world.accessibleSupplies[materialIndex(MaterialId::Wood)]=environment.accessible_wood;
@@ -4577,14 +4583,15 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
         const int y=world.buildings.empty()?0:world.buildings.front().centerY;
         world.feedingColonies.push_back({x,y,{}});
     }
-    std::vector<std::array<long long,3>> colonyMeals(world.feedingColonies.size());
+    std::vector<std::vector<long long>> colonyMeals(world.feedingColonies.size(),std::vector<long long>(context.observation().unitTypeCount()));
+    for(auto& colony:world.feedingColonies)colony.demand.resize(context.observation().unitTypeCount());
     for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.observation().unitSlots(runtime.teamNumber())[id];u && !u->isDead)
         colonyMeals[world.feedingColonyAt(u->posX,u->posY)][u->typeNum]+=recipient_meal_rate(*u);
-    for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(int unit=0;unit<3;++unit)
+    for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(unsigned unit=0;unit<context.observation().unitTypeCount();++unit)
         world.feedingColonies[colony].demand[unit]=int(std::min<long long>(INT_MAX,(colonyMeals[colony][unit]+MealRatePrecision/2)/MealRatePrecision));
     for(const auto& colony:world.feedingColonies) {
         add_preemptive_hash(worldSignature,Uint32(colony.x));add_preemptive_hash(worldSignature,Uint32(colony.y));
-        for(int unit=0;unit<3;++unit)add_preemptive_hash(worldSignature,Uint32(colony.demand[unit]));
+        for(int demand:colony.demand)add_preemptive_hash(worldSignature,Uint32(demand));
     }
 	if(signature)*signature=worldSignature;
 	return world;
@@ -4597,8 +4604,10 @@ std::pair<int,int> Maxima::barracks_capacity(Context& runtime,int excludedAction
  using namespace AIMaximaPlacement;std::map<int,std::pair<int,int>> seats;
  for(const auto& [id,record]:runtime.get_building_register().found()) {
   const auto* b=runtime.get_building_register().get_building(id);if(!b||!AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::CombatTraining))continue;
-  const auto* complete=AIMaximaBuildings::completed(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b));
-  if(!(complete->semantics.admittedUnitMask&(1u<<WARRIOR)))continue;
+  const auto& current=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b);
+  const auto* complete=AIMaximaBuildings::completed(runtime.observation(),current);
+  const int completedType=current.isBuildingSite && current.nextLevel>=0 ? current.nextLevel : b->typeNum;
+  if(!runtime.observation().capabilities().matches(completedType,AIPlanning::BuildingIntent::TrainAttackSpeed) && !runtime.observation().capabilities().matches(completedType,AIPlanning::BuildingIntent::TrainAttackStrength))continue;
   seats[b->gid]={b->buildingState==Building::ALIVE&&!AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite&&b->constructionResultState==Building::NO_CONSTRUCTION?b->maxUnitInside:0,complete->maxUnitInside};
  }
  for(const auto& [id,a]:development_planner.actions()) {
@@ -5348,7 +5357,7 @@ void Maxima::update_food_retirement(Context& runtime,
 
 	int completed_inns=0,completed_swarms=0;
 	std::map<int,std::pair<unsigned,long long>> inn_rates;
-    std::array<long long,8> remainingRates{};
+    std::vector<long long> remainingRates(context.observation().catalog->size());
 	for(size_t b=0;b<world.buildings.size();++b)
 	{
 		const AIMaximaPlacement::WorldBuilding& building=world.buildings[b];
@@ -5358,7 +5367,7 @@ void Maxima::update_food_retirement(Context& runtime,
             const auto* definition=profile_variant(building.buildingType,building.level);
             const unsigned mask=definition->feedingMask&7u;
             const long long rate=static_cast<long long>(development_feeding_visit_rate[definition->completedType])*strategy.economy.reliable_inn_percent/100;
-            ++completed_inns;inn_rates[building.id]={mask,rate};remainingRates[mask]+=rate;
+            ++completed_inns;inn_rates[building.id]={unsigned(definition->completedType),rate};remainingRates[definition->completedType]+=rate;
         }
 		else if(profile_serves(building.buildingType,AIMaximaBuildings::Production,building.level))
 			++completed_swarms;
@@ -5562,7 +5571,7 @@ void Maxima::update_food_relocation(Context& runtime,
 				if(old&&profile_serves(old->buildingType,AIMaximaBuildings::Feeding,old->level))
 				{
 
-					std::array<long long,8> rates{};
+					std::vector<long long> rates(context.observation().catalog->size());
 					for(size_t b=0;b<world.buildings.size();++b)
 					{
 						const WorldBuilding& building=world.buildings[b];
@@ -5575,7 +5584,7 @@ void Maxima::update_food_relocation(Context& runtime,
 						const int coverage=supplied
 							? std::min(100,std::max(0,supplied->coveragePercent)) : 100;
                         const auto* definition=profile_variant(building.buildingType,building.level);
-                        rates[definition->feedingMask&7u]+=static_cast<long long>(development_feeding_visit_rate[definition->completedType])*coverage*strategy.economy.reliable_inn_percent/10000;
+                        rates[definition->completedType]+=static_cast<long long>(development_feeding_visit_rate[definition->completedType])*coverage*strategy.economy.reliable_inn_percent/10000;
                     }
                     seatsRemain=aggregate_feeding_capacity(rates)>=snapshot.population;
 				}
@@ -5718,7 +5727,7 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		if(!u || u->isDead) continue;
 		if(u->medical==Unit::MED_DAMAGED) ++result.hurtUnits;
 		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
-		if(u->typeNum!=WORKER) continue;
+		if(!(u->capabilityFlags&UnitRuntimeTraits::Transport)) continue;
 		++result.workers;
 		if(u->level[WALK]==0) ++result.untrainedWalkers;
 		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
@@ -5927,7 +5936,7 @@ void Maxima::manage_swarm(Context& runtime, int id)
     auto ownerObservation=runtime.scopeOwnerObservation();
 	//Get some statistics
 	const TeamStat* stat=&runtime.observedTeam().statistics;
-	int total_explorers=stat->numberUnitPerType[EXPLORER];
+	int total_explorers=stat->scouts;
 	if(stat->totalUnit == 0)
 		return;
 
@@ -5948,7 +5957,7 @@ void Maxima::manage_swarm(Context& runtime, int id)
 		? budget.explorer_ratio : 0;
 
 	///Warriors are constructed during the war preperation phase
-	int warrior_ratio=stat->numberUnitPerType[WARRIOR]<budget.desired_warriors
+	int warrior_ratio=stat->meleeUnits<budget.desired_warriors
 		? budget.warrior_ratio : 0;
 
 	// Birth funding remains a colony decision even though staffing is local: a

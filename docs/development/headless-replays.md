@@ -33,6 +33,29 @@ placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
+Unit format 153 embeds resolved unit definitions, assigned job purposes and
+extended cargo before dependent state. It uses network protocol 69 and simulation
+revision 42. The replay floor remains 152: built-in version-152 recordings use an
+explicit legacy representation checksum while running the same default unit
+behavior. New recordings checksum the catalog and extended state. Legacy saves
+adopt their saved race tables after loading, preserving cached effective values;
+current saves validate redundant tables against the embedded catalog.
+
+For full continuation evidence, `game run --telemetry continuation-state` also
+writes compressed named text saves under the output directory's `state/`.
+The existing `--diagnostic-interval` sets capture cadence (default 2,500 ticks);
+use `--diagnostic-interval 1` for a bounded window with every tick captured.
+These include private random streams, pending work and controller state omitted
+from compact replay checksums, plus live-list order, event queues and cooldowns,
+material reservations and building gradient reader caches. The diagnostic stream
+encodes floating-point values as exact bit patterns; ordinary save serializers
+retain their existing representations. Continuous order and gameplay event traces
+accompany these saves. Capture joins private work without delivering
+future orders. Compare a capture run with ordinary checksum recording to verify
+that capture itself preserves the trajectory. Keep this expensive evidence
+capture separate from benchmarks. When comparing formats, normalize only
+documented serialization differences; preserve every gameplay and RNG field.
+
 Structured `game run` accepts `--ai-order-delay N`, where `N` is an integer
 from 0 through 8 and defaults to 8 for a new match. It is one match-wide engine
 setting, shared by all native and JavaScript AI players. `--rule aiOrderDelay=N`

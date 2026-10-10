@@ -13,6 +13,7 @@
 #include "Ressource.h"
 #include <cstdio>
 #include <cstdlib>
+#include <nlohmann/json.hpp>
 
 namespace
 {
@@ -26,11 +27,22 @@ struct World
 	GameGUI gui;
 	Game& game = gui.game;
 	Team* team = nullptr;
+    unsigned unitType = WORKER;
 
-	World()
+	World(unsigned type = WORKER) : unitType(type)
 	{
 		game.map.setSize(6, 6, GRASS);  // 64x64
 		game.map.setGame(&game);
+        if (unitType >= BuiltinUnitCount) {
+            auto definitions=nlohmann::json::parse(game.unitCatalog().serialize());
+            while(definitions["units"].size()<=unitType) {
+                auto worker=definitions["units"][WORKER];
+                worker["key"]="fixture:worker-"+std::to_string(definitions["units"].size());
+                definitions["units"].push_back(worker);
+            }
+            game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+            game.configureBuildingCatalog();
+        }
 		game.addTeam(0);
 		team = game.teams[0];
 		// The gradient scheduler expects an in-use field; allocation is lazy (#243 lifts this).
@@ -53,7 +65,7 @@ struct World
 	// A worker that looks for food on its next activity check.
 	Unit* addHungryWorker(int x, int y)
 	{
-		Unit* u = game.addUnit(x, y, 0, WORKER, 0, 0, 0, 0);
+		Unit* u = game.addUnit(x, y, 0, unitType, 0, 0, 0, 0);
 		require(u != nullptr, "worker placed");
 		u->hungry = 0;
 		u->medical = Unit::MED_HUNGRY;
@@ -73,9 +85,9 @@ struct World
 // Inn A (west) has one meal, inn B (east) plenty. The far unit books A first
 // and fills it; the near unit then has to book B. At that moment both walks
 // together are longer than with the inns exchanged, so they trade.
-static void theLaterBookerTradesWithTheOneItWouldCross()
+static void theLaterBookerTradesWithTheOneItWouldCross(unsigned unitType = WORKER)
 {
-	World world;
+	World world(unitType);
 	Building* a = world.addInn(4, 8, 1);
 	Building* b = world.addInn(44, 8, 10);
 	Unit* farWorker = world.addHungryWorker(20, 9);
@@ -137,6 +149,11 @@ TEST_SUITE("InnSwap")
 	{
 		glob2test::HeadlessGlobals globals;
 		theLaterBookerTradesWithTheOneItWouldCross();
+	}
+	TEST_CASE("custom types beyond narrow masks exchange feeding reservations")
+	{
+		glob2test::HeadlessGlobals globals;
+        for(unsigned id:{35u,275u}) theLaterBookerTradesWithTheOneItWouldCross(id);
 	}
 	TEST_CASE("a good booking stays")
 	{

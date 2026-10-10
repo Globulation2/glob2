@@ -66,8 +66,8 @@ inline bool permittedQueuedOrder(Game& game, Order& order)
         if(gid>=Building::MAX_COUNT*Team::MAX_COUNT) return false;
         auto* team=game.teams[Building::GIDtoTeam(gid)];
         auto* building=team ? team->myBuildings[Building::GIDtoID(gid)] : nullptr;
-        return !building || !building->type->zonable[WARRIOR]
-            || building->type->zonable[WORKER] || building->type->zonable[EXPLORER];
+        return !building || !building->runtime->attractsRole(2)
+            || building->runtime->attractsRole(0) || building->runtime->attractsRole(1);
     }
     return true;
 }
@@ -96,7 +96,7 @@ inline bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& orde
         const auto* building=world.buildingAtSlot(gid);
         if(!building) return true;
         const auto& kind=world.catalog->at(building->typeNum);
-        return !kind.zonable[WARRIOR] || kind.zonable[WORKER] || kind.zonable[EXPLORER];
+        return !kind.resolvedType.attractsRole(2) || kind.resolvedType.attractsRole(0) || kind.resolvedType.attractsRole(1);
     }
     return true;
 }

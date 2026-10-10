@@ -110,7 +110,7 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		return std::make_shared<OrderChangePriority>(gid, number("priority", -1, 1));
 	if (type == "production")
 	{
-		if (!world.catalog->at(b->typeNum).semantics.production.enabledUnitMask)
+		if (world.catalog->at(b->typeNum).semantics.production.enabledUnits.empty())
 			throw std::runtime_error("Building does not produce units");
 		const auto &a = d.get("ratios");
 		if (a.kind != Value::Array || a.items.size() != NB_UNIT_TYPE)

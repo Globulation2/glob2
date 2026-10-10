@@ -87,8 +87,12 @@ void prepareSource(const SceneInputs& input,PresentationFrame& scene)
         int recipe=b.productionUnit;
         if (recipe<0) {
             Sint64 best=std::numeric_limits<Sint64>::max();
-            for (int i=0;i<NB_UNIT_TYPE;++i) if (bp.type->semantics.production.recipes[i].enabled && b.ratio[i]>0) {
-                const Sint64 proportion=(Sint64(b.percentUsed[i])<<16)/b.ratio[i];
+            for (unsigned i=0;i<bp.type->semantics.production.recipes.size();++i) {
+                const unsigned extra=i<BuiltinUnitCount?0:i-BuiltinUnitCount;
+                const Sint32 ratio=i<BuiltinUnitCount?b.ratio[i]:(extra<b.extraProductionCount?world.entities->extraProduction[b.extraProductionOffset+extra].ratio:0);
+                if (!bp.type->semantics.production.recipes[i].enabled || ratio<=0) continue;
+                const Sint32 used=i<BuiltinUnitCount?b.percentUsed[i]:world.entities->extraProduction[b.extraProductionOffset+extra].used;
+                const Sint64 proportion=(Sint64(used)<<16)/ratio;
                 if (proportion<=best) {best=proportion;recipe=i;}
             }
         }
@@ -101,6 +105,8 @@ void prepareSource(const SceneInputs& input,PresentationFrame& scene)
     if (selectedUnit) {
         auto& up=panels.unit;up.record=selectedUnit;up.valid=true;
         up.ownerRecord=&world.teams->values.at(selectedUnit->team);up.unitTypes=world.catalogs->unitTypes[selectedUnit->typeNum];
+        const auto& traits=world.catalogs->units->runtime(selectedUnit->typeNum);
+        up.foodCapacity=traits.foodCapacity;up.meshClass=traits.meshClass;
         up.glassCannonScale=world.rules->configuration->getGlassCannonScale();
     }
 }

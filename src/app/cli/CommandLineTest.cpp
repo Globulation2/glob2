@@ -137,6 +137,18 @@ TEST_SUITE("CommandLine")
 			CHECK_EQ(Cli::parse(jsonHelp).get("--format"), "json");
 		}
 	}
+    TEST_CASE("continuation state has an independent interval but PNG still requires fields")
+    {
+        const std::vector<std::string> base={"game","run","--load-game","fixture","--output-dir","fixture"};
+        auto args=base;args.insert(args.end(),{"--telemetry","continuation-state","--diagnostic-interval","1"});
+        CHECK_EQ(Cli::parse(args).get("--diagnostic-interval"),"1");
+        args=base;args.insert(args.end(),{"--telemetry","checksums","--diagnostic-interval","1"});
+        CHECK_THROWS_AS(Cli::parse(args),std::invalid_argument);
+        args=base;args.insert(args.end(),{"--telemetry","continuation-state","--diagnostic-png","true"});
+        CHECK_THROWS_AS(Cli::parse(args),std::invalid_argument);
+        args=base;args.insert(args.end(),{"--diagnostic-fields","maxima","--diagnostic-interval","1"});
+        CHECK_EQ(Cli::parse(args).get("--diagnostic-fields"),"maxima");
+    }
 	TEST_CASE("completion scripts contain all command options without running jobs")
 	{
 		for (const auto &shell : {"bash", "zsh", "fish"})

@@ -1069,6 +1069,8 @@ const typedColumns: ColumnLists = {
     'generator_provenance',
     'set_credits',
     'building_catalog',
+    'unit_catalog',
+    'required_unit_experiments',
     'resource_experiments',
     'required_resource_experiments',
     'id',
@@ -1277,6 +1279,8 @@ const typedColumns: ColumnLists = {
   queue_cooldowns: ['account_id', 'until', 'reason', 'created_at'],
   map_uploads: [
     'building_catalog',
+    'unit_catalog',
+    'required_unit_experiments',
     'resource_experiments',
     'required_resource_experiments',
     'id',
@@ -1300,6 +1304,8 @@ const typedColumns: ColumnLists = {
   generated_maps: [
     'chosen_seed',
     'building_catalog',
+    'unit_catalog',
+    'required_unit_experiments',
     'resource_experiments',
     'required_resource_experiments',
     'descriptor_hash',
@@ -1537,6 +1543,7 @@ describe('migrations', () => {
         '0056_admin_rollup_state',
         '0057_generator_library',
         '0058_generator_studio',
+        '0059_unit_catalogs',
       ]);
       expect(
         (
@@ -1606,7 +1613,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(37);
+      expect(upgraded).toHaveLength(38);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1759,6 +1766,7 @@ describe('migrations', () => {
         ['0056_admin_rollup_state', 'Success'],
         ['0057_generator_library', 'Success'],
         ['0058_generator_studio', 'Success'],
+        ['0059_unit_catalogs', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1908,6 +1916,7 @@ describe('migrations', () => {
         ['0056_admin_rollup_state', 'Success'],
         ['0057_generator_library', 'Success'],
         ['0058_generator_studio', 'Success'],
+        ['0059_unit_catalogs', 'Success'],
       ]);
       expect(
         await db

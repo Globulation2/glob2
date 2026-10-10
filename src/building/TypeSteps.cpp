@@ -26,10 +26,10 @@ int Building::selectProductionRecipe() const
 {
 	Sint64 best = std::numeric_limits<Sint64>::max();
 	int chosen = -1;
-	for (int u = 0; u < NB_UNIT_TYPE; ++u)
-		if ((runtime->productionEnabledMask&(1u<<u)) && ratio[u] > 0)
+	for (unsigned u : type->semantics.production.enabledUnits)
+		if (runtime->produces(u) && productionRatio(u) > 0)
 		{
-			const Sint64 proportion = (Sint64(percentUsed[u]) << FIXED_POINT_SHIFT_16) / ratio[u];
+			const Sint64 proportion = (Sint64(productionUsed(u)) << FIXED_POINT_SHIFT_16) / productionRatio(u);
 			if (proportion <= best) { best = proportion; chosen = u; }
 		}
 	return chosen;
@@ -38,9 +38,9 @@ int Building::selectProductionRecipe() const
 bool Building::canAffordProduction(int unitType) const
 {
 	if (buildingState != ALIVE || siteCompletionPending) return false;
-	if (unitType < 0 || unitType >= NB_UNIT_TYPE) return false;
+	if (unitType < 0 || unsigned(unitType) >= type->semantics.production.recipes.size()) return false;
 	const auto& recipe = type->semantics.production.recipes[unitType];
-	if (!recipe.enabled) return false;
+	if (!runtime->produces(unitType)) return false;
 	if (productionUnit == unitType) return true; // committed resources are reserved
 	for (unsigned mask = recipe.costMask; mask; mask &= mask - 1)
 	{
@@ -71,7 +71,7 @@ void Building::restoreProductionReservations()
 {
 	if (productionUnit < 0) return;
 	const auto& p = type->semantics.production;
-	if (productionUnit >= NB_UNIT_TYPE || !p.recipes[productionUnit].enabled ||
+	if (unsigned(productionUnit) >= p.recipes.size() || !p.recipes[productionUnit].enabled ||
 		p.scheduling != BuildingProductionScheduling::WeightedCommittedJob ||
 		buildingState != ALIVE || productionTimeout < -1 || productionTimeout > p.recipes[productionUnit].duration)
 		throw std::runtime_error("Invalid saved committed production job");
@@ -109,8 +109,8 @@ void Building::swarmStep(void)
 		// pending timer needs only availability and an active ratio, not ranking.
 		const bool affordable=canAffordProduction(production.fallbackUnit);
 		bool active=false;
-		for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
-			active |= (runtime->productionEnabledMask&(1u<<unit)) && ratio[unit]>0;
+		for (unsigned unit : production.enabledUnits)
+			active |= runtime->produces(unit) && productionRatio(unit)>0;
 		if (active && affordable && productionTimeout>std::numeric_limits<Sint32>::min()) --productionTimeout;
 		if (productionTimeout>=0 || !affordable) return;
 		chosen=selectProductionRecipe();
@@ -120,8 +120,13 @@ void Building::swarmStep(void)
 
 	int x, y, dx, dy;
 	const UnitType* ut = owner->race.getUnitType(chosen, 0);
-	const bool exitFound = ut->performance[FLY] ? findAirExit(&x, &y, &dx, &dy)
-		: findGroundExit(&x, &y, &dx, &dy, ut->performance[SWIM]);
+	const auto& traits=owner->race.getRuntime(chosen);
+    const bool canFly=traits.has(UnitRuntimeTraits::Fly) && ut->performance[FLY];
+    const bool canWalk=traits.has(UnitRuntimeTraits::Walk) && ut->performance[WALK];
+    const bool canSwim=traits.has(UnitRuntimeTraits::Swim) && ut->performance[SWIM];
+    // An immobile unit still needs a legal birth cell outside its producer.
+	const bool exitFound = canFly ? findAirExit(&x, &y, &dx, &dy)
+		: findGroundExit(&x, &y, &dx, &dy, canSwim, canWalk || (!canWalk && !canSwim));
 	if (!exitFound) return;
 	Unit* u = owner->game->addUnit(x, y, owner->teamNumber, chosen, 0, 0, dx, dy);
 	if (!u) return;
@@ -143,11 +148,11 @@ void Building::swarmStep(void)
 		? owner->map->terrainPropertiesAt(u->posX,u->posY).airSpeedQ8
 		: owner->map->terrainPropertiesAt(u->posX,u->posY).groundSpeedQ8);
 	productionTimeout = recipe.duration;
-	++percentUsed[chosen];
+	++productionUsed(chosen);
 	bool allDone = true;
-	for (int i = 0; i < NB_UNIT_TYPE; ++i)
-		if (production.recipes[i].enabled && percentUsed[i] < ratio[i]) allDone = false;
-	if (allDone) std::fill(std::begin(percentUsed), std::end(percentUsed), 0);
+	for (unsigned i : production.enabledUnits)
+		if (runtime->produces(i) && productionUsed(i) < productionRatio(i)) allDone = false;
+	if (allDone) { std::fill(std::begin(percentUsed), std::end(percentUsed), 0); std::fill(extraProductionUsed.begin(),extraProductionUsed.end(),0); }
 }
 
 
@@ -216,11 +221,11 @@ void Building::turretStep(Uint32 stepCounter)
 
 int Building::scoreWarriorTarget(const Unit* target, int ring) const
 {
-	int targetOffense = (target->getRealAttackStrength() * target->performance[ATTACK_SPEED]); // 88 to 1024
+	const Sint64 targetOffense = Sint64(target->getRealAttackStrength()) * target->performance[ATTACK_SPEED]; // 88 to 1024 for stock units
 	int targetWeakness = 0; // 0 to 512
 	if (target->hp > 0)
 	{
-		if (target->hp < runtime->projectileDamage[target->typeNum]) // hahaha, how mean!
+		if (target->hp < runtime->damage(target->typeNum)) // hahaha, how mean!
 			targetWeakness = 512;
 		else
 			targetWeakness = 256 / target->hp;
@@ -230,7 +235,7 @@ int Building::scoreWarriorTarget(const Unit* target, int ring) const
 		targetProximity = 512;
 	else
 		targetProximity = (256 / ring);
-	return targetOffense + targetWeakness + targetProximity;
+	return int(std::clamp<Sint64>(targetOffense + targetWeakness + targetProximity, 0, std::numeric_limits<int>::max()));
 }
 
 void Building::applyCandidate(TurretTarget& best, int score, int ticks,
@@ -277,24 +282,17 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 				// skip this unit if it will move away too soon.
 				if (targetTicks <= ticksToHit)
 					return;
-				// shoot warrior first, then workers if no warrior
-				if (testUnit->typeNum == WARRIOR && runtime->projectileDamage[WARRIOR] > 0)
-				{
-					applyCandidate(best, scoreWarriorTarget(testUnit, ring),
-						targetTicks, targetX, targetY, TARGETTYPE_WARRIOR);
-				}
-				else if ((best.type != TARGETTYPE_WARRIOR) && (testUnit->typeNum == WORKER) && runtime->projectileDamage[WORKER] > 0)
-				{
-					// adjust score for range
-					applyCandidate(best, -testUnit->hp,
-						targetTicks, targetX, targetY, TARGETTYPE_WORKER);
-				}
+                const auto priority=static_cast<TurretTargetType>(testUnit->runtimeTraits().turretPriority);
+                if (runtime->damage(testUnit->typeNum)>0 &&
+                    (priority!=TARGETTYPE_GENERAL || best.type!=TARGETTYPE_THREAT))
+                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->hp,
+                        targetTicks,targetX,targetY,priority);
 			}
 		}
 	}
 	//explorers are now priority targets as defined later
 
-	if (airTargetGUID != NOGUID && runtime->projectileDamage[EXPLORER] > 0)
+	if (airTargetGUID != NOGUID)
 	{
 		Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
 		Sint32 targetID = Unit::GIDtoID(airTargetGUID);
@@ -308,10 +306,11 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 				// skip this unit if it will move away too soon.
 				if (targetTicks <= ticksToHit)
 					return;
-				//Using simple calculation for now (should always shoot ground-attackers first, probably)
-				// adjust score for range
-				applyCandidate(best, -testUnit->hp,
-					targetTicks, targetX, targetY, TARGETTYPE_EXPLORER);
+				                if (runtime->damage(testUnit->typeNum)>0) {
+                    const auto priority=static_cast<TurretTargetType>(testUnit->runtimeTraits().turretPriority);
+                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->hp,
+                        targetTicks,targetX,targetY,priority);
+                }
 			}
 		}
 	}
@@ -355,7 +354,7 @@ Building::TurretTarget Building::findBestTarget() const
 		// The footprint may contain targets for a non-occupying structure.
 		for (int y = posY; y < posY + runtime->height; ++y)
 			for (int x = posX; x < posX + runtime->width; ++x) consider(x, y, 0);
-		for (int ring = 1; ring <= range && best.type != TARGETTYPE_EXPLORER; ++ring)
+		for (int ring = 1; ring <= range && best.type != TARGETTYPE_PRIORITY; ++ring)
 		{
 			const int left = posX - ring, right = posX + runtime->width - 1 + ring;
 			const int top = posY - ring, bottom = posY + runtime->height - 1 + ring;
@@ -378,7 +377,7 @@ Building::TurretTarget Building::findBestTarget() const
 				considerScanTile(targetX, targetY, i, ticksToHit, enemies, map, best);
 			}
 		}
-		if (best.type == TARGETTYPE_EXPLORER)
+		if (best.type == TARGETTYPE_PRIORITY)
 			break;//specifying explorers as high priority
 	}
 
@@ -448,8 +447,8 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 	if (sol.ticksLeft < target.ticks)
 	{
 		Bullet *b = new Bullet(sol.originX, sol.originY, sol.speedX, sol.speedY, sol.ticksLeft, applyAreaAttack(runtime->projectileBuildingDamage), target.x, target.y, posX-1, posY-1, runtime->width+2, runtime->height+2);
-		b->unitDamage = runtime->projectileDamage;
-		for (auto& damage : b->unitDamage) damage=applyAreaAttack(damage);
+		b->unitDamage.resize(runtime->unitCount);
+		for (unsigned unit=0;unit<runtime->unitCount;++unit) b->unitDamage[unit]=applyAreaAttack(runtime->damage(unit));
 		b->sourceTeam = owner->teamNumber;
 		++owner->stats.measurements.shots[GameplayMeasurements::TOWER];
 		s->bullets.push_front(b);
@@ -469,13 +468,14 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 void Building::transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin, bool restoring)
 {
     totalRatio=0;
-    for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
+    for (unsigned unit=0; unit<productionTypeCount(); ++unit)
     {
-        if (restoring) ratio[unit]=constructionOriginRatios[unit];
-        else if (!type->semantics.production.recipes[unit].enabled) ratio[unit]=0;
+        auto& preference=productionRatio(unit);
+        if (restoring) preference=originProductionRatio(unit);
+        else if (!type->semantics.production.recipes[unit].enabled) preference=0;
         else if (previous->semantics.production.recipes[unit].enabled) {} // retain the current preference
-        else if (origin && origin->semantics.production.recipes[unit].enabled) ratio[unit]=constructionOriginRatios[unit];
-        else ratio[unit]=type->semantics.production.initialRatios[unit];
-        totalRatio+=ratio[unit]; percentUsed[unit]=0;
+        else if (origin && origin->semantics.production.recipes[unit].enabled) preference=originProductionRatio(unit);
+        else preference=type->semantics.production.initialRatios[unit];
+        totalRatio+=preference; productionUsed(unit)=0;
     }
 }
