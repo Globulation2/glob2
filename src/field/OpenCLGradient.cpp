@@ -1751,6 +1751,10 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
         request.limit<0 || request.session.failed.load() ||
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
         device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
+    // A caller-supplied readiness flag/mask is never permission to perform
+    // device/compiler initialization inside an optional CPU reservation.
+    {std::lock_guard lock(device.failureMutex);
+        if(!device.probed || !device.status.available || device.failed.load())return {};}
     try {
         if(!device.optionalLifetime.tryReserve())return {};
         struct Admission {OpenCLBorrowedLifetime& slot;bool transferred=false;
