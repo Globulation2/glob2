@@ -9,7 +9,6 @@
 
 #include <chrono>
 #include <thread>
-#include <unistd.h>
 
 #include "NetTransport.h"
 #include "NetworkConfig.h"
@@ -21,11 +20,11 @@ TEST_SUITE("WssTransport")
 		auto network = makeNetworkConfig(true);
 		auto config = network.lobby;
 		config.bindAddress = "127.0.0.1";
-		config.port = static_cast<uint16_t>(40000 + getpid() % 20000);
+		config.port = 0;
 		auto listener = makeNetTransportListener(config);
 		const auto pin = network.lobbyEndpoint.substr(network.lobbyEndpoint.find('#'));
 		auto client = makeNetTransport();
-		client->open("wss://localhost:" + std::to_string(config.port) + config.route + pin);
+		client->open("wss://localhost:" + std::to_string(listener->localPort()) + config.route + pin);
 
 		std::unique_ptr<NetTransport> server;
 		const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(20);

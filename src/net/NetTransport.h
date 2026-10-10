@@ -121,6 +121,8 @@ class NetTransportListener
 	virtual std::unique_ptr<NetTransport> accept() = 0;
 	virtual void close() = 0;
 	virtual bool listening() const = 0;
+	// Actual local port, including the OS-selected port when configured with zero.
+	virtual uint16_t localPort() const { return 0; }
 	// As NetTransport::waitHandles: the listening socket and handshaking connections.
 	virtual NetWaitStatus waitHandles(std::vector<NetWaitHandle> &) const
 	{
