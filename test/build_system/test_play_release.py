@@ -1,4 +1,5 @@
 import hashlib
+import io
 import json
 from pathlib import Path
 import sys
@@ -37,7 +38,11 @@ class FakeEdits:
 
     def get(self, **kwargs):
         self.calls.append(('get', kwargs))
-        return Request({'track': 'internal', 'releases': [{'versionCodes': [str(self.active)]}]})
+        return Request({'track': kwargs['track'], 'releases': [{'versionCodes': [str(self.active)]}]})
+
+    def delete(self, **kwargs):
+        self.calls.append(('delete', kwargs))
+        return Request({})
 
     def upload(self, **kwargs):
         self.calls.append(('upload', kwargs))
@@ -87,6 +92,51 @@ class PlayReleaseTests(unittest.TestCase):
         self.assertEqual(play_release.version_code(play_release.VERSION_EPOCH + 42), 42)
         with self.assertRaises(ValueError):
             play_release.version_code(play_release.VERSION_EPOCH + play_release.MAX_VERSION_CODE + 1)
+
+    def test_preflight_verifies_selected_app_track_without_publishing(self):
+        for track in ('internal', 'production'):
+            with self.subTest(track=track):
+                service, edits = self.service()
+                result = play_release.preflight(service, track)
+                self.assertEqual(result, {'package': play_release.PACKAGE, 'track': track, 'apiAccessVerified': True})
+                self.assertEqual([name for name, _ in edits.calls], ['insert', 'get', 'delete'])
+                self.assertEqual(edits.calls[1][1]['track'], track)
+                self.assertTrue(all(args['packageName'] == play_release.PACKAGE for _, args in edits.calls))
+
+    def test_failed_preflight_deletes_temporary_edit(self):
+        service, edits = self.service()
+        with patch.object(edits, 'get', side_effect=ValueError('Selected channel denied')):
+            with self.assertRaisesRegex(ValueError, 'Selected channel denied'):
+                play_release.preflight(service, 'production')
+        self.assertEqual([name for name, _ in edits.calls], ['insert', 'delete'])
+        service, edits = self.service()
+        with patch.object(edits, 'get', return_value=Request({'track': 'internal'})):
+            with self.assertRaisesRegex(ValueError, 'different selected track'):
+                play_release.preflight(service, 'production')
+        self.assertEqual([name for name, _ in edits.calls], ['insert', 'delete'])
+
+    def test_unknown_preflight_track_fails_before_api_access(self):
+        service, edits = self.service()
+        with self.assertRaisesRegex(ValueError, 'Unsupported Play track'):
+            play_release.preflight(service, 'unknown')
+        self.assertEqual(edits.calls, [])
+
+    def test_preflight_cli_does_not_require_bundle_or_version_code(self):
+        service, edits = self.service()
+        auth = types.ModuleType('google.auth')
+        auth.default = lambda **_: ('credentials', None)
+        google = types.ModuleType('google')
+        google.auth = auth
+        discovery = types.ModuleType('googleapiclient.discovery')
+        discovery.build = lambda *args, **kwargs: service
+        output = io.StringIO()
+        with patch.dict(sys.modules, {'google': google, 'google.auth': auth,
+                                     'googleapiclient.discovery': discovery}), \
+             patch.object(sys, 'argv', ['play_release.py', 'preflight', '--track', 'production']), \
+             patch.object(sys, 'stdout', output):
+            play_release.main()
+        self.assertEqual(json.loads(output.getvalue())['track'], 'production')
+        self.assertEqual([name for name, _ in edits.calls], ['insert', 'get', 'delete'])
 
     def test_publishes_only_internal_track_after_validation(self):
         service, edits = self.service()
