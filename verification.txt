@@ -1,0 +1,8 @@
+Head: 84eb46eac55b6e6dc4a8e754ce305632d128aedc
+Base (freshly fetched): 4ca7b086359891010281dd994dbbcd8cceadadad
+Linux x86_64; Docker BuildKit; pinned repository npm lockfile and Dockerfile Node image.
+Command: docker build -f deploy/Dockerfile --target platform -t glob2-ci-api-docs:repair .
+Result: PASS
+Command: docker run --rm glob2-ci-api-docs:repair node --experimental-strip-types --input-type=module -e 'import {systemPrompt} from "./apps/api/src/coding-studio/runner.ts"; if (!systemPrompt.includes("Starter:")) throw new Error("missing prompt"); console.log("Coding Studio import PASS; prompt characters:", systemPrompt.length);'
+Result: PASS; real packaged module reads both documentation files.
+Scope: two Docker COPY destinations only. Engine-agent uses identical corrected COPY instruction but its full native image was not built. Full compose stack not rerun locally; hosted master will confirm broader recovery. No simulation, save, replay, network or gameplay code changed.

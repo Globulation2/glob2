@@ -1,0 +1,227 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 19.21kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#2 DONE 0.3s
+
+#3 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#3 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#4 DONE 1.1s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 290B done
+#5 DONE 0.0s
+
+#6 [node-deps  1/26] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#6 resolve docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392 0.0s done
+#6 DONE 0.1s
+
+#7 [internal] load build context
+#7 transferring context: 11.99MB 0.2s done
+#7 DONE 0.2s
+
+#6 [node-deps  1/26] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#6 sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 448B / 448B 0.1s done
+#6 sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 3.31kB / 3.31kB 0.1s done
+#6 sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 1.71MB / 1.71MB 0.2s done
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 4.19MB / 49.84MB 0.3s
+#6 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 4.19MB / 28.25MB 0.3s
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 9.44MB / 49.84MB 0.5s
+#6 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 9.44MB / 28.25MB 0.5s
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 15.73MB / 49.84MB 0.6s
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 19.92MB / 49.84MB 0.8s
+#6 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 20.97MB / 28.25MB 0.8s
+#6 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 26.21MB / 28.25MB 0.9s
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 33.55MB / 49.84MB 1.1s
+#6 sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 28.25MB / 28.25MB 0.9s done
+#6 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 41.94MB / 49.84MB 1.2s
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 49.84MB / 49.84MB 1.4s
+#6 sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 49.84MB / 49.84MB 1.4s done
+#6 extracting sha256:7fd1ebe418b5079d4aa36f416af9b143d127bc75b0155d71cb5fd559b5e04d39 0.9s done
+#6 DONE 1.9s
+
+#6 [node-deps  1/26] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#6 extracting sha256:f0400f4b55b0ad346bf6167a1b64a258e4d73db608c457798ce35e4ffeebfaaf 0.0s done
+#6 extracting sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856
+#6 extracting sha256:d22c69a95cf463f4cb74462bd2899597ce505d82bd4c01ceddf7845e12f13856 1.2s done
+#6 DONE 3.1s
+
+#6 [node-deps  1/26] FROM docker.io/library/node:22-bookworm-slim@sha256:c3de60bf2f9dd0ac6370e6117950ff62d6e339527e7472301c9c78a017978392
+#6 extracting sha256:2cfab517365cfc6b4bd1f8c4cb01754884ef75bc38758b3c41e291c696f019f5 0.0s done
+#6 extracting sha256:a8de9fa052209313d8e45435a8486e29b20eebaa820e2e7f63a7c3c94b4fa567 0.0s done
+#6 DONE 3.2s
+
+#8 [node-deps  2/26] WORKDIR /app/platform
+#8 DONE 0.5s
+
+#9 [platform  2/12] RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 &&     mkdir -p /var/lib/glob2/blobs /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent       /var/lib/glob2/db/migrator /var/lib/glob2/db/api /var/lib/glob2/db/worker /etc/glob2 &&     chown -R 10001:10001 /var/lib/glob2 &&     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
+#9 DONE 0.6s
+
+#10 [node-deps  3/26] COPY platform/package.json platform/package-lock.json ./
+#10 DONE 0.0s
+
+#11 [node-deps  4/26] COPY platform/packages/protocol/package.json packages/protocol/
+#11 DONE 0.0s
+
+#12 [node-deps  5/26] COPY platform/packages/db/package.json packages/db/
+#12 DONE 0.0s
+
+#13 [node-deps  6/26] COPY platform/packages/core/package.json packages/core/
+#13 DONE 0.0s
+
+#14 [node-deps  7/26] COPY platform/packages/play/package.json packages/play/
+#14 DONE 0.0s
+
+#15 [node-deps  8/26] COPY platform/packages/engine/package.json packages/engine/
+#15 DONE 0.0s
+
+#16 [node-deps  9/26] COPY platform/packages/hive/package.json packages/hive/
+#16 DONE 0.0s
+
+#17 [node-deps 10/26] COPY platform/packages/billing/package.json packages/billing/
+#17 DONE 0.0s
+
+#18 [node-deps 11/26] COPY platform/packages/map-studio/package.json packages/map-studio/
+#18 DONE 0.0s
+
+#19 [node-deps 12/26] COPY platform/packages/music/package.json packages/music/
+#19 DONE 0.0s
+
+#20 [node-deps 13/26] COPY platform/packages/music-studio/package.json packages/music-studio/
+#20 DONE 0.0s
+
+#21 [node-deps 14/26] COPY platform/packages/terrain-studio/package.json packages/terrain-studio/
+#21 DONE 0.0s
+
+#22 [node-deps 15/26] COPY platform/packages/building-studio/package.json packages/building-studio/
+#22 DONE 0.0s
+
+#23 [node-deps 16/26] COPY platform/apps/ai-building-worker/package.json apps/ai-building-worker/
+#23 DONE 0.0s
+
+#24 [node-deps 17/26] COPY platform/apps/ai-terrain-worker/package.json apps/ai-terrain-worker/
+#24 DONE 0.0s
+
+#25 [node-deps 18/26] COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
+#25 DONE 0.0s
+
+#26 [node-deps 19/26] COPY platform/apps/music-worker/package.json apps/music-worker/
+#26 DONE 0.0s
+
+#27 [node-deps 20/26] COPY platform/apps/skin-render-worker/package.json apps/skin-render-worker/
+#27 DONE 0.0s
+
+#28 [node-deps 21/26] COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
+#28 DONE 0.0s
+
+#29 [node-deps 22/26] COPY platform/apps/api/package.json apps/api/
+#29 DONE 0.0s
+
+#30 [node-deps 23/26] COPY platform/apps/worker/package.json apps/worker/
+#30 DONE 0.0s
+
+#31 [node-deps 24/26] COPY platform/apps/engine-agent/package.json apps/engine-agent/
+#31 DONE 0.0s
+
+#32 [node-deps 25/26] COPY platform/apps/web/package.json apps/web/
+#32 DONE 0.0s
+
+#33 [node-deps 26/26] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --no-audit --no-fund
+#33 7.121 
+#33 7.121 added 583 packages in 7s
+#33 7.122 npm notice
+#33 7.122 npm notice New major version of npm available! 10.9.9 -> 12.2.0
+#33 7.122 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+#33 7.122 npm notice To update run: npm install -g npm@12.2.0
+#33 7.122 npm notice
+#33 DONE 9.4s
+
+#34 [platform-runtime-deps  1/13] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund
+#34 6.499 
+#34 6.499 added 369 packages in 6s
+#34 DONE 7.9s
+
+#35 [platform-runtime-deps  2/13] COPY platform/tsconfig.base.json platform/tsconfig.json ./
+#35 DONE 0.2s
+
+#36 [platform-runtime-deps  3/13] COPY platform/packages packages
+#36 DONE 0.3s
+
+#37 [platform-runtime-deps  4/13] COPY platform/apps/api apps/api
+#37 DONE 0.1s
+
+#38 [platform-runtime-deps  5/13] COPY platform/apps/worker apps/worker
+#38 DONE 0.0s
+
+#39 [platform-runtime-deps  6/13] COPY platform/apps/music-worker apps/music-worker
+#39 DONE 0.0s
+
+#40 [platform-runtime-deps  7/13] COPY platform/apps/skin-render-worker apps/skin-render-worker
+#40 DONE 0.0s
+
+#41 [platform-runtime-deps  8/13] COPY platform/apps/engine-agent apps/engine-agent
+#41 DONE 0.0s
+
+#42 [platform-runtime-deps  9/13] COPY platform/apps/ai-map-worker apps/ai-map-worker
+#42 DONE 0.0s
+
+#43 [platform-runtime-deps 10/13] COPY platform/apps/ai-music-worker apps/ai-music-worker
+#43 DONE 0.0s
+
+#44 [platform-runtime-deps 11/13] COPY platform/apps/ai-terrain-worker apps/ai-terrain-worker
+#44 DONE 0.0s
+
+#45 [platform-runtime-deps 12/13] COPY platform/apps/ai-building-worker apps/ai-building-worker
+#45 DONE 0.0s
+
+#46 [platform-runtime-deps 13/13] RUN rm -rf packages/*/test apps/*/test &&     find packages apps -name '*.test.ts' -delete
+#46 DONE 0.2s
+
+#47 [platform  3/12] COPY --from=platform-runtime-deps /app/platform /app/platform
+#47 DONE 3.7s
+
+#48 [platform  4/12] COPY examples/javascript /app/examples/javascript
+#48 DONE 0.2s
+
+#49 [platform  5/12] COPY data/resources/registry.json /app/data/resources/registry.json
+#49 DONE 0.0s
+
+#50 [platform  6/12] COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/scripting/
+#50 DONE 0.0s
+
+#51 [platform  7/12] COPY docs/map-generators/javascript.md /app/docs/map-generators/javascript.md
+#51 DONE 0.0s
+
+#52 [platform  8/12] COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
+#52 DONE 0.0s
+
+#53 [platform  9/12] COPY data/generators/examples/swamp /app/data/generators/examples/swamp
+#53 DONE 0.0s
+
+#54 [platform 10/12] COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
+#54 DONE 0.0s
+
+#55 [platform 11/12] RUN printf '#!/bin/sh\nexec node /app/platform/apps/api/src/cli.ts "$@"\n' > /usr/local/bin/platform &&     chmod 755 /usr/local/bin/platform /usr/local/bin/glob2-platform-init
+#55 DONE 0.2s
+
+#56 [platform 12/12] WORKDIR /app/platform
+#56 DONE 0.1s
+
+#57 exporting to image
+#57 exporting layers
+#57 exporting layers 13.8s done
+#57 exporting manifest sha256:6e2366c8eb05278aed96d487cf1c6e60b56ea6ffc4ba9d4e06258faa9270b6f5 0.0s done
+#57 exporting config sha256:9f33c2d74856b2c6e9319d25692946763422b22c7e4c00032c976bfab31682cd done
+#57 exporting attestation manifest sha256:c2293a6f99f4c5d07984a91620d517cdc431a596230806d7a36dd76cb697e991 done
+#57 exporting manifest list sha256:5ac41f73aef75c13bdfffd88714860ec78437a987170c0f224b215e60d56a5c7 done
+#57 naming to docker.io/library/glob2-ci-api-docs:repair done
+#57 unpacking to docker.io/library/glob2-ci-api-docs:repair
+#57 unpacking to docker.io/library/glob2-ci-api-docs:repair 5.3s done
+#57 DONE 19.2s
