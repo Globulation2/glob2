@@ -1,0 +1,24 @@
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (159.6s)
+FAIL HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (261.5s)
+PASS UnitHighResolutionCache/HD layer mappings and fallbacks in software rendering (22.0s)
+PASS UnitHighResolutionCache/HD layer mappings; fallbacks; zoom and shader cache behaviour [display] (108.0s)
+
+===== FAIL HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/2a0e/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "0f611fbe9de369c50d424b9389869f03a1e3fbd4", "sourceStatus": [], "sourceTreeSha256": "83c34174535befd7f5bd47c53586ff5ab0a0040f721a8d68d250272fe73d5b9e"}
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 100%: 160.476 ms, 419 calls, 98287680 GPU bytes
+original gameplay 50%: 59.0163 ms, 696 calls, 98558016 GPU bytes
+original gameplay 100%: 33.1131 ms, 419 calls, 98558016 GPU bytes
+original gameplay 200%: 32.1456 ms, 308 calls, 98566208 GPU bytes
+original gameplay 500%: 25.2377 ms, 212 calls, 98574400 GPU bytes
+SKIP fullscreen camera continuity: enable with --fullscreen
+
+[failure] HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]: false
+src/render/HighResolutionIntegrationHarness.cpp:49:
+REQUIRE( complete ) is NOT correct!
+  values: REQUIRE( false )
+
+
+3 passed, 1 failed, 0 skipped (551.1s of test time)
+[run_tests] JUnit report: artifacts/building-studio/depot-e2e/artwork-engine-tests.xml (4 cases)

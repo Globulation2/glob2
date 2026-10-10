@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="1" errors="0" skipped="0"><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="249.4" status="run">
+      <failure message="false" type="REQUIRE">
+src/render/HighResolutionIntegrationHarness.cpp:49:
+REQUIRE( complete ) is NOT correct!
+  values: REQUIRE( false )
+
+      </failure>
+    </testcase>
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="145.639" status="run" />
+  </testsuite><testsuite name="UnitHighResolutionCache"><testcase classname="UnitHighResolutionCache" name="HD layer mappings and fallbacks in software rendering" time="5.81952" status="run" />
+  <testcase classname="UnitHighResolutionCache" name="HD layer mappings; fallbacks; zoom and shader cache behaviour [display]" time="95.9058" status="run" />
+  </testsuite></testsuites>

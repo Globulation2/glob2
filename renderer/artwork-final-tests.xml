@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="188.776" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="1.01318" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="1.07687" status="run" />
+  <testcase classname="SpriteSheets" name="sheet tiles load as the frames they were packed from" time="0.093895" status="run" />
+    <testcase classname="SpriteSheets" name="PNG artwork cannot enter the WebP sprite path" time="0.125541" status="run" />
+    <testcase classname="SpriteSheets" name="Q90 sheet tiles preserve exact frame alpha" time="0.037771" status="run" />
+    <testcase classname="SpriteSheets" name="sprites without an index still load one file per frame" time="0.008308" status="run" />
+    <testcase classname="SpriteSheets" name="an index the sheets cannot satisfy falls back to the frames" time="0.24535" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,7 @@
+PASS SpriteSheets/portable HD uses standalone frames without requesting GL atlases [display] (3.0s)
+PASS SpriteSheets/independently encoded lossy HD atlases keep exact frame alpha [display] (3.9s)
+PASS glob2-unit-tests SpriteSheets (5 cases) (2.2s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (189.9s)
+
+4 passed, 0 failed, 0 skipped (198.9s of test time)
+[run_tests] JUnit report: artifacts/building-studio/depot-e2e/artwork-final-tests.xml (8 cases)
