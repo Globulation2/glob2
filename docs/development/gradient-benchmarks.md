@@ -399,3 +399,22 @@ promotion is attached. Any future device adapter must retain aliases through
 terminal event reaping and include private cost preparation, driver work and all
 cleanup in conservative accounting. Device/compiler initialization must already
 be qualified and prepared under its own tested accounting contract.
+
+### Classic CPU empty-layer ablation
+
+`GLOB2_GRADIENT_SKIP_EMPTY_CLASSIC=0/1` is latched per process and defaults to
+zero. It selects the eager classic CPU specialization once per field. Mode one
+skips `expandBucket` when its source bucket is empty; it retains every cost-layer
+iteration, deferred-seed insertion and cap rule. Building resumptions, modified
+terrain kernels and optional chunked CPU references retain their existing paths.
+There is no added per-cell test. This is an unqualified component candidate.
+
+Run fresh processes with each value against the same immutable development
+corpus using `tools/gradient_qualification/compare_compact.py`, the shared
+resource lock and separate output directories. Its freeze and CPU rows report
+`cpu_skip_empty_classic`; only `classic_land` and `classic_water` rows activate
+the shortcut. Retain exactness receipts and release compiler/library hashes.
+Compare mode zero against the pre-candidate binary as an overhead control.
+The compiler may already sink empty-loop setup, so source structure does not
+establish a speedup. A paired CPU component result precedes any full-game trial;
+modified-only or shortcut-only corpora cannot establish activation or benefit.

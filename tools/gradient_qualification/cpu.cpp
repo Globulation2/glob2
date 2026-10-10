@@ -21,6 +21,7 @@ struct CPU {
 extern "C" void* cpu_create() {try{return new CPU;}catch(...){return nullptr;}}
 extern "C" void cpu_destroy(void* storage) {delete static_cast<CPU*>(storage);}
 extern "C" unsigned cpu_cost_limit() {return gradient_kernel::COST_LIMIT;}
+extern "C" int cpu_skip_empty_classic() {return gradient_kernel::requestedClassicEmptyLayerSkip();}
 extern "C" void cpu_metrics(void* storage,std::uint64_t* output) {
     const auto& state=*static_cast<CPU*>(storage);
     std::uint64_t bytes=sizeof(CPU)+state.classes.capacity()+

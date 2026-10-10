@@ -63,6 +63,7 @@ class Comparison:
         self.cpu.cpu_create.restype=ctypes.c_void_p
         self.cpu.cpu_destroy.argtypes=[ctypes.c_void_p]
         self.cpu.cpu_cost_limit.restype=ctypes.c_uint32
+        self.cpu.cpu_skip_empty_classic.restype=ctypes.c_int
         self.cpu.run_cpu.argtypes=[ctypes.c_void_p]*4+[ctypes.c_uint32]*3+[ctypes.c_void_p]
         self.cpu.cpu_metrics.argtypes=[ctypes.c_void_p]*2
 
@@ -91,6 +92,7 @@ class Comparison:
                 cpu_retained_host_payload_bytes=int(cpu_metrics[3]),cpu_preparation_ns=int(cpu_metrics[4]),
                 seed_copied_bytes=int(cpu_metrics[5]),cpu_prepared_now=bool(cpu_metrics[6]),
                 cpu_swim=int(cpu_metrics[7]),native_cpu_ns=int(stats[1]*1e6),native_cpu_available=bool(stats[2]))
+            details['cpu_skip_empty_classic']=bool(self.cpu.cpu_skip_empty_classic())
         elif name in ('compact','compact8'):
             if n*20+40>128*1024*1024:raise ValueError('compact device payload exceeds development 128MiB cap')
             if not scratch:
@@ -245,6 +247,7 @@ def run_locked(args,cases):
                 compact8_metadata='two counts plus one-writer ulong processed/highwater/empty rounds and guarded overflow',
                 list_capacity='cells',deduplication='per-dispatch epoch, reset between independent requests',
                 cpu_reference='classic compatible LAND/swim or runtime 64/128/256 direct-profile buckets; production Movement8/256 padding',
+                cpu_skip_empty_classic=bool(runner.cpu.cpu_skip_empty_classic()),
                 cost_preparation='paid cold, immutable warm',campaign_lock=str(args.lock.resolve()),
                 process_cpu='interval diagnostic only; driver work outside interval not attributed; no promotion',
                 tracked_device_payload_cap_bytes=128*1024*1024,

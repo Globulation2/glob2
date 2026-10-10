@@ -5,6 +5,7 @@
 #include "field/UniformTraversal.h"
 #include "field/Influence.h"
 #include "field/GradientPropagation.h"
+#include "field/RuntimeTerrainGradient.h"
 #include "field/PriorityTraversal.h"
 #include <climits>
 #include <cstdint>
@@ -35,6 +36,69 @@ std::vector<int> reference(int w,int h,std::vector<int> values,
 }
 TEST_SUITE("FieldGradient")
 {
+TEST_CASE("classic empty layer shortcut preserves deferred seeds weighted costs and scratch reuse")
+{
+    using namespace gradient_kernel;
+    std::mt19937 random(41057);
+    GradientWorkspace ordinary,skipped;
+    for(const auto [w,h]:{std::pair{1,1},std::pair{1,17},std::pair{2,9},
+        std::pair{7,1},std::pair{8,8},std::pair{9,5}})
+        for(int swim=0;swim<int(std::size(WATER_STEP));++swim)
+            for(int cap:{0,9,71,401,COST_LIMIT})for(int trial=0;trial<3;++trial)
+    {
+        CAPTURE(w,h,swim,cap,trial);
+        std::vector<std::uint16_t> seeds(w*h,GRADIENT_UNREACHABLE);
+        std::vector<bool> water(w*h);
+        for(int i=0;i<w*h;++i) {
+            water[i]=random()%2;
+            if(random()%5==0)seeds[i]=GRADIENT_FORBIDDEN;
+            else if(random()%7==0)seeds[i]=GRADIENT_AT_GOAL-(random()%600);
+        }
+        seeds[0]=GRADIENT_AT_GOAL;
+        if(w*h>1)seeds.back()=GRADIENT_AT_GOAL-500;
+        const auto original=seeds;
+        auto expected=seeds;
+        std::priority_queue<std::pair<int,std::size_t>> frontier;
+        for(std::size_t i=0;i<seeds.size();++i)if(seeds[i]>1)frontier.emplace(seeds[i],i);
+        while(!frontier.empty()) {
+            const auto [value,i]=frontier.top();frontier.pop();
+            if(expected[i]!=value)continue;
+            const int cost=GRADIENT_AT_GOAL-value;
+            if(cost>cap)continue;
+            const auto steps=weightedClass(swim)&&water[i]?entrySteps(WATER_STEP[swim]):LAND_STEPS;
+            for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx) {
+                if(!dx&&!dy)continue;
+                const unsigned step=dx&&dy?steps.diagonal:steps.cardinal;
+                if(unsigned(cost)+step>unsigned(cap))continue;
+                const auto next=std::size_t((int(i)/w+dy+h)%h)*w+(int(i)%w+dx+w)%w;
+                const auto candidate=std::uint16_t(value-step);
+                if(expected[next] && expected[next]<candidate) {
+                    expected[next]=candidate;frontier.emplace(candidate,next);
+                }
+            }
+        }
+        auto baseline=seeds,candidate=seeds;
+        const auto at=[&](std::size_t i){return water[i];};
+        propagateFieldCPUVariant<false>(baseline.data(),swim,cap,{w,h},ordinary,at);
+        propagateFieldCPUVariant<true>(candidate.data(),swim,cap,{w,h},skipped,at);
+        CHECK(baseline==expected);CHECK(candidate==expected);CHECK(seeds==original);
+        CHECK(ordinary.deferredSeeds==skipped.deferredSeeds);
+        for(unsigned b=0;b<BUCKETS;++b)CHECK(ordinary.buckets[b].size==skipped.buckets[b].size);
+        // Modified terrain with exactly these costs remains on the untouched
+        // general kernel. Its result also checks classic-compatible imports.
+        if(trial==0) {
+            TerrainRegistry::Movement movement;
+            movement.profiles={LAND_STEPS,weightedClass(swim)?entrySteps(WATER_STEP[swim]):LAND_STEPS};
+            std::array<EntrySteps,8> entries;entries.fill(LAND_STEPS);
+            entries[1]=movement.profiles[1];
+            movement.prepared=PreparedTerrainCosts<8>(entries);
+            auto modified=seeds;GradientWorkspace general;
+            runtime_terrain::propagate<64,true,false>(modified.data(),cap,{w,h},general,
+                [&](std::size_t i){return unsigned(water[i]);},movement);
+            CHECK(modified==expected);
+        }
+    }
+}
 TEST_CASE("Distance FIFO preserves order through wrap growth and scratch reuse")
 {
     field::Frontier queue;
