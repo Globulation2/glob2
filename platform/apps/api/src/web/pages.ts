@@ -1,16 +1,16 @@
 // Server-rendered pages (sign-in, invites). They are deliberately plain: no
-// scripts beyond one nonce'd inline script where a page needs it, nothing
+// application bundle: a shared same-origin theme bootstrap and one nonce'd inline script where needed, nothing
 // from other origins, a strict Content-Security-Policy, and no cross-site Referer, so the
 // attempt id in the URL never leaks to a provider or another site.
 //
-// They share the web app's look (platform/apps/web/src/styles): the game's
+// They share the web app's design-system foundations: the game's
 // colony behind a paper panel, its wordmark, and the same light and dark
 // themes. The few images and fonts they use are served from this API under
-// /signin/assets/ (built by platform/apps/web/art/build_art.py).
+// /signin/assets/ (served from the resolved design-system package).
 import { t, resolveLocale, localeFromCookie, locales } from '@glob2/i18n/server';
+import { assetPath, cssText } from '@glob2/design-system/node';
 import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 export function escapeHtml(value: string): string {
@@ -117,7 +117,7 @@ export function pageHtml(reply: FastifyReply) {
   };
 }
 
-/** Public path of a page asset (images and fonts in ./static). */
+/** Public path of an asset in the shared design-system package. */
 export const ASSETS = '/signin/assets';
 
 const TYPES: Record<string, string> = {
@@ -125,11 +125,14 @@ const TYPES: Record<string, string> = {
   png: 'image/png',
   jpg: 'image/jpeg',
   woff2: 'font/woff2',
+  js: 'text/javascript; charset=utf-8',
+  css: 'text/css; charset=utf-8',
+  txt: 'text/plain; charset=utf-8',
 };
-const STATIC_DIR = join(import.meta.dirname, 'static');
-const ASSET_NAME = /^[a-z0-9-]+\.(webp|png|jpg|woff2)$/;
 
-/** Serves ./static (read once, cached by browsers for a week). */
+const ASSET_NAME = /^[a-zA-Z0-9-]+\.(webp|png|jpg|woff2|js|css|txt)$/;
+
+/** Serves shared design assets (read once, revalidated by browsers after deployment). */
 export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
   const cache = new Map<string, Buffer>();
   app.get<{ Params: { file: string } }>(`${ASSETS}/:file`, async (request, reply) => {
@@ -139,7 +142,10 @@ export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
     let body = cache.get(file);
     if (!body) {
       try {
-        body = readFileSync(join(STATIC_DIR, file));
+        body =
+          ext === 'css'
+            ? Buffer.from(cssText(file.slice(0, -4), ASSETS))
+            : readFileSync(assetPath(file));
       } catch {
         return reply.status(404).send();
       }
@@ -147,18 +153,15 @@ export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
     }
     return reply
       .header('content-type', TYPES[ext] ?? 'application/octet-stream')
-      .header('cache-control', 'public, max-age=604800')
+      .header('cache-control', 'public, max-age=0, must-revalidate')
       .header('x-content-type-options', 'nosniff')
       .send(body);
   });
 }
 
-// Tokens match apps/web/src/styles/tokens.css ("Meadow" light, "Night colony" dark).
+// Auth-page layout; reusable tokens, fonts, controls and wordmark come from the shared package.
 const STYLE = `
-@font-face{font-family:'Glob2 Sans';src:url(${ASSETS}/glob2-sans.woff2) format('woff2');font-display:swap}
-@font-face{font-family:'Nunito Variable';src:url(${ASSETS}/nunito.woff2) format('woff2-variations');font-weight:200 1000;font-display:swap}
-:root{color-scheme:light dark;--bg:#f1f1e1;--surface:#fbfbf3;--surface-2:#eaedda;--ink:#1d4530;--ink-2:#4b604c;--line:#ccd5bf;--line-strong:#74866a;--accent:#e3c077;--accent-hover:#ecce8f;--accent-edge:#c69e4c;--accent-ink:#142a1f;--gold-ink:#835607;--focus:#9a5a0c;--warn:#87500a;--warn-bg:#fbf0d9;--warn-line:#e0b878;--danger:#a3362c;--danger-bg:#fbe9e5;--danger-line:#e3aaa1;--two:#e2b85f;--tint:rgba(241,241,225,.0);--shadow:0 2px 0 rgba(15,39,25,.12),0 22px 50px -18px rgba(15,39,25,.55)}
-@media (prefers-color-scheme:dark){:root{--bg:#1b1229;--surface:#2b1c42;--surface-2:#34234f;--ink:#f9e8bb;--ink-2:#cfc1a0;--line:#4f3c6b;--line-strong:#8a6db3;--accent-ink:#1e1228;--gold-ink:#f0cf7c;--focus:#ffd678;--warn:#f6c46e;--warn-bg:#45301a;--warn-line:#8a6430;--danger:#ff9488;--danger-bg:#4a1f2e;--danger-line:#8c4250;--tint:rgba(40,22,80,.55);--shadow:0 2px 0 rgba(0,0,0,.3),0 22px 50px -18px rgba(0,0,0,.85)}}
+:root{--two:var(--wm-two);--tint:var(--hero-tint);--shadow:var(--shadow-lg)}
 *{box-sizing:border-box}
 html{background:#2f6526}
 body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:var(--ink);font:16px/1.55 'Nunito Variable',ui-rounded,system-ui,-apple-system,'Segoe UI',sans-serif;background:#2f6526 url(${ASSETS}/colony.webp) center/cover fixed;padding:0 16px}
@@ -166,9 +169,7 @@ body::before{content:'';position:fixed;inset:0;background:linear-gradient(180deg
 .top{width:100%;max-width:30rem;padding:20px 0 12px}
 .brand{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:4px 14px 4px 6px;background:var(--surface);border-radius:999px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow)}
 .brand img{width:34px;height:34px;display:block}
-.wordmark{position:relative;display:inline-block;height:22px;aspect-ratio:900/131}
-.wordmark::before,.wordmark::after{content:'';position:absolute;inset:0;-webkit-mask:url(${ASSETS}/wordmark-letters.webp) 0 0/100% 100% no-repeat;mask:url(${ASSETS}/wordmark-letters.webp) 0 0/100% 100% no-repeat;background:var(--ink)}
-.wordmark::after{-webkit-mask-image:url(${ASSETS}/wordmark-two.webp);mask-image:url(${ASSETS}/wordmark-two.webp);background:var(--two)}
+.wordmark{height:22px}
 main{width:100%;max-width:30rem;margin:0 0 24px;background:var(--bg);border-radius:24px;padding:24px;box-shadow:var(--shadow)}
 h1{font:normal 1.6rem/1.15 'Glob2 Sans','DejaVu Sans',Verdana,sans-serif;letter-spacing:-.01em;margin:0 0 16px;text-wrap:balance}
 p{margin:0 0 12px}
@@ -182,10 +183,7 @@ a{color:var(--ink);text-decoration-color:var(--accent-edge);text-decoration-thic
 .warn{color:var(--warn);background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;padding:10px 12px}
 .eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);margin:0 0 4px}
 .room{font:normal 1.35rem/1.2 'Glob2 Sans','DejaVu Sans',Verdana,sans-serif;margin:0 0 8px;overflow-wrap:anywhere}
-a.button,button{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;padding:10px 18px;margin:8px 0;border-radius:999px;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}
-a.button:hover,button:hover{background:var(--surface-2)}
-a.button.primary,button.primary{background:var(--accent);border-color:var(--accent-edge);color:var(--accent-ink);box-shadow:inset 0 -3px 0 rgba(120,80,10,.18),0 2px 0 var(--accent-edge)}
-a.button.primary:hover,button.primary:hover{background:var(--accent-hover)}
+a.button,button{display:flex;width:100%;min-height:48px;padding:10px 18px;margin:8px 0;text-align:center}
 label{display:block;margin:12px 0 4px;font-weight:700;font-size:.9rem;color:var(--ink-2)}
 h2{font:normal 1.2rem/1.2 'Glob2 Sans','DejaVu Sans',Verdana,sans-serif;margin:0 0 4px}
 .hint{margin:4px 0 0;font-size:.85rem;color:var(--ink-2)}
@@ -230,7 +228,7 @@ export function sendPage(
     .header('x-content-type-options', 'nosniff')
     .header(
       'content-security-policy',
-      `default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'${nonce ? `; script-src 'nonce-${nonce}'` : ''}`,
+      `default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'${nonce ? `; script-src 'self' 'nonce-${nonce}'` : `; script-src 'self'`}`,
     )
     .send(
       html`<!doctype html>
@@ -240,6 +238,12 @@ export function sendPage(
             <meta name="viewport" content="width=device-width,initial-scale=1" />
             <meta name="color-scheme" content="light dark" />
             <meta name="theme-color" content="#2f6526" />
+            <script src="/signin/assets/bootstrap.js"></script>
+            <link rel="stylesheet" href="/signin/assets/tokens.css" />
+            <link rel="stylesheet" href="/signin/assets/fonts.css" />
+            <link rel="stylesheet" href="/signin/assets/base.css" />
+            <link rel="stylesheet" href="/signin/assets/components.css" />
+            <link rel="stylesheet" href="/signin/assets/brand.css" />
             <title>${title === 'Globulation 2' ? title : `${title} · Globulation 2`}</title>
             <link rel="icon" type="image/png" sizes="32x32" href="${ASSETS}/favicon-32.png" />
             ${extras.head}
@@ -247,7 +251,7 @@ export function sendPage(
               ${new Html(STYLE)}
             </style>
           </head>
-          <body>
+          <body class="g2-ui">
             <header class="top">
               <a class="brand" href="/"
                 ><img src="${ASSETS}/glob-64.png" width="34" height="34" alt="" /><span

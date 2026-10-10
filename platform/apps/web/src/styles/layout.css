@@ -44,7 +44,7 @@
   z-index: -1;
   background:
     linear-gradient(180deg, transparent, var(--surface)),
-    url('../art/colony-960.webp') 50% 60% / cover;
+    url('@glob2/design-system/assets/colony-960.webp') 50% 60% / cover;
   opacity: 0.25;
 }
 .brand {
@@ -499,39 +499,6 @@ main:focus {
   display: inline-flex;
   align-items: center;
   min-height: var(--target);
-}
-
-/* --------------------------------------------------------------- wordmark */
-
-/* The game's wordmark as two masks (art/build_art.py) so it takes any colours. */
-.wordmark {
-  --wm-ink: var(--ink);
-  --wm-two: #e2b85f;
-  position: relative;
-  display: inline-block;
-  height: 40px;
-  aspect-ratio: 900 / 131;
-  flex: none;
-}
-.wordmark::before,
-.wordmark::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  -webkit-mask: url('../art/wordmark-letters.webp') 0 0 / 100% 100% no-repeat;
-  mask: url('../art/wordmark-letters.webp') 0 0 / 100% 100% no-repeat;
-  background: var(--wm-ink);
-}
-.wordmark::after {
-  -webkit-mask-image: url('../art/wordmark-two.webp');
-  mask-image: url('../art/wordmark-two.webp');
-  background: var(--wm-two);
-}
-@media (forced-colors: active) {
-  .wordmark::before,
-  .wordmark::after {
-    background: CanvasText;
-  }
 }
 
 /* Functional headings stay compact within the app frame. */
