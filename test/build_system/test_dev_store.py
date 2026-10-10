@@ -143,6 +143,23 @@ class StoreTests(unittest.TestCase):
             )
             target.write_text(old)
 
+    def test_dependency_keys_invalidate_changed_added_and_removed_overlay_files(self):
+        identity = {"target": "ios", "arch": "arm64", "environment": "simulator", "mode": "release"}
+        port = self.a / "scons/vcpkg-ports/sdl3"
+        port.mkdir(parents=True)
+        recipe = port / "portfile.cmake"
+        recipe.write_text('camera on')
+        before = store.dependency_key(self.a, identity, "compiler")
+        recipe.write_text('camera off')
+        changed = store.dependency_key(self.a, identity, "compiler")
+        self.assertNotEqual(before, changed)
+        patch = port / "backend.patch"
+        patch.write_text('reviewed patch')
+        added = store.dependency_key(self.a, identity, "compiler")
+        self.assertNotEqual(changed, added)
+        patch.unlink()
+        self.assertEqual(changed, store.dependency_key(self.a, identity, "compiler"))
+
     def test_budget_skips_active_cache_and_preserves_tools_and_evidence(self):
         cache = store.cache(self.a, "active")
         cache.mkdir(parents=True)

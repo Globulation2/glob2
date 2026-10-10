@@ -23,6 +23,17 @@ Developer account added in Settings > Accounts; the build allows Xcode to create
 or update the provisioning profile for the bundle ID. The generated target is
 included in Xcode archives for TestFlight distribution.
 
+The iOS SDL build excludes camera capture and HID/Bluetooth device discovery,
+which Glob2 does not use. Dependency cache identities include overlay recipes
+and patches, so changes to those backends cannot reuse an older library bundle.
+
+The protected TestFlight upload job waits up to 30 minutes for Apple's processing
+of the exact build number and marketing version. External candidates must become
+App Store eligible with resolved encryption metadata before successful upload
+provenance is recorded. An upload transport success alone is insufficient;
+rejected or invisible builds fail the job and require checking Apple's delivery
+notification before retrying with a corrected immutable tag.
+
 
 ## Signing fingerprints for invite links
 

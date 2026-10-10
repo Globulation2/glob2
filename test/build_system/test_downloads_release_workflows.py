@@ -237,6 +237,13 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('  upload:\n    if: ${{ inputs.upload }}\n    needs: build',text)
         self.assertIn("github.repository_id == 1397722696",text)
         self.assertIn('EXPECTED_COMMIT',text)
+        upload=text.split('\n  upload:\n',1)[1]
+        self.assertIn('ref: ${{ needs.build.outputs.commit }}',upload)
+        self.assertLess(upload.index('actions/checkout@'),upload.index('actions/download-artifact@'))
+        self.assertLess(upload.index('Require Apple processing of the exact uploaded build'),
+                        upload.index('Record provenance only after Apple processing succeeds'))
+        self.assertIn('--build-number "$BUILD_NUMBER" --marketing-version "$marketing_version"',upload)
+        self.assertIn('--audience "$TESTFLIGHT_AUDIENCE"',upload)
 
     def test_all_platform_jobs_receive_the_same_source_revision(self):
         text=(ROOT/'.github/workflows/github-release.yml').read_text()

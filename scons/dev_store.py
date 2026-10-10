@@ -235,6 +235,11 @@ def dependency_key(root, identity, fingerprint):
         str(p.relative_to(root))
         for p in (Path(root) / "mobile/triplets").rglob("*.cmake")
     ]
+    files += [
+        str(p.relative_to(root))
+        for p in (Path(root) / "scons/vcpkg-ports").rglob("*")
+        if p.is_file()
+    ]
     return key(root, files, {"identity": identity, "compiler": fingerprint})
 
 
