@@ -18,10 +18,7 @@ it('ends a definite provider rejection without making design repair calls', asyn
     text: vi.fn(),
     finish,
   };
-  const base = newPackage(
-    '11111111-1111-4111-8111-111111111111',
-    '22222222-2222-4222-8222-222222222222',
-  );
+  const base = newPackage('11111111-1111-4111-8111-111111111111');
   studio.claim.mockResolvedValue({
     id: 'test',
     input: { base, brief: 'snow', messages: [], submission: { references: [] } },
