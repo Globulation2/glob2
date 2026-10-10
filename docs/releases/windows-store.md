@@ -94,6 +94,82 @@ and advance the Partner Center submission through its listing, age rating and
 certification steps. Keep the corresponding GPL source available with each
 distributed version.
 
+## Free retail launch in Partner Center
+
+Package upload is only one part of launch. Maintain the following fields on the
+product's `Main` branch before submitting for certification:
+
+1. **Pricing and availability:** select the zero-price tier, confirm the intended
+   markets and public discoverability, and review the release schedule. Saving a
+   draft does not publish the product. Review any automatic release setting before
+   submitting; use a manual hold if certification should finish before launch.
+2. **Properties:** Strategy is the primary genre; Simulation is an additional
+   genre. Declare PC single-player and online multiplayer. Use
+   `https://glob2online.com/privacy/` for privacy, `https://glob2online.com/` for the
+   website, and the current support contact published in that privacy policy.
+   Review the customer-visible contact address and phone: Partner Center can use
+   the developer account's contact details when product fields are blank.
+   Verify hardware requirements against the packaged release; do not infer them
+   from an older build or claim untested Xbox or accessibility features.
+3. **Store listings:** maintain an English (United States) listing using the copy
+   below. Upload genuine desktop screenshots from the release candidate. At least
+   one PNG is required; Partner Center recommends four, at 1366 × 768 or larger.
+   The current gameplay screenshot at
+   `https://glob2online.com/images/glob2-first-colony.webp` is an approved source;
+   convert it to PNG without changing its content. Add more screenshots of
+   gameplay, colony management, campaigns and the editor when available. Do not reuse
+   mobile screenshots or the legacy `data/screenshots/globulation2-gameplay.png`
+   showing version 0.9.5 as evidence of the current Windows release. Package logos
+   are the default; optional Store poster and box artwork can improve presentation.
+4. **Age ratings:** reuse an applicable existing IARC certificate if available,
+   otherwise complete the questionnaire accurately. Disclose cartoon/fantasy
+   combat and native online communication. Review the included content and whether
+   the Windows client offers digital purchases or links to checkout; a free base
+   game alone does not settle those answers. Do not equate a developer audience
+   policy with an IARC rating.
+5. **Additional Testing Information:** explain offline single-player, campaigns,
+   editor, save/load, guest online play and LAN testing. Guest online play does not
+   require an email/password; do not supply administrator or publishing credentials
+   to reviewers. Verify these instructions against the candidate build.
+6. **Review and submit:** check the exact package/version, listing, rating, pricing,
+   markets and release controls together. Obtain the owner's launch decision,
+   submit for certification, resolve feedback, and publish using the selected
+   release controls. The workflow does not perform these steps.
+
+Gaming metadata (supported languages and verified accessibility features) is
+optional. Keep claims aligned with the actual shipped client. Keep the matching
+GPL source and license accessible for every distributed version.
+
+### English listing copy
+
+**Short description**
+
+Guide a colony of autonomous globs. Build, explore, and compete in a free,
+open-source real-time strategy game with single-player campaigns, multiplayer,
+and a map editor.
+
+**Description**
+
+Globulation 2 is a free, open-source real-time strategy game about guiding a
+colony rather than directing every unit. Set priorities, choose where to build,
+and assign globs to work. Your globs carry out those jobs while you focus on the
+shape of your settlement and your next move.
+
+Grow your economy, explore the map, and adapt your strategy as rival colonies
+expand. Play against computer opponents, try the included maps and campaigns,
+or compete with other players online or over a local network. Use the map editor
+to create your own challenges.
+
+Single-player games can be played offline without an account. Online multiplayer
+requires an internet connection.
+
+**Product feature:** Guide autonomous workers by setting priorities and assigning
+jobs.
+
+**Developed by:** Globulation 2 contributors.
+
+**Search term:** real time strategy.
+
 The repository packages the Store build as original MSIXVC. A future MSIXVC2 migration needs its own Partner Center package branch.
 See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/overviews/packaging-getting-started-for-pc),
 [MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
