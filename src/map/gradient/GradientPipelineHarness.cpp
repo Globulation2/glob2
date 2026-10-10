@@ -19,6 +19,7 @@
 #include <filesystem>
 #include <fstream>
 #include "field/GradientBatchManifest.h"
+#include "field/GradientPropagation.h"
 
 namespace {
 using PipelineEnvironment = glob2test::ScopedEnvironment;
