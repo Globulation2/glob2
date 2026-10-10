@@ -16,6 +16,7 @@
 #include <string_view>
 #include <vector>
 #include <charconv>
+#include <thread>
 
 namespace gradient_kernel
 {
@@ -116,6 +117,10 @@ struct API
     CL_FUNCTION(EnqueueNDRangeKernel, Int, Handle, Handle, UInt, const std::size_t *, const std::size_t *,
                 const std::size_t *, UInt, const Handle *, Handle *);
     CL_FUNCTION(Finish, Int, Handle);
+    CL_FUNCTION(Flush, Int, Handle);
+    CL_FUNCTION(GetEventInfo, Int, Handle, UInt, std::size_t, void*, std::size_t*);
+    CL_FUNCTION(GetEventProfilingInfo, Int, Handle, UInt, std::size_t, void*, std::size_t*);
+    CL_FUNCTION(ReleaseEvent, Int, Handle);
     CL_FUNCTION(ReleaseMemObject, Int, Handle);
     CL_FUNCTION(ReleaseKernel, Int, Handle);
     CL_FUNCTION(ReleaseProgram, Int, Handle);
@@ -159,6 +164,10 @@ struct API
         LOAD(EnqueueReadBuffer);
         LOAD(EnqueueNDRangeKernel);
         LOAD(Finish);
+        LOAD(Flush);
+        LOAD(GetEventInfo);
+        LOAD(GetEventProfilingInfo);
+        LOAD(ReleaseEvent);
         LOAD(ReleaseMemObject);
         LOAD(ReleaseKernel);
         LOAD(ReleaseProgram);
@@ -394,6 +403,8 @@ struct Device
             api.load();
             status.checkInterval=numericOverride("GLOB2_OPENCL_CHECK_INTERVAL",8,32);
             if(!status.checkInterval) throw std::runtime_error("Invalid GLOB2_OPENCL_CHECK_INTERVAL");
+            status.pollMicros=numericOverride("GLOB2_OPENCL_POLL_US",0,1000);
+            status.deviceProfiling=numericOverride("GLOB2_OPENCL_PROFILE",0,1)!=0;
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
             unsigned ordinal=0;
@@ -570,6 +581,9 @@ struct Runtime
         out.threadCPUAvailable=out.threadCPUAvailable||in.threadCPUAvailable;
         out.preparationNs+=in.preparationNs;out.uploadNs+=in.uploadNs;
         out.dispatchWaitNs+=in.dispatchWaitNs;out.readbackNs+=in.readbackNs;
+        out.deviceUploadNs+=in.deviceUploadNs;out.deviceKernelNs+=in.deviceKernelNs;
+        out.deviceReadbackNs+=in.deviceReadbackNs;out.deviceCheckReadNs+=in.deviceCheckReadNs;
+        out.profilingErrors+=in.profilingErrors;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -616,7 +630,7 @@ struct Runtime
         if(!shared->status.available || shared->failed.load()) throw std::runtime_error("OpenCL device unavailable");
         context=shared->context;device=shared->device;
         Int error=0;
-        queue=api.CreateCommandQueue(context,device,0,&error);check(error);
+        queue=api.CreateCommandQueue(context,device,shared->status.deviceProfiling ? 2 : 0,&error);check(error);
         for(std::size_t i=0;i<variants.size();++i) if(shared->variants[i].kernel) {
             variants[i].program=shared->variants[i].program;
             variants[i].kernel=api.CreateKernel(variants[i].program,"propagate",&error);check(error);
@@ -628,11 +642,54 @@ struct Runtime
     {
         check(api.SetKernelArg(kernel, index, sizeof(T), &value));
     }
+    struct Event {
+        API& api;Handle value=nullptr;
+        explicit Event(API& api):api(api) {}
+        ~Event(){if(value) api.ReleaseEvent(value);}
+        Event(const Event&)=delete;
+    };
+    void await(Event& event) {
+        if(!event.value || !shared->status.pollMicros) return;
+        try {
+            check(api.Flush(queue));
+            for(;;) {
+                Int state=0;
+                check(api.GetEventInfo(event.value,0x11D3 /* command execution status */,sizeof state,&state,nullptr));
+                if(state<0) check(state);
+                if(!state) return;
+                std::this_thread::sleep_for(std::chrono::microseconds(shared->status.pollMicros));
+            }
+        } catch(...) {
+            // A nonblocking transfer still borrows its source/destination.
+            // Drain before any stack descriptor or staging storage can unwind.
+            api.Finish(queue);throw;
+        }
+    }
+    void profile(Handle event,std::uint64_t& total) {
+        if(!event || !shared->status.deviceProfiling) return;
+        Bits started=0,finished=0;
+        if(api.GetEventProfilingInfo(event,0x1282,sizeof started,&started,nullptr)!=0 ||
+           api.GetEventProfilingInfo(event,0x1283,sizeof finished,&finished,nullptr)!=0 || finished<started) {
+            ++status.profilingErrors;return;
+        }
+        total+=finished-started;
+    }
+    void read(Handle buffer,void* output,std::size_t bytes,bool finalOutput) {
+        Event event(api);
+        const bool asynchronous=shared->status.pollMicros!=0;
+        const bool capture=asynchronous || shared->status.deviceProfiling;
+        check(api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr));
+        await(event);
+        profile(event.value,finalOutput ? status.deviceReadbackNs : status.deviceCheckReadNs);
+    }
     void write(Handle buffer, const void *data, std::size_t bytes)
     {
         const auto start=activeStageTiming ? monotonicNs() : 0;
-        // Blocking uploads keep borrowed storage valid even after an error.
-        check(api.EnqueueWriteBuffer(queue, buffer, 1, 0, bytes, data, 0, nullptr, nullptr));
+        Event event(api);
+        const bool asynchronous=shared->status.pollMicros!=0;
+        const bool capture=asynchronous || shared->status.deviceProfiling;
+        check(api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr));
+        await(event);profile(event.value,status.deviceUploadNs);
         if(activeStageTiming) activeStageTiming->uploadNs+=monotonicNs()-start;
     }
     void awaitPlane(const std::shared_ptr<Device::Plane>& p) {
@@ -815,6 +872,10 @@ struct Runtime
         {
             if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
             const auto count=std::min<UInt>(checkInterval,65536-round);
+            struct Events {
+                API& api;std::array<Handle,32> values{};
+                ~Events(){for(auto event:values) if(event) api.ReleaseEvent(event);}
+            } events{api};
             for (unsigned dispatch = 0; dispatch < count; ++dispatch)
             {
                 // Only the last dispatch's changes are read by the host. The
@@ -829,14 +890,15 @@ struct Runtime
                 argument(12, active);
                 argument(13, nextActive);
                 check(
-                    api.EnqueueNDRangeKernel(queue, kernel, 3, nullptr, global, local, 0, nullptr, nullptr));
+                    api.EnqueueNDRangeKernel(queue,kernel,3,nullptr,global,local,0,nullptr,
+                        shared->status.deviceProfiling ? &events.values[dispatch] : nullptr));
                 std::swap(a, b);
                 std::swap(active, nextActive);
                 ++status.dispatches;
             }
             round+=count;
-            check(api.EnqueueReadBuffer(queue, changed, 1, 0, requests.size() * sizeof(UInt), flags.data(), 0,
-                                        nullptr, nullptr));
+            read(changed,flags.data(),requests.size()*sizeof(UInt),false);
+            for(auto event:events.values) profile(event,status.deviceKernelNs);
             ++status.hostChecks;
             bool retired = false;
             for (std::size_t f = 0; f < requests.size(); ++f)
@@ -850,8 +912,7 @@ struct Runtime
             {
                 const auto readStart=activeStageTiming ? monotonicNs() : 0;
                 if(activeStageTiming) activeStageTiming->dispatchNs+=readStart-dispatchStart;
-                check(api.EnqueueReadBuffer(queue, a, 1, 0, total * sizeof(std::uint16_t), staging.data(), 0, nullptr,
-                                            nullptr));
+                read(a,staging.data(),total*sizeof(std::uint16_t),true);
                 if(activeStageTiming) activeStageTiming->readbackNs+=monotonicNs()-readStart;
                 return;
             }

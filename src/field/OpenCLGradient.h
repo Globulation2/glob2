@@ -30,6 +30,10 @@ struct OpenCLStatus
     std::uint64_t preparationNs = 0, uploadNs = 0, dispatchWaitNs = 0, readbackNs = 0;
     unsigned checkInterval = 8;
     bool threadCPUAvailable = false;
+    unsigned pollMicros = 0;
+    bool deviceProfiling = false;
+    std::uint64_t deviceUploadNs = 0, deviceKernelNs = 0, deviceReadbackNs = 0;
+    std::uint64_t deviceCheckReadNs = 0, profilingErrors = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.
