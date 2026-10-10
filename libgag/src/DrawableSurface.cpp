@@ -16,6 +16,7 @@
 #include <AssetLoader.h>
 #ifdef GLOB2_WEBGL2
 #include <set>
+#include <emscripten.h>
 #endif
 
 namespace GAGCore
@@ -212,6 +213,11 @@ namespace GAGCore
 		}
 		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
+#ifdef GLOB2_WEBGL2
+            // Context restoration discards lost handles. Recreate a texture
+            // when it is actually used instead of uploading every HD frame.
+            if (!texture) allocateTexture();
+#endif
 			glState.setTexture(texture);
 
 			void *pixelsPtr;
@@ -221,7 +227,17 @@ namespace GAGCore
 #elif SDL_BYTEORDER == SDL_BIG_ENDIAN
             std::valarray<Uint32> tempPixels;
 #endif
-            if (preparedUploadRevision == pixelRevision && !preparedUploadPixels.empty()) {
+            if (highResolutionSampling && !glState.isTextureSRectangle) {
+                // The HD branch uploads its prepared mip chain, including
+                // level zero. Converting this surface here would create an
+                // unused full-size RGBA copy on every terrain animation update.
+                pixelsPtr = nullptr;
+#if defined(GLOB2_WEBGL2) || SDL_BYTEORDER == SDL_BIG_ENDIAN
+                pixelFormat = GL_RGBA;
+#else
+                pixelFormat = GL_BGRA;
+#endif
+            } else if (preparedUploadRevision == pixelRevision && !preparedUploadPixels.empty()) {
                 pixelsPtr = preparedUploadPixels.data(); pixelFormat = GL_RGBA;
             } else {
 			#if defined(GLOB2_WEBGL2)
@@ -260,6 +276,36 @@ namespace GAGCore
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+#ifdef GLOB2_WEBGL2
+                    if ((preparedUploadRevision != pixelRevision || preparedMips.empty()) &&
+                        sdlsurface->w > 0 && sdlsurface->h > 0 &&
+                        sdlsurface->pitch == sdlsurface->w * 4 &&
+                        !(sdlsurface->w & (sdlsurface->w - 1)) && !(sdlsurface->h & (sdlsurface->h - 1))) {
+                        const bool generated = EM_ASM_INT({
+                            try {
+                                return Module.glob2GenerateMipmaps(GLctx, GL.textures[$0],
+                                    HEAPU8.subarray($1, $1 + $2 * $3 * 4), $2, $3, true);
+                            } catch (error) {
+                                console.warn('GPU mip preparation failed; using CPU: ' + error);
+                                return false;
+                            }
+                        }, texture, sdlsurface->pixels, sdlsurface->w, sdlsurface->h);
+                        if (generated) {
+                            glState.allocatedTextureBytes -= gpuBytes; gpuBytes = 0;
+                            int w = sdlsurface->w, h = sdlsurface->h;
+                            for (;;) {
+                                gpuBytes += size_t(w) * h * 4;
+                                if (w == 1 && h == 1) break;
+                                w = std::max(1, w / 2); h = std::max(1, h / 2);
+                            }
+                            glState.allocatedTextureBytes += gpuBytes;
+                            glUploadedRevision = pixelRevision;
+                            std::vector<unsigned char>().swap(preparedUploadPixels);
+                            std::vector<AssetImage::Mip>().swap(preparedMips);
+                            return;
+                        }
+                    }
+#endif
                     AssetImage fallback(nullptr);
                     const auto *levels = &preparedMips;
                     if (preparedUploadRevision != pixelRevision || preparedMips.empty()) {
@@ -466,14 +512,11 @@ void GraphicContext::restoreBrowserContext()
     // CPU surfaces, including sprite atlases, remain the source of truth.
     // Rebuild GPU objects without touching game, camera, or UI state.
     glState.allocatedTextureCount = 0;
+    glState.allocatedTextureBytes = 0;
     for (auto* surface : gpuSurfaces) {
-        glDeleteTextures(1, &surface->texture);
         surface->texture = 0;
-        if (surface->textureInfo) continue;
-        glGenTextures(1, &surface->texture);
-        ++glState.allocatedTextureCount;
-        surface->initTextureSize();
-        surface->uploadToTexture();
+        surface->gpuBytes = 0;
+        surface->glUploadedRevision = 0;
     }
     _gc->setClipRect();
 }

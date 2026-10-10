@@ -10,6 +10,7 @@
 #include <set>
 #include <cstdlib>
 #include <GraphicContext.h>
+#include <Toolkit.h>
 #include <emscripten.h>
 #include <stdexcept>
 
@@ -65,6 +66,7 @@ void publishDiagnostics(bool hostTurn = false) {
         if (imported) Module.importState = imported;
         if ($2) Module.glob2Tick = $3 >>> 0;
         Module.glob2Frames = (Module.glob2Frames || 0) + $4;
+        Module.glob2ArtworkReady = !!$15;
         if ($5 >= 0) Module.glob2Paused = !!$5;
         if ($6 >= 0) Module.glob2Torus = !!$6;
         if ($14 >= 0) Module.glob2TorusSettled = !!$14;
@@ -78,7 +80,8 @@ void publishDiagnostics(bool hostTurn = false) {
         }
     }, d.screen.c_str(), d.import.c_str(), d.hasTick, d.tick, d.frames,
        d.paused, d.torus, d.room, d.custom, d.screenClass.c_str(), hostTurn,
-       dimensions[0], dimensions[1], dimensions[2], d.torusSettled);
+       dimensions[0], dimensions[1], dimensions[2], d.torusSettled,
+       Toolkit::pollAssets(0));
     for (const auto &[owner, json] : d.controls) {
         MAIN_THREAD_EM_ASM({
             Module.glob2Controls ||= new Map();
@@ -186,6 +189,7 @@ void scheduledFrame(void* opaque)
             // Forget their handles rather than deleting them in the new context.
             GL.textures.fill(null);
             GL.buffers.fill(null);
+            Module.glob2ForgetMipmaps(GLctx);
             GLImmediate.currentRenderer = null;
             GLImmediate.lastRenderer = null;
             GLImmediate.lastArrayBuffer = null;

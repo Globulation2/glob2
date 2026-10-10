@@ -638,6 +638,10 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
 	unsigned boundPage = ~0u;
 	for (const auto &[key, request] : unique)
 	{
+#ifdef GLOB2_WEBGL2
+        request.texture->prepareTexture();
+        request.material->prepareTexture();
+#endif
 		if (!request.texture->texture || !request.material->texture)
 			continue;
 		const unsigned slot = r.slots.reserve(key);

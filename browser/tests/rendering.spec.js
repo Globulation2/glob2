@@ -8,7 +8,7 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
   test.setTimeout(120000);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
-  page.on('console', message => { if (/GL_INVALID|GL_INVALID_OPERATION|WebGL:.*(INVALID|error)|Aborted/.test(message.text())) errors.push(message.text()); });
+  page.on('console', message => { if (/GL_INVALID|GL_INVALID_OPERATION|WebGL:.*(INVALID|error)|GPU mip preparation failed|Aborted/.test(message.text())) errors.push(message.text()); });
   await page.goto('/?renderer=webgl2&gl-errors=1');
   await screen(page, 'MainMenuScreen');
   expect((await state(page)).renderer).toBe('webgl2');
@@ -80,14 +80,17 @@ for (const [reason, stub] of Object.entries(fallbacks)) {
 }
 
 
-test('WebGL context restoration keeps the match and can recover repeatedly', async ({page}, info) => {
-  test.setTimeout(120000);
+for (const variant of ['serial', 'threaded']) {
+test(`WebGL context restoration keeps the match and can recover repeatedly (${variant})`, async ({page}, info) => {
+  test.setTimeout(240000);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
-  await page.goto('/?renderer=webgl2&gl-errors=1'); await screen(page,'MainMenuScreen');
+  await page.goto(`/?renderer=webgl2&gl-errors=1&threads=${variant}`); await screen(page,'MainMenuScreen');
+  await expect.poll(async () => (await state(page)).assets.hd, {timeout:120000}).toBe('ready');
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
+  await expect.poll(async () => (await state(page)).artworkReady, {timeout:120000}).toBe(true);
   for (let count=1; count<=2; ++count) {
     await page.evaluate(() => {
       Module._glob2_context_action(0);
@@ -105,7 +108,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
     await page.waitForTimeout(250);
     expect((await state(page)).tick).toBe(paused);
     await page.evaluate(() => Module._glob2_context_action(1));
-    await expect.poll(async () => (await state(page)).contextRestores).toBe(count);
+    await expect.poll(async () => (await state(page)).contextRestores, {timeout:60000}).toBe(count);
     if (count === 1) {
       // Restoring the GPU must not resume a tab that is still hidden.
       const restored = await state(page);
@@ -130,6 +133,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
   await clickControl(page,'quit'); await screen(page,'EndGameScreen');
   expect(errors).toEqual([]);
 });
+}
 
 test('WebGL context restoration retains settings, editor and confirmation controls', async ({page}, info) => {
   const errors = [];

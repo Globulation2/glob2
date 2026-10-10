@@ -42,14 +42,15 @@ TEST_CASE("prepared image adoption separates shared pixels and transfers exclusi
     CHECK_THROWS_AS(GAGCore::DrawableSurface::fromAssetImage(missing, true, false), std::runtime_error);
 }
 TEST_CASE("mip preparation preserves padded alpha weighted integer filtering") {
-    for (const auto size : {std::pair<int, int>{7, 5}, {1, 9}, {9, 1}, {8, 8}}) {
+    for (const auto size : {std::pair<int, int>{7, 5}, {1, 9}, {9, 1}, {8, 8}}) for (int alphaMode : {0, 1, 2}) {
         auto *surface = SDL_CreateSurface(size.first, size.second, SDL_PIXELFORMAT_ARGB8888);
         REQUIRE(surface != nullptr);
         for (int y = 0; y < surface->h; ++y) for (int x = 0; x < surface->w; ++x) {
             auto *p = static_cast<unsigned char*>(surface->pixels) + y * surface->pitch + x * 4;
             p[0] = (x * 37 + y * 11) % 256; p[1] = (x * 19 + y * 43) % 256;
             p[2] = (x * 53 + y * 17) % 256;
-            p[3] = x < surface->w / 2 ? 255 : (x * 71 + y * 23) % 256;
+            p[3] = alphaMode == 0 ? 0 : alphaMode == 1 ? 255 :
+                (x < surface->w / 2 ? 255 : (x * 71 + y * 23) % 256);
         }
         GAGCore::AssetImage image(surface);
         image.prepareUpload(true);

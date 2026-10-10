@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include "ScopedEnvironment.h"
 #include <SpriteLoad.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
@@ -52,6 +53,25 @@ std::unique_ptr<GAGCore::Sprite> finish(GAGCore::SpriteLoad& load) {
 }
 }
 TEST_SUITE("SpriteLoad") {
+TEST_CASE("ready sprite pixels publish before unrelated cooperative work") {
+    glob2test::ScopedEnvironment cpu("GLOB2_ASSET_THREADS", "0"), io("GLOB2_ASSET_IO_THREADS", "0");
+    glob2test::ToolkitScope toolkit;
+    glob2test::TempDir temp("ready-sprite");
+    image(temp.path / "ready0.webp");
+    GAGCore::Toolkit::getFileManager()->addDir(temp.path.string());
+    auto& loader = GAGCore::Toolkit::assets();
+    GAGCore::SpriteLoad loading("ready");
+    loader.poll(std::chrono::seconds(1));
+    CHECK_FALSE(loading.poll(std::chrono::milliseconds(20)));
+    loader.poll(std::chrono::seconds(1));
+    auto unrelated = loader.request<int>("unrelated-background", {}, [] {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        return std::make_shared<const int>(7);
+    }, 0, GAGCore::AssetLoader::Priority::Background);
+    CHECK(loading.poll(std::chrono::milliseconds(20)));
+    REQUIRE(loading.take());
+    CHECK(unrelated.pending());
+}
 TEST_CASE("source frames prepare in parallel without a graphic context") {
     glob2test::ToolkitScope toolkit;
     glob2test::TempDir temp("sprite-load");
