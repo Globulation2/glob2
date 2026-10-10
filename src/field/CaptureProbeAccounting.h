@@ -45,6 +45,7 @@ private:
         totals.requiredGeneration=generation;totals.ticketId=ticket.id;totals.policyGeneration=ticket.generation;
         totals.releaseQualified=qualified;
         envelope.emplace(*registry);totals.processBeginNs=envelope->processBeginCpuNs();processFloor=totals.processBeginNs;
+        if(!processFloor)invalid();
     }
     void invalid() noexcept {totals.clockValid=false;++totals.invalidClocks;}
     bool sameProducer() noexcept {
@@ -57,7 +58,7 @@ private:
     bool checkpoint(std::uint64_t& output) noexcept {
         if(!envelope){invalid();return false;}
         const auto value=envelope->sampleProcessCpu();
-        if(!value.valid || value.ns<processFloor){invalid();return false;}
+        if(!value.valid || !value.ns || value.ns<processFloor){invalid();return false;}
         processFloor=value.ns;output=value.ns;return true;
     }
     void add(std::uint64_t ns) noexcept {
@@ -106,6 +107,7 @@ public:
     glob2::ProcessCpuEnvelope::Progress advanceEnvelope() noexcept {
         if(!sameProducer())return glob2::ProcessCpuEnvelope::Progress::Invalid;
         if(!envelope){invalid();return glob2::ProcessCpuEnvelope::Progress::Invalid;}
+        if(failed())return glob2::ProcessCpuEnvelope::Progress::Invalid;
         return envelope->advance(); // <=64 clocks; caller accountStep covers it.
     }
     bool markDeviceTerminal(std::uint64_t now) noexcept {

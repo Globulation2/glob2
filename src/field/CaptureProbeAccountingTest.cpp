@@ -143,3 +143,16 @@ TEST_CASE("capture accounting requires native qualified identity and pre-reserve
     CHECK_FALSE(f.token->settle(result.outcome,result.authorization)); // A single pair cannot promote.
     CHECK(f.policy->metrics().promoted==0);
 }
+
+
+TEST_CASE("capture accounting rejects zero process clocks even when provider marks them valid" * doctest::test_suite("OpenCLGradient"))
+{
+    Fixture f;f.owner->clocks.processCpu=0;
+    auto accounting=f.begin(true);REQUIRE(bool(accounting));CHECK(accounting->failed());
+    const auto reads=f.owner->clocks.threadReads;
+    CHECK(accounting->advanceEnvelope()==glob2::ProcessCpuEnvelope::Progress::Invalid);
+    CHECK(f.owner->clocks.threadReads==reads);CHECK_FALSE(accounting->envelopeReady());
+    auto result=accounting->finishResult(*f.token,91,true,true,true,500000001,f.input.slackNs);
+    CHECK_FALSE(result.authorization.permitsInference());CHECK_FALSE(result.outcome.clockValid);
+    accounting.reset();f.token.reset();CHECK(f.policy->metrics().probeCpuNs>=f.input.reservedCpuNs);
+}
