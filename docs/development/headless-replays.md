@@ -228,6 +228,9 @@ expected. Only the matchup AIs issue orders.
 ### `dev random-games --display`
 
 Same as `dev random-games` but **with GUI** — useful for visually verifying AI behavior.
+The rendering thread polls pending artwork with the application's 2 ms budget,
+including when simulation runs on a separate thread, so HD reloads finish during
+automatic matches too.
 
 ## Verifying a match record
 
