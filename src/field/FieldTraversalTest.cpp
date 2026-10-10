@@ -36,6 +36,15 @@ std::vector<int> reference(int w,int h,std::vector<int> values,
 }
 TEST_SUITE("FieldGradient")
 {
+TEST_CASE("classic empty layer override rejects typos without process latch mutation")
+{
+    CHECK_FALSE(gradient_kernel::parseClassicEmptyLayerSkip(nullptr));
+    CHECK_FALSE(gradient_kernel::parseClassicEmptyLayerSkip(""));
+    CHECK_FALSE(gradient_kernel::parseClassicEmptyLayerSkip("0"));
+    CHECK(gradient_kernel::parseClassicEmptyLayerSkip("1"));
+    for(const auto* value:{"00","10","yes"," 1","-1"})
+        CHECK_THROWS_AS(gradient_kernel::parseClassicEmptyLayerSkip(value),std::invalid_argument);
+}
 TEST_CASE("classic empty layer shortcut preserves deferred seeds weighted costs and scratch reuse")
 {
     using namespace gradient_kernel;
@@ -88,13 +97,14 @@ TEST_CASE("classic empty layer shortcut preserves deferred seeds weighted costs 
         // general kernel. Its result also checks classic-compatible imports.
         if(trial==0) {
             TerrainRegistry::Movement movement;
-            movement.profiles={LAND_STEPS,weightedClass(swim)?entrySteps(WATER_STEP[swim]):LAND_STEPS};
+            movement.profiles={LAND_STEPS};
+            if(weightedClass(swim))movement.profiles.push_back(entrySteps(WATER_STEP[swim]));
             std::array<EntrySteps,8> entries;entries.fill(LAND_STEPS);
-            entries[1]=movement.profiles[1];
+            if(weightedClass(swim))entries[1]=movement.profiles[1];
             movement.prepared=PreparedTerrainCosts<8>(entries);
             auto modified=seeds;GradientWorkspace general;
-            runtime_terrain::propagate<64,true,false>(modified.data(),cap,{w,h},general,
-                [&](std::size_t i){return unsigned(water[i]);},movement);
+            runtime_terrain::propagate<BUCKETS,true,false>(modified.data(),cap,{w,h},general,
+                [&](std::size_t i){return weightedClass(swim)?unsigned(water[i]):0u;},movement);
             CHECK(modified==expected);
         }
     }

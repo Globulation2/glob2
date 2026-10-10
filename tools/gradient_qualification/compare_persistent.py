@@ -165,7 +165,8 @@ def run_locked(args):
         runner=PersistentComparison(directory,args.device,args.local_size,args.pop_limit,args.epoch_limit)
         freeze=dict(schema=1,revision=revision,purpose='isolated development screening; no production admission',
             hypothesis='One bounded barrier-based work-group per field replaces per-round host commands with one kernel enqueue and one metadata read; incomplete work pays exact CPU recovery from immutable originals.',
-            configuration=vars(args)|dict(lock=str(args.lock.resolve()),output=str(directory)),
+            configuration=vars(args)|dict(lock=str(args.lock.resolve()),output=str(directory),
+                cpu_skip_empty_classic=bool(runner.cpu.cpu_skip_empty_classic())),
             sources=initial,commands=commands,corpus=cases,plans=['cpu','Frozen8','persistent'],
             builds=runner.compact_builds,device=runner.gpu.device.name,driver=runner.gpu.device.driver_version,
             device_version=runner.gpu.device.version,platform=runner.gpu.device.platform.name,

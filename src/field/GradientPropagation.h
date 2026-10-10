@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <stdexcept>
 #include <tuple>
 #include <type_traits>
 
@@ -21,12 +22,15 @@ namespace gradient_kernel
 {
 // Development ablation, fixed for the process. Selection is once per eager
 // field; the default specialization retains the original cost-layer loop.
+inline bool parseClassicEmptyLayerSkip(const char* value)
+{
+    if(!value || !*value)return false;
+    if((value[0]=='0'||value[0]=='1') && value[1]=='\0')return value[0]=='1';
+    throw std::invalid_argument("GLOB2_GRADIENT_SKIP_EMPTY_CLASSIC must be 0 or 1");
+}
 inline bool requestedClassicEmptyLayerSkip()
 {
-    static const bool enabled=[] {
-        const auto* value=std::getenv("GLOB2_GRADIENT_SKIP_EMPTY_CLASSIC");
-        return value && value[0]=='1' && value[1]=='\0';
-    }();
+    static const bool enabled=parseClassicEmptyLayerSkip(std::getenv("GLOB2_GRADIENT_SKIP_EMPTY_CLASSIC"));
     return enabled;
 }
 // Seeds are already encoded as GRADIENT_AT_GOAL - starting cost. Values 0 and 1

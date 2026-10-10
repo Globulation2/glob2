@@ -403,7 +403,8 @@ be qualified and prepared under its own tested accounting contract.
 ### Classic CPU empty-layer ablation
 
 `GLOB2_GRADIENT_SKIP_EMPTY_CLASSIC=0/1` is latched per process and defaults to
-zero. It selects the eager classic CPU specialization once per field. Mode one
+zero; other nonempty values are rejected. It selects the eager classic CPU
+specialization once per field. Mode one
 skips `expandBucket` when its source bucket is empty; it retains every cost-layer
 iteration, deferred-seed insertion and cap rule. Building resumptions, modified
 terrain kernels and optional chunked CPU references retain their existing paths.
