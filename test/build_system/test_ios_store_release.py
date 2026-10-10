@@ -59,6 +59,46 @@ class MetadataAPI(FakeAPI):
 
 
 class IOSStoreTests(unittest.TestCase):
+    def draft_api(self):
+        class DraftAPI(FakeAPI):
+            def __init__(self):
+                super().__init__(missing=True,attached=None)
+                self.version['attributes']['platform']='IOS'
+                self.owner='app-1'
+            def request(self,method,path,body=None):
+                if method=='GET' and path=='/v1/appStoreVersions/version-1':
+                    self.calls.append((method,path,body));return {'data':self.version}
+                if path.endswith('/relationships/app'):
+                    self.calls.append((method,path,body));return {'data':{'type':'apps','id':self.owner}}
+                return super().request(method,path,body)
+        return DraftAPI()
+
+    def test_explicit_empty_draft_preserves_listing_and_binds_exact_verified_build(self):
+        api=self.draft_api();result=store.run(api,'prepare',provenance(),'version-1')
+        self.assertEqual(result['versionId'],'version-1')
+        writes=[call for call in api.calls if call[0]!='GET']
+        self.assertEqual(writes,[('PATCH','/v1/appStoreVersions/version-1',store.resource(
+            'appStoreVersions','version-1',{'versionString':'0.11.0','releaseType':'MANUAL'},
+            {'build':store.relation('builds','build-1')}))])
+        self.assertEqual(api.version['attributes']['copyright'],'Globulation 2')
+
+    def test_explicit_draft_rejects_wrong_app_platform_state_or_attached_build(self):
+        for field,value in [('owner','other'),('platform','MAC_OS'),('appVersionState','IN_REVIEW'),
+                            ('attached','build-1'),('attached','different')]:
+            api=self.draft_api()
+            if field in ('owner','attached'):setattr(api,field,value)
+            else:api.version['attributes'][field]=value
+            with self.subTest(field=field,value=value),self.assertRaises(ValueError):
+                store.run(api,'prepare',provenance(),'version-1')
+            self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
+
+    def test_explicit_draft_rejects_conflicting_version_and_unsafe_or_nonprepare_input(self):
+        for stage,identity in [('prepare','other-version'),('prepare','../version'),('submit','version-1'),('publish','version-1')]:
+            api=FakeAPI()
+            with self.subTest(stage=stage,identity=identity),self.assertRaises(ValueError):
+                store.run(api,stage,provenance(),identity)
+            self.assertFalse(any(method!='GET' for method,_,_ in api.calls))
+
     def test_version_mapping_preserves_fourth_component_without_collisions(self):
         self.assertEqual(ios_release.marketing_version('0.11.0.0'),'0.11.0')
         self.assertEqual(ios_release.marketing_version('0.11.1.23'),'0.11.123')

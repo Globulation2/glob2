@@ -35,6 +35,19 @@ rejected or invisible builds fail the job and require checking Apple's delivery
 notification before retrying with a corrected immutable tag.
 
 
+## Reusing an empty App Store draft
+
+When Apple already has a listing draft for an earlier candidate, the owner can
+set `draft_version_id` in `ios-production.yml` while selecting `prepare`.
+The pipeline requires a processed, App Store eligible build from the exact
+selected public tag. It verifies that the specified draft belongs to Glob2,
+targets iOS, is `PREPARE_FOR_SUBMISSION`, and has no attached build before
+updating its version and attaching that build with manual release control.
+The existing listing, screenshots and review contact remain on the same draft.
+It refuses to replace an attached build or reuse a different matching version.
+Leaving the input empty retains the normal exact-version preparation behavior.
+This option neither submits for review nor publishes the app.
+
 ## Signing fingerprints for invite links
 
 `.github/workflows/app-signing-fingerprints.yml` reads the public signing

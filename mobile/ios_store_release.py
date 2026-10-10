@@ -128,7 +128,9 @@ def check_metadata(api, app, version):
         raise ValueError('Primary locale privacy policy URL is missing')
 
 
-def run(api, stage, provenance):
+def run(api, stage, provenance, draft_version_id=''):
+    if draft_version_id and (stage!='prepare' or not re.fullmatch('[A-Za-z0-9-]{1,128}',draft_version_id)):
+        raise ValueError('An explicit draft ID is valid only for prepare')
     app=one(api.collect('/v1/apps?'+urlencode({'filter[bundleId]':BUNDLE})), 'Globulation 2 app')
     build=one(api.collect('/v1/builds?'+urlencode({'filter[app]':app['id'],'filter[version]':provenance['buildNumber'],
         'filter[preReleaseVersion.version]':provenance['marketingVersion'],'filter[preReleaseVersion.platform]':'IOS'})), 'uploaded tagged iOS build')
@@ -137,6 +139,21 @@ def run(api, stage, provenance):
     if build['attributes'].get('usesNonExemptEncryption') is not False:
         raise ValueError('Encryption declaration is unresolved or differs from the uploaded app')
     versions=api.collect(f"/v1/apps/{app['id']}/appStoreVersions?"+urlencode({'filter[platform]':'IOS','filter[versionString]':provenance['marketingVersion']}))
+    if draft_version_id and versions and one(versions,'matching iOS App Store version')['id']!=draft_version_id:
+        raise ValueError('Explicit draft differs from the existing tagged version')
+    if draft_version_id and not versions:
+        path=f'/v1/appStoreVersions/{draft_version_id}'
+        version=api.request('GET',path)['data']
+        owner=api.request('GET',path+'/relationships/app')['data']
+        if (version['id']!=draft_version_id or owner.get('id')!=app['id'] or
+            version['attributes'].get('platform')!='IOS' or state(version)!='PREPARE_FOR_SUBMISSION'):
+            raise ValueError('Explicit draft must be an editable iOS draft belonging to this app')
+        if api.request('GET',path+'/relationships/build').get('data') is not None:
+            raise ValueError('Explicit draft already has a build; refusing to replace it')
+        api.request('PATCH',path,resource('appStoreVersions',draft_version_id,
+            {'versionString':provenance['marketingVersion'],'releaseType':'MANUAL'},
+            {'build':relation('builds',build['id'])}))
+        return {'stage':stage,'versionId':draft_version_id,'buildId':build['id'],'state':state(version)}
     if not versions:
         if stage!='prepare': raise ValueError('Prepare the exact tagged App Store version first')
         version=api.request('POST','/v1/appStoreVersions',resource('appStoreVersions',attributes={
@@ -186,10 +203,11 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('stage',choices=('prepare','submit','publish'))
     parser.add_argument('--provenance',type=Path,required=True)
+    parser.add_argument('--draft-version-id',default='',help='Explicit empty editable iOS draft to reuse during prepare')
     for name in ('tag','source-commit','run-id'): parser.add_argument('--'+name,required=True)
     args=parser.parse_args();record=validate_provenance(json.loads(args.provenance.read_text()),args.tag,args.source_commit,args.run_id)
     token=jwt_token(base64.b64decode(os.environ['IOS_ASC_KEY_P8_BASE64'],validate=True),os.environ['IOS_ASC_KEY_ID'],os.environ['IOS_ASC_ISSUER_ID'])
-    result=run(Client(token),args.stage,record);print(json.dumps(result,sort_keys=True))
+    result=run(Client(token),args.stage,record,args.draft_version_id);print(json.dumps(result,sort_keys=True))
 
 
 if __name__=='__main__':main()
