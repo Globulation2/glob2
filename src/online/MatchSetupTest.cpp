@@ -249,6 +249,8 @@ TEST_SUITE("MatchSetup")
         auto mismatch=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"foodCapacity":90000}}]})");
         GameHeader placeholder=fixture.game.gameHeader;
         placeholder.setUnitCatalog(UnitCatalog::legacyMigration());
+        placeholder.setNumberOfPlayers(1);
+        placeholder.getBasePlayer(0)=BasePlayer(0,"Legacy client",0,BasePlayer::P_LOCAL);
         const auto inferred=MatchSetup::fromGameHeader(placeholder,fixture.game.mapHeader,prototype.map,prototype.simVersion);
         CHECK(inferred.unitCatalogSnapshot.empty());
         CHECK(inferred.unitCatalogHash.empty());
