@@ -1,3 +1,4 @@
+#include "app/ClientFeatures.h"
 #include "hive/HiveClient.h"
 #include "online/InstanceConfig.h"
 #include "online/OnlineStorage.h"
@@ -55,6 +56,7 @@ TEST_CASE("Hive Mind copies the engine fog boundary and validates ownership" *
 }
 TEST_CASE("Hive Mind evaluation gameplay fixture" * doctest::test_suite("HiveMindEvaluation"))
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	const char *input = std::getenv("GLOB2_HIVE_EVAL_INPUT"),
 			   *output = std::getenv("GLOB2_HIVE_EVAL_OUTPUT");
 	if (!input || !output)
@@ -207,6 +209,7 @@ TEST_CASE("Hive Mind evaluation gameplay fixture" * doctest::test_suite("HiveMin
 TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements" *
 		  doctest::test_suite("HiveMindScheduler"))
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	glob2test::HeadlessGlobals globals({.seed = 19});
 	glob2test::HeadlessGame world(
 		{.teams = 1, .discovered = true, .loadDefaultRace = true, .header = true});
@@ -402,6 +405,7 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 #include <ScreenStack.h>
 TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindPresentation"))
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	glob2test::HeadlessGlobals globals(
 		{.display = true, .loadStrings = true, .width = 1000, .height = 800});
 	// GameGUI owns the client and saves its state during destruction, so its
@@ -588,6 +592,7 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 TEST_CASE("Hive Mind pending requests preserve drafts and stop feedback" *
 		  doctest::test_suite("HiveMindReliability"))
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.teams = 1, .loadDefaultRace = true, .header = true});
 	Online::MemoryStorage storage;
@@ -646,4 +651,32 @@ TEST_CASE("Hive Mind pending requests preserve drafts and stop feedback" *
 	// Late network completions must be harmless after leaving the match.
 	commandReply(ok);
 	stopReply(ok);
+}
+
+TEST_CASE("Free client never starts Commander or changes its stored checkpoint" * doctest::test_suite("HiveMindIntegration"))
+{
+    if constexpr (ClientFeatures::Commander) return;
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams = 1, .loadDefaultRace = true, .header = true});
+    Online::MemoryStorage storage;
+    Online::InstanceConfig config(storage);
+    Online::PlatformClient platform(config);
+    Hive::ClientEnvironment environment;
+    environment.storage = &storage;
+    unsigned requests = 0;
+    environment.request = [&](auto, const std::string &, const Json &, auto) { ++requests; };
+    const std::string checkpoint = "online/hive/12345678-1234-4234-8234-123456789abc-" + std::to_string(world.gui.localPlayer) + ".json";
+    REQUIRE(storage.write(checkpoint, "existing checkpoint"));
+    {
+        Hive::Client client(world.gui, platform, "12345678-1234-4234-8234-123456789abc", 0, environment);
+        CHECK_FALSE(client.available());
+        client.command("Build an inn", false);
+        client.stop();
+        client.change("order", "resume");
+        client.update(true);
+    }
+    CHECK(requests == 0);
+    std::string saved;
+    REQUIRE(storage.read(checkpoint, saved));
+    CHECK(saved == "existing checkpoint");
 }

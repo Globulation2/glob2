@@ -169,3 +169,8 @@ musicStudio:
   maxOutputBytes: 134217728
   timeoutSeconds: 1800
   packs: [] # Configure dedicated Stripe music-credit packs after measuring costs.
+
+# Public free launch: preserve existing appearances and financial reconciliation.
+skinDesigner:
+  enabled: false
+  salesEnabled: false

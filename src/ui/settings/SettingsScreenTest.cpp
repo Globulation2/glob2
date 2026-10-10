@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "ui/ThemeCatalog.h"
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <utility>
@@ -600,4 +602,24 @@ TEST_CASE("AI library compact discovery, favourite, installation and malformed r
 		  doctest::test_suite("SettingsAILibrary"))
 {
 	aiLibraryPresentation(640, 800, "dark");
+}
+
+
+TEST_CASE("Settings categories follow the resolved client capabilities" * doctest::test_suite("ClientCapabilities"))
+{
+    glob2test::HeadlessGlobals globals;
+    SettingsScreen screen;
+    const auto categories = screen.visibleCategories();
+    const auto contains = [&](SettingsScreen::Category category) {
+        return std::find(categories.begin(), categories.end(), category) != categories.end();
+    };
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+    CHECK(contains(SettingsScreen::Category::HiveMind) == ClientFeatures::Commander);
+#endif
+    CHECK(contains(SettingsScreen::Category::CustomAIs) == ClientFeatures::CommunityAI);
+    CHECK(contains(SettingsScreen::Category::CustomGenerators) == ClientFeatures::CommunityGenerators);
+    if (!ClientFeatures::Commander) {
+        screen.selectCategory(SettingsScreen::Category::HiveMind);
+        CHECK(screen.category() == SettingsScreen::Category::Display);
+    }
 }

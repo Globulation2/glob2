@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
@@ -72,6 +73,8 @@ void SettingsScreen::buildKeyboard()
     auto& bindings=keyboard().getKeyboardShortcuts();
     const int count=shortcutMode==GameGUIShortcuts?int(GameGUIKeyActions::ActionSize):int(MapEditKeyActions::ActionSize);
     for(int action=0;action<count;++action){
+        if(shortcutMode==GameGUIShortcuts && !ClientFeatures::Commander &&
+           (action==GameGUIKeyActions::OpenCommander || action==GameGUIKeyActions::StopCommander))continue;
         if(shortcutMode==GameGUIShortcuts && action==GameGUIKeyActions::ToggleRecording && !GAGCore::Recording::supported())continue;
         auto name=shortcutMode==GameGUIShortcuts?GameGUIKeyActions::getName(action):MapEditKeyActions::getName(action);
         auto label=Toolkit::getStringTable()->getString("["+name+"]");

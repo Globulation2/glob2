@@ -1,4 +1,5 @@
 """Emscripten toolchain, independent of native configuration and SDK discovery."""
+from client_features import header as client_feature_header
 from pathlib import Path
 import json
 import os
@@ -83,7 +84,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
 #define PACKAGE_DATA_DIR "/"
 #define PACKAGE_SOURCE_DIR "/"
 #define PRIMARY_FONT "sans.ttf"
-''')
+''' + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
     include_paths = [str(output / 'include'), str(sdl_prefix / 'include')] + list(INCLUDE_DIRECTORIES)
     env.Append(CPPPATH=include_paths + [str(opus_prefix / 'include'), str(opus_prefix / 'include/opus'), "#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)),
