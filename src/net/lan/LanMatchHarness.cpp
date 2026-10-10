@@ -49,6 +49,7 @@
 #include "AINames.h"
 #include "Engine.h"
 #include "EngineTiming.h"
+#include "FileFormatVersions.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "BinaryStream.h"
