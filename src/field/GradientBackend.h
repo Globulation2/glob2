@@ -25,6 +25,9 @@ struct CostIdentity
     // True only when costAt is valid for every cell, including forbidden ones.
     // Such planes depend on terrain/movement alone, not the field's obstacles.
     bool allCells = false;
+    // Known retained payload of the immutable owner. Native caches charge it
+    // while retaining that owner, even after the scheduling DTO is released.
+    std::size_t retainedBytes = 0;
 };
 struct BackendRequest
 {
@@ -42,7 +45,16 @@ struct BackendRequest
     Operation operation = Operation::CompleteField;
     void (*failure)(void*,std::exception_ptr) = nullptr;
     unsigned cpuBuckets = 0; // zero means unknown, never inferred by scanning
+    // Optional owned completion output. True only after a dispatched GPU result
+    // commits. A handled trivial field is not a device execution.
+    bool* executedOnDevice = nullptr;
 };
+inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
+    const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
+    if(source==seeds.end()) return true;
+    if(*source!=65535) return false;
+    return std::none_of(seeds.begin(),seeds.end(),[](auto value){return value!=0 && value!=65535;});
+}
 // An accelerator must leave the seed buffer untouched when returning false.
 // Registered by the optional native implementation; absent in standalone users.
 inline bool (*accelerator)(const BackendRequest &, Plan) = nullptr;
@@ -74,6 +86,12 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
     const bool eligible=std::all_of(requests.begin(),requests.end(),[](const auto& request) {
         return request.operation==Operation::CompleteField && request.limit>=0;
     });
+    for(const auto& request:requests) if(request.executedOnDevice) *request.executedOnDevice=false;
+    // Share the exact shortcut with CPU execution so trivial work is never
+    // credited as an accelerator advantage. Resumable phase state is observable.
+    if(eligible && std::all_of(requests.begin(),requests.end(),[](const auto& request) {
+        return alreadyFixedGradient(std::span(request.gradient,request.grid.cells()));
+    })) return;
     const auto chosen=eligible ? first.session.choose(first.family,requests.size(),mode) : PlanDecision{};
     const bool sample=eligible && first.session.sample();
     GradientObservation observation;

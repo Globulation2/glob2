@@ -633,7 +633,7 @@ TEST_CASE("established plans execute once without calibration and unknown work n
         request.gradient[0]=123; return true;
     };
     BackendSession policy;
-    std::uint16_t value=1;
+    std::uint16_t value=77;
     BackendRequest request{&value,COST_LIMIT,{1,1},policy,&context,
         [](void* p,std::size_t){++static_cast<Context*>(p)->costs;return LAND_STEPS;},
         [](void* p,std::uint16_t* out){++static_cast<Context*>(p)->cpu;*out=123;},{},Family::Materials};
@@ -769,8 +769,10 @@ TEST_CASE("device service calls preserve exact fields and release lane buffer bu
         BackendRequest request{seeds.data(),600,grid,session,costs.get(),
             [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},
             [](void*,std::uint16_t*){FAIL("direct device execution cannot recover on CPU");},
-            {costs,0,1,true}};
+            {costs,0,1,true,costs->capacity()*sizeof(EntrySteps)}};
+        bool dispatched=false;request.executedOnDevice=&dispatched;
         CHECK(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+        CHECK(dispatched);
         CHECK(seeds==expected);
         const auto running=openCLStatus();
         const std::size_t tiles=((grid.width()+15)/16)*((grid.height()+15)/16);
@@ -786,6 +788,59 @@ TEST_CASE("device service calls preserve exact fields and release lane buffer bu
     CHECK(after.deviceBytes<=before.deviceBytes+grid.cells()*sizeof(std::uint32_t));
     CHECK(after.peakHostBytes<=OpenCLHostBudget);
     CHECK(after.peakDeviceBytes<=OpenCLDeviceBudget);
+}
+TEST_CASE("immutable owner budget rejection preserves seeds and healthy device state")
+{
+    using namespace gradient_kernel;
+    if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
+    const field::Grid grid(5,7);
+    auto owner=std::make_shared<std::array<std::uint8_t,1024>>();
+    std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;
+    const auto original=seeds;
+    BackendSession session;
+    const auto before=openCLStatus();
+    std::thread service([&] {
+        BackendRequest request{seeds.data(),60,grid,session,nullptr,
+            [](void*,std::size_t){return LAND_STEPS;},[](void*,std::uint16_t*){},
+            {owner,987654321,1,true,OpenCLHostBudget}};
+        bool dispatched=true;request.executedOnDevice=&dispatched;
+        // Even an otherwise empty cache cannot fit an owner consuming the whole
+        // budget plus its plane. This tests retained ownership independently of
+        // staging capacity or cache contents established by earlier tests.
+        CHECK_FALSE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+        CHECK_FALSE(dispatched);CHECK(seeds==original);CHECK_FALSE(session.failed.load());
+        request.identity.retainedBytes=owner->size();
+        CHECK(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+        CHECK(dispatched);
+    });
+    service.join();
+    const auto after=openCLStatus();
+    CHECK(after.budgetDeclines==before.budgetDeclines+1);
+    CHECK(after.fields==before.fields+1);
+    CHECK(after.available);
+    CHECK(after.hostBytes<=OpenCLHostBudget);
+    CHECK(after.deviceBytes<=OpenCLDeviceBudget);
+}
+TEST_CASE("trivial gradient work is shared by CPU and reports no device dispatch")
+{
+    using namespace gradient_kernel;
+    BackendSession session;
+    std::array<std::uint16_t,4> seeds{0,65535,0,65535};
+    bool dispatched=true;
+    BackendRequest request{seeds.data(),60,{2,2},session,nullptr,
+        [](void*,std::size_t){FAIL("trivial field needs no costs");return LAND_STEPS;},
+        [](void*,std::uint16_t*){FAIL("trivial CPU field needs no propagation");},{}};
+    request.executedOnDevice=&dispatched;
+    executeGradientGroup(std::span(&request,1),Backend::CPU);
+    CHECK_FALSE(dispatched);
+    if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
+    const auto before=openCLStatus();dispatched=true;
+    REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+    CHECK_FALSE(dispatched);
+    const auto after=openCLStatus();
+    CHECK(after.noopFields==before.noopFields+1);
+    CHECK(after.dispatches==before.dispatches);
+    CHECK(after.fields==before.fields);
 }
 TEST_CASE("shared offload host reservations are bounded and recover after release")
 {

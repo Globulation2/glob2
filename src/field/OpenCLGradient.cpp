@@ -364,7 +364,11 @@ struct Device
         std::atomic<bool> published{false};
         Plane(API& api, const BackendRequest& r, std::span<const std::uint8_t> mask)
             : api(&api), identity(r.identity), width(r.grid.width()), height(r.grid.height()) {
-            hostLease.resize(r.grid.cells()*sizeof(UInt)+mask.size());
+            if(r.grid.cells()>OpenCLHostBudget/sizeof(UInt)) throw BudgetExceeded();
+            const auto payload=r.grid.cells()*sizeof(UInt)+mask.size()+sizeof(*this);
+            const auto retained=r.identity.owner ? r.identity.retainedBytes : 0;
+            if(payload>OpenCLHostBudget || retained>OpenCLHostBudget-payload) throw BudgetExceeded();
+            hostLease.resize(payload+retained);
             data.resize(r.grid.cells());blocked.assign(mask.begin(),mask.end());
         }
 
@@ -376,6 +380,8 @@ struct Device
     OpenCLStatus retired;
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
+    std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0};
+    std::atomic<bool> threadCPUAvailable{false};
     void evictUnusedPlanes() {
         std::lock_guard lock(cacheMutex);
         for(auto& p:planes) if(p && p.use_count()==1) p.reset();
@@ -610,6 +616,8 @@ struct Runtime
         out.available=out.available&&!shared->failed.load();
         out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
+        out.noopFields=shared->noopFields.load();out.threadCPUNs=shared->threadCPUNs.load();
+        out.threadCPUAvailable=out.threadCPUAvailable || shared->threadCPUAvailable.load();
         out.executionLanes=live.size();out.maxConcurrentBatches=shared->maximumActive.load();
         return out;
     }
@@ -934,18 +942,16 @@ struct Runtime
     }
     static bool alreadyFixed(const BackendRequest& request)
     {
-        const auto* begin = request.gradient;
-        const auto* end = begin + request.grid.cells();
-        const auto* source = std::find_if(begin, end, [](auto value) { return value > 1; });
-        // Without a source no legal path can start.
-        if (source == end) return true;
-        if (*source != 65535) return false;
-        // With only forbidden cells and maximal goals, no cell can improve,
-        // regardless of positive costs.
-        return std::none_of(begin, end, [](auto value) { return value != 0 && value != 65535; });
+        return alreadyFixedGradient(std::span(request.gradient,request.grid.cells()));
     }
     bool batch(std::span<const BackendRequest> input, Plan plan)
     {
+        const auto cpuStarted=execution ? 0 : threadCPUClock();
+        struct CPUTimer {
+            Device& device;std::uint64_t start;
+            ~CPUTimer(){if(start) {device.threadCPUAvailable.store(true);device.threadCPUNs+=threadCPUClock()-start;}}
+        } cpuTimer{*shared,cpuStarted};
+        for(const auto& request:input) if(request.executedOnDevice) *request.executedOnDevice=false;
         if(input.empty()) return true;
         if(plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
            !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(plan)))) return false;
@@ -956,7 +962,7 @@ struct Runtime
         if(std::any_of(input.begin(),input.end(),[](const auto& r) {
             return r.session.failed.load() || r.operation!=Operation::CompleteField || r.limit<0;
         })) return false;
-        if(std::all_of(input.begin(),input.end(),alreadyFixed)) return true;
+        if(std::all_of(input.begin(),input.end(),alreadyFixed)) {shared->noopFields+=input.size();return true;}
         if(!execution) {
             try { return lane().batch(input,plan); }
             catch(...) { shared->fail("Unable to allocate OpenCL execution lane"); readyPlans.store(0);
@@ -970,8 +976,6 @@ struct Runtime
             ~Active(){--d.active;}
         } activeLane(*shared);
         statusSequence=++shared->sequence;
-        const auto cpuStarted=threadCPUClock();
-        struct CPUTimer {OpenCLStatus& status;std::uint64_t start;~CPUTimer(){if(start) {status.threadCPUAvailable=true;status.threadCPUNs+=threadCPUClock()-start;}}} cpuTimer{status,cpuStarted};
         StageTiming localStages;
         auto* stages=activeStageTiming ? activeStageTiming : accountingRequested() ? &localStages : nullptr;
         const auto before=stages ? *stages : StageTiming{};
@@ -1015,6 +1019,7 @@ struct Runtime
             outputOffset=0;
             for(const auto& r:input) {
                 std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
+                if(r.executedOnDevice) *r.executedOnDevice=true;
                 outputOffset+=r.grid.cells();
             }
             ++status.schedulerBatches;
@@ -1048,7 +1053,10 @@ struct Runtime
     bool batch(std::span<const BackendRequest> requests, Plan)
     {
         for (const auto &r : requests)
+        {
+            if(r.executedOnDevice) *r.executedOnDevice=false;
             r.session.fail();
+        }
         return false;
     }
     bool run(const BackendRequest &r, Plan)

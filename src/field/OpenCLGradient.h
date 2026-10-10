@@ -34,6 +34,7 @@ struct OpenCLStatus
     bool deviceProfiling = false;
     std::uint64_t deviceUploadNs = 0, deviceKernelNs = 0, deviceReadbackNs = 0;
     std::uint64_t deviceCheckReadNs = 0, profilingErrors = 0;
+    std::uint64_t noopFields = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.

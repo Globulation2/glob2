@@ -28,6 +28,12 @@ extern "C" int run_cpu(void* storage,const std::uint16_t* seeds,const std::uint3
     try {
         auto& state=*static_cast<CPU*>(storage);
         const field::Grid grid(width,height);
+        std::copy_n(seeds,grid.cells(),output);
+        if(alreadyFixedGradient(std::span<const std::uint16_t>(output,grid.cells()))) {
+            stats[0]=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-started).count();
+            stats[1]=double(glob2::threadCpuNs()-cpuStarted)/1e6;
+            return 0;
+        }
         if(!state.profile) {
             state.classes.resize(grid.cells());
             std::array<EntrySteps,256> entries;entries.fill(LAND_STEPS);
@@ -51,7 +57,6 @@ extern "C" int run_cpu(void* storage,const std::uint16_t* seeds,const std::uint3
                 entries[0].diagonal==LAND_STEPS.diagonal;
         }
         if(state.classes.size()!=grid.cells())return -4;
-        std::copy_n(seeds,grid.cells(),output);
         if(state.classic)
             propagateFieldCPU(output,0,int(cap),grid,state.workspace,[](std::size_t){return false;});
         else propagatePreparedTerrainFieldCPU(output,int(cap),grid,state.workspace,*state.profile,
