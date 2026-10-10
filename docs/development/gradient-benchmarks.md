@@ -574,3 +574,30 @@ original-byte rollback before one CPU callback, retained cost-owner/host credits
 and later positive-event release. It deliberately disables the backend for that
 process. It supplies failure-lifetime evidence, not performance or driver-hang
 coverage.
+### Captured replay adapter
+
+`CaptureProbeReplay` is an unattached background lifecycle adapter. Its immutable
+input owns original and golden arrays plus packed classic water costs. A borrowed
+water lookup may pack a weighted capture in guarded blocks; no terrain graph or
+borrowed lookup context survives capture. Modified movement still declines.
+
+The adapter reserves its fixed state, private accounting-free BackendSession,
+clock/backend owner graph and control storage before allocation. It never starts
+device/compiler initialization. Every advance receives the current required
+generation, tick, available slack and backlog; stale or late input cancels new
+work while outstanding device transfers retain their graph until terminal proof.
+Exact comparison visits at most 16 KiB per advance and never changes captured or
+published arrays. Only atomic cancellation may cross producer threads.
+
+Quarantine pins record, policy, session and leases. After positive terminal cleanup,
+exclusive `takeSettlement` transfers the captured admission to a move-only token.
+Call `cleanup` to release actual captured arrays while retaining admission, close
+the outer complete-cost envelope, destroy the adapter wrapper, then settle. The
+default authorization suppresses inference and conservatively pays full reserved
+credit because calling-thread CPU alone does not cover driver/tail expense. Only
+the future qualified `CaptureProbeAccounting` bridge can authorize inference.
+Rejected setup leaves an attempted-work receipt; if ownership was not consumed,
+the caller must retain/cancel that record and add the attempt's CPU to settlement.
+Hardware-free injected backends test exact/mismatched results, required backlog,
+unknown completion, retained admission, invalid clocks and unprepared alternatives.
+These tests do not establish actual driver lifetime or performance qualification.
