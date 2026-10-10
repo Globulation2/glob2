@@ -239,7 +239,8 @@ jobs:
         env:
           GLOB2_RELEASE_NOTES: ${{ inputs.release_notes }}
         run: |
-          build/play-api-venv/bin/python mobile/play_release.py publish \
+          # Google Play may process a large resumable upload longer than 60 seconds.
+          build/play-api-venv/bin/python -c 'import runpy, socket; socket.setdefaulttimeout(300); runpy.run_path("mobile/play_release.py", run_name="__main__")' publish \
             --bundle build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release/app-release-play.aab \
             --version-code '${{ needs.build.outputs.code }}' \
             --release-notes "$GLOB2_RELEASE_NOTES" --track "${{ inputs.track }}"
