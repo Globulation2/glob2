@@ -1,0 +1,5 @@
+Tested head: ee5c52547a0f377a58f600642ce6394060fc7a83
+Base: c0949cbfa048a8c3d7e7d96b64f7394f2f75e86c
+Linux x86_64 Python3.14.4, Bash local; hosted release CLI2 binary source69ef3e1 (CLI implementation unchanged since).
+LD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib" GLOB2_CLI_BINARY="$PWD/artifacts/maxima-cli2-runs/native/build/linux/client/release/src/glob2" python3 -m unittest discover -s test -p test_cli_smoke.py -k test_bash_completion_commands_enums_equals_and_paths
+PASS 1 test, all existing assertions. No Windows runtime locally; hosted Windows verification required before acceptance. No engine/simulation code changes.
