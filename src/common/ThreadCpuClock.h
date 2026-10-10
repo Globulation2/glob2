@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <cstdint>
+#if defined(__linux__)
+#include <sys/syscall.h>
+#include <unistd.h>
+#endif
 #if defined(_WIN32)
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -12,6 +16,17 @@
 
 namespace glob2
 {
+// Diagnostic identity, captured once at thread startup. Zero means unavailable;
+// consumers must not infer driver roles from inherited thread names.
+inline std::uint64_t nativeThreadId() noexcept
+{
+#if defined(__linux__)
+    const auto value=::syscall(SYS_gettid);
+    return value>0 ? std::uint64_t(value) : 0;
+#else
+    return 0;
+#endif
+}
 // Wall time includes waiting for the device; policy training must use actual
 // host CPU instead. Zero means unavailable and cannot qualify a learned plan.
 inline std::uint64_t threadCpuNs() noexcept
