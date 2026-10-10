@@ -2435,7 +2435,7 @@ DistributedNewConstructionManager::point DistributedNewConstructionManager::find
  const unsigned inputs=recurring ? recurring : construction;
  for(auto& factor:factors)
   if(!factor.is_null && (factor.source==Gradient::Wheat || factor.source==Gradient::Wood || factor.source==Gradient::Stone))
-   factor.source=static_cast<Gradient::Sources>(inputs ? inputs : Gradient::VillageCenter);
+   factor.source=inputs ? inputs : Gradient::VillageCenter;
 
 	for(unsigned int x=0; x<width; ++x)
 	{

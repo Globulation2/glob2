@@ -51,7 +51,9 @@ enum DevelopmentPurpose
 	Fortification
 };
 
-enum TemplateId
+// Catalog-generated identities exceed the named styles; preserve the signed
+// 32-bit representation used by planner persistence, including sentinel bits.
+enum TemplateId : int32_t
 {
 	NoTemplate=0,
 	InnCompact,

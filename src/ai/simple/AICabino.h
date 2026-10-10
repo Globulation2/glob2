@@ -783,10 +783,10 @@ namespace Cabino
 			struct GradientPoll
 			{
 				GradientPoll() : is_null(true) {}
-				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, int weight) : is_null(false), source(source), obstacle(obstacle), weight(weight), min_dist(-1), max_dist(-1) {}
-				GradientPoll(Gradient::Sources source, Gradient::Obstacles obstacle, int minimum_distance, int maximum_distance) : is_null(false), source(source), obstacle(obstacle), weight(1), min_dist(minimum_distance), max_dist(maximum_distance) {}
+				GradientPoll(unsigned source, Gradient::Obstacles obstacle, int weight) : is_null(false), source(source), obstacle(obstacle), weight(weight), min_dist(-1), max_dist(-1) {}
+				GradientPoll(unsigned source, Gradient::Obstacles obstacle, int minimum_distance, int maximum_distance) : is_null(false), source(source), obstacle(obstacle), weight(1), min_dist(minimum_distance), max_dist(maximum_distance) {}
  				bool is_null;
-				Gradient::Sources source;
+				unsigned source;
 				Gradient::Obstacles obstacle;
 				int weight;
 				int min_dist;

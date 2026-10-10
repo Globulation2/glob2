@@ -16,6 +16,9 @@
 #include <functional>
 #include <fstream>
 #include <iterator>
+#include <type_traits>
+#include <algorithm>
+#include <cstdlib>
 
 namespace {
 using namespace GAGCore;
@@ -254,6 +257,140 @@ TEST_CASE("Cabino saving leaves its pending FIFO intact")
             while (!expected.empty()) { CHECK(wire(loaded.getOrder())==wire(expected.front()));expected.pop(); }
         });
     }
+}
+TEST_CASE("Cabino construction polls preserve high material and combined source masks")
+{
+    using namespace Cabino;
+    using Poll=DistributedNewConstructionManager::GradientPoll;
+    static_assert(std::is_same_v<decltype(Poll{}.source),unsigned>);
+    static_assert(sizeof(Gradient::Sources)==sizeof(unsigned));
+    static_assert(alignof(Gradient::Sources)==alignof(unsigned));
+    World w;
+    auto& game=w.world.game;
+    game.map.setResourceByIndex(13,15,PRUNE,1);
+    game.map.setResourceByIndex(20,16,WHEAT,1);
+    REQUIRE((game.map.materialMaskAt(game.map.coordToIndex(13,15)) & materialBit(MaterialId::Prunes))!=0);
+    const unsigned highMask=1u<<(8+materialIndex(MaterialId::Prunes));
+    const unsigned combinedMask=highMask|(1u<<(8+materialIndex(MaterialId::Food)))|Gradient::VillageCenter;
+    Poll high(highMask,Gradient::None,4);
+    Poll combined(combinedMask,Gradient::None,-1,-1);
+    CHECK(high.source==highMask);
+    CHECK(combined.source==combinedMask);
+    Poll assigned(Gradient::Stone,Gradient::None,1);
+    assigned.source=combinedMask; // the construction planner's late-bound assignment
+    CHECK(assigned.source==combined.source);
+    AICabino original(w.player());
+    MersenneTwister controllerRandom(713);original.setRandomEngine(controllerRandom);
+    const auto controllerBefore=controllerRandom,gameBefore=game.syncRandom;
+    const int width=game.map.getW(),height=game.map.getH();
+    const auto distance=[&](int x,int y,int sourceX,int sourceY) {
+        int dx=std::abs(x-sourceX),dy=std::abs(y-sourceY);
+        return std::max(std::min(dx,width-dx),std::min(dy,height-dy));
+    };
+    const auto checkFields=[&](AICabino& ai) {
+        glob2test::withCabinoObservation(ai,game,[&] {
+            auto& highField=ai.getGradientManager().getGradient(high.source,high.obstacle);
+            auto& combinedField=ai.getGradientManager().getGradient(assigned.source,combined.obstacle);
+            for(int y=0;y<height;++y) for(int x=0;x<width;++x) {
+                CHECK(highField.getHeight(x,y)==1+distance(x,y,13,15));
+                const int nearest=std::min({distance(x,y,13,15),distance(x,y,20,16),
+                    distance(x,y,int(ai.getCenterX()),int(ai.getCenterY()))});
+                CHECK(combinedField.getHeight(x,y)==1+nearest);
+            }
+        });
+    };
+    checkFields(original);
+    glob2test::withCabinoObservation(original,game,[&]{original.getGradientManager().updateGradients();});
+    for(bool text:{false,true}) {
+        CAPTURE(text);
+        const auto bytes=write(text,[&](auto* out){original.getGradientManager().save(out);out->writeUint32(sentinel,"sentinel");});
+        AICabino restored(w.player());
+        read(bytes,text,[&](auto* in) {
+            REQUIRE(glob2test::withCabinoObservation(restored,game,[&]{return restored.getGradientManager().load(in);}));
+            CHECK(in->readUint32("sentinel")==sentinel);
+        });
+        CHECK(write(text,[&](auto* out){restored.getGradientManager().save(out);out->writeUint32(sentinel,"sentinel");})==bytes);
+        checkFields(restored);
+        glob2test::withCabinoObservation(restored,game,[&]{restored.getGradientManager().updateGradients();});
+        checkFields(restored);
+    }
+    CHECK(controllerRandom==controllerBefore);
+    CHECK(game.syncRandom==gameBefore);
+}
+TEST_CASE("Cabino material mask placement resumes without changing RNG")
+{
+    using namespace Cabino;
+    World w;
+    auto& game=w.world.game;
+    game.map.setMapDiscovered();
+    REQUIRE(w.world.addBuilding("swarm",4,4));
+    game.map.setResourceByIndex(20,20,STONE,1);
+    const int tower=game.buildingsTypes.findByKey("defencetower.0.finished");
+    REQUIRE(tower>=0);
+    const auto* type=game.buildingsTypes.get(tower);
+    REQUIRE(type->shootingRange>0);
+    REQUIRE(type->semantics.ammunitionMaterial==int(materialIndex(MaterialId::Stone)));
+    REQUIRE(type->semantics.ammunitionCost>0);
+    AICabino original(w.player());
+    MersenneTwister controllerRandom(713);original.setRandomEngine(controllerRandom);
+    const auto controllerBefore=controllerRandom,gameBefore=game.syncRandom;
+    const auto place=[&](AICabino& ai) {
+        return glob2test::withCabinoObservation(ai,game,[&] {
+            auto* construction=dynamic_cast<DistributedNewConstructionManager*>(ai.getNewConstructionModule());
+            REQUIRE(construction);
+            construction->updateImap();
+            return construction->findBestPlace(DefendWithProjectiles,unsigned(tower));
+        });
+    };
+    const auto expected=place(original);
+    REQUIRE(expected.x!=NO_POSITION);
+    REQUIRE(expected.y!=NO_POSITION);
+    CHECK(expected.x<unsigned(game.map.getW()));
+    CHECK(expected.y<unsigned(game.map.getH()));
+    const unsigned stoneMask=1u<<(8+materialIndex(MaterialId::Stone));
+    bool hasMaterialGradient=false;
+    // Inspect the already selected rows; calling getGradient here would create
+    // a missing row and could hide a placement-mask regression.
+    const auto selectedRows=write(false,[&](auto* out){original.getGradientManager().save(out);});
+    glob2test::withCabinoObservation(original,game,[&] {
+        read(selectedRows,false,[&](auto* in) {
+            in->readEnterSection("GradientManager");
+            const auto count=in->readUint32("size");
+            REQUIRE(count>0);
+            for(Uint32 row=0;row<count;++row) {
+                in->readEnterSection(row);
+                const unsigned source=in->readUint32("sources");
+                const unsigned obstacles=in->readUint32("obstacles");
+                Gradient field;
+                REQUIRE(field.load(in,original));
+                if(source==stoneMask) {
+                    CHECK(obstacles==unsigned(Gradient::None));
+                    CHECK(field.getHeight(20,20)==1);
+                    hasMaterialGradient=true;
+                }
+                in->readLeaveSection();
+            }
+            in->readLeaveSection();
+            CHECK(in->isValid());
+        });
+    });
+    REQUIRE(hasMaterialGradient); // exercises the exact 2048 mask in the sanitizer report
+    for(bool text:{false,true}) {
+        CAPTURE(text);
+        const auto bytes=write(text,[&](auto* out){original.save(out);out->writeUint32(sentinel,"sentinel");});
+        AICabino restored(w.player());
+        MersenneTwister restoredRandom(713);restored.setRandomEngine(restoredRandom);
+        read(bytes,text,[&](auto* in){REQUIRE(restored.load(in,w.player(),VERSION_MINOR));CHECK(in->readUint32("sentinel")==sentinel);});
+        CHECK(write(text,[&](auto* out){restored.getGradientManager().save(out);})
+            ==write(text,[&](auto* out){original.getGradientManager().save(out);}));
+        const auto resumed=place(restored);
+        CHECK(resumed.x==expected.x);CHECK(resumed.y==expected.y);
+        CHECK(write(text,[&](auto* out){restored.getGradientManager().save(out);})
+            ==write(text,[&](auto* out){original.getGradientManager().save(out);}));
+        CHECK(restoredRandom==controllerBefore);
+    }
+    CHECK(controllerRandom==controllerBefore);
+    CHECK(game.syncRandom==gameBefore);
 }
 TEST_CASE("Cabino preserves stale gradients module latches and fruit memories")
 {
