@@ -1,4 +1,4 @@
-"""Check the resolved deployment storage contract, including optional workers."""
+"""Check resolved storage and build contracts, including optional workers."""
 import json
 import os
 from pathlib import Path
@@ -9,6 +9,27 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class BlobMountTests(unittest.TestCase):
+    def test_every_node_image_uses_the_resolved_design_revision(self):
+        revision = 'ab' * 20
+        result = subprocess.run(
+            ['docker', 'compose', '--env-file', os.devnull, '-f',
+             str(ROOT / 'deploy/compose.yaml'), '--profile', '*', 'config', '--format', 'json'],
+            env={**os.environ, 'POSTGRES_PASSWORD': 'fixture', 'GLOB2_ENV_FILE': os.devnull,
+                 'GLOB2_DESIGN_SYSTEM_SHA': revision},
+            check=True, capture_output=True, text=True)
+        targets = set()
+        for name, service in json.loads(result.stdout)['services'].items():
+            build = service.get('build', {})
+            target = build.get('target')
+            if not target or target == 'relay':
+                continue
+            targets.add(target)
+            with self.subTest(service=name):
+                self.assertEqual(build.get('args', {}).get('GLOB2_DESIGN_SYSTEM_SHA'), revision)
+        self.assertTrue({'platform', 'caddy', 'engine-agent', 'music-worker',
+                         'ai-music-worker', 'ai-building-worker', 'ai-terrain-worker',
+                         'ai-map-worker', 'skin-render-worker'} <= targets)
+
     def test_every_blob_writer_uses_its_writable_shared_volume(self):
         result = subprocess.run(
             ['docker', 'compose', '--env-file', os.devnull, '-f',
