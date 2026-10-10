@@ -69,12 +69,22 @@ includes all eleven playable packages plus the tagged source archive.
 publication; see the [qualified manifest procedure](downloads.md#qualified-downloads-manifest).
 
 The Flatpak recipe in `flatpak/org.globulation2.Globulation2.yml.in` pins every
-third-party source and is rendered with the selected commit. Once its package
-and metadata pass Flathub's build and lint checks, fork `flathub/flathub` with
-its `new-pr` branch, add the rendered manifest at the fork's top level, and
-submit a first-listing PR targeting `new-pr` under
-`org.globulation2.Globulation2`. Do this only for a selected stable release
-candidate: acceptance creates the public listing. Flathub publishes from its
+third-party source and is rendered with the selected commit for our package
+builds. Before preparing a Flathub submission, read its current
+[requirements](https://docs.flathub.org/docs/for-app-authors/requirements#generative-ai-policy).
+Flathub prohibits AI-generated or AI-assisted manifests and AI agents opening
+submission PRs or generating their commit messages, descriptions or review
+replies. It also requires disclosure of known AI-generated material in the
+application, identifying the affected parts and approximate extent. Our
+AI-assisted recipe can be used for our own Flatpak builds; it is not an eligible
+Flathub submission manifest. A human maintainer must author the submission
+manifest and interactions under Flathub's policy.
+
+Once the selected stable candidate passes build, lint and installed-game checks,
+the human submitter forks `flathub/flathub` with its `new-pr` branch, adds their
+manifest at the fork's top level, and opens a first-listing PR targeting `new-pr`
+under `org.globulation2.Globulation2`. Acceptance creates the public listing.
+Flathub publishes from its
 own manifest repository after its review; a GitHub release cannot directly
 publish to Flathub. Once the Flathub app repository exists, create a
 writable fork and set `FLATHUB_FORK` (an `owner/repository` GitHub Actions
