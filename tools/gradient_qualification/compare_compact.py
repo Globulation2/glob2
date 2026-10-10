@@ -26,6 +26,7 @@ def provenance():
     paths=list((ROOT/'src/field').glob('*.h'))+list((ROOT/'src/map').glob('*.h'))
     paths+=list((ROOT/'src/resource').glob('*.h'))
     paths += [ROOT/'src/common/ComputeExecutor.h',ROOT/'src/common/ThreadCpuClock.h',
+              ROOT/'src/map/TerrainRegistry.cpp',
               ROOT/'libgag/include/ThreadSupport.h']
     result.update({str(path.relative_to(ROOT)):sha(path) for path in paths})
     return result
@@ -153,6 +154,7 @@ def run_locked(args,cases):
             hypothesis='Compact vertex worklists reduce sparse-source field work versus dense tiled sweeps and must beat exact production CPU.',
             configuration=dict(max_size=args.max_size,device_index=args.device,compact_workgroup=128,
                 compact_host_check_dispatches=1,list_capacity='cells',deduplication='per-dispatch epoch',
+                cpu_reference='classic LAND or runtime direct-profile buckets, production Movement 8/256 padding',
                 cost_preparation='paid cold, immutable warm',campaign_lock=str(args.lock.resolve())),
             sources=initial,corpus=cases,repeats=args.repeats,plans=['cpu','Frozen8','compact'],
             commands=commands,cpu_cost_limit=runner.cpu.cpu_cost_limit(),

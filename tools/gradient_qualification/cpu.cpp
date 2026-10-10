@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Production prepared-bucket comparator for the development corpus. This is
 // deliberately separate from the heap oracle and retains real queue capacity.
-#include "field/TerrainGradient.h"
+#include "field/RuntimeTerrainGradient.h"
 #include "common/ThreadCpuClock.h"
 #include <chrono>
 #include <memory>
@@ -11,7 +11,7 @@ namespace {
 struct CPU {
     GradientWorkspace workspace;
     std::vector<std::uint8_t> classes;
-    std::unique_ptr<gradient_kernel::PreparedTerrainCosts<256>> profile;
+    TerrainRegistry::Movement movement;
     bool classic=false;
 };
 }
@@ -34,9 +34,8 @@ extern "C" int run_cpu(void* storage,const std::uint16_t* seeds,const std::uint3
             stats[1]=double(glob2::threadCpuNs()-cpuStarted)/1e6;
             return 0;
         }
-        if(!state.profile) {
+        if(!state.movement.prepared) {
             state.classes.resize(grid.cells());
-            std::array<EntrySteps,256> entries;entries.fill(LAND_STEPS);
             std::unordered_map<std::uint32_t,unsigned> identities;
             for(std::size_t i=0;i<grid.cells();++i) {
                 const auto packed=costs[i];
@@ -48,19 +47,29 @@ extern "C" int run_cpu(void* storage,const std::uint16_t* seeds,const std::uint3
                 if(found==identities.end()) {
                     const auto id=identities.size();if(id==256)return -3;
                     found=identities.emplace(packed,unsigned(id)).first;
-                    entries[id]={cardinal,diagonal};
+                    state.movement.profiles.push_back({cardinal,diagonal});
                 }
                 state.classes[i]=found->second;
             }
-            state.profile=std::make_unique<PreparedTerrainCosts<256>>(entries);
-            state.classic=identities.size()==1 && entries[0].cardinal==LAND_STEPS.cardinal &&
-                entries[0].diagonal==LAND_STEPS.diagonal;
+            // Match Movement::prepare exactly: duplicate the first present
+            // profile for padding, and use the compact production variant.
+            // Keep this paid cold construction inside the timed request.
+            const auto prepare=[&]<std::size_t N>() {
+                std::array<EntrySteps,N> entries;entries.fill(state.movement.profiles.front());
+                std::copy(state.movement.profiles.begin(),state.movement.profiles.end(),entries.begin());
+                state.movement.prepared=PreparedTerrainCosts<N>(entries);
+            };
+            if(state.movement.profiles.size()<=8) prepare.template operator()<8>();
+            else prepare.template operator()<256>();
+            const auto first=state.movement.profiles.front();
+            state.classic=identities.size()==1 && first.cardinal==LAND_STEPS.cardinal &&
+                first.diagonal==LAND_STEPS.diagonal;
         }
         if(state.classes.size()!=grid.cells())return -4;
         if(state.classic)
             propagateFieldCPU(output,0,int(cap),grid,state.workspace,[](std::size_t){return false;});
-        else propagatePreparedTerrainFieldCPU(output,int(cap),grid,state.workspace,*state.profile,
-            [&](std::size_t i){return state.profile->terrainClasses[state.classes[i]];});
+        else runtime_terrain::propagate<BUCKETS,true,false>(output,int(cap),grid,state.workspace,
+            [&](std::size_t i){return state.classes[i];},state.movement);
     } catch(...) {return -5;}
     stats[0]=std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-started).count();
     stats[1]=double(glob2::threadCpuNs()-cpuStarted)/1e6;
