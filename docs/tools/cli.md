@@ -238,7 +238,7 @@ historical documents may show the command that originally produced their data.
 Launch the graphical game.
 
 ```text
-glob2 play  [OPTIONS]
+glob2 play [OPTIONS]
 ```
 
 Outputs: Interactive game.
@@ -257,7 +257,7 @@ Platform: all.
 | `--no-mute` | flag; default false | Unmute music and speech. |
 | `--renderer` | gpu, software | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; minimum 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
@@ -320,7 +320,7 @@ Platform: all.
 | `--no-mute` | flag; default false | Unmute music and speech. |
 | `--renderer` | gpu, software | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; minimum 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
@@ -441,7 +441,7 @@ glob2 map study river --seed 713 --write-map --output-dir artifacts/study
 List generators or inspect controls.
 
 ```text
-glob2 map generators GENERATOR [OPTIONS]
+glob2 map generators [GENERATOR] [OPTIONS]
 ```
 
 Outputs: Generator IDs, defaults and allowed control values.
@@ -481,6 +481,8 @@ Platform: all.
 | `--preview-size` | integer; pixels; 128..4096 | Longest preview side in pixels. |
 | `--preview-scale` | 2, 4, 8; default 2 | Scale retained thumbnail pixels. |
 | `--help` | flag; default false | Show this command's help (also -h). |
+
+Choose at most one: `--output`, `--preview`.
 
 Choose at most one: `--preview-scale`, `--preview-size`.
 
@@ -627,7 +629,7 @@ glob2 map validate-set set.json --report-file artifacts/set-report.json --previe
 Run or continue a structured headless game.
 
 ```text
-glob2 game run  [OPTIONS]
+glob2 game run [OPTIONS]
 ```
 
 Outputs: result.json, progress.json, artifacts.json; requested saves, replay and telemetry.
@@ -777,7 +779,7 @@ Platform: all.
 | `--no-mute` | flag; default false | Unmute music and speech. |
 | `--renderer` | gpu, software | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; minimum 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
@@ -841,7 +843,7 @@ Platform: all.
 | `--no-mute` | flag; default false | Unmute music and speech. |
 | `--renderer` | gpu, software | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; minimum 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
@@ -907,7 +909,7 @@ Platform: all.
 | `--no-mute` | flag; default false | Unmute music and speech. |
 | `--renderer` | gpu, software | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; minimum 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
@@ -1044,7 +1046,7 @@ glob2 script attach maps/FourSquares1.map.gz examples/javascript/scenario.js art
 Compose and validate building packages.
 
 ```text
-glob2 assets compose-buildings  [OPTIONS]
+glob2 assets compose-buildings [OPTIONS]
 ```
 
 Outputs: Resolved catalog/hash and optional artwork hash.
@@ -1068,7 +1070,7 @@ glob2 assets compose-buildings --format json
 Bake transparent colony sprites.
 
 ```text
-glob2 assets render-skin  [OPTIONS]
+glob2 assets render-skin [OPTIONS]
 ```
 
 Outputs: Colony sprite bundle.
@@ -1092,7 +1094,7 @@ glob2 assets render-skin --manifest skin.json --texture texture.png --material m
 Inspect native skin exporter capabilities.
 
 ```text
-glob2 assets skin-info  [OPTIONS]
+glob2 assets skin-info [OPTIONS]
 ```
 
 Outputs: Exporter revision and pinned codec.
@@ -1113,7 +1115,7 @@ glob2 assets skin-info --format json
 Exercise random AI games.
 
 ```text
-glob2 dev random-games  [OPTIONS]
+glob2 dev random-games [OPTIONS]
 ```
 
 Outputs: Game summaries and opt-in diagnostic outputs.
@@ -1134,7 +1136,7 @@ Platform: all.
 | `--no-mute` | flag; default false | Unmute music and speech. |
 | `--renderer` | gpu, software | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; minimum 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
@@ -1191,7 +1193,7 @@ glob2 dev random-games --runs 1 --ticks 64 --map Playground --matchup castor,war
 Generate random maps indefinitely.
 
 ```text
-glob2 dev stress-maps  [OPTIONS]
+glob2 dev stress-maps [OPTIONS]
 ```
 
 Outputs: Generation diagnostics; interrupt to stop.
@@ -1213,7 +1215,7 @@ glob2 dev stress-maps
 Capture rendered translation texts.
 
 ```text
-glob2 dev textshots  [OPTIONS]
+glob2 dev textshots [OPTIONS]
 ```
 
 Outputs: Translation screenshots; uses the existing screenshot workflow.
@@ -1232,7 +1234,7 @@ Platform: all.
 | `--no-mute` | flag; default false | Unmute music and speech. |
 | `--renderer` | gpu, software | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; minimum 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
@@ -1348,7 +1350,7 @@ glob2 dev dump-tiled maps/FourSquares1.map.gz --repeat-x 2 --repeat-y 2
 Internal Hive JSON-lines worker.
 
 ```text
-glob2 dev hive-worker  [OPTIONS]
+glob2 dev hive-worker [OPTIONS]
 ```
 
 Outputs: Worker JSON on stdout; accepts stdin; internal subprocess interface.
@@ -1368,7 +1370,7 @@ glob2 dev hive-worker < requests.jsonl
 Inspect the executable build.
 
 ```text
-glob2 info version  [OPTIONS]
+glob2 info version [OPTIONS]
 ```
 
 Outputs: Build, SDL, save and network versions.
@@ -1389,7 +1391,7 @@ glob2 info version
 Inspect the simulation identity.
 
 ```text
-glob2 info sim-version  [OPTIONS]
+glob2 info sim-version [OPTIONS]
 ```
 
 Outputs: Existing simulation-version JSON or readable fields.
@@ -1410,7 +1412,7 @@ glob2 info sim-version --format json
 Inspect AI, generator and job capabilities.
 
 ```text
-glob2 info catalog  [OPTIONS]
+glob2 info catalog [OPTIONS]
 ```
 
 Outputs: Existing headless catalog JSON or readable fields.
@@ -1433,7 +1435,7 @@ glob2 info catalog --format json
 Inspect asset search paths.
 
 ```text
-glob2 info paths  [OPTIONS]
+glob2 info paths [OPTIONS]
 ```
 
 Outputs: Ordered asset directories.
@@ -1455,7 +1457,7 @@ glob2 info paths --data-dir ./data
 Describe commands without loading game assets.
 
 ```text
-glob2 help COMMAND... [OPTIONS]
+glob2 help [COMMAND...] [OPTIONS]
 ```
 
 Outputs: Text help or schema_version=1, cli_version=2 JSON.

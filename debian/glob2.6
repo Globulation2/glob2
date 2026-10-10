@@ -12,7 +12,7 @@ Use glob2 help --format json for the self-describing CLI schema.
 .SS "play"
 Launch the graphical game
 .PP
-Usage: glob2 play  [OPTIONS]
+Usage: glob2 play [OPTIONS]
 .TP
 .B \-\-fullscreen
 Use fullscreen Default: false.
@@ -45,7 +45,7 @@ Rendering backend Allowed: gpu, software. Type: enum.
 Detail effects Allowed: full, reduced. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; minimum 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -149,7 +149,7 @@ Rendering backend Allowed: gpu, software. Type: enum.
 Detail effects Allowed: full, reduced. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; minimum 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -345,7 +345,7 @@ Platform: all
 .SS "map generators"
 List generators or inspect controls
 .PP
-Usage: glob2 map generators GENERATOR [OPTIONS]
+Usage: glob2 map generators [GENERATOR] [OPTIONS]
 .TP
 .B \-\-format
 Output format Default: text. Allowed: text, json. Type: enum.
@@ -394,6 +394,8 @@ Scale retained thumbnail pixels Default: 2. Allowed: 2, 4, 8. Type: enum.
 .TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
+.PP
+Choose at most one: \-\-output, \-\-preview
 .PP
 Choose at most one: \-\-preview\-scale, \-\-preview\-size
 .PP
@@ -576,7 +578,7 @@ Platform: all
 .SS "game run"
 Run or continue a structured headless game
 .PP
-Usage: glob2 game run  [OPTIONS]
+Usage: glob2 game run [OPTIONS]
 .TP
 .B \-\-output\-dir
 Structured job directory; must not already contain result.json Type: directory. Required.
@@ -815,7 +817,7 @@ Rendering backend Allowed: gpu, software. Type: enum.
 Detail effects Allowed: full, reduced. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; minimum 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -922,7 +924,7 @@ Rendering backend Allowed: gpu, software. Type: enum.
 Detail effects Allowed: full, reduced. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; minimum 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1035,7 +1037,7 @@ Rendering backend Allowed: gpu, software. Type: enum.
 Detail effects Allowed: full, reduced. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; minimum 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1205,7 +1207,7 @@ Platform: all
 .SS "assets compose\-buildings"
 Compose and validate building packages
 .PP
-Usage: glob2 assets compose\-buildings  [OPTIONS]
+Usage: glob2 assets compose\-buildings [OPTIONS]
 .TP
 .B \-\-base
 Base building catalog Type: file.
@@ -1232,7 +1234,7 @@ Platform: all
 .SS "assets render\-skin"
 Bake transparent colony sprites
 .PP
-Usage: glob2 assets render\-skin  [OPTIONS]
+Usage: glob2 assets render\-skin [OPTIONS]
 .TP
 .B \-\-manifest
 Skin manifest Type: file. Required.
@@ -1259,7 +1261,7 @@ Platform: native OpenGL client
 .SS "assets skin\-info"
 Inspect native skin exporter capabilities
 .PP
-Usage: glob2 assets skin\-info  [OPTIONS]
+Usage: glob2 assets skin\-info [OPTIONS]
 .TP
 .B \-\-format
 Output format Default: text. Allowed: text, json. Type: enum.
@@ -1277,7 +1279,7 @@ Platform: native OpenGL client
 .SS "dev random\-games"
 Exercise random AI games
 .PP
-Usage: glob2 dev random\-games  [OPTIONS]
+Usage: glob2 dev random\-games [OPTIONS]
 .TP
 .B \-\-data\-dir
 Add an asset search directory (in order) Type: directory. Repeatable.
@@ -1316,7 +1318,7 @@ Rendering backend Allowed: gpu, software. Type: enum.
 Detail effects Allowed: full, reduced. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; minimum 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1410,7 +1412,7 @@ Platform: all
 .SS "dev stress\-maps"
 Generate random maps indefinitely
 .PP
-Usage: glob2 dev stress\-maps  [OPTIONS]
+Usage: glob2 dev stress\-maps [OPTIONS]
 .TP
 .B \-\-data\-dir
 Add an asset search directory (in order) Type: directory. Repeatable.
@@ -1431,7 +1433,7 @@ Platform: all
 .SS "dev textshots"
 Capture rendered translation texts
 .PP
-Usage: glob2 dev textshots  [OPTIONS]
+Usage: glob2 dev textshots [OPTIONS]
 .TP
 .B \-\-fullscreen
 Use fullscreen Default: false.
@@ -1464,7 +1466,7 @@ Rendering backend Allowed: gpu, software. Type: enum.
 Detail effects Allowed: full, reduced. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; minimum 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1616,7 +1618,7 @@ Platform: all
 .SS "dev hive\-worker"
 Internal Hive JSON\-lines worker
 .PP
-Usage: glob2 dev hive\-worker  [OPTIONS]
+Usage: glob2 dev hive\-worker [OPTIONS]
 .TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
@@ -1631,7 +1633,7 @@ Platform: native subprocess (browser uses its dedicated worker)
 .SS "info version"
 Inspect the executable build
 .PP
-Usage: glob2 info version  [OPTIONS]
+Usage: glob2 info version [OPTIONS]
 .TP
 .B \-\-format
 Output format Default: text. Allowed: text, json. Type: enum.
@@ -1649,7 +1651,7 @@ Platform: all
 .SS "info sim\-version"
 Inspect the simulation identity
 .PP
-Usage: glob2 info sim\-version  [OPTIONS]
+Usage: glob2 info sim\-version [OPTIONS]
 .TP
 .B \-\-format
 Output format Default: text. Allowed: text, json. Type: enum.
@@ -1667,7 +1669,7 @@ Platform: all
 .SS "info catalog"
 Inspect AI, generator and job capabilities
 .PP
-Usage: glob2 info catalog  [OPTIONS]
+Usage: glob2 info catalog [OPTIONS]
 .TP
 .B \-\-format
 Output format Default: text. Allowed: text, json. Type: enum.
@@ -1691,7 +1693,7 @@ Platform: all
 .SS "info paths"
 Inspect asset search paths
 .PP
-Usage: glob2 info paths  [OPTIONS]
+Usage: glob2 info paths [OPTIONS]
 .TP
 .B \-\-format
 Output format Default: text. Allowed: text, json. Type: enum.
@@ -1712,7 +1714,7 @@ Platform: all
 .SS "help"
 Describe commands without loading game assets
 .PP
-Usage: glob2 help COMMAND... [OPTIONS]
+Usage: glob2 help [COMMAND...] [OPTIONS]
 .TP
 .B \-\-format
 Output format Default: text. Allowed: text, json. Type: enum.

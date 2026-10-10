@@ -2,6 +2,9 @@
 function __glob2_path
   set -l path ''
   set -l words (commandline -opc)
+  if test (count $words) -ge 2; and test "$words[2]" = help
+    set -e words[2]
+  end
   for word in $words[2..-1]
     switch "$path|$word"
       case '|play'

@@ -4,6 +4,7 @@ _glob2() {
   local command_path='' word i
   for ((i=2;i<CURRENT;i++)); do
     word=$words[i]
+    if ((i == 2)) && [[ $word == help ]]; then continue; fi
     case "$command_path|$word" in
       '|play') command_path='play';;
       '|replay') command_path='replay';;
