@@ -39,6 +39,10 @@ public:
         Plan alternative=Plan::Frozen8;
         std::uint64_t reservedCpuNs=0,captureCpuLimitNs=0;
         std::uint64_t slackNs=0,conservativeElapsedNs=0;
+        // Borrowed only during synchronous capture. Packing never retains a
+        // terrain/rule graph; unweighted classic fields never call this.
+        void* waterContext=nullptr;
+        std::uint8_t (*waterAt)(void*,std::size_t)=nullptr;
     };
     struct Receipt {
         // Optional capture/cleanup only. Required propagation is disjoint.
@@ -188,7 +192,8 @@ public:
            (clock.read && (!clock.owner || !clock.retainedBytes)) ||
            (!clock.read && (clock.owner || clock.retainedBytes)))return {};
         const bool weighted=weightedClass(input.swim);
-        if(weighted && input.water.size()!=input.original.size())return {};
+        if(weighted && input.water.size()!=input.original.size() &&
+           !(input.water.empty() && input.waterAt && input.waterContext))return {};
         // Fixed arrays avoid vector capacity guesses and full object-graph
         // retention. Charge policy, holder and conservative control overhead.
         constexpr auto fixed=sizeof(Record)+sizeof(GradientCpuCapture)+sizeof(CpuSavingPolicy)+512;
@@ -223,7 +228,15 @@ public:
                 if(weighted)owned->waterCells.reset(new std::uint8_t[input.original.size()]);
             });
             owned->copy(owned->originals.get(),input.original.data(),input.original.size_bytes());
-            if(weighted)owned->copy(owned->waterCells.get(),input.water.data(),input.water.size_bytes());
+            if(weighted) {
+                if(!input.water.empty())owned->copy(owned->waterCells.get(),input.water.data(),input.water.size_bytes());
+                else for(std::size_t offset=0;offset<input.original.size();) {
+                    const auto n=std::min(CopyBlockBytes,input.original.size()-offset);
+                    owned->block([&]{for(std::size_t i=0;i<n;++i)
+                        owned->waterCells[offset+i]=input.waterAt(input.waterContext,offset+i);});
+                    offset+=n;owned->totals.copiedBytes+=n;++owned->totals.blocks;
+                }
+            }
             std::unique_ptr<GradientCpuCapture> result;
             owned->block([&]{result.reset(new GradientCpuCapture(owned));});
             // Include admission, reservations, holder/control allocation and

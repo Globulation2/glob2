@@ -222,3 +222,41 @@ TEST_CASE("capture allocation overshoot declines before copying seeds" * doctest
     CHECK(fixture.seeds==original);CHECK(openCLProbeBytes()==baseline);
     CHECK(fixture.policy->metrics().probeCpuNs>=receipt.optionalCpuNs);
 }
+
+TEST_CASE("weighted captures pack borrowed water callbacks without retaining their graph" * doctest::test_suite("OpenCLGradient"))
+{
+    struct Context {
+        const std::vector<std::uint8_t>& cells;unsigned calls=0;bool fail=false;
+        static std::uint8_t at(void* value,std::size_t i) {
+            auto& self=*static_cast<Context*>(value);++self.calls;
+            if(self.fail)throw std::runtime_error("water lookup failed");
+            return self.cells[i];
+        }
+    };
+    const auto baseline=openCLProbeBytes();
+    for(const int swim:{0,1}) {
+        CaptureFixture fixture(17,1,swim);GradientCpuCapture::Receipt receipt;
+        const auto originals=fixture.seeds;
+        const auto water=fixture.water;
+        auto context=std::make_shared<Context>(Context{fixture.water});
+        std::weak_ptr<Context> weak=context;
+        fixture.input.water={};fixture.input.waterContext=context.get();fixture.input.waterAt=&Context::at;
+        auto capture=fixture.begin(receipt);REQUIRE(bool(capture));
+        CHECK(context->calls==(weightedClass(swim)?fixture.water.size():0));
+        GradientWorkspace scratch;
+        propagateFieldCPU(fixture.seeds.data(),swim,COST_LIMIT,field::Grid(17,1),scratch,
+            [&](std::size_t i){return fixture.water[i]!=0;});
+        auto record=capture->complete(fixture.seeds,{91,1000000,true,true},receipt);REQUIRE(bool(record));
+        context.reset();CHECK(weak.expired());
+        CHECK(std::equal(record->original().begin(),record->original().end(),originals.begin()));
+        if(weightedClass(swim))CHECK(std::equal(record->water().begin(),record->water().end(),water.begin()));
+        else CHECK(record->water().empty());
+        record.reset();capture.reset();CHECK(openCLProbeBytes()==baseline);
+    }
+    CaptureFixture fixture(17,1,1);GradientCpuCapture::Receipt receipt;
+    auto context=std::make_shared<Context>(Context{fixture.water,0,true});
+    const auto originals=fixture.seeds;
+    fixture.input.water={};fixture.input.waterContext=context.get();fixture.input.waterAt=&Context::at;
+    CHECK_FALSE(fixture.begin(receipt));CHECK(context->calls>0);CHECK(fixture.seeds==originals);
+    CHECK(openCLProbeBytes()==baseline);CHECK(fixture.policy->metrics().probeCpuNs>0);
+}
