@@ -55,7 +55,7 @@ TEST_CASE("classic empty layer shortcut preserves deferred seeds weighted costs 
         for(int swim=0;swim<int(std::size(WATER_STEP));++swim)
             for(int cap:{0,9,71,401,COST_LIMIT})for(int trial=0;trial<3;++trial)
     {
-        CAPTURE(w,h,swim,cap,trial);
+        CAPTURE(w);CAPTURE(h);CAPTURE(swim);CAPTURE(cap);CAPTURE(trial);
         std::vector<std::uint16_t> seeds(w*h,GRADIENT_UNREACHABLE);
         std::vector<bool> water(w*h);
         for(int i=0;i<w*h;++i) {
