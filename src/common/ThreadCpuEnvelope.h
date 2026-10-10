@@ -219,6 +219,7 @@ public:
     }
     Progress progress() const noexcept {return phase;}
     const ProcessCpuEnvelopeResult& metrics() const noexcept {return result;}
+    std::uint64_t processBeginCpuNs() const noexcept {return processStart.ns;}
     static constexpr std::size_t storageBytes() noexcept {return sizeof(ProcessCpuEnvelope);}
     // Caller measures all lifecycle CPU/storage against optional budgets,
     // including constructor/destructor/registry sampling. samplerCpuNs is only
