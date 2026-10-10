@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="1" skipped="0"><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="0.542254" status="run">
+      <failure message="{?} == {?}" type="CHECK">
+src/team/stats/TeamStatsSaveHarness.cpp:1527:
+CHECK( std::find(entry.second.begin(),entry.second.end(),swarm)==entry.second.end() ) is NOT correct!
+  values: CHECK( {?} == {?} )
+
+      </failure>
+      <error message="exception">
+        Invalid team building list reference: buildings team=0 gid=0
+      </error>
+    </testcase>
+  </testsuite></testsuites>

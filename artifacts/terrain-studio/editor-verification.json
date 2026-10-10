@@ -1,12 +1,12 @@
 {
-  "testedCommit": "4a447509518872bd1d973c9bb2489866d4739e20",
-  "baseCommit": "b602ee96896aa8d8b5fda16ca297851f8166827c",
+  "testedCommit": "5063d9da710984b437bab68ac6cee14abfc97997",
+  "baseCommit": "aaa73b56543e7a5070f51379e955ec493e22d082",
   "platform": "macOS 26.6.2 arm64, Apple LLVM 21.0.0",
   "nativeBuild": "python3 tools/dev_build.py engine-tests (dev_fast=1, -O0 -g1, no PCH/unity)",
-  "focusedTests": "8 passed at combined revision: editor deletion/save/slot reuse, live slot lists, script identities, and all five EditorTerrainPaint cases.",
-  "simulation": "Canonical 842-checksum trace matches committed fixture and Linux. Arctic map seed 713, cortex/cortex, 20000 ticks: macOS/Linux per-tick traces identical. Current integrated native engine also reproduces canonical fixture exactly.",
+  "focusedTests": "8 cases passed on integrated revision: seven passed in the parallel run; the hiring deletion/save/slot-reuse case timed out under concurrent build/test load and passed on a single-process retry in 9.9 seconds. Before-fix extended test reproduces the hiring list failure. Both logs retained.",
+  "simulation": "Integrated native and both Chromium WebAssembly variants match all 842 canonical checksums. Original Arctic map, seed 713 cortex/cortex, completed 20000 ticks with identical macOS/Linux per-tick traces; no simulation-step source change.",
   "liveFlow": "UI generation, metadata save/reload, sandboxed validation, history download, real editor pack import, five terrains/five resources, fresh map save, live custom-game start, game save/browser reload/resume succeeded. Winter inn Food 10/10.",
-  "limitations": "Browser release compilation/verification and live editor deletion regression deployment remain pending. Windows, Android, iOS not run. No loader/save format or simulation-step change. Stripe purchase unavailable because sales/packs disabled.",
+  "limitations": "Final live hiring-deletion regression deployment pending. Windows, Android, iOS not run. No loader/save format or simulation-step change. Stripe purchase unavailable because sales/packs disabled.",
   "artifacts": {
     "Arctic_Tundra_Winter.map.gz": {
       "bytes": 155084,
@@ -20,5 +20,7 @@
       "bytes": 323723,
       "sha256": "3721b9f0329150c6ccc936dff4a6ad69845a6db9abe770a1c3fc3091fc7fbf9c"
     }
-  }
+  },
+  "browserBuild": "CCACHE=1 scons target=web release=1 client_profile=free web_variant=both --build build/emscripten/client/release/terrain-e2e-free -j8 web-package; static package and gzip sidecars verified.",
+  "browserTests": "2 Chromium canonical match tests passed at integrated 5063d9da7, serial and threaded, 4.3 seconds total. Static package and gzip sidecars verified."
 }

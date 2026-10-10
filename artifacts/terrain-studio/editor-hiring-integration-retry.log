@@ -1,0 +1,4 @@
+PASS TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse (9.9s)
+
+1 passed, 0 failed, 0 skipped (9.9s of test time)
+[run_tests] JUnit report: artifacts/terrain-studio/editor-hiring-integration-retry.xml (1 cases)

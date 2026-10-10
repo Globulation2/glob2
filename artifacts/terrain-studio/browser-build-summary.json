@@ -1,0 +1,26 @@
+{
+  "commit": "5063d9da710984b437bab68ac6cee14abfc97997",
+  "base": "aaa73b56543e7a5070f51379e955ec493e22d082",
+  "identity": {
+    "client_features": {
+      "authoring_links": false,
+      "commander": false,
+      "community_ai": true,
+      "community_generators": true
+    },
+    "client_profile": "free",
+    "distribution": "browser",
+    "mode": "release",
+    "native_wss": false,
+    "role": "client",
+    "target": "web",
+    "toolchain": "emscripten"
+  },
+  "command": "CCACHE=1 scons target=web release=1 client_profile=free web_variant=both --build build/emscripten/client/release/terrain-e2e-free -j8 web-package",
+  "sha256": {
+    "index.js": "987981d44c2ac4f6752c59f95ec49a6dd6399ebed109ecbf0347e2e011cd143e",
+    "index.wasm": "7497dfa63b83b121754b31b4ec94c1155a58319126ac2d36d71e96a688ffef3a",
+    "threaded/index.js": "175ddd0e6a939da4622b5ed85f3b95a8966b0747bb545f449a7ba5ce763085b5",
+    "threaded/index.wasm": "0c3d8243e9c63dd41ea20d68f7b41823f7fddc04de68a2edf91a76b892bf8219"
+  }
+}

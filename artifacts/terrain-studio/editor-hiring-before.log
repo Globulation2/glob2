@@ -1,0 +1,16 @@
+FAIL TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse (0.8s)
+
+===== FAIL TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/eb29/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "4a447509518872bd1d973c9bb2489866d4739e20", "sourceStatus": [" M src/team/stats/TeamStatsSaveHarness.cpp", "?? .playwright-mcp/"], "sourceTreeSha256": "3274c1863268d21ae6d825073cbfa33325ed6779cac1fb4741b7ad0159841d4b"}
+
+[failure] Editor building deletion clears ability lists before save and slot reuse: {?} == {?}
+src/team/stats/TeamStatsSaveHarness.cpp:1527:
+CHECK( std::find(entry.second.begin(),entry.second.end(),swarm)==entry.second.end() ) is NOT correct!
+  values: CHECK( {?} == {?} )
+[error] Editor building deletion clears ability lists before save and slot reuse: exception
+Invalid team building list reference: buildings team=0 gid=0
+
+
+0 passed, 1 failed, 0 skipped (0.8s of test time)
+[run_tests] JUnit report: artifacts/terrain-studio/editor-hiring-before.xml (1 cases)

@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="8.89024" status="run" />
+  </testsuite></testsuites>
