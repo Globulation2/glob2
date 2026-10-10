@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLGradient.h"
+#include "OpenCLProbeBatchStorage.h"
+#include "CaptureProbeAccounting.h"
 #include "OpenCLCpuAttribution.h"
 #include "OpenCLBorrowedLifetime.h"
 #include "OpenCLRequiredLifetimePool.h"
@@ -48,27 +50,41 @@ MemoryBudget hostBudget{OpenCLHostBudget};
 MemoryBudget probeBudget{OpenCLProbeBudget};
 struct BudgetExceeded : std::runtime_error { BudgetExceeded():std::runtime_error("OpenCL payload budget exceeded") {} };
 struct RequiredCanceled : std::exception {const char* what() const noexcept override{return "Required OpenCL execution canceled";}};
-struct BudgetLease {
-    MemoryBudget& budget;
+} // namespace
+// Named so only this native lease can subdivide an opaque future admission.
+// Empty destination leases adopt the source ledger during transfer/split;
+// direct required and singleton leases retain their process-wide budgets.
+class OpenCLProbeBudgetLease {
+public:
+    MemoryBudget* budget;
+    std::shared_ptr<OpenCLProbeBatchStorage> backing;
+    unsigned kind=0;
     std::size_t bytes=0;
-    explicit BudgetLease(MemoryBudget& budget):budget(budget) {}
-    BudgetLease(const BudgetLease&)=delete;
-    BudgetLease& operator=(const BudgetLease&)=delete;
-    ~BudgetLease(){budget.release(bytes);}
-    void transferTo(BudgetLease& destination) noexcept {
-        if(&budget!=&destination.budget || destination.bytes)std::terminate();
+    explicit OpenCLProbeBudgetLease(MemoryBudget& budget,std::shared_ptr<OpenCLProbeBatchStorage> owner={},unsigned ledger=0)
+        :budget(&budget),backing(std::move(owner)),kind(ledger) {}
+    OpenCLProbeBudgetLease(const OpenCLProbeBudgetLease&)=delete;
+    OpenCLProbeBudgetLease& operator=(const OpenCLProbeBudgetLease&)=delete;
+    ~OpenCLProbeBudgetLease(){release(bytes);}
+    bool reserve(std::size_t count) noexcept {return backing?backing->reserve(kind,count):budget->reserve(count);}
+    void release(std::size_t count) noexcept {if(backing)backing->release(kind,count);else budget->release(count);}
+    void transferTo(OpenCLProbeBudgetLease& destination) noexcept {
+        if(destination.bytes || (!backing && !destination.backing && budget!=destination.budget))std::terminate();
+        destination.budget=budget;destination.backing=backing;destination.kind=kind;
         destination.bytes=bytes;bytes=0;
     }
-    void splitTo(BudgetLease& destination,std::size_t count) noexcept {
-        if(&budget!=&destination.budget || destination.bytes || count>bytes)std::terminate();
+    void splitTo(OpenCLProbeBudgetLease& destination,std::size_t count) noexcept {
+        if(destination.bytes || count>bytes || (!backing && !destination.backing && budget!=destination.budget))std::terminate();
+        destination.budget=budget;destination.backing=backing;destination.kind=kind;
         destination.bytes=count;bytes-=count;
     }
     void resize(std::size_t next) {
-        if(next>bytes && !budget.reserve(next-bytes)) throw BudgetExceeded();
-        if(next<bytes) budget.release(bytes-next);
+        if(next>bytes && !reserve(next-bytes)) throw BudgetExceeded();
+        if(next<bytes) release(bytes-next);
         bytes=next;
     }
 };
+namespace {
+using BudgetLease=OpenCLProbeBudgetLease;
 template<class T> void resizeStaging(std::vector<T>& values,std::size_t count,BudgetLease& lease) {
     if(count>values.capacity()) {
         // Reserve the transient old+new allocation, not just their difference.
@@ -391,12 +407,13 @@ struct Device
             API* api;
             Handle buffer=nullptr;
             BudgetLease deviceLease;
-            Storage(API& api,MemoryBudget& budget,BudgetLease& admission):api(&api),deviceLease(budget) {
+            Storage(API& api,MemoryBudget& budget,BudgetLease& admission):api(&api),deviceLease(budget,admission.backing,2) {
                 admission.transferTo(hostLease);
             }
             static constexpr std::size_t fixedBytes(){return sizeof(Storage)+128;}
-            static std::shared_ptr<Storage> create(API& api,MemoryBudget& budget) {
-                BudgetLease reserved{hostBudget};reserved.resize(fixedBytes());
+            static std::shared_ptr<Storage> create(API& api,MemoryBudget& budget,
+                std::shared_ptr<OpenCLProbeBatchStorage> future={}) {
+                BudgetLease reserved{hostBudget,std::move(future)};reserved.resize(fixedBytes());
                 return std::make_shared<Storage>(api,budget,reserved);
             }
             ~Storage(){if(buffer)api->ReleaseMemObject(buffer);}
@@ -421,8 +438,9 @@ struct Device
         }
         template<class Request>
         static std::shared_ptr<Plane> create(API& api,const Request& request,
-            std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false) {
-            BudgetLease reserved{hostBudget};
+            std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false,
+            std::shared_ptr<OpenCLProbeBatchStorage> future={}) {
+            BudgetLease reserved{hostBudget,std::move(future)};
             reserved.resize(estimatedBytes(scalar ? 1 : request.grid.cells(),mask.size(),
                 retainedCostOwnerBytes(request.identity)));
             return std::make_shared<Plane>(api,request,mask,scalar,reserveOnly,reserved);
@@ -671,8 +689,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     // status strings retained by a concurrent snapshot's shared lane handle.
     BudgetLease optionalObjectLease{hostBudget},optionalSubsetLease{probeBudget};
     std::uint64_t statusSequence = 0;
-    Runtime(std::shared_ptr<Device> state = makeDevice(), bool lane = false)
-        : shared(std::move(state)), api(shared->api), execution(lane) {}
+    Runtime(std::shared_ptr<Device> state = makeDevice(), bool lane = false,
+        std::shared_ptr<OpenCLProbeBatchStorage> future={})
+        : shared(std::move(state)), api(shared->api), execution(lane),
+          optionalObjectLease(hostBudget,future),optionalSubsetLease(probeBudget,future,1),
+          valuesLease(hostBudget,future),blockedLease(hostBudget,future),deviceLease(shared->deviceBudget,std::move(future),2) {}
     std::mutex mutex;
     OpenCLStatus status;
     OpenCLCpuAttribution cpuAttribution{status.apiCpu};
@@ -792,14 +813,16 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         BudgetLease& objectAdmission,BudgetLease* subsetAdmission=nullptr) {
         // Separate payload/control allocations: expired weak registration must
         // never retain a full Runtime after its payload credit is released.
-        struct ControlCredit {BudgetLease host{hostBudget},subset{probeBudget};};
+        struct ControlCredit {BudgetLease host,subset;
+            explicit ControlCredit(const std::shared_ptr<OpenCLProbeBatchStorage>& future)
+                :host(hostBudget,future),subset(probeBudget,future,1){}};
         // Existing admission pays for both this credit holder and the Runtime
         // control block before either allocation. Registry retains the credit
         // until the expired weak control is actually erased.
-        auto credit=std::make_shared<ControlCredit>();
+        auto credit=std::make_shared<ControlCredit>(objectAdmission.backing);
         objectAdmission.splitTo(credit->host,256);
         if(subsetAdmission)subsetAdmission->splitTo(credit->subset,256);
-        auto result=std::shared_ptr<Runtime>(new Runtime(device,true),[credit](Runtime* value){delete value;});
+        auto result=std::shared_ptr<Runtime>(new Runtime(device,true,objectAdmission.backing),[credit](Runtime* value){delete value;});
         objectAdmission.transferTo(result->optionalObjectLease);
         if(subsetAdmission)subsetAdmission->transferTo(result->optionalSubsetLease);
         std::lock_guard lock(device->lanesMutex);
@@ -1646,7 +1669,7 @@ struct OpenCLProbe::Impl
                 if(retained>OpenCLProbeBudget-objectBytes()-payload) throw BudgetExceeded();
                 const auto bytes=payload+retained;
                 lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
-                costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},true);
+                costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},true,false,lane->optionalObjectLease.backing);
                 costs->data[0]=packed;privateScalar=privateCosts=true;
                 measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
                 measured.coldCostPlane=privateCostPermission();
@@ -1664,7 +1687,7 @@ struct OpenCLProbe::Impl
                 n>(available-retained-fixed)/sizeof(UInt))throw BudgetExceeded();
             const auto bytes=fixed+n*sizeof(UInt)+retained;
             lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
-            costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},false,true);
+            costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},false,true,lane->optionalObjectLease.backing);
             costCharge=costs->hostLease.bytes+Device::Plane::Storage::fixedBytes();
             lane->optionalSubsetLease.resize(objectBytes()-256+costCharge);
             measured.coldCostPlane=true;privateCosts=true;
@@ -1753,7 +1776,7 @@ struct OpenCLProbe::Impl
             }
             lane->capacity=n;lane->tileCapacity=tileCount;
             if(privateCosts) {
-                costs->storage=Device::Plane::Storage::create(api,lane->shared->deviceBudget);
+                costs->storage=Device::Plane::Storage::create(api,lane->shared->deviceBudget,lane->optionalObjectLease.backing);
                 const auto bytes=costs->data.size()*sizeof(UInt);
                 costs->storage->deviceLease.resize(bytes);
                 costs->buffer=costs->storage->buffer=api.CreateBuffer(lane->context,1,bytes,nullptr,&error);check(error);
@@ -1944,6 +1967,69 @@ OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpu
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
     return beginOpenCLProbe(OpenCLProbeInput{request.gradient,request.limit,request.grid,request.session,
         request.context,request.costAt,request.identity,request.operation},plan,std::move(keepAlive),std::move(clock));
+}
+OpenCLProbeBatchStorage::Estimate OpenCLProbeBatchStorage::estimate(field::Grid grid,unsigned count,
+    Plan plan,std::size_t retainedDiagnosticBytes) noexcept {
+    static_assert(CaptureProbeAccounting::nativeRetainedBytes()+16*1024<=AdapterAllowance,
+        "Batch future admission must cover the complete native accounting graph and adapter allowance");
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    if(!count || count>8 || plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
+       grid.width()<=0 || grid.height()<=0)return {};
+    const auto cells=grid.cells();const auto& selected=PLANS[unsigned(plan)];
+    if(!selected.tileWidth || !selected.tileHeight || cells>UINT32_MAX/count)return {};
+    const auto pitch=(std::size_t(grid.width())+selected.tileWidth-1)/selected.tileWidth;
+    const auto rows=(std::size_t(grid.height())+selected.tileHeight-1)/selected.tileHeight;
+    if(rows>UINT32_MAX/pitch || pitch*rows>UINT32_MAX/count)return {};
+    const auto tiles=pitch*rows*count,total=cells*count;
+    // The future batch state is bounded by eight input descriptors beyond the
+    // singleton implementation. The flattened host values array is reused for
+    // upload AND readback. Capture original/golden 4N are charged separately.
+    const auto fixed=metadataBytes()+AdapterAllowance+OpenCLProbe::Impl::objectBytes()+
+        8*sizeof(OpenCLProbeInput)+Device::Plane::fixedBytes()+sizeof(UInt)+Device::Plane::Storage::fixedBytes();
+    if(fixed>OpenCLProbeBudget || retainedDiagnosticBytes>OpenCLProbeBudget-fixed ||
+       total>(OpenCLProbeBudget-fixed-retainedDiagnosticBytes)/sizeof(std::uint16_t))return {};
+    const auto host=fixed+retainedDiagnosticBytes+total*sizeof(std::uint16_t);
+    if(tiles>(OpenCLDeviceBudget-292)/8 || total>(OpenCLDeviceBudget-292-tiles*8)/4)return {};
+    return {host,total*4+tiles*8+292,unsigned(plan)};
+#else
+    return {};
+#endif
+}
+std::shared_ptr<OpenCLProbeBatchStorage> OpenCLProbeBatchStorage::adopt(std::size_t& futurePairedBytes,
+    Estimate wanted) noexcept {
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    if(!wanted || !wanted.planOrdinal || wanted.planOrdinal>=PLANS.size() ||
+       wanted.hostBytes>OpenCLProbeBudget || wanted.hostBytes<metadataBytes() ||
+       wanted.deviceBytes>OpenCLDeviceBudget || futurePairedBytes<wanted.hostBytes)return {};
+    try {
+        auto device=runtime().shared;
+        // Admission does not call prepare(), probe(), OpenCL or a compiler.
+        // The caller already paid and qualified initialization separately.
+        {std::lock_guard lock(device->failureMutex);
+            if(!device->probed || !device->status.available || device->failed.load(std::memory_order_acquire))return {};}
+        if(!(readyPlans.load(std::memory_order_acquire)&(1u<<wanted.planOrdinal)))return {};
+        BudgetLease admittedDevice{device->deviceBudget};admittedDevice.resize(wanted.deviceBytes);
+        struct RealCredit {
+            std::shared_ptr<Device> parent;
+            BudgetLease device;
+            std::size_t pairedBytes=0;
+            explicit RealCredit(std::shared_ptr<Device> owner):parent(std::move(owner)),device(parent->deviceBudget){}
+            ~RealCredit(){if(pairedBytes)releaseOpenCLProbeBytes(pairedBytes);}
+        };
+        static_assert(sizeof(RealCredit)+256<=512,"Future admission must precharge credit/control metadata");
+        auto credit=std::make_shared<RealCredit>(std::move(device));
+        admittedDevice.transferTo(credit->device);
+        auto allocation=std::unique_ptr<OpenCLProbeBatchStorage>(new OpenCLProbeBatchStorage(wanted));
+        auto result=std::shared_ptr<OpenCLProbeBatchStorage>(allocation.release(),[credit](auto* value){delete value;});
+        result->realCredit=credit;
+        // Transfer only after every allocating operation has succeeded. The
+        // deleter-held credit pins reservations through escaped weak controls.
+        credit->pairedBytes=wanted.hostBytes;futurePairedBytes-=wanted.hostBytes;
+        return result;
+    }catch(...){return {};}
+#else
+    return {};
+#endif
 }
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Plan plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock) {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)

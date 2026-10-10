@@ -10,6 +10,7 @@ namespace gradient_kernel
 {
 struct BackendRequest;
 struct OpenCLProbeInput;
+class OpenCLProbeBatchStorage;
 enum class Plan : unsigned;
 inline constexpr std::size_t OpenCLHostBudget = 64 * 1024 * 1024;
 inline constexpr std::size_t OpenCLDeviceBudget = 128 * 1024 * 1024;
@@ -188,6 +189,7 @@ private:
     friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void>,OpenCLProbeClock);
     friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput&,Plan,std::shared_ptr<const void>,OpenCLProbeClock);
     friend bool reapOpenCLProbeQuarantine() noexcept;
+    friend class OpenCLProbeBatchStorage;
 };
 // Cancellation parks pending events: call advance until terminal before normal
 // destruction. Premature destruction or an ambiguous completion quarantines

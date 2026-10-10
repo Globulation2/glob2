@@ -260,6 +260,7 @@ UNIT_TESTS = [
     '#src/field/OpenCLRequiredControlTest.cpp',
     '#src/field/CaptureProbeAccountingTest.cpp',
     '#src/field/OpenCLLaneRegistryTest.cpp',
+    '#src/field/OpenCLProbeBatchStorageTest.cpp',
     '#src/field/CpuSavingPolicyTest.cpp',
     ('#src/map/gradient/GradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HelloWorldTest.cpp',

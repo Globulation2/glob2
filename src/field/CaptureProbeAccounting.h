@@ -29,7 +29,8 @@ public:
         Receipt receipt;
     };
 private:
-    struct Lease {std::size_t bytes=0;~Lease(){releaseOpenCLProbeBytes(bytes);}} lease;
+    struct Lease {std::shared_ptr<PrechargedProbeStorage> futureCredit;std::size_t bytes=0;
+        ~Lease(){if(bytes)releaseOpenCLProbeBytes(bytes);}} lease;
     std::shared_ptr<glob2::CpuClockRegistry> registry;
     std::optional<glob2::ProcessCpuEnvelope> envelope;
     std::thread::id producer=std::this_thread::get_id();
@@ -39,9 +40,11 @@ private:
     unsigned tails=0;
     bool finishing=false;
     CaptureProbeAccounting(std::shared_ptr<glob2::CpuClockRegistry> clocks,std::uint64_t capturedCpu,
-        std::uint64_t generation,CpuSavingPolicy::ProbeTicket identity,bool qualified,std::size_t bytes)
+        std::uint64_t generation,CpuSavingPolicy::ProbeTicket identity,bool qualified,std::size_t bytes,
+        std::shared_ptr<PrechargedProbeStorage> future={})
         :registry(std::move(clocks)),ticket(identity) {
-        lease.bytes=bytes;totals.reservedBytes=bytes;totals.capturedCpuNs=capturedCpu;
+        lease.futureCredit=std::move(future);lease.bytes=lease.futureCredit?0:bytes;
+        totals.reservedBytes=bytes;totals.capturedCpuNs=capturedCpu;
         totals.requiredGeneration=generation;totals.ticketId=ticket.id;totals.policyGeneration=ticket.generation;
         totals.releaseQualified=qualified;
         envelope.emplace(*registry);totals.processBeginNs=envelope->processBeginCpuNs();processFloor=totals.processBeginNs;
@@ -67,22 +70,28 @@ private:
     }
 public:
     CaptureProbeAccounting(const CaptureProbeAccounting&)=delete;
+    static constexpr std::size_t nativeRetainedBytes() noexcept {
+        return sizeof(CaptureProbeAccounting)+512+glob2::CpuClockRegistry::storageBytes()+PrechargedProbeStorage::metadataBytes();
+    }
     // The registry shared owner must pin its reader context as well. retainedBytes
     // covers that COMPLETE graph/control allocation, even if already globally
     // charged. Native registry retention is conservatively sizeof(registry)+256.
     static std::unique_ptr<CaptureProbeAccounting> begin(std::shared_ptr<glob2::CpuClockRegistry> registry,
         std::uint64_t capturedOptionalCpuNs,std::uint64_t requiredGeneration,CpuSavingPolicy::ProbeTicket ticket,
-        bool releaseQualified,Receipt& attempted,std::size_t retainedBytes=glob2::CpuClockRegistry::storageBytes()+256) noexcept {
+        bool releaseQualified,Receipt& attempted,std::size_t retainedBytes=glob2::CpuClockRegistry::storageBytes()+256,
+        std::shared_ptr<OpenCLProbeBatchStorage> future={}) noexcept {
         attempted={};
         constexpr auto fixed=sizeof(CaptureProbeAccounting)+256;
         if(!registry || !requiredGeneration || !ticket || retainedBytes<glob2::CpuClockRegistry::storageBytes() ||
            retainedBytes>OpenCLProbeBudget-fixed)return {};
-        const auto bytes=fixed+retainedBytes;
-        if(!reserveOpenCLProbeBytes(bytes))return {};
-        struct Guard {std::size_t bytes;~Guard(){if(bytes)releaseOpenCLProbeBytes(bytes);}} guard{bytes};
+        const auto bytes=fixed+retainedBytes+(future?PrechargedProbeStorage::metadataBytes():0);
+        struct Guard {std::size_t bytes=0;~Guard(){if(bytes)releaseOpenCLProbeBytes(bytes);}} guard;
         try {
+            std::shared_ptr<PrechargedProbeStorage> credit;
+            if(future)credit=PrechargedProbeStorage::claim(std::move(future),bytes);
+            else {if(!reserveOpenCLProbeBytes(bytes))return {};guard.bytes=bytes;}
             auto result=std::unique_ptr<CaptureProbeAccounting>(new CaptureProbeAccounting(std::move(registry),
-                capturedOptionalCpuNs,requiredGeneration,ticket,releaseQualified,bytes));
+                capturedOptionalCpuNs,requiredGeneration,ticket,releaseQualified,bytes,std::move(credit)));
             guard.bytes=0;attempted=result->totals;return result;
         } catch(...) {attempted.clockValid=false;++attempted.invalidClocks;return {};}
     }

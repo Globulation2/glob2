@@ -878,3 +878,23 @@ array is unchanged. A 2048 capture declines before any clone or clock read,
 because its two ushort arrays alone exhaust the 16 MiB subset. An injected
 adapter clock keeps this ownership test separate from timing qualification;
 neither it nor fake backend controls can promote a plan.
+
+Optional scalar batch capture must reserve its complete future replay graph
+before cloning the first input. `OpenCLProbeBatchStorage` transfers the group's
+real paired host/probe admission and separately reserves device bytes on an
+already initialized backend. Local native/adapter/accounting claims subdivide
+that promise; returning a local claim never releases the process-wide promise.
+The holder and its shared control retain the full admission until all payload
+and weak aliases disappear. Generic and singleton paths retain direct budgets.
+
+The estimate includes the actual flattened ushort values array reused for upload
+and readback, native fixed objects and scalar Plane/Storage metadata, two device
+gradient buffers, two tile masks, flags/descriptors, and a checked fixed adapter
+and complete registry/accounting allowance. Original and golden capture arrays
+are separate four-byte-per-cell admission. Thus eight 512-square scalar fields
+need about 12 MiB of arrays plus metadata; a 1024-square group must downshift to
+two or fewer before capture, and a 2048-square capture cannot fit. Extra injected
+diagnostic owner graphs require an explicit retained-byte allowance. Hardware-
+free tests prove subdivision, rollback and weak-credit retention using real host
+credits and explicitly synthetic device bookkeeping; they do not qualify device
+allocation, batch dispatch, or live automatic execution.
