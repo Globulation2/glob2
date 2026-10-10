@@ -120,8 +120,8 @@ their own terminal lifetimes. Settlement checks producer clock continuity,
 cleanup bounds and all late invalidity flags before it can permit inference.
 A directly promoted batch choice publishes its measured whole-batch elapsed
 bound with its plan/version; singleton timings never supply that bound. These
-interfaces require native replay and production scheduling qualification before
-batch promotion is enabled.
+interfaces are connected to background native replay and settlement. Native
+exactness and real production promotion require separate qualification.
 
 Accepted CPU capture has a separate policy-owned state from a paid CPU replay.
 Admission reserves optional CPU before copying original seeds and golden output;

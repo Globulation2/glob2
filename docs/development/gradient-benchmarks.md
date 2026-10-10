@@ -472,8 +472,8 @@ host budgets; cancellation must return the subset to its previous reservation.
 This is an implementation gate, not promotion evidence. Yielded/cold probe CPU
 includes event polls, setup and lifecycle costs and is not faithful required
 batch timing; it also excludes asynchronous driver CPU outside the calling
-thread. Capture and live promotion remain disabled until calibration, full
-process CPU, device contention and tick-tail gates pass. Unknown cost planes
+thread. Controlled capture and promotion require the complete process accounting
+path described below; this kernel gate alone cannot enable them. Unknown cost planes
 still decline; this candidate does not warm them synchronously or on the owner.
 
 Optional probe clocks must be nonzero and monotonic at setup, advance endpoints,
@@ -975,10 +975,10 @@ coverage without a calibration, using synthetic funding only for API admission.
 Private identity-bound settlement floors independently protect complete debt
 and a calibrated required-path upper bound; final probe-only metadata destruction
 increases debt only for that authenticated split. The legacy accounting overload
-also keeps both bounds equal. The explicit split is
-unattached until native accounting, calibration, tuning-on/off total CPU and
-promotion-enabled responsiveness gates pass; it never waives complete-mode
-overhead or deadline checks.
+also keeps both bounds equal. The production background service uses authenticated
+complete-debt receipts. The calibrated split remains unattached until actual
+required-path calibration and integrated qualification; neither path waives
+complete-mode expense or deadline checks.
 
 `CaptureBatchProbeReplay` accepts the Group's already frozen two/four/eight
 immutable fields and executes one native batch, preserving per-field exact
