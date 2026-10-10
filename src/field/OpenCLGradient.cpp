@@ -922,9 +922,6 @@ struct Runtime
                 auto& selection = representative.session.selection(representative.family, count);
                 const auto signature = workload(requests);
                 if (choice == Backend::Automatic) reconsider(representative, count, signature, movementMask(requests));
-                double groupSchedulingMs = schedulingMs;
-                for (auto request : requests)
-                    groupSchedulingMs = std::max(groupSchedulingMs, schedulingMs + request->schedulingMs);
                 std::unique_lock classLock(representative.session.classMutex(representative.family,count),std::defer_lock);
                 const bool large=std::any_of(requests.begin(),requests.end(),[](auto r){return r->grid.cells()>=65536;});
                 // Rechecks can invalidate a previous winner while another lane
@@ -1005,7 +1002,7 @@ struct Runtime
                             std::copy(measured[i].begin(), measured[i].end(), committed[i].begin());
                             offset += size;
                         }
-                        sample = elapsed(start) + groupSchedulingMs;
+                        sample = elapsed(start) + schedulingMs;
                         // Verify outside the timed region, after output conversion.
                         for (std::size_t i = 0; i < count; ++i)
                         {
@@ -1068,7 +1065,7 @@ struct Runtime
                 if (choice == Backend::Automatic) {
                     auto& timing = representative.session.timing(representative.family, count);
                     const auto baseline = timing.cpuMs.load(std::memory_order_relaxed);
-                    if (baseline > 0 && elapsed(executionStart) + groupSchedulingMs > baseline * 1.1) {
+                    if (baseline > 0 && elapsed(executionStart) + schedulingMs > baseline * 1.1) {
                         if (timing.slowSamples.fetch_add(1, std::memory_order_relaxed) + 1 >= 8)
                             timing.calls.store(timing.recheckAfter.load(std::memory_order_relaxed),
                                                std::memory_order_relaxed);

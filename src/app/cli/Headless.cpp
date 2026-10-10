@@ -574,8 +574,6 @@ struct HeadlessRunner
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << pipelineResult.waitNs
 			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
-			<< ",\"gradient_device_queue_ns\":" << pipelineResult.deviceQueueNs
-			<< ",\"gradient_device_queue_max_ns\":" << pipelineResult.deviceQueueMaxNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
 			<< ",\"building_gradient_jobs\":" << buildingResult.jobs

@@ -102,8 +102,6 @@ struct BackendRequest
     Family family = Family::Generic;
     // Optional caller-owned CPU batch executor, also used during calibration.
     void (*cpuBatch)(std::span<const BackendRequest* const>, std::span<std::uint16_t* const>) = nullptr;
-    // Time already spent waiting for accelerator dispatch, excluded from CPU placement.
-    double schedulingMs = 0;
 };
 // An accelerator must leave the seed buffer untouched when returning false.
 // Registered by the optional native implementation; absent in standalone users.
@@ -118,8 +116,7 @@ inline bool canBatch(const BackendSession &session)
 
 template <class Costs, class CPU>
 bool tryAcceleratedGradient(std::uint16_t *gradient, int maxCost, field::Grid grid, BackendSession &session,
-                            Costs costs, CPU cpu, CostIdentity identity = {}, Family family = Family::Generic,
-                            double schedulingMs = 0)
+                            Costs costs, CPU cpu, CostIdentity identity = {}, Family family = Family::Generic)
 {
     const auto choice = backend();
     if (!accelerator || choice == Backend::CPU || maxCost < 0)
@@ -138,7 +135,7 @@ bool tryAcceleratedGradient(std::uint16_t *gradient, int maxCost, field::Grid gr
                                  &context,
                                  [](void *p, std::size_t i) { return static_cast<Context *>(p)->costs(i); },
                                  [](void *p, std::uint16_t *out) { static_cast<Context *>(p)->cpu(out); },
-                                 std::move(identity), family, nullptr, schedulingMs};
+                                 std::move(identity), family, nullptr};
     return accelerator(request, choice);
 }
 } // namespace gradient_kernel

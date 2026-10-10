@@ -18,8 +18,6 @@
 #include <stdexcept>
 #include <vector>
 #include <utility>
-#include <condition_variable>
-#include <thread>
 
 // Fixed-tick publication. The simulation thread owns pending/free
 // and all slot pointers; workers own private output and immutable inputs until joined.
@@ -39,7 +37,7 @@ public:
 		bool modifiedCosts = false;
 		int swim = 0;
 		std::uint64_t due = 0;
-		bool superseded = false, done = false, offloaded = false;
+		bool superseded = false, done = false;
 		std::exception_ptr error;
 		gradient_preparation::Request request;
 		gradient_preparation::CrowdingScratch* crowding = nullptr;
@@ -47,8 +45,6 @@ public:
 		GradientPipeline* owner = nullptr;
 		std::function<void(Job&)> seed;
 		std::uint64_t preparationNs = 0;
-		std::chrono::steady_clock::time_point queuedAt{};
-		std::uint64_t queueWaitNs = 0;
 	};
 	// Stable save boundary. A view is valid only during visitPendingSnapshots;
 	// the owning queue and worker state remain private to the pipeline.
@@ -75,8 +71,7 @@ public:
 	std::function<std::uint64_t(unsigned remaining)> deadline;
 	static constexpr unsigned MaxDelay = 16;
 	static_assert(MaxDelay <= ComputeExecutor::GradientHorizon);
-	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0,
-		queueWaitNs=0, maxQueueWaitNs=0; } metrics;
+	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0; } metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
@@ -90,71 +85,7 @@ private:
 	std::size_t cells = 0;
 	Work work;
     BatchWork batchWork;
-
-    // Experimental asynchronous device submission. The original executor owns
-    // preparation; immutable seeded jobs live until their publication join.
-    std::mutex deviceMutex;
-    std::condition_variable deviceChanged;
-    std::deque<Job*> devicePending;
-    std::thread deviceThread;
-    std::function<std::thread(std::function<void()>)> deviceFactory =
-        [](auto function) { return GAGCore::ThreadSupport::launch(std::move(function)); };
-    bool deviceStopping = false;
-    std::array<GradientWorkspace, 8> deviceScratch;
-    void releaseInputs(Job& job) {
-        job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
-        job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;
-    }
-    void deviceLoop() {
-        for (;;) {
-            std::array<Job*, 8> jobs{};
-            std::size_t count = 0;
-            {
-                std::unique_lock lock(deviceMutex);
-                deviceChanged.wait(lock, [&] { return deviceStopping || !devicePending.empty(); });
-                if (devicePending.empty()) return;
-                // Automatic placement is calibrated for singleton work on the
-                // original worker. Do not create an unmeasured batch class or
-                // compare its CPU alternative serially on this helper.
-                const auto limit = gradient_kernel::backend() == gradient_kernel::Backend::OpenCL ? jobs.size() : 1;
-                while (count < limit && !devicePending.empty()) {
-                    auto* job = devicePending.front(); devicePending.pop_front();
-                    job->queueWaitNs = ns(job->queuedAt);
-                    jobs[count++] = job;
-                }
-            }
-            const auto start = Clock::now();
-            try { batchWork(std::span(jobs.data(), count), std::span(deviceScratch.data(), count)); }
-            catch (...) { for (std::size_t i=0; i<count; ++i) jobs[i]->error = std::current_exception(); }
-            for (std::size_t i=0; i<count; ++i) releaseInputs(*jobs[i]);
-            activeNs.fetch_add(ns(start), std::memory_order_relaxed);
-            {
-                std::lock_guard lock(deviceMutex);
-                for (std::size_t i=0; i<count; ++i) jobs[i]->done = true;
-            }
-            deviceChanged.notify_all();
-        }
-    }
-    void stopDevice() {
-        { std::lock_guard lock(deviceMutex); deviceStopping = true; }
-        deviceChanged.notify_all();
-        if (deviceThread.joinable()) deviceThread.join();
-        deviceStopping = false;
-    }
-    // Configuration changes happen only after previous work is drained. Saves
-    // can restore a pipeline before the executor receives its local thread count.
-    void refreshDevice() {
-        const auto* enabled = std::getenv("GLOB2_GRADIENT_ASYNC");
-        const bool eligible = GAGCore::ThreadSupport::available && enabled && std::strcmp(enabled,"0")!=0 &&
-            delay && shared && executor && executor->threadCount()>1 &&
-            batchWork && gradient_kernel::canBatch(*backendSession);
-        if (!eligible) { stopDevice(); return; }
-        if (deviceThread.joinable()) return;
-        for (auto& scratch : deviceScratch) scratch.backendSession = backendSession;
-        try { deviceThread = deviceFactory([this] { deviceLoop(); }); }
-        catch (...) { /* Existing workers retain the synchronous backend. */ }
-    }
-    std::atomic<std::uint64_t> activeNs{0};
+	std::atomic<std::uint64_t> activeNs{0};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
@@ -172,22 +103,6 @@ private:
             const bool selectedGPU = choice == gradient_kernel::Backend::OpenCL ||
                 (choice == gradient_kernel::Backend::Automatic &&
                  backendSession->selection(gradient_preparation::backendFamily(job.request.kind), 1).load() == gradient_kernel::Backend::OpenCL);
-            if (shared && deviceThread.joinable() && gradient_kernel::canBatch(*backendSession) && selectedGPU) {
-                job.crowding = nullptr;
-                {
-                    std::lock_guard lock(deviceMutex);
-                    job.queuedAt = Clock::now();
-                    // Preparation can complete out of order. Give already-ready
-                    // work the same deadline ordering as the original executor.
-                    const auto position = std::upper_bound(devicePending.begin(), devicePending.end(), job.due,
-                        [](auto due, const Job* pending) { return due < pending->due; });
-                    devicePending.insert(position, &job);
-                    job.offloaded = true;
-                }
-                activeNs.fetch_add(ns(start), std::memory_order_relaxed);
-                deviceChanged.notify_all();
-                return;
-            }
             if (selectedGPU && batchWork && gradient_kernel::canBatch(*backendSession)) {
                 const std::array jobs{&job};
                 batchWork(jobs, std::span(&scratch.propagation, 1));
@@ -211,16 +126,7 @@ private:
 	void wait(Job &job) {
 		const auto start = Clock::now();
 		if (executor) executor->join(job.batch);
-        // The executor join publishes the offload decision. Unsubmitted
-        // reservations must reach the existing error instead of waiting for a
-        // device completion that can never arrive.
-        if (job.offloaded) {
-            std::unique_lock lock(deviceMutex);
-            deviceChanged.wait(lock, [&] { return job.done; });
-        }
 		metrics.preparationNs += std::exchange(job.preparationNs, 0);
-		metrics.maxQueueWaitNs = std::max(metrics.maxQueueWaitNs, job.queueWaitNs);
-		metrics.queueWaitNs += std::exchange(job.queueWaitNs, 0);
 		metrics.waitNs += ns(start);
 		if (!job.done) throw std::logic_error("Unprepared gradient reservation");
 	}
@@ -237,7 +143,6 @@ public:
 		for (auto& job : pending) if (!job->batch.empty()) {
 			try { executor->join(job->batch); } catch (...) {}
 		}
-		stopDevice();
 		pending.clear(); spare.clear(); workspaces.clear();
 		delay = 0; tick = 0; lastSubmission = 0;
 	}
@@ -246,18 +151,11 @@ public:
 		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
-    void setBatchWork(BatchWork callback,
-        const std::function<std::thread(std::function<void()>)>& factory =
-            [](auto function) { return GAGCore::ThreadSupport::launch(std::move(function)); }) {
-        finish(); stopDevice(); batchWork=std::move(callback); deviceFactory=factory;
-        refreshDevice();
-    }
+    void setBatchWork(BatchWork callback) { finish(); batchWork=std::move(callback); }
 	// Share the game choice with all previous work drained.
     void setBackendSession(std::shared_ptr<gradient_kernel::BackendSession> session) {
         backendSession = std::move(session);
-        for (auto& scratch : deviceScratch) scratch.backendSession=backendSession;
         for (auto& workspace : workspaces) workspace.propagation.backendSession = backendSession;
-        refreshDevice();
     }
 	// Call after the executor is resized, with all previous work drained.
 	void resizeWorkspaces() {
@@ -268,7 +166,6 @@ public:
             workspace.crowding.materials = {};
             workspace.crowding.materials.budget = 64 * 1024 * 1024 / workspaces.size();
         }
-        refreshDevice();
     }
 	// Saving completes private work without changing publication deadlines.
 	template<class Visitor> void visitPendingSnapshots(Visitor visitor) {
@@ -289,7 +186,7 @@ public:
 		pending.push_back(std::move(job));
 	}
 	// Execution is local configuration, never part of saved simulation state.
-	void setWorkerCount(unsigned count) { finish(); shared = count != 0; refreshDevice(); }
+	void setWorkerCount(unsigned count) { finish(); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
 		++tick;
@@ -315,8 +212,7 @@ public:
 		if (spare.empty()) { job = std::make_unique<Job>(); job->data.reset(new std::uint16_t[cells]); }
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
-		job->done=false; job->offloaded=false; job->superseded=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
-		job->queuedAt={}; job->queueWaitNs=0;
+		job->done=false; job->superseded=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
 		++metrics.jobs;

@@ -360,7 +360,7 @@ void propagateBatch(std::span<const PropagationField> fields)
                  { return batchCosts(*static_cast<PropagationField *>(context), cell); },
                  [](void *context, Uint16 *out) { batchCPU(*static_cast<PropagationField *>(context), out); },
                  snapshotCostIdentity(field.request, *field.snapshot),
-                 backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr, field.schedulingMs});
+                 backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr});
         }
         catch (...)
         {

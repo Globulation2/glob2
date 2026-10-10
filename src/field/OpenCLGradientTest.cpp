@@ -890,45 +890,6 @@ TEST_SUITE("OpenCLGradient")
         CHECK_FALSE(session.failed.load());
     }
 
-    TEST_CASE("accelerator queue delay brings forward placement rechecks")
-    {
-        using namespace gradient_kernel;
-        RestoreBackend restore;
-        if (!openCLStatus().available) return;
-        setBackend(Backend::Automatic);
-        BackendSession session;
-        std::vector<std::uint16_t> seeds(64, 1);
-        seeds[7] = 65535;
-        auto expected = oracle(seeds, {8,8}, std::vector<EntrySteps>(64, LAND_STEPS), COST_LIMIT);
-        auto field = seeds;
-        BackendRequest request{field.data(), COST_LIMIT, {8,8}, session, &expected,
-            [](void*, std::size_t) { return LAND_STEPS; },
-            [](void* p, std::uint16_t* output) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                const auto& expected = *static_cast<const std::vector<std::uint16_t>*>(p);
-                std::copy(expected.begin(), expected.end(), output);
-            }, {}, Family::Guard};
-        REQUIRE(accelerator(request, Backend::Automatic));
-        REQUIRE(field == expected);
-        REQUIRE(session.selection(Family::Guard).load() == Backend::OpenCL);
-        const auto measured = openCLStatus();
-        request.schedulingMs = 1000;
-        for (unsigned repeat = 0; repeat < 8; ++repeat) {
-            field = seeds;
-            REQUIRE(accelerator(request, Backend::Automatic));
-            CHECK(field == expected);
-        }
-        CHECK(openCLStatus().calibrations == measured.calibrations);
-        auto& timing = session.timing(Family::Guard, 1);
-        CHECK(timing.calls.load() >= timing.recheckAfter.load());
-        field = seeds;
-        REQUIRE(accelerator(request, Backend::Automatic));
-        CHECK(field == expected);
-        CHECK(openCLStatus().calibrations == measured.calibrations + 1);
-        CHECK(session.selection(Family::Guard).load() == Backend::CPU);
-        CHECK_FALSE(session.failed.load());
-    }
-
     TEST_CASE("independent GPU lanes finish while another lane prepares different terrain")
     {
         using namespace gradient_kernel;
