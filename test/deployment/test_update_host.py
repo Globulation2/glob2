@@ -124,6 +124,39 @@ class UpdateHostTests(unittest.TestCase):
             self.assertEqual(self.run_script().returncode, 0)
         self.assertEqual(len(self.backups()), 2)
 
+    def test_retention_preserves_manual_and_scheduled_backups(self):
+        backups = self.dir / 'backups'
+        backups.mkdir()
+        names = ('admin-dashboard-20260101T000000Z', 'ai-enable-20260101T000000Z',
+                 'manual-v4-20260101T000000Z', 'retired-environment-config', 'scheduled',
+                 '20000101T000000Z')
+        for name in names:
+            (backups / name).mkdir()
+            (backups / name / 'evidence').write_text('preserve')
+        for _ in range(3):
+            result = self.run_script()
+            self.assertEqual(result.returncode, 0, result.stderr)
+        for name in names:
+            self.assertEqual((backups / name / 'evidence').read_text(), 'preserve')
+        deployments = [path for path in self.backups() if path.name not in names]
+        self.assertEqual(len(deployments), 2)
+        for path in deployments:
+            self.assertTrue((path / 'target-design-system-revision').exists())
+
+    def test_retention_preserves_current_backup_after_clock_regression(self):
+        backups = self.dir / 'backups'
+        backups.mkdir()
+        for name in ('20990101T000000Z', '20990102T000000Z.000000'):
+            (backups / name).mkdir()
+            (backups / name / 'revision').write_text('future-deployment')
+        result = self.run_script()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(len(self.backups()), 2)
+        current = [path for path in self.backups() if (path / 'glob2.dump').exists()]
+        self.assertEqual(len(current), 1)
+        self.assertTrue((current[0] / 'glob2.dump').exists())
+        self.assertTrue((current[0] / 'target-design-system-revision').exists())
+
     def test_a_failed_build_changes_nothing_that_runs(self):
         result = self.run_script(FAKE_BUILD_FAIL='1')
         self.assertNotEqual(result.returncode, 0)
