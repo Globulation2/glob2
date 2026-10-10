@@ -50,6 +50,22 @@ def release_body(code, name, notes, track=TRACK):
     }]}
 
 
+def preflight(service, track=TRACK):
+    """Verify app/channel API access using an uncommitted, temporary edit."""
+    if track not in ('internal', 'production'):
+        raise ValueError('Unsupported Play track')
+    edits = service.edits()
+    edit = edits.insert(packageName=PACKAGE, body={}).execute(num_retries=3)
+    args = {'packageName': PACKAGE, 'editId': edit['id']}
+    try:
+        current = edits.tracks().get(track=track, **args).execute(num_retries=3)
+        if current.get('track') != track:
+            raise ValueError('Play returned a different selected track')
+    finally:
+        edits.delete(**args).execute(num_retries=3)
+    return {'package': PACKAGE, 'track': track, 'apiAccessVerified': True}
+
+
 def publish(service, bundle, code, name, notes, track=TRACK):
     """Create a Play edit, upload the bundle, and commit only the explicitly selected track."""
     from googleapiclient.http import MediaFileUpload
@@ -87,6 +103,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     subcommands = parser.add_subparsers(dest='command', required=True)
     subcommands.add_parser('version-code')
+    check = subcommands.add_parser('preflight')
+    check.add_argument('--track', choices=('internal', 'production'), default=TRACK)
     release = subcommands.add_parser('publish')
     release.add_argument('--track', choices=('internal', 'production'), default=TRACK)
     release.add_argument('--bundle', type=Path, required=True)
@@ -96,13 +114,16 @@ def main():
     if args.command == 'version-code':
         print(version_code())
         return
-    if not 1 < args.version_code <= MAX_VERSION_CODE:
+    if args.command == 'publish' and not 1 < args.version_code <= MAX_VERSION_CODE:
         raise ValueError('Invalid Play version code')
     from googleapiclient.discovery import build
     import google.auth
 
     credentials, _ = google.auth.default(scopes=['https://www.googleapis.com/auth/androidpublisher'])
     service = build('androidpublisher', 'v3', credentials=credentials, cache_discovery=False)
+    if args.command == 'preflight':
+        print(json.dumps(preflight(service, args.track), sort_keys=True))
+        return
     revision = os.environ.get('GITHUB_SHA', 'local')[:7]
     name = f'{args.track.title()} {args.version_code} ({revision})'
     result = publish(service, args.bundle.resolve(), args.version_code, name, args.release_notes, args.track)

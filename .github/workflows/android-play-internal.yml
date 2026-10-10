@@ -17,6 +17,11 @@ on:
         required: false
         default: Automated Globulation 2 internal test build.
         type: string
+      preflight_only:
+        description: Verify protected channel credentials and API access without building or publishing
+        required: false
+        default: false
+        type: boolean
   workflow_call:
     inputs:
       source_commit:
@@ -34,6 +39,10 @@ on:
         required: false
         default: Globulation 2 release.
         type: string
+      preflight_only:
+        required: false
+        default: false
+        type: boolean
 
 # Release credentials exist only in the owner's release mirror. Public read
 # access does not grant write access, workflow dispatch, or environment approval.
@@ -55,6 +64,9 @@ jobs:
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     environment: ${{ inputs.track == 'production' && 'google-play-production' || 'google-play-internal' }}
+    permissions:
+      contents: read
+      id-token: write
     outputs:
       commit: ${{ steps.source.outputs.commit }}
     steps:
@@ -90,8 +102,25 @@ jobs:
           if [[ -n "$EXPECTED_COMMIT" ]]; then test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"; fi
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: Install pinned Play API preflight tools
+        run: |
+          python3 -m venv "$RUNNER_TEMP/play-preflight-tools"
+          "$RUNNER_TEMP/play-preflight-tools/bin/python" -m pip install --disable-pip-version-check \
+            --require-hashes --only-binary=:all: -r mobile/play-api-requirements.txt
+      - name: Authenticate the selected protected Play channel
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GLOB2_PLAY_WIF_PROVIDER }}
+          service_account: ${{ vars.GLOB2_PLAY_SERVICE_ACCOUNT }}
+      - name: Verify app and selected track access before compiling
+        env:
+          TRACK: ${{ inputs.track }}
+        run: |
+          "$RUNNER_TEMP/play-preflight-tools/bin/python" mobile/play_release.py preflight --track "$TRACK"
+
   build:
     needs: credentials
+    if: ${{ !inputs.preflight_only }}
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     outputs:
