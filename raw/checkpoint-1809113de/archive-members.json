@@ -1,0 +1,1082 @@
+{
+  "native-bcfb57075-unit/build-provenance.json": {
+    "sha256": "09a4ef508b2bbd31569b88153a33887ff59f81b86e167724e227fc9fb7a4c188",
+    "bytes": 616,
+    "archive": "native-bcfb57075-unit.tar.gz"
+  },
+  "native-bcfb57075-unit/inventory.json": {
+    "sha256": "a1e25e83017937f837a01769bed87e2f36aba7fd8a31883bb339da5ac6dfd4f2",
+    "bytes": 83637,
+    "archive": "native-bcfb57075-unit.tar.gz"
+  },
+  "native-bcfb57075-unit/junit.xml": {
+    "sha256": "9e707050ec32e89d2753f498acd46e91494c421083d1695e28081d0ede17a206",
+    "bytes": 13997,
+    "archive": "native-bcfb57075-unit.tar.gz"
+  },
+  "native-bcfb57075-engine/inventory.json": {
+    "sha256": "4e3d7b3b2c8147aa8203484d00fd0cf9fa578cf57b9057f1a9531bcc62de42f9",
+    "bytes": 147300,
+    "archive": "native-bcfb57075-engine.tar.gz"
+  },
+  "native-bcfb57075-engine/junit.xml": {
+    "sha256": "54c6acacf383769a7ffc995ae5b241c8a32cb4b1c74acfd98f1869dd4f22e7f7",
+    "bytes": 12425,
+    "archive": "native-bcfb57075-engine.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch0-parity1-interval1/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch0-parity1-interval1/stderr.log": {
+    "sha256": "fc37f7523e976751d619975684ada7d64d4352cc4ff252f7fba8086c671e707f",
+    "bytes": 744,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch0-parity1-interval3/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch0-parity1-interval3/stderr.log": {
+    "sha256": "a4e2bcd9a966cc8e990426a2bfef4a8f78b1c8d651b7653e6c97dd8fdc233c6a",
+    "bytes": 702,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch0-parity1-interval8/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch0-parity1-interval8/stderr.log": {
+    "sha256": "a4e2bcd9a966cc8e990426a2bfef4a8f78b1c8d651b7653e6c97dd8fdc233c6a",
+    "bytes": 702,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity0-interval1/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity0-interval1/stderr.log": {
+    "sha256": "fc37f7523e976751d619975684ada7d64d4352cc4ff252f7fba8086c671e707f",
+    "bytes": 744,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity0-interval3/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity0-interval3/stderr.log": {
+    "sha256": "a4e2bcd9a966cc8e990426a2bfef4a8f78b1c8d651b7653e6c97dd8fdc233c6a",
+    "bytes": 702,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity0-interval8/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity0-interval8/stderr.log": {
+    "sha256": "a4e2bcd9a966cc8e990426a2bfef4a8f78b1c8d651b7653e6c97dd8fdc233c6a",
+    "bytes": 702,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity1-interval1/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity1-interval1/stderr.log": {
+    "sha256": "a4e2bcd9a966cc8e990426a2bfef4a8f78b1c8d651b7653e6c97dd8fdc233c6a",
+    "bytes": 702,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity1-interval3/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity1-interval3/stderr.log": {
+    "sha256": "a4e2bcd9a966cc8e990426a2bfef4a8f78b1c8d651b7653e6c97dd8fdc233c6a",
+    "bytes": 702,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity1-interval8/results.xml": {
+    "sha256": "16f6a75a1b48831dad9237fa2ff4cfa4870d3a0afee3f12de90aee297070a6a5",
+    "bytes": 157138,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/epoch1-parity1-interval8/stderr.log": {
+    "sha256": "a4e2bcd9a966cc8e990426a2bfef4a8f78b1c8d651b7653e6c97dd8fdc233c6a",
+    "bytes": 702,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/matrix-original-parser.json": {
+    "sha256": "a9d3d9d5c246d74cd5a361cd8fe036d3a4e98bf10c66b84fc7595243527113a9",
+    "bytes": 1129,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/matrix.json": {
+    "sha256": "8eb850914b4c1c9a35bcee850b1a9b218690b91fd00abf63d3c1eafaa2d58069",
+    "bytes": 10110,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "native-bcfb57075-required-matrix/metadata.json": {
+    "sha256": "7174c501538102141fb868405e885ca49a8e600f349016707cb70935d7e46c93",
+    "bytes": 693,
+    "archive": "native-bcfb57075-required-matrix.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/artifacts.json": {
+    "sha256": "7b0ca7bf6545be9c55f75f14f8869365df2c691378a0c346b0c839982daa3eb2",
+    "bytes": 277,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/artifacts.json": {
+    "sha256": "8b51913aee5b8391f90a3470949c307520d9f8b950bd911c1d34cb6914c8f866",
+    "bytes": 237,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/engine.log": {
+    "sha256": "9318ee950991f6d8050f8c30e94d47c40ea54982fd1be64065a42896a714bf20",
+    "bytes": 46230,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/game.replay.checksums": {
+    "sha256": "e2ebb0ea91a64adc3e3091d6d79a2fe5eba96e66ba45e4e231310f5bcce08069",
+    "bytes": 14653796,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/progress.jsonl": {
+    "sha256": "862b6e33bbc2fd04cb35883e59d6bf789307a51cb736d16bc1373ae164565271",
+    "bytes": 264,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/result.json": {
+    "sha256": "73d02abac47d0e7f4aca954c38658a956edebd8d1307ae4beecb442d939f5c9e",
+    "bytes": 71617,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/continuation/world.checksums": {
+    "sha256": "76dd8181c651aec5a423e5abdb07aeb36396e09ceae143668777bd3eb85ea430",
+    "bytes": 32286,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/engine.log": {
+    "sha256": "280c4e2a4b994d5ca2516f164b9024259317321f3d229dcd6fa5e7b9958d3fb5",
+    "bytes": 46419,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/final.game.gz": {
+    "sha256": "3664f6ac30816bd0abdd0f503195ea9a29238259b67d74d1eb0b74526b3af5a6",
+    "bytes": 1034592,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/game.replay.checksums": {
+    "sha256": "c6b6791e97a020f9c31cb4a45fdc9322a2eed9237d79631b0423cd2e24b8d0ca",
+    "bytes": 9439884,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/progress.jsonl": {
+    "sha256": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+    "bytes": 261,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/result.json": {
+    "sha256": "2a24fb7c9908417f9066ebe01b07a511e410894e042495d639d142d5bba0bb43",
+    "bytes": 71323,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-cpu/world.checksums": {
+    "sha256": "b5eed856f1f200b4e578416d181c95639756a0acd39d31550d4e5cc5c876d314",
+    "bytes": 31112,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/artifacts.json": {
+    "sha256": "331ebe9dc96db7921ce2e478a8b5d4cecb520c7c91d5c6209a6505d97f78619d",
+    "bytes": 277,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/artifacts.json": {
+    "sha256": "20f4bad42ac78884f1e53923ecb885d9cbee2d7f9d182dcc59338d66655ce217",
+    "bytes": 237,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/engine.log": {
+    "sha256": "9318ee950991f6d8050f8c30e94d47c40ea54982fd1be64065a42896a714bf20",
+    "bytes": 46230,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/game.replay.checksums": {
+    "sha256": "e2ebb0ea91a64adc3e3091d6d79a2fe5eba96e66ba45e4e231310f5bcce08069",
+    "bytes": 14653796,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/progress.jsonl": {
+    "sha256": "862b6e33bbc2fd04cb35883e59d6bf789307a51cb736d16bc1373ae164565271",
+    "bytes": 264,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/result.json": {
+    "sha256": "97c16ec16b7a63b9f6062e91e3548588b85c52b8463779b0a01b55605f1a51ad",
+    "bytes": 71829,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/continuation/world.checksums": {
+    "sha256": "76dd8181c651aec5a423e5abdb07aeb36396e09ceae143668777bd3eb85ea430",
+    "bytes": 32286,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/engine.log": {
+    "sha256": "2f51e288108bfdfa86d25a87625976501176886e9fcde4a2f089d536115ea30b",
+    "bytes": 46425,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/final.game.gz": {
+    "sha256": "3664f6ac30816bd0abdd0f503195ea9a29238259b67d74d1eb0b74526b3af5a6",
+    "bytes": 1034592,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/game.replay.checksums": {
+    "sha256": "c6b6791e97a020f9c31cb4a45fdc9322a2eed9237d79631b0423cd2e24b8d0ca",
+    "bytes": 9439884,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/progress.jsonl": {
+    "sha256": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+    "bytes": 261,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/result.json": {
+    "sha256": "62d8e232be68ea8aa7db29f675c9266021f5d84a26e08a9db1ec424a3d6b104b",
+    "bytes": 71543,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-poll0/world.checksums": {
+    "sha256": "b5eed856f1f200b4e578416d181c95639756a0acd39d31550d4e5cc5c876d314",
+    "bytes": 31112,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/artifacts.json": {
+    "sha256": "c5a0edce4d5bdeb61d06e21eb03e62fa9b918caf857f579b40e643844087e9ee",
+    "bytes": 277,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/artifacts.json": {
+    "sha256": "49d5121ad6e4f037e179a6c336201ed02f899e675575d0ab888b831edfe2c035",
+    "bytes": 237,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/engine.log": {
+    "sha256": "9318ee950991f6d8050f8c30e94d47c40ea54982fd1be64065a42896a714bf20",
+    "bytes": 46230,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/game.replay.checksums": {
+    "sha256": "e2ebb0ea91a64adc3e3091d6d79a2fe5eba96e66ba45e4e231310f5bcce08069",
+    "bytes": 14653796,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/progress.jsonl": {
+    "sha256": "862b6e33bbc2fd04cb35883e59d6bf789307a51cb736d16bc1373ae164565271",
+    "bytes": 264,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/result.json": {
+    "sha256": "55a8415831bc9edb023a4b888c1b04e03aeaf862c779bc70dfd8450f4c8156df",
+    "bytes": 71836,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/continuation/world.checksums": {
+    "sha256": "76dd8181c651aec5a423e5abdb07aeb36396e09ceae143668777bd3eb85ea430",
+    "bytes": 32286,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/engine.log": {
+    "sha256": "196e6b73e1bea02d8b07897a67a580a37c0b213ac4146d6c620b95dfc133508c",
+    "bytes": 46431,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/final.game.gz": {
+    "sha256": "3664f6ac30816bd0abdd0f503195ea9a29238259b67d74d1eb0b74526b3af5a6",
+    "bytes": 1034592,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/game.replay.checksums": {
+    "sha256": "c6b6791e97a020f9c31cb4a45fdc9322a2eed9237d79631b0423cd2e24b8d0ca",
+    "bytes": 9439884,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/progress.jsonl": {
+    "sha256": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+    "bytes": 261,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/result.json": {
+    "sha256": "0739972f17ba5b80a44e1eaf9c99e4ee107d63f865278d261a500f1019e561f1",
+    "bytes": 71550,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/candidate-gpu-worker-noop/world.checksums": {
+    "sha256": "b5eed856f1f200b4e578416d181c95639756a0acd39d31550d4e5cc5c876d314",
+    "bytes": 31112,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/artifacts.json": {
+    "sha256": "fed2cb0f14af9c9f299a157272760d75697d7053e57354622a8d9fc46ee338ca",
+    "bytes": 277,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/artifacts.json": {
+    "sha256": "b000dbfd82fca0c12d0fac122e18bb3ea66956c47df21e2e2a4b6e6a3a949c5b",
+    "bytes": 237,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/engine.log": {
+    "sha256": "9318ee950991f6d8050f8c30e94d47c40ea54982fd1be64065a42896a714bf20",
+    "bytes": 46230,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/game.replay.checksums": {
+    "sha256": "e2ebb0ea91a64adc3e3091d6d79a2fe5eba96e66ba45e4e231310f5bcce08069",
+    "bytes": 14653796,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/progress.jsonl": {
+    "sha256": "862b6e33bbc2fd04cb35883e59d6bf789307a51cb736d16bc1373ae164565271",
+    "bytes": 264,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/result.json": {
+    "sha256": "13ae35b06c23d61b6ab17898361e05c90c4f8ea50911caa8147f8c7f9581567b",
+    "bytes": 63127,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/continuation/world.checksums": {
+    "sha256": "76dd8181c651aec5a423e5abdb07aeb36396e09ceae143668777bd3eb85ea430",
+    "bytes": 32286,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/engine.log": {
+    "sha256": "65c4bf2bbdaf6ff881c6432c48d19a6b124f6bfafdf27f985cd7c0a236563fd6",
+    "bytes": 46412,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/final.game.gz": {
+    "sha256": "3664f6ac30816bd0abdd0f503195ea9a29238259b67d74d1eb0b74526b3af5a6",
+    "bytes": 1034592,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/game.replay.checksums": {
+    "sha256": "c6b6791e97a020f9c31cb4a45fdc9322a2eed9237d79631b0423cd2e24b8d0ca",
+    "bytes": 9439884,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/progress.jsonl": {
+    "sha256": "b48c60e54c1f9891fe0aa8696f3a3c25a688e6d633009f20b9a0548b1e262efe",
+    "bytes": 261,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/result.json": {
+    "sha256": "7c39504328b68edb41a6b7e506b867a05092d1f5ca7c5a679cc0b02f9e95c9bc",
+    "bytes": 62828,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/512-open-early/pr-cpu/world.checksums": {
+    "sha256": "b5eed856f1f200b4e578416d181c95639756a0acd39d31550d4e5cc5c876d314",
+    "bytes": 31112,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/metadata.json": {
+    "sha256": "8a273ff4e608f8134cd1c6349424ee75e37b3083352cfbf3684ad7404892745e",
+    "bytes": 4291,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-continuation/verification.jsonl": {
+    "sha256": "cd3fb413bc6eef45834b73e2c03145d82d2629d5f8b6535e7cca0c507e72be7e",
+    "bytes": 650855,
+    "archive": "candidate-bcfb57075-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/artifacts.json": {
+    "sha256": "b8670b9198c4e6447f443e1f118c4e615559d79e80bedf146f813614bb07c817",
+    "bytes": 235,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/engine.log": {
+    "sha256": "26b1be1d64548a41d93666b03294f408e51c6d8bef14ab04070ad38020d1a8b8",
+    "bytes": 46228,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/game.replay.checksums": {
+    "sha256": "a0329a1aeef1a4696dd66bee42efc10c58b94fdd85687a5e7bc65d5c82e43e13",
+    "bytes": 2683086,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/progress.jsonl": {
+    "sha256": "3aec09808a9da97ed2255262078f7c7dcab76f5a16ce69ad5d0caf31dbdf748e",
+    "bytes": 96,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/result.json": {
+    "sha256": "2d84163fd15ecb485e86c84742f3224c39386c773c012de832e93d3cdc0915c2",
+    "bytes": 71139,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-cpu/world.checksums": {
+    "sha256": "1a2eccc2b4c30db4d3d4ca0d81051febec1d24abcb320813f625c164822cf7f9",
+    "bytes": 11208,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/artifacts.json": {
+    "sha256": "a0e995c20753bd917ca587580a0381ec12d2b74444b42bbf2cfa6accb7ef5e36",
+    "bytes": 235,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/engine.log": {
+    "sha256": "26b1be1d64548a41d93666b03294f408e51c6d8bef14ab04070ad38020d1a8b8",
+    "bytes": 46228,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/game.replay.checksums": {
+    "sha256": "a0329a1aeef1a4696dd66bee42efc10c58b94fdd85687a5e7bc65d5c82e43e13",
+    "bytes": 2683086,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/progress.jsonl": {
+    "sha256": "3aec09808a9da97ed2255262078f7c7dcab76f5a16ce69ad5d0caf31dbdf748e",
+    "bytes": 96,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/result.json": {
+    "sha256": "2274140f6651b5ed64a2227bc0eb61de00f54c6b3c578455723467ce886b39e4",
+    "bytes": 71336,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch0-parity1/world.checksums": {
+    "sha256": "1a2eccc2b4c30db4d3d4ca0d81051febec1d24abcb320813f625c164822cf7f9",
+    "bytes": 11208,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/artifacts.json": {
+    "sha256": "56d0b8f73df652620e155f5abd708677ce2e7a7c6329637110b754be20ae7104",
+    "bytes": 235,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/engine.log": {
+    "sha256": "26b1be1d64548a41d93666b03294f408e51c6d8bef14ab04070ad38020d1a8b8",
+    "bytes": 46228,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/game.replay.checksums": {
+    "sha256": "a0329a1aeef1a4696dd66bee42efc10c58b94fdd85687a5e7bc65d5c82e43e13",
+    "bytes": 2683086,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/progress.jsonl": {
+    "sha256": "3aec09808a9da97ed2255262078f7c7dcab76f5a16ce69ad5d0caf31dbdf748e",
+    "bytes": 96,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/result.json": {
+    "sha256": "3141b0048a74562de19fc405e3fcaaad5be3a676e81b7211391c1d6f774521f5",
+    "bytes": 71332,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity0/world.checksums": {
+    "sha256": "1a2eccc2b4c30db4d3d4ca0d81051febec1d24abcb320813f625c164822cf7f9",
+    "bytes": 11208,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/artifacts.json": {
+    "sha256": "d4b5903f76dd5452893fde0a6fd6f5f2ffffde99c91bb68a94ed7df60081c0bb",
+    "bytes": 235,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/engine.log": {
+    "sha256": "26b1be1d64548a41d93666b03294f408e51c6d8bef14ab04070ad38020d1a8b8",
+    "bytes": 46228,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/game.replay.checksums": {
+    "sha256": "a0329a1aeef1a4696dd66bee42efc10c58b94fdd85687a5e7bc65d5c82e43e13",
+    "bytes": 2683086,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/progress.jsonl": {
+    "sha256": "3aec09808a9da97ed2255262078f7c7dcab76f5a16ce69ad5d0caf31dbdf748e",
+    "bytes": 96,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/result.json": {
+    "sha256": "39eb344c6f2d2dd9fb850efcb01e77eb40393eb6839dc928254ae31b4098fb46",
+    "bytes": 71334,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/512-open-early/candidate-gpu-epoch1-parity1/world.checksums": {
+    "sha256": "1a2eccc2b4c30db4d3d4ca0d81051febec1d24abcb320813f625c164822cf7f9",
+    "bytes": 11208,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/metadata.json": {
+    "sha256": "262f03ecc2649a40cca1f59867f6683b3c00f9e9cb6887be4fff1ff10262c9db",
+    "bytes": 4789,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "candidate-bcfb57075-required-mode-exactness/verification.jsonl": {
+    "sha256": "aa5bb1f02f7d4cd3bfbab3b14fbf34356e398c4f4a449bf7334a90b08aa9857e",
+    "bytes": 331003,
+    "archive": "candidate-bcfb57075-required-mode-exactness.tar.gz"
+  },
+  "native-bcfb57075-1024-fixtures/GpuOffloadFixture/write_1024_real-game_stress_fixtures_benchmark_artifacts/gpu-1024-corridors.game": {
+    "sha256": "4ce5841530c6f861e73e6637b8ddc4c06bcc5f2014b14817a0844c9dc982245a",
+    "bytes": 10165119,
+    "archive": "native-bcfb57075-1024-fixtures.tar.gz"
+  },
+  "native-bcfb57075-1024-fixtures/GpuOffloadFixture/write_1024_real-game_stress_fixtures_benchmark_artifacts/gpu-1024-open.game": {
+    "sha256": "6d1df98e39fafb5da4a4926906cf7daae2299518b7833e4ce37c4959bb9c8248",
+    "bytes": 10086493,
+    "archive": "native-bcfb57075-1024-fixtures.tar.gz"
+  },
+  "native-bcfb57075-1024-fixtures/inventory.json": {
+    "sha256": "5981dd0c43c78af58b867110807fb34b597922718b6b1ccb63a66ad0d97a77ca",
+    "bytes": 132604,
+    "archive": "native-bcfb57075-1024-fixtures.tar.gz"
+  },
+  "native-bcfb57075-1024-fixtures/junit.xml": {
+    "sha256": "e39552f395e4aac754130048b0c98b18107eb2bc29c0052e8c5095f9541077a5",
+    "bytes": 298,
+    "archive": "native-bcfb57075-1024-fixtures.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/artifacts.json": {
+    "sha256": "91cf24c532ee44b23fe395dac22600f9afdc0249cae27ea45c2e4f5a7ff7d779",
+    "bytes": 276,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/artifacts.json": {
+    "sha256": "0d3512e85d68932ad7bc6ee513562a231fdc9e267b07302c9347ba8d53809e1f",
+    "bytes": 192,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/engine.log": {
+    "sha256": "27a3c32329ddeb4b8857c33e136f3dede257dae4cbc661ec9748a1e5ffea7c13",
+    "bytes": 46009,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/game.replay.checksums": {
+    "sha256": "9bf6a0c7827c88d2fe096da93423efe925fc36a781e7dd7c536ca2e1c1032ada",
+    "bytes": 784916,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/result.json": {
+    "sha256": "e80d2ef8b116da2bafe1ca1c8d46285a18ce45eab7fc52fa177eff547bddd021",
+    "bytes": 83,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/continuation/world.checksums": {
+    "sha256": "2db6edef57c9270ed39dc0af518700125f907045cd6648d826e3fb58bef035e1",
+    "bytes": 235,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/engine.log": {
+    "sha256": "1132ad894c65b9c6402719034c6be774a16d1dc46c225218a579e4d53ec15fff",
+    "bytes": 46431,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/final.game.gz": {
+    "sha256": "5eddcde8b20fba2bbe8523bc524b0c38280150c681775ae422d307513d653da8",
+    "bytes": 4433921,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/game.replay.checksums": {
+    "sha256": "c5c1518ebfe75b6d65be08543ab0ac0fca85ec68069c5868df29c66834c98eb9",
+    "bytes": 12265286,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/pending-command-scan.json": {
+    "sha256": "61c78b933fdd0e6011e606195fc5c2b4cf9a9e31084b814104fb9c4518604eb8",
+    "bytes": 6796,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/progress.jsonl": {
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+    "bytes": 32,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/result.json": {
+    "sha256": "24927b2c220a85451d91b57de8a4d1d412ec7bfe8234decf49b6c7bda50a1681",
+    "bytes": 70741,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-cpu/world.checksums": {
+    "sha256": "4fe251ad269562ad92123b0d8fb3957fb3333c722097648c17b159d1729163fd",
+    "bytes": 3664,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/artifacts.json": {
+    "sha256": "f368e9937eb0e0c7bbbad51439e4561b603607236b5badc681290144855b46be",
+    "bytes": 276,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/engine.log": {
+    "sha256": "3e8949a4254bf1245b26af2e48669c3baf211c163768a33598ee4bd8d70a2be0",
+    "bytes": 46437,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/final.game.gz": {
+    "sha256": "5eddcde8b20fba2bbe8523bc524b0c38280150c681775ae422d307513d653da8",
+    "bytes": 4433921,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/game.replay.checksums": {
+    "sha256": "c5c1518ebfe75b6d65be08543ab0ac0fca85ec68069c5868df29c66834c98eb9",
+    "bytes": 12265286,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/progress.jsonl": {
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+    "bytes": 32,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/result.json": {
+    "sha256": "1014049549daf698dd535bd90a7ff991fc032182c9e7c147bee0535d68832094",
+    "bytes": 70925,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/gpu-1024-corridors/candidate-gpu-poll0/world.checksums": {
+    "sha256": "4fe251ad269562ad92123b0d8fb3957fb3333c722097648c17b159d1729163fd",
+    "bytes": 3664,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/metadata.json": {
+    "sha256": "9ee2c91e068ecb10c729b11b85aefdbb8b254a77c8d48b75818fd3c8ddd190ed",
+    "bytes": 4178,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-continuation/verification.jsonl": {
+    "sha256": "79f71609b63b989c8780ab30f44aa8e723871c4abe4e2898f28a44308eb5990a",
+    "bytes": 174741,
+    "archive": "candidate-bcfb57075-1024-continuation.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/artifacts.json": {
+    "sha256": "edc9694789655d803bb8890ff06b72df545bdcda9a372bcc8cada014c92680ae",
+    "bytes": 276,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/continuation/artifacts.json": {
+    "sha256": "5d338d7b50f70e1bc80a2bd895b97f02b1613ac287bb47ad2a834bcaf399ee30",
+    "bytes": 103,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/continuation/engine.log": {
+    "sha256": "cc54bdf44f410ded1cf29cd0c3e2c2eae2d34ecd11febd2a8b951a1987a1e193",
+    "bytes": 240,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/continuation/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/continuation/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/continuation/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/continuation/result.json": {
+    "sha256": "1e66f854c94cd4c57a870cfe497728be36f3f774432257a7448d3772691023d9",
+    "bytes": 86,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/engine.log": {
+    "sha256": "31ea0b3b83e86b84c24dd66d7a31ccc34accd2c3bbff11eb67d97f8ed50b3ccf",
+    "bytes": 46434,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/final.game.gz": {
+    "sha256": "3d469e20db3edcb0b9340310eb789e737d187e925d334b241c2c6d5694c288b5",
+    "bytes": 4294856,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/game.replay.checksums": {
+    "sha256": "d15c122f387b4d91f4ed02710e7b51915f676f592f40b57d61f126faabef4a16",
+    "bytes": 12706790,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/invalid-command-evidence.json": {
+    "sha256": "529d9261ea90f98dbe75830851de8092603326e4357895149e030026e7e2fe20",
+    "bytes": 1853,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/progress.jsonl": {
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+    "bytes": 32,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/result.json": {
+    "sha256": "e09eac5841ab325f8ef450e527be6cae2ea9e5bae5a62892a5f0d581b8fb0271",
+    "bytes": 70742,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/world.checksums": {
+    "sha256": "6b3316088a5a23b604100b1f3cc87a91ed2966d3622e749c45924555b4783705",
+    "bytes": 3794,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/metadata.json": {
+    "sha256": "ca5b3a8cc4e10e62114286f30fd0c9523831d9dc4841e2dcd81aeb65f65dcb73",
+    "bytes": 2231,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-command-capture/verification.jsonl": {
+    "sha256": "8e0b1fdefef654ec7d14c38d4438f39461457609dedc941ab51950608e40b28a",
+    "bytes": 88133,
+    "archive": "candidate-bcfb57075-1024-command-capture.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/artifacts.json": {
+    "sha256": "301c0649d946257f33e443afa6685bc7778ff14c2891d496e4694917b20b34b4",
+    "bytes": 235,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/engine.log": {
+    "sha256": "e0e6f18361b56644e5165424ea4457239cc6078470c5dda46a5a2b85783b7ea2",
+    "bytes": 46232,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/game.replay.checksums": {
+    "sha256": "7076680ebe8012bfb08baf30f1b386f1f149243bb97482907f1a80868fc421e0",
+    "bytes": 12199514,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/progress.jsonl": {
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+    "bytes": 32,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/result.json": {
+    "sha256": "d64aea4a327f00f2c5db0f0715a663c5f2d722708e0d3899d1158d0b0c53eded",
+    "bytes": 70737,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-cpu/world.checksums": {
+    "sha256": "834c1d8f9aff55733a9d820117efa2354fc6d9b1484cfec60e8d964d2aa4ac64",
+    "bytes": 3648,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/artifacts.json": {
+    "sha256": "144c27e286147415cb2434409c11bbb750daa532fe7b7c3f3294b377db143213",
+    "bytes": 235,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/engine.log": {
+    "sha256": "e0e6f18361b56644e5165424ea4457239cc6078470c5dda46a5a2b85783b7ea2",
+    "bytes": 46232,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/game.replay.checksums": {
+    "sha256": "7076680ebe8012bfb08baf30f1b386f1f149243bb97482907f1a80868fc421e0",
+    "bytes": 12199514,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/profile/keyboard-gui.txt": {
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/profile/keyboard-mapedit.txt": {
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/profile/preferences.txt": {
+    "sha256": "496ca8c5489df3e97e2ee26b41df35bfa33e8c038299d890d073fd9f7117cbe4",
+    "bytes": 946,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/progress.jsonl": {
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85",
+    "bytes": 32,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/result.json": {
+    "sha256": "440463cb16768ae54b54bdc345cc56af4737031eab8d92fe03732df9fc92f34f",
+    "bytes": 70922,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/gpu-1024-open/candidate-gpu-poll0/world.checksums": {
+    "sha256": "834c1d8f9aff55733a9d820117efa2354fc6d9b1484cfec60e8d964d2aa4ac64",
+    "bytes": 3648,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/metadata.json": {
+    "sha256": "3a04c21395416dfb0a5ee933c137ce3dc67122a5b30e77ce7f6bde106aa95970",
+    "bytes": 3222,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  },
+  "candidate-bcfb57075-1024-open-initial/verification.jsonl": {
+    "sha256": "118efb5bd13be703ad380ebc52b04a1321a127228cf08001700e6324d0a8193f",
+    "bytes": 162936,
+    "archive": "candidate-bcfb57075-1024-open-initial.tar.gz"
+  }
+}

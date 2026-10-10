@@ -1,0 +1,107 @@
+{
+  "source_sha": "bcfb570758e0b4ad7b8756ee63639e592ab56691",
+  "integration_equivalent_sha": "1809113de",
+  "git_tree": "01d93c2baab91d74e938391e42e4d519a5685f0c",
+  "binaries_receipts_directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/bcfb57075",
+  "build_log": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/builds/candidate-bcfb57075.log",
+  "native": {
+    "unit": {
+      "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-bcfb57075-unit",
+      "junit_totals": {
+        "tests": "87",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "inventory_sha256": "a1e25e83017937f837a01769bed87e2f36aba7fd8a31883bb339da5ac6dfd4f2",
+      "runtime_provenance": {
+        "compiler": "g++",
+        "dirty": false,
+        "flags": {
+          "CCFLAGS": "",
+          "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED",
+          "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s",
+          "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/glob2-claude/build/sdl3/prefix/lib -Wl,--enable-new-dtags"
+        },
+        "revision": "bcfb570758e0b4ad7b8756ee63639e592ab56691",
+        "sourceStatus": [],
+        "sourceTreeSha256": "b8120a28670abe225ffa45e3c5d412bbbcb1ab5ac5714550bf66be0d35d0c840"
+      },
+      "build_receipt": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/bcfb57075/glob2-unit-tests-receipt.json"
+    },
+    "engine": {
+      "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-bcfb57075-engine",
+      "junit_totals": {
+        "tests": "79",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "inventory_sha256": "4e3d7b3b2c8147aa8203484d00fd0cf9fa578cf57b9057f1a9531bcc62de42f9",
+      "runtime_provenance": null,
+      "build_receipt": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/bcfb57075/glob2-engine-tests-receipt.json"
+    }
+  },
+  "required_modes": {
+    "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-bcfb57075-required-matrix",
+    "configurations": 9,
+    "minimum_assertions": 274,
+    "all_passed": true,
+    "parser_note": "Original parser counted skipped XML listing cases and was corrected. Original failure classification retained in matrix-original-parser.json; native first run already exit0 with274successes0failures."
+  },
+  "continuation_512": {
+    "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-bcfb57075-continuation",
+    "rows": 8,
+    "valid_rows": 8,
+    "failures": []
+  },
+  "required_modes_512": {
+    "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-bcfb57075-required-mode-exactness",
+    "rows": 4,
+    "valid_rows": 4,
+    "failures": []
+  },
+  "fixtures_1024_directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-bcfb57075-1024-fixtures",
+  "mixed_ai_1024_continuation": {
+    "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-bcfb57075-1024-continuation",
+    "rows": 3,
+    "valid_rows": 2,
+    "failures": [
+      {
+        "scenario": "gpu-1024-corridors",
+        "variant": "candidate-cpu",
+        "stage": "continuation",
+        "errors": [
+          "process failure",
+          "process failure"
+        ]
+      }
+    ]
+  },
+  "mixed_ai_1024_command_capture": {
+    "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-bcfb57075-1024-command-capture",
+    "rows": 2,
+    "valid_rows": 1,
+    "failures": [
+      {
+        "scenario": "gpu-1024-corridors",
+        "variant": "candidate-cpu",
+        "stage": "continuation",
+        "errors": [
+          "process failure",
+          "process failure"
+        ]
+      }
+    ]
+  },
+  "open_1024_initial": {
+    "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-bcfb57075-1024-open-initial",
+    "rows": 2,
+    "valid_rows": 2,
+    "failures": []
+  },
+  "large_map_failure": "Nicowar players1/3 encoded ORDER_ALTER_FORBIDDEN type37 at observed264 due272 with1023x1024 brush, beyond established512side protocol bound; no production limit changes. Initial256CPU/GPU both layouts exact; mixedAI continuation unsupported.",
+  "failure_command_evidence": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-bcfb57075-1024-command-capture/gpu-1024-corridors/candidate-cpu/invalid-command-evidence.json",
+  "timing_eligible": false,
+  "performance_acceptance_claim": false
+}

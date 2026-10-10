@@ -1,0 +1,15 @@
+{
+  "source_sha": "bcfb570758e0b4ad7b8756ee63639e592ab56691",
+  "git_tree": "01d93c2baab91d74e938391e42e4d519a5685f0c",
+  "equivalent_integration_sha": "1809113de",
+  "utc": "2026-10-10T17:20:09.947125+00:00",
+  "build_flags": {
+    "release": 1,
+    "server": 0
+  },
+  "targets": [
+    "build/linux/client/release/src/glob2",
+    "unit-tests",
+    "engine-tests"
+  ]
+}

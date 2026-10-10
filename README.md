@@ -1,6 +1,6 @@
 # Reproducible development evidence for PR 1045
 
-Read [report.md](report.md) for results and limitations. This snapshot contains one clean reserved-core screen, the rejected unreserved polling screen, native inventories, binary/source/dependency receipts, an exactness receipt, and the retained generated fixture. It is an evidence branch, separate from implementation history. No performance gate has passed.
+Read [report.md](report.md) for results and limitations. This snapshot contains one clean reserved-core screen, the rejected unreserved polling screen, native inventories, binary/source/dependency receipts, initial and save-continuation exactness evidence, failed 1024² mixed-AI command evidence, and retained generated fixtures. It is an evidence branch, separate from implementation history. No performance gate has passed.
 
 ## Contents
 
@@ -42,3 +42,11 @@ The runner verifies binary/fixture hashes, cgroup state, identical affinity and 
 For correctness, implementation `test/verify_gpu_offload.py` runs CPU/GPU against the same fixture, requiring equality at every tick and of the simulation/entity sidecar. Correctness exports are separate from performance windows.
 
 For final acceptance, the larger map/phase corpus, strongest CPU comparison, real rendering, compatibility/failure matrix, tuning-on overhead and independent held-out confirmation still need to pass. This screen cannot substitute for them.
+
+## Verified later checkpoint (correctness only)
+
+`raw/checkpoint-1809113de/` contains deterministic `.tar.gz` archives of the later native inventories, all nine required-mode oracle configurations, 512² exactness and own-save continuations, scoped 1024² fixtures, and both successful and failed 1024² runs. `archive-members.json` records SHA-256 and byte length of every uncompressed member. Archives retain the original directory names; extract them into a dedicated evidence directory. Receipts retain original absolute paths as provenance, so relocate paths explicitly when reproducing. No binaries are archived; build receipts record their hashes and immutable source/configuration/dependency identities.
+
+`candidate-bcfb57075-validation.json` is the consolidated index. Integration `1809113de` and evidence freeze `bcfb57075` have identical Git trees. Exact verifier/runner/analysis sources for that checkpoint are in `tools/checkpoint-1809113de/`; the earlier screen's tools and protocol remain unchanged. Run the retained `run-required-mode-matrix.py` using its recorded configuration and native binary, rather than counting skipped XML listings as executed tests. The original parser failure is retained.
+
+The failed 1024² mixed-AI continuation is deliberate evidence retention, not a passing fixture. Its command-capture archive records a CPU-generated 1023×1024 forbidden-area brush rejected by the established 512-side codec. The scoped import tests do not authorize widening production generator or network limits. This later checkpoint has no performance acceptance claim.
