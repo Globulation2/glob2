@@ -78,7 +78,7 @@ public:
         std::thread::id producer;
         WorkloadKey workload;
         int swimClass=0,cap=COST_LIMIT;
-        std::uint64_t deadline=0,sessionGeneration=0,lastCpu=0,captureLimit=0;
+        std::uint64_t deadline=0,sessionGeneration=0,lastCpu=0,captureLimit=0,reservedCpu=0;
         std::size_t count=0,lease=0;
         std::unique_ptr<std::uint16_t[]> originals,golden;
         std::unique_ptr<std::uint8_t[]> waterCells;
@@ -127,7 +127,7 @@ public:
             :policy(std::move(value)),ticket(admitted),clock(std::move(timer)),
              producer(std::this_thread::get_id()),workload(input.key),swimClass(input.swim),
              cap(input.maxCost),deadline(input.due),sessionGeneration(input.requiredGeneration),
-             lastCpu(floor),captureLimit(input.captureCpuLimitNs),count(input.original.size()),lease(bytes) {
+             lastCpu(floor),captureLimit(input.captureCpuLimitNs),reservedCpu(input.reservedCpuNs),count(input.original.size()),lease(bytes) {
             totals.reservedBytes=bytes;
         }
     public:
@@ -157,6 +157,8 @@ public:
         int maxCost() const noexcept {return cap;}
         std::uint64_t due() const noexcept {return deadline;}
         std::uint64_t requiredGeneration() const noexcept {return sessionGeneration;}
+        CpuSavingPolicy::ProbeTicket probeTicket() const noexcept {return ticket;}
+        std::uint64_t reservedCpuNs() const noexcept {return reservedCpu;}
         Receipt receipt() const noexcept {return totals;}
         // Exactly one explicit worker -> stable background-producer handoff.
         // The caller synchronizes ownership transfer; no simultaneous methods
@@ -191,9 +193,10 @@ public:
         Receipt totals;
         std::thread::id producer;
         std::size_t lease=0;
+        std::uint64_t reservedCpu=0;
         explicit Settlement(std::shared_ptr<Record> value)
             :record(std::move(value)),policy(record->policy),ticket(record->ticket),
-             totals(record->totals),producer(record->producer),lease(record->lease) {
+             totals(record->totals),producer(record->producer),lease(record->lease),reservedCpu(record->reservedCpu) {
             record->delegatedSettlement=true;record->lease=0;
         }
     public:
@@ -201,10 +204,12 @@ public:
         Settlement& operator=(const Settlement&)=delete;
         Settlement(Settlement&& other) noexcept
             :record(std::move(other.record)),policy(std::move(other.policy)),ticket(other.ticket),
-             totals(other.totals),producer(other.producer),lease(std::exchange(other.lease,0)) {}
+             totals(other.totals),producer(other.producer),lease(std::exchange(other.lease,0)),reservedCpu(other.reservedCpu) {}
         Settlement& operator=(Settlement&&)=delete;
         ~Settlement(){settle({},{});}
         Receipt receipt() const noexcept {return totals;}
+        CpuSavingPolicy::ProbeTicket probeTicket() const noexcept {return ticket;}
+        std::uint64_t reservedCpuNs() const noexcept {return reservedCpu;}
         void addObservedCpu(std::uint64_t ns,bool valid) noexcept {
             if(!valid || ns>UINT64_MAX-totals.optionalCpuNs) {
                 totals.clockValid=false;totals.requiresFullReservedCharge=true;++totals.invalidClocks;

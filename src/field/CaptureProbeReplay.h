@@ -142,9 +142,13 @@ private:
     std::unique_ptr<Probe> probe; // Outside State: keepAlive never creates a cycle.
     Progress progress=Progress::Pending;
     Receipt finalReceipt;
+    CpuSavingPolicy::ProbeAuthorization finalAuthorization;
+    WorkloadKey workload;
+    std::uint64_t generation=0,deadline=0;
     bool comparing=false;
     explicit CaptureProbeReplay(std::shared_ptr<State> value,std::size_t bytes):state(std::move(value)) {
         wrapperLease.bytes=bytes;
+        workload=state->record->key();generation=state->record->requiredGeneration();deadline=state->record->due();
     }
     void dropProbe() noexcept {probe.reset();}
     static bool prepared(const Hooks& hooks) {
@@ -162,6 +166,13 @@ public:
     }
     void cancel() noexcept {if(state)state->canceled.store(true,std::memory_order_release);}
     Receipt receipt() const noexcept {return state?state->receipt:finalReceipt;}
+    std::optional<CpuSavingPolicy::ProbeAuthorization> authorization() const noexcept {
+        const auto value=state?state->authorization:finalAuthorization;
+        if(!value.reservedCpuNs)return {};return value;
+    }
+    const WorkloadKey& key() const noexcept {return workload;}
+    std::uint64_t requiredGeneration() const noexcept {return generation;}
+    std::uint64_t due() const noexcept {return deadline;}
     static std::unique_ptr<CaptureProbeReplay> begin(std::shared_ptr<GradientCpuCapture::Record>&& captured,
         Admission admission,Receipt& attempted,Clock clock,Hooks hooks) noexcept {
         attempted={};
@@ -281,6 +292,7 @@ public:
         auto token=GradientCpuCapture::takeSettlement(state->record);
         if(!token)return {};
         finalReceipt=state->receipt;
+        finalAuthorization=state->authorization;
         const auto start=glob2::threadCpuNs();state.reset();const auto end=glob2::threadCpuNs();
         token->addObservedCpu(additionalCpu,finalReceipt.clockValid);
         token->addObservedCpu(start && end && end>=start?end-start:0,start && end && end>=start);
