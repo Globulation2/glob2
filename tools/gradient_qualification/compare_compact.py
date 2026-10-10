@@ -125,6 +125,14 @@ class Comparison:
                 details.update(host_checks=int(stats[2]),empty_rounds=0,
                     seed_uploaded_bytes=n*4 if initial.size else 0,frontier_uploaded_bytes=int(initial.size)*4,
                     field_readback_bytes=n*4 if initial.size else 0,count_readback_bytes=int(stats[2])*4)
+            if result:
+                # Native early rejection can follow queued kernels. Keep the
+                # uint upload/readback arrays alive until the background queue
+                # drains, before conversion or workspace release on failure.
+                try:self.gpu.queue.finish()
+                except Exception as error:
+                    raise RuntimeError(f'{name} failed {result}; queue drain also failed: {error}') from error
+                raise RuntimeError(f'{name} execution failed: {result}')
             out=out.astype(np.uint16);dispatches=int(stats[2])
         else:
             out,timing=self.gpu.execute(name,field,scratch)

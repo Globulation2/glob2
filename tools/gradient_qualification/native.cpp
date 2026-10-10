@@ -146,7 +146,7 @@ extern "C" int run_compact_grouped(Handle queue,Handle kernel,Handle* buffers,
 {
     const auto started=Clock::now();
     std::fill_n(metrics,14,0);
-    if(!width || !height || !groups || width>std::numeric_limits<UInt>::max()/height ||
+    if(!width || !height || !groups || groups>4096 || width>std::numeric_limits<UInt>::max()/height ||
        cap>65533 || std::size_t(groups)>std::numeric_limits<std::size_t>::max()/128)return -997;
     const UInt cells=width*height,zero=0;
     if(std::uint64_t(cells)*20+40>128ull*1024*1024)return -997;
