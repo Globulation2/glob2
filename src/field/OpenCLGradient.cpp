@@ -363,14 +363,25 @@ struct Device
         std::promise<void> completed;
         std::shared_future<void> ready = completed.get_future().share();
         std::atomic<bool> published{false};
-        Plane(API& api, const BackendRequest& r, std::span<const std::uint8_t> mask)
+        Plane(API& api, const BackendRequest& r, std::span<const std::uint8_t> mask,bool scalar)
             : api(&api), identity(r.identity), width(r.grid.width()), height(r.grid.height()) {
-            if(r.grid.cells()>OpenCLHostBudget/sizeof(UInt)) throw BudgetExceeded();
-            const auto payload=r.grid.cells()*sizeof(UInt)+mask.size()+sizeof(*this);
+            const auto count=scalar ? std::size_t(1) : r.grid.cells();
+            if(count>OpenCLHostBudget/sizeof(UInt)) throw BudgetExceeded();
+            const auto payload=count*sizeof(UInt)+mask.size()+sizeof(*this);
             const auto retained=r.identity.owner ? r.identity.retainedBytes : 0;
             if(payload>OpenCLHostBudget || retained>OpenCLHostBudget-payload) throw BudgetExceeded();
             hostLease.resize(payload+retained);
-            data.resize(r.grid.cells());blocked.assign(mask.begin(),mask.end());
+            data.resize(count);blocked.assign(mask.begin(),mask.end());
+        }
+        void compactUniform() {
+            if(data.size()==1) return;
+            const auto previous=hostLease.bytes;
+            hostLease.resize(previous+sizeof(UInt));
+            try {
+                {std::vector<UInt> scalar(1,data[0]);data.swap(scalar);}
+            } catch(...) {hostLease.resize(previous);throw;}
+            hostLease.resize(sizeof(*this)+data.capacity()*sizeof(UInt)+blocked.capacity()
+                +(identity.owner ? identity.retainedBytes : 0));
         }
 
     };
@@ -412,6 +423,7 @@ struct Device
             if(!status.checkInterval) throw std::runtime_error("Invalid GLOB2_OPENCL_CHECK_INTERVAL");
             status.pollMicros=numericOverride("GLOB2_OPENCL_POLL_US",0,1000);
             status.deviceProfiling=numericOverride("GLOB2_OPENCL_PROFILE",0,1)!=0;
+            status.uniformMetadata=numericOverride("GLOB2_OPENCL_UNIFORM_METADATA",0,1)!=0;
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
             unsigned ordinal=0;
@@ -591,6 +603,7 @@ struct Runtime
         out.deviceUploadNs+=in.deviceUploadNs;out.deviceKernelNs+=in.deviceKernelNs;
         out.deviceReadbackNs+=in.deviceReadbackNs;out.deviceCheckReadNs+=in.deviceCheckReadNs;
         out.profilingErrors+=in.profilingErrors;
+        out.uniformMetadataHits+=in.uniformMetadataHits;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -707,9 +720,13 @@ struct Runtime
         p->ready.get();
     }
     std::shared_ptr<Device::Plane> costPlane(const BackendRequest& r) {
+        const auto packed=r.identity.packedUniformCost;
+        const bool knownUniform=shared->status.uniformMetadata && r.identity.owner && r.identity.allCells
+            && (packed&65535u) && (packed>>16);
         auto sameIdentity=[&](const auto& p) {
             return p&&r.identity.owner&&p->identity.owner==r.identity.owner&&p->identity.variant==r.identity.variant&&
                 p->identity.revision==r.identity.revision&&p->identity.allCells==r.identity.allCells&&
+                p->identity.packedUniformCost==packed&&
                 p->width==r.grid.width()&&p->height==r.grid.height()&&(r.identity.allCells||p->blocked==blocked);
         };
         // Immutable snapshots allow expensive mask/content comparison outside
@@ -721,8 +738,8 @@ struct Runtime
         }
         candidates.fill({});
         std::shared_ptr<Device::Plane> p;
-        try {p=std::make_shared<Device::Plane>(api,r,blocked);}
-        catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p=std::make_shared<Device::Plane>(api,r,blocked);}
+        try {p=std::make_shared<Device::Plane>(api,r,blocked,knownUniform);}
+        catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p=std::make_shared<Device::Plane>(api,r,blocked,knownUniform);}
         bool reserved=false;
         if(r.identity.owner) {
             // Mask comparison is outside the lock; pointer equality detects a
@@ -740,15 +757,18 @@ struct Runtime
         }
         try {
             const auto n=r.grid.cells();
-            for(std::size_t i=0;i<n;++i) {
+            if(knownUniform) {p->data[0]=packed;++status.uniformMetadataHits;}
+            else for(std::size_t i=0;i<n;++i) {
                 const auto step=!r.identity.allCells&&blocked[i]?LAND_STEPS:r.costAt(r.context,i);
                 if(!step.cardinal||!step.diagonal||step.cardinal>65535||step.diagonal>65535)
                     throw std::runtime_error("Invalid OpenCL gradient edge cost");
                 p->data[i]=step.cardinal|(step.diagonal<<16);
                 if (i && p->data[i] != p->data[0]) p->uniform = false;
             }
+            if(shared->status.uniformMetadata && p->uniform) p->compactUniform();
             {std::lock_guard lock(shared->cacheMutex);candidates=shared->planes;}
-            for(auto& other:candidates) if(other&&other!=p&&other->published.load()&&other->data==p->data) {
+            for(auto& other:candidates) if(other&&other!=p&&other->published.load()&&other->uniform==p->uniform&&
+                (p->uniform || (other->width==p->width&&other->height==p->height))&&other->data==p->data) {
                 ++status.costCacheHits;
                 // A reservation must still complete for concurrent identity
                 // waiters. Share the buffer through an immutable retained alias.
@@ -762,10 +782,11 @@ struct Runtime
             }
             candidates.fill({});
             p->storage=std::make_shared<Device::Plane::Storage>(api,shared->deviceBudget);
-            try {p->storage->deviceLease.resize(n*sizeof(UInt));}
-            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p->storage->deviceLease.resize(n*sizeof(UInt));}
-            Int error=0;p->buffer=p->storage->buffer=api.CreateBuffer(context,1,n*sizeof(UInt),nullptr,&error);check(error);
-            write(p->buffer,p->data.data(),n*sizeof(UInt));++status.costUploads;
+            const auto bytes=p->data.size()*sizeof(UInt);
+            try {p->storage->deviceLease.resize(bytes);}
+            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p->storage->deviceLease.resize(bytes);}
+            Int error=0;p->buffer=p->storage->buffer=api.CreateBuffer(context,1,bytes,nullptr,&error);check(error);
+            write(p->buffer,p->data.data(),bytes);++status.costUploads;
             p->published.store(true);p->completed.set_value();
             if(!reserved) {std::lock_guard lock(shared->cacheMutex);
                 const auto slot=std::min_element(shared->used.begin(),shared->used.end())-shared->used.begin();

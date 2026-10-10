@@ -28,6 +28,9 @@ struct CostIdentity
     // Known retained payload of the immutable owner. Native caches charge it
     // while retaining that owner, even after the scheduling DTO is released.
     std::size_t retainedBytes = 0;
+    // Optional immutable proof: every cell has this packed cardinal/diagonal
+    // pair. Zero is unknown. Valid only with owner and allCells.
+    std::uint32_t packedUniformCost = 0;
 };
 struct BackendRequest
 {

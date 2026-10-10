@@ -842,6 +842,48 @@ TEST_CASE("trivial gradient work is shared by CPU and reports no device dispatch
     CHECK(after.dispatches==before.dispatches);
     CHECK(after.fields==before.fields);
 }
+TEST_CASE("uniform metadata uses scalar costs only with a complete immutable proof")
+{
+    using namespace gradient_kernel;
+    if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
+    const bool enabled=openCLStatus().uniformMetadata;
+    const EntrySteps step{17,23};
+    const std::uint32_t packed=step.cardinal|(step.diagonal<<16);
+    unsigned calls=0;
+    auto run=[&](field::Grid grid,bool allCells,std::uint32_t proof,bool varied) {
+        auto owner=std::make_shared<std::uint8_t>();
+        std::vector<EntrySteps> costs(grid.cells(),step);
+        if(varied) for(std::size_t i=0;i<costs.size();i+=2) costs[i]={19,29};
+        std::vector<std::uint16_t> actual(grid.cells(),1);actual[0]=65535;actual[1]=0;
+        const auto expected=oracle(actual,grid,costs,600);
+        BackendSession session;
+        auto callback=[&](std::size_t i){++calls;return costs[i];};
+        BackendRequest request{actual.data(),600,grid,session,&callback,
+            [](void* p,std::size_t i){return (*static_cast<decltype(callback)*>(p))(i);},
+            [](void*,std::uint16_t*){FAIL("metadata execution cannot call CPU fallback");},
+            {owner,81234567,1,allCells,sizeof(*owner),proof}};
+        const auto before=calls;
+        REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+        CHECK(actual==expected);
+        const auto expectedCalls=enabled&&allCells&&proof&&(proof&65535u)&&(proof>>16)
+            ? 0 : grid.cells()-std::size_t(!allCells);
+        CHECK(calls-before==expectedCalls);
+    };
+    std::thread service([&] {
+        run({7,13},true,packed,false);
+        const auto before=openCLStatus();
+        // Proven and discovered uniform planes alias safely across shapes.
+        run({31,17},true,packed,false);
+        run({13,7},true,0,false);
+        if(enabled) CHECK(openCLStatus().costCacheHits>=before.costCacheHits+2);
+        // Metadata with a forbidden-dependent or invalid pair is ignored.
+        run({7,13},false,packed,true);
+        run({13,7},true,step.cardinal,false);
+        // Varied contents cannot alias the scalar uniform storage.
+        run({7,13},true,0,true);
+    });
+    service.join();
+}
 TEST_CASE("shared offload host reservations are bounded and recover after release")
 {
     using namespace gradient_kernel;
