@@ -524,7 +524,20 @@ void Map::clearGradientBufferPool()
 std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
 {
     const auto m=gradientRuntime->backendSession->metrics();
-    return {{"recorded",m.recorded},{"dropped",m.dropped},{"accepted",m.accepted},{"stale",m.stale},
+    const auto device=gradientRuntime->deviceService->metrics();
+    return {{"required_seed_cpu_ns",gradientRuntime->pipeline.requiredSeedCpuNs()},
+        {"required_propagation_cpu_ns",gradientRuntime->pipeline.requiredPropagationCpuNs()},
+        {"cpu_complete_fields",gradientRuntime->pipeline.cpuCompleteFields()},
+        {"gpu_complete_fields",gradientRuntime->pipeline.gpuCompleteFields()},
+        {"coordinator_cpu_ns",device.hostCpuNs},{"coordinator_initialization_ns",device.initializationNs},
+        {"coordinator_running",device.running},{"coordinator_ready",device.ready},
+        {"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
+        {"coordinator_fallbacks",device.fallbacks},{"coordinator_declined",device.declined},
+        {"coordinator_stale",device.stale},{"coordinator_budget_declines",device.budgetDeclines},
+        {"coordinator_retained_host_bytes",device.retainedHostBytes},{"coordinator_observation_drops",device.observationDrops},
+        {"coordinator_batches",device.batches},{"coordinator_max_batch",device.maxBatch},
+        {"coordinator_queued",device.queued},{"thread_cpu_clock_available",glob2::threadCpuNs()!=0},
+        {"recorded",m.recorded},{"dropped",m.dropped},{"accepted",m.accepted},{"stale",m.stale},
         {"unprocessed_observations",m.recorded>m.accepted+m.stale ? m.recorded-m.accepted-m.stale : 0},
         {"processing_ns",m.processingNs},{"passes",m.passes},{"initialization_ns",m.initializationNs},
         {"sample_queue_ns",m.queueNs},{"sample_execution_ns",m.executionNs},{"sample_service_ns",m.serviceNs},
@@ -543,8 +556,11 @@ void Map::configureCompute(unsigned threads)
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	gradientRuntime->shareBackendSession();
+    gradientRuntime->backendSession->setExternalInitialization(true);
+    gradientRuntime->backendSession->configureLearning(true);
     gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
     compute.setWorkerOnly(gradientRuntime->backendSession);
+    gradientRuntime->deviceService->configure(compute.threadCount(),gradient_kernel::backend());
 }
 
 void Map::clear()
@@ -565,6 +581,8 @@ void Map::clear()
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();
+    gradientRuntime->backendSession->setExternalInitialization(true);
+    gradientRuntime->backendSession->configureLearning(true);
     gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
     compute.setWorkerOnly(gradientRuntime->backendSession);
 	gradientRuntime->buildingSynchronous=0;

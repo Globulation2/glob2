@@ -20,6 +20,7 @@ class TestGradientPipeline : public GradientPipeline
     ComputeExecutor executor;
 public:
     ~TestGradientPipeline() { reset(); }
+    ComputeExecutor& compute() { return executor; }
     void configure(unsigned count, unsigned delay, size_t cells, Work work,
         const std::function<std::thread(std::function<void()>)>& factory =
             [](auto f) { return GAGCore::ThreadSupport::launch(std::move(f)); })
@@ -653,4 +654,115 @@ TEST_CASE("GradientPipeline/CPU and unknown automatic fields keep their original
     pipeline.reset();
     delete[] field;
     }
+}
+
+TEST_CASE("owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    struct Restore {
+        Backend mode=backend(); unsigned mask=readyPlans.load();
+        ~Restore(){setBackend(mode);readyPlans=mask;}
+    } restore;
+    readyPlans=1u<<unsigned(requestedOpenCLPlan()); setBackend(Backend::OpenCL);
+    struct State {
+        std::mutex mutex; std::condition_variable changed;
+        bool entered=false, release=false;
+        std::atomic<unsigned> cpu{0},gpu{0};
+        std::atomic<bool> initializedOnWorker{false},cpuOnWorker{false};
+    };
+    auto state=std::make_shared<State>();
+    auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+        [state]{state->initializedOnWorker=ComputeExecutor::workerSlot()!=0;return true;},
+        [state](std::span<const BackendRequest> requests,Plan){
+            {std::unique_lock lock(state->mutex);state->entered=true;state->changed.notify_one();
+             state->changed.wait(lock,[&]{return state->release;});}
+            for(const auto& request:requests){request.gradient[0]+=100;++state->gpu;}
+            return true;
+        }});
+    service->configure(2,Backend::OpenCL);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->metrics().ready && std::chrono::steady_clock::now()<until) std::this_thread::yield();
+    REQUIRE(service->metrics().ready); CHECK_FALSE(state->initializedOnWorker);
+    TestGradientPipeline pipeline;
+    pipeline.configure(1,3,1,[](auto&,auto&){FAIL("GPU owned field reached synchronous callback");});
+    pipeline.setDeviceService(service);
+    pipeline.setAsyncWork([state](auto& job,PlanDecision decision){
+        auto owned=std::make_shared<OwnedGradientField>();
+        owned->inputs=state;owned->session=job.owner->session();owned->decision=decision;
+        owned->due=job.executorDue;owned->data=std::move(job.data);
+        owned->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+        owned->cpu=[](auto& owned){
+            auto& state=*const_cast<State*>(static_cast<const State*>(owned.inputs.get()));
+            state.cpuOnWorker=ComputeExecutor::workerSlot()!=0;++state.cpu;owned.data[0]+=100;
+        };
+        return owned;
+    });
+    auto* published=new std::uint16_t[1]{};
+    pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=23;});
+    {
+        std::unique_lock lock(state->mutex);
+        const bool entered=state->changed.wait_for(lock,std::chrono::seconds(5),[&]{return state->entered;});
+        if(!entered){state->release=true;state->changed.notify_one();}
+        REQUIRE(entered);
+    }
+    std::atomic<unsigned> unrelated{0};
+    const ComputeExecutor::Group other{1,{[](void* value,std::size_t){++*static_cast<std::atomic<unsigned>*>(value);},&unrelated}};
+    auto batch=pipeline.compute().submit(std::span(&other,1));pipeline.compute().join(batch);
+    CHECK(unrelated==1);CHECK(published[0]==0);CHECK(service->metrics().retainedHostBytes>0);
+    {std::lock_guard lock(state->mutex);state->release=true;}state->changed.notify_one();
+    unsigned visited=0;
+    pipeline.visitPendingSnapshots([&](auto snapshot){
+        ++visited;CHECK(snapshot.data[0]==123);CHECK(snapshot.remaining==3);CHECK_FALSE(snapshot.superseded);
+    });
+    CHECK(visited==1);CHECK(published[0]==0);CHECK(state->gpu==1);CHECK(state->cpu==0);
+    CHECK(service->metrics().retainedHostBytes==0);
+    pipeline.advance();pipeline.advance();CHECK(published[0]==0);
+    pipeline.advance();CHECK(published[0]==123);CHECK(pipeline.gpuCompleteFields()==1);
+    pipeline.reset();service->stop();delete[] published;
+}
+
+TEST_CASE("GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
+    readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
+    struct State {std::atomic<unsigned> cpu{0};std::atomic<bool> worker{false};};
+    auto state=std::make_shared<State>();std::weak_ptr<State> retained=state;
+    auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+        []{return true;},[](std::span<const BackendRequest> requests,Plan){
+            CHECK(requests.front().gradient[0]==77);return false;
+        }});
+    service->configure(2,Backend::OpenCL);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+    REQUIRE(service->metrics().ready);
+    TestGradientPipeline pipeline;pipeline.configure(1,2,1,[](auto&,auto&){FAIL("unexpected synchronous execution");});
+    pipeline.setDeviceService(service);
+    pipeline.setAsyncWork([state](auto& job,PlanDecision decision){
+        auto owned=std::make_shared<OwnedGradientField>();owned->inputs=state;
+        owned->session=job.owner->session();owned->decision=decision;owned->data=std::move(job.data);
+        owned->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+        owned->cpu=[](auto& owned){
+            auto& state=*const_cast<State*>(static_cast<const State*>(owned.inputs.get()));
+            state.worker=ComputeExecutor::workerSlot()!=0;++state.cpu;
+            CHECK(owned.data[0]==77);owned.data[0]=88;
+        };return owned;
+    });
+    auto* field=new std::uint16_t[1]{};pipeline.advance();pipeline.submit(&field,0,[](auto& job){job.data[0]=77;});
+    pipeline.finish();CHECK(state->cpu==1);CHECK(state->worker);CHECK(field[0]==0);
+    CHECK(service->metrics().fallbacks==1);CHECK(pipeline.cpuCompleteFields()==1);
+    pipeline.advance();pipeline.advance();CHECK(field[0]==88);
+    pipeline.setAsyncWork({});state.reset();CHECK(retained.expired());
+    pipeline.reset();service->stop();delete[] field;
+}
+
+TEST_CASE("one-slot device configuration creates no driver activity" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    std::atomic<unsigned> initialized{0};
+    GradientDeviceService service({[&]{++initialized;return true;},{}});
+    service.configure(1,Backend::OpenCL);service.stop();
+    CHECK(initialized==0);CHECK_FALSE(service.metrics().running);
 }

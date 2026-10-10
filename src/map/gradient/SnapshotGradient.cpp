@@ -7,6 +7,7 @@
 #include "Unit.h"
 #include "BuildingType.h"
 #include "field/RuntimeTerrainGradient.h"
+#include "field/GradientDeviceService.h"
 #include <array>
 #include <bit>
 #include <cstring>
@@ -378,6 +379,58 @@ void propagateBatch(std::span<const PropagationField> fields)
     }
     executeGradientBatch(requests,backend());
 
+}
+
+namespace {
+struct OwnedPropagation {
+    Request request;
+    SimulationSnapshot::Handle snapshot;
+};
+}
+std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
+    const Request& request,const SimulationSnapshot::Handle& snapshot,std::unique_ptr<Uint16[]>& data,
+    std::shared_ptr<gradient_kernel::BackendSession> session,gradient_kernel::PlanDecision decision,std::uint64_t due)
+{
+    using namespace gradient_kernel;
+    runtime_terrain::validateQueueSize(request.terrainBuckets);
+    const auto& terrain=*snapshot.terrain;
+    if(terrain.movementModifiers) {
+        const auto& movement=terrain.rules->movement(request.swim);
+        if(std::any_of(movement.profiles.begin(),movement.profiles.end(),[&](auto cost) {
+            return !cost.cardinal || !cost.diagonal || cost.cardinal>=request.terrainBuckets || cost.diagonal>=request.terrainBuckets;
+        })) {
+            const PropagationField field{request,&snapshot,data.get(),nullptr};
+            for(std::size_t cell=0;cell<std::size_t(snapshot.width)*snapshot.height;++cell)
+                if(data[cell]) runtime_terrain::validateQueueEdge(batchCosts(field,cell),request.terrainBuckets);
+        }
+    }
+    auto inputs=std::make_shared<OwnedPropagation>(OwnedPropagation{
+        request,snapshot.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain))});
+    auto owned=std::make_shared<OwnedGradientField>();
+    owned->inputs=inputs;
+    // Conservative retained-lease charge. Shared planes may be charged more
+    // than once; the limit never assumes their external owners stay alive.
+    owned->retainedInputBytes=sizeof(OwnedPropagation)+sizeof(SimulationSnapshot::Terrain)
+        +snapshot.terrain->cellRules.capacity()*sizeof(Uint16)
+        +snapshot.terrain->stamps.chunks.capacity()*sizeof(Uint64);
+    if(snapshot.terrain->vertices) owned->retainedInputBytes+=snapshot.terrain->vertices->capacity()*sizeof(TerrainType);
+    owned->session=std::move(session);
+    owned->grid={snapshot.width,snapshot.height}; owned->identity=snapshotCostIdentity(request,snapshot);
+    owned->family=backendFamily(request.kind); owned->cpuBuckets=request.terrainBuckets;
+    owned->decision=decision; owned->due=due;
+    owned->costAt=[](const OwnedGradientField& owned,std::size_t cell) {
+        const auto& inputs=*static_cast<const OwnedPropagation*>(owned.inputs.get());
+        const PropagationField field{inputs.request,&inputs.snapshot,owned.data.get(),nullptr};
+        return batchCosts(field,cell);
+    };
+    owned->cpu=[](OwnedGradientField& owned) {
+        const auto& inputs=*static_cast<const OwnedPropagation*>(owned.inputs.get());
+        GradientWorkspace workspace; workspace.backendSession=owned.session;
+        const PropagationField field{inputs.request,&inputs.snapshot,owned.data.get(),&workspace};
+        batchCPU(field,owned.data.get());
+    };
+    owned->data=std::move(data);
+    return owned;
 }
 
 SimulationSnapshot::Requirements buildingRequirements()

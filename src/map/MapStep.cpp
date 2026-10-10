@@ -331,6 +331,10 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
             gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
         });
+    gradientRuntime->pipeline.setAsyncWork([](GradientPipeline::Job& job,gradient_kernel::PlanDecision decision) {
+        return gradient_preparation::ownPropagation(job.request,*job.snapshotLease,job.data,
+            job.owner->session(),decision,job.executorDue);
+    });
     gradientRuntime->pipeline.setBatchWork([this](std::span<GradientPipeline::Job* const> jobs,
         std::span<GradientWorkspace> scratch) {
         std::vector<gradient_preparation::PropagationField> fields;fields.reserve(jobs.size());

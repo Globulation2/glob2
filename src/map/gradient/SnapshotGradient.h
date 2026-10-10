@@ -12,6 +12,7 @@
 #include "SeedCells.h"
 
 class ComputeExecutor;
+namespace gradient_kernel { struct OwnedGradientField; }
 
 namespace gradient_preparation
 {
@@ -78,6 +79,12 @@ struct PropagationField {
 // Independent immutable fields; completes synchronously with original-seed CPU recovery.
 void propagateBatch(std::span<const PropagationField> fields);
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, GradientWorkspace& scratch);
+
+// Worker-side ownership transfer for the asynchronous device service. Only
+// terrain survives seed preparation; the DTO owns all inputs and original seeds.
+std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
+    const Request&, const SimulationSnapshot::Handle&, std::unique_ptr<Uint16[]>&,
+    std::shared_ptr<gradient_kernel::BackendSession>, gradient_kernel::PlanDecision, std::uint64_t due);
 
 // The snapshot components a building field reads: terrain, resources,
 // occupancy and areas, without visibility or entities.

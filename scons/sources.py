@@ -2,6 +2,7 @@
 
 CLIENT_SOURCES = (
     'field/OpenCLGradient.cpp',
+    'field/GradientDeviceService.cpp',
     'ai/castor/Control.cpp',
     'ai/castor/GetOrder.cpp',
     'ai/castor/Lifecycle.cpp',
