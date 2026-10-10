@@ -224,15 +224,21 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  uint j=(o/CORE_X+HALO)*SIDE_X+o%CORE_X+HALO;
  if(x<w&&y<h){uint i=base+y*w+x;b[i]=v[j];flags[lid]|=(a[i]!=v[j]);}}
  barrier(CLK_LOCAL_MEM_FENCE);
- if(lid<8){uint v=flags[lid];for(uint z=8;z<WG;z+=8)v|=flags[lid+z];flags[lid]=v;}barrier(CLK_LOCAL_MEM_FENCE);if(lid==0){for(uint z=1;z<8;z++)flags[0]|=flags[z];}
- if(lid==0&&flags[0]){
-  atomic_or(changed+f,1u);
-  // A changed tile reactivates its dependency neighbors. On general grids a
-  // thin last tile can put the halo two tiles across a seam; game maps use one.
-  int rx=(w%CORE_X&&w>CORE_X)?2:1,ry=(h%CORE_Y&&h>CORE_Y)?2:1;
-  for(int dy=-ry;dy<=ry;dy++)for(int dx=-rx;dx<=rx;dx++){
-   uint nx=wrap((int)gx+dx,desc[d+6]),ny=wrap((int)gy+dy,desc[d+7]);
-   atomic_or(nextActive+f*stride+ny*pitch+nx,1u);
+ if(lid<8){uint v=flags[lid];for(uint z=8;z<WG;z+=8)v|=flags[lid+z];flags[lid]=v;}barrier(CLK_LOCAL_MEM_FENCE);
+ // Every publishing work-item reads the same eight completed partial reductions.
+ // flags[0..7] remain read-only after the preceding barrier.
+ if(lid<25){
+  uint tileChanged=flags[0];for(uint z=1;z<8;z++)tileChanged|=flags[z];
+  if(tileChanged){
+   if(lid==0)atomic_or(changed+f,1u);
+   // A partial edge tile can reach two tiles across a wrapped seam.
+   // Distribute the same 3x3, 3x5, 5x3 or 5x5 neighborhood across work-items.
+   int rx=(w%CORE_X&&w>CORE_X)?2:1,ry=(h%CORE_Y&&h>CORE_Y)?2:1;
+   if(lid<(uint)((2*rx+1)*(2*ry+1))){
+    int dx,dy;if(rx==1){dx=(int)lid%3-1;dy=(int)lid/3-ry;}else{dx=(int)lid%5-2;dy=(int)lid/5-ry;}
+    uint nx=wrap((int)gx+dx,desc[d+6]),ny=wrap((int)gy+dy,desc[d+7]);
+    atomic_or(nextActive+f*stride+ny*pitch+nx,1u);
+   }
   }
  }
 }
