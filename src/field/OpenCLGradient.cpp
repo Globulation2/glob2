@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLGradient.h"
 #include "OpenCLCpuAttribution.h"
+#include "OpenCLBorrowedLifetime.h"
 #include "GradientBackend.h"
 #include "ThreadCpuClock.h"
 #include <SDL3/SDL_loadso.h>
@@ -354,6 +355,7 @@ struct Device
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
     std::atomic<bool> failed{false};
+    OpenCLBorrowedLifetime optionalLifetime;
     MemoryBudget deviceBudget{OpenCLDeviceBudget};
     Handle device = nullptr, context = nullptr;
     OpenCLStatus status;
@@ -413,6 +415,7 @@ struct Device
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
     std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0};
+    std::atomic<std::uint64_t> optionalQuarantines{0};
     std::atomic<bool> threadCPUAvailable{false};
     void evictUnusedPlanes() {
         std::lock_guard lock(cacheMutex);
@@ -704,6 +707,8 @@ struct Runtime
             if(l->statusSequence>=last) {parameters(out,l->status);last=l->statusSequence;}
         }
         out.available=out.available&&!shared->failed.load();
+        out.optionalQuarantines=shared->optionalQuarantines.load();
+        out.optionalQuarantinePending=shared->optionalLifetime.quarantined();
         out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
         out.probeBytes=probeBudget.current.load();out.peakProbeBytes=probeBudget.peak.load();
         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
@@ -1318,6 +1323,11 @@ struct OpenCLProbe::Impl
     std::atomic<bool> cancelled{false};
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     using Phase=OpenCLProbe::Stage;
+    struct AdmissionLease {
+        std::shared_ptr<Device> parent;
+        bool owns=false;
+        ~AdmissionLease(){if(owns)parent->optionalLifetime.release();}
+    } admission;
     Phase phase=Phase::Costs;
     BackendRequest request;
     Plan plan;
@@ -1332,10 +1342,13 @@ struct OpenCLProbe::Impl
     std::array<UInt,8> descriptor{};
     Handle a=nullptr,b=nullptr,active=nullptr,nextActive=nullptr,event=nullptr;
     bool privateScalar=false,privateCosts=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
-    static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime);}
+    bool completionUnknown=false,untrackedCommand=false;
+    static constexpr std::size_t controlBytes=256+sizeof(OpenCLBorrowedLifetime);
+    static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime)+controlBytes;}
     Impl(const BackendRequest& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue)
         :request(r),plan(p),keepAlive(std::move(owner)),clock(std::move(clockValue)),generation(r.session.currentGeneration()) {
-        objectLease.resize(sizeof(OpenCLProbe)+sizeof(Impl));
+        admission.parent=runtime().shared;
+        objectLease.resize(sizeof(OpenCLProbe)+sizeof(Impl)+controlBytes);
         lane=std::make_shared<Runtime>(runtime().shared,true);
         measured.activeEpoch=lane->shared->status.activeEpoch;
         measured.checkInterval=measured.activeEpoch ? lane->shared->status.checkInterval : 1;
@@ -1346,11 +1359,38 @@ struct OpenCLProbe::Impl
         lane->shared->lanes.push_back(lane);
     }
     ~Impl() {
-        // Normal coordinator cancellation polls to terminal first. This drain
-        // is a lifetime safety net for misuse/shutdown while a transfer borrows
-        // persistent descriptor, flags, cost data or staging storage.
-        if(event || borrowedTransfers) lane->api.Finish(lane->queue);
+        // Only positive proof or command-free setup may reach destruction.
+        // Ambiguous completion retains this state and its Device/API parent.
         if(event) lane->api.ReleaseEvent(event);
+    }
+    void quarantine() noexcept {
+        if(!measured.quarantined)++lane->shared->optionalQuarantines;
+        measured.quarantined=true;
+        completionUnknown=true;cancelled=true;progress=OpenCLProbeProgress::Quarantined;
+        lane->shared->failed.store(true,std::memory_order_release);
+        readyPlans.store(0,std::memory_order_release);
+    }
+    // Every successfully accepted async command produces a trailing event.
+    // Replacing the old event is safe on this in-order queue: positive terminal
+    // proof for the new event also covers all preceding borrowed transfers.
+    void remember(Handle next) {
+        if(!next){untrackedCommand=true;quarantine();throw std::runtime_error("OpenCL omitted completion event");}
+        if(event)lane->api.ReleaseEvent(event);
+        event=next;
+    }
+    template<class Enqueue> void submitEvent(Enqueue enqueue) {
+        Handle next=nullptr;
+        check(enqueue(&next));remember(next);
+    }
+    static bool terminalProof(void* value) noexcept {
+        auto& state=*static_cast<Impl*>(value);
+        if(state.untrackedCommand)return false;
+        if(!state.event)return !state.borrowedTransfers && !state.completionUnknown;
+        Int status=1;
+        if(state.lane->api.GetEventInfo(state.event,0x11D3,sizeof status,&status,nullptr) || status!=0)return false;
+        state.lane->api.ReleaseEvent(state.event);state.event=nullptr;
+        state.borrowedTransfers=false;state.completionUnknown=false;
+        state.progress=OpenCLProbeProgress::Declined;return true;
     }
     std::uint64_t clockNow() noexcept {
         const auto now=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
@@ -1362,13 +1402,8 @@ struct OpenCLProbe::Impl
     }
     bool readyEvent() {
         Int state=0;
-        check(lane->api.GetEventInfo(event,0x11D3,sizeof state,&state,nullptr));
-        if(state<0) {
-            // Failure of a trailing command is not used as proof that an
-            // earlier borrowed transfer has stopped touching its CPU storage.
-            if(borrowedTransfers) lane->api.Finish(lane->queue);
-            lane->api.ReleaseEvent(event);event=nullptr;borrowedTransfers=false;check(state);
-        }
+        const auto result=lane->api.GetEventInfo(event,0x11D3,sizeof state,&state,nullptr);
+        if(result || state<0){quarantine();return false;}
         if(state) return false;
         if(phase==Phase::KernelWait) lane->profile(event,lane->status.deviceKernelNs);
         if(phase==Phase::CheckWait) lane->profile(event,lane->status.deviceCheckReadNs);
@@ -1455,8 +1490,8 @@ struct OpenCLProbe::Impl
             break;
         }
         case Phase::CostsUpload:
-            check(api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,costs->data.size()*sizeof(UInt),
-                costs->data.data(),0,nullptr,&event));
+            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,costs->data.size()*sizeof(UInt),
+                costs->data.data(),0,nullptr,done);});
             borrowedTransfers=true;++lane->status.costUploads;++measured.costUploads;
             if(privateScalar) ++lane->status.uniformMetadataHits;
             flush();phase=Phase::CostsWait;break;
@@ -1528,23 +1563,22 @@ struct OpenCLProbe::Impl
         case Phase::Upload: {
             // All borrowed sources persist until the trailing event completes.
             if(privateScalar && !lane->shared->status.probeColdCosts) {
-                check(api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,sizeof(UInt),costs->data.data(),0,nullptr,nullptr));
+                submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,sizeof(UInt),costs->data.data(),0,nullptr,done);});
                 borrowedTransfers=true;
                 ++lane->status.costUploads;++lane->status.uniformMetadataHits;
             }
-            check(api.EnqueueWriteBuffer(lane->queue,a,0,0,n*sizeof(std::uint16_t),lane->values.data(),0,nullptr,nullptr));
+            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,a,0,0,n*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
             borrowedTransfers=true;
-            check(api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,sizeof descriptor,descriptor.data(),0,nullptr,nullptr));
+            submitEvent([&](Handle* done){return api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,sizeof descriptor,descriptor.data(),0,nullptr,done);});
             const UInt one=1;
-            check(api.EnqueueFillBuffer(lane->queue,active,&one,sizeof one,0,tileCount*sizeof(UInt),0,nullptr,
-                measured.activeEpoch ? nullptr : &event));
+            submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,active,&one,sizeof one,0,tileCount*sizeof(UInt),0,nullptr,done);});
             ++lane->status.tileMaskInitializations;++measured.tileMaskInitializations;
             if(measured.activeEpoch){
                 const UInt zero=0;
                 // Fresh A=1/B=0 across every probe, including cached costs and
                 // differently shaped required work interleaved on its own lane.
                 // The trailing event follows BOTH mask fills and all uploads.
-                check(api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,&event));
+                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,done);});
                 ++lane->status.tileMaskInitializations;++measured.tileMaskInitializations;
             }
             flush();phase=Phase::InitialWait;break;
@@ -1567,9 +1601,9 @@ struct OpenCLProbe::Impl
             if(round==65536) throw std::runtime_error("OpenCL probe failed to converge");
             const UInt zero=0;
             if(!measured.activeEpoch || round+1==windowEnd)
-                check(api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,sizeof zero,0,nullptr,nullptr));
+                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,sizeof zero,0,nullptr,done);});
             if(!measured.activeEpoch){
-                check(api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof zero,0,nullptr,nullptr));
+                submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof zero,0,nullptr,done);});
                 ++lane->status.tileMaskClears;++measured.tileMaskClears;
             }
             const auto before=lane->status.kernelArgumentUpdates;
@@ -1584,7 +1618,7 @@ struct OpenCLProbe::Impl
             measured.kernelArgumentUpdates+=lane->status.kernelArgumentUpdates-before;
             const auto threads=lane->variants[lane->selectedVariant].threads;
             const std::size_t global[]{std::size_t(pitch)*threads,rows,1},local[]{threads,1,1};
-            check(api.EnqueueNDRangeKernel(lane->queue,lane->kernel,3,nullptr,global,local,0,nullptr,&event));
+            submitEvent([&](Handle* done){return api.EnqueueNDRangeKernel(lane->queue,lane->kernel,3,nullptr,global,local,0,nullptr,done);});
             std::swap(a,b);std::swap(active,nextActive);++round;
             ++lane->status.dispatches;++measured.dispatches;
             flush();phase=Phase::KernelWait;break;
@@ -1593,7 +1627,7 @@ struct OpenCLProbe::Impl
             // Yielded event polls add optional lifecycle cost, but kernel and
             // convergence-check counts mirror the required epoch check window.
             if(measured.activeEpoch && round<windowEnd){phase=Phase::Dispatch;break;}
-            check(api.EnqueueReadBuffer(lane->queue,lane->changed,0,0,sizeof flags,&flags,0,nullptr,&event));
+            submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,lane->changed,0,0,sizeof flags,&flags,0,nullptr,done);});
             borrowedTransfers=true;
             flush();phase=Phase::CheckWait;break;
         case Phase::CheckWait:
@@ -1603,7 +1637,7 @@ struct OpenCLProbe::Impl
                 phase=Phase::Dispatch;
             }
             else {
-                check(api.EnqueueReadBuffer(lane->queue,a,0,0,n*sizeof(std::uint16_t),lane->values.data(),0,nullptr,&event));
+                submitEvent([&](Handle* done){return api.EnqueueReadBuffer(lane->queue,a,0,0,n*sizeof(std::uint16_t),lane->values.data(),0,nullptr,done);});
                 borrowedTransfers=true;
                 flush();phase=Phase::OutputWait;
             }
@@ -1618,8 +1652,14 @@ struct OpenCLProbe::Impl
     Impl(const BackendRequest&,Plan,std::shared_ptr<const void>,OpenCLProbeClock) {progress=OpenCLProbeProgress::Declined;}
 #endif
 };
-OpenCLProbe::OpenCLProbe(std::unique_ptr<Impl> value):state(std::move(value)) {}
-OpenCLProbe::~OpenCLProbe()=default;
+OpenCLProbe::OpenCLProbe(std::shared_ptr<Impl> value):state(std::move(value)) {}
+OpenCLProbe::~OpenCLProbe() {
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    if(state && (state->event || state->borrowedTransfers || state->completionUnknown)) {
+        state->quarantine();state->lane->shared->optionalLifetime.quarantine(state);
+    }
+#endif
+}
 void OpenCLProbe::cancel() noexcept {state->cancelled=true;}
 OpenCLProbe::Metrics OpenCLProbe::metrics() const noexcept {
     auto result=state->measured;
@@ -1646,14 +1686,18 @@ OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpu
     catch(const BudgetExceeded&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(const std::bad_alloc&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(...) {
-        device.fail("OpenCL optional execution failed");readyPlans.store(0,std::memory_order_release);
+        if(state->event || state->borrowedTransfers || state->completionUnknown)state->quarantine();
+        else {device.fail("OpenCL optional execution failed");readyPlans.store(0,std::memory_order_release);}
         state->cancelled=true;
     }
-    // Reconcile canceled/failed operations before sampling the endpoint so
-    // exceptional safety drains remain part of calling-thread CPU expense.
-    if(state->cancelled && !state->event) {
-        if(state->borrowedTransfers) {state->lane->api.Finish(state->lane->queue);state->borrowedTransfers=false;}
-        state->progress=OpenCLProbeProgress::Declined;
+    // Retain ambiguous completion before sampling the endpoint. There is no
+    // blocking drain on this coordinator, including failure/cancellation.
+    if(state->progress==OpenCLProbeProgress::Quarantined)device.optionalLifetime.quarantine(state);
+    else if(state->cancelled && !state->event) {
+        if(state->borrowedTransfers) {
+            state->quarantine();device.optionalLifetime.quarantine(state);
+        }
+        else state->progress=OpenCLProbeProgress::Declined;
     }
     lock.unlock();
     const auto ended=state->clockNow();
@@ -1665,7 +1709,7 @@ OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpu
         state->measured.maxAdvanceCpuNs=std::max(state->measured.maxAdvanceCpuNs,elapsed);
         if(elapsed>budget) ++state->measured.overshoots;
     }
-    if(state->cancelled) {
+    if(state->cancelled && state->progress!=OpenCLProbeProgress::Quarantined) {
         // Invalid clocks stop new optional commands. Pending events are reaped
         // on later coordinator advances before captured storage is released.
         if(state->event) return OpenCLProbeProgress::Pending;
@@ -1708,7 +1752,12 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
         device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
     try {
-        auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock)));
+        if(!device.optionalLifetime.tryReserve())return {};
+        struct Admission {OpenCLBorrowedLifetime& slot;bool transferred=false;
+            ~Admission(){if(!transferred)slot.release();}} admission{device.optionalLifetime};
+        auto state=std::make_shared<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock);
+        state->admission.owns=true;admission.transferred=true;
+        auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::move(state)));
         admitted=value->state.get();timer.finish();
         if(!timer.valid) {admitted=nullptr;return {};}
         return value;
@@ -1716,6 +1765,13 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
     catch(...) {return {};}
 #else
     return {};
+#endif
+}
+bool reapOpenCLProbeQuarantine() noexcept {
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    return runtime().shared->optionalLifetime.tryReap(&OpenCLProbe::Impl::terminalProof);
+#else
+    return false;
 #endif
 }
 bool initializeOpenCL() {

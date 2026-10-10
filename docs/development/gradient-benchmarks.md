@@ -486,3 +486,32 @@ packing. Separate cases cancel packing/upload waits, invalidate the session,
 reject unknown/forbidden-dependent/bad costs, and exhaust16/64/128MiB tracked
 budgets. Use fresh processes with epoch zero and one separately; optional capture
 and live learning remain disabled, and full cold CPU cost is paid per probe.
+### Optional probe completion quarantine
+
+Optional probe admission reserves one process-wide backend slot before state
+construction. Its shared state owns the Device/API parent, original/cost/session
+keep-alive graph and all host/probe/device leases. Every accepted asynchronous
+command requests a trailing event on the in-order queue. Positive completion of
+the latest event proves all preceding borrowed transfers are finished. Negative
+event status, query failure or an accepted command without its requested event
+does not establish that proof.
+
+Ambiguous completion returns `Quarantined`, retains the already-allocated graph
+in a bounded slot and disables further GPU/probe admission. Retention requires
+no failure-path allocation. Repeated failed queries retain the same graph;
+`reapOpenCLProbeQuarantine` polls only the existing event and releases retention
+after a positive completion proof. External handles continue holding admission
+until their payload is destroyed. Cancellation and premature disposal never
+call blocking `clFinish` on the required coordinator. Ordinary shutdown cannot
+free an unproved graph because the retained state pins the slot's parent; this
+bounded cycle survives until proof or operating-system process reclamation.
+
+An omitted completion event cannot be reaped through an older event. This
+candidate has no automatic emergency-drain thread and no automatic GPU recovery
+after quarantine. It remains an isolated diagnostic prerequisite; required
+synchronous Runtime failure paths still need a separate ownership repair. Tool
+exit code 86 is not a game fallback. No timing sample or policy settlement may
+be inferred from quarantine, and capture/policy leases must stay in its retained
+graph. Hardware-free tests exercise the actual retention helper with live seed,
+output and metadata sentinels, repeated failed proof, later successful reap,
+foreign-owner rejection and last-external-owner admission release.

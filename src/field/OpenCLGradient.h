@@ -86,6 +86,8 @@ struct OpenCLStatus
     unsigned apiCpuMode = 0;
     bool apiCpuConfigured = false;
     OpenCLApiCpuCounters apiCpu;
+    std::uint64_t optionalQuarantines=0;
+    bool optionalQuarantinePending=false;
     // Isolated optional preparation only; never publishes pending/cache planes.
     bool probeColdCosts=false;
 };
@@ -99,11 +101,15 @@ bool executeOpenCLDevice(std::span<const BackendRequest> requests, Plan plan);
 // Process-owned coordinators retain this lease until after their thread joins.
 // It pins the backend/API library, without initializing or compiling a driver.
 std::shared_ptr<const void> retainOpenCLLifetime();
-enum class OpenCLProbeProgress { Pending, Complete, Declined };
+enum class OpenCLProbeProgress { Pending, Complete, Declined, Quarantined };
+// Background/coordinator only: poll an existing trailing event without waiting.
+// False leaves ambiguous state, all payload leases and admission retained.
+bool reapOpenCLProbeQuarantine() noexcept;
 // Development-only optional execution. Required requests keep the synchronous
 // API. Each normal advance enqueues at most one kernel and never waits for the
-// driver. A driver failure before a trailing event exists requires an emergency
-// drain to protect borrowed transfer storage; such failures cannot be promoted.
+// driver. Every accepted command retains a trailing event. Unknown completion
+// quarantines borrowed storage and disables GPU admissions; no blocking Finish
+// or completion inference from a negative event status is permitted here.
 // keepAlive must retain original gradient, cost context and session lifetimes;
 // source/cost storage must remain immutable and be charged to the shared probe
 // budget by its owner. In particular, keepAlive must retain that owner's probe
@@ -135,6 +141,7 @@ public:
         std::uint64_t hostChecks=0,tileMaskInitializations=0,tileMaskClears=0,kernelArgumentUpdates=0;
         std::uint64_t invalidCpuClocks=0,costCellsPrepared=0,costPreparedBytes=0,costUploads=0;
         bool coldCostPlane=false;
+        bool quarantined=false;
         unsigned checkInterval=1;
         bool activeEpoch=false;
         Stage stage=Stage::Costs;
@@ -155,11 +162,13 @@ public:
     Metrics metrics() const noexcept;
 private:
     struct Impl;
-    std::unique_ptr<Impl> state;
-    explicit OpenCLProbe(std::unique_ptr<Impl>);
+    std::shared_ptr<Impl> state;
+    explicit OpenCLProbe(std::shared_ptr<Impl>);
     friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void>,OpenCLProbeClock);
+    friend bool reapOpenCLProbeQuarantine() noexcept;
 };
 // Cancellation parks pending events: call advance until terminal before normal
-// destruction. A premature destructor defensively drains on its calling thread.
+// destruction. Premature destruction or an ambiguous completion quarantines
+// the heap-owned graph and disables GPU admissions; it never blocks on Finish.
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void> keepAlive,OpenCLProbeClock clock={});
 } // namespace gradient_kernel
