@@ -74,6 +74,10 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('needs: [preflight, windows]',smoke)
         self.assertIn('ref: ${{ needs.preflight.outputs.source_commit }}',smoke)
         self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
+        self.assertIn("'1' { $repeatArgs = @('--nox', $save, '10', '1') }",smoke)
+        self.assertIn("'2' { $repeatArgs = @('game', 'repeat', $save, '--ticks', '10', '--runs', '1') }",smoke)
+        self.assertIn('& .\\glob2.exe @repeatArgs',smoke)
+        self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
 
     def test_gog_posix_repeat_selector_preserves_both_command_contracts(self):
         text=(ROOT/'.github/workflows/gog-staging.yml').read_text()

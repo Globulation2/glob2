@@ -123,6 +123,7 @@ jobs:
           WORKFLOW_COMMIT: ${{ needs.preflight.outputs.workflow_commit }}
           CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}
         run: |
+          set -euo pipefail
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
