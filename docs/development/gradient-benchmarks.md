@@ -943,6 +943,14 @@ and rolling/cumulative one-percent limits apply to that complete debt. Reaching
 the reservation before comparison invalidates the pair; changing its cost model
 does not forgive overspending.
 
+Exploratory reservations include 8 ms for fixed background capture/accounting
+work plus half the retained CPU reference, capped at 64 ms. A group uses its
+declared capacity only to predict that reservation; only completed selected jobs
+can provide the paired batch reference. These CPU budgets do not predict GPU
+elapsed time. Admission still requires the full reservation to fit both rolling
+and cumulative credits before copying anything. A cheap or unfunded workload
+stays on its accepted plan rather than starting an experiment that cannot finish.
+
 The explicit required-path receipt can only be created after real native
 completion/readback and exact comparison with valid producer clocks. It includes
 all measured native calling CPU, including fresh queue/all-kernel setup until

@@ -327,13 +327,49 @@ TEST_CASE("optional bootstrap does not use slow CPU time as a GPU completion bou
     const auto offer=policy.probeOffer(key);
     CHECK(offer.plan==Plan::Frozen8);
     CHECK(offer.elapsedNs==1000000); // Exploratory dispatch admission only.
-    CHECK(offer.reservedCpuNs==8000000);
+    CHECK(offer.reservedCpuNs==58000000);
     CHECK(policy.lookup(key).plan==Plan::CPU);
     for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
         CHECK_FALSE(policy.beginAcceptedCapture(key,offer.plan,1,offer.reservedCpuNs,1000000,
             offer.elapsedNs,false,0,41,true));
     CHECK(policy.metrics().admitted==0);
     CHECK(policy.lookup(key).plan==Plan::CPU);
+}
+
+TEST_CASE("complete probe reservations require real rolling credits without changing required choices" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload(512);
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    auto pair=key;pair.batch=2;REQUIRE(policy.qualify(pair,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,1000000,1);
+    const auto offer=policy.probeOffer(key);
+    CHECK(offer.reservedCpuNs==8500000);
+    CHECK(offer.elapsedNs==1000000);
+    CHECK(policy.groupOffer(key,2,1).reservedCpuNs==0);
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
+        CHECK_FALSE(policy.beginAcceptedCapture(key,offer.plan,1,offer.reservedCpuNs,
+            100000000,offer.elapsedNs,false,0,41,true));
+    CHECK(policy.metrics().admitted==0);CHECK(policy.lookup(key).plan==Plan::CPU);
+    // Other actual accepted jobs can fund learning, but never become this
+    // immutable job's paired reference or this batch's measured CPU baseline.
+    auto other=workload(256);policy.observeAccepted(other,Plan::CPU,2000000000,1);
+    CHECK(policy.groupOffer(key,2,1).reservedCpuNs==9000000);
+    std::optional<CpuSavingPolicy::ProbeTicket> ticket;
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
+        ticket=policy.beginAcceptedCapture(key,offer.plan,1,offer.reservedCpuNs,
+            100000000,offer.elapsedNs,false,0,41,true);
+    REQUIRE(bool(ticket));REQUIRE(policy.bindAcceptedReference(*ticket,41,1000000,true,true));
+    const auto authorization=policy.authorizeOptionalExecution(*ticket,41,1,100000000,false);
+    REQUIRE(bool(authorization));CHECK(authorization->acceptedReferenceCpuNs==1000000);
+    policy.cancelProbe(*ticket,7000000);
+    CHECK(policy.metrics().probeCpuNs>=7000000);CHECK(policy.lookup(key).plan==Plan::CPU);
+    // Cumulative headroom cannot substitute for an expired rolling window.
+    policy.observeAccepted(other,Plan::CPU,2000000,257);
+    CHECK(policy.groupOffer(key,2,257).reservedCpuNs==0);
+    for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
+        CHECK_FALSE(policy.beginAcceptedCapture(key,offer.plan,257,offer.reservedCpuNs,
+            100000000,offer.elapsedNs,false,0,41,true));
+    CHECK(policy.metrics().admitted==1);CHECK(policy.lookup(key).plan==Plan::CPU);
 }
 
 TEST_CASE("tuning debt cannot wrap around and restore probe admission" * doctest::test_suite("OpenCLGradient"))

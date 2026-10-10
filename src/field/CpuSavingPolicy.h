@@ -95,6 +95,16 @@ private:
     inline static std::atomic<std::uint64_t> globalProbeOpportunities{0};
     Metrics totals;
 
+    static std::uint64_t optionalReservationCpuNs(std::uint64_t reference) noexcept {
+        // Capture, exact comparison and complete background accounting have a
+        // fixed cost even for a cheap field. Reserve that work before learning;
+        // a fraction of propagation time alone can cancel before comparison.
+        // This is an exploratory CPU budget, never a GPU performance estimate.
+        // Insufficient rolling credits leave the workload on its accepted plan.
+        constexpr std::uint64_t fixedCpuNs=8000000,maximumCpuNs=64000000;
+        return reference/2>=maximumCpuNs-fixedCpuNs ? maximumCpuNs : fixedCpuNs+reference/2;
+    }
+
     unsigned findOrCreate(const WorkloadKey& key) {
         const auto count=published.load(std::memory_order_relaxed);
         for(unsigned i=0;i<count;++i) if(profiles[i].key==key) return i;
@@ -206,7 +216,7 @@ public:
         for(unsigned i=0;i<count;++i)if(profiles[i].key==key) {
             const auto& p=profiles[i];if(p.cooldown || !p.cpuReference)return {};
             for(const auto& a:p.alternatives)if(a.qualified) {
-                const auto cap=std::clamp(p.cpuReference/4,std::uint64_t(1000000),std::uint64_t(8000000));
+                const auto cap=optionalReservationCpuNs(p.cpuReference);
                 // Before a measured alternative exists, this is only the
                 // admission quantum for exploratory optional dispatches. It is
                 // never a completion bound for required work or promotion.
@@ -227,7 +237,7 @@ public:
         for(unsigned i=0;i<count;++i)if(profiles[i].key==key && !profiles[i].cooldown) {
             for(const auto& a:profiles[i].alternatives)if(a.qualified) {
                 const auto estimated=reference>UINT64_MAX/capacity?UINT64_MAX:reference*capacity;
-                const auto reserve=std::clamp(estimated/4,std::uint64_t(1000000),std::uint64_t(8000000));
+                const auto reserve=optionalReservationCpuNs(estimated);
                 std::uint64_t accepted=0,paid=0;
                 for(const auto& c:credits)if(c.tick<=tick && tick-c.tick<WindowTicks) {
                     accepted=saturatedAdd(accepted,c.accepted);paid=saturatedAdd(paid,c.probes);
