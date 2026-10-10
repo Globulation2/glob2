@@ -2,6 +2,21 @@
 
 Measure scheduled AI, gradients, growth and scene preparation using retained inputs. Use [telemetry contracts](performance-telemetry.md) to interpret exported fields.
 
+## Optional barrier participation diagnosis
+
+`GLOB2_COMPUTE_BARRIER_DIAGNOSTICS=1` records fixed counters for worker
+participation in blocking `run()` generations. Empty invocations claimed no jobs;
+late completed generations were already complete when a worker first observed
+them. These distinct counters leave execution unchanged. Actual worker/owner
+parallel job counts normalize participation. Two CPU clock reads per invocation
+are enabled only with this flag; the default template path retains the original
+loop without added per-job counters or clock reads. Inclusive invocation CPU
+contains the empty-invocation component, so never add the two. Unavailable or
+reversed clocks count invalid measurements and contribute zero CPU. Deferred
+AI/gradient work is counted separately by existing deferred metrics. The fixed
+scalar copy is available through `ComputeExecutor::metrics()` and warm gradient
+metric exports; these diagnostic samples do not establish a scheduling benefit.
+
 ## Scheduled AI decisions and shared computation
 
 All shipped controllers borrow immutable engine snapshots for decisions. The simulation

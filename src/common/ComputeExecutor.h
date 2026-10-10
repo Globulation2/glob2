@@ -19,6 +19,8 @@
 #include <ThreadSupport.h>
 #include <vector>
 #include <utility>
+#include <cstdlib>
+#include <cstring>
 #include "ThreadCpuClock.h"
 #include "ThreadCpuEnvelopeBridge.h"
 
@@ -85,6 +87,12 @@ public:
 		std::uint64_t batchNs = 0, waitNs = 0;
 		std::size_t deferredBatches = 0, deferredJobs = 0, ownerJobs = 0, workerJobs = 0;
 		std::uint64_t joinWaitNs = 0;
+        bool barrierDiagnostics=false;
+        std::uint64_t workerParallelInvokes=0,workerEmptyParallelInvokes=0,workerLateCompletedGenerations=0,ownerEmptyParallelInvokes=0;
+        std::uint64_t workerParallelJobs=0,ownerParallelJobs=0;
+        // Inclusive CPU per invocation; empty CPU is a subset, never additive.
+        std::uint64_t workerParallelInvokeCpuNs=0,ownerParallelInvokeCpuNs=0,workerEmptyParallelInvokeCpuNs=0,ownerEmptyParallelInvokeCpuNs=0;
+        std::uint64_t barrierCpuInvalidMeasurements=0;
 	};
 	struct Job
 	{
@@ -191,6 +199,7 @@ private:
 	std::uint64_t nextSerial = 1;
 	std::array<std::uint64_t, Lanes> laneIssued{}, laneCompleted{}, laneDue{};
 	Metrics totals;
+    bool barrierDiagnostics=false;
 	struct WorkerMetrics { std::uint64_t jobs = 0, activeNs = 0; };
 	std::vector<WorkerMetrics> workerMetrics{1};
 	PresentationTicket presentation, presentationPending;
@@ -261,8 +270,11 @@ private:
 		ready.notify_all();
 	}
 
-	void invoke(std::size_t slot)
+	struct InvocationDiagnostic {std::uint64_t jobs=0,cpuNs=0;bool valid=false;};
+    template<bool Measure> InvocationDiagnostic invoke(std::size_t slot)
 	{
+        InvocationDiagnostic diagnostic;
+        const auto cpuStart=Measure ? glob2::threadCpuNs() : 0;
 		auto *previous = active;
 		const auto previousSlot = activeSlot;
 		active = this;
@@ -273,6 +285,7 @@ private:
 			const auto i = next.fetch_add(1, std::memory_order_relaxed);
 			if (i >= count) break;
 			++workerMetrics[slot].jobs;
+            if constexpr(Measure)++diagnostic.jobs;
 			try { job(i); }
 			catch (...) { std::lock_guard<std::mutex> lock(mutex); if (!error) error = std::current_exception(); }
 			{
@@ -283,7 +296,22 @@ private:
 		workerMetrics[slot].activeNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - started).count();
 		active = previous;
 		activeSlot = previousSlot;
+        if constexpr(Measure){const auto end=glob2::threadCpuNs();diagnostic.valid=cpuStart && end>=cpuStart;
+            diagnostic.cpuNs=glob2::threadCpuDeltaNs(cpuStart,end);}
+        return diagnostic;
 	}
+    // Called only while holding the already-required worker/owner barrier lock.
+    void recordInvocation(const InvocationDiagnostic& diagnostic,bool worker) {
+        if(worker){
+            ++totals.workerParallelInvokes;totals.workerParallelJobs+=diagnostic.jobs;
+            totals.workerParallelInvokeCpuNs+=diagnostic.cpuNs;
+            if(!diagnostic.jobs){++totals.workerEmptyParallelInvokes;totals.workerEmptyParallelInvokeCpuNs+=diagnostic.cpuNs;}
+        }else{
+            totals.ownerParallelJobs+=diagnostic.jobs;totals.ownerParallelInvokeCpuNs+=diagnostic.cpuNs;
+            if(!diagnostic.jobs){++totals.ownerEmptyParallelInvokes;totals.ownerEmptyParallelInvokeCpuNs+=diagnostic.cpuNs;}
+        }
+        totals.barrierCpuInvalidMeasurements+=!diagnostic.valid;
+    }
 	// Under mutex: the earliest due, then earliest submitted, live batch with a
 	// claimable job. Only workers claim, unless there are none: then the owner
 	// claims the jobs due no later than limit. claimable() has no side effect.
@@ -436,10 +464,13 @@ private:
 			{
 				++simulationClaims;
 				seen = generation;
+                if(barrierDiagnostics)totals.workerLateCompletedGenerations+=runDone==count;
 				++inFlight;
 				lock.unlock();
-				invoke(slot);
+				InvocationDiagnostic diagnostic;
+                if(barrierDiagnostics)diagnostic=invoke<true>(slot);else invoke<false>(slot);
 				lock.lock();
+                if(barrierDiagnostics)recordInvocation(diagnostic,true);
 				if (--inFlight == 0) runFinished.notify_all();
 				continue;
 			}
@@ -502,6 +533,8 @@ public:
 	{
 		assert(!active && threads >= 1);
 		stop();
+        const auto* barrierOption=std::getenv("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS");
+        barrierDiagnostics=barrierOption && std::strcmp(barrierOption,"1")==0;
         {std::lock_guard lock(mutex);nativeThreadIds.assign(threads,0);nativeThreadIds[0]=glob2::nativeThreadId();}
 		presentationWorker = threads > 1 ? threads - 1 : 0;
 		if constexpr (GAGCore::ThreadSupport::available)
@@ -516,7 +549,7 @@ public:
 		}
 		else {presentationWorker = 0;std::lock_guard lock(mutex);nativeThreadIds.resize(1);}
 		workerMetrics.assign(threadCount(), {});
-		totals = {};
+		totals = {};totals.barrierDiagnostics=barrierDiagnostics;
 		presentationTotals = {};
 	}
 	// The submitting thread owns admission. Replacing pending work releases its
@@ -648,12 +681,14 @@ public:
 				++generation;
 			}
 			ready.notify_all();
-			invoke(0);
+			InvocationDiagnostic diagnostic;
+            if(barrierDiagnostics)diagnostic=invoke<true>(0);else invoke<false>(0);
 			const auto waitStart = Clock::now();
 			// Completion counts jobs plus the workers still inside this batch: a
 			// worker busy with a deferred job never joins it and cannot delay the
 			// barrier, while one that did join must leave before the state changes.
 			std::unique_lock<std::mutex> lock(mutex);
+            if(barrierDiagnostics)recordInvocation(diagnostic,false);
 			runFinished.wait(lock, [&] { return runDone == count && inFlight == 0; });
 			totals.waitNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - waitStart).count();
 			job = {};

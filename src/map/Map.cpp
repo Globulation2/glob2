@@ -525,6 +525,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
 {
     const auto m=gradientRuntime->backendSession->metrics();
     const auto device=gradientRuntime->deviceService->metrics();
+    const auto barriers=compute.metrics();
     auto result=std::vector<std::pair<std::string,Uint64>>{{"cpu_diagnostics_enabled",1},
         {"gradient_stage_diagnostics_enabled",gradientRuntime->pipeline.diagnosticsEnabled()},
         {"gpu_requested_fields",gradientRuntime->pipeline.gpuRequestedFields()},
@@ -535,6 +536,13 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"cpu_reason_failed_session",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::FailedSession)},
         {"cpu_reason_trivial",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::Trivial)},
         {"cpu_reason_clock_unavailable",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::CpuClockUnavailable)},
+        {"compute_barrier_diagnostics",barriers.barrierDiagnostics},
+        {"worker_parallel_invokes",barriers.workerParallelInvokes},{"worker_empty_parallel_invokes",barriers.workerEmptyParallelInvokes},
+        {"worker_late_completed_generations",barriers.workerLateCompletedGenerations},{"owner_empty_parallel_invokes",barriers.ownerEmptyParallelInvokes},
+        {"worker_parallel_jobs",barriers.workerParallelJobs},{"owner_parallel_jobs",barriers.ownerParallelJobs},
+        {"worker_parallel_invoke_cpu_ns",barriers.workerParallelInvokeCpuNs},{"owner_parallel_invoke_cpu_ns",barriers.ownerParallelInvokeCpuNs},
+        {"worker_empty_parallel_invoke_cpu_ns",barriers.workerEmptyParallelInvokeCpuNs},{"owner_empty_parallel_invoke_cpu_ns",barriers.ownerEmptyParallelInvokeCpuNs},
+        {"barrier_cpu_invalid_measurements",barriers.barrierCpuInvalidMeasurements},
         {"worker_noop_bypass",gradientRuntime->pipeline.workerNoopEnabled()},
         {"required_seed_cpu_ns",gradientRuntime->pipeline.requiredSeedCpuNs()},
         {"required_propagation_cpu_ns",gradientRuntime->pipeline.requiredPropagationCpuNs()},

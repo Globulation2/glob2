@@ -15,6 +15,8 @@
 #include <mutex>
 #include <limits>
 #include <string>
+#include <Environment.h>
+#include <future>
 
 TEST_SUITE("ComputeExecutor")
 {
@@ -781,4 +783,47 @@ TEST_CASE("retained completion tickets can be resolved after executor destructio
         auto batch=executor.submit(std::span(&group,1)); executor.join(batch);
     }
     CHECK_FALSE(ticket->complete());
+}
+
+
+TEST_CASE("optional barrier diagnostics distinguish completed late generations from useful worker claims" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Environment {
+        std::string previous=std::getenv("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS") ? std::getenv("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS") : "";
+        explicit Environment(bool enabled){GAGCore::setProcessEnvironment("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS",enabled ? "1" : "0",1);}
+        ~Environment(){GAGCore::setProcessEnvironment("GLOB2_COMPUTE_BARRIER_DIAGNOSTICS",previous.c_str(),1);}
+    };
+    for(bool enabled:{false,true}){
+        Environment environment(enabled);ComputeExecutor executor;executor.configure(2);
+        struct Gate {std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();std::atomic<bool> opened{false};
+            void open(){if(!opened.exchange(true))release.set_value();}};
+        auto gate=std::make_shared<Gate>();struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} cleanup{gate};
+        auto entered=gate->entered.get_future();
+        const ComputeExecutor::Group held{1,{[](void* value,std::size_t){auto& gate=*static_cast<Gate*>(value);gate.entered.set_value();gate.released.wait();},gate.get()}};
+        auto ticket=executor.submit(std::span(&held,1),100);
+        const auto reached=entered.wait_for(std::chrono::seconds(5));if(reached!=std::future_status::ready)gate->open();
+        REQUIRE(reached==std::future_status::ready);
+        std::atomic<unsigned> calls{0};executor.run(2,[&](auto){++calls;});CHECK(calls==2);
+        // The sole worker missed this entire generation. Let it observe that
+        // completed generation and make its existing empty invoke unchanged.
+        gate->open();executor.join(ticket);
+        const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        if(enabled){while(executor.metrics().workerParallelInvokes!=1 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+            const auto first=executor.metrics();CHECK(first.workerParallelInvokes==1);CHECK(first.workerEmptyParallelInvokes==1);
+            CHECK(first.workerLateCompletedGenerations==1);CHECK(first.workerParallelJobs==0);CHECK(first.ownerParallelJobs==2);}
+        const auto simultaneousDeadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        std::atomic<unsigned> simultaneous{0};std::atomic<bool> overlapped{true};
+        executor.run(2,[&](auto){++calls;++simultaneous;
+            while(simultaneous.load()<2 && std::chrono::steady_clock::now()<simultaneousDeadline)std::this_thread::yield();
+            if(simultaneous.load()<2)overlapped=false;});
+        CHECK(overlapped);CHECK(calls==4);
+        const auto totals=executor.metrics();CHECK(totals.barrierDiagnostics==enabled);
+        if(enabled){CHECK(totals.workerParallelInvokes==2);CHECK(totals.workerEmptyParallelInvokes==1);
+            CHECK(totals.workerLateCompletedGenerations==1);CHECK(totals.workerParallelJobs==1);CHECK(totals.ownerParallelJobs==3);
+            CHECK(totals.workerEmptyParallelInvokeCpuNs<=totals.workerParallelInvokeCpuNs);
+            CHECK(totals.ownerEmptyParallelInvokeCpuNs<=totals.ownerParallelInvokeCpuNs);}
+        else {CHECK(totals.workerParallelInvokes==0);CHECK(totals.workerEmptyParallelInvokes==0);CHECK(totals.workerLateCompletedGenerations==0);
+            CHECK(totals.workerParallelJobs==0);CHECK(totals.ownerParallelJobs==0);CHECK(totals.workerParallelInvokeCpuNs==0);CHECK(totals.ownerParallelInvokeCpuNs==0);}
+    }
 }
