@@ -5,6 +5,45 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
 import type { SetSheet } from '@glob2/protocol';
+export class ArtworkError extends Error {}
+export class ArtworkInvalid extends ArtworkError {}
+const conversionReasons = [
+  'Terrain source must be fully opaque',
+  'Resource/decor source needs a transparent background',
+  'Missing resource/decor frame',
+  'Sprite touches a frame edge; regenerate with more padding',
+  'Source image exceeds 16 MiB',
+  'Expected a bounded PNG source image',
+];
+export function conversionError(error: unknown): Error {
+  const stderr = (error as { stderr?: unknown })?.stderr;
+  if (typeof stderr === 'string') {
+    const reason = stderr.match(/(?:^|\n)ValueError: ([^\r\n]+)\s*$/)?.[1];
+    if (reason && conversionReasons.includes(reason)) return new ArtworkInvalid(reason);
+  }
+  return new ArtworkError('Artwork conversion could not complete.');
+}
+/** Image corrections preserve the plan and each successfully processed entry. */
+export async function prepareArtwork<T>(
+  generate: (attempt: number, reason?: string) => Promise<Uint8Array>,
+  process: (source: Uint8Array) => Promise<T>,
+  repaired: (attempt: number, reason: string) => Promise<void>,
+): Promise<T> {
+  let reason: string | undefined;
+  for (let attempt = 0; attempt <= 2; attempt++) {
+    const source = await generate(attempt, reason);
+    try {
+      return await process(source);
+    } catch (error) {
+      if (!(error instanceof ArtworkInvalid)) throw error;
+      reason = error.message;
+      if (attempt === 2)
+        throw new ArtworkInvalid('Artwork failed after two image repair passes: ' + reason);
+      await repaired(attempt + 1, reason);
+    }
+  }
+  throw new ArtworkInvalid('Artwork could not be prepared.');
+}
 export async function processArtwork(
   source: Uint8Array,
   kind: 'terrain' | 'resource' | 'decor',
@@ -30,7 +69,9 @@ export async function processArtwork(
         String(phases),
       ],
       { signal, timeout: 60000, maxBuffer: 1024 * 1024 },
-    );
+    ).catch((error: unknown) => {
+      throw conversionError(error);
+    });
     const metadata = JSON.parse(result.stdout) as {
       frameWidth: number;
       frameHeight: number;

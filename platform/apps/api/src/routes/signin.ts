@@ -77,8 +77,8 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       reply,
       'Sign-in problem',
       pageHtml(reply)`<div class="card" role="alert"><p>${pageText(reply, message)}</p></div>
-        <a class="button primary" href="/signin">Back to sign in</a>
-        <a class="button" href="/">Go to ${identity.instanceName}</a>`,
+        <a class="btn button primary" href="/signin">Back to sign in</a>
+        <a class="btn button" href="/">Go to ${identity.instanceName}</a>`,
       status,
     );
 
@@ -162,7 +162,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     return providers.map(
       (provider, i) =>
         pageHtml(reply)`<a
-          class="button${i === 0 ? ' primary' : ''}"
+          class="btn button${i === 0 ? ' primary' : ''}"
           href="/auth/${encodeURIComponent(provider.id)}/start${query}"
           >Continue with ${provider.displayName}</a
         >`,
@@ -337,7 +337,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         view.signedInAs
           ? pageHtml(reply)`<div class="card">
                 <p>Signed in as <strong>${view.signedInAs}</strong>.</p>
-                <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
+                <a class="btn button primary" href="/">Continue to ${identity.instanceName}</a>
               </div>`
           : ''
       }
@@ -672,7 +672,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       'Signed in',
       pageHtml(reply)`<div class="card">
         <p>You are signed in as <strong>${account.display_name}</strong>.</p>
-        <a class="button primary" href="/">Continue to ${identity.instanceName}</a>
+        <a class="btn button primary" href="/">Continue to ${identity.instanceName}</a>
       </div>`,
     );
   };

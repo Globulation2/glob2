@@ -5,6 +5,8 @@ import { createHash } from 'node:crypto';
 import {
   type TerrainStudio,
   validatePlan,
+  preparePlan,
+  validateRepairScope,
   assemble,
   plannerPrompt,
   entryKey,
@@ -18,8 +20,14 @@ import {
   type SetPackage,
 } from '@glob2/protocol';
 import type { AgentBlobs } from '@glob2/engine/blobs';
-import { Attempts, ProviderUncertain, ProviderBudget, type TerrainProvider } from './provider.ts';
-import { imagePrompt, processArtwork } from './artwork.ts';
+import {
+  Attempts,
+  ProviderUncertain,
+  ProviderBudget,
+  ProviderRejected,
+  type TerrainProvider,
+} from './provider.ts';
+import { imagePrompt, processArtwork, prepareArtwork, ArtworkError } from './artwork.ts';
 export interface Validator {
   validateSet(
     bytes: Uint8Array,
@@ -118,7 +126,24 @@ export class Pipeline {
           signal,
         ),
     );
-    let plan = validatePlan(JSON.parse(planned.text), row.input.base);
+    let plan = await preparePlan(planned.text, row.input.base, async (proposal, error, repair) => {
+      await this.studio.text(row, `Design repair ${repair + 1}: ${error}`, repair + 1);
+      const fixed = await attempts.run(
+        row,
+        `design-repair:${repair}`,
+        textModel,
+        { error, plan: proposal },
+        () =>
+          this.provider.text(
+            textModel,
+            plannerPrompt(row.input.base, row.input.messages, proposal.brief) +
+              `\nRepair this proposed plan without changing its action or entry scope: ${JSON.stringify(proposal)}\nValidation error: ${error}`,
+            cfg.maxOutputTokens ?? 16000,
+            signal,
+          ),
+      );
+      return fixed.text;
+    });
     if (plan.action === 'discuss') {
       await this.studio.stage(row, 'prepare', 'complete');
       await this.studio.finish(row, { text: plan.text, brief: plan.brief });
@@ -175,44 +200,59 @@ export class Pipeline {
           const imageReferences = sheet
             ? [Buffer.from(sheet.png, 'base64url'), ...references].slice(0, 4)
             : references;
-          const original = await attempts.run(
-            row,
-            `art:${key}:${createHash('sha256').update(entry.artPrompt).digest('hex')}`,
-            imageModel,
-            {
-              prompt: entry.artPrompt,
-              kind: entry.kind,
-              references: row.input.submission.references,
-            },
-            async () => {
-              const result = await this.provider.image(
+          let sourceForDecor: Uint8Array | undefined;
+          const processed: EntryArtwork = await prepareArtwork(
+            async (attempt, reason) => {
+              const prompt =
+                entry.artPrompt +
+                (reason
+                  ? `\nCorrect only this image: ${reason}. Respect the exact frame layout and leave fully transparent padding around every object.`
+                  : '');
+              const original = await attempts.run(
+                row,
+                `art:${key}:${createHash('sha256').update(entry.artPrompt).digest('hex')}${attempt ? `:image-repair:${attempt}` : ''}`,
                 imageModel,
-                imagePrompt(entry.kind, entry.artPrompt),
-                imageReferences,
-                entry.kind === 'resource',
-                signal,
+                { prompt, kind: entry.kind, references: row.input.submission.references },
+                async () => {
+                  const result = await this.provider.image(
+                    imageModel,
+                    imagePrompt(entry.kind, prompt),
+                    imageReferences,
+                    entry.kind === 'resource',
+                    signal,
+                  );
+                  return {
+                    hash: await this.blobs.write(result.bytes, 'image/png'),
+                    usage: result.usage,
+                    responseId: result.responseId,
+                  };
+                },
               );
-              const hash = await this.blobs.write(result.bytes, 'image/png');
-              return { hash, usage: result.usage, responseId: result.responseId };
+              await this.studio.artifact(row, {
+                stage: 'artwork',
+                kind: 'source',
+                label: entry.name + ' source',
+                hash: original.hash,
+              });
+              sourceForDecor = await this.blobs.read(original.hash, 16 * 1024 * 1024);
+              return sourceForDecor;
             },
-          );
-          await this.studio.artifact(row, {
-            stage: 'artwork',
-            kind: 'source',
-            label: entry.name + ' source',
-            hash: original.hash,
-          });
-          const source = await this.blobs.read(original.hash, 16 * 1024 * 1024);
-          const processed: EntryArtwork = await processArtwork(
-            source,
-            entry.kind,
-            entry.animationFrames,
-            this.root,
-            this.python,
-            signal,
+            (source) =>
+              processArtwork(
+                source,
+                entry.kind,
+                entry.animationFrames,
+                this.root,
+                this.python,
+                signal,
+              ),
+            (attempt, reason) =>
+              this.studio.text(row, `${entry.name}: image repair ${attempt}: ${reason}`, attempt),
           );
           art[key] = processed;
           if (entry.decorPrompt) {
+            const decorSource = sourceForDecor;
+            if (!decorSource) throw Error('Terrain source for decoration is missing.');
             const decor = await attempts.run(
               row,
               `decor:${key}:${createHash('sha256').update(entry.decorPrompt).digest('hex')}`,
@@ -222,7 +262,7 @@ export class Pipeline {
                 const result = await this.provider.image(
                   imageModel,
                   imagePrompt('decor', entry.decorPrompt),
-                  [source, ...references].slice(0, 4),
+                  [decorSource, ...references].slice(0, 4),
                   true,
                   signal,
                 );
@@ -300,7 +340,13 @@ export class Pipeline {
         });
         return;
       } catch (e) {
-        if (e instanceof ProviderUncertain || e instanceof ProviderBudget || signal.aborted)
+        if (
+          e instanceof ProviderUncertain ||
+          e instanceof ProviderBudget ||
+          e instanceof ProviderRejected ||
+          e instanceof ArtworkError ||
+          signal.aborted
+        )
           throw e;
         error = e instanceof Error ? e.message : 'Invalid generated pack';
       }
@@ -317,24 +363,7 @@ export class Pipeline {
       );
       const next = validatePlan(JSON.parse(fixed.text), row.input.base);
       // Repairs cannot delete extra entries, expand scope or turn a build into discussion.
-      const keys = new Set(plan.entries.map((e) => entryKey(row.input.base, e.key)));
-      if (
-        next.action !== 'build' ||
-        next.entries.length !== plan.entries.length ||
-        next.entries.some(
-          (e) =>
-            !keys.has(entryKey(row.input.base, e.key)) ||
-            e.operation !==
-              plan.entries.find(
-                (v) => entryKey(row.input.base, v.key) === entryKey(row.input.base, e.key),
-              )?.operation ||
-            e.kind !==
-              plan.entries.find(
-                (v) => entryKey(row.input.base, v.key) === entryKey(row.input.base, e.key),
-              )?.kind,
-        )
-      )
-        throw Error('Repair changed the requested scope.');
+      validateRepairScope(plan, next, row.input.base);
       plan = next;
     }
   }

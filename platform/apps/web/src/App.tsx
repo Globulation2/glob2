@@ -20,7 +20,7 @@ import { Leaderboard } from './pages/Leaderboard.tsx';
 import { Matches } from './pages/Matches.tsx';
 import { Link, RouterProvider, matchPath, useRouter } from './router.tsx';
 import { SessionProvider, isModerator, useSession } from './state.tsx';
-import { ThemeProvider, ThemeToggle } from './theme.tsx';
+import { ThemeProvider, ThemeToggle, useThemeNavigation } from './theme.tsx';
 
 // Pages most visitors never open load on demand.
 const AiBuildingStudio = lazy(() =>
@@ -413,6 +413,7 @@ function Layout() {
   const features = useFeatures();
   const locale = useLocale();
   const { location } = useRouter();
+  useThemeNavigation(`${location.path}?${location.search.toString()}`);
   const { instance, account } = useSession();
   const found = resolve(location.path);
   const available = pathAvailable(location.path, features);
