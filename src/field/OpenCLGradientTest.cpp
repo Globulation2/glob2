@@ -1153,7 +1153,7 @@ TEST_CASE("owned optional probe clocks cancel invalid copy and pending transfer 
         owner->clock->failRead=owner->clock->reads+1;owner->clock->invalidValue=1;
         CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read}));
         CHECK(openCLProbeBytes()==reserved);CHECK(owner->seeds==original);
-        for(unsigned scenario=0;scenario<5;++scenario){
+        for(unsigned scenario=0;scenario<7;++scenario){
             owner->clock->failRead=~0u;
             auto probe=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(probe);
             const auto target=scenario==4 ? OpenCLProbe::Stage::Dispatch : OpenCLProbe::Stage::Copy;
@@ -1162,14 +1162,17 @@ TEST_CASE("owned optional probe clocks cancel invalid copy and pending transfer 
             REQUIRE(probe->metrics().stage==target);
             const auto reads=owner->clock->reads;
             // Cases: bad start; zero/reversed first 64-cell checkpoint; bad
-            // copy endpoint; bad endpoint after enqueue with pending event.
-            const auto offset=scenario==0 ? 0u : scenario==3 ? 2u : 1u;
+            // copy endpoint; bad endpoint after enqueue with pending event;
+            // between-advance reversal; checkpoint reversal still >=start.
+            const auto offset=(scenario==0 || scenario==5) ? 0u : (scenario==3 || scenario==6) ? 2u : 1u;
             owner->clock->failRead=reads+offset;
-            owner->clock->invalidValue=scenario==2 ? 1 : 0;
+            owner->clock->invalidValue=scenario==2 ? 1 : scenario==5 ? owner->clock->next-1 :
+                scenario==6 ? owner->clock->next+1 : 0;
             auto progress=probe->advance(scenario==3 ? 64 : 4096);
             if(scenario==4){CHECK(progress==OpenCLProbeProgress::Pending);CHECK(probe->metrics().dispatches==1);}
             else {CHECK(progress==OpenCLProbeProgress::Declined);CHECK(probe->metrics().dispatches==0);}
             if(scenario==1 || scenario==2) CHECK(owner->clock->reads==reads+3);
+            if(scenario==6) CHECK(owner->clock->reads==reads+4);
             REQUIRE(probe->metrics().invalidCpuClocks>0);
             for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
                 progress=probe->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();

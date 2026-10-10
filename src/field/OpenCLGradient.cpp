@@ -1309,7 +1309,7 @@ struct OpenCLProbe::Impl
     OpenCLProbeClock clock;
     std::shared_ptr<Runtime> lane;
     std::shared_ptr<Device::Plane> costs;
-    std::uint64_t generation;
+    std::uint64_t generation,lastCpuClock=0;
     std::size_t copied=0,tileCount=0,costCharge=0;
     UInt round=0,pitch=0,rows=0,flags=0,windowEnd=0;
     std::array<UInt,8> descriptor{};
@@ -1335,7 +1335,11 @@ struct OpenCLProbe::Impl
         if(event || borrowedTransfers) lane->api.Finish(lane->queue);
         if(event) lane->api.ReleaseEvent(event);
     }
-    std::uint64_t clockNow() const noexcept {return clock.read ? clock.read(clock.owner.get()) : threadCPUClock();}
+    std::uint64_t clockNow() noexcept {
+        const auto now=clock.read ? clock.read(clock.owner.get()) : threadCPUClock();
+        if(!now || now<lastCpuClock) return 0;
+        lastCpuClock=now;return now;
+    }
     void invalidClock() noexcept {
         ++measured.invalidCpuClocks;++lane->shared->threadCPUInvalidMeasurements;cancelled=true;
     }
@@ -1616,6 +1620,7 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
             valid=true;
             const auto elapsed=ended-started;device.threadCPUAvailable.store(true);device.threadCPUNs+=elapsed;
             if(admitted) {
+                admitted->lastCpuClock=ended;
                 admitted->measured.setupCpuNs+=elapsed;admitted->measured.threadCpuNs+=elapsed;
                 if(elapsed>500000) ++admitted->measured.overshoots;
             }
