@@ -252,6 +252,9 @@ function BuildingWorkspace({ id }: { id?: string }) {
               'Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.',
             )}
           </p>
+          {wallet && wallet.packs.length === 0 && (
+            <p role="status">{t('Credit purchases are currently unavailable.')}</p>
+          )}
           {wallet?.packs.map((p) => (
             <button
               key={p.id}

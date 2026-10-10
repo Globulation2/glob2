@@ -68,6 +68,9 @@ Compose profile and `ai-building-worker` Docker target; its engine and stock
 building definitions must come from the same build. The worker requires
 `ENGINE_BINARY`, `GLOB2_SOURCE_DIR` (including building-catalog documentation and
 stock definitions) and `BUILDING_OPENAI_API_KEY`.
+The API and authoring worker must use the same blob store. Compose sets
+`BLOB_STORE=fs` and `BLOB_DIR=/var/lib/glob2/blobs` to match their shared volume;
+local workers must also point `BLOB_DIR` at the API's blob directory.
 Artwork generation also needs stock camera sprites: the Docker target supplies
 them under `studio/building-references/`, while source checkouts use `data/gfx/`.
 A properties-only edit does not require these image references.

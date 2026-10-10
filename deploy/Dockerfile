@@ -258,7 +258,7 @@ CMD ["node", "apps/ai-terrain-worker/src/main.ts"]
 # Building authoring uses the matching native catalog validator and source examples.
 FROM engine-agent AS ai-building-worker
 USER root
-COPY docs/features/building-catalogs.md /opt/glob2/share/docs/features/building-catalogs.md
+COPY docs/features/building-catalogs.md docs/features/building-semantics.md docs/features/building-authoring.md /opt/glob2/share/docs/features/
 COPY data/gfx/inn0b0.png data/gfx/inn0b0r.png data/gfx/hosp0b0.png data/gfx/hosp0b0r.png data/gfx/defencetower0b0.png data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
 ENV GLOB2_SOURCE_DIR=/opt/glob2/share
 USER 10001:10001
