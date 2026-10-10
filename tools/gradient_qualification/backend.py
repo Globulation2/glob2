@@ -21,7 +21,7 @@ def compile_native(output):
 
 
 class Runner:
-    def __init__(self, directory, device_index):
+    def __init__(self, directory, device_index, plans=None):
         import numpy as np
         import pyopencl as cl
         self.np, self.cl = np, cl
@@ -39,9 +39,13 @@ class Runner:
         self.kernels, self.programs = {}, []
         self.bounded_kernels = {}
         production = (ROOT/'src/field/OpenCLGradient.cpp').read_text().split('R"CL(', 1)[1].split(')CL";', 1)[0]
+        if plans is not None and (not plans or not set(plans)<=set(CONFIGS)|{'global','frontier','bounded'}):
+            raise ValueError('unknown or empty development plan subset')
         builds = []
         for build_name in (*CONFIGS, 'global', 'frontier', 'bounded2', 'bounded4', 'bounded8', 'bounded16'):
             name = 'bounded' if build_name.startswith('bounded') else build_name
+            if plans is not None and name not in plans:
+                continue
             source = production if name in CONFIGS or name == 'bounded' else (HERE/f'{name}.cl').read_text()
             options = ['-cl-std=CL1.2']
             if name in CONFIGS or name == 'bounded':

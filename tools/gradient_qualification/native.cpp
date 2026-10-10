@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <initializer_list>
 
 using Handle = void *;
 using UInt = std::uint32_t;
@@ -95,5 +96,41 @@ extern "C" int run_frontier(Handle queue, Handle kernel, Handle values, Handle c
     CHECK(clEnqueueReadBuffer(queue, values, 1, 0, cells * 4, output, 0, nullptr, nullptr));
     stats[0] = std::chrono::duration<double, std::milli>(Clock::now() - start).count();
     stats[2] = rounds;
+    return 0;
+}
+
+extern "C" int run_compact(Handle queue,Handle kernel,Handle* buffers,
+ const UInt* seeds,const UInt* initial,UInt* output,UInt seedCount,
+ UInt width,UInt height,UInt cap,double* stats)
+{
+    const auto started=Clock::now();
+    const UInt cells=width*height,zero=0;
+    if(!seedCount) {
+        std::copy_n(seeds,cells,output);stats[0]=0;stats[2]=0;return 0;
+    }
+    CHECK(clEnqueueWriteBuffer(queue,buffers[0],1,0,cells*4,seeds,0,nullptr,nullptr));
+    CHECK(clEnqueueWriteBuffer(queue,buffers[2],1,0,seedCount*4,initial,0,nullptr,nullptr));
+    CHECK(clEnqueueFillBuffer(queue,buffers[4],&zero,4,0,cells*4,0,nullptr,nullptr));
+    for(UInt i:{0u,1u,4u,5u})CHECK(clSetKernelArg(kernel,i,sizeof(Handle),buffers+i));
+    CHECK(clSetKernelArg(kernel,8,sizeof(UInt),&width));
+    CHECK(clSetKernelArg(kernel,9,sizeof(UInt),&height));
+    CHECK(clSetKernelArg(kernel,10,sizeof(UInt),&cap));
+    Handle active=buffers[2],next=buffers[3];UInt count=seedCount,rounds=0;
+    while(count) {
+        if(rounds==65536)return -999;
+        const UInt epoch=++rounds;
+        CHECK(clEnqueueFillBuffer(queue,buffers[5],&zero,4,0,4,0,nullptr,nullptr));
+        CHECK(clSetKernelArg(kernel,2,sizeof(Handle),&active));
+        CHECK(clSetKernelArg(kernel,3,sizeof(Handle),&next));
+        CHECK(clSetKernelArg(kernel,6,sizeof(UInt),&count));
+        CHECK(clSetKernelArg(kernel,7,sizeof(UInt),&epoch));
+        const std::size_t global=((std::size_t(count)+127)/128)*128,local=128;
+        CHECK(clEnqueueNDRangeKernel(queue,kernel,1,nullptr,&global,&local,0,nullptr,nullptr));
+        CHECK(clEnqueueReadBuffer(queue,buffers[5],1,0,4,&count,0,nullptr,nullptr));
+        if(count>cells)return -998; // retain overflow as a qualification failure
+        std::swap(active,next);
+    }
+    CHECK(clEnqueueReadBuffer(queue,buffers[0],1,0,cells*4,output,0,nullptr,nullptr));
+    stats[0]=std::chrono::duration<double,std::milli>(Clock::now()-started).count();stats[2]=rounds;
     return 0;
 }
