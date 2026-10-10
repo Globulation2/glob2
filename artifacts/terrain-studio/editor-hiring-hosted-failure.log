@@ -1,0 +1,1082 @@
+Select relevant checks	Test shared build-system contracts once	﻿2026-10-10T21:57:12.8205137Z ##[group]Run "$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:12.8205680Z ^[[36;1m"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v^[[0m
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:12.8742873Z shell: /usr/bin/bash -e {0}
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:12.8743308Z env:
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:12.8743453Z   GLOB2_DEV_MODE: isolated
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:12.8743598Z ##[endgroup]
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:15.5069489Z Collecting Pillow==12.2.0 (from -r /home/runner/work/glob2/glob2/tools/asset-requirements.txt (line 2))
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:15.5799406Z   Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:15.6068182Z Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:15.8075874Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 36.0 MB/s eta 0:00:00
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:15.8264292Z Installing collected packages: Pillow
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:16.0417385Z Successfully installed Pillow-12.2.0
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9449130Z test_rejects_changed_handoff_before_signing (test_amazon_release.ArtifactTests.test_rejects_changed_handoff_before_signing) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9463312Z test_rejects_single_abi (test_amazon_release.ArtifactTests.test_rejects_single_abi) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9479065Z test_failed_upload_leaves_edit_and_retry_stops_before_upload (test_amazon_release.PublisherTests.test_failed_upload_leaves_edit_and_retry_stops_before_upload) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9488155Z test_refuses_existing_draft_without_mutation (test_amazon_release.PublisherTests.test_refuses_existing_draft_without_mutation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9497874Z test_refuses_nonincreasing_version_before_upload (test_amazon_release.PublisherTests.test_refuses_nonincreasing_version_before_upload) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9506740Z test_rejects_changed_handoff_before_signing (test_amazon_release.PublisherTests.test_rejects_changed_handoff_before_signing) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9517007Z test_rejects_single_abi (test_amazon_release.PublisherTests.test_rejects_single_abi) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9526106Z test_replaces_apk_updates_notes_validates_and_commits (test_amazon_release.PublisherTests.test_replaces_apk_updates_notes_validates_and_commits) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9527031Z test_version_code_is_stable_and_ordered (test_amazon_release.VersionTests.test_version_code_is_stable_and_ordered) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9552483Z test_apk_rejects_second_abi_and_wrong_version (test_android_release.AndroidReleaseTests.test_apk_rejects_second_abi_and_wrong_version) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9570646Z test_apk_rejects_unexpected_same_abi_library (test_android_release.AndroidReleaseTests.test_apk_rejects_unexpected_same_abi_library) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9579089Z test_candidate_accepts_existing_version_but_publication_rejects_tag_collision (test_android_release.AndroidReleaseTests.test_candidate_accepts_existing_version_but_publication_rejects_tag_collision) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9582044Z test_development_check_allows_released_version_but_not_lower_codes (test_android_release.AndroidReleaseTests.test_development_check_allows_released_version_but_not_lower_codes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9591170Z test_development_cli_preserves_identity_and_recipe_validation (test_android_release.AndroidReleaseTests.test_development_cli_preserves_identity_and_recipe_validation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9595758Z test_monitor_state_transitions (test_android_release.AndroidReleaseTests.test_monitor_state_transitions) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9597896Z test_preflight_rejects_reused_tag_at_other_commit (test_android_release.AndroidReleaseTests.test_preflight_rejects_reused_tag_at_other_commit) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9608482Z test_recipe_rejects_missing_abi (test_android_release.AndroidReleaseTests.test_recipe_rejects_missing_abi) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9618947Z test_recipe_rejects_sdk_drift (test_android_release.AndroidReleaseTests.test_recipe_rejects_sdk_drift) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9630604Z test_recipe_template_supports_later_tag (test_android_release.AndroidReleaseTests.test_recipe_template_supports_later_tag) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9643956Z test_shared_apk_verification_preserves_release_identity (test_android_release.AndroidReleaseTests.test_shared_apk_verification_preserves_release_identity) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9647579Z test_version_codes_and_desktop_version (test_android_release.AndroidReleaseTests.test_version_codes_and_desktop_version) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9651712Z test_version_manifest_rejects_mismatch (test_android_release.AndroidReleaseTests.test_version_manifest_rejects_mismatch) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9653152Z test_workflows_keep_publication_preflight_strict (test_android_release.AndroidReleaseTests.test_workflows_keep_publication_preflight_strict) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9685874Z test_offline_editions_drop_both_invite_filters (test_android_release.InviteLinkManifestTests.test_offline_editions_drop_both_invite_filters) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9686741Z test_unexpected_layout_is_refused (test_android_release.InviteLinkManifestTests.test_unexpected_layout_is_refused) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9691617Z test_check_only_mode_does_not_write (test_app_link_fingerprints.AppStoreConnectTests.test_check_only_mode_does_not_write) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9692359Z test_der_signature_becomes_jose_form (test_app_link_fingerprints.AppStoreConnectTests.test_der_signature_becomes_jose_form) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9695617Z test_enables_associated_domains_once (test_app_link_fingerprints.AppStoreConnectTests.test_enables_associated_domains_once) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9696548Z test_http_errors_are_reported_without_the_token (test_app_link_fingerprints.AppStoreConnectTests.test_http_errors_are_reported_without_the_token) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9769387Z test_token_is_an_es256_jwt (test_app_link_fingerprints.AppStoreConnectTests.test_token_is_an_es256_jwt) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9770993Z test_apksigner_output (test_app_link_fingerprints.FingerprintTests.test_apksigner_output) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9772992Z test_keytool_listing_yields_only_the_sha256 (test_app_link_fingerprints.FingerprintTests.test_keytool_listing_yields_only_the_sha256) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9774709Z test_normalises_hex_colon_and_base64 (test_app_link_fingerprints.FingerprintTests.test_normalises_hex_colon_and_base64) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:17.9775420Z test_snippet_matches_instance_schema (test_app_link_fingerprints.FingerprintTests.test_snippet_matches_instance_schema) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5723493Z test_reads_certificate_and_removes_decoded_keystore (test_app_link_fingerprints.KeystoreTests.test_reads_certificate_and_removes_decoded_keystore) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5724337Z test_empty_track_is_an_error (test_app_link_fingerprints.PlayTests.test_empty_track_is_an_error) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5729489Z test_falls_back_to_system_apk_variant (test_app_link_fingerprints.PlayTests.test_falls_back_to_system_apk_variant) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5732285Z test_mismatch_between_listing_and_apk_fails (test_app_link_fingerprints.PlayTests.test_mismatch_between_listing_and_apk_fails) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5735325Z test_reads_latest_internal_release_and_never_commits_the_edit (test_app_link_fingerprints.PlayTests.test_reads_latest_internal_release_and_never_commits_the_edit) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5740199Z test_never_prints_secret_material (test_app_link_fingerprints.WorkflowTests.test_never_prints_secret_material) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5742413Z test_runs_only_by_owner_dispatch_in_the_release_mirror (test_app_link_fingerprints.WorkflowTests.test_runs_only_by_owner_dispatch_in_the_release_mirror) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5768101Z test_assembly_preserves_approved_source_bytes (test_artwork_package.ArtworkPackageTests.test_assembly_preserves_approved_source_bytes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5796556Z test_assembly_rejects_stale_or_symlinked_source_exports (test_artwork_package.ArtworkPackageTests.test_assembly_rejects_stale_or_symlinked_source_exports) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5806231Z test_bad_hash_fails_before_any_output_write (test_artwork_package.ArtworkPackageTests.test_bad_hash_fails_before_any_output_write) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5828664Z test_capture_validates_all_source_hashes_before_production_changes (test_artwork_package.ArtworkPackageTests.test_capture_validates_all_source_hashes_before_production_changes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5856107Z test_index_rejects_duplicate_paths_traversal_and_wrong_categories (test_artwork_package.ArtworkPackageTests.test_index_rejects_duplicate_paths_traversal_and_wrong_categories) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5862483Z test_inventory_rejects_duplicate_or_misnamed_layers_and_unknown_recipes (test_artwork_package.ArtworkPackageTests.test_inventory_rejects_duplicate_or_misnamed_layers_and_unknown_recipes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5879651Z test_unindexed_files_and_overlapping_output_are_rejected (test_artwork_package.ArtworkPackageTests.test_unindexed_files_and_overlapping_output_are_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5922699Z test_bad_html_keeps_previous_package (test_browser_package.BrowserPackageTests.test_bad_html_keeps_previous_package) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5930537Z test_ci_artifacts_publish_the_complete_music_runtime (test_browser_package.BrowserPackageTests.test_ci_artifacts_publish_the_complete_music_runtime) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.5972633Z test_corrupt_or_missing_sidecar_rejected (test_browser_package.BrowserPackageTests.test_corrupt_or_missing_sidecar_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6122226Z test_dual_runtime_references_and_version_include_threaded_binary (test_browser_package.BrowserPackageTests.test_dual_runtime_references_and_version_include_threaded_binary) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6182101Z test_dual_runtime_rejects_missing_worker_sidecar (test_browser_package.BrowserPackageTests.test_dual_runtime_rejects_missing_worker_sidecar) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6215786Z test_existing_website_is_not_an_owned_package (test_browser_package.BrowserPackageTests.test_existing_website_is_not_an_owned_package) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6297706Z test_failed_directory_swap_keeps_previous_package (test_browser_package.BrowserPackageTests.test_failed_directory_swap_keeps_previous_package) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6311641Z test_localized_shell_requires_translation_assets (test_browser_package.BrowserPackageTests.test_localized_shell_requires_translation_assets) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6395996Z test_missing_music_input_keeps_previous_package (test_browser_package.BrowserPackageTests.test_missing_music_input_keeps_previous_package) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6602120Z test_music_assets_and_notices_follow_release_identity (test_browser_package.BrowserPackageTests.test_music_assets_and_notices_follow_release_identity) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6714446Z test_music_sidecars_required_even_without_checksum_entry (test_browser_package.BrowserPackageTests.test_music_sidecars_required_even_without_checksum_entry) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.6845208Z test_non_html_sidecars_are_mandatory_even_if_checksums_are_removed (test_browser_package.BrowserPackageTests.test_non_html_sidecars_are_mandatory_even_if_checksums_are_removed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7006193Z test_package_rejects_missing_locale_and_preserves_previous_release (test_browser_package.BrowserPackageTests.test_package_rejects_missing_locale_and_preserves_previous_release) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7036068Z test_package_rejects_noncanonical_locale (test_browser_package.BrowserPackageTests.test_package_rejects_noncanonical_locale) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7041824Z test_package_requires_game_data (test_browser_package.BrowserPackageTests.test_package_requires_game_data) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7144576Z test_public_package_is_readable_under_private_umask (test_browser_package.BrowserPackageTests.test_public_package_is_readable_under_private_umask) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7207405Z test_public_package_is_readable_with_restrictive_umask (test_browser_package.BrowserPackageTests.test_public_package_is_readable_with_restrictive_umask) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7348800Z test_recording_assets_are_versioned_and_references_follow_them (test_browser_package.BrowserPackageTests.test_recording_assets_are_versioned_and_references_follow_them) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7430514Z test_references_sidecars_and_repeatable_identity (test_browser_package.BrowserPackageTests.test_references_sidecars_and_repeatable_identity) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7493469Z test_stale_assets_removed (test_browser_package.BrowserPackageTests.test_stale_assets_removed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7546626Z test_threaded_package_is_public_readable_under_private_build_umask (test_browser_package.BrowserPackageTests.test_threaded_package_is_public_readable_under_private_build_umask) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.7915478Z test_translation_catalogs_ship_and_change_release_identity (test_browser_package.BrowserPackageTests.test_translation_catalogs_ship_and_change_release_identity) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8119722Z test_verify_rejects_missing_locale_even_with_rewritten_checksums (test_browser_package.BrowserPackageTests.test_verify_rejects_missing_locale_even_with_rewritten_checksums) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8329559Z test_verify_rejects_missing_localization_runtime (test_browser_package.BrowserPackageTests.test_verify_rejects_missing_localization_runtime) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8544798Z test_verify_rejects_noncanonical_locale_with_valid_sidecar_and_checksum (test_browser_package.BrowserPackageTests.test_verify_rejects_noncanonical_locale_with_valid_sidecar_and_checksum) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8561446Z test_batch_retains_requested_draft_tests_but_excludes_cheap_runs (test_ci_batch_metrics.BatchTest.test_batch_retains_requested_draft_tests_but_excludes_cheap_runs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8573417Z test_batch_skips_measured_attempts_and_cancelled_runs (test_ci_batch_metrics.BatchTest.test_batch_skips_measured_attempts_and_cancelled_runs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8584803Z test_cold_batch_bounds_api_work_and_retries_unavailable_measurements (test_ci_batch_metrics.BatchTest.test_cold_batch_bounds_api_work_and_retries_unavailable_measurements) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8587399Z test_previous_state_is_inert_json (test_ci_batch_metrics.BatchTest.test_previous_state_is_inert_json) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8589121Z test_ai_and_ui_changes_skip_map_sweep_and_deployment (test_ci_changed_paths.ChangedPathsTest.test_ai_and_ui_changes_skip_map_sweep_and_deployment) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8599421Z test_browser_checks_survive_skipped_optional_native_producer (test_ci_changed_paths.ChangedPathsTest.test_browser_checks_survive_skipped_optional_native_producer) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8600163Z test_browser_shell_only (test_ci_changed_paths.ChangedPathsTest.test_browser_shell_only) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8600850Z test_ci_tool_tests_only_run_selector_contracts (test_ci_changed_paths.ChangedPathsTest.test_ci_tool_tests_only_run_selector_contracts) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8601924Z test_cross_platform_fixtures_run_everything (test_ci_changed_paths.ChangedPathsTest.test_cross_platform_fixtures_run_everything) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8602757Z test_deployment_changes_only_run_browser_and_deployment (test_ci_changed_paths.ChangedPathsTest.test_deployment_changes_only_run_browser_and_deployment) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8603375Z test_documentation_only (test_ci_changed_paths.ChangedPathsTest.test_documentation_only) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8621201Z test_downloaded_native_archives_do_not_dirty_source_provenance (test_ci_changed_paths.ChangedPathsTest.test_downloaded_native_archives_do_not_dirty_source_provenance) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8622949Z test_drawing_implementations_keep_all_platforms_without_map_sweeps (test_ci_changed_paths.ChangedPathsTest.test_drawing_implementations_keep_all_platforms_without_map_sweeps) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8623891Z test_empty_diff_runs_everything (test_ci_changed_paths.ChangedPathsTest.test_empty_diff_runs_everything) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8624666Z test_every_inline_build_checks_out_the_selected_revision (test_ci_changed_paths.ChangedPathsTest.test_every_inline_build_checks_out_the_selected_revision) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8625767Z test_golden_table_only_runs_golden_job (test_ci_changed_paths.ChangedPathsTest.test_golden_table_only_runs_golden_job) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8630007Z test_javascript_evidence_steps_are_visible_to_ci_failure_summary (test_ci_changed_paths.ChangedPathsTest.test_javascript_evidence_steps_are_visible_to_ci_failure_summary) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8632384Z test_lightweight_suites_are_executed_and_packaging_paths_remain (test_ci_changed_paths.ChangedPathsTest.test_lightweight_suites_are_executed_and_packaging_paths_remain) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8633534Z test_linux_platform_tests_depend_only_on_their_own_build (test_ci_changed_paths.ChangedPathsTest.test_linux_platform_tests_depend_only_on_their_own_build) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8634578Z test_match_record_fixture_runs_native_browser_and_comparison (test_ci_changed_paths.ChangedPathsTest.test_match_record_fixture_runs_native_browser_and_comparison) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8635362Z test_mixed_independent_changes (test_ci_changed_paths.ChangedPathsTest.test_mixed_independent_changes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8636029Z test_music_pipeline_and_soundtrack_sets (test_ci_changed_paths.ChangedPathsTest.test_music_pipeline_and_soundtrack_sets) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8637393Z test_native_test_only (test_ci_changed_paths.ChangedPathsTest.test_native_test_only) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8637996Z test_network_changes_keep_deployment (test_ci_changed_paths.ChangedPathsTest.test_network_changes_keep_deployment) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8638403Z test_platform_docs_only (test_ci_changed_paths.ChangedPathsTest.test_platform_docs_only) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8638721Z test_platform_only (test_ci_changed_paths.ChangedPathsTest.test_platform_only) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8639044Z test_platform_stack_paths (test_ci_changed_paths.ChangedPathsTest.test_platform_stack_paths) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8639519Z test_protocol_fixtures_run_platform_and_native_contract_tests (test_ci_changed_paths.ChangedPathsTest.test_protocol_fixtures_run_platform_and_native_contract_tests) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8640094Z test_relay_changes_run_the_relay_job_only (test_ci_changed_paths.ChangedPathsTest.test_relay_changes_run_the_relay_job_only) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8640659Z test_shared_scripting_changes_run_native_browser_and_comparison (test_ci_changed_paths.ChangedPathsTest.test_shared_scripting_changes_run_native_browser_and_comparison) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8641199Z test_shared_source_runs_everything (test_ci_changed_paths.ChangedPathsTest.test_shared_source_runs_everything) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8641679Z test_transport_fixture_only_runs_browser_jobs (test_ci_changed_paths.ChangedPathsTest.test_transport_fixture_only_runs_browser_jobs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8647165Z test_windows_cache_writes_require_authorized_event_and_successful_build (test_ci_changed_paths.ChangedPathsTest.test_windows_cache_writes_require_authorized_event_and_successful_build) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8648164Z test_windows_git_newline_policy_is_pinned_before_cache_and_build (test_ci_changed_paths.ChangedPathsTest.test_windows_git_newline_policy_is_pinned_before_cache_and_build) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8662943Z test_workspace_compiler_caches_do_not_dirty_source_provenance (test_ci_changed_paths.ChangedPathsTest.test_workspace_compiler_caches_do_not_dirty_source_provenance) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8665077Z test_queued_workflow_with_active_or_completed_job_is_protected (test_ci_concurrency.MasterExecutionTest.test_queued_workflow_with_active_or_completed_job_is_protected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8666922Z test_unknown_execution_is_protected_and_current_attempt_is_queried (test_ci_concurrency.MasterExecutionTest.test_unknown_execution_is_protected_and_current_attempt_is_queried) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8667925Z test_closed_pull_requests_cancel_everything_but_keep_branch_pushes (test_ci_concurrency.SelectionTest.test_closed_pull_requests_cancel_everything_but_keep_branch_pushes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8669001Z test_default_branch_is_opt_in_and_keeps_its_newest_run (test_ci_concurrency.SelectionTest.test_default_branch_is_opt_in_and_keeps_its_newest_run) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8669578Z test_fork_branch_with_same_name_is_a_different_head (test_ci_concurrency.SelectionTest.test_fork_branch_with_same_name_is_a_different_head) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8670120Z test_legacy_release_pr_runs_are_retired_even_at_the_current_head (test_ci_concurrency.SelectionTest.test_legacy_release_pr_runs_are_retired_even_at_the_current_head) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8670656Z test_only_runs_for_an_outdated_head_are_cancelled (test_ci_concurrency.SelectionTest.test_only_runs_for_an_outdated_head_are_cancelled) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8671182Z test_release_dispatch_current_and_unknown_runs_are_protected (test_ci_concurrency.SelectionTest.test_release_dispatch_current_and_unknown_runs_are_protected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8700107Z test_called_workflows_never_share_their_callers_group (test_ci_concurrency.WorkflowConcurrencyTest.test_called_workflows_never_share_their_callers_group) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8708086Z test_canceller_covers_every_event_triggered_ci_workflow (test_ci_concurrency.WorkflowConcurrencyTest.test_canceller_covers_every_event_triggered_ci_workflow) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8721142Z test_ci_workflows_cancel_superseded_pull_request_and_branch_runs (test_ci_concurrency.WorkflowConcurrencyTest.test_ci_workflows_cancel_superseded_pull_request_and_branch_runs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8726626Z test_classification_names_existing_workflows (test_ci_concurrency.WorkflowConcurrencyTest.test_classification_names_existing_workflows) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8858598Z test_release_workflows_never_cancel_in_progress (test_ci_concurrency.WorkflowConcurrencyTest.test_release_workflows_never_cancel_in_progress) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8861985Z test_browser_compatibility_keeps_every_engine_and_thread_variant (test_ci_policy.PolicyTest.test_browser_compatibility_keeps_every_engine_and_thread_variant) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8933478Z test_checkpoint_never_uses_divergent_or_unattested_revision (test_ci_policy.PolicyTest.test_checkpoint_never_uses_divergent_or_unattested_revision) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8934374Z test_documentation_checker_is_cheap_contributor_tooling (test_ci_policy.PolicyTest.test_documentation_checker_is_cheap_contributor_tooling) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.8935845Z test_labels_only_expand (test_ci_policy.PolicyTest.test_labels_only_expand) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9199244Z test_master_always_full_and_nightly_reuse_is_not_a_checkpoint (test_ci_policy.PolicyTest.test_master_always_full_and_nightly_reuse_is_not_a_checkpoint) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9371471Z test_music_pipeline_is_a_cheap_job_and_sets_are_packaged_data (test_ci_policy.PolicyTest.test_music_pipeline_is_a_cheap_job_and_sets_are_packaged_data) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9372304Z test_music_runtime_boundaries_select_their_consumers (test_ci_policy.PolicyTest.test_music_runtime_boundaries_select_their_consumers) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9373244Z test_platform_stack_smoke_follows_the_stack_inputs (test_ci_policy.PolicyTest.test_platform_stack_smoke_follows_the_stack_inputs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9374307Z test_portable_cases_remain_primary_and_simulation_adds_compatibility (test_ci_policy.PolicyTest.test_portable_cases_remain_primary_and_simulation_adds_compatibility) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9836405Z test_pr_requests_and_label_removal (test_ci_policy.PolicyTest.test_pr_requests_and_label_removal) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9872318Z test_release_metadata_does_not_compile_engine (test_ci_policy.PolicyTest.test_release_metadata_does_not_compile_engine) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9873508Z test_rendering_mobile_maps_and_network_have_distinct_boundaries (test_ci_policy.PolicyTest.test_rendering_mobile_maps_and_network_have_distinct_boundaries) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9874596Z test_shared_unknown_and_unavailable_inputs_fail_closed (test_ci_policy.PolicyTest.test_shared_unknown_and_unavailable_inputs_fail_closed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9875677Z test_terrain_catalog_and_compiler_are_shared_boundaries (test_ci_policy.PolicyTest.test_terrain_catalog_and_compiler_are_shared_boundaries) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9911616Z test_tests_beside_code_select_as_tests (test_ci_policy.PolicyTest.test_tests_beside_code_select_as_tests) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9945614Z test_timing_inventory_does_not_change_for_equivalent_policy_implementation (test_ci_policy.PolicyTest.test_timing_inventory_does_not_change_for_equivalent_policy_implementation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9947414Z test_cleanup_protects_open_pr_and_newest_master_generations (test_ci_policy.ReuseTest.test_cleanup_protects_open_pr_and_newest_master_generations) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9948366Z test_different_case_inventories_do_not_produce_speed_comparisons (test_ci_policy.ReuseTest.test_different_case_inventories_do_not_produce_speed_comparisons) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9970916Z test_native_and_browser_evidence_must_include_every_selected_identity (test_ci_policy.ReuseTest.test_native_and_browser_evidence_must_include_every_selected_identity) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:19.9971882Z test_native_coverage_audit_rejects_duplicate_missing_and_disagreeing_shards (test_ci_policy.ReuseTest.test_native_coverage_audit_rejects_duplicate_missing_and_disagreeing_shards) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0035463Z test_resource_compositions_require_complete_matching_producers (test_ci_policy.ReuseTest.test_resource_compositions_require_complete_matching_producers) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0042522Z test_restored_dependencies_require_matching_identity_and_exact_content (test_ci_policy.ReuseTest.test_restored_dependencies_require_matching_identity_and_exact_content) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0043750Z test_p90_requires_ten_exact_coverage_samples (test_ci_run_metrics.FeedbackTest.test_p90_requires_ten_exact_coverage_samples) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0044536Z test_all_artifact_pages_are_read_for_large_full_matrix (test_ci_run_metrics.MetricsTest.test_all_artifact_pages_are_read_for_large_full_matrix) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0046635Z test_comparison_requires_ten_successes_and_matching_coverage (test_ci_run_metrics.MetricsTest.test_comparison_requires_ten_successes_and_matching_coverage) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0047519Z test_idle_gaps_do_not_count_as_execution_and_overlap_is_not_double_counted (test_ci_run_metrics.MetricsTest.test_idle_gaps_do_not_count_as_execution_and_overlap_is_not_double_counted) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0048339Z test_master_and_nightly_are_full_not_last_push_diff (test_ci_run_metrics.MetricsTest.test_master_and_nightly_are_full_not_last_push_diff) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0049247Z test_queue_and_execution_are_separate_and_empty_cancelled_jobs_cost_zero (test_ci_run_metrics.MetricsTest.test_queue_and_execution_are_separate_and_empty_cancelled_jobs_cost_zero) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0071276Z test_cheap_contract_summary_and_missing_jobs (test_ci_tiers.AggregateGateTest.test_cheap_contract_summary_and_missing_jobs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0135881Z test_primary_gcc_gate_rejects_unexpected_compatibility_results (test_ci_tiers.AggregateGateTest.test_primary_gcc_gate_rejects_unexpected_compatibility_results) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0289874Z Measurement unavailable for 0; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0290231Z Measurement unavailable for 1; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0290585Z Measurement unavailable for 2; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0290900Z Measurement unavailable for 3; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0291198Z Measurement unavailable for 4; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0291499Z Measurement unavailable for 5; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0291812Z Measurement unavailable for 6; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0292128Z Measurement unavailable for 7; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0292448Z Measurement unavailable for 8; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0292793Z Measurement unavailable for 9; retry in a later batch
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0293260Z android: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0293815Z macos: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0293994Z tsan: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0294185Z native-coverage: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0294382Z linux: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0294561Z linux-variants: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0294763Z linux-map-generators: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0294957Z windows: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0295124Z web-build: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0295302Z web-native: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0295473Z web-deploy: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0295643Z web-test: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0295833Z browser-determinism: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0296160Z platform: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0296349Z platform-stack: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0296534Z music: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0296714Z android: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0296886Z macos: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0297052Z tsan: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0297225Z native-coverage: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0297404Z linux: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0297599Z linux-variants: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0297791Z linux-map-generators: skipped (expected skipped)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0297986Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0298156Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0298323Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0298497Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0298723Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0298898Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0299092Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0299288Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0299465Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0299647Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0299829Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0300005Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0300196Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0300398Z platform: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0300577Z platform-stack: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0300760Z music: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0300921Z android: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0301093Z android: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0301264Z android: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0301430Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0301593Z macos: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0301757Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0301922Z macos: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0302091Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0302259Z macos: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0302427Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0302593Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0302753Z tsan: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0302915Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0303203Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0303370Z tsan: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0303549Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0303720Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0303889Z tsan: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0304054Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0304226Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0304394Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0304577Z native-coverage: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0304760Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0305035Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0305205Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0305390Z native-coverage: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0305591Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0305766Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0305929Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0306103Z native-coverage: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0306287Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0306446Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0306608Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0306773Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0306954Z linux: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0307106Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0307342Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0307489Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0307643Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0307809Z linux: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0307962Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0308117Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0308265Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0308429Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0308596Z linux: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0308742Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0308890Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0309040Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0309196Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0309370Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0309541Z linux-variants: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0309724Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0309898Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0310081Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0310260Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0310436Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0310609Z linux-variants: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0310773Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0310922Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0311072Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0311230Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0311390Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0311551Z linux-variants: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0311720Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0311884Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0312035Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0312204Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0312387Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0312548Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0312736Z linux-map-generators: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0312928Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0313236Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0313460Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0313704Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0313879Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0314042Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0314231Z linux-map-generators: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0314418Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0314572Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0314726Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0314893Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0315060Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0315231Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0315426Z linux-map-generators: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0315618Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0315991Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0316151Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0316318Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0316478Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0316642Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0316826Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0317009Z windows: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0317185Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0317352Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0317517Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0317695Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0317892Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0318153Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0318345Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0318537Z windows: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0318709Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0318867Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0319017Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0319175Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0319338Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0319502Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0319687Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0319869Z windows: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0320033Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0320204Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0320362Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0320522Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0320699Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0320862Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0321056Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0321255Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0321421Z web-build: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0321592Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0321750Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0321906Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0322066Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0322232Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0322398Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0322581Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0322758Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0322916Z web-build: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0323264Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0323425Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0323577Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0323743Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0323926Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0324095Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0324289Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0324477Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0324643Z web-build: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0324805Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0324964Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0325115Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0325274Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0325441Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0325619Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0325826Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0326010Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0326171Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0326339Z web-native: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0326617Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0326784Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0326942Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0327106Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0327272Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0327424Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0327616Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0327789Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0327947Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0328119Z web-native: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0328292Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0328451Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0328613Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0328872Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0329045Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0329207Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0371788Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0372057Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0372290Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0372533Z web-native: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0372720Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0372868Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0373127Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0373308Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0373476Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0373641Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0373832Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0374012Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0374166Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0374321Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0374475Z web-deploy: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0374631Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0374778Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0374923Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0375076Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0375239Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0375388Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0375562Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0375730Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0375876Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0376027Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0376183Z web-deploy: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0376338Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0376486Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0376625Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0376776Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0376939Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0377087Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0377265Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0377435Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0377583Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0377736Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0377895Z web-deploy: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0378045Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0378215Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0378357Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0378508Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0378666Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0378821Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0378995Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0379167Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0379429Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0379583Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0379734Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0379884Z web-test: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0380031Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0380184Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0380330Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0380485Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0380648Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0380799Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0380973Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0381153Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0381395Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0381563Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0381734Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0381910Z web-test: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0382078Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0382244Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0382403Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0382564Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0382732Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0382897Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0383150Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0383328Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0383484Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0383639Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0383798Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0383965Z web-test: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0384118Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0384263Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0384408Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0384557Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0384712Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0384967Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0385229Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0385488Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0385721Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0385886Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0386038Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0386185Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0386346Z browser-determinism: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0386513Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0386662Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0386802Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0386949Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0387103Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0387253Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0387423Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0387592Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0387736Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0387884Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0388035Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0388188Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0388359Z browser-determinism: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0388534Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0388695Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0388845Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0388999Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0389154Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0389305Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0389593Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0389760Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0389905Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0390058Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0390211Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0390359Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0390523Z browser-determinism: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0390690Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0390833Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0390975Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0391125Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0391282Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0391518Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0391692Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0391861Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0392012Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0392163Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0392315Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0392464Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0392635Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0392802Z platform: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0392952Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0393243Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0393386Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0393535Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0393692Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0393854Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0394031Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0394207Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0394359Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0394533Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0394685Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0394838Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0394999Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0395171Z platform: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0395320Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0395466Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0395611Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0395760Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0395914Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0396065Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0396231Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0396400Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0396549Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0396836Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0397064Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0440064Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0440276Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0440464Z platform: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0440636Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0440785Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0440932Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0441086Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0441248Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0441400Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0441575Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0441750Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0441914Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0442072Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0442226Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0442613Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0442777Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0442958Z platform: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0443200Z platform-stack: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0443360Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0443508Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0443654Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0443807Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0443966Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0444118Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0444290Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0444463Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0444718Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0444873Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0445028Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0445188Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0445354Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0445532Z platform: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0445688Z platform-stack: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0445861Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0446007Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0446152Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0446305Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0446469Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0446630Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0446810Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0446979Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0447133Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0447282Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0447435Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0447589Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0447750Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0447915Z platform: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0448065Z platform-stack: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0448219Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0448366Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0448512Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0448668Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0448826Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0448980Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0449146Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0449313Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0449467Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0449617Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0449769Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0449956Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0450325Z test_selected_failures_and_cancellations_cannot_pass (test_ci_tiers.AggregateGateTest.test_selected_failures_and_cancellations_cannot_pass) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0689435Z test_nightly_reuses_only_exact_full_available_evidence (test_ci_tiers.BaselineTest.test_nightly_reuses_only_exact_full_available_evidence) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0834065Z test_only_successful_proven_full_master_baseline_activates (test_ci_tiers.BaselineTest.test_only_successful_proven_full_master_baseline_activates) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0837091Z test_ci_contract_tests_do_not_select_mobile_or_compatibility (test_ci_tiers.TierTest.test_ci_contract_tests_do_not_select_mobile_or_compatibility) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0837999Z test_complete_browser_inventory_keeps_every_command (test_ci_tiers.TierTest.test_complete_browser_inventory_keeps_every_command) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0911496Z test_contract_only_selection_is_lightweight_before_tiers_are_enabled (test_ci_tiers.TierTest.test_contract_only_selection_is_lightweight_before_tiers_are_enabled) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0982289Z test_default_pull_requests_defer_every_selected_check (test_ci_tiers.TierTest.test_default_pull_requests_defer_every_selected_check) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0983244Z test_known_implementation_and_test_boundaries_are_primary (test_ci_tiers.TierTest.test_known_implementation_and_test_boundaries_are_primary) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0983952Z test_master_and_schedule_override_docs (test_ci_tiers.TierTest.test_master_and_schedule_override_docs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0984759Z test_release_metadata_defers_to_release_but_mobile_workflow_stays_relevant (test_ci_tiers.TierTest.test_release_metadata_defers_to_release_but_mobile_workflow_stays_relevant) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0985844Z test_reusable_android_does_not_share_caller_concurrency_group (test_ci_tiers.TierTest.test_reusable_android_does_not_share_caller_concurrency_group) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0986481Z test_runtime_and_shard_configuration_exercises_both_gcc_platforms (test_ci_tiers.TierTest.test_runtime_and_shard_configuration_exercises_both_gcc_platforms) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0987964Z test_shared_simulation_platform_and_unknown_paths_are_full (test_ci_tiers.TierTest.test_shared_simulation_platform_and_unknown_paths_are_full) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0990065Z test_feature_variants_isolate_outputs_but_reuse_dependencies (test_client_features.ClientFeaturesTests.test_feature_variants_isolate_outputs_but_reuse_dependencies) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0990861Z test_invalid_values_fail_closed (test_client_features.ClientFeaturesTests.test_invalid_values_fail_closed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0991556Z test_release_is_free_and_development_is_full (test_client_features.ClientFeaturesTests.test_release_is_free_and_development_is_full) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.0992047Z test_store_capabilities_are_independent (test_client_features.ClientFeaturesTests.test_store_capabilities_are_independent) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.1329156Z test_benchmark_snapshot_retains_git_provenance_and_candidate_edits (test_dev_build.DevelopmentBuildTests.test_benchmark_snapshot_retains_git_provenance_and_candidate_edits) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.1695473Z test_compatible_consumer_reuses_an_active_reader_installation (test_dev_build.DevelopmentBuildTests.test_compatible_consumer_reuses_an_active_reader_installation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4077770Z test_concurrent_consumers_publish_once (test_dev_build.DevelopmentBuildTests.test_concurrent_consumers_publish_once) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4082883Z test_configurable_budget_and_no_automatic_pruning (test_dev_build.DevelopmentBuildTests.test_configurable_budget_and_no_automatic_pruning) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4091447Z test_dependency_configuration_skips_query_only_targets (test_dev_build.DevelopmentBuildTests.test_dependency_configuration_skips_query_only_targets) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4099697Z test_development_command_preserves_overrides (test_dev_build.DevelopmentBuildTests.test_development_command_preserves_overrides) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4154394Z test_failed_publish_preserves_prior_install (test_dev_build.DevelopmentBuildTests.test_failed_publish_preserves_prior_install) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4192602Z test_identity_serializes_path_and_tuple_inputs (test_dev_build.DevelopmentBuildTests.test_identity_serializes_path_and_tuple_inputs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4193488Z test_invalid_profiles (test_dev_build.DevelopmentBuildTests.test_invalid_profiles) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4201274Z test_profiles_are_isolated_and_mobile_dependencies_reused (test_dev_build.DevelopmentBuildTests.test_profiles_are_isolated_and_mobile_dependencies_reused) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4214205Z test_query_and_isolated_mode (test_dev_build.DevelopmentBuildTests.test_query_and_isolated_mode) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4296073Z test_shared_install_reuses_content_and_relocates_metadata (test_dev_build.DevelopmentBuildTests.test_shared_install_reuses_content_and_relocates_metadata) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.4764374Z test_browser_migration_preserves_config_caches_and_busy_checkouts (test_dev_store.StoreTests.test_browser_migration_preserves_config_caches_and_busy_checkouts) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.5180474Z test_budget_skips_active_cache_and_preserves_tools_and_evidence (test_dev_store.StoreTests.test_budget_skips_active_cache_and_preserves_tools_and_evidence) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.5751838Z test_checksum_install_atomic_and_rejects_unverified_directory (test_dev_store.StoreTests.test_checksum_install_atomic_and_rejects_unverified_directory) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.6310920Z test_compiler_bytes_invalidate_cached_digest (test_dev_store.StoreTests.test_compiler_bytes_invalidate_cached_digest) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.6721865Z test_compiler_fingerprint_survives_installation_relocation (test_dev_store.StoreTests.test_compiler_fingerprint_survives_installation_relocation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.7760235Z test_concurrent_installation_publishes_one_complete_entry (test_dev_store.StoreTests.test_concurrent_installation_publishes_one_complete_entry) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.8166697Z test_dependency_bundle_rejects_changed_archives (test_dev_store.StoreTests.test_dependency_bundle_rejects_changed_archives) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.8604875Z test_dependency_keys_include_compiler_triplets_manifest_and_sdl (test_dev_store.StoreTests.test_dependency_keys_include_compiler_triplets_manifest_and_sdl) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.9008752Z test_explicit_sdk_and_browser_override (test_dev_store.StoreTests.test_explicit_sdk_and_browser_override) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.9417449Z test_failed_checksum_never_publishes (test_dev_store.StoreTests.test_failed_checksum_never_publishes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:20.9839150Z test_identical_components_are_shared_across_toolchain_bundles (test_dev_store.StoreTests.test_identical_components_are_shared_across_toolchain_bundles) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.0222701Z test_isolated_mode_cannot_prune_the_shared_store (test_dev_store.StoreTests.test_isolated_mode_cannot_prune_the_shared_store) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.0763851Z test_java_sources_available_without_dependency_buildtrees (test_dev_store.StoreTests.test_java_sources_available_without_dependency_buildtrees) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.1155714Z test_manifest_changes_coexist (test_dev_store.StoreTests.test_manifest_changes_coexist) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.5960491Z test_migration_ignores_own_lock_but_detects_other_processes (test_dev_store.StoreTests.test_migration_ignores_own_lock_but_detects_other_processes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.6369544Z test_migration_preserves_customized_tools (test_dev_store.StoreTests.test_migration_preserves_customized_tools) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.6776310Z test_migration_skips_symlinked_parent_overrides (test_dev_store.StoreTests.test_migration_skips_symlinked_parent_overrides) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.8101625Z test_paths_cli_is_read_only_and_reports_isolated_mode (test_dev_store.StoreTests.test_paths_cli_is_read_only_and_reports_isolated_mode) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.8533833Z test_platform_defaults (test_dev_store.StoreTests.test_platform_defaults) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.9185295Z test_process_lease_blocks_install_and_prune (test_dev_store.StoreTests.test_process_lease_blocks_install_and_prune) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:21.9605047Z test_prune_dry_run_does_not_delete (test_dev_store.StoreTests.test_prune_dry_run_does_not_delete) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:22.0241205Z test_readers_can_share_a_resource (test_dev_store.StoreTests.test_readers_can_share_a_resource) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:22.0648047Z test_sdk_alias_does_not_copy_installation (test_dev_store.StoreTests.test_sdk_alias_does_not_copy_installation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:22.1060917Z test_sdk_java_command_preserves_paths_with_spaces (test_dev_store.StoreTests.test_sdk_java_command_preserves_paths_with_spaces) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.0074831Z test_warm_dependency_setup_can_run_during_an_active_build (test_dev_store.StoreTests.test_warm_dependency_setup_can_run_during_an_active_build) ... FAIL
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3222216Z test_worktrees_share_pinned_tools_but_not_isolated_state (test_dev_store.StoreTests.test_worktrees_share_pinned_tools_but_not_isolated_state) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3237954Z test_changed_final_bytes_invalidate_evidence (test_downloads_manifest.ManifestTests.test_changed_final_bytes_invalidate_evidence) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3248573Z test_checkout_requires_exact_commit_tag_and_version (test_downloads_manifest.ManifestTests.test_checkout_requires_exact_commit_tag_and_version) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3262713Z test_cli_rejection_preserves_existing_snapshot (test_downloads_manifest.ManifestTests.test_cli_rejection_preserves_existing_snapshot) ... downloads manifest rejected: qualification schemaVersion must be 1
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3267288Z ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3280505Z test_duplicates_and_source_overlap (test_downloads_manifest.ManifestTests.test_duplicates_and_source_overlap) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3406885Z test_each_installed_package_and_device_target_is_required (test_downloads_manifest.ManifestTests.test_each_installed_package_and_device_target_is_required) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3453868Z test_every_qualification_gate_required (test_downloads_manifest.ManifestTests.test_every_qualification_gate_required) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3466467Z test_extra_or_missing_digest_rejected (test_downloads_manifest.ManifestTests.test_extra_or_missing_digest_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3479295Z test_final_bytes_and_all_formats (test_downloads_manifest.ManifestTests.test_final_bytes_and_all_formats) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3497377Z test_malformed_nested_metadata_rejected (test_downloads_manifest.ManifestTests.test_malformed_nested_metadata_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3533558Z test_missing_each_package_rejected (test_downloads_manifest.ManifestTests.test_missing_each_package_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3544178Z test_numeric_tag_component_parity (test_downloads_manifest.ManifestTests.test_numeric_tag_component_parity) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3567881Z test_path_traversal_symlink_empty_and_wrong_extension (test_downloads_manifest.ManifestTests.test_path_traversal_symlink_empty_and_wrong_extension) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3575148Z test_release_workflows_keep_draft_and_promotion_separate (test_downloads_manifest.ManifestTests.test_release_workflows_keep_draft_and_promotion_separate) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3593505Z test_review_time_and_reviewer_required (test_downloads_manifest.ManifestTests.test_review_time_and_reviewer_required) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3605741Z test_revision_mismatches (test_downloads_manifest.ManifestTests.test_revision_mismatches) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3612402Z test_source_archive_is_required (test_downloads_manifest.ManifestTests.test_source_archive_is_required) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3637316Z test_stage_inventory_maps_final_public_packages (test_downloads_manifest.ManifestTests.test_stage_inventory_maps_final_public_packages) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3670211Z test_store_urls_and_production_availability (test_downloads_manifest.ManifestTests.test_store_urls_and_production_availability) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3683645Z test_wrong_google_play_application_rejected (test_downloads_manifest.ManifestTests.test_wrong_google_play_application_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3689616Z test_instructions_install_and_remove_the_bundled_library_tree (test_downloads_release_workflows.LinuxInstallationTests.test_instructions_install_and_remove_the_bundled_library_tree) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3699389Z test_ambiguous_rpm_outputs_fail (test_downloads_release_workflows.PackageInventoryTests.test_ambiguous_rpm_outputs_fail) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3714696Z test_inventory_has_exact_platform_matrix_and_source (test_downloads_release_workflows.PackageInventoryTests.test_inventory_has_exact_platform_matrix_and_source) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3721376Z test_missing_final_installer_fails_before_publication (test_downloads_release_workflows.PackageInventoryTests.test_missing_final_installer_fails_before_publication) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3723339Z test_all_platform_jobs_receive_the_same_source_revision (test_downloads_release_workflows.ReleaseWorkflowTests.test_all_platform_jobs_receive_the_same_source_revision) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3724757Z test_build_jobs_have_no_signing_environments_or_publication_credentials (test_downloads_release_workflows.ReleaseWorkflowTests.test_build_jobs_have_no_signing_environments_or_publication_credentials) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3725846Z test_desktop_queue_is_scoped_to_the_immutable_release_tag (test_downloads_release_workflows.ReleaseWorkflowTests.test_desktop_queue_is_scoped_to_the_immutable_release_tag) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3787313Z test_downloaded_android_layout_checks_bytes_before_signing (test_downloads_release_workflows.ReleaseWorkflowTests.test_downloaded_android_layout_checks_bytes_before_signing) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3788725Z test_epic_build_only_skips_credential_bearing_upload (test_downloads_release_workflows.ReleaseWorkflowTests.test_epic_build_only_skips_credential_bearing_upload) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3858926Z test_epic_smoke_uses_tag_cli_and_rejects_unknown_versions (test_downloads_release_workflows.ReleaseWorkflowTests.test_epic_smoke_uses_tag_cli_and_rejects_unknown_versions) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3860035Z test_gog_builds_and_stages_the_resolved_public_source (test_downloads_release_workflows.ReleaseWorkflowTests.test_gog_builds_and_stages_the_resolved_public_source) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3938930Z test_gog_posix_repeat_selector_preserves_both_command_contracts (test_downloads_release_workflows.ReleaseWorkflowTests.test_gog_posix_repeat_selector_preserves_both_command_contracts) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3939775Z test_ios_archive_qualification_does_not_require_upload_credentials (test_downloads_release_workflows.ReleaseWorkflowTests.test_ios_archive_qualification_does_not_require_upload_credentials) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.3940479Z test_mac_store_build_and_signing_use_same_public_tag_source (test_downloads_release_workflows.ReleaseWorkflowTests.test_mac_store_build_and_signing_use_same_public_tag_source) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4004971Z test_mac_store_selects_commands_from_compiled_source_and_fails_closed (test_downloads_release_workflows.ReleaseWorkflowTests.test_mac_store_selects_commands_from_compiled_source_and_fails_closed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4006227Z test_only_mobile_upload_callers_inherit_release_secrets (test_downloads_release_workflows.ReleaseWorkflowTests.test_only_mobile_upload_callers_inherit_release_secrets) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4007416Z test_only_qualified_promotion_makes_public_release_visible (test_downloads_release_workflows.ReleaseWorkflowTests.test_only_qualified_promotion_makes_public_release_visible) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4021341Z test_owner_dispatch_master_guard_on_every_new_entrypoint (test_downloads_release_workflows.ReleaseWorkflowTests.test_owner_dispatch_master_guard_on_every_new_entrypoint) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4022383Z test_steam_tag_identity_survives_package_smoke_and_upload (test_downloads_release_workflows.ReleaseWorkflowTests.test_steam_tag_identity_survives_package_smoke_and_upload) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4023301Z test_windows_signs_exact_game_and_tests_final_installer (test_downloads_release_workflows.ReleaseWorkflowTests.test_windows_signs_exact_game_and_tests_final_installer) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4024217Z test_direct_mac_download_rejects_app_store_certificate (test_downloads_release_workflows.SigningTests.test_direct_mac_download_rejects_app_store_certificate) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4033653Z test_mac_architecture_and_minimum_os_fail_closed (test_downloads_release_workflows.SigningTests.test_mac_architecture_and_minimum_os_fail_closed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4034587Z test_sideload_rejects_debug_and_upload_key_aliases (test_downloads_release_workflows.SigningTests.test_sideload_rejects_debug_and_upload_key_aliases) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4038934Z test_sideload_requires_pinned_certificate_and_passwords (test_downloads_release_workflows.SigningTests.test_sideload_requires_pinned_certificate_and_passwords) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4046548Z test_empty_selection_rejected (test_free_cohort.FreeCohortTests.test_empty_selection_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4054657Z test_exact_build_identity_attestation (test_free_cohort.FreeCohortTests.test_exact_build_identity_attestation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4063927Z test_free_profile_and_final_release_flags_required (test_free_cohort.FreeCohortTests.test_free_profile_and_final_release_flags_required) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4106484Z test_safe_bundle_extraction (test_free_cohort.FreeCohortTests.test_safe_bundle_extraction) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4114902Z test_selected_channel_does_not_wait_for_unselected_stores (test_free_cohort.FreeCohortTests.test_selected_channel_does_not_wait_for_unselected_stores) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4122324Z test_selected_platform_still_needs_qualification (test_free_cohort.FreeCohortTests.test_selected_platform_still_needs_qualification) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4136042Z test_stage_does_not_require_unselected_outputs (test_free_cohort.FreeCohortTests.test_stage_does_not_require_unselected_outputs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4183803Z test_collection_rejects_binary_mutation_and_cleans_profiles (test_generator_evidence.GeneratorEvidenceTest.test_collection_rejects_binary_mutation_and_cleans_profiles) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4185236Z test_complete_inventory_includes_unapproved_extended_team_cases (test_generator_evidence.GeneratorEvidenceTest.test_complete_inventory_includes_unapproved_extended_team_cases) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4207966Z test_independent_comparison_requires_same_inputs_and_every_fingerprint (test_generator_evidence.GeneratorEvidenceTest.test_independent_comparison_requires_same_inputs_and_every_fingerprint) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4209084Z test_inventory_requires_exact_current_rows_and_revisions (test_generator_evidence.GeneratorEvidenceTest.test_inventory_requires_exact_current_rows_and_revisions) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4210147Z test_rows_ignore_logs_but_reject_missing_malformed_or_duplicate_output (test_generator_evidence.GeneratorEvidenceTest.test_rows_ignore_logs_but_reject_missing_malformed_or_duplicate_output) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4211264Z test_client_rejects_pagination_to_other_origin_before_sending_token (test_ios_store_release.IOSStoreTests.test_client_rejects_pagination_to_other_origin_before_sending_token) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4212310Z test_concrete_listing_metadata_complete_and_missing_gates (test_ios_store_release.IOSStoreTests.test_concrete_listing_metadata_complete_and_missing_gates) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4213510Z test_invalid_internal_or_unprocessed_apple_build_is_rejected_before_writes (test_ios_store_release.IOSStoreTests.test_invalid_internal_or_unprocessed_apple_build_is_rejected_before_writes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4215260Z test_missing_metadata_blocks_submission_writes (test_ios_store_release.IOSStoreTests.test_missing_metadata_blocks_submission_writes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4216156Z test_prepare_creates_manual_version_with_exact_uploaded_build_without_submitting (test_ios_store_release.IOSStoreTests.test_prepare_creates_manual_version_with_exact_uploaded_build_without_submitting) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4218018Z test_provenance_requires_exact_public_source_and_eligible_successful_upload (test_ios_store_release.IOSStoreTests.test_provenance_requires_exact_public_source_and_eligible_successful_upload) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4219116Z test_publish_requires_approved_manual_version_and_exact_build (test_ios_store_release.IOSStoreTests.test_publish_requires_approved_manual_version_and_exact_build) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4219825Z test_submission_retry_reuses_only_exact_review_item_relationship (test_ios_store_release.IOSStoreTests.test_submission_retry_reuses_only_exact_review_item_relationship) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4223687Z test_submit_checks_metadata_then_creates_review_without_publishing (test_ios_store_release.IOSStoreTests.test_submit_checks_metadata_then_creates_review_without_publishing) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4224611Z test_version_mapping_preserves_fourth_component_without_collisions (test_ios_store_release.IOSStoreTests.test_version_mapping_preserves_fourth_component_without_collisions) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4227168Z test_all_supported_configurations_have_distinct_directories (test_layout.BuildLayoutTests.test_all_supported_configurations_have_distinct_directories) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4234630Z test_identical_generated_header_does_not_invalidate_objects (test_layout.BuildLayoutTests.test_identical_generated_header_does_not_invalidate_objects) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4238319Z test_incompatible_explicit_directory_is_rejected (test_layout.BuildLayoutTests.test_incompatible_explicit_directory_is_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4239131Z test_invalid_combinations_fail_before_toolchain_initialization (test_layout.BuildLayoutTests.test_invalid_combinations_fail_before_toolchain_initialization) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4240208Z test_removed_server_roles_and_mingw_options (test_layout.BuildLayoutTests.test_removed_server_roles_and_mingw_options) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4461485Z test_same_identity_cannot_have_two_concurrent_writers (test_layout.BuildLayoutTests.test_same_identity_cannot_have_two_concurrent_writers) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4516443Z test_shared_manifests_are_valid_and_unique (test_layout.BuildLayoutTests.test_shared_manifests_are_valid_and_unique) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4535664Z test_cached_configure_probes_are_not_runtime_programs (test_linux_runtime_packages.RuntimePackagesTest.test_cached_configure_probes_are_not_runtime_programs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4538556Z test_diversion_metadata_with_real_owner_is_not_ambiguous (test_linux_runtime_packages.RuntimePackagesTest.test_diversion_metadata_with_real_owner_is_not_ambiguous) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4539445Z test_missing_libraries_are_errors (test_linux_runtime_packages.RuntimePackagesTest.test_missing_libraries_are_errors) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4540251Z test_multiple_real_owners_remain_an_error (test_linux_runtime_packages.RuntimePackagesTest.test_multiple_real_owners_remain_an_error) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4541224Z test_real_dependencies_use_package_owners_and_preserve_architecture (test_linux_runtime_packages.RuntimePackagesTest.test_real_dependencies_use_package_owners_and_preserve_architecture) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4548152Z test_runtime_inventory_excludes_cached_configure_probes (test_linux_runtime_packages.RuntimePackagesTest.test_runtime_inventory_excludes_cached_configure_probes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4550042Z test_unowned_system_library_is_not_silently_omitted (test_linux_runtime_packages.RuntimePackagesTest.test_unowned_system_library_is_not_silently_omitted) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4551777Z test_usrmerge_loader_diversion_resolves_to_real_package_owner (test_linux_runtime_packages.RuntimePackagesTest.test_usrmerge_loader_diversion_resolves_to_real_package_owner) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4556273Z test_aliases_resolve_to_one_real_file_even_with_spaces (test_mac_image_dependency.MacImageTests.test_aliases_resolve_to_one_real_file_even_with_spaces) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4563107Z test_corrupted_dependency_rejected (test_mac_image_dependency.MacImageTests.test_corrupted_dependency_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4572258Z test_disk_image_staging_preserves_library_aliases (test_mac_image_dependency.MacImageTests.test_disk_image_staging_preserves_library_aliases) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4597450Z test_identity_ignores_unrelated_libraries_and_hashes_shared_files_once (test_mac_image_dependency.MacImageTests.test_identity_ignores_unrelated_libraries_and_hashes_shared_files_once) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4598455Z test_missing_dependency_is_fatal (test_mac_image_dependency.MacImageTests.test_missing_dependency_is_fatal) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4598974Z test_only_required_codecs_and_saving_are_enabled (test_mac_image_dependency.MacImageTests.test_only_required_codecs_and_saving_are_enabled) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4610113Z test_bundle_uses_base_module_native_library (test_mobile.AndroidSymbolTests.test_bundle_uses_base_module_native_library) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4624604Z test_packaged_symbols_require_matching_unambiguous_build_ids (test_mobile.AndroidSymbolTests.test_packaged_symbols_require_matching_unambiguous_build_ids) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4660740Z test_archive_member_names_distinguish_same_basename_sources (test_mobile.ArchiveSymbolTests.test_archive_member_names_distinguish_same_basename_sources) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4680259Z test_install_rejects_stale_or_modified_signed_apk (test_mobile.DeveloperSigningTests.test_install_rejects_stale_or_modified_signed_apk) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4719139Z test_runner_sdk_cannot_override_the_isolated_emulator_sdk (test_mobile.EmulatorEnvironmentTests.test_runner_sdk_cannot_override_the_isolated_emulator_sdk) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4720537Z test_emulator_archives_match_configured_package_versions (test_mobile.EmulatorSmokeTests.test_emulator_archives_match_configured_package_versions) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4747558Z test_extracted_emulator_is_registered_without_changing_licenses (test_mobile.EmulatorSmokeTests.test_extracted_emulator_is_registered_without_changing_licenses) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4775887Z test_pinned_java_home_is_host_specific_and_preserves_override (test_mobile.EmulatorSmokeTests.test_pinned_java_home_is_host_specific_and_preserves_override) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4792978Z test_smoke_rejects_physical_devices_and_shared_servers (test_mobile.EmulatorSmokeTests.test_smoke_rejects_physical_devices_and_shared_servers) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4826676Z test_incomplete_device_requests_fail_before_sdk_or_build (test_mobile.IOSCommandTests.test_incomplete_device_requests_fail_before_sdk_or_build) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4836830Z test_simulator_install_uses_task_device_set (test_mobile.IOSCommandTests.test_simulator_install_uses_task_device_set) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4865927Z test_ios_guard_uses_its_own_compiled_objects_without_android_mapping (test_mobile.IOSNumericGuardTests.test_ios_guard_uses_its_own_compiled_objects_without_android_mapping) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4884860Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4885121Z platform: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4885303Z platform-stack: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4885464Z music: failure (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4885620Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4885791Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4885932Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4886080Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4886306Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4886529Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4886803Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4887068Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4887329Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4887560Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4887755Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4887907Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4888068Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4888229Z platform: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4888376Z platform-stack: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4888527Z music: cancelled (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4888672Z android: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4888812Z macos: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4888952Z tsan: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4889098Z native-coverage: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4889250Z linux: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4889392Z linux-variants: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4889559Z linux-map-generators: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4889727Z windows: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4889873Z web-build: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4890017Z web-native: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4890314Z web-deploy: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4890457Z web-test: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4890612Z browser-determinism: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4890775Z platform: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4890921Z platform-stack: success (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4891070Z music: skipped (expected success)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4891235Z Collected 1 unapproved rows; expected tables unchanged
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4891412Z simctl list devices --json
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4891555Z simctl spawn owned-test launchctl list
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4892079Z simctl launch --stdout=/home/runner/work/glob2/glob2/build/test-profiles/tmph99frptu/diagnostics/startup-stdout.txt --stderr=/home/runner/work/glob2/glob2/build/test-profiles/tmph99frptu/diagnostics/startup-stderr.txt owned-test org.globulation2.glob2
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4892859Z simctl spawn owned-test launchctl list
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4893278Z simctl spawn owned-test log show --last 3m --style compact --predicate process == "Glob2" OR eventMessage CONTAINS "org.globulation2.glob2"
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4893727Z simctl io owned-test screenshot /home/runner/work/glob2/glob2/build/test-profiles/tmph99frptu/diagnostics/failure.png
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4894861Z test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps (test_mobile.IOSSmokeFailureTests.test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4897831Z test_checks_every_archive_member (test_mobile.MobileArtifactTests.test_checks_every_archive_member) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4923101Z test_packaged_shared_libraries_require_aligned_load_segments (test_mobile.MobileArtifactTests.test_packaged_shared_libraries_require_aligned_load_segments) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4925573Z test_reject_mislabeled_dependency_before_linking (test_mobile.MobileArtifactTests.test_reject_mislabeled_dependency_before_linking) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4929649Z test_rejects_host_archive_and_empty_archive (test_mobile.MobileArtifactTests.test_rejects_host_archive_and_empty_archive) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4931454Z test_amazon_release_isolated_from_standard_android_but_reuses_toolchain (test_mobile.MobileBuildTests.test_amazon_release_isolated_from_standard_android_but_reuses_toolchain) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4932532Z test_android_seven_is_the_default_minimum (test_mobile.MobileBuildTests.test_android_seven_is_the_default_minimum) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4937902Z test_each_mobile_configuration_has_its_own_directory (test_mobile.MobileBuildTests.test_each_mobile_configuration_has_its_own_directory) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4939136Z test_invalid_targets_fail_without_probing_host (test_mobile.MobileBuildTests.test_invalid_targets_fail_without_probing_host) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4941898Z test_ios_on_non_apple_host_has_actionable_error (test_mobile.MobileBuildTests.test_ios_on_non_apple_host_has_actionable_error) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4945583Z test_missing_android_sdk_does_not_fall_back_to_host (test_mobile.MobileBuildTests.test_missing_android_sdk_does_not_fall_back_to_host) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4948392Z test_wrong_architecture_cannot_reuse_output (test_mobile.MobileBuildTests.test_wrong_architecture_cannot_reuse_output) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4962392Z test_bundle_restores_gzip_assets_and_checks_original_bytes (test_mobile.PlayBundleAssetTests.test_bundle_restores_gzip_assets_and_checks_original_bytes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.4983986Z test_signing_rejects_changed_bundle_before_using_key (test_mobile.PlayBundleAssetTests.test_signing_rejects_changed_bundle_before_using_key) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5048446Z test_existing_bundle_matches_native_consumer_for_all_mobile_targets (test_mobile_dependency_manifest.MobileDependencyManifestTests.test_existing_bundle_matches_native_consumer_for_all_mobile_targets) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5049568Z test_circular_padding_is_trimmed_to_the_original_frame_count (test_music_encoding.MusicEncodingTests.test_circular_padding_is_trimmed_to_the_original_frame_count) ... skipped 'FFmpeg tools required'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5050783Z test_output_cannot_replace_source_or_use_old_extension (test_music_encoding.MusicEncodingTests.test_output_cannot_replace_source_or_use_old_extension) ... skipped 'FFmpeg tools required'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5051586Z test_trimmed_frames_and_failed_validation_preserves_installed_track (test_music_encoding.MusicEncodingTests.test_trimmed_frames_and_failed_validation_preserves_installed_track) ... skipped 'FFmpeg tools required'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5059756Z test_native_install_discovers_source_sets_from_a_variant_directory (test_music_encoding.MusicPackagingTests.test_native_install_discovers_source_sets_from_a_variant_directory) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5074374Z test_vorbis_cannot_enter_runtime_assets (test_music_encoding.MusicPackagingTests.test_vorbis_cannot_enter_runtime_assets) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5075489Z test_real_install_graph_preserves_one_canonical_library_and_aliases (test_native_image_dependency.LinuxRuntimeInstallTests.test_real_install_graph_preserves_one_canonical_library_and_aliases) ... skipped 'SCons unavailable'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5083297Z test_cached_decoder_acquires_the_supported_shared_lease (test_native_image_dependency.NativeImageTests.test_cached_decoder_acquires_the_supported_shared_lease) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5084220Z test_explicit_compiler_wrappers_reach_the_real_cmake_driver (test_native_image_dependency.NativeImageTests.test_explicit_compiler_wrappers_reach_the_real_cmake_driver) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5102949Z test_linux_dependency_update_invalidates_cache_without_unrelated_libraries (test_native_image_dependency.NativeImageTests.test_linux_dependency_update_invalidates_cache_without_unrelated_libraries) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5104730Z test_private_decoder_cannot_share_ordinary_build_outputs (test_native_image_dependency.NativeImageTests.test_private_decoder_cannot_share_ordinary_build_outputs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5106658Z test_build_refuses_to_overwrite_existing_environment (test_offline_asset_encoder.OfflineEncoderTests.test_build_refuses_to_overwrite_existing_environment) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5109857Z test_corrupt_archive_rejected_before_extraction (test_offline_asset_encoder.OfflineEncoderTests.test_corrupt_archive_rejected_before_extraction) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5110702Z test_sources_match_rpm_and_flatpak_inputs (test_offline_asset_encoder.OfflineEncoderTests.test_sources_match_rpm_and_flatpak_inputs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5569196Z test_cache_blob_corruption_is_repaired (test_package_assets.AssetExportTests.test_cache_blob_corruption_is_repaired) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5772936Z test_cache_metadata_corruption_is_repaired (test_package_assets.AssetExportTests.test_cache_metadata_corruption_is_repaired) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.5913262Z test_cached_export_is_repeatable_and_stale_files_disappear (test_package_assets.AssetExportTests.test_cached_export_is_repeatable_and_stale_files_disappear) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.6025309Z test_corrupt_source_keeps_previous_export (test_package_assets.AssetExportTests.test_corrupt_source_keeps_previous_export) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.6055787Z test_exact_pixels_including_invisible_rgb_and_sources_unchanged (test_package_assets.AssetExportTests.test_exact_pixels_including_invisible_rgb_and_sources_unchanged) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.6186606Z test_failed_audit_replacement_rolls_back_export (test_package_assets.AssetExportTests.test_failed_audit_replacement_rolls_back_export) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.6192722Z test_filters_metadata_but_preserves_linux_store_screenshot (test_package_assets.AssetExportTests.test_filters_metadata_but_preserves_linux_store_screenshot) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.7284215Z test_global_q90_policy_preserves_alpha_and_sources (test_package_assets.AssetExportTests.test_global_q90_policy_preserves_alpha_and_sources) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.7307700Z test_high_depth_png_is_not_quantized_to_webp (test_package_assets.AssetExportTests.test_high_depth_png_is_not_quantized_to_webp) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.8505518Z test_high_depth_rgba_uses_renderer_reference (test_package_assets.AssetExportTests.test_high_depth_rgba_uses_renderer_reference) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.8615655Z test_linux_screenshots_keep_their_png_representation (test_package_assets.AssetExportTests.test_linux_screenshots_keep_their_png_representation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.8777364Z test_old_export_upgrade_format_changes_and_unrelated_content (test_package_assets.AssetExportTests.test_old_export_upgrade_format_changes_and_unrelated_content) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.8797160Z test_original_profile_needs_no_conversion (test_package_assets.AssetExportTests.test_original_profile_needs_no_conversion) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.8971192Z test_png_cannot_win_even_when_smaller_and_hd_index_uses_webp (test_package_assets.AssetExportTests.test_png_cannot_win_even_when_smaller_and_hd_index_uses_webp) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9070256Z test_q90_encoder_parameters (test_package_assets.AssetExportTests.test_q90_encoder_parameters) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9273894Z test_recipe_change_invalidates_cache (test_package_assets.AssetExportTests.test_recipe_change_invalidates_cache) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9380178Z test_refuses_source_and_unowned_output (test_package_assets.AssetExportTests.test_refuses_source_and_unowned_output) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9429579Z test_rgba16_png_filters_and_adam7_reference (test_package_assets.AssetExportTests.test_rgba16_png_filters_and_adam7_reference) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9533924Z test_smaller_lossless_candidate_wins (test_package_assets.AssetExportTests.test_smaller_lossless_candidate_wins) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9668841Z test_source_change_invalidates_cache (test_package_assets.AssetExportTests.test_source_change_invalidates_cache) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9719401Z test_source_hd_atlas_placement_is_verified_before_encoding (test_package_assets.AssetExportTests.test_source_hd_atlas_placement_is_verified_before_encoding) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:29.9954405Z test_cached_export_is_repeatable (test_package_assets.SpriteSheetExportTests.test_cached_export_is_repeatable) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.0187387Z test_default_sheet_alpha_and_corrupt_packed_cache (test_package_assets.SpriteSheetExportTests.test_default_sheet_alpha_and_corrupt_packed_cache) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.0212047Z test_frames_behind_a_gap_are_rejected (test_package_assets.SpriteSheetExportTests.test_frames_behind_a_gap_are_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.0249029Z test_original_profile_keeps_the_frames (test_package_assets.SpriteSheetExportTests.test_original_profile_keeps_the_frames) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.0372677Z test_runs_split_by_layer_size_and_sheet_capacity (test_package_assets.SpriteSheetExportTests.test_runs_split_by_layer_size_and_sheet_capacity) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.0469768Z test_sheets_hold_every_frame_exactly_and_replace_the_frames (test_package_assets.SpriteSheetExportTests.test_sheets_hold_every_frame_exactly_and_replace_the_frames) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3663190Z test_catalog_exports_delegate_before_importing_pillow (test_package_assets.TerrainEncoderHandoffTests.test_catalog_exports_delegate_before_importing_pillow) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3707211Z test_fingerprints_use_decoded_lossy_exports_and_sheet_regions (test_package_assets.TerrainRuntimeFingerprintTests.test_fingerprints_use_decoded_lossy_exports_and_sheet_regions) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3708298Z test_archive_adoption_requires_meaningful_savings (test_package_optimization.PackageOptimizationTests.test_archive_adoption_requires_meaningful_savings) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3827875Z test_archives_preserve_all_payload_bytes_and_linux_aliases (test_package_optimization.PackageOptimizationTests.test_archives_preserve_all_payload_bytes_and_linux_aliases) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3833554Z test_compiler_profiles_cannot_mix_cached_objects (test_package_optimization.PackageOptimizationTests.test_compiler_profiles_cannot_mix_cached_objects) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3851885Z test_cross_platform_evidence_requires_all_profiles_and_matching_tick_traces (test_package_optimization.PackageOptimizationTests.test_cross_platform_evidence_requires_all_profiles_and_matching_tick_traces) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3853290Z test_repeated_slowdown_requires_evidence_in_both_batches (test_package_optimization.PackageOptimizationTests.test_repeated_slowdown_requires_evidence_in_both_batches) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3855867Z test_comparison_rejects_unrelated_source_toolchains_and_scopes (test_package_sizes.PackageSizeTests.test_comparison_rejects_unrelated_source_toolchains_and_scopes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3873572Z test_complete_inventory_tracks_categories_archives_and_aliases (test_package_sizes.PackageSizeTests.test_complete_inventory_tracks_categories_archives_and_aliases) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3874666Z test_distro_optimization_preserves_debug_build_selection (test_package_sizes.PackageSizeTests.test_distro_optimization_preserves_debug_build_selection) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.3875802Z test_unrecorded_toolchain_cannot_be_compared (test_package_sizes.PackageSizeTests.test_unrecorded_toolchain_cannot_be_compared) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.4285029Z test_no_delay_macro_redefines_sdl_behavior (test_platform_boundary.PlatformBoundaryTests.test_no_delay_macro_redefines_sdl_behavior) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.7771149Z test_shared_code_does_not_embed_browser_api_calls (test_platform_boundary.PlatformBoundaryTests.test_shared_code_does_not_embed_browser_api_calls) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8127089Z test_shared_code_uses_target_owned_configuration (test_platform_boundary.PlatformBoundaryTests.test_shared_code_uses_target_owned_configuration) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8134985Z test_never_commits_wrong_or_reused_bundle (test_play_release.PlayReleaseTests.test_never_commits_wrong_or_reused_bundle) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8139750Z test_production_requires_explicit_track_and_validated_bundle (test_play_release.PlayReleaseTests.test_production_requires_explicit_track_and_validated_bundle) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8144219Z test_publishes_only_internal_track_after_validation (test_play_release.PlayReleaseTests.test_publishes_only_internal_track_after_validation) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8151540Z test_rejects_changed_build_before_creating_edit (test_play_release.PlayReleaseTests.test_rejects_changed_build_before_creating_edit) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8155264Z test_version_codes_are_monotonic_seconds_within_play_limit (test_play_release.PlayReleaseTests.test_version_codes_are_monotonic_seconds_within_play_limit) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8158849Z test_native_platforms_retain_bash_lookup (test_recording_shell.RecordingShellTests.test_native_platforms_retain_bash_lookup) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8164218Z test_windows_missing_posix_bash_reports_the_required_toolchain (test_recording_shell.RecordingShellTests.test_windows_missing_posix_bash_reports_the_required_toolchain) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8169035Z test_windows_uses_bash_beside_the_posix_shell (test_recording_shell.RecordingShellTests.test_windows_uses_bash_beside_the_posix_shell) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8200293Z test_manual_is_from_committed_blob_without_historical_packaging (test_recording_source_archive.RecordingSourceArchiveTest.test_manual_is_from_committed_blob_without_historical_packaging) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8241852Z test_pinned_archives_append_after_reading_git_archive_and_are_repeatable (test_recording_source_archive.RecordingSourceArchiveTest.test_pinned_archives_append_after_reading_git_archive_and_are_repeatable) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8410771Z test_every_root_job_requires_the_release_mirror (test_release_guards.ReleaseGuardTest.test_every_root_job_requires_the_release_mirror) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8411996Z test_guard_check_rejects_bypasses (test_release_guards.ReleaseGuardTest.test_guard_check_rejects_bypasses) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8457907Z test_publishing_workflows_are_in_the_release_set (test_release_guards.ReleaseGuardTest.test_publishing_workflows_are_in_the_release_set) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8587420Z test_release_workflows_never_run_for_pull_requests (test_release_guards.ReleaseGuardTest.test_release_workflows_never_run_for_pull_requests) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8697498Z test_adjacent_runtime_is_packaged (test_release_windows_package.WindowsPackageTests.test_adjacent_runtime_is_packaged) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8799536Z test_epic_stage_and_zip_share_files (test_release_windows_package.WindowsPackageTests.test_epic_stage_and_zip_share_files) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8836336Z test_complete_trace_and_provenance_are_retained (test_resource_evidence_collection.ResourceCollectionTest.test_complete_trace_and_provenance_are_retained) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8892443Z test_failed_or_interrupted_run_has_no_success_manifest (test_resource_evidence_collection.ResourceCollectionTest.test_failed_or_interrupted_run_has_no_success_manifest) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.8954308Z test_truncated_trace_fails_and_stale_output_is_rejected (test_resource_evidence_collection.ResourceCollectionTest.test_truncated_trace_fails_and_stale_output_is_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.9073158Z test_frames_packed_into_sheets_leave_the_install (test_runtime_install.RuntimeInstallTests.test_frames_packed_into_sheets_leave_the_install) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.9159825Z test_legacy_install_frames_packed_into_sheets_are_removed (test_runtime_install.RuntimeInstallTests.test_legacy_install_frames_packed_into_sheets_are_removed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.9191960Z test_legacy_png_does_not_shadow_webp_after_install (test_runtime_install.RuntimeInstallTests.test_legacy_png_does_not_shadow_webp_after_install) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.9226031Z test_legacy_png_from_older_release_does_not_hide_updated_artwork (test_runtime_install.RuntimeInstallTests.test_legacy_png_from_older_release_does_not_hide_updated_artwork) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.9272909Z test_modified_old_asset_is_preserved (test_runtime_install.RuntimeInstallTests.test_modified_old_asset_is_preserved) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:30.9392147Z test_removed_assets_and_format_changes_remove_only_owned_files (test_runtime_install.RuntimeInstallTests.test_removed_assets_and_format_changes_remove_only_owned_files) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.2560565Z test_drawing_does_not_read_live_entities (test_scene_boundary.SceneBoundaryTests.test_drawing_does_not_read_live_entities) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.5300279Z test_preparation_cannot_capture_or_read_live_objects (test_scene_boundary.SceneBoundaryTests.test_preparation_cannot_capture_or_read_live_objects) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.5309075Z test_scene_types_do_not_include_simulation_headers (test_scene_boundary.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.5310188Z test_debug_client_prepares_lossless_webp_without_install (test_scons_asset_install.SConsAssetInstallTests.test_debug_client_prepares_lossless_webp_without_install) ... skipped 'SCons command unavailable'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.5311385Z test_rebuild_retains_ownership_and_removes_obsolete_installed_assets (test_scons_asset_install.SConsAssetInstallTests.test_rebuild_retains_ownership_and_removes_obsolete_installed_assets) ... skipped 'SCons command unavailable'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.6106251Z test_patches_apply_once_and_reject_changed_sources (test_sdl3_dependencies.SourcePatchTests.test_patches_apply_once_and_reject_changed_sources) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.6108145Z test_the_kerning_patch_applies_to_the_pinned_archive (test_sdl3_dependencies.TtfKerningPatchTests.test_the_kerning_patch_applies_to_the_pinned_archive) ... skipped 'the pinned SDL3_ttf archive has not been downloaded'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.6109415Z test_the_kerning_patch_is_part_of_every_pinned_build (test_sdl3_dependencies.TtfKerningPatchTests.test_the_kerning_patch_is_part_of_every_pinned_build) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.6522747Z test_active_consumers_share_reader_leases (test_shared_development_dependencies.SharedDevelopmentDependenciesTests.test_active_consumers_share_reader_leases) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.6570619Z test_build_paths_avoid_spaces_and_metadata_relocates_to_managed_home (test_shared_development_dependencies.SharedDevelopmentDependenciesTests.test_build_paths_avoid_spaces_and_metadata_relocates_to_managed_home) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.6579331Z test_relocation_handles_resolved_temporary_directory_alias (test_shared_development_dependencies.SharedDevelopmentDependenciesTests.test_relocation_handles_resolved_temporary_directory_alias) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.6642004Z test_reuse_and_corruption_detection (test_shared_development_dependencies.SharedDevelopmentDependenciesTests.test_reuse_and_corruption_detection) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:31.7277672Z test_camera_metadata_is_bound_and_native_constants_match (test_skin_assets.ColonySkinAssetsTest.test_camera_metadata_is_bound_and_native_constants_match) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.2595809Z test_installed_meshes_match_their_sources_and_paint_contract (test_skin_assets.ColonySkinAssetsTest.test_installed_meshes_match_their_sources_and_paint_contract) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.2674200Z test_material_unwraps_are_shared_by_runtime_and_studio (test_skin_assets.ColonySkinAssetsTest.test_material_unwraps_are_shared_by_runtime_and_studio) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4549966Z test_unit_rigs_are_accepted_hash_bound_and_preserve_paint_topology (test_skin_assets.ColonySkinAssetsTest.test_unit_rigs_are_accepted_hash_bound_and_preserve_paint_topology) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4552260Z test_docs_point_at_the_registry (test_skin_materials.SkinMaterialsTest.test_docs_point_at_the_registry) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4552815Z test_protocol_mirror (test_skin_materials.SkinMaterialsTest.test_protocol_mirror)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4562800Z The platform ships a copy of the registry; its vitest pins equality, ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4590085Z test_registry_and_shader_agree (test_skin_materials.SkinMaterialsTest.test_registry_and_shader_agree) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4590811Z test_shader_edits_rebake_sprites (test_skin_materials.SkinMaterialsTest.test_shader_edits_rebake_sprites) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4591461Z test_shader_stays_portable (test_skin_materials.SkinMaterialsTest.test_shader_stays_portable)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4596477Z Both GLSL 1.20 and ES 3.00 must compile the shared block as is. ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4597585Z test_web_studio_imports_the_shader (test_skin_materials.SkinMaterialsTest.test_web_studio_imports_the_shader) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.4606916Z test_incomplete_export_does_not_replace_installed_meshes (test_skin_surface_contract.SkinInstallTest.test_incomplete_export_does_not_replace_installed_meshes) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.5198194Z test_rejects_a_collapsed_connection (test_skin_surface_contract.SkinSurfaceContractTest.test_rejects_a_collapsed_connection) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.5222297Z test_rejects_a_triangle_joining_different_feet (test_skin_surface_contract.SkinSurfaceContractTest.test_rejects_a_triangle_joining_different_feet) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.5552629Z test_rejects_paint_that_does_not_match_its_counterpart (test_skin_surface_contract.SkinSurfaceContractTest.test_rejects_paint_that_does_not_match_its_counterpart) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.5572753Z test_bad_responses_fail_after_three_attempts_without_an_archive (test_tool_archives.ToolArchiveTests.test_bad_responses_fail_after_three_attempts_without_an_archive) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.5584650Z test_partial_response_is_retried_and_only_verified_bytes_are_published (test_tool_archives.ToolArchiveTests.test_partial_response_is_retried_and_only_verified_bytes_are_published) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.5588649Z test_verified_cache_is_used_without_a_network_request (test_tool_archives.ToolArchiveTests.test_verified_cache_is_used_without_a_network_request) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.5910225Z test_a_copy_stands_in_for_a_re_encoded_export_when_smaller (test_web_assets.BrowserCopyTests.test_a_copy_stands_in_for_a_re_encoded_export_when_smaller) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.6599107Z test_a_stale_copy_falls_back_to_the_original (test_web_assets.BrowserCopyTests.test_a_stale_copy_falls_back_to_the_original) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.7171554Z test_png_derivative_is_rejected_and_original_profile_keeps_font (test_web_assets.BrowserCopyTests.test_png_derivative_is_rejected_and_original_profile_keeps_font) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.8033497Z test_q85_or_corrupt_derivatives_are_rejected (test_web_assets.BrowserCopyTests.test_q85_or_corrupt_derivatives_are_rejected) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.8040437Z test_the_core_font_has_every_glyph_but_the_appended_cjk_ones (test_web_assets.BrowserCopyTests.test_the_core_font_has_every_glyph_but_the_appended_cjk_ones) ... skipped 'fontTools is not installed'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.8547517Z test_incomplete_localization_leaves_served_release_untouched (test_web_assets.InstallWebClientTests.test_incomplete_localization_leaves_served_release_untouched) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:40.9265760Z test_installs_entry_files_last_and_keeps_one_previous_release (test_web_assets.InstallWebClientTests.test_installs_entry_files_last_and_keeps_one_previous_release) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:57:41.0166949Z test_localized_install_and_upgrade_replaces_compressed_catalogs (test_web_assets.InstallWebClientTests.test_localized_install_and_upgrade_replaces_compressed_catalogs) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.3144479Z test_packages_round_trip_and_are_content_addressed (test_web_assets.WebAssetPackageTests.test_packages_round_trip_and_are_content_addressed) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8142777Z test_build_files_and_documentation_are_not_shipped (test_web_assets.WebAssetPlanTests.test_build_files_and_documentation_are_not_shipped) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8152718Z test_building_definition_artwork_including_experiments_is_packaged (test_web_assets.WebAssetPlanTests.test_building_definition_artwork_including_experiments_is_packaged) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8160808Z test_core_has_english_and_every_language_name (test_web_assets.WebAssetPlanTests.test_core_has_english_and_every_language_name) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8161650Z test_core_ships_the_browser_copies_and_font_cjk_the_full_font (test_web_assets.WebAssetPlanTests.test_core_ships_the_browser_copies_and_font_cjk_the_full_font) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8164842Z test_every_installed_music_set_is_owned_and_opus_only (test_web_assets.WebAssetPlanTests.test_every_installed_music_set_is_owned_and_opus_only) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8169413Z test_in_game_sprites_follow_the_main_menu (test_web_assets.WebAssetPlanTests.test_in_game_sprites_follow_the_main_menu) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8171749Z test_music_and_artwork_the_game_reloads_per_match_are_optional (test_web_assets.WebAssetPlanTests.test_music_and_artwork_the_game_reloads_per_match_are_optional) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8172476Z test_parts_respect_the_size_limit (test_web_assets.WebAssetPlanTests.test_parts_respect_the_size_limit) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8991022Z test_resource_catalog_artwork_is_in_game_package (test_web_assets.WebAssetPlanTests.test_resource_catalog_artwork_is_in_game_package) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8991861Z test_runtime_files_the_menus_need_are_core (test_web_assets.WebAssetPlanTests.test_runtime_files_the_menus_need_are_core) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8992541Z test_simulation_data_starts_with_the_game (test_web_assets.WebAssetPlanTests.test_simulation_data_starts_with_the_game) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.8998356Z test_skin_meshes_are_only_in_the_on_demand_package (test_web_assets.WebAssetPlanTests.test_skin_meshes_are_only_in_the_on_demand_package) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9005423Z test_terrain_registry_atlases_and_decor_are_game_sprites (test_web_assets.WebAssetPlanTests.test_terrain_registry_atlases_and_decor_are_game_sprites) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9048036Z test_terrain_registry_changes_invalidate_browser_asset_plan (test_web_assets.WebAssetPlanTests.test_terrain_registry_changes_invalidate_browser_asset_plan) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9049091Z test_actual_compiler_accepts_unicode_paths_spaces_and_literal_dollars (test_windows_runtime.WindowsRuntimeTests.test_actual_compiler_accepts_unicode_paths_spaces_and_literal_dollars) ... skipped 'NSIS compiler unavailable'
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9063605Z test_installer_lists_preserve_relative_paths_and_only_owned_files (test_windows_runtime.WindowsRuntimeTests.test_installer_lists_preserve_relative_paths_and_only_owned_files) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9066232Z test_missing_import_fails_with_importer (test_windows_runtime.WindowsRuntimeTests.test_missing_import_fails_with_importer) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9081459Z test_private_sdl3_runtime_stages_notices_and_rejects_sdl2 (test_windows_runtime.WindowsRuntimeTests.test_private_sdl3_runtime_stages_notices_and_rejects_sdl2) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9089242Z test_recursive_case_insensitive_imports_prefer_private_runtime (test_windows_runtime.WindowsRuntimeTests.test_recursive_case_insensitive_imports_prefer_private_runtime) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9092029Z test_rejects_symlinks_and_invalid_nsis_strings (test_windows_runtime.WindowsRuntimeTests.test_rejects_symlinks_and_invalid_nsis_strings) ... ok
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9092688Z 
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9092799Z ======================================================================
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9093410Z FAIL: test_warm_dependency_setup_can_run_during_an_active_build (test_dev_store.StoreTests.test_warm_dependency_setup_can_run_during_an_active_build)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9093955Z ----------------------------------------------------------------------
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9094287Z Traceback (most recent call last):
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9094758Z   File "/home/runner/work/glob2/glob2/test/build_system/test_dev_store.py", line 230, in test_warm_dependency_setup_can_run_during_an_active_build
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9095264Z     self.assertEqual(command.returncode, 0, command.stderr)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9095683Z AssertionError: 1 != 0 : Cloning into '/tmp/tmpix52bcbh/store/toolchains/vcpkg/.install-8zjfljnd/vcpkg'...
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9096125Z HEAD is now at 80d54ff62 [vcpkg-make] Add new port (#39050)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9096527Z warning: Embedding `vcpkg-configuration` in a manifest file is an EXPERIMENTAL feature.
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9096928Z Traceback (most recent call last):
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9097148Z   File "<string>", line 1, in <module>
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9097465Z   File "/home/runner/work/glob2/glob2/mobile/dependencies.py", line 233, in main
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9097782Z     subprocess.run(
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9098027Z   File "/usr/lib/python3.12/subprocess.py", line 571, in run
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9098320Z     raise CalledProcessError(retcode, process.args,
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9100570Z subprocess.CalledProcessError: Command '['/tmp/tmpix52bcbh/store/toolchains/vcpkg/Linux-x86_64-2579bf6b23e24bd69af06354/vcpkg', 'install', '--triplet=glob2-arm64-android', '--overlay-triplets=/tmp/tmpix52bcbh/a/mobile/triplets', '--overlay-ports=/tmp/tmpix52bcbh/a/scons/vcpkg-ports', '--x-manifest-root=/tmp/tmpix52bcbh/a/mobile', '--x-install-root=/tmp/tmpix52bcbh/a/build/android/device/arm64-v8a/24/client/release/dependency-staging-b9vw4nun/vcpkg-installed', '--x-buildtrees-root=/tmp/tmpix52bcbh/a/build/android/device/arm64-v8a/24/client/release/dependency-staging-b9vw4nun/vcpkg-buildtrees', '--x-packages-root=/tmp/tmpix52bcbh/a/build/android/device/arm64-v8a/24/client/release/dependency-staging-b9vw4nun/vcpkg-packages']' returned non-zero exit status 1.
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9102726Z 
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9102731Z 
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9102852Z ----------------------------------------------------------------------
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9103232Z Ran 456 tests in 56.966s
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9103349Z 
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9103437Z FAILED (failures=1, skipped=9)
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9103839Z Dependency prefix: /tmp/tmpn8j2qdll/deps
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9104083Z Dependency prefix: /tmp/tmpyhliplu8/deps
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9104317Z Dependency prefix: /tmp/tmpltil3mn0/deps
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9104548Z Dependency prefix: /tmp/tmpfbe_2bt9/deps
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9104727Z Dependency prefix: /tmp/tmpd1r3dsd4/deps
+Select relevant checks	Test shared build-system contracts once	2026-10-10T21:58:14.9339829Z ##[error]Process completed with exit code 1.
+Relevant checks passed	Verify all selected jobs completed successfully	﻿2026-10-10T21:58:21.7814005Z ##[group]Run python3 - <<'PY'
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7815224Z ^[[36;1mpython3 - <<'PY'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7815955Z ^[[36;1mimport json^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7816531Z ^[[36;1mimport os^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7817158Z ^[[36;1m^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7817785Z ^[[36;1mneeds = json.loads(os.environ['NEEDS_JSON'])^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7818659Z ^[[36;1mmode = os.environ.get('VERIFICATION_MODE', 'unknown')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7819614Z ^[[36;1msummary = os.environ.get('GITHUB_STEP_SUMMARY')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7820379Z ^[[36;1mif summary:^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7821057Z ^[[36;1m    with open(summary, 'a') as target:^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7821895Z ^[[36;1m        target.write(f'Verification mode: **{mode}**.\n')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7822767Z ^[[36;1m        if mode in ('cheap-contracts', 'nightly-reused'):^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7824191Z ^[[36;1m            target.write('This run checked cheap contracts only; success does not establish engine verification or acceptance of PR evidence.\n')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7825929Z ^[[36;1massert needs['changes']['result'] == 'success', 'Change detection failed'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7826925Z ^[[36;1mselected = needs['changes']['outputs']^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7827658Z ^[[36;1mexpected = {^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7828331Z ^[[36;1m    'android': selected['android'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7829090Z ^[[36;1m    'macos': selected['macos'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7829803Z ^[[36;1m    'tsan': selected['tsan'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7830951Z ^[[36;1m    'native-coverage': selected['coverage'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7831802Z ^[[36;1m    'linux': selected['native'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7832785Z ^[[36;1m    'linux-variants': selected['native'] == 'true' and selected['variants'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7833912Z ^[[36;1m    'linux-map-generators': selected['map_generators'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7835101Z ^[[36;1m    'windows': selected['windows'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7835923Z ^[[36;1m    'web-build': selected['browser'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7836720Z ^[[36;1m    'web-native': selected['browser'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7837576Z ^[[36;1m    'web-deploy': selected['deployment'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7838372Z ^[[36;1m    'web-test': selected['browser'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7839252Z ^[[36;1m    'browser-determinism': selected['cross_platform'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7840236Z ^[[36;1m    'platform': selected['platform'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7841107Z ^[[36;1m    'platform-stack': selected['platform_stack'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7842072Z ^[[36;1m    'music': selected['music'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7842795Z ^[[36;1m}^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7915203Z ^[[36;1mfor job, should_run in expected.items():^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7916264Z ^[[36;1m    required = 'success' if should_run else 'skipped'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7916958Z ^[[36;1m    actual = needs[job]['result']^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7917641Z ^[[36;1m    print(f'{job}: {actual} (expected {required})')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7918511Z ^[[36;1m    assert actual == required, f'{job}: {actual}, expected {required}'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.7919232Z ^[[36;1mPY^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.8796949Z shell: /usr/bin/bash -e {0}
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.8798319Z env:
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.8799056Z   GLOB2_DEV_MODE: isolated
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.8807946Z   NEEDS_JSON: {
+Relevant checks passed	Verify all selected jobs completed successfully	  "changes": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "failure",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "android": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "macos": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "tsan": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "native-coverage": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "linux": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "linux-variants": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "linux-map-generators": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "windows": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-build": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-native": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-deploy": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-test": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "browser-determinism": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "platform": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "platform-stack": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "music": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  }
+Relevant checks passed	Verify all selected jobs completed successfully	}
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.8818275Z   VERIFICATION_MODE: 
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:21.8819099Z ##[endgroup]
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:22.0379119Z Traceback (most recent call last):
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:22.0380229Z   File "<stdin>", line 12, in <module>
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:22.0381189Z AssertionError: Change detection failed
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-10T21:58:22.0528405Z ##[error]Process completed with exit code 1.
