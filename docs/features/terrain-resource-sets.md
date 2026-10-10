@@ -123,6 +123,9 @@ four texture variants; generated resources get three stock stages and two varian
 per stage. Requested animation uses a gentle glow pulse, not articulated movement.
 The default style follows the game's painterly artwork; explicit alternate styles
 are supported subject to readability and technical asset limits.
+Invalid design overrides receive up to two automatic corrections before artwork
+generation. Corrections retain the original action and entry scope; they cannot
+turn a discussion into a build or add unrelated entries.
 
 The scene gallery uses the game compositor for isolated cells, narrow paths,
 mixed boundaries, raised decor, resource stock stages, and selected animation
