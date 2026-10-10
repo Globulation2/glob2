@@ -14,16 +14,17 @@ namespace gradient_kernel
 // including cardinal/diagonal aliases, rather than assuming four distinct costs.
 // Reserve once per chunk, outside neighbor loops; retain vector relaxation on
 // SSE2/NEON and the same scalar wrapped-edge path as the legacy specialization.
-template<bool Masked, std::size_t N, class ClassAt, unsigned QueueBuckets = BUCKETS>
-void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue,
+template<bool Masked, std::size_t N, class ClassAt, unsigned QueueBuckets = BUCKETS,class Reserve=DefaultGradientReserve>
+void expandPreparedTerrainBucketRangeAddressed(std::uint16_t *__restrict gradient, GradientBucket *queue,
     std::size_t &pending, int cur, int limit, const field::Grid &grid,
-    const PreparedTerrainCosts<N> &profile, ClassAt classAt)
+    const PreparedTerrainCosts<N> &profile, ClassAt classAt,std::size_t begin,std::size_t end,Reserve reserve={})
 {
     auto &bucket = queue[unsigned(cur) % QueueBuckets];
-    const auto count = bucket.size;
-    if (!count) return;
+    assert(begin<=end && end<=bucket.size);
+    const auto count = end;
+    if (begin==end) return;
     GLOB2_GRADIENT_BENCH_EVENT(occupied, 1);
-    GLOB2_GRADIENT_BENCH_EVENT(popped, count);
+    GLOB2_GRADIENT_BENCH_EVENT(popped, count-begin);
     const auto &steps = profile.steps;
     const unsigned stepCount = profile.stepCount;
     // Class/slot membership is invariant; only candidate values depend on cur.
@@ -66,7 +67,7 @@ void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, Gr
     // source bucket, so reserving target storage cannot invalidate cells.
     const auto *cells = bucket.cells.data();
     const unsigned width = grid.width(), height = grid.height(), shift = Masked ? grid.widthShift() : 0;
-    for (std::size_t begin = 0; begin < count; begin += CHUNK)
+    for (; begin < count; begin += CHUNK)
     {
         const auto end = std::min(count, begin + CHUNK);
         std::array<std::uint32_t *, 2 * N> ends;
@@ -76,7 +77,7 @@ void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, Gr
                 if (steps[s] >= QueueBuckets) continue;
             auto &target = queue[(unsigned(cur) + steps[s]) % QueueBuckets];
             GLOB2_GRADIENT_BENCH_EVENT(chunkReserves, 1);
-            target.reserveExtra(profile.maxAppends[s] * (end - begin));
+            reserve(target,profile.maxAppends[s] * (end - begin));
             ends[s] = target.cells.data() + target.size;
         }
         for (auto ci = begin; ci < end; ++ci)
@@ -144,7 +145,20 @@ void expandPreparedTerrainBucketAddressed(std::uint16_t *__restrict gradient, Gr
             pending += newSize-target.size; target.size=newSize;
         }
     }
-    pending -= count; bucket.clear();
+    // The range wrapper accounts consumed entries; its caller decides when
+    // the complete original layer has been consumed and can be cleared.
+}
+
+template<unsigned QueueBuckets = BUCKETS, std::size_t N, class ClassAt,class Reserve=DefaultGradientReserve>
+void expandPreparedTerrainBucketRange(std::uint16_t *gradient,GradientBucket *queue,
+    std::size_t& pending,int cur,int limit,const field::Grid& grid,
+    const PreparedTerrainCosts<N>& profile,ClassAt classAt,std::size_t begin,std::size_t end,Reserve reserve={})
+{
+    if(grid.powerOfTwo())
+        expandPreparedTerrainBucketRangeAddressed<true,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
+    else
+        expandPreparedTerrainBucketRangeAddressed<false,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt,begin,end,reserve);
+    pending-=end-begin;
 }
 
 template<unsigned QueueBuckets = BUCKETS, std::size_t N, class ClassAt>
@@ -152,10 +166,9 @@ void expandPreparedTerrainBucket(std::uint16_t *gradient, GradientBucket *queue,
     std::size_t &pending, int cur, int limit, const field::Grid &grid,
     const PreparedTerrainCosts<N> &profile, ClassAt classAt)
 {
-    if (grid.powerOfTwo())
-        expandPreparedTerrainBucketAddressed<true,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt);
-    else
-        expandPreparedTerrainBucketAddressed<false,N,ClassAt,QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt);
+    auto& bucket=queue[unsigned(cur)%QueueBuckets];
+    expandPreparedTerrainBucketRange<QueueBuckets>(gradient,queue,pending,cur,limit,grid,profile,classAt,0,bucket.size);
+    bucket.clear();
 }
 
 template<std::size_t N, class TerrainAt>
