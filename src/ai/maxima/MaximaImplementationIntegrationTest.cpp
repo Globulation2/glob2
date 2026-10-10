@@ -1091,7 +1091,13 @@ static void placementMaintenanceRegressions()
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         {
             game.map.setMapDiscovered(x,y,player.team->me);
-            if(x<20||x>=24||y<20||y>=24)game.map.setResourceByIndex(x,y,WOOD,1);
+            if(x<20||x>=24||y<20||y>=24)
+            {
+                game.map.setResourceByIndex(x,y,WOOD,1);
+                // Placement randomizes stock. Equal costs make this fixture's
+                // one-tile entrance expectation independent of the game seed.
+                game.map.setResourceAmount(y*64+x,1);
+            }
         }
         game.map.setNoResource(17,21,0);
         REQUIRE(game.addUnit(17,21,0,WORKER,0,0,0,0));
