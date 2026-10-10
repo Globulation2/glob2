@@ -116,14 +116,19 @@ private:
     std::atomic<std::uint64_t> initializationNs{0};
 public:
     std::atomic<bool> failed{false};
-    // Configure only with required jobs drained. Replacing the map creates a
-    // new policy; executor reconfiguration invalidates all previous observations.
+    // Configure only after stopping the executor (including maintenance passes).
+    // Replacing the map creates a new policy; reconfiguration invalidates all
+    // previous observations while preserving established plans.
     void configure(unsigned threads, bool enable) {
         configurationThreads.store(threads);
         generation.store(nextGeneration.fetch_add(1),std::memory_order_release);
         if(enable && !accounting) accounting=std::make_unique<Accounting>();
         if(!enable) accounting.reset();
-        wantsGPU.store(backend()==Backend::OpenCL);
+        const auto mode=backend();
+        wantsGPU.store(mode==Backend::OpenCL || (mode==Backend::Automatic &&
+            std::any_of(decisions.begin(),decisions.end(),[](const auto& word) {
+                return (word.load(std::memory_order_relaxed)&255)!=unsigned(Plan::CPU);
+            })));
     }
     void establish(Family family,std::size_t count,Plan plan) {
         if(unsigned(plan)>=PLANS.size()) throw std::invalid_argument("Invalid gradient plan");

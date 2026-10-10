@@ -591,6 +591,31 @@ TEST_CASE("declined established plans preserve original seeds and recover exactl
     CHECK(value==123); CHECK(cpu==1); CHECK(policy.failed.load());
     CHECK(policy.decision(Family::Generic,1).generation!=before.generation);
 }
+TEST_CASE("executor reconfiguration preserves pending established plan preparation")
+{
+    using namespace gradient_kernel;
+    RestoreBackend restoreBackend;
+    const auto oldState=initializationState.exchange(0);
+    struct RestoreState { unsigned value; ~RestoreState(){initializationState.store(value);} } restoreState{oldState};
+    setBackend(Backend::Automatic);
+    BackendSession policy;
+    policy.configure(1,false);
+    CHECK_FALSE(policy.pending());
+    policy.establish(Family::Materials,1,Plan::Frozen8);
+    REQUIRE(policy.pending());
+    const auto before=policy.decision(Family::Materials,1);
+    policy.configure(8,false);
+    CHECK(policy.pending());
+    CHECK(policy.decision(Family::Materials,1).plan==Plan::Frozen8);
+    CHECK(policy.decision(Family::Materials,1).generation!=before.generation);
+    setBackend(Backend::CPU);
+    policy.configure(8,false);
+    CHECK_FALSE(policy.pending());
+    policy.establish(Family::Materials,1,Plan::CPU);
+    setBackend(Backend::Automatic);
+    policy.configure(8,false);
+    CHECK_FALSE(policy.pending());
+}
 TEST_CASE("passive buffers are bounded worker only and reject retired decisions and configurations")
 {
     if constexpr(!GAGCore::ThreadSupport::available) return;
