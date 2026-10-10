@@ -217,8 +217,15 @@ public:
             const auto buffers=sizeof(ResumableProductionGradient)+sizeof(*value.seeds)
                 +value.grid.cells()*sizeof(std::uint16_t)+value.seeds->capacity()*sizeof(std::uint16_t);
             if(buffers>OpenCLProbeBudget || value.retainedCostBytes>OpenCLProbeBudget-buffers) return {};
+            const auto bytes=buffers+value.retainedCostBytes;
+            if(!reserveOpenCLProbeBytes(bytes)) return {};
+            struct AdmissionLease {
+                std::size_t bytes;
+                ~AdmissionLease() {releaseOpenCLProbeBytes(bytes);}
+            } admission{bytes};
             auto result=std::unique_ptr<ResumableProductionGradient>(new ResumableProductionGradient(std::move(value),timer));
-            result->baseBytes=buffers+result->input.retainedCostBytes;result->charge(result->baseBytes);
+            result->baseBytes=bytes;result->reserved=bytes;result->totals.reservedHostBytes=bytes;
+            admission.bytes=0;
             const auto ended=result->readCpu();result->totals.cpuClockAvailable=started && ended>=started;
             if(result->totals.cpuClockAvailable) {
                 result->totals.cpuNs=ended-started;
