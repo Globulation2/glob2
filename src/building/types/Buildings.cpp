@@ -368,7 +368,13 @@ void BuildingsTypes::configureUnits(const UnitCatalog& catalog)
     unitCount_=catalog.size(); unitAvailable_.assign(unitCount_,1); unitExperiments_.resize(unitCount_);
     unitFlags_.resize(unitCount_);
     for (unsigned unit=0;unit<unitCount_;++unit) {unitExperiments_[unit]=catalog.definition(unit).requiredExperiment;unitFlags_[unit]=catalog.runtime(unit).flags;}
-    const auto resolve=[&](BuildingUnitSelection& selection,unsigned legacyMask) {
+    const auto resolve=[&](BuildingUnitSelection& selection,unsigned legacyMask,bool defaultRow=false) {
+        // Unspecified service selectors use their legacy policy in matches().
+        // Only attraction needs an explicit capability-derived default row.
+        if (!selection.specified && !defaultRow) {
+            std::vector<Uint8>().swap(selection.resolved);
+            return;
+        }
         selection.resolved.assign(unitCount_,0);
         if (selection.specified) for (const auto& key:selection.keys) {
             const auto unit=catalog.find(key);
@@ -385,7 +391,7 @@ void BuildingsTypes::configureUnits(const UnitCatalog& catalog)
         constexpr unsigned jobs[]={WORKER,EXPLORER,WARRIOR};
         for (unsigned role=0;role<3;++role) {
             auto& selected=s.attractionUnits[role];
-            resolve(selected,b.zonable[jobs[role]] ? 1u<<jobs[role] : 0);
+            resolve(selected,b.zonable[jobs[role]] ? 1u<<jobs[role] : 0,true);
             for (unsigned unit=0;unit<unitCount_;++unit) {
                 const auto& traits=catalog.runtime(unit);
                 const bool capable=role==0 ? traits.has(UnitRuntimeTraits::Clear)

@@ -1005,6 +1005,23 @@ TEST_CASE("additional recipients compile stable keys into direct building intera
     semantic["admittedUnits"]={"fixture:hauler"};
     semantic["feeding"]["units"]={"fixture:hauler"};
     catalog.loadSnapshotJson(definition.dump());catalog.configureUnits(*units);
+    CHECK(catalog.get(3)->semantics.admittedUnits.resolved.size()==units->size());
+    CHECK(catalog.get(3)->semantics.feeding.units.resolved.size()==units->size());
+    for (std::size_t id=0;id<catalog.size();++id) {
+        const auto& s=catalog.get(id)->semantics;
+        const auto checkDefault=[&](const BuildingUnitSelection& selection,unsigned mask) {
+            if (selection.specified) return;
+            CHECK(selection.resolved.empty());
+            for (unsigned unit=0;unit<units->size();++unit)
+                CHECK(selection.matches(unit,mask)==(mask==BUILDING_ALL_UNIT_TYPES ||
+                    (unit<BuiltinUnitCount && (mask&(1u<<unit)))));
+        };
+        checkDefault(s.admittedUnits,s.admittedUnitMask);
+        checkDefault(s.feeding.units,s.feeding.unitMask);
+        checkDefault(s.healing.units,s.healing.unitMask);
+        for (const auto& training:s.training) checkDefault(training.units,training.unitMask);
+        for (const auto& attraction:s.attractionUnits) CHECK(attraction.resolved.size()==units->size());
+    }
     const auto* runtime=catalog.getRuntime(3);
     CHECK(runtime->unitCount==4);
     CHECK_FALSE(runtime->interaction(WORKER).has(BuildingUnitInteraction::Feeds));
@@ -1013,6 +1030,10 @@ TEST_CASE("additional recipients compile stable keys into direct building intera
     auto copy=catalog;
     CHECK(copy.getRuntime(3)->interactions!=runtime->interactions);
     CHECK(copy.getRuntime(3)->interaction(3).has(BuildingUnitInteraction::Feeds));
+    const auto canonical=catalog.snapshotJson();
+    catalog.configureUnits(*units);
+    CHECK(catalog.snapshotJson()==canonical);
+    CHECK(catalog.getRuntime(3)->interaction(3).has(BuildingUnitInteraction::Feeds));
 }
 
 TEST_CASE("uniform projectile policies cover additional units and keyed overrides remain authoritative")
