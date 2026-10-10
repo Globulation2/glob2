@@ -28,7 +28,13 @@ import {
 } from '@glob2/protocol/node';
 import type { AgentBlobs } from '@glob2/engine/blobs';
 import type { BuildingCompositionResult } from '@glob2/engine/engineCli';
-import { Attempts, ProviderUncertain, ProviderBudget, type BuildingProvider } from './provider.ts';
+import {
+  Attempts,
+  ProviderUncertain,
+  ProviderBudget,
+  ProviderRejected,
+  type BuildingProvider,
+} from './provider.ts';
 import { imagePrompt, processArtwork } from './artwork.ts';
 import { stockReferences, referenceInstructions, type ArtworkReference } from './references.ts';
 export interface Validator {
@@ -329,6 +335,7 @@ export class Pipeline {
         if (
           error instanceof ProviderUncertain ||
           error instanceof ProviderBudget ||
+          error instanceof ProviderRejected ||
           error instanceof HiveError ||
           signal.aborted
         )

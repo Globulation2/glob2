@@ -27,15 +27,15 @@ To create and share a family:
 
 Common authoring controls include:
 
-| Control | Meaning |
-| --- | --- |
-| `hpInit`, `hpMax` | Health on creation and maximum health; initial health cannot exceed the maximum |
-| `isBuildingSite` | Construction/repair stage; its `next` must name a completed variant |
-| `level` | Display tier, 0–3; it does not infer an upgrade link |
-| `placeable`, `instantPlacement` | Whether players can place the variant; a completed placeable variant needs instant placement, otherwise use a construction site |
-| `repairable`, `previous` | Repair capability and explicit site reference; repairable variants need a positive maximum health and a previous construction site |
-| `constructionCost` | Costs attached to a construction site; completed variants cannot carry them |
-| `requiredExperiment` | Package-local experiment gate; an unavailable gate keeps the variant out of the new game's choices |
+| Control                         | Meaning                                                                                                                                                                             |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hpInit`, `hpMax`               | Health on creation and maximum health; initial health cannot exceed the maximum                                                                                                     |
+| `isBuildingSite`                | Construction/repair stage; its `next` must name a completed variant                                                                                                                 |
+| `level`                         | Display tier, 0–3; it does not infer an upgrade link                                                                                                                                |
+| `placeable`, `instantPlacement` | Whether players can place the variant; a completed placeable variant needs instant placement, otherwise use a construction site                                                     |
+| `repairable`, `previous`        | Repair capability and explicit site reference; repairable variants need a positive maximum health and a previous construction site                                                  |
+| `constructionCost`              | Costs attached to a construction site; completed variants cannot carry them. AI-authored sites with material costs must have a positive `assignmentLimit` so workers can build them |
+| `requiredExperiment`            | Package-local experiment gate; an unavailable gate keeps the variant out of the new game's choices                                                                                  |
 
 The service and presentation sections earlier in this guide describe the remaining
 capabilities. Definitions compose existing primitives; publication does not add
