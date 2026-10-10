@@ -1,0 +1,45 @@
+
+Globulation 2 - Real time strategy with automatic unit task assignment
+
+          ID: org.globulation2.Globulation2
+         Ref: app/org.globulation2.Globulation2/x86_64/master
+        Arch: x86_64
+      Branch: master
+     Version: 0.11.0.3
+     License: GPL-3.0-or-later
+      Origin: globulation21-origin
+  Collection: 
+Installation: user
+   Installed: 437.6 MB
+     Runtime: org.gnome.Platform/x86_64/51
+         Sdk: org.gnome.Sdk/x86_64/51
+
+      Commit: c434aca4360078a87e8bb3bac3a407e8b520fce72c687e7b940d650511ee9ed8
+     Subject: Export org.globulation2.Globulation2
+        Date: 2026-10-10 23:02:47 +0000
+cli_version: 2
+compiled: Nov 11 2011 11:11:11
+minimum_save_version: 58
+network_protocol: 68
+save_version: 152
+sdl: 3.4.16
+version: 0.11.0.3
+Settings::load("preferences.txt") : error, can't open file.
+{"dataHash":"383ce11d5da4f2a0521b1d0b8183c6433a263fc7346c934d0ae739cec72eae41","netProtocol":68,"versionMinor":152}
+Settings::load("preferences.txt") : error, can't open file.
+river revision 5 seed 713 [complete]: 
+TrueTypeFont: this SDL3_ttf misplaces kerned glyphs; drawing text without kerning
+Preview: /var/data/validation-01103/river.png (128x128 tiles)
+Map: /var/data/validation-01103/river.map.gz
+Map report: /var/data/validation-01103/river.json
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 76e3ebed
+automaticEndingGame ended: 2048 ticks, 1 minutes, 8 seconds
+GLOB2_GAME_END ticks=2048 winner_team=-1 seed=713 map="river" orders=38 players=team0:Castor,team1:Cortex
+final: wrote /var/data/validation-01103/game/final.game.gz
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 5074f592
+automaticEndingGame ended: 2112 ticks, 1 minutes, 10 seconds
+GLOB2_GAME_END ticks=2112 winner_team=-1 seed=713 map="river" orders=0 players=team0:Castor,team1:Cortex

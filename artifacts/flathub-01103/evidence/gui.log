@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+TrueTypeFont: this SDL3_ttf misplaces kerned glyphs; drawing text without kerning

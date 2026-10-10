@@ -1,0 +1,5 @@
+gcc (GCC) 16.2.0
+Python 3.14.7
+flatpak-builder-1.4.9
+1b07aab89a7a9c2887f86e49c5effffa60ba1b2305c9763e555ec336d204e595
+a89b4f49eac2ef80f389b4cccf6685bc15b457c8a76f0d1f35c76c5a806d0801
