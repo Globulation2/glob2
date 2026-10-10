@@ -106,7 +106,10 @@ They do not enter services that require movement. Producers can place them at
 free ground exits without enabling movement. Newly authored flight capability
 requires flight at every level: airborne units do not acquire ground occupancy
 through training. Walking and swimming use the existing terrain routing; a
-swim-only class excludes land and allocates its fields only when needed.
+swim-only class excludes land and allocates its fields only when needed. Patrol
+and exploration steering reject dry neighbors before selecting a step, so a
+water-only unit can choose a valid water alternative. Ordinary walkers and
+airborne units retain their existing candidate order and random draws.
 Training admission projects every eligible parallel grant together before
 reserving materials. Authored courses cannot remove all movement or change
 movement to a mode unsupported by the building's exit terrain; temporary

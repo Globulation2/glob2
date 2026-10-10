@@ -40,6 +40,29 @@ void configure(glob2test::HeadlessGame& world)
     for (int t=0;t<world.game.teamsCount();++t) world.game.teams[t]->race.setCatalog(catalog);
 }
 
+// The steering fixtures combine existing guard/exploration policies with
+// water-only movement, plus a stationary control. Defaults remain unmodified.
+void configureSteeringUnits(glob2test::HeadlessGame& world)
+{
+    auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    auto swimmer=definitions["units"][WARRIOR];
+    swimmer["key"]="fixture:water-only-steering";
+    auto& traits=swimmer["behaviors"];
+    traits["walk"]=false; traits["swim"]=true; traits["fly"]=false;
+    traits["explore"]=true; traits["exploreIdle"]=true; traits["hungerRate"]=0;
+    for(unsigned level=0;level<NB_UNIT_LEVELS;++level)
+        swimmer["levels"][level]["performance"][SWIM]=16;
+    definitions["units"].push_back(swimmer);
+    auto stationary=swimmer; stationary["key"]="fixture:stationary-steering";
+    stationary["behaviors"]["swim"]=false;
+    definitions["units"].push_back(stationary);
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+    world.game.configureBuildingCatalog();
+    world.game.gameHeader.setHungerDisabled(true);
+    world.game.gameHeader.setResourceGrowthDisabled(true);
+}
+
+
 // Compare the complete checksum vectors, serialized cached unit state, ordered
 // relationships and reservations. A digest alone would hide which continuation
 // contract failed, and catalog-derived values must not replace saved caches.
@@ -106,6 +129,112 @@ void checkPhaseContinuation(Game& game,int ticks)
 
 TEST_SUITE("UnitCustomization")
 {
+    TEST_CASE("water only patrol ignores less explored dry neighbours without changing walker or flyer RNG")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int mode=0;mode<4;++mode) {
+            CAPTURE(mode);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            configureSteeringUnits(world);
+            auto& game=world.game; auto& map=game.map;
+            const int type=mode==0?3:mode==1?WARRIOR:mode==2?EXPLORER:4;
+            if(mode==0) map.paintCell(8,8,WATER);
+            map.paintCell(9,8,WATER); // The only water neighbour is east.
+            auto* unit=world.addUnit(type,8,8); REQUIRE(unit);
+            auto* flag=world.addBuilding("warflag",8,10); REQUIRE(flag);
+            flag->unitStayRange=10;
+            flag->desiredMaxUnitWorking=flag->maxUnitWorking=flag->maxUnitWorkingPreferred=0;
+            for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x)
+                map.exploredArea[0][map.coordToIndex(x,y)]=100;
+            // NE is dry and strictly least explored; east is valid water but
+            // has a larger score. A dry winner used to be cancelled at action.
+            for(const auto& point:std::array<std::array<int,2>,3>{{{10,6},{11,7},{9,5}}})
+                map.exploredArea[0][map.coordToIndex(point[0],point[1])]=0;
+            REQUIRE_FALSE(map.terrainPropertiesAt(9,7).swimmable);
+            REQUIRE(map.terrainPropertiesAt(9,8).swimmable);
+            REQUIRE(map.isFreeForGroundUnit(9,7,true,unit->owner->me));
+            REQUIRE(map.isFreeForGroundUnit(9,8,true,unit->owner->me));
+            unit->direction=2;
+            const auto random=game.syncRandom; const auto entity=unit->entityRandom;
+            // Select the attached-flag steering seam for every presentation
+            // control, without fabricating a persistent work subscription.
+            // Restore it before action, full-engine ticks or serialization.
+            REQUIRE(unit->attachedBuilding==nullptr);
+            unit->attachedBuilding=flag;
+            unit->handleMovementAttackingAround();
+            unit->attachedBuilding=nullptr;
+            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==entity);
+            if(mode==3) CHECK(unit->movement==Unit::MOV_RANDOM_GROUND);
+            else {
+                REQUIRE(unit->movement==Unit::MOV_GOING_DX_DY);
+                CHECK(unit->dx==1); CHECK(unit->dy==(mode==0?0:-1));
+            }
+            unit->handleAction();
+            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==entity);
+            CHECK(unit->posX==(mode==3?8:9)); CHECK(unit->posY==(mode==0||mode==3?8:7));
+            CHECK(unit->action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
+            CHECK((mode==2?map.getAirUnit(unit->posX,unit->posY):map.getGroundUnit(unit->posX,unit->posY))==unit->gid);
+            if(mode==0) {
+                REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
+                for(int tick=0;tick<64;++tick) {
+                    CAPTURE(tick); game.syncStep(0);
+                    REQUIRE(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+                }
+                checkPhaseContinuation(game,64);
+                CHECK(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+            }
+        }
+    }
+
+    TEST_CASE("water only exploration rejects dry steering and takes a valid water alternative")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int mode=0;mode<4;++mode) {
+            CAPTURE(mode);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            configureSteeringUnits(world);
+            auto& game=world.game; auto& map=game.map;
+            const int type=mode==0?3:mode==1?WORKER:mode==2?EXPLORER:4;
+            if(mode==0) map.paintCell(8,8,WATER);
+            map.paintCell(9,8,WATER); // A single eligible alternative makes RNG exact.
+            auto* unit=world.addUnit(type,8,8); REQUIRE(unit);
+            auto* flag=world.addBuilding("explorationflag",8,10); REQUIRE(flag);
+            flag->desiredMaxUnitWorking=flag->maxUnitWorking=flag->maxUnitWorkingPreferred=0;
+            REQUIRE(map.isMapDiscovered(8,12,unit->owner->sharedVisionOther));
+            REQUIRE_FALSE(map.terrainPropertiesAt(7,8).swimmable);
+            REQUIRE(map.terrainPropertiesAt(9,8).swimmable);
+            const auto random=game.syncRandom; auto expectedEntity=unit->entityRandom;
+            REQUIRE(unit->attachedBuilding==nullptr);
+            unit->attachedBuilding=flag;
+            unit->handleMovementRemovingBlackAround();
+            unit->attachedBuilding=nullptr;
+            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==expectedEntity);
+            if(mode==0||mode==3) REQUIRE(unit->movement==Unit::MOV_RANDOM_GROUND);
+            else {
+                REQUIRE(unit->movement==Unit::MOV_GOING_DX_DY);
+                CHECK(unit->dx==-1); CHECK(unit->dy==0);
+            }
+            // The swimmer's valid-neighbour fallback draws once even when
+            // count==1. Stock direct steps and stationary actions draw none.
+            if(mode==0) expectedEntity.nextU32();
+            unit->handleAction();
+            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==expectedEntity);
+            CHECK(unit->posX==(mode==0?9:mode==3?8:7)); CHECK(unit->posY==8);
+            CHECK(unit->action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
+            CHECK((mode==2?map.getAirUnit(unit->posX,unit->posY):map.getGroundUnit(unit->posX,unit->posY))==unit->gid);
+            if(mode==0) {
+                REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
+                for(int tick=0;tick<64;++tick) {
+                    CAPTURE(tick); game.syncStep(0);
+                    REQUIRE(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+                }
+                checkPhaseContinuation(game,64);
+                CHECK(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+            }
+        }
+    }
+
+
     TEST_CASE("hybrid flag recruitment policies are independent of abilities and idle area policies [save-format]")
     {
         glob2test::HeadlessGlobals globals;

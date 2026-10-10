@@ -210,9 +210,14 @@ void Unit::handleMovementRemovingBlackAround()
 			}
 		}
 	}
-	if (performance[FLY]) {
+	const bool flying=performance[FLY]!=0;
+	const bool canWalk=performance[WALK]>0;
+	const bool canSwim=performance[SWIM]>0;
+	if (flying) {
 		if (movement!=MOV_GOING_DX_DY || !owner->map->isFreeForAirUnit(posX+dx,posY+dy)) movement=MOV_RANDOM_FLY;
-	} else if (movement!=MOV_GOING_DX_DY || !owner->map->isFreeForGroundUnit(posX+dx,posY+dy,performance[SWIM]>0,owner->me)) movement=MOV_RANDOM_GROUND;
+	} else if (movement!=MOV_GOING_DX_DY
+		|| (!canWalk && (!canSwim || !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable))
+		|| !owner->map->isFreeForGroundUnit(posX+dx,posY+dy,canSwim,owner->me)) movement=MOV_RANDOM_GROUND;
 }
 
 void Unit::handleMovementAttackingAround()
@@ -313,12 +318,17 @@ void Unit::handleMovementAttackingAround()
 			// are we into the guard area or war flag, and we have to go to the least known area.
 			int bestExplored = 3*EXPLORED_FRESH;
 			int bestDirection = -1;
+			const bool flying=performance[FLY]!=0;
+			const bool canWalk=performance[WALK]>0;
+			const bool canSwim=performance[SWIM]>0;
 			for (int di = 0; di < 8; di++)
 			{
 				int d = (direction + di) & UNIT_DIRECTION_MASK;
 				int cdx, cdy;
 				dxDyFromDirection(d, &cdx, &cdy);
-				if (performance[FLY] ? !owner->map->isFreeForAirUnit(posX+cdx,posY+cdy) : !owner->map->isFreeForGroundUnit(posX + cdx, posY + cdy, performance[SWIM]>0, owner->me))
+				if (flying ? !owner->map->isFreeForAirUnit(posX+cdx,posY+cdy)
+					: ((!canWalk && (!canSwim || !owner->map->terrainPropertiesAt(posX+cdx,posY+cdy).swimmable))
+						|| !owner->map->isFreeForGroundUnit(posX+cdx,posY+cdy,canSwim,owner->me)))
 					continue;
 				if (attachedBuilding)
 				{
