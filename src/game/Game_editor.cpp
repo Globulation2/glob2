@@ -318,6 +318,10 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			Building *b=teams[team]->myBuildings[id];
 			if (!b->type->isVirtual)
 				map.setBuilding(b->posX, b->posY, b->type->width, b->type->height, NOGBID);
+			teams[team]->removeFromAbilitiesLists(b);
+			teams[team]->buildingsTryToBuildingSiteRoom.remove(b);
+			teams[team]->buildingsWaitingForDestruction.remove(b);
+			teams[team]->buildingsToBeDestroyed.remove(b);
 			delete b;
 			teams[team]->myBuildings[id]=NULL;
 			teams[team]->detachBuilding(id);
@@ -330,10 +334,16 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			for (std::list<Building *>::iterator bi=teams[ti]->virtualBuildings.begin(); bi!=teams[ti]->virtualBuildings.end(); ++bi)
 				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
-					teams[ti]->myBuildings[Building::GIDtoID((*bi)->gid)]=NULL;
-					teams[ti]->detachBuilding(Building::GIDtoID((*bi)->gid));
-					delete *bi;
-					teams[ti]->virtualBuildings.erase(bi);
+					Building *b = *bi;
+					teams[ti]->myBuildings[Building::GIDtoID(b->gid)]=NULL;
+					teams[ti]->detachBuilding(Building::GIDtoID(b->gid));
+					// This also removes the virtual-building list entry; do not
+					// use its iterator after removing the ability references.
+					teams[ti]->removeFromAbilitiesLists(b);
+					teams[ti]->buildingsTryToBuildingSiteRoom.remove(b);
+					teams[ti]->buildingsWaitingForDestruction.remove(b);
+					teams[ti]->buildingsToBeDestroyed.remove(b);
+					delete b;
 					found=true;
 					break;
 				}
