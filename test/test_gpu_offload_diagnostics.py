@@ -3,6 +3,18 @@ from analyze_gpu_offload_diagnostics import analyze
 
 
 class DiagnosticsTest(unittest.TestCase):
+    def test_sampled_scope_cpu_never_claims_complete_call_coverage(self):
+        result, diagnostics = self.fixture()
+        initial = dict(scope='Sampled', inclusive_cpu_ns=10, self_cpu_ns=5,
+                       calls=64, wall_samples=1, cpu_samples=1, self_complete=True)
+        diagnostics['owner_scopes_at_start'] = [initial]
+        diagnostics['owner_scopes_at_end'] = [dict(initial, calls=128, wall_samples=2,
+            cpu_samples=2, inclusive_cpu_ns=40, self_cpu_ns=25)]
+        scope = analyze(result, diagnostics)['owner_scopes'][0]
+        self.assertEqual(scope['inclusive_cpu_ns'], 30)
+        self.assertEqual(scope['cpu_sample_fraction'], 1/64)
+        self.assertFalse(scope['self_complete'])
+
     def fixture(self):
         def thread(tid, cpu, started=1):
             return dict(tid=tid, start_ticks=started, user_cpu_ns=cpu, system_cpu_ns=0, name='same-inherited-name')

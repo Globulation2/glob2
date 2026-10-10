@@ -30,8 +30,14 @@ def analyze(result, diagnostics):
         delta = {k: s[k] - a[k] for k in ('inclusive_cpu_ns', 'self_cpu_ns', 'cpu_samples')}
         if any(v < 0 for v in delta.values()):
             raise ValueError('scope CPU counter decreased')
+        coverage = {k: s[k] - a[k] if k in s and k in a else None for k in ('calls', 'wall_samples')}
+        if any(v is not None and v < 0 for v in coverage.values()):
+            raise ValueError('scope sample/call counter decreased')
         if delta['cpu_samples']:
-            scopes.append(dict(scope=s['scope'], **delta, self_complete=a['self_complete'] and s['self_complete']))
+            scopes.append(dict(scope=s['scope'], **delta, **coverage,
+                cpu_sample_fraction=delta['cpu_samples']/coverage['calls'] if coverage['calls'] else None,
+                self_complete=a['self_complete'] and s['self_complete'] and coverage['calls'] == delta['cpu_samples'],
+                note='Observed CPU samples only; partial coverage is not extrapolated to all calls.'))
     ticks = diagnostics['ticks']
     if len(ticks) != result['benchmark_measured_ticks']:
         raise ValueError('diagnostic tick coverage differs from measured window')
