@@ -98,7 +98,15 @@ private:
         const auto bytes=count*sizeof(std::uint32_t);
         charge(reserved+bytes); // Old and replacement allocations coexist.
         {std::vector<std::uint32_t> replacement(count);
-            std::copy(bucket.cells.begin(),bucket.cells.end(),replacement.begin());bucket.cells.swap(replacement);}
+            checkAllocation();
+            // Only live entries survive growth. Allocation may overrun, but
+            // owned copy loops check the optional CPU budget every 64 cells.
+            for(std::size_t begin=0;begin<bucket.size;begin+=CHUNK) {
+                const auto end=std::min(bucket.size,begin+CHUNK);
+                std::copy(bucket.cells.begin()+begin,bucket.cells.begin()+end,replacement.begin()+begin);
+                checkAllocation();
+            }
+            bucket.cells.swap(replacement);}
         const auto actual=bucket.cells.capacity()*sizeof(std::uint32_t);
         charge(reserved-bytes-old+actual);
         totals.bucketBytes+=actual-old;totals.peakBucketBytes=std::max(totals.peakBucketBytes,totals.bucketBytes);
@@ -111,7 +119,13 @@ private:
             const auto count=std::min<std::size_t>(MaxDeferredSeeds,std::max<std::size_t>(256,deferred.capacity()*2));
             const auto bytes=count*sizeof(deferred[0]);charge(reserved+bytes);
             {std::vector<std::pair<int,int>> replacement;replacement.reserve(count);
-                replacement.insert(replacement.end(),deferred.begin(),deferred.end());deferred.swap(replacement);}
+                checkAllocation();
+                for(std::size_t begin=0;begin<deferred.size();begin+=CHUNK) {
+                    const auto end=std::min(deferred.size(),begin+CHUNK);
+                    replacement.insert(replacement.end(),deferred.begin()+begin,deferred.begin()+end);
+                    checkAllocation();
+                }
+                deferred.swap(replacement);}
             const auto actual=deferred.capacity()*sizeof(deferred[0]);charge(reserved-bytes-deferredBytes+actual);
             deferredBytes=actual;checkAllocation();
         }
