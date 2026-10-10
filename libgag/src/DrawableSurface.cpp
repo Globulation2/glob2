@@ -106,7 +106,7 @@ namespace GAGCore
     void DrawableSurface::prepareTexture()
     {
         assert(!_gc || SDL_GetCurrentThreadID() == _gc->eventThread);
-        if (_gc && _gc->portableRenderer) _gc->portableRenderer->prepareTexture(this, sdlsurface, pixelRevision);
+        if (_gc && _gc->portableRenderer) _gc->portableRenderer->prepareTexture(this, sdlsurface, pixelRevision, highResolutionSampling);
         if (glUploadedRevision != pixelRevision) uploadToTexture();
     }
 
@@ -276,13 +276,16 @@ namespace GAGCore
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
-#ifdef GLOB2_WEBGL2
                     if ((preparedUploadRevision != pixelRevision || preparedMips.empty()) &&
                         sdlsurface->w > 0 && sdlsurface->h > 0 &&
                         sdlsurface->pitch == sdlsurface->w * 4 &&
                         !(sdlsurface->w & (sdlsurface->w - 1)) && !(sdlsurface->h & (sdlsurface->h - 1))) {
+#ifdef GLOB2_WEBGL2
                         const bool generated = ApplicationHost::prepareOpenGLMipmaps(
                             texture, sdlsurface->pixels, sdlsurface->w, sdlsurface->h);
+#else
+                        const bool generated = prepareNativeMipmaps(texture, sdlsurface);
+#endif
                         if (generated) {
                             glState.allocatedTextureBytes -= gpuBytes; gpuBytes = 0;
                             int w = sdlsurface->w, h = sdlsurface->h;
@@ -298,7 +301,6 @@ namespace GAGCore
                             return;
                         }
                     }
-#endif
                     AssetImage fallback(nullptr);
                     const auto *levels = &preparedMips;
                     if (preparedUploadRevision != pixelRevision || preparedMips.empty()) {

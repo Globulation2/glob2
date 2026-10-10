@@ -89,6 +89,8 @@ namespace GAGCore
     }
     // Source decoding and standalone frame preparation work with either texture
     // backend. Only packing those frames into the legacy atlas requires GL.
+    // SDL's portable renderer consumes only the base image; requesting a mip
+    // chain there duplicates work and prevents adopting the base-only prefetch.
     static bool highResolutionFramesSupported()
     {
         return _gc && (_gc->getOptionFlags() &
@@ -600,7 +602,8 @@ namespace GAGCore
                 if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
                 firstFrame = std::min(firstFrame, i);
                 handles.push_back(incremental ? AssetLoader::Handle<AssetImage>{} :
-                    Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true));
+                    Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required,
+                        bool(_gc->getOptionFlags() & GraphicContext::USEGPU)));
             }
         }
         if ((_gc->getOptionFlags() & GraphicContext::USEGPU) &&
@@ -645,7 +648,8 @@ namespace GAGCore
                 if (slot >= frameInputs) break;
                 auto& input = inputs[slot++];
                 if (!input.dependency().subscription)
-                    input = Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true);
+                    input = Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required,
+                        bool(_gc->getOptionFlags() & GraphicContext::USEGPU));
             }
         }
         auto offset = found->second.prefetchOffset;
@@ -692,7 +696,8 @@ namespace GAGCore
             // A partial pack may have no usable prepacked atlas. Every accepted
             // layer needs a ready standalone texture for that fallback.
             bool exclusive = false;
-            auto decoded = consumeHighResolutionImage(directory + '/' + name, true, inputs, exclusive);
+            auto decoded = consumeHighResolutionImage(directory + '/' + name,
+                bool(_gc->getOptionFlags() & GraphicContext::USEGPU), inputs, exclusive);
             if (!decoded) return nullptr;
             auto *surface = decoded->surface;
             const int width = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getW() : entry.width) * entry.scale;

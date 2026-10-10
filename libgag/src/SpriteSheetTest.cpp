@@ -136,12 +136,14 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     for (bool shared : {false, true}) {
         auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 1);
         REQUIRE(GAGCore::Toolkit::assets().wait(inputs.front()));
+        CHECK(inputs.front().get()->mips.empty()); // SDL sampling never consumes CPU mip levels.
         std::weak_ptr<const GAGCore::AssetImage> decoded = inputs.front().get();
         auto* pixels = inputs.front().get()->surface;
         auto independent = shared ? inputs.front().retain() : GAGCore::AssetLoader::Handle<GAGCore::AssetImage>{};
         GAGCore::Sprite prepared;
         sprite.appendHighResolutionFrame(0, prepared, inputs);
         REQUIRE(prepared.experimentImages[0]);
+        CHECK(prepared.experimentImages[0]->preparedMips.empty());
         CHECK(inputs.front().state() == GAGCore::AssetLoader::State::Cancelled);
         if (shared) {
             REQUIRE(independent.get());

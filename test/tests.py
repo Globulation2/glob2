@@ -221,6 +221,7 @@ UNIT_TESTS = [
     '#libusl/test/USLCoverageTest.cpp',
     '#libgag/src/SurfaceCoverageTest.cpp',
     '#libgag/src/ImageAssetTest.cpp',
+    '#libgag/src/GpuTexturePreparationTest.cpp',
     '#src/scripting/javascript/ScriptRuntimeTest.cpp',
     '#src/hive/HiveWorkerTest.cpp',
     '#src/scripting/javascript/ScriptNumericTest.cpp',
