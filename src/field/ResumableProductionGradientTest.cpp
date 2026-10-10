@@ -123,7 +123,75 @@ TEST_CASE("production probe pauses within source layers and rejects unpaid stora
     CHECK(reference->status()==Production::Status::Declined);CHECK(openCLProbeBytes()==before);
     input.retainedCostBytes=OpenCLProbeBudget;CHECK_FALSE(Production::tryCreate(input));CHECK(openCLProbeBytes()==before);
     auto clock=[](void*)->std::uint64_t{return 0;};input.retainedCostBytes=0;
-    reference=Production::tryCreate(input,{nullptr,clock});REQUIRE(reference);
-    reference->advance();CHECK(reference->metrics().entries<=CHUNK);CHECK_FALSE(reference->metrics().cpuClockAvailable);
-    reference.reset();CHECK(openCLProbeBytes()==before);
+    Production::Metrics declined;
+    reference=Production::tryCreate(input,{nullptr,clock},&declined);CHECK_FALSE(reference);
+    CHECK_FALSE(declined.cpuClockAvailable);CHECK(declined.invalidCpuClocks==1);
+    CHECK(declined.requiresFullReservedCharge);CHECK(openCLProbeBytes()==before);
+}
+
+namespace {
+struct ScriptedProductionClock {
+    std::vector<std::uint64_t> values;
+    std::size_t reads=0,throwAt=std::numeric_limits<std::size_t>::max();
+    static std::uint64_t read(void* p) {
+        auto& clock=*static_cast<ScriptedProductionClock*>(p);
+        const auto at=clock.reads++;
+        if(at==clock.throwAt)throw std::runtime_error("injected CPU clock failure");
+        return at<clock.values.size()?clock.values[at]:100000+at;
+    }
+    Production::Clock hook(){return {this,read};}
+};
+}
+TEST_CASE("production probe setup clock failures decline without optional allocation or seed mutation" * doctest::test_suite("GradientProbe"))
+{
+    const auto before=openCLProbeBytes();
+    Production::Input input;input.grid={17,5};
+    input.seeds=std::make_shared<const std::vector<std::uint16_t>>(input.grid.cells(),1);
+    const auto original=*input.seeds;
+    for(unsigned scenario=0;scenario<5;++scenario) {
+        CAPTURE(scenario);
+        ScriptedProductionClock clock{{100,200}};
+        if(scenario==0)clock.values[0]=0;
+        if(scenario==1)clock.throwAt=0;
+        if(scenario==2)clock.values[1]=0;
+        if(scenario==3)clock.values[1]=99;
+        if(scenario==4)clock.throwAt=1;
+        Production::Metrics declined;
+        auto reference=Production::tryCreate(input,clock.hook(),&declined);
+        CHECK_FALSE(reference);CHECK_FALSE(declined.cpuClockAvailable);
+        CHECK(declined.invalidCpuClocks==1);CHECK(declined.requiresFullReservedCharge);
+        CHECK(declined.reservedHostBytes==0);CHECK(openCLProbeBytes()==before);
+        CHECK(*input.seeds==original);CHECK(clock.reads==(scenario<2?1:2));
+    }
+}
+TEST_CASE("production probe clocks retain a floor across checkpoints and advances" * doctest::test_suite("GradientProbe"))
+{
+    const auto before=openCLProbeBytes();
+    Production::Input input;input.grid={33,5};
+    input.seeds=std::make_shared<const std::vector<std::uint16_t>>(input.grid.cells(),1);
+    const auto original=*input.seeds;
+    for(unsigned scenario=0;scenario<6;++scenario) {
+        CAPTURE(scenario);
+        ScriptedProductionClock clock{{1,2,100,500,200,600}};
+        std::size_t expectedReads=5;
+        if(scenario==1) {clock.values={1,2,100,110,120,130,90,200};expectedReads=7;}
+        if(scenario==2) {clock.values={1,2,0,100};expectedReads=3;}
+        if(scenario==3) {clock.throwAt=3;expectedReads=4;}
+        if(scenario==4) {clock.values={1,2,100,110,120,0};expectedReads=6;}
+        if(scenario==5) {clock.values={1,2,100,110,120,130,140,150,0,180};expectedReads=9;}
+        auto reference=Production::tryCreate(input,clock.hook());REQUIRE(bool(reference));
+        CHECK(reference->metrics().cpuClockAvailable);
+        if(scenario==1 || scenario==5) {
+            REQUIRE(reference->advance(Production::MaxChunkCpuNs,1)==Production::Status::Pending);
+            CHECK(reference->metrics().entries==1);
+        }
+        CHECK(reference->advance(Production::MaxChunkCpuNs,scenario==4?1:128)==Production::Status::Declined);
+        const auto measured=reference->metrics();
+        CHECK_FALSE(measured.cpuClockAvailable);CHECK(measured.invalidCpuClocks==1);
+        CHECK(measured.requiresFullReservedCharge);CHECK(measured.reservedHostBytes==0);
+        CHECK(reference->result().empty());CHECK(openCLProbeBytes()==before);
+        CHECK(*input.seeds==original);CHECK(clock.reads==expectedReads);
+        CHECK(reference->advance()==Production::Status::Declined);
+        CHECK(clock.reads==expectedReads);CHECK(reference->metrics().entries==measured.entries);
+    }
 }

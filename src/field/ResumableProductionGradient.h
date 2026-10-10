@@ -50,9 +50,14 @@ public:
         std::uint64_t cpuNs=0,lastChunkCpuNs=0,maxChunkCpuNs=0,chunks=0,entries=0,overshoots=0;
         std::size_t reservedHostBytes=0,bucketBytes=0,peakBucketBytes=0;
         bool cpuClockAvailable=false,uniformProfile=false,classic=false;
+        // Once invalid, cpuNs is only a known lower bound. The caller must
+        // settle the full reserved optional CPU credit, never zero expense.
+        std::uint64_t invalidCpuClocks=0;
+        bool requiresFullReservedCharge=false;
     };
 private:
     struct Decline {};
+    struct InvalidCpuClock {};
     enum class Phase {Output,Copy,Sort,Sweep,Layer};
     Input input;
     Clock clock;
@@ -70,7 +75,20 @@ private:
     std::exception_ptr failure;
     Metrics totals;
     std::uint64_t chunkStarted=0,chunkBudget=MaxChunkCpuNs;
-    std::uint64_t readCpu() const noexcept {return clock.read ? clock.read(clock.context) : glob2::threadCpuNs();}
+    std::uint64_t lastSuccessfulCpu=0;
+    bool invalidCpuClock=false;
+    void invalidateCpuClock() noexcept {
+        if(!invalidCpuClock)++totals.invalidCpuClocks;
+        invalidCpuClock=true;totals.cpuClockAvailable=false;totals.requiresFullReservedCharge=true;
+    }
+    std::uint64_t readCpu() {
+        if(invalidCpuClock)throw InvalidCpuClock{};
+        std::uint64_t now;
+        try {now=clock.read ? clock.read(clock.context) : glob2::threadCpuNs();}
+        catch(...) {invalidateCpuClock();throw InvalidCpuClock{};}
+        if(!now || now<lastSuccessfulCpu) {invalidateCpuClock();throw InvalidCpuClock{};}
+        lastSuccessfulCpu=now;return now;
+    }
     ResumableProductionGradient(Input value,Clock timer):input(std::move(value)),clock(timer),limit(std::min(input.maxCost,COST_LIMIT)) {
         totals.classic=!input.movement;
     }
@@ -86,7 +104,7 @@ private:
     }
     void checkAllocation() {
         const auto now=readCpu();
-        if(chunkStarted && now>=chunkStarted && now-chunkStarted>chunkBudget) throw Decline{};
+        if(now-chunkStarted>chunkBudget) throw Decline{};
     }
     void reserveBucket(GradientBucket& bucket,std::size_t extra) {
         if(extra>std::numeric_limits<std::size_t>::max()-bucket.size) throw Decline{};
@@ -169,7 +187,7 @@ private:
         }
         case Phase::Sort: {
             const auto start=readCpu();std::sort(deferred.begin(),deferred.end());const auto end=readCpu();
-            if(start && end>=start && end-start>MaxChunkCpuNs) throw Decline{};
+            if(end-start>MaxChunkCpuNs) throw Decline{};
             totals.uniformProfile=input.movement && uniform && uniformClass<input.movement->profiles.size();
             phase=Phase::Sweep;return 1;
         }
@@ -206,9 +224,19 @@ private:
 public:
     ~ResumableProductionGradient(){clear();}
     ResumableProductionGradient(const ResumableProductionGradient&)=delete;
-    static std::unique_ptr<ResumableProductionGradient> tryCreate(Input value,Clock timer) noexcept {
-        const auto started=timer.read ? timer.read(timer.context) : glob2::threadCpuNs();
+    static std::unique_ptr<ResumableProductionGradient> tryCreate(Input value,Clock timer,Metrics* declinedMetrics=nullptr) noexcept {
+        if(declinedMetrics)*declinedMetrics={};
         try {
+            std::uint64_t started;
+            try {started=timer.read ? timer.read(timer.context) : glob2::threadCpuNs();}
+            catch(...) {
+                if(declinedMetrics) {declinedMetrics->invalidCpuClocks=1;declinedMetrics->requiresFullReservedCharge=true;}
+                return {};
+            }
+            if(!started) {
+                if(declinedMetrics) {declinedMetrics->invalidCpuClocks=1;declinedMetrics->requiresFullReservedCharge=true;}
+                return {};
+            }
             if(!value.seeds || value.seeds->size()!=value.grid.cells() || value.grid.width()<=0 || value.grid.height()<=0 ||
                 value.maxCost>COST_LIMIT ||
                 value.swim<0 || unsigned(value.swim)>=std::size(WATER_STEP)) return {};
@@ -240,32 +268,39 @@ public:
             auto result=std::unique_ptr<ResumableProductionGradient>(new ResumableProductionGradient(std::move(value),timer));
             result->baseBytes=bytes;result->reserved=bytes;result->totals.reservedHostBytes=bytes;
             admission.bytes=0;
-            const auto ended=result->readCpu();result->totals.cpuClockAvailable=started && ended>=started;
-            if(result->totals.cpuClockAvailable) {
-                result->totals.cpuNs=ended-started;
-                if(ended-started>MaxChunkCpuNs) ++result->totals.overshoots;
+            result->lastSuccessfulCpu=started;
+            std::uint64_t ended;
+            try {ended=result->readCpu();}
+            catch(const InvalidCpuClock&) {
+                result->clear();if(declinedMetrics)*declinedMetrics=result->totals;return {};
             }
+            result->totals.cpuClockAvailable=true;result->totals.cpuNs=ended-started;
+            if(ended-started>MaxChunkCpuNs) ++result->totals.overshoots;
             return result;
         } catch(...) {return {};}
     }
     static std::unique_ptr<ResumableProductionGradient> tryCreate(Input value) noexcept {return tryCreate(std::move(value),Clock{});}
     Status advance(std::uint64_t cpuBudgetNs=MaxChunkCpuNs,unsigned maxEntries=4096) noexcept {
         if(state!=Status::Pending) return state;
-        chunkStarted=readCpu();chunkBudget=std::max<std::uint64_t>(1,std::min(cpuBudgetNs,MaxChunkCpuNs));
-        if(!chunkStarted) maxEntries=std::min<unsigned>(maxEntries,CHUNK);
+        chunkBudget=std::max<std::uint64_t>(1,std::min(cpuBudgetNs,MaxChunkCpuNs));
         unsigned used=0;
         try {
+            chunkStarted=readCpu();
             while(used<maxEntries && state==Status::Pending) {
                 if(canceled.load()) {state=Status::Canceled;clear();break;}
                 used+=step(std::min<unsigned>(unsigned(CHUNK),maxEntries-used));
                 const auto now=readCpu();
-                if(chunkStarted && now>=chunkStarted && now-chunkStarted>=chunkBudget) break;
+                if(now-chunkStarted>=chunkBudget) break;
             }
-        } catch(const Decline&) {state=Status::Declined;clear();}
+        } catch(const InvalidCpuClock&) {state=Status::Declined;clear();}
+        catch(const Decline&) {state=Status::Declined;clear();}
         catch(const std::bad_alloc&) {state=Status::Declined;clear();}
         catch(...) {failure=std::current_exception();state=Status::Failed;clear();}
-        const auto ended=readCpu();const auto elapsed=chunkStarted && ended>=chunkStarted ? ended-chunkStarted : 0;
-        totals.cpuClockAvailable=totals.cpuClockAvailable || bool(chunkStarted&&ended>=chunkStarted);
+        std::uint64_t elapsed=0;
+        if(!invalidCpuClock) {
+            try {elapsed=readCpu()-chunkStarted;}
+            catch(const InvalidCpuClock&) {state=Status::Declined;clear();}
+        }
         totals.cpuNs+=elapsed;totals.lastChunkCpuNs=elapsed;totals.maxChunkCpuNs=std::max(totals.maxChunkCpuNs,elapsed);
         if(elapsed>MaxChunkCpuNs) ++totals.overshoots;
         totals.entries+=used;++totals.chunks;return state;
