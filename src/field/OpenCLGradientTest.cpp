@@ -556,6 +556,8 @@ TEST_CASE("gradient policy rejects invalid families before eligibility or indexi
 TEST_CASE("direct gradient groups validate bounds and homogeneity before work")
 {
     using namespace gradient_kernel;
+    for(unsigned scenario=0;scenario<5;++scenario) {
+    CAPTURE(scenario);
     unsigned calls = 0;
     std::uint16_t value = 1;
     BackendSession policy, otherPolicy;
@@ -565,18 +567,18 @@ TEST_CASE("direct gradient groups validate bounds and homogeneity before work")
     const BackendRequest request{&value, COST_LIMIT, {1, 1}, policy, &calls,
         [](void*, std::size_t) { return LAND_STEPS; }, cpu, {}};
     std::vector<BackendRequest> requests{request};
-    SUBCASE("oversized group") { for (unsigned i = 1; i < 9; ++i) requests.push_back(request); }
-    SUBCASE("different families") {
+    if(scenario==0) { for (unsigned i = 1; i < 9; ++i) requests.push_back(request); }
+    else if(scenario==1) {
         requests.push_back(request); requests.back().family = Family::Materials;
     }
-    SUBCASE("different operations") {
+    else if(scenario==2) {
         requests.push_back(request); requests.back().operation = Operation::ResumableSearch;
     }
-    SUBCASE("different sessions") {
+    else if(scenario==3) {
         requests.push_back(BackendRequest{&value, COST_LIMIT, {1, 1}, otherPolicy,
             &calls, request.costAt, cpu, {}});
     }
-    SUBCASE("invalid family") {
+    else {
         requests.front().family = Family::Count;
     }
     // Run on the owner: invalid contracts must be checked even when GPU and
@@ -587,6 +589,7 @@ TEST_CASE("direct gradient groups validate bounds and homogeneity before work")
     CHECK(policy.metrics().recorded == 0);
     CHECK_NOTHROW(executeGradientGroup({}, Backend::CPU));
     CHECK(calls == 0);
+    }
 }
 TEST_CASE("gradient batches reject invalid later families before executing any group")
 {
