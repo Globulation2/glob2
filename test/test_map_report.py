@@ -3,6 +3,7 @@
 import json
 import math
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -61,6 +62,7 @@ def contract(value, schema=SCHEMA, path='$'):
     if isinstance(value,str):
         if 'minLength' in schema: assert len(value) >= schema['minLength'], path
         if 'maxLength' in schema: assert len(value) <= schema['maxLength'], path
+        if 'pattern' in schema: assert re.search(schema['pattern'],value), path
     if type(value) in (int,float):
         assert math.isfinite(value), path
         if 'minimum' in schema: assert value >= schema['minimum'], path
@@ -94,6 +96,24 @@ def contract_rejections(report):
     contract(credited)
     rejected('credits array type', lambda j: j['map'].update(setCredits={}))
     rejected('incomplete credit', lambda j: j['map'].update(setCredits=[{'title':'Example'}]))
+    units = json.loads(json.dumps(report))
+    units['map'].update(unitCatalog={'snapshot':'{}','hash':'a'*64},
+                        requiredUnitExperiments=['unit.experimental.courier'])
+    contract(units)
+    older = json.loads(json.dumps(units))
+    older['map'].pop('unitCatalog')
+    older['map'].pop('requiredUnitExperiments')
+    contract(older)
+    rejected('unit catalog type', lambda j: j['map'].update(unitCatalog=[]))
+    rejected('incomplete unit catalog', lambda j: j['map'].update(unitCatalog={'snapshot':'{}'}))
+    for snapshot in (None,{},''):
+        rejected('unit snapshot value', lambda j, value=snapshot: j['map'].update(
+            unitCatalog={'snapshot':value,'hash':'a'*64}))
+    for digest in (None,64,'a'*63,'A'*64,'g'*64):
+        rejected('unit catalog hash', lambda j, value=digest: j['map'].update(
+            unitCatalog={'snapshot':'{}','hash':value}))
+    rejected('unit experiment array type', lambda j: j['map'].update(requiredUnitExperiments={}))
+    rejected('unit experiment entry type', lambda j: j['map'].update(requiredUnitExperiments=[1]))
     rejected('telemetry kind enum', lambda j: telemetry(j)['records'][0].update(kind='unknown'))
     rejected('telemetry value type', lambda j: telemetry(j)['records'][0].update(value={}))
     rejected('negative subject', lambda j: telemetry(j)['records'][0].update(subject=-1))
