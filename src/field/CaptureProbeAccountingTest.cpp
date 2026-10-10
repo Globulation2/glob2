@@ -41,7 +41,8 @@ struct Fixture {
             capture=GradientCpuCapture::begin(policy,input,receipt,{clock,&Clocks::capture,sizeof(Clocks)});
         REQUIRE(bool(capture));auto record=capture->complete(seeds,{91,1000000,true,true},receipt);REQUIRE(bool(record));
         REQUIRE(record->adoptProducer());REQUIRE(bool(record->authorize(91,1,input.slackNs,false)));
-        token=GradientCpuCapture::takeSettlement(record);REQUIRE(bool(token));
+        auto extracted=GradientCpuCapture::takeSettlement(record);REQUIRE(bool(extracted));
+        token.emplace(std::move(*extracted));
         input.original={}; // No borrowed stack view survives construction.
     }
     std::unique_ptr<CaptureProbeAccounting> begin(bool qualified=false) {
