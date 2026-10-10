@@ -32,7 +32,7 @@ void deposit(Map& map,int x,int y,int type,int amount)
 }
 void configure(glob2test::HeadlessGame& world)
 {
-    auto catalog=UnitCatalog::loadFile(glob2test::fixture("unit-catalog/combinations.json"));
+    auto catalog=UnitCatalog::loadFile(glob2test::fixture("unit-catalog/combinations.json").string());
     world.game.gameHeader.setUnitCatalog(catalog);
     world.game.configureBuildingCatalog();
     for (int t=0;t<world.game.teamsCount();++t) world.game.teams[t]->race.setCatalog(catalog);

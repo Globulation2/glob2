@@ -659,13 +659,12 @@ TEST_CASE("portable bundle verifies image bytes and catalog frame references") {
 			world.game.save(output.get(), false, "Portable kitchen");
 			output->flush();
 			saved->seekFromStart(0);
+			auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(*saved);
 			std::unique_ptr<GAGCore::InputStream> input;
 			if (text)
-				input = std::make_unique<GAGCore::TextInputStream>(
-					new GAGCore::MemoryStreamBackend(*saved));
+				input = std::make_unique<GAGCore::TextInputStream>(inputBackend.get());
 			else
-				input = std::make_unique<GAGCore::BinaryInputStream>(
-					new GAGCore::MemoryStreamBackend(*saved));
+				input = std::make_unique<GAGCore::BinaryInputStream>(inputBackend.release());
 			Game loaded(nullptr);
 			REQUIRE(loaded.load(input.get()));
 			REQUIRE(loaded.gameHeader.getBuildingArtwork());

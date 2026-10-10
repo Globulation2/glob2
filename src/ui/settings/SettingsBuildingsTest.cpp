@@ -46,7 +46,7 @@ TEST_CASE("catalog preferences isolate reused stock keys and persist assignment 
     CHECK(globals->settings.buildingAssignment(stockFingerprint,*stock.get(inn))==9);
     CHECK(globals->settings.buildingAssignment(customFingerprint,custom)==12);
 }
-TEST_CASE("version one preferences import only into frozen stock catalog")
+TEST_CASE("version one preferences import only into known stock catalogs")
 {
     glob2test::HeadlessGlobals globals;
     const auto filename="legacy-building-preferences.txt";
@@ -58,7 +58,18 @@ TEST_CASE("version one preferences import only into frozen stock catalog")
     Settings settings;settings.load(filename);
     BuildingsTypes frozen;frozen.initLegacy();
     const auto fingerprint=frozen.fingerprint();
-    REQUIRE(fingerprint==globals->buildingsTypes.fingerprint());
+    const auto inheritedFingerprint=globals->buildingsTypes.fingerprint();
+    REQUIRE(fingerprint!=inheritedFingerprint);
+    REQUIRE(inheritedFingerprint=="2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71");
+    CHECK(settings.buildingAssignment(inheritedFingerprint,*globals->buildingsTypes.getByType("inn",0,false))==11);
+    CHECK(settings.buildingAssignment(inheritedFingerprint,*globals->buildingsTypes.getByType("inn",1,true))==13);
+    CHECK(settings.buildingRadius(inheritedFingerprint,*globals->buildingsTypes.getByType("warflag",0,false))==9);
+    auto custom=nlohmann::json::parse(globals->buildingsTypes.snapshotJson());
+    custom["variants"][globals->buildingsTypes.getTypeNum("inn",0,false)]["properties"]["hpMax"]=999;
+    BuildingsTypes authored; authored.loadSnapshotJson(custom.dump());
+    REQUIRE(authored.fingerprint()!=inheritedFingerprint);
+    const auto& authoredInn=*authored.getByType("inn",0,false);
+    CHECK(settings.buildingAssignment(authored.fingerprint(),authoredInn)==authoredInn.presentation.defaultAssigned);
     CHECK(settings.buildingAssignment(fingerprint,*frozen.getByType("inn",0,false))==11);
     CHECK(settings.buildingAssignment(fingerprint,*frozen.getByType("inn",1,true))==13);
     const auto& flag=*frozen.getByType("warflag",0,false);
@@ -94,6 +105,42 @@ TEST_CASE("version two pre-material stock fingerprints retain preferences withou
     REQUIRE(settings.save(path.filename().string()));
     Settings restored;restored.load(path.filename().string());
     CHECK(restored.buildingAssignment(fingerprint,*stock.getByType("inn",0,false))==11);
+}
+TEST_CASE("known frozen stock fingerprints migrate to inherited costs with current preferences taking precedence")
+{
+    glob2test::HeadlessGlobals globals;
+    BuildingsTypes frozen; frozen.initLegacy();
+    const auto legacy=frozen.fingerprint();
+    const auto current=globals->buildingsTypes.fingerprint();
+    REQUIRE(current=="2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71");
+    REQUIRE(legacy=="b7c9b811ca4f519c5d1040219ec6c32cf888b1f0fbbeb63022c573bcc20c6803");
+    for(const auto& old : {std::string("6f09045e24e9f39f70d96366f8d315a17936880ff1cb9015d4ca52ddf0162e54"),legacy})
+    {
+        const auto path=glob2test::profileDir()/"stock-cost-migration-preferences.txt";
+        {
+            std::ofstream file(path);
+            file << "version=2\nbuildingAssignment." << old << "/inn.0.finished=11\n"
+                 << "buildingAssignment." << old << "/inn.1.site=13\n"
+                 << "buildingAssignment." << current << "/inn.1.site=7\n"
+                 << "buildingRadius." << old << "/warflag.0.finished=999\n"
+                 << "buildingAssignment.custom/inn.0.finished=15\n";
+        }
+        Settings settings; settings.load(path.filename().string());
+        const auto& inn=*globals->buildingsTypes.getByType("inn",0,false);
+        const auto& site=*globals->buildingsTypes.getByType("inn",1,true);
+        const auto& flag=*globals->buildingsTypes.getByType("warflag",0,false);
+        CHECK(settings.buildingAssignment(current,inn)==11);
+        CHECK(settings.buildingAssignment(current,site)==7);
+        CHECK(settings.buildingRadius(current,flag)==flag.maxUnitStayRange);
+        CHECK(settings.buildingAssignment(legacy,*frozen.getByType("inn",0,false))==11);
+        CHECK(settings.buildingAssignment("custom",inn)==15);
+        CHECK(settings.buildingAssignment("unrelated",inn)==inn.presentation.defaultAssigned);
+        REQUIRE(settings.save(path.filename().string()));
+        Settings restored; restored.load(path.filename().string());
+        CHECK(restored.buildingAssignment(current,inn)==11);
+        CHECK(restored.buildingAssignment(current,site)==7);
+        CHECK(restored.buildingRadius(current,flag)==flag.maxUnitStayRange);
+    }
 }
 TEST_CASE("per game assignment loads reject duplicate stable and legacy identities")
 {

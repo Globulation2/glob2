@@ -68,7 +68,10 @@ object maps stable keys to damage. A uniform historical three-entry damage array
 also applies to additional types; heterogeneous arrays require explicit additional
 target keys. Keyed overrides take precedence. See [building semantics](../features/building-semantics.md).
 The three-choice gameplay controls and AI production strategy continue to select
-the built-ins.
+the built-ins. Default map generators also retain their starting-worker roster
+and choose clear land tiles. A water-only replacement for the starting worker
+requires authored starting positions; these generators report a placement
+failure rather than creating units on illegal terrain.
 
 `levels` contains exactly four objects when supplied. Each object can override
 individual fields inherited from its base, but a supplied `performance` or
