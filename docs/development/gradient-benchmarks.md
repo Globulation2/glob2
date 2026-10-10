@@ -443,15 +443,27 @@ once and the masks never clear between dispatches. Epochs stay bounded through
 the 65536-dispatch limit. Cancellation retains uploads/readbacks and immutable
 original inputs until their trailing event has completed.
 
+Inside a healthy epoch window, successive broker turns replace the preceding
+kernel event without polling it. The in-order queue makes the new event cover
+every preceding dispatch. At most the configured 1..32 kernels can be queued;
+required priority and cancellation are checked on every turn. Upload, check and
+readback boundaries still require positive completion proof. Ambiguous enqueue
+or cancellation cannot use an older event to release storage. Device profiling
+retains per-kernel waits so its existing individual-event measurements remain
+valid. `queuedWindowDispatches` records actual poll bypasses, rather than just
+requested configuration.
+
 Evidence should run the `isolated epoch probes*` actual-device case in three
 fresh processes, with `GLOB2_TEST_OPENCL_EPOCH_PROBE=1`,
 `GLOB2_OPENCL_ACTIVE_EPOCH=1`, `GLOB2_OPENCL_CHECK_INTERVAL` set to 1, 8 and 32,
-and parity binding, direct seed upload and API CPU diagnostics explicitly zero.
+and profiling, parity binding, direct seed upload and API CPU diagnostics explicitly zero.
 The case rejects missing activation/configuration, exercises every compiled plan
 on singleton/thin/odd maps, compares exact arrays to an independent oracle and
 required dispatch counts, and interleaves larger/smaller required buffers.
 It verifies mask/argument/check counters and cancellation during initial upload,
 kernel, convergence read and final readback, including stale session generation.
+Checks greater than one also cancel a partially enqueued window, require no new
+dispatch after cancellation, and reconcile bypasses to dispatches minus checks.
 Caller input/session/cost retention and backend storage share the optional/total
 host budgets; cancellation must return the subset to its previous reservation.
 

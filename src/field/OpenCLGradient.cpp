@@ -1601,12 +1601,24 @@ struct OpenCLProbe::Impl
         lane->api.ReleaseEvent(event);event=nullptr;borrowedTransfers=false;return true;
     }
     bool privateCostPermission() const noexcept {return request.capturedPrivateCosts || lane->shared->status.probeColdCosts;}
+    bool canQueueEpochDispatch() const noexcept {
+        // The in-order trailing kernel event covers every prior dispatch. CPU
+        // work still yields after ONE kernel, but no old event poll is needed
+        // inside the bounded window. Transfers and window boundaries require
+        // positive proof before their host storage is consumed or released.
+        return progress==OpenCLProbeProgress::Pending && measured.activeEpoch &&
+            !lane->shared->status.deviceProfiling && phase==Phase::Dispatch &&
+            round>0 && round<windowEnd && !cancelled.load() &&
+            !borrowedTransfers && !completionUnknown && !untrackedCommand &&
+            generation==request.session.currentGeneration() &&
+            !lane->shared->failed.load() && !request.session.failed.load();
+    }
     void flush() {check(lane->api.Flush(lane->queue));}
     OpenCLProbeProgress step(std::size_t copyCells,std::uint64_t started,std::uint64_t cpuBudget) {
         if(progress!=OpenCLProbeProgress::Pending) return progress;
         if(generation!=request.session.currentGeneration()) cancelled=true;
         if(lane->shared->failed.load() || request.session.failed.load()) cancelled=true;
-        if(event && !readyEvent()) return progress;
+        if(event && !canQueueEpochDispatch() && !readyEvent()) return progress;
         if(cancelled) {progress=OpenCLProbeProgress::Declined;return progress;}
         const auto n=request.grid.cells();
         auto& api=lane->api;
@@ -1790,6 +1802,7 @@ struct OpenCLProbe::Impl
             phase=Phase::Dispatch;break;
         case Phase::Dispatch: {
             if(round==65536) throw std::runtime_error("OpenCL probe failed to converge");
+            const bool queuedWithoutPoll=event && canQueueEpochDispatch();
             const UInt zero=0;
             if(!measured.activeEpoch || round+1==windowEnd)
                 submitEvent([&](Handle* done){return api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,sizeof zero,0,nullptr,done);});
@@ -1812,7 +1825,11 @@ struct OpenCLProbe::Impl
             submitEvent([&](Handle* done){return api.EnqueueNDRangeKernel(lane->queue,lane->kernel,3,nullptr,global,local,0,nullptr,done);});
             std::swap(a,b);std::swap(active,nextActive);++round;
             ++lane->status.dispatches;++measured.dispatches;
-            flush();phase=Phase::KernelWait;break;
+            if(queuedWithoutPoll)++measured.queuedWindowDispatches;
+            flush();
+            phase=measured.activeEpoch && round<windowEnd && !lane->shared->status.deviceProfiling
+                ? Phase::Dispatch : Phase::KernelWait;
+            break;
         }
         case Phase::KernelWait:
             // Yielded event polls add optional lifecycle cost, but kernel and
@@ -1864,7 +1881,8 @@ OpenCLProbe::Metrics OpenCLProbe::metrics() const noexcept {
 }
 bool OpenCLProbe::waitingForEvent() const noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    return state && state->progress==OpenCLProbeProgress::Pending && state->event;
+    return state && state->progress==OpenCLProbeProgress::Pending && state->event &&
+        !state->canQueueEpochDispatch();
 #else
     return false;
 #endif

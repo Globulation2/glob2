@@ -157,6 +157,9 @@ public:
         Stage stage=Stage::Costs;
         // Driver/protocol failure, distinct from cancellation or admission decline.
         bool executionFailed=false;
+        // Successful active-epoch dispatches replacing an older in-order event
+        // without polling it. At most checkInterval kernels remain queued.
+        std::uint64_t queuedWindowDispatches=0;
     };
     ~OpenCLProbe();
     OpenCLProbe(const OpenCLProbe&)=delete;
@@ -173,7 +176,9 @@ public:
     // independently atomic; metrics and result do not supply concurrent reads.
     Metrics metrics() const noexcept;
     // Same coordinator only; no driver call. A retained trailing event has no
-    // terminal proof yet. CPU setup/comparison may instead resume immediately
+    // terminal proof yet at a transfer/check boundary. An active epoch dispatch
+    // within its bounded window can replace that event without polling it.
+    // CPU setup/comparison may instead resume immediately
     // after the broker checks required work again.
     bool waitingForEvent() const noexcept;
 private:

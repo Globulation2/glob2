@@ -1344,6 +1344,7 @@ TEST_CASE("isolated epoch probes mirror required windows and preserve exact owne
     REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
     REQUIRE(configured.activeEpoch);REQUIRE_FALSE(configured.parityBound);
     REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
+    REQUIRE_FALSE(configured.deviceProfiling);
     struct Capture {
         std::shared_ptr<std::vector<std::uint16_t>> seeds;
         std::shared_ptr<std::vector<EntrySteps>> costs;
@@ -1380,7 +1381,10 @@ TEST_CASE("isolated epoch probes mirror required windows and preserve exact owne
                 const auto reserved=openCLProbeBytes();auto probe=beginOpenCLProbe(request,Plan(plan),holder);REQUIRE(probe);
                 auto progress=OpenCLProbeProgress::Pending;bool interleaved=false;
                 for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
-                    const auto dispatched=probe->metrics().dispatches;progress=probe->advance(17);
+                    const auto dispatched=probe->metrics().dispatches;
+                    if(dispatched && probe->metrics().stage==OpenCLProbe::Stage::Dispatch)
+                        CHECK_FALSE(probe->waitingForEvent()); // Healthy in-window work is immediately runnable.
+                    progress=probe->advance(17);
                     CHECK(probe->metrics().dispatches<=dispatched+1);CHECK(*holder->seeds==original);
                     if(!interleaved && probe->metrics().dispatches){
                         // Required lane changes both plan and retained buffer
@@ -1403,6 +1407,7 @@ TEST_CASE("isolated epoch probes mirror required windows and preserve exact owne
                 const auto metrics=probe->metrics();CHECK(metrics.activeEpoch);
                 CHECK(metrics.checkInterval==configured.checkInterval);CHECK(metrics.dispatches==requiredDispatches);
                 CHECK(metrics.dispatches>0);CHECK(metrics.hostChecks==(metrics.dispatches+configured.checkInterval-1)/configured.checkInterval);
+                CHECK(metrics.queuedWindowDispatches==metrics.dispatches-metrics.hostChecks);
                 CHECK(metrics.tileMaskInitializations==2);CHECK(metrics.tileMaskClears==0);
                 CHECK(metrics.kernelArgumentUpdates==12+5*metrics.dispatches);
                 probe.reset();CHECK(openCLProbeBytes()==reserved);++completed;
@@ -1410,27 +1415,38 @@ TEST_CASE("isolated epoch probes mirror required windows and preserve exact owne
                     using Stage=OpenCLProbe::Stage;
                     for(const auto [stage,generationCancel]:std::array{
                         std::pair{Stage::InitialWait,false},std::pair{Stage::KernelWait,false},
-                        std::pair{Stage::CheckWait,false},std::pair{Stage::OutputWait,false},std::pair{Stage::KernelWait,true}}){
+                        std::pair{Stage::CheckWait,false},std::pair{Stage::OutputWait,false},std::pair{Stage::KernelWait,true},
+                        std::pair{Stage::Dispatch,false},std::pair{Stage::Dispatch,true}}){
+                        if(stage==Stage::Dispatch && configured.checkInterval==1)continue;
                         auto pending=beginOpenCLProbe(request,Plan(plan),holder);REQUIRE(pending);
                         progress=OpenCLProbeProgress::Pending;bool reached=false;
                         for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
                             progress=pending->advance(17);
-                            if(pending->metrics().stage==stage){reached=true;break;}
+                            if(pending->metrics().stage==stage &&
+                                (stage!=Stage::Dispatch || pending->metrics().dispatches>0)){reached=true;break;}
                             if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
                         }
                         REQUIRE(reached);REQUIRE(progress==OpenCLProbeProgress::Pending);
+                        if(stage==Stage::Dispatch){
+                            CHECK_FALSE(pending->waitingForEvent());
+                            CHECK(pending->metrics().dispatches<configured.checkInterval);
+                        }
+                        const auto beforeCancel=pending->metrics().dispatches;
                         if(generationCancel)holder->session->configure(2,false);else pending->cancel();
+                        CHECK(pending->waitingForEvent()); // Cancellation must prove the trailing queued event.
                         for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
                             progress=pending->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
                         }
                         REQUIRE(progress==OpenCLProbeProgress::Declined);CHECK(pending->result().empty());
+                        CHECK(pending->metrics().dispatches==beforeCancel);
                         CHECK(*holder->seeds==original);CHECK_FALSE(holder->session->failed.load());
                         pending.reset();CHECK(openCLProbeBytes()==reserved);++canceled;
                     }
                 }
             }
         }
-        CHECK(completed==(PLANS.size()-1)*10);CHECK(requiredInterleaves==completed*2);CHECK(canceled==5);
+        CHECK(completed==(PLANS.size()-1)*10);CHECK(requiredInterleaves==completed*2);
+        CHECK(canceled==(configured.checkInterval==1?5:7));
         CHECK(openCLProbeBytes()==baseline);
     });
     coordinator.join();
