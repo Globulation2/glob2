@@ -1195,6 +1195,146 @@ TEST_CASE("owned optional probe clocks cancel invalid copy and pending transfer 
         CHECK(openCLProbeBytes()==baseline);
     });coordinator.join();
 }
+TEST_CASE("isolated cold optional costs are exact private bounded and cancelable")
+{
+    using namespace gradient_kernel;
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_COLD_COSTS");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
+    REQUIRE(configured.probeColdCosts);REQUIRE_FALSE(configured.parityBound);
+    REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
+    struct Costs {
+        std::vector<EntrySteps> values;
+        std::size_t calls=0;
+        static EntrySteps at(void* value,std::size_t i) {
+            auto& cost=*static_cast<Costs*>(value);++cost.calls;return cost.values[i];
+        }
+    };
+    struct Capture {
+        std::vector<std::uint16_t> seeds;
+        std::shared_ptr<Costs> costs=std::make_shared<Costs>();
+        BackendSession session;
+        std::shared_ptr<ProbeClock> clock=std::make_shared<ProbeClock>();
+        std::size_t reservation=0;
+        ~Capture(){if(reservation)releaseOpenCLProbeBytes(reservation);}
+    };
+    std::thread coordinator([&] {
+        const auto baseline=openCLProbeBytes();
+        const auto makeCapture=[](field::Grid grid,unsigned variation) {
+            auto owner=std::make_shared<Capture>();owner->seeds.assign(grid.cells(),1);
+            owner->costs->values.assign(grid.cells(),LAND_STEPS);
+            for(std::size_t i=0;i<grid.cells();++i){
+                if(i%13==3)owner->seeds[i]=0;
+                if(i%3==variation%3)owner->costs->values[i]={19+variation,29+variation};
+            }
+            owner->seeds[variation%grid.cells()]=65535;owner->seeds.back()=65001;
+            if(variation==2)owner->seeds[0]=1; // Removed/moved full-strength goal.
+            const auto bytes=sizeof(Capture)+owner->seeds.capacity()*sizeof(std::uint16_t)+sizeof(Costs)+
+                owner->costs->values.capacity()*sizeof(EntrySteps)+sizeof(ProbeClock)+256;
+            REQUIRE(reserveOpenCLProbeBytes(bytes));owner->reservation=bytes;return owner;
+        };
+        const auto makeRequest=[](const std::shared_ptr<Capture>& owner,field::Grid grid,int cap,unsigned revision) {
+            return BackendRequest{owner->seeds.data(),cap,grid,owner->session,owner->costs.get(),Costs::at,nullptr,
+                {owner->costs,492771,revision,true,sizeof(Costs)+owner->costs->values.capacity()*sizeof(EntrySteps)}};
+        };
+        const auto drain=[](OpenCLProbe& probe,OpenCLProbeProgress progress) {
+            for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
+                progress=probe.advance(64);if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+            }
+            return progress;
+        };
+        unsigned completed=0,interleaved=0;
+        for(unsigned plan=1;plan<PLANS.size();++plan){
+            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
+            for(auto shape:{std::pair{1,257},std::pair{257,1},std::pair{17,19}})
+            for(int cap:{0,700})for(unsigned revision=1;revision<=3;++revision){
+                const field::Grid grid(shape.first,shape.second);auto owner=makeCapture(grid,revision-1);
+                auto request=makeRequest(owner,grid,cap,revision);const auto original=owner->seeds;
+                const auto expected=oracle(original,grid,owner->costs->values,cap);
+                const auto reserved=openCLProbeBytes();const auto uploads=openCLStatus().costUploads;
+                auto probe=beginOpenCLProbe(request,Plan(plan),owner,{owner->clock,ProbeClock::read});REQUIRE(probe);
+                bool required=false;auto progress=OpenCLProbeProgress::Pending;
+                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
+                    const auto before=probe->metrics();progress=probe->advance(64);
+                    const auto after=probe->metrics();CHECK(after.costCellsPrepared<=before.costCellsPrepared+64);
+                    CHECK(after.dispatches<=before.dispatches+1);CHECK(owner->seeds==original);
+                    if(!required && plan==unsigned(Plan::Frozen8) && cap==700 && revision==1 &&
+                        after.stage==OpenCLProbe::Stage::CostsPack && after.costCellsPrepared==64){
+                        // Same cold identity on required lane: it completes its
+                        // own preparation while optional packing is unfinished.
+                        auto actual=original;auto requiredRequest=request;requiredRequest.gradient=actual.data();
+                        REQUIRE(executeOpenCLDevice(std::span(&requiredRequest,1),Plan::Frozen8));CHECK(actual==expected);
+                        required=true;++interleaved;
+                    }
+                    if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+                }
+                REQUIRE(progress==OpenCLProbeProgress::Complete);const auto metrics=probe->metrics();
+                CHECK(metrics.coldCostPlane);CHECK(metrics.costCellsPrepared==grid.cells());
+                CHECK(metrics.costPreparedBytes>=grid.cells()*sizeof(std::uint32_t));CHECK(metrics.costUploads==1);
+                CHECK(metrics.invalidCpuClocks==0);CHECK(metrics.dispatches>0);
+                CHECK(owner->costs->calls==grid.cells()*(required ? 2 : 1));
+                CHECK(openCLStatus().costUploads==uploads+(required ? 2 : 1));
+                CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
+                CHECK(owner->seeds==original);probe.reset();CHECK(openCLProbeBytes()==reserved);++completed;
+            }
+        }
+        CHECK(completed==(PLANS.size()-1)*18);CHECK(interleaved==3);
+        if(configured.uniformMetadata){
+            const field::Grid grid(17,19);auto owner=makeCapture(grid,0);
+            owner->costs->values.assign(grid.cells(),LAND_STEPS);
+            auto request=makeRequest(owner,grid,700,90);
+            request.identity.packedUniformCost=LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16);
+            const auto original=owner->seeds;const auto expected=oracle(original,grid,owner->costs->values,700);
+            auto scalar=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(scalar);
+            CHECK(drain(*scalar,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Complete);
+            CHECK(scalar->metrics().costCellsPrepared==0);CHECK(scalar->metrics().costPreparedBytes==sizeof(std::uint32_t));
+            CHECK(scalar->metrics().costUploads==1);CHECK(owner->costs->calls==0);
+            CHECK(std::vector<std::uint16_t>(scalar->result().begin(),scalar->result().end())==expected);
+            CHECK(owner->seeds==original);
+        }
+        // Independent cold identity per case. No required warm-up can mask a
+        // canceled pack/upload, bad owner metadata, callback or budget decline.
+        for(unsigned scenario=0;scenario<10;++scenario){
+            const field::Grid grid(17,19);auto owner=makeCapture(grid,scenario);
+            auto request=makeRequest(owner,grid,700,100+scenario);const auto original=owner->seeds;
+            const auto reserved=openCLProbeBytes();
+            if(scenario==0){request.identity.allCells=false;CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,owner));}
+            else {
+                if(scenario==1)request.identity.retainedBytes=0;
+                if(scenario==8)owner->costs->values[10]={0,1};
+                auto probe=beginOpenCLProbe(request,Plan::Frozen8,owner,{owner->clock,ProbeClock::read});REQUIRE(probe);
+                if((scenario>=2 && scenario<=4) || scenario==9){
+                    const auto target=scenario==3 ? OpenCLProbe::Stage::CostsWait : OpenCLProbe::Stage::CostsPack;
+                    for(unsigned attempt=0;attempt<100000 && probe->metrics().stage!=target;++attempt)
+                        REQUIRE(probe->advance(64)==OpenCLProbeProgress::Pending);
+                    REQUIRE(probe->metrics().stage==target);
+                    if(scenario==4)owner->session.configure(2,false);
+                    else if(scenario==9){owner->clock->failRead=owner->clock->reads+1;owner->clock->invalidValue=0;}
+                    else probe->cancel();
+                    CHECK(drain(*probe,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Declined);
+                    if(scenario==9)CHECK(probe->metrics().invalidCpuClocks>0);
+                } else if(scenario>=5 && scenario<=7){
+                    REQUIRE(probe->advance(64)==OpenCLProbeProgress::Pending); // CostsReserve before any cost allocation.
+                    if(scenario==5){
+                        const auto available=OpenCLProbeBudget-openCLProbeBytes();REQUIRE(reserveOpenCLProbeBytes(available));
+                        CHECK(probe->advance(64)==OpenCLProbeProgress::Declined);releaseOpenCLProbeBytes(available);
+                    } else if(scenario==6){
+                        const auto available=OpenCLHostBudget-openCLStatus().hostBytes;REQUIRE(reserveOpenCLHostBytes(available));
+                        CHECK(probe->advance(64)==OpenCLProbeProgress::Declined);releaseOpenCLHostBytes(available);
+                    } else {
+                        const auto before=openCLStatus().deviceBytes;
+                        auto pressure=reserveOpenCLDeviceBytesForDiagnostics(OpenCLDeviceBudget-before);REQUIRE(pressure);
+                        CHECK(drain(*probe,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Declined);
+                        pressure.reset();CHECK(openCLStatus().deviceBytes==before);
+                    }
+                } else CHECK(drain(*probe,OpenCLProbeProgress::Pending)==OpenCLProbeProgress::Declined);
+                CHECK(probe->result().empty());probe.reset();
+            }
+            CHECK(owner->seeds==original);CHECK_FALSE(owner->session.failed.load());CHECK(openCLProbeBytes()==reserved);
+        }
+        CHECK(openCLProbeBytes()==baseline);
+    });coordinator.join();
+}
 TEST_CASE("isolated epoch probes mirror required windows and preserve exact owned cancellation")
 {
     using namespace gradient_kernel;

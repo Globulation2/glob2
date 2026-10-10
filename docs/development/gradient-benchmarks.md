@@ -459,3 +459,30 @@ callers must conservatively charge the full optional reservation or supply a
 known external CPU measurement, and must never promote or settle it as zero.
 The appended owned clock callback exists for correctness diagnostics; callers
 charge and retain its captured allocation through the shared probe storage lease.
+
+`GLOB2_OPENCL_PROBE_COLD_COSTS=1` enables isolated optional preparation for
+immutable all-cell cost owners whose retained allocation size is known. Default
+zero declines unknown/unready weighted planes. Costs use reserve-only storage,
+validated packing in at most64 entries per CPU checkpoint, and a nonblocking
+upload/event wait before seed upload or propagation. Known uniform proofs use
+one packed word with no full-grid initialization. Prepared planes remain private
+through probe destruction and never enter the shared cache, including after
+upload completion; required work cannot wait on an optional cache future.
+
+Cold preparation, captured owners, seed staging, lane/state and host capacity
+share the16MiB probe subset and64MiB host budget; cost/device buffers also charge
+the128MiB device budget. The caller retains/charges original captures separately,
+so temporary duplicate owner charges are conservative. Allocation/driver calls
+may exceed the500us target and are recorded as overshoots; clocks and chunking
+do not create a hard bound or qualified promotion evidence. The diagnostic owned
+device reservation models tracked-budget exhaustion and does not allocate GPU
+memory or claim driver-allocation pressure coverage.
+
+The explicit actual-device test `GLOB2_TEST_OPENCL_COLD_COSTS=1` requires the cold
+configuration and all six ready plans. It starts weighted planes without forced
+warmup, compares thin/odd toroidal fields and moved/removed goals/caps against the
+independent oracle, and lets same-identity required work finish during cold
+packing. Separate cases cancel packing/upload waits, invalidate the session,
+reject unknown/forbidden-dependent/bad costs, and exhaust16/64/128MiB tracked
+budgets. Use fresh processes with epoch zero and one separately; optional capture
+and live learning remain disabled, and full cold CPU cost is paid per probe.

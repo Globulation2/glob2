@@ -381,7 +381,7 @@ struct Device
         std::promise<void> completed;
         std::shared_future<void> ready = completed.get_future().share();
         std::atomic<bool> published{false};
-        Plane(API& api, const BackendRequest& r, std::span<const std::uint8_t> mask,bool scalar)
+        Plane(API& api, const BackendRequest& r, std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false)
             : api(&api), identity(r.identity), width(r.grid.width()), height(r.grid.height()) {
             const auto count=scalar ? std::size_t(1) : r.grid.cells();
             if(count>OpenCLHostBudget/sizeof(UInt)) throw BudgetExceeded();
@@ -389,7 +389,9 @@ struct Device
             const auto retained=r.identity.owner ? r.identity.retainedBytes : 0;
             if(payload>OpenCLHostBudget || retained>OpenCLHostBudget-payload) throw BudgetExceeded();
             hostLease.resize(payload+retained);
-            data.resize(count);blocked.assign(mask.begin(),mask.end());
+            if(reserveOnly) data.reserve(count);else data.resize(count);
+            blocked.assign(mask.begin(),mask.end());
+            if(reserveOnly) hostLease.resize(sizeof(*this)+data.capacity()*sizeof(UInt)+blocked.capacity()+retained);
         }
         void compactUniform() {
             if(data.size()==1) return;
@@ -446,6 +448,7 @@ struct Device
             status.pollMicros=numericOverride("GLOB2_OPENCL_POLL_US",0,1000);
             status.deviceProfiling=numericOverride("GLOB2_OPENCL_PROFILE",0,1)!=0;
             status.uniformMetadata=numericOverride("GLOB2_OPENCL_UNIFORM_METADATA",0,1)!=0;
+            status.probeColdCosts=numericOverride("GLOB2_OPENCL_PROBE_COLD_COSTS",0,1)!=0;
             status.activeEpoch=numericOverride("GLOB2_OPENCL_ACTIVE_EPOCH",0,1)!=0;
             status.parityBound=numericOverride("GLOB2_OPENCL_PARITY_BOUND",0,1)!=0;
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
@@ -1294,6 +1297,20 @@ std::shared_ptr<const void> retainOpenCLLifetime() {
     return {};
 #endif
 }
+std::shared_ptr<const void> reserveOpenCLDeviceBytesForDiagnostics(std::size_t bytes) {
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    struct Lease {
+        std::shared_ptr<Device> device;
+        BudgetLease budget;
+        Lease(std::shared_ptr<Device> device,std::size_t bytes):device(std::move(device)),budget(this->device->deviceBudget) {
+            budget.resize(bytes);
+        }
+    };
+    try {return std::make_shared<Lease>(runtime().shared,bytes);}catch(...) {return {};}
+#else
+    return {};
+#endif
+}
 struct OpenCLProbe::Impl
 {
     OpenCLProbeProgress progress=OpenCLProbeProgress::Pending;
@@ -1314,7 +1331,7 @@ struct OpenCLProbe::Impl
     UInt round=0,pitch=0,rows=0,flags=0,windowEnd=0;
     std::array<UInt,8> descriptor{};
     Handle a=nullptr,b=nullptr,active=nullptr,nextActive=nullptr,event=nullptr;
-    bool privateScalar=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
+    bool privateScalar=false,privateCosts=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
     static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime);}
     Impl(const BackendRequest& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue)
         :request(r),plan(p),keepAlive(std::move(owner)),clock(std::move(clockValue)),generation(r.session.currentGeneration()) {
@@ -1356,6 +1373,7 @@ struct OpenCLProbe::Impl
         if(phase==Phase::KernelWait) lane->profile(event,lane->status.deviceKernelNs);
         if(phase==Phase::CheckWait) lane->profile(event,lane->status.deviceCheckReadNs);
         if(phase==Phase::OutputWait) lane->profile(event,lane->status.deviceReadbackNs);
+        if(phase==Phase::CostsWait) lane->profile(event,lane->status.deviceUploadNs);
         lane->api.ReleaseEvent(event);event=nullptr;borrowedTransfers=false;return true;
     }
     void flush() {check(lane->api.Flush(lane->queue));}
@@ -1379,7 +1397,10 @@ struct OpenCLProbe::Impl
             if(!costs) {
                 const auto packed=request.identity.packedUniformCost;
                 if(!lane->shared->status.uniformMetadata || !(packed&65535u) || !(packed>>16)) {
-                    progress=OpenCLProbeProgress::Declined;return progress;
+                    if(!lane->shared->status.probeColdCosts || !request.identity.retainedBytes || !request.costAt) {
+                        progress=OpenCLProbeProgress::Declined;return progress;
+                    }
+                    phase=Phase::CostsReserve;break;
                 }
                 // A private proven scalar needs no callback scan or wait for a
                 // cache reservation being prepared by a different lane.
@@ -1388,11 +1409,62 @@ struct OpenCLProbe::Impl
                 const auto bytes=payload+request.identity.retainedBytes;
                 lane->optionalSubsetLease.resize(objectBytes()+bytes);
                 costs=std::make_shared<Device::Plane>(api,request,std::span<const std::uint8_t>{},true);
-                costs->data[0]=packed;privateScalar=true;
+                costs->data[0]=packed;privateScalar=privateCosts=true;
+                measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
+                measured.coldCostPlane=lane->shared->status.probeColdCosts;
             }
             costCharge=costs->hostLease.bytes;
             lane->optionalSubsetLease.resize(objectBytes()+costCharge);phase=Phase::Reserve;break;
         }
+        case Phase::CostsReserve: {
+            // No pending optional plane is ever inserted into the shared cache.
+            // Required work uses its own lane/plane and never waits for this one.
+            const auto retained=request.identity.retainedBytes;
+            const auto available=OpenCLProbeBudget-objectBytes();
+            if(retained>available || sizeof(Device::Plane)>available-retained ||
+                n>(available-retained-sizeof(Device::Plane))/sizeof(UInt)) throw BudgetExceeded();
+            const auto bytes=sizeof(Device::Plane)+n*sizeof(UInt)+retained;
+            lane->optionalSubsetLease.resize(objectBytes()+bytes);
+            costs=std::make_shared<Device::Plane>(api,request,std::span<const std::uint8_t>{},false,true);
+            costCharge=costs->hostLease.bytes;
+            lane->optionalSubsetLease.resize(objectBytes()+costCharge);
+            measured.coldCostPlane=true;privateCosts=true;
+            measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
+            phase=Phase::CostsPack;break;
+        }
+        case Phase::CostsPack: {
+            const auto stop=costs->data.size()+std::min(copyCells,n-costs->data.size());
+            while(costs->data.size()<stop) {
+                const auto end=costs->data.size()+std::min<std::size_t>(64,stop-costs->data.size());
+                while(costs->data.size()<end) {
+                    EntrySteps step;
+                    try {step=request.costAt(request.context,costs->data.size());}
+                    catch(...) {progress=OpenCLProbeProgress::Declined;return progress;}
+                    if(!step.cardinal || !step.diagonal || step.cardinal>65535 || step.diagonal>65535) {
+                        progress=OpenCLProbeProgress::Declined;return progress;
+                    }
+                    const UInt packed=step.cardinal|(step.diagonal<<16);
+                    if(!costs->data.empty() && costs->data[0]!=packed) costs->uniform=false;
+                    costs->data.push_back(packed);++measured.costCellsPrepared;
+                }
+                const auto now=clockNow();
+                if(!now || now<started) {invalidClock();progress=OpenCLProbeProgress::Declined;return progress;}
+                if(now-started>=cpuBudget) break;
+            }
+            if(costs->data.size()==n) phase=Phase::Reserve;
+            break;
+        }
+        case Phase::CostsUpload:
+            check(api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,costs->data.size()*sizeof(UInt),
+                costs->data.data(),0,nullptr,&event));
+            borrowedTransfers=true;++lane->status.costUploads;++measured.costUploads;
+            if(privateScalar) ++lane->status.uniformMetadataHits;
+            flush();phase=Phase::CostsWait;break;
+        case Phase::CostsWait:
+            // Completion is private. Do not publish a cache future or transfer
+            // ownership; the probe lease covers this immutable plane to death.
+            costs->published.store(true);costs->completed.set_value();
+            phase=Phase::Upload;break;
         case Phase::Reserve:
             if(n>(OpenCLProbeBudget-objectBytes()-costCharge)/sizeof(std::uint16_t)) throw BudgetExceeded();
             lane->optionalSubsetLease.resize(objectBytes()+costCharge+n*sizeof(std::uint16_t));
@@ -1441,20 +1513,21 @@ struct OpenCLProbe::Impl
                 *buffer=api.CreateBuffer(lane->context,1,tileCount*sizeof(UInt),nullptr,&error);check(error);
             }
             lane->capacity=n;lane->tileCapacity=tileCount;
-            if(privateScalar) {
+            if(privateCosts) {
                 costs->storage=std::make_shared<Device::Plane::Storage>(api,lane->shared->deviceBudget);
-                costs->storage->deviceLease.resize(sizeof(UInt));
-                costs->buffer=costs->storage->buffer=api.CreateBuffer(lane->context,1,sizeof(UInt),nullptr,&error);check(error);
+                const auto bytes=costs->data.size()*sizeof(UInt);
+                costs->storage->deviceLease.resize(bytes);
+                costs->buffer=costs->storage->buffer=api.CreateBuffer(lane->context,1,bytes,nullptr,&error);check(error);
             }
             descriptor={UInt(request.grid.width()),UInt(request.grid.height()),0,0,UInt(request.limit),
                 costs->uniform?3u:1u,pitch,rows};
             a=lane->first;b=lane->second;active=lane->tilesFirst;nextActive=lane->tilesSecond;
             ++lane->status.batches;lane->status.maxBatchFields=std::max<std::uint64_t>(lane->status.maxBatchFields,1);
-            phase=Phase::Upload;break;
+            phase=privateCosts && lane->shared->status.probeColdCosts ? Phase::CostsUpload : Phase::Upload;break;
         }
         case Phase::Upload: {
             // All borrowed sources persist until the trailing event completes.
-            if(privateScalar) {
+            if(privateScalar && !lane->shared->status.probeColdCosts) {
                 check(api.EnqueueWriteBuffer(lane->queue,costs->buffer,0,0,sizeof(UInt),costs->data.data(),0,nullptr,nullptr));
                 borrowedTransfers=true;
                 ++lane->status.costUploads;++lane->status.uniformMetadataHits;
@@ -1477,7 +1550,7 @@ struct OpenCLProbe::Impl
             flush();phase=Phase::InitialWait;break;
         }
         case Phase::InitialWait:
-            if(privateScalar) {costs->published.store(true);costs->completed.set_value();}
+            if(privateScalar && !lane->shared->status.probeColdCosts) {costs->published.store(true);costs->completed.set_value();}
             if(measured.activeEpoch){
                 // Same immutable batch bindings as required epoch execution;
                 // only pingpong/mask/epoch arguments change per dispatch. This

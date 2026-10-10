@@ -22,6 +22,9 @@ void releaseOpenCLHostBytes(std::size_t bytes) noexcept;
 bool reserveOpenCLProbeBytes(std::size_t bytes) noexcept;
 void releaseOpenCLProbeBytes(std::size_t bytes) noexcept;
 std::size_t openCLProbeBytes() noexcept;
+// Synthetic tracked-budget pressure only; no GPU allocation or driver query.
+// Explicit development tests retain this owned lease until after probe cleanup.
+std::shared_ptr<const void> reserveOpenCLDeviceBytesForDiagnostics(std::size_t bytes);
 enum class OpenCLCpuCategory : unsigned {Preparation,Upload,Arguments,Fill,KernelEnqueue,CheckRead,OutputRead,OutputCopy,Other,Count};
 struct OpenCLApiCpuCounters {
     std::array<std::uint64_t,unsigned(OpenCLCpuCategory::Count)> ns{},calls{};
@@ -83,6 +86,8 @@ struct OpenCLStatus
     unsigned apiCpuMode = 0;
     bool apiCpuConfigured = false;
     OpenCLApiCpuCounters apiCpu;
+    // Isolated optional preparation only; never publishes pending/cache planes.
+    bool probeColdCosts=false;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.
@@ -106,7 +111,8 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // destruction. Generic keepAlive allocation sizes are unknowable here, so the
 // backend accounts only its staging/state/lane and retained cost plane.
 // Backend staging is charged
-// separately. Unknown/unready cost planes are declined without preparation.
+// separately. Unknown/unready planes decline by default; the isolated cold
+// preparation opt-in retains its completed plane privately through destruction.
 // Epoch probes use the same initialized program and required check window,
 // private kernel/buffers and one-dispatch advances. Their yielded/cold lifecycle
 // CPU is not a faithful required-batch timing reference or full process cost;
@@ -123,11 +129,12 @@ struct OpenCLProbeClock {
 class OpenCLProbe
 {
 public:
-    enum class Stage {Costs,Reserve,Copy,Queue,Buffers,Upload,InitialWait,Dispatch,KernelWait,CheckWait,OutputWait};
+    enum class Stage {Costs,Reserve,Copy,Queue,Buffers,Upload,InitialWait,Dispatch,KernelWait,CheckWait,OutputWait,CostsReserve,CostsPack,CostsUpload,CostsWait};
     struct Metrics {
         std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0,setupCpuNs=0;
         std::uint64_t hostChecks=0,tileMaskInitializations=0,tileMaskClears=0,kernelArgumentUpdates=0;
-        std::uint64_t invalidCpuClocks=0;
+        std::uint64_t invalidCpuClocks=0,costCellsPrepared=0,costPreparedBytes=0,costUploads=0;
+        bool coldCostPlane=false;
         unsigned checkInterval=1;
         bool activeEpoch=false;
         Stage stage=Stage::Costs;
