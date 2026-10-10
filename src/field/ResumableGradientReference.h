@@ -161,7 +161,7 @@ public:
         const auto start=timer.read ? timer.read(timer.context) : glob2::threadCpuNs();
         try {
             if(!value.seeds || !value.costsOwner || !value.costAt || value.grid.width()<=0 || value.grid.height()<=0 ||
-               std::size_t(value.grid.width())>ProbeHostLease::Budget/10/std::size_t(value.grid.height())) return {};
+               value.maxCost>COST_LIMIT || std::size_t(value.grid.width())>ProbeHostLease::Budget/10/std::size_t(value.grid.height())) return {};
             if(value.seeds->size()!=value.grid.cells() || value.grid.cells()>=Absent) return {};
             // Storage is fixed before admission: 2-byte output and two 4-byte
             // indexed-heap arrays, plus the immutable original seed allocation.

@@ -139,6 +139,8 @@ TEST_CASE("probe cancellation and invalid input release bounded retained leases"
     auto oversized=input({1,1},{GRADIENT_AT_GOAL},{LAND_STEPS},COST_LIMIT);
     oversized.retainedCostBytes=ProbeHostLease::Budget;
     CHECK_FALSE(Reference::tryCreate(oversized));CHECK(ProbeHostLease::currentBytes()==baseline);
+    auto unsupported=input({1,1},{GRADIENT_AT_GOAL},{LAND_STEPS},COST_LIMIT+1);
+    CHECK_FALSE(Reference::tryCreate(unsupported));CHECK(ProbeHostLease::currentBytes()==baseline);
     // A zero edge is invalid only if the cell is actually expanded; the
     // original immutable input survives the failed optional computation.
     auto invalid=input({1,1},{GRADIENT_AT_GOAL},{{0,14}},COST_LIMIT);
