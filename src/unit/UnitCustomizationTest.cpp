@@ -2690,7 +2690,7 @@ TEST_SUITE("UnitCustomization")
         }
         auto* tower=world.addBuilding("defencetower",8,8,0,1); REQUIRE(tower);
         REQUIRE(Building::GIDtoID(tower->gid)==Building::MAX_COUNT-1);
-        REQUIRE(enemy->liveBuildings.size()==Building::MAX_COUNT);
+        REQUIRE(enemy->liveBuildings.size()==std::size_t(Building::MAX_COUNT));
         REQUIRE(enemy->liveBuildings.matches(enemy->myBuildings,Building::MAX_COUNT));
         const auto random=world.game.syncRandom; const auto entity=observer->entityRandom.exportState();
         int positives=0,negatives=0;
