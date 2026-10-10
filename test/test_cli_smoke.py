@@ -201,7 +201,7 @@ class CliSmoke(unittest.TestCase):
                 + '; _glob2_complete; printf "%s\\n" "${COMPREPLY[@]}"'
             )
             result = subprocess.run(
-                ["bash", "-s", "--", source.name],
+                [shutil.which("bash"), "-s", "--", source.name],
                 input=code.encode("utf-8"),
                 cwd=self.root,
                 capture_output=True,
