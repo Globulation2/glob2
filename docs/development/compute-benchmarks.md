@@ -33,6 +33,21 @@ than one decision and the smoothed decision work of recent batches is at least 1
 otherwise the owner decides it inline when it dispatches, outside the executor. That
 choice changes which thread runs a decision, never its result.
 
+`GLOB2_AI_SCHEDULER_DIAGNOSTICS=1` enables thread CPU measurement around
+`DecisionAndCommandCapture` (inclusive controller decision and command creation)
+and separate `InputRelease` (observation and closure cleanup). The flag is latched
+at scheduler construction; disabled callbacks perform no extra clock reads or
+counter updates. Unavailable or reversed clocks count an invalid measurement and
+contribute zero CPU. Counts include failed decisions. These counters are unsaved
+scheduler-lifetime totals across controller generations, not per-job event traces;
+independently read live scalars need not represent a coherent instant. Sample
+warm boundaries after settling work when exact aggregate attribution is needed.
+`Game::aiSchedulingCounters()` copies fixed scheduling and CPU scalars without
+constructing the full `aiMetrics()` vector or inspecting snapshots. Per-tick
+`deadlineWaitNs` and `deadlineMisses` deltas expose AI publication waits separately
+from GPU gradient publication. Thread CPU scopes remain components of total
+process CPU, and should not be added again to that process total.
+
 Orders carry observed target incarnations. The execution boundary rejects a missing or
 replaced target and queues immutable accepted/rejected feedback for a later decision.
 Controller replacement joins its work before destruction. Saving drains computation

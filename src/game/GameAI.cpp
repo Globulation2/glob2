@@ -33,8 +33,15 @@ void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
 void Game::clearAI() { map.finishGradientPipeline(); map.finishResourceGrowth(); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary({},true));}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
+Game::AISchedulingCounters Game::aiSchedulingCounters() const noexcept {
+ if(!aiPipeline)return {};
+ const auto& scheduling=aiPipeline->schedulingMetrics();const auto jobs=aiPipeline->schedulingJobCpuCounters();
+ return {scheduling.submitted,scheduling.delivered,scheduling.deadlineMisses,scheduling.deadlineWaitNs,scheduling.sharedBatches,
+  jobs.enabled,jobs.jobsCompleted,jobs.decisionAndCommandCaptureCpuNs,jobs.inputReleaseCpuNs,jobs.invalidMeasurements,jobs.failedJobs};
+}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  if(!aiPipeline)return {};
+ const auto jobCpu=aiPipeline->schedulingJobCpuCounters();
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
   {"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
@@ -48,7 +55,9 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
   {"snapshot_peak_retained_bytes",memory.peakRetainedBytes},{"snapshot_peak_capacity_bytes",memory.peakCapacityBytes},
   {"snapshot_peak_leased_bytes",memory.peakLeasedBytes},
   {"deadline_misses",scheduling.deadlineMisses},{"deadline_wait_ns",scheduling.deadlineWaitNs},{"maximum_pending",scheduling.maximumPending},
-  {"shared_batches",scheduling.sharedBatches}};
+  {"shared_batches",scheduling.sharedBatches},{"job_cpu_diagnostics",jobCpu.enabled},
+  {"jobs_completed",jobCpu.jobsCompleted},{"decision_and_command_capture_cpu_ns",jobCpu.decisionAndCommandCaptureCpuNs},
+  {"input_release_cpu_ns",jobCpu.inputReleaseCpuNs},{"job_cpu_invalid_measurements",jobCpu.invalidMeasurements},{"failed_jobs",jobCpu.failedJobs}};
 }
 void Game::observeUnpolledAI() {
  std::vector<AIJavaScript*> idle;

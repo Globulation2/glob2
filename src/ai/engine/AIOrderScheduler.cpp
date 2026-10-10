@@ -9,6 +9,9 @@
 #include <limits>
 #include <chrono>
 #include <set>
+#include <cstdlib>
+#include <cstring>
+#include "common/ThreadCpuClock.h"
 
 namespace AIEngine
 {
@@ -61,6 +64,10 @@ std::shared_ptr<Order> Command::decode() const
 	return order;
 }
 
+OrderScheduler::OrderScheduler() {
+    const auto* value=std::getenv("GLOB2_AI_SCHEDULER_DIAGNOSTICS");
+    jobCpuDiagnostics=value && std::strcmp(value,"1")==0;
+}
 Command& OrderScheduler::complete(Pending& entry)
 {
 	if (entry.failure) std::rethrow_exception(entry.failure);
@@ -71,12 +78,26 @@ void OrderScheduler::Pending::run(void* context, std::size_t)
 {
 	auto& entry = *static_cast<Pending*>(context);
 	const auto start = std::chrono::steady_clock::now();
+    const auto cpuStart=entry.owner->jobCpuDiagnostics ? glob2::threadCpuNs() : 0;
 	try { entry.completed = entry.decide(*entry.world); }
 	catch (...) { entry.failure = std::current_exception(); }
-	entry.computationNs = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count();
+	const auto decided=std::chrono::steady_clock::now();
+    const auto cpuDecided=entry.owner->jobCpuDiagnostics ? glob2::threadCpuNs() : 0;
+	entry.computationNs = std::chrono::duration_cast<std::chrono::nanoseconds>(decided - start).count();
 	entry.owner->computationNs.fetch_add(entry.computationNs, std::memory_order_relaxed);
 	// The observation lease and the decision closure end with the computation.
+    const auto cpuCleanup=entry.owner->jobCpuDiagnostics ? glob2::threadCpuNs() : 0;
 	entry.world.reset(); entry.decide = nullptr;
+    if(entry.owner->jobCpuDiagnostics){
+        const auto cpuReleased=glob2::threadCpuNs();
+        const bool valid=cpuStart && cpuDecided>=cpuStart && cpuCleanup>=cpuDecided && cpuReleased>=cpuCleanup;
+        if(valid){
+            entry.owner->decisionCpuNs.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuDecided),std::memory_order_relaxed);
+            entry.owner->inputReleaseCpuNs.fetch_add(glob2::threadCpuDeltaNs(cpuCleanup,cpuReleased),std::memory_order_relaxed);
+        }else entry.owner->invalidCpuMeasurements.fetch_add(1,std::memory_order_relaxed);
+        if(entry.failure)entry.owner->failedJobs.fetch_add(1,std::memory_order_relaxed);
+        entry.owner->completedJobs.fetch_add(1,std::memory_order_relaxed);
+    }
 }
 OrderScheduler::~OrderScheduler()
 {
