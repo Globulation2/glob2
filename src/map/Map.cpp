@@ -525,7 +525,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
 {
     const auto m=gradientRuntime->backendSession->metrics();
     const auto device=gradientRuntime->deviceService->metrics();
-    return {{"required_seed_cpu_ns",gradientRuntime->pipeline.requiredSeedCpuNs()},
+    return {{"cpu_diagnostics_enabled",1},{"required_seed_cpu_ns",gradientRuntime->pipeline.requiredSeedCpuNs()},
         {"required_propagation_cpu_ns",gradientRuntime->pipeline.requiredPropagationCpuNs()},
         {"cpu_complete_fields",gradientRuntime->pipeline.cpuCompleteFields()},
         {"gpu_selected_fields",gradientRuntime->pipeline.gpuSelectedFields()},
