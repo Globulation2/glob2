@@ -251,6 +251,8 @@ UNIT_TESTS = [
     '#src/field/ResumableGradientReferenceTest.cpp',
     '#src/field/ResumableProductionGradientTest.cpp',
     '#src/field/OpenCLGradientTest.cpp',
+    '#src/field/OpenCLBorrowedLifetimeTest.cpp',
+    '#src/field/GradientCpuCaptureTest.cpp',
     '#src/field/CpuSavingPolicyTest.cpp',
     ('#src/map/gradient/GradientTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HelloWorldTest.cpp',
