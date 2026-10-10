@@ -164,7 +164,10 @@ struct BuildingUnitInteraction
     Sint32 projectileDamage=0;
     std::uint32_t trainingMask=0;
     Uint8 flags=0;
+    // New-hire policy consumes existing padding; semantic flags remain stable.
+    Uint8 recruitmentMask=0;
     bool has(Flag flag) const { return flags&flag; }
+    bool recruits(unsigned role) const { return role<3 && (recruitmentMask&(1u<<role)); }
 };
 static_assert(sizeof(BuildingUnitInteraction)==12);
 

@@ -19,6 +19,7 @@ namespace
 {
 using Json = nlohmann::json;
 const char *builtinKeys[] = {"worker", "explorer", "warrior"};
+const char *recruitmentNames[] = {"recruitClear", "recruitExplore", "recruitDefend"};
 const std::pair<const char *, UnitRuntimeTraits::Flag> flagNames[] = {
     {"transport", UnitRuntimeTraits::Transport},
     {"construct", UnitRuntimeTraits::Construct},
@@ -149,8 +150,9 @@ void parseLevel(const Json &j, UnitType &l)
         if (j.contains(name))
             *value = integer(j.at(name));
 }
-Json runtimeJson(const UnitRuntimeTraits &r)
+Json runtimeJson(const UnitDefinition &definition)
 {
+    const auto &r = definition.runtime;
     Json j = Json::object();
     for (auto [name, flag] : flagNames)
         j[name] = r.has(flag);
@@ -158,13 +160,30 @@ Json runtimeJson(const UnitRuntimeTraits &r)
     RUNTIME_FIELDS(WRITE)
 #undef WRITE
     j["learnableMask"] = r.learnableMask;
+    // Omit unspecified policies so pre-policy snapshots retain their canonical
+    // bytes, digest, and simulation identity.
+    for (unsigned role = 0; role < 3; ++role)
+        if (definition.recruitmentOverrides[role].has_value())
+            j[recruitmentNames[role]] = *definition.recruitmentOverrides[role];
     return j;
 }
-void parseRuntime(const Json &j, UnitRuntimeTraits &r)
+void parseRuntime(const Json &j, UnitDefinition &definition)
 {
+    auto &r = definition.runtime;
     if (!j.is_object())
         fail("behaviors must be object");
     std::set<std::string> allowed;
+    for (unsigned role = 0; role < 3; ++role)
+    {
+        const auto *name = recruitmentNames[role];
+        allowed.insert(name);
+        if (j.contains(name))
+        {
+            if (!j.at(name).is_boolean())
+                fail("recruitment policy must be boolean");
+            definition.recruitmentOverrides[role] = j.at(name).get<bool>();
+        }
+    }
     for (auto [name, flag] : flagNames)
     {
         allowed.insert(name);
@@ -318,7 +337,7 @@ std::string UnitCatalog::serialize() const
                               {"requiredExperiment", d.requiredExperiment},
                               {"sprite", d.sprite},
                               {"mesh", d.mesh},
-                              {"behaviors", runtimeJson(d.runtime)},
+                              {"behaviors", runtimeJson(d)},
                               {"levels", levels},
                               {"cost", cost}});
     }
@@ -442,7 +461,7 @@ std::shared_ptr<const UnitCatalog> UnitCatalog::parse(std::string_view source, b
         d.sprite = entry.value("sprite", d.sprite);
         d.mesh = entry.value("mesh", d.mesh);
         if (entry.contains("behaviors"))
-            parseRuntime(entry.at("behaviors"), d.runtime);
+            parseRuntime(entry.at("behaviors"), d);
         if (entry.contains("levels"))
         {
             const auto &a = entry.at("levels");
@@ -597,6 +616,13 @@ void UnitCatalog::compile()
                          [&](const auto &e) { return e.key == d.requiredExperiment; }))
             fail("unresolved experiment");
         auto &r = d.runtime;
+        const bool roleCapabilities[] = {
+            r.has(UnitRuntimeTraits::Clear), r.has(UnitRuntimeTraits::Explore),
+            r.has(UnitRuntimeTraits::Melee) || r.has(UnitRuntimeTraits::GuardIdle)};
+        r.recruitmentMask = 0;
+        for (unsigned role = 0; role < 3; ++role)
+            if (roleCapabilities[role] && d.recruitmentOverrides[role].value_or(true))
+                r.recruitmentMask |= Uint8(1u << role);
         if (legacyPerformancePolicies_ && i < BuiltinUnitCount)
             r.flags |= UnitRuntimeTraits::LegacyPerformancePolicies;
         else

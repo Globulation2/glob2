@@ -205,6 +205,7 @@ private:
 	void compileRuntimeTraits();
 	std::vector<BuildingRuntimeTraits> runtimeTypes_;
     std::vector<Uint32> unitFlags_;
+    std::vector<Uint8> unitRecruitmentMasks_;
 	std::vector<Uint32> unitTrainingAbilities_;
 	std::vector<Uint32> unitConstructionTrainingAbilities_;
 	std::vector<BuildingUnitInteraction> unitInteractions_;

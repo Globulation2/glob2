@@ -74,14 +74,12 @@ Population::Population(bool workers, bool explorers, bool warriors, int num, Pop
 tribool Population::passes(Runtime& runtime)
 {
 	int amount=0;
-    const auto& statistics=runtime.observedTeam().statistics;
     const auto& world=runtime.observation();
-    for (unsigned id=0;id<world.unitTypeCount();++id) {
-        const auto flags=world.unitTraits(id).flags;
-        if ((workers && (flags&UnitRuntimeTraits::Transport))
-            || (explorers && (flags&UnitRuntimeTraits::Explore))
-            || (warriors && (flags&UnitRuntimeTraits::Melee)))
-            amount+=statistics.numberUnitPerType[id];
+    for (const auto* unit:world.unitSlots(runtime.teamNumber())) {
+        if (unit && ((workers && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,WORKER))
+            || (explorers && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,EXPLORER))
+            || (warriors && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,WARRIOR))))
+            ++amount;
     }
 	if(method==Greater)
 	{

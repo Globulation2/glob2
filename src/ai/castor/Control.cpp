@@ -44,9 +44,9 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 		const AIEngine::UnitView *u=myUnits[i];
 		if (u) {
             ++unitSumAll;++feedingCounts[u->typeNum];
-            unitSum[WORKER]+=bool(u->capabilityFlags&UnitRuntimeTraits::Transport);
-            unitSum[EXPLORER]+=bool(u->capabilityFlags&UnitRuntimeTraits::Explore);
-            unitSum[WARRIOR]+=bool(u->capabilityFlags&UnitRuntimeTraits::Melee);
+            unitSum[WORKER]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER);
+            unitSum[EXPLORER]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,EXPLORER);
+            unitSum[WARRIOR]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WARRIOR);
         }
 	}
 	int foodSum=0;

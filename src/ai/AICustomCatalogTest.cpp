@@ -935,4 +935,102 @@ TEST_CASE("historical farming reserves only propagating finite material donors")
     }
 }
 
+TEST_CASE("keyed worker courses retain qualification grants and exclude unrelated recipients")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;
+    auto units=nlohmann::json::parse(game.unitCatalog().serialize());
+    auto builder=units["units"][WORKER];builder["key"]="fixture:keyed-builder";
+    builder["behaviors"]["learnableMask"]=builder["behaviors"]["learnableMask"].get<Uint32>()|(1u<<ARMOR);
+    builder["behaviors"]["melee"]=true;
+    for(int level=0;level<NB_UNIT_LEVELS;++level) {
+        builder["levels"][level]["performance"][ATTACK_SPEED]=units["units"][WARRIOR]["levels"][level]["performance"][ATTACK_SPEED];
+        builder["levels"][level]["performance"][ATTACK_STRENGTH]=units["units"][WARRIOR]["levels"][level]["performance"][ATTACK_STRENGTH];
+    }
+    units["units"].push_back(builder);
+    auto courier=builder;courier["key"]="fixture:keyed-courier";courier["behaviors"]["construct"]=false;
+    units["units"].push_back(courier);
+    auto constructor=builder;constructor["key"]="fixture:constructor-only";
+    constructor["behaviors"]["transport"]=false;
+    units["units"].push_back(constructor);
+    game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+    auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+    const int school=game.buildingsTypes.getTypeNum("school",0,false);
+    auto& semantics=buildings["variants"][school]["semantics"];
+    semantics["admittedUnits"]={"fixture:keyed-builder"};
+    semantics["training"]=nlohmann::json::object();
+    // Raw masks still mention the worker; stable keys authoritatively exclude it.
+    semantics["training"]["armor"]={{"enabled",true},{"unitMask",1},
+        {"units",{"fixture:keyed-builder"}},{"targetLevel",0},{"constructionLevel",2},
+        {"duration",32},{"cost",nlohmann::json::object()}};
+    game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
+    world.addBuilding("school",4,4);
+    auto* worker=world.addUnit(WORKER,10,10);worker->constructionLevel=0;
+    auto* custom=world.addUnit(3,11,10);custom->constructionLevel=0;
+    auto* carrier=world.addUnit(4,12,10);carrier->constructionLevel=0;
+    auto* inactive=world.addUnit(WORKER,13,10);inactive->performance[HARVEST]=0;
+    auto* defender=world.addUnit(3,14,10);defender->jobPurpose=UnitJobPurpose::Defend;
+    const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+    const auto projection=AIEngine::ObservationQueries::workerTrainingProjection(*view,false);
+    CHECK(projection.labourProviders[school]==1);
+    CHECK(projection.constructionLevels[school]==2);
+    CHECK((projection.courseMasks[school][3]&(1u<<ARMOR))!=0);
+    CHECK(projection.courseMasks[school][WORKER]==0);
+    CHECK(projection.courseMasks[school][4]==0);
+    CHECK_FALSE(AIEngine::ObservationQueries::definitionCanConstruct(*view,5));
+    CHECK(AIEngine::ObservationQueries::definitionCanServeStrategyRole(*view,4,WORKER));
+    CHECK_FALSE(AIEngine::ObservationQueries::definitionCanConstruct(*view,4));
+    AIMaxima::Maxima maxima(game.players[0]);
+    const auto labour=maxima.observe_labour(maxima.context);
+    CHECK(labour.workers==3); // worker, keyed builder, courier; defense owns its hybrid.
+    CHECK(labour.idle==3);CHECK(labour.trainable==1);
+    CHECK(labour.trainingSlots==game.buildingsTypes.get(school)->maxUnitInside);
+    custom->canLearn[ARMOR]=false;
+    const auto blocked=maxima.observe_labour(maxima.context);
+    CHECK(blocked.trainingSlots==labour.trainingSlots);CHECK(blocked.trainable==0);
+    auto* clearing=world.addBuilding("clearingflag",20,4);REQUIRE(clearing);
+    worker->attachedBuilding=clearing;worker->activity=Unit::ACT_FLAG;worker->jobPurpose=UnitJobPurpose::Clear;
+    clearing->unitsWorking.push_back(worker);
+    const auto clearingLabour=maxima.observe_labour(maxima.context);
+    CHECK(clearingLabour.workers==labour.workers);CHECK(clearingLabour.idle==labour.idle-1);
+    CHECK(clearingLabour.otherAssigned==1);CHECK(clearingLabour.innCarriers==0);
+    CHECK(clearingLabour.swarmCarriers==0);CHECK(clearingLabour.builders==0);
+    clearing->unitsWorking.clear();worker->attachedBuilding=nullptr;
+    (void)carrier;
+}
+
+TEST_CASE("construction tier arithmetic excludes couriers without construction")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;
+    auto units=nlohmann::json::parse(game.unitCatalog().serialize());
+    auto courier=units["units"][WORKER];courier["key"]="fixture:upgrade-courier";
+    courier["behaviors"]["construct"]=false;units["units"].push_back(courier);
+    game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));game.configureBuildingCatalog();
+    world.addBuilding("inn",4,4);
+    auto* delivery=world.addUnit(3,12,12);delivery->constructionLevel=3;
+    AINumbi ai(game.players[0]);
+    CHECK(withNumbiObservation(ai,game,[&]{return ai.mayUpgrade(0,0);})->getOrderType()==ORDER_NULL);
+    auto* worker=world.addUnit(WORKER,13,12);worker->constructionLevel=1;
+    CHECK(withNumbiObservation(ai,game,[&]{return ai.mayUpgrade(0,0);})->getOrderType()==ORDER_CONSTRUCTION);
+}
+TEST_CASE("Castor swimming workforce excludes inactive carriers")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto* worker=world.addUnit(WORKER,10,10);
+    for(int i=0;i<3;++i) {
+        auto* inactive=world.addUnit(WORKER,11+i,10);
+        inactive->performance[SWIM]=10;inactive->performance[HARVEST]=0;
+    }
+    AICastor ai(world.game.players[0]);
+    withCastorObservation(ai,world.game,[&]{ai.computeCanSwim();});
+    CHECK_FALSE(ai.canSwim);
+    worker->performance[SWIM]=10;
+    withCastorObservation(ai,world.game,[&]{ai.computeCanSwim();});
+    CHECK(ai.canSwim);
+}
+
 }

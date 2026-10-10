@@ -309,7 +309,7 @@ void AICastor::computeWorkPowerMap()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && (u->capabilityFlags&UnitRuntimeTraits::Transport) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
 			int range=u->hungriness>0 ? ((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness : AI_CASTOR_GRADIENT_WALL;
 			if (range<0)
@@ -383,7 +383,7 @@ void AICastor::computeWorkRangeMap()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && (u->capabilityFlags&UnitRuntimeTraits::Transport) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
 			int range=u->hungriness>0 ? ((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness : AI_CASTOR_GRADIENT_WALL;
 			if (range<0)

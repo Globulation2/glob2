@@ -771,7 +771,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->occupancyAt(map->tileIndex(x,y)).groundUnit);
 					if (u)
 					{
-						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && (u->capabilityFlags&UnitRuntimeTraits::Melee))
+						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR))
 						{
 							score++;
 						}
@@ -1055,7 +1055,9 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medic
 			// This overload supplies recruitable free units; stationary combat
 			// contributes to the total-role overload but cannot reach an assignment.
 			if ((u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0)
-				&& AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type) && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
+				&& AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type)
+                && (type!=WARRIOR || activity!=Unit::ACT_RANDOM || world->unitTraits(u->typeNum).recruits(2))
+                && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
 				(isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])>=static_cast<int>(level))) && u->medical==medical_state)
 			{
 				free_workers+=1;
@@ -3756,7 +3758,8 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 			for(const auto reference:ai.game->workers(*b))
 			{
 				const auto* unit=ai.game->unit(reference);
-				if(unit && unit->typeNum==unit_type
+				if(unit && AIEngine::ObservationQueries::matchesStrategyUnitRole(*ai.game,*unit,unit_type)
+                    && (unit_type!=WORKER || (unit->jobPurpose!=UnitJobPurpose::Defend && unit->jobPurpose!=UnitJobPurpose::Explore))
 					&& (ability==BUILD ? unit->constructionLevel : unit->level[ability])>=static_cast<int>(usage.minimum_level))++assigned;
 			}
 			needed+=std::max(0,static_cast<int>(usage.number)-assigned);

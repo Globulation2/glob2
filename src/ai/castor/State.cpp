@@ -54,7 +54,7 @@ void AICastor::computeCanSwim()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && (u->capabilityFlags&UnitRuntimeTraits::Transport) && u->medical==0)
+		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0)
 		{
 			if (u->performance[SWIM]>0)
 				sumCanSwim++;

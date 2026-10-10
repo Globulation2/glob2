@@ -1058,6 +1058,38 @@ TEST_CASE("uniform projectile policies cover additional units and keyed override
     CHECK(catalog.getRuntime(tower)->damage(4)==0);
 }
 
+TEST_CASE("building interaction recruitment bytes remain distinct when semantic roles match")
+{
+    CHECK(sizeof(BuildingUnitInteraction)==12);
+    CHECK(sizeof(BuildingRuntimeTraits)==64);
+    std::vector<BuildingUnitInteraction> row(3);
+    row[WORKER].flags=BuildingUnitInteraction::Clear;
+    row[WORKER].recruitmentMask=1;
+    BuildingUnitInteractionPool pool;
+    const auto accepting=pool.intern(row);
+    row[WORKER].recruitmentMask=0;
+    const auto refusing=pool.intern(row);
+    CHECK(accepting!=refusing); CHECK(pool.intern(row)==refusing);
+    const auto rows=pool.release();
+    CHECK(rows[accepting+WORKER].flags==rows[refusing+WORKER].flags);
+    CHECK(rows[accepting+WORKER].recruits(0)); CHECK_FALSE(rows[refusing+WORKER].recruits(0));
+
+    const auto units=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"recruitClear":false}}]})");
+    BuildingsTypes catalog; catalog.initLegacy(); catalog.configureUnits(*units);
+    const auto flag=catalog.getFinishedTypeNum("clearingflag");
+    CHECK(catalog.getRuntime(flag)->attractsRole(0));
+    CHECK(catalog.getRuntime(flag)->interaction(WORKER).has(BuildingUnitInteraction::Clear));
+    CHECK_FALSE(catalog.getRuntime(flag)->interaction(WORKER).recruits(0));
+    const auto copy=catalog;
+    CHECK(copy.getRuntime(flag)->interactions!=catalog.getRuntime(flag)->interactions);
+    CHECK(copy.getRuntime(flag)->attractsRole(0));
+    CHECK_FALSE(copy.getRuntime(flag)->interaction(WORKER).recruits(0));
+    BuildingsTypes restored; restored.loadSnapshotJson(catalog.snapshotJson());
+    restored.configureUnits(*UnitCatalog::deserialize(units->serialize()));
+    CHECK(restored.getRuntime(flag)->attractsRole(0));
+    CHECK_FALSE(restored.getRuntime(flag)->interaction(WORKER).recruits(0));
+}
+
 TEST_CASE("building interaction interning shares identical rows and bounds unique storage")
 {
     std::vector<BuildingUnitInteraction> row(4);

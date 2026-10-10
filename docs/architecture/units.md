@@ -106,8 +106,18 @@ through training. Walking and swimming use the existing terrain routing; a
 swim-only class excludes land and allocates its fields only when needed.
 
 Transport, construction, clearing, melee and ranged combat are independent.
-Idle recruitment, combat interruption, retreat and regeneration have separate
-policies. `countsForSurvival` determines whether a unit can keep its team alive;
+Automatic flag recruitment, painted-area seeking, combat interruption, retreat
+and regeneration have separate policies. `recruitClear`, `recruitExplore` and
+`recruitDefend` independently permit new automatic flag assignments. Missing
+values retain the preceding capability-derived eligibility; explicit values
+inherit from a parent definition. A true policy cannot enable a missing work
+capability, and a building's `attractionUnits` selector cannot bypass a false
+policy for a new hire. Semantic attraction roles still govern existing jobs,
+building orders, routing and team-list memberships. Changing recruitment policy
+during setup does not revoke an existing valid assignment. `clearIdle` and `guardIdle` instead control autonomous seeking
+of painted clearing and guard areas; `exploreIdle` controls autonomous fog
+exploration. Recruitment overrides are optional in resolved snapshots, so
+pre-policy catalogs preserve their serialized bytes and identity. `countsForSurvival` determines whether a unit can keep its team alive;
 workers and warriors enable it, while explorers retain their historical exclusion.
 `releaseClearingClaims` releases an idle clearing claim on conversion or direct
 destruction. New definitions enable this policy; the shipped definitions preserve
@@ -121,6 +131,11 @@ combat, recruitment and feeding calculations use capabilities and effective
 properties. Population aggregates avoid counting a hybrid as simultaneously
 performing multiple assignments. Feeding admission uses bounded deterministic
 capacity allocation rather than enumerating subsets of all types.
+Maxima retains its minimum attack-ability level as the unlearned army estimate,
+using configured speed, strength and reference armor at that level. Imported
+historical race tables retain their private legacy strategy calibration. When
+built-in melee is disabled, enabled custom melee definitions provide a fallback
+reference for enemy strength.
 
 Training-provider summaries and AI recipient tables use compiled learnability
 and active capabilities. Construction qualification is independent: any

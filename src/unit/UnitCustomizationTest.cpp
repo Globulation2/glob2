@@ -104,6 +104,151 @@ void checkPhaseContinuation(Game& game,int ticks)
 
 TEST_SUITE("UnitCustomization")
 {
+    TEST_CASE("hybrid flag recruitment policies are independent of abilities and idle area policies [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        constexpr const char *policyNames[] = {"recruitClear", "recruitExplore", "recruitDefend"};
+        for (unsigned role = 0; role < 3; ++role) for (bool allowed : {false, true})
+            for (bool explicitSelection : {false, true}) {
+            CAPTURE(role); CAPTURE(allowed); CAPTURE(explicitSelection);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            auto definitions = nlohmann::json::parse(world.game.unitCatalog().serialize());
+            auto hybrid = definitions["units"][WORKER]; hybrid["key"] = "fixture:recruitment-hybrid";
+            auto &traits = hybrid["behaviors"];
+            traits["melee"] = true; traits["explore"] = true;
+            // These idle policies concern painted areas/fog, not flag work.
+            traits["guardIdle"] = false; traits["clearIdle"] = false; traits["exploreIdle"] = false;
+            for (unsigned candidate = 0; candidate < 3; ++candidate)
+                traits[policyNames[candidate]] = allowed && candidate == role;
+            for (unsigned level = 0; level < NB_UNIT_LEVELS; ++level) {
+                hybrid["levels"][level]["performance"][ATTACK_SPEED] = definitions["units"][WARRIOR]["levels"][level]["performance"][ATTACK_SPEED];
+                hybrid["levels"][level]["performance"][ATTACK_STRENGTH] = definitions["units"][WARRIOR]["levels"][level]["performance"][ATTACK_STRENGTH];
+            }
+            definitions["units"].push_back(hybrid);
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+            auto buildings = nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            const auto innType = world.game.buildingsTypes.getFinishedTypeNum("inn");
+            buildings["variants"][innType]["properties"]["zonable"] = {1,1,1};
+            if (explicitSelection)
+                for (const char *job : {"clear", "explore", "defend"})
+                    buildings["variants"][innType]["semantics"]["attractionUnits"][job] = {"fixture:recruitment-hybrid"};
+            world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+            world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto *flag = world.addBuilding("inn",10,8);
+            auto *unit = world.addUnit(3,6,8);
+            REQUIRE(flag); REQUIRE(unit);
+            flag->unitStayRange = 6; flag->dirtyGradients();
+            deposit(world.game.map,15,9,WOOD,3);
+            CHECK(unit->hasCapability(UnitRuntimeTraits::Clear)); CHECK(unit->hasCapability(UnitRuntimeTraits::Melee));
+            CHECK(unit->hasCapability(UnitRuntimeTraits::Explore));
+            CHECK(unit->runtimeTraits().recruits(role) == allowed);
+            // A refusal changes hiring, not the building's role or ability
+            // to host a job that was already assigned.
+            CHECK(flag->canUnitWorkHere(unit,true,int(role)));
+            CHECK(flag->runtime->attractsRole(role));
+            CHECK(flag->runtime->interaction(unit->typeNum).recruits(role) == allowed);
+            unit->handleDisplacement(); CHECK(unit->displacement == Unit::DIS_RANDOM);
+            flag->maxUnitWorking = flag->desiredMaxUnitWorking = 1;
+            flag->subscriptionWorkingTimer = 32;
+            CHECK(flag->subscribeForFlagingStep() == allowed);
+            if (allowed) {
+                CHECK(unit->attachedBuilding == flag); CHECK(unit->activity == Unit::ACT_FLAG);
+                CHECK(unit->jobPurpose == static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+role));
+            } else {
+                CHECK(unit->attachedBuilding == nullptr); CHECK(unit->activity == Unit::ACT_RANDOM);
+                CHECK(flag->unitsWorking.empty());
+            }
+            checkPhaseContinuation(world.game,64);
+        }
+    }
+
+    TEST_CASE("flag recruitment refusal does not disable painted clearing or defense areas")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool clearing : {false,true}) {
+            CAPTURE(clearing);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            const auto catalog = UnitCatalog::fromJson(clearing
+                ? R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"recruitClear":false}}]})"
+                : R"({"schemaVersion":1,"units":[{"key":"warrior","behaviors":{"recruitDefend":false}}]})");
+            world.game.gameHeader.setUnitCatalog(catalog); world.game.configureBuildingCatalog();
+            world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto *unit = world.addUnit(clearing ? WORKER : WARRIOR,6,8); REQUIRE(unit);
+            CHECK_FALSE(unit->runtimeTraits().recruits(clearing ? 0 : 2));
+            if (clearing) {
+                deposit(world.game.map,8,8,WOOD,2);
+                world.game.map.addClearArea(8,8,world.team->teamNumber);
+                for (int tick=0;tick<2048 && world.game.map.getResource(8,8).amount;++tick) world.game.syncStep(0);
+                CHECK(world.game.map.getResource(8,8).amount == 0);
+                CHECK(world.team->stats.measurements.cleared[WOOD] > 0);
+            } else {
+                world.game.map.addGuardArea(9,8,world.team->teamNumber);
+                unit->handleDisplacement(); CHECK(unit->displacement == Unit::DIS_ATTACKING_AROUND);
+                for (int tick=0;tick<2048 && !world.game.map.isGuardArea(unit->posX,unit->posY,world.team->me);++tick)
+                    world.game.syncStep(0);
+                CHECK(world.game.map.isGuardArea(unit->posX,unit->posY,world.team->me));
+            }
+            CHECK(unit->attachedBuilding == nullptr);
+            checkPhaseContinuation(world.game,64);
+        }
+    }
+
+    TEST_CASE("disabling future flag recruitment preserves all existing job roles and memberships [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        constexpr const char *policyNames[] = {"recruitClear", "recruitExplore", "recruitDefend"};
+        constexpr const char *flagNames[] = {"clearingflag", "explorationflag", "warflag"};
+        constexpr int unitTypes[] = {WORKER, EXPLORER, WARRIOR};
+        for (unsigned role=0;role<3;++role) {
+            CAPTURE(role);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto definitions = nlohmann::json::parse(world.game.unitCatalog().serialize());
+            auto *flag = world.addBuilding(flagNames[role],16,16);
+            auto *unit = world.addUnit(unitTypes[role],10,16);
+            REQUIRE(flag); REQUIRE(unit);
+            world.team->addToStaticAbilitiesLists(flag);
+            flag->unitStayRange=6; flag->dirtyGradients();
+            deposit(world.game.map,20,16,WOOD,3);
+            flag->maxUnitWorking=flag->desiredMaxUnitWorking=1; flag->subscriptionWorkingTimer=32;
+            REQUIRE(flag->subscribeForFlagingStep());
+            const auto purpose=static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+role);
+            REQUIRE(unit->jobPurpose==purpose); REQUIRE(world.team->integrity());
+            const auto clearingMembership=world.team->clearingFlags;
+            const auto combatMembership=world.team->combatFlags;
+            const auto semanticRoles=flag->runtime->attractionRoles;
+            const auto buildingCatalog=world.game.buildingsTypes.snapshotJson();
+            definitions["units"][unitTypes[role]]["behaviors"][policyNames[role]]=false;
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+            // Recompile interaction rows without replacing live descriptors.
+            world.game.configureBuildingCatalog();
+            CHECK_FALSE(unit->runtimeTraits().recruits(role));
+            CHECK_FALSE(flag->runtime->interaction(unit->typeNum).recruits(role));
+            CHECK(flag->runtime->attractionRoles==semanticRoles);
+            CHECK(world.game.buildingsTypes.snapshotJson()==buildingCatalog);
+            CHECK(world.team->clearingFlags==clearingMembership);
+            CHECK(world.team->combatFlags==combatMembership);
+            CHECK(unit->activity==Unit::ACT_FLAG); CHECK(unit->attachedBuilding==flag);
+            CHECK(unit->jobPurpose==purpose); CHECK(flag->unitsWorking.size()==1);
+            CHECK(flag->canUnitWorkHere(unit,true,int(role))); REQUIRE(world.team->integrity());
+            auto *idle=world.addUnit(unitTypes[role],10,20); REQUIRE(idle);
+            flag->maxUnitWorking=flag->desiredMaxUnitWorking=2; flag->subscriptionWorkingTimer=32;
+            CHECK_FALSE(flag->subscribeForFlagingStep());
+            CHECK(idle->activity==Unit::ACT_RANDOM); CHECK(idle->attachedBuilding==nullptr);
+            REQUIRE(world.team->integrity());
+            checkPhaseContinuation(world.game,64);
+            const auto gid=flag->gid;
+            flag->kill(); world.game.syncStep(0);
+            CHECK(world.team->myBuildings[Building::GIDtoID(gid)]==nullptr);
+            CHECK(std::find(world.team->clearingFlags.begin(),world.team->clearingFlags.end(),flag)==world.team->clearingFlags.end());
+            CHECK(std::find(world.team->combatFlags.begin(),world.team->combatFlags.end(),flag)==world.team->combatFlags.end());
+            CHECK(unit->attachedBuilding==nullptr); CHECK(idle->attachedBuilding==nullptr);
+            REQUIRE(world.team->integrity());
+            checkPhaseContinuation(world.game,64);
+        }
+    }
+
+
     TEST_CASE("stock capacity-one wide primary cargo survives unit and game continuation [save-format]")
     {
         glob2test::HeadlessGlobals globals;

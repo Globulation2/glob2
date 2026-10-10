@@ -1,4 +1,5 @@
 #include "CortexSnapshotQueries.h"
+#include "ai/observation/ObservationQueries.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
@@ -239,7 +240,9 @@ namespace Cortex
 			// (Building::considerUnitForWarriorFlag requires activity == ACT_RANDOM &&
 			// medical == MED_FREE). A warrior already on a flag is ACT_FLAG and is never
 			// poached, so this counts only the immediately-recruitable reserve.
-			if ((u->capabilityFlags&UnitRuntimeTraits::Melee)
+			if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR)
+             && game->unitTraits(u->typeNum).recruits(2)
+             && (u->performance[WALK]>0 || u->performance[SWIM]>0 || u->performance[FLY]>0)
 			 && u->activity == ::Unit::ACT_RANDOM && u->medical == ::Unit::MED_FREE)
 				obs.freeWarriors++;
 		}
@@ -525,7 +528,7 @@ namespace Cortex
 					// ATTACK_STRENGTH level among enemy warriors we can SEE this cycle.
 					// Already inside the FOW gate above, so never unfogged truth.
 					// C++: Unit::level[] (unit/Unit.h), ATTACK_STRENGTH == 9.
-					if ((u->capabilityFlags&UnitRuntimeTraits::Melee)
+					if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR)
 					 && u->level[ATTACK_STRENGTH] > obs.enemyWarriorLevelVisible)
 						obs.enemyWarriorLevelVisible = u->level[ATTACK_STRENGTH];
 				}
