@@ -1,7 +1,25 @@
 import subprocess
 import unittest
 from unittest.mock import patch
-from benchmark_gpu_offload import gpu_snapshot
+from benchmark_gpu_offload import gpu_snapshot, round_order
+
+
+class ExperimentOrderTest(unittest.TestCase):
+    def test_two_variant_pairs_balance_first_and_second_positions(self):
+        variants = ['cpu', 'gpu']
+        orders = [round_order(variants, n) for n in range(6)]
+        self.assertEqual(sum(order[0] == 'cpu' for order in orders), 3)
+        self.assertEqual(sum(order[0] == 'gpu' for order in orders), 3)
+        self.assertNotEqual(orders[0], orders[1])
+        self.assertEqual(variants, ['cpu', 'gpu'])
+
+    def test_three_variants_cover_each_position_in_both_blocks(self):
+        variants = ['baseline', 'cpu', 'gpu']
+        orders = [round_order(variants, n) for n in range(6)]
+        for variant in variants:
+            for position in range(3):
+                self.assertEqual(sum(order[position] == variant for order in orders), 2)
+        self.assertEqual(round_order(variants, -1), variants)
 
 
 class GPUResourcesTest(unittest.TestCase):

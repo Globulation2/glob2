@@ -25,6 +25,18 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def round_order(variants, round_index):
+    """Balance positions in cyclic blocks and reverse each second block."""
+    if round_index < 0:
+        return list(variants)
+    count = len(variants)
+    shift = round_index % count
+    order = list(variants[shift:]) + list(variants[:shift])
+    if (round_index // count) % 2:
+        order.reverse()
+    return order
+
+
 def validate(config):
     ids = [v['id'] for v in config['variants']]
     if len(ids) != len(set(ids)) or config['control'] not in ids:
@@ -235,9 +247,7 @@ def main():
         with (output / 'measurements.jsonl').open('w') as stream:
             for scenario in config['scenarios']:
                 for n in range(-1, rounds):
-                    shift = (n + 1) % len(config['variants'])
-                    order = config['variants'][shift:] + config['variants'][:shift]
-                    if n % 2: order = list(reversed(order))
+                    order = round_order(config['variants'], n)
                     reference = None
                     for variant in order:
                         dest = output / scenario['id'] / str(n) / variant['id']
