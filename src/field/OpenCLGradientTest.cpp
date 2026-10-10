@@ -812,7 +812,7 @@ TEST_CASE("isolated completed kernels remain observed when transactional output 
     const auto* isolated=std::getenv("GLOB2_TEST_OPENCL_EXECUTION_OBSERVATION_ROLLBACK");
     if(!isolated || std::strcmp(isolated,"1"))return;
     using namespace gradient_kernel;
-    REQUIRE(initializeOpenCL());REQUIRE(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)));
+    REQUIRE(initializeOpenCL());REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);
     BackendSession session;const field::Grid grid(31,17);
     std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[19]=65400;seeds[13]=0;
     const auto original=seeds;
@@ -1278,7 +1278,7 @@ TEST_CASE("isolated direct seed upload rollback preserves originals after device
     if(!isolated || std::strcmp(isolated,"1"))return;
     using namespace gradient_kernel;
     REQUIRE(initializeOpenCL());REQUIRE(openCLStatus().directSeedUpload);
-    REQUIRE(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)));
+    REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);
     BackendSession session;const field::Grid grid(31,17);
     std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[19]=65400;seeds[13]=0;
     const auto original=seeds;
