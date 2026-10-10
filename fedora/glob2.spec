@@ -96,6 +96,10 @@ scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}"
 %{_datadir}/applications/org.globulation2.Globulation2.desktop
 %{_datadir}/metainfo/org.globulation2.Globulation2.metainfo.xml
 %{_datadir}/icons/hicolor/*/apps/glob2.png
+%{_mandir}/man6/glob2.6*
+%{_datadir}/bash-completion/completions/glob2
+%{_datadir}/fish/vendor_completions.d/glob2.fish
+%{_datadir}/zsh/site-functions/_glob2
 
 %changelog
 * Thu Oct 08 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.11.0.0-1
