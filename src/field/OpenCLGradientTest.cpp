@@ -196,7 +196,7 @@ TEST_SUITE("OpenCLGradient")
         }
         CHECK(calls == 1);
     }
-    TEST_CASE("a game shares and retains its selected backend across workspaces")
+    TEST_CASE("a game shares placement across workspaces and rechecks changed geometry")
     {
         using namespace gradient_kernel;
         RestoreBackend restore;
@@ -227,12 +227,13 @@ TEST_SUITE("OpenCLGradient")
         propagateFieldCPU(reference.data(), 0, COST_LIMIT, {8, 8}, first, [](std::size_t) { return false; });
         propagateField(small.data(), 0, COST_LIMIT, {8, 8}, second, [](std::size_t) { return false; });
         CHECK(small == reference);
-        CHECK(session->selection().load() == winner);
-        if (before.available)
-            CHECK(openCLStatus().calibrations == before.calibrations + 1);
+        if (before.available) {
+            CHECK(session->selection().load() != Backend::Automatic);
+            CHECK(openCLStatus().calibrations == before.calibrations + 2);
+        }
         if (before.available)
         {
-            // A selected GPU stays selected for even the smallest later field.
+            // An explicit test choice still applies to the same geometry.
             session->selection().store(Backend::OpenCL);
             const auto fields = openCLStatus().fields;
             small.assign(64, 1);
@@ -246,7 +247,7 @@ TEST_SUITE("OpenCLGradient")
         CHECK(nextGame.backendSession != session);
     }
 
-    TEST_CASE("tiled batches reuse device costs and preserve exact long paths")
+    TEST_CASE("concurrent lanes reuse device costs and preserve exact long paths")
     {
         using namespace gradient_kernel;
         RestoreBackend restore;
@@ -292,7 +293,6 @@ TEST_SUITE("OpenCLGradient")
         }
         const auto after = openCLStatus();
         REQUIRE_MESSAGE(after.available, after.error);
-        CHECK(after.maxBatchFields > 1);
         CHECK(after.costCacheHits > before.costCacheHits);
         CHECK(after.costUploads - before.costUploads < count * 2);
         CHECK(after.dispatches - before.dispatches == 8 * (after.hostChecks - before.hostChecks));
@@ -305,6 +305,39 @@ TEST_SUITE("OpenCLGradient")
         CHECK(changed == reference);
         CHECK(openCLStatus().costUploads > after.costUploads);
     }
+    TEST_CASE("frozen halos retain the full global convergence budget")
+    {
+        using namespace gradient_kernel;
+        RestoreBackend restore;
+        if (!openCLStatus().available)
+            return;
+        setBackend(Backend::OpenCL);
+        const field::Grid grid(32, 32768);
+        std::vector<std::uint16_t> seeds(grid.cells(), 0);
+        // Every legal edge crosses the tile boundary, so more local sweeps
+        // cannot replace global exchanges. This requires over 8192 dispatches,
+        // exceeding the old 65536 / localSteps bound for both frozen variants.
+        for (int y = 0; y < grid.height(); ++y)
+            seeds[grid.index(15 + (y & 1), y)] = 1;
+        seeds[grid.index(15, 0)] = 65535;
+        const auto expected = oracle(seeds, grid,
+            std::vector<EntrySteps>(grid.cells(), entrySteps(WATER_STEP[1])), COST_LIMIT);
+        // A fresh large-field session screens every supported native variant.
+        // Do not force an index: a device may reject an individual kernel while
+        // retaining other valid variants. Failed tuning must not pass this test
+        // merely because propagation recovered through the CPU fallback.
+        GradientWorkspace scratch;
+        auto actual = seeds;
+        const auto before = openCLStatus();
+        propagateField(actual.data(), 1, COST_LIMIT, grid, scratch,
+                       [](std::size_t) { return true; });
+        const auto after = openCLStatus();
+        REQUIRE_MESSAGE(after.available, after.error);
+        CHECK_FALSE(scratch.backendSession->failed.load());
+        CHECK(after.fields == before.fields + 1);
+        CHECK(actual == expected);
+    }
+
     TEST_CASE("immutable identities skip cost callbacks and invalidate every cost dependency")
     {
         using namespace gradient_kernel;
@@ -389,6 +422,62 @@ TEST_SUITE("OpenCLGradient")
         owner.reset();
         CHECK_FALSE(retained.expired()); // Cache prevents pooled address reuse.
     }
+    TEST_CASE("uniform cost aliases coexist with varied planes and invalidate on revision")
+    {
+        using namespace gradient_kernel;
+        RestoreBackend restore;
+        if (!openCLStatus().available)
+            return;
+        setBackend(Backend::OpenCL);
+        const field::Grid grid(33, 35);
+        struct Context
+        {
+            std::shared_ptr<std::vector<EntrySteps>> costs;
+            std::vector<std::uint16_t> seeds, actual, expected;
+        };
+        std::array<Context, 3> contexts;
+        for (unsigned f = 0; f < contexts.size(); ++f)
+        {
+            auto &context = contexts[f];
+            context.costs = std::make_shared<std::vector<EntrySteps>>(grid.cells(), EntrySteps{7, 31});
+            context.seeds.assign(grid.cells(), 1);
+            for (std::size_t i = 0; i < grid.cells(); ++i)
+            {
+                if (i % 17 == 0) context.seeds[i] = 0;
+                if (f == 2 && i % 3 == 0) (*context.costs)[i] = {13, 5};
+            }
+            context.seeds[7] = 65535;
+            context.seeds.back() = 65450;
+        }
+        BackendSession session;
+        for (unsigned revision = 0; revision < 2; ++revision)
+        {
+            if (revision)
+            {
+                // The same owner now describes a varied plane. Its new revision
+                // must replace the cached uniform classification along with the data.
+                (*contexts[0].costs)[7] = {29, 11};
+            }
+            std::vector<BackendRequest> requests;
+            for (auto &context : contexts)
+            {
+                context.actual = context.seeds;
+                context.expected = oracle(context.seeds, grid, *context.costs, COST_LIMIT);
+                requests.push_back({context.actual.data(), COST_LIMIT, grid, session, &context,
+                    [](void *p, std::size_t i) { return (*static_cast<Context *>(p)->costs)[i]; },
+                    [](void *p, std::uint16_t *out) {
+                        auto &c = *static_cast<Context *>(p);
+                        std::copy(c.expected.begin(), c.expected.end(), out);
+                    }, {context.costs, 0, revision, true}});
+            }
+            const auto before = openCLStatus();
+            REQUIRE(batchAccelerator(requests, Backend::OpenCL));
+            for (const auto &context : contexts) CHECK(context.actual == context.expected);
+            const auto after = openCLStatus();
+            REQUIRE_MESSAGE(after.available, after.error);
+            if (!revision) CHECK(after.costCacheHits > before.costCacheHits);
+        }
+    }
     TEST_CASE("explicit scheduler batches span chunks and retire mixed fields exactly")
     {
         using namespace gradient_kernel;
@@ -455,7 +544,7 @@ TEST_SUITE("OpenCLGradient")
         CHECK(after.retiredFields == before.retiredFields + count);
         CHECK(after.fields == before.fields + count);
         CHECK(after.tileWidth * after.tileHeight == 256);
-        CHECK((after.localSteps == 2 || after.localSteps == 4 || after.localSteps == 8));
+        CHECK((after.localSteps == 2 || after.localSteps == 4 || after.localSteps == 8 || after.localSteps == 16));
         CHECK(after.tunings == before.tunings); // Small explicit fields do not trigger workload-class tuning.
     }
     TEST_CASE("GPU algorithm and local steps are tuned independently per game workload class")
@@ -542,6 +631,47 @@ TEST_SUITE("OpenCLGradient")
         CHECK_FALSE(inertSession.failed.load());
     }
 
+    TEST_CASE("maximally seeded fields skip cost work and class selection in singletons and batches")
+    {
+        using namespace gradient_kernel;
+        RestoreBackend restore;
+        const auto before = openCLStatus();
+        if (!before.available) return;
+        BackendSession session;
+        unsigned callbacks = 0;
+        std::vector<std::uint16_t> goals(64, 65535), empty(64, 1);
+        goals[3] = 0;
+        empty[7] = 0;
+        const auto original = goals;
+        auto costs = [](void* p, std::size_t) {
+            ++*static_cast<unsigned*>(p);
+            return LAND_STEPS;
+        };
+        const BackendRequest goalRequest{goals.data(), COST_LIMIT, {8,8}, session, &callbacks,
+            costs, [](void*, std::uint16_t*) {}, {}, Family::Forbidden};
+        const BackendRequest emptyRequest{empty.data(), COST_LIMIT, {8,8}, session, &callbacks,
+            costs, [](void*, std::uint16_t*) {}, {}, Family::Forbidden};
+        REQUIRE(accelerator(goalRequest, Backend::Automatic));
+        const std::array requests{goalRequest, emptyRequest};
+        REQUIRE(batchAccelerator(requests, Backend::Automatic));
+        CHECK(goals == original);
+        CHECK(callbacks == 0);
+        CHECK(session.selection(Family::Forbidden, 1).load() == Backend::Automatic);
+        CHECK(session.selection(Family::Forbidden, 2).load() == Backend::Automatic);
+        CHECK(session.tileSelection(Family::Forbidden, 1).load() == 0);
+        const auto after = openCLStatus();
+        CHECK(after.fields == before.fields);
+        CHECK(after.calibrations == before.calibrations);
+        CHECK(after.batches == before.batches);
+        // A nonmaximal seed can improve even when every traversable cell is
+        // already seeded. It must retain ordinary propagation and validation.
+        goals[8] = 65520;
+        const auto expected = oracle(goals, {8,8}, std::vector<EntrySteps>(64, LAND_STEPS), COST_LIMIT);
+        REQUIRE(accelerator(goalRequest, Backend::OpenCL));
+        CHECK(goals == expected);
+        CHECK(goals[8] > 65520);
+        CHECK(callbacks > 0);
+    }
     TEST_CASE("known CPU groups finish while another GPU group holds the device queue")
     {
         using namespace gradient_kernel;
@@ -616,7 +746,7 @@ TEST_SUITE("OpenCLGradient")
             CHECK(cpuSession.selection(Family::Materials, size).load() == Backend::CPU);
     }
 
-    TEST_CASE("native larger classes are discovered after the singleton class selects CPU")
+    TEST_CASE("explicit larger classes are discovered after the singleton class selects CPU")
     {
         using namespace gradient_kernel;
         RestoreBackend restore;
@@ -627,35 +757,175 @@ TEST_SUITE("OpenCLGradient")
         constexpr unsigned count = 8, cells = 32 * 32;
         std::vector<std::uint16_t> seeds(cells, 1);
         seeds[7] = 65535;
-        const auto expected = oracle(seeds, {32,32}, std::vector<EntrySteps>(cells, LAND_STEPS), COST_LIMIT);
+        auto expected = oracle(seeds, {32,32}, std::vector<EntrySteps>(cells, LAND_STEPS), COST_LIMIT);
         const auto before = openCLStatus().calibrations;
         std::array<std::vector<std::uint16_t>, count> fields;
-        bool discovered = false;
-        // Arrival timing determines actual native membership. Accept any larger
-        // class, and retry boundedly rather than assuming one OS scheduling order.
-        for (unsigned attempt = 0; attempt < 4 && !discovered; ++attempt) {
-            std::barrier start(count);
-            std::array<std::thread, count> workers;
-            for (unsigned i = 0; i < count; ++i) {
-                fields[i] = seeds;
-                workers[i] = std::thread([&, i] {
-                    start.arrive_and_wait();
-                    auto cpu = [&](std::uint16_t* output) {
-                        std::copy(expected.begin(), expected.end(), output);
-                    };
-                    const bool handled = tryAcceleratedGradient(fields[i].data(), COST_LIMIT, {32,32},
-                        session, [](std::size_t) { return LAND_STEPS; }, cpu, {}, Family::Materials);
-                    if (!handled) cpu(fields[i].data());
-                });
-            }
-            for (auto& worker : workers) worker.join();
-            for (const auto& field : fields) CHECK(field == expected);
-            for (unsigned size = 2; size <= 8; ++size)
-                discovered |= session.selection(Family::Materials, size).load() != Backend::Automatic;
+        std::vector<BackendRequest> requests;
+        for (unsigned i = 0; i < count; ++i) {
+            fields[i] = seeds;
+            requests.push_back({fields[i].data(), COST_LIMIT, {32,32}, session, &expected,
+                [](void*, std::size_t) { return LAND_STEPS; },
+                [](void* context, std::uint16_t* output) {
+                    const auto& reference = *static_cast<std::vector<std::uint16_t>*>(context);
+                    std::copy(reference.begin(), reference.end(), output);
+                }, {}, Family::Materials});
         }
-        CHECK(discovered);
-        CHECK(openCLStatus().calibrations > before);
+        REQUIRE(batchAccelerator(requests, Backend::Automatic));
+        for (const auto& field : fields) CHECK(field == expected);
+        CHECK(session.selection(Family::Materials, count).load() != Backend::Automatic);
+        CHECK(openCLStatus().calibrations == before + 1);
         CHECK(session.selection(Family::Materials, 1).load() == Backend::CPU);
+        CHECK_FALSE(session.failed.load());
+    }
+
+    TEST_CASE("CPU placement bypasses device work and periodically rechecks its decision")
+    {
+        using namespace gradient_kernel;
+        RestoreBackend restore;
+        if (!openCLStatus().available) return;
+        setBackend(Backend::Automatic);
+        BackendSession session;
+        std::vector<std::uint16_t> seeds(64, 1);
+        seeds[7] = 65535;
+        auto expected = oracle(seeds, {8,8}, std::vector<EntrySteps>(64, LAND_STEPS), COST_LIMIT);
+        auto field = seeds;
+        BackendRequest request{field.data(), COST_LIMIT, {8,8}, session, &expected,
+            [](void*, std::size_t) { return LAND_STEPS; },
+            [](void* context, std::uint16_t* output) {
+                const auto& reference = *static_cast<std::vector<std::uint16_t>*>(context);
+                std::copy(reference.begin(), reference.end(), output);
+            }, {}, Family::Clear};
+        REQUIRE(accelerator(request, Backend::Automatic));
+        REQUIRE(field == expected);
+        REQUIRE(session.selection(Family::Clear, 1).load() == Backend::CPU);
+        const auto measured = openCLStatus();
+        auto& timing = session.timing(Family::Clear, 1);
+        CHECK(timing.recheckAfter.load() >= 32);
+        for (unsigned repeat = 0; repeat < 8; ++repeat) {
+            field = seeds;
+            CHECK_FALSE(accelerator(request, Backend::Automatic));
+            CHECK(field == seeds);
+        }
+        CHECK(openCLStatus().batches == measured.batches);
+        CHECK(openCLStatus().calibrations == measured.calibrations);
+        timing.calls.store(timing.recheckAfter.load() - 1);
+        REQUIRE(accelerator(request, Backend::Automatic));
+        CHECK(field == expected);
+        CHECK(openCLStatus().calibrations == measured.calibrations + 1);
+        CHECK_FALSE(session.failed.load());
+    }
+
+    TEST_CASE("periodic checks replace a GPU winner when the CPU workload becomes cheaper")
+    {
+        using namespace gradient_kernel;
+        RestoreBackend restore;
+        if (!openCLStatus().available) return;
+        setBackend(Backend::Automatic);
+        BackendSession session;
+        std::vector<std::uint16_t> seeds(64, 1);
+        seeds[7] = 65535;
+        auto expected = oracle(seeds, {8,8}, std::vector<EntrySteps>(64, LAND_STEPS), COST_LIMIT);
+        struct Context { const std::vector<std::uint16_t>* expected; bool slow = true; } context{&expected};
+        auto field = seeds;
+        BackendRequest request{field.data(), COST_LIMIT, {8,8}, session, &context,
+            [](void*, std::size_t) { return LAND_STEPS; },
+            [](void* p, std::uint16_t* output) {
+                const auto& c = *static_cast<Context*>(p);
+                if (c.slow) std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                std::copy(c.expected->begin(), c.expected->end(), output);
+            }, {}, Family::Forbidden};
+        REQUIRE(accelerator(request, Backend::Automatic));
+        REQUIRE(field == expected);
+        REQUIRE(session.selection(Family::Forbidden, 1).load() == Backend::OpenCL);
+        const auto calibrations = openCLStatus().calibrations;
+        context.slow = false;
+        auto& timing = session.timing(Family::Forbidden, 1);
+        timing.calls.store(timing.recheckAfter.load() - 1);
+        field = seeds;
+        REQUIRE(accelerator(request, Backend::Automatic));
+        CHECK(field == expected);
+        CHECK(session.selection(Family::Forbidden, 1).load() == Backend::CPU);
+        CHECK(openCLStatus().calibrations == calibrations + 1);
+        CHECK_FALSE(session.failed.load());
+    }
+
+    TEST_CASE("first-seen movement rechecks placement without recalibrating every alternation")
+    {
+        using namespace gradient_kernel;
+        RestoreBackend restore;
+        if (!openCLStatus().available) return;
+        setBackend(Backend::Automatic);
+        BackendSession session;
+        std::vector<std::uint16_t> seeds(64, 1);
+        seeds[7] = 65535;
+        auto expected = oracle(seeds, {8,8}, std::vector<EntrySteps>(64, LAND_STEPS), COST_LIMIT);
+        auto field = seeds;
+        BackendRequest request{field.data(), COST_LIMIT, {8,8}, session, &expected,
+            [](void*, std::size_t) { return LAND_STEPS; },
+            [](void* p, std::uint16_t* output) {
+                const auto& expected = *static_cast<const std::vector<std::uint16_t>*>(p);
+                std::copy(expected.begin(), expected.end(), output);
+            }, {}, Family::Clear};
+        REQUIRE(accelerator(request, Backend::Automatic));
+        REQUIRE(field == expected);
+        REQUIRE(session.selection(Family::Clear).load() == Backend::CPU);
+        auto& timing = session.timing(Family::Clear, 1);
+        CHECK(timing.variantProbes.load() == 1);
+        CHECK(session.tileSelection(Family::Clear, 1).load() == 0);
+        const auto measured = openCLStatus();
+        request.identity.variant = 4;
+        field = seeds;
+        REQUIRE(accelerator(request, Backend::Automatic));
+        CHECK(field == expected);
+        CHECK(openCLStatus().calibrations == measured.calibrations + 1);
+        CHECK(timing.variantProbes.load() == 2);
+        CHECK(timing.movements.load() == ((1u << 0) | (1u << 4)));
+        for (unsigned repeat = 0; repeat < 8; ++repeat) {
+            request.identity.variant = repeat % 2 ? 4 : 0;
+            field = seeds;
+            CHECK_FALSE(accelerator(request, Backend::Automatic));
+            CHECK(field == seeds);
+        }
+        CHECK(openCLStatus().calibrations == measured.calibrations + 1);
+        CHECK_FALSE(session.failed.load());
+    }
+
+    TEST_CASE("accelerator queue delay brings forward placement rechecks")
+    {
+        using namespace gradient_kernel;
+        RestoreBackend restore;
+        if (!openCLStatus().available) return;
+        setBackend(Backend::Automatic);
+        BackendSession session;
+        std::vector<std::uint16_t> seeds(64, 1);
+        seeds[7] = 65535;
+        auto expected = oracle(seeds, {8,8}, std::vector<EntrySteps>(64, LAND_STEPS), COST_LIMIT);
+        auto field = seeds;
+        BackendRequest request{field.data(), COST_LIMIT, {8,8}, session, &expected,
+            [](void*, std::size_t) { return LAND_STEPS; },
+            [](void* p, std::uint16_t* output) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                const auto& expected = *static_cast<const std::vector<std::uint16_t>*>(p);
+                std::copy(expected.begin(), expected.end(), output);
+            }, {}, Family::Guard};
+        REQUIRE(accelerator(request, Backend::Automatic));
+        REQUIRE(field == expected);
+        REQUIRE(session.selection(Family::Guard).load() == Backend::OpenCL);
+        const auto measured = openCLStatus();
+        request.schedulingMs = 1000;
+        for (unsigned repeat = 0; repeat < 8; ++repeat) {
+            field = seeds;
+            REQUIRE(accelerator(request, Backend::Automatic));
+            CHECK(field == expected);
+        }
+        CHECK(openCLStatus().calibrations == measured.calibrations);
+        auto& timing = session.timing(Family::Guard, 1);
+        CHECK(timing.calls.load() >= timing.recheckAfter.load());
+        field = seeds;
+        REQUIRE(accelerator(request, Backend::Automatic));
+        CHECK(field == expected);
+        CHECK(openCLStatus().calibrations == measured.calibrations + 1);
+        CHECK(session.selection(Family::Guard).load() == Backend::CPU);
         CHECK_FALSE(session.failed.load());
     }
 
@@ -831,7 +1101,7 @@ TEST_SUITE("OpenCLGradient")
         CHECK_FALSE(session.failed.load());
     }
 
-    TEST_CASE("queued calibration uses the original CPU workers in parallel")
+    TEST_CASE("concurrent singleton calibration uses its original CPU worker")
     {
         using namespace gradient_kernel;
         RestoreBackend restore;
@@ -878,7 +1148,7 @@ TEST_SUITE("OpenCLGradient")
         }
         for (auto& worker : workers) worker.join();
         CHECK_FALSE(wrongWorker.load());
-        CHECK(maximum.load() > 1);
+        CHECK(maximum.load() >= 1);
         CHECK_FALSE(session.failed.load());
         for (const auto& field : fields) CHECK(field == expected);
     }
@@ -925,7 +1195,7 @@ TEST_SUITE("OpenCLGradient")
             CHECK(session.selection(Family::Materials, count).load() == Backend::Automatic);
             const auto cpuBefore = cpuBatches;
             run(Family::Materials, count);
-            CHECK(cpuBatches == cpuBefore + 4);
+            CHECK(cpuBatches == cpuBefore + 3);
             CHECK(openCLStatus().calibrations == ++calibrations);
             const auto winner = session.selection(Family::Materials, count).load();
             CHECK(winner != Backend::Automatic);
@@ -933,7 +1203,7 @@ TEST_SUITE("OpenCLGradient")
             run(Family::Materials, count);
             CHECK(openCLStatus().calibrations == calibrations);
             CHECK(session.selection(Family::Materials, count).load() == winner);
-            CHECK(cpuBatches == cpuBefore + 4 + (winner == Backend::CPU ? 1 : 0));
+            CHECK(cpuBatches == cpuBefore + 3 + (winner == Backend::CPU ? 1 : 0));
         }
         run(Family::Guard, 2);
         CHECK(openCLStatus().calibrations == ++calibrations);

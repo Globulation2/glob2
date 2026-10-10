@@ -258,6 +258,7 @@ public:
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
 		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0;
+		std::uint64_t deviceQueueNs = 0, deviceQueueMaxNs = 0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;

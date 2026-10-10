@@ -233,7 +233,8 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 	const auto &metrics = pipeline.metrics;
 	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
 		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
-		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
+		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs,
+		metrics.queueWaitNs, metrics.maxQueueWaitNs};
 }
 
 bool Map::hasPendingGradientPreparation() const
@@ -335,7 +336,8 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
         std::span<GradientWorkspace> scratch) {
         std::vector<gradient_preparation::PropagationField> fields;fields.reserve(jobs.size());
         for(std::size_t i=0;i<jobs.size();++i)
-            fields.push_back({jobs[i]->request,&*jobs[i]->snapshotLease,jobs[i]->data.get(),&scratch[i],&jobs[i]->error,&compute});
+            fields.push_back({jobs[i]->request,&*jobs[i]->snapshotLease,jobs[i]->data.get(),&scratch[i],&jobs[i]->error,nullptr,
+                double(jobs[i]->queueWaitNs) / 1e6});
         gradient_preparation::propagateBatch(fields);
     });
 }

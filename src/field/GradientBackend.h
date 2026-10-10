@@ -44,13 +44,26 @@ enum class Family { Generic, Materials, Markets, Guard, Clear, Forbidden, Count 
 // so merging ranges would let an unmeasured size inherit another size's winner.
 inline constexpr std::size_t BATCH_CATEGORIES = 8;
 inline std::size_t batchCategory(std::size_t count) { return std::clamp<std::size_t>(count, 1, 8) - 1; }
+// Timing data is advisory only and never changes a completed field. Periodic
+// paired measurements prevent an early game's placement from becoming permanent.
+struct BackendTiming
+{
+    std::atomic<std::uint64_t> workload{0}, movements{0};
+    std::atomic<unsigned> calls{0}, recheckAfter{0}, slowSamples{0}, variantProbes{0};
+    std::atomic<double> cpuMs{0};
+};
 struct BackendSession
 {
     std::array<std::atomic<Backend>, std::size_t(Family::Count) * BATCH_CATEGORIES> choices{};
     // Zero is untuned; otherwise the native variant index plus one. Game-local,
     // like backend choices, and accessed only by the accelerator.
     std::array<std::atomic<unsigned>, std::size_t(Family::Count) * BATCH_CATEGORIES> tileChoices{};
+    std::array<BackendTiming, std::size_t(Family::Count) * BATCH_CATEGORIES> timings;
     std::atomic<bool> failed{false};
+    BackendTiming& timing(Family family, std::size_t count)
+    {
+        return timings[std::size_t(family) * BATCH_CATEGORIES + batchCategory(count)];
+    }
     std::array<std::mutex, std::size_t(Family::Count)*BATCH_CATEGORIES> calibrationMutexes;
     std::mutex& classMutex(Family family,std::size_t count) {
         return calibrationMutexes[std::size_t(family)*BATCH_CATEGORIES+batchCategory(count)];
@@ -89,6 +102,8 @@ struct BackendRequest
     Family family = Family::Generic;
     // Optional caller-owned CPU batch executor, also used during calibration.
     void (*cpuBatch)(std::span<const BackendRequest* const>, std::span<std::uint16_t* const>) = nullptr;
+    // Time already spent waiting for accelerator dispatch, excluded from CPU placement.
+    double schedulingMs = 0;
 };
 // An accelerator must leave the seed buffer untouched when returning false.
 // Registered by the optional native implementation; absent in standalone users.
@@ -103,7 +118,8 @@ inline bool canBatch(const BackendSession &session)
 
 template <class Costs, class CPU>
 bool tryAcceleratedGradient(std::uint16_t *gradient, int maxCost, field::Grid grid, BackendSession &session,
-                            Costs costs, CPU cpu, CostIdentity identity = {}, Family family = Family::Generic)
+                            Costs costs, CPU cpu, CostIdentity identity = {}, Family family = Family::Generic,
+                            double schedulingMs = 0)
 {
     const auto choice = backend();
     if (!accelerator || choice == Backend::CPU || maxCost < 0)
@@ -122,7 +138,7 @@ bool tryAcceleratedGradient(std::uint16_t *gradient, int maxCost, field::Grid gr
                                  &context,
                                  [](void *p, std::size_t i) { return static_cast<Context *>(p)->costs(i); },
                                  [](void *p, std::uint16_t *out) { static_cast<Context *>(p)->cpu(out); },
-                                 std::move(identity), family};
+                                 std::move(identity), family, nullptr, schedulingMs};
     return accelerator(request, choice);
 }
 } // namespace gradient_kernel

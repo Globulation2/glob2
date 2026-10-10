@@ -1271,7 +1271,7 @@ TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields 
         CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
         CHECK(session->selection(Family::Materials,2).load()!=Backend::Automatic);
         CHECK(openCLStatus().calibrations==initialCalibrations+1);
-        CHECK(executor.metrics().parallelBatches>=4); // Warmup and three real CPU batch samples.
+        CHECK(executor.metrics().parallelBatches>=3); // All three timed CPU samples use the caller's executor.
         fields[0].request.kind=gradient_preparation::Kind::Materials;
         fields[2].request.kind=gradient_preparation::Kind::Guard;
         for(unsigned i:{0u,2u}) {

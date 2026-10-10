@@ -360,7 +360,7 @@ void propagateBatch(std::span<const PropagationField> fields)
                  { return batchCosts(*static_cast<PropagationField *>(context), cell); },
                  [](void *context, Uint16 *out) { batchCPU(*static_cast<PropagationField *>(context), out); },
                  snapshotCostIdentity(field.request, *field.snapshot),
-                 backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr});
+                 backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr, field.schedulingMs});
         }
         catch (...)
         {
@@ -370,8 +370,7 @@ void propagateBatch(std::span<const PropagationField> fields)
                 throw;
         }
     }
-    // Individual worker fields participate in the native rendezvous immediately,
-    // rather than collecting only when the owner reaches publication.
+    // Ready fields run immediately; publication still keeps its fixed deadline.
     if (requests.size() == 1 ? accelerator && accelerator(requests.front(), backend())
                              : batchAccelerator && batchAccelerator(requests, backend()))
         return;

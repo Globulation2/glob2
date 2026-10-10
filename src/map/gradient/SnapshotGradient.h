@@ -74,6 +74,7 @@ struct PropagationField {
     GradientWorkspace* scratch;
     std::exception_ptr* error = nullptr;
     ComputeExecutor* executor = nullptr;
+    double schedulingMs = 0;
 };
 // Independent immutable fields; completes synchronously with original-seed CPU recovery.
 void propagateBatch(std::span<const PropagationField> fields);
