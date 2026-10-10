@@ -115,6 +115,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 			|| owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
 		allowed = unit ? (interaction->trainingMask&(1u<<purpose))!=0 : true;
 		if (unit && !unit->needsTraining(spec.training[purpose], purpose)) return false;
+		if (unit && !unit->trainingVisitSafe(*this,purpose)) return false;
 	}
 	if (!allowed) return false;
 	BuildingMaterialCost bundleCost{};

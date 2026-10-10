@@ -11,7 +11,6 @@
 
 #include "Utilities.h"
 #include "render/GameAnimations.h"
-#include <set>
 #include <climits>
 
 void Unit::selectPreferredMovement(void)
@@ -112,8 +111,6 @@ void Unit::handleMagic(void)
 	bool hasUsedMagicAction = false;
 	if (performance[MAGIC_ATTACK_AIR] || performance[MAGIC_ATTACK_GROUND])
 	{
-		std::set<Uint16> damagedBuildings;
-		damagedBuildings.insert(NOGBID);
 		const int ATTACK_RANGE = runtimeTraits().magicRange;
 		for (int yi=posY-ATTACK_RANGE; yi<=posY+ATTACK_RANGE; yi++)
 			for (int xi=posX-ATTACK_RANGE; xi<=posX+ATTACK_RANGE; xi++)

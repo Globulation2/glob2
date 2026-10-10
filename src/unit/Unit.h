@@ -192,7 +192,13 @@ public:
 	//! Construction eligibility is independent of work/harvest speed.
 	Sint32 workerLevel() const { return constructionLevel; }
 	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;
-	void applyTraining(const BuildingTrainingSpec& training, int ability);
+	// Single developer/test grants reject loss of the last movement clock.
+	bool applyTraining(const BuildingTrainingSpec& training, int ability);
+	bool trainingVisitSafe(const Building& building,int purpose) const;
+	std::optional<Uint32> trainingVisitCourses(const Building& building,int purpose) const;
+private:
+	void applyTrainingUnchecked(const BuildingTrainingSpec& training,int ability);
+public:
 	//! Re-creates a freshly placed unit at `newLevel` in every ability, keeping its place,
 	//! identity and team (the lobby's Veteran/Fast start rule, before the map is saved).
 	void resetAtLevel(Sint32 newLevel);

@@ -368,7 +368,13 @@ void Unit::handleDisplacement(void)
 				{
 					displacement=DIS_EXITING_BUILDING;
 					validTarget=false;
-					if (!owner->game->gameHeader.isUnitUpgradesDisabled() && destinationPurpose != FEED && destinationPurpose != HEAL)
+					// A restored or reconfigured visit may now offer an unsafe
+					// course. Release its original reservation before changing any
+					// levels, then exit using the existing movement clocks.
+					const bool trainingVisit=destinationPurpose!=FEED && destinationPurpose!=HEAL;
+					const auto courses=trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled()
+						? trainingVisitCourses(*attachedBuilding,destinationPurpose) : std::optional<Uint32>{};
+					if (trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled() && courses)
 						++owner->stats.measurements.trainingVisits[typeNum];
 
 					if (destinationPurpose==FEED)
@@ -392,6 +398,7 @@ void Unit::handleDisplacement(void)
 					// New training visits are rejected by Team::findBestUpgrade.
 					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
 					{
+						if(!courses) { attachedBuilding->releaseService(this); needToRecheckMedical=true; break; }
 						attachedBuilding->settleService(this);
 						Sint32 previousLevels[NB_ABILITY];
 						std::copy(level, level + NB_ABILITY, previousLevels);
@@ -400,11 +407,14 @@ void Unit::handleDisplacement(void)
 							for (int ability = (int)WALK; ability < NB_ABILITY; ability++)
 							{
 								const auto& training = attachedBuilding->type->semantics.training[ability];
-								if (needsTraining(training, ability)) applyTraining(training, ability);
+								// Migrated tables retain the historical reevaluation order.
+								if (hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
+									? needsTraining(training,ability) : ((*courses&(1u<<ability))!=0))
+									applyTrainingUnchecked(training,ability);
 							}
 						}
 						else
-							applyTraining(attachedBuilding->type->semantics.training[destinationPurpose], destinationPurpose);
+							applyTrainingUnchecked(attachedBuilding->type->semantics.training[destinationPurpose], destinationPurpose);
 
 						for (int a = 0; a < NB_ABILITY; ++a)
 							owner->stats.measurements.abilityGains[typeNum][a] +=

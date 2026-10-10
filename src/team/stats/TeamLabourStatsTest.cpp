@@ -479,8 +479,14 @@ TEST_SUITE("TeamStatsSave")
         for(unsigned i=0;i<fighters.size();++i) {
             fighters[i]=world.addUnit(WARRIOR,10+2*i,16); REQUIRE(fighters[i]);
         }
-        flag->maxUnitWorking=flag->desiredMaxUnitWorking=1; flag->subscriptionWorkingTimer=32;
-        REQUIRE(flag->subscribeForFlagingStep());
+        // Exercise the public recruitment clock rather than altering its timer.
+        auto recruitmentRound=[&] {
+            bool hired=false;
+            for(int i=0;i<33;++i) hired=flag->subscribeForFlagingStep() || hired;
+            return hired;
+        };
+        flag->maxUnitWorking=flag->desiredMaxUnitWorking=1;
+        REQUIRE(recruitmentRound());
         Unit* assigned=nullptr; std::vector<Unit*> idle;
         for(auto* unit:fighters) {
             if(unit->attachedBuilding==flag) assigned=unit;
@@ -489,11 +495,11 @@ TEST_SUITE("TeamStatsSave")
         REQUIRE(assigned); REQUIRE(idle.size()==2);
         REQUIRE(assigned->activity==Unit::ACT_FLAG); REQUIRE(assigned->jobPurpose==UnitJobPurpose::Defend);
         auto sample=[&] { ++game.stepCounter; world.team->stats.step(world.team); };
-        auto sampleWindow=[&] { for(int i=0;i<TeamStats::STATS_SMOOTH_SIZE;++i) sample(); };
+        auto sampleWindow=[&] { for(int i=0;i<32;++i) sample(); };
         // Preserve the stock maximum over the sampling window: one idle unit
         // becomes unavailable after the first sample, but the reserve stays two.
         sample(); --idle[0]->hp; idle[0]->medical=Unit::MED_DAMAGED;
-        for(int i=1;i<TeamStats::STATS_SMOOTH_SIZE;++i) sample();
+        for(int i=1;i<32;++i) sample();
         auto* stats=world.team->stats.getLatestStat();
         CHECK(stats->meleeUnits==3); CHECK(stats->idleDefenders==2);
         CHECK(stats->isFree[WARRIOR]==2);
@@ -504,8 +510,8 @@ TEST_SUITE("TeamStatsSave")
         REQUIRE_FALSE(assigned->runtimeTraits().recruits(2));
         CHECK(assigned->attachedBuilding==flag); CHECK(assigned->jobPurpose==UnitJobPurpose::Defend);
         CHECK(assigned->activity==Unit::ACT_FLAG); CHECK(flag->unitsWorking.size()==1);
-        flag->maxUnitWorking=flag->desiredMaxUnitWorking=2; flag->subscriptionWorkingTimer=32;
-        CHECK_FALSE(flag->subscribeForFlagingStep());
+        flag->maxUnitWorking=flag->desiredMaxUnitWorking=2;
+        CHECK_FALSE(recruitmentRound());
         sampleWindow(); stats=world.team->stats.getLatestStat();
         // Physical fighters and historical free counters retain their meanings.
         CHECK(stats->meleeUnits==3); CHECK(stats->isFree[WARRIOR]==1);
@@ -518,7 +524,7 @@ TEST_SUITE("TeamStatsSave")
         sampleWindow(); stats=world.team->stats.getLatestStat();
         CHECK(stats->meleeUnits==3); CHECK(stats->idleDefenders==2);
         CHECK(assigned->attachedBuilding==flag); CHECK(assigned->jobPurpose==UnitJobPurpose::Defend);
-        flag->subscriptionWorkingTimer=32; REQUIRE(flag->subscribeForFlagingStep());
+        REQUIRE(recruitmentRound());
         CHECK(flag->unitsWorking.size()==2);
         sampleWindow(); CHECK(world.team->stats.getLatestStat()->idleDefenders==1);
     }
@@ -543,7 +549,7 @@ TEST_SUITE("TeamStatsSave")
         REQUIRE(recruit->performance[ATTACK_SPEED]>0); REQUIRE(refuse->performance[ATTACK_SPEED]>0);
         REQUIRE(noClock->performance[ATTACK_SPEED]==0);
         auto sampleWindow=[&] {
-            for(int i=0;i<TeamStats::STATS_SMOOTH_SIZE;++i) {
+            for(int i=0;i<32;++i) {
                 ++game.stepCounter; world.team->stats.step(world.team);
             }
         };

@@ -2273,4 +2273,285 @@ TEST_SUITE("UnitCustomization")
             }
         }
     }
+    TEST_CASE("training rejects loss of the last movement mode before reservation or direct mutation")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(bool modifiedBuiltin:{false,true}) {
+        CAPTURE(modifiedBuiltin);
+        const std::string key=modifiedBuiltin?"worker":"training-loss";
+        const int type=modifiedBuiltin?WORKER:3;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto custom=units["units"][WORKER]; custom["key"]=key;
+        custom["behaviors"]["swim"]=false;
+        custom["behaviors"]["hungerRate"]=0;
+        custom["levels"][1]["performance"][WALK]=0;
+        if(modifiedBuiltin)units["units"][WORKER]=custom; else units["units"].push_back(custom);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+        auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& semantics=buildings["variants"][3]["semantics"];
+        semantics["admittedUnits"]={key};
+        semantics["training"]=nlohmann::json::object();
+        semantics["training"]["walk"]={{"enabled",true},{"units",{key}},{"targetLevel",1},{"duration",3},{"cost",{{"food",2}}}};
+        world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+        auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(type,6,8);
+        REQUIRE(inn); REQUIRE(unit); inn->materials[WHEAT]=2;
+        const auto random=unit->entityRandom.exportState(); const int walk=unit->performance[WALK];
+        CHECK(unit->needsTraining(inn->type->semantics.training[WALK],WALK));
+        CHECK_FALSE(inn->canOfferService(unit,WALK));
+        CHECK(world.team->findBestUpgrade(unit)==nullptr);
+        auto captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        REQUIRE(captured->unitAtSlot(unit->gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
+        CHECK_FALSE(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK));
+        CHECK_FALSE(unit->applyTraining(inn->type->semantics.training[WALK],WALK));
+        CHECK(unit->level[WALK]==0); CHECK(unit->performance[WALK]==walk);
+        CHECK(unit->entityRandom.exportState()==random);
+        CHECK_FALSE(unit->serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==2);
+        checkPhaseContinuation(world.game,64);
+        CHECK(unit->integrity()); CHECK(inn->unitsInside.empty());
+        }
+    }
+
+    TEST_CASE("parallel movement transfer checks exit terrain but ignores temporary occupants and resumes atomically")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto custom=units["units"][WORKER]; custom["key"]="training-transfer";
+        custom["behaviors"]["hungerRate"]=0; custom["behaviors"]["clearIdle"]=false;
+        custom["behaviors"]["adjacentClearInterrupt"]=false;
+        custom["levels"][0]["performance"][SWIM]=0;
+        custom["levels"][1]["performance"][WALK]=0; custom["levels"][1]["performance"][SWIM]=16;
+        units["units"].push_back(custom);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+        auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& semantics=buildings["variants"][3]["semantics"];
+        semantics["admittedUnits"]={"training-transfer"}; semantics["trainingInParallel"]=true;
+        semantics["training"]=nlohmann::json::object();
+        semantics["training"]["walk"]={{"enabled",true},{"units",{"training-transfer"}},{"targetLevel",1},{"duration",3},{"cost",{{"food",2}}}};
+        semantics["training"]["swim"]={{"enabled",true},{"units",{"training-transfer"}},{"targetLevel",1},{"duration",3},{"cost",{{"food",3}}}};
+        buildings["variants"][3]["properties"]["insideSpeed"]=256;
+        world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+        auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,6,8);
+        REQUIRE(inn); REQUIRE(unit); inn->materials[WHEAT]=5;
+        CHECK_FALSE(inn->canOfferService(unit,WALK)); // swimming-only cannot exit a dry perimeter
+        CHECK_FALSE(unit->applyTraining(inn->type->semantics.training[WALK],WALK));
+        // Paint an actual exit and a following cell, away from the incoming land route.
+        for(int y=inn->posY-2;y<inn->posY;++y) for(int x=inn->posX;x<inn->posX+inn->type->width;++x)
+            world.game.map.paintCell(x,y,WATER);
+        REQUIRE(world.game.map.terrainPropertiesAt(inn->posX,inn->posY-1).swimmable);
+        auto* occupant=world.addUnit(3,inn->posX,inn->posY-1,0,1); REQUIRE(occupant);
+        REQUIRE(inn->canOfferService(unit,WALK));
+        const auto grants=unit->trainingVisitCourses(*inn,WALK); REQUIRE(grants);
+        CHECK((*grants&((1u<<WALK)|(1u<<SWIM)))==((1u<<WALK)|(1u<<SWIM)));
+        auto captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        REQUIRE(captured->unitAtSlot(unit->gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
+        CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK));
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(occupant->posX,occupant->posY,Game::DEL_GROUND_UNIT));
+        unit->destinationPurpose=WALK; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+        REQUIRE(unit->serviceResourcesReserved); REQUIRE(inn->reservedMaterials[WHEAT]==5);
+        for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+        REQUIRE(unit->displacement==Unit::DIS_INSIDE);
+        checkPhaseContinuation(world.game,256);
+        CHECK(unit->level[WALK]==1); CHECK(unit->level[SWIM]==1);
+        CHECK(unit->performance[WALK]==0); CHECK(unit->performance[SWIM]==16);
+        CHECK(world.game.map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+        CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->serviceResourcesReserved);
+        CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==0);
+        CHECK(world.team->stats.measurements.trainingVisits[3]==1); CHECK(unit->integrity());
+    }
+
+    TEST_CASE("restored unsafe ongoing training exits without charging materials or changing levels")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto custom=units["units"][WORKER]; custom["key"]="training-restored";
+        custom["behaviors"]["swim"]=false; custom["behaviors"]["hungerRate"]=0;
+        custom["behaviors"]["clearIdle"]=false; custom["behaviors"]["adjacentClearInterrupt"]=false;
+        units["units"].push_back(custom);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+        auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& semantics=buildings["variants"][3]["semantics"];
+        semantics["admittedUnits"]={"training-restored"}; semantics["training"]=nlohmann::json::object();
+        semantics["training"]["walk"]={{"enabled",true},{"units",{"training-restored"}},{"targetLevel",1},{"duration",100},{"cost",{{"food",2}}}};
+        buildings["variants"][3]["properties"]["insideSpeed"]=256;
+        world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+        auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,6,8);
+        REQUIRE(inn); REQUIRE(unit); inn->materials[WHEAT]=2;
+        unit->destinationPurpose=WALK; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+        REQUIRE(unit->serviceResourcesReserved);
+        for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+        REQUIRE(unit->displacement==Unit::DIS_INSIDE); REQUIRE(inn->reservedMaterials[WHEAT]==2);
+        // A changed future level table is allowed during a visit: current clocks,
+        // learnability, selection and reservation costs are all still unchanged.
+        units["units"][3]["levels"][1]["performance"][WALK]=0;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump())); world.game.configureBuildingCatalog();
+        CHECK_FALSE(unit->trainingVisitSafe(*inn,WALK));
+        unit->insideTimeout=0; unit->delta=255;
+        checkPhaseContinuation(world.game,256);
+        CHECK(unit->level[WALK]==0); CHECK(unit->performance[WALK]>0);
+        CHECK(world.team->stats.measurements.trainingVisits[3]==0);
+        CHECK(world.team->stats.measurements.abilityGains[3][WALK]==0);
+        CHECK_FALSE(unit->serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0);
+        CHECK(inn->materials[WHEAT]==2); CHECK(inn->unitsInside.empty()); CHECK(unit->integrity());
+    }
+
+    TEST_CASE("imported movement tables retain historical course admission and direct grants")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto base=UnitCatalog::legacyMigration(); std::vector<std::array<UnitType,NB_UNIT_LEVELS>> tables;
+        for(unsigned type=0;type<base->size();++type)tables.push_back(base->levels(type));
+        tables[WORKER][1].performance[WALK]=0;
+        for(auto& level:tables[WORKER])level.performance[SWIM]=0;
+        world.game.gameHeader.setUnitCatalog(base->withLegacyLevels(tables,425));
+        auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& semantics=buildings["variants"][3]["semantics"];
+        semantics["training"]=nlohmann::json::object();
+        semantics["training"]["walk"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",3},{"cost",nlohmann::json::object()}};
+        world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+        auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(WORKER,6,8); REQUIRE(inn); REQUIRE(unit);
+        REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
+        CHECK(inn->canOfferService(unit,WALK));
+        CHECK(unit->applyTraining(inn->type->semantics.training[WALK],WALK));
+        CHECK(unit->level[WALK]==1); CHECK(unit->performance[WALK]==0);
+    }
+
+    TEST_CASE("parallel construction qualification captures all courses before grants and preserves immobile definitions")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(bool immobile:{false,true}) {
+            CAPTURE(immobile);
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+            auto custom=units["units"][WORKER]; custom["key"]="training-qualification";
+            custom["behaviors"]["hungerRate"]=0; custom["behaviors"]["clearIdle"]=false;
+            custom["behaviors"]["adjacentClearInterrupt"]=false;
+            if(immobile) {
+                custom["behaviors"]["walk"]=false; custom["behaviors"]["swim"]=false;
+                for(auto& level:custom["levels"]) { level["performance"][WALK]=0; level["performance"][SWIM]=0; }
+            }
+            units["units"].push_back(custom);
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+            auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            auto& semantics=buildings["variants"][3]["semantics"];
+            semantics["admittedUnits"]={"training-qualification"}; semantics["trainingInParallel"]=true;
+            semantics["training"]=nlohmann::json::object();
+            semantics["training"]["build"]={{"enabled",true},{"units",{"training-qualification"}},{"targetLevel",0},{"constructionLevel",2},{"duration",3},{"cost",{{"food",2}}}};
+            semantics["training"]["harvest"]={{"enabled",true},{"units",{"training-qualification"}},{"targetLevel",0},{"constructionLevel",2},{"duration",3},{"cost",{{"food",3}}}};
+            buildings["variants"][3]["properties"]["insideSpeed"]=256;
+            world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+            auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,6,8); REQUIRE(inn); REQUIRE(unit);
+            inn->materials[WHEAT]=5;
+            const int build=unit->performance[BUILD],harvest=unit->performance[HARVEST];
+            REQUIRE(unit->constructionLevel==0); REQUIRE(inn->canOfferService(unit,BUILD));
+            const auto courses=unit->trainingVisitCourses(*inn,BUILD); REQUIRE(courses);
+            CHECK((*courses&((1u<<BUILD)|(1u<<HARVEST)))==((1u<<BUILD)|(1u<<HARVEST)));
+            if(immobile) {
+                // Direct construction grants need no movement and remain useful
+                // to stationary definitions created by developer-authored setups.
+                CHECK(unit->applyTraining(inn->type->semantics.training[BUILD],BUILD));
+                CHECK(unit->constructionLevel==2); CHECK(unit->performance[WALK]==0); CHECK(unit->performance[SWIM]==0);
+            } else {
+                unit->destinationPurpose=BUILD; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+                REQUIRE(inn->reservedMaterials[WHEAT]==5);
+                for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+                REQUIRE(unit->displacement==Unit::DIS_INSIDE);
+                checkPhaseContinuation(world.game,256);
+                CHECK(unit->constructionLevel==2); CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0);
+                CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->serviceResourcesReserved);
+                CHECK(world.team->stats.measurements.trainingVisits[3]==1);
+            }
+            CHECK(unit->level[BUILD]==0); CHECK(unit->level[HARVEST]==0);
+            CHECK(unit->performance[BUILD]==build); CHECK(unit->performance[HARVEST]==harvest); CHECK(unit->integrity());
+        }
+    }
+
+    TEST_CASE("parallel movement losses are assessed together before admission with a surviving mode alternative")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(bool airborneAlternative:{false,true}) {
+            CAPTURE(airborneAlternative);
+            glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            if(airborneAlternative) {
+                // Import terrain before creating entities, using the detached
+                // authoring setup also used by TerrainRuntime fixtures.
+                world.game.map.game=nullptr;
+                world.game.map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:training-no-fly","name":"No fly","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
+                world.game.map.setGame(&world.game);
+            }
+            auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+            auto custom=units["units"][WORKER]; custom["key"]="training-bundle";
+            custom["behaviors"]["hungerRate"]=0; custom["behaviors"]["clearIdle"]=false;
+            custom["behaviors"]["adjacentClearInterrupt"]=false;
+            custom["behaviors"]["fly"]=airborneAlternative;
+            for(auto& level:custom["levels"])level["performance"][FLY]=airborneAlternative?16:0;
+            custom["levels"][0]["performance"][SWIM]=16;
+            custom["levels"][1]["performance"][WALK]=0; custom["levels"][1]["performance"][SWIM]=0;
+            units["units"].push_back(custom);
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+            auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            auto& semantics=buildings["variants"][3]["semantics"];
+            semantics["admittedUnits"]={"training-bundle"}; semantics["trainingInParallel"]=true;
+            semantics["training"]=nlohmann::json::object();
+            semantics["training"]["walk"]={{"enabled",true},{"units",{"training-bundle"}},{"targetLevel",1},{"duration",3},{"cost",{{"food",2}}}};
+            semantics["training"]["swim"]={{"enabled",true},{"units",{"training-bundle"}},{"targetLevel",1},{"duration",3},{"cost",{{"food",3}}}};
+            buildings["variants"][3]["properties"]["insideSpeed"]=256;
+            world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+            auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,6,8); REQUIRE(inn); REQUIRE(unit);
+            inn->materials[WHEAT]=5;
+            const int walk=unit->performance[WALK],swim=unit->performance[SWIM];
+            REQUIRE(walk>0); REQUIRE(swim>0);
+            CHECK(inn->canOfferService(unit,WALK)==airborneAlternative);
+            CHECK(inn->canOfferService(unit,SWIM)==airborneAlternative);
+            auto captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+            REQUIRE(captured->unitAtSlot(unit->gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
+            CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK)==airborneAlternative);
+            CHECK(unit->level[WALK]==0); CHECK(unit->level[SWIM]==0);
+            CHECK(unit->performance[WALK]==walk); CHECK(unit->performance[SWIM]==swim);
+            CHECK_FALSE(unit->serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==5);
+            if(airborneAlternative) {
+                unit->destinationPurpose=WALK; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+                REQUIRE(inn->reservedMaterials[WHEAT]==5);
+                for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick)world.game.syncStep(0);
+                REQUIRE(unit->displacement==Unit::DIS_INSIDE);
+                // Close only the outside vertex ring after entry. Every ground
+                // exit perimeter cell becomes non-flyable, while every footprint
+                // cell remains a valid actual air exit.
+                const auto noFly=world.game.map.terrainRegistry().find("fixture:training-no-fly"); REQUIRE(noFly);
+                auto& map=world.game.map;
+                for(int y=inn->posY-1;y<=inn->posY+inn->type->height+1;++y)
+                    for(int x=inn->posX-1;x<=inn->posX+inn->type->width+1;++x)
+                        if(y==inn->posY-1 || y==inn->posY+inn->type->height+1 || x==inn->posX-1 || x==inn->posX+inn->type->width+1)
+                            map.setVertexTerrain(x,y,*noFly);
+                for(int y=inn->posY-1;y<=inn->posY+inn->type->height;++y)
+                    for(int x=inn->posX-1;x<=inn->posX+inn->type->width;++x)
+                        if(y==inn->posY-1 || y==inn->posY+inn->type->height || x==inn->posX-1 || x==inn->posX+inn->type->width)
+                            REQUIRE_FALSE(map.terrainPropertiesAt(x,y).flyable);
+                for(int y=inn->posY;y<inn->posY+inn->type->height;++y)
+                    for(int x=inn->posX;x<inn->posX+inn->type->width;++x)
+                        REQUIRE(map.terrainPropertiesAt(x,y).flyable);
+                REQUIRE(unit->trainingVisitSafe(*inn,WALK));
+                captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+                CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK));
+                checkPhaseContinuation(world.game,256);
+                CHECK(unit->performance[WALK]==0); CHECK(unit->performance[SWIM]==0); CHECK(unit->performance[FLY]==16);
+                CHECK(unit->level[WALK]==1); CHECK(unit->level[SWIM]==1);
+                CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->unitsInside.empty());
+                CHECK(world.team->stats.measurements.trainingVisits[3]==1); CHECK(unit->integrity());
+            } else {
+                // Each grant alone preserves the other mode. The service must
+                // reject their combined effect rather than applying them in order.
+                auto* isolated=world.addUnit(3,6,9); REQUIRE(isolated);
+                REQUIRE(isolated->applyTraining(inn->type->semantics.training[SWIM],SWIM));
+                CHECK(isolated->performance[WALK]==walk); CHECK(isolated->performance[SWIM]==0);
+                REQUIRE(unit->applyTraining(inn->type->semantics.training[WALK],WALK));
+                CHECK(unit->performance[SWIM]==swim);
+                CHECK_FALSE(unit->applyTraining(inn->type->semantics.training[SWIM],SWIM));
+                CHECK(unit->level[SWIM]==0); CHECK(unit->performance[SWIM]==swim);
+            }
+        }
+    }
+
 }

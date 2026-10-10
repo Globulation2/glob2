@@ -107,6 +107,14 @@ free ground exits without enabling movement. Newly authored flight capability
 requires flight at every level: airborne units do not acquire ground occupancy
 through training. Walking and swimming use the existing terrain routing; a
 swim-only class excludes land and allocates its fields only when needed.
+Training admission projects every eligible parallel grant together before
+reserving materials. Authored courses cannot remove all movement or change
+movement to a mode unsupported by the building's exit terrain; temporary
+occupants do not prevent admission. Unsafe restored visits release their
+reservations and exit without a partial charge or level change. Direct
+single-course `applyTraining` returns false without mutation if it would remove
+the last movement mode. Imported historical tables retain their original
+application and admission policies for replay compatibility.
 
 Transport, construction, clearing, melee and ranged combat are independent.
 Automatic flag recruitment, painted-area seeking, combat interruption, retreat
