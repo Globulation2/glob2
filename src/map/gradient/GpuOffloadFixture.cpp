@@ -5,6 +5,7 @@
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "BuildingType.h"
+#include "field/GradientCosts.h"
 #include "io/BenchmarkMapImport.h"
 #include "io/BenchmarkFixtureAdmission.h"
 #include <cstdlib>
@@ -15,7 +16,7 @@
 #include <vector>
 
 namespace {
-struct Controllers {std::string suffix;unsigned seed;AI::ImplementationID even,odd;int units=64;};
+struct Controllers {std::string suffix;unsigned seed;AI::ImplementationID even,odd;int units=64;bool swimmers=false;};
 void writeFixtures(int exponent,const std::vector<Controllers>& controllers) {
     REQUIRE((exponent==10 || exponent==11));
     const int dimension=1<<exponent;
@@ -27,6 +28,7 @@ void writeFixtures(int exponent,const std::vector<Controllers>& controllers) {
         glob2test::HeadlessGame world({.wDec=exponent,.hDec=exponent,.teams=4,.discovered=true,
             .clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=controller.seed});
         auto& map=world.game.map;
+        std::vector<Uint16> swimmerGids;
         if (layout=="corridors") {
             auto edit=map.editTerrain();
             // Water barriers with alternating broad passages. These fixtures are
@@ -49,9 +51,20 @@ void writeFixtures(int exponent,const std::vector<Controllers>& controllers) {
                 for(int material=0;material<MaterialCount;++material)
                     building->materials[material]=building->type->maxMaterial[material];
             }
-            for(int unit=0;unit<controller.units;++unit)
-                world.addUnit(unit<controller.units*3/4 ? WORKER : unit<controller.units*15/16 ? WARRIOR : EXPLORER,
-                    x+unit%16,y+24+unit/16,team);
+            for(int unit=0;unit<controller.units;++unit) {
+                const int type=unit<controller.units*3/4 ? WORKER : unit<controller.units*15/16 ? WARRIOR : EXPLORER;
+                const bool swimmer=controller.swimmers && type==WORKER && unit%2==0;
+                auto* created=world.addUnit(type,x+unit%16,y+24+unit/16,team,swimmer?1:0);
+                if(swimmer) {
+                    REQUIRE(created);
+                    REQUIRE(created->performance[SWIM]>0);
+                    // Default level-one workers walk at21 and swim at10: the
+                    // serialized legal upgrade selects weighted class5.
+                    REQUIRE(created->swimClass()==5);
+                    REQUIRE(gradient_kernel::weightedClass(created->swimClass()));
+                    swimmerGids.push_back(created->gid);
+                }
+            }
             for(int material=0;material<MaterialCount;++material)
                 for(int dy=0;dy<6;++dy) for(int dx=0;dx<6;++dx) {
                     const int rx=x-48+material*12+dx,ry=y+64+dy;
@@ -86,6 +99,19 @@ void writeFixtures(int exponent,const std::vector<Controllers>& controllers) {
         CHECK(restored.game.map.getH()==dimension);
         CHECK(restored.game.teamsCount()==4);
         CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true)==world.game.checkSum(nullptr,nullptr,nullptr,true));
+        if(controller.swimmers) {
+            // Half of the three-quarter worker cohort, across four teams:
+            // 96 weighted swimmers for the explicit64-unit-per-team fixture.
+            REQUIRE(swimmerGids.size()==std::size_t(controller.units*3/2));
+            for(const auto gid:swimmerGids) {
+                auto* restoredSwimmer=restored.game.getUnit(gid);
+                REQUIRE(restoredSwimmer);
+                CHECK(restoredSwimmer->performance[SWIM]>0);
+                CHECK(restoredSwimmer->swimClass()==5);
+            }
+            MESSAGE("Weighted swimmer fixture expected class5 count " << swimmerGids.size()
+                << "; real-game activation also requires positive minimal copied bytes, cost uploads and committed GPU fields, plus exact own-save continuation.");
+        }
         MESSAGE("Constructed stress fixture " << dimension << " population " << controller.units*4 << ": " << path);
     }
 }
@@ -101,6 +127,8 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]") {
             controllers.push_back({"-bounded-ai-seed"+std::to_string(seed),seed,AI::NUMBI,AI::CASTOR});
     if(const auto* stress=std::getenv("GLOB2_GPU_OFFLOAD_POPULATION_STRESS");stress && std::string(stress)=="1")
         controllers.push_back({"-bounded-ai-seed91005-population1024",91005,AI::NUMBI,AI::CASTOR,256});
+    if(const auto* swimmers=std::getenv("GLOB2_GPU_OFFLOAD_SWIM_FIXTURES");swimmers && std::string(swimmers)=="1")
+        controllers.push_back({"-bounded-ai-seed91006-swimmers",91006,AI::NUMBI,AI::CASTOR,64,true});
     writeFixtures(10,controllers);
 }
 TEST_CASE("write 2048 bounded-AI stress fixtures after explicit memory admission [benchmark][artifacts]") {
