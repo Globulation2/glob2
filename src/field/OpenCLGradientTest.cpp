@@ -1245,14 +1245,18 @@ TEST_CASE("experimental mask and parity bindings preserve every plan across reti
             CHECK(after.dispatches>before.dispatches);CHECK_FALSE(session.failed.load());
         }
     }
-    // Required-only candidates must not supply unqualified live probe data.
-    auto seeds=std::make_shared<std::vector<std::uint16_t>>(2,1);(*seeds)[0]=65535;
-    const auto original=*seeds;
-    const auto bytes=openCLProbeBytes();
-    BackendRequest request{seeds->data(),100,{2,1},session,nullptr,
-        [](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,98232,1,true}};
-    CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,seeds));
-    CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);CHECK_FALSE(session.failed.load());
+    // The epoch counterpart has a separate fresh-process lifecycle gate above.
+    // Remaining required-only configurations must still decline optional work.
+    const auto configuration=openCLStatus();
+    if(configuration.parityBound || configuration.directSeedUpload || configuration.apiCpuMode){
+        auto seeds=std::make_shared<std::vector<std::uint16_t>>(2,1);(*seeds)[0]=65535;
+        const auto original=*seeds;
+        const auto bytes=openCLProbeBytes();
+        BackendRequest request{seeds->data(),100,{2,1},session,nullptr,
+            [](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,98232,1,true}};
+        CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,seeds));
+        CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);CHECK_FALSE(session.failed.load());
+    }
 }
 TEST_CASE("singleton direct seed uploads preserve exact arrays commands and mixed batch staging")
 {
