@@ -3,6 +3,7 @@
 #include "OpenCLCpuAttribution.h"
 #include "OpenCLBorrowedLifetime.h"
 #include "OpenCLTransferProof.h"
+#include "OpenCLLaneRegistry.h"
 #include "GradientBackend.h"
 #include "ThreadCpuClock.h"
 #include <SDL3/SDL_loadso.h>
@@ -56,6 +57,10 @@ struct BudgetLease {
     void transferTo(BudgetLease& destination) noexcept {
         if(&budget!=&destination.budget || destination.bytes)std::terminate();
         destination.bytes=bytes;bytes=0;
+    }
+    void splitTo(BudgetLease& destination,std::size_t count) noexcept {
+        if(&budget!=&destination.budget || destination.bytes || count>bytes)std::terminate();
+        destination.bytes=count;bytes-=count;
     }
     void resize(std::size_t next) {
         if(next>bytes && !budget.reserve(next-bytes)) throw BudgetExceeded();
@@ -357,6 +362,10 @@ constexpr auto kernelVariants()
 struct Runtime;
 struct Device
 {
+    // Pre-reserved object, retained strings and weak control metadata; released
+    // after all payload and registrations, including quarantined aliases.
+    BudgetLease metadataLease{hostBudget};
+    explicit Device(BudgetLease& reserved){reserved.transferTo(metadataLease);}
     API api;
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
@@ -418,13 +427,15 @@ struct Device
     std::array<std::shared_ptr<Plane>, 8> planes;
     std::array<std::uint64_t, 8> used{};
     std::uint64_t age = 0;
-    std::vector<std::weak_ptr<Runtime>> lanes;
+    static constexpr std::size_t LaneCapacity=64;
+    OpenCLLaneRegistry<Runtime,LaneCapacity> lanes;
     OpenCLStatus retired;
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
     std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0};
     std::atomic<std::uint64_t> optionalQuarantines{0},requiredQuarantines{0},requiredProofFailures{0};
     std::atomic<bool> threadCPUAvailable{false};
+    void reapExpiredLanes() noexcept {std::lock_guard lock(lanesMutex);lanes.clearExpired();}
     void evictUnusedPlanes() {
         std::lock_guard lock(cacheMutex);
         for(auto& p:planes) if(p && p.use_count()==1) p.reset();
@@ -468,16 +479,18 @@ struct Device
             unsigned ordinal=0;
             UInt count = 0;
             check(api.GetPlatformIDs(0, nullptr, &count));
-            std::vector<Handle> platforms(count);
+            if(!count || count>64)throw std::runtime_error("OpenCL platform count exceeds bounded metadata");
+            std::array<Handle,64> platforms{};
             check(api.GetPlatformIDs(count, platforms.data(), nullptr));
-            for (auto platform : platforms)
+            for (auto platform : std::span(platforms.data(),count))
             {
                 UInt found = 0;
                 if (api.GetDeviceIDs(platform, 4 /* GPU */, 0, nullptr, &found) != 0)
                     continue;
-                std::vector<Handle> devices(found);
+                if(found>64)throw std::runtime_error("OpenCL device count exceeds bounded metadata");
+                std::array<Handle,64> devices{};
                 check(api.GetDeviceIDs(platform, 4, found, devices.data(), nullptr));
-                for (auto candidate : devices)
+                for (auto candidate : std::span(devices.data(),found))
                 {
                     const auto candidateOrdinal=ordinal++;
                     if(explicitDevice && candidateOrdinal!=requestedDevice) continue;
@@ -500,9 +513,11 @@ struct Device
                 throw std::runtime_error("No supported OpenCL GPU");
             std::size_t bytes = 0;
             check(api.GetDeviceInfo(device, 0x102B, 0, nullptr, &bytes));
-            std::vector<char> name(bytes);
+            if(!bytes || bytes>2048)throw std::runtime_error("OpenCL device name exceeds bounded metadata");
+            std::array<char,2048> name{};
             check(api.GetDeviceInfo(device, 0x102B, bytes, name.data(), nullptr));
-            status.device = name.data();
+            if(name[bytes-1]!=0)throw std::runtime_error("Unterminated OpenCL device name");
+            status.device.assign(name.data(),bytes-1);
             // Fingerprints are captured once on the initialization coordinator.
             // A malformed/unsupported optional query leaves metadata empty and
             // therefore cannot qualify a matching offline batch manifest.
@@ -537,10 +552,10 @@ struct Device
             check(error);
             UInt dimensions = 0;
             check(api.GetDeviceInfo(device, 0x1003, sizeof dimensions, &dimensions, nullptr));
-            if (dimensions < 3)
+            if (dimensions < 3 || dimensions>64)
                 throw std::runtime_error("OpenCL device needs three work-item dimensions");
-            std::vector<std::size_t> axes(dimensions);
-            check(api.GetDeviceInfo(device, 0x1005, axes.size() * sizeof(std::size_t), axes.data(), nullptr));
+            std::array<std::size_t,64> axes{};
+            check(api.GetDeviceInfo(device, 0x1005, dimensions * sizeof(std::size_t), axes.data(), nullptr));
             std::string unsupported;
             for (auto &variant : variants)
             {
@@ -564,9 +579,11 @@ struct Device
                         check(built); // Driver errors, rather than a rejected candidate build.
                     std::size_t size = 0;
                     api.GetProgramBuildInfo(variant.program, device, 0x1183, 0, nullptr, &size);
-                    std::vector<char> log(size + 1);
-                    api.GetProgramBuildInfo(variant.program, device, 0x1183, size, log.data(), nullptr);
-                    unsupported = "OpenCL build failed: " + std::string(log.data());
+                    std::array<char,4096> log{};
+                    if(size && size<=log.size() &&
+                        !api.GetProgramBuildInfo(variant.program,device,0x1183,size,log.data(),nullptr) && log[size-1]==0)
+                        unsupported="OpenCL build failed: "+std::string(log.data(),size-1);
+                    else unsupported="OpenCL build failed (diagnostic unavailable or exceeds bounded metadata)";
                     api.ReleaseProgram(variant.program);
                     variant.program = nullptr;
                     continue;
@@ -603,7 +620,7 @@ struct Device
         }
         catch (const std::exception &e)
         {
-            status.error = e.what();
+            status.error.assign(e.what(),std::min<std::size_t>(std::strlen(e.what()),4096));
             status.available = false;
         }
     }
@@ -614,9 +631,14 @@ struct Device
     }
     void fail(std::string_view message) noexcept {
         failed.store(true);
-        try { std::lock_guard lock(failureMutex); if(status.error.empty()) status.error.assign(message); } catch(...) {}
+        try { std::lock_guard lock(failureMutex); if(status.error.empty()) status.error.assign(message.substr(0,4096)); } catch(...) {}
     }
 };
+std::shared_ptr<Device> makeDevice() {
+    BudgetLease reserved{hostBudget};
+    reserved.resize(sizeof(Device)+256+Device::LaneCapacity*256+65536);
+    return std::make_shared<Device>(reserved);
+}
 struct Runtime : std::enable_shared_from_this<Runtime>
 {
     std::shared_ptr<Device> shared;
@@ -626,7 +648,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     // status strings retained by a concurrent snapshot's shared lane handle.
     BudgetLease optionalObjectLease{hostBudget},optionalSubsetLease{probeBudget};
     std::uint64_t statusSequence = 0;
-    Runtime(std::shared_ptr<Device> state = std::make_shared<Device>(), bool lane = false)
+    Runtime(std::shared_ptr<Device> state = makeDevice(), bool lane = false)
         : shared(std::move(state)), api(shared->api), execution(lane) {}
     std::mutex mutex;
     OpenCLStatus status;
@@ -742,26 +764,42 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         out.apiCpu.controlBracketNs+=in.apiCpu.controlBracketNs;out.apiCpu.clockReads+=in.apiCpu.clockReads;
         out.apiCpu.coveredNs+=in.apiCpu.coveredNs;
     }
+    static std::shared_ptr<Runtime> registeredLane(const std::shared_ptr<Device>& device,
+        BudgetLease& objectAdmission,BudgetLease* subsetAdmission=nullptr) {
+        // Separate payload/control allocations: expired weak registration must
+        // never retain a full Runtime after its payload credit is released.
+        struct ControlCredit {BudgetLease host{hostBudget},subset{probeBudget};};
+        // Existing admission pays for both this credit holder and the Runtime
+        // control block before either allocation. Registry retains the credit
+        // until the expired weak control is actually erased.
+        auto credit=std::make_shared<ControlCredit>();
+        objectAdmission.splitTo(credit->host,256);
+        if(subsetAdmission)subsetAdmission->splitTo(credit->subset,256);
+        auto result=std::shared_ptr<Runtime>(new Runtime(device,true),[credit](Runtime* value){delete value;});
+        objectAdmission.transferTo(result->optionalObjectLease);
+        if(subsetAdmission)subsetAdmission->transferTo(result->optionalSubsetLease);
+        std::lock_guard lock(device->lanesMutex);
+        if(!device->lanes.insert(result,credit))throw BudgetExceeded();
+        return result;
+    }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
         if(!current) {
-            current=std::make_shared<Runtime>(shared,true);
-            std::lock_guard lock(shared->lanesMutex);
-            shared->lanes.erase(std::remove_if(shared->lanes.begin(),shared->lanes.end(),[](const auto& v){return v.expired();}),shared->lanes.end());
-            shared->lanes.push_back(current);
+            BudgetLease reserved{hostBudget};reserved.resize(sizeof(Runtime)+256+8192);
+            current=registeredLane(shared,reserved);
         }
         return *current;
     }
     OpenCLStatus snapshot() {
         OpenCLStatus out;
         { std::lock_guard lock(shared->failureMutex); out=shared->status; }
-        std::vector<std::shared_ptr<Runtime>> live;
+        std::array<std::shared_ptr<Runtime>,Device::LaneCapacity> live{};
         std::uint64_t last;
         { std::lock_guard lock(shared->lanesMutex);
             accumulate(out,shared->retired);parameters(out,shared->retired);last=shared->retiredSequence;
-            for(auto& v:shared->lanes) if(auto l=v.lock()) live.push_back(std::move(l));
+            live=shared->lanes.snapshot();
         }
-        for(auto& l:live) { std::lock_guard lock(l->mutex);accumulate(out,l->status);
+        for(auto& l:live) if(l) { std::lock_guard lock(l->mutex);accumulate(out,l->status);
             if(l->statusSequence>=last) {parameters(out,l->status);last=l->statusSequence;}
         }
         out.available=out.available&&!shared->failed.load();
@@ -776,7 +814,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         out.noopFields=shared->noopFields.load();out.threadCPUNs=shared->threadCPUNs.load();
         out.threadCPUInvalidMeasurements+=shared->threadCPUInvalidMeasurements.load();
         out.threadCPUAvailable=out.threadCPUAvailable || shared->threadCPUAvailable.load();
-        out.executionLanes=live.size();out.maxConcurrentBatches=shared->maximumActive.load();
+        out.executionLanes=std::count_if(live.begin(),live.end(),[](const auto& lane){return bool(lane);});out.maxConcurrentBatches=shared->maximumActive.load();
         return out;
     }
     void buffers()
@@ -1323,7 +1361,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             for(const auto& r:input) { r.session.fail(); ++status.cpuSelections; }
             try {
                 try { throw; }
-                catch(const std::exception& e) { status.error=e.what(); }
+                catch(const std::exception& e) { status.error.assign(e.what(),std::min<std::size_t>(std::strlen(e.what()),4096)); }
                 catch(...) { status.error="OpenCL workload failed with an unknown exception"; }
             } catch(...) { status.error.clear(); }
             readyPlans.store(0,std::memory_order_release);
@@ -1466,22 +1504,17 @@ struct OpenCLProbe::Impl
     Handle a=nullptr,b=nullptr,active=nullptr,nextActive=nullptr,event=nullptr;
     bool privateScalar=false,privateCosts=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
     bool completionUnknown=false,untrackedCommand=false;
-    static constexpr std::size_t controlBytes=256+sizeof(OpenCLBorrowedLifetime);
+    static constexpr std::size_t controlBytes=512+sizeof(OpenCLBorrowedLifetime);
     static constexpr std::size_t objectBytes() {return sizeof(OpenCLProbe)+sizeof(Impl)+sizeof(Runtime)+controlBytes;}
     Impl(const OpenCLProbeInput& r,Plan p,std::shared_ptr<const void> owner,OpenCLProbeClock clockValue,
          BudgetLease& objectAdmission,BudgetLease& laneAdmission,BudgetLease& subsetAdmission)
         :request(r),plan(p),keepAlive(std::move(owner)),clock(std::move(clockValue)),generation(r.session.currentGeneration()) {
         admission.parent=runtime().shared;
         objectAdmission.transferTo(objectLease);
-        lane=std::make_shared<Runtime>(runtime().shared,true);
-        laneAdmission.transferTo(lane->optionalObjectLease);
-        subsetAdmission.transferTo(lane->optionalSubsetLease);
+        lane=Runtime::registeredLane(runtime().shared,laneAdmission,&subsetAdmission);
         measured.activeEpoch=lane->shared->status.activeEpoch;
         measured.checkInterval=measured.activeEpoch ? lane->shared->status.checkInterval : 1;
-        std::lock_guard lock(lane->shared->lanesMutex);
-        lane->shared->lanes.erase(std::remove_if(lane->shared->lanes.begin(),lane->shared->lanes.end(),
-            [](const auto& v){return v.expired();}),lane->shared->lanes.end());
-        lane->shared->lanes.push_back(lane);
+
     }
     ~Impl() {
         // Only positive proof or command-free setup may reach destruction.
@@ -1570,14 +1603,14 @@ struct OpenCLProbe::Impl
                 const auto payload=sizeof(Device::Plane)+sizeof(UInt);
                 if(request.identity.retainedBytes>OpenCLProbeBudget-objectBytes()-payload) throw BudgetExceeded();
                 const auto bytes=payload+request.identity.retainedBytes;
-                lane->optionalSubsetLease.resize(objectBytes()+bytes);
+                lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
                 costs=std::make_shared<Device::Plane>(api,request,std::span<const std::uint8_t>{},true);
                 costs->data[0]=packed;privateScalar=privateCosts=true;
                 measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
                 measured.coldCostPlane=lane->shared->status.probeColdCosts;
             }
             costCharge=costs->hostLease.bytes;
-            lane->optionalSubsetLease.resize(objectBytes()+costCharge);phase=Phase::Reserve;break;
+            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge);phase=Phase::Reserve;break;
         }
         case Phase::CostsReserve: {
             // No pending optional plane is ever inserted into the shared cache.
@@ -1587,10 +1620,10 @@ struct OpenCLProbe::Impl
             if(retained>available || sizeof(Device::Plane)>available-retained ||
                 n>(available-retained-sizeof(Device::Plane))/sizeof(UInt)) throw BudgetExceeded();
             const auto bytes=sizeof(Device::Plane)+n*sizeof(UInt)+retained;
-            lane->optionalSubsetLease.resize(objectBytes()+bytes);
+            lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
             costs=std::make_shared<Device::Plane>(api,request,std::span<const std::uint8_t>{},false,true);
             costCharge=costs->hostLease.bytes;
-            lane->optionalSubsetLease.resize(objectBytes()+costCharge);
+            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge);
             measured.coldCostPlane=true;privateCosts=true;
             measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
             phase=Phase::CostsPack;break;
@@ -1630,11 +1663,11 @@ struct OpenCLProbe::Impl
             phase=Phase::Upload;break;
         case Phase::Reserve:
             if(n>(OpenCLProbeBudget-objectBytes()-costCharge)/sizeof(std::uint16_t)) throw BudgetExceeded();
-            lane->optionalSubsetLease.resize(objectBytes()+costCharge+n*sizeof(std::uint16_t));
+            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge+n*sizeof(std::uint16_t));
             lane->valuesLease.resize(n*sizeof(std::uint16_t));
             lane->values.reserve(n); // No full-plane value initialization.
             lane->valuesLease.resize(lane->values.capacity()*sizeof(std::uint16_t));
-            lane->optionalSubsetLease.resize(objectBytes()+costCharge+lane->valuesLease.bytes);
+            lane->optionalSubsetLease.resize(objectBytes()-256+costCharge+lane->valuesLease.bytes);
             phase=Phase::Copy;break;
         case Phase::Copy: {
             const auto stop=copied+std::min(copyCells,n-copied);
@@ -1783,9 +1816,12 @@ struct OpenCLProbe::Impl
 OpenCLProbe::OpenCLProbe(std::shared_ptr<Impl> value):state(std::move(value)) {}
 OpenCLProbe::~OpenCLProbe() {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    auto parent=state ? state->admission.parent : std::shared_ptr<Device>{};
     if(state && (state->event || state->borrowedTransfers || state->completionUnknown)) {
         state->quarantine();state->lane->shared->optionalLifetime.quarantine(state);
     }
+    state.reset();
+    if(parent)parent->reapExpiredLanes();
 #endif
 }
 void OpenCLProbe::cancel() noexcept {state->cancelled=true;}
@@ -1895,8 +1931,8 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Pl
         // constructor. Local guards retain admission if construction throws;
         // successful construction transfers the leases without changing totals.
         BudgetLease objectAdmission{hostBudget},laneAdmission{hostBudget},subsetAdmission{probeBudget};
-        objectAdmission.resize(sizeof(OpenCLProbe)+sizeof(OpenCLProbe::Impl)+OpenCLProbe::Impl::controlBytes);
-        laneAdmission.resize(sizeof(Runtime));
+        objectAdmission.resize(sizeof(OpenCLProbe)+sizeof(OpenCLProbe::Impl)+OpenCLProbe::Impl::controlBytes-256);
+        laneAdmission.resize(sizeof(Runtime)+256);
         subsetAdmission.resize(OpenCLProbe::Impl::objectBytes());
         auto state=std::make_shared<OpenCLProbe::Impl>(request,plan,std::move(keepAlive),clock,
             objectAdmission,laneAdmission,subsetAdmission);
@@ -1906,21 +1942,23 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Pl
         if(!timer.valid) {admitted=nullptr;return {};}
         return value;
     }
-    catch(...) {return {};}
+    catch(...) {device.reapExpiredLanes();return {};}
 #else
     return {};
 #endif
 }
 bool reapOpenCLProbeQuarantine() noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    return runtime().shared->optionalLifetime.tryReap(&OpenCLProbe::Impl::terminalProof);
+    try {auto device=runtime().shared;const bool reaped=device->optionalLifetime.tryReap(&OpenCLProbe::Impl::terminalProof);
+        device->reapExpiredLanes();return reaped;}catch(...){return false;}
 #else
     return false;
 #endif
 }
 bool reapOpenCLRequiredQuarantine() noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    return runtime().shared->requiredLifetime.tryReap(&Runtime::RequiredTransaction::terminalProof);
+    try {auto device=runtime().shared;const bool reaped=device->requiredLifetime.tryReap(&Runtime::RequiredTransaction::terminalProof);
+        device->reapExpiredLanes();return reaped;}catch(...){return false;}
 #else
     return false;
 #endif
@@ -1938,7 +1976,9 @@ bool executeOpenCLDevice(std::span<const BackendRequest> requests,Plan plan) {
 OpenCLStatus openCLStatus()
 {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    return runtime().snapshot();
+    try {return runtime().snapshot();}
+    catch(...) {OpenCLStatus unavailable;unavailable.hostBytes=hostBudget.current.load();unavailable.peakHostBytes=hostBudget.peak.load();
+        unavailable.probeBytes=probeBudget.current.load();unavailable.peakProbeBytes=probeBudget.peak.load();return unavailable;}
 #else
     auto status=runtime().status;
     status.hostBytes=hostBudget.current.load();status.peakHostBytes=hostBudget.peak.load();

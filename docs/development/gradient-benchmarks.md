@@ -658,3 +658,21 @@ release qualification is separately required; it remains false until the complet
 tuning-on/off CPU, deadline and compatibility gates qualify that exact protocol.
 Synthetic clock tests exercise this gate without supplying release evidence.
 No compiler/device initialization or owner scans belong inside this envelope.
+### Accelerator lane metadata storage
+
+The backend registry has 64 weak lane slots. Execution payloads are allocated
+separately from shared control blocks; a dedicated credit is pinned by the
+control block and conservatively by the registry until its last weak reference
+is released. Optional control metadata remains charged to the 16 MiB subset.
+Concurrent status aliases retain the payload lease until actual destruction.
+Terminal optional disposal and background quarantine reaping remove expired
+registry entries only after their payloads have gone.
+
+Device metadata is reserved before allocation, including bounded retained
+strings and registry controls. Initialization accepts at most 64 platforms,
+devices per platform, and work-item axes, with 2048-byte device identity strings
+and 4096-byte compiler diagnostics. Oversized or malformed metadata declines
+admission; driver allocations are outside these application-owned byte limits.
+These lane and initialization bounds are independent of cost-plane, required
+input, session, and optional capture accounting, which must also satisfy their
+own lifetime reservations.
