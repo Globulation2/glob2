@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GradientCosts.h"
+#include "AdaptiveGradientPolicy.h"
 #include "Grid.h"
 #include <algorithm>
 #include <array>
@@ -14,70 +15,6 @@
 
 namespace gradient_kernel
 {
-// Execution placement only: the field encoding and publication boundary do not
-// depend on this setting. Header-only consumers retain the CPU implementation.
-enum class Backend
-{
-    Automatic,
-    CPU,
-    OpenCL
-};
-inline std::atomic<Backend> &backendSetting()
-{
-    static std::atomic<Backend> value{[]
-                                      {
-                                          const auto *name = std::getenv("GLOB2_GRADIENT_BACKEND");
-                                          if (name && std::strcmp(name, "cpu") == 0)
-                                              return Backend::CPU;
-                                          if (name && std::strcmp(name, "opencl") == 0)
-                                              return Backend::OpenCL;
-                                          return Backend::Automatic;
-                                      }()};
-    return value;
-}
-inline Backend backend() { return backendSetting().load(std::memory_order_relaxed); }
-inline void setBackend(Backend value) { backendSetting().store(value, std::memory_order_relaxed); }
-
-// Workload choices are game-local; device failure overrides every class.
-enum class Family { Generic, Materials, Markets, Guard, Clear, Forbidden, Count };
-// Keep each native batch size separate: measured throughput is not monotonic,
-// so merging ranges would let an unmeasured size inherit another size's winner.
-inline constexpr std::size_t BATCH_CATEGORIES = 8;
-inline std::size_t batchCategory(std::size_t count) { return std::clamp<std::size_t>(count, 1, 8) - 1; }
-// Timing data is advisory only and never changes a completed field. Periodic
-// paired measurements prevent an early game's placement from becoming permanent.
-struct BackendTiming
-{
-    std::atomic<std::uint64_t> workload{0}, movements{0};
-    std::atomic<unsigned> calls{0}, recheckAfter{0}, slowSamples{0}, variantProbes{0};
-    std::atomic<double> cpuMs{0};
-};
-struct BackendSession
-{
-    std::array<std::atomic<Backend>, std::size_t(Family::Count) * BATCH_CATEGORIES> choices{};
-    // Zero is untuned; otherwise the native variant index plus one. Game-local,
-    // like backend choices, and accessed only by the accelerator.
-    std::array<std::atomic<unsigned>, std::size_t(Family::Count) * BATCH_CATEGORIES> tileChoices{};
-    std::array<BackendTiming, std::size_t(Family::Count) * BATCH_CATEGORIES> timings;
-    std::atomic<bool> failed{false};
-    BackendTiming& timing(Family family, std::size_t count)
-    {
-        return timings[std::size_t(family) * BATCH_CATEGORIES + batchCategory(count)];
-    }
-    std::array<std::mutex, std::size_t(Family::Count)*BATCH_CATEGORIES> calibrationMutexes;
-    std::mutex& classMutex(Family family,std::size_t count) {
-        return calibrationMutexes[std::size_t(family)*BATCH_CATEGORIES+batchCategory(count)];
-    }
-    std::atomic<unsigned>& tileSelection(Family family, std::size_t count)
-    {
-        return tileChoices[std::size_t(family) * BATCH_CATEGORIES + batchCategory(count)];
-    }
-    std::atomic<Backend>& selection(Family family = Family::Generic, std::size_t count = 1)
-    {
-        return choices[std::size_t(family) * BATCH_CATEGORIES + batchCategory(count)];
-    }
-};
-
 // The owner must keep the complete cost input immutable. Retaining it prevents
 // pooled storage/address reuse; variant identifies movement class/cost semantics.
 // Without an identity accelerators must compare actual cost contents.
@@ -100,18 +37,83 @@ struct BackendRequest
     void (*cpu)(void *, std::uint16_t *);
     CostIdentity identity;
     Family family = Family::Generic;
-    // Optional caller-owned CPU batch executor, also used during calibration.
+    // Optional caller-owned executor for a complete, ready CPU batch.
     void (*cpuBatch)(std::span<const BackendRequest* const>, std::span<std::uint16_t* const>) = nullptr;
+    Operation operation = Operation::CompleteField;
+    void (*failure)(void*,std::exception_ptr) = nullptr;
+    unsigned cpuBuckets = 0; // zero means unknown, never inferred by scanning
 };
 // An accelerator must leave the seed buffer untouched when returning false.
 // Registered by the optional native implementation; absent in standalone users.
-inline bool (*accelerator)(const BackendRequest &, Backend) = nullptr;
+inline bool (*accelerator)(const BackendRequest &, Plan) = nullptr;
 // Explicit scheduler batches own all contexts until this synchronous call ends.
-inline bool (*batchAccelerator)(std::span<const BackendRequest>, Backend) = nullptr;
+inline bool (*batchAccelerator)(std::span<const BackendRequest>, Plan) = nullptr;
 inline bool canBatch(const BackendSession &session)
 {
     const auto choice = backend();
     return batchAccelerator && choice != Backend::CPU && !session.failed.load(std::memory_order_relaxed);
+}
+
+// The shared layer selects once. Backends execute exactly that plan or decline
+// without touching seeds. No selected plan invokes a comparison or tournament.
+inline void executeGradientGroup(std::span<const BackendRequest> requests, Backend mode)
+{
+    if(requests.empty()) return;
+    const auto& first=requests.front();
+    const bool eligible=std::all_of(requests.begin(),requests.end(),[](const auto& request) {
+        return request.operation==Operation::CompleteField && request.limit>=0;
+    });
+    const auto chosen=eligible ? first.session.choose(first.family,requests.size(),mode) : PlanDecision{};
+    const bool sample=eligible && first.session.sample();
+    GradientObservation observation;
+    const auto started=sample ? monotonicNs() : 0;
+    if(sample) {
+        observation.decision=chosen; observation.family=first.family; observation.batch=unsigned(requests.size());
+        observation.width=first.grid.width(); observation.height=first.grid.height(); observation.limit=first.limit;
+        observation.movement=first.identity.variant; observation.costRevision=first.identity.revision;
+        observation.cpuBuckets=first.cpuBuckets; observation.threads=unsigned(ComputeExecutor::executionThreads());
+    }
+    StageTimingScope stageScope(sample ? &observation.stages : nullptr);
+    bool handled=false;
+    if(chosen.plan!=Plan::CPU) {
+        if(requests.size()==1 && accelerator) handled=accelerator(first,chosen.plan);
+        else if(batchAccelerator) handled=batchAccelerator(requests,chosen.plan);
+    }
+    if(!handled) {
+        observation.decision.plan=Plan::CPU;
+        if(first.cpuBatch && std::all_of(requests.begin(),requests.end(),[&](const auto& r){return r.cpuBatch==first.cpuBatch;})) {
+            std::array<const BackendRequest*,8> pointers{};
+            std::array<std::uint16_t*,8> outputs{};
+            for(std::size_t i=0;i<requests.size();++i) { pointers[i]=&requests[i]; outputs[i]=requests[i].gradient; }
+            first.cpuBatch(std::span(pointers.data(),requests.size()),std::span(outputs.data(),requests.size()));
+        }
+        else for(const auto& r:requests) {
+            try { r.cpu(r.context,r.gradient); }
+            catch(...) { if(r.failure) r.failure(r.context,std::current_exception()); else throw; }
+        }
+    }
+    if(sample) {
+        const auto completed=monotonicNs();
+        const auto* job=JobTiming::current;
+        observation.hasQueue=job && job->submitted;
+        const auto executionStart=observation.hasQueue ? job->started : started;
+        observation.executionNs=completed-executionStart;
+        observation.queueNs=observation.hasQueue ? job->started-job->submitted : 0;
+        observation.serviceNs=observation.executionNs+observation.queueNs;
+        observation.seedPreparationNs=job ? job->preparation : 0;
+        first.session.record(observation);
+    }
+}
+inline void executeGradientBatch(std::span<const BackendRequest> input, Backend mode)
+{
+    // Batches are explicitly ready; no gathering, retained inputs or optional
+    // dependency. Group only adjacent requests sharing semantic eligibility.
+    for(std::size_t begin=0;begin<input.size();) {
+        std::size_t end=begin+1;
+        while(end<input.size() && end-begin<8 && input[end].family==input[begin].family &&
+              &input[end].session==&input[begin].session && input[end].operation==input[begin].operation) ++end;
+        executeGradientGroup(input.subspan(begin,end-begin),mode); begin=end;
+    }
 }
 
 template <class Costs, class CPU>
@@ -119,10 +121,7 @@ bool tryAcceleratedGradient(std::uint16_t *gradient, int maxCost, field::Grid gr
                             Costs costs, CPU cpu, CostIdentity identity = {}, Family family = Family::Generic)
 {
     const auto choice = backend();
-    if (!accelerator || choice == Backend::CPU || maxCost < 0)
-        return false;
-    if (session.failed.load(std::memory_order_relaxed))
-        return false;
+    if (maxCost < 0) return false;
     struct Context
     {
         Costs costs;
@@ -136,6 +135,7 @@ bool tryAcceleratedGradient(std::uint16_t *gradient, int maxCost, field::Grid gr
                                  [](void *p, std::size_t i) { return static_cast<Context *>(p)->costs(i); },
                                  [](void *p, std::uint16_t *out) { static_cast<Context *>(p)->cpu(out); },
                                  std::move(identity), family, nullptr};
-    return accelerator(request, choice);
+    executeGradientGroup(std::span(&request,1),choice);
+    return true;
 }
 } // namespace gradient_kernel

@@ -18,6 +18,7 @@
 #include <thread>
 #include <ThreadSupport.h>
 #include <vector>
+#include <utility>
 
 // One executor for the simulation's parallel work. Two shapes of work share
 // its threads:
@@ -39,6 +40,16 @@
 class ComputeExecutor
 {
 public:
+	// Optional maintenance is never a deferred Group: join/run/owner fallback
+	// cannot execute it. A pass must be bounded and must not retain game inputs.
+	// No ticket or completion barrier is exposed to required work.
+	class WorkerOnly
+	{
+	public:
+		virtual ~WorkerOnly() = default;
+		virtual bool pending() const noexcept = 0;
+		virtual void process() noexcept = 0;
+	};
 	// Presentation is best-effort work, never part of a simulation barrier.
 	// One chunk runs at a time; at most one replacement waits behind it.
 	class Presentation
@@ -148,6 +159,12 @@ private:
 	bool ownerRunsDeferred() const { return presentationWorker == 0; }
 	PresentationMetrics presentationTotals;
 	std::condition_variable presentationDone;
+	std::shared_ptr<WorkerOnly> maintenance;
+	bool maintenanceRunning = false;
+	bool maintenanceClaimable(std::size_t worker) const
+	{
+		return worker != presentationWorker && maintenance && !maintenanceRunning && !presentation && !presentationPending && maintenance->pending();
+	}
 
 	bool presentationClaimable(std::size_t worker) const
 	{
@@ -215,6 +232,7 @@ private:
 			{
 				std::lock_guard<std::mutex> lock(mutex);
 				if (++runDone == count) runFinished.notify_all();
+				if (maintenance && maintenance->pending()) ready.notify_all();
 			}
 		}
 		workerMetrics[slot].activeNs += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - started).count();
@@ -304,6 +322,9 @@ private:
 			if (thread) ++totals.workerJobs; else ++totals.ownerJobs;
 			if (group.lane != NoLane) { ++laneCompleted[group.lane]; ready.notify_all(); }
 			if (++slot.completed == slot.total) slotDone.notify_all();
+			// Publish optional notifications at the existing scheduler boundary.
+			// No extra producer lock, and no lost CV wake between predicate and wait.
+			if (maintenance && maintenance->pending()) ready.notify_all();
 		}
 	}
 	void worker(std::size_t slot)
@@ -312,7 +333,7 @@ private:
 		std::unique_lock<std::mutex> lock(mutex);
 		for (;;)
 		{
-			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot); });
+			ready.wait(lock, [&] { return stopping || generation != seen || claimable(false) || presentationClaimable(slot) || maintenanceClaimable(slot); });
 			if (stopping) return;
 			// The designated worker interleaves presentation chunks with
 			// simulation jobs, so neither starves the other: a join waits at
@@ -340,7 +361,20 @@ private:
 			const auto claimed = claim(false);
 			if (!claimed.valid)
 			{
-				if (!presentationClaimable(slot)) continue;
+				if (!presentationClaimable(slot))
+				{
+					if (!maintenanceClaimable(slot)) continue;
+					const auto work = maintenance;
+					maintenanceRunning = true;
+					lock.unlock();
+					active = this; activeSlot = slot;
+					work->process();
+					active = nullptr; activeSlot = 0;
+					lock.lock();
+					maintenanceRunning = false;
+					ready.notify_all();
+					continue;
+				}
 				const auto work = claimPresentation();
 				simulationClaims = 0;
 				lock.unlock();
@@ -356,6 +390,7 @@ private:
 	}
 	void stop()
 	{
+		setWorkerOnly({});
 		cancelPresentationAndWait();
 		joinAll();
 		{ std::lock_guard<std::mutex> lock(mutex); stopping = true; }
@@ -466,6 +501,19 @@ public:
 	PresentationMetrics presentationMetrics() const { std::lock_guard<std::mutex> lock(mutex); return presentationTotals; }
 	std::size_t threadCount() const { return workers.size() + 1; }
 	std::size_t slot() const { return active == this ? activeSlot : 0; }
+	static std::size_t workerSlot() { return active ? activeSlot : 0; }
+	static std::size_t executionThreads() { return active ? active->threadCount() : 1; }
+	// Configuration/lifecycle only. Replacing a service does not wait for a
+	// running pass; the worker retains its old service until that pass ends.
+	void setWorkerOnly(std::shared_ptr<WorkerOnly> service)
+	{
+		std::shared_ptr<WorkerOnly> old;
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			old = std::exchange(maintenance, std::move(service));
+		}
+		ready.notify_all();
+	}
 	// A consistent copy; workers update the deferred counters under the mutex.
 	Metrics metrics() const { std::lock_guard<std::mutex> lock(mutex); return totals; }
 	// Sum of active elapsed times, NOT CPU time (the benchmark measures process CPU).

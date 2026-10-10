@@ -476,6 +476,7 @@ struct HeadlessRunner
 				static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
 		}
 		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
+        const auto initialGradientPolicy=engine.gui.game.map.adaptiveGradientMetrics();
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
@@ -573,6 +574,7 @@ struct HeadlessRunner
 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << pipelineResult.waitNs
+            << ",\"gradient_publication_wait_ns\":" << pipelineResult.publicationWaitNs
 			<< ",\"gradient_preparation_ns\":" << pipelineResult.preparationNs
 			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
@@ -616,6 +618,18 @@ struct HeadlessRunner
 			<< ",\"ai_pipeline\":{";
 		bool metricComma=false;
 		for(const auto& [name,value]:game.aiMetrics()) {if(metricComma)result<<',';metricComma=true;result<<quote(name)<<':'<<value;}
+        result << "},\"adaptive_gradient_at_start\":{";
+        bool initialPolicyComma=false;
+        for(const auto& [name,value]:initialGradientPolicy) {
+            if(initialPolicyComma) result<<',';
+            initialPolicyComma=true; result<<quote(name)<<':'<<value;
+        }
+        result << "},\"adaptive_gradient\":{";
+        bool policyComma=false;
+        for(const auto& [name,value]:game.map.adaptiveGradientMetrics()) {
+            if(policyComma) result<<',';
+            policyComma=true; result<<quote(name)<<':'<<value;
+        }
         result << "},\"benchmark_tick_histogram\":[";
         for(unsigned i=0;i<tickHistogram.size();++i) {
             if(i) result<<',';

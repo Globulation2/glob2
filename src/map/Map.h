@@ -244,6 +244,7 @@ public:
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
 	void configureCompute(unsigned threads);
+    std::vector<std::pair<std::string,Uint64>> adaptiveGradientMetrics() const;
 	ComputeExecutor &computeExecutor() { return compute; }
 	// Live field seeding retains its serial production order.
 	template<class Function> void initializeGradientCells(Function function) const
@@ -257,7 +258,7 @@ public:
 		unsigned workers = 0, delay = 0;
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
-		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0;
+		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0, publicationWaitNs = 0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;

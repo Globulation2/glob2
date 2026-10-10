@@ -319,7 +319,8 @@ void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> reque
 {
     const auto& first = *static_cast<const PropagationField*>(requests.front()->context);
     first.executor->run(requests.size(), [&](std::size_t i) {
-        requests[i]->cpu(requests[i]->context, destinations[i]);
+        try { requests[i]->cpu(requests[i]->context, destinations[i]); }
+        catch(...) { if(requests[i]->failure) requests[i]->failure(requests[i]->context,std::current_exception()); else throw; }
     });
 }
 } // namespace
@@ -361,6 +362,11 @@ void propagateBatch(std::span<const PropagationField> fields)
                  [](void *context, Uint16 *out) { batchCPU(*static_cast<PropagationField *>(context), out); },
                  snapshotCostIdentity(field.request, *field.snapshot),
                  backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr});
+            requests.back().cpuBuckets=field.request.terrainBuckets;
+            requests.back().failure=[](void* context,std::exception_ptr error) {
+                const auto& field=*static_cast<const PropagationField*>(context);
+                if(field.error) *field.error=error; else std::rethrow_exception(error);
+            };
         }
         catch (...)
         {
@@ -370,25 +376,8 @@ void propagateBatch(std::span<const PropagationField> fields)
                 throw;
         }
     }
-    // Ready fields run immediately; publication still keeps its fixed deadline.
-    if (requests.size() == 1 ? accelerator && accelerator(requests.front(), backend())
-                             : batchAccelerator && batchAccelerator(requests, backend()))
-        return;
-    for (const auto &request : requests)
-    {
-        const auto &field = *static_cast<const PropagationField *>(request.context);
-        try
-        {
-            batchCPU(field, field.output);
-        }
-        catch (...)
-        {
-            if (field.error)
-                *field.error = std::current_exception();
-            else
-                throw;
-        }
-    }
+    executeGradientBatch(requests,backend());
+
 }
 
 SimulationSnapshot::Requirements buildingRequirements()

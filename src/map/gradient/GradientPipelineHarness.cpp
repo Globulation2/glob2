@@ -475,7 +475,7 @@ TEST_CASE("shared preparation executes off the owner and retains its deadline" *
 TEST_CASE("backend selection is shared across owner and resized worker scratch" * doctest::test_suite("GradientPipeline"))
 {
     auto session=std::make_shared<gradient_kernel::BackendSession>();
-    session->selection().store(gradient_kernel::Backend::OpenCL);
+    session->establish(gradient_kernel::Family::Generic,1,gradient_kernel::Plan::Frozen8);
     TestGradientPipeline pipeline;
     pipeline.setBackendSession(session);
     auto* field=new std::uint16_t[1]{};
@@ -483,7 +483,7 @@ TEST_CASE("backend selection is shared across owner and resized worker scratch" 
     {
         pipeline.configure(workers,1,1,[session](auto& job,auto& scratch) {
             if (scratch.backendSession!=session ||
-                scratch.backendSession->selection().load()!=gradient_kernel::Backend::OpenCL)
+                scratch.backendSession->decision(gradient_kernel::Family::Generic,1).plan!=gradient_kernel::Plan::Frozen8)
                 throw std::logic_error("gradient workspace lost game backend selection");
             job.data[0]=42;
         });
@@ -504,16 +504,19 @@ TEST_CASE("GradientPipeline/worker GPU submissions finish ahead of deadlines and
     {
         Backend choice;
         decltype(batchAccelerator) provider;
+        unsigned mask;
         ~Restore()
         {
             setBackend(choice);
             batchAccelerator = provider;
+            readyPlans.store(mask);
         }
-    } restore{oldBackend, oldBatch};
+    } restore{oldBackend, oldBatch, readyPlans.load()};
+    readyPlans.store(1u<<unsigned(Plan::Frozen8));
     setBackend(Backend::OpenCL);
-    batchAccelerator = [](std::span<const BackendRequest>, Backend)
+    batchAccelerator = [](std::span<const BackendRequest>, Plan)
     { return false; }; // Eligibility only; callback below owns the test work.
-    for (unsigned workers : {0, 1, 4})
+    for (unsigned workers : {1, 4})
     {
         TestGradientPipeline pipeline;
         std::array<std::uint16_t *, 4> slots{};
@@ -608,10 +611,9 @@ TEST_CASE("GradientPipeline/worker GPU submissions finish ahead of deadlines and
     }
 }
 
-TEST_CASE("GradientPipeline/CPU and uncalibrated automatic fields keep their original worker")
+TEST_CASE("GradientPipeline/CPU and unknown automatic fields keep their original worker")
 {
     using namespace gradient_kernel;
-    for (const auto selected : {Backend::Automatic, Backend::CPU})
     for (const auto choice : {Backend::CPU, Backend::Automatic}) {
     const auto previous = backend();
     const auto provider = batchAccelerator;
@@ -620,7 +622,7 @@ TEST_CASE("GradientPipeline/CPU and uncalibrated automatic fields keep their ori
         ~Restore() { setBackend(previous); batchAccelerator = provider; }
     } restore{previous, provider};
     setBackend(choice);
-    batchAccelerator = [](std::span<const BackendRequest>, Backend) { return false; };
+    batchAccelerator = [](std::span<const BackendRequest>, Plan) { return false; };
     TestGradientPipeline pipeline;
     std::promise<void> completion;
     auto finished = completion.get_future();
@@ -634,7 +636,7 @@ TEST_CASE("GradientPipeline/CPU and uncalibrated automatic fields keep their ori
     });
     pipeline.setBatchWork([&](auto, auto) { ++batches; });
     auto session = std::make_shared<BackendSession>();
-    session->selection(Family::Materials).store(selected);
+    session->establish(Family::Materials,1,Plan::CPU);
     pipeline.setBackendSession(session);
     auto* field = new std::uint16_t[1]{};
     pipeline.advance();

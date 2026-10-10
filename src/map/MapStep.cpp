@@ -233,7 +233,7 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 	const auto &metrics = pipeline.metrics;
 	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
 		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
-		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs};
+		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs, metrics.publicationWaitNs};
 }
 
 bool Map::hasPendingGradientPreparation() const

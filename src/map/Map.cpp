@@ -521,6 +521,20 @@ void Map::clearGradientBufferPool()
 		delete[] idleGradientBuffers[--idleGradientBufferCount];
 }
 
+std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
+{
+    const auto m=gradientRuntime->backendSession->metrics();
+    return {{"recorded",m.recorded},{"dropped",m.dropped},{"accepted",m.accepted},{"stale",m.stale},
+        {"unprocessed_observations",m.recorded>m.accepted+m.stale ? m.recorded-m.accepted-m.stale : 0},
+        {"processing_ns",m.processingNs},{"passes",m.passes},{"initialization_ns",m.initializationNs},
+        {"sample_queue_ns",m.queueNs},{"sample_execution_ns",m.executionNs},{"sample_service_ns",m.serviceNs},
+        {"sample_seed_preparation_ns",m.seedPreparationNs},{"sample_gpu_preparation_ns",m.stages.preparationNs},
+        {"sample_upload_ns",m.stages.uploadNs},{"sample_dispatch_ns",m.stages.dispatchNs},{"sample_readback_ns",m.stages.readbackNs},
+        {"retained_bytes",m.retainedBytes},{"retained_input_bytes",0},{"probe_dispatches",0},
+        {"backend_initialization_ns",gradient_kernel::backendPreparationNs.load()},
+        {"ready_plan_mask",gradient_kernel::readyPlans.load()}};
+}
+
 void Map::configureCompute(unsigned threads)
 {
 	finishGradientPipeline();
@@ -529,6 +543,8 @@ void Map::configureCompute(unsigned threads)
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	gradientRuntime->shareBackendSession();
+    gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
+    compute.setWorkerOnly(gradientRuntime->backendSession);
 }
 
 void Map::clear()
@@ -549,6 +565,8 @@ void Map::clear()
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();
+    gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
+    compute.setWorkerOnly(gradientRuntime->backendSession);
 	gradientRuntime->buildingSynchronous=0;
 	gradientRuntime->synchronousByReason={};
 	gradientRuntime->overlaySupplierLocations.clear();

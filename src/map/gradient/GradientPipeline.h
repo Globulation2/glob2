@@ -44,7 +44,7 @@ public:
 		ComputeExecutor::Batch batch;
 		GradientPipeline* owner = nullptr;
 		std::function<void(Job&)> seed;
-		std::uint64_t preparationNs = 0;
+		std::uint64_t preparationNs = 0, submittedNs = 0;
 	};
 	// Stable save boundary. A view is valid only during visitPendingSnapshots;
 	// the owning queue and worker state remain private to the pipeline.
@@ -71,7 +71,7 @@ public:
 	std::function<std::uint64_t(unsigned remaining)> deadline;
 	static constexpr unsigned MaxDelay = 16;
 	static_assert(MaxDelay <= ComputeExecutor::GradientHorizon);
-	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0; } metrics;
+	struct Metrics { std::uint64_t jobs=0, published=0, discarded=0, waitNs=0, maxPending=0, preparationNs=0, publicationWaitNs=0; } metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
@@ -92,6 +92,8 @@ private:
 	}
 	void execute(Job &job, Workspace &scratch) noexcept {
 		const auto start = Clock::now();
+		gradient_kernel::JobTiming timing{job.submittedNs, job.submittedNs ? gradient_kernel::monotonicNs() : 0,0};
+		gradient_kernel::JobTimingScope timingScope(timing);
 		job.crowding = &scratch.crowding;
 		try
 		{
@@ -99,10 +101,10 @@ private:
 			try { if (job.seed) job.seed(job); }
 			catch (...) { job.preparationNs = ns(preparationStart); throw; }
 			job.preparationNs = ns(preparationStart);
+            timing.preparation=job.preparationNs;
             const auto choice = gradient_kernel::backend();
-            const bool selectedGPU = choice == gradient_kernel::Backend::OpenCL ||
-                (choice == gradient_kernel::Backend::Automatic &&
-                 backendSession->selection(gradient_preparation::backendFamily(job.request.kind), 1).load() == gradient_kernel::Backend::OpenCL);
+            const bool selectedGPU = backendSession->choose(
+                gradient_preparation::backendFamily(job.request.kind),1,choice).plan != gradient_kernel::Plan::CPU;
             if (selectedGPU && batchWork && gradient_kernel::canBatch(*backendSession)) {
                 const std::array jobs{&job};
                 batchWork(jobs, std::span(&scratch.propagation, 1));
@@ -123,11 +125,13 @@ private:
 		auto& pipeline = *job.owner;
 		pipeline.execute(job, pipeline.workspaces[pipeline.executor->slot()]);
 	}
-	void wait(Job &job) {
+	void wait(Job &job, bool publication = false) {
 		const auto start = Clock::now();
 		if (executor) executor->join(job.batch);
 		metrics.preparationNs += std::exchange(job.preparationNs, 0);
-		metrics.waitNs += ns(start);
+        const auto waited=ns(start);
+		metrics.waitNs += waited;
+        if(publication) metrics.publicationWaitNs += waited;
 		if (!job.done) throw std::logic_error("Unprepared gradient reservation");
 	}
 public:
@@ -191,7 +195,7 @@ public:
 	void advance() {
 		++tick;
 		while (!pending.empty() && pending.front()->due <= tick) {
-			auto &job = *pending.front(); wait(job);
+			auto &job = *pending.front(); wait(job,true);
 			if (job.error) std::rethrow_exception(job.error);
 			if (!job.superseded) {
 				auto *old = *job.slot; *job.slot = job.data.release(); job.data.reset(old);
@@ -223,6 +227,7 @@ public:
 	template<class Seed> void prepare(Job *ptr, Seed &&seed) {
 		try {
 			ptr->seed = std::forward<Seed>(seed);
+            ptr->submittedNs=backendSession->accountingEnabled() ? gradient_kernel::monotonicNs() : 0;
 			// Owner-only execution computes now; publication keeps its deadline.
 			if (!shared) { execute(*ptr, workspaces[0]); return; }
 			const ComputeExecutor::Group group{1, {&run, ptr}, ComputeExecutor::NoLane};

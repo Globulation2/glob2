@@ -16,6 +16,7 @@ struct OpenCLStatus
     bool colored = false;
     unsigned tileWidth = 16, tileHeight = 16, localSteps = 4;
 };
-// Probes on first use. Automatic selection uses CPU when no supported GPU is available.
+// Status only: never initializes or compiles. Worker-only maintenance publishes
+// readiness; required callers keep using CPU until a selected plan is ready.
 OpenCLStatus openCLStatus();
 } // namespace gradient_kernel

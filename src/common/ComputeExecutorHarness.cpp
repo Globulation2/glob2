@@ -588,3 +588,61 @@ TEST_CASE("resumable presentation yields without advancing or retaining canceled
 
 
 }
+
+TEST_CASE("worker only maintenance never uses the owner including creation failure" * doctest::test_suite("ComputeExecutor"))
+{
+    struct Service : ComputeExecutor::WorkerOnly {
+        std::atomic<unsigned> calls{0};
+        bool pending() const noexcept override { return calls.load()==0; }
+        void process() noexcept override { ++calls; }
+    };
+    for(bool fail:{false,true}) {
+        ComputeExecutor executor;
+        if(fail) executor.configure(8,[](auto)->std::thread {throw std::runtime_error("injected creation failure");});
+        else executor.configure(1);
+        REQUIRE(executor.threadCount()==1);
+        auto service=std::make_shared<Service>(); executor.setWorkerOnly(service);
+        unsigned required=0;
+        executor.run(1,[&](auto){++required;});
+        const ComputeExecutor::Group group{1,{[](void* p,std::size_t){++*static_cast<unsigned*>(p);},&required}};
+        auto batch=executor.submit(std::span(&group,1)); executor.join(batch);
+        executor.joinAll(); CHECK(required==2); CHECK(service->calls.load()==0);
+    }
+}
+TEST_CASE("worker only maintenance yields to required jobs and cannot delay their completed join" * doctest::test_suite("ComputeExecutor"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    struct Service : ComputeExecutor::WorkerOnly {
+        std::atomic<bool> entered{false},release{false};
+        std::atomic<unsigned>& required;
+        std::atomic<unsigned>& presentation;
+        unsigned observed=0, observedPresentation=0; bool onWorker=false;
+        Service(std::atomic<unsigned>& required,std::atomic<unsigned>& presentation):required(required),presentation(presentation) {}
+        bool pending() const noexcept override { return !entered.load(); }
+        void process() noexcept override {
+            observed=required.load(); observedPresentation=presentation.load(); onWorker=ComputeExecutor::workerSlot()!=0; entered=true;
+            while(!release.load()) std::this_thread::yield(); // test-only held pass
+        }
+    };
+    ComputeExecutor executor; executor.configure(3); REQUIRE(executor.threadCount()==3);
+    std::atomic<unsigned> required{0},entered{0}; std::atomic<bool> release{false};
+    struct Context {std::atomic<unsigned>& required;std::atomic<unsigned>& entered;std::atomic<bool>& release;} context{required,entered,release};
+    const ComputeExecutor::Group first{2,{[](void* p,std::size_t){
+        auto& c=*static_cast<Context*>(p);++c.entered;while(!c.release.load())std::this_thread::yield();++c.required;
+    },&context}};
+    auto a=executor.submit(std::span(&first,1));
+    while(entered.load()!=2) std::this_thread::yield();
+    std::atomic<unsigned> presentation{0};
+    auto ticket=executor.submitPresentation(12,[&](auto){++presentation;});
+    auto service=std::make_shared<Service>(required,presentation); executor.setWorkerOnly(service);
+    const ComputeExecutor::Group second{1,{[](void* p,std::size_t){++*static_cast<std::atomic<unsigned>*>(p);},&required}};
+    auto b=executor.submit(std::span(&second,1)); release=true;
+    const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->entered.load() && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
+    const bool ran=service->entered.load();
+    if(ran) { executor.join(a); executor.join(b); }
+    service->release=true;
+    CHECK(ran); if(ran) { CHECK(service->observed==3); CHECK(service->observedPresentation==12); CHECK(service->onWorker); }
+    executor.join(a);executor.join(b);
+    CHECK(executor.threadCount()==3);
+}

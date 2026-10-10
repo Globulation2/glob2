@@ -1257,42 +1257,20 @@ TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields 
     CHECK_FALSE(errors[0]);CHECK_FALSE(errors[2]);REQUIRE(errors[1]);
     CHECK_THROWS_AS(std::rethrow_exception(errors[1]),std::invalid_argument);
     CHECK(outputs[1][1]==65535);CHECK(outputs[1][21]==65000); // Invalid field was never propagated.
-    if (openCLStatus().available) {
-        auto session=std::make_shared<BackendSession>();
-        for(auto& workspace:scratch) workspace.backendSession=session;
-        ComputeExecutor executor;executor.configure(4);
-        for(auto& field:fields) field.executor=&executor;
-        for(unsigned i:{0u,2u}) {
-            outputs[i].assign(map.getW()*map.getH(),1);outputs[i][i]=65535;outputs[i][13]=0;
-            outputs[i][21]=65000;
-        }
-        const auto initialCalibrations=openCLStatus().calibrations;
-        setBackend(Backend::Automatic);gradient_preparation::propagateBatch(fields);
-        CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
-        CHECK(session->selection(Family::Materials,2).load()!=Backend::Automatic);
-        CHECK(openCLStatus().calibrations==initialCalibrations+1);
-        CHECK(executor.metrics().parallelBatches>=3); // All three timed CPU samples use the caller's executor.
-        fields[0].request.kind=gradient_preparation::Kind::Materials;
-        fields[2].request.kind=gradient_preparation::Kind::Guard;
-        for(unsigned i:{0u,2u}) {
-            outputs[i].assign(map.getW()*map.getH(),1);outputs[i][i]=65535;outputs[i][13]=0;
-            outputs[i][21]=65000;
-        }
-        const auto calibrations=openCLStatus().calibrations;
-        setBackend(Backend::Automatic);gradient_preparation::propagateBatch(fields);
-        CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
-        CHECK(session->selection(Family::Materials,1).load()!=Backend::Automatic);
-        CHECK(session->selection(Family::Guard,1).load()!=Backend::Automatic);
-        CHECK(session->selection(Family::Materials,2).load()!=Backend::Automatic);
-        CHECK(session->selection().load()==Backend::Automatic);
-        CHECK(openCLStatus().calibrations==calibrations+2);
-        // The ordinary one-field entry point uses the same family choice.
-        outputs[2].assign(map.getW()*map.getH(),1);outputs[2][2]=65535;outputs[2][13]=0;
-        outputs[2][21]=65000;
-        gradient_preparation::propagate(fields[2].request,snapshot,outputs[2].data(),scratch[2]);
-        CHECK(outputs[2]==expected[2]);
-        CHECK(openCLStatus().calibrations==calibrations+2);
+    // Unknown automatic categories execute CPU once; no batch-size discovery
+    // or CPU reference tournament is hidden in this synchronous caller.
+    auto session=std::make_shared<BackendSession>();
+    for(auto& workspace:scratch) workspace.backendSession=session;
+    const auto before=openCLStatus();
+    for(unsigned i:{0u,2u}) {
+        outputs[i].assign(map.getW()*map.getH(),1); outputs[i][i]=65535; outputs[i][13]=0; outputs[i][21]=65000;
     }
+    setBackend(Backend::Automatic); gradient_preparation::propagateBatch(fields);
+    CHECK(outputs[0]==expected[0]); CHECK(outputs[2]==expected[2]);
+    CHECK(session->decision(Family::Materials,2).plan==Plan::CPU);
+    CHECK(openCLStatus().calibrations==before.calibrations);
+    CHECK(openCLStatus().tunings==before.tunings);
+
 
 }
 
@@ -1311,6 +1289,14 @@ TEST_CASE("GradientPreparation/modified terrain costs stay resident when field o
     REQUIRE(snapshot.terrain->movementModifiers);
     gradient_preparation::Request request;
     GradientWorkspace scratch;
+    setBackend(Backend::OpenCL);
+    map.configureCompute(3); // one eligible maintenance worker plus presentation
+    if constexpr(GAGCore::ThreadSupport::available) {
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(30);
+        while(initializationState.load()!=2 && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
+        REQUIRE(initializationState.load()==2);
+    }
+
     for (unsigned entry=0;entry<3;++entry) {
         std::uint64_t hits=0;
         for(unsigned phase=0;phase<2;++phase) {
@@ -1318,14 +1304,18 @@ TEST_CASE("GradientPreparation/modified terrain costs stay resident when field o
             auto expected=output;
             setBackend(Backend::CPU);map.propagateGradient(expected.data(),0);
             setBackend(Backend::OpenCL);
-            if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
-            else if(entry==1) {
-                const gradient_preparation::PropagationField field{request,&snapshot,output.data(),&scratch};
-                gradient_preparation::propagateBatch(std::span(&field,1));
-            } else map.propagateGradient(output.data(),0);
+            std::function<void()> work=[&] {
+                if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
+                else if(entry==1) {
+                    const gradient_preparation::PropagationField field{request,&snapshot,output.data(),&scratch};
+                    gradient_preparation::propagateBatch(std::span(&field,1));
+                } else map.propagateGradient(output.data(),0);
+            };
+            const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
+            auto batch=map.computeExecutor().submit(std::span(&group,1)); map.computeExecutor().join(batch);
             CHECK(output==expected);
             const auto status=openCLStatus();
-            if(phase && status.available) CHECK(status.costIdentityHits>hits);
+            if(phase && (readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) CHECK(status.costIdentityHits>hits);
             hits=status.costIdentityHits;
         }
     }

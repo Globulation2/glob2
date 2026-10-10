@@ -247,11 +247,6 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  }
 }
 )CL";
-using Clock = std::chrono::steady_clock;
-double elapsed(Clock::time_point start)
-{
-    return std::chrono::duration<double, std::milli>(Clock::now() - start).count();
-}
 struct Runtime;
 struct Device
 {
@@ -508,7 +503,6 @@ struct Runtime
         return *current;
     }
     OpenCLStatus snapshot() {
-        shared->initialize();
         OpenCLStatus out;
         { std::lock_guard lock(shared->failureMutex); out=shared->status; }
         std::vector<std::shared_ptr<Runtime>> live;
@@ -536,7 +530,7 @@ struct Runtime
     }
     void probe() {
         if(probed) return;
-        shared->initialize();
+        if(!readyPlans.load(std::memory_order_acquire)) throw std::runtime_error("OpenCL plans not ready");
         if(!shared->status.available || shared->failed.load()) throw std::runtime_error("OpenCL device unavailable");
         context=shared->context;device=shared->device;
         Int error=0;
@@ -554,8 +548,10 @@ struct Runtime
     }
     void write(Handle buffer, const void *data, std::size_t bytes)
     {
+        const auto start=activeStageTiming ? monotonicNs() : 0;
         // Blocking uploads keep borrowed storage valid even after an error.
         check(api.EnqueueWriteBuffer(queue, buffer, 1, 0, bytes, data, 0, nullptr, nullptr));
+        if(activeStageTiming) activeStageTiming->uploadNs+=monotonicNs()-start;
     }
     void awaitPlane(const std::shared_ptr<Device::Plane>& p) {
         while(p->ready.wait_for(std::chrono::milliseconds(1))!=std::future_status::ready)
@@ -629,6 +625,7 @@ struct Runtime
     }
     void computeBatch(std::span<const BackendRequest *const> requests)
     {
+        const auto preparationStart=activeStageTiming ? monotonicNs() : 0;
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
         std::size_t largest = 0, total = 0;
         UInt width = 0, height = 0;
@@ -714,6 +711,8 @@ struct Runtime
         argument(11, descriptors);
         argument(14, UInt(stride));
         argument(15, pitch);
+        const auto dispatchStart=activeStageTiming ? monotonicNs() : 0;
+        if(activeStageTiming) activeStageTiming->preparationNs+=dispatchStart-preparationStart;
         // Every dispatch extends at least one global path edge. Frozen halos
         // exchange only one cell even when they perform many local sweeps, so
         // the ushort convergence bound counts dispatches, not local sweeps.
@@ -752,8 +751,11 @@ struct Runtime
                 }
             if (std::none_of(flags.begin(), flags.begin() + requests.size(), [](UInt v) { return v != 0; }))
             {
+                const auto readStart=activeStageTiming ? monotonicNs() : 0;
+                if(activeStageTiming) activeStageTiming->dispatchNs+=readStart-dispatchStart;
                 check(api.EnqueueReadBuffer(queue, a, 1, 0, total * sizeof(std::uint16_t), values.data(), 0, nullptr,
                                             nullptr));
+                if(activeStageTiming) activeStageTiming->readbackNs+=monotonicNs()-readStart;
                 return;
             }
             // No later kernel consumes descriptors once every field is done.
@@ -777,46 +779,6 @@ struct Runtime
         status.localSteps = variants[index].steps;
         status.colored = variants[index].colored;
     }
-    void tune(std::span<const BackendRequest* const> requests,
-              std::span<std::uint16_t* const> expected, bool warmed = false)
-    {
-        ++status.tunings;
-        if (!warmed) computeBatch(requests);
-        auto sample = [&] {
-            const auto start = Clock::now();
-            computeBatch(requests);
-            const auto ms = elapsed(start);
-            std::size_t offset = 0;
-            for (std::size_t f = 0; f < requests.size(); ++f)
-            {
-                const auto n = requests[f]->grid.cells();
-                if (!std::equal(expected[f], expected[f] + n, values.begin() + offset))
-                    throw std::runtime_error("OpenCL tile variant disagrees with CPU");
-                offset += n;
-            }
-            return ms;
-        };
-        // Screen all supported variants once, then spend repeat measurements on
-        // the two finalists. Every sampled result still receives an exact check.
-        std::vector<std::pair<double, std::size_t>> screened;
-        for (std::size_t i = 0; i < variants.size(); ++i)
-        {
-            if (!variants[i].kernel) continue;
-            selectVariant(i);
-            screened.emplace_back(sample(), i);
-        }
-        std::sort(screened.begin(), screened.end());
-        double best = std::numeric_limits<double>::max();
-        std::size_t winner = selectedVariant;
-        for (std::size_t i = 0; i < std::min<std::size_t>(2, screened.size()); ++i)
-        {
-            selectVariant(screened[i].second);
-            std::array samples{screened[i].first, sample(), sample()};
-            std::sort(samples.begin(), samples.end());
-            if (samples[1] < best) { best = samples[1]; winner = selectedVariant; }
-        }
-        selectVariant(winner);
-    }
     static bool alreadyFixed(const BackendRequest& request)
     {
         const auto* begin = request.gradient;
@@ -829,62 +791,24 @@ struct Runtime
         // regardless of positive costs.
         return std::none_of(begin, end, [](auto value) { return value != 0 && value != 65535; });
     }
-    // A map normally keeps the same dimensions and cap, but generic callers can
-    // share a session across unlike fields. Do not reuse their old placement.
-    static std::uint64_t workload(std::span<const BackendRequest* const> requests)
+    bool batch(std::span<const BackendRequest> input, Plan plan)
     {
-        std::uint64_t hash = 14695981039346656037ull;
-        for (auto request : requests)
-            for (auto value : {unsigned(request->grid.width()), unsigned(request->grid.height()),
-                               unsigned(request->limit)})
-                hash = (hash ^ value) * 1099511628211ull;
-        return hash ? hash : 1;
-    }
-    static std::uint64_t movementMask(std::span<const BackendRequest* const> requests)
-    {
-        std::uint64_t mask = 0;
-        for (auto request : requests)
-            if (request->identity.variant < 64) mask |= std::uint64_t(1) << request->identity.variant;
-        return mask;
-    }
-    static void reconsider(const BackendRequest& request, std::size_t count,
-                           std::uint64_t signature, std::uint64_t movements)
-    {
-        auto& session = request.session;
-        auto& selection = session.selection(request.family, count);
-        if (selection.load(std::memory_order_relaxed) == Backend::Automatic) return;
-        auto& timing = session.timing(request.family, count);
-        const auto prior = timing.workload.load(std::memory_order_relaxed);
-        // A caller may explicitly install a choice without any timing record.
-        if (!prior) return;
-        const bool newMovement = (timing.movements.fetch_or(movements, std::memory_order_relaxed) & movements)
-                                 != movements;
-        const auto calls = timing.calls.fetch_add(1, std::memory_order_relaxed) + 1;
-        if (prior == signature && !newMovement && calls < timing.recheckAfter.load(std::memory_order_relaxed)) return;
-        std::lock_guard lock(session.classMutex(request.family, count));
-        if (newMovement || timing.workload.load(std::memory_order_relaxed) != signature ||
-            timing.calls.load(std::memory_order_relaxed) >= timing.recheckAfter.load(std::memory_order_relaxed))
-            selection.store(Backend::Automatic, std::memory_order_relaxed);
-    }
-    bool batch(std::span<const BackendRequest> input, Backend choice,
-               std::span<std::uint8_t> handled = {}, double schedulingMs = 0)
-    {
-        const bool workerCalls = !handled.empty();
-        std::fill(handled.begin(), handled.end(), 0);
-        if (input.empty()) return true;
+        if(input.empty()) return true;
+        if(plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
+           !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(plan)))) return false;
         if(shared->failed.load()) {
-            for(const auto& r:input) r.session.failed.store(true);
+            for(const auto& r:input) r.session.fail();
             return false;
         }
-        if (choice == Backend::CPU || std::any_of(input.begin(), input.end(),
-            [](const auto& r) { return r.session.failed.load(); })) return false;
-        if (std::all_of(input.begin(), input.end(), alreadyFixed)) {
-            std::fill(handled.begin(), handled.end(), 1);
-            return true;
-        }
+        if(std::any_of(input.begin(),input.end(),[](const auto& r) {
+            return r.session.failed.load() || r.operation!=Operation::CompleteField || r.limit<0;
+        })) return false;
+        if(std::all_of(input.begin(),input.end(),alreadyFixed)) return true;
         if(!execution) {
-            try { return lane().batch(input,choice,handled,schedulingMs); }
-            catch(...) {shared->fail("Unable to allocate OpenCL execution lane");for(const auto& r:input)r.session.failed.store(true);return false;}
+            try { return lane().batch(input,plan); }
+            catch(...) { shared->fail("Unable to allocate OpenCL execution lane"); readyPlans.store(0);
+                for(const auto& r:input) r.session.fail();
+                return false; }
         }
         std::lock_guard lock(mutex);
         struct Active {
@@ -893,245 +817,46 @@ struct Runtime
             ~Active(){--d.active;}
         } activeLane(*shared);
         statusSequence=++shared->sequence;
-        try
-        {
-            std::vector<bool> processed(input.size(), false);
-            for (std::size_t i = 0; i < input.size(); ++i)
-                if (alreadyFixed(input[i])) {
-                    processed[i] = true;
-                    if (workerCalls) handled[i] = 1;
-                }
-            probe();
-            if (!status.available) throw std::runtime_error(status.error);
-            // Homogeneous family/session groups get their own actual batch size.
-            // Stage every result before committing so a late GPU error preserves
-            // all original seeds for permanent CPU recovery.
+        try {
+            probe(); // Lane buffers/queue only. Compilation must already be complete.
+            if(!variants[unsigned(plan)-1].kernel) return false;
+            selectVariant(unsigned(plan)-1);
+            // Stage ALL output before commit; even a failure in the last chunk
+            // leaves every caller's original seeds intact for exact CPU recovery.
             std::vector<std::vector<std::uint16_t>> output(input.size());
-            for (std::size_t first = 0; first < input.size(); ++first)
-            {
-                if (processed[first]) continue;
-                const auto& representative = input[first];
-                std::array<const BackendRequest*, 8> pointers{};
-                std::array<std::size_t, 8> indices{};
-                std::size_t count = 0;
-                for (std::size_t i = first; i < input.size() && count < 8; ++i)
-                    if (!processed[i] && input[i].family == representative.family &&
-                        (choice == Backend::OpenCL || &input[i].session == &representative.session))
-                    {
-                        processed[i] = true;
-                        indices[count] = i;
-                        pointers[count++] = &input[i];
-                    }
-                const std::span requests(pointers.data(), count);
-                auto& selection = representative.session.selection(representative.family, count);
-                const auto signature = workload(requests);
-                if (choice == Backend::Automatic) reconsider(representative, count, signature, movementMask(requests));
-                std::unique_lock classLock(representative.session.classMutex(representative.family,count),std::defer_lock);
-                const bool large=std::any_of(requests.begin(),requests.end(),[](auto r){return r->grid.cells()>=65536;});
-                // Rechecks can invalidate a previous winner while another lane
-                // enters. Read the decision under its lock before calibrating.
-                if(choice==Backend::Automatic ||
-                   (large&&!representative.session.tileSelection(representative.family,count).load())) classLock.lock();
-                auto selected = selection.load(std::memory_order_relaxed);
-                std::array<std::uint16_t*, 8> destinations{};
-                auto prepareCPU = [&] {
-                    for (std::size_t i = 0; i < count; ++i)
-                    {
-                        auto& out = output[indices[i]];
-                        const auto& r = *pointers[i];
-                        out.assign(r.gradient, r.gradient + r.grid.cells());
-                        destinations[i] = out.data();
-                    }
-                };
-                auto executeCPU = [&] {
-                    if (representative.cpuBatch && std::all_of(requests.begin(), requests.end(),
-                        [&](auto r) { return r->cpuBatch == representative.cpuBatch; }))
-                        representative.cpuBatch(requests, std::span(destinations.data(), count));
-                    else
-                        for (std::size_t i = 0; i < count; ++i)
-                            pointers[i]->cpu(pointers[i]->context, destinations[i]);
-                };
-                if (choice == Backend::Automatic && selected == Backend::CPU)
-                {
-                    if (classLock.owns_lock()) classLock.unlock();
-                    if (!workerCalls) { prepareCPU(); executeCPU(); }
-                    continue; // The singleton CPU caller resumes in its own scratch.
+            for(std::size_t begin=0;begin<input.size();begin+=8) {
+                const auto count=std::min<std::size_t>(8,input.size()-begin);
+                std::array<const BackendRequest*,8> pointers{};
+                for(std::size_t i=0;i<count;++i) pointers[i]=&input[begin+i];
+                computeBatch(std::span(pointers.data(),count));
+                std::size_t offset=0;
+                for(std::size_t i=0;i<count;++i) {
+                    const auto size=pointers[i]->grid.cells();
+                    output[begin+i].assign(values.begin()+offset,values.begin()+offset+size);
+                    offset+=size;
                 }
-                auto& tileChoice = representative.session.tileSelection(representative.family, count);
-                if (const auto stored = tileChoice.load(std::memory_order_relaxed))
-                    selectVariant(stored - 1);
-                else if (choice == Backend::OpenCL && large)
-                {
-                    prepareCPU(); executeCPU();
-                    tune(requests, std::span(destinations.data(), count));
-                    tileChoice.store(unsigned(selectedVariant + 1), std::memory_order_relaxed);
-                }
-                else {
-                    // Losing classes try another candidate at their next budgeted
-                    // check, so one poor default kernel cannot exclude the GPU forever.
-                    const auto probes = representative.session.timing(representative.family, count)
-                                            .variantProbes.load(std::memory_order_relaxed);
-                    for (std::size_t attempt = 0; attempt < variants.size(); ++attempt) {
-                        const auto index = (1 + probes + attempt) % variants.size();
-                        if (variants[index].kernel) { selectVariant(index); break; }
-                    }
-                }
-                if (choice == Backend::Automatic && selected == Backend::Automatic)
-                {
-                    ++status.calibrations;
-                    const auto calibrationStart = Clock::now();
-                    std::array<double, 3> cpuTimes{}, gpuTimes{};
-                    // The ordinary CPU path operates in place. Private benchmark
-                    // seed resets are excluded for singleton and explicit batches;
-                    // executor dispatch/join stays inside the CPU timer.
-                    for (auto& sample : cpuTimes)
-                    {
-                        prepareCPU();
-                        const auto start = Clock::now();
-                        executeCPU();
-                        sample = elapsed(start);
-                    }
-                    std::vector<std::vector<std::uint16_t>> measured(count), committed(count);
-                    for (std::size_t i = 0; i < count; ++i) committed[i].resize(pointers[i]->grid.cells());
-                    auto measureGPU = [&] {
-                    for (auto& sample : gpuTimes)
-                    {
-                        const auto start = Clock::now();
-                        computeBatch(requests);
-                        std::size_t offset = 0;
-                        for (std::size_t i = 0; i < count; ++i)
-                        {
-                            const auto size = pointers[i]->grid.cells();
-                            measured[i].assign(values.begin() + offset, values.begin() + offset + size);
-                            std::copy(measured[i].begin(), measured[i].end(), committed[i].begin());
-                            offset += size;
-                        }
-                        sample = elapsed(start) + schedulingMs;
-                        // Verify outside the timed region, after output conversion.
-                        for (std::size_t i = 0; i < count; ++i)
-                        {
-                            if (output[indices[i]] != measured[i])
-                                throw std::runtime_error("OpenCL workload class disagrees with CPU");
-                        }
-                    }
-                    std::sort(gpuTimes.begin(), gpuTimes.end());
-                    };
-                    std::sort(cpuTimes.begin(), cpuTimes.end());
-                    measureGPU();
-                    // Median absolute deviation tolerates one cold or interrupted
-                    // sample without turning that outlier into a permanent CPU bias.
-                    auto uncertainty = [&] {
-                        const auto cpuNoise = std::min(cpuTimes[1] - cpuTimes[0], cpuTimes[2] - cpuTimes[1]);
-                        const auto gpuNoise = std::min(gpuTimes[1] - gpuTimes[0], gpuTimes[2] - gpuTimes[1]);
-                        return std::max(cpuTimes[1] * 0.05, 2 * (cpuNoise + gpuNoise));
-                    };
-                    auto& timing = representative.session.timing(representative.family, count);
-                    if (!tileChoice.load(std::memory_order_relaxed)) {
-                        timing.variantProbes.fetch_add(1, std::memory_order_relaxed);
-                        // Pay for variant tuning only after this actual workload
-                        // demonstrates plausible GPU throughput. Reuse the CPU oracle.
-                        if (gpuTimes[1] <= cpuTimes[1] + uncertainty()) {
-                            tune(requests, std::span(destinations.data(), count), true);
-                            tileChoice.store(unsigned(selectedVariant + 1), std::memory_order_relaxed);
-                            measureGPU();
-                        }
-                    }
-                    selected = gpuTimes[1] + uncertainty() < cpuTimes[1] ? Backend::OpenCL : Backend::CPU;
-                    timing.cpuMs.store(cpuTimes[1], std::memory_order_relaxed);
-                    timing.workload.store(signature, std::memory_order_relaxed);
-                    timing.movements.fetch_or(movementMask(requests), std::memory_order_relaxed);
-                    timing.calls.store(0, std::memory_order_relaxed);
-                    timing.slowSamples.store(0, std::memory_order_relaxed);
-                    // Explore untuned variants sooner, but make the interval
-                    // proportional to probe cost and useful CPU work. A slow losing
-                    // GPU must not be sampled every few cheap CPU calls.
-                    const bool exploring = !tileChoice.load(std::memory_order_relaxed) &&
-                        timing.variantProbes.load(std::memory_order_relaxed) < variants.size();
-                    const double winnerMs = std::max(0.001, std::min(cpuTimes[1], gpuTimes[1]));
-                    const double interval = elapsed(calibrationStart) / (winnerMs * (exploring ? 0.05 : 0.01));
-                    timing.recheckAfter.store(unsigned(std::clamp(interval, exploring ? 32.0 : 256.0, 65536.0)),
-                                              std::memory_order_relaxed);
-                    selection.store(selected, std::memory_order_relaxed);
-                    status.cpuSelections += selected == Backend::CPU;
-                    // CPU reference is already a verified completed result.
-                    continue;
-                }
-                if(classLock.owns_lock()) classLock.unlock();
-                const auto executionStart = Clock::now();
-                computeBatch(requests);
-                std::size_t offset = 0;
-                for (std::size_t i = 0; i < count; ++i)
-                {
-                    const auto size = pointers[i]->grid.cells();
-                    output[indices[i]].assign(values.begin() + offset, values.begin() + offset + size);
-                    offset += size;
-                }
-                if (choice == Backend::Automatic) {
-                    auto& timing = representative.session.timing(representative.family, count);
-                    const auto baseline = timing.cpuMs.load(std::memory_order_relaxed);
-                    if (baseline > 0 && elapsed(executionStart) + schedulingMs > baseline * 1.1) {
-                        if (timing.slowSamples.fetch_add(1, std::memory_order_relaxed) + 1 >= 8)
-                            timing.calls.store(timing.recheckAfter.load(std::memory_order_relaxed),
-                                               std::memory_order_relaxed);
-                    } else timing.slowSamples.store(0, std::memory_order_relaxed);
-                }
-                status.fields += count;
+                status.fields+=count;
             }
             if(shared->failed.load() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
                 throw std::runtime_error("OpenCL device or session failed on another lane");
-            for (std::size_t i = 0; i < input.size(); ++i)
-                if (!output[i].empty()) {
-                    std::copy(output[i].begin(), output[i].end(), input[i].gradient);
-                    if (workerCalls) handled[i] = 1;
-                }
+            for(std::size_t i=0;i<input.size();++i) std::copy(output[i].begin(),output[i].end(),input[i].gradient);
             ++status.schedulerBatches;
             return true;
-        }
-        catch (...)
-        {
-            status.available = false;
-            for (const auto& r : input)
-            {
-                r.session.failed.store(true);
-                ++status.cpuSelections;
-            }
-            // Diagnostics must never let an allocation failure strand waiting
-            // workers. The failure flags and untouched seeds are authoritative.
+        } catch(...) {
+            status.available=false;
+            for(const auto& r:input) { r.session.fail(); ++status.cpuSelections; }
             try {
                 try { throw; }
-                catch (const std::exception& e) { status.error = e.what(); }
-                catch (...) { status.error = "OpenCL workload failed with an unknown exception"; }
-            } catch (...) { status.error.clear(); }
+                catch(const std::exception& e) { status.error=e.what(); }
+                catch(...) { status.error="OpenCL workload failed with an unknown exception"; }
+            } catch(...) { status.error.clear(); }
+            readyPlans.store(0,std::memory_order_release);
             shared->fail(status.error);
-            if (queue) api.Finish(queue);
+            if(queue) api.Finish(queue);
             return false;
         }
     }
-    bool run(const BackendRequest& r, Backend choice)
-    {
-        const auto schedulingStart = Clock::now();
-        if(shared->failed.load()) {r.session.failed.store(true);return false;}
-        if (r.session.failed.load()) return false;
-        if (choice == Backend::CPU) return false;
-        // Known singleton CPU work does not allocate, scan seeds, or rendezvous
-        // with GPU callers. Explicit batches still measure their own sizes.
-        if (choice == Backend::Automatic &&
-            r.session.selection(r.family, 1).load(std::memory_order_relaxed) == Backend::CPU) {
-            const BackendRequest* pointer = &r;
-            reconsider(r, 1, workload(std::span(&pointer, 1)), movementMask(std::span(&pointer, 1)));
-            if (r.session.selection(r.family, 1).load(std::memory_order_relaxed) == Backend::CPU)
-                return false;
-        }
-        if (alreadyFixed(r))
-            return true;
-        // Jobs that already own a worker run immediately. Reliable batching
-        // belongs to callers that have an explicit ready group, rather than a
-        // rendezvous that suspends workers hoping more jobs will arrive.
-        auto request = r;
-        request.cpuBatch = nullptr; // No nested dispatch for a singleton's CPU reference.
-        std::uint8_t handled = 0;
-        return batch(std::span(&request, 1), choice, std::span(&handled, 1), elapsed(schedulingStart)) && handled;
-    }
+    bool run(const BackendRequest& r, Plan plan) { return batch(std::span(&r,1),plan); }
 
 };
 #else
@@ -1140,15 +865,15 @@ struct Runtime
     std::mutex mutex;
     OpenCLStatus status{false, {}, "OpenCL backend unavailable on this platform", 0, 0, 0};
     void probe() {}
-    bool batch(std::span<const BackendRequest> requests, Backend)
+    bool batch(std::span<const BackendRequest> requests, Plan)
     {
         for (const auto &r : requests)
-            r.session.failed.store(true);
+            r.session.fail();
         return false;
     }
-    bool run(const BackendRequest &r, Backend)
+    bool run(const BackendRequest &r, Plan)
     {
-        r.session.failed.store(true);
+        r.session.fail();
         return false;
     }
 };
@@ -1158,15 +883,27 @@ Runtime &runtime()
     static Runtime value;
     return value;
 }
-bool execute(const BackendRequest &r, Backend choice) { return runtime().run(r, choice); }
-bool executeBatch(std::span<const BackendRequest> requests, Backend choice)
+bool execute(const BackendRequest &r, Plan choice) { return runtime().run(r, choice); }
+bool executeBatch(std::span<const BackendRequest> requests, Plan choice)
 {
     return runtime().batch(requests, choice);
+}
+void prepare()
+{
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    auto& device=*runtime().shared;
+    device.initialize();
+    unsigned mask=0;
+    if(device.status.available && !device.failed.load())
+        for(std::size_t i=0;i<device.variants.size();++i) if(device.variants[i].kernel) mask|=1u<<(i+1);
+    readyPlans.store(mask,std::memory_order_release);
+#endif
 }
 struct Register
 {
     Register()
     {
+        prepareAccelerator = &prepare;
         accelerator = &execute;
         batchAccelerator = &executeBatch;
     }
