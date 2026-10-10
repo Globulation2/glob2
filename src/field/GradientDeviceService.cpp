@@ -38,6 +38,9 @@ struct GradientDeviceState
     };
     mutable std::mutex mutex;
     GradientDeviceService::Hooks hooks;
+    // Kept immutable through fallback continuations; canceled registrations clear
+    // backend hooks independently while required worker recovery can still run.
+    std::function<std::uint64_t()> cpuClock;
     GradientDeviceService::Metrics totals;
     std::deque<Queued> queue;
     std::array<Observation,64> observations;
@@ -46,11 +49,15 @@ struct GradientDeviceState
     unsigned maximumBatch=8,computeThreads=1;
     Backend mode=Backend::CPU;
     std::shared_ptr<GradientBatchAdmissionState> batching;
-    bool started=false,initialized=false,canceled=false;
+    bool started=false,initialized=false,canceled=false,automaticClockUnavailable=false;
     std::shared_ptr<std::atomic<std::size_t>> retained=std::make_shared<std::atomic<std::size_t>>(0);
 };
 namespace
 {
+std::uint64_t serviceCpuNow(const GradientDeviceState* state) noexcept {
+    try{return state && state->cpuClock ? state->cpuClock() : glob2::threadCpuNs();}catch(...){return 0;}
+}
+bool validCpuInterval(std::uint64_t start,std::uint64_t end) noexcept {return start && end>=start;}
 struct EnvelopeMemoryLease
 {
     std::size_t bytes=0;bool probe=false;
@@ -137,14 +144,19 @@ std::atomic<std::uint64_t> brokerThreadId{0};
 void recoverField(void* context,std::size_t) noexcept
 {
     auto& field=*static_cast<OwnedGradientField*>(context);
-    const auto cpuStart=glob2::threadCpuNs();
+    const auto cpuStart=serviceCpuNow(field.executionState.get());
     try {field.cpu(field);} catch(...) {field.error=std::current_exception();}
-    field.fallbackCpuNs=glob2::threadCpuNs()-cpuStart;
-    const auto cleanupStart=field.diagnostics ? glob2::threadCpuNs() : 0;
+    const auto cpuEnd=serviceCpuNow(field.executionState.get());
+    field.fallbackCpuNs=glob2::threadCpuDeltaNs(cpuStart,cpuEnd);
+    const auto cleanupStart=field.diagnostics ? serviceCpuNow(field.executionState.get()) : 0;
     field.inputs.reset();field.identity={};
-    if(field.diagnostics)field.fallbackCleanupCpuNs=glob2::threadCpuNs()-cleanupStart;
+    if(field.diagnostics)field.fallbackCleanupCpuNs=glob2::threadCpuDeltaNs(cleanupStart,serviceCpuNow(field.executionState.get()));
+    bool measured=field.preparationCpuClockValid && field.hostCpuClockValid && validCpuInterval(cpuStart,cpuEnd);
+    auto cpu=field.seedCpuNs;
+    for(const auto part:{field.hostCpuNs,field.fallbackCpuNs}){if(part>UINT64_MAX-cpu)measured=false;else cpu+=part;}
+    if(!measured && field.executionState){std::lock_guard lock(field.executionState->mutex);++field.executionState->totals.clockInvalidMeasurements;}
     if(auto service=field.observer.lock()) service->recordAccepted(field.session,field.workload,
-        field.decision.plan,field.seedCpuNs+field.hostCpuNs+field.fallbackCpuNs,field.tick,true);
+        field.decision.plan,measured ? cpu : 0,field.tick,true);
 }
 void fallbackField(const std::shared_ptr<OwnedGradientField>& field) noexcept
 {
@@ -161,8 +173,8 @@ bool observe(const std::shared_ptr<GradientDeviceState>& state,std::shared_ptr<B
     if(!state->started || state->canceled || !session || !session->learningPolicy()) return false;
     if(state->observationWritten-state->observationRead==state->observations.size()) {
         ++state->totals.observationDrops;
-        if(!publicationStall)return false;
-        ++state->observationRead; // Retain a stall demotion instead of an older optional sample.
+        if(!publicationStall && !failure)return false;
+        ++state->observationRead; // Retain failure/stall demotion over an older optional sample.
     }
     if(publicationStall)++state->totals.publicationStalls;
     state->observations[state->observationWritten++%state->observations.size()]={
@@ -241,7 +253,7 @@ class DeviceBroker
         state->totals.initializationNs=monotonicNs()-start;
     }
     void execute(const std::shared_ptr<GradientDeviceState>& state) noexcept {
-        const auto started=monotonicNs(),cpuStart=glob2::threadCpuNs();
+        const auto started=monotonicNs(),cpuStart=serviceCpuNow(state.get());
         std::array<std::shared_ptr<OwnedGradientField>,8> held;std::size_t count=0;bool canceled=false;
         {
             std::lock_guard lock(state->mutex);canceled=state->canceled;
@@ -324,10 +336,12 @@ class DeviceBroker
         const auto envelopeSetupStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
         auto envelope=state->totals.cpuEnvelopeRequested ? beginBatchCpuEnvelope() : nullptr;
         const auto envelopeSetupCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeSetupStarted,glob2::threadCpuNs()) : 0;
+        const bool missingPreparationClock=std::any_of(fields.begin(),fields.end(),[](const auto& field){return !field->preparationCpuClockValid;});
+        const bool clockUnavailable=state->mode==Backend::Automatic && (state->automaticClockUnavailable || !cpuStart || missingPreparationClock);
         const bool stale=std::any_of(fields.begin(),fields.end(),[](const auto& field) {
             return field->decision.generation!=field->session->currentGeneration() || field->session->failed.load();
         });
-        if(!canceled && !stale) {
+        if(!canceled && !stale && !clockUnavailable) {
             try {
                 std::vector<BackendRequest> requests;requests.reserve(count);
                 for(const auto& field:fields) {
@@ -337,27 +351,30 @@ class DeviceBroker
                     requests.back().cpuBuckets=field->cpuBuckets;requests.back().executedOnDevice=&field->executedGPU;
                     requests.back().deviceExecutionObserved=&field->deviceExecutionObserved;
                 }
-                if(diagnostics)preparationEnd=glob2::threadCpuNs();
+                if(diagnostics)preparationEnd=serviceCpuNow(state.get());
                 if(trackCompletion) {
                     const auto stamp=monotonicNs();for(const auto& field:fields) field->deviceStartedWallNs=stamp;
                 }
                 submissionStarted=true;
                 handled=state->hooks.execute ? state->hooks.execute(requests,fields.front()->decision.plan)
                     : executeOpenCLDevice(requests,fields.front()->decision.plan);
-                if(diagnostics) submissionEnd=glob2::threadCpuNs();
+                if(diagnostics) submissionEnd=serviceCpuNow(state.get());
             } catch(...) {
                 handled=false;
-                if(diagnostics) {submissionEnd=glob2::threadCpuNs();if(!submissionStarted)preparationEnd=submissionEnd;}
+                if(diagnostics) {submissionEnd=serviceCpuNow(state.get());if(!submissionStarted)preparationEnd=submissionEnd;}
             }
         }
-        if(diagnostics && submissionEnd<preparationEnd) submissionEnd=glob2::threadCpuNs();
-        const auto elapsed=monotonicNs()-started,consumed=glob2::threadCpuNs()-cpuStart;
+        const auto cpuEnd=serviceCpuNow(state.get());
+        const bool hostClockValid=validCpuInterval(cpuStart,cpuEnd) && (!diagnostics ||
+            (validCpuInterval(cpuStart,preparationEnd) && validCpuInterval(preparationEnd,submissionEnd) && cpuEnd>=submissionEnd));
+        bool batchTimingInvalid=!hostClockValid || missingPreparationClock;
+        const auto elapsed=monotonicNs()-started,consumed=glob2::threadCpuDeltaNs(cpuStart,cpuEnd);
         if(trackCompletion) {
             const auto stamp=monotonicNs();for(const auto& field:fields)field->deviceCompletedWallNs=stamp;
         }
         std::size_t cells=0;for(const auto& field:fields) cells+=field->grid.cells();
         for(const auto& field:fields) {
-            field->executedBatchCount=unsigned(count);
+            field->executedBatchCount=unsigned(count);field->hostCpuClockValid=hostClockValid;
             field->serviceNs=elapsed;field->hostCpuNs=(consumed/cells)*field->grid.cells()+(consumed%cells)*field->grid.cells()/cells;
             if(handled) {
                 field->inputs.reset();field->identity={};
@@ -365,14 +382,19 @@ class DeviceBroker
             }
             else {
                 field->fallbackReason=canceled ? GradientFallbackReason::Shutdown : stale ? GradientFallbackReason::StaleGeneration
+                    : clockUnavailable ? GradientFallbackReason::CpuClockUnavailable
                     : field->session->failed.load() ? GradientFallbackReason::DriverFailure : GradientFallbackReason::BackendDecline;
                 fallbackField(field);
             }
         }
         if(handled && std::any_of(fields.begin(),fields.end(),[](const auto& field){return field->executedGPU;})) {
             auto key=fields.front()->workload;key.batch=unsigned(count);
-            auto cpu=glob2::threadCpuNs()-cpuStart;for(const auto& field:fields) cpu+=field->seedCpuNs;
-            observe(state,fields.front()->session,key,fields.front()->decision.plan,cpu,fields.front()->tick);
+            const auto observationEnd=serviceCpuNow(state.get());
+            bool measured=hostClockValid && !missingPreparationClock && validCpuInterval(cpuStart,observationEnd) && observationEnd>=cpuEnd;
+            auto cpu=glob2::threadCpuDeltaNs(cpuStart,observationEnd);
+            for(const auto& field:fields){if(field->seedCpuNs>UINT64_MAX-cpu)measured=false;else cpu+=field->seedCpuNs;}
+            observe(state,fields.front()->session,key,fields.front()->decision.plan,measured ? cpu : 0,fields.front()->tick,!measured);
+            if(!measured){batchTimingInvalid=true;if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
         }
         const auto envelopeFinishStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
         if(envelope)finishBatchCpuEnvelope(envelope->envelope);
@@ -384,6 +406,9 @@ class DeviceBroker
         envelope.reset();
         const auto envelopeFinishCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeFinishStarted,glob2::threadCpuNs()) : 0;
         std::lock_guard lock(state->mutex);
+        if(batchTimingInvalid){++state->totals.clockInvalidMeasurements;
+            if(state->mode==Backend::Automatic)state->automaticClockUnavailable=true;}
+        state->totals.automaticClockUnavailable=state->automaticClockUnavailable;
         if(state->totals.cpuEnvelopeRequested) {
             state->totals.cpuEnvelopeLifecycleNs+=envelopeSetupCpu+envelopeFinishCpu;
             state->totals.cpuEnvelopeSetupOvershoots+=envelopeSetupCpu>500000;
@@ -404,9 +429,9 @@ class DeviceBroker
             }
         }
         if(diagnostics) {
-            state->totals.batchPreparationCpuNs+=preparationEnd-cpuStart;
-            state->totals.batchSubmissionCpuNs+=submissionEnd-preparationEnd;
-            state->totals.batchCompletionCpuNs+=glob2::threadCpuNs()-submissionEnd;
+            state->totals.batchPreparationCpuNs+=glob2::threadCpuDeltaNs(cpuStart,preparationEnd);
+            state->totals.batchSubmissionCpuNs+=glob2::threadCpuDeltaNs(preparationEnd,submissionEnd);
+            state->totals.batchCompletionCpuNs+=glob2::threadCpuDeltaNs(submissionEnd,serviceCpuNow(state.get()));
         }
         for(const auto& field:fields)if(field->deviceExecutionObserved){
             ++state->totals.deviceCompletedFields;
@@ -456,7 +481,7 @@ class DeviceBroker
                     if(state->observationRead!=state->observationWritten) {selected=state;work=Work::Observation;break;}
                 }
             }
-            brokerCpuNs=glob2::threadCpuNs()-cpuStart;
+            brokerCpuNs=glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs());
             if(!selected) continue;
             if(work==Work::Required) execute(selected);
             else if(work==Work::Initialize) initialize(selected);
@@ -469,9 +494,9 @@ class DeviceBroker
                     if(auto policy=observation.session->learningPolicy()) policy->observeAccepted(
                         observation.key,observation.plan,observation.cpuNs,observation.tick,observation.failed,observation.publicationStall);
             }
-            brokerCpuNs=glob2::threadCpuNs()-cpuStart;
+            brokerCpuNs=glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs());
         }
-        brokerCpuNs=glob2::threadCpuNs()-cpuStart;brokerThreads=0;
+        brokerCpuNs=glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs());brokerThreads=0;
     }
 public:
     ~DeviceBroker() {
@@ -499,7 +524,7 @@ void OwnedGradientField::releaseReservation() noexcept {
 std::unique_ptr<std::uint16_t[]> OwnedGradientField::takeData(){releaseReservation();return std::move(data);}
 std::shared_ptr<GradientDeviceState> GradientDeviceService::state() const {std::lock_guard lock(mutex);return registration;}
 void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
-    stop();auto next=std::make_shared<GradientDeviceState>();next->hooks=hooks;
+    stop();auto next=std::make_shared<GradientDeviceState>();next->hooks=hooks;next->cpuClock=hooks.cpuClock;
     next->totals.diagnostics=gradientDiagnosticsRequested();
     next->totals.cpuEnvelopeRequested=glob2::cpuEnvelopeRequested();
     if(next->totals.cpuEnvelopeRequested)glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::OtherOwned);

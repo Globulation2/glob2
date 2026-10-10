@@ -15,7 +15,7 @@ namespace gradient_kernel
 class GradientDeviceService;
 struct GradientDeviceState;
 bool gradientDiagnosticsRequested() noexcept;
-enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,Count};
+enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,CpuClockUnavailable,Count};
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
 struct OwnedGradientField
@@ -40,6 +40,8 @@ struct OwnedGradientField
     // Published before the completion ticket resolves; owner reads after join.
     std::uint64_t deviceStartedWallNs=0,deviceCompletedWallNs=0,fallbackCleanupCpuNs=0;
     bool diagnostics=false;
+    // No preparation CPU reference is assumed unless its producer measured it.
+    bool preparationCpuClockValid=false,hostCpuClockValid=false;
     unsigned executedBatchCount=1;
     bool executedGPU = false;
     // Diagnostic completion proof survives later rollback. Policy/publication
@@ -70,6 +72,7 @@ public:
         std::function<bool()> initialize;
         std::function<bool(std::span<const BackendRequest>,Plan)> execute;
         std::function<OpenCLStatus()> status; // Owned fake configuration, tests only.
+        std::function<std::uint64_t()> cpuClock; // Empty native default; owned test clock.
     };
     struct Metrics {
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
@@ -78,10 +81,10 @@ public:
         // distinct from a fully converged, successfully committed GPU result.
         std::uint64_t deviceCompletedFields=0,fallbackAfterDeviceCompletionFields=0;
         std::uint64_t stale=0, budgetDeclines=0, observationDrops=0;
-        std::uint64_t publicationStalls=0;
+        std::uint64_t publicationStalls=0,clockInvalidMeasurements=0;
         std::uint64_t batchPreparationCpuNs=0,batchSubmissionCpuNs=0,batchCompletionCpuNs=0;
         std::size_t queued=0, retainedHostBytes=0;
-        bool running=false, ready=false;
+        bool running=false, ready=false,automaticClockUnavailable=false;
         unsigned configuredMaxBatch=8, deviceConcurrency=1;
         unsigned coordinatorThreads=0;
         std::uint64_t coordinatorThreadId=0;

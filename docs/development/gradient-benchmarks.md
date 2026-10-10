@@ -71,6 +71,15 @@ headless saved-game import scope for these fixtures. Ordinary loader, generator,
 lobby and network dimension limits remain unchanged. The scope supports at
 most exponent ten in each dimension and does not admit 2048² fixtures yet.
 
+Automatic selection requires valid, monotonic preparation and coordinator thread CPU clocks.
+Unavailable or reversed measurements contribute zero learning credits and demote
+the affected accepted plan; a committed device result still publishes exactly once.
+The coordinator disables automatic device execution until reconfiguration after
+such a measurement failure. Forced OpenCL remains available for diagnosis.
+Use `cpu_reason_clock_unavailable`, `fallback_reason_cpu_clock`,
+`cpu_clock_invalid_measurements` and `automatic_cpu_clock_unavailable` to identify
+this conservative fallback.
+
 ## Terrain gradient benchmarks
 
 `TerrainHazardBenchmark` provides opt-in CPU and wall-time measurements for idle
