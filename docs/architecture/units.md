@@ -153,9 +153,11 @@ simulation definitions can share worker appearance. This foundation adds no new
 artwork, skin format or customization UI.
 
 Format 153 embeds resolved definitions before dependent state, including cargo
-and assignments. Earlier saves remain supported back to format 58. Legacy loading
-first reads records with provisional definitions, then adopts the saved race
-tables without recalculating unit performance or hunger caches. The last saved
+and assignments. Earlier saves remain supported back to format 58. Formats 58–72
+read saved race tables inside each team's BaseTeam record before loading units.
+Later legacy formats first read records with provisional definitions, then adopt
+the saved race tables. Neither path recalculates saved performance or hunger
+caches. The last saved
 race table applies to every team, matching historical shared-table loading.
 Converted legacy tables can carry a private movement compatibility marker;
 new authoring cannot request that exception to the flight invariant.

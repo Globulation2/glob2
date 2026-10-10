@@ -12,6 +12,8 @@ namespace GAGCore
 	class OutputStream;
 }
 
+class Race;
+
 class BaseTeam
 {
 public:
@@ -35,9 +37,10 @@ public:
 	bool disableRecursiveDestruction;
 
 public:
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	// Formats before 73 contain a Race record here. Actual teams retain it;
+	// standalone header readers may omit the destination.
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor, Race* legacyRace=nullptr);
 	void save(GAGCore::OutputStream *stream) const;
 
 	Uint32 checkSum();
 };
-

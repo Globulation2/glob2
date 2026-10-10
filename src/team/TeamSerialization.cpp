@@ -26,13 +26,15 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	buildingsTryToBuildingSiteRoom.clear();
 
 	// loading base team
-	if(!BaseTeam::load(stream, versionMinor))
+	if(!BaseTeam::load(stream, versionMinor, &race))
 		co_return false;
 
 	stream->readEnterSection("Team");
 
 	// Bind immutable definitions before any entity takes a descriptor pointer.
-	race.setCatalog(game->gameHeader.getUnitCatalog());
+	// Older formats already bound their saved Race while reading BaseTeam.
+	if (versionMinor >= FILE_FORMAT_VERSION_RACE_FIELD)
+		race.setCatalog(game->gameHeader.getUnitCatalog());
 	stats.configureUnits(race.unitTypeCount());
 
 	// normal load
@@ -164,10 +166,6 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 			stream->readLeaveSection();
 			co_return false;
 		}
-	}
-	else
-	{
-		race.setCatalog(game->gameHeader.getUnitCatalog());
 	}
 	stats.configureUnits(race.unitTypeCount());
 

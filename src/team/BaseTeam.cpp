@@ -24,7 +24,7 @@ BaseTeam::BaseTeam()
 
 
 
-bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
+bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor, Race* legacyRace)
 {
 	// loading base team
 	stream->readEnterSection("BaseTeam");
@@ -46,8 +46,15 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	playersMask = stream->readUint32("playersMask");
 	if(versionMinor < 73)
 	{
-		Race race;
-		race.load(stream, versionMinor);
+		// These formats stored Race inside BaseTeam. Its former process-global
+		// tables survived the temporary reader; retain them on the actual team
+		// before its units load now that definitions belong to this game.
+		if (legacyRace) {
+			if (!legacyRace->load(stream, versionMinor)) return false;
+		} else {
+			Race ignored;
+			if (!ignored.load(stream, versionMinor)) return false;
+		}
 	}
 	stream->readLeaveSection();
 	return true;
@@ -90,4 +97,3 @@ Uint32 BaseTeam::checkSum()
 
 	return cs;
 }
-
