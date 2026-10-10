@@ -1033,4 +1033,63 @@ TEST_CASE("Castor swimming workforce excludes inactive carriers")
     CHECK(ai.canSwim);
 }
 
+TEST_CASE("independent nonmonotonic worker clocks retain keyed course eligibility")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;
+    auto units=nlohmann::json::parse(game.unitCatalog().serialize());
+    auto courier=units["units"][WORKER];courier["key"]="fixture:split-clock-courier";
+    courier["behaviors"]["construct"]=false;
+    for(int level=0;level<NB_UNIT_LEVELS;++level) {
+        courier["levels"][level]["performance"][BUILD]=level==0?9:0;
+        courier["levels"][level]["performance"][HARVEST]=level==1?11:0;
+    }
+    units["units"].push_back(courier);
+    auto immobile=courier;immobile["key"]="fixture:split-clock-immobile";
+    // Positive authoring clocks cannot enable movement whose behavior is off.
+    immobile["behaviors"]["walk"]=false;immobile["behaviors"]["swim"]=false;
+    immobile["behaviors"]["fly"]=false;units["units"].push_back(immobile);
+    game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+    auto buildings=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+    const int school=game.buildingsTypes.getTypeNum("school",0,false);
+    auto& semantics=buildings["variants"][school]["semantics"];
+    semantics["admittedUnits"]={"fixture:split-clock-courier"};
+    semantics["training"]=nlohmann::json::object();
+    semantics["training"]["walk"]={{"enabled",true},{"unitMask",1},
+        {"units",{"fixture:split-clock-courier"}},{"targetLevel",1},
+        {"duration",32},{"cost",nlohmann::json::object()}};
+    semantics["training"]["harvest"]=semantics["training"]["walk"];
+    game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
+    auto* provider=world.addBuilding("school",4,4);REQUIRE(provider);
+    auto* custom=world.addUnit(3,11,10);REQUIRE(custom);
+    REQUIRE(custom->canLearn[HARVEST]);
+    REQUIRE(custom->performance[BUILD]==9);REQUIRE(custom->performance[HARVEST]==0);
+    const auto& apprenticeship=provider->type->semantics.training[HARVEST];
+    REQUIRE(custom->needsTraining(apprenticeship,HARVEST));
+    custom->applyTraining(apprenticeship,HARVEST);
+    CHECK(custom->level[BUILD]==0);CHECK(custom->level[HARVEST]==1);
+    CHECK(custom->performance[BUILD]==9);CHECK(custom->performance[HARVEST]==11);
+    const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
+    const auto* captured=view->unitSlots(0)[Unit::GIDtoID(custom->gid)];REQUIRE(captured);
+    CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*captured,WORKER));
+    // No equal-level probe can represent this effective, independently trained unit.
+    for(const auto& level:game.unitCatalog().levels(3)) {
+        auto uniform=*captured;
+        std::copy(std::begin(level.performance),std::end(level.performance),uniform.performance);
+        CHECK_FALSE(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,uniform,WORKER));
+    }
+    CHECK(AIEngine::ObservationQueries::definitionCanServeStrategyRole(*view,3,WORKER));
+    CHECK_FALSE(AIEngine::ObservationQueries::definitionCanServeStrategyRole(*view,4,WORKER));
+    const auto projection=AIEngine::ObservationQueries::workerTrainingProjection(*view,false);
+    CHECK(projection.labourProviders[school]==1);
+    CHECK((projection.courseMasks[school][3]&(1u<<WALK))!=0);
+    CHECK(projection.courseMasks[school][WORKER]==0);
+    AIMaxima::Maxima maxima(game.players[0]);const auto labour=maxima.observe_labour(maxima.context);
+    CHECK(labour.workers==1);CHECK(labour.idle==1);CHECK(labour.trainable==1);
+    CHECK(labour.trainingSlots==game.buildingsTypes.get(school)->maxUnitInside);
+    custom->canLearn[WALK]=false;
+    CHECK(maxima.observe_labour(maxima.context).trainable==0);
+}
+
 }

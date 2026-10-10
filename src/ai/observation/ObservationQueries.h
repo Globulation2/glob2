@@ -106,23 +106,25 @@ inline bool matchesConstructionRole(const AIEngine::AIWorldView& world,const AIE
     // engine still requires transport eligibility as well as Construct.
     return (unit.capabilityFlags&UnitRuntimeTraits::Construct) && matchesStrategyUnitRole(world,unit,WORKER);
 }
-// Planning-only projection: a recipient may acquire effective clocks at a later
-// configured level. Compute these candidates before scanning live entities.
+// Planning-only projection: ability levels are independent, so a recipient can
+// retain one clock while training another. Nonmonotonic tables need not have a
+// single uniform level with every clock active. Compute the potential maxima
+// before scanning live entities; actual role/training checks still use caches.
 inline bool definitionCanServeStrategyRole(const AIEngine::AIWorldView& world,unsigned id,unsigned role)
 {
     const auto& traits=world.unitTraits(id);
     AIEngine::UnitView probe;
     probe.typeNum=id;probe.capabilityFlags=traits.flags;probe.experienceLevel=0;
-    for(const auto& level:world.unitCatalog().levels(id)) {
-        std::copy(std::begin(level.performance),std::end(level.performance),probe.performance);
-        if(!traits.has(UnitRuntimeTraits::LegacyPerformancePolicies)) {
-            if(!traits.has(UnitRuntimeTraits::Walk))probe.performance[WALK]=0;
-            if(!traits.has(UnitRuntimeTraits::Swim))probe.performance[SWIM]=0;
-            if(!traits.has(UnitRuntimeTraits::Fly))probe.performance[FLY]=0;
-        }
-        if(matchesStrategyUnitRole(world,probe,role))return true;
+    std::fill(std::begin(probe.performance),std::end(probe.performance),0);
+    for(const auto& level:world.unitCatalog().levels(id))
+        for(const int ability:{WALK,SWIM,FLY,BUILD,HARVEST,ATTACK_SPEED,ATTACK_STRENGTH})
+            probe.performance[ability]=std::max(probe.performance[ability],level.performance[ability]);
+    if(!traits.has(UnitRuntimeTraits::LegacyPerformancePolicies)) {
+        if(!traits.has(UnitRuntimeTraits::Walk))probe.performance[WALK]=0;
+        if(!traits.has(UnitRuntimeTraits::Swim))probe.performance[SWIM]=0;
+        if(!traits.has(UnitRuntimeTraits::Fly))probe.performance[FLY]=0;
     }
-    return false;
+    return matchesStrategyUnitRole(world,probe,role);
 }
 inline bool definitionCanConstruct(const AIEngine::AIWorldView& world,unsigned id)
 {
