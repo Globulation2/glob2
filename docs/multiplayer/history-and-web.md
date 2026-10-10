@@ -5,7 +5,7 @@ matches, participants, rating history, per-team statistics and 512-tick
 timelines, and the replay of every verified match. This page describes the
 read-only REST API over that history and the web app built on it (`platform/apps/web`).
 The writers are described in [ratings and matchmaking](ratings-and-matchmaking.md)
-and [architecture](architecture.md#engine-agents).
+and [architecture](engine-agents.md#engine-agents).
 
 ## REST
 
@@ -220,6 +220,7 @@ previews, plus the stock colony card. Library styles must not change studios,
 upload forms or item detail pages. Review both themes, narrow screens, keyboard
 focus and reduced motion when changing these patterns.
 
+
 The sign-in and invite pages (`apps/api/src/web/pages.ts`) share the tokens and
 the colony backdrop; their assets are served from `/signin/assets/`. Invite
 pages carry an OpenGraph image for link previews.
@@ -258,7 +259,7 @@ finances and operations are admin-only. Analytics and finances accept `days=7`,
 `30` (default), or `90`; finances also accepts `mode=live` (default), `test`, or
 `unclassified`. Results are cached for 60 seconds and display their generation
 time. No private prompts/source are returned by operations lists or details.
-See [hosting](../hosting/README.md#admin-reporting) for collection, coverage,
+See [hosting](../hosting/admin-reporting.md#admin-reporting) for collection, coverage,
 recovery and rate configuration.
 
 Map detail previews show one complete map period at its native aspect ratio.
@@ -319,3 +320,5 @@ least 44 px. Other checks: keyboard skip link and focus after navigation, the
 theme toggle, and the colony animation (pause, reduced motion).
 `SCREENSHOT_DIR=<dir>` saves desktop and phone screenshots of each page in both
 themes; `AXE_REPORT=<file>` writes the axe results as JSON lines.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

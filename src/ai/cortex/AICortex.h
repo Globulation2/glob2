@@ -24,8 +24,7 @@ class Player;
 class Order;
 class Building;
 
-// AICortex — variant A of the parent-class spike (docs/AI/cortex/NEXT.md open
-// question #1). Subclasses AIImplementation DIRECTLY, owning the full
+// AICortex subclasses AIImplementation directly, owning the full
 // observation -> policy -> action pipeline with no Runtime framework in between.
 //
 // The engine constraint is one Order per getOrder() call. The action layer
@@ -33,7 +32,7 @@ class Building;
 // orderQueue; getOrder() pops one per tick and returns NullOrder when the queue
 // is empty. The policy is consulted on a slow cadence (OBSERVE_INTERVAL ticks),
 // not every tick — cheap now, and the right shape for paying NN inference cost
-// only on decision cycles later.
+// only on decision cycles. See docs/ai/development.md.
 
 class AICortex : public AIImplementation
 {

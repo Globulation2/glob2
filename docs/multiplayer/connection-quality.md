@@ -34,7 +34,7 @@ A value at or above *fair* is fair; at or above *poor* it is poor.
 | --- | --- | --- | --- |
 | Ping | under 150 ms | 150–299 ms | 300 ms and up |
 | Delay | under 200 ms | 200–399 ms | 400 ms and up |
-| Behind | under 1 s | 1–1.9 s | 2 s and up (the relay's *slow* state starts here) |
+| Behind | under 1 s | 1–1.9 s | 2 s and up |
 
 Each rating has a word, a colour and a marker shape, so colour is never the only
 signal:
@@ -60,8 +60,9 @@ reconnect, offline-time, delayed-order and rejoin rules in
 - **Rows:** colour, name ("You" on the own row) and the value: `42 ms · Good`, or
   `Behind 1.3 s · Fair` once a player falls a second behind (or when no Ping is
   known, as with LAN guests). States replace the value: `Reconnecting 2:12`,
-  `Rejoining`, `Connecting…`, `Left`, `AI`. A player the relay marks slow is rated
-  poor.
+  `Rejoining`, `Connecting…`, `Left`, `AI`. A player the relay marks lagging is rated poor. The sequencer
+  threshold is tick-based (default 50 ticks, about 1.67 s at 30 ticks/s), so this
+  state override can precede the numeric 2 s Poor threshold.
 - **Footer:** `Your delay 171 ms · Good`, plus `· unstable` when this client's jitter
   is above 60 ms.
 - **Phones with more than four humans:** a two-column grid of colour, marker and
@@ -80,7 +81,7 @@ sends it with every `Presence` broadcast, but only to clients that said version 
 answer `Welcome` in the client's version. A version-2 client that an older relay
 refuses with `Reject(1)` retries once with version 1 and then plays without other
 players' Ping. Replays, match records, saves and the simulation are unchanged
-([turn protocol](turn-protocol.md#framing-and-versioning)).
+([turn protocol](turn-wire.md#framing-and-versioning)).
 
 `Presence.lagTicks` is the lag the seat's last `Ping` reported, and no longer grows
 between pings. Clients ping every 500 ms. Once a second passes without a ping, the
@@ -99,3 +100,5 @@ extra time counts as lag, so a silent client still turns *slow* after two second
 
 Changing a threshold changes how connections are labelled and how the game feels to
 read. Call it out in the pull request.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

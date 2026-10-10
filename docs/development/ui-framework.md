@@ -18,7 +18,7 @@ require a paint to advance loading, networking, input handling or persistence.
 DOM text-field changes and actions are delivered in `frame()` before transitions
 and SDL events; `draw()` must not dispatch input or admit screen transitions.
 The **Target render FPS** preference applies to screen and dialog drawing as well
-as matches and the editor; see [render pacing](reference.md#target-render-fps).
+as matches and the editor; see [render pacing](../architecture/rendering.md#target-render-fps).
 
 ## Rules
 

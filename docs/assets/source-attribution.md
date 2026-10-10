@@ -39,7 +39,7 @@ Worley cells, stamps and palette ramps; no pixels derived from other artwork),
 GPL-3.0-or-later like the rest of the project. Materials later replaced through
 tools/artwork/export_material.py are AI-generated images disclosed as such in
 datasrc/gfx/<name>/provenance.json, with the prompt and reference hashes. See
-[terrain materials](terrain-materials.md#material-production).
+[terrain materials](terrain-production.md#material-production).
 
 Foundation deposit sprites (data/gfx/resource-gold-ore0.png, resource-iron-ore0.png,
 resource-silica0.png, resource-cotton0.png and their HD frames):
@@ -63,3 +63,5 @@ Music (data/zik/; each set directory also holds a LICENSE.txt with full details)
 - `glass-garden`: original score with sounds designed in Surge XT (GPL-3.0).
 - `orchestral-dawn`: AI-generated audio (ACE-Step 1.5, MIT) separated with Demucs (MIT). Disclosed as AI-generated content.
 How these sets are built is described in [the music pipeline guide](music-pipeline.md).
+
+Related: [asset production](README.md).

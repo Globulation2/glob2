@@ -17,7 +17,7 @@ class Player;
 // Cortex paints a checkerboard `forbidden` pattern over its food so
 // workers harvest one half while the protected half stays full and reseeds it
 // (forbidden blocks harvest, MapGradientMaterial.cpp, but NOT growth,
-// MapStep.cpp:80). See docs/AI/cortex/food-protection-plan.md.
+// MapStep.cpp). See docs/ai/engine-mechanics.md#food-protection.
 //
 // Two layers live here:
 //   * scanFoodSourcesForbidden(...) — the PURE geometry + reconcile core. It takes

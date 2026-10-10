@@ -1,6 +1,6 @@
 # ADR 001: one source manifest, independent build identities
 
-Status: implemented; platform-wide release validation remains in progress.
+Status: accepted.
 
 The experiment parsed SConscript text and used host Boost headers. Native
 configuration wrote a root header and options cache. Running different
@@ -28,9 +28,7 @@ paths move under the identity directory. macOS packaging is an explicit
 `package` target rather than a side effect of compiling release objects.
 
 The browser SDK revision and version are recorded in
-`browser/toolchain.json`. Emscripten verifies port archive checksums. A complete
-release dependency lock covering SDK archive digests and native gateway
-dependencies is still required before reproducible release status.
+`browser/toolchain.json`. Emscripten verifies port archive checksums. Release reproducibility also depends on native dependencies and packaging inputs; SDK pinning alone does not establish it.
 
 CI validates the identity rules directly and builds native and WebAssembly
 outputs in their own jobs. `test/build_system/coexistence.py` remains an
@@ -58,5 +56,7 @@ Hive, scripting, assets and localization remain available in either variant.
 Ordinary `scons target=web` defaults to both variants; `web-package` requires both.
 Browser SDL/Opus installations are shared by SDK and threading configuration,
 while the standalone music decoder always uses serial Opus libraries.
-See [fast development builds](../development/reference.md#fast-development-builds)
+See [fast development builds](../development/build-options.md#fast-development-builds)
 for PCH/unity options, caching, dependency jobs and measurement limitations.
+
+Related: [browser guide and decision index](README.md).

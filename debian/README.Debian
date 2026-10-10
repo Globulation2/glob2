@@ -1,6 +1,9 @@
-glob2 for Debian
-----------------
+# Debian packages
 
-Use gcc >= 3.0 if you want to compile this package yourself, not gcc-2.95
+The Debian packaging builds the client and packages game data and a pinned SDL3
+runtime separately. `control` declares the package dependencies; `rules` builds
+the SDL3 prefix with `scons/sdl3_dependencies.py` before invoking SCons.
 
- -- Stephane Magnenat <stephane at magnenat dot net>
+Use the [native build guide](../docs/development/building.md) for contributor setup
+and the [release index](../docs/releases/README.md) for distribution workflows.
+The historical GCC 3.0 minimum is not a supported modern compiler requirement.

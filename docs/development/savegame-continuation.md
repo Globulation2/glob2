@@ -13,8 +13,6 @@ Map files do not contain this runtime section. Older saves remain readable and u
 
 `savegame-safety-test` compares 300 subsequent simulation steps against uninterrupted play, for human and AI players, after advancing the random sequence and loading a mid-game checkpoint. It also checks 2,000 future RNG outputs, text round trips of the routing section, and rejection/reuse after truncated or invalid runtime sections. The normal save loader and production simulation execute these checks.
 
-The earlier Windows OpenGL “background bleed-through” observation was the existing cloud overlay. With the same build and saved game, setting only `cloudMaxAlpha=0` removed the moving shapes. No production renderer change was required. `map-render-resize-test` additionally checks opaque rectangle and alpha-map drawing after a menu background and cached-frame presentation.
-
 ## Compact saves
 
 Format 128 changes storage without changing simulation state. The save floor remains
@@ -57,7 +55,7 @@ also be exported after a browser-storage failure. Names and editor dirty state
 change only after the complete operation succeeds. Threadless builds yield
 between bounded finalization steps. These scheduling changes do not alter the
 format-128 bytes; see the
-[persistence implementation](reference.md#native-simulation-memory-and-cpu-comparisons)
+[persistence implementation](memory-benchmarks.md#native-simulation-memory-and-cpu-comparisons)
 for snapshot ownership and offset relocation rules.
 
 Size comparisons must use final gzip files, not only the size of the intermediate

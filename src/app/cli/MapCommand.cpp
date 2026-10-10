@@ -267,8 +267,8 @@ void printMapCommandHelp()
 		   "Supply at least one output: --output, --preview, or --json. Defaults: seed=1, "
 		   "registered settings.\n"
 		   "Config: key=value lines; blank lines and # comments allowed. CLI overrides config.\n"
-		   "Width/height are tile counts, not exponents. See docs/map-generators/CLI.md.\n"
-		   "JSON fields, units and formulas: docs/map-generators/REPORT.md.\n";
+		   "Width/height are tile counts, not exponents. See docs/map-generators/cli.md.\n"
+		   "JSON fields, units and formulas: docs/map-generators/report-format.md.\n";
 }
 int runMapCommand(int argc, char **argv)
 {

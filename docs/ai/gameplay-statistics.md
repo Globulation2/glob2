@@ -1,10 +1,12 @@
 # Gameplay measurements
 
-`TeamStats::measurements` is a diagnostic block alongside the existing live,
-smoothed and end-game statistics. It does not participate in AI decisions, RNG,
-orders or simulation checksums. Starting, loaded, scripted and editor-created
-entities are not production events. Existing statistics and AI accessors retain
-their definitions and sampling cadence.
+## On this page
+
+- [Definitions](#definitions)
+- [Sampling and saves](#sampling-and-saves)
+- [Existing timeline output](#existing-timeline-output)
+- [What the player sees](#what-the-player-sees)
+- [Verification](#verification)
 
 ## Definitions
 
@@ -235,3 +237,5 @@ cannot have the same aggregate checksum as a format-107 save. CI runs the
 same check on Linux and Windows (with `.exe` on Windows).
 Actual results and platform/performance coverage are recorded with the change's
 validation artifacts; CI compilation alone is not deterministic execution proof.
+
+Related: [AI documentation](README.md).

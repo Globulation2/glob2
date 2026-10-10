@@ -40,7 +40,7 @@ using namespace MapGeneration;
 // off the town. Every other drumlin is fertile the same way and starts under a scatter of crops;
 // the biggest and the farthest from every home carry the prizes.
 //
-// WHY IT PLAYS WELL (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md). Water blocks walking until
+// WHY IT PLAYS WELL (docs/map-generators/game-rules-for-map-design.md). Water blocks walking until
 // a colony has a pool, so the eskers are the map's doors: a line of sand a few tiles wide that a
 // column of units can cross but nothing can be built on and no crop grows over, so whoever holds
 // an esker's landing holds it, and nobody can wall it shut with buildings. The eskers form a tree that joins

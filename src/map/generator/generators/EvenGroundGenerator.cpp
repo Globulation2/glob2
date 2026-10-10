@@ -66,7 +66,7 @@ using namespace MapGeneration;
 // The solved lattice is then painted onto the tiles through a noise warp, so cell borders wander
 // and the result reads as country rather than as a grid of squares.
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Resources block ground units and buildings alike, so a crop cell is planted to a share of its
 //   ground rather than solid: the fields stay walkable and gatherable from inside.
 // - Stone never runs out, so a stone cell is a permanent strategic site, and is planted thinnest of

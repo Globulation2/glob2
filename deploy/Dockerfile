@@ -164,8 +164,8 @@ RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-ho
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY examples/javascript /app/examples/javascript
 COPY data/resources/registry.json /app/data/resources/registry.json
-COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
-COPY docs/map-generators/JAVASCRIPT.md /app/docs/map-generators/JAVASCRIPT.md
+COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/development/
+COPY docs/map-generators/javascript.md /app/docs/map-generators/javascript.md
 COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
 COPY data/generators/examples/swamp /app/data/generators/examples/swamp
 COPY deploy/platform-init.sh /usr/local/bin/glob2-platform-init
@@ -213,7 +213,7 @@ COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 COPY --from=platform-runtime-deps /app/platform /app/platform
 COPY examples/javascript /app/examples/javascript
 COPY data/resources/registry.json /app/data/resources/registry.json
-COPY docs/development/javascript.md docs/development/javascript-api.md /app/docs/development/
+COPY docs/scripting/javascript.md docs/scripting/javascript-api.md /app/docs/development/
 COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
 COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
 COPY --from=engine-build /output/licenses /usr/local/share/licenses

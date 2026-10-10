@@ -1,7 +1,19 @@
 # Maxima strategic farming
 
-Maxima owns a private farming planner. Its fertility cache and derived masks
-are rebuilt after construction or loading rather than serialized.
+## On this page
+
+- [Implementation model](#implementation-model)
+- [Independently tunable behavior](#independently-tunable-behavior)
+- [Exact fertility](#exact-fertility)
+- [Recurring food demand](#recurring-food-demand)
+- [Policy order](#policy-order)
+- [Permanent wheat protection](#permanent-wheat-protection)
+- [Minimum renewable wood reserve](#minimum-renewable-wood-reserve)
+- [Wood pressure](#wood-pressure)
+- [Fertility firebreak](#fertility-firebreak)
+- [Maintenance clearing areas and emergency flag](#maintenance-clearing-areas-and-emergency-flag)
+- [Scheduling and telemetry](#scheduling-and-telemetry)
+- [Farm management distance](#farm-management-distance)
 
 ## Implementation model
 
@@ -306,3 +318,5 @@ calculation. Existing firebreak clearing outside the radius is removed on the
 next maintenance update. Physical access and construction clearing
 contracts retain their independent scope. Unlike protected wheat seeds,
 firebreak clearing is not retained after losing its nearby building anchor.
+
+Related: [AI documentation](../README.md).

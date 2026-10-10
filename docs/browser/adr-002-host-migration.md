@@ -40,3 +40,5 @@ tested to ensure the linked runtime contains no Asyncify instrumentation.
   simulation code.
 
 See [ADR 003](adr-003-screen-execution.md) for screen and session ownership.
+
+Related: [browser guide and decision index](README.md).

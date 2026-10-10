@@ -13,7 +13,7 @@
 // Cross-validated grouped by game: McFadden R2 0.413, top-1 accuracy 77.5%
 // against 42.9% for guessing. Where it says 97% it was right 96-100% of the time,
 // in every phase of the game.
-// See docs/win-probability-model.md.
+// See docs/ai/architecture/win-probability-model.md.
 #pragma once
 #include "WinProbability.h"
 #include <cstddef>

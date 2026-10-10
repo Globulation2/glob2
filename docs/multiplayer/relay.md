@@ -75,7 +75,7 @@ secrets.
 | `GLOB2_RELAY_PLATFORM_URL` | unset | Platform origin for `/internal/v1` calls; unset disables them |
 | `GLOB2_RELAY_PLATFORM_CA` | system store | Extra trust anchors for HTTPS calls to the platform |
 | `GLOB2_RELAY_KEY` (`_FILE`) | required with a platform | Bearer token for `/internal/v1` calls |
-| `GLOB2_RELAY_ID` | host name | `relayId`, `[A-Za-z0-9._-]{1,64}`; the compose image's entrypoint sets a stable `relay-<n>` claimed on the spool volume ([hosting](../hosting/README.md#scaling)) |
+| `GLOB2_RELAY_ID` | host name | `relayId`, `[A-Za-z0-9._-]{1,64}`; the compose image's entrypoint sets a stable `relay-<n>` claimed on the spool volume ([hosting](../hosting/scaling.md#scaling)) |
 | `GLOB2_RELAY_PUBLIC_URL` | required with a platform | The `wss://` URL clients use, sent at registration |
 | `GLOB2_RELAY_REGION` | `default` | Region id, `^[a-z0-9][a-z0-9-]{0,31}$` |
 | `GLOB2_RELAY_SPOOL_DIR` | unset | Directory where records wait until they are uploaded |
@@ -128,7 +128,7 @@ The first frame must be `Hello`. Reading pauses while the relay verifies the tic
 so frames that follow the `Hello` wait in the socket and reach the match in order.
 
 1. **Protocol version.** A different version gets `Reject(1)`.
-2. **Ticket.** See [tickets](#tickets). A refused ticket gets `Reject(2)` with the
+2. **Ticket.** See [tickets](relay.md#tickets). A refused ticket gets `Reject(2)` with the
    reason in the detail, for example `Ticket refused: expired`.
 3. **Admission.** The ticket's `matchId` names the match:
    - The first valid ticket for an unknown `matchId` creates the match. The
@@ -162,18 +162,21 @@ each bundle leaves on its tick boundary; the earliest grace expiry, at most a se
 away, while nobody is connected; the load-barrier deadline before the first tick; and
 at once when an event (a connection, a disconnect, a quit) left a presence change to
 broadcast, which cuts the current sleep short. Grace expiry, arbitration timeouts and
-the presence refresh all fall on those wakes. A running match therefore wakes 25 times
-a second (it used to wake every 10 ms, 100 times a second), and an empty one about once
-a second. At the default bundle interval of 1 the relay sends each client 25 bundles
-per second; client-to-relay frame limits are unaffected.
+the presence refresh all fall on those wakes. With the default 30 ticks/s and
+one-tick bundles, a running match wakes and sends each client a bundle about
+30 times/s; an empty match wakes about once/s. Client frame limits are separate.
 
-The sequencer's cost per update no longer grows with the length of the match: it
-keeps the ticks still waiting for checksum reports in their own set, and a rejoin
-clears a seat's reports only from those, instead of walking every report since tick 0.
-A benchmark of one 60-minute four-player match (reports every 25 ticks, an order
-every 0.3 s on average) on an M-series Mac spent 13.9 s of CPU in `update` before
-(630 ms in the last minute alone, on a thread every match shares) and 36 ms after, with
-90,000 wakes instead of 360,000.
+Arbitration tracks pending checksum-report ticks, and a rejoin clears the seat's
+reports from that pending set. Its per-update work does not require scanning
+all historical reports. The `TurnProtocolTest` case `arbitration stays incremental
+over a long match and the record keeps every report` checks incremental
+arbitration and record completeness across a large tick range.
+
+To evaluate throughput changes, record source revision, tick rate, bundle and
+checksum intervals, player count, order frequency, wall duration and CPU time.
+Compare the same workload/build inputs and retain profiler traces under
+`artifacts/`; an old machine's before/after timings are not a capacity guarantee.
+
 
 ## Tickets
 
@@ -347,7 +350,9 @@ tests cover:
 - **TLS.** WSS clients and HTTPS platform calls, with a private CA from
   `deploy/provision_tls.py`.
 
-CI runs both in the native-programs job.
+Requested hosted native-program verification covers both suites. Choose focused
+local verification from the affected relay boundaries; see
+[verification policy](../../AGENTS.md#validation-and-ci-feedback).
 
 ## Limits and follow-ups
 
@@ -355,10 +360,12 @@ CI runs both in the native-programs job.
   replica is reached at `/relay/<relay id>`, its id being its container's host name,
   and Caddy rewrites the path to `/relay` (see the
   [self-hosting guide](../hosting/README.md)).
-- The setup lookup endpoint and the idempotent upload behaviour are relay-side
-  assumptions that the platform API must implement (see [platform calls](#platform-calls)).
+- The setup lookup endpoint and idempotent upload behavior are contracts shared
+  with the platform API (see [platform calls](relay.md#platform-calls)).
 - A refused new match uses `Reject(5)` (match over) with an explanatory detail. A
   dedicated "relay unavailable" reason would let clients ask for another relay
   automatically; it needs a turn protocol version bump.
-- The relay has been run on macOS (clang) and Linux (g++-13). It does not build on
-  Windows, and is not meant to.
+- Published relay images target Linux amd64 and arm64. The self-hosting workflow
+  uses these Linux containers; it does not provide a Windows relay deployment.
+
+[Multiplayer index](README.md) · [Documentation index](../README.md).

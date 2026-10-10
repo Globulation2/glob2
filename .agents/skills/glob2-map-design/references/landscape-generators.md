@@ -135,7 +135,7 @@ Symmetry is only one option. Use the existing [start scorer](../../../../src/map
 and [balanced start search](../../../../src/map/generator/shared/BalancedStarts.h) as measurable
 components, not as certificates of competitive fairness. The scorer measures wheat/wood access,
 fertility, resource depth, building room and isolation, and a
-[model fitted to real games](../../../../docs/map-generators/FAIRNESS_MODEL.md) turns those into
+[model fitted to real games](../../../../docs/map-generators/fairness-model.md) turns those into
 each colony's chance of winning; maps are ranked by how evenly that chance is shared. Fairness
 alone will happily reward a map on which every colony is equally bad, so keep an absolute
 viability check in `validateWorld`.
@@ -178,7 +178,7 @@ Useful construction heuristics from these generators:
 
 Tune the weak start and the unmeasured opportunities: expansion room, approaches to shared
 prizes, who meets whom first, number of defendable doors, and post-swimming access. Do not tune
-weights solely to make a score rise. [The fairness tournament guide](../../../../docs/map-generators/FAIRNESS_TOURNAMENT.md)
+weights solely to make a score rise. [The fairness tournament guide](../../../../docs/map-generators/fairness-tournament.md)
 documents why rotating team indices over the same starts is necessary and why apparently good
 start scores can miss dominant positions. Use saved maps with all team-index rotations and
 multiple engine seeds, and report inconclusive or capped games separately from decisive wins.

@@ -9,7 +9,7 @@
 // Fitted on 2942 free-for-all games over 1482 randomly drawn maps,
 // the same AI in every slot (castor, maxima, nicowar, numbi), at 1af7f82fb.
 // Cross-validated McFadden R2 0.0278, 0.0282 in sample.
-// See docs/map-generators/FAIRNESS_MODEL.md.
+// See docs/map-generators/fairness-model.md.
 #pragma once
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"

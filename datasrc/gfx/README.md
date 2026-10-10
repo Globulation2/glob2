@@ -1,13 +1,9 @@
-> This pack contains 60 verified original-derived world frames and 1,792 unit poses
-> rendered from original Blender rigs. No AI assets are included; unavailable
-> frames retain classic artwork.
-
 # Original artwork
 
 This is the shared home for Globulation 2's original artwork, combining the
 repository's existing sources with the archive recovered by Stéphane Magnenat
 on 8 September 2026. Start with the [browsable catalog](CATALOG.md) and
-[visually verified building map](BUILDING-MAP.md).
+[visually verified building map](building-map.md).
 
 ```
 originals/
@@ -43,16 +39,16 @@ provenance/           Source URLs, archive paths, old repository paths and hashe
 - Do not resave old Blender/GIMP files just to upgrade their file format. Work
   from copies, keep layer roles intact and record reproducible export settings.
 - The archive supplies historical variants, not an approved mapping for every
-  building state. See [coverage and open questions](COVERAGE.md).
+  building state. See [coverage and open questions](coverage.md).
 
 `data/gfx/` remains the classic runtime artwork. `data/highres/` is the runtime
 pack. Historical experiments are excluded from Git and are not the
-original-source archive. Sixty world frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings, five papyrus and 24 area markers) use verified original-derived artwork. The pack also includes 1,792 unit poses rendered from original Blender rigs. See [export recipes and coverage](RECOVERED-RUNTIME.md).
+original-source archive. Sixty world frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings, five papyrus and 24 area markers) use verified original-derived artwork. The pack also includes 1,792 unit poses rendered from original Blender rigs. See [export recipes and coverage](recovered-runtime.md).
 Other layered buildings and remaining resources still need runtime migration; the two final ripe wheat color states still lack larger originals.
 
 The classic Trail terrain is a separate AI-generated material, retained under
-[`trail/`](trail/) with its prompt, provenance and deterministic 32px export
-recipe. It does not change the original-derived HD pack described above.
+[`trail/`](trail) with its prompt, provenance and deterministic 32px export
+recipe. Its provenance is separate from recovered artist originals. The active runtime pack combines reviewed sources; see the generated [runtime inventory](../../docs/assets/high-resolution/ASSET-PROVENANCE.md).
 
 ## Provenance and preservation
 
@@ -121,3 +117,5 @@ Approved runtime inputs are now physically separated under `production/`:
 Prebuilt mixed atlases and runtime metadata have separate directories there.
 `derived/` contains intermediate deterministic exports from originals only.
 Historical trials are excluded from Git. Normal packaging uses approved inputs only. See [production workflow](production/README.md).
+
+Related: [artwork production](../../docs/assets/artwork-workflow.md).

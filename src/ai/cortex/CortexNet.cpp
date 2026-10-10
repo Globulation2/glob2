@@ -9,7 +9,7 @@
 #include <iostream>
 
 // Integer I16F16 inference for the Cortex swarm worker-tuning net. See
-// CortexNet.h and tools/cortex-ml-infer/FORMAT.md for the contract.
+// CortexNet.h and tools/cortex-ml-infer/format.md for the contract.
 
 namespace Cortex
 {
@@ -45,7 +45,7 @@ namespace Cortex
 		}
 
 		// I16F16 fixed-point multiply: (int64(a) * int64(b)) >> 16, arithmetic
-		// shift (sign-preserving). int64 intermediate prevents overflow.
+		// shift (sign-preserving). products and sums must remain within signed 64-bit range.
 		inline Sint64 fxmul(Sint64 a, Sint64 b)
 		{
 			return (a * b) >> FRAC_BITS;
@@ -244,7 +244,7 @@ namespace Cortex
 		// architecture (arch_.front()/back()), not from compile-time constants, so
 		// the SAME arithmetic serves both the worker-cap (16->20) and decision
 		// (48->18) nets. Promote raw int features to I16F16 (x << 16). Sint64
-		// activations so the per-product fxmul and the accumulation never overflow.
+		// activations; the model and input ranges must keep products/sums in range.
 		const int inDim = arch_.front();
 		std::vector<Sint64> acts(inDim);
 		for (int i = 0; i < inDim; i++)

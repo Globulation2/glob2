@@ -15,7 +15,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` (statistics in `team/stats/`), `src/resource/`; each holds its type tables in `types/` and its drawing or HUD code in `render/` or `hud/` |
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/`; generators in `generator/`, the editor in `editor/` |
 | AI implementations | `src/ai/`, one directory per AI, behind `AIImplementation` |
-| Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/development/reference.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
+| Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/architecture/rendering.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `platform/`, [platform architecture](docs/multiplayer/architecture.md) |
 | Soundtrack sets and the music pipeline | `data/zik/` (one directory per set), `tools/music/` (build and QA), [music pipeline](docs/assets/music-pipeline.md), [style guide](docs/assets/music-style-guide.md); playback in `src/audio/SoundMixer.cpp` |
@@ -24,8 +24,8 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Documentation index | [docs/README.md](docs/README.md) |
 | Application shell and shared utilities | `src/app/` (entry point, settings, command-line modes in `cli/`), `src/audio/`, `src/common/` |
 | Tests and replay usage | A domain's tests sit beside its code (`*Test.cpp`, `*Harness.cpp`); cross-domain tests, fixtures and the registry are in `test/`: [test/README.md](test/README.md), [docs/development/headless-replays.md](docs/development/headless-replays.md) |
-| Build pitfalls, verification and conventions | [Development reference](docs/development/reference.md) |
-| Architecture background | [Historical source-code overview](docs/development/legacy-architecture.txt) |
+| Build pitfalls, verification and conventions | [Development guides](docs/development/README.md) |
+| Architecture overview | [Current system overview](docs/architecture/overview.md) |
 
 Use these pointers to find the current implementation, rather than treating this
 guide as a substitute for reading it. Update affected documentation in the same PR
@@ -83,7 +83,7 @@ permanent docs.
   orders (rules, units, AI, order validation, map loading, random number use), even
   when saves and replays stay compatible, and regenerate the golden match record in the
   same change. CI fails when the committed `--verify-match` trace moves without a new
-  sim version; see [Simulation version](docs/multiplayer/turn-protocol.md#simulation-version).
+  sim version; see [Simulation version](docs/multiplayer/turn-engine.md#simulation-version).
 
 ## Development and release builds
 
@@ -117,7 +117,7 @@ The development command uses a 12 GiB compiler-cache ceiling; `CCACHE_MAXSIZE`
 overrides it. Shared cache/dependency pruning defaults to 32 GiB, configurable
 with `GLOB2_DEV_BUDGET_GIB`. Builds never prune the managed store automatically;
 inspect `tools/dev_environment.py status` and explicitly run its `prune` command.
-See [Development reference](docs/development/reference.md#fast-development-builds)
+See [Build options](docs/development/build-options.md#fast-development-builds)
 for configuration, dependency reuse, profiling and validation details.
 
 ## Dependencies
@@ -186,7 +186,7 @@ in a PR comment: tested commit SHA and base revision, OS/architecture/toolchain,
 dependencies and build flags, exact commands and results, coverage rationale,
 omitted checks and limitations. Attach logs and applicable checksums, saves,
 replays or screenshots through links reviewers can access; files left only on a
-local machine are insufficient evidence. Use the [evidence template](docs/development/reference.md#local-and-vm-pr-verification).
+local machine are insufficient evidence. Use the [evidence template](docs/development/verification.md#local-and-vm-pr-verification).
 Refresh evidence when later edits affect tested behavior, dependencies or
 integration. Preserve all affected simulation determinism, save/load,
 replay/network, platform compatibility and simulation-version requirements;

@@ -36,9 +36,9 @@ using namespace MapGeneration;
 // Territory, lake and home construction use the shared toolkit. Only prize selection is annealed;
 // cached colony cost fields make each proposal a table lookup. Levelling controls search effort,
 // with zero leaving a random selection and relaxing only the final rope-balance checks.
-// See docs/map-generators/MARCHLAND.md for the play contract and measured limitations.
+// See docs/map-generators/marchland.md for the play contract and measured limitations.
 //
-// GAME RULES IT LEANS ON (docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md):
+// GAME RULES IT LEANS ON (docs/map-generators/game-rules-for-map-design.md):
 // - Fruit is a weapon: it wins hungry enemy units over to your inns. Putting every fruit tree on
 //   the rope is what makes the rope worth pulling.
 // - Stone never runs out, so the prize quarries are permanent strategic ground, not a resource that

@@ -22,3 +22,5 @@ The final fit excludes 48 invalid-map results and two games that repeatedly exha
 Every retained game has equal weight in an unregularized Bradley–Terry fit, centred at 1500. Draws score 0.5 and 400 points represent tenfold odds. Intervals refit 1,000 resamples of whole pairs within generators, seed 1. Input order has no effect. Pooling platform builds does not establish cross-platform simulation checksum equivalence.
 
 [Outcomes, summary, exclusion audit and reproduction scripts](https://github.com/Globulation2/glob2/blob/evidence/ai-ratings-final-20260920/docs/validation/ai-elo-maxima-d37c0c353-20000-20260920) are preserved on the dedicated evidence branch, along with [previous-cohort evidence](https://github.com/Globulation2/glob2/blob/evidence/ai-ratings-final-20260920/docs/validation/ai-elo-20000-20260920). Do not combine results across AI revisions.
+
+Related: [AI documentation](README.md).

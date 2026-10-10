@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
 #
-# Cortex ML pilot — offline-RL reward + trajectory builder (step 6).
+# Cortex worker-policy offline-RL reward and trajectory builder.
 #
-# Implements the dense, local, per-swarm reward from docs/AI/cortex/PILOT.md and
+# Implements the dense, local, per-swarm reward from tools/cortex-ml/training.md and
 # turns the raw trace CSVs into discounted-return transitions for offline RL
 # (AWR / CQL). All reward logic lives HERE in Python so shaping iterates without
-# recompiling the engine (PILOT.md "Reward").
+# recompiling the engine (reward.py "Reward").
 #
 # A transition is one decision cycle of one swarm: (s_t, a_t, r_t, s_{t+1}),
 # joined by `gid` WITHIN a single trace file (one game+team). a_t is the cap the
@@ -22,7 +22,7 @@ from dataset import (
     TraceFile, find_trace_files, load_constants, FEATURE_NAMES, NUM_FEATURES,
 )
 
-# Feature indices (ML_CONTRACT.md order) used by the reward.
+# Feature indices (tools/cortex-ml-infer/format.md order) used by the reward.
 F_CORN = FEATURE_NAMES.index("corn")
 F_MAXUNITWORKING = FEATURE_NAMES.index("maxUnitWorking")
 F_HARVEST = FEATURE_NAMES.index("harvestableWheatNearby")
@@ -30,14 +30,14 @@ F_FREEWORKERS = FEATURE_NAMES.index("freeWorkers")    # 7
 F_TOTALNEEDED = FEATURE_NAMES.index("totalNeeded")    # 9
 
 # --- reward shaping weights (tunable; the whole point of keeping reward in
-# Python is that these iterate without an engine rebuild). Signs per PILOT.md.
+# Python is that these iterate without an engine rebuild).
 # Every term below is SWARM-LOCAL and controllable by the lever the net sets (the
-# swarm's worker cap). The PILOT.md "colony coupling" term (−starvingUnits) is
+# swarm's worker cap). A colony-wide starvingUnits penalty is
 # DELIBERATELY OMITTED: starvingUnits is a colony-wide FEEDING outcome driven by
 # inns, which this head does not tune, so the swarm cap can only move it through
 # the weak shared-worker-pool path — and the same colony-wide number is stamped on
 # every swarm's transition each tick, so it adds variance to the return without
-# discriminating good vs bad cap choices. Dropped per user review (2026-06-07).
+# discriminating good vs bad cap choices.
 W_IN_BAND = 1.0          # + producing, not hoarding
 W_STALL_BASE = 1.0       # - production halts (corn < ADD_LO); plus depth term
 W_STALL_DEPTH = 0.5      # - extra per corn below ADD_LO
@@ -45,15 +45,14 @@ W_HOARD = 0.05           # - per excess worker while saturated (corn >= REM_HI)
 W_OSC = 0.05             # - per unit of |Δ maxUnitWorking|
 W_WHEAT_WASTE = 0.5      # - haulers assigned to a wheat-starved catchment
 
-# Colony labor-shortfall coupling (added per user review 2026-06-07). The hand
+# Colony labor-shortfall coupling. The hand
 # rule's swarm loop is PURELY LOCAL (each swarm's own corn buffer) and blind to
 # colony-wide labor supply — yet freeWorkers/totalNeeded are already in the net's
 # input, so rewarding this is a global signal the teacher ignores and a concrete
 # way the learned policy can beat it. A swarm holding workers it can RELEASE while
 # the colony has more open jobs than idle workers shares the blame for the crunch;
 # dropping its cap frees haulers for higher-priority inns/sites. Per-swarm-attributed
-# (weighted by THIS swarm's releasable workers, a_t-MIN) to avoid the colony-wide-
-# smear dilution that sank the starvingUnits term. Deadband K: 'a few open jobs is
+# (weighted by THIS swarm's releasable workers, a_t-MIN) to avoid a colony-wide penalty applied equally to every swarm. Deadband K: 'a few open jobs is
 # fine' (a new building ramping); only a SUSTAINED gap beyond K is penalised, and
 # the γ-return makes sustained ~10x a one-cycle transient automatically. Measured
 # on s_next (the action's effect on totalNeeded shows in the next observation).
@@ -64,7 +63,7 @@ GAMMA = 0.9              # discount over decision cycles
 
 
 def _reward_row(s_t, a_t, s_next, consts):
-    """Dense local reward for one transition (PILOT.md 'Reward').
+    """Dense local reward for one transition (reward.py 'Reward').
 
     s_t, s_next: 16-feature float vectors (contract order). a_t: cap chosen at t
     (1..20). Returns a float. The buffer outcome of a_t is read from s_next.corn;

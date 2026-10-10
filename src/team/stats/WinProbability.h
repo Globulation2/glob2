@@ -30,7 +30,7 @@ class Game;
 ///
 /// The fitted coefficients live in the generated WinProbabilityModel.h; this
 /// header is the arithmetic they are evaluated with, and the contract the
-/// generator writes against. See docs/win-probability-model.md.
+/// generator writes against. See docs/ai/architecture/win-probability-model.md.
 ///
 /// Everything here is integer arithmetic, deliberately. The optional win
 /// probability victory condition asks this code who has won, inside the

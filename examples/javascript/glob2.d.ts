@@ -1,6 +1,6 @@
 /**
  * Glob2 synchronous, unpublished JavaScript profile 1; declarations only, no runtime module.
- * Reference: docs/development/javascript-api.md. Execute plain JavaScript sources:
+ * Reference: docs/scripting/javascript-api.md. Execute plain JavaScript sources:
  * imports, TypeScript syntax and runtime enum exports are not available.
  * Read records are detached null-prototype objects; optional fields are absent,
  * not null. Embedded sources execute automatically as trusted developer code.

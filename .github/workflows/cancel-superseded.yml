@@ -5,7 +5,7 @@ name: Cancel superseded CI runs
 # longer triggers, and every CI run of a pull request that was closed or merged.
 # Only CI workflows listed in .github/scripts/ci_cancel_superseded.py are
 # touched; release, publication and deployment runs never are. See "CI run
-# cancellation" in docs/development/reference.md.
+# cancellation" in docs/development/verification.md.
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, closed, converted_to_draft]

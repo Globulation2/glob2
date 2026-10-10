@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 The Globulation 2 Authors
-"""Quantize a cortex-mlp-f32-v1 JSON net to the cortex-i16f16-v1 blob.
+"""Quantize either Cortex trainer JSON format to the shared I16F16 v1 blob.
 
-Reads the trainer's f32 JSON (see docs/AI/cortex/ML_CONTRACT.md) and writes the
-versioned I16F16 binary defined in FORMAT.md. Pure numpy / stdlib so the integer
-math here can never drift from int_ref.py and CortexNet.cpp.
+The layout and arithmetic are documented in format.md. This writer uses only the
+standard library; it validates layer shapes and rounds/clamps weights and biases.
 """
 import argparse
 import json
