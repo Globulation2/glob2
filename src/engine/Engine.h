@@ -24,6 +24,7 @@
 #include "ChecksumSidecar.h"
 #include "RenderedCpuWindow.h"
 #include "RenderedWarmDurations.h"
+#include "ai/observation/ResourceGradientDiagnostics.h"
 
 
 class SimulationRunner;
@@ -50,7 +51,8 @@ class Engine
 	std::shared_ptr<GameDiagnostics::Session> diagnostics;
 	bool headlessDiagnosticsPending() const;
     struct RenderedCpuState {
-        struct Counters {Map::GradientCpuCounters gradient;Game::AISchedulingCounters ai;};
+        struct Counters {Map::GradientCpuCounters gradient;Game::AISchedulingCounters ai;
+            AIEngine::ResourceGradientCounters resources;};
         RenderedCpuDiagnostics::Window<Counters> window;
         std::unique_ptr<RenderedCpuDiagnostics::WarmDurations> warmDurations;
         std::string path;

@@ -988,7 +988,7 @@ void Engine::finishRenderedCpuDiagnostics()
     using Json=nlohmann::json;
     const auto metadata=[](const RenderedCpuState::Counters& c){
         const auto& g=c.gradient;const auto& a=c.ai;
-        return Json{{"gradient_stage_diagnostics_enabled",g.stageDiagnostics},
+        auto result=Json{{"gradient_stage_diagnostics_enabled",g.stageDiagnostics},
             {"required_seed_cpu_ns",g.seedCpuNs},{"required_propagation_cpu_ns",g.propagationCpuNs},
             {"required_owned_input_cpu_ns",g.ownedInputCpuNs},{"required_handoff_cpu_ns",g.handoffCpuNs},
             {"required_cleanup_cpu_ns",g.cleanupCpuNs},{"required_owner_completion_cpu_ns",g.ownerCompletionCpuNs},
@@ -1002,6 +1002,10 @@ void Engine::finishRenderedCpuDiagnostics()
             {"ai_input_release_cpu_ns",a.inputReleaseCpuNs},{"ai_job_cpu_invalid_measurements",a.jobCpuInvalidMeasurements},
             {"ai_failed_jobs",a.failedJobs},{"ai_submitted",a.submitted},{"ai_delivered",a.delivered},
             {"ai_deadline_misses",a.deadlineMisses},{"ai_deadline_wait_ns",a.deadlineWaitNs}};
+        result["ai_resource_gradient_diagnostics"]=c.resources.enabled;
+        if(c.resources.enabled)for(unsigned i=0;i<AIEngine::ResourceGradientMetricCount;++i)
+            result[std::string("ai_resource_gradient_")+AIEngine::resourceGradientMetricName(AIEngine::ResourceGradientMetric(i))]=c.resources.values[i];
+        return result;
     };
     const auto endpoint=[&](const auto& e){return Json{{"captured",e.captured},{"tick",e.tick},
         {"process_cpu_ns",e.processCpuNs},{"owner_cpu_ns",e.ownerCpuNs},{"wall_ns",e.wallNs},
@@ -1365,7 +1369,7 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
         perf.capture(gui.game.stepCounter);
     if(renderedCpu && gui.game.stepCounter!=diagnosticTickBefore)
         renderedCpu->window.onTick(gui.game.stepCounter,[&]{return RenderedCpuState::Counters{
-            gui.game.map.gradientCpuCounters(),gui.game.aiSchedulingCounters()};});
+            gui.game.map.gradientCpuCounters(),gui.game.aiSchedulingCounters(),gui.game.aiResourceGradientCounters()};});
     warmAdvance.completed();
     return gui.isRunning;
 }

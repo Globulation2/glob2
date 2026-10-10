@@ -68,7 +68,7 @@ class PlayerQuitsGameOrder;
 class GameAnimations;
 class SoftwareTerrainCache;
 namespace AIPlanning { class BuildingCapabilityIndex; }
-namespace AIEngine { class Pipeline; }
+namespace AIEngine { class Pipeline; struct ResourceGradientCounters; }
 namespace GameDiagnostics { class Session; }
 
 // Minimum value of the prestige-victory threshold.
@@ -257,6 +257,7 @@ public:
     };
     // Simulation-owner accessor: fixed scalar copies, no observation/memory scans.
     AISchedulingCounters aiSchedulingCounters() const noexcept;
+    AIEngine::ResourceGradientCounters aiResourceGradientCounters() const noexcept;
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;

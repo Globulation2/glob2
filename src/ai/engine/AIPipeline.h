@@ -42,6 +42,7 @@ public:
  bool load(Game& game, GAGCore::InputStream* stream);
  const auto& schedulingMetrics() const { return scheduler.metrics; }
  auto schedulingJobCpuCounters() const noexcept { return scheduler.jobCpuCounters(); }
+ auto schedulingResourceGradientCounters() const noexcept {return scheduler.resourceGradientCounters();}
  Uint64 computationNs() const { return scheduler.activeNs(); }
  bool wasPolled(unsigned player, Uint32 tick) const;
  std::pair<Uint64,unsigned> queryVectorMemory() const {

@@ -4,6 +4,7 @@
 #include "ai/observation/AIWorldView.h"
 #include "ai/observation/ObservationQueries.h"
 #include "ResourceInitializationCache.h"
+#include "ResourceGradientDiagnostics.h"
 #include "ai/engine/AIDecision.h"
 #include <set>
 #include "Building.h"
@@ -14,6 +15,7 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
+#include <optional>
 
 namespace AIEngine
 {
@@ -29,11 +31,14 @@ class WorldQueries
  ResourceInitializations& resourceFields;
  std::vector<AIEngine::ResourceEnrollmentRequest>* enrollments;
  std::set<int> enrollmentsReported;
+ // Borrowed only within the synchronous decision's worker-local scope. This
+ // query object and controller query pointers never survive that invocation.
+ ResourceGradientDiagnosticSink* resourceDiagnostics;
  GradientWorkspace scratch;
  struct Reservation { int type,x,y; };
  std::vector<Reservation> reservations;
 public:
- WorldQueries(const AIEngine::AIWorldView& world,int team,ResourceInitializations& cache,std::vector<AIEngine::ResourceEnrollmentRequest>* enrollments=nullptr):world(world),team(team),resourceFields(cache),enrollments(enrollments)
+ WorldQueries(const AIEngine::AIWorldView& world,int team,ResourceInitializations& cache,std::vector<AIEngine::ResourceEnrollmentRequest>* enrollments=nullptr):world(world),team(team),resourceFields(cache),enrollments(enrollments),resourceDiagnostics(activeResourceGradientDiagnostics)
  {}
  int getW() const { return world.width; }
  int getH() const { return world.height; }
@@ -166,11 +171,20 @@ public:
  }
  std::span<const Uint16> resourceGradient(int owner,int resource,int swim)
  {
+  if(resourceDiagnostics)resourceDiagnostics->add(ResourceGradientMetric::Requests);
   const int key=(owner*MaterialSlotCount+resource)*7+swim;
   auto published=world.resourceGradient(owner,resource,swim);
   std::span<const Uint16> gradient=published;
-  if(!published.empty()) resourceFields.erase(key);
+  if(!published.empty()) {
+   if(resourceDiagnostics)resourceDiagnostics->add(ResourceGradientMetric::PublishedHits);
+   resourceFields.erase(key);
+  }
   else {
+   // Only diagnostics adds the extra worker-local lookup, so hit paths take no
+   // CPU clocks and the cold interval includes the original map-node allocation.
+   std::optional<ResourceGradientColdMeasurement> measured;
+   if(resourceDiagnostics&&resourceFields.find(key)==resourceFields.end())
+    measured.emplace(*resourceDiagnostics,world.tiles.size());
    auto [it,inserted]=resourceFields.try_emplace(key);
    auto& initialization=it->second;
    if(inserted) {
@@ -194,10 +208,13 @@ public:
     }
     values[i]=value;
    }
+   if(measured)measured->seeded();
    gradient_kernel::propagateTerrainField(values.data(),swim,gradient_kernel::COST_LIMIT,{world.width,world.height},scratch,
     [&](size_t i){return world.cellRuleAt(i);},modified,*world.cellRules,256);
     initialization.values=std::move(buffer);
+    if(measured)measured->complete();
    }
+   else if(resourceDiagnostics)resourceDiagnostics->add(ResourceGradientMetric::PrivateHits);
    if(enrollments && enrollmentsReported.insert(key).second)
     enrollments->push_back({owner,resource,swim,initialization.observedTick,initialization.values});
    gradient=*initialization.values;

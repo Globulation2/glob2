@@ -67,6 +67,10 @@ std::shared_ptr<Order> Command::decode() const
 OrderScheduler::OrderScheduler() {
     const auto* value=std::getenv("GLOB2_AI_SCHEDULER_DIAGNOSTICS");
     jobCpuDiagnostics=value && std::strcmp(value,"1")==0;
+    const auto* resources=std::getenv("GLOB2_AI_RESOURCE_DIAGNOSTICS");
+    if(resources&&*resources&&std::strcmp(resources,"0")&&std::strcmp(resources,"1"))
+        throw std::invalid_argument("GLOB2_AI_RESOURCE_DIAGNOSTICS must be 0 or 1");
+    resourceGradientDiagnostics=resources&&std::strcmp(resources,"1")==0;
 }
 Command& OrderScheduler::complete(Pending& entry)
 {
@@ -79,8 +83,17 @@ void OrderScheduler::Pending::run(void* context, std::size_t)
 	auto& entry = *static_cast<Pending*>(context);
 	const auto start = std::chrono::steady_clock::now();
     const auto cpuStart=entry.owner->jobCpuDiagnostics ? glob2::threadCpuNs() : 0;
-	try { entry.completed = entry.decide(*entry.world); }
-	catch (...) { entry.failure = std::current_exception(); }
+    std::optional<ResourceGradientDiagnosticSink> resourceCounters;
+    const bool resourceWorker=entry.owner->resourceGradientDiagnostics&&ComputeExecutor::workerSlot()!=0;
+    const auto decide=[&]{
+        try {entry.completed=entry.decide(*entry.world);}
+        catch(...){entry.failure=std::current_exception();}
+    };
+    if(resourceWorker) {
+        resourceCounters.emplace();
+        ResourceGradientDiagnosticScope scope(*resourceCounters);
+        decide(); // Every borrowed WorldQueries finishes before this scope.
+    }else decide();
 	const auto decided=std::chrono::steady_clock::now();
     const auto cpuDecided=entry.owner->jobCpuDiagnostics ? glob2::threadCpuNs() : 0;
 	entry.computationNs = std::chrono::duration_cast<std::chrono::nanoseconds>(decided - start).count();
@@ -98,6 +111,15 @@ void OrderScheduler::Pending::run(void* context, std::size_t)
         if(entry.failure)entry.owner->failedJobs.fetch_add(1,std::memory_order_relaxed);
         entry.owner->completedJobs.fetch_add(1,std::memory_order_relaxed);
     }
+    // Fixed local merge once per job. These independent cumulative atomics are
+    // not a transactional snapshot, and never change decision/save delivery.
+    if(resourceCounters) {
+        resourceCounters->add(ResourceGradientMetric::CompletedJobs);
+        if(entry.failure)resourceCounters->add(ResourceGradientMetric::FailedJobs);
+        for(unsigned i=0;i<ResourceGradientMetricCount;++i)
+            entry.owner->resourceGradientTotals[i].fetch_add(resourceCounters->values[i],std::memory_order_relaxed);
+    }else if(entry.owner->resourceGradientDiagnostics)
+        entry.owner->resourceGradientTotals[unsigned(ResourceGradientMetric::OwnerJobsExcluded)].fetch_add(1,std::memory_order_relaxed);
 }
 OrderScheduler::~OrderScheduler()
 {

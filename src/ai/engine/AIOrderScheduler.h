@@ -11,6 +11,7 @@
 #include "AIDecision.h"
 #include "AIDiagnostics.h"
 #include "AITelemetry.h"
+#include "ai/observation/ResourceGradientDiagnostics.h"
 #include <cstdint>
 #include <optional>
 
@@ -85,6 +86,8 @@ private:
     // Process-local, unsaved totals across this scheduler's controller generations.
     bool jobCpuDiagnostics=false;
     std::atomic<Uint64> completedJobs{0},decisionCpuNs{0},inputReleaseCpuNs{0},invalidCpuMeasurements{0},failedJobs{0};
+    bool resourceGradientDiagnostics=false;
+    std::array<std::atomic<Uint64>,ResourceGradientMetricCount> resourceGradientTotals{};
 	std::map<unsigned, RequestId> lastSubmitted;
 	unsigned delay = 0;
 	std::optional<Uint32> submissionTick;
@@ -108,7 +111,13 @@ public:
         return {jobCpuDiagnostics,completedJobs.load(std::memory_order_relaxed),decisionCpuNs.load(std::memory_order_relaxed),
             inputReleaseCpuNs.load(std::memory_order_relaxed),invalidCpuMeasurements.load(std::memory_order_relaxed),failedJobs.load(std::memory_order_relaxed)};
     }
-	OrderScheduler(const OrderScheduler&) = delete;
+    OrderScheduler(const OrderScheduler&) = delete;
+    ResourceGradientCounters resourceGradientCounters() const noexcept {
+        ResourceGradientCounters result;result.enabled=resourceGradientDiagnostics;
+        if(result.enabled)for(unsigned i=0;i<ResourceGradientMetricCount;++i)
+            result.values[i]=resourceGradientTotals[i].load(std::memory_order_relaxed);
+        return result;
+    }
 	// Joins every admitted decision; the executor must outlive the scheduler.
 	~OrderScheduler();
 	// Shared execution hands batches to the executor's workers and the

@@ -18,9 +18,18 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include "Version.h"
+#include <array>
+#include <stdexcept>
 
 namespace
 {
+std::array<Uint64,3> resourceClockValues{10,30,70};
+unsigned resourceClockReads=0,resourceClockThrow=3;
+std::uint64_t resourceDiagnosticClock() {
+    const auto at=resourceClockReads++;
+    if(at==resourceClockThrow)throw std::runtime_error("injected diagnostic clock failure");
+    return resourceClockValues[at%resourceClockValues.size()];
+}
 // Direct Castor helpers borrow the same immutable inputs as a decision, without
 // advancing controller cadence or retaining a view after this fixture operation.
 template<class Operation> decltype(auto) withCastorObservation(AICastor& ai, Game& game, Operation&& operation)
@@ -39,6 +48,80 @@ template<class Operation> decltype(auto) withCastorObservation(AICastor& ai, Gam
 
 TEST_SUITE("AIRecoveryCoverage")
 {
+ TEST_CASE("resource diagnostic hits use no clocks and cold fields preserve exact arrays and enrollment") {
+  using namespace AIEngine;using M=ResourceGradientMetric;
+  glob2test::HeadlessGlobals globals;
+  glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true}};
+  auto& game=fixture.game;game.map.setResourceByIndex(18,18,WHEAT,1);
+  Sint32 x=0,y=0,distance=0;game.map.materialAvailableUpdateSlot(0,materialIndex(MaterialId::Food),0,4,4,&x,&y,&distance);
+  const auto full=AIWorldView::capture(game,AIWorldView::captureCatalog(game));
+  REQUIRE_FALSE(full->resourceGradient(0,materialIndex(MaterialId::Food),0).empty());
+  auto components=full->components();components.resourceFields.reset();AIWorldView input(std::move(components));
+  std::vector<Uint16> expected;
+  for(bool enabled:{false,true}) {
+   ResourceGradientDiagnosticSink sink;sink.clock=resourceDiagnosticClock;
+   std::optional<ResourceGradientDiagnosticScope> scope;if(enabled)scope.emplace(sink);
+   ResourceInitializations cache;std::vector<ResourceEnrollmentRequest> enrollments;
+   WorldQueries queries(input,0,cache,&enrollments);
+   resourceClockReads=0;resourceClockThrow=3;resourceClockValues={10,30,70};
+   const auto first=queries.resourceGradient(0,materialIndex(MaterialId::Food),0);
+   if(!enabled)expected.assign(first.begin(),first.end());
+   else CHECK(std::vector<Uint16>(first.begin(),first.end())==expected);
+   const auto reads=resourceClockReads;CHECK(reads==unsigned(enabled?3:0));
+   const auto again=queries.resourceGradient(0,materialIndex(MaterialId::Food),0);
+   CHECK(resourceClockReads==reads);CHECK(first.data()==again.data());
+   REQUIRE(enrollments.size()==1);CHECK(enrollments[0].observedTick==input.tick);
+   CHECK(enrollments[0].initialField->data()==first.data());
+   WorldQueries published(*full,0,cache,&enrollments);
+   CHECK(published.resourceGradient(0,materialIndex(MaterialId::Food),0).data()==full->resourceGradient(0,materialIndex(MaterialId::Food),0).data());
+   CHECK(resourceClockReads==reads);CHECK(cache.empty());CHECK(enrollments.size()==1);
+   CHECK(sink.values[unsigned(M::Requests)]==Uint64(enabled?3:0));
+   CHECK(sink.values[unsigned(M::PublishedHits)]==Uint64(enabled));
+   CHECK(sink.values[unsigned(M::PrivateHits)]==Uint64(enabled));
+   CHECK(sink.values[unsigned(M::ColdAttempts)]==Uint64(enabled));
+   CHECK(sink.values[unsigned(M::ColdCompleted)]==Uint64(enabled));
+   CHECK(sink.values[unsigned(M::ColdAborted)]==0);CHECK(sink.values[unsigned(M::InvalidClocks)]==0);
+   CHECK(sink.values[unsigned(M::AttemptedCells)]==Uint64(enabled?1024:0));
+   CHECK(sink.values[unsigned(M::AllocationAndSeedCpuNs)]==Uint64(enabled?20:0));
+   CHECK(sink.values[unsigned(M::PropagationCpuNs)]==Uint64(enabled?40:0));
+  }
+  CHECK(activeResourceGradientDiagnostics==nullptr);
+ }
+ TEST_CASE("zero reversed and throwing diagnostic clocks cannot change exact cold field work") {
+  using namespace AIEngine;using M=ResourceGradientMetric;
+  glob2test::HeadlessGlobals globals;
+  glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=4,.hDec=4,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true}};
+  fixture.game.map.setResourceByIndex(8,8,WHEAT,1);
+  const auto captured=AIWorldView::capture(fixture.game,AIWorldView::captureCatalog(fixture.game));
+  auto components=captured->components();components.resourceFields.reset();
+  const auto world=std::make_shared<const AIWorldView>(std::move(components));
+  ResourceInitializations ordinary;WorldQueries control(*world,0,ordinary);
+  const auto baseline=control.resourceGradient(0,materialIndex(MaterialId::Food),0);
+  const std::vector<Uint16> expected(baseline.begin(),baseline.end());
+  for(unsigned fault=0;fault<8;++fault) {
+   CAPTURE(fault);resourceClockValues={10,30,70};resourceClockThrow=3;resourceClockReads=0;
+   if(fault<3)resourceClockValues[fault]=0;
+   else if(fault==3)resourceClockValues[1]=9;
+   else if(fault==4)resourceClockValues[2]=29;
+   else resourceClockThrow=fault-5;
+   ResourceGradientDiagnosticSink sink;sink.clock=resourceDiagnosticClock;
+   {
+    ResourceGradientDiagnosticScope scope(sink);ResourceInitializations cache;
+    WorldQueries queries(*world,0,cache);
+    const auto result=queries.resourceGradient(0,materialIndex(MaterialId::Food),0);
+    CHECK(std::vector<Uint16>(result.begin(),result.end())==expected);
+    CHECK(resourceClockReads==3);CHECK(sink.values[unsigned(M::ColdCompleted)]==1);
+    CHECK(sink.values[unsigned(M::ColdAborted)]==0);CHECK(sink.values[unsigned(M::InvalidClocks)]==1);
+    CHECK(sink.values[unsigned(M::AllocationAndSeedCpuNs)]==0);CHECK(sink.values[unsigned(M::PropagationCpuNs)]==0);
+   }
+   CHECK(activeResourceGradientDiagnostics==nullptr);
+  }
+  ResourceGradientDiagnosticSink aborted;
+  {ResourceGradientDiagnosticScope scope(aborted);
+   CHECK_THROWS_AS(([&]{ResourceGradientColdMeasurement cold(aborted,256);throw std::runtime_error("required failure");})(),std::runtime_error);}
+  CHECK(aborted.values[unsigned(M::ColdAttempts)]==1);CHECK(aborted.values[unsigned(M::ColdCompleted)]==0);
+  CHECK(aborted.values[unsigned(M::ColdAborted)]==1);CHECK(activeResourceGradientDiagnostics==nullptr);
+ }
     TEST_CASE("Cabino declared inputs omit published fields without changing decisions")
  {
   glob2test::HeadlessGlobals globals;

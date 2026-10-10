@@ -666,3 +666,33 @@ and missing warm presentations invalidate the corresponding result. Histogram
 percentiles report lower and upper bin endpoints, not exact quantiles. This is
 an isolated development diagnostic: measure its overhead with matching controls
 before using the distributions in a confirmation protocol.
+
+### AI resource initialization diagnostics
+
+`GLOB2_AI_RESOURCE_DIAGNOSTICS=1` is a separate default-off decision-worker
+diagnostic. Only a nonzero executor worker slot installs its borrowed local sink;
+owner-inline decisions are counted as `owner_jobs_excluded` and take no resource
+clocks or extra classification lookup. Null/empty/`0` disables it; other nonempty
+values are rejected. No cache, field, enrollment, save or decision behavior changes.
+
+Fixed counts distinguish requests, published/private hits, cold attempts,
+completed/aborted cold attempts and attempted cells. Hits take no clock reads.
+An extra diagnostic-only worker lookup detects a cold request before the original
+cache insertion so its three thread-CPU endpoints enclose map-node/buffer
+allocation and seeding, then propagation and private-field ownership transfer.
+The native clock is noexcept; injected failures are caught. Zero/reversed clocks
+reject both CPU components without interrupting required field work. Allocation
+or decision exceptions retain an attempted/aborted count rather than claiming a
+successful initialization or fabricated partial timing.
+
+WorldQueries objects are stack-bound to synchronous decision calls. Controllers
+clear their borrowed query pointers on return and exceptions, before the worker
+sink disappears. Local counters merge once after each decision, including failed
+decisions, into unsaved scheduler-lifetime atomics spanning controller generations.
+Game exposes only fixed scalar copies; rendered CPU endpoints export them without
+classification scans, and ordinary AI metric vectors are processed outside the
+fixed measured interval. Snapshots are independently cumulative and jobs can
+straddle warm boundaries. The allocation/seed and propagation components are
+**nested inside DecisionAndCommandCapture**, never additional process/decision
+CPU to sum. Diagnostic lookup/merge overhead is paid by process CPU; pre-candidate
+and mode-0 controls are required before attributing or claiming any savings.

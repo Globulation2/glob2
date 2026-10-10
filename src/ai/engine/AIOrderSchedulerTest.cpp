@@ -10,6 +10,7 @@
 #include <thread>
 #include <Environment.h>
 #include "common/ThreadCpuClock.h"
+#include "ai/observation/WorldQueries.h"
 
 namespace
 {
@@ -344,6 +345,97 @@ TEST_CASE("optional AI CPU scopes preserve deadlines and byte-identical pending 
         CHECK(scheduler.jobCpuCounters().jobsCompleted==Uint64(enabled)); // Saved work was not recomputed.
     }
 }
+TEST_CASE("resource diagnostics reject unknown flags before scheduling work" * doctest::test_suite("AIOrderScheduler"))
+{
+    for(const char* value:{"yes","2"," 1"}) {
+        CAPTURE(value);
+        SchedulerEnvironment mode("GLOB2_AI_RESOURCE_DIAGNOSTICS",value);
+        CHECK_THROWS_AS(AIEngine::OrderScheduler{},std::invalid_argument);
+    }
+    for(const char* value:{"","0","1"}) {
+        CAPTURE(value);
+        SchedulerEnvironment mode("GLOB2_AI_RESOURCE_DIAGNOSTICS",value);
+        AIEngine::OrderScheduler scheduler;
+        CHECK(scheduler.resourceGradientCounters().enabled==(std::string(value)=="1"));
+        CHECK(scheduler.resourceGradientCounters().get(AIEngine::ResourceGradientMetric::Requests)==0);
+    }
+}
+TEST_CASE("worker resource diagnostics preserve pending saves and never observe owner-inline jobs" * doctest::test_suite("AIOrderScheduler"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    using namespace AIEngine;using M=ResourceGradientMetric;
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=4,.hDec=4,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true}};
+    fixture.game.map.setResourceByIndex(8,8,WHEAT,1);
+    const auto captured=AIWorldView::capture(fixture.game,AIWorldView::captureCatalog(fixture.game));
+    auto components=captured->components();components.resourceFields.reset();
+    const auto world=std::make_shared<const AIWorldView>(std::move(components));
+    std::vector<Uint8> reference;
+    for(bool enabled:{false,true}) {
+        SchedulerEnvironment mode("GLOB2_AI_RESOURCE_DIAGNOSTICS",enabled?"1":"0");
+        TestScheduler scheduler;scheduler.configure(3,2);
+        std::atomic<bool> done=false;std::atomic<bool> worker=false;
+        scheduler.submit({0,7,0,11,0},world,[&](const auto& input) {
+            worker.store(ComputeExecutor::workerSlot()!=0,std::memory_order_relaxed);
+            ResourceInitializations cache;WorldQueries queries(input,0,cache);
+            const auto first=queries.resourceGradient(0,materialIndex(MaterialId::Food),0);
+            const auto again=queries.resourceGradient(0,materialIndex(MaterialId::Food),0);
+            if(first.data()!=again.data())throw std::runtime_error("private cache changed");
+            done.store(true,std::memory_order_release);return nullCommand();
+        });
+        CHECK(scheduler.takeDue(0).empty());
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!done.load(std::memory_order_acquire)&&std::chrono::steady_clock::now()<deadline)std::this_thread::yield();
+        REQUIRE(done.load(std::memory_order_acquire));REQUIRE(worker.load(std::memory_order_relaxed));
+        auto* backend=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(backend);
+        scheduler.save(&output);output.flush();const auto bytes=backend->takeContents();
+        if(!enabled)reference.assign(bytes.begin(),bytes.end());else CHECK(std::vector<Uint8>(bytes.begin(),bytes.end())==reference);
+        const auto counters=scheduler.resourceGradientCounters();CHECK(counters.enabled==enabled);
+        CHECK(counters.get(M::Requests)==Uint64(enabled?2:0));CHECK(counters.get(M::PrivateHits)==Uint64(enabled));
+        CHECK(counters.get(M::ColdAttempts)==Uint64(enabled));CHECK(counters.get(M::ColdCompleted)==Uint64(enabled));
+        CHECK(counters.get(M::AttemptedCells)==Uint64(enabled?256:0));CHECK(counters.get(M::CompletedJobs)==Uint64(enabled));
+        CHECK(counters.get(M::OwnerJobsExcluded)==0);CHECK(counters.get(M::FailedJobs)==0);
+        const auto due=scheduler.takeDue(3);REQUIRE(due.size()==1);
+        CHECK(due[0].command.bytes==std::vector<Uint8>{ORDER_NULL});CHECK(due[0].request.generation==7);
+        CHECK(scheduler.resourceGradientCounters().get(M::CompletedJobs)==Uint64(enabled));
+    }
+    SchedulerEnvironment mode("GLOB2_AI_RESOURCE_DIAGNOSTICS","1");
+    TestScheduler serial;serial.configure(3,0);
+    bool observed=false;
+    serial.submit({0,7,0,11,0},world,[&](const auto& input) {
+        observed=activeResourceGradientDiagnostics!=nullptr;
+        ResourceInitializations cache;WorldQueries queries(input,0,cache);
+        queries.resourceGradient(0,materialIndex(MaterialId::Food),0);return nullCommand();
+    });
+    const auto due=serial.takeDue(3);REQUIRE(due.size()==1);CHECK_FALSE(observed);
+    const auto counters=serial.resourceGradientCounters();CHECK(counters.enabled);
+    CHECK(counters.get(M::OwnerJobsExcluded)==1);CHECK(counters.get(M::Requests)==0);
+    CHECK(counters.get(M::ColdAttempts)==0);CHECK(counters.get(M::AllocationAndSeedCpuNs)==0);
+    CHECK(activeResourceGradientDiagnostics==nullptr);
+}
+TEST_CASE("failed worker diagnostics merge incomplete attempts without publishing an AI command" * doctest::test_suite("AIOrderScheduler"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    using namespace AIEngine;using M=ResourceGradientMetric;
+    SchedulerEnvironment mode("GLOB2_AI_RESOURCE_DIAGNOSTICS","1");
+    TestScheduler scheduler;scheduler.configure(3,2);std::atomic<bool> entered=false;
+    scheduler.submit({0,4,0,0,0},observation(0),[&](const auto&)->Command {
+        if(!activeResourceGradientDiagnostics)throw std::runtime_error("worker sink absent");
+        ResourceGradientColdMeasurement measured(*activeResourceGradientDiagnostics,9);
+        entered.store(true,std::memory_order_release);throw std::runtime_error("required decision failed");
+    });
+    CHECK(scheduler.takeDue(0).empty());
+    const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!entered.load(std::memory_order_acquire)&&std::chrono::steady_clock::now()<deadline)std::this_thread::yield();
+    REQUIRE(entered.load(std::memory_order_acquire));
+    CHECK_THROWS_AS(scheduler.takeDue(3),std::runtime_error);
+    const auto counters=scheduler.resourceGradientCounters();
+    CHECK(counters.get(M::CompletedJobs)==1);CHECK(counters.get(M::FailedJobs)==1);
+    CHECK(counters.get(M::ColdAttempts)==1);CHECK(counters.get(M::ColdCompleted)==0);
+    CHECK(counters.get(M::ColdAborted)==1);CHECK(counters.get(M::AllocationAndSeedCpuNs)==0);
+    CHECK(counters.get(M::PropagationCpuNs)==0);CHECK(activeResourceGradientDiagnostics==nullptr);
+}
+
 TEST_CASE("AI diagnostic CPU totals include failed jobs without publishing their commands" * doctest::test_suite("AIOrderScheduler"))
 {
     SchedulerEnvironment diagnostics("GLOB2_AI_SCHEDULER_DIAGNOSTICS","1");
