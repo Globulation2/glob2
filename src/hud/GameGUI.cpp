@@ -76,7 +76,6 @@ void GameGUI::requestPause(bool pause)
 
 GameGUI::~GameGUI()
 {
-	if (!globalContainer->runNoX) Sprite::requestHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 	if (persistPreferences && globalContainer->settings.rememberUnit)

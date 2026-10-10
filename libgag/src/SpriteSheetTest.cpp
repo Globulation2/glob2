@@ -195,6 +195,15 @@ TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [displa
     REQUIRE(complete);
     CHECK(sprite.experimentImages[0] != previous);
     CHECK(sprite.highResolutionAtlas != nullptr);
+    const auto generation = GAGCore::Toolkit::assets().sourceGeneration();
+    auto *published = sprite.experimentImages[0];
+    for (int i = 0; i < 4; ++i) GAGCore::Sprite::requestHighResolution(true);
+    CHECK(GAGCore::Sprite::pollHighResolution(0));
+    CHECK(GAGCore::Toolkit::assets().sourceGeneration() == generation);
+    CHECK(sprite.experimentImages[0] == published);
+    GAGCore::Sprite::setHighResolution(true);
+    CHECK(GAGCore::Toolkit::assets().sourceGeneration() != generation);
+    CHECK(sprite.experimentImages[0] != published);
 }
 #endif
 
