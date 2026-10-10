@@ -52,7 +52,7 @@ public:
     };
     struct Metrics {
         std::uint64_t acceptedCpuNs=0, probeCpuNs=0, admitted=0, canceled=0, promoted=0, demoted=0;
-        unsigned profiles=0;
+        unsigned profiles=0;std::uint64_t confidenceQualified=0;bool promotionEnabled=true;
     };
 private:
     struct Reservation {
@@ -171,6 +171,7 @@ private:
         return active->ticket();
     }
 public:
+    explicit CpuSavingPolicy(bool promotionEnabled=true) {totals.promotionEnabled=promotionEnabled;}
     ~CpuSavingPolicy() {
         // Captured work retains its policy. Disposal follows cancellation and
         // cannot leave another map permanently excluded from experimentation.
@@ -366,6 +367,8 @@ private:
         const double relativeUpper=alternative.sumRelative+std::sqrt(.5*alternative.relativeWidthsSquared*logAlpha);
         const double absoluteUpper=alternative.sumAbsolute+std::sqrt(.5*alternative.absoluteWidthsSquared*logAlpha);
         if(relativeUpper>=0 || absoluteUpper>=0) return settle(false);
+        ++totals.confidenceQualified;
+        if(!totals.promotionEnabled)return settle(false);
         // Include the statistical work in the reservation before publishing.
         if(!settle(true)) return false;
         publish(profile,alternative.plan); ++totals.promoted; return true;

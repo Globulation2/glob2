@@ -88,6 +88,14 @@ inline bool learningRequested() {
     const auto* value=std::getenv("GLOB2_GRADIENT_TUNING");
     return value && std::strcmp(value,"1")==0;
 }
+// Evidence override keeps required CPU choices fixed while genuine probes,
+// confidence processing and their complete expense still execute.
+inline bool learningPromotionRequested() {
+    const auto* value=std::getenv("GLOB2_GRADIENT_TUNING_PROMOTION");
+    if(!value || !*value || std::strcmp(value,"1")==0)return true;
+    if(std::strcmp(value,"0")==0)return false;
+    throw std::invalid_argument("GLOB2_GRADIENT_TUNING_PROMOTION must be0 or1");
+}
 // Backend registration publishes only compiled, eligible plans. No read invokes
 // initialization. State 1 means another worker is initializing; never wait on it.
 inline std::atomic<unsigned> readyPlans{0}, initializationState{0};
@@ -181,7 +189,7 @@ public:
             struct Admission {std::size_t bytes;~Admission(){if(bytes)releaseOpenCLHostBytes(bytes);}} admission{bytes};
             {
                 auto dispose=[](CpuSavingPolicy* value){delete value;releaseOpenCLHostBytes(sizeof(CpuSavingPolicy)+128);};
-                std::unique_ptr<CpuSavingPolicy,decltype(dispose)> value(new CpuSavingPolicy,dispose);
+                std::unique_ptr<CpuSavingPolicy,decltype(dispose)> value(new CpuSavingPolicy(learningPromotionRequested()),dispose);
                 admission.bytes=0;
                 learning.store(std::shared_ptr<CpuSavingPolicy>(std::move(value)),std::memory_order_release);
             }

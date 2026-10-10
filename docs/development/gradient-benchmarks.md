@@ -802,3 +802,12 @@ it` alone in a fresh engine-test subprocess with
 the fake borrowed graph unresolved. Successful normal process exit, without
 forced termination, is part of the required result; an in-process test return
 alone does not validate the broker's shutdown path.
+
+For the tuning overhead comparison, set `GLOB2_GRADIENT_TUNING_PROMOTION=0`
+in both automatic off/on variants. New profiles keep required CPU plans fixed,
+while genuine captures, device replay, exact pairing, confidence updates and
+retirement/accounting still execute when tuning is on. Report this override and
+confidence-qualified counts. It prevents GPU savings from masking optional
+expense. Separately validate the ordinary promotion-enabled configuration's
+actual GPU selection, exactness and whole-mode responsiveness; suppression
+alone cannot qualify promoted execution.

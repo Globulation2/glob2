@@ -363,3 +363,19 @@ TEST_CASE("historical tuning debt at the cumulative cap cannot borrow fresh roll
     CHECK_FALSE(nextProbe(policy,key,257));
     CHECK(policy.lookup(key).plan==Plan::CPU);
 }
+
+TEST_CASE("suppressed promotion still processes and pays qualified counterfactuals" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy(false);const auto key=workload();
+    policy.observeAccepted(key,Plan::CPU,100000000000ull,1);
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    for(unsigned pair=0;pair<256;++pair) {
+        auto ticket=nextProbe(policy,key);REQUIRE(ticket);
+        CHECK_FALSE(policy.finishProbe(*ticket,1000000,100000,1000000,1100000,100000000,true,true));
+        CHECK(policy.lookup(key).plan==Plan::CPU);
+    }
+    CHECK_FALSE(policy.metrics().promotionEnabled);
+    CHECK(policy.metrics().confidenceQualified>0);
+    CHECK(policy.metrics().promoted==0);
+    CHECK(policy.metrics().probeCpuNs>=256ull*1100000);
+}

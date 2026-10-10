@@ -580,6 +580,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"automatic_admitted",device.automaticPolicy.admitted},{"automatic_canceled",device.automaticPolicy.canceled},
         {"automatic_promoted",device.automaticPolicy.promoted},{"automatic_demoted",device.automaticPolicy.demoted},
         {"automatic_profiles",device.automaticPolicy.profiles},
+        {"automatic_confidence_qualified",device.automaticPolicy.confidenceQualified},{"automatic_promotion_enabled",device.automaticPolicy.promotionEnabled},
         {"coordinator_threads",device.coordinatorThreads},{"coordinator_cpu_scope_process",1},
         {"coordinator_executed",device.executed},{"coordinator_trivial",device.trivial},
         {"coordinator_gpu_result_committed_fields",device.executed},
