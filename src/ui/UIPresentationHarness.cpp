@@ -95,6 +95,7 @@ std::vector<Fixture> fixtures()
 	auto &strings = *GAGCore::Toolkit::getStringTable();
 	return {
 		{"main-menu", [](GAGGUI::ScreenStack &) { return std::make_unique<MainMenuScreen>(); }},
+		{"discord-community", [](GAGGUI::ScreenStack &) { auto screen = std::make_unique<MainMenuScreen>(); screen->openCommunity(); return screen; }},
 		{"main-menu-more", [](GAGGUI::ScreenStack &) { return std::make_unique<MainMenuScreen>(); }},
 		{"campaign-menu", [](GAGGUI::ScreenStack &s) { return std::make_unique<CampaignMainMenu>(s); }},
 		{"editor-menu", [](GAGGUI::ScreenStack &s) { return std::make_unique<EditorMainMenu>(s); }},
