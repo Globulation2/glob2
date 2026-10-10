@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 /Users/bradley/.codex/worktrees/8a1c/glob2/platform
+
+
+ Test Files  41 passed (41)
+      Tests  292 passed (292)
+   Start at  21:25:12
+   Duration  17.55s (tests 47%, environment 28%, transform 13%, import 12%)
+
+    Isolate  41 workers spawned · ~883ms startup each (spawn + environment, per file)
+             at least ~4.29s faster with isolate: false — reuses workers across files instead of one per file
+

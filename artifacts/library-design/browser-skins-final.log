@@ -1,0 +1,21 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts skins.spec.ts --grep designs save automatically|collection duplicates|large collections
+
+[WebServer] (node:13878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:13917) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/skins.spec.ts:45:1 › designs save automatically across devices and resolve stale edits without overwriting (14.5s)
+  ✓  2 [desktop] › e2e/skins.spec.ts:608:1 › collection duplicates designs and deletes the active skin with confirmation (19.1s)
+  ✓  3 [desktop] › e2e/skins.spec.ts:709:1 › large collections keep previews bounded and every design reachable (14.9s)
+(node:14059) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [phone] › e2e/skins.spec.ts:45:1 › designs save automatically across devices and resolve stale edits without overwriting (36.9s)
+  ✓  5 [phone] › e2e/skins.spec.ts:608:1 › collection duplicates designs and deletes the active skin with confirmation (32.8s)
+  ✓  6 [phone] › e2e/skins.spec.ts:709:1 › large collections keep previews bounded and every design reachable (17.2s)
+
+  6 passed (2.3m)

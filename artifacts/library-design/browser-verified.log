@@ -1,0 +1,60 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts libraries.spec.ts buildingLibrary.spec.ts ais.spec.ts sets.spec.ts music.spec.ts
+
+[WebServer] (node:14195) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 42 tests using 1 worker
+
+(node:14206) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › e2e/ais.spec.ts:46:1 › AI discovery, version details, social actions and gated publishing (4.2s)
+  ✓   2 [desktop] › e2e/buildingLibrary.spec.ts:7:1 › browses, downloads and forks a released family (2.0s)
+  ✓   3 [desktop] › e2e/buildingLibrary.spec.ts:59:1 › owner changes published visibility and confirms withdrawal (418ms)
+  ✓   4 [desktop] › e2e/libraries.spec.ts:102:3 › /maps shares responsive gallery, feedback, and accessible controls (2.3s)
+  ✓   5 [desktop] › e2e/libraries.spec.ts:102:3 › /sets shares responsive gallery, feedback, and accessible controls (2.1s)
+  ✓   6 [desktop] › e2e/libraries.spec.ts:102:3 › /ais shares responsive gallery, feedback, and accessible controls (2.1s)
+  ✓   7 [desktop] › e2e/libraries.spec.ts:102:3 › /buildings shares responsive gallery, feedback, and accessible controls (2.1s)
+  ✓   8 [desktop] › e2e/libraries.spec.ts:102:3 › /music shares responsive gallery, feedback, and accessible controls (2.2s)
+  ✓   9 [desktop] › e2e/libraries.spec.ts:102:3 › /skins shares responsive gallery, feedback, and accessible controls (2.7s)
+  ✓  10 [desktop] › e2e/libraries.spec.ts:213:1 › music filters apply immediately, Enter submits multiple text fields, and reset preserves My music (284ms)
+  ✓  11 [desktop] › e2e/libraries.spec.ts:255:3 › /maps trims live search, flushes Enter, and clears filtered results (564ms)
+  ✓  12 [desktop] › e2e/libraries.spec.ts:255:3 › /sets trims live search, flushes Enter, and clears filtered results (557ms)
+  ✓  13 [desktop] › e2e/libraries.spec.ts:255:3 › /ais trims live search, flushes Enter, and clears filtered results (576ms)
+  ✓  14 [desktop] › e2e/libraries.spec.ts:255:3 › /buildings trims live search, flushes Enter, and clears filtered results (540ms)
+  ✓  15 [desktop] › e2e/libraries.spec.ts:255:3 › /music trims live search, flushes Enter, and clears filtered results (574ms)
+{"seconds":10,"decoderHeapBytes":16777216}
+  ✓  16 [desktop] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (4.4s)
+  ✓  17 [desktop] › e2e/music.spec.ts:134:1 › upload → worker conversion → audition → publish → like → bulk ZIP (7.1s)
+  ✓  18 [desktop] › e2e/music.spec.ts:187:1 › song detail puts listening first and keeps quality and errors understandable (11.3s)
+  ✓  19 [desktop] › e2e/sets.spec.ts:6:1 › custom definitions and PNG mappings survive save and reload (772ms)
+  ✓  20 [desktop] › e2e/sets.spec.ts:181:1 › shared map credits remain available on narrow screens (332ms)
+  ✓  21 [desktop] › e2e/sets.spec.ts:202:1 › cancelling browser Back retains unsaved set changes (1.0s)
+(node:14432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  22 [phone] › e2e/ais.spec.ts:46:1 › AI discovery, version details, social actions and gated publishing (4.0s)
+  ✓  23 [phone] › e2e/buildingLibrary.spec.ts:7:1 › browses, downloads and forks a released family (1.9s)
+  ✓  24 [phone] › e2e/buildingLibrary.spec.ts:59:1 › owner changes published visibility and confirms withdrawal (400ms)
+  ✓  25 [phone] › e2e/libraries.spec.ts:102:3 › /maps shares responsive gallery, feedback, and accessible controls (2.4s)
+  ✓  26 [phone] › e2e/libraries.spec.ts:102:3 › /sets shares responsive gallery, feedback, and accessible controls (2.1s)
+  ✓  27 [phone] › e2e/libraries.spec.ts:102:3 › /ais shares responsive gallery, feedback, and accessible controls (2.2s)
+  ✓  28 [phone] › e2e/libraries.spec.ts:102:3 › /buildings shares responsive gallery, feedback, and accessible controls (2.0s)
+  ✓  29 [phone] › e2e/libraries.spec.ts:102:3 › /music shares responsive gallery, feedback, and accessible controls (2.1s)
+  ✓  30 [phone] › e2e/libraries.spec.ts:102:3 › /skins shares responsive gallery, feedback, and accessible controls (2.6s)
+  ✓  31 [phone] › e2e/libraries.spec.ts:213:1 › music filters apply immediately, Enter submits multiple text fields, and reset preserves My music (282ms)
+  ✓  32 [phone] › e2e/libraries.spec.ts:255:3 › /maps trims live search, flushes Enter, and clears filtered results (631ms)
+  ✓  33 [phone] › e2e/libraries.spec.ts:255:3 › /sets trims live search, flushes Enter, and clears filtered results (662ms)
+  ✓  34 [phone] › e2e/libraries.spec.ts:255:3 › /ais trims live search, flushes Enter, and clears filtered results (647ms)
+  ✓  35 [phone] › e2e/libraries.spec.ts:255:3 › /buildings trims live search, flushes Enter, and clears filtered results (628ms)
+  ✓  36 [phone] › e2e/libraries.spec.ts:255:3 › /music trims live search, flushes Enter, and clears filtered results (645ms)
+{"seconds":10,"decoderHeapBytes":16777216}
+  ✓  37 [phone] › e2e/music.spec.ts:50:1 › catalogue, bounded WASM playback, fades and bulk selection (4.7s)
+  -  38 [phone] › e2e/music.spec.ts:134:1 › upload → worker conversion → audition → publish → like → bulk ZIP
+  ✓  39 [phone] › e2e/music.spec.ts:187:1 › song detail puts listening first and keeps quality and errors understandable (11.6s)
+  ✓  40 [phone] › e2e/sets.spec.ts:6:1 › custom definitions and PNG mappings survive save and reload (1.3s)
+  ✓  41 [phone] › e2e/sets.spec.ts:181:1 › shared map credits remain available on narrow screens (356ms)
+  ✓  42 [phone] › e2e/sets.spec.ts:202:1 › cancelling browser Back retains unsaved set changes (990ms)
+
+  1 skipped
+  41 passed (1.6m)
