@@ -628,3 +628,33 @@ may hang internally: cooperative polling establishes safe retention and recovery
 between calls, not a hard response bound for a broken driver. Changing blocking
 transfer behavior needs fresh exact-array, actual activation, CPU overhead and
 tail evidence; the previous measured candidate does not qualify this change.
+
+`CaptureProbeAccounting` is the background-only envelope for captured replay.
+Create it before `CaptureProbeReplay::begin`; reserve the complete retained
+registry/reader graph, then record disjoint optional calling-CPU brackets around
+allocation, queue manipulation, sampling, replay and cleanup. Required work is
+excluded. Each envelope advance visits at most 64 registered clocks. The total
+charge is the larger of capture-plus-optional calling CPU and the settlement
+receipt, plus the enclosing process window's unknown CPU upper bound. Sampling
+CPU is component telemetry and is not added twice. Unrelated concurrent process
+work may be overcharged; unknown CPU must never be labeled causal driver CPU.
+
+After device terminal proof, extract the settlement, call its idempotent cleanup,
+and destroy the replay wrapper. Confirm cleanup with the matching ticket and both
+generation namespaces. Keep that ticket and its storage lease through two
+separate 250 ms post-cleanup intervals and the bounded final clock scan. The
+accounting holder's final destruction is measured by `close` and added to both
+costs before settlement; the outer service must likewise charge remaining queue,
+receipt and settlement wrapper work. Raw process-CPU checkpoints at cleanup and each tail expose interval costs;
+they are never extra additions or deductions. These empirical tails do not prove silence
+or complete causal attribution. Invalid/churned/omitted clocks, generation changes,
+chunk overshoots, incomplete cleanup and unqualified configuration suppress
+inference and retain the full reserved CPU charge. Read `failed()` as well as
+`tailFinished()` so invalid clocks cannot strand the tail state machine.
+
+Only the accounting friend can mint an authorization, bound to the opaque ticket,
+policy generation, required generation and minimum measured cost. A frozen native
+release qualification is separately required; it remains false until the complete
+tuning-on/off CPU, deadline and compatibility gates qualify that exact protocol.
+Synthetic clock tests exercise this gate without supplying release evidence.
+No compiler/device initialization or owner scans belong inside this envelope.

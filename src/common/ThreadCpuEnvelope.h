@@ -220,6 +220,11 @@ public:
     Progress progress() const noexcept {return phase;}
     const ProcessCpuEnvelopeResult& metrics() const noexcept {return result;}
     std::uint64_t processBeginCpuNs() const noexcept {return processStart.ns;}
+    // Background-only component checkpoint; no deduction or phase transition.
+    // The outer caller pays this read and validates checkpoint monotonicity.
+    CpuClockSample sampleProcessCpu() const noexcept {
+        return registry.reader.process ? registry.reader.process(registry.reader.context) : CpuClockSample{};
+    }
     static constexpr std::size_t storageBytes() noexcept {return sizeof(ProcessCpuEnvelope);}
     // Caller measures all lifecycle CPU/storage against optional budgets,
     // including constructor/destructor/registry sampling. samplerCpuNs is only

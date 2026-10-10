@@ -15,8 +15,12 @@ namespace gradient_kernel
 class CaptureProbeAccounting;
 class CaptureSettlementAuthorization {
     friend class CaptureProbeAccounting;
+    friend class GradientCpuCapture;
     bool qualified=false;
+    std::uint64_t ticketId=0,policyGeneration=0,requiredGeneration=0,minimumCpuNs=0;
     explicit CaptureSettlementAuthorization(bool value):qualified(value) {}
+    CaptureSettlementAuthorization(bool value,std::uint64_t id,std::uint64_t policyGen,std::uint64_t requiredGen,std::uint64_t cpu)
+        :qualified(value),ticketId(id),policyGeneration(policyGen),requiredGeneration(requiredGen),minimumCpuNs(cpu) {}
 public:
     CaptureSettlementAuthorization()=default;
     bool permitsInference() const noexcept {return qualified;}
@@ -212,6 +216,7 @@ public:
         CpuSavingPolicy::ProbeTicket probeTicket() const noexcept {return ticket;}
         std::uint64_t reservedCpuNs() const noexcept {return reservedCpu;}
         std::uint64_t requiredGeneration() const noexcept {return requiredGen;}
+        bool cleanupComplete() const noexcept {return !record;}
         void addObservedCpu(std::uint64_t ns,bool valid) noexcept {
             if(!valid || ns>UINT64_MAX-totals.optionalCpuNs) {
                 totals.clockValid=false;totals.requiresFullReservedCharge=true;++totals.invalidClocks;
@@ -233,7 +238,9 @@ public:
                     CaptureSettlementAuthorization authorization={}) noexcept {
             if(!policy)return false;
             cleanup();
-            const bool complete=authorization.permitsInference() && outcome.clockValid &&
+            const bool complete=authorization.permitsInference() && authorization.ticketId==ticket.id &&
+                authorization.policyGeneration==ticket.generation && authorization.requiredGeneration==requiredGen &&
+                outcome.actualProbeCpuNs>=authorization.minimumCpuNs && outcome.alternativeCpuNs>=authorization.minimumCpuNs && outcome.clockValid &&
                 totals.clockValid && !totals.requiresFullReservedCharge &&
                 outcome.actualProbeCpuNs>=totals.optionalCpuNs;
             outcome.actualProbeCpuNs=std::max(outcome.actualProbeCpuNs,totals.optionalCpuNs);
