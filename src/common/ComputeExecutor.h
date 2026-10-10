@@ -371,9 +371,11 @@ private:
 	void execute(const Claim& claim, std::size_t thread)
 	{
 		Group group; std::size_t offset = 0;
+		std::uint64_t serial;
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			auto& slot = slots[claim.slot];
+			serial = slot.serial;
 			const auto g = this->group(slot, claim.index);
 			group = slot.groups[g]; offset = claim.index - slot.starts[g];
 			if (slot.continuations[claim.index].invoke) { group.job = slot.continuations[claim.index]; offset = 0; }
@@ -385,7 +387,7 @@ private:
 		const auto previousDeferredSlot = deferredSlot, previousDeferredIndex = deferredIndex;
 		const auto previousDeferredSerial = deferredSerial;
 		deferredSlot = claim.slot; deferredIndex = claim.index;
-		{ std::lock_guard<std::mutex> lock(mutex); deferredSerial = slots[claim.slot].serial; }
+		deferredSerial = serial;
 		const auto started = Clock::now();
 		std::exception_ptr failure;
 		try { group.job.invoke(group.job.context, offset); }
