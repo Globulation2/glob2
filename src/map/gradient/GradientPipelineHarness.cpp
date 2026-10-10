@@ -766,3 +766,49 @@ TEST_CASE("one-slot device configuration creates no driver activity" * doctest::
     service.configure(1,Backend::OpenCL);service.stop();
     CHECK(initialized==0);CHECK_FALSE(service.metrics().running);
 }
+
+TEST_CASE("device registration stop and reconfigure never join a slow optional initializer" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    struct Gate {
+        std::promise<void> entered,release;
+        std::shared_future<void> released=release.get_future().share();
+        std::atomic<bool> opened{false};
+        void open(){if(!opened.exchange(true))release.set_value();}
+    };
+    auto gate=std::make_shared<Gate>();
+    struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} release{gate};
+    auto entered=gate->entered.get_future();
+    auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+        [gate]{gate->entered.set_value();gate->released.wait();return true;},{}});
+    service->configure(2,Backend::OpenCL);
+    REQUIRE(entered.wait_for(std::chrono::seconds(5))==std::future_status::ready);
+    auto stopped=std::async(std::launch::async,[service]{
+        service->stop();service->configure(2,Backend::CPU);return service->metrics();
+    });
+    const auto progress=stopped.wait_for(std::chrono::milliseconds(100));
+    CHECK(progress==std::future_status::ready);
+    // Always release before future destruction, including a regression failure.
+    gate->open();const auto metrics=stopped.get();
+    CHECK_FALSE(metrics.running);CHECK_FALSE(metrics.ready);
+}
+
+TEST_CASE("two device registrations share exactly one process coordinator" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    struct Ids {std::thread::id first,second;};
+    auto ids=std::make_shared<Ids>();
+    GradientDeviceService first({[ids]{ids->first=std::this_thread::get_id();return true;},{}});
+    GradientDeviceService second({[ids]{ids->second=std::this_thread::get_id();return true;},{}});
+    first.configure(2,Backend::OpenCL);second.configure(3,Backend::OpenCL);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while((!first.metrics().ready || !second.metrics().ready) && std::chrono::steady_clock::now()<until)
+        std::this_thread::yield();
+    REQUIRE(first.metrics().ready);REQUIRE(second.metrics().ready);
+    CHECK(ids->first==ids->second);CHECK(ids->first!=std::this_thread::get_id());
+    CHECK(first.metrics().coordinatorThreads==1);CHECK(second.metrics().coordinatorThreads==1);
+    first.stop();CHECK_FALSE(first.metrics().running);CHECK(second.metrics().ready);
+    second.stop();
+}

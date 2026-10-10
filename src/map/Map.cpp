@@ -539,6 +539,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"gpu_complete_fields",gradientRuntime->pipeline.gpuCompleteFields()},
         {"coordinator_cpu_ns",device.hostCpuNs},{"coordinator_initialization_ns",device.initializationNs},
         {"coordinator_running",device.running},{"coordinator_ready",device.ready},
+        {"coordinator_threads",device.coordinatorThreads},{"coordinator_cpu_scope_process",1},
         {"coordinator_executed",device.executed},{"coordinator_trivial",device.trivial},
         {"coordinator_configured_max_batch",device.configuredMaxBatch},{"coordinator_device_concurrency",device.deviceConcurrency},
         {"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},

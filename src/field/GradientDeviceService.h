@@ -10,6 +10,7 @@
 namespace gradient_kernel
 {
 class GradientDeviceService;
+struct GradientDeviceState;
 enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,Count};
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
@@ -36,6 +37,7 @@ struct OwnedGradientField
     std::atomic<bool> admitted{false};
     std::shared_ptr<std::atomic<std::size_t>> serviceRetained;
     std::weak_ptr<GradientDeviceService> observer;
+    std::shared_ptr<GradientDeviceState> executionState;
     WorkloadKey workload;
     std::uint64_t tick=0, seedCpuNs=0;
     ~OwnedGradientField();
@@ -44,12 +46,14 @@ private:
     void releaseReservation() noexcept;
 };
 
-// One extra, mostly sleeping native thread owns all driver activity for this
-// Map. CPU recovery is a continuation on the original executor batch.
+// Registrations share one process-owned, mostly sleeping driver thread. Map
+// lifecycle cancels an owned registration without joining optional work.
 class GradientDeviceService : public std::enable_shared_from_this<GradientDeviceService>
 {
 public:
     struct Hooks {
+        // Test adapters must own captured state: cancellation can return before
+        // an initializer exits. Each registration copies these callbacks.
         std::function<bool()> initialize;
         std::function<bool(std::span<const BackendRequest>,Plan)> execute;
     };
@@ -60,31 +64,14 @@ public:
         std::size_t queued=0, retainedHostBytes=0;
         bool running=false, ready=false;
         unsigned configuredMaxBatch=8, deviceConcurrency=1;
+        unsigned coordinatorThreads=0;
         std::array<std::uint64_t,unsigned(GradientFallbackReason::Count)> fallbackReasons{};
     };
 private:
-    struct Queued { std::shared_ptr<OwnedGradientField> field; std::uint64_t serial; };
     mutable std::mutex mutex;
-    std::condition_variable wake;
-    std::deque<Queued> queue;
-    std::thread coordinator;
     Hooks hooks;
-    bool stopping=false, started=false, initialized=false;
-    std::uint64_t nextSerial=0;
-    unsigned maximumBatch=8;
-    Metrics totals;
-    std::shared_ptr<std::atomic<std::size_t>> retained = std::make_shared<std::atomic<std::size_t>>(0);
-    struct Observation {
-        std::shared_ptr<BackendSession> session;
-        WorkloadKey key;
-        Plan plan=Plan::CPU;
-        std::uint64_t generation=0, cpuNs=0, tick=0;
-        bool failed=false;
-    };
-    std::array<Observation,64> observations;
-    std::size_t observationRead=0, observationWritten=0;
-    void run() noexcept;
-    static void recover(void*,std::size_t) noexcept;
+    std::shared_ptr<GradientDeviceState> registration;
+    std::shared_ptr<GradientDeviceState> state() const;
     void fallback(const std::shared_ptr<OwnedGradientField>&) noexcept;
 public:
     explicit GradientDeviceService(Hooks hooks = {}):hooks(std::move(hooks)) {}
