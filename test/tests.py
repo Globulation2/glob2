@@ -327,6 +327,7 @@ UNIT_TESTS = [
     '#src/game/WinningConditionsHarness.cpp',
     '#libgag/src/BufferedFileStreamHarness.cpp',
     '#src/common/ComputeExecutorHarness.cpp',
+    '#src/common/ThreadCpuEnvelopeHarness.cpp',
     '#src/map/gradient/GradientPipelineHarness.cpp',
     ('#mobile/MobileCertificateHarness.cpp', dict(require={'wss'})),
     '#mobile/MobileDocumentsHarness.cpp',
