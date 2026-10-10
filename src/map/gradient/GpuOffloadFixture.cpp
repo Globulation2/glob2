@@ -17,13 +17,13 @@
 namespace {
 struct Controllers {std::string suffix;unsigned seed;AI::ImplementationID even,odd;int units=64;};
 void writeFixtures(int exponent,const std::vector<Controllers>& controllers) {
-    REQUIRE(exponent==10 || exponent==11);
+    REQUIRE((exponent==10 || exponent==11));
     const int dimension=1<<exponent;
     REQUIRE(std::uint64_t(dimension)*dimension<=std::uint64_t(2048)*2048);
     glob2test::HeadlessGlobals globals;
     for(const auto& controller:controllers)
     for (const std::string layout : {"open", "corridors"}) {
-        REQUIRE(controller.units==64 || controller.units==256);
+        REQUIRE((controller.units==64 || controller.units==256));
         glob2test::HeadlessGame world({.wDec=exponent,.hDec=exponent,.teams=4,.discovered=true,
             .clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=controller.seed});
         auto& map=world.game.map;
