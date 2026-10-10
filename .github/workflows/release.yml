@@ -212,6 +212,13 @@ jobs:
           scons -j2 release=1 client_profile=free server=0 lean_images=1 unit-tests
           LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-unit-tests --test-suite=ImageAssets
           env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" info version
+          env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" info paths --format json > "$RUNNER_TEMP/linux-installed-paths.json"
+          python3 - "$RUNNER_TEMP/linux-installed-paths.json" "$stage/usr/share/glob2" <<'PY'
+          import json, sys
+          from pathlib import Path
+          paths = json.loads(Path(sys.argv[1]).read_text())
+          assert isinstance(paths, list) and sys.argv[2] in paths, 'Installed runtime assets are not discoverable'
+          PY
           ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL3_image"
       - name: Measure original-assets Linux baseline
         run: |
