@@ -63,7 +63,11 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // drain to protect borrowed transfer storage; such failures cannot be promoted.
 // keepAlive must retain original gradient, cost context and session lifetimes;
 // source/cost storage must remain immutable and be charged to the shared probe
-// budget by its owner. Backend staging is charged
+// budget by its owner. In particular, keepAlive must retain that owner's probe
+// budget lease for original seed capacity and DTO/captured payload until probe
+// destruction. Generic keepAlive allocation sizes are unknowable here, so the
+// backend accounts only its staging/state/lane and retained cost plane.
+// Backend staging is charged
 // separately. Unknown/unready cost planes are declined without preparation.
 class OpenCLProbe
 {

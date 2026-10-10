@@ -1184,7 +1184,12 @@ struct OpenCLProbe::Impl
     bool readyEvent() {
         Int state=0;
         check(lane->api.GetEventInfo(event,0x11D3,sizeof state,&state,nullptr));
-        if(state<0) {lane->api.ReleaseEvent(event);event=nullptr;borrowedTransfers=false;check(state);}
+        if(state<0) {
+            // Failure of a trailing command is not used as proof that an
+            // earlier borrowed transfer has stopped touching its CPU storage.
+            if(borrowedTransfers) lane->api.Finish(lane->queue);
+            lane->api.ReleaseEvent(event);event=nullptr;borrowedTransfers=false;check(state);
+        }
         if(state) return false;
         if(phase==Phase::KernelWait) lane->profile(event,lane->status.deviceKernelNs);
         if(phase==Phase::CheckWait) lane->profile(event,lane->status.deviceCheckReadNs);
