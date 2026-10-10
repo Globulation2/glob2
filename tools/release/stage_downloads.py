@@ -45,7 +45,7 @@ def inventory(directory, tag, commit, selected=None, client_builds=None):
     add('windows','x86_64','exe','Windows 10 (64-bit)',f'glob2-{version}-windows-x86_64-setup.exe')
     add('windows','x86_64','zip','Windows 10 (64-bit)',f'glob2-{version}-windows-x86_64.zip')
     for arch in ('arm64','x86_64'): add('macos',arch,'dmg','macOS 15.0',f'Glob2-{version}-macos-{arch}.dmg')
-    add('linux','x86_64','flatpak','Flatpak with GNOME 50 runtime','glob2.flatpak')
+    add('linux','x86_64','flatpak','Flatpak with GNOME 51 runtime','glob2.flatpak')
     snap=(normalize('globulation2_*.snap',f'glob2-{version}-linux-x86_64.snap')
           if selected is None or ('linux','x86_64','snap') in selected else '')
     add('linux','x86_64','snap','Linux with snapd',snap)
