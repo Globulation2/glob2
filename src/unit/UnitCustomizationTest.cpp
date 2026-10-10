@@ -6,6 +6,7 @@
 #include "UnitTiming.h"
 #include "Bullet.h"
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
 #include <limits>
@@ -103,6 +104,69 @@ void checkPhaseContinuation(Game& game,int ticks)
 
 TEST_SUITE("UnitCustomization")
 {
+    TEST_CASE("stock capacity-one wide primary cargo survives unit and game continuation [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(Uint64 denominator:{1000001ull,1000000000039ull}) for(bool text:{false,true}) {
+            CAPTURE(denominator); CAPTURE(text);
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            world.game.gameHeader.setHungerDisabled(true);
+            auto* unit=world.addUnit(WORKER,20,20); REQUIRE(unit);
+            REQUIRE(unit->runtimeTraits().cargoCapacity==1);
+            REQUIRE(unit->hasCapability(UnitRuntimeTraits::SpillRejectedCargo));
+            REQUIRE_FALSE(unit->hasCapability(UnitRuntimeTraits::ExtendedCargo));
+            unit->receiveCargoPacket(WOOD,{1,denominator});
+            REQUIRE(unit->widePrimaryCargo); REQUIRE(unit->carriedPacketCount()==1);
+            CHECK_FALSE(unit->canCarryMaterial(WOOD));
+            const auto original=world.game.unitCargo.entries();
+            world.team->stats.beginMeasurementSnapshot(world.team);
+            world.team->stats.observeMeasurementUnit(unit);
+            CHECK(world.team->stats.measurements.carried[WOOD]==1);
+            const auto saveUnit=[&](Unit& value,bool textual) {
+                auto* backend=new GAGCore::MemoryStreamBackend;
+                std::string bytes;
+                if(textual) { GAGCore::TextOutputStream output(backend); value.save(&output); output.flush(); bytes=backend->takeContents(); }
+                else { GAGCore::BinaryOutputStream output(backend); value.save(&output); bytes=backend->takeContents(); }
+                return bytes;
+            };
+            const auto bytes=saveUnit(*unit,text);
+            glob2test::HeadlessGame restored({.clearImmobile=true,.header=true,.seed=4921});
+            Unit* loaded=nullptr;
+            if(text) {
+                GAGCore::MemoryStreamBackend backend(bytes.data(),bytes.size()); backend.seekFromStart(0);
+                GAGCore::TextInputStream input(&backend); loaded=new Unit(&input,restored.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
+            } else {
+                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+                loaded=new Unit(&input,restored.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
+                REQUIRE(input.getPosition()==bytes.size());
+            }
+            restored.team->myUnits[0]=loaded; restored.team->rebuildLiveLists();
+            restored.game.map.setGroundUnit(loaded->posX,loaded->posY,loaded->gid);
+            REQUIRE(loaded->widePrimaryCargo); CHECK(loaded->carriedPacketCount()==1);
+            CHECK(saveUnit(*loaded,text)==bytes); CHECK(restored.game.unitCargo.entries()==original);
+            restored.team->stats.beginMeasurementSnapshot(restored.team); restored.team->stats.observeMeasurementUnit(loaded);
+            CHECK(restored.team->stats.measurements.carried[WOOD]==1);
+            CHECK(restored.team->stats.measurements.materialSpillageEvents==0);
+            checkPhaseContinuation(world.game,64);
+            CHECK(world.game.unitCargo.entries()==original);
+            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+            // Admission of the primary alias must not admit a different first
+            // material or a second packet into this capacity-one inventory.
+            if(text) for(bool wrongMaterial:{false,true}) {
+                CAPTURE(wrongMaterial);
+                auto malformed=bytes;
+                const std::string before=wrongMaterial?"material = "+std::to_string(WOOD)+";":"cargoOverflowCount = 1;";
+                const std::string after=wrongMaterial?"material = "+std::to_string(STONE)+";":"cargoOverflowCount = 2;";
+                const auto at=malformed.find(before); REQUIRE(at!=std::string::npos); malformed.replace(at,before.size(),after);
+                glob2test::HeadlessGame invalid({.clearImmobile=true,.header=true,.seed=4921});
+                GAGCore::MemoryStreamBackend backend(malformed.data(),malformed.size()); backend.seekFromStart(0);
+                GAGCore::TextInputStream input(&backend);
+                CHECK_THROWS_AS(Unit(&input,invalid.team,FILE_FORMAT_VERSION_UNIT_CATALOG),std::runtime_error);
+                CHECK(invalid.game.unitCargo.empty());
+            }
+        }
+    }
+
     TEST_CASE("catalog resizing rejects in-flight projectile rows without publishing state")
     {
         glob2test::HeadlessGlobals globals;

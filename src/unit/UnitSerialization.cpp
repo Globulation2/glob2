@@ -217,7 +217,11 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 			const auto read64=[&](const char* name) { stream->readEnterSection(name); const Uint64 hi=stream->readUint32("high"),lo=stream->readUint32("low"); stream->readLeaveSection(); return (hi<<32)|lo; };
 			const WideMaterialPacket packet{read64("numerator"),read64("denominator")};
 			stream->readLeaveSection();
-			if (material<0 || material>=int(MaterialCount) || !packet.numerator || !packet.denominator || packet.numerator>packet.denominator || !canCarryMaterial(material) || (widePrimaryCargo && i==0 && material!=carriedMaterial))
+			// The first wide row is the already-counted primary packet, not an
+			// additional pickup. In the inline capacity-one path its material
+			// marker already consumes capacity before this row is restored.
+			const bool primary=widePrimaryCargo && i==0;
+			if (material<0 || material>=int(MaterialCount) || !packet.numerator || !packet.denominator || packet.numerator>packet.denominator || (!primary && !canCarryMaterial(material)) || (primary && material!=carriedMaterial))
 				throw std::runtime_error("Invalid unit cargo packet");
 			owner->game->unitCargo.overflow(gid).push_back({material,packet});
 		}
