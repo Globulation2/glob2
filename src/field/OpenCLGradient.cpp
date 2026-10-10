@@ -2,6 +2,7 @@
 #include "OpenCLGradient.h"
 #include "OpenCLCpuAttribution.h"
 #include "OpenCLBorrowedLifetime.h"
+#include "OpenCLRequiredLifetimePool.h"
 #include "OpenCLTransferProof.h"
 #include "OpenCLLaneRegistry.h"
 #include "GradientBackend.h"
@@ -370,7 +371,8 @@ struct Device
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
     std::atomic<bool> failed{false};
-    OpenCLBorrowedLifetime optionalLifetime,requiredLifetime;
+    OpenCLBorrowedLifetime optionalLifetime;
+    OpenCLRequiredLifetimePool requiredLifetime;
     bool requiredQueryFailureDiagnostics=false;
     MemoryBudget deviceBudget{OpenCLDeviceBudget};
     Handle device = nullptr, context = nullptr;
@@ -447,6 +449,7 @@ struct Device
     std::array<std::uint64_t, 8> used{};
     std::uint64_t age = 0;
     static constexpr std::size_t LaneCapacity=64;
+    static_assert(LaneCapacity==OpenCLRequiredLifetimePool::MaxSlots);
     OpenCLLaneRegistry<Runtime,LaneCapacity> lanes;
     OpenCLStatus retired;
     std::uint64_t retiredSequence = 0;
@@ -690,8 +693,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     struct RequiredTransaction {
         struct Admission {
             std::shared_ptr<Device> parent;
+            OpenCLRequiredLifetimePool::Slot* slot=nullptr;
             bool owns=false;
-            ~Admission(){if(owns)parent->requiredLifetime.release();}
+            ~Admission(){if(owns)slot->release();}
         } admission; // Pins parent and releases admission after all payload.
         BudgetLease objectLease{hostBudget};
         std::shared_ptr<Runtime> lane;
@@ -703,8 +707,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         Handle event=nullptr;
         OpenCLTransferProof proof;
         unsigned diagnosticQueryFailures=0;
-        RequiredTransaction(std::shared_ptr<Runtime> owner,BudgetLease& reserved):lane(std::move(owner)) {
-            admission.parent=lane->shared;reserved.transferTo(objectLease);
+        RequiredTransaction(std::shared_ptr<Runtime> owner,BudgetLease& reserved,OpenCLRequiredLifetimePool::Slot& slot):lane(std::move(owner)) {
+            admission.parent=lane->shared;admission.slot=&slot;reserved.transferTo(objectLease);
             diagnosticQueryFailures=lane->shared->requiredQueryFailureDiagnostics ? 2 : 0;
         }
         ~RequiredTransaction(){if(event)lane->api.ReleaseEvent(event);}
@@ -1317,14 +1321,15 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 status.readbackNs+=timing->readbackNs-before.readbackNs;
             }
         } stageAccumulator{status,stages,before};
-        if(!shared->requiredLifetime.tryReserve()){++status.budgetDeclines;return false;}
-        struct SlotGuard {Device& device;bool transferred=false;
-            ~SlotGuard(){if(!transferred)device.requiredLifetime.release();}} slotGuard{*shared};
+        auto* slot=shared->requiredLifetime.tryReserve();
+        if(!slot){++status.budgetDeclines;return false;}
+        struct SlotGuard {OpenCLRequiredLifetimePool::Slot* slot;bool transferred=false;
+            ~SlotGuard(){if(!transferred)slot->release();}} slotGuard{slot};
         std::shared_ptr<RequiredTransaction> transaction;
         struct CurrentGuard {Runtime& lane;~CurrentGuard(){lane.required=nullptr;}} currentGuard{*this};
         try {
             BudgetLease reserved{hostBudget};reserved.resize(sizeof(RequiredTransaction)+256);
-            transaction=std::make_shared<RequiredTransaction>(shared_from_this(),reserved);
+            transaction=std::make_shared<RequiredTransaction>(shared_from_this(),reserved,*slot);
             transaction->admission.owns=true;slotGuard.transferred=true;required=transaction.get();
             for(std::size_t i=0;i<std::min<std::size_t>(8,input.size());++i)transaction->controls[i]=input[i].requiredControl;
             if(transaction->canceled())throw RequiredCanceled();
@@ -1398,7 +1403,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         if(RequiredTransaction::terminalProof(transaction.get()))return;
         ++shared->requiredProofFailures;++shared->requiredQuarantines;
         shared->failed.store(true,std::memory_order_release);readyPlans.store(0,std::memory_order_release);
-        if(!shared->requiredLifetime.quarantine(transaction))std::terminate();
+        if(!transaction->admission.slot->quarantine(transaction))std::terminate();
     }
     bool run(const BackendRequest& r, Plan plan) { return batch(std::span(&r,1),plan); }
 

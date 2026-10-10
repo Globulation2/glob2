@@ -555,10 +555,14 @@ uses the unchanged original seeds once on its worker and cannot race late driver
 writes. An existing positive in-order event can reap only if no newer unobserved
 command or ambiguous enqueue invalidated its coverage. Older, error-returned or
 omitted events cannot establish proof; such storage remains retained until proof
-or operating-system process reclamation. Required batches share one process-wide admission slot; a concurrent request
-declines to CPU rather than waiting for the slot. Reaping and required execution
-share one background coordinator and must not overlap. No reaping, Finish, driver
-wait, or fatal exit is added to save/publication/owner code.
+or operating-system process reclamation. Required batches use a fixed pool of
+64 precharged transaction slots, aligned with the 64 live lane registrations.
+The production broker still runs exactly one required batch at a time.
+Independent direct-API lanes can reserve separate slots; exhausting the bounded
+pool declines to CPU without waiting. Production reaping and required execution
+share one background coordinator. Reaper callbacks are serialized even for
+independent direct-API callers. No reaping, Finish, driver wait, or fatal exit is
+added to save/publication/owner code.
 
 Hardware-free tests exercise the shared proof and retention machinery with late
 readback writes, live descriptor/upload sentinels, failed queries, exactly one CPU
