@@ -3,6 +3,7 @@
 
 #include <GameplayRecording.h>
 #include <PerformanceTelemetry.h>
+#include "common/ThreadCpuEnvelopeBridge.h"
 #include <EventQueue.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
@@ -301,6 +302,12 @@ void Engine::executeOrdersAndStep(bool readyNow)
 
 void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFrame* scene)
 {
+    // Diagnostic-only actual rendering role; background initialization may not
+    // have finished at configuration. Retry without allocation or task scans.
+    thread_local const bool envelopeRequested=glob2::cpuEnvelopeRequested();
+    thread_local bool envelopeRegistered=false;
+    if(envelopeRequested && !envelopeRegistered)
+        envelopeRegistered=glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::OtherOwned);
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
 	if (renderedFrame)

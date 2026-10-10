@@ -1068,3 +1068,91 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
         service->stop();
     }
 }
+
+TEST_CASE("CPU envelope bridge initializes on CPU worker and deduplicates actual owner aliases" * doctest::test_suite("GradientPipeline"))
+{
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    if(!glob2::nativeThreadId())return; // Native role identity is Linux-only today.
+    using namespace gradient_kernel;
+    Environment enabled("GLOB2_GRADIENT_CPU_ENVELOPE","1");
+    // Lookup/owner registration cannot create a registry. This also holds when
+    // another test has already initialized the process-owned registry.
+    const auto initially=glob2::cpuEnvelopeRegistry();
+    const auto before=openCLStatus().hostBytes;
+    const auto ownerAttempt=glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Owner);
+    if(!initially){CHECK_FALSE(ownerAttempt);CHECK_FALSE(glob2::cpuEnvelopeRegistry());CHECK(openCLStatus().hostBytes==before);}
+    ComputeExecutor executor;executor.configure(2);
+    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    std::vector<std::uint64_t> ids;
+    do {ids=executor.threadIds();if(ids.size()>1 && ids[1])break;std::this_thread::yield();}
+    while(std::chrono::steady_clock::now()<until);
+    REQUIRE(ids.size()==2);REQUIRE(ids[1]!=0);
+    auto registry=glob2::cpuEnvelopeRegistry();REQUIRE(registry);
+    REQUIRE(glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Owner));
+    REQUIRE(glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::OtherOwned));
+    const auto complete=[](glob2::ProcessCpuEnvelope& envelope){
+        for(unsigned i=0;i<4;++i)envelope.advance();
+        if(envelope.finish())for(unsigned i=0;i<4;++i)envelope.advance();
+    };
+    glob2::ProcessCpuEnvelope live(*registry);complete(live);
+    if(live.metrics().valid){
+        unsigned owners=0,workers=0;
+        for(std::size_t i=0;i<live.metrics().threadCount;++i){
+            const auto& thread=live.metrics().threads[i];
+            if(thread.tid==glob2::nativeThreadId()){
+                ++owners;CHECK(thread.roles&(1u<<unsigned(glob2::CpuThreadRole::Owner)));
+                CHECK(thread.roles&(1u<<unsigned(glob2::CpuThreadRole::OtherOwned)));
+            }
+            if(thread.tid==ids[1]){++workers;CHECK(thread.roles&(1u<<unsigned(glob2::CpuThreadRole::Worker)));}
+        }
+        CHECK(owners==1);CHECK(workers==1);
+        CHECK(live.metrics().processCpuNs==live.metrics().knownInnerCpuNs+live.metrics().unknownUpperCpuNs);
+        CHECK_FALSE(live.metrics().attributionComplete);
+    }
+    executor.configure(1); // Worker TLS leases retire before native exit.
+    glob2::ProcessCpuEnvelope retired(*registry);complete(retired);
+    for(std::size_t i=0;i<retired.metrics().threadCount;++i)CHECK(retired.metrics().threads[i].tid!=ids[1]);
+}
+
+TEST_CASE("required GPU envelopes are opt-in enclosing diagnostics and release probe storage" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
+    readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
+    for(bool enabled:{false,true}){
+        Environment envelope("GLOB2_GRADIENT_CPU_ENVELOPE",enabled ? "1" : "0");
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+            [](std::span<const BackendRequest> requests,Plan){
+                for(const auto& request:requests){request.gradient[0]=91;if(request.executedOnDevice)*request.executedOnDevice=true;}return true;
+            }});
+        service->configure(2,Backend::OpenCL);
+        const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().ready);CHECK(service->metrics().cpuEnvelopeRequested==enabled);
+        const auto probeBefore=openCLProbeBytes();
+        TestGradientPipeline pipeline;pipeline.configure(1,1,1,[](auto&,auto&){FAIL("unexpected synchronous GPU work");});
+        pipeline.setDeviceService(service);pipeline.setAsyncWork([](auto& job,PlanDecision decision){
+            auto field=std::make_shared<OwnedGradientField>();field->session=job.owner->session();field->decision=decision;
+            field->due=job.executorDue;field->data=std::move(job.data);field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
+            field->cpu=[](auto&){FAIL("unexpected fallback");};return field;
+        });
+        auto* published=new std::uint16_t[1]{};
+        pipeline.advance();pipeline.submit(&published,0,[](auto& job){job.data[0]=7;});pipeline.advance();
+        CHECK(published[0]==91);pipeline.reset();
+        // Required completion is independent of subsequent diagnostic sampling.
+        // Wait for the background diagnostic here solely to inspect the fixture.
+        while(service->metrics().completed!=1 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        const auto metrics=service->metrics();REQUIRE(metrics.completed==1);
+        if(enabled){
+            CHECK(metrics.cpuEnvelopeRegistryReady);
+            CHECK(metrics.cpuEnvelopeWindows+metrics.cpuEnvelopeInvalid+metrics.cpuEnvelopeDeclines==1);
+            CHECK(metrics.cpuEnvelopeProcessNs==metrics.cpuEnvelopeKnownInnerNs+metrics.cpuEnvelopeUnknownUpperNs);
+        }else{
+            CHECK(metrics.cpuEnvelopeWindows==0);CHECK(metrics.cpuEnvelopeInvalid==0);CHECK(metrics.cpuEnvelopeDeclines==0);
+            CHECK(metrics.cpuEnvelopeSamplerNs==0);
+        }
+        while(openCLProbeBytes()!=probeBefore && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        CHECK(openCLProbeBytes()==probeBefore);service->stop();delete[] published;
+    }
+}

@@ -51,6 +51,86 @@ struct GradientDeviceState
 };
 namespace
 {
+struct EnvelopeMemoryLease
+{
+    std::size_t bytes=0;bool probe=false;
+    EnvelopeMemoryLease()=default;
+    EnvelopeMemoryLease(std::size_t size,bool optional):probe(optional) {
+        if(optional ? reserveOpenCLProbeBytes(size) : reserveOpenCLHostBytes(size))bytes=size;
+    }
+    EnvelopeMemoryLease(EnvelopeMemoryLease&& other) noexcept:bytes(std::exchange(other.bytes,0)),probe(other.probe){}
+    EnvelopeMemoryLease& operator=(EnvelopeMemoryLease&& other) noexcept {
+        if(this!=&other){if(bytes){if(probe)releaseOpenCLProbeBytes(bytes);else releaseOpenCLHostBytes(bytes);}
+            bytes=std::exchange(other.bytes,0);probe=other.probe;}return *this;
+    }
+    EnvelopeMemoryLease(const EnvelopeMemoryLease&)=delete;
+    ~EnvelopeMemoryLease(){if(bytes){if(probe)releaseOpenCLProbeBytes(bytes);else releaseOpenCLHostBytes(bytes);}}
+};
+struct EnvelopeRegistryStorage {
+    EnvelopeMemoryLease memory;glob2::CpuClockRegistry registry;
+    explicit EnvelopeRegistryStorage(EnvelopeMemoryLease&& lease):memory(std::move(lease)){}
+};
+std::atomic<std::shared_ptr<glob2::CpuClockRegistry>> envelopeRegistry;
+std::mutex envelopeRegistryInitialization;
+std::atomic<std::uint64_t> envelopeRegistrySetupCpuNs{0},envelopeRoleRegistrationCpuNs{0};
+std::shared_ptr<glob2::CpuClockRegistry> lookupEnvelopeRegistry() noexcept {return envelopeRegistry.load(std::memory_order_acquire);}
+bool registerEnvelopeRole(glob2::CpuThreadRole role,bool initialize) noexcept {
+    if(unsigned(role)>=4)return true;
+    auto registry=lookupEnvelopeRegistry();
+    if(!registry && initialize) {
+        std::lock_guard lock(envelopeRegistryInitialization);registry=lookupEnvelopeRegistry();
+        if(!registry) {
+            const auto started=glob2::threadCpuNs();
+            try {
+                EnvelopeMemoryLease memory(sizeof(EnvelopeRegistryStorage)+128,false);
+                if(memory.bytes) {
+                    auto storage=std::make_shared<EnvelopeRegistryStorage>(std::move(memory));
+                    registry=std::shared_ptr<glob2::CpuClockRegistry>(storage,&storage->registry);
+                    envelopeRegistry.store(registry,std::memory_order_release);
+                }
+            } catch(...) {}
+            envelopeRegistrySetupCpuNs.fetch_add(glob2::threadCpuDeltaNs(started,glob2::threadCpuNs()),std::memory_order_relaxed);
+        }
+    }
+    if(!registry)return false; // Owner never initializes or waits for initialization.
+    struct ThreadRegistration {
+        // First member releases last, after clock leases retire and registry ownership dies.
+        EnvelopeMemoryLease memory;
+        std::shared_ptr<glob2::CpuClockRegistry> registry;
+        std::array<glob2::CpuClockRegistry::Lease,4> roles;
+        unsigned attempted=0;
+    };
+    thread_local ThreadRegistration current;
+    const auto bit=1u<<unsigned(role);
+    if(current.attempted&bit)return true;
+    const auto started=glob2::threadCpuNs();
+    if(!current.memory.bytes)current.memory=EnvelopeMemoryLease(sizeof(ThreadRegistration),false);
+    const bool admitted=current.memory.bytes!=0;
+    if(admitted){current.registry=registry;current.roles[unsigned(role)]=registry->registerCurrent(role);current.attempted|=bit;}
+    envelopeRoleRegistrationCpuNs.fetch_add(glob2::threadCpuDeltaNs(started,glob2::threadCpuNs()),std::memory_order_relaxed);
+    return admitted;
+}
+const bool installedEnvelopeBridge=[] {
+    glob2::cpuEnvelopeRoleRegistrar=&registerEnvelopeRole;glob2::cpuEnvelopeRegistryLookup=&lookupEnvelopeRegistry;return true;
+}();
+struct BatchCpuEnvelope {
+    std::shared_ptr<glob2::CpuClockRegistry> registry;
+    EnvelopeMemoryLease memory;
+    glob2::ProcessCpuEnvelope envelope;
+    BatchCpuEnvelope(std::shared_ptr<glob2::CpuClockRegistry> clocks,EnvelopeMemoryLease&& lease)
+        :registry(std::move(clocks)),memory(std::move(lease)),envelope(*registry) {}
+};
+std::unique_ptr<BatchCpuEnvelope> beginBatchCpuEnvelope() noexcept {
+    auto registry=lookupEnvelopeRegistry();if(!registry)return {};
+    try {
+        EnvelopeMemoryLease memory(sizeof(BatchCpuEnvelope)+128,true);if(!memory.bytes)return {};
+        auto result=std::make_unique<BatchCpuEnvelope>(std::move(registry),std::move(memory));
+        for(unsigned advance=0;advance<4;++advance)result->envelope.advance();return result;
+    } catch(...) {return {};}
+}
+void finishBatchCpuEnvelope(glob2::ProcessCpuEnvelope& envelope) noexcept {
+    if(envelope.finish())for(unsigned advance=0;advance<4;++advance)envelope.advance();
+}
 std::atomic<std::uint64_t> brokerCpuNs{0};
 std::atomic<unsigned> brokerThreads{0};
 std::atomic<std::uint64_t> brokerThreadId{0};
@@ -148,6 +228,7 @@ class DeviceBroker
     }
     void initialize(const std::shared_ptr<GradientDeviceState>& state) noexcept {
         const auto start=monotonicNs();bool ready=false;
+        if(state->totals.cpuEnvelopeRequested)glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Coordinator,true);
         try {
             if(state->hooks.initialize) ready=state->hooks.initialize();
             else {
@@ -240,6 +321,9 @@ class DeviceBroker
         const bool diagnostics=state->totals.diagnostics;
         const bool trackCompletion=diagnostics || bool(fields.front()->session->learningPolicy());
         std::uint64_t preparationEnd=cpuStart,submissionEnd=cpuStart;
+        const auto envelopeSetupStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
+        auto envelope=state->totals.cpuEnvelopeRequested ? beginBatchCpuEnvelope() : nullptr;
+        const auto envelopeSetupCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeSetupStarted,glob2::threadCpuNs()) : 0;
         const bool stale=std::any_of(fields.begin(),fields.end(),[](const auto& field) {
             return field->decision.generation!=field->session->currentGeneration() || field->session->failed.load();
         });
@@ -289,7 +373,35 @@ class DeviceBroker
             auto cpu=glob2::threadCpuNs()-cpuStart;for(const auto& field:fields) cpu+=field->seedCpuNs;
             observe(state,fields.front()->session,key,fields.front()->decision.plan,cpu,fields.front()->tick);
         }
+        const auto envelopeFinishStarted=state->totals.cpuEnvelopeRequested ? glob2::threadCpuNs() : 0;
+        if(envelope)finishBatchCpuEnvelope(envelope->envelope);
+        // Retain only bounded scalar metadata; release optional storage before
+        // publishing telemetry. The original completion ticket is already done.
+        struct Summary {bool present=false,valid=false,churn=false;std::uint64_t process=0,known=0,unknown=0,sampler=0,omitted=0,resolution=0;} envelopeResult;
+        if(envelope){const auto& result=envelope->envelope.metrics();envelopeResult={true,result.valid,result.churn,
+            result.processCpuNs,result.knownInnerCpuNs,result.unknownUpperCpuNs,result.samplerCpuNs,result.omittedThreads,result.maxResolutionNs};}
+        envelope.reset();
+        const auto envelopeFinishCpu=state->totals.cpuEnvelopeRequested ? glob2::threadCpuDeltaNs(envelopeFinishStarted,glob2::threadCpuNs()) : 0;
         std::lock_guard lock(state->mutex);
+        if(state->totals.cpuEnvelopeRequested) {
+            state->totals.cpuEnvelopeLifecycleNs+=envelopeSetupCpu+envelopeFinishCpu;
+            state->totals.cpuEnvelopeSetupOvershoots+=envelopeSetupCpu>500000;
+            state->totals.cpuEnvelopeFinishOvershoots+=envelopeFinishCpu>500000;
+            if(!envelopeResult.present)++state->totals.cpuEnvelopeDeclines;
+            else {
+                state->totals.cpuEnvelopeSamplerNs+=envelopeResult.sampler;
+                state->totals.cpuEnvelopeOmittedThreads+=envelopeResult.omitted;
+                state->totals.cpuEnvelopeChurn+=envelopeResult.churn;
+                state->totals.cpuEnvelopeMaxResolutionNs=std::max(state->totals.cpuEnvelopeMaxResolutionNs,envelopeResult.resolution);
+                if(!envelopeResult.valid)++state->totals.cpuEnvelopeInvalid;
+                else {
+                    ++state->totals.cpuEnvelopeWindows;
+                    state->totals.cpuEnvelopeProcessNs+=envelopeResult.process;
+                    state->totals.cpuEnvelopeKnownInnerNs+=envelopeResult.known;
+                    state->totals.cpuEnvelopeUnknownUpperNs+=envelopeResult.unknown;
+                }
+            }
+        }
         if(diagnostics) {
             state->totals.batchPreparationCpuNs+=preparationEnd-cpuStart;
             state->totals.batchSubmissionCpuNs+=submissionEnd-preparationEnd;
@@ -383,7 +495,10 @@ std::unique_ptr<std::uint16_t[]> OwnedGradientField::takeData(){releaseReservati
 std::shared_ptr<GradientDeviceState> GradientDeviceService::state() const {std::lock_guard lock(mutex);return registration;}
 void GradientDeviceService::configure(unsigned computeThreads,Backend mode) {
     stop();auto next=std::make_shared<GradientDeviceState>();next->hooks=hooks;
-    next->totals.diagnostics=gradientDiagnosticsRequested();next->mode=mode;next->computeThreads=computeThreads;
+    next->totals.diagnostics=gradientDiagnosticsRequested();
+    next->totals.cpuEnvelopeRequested=glob2::cpuEnvelopeRequested();
+    if(next->totals.cpuEnvelopeRequested)glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::OtherOwned);
+    next->mode=mode;next->computeThreads=computeThreads;
     if(const auto* value=std::getenv("GLOB2_GRADIENT_CROSS_DUE");value && *value) {
         if(std::strcmp(value,"0") && std::strcmp(value,"1"))throw std::invalid_argument("GLOB2_GRADIENT_CROSS_DUE must be 0 or 1");
         if(std::strcmp(value,"1")==0 && computeThreads>=2 && mode!=Backend::CPU) {
@@ -488,6 +603,8 @@ GradientDeviceService::Metrics GradientDeviceService::metrics() const {
         out.running=current->started && !current->canceled;out.ready=out.running && current->initialized;
         out.retainedHostBytes=current->retained->load();
     }
+    out.cpuEnvelopeRegistryReady=bool(lookupEnvelopeRegistry());out.cpuEnvelopeRegistrySetupCpuNs=envelopeRegistrySetupCpuNs.load();
+    out.cpuEnvelopeRoleRegistrationCpuNs=envelopeRoleRegistrationCpuNs.load();
     out.hostCpuNs=brokerCpuNs.load();out.coordinatorThreads=brokerThreads.load();
     out.coordinatorThreadId=brokerThreadId.load();return out;
 }

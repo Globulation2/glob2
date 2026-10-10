@@ -84,6 +84,15 @@ public:
         unsigned batchProfiles=0;
         std::uint64_t batchManifestHash=0,batchSourceHash=0,batchProfileDeclines=0,crossDueBatches=0;
         std::uint64_t cadenceSamples=0,cadenceDrops=0,cadenceFloorNs=0,cadenceRevision=0;
+        bool cpuEnvelopeRequested=false,cpuEnvelopeRegistryReady=false;
+        // Sum of overlapping narrow batch windows is diagnostic only. It must
+        // never be reported as total process CPU or causal driver attribution.
+        std::uint64_t cpuEnvelopeWindows=0,cpuEnvelopeInvalid=0,cpuEnvelopeDeclines=0,cpuEnvelopeChurn=0;
+        std::uint64_t cpuEnvelopeProcessNs=0,cpuEnvelopeKnownInnerNs=0,cpuEnvelopeUnknownUpperNs=0,cpuEnvelopeSamplerNs=0;
+        std::uint64_t cpuEnvelopeOmittedThreads=0,cpuEnvelopeMaxResolutionNs=0,cpuEnvelopeRegistrySetupCpuNs=0,cpuEnvelopeRoleRegistrationCpuNs=0;
+        // Lifecycle includes allocation, all start/finish advances and release;
+        // sampler is a component of lifecycle, and both overlap hostCpuNs.
+        std::uint64_t cpuEnvelopeLifecycleNs=0,cpuEnvelopeSetupOvershoots=0,cpuEnvelopeFinishOvershoots=0;
         std::array<std::uint64_t,unsigned(GradientFallbackReason::Count)> fallbackReasons{};
     };
 private:

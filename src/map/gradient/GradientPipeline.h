@@ -103,7 +103,7 @@ private:
 	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0}, requestedGpu{0};
     std::atomic<std::uint64_t> ownedInputCpu{0},handoffCpu{0},cleanupCpu{0};
     bool diagnostics=false;
-    bool workerNoopBypass=false,crossDueTiming=false;
+    bool workerNoopBypass=false,crossDueTiming=false,cpuEnvelopeTiming=false,cpuEnvelopeOwnerRegistered=false;
     std::uint64_t cadenceStartedNs=0,cadenceOwnerCpuNs=0,cadenceWaitNs=0;
     std::array<std::atomic<std::uint64_t>,unsigned(CPUReason::Count)> cpuReasons{};
 	using Clock = std::chrono::steady_clock;
@@ -277,7 +277,8 @@ public:
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
 		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
         for(auto& reason:cpuReasons) reason=0; cells = size; work = std::move(callback);
-        diagnostics=gradient_kernel::gradientDiagnosticsRequested();ownedInputCpu=0;handoffCpu=0;cleanupCpu=0;
+        diagnostics=gradient_kernel::gradientDiagnosticsRequested();
+        cpuEnvelopeTiming=glob2::cpuEnvelopeRequested();cpuEnvelopeOwnerRegistered=false;ownedInputCpu=0;handoffCpu=0;cleanupCpu=0;
         workerNoopBypass=false;
         if(const auto* value=std::getenv("GLOB2_GRADIENT_WORKER_NOOP");value && *value) {
             if(std::strcmp(value,"0") && std::strcmp(value,"1"))
@@ -347,6 +348,8 @@ public:
 	void setWorkerCount(unsigned count) { finish(); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
+        if(cpuEnvelopeTiming && !cpuEnvelopeOwnerRegistered)
+            cpuEnvelopeOwnerRegistered=glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Owner);
         if(crossDueTiming && executor) {
             const auto started=gradient_kernel::monotonicNs(),ownerCpu=glob2::threadCpuNs();
             const auto totals=executor->metrics();const auto waited=totals.waitNs+totals.joinWaitNs;

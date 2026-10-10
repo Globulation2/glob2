@@ -20,6 +20,7 @@
 #include <vector>
 #include <utility>
 #include "ThreadCpuClock.h"
+#include "ThreadCpuEnvelopeBridge.h"
 
 // One executor for the simulation's parallel work. Two shapes of work share
 // its threads:
@@ -412,6 +413,7 @@ private:
 	void worker(std::size_t slot)
 	{
 		std::size_t seen = 0, simulationClaims = 0;
+        if(glob2::cpuEnvelopeRequested())glob2::registerCpuEnvelopeThread(glob2::CpuThreadRole::Worker,true);
 		std::unique_lock<std::mutex> lock(mutex);
 		nativeThreadIds[slot]=glob2::nativeThreadId();
 		for (;;)
