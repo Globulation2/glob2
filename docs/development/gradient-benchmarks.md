@@ -379,6 +379,9 @@ callback and block overshoots remain measured declines, not hard latency
 guarantees. Invalid clocks stop optional copying permanently and require full
 reserved charge. Rejected admission returns an optional-work receipt too; future
 attachment must record/exclude this cost rather than count it as accepted work.
+Receipts taken before final record destruction exclude final cleanup. Policy
+metrics include cleanup and cancellation; future outer accounting must also
+cover validation and rejected attempts outside the returned record.
 
 The required job runs exactly once between the original and golden clones. Its
 reference is a guarded propagation-only CPU span, excluding preparation and

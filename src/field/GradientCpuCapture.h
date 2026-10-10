@@ -44,6 +44,9 @@ public:
         // Optional capture/cleanup only. Required propagation is disjoint.
         // On invalid timing this is a lower bound and settlement pays the
         // complete CPU reservation. Rejected admission still returns a receipt.
+        // A receipt taken before final destruction excludes final cleanup;
+        // policy metrics include cleanup/cancellation. Future outer accounting
+        // must also include validation and rejected attempts.
         std::uint64_t optionalCpuNs=0,blocks=0,invalidClocks=0,overshoots=0;
         std::size_t reservedBytes=0,copiedBytes=0;
         bool clockValid=true,requiresFullReservedCharge=false,referenceBound=false;
@@ -171,7 +174,7 @@ public:
     // policy is retained and conservatively charged in each record; sharing a
     // policy or clock owner does not reduce this capture's tracked reservation.
     static std::unique_ptr<GradientCpuCapture> begin(std::shared_ptr<CpuSavingPolicy> policy,
-        const Input& input,Receipt& receipt,Clock clock={}) noexcept {
+        const Input& input,Receipt& receipt,Clock clock) noexcept {
         receipt={};
         if(!policy || input.modifiedCosts || input.swim<0 || input.swim>=int(std::size(WATER_STEP)) ||
             input.key.width==0 || input.key.height==0 || input.key.batch!=1 ||
@@ -248,6 +251,10 @@ public:
             }
             return {};
         }
+    }
+    static std::unique_ptr<GradientCpuCapture> begin(std::shared_ptr<CpuSavingPolicy> policy,
+        const Input& input,Receipt& receipt) noexcept {
+        return begin(std::move(policy),input,receipt,Clock{});
     }
     // Called only after required CPU propagation, before Job.data can publish
     // or be reused. Reference is propagation alone: preparation and capture
