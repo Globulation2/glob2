@@ -1528,7 +1528,12 @@ TEST_CASE("Editor building deletion clears ability lists before save and slot re
  loaded=roundTrip(w.game);
  CHECK(loaded->game.teams[0]->swarms.empty());
  CHECK(loaded->game.teams[0]->myBuildings[slot]!=nullptr);
- auto* flag=w.building("clearingflag",16,16);
+ // Virtual flags do not occupy map cells; the physical-building fixture
+ // helper intentionally writes occupancy and is inappropriate here.
+ const auto flagType=globalContainer->buildingsTypes.getTypeNum("clearingflag",0,false);
+ REQUIRE(flagType>=0);
+ auto* flag=w.game.addBuilding(16,16,flagType,0);
+ REQUIRE(flag!=nullptr);
  team->addToStaticAbilitiesLists(flag);
  REQUIRE(std::find(team->clearingFlags.begin(),team->clearingFlags.end(),flag)!=team->clearingFlags.end());
  REQUIRE(w.game.removeUnitAndBuildingAndFlags(16,16,Game::DEL_FLAG));
