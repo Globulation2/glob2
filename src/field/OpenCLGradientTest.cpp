@@ -920,7 +920,7 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
 {
     using namespace gradient_kernel;
     if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
-    if(openCLStatus().activeEpoch) return; // Required-only experimental mode.
+    if(openCLStatus().activeEpoch || openCLStatus().parityBound) return; // Required-only experimental modes.
     std::thread coordinator([&] {
         for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{7,13}})
         for(int cap:{0,40,700}) {
@@ -980,10 +980,10 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
     });
     coordinator.join();
 }
-TEST_CASE("epoch masks preserve every explicit plan across mixed retirement and buffer reuse")
+TEST_CASE("experimental mask and parity bindings preserve every plan across retirement and buffer reuse")
 {
     using namespace gradient_kernel;
-    if(!initializeOpenCL() || !openCLStatus().activeEpoch) return;
+    if(!initializeOpenCL() || (!openCLStatus().activeEpoch && !openCLStatus().parityBound)) return;
     struct Context {
         field::Grid grid;
         std::shared_ptr<std::vector<EntrySteps>> costs;
@@ -1028,13 +1028,17 @@ TEST_CASE("epoch masks preserve every explicit plan across mixed retirement and 
             for(std::size_t i=0;i<fields.size();++i)
                 CHECK(fields[i].actual==(i<count ? fields[i].expected : fields[i].original));
             const auto after=openCLStatus();
-            CHECK(after.activeEpoch);CHECK(after.retiredFields==before.retiredFields+count);
-            CHECK(after.tileMaskInitializations==before.tileMaskInitializations+2);
-            CHECK(after.tileMaskClears==before.tileMaskClears);
+            const auto dispatches=after.dispatches-before.dispatches;
+            CHECK(after.activeEpoch==before.activeEpoch);CHECK(after.parityBound==before.parityBound);
+            CHECK(after.retiredFields==before.retiredFields+count);
+            CHECK(after.tileMaskInitializations==before.tileMaskInitializations+(after.activeEpoch ? 2 : 1));
+            CHECK(after.tileMaskClears==before.tileMaskClears+(after.activeEpoch ? 0 : dispatches));
+            const auto arguments=after.parityBound ? 32 : 12+4*dispatches;
+            CHECK(after.kernelArgumentUpdates==before.kernelArgumentUpdates+arguments+(after.activeEpoch ? dispatches : 0));
             CHECK(after.dispatches>before.dispatches);CHECK_FALSE(session.failed.load());
         }
     }
-    // The required-only candidate must not supply unqualified live probe data.
+    // Required-only candidates must not supply unqualified live probe data.
     auto seeds=std::make_shared<std::vector<std::uint16_t>>(2,1);(*seeds)[0]=65535;
     const auto original=*seeds;
     const auto bytes=openCLProbeBytes();

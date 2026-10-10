@@ -49,6 +49,10 @@ struct OpenCLStatus
     // promotion: the optional yielding probe intentionally declines this mode.
     bool activeEpoch = false;
     std::uint64_t tileMaskInitializations = 0, tileMaskClears = 0;
+    // Independent required-only ablation: two lane-private kernel instances
+    // retain fixed pingpong bindings, avoiding four argument setters/dispatch.
+    bool parityBound = false;
+    std::uint64_t kernelArgumentUpdates = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.
@@ -73,6 +77,9 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // backend accounts only its staging/state/lane and retained cost plane.
 // Backend staging is charged
 // separately. Unknown/unready cost planes are declined without preparation.
+// Required-only active-epoch/parity-binding ablations are also declined; their
+// results cannot supply automatic-promotion evidence until yielding counterparts
+// have been independently implemented and qualified.
 class OpenCLProbe
 {
 public:

@@ -334,7 +334,7 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
 // compilation options and dispatch geometry cannot drift apart.
 struct KernelVariant : ExecutionPlan
 {
-    Handle program = nullptr, kernel = nullptr;
+    Handle program = nullptr, kernel = nullptr, reverseKernel = nullptr;
 };
 constexpr auto kernelVariants()
 {
@@ -440,6 +440,7 @@ struct Device
             status.deviceProfiling=numericOverride("GLOB2_OPENCL_PROFILE",0,1)!=0;
             status.uniformMetadata=numericOverride("GLOB2_OPENCL_UNIFORM_METADATA",0,1)!=0;
             status.activeEpoch=numericOverride("GLOB2_OPENCL_ACTIVE_EPOCH",0,1)!=0;
+            status.parityBound=numericOverride("GLOB2_OPENCL_PARITY_BOUND",0,1)!=0;
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
             unsigned ordinal=0;
@@ -594,6 +595,8 @@ struct Runtime
         {
             if (variant.kernel)
                 api.ReleaseKernel(variant.kernel);
+            if (variant.reverseKernel)
+                api.ReleaseKernel(variant.reverseKernel);
 
         }
         if (queue)
@@ -625,6 +628,7 @@ struct Runtime
         out.profilingErrors+=in.profilingErrors;
         out.uniformMetadataHits+=in.uniformMetadataHits;
         out.tileMaskInitializations+=in.tileMaskInitializations;out.tileMaskClears+=in.tileMaskClears;
+        out.kernelArgumentUpdates+=in.kernelArgumentUpdates;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -678,14 +682,18 @@ struct Runtime
         for(std::size_t i=0;i<variants.size();++i) if(shared->variants[i].kernel) {
             variants[i].program=shared->variants[i].program;
             variants[i].kernel=api.CreateKernel(variants[i].program,"propagate",&error);check(error);
+            if(shared->status.parityBound) {
+                variants[i].reverseKernel=api.CreateKernel(variants[i].program,"propagate",&error);check(error);
+            }
         }
         selectedVariant=shared->selectedVariant;selectVariant(selectedVariant);
         status.available=true;probed=true;
     }
-    template <class T> void argument(UInt index, T value)
+    template <class T> void argumentTo(Handle target,UInt index,T value)
     {
-        check(api.SetKernelArg(kernel, index, sizeof(T), &value));
+        check(api.SetKernelArg(target, index, sizeof(T), &value));++status.kernelArgumentUpdates;
     }
+    template <class T> void argument(UInt index,T value) {argumentTo(kernel,index,value);}
     struct Event {
         API& api;Handle value=nullptr;
         explicit Event(API& api):api(api) {}
@@ -916,13 +924,25 @@ struct Runtime
         std::array<UInt, 8> zero{}, flags{};
         ++status.batches;
         status.maxBatchFields = std::max(status.maxBatchFields, std::uint64_t(requests.size()));
-        // Each lane owns its kernel instance. These arguments are immutable
-        // throughout this computation; only ping-pong buffers change per round.
-        for(unsigned i=0;i<8;++i) argument(2+i,held[i]?held[i]->buffer:held[0]->buffer);
-        argument(10, changed);
-        argument(11, descriptors);
-        argument(14, UInt(stride));
-        argument(15, pitch);
+        // Each lane owns its kernel instances. Both parity instances share
+        // immutable batch arguments but retain opposite pingpong bindings.
+        // Required batches may change shape/cost/plan, so rebind both each time.
+        const auto forward=variants[selectedVariant].kernel;
+        const auto reverse=variants[selectedVariant].reverseKernel;
+        kernel=forward;
+        const auto bindCommon=[&](Handle target) {
+            for(unsigned i=0;i<8;++i) argumentTo(target,2+i,held[i]?held[i]->buffer:held[0]->buffer);
+            argumentTo(target,10,changed);argumentTo(target,11,descriptors);
+            argumentTo(target,14,UInt(stride));argumentTo(target,15,pitch);
+        };
+        bindCommon(forward);
+        if(shared->status.parityBound) {
+            bindCommon(reverse);
+            argumentTo(forward,0,first);argumentTo(forward,1,second);
+            argumentTo(forward,12,tilesFirst);argumentTo(forward,13,tilesSecond);
+            argumentTo(reverse,0,second);argumentTo(reverse,1,first);
+            argumentTo(reverse,12,tilesSecond);argumentTo(reverse,13,tilesFirst);
+        }
         const auto dispatchStart=activeStageTiming ? monotonicNs() : 0;
         if(activeStageTiming) activeStageTiming->preparationNs+=dispatchStart-preparationStart;
         // Every dispatch extends at least one global path edge. Frozen halos
@@ -939,6 +959,7 @@ struct Runtime
             } events{api};
             for (unsigned dispatch = 0; dispatch < count; ++dispatch)
             {
+                if(shared->status.parityBound) kernel=a==first ? forward : reverse;
                 // Only the last dispatch's changes are read by the host. The
                 // in-order queue clears earlier accumulated flags before it.
                 if (dispatch+1 == count)
@@ -953,10 +974,10 @@ struct Runtime
                                                 tileCount * sizeof(UInt), 0, nullptr, nullptr));
                     ++status.tileMaskClears;
                 }
-                argument(0, a);
-                argument(1, b);
-                argument(12, active);
-                argument(13, nextActive);
+                if(!shared->status.parityBound) {
+                    argument(0, a);argument(1, b);
+                    argument(12, active);argument(13, nextActive);
+                }
                 check(
                     api.EnqueueNDRangeKernel(queue,kernel,3,nullptr,global,local,0,nullptr,
                         shared->status.deviceProfiling ? &events.values[dispatch] : nullptr));
@@ -1444,7 +1465,7 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
         request.grid.width()<=0 || request.grid.height()<=0 || request.operation!=Operation::CompleteField ||
         request.limit<0 || request.session.failed.load() ||
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
-        device.status.activeEpoch) return {};
+        device.status.activeEpoch || device.status.parityBound) return {};
     try {
         auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));
         admitted=value->state.get();return value;
