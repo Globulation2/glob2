@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
+#include <PerformanceTelemetry.h>
+#include <nlohmann/json.hpp>
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>
@@ -78,6 +80,57 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("rendered CPU endpoints preserve fixed ticks checksums and prior clocks [display][artifacts]")
+    {
+        glob2test::ScopedEnvironment serial("GLOB2_SIM_THREAD","0");
+        glob2test::ScopedEnvironment warm("GLOB2_RENDERED_CPU_WARMUP_TICKS","2");
+        glob2test::ScopedEnvironment measure("GLOB2_RENDERED_CPU_MEASURE_TICKS","3");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
+        REQUIRE(NET_Init());struct NetworkScope{~NetworkScope(){NET_Quit();}} network;
+        const auto previous=PerformanceTelemetry::diagnosticCpuClock();
+        struct RestoreClock{PerformanceTelemetry::Clock clock;~RestoreClock(){PerformanceTelemetry::setDiagnosticCpuClock(clock);}} restore{previous};
+        const auto sentinel=+[]()->std::uint64_t{return 777;};
+        PerformanceTelemetry::setDiagnosticCpuClock(sentinel);
+        const auto output=glob2test::artifactDir()/"rendered-cpu-endpoints.json";
+        const auto outputString=output.string();
+        std::vector<Uint32> expected;
+        for(bool enabled:{false,true}){
+            glob2test::ScopedEnvironment path("GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH",enabled?outputString.c_str():"");
+            Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+            const auto initial=engine.gui.game.stepCounter;
+            globalContainer->runNoX=false;globalContainer->runNoXGameName="games/gd-small-2ai.game";
+            globalContainer->runNoXCountRuns=1;globalContainer->automaticEndingGame=true;
+            globalContainer->automaticEndingSteps=int(initial+6);
+            engine.beginSession(1000);
+            CHECK(bool(engine.renderedCpu)==enabled);
+            CHECK(PerformanceTelemetry::diagnosticCpuClock()==(enabled?glob2::threadCpuNs:sentinel));
+            std::vector<Uint32> checksums;
+            for(unsigned i=0;i<6;++i){engine.stepSession(1000+i*40,{});checksums.push_back(engine.gui.game.checkSum());}
+            CHECK(engine.gui.game.stepCounter==initial+6);CHECK_FALSE(engine.gui.isRunning);
+            if(enabled){
+                CHECK(engine.renderedCpu->window.endpoints[0].tick==initial+2);
+                CHECK(engine.renderedCpu->window.endpoints[1].tick==initial+5);
+                CHECK(checksums==expected);
+            }else expected=checksums;
+            CHECK_FALSE(engine.finishSession());
+            CHECK(PerformanceTelemetry::diagnosticCpuClock()==sentinel);
+        }
+        std::ifstream stream(output);REQUIRE(bool(stream));nlohmann::json report;stream>>report;
+        CHECK(report["schema"]=="glob2-rendered-cpu-diagnostics-v1");
+        CHECK(report["start"]["captured"].get<bool>());CHECK(report["end"]["captured"].get<bool>());
+        CHECK(report["requested_end_tick"].get<Uint32>()-report["requested_start_tick"].get<Uint32>()==3);
+        CHECK(report["post_stop_backend_totals"].contains("scope"));
+        // Cancellation also restores a previously configured clock, and never
+        // writes incomplete evidence from the simulation owner's failure path.
+        {
+            glob2test::ScopedEnvironment path("GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH",outputString.c_str());
+            Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+            globalContainer->automaticEndingSteps=int(engine.gui.game.stepCounter+6);
+            engine.beginSession(1000);CHECK(PerformanceTelemetry::diagnosticCpuClock()==glob2::threadCpuNs);
+            engine.abortSession();CHECK(PerformanceTelemetry::diagnosticCpuClock()==sentinel);
+        }
+    }
+
 
     TEST_CASE("eliminated prestige leaders cannot make every survivor lose")
     {

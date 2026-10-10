@@ -590,3 +590,36 @@ completion was proved by an in-order read. `committed_fields` counts successful
 transactional GPU outputs. A later failure can increase the former without the
 latter; publication still requires exact output or an original-seed CPU recovery.
 Coordinator diagnostics expose this distinction and fallback after observation.
+
+### Normal presentation CPU boundaries
+
+For a fresh `game repeat FILE --display --runs 1 --ticks END` diagnostic run,
+`GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH` selects a JSON report written after the
+simulation stops. Set positive `GLOB2_RENDERED_CPU_WARMUP_TICKS` and
+`GLOB2_RENDERED_CPU_MEASURE_TICKS` explicitly. The requested boundaries are the
+loaded game's initial tick plus warmup, and that tick plus measure. Both must
+fit the existing absolute `--ticks` ending target; these variables never change
+simulation tick counts, publication deadlines or save/replay behavior.
+
+Two fixed endpoint slots record all-thread process CPU, simulation-owner CPU,
+monotonic wall time and scalar gradient/AI counters after the named completed
+ticks. Start metadata is captured before the process-clock reading; endpoint
+metadata is captured after the end reading. The simulation loop performs no
+report allocation, JSON, I/O, pending-job scan or device/service status query.
+This opt-in also enables diagnostic CPU clocks for normal performance scopes
+before the simulation thread starts and restores the previous clock afterward.
+To collect additional gradient stages and AI job CPU, independently set
+`GLOB2_GRADIENT_DIAGNOSTICS=1` and `GLOB2_AI_SCHEDULER_DIAGNOSTICS=1` before startup.
+The report records whether those counters were enabled.
+
+The interval is labelled `[start_tick,end_tick)`, with both boundaries after
+completed ticks. Completed-job counters can straddle these boundaries; their
+nontransactional deltas are approximate observations, not an exact CPU ceiling.
+Owner join and nested scope totals are inclusive and must not be summed with
+propagation or their child scopes. Missing endpoints and zero/reversed clocks
+produce invalid evidence and null CPU deltas. Warm committed GPU field counts
+are scalar pipeline observations; backend dispatch and coordinator totals are
+separately sampled after stop and explicitly describe cumulative process/session
+activity outside the measured window. They do not establish warm dispatch counts.
+Use matching assets, checksums/replay, renderer settings and external resource
+controls for comparisons; this diagnostic alone never qualifies automatic mode.

@@ -225,6 +225,16 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
 }
 
 
+Map::GradientCpuCounters Map::gradientCpuCounters() const noexcept
+{
+    const auto& p=gradientRuntime->pipeline;
+    return {p.diagnosticsEnabled(),p.requiredSeedCpuNs(),p.requiredPropagationCpuNs(),
+        p.requiredOwnedInputCpuNs(),p.requiredHandoffCpuNs(),p.requiredCleanupCpuNs(),
+        p.metrics.ownerCompletionCpuNs,p.metrics.ownerJoinCpuNs,p.cpuCompleteFields(),p.gpuCompleteFields(),
+        p.gpuRequestedFields(),p.gpuSelectedFields(),p.cpuReason(GradientPipeline::CPUReason::CpuClockUnavailable),
+        p.metrics.publicationWaitNs,p.metrics.gpuPublicationWaitNs,p.metrics.gpuDeviceOverlapWaitNs};
+}
+
 bool Map::gradientPipelineEnabled() const { return gradientRuntime->pipeline.enabled(); }
 
 Map::GradientPipelineStatus Map::gradientPipelineStatus() const

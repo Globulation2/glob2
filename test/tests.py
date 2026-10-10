@@ -328,6 +328,7 @@ UNIT_TESTS = [
     '#libgag/src/BufferedFileStreamHarness.cpp',
     '#src/common/ComputeExecutorHarness.cpp',
     '#src/common/ThreadCpuEnvelopeHarness.cpp',
+    '#src/engine/RenderedCpuWindowHarness.cpp',
     '#src/map/gradient/GradientPipelineHarness.cpp',
     ('#mobile/MobileCertificateHarness.cpp', dict(require={'wss'})),
     '#mobile/MobileDocumentsHarness.cpp',

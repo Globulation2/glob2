@@ -262,6 +262,16 @@ public:
         // Owner-only O(1) last-advance telemetry, no pending-job scan.
         std::uint64_t lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
 	};
+    // Simulation-owner only: independent cumulative atomics plus owner-local
+    // publication counters. No pending scan or device/service/policy locks.
+    struct GradientCpuCounters {
+        bool stageDiagnostics=false;
+        Uint64 seedCpuNs=0,propagationCpuNs=0,ownedInputCpuNs=0,handoffCpuNs=0,cleanupCpuNs=0;
+        Uint64 ownerCompletionCpuNs=0,ownerJoinCpuNs=0,cpuCompleteFields=0,gpuCompleteFields=0;
+        Uint64 gpuRequestedFields=0,gpuSelectedFields=0,cpuClockUnavailableFields=0;
+        Uint64 publicationWaitNs=0,gpuPublicationWaitNs=0,gpuDeviceOverlapWaitNs=0;
+    };
+    GradientCpuCounters gradientCpuCounters() const noexcept;
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
 	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
