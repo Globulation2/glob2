@@ -303,7 +303,7 @@ void Engine::executeOrdersAndStep(bool readyNow)
 void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFrame* scene)
 {
     // Diagnostic-only actual rendering role; background initialization may not
-    // have finished at configuration. Retry without allocation or task scans.
+    // have finished at configuration. Retry without registry initialization or task scans.
     thread_local const bool envelopeRequested=glob2::cpuEnvelopeRequested();
     thread_local bool envelopeRegistered=false;
     if(envelopeRequested && !envelopeRegistered)
