@@ -40,14 +40,17 @@ uninstalling the installed copy; export or back up saves first.
 Before tagging, run `fdroid lint` and exercise `fdroid checkupdates` with a
 disposable tag fixture; the update checker cannot discover an unpublished
 public tag. Confirm it generates all three ABI version codes.
-Dispatch `F-Droid buildserver recipe trial` on private `genixpro/glob2-release`
+Dispatch `F-Droid buildserver recipe trial` on `genixpro/glob2-release`
 for each ABI with the exact public candidate commit SHA. It runs the recipe with
 `fdroid build --on-server` inside F-Droid's pinned buildserver image. The trial
-uses a disposable copy of the recipe whose three `commit` fields point to that
-SHA; the public tag does not exist until these gates pass. The source build
+uses a disposable copy of the reviewed recipe, updating all three version names,
+ABI codes, and current-version fields from the candidate manifest and pointing
+each `commit` field to that SHA. This supports candidates newer than the reviewed
+template. The public tag does not exist until these gates pass. The source build
 installs the repository's checksum-pinned JDK so its Java bytecode can be
-compared with GitHub's APK. Retain the trial APKs and logs, and restore the tag
-references before submitting the recipe to `fdroiddata`. Play the candidate on
+compared with GitHub's APK. Retain the trial APKs and logs. Submit the materialized
+recipe to `fdroiddata` with full commit hashes that match the final public tag,
+as required by its app inclusion template. Play the candidate on
 real ARM64 and 32-bit ARM devices and an x86_64 emulator. Record APK digests,
 logs, screenshots, save/load,
 rotation, lifecycle, keyboard, touch, and editor results under `artifacts/` for
@@ -59,6 +62,12 @@ for all three codes after the GitHub release and opens one tracking issue when
 publication remains incomplete after 72 hours.
 
 F-Droid's initial listing requires an accepted `fdroiddata` merge request.
+Fork `fdroid/fdroiddata` into the submitting maintainer's personal GitLab
+namespace; a new GitLab group is unnecessary. Add only the app's YAML file on a
+dedicated branch and open a draft merge request using the app inclusion template.
+Keep release validation and license questions explicit until resolved; a draft
+submission does not establish release readiness. If GitLab account verification
+blocks fork CI, note that in the merge request so F-Droid maintainers can run it.
 Subsequent tagged updates use F-Droid's update checker; GitHub Actions does not
 publish directly to the main F-Droid repository. Review the shipped asset
 licenses against `docs/assets/source-attribution.md` and the font licenses with
