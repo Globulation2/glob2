@@ -329,3 +329,14 @@ unwinding with exit code 86. This prevents borrowed stack/output storage from
 expiring while driver completion is unknown. It is not production recovery;
 retain the external process return code, freeze and partial result files and
 reject the entire run. Normal successful execution adds no safety `Finish`.
+
+Before real-device persistent screens, evidence can run the independent
+`check_persistent_failure.py --lock <shared-lock> --output <fresh-directory>`
+controlled subprocess test. It compiles the actual native helper against OpenCL
+stubs, loads no driver, and injects metadata-read failure. Successful drain
+writes borrowed native stack metadata while it is alive, returns the API error,
+and preserves seeds/output sentinels; a destructor marker proves ordinary
+unwinding works. Failed drain checks those same sentinels, requires exit code 86,
+exact fatal receipt/stderr markers, and absence of the destructor marker. The
+shared lock precedes compilation, source/binary hashes and all subprocess
+outputs/return codes are retained, and a completion receipt requires both cases.
