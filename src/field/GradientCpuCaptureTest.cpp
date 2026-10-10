@@ -260,3 +260,42 @@ TEST_CASE("weighted captures pack borrowed water callbacks without retaining the
     CHECK_FALSE(fixture.begin(receipt));CHECK(context->calls>0);CHECK(fixture.seeds==originals);
     CHECK(openCLProbeBytes()==baseline);CHECK(fixture.policy->metrics().probeCpuNs>0);
 }
+
+TEST_CASE("capture settlement cannot escape borrowed aliases or infer unknown driver cost" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();
+    CaptureFixture fixture;GradientCpuCapture::Receipt receipt;
+    auto capture=fixture.begin(receipt);REQUIRE(bool(capture));
+    auto record=capture->complete(fixture.seeds,{91,1000000,true,true},receipt);REQUIRE(bool(record));
+    REQUIRE(bool(record->adoptProducer()));
+    REQUIRE(bool(record->authorize(91,1,100000000,false)));
+    auto borrowed=record;
+    CHECK_FALSE(GradientCpuCapture::takeSettlement(record));CHECK(bool(record));
+    CHECK(fixture.policy->metrics().probeCpuNs==0);CHECK(openCLProbeBytes()>baseline);
+    borrowed.reset();std::weak_ptr<GradientCpuCapture::Record> weak=record;
+    auto token=GradientCpuCapture::takeSettlement(record);REQUIRE(bool(token));CHECK_FALSE(record);
+    CHECK_FALSE(weak.expired());CHECK(openCLProbeBytes()>baseline);
+    token->addObservedCpu(1000,true);
+    CHECK_FALSE(token->settle({1000,10000,2000,100000000,true,true,true}));
+    CHECK(weak.expired());CHECK(openCLProbeBytes()==baseline);
+    CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+    CHECK(fixture.policy->metrics().promoted==0);CHECK(token->receipt().reservedBytes==0);
+}
+
+TEST_CASE("unsettled capture token destruction charges invalid timing after storage release" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();
+    CaptureFixture fixture;GradientCpuCapture::Receipt receipt;
+    auto capture=fixture.begin(receipt);REQUIRE(bool(capture));
+    auto record=capture->complete(fixture.seeds,{91,1000000,true,true},receipt);REQUIRE(bool(record));
+    REQUIRE(record->adoptProducer());
+    REQUIRE(bool(record->authorize(91,1,100000000,false)));
+    {
+        auto token=GradientCpuCapture::takeSettlement(record);REQUIRE(bool(token));
+        token->addObservedCpu(0,false);CHECK_FALSE(token->receipt().clockValid);
+        CHECK(fixture.policy->metrics().probeCpuNs==0);CHECK(openCLProbeBytes()>baseline);
+    }
+    CHECK(openCLProbeBytes()==baseline);
+    CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+    CHECK(fixture.policy->metrics().canceled==1);
+}

@@ -10,6 +10,17 @@
 
 namespace gradient_kernel
 {
+// The production accounting bridge owns qualification of complete process /
+// driver-tail coverage. Diagnostics cannot manufacture this authorization.
+class CaptureProbeAccounting;
+class CaptureSettlementAuthorization {
+    friend class CaptureProbeAccounting;
+    bool qualified=false;
+    explicit CaptureSettlementAuthorization(bool value):qualified(value) {}
+public:
+    CaptureSettlementAuthorization()=default;
+    bool permitsInference() const noexcept {return qualified;}
+};
 // Unattached worker-side capture primitive. Nothing in required selection calls
 // it. Admission must follow seeding and precede in-place CPU propagation.
 // Modified/indirect terrain views deliberately decline: retaining a Terrain
@@ -73,7 +84,7 @@ public:
         std::unique_ptr<std::uint8_t[]> waterCells;
         Receipt totals;
         bool invalid=false,declined=false;
-        bool handedOff=false;
+        bool handedOff=false,delegatedSettlement=false;
         struct Decline {};
         std::uint64_t readCpu() {
             if(invalid || declined)throw Decline{};
@@ -136,7 +147,7 @@ public:
             const auto end=glob2::threadCpuNs();
             if(!start || !end || end<start)invalidate();
             else try {account(start,end);}catch(...) {}
-            policy->cancelProbe(ticket,totals.optionalCpuNs,!invalid);
+            if(!delegatedSettlement)policy->cancelProbe(ticket,totals.optionalCpuNs,!invalid);
         }
         std::span<const std::uint16_t> original() const noexcept {return {originals.get(),count};}
         std::span<const std::uint16_t> expected() const noexcept {return {golden.get(),count};}
@@ -169,6 +180,66 @@ public:
             return result;
         }
     };
+    // Move-only terminal owner. Capture/probe aliases must be gone before
+    // extraction. Storage, policy and global admission survive until cleanup;
+    // destruction without complete-cost authorization pays full reserved credit.
+    class Settlement {
+        friend class GradientCpuCapture;
+        std::shared_ptr<Record> record;
+        std::shared_ptr<CpuSavingPolicy> policy;
+        CpuSavingPolicy::ProbeTicket ticket;
+        Receipt totals;
+        std::thread::id producer;
+        std::size_t lease=0;
+        explicit Settlement(std::shared_ptr<Record> value)
+            :record(std::move(value)),policy(record->policy),ticket(record->ticket),
+             totals(record->totals),producer(record->producer),lease(record->lease) {
+            record->delegatedSettlement=true;record->lease=0;
+        }
+    public:
+        Settlement(const Settlement&)=delete;
+        Settlement& operator=(const Settlement&)=delete;
+        Settlement(Settlement&& other) noexcept
+            :record(std::move(other.record)),policy(std::move(other.policy)),ticket(other.ticket),
+             totals(other.totals),producer(other.producer),lease(std::exchange(other.lease,0)) {}
+        Settlement& operator=(Settlement&&)=delete;
+        ~Settlement(){settle({},{});}
+        Receipt receipt() const noexcept {return totals;}
+        void addObservedCpu(std::uint64_t ns,bool valid) noexcept {
+            if(!valid || ns>UINT64_MAX-totals.optionalCpuNs) {
+                totals.clockValid=false;totals.requiresFullReservedCharge=true;++totals.invalidClocks;
+            } else totals.optionalCpuNs+=ns;
+        }
+        bool settle(CpuSavingPolicy::ProbeOutcome outcome,
+                    CaptureSettlementAuthorization authorization={}) noexcept {
+            if(!policy)return false;
+            const auto start=glob2::threadCpuNs();
+            const bool sameProducer=std::this_thread::get_id()==producer;
+            // Record cannot cancel here: this token retains its lease and
+            // admission while arrays, callback owner and holder are destroyed.
+            record.reset();
+            const auto end=glob2::threadCpuNs();
+            addObservedCpu(start && end && end>=start?end-start:0,
+                sameProducer && start && end && end>=start);
+            const bool complete=authorization.permitsInference() && outcome.clockValid &&
+                totals.clockValid && !totals.requiresFullReservedCharge &&
+                outcome.actualProbeCpuNs>=totals.optionalCpuNs;
+            outcome.actualProbeCpuNs=std::max(outcome.actualProbeCpuNs,totals.optionalCpuNs);
+            bool promoted=false;
+            // All captured storage is now gone. Policy's internal settlement
+            // clocks account its own mutation/statistics CPU before publishing.
+            releaseOpenCLProbeBytes(lease);lease=0;totals.reservedBytes=0;
+            if(complete)promoted=policy->finishAcceptedCapture(ticket,outcome);
+            else {totals.requiresFullReservedCharge=true;policy->cancelProbe(ticket,outcome.actualProbeCpuNs,false);}
+            policy.reset();return promoted;
+        }
+    };
+    static std::optional<Settlement> takeSettlement(std::shared_ptr<Record>& value) noexcept {
+        // An escaped immutable alias may still be a DMA source. Neither its
+        // budget nor policy ticket can move away until exclusive ownership.
+        if(!value || value.use_count()!=1 || !value->totals.referenceBound)return {};
+        return Settlement(std::exchange(value,{}));
+    }
 private:
     std::shared_ptr<Record> record;
     explicit GradientCpuCapture(std::shared_ptr<Record> value):record(std::move(value)) {}
