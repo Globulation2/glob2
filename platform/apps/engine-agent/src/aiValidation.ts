@@ -173,7 +173,8 @@ export async function createAiValidator(
       throw Error('Isolated AI validator probe failed: ' + p.stderr.slice(-500));
     await mkdir(join(scratch, 'probe'));
     const game = await run(scratch, [
-      'game', 'run',
+      'game',
+      'run',
       '--map-file',
       '/fixtures/two.map.gz',
       '--game-seed',
@@ -227,7 +228,11 @@ export async function createAiValidator(
         await progress?.(report).catch((error) => {
           throw new InfrastructureError(String(error));
         });
-        const checked = await run(scratch, ['ai', 'check', '--format', 'json', '/job/source.js'], signal);
+        const checked = await run(
+          scratch,
+          ['ai', 'check', '--format', 'json', '/job/source.js'],
+          signal,
+        );
         if (checked.timedOut || checked.signal)
           throw Error('Startup exceeded the validation resource limits.');
         const checkedJson = JSON.parse(checked.stdout) as {
@@ -262,7 +267,8 @@ export async function createAiValidator(
           const p = await run(
             scratch,
             [
-              'game', 'run',
+              'game',
+              'run',
               ...args,
               '--ticks',
               '4096',
@@ -337,7 +343,8 @@ export async function createAiValidator(
           const prepared = await run(
             scratch,
             [
-              'game', 'run',
+              'game',
+              'run',
               ...args,
               '--ticks',
               '1',

@@ -46,7 +46,8 @@ describe('catalog and generation', () => {
     // This recorded catalog predates the current pool's generator revisions.
     const revision = catalog.generators.get(entry.generatorId)!.revision;
     expect(generateMapArgs({ ...entry, revision, seed: 42 }, catalog, '/tmp/out')).toEqual([
-      'map', 'study',
+      'map',
+      'study',
       '15',
       '--seed',
       '42',
@@ -188,7 +189,8 @@ describe('verify-match outputs', () => {
     expect(() => parseVerdict('{"verdict":"maybe"}')).toThrow(/unknown verdict/);
     expect(() => parseVerdict('not json')).toThrow(EngineOutputError);
     expect(verifyMatchArgs('r', 'm', 'o')).toEqual([
-      'match', 'verify',
+      'match',
+      'verify',
       'r',
       '--map-file',
       'm',
@@ -300,7 +302,13 @@ describe('process limits', () => {
 // CLI descriptions are separate from domain catalog/simulation versions.
 import { requireCliVersion } from '@glob2/engine/engineCli';
 it('rejects unsupported static CLI descriptions before starting jobs', () => {
-  expect(() => requireCliVersion(JSON.stringify({ schema_version: 1, cli_version: 2, commands: [] }))).not.toThrow();
-  for (const value of [{ schema_version: 1, cli_version: 1, commands: [] }, { schema_version: 2, cli_version: 2, commands: [] }, { schema_version: 1, cli_version: 2 }])
+  expect(() =>
+    requireCliVersion(JSON.stringify({ schema_version: 1, cli_version: 2, commands: [] })),
+  ).not.toThrow();
+  for (const value of [
+    { schema_version: 1, cli_version: 1, commands: [] },
+    { schema_version: 2, cli_version: 2, commands: [] },
+    { schema_version: 1, cli_version: 2 },
+  ])
     expect(() => requireCliVersion(JSON.stringify(value))).toThrow();
 });

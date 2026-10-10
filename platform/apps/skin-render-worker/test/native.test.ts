@@ -21,7 +21,13 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
   async () => {
     const binary = process.env['GLOB2_SKIN_RENDER_TEST_BINARY']!;
     const cwd = fileURLToPath(new URL('../../../../', import.meta.url));
-    const description = await runProcess({ binary, cwd, args: ['help', '--format', 'json'], limits: { timeoutMs: 10000 }, maxCaptureBytes: 1024 * 1024 });
+    const description = await runProcess({
+      binary,
+      cwd,
+      args: ['help', '--format', 'json'],
+      limits: { timeoutMs: 10000 },
+      maxCaptureBytes: 1024 * 1024,
+    });
     expect(description.code).toBe(0);
     requireCliVersion(description.stdout);
     const probe = await runProcess({
@@ -154,7 +160,8 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
     let texture: Buffer = Buffer.from(fixture.textureHex, 'hex'),
       material: Buffer = Buffer.from(fixture.materialHex, 'hex');
     const args = [
-      'assets', 'render-skin',
+      'assets',
+      'render-skin',
       '--manifest',
       join(work, 'input.json'),
       '--texture',

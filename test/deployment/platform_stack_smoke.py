@@ -692,7 +692,7 @@ def main():
     parser.add_argument('--log-dir', help='write compose logs and results.json here')
     parser.add_argument('--attach', metavar='PROJECT', help='check this running Compose project instead')
     parser.add_argument('--env-file', help="with --attach: the deployment's env file")
-    parser.add_argument('info', 'sim-version', '--format', 'json', help='with --attach: expected sim version key (default: this checkout)')
+    parser.add_argument('--sim-version', help='with --attach: expected sim version key (default: this checkout)')
     parser.add_argument('--website', metavar='ORIGIN',
                         help='with --attach: separately hosted public website whose old app paths redirect here')
     parser.add_argument('--match-e2e', action='store_true',
