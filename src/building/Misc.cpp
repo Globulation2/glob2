@@ -15,6 +15,7 @@
 #include "Game.h"
 #include "Team.h"
 #include "Unit.h"
+#include "UnitCargo.h"
 #include "Order.h"
 #include "Integrity.h"
 
@@ -119,7 +120,7 @@ void Building::kill(int diagnosticRemoval)
 	{
 		Unit *u=*it;
 		int x, y, dx, dy;
-		if (findExpelTile(u->performance[FLY], u->performance[SWIM], &x, &y, &dx, &dy))
+		if (findExpelTile(u->performance[FLY], u->performance[SWIM], &x, &y, &dx, &dy, u->performance[WALK]>0))
 			u->expelFromBuilding(x, y, dx, dy);
 		else
 		{
@@ -159,39 +160,18 @@ bool Building::isUpgradeAvailable() const
 	return owner->game->isBuildingTypeAvailable(type->nextLevel);
 }
 
-bool Building::canUnitWorkHere(Unit* unit, bool attraction)
+bool Building::canUnitWorkHere(Unit* unit,bool attraction,int role)
 {
-	if(attraction)
-	{
-		if(type->zonable[unit->typeNum])
-		{
-			if (unit->typeNum == WARRIOR)
-			{
-				int level=std::min(unit->level[ATTACK_SPEED], unit->level[ATTACK_STRENGTH]);
-				if(minLevelToFlag<=level)
-					return true;
-			}
-			else if (unit->typeNum == EXPLORER)
-			{
-				if(explorersRequireBombing && !unit->level[MAGIC_ATTACK_GROUND])
-					return false;
-				else
-					return true;
-			}
-			else if (unit->typeNum == WORKER)
-			{
-				return unit->workerLevel() >= minWorkerLevelToFlag;
-			}
-
-		}
-	}
-	else if(unit->typeNum ==  WORKER)
-	{
-		if(runtime->requiredWorkerLevel <= unit->workerLevel())
-			return true;
-	}
-	return false;
-
+    if (!attraction) return unit->hasCapability(UnitRuntimeTraits::Transport) && unit->performance[BUILD]>0
+        && (!type->isBuildingSite || unit->hasCapability(UnitRuntimeTraits::Construct))
+        && runtime->requiredWorkerLevel<=unit->workerLevel();
+    const auto& interaction=runtime->interaction(unit->typeNum);
+    const auto qualified=[&](int job) {
+        if (job==0) return interaction.has(BuildingUnitInteraction::Clear) && unit->workerLevel()>=minWorkerLevelToFlag;
+        if (job==1) return interaction.has(BuildingUnitInteraction::Explore) && (!explorersRequireBombing || unit->level[MAGIC_ATTACK_GROUND]);
+        return interaction.has(BuildingUnitInteraction::Defend) && minLevelToFlag<=std::min(unit->level[ATTACK_SPEED],unit->level[ATTACK_STRENGTH]);
+    };
+    return role>=0 ? role<3 && qualified(role) : qualified(0)||qualified(1)||qualified(2);
 }
 
 
@@ -282,6 +262,38 @@ MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, Materia
 }
 
 
+WideMaterialDeliveryResult Building::deliverCargoPacket(int resourceType, WideMaterialPacket packet)
+{
+    if (resourceType<0 || resourceType>=MaterialSlotCount || !packet.denominator)
+        throw std::runtime_error("Invalid cargo material packet");
+    const auto packetDivisor=std::gcd(packet.numerator,packet.denominator);
+    packet.numerator/=packetDivisor;packet.denominator/=packetDivisor;
+    WideMaterialDeliveryResult result{0,packet};
+    const Uint64 multiplier=type->materialMultiplier[resourceType];
+    constexpr Uint64 maximum=std::numeric_limits<Uint64>::max();
+    // Preflight all arithmetic before delivery changes stock, health or telemetry.
+    const Uint64 common=std::gcd(packet.denominator,multiplier);
+    const Uint64 scale=multiplier/common,stockDenominator=packet.denominator/common;
+    if (packet.numerator>maximum/scale || packet.denominator>maximum/scale)
+        return result;
+    const Uint64 scaled=packet.numerator*scale;
+    const Sint32 accepted=Sint32(std::min({scaled/stockDenominator,Uint64(multiplier),
+        Uint64(std::max(0,materialDeliveryNeed(resourceType))),
+        Uint64(std::numeric_limits<Sint32>::max()-materials[resourceType])}));
+    if (!accepted) return result;
+    // This denomination is exact and has no discarded fraction. Cargo retains
+    // everything the recipient did not accept, without a spillage event.
+    const auto delivery=deliverMaterialPacket(resourceType,{Uint32(accepted),Uint32(multiplier)});
+    result.acceptedStock=delivery.acceptedStock;
+    result.residual={scaled-Uint64(delivery.acceptedStock)*stockDenominator,
+        packet.denominator*scale};
+    const auto divisor=std::gcd(result.residual.numerator,result.residual.denominator);
+    result.residual.numerator/=divisor;
+    result.residual.denominator/=divisor;
+    return result;
+}
+
+
 
 void Building::removeMaterialFromBuilding(int resourceType)
 {
@@ -316,7 +328,7 @@ int Building::getMidY(void)
 	return ((posY-type->decTop)&owner->map->getMaskH());
 }
 
-bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim)
+bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim, bool canWalk)
 {
 	int testX, testY;
 	int exitQuality=0;
@@ -330,28 +342,28 @@ bool Building::findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSw
 		testY=this->posY-1;
 		oldQuality=0;
 		for (testX=this->posX-1; testX<=this->posX+type->width ; testX++)
-			checkGroundExitQuality(testX,testY,testX,testY-1,exitX,exitY,exitQuality,oldQuality,canSwim);
+			checkGroundExitQuality(testX,testY,testX,testY-1,exitX,exitY,exitQuality,oldQuality,canSwim,canWalk);
 	}
 	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		testY=this->posY+type->height;
 		oldQuality=0;
 		for (testX=this->posX-1; (testX<=this->posX+type->width) ; testX++)
-			checkGroundExitQuality(testX,testY,testX,testY+1,exitX,exitY,exitQuality,oldQuality,canSwim);
+			checkGroundExitQuality(testX,testY,testX,testY+1,exitX,exitY,exitQuality,oldQuality,canSwim,canWalk);
 	}
 	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		oldQuality=0;
 		testX=this->posX-1;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			checkGroundExitQuality(testX,testY,testX-1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
+			checkGroundExitQuality(testX,testY,testX-1,testY,exitX,exitY,exitQuality,oldQuality,canSwim,canWalk);
 	}
 	if (exitQuality<EXIT_QUALITY_GOOD_ENOUGH)
 	{
 		oldQuality=0;
 		testX=this->posX+type->width;
 		for (testY=this->posY-1; (testY<=this->posY+type->height) ; testY++)
-			checkGroundExitQuality(testX,testY,testX+1,testY,exitX,exitY,exitQuality,oldQuality,canSwim);
+			checkGroundExitQuality(testX,testY,testX+1,testY,exitX,exitY,exitQuality,oldQuality,canSwim,canWalk);
 	}
 	if (exitQuality>0)
 	{
@@ -375,12 +387,12 @@ void Building::checkGroundExitQuality(
 		int & exitY,
 		int & exitQuality,
 		int & oldQuality,
-		bool canSwim)
+		bool canSwim, bool canWalk)
 {
 	Uint32 me=owner->me;
-	if (owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
+	if ((canWalk || (canSwim && owner->map->terrainPropertiesAt(testX,testY).swimmable)) && owner->map->isFreeForGroundUnit(testX, testY, canSwim, me))
 	{
-		if (owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
+		if ((canWalk || (canSwim && owner->map->terrainPropertiesAt(extraTestX,extraTestY).swimmable)) && owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
 			oldQuality++;
 		if (owner->map->isResource(testX, testY-1))
 		{
@@ -433,7 +445,7 @@ bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
 	return false;
 }
 
-bool Building::findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy)
+bool Building::findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy, bool canWalk)
 {
 	// Pass 0 takes the footprint, pass 1 the ring around it.
 	for (int pass=0; pass<2; pass++)
@@ -446,7 +458,7 @@ bool Building::findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *
 					continue;
 				int wx=x&owner->map->getMaskW();
 				int wy=y&owner->map->getMaskH();
-				if (fly ? !owner->map->isFreeForAirUnit(wx, wy) : !owner->map->isFreeForGroundUnit(wx, wy, canSwim, owner->me))
+				if (fly ? !owner->map->isFreeForAirUnit(wx, wy) : (!(canWalk || (canSwim && owner->map->terrainPropertiesAt(wx,wy).swimmable)) || !owner->map->isFreeForGroundUnit(wx, wy, canSwim, owner->me)))
 					continue;
 				*posX=wx;
 				*posY=wy;
@@ -536,7 +548,7 @@ bool Building::integrity()
 	return true;
 }
 
-Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
+Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 {
 	// `cs` is signed `int` so the open-coded `(cs<<31)|(cs>>1)` rotates
 	// use arithmetic right-shift (sign-extending). Do NOT replace these
@@ -640,15 +652,16 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 		checkSumsVector->push_back(cs);// [17]
 
 
-	for (int i=0; i<NB_UNIT_TYPE; i++)
+	for (unsigned i=0; i<(legacy152 ? NB_UNIT_TYPE : productionTypeCount()); i++)
 	{
-		cs^=ratio[i];
-		cs^=percentUsed[i];
+		cs^=productionRatio(i);
+		cs^=productionUsed(i);
 		cs=(cs<<31)|(cs>>1);
 	}
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [18]
 
+	if (!legacy152) for (const auto preference:extraConstructionOriginRatios) { cs=(cs<<1)|(cs>>31); cs^=preference; }
 	cs^=shootingStep;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [19]

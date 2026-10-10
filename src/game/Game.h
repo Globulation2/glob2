@@ -10,6 +10,8 @@
 #include <span>
 
 #include "Map.h"
+#include "UnitCatalog.h"
+#include "UnitCargo.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "Utilities.h"
 #include "OwnerRandom.h"
@@ -155,6 +157,12 @@ public:
 	// Frozen for the lifetime of this simulation. Entity type pointers always
 	// refer to this registry, never to the application's authoring defaults.
 	BuildingsTypes buildingsTypes;
+	UnitCargoStore unitCargo;
+	const UnitCatalog& unitCatalog() const { return *gameHeader.getUnitCatalog(); }
+	std::size_t unitTypeCount() const { return unitCatalog().size(); }
+	bool isUnitTypeAvailable(int type) const;
+	void configureUnitCatalog();
+	bool hasWaterOnlyUnits() const { return waterOnlyUnits; }
 	BuildingAreaEffects::Runtime areaEffects;
 	const AIPlanning::BuildingCapabilityIndex& buildingCapabilities() const;
 	// Setup/load only: compile experiment gates and discard catalog-derived AI
@@ -170,6 +178,8 @@ public:
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
 private:
 	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
+	std::vector<Uint8> unitAvailability;
+	bool waterOnlyUnits=false;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
 	friend class FailingUnitMarkersHarness;
@@ -457,7 +467,7 @@ private:
 	static void drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SnapshotUnit& unit, Uint32 drawOptions, const PresentationFrame& scene, float unitMotion = 0);
 	static bool isOnScreen(int left, int top, int right, int bot, int viewportX, int viewportY, int x, int y, const SceneMap& map);
 public:
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector=NULL, std::vector<Uint32> *checkSumsVectorForBuildings=NULL, std::vector<Uint32> *checkSumsVectorForUnits=NULL, bool heavy=false, bool legacy152=false);
 
 	/// Sets the alliances from the GameHeader alliance teams
 	void setAlliances(void);

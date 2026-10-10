@@ -453,7 +453,7 @@ void Maxima::manage_land_clearing(Context& runtime)
 		&& maintenance_wood_tiles>0
 		&& timer>=strategy.farming.proactive_start_tick && !budget.recovery_active
 		&& timer-last_proactive_clearing_tick>=budget.farming_clearing_cooldown
-		&& stat->numberUnitPerType[WORKER]
+		&& stat->carriers
 			>=budget.farming_min_workers_for_clearing;
 	if(!(budget.farming_proactive_clearing_enabled
 		&& budget.farming_allow_proactive_clearing)
@@ -461,7 +461,7 @@ void Maxima::manage_land_clearing(Context& runtime)
 		return;
 	// Clearing inflicts 10 HP per harvested resource. Use one worker and stop
 	// after a bounded gain; unrelated injured units must not disable maintenance.
-	if(stat->numberUnitPerType[WORKER]<budget.farming_min_workers_for_clearing)
+	if(stat->carriers<budget.farming_min_workers_for_clearing)
 		return;
 
 	const WoodClearingTarget target=select_wood_clearing_target(runtime);
@@ -542,7 +542,7 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 		for(int id=0;id<Unit::MAX_COUNT;++id)
 		{
 			const AIEngine::UnitView* worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
-			if(!worker||worker->typeNum!=WORKER
+			if(!worker||!AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*worker,WORKER)
 			   ||int(worker->performance[SWIM]>0)!=swimming)continue;
 			const int index=(*map).normalizeY(worker->posY)*w+(*map).normalizeX(worker->posX);
 			if(!visited[index]){visited[index]=1;queue.push_back(index);}

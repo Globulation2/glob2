@@ -69,7 +69,7 @@ struct BuildingStateRecord
 	Sint32 bullets;
 	Uint32 seenByMask;
 	// Footprint, clearing and combat access, each without/with swimming.
-	bool locked[6];
+	bool locked[9];
 	// Keep optional funding bookkeeping after existing hot simulation fields.
 	bool areaFunded = false;
 	Sint8 areaFundingTeam = -1;

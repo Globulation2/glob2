@@ -14,6 +14,7 @@
 #define AI_MAXIMA_LABOUR_H
 
 #include <algorithm>
+#include <climits>
 
 namespace AIMaxima
 {
@@ -152,19 +153,24 @@ inline int hospitalBedsWanted(int warriors, int bedsPerWarriorPercent)
 	return (std::max(0, warriors)*std::max(0, bedsPerWarriorPercent)+99)/100;
 }
 
-/// Damage rate of a warrior by combat level: attack speed times what its
-/// strength leaves after armour (src/unit/types/Race.cpp, armour 10).
-const int WarriorDamageRate[4]={36, 64, 110, 168};
-
-/// Whether an army's damage rate clears the defenders it is believed to face.
-/// Defenders use the mean damage rate of levels 1 and 2. A level-3 army
-/// needs fewer heads than a level-1 army to meet the same requirement.
-inline bool attackStrengthSufficient(long long ownDamageRate,
-	int estimatedEnemyWarriors)
+/// The unlearned offense model measures attack speed times damage left after
+/// the reference defender's armour. Bound a contribution before summing an army.
+inline int combatDamageRate(int attackSpeed, int attackStrength, int armour)
 {
-	const long long required=static_cast<long long>(std::max(0,
-		estimatedEnemyWarriors))*(WarriorDamageRate[1]+WarriorDamageRate[2])/2;
-	return ownDamageRate>=required;
+    if (attackSpeed<=0 || attackStrength<=0) return 0;
+    const long long damage=std::max(1LL,static_cast<long long>(attackStrength)-std::max(0,armour));
+    return static_cast<int>(std::min(static_cast<long long>(INT_MAX),
+        static_cast<long long>(std::max(0,attackSpeed))*damage));
+}
+
+/// Whether an army clears the estimated defenders at the supplied reference
+/// damage rate. The controller derives that reference from its unit catalog.
+inline bool attackStrengthSufficient(long long ownDamageRate,
+    int estimatedEnemyWarriors, int referenceDamageRate)
+{
+    const long long required=static_cast<long long>(std::max(0,
+        estimatedEnemyWarriors))*std::max(0,referenceDamageRate);
+    return ownDamageRate>=required;
 }
 
 /// Inns are a service too. The model's units-per-inn is a nominal figure; the

@@ -300,7 +300,10 @@ void constraints(const Request &r)
 				"Choose exactly one of --generator, --map-file, --load-game");
 		for (const auto &key : {"--map-seed", "--set", "--candidates", "--building-artwork"})
 			requireParent(key, "--generator");
-		requireParent("--diagnostic-interval", "--diagnostic-fields");
+        const auto telemetry=r.all("--telemetry");
+        const bool continuationTrace=std::find(telemetry.begin(),telemetry.end(),"continuation-state")!=telemetry.end();
+        if(r.has("--diagnostic-interval") && !r.has("--diagnostic-fields") && !continuationTrace)
+            throw std::invalid_argument("--diagnostic-interval requires --diagnostic-fields or --telemetry continuation-state");
 		requireParent("--diagnostic-png", "--diagnostic-fields");
 		requireParent("--fork-rule", "--load-game");
 		if (r.has("--load-game"))
@@ -463,7 +466,7 @@ const std::vector<Command> &commands()
 			 integer("--ai-order-delay", "AI order delay in ticks", 0, 8),
 			 value("--save", "string", "Snapshot: initial, final, or every:N", "", true),
 			 choice("--telemetry", "Additional telemetry",
-					{"checksums", "team-timeline", "maxima", "gradient-stats"}, "", true),
+					{"checksums", "continuation-state", "team-timeline", "maxima", "gradient-stats"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),
@@ -624,7 +627,8 @@ const std::vector<Command> &commands()
 				for (const auto &key :
 					 {"--map-seed", "--set", "--candidates", "--building-artwork"})
 					c.requirements[key] = {"--generator"};
-				c.requirements["--diagnostic-interval"] = {"--diagnostic-fields"};
+				c.requirements["--diagnostic-interval"] = {"--diagnostic-fields", "--telemetry"};
+                c.constraints.push_back("--diagnostic-interval requires --diagnostic-fields or --telemetry continuation-state");
 				c.requirements["--diagnostic-png"] = {"--diagnostic-fields"};
 				c.requirements["--fork-rule"] = {"--load-game"};
 			}

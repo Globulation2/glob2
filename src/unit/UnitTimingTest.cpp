@@ -36,6 +36,7 @@ public:
 	{
 		// Fixed expected values protect the replay-visible integer rounding.
 		CHECK_EQ(0, unitActionStepSpeed(0, WALK, 1, 1));
+		CHECK_EQ(1, unitActionStepSpeed(1, WALK, 1, 1));
 		CHECK_EQ(11, unitActionStepSpeed(16, WALK, 1, 1));
 		CHECK_EQ(22, unitActionStepSpeed(32, WALK, 1, 1));
 		CHECK_EQ(45, unitActionStepSpeed(64, WALK, 1, 1));

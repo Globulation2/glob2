@@ -996,7 +996,7 @@ std::vector<std::pair<std::string, std::string>> GameGUITouch::unitInfoRows() co
 		rows.emplace_back(strings->getString(key), std::move(text));
 	};
 	value("[hp]", std::to_string(u.state().hp) + " / " + std::to_string(u.state().performance[HP]));
-	value("[food]", std::to_string(u.state().hungry * 100 / Unit::HUNGRY_MAX) + "% (" + std::to_string(u.state().fruitCount) + ")");
+	value("[food]", std::to_string(Sint64(u.state().hungry) * 100 / u.foodCapacity) + "% (" + std::to_string(u.state().fruitCount) + ")");
 	value("[current speed]", std::to_string(u.state().speed));
 	if (u.state().performance[ARMOR]) value("[armor]", std::to_string(u.realArmor));
 	if (u.state().performance[HARVEST]) {
@@ -1009,7 +1009,7 @@ std::vector<std::pair<std::string, std::string>> GameGUITouch::unitInfoRows() co
 	for (const auto &[ability,key] : abilities)
 		if (u.state().performance[ability]) {
 			const bool attack = ability == ATTACK_STRENGTH || ability == MAGIC_ATTACK_AIR || ability == MAGIC_ATTACK_GROUND;
-			const int strength = (u.state().performance[ability] + (attack ? u.state().experienceLevel : 0)) *
+			const Sint64 strength = (Sint64(u.state().performance[ability]) + (attack ? u.state().experienceLevel : 0)) *
 				(ability == ATTACK_STRENGTH ? u.glassCannonScale : 1);
 			value(key, std::to_string(strength) + " · " + strings->getString("[level]") + " " +
 				std::to_string(u.state().level[ability] + (ability == SWIM ? 0 : 1)));
@@ -1032,8 +1032,8 @@ void GameGUITouch::drawUnitPanel()
 	{
 		auto *sprite = globalContainer->unitmini;
 		sprite->setBaseColor(presentationColor(selected.owner().color));
-		drawSelectionHeader(allocationRect(), sprite, selected.state().typeNum,
-			std::string(getUnitName(selected.state().typeNum)) + "\n" + displayPlayerName(selected.owner().firstPlayerName));
+		drawSelectionHeader(allocationRect(), sprite, selected.meshClass,
+			std::string(getUnitName(selected.state().typeNum, *gui.drawnScene().world.catalogs->units)) + "\n" + displayPlayerName(selected.owner().firstPlayerName));
 	}
 	// A solid surface keeps the map from competing with the unit's numbers.
 	auto background = InGameTouchTheme::paper();

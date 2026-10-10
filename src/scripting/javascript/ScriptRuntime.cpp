@@ -14,6 +14,15 @@ namespace Script
 {
 namespace
 {
+// Append queries so established host ordinals and commander permissions remain stable.
+static constexpr const char* QueryNames[] = {
+    "teams", "units", "buildings", "unit", "building", "tile", "region",
+    "objectives", "hints", "interface", "buildingTypes", "wakeAgent",
+    "experiments", "rules", "terrainTypes", "resourceTypes", "materialTypes",
+    "unitTypes", "unitBehavior"
+};
+static constexpr int WakeAgentQuery = 11;
+static_assert(std::string_view(QueryNames[WakeAgentQuery]) == "wakeAgent");
 struct Environment
 {
 #include "ScriptRuntimeV2.inc"
@@ -441,10 +450,7 @@ struct Environment
 	}
 	static JSValue query(JSContext *ctx, JSValueConst, int argc, JSValueConst *argv, int magic)
 	{
-		static const char *names[] = {"teams",    "units",     "buildings",    "unit",
-									  "building", "tile",      "region",       "objectives",
-									  "hints",    "interface", "buildingTypes", "wakeAgent",
-									  "experiments", "rules", "terrainTypes", "resourceTypes", "materialTypes"};
+		static constexpr auto& names = QueryNames;
 		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
 		try
 		{
@@ -507,15 +513,12 @@ struct Environment
 		set(context.get(), "tick", JS_NewUint32(ctx, host->tick));
 		set(context.get(), "myTeam", JS_NewInt32(ctx, host->team));
 		set(context.get(), "random", JS_NewCFunction(ctx, random, "random", 0));
-		static const char *names[] = {"teams",    "units",     "buildings",    "unit",
-									  "building", "tile",      "region",       "objectives",
-									  "hints",    "interface", "buildingTypes", "wakeAgent",
-									  "experiments", "rules", "terrainTypes", "resourceTypes", "materialTypes"};
+		static constexpr auto& names = QueryNames;
 		for (int i = 0; i < int(std::size(names)); ++i)
 			if (!host->commander || i < 7 || i == 10 || i == 12 || i >= 13) set(i == 5 || i == 6 ? map.get() : game.get(), names[i],
 				JS_NewCFunctionMagic(ctx, query, names[i], 0, JS_CFUNC_generic_magic, i));
 		if (host->commander)
-			set(context.get(), "wakeAgent", JS_NewCFunctionMagic(ctx, query, "wakeAgent", 1, JS_CFUNC_generic_magic, 11));
+			set(context.get(), "wakeAgent", JS_NewCFunctionMagic(ctx, query, "wakeAgent", 1, JS_CFUNC_generic_magic, WakeAgentQuery));
 		set(map.get(), "width", JS_NewUint32(ctx, host->width));
 		set(map.get(), "height", JS_NewUint32(ctx, host->height));
 		set(game.get(), "map", map.release());

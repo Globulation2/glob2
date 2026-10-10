@@ -3,16 +3,20 @@
 #include "GameDiagnostics.h"
 #include "sim/presentation/SceneInputs.h"
 #include "Game.h"
+#include "Order.h"
+#include <cstdlib>
 #include "AIStateSerialization.h"
 #include <bit>
 #include <algorithm>
 #include <FileManager.h>
+#include <TextStream.h>
 #include <Toolkit.h>
 #include "AI.h"
 #include "AIMaxima.h"
 #include "Player.h"
 #include "Team.h"
 #include "Unit.h"
+#include "Building.h"
 #include "Sector.h"
 #include "render/scene/SceneExtract.h"
 #include "render/GameAnimations.h"
@@ -26,6 +30,110 @@
 namespace fs = std::filesystem;
 namespace GameDiagnostics
 {
+namespace
+{
+class ExactContinuationStream final : public GAGCore::TextOutputStream
+{
+public:
+    explicit ExactContinuationStream(GAGCore::StreamBackend* backend):TextOutputStream(backend) {}
+    void writeFloat(float value,const std::string name) override
+    {
+        TextOutputStream::writeUint32(std::bit_cast<std::uint32_t>(value),name);
+    }
+    void writeDouble(double value,const std::string name) override
+    {
+        const auto bits=std::bit_cast<std::uint64_t>(value);
+        writeEnterSection(name);
+        writeUint32(Uint32(bits),"low");
+        writeUint32(Uint32(bits>>32),"high");
+        writeLeaveSection();
+    }
+};
+}
+std::unique_ptr<GAGCore::OutputStream> makeContinuationStream(GAGCore::StreamBackend* backend)
+{
+    return std::make_unique<ExactContinuationStream>(backend);
+}
+void saveLiveContinuation(GAGCore::OutputStream* stream, const Game& game)
+{
+    // Diagnostics only. These live fields are deliberately absent from saves,
+    // but can affect subsequent scheduling or which notifications are emitted.
+    stream->writeEnterSection("liveContinuation");
+    for (int teamId=0; teamId<game.teamsCount(); ++teamId) {
+        stream->writeEnterSection(teamId);
+        const auto& team=*game.teams[teamId];
+        const auto writeList=[&](const auto& list,const char* name) {
+            stream->writeEnterSection(name);
+            stream->writeUint32(list.size(),"count");
+            unsigned index=0;
+            for(const auto* entity:list.entries()) {
+                stream->writeEnterSection(index++);
+                stream->writeUint16(entity->gid,"gid");
+                stream->writeLeaveSection();
+            }
+            stream->writeLeaveSection();
+        };
+        writeList(team.liveUnits,"liveUnits");
+        writeList(team.liveBuildings,"liveBuildings");
+        stream->writeEnterSection("reservedTeamMaterials");
+        for(unsigned material=0;material<MaterialSlotCount;++material) {
+            stream->writeEnterSection(material);
+            stream->writeSint32(team.reservedTeamMaterials[material],"reserved");
+            stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
+        stream->writeEnterSection("reservations");
+        for(const auto* building:team.liveBuildings.entries()) {
+            stream->writeEnterSection(Building::GIDtoID(building->gid));
+            stream->writeEnterSection("gradientReaderCaches");
+            for(unsigned route=0;route<BUILDING_ROUTE_COUNT;++route) {
+                stream->writeEnterSection(route);
+                for(unsigned swim=0;swim<SWIM_CLASS_COUNT;++swim) {
+                    stream->writeEnterSection(swim);
+                    const auto slot=route*SWIM_CLASS_COUNT+swim;
+                    stream->writeUint32(building->refreshEpoch[slot],"refreshEpoch");
+                    stream->writeUint8(building->refreshRequested.test(slot),"refreshRequested");
+                    stream->writeUint16(building->settledCostHint[slot],"settledCostHint");
+                    stream->writeLeaveSection();
+                }
+                stream->writeLeaveSection();
+            }
+            stream->writeLeaveSection();
+            for(unsigned material=0;material<MaterialCount;++material) {
+                stream->writeEnterSection(material);
+                stream->writeSint32(building->reservedMaterials[material],"reserved");
+                stream->writeLeaveSection();
+            }
+            stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+}
+void recordContinuationEvent(int team, const GameEvent& event)
+{
+    const char* directory=std::getenv("GLOB2_FULL_STATE_TRACE_OUTPUT");
+    if(!directory || !*directory) return;
+    std::ofstream output(fs::path(directory)/"events.trace",std::ios::app);
+    output << event.getStep() << ' ' << team << ' ' << event.getEventType()
+           << ' ' << event.getX() << ' ' << event.getY() << ' '
+           << event.getTypeNum() << ' ' << unsigned(event.getOtherTeamNumber()) << '\n';
+    output.close();
+    if(!output) throw std::runtime_error("Cannot write continuation event trace");
+}
+void recordContinuationOrder(Uint32 tick, unsigned player, Order& order)
+{
+    const char* directory=std::getenv("GLOB2_FULL_STATE_TRACE_OUTPUT");
+    if(!directory || !*directory) return;
+    std::ofstream output(fs::path(directory)/"emitted-orders.trace",std::ios::app);
+    output << tick << ' ' << player << ' ' << unsigned(order.getOrderType()) << ' ';
+    const auto length=order.getDataLength();
+    const auto* data=length ? order.getData() : nullptr;
+    for(int i=0;i<length;++i) output << std::hex << std::setw(2) << std::setfill('0') << unsigned(data[i]);
+    output << '\n'; output.close();
+    if(!output) throw std::runtime_error("Cannot write continuation order trace");
+}
 namespace
 {
 struct Named { const char* name; const char* units; int r,g,b; };

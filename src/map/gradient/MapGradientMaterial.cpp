@@ -152,7 +152,7 @@ Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int resource, 
     const bool privateField=consumer->runtime->has(BuildingRuntimeTraits::SharedStock) ||
         ((((modes&1) ? consumer->runtime->suppliesStockMask : 0) | ((modes&2) ? consumer->runtime->suppliesDirectStockMask : 0))&(1u<<resource));
     const int excluded=privateField ? consumer->gid : -1;
-    const Uint64 key=((((Uint64(excluded+1)*Team::MAX_COUNT+team)*MaterialCount+resource)*SWIM_CLASS_COUNT+swim)*4)+modes;
+    const Uint64 key=MapState::materialFieldKey(excluded,team,resource,swim,modes);
     auto found=runtime.materialFields.find(key);
     if (found==runtime.materialFields.end())
     {

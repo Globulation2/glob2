@@ -156,6 +156,7 @@ TEST_SUITE("WorldSnapshot")
         static_assert(std::is_base_of_v<UnitState,Unit>);
         static_assert(std::is_base_of_v<UnitState,SimulationSnapshot::UnitView>);
         CHECK(observed.typeNum==unit->typeNum); CHECK(observed.posX==unit->posX); CHECK(observed.posY==unit->posY);
+        CHECK(observed.configuredVisionRadius==unit->configuredVisionRadius);
         CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical==unit->needToRecheckMedical);
         CHECK(observed.serviceResourcesReserved==unit->serviceResourcesReserved);
         CHECK(observed.trigHP==unit->trigHP); CHECK(observed.trigHungryCarrying==unit->trigHungryCarrying);
@@ -166,6 +167,9 @@ TEST_SUITE("WorldSnapshot")
         }
         const int oldLevel=observed.level[WALK]; unit->level[WALK]=oldLevel+1; unit->jobTimer=31;
         CHECK(observed.level[WALK]==oldLevel); CHECK(observed.jobTimer==17);
+        const auto frozenVision=observed.configuredVisionRadius;
+        unit->configuredVisionRadius=Uint8(frozenVision+1);
+        CHECK(observed.configuredVisionRadius==frozenVision);
     }
     TEST_CASE("map snapshots bulk copy authoritative records without translation")
     {

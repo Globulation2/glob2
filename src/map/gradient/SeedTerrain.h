@@ -14,7 +14,7 @@ void withOpenTerrain(const MapState::View& view, int swim, Function fn)
     for (size_t r=0;r<table.size();++r)
     {
         const auto& p=view.rules->properties(std::uint16_t(r));
-        table[r]=Uint16(p.walkable || (swim>0 && p.swimmable) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN);
+        table[r]=Uint16(gradient_kernel::terrainAllowsGround(p,swim) ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN);
     }
     fn([&](size_t i) { return table[view.cellRules[i]]; });
 }

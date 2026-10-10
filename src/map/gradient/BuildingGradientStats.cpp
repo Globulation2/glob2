@@ -168,7 +168,7 @@ void BuildingGradientStats::fieldReleased(const Building &building, int slot, Ev
 {
 	if (!building.globalGradient[slot])
 		return;
-	const int access = (slot / SWIM_CLASS_COUNT) * SWIM_VARIANT_COUNT + (slot % SWIM_CLASS_COUNT > 0);
+	const int access = building.routeAccess(slot % SWIM_CLASS_COUNT, BuildingRoute(slot / SWIM_CLASS_COUNT));
 	Row row = previousRow(building, slot, event, tick, true, access);
 	row.reason = Reason::Other;
 	++eventCounts[unsigned(event)];

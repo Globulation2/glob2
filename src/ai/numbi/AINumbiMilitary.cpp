@@ -202,9 +202,10 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 	const Intent priorities[] = {Intent::Feed, Intent::Heal, Intent::TrainAttackStrength,
 		Intent::TrainConstruction, Intent::ProjectileDefense};
 	std::array<int, NB_UNIT_LEVELS> workers{}, idle{}, training{};
+    const auto workerTraining=AIEngine::ObservationQueries::workerTrainingProjection(*observation,false);
 	std::array<std::array<int, NB_UNIT_LEVELS>, std::size(priorities)> ready{}, underway{};
 	for (const AIEngine::UnitView* u : observation->unitSlots(teamNumber))
-		if (u && u->typeNum == WORKER)
+		if (u && AIEngine::ObservationQueries::matchesConstructionRole(*observation,*u))
 			for (int level = 0; level <= u->constructionLevel && level < NB_UNIT_LEVELS; ++level)
 			{ ++workers[level]; if (u->activity == Unit::ACT_RANDOM) ++idle[level]; }
 	for (const AIEngine::BuildingView* b : observation->buildingSlots(teamNumber))
@@ -212,11 +213,8 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 		if (!b) continue;
 		if (!queries->kind(*b).site && provides(*b, Intent::TrainConstruction))
 		{
-			int qualification = 0;
-			for (const auto& grant : queries->kind(*b).semantics.training)
-				if (grant.enabled && (grant.unitMask & (1u << WORKER)))
-					qualification = std::max(qualification, grant.constructionLevel);
-			for (int level = 0; level <= qualification && level < NB_UNIT_LEVELS; ++level)
+            const int qualification=workerTraining.constructionLevels[b->typeNum];
+			for (int level = 0; qualification>0 && level <= qualification && level < NB_UNIT_LEVELS; ++level)
 				++training[level];
 		}
 		for (unsigned demand = 0; demand < std::size(priorities); ++demand)

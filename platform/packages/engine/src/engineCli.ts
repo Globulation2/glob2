@@ -8,6 +8,7 @@
 // map preview writes map analysis/PNG; match verify writes the verdict and trace.
 import type {
   BuildingCatalog,
+  UnitCatalog,
   ResourceExperimentDefinitions,
   GeneratorDescriptor,
   SimVersion,
@@ -18,9 +19,10 @@ import {
   MapSetCredits,
   parse,
   buildingCatalogExperimentKeys,
+  unitCatalogExperimentKeys,
   resourceExperimentKeys,
 } from '@glob2/protocol';
-import { checkBuildingCatalogHash } from '@glob2/protocol/node';
+import { checkBuildingCatalogHash, checkUnitCatalogHash } from '@glob2/protocol/node';
 
 /** A failure caused by the job's input: deterministic, so it is reported, not retried. */
 export class EngineInputError extends Error {
@@ -245,6 +247,8 @@ export const GENERATED_MAP_FILE = 'map-r0.map.gz';
 export interface MapFacts {
   setCredits?: MapSetCredits;
   buildingCatalog?: BuildingCatalog;
+  unitCatalog?: UnitCatalog;
+  requiredUnitExperiments?: string[];
   resourceExperiments?: ResourceExperimentDefinitions;
   requiredResourceExperiments?: string[];
   width: number;
@@ -278,6 +282,10 @@ export function parseGenerationResult(text: string): GenerationOutcome {
       height: map.height,
       teamCount: map.teamCount,
       ...(map.buildingCatalog ? { buildingCatalog: map.buildingCatalog } : {}),
+      ...(map.unitCatalog ? { unitCatalog: map.unitCatalog } : {}),
+      ...(map.requiredUnitExperiments
+        ? { requiredUnitExperiments: map.requiredUnitExperiments }
+        : {}),
       ...(map.setCredits ? { setCredits: map.setCredits } : {}),
       ...(map.resourceExperiments ? { resourceExperiments: map.resourceExperiments } : {}),
       ...(map.requiredResourceExperiments
@@ -348,6 +356,8 @@ function parseControllers(value: unknown): ReportController[] {
 function parseReportMap(report: Json): ReportMap {
   const map = object(report['map'], 'map report map');
   let buildingCatalog: BuildingCatalog | undefined;
+  let unitCatalog: UnitCatalog | undefined;
+  let requiredUnitExperiments: string[] | undefined;
   let resourceExperiments: ResourceExperimentDefinitions | undefined;
   let requiredResourceExperiments: string[] | undefined;
   if (map['resourceExperiments'] !== undefined) {
@@ -382,8 +392,35 @@ function parseReportMap(report: Json): ReportMap {
       throw new EngineOutputError(String(error));
     }
   }
+
+  if (map['unitCatalog'] !== undefined) {
+    const value = object(map['unitCatalog'], 'unit catalog');
+    if (typeof value['snapshot'] !== 'string' || typeof value['hash'] !== 'string')
+      throw new EngineOutputError('invalid unit catalog');
+    unitCatalog = { snapshot: value['snapshot'], hash: value['hash'] };
+    try {
+      checkUnitCatalogHash(unitCatalog);
+      unitCatalogExperimentKeys(unitCatalog);
+    } catch (error) {
+      throw new EngineOutputError(String(error));
+    }
+  }
+  if (map['requiredUnitExperiments'] !== undefined) {
+    const keys = map['requiredUnitExperiments'];
+    const allowed = new Set(unitCatalog ? unitCatalogExperimentKeys(unitCatalog) : []);
+    if (
+      !Array.isArray(keys) ||
+      keys.length > 64 ||
+      new Set(keys).size !== keys.length ||
+      keys.some((key: unknown) => typeof key !== 'string' || !allowed.has(key))
+    )
+      throw new EngineOutputError('invalid required unit experiments');
+    requiredUnitExperiments = keys as string[];
+  }
   return {
     ...(buildingCatalog ? { buildingCatalog } : {}),
+    ...(unitCatalog ? { unitCatalog } : {}),
+    ...(requiredUnitExperiments ? { requiredUnitExperiments } : {}),
     ...(map['setCredits'] !== undefined
       ? { setCredits: parse(MapSetCredits, map['setCredits'], 'map set credits') }
       : {}),

@@ -8,6 +8,9 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
+#include <TextStream.h>
+#include <cstdlib>
+#include <string_view>
 #include <stdexcept>
 #include <algorithm>
 
@@ -23,10 +26,16 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	buildingsTryToBuildingSiteRoom.clear();
 
 	// loading base team
-	if(!BaseTeam::load(stream, versionMinor))
+	if(!BaseTeam::load(stream, versionMinor, &race))
 		co_return false;
 
 	stream->readEnterSection("Team");
+
+	// Bind immutable definitions before any entity takes a descriptor pointer.
+	// Older formats already bound their saved Race while reading BaseTeam.
+	if (versionMinor >= FILE_FORMAT_VERSION_RACE_FIELD)
+		race.setCatalog(game->gameHeader.getUnitCatalog());
+	stats.configureUnits(race.unitTypeCount());
 
 	// normal load
 	stream->readEnterSection("myUnits");
@@ -71,7 +80,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		{
 			myBuildings[i] = new Building(stream, buildingstypes, this, versionMinor);
 			if (Building::GIDtoID(myBuildings[i]->gid) != i) throw std::runtime_error("Building identity does not match slot");
-			if (myBuildings[i]->type->semantics.production.enabledUnitMask)
+			if (!myBuildings[i]->type->semantics.production.enabledUnits.empty())
 				swarms.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->shootingRange)
 				turrets.push_back(myBuildings[i]);
@@ -79,7 +88,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 				canExchange.push_back(myBuildings[i]);
 			if (myBuildings[i]->type->isVirtual)
 				virtualBuildings.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->zonable[WORKER])
+			if (myBuildings[i]->runtime->attractsRole(0))
 				clearingFlags.push_back(myBuildings[i]);
 		}
 		else
@@ -158,10 +167,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 			co_return false;
 		}
 	}
-	else
-	{
-		race.load();
-	}
+	stats.configureUnits(race.unitTypeCount());
 
 	isAlive = true;
 
@@ -231,14 +237,20 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 				{
 					const int id=Unit::GIDtoID(unit->gid);
 					const int purpose=unit->destinationPurpose;
-					const auto& spec=building->type->semantics;
-					const bool validService=purpose==FEED ? spec.feeding.enabled :
-						purpose==HEAL ? spec.healing.enabled :
-						purpose>=0 && purpose<NB_ABILITY && spec.training[purpose].enabled;
-					const unsigned serviceMask=purpose==FEED ? spec.feeding.unitMask : purpose==HEAL ? spec.healing.unitMask :
-						purpose>=0 && purpose<NB_ABILITY ? spec.training[purpose].unitMask : 0;
-					if (!(spec.admittedUnitMask & serviceMask & (1u<<unit->typeNum)) || visits[id] || unit->attachedBuilding!=building || unit->activity!=Unit::ACT_UPGRADING
-						|| !validService || (unit->serviceResourcesReserved && unit->displacement==Unit::DIS_EXITING_BUILDING))
+					const auto& interaction=building->runtime->interaction(unit->typeNum);
+					const bool validService=purpose==FEED ? interaction.has(BuildingUnitInteraction::Feeds) :
+						purpose==HEAL ? interaction.has(BuildingUnitInteraction::Heals) :
+						purpose>=0 && purpose<NB_ABILITY && (interaction.trainingMask & (1u<<purpose));
+					// Historical saves could retain an unassigned occupancy entry
+					// in unitsInside (the format-88 entering-animation reproducer
+					// has ACT_RANDOM and purpose -1). Preserve that opaque entry
+					// through current resaves only with private migration provenance.
+					// Authored catalogs and all declared visits stay strictly checked.
+					const bool legacyOpaqueVisit=unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
+						&& unit->activity==Unit::ACT_RANDOM && purpose==-1 && !unit->serviceResourcesReserved;
+					if (visits[id] || unit->attachedBuilding!=building
+						|| (!legacyOpaqueVisit && (unit->activity!=Unit::ACT_UPGRADING || !validService))
+						|| (unit->serviceResourcesReserved && unit->displacement==Unit::DIS_EXITING_BUILDING))
 						throw std::runtime_error("Invalid saved building service membership");
 					visits[id]=true;
 				}
@@ -256,7 +268,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		{
 			if (b->type->runtimeSuppliesStock && b->buildingState == Building::ALIVE) stockSuppliers.push_back(b);
 			if (b->type->runtimeSuppliesDirectStock && b->buildingState == Building::ALIVE) directStockSuppliers.push_back(b);
-			if (b->type->zonable[WARRIOR]) combatFlags.push_back(b);
+			if (b->runtime->attractsRole(2)) combatFlags.push_back(b);
 			b->reservedMaterials.fill(0);
 			b->restoreServiceReservations();
 			b->restoreProductionReservations();
@@ -399,6 +411,37 @@ void Team::save(GAGCore::OutputStream *stream)
 	}
 
 	stream->writeSint32(noMoreBuildingSitesCountdown, "noMoreBuildingSitesCountdown");
+    // Verification-only text fields; binary save/replay bytes stay unchanged.
+    const char* trace=std::getenv("GLOB2_FULL_STATE_TRACE");
+    if(trace && std::string_view(trace)=="1" && dynamic_cast<GAGCore::TextOutputStream*>(stream)) {
+        stream->writeEnterSection("diagnosticEvents");
+        stream->writeEnterSection("eventCooldownTimers");
+        for(unsigned type=0; type<GESize; ++type) {
+            stream->writeEnterSection(type);
+            stream->writeUint8(eventCooldownTimers[type],"remaining");
+            stream->writeLeaveSection();
+        }
+        stream->writeLeaveSection();
+        auto capturedEvents=events; // Preserve the live FIFO; never pop the owner queue.
+        stream->writeEnterSection("queuedEvents");
+        stream->writeUint32(capturedEvents.size(),"count");
+        unsigned eventIndex=0;
+        while(!capturedEvents.empty()) {
+            const auto& event=capturedEvents.front();
+            stream->writeEnterSection(eventIndex++);
+            stream->writeUint32(event.getStep(),"step");
+            stream->writeUint32(event.getEventType(),"type");
+            stream->writeSint16(event.getX(),"x");
+            stream->writeSint16(event.getY(),"y");
+            stream->writeUint32(event.getTypeNum(),"typeNum");
+            stream->writeUint8(event.getOtherTeamNumber(),"otherTeam");
+            stream->writeLeaveSection();
+            capturedEvents.pop();
+        }
+        stream->writeLeaveSection();
+        stream->writeLeaveSection();
+    }
+
 
 	stream->writeLeaveSection();
 }
@@ -406,7 +449,7 @@ void Team::save(GAGCore::OutputStream *stream)
 
 
 
-Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits)
+Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool legacy152)
 {
 	Uint32 cs=0;
 
@@ -417,7 +460,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	for (Unit *unit : liveUnits.entries())
 	{
-		cs^=unit->checkSum(checkSumsVectorForUnits);
+		cs^=unit->checkSum(checkSumsVectorForUnits,legacy152);
 		cs=rotr1(cs);
 	}
 	if (checkSumsVector)
@@ -425,7 +468,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	for (Building *building : liveBuildings.entries())
 	{
-		cs^=building->checkSum(checkSumsVectorForBuildings);
+		cs^=building->checkSum(checkSumsVectorForBuildings,legacy152);
 		cs=rotr1(cs);
 	}
 	if (checkSumsVector)

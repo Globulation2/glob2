@@ -53,7 +53,7 @@ class Observations
 	unsigned lastTick = 0xffffffffu;
 	Value ref(const AIEngine::UnitView *unit) const;
 	Value ref(const AIEngine::BuildingView *building) const;
-	Value unit(const AIEngine::UnitView &unit) const;
+	Value unit(const AIEngine::UnitView &unit, bool extended=false) const;
 	Value building(const AIEngine::BuildingView &building) const;
 	Value tile(int x, int y) const;
 

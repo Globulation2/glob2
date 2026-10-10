@@ -8,6 +8,8 @@
 #include "UnitConsts.h"
 #include <type_traits>
 
+enum class UnitJobPurpose : Uint8 { None, Transport, Clear, Explore, Defend };
+
 // Authoritative pointer-free unit state. Both live units and captured units use
 // this exact record; capture copies it without translating fields or arrays.
 // Relationships and query caches remain outside the record.
@@ -79,15 +81,21 @@ struct UnitState
 		HUNGRY_MAX=150000
 	};
 
-	Sint32 typeNum;
+	Uint16 typeNum;
+	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
+	Uint8 regenerationRemainder = 0;
+	// Keep frequently queried capabilities beside the identity in existing padding.
+	Uint32 capabilityFlags = 0;
 	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	Uint16 gid;
+	bool serviceResourcesReserved = false;
+	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
 	Sint32 isDead;
 	Sint32 posX, posY, delta, dx, dy, direction;
 	Sint32 terrainHealthRemainder = 0;
 	Sint32 insideTimeout;
-	bool serviceResourcesReserved = false;
+	Sint32 configuredFoodCapacity = HUNGRY_MAX;
 	Sint32 speed;
 	bool needToRecheckMedical;
 	Medical medical;
@@ -99,6 +107,8 @@ struct UnitState
 	bool validTarget;
 	Sint32 magicActionTimeout;
 	Uint8 underAttackTimer; // Counts down 240 frames after being attacked.
+	// Catalog-derived visibility cache occupies existing alignment padding.
+	Uint8 configuredVisionRadius = 1;
 	Sint32 hp, trigHP;
 	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
 	Uint32 fruitMask, fruitCount;

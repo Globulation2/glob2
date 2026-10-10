@@ -30,6 +30,8 @@
 #include <Toolkit.h>
 
 #include "BuildingType.h"
+#include "UnitCatalog.h"
+#include "BuildingUnitInteractionPool.h"
 
 using namespace GAGCore;
 
@@ -313,6 +315,7 @@ void BuildingsTypes::configureExperiments(const std::vector<std::string>& keys)
 {
 	const std::set<std::string> enabled(keys.begin(), keys.end());
 	const auto permitted = [&](const std::string& key) { return key.empty() || enabled.count(key) != 0; };
+	for (std::size_t unit=0; unit<unitExperiments_.size(); ++unit) unitAvailable_[unit]=permitted(unitExperiments_[unit]);
 	usesMarketRouting_ = false;
 	stockSupplyMask_ = directSupplyMask_ = extraDirectSupplyMask_ = 0;
 	usesOverlaySuppliers_ = false;
@@ -341,10 +344,14 @@ void BuildingsTypes::configureExperiments(const std::vector<std::string>& keys)
 }
 
 BuildingsTypes::BuildingsTypes(const BuildingsTypes& other)
-	: runtimeTypes_(other.runtimeTypes_), entries_(std::make_shared<std::vector<BuildingType>>(*other.entries_)),
+	: entries_(std::make_shared<std::vector<BuildingType>>(*other.entries_)),
 	  experiments_(other.experiments_), catalogKey_(other.catalogKey_),
 	  startingBuildingKey_(other.startingBuildingKey_), startingBuildingId_(other.startingBuildingId_), stockSupplyMask_(other.stockSupplyMask_), directSupplyMask_(other.directSupplyMask_), extraDirectSupplyMask_(other.extraDirectSupplyMask_), usesMarketRouting_(other.usesMarketRouting_), usesOverlaySuppliers_(other.usesOverlaySuppliers_)
 {
+    unitFlags_=other.unitFlags_; unitRecruitmentMasks_=other.unitRecruitmentMasks_; unitCount_=other.unitCount_; unitAvailable_=other.unitAvailable_; unitExperiments_=other.unitExperiments_;
+    unitTrainingAbilities_=other.unitTrainingAbilities_;
+    unitConstructionTrainingAbilities_=other.unitConstructionTrainingAbilities_;
+    compileRuntimeTraits();
 }
 
 BuildingsTypes& BuildingsTypes::operator=(const BuildingsTypes& other)
@@ -358,15 +365,180 @@ BuildingsTypes& BuildingsTypes::operator=(const BuildingsTypes& other)
 }
 
 
+void BuildingsTypes::compileUnitTrainingAbilities(const UnitCatalog& catalog)
+{
+    unitFlags_.resize(catalog.size());
+    unitRecruitmentMasks_.resize(catalog.size());
+    unitTrainingAbilities_.resize(catalog.size());
+    unitConstructionTrainingAbilities_.resize(catalog.size());
+    for (unsigned unit=0;unit<catalog.size();++unit) {
+        const auto& traits=catalog.runtime(unit);
+        unitFlags_[unit]=traits.flags;
+        unitRecruitmentMasks_[unit]=traits.recruitmentMask;
+        auto abilities=traits.learnableMask;
+        // Historical units retain cached ability policies, including unusual
+        // Race tables that do not follow the built-in job capabilities.
+        if (!traits.has(UnitRuntimeTraits::LegacyPerformancePolicies)) {
+            for (const auto [ability,flag]: {
+                std::pair{WALK,UnitRuntimeTraits::Walk}, {SWIM,UnitRuntimeTraits::Swim},
+                {FLY,UnitRuntimeTraits::Fly}, {ATTACK_SPEED,UnitRuntimeTraits::Melee},
+                {ATTACK_STRENGTH,UnitRuntimeTraits::Melee}, {MAGIC_ATTACK_AIR,UnitRuntimeTraits::MagicAir},
+                {MAGIC_ATTACK_GROUND,UnitRuntimeTraits::MagicGround}, {MAGIC_CREATE_WOOD,UnitRuntimeTraits::MagicCreateWood},
+                {MAGIC_CREATE_WHEAT,UnitRuntimeTraits::MagicCreateWheat}, {MAGIC_CREATE_ALGA,UnitRuntimeTraits::MagicCreateAlga}})
+                if (!traits.has(flag)) abilities&=~(1u<<ability);
+            if (!traits.has(UnitRuntimeTraits::Construct) && !traits.has(UnitRuntimeTraits::Transport)) abilities&=~(1u<<BUILD);
+            if (!traits.has(UnitRuntimeTraits::Clear) && !traits.has(UnitRuntimeTraits::Transport)) abilities&=~(1u<<HARVEST);
+        }
+        unitTrainingAbilities_[unit]=abilities;
+        // Qualification may accompany any learnable course, even when its
+        // ability is inactive. This mirrors Unit::needsTraining/applyTraining.
+        unitConstructionTrainingAbilities_[unit]=traits.has(UnitRuntimeTraits::LearnConstruction) ? traits.learnableMask : 0;
+    }
+}
+
+void BuildingsTypes::configureUnits(const UnitCatalog& catalog)
+{
+    unitCount_=catalog.size(); unitAvailable_.assign(unitCount_,1); unitExperiments_.resize(unitCount_);
+    compileUnitTrainingAbilities(catalog);
+    for (unsigned unit=0;unit<unitCount_;++unit) unitExperiments_[unit]=catalog.definition(unit).requiredExperiment;
+    const auto resolve=[&](BuildingUnitSelection& selection,unsigned legacyMask,bool defaultRow=false) {
+        // Unspecified service selectors use their legacy policy in matches().
+        // Only attraction needs an explicit capability-derived default row.
+        if (!selection.specified && !defaultRow) {
+            std::vector<Uint8>().swap(selection.resolved);
+            return;
+        }
+        selection.resolved.assign(unitCount_,0);
+        if (selection.specified) for (const auto& key:selection.keys) {
+            const auto unit=catalog.find(key);
+            if (!unit) throw std::runtime_error("Building unit selection references unknown unit: "+key);
+            selection.resolved[*unit]=1;
+        }
+        else for (unsigned unit=0;unit<unitCount_;++unit) selection.resolved[unit]=selection.matches(unit,legacyMask);
+    };
+    for (auto& b:*entries_) {
+        auto& s=b.semantics;
+        resolve(s.admittedUnits,s.admittedUnitMask);
+        resolve(s.feeding.units,s.feeding.unitMask); resolve(s.healing.units,s.healing.unitMask);
+        for (auto& training:s.training) resolve(training.units,training.unitMask);
+        constexpr unsigned jobs[]={WORKER,EXPLORER,WARRIOR};
+        for (unsigned role=0;role<3;++role) {
+            auto& selected=s.attractionUnits[role];
+            resolve(selected,b.zonable[jobs[role]] ? 1u<<jobs[role] : 0,true);
+            for (unsigned unit=0;unit<unitCount_;++unit) {
+                const auto& traits=catalog.runtime(unit);
+                const bool capable=role==0 ? traits.has(UnitRuntimeTraits::Clear)
+                    : role==1 ? traits.has(UnitRuntimeTraits::Explore)
+                    : traits.has(UnitRuntimeTraits::Melee)||traits.has(UnitRuntimeTraits::GuardIdle);
+                if (!selected.specified) selected.resolved[unit]=b.zonable[jobs[role]] && capable;
+                else if (selected.resolved[unit] && !capable) throw std::runtime_error("Attraction selects a unit without its job capability: "+catalog.definition(unit).key);
+            }
+        }
+        s.production.recipes.resize(unitCount_); s.production.initialRatios.resize(unitCount_);
+        for (const auto& [key,recipe]:s.production.additionalRecipes) {
+            const auto unit=catalog.find(key); if (!unit) throw std::runtime_error("Unknown production unit: "+key);
+            s.production.recipes[*unit]=recipe;
+        }
+        for (const auto& [key,ratio]:s.production.additionalInitialRatios) {
+            const auto unit=catalog.find(key); if (!unit) throw std::runtime_error("Unknown production ratio unit: "+key);
+            s.production.initialRatios[*unit]=ratio;
+        }
+        const BuildingProductionRecipe* first=nullptr;
+        for (unsigned unit=0;unit<unitCount_;++unit) {
+            auto& recipe=s.production.recipes[unit];
+            if (!recipe.costExplicit) recipe.cost=catalog.definition(unit).cost;
+            recipe.costMask=0;
+            for (unsigned material=0;material<MaterialCount;++material) if (recipe.cost[material]) recipe.costMask|=1u<<material;
+            if (recipe.duration<0 || recipe.duration>1000000) throw std::runtime_error("Invalid production duration");
+            for (unsigned material=0;material<MaterialSlotCount;++material)
+                if (recipe.cost[material]<0 || recipe.cost[material]>1000000 || (material>=MaterialCount && recipe.cost[material])) throw std::runtime_error("Invalid production cost");
+            if (!recipe.enabled) continue;
+            if (first && s.production.scheduling==BuildingProductionScheduling::WeightedLateChoice && (recipe.cost!=first->cost || recipe.duration!=first->duration)) throw std::runtime_error("Late-choice production requires equal recipes");
+            first=&recipe;
+        }
+        if (s.production.fallbackUnit<0 || unsigned(s.production.fallbackUnit)>=unitCount_) throw std::runtime_error("Invalid production fallback unit");
+        if(first && s.production.scheduling==BuildingProductionScheduling::WeightedLateChoice && !s.production.recipes[s.production.fallbackUnit].enabled)throw std::runtime_error("Late-choice fallback recipe is disabled");
+        // Historical uniform rows describe a tower's damage to any unit.
+        // Preserve that policy for new definitions; heterogeneous rows remain
+        // explicit per-target tables, with additional keys overriding either.
+        auto builtinDamage=s.projectileDamage;
+        for(unsigned unit=0;unit<NB_UNIT_TYPE;++unit)
+            if(const auto override=s.additionalProjectileDamage.find(catalog.definition(unit).key);override!=s.additionalProjectileDamage.end())
+                builtinDamage[unit]=override->second;
+        const bool uniformDamage=std::all_of(builtinDamage.begin(),builtinDamage.end(),
+            [&](Sint32 damage) { return damage==builtinDamage.front(); });
+        s.resolvedProjectileDamage.assign(unitCount_,uniformDamage ? builtinDamage.front() : 0);
+        std::copy(builtinDamage.begin(),builtinDamage.end(),s.resolvedProjectileDamage.begin());
+        for (const auto& [key,damage]:s.additionalProjectileDamage) {
+            const auto unit=catalog.find(key); if (!unit) throw std::runtime_error("Unknown projectile target unit: "+key);
+            s.resolvedProjectileDamage[*unit]=damage;
+        }
+        b.runtimeFlyingCarriers=false;
+        for(unsigned id=0;id<unitCount_;++id) {
+            const auto& traits=catalog.runtime(id);
+            b.runtimeFlyingCarriers|=traits.has(UnitRuntimeTraits::Fly) && traits.has(UnitRuntimeTraits::Transport) && (!b.isBuildingSite || traits.has(UnitRuntimeTraits::Construct));
+        }
+        b.runtimeDefenseDamage=0;
+        for(unsigned id=0;id<unitCount_;++id)if(catalog.runtime(id).has(UnitRuntimeTraits::Melee))
+            b.runtimeDefenseDamage=std::max(b.runtimeDefenseDamage,s.resolvedProjectileDamage[id]);
+    }
+    compileRuntimeTraits();
+}
+
 void BuildingsTypes::compileRuntimeTraits()
 {
+    if (unitTrainingAbilities_.empty()) compileUnitTrainingAbilities(*UnitCatalog::legacyMigration());
     runtimeTypes_.resize(entries_->size());
+    BuildingUnitInteractionPool pool;
+    std::vector<std::size_t> offsets(entries_->size());
+    std::vector<BuildingUnitInteraction> interactions(unitCount_);
     for (std::size_t id=0; id<entries_->size(); ++id)
     {
-        const auto& b=(*entries_)[id]; const auto& s=b.semantics;
+        auto& b=(*entries_)[id]; auto& s=b.semantics;
         auto& hot=runtimeTypes_[id]; hot={};
         hot.hpMax=b.hpMax; hot.armor=b.armor; hot.regenerationPerTick=s.regenerationPerTick;
-        hot.projectileDamage=s.projectileDamage; hot.projectileBuildingDamage=s.projectileBuildingDamage;
+        hot.projectileBuildingDamage=s.projectileBuildingDamage;
+        hot.unitCount=unitCount_;
+        s.production.enabledUnits.clear();
+        b.runtimeTrainingAbilities=0;b.runtimeFeeds=false;b.runtimeHeals=false;b.runtimeAnyProjectileDamage=false;b.runtimeConstructionTraining=false;b.runtimeFlyingAttractions=false;
+        for (unsigned unit=0; unit<unitCount_; ++unit)
+        {
+            auto& row=interactions[unit]; row={};
+            const bool admitted=s.admittedUnits.matches(unit,s.admittedUnitMask);
+            if (admitted) row.flags|=BuildingUnitInteraction::Admitted;
+            if (admitted && s.feeding.enabled && s.feeding.units.matches(unit,s.feeding.unitMask)) row.flags|=BuildingUnitInteraction::Feeds;
+            if (admitted && s.healing.enabled && s.healing.units.matches(unit,s.healing.unitMask)) row.flags|=BuildingUnitInteraction::Heals;
+            for (unsigned ability=0; ability<NB_ABILITY; ++ability)
+                if (admitted && s.training[ability].enabled && s.training[ability].units.matches(unit,s.training[ability].unitMask)) row.trainingMask|=1u<<ability;
+            constexpr unsigned legacyJobs[3]={WORKER,EXPLORER,WARRIOR};
+            for (unsigned role=0; role<3; ++role)
+                if ((s.attractionUnits[role].resolved.empty() ? s.attractionUnits[role].matches(unit,b.zonable[legacyJobs[role]] ? 1u<<legacyJobs[role] : 0) : s.attractionUnits[role].resolved[unit]!=0))
+                {
+                    // Semantic attraction still governs existing assignments,
+                    // building orders, routing and team-list memberships.
+                    row.flags|=BuildingUnitInteraction::Clear<<role; hot.attractionRoles|=1u<<role;
+                    if (unitRecruitmentMasks_[unit] & (1u<<role)) row.recruitmentMask|=Uint8(1u<<role);
+                }
+            if (unit<s.production.recipes.size() && s.production.recipes[unit].enabled && (unitAvailable_.empty() || unitAvailable_[unit]))
+            { row.flags|=BuildingUnitInteraction::Produces; s.production.enabledUnits.push_back(unit); }
+            const auto flags=unitFlags_[unit];
+            b.runtimeFlyingAttractions|=(flags&UnitRuntimeTraits::Fly) && (row.flags&(BuildingUnitInteraction::Clear|BuildingUnitInteraction::Explore|BuildingUnitInteraction::Defend));
+            for(unsigned ability=0;ability<NB_ABILITY;++ability) {
+                const auto bit=1u<<ability;
+                if ((row.trainingMask&bit) && s.training[ability].targetLevel>0)
+                    b.runtimeTrainingAbilities|=unitTrainingAbilities_[unit]&bit;
+                b.runtimeConstructionTraining|=(row.trainingMask&unitConstructionTrainingAbilities_[unit]&bit)
+                    && s.training[ability].constructionLevel>0;
+            }
+            b.runtimeFeeds|=row.has(BuildingUnitInteraction::Feeds);
+            b.runtimeHeals|=row.has(BuildingUnitInteraction::Heals);
+            if (unit<NB_UNIT_TYPE) row.projectileDamage=s.projectileDamage[unit];
+        }
+        for (unsigned unit=0; unit<s.resolvedProjectileDamage.size(); ++unit)
+            interactions[unit].projectileDamage=s.resolvedProjectileDamage[unit];
+        offsets[id]=pool.intern(interactions);
+        b.runtimeAttractionRoles=hot.attractionRoles;
+        for(unsigned unit=0;unit<unitCount_;++unit)b.runtimeAnyProjectileDamage|=interactions[unit].projectileDamage>0;
         hot.shootSpeed=b.shootSpeed; hot.workPriorityBias=s.workPriorityBias;
         for (int ability=0; ability<NB_ABILITY; ++ability) if (s.training[ability].enabled) hot.trainingMask|=1u<<ability;
         hot.width=b.width; hot.height=b.height; hot.decLeft=b.decLeft; hot.decTop=b.decTop;
@@ -382,4 +554,6 @@ void BuildingsTypes::compileRuntimeTraits()
         hot.replenishMaterialMask=s.replenishMaterialMask; hot.productionEnabledMask=s.production.enabledUnitMask;
         if (s.production.scheduling==BuildingProductionScheduling::WeightedCommittedJob) hot.flags|=BuildingRuntimeTraits::CommittedProduction;
     }
+    unitInteractions_=pool.release();
+    for(std::size_t id=0;id<runtimeTypes_.size();++id)runtimeTypes_[id].interactions=unitInteractions_.data()+offsets[id];
 }

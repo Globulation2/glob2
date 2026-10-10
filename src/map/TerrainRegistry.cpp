@@ -491,7 +491,7 @@ void TerrainRegistry::compile()
 					used[step] = true;
 					m.steps.push_back(step);
 				}
-			if (p.walkable || (sw && p.swimmable))
+			if (gradient_kernel::terrainAllowsGround(p,sw))
 				m.minimum = std::min(m.minimum, cost.cardinal);
 		}
 		m.prepare();

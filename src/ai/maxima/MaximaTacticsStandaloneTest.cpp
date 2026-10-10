@@ -121,6 +121,9 @@ TEST_SUITE("Maxima.Tactics")
 			freshThreats.push_back(ThreatSighting(300+i,3,0,5,10));
 		program.replaceThreats(115,freshThreats);
 		REQUIRE(program.raidCandidates()[0].defenders==20);
+		freshThreats.assign(2,ThreatSighting(999,3,0,5,INT_MAX));
+		program.replaceThreats(119,freshThreats);
+		REQUIRE(program.raidCandidates()[0].defenderPower==INT_MAX);
 		program.replaceThreats(120,std::vector<ThreatSighting>());
 		REQUIRE(program.raidCandidates()[0].defenders==0);
 		REQUIRE(program.raidCandidates()[0].defenderPower==0);

@@ -14,10 +14,13 @@
 #include "AIMaximaFoodSupply.h"
 #include "ai/cortex/CortexPolicy.h"
 #include "ai/cortex/CortexQuery.h"
+#include "ai/cortex/CortexObservation.h"
+#include "shared_runtime/Runtime.h"
 #include "GameRuleOverrides.h"
 #include "Order.h"
 #include "ReplayReader.h"
 #include "Version.h"
+#include "UnitCatalog.h"
 #include <FileManager.h>
 #include <cstdlib>
 #include <nlohmann/json.hpp>
@@ -223,10 +226,92 @@ TEST_CASE("legacy queued staffing imports explicit 135 wire without weakening mo
     CHECK(static_cast<const OrderConstruction&>(*upgrade).unitWorkingFuture==0);
     CHECK(OrderValidation::validate(game,0,*upgrade).verdict==OrderValidation::Verdict::Accepted);
 }
+TEST_CASE("food population preserves migrated calibration and scales authored recipients")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const auto defaults=UnitCatalog::builtins();
+    const std::array<int,3> counts{13,7,3};
+    for(int variant=0;variant<5;++variant) {
+        CAPTURE(variant);
+        if(variant==0) {
+            std::vector<std::array<UnitType,NB_UNIT_LEVELS>> levels;
+            for(unsigned id=0;id<defaults->size();++id)levels.push_back(defaults->levels(id));
+            world.game.gameHeader.setUnitCatalog(defaults->withLegacyLevels(levels,700));
+        } else {
+            auto catalog=nlohmann::json::parse(defaults->serialize());
+            for(auto& unit:catalog["units"]) {
+                unit["behaviors"]["hungerRate"]=variant==1?425:variant==2?850:variant==3?0:425;
+                if(variant==4)unit["behaviors"]["feedingSpeedQ8"]=512;
+            }
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+        }
+        world.game.configureUnitCatalog();
+        const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        const int expected=variant<2?23:variant==2?46:variant==3?0:12;
+        CHECK(AIEngine::ObservationQueries::normalizedFoodPopulation(*view,counts)==expected);
+    }
+}
+TEST_CASE("Cabino strategy roles require effective clocks and mobile labor")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    auto walkingScout=catalog["units"][WORKER];
+    walkingScout["key"]="fixture:walking-empty-scout";
+    walkingScout["behaviors"]["transport"]=false;
+    walkingScout["behaviors"]["cargoCapacity"]=0;
+    walkingScout["behaviors"]["cargoKinds"]=0;
+    walkingScout["behaviors"]["explore"]=true;
+    catalog["units"].push_back(walkingScout);
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+    world.game.configureBuildingCatalog();
+    auto* worker=world.addUnit(WORKER,4,10); REQUIRE(worker);
+    auto* noBuild=world.addUnit(WORKER,5,10); REQUIRE(noBuild); noBuild->performance[BUILD]=0;
+    auto* noHarvest=world.addUnit(WORKER,6,10); REQUIRE(noHarvest); noHarvest->performance[HARVEST]=0;
+    auto* immobileWorker=world.addUnit(WORKER,7,10); REQUIRE(immobileWorker);
+    immobileWorker->performance[WALK]=immobileWorker->performance[SWIM]=immobileWorker->performance[FLY]=0;
+    auto* noCapacity=world.addUnit(3,8,10); REQUIRE(noCapacity);
+    auto* explorer=world.addUnit(EXPLORER,9,10); REQUIRE(explorer);
+    auto* immobileExplorer=world.addUnit(EXPLORER,10,10); REQUIRE(immobileExplorer);
+    immobileExplorer->performance[WALK]=immobileExplorer->performance[SWIM]=immobileExplorer->performance[FLY]=0;
+    auto* stationaryFighter=world.addUnit(WARRIOR,11,10); REQUIRE(stationaryFighter);
+    stationaryFighter->performance[WALK]=stationaryFighter->performance[SWIM]=stationaryFighter->performance[FLY]=0;
+    auto* noAttackClock=world.addUnit(WARRIOR,12,10); REQUIRE(noAttackClock); noAttackClock->performance[ATTACK_SPEED]=0;
+    auto* noAttackDamage=world.addUnit(WARRIOR,13,10); REQUIRE(noAttackDamage); noAttackDamage->performance[ATTACK_STRENGTH]=0;
+    const auto counts=[&] {
+        const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        auto capacityProbe=*view->unitSlots(0)[Unit::GIDtoID(noCapacity->gid)];
+        capacityProbe.capabilityFlags|=UnitRuntimeTraits::Transport;
+        CHECK_FALSE(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,capacityProbe,WORKER));
+        Cabino::TeamStatsGenerator stats(view.get(),&view->teams[0]);
+        CHECK(stats.getUnits(WORKER,BUILD,1,true)==1);
+        CHECK(stats.getUnits(WORKER,Unit::MED_FREE,Unit::ACT_RANDOM,BUILD,1,true)==1);
+        CHECK(stats.getUnits(EXPLORER,FLY,1,true)==2); // Exploration accepts walking scouts too.
+        CHECK(stats.getUnits(WARRIOR,ATTACK_STRENGTH,1,true)==1);
+        CHECK(stats.getUnits(WARRIOR,Unit::MED_FREE,Unit::ACT_RANDOM,ATTACK_STRENGTH,1,true)==0);
+    };
+    counts();
+    noCapacity->performance[WALK]=0;
+    const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+    Cabino::TeamStatsGenerator stats(view.get(),&view->teams[0]);
+    CHECK(stats.getUnits(EXPLORER,FLY,1,true)==1);
+}
 TEST_CASE("Cabino reservations match unit class and qualification instead of building level")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world(glob2test::GameOptions{.clearImmobile=true,.loadDefaultRace=true});
+    auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    auto courier=units["units"][WORKER];courier["key"]="fixture:assigned-courier";
+    courier["behaviors"]["construct"]=false; // Producers/inns still need couriers.
+    courier["behaviors"]["melee"]=true;
+    for(int level=0;level<NB_UNIT_LEVELS;++level) {
+        courier["levels"][level]["performance"][ATTACK_SPEED]=units["units"][WARRIOR]["levels"][level]["performance"][ATTACK_SPEED];
+        courier["levels"][level]["performance"][ATTACK_STRENGTH]=units["units"][WARRIOR]["levels"][level]["performance"][ATTACK_STRENGTH];
+    }
+    units["units"].push_back(courier);
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+    world.game.configureBuildingCatalog();
     Player player;player.setTeam(world.game.teams[0]);
     Cabino::AICabino ai(&player);
     struct Reservations:Cabino::DistributedUnitManager {
@@ -247,7 +332,79 @@ TEST_CASE("Cabino reservations match unit class and qualification instead of bui
     building->unitsWorking={worker,unqualified,warrior};
     CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==3);
     CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,2,true);})==3);
+    auto* custom=world.addUnit(3,13,10);custom->constructionLevel=1;
+    building->unitsWorking.push_back(custom);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==2);
+    custom->jobPurpose=UnitJobPurpose::Defend;
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==3);
+    custom->jobPurpose=UnitJobPurpose::Transport;
+    worker->performance[HARVEST]=0;
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==3);
     building->unitsWorking.clear();
+}
+TEST_CASE("effective melee threats remain local while reserves require movement")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    auto localFighter=units["units"][WARRIOR];localFighter["key"]="fixture:unrecruitable-fighter";
+    localFighter["behaviors"]["recruitDefend"]=false;units["units"].push_back(localFighter);
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));world.game.configureBuildingCatalog();
+    world.addBuilding("swarm",2,2);
+    auto* active=world.addUnit(WARRIOR,10,10);
+    auto* nonRecruitable=world.addUnit(3,13,10);
+    auto* stationary=world.addUnit(WARRIOR,11,10);
+    stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
+    auto* inactive=world.addUnit(WARRIOR,12,10);inactive->performance[ATTACK_SPEED]=0;
+    auto* enemyStationary=world.addUnit(WARRIOR,20,10,1);
+    enemyStationary->performance[WALK]=enemyStationary->performance[SWIM]=enemyStationary->performance[FLY]=0;
+    auto* enemyInactive=world.addUnit(WARRIOR,21,10,1);enemyInactive->performance[ATTACK_SPEED]=0;
+    Player player;player.setTeam(world.game.teams[0]);Cabino::AICabino ai(&player);
+    CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{
+        Cabino::GridPollingSystem poll(ai);
+        return poll.pollArea(19,9,4,3,Cabino::GridPollingSystem::MAXIMUM,Cabino::GridPollingSystem::ENEMY_WARRIORS);
+    })==1);
+    const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+    Cortex::QueryScratch scratch;Cortex::PlanningIntent intents;MersenneTwister random(713);
+    const auto observed=Cortex::observeWorld(random,view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
+    CHECK(observed.freeWarriors==1);
+    CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*view->unitSlots(0)[Unit::GIDtoID(nonRecruitable->gid)],WARRIOR));
+    CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*view->unitSlots(0)[Unit::GIDtoID(stationary->gid)],WARRIOR));
+    (void)active;
+}
+TEST_CASE("loaded Population counts effective own roles once per hybrid")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto* hybrid=world.addUnit(WORKER,10,10);
+    hybrid->capabilityFlags|=UnitRuntimeTraits::Melee;
+    hybrid->performance[ATTACK_SPEED]=4;hybrid->performance[ATTACK_STRENGTH]=19;
+    auto* inactive=world.addUnit(WORKER,11,10);inactive->performance[BUILD]=0;
+    auto* stationary=world.addUnit(WARRIOR,12,10);
+    stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
+    auto* scout=world.addUnit(EXPLORER,13,10);
+    scout->performance[WALK]=scout->performance[SWIM]=scout->performance[FLY]=0;
+    world.addUnit(WARRIOR,20,10,1); // Another team never enters our predicate.
+    AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,world.game.players[0]);
+    struct Probe:AISharedRuntime::Conditions::Population {
+        using Population::Population;using Population::passes;using Population::save;using Population::load;
+    };
+    const auto assertLoaded=[&](bool workers,bool explorers,bool warriors,int limit,Probe::PopulationMethod method,bool expected) {
+        Probe authored(workers,explorers,warriors,limit,method);
+        auto* memory=new GAGCore::MemoryStreamBackend;GAGCore::BinaryOutputStream output(memory);
+        authored.save(&output);output.flush();const auto bytes=memory->takeContents();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);Probe loaded(false,false,false,0,Probe::Greater);
+        REQUIRE(loaded.load(&input,world.game.players[0],VERSION_MINOR));
+        AISharedRuntime::Runtime::OwnerObservationScope scope(runtime);
+        CHECK(bool(loaded.passes(runtime))==expected);
+    };
+    assertLoaded(true,true,true,2,Probe::Greater,true);
+    assertLoaded(true,true,true,3,Probe::Greater,false);
+    assertLoaded(true,true,true,2,Probe::Lesser,true);
+    assertLoaded(true,true,true,1,Probe::Lesser,false);
+    assertLoaded(true,false,false,1,Probe::Greater,true);
+    assertLoaded(false,true,false,1,Probe::Greater,false);
 }
 TEST_CASE("retained tournament replay contains no unavailable orders")
 {

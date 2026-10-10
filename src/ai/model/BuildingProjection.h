@@ -20,30 +20,25 @@ template<class Catalog> inline const BuildingType& completed(const Catalog& cata
 }
 inline bool trainsWarriorCombat(const BuildingType& type)
 {
-    if(type.maxUnitInside<=0 || !(type.semantics.admittedUnitMask&(1u<<WARRIOR)))return false;
-    for(int ability:{ATTACK_SPEED,ATTACK_STRENGTH}) {
-        const auto& training=type.semantics.training[ability];
-        if(training.enabled && (training.unitMask&(1u<<WARRIOR)))return true;
-    }
-    return false;
+    return type.maxUnitInside>0 && (type.runtimeTrainingAbilities&((1u<<ATTACK_SPEED)|(1u<<ATTACK_STRENGTH)));
 }
 inline int channelCompleted(const BuildingType& type)
 {
     const auto& s=type.semantics;
     const bool seats=type.maxUnitInside>0;
-    auto training=[&](int ability){return seats && s.training[ability].enabled && (s.training[ability].unitMask&s.admittedUnitMask);};
-    if(s.production.enabledUnitMask)return Production;
-    if(seats && s.feeding.enabled && (s.feeding.unitMask&s.admittedUnitMask))return Feeding;
-    if(seats && s.healing.enabled && (s.healing.unitMask&s.admittedUnitMask))return Healing;
+    auto training=[&](int ability){return seats && (type.runtimeTrainingAbilities&(1u<<ability));};
+    if(!s.production.enabledUnits.empty())return Production;
+    if(seats && type.runtimeFeeds)return Feeding;
+    if(seats && type.runtimeHeals)return Healing;
     if(training(WALK))return Walking;
     if(training(SWIM))return Swimming;
     if(training(ATTACK_SPEED)||training(ATTACK_STRENGTH))return CombatTraining;
     for(int ability=0;ability<NB_ABILITY;++ability)if(training(ability))return Education;
     if(type.shootingRange>0 && type.shootRhythm>0 &&
-        std::any_of(s.projectileDamage.begin(),s.projectileDamage.end(),[](int n){return n>0;}))return ProjectileDefense;
-    if(type.zonable[EXPLORER])return Exploration;
-    if(type.zonable[WARRIOR])return WarriorAttraction;
-    if(type.zonable[WORKER])return WorkerAttraction;
+        (type.runtimeAnyProjectileDamage || s.projectileBuildingDamage>0))return ProjectileDefense;
+    if(type.runtimeAttractionRoles&2)return Exploration;
+    if(type.runtimeAttractionRoles&4)return WarriorAttraction;
+    if(type.runtimeAttractionRoles&1)return WorkerAttraction;
     if((s.market.interTeamFruitExchange || type.runtimeSuppliesDirectStock) || type.runtimeSuppliesStock)return Exchange;
     return s.occupiesGround ? PassiveGround : -1;
 }

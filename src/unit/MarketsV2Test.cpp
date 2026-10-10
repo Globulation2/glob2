@@ -21,15 +21,19 @@
 
 namespace
 {
-std::vector<Uint32> simulation(Game &game)
+std::vector<Uint32> simulation(Game &game, bool legacy152Representation=false)
 {
 	std::vector<Uint32> state, buildings, units;
-	game.checkSum(&state, &buildings, &units, true);
+	game.checkSum(&state, &buildings, &units, true,legacy152Representation);
 	state.erase(state.begin()); // file version changes on save, not simulation
 	state.insert(state.end(), buildings.begin(), buildings.end());
 	state.insert(state.end(), units.begin(), units.end());
 	return state;
 }
+// Historical goldens compare the accepted version152 representation. Current
+// save/resume checks below continue to use complete new simulation components.
+std::vector<Uint32> historicalGoldenState(Game& game) { return simulation(game,true); }
+
 std::string save(Game &game, bool text)
 {
 	auto *backend = new GAGCore::MemoryStreamBackend;
@@ -41,12 +45,14 @@ std::string save(Game &game, bool text)
 }
 bool load(Game &game, const std::string &bytes, bool text)
 {
-	auto *backend = new GAGCore::MemoryStreamBackend;
-	backend->write(bytes.data(), bytes.size()); backend->seekFromStart(0);
-	std::unique_ptr<GAGCore::InputStream> in(text
-		? static_cast<GAGCore::InputStream *>(new GAGCore::TextInputStream(backend))
-		: static_cast<GAGCore::InputStream *>(new GAGCore::BinaryInputStream(backend)));
-	return game.load(in.get());
+    auto backend=std::make_unique<GAGCore::MemoryStreamBackend>();
+    backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
+    // TextInputStream parses synchronously and does not own its backend;
+    // BinaryInputStream owns and deletes the backend handed to it.
+    if(text) {
+        GAGCore::TextInputStream input(backend.get()); return game.load(&input);
+    }
+    GAGCore::BinaryInputStream input(backend.release()); return game.load(&input);
 }
 }
 
@@ -103,7 +109,7 @@ std::string marketTrace(bool enabled, bool report=false)
 			}
 			world.step();
 			Uint32 hash=2166136261u;
-			for (Uint32 value : simulation(g)) hash=(hash ^ value)*16777619u;
+			for (Uint32 value : historicalGoldenState(g)) hash=(hash ^ value)*16777619u;
 			trace << pipeline << ' ' << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
 			if (tick==749)
 			{
@@ -158,7 +164,7 @@ TEST_CASE("legacy workers already travelling to markets continue after migration
 		for (int i=0;i<6;++i) { world.team->myUnits[i]->hungry=Unit::HUNGRY_MAX; world.team->myUnits[i]->medical=Unit::MED_FREE; }
 		world.step();
 		Uint32 hash=2166136261u;
-		for (Uint32 value : simulation(world.game)) hash=(hash^value)*16777619u;
+		for (Uint32 value : historicalGoldenState(world.game)) hash=(hash^value)*16777619u;
 		trace << "0 " << tick+1 << ' ' << std::hex << hash << std::dec << '\n';
 	}
 	glob2test::expectGolden("markets-v2/legacy-133-checksums.txt",trace.str());
@@ -242,6 +248,7 @@ TEST_CASE("each market level accepts only its resources across all swim classes"
 {
 	glob2test::HeadlessGlobals globals;
 	for (int level=0; level<3; ++level)
+    for(bool waterOnly:{false,true})
 	{
 		glob2test::GameOptions options{.teams=2, .discovered=true, .clearImmobile=true, .header=true};
 		options.experiments.set(ExperimentId::MarketsV2);
@@ -249,10 +256,13 @@ TEST_CASE("each market level accepts only its resources across all swim classes"
 		auto &g=world.game;
 		auto *market=world.addBuilding("market",8,8,level);
 		REQUIRE(market);
+        if(waterOnly)
+            for(int y=0;y<g.map.getH();++y)for(int x=0;x<g.map.getW();++x)
+                if(g.map.getBuilding(x,y)==NOGBID)g.map.paintCell(x,y,WATER);
 		for (int r=0; r<MaterialSlotCount; ++r) market->materials[r]=100;
 		CHECK_FALSE(market->fetchesFromMarkets());
 		for (int r=0; r<MaterialCount; ++r)
-			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0; sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1); ++sw)
 			{
 				bool accepts=market->type->maxMaterial[r]>0;
 				CHECK(g.map.isStockedMarketTile(market->gid,0,r)==accepts);
@@ -267,21 +277,26 @@ TEST_CASE("each market level accepts only its resources across all swim classes"
 TEST_CASE("market routes respect forbidden ground and water across swim classes")
 {
 	glob2test::HeadlessGlobals globals;
+    for(bool waterOnly:{false,true}) {
 	glob2test::GameOptions options{.discovered=true, .clearImmobile=true, .header=true};
 	options.experiments.set(ExperimentId::MarketsV2);
 	glob2test::HeadlessGame world(options);
 	auto *market=world.addBuilding("market",8,8);
 	market->materials[CHERRY]=20;
+    if(waterOnly)
+        for(int y=0;y<world.game.map.getH();++y)for(int x=0;x<world.game.map.getW();++x)
+            if(world.game.map.getBuilding(x,y)==NOGBID)world.game.map.paintCell(x,y,WATER);
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x) world.game.map.addForbidden(x,y,0);
-	for (int sw=0;sw<SWIM_CLASS_COUNT;++sw) CHECK_FALSE(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true));
+	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw) CHECK_FALSE(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true));
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x)
 	{ world.game.map.removeForbidden(x,y,0); world.game.map.paintCell(x, y, WATER); }
 	world.game.map.bumpTopologyGeneration();
-	for (int sw=0;sw<SWIM_CLASS_COUNT;++sw)
+	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw)
 	{
 		world.game.map.updateMaterialGradient(0,CHERRY,sw,true);
 		CHECK(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true)==(sw>0));
 	}
+    }
 }
 TEST_CASE("a frequently refreshed market field publishes depletion and restocking")
 {

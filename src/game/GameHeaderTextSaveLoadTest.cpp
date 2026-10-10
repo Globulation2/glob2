@@ -28,6 +28,7 @@
 #include "FileFormatVersions.h"
 #include "Version.h"
 #include "BuildingType.h"
+#include "LegacyGameHeaderWire.h"
 #include <nlohmann/json.hpp>
 
 using namespace GAGCore;
@@ -216,6 +217,7 @@ void testBinaryHeaderFormsAndLegacy()
         // shorter tail; player-info-only records never contain them.
         memory->seekFromEnd(0);
         std::string historical(memory->getBuffer(),memory->getPosition());
+        if (form != 1) glob2test::removeUnitCatalogWireSection(historical, original);
         const std::string current=historical;
         if(form!=1) historical.erase(6,1);
         // Format 145 adds an empty artwork chunk count before resource declarations.
@@ -459,7 +461,7 @@ TEST_CASE("released format 145 header detects empty artwork without consuming th
         output->writeUint32(0x47614265, "sentinel"); output->flush();
         std::unique_ptr<InputStream> input;
         if (text) input = makeInputStream(*memory);
-        else { std::string bytes(memory->getBuffer(), memory->getPosition()); bytes.erase(6,1); auto* copy = new MemoryStreamBackend(bytes.data(),bytes.size()); copy->seekFromStart(0); input = std::make_unique<BinaryInputStream>(copy); }
+        else { std::string bytes(memory->getBuffer(), memory->getPosition()); glob2test::removeUnitCatalogWireSection(bytes, original, sizeof(Uint32)); bytes.erase(6,1); auto* copy = new MemoryStreamBackend(bytes.data(),bytes.size()); copy->seekFromStart(0); input = std::make_unique<BinaryInputStream>(copy); }
         GameHeader restored;
         REQUIRE((players ? restored.load(input.get(), 145) : restored.loadWithoutPlayerInfo(input.get(), 145)));
         CHECK(restored.resourceExperiments() == original.resourceExperiments());
@@ -480,6 +482,7 @@ TEST_CASE("compact-growth format 145 headers preserve definitions and enabled ke
         if (players) original.save(&output); else original.saveWithoutPlayerInfo(&output);
         output.flush();
         std::string historical(memory->getBuffer(), memory->getPosition());
+        glob2test::removeUnitCatalogWireSection(historical, original);
         historical.erase(6,1); // Building gradient delay was introduced after format145.
         auto* tail = new MemoryStreamBackend;
         BinaryOutputStream tailOutput(tail);

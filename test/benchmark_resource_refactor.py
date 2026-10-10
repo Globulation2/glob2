@@ -45,7 +45,9 @@ METRIC_DESCRIPTIONS = {
     'save_cpu_s': 'CPU around the requested final save; near zero when no final save is requested.',
     'cpu_s': 'Whole child-process user plus system CPU from wait4, including all threads, startup and teardown.',
     'wall_s': 'Whole child-process wall time from launch through wait4 completion.',
-    'peak_rss_bytes': 'Whole child-process peak resident memory; includes setup and does not isolate resource/cache allocations.',
+    'owner_cpu_s': 'Owner thread CPU over the measured simulation window, including final pipeline drain.',
+    'owner_tick_s': 'Sum of elapsed owner tick calls that advance the simulation, including waits on their critical path.',
+    'peak_rss_bytes': 'Whole child-process peak resident memory; includes setup and does not isolate resource/cache allocations. Linux results at the inherited runner high-water mark are rejected as censored.',
 }
 RUNNER_INPUTS = (Path(__file__).resolve(), Path(benchmark_parallel_compute.__file__).resolve())
 CATALOG_SUFFIXES = {'.json', '.txt', '.js', '.sgsl'}
@@ -252,7 +254,7 @@ def aggregate_interval(scenario_logs):
                 ci95=[math.exp(means[100]), math.exp(means[3899])])
 
 
-def main():
+def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('before', type=Path)
     p.add_argument('after', type=Path)
@@ -263,7 +265,13 @@ def main():
     p.add_argument('--repeats', type=int, default=8)
     p.add_argument('--report-only', action='store_true',
                    help='Report historical threshold diagnostics without failing on regression or inconclusive intervals; execution and integrity failures still fail')
-    args = p.parse_args()
+    p.add_argument('--aggregate-cpu-limit', type=float, default=1.02)
+    p.add_argument('--scenario-cpu-limit', type=float, default=1.05)
+    p.add_argument('--aggregate-rss-limit', type=float)
+    p.add_argument('--require-owner-timing', action='store_true')
+    args = p.parse_args(argv)
+    if any(not math.isfinite(value) or value < 1 for value in (args.aggregate_cpu_limit, args.scenario_cpu_limit, *(() if args.aggregate_rss_limit is None else (args.aggregate_rss_limit,)))):
+        p.error('ratio limits must be at least one')
     if args.repeats < 3:
         p.error('at least three paired repeats required')
     binaries = {'baseline': args.before.resolve(), 'candidate': args.after.resolve()}
@@ -283,6 +291,8 @@ def main():
         if not isinstance(name, str) or not name or name in ('.', '..') or '/' in name or '\\' in name or name in scenario_ids:
             p.error('each scenario requires a unique single-directory id')
         scenario_ids.add(name)
+        if type(scenario.get('repeats', args.repeats)) is not int or scenario.get('repeats', args.repeats) < 3:
+            p.error('each scenario requires at least three paired repeats')
         run_args = scenario.get('args')
         if not isinstance(run_args, list) or not all(isinstance(value, str) for value in run_args):
             p.error('each scenario requires a list of string arguments')
@@ -333,7 +343,7 @@ def main():
         with (out/'measurements.jsonl').open('w') as stream:
             for scenario in manifest['scenarios']:
                 samples = []
-                for repeat in range(-1, args.repeats):
+                for repeat in range(-1, scenario.get('repeats', args.repeats)):
                     rows = {}
                     order = ['baseline', 'candidate'] if repeat % 2 else ['candidate', 'baseline']
                     for variant in order:
@@ -359,6 +369,9 @@ def main():
                         row['setup_cpu_s'] = result['benchmark_setup_cpu_ns'] / 1e9
                         row['save_cpu_s'] = result['benchmark_save_cpu_ns'] / 1e9
                         row['simulation_wall_s'] = result['run_ns'] / 1e9
+                        if args.require_owner_timing:
+                            row['owner_cpu_s'] = result['benchmark_owner_cpu_ns'] / 1e9
+                            row['owner_tick_s'] = result['benchmark_owner_tick_ns'] / 1e9
                         rows[variant] = row
                         stream.write(json.dumps(row)+'\n'); stream.flush()
                         print(f"{scenario['id']} {repeat} {variant}: cpu={row['cpu_s']:.4f}s wall={row['wall_s']:.4f}s", flush=True)
@@ -369,20 +382,28 @@ def main():
     summary = {}
     for name, samples in pairs.items():
         summary[name] = {}
-        for metric in ('simulation_cpu_s', 'simulation_wall_s', 'cpu_s', 'wall_s', 'peak_rss_bytes'):
+        for metric in ('simulation_cpu_s', 'simulation_wall_s', 'cpu_s', 'wall_s', 'peak_rss_bytes') + (('owner_cpu_s', 'owner_tick_s') if args.require_owner_timing else ()):
             logs = [math.log(row['candidate'][metric]/row['baseline'][metric]) for row in samples]
             summary[name][metric] = dict(ratio=math.exp(statistics.mean(logs)), ci95=interval(logs),
                 baseline_median=statistics.median(row['baseline'][metric] for row in samples),
                 candidate_median=statistics.median(row['candidate'][metric] for row in samples))
     # Each scenario receives equal weight; all early/middle/late controls are included.
-    aggregate_logs = [[math.log(row['candidate']['simulation_cpu_s']/row['baseline']['simulation_cpu_s'])
-                       for row in samples] for samples in pairs.values()]
-    aggregate = aggregate_interval(aggregate_logs)
-    credible_regression = aggregate['ci95'][0] > 1.02 or any(s['simulation_cpu_s']['ci95'][0] > 1.05 for s in summary.values())
-    within_limits = aggregate['ci95'][1] <= 1.02 and all(s['simulation_cpu_s']['ci95'][1] <= 1.05 for s in summary.values())
-    result = dict(scenarios=summary, aggregate_cpu=aggregate,
-                  report_only=args.report_only,
-                  performance_gate='regression' if credible_regression else 'within_limits' if within_limits else 'inconclusive')
+    gates = [('simulation_cpu_s', args.aggregate_cpu_limit)]
+    if args.require_owner_timing:
+        gates += [('cpu_s', args.aggregate_cpu_limit), ('owner_cpu_s', args.aggregate_cpu_limit), ('owner_tick_s', args.aggregate_cpu_limit)]
+    if args.aggregate_rss_limit is not None:
+        gates += [('peak_rss_bytes', args.aggregate_rss_limit)]
+    aggregates = {metric: aggregate_interval([[math.log(row['candidate'][metric]/row['baseline'][metric])
+                  for row in samples] for samples in pairs.values()]) for metric, _ in gates}
+    regression = any(aggregates[metric]['ci95'][0] > limit for metric, limit in gates)
+    within = all(aggregates[metric]['ci95'][1] <= limit for metric, limit in gates)
+    scenario_metrics = ['simulation_cpu_s'] + (['cpu_s', 'owner_cpu_s', 'owner_tick_s'] if args.require_owner_timing else [])
+    regression |= any(s[metric]['ci95'][0] > args.scenario_cpu_limit for s in summary.values() for metric in scenario_metrics)
+    within &= all(s[metric]['ci95'][1] <= args.scenario_cpu_limit for s in summary.values() for metric in scenario_metrics)
+    credible_regression, within_limits = regression, within
+    result = dict(scenarios=summary, aggregate_cpu=aggregates['simulation_cpu_s'], aggregates=aggregates,
+                  limits=dict(gates, per_scenario_cpu_owner=args.scenario_cpu_limit), report_only=args.report_only,
+                  performance_gate='regression' if regression else 'within_limits' if within else 'inconclusive')
     (out/'summary.json').write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result['aggregate_cpu']), result['performance_gate'])
     # Report-only changes only threshold enforcement, after the complete input audit.

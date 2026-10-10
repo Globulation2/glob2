@@ -36,6 +36,10 @@
 #include <iostream>
 #include <array>
 #include <fstream>
+#include <filesystem>
+#include <TextStream.h>
+#include <GzipUtil.h>
+#include <StreamBackend.h>
 #include <sstream>
 #include <iomanip>
 #include <cstdlib>
@@ -179,6 +183,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
     const auto world=openReadBoundary(eligible,paused,!readBoundaryOpened);
     const auto scheduled=gui.game.prepareAIOrders(eligible,paused,diagnostics,&world);
     for(const auto& [actor,order]:scheduled) {
+        if(checksumSidecar) GameDiagnostics::recordContinuationOrder(gui.game.stepCounter,actor,*order);
         if(localAI && actor==unsigned(orderPlayer)) localOrder=order;
         else net->pushOrder(order,actor,true);
     }
@@ -187,20 +192,48 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	if (wasReadyLastTick)
 	{
 		PERF_SCOPE_TIME(Replay);
-		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL);
+		const bool legacy152 = globalContainer->replayReader && globalContainer->replayReader->formatVersion() <= 152;
+		Uint32 checksum = gui.game.checkSum(NULL, NULL, NULL, false, legacy152);
 		net->advanceStep(checksum);
 
 		if (globalContainer->replayWriter) globalContainer->replayWriter->setCheckSum(checksum);
 
 		if (checksumSidecar)
         {
-			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game);
+			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game,legacy152);
             // Explicit verification only: joins private growth and hashes every
             // resource and pending proposal without slowing routine checksums.
             if (!headlessOutput.empty())
+            {
                 std::ofstream(headlessOutput + "/world.checksums", std::ios::app)
                     << gui.game.stepCounter << ' '
                     << gui.game.checkSum(nullptr, nullptr, nullptr, true) << '\n';
+                // Explicit correctness evidence, never a timing-run sink. Saving
+                // joins private work without delivering future AI orders, exposing
+                // continuation state that the compact replay checksum omits.
+                if (const char* trace=std::getenv("GLOB2_FULL_STATE_TRACE"); trace && std::string_view(trace)=="1")
+                {
+                    const char* cadence=std::getenv("GLOB2_FULL_STATE_TRACE_INTERVAL");
+                    const auto interval=cadence ? std::strtoul(cadence,nullptr,10) : 1ul;
+                    if(!interval) throw std::runtime_error("Invalid continuation trace interval");
+                    if(gui.game.stepCounter % interval == 0)
+                    {
+                    const auto directory=std::filesystem::path(headlessOutput)/"state";
+                    std::filesystem::create_directories(directory);
+                    auto* bytes=new GAGCore::MemoryStreamBackend();
+                    auto stream=GameDiagnostics::makeContinuationStream(bytes);
+                    const auto savedOffset=gui.game.mapHeader.getMapOffset();
+                    gui.game.mapHeader.setMapOffset(0);
+                    gui.game.save(stream.get(),false,"continuation-trace");
+                    GameDiagnostics::saveLiveContinuation(stream.get(),gui.game);
+                    gui.game.mapHeader.setMapOffset(savedOffset);
+                    stream->flush();
+                    const auto contents=bytes->takeContents();
+                    if(!GAGCore::writeGzipAtomicToPath((directory/(std::to_string(gui.game.stepCounter)+".txt.gz")).string(),contents))
+                        throw std::runtime_error("Cannot write continuation trace");
+                    }
+                }
+            }
         }
 	}
 	// advanceStep inserts the local order. Measuring earlier leaves a stale

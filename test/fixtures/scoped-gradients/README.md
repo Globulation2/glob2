@@ -5,9 +5,9 @@ policy combined with the eight-tick periodic gradient pipeline. The superseded
 version-120 traces were removed with the test-suite cleanup and remain in git history
 (commit `508942f08`, PR #390).
 
-`test/check_telemetry_simulation.py` checks the `*.resources.checksums.gz`
-traces across CI platforms. These are the format-152, simulation-revision-40
-baselines. The version-123 and `*.terrain.checksums.gz` references remain unchanged
+`test/check_telemetry_simulation.py` checks the `*.units.checksums.gz`
+traces across CI platforms. These are the format-153 unit-era references. The
+format-152 `*.resources.checksums.gz`, version-123 and `*.terrain.checksums.gz` references remain unchanged
 as historical evidence, including the simulation-revision-20 capability checksums.
 All epochs use the same retained legacy save inputs.
 
@@ -23,7 +23,7 @@ The checker compares complete sidecars, including the aggregate checksum and eve
 team/entity record, for fresh loads and the v108 checkpoint continuation. It does
 not discard differing fields or weaken the per-tick comparison.
 
-Regenerate only the resource traces with
+Regenerate only the unit-era traces with
 `python3 test/check_telemetry_simulation.py PATH/TO/glob2 --update-fixtures`, then
 verify without that flag using both the default and `--parallel-ai` modes.
 `--output artifacts/NAME` retains commands, logs, traces and a hash manifest.
@@ -38,3 +38,9 @@ publication delay. Compress sidecars with gzip mtime zero.
 Current references intentionally change with the simulation policy; they do not
 assert trajectory compatibility with version 120. The separate save-continuation
 test checks newly saved states against uninterrupted execution.
+
+The unit-era checksum records include resolved catalog identity, capability
+state, assigned job purpose and extended cargo. Historical resource traces
+remain migration evidence; the current checker never updates them. New current
+references require reviewing default gameplay equivalence independently of
+these additional checksum fields before accepting regenerated traces.

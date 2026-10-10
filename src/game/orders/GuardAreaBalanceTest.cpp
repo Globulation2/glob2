@@ -59,10 +59,10 @@ namespace
 	};
 
 	// Simulation checksum of everything that matters, for continuation checks.
-	std::vector<Uint32> simulationState(Game& game)
+	std::vector<Uint32> simulationState(Game& game, bool legacy152=false)
 	{
 		std::vector<Uint32> result, buildings, units;
-		game.checkSum(&result, &buildings, &units, true);
+		game.checkSum(&result, &buildings, &units, true, legacy152);
 		result.erase(result.begin()); // the save path upgrades the map format header
 		result.insert(result.end(), buildings.begin(), buildings.end());
 		result.insert(result.end(), units.begin(), units.end());
@@ -531,7 +531,7 @@ namespace
 			if (tick)
 				world.run(100);
 			Uint32 hash = 2166136261u; // FNV-1a over every checksum word
-			for (Uint32 word : simulationState(world.game))
+			for (Uint32 word : simulationState(world.game, true))
 			{
 				hash ^= word;
 				hash *= 16777619u;

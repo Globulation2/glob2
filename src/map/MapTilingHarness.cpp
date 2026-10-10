@@ -302,7 +302,8 @@ TEST_CASE("a repeated starting map has portable per-tick checksums [save-format]
 	for (int tick = 0; tick < 128; ++tick)
 	{
 		game.syncStep(0);
-		checksums << tick << ' ' << game.checkSum(nullptr, nullptr, nullptr, true) << '\n';
+		// This historical golden predates the unit-catalog representation.
+		checksums << tick << ' ' << game.checkSum(nullptr, nullptr, nullptr, true, true) << '\n';
 	}
 	glob2test::expectGolden("map-tiling/checksums.txt", checksums.str());
 }

@@ -14,7 +14,9 @@ fetching, salted private entity RNG streams, and scheduled building walking fiel
 fields, and its pre-148 header gets the default eight-tick delay).
 `round-trip-143-checksums.txt` is that per-tick trace (FNV-1a over every
 checksum part except the MapHeader, whose version changes on save),
-regenerated whenever the simulation changes. Re-saving at tick 1,700
+retained through the unit-catalog refactor using the version-152 checksum
+representation adapter. The save/resume state comparison uses the complete current
+representation. Re-saving at tick 1,700
 in binary and text form, in the current format, must continue identically.
 The old save has no PCG state: loading initializes every unit/building stream once
 from its saved seed, GID and generation, and the new saves preserve that progress. Format 152 similarly initializes map

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include <PackedArray.h>
+#include <PackedRecords.h>
 #include <random>
 
 template <class U> static std::string pack(const std::vector<U> &values)
@@ -118,6 +119,54 @@ TEST_SUITE("PackedArray")
 		CHECK_THROWS(unpack<Uint8>(std::string("\1\0\0\0\2\0\0", 7), 8));
 		CHECK_THROWS(unpack<Uint8>(std::string("\0\0\0\0\1\0", 6), 8));
 	}
+}
+
+TEST_SUITE("PackedRecords")
+{
+    TEST_CASE("large unit history rows retain bounded batches and exact continuation [save-format]")
+    {
+        for(const size_t rowBytes:{size_t(8+16*4096),size_t(256*1024),GAGCore::PackedRecords::maxRowBytes}) {
+        const size_t count=GAGCore::PackedRecords::rowsPerBatch(rowBytes)+1;
+        CHECK(GAGCore::PackedRecords::rowsPerBatch(rowBytes)*rowBytes<=GAGCore::PackedRecords::maxBatchBytes);
+        const auto writeRow=[rowBytes](GAGCore::OutputStream* stream,size_t row) {
+            for(size_t word=0;word<rowBytes/4;++word) stream->writeUint32(Uint32(row*7919+word),"value");
+        };
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);
+        GAGCore::PackedRecords::write(&output,count,rowBytes,writeRow);
+        const auto expected=memory->takeContents();
+        if(rowBytes==8+16*4096) {
+            // Independent historical transpose: its wire batches were always 256.
+            auto* oldMemory=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream oldOutput(oldMemory);
+            for(size_t off=0;off<count;off+=256) {
+                const size_t n=std::min(size_t(256),count-off);
+                for(size_t word=0;word<rowBytes/4;++word)
+                    GAGCore::PackedArray::write<Uint32>(&oldOutput,n,[&](size_t row) { return Uint32((off+row)*7919+word); });
+            }
+            CHECK(oldMemory->takeContents()==expected);
+        }
+        GAGCore::DeferredStream deferred;
+        GAGCore::PackedRecords::write(&deferred,count,rowBytes,writeRow);
+        auto finalized=deferred.takeSnapshot().finish();
+        std::string captured(finalized.size(),'\0'); finalized.readAt(0,captured.data(),captured.size());
+        CHECK(captured==expected);
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(expected.data(),expected.size()));
+        input.seekFromStart(0);
+        bool exact=true;
+        GAGCore::PackedRecords::read(&input,count,rowBytes,[&](GAGCore::InputStream* stream,size_t row) {
+            for(size_t word=0;word<rowBytes/4;++word) exact&=stream->readUint32("value")==Uint32(row*7919+word);
+        });
+        CHECK(exact); CHECK(input.getPosition()==expected.size());
+        CHECK_THROWS(GAGCore::PackedRecords::write(&output,1,GAGCore::PackedRecords::maxRowBytes+4,writeRow));
+        CHECK_THROWS(GAGCore::PackedRecords::read(&input,1,GAGCore::PackedRecords::maxRowBytes+4,
+            [](GAGCore::InputStream*,size_t) {}));
+        for(size_t invalid:{size_t(0),size_t(3)}) {
+            CHECK_THROWS(GAGCore::PackedRecords::write(&output,1,invalid,writeRow));
+            CHECK_THROWS(GAGCore::PackedRecords::read(&input,1,invalid,[](GAGCore::InputStream*,size_t) {}));
+        }
+        }
+    }
 }
 
 TEST_SUITE("DeferredSnapshot")

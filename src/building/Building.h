@@ -25,6 +25,8 @@ namespace GAGCore
 }
 
 
+struct WideMaterialPacket;
+struct WideMaterialDeliveryResult;
 class Unit;
 class Team;
 class Map;
@@ -47,7 +49,7 @@ static constexpr int MATERIAL_TYPE_NONE = -1;
 /// `[canSwim]` where `canSwim == 0` means the no-swim variant and
 /// `canSwim == 1` means the can-swim variant. Used both as the array
 /// dimension and as the loop bound in `for (canSwim=0; canSwim<...; …)`.
-static constexpr int SWIM_VARIANT_COUNT = 2;
+static constexpr int SWIM_VARIANT_COUNT = 3;
 
 /// Index into a `[SWIM_VARIANT_COUNT]` array selecting the variant
 /// reachable by units that have the SWIM ability. Used at sites that
@@ -217,7 +219,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	///Returns true if a unit was hired
 	bool subscribeToBringMaterialsStep(bool borrowUnused = false);
 	//! Whether the unit's type and level qualify it to work for this building.
-	bool canUnitWorkHere(Unit* unit, bool attraction = false);
+	bool canUnitWorkHere(Unit* unit, bool attraction = false, int role=-1);
 	/// Whether any configured material uses routed team-stock fetching.
 	/// Consumer-aware Map queries apply per-material gates and exclude own pools.
 	bool fetchesFromMarkets() const;
@@ -283,6 +285,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	/// This function is called when a Unit delivers a material into the building.
 	void addMaterialIntoBuilding(int resourceType);
 	MaterialDeliveryResult deliverMaterialPacket(int resourceType, MaterialPacket packet);
+	WideMaterialDeliveryResult deliverCargoPacket(int resourceType, WideMaterialPacket packet);
 	MaterialPacket withdrawMaterialPacket(int resourceType);
 	int getConstructionOriginTypeNum() const { return constructionOriginTypeNum; }
 	int getConstructionCompletionTypeNum() const;
@@ -296,6 +299,16 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	void transferMaterialsPointer(bool wasShared);
 	BuildingMaterialCost constructionBudget{}, constructionReserved{};
 	std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios{};
+	// Optional additional types do not enlarge the pointer-free hot state record.
+	std::vector<Sint32> extraProductionRatios, extraProductionUsed, extraConstructionOriginRatios;
+	Sint32& productionRatio(unsigned id) { return id<NB_UNIT_TYPE ? ratio[id] : extraProductionRatios.at(id-NB_UNIT_TYPE); }
+	Sint32 productionRatio(unsigned id) const { return id<NB_UNIT_TYPE ? ratio[id] : extraProductionRatios.at(id-NB_UNIT_TYPE); }
+	Sint32& productionUsed(unsigned id) { return id<NB_UNIT_TYPE ? percentUsed[id] : extraProductionUsed.at(id-NB_UNIT_TYPE); }
+	Sint32 productionUsed(unsigned id) const { return id<NB_UNIT_TYPE ? percentUsed[id] : extraProductionUsed.at(id-NB_UNIT_TYPE); }
+	Sint32& originProductionRatio(unsigned id) { return id<NB_UNIT_TYPE ? constructionOriginRatios[id] : extraConstructionOriginRatios.at(id-NB_UNIT_TYPE); }
+	Sint32 originProductionRatio(unsigned id) const { return id<NB_UNIT_TYPE ? constructionOriginRatios[id] : extraConstructionOriginRatios.at(id-NB_UNIT_TYPE); }
+	void configureProductionState();
+	std::size_t productionTypeCount() const { return NB_UNIT_TYPE+extraProductionRatios.size(); }
 	void transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin = nullptr, bool restoring = false);
 	Sint32 repairInitialDeficit = 0, repairHealthGranted = 0;
 	void applyConstructionHealth(int funded, bool finishRepair = false);
@@ -312,14 +325,14 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
 	/// and provides the x and y coordinates, along with the direction the unit should be travelling
 	/// when it leaves.
-	bool findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim);
+	bool findGroundExit(int *posX, int *posY, int *dx, int *dy, bool canSwim, bool canWalk=true);
 	/// When a unit leaves a building, this function will find an open spot for that unit to leave,
 	/// and provides the x and y coordinates, along with the direction the unit should be travelling
 	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
 
 	/// Free tile for a unit expelled by kill(): footprint first, then the ring; dx/dy point outwards.
-	bool findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy);
+	bool findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy, bool canWalk=true);
 
 	/// Returns the script level number. Construction sites are odd numbers and completed buildings
 	/// even, from 0 to 5
@@ -342,7 +355,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	bool hasClearShotTo(int targetX, int targetY) const;
 
 	bool integrity();
-	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
+	Uint32 checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152=false);
 
 private:
 	// ─── Turret targeting (turretStep helpers) ──────────────────────
@@ -355,9 +368,9 @@ private:
 	{
 		TARGETTYPE_NONE,
 		TARGETTYPE_BUILDING,
-		TARGETTYPE_WORKER,
-		TARGETTYPE_WARRIOR,
-		TARGETTYPE_EXPLORER,
+		TARGETTYPE_GENERAL,
+		TARGETTYPE_THREAT,
+		TARGETTYPE_PRIORITY,
 	};
 
 	/// Result of a turret's ring scan: the best target found and the data
@@ -469,7 +482,7 @@ private:
 	///     Map::buildingAvailable (range 0..~254), compared against timeLeft.
 	bool considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDistance = -1);
 	bool considerUnitForWorkerFlag(Unit* unit, int* dist);
-	bool considerUnitForWarriorFlag(Unit* unit, int* dist);
+	bool considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDistance=-1);
 
 	/// One worker that could be hired to carry materials to this building,
 	/// with the metrics the selection passes of
@@ -501,21 +514,25 @@ private:
 	/// high enough level, and close enough to reach this building before going
 	/// hungry. Fills *distBuilding on success; on failure tallies the rejection
 	/// reason in unitsFailingRequirements and returns false.
-	bool considerUnitForBuilding(Unit* unit, int* distBuilding);
+	bool considerUnitForBuilding(Unit* unit, int* distBuilding, int airDistance=-1);
 
 	/// Per-unit predicate for one material: considerUnitForBuilding plus a
 	/// reachable source of `wantedMaterial` the unit can fetch from and still
 	/// carry to this building before going hungry. Fills *dist with the round
 	/// distance by way of the resource. Callers must pre-filter units lacking
 	/// the HARVEST ability or already filling this building.
-	bool considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist);
+	bool considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist, int airDistance=-1);
 
 	/// Packs workers hireable to fetch `wantedMaterial` into candidates in unit
 	/// index order and returns their count. The caller supplies Unit::MAX_COUNT
 	/// slots. Rejection reasons are tallied via considerUnitForMaterial. The
 	/// tallies are reset per scan, so they describe one material, never a unit
 	/// counted once per material the building tried.
-	int gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial);
+	int gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial, const int* airDistances=nullptr);
+	// Keep large scratch arrays off fully staffed/dead/timer-only admission paths.
+	[[gnu::noinline]] bool hireMaterialUnit(const int* targets, const int* served, const int* airDistances);
+	[[gnu::noinline]] bool hireMaterialUnitWithFlyingDistances(const int* targets, const int* served);
+	[[gnu::noinline]] bool hireFlagUnits();
 
 	/// Per-material delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in
@@ -534,7 +551,7 @@ private:
 	/// out. Assigns destinationPurpose to every carrying candidate it inspects,
 	/// not only the one chosen, and scores on a hunger-discounted distance.
 	/// Both are deliberate and must be preserved.
-	void selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel);
+	void selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel, const int* airDistances=nullptr);
 
 	/// The fetch-out selection pass for one material. Scans all candidates and
 	/// updates `sel` with the best match, assigning destinationPurpose only to
@@ -556,7 +573,7 @@ private:
 		int & exitY,
 		int & exitQuality,
 		int & oldQuality,
-		bool canSwim);
+		bool canSwim, bool canWalk);
 
 public:
 	// ─── Public data ────────────────────────────────────────────────
@@ -616,7 +633,7 @@ public:
 	int routeSlot(int swimClass, BuildingRoute route) const
 	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_CLASS_COUNT + swimClass; }
 	int routeAccess(int swimClass, BuildingRoute route) const
-	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_VARIANT_COUNT + (swimClass > 0); }
+	{ return int(route == BuildingRoute::Automatic ? resolveRoute(route) : route) * SWIM_VARIANT_COUNT + (swimClass == SWIM_CLASS_COUNT-1 ? 2 : int(swimClass > 0)); }
 	int workRoleTarget(int role) const; // -1 delivery, otherwise attracted unit class
 	bool subscribeWorkStep();
 

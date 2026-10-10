@@ -150,6 +150,12 @@ changes do not rewrite a saved game's rules. Format 136 terrain registries and t
 existing save-support floor remain readable through versioned loaders. Replay and
 network boundaries are intentionally stricter than save loading.
 
+Local assignment and flag-radius preferences are keyed by catalog fingerprint
+and stable variant key. Preferences migrate only between the known stock
+snapshots, including the switch from explicit production costs to unit-cost
+inheritance. Explicit preferences for the newer stock identity take precedence;
+authored catalogs retain separate preferences even when they reuse stock keys.
+
 Stock compatibility checks compare the shipped definitions against the frozen
 legacy import. Service/production fixtures check accounting and continuation;
 custom-catalog fixtures check replacement providers, absence handling, mixed

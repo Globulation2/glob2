@@ -55,17 +55,17 @@ All paths in this table are relative to one variant:
 | `semantics.feeding`, `semantics.healing` | Enabled flag, class mask, duration, costs, partial-settlement policy, exit admission and configured outcomes |
 | `semantics.training` | Ability-name object with explicit results, duration, class admission, material cost and optional independent construction qualification |
 | `semantics.trainingInParallel` | One configured visit may grant its eligible training bundle |
-| `semantics.production.recipes` | Unit-name object with independently enabled worker/explorer/warrior recipes, costs and durations |
-| `semantics.projectileDamage`, `semantics.projectileBuildingDamage` | Unit-class damage array and independent building damage |
+| `semantics.production.recipes` | Stable-unit-key object with independently enabled recipes, inherited or explicit costs and durations |
+| `semantics.projectileDamage`, `semantics.projectileBuildingDamage` | Uniform legacy damage arrays apply to all unit types; heterogeneous arrays cover the built-ins and require explicit extra targets. A `projectileDamage` object overrides stable unit keys. Building damage is independent. |
 | `semantics.ammunitionMaterial`, `semantics.ammunitionCost` | Material index and amount per ammunition refill; capacity/cadence/range/speed remain explicit properties |
 | `semantics.constructionCost`, `semantics.repairCost` | Materials independent of operating storage limits |
 | `semantics.repairable`, `semantics.regenerationPerTick` | Permission to repair and passive regeneration are independent |
 | `semantics.requiredWorkerLevel` | Construction qualification, separate from work speed and presentation tier |
-| `semantics.assignmentLimit`, `semantics.admittedUnitMask` | Shared assignment bound and allowed interior unit classes |
+| `semantics.assignmentLimit`, `semantics.admittedUnitMask` | Shared assignment bound and legacy built-in admission mask; `admittedUnits` selects stable unit keys |
 | `properties.maxUnitInside` | Shared interior seats; every enabled interior service needs at least one admitted class and one seat |
 | `semantics.placeable`, `semantics.instantPlacement` | Availability for placement and whether a completed variant can be placed directly |
 | `semantics.occupiesGround`, `semantics.relocatable` | Independent occupancy and movement behavior |
-| `properties.zonable` | Attraction enabled independently for each unit class |
+| `properties.zonable` | Legacy built-in attraction; `attractionUnits` selects stable unit keys separately for clearing, exploration and defense |
 | `properties.defaultUnitStayRange`, `properties.maxUnitStayRange` | Initial and maximum attraction radius |
 | `semantics.market` | Shared/local inventory, direct or routed supply/fetch and inter-team fruit exchange |
 | `semantics.workPriorityBias`, `semantics.sightSharing` | Worker task preference and visibility sharing policy |
@@ -83,6 +83,14 @@ Current-format loads validate that this completed origin points to the active
 site through the appropriate repair or upgrade edge.
 Bombing training is independent of school tier, as are worker construction
 qualification and work-speed training.
+
+Production material costs inherit the unit definition when `cost` is omitted.
+An explicit empty `cost` object enables free production. An `initialRatios` object
+sets weights by stable unit key; the legacy three-entry array remains supported.
+Existing gameplay ratio orders preserve configured weights for additional types.
+Services and training accept a `units` array instead of a built-in `unitMask`.
+These selectors resolve once against the game catalog into immutable indexed rows;
+see [unit definitions](../architecture/units.md).
 
 Production has two reusable scheduling policies:
 

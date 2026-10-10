@@ -356,12 +356,13 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 	// At most one allocated field per eight map ticks; no extra saved state.
 	// Normal cycle: 8 * teams * SWIM_CLASS_COUNT ticks; counter wrap can
 	// extend one interval to less than two cycles.
-	const int escapeSlots = game->mapHeader.getNumberOfTeams() * SWIM_CLASS_COUNT;
+	const int activeSwimClasses=game->hasWaterOnlyUnits()?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+	const int escapeSlots = game->mapHeader.getNumberOfTeams() * activeSwimClasses;
 	if (escapeSlots && (stepCounter & 7) == 0)
 	{
 		const int slot = (stepCounter >> 3) % escapeSlots;
-		const int escapeTeam = slot / SWIM_CLASS_COUNT;
-		const int escapeSwim = slot % SWIM_CLASS_COUNT;
+		const int escapeTeam = slot / activeSwimClasses;
+		const int escapeSwim = slot % activeSwimClasses;
 		const Uint16* field = forbiddenGradient[escapeTeam][escapeSwim];
 		if (field)
 		{

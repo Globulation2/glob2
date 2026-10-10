@@ -28,6 +28,7 @@ template<class Fn> void visitSeedBits(const MaterialSeedCache::Bits& bits, Fn fn
 bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
     int swim, Uint16* output, const Uint16* suppliers)
 {
+    if (swim==WATER_ONLY_CLASS) return false;
     const auto view=snapshot.view();
     const size_t cells=size_t(view.width)*view.height, words=(cells+63)/64;
     const size_t required=cells*(2*sizeof(Uint16)+sizeof(Uint16)+sizeof(Uint32))
@@ -240,7 +241,7 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
     if (scratch.seeds.empty()) return;
     scratch.positions.clear();
     for (const auto& u : snapshot.entities->units)
-        if (u.team == request.team && !u.isDead && u.typeNum == WARRIOR && u.displacement != Unit::DIS_INSIDE)
+        if (u.team == request.team && !u.isDead && (u.capabilityFlags & UnitRuntimeTraits::GuardIdle) && u.displacement != Unit::DIS_INSIDE)
             scratch.positions.push_back(view.index(u.posX, u.posY));
     if (scratch.positions.empty()) return;
     scratch.warriors.assign(size, 0);

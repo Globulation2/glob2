@@ -15,10 +15,10 @@
 
 namespace
 {
-std::vector<Uint32> simulation(Game &game)
+std::vector<Uint32> simulation(Game &game, bool legacy152=false)
 {
 	std::vector<Uint32> state, buildings, units;
-	game.checkSum(&state, &buildings, &units, true);
+	game.checkSum(&state, &buildings, &units, true, legacy152);
 	state.erase(state.begin()); // file version changes on save, not simulation
 	state.insert(state.end(), buildings.begin(), buildings.end());
 	state.insert(state.end(), units.begin(), units.end());
@@ -28,7 +28,9 @@ std::vector<Uint32> simulation(Game &game)
 Uint32 digest(Game &game)
 {
 	Uint32 hash=2166136261u;
-	for (Uint32 value : simulation(game)) hash=(hash ^ value)*16777619u;
+	// Retain the released representation as an independent default-behavior oracle.
+	// Save/resume comparisons below still cover the complete current state.
+	for (Uint32 value : simulation(game, true)) hash=(hash ^ value)*16777619u;
 	return hash;
 }
 

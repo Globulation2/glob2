@@ -51,62 +51,91 @@ def compare_payloads(whole, resumed):
 
 
 def save_header(path):
-    """Read the modern fixture's MapHeader and GameHeader player count."""
+    """Read bounded format-73..153 MapHeader framing and the player-count prefix.
+
+    Unit definitions in format 153 follow the GameHeader players and resource
+    declarations; they do not add MapHeader fields or change this prefix.
+    """
     data = gzip.decompress(path.read_bytes())
-    name_length = struct.unpack_from('>I', data)[0]
-    major, minor, teams = struct.unpack_from('>3I', data, 4 + name_length)
-    assert minor >= 73, 'fixture predates fixed-size BaseTeam headers'
-    # Version134 appends the required-terrain experiment keys before BaseTeams.
-    game_header = 4 + name_length + 16 + 1 + 20
-    if minor >= 134:
-        count = struct.unpack_from('>I', data, game_header)[0]
-        game_header += 4
-        assert count <= 256, 'invalid required terrain experiment count'
+    position = 0
+
+    def skip(size, field):
+        nonlocal position
+        assert 0 <= size <= len(data) - position, 'truncated ' + field
+        position += size
+
+    def word(field):
+        nonlocal position
+        assert len(data) - position >= 4, 'truncated ' + field
+        value = struct.unpack_from('>I', data, position)[0]
+        position += 4
+        return value
+
+    def byte(field):
+        nonlocal position
+        assert position < len(data), 'truncated ' + field
+        value = data[position]
+        position += 1
+        return value
+
+    def text(limit, field, allow_empty=False):
+        length = word(field + ' length')
+        assert (allow_empty or length > 0) and length <= limit, 'invalid ' + field + ' length'
+        skip(length, field)
+
+    def keys(field):
+        count = word(field + ' count')
+        assert count <= 64, 'invalid ' + field + ' count'
         for _ in range(count):
-            length = struct.unpack_from('>I', data, game_header)[0]
-            game_header += 4 + length
-            assert game_header <= len(data), 'truncated terrain experiment key'
+            text(128, field + ' key')
+
+    text(1024 * 1024, 'map name', allow_empty=True)
+    major, minor, teams = word('major version'), word('minor version'), word('team count')
+    assert major == 0 and 73 <= minor <= 153, 'unsupported fixture header version'
+    assert 0 < teams <= 32, 'invalid team count'
+    skip(4, 'map offset')
+    assert byte('saved-game flag') <= 1, 'invalid saved-game flag'
+    skip(20, 'map SHA1')
+    if minor >= 134:
+        keys('required terrain experiments')
     if minor >= 140:
-        # Resource experiment declarations precede their required enabled keys.
-        # Metadata is bounded by the native catalog transport contract.
-        count = struct.unpack_from('>I', data, game_header)[0]
-        game_header += 4
+        count = word('resource experiment declaration count')
         assert count <= 64, 'invalid resource experiment declaration count'
         for _ in range(count):
-            for limit in (128, 512, 4096):
-                length = struct.unpack_from('>I', data, game_header)[0]
-                assert 0 < length <= limit, 'invalid resource experiment metadata length'
-                game_header += 4 + length
-                assert game_header <= len(data), 'truncated resource experiment metadata'
-        count = struct.unpack_from('>I', data, game_header)[0]
-        game_header += 4
-        assert count <= 64, 'invalid required resource experiment count'
-        for _ in range(count):
-            length = struct.unpack_from('>I', data, game_header)[0]
-            assert 0 < length <= 128, 'invalid required resource experiment key length'
-            game_header += 4 + length
-            assert game_header <= len(data), 'truncated resource experiment key'
-    game_header += 20 * teams
-    # Version 143 inserts uint8 aiOrderDelay after latency and order rate;
-    # version 148 follows it with uint8 buildingGradientDelay.
-    players_offset = game_header + 5 + (1 if minor >= 143 else 0) + (1 if minor >= 148 else 0)
-    players = struct.unpack_from('>I', data, players_offset)[0]
-    assert 0 < teams <= 32 and 0 < players <= 32
+            for limit, field in ((128, 'key'), (512, 'label'), (4096, 'help')):
+                text(limit, 'resource experiment ' + field)
+        keys('required resource experiments')
+    skip(20 * teams, 'BaseTeam headers')
+    skip(5, 'game latency/order rate')
+    if minor >= 143:
+        assert byte('AI delay') <= 8, 'invalid AI delay'
+    if minor >= 148:
+        assert 1 <= byte('building gradient delay') <= 8, 'invalid building gradient delay'
+    players = word('player count')
+    assert 0 < players <= 32, 'invalid player count'
     return major, minor, teams, players
 
 
-def continuation_matches(ticks, records, initial, checkpoint, boundary):
-    """Keep aggregate coverage while accounting only for serialized header version."""
-    before, after = save_header(initial), save_header(checkpoint)
+def header_checksum_delta(before, after, checksum_format=153):
+    """Version-only XOR for a specific executed checksum protocol, not save format."""
     assert before[0] == after[0], 'saved major version changed'
     assert after[1] >= before[1], 'saved minor version moved backwards'
     assert before[2:] == after[2:], 'saved team/player counts changed'
     # MapHeader::checkSum rotates major ^ minor ^ teams once. Game::checkSum
     # rotates that contribution once per team/player and four more times.
+    # The current unit-catalog checksum adds one final rotation. Both original
+    # and resumed states run that protocol even when the input save is older.
+    assert checksum_format in (152, 153), 'unsupported checksum protocol'
     delta = before[0] ^ before[1] ^ after[0] ^ after[1]
-    rotations = (before[2] + before[3] + 5) % 32
+    rotations = (before[2] + before[3] + 5 + (checksum_format >= 153)) % 32
     if rotations:
         delta = ((delta >> rotations) | (delta << (32 - rotations))) & 0xffffffff
+    return delta
+
+
+def continuation_matches(ticks, records, initial, checkpoint, boundary):
+    """Keep aggregate coverage while accounting only for serialized header version."""
+    delta = header_checksum_delta(save_header(initial), save_header(checkpoint))
     if set(records) != set(range(boundary, 256)):
         return False
     for tick, actual in records.items():
@@ -142,10 +171,10 @@ def main():
                    for tick, record in released_ticks.items()), name + ': released entity records differ'
         # Preserve historical migration evidence independently of the current
         # simulation trace. Still load the original version-125 save below.
-        trace = FIXTURE / (name + '-256-resources.checksums.gz')
+        trace = FIXTURE / (name + '-256-units.checksums.gz')
         expected = gzip.decompress(trace.read_bytes())
         ticks = complete_ticks(expected)
-        assert set(ticks) == set(range(256)), name + ': incomplete resource trace'
+        assert set(ticks) == set(range(256)), name + ': incomplete unit-era trace'
         initial = FIXTURE / (name + '-initial.game.gz')
         manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
                                      'trace': str(trace.relative_to(ROOT)),

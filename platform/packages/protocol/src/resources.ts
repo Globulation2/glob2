@@ -1,6 +1,6 @@
 import { ScriptGeneratorDescriptor } from './generators.ts';
 import { MapSetCredits } from './sets.ts';
-import { ResourceExperimentDefinitions, BuildingCatalog } from './matchSetup.ts';
+import { ResourceExperimentDefinitions, BuildingCatalog, UnitCatalog } from './matchSetup.ts';
 // REST resource shapes for /api/v1. Accounts and auth are complete for M3;
 // rooms, matches, maps and leaderboards define the shapes later milestones
 // fill in. Server-emitted resources use Open objects (unknown fields allowed);
@@ -468,6 +468,8 @@ export const RoomState = Open(
     hostAccountId: Uuid,
     simVersion: SimVersion,
     buildingCatalog: Type.Optional(BuildingCatalog),
+    unitCatalog: Type.Optional(UnitCatalog),
+    requiredUnitExperiments: Type.Optional(Type.Array(Type.String(), { maxItems: 64 })),
     resourceExperiments: Type.Optional(ResourceExperimentDefinitions),
     requiredResourceExperiments: Type.Optional(Type.Array(Type.String(), { maxItems: 64 })),
     map: Type.Optional(RoomMapSelection),

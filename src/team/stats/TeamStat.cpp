@@ -32,6 +32,11 @@
 
 namespace
 {
+// Second byte of each cold sampling qualification row: independent uniform
+// defender qualification and flag recruitment policy. Keep rows at two bytes.
+constexpr Uint8 SamplingAlwaysRecruitableDefender = 1u << 0;
+constexpr Uint8 SamplingAcceptsDefenderRecruitment = 1u << 1;
+
 void statValue(GAGCore::OutputStream* stream, const char* name, const int& value)
 {
     stream->writeSint32(value, name);
@@ -86,6 +91,49 @@ void statValue(Stream* stream, const char* name, T (&values)[N])
     leaveStatSection(stream);
 }
 
+template<class Stream,class T,std::size_t N>
+void statValue(Stream* stream,const char* name,std::array<T,N>& values)
+{
+    enterStatSection(stream,name);
+    for (unsigned i=0;i<N;++i) {
+        enterStatSection(stream,i); statValue(stream,"value",values[i]); leaveStatSection(stream);
+    }
+    leaveStatSection(stream);
+}
+template<class T,std::size_t N>
+void statValue(GAGCore::OutputStream* stream,const char* name,const std::array<T,N>& values)
+{
+    enterStatSection(stream,name);
+    for (unsigned i=0;i<N;++i) {
+        enterStatSection(stream,i); statValue(stream,"value",values[i]); leaveStatSection(stream);
+    }
+    leaveStatSection(stream);
+}
+template<class Stream,class Store>
+void unitStatValue(Stream* stream,const char* name,Store& values,int versionMinor)
+{
+    enterStatSection(stream,name);
+    unsigned count=NB_UNIT_TYPE;
+    if constexpr (std::is_base_of_v<GAGCore::OutputStream,Stream>) {
+        if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG) { count=values.size(); stream->writeUint32(count,"unitTypes"); }
+    } else {
+        if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG) count=stream->readUint32("unitTypes");
+        values.resize(count);
+    }
+    for (unsigned i=0;i<count;++i) {
+        enterStatSection(stream,i); statValue(stream,"value",values[i]); leaveStatSection(stream);
+    }
+    leaveStatSection(stream);
+}
+template<class Stream,class T,std::size_t N>
+void unitStatValue(Stream* stream,const char* name,std::array<UnitStatistics<T>,N>& values,int versionMinor)
+{
+    enterStatSection(stream,name);
+    for (unsigned i=0;i<N;++i) {
+        enterStatSection(stream,i); unitStatValue(stream,"value",values[i],versionMinor); leaveStatSection(stream);
+    }
+    leaveStatSection(stream);
+}
 template<class Stream, class Measurement>
 void variantFields(Stream* stream, Measurement& value)
 {
@@ -133,10 +181,10 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 {
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG) statValue(stream,"variants",stat.variants);
 	statValue(stream, "tick", stat.tick);
-	statValue(stream, "births", stat.births);
-	statValue(stream, "deaths", stat.deaths);
-	statValue(stream, "conversionsIn", stat.conversionsIn);
-	statValue(stream, "conversionsOut", stat.conversionsOut);
+	unitStatValue(stream, "births", stat.births,versionMinor);
+	unitStatValue(stream, "deaths", stat.deaths,versionMinor);
+	unitStatValue(stream, "conversionsIn", stat.conversionsIn,versionMinor);
+	unitStatValue(stream, "conversionsOut", stat.conversionsOut,versionMinor);
 	statValue(stream, "harvested", stat.harvested);
 	statValue(stream, "cleared", stat.cleared);
 	statValue(stream, "delivered", stat.delivered);
@@ -161,8 +209,8 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 	statValue(stream, "impacts", stat.impacts);
 	statValue(stream, "completed", stat.completed);
 	statValue(stream, "removed", stat.removed);
-	statValue(stream, "trainingVisits", stat.trainingVisits);
-	statValue(stream, "abilityGains", stat.abilityGains);
+	unitStatValue(stream, "trainingVisits", stat.trainingVisits,versionMinor);
+	unitStatValue(stream, "abilityGains", stat.abilityGains,versionMinor);
 	statValue(stream, "stock", stat.stock);
 	statValue(stream, "carried", stat.carried);
 	statValue(stream, "buildings", stat.buildings);
@@ -172,10 +220,10 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 	statValue(stream, "healing", stat.healing);
 	if (versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS)
 	{
-		statValue(stream, "trappedUnits", stat.trappedUnits);
+		unitStatValue(stream, "trappedUnits", stat.trappedUnits,versionMinor);
 		statValue(stream, "trappedBuildings", stat.trappedBuildings);
-		statValue(stream, "lowHP", stat.lowHP);
-		statValue(stream, "lowFood", stat.lowFood);
+		unitStatValue(stream, "lowHP", stat.lowHP,versionMinor);
+		unitStatValue(stream, "lowFood", stat.lowFood,versionMinor);
 		statValue(stream, "trappedTick", stat.trappedTick);
 		statValue(stream, "growthTiles", stat.growthTiles);
 		statValue(stream, "growthAmount", stat.growthAmount);
@@ -190,8 +238,8 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 		statValue(stream, "harvestSamples", stat.harvestSamples);
 		statValue(stream, "eatWalkDistance", stat.eatWalkDistance);
 		statValue(stream, "eatWalkSamples", stat.eatWalkSamples);
-		statValue(stream, "combatDeathPlace", stat.combatDeathPlace);
-		statValue(stream, "combatDeathAssignment", stat.combatDeathAssignment);
+		unitStatValue(stream, "combatDeathPlace", stat.combatDeathPlace,versionMinor);
+		unitStatValue(stream, "combatDeathAssignment", stat.combatDeathAssignment,versionMinor);
 		statValue(stream, "warriors", stat.warriors);
 		statValue(stream, "warriorLevels", stat.warriorLevels);
 		statValue(stream, "warriorsHurt", stat.warriorsHurt);
@@ -204,11 +252,12 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 }
 
 // Packed history rows have the fixed size of one record in the save's own format.
-size_t measurementRecordBytes(int versionMinor, size_t catalogSize)
+size_t measurementRecordBytes(int versionMinor, size_t catalogSize,std::size_t unitCount=NB_UNIT_TYPE)
 {
     GAGCore::BinaryOutputStream stream(new GAGCore::MemoryStreamBackend);
     GameplayMeasurements value{};
     value.variants.resize(catalogSize);
+    value.configureUnits(unitCount);
     measurementFields(&stream,value,versionMinor);
     return stream.getPosition();
 }
@@ -218,10 +267,10 @@ void liveStatFields(Stream* stream, Stat& stat, int versionMinor = VERSION_MINOR
 {
     if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG) statValue(stream,"buildingCountByVariant",stat.buildingCountByVariant);
     statValue(stream, "totalUnit", stat.totalUnit);
-    statValue(stream, "numberUnitPerType", stat.numberUnitPerType);
+    unitStatValue(stream, "numberUnitPerType", stat.numberUnitPerType,versionMinor);
     if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG) statValue(stream,"workersByConstructionLevel",stat.workersByConstructionLevel);
     statValue(stream, "totalFree", stat.totalFree);
-    statValue(stream, "isFree", stat.isFree);
+    unitStatValue(stream, "isFree", stat.isFree,versionMinor);
     statValue(stream, "totalNeeded", stat.totalNeeded);
     statValue(stream, "totalNeededPerLevel", stat.totalNeededPerLevel);
     statValue(stream, "totalBuilding", stat.totalBuilding);
@@ -233,7 +282,7 @@ void liveStatFields(Stream* stream, Stat& stat, int versionMinor = VERSION_MINOR
     statValue(stream, "needHeal", stat.needHeal);
     statValue(stream, "needNothing", stat.needNothing);
     statValue(stream, "upgradeState", stat.upgradeState);
-    statValue(stream, "upgradeStatePerType", stat.upgradeStatePerType);
+    unitStatValue(stream, "upgradeStatePerType", stat.upgradeStatePerType,versionMinor);
     statValue(stream, "totalFood", stat.totalFood);
     statValue(stream, "totalFoodCapacity", stat.totalFoodCapacity);
     statValue(stream, "totalUnitFoodable", stat.totalUnitFoodable);
@@ -242,13 +291,19 @@ void liveStatFields(Stream* stream, Stat& stat, int versionMinor = VERSION_MINOR
     statValue(stream, "totalAttackPower", stat.totalAttackPower);
     statValue(stream, "totalDefensePower", stat.totalDefensePower);
     statValue(stream, "happiness", stat.happiness);
+    if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG) {
+        statValue(stream,"carriers",stat.carriers); statValue(stream,"builders",stat.builders);
+        statValue(stream,"meleeUnits",stat.meleeUnits); statValue(stream,"rangedUnits",stat.rangedUnits); statValue(stream,"scouts",stat.scouts);
+        statValue(stream,"idleCarriers",stat.idleCarriers); statValue(stream,"idleDefenders",stat.idleDefenders);
+    }
+
 }
 
 template<class Stream, class Stat>
-void smoothedStatFields(Stream* stream, Stat& stat)
+void smoothedStatFields(Stream* stream, Stat& stat,int versionMinor=VERSION_MINOR)
 {
     statValue(stream, "totalFree", stat.totalFree);
-    statValue(stream, "isFree", stat.isFree);
+    unitStatValue(stream, "isFree", stat.isFree,versionMinor);
     statValue(stream, "totalNeeded", stat.totalNeeded);
     statValue(stream, "totalNeededPerLevel", stat.totalNeededPerLevel);
 }
@@ -276,11 +331,8 @@ void TeamStat::reset()
 	std::fill(buildingCountByVariant.begin(),buildingCountByVariant.end(),0);
 	std::fill_n(workersByConstructionLevel, NB_UNIT_LEVELS, 0);
 	totalUnit=0;
-	for(int i=0; i<NB_UNIT_TYPE; ++i)
-	{
-		numberUnitPerType[i]=0;
-		isFree[i]=0;
-	}
+	numberUnitPerType.clear(); isFree.clear();
+    carriers=builders=meleeUnits=rangedUnits=scouts=idleCarriers=idleDefenders=0;
 	totalFree=0;
 	totalNeeded=0;
 	for(int i=0; i<NB_UNIT_LEVELS; ++i)
@@ -302,7 +354,7 @@ void TeamStat::reset()
 		{
 			upgradeState[i][j]=0;
 		}
-	for(int k=0; k<NB_UNIT_TYPE; ++k)
+	for(unsigned k=0; k<upgradeStatePerType.size(); ++k)
 	{
 		for(int i=0; i<NB_ABILITY; ++i)
 			for(int j=0; j<NB_UNIT_LEVELS; ++j)
@@ -332,10 +384,7 @@ TeamSmoothedStat::TeamSmoothedStat()
 void TeamSmoothedStat::reset()
 {
 	totalFree=0;
-	for(int i=0; i<NB_UNIT_TYPE; ++i)
-	{
-		isFree[i]=0;
-	}
+	isFree.clear();
 	totalNeeded=0;
 	for(int i=0; i<NB_UNIT_LEVELS; ++i)
 		totalNeededPerLevel[i]=0;
@@ -357,6 +406,7 @@ TeamStats::~TeamStats()
 
 void TeamStats::step(Team *team, bool reloaded)
 {
+    configureUnits(team->race.unitTypeCount());
 	PERF_SCOPE_TIME(Stats);
 	if (!reloaded && needsMeasurementInitialization)
 		initializeMeasurements(team->game->stepCounter);
@@ -384,19 +434,14 @@ void TeamStats::step(Team *team, bool reloaded)
                 const int count=s.buildingCountByVariant[id];if(!count)continue;
                 const auto& type=ModelBuildingProjection::completed(team->game->buildingsTypes,*team->game->buildingsTypes.get(id));
                 const auto& spec=type.semantics;
-                auto trains=[&](int ability) {const auto& t=spec.training[ability];return type.maxUnitInside>0 && t.enabled && (t.unitMask&spec.admittedUnitMask);};
-                production+=count*bool(spec.production.enabledUnitMask);
-                feeding+=count*bool(type.maxUnitInside>0 && spec.feeding.enabled && (spec.feeding.unitMask&spec.admittedUnitMask));
-                healing+=count*bool(type.maxUnitInside>0 && spec.healing.enabled && (spec.healing.unitMask&spec.admittedUnitMask));
+                auto trains=[&](int ability) {return type.maxUnitInside>0 && (type.runtimeTrainingAbilities&(1u<<ability));};
+                production+=count*bool(!spec.production.enabledUnits.empty());
+                feeding+=count*bool(type.maxUnitInside>0 && type.runtimeFeeds);
+                healing+=count*bool(type.maxUnitInside>0 && type.runtimeHeals);
                 combat+=count*ModelBuildingProjection::trainsWarriorCombat(type);
                 walking+=count*trains(WALK);swimming+=count*trains(SWIM);
-                bool grantsConstruction=false;
-                for(int ability=0;ability<NB_ABILITY;++ability)
-                    grantsConstruction|=trains(ability) && spec.training[ability].constructionLevel>0 &&
-                        (spec.training[ability].unitMask&spec.admittedUnitMask&(1u<<WORKER));
-                construction+=count*grantsConstruction;
-                projectiles+=count*bool(type.shootingRange>0 && type.shootRhythm>0 &&
-                    std::any_of(spec.projectileDamage.begin(),spec.projectileDamage.end(),[](int n){return n>0;}));
+                construction+=count*bool(type.maxUnitInside>0 && type.runtimeConstructionTraining);
+                projectiles+=count*bool(type.shootingRange>0 && type.shootRhythm>0 && type.runtimeAnyProjectileDamage);
             }
 			std::cout << "GLOB2_ECON team=" << team->teamNumber
 				<< " tick=" << team->game->stepCounter
@@ -428,7 +473,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	{
 		observeMeasurementUnit(u);
 		// Filter here: most of the 1024 slots hold no worker.
-		if (!reloaded && u && u->typeNum == WORKER)
+		if (!reloaded && u && u->hasCapability(UnitRuntimeTraits::Transport))
 			observeLabour(u);
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
 		{
@@ -442,7 +487,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		if (b)
 		{
 			observeMeasurementBuilding(b);
-			if(b->type->foodable || b->type->fillable || b->type->zonable[WORKER])
+			if(b->type->foodable || b->type->fillable || b->runtime->attractsRole(0))
             {
 		        smoothedStat.totalNeeded+=b->desiredMaxUnitWorking-(int)b->unitsWorking.size();
 		        smoothedStat.totalNeededPerLevel[b->type->semantics.requiredWorkerLevel]+=b->desiredMaxUnitWorking-(int)b->unitsWorking.size();
@@ -467,14 +512,16 @@ void TeamStats::step(Team *team, bool reloaded)
 	if (smoothedIndex)
 		return;
 	
-	TeamSmoothedStat maxStat;
+	configureSamplingCatalog(team->race.getCatalog());
+    auto& maxStat=samplingMaxima;
+    maxStat.reset();
 	for (int i=0; i<STATS_SMOOTH_SIZE; i++)
 	{
 		TeamSmoothedStat &smoothedStat=smoothedStats[i];
 
 		if (smoothedStat.totalFree>maxStat.totalFree)
 			maxStat.totalFree=smoothedStat.totalFree;
-		for (int j=0; j<NB_UNIT_TYPE; j++)
+		for (unsigned j=0; j<unitTypeCount; j++)
 			if (smoothedStat.isFree[j]>maxStat.isFree[j])
 				maxStat.isFree[j]=smoothedStat.isFree[j];
 		if (smoothedStat.totalNeeded>maxStat.totalNeeded)
@@ -496,6 +543,8 @@ void TeamStats::step(Team *team, bool reloaded)
 
 	stat.reset();
 	stat.buildingCountByVariant.resize(team->game->buildingsTypes.size(),0);
+    auto& eligible=samplingEligibility;
+    eligible.clear();
 
 	for (Unit *u : team->liveUnits.entries())
 	{
@@ -503,8 +552,24 @@ void TeamStats::step(Team *team, bool reloaded)
 		{
 			stat.totalUnit++;
 			stat.numberUnitPerType[(int)u->typeNum]++;
-			if (u->typeNum==WORKER) ++stat.workersByConstructionLevel[u->workerLevel()];
-			stat.totalHP+=u->hp;
+			stat.totalHP=int(std::clamp<Sint64>(Sint64(stat.totalHP)+u->hp, std::numeric_limits<int>::min(), std::numeric_limits<int>::max()));
+            const bool mobile=u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0;
+            const bool carrier=mobile && u->hasCapability(UnitRuntimeTraits::Transport)
+                && u->performance[BUILD]>0 && u->performance[HARVEST]>0
+                && (!u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->runtimeTraits().cargoCapacity>0);
+            const bool builder=carrier && u->hasCapability(UnitRuntimeTraits::Construct);
+            const int attackStrength=u->hasCapability(UnitRuntimeTraits::Melee) ? u->getRealAttackStrength() : 0;
+            const bool melee=u->hasCapability(UnitRuntimeTraits::Melee) && u->performance[ATTACK_SPEED]>0 && attackStrength>0;
+            const bool ranged=u->performance[MAGIC_ATTACK_AIR]>0 || u->performance[MAGIC_ATTACK_GROUND]>0;
+            const bool defender=mobile && (melee || (u->hasCapability(UnitRuntimeTraits::GuardIdle) && ranged));
+            stat.carriers+=carrier; stat.builders+=builder; stat.meleeUnits+=melee; stat.rangedUnits+=ranged;
+            stat.scouts+=mobile && u->hasCapability(UnitRuntimeTraits::Explore);
+            if (builder) ++stat.workersByConstructionLevel[u->workerLevel()];
+            const bool idle=u->medical==Unit::MED_FREE && u->activity==Unit::ACT_RANDOM;
+            auto& counts=eligible[u->typeNum];
+            counts[0]+=carrier; counts[1]+=defender; counts[2]+=carrier && idle;
+            counts[3]+=defender && idle
+                && (samplingQualifications[u->typeNum][1]&SamplingAcceptsDefenderRecruitment);
 
 			if (u->isUnitHungry())
 			{
@@ -548,8 +613,8 @@ void TeamStats::step(Team *team, bool reloaded)
 					stat.upgradeStatePerType[(int)u->typeNum][j][u->level[j]]++;
 				}
 			}
-			if (u->typeNum==WARRIOR)
-				stat.totalAttackPower+=u->performance[ATTACK_SPEED]*u->getRealAttackStrength();
+			if (u->hasCapability(UnitRuntimeTraits::Melee))
+				stat.totalAttackPower=int(std::min<Sint64>(std::numeric_limits<int>::max(), Sint64(stat.totalAttackPower)+Sint64(u->performance[ATTACK_SPEED])*attackStrength));
 			
 			stat.happiness[u->fruitCount]++;
 		}
@@ -567,12 +632,12 @@ void TeamStats::step(Team *team, bool reloaded)
 				++stat.numberBuildingPerType[family];
 				++stat.numberBuildingPerTypePerLevel[family][level];
 			}
-			stat.totalHP += b->hp;
-			// The scalar model/UI convention is damage against warriors. Actual
-            // projectile resolution keeps its independent per-unit damage.
+			stat.totalHP=int(std::clamp<Sint64>(Sint64(stat.totalHP)+b->hp, std::numeric_limits<int>::min(), std::numeric_limits<int>::max()));
+			// The scalar defense estimate uses the strongest configured melee target;
+            // projectile resolution retains each recipient's own damage.
             if (b->type->shootingRange > 0)
                 stat.totalDefensePower = int(std::min<Sint64>(std::numeric_limits<int>::max(),
-                    Sint64(stat.totalDefensePower) + ((Sint64(b->type->semantics.projectileDamage[WARRIOR]) *
+                    Sint64(stat.totalDefensePower) + ((Sint64(b->type->runtimeDefenseDamage) *
                         b->type->shootRhythm) >> SHOOTING_COOLDOWN_MAGNITUDE)));
 			if ((!b->type->isBuildingSite) && (!b->type->isVirtual))
 				stat.totalBuilding++;
@@ -581,7 +646,18 @@ void TeamStats::step(Team *team, bool reloaded)
 	
 	// We override unsmoothed stats:
 	stat.totalFree=maxStat.totalFree;
-	for (int j=0; j<NB_UNIT_TYPE; j++)
+    stat.idleCarriers=stat.idleDefenders=0;
+    for (unsigned unit=0;unit<unitTypeCount;++unit) {
+        const auto& qualification=samplingQualifications[unit];
+        const bool alwaysCarrier=qualification[0];
+        const bool alwaysDefender=(qualification[1]&SamplingAlwaysRecruitableDefender)!=0;
+        // Historical smoothing is safe only when every level and live cached
+        // state qualifies. Otherwise a type's free count includes unusable units.
+        const auto& counts=eligible[unit];
+        stat.idleCarriers+=alwaysCarrier && counts[0]==stat.numberUnitPerType[unit] ? maxStat.isFree[unit] : counts[2];
+        stat.idleDefenders+=alwaysDefender && counts[1]==stat.numberUnitPerType[unit] ? maxStat.isFree[unit] : counts[3];
+    }
+	for (unsigned j=0; j<unitTypeCount; j++)
 		stat.isFree[j]=maxStat.isFree[j];
 	stat.totalNeeded=maxStat.totalNeeded;
 	for(int k=0; k<NB_UNIT_LEVELS; ++k)
@@ -591,10 +667,13 @@ void TeamStats::step(Team *team, bool reloaded)
 size_t TeamStats::displayCapacityBytes() const
 {
     size_t bytes=0;
-    for (const auto& sample:stats) bytes+=sample.buildingCountByVariant.capacity()*sizeof(int);
+    for (const auto& sample:stats) bytes+=sample.buildingCountByVariant.capacity()*sizeof(int)+sample.numberUnitPerType.extraCapacityBytes()+sample.isFree.extraCapacityBytes()+sample.upgradeStatePerType.extraCapacityBytes();
     bytes += endOfGameStats.capacity() * sizeof(EndOfGameStat);
     bytes += measurementHistory.capacity() * sizeof(GameplayMeasurements);
-    for (const auto& sample : measurementHistory) bytes += sample.variants.capacity() * sizeof(sample.variants[0]);
+    for (const auto& sample : measurementHistory) bytes += sample.variants.capacity() * sizeof(sample.variants[0])+sample.unitCapacityBytes();
+    bytes+=measurements.unitCapacityBytes();
+    bytes+=samplingMaxima.isFree.extraCapacityBytes()+samplingEligibility.extraCapacityBytes()+samplingQualifications.extraCapacityBytes();
+    for(const auto& sample:smoothedStats)bytes+=sample.isFree.extraCapacityBytes();
     return bytes;
 }
 
@@ -841,7 +920,7 @@ int TeamStats::getWorkersNeeded() const
 
 int TeamStats::getWorkersBalance() const
 {
-	return (stats[statsIndex].isFree[WORKER]-stats[statsIndex].totalNeeded);
+	return stats[statsIndex].idleCarriers-stats[statsIndex].totalNeeded;
 }
 
 int TeamStats::getWorkersLevel(int level) const
@@ -899,8 +978,30 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
         {
             stream->readEnterSection(i);
             liveStatFields(stream, stats[i], versionMinor);
+            if(versionMinor<FILE_FORMAT_VERSION_UNIT_CATALOG) {
+                // Historical wire tables contain only the three built-ins;
+                // recover cached capability counts before the first AI tick.
+                auto& stat=stats[i];
+                stat.carriers=stat.builders=stat.numberUnitPerType[WORKER];
+                stat.scouts=stat.numberUnitPerType[EXPLORER];
+                stat.meleeUnits=stat.numberUnitPerType[WARRIOR];
+                stat.idleCarriers=stat.isFree[WORKER];stat.idleDefenders=stat.isFree[WARRIOR];
+                // Levels belong to each ability independently. The same
+                // explorer may occur in AIR level 0 and GROUND level 3, so
+                // per-level maxima double-count it. Historical histograms
+                // contain no joint membership: the larger ability total is
+                // exact for stock explorers (all have AIR) and a conservative
+                // reconstruction for modified legacy tables. New samples
+                // count the union directly from cached unit capabilities.
+                Sint64 air=0,ground=0;
+                for(unsigned level=0;level<NB_UNIT_LEVELS;++level) {
+                    air+=stat.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_AIR][level];
+                    ground+=stat.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][level];
+                }
+                stat.rangedUnits=int(std::clamp<Sint64>(std::max(air,ground),0,INT_MAX));
+            }
             if (versionMinor < FILE_FORMAT_VERSION_BUILDING_CATALOG)
-                std::copy_n(stats[i].upgradeStatePerType[WORKER][BUILD], NB_UNIT_LEVELS, stats[i].workersByConstructionLevel);
+                std::copy_n(stats[i].upgradeStatePerType[WORKER][BUILD].begin(), NB_UNIT_LEVELS, stats[i].workersByConstructionLevel);
             stream->readLeaveSection();
         }
         stream->readLeaveSection();
@@ -908,7 +1009,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
         for (unsigned i = 0; i < STATS_SMOOTH_SIZE; ++i)
         {
             stream->readEnterSection(i);
-            smoothedStatFields(stream, smoothedStats[i]);
+            smoothedStatFields(stream, smoothedStats[i],versionMinor);
             stream->readLeaveSection();
         }
         stream->readLeaveSection();
@@ -929,14 +1030,14 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			GameplayMeasurements sample;
 			measurementFields(stream, sample, versionMinor);
 			stream->readLeaveSection();
-			if (sample.variants.size() != measurements.variants.size() || sample.tick < coverageStartTick || sample.tick > measurements.tick ||
+			if (sample.births.size()!=measurements.births.size() || sample.variants.size() != measurements.variants.size() || sample.tick < coverageStartTick || sample.tick > measurements.tick ||
 				(sample.tick & 511) ||
 				(!measurementHistory.empty() && sample.tick <= measurementHistory.back().tick))
 				throw std::runtime_error("Invalid gameplay statistics timestamp");
 			measurementHistory.push_back(sample);
         };
         if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream))
-            GAGCore::PackedRecords::read(stream,count,measurementRecordBytes(versionMinor, measurements.variants.size()),readMeasurement);
+            GAGCore::PackedRecords::read(stream,count,measurementRecordBytes(versionMinor, measurements.variants.size(),measurements.births.size()),readMeasurement);
         else for(Uint32 i=0;i<count;++i) readMeasurement(stream,i);
 		needsMeasurementInitialization = false;
 		extendedCoverageStartTick = versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS
@@ -1077,7 +1178,7 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 	measurementFields(stream, measurements);
 	stream->writeUint32(measurementHistory.size(), "measurementCount");
     if(GAGCore::PackedArray::binary(stream))
-        GAGCore::PackedRecords::write(stream,measurementHistory.size(),measurementRecordBytes(VERSION_MINOR, measurements.variants.size()),
+        GAGCore::PackedRecords::write(stream,measurementHistory.size(),measurementRecordBytes(VERSION_MINOR, measurements.variants.size(),measurements.births.size()),
             [&](GAGCore::OutputStream* rows,size_t i){
 				auto sample=measurementHistory[i]; sample.variants.resize(measurements.variants.size());
 				measurementFields(rows,sample);
@@ -1111,6 +1212,7 @@ void TeamStats::initializeMeasurements(Uint32 tick)
 {
     historySnapshot.reset();
 	measurements = GameplayMeasurements{};
+    measurements.configureUnits(unitTypeCount);
 	measurementCountTouched.clear();
 	measurementCountCatalogSize = 0;
 	measurements.tick = coverageStartTick = tick;
@@ -1137,6 +1239,8 @@ void TeamStats::recordDamage(Team *source, Team *target, int kind, int targetKin
 
 namespace
 {
+template<class T,std::size_t N> void printMeasurement(const std::string&,const std::array<T,N>&);
+template<class T> void printMeasurement(const std::string&,const UnitStatistics<T>&);
 template <class T> void printMeasurement(const std::string &name, const T &value)
 {
 	std::cout << ' ' << name << '=' << value;
@@ -1145,6 +1249,14 @@ template <class T, size_t N> void printMeasurement(const std::string &name, cons
 {
 	for (size_t i = 0; i < N; ++i)
 		printMeasurement(name + "_" + std::to_string(i), values[i]);
+}
+template<class T,std::size_t N> void printMeasurement(const std::string& name,const std::array<T,N>& values)
+{
+    for (std::size_t i=0;i<N;++i) printMeasurement(name+"_"+std::to_string(i),values[i]);
+}
+template<class T> void printMeasurement(const std::string& name,const UnitStatistics<T>& values)
+{
+    for (std::size_t i=0;i<values.size();++i) printMeasurement(name+"_"+std::to_string(i),values[i]);
 }
 } // namespace
 void TeamStats::printMeasurements(int team, bool final) const
@@ -1237,6 +1349,7 @@ void TeamStats::rebuildMeasurementCountReset()
 
 void TeamStats::beginMeasurementSnapshot(Team *team)
 {
+    configureUnits(team->race.unitTypeCount());
 	measurements.tick = team->game->stepCounter;
 	measurements.variants.resize(team->game->buildingsTypes.size());
 	if (measurementCountCatalogSize != measurements.variants.size())
@@ -1255,8 +1368,11 @@ void TeamStats::observeMeasurementUnit(Unit *u)
 {
 	if (u && !u->isDead)
 	{
-		if (u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
+		if (!u->widePrimaryCargo && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
 			++measurements.carried[u->carriedMaterial];
+        if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo)
+            if (const auto* cargo=u->owner->game->unitCargo.find(u->gid))
+                for (const auto& packet:*cargo) ++measurements.carried[packet.material];
 		if (u->isUnitHungry())
 		{
 			++measurements.hungry;
@@ -1298,7 +1414,7 @@ GameplayMeasurements::Place TeamStats::placeOf(const Team *team, int x, int y)
 void TeamStats::observeLabour(Unit *u)
 {
 	using M = GameplayMeasurements;
-	if (!u || u->isDead || u->typeNum != WORKER)
+	if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::Transport))
 		return;
 	auto &m = measurements;
 	auto distanceTo = [u](Building *b)
@@ -1345,7 +1461,7 @@ void TeamStats::observeLabour(Unit *u)
 			M::LabourJob job = M::OTHER_JOB;
 			if (b->type->isBuildingSite)
 				job = M::SITE_JOB;
-			else if (b->type->semantics.production.enabledUnitMask)
+			else if (!b->type->semantics.production.enabledUnits.empty())
 				job = M::SWARM_JOB;
 			else if (b->type->canFeedUnit)
 				job = M::INN_JOB;
@@ -1373,7 +1489,7 @@ void TeamStats::observeLabour(Unit *u)
 void TeamStats::recordCombatDeath(Unit *u)
 {
 	using M = GameplayMeasurements;
-	if (u->typeNum < 0 || u->typeNum >= NB_UNIT_TYPE)
+	if (u->typeNum < 0 || unsigned(u->typeNum)>=unitTypeCount)
 		return;
 	u->owner->map->rebuildGrowthCoverage();
 	++measurements.combatDeathPlace[u->typeNum][placeOf(u->owner, u->posX, u->posY)];
@@ -1383,9 +1499,9 @@ void TeamStats::recordCombatDeath(Unit *u)
 		assignment=M::OTHER_BUILDING;
 		if (u->activity==Unit::ACT_FLAG)
 		{
-			if (u->typeNum==WARRIOR) assignment=M::WAR_FLAG;
-			else if (u->typeNum==WORKER) assignment=M::CLEARING_FLAG;
-			else if (u->typeNum==EXPLORER) assignment=M::EXPLORATION_FLAG;
+			if (u->jobPurpose==UnitJobPurpose::Defend) assignment=M::WAR_FLAG;
+			else if (u->jobPurpose==UnitJobPurpose::Clear) assignment=M::CLEARING_FLAG;
+			else if (u->jobPurpose==UnitJobPurpose::Explore) assignment=M::EXPLORATION_FLAG;
 		}
 	}
 	++measurements.combatDeathAssignment[u->typeNum][assignment];
@@ -1403,14 +1519,14 @@ void TeamStats::sampleDefence(Team *team)
 	for (int i = 0; i < Unit::MAX_COUNT; ++i)
 	{
 		Unit *u = team->myUnits[i];
-		if (!u || u->isDead || u->typeNum != WARRIOR)
+		if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::Melee))
 			continue;
 		const auto place = placeOf(team, u->posX, u->posY);
 		++m.warriors[place];
 		m.warriorLevels[place] += attackLevels(u);
 		m.warriorsHurt += u->medical == Unit::MED_DAMAGED;
 		m.warriorsFlagged += u->attachedBuilding &&
-			u->activity == Unit::ACT_FLAG && u->attachedBuilding->type->zonable[WARRIOR];
+			u->activity == Unit::ACT_FLAG && u->jobPurpose==UnitJobPurpose::Defend;
 		m.warriorsInside += u->displacement == Unit::DIS_INSIDE;
 	}
 	for (int t = 0; t < team->game->teamsCount(); ++t)
@@ -1421,7 +1537,7 @@ void TeamStats::sampleDefence(Team *team)
 		for (int i = 0; i < Unit::MAX_COUNT; ++i)
 		{
 			const Unit *u = other->myUnits[i];
-			if (u && !u->isDead && u->typeNum == WARRIOR &&
+			if (u && !u->isDead && u->hasCapability(UnitRuntimeTraits::Melee) &&
 				placeOf(team, u->posX, u->posY) == GameplayMeasurements::HOME)
 			{
 				++m.intruders;
@@ -1467,7 +1583,7 @@ void TeamStats::sampleTraps(Team *team)
 			const int percent = (band + 1) * 25;
 			if (Sint64(u->hp) * 100 <= Sint64(u->performance[HP]) * percent)
 				++m.lowHP[band][u->typeNum];
-			if (Sint64(u->hungry) * 100 <= Sint64(Unit::HUNGRY_MAX) * percent)
+			if (Sint64(u->hungry) * 100 <= Sint64(u->runtimeTraits().foodCapacity) * percent)
 				++m.lowFood[band][u->typeNum];
 		}
 		bool structural = false, current = false;
@@ -1486,10 +1602,11 @@ void TeamStats::sampleTraps(Team *team)
 					for (int x = b->posX - 1; x <= b->posX + b->type->width; ++x)
 						if (x < b->posX || x >= b->posX + b->type->width ||
 							y < b->posY || y >= b->posY + b->type->height)
-							hardExit |= map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+							hardExit |= (u->performance[WALK] || (u->performance[SWIM] && map->terrainPropertiesAt(x,y).swimmable))
+                                    && map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
 				structural = !hardExit;
 				int x,y,dx,dy;
-				current = !b->findGroundExit(&x,&y,&dx,&dy,u->performance[SWIM] > 0);
+				current = !b->findGroundExit(&x,&y,&dx,&dy,u->performance[SWIM] > 0,u->performance[WALK]>0);
 			}
 		}
 		else if (u->displacement != Unit::DIS_INSIDE)
@@ -1505,8 +1622,10 @@ void TeamStats::sampleTraps(Team *team)
 				}
 				else
 				{
-					hardExit |= map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
-					freeExit |= map->isFreeForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+					hardExit |= (u->performance[WALK] || (u->performance[SWIM] && map->terrainPropertiesAt(x,y).swimmable))
+                                    && map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+					freeExit |= (u->performance[WALK] || (u->performance[SWIM] && map->terrainPropertiesAt(x,y).swimmable))
+                                    && map->isFreeForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
 				}
 				if (hardExit && freeExit) break;
 			}
@@ -1559,4 +1678,47 @@ void TeamStats::sampleTraps(Team *team)
 		}
 		coverageBuildingTick = m.tick;
 	}
+}
+
+void TeamStat::configureUnits(std::size_t count)
+{
+    numberUnitPerType.resize(count); isFree.resize(count); upgradeStatePerType.resize(count);
+}
+void TeamStats::configureSamplingCatalog(const std::shared_ptr<const UnitCatalog>& catalog)
+{
+    if (samplingCatalog==catalog) return;
+    for (unsigned unit=0;unit<unitTypeCount;++unit) {
+        const auto& traits=catalog->runtime(unit);
+        bool alwaysCarrier=traits.has(UnitRuntimeTraits::Transport) && traits.cargoCapacity>0;
+        bool alwaysDefender=traits.has(UnitRuntimeTraits::Melee) || traits.has(UnitRuntimeTraits::GuardIdle);
+        for (const auto& level:catalog->levels(unit)) {
+            const auto& p=level.performance;
+            const bool mobile=(traits.has(UnitRuntimeTraits::Fly) && p[FLY]>0)
+                || (traits.has(UnitRuntimeTraits::Walk) && p[WALK]>0)
+                || (traits.has(UnitRuntimeTraits::Swim) && p[SWIM]>0);
+            alwaysCarrier &= mobile && p[BUILD]>0 && p[HARVEST]>0;
+            alwaysDefender &= mobile && ((traits.has(UnitRuntimeTraits::Melee) && p[ATTACK_SPEED]>0 && p[ATTACK_STRENGTH]>0)
+                || (traits.has(UnitRuntimeTraits::GuardIdle) && ((traits.has(UnitRuntimeTraits::MagicAir) && p[MAGIC_ATTACK_AIR]>0)
+                    || (traits.has(UnitRuntimeTraits::MagicGround) && p[MAGIC_ATTACK_GROUND]>0))));
+        }
+        const bool recruitsDefender=traits.recruits(2);
+        samplingQualifications[unit]={Uint8(alwaysCarrier),Uint8(
+            (alwaysDefender && recruitsDefender ? SamplingAlwaysRecruitableDefender : 0)
+            | (recruitsDefender ? SamplingAcceptsDefenderRecruitment : 0))};
+    }
+    samplingCatalog=catalog;
+}
+
+void TeamStats::configureUnits(std::size_t count)
+{
+    if (unitTypeCount==count && measurements.births.size()==count && stats[0].numberUnitPerType.size()==count) return;
+    unitTypeCount=count;
+    samplingMaxima.configureUnits(count);
+    samplingEligibility.resize(count);
+    samplingQualifications.resize(count);
+    samplingCatalog.reset();
+    for (auto& stat:stats) stat.configureUnits(count);
+    for (auto& stat:smoothedStats) stat.configureUnits(count);
+    measurements.configureUnits(count);
+    for (auto& sample:measurementHistory) sample.configureUnits(count);
 }

@@ -242,7 +242,7 @@ _glob2() {
       '--resource-growth-delay[resource-growth-delay]:value:' \
       '--ai-order-delay[ai-order-delay]:value:' \
       '*--save[save]:value:' \
-      '*--telemetry[telemetry]:value:(checksums team-timeline maxima gradient-stats)' \
+      '*--telemetry[telemetry]:value:(checksums continuation-state team-timeline maxima gradient-stats)' \
       '--write-replay[write-replay]' \
       '--benchmark-warmup[benchmark-warmup]:value:' \
       '--diagnostic-fields[diagnostic-fields]:value:(maxima)' \

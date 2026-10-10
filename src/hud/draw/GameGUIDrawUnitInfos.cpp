@@ -46,7 +46,7 @@ void GameGUI::drawUnitInfos(void)
 
 	// draw "unit" of "player"
 	std::string title;
-	title += getUnitName(selUnit->state().typeNum);
+	title += getUnitName(selUnit->state().typeNum, *drawnScene().world.catalogs->units);
 	title += " (";
 
 	title += displayPlayerName(selUnit->owner().firstPlayerName);
@@ -114,7 +114,7 @@ void GameGUI::drawUnitInfos(void)
 		{ r=0; g=255; b=0; }
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormattableString("%0 % (%1)").arg(((float)selUnit->state().hungry*100.0f)/(float)Unit::HUNGRY_MAX, 0, 0).arg(selUnit->state().fruitCount).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormattableString("%0 % (%1)").arg(((float)selUnit->state().hungry*100.0f)/(float)selUnit->foodCapacity, 0, 0).arg(selUnit->state().fruitCount).c_str());
 	globalContainer->littleFont->popStyle();
 
 	ypos += YOFFSET_ICON+10;
@@ -155,7 +155,7 @@ void GameGUI::drawUnitInfos(void)
 	}
 	ypos += YOFFSET_TEXT_PARA;
 
-	if (selUnit->state().typeNum!=EXPLORER)
+	if (selUnit->meshClass!=EXPLORER)
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[levels]")).c_str());
 	ypos += YOFFSET_TEXT_PARA;
 

@@ -74,26 +74,68 @@ namespace
 		return value;
 	}
 
-	bool tactical_warrior_available(const AIEngine::AIWorldView& world,const AIEngine::UnitView* warrior,
-		const AIEngine::BuildingView* continuingFlag, int minimumLevel,
-		const std::vector<const AIEngine::BuildingView*>* offenseFlags=NULL)
-	{
-		// Match the engine's flag subscription rule: the lower of the two combat
-		// abilities must reach the flag's minimum level (user level minus one).
-		if(!warrior || warrior->typeNum!=WARRIOR || warrior->isDead
-		   || warrior->medical!=Unit::MED_FREE
-		   || std::min(warrior->level[ATTACK_SPEED],
-			warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
-			return false;
-		const auto* attached=world.building(warrior->attached);
-		if(offenseFlags && attached
-		   && std::find(offenseFlags->begin(),offenseFlags->end(),attached)!=offenseFlags->end())
-			return true;
-		if(continuingFlag && attached==continuingFlag)
-			return true;
-		return !attached && warrior->activity==Unit::ACT_RANDOM
-			&& warrior->movement!=Unit::MOV_ATTACKING_TARGET;
-	}
+    bool tactical_continuing_member(const AIEngine::BuildingView* attached,
+        const AIEngine::BuildingView* continuingFlag,
+        const std::vector<const AIEngine::BuildingView*>* offenseFlags)
+    {
+        return attached && ((continuingFlag && attached==continuingFlag)
+            || (offenseFlags && std::find(offenseFlags->begin(),offenseFlags->end(),attached)!=offenseFlags->end()));
+    }
+
+    bool tactical_recipient_admitted(const AIEngine::AIWorldView& world,
+        const AIEngine::UnitView& warrior, const AIEngine::BuildingView* continuingFlag,
+        const BuildingType* recruitmentType)
+    {
+        const auto* recipientType=continuingFlag
+            ? &AIEngine::ObservationQueries::buildingType(world,*continuingFlag) : recruitmentType;
+        const auto* selection=recipientType ? &recipientType->semantics.attractionUnits[2] : nullptr;
+        return !selection || (selection->resolved.empty()
+            ? selection->matches(warrior.typeNum,1u<<WARRIOR)
+            : unsigned(warrior.typeNum)<selection->resolved.size() && selection->resolved[warrior.typeNum]);
+    }
+
+    bool tactical_mobile_or_local(const AIEngine::AIWorldView& world,
+        const AIEngine::UnitView& warrior,const AIEngine::BuildingView* continuingFlag)
+    {
+        return warrior.performance[FLY]>0 || warrior.performance[WALK]>0 || warrior.performance[SWIM]>0
+            || (continuingFlag && world.tileIndex(warrior.posX,warrior.posY)==world.tileIndex(continuingFlag->posX,continuingFlag->posY));
+    }
+
+    bool tactical_warrior_available(const AIEngine::AIWorldView& world,const AIEngine::UnitView* warrior,
+        const AIEngine::BuildingView* continuingFlag, int minimumLevel,
+        const std::vector<const AIEngine::BuildingView*>* offenseFlags=NULL,
+        const BuildingType* recruitmentType=nullptr)
+    {
+        // Match the engine's flag subscription rule: the lower of the two combat
+        // abilities must reach the flag's minimum level (user level minus one).
+        if(!warrior || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*warrior,WARRIOR) || warrior->isDead
+           || warrior->medical!=Unit::MED_FREE
+           || std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
+            return false;
+        const auto* attached=world.building(warrior->attached);
+        if(tactical_continuing_member(attached,continuingFlag,offenseFlags))return true;
+        return !attached
+            && tactical_recipient_admitted(world,*warrior,continuingFlag,recruitmentType)
+            && world.unitTraits(warrior->typeNum).recruits(2)
+            && warrior->activity==Unit::ACT_RANDOM
+            && warrior->movement!=Unit::MOV_ATTACKING_TARGET;
+    }
+
+    bool tactical_warrior_recovering(const AIEngine::AIWorldView& world,const AIEngine::UnitView* warrior,
+        const AIEngine::BuildingView* continuingFlag,
+        const std::vector<const AIEngine::BuildingView*>* offenseFlags,
+        const BuildingType* recruitmentType)
+    {
+        if(!warrior || warrior->isDead
+            || (warrior->medical==Unit::MED_FREE && warrior->activity!=Unit::ACT_UPGRADING)
+            || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*warrior,WARRIOR)
+            || !tactical_mobile_or_local(world,*warrior,continuingFlag))return false;
+        // Service transitions can still retain another attachment. Preserve
+        // that recovery policy without crediting recipients unable to join.
+        return tactical_continuing_member(world.building(warrior->attached),continuingFlag,offenseFlags)
+            || (world.unitTraits(warrior->typeNum).recruits(2)
+                && tactical_recipient_admitted(world,*warrior,continuingFlag,recruitmentType));
+    }
 
 	// Label each traversable component once per decision. A route from an
 	// outpost proves nothing about warriors stranded in another component.
@@ -101,8 +143,9 @@ namespace
 	{
 	public:
 		TacticalReachability(const AIEngine::AIWorldView* map, int minimumLevel,
-			const std::vector<const AIEngine::BuildingView*>* offenseFlags=NULL)
-			: map(map), minimumLevel(minimumLevel), offenseFlags(offenseFlags) {}
+			const std::vector<const AIEngine::BuildingView*>* offenseFlags=NULL,
+            const BuildingType* recruitmentType=nullptr)
+			: map(map), minimumLevel(minimumLevel), offenseFlags(offenseFlags), recruitmentType(recruitmentType) {}
 		std::vector<int> powersAt(const AIEngine::TeamView* team, const AIEngine::BuildingView* continuingFlag,
 			int x, int y, int cap, bool swimmersOnly=false,
 			std::map<std::string, int>* diagnostics=NULL)
@@ -112,13 +155,13 @@ namespace
 			for(int id=0; id<Unit::MAX_COUNT; ++id)
 			{
 				const AIEngine::UnitView* warrior=map->unitSlots(team->number)[id];
-				if(diagnostics && warrior && warrior->typeNum==WARRIOR && !warrior->isDead)
+				if(diagnostics && warrior && AIEngine::ObservationQueries::matchesStrategyUnitRole(*map,*warrior,WARRIOR) && !warrior->isDead)
 				{
 					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
 						++(*diagnostics)["untrained"];
 					else if(warrior->medical!=Unit::MED_FREE)
 						++(*diagnostics)["medical"];
-					else if(!tactical_warrior_available(*map,warrior,continuingFlag,minimumLevel,offenseFlags))
+					else if(!tactical_warrior_available(*map,warrior,continuingFlag,minimumLevel,offenseFlags,recruitmentType))
 					{
 						++(*diagnostics)["busy"];
 						if(map->building(warrior->attached))
@@ -130,20 +173,28 @@ namespace
 							++(*diagnostics)["busy_attacking"];
 					}
 				}
-				if(!tactical_warrior_available(*map,warrior,continuingFlag,minimumLevel,offenseFlags)) continue;
+				if(!tactical_warrior_available(*map,warrior,continuingFlag,minimumLevel,offenseFlags,recruitmentType)) continue;
 				const bool swimming=warrior->performance[SWIM]>0;
-				if(swimmersOnly && !swimming)
+                const bool flying=warrior->performance[FLY]>0;
+                const bool walking=warrior->performance[WALK]>0;
+				if(swimmersOnly && !swimming && !flying)
 				{
 					if(diagnostics) ++(*diagnostics)["no_swim"];
 					continue;
 				}
-				if(components[swimming].empty()) label(swimming);
-				const std::vector<int>& field=components[swimming];
 				const int origin=(*map).normalizeY(warrior->posY)*(*map).width
 					+(*map).normalizeX(warrior->posX);
-				if(field[target]>=0 && field[origin]==field[target])
-					powers.push_back(warrior_power(*map,warrior));
-				else if(diagnostics) ++(*diagnostics)["disconnected"];
+				if(!flying && !walking && !swimming) {
+                    if(origin==target)powers.push_back(warrior_power(*map,warrior));
+                    else if(diagnostics)++(*diagnostics)["disconnected"];
+                    continue;
+                }
+                const unsigned movement=flying?2:walking?unsigned(swimming):3;
+                if(components[movement].empty())label(movement);
+                const auto& field=components[movement];
+                if(field[target]>=0 && field[origin]==field[target])
+                    powers.push_back(warrior_power(*map,warrior));
+                else if(diagnostics)++(*diagnostics)["disconnected"];
 
 			}
 			if(diagnostics) (*diagnostics)["reachable_before_reserve_cap"]=int(powers.size());
@@ -155,15 +206,19 @@ namespace
 		const AIEngine::AIWorldView* map;
 		int minimumLevel;
 		const std::vector<const AIEngine::BuildingView*>* offenseFlags;
-		std::vector<int> components[2];
-		void label(bool swimming)
+        const BuildingType* recruitmentType;
+		std::vector<int> components[4];
+		void label(unsigned movement)
 		{
 			const int w=(*map).width, h=(*map).height;
-			std::vector<int>& field=components[swimming];
+			std::vector<int>& field=components[movement];
 			field.assign(w*h,-1);
-			for(int i=0; i<w*h; ++i)
-				if(((*map).resourceAt((*map).tileIndex(powerOfTwoRemainder(i, w),i/w)).resource.type!=NO_RES_TYPE) || (!AIEngine::ObservationQueries::terrain((*map),i).walkable && !(swimming && AIEngine::ObservationQueries::terrain((*map),i).swimmable)))
-					field[i]=-2;
+			for(int i=0; i<w*h; ++i) {
+                const auto& terrain=AIEngine::ObservationQueries::terrain(*map,i);
+                const bool traversable=movement==2?terrain.flyable:movement==3?terrain.swimmable:
+                    terrain.walkable || (movement==1 && terrain.swimmable);
+                if(!traversable || (movement!=2 && map->resourceAt(map->tileIndex(powerOfTwoRemainder(i,w),i/w)).resource.type!=NO_RES_TYPE))field[i]=-2;
+            }
 			std::vector<int> queue;
 			for(int start=0; start<w*h; ++start)
 			{
@@ -314,6 +369,9 @@ void Maxima::plan_offense(Context& runtime)
 		&& runtime.get_building_register().is_building_found(tactical_mission.flagId)
 		? runtime.get_building_register().get_building(tactical_mission.flagId) : NULL;
 	const bool active=tactical_mission.flagId>=0;
+    const auto flagCandidate=AIMaximaBuildings::choose(*map,runtime.observedTeam(),AIMaximaBuildings::WarriorAttraction);
+    const auto* recruitmentType=flagCandidate.completedType>=0
+        ? &map->catalog->at(flagCandidate.completedType).resolvedType : nullptr;
 	int believed_defenders=0;
 	for(int team=0; team<Team::MAX_COUNT; ++team)
 		if(opponents[team].alive)
@@ -328,9 +386,11 @@ void Maxima::plan_offense(Context& runtime)
 				learned_power=true;
 				believed_power=std::max(believed_power,entry.second.prediction.rounded(ForceModel::Power));
 			}
+	const int referenceArmour=learned_power ? 0 : unlearned_reference_armour(*map);
+	const int referenceDamageRate=learned_power ? 0 : unlearned_reference_damage_rate(*map,referenceArmour);
 	const auto strength_sufficient=[&](long long own_power) {
 		return learned_power ? own_power>=believed_power
-			: Labour::attackStrengthSufficient(own_power,believed_defenders);
+			: Labour::attackStrengthSufficient(own_power,believed_defenders,referenceDamageRate);
 	};
 	std::vector<const AIEngine::BuildingView*> offenseFlags;
 	for(const auto& wave:offense_waves)
@@ -351,16 +411,15 @@ void Maxima::plan_offense(Context& runtime)
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
 			const AIEngine::UnitView* warrior=runtime.observation().unitSlots(runtime.teamNumber())[id];
-			if(tactical_warrior_available(runtime.observation(),warrior, flag, level, &offenseFlags))
+			if(tactical_warrior_available(runtime.observation(),warrior, flag, level, &offenseFlags,recruitmentType)
+                && tactical_mobile_or_local(*map,*warrior,flag))
 			{
 				++eligible;
-				eligible_damage_rate+=learned_power ? warrior_power(*map,warrior) : Labour::WarriorDamageRate[std::max(0, std::min(3,
-					std::min(warrior->level[ATTACK_SPEED], warrior->level[ATTACK_STRENGTH])))];
+				eligible_damage_rate+=learned_power ? warrior_power(*map,warrior)
+					: WorldHelpers::detail::unlearned_eligible_damage_rate(*map,*warrior,referenceArmour);
 				trainees.push_back(warrior);
 			}
-			else if(warrior && warrior->typeNum==WARRIOR && !warrior->isDead
-				&& (warrior->medical!=Unit::MED_FREE
-					|| warrior->activity==Unit::ACT_UPGRADING))
+			else if(tactical_warrior_recovering(*map,warrior,flag,&offenseFlags,recruitmentType))
 				++recovering;
 		}
 	};
@@ -389,7 +448,7 @@ void Maxima::plan_offense(Context& runtime)
 		}
 	}
 	budget.tactical_flag_level=flag_level;
-	TacticalReachability reachability(map, flag_level, &offenseFlags);
+	TacticalReachability reachability(map, flag_level, &offenseFlags,recruitmentType);
 	offense_diagnostics.eligibleWarriors=eligible;
 	// Reserve training only for available warriors who can learn there.
 	// Match trainees to capacity so overlapping barracks do not reserve the
@@ -410,8 +469,9 @@ void Maxima::plan_offense(Context& runtime)
 	for(size_t u=0;u<trainees.size();++u)
 		for(size_t b=0;b<barracks.size();++b)
 			for (int ability : {ATTACK_SPEED, ATTACK_STRENGTH})
-				if ((AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnitMask & (1u << WARRIOR))
-				   && AIEngine::ObservationQueries::needsTraining(*trainees[u],AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.training[ability], ability))
+				if (AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnits.matches(trainees[u]->typeNum,AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnitMask)
+				   && AIEngine::ObservationQueries::needsTraining(*trainees[u],AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.training[ability], ability)
+                   && AIEngine::ObservationQueries::trainingVisitSafe(runtime.observation(),*trainees[u],*barracks[b],ability))
 				{choices[u].push_back(int(b));break;}
 	std::function<bool(int,std::vector<bool>&)> assignTraining=
 		[&](int unit,std::vector<bool>& visited) {
@@ -559,7 +619,7 @@ void Maxima::plan_offense(Context& runtime)
 					if (defense.construction || defense.type < 0
 						|| size_t(defense.type) >= runtime.observation().catalog->size()) continue;
 					const auto& type = runtime.observation().catalog->at(defense.type).resolvedType;
-					if (type.shootRhythm > 0 && type.semantics.projectileDamage[WARRIOR] > 0
+					if (type.shootRhythm > 0 && type.runtimeDefenseDamage > 0
 						&& (*map).distanceSquared(sighting.x,sighting.y,defense.x,defense.y)
 							<= type.shootingRange * type.shootingRange)
 						++nearby_towers;
@@ -1772,7 +1832,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
 		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->typeNum != EXPLORER && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
+		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->performance[FLY]==0 && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
 		{
 			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
 			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
@@ -1810,7 +1870,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
 			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
-			if(!unit || unit->typeNum!=WARRIOR
+			if(!unit || !AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
 			   || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
@@ -1935,7 +1995,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 					{
 						const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
-						if(unit && unit->typeNum == WARRIOR)
+						if(unit && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR))
 						{
 							covered_points.push_back(position(nx, ny));
 							enemy_count += 1;
@@ -2077,7 +2137,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 						& runtime.observedTeam().enemies))
 						continue;
 					const AIEngine::UnitView* enemy=runtime.observation().unitAtSlot(guid);
-					if(enemy && enemy->typeNum==WARRIOR)
+					if(enemy && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*enemy,WARRIOR))
 						local_enemy_count+=1;
 				}
 			}
@@ -2207,7 +2267,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 		{
 			const AIEngine::UnitView* unit = runtime.observation().unitSlots(strike_target)[i];
 			if(unit && AIEngine::ObservationQueries::visible(runtime.observation(),unit->posX, unit->posY,
-				runtime.observedTeam().mask) && unit->typeNum==WARRIOR
+				runtime.observedTeam().mask) && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
 			   && unit->activity != Unit::ACT_UPGRADING)
 			{
 				if(!first)
@@ -2292,8 +2352,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	}
 
 	std::sort(groups.begin(), groups.end(), std::greater<std::tuple<int, int, int> >());
-	const int trained_explorers=runtime.observedTeam().statistics
-		.upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3];
+	const int trained_explorers=runtime.observation().capabilityUpgradeCount(runtime.observedTeam().statistics,UnitRuntimeTraits::MagicGround,MAGIC_ATTACK_GROUND,3);
 	int total_attacks=budget.explorer_campaign_flags;
 
 	//Go through existing flags and see if they can be moved to be on top of new groups

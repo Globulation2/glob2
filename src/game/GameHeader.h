@@ -10,6 +10,7 @@
 #include <optional>
 #include <memory>
 class BuildingArtwork;
+class UnitCatalog;
 #include <vector>
 #include "WinningConditions.h"
 #include <assert.h>
@@ -264,7 +265,12 @@ public:
 	const std::vector<CatalogExperimentDefinition>& resourceExperiments() const { return resourceCatalogExperiments; }
 	void setResourceExperiments(const std::vector<CatalogExperimentDefinition>& definitions);
 	std::vector<std::string> catalogExperimentKeys() const;
+	const std::shared_ptr<const UnitCatalog>& getUnitCatalog() const { return unitCatalogValue; }
+	void setUnitCatalog(std::shared_ptr<const UnitCatalog> catalog);
+	void setUnitCatalogSnapshot(const std::string& snapshot);
+	std::string getUnitCatalogSnapshot() const;
 private:
+	std::shared_ptr<const UnitCatalog> unitCatalogValue;
 	std::string buildingCatalogSnapshot;
 	std::shared_ptr<const BuildingArtwork> buildingArtwork;
 	std::vector<std::string> buildingCatalogExperimentKeys;

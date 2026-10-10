@@ -262,6 +262,17 @@ class JunitExecutionTest(unittest.TestCase):
 
 
 class JunitTest(unittest.TestCase):
+    def test_failed_process_with_empty_junit_records_selected_case_error(self):
+        case = run_tests.Case('engine', 'Runner', 'failed before test', 'fixture.cpp')
+        result = run_tests.Result(run_tests.Job('engine', [case]), 'fail', 0.1,
+                                  output='failed before running tests', junit='<testsuites/>')
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'junit.xml'
+            totals = run_tests.merge_junit([result], path)
+            report = ET.parse(path)
+        self.assertEqual(totals, {'tests': 1, 'failures': 0, 'errors': 1, 'skipped': 0})
+        self.assertEqual(len(report.findall('.//testcase/error')), 1)
+
     def test_merges_doctest_reports_and_synthesises_errors(self):
         cases = run_tests.parse_listing(LISTING, 'engine')
         jobs = run_tests.make_jobs(cases, args())
@@ -309,7 +320,7 @@ class EndToEndTest(unittest.TestCase):
                                                          EXPECTED_FULLSCREEN='1' if fullscreen else '0'))
                         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def run_python_fake(self, cases, report, extra=(), required_filters=()):
+    def run_python_fake(self, cases, report, extra=(), required_filters=(), process_output='', exit_code=0):
         listing = ET.Element('doctest')
         for case in cases:
             ET.SubElement(listing, 'TestCase', name=case.name, testsuite=case.suite,
@@ -326,7 +337,9 @@ class EndToEndTest(unittest.TestCase):
                 f'report = {report!r}\n'
                 f'if not all(value in sys.argv for value in {tuple(required_filters)!r}): report = "<testsuites/>"\n'
                 'output = next(value[3:] for value in sys.argv if value.startswith("-o="))\n'
-                'Path(output).write_text(report)\n')
+                'Path(output).write_text(report)\n'
+                f'print({process_output!r})\n'
+                f'raise SystemExit({exit_code})\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             junit = Path(directory) / 'junit.xml'
             completed = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
@@ -343,6 +356,25 @@ class EndToEndTest(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
         self.assertIn('PASS', completed.stdout)
         self.assertEqual(len(ET.fromstring(report).findall('.//testcase')), 1)
+
+    def test_post_report_exit_and_recoverable_sanitizers_cannot_publish_passing_junit(self):
+        case = run_tests.Case('engine', 'Runner', 'sanitizer case', 'fixture.cpp')
+        diagnostics = [
+            (1, 'SUMMARY: AddressSanitizer: 48 byte(s) leaked in 1 allocation(s).'),
+            (0, 'fixture.cpp:10:4: runtime error: load of value 32515, which is not a valid enum'),
+            (0, 'SUMMARY: ThreadSanitizer: data race fixture.cpp:10'),
+            (1, ''),
+        ]
+        for exit_code, output in diagnostics:
+            with self.subTest(exit_code=exit_code, output=output):
+                completed, report = self.run_python_fake([case], junit_for([case]),
+                                                        process_output=output, exit_code=exit_code)
+                self.assertEqual(completed.returncode, 1, completed.stdout + completed.stderr)
+                self.assertIn('FAIL Runner/sanitizer case', completed.stdout)
+                document = ET.fromstring(report)
+                self.assertEqual(document.get('failures'), '1')
+                self.assertEqual(len(document.findall('.//testcase/failure')), 1)
+                self.assertIn(output or 'exited with status 1', report)
 
     def test_successful_process_with_empty_or_partial_junit_is_an_error(self):
         cases = [run_tests.Case('engine', 'Runner', 'first', 'first.cpp'),

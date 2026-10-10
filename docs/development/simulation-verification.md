@@ -10,6 +10,14 @@ Identify whether the change preserves behavior or intentionally changes gameplay
 
 For a behavior-preserving change, run base and candidate optimized binaries with identical maps/saves, settings, seeds and orders. Compare per-tick state checksums; matching replay orders alone do not prove equivalent execution. Repeat serial and threaded execution and compare affected platforms. [Headless replays](headless-replays.md) describes traces and match-record verification.
 
+For a representation refactor, compare named state captures as well: cached
+effective values, inventories, reservations, list ordering, pending work and every
+random stream can affect future ticks without appearing in an aggregate checksum.
+Document any normalization field by field and retain the original captures.
+When save/resume resets diagnostic telemetry or derived readers, compare the same
+continuation on the base revision and report those differences separately; do not
+describe a checksum match as complete snapshot equality.
+
 For an intentional simulation change, test the new behavior, call out its effects on pacing/economy/difficulty, bump `SIM_REVISION` and regenerate the golden match record. Do not use a version bump to hide accidental build or portability differences.
 
 ## Check compatibility separately

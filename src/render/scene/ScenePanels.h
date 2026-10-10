@@ -39,6 +39,8 @@ struct SceneUnitPanel
     const SimulationSnapshot::TeamView* ownerRecord = nullptr;
     const SimulationSnapshot::TeamView& owner() const { static const SimulationSnapshot::TeamView empty{}; return ownerRecord ? *ownerRecord : empty; }
     std::span<const UnitType> unitTypes;
+    int foodCapacity = 150000;
+    unsigned meshClass = 0;
     bool unitHungry = false;
     int realArmor = 0, nextLevelThreshold = 0, glassCannonScale = 0;
 };

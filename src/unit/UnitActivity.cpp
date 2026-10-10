@@ -21,7 +21,7 @@ void Unit::handleActivity(void)
 	// freeze unit health when inside a building
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE)
             || ((displacement==DIS_EXITING_BUILDING)
-                && ! ((typeNum == EXPLORER) && (medical != MED_FREE))))
+                && ! (hasCapability(UnitRuntimeTraits::ServiceRebound) && (medical != MED_FREE))))
 		return;
 
 	if (verbose)
@@ -57,7 +57,7 @@ void Unit::handleActivity(void)
 				}
 
 				// we go to a heal building if we'r not fully healed: (1/8 trigger)
-				if (hp+(performance[HP]/UNIT_HEAL_TRIGGER_INV_RATIO) < performance[HP])
+				if (hasCapability(UnitRuntimeTraits::MedicalIdle) && hp+(Sint64(performance[HP])*runtimeTraits().idleHealMissingNumerator/runtimeTraits().idleHealMissingDenominator) < performance[HP])
 				{
 					Building *b;
 					b=owner->findNearestHeal(this);
@@ -94,20 +94,19 @@ void Unit::handleActivity(void)
 			ownExchangeBuilding=NULL;
 		}
 		setTargetBuilding(NULL);
+		// Medical service replaces the assignment even when no service is available.
+		jobPurpose=UnitJobPurpose::None;
 
 		if (medical==MED_HUNGRY)
 		{
 			Building *b;
 			b=owner->findNearestFood(this);
-                        /*if (typeNum == EXPLORER) {
-                           fprintf (stderr, "gid: %d, b: %x\n", gid, b);
-                        }*/
 
 			if (b!=NULL)
 			{
 				Team *currentTeam=owner;
 				Team *targetTeam=b->owner;
-				if (currentTeam != targetTeam)
+				if (currentTeam != targetTeam && hasCapability(UnitRuntimeTraits::Convert))
 				{
 					// Unit conversion code
 
@@ -130,6 +129,11 @@ void Unit::handleActivity(void)
 					// If free slot, do the conversion, change owner and ID
 					if (targetID!=UNIT_TARGETID_NONE)
 					{
+						if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea) {
+							if (currentTeam->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,currentTeam->teamNumber)==gid)
+								currentTeam->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,currentTeam->teamNumber);
+							previousClearingArea.reset(); previousClearingAreaDistance=UNIT_CLEAR_AREA_DISTANCE_NONE;
+						}
 						const Uint16 targetGID = GIDfrom(targetID, targetTeam->teamNumber);
 						const Uint32 identity = owner->game->allocateScriptIdentity(false, targetGID);
 						++currentTeam->stats.measurements.conversionsOut[typeNum];
@@ -157,8 +161,10 @@ void Unit::handleActivity(void)
 						owner->game->publishClientEvent(ClientEvent::UnitConverted{
 							UnitRef{gid, scriptIdentity}, UnitRef{targetGID, identity}});
 						scriptIdentity = identity;
+						owner->game->unitCargo.transfer(gid,targetGID);
 						gid=targetGID;
 						owner=targetTeam;
+						race=&targetTeam->race;
 					}
 				}
 

@@ -26,8 +26,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	// unit specification
 	// File-controlled types and identities reach fixed tables later. Validate
 	// before indexing or converting raw integers into simulation enums.
-	typeNum = stream->readSint32("typeNum");
-	if (typeNum < 0 || typeNum >= NB_UNIT_TYPE) throw std::runtime_error("Invalid unit type");
+	const Sint32 savedType=stream->readSint32("typeNum");
+	if (savedType < 0 || savedType >= int(owner->race.unitTypeCount())) throw std::runtime_error("Invalid unit type");
+	typeNum=Uint16(savedType);
 	if (versionMinor < FILE_FORMAT_VERSION_DROP_UNIT_SKIN_NAME)
 	{
 		// Pre-v84 saves carried a per-unit skinName string; skin is now derived
@@ -36,6 +37,12 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	}
 	race = &(owner->race);
 	assert(race);
+	capabilityFlags=race->getRuntime(typeNum).flags;
+	configuredFoodCapacity=race->getRuntime(typeNum).foodCapacity;
+	configuredVisionRadius=Uint8(race->getRuntime(typeNum).visionRadius);
+	jobPurpose=UnitJobPurpose::None;
+	regenerationRemainder=0;
+	widePrimaryCargo=false;
 
 	// identity
 	gid = stream->readUint16("gid");
@@ -118,7 +125,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	hungry = stream->readSint32("hungry");
 	hungriness = stream->readSint32("hungryness");
 	trigHungry = stream->readSint32("trigHungry");
-	trigHungryCarrying = HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_CARRYING;
+	trigHungryCarrying = Sint64(foodCapacity())*runtimeTraits().carryingTriggerNumerator/runtimeTraits().carryingTriggerDenominator;
 	fruitMask = stream->readUint32("fruitMask");
 	fruitCount = stream->readUint32("fruitCount");
 
@@ -129,6 +136,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		stream->readEnterSection(i);
 		performance[i] = stream->readSint32("performance");
 		level[i] = stream->readSint32("level");
+		if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG && (performance[i]<0 || performance[i]>1000000
+            || (i==HP && performance[i]==0 && !hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies))))
+			throw std::runtime_error("Invalid cached unit ability");
 		if (level[i] < 0 || level[i] >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid unit level");
 		canLearn[i] = (bool)stream->readUint32("canLearn");
 		stream->readLeaveSection();
@@ -147,6 +157,8 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	experience = stream->readSint32("experience");
 	experienceLevel = stream->readSint32("experienceLevel");
+	if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG && (experience<0 || experienceLevel<0 || speed<0 || delta<0 || fruitCount>3))
+		throw std::runtime_error("Invalid cached unit clock or combat state");
 
 	destinationPurpose = stream->readSint32("destinationPurpose");
 	carriedMaterial = stream->readSint32("carriedRessource");
@@ -181,6 +193,42 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		}
 		previousClearingAreaDistance = stream->readUint32("clearingClaimDistance");
 	}
+
+	owner->game->unitCargo.erase(gid);
+	if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG) {
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		const unsigned purpose=stream->readUint8("jobPurpose");
+		if (purpose>unsigned(UnitJobPurpose::Defend)) throw std::runtime_error("Invalid unit job purpose");
+		jobPurpose=UnitJobPurpose(purpose);
+		if ((activity==ACT_FLAG && (jobPurpose==UnitJobPurpose::None || jobPurpose==UnitJobPurpose::Transport))
+			|| (activity==ACT_FILLING && jobPurpose!=UnitJobPurpose::Transport)
+			|| ((activity==ACT_RANDOM || activity==ACT_UPGRADING) && jobPurpose!=UnitJobPurpose::None))
+			throw std::runtime_error("Saved unit assignment does not match its activity");
+		regenerationRemainder=stream->readUint8("regenerationRemainder");
+		widePrimaryCargo=readState("widePrimaryCargo",1)!=0;
+		const unsigned count=stream->readUint32("cargoOverflowCount");
+		if (count>unsigned(std::max(0,runtimeTraits().cargoCapacity-1+(widePrimaryCargo?1:0))) || (count && carriedMaterial<0) || (widePrimaryCargo && !count))
+			throw std::runtime_error("Invalid unit cargo count");
+		const Uint64 packets=Uint64(count)+(carriedMaterial>=0?1:0)-(widePrimaryCargo?1:0);
+		if (packets>unsigned(runtimeTraits().cargoCapacity) || (carriedMaterial>=0 && runtimeTraits().cargoKinds==0))
+			throw std::runtime_error("Saved unit inventory exceeds its definition");
+		for (unsigned i=0;i<count;++i) {
+			stream->readEnterSection(i);
+			const int material=stream->readSint32("material");
+			const auto read64=[&](const char* name) { stream->readEnterSection(name); const Uint64 hi=stream->readUint32("high"),lo=stream->readUint32("low"); stream->readLeaveSection(); return (hi<<32)|lo; };
+			const WideMaterialPacket packet{read64("numerator"),read64("denominator")};
+			stream->readLeaveSection();
+			// The first wide row is the already-counted primary packet, not an
+			// additional pickup. In the inline capacity-one path its material
+			// marker already consumes capacity before this row is restored.
+			const bool primary=widePrimaryCargo && i==0;
+			if (material<0 || material>=int(MaterialCount) || !packet.numerator || !packet.denominator || packet.numerator>packet.denominator || (!primary && !canCarryMaterial(material)) || (primary && material!=carriedMaterial))
+				throw std::runtime_error("Invalid unit cargo packet");
+			owner->game->unitCargo.overflow(gid).push_back({material,packet});
+		}
+	} else if (activity==ACT_FILLING) jobPurpose=UnitJobPurpose::Transport;
+	else if (activity==ACT_FLAG) jobPurpose=hasCapability(UnitRuntimeTraits::Clear)?UnitJobPurpose::Clear:
+		hasCapability(UnitRuntimeTraits::Explore)?UnitJobPurpose::Explore:UnitJobPurpose::Defend;
 
 	// Old replay headers were originally loaded with a reset idle timer.
 	// Keep that execution contract; new saves retain the timer read above.
@@ -280,6 +328,20 @@ void Unit::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeUint32(previousClearingAreaDistance, "clearingClaimDistance");
 
+	stream->writeUint8(Uint8(jobPurpose),"jobPurpose");
+	stream->writeUint8(regenerationRemainder,"regenerationRemainder");
+	stream->writeUint32(widePrimaryCargo,"widePrimaryCargo");
+	const auto* extra=owner->game->unitCargo.find(gid);
+	stream->writeUint32(extra?extra->size():0,"cargoOverflowCount");
+	if (extra) for (unsigned i=0;i<extra->size();++i) {
+		stream->writeEnterSection(i);
+		const auto& entry=(*extra)[i];
+		stream->writeSint32(entry.material,"material");
+		const auto write64=[&](const char* name,Uint64 value) { stream->writeEnterSection(name); stream->writeUint32(value>>32,"high"); stream->writeUint32(value,"low"); stream->writeLeaveSection(); };
+		write64("numerator",entry.packet.numerator); write64("denominator",entry.packet.denominator);
+		stream->writeLeaveSection();
+	}
+
 
 	stream->writeLeaveSection();
 }
@@ -338,7 +400,7 @@ bool Unit::integrity()
 	return true;
 }
 
-Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
+Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 {
 	Uint32 cs=(serviceResourcesReserved ? 0x73657276u : 0) ^ (Uint32(constructionLevel) << 20);
 
@@ -501,6 +563,18 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 		checkSumsVector->push_back(Uint32(random.increment));
 	}
 
+	if (!legacy152) {
+		const auto append=[&](Uint32 value) { cs=rotl1(cs)^value; if (checkSumsVector) checkSumsVector->push_back(value); };
+		append(Uint8(jobPurpose)|(Uint32(regenerationRemainder)<<8)|(Uint32(widePrimaryCargo)<<16));
+		append(configuredFoodCapacity); append(capabilityFlags);
+		if (hasCapability(UnitRuntimeTraits::ExtendedCargo) || widePrimaryCargo) {
+			const auto* extra=owner->game->unitCargo.find(gid); append(extra?extra->size():0);
+			if (extra) for (const auto& entry:*extra) {
+				append(entry.material); append(entry.packet.numerator>>32); append(entry.packet.numerator);
+				append(entry.packet.denominator>>32); append(entry.packet.denominator);
+			}
+		}
+	}
 	cs ^= entityRandom.checksum();
 	return cs;
 }

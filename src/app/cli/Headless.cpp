@@ -111,7 +111,7 @@ void isolateEnvironment()
 		"GLOB2_MAXIMA_FORMAT", "GLOB2_MAXIMA_OVERRIDES", "GLOB2_MAXIMA_TEAM_OVERRIDES",
 		"GLOB2_MAXIMA_PLAYER_OVERRIDES", "GLOB2_MAXIMA_TUNING", "GLOB2_NICOWAR_V3_OVERRIDES",
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
-		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS", "GLOB2_GRADIENT_STATS",
+		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_FULL_STATE_TRACE", "GLOB2_FULL_STATE_TRACE_OUTPUT", "GLOB2_FULL_STATE_TRACE_INTERVAL", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS", "GLOB2_GRADIENT_STATS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR", "GLOB2_USER_DATA_DIR",
 		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
@@ -154,6 +154,23 @@ uint64_t processCpuNs()
 	return uint64_t(std::clock())*1000000000/CLOCKS_PER_SEC;
 #endif
 }
+uint64_t ownerCpuNs()
+{
+#ifdef WIN32
+    FILETIME created, exited, kernel, user;
+    if (!GetThreadTimes(GetCurrentThread(),&created,&exited,&kernel,&user))
+        throw std::runtime_error("Cannot read owner thread CPU time");
+    ULARGE_INTEGER k{},u{}; k.LowPart=kernel.dwLowDateTime;k.HighPart=kernel.dwHighDateTime;
+    u.LowPart=user.dwLowDateTime;u.HighPart=user.dwHighDateTime;
+    return (k.QuadPart+u.QuadPart)*100;
+#elif defined(CLOCK_THREAD_CPUTIME_ID)
+    timespec time{};
+    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID,&time)!=0) throw std::runtime_error("Cannot read owner thread CPU time");
+    return uint64_t(time.tv_sec)*1000000000+time.tv_nsec;
+#else
+    throw std::runtime_error("Owner thread CPU timing is unavailable on this platform");
+#endif
+}
 void jsonArray(std::ostream& out, int value) { out << value; }
 void jsonArray(std::ostream& out, const std::vector<int>& values)
 {
@@ -166,6 +183,18 @@ template<class T, size_t N> void jsonArray(std::ostream& out, const T (&values)[
 	out << '[';
 	for(size_t i=0;i<N;++i){if(i)out<<',';jsonArray(out,values[i]);}
 	out << ']';
+}
+template<class T, size_t N> void jsonArray(std::ostream& out, const std::array<T,N>& values)
+{
+    out << '[';
+    for(size_t i=0;i<N;++i){if(i)out<<',';jsonArray(out,values[i]);}
+    out << ']';
+}
+template<class T> void jsonArray(std::ostream& out, const UnitStatistics<T>& values)
+{
+    out << '[';
+    for(size_t i=0;i<values.size();++i){if(i)out<<',';jsonArray(out,values[i]);}
+    out << ']';
 }
 void standardStatistics(std::ostream& out, const TeamStat& stat)
 {
@@ -270,8 +299,10 @@ struct HeadlessRunner
 		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
 		const auto fields = one(options,"--diagnostic-fields");
 		if (!fields.empty() && fields != "maxima") throw std::invalid_argument("Expected --diagnostic-fields maxima");
-		if (fields.empty() && (options.count("--diagnostic-interval") || options.count("--diagnostic-png")))
-			throw std::invalid_argument("Diagnostic options require --diagnostic-fields maxima");
+        const auto telemetry= many(options,"--telemetry");
+        const bool continuationTrace=std::find(telemetry.begin(),telemetry.end(),"continuation-state")!=telemetry.end();
+        if (fields.empty() && (options.count("--diagnostic-png") || (options.count("--diagnostic-interval") && !continuationTrace)))
+            throw std::invalid_argument("Diagnostic interval requires fields or continuation-state; PNG requires fields");
 		const auto diagnosticInterval = unsigned(integer(one(options,"--diagnostic-interval",std::to_string(Cli::DefaultDiagnosticInterval)),1,std::numeric_limits<int>::max()));
 		const auto diagnosticPng = one(options,"--diagnostic-png","false");
 		if (diagnosticPng != "true" && diagnosticPng != "false") throw std::invalid_argument("Expected --diagnostic-png true|false");
@@ -298,6 +329,7 @@ struct HeadlessRunner
 		for(const auto &telemetry : many(options,"--telemetry"))
 		{
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
+			else if(telemetry=="continuation-state") { setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1"); setHeadlessEnvironment("GLOB2_FULL_STATE_TRACE", "1"); setHeadlessEnvironment("GLOB2_FULL_STATE_TRACE_OUTPUT", output.string().c_str()); setHeadlessEnvironment("GLOB2_FULL_STATE_TRACE_INTERVAL", one(options,"--diagnostic-interval", "2500").c_str()); }
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
 			else if(telemetry=="gradient-stats") setHeadlessEnvironment("GLOB2_GRADIENT_STATS", "1");
@@ -353,7 +385,9 @@ struct HeadlessRunner
 			GameHeader header;
 			// Catalog-declared experiment keys belong to the received map even
 			// when this installation has no matching authoring definitions.
-			header.setBuildingCatalogSnapshot(Engine::loadGameHeader(mapFile).getBuildingCatalogSnapshot());
+			const auto mapGameHeader=Engine::loadGameHeader(mapFile);
+            header.setBuildingCatalogSnapshot(mapGameHeader.getBuildingCatalogSnapshot());
+            header.setUnitCatalog(mapGameHeader.getUnitCatalog());
 			const auto players=many(options,"--player");
 			if(players.empty() || players.size()!=size_t(map.getNumberOfTeams()) || players.size()>Team::MAX_COUNT)
 				throw std::invalid_argument("one --player AI is required per map team");
@@ -479,6 +513,7 @@ struct HeadlessRunner
 		const auto runStart = std::chrono::steady_clock::now();
 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
 		unsigned measuredTicks=0;
+        uint64_t ownerStart=0,ownerCpu=0,ownerTicks=0;
         std::array<Uint64,64> tickHistogram{};
         std::vector<Uint64> tickDurations;
 		if(benchmark)
@@ -488,7 +523,7 @@ struct HeadlessRunner
 			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
 			setupCpu=processCpuNs()-setupCpuStart;
 			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
-			if(benchmarkWarmup==0) measureStart=processCpuNs();
+			if(benchmarkWarmup==0) {measureStart=processCpuNs();ownerStart=ownerCpuNs();}
 			while(engine.gui.isRunning)
 			{
                 const auto beforeTick=engine.gui.game.stepCounter;
@@ -498,13 +533,15 @@ struct HeadlessRunner
                     const auto duration=Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-tickStart).count());
                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
                     tickDurations.push_back(duration);
+                    ownerTicks+=duration;
                 }
-				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
+				if(!measureStart && engine.gui.game.stepCounter>=start) {measureStart=processCpuNs();ownerStart=ownerCpuNs();}
 			}
 			engine.finishSession();
 			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
 			runCpu=processCpuNs()-measureStart;
+            ownerCpu=ownerCpuNs()-ownerStart;
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
@@ -540,6 +577,8 @@ struct HeadlessRunner
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
 			<< ",\"benchmark_save_cpu_ns\":" << saveCpu
+            << ",\"benchmark_owner_cpu_ns\":" << ownerCpu
+            << ",\"benchmark_owner_tick_ns\":" << ownerTicks
 			<< ",\"benchmark_measured_ticks\":" << measuredTicks
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
 			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
@@ -771,7 +810,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"continuation-state\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

@@ -11,13 +11,20 @@
 #include <string>
 #include <vector>
 class Game;
-namespace GAGCore { class InputStream; class OutputStream; }
+class GameEvent;
+class Order;
+namespace GAGCore { class InputStream; class OutputStream; class StreamBackend; }
 struct PresentationFrame;
 struct SceneInputs;
 namespace SimulationSnapshot { struct Handle; }
 namespace AIMaximaPlacement { struct WorldState; }
 namespace GameDiagnostics
 {
+// Optional full-continuation evidence accompanies named state captures.
+void recordContinuationEvent(int team, const GameEvent& event);
+void recordContinuationOrder(Uint32 tick, unsigned player, Order& order);
+void saveLiveContinuation(GAGCore::OutputStream* stream, const Game& game);
+std::unique_ptr<GAGCore::OutputStream> makeContinuationStream(GAGCore::StreamBackend* backend);
 inline constexpr size_t CaptureBudget = 128 * 1024 * 1024;
 // One controller owns each sink; AI workers never share mutable sink storage.
 struct FieldSink

@@ -1,34 +1,29 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
-
-#include "UnitType.h"
-
+#include "UnitCatalog.h"
 namespace GAGCore
 {
-	class InputStream;
-	class OutputStream;
-}
-
+class InputStream;
+class OutputStream;
+} // namespace GAGCore
 class Race
 {
-public:
-	static UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-	static Sint32 hungriness;
+  public:
+    Sint32 hungriness = 425;
+    Race();
+    virtual ~Race();
+    void load();
+    // Compatibility entry point: warms immutable defaults, mutates no live game.
+    static void loadDefault();
+    void setCatalog(std::shared_ptr<const UnitCatalog> catalog);
+    const std::shared_ptr<const UnitCatalog> &getCatalog() const { return catalog_; }
+    const UnitRuntimeTraits &getRuntime(int type) const { return catalog_->runtime(type); }
+    std::size_t unitTypeCount() const { return unitTypes.size(); }
+    const UnitType *getUnitType(int type, int level) const;
+    void save(GAGCore::OutputStream *stream);
+    bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 
-public:
-	Race();
-	virtual ~Race();
-
-	void load();
-	// Installs the compile-time default unit-type table from race.cpp into
-	// Race::unitTypes (and seeds Race::hungriness). Replaces the previous
-	// runtime parser of data/units.txt.
-	static void loadDefault();
-
-	UnitType *getUnitType(int type, int level);
-
-	void save(GAGCore::OutputStream *stream);
-	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+  private:
+    std::vector<std::array<UnitType, NB_UNIT_LEVELS>> unitTypes;
+    std::shared_ptr<const UnitCatalog> catalog_;
 };

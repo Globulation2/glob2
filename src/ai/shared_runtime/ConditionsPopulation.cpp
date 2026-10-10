@@ -74,12 +74,13 @@ Population::Population(bool workers, bool explorers, bool warriors, int num, Pop
 tribool Population::passes(Runtime& runtime)
 {
 	int amount=0;
-	if(workers)
-		amount+=runtime.observedTeam().statistics.numberUnitPerType[WORKER];
-	if(explorers)
-		amount+=runtime.observedTeam().statistics.numberUnitPerType[EXPLORER];
-	if(warriors)
-		amount+=runtime.observedTeam().statistics.numberUnitPerType[WARRIOR];
+    const auto& world=runtime.observation();
+    for (const auto* unit:world.unitSlots(runtime.teamNumber())) {
+        if (unit && ((workers && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,WORKER))
+            || (explorers && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,EXPLORER))
+            || (warriors && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,WARRIOR))))
+            ++amount;
+    }
 	if(method==Greater)
 	{
 		return (amount >= num);

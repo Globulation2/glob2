@@ -38,7 +38,7 @@ bool permittedQueuedOrder(const AIEngine::AIWorldView& world, Order& order)
         const auto* building=world.buildingAtSlot(static_cast<const OrderMoveFlag&>(order).gid);
         if(!building)return true;
         const auto& kind=world.catalog->at(building->typeNum);
-        return !kind.zonable[WARRIOR] || kind.zonable[WORKER] || kind.zonable[EXPLORER];
+        return !(kind.resolvedType.runtimeAttractionRoles&4) || (kind.resolvedType.runtimeAttractionRoles&3);
     }
     return true;
 }

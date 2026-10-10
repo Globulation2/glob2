@@ -3,6 +3,7 @@
 
 #include "Material.h"
 #include <algorithm>
+#include <climits>
 #include "Unit.h"
 #include "UnitTiming.h"
 #include "Race.h"
@@ -23,10 +24,12 @@ void Unit::handleDisplacement(void)
 		{
 			if ((medical==MED_FREE)&&((displacement==DIS_RANDOM)||(displacement==DIS_REMOVING_BLACK_AROUND)||(displacement==DIS_ATTACKING_AROUND)))
 			{
-				if (performance[FLY])
+				if (hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies) ? performance[FLY]>0 : hasCapability(UnitRuntimeTraits::ExploreIdle))
 					displacement=DIS_REMOVING_BLACK_AROUND;
-				else if (performance[ATTACK_SPEED])
+				else if (hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies) ? performance[ATTACK_SPEED]>0 : hasCapability(UnitRuntimeTraits::GuardIdle))
 					displacement=DIS_ATTACKING_AROUND;
+				else if (!hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies))
+					displacement=DIS_RANDOM;
 			}
 			else
 				displacement=DIS_RANDOM;
@@ -57,7 +60,9 @@ void Unit::handleDisplacement(void)
 					// resource at its door and carry it home.
 					if (Building *market = owner->map->touchedStockedMarketSlot(this, destinationPurpose))
 					{
+						if (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(destinationPurpose)) { stopAttachedForBuilding(false); break; }
 						receiveCarriedMaterial(destinationPurpose,market->withdrawMaterialPacket(destinationPurpose));
+						if (continueCargoCollection()) break;
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
 						validTarget=true;
@@ -72,6 +77,12 @@ void Unit::handleDisplacement(void)
 				// the ripest tile of the connected field rather than off the tile
 				// under the animation, and an exhausted field hands out nothing.
 				// Everywhere else this is the old unconditional grant.
+				if (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(destinationPurpose)) {
+					// This pickup never consumed its source. Do not let the old
+					// harvest animation become an idle clearing completion.
+					movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
+					stopAttachedForBuilding(false); break;
+				}
 				const bool gotResource = owner->map->takeHarvest(posX, posY, dx, dy,
 					static_cast<MaterialId>(destinationPurpose), owner->me);
 				assert(movement == MOV_HARVESTING);
@@ -91,7 +102,9 @@ void Unit::handleDisplacement(void)
 				{
 					// we got the resource.
 					receiveCarriedMaterial(destinationPurpose,{});
-					++owner->stats.measurements.harvested[carriedMaterial];
+					++owner->stats.measurements.harvested[destinationPurpose];
+
+					if (continueCargoCollection()) break;
 
 					setTargetBuilding(attachedBuilding);
 					if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
@@ -125,6 +138,7 @@ void Unit::handleDisplacement(void)
 			{
 				bool loopMove=false;
 				bool exchangeReady=false;
+				bool cargoDeliveryProgress=false;
 				assert(targetBuilding);
 				if (targetBuilding==ownExchangeBuilding)
 				{
@@ -149,7 +163,9 @@ void Unit::handleDisplacement(void)
 
 					if (targetBuilding->availableMaterial(destinationPurpose)>0)
 					{
+						if (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(destinationPurpose)) { stopAttachedForBuilding(false); break; }
 						receiveCarriedMaterial(destinationPurpose,targetBuilding->withdrawMaterialPacket(destinationPurpose));
+						if (continueCargoCollection()) break;
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -161,13 +177,11 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
 					}
 				}
-				else if ((carriedMaterial>=0) && (targetBuilding->materialDeliveryNeed(carriedMaterial)>0))
+				else if (carriedMaterial>=0 && (hasCapability(UnitRuntimeTraits::ExtendedCargo) || targetBuilding->materialDeliveryNeed(carriedMaterial)>0))
 				{
 					if (verbose)
 						printf("guid=(%d) Giving material (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->materials[carriedMaterial]);
-					targetBuilding->deliverMaterialPacket(carriedMaterial,carriedPacket);
-					carriedMaterial=UNIT_CARRIED_RESOURCE_NONE;
-					carriedPacket={};
+					cargoDeliveryProgress=deliverCargo(*targetBuilding);
 				}
 
 				if (!loopMove && !exchangeReady)
@@ -177,6 +191,7 @@ void Unit::handleDisplacement(void)
 					{
 						if (verbose)
 							printf("guid=(%d) The building doesn't need me any more.\n", gid);
+						jobPurpose=UnitJobPurpose::None;
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
 						validTarget=false;
@@ -187,6 +202,15 @@ void Unit::handleDisplacement(void)
 						///Find a resource that the building wants and a location to get it from
 						///The location may be a market, or the harvesting the resource from the
 						///map.
+
+						if (hasCapability(UnitRuntimeTraits::ExtendedCargo) && carriedMaterial>=0) {
+							bool useful=false;
+							for (int material=0;material<MaterialCount;++material)
+								if (hasCarriedMaterial(material) && attachedBuilding->materialDeliveryNeed(material)>0) { useful=true; destinationPurpose=material; break; }
+							if (useful && cargoDeliveryProgress) { displacement=DIS_FILLING_BUILDING; break; }
+							if (carriedPacketCount()>=unsigned(runtimeTraits().cargoCapacity)) { stopAttachedForBuilding(false); break; }
+						}
+						if (!performance[HARVEST]) { stopAttachedForBuilding(false); break; }
 						int needs[MaterialSlotCount];
 						attachedBuilding->computeWishedMaterials(needs);
 						int teamNumber=owner->teamNumber;
@@ -200,9 +224,9 @@ void Unit::handleDisplacement(void)
 							for (int r=0; r<MaterialCount; ++r)
 							{
 								const int need=needs[r];
-								if (need<=0) continue;
+								if (need<=0 || (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(r))) continue;
 								int distance;
-								const bool available=map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								const bool available=performance[FLY]?findMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding):map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
 								if (!available || (distance<<1)>=timeLeft) continue;
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }
@@ -224,7 +248,7 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->materialAvailableUpdateSlot(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist, attachedBuilding->fetchesFromMarkets(), attachedBuilding))
+									else if (findMaterialDestination(destinationPurpose,&targetX,&targetY,&dummyDist,attachedBuilding->fetchesFromMarkets(),attachedBuilding))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;
@@ -289,20 +313,22 @@ void Unit::handleDisplacement(void)
 				if (destinationPurpose==FEED)
 				{
 					insideTimeout=-attachedBuilding->type->semantics.feeding.duration;
-					speed=attachedBuilding->type->insideSpeed;
+					speed=std::max(1,int(Sint64(attachedBuilding->type->insideSpeed)*runtimeTraits().feedingSpeedQ8/256));
 				}
 				else if (destinationPurpose==HEAL)
 				{
 					//insideTimeout=-(attachedBuilding->type->semantics.healing.duration*(performance[HP]-hp))/performance[HP];
 					insideTimeout=-attachedBuilding->type->semantics.healing.duration;
-					speed=(attachedBuilding->type->insideSpeed*performance[HP])/std::max(1, performance[HP]-hp);
+					const Sint64 baseSpeed=(Sint64(attachedBuilding->type->insideSpeed)*performance[HP])
+						/std::max<Sint64>(1, Sint64(performance[HP])-hp);
+					speed=int(std::clamp<Sint64>(baseSpeed*runtimeTraits().healingSpeedQ8/256,1,INT_MAX));
 				}
 				else
 				{
 					const auto& spec=attachedBuilding->type->semantics;
 					const auto trainingSpeed=[&](int ability) {
-						return std::max(1, attachedBuilding->type->insideSpeed/
-							std::max(1, spec.training[ability].targetLevel-level[ability]));
+						return std::max(1,int(Sint64(std::max(1, attachedBuilding->type->insideSpeed/
+							std::max(1, spec.training[ability].targetLevel-level[ability])))*runtimeTraits().trainingSpeedQ8/256));
 					};
 					int duration=spec.training[destinationPurpose].duration;
 					speed=trainingSpeed(destinationPurpose);
@@ -342,12 +368,18 @@ void Unit::handleDisplacement(void)
 				{
 					displacement=DIS_EXITING_BUILDING;
 					validTarget=false;
-					if (!owner->game->gameHeader.isUnitUpgradesDisabled() && destinationPurpose != FEED && destinationPurpose != HEAL)
+					// A restored or reconfigured visit may now offer an unsafe
+					// course. Release its original reservation before changing any
+					// levels, then exit using the existing movement clocks.
+					const bool trainingVisit=destinationPurpose!=FEED && destinationPurpose!=HEAL;
+					const auto courses=trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled()
+						? trainingVisitCourses(*attachedBuilding,destinationPurpose) : std::optional<Uint32>{};
+					if (trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled() && courses)
 						++owner->stats.measurements.trainingVisits[typeNum];
 
 					if (destinationPurpose==FEED)
 					{
-						hungry=HUNGRY_MAX;
+						hungry=foodCapacity();
 						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 						needToRecheckMedical=true;
@@ -357,7 +389,7 @@ void Unit::handleDisplacement(void)
 						attachedBuilding->settleService(this);
 						++attachedBuilding->owner->stats.measurements.healingVisits;
 						attachedBuilding->owner->stats.measurements.hpRestored +=
-							std::max(0, performance[HP] - hp);
+							std::max<Sint64>(0, Sint64(performance[HP]) - hp);
 						hp=performance[HP];
 						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 						needToRecheckMedical=true;
@@ -366,6 +398,7 @@ void Unit::handleDisplacement(void)
 					// New training visits are rejected by Team::findBestUpgrade.
 					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
 					{
+						if(!courses) { attachedBuilding->releaseService(this); needToRecheckMedical=true; break; }
 						attachedBuilding->settleService(this);
 						Sint32 previousLevels[NB_ABILITY];
 						std::copy(level, level + NB_ABILITY, previousLevels);
@@ -374,11 +407,14 @@ void Unit::handleDisplacement(void)
 							for (int ability = (int)WALK; ability < NB_ABILITY; ability++)
 							{
 								const auto& training = attachedBuilding->type->semantics.training[ability];
-								if (needsTraining(training, ability)) applyTraining(training, ability);
+								// Migrated tables retain the historical reevaluation order.
+								if (hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
+									? needsTraining(training,ability) : ((*courses&(1u<<ability))!=0))
+									applyTrainingUnchecked(training,ability);
 							}
 						}
 						else
-							applyTraining(attachedBuilding->type->semantics.training[destinationPurpose], destinationPurpose);
+							applyTrainingUnchecked(attachedBuilding->type->semantics.training[destinationPurpose], destinationPurpose);
 
 						for (int a = 0; a < NB_ABILITY; ++a)
 							owner->stats.measurements.abilityGains[typeNum][a] +=
@@ -418,16 +454,16 @@ void Unit::handleDisplacement(void)
 			if (distance<=usr2)
 			{
 				validTarget=false;
-				if (typeNum==WORKER)
+				if (jobPurpose==UnitJobPurpose::Clear)
 					displacement=DIS_CLEARING_RESOURCES;
-				else if (typeNum==EXPLORER)
+				else if (jobPurpose==UnitJobPurpose::Explore)
 					displacement=DIS_REMOVING_BLACK_AROUND;
-				else if (typeNum==WARRIOR)
+				else if (jobPurpose==UnitJobPurpose::Defend)
 					displacement=DIS_ATTACKING_AROUND;
 				else
 					assert(false);
 			}
-			else if (typeNum==WORKER)
+			else if (jobPurpose==UnitJobPurpose::Clear)
 			{
 				int usr2plus=1+(usr+1)*(usr+1);
 				if (distance<=usr2plus)
@@ -470,9 +506,9 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 		Team *t = owner->game->teams[i];
 		if((t)&&(owner->enemies & t->me))
 		{
-			for(int j=0;j<Building::MAX_COUNT;j++)
+			// The live index contains every occupied slot in the original slot order.
+			for(Building *b : t->liveBuildings.entries())
 			{
-				Building *b = t->myBuildings[j];
 				if((b)&&(b->runtime->shootingRange>0)&&(owner->map->warpDistMax(b->posX,b->posY,x,y) <= b->runtime->shootingRange + 1)
                     && b->hasClearShotTo(x,y)) return true;
 			}
@@ -494,23 +530,23 @@ void Unit::applyPartialInsideBenefit()
 		total=attachedBuilding->type->semantics.healing.duration;
 	else
 		return;
-	int elapsed=std::min(total, total+insideTimeout);
+	const int elapsed=int(std::min<Sint64>(total, Sint64(total)+insideTimeout));
 	if (total<=0 || elapsed<=0)
 		return;
 	if (destinationPurpose==FEED)
 	{
 		if (attachedBuilding->type->semantics.feeding.partial == BuildingPartialService::None) return;
-		hungry+=(Sint64(HUNGRY_MAX-hungry)*elapsed)/total;
-		if (hungry>=HUNGRY_MAX && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
+		hungry=int(Sint64(hungry)+((Sint64(foodCapacity())-hungry)*elapsed)/total);
+		if (hungry>=foodCapacity() && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 		fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
 	}
 	else
 	{
 		if (attachedBuilding->type->semantics.healing.partial == BuildingPartialService::None) return;
 		attachedBuilding->settleService(this);
-		const int restored = (Sint64(performance[HP] - hp) * elapsed) / total;
-		attachedBuilding->owner->stats.measurements.hpRestored += std::max(0, restored);
-		hp += restored;
+		const Sint64 restored = ((Sint64(performance[HP]) - hp) * elapsed) / total;
+		attachedBuilding->owner->stats.measurements.hpRestored += std::max<Sint64>(0, restored);
+		hp=int(Sint64(hp)+restored);
 		if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 	}
 }

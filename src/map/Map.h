@@ -118,7 +118,7 @@ class Map
 	void resetBuildingGradientPipeline() noexcept;
 	Building *buildingGradientDestination(int team, int id, Uint32 identity) const;
 	void saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const;
-	void loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed);
+	void loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed, int versionMinor);
 	// The live cell view minus the game's growth settings, rebound by
 	// refreshLiveView() whenever an input is replaced. Per-cell queries read
 	// it directly instead of assembling a view on every call.
@@ -146,7 +146,7 @@ class Map
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
 	mutable std::shared_ptr<const std::vector<TerrainType>> vertexSnapshot;
-	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, 7> terrainMovementSnapshots;
+	mutable std::array<std::shared_ptr<const TerrainMovementSnapshot>, SWIM_CLASS_COUNT> terrainMovementSnapshots;
 	std::shared_ptr<const ResourceRegistry> resourceRegistryValue = ResourceRegistry::availableDefaults();
 	// Single-yield tiles keep stock inline. The index plane is allocated only
 	// when a multi-yield deposit is first placed; zero means no sidecar slot.
@@ -176,9 +176,9 @@ class Map
 	std::vector<std::size_t> cellRuleCounts;
 	std::array<unsigned, 6> terrainFeatures{};
 	unsigned terrainBucketCount = 64;
-	std::array<std::array<unsigned, 182>, 7> terrainGroundCostCounts{};
+	std::array<std::array<unsigned, 182>, SWIM_CLASS_COUNT> terrainGroundCostCounts{};
 	std::array<unsigned, 41> terrainAirCostCounts{};
-	std::array<unsigned, 7> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
+	std::array<unsigned, SWIM_CLASS_COUNT> terrainMinimumGround = gradient_kernel::MINIMUM_TERRAIN_ENTRY_COSTS;
 	unsigned terrainMinimumAir = GRADIENT_STEP;
 	void adjustTerrainFeatures(std::uint16_t rule, bool add);
 	std::uint64_t terrainGenerationValue = 1;
@@ -824,7 +824,7 @@ public:
 		return getResource(x, y).type != NO_RES_TYPE;
 	}
 
-    bool isClearableResourceForMaterials(int x,int y,bool materials[MaterialCount]) const
+    bool isClearableResourceForMaterials(int x,int y,const bool materials[MaterialCount]) const
     {
         const auto index=coordToIndex(x,y);
         const auto& r=resourceCells[index].resource;

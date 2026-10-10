@@ -109,9 +109,9 @@ bool OverlayArea::computeChunk(const SimulationSnapshot::Handle& world,OverlayTy
         while (buildingCursor<std::min(buildings.size(),(chunk+1)*16)) {
             const auto& b=buildings[buildingCursor];
             const auto& definition=world.catalogs->buildings->at(b.typeNum).resolvedType;
-            if (b.team==localteam && definition.semantics.projectileDamage[WARRIOR]>0) {
+            if (b.team==localteam && definition.runtimeDefenseDamage>0) {
                 const int power=int(std::min<std::int64_t>(std::numeric_limits<int>::max(),
-                    (std::int64_t(definition.semantics.projectileDamage[WARRIOR])*definition.shootRhythm)>>SHOOTING_COOLDOWN_MAGNITUDE));
+                    (std::int64_t(definition.runtimeDefenseDamage)*definition.shootRhythm)>>SHOOTING_COOLDOWN_MAGNITUDE));
                 const size_t before=kernelCursor;
                 const bool complete=OverlayFill::spreadPointChunk(b.posX,b.posY,power,definition.shootingRange,
                     width,height,field,overlaymax,kernelCursor,budget);

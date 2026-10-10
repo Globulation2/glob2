@@ -771,7 +771,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->occupancyAt(map->tileIndex(x,y)).groundUnit);
 					if (u)
 					{
-						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
+						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR))
 						{
 							score++;
 						}
@@ -1052,7 +1052,12 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medic
 		const AIEngine::UnitView* u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum == static_cast<int>(type) && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
+			// This overload supplies recruitable free units; stationary combat
+			// contributes to the total-role overload but cannot reach an assignment.
+			if ((u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0)
+				&& AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type)
+                && (type!=WARRIOR || activity!=Unit::ACT_RANDOM || world->unitTraits(u->typeNum).recruits(2))
+                && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
 				(isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])>=static_cast<int>(level))) && u->medical==medical_state)
 			{
 				free_workers+=1;
@@ -1076,7 +1081,7 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 		const AIEngine::UnitView* u = myUnits[i];
 		if (u)
 		{
-			if (u->typeNum == static_cast<int>(type) && 	((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
+			if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type) && 	((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
 									(  isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])>=static_cast<int>(level))))
 			{
 				free_workers+=1;
@@ -1954,7 +1959,7 @@ bool PrioritizedBuildingAttack::attack()
 		{
 			ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR, 0, ATTACK_STRENGTH, i+1);
 		}
-		unsigned int numWarriors=ai.team->statistics.numberUnitPerType[WARRIOR];
+		unsigned int numWarriors=ai.team->statistics.meleeUnits;
 		ai.getUnitModule()->changeUnits("PrioritizedBuildingAttack", WARRIOR,
 			std::min(BASE_ATTACK_WARRIORS, round_up(numWarriors, WARRIOR_DEVELOPMENT_CHUNK_SIZE)+WARRIOR_DEVElOPMENT_CONSISTANT_SIZE),
 			ATTACK_STRENGTH, strength_level+1);
@@ -3753,7 +3758,8 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 			for(const auto reference:ai.game->workers(*b))
 			{
 				const auto* unit=ai.game->unit(reference);
-				if(unit && unit->typeNum==unit_type
+				if(unit && AIEngine::ObservationQueries::matchesStrategyUnitRole(*ai.game,*unit,unit_type)
+                    && (unit_type!=WORKER || (unit->jobPurpose!=UnitJobPurpose::Defend && unit->jobPurpose!=UnitJobPurpose::Explore))
 					&& (ability==BUILD ? unit->constructionLevel : unit->level[ability])>=static_cast<int>(usage.minimum_level))++assigned;
 			}
 			needed+=std::max(0,static_cast<int>(usage.number)-assigned);
@@ -3831,7 +3837,9 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 	unsigned int total_available[NB_UNIT_TYPE];
 	for (unsigned int i=0; static_cast<int>(i)<NB_UNIT_TYPE; i++)
 	{
-		total_available[i]=ai.team->statistics.numberUnitPerType[i];
+		const auto& stat=ai.team->statistics;
+        const int roleCounts[3]={stat.carriers,stat.scouts,stat.meleeUnits};
+        total_available[i]=roleCounts[i];
 		num_wanted[i]=0;
 	}
 
@@ -4584,7 +4592,7 @@ bool HappinessHandler::adjustAlliances()
 {
 	Uint32 food_mask=ai.team->mask;
 	unsigned int total_happiness=0;
-	unsigned int total_units=std::max(1, ai.team->statistics.numberUnitPerType[WORKER]);
+	unsigned int total_units=std::max(1, ai.team->statistics.carriers);
 	for(unsigned int i=0; i<HAPPINESS_COUNT+1; ++i)
 	{
 		total_happiness+=ai.team->statistics.happiness[i]*i;
@@ -4604,7 +4612,7 @@ bool HappinessHandler::adjustAlliances()
 					continue;
 				}
 				unsigned int enemy_happiness=0;
-				unsigned int enemy_units=std::max(1, t->statistics.numberUnitPerType[WORKER]);
+				unsigned int enemy_units=std::max(1, t->statistics.carriers);
 				for(unsigned int i=0; i<HAPPINESS_COUNT+1; ++i)
 				{
 					enemy_happiness+=t->statistics.happiness[i]*i;

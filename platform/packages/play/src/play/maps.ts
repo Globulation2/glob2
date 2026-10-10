@@ -10,6 +10,7 @@ import {
   parseSimVersionKey,
   type ResourceExperimentDefinitions,
   type BuildingCatalog,
+  type UnitCatalog,
   type GeneratorDescriptor,
   type ScriptGeneratorDescriptor,
 } from '@glob2/protocol';
@@ -54,6 +55,8 @@ export type GeneratedMapState =
       teamCount: number | null;
       jobId: string | null;
       buildingCatalog?: BuildingCatalog;
+      unitCatalog?: UnitCatalog;
+      requiredUnitExperiments: string[];
       resourceExperiments: ResourceExperimentDefinitions;
       requiredResourceExperiments: string[];
     }
@@ -67,6 +70,8 @@ function stateOf(row: {
   failure: string | null;
   job_id: string | null;
   building_catalog: unknown;
+  unit_catalog: unknown;
+  required_unit_experiments: string[];
   resource_experiments: ResourceExperimentDefinitions;
   required_resource_experiments: string[];
 }): GeneratedMapState {
@@ -80,6 +85,8 @@ function stateOf(row: {
       requiredResourceExperiments: row.required_resource_experiments,
       jobId: row.job_id,
       ...(row.building_catalog ? { buildingCatalog: row.building_catalog as BuildingCatalog } : {}),
+      ...(row.unit_catalog ? { unitCatalog: row.unit_catalog as UnitCatalog } : {}),
+      requiredUnitExperiments: row.required_unit_experiments,
     };
   }
   if (row.status === 'failed') {
@@ -103,6 +110,8 @@ export async function generatedMapState(
       'failure',
       'job_id',
       'building_catalog',
+      'unit_catalog',
+      'required_unit_experiments',
       'resource_experiments',
       'required_resource_experiments',
     ])
@@ -297,6 +306,8 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
           required_resource_experiments: JSON.stringify(
             result.map.requiredResourceExperiments ?? [],
           ),
+          unit_catalog: result.map.unitCatalog ? JSON.stringify(result.map.unitCatalog) : null,
+          required_unit_experiments: JSON.stringify(result.map.requiredUnitExperiments ?? []),
           building_catalog: result.map.buildingCatalog
             ? JSON.stringify(result.map.buildingCatalog)
             : null,
@@ -345,6 +356,8 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
           required_resource_experiments: JSON.stringify(
             result.map.requiredResourceExperiments ?? [],
           ),
+          unit_catalog: result.map.unitCatalog ? JSON.stringify(result.map.unitCatalog) : null,
+          required_unit_experiments: JSON.stringify(result.map.requiredUnitExperiments ?? []),
           building_catalog: result.map.buildingCatalog
             ? JSON.stringify(result.map.buildingCatalog)
             : null,

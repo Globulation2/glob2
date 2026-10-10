@@ -234,12 +234,37 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		if (teams[i]->teamNumber != i) co_return false;
 		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 			if (const Building *b = teams[i]->myBuildings[slot]; b && !isBuildingTypeAvailable(b->typeNum)) co_return false;
+        if (versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG)
+            for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
+                if (const Unit *unit = teams[i]->myUnits[slot]; unit && !isUnitTypeAvailable(unit->typeNum))
+                    co_return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_TEAM, "signatureAfterTeams"))
 		co_return false;
+
+    // Historical Race tables were global: the final team's saved table won.
+    // Adopt that authoritative snapshot within this game, then bind every team
+    // before configuring readers. Cached unit performance remains exactly loaded.
+    if(versionMinor < FILE_FORMAT_VERSION_UNIT_CATALOG && mapHeader.getNumberOfTeams()>0)
+    {
+        gameHeader.setUnitCatalog(teams[mapHeader.getNumberOfTeams()-1]->race.getCatalog());
+        for(int team=0;team<mapHeader.getNumberOfTeams();++team)
+        {
+            teams[team]->race.setCatalog(gameHeader.getUnitCatalog());
+            for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
+                if (auto *unit = teams[team]->myUnits[slot])
+                {
+                    const auto &traits = teams[team]->race.getRuntime(unit->typeNum);
+                    unit->capabilityFlags = traits.flags;
+                    unit->configuredFoodCapacity = traits.foodCapacity;
+                    unit->configuredVisionRadius = Uint8(traits.visionRadius);
+                }
+        }
+        configureBuildingCatalog();
+    }
 
 	// Load the map. Team has to be saved and loaded first.
 	if(!(co_await map.loadTask(stream, mapHeader, this)))
@@ -845,7 +870,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	// isSavedGame on scope exit.
 }
 
-Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy)
+Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> *checkSumsVectorForBuildings, std::vector<Uint32> *checkSumsVectorForUnits, bool heavy, bool legacy152)
 {
     // Explicit verification may join future work. Network checksums retain
     // their full live-map coverage without shortening worker deadlines.
@@ -862,7 +887,7 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	Uint32 teamsCs=0;
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
-		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits);
+		teamsCs^=teams[i]->checkSum(checkSumsVector, checkSumsVectorForBuildings, checkSumsVectorForUnits, legacy152);
 		teamsCs=rotr1(teamsCs);
 		cs=rotr1(cs);
 	}
@@ -910,5 +935,13 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	if (checkSumsVector)
 		checkSumsVector->push_back(scriptCs);// [4+t*20+p*2]
 
+    // Current protocol covers immutable behavior as well as mutable entities.
+    // The explicit adapter exists only for pre-refactor replay/equivalence checks.
+    if(!legacy152)
+    {
+        const auto catalogCs=unitCatalog().checksum();
+        cs=rotr1(cs)^catalogCs;
+        if(checkSumsVector)checkSumsVector->push_back(catalogCs);
+    }
 	return cs;
 }

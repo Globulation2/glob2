@@ -188,6 +188,7 @@ struct BuildingLevelProfile
 	int operatingMaterials[MaterialCount]{}; // recurring carried packets, FoodLedger::RateScale per tick
 	int feedingRate=0; // visits per tick, FoodLedger::RateScale
     unsigned feedingMask=0;
+    std::vector<Uint8> feedingRecipients;
     int feedingMaterials[MaterialCount]{};
     int operatingAssignmentLimit=1024;
     int initialCarriers=-1; // -1 only for legacy/planner-only unknown staffing
@@ -275,7 +276,7 @@ struct WorldBuilding
 struct FeedingColony
 {
     int x=0,y=0;
-    int demand[3]{}; // recipient-class meals/tick, FoodLedger::RateScale
+    std::vector<int> demand{0,0,0}; // recipient-class meals/tick, FoodLedger::RateScale
 };
 
 struct WorldState

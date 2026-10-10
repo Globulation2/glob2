@@ -11,6 +11,14 @@
 
 #include "EngineTiming.h"
 #include "EngineFixtures.h"
+#include "Engine.h"
+#include "UnitCatalog.h"
+#include "FileFormatVersions.h"
+#include <cstdio>
+#include <fstream>
+#include "TurnTestSupport.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 
 #include <algorithm>
 #include <filesystem>
@@ -185,10 +193,175 @@ TEST_SUITE("MatchSetup")
 		CHECK_THROWS_AS(MatchSetup::fromJson(document), MatchSetupError);
 	}
 
+
+    TEST_CASE("legacy resolved setup catalogs retain zero health privately and reject authoring escapes")
+    {
+        glob2test::HeadlessGlobals globals;
+        std::vector<std::array<UnitType,NB_UNIT_LEVELS>> zeroTables(BuiltinUnitCount);
+        const auto recovered=UnitCatalog::legacyMigration()->withLegacyLevels(zeroTables,0);
+        json document=json::parse(glob2test::readFile(fixtureRoot()/"valid/MatchSetup/room-closed-seats.json"));
+        document["unitCatalog"]={{"snapshot",recovered->serialize()},{"hash",recovered->digest()}};
+        auto setup=MatchSetup::fromJson(document);
+        const auto header=setup.toGameHeader(mapWithTeams(4));
+        CHECK(header.getUnitCatalog()->levels(WORKER)[0].performance[HP]==0);
+        CHECK(header.getUnitCatalog()->runtime(WORKER).flagRankingHealth==0);
+        CHECK(header.getUnitCatalog()->runtime(WORKER).has(UnitRuntimeTraits::LegacyPerformancePolicies));
+        CHECK_THROWS(UnitCatalog::fromJson(recovered->serialize()));
+        auto snapshot=json::parse(recovered->serialize()); snapshot.erase("legacyPerformancePolicies");
+        CHECK_THROWS(UnitCatalog::deserialize(snapshot.dump()));
+        auto extended=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"fixture:modern","extends":"worker"}]})");
+        snapshot=json::parse(extended->serialize()); snapshot["legacyPerformancePolicies"]=true;
+        snapshot["units"][3]["levels"][0]["performance"][HP]=0;
+        CHECK_THROWS(UnitCatalog::deserialize(snapshot.dump()));
+        document["unitCatalog"]["hash"]=std::string(64,'0');
+        CHECK_THROWS_AS(MatchSetup::fromJson(document),MatchSetupError);
+    }
+
+    TEST_CASE("legacy turn setup validates recovered body catalogs before accepting the session [save-format]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        globals->structuredHeadless=true;
+        // The retained fixture contains only Game state. A real saved client
+        // additionally writes this legacy GUI tail, even when match loading
+        // discards its local viewport and preferences.
+        const auto gameOnly=glob2test::inflated("entering-explorer/reproducer.game.gz");
+        auto* tail=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream guiTail(tail);
+        guiTail.writeUint32(0xffffffffu,"chatMask");
+        for(const auto* field:{"localPlayer","localTeamNo","viewportX","viewportY"})guiTail.writeSint32(0,field);
+        guiTail.writeUint32(0,"hiddenGUIElements");
+        guiTail.writeUint32(0,"buildingsChoiceMask"); guiTail.writeUint32(0,"flagsChoiceMask");
+        guiTail.writeUint32(0,"size"); // empty legacy default-assignment map
+        guiTail.flush();
+        const auto path=(glob2test::artifactDir()/"legacy88-complete.game").string();
+        {std::ofstream output(path,std::ios::binary); output<<glob2test::readFile(gameOnly)<<tail->takeContents();}
+
+        FILE* file=std::fopen(path.c_str(),"rb"); REQUIRE(file);
+        GAGCore::BinaryInputStream input(new GAGCore::FileStreamBackend(file));
+        GameGUI fixture; REQUIRE(fixture.game.load(&input));
+        const auto recovered=fixture.game.gameHeader.getUnitCatalog();
+        REQUIRE(fixture.game.mapHeader.getVersionMinor()<FILE_FORMAT_VERSION_UNIT_CATALOG);
+        MatchSetup prototype; prototype.simVersion=currentSimVersion(); prototype.seed=77;
+        prototype.map.kind=MapSource::Kind::Upload; prototype.map.format=MapSource::Format::Save;
+        prototype.map.hash=sha256Hex(glob2test::readFile(path));
+        prototype.teams={{0,0}}; SetupSeat seat; seat.seat=0; seat.team=0; seat.name="Legacy client";
+        prototype.seats.push_back(seat);
+        auto mismatch=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"foodCapacity":90000}}]})");
+        GameHeader placeholder=fixture.game.gameHeader;
+        placeholder.setUnitCatalog(UnitCatalog::legacyMigration());
+        placeholder.setNumberOfPlayers(1);
+        placeholder.getBasePlayer(0)=BasePlayer(0,"Legacy client",0,BasePlayer::P_LOCAL);
+        const auto inferred=MatchSetup::fromGameHeader(placeholder,fixture.game.mapHeader,prototype.map,prototype.simVersion);
+        CHECK(inferred.unitCatalogSnapshot.empty());
+        CHECK(inferred.unitCatalogHash.empty());
+        // A current resave embeds this exact catalog, so its identity must be
+        // transmitted even when its bytes equal the historical placeholder.
+        const auto current=MatchSetup::fromGameHeader(placeholder,mapWithTeams(1),prototype.map,prototype.simVersion);
+        CHECK(current.unitCatalogSnapshot==UnitCatalog::legacyMigration()->serialize());
+        CHECK(current.unitCatalogHash==UnitCatalog::legacyMigration()->digest());
+        for (int mode=0;mode<5;++mode) {
+            CAPTURE(mode);
+            auto setup=prototype;
+            if (mode) {
+                const auto catalog=mode==1?recovered:mode==2?mismatch:mode==3?UnitCatalog::availableDefaults():UnitCatalog::legacyMigration();
+                setup.unitCatalogSnapshot=catalog->serialize(); setup.unitCatalogHash=catalog->digest();
+            }
+            setup.validateSemantics();
+            Engine engine; Engine::TurnMatchStart start;
+            start.setup=setup; start.mapFile=path; start.localSeat=0;
+            start.transport=std::make_shared<turntest::ScriptedTransport>();
+            const bool loaded=engine.initTurnMatchTask(std::move(start)).run();
+            if (mode<=1 || mode==4) {
+                REQUIRE_MESSAGE(loaded,engine.getInitializationDiagnostic());
+                auto* team=engine.gameTeam(0); REQUIRE(team);
+                CHECK(team->game->gameHeader.getUnitCatalog()->digest()==recovered->digest());
+                REQUIRE(team->myUnits[0]);
+                CHECK(team->myUnits[0]->hp==0);
+                CHECK(team->myUnits[0]->performance[HP]==0);
+                CHECK(team->map->getAirUnit(7,8)==team->myUnits[0]->gid);
+                REQUIRE(engine.turnSession());
+            } else {
+                CHECK_FALSE(loaded); CHECK_FALSE(engine.turnSession());
+                CHECK(engine.getInitializationDiagnostic().find("unit catalog does not match")!=std::string::npos);
+            }
+        }
+    }
+
+    TEST_CASE("current files bind embedded migration catalogs as explicit authority [save-format]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        globals->structuredHeadless=true;
+        const auto catalog=UnitCatalog::legacyMigration();
+        const auto path=(glob2test::artifactDir()/"current-migration.map").string();
+        {
+            glob2test::HeadlessGame world({.teams=1,.loadDefaultRace=true,.header=true});
+            world.game.gameHeader.setUnitCatalog(catalog);
+            world.game.configureBuildingCatalog();
+            REQUIRE(world.addUnit(WORKER,8,8));
+            FILE* file=std::fopen(path.c_str(),"wb"); REQUIRE(file);
+            GAGCore::BinaryOutputStream output(new GAGCore::FileStreamBackend(file));
+            world.game.save(&output,true,"Current migration authority");
+        }
+        const auto map=Engine::loadMapHeader(path);
+        const auto embedded=Engine::loadGameHeader(path);
+        REQUIRE(map.getVersionMinor()>=FILE_FORMAT_VERSION_UNIT_CATALOG);
+        CHECK(embedded.getUnitCatalogSnapshot()==catalog->serialize());
+        MatchSetup prototype=MatchSetup::fromGameHeader(embedded,map,
+            MapSource{.kind=MapSource::Kind::Upload,.hash=sha256Hex(glob2test::readFile(path)),.format=MapSource::Format::Map},
+            currentSimVersion());
+        REQUIRE(prototype.unitCatalogSnapshot==catalog->serialize());
+        for(int mode=0;mode<3;++mode) {
+            CAPTURE(mode);
+            auto setup=prototype;
+            if(mode==1) { setup.unitCatalogSnapshot.clear(); setup.unitCatalogHash.clear(); }
+            if(mode==2) {
+                setup.unitCatalogSnapshot=UnitCatalog::availableDefaults()->serialize();
+                setup.unitCatalogHash=UnitCatalog::availableDefaults()->digest();
+            }
+            Engine engine; Engine::TurnMatchStart start;
+            start.setup=setup; start.mapFile=path; start.localSeat=0;
+            start.transport=std::make_shared<turntest::ScriptedTransport>();
+            const bool loaded=engine.initTurnMatchTask(std::move(start)).run();
+            if(mode==0) {
+                REQUIRE_MESSAGE(loaded,engine.getInitializationDiagnostic());
+                REQUIRE(engine.turnSession());
+                CHECK(engine.gameTeam(0)->game->unitCatalog().digest()==catalog->digest());
+            } else {
+                CHECK_FALSE(loaded); CHECK_FALSE(engine.turnSession());
+                CHECK(engine.getInitializationDiagnostic().find("unit catalog")!=std::string::npos);
+            }
+        }
+    }
+
+    TEST_CASE("unit catalogs survive setup conversion and reject tampered identity")
+    {
+        glob2test::HeadlessGlobals globals;
+        auto catalog=UnitCatalog::fromJson(R"({"schemaVersion":1,"experiments":[{"key":"unit-fixture","label":"Fixture unit","help":"Tests unit setup"}],"units":[{"key":"fixture:carrier","extends":"worker","requiredExperiment":"unit-fixture","behaviors":{"cargoCapacity":4,"cargoKinds":2}}]})");
+        json document=json::parse(glob2test::readFile(fixtureRoot()/"valid/MatchSetup/room-closed-seats.json"));
+        document["unitCatalog"]={{"snapshot",catalog->serialize()},{"hash",catalog->digest()}};
+        document["experiments"]={"unit-fixture"};
+        auto setup=MatchSetup::fromJson(document);
+        auto map=mapWithTeams(4);
+        auto header=setup.toGameHeader(map);
+        CHECK(header.getUnitCatalog()->size()==4);
+        CHECK(header.getExperiments().has("unit-fixture"));
+        auto restored=MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion);
+        CHECK(restored.unitCatalogSnapshot==catalog->serialize());
+        CHECK(restored.unitCatalogHash==catalog->digest());
+        document["unitCatalog"]["hash"]=std::string(64,'0');
+        CHECK_THROWS_AS(MatchSetup::fromJson(document),MatchSetupError);
+        document["unitCatalog"]["hash"]=catalog->digest();
+        document["unitCatalog"]["snapshot"]=catalog->serialize()+"\n";
+        CHECK_THROWS_AS(MatchSetup::fromJson(document),MatchSetupError);
+        document.erase("unitCatalog");
+        CHECK_THROWS_AS(MatchSetup::fromJson(document),MatchSetupError);
+    }
 	TEST_CASE("catalog rules identity partitions ratings without changing the executable identity")
 	{
 		const SimVersion engine{135, 55, std::string(64, 'a')};
 		CHECK(catalogRulesVersion(engine, "") == engine);
+        CHECK(catalogRulesVersion(engine,"",std::string(64,'b'))!=engine);
+        CHECK(catalogRulesVersion(engine,std::string(64,'c'),std::string(64,'b'))!=catalogRulesVersion(engine,"",std::string(64,'b')));
 		const auto first = catalogRulesVersion(engine, std::string(64, 'b'));
 		CHECK(first.versionMinor == engine.versionMinor);
 		CHECK(first.netProtocol == engine.netProtocol);
@@ -554,6 +727,7 @@ TEST_SUITE("MatchSetup")
 		onDisk.insert("data/nicowar.txt");
 		onDisk.insert("data/buildings/manifest.json");
         onDisk.insert("data/resources/registry.json");
+        onDisk.insert("data/units/registry.json");
 		const auto buildingManifest = json::parse(glob2test::readFile(root / "data/buildings/manifest.json"));
 		for (const auto& name : buildingManifest.at("files"))
 			onDisk.insert("data/buildings/" + name.get<std::string>());
