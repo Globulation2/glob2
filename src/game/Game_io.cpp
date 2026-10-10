@@ -260,6 +260,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
                     const auto &traits = teams[team]->race.getRuntime(unit->typeNum);
                     unit->capabilityFlags = traits.flags;
                     unit->configuredFoodCapacity = traits.foodCapacity;
+                    unit->configuredVisionRadius = Uint8(traits.visionRadius);
                 }
         }
         configureBuildingCatalog();

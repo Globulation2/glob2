@@ -39,6 +39,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	assert(race);
 	capabilityFlags=race->getRuntime(typeNum).flags;
 	configuredFoodCapacity=race->getRuntime(typeNum).foodCapacity;
+	configuredVisionRadius=Uint8(race->getRuntime(typeNum).visionRadius);
 	jobPurpose=UnitJobPurpose::None;
 	regenerationRemainder=0;
 	widePrimaryCargo=false;

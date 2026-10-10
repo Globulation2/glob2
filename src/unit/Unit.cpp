@@ -78,6 +78,7 @@ void Unit::rebindDefinitionForSetup()
 		trainingDefinitionChanged|=canLearn[ability]!=((traits.learnableMask&(1u<<ability))!=0);
 	capabilityFlags=traits.flags;
 	configuredFoodCapacity=traits.foodCapacity;
+	configuredVisionRadius=Uint8(traits.visionRadius);
 	for (int ability=0;ability<NB_ABILITY;++ability)
 		performance[ability]=race->getUnitType(typeNum,level[ability])->performance[ability];
 	performance[HP]=std::max(1,performance[HP]/owner->game->gameHeader.getGlassCannonScale());
@@ -157,6 +158,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	assert(race);
 	capabilityFlags=race->getRuntime(typeNum).flags;
 	configuredFoodCapacity=race->getRuntime(typeNum).foodCapacity;
+	configuredVisionRadius=Uint8(race->getRuntime(typeNum).visionRadius);
 	jobPurpose=UnitJobPurpose::None;
 	regenerationRemainder=0;
 	widePrimaryCargo=false;
@@ -537,7 +539,7 @@ void Unit::syncStep(void)
 
 		endOfAction();
 
-		const int r=runtimeTraits().visionRadius;
+		const int r=configuredVisionRadius;
 		const int d=2*r+1;
 		owner->map->setMapDiscovered(posX-r,posY-r,d,d,owner->sharedVisionOther);
 		owner->map->setMapBuildingsDiscovered(posX-r,posY-r,d,d,owner->sharedVisionOther,owner->game->teams);

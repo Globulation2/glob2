@@ -107,6 +107,8 @@ struct UnitState
 	bool validTarget;
 	Sint32 magicActionTimeout;
 	Uint8 underAttackTimer; // Counts down 240 frames after being attacked.
+	// Catalog-derived visibility cache occupies existing alignment padding.
+	Uint8 configuredVisionRadius = 1;
 	Sint32 hp, trigHP;
 	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
 	Uint32 fruitMask, fruitCount;

@@ -175,6 +175,7 @@ TEST_SUITE("UnitCatalog")
             REQUIRE(world.team->race.getCatalog()->serialize()==expected->serialize());
             auto* loaded=world.team->myUnits[0]; REQUIRE(loaded);
             REQUIRE(loaded->runtimeTraits().hungerRate==700);
+            CHECK(loaded->configuredVisionRadius==loaded->runtimeTraits().visionRadius);
             CHECK(loaded->performance[WALK]==17); CHECK(loaded->performance[HP]==200);
             CHECK(loaded->hp==177); CHECK(loaded->hungriness==611); CHECK(loaded->trigHP==37); CHECK(loaded->trigHungry==31000);
             // Model Game's final-team adoption after the actual old Team load.
@@ -182,6 +183,7 @@ TEST_SUITE("UnitCatalog")
             world.game.gameHeader.setUnitCatalog(world.team->race.getCatalog());
             world.game.configureBuildingCatalog();
             CHECK(loaded->performance[WALK]==17); CHECK(loaded->hungriness==611);
+            CHECK(loaded->configuredVisionRadius==world.game.unitCatalog().runtime(WORKER).visionRadius);
             loaded->setWorkerLevel(1);
             CHECK(loaded->performance[BUILD]==19); CHECK(loaded->performance[HARVEST]==13);
             auto* producer=world.addBuilding("swarm",8,8); REQUIRE(producer);
