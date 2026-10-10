@@ -718,8 +718,9 @@ and mode-0 controls are required before attributing or claiming any savings.
 
 ### Minimal retained GPU costs
 
-`GLOB2_GRADIENT_MINIMAL_COSTS=1` is an isolated default-off development candidate,
-latched on first asynchronous ownership preparation. It replaces a required
+Minimal retained costs are enabled by default and latched on first asynchronous
+ownership preparation. Set `GLOB2_GRADIENT_MINIMAL_COSTS=0` for the legacy ownership
+comparison or `1` to select them explicitly. The view replaces a required
 GPU job's complete terrain/table/catalog lease with exact recovery costs only.
 Uniform classic movement has scalar costs; weighted classic movement retains
 one swimming byte per cell; modified movement retains one existing profile ID

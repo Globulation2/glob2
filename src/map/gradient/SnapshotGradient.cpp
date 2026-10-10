@@ -562,7 +562,7 @@ bool minimalCostsEnabled() {
         const auto* value=std::getenv("GLOB2_GRADIENT_MINIMAL_COSTS");
         if(value&&*value&&std::strcmp(value,"0")&&std::strcmp(value,"1"))
             throw std::invalid_argument("GLOB2_GRADIENT_MINIMAL_COSTS must be 0 or 1");
-        return value&&std::strcmp(value,"1")==0;
+        return !value || !*value || std::strcmp(value,"1")==0;
     }();
     return enabled;
 }
