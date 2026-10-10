@@ -5,6 +5,7 @@
 #include <span>
 #include <cstddef>
 #include <memory>
+#include <array>
 namespace gradient_kernel
 {
 struct BackendRequest;
@@ -21,6 +22,11 @@ void releaseOpenCLHostBytes(std::size_t bytes) noexcept;
 bool reserveOpenCLProbeBytes(std::size_t bytes) noexcept;
 void releaseOpenCLProbeBytes(std::size_t bytes) noexcept;
 std::size_t openCLProbeBytes() noexcept;
+enum class OpenCLCpuCategory : unsigned {Preparation,Upload,Arguments,Fill,KernelEnqueue,CheckRead,OutputRead,OutputCopy,Other,Count};
+struct OpenCLApiCpuCounters {
+    std::array<std::uint64_t,unsigned(OpenCLCpuCategory::Count)> ns{},calls{};
+    std::uint64_t invalidScopes=0,reconciliationErrors=0,controlBracketNs=0,clockReads=0,coveredNs=0;
+};
 struct OpenCLStatus
 {
     bool available = false;
@@ -71,6 +77,12 @@ struct OpenCLStatus
     unsigned deviceOrdinal = 0;
     bool deviceOrdinalKnown = false;
     std::uint64_t threadCPUInvalidMeasurements = 0;
+    // Background required execution diagnostic: 0 off, 1 exclusive actual
+    // scopes, 2 same scopes/read count with empty brackets before actual work.
+    // Includes calling-thread CPU only; never qualifies automatic promotion.
+    unsigned apiCpuMode = 0;
+    bool apiCpuConfigured = false;
+    OpenCLApiCpuCounters apiCpu;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.
@@ -95,7 +107,7 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // backend accounts only its staging/state/lane and retained cost plane.
 // Backend staging is charged
 // separately. Unknown/unready cost planes are declined without preparation.
-// Required-only active-epoch/parity-binding/direct-seed ablations are also declined; their
+// Required-only active-epoch/parity-binding/direct-seed/API-CPU ablations are also declined; their
 // results cannot supply automatic-promotion evidence until yielding counterparts
 // have been independently implemented and qualified.
 class OpenCLProbe

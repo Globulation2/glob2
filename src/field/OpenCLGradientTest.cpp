@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLGradient.h"
+#include "OpenCLCpuAttribution.h"
 #include "Glob2Test.h"
 #include "GradientPropagation.h"
 #include "TerrainGradient.h"
@@ -13,6 +14,13 @@
 
 namespace
 {
+struct AttributionClock {
+    std::array<std::uint64_t,8> values{};unsigned at=0;
+    static std::uint64_t read(void* value) noexcept {
+        auto& clock=*static_cast<AttributionClock*>(value);
+        return clock.at<clock.values.size() ? clock.values[clock.at++] : 0;
+    }
+};
 void onWorker(const std::function<void()>& function)
 {
     if constexpr(!GAGCore::ThreadSupport::available) { function(); return; }
@@ -21,6 +29,76 @@ void onWorker(const std::function<void()>& function)
     REQUIRE(executor.threadCount()==2);
     const ComputeExecutor::Group group{1,{[](void* p,std::size_t){ (*static_cast<const std::function<void()>*>(p))(); },const_cast<std::function<void()>*>(&function)}};
     auto ticket=executor.submit(std::span(&group,1)); executor.join(ticket);
+}
+
+TEST_CASE("OpenCL CPU scopes conserve nested CPU and expose invalid readings")
+{
+    using namespace gradient_kernel;
+    OpenCLApiCpuCounters measured;
+    OpenCLCpuAttribution timer(measured);timer.mode=1;
+    AttributionClock clock{{100,110,120,130,150,200}};
+    timer.setClockForTesting(&clock,AttributionClock::read);
+    {
+        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
+        {
+            OpenCLCpuAttribution::Scope preparation(timer,OpenCLCpuCategory::Preparation);
+            OpenCLCpuAttribution::Scope upload(timer,OpenCLCpuCategory::Upload);
+        }
+    }
+    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Other)]==60);
+    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Preparation)]==30);
+    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Upload)]==10);
+    CHECK(measured.coveredNs==100);CHECK(measured.clockReads==6);
+    CHECK(measured.invalidScopes==0);CHECK(measured.reconciliationErrors==0);
+    measured={};clock={{100,110,109,200}};
+    {
+        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
+        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::KernelEnqueue);
+    }
+    CHECK(measured.invalidScopes==2);CHECK(measured.coveredNs==0);
+    CHECK(measured.ns[unsigned(OpenCLCpuCategory::KernelEnqueue)]==0);
+    measured={};clock={{100,110,200,150}};
+    {
+        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
+        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::Fill);
+    }
+    CHECK(measured.reconciliationErrors==1);CHECK(measured.coveredNs==0);
+    CHECK(measured.ns[unsigned(OpenCLCpuCategory::Fill)]==90);
+    measured={};clock={{0,200}};
+    {OpenCLCpuAttribution::Scope invalid(timer,OpenCLCpuCategory::CheckRead);}
+    CHECK(measured.invalidScopes==1);CHECK(measured.coveredNs==0);
+    measured={};clock={{100,200}};
+    measured.ns[unsigned(OpenCLCpuCategory::OutputCopy)]=UINT64_MAX;
+    {OpenCLCpuAttribution::Scope overflow(timer,OpenCLCpuCategory::OutputCopy);}
+    CHECK(measured.reconciliationErrors==1);CHECK(measured.coveredNs==0);
+    CHECK(measured.ns[unsigned(OpenCLCpuCategory::OutputCopy)]==UINT64_MAX);
+}
+TEST_CASE("OpenCL empty CPU brackets match clock count and off mode reads nothing")
+{
+    using namespace gradient_kernel;
+    OpenCLApiCpuCounters counters;
+    OpenCLCpuAttribution timer(counters);timer.mode=2;
+    AttributionClock clock{{100,101,200,203}};timer.setClockForTesting(&clock,AttributionClock::read);
+    {
+        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
+        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::Arguments);
+    }
+    CHECK(counters.clockReads==4);CHECK(counters.controlBracketNs==4);
+    CHECK(counters.coveredNs==0);
+    for(const auto value:counters.ns)CHECK(value==0);
+    CHECK(counters.calls[unsigned(OpenCLCpuCategory::Arguments)]==1);
+    const auto control=counters;
+    counters={};timer.mode=1;clock={{100,200,203,300}};
+    {
+        OpenCLCpuAttribution::Scope parent(timer,OpenCLCpuCategory::Other);
+        OpenCLCpuAttribution::Scope child(timer,OpenCLCpuCategory::Arguments);
+    }
+    CHECK(counters.clockReads==control.clockReads);CHECK(counters.calls==control.calls);
+    CHECK(counters.coveredNs==200);CHECK(counters.controlBracketNs==0);
+    const auto before=counters;timer.mode=0;
+    {OpenCLCpuAttribution::Scope off(timer,OpenCLCpuCategory::KernelEnqueue);}
+    CHECK(counters.clockReads==before.clockReads);CHECK(counters.calls==before.calls);
+    CHECK(clock.at==4);
 }
 void initializeForTest()
 {
@@ -1152,6 +1230,43 @@ TEST_CASE("singleton direct seed uploads preserve exact arrays commands and mixe
     const auto original=*seeds;const auto bytes=openCLProbeBytes();
     BackendRequest probe{seeds->data(),100,{2,1},session,nullptr,[](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,872392,1,true}};
     CHECK_FALSE(beginOpenCLProbe(probe,Plan::Frozen8,seeds));CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);
+}
+
+TEST_CASE("opt-in API CPU scopes observe real required commands without changing results")
+{
+    using namespace gradient_kernel;
+    initializeForTest();const auto initial=openCLStatus();
+    if(!initial.available || !initial.apiCpuMode)return;
+    REQUIRE(initial.apiCpuConfigured);
+    const field::Grid grid(7,13);
+    std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[11]=0;seeds.back()=65000;
+    std::vector<EntrySteps> costs(grid.cells(),LAND_STEPS);
+    const auto expected=oracle(seeds,grid,costs,40);
+    BackendSession session;auto owner=std::make_shared<unsigned>(1);
+    BackendRequest request{seeds.data(),40,grid,session,&costs,
+        [](void* context,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(context))[cell];}};
+    request.identity={owner,1,1,true};
+    const auto before=openCLStatus();
+    REQUIRE(executeOpenCLDevice(std::span(&request,1),requestedOpenCLPlan()));
+    CHECK(seeds==expected);
+    const auto after=openCLStatus();
+    const auto calls=[&](OpenCLCpuCategory category){return after.apiCpu.calls[unsigned(category)]-before.apiCpu.calls[unsigned(category)];};
+    CHECK(calls(OpenCLCpuCategory::KernelEnqueue)==after.dispatches-before.dispatches);
+    CHECK(calls(OpenCLCpuCategory::Arguments)==after.kernelArgumentUpdates-before.kernelArgumentUpdates);
+    CHECK(calls(OpenCLCpuCategory::CheckRead)==after.hostChecks-before.hostChecks);
+    CHECK(calls(OpenCLCpuCategory::Fill)==after.tileMaskInitializations-before.tileMaskInitializations+
+        after.tileMaskClears-before.tileMaskClears+after.hostChecks-before.hostChecks);
+    CHECK(calls(OpenCLCpuCategory::OutputRead)==1);CHECK(calls(OpenCLCpuCategory::OutputCopy)==1);
+    CHECK(calls(OpenCLCpuCategory::Upload)>=2);
+    std::uint64_t scopes=0,categoryCpu=0;
+    for(unsigned i=0;i<unsigned(OpenCLCpuCategory::Count);++i){
+        scopes+=after.apiCpu.calls[i]-before.apiCpu.calls[i];categoryCpu+=after.apiCpu.ns[i]-before.apiCpu.ns[i];
+    }
+    CHECK(after.apiCpu.clockReads-before.apiCpu.clockReads==scopes*2);
+    CHECK(after.apiCpu.invalidScopes==before.apiCpu.invalidScopes);
+    CHECK(after.apiCpu.reconciliationErrors==before.apiCpu.reconciliationErrors);
+    if(initial.apiCpuMode==1)CHECK(categoryCpu==after.apiCpu.coveredNs-before.apiCpu.coveredNs);
+    else {CHECK(categoryCpu==0);CHECK(after.apiCpu.coveredNs==before.apiCpu.coveredNs);}
 }
 TEST_CASE("isolated direct seed upload rollback preserves originals after device work")
 {

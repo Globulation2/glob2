@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLGradient.h"
+#include "OpenCLCpuAttribution.h"
 #include "GradientBackend.h"
 #include "ThreadCpuClock.h"
 #include <SDL3/SDL_loadso.h>
@@ -438,6 +439,7 @@ struct Device
         try
         {
             status.directSeedUploadRequested=numericOverride("GLOB2_OPENCL_DIRECT_SEED_UPLOAD",0,1)!=0;
+            status.apiCpuMode=numericOverride("GLOB2_OPENCL_API_CPU",0,2);
             api.load();
             status.checkInterval=numericOverride("GLOB2_OPENCL_CHECK_INTERVAL",8,32);
             if(!status.checkInterval) throw std::runtime_error("Invalid GLOB2_OPENCL_CHECK_INTERVAL");
@@ -582,6 +584,7 @@ struct Device
             status.localSteps = variants[selectedVariant].steps;
             status.available = true;
             status.directSeedUpload=status.directSeedUploadRequested;
+            status.apiCpuConfigured=true;
         }
         catch (const std::exception &e)
         {
@@ -609,6 +612,7 @@ struct Runtime
         : shared(std::move(state)), api(shared->api), execution(lane) {}
     std::mutex mutex;
     OpenCLStatus status;
+    OpenCLCpuAttribution cpuAttribution{status.apiCpu};
     bool probed = false;
     Handle device = nullptr, context = nullptr, queue = nullptr;
     std::array<KernelVariant, PLANS.size() - 1> variants = kernelVariants();
@@ -669,6 +673,10 @@ struct Runtime
         out.directSeedUploads+=in.directSeedUploads;out.seedCopiedBytes+=in.seedCopiedBytes;
         out.seedUploadedBytes+=in.seedUploadedBytes;out.directSeedUploadedBytes+=in.directSeedUploadedBytes;
         out.outputCopiedBytes+=in.outputCopiedBytes;
+        for(unsigned i=0;i<unsigned(OpenCLCpuCategory::Count);++i){out.apiCpu.ns[i]+=in.apiCpu.ns[i];out.apiCpu.calls[i]+=in.apiCpu.calls[i];}
+        out.apiCpu.invalidScopes+=in.apiCpu.invalidScopes;out.apiCpu.reconciliationErrors+=in.apiCpu.reconciliationErrors;
+        out.apiCpu.controlBracketNs+=in.apiCpu.controlBracketNs;out.apiCpu.clockReads+=in.apiCpu.clockReads;
+        out.apiCpu.coveredNs+=in.apiCpu.coveredNs;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -730,9 +738,18 @@ struct Runtime
         selectedVariant=shared->selectedVariant;selectVariant(selectedVariant);
         status.available=true;probed=true;
     }
+    template<class Function> auto timedCpu(OpenCLCpuCategory category,Function&& function) {
+        OpenCLCpuAttribution::Scope scope(cpuAttribution,category);return function();
+    }
+    template<class... Args> Int fill(Args... args) {
+        return timedCpu(OpenCLCpuCategory::Fill,[&]{return api.EnqueueFillBuffer(args...);});
+    }
+    template<class... Args> Int enqueueKernel(Args... args) {
+        return timedCpu(OpenCLCpuCategory::KernelEnqueue,[&]{return api.EnqueueNDRangeKernel(args...);});
+    }
     template <class T> void argumentTo(Handle target,UInt index,T value)
     {
-        check(api.SetKernelArg(target, index, sizeof(T), &value));++status.kernelArgumentUpdates;
+        check(timedCpu(OpenCLCpuCategory::Arguments,[&]{return api.SetKernelArg(target,index,sizeof(T),&value);}));++status.kernelArgumentUpdates;
     }
     template <class T> void argument(UInt index,T value) {argumentTo(kernel,index,value);}
     struct Event {
@@ -744,10 +761,10 @@ struct Runtime
     void await(Event& event) {
         if(!event.value || !shared->status.pollMicros) return;
         try {
-            check(api.Flush(queue));
+            check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.Flush(queue);}));
             for(;;) {
                 Int state=0;
-                check(api.GetEventInfo(event.value,0x11D3 /* command execution status */,sizeof state,&state,nullptr));
+                check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventInfo(event.value,0x11D3 /* command execution status */,sizeof state,&state,nullptr);}));
                 if(state<0) check(state);
                 if(!state) return;
                 std::this_thread::sleep_for(std::chrono::microseconds(shared->status.pollMicros));
@@ -755,14 +772,14 @@ struct Runtime
         } catch(...) {
             // A nonblocking transfer still borrows its source/destination.
             // Drain before any stack descriptor or staging storage can unwind.
-            api.Finish(queue);throw;
+            timedCpu(OpenCLCpuCategory::Other,[&]{return api.Finish(queue);});throw;
         }
     }
     void profile(Handle event,std::uint64_t& total) {
         if(!event || !shared->status.deviceProfiling) return;
         Bits started=0,finished=0;
-        if(api.GetEventProfilingInfo(event,0x1282,sizeof started,&started,nullptr)!=0 ||
-           api.GetEventProfilingInfo(event,0x1283,sizeof finished,&finished,nullptr)!=0 || finished<started) {
+        if(timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventProfilingInfo(event,0x1282,sizeof started,&started,nullptr);})!=0 ||
+           timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventProfilingInfo(event,0x1283,sizeof finished,&finished,nullptr);})!=0 || finished<started) {
             ++status.profilingErrors;return;
         }
         total+=finished-started;
@@ -771,7 +788,7 @@ struct Runtime
         Event event(api);
         const bool asynchronous=shared->status.pollMicros!=0;
         const bool capture=asynchronous || shared->status.deviceProfiling;
-        check(api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr));
+        check(timedCpu(finalOutput ? OpenCLCpuCategory::OutputRead : OpenCLCpuCategory::CheckRead,[&]{return api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr);}));
         await(event);
         profile(event.value,finalOutput ? status.deviceReadbackNs : status.deviceCheckReadNs);
     }
@@ -781,7 +798,7 @@ struct Runtime
         Event event(api);
         const bool asynchronous=shared->status.pollMicros!=0;
         const bool capture=asynchronous || shared->status.deviceProfiling;
-        check(api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr));
+        check(timedCpu(OpenCLCpuCategory::Upload,[&]{return api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr);}));
         await(event);profile(event.value,status.deviceUploadNs);
         if(activeStageTiming) activeStageTiming->uploadNs+=monotonicNs()-start;
     }
@@ -873,6 +890,7 @@ struct Runtime
     void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging,
                       bool directSingletonSeed=false)
     {
+        OpenCLCpuAttribution::Scope preparationCpuScope(cpuAttribution,OpenCLCpuCategory::Preparation);
         const auto preparationStart=activeStageTiming ? monotonicNs() : 0;
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
         std::size_t total = 0;
@@ -959,7 +977,7 @@ struct Runtime
             tileCapacity = tileCount;
         }
         UInt one = 1;
-        check(api.EnqueueFillBuffer(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
+        check(fill(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
                                     nullptr, nullptr));
         ++status.tileMaskInitializations;
         if(shared->status.activeEpoch) {
@@ -967,7 +985,7 @@ struct Runtime
             // Reset both masks on every new batch, including reused buffers.
             // Otherwise stale prior-request epochs could spuriously activate
             // a tile during this request's first exchanges.
-            check(api.EnqueueFillBuffer(queue,tilesSecond,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,nullptr));
+            check(fill(queue,tilesSecond,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,nullptr));
             ++status.tileMaskInitializations;
         }
         Handle active = tilesFirst, nextActive = tilesSecond;
@@ -996,6 +1014,7 @@ struct Runtime
             argumentTo(reverse,0,second);argumentTo(reverse,1,first);
             argumentTo(reverse,12,tilesSecond);argumentTo(reverse,13,tilesFirst);
         }
+        preparationCpuScope.close();
         const auto dispatchStart=activeStageTiming ? monotonicNs() : 0;
         if(activeStageTiming) activeStageTiming->preparationNs+=dispatchStart-preparationStart;
         // Every dispatch extends at least one global path edge. Frozen halos
@@ -1017,14 +1036,14 @@ struct Runtime
                 // Only the last dispatch's changes are read by the host. The
                 // in-order queue clears earlier accumulated flags before it.
                 if (dispatch+1 == count)
-                    check(api.EnqueueFillBuffer(queue, changed, zero.data(), sizeof(UInt), 0,
+                    check(fill(queue, changed, zero.data(), sizeof(UInt), 0,
                                                 requests.size() * sizeof(UInt), 0, nullptr, nullptr));
                 if(shared->status.activeEpoch)
                     // Epoch one is the initial mask. The convergence bound
                     // ends at epoch 65537, well before unsigned wraparound.
                     argument(16,UInt(round+dispatch+1));
                 else {
-                    check(api.EnqueueFillBuffer(queue, nextActive, zero.data(), sizeof(UInt), 0,
+                    check(fill(queue, nextActive, zero.data(), sizeof(UInt), 0,
                                                 tileCount * sizeof(UInt), 0, nullptr, nullptr));
                     ++status.tileMaskClears;
                 }
@@ -1033,7 +1052,7 @@ struct Runtime
                     argument(12, active);argument(13, nextActive);
                 }
                 check(
-                    api.EnqueueNDRangeKernel(queue,kernel,3,nullptr,global,local,0,nullptr,
+                    enqueueKernel(queue,kernel,3,nullptr,global,local,0,nullptr,
                         shared->status.deviceProfiling ? &events.values[dispatch] : nullptr));
                 std::swap(a, b);
                 std::swap(active, nextActive);
@@ -1120,6 +1139,8 @@ struct Runtime
                 return false; }
         }
         std::lock_guard lock(mutex);
+        cpuAttribution.mode=shared->status.apiCpuMode;
+        OpenCLCpuAttribution::Scope batchCpuScope(cpuAttribution,OpenCLCpuCategory::Other);
         struct Active {
             Device& d;
             Active(Device& d):d(d) {const auto n=++d.active;auto old=d.maximumActive.load();while(old<n&&!d.maximumActive.compare_exchange_weak(old,n)){} }
@@ -1146,6 +1167,7 @@ struct Runtime
             selectVariant(unsigned(plan)-1);
             // Stage ALL output before commit; even a failure in the last chunk
             // leaves every caller's original seeds intact for exact CPU recovery.
+            OpenCLCpuAttribution::Scope allocationCpuScope(cpuAttribution,OpenCLCpuCategory::Preparation);
             std::size_t total=0;
             for(const auto& request:input) {
                 if(request.grid.cells()>std::numeric_limits<std::size_t>::max()-total) throw BudgetExceeded();
@@ -1154,6 +1176,7 @@ struct Runtime
             if(total>OpenCLHostBudget/sizeof(std::uint16_t)) throw BudgetExceeded();
             try {resizeStaging(values,total,valuesLease);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(values,total,valuesLease);}
+            allocationCpuScope.close();
             std::size_t outputOffset=0;
             for(std::size_t begin=0;begin<input.size();begin+=8) {
                 const auto count=std::min<std::size_t>(8,input.size()-begin);
@@ -1168,6 +1191,7 @@ struct Runtime
             if(shared->failed.load() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
                 throw std::runtime_error("OpenCL device or session failed on another lane");
             outputOffset=0;
+            OpenCLCpuAttribution::Scope outputCopyCpuScope(cpuAttribution,OpenCLCpuCategory::OutputCopy);
             for(const auto& r:input) {
                 std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
                 status.outputCopiedBytes+=r.grid.cells()*sizeof(std::uint16_t);
@@ -1175,6 +1199,7 @@ struct Runtime
                 ++status.committedFields;
                 outputOffset+=r.grid.cells();
             }
+            outputCopyCpuScope.close();
             ++status.schedulerBatches;
             return true;
         } catch(const BudgetExceeded&) {
@@ -1190,7 +1215,7 @@ struct Runtime
             } catch(...) { status.error.clear(); }
             readyPlans.store(0,std::memory_order_release);
             shared->fail(status.error);
-            if(queue) api.Finish(queue);
+            if(queue) timedCpu(OpenCLCpuCategory::Other,[&]{return api.Finish(queue);});
             return false;
         }
     }
@@ -1537,7 +1562,7 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
         request.grid.width()<=0 || request.grid.height()<=0 || request.operation!=Operation::CompleteField ||
         request.limit<0 || request.session.failed.load() ||
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
-        device.status.activeEpoch || device.status.parityBound || device.status.directSeedUpload) return {};
+        device.status.activeEpoch || device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
     try {
         auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));
         admitted=value->state.get();return value;
