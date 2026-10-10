@@ -485,7 +485,7 @@ static void rallyAssemblesByMovement()
             // Keep the format-115 baseline: this fixture's header version is
             // rotated eight times by MapHeader/Game checksums (three teams,
             // no players). A save-format bump must not change movement evidence.
-            const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true)
+            const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true,true)
                 ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),8);
             if(record)output << shift << ' ' << f.game.stepCounter << ' ' << checksum << '\n';
             else {

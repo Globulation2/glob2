@@ -159,7 +159,7 @@ namespace
 	Uint32 simulationChecksum(Game& game)
 	{
 		std::vector<Uint32> parts, buildings, units;
-		game.checkSum(&parts, &buildings, &units, true);
+		game.checkSum(&parts, &buildings, &units, true, true);
 		parts.erase(parts.begin());
 		parts.insert(parts.end(), buildings.begin(), buildings.end());
 		parts.insert(parts.end(), units.begin(), units.end());

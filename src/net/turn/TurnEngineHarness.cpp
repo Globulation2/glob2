@@ -37,6 +37,7 @@
 #include "ConnectionOverlay.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "FileFormatVersions.h"
 #include "render/ColonySkinPreview.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -222,6 +223,27 @@ std::string mapPath(const std::string& name)
 	return (glob2test::sourceRoot() / "maps" / (name + ".map.gz")).string();
 }
 
+// Uploaded current files bind their authored catalogs through the production
+// setup conversion, while fixture seats and policies remain independently authored.
+void bindEmbeddedCatalogs(Online::MatchSetup& setup, const std::string& file, const MapHeader& map)
+{
+	if (map.getVersionMinor() < FILE_FORMAT_VERSION_BUILDING_CATALOG)
+		return;
+	const auto embedded = Engine::loadGameHeader(file);
+	auto header = setup.toGameHeader(map);
+	header.setBuildingCatalogSnapshot(embedded.getBuildingCatalogSnapshot());
+	if (map.getVersionMinor() >= FILE_FORMAT_VERSION_UNIT_CATALOG)
+		header.setUnitCatalog(embedded.getUnitCatalog());
+	const auto catalogs = Online::MatchSetup::fromGameHeader(header, map, setup.map, setup.simVersion);
+	setup.buildingCatalogSnapshot = catalogs.buildingCatalogSnapshot;
+	setup.buildingCatalogHash = catalogs.buildingCatalogHash;
+	if (map.getVersionMinor() >= FILE_FORMAT_VERSION_UNIT_CATALOG)
+	{
+		setup.unitCatalogSnapshot = catalogs.unitCatalogSnapshot;
+		setup.unitCatalogHash = catalogs.unitCatalogHash;
+	}
+}
+
 /// A setup on `map`: humans on the first teams, then one team per entry of `ais`,
 /// every team its own alliance. An entry "closed" closes its team (a closed seat
 /// after every player seat, as a room sends an empty seat). Unused map teams stay
@@ -269,6 +291,7 @@ Online::MatchSetup makeSetup(const std::string& map, int humans, const std::vect
 		seat.seat = static_cast<int>(setup.seats.size());
 		setup.seats.push_back(seat);
 	}
+	bindEmbeddedCatalogs(setup, map, header);
 	setup.validateSemantics();
 	return setup;
 }
@@ -1407,6 +1430,7 @@ TEST_SUITE("TurnEngineHarness")
 		human(1, 1);
 		closed(2, 0);
 		closed(3, 2);
+		bindEmbeddedCatalogs(setup, save, saved);
 		setup.validateSemantics();
 		// Through the JSON every client and the verifier parse.
 		setup = Online::MatchSetup::parse(setup.dump());
