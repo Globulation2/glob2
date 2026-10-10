@@ -283,10 +283,28 @@ gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const
     const auto& terrain = *snapshot.terrain;
     // Snapshot lookups cover every cell. Valid terrain costs do not depend on
     // this field's obstacle mask, even when movement modifiers are enabled.
-    const bool allCells = !terrain.movementModifiers || std::all_of(
-        terrain.rules->movement(request.swim).profiles.begin(), terrain.rules->movement(request.swim).profiles.end(),
-        [](const auto step) { return step.cardinal && step.diagonal && step.cardinal <= 65535 && step.diagonal <= 65535; });
-    return {snapshot.terrain, std::uint64_t(request.swim), terrain.revision, allCells,retainedTerrainBytes(terrain)};
+    bool allCells=!terrain.movementModifiers;
+    std::uint32_t uniform=0;
+    if(!terrain.movementModifiers) {
+        // Binary weighted swimming can vary across cells; proving it uniform
+        // would need a map scan, so leave it unknown. The land-only class is
+        // already uniform by construction.
+        if(!gradient_kernel::weightedClass(request.swim))
+            uniform=gradient_kernel::LAND_STEPS.cardinal|(gradient_kernel::LAND_STEPS.diagonal<<16);
+    } else {
+        const auto& profiles=terrain.rules->movement(request.swim).profiles;
+        allCells=true;
+        const auto first=profiles.empty() ? gradient_kernel::EntrySteps{} : profiles.front();
+        bool same=!profiles.empty();
+        // This replaces the existing validity pass: only compact cost profiles
+        // are inspected, never cells or original seed values.
+        for(const auto step:profiles) {
+            allCells=allCells && step.cardinal && step.diagonal && step.cardinal<=65535 && step.diagonal<=65535;
+            same=same && step.cardinal==first.cardinal && step.diagonal==first.diagonal;
+        }
+        if(allCells && same) uniform=first.cardinal|(first.diagonal<<16);
+    }
+    return {snapshot.terrain, std::uint64_t(request.swim), terrain.revision, allCells,retainedTerrainBytes(terrain),uniform};
 }
 }
 
