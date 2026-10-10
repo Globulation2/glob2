@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
+#include <climits>
 
 // Named in a friend declaration, so it stays outside the anonymous namespace.
 class FetchHiringScoreHarness
@@ -46,6 +47,9 @@ public:
     }
 	static bool consider(Building* building, Unit* unit, int resource, int* dist)
 		{ return building->considerUnitForMaterial(unit, resource, dist); }
+    static void resetFailures(Building* building) { building->resetFailureTallies(); }
+    static int failures(Building* building, Building::UnitCantWorkReason reason)
+        { return building->unitsFailingRequirements[reason]; }
 };
 
 namespace
@@ -184,6 +188,76 @@ static void theScoreEstimatesTheWholeTrip()
 
 TEST_SUITE("FetchHiringScore")
 {
+    TEST_CASE("recruitment retains exact hunger boundaries and widened cached extremes")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=1, .discovered=true, .clearImmobile=true,
+            .loadDefaultRace=true, .header=true});
+        auto* inn=world.addBuilding("inn",8,8,0,0);
+        REQUIRE(inn);
+        inn->materials[WHEAT]=0;
+        REQUIRE(world.game.map.incResourceByIndex(18,8,WHEAT,0));
+        auto* unit=world.addUnit(WORKER,6,8);
+        REQUIRE(unit);
+        unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
+        int buildingDistance=0,resourceDistance=0;
+        REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->posX,unit->posY,&buildingDistance));
+        REQUIRE(world.game.map.materialAvailableSlot(0,WHEAT,unit->swimClass(),unit->posX,unit->posY,&resourceDistance));
+        REQUIRE(buildingDistance<resourceDistance);
+        REQUIRE(resourceDistance>1);
+        const int expectedScore=(resourceDistance+std::max(buildingDistance,resourceDistance))<<Q8_FIXED_POINT_SHIFT;
+        const auto random=unit->entityRandom.exportState();
+        const auto gameRandom=world.game.syncRandom;
+        const auto query=[&](int hungry,int threshold,int rate,bool expected,int reason) {
+            CAPTURE(hungry); CAPTURE(threshold); CAPTURE(rate);
+            unit->hungry=hungry; unit->trigHungry=threshold; unit->hungriness=rate;
+            FetchHiringScoreHarness::resetFailures(inn);
+            int score=-1;
+            CHECK(FetchHiringScoreHarness::consider(inn,unit,WHEAT,&score)==expected);
+            if(expected) CHECK(score==expectedScore);
+            CHECK(FetchHiringScoreHarness::failures(inn,Building::UnitTooFarFromBuilding)==(reason==1));
+            CHECK(FetchHiringScoreHarness::failures(inn,Building::UnitTooFarFromResource)==(reason==2));
+            CHECK(unit->entityRandom.exportState()==random);
+            CHECK(world.game.syncRandom==gameRandom);
+        };
+        for(int rate : {1,2,425,1000000}) {
+            // Arrival at the exact starvation boundary is rejected, including
+            // the last fractional tick; one additional rate quantum permits it.
+            query(100+resourceDistance*rate,100,rate,false,2);
+            query(100+(resourceDistance+1)*rate-1,100,rate,false,2);
+            query(100+(resourceDistance+1)*rate,100,rate,true,0);
+        }
+        // These historical cached scalar combinations cross both signed32
+        // subtraction limits. Query them without advancing survival state.
+        query(INT_MAX,-1,1,true,0);
+        query(INT_MAX,INT_MIN,425,true,0);
+        query(INT_MIN,1,1,false,1);
+        query(INT_MIN,INT_MAX,425,false,1);
+        query(INT_MIN,INT_MAX,0,true,0);
+        query(INT_MIN,INT_MAX,-1,true,0);
+    }
+
+    TEST_CASE("carrying selection preserves saturated wide hunger ties and purpose writes")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=1, .discovered=true, .clearImmobile=true,
+            .loadDefaultRace=true, .header=true});
+        auto* inn=world.addBuilding("inn",8,8,0,0);
+        REQUIRE(inn); inn->materials[WHEAT]=0;
+        for(int slot : {Unit::MAX_COUNT-1,3}) {
+            auto* unit=new Unit(6,8,Unit::GIDfrom(0,slot),WORKER,world.team,0);
+            world.team->myUnits[slot]=unit; world.team->attachUnit(slot);
+            unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
+            unit->carriedMaterial=WHEAT; unit->destinationPurpose=-1;
+            unit->hungry=INT_MAX; unit->trigHungry=slot==3 ? -1 : -2; unit->hungriness=1;
+        }
+        // Both positive quotients saturate to the same signed32 budget; the
+        // lower slot wins the unchanged traversal tie, and both are evaluated.
+        CHECK(FetchHiringScoreHarness::carrying(inn)==world.team->myUnits[3]);
+        CHECK(world.team->myUnits[3]->destinationPurpose==WHEAT);
+        CHECK(world.team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose==WHEAT);
+    }
+
     TEST_CASE("carrying candidates preserve sparse slot ties and all purpose writes")
     {
         glob2test::HeadlessGlobals globals;

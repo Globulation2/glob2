@@ -81,26 +81,42 @@ void Building::resetFailureTallies()
 	}
 }
 
-bool Building::considerUnitForBuilding(Unit* unit, int* distBuilding, int airDistance)
+namespace
+{
+// Healthy stock hunger deltas fit in 32 bits. Preserve widened subtraction and
+// exact signed division for extreme cached or authored values.
+int remainingFoodTime(const Unit& unit)
+{
+    if (unit.hungriness<=0) return INT_MAX;
+    const Sint64 delta=Sint64(unit.hungry)-unit.trigHungry;
+    if (delta>=INT_MIN && delta<=INT_MAX)
+        return int(delta)/unit.hungriness;
+    return int(std::clamp<Sint64>(delta/unit.hungriness,INT_MIN,INT_MAX));
+}
+
+// Return the already-computed food budget to the material and carrying scans.
+// Keep the original member entry point below for existing callers and fixtures.
+bool considerBuildingCandidate(Building& building, Unit* unit, int* distBuilding,
+                               int airDistance, int& timeLeft)
 {
 	if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
-		noteUnitFailing(unit, UnitNotAvailable);
+		building.noteUnitFailing(unit, Building::UnitNotAvailable);
 		return false;
 	}
-	if(!canUnitWorkHere(unit))
+	if(!building.canUnitWorkHere(unit))
 	{
-		noteUnitFailing(unit, UnitTooLowLevel);
+		building.noteUnitFailing(unit, Building::UnitTooLowLevel);
 		return false;
 	}
 
-	int timeLeft=(unit->hungriness>0 ? int(std::clamp<Sint64>((Sint64(unit->hungry)-unit->trigHungry)/unit->hungriness,INT_MIN,INT_MAX)) : INT_MAX);
+	timeLeft=remainingFoodTime(*unit);
 	bool accessible=true;
     if(unit->performance[FLY] && airDistance>=0) {
         *distBuilding=airDistance;accessible=airDistance!=INT_MAX;
     } else if(unit->performance[FLY]) {
-        const Map& map=*owner->map;
-        field::AirDistanceField routes(map.getW(),map.getH(),posX,posY,
+        const Map& map=*building.owner->map;
+        field::AirDistanceField routes(map.getW(),map.getH(),building.posX,building.posY,
             [&map](int x,int y){return map.terrainPropertiesAt(x,y).flyable;},
             [&map](int x,int y){return map.cellRule(map.coordToIndex(x,y)).airCost;},
             map.hasAirTerrainConstraints(),field::AirDistanceDirection::ToDestination);
@@ -108,32 +124,38 @@ bool Building::considerUnitForBuilding(Unit* unit, int* distBuilding, int airDis
             const auto cost=routes.costTo(unit->posX,unit->posY);
             accessible=cost!=decltype(routes)::unreachable;
             *distBuilding=accessible?int((cost+GRADIENT_STEP-1)/GRADIENT_STEP):INT_MAX;
-        } else *distBuilding=owner->map->warpDistMax(unit->posX,unit->posY,posX,posY);
-    } else accessible=owner->map->buildingAvailable(this,unit->swimClass(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
+        } else *distBuilding=building.owner->map->warpDistMax(unit->posX,unit->posY,building.posX,building.posY);
+    } else accessible=building.owner->map->buildingAvailable(&building,unit->swimClass(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
     if(!accessible)
 	{
-		noteUnitFailing(unit, UnitCantAccessBuilding);
+		building.noteUnitFailing(unit, Building::UnitCantAccessBuilding);
 		return false;
 	}
 	if((!unit->performance[FLY] && !unit->performance[WALK] && !unit->performance[SWIM] && *distBuilding>1) || *distBuilding >= timeLeft)
 	{
-		noteUnitFailing(unit, UnitTooFarFromBuilding);
+		building.noteUnitFailing(unit, Building::UnitTooFarFromBuilding);
 		return false;
 	}
 	return true;
 }
 
+}
+
+bool Building::considerUnitForBuilding(Unit* unit, int* distBuilding, int airDistance)
+{
+    int timeLeft;
+    return considerBuildingCandidate(*this,unit,distBuilding,airDistance,timeLeft);
+}
 
 bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist, int airDistance)
 {
 	if (unit->hasCapability(UnitRuntimeTraits::ExtendedCargo)
 		&& !unit->hasDeliverableCargo(*this,wantedMaterial) && !unit->canCarryMaterial(wantedMaterial))
 		return false;
-	int distBuilding=0;
-	if(!considerUnitForBuilding(unit, &distBuilding,airDistance))
+	int distBuilding=0, timeLeft;
+	if(!considerBuildingCandidate(*this,unit,&distBuilding,airDistance,timeLeft))
 		return false;
 
-	int timeLeft=(unit->hungriness>0 ? int(std::clamp<Sint64>((Sint64(unit->hungry)-unit->trigHungry)/unit->hungriness,INT_MIN,INT_MAX)) : INT_MAX);
 	int distMaterial = 0;
 	Sint32 materialX=0,materialY=0;
 	if(!(unit->performance[FLY] ? unit->findMaterialDestination(wantedMaterial,&materialX,&materialY,&distMaterial,fetchesFromMarkets(),this) : owner->map->materialAvailableSlot(owner->teamNumber,wantedMaterial,unit->swimClass(),unit->posX,unit->posY,&distMaterial,fetchesFromMarkets(),this)))
@@ -234,11 +256,10 @@ void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* s
 		}
 		if(r<0 || !wantsAnotherDelivery(r, targets, served))
 			continue;
-		int distBuilding;
-		if(!considerUnitForBuilding(unit, &distBuilding,airDistances?airDistances[Unit::GIDtoID(unit->gid)]:-1))
+		int distBuilding, timeLeft;
+		if(!considerBuildingCandidate(*this,unit,&distBuilding,airDistances?airDistances[Unit::GIDtoID(unit->gid)]:-1,timeLeft))
 			continue;
 
-		int timeLeft=(unit->hungriness>0 ? int(std::clamp<Sint64>((Sint64(unit->hungry)-unit->trigHungry)/unit->hungriness,INT_MIN,INT_MAX)) : INT_MAX);
 		int value=distBuilding-(timeLeft>>1);
 		int level = bringMaterialsLevel(unit);
 		// Every carrying candidate has its destinationPurpose set to the
@@ -399,7 +420,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
 		noteUnitFailing(unit, UnitTooLowLevel);
 		return false;
 	}
-	int timeLeft = (unit->hungriness>0 ? int(std::clamp<Sint64>((Sint64(unit->hungry)-unit->trigHungry)/unit->hungriness,INT_MIN,INT_MAX)) : INT_MAX);
+	int timeLeft = remainingFoodTime(*unit);
     if(!unit->performance[FLY]) {
         int distance=0;
         if(!owner->map->buildingAvailable(this,unit->swimClass(),unit->posX,unit->posY,&distance,BuildingRoute::Combat)) {
@@ -453,14 +474,14 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	if(unit->performance[FLY]) {
         Sint32 x,y;int distance;
         if(!unit->findAirClearingDestination(this,&x,&y,&distance)){noteUnitFailing(unit,UnitCantAccessResource);return false;}
-        if(unit->hungriness>0 && distance>=int(std::clamp<Sint64>((Sint64(unit->hungry)-unit->trigHungry)/unit->hungriness,INT_MIN,INT_MAX))){noteUnitFailing(unit,UnitTooFarFromBuilding);return false;}
+        if(unit->hungriness>0 && distance>=remainingFoodTime(*unit)){noteUnitFailing(unit,UnitTooFarFromBuilding);return false;}
         *dist=distance;return true;
     }
 	int distBuilding = 0;
 	// timeLeft and distBuilding are both linear (in ticks-remaining and
 	// linear gradient steps respectively); compare as-is. The corresponding
 	// check in subscribeToBringMaterialsStep uses the same pairing.
-	int timeLeft = (unit->hungriness>0 ? int(std::clamp<Sint64>((Sint64(unit->hungry)-unit->trigHungry)/unit->hungriness,INT_MIN,INT_MAX)) : INT_MAX);
+	int timeLeft = remainingFoodTime(*unit);
 	bool canSwim = unit->performance[SWIM];
 	if (!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Clearing))
 	{
@@ -502,7 +523,7 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDist
 	// timeLeft and distBuilding are both linear (in ticks-remaining and
 	// linear gradient steps respectively); compare as-is. The corresponding
 	// check in subscribeToBringMaterialsStep uses the same pairing.
-	int timeLeft = (unit->hungriness>0 ? int(std::clamp<Sint64>((Sint64(unit->hungry)-unit->trigHungry)/unit->hungriness,INT_MIN,INT_MAX)) : INT_MAX);
+	int timeLeft = remainingFoodTime(*unit);
 	if (unit->performance[FLY]) distBuilding=terrainDistance>=0 ? terrainDistance : owner->map->warpDistMax(unit->posX,unit->posY,posX,posY);
     else if (!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Combat))
 	{
