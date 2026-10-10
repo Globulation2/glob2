@@ -32,6 +32,7 @@ Engine::Engine()
 Engine::~Engine()
 {
 	stopSimulationThread();
+	detachRenderedWarmTelemetry();
 	PerformanceTelemetry::collector().enabled = false;
 	globalContainer->liveSpectating=false;
 	if(previousCustomSpeed>=0) {

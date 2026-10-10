@@ -148,11 +148,15 @@ void Collector::enableDurationDistributions(bool enabled)
 	if (enabled) distributions = std::make_unique<DurationDistributions>();
 	else distributions.reset();
 }
-void Collector::recordDistribution(Id id, std::uint64_t duration)
+void Collector::recordDistribution(Id id, std::uint64_t duration,
+								   std::uint64_t start, std::uint64_t end)
 {
 	if (!distributions) return;
 	if (id == Id::Tick) distributions->tick.add(duration);
 	else if (id == Id::FrameInterval) distributions->frame.add(duration);
+	if (distributions->ownerSink &&
+		(id == Id::Tick || id == Id::Work || id == Id::Loop))
+		distributions->ownerSink->duration(id, start, end, duration);
 }
 void Metric::merge(const Metric &b)
 {
@@ -334,6 +338,8 @@ void Collector::presented()
 	if (!enabled)
 		return;
 	const auto t = clock();
+	if (distributions && distributions->presentationSink)
+		distributions->presentationSink->presented(t);
 	if (lastPresentation)
 	{
 		const auto interval = t - lastPresentation;
@@ -531,11 +537,12 @@ void Scope::stop()
 	const auto cpuEnd = c->cpuClock ? c->cpuClock() : 0;
     const bool cpuMeasured = c->cpuClock && cpuStart && cpuEnd>=cpuStart;
     const auto cpuElapsed = cpuMeasured ? cpuEnd-cpuStart : 0;
-	const auto elapsed = c->clock() - start;
+	const auto wallEnd = c->clock();
+	const auto elapsed = wallEnd - start;
 	const auto duration = id == Id::Work ? elapsed - std::min(elapsed, excluded) : elapsed;
 	auto &m = c->window[index(id)];
 	m.time.add(duration);
-	if (c->distributions) c->recordDistribution(id, duration);
+	if (c->distributions) c->recordDistribution(id, duration, start, wallEnd);
 	m.self += elapsed - std::min(elapsed, children);
 	m.selfComplete &= complete;
     m.cpuSelfComplete &= cpuComplete && cpuMeasured && complete;

@@ -23,6 +23,7 @@
 #include "TurnSession.h"
 #include "ChecksumSidecar.h"
 #include "RenderedCpuWindow.h"
+#include "RenderedWarmDurations.h"
 
 
 class SimulationRunner;
@@ -51,6 +52,7 @@ class Engine
     struct RenderedCpuState {
         struct Counters {Map::GradientCpuCounters gradient;Game::AISchedulingCounters ai;};
         RenderedCpuDiagnostics::Window<Counters> window;
+        std::unique_ptr<RenderedCpuDiagnostics::WarmDurations> warmDurations;
         std::string path;
         std::uint64_t (*previousTelemetryClock)()=nullptr;
         bool clockInstalled=false;
@@ -61,6 +63,8 @@ class Engine
     std::unique_ptr<RenderedCpuState> renderedCpu;
     void prepareRenderedCpuDiagnostics();
     void finishRenderedCpuDiagnostics();
+    void attachRenderedWarmTelemetry(PerformanceTelemetry::Collector&,bool owner,bool presentation);
+    void detachRenderedWarmTelemetry(); // Only after joining the simulation.
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
 	int headlessSaveInterval = 0;

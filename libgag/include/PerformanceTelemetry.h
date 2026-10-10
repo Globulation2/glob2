@@ -41,9 +41,20 @@ struct DurationDistribution
 	static std::pair<std::uint64_t, std::uint64_t> bounds(unsigned bin);
 	std::pair<std::uint64_t, std::uint64_t> percentile(unsigned percent) const;
 };
+// Borrowed diagnostic sink. Attach before launching its producer, detach after
+// joining it. Mailbox absorption never forwards events. Implementations must
+// provide allocation-free, nonblocking callbacks and independent producer state.
+struct DurationEventSink
+{
+	virtual ~DurationEventSink() = default;
+	virtual void duration(Id id, std::uint64_t start, std::uint64_t end,
+						  std::uint64_t duration) noexcept = 0;
+	virtual void presented(std::uint64_t timestamp) noexcept = 0;
+};
 struct DurationDistributions
 {
 	DurationDistribution tick, frame, totalTick, totalFrame;
+	DurationEventSink *ownerSink = nullptr, *presentationSink = nullptr;
 };
 struct Metric
 {
@@ -92,7 +103,8 @@ struct Collector
 	std::unique_ptr<DurationDistributions> distributions;
 	//! Configure only before launching the simulation; no per-event allocation.
 	void enableDurationDistributions(bool enabled);
-	void recordDistribution(Id id, std::uint64_t duration);
+	void recordDistribution(Id id, std::uint64_t duration,
+							std::uint64_t start = 0, std::uint64_t end = 0);
 	//! Per scope: 1 = measured on this collector's thread, 2 = absorbed from the
 	//! simulation thread (see absorb); exported as the record's thread attribution.
 	std::array<std::uint8_t, ScopeCount> threads{};

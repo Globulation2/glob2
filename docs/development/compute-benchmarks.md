@@ -628,3 +628,28 @@ otherwise they are unavailable. An `opengl` backend alone does not establish
 hardware presentation: software implementations such as llvmpipe also use GL.
 Use matching assets, checksums/replay, renderer settings and external resource
 controls for comparisons; this diagnostic alone never qualifies automatic mode.
+
+With that report, `GLOB2_RENDERED_WARM_DISTRIBUTIONS=1` additionally retains
+bounded wall endpoints from the existing optional telemetry path. No new scope
+or presentation clock reads are added. Storage is allocated before simulation:
+at most 65,536 selected ticks and 131,072 presentation intervals. The owner and
+presentation threads have separate buffers, detached only after the owner joins.
+No per-event allocations, locks, statistics, JSON or report I/O are added.
+
+For each successful actual completed tick `start_tick < tick <= end_tick`, the
+capture requires exactly one full Engine `loop`, Engine `loop.work` and
+`Game::syncStep` `simulation.tick` scope. The Engine scopes include the surrounding
+order/AI scheduling and next read-boundary preparation; they must not be equated
+with `Game::syncStep` alone. Work retains the existing pacing exclusion. An RAII
+advance association verifies the actual owner counter and clears on idle, failed
+and successful exits; unrelated syncStep calls receive no synthetic tick tags.
+
+Presentation has an independent previous timestamp, so collector mode/budget
+resets cannot hide a long interval. Post-stop processing includes only whole
+intervals inside the same warm wall boundaries; it separately counts outside
+intervals and boundary-straddling intervals, excluding the latter without
+clipping. Overflow, missing/duplicate owner samples, unavailable/reversed clocks
+and missing warm presentations invalidate the corresponding result. Histogram
+percentiles report lower and upper bin endpoints, not exact quantiles. This is
+an isolated development diagnostic: measure its overhead with matching controls
+before using the distributions in a confirmation protocol.

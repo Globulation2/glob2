@@ -83,6 +83,7 @@ TEST_SUITE("EngineSession")
 {
     TEST_CASE("rendered CPU endpoints preserve fixed ticks checksums and prior clocks [display][artifacts]")
     {
+        glob2test::ScopedEnvironment distributionMode("GLOB2_RENDERED_WARM_DISTRIBUTIONS","1");
         glob2test::ScopedEnvironment serial("GLOB2_SIM_THREAD","0");
         glob2test::ScopedEnvironment warm("GLOB2_RENDERED_CPU_WARMUP_TICKS","2");
         glob2test::ScopedEnvironment measure("GLOB2_RENDERED_CPU_MEASURE_TICKS","3");
@@ -109,6 +110,12 @@ TEST_SUITE("EngineSession")
             for(unsigned i=0;i<6;++i){engine.stepSession(1000+i*40,{});checksums.push_back(engine.gui.game.checkSum());}
             CHECK(engine.gui.game.stepCounter==initial+6);CHECK_FALSE(engine.gui.isRunning);
             if(enabled){
+                REQUIRE(bool(engine.renderedCpu->warmDurations));
+                const auto& captured=*engine.renderedCpu->warmDurations;
+                REQUIRE(captured.owner.count==3);
+                CHECK(captured.owner.samples[0].tick==initial+3);
+                CHECK(captured.owner.samples[2].tick==initial+5);
+                CHECK_FALSE(captured.owner.active);
                 CHECK(engine.renderedCpu->window.endpoints[0].tick==initial+2);
                 CHECK(engine.renderedCpu->window.endpoints[1].tick==initial+5);
                 CHECK(checksums==expected);
@@ -125,6 +132,10 @@ TEST_SUITE("EngineSession")
         CHECK(report["rendering_identity"]["gl_identity_available"].is_boolean());
         CHECK(report["rendering_identity"]["gl_vendor"].is_string());
         CHECK(report["rendering_identity"]["gl_renderer"].is_string());
+        CHECK(report["warm_distributions"]["owner_valid"].get<bool>());
+        CHECK(report["warm_distributions"]["owner_records"].get<unsigned>()==3);
+        for(const auto scope:{"engine_loop","engine_work","game_sync_step"})
+            CHECK(report["warm_distributions"]["distributions"][scope]["samples"].get<unsigned>()==3);
         // Cancellation also restores a previously configured clock, and never
         // writes incomplete evidence from the simulation owner's failure path.
         {
@@ -134,11 +145,20 @@ TEST_SUITE("EngineSession")
             engine.beginSession(1000);CHECK(PerformanceTelemetry::diagnosticCpuClock()==glob2::threadCpuNs);
             engine.abortSession();CHECK(PerformanceTelemetry::diagnosticCpuClock()==sentinel);
         }
+        {
+            glob2test::ScopedEnvironment path("GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH",outputString.c_str());
+            glob2test::ScopedEnvironment badMode("GLOB2_RENDERED_WARM_DISTRIBUTIONS","yes");
+            Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+            globalContainer->automaticEndingSteps=int(engine.gui.game.stepCounter+6);
+            CHECK_THROWS_AS(engine.beginSession(1000),std::invalid_argument);
+            CHECK(PerformanceTelemetry::diagnosticCpuClock()==sentinel);
+        }
     }
 
 
     TEST_CASE("rendered CPU boundaries belong to the actual simulation thread [display][artifacts]")
     {
+        glob2test::ScopedEnvironment distributionMode("GLOB2_RENDERED_WARM_DISTRIBUTIONS","1");
         if constexpr(!GAGCore::ThreadSupport::available)return;
         glob2test::ScopedEnvironment warm("GLOB2_RENDERED_CPU_WARMUP_TICKS","2");
         glob2test::ScopedEnvironment measure("GLOB2_RENDERED_CPU_MEASURE_TICKS","3");
@@ -180,8 +200,17 @@ TEST_SUITE("EngineSession")
                 }
                 REQUIRE(engine.runner->ended());engine.runner->rethrowFailure();
                 engine.stopSimulationThread();
+                REQUIRE(bool(PerformanceTelemetry::collector().distributions));
+                CHECK(PerformanceTelemetry::collector().distributions->ownerSink==engine.renderedCpu->warmDurations.get());
+                CHECK(PerformanceTelemetry::collector().distributions->presentationSink==engine.renderedCpu->warmDurations.get());
                 CHECK(engine.gui.game.stepCounter==initial+6);CHECK_FALSE(engine.gui.isRunning);
                 const auto& w=engine.renderedCpu->window;
+                REQUIRE(bool(engine.renderedCpu->warmDurations));
+                const auto& captured=*engine.renderedCpu->warmDurations;
+                REQUIRE(captured.owner.count==3);
+                CHECK(captured.owner.samples[0].tick==initial+3);
+                CHECK(captured.owner.samples[2].tick==initial+5);
+                CHECK_FALSE(captured.owner.active);
                 CHECK(w.endpoints[0].tick==initial+2);CHECK(w.endpoints[1].tick==initial+5);
                 if(presentationTid){
                     const auto actualSimulationTid=simulationTid->load(std::memory_order_relaxed);
@@ -203,6 +232,40 @@ TEST_SUITE("EngineSession")
         std::ifstream stream(output);REQUIRE(bool(stream));nlohmann::json report;stream>>report;
         CHECK(report["start"]["captured"].get<bool>());CHECK(report["end"]["captured"].get<bool>());
         if(presentationTid)CHECK(report["start"]["owner_tid"].get<Uint64>()!=presentationTid);
+        CHECK(report["warm_distributions"]["owner_valid"].get<bool>());
+        CHECK(report["warm_distributions"]["owner_records"].get<unsigned>()==3);
+        for(const auto scope:{"engine_loop","engine_work","game_sync_step"})
+            CHECK(report["warm_distributions"]["distributions"][scope]["samples"].get<unsigned>()==3);
+    }
+
+    TEST_CASE("warm capture resumes serial owner samples after stopping a paused runner [display][artifacts]")
+    {
+        if constexpr(!GAGCore::ThreadSupport::available)return;
+        glob2test::ScopedEnvironment threadMode("GLOB2_SIM_THREAD","1");
+        glob2test::ScopedEnvironment distributions("GLOB2_RENDERED_WARM_DISTRIBUTIONS","1");
+        glob2test::ScopedEnvironment warm("GLOB2_RENDERED_CPU_WARMUP_TICKS","2");
+        glob2test::ScopedEnvironment measure("GLOB2_RENDERED_CPU_MEASURE_TICKS","3");
+        glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
+        REQUIRE(NET_Init());struct NetworkScope{~NetworkScope(){NET_Quit();}} network;
+        const auto output=(glob2test::artifactDir()/"rendered-warm-serial-resume.json").string();
+        glob2test::ScopedEnvironment path("GLOB2_RENDERED_CPU_DIAGNOSTICS_PATH",output.c_str());
+        Engine engine;REQUIRE(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+        const auto initial=engine.gui.game.stepCounter;
+        globalContainer->runNoX=false;globalContainer->runNoXGameName="games/gd-small-2ai.game";
+        globalContainer->runNoXCountRuns=1;globalContainer->automaticEndingGame=true;
+        globalContainer->automaticEndingSteps=int(initial+6);globalContainer->settings.autosaveGames=false;
+        engine.beginSession(SDL_GetTicks());engine.gui.hardPause=true;
+        REQUIRE(engine.startSimulationThread(SDL_GetTicks()));engine.stopSimulationThread();
+        CHECK(engine.gui.game.stepCounter==initial);
+        engine.gui.hardPause=false;
+        const auto now=SDL_GetTicks();for(unsigned i=0;i<6;++i)engine.stepSession(now+i*40,{});
+        REQUIRE(engine.gui.game.stepCounter==initial+6);
+        const auto& capture=*engine.renderedCpu->warmDurations;
+        REQUIRE(capture.owner.count==3);CHECK(capture.owner.samples[0].tick==initial+3);
+        CHECK(capture.owner.samples[2].tick==initial+5);CHECK_FALSE(capture.owner.active);
+        CHECK_FALSE(engine.finishSession());
+        std::ifstream input(output);nlohmann::json report;input>>report;
+        CHECK(report["warm_distributions"]["owner_valid"].get<bool>());
     }
 
     TEST_CASE("eliminated prestige leaders cannot make every survivor lose")
