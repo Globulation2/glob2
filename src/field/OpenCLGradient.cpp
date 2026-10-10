@@ -1374,10 +1374,28 @@ OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpu
 }
 std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan plan,std::shared_ptr<const void> keepAlive) {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    const auto started=threadCPUClock();
+    auto& device=*runtime().shared;
+    OpenCLProbe::Impl* admitted=nullptr;
+    struct CPU {
+        Device& device;OpenCLProbe::Impl*& admitted;std::uint64_t started;
+        ~CPU() {
+            const auto ended=threadCPUClock();if(!started || ended<started) return;
+            const auto elapsed=ended-started;device.threadCPUAvailable.store(true);device.threadCPUNs+=elapsed;
+            if(admitted) {
+                admitted->measured.setupCpuNs+=elapsed;admitted->measured.threadCpuNs+=elapsed;
+                if(elapsed>500000) ++admitted->measured.overshoots;
+            }
+        }
+    } timer{device,admitted,started};
     if(!keepAlive || !request.gradient || !request.identity.owner || !request.identity.allCells ||
-        request.operation!=Operation::CompleteField || request.limit<0 || request.session.failed.load() ||
+        request.grid.width()<=0 || request.grid.height()<=0 || request.operation!=Operation::CompleteField ||
+        request.limit<0 || request.session.failed.load() ||
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan)))) return {};
-    try {return std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));}
+    try {
+        auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));
+        admitted=value->state.get();return value;
+    }
     catch(...) {return {};}
 #else
     return {};

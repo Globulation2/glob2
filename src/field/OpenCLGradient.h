@@ -65,7 +65,7 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 class OpenCLProbe
 {
 public:
-    struct Metrics {std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0;};
+    struct Metrics {std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0,setupCpuNs=0;};
     ~OpenCLProbe();
     OpenCLProbe(const OpenCLProbe&)=delete;
     OpenCLProbe& operator=(const OpenCLProbe&)=delete;
