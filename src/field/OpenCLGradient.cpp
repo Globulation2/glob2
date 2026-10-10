@@ -67,6 +67,7 @@ template<class T> void resizeStaging(std::vector<T>& values,std::size_t count,Bu
 std::uint64_t threadCPUClock() noexcept {
     return glob2::threadCpuNs();
 }
+thread_local unsigned backendCPUDepth=0;
 unsigned numericOverride(const char* name,unsigned fallback,unsigned maximum) {
     const auto* value=std::getenv(name);
     if(!value) return fallback;
@@ -946,11 +947,14 @@ struct Runtime
     }
     bool batch(std::span<const BackendRequest> input, Plan plan)
     {
-        const auto cpuStarted=execution ? 0 : threadCPUClock();
         struct CPUTimer {
             Device& device;std::uint64_t start;
-            ~CPUTimer(){if(start) {device.threadCPUAvailable.store(true);device.threadCPUNs+=threadCPUClock()-start;}}
-        } cpuTimer{*shared,cpuStarted};
+            explicit CPUTimer(Device& device):device(device),start(backendCPUDepth++ ? 0 : threadCPUClock()) {}
+            ~CPUTimer(){
+                --backendCPUDepth;
+                if(start) {device.threadCPUAvailable.store(true);device.threadCPUNs+=threadCPUClock()-start;}
+            }
+        } cpuTimer{*shared};
         for(const auto& request:input) if(request.executedOnDevice) *request.executedOnDevice=false;
         if(input.empty()) return true;
         if(plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
