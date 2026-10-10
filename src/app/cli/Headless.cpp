@@ -704,6 +704,11 @@ struct HeadlessRunner
                 << ",\"device\":" << quote(status.device) << ",\"error\":" << quote(status.error);
             const std::map<std::string,Uint64> values={
                 {"fields",status.fields},{"batches",status.batches},{"dispatches",status.dispatches},
+                {"device_observed_fields",status.deviceObservedFields},{"committed_fields",status.committedFields},
+                {"direct_seed_upload_requested",status.directSeedUploadRequested},{"direct_seed_upload",status.directSeedUpload},
+                {"direct_seed_uploads",status.directSeedUploads},{"seed_copied_bytes",status.seedCopiedBytes},
+                {"seed_uploaded_bytes",status.seedUploadedBytes},{"direct_seed_uploaded_bytes",status.directSeedUploadedBytes},
+                {"output_copied_bytes",status.outputCopiedBytes},
                 {"host_checks",status.hostChecks},{"cost_uploads",status.costUploads},
                 {"cost_cache_hits",status.costCacheHits},{"cost_identity_hits",status.costIdentityHits},
                 {"noop_fields",status.noopFields},{"max_batch_fields",status.maxBatchFields},
