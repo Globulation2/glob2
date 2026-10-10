@@ -260,7 +260,7 @@ TEST_SUITE("BuildingCapabilities")
         catalog.get(id)->semantics.admittedUnitMask=BUILDING_ALL_UNIT_TYPES;
         catalog.get(id)->semantics.training[BUILD].unitMask=BUILDING_ALL_UNIT_TYPES;
         catalog.configureUnits(*recovered);
-        CHECK(catalog.unitTrainingAbilities(EXPLORER)&(1u<<BUILD));
+        CHECK((catalog.unitTrainingAbilities(EXPLORER)&(1u<<BUILD))!=0);
         CHECK(BuildingCapabilityIndex(catalog).matches(id,BuildingIntent::TrainBuild,EXPLORER));
         CHECK_FALSE(BuildingCapabilityIndex(catalog).matches(id,BuildingIntent::TrainConstruction,EXPLORER));
         // The same table authored without the legacy cache policy is gated by
@@ -269,9 +269,9 @@ TEST_SUITE("BuildingCapabilities")
         authoredSnapshot["legacyPerformancePolicies"]=false;
         const auto authored=UnitCatalog::deserialize(authoredSnapshot.dump());
         catalog.configureUnits(*authored);
-        CHECK_FALSE(catalog.unitTrainingAbilities(EXPLORER)&(1u<<BUILD));
+        CHECK((catalog.unitTrainingAbilities(EXPLORER)&(1u<<BUILD))==0);
         CHECK_FALSE(BuildingCapabilityIndex(catalog).matches(id,BuildingIntent::TrainBuild,EXPLORER));
-        CHECK(catalog.getRuntime(id)->interaction(EXPLORER).trainingMask&(1u<<BUILD));
+        CHECK((catalog.getRuntime(id)->interaction(EXPLORER).trainingMask&(1u<<BUILD))!=0);
     }
 
 	TEST_CASE("combined providers retain independent admission and operation rule gates")
