@@ -45,6 +45,10 @@ struct OpenCLStatus
     bool uniformMetadata = false;
     std::uint64_t uniformMetadataHits = 0;
     std::uint64_t probeBytes = 0, peakProbeBytes = 0;
+    // Experimental command-reduction ablation. Not qualified for automatic
+    // promotion: the optional yielding probe intentionally declines this mode.
+    bool activeEpoch = false;
+    std::uint64_t tileMaskInitializations = 0, tileMaskClears = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.

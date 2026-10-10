@@ -202,7 +202,11 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  __global const uint *c0,__global const uint *c1,__global const uint *c2,__global const uint *c3,
  __global const uint *c4,__global const uint *c5,__global const uint *c6,__global const uint *c7,
  __global uint *changed,__global const uint *desc,
- __global const uint *active,__global uint *nextActive,uint stride,uint pitch)
+ __global const uint *active,__global uint *nextActive,uint stride,uint pitch
+#if ACTIVE_EPOCH
+ ,uint activeEpoch
+#endif
+ )
 {
  uint f=get_group_id(2),d=f*8,w=desc[d],h=desc[d+1],base=desc[d+2],cb=desc[d+3],cap=desc[d+4];
  __global const uint *costs=cb==0?c0:cb==1?c1:cb==2?c2:cb==3?c3:cb==4?c4:cb==5?c5:cb==6?c6:c7;
@@ -216,7 +220,11 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
 
  uint lid=get_local_id(0);
  if(gx>=desc[d+6]||gy>=desc[d+7]||!desc[d+5])return; // Entire workgroup/retired field.
+#if ACTIVE_EPOCH
+ if(active[tile]!=activeEpoch){
+#else
  if(!active[tile]){
+#endif
   // Keep ping-pong buffers coherent. Only propagation/local-memory work is skipped.
   for(uint o=lid;o<CORE_X*CORE_Y;o+=WG){uint x=gx*CORE_X+o%CORE_X,y=gy*CORE_Y+o/CORE_X;
   if(x<w&&y<h){uint i=base+y*w+x;b[i]=a[i];}}return;
@@ -309,7 +317,13 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
    if(lid<(uint)((2*rx+1)*(2*ry+1))){
     int dx,dy;if(rx==1){dx=(int)lid%3-1;dy=(int)lid/3-ry;}else{dx=(int)lid%5-2;dy=(int)lid/5-ry;}
     uint nx=wrap((int)gx+dx,desc[d+6]),ny=wrap((int)gy+dy,desc[d+7]);
+#if ACTIVE_EPOCH
+    // All publishers in this dispatch store the same next epoch. Kernel
+    // boundaries publish it globally before the following tile exchange.
+    atomic_xchg(nextActive+f*stride+ny*pitch+nx,activeEpoch+1u);
+#else
     atomic_or(nextActive+f*stride+ny*pitch+nx,1u);
+#endif
    }
   }
  }
@@ -425,6 +439,7 @@ struct Device
             status.pollMicros=numericOverride("GLOB2_OPENCL_POLL_US",0,1000);
             status.deviceProfiling=numericOverride("GLOB2_OPENCL_PROFILE",0,1)!=0;
             status.uniformMetadata=numericOverride("GLOB2_OPENCL_UNIFORM_METADATA",0,1)!=0;
+            status.activeEpoch=numericOverride("GLOB2_OPENCL_ACTIVE_EPOCH",0,1)!=0;
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
             unsigned ordinal=0;
@@ -486,7 +501,8 @@ struct Device
                                      " -DSTEPS=" + std::to_string(variant.steps) +
                                      " -DCOLOR_RELAXATION=" + std::to_string(variant.colored) +
                                      " -DWG=" + std::to_string(variant.threads) +
-                                     " -DFROZEN_HALO=" + std::to_string(variant.frozen);
+                                     " -DFROZEN_HALO=" + std::to_string(variant.frozen) +
+                                     " -DACTIVE_EPOCH=" + std::to_string(status.activeEpoch);
                 const auto built =
                     api.BuildProgram(variant.program, 1, &device, options.c_str(), nullptr, nullptr);
                 if (built != 0)
@@ -608,6 +624,7 @@ struct Runtime
         out.deviceReadbackNs+=in.deviceReadbackNs;out.deviceCheckReadNs+=in.deviceCheckReadNs;
         out.profilingErrors+=in.profilingErrors;
         out.uniformMetadataHits+=in.uniformMetadataHits;
+        out.tileMaskInitializations+=in.tileMaskInitializations;out.tileMaskClears+=in.tileMaskClears;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -883,6 +900,15 @@ struct Runtime
         UInt one = 1;
         check(api.EnqueueFillBuffer(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
                                     nullptr, nullptr));
+        ++status.tileMaskInitializations;
+        if(shared->status.activeEpoch) {
+            const UInt zero=0;
+            // Reset both masks on every new batch, including reused buffers.
+            // Otherwise stale prior-request epochs could spuriously activate
+            // a tile during this request's first exchanges.
+            check(api.EnqueueFillBuffer(queue,tilesSecond,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,nullptr));
+            ++status.tileMaskInitializations;
+        }
         Handle active = tilesFirst, nextActive = tilesSecond;
         const std::size_t global[]{std::size_t(pitch) * variant.threads, std::size_t(rows),
                                    requests.size()},
@@ -918,8 +944,15 @@ struct Runtime
                 if (dispatch+1 == count)
                     check(api.EnqueueFillBuffer(queue, changed, zero.data(), sizeof(UInt), 0,
                                                 requests.size() * sizeof(UInt), 0, nullptr, nullptr));
-                check(api.EnqueueFillBuffer(queue, nextActive, zero.data(), sizeof(UInt), 0,
-                                            tileCount * sizeof(UInt), 0, nullptr, nullptr));
+                if(shared->status.activeEpoch)
+                    // Epoch one is the initial mask. The convergence bound
+                    // ends at epoch 65537, well before unsigned wraparound.
+                    argument(16,UInt(round+dispatch+1));
+                else {
+                    check(api.EnqueueFillBuffer(queue, nextActive, zero.data(), sizeof(UInt), 0,
+                                                tileCount * sizeof(UInt), 0, nullptr, nullptr));
+                    ++status.tileMaskClears;
+                }
                 argument(0, a);
                 argument(1, b);
                 argument(12, active);
@@ -1405,10 +1438,13 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
             }
         }
     } timer{device,admitted,started};
+    // Required-only experimental mode has no matching yieldable probe yet.
+    // It cannot provide live automatic-promotion evidence.
     if(!keepAlive || !request.gradient || !request.identity.owner || !request.identity.allCells ||
         request.grid.width()<=0 || request.grid.height()<=0 || request.operation!=Operation::CompleteField ||
         request.limit<0 || request.session.failed.load() ||
-        plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan)))) return {};
+        plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
+        device.status.activeEpoch) return {};
     try {
         auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));
         admitted=value->state.get();return value;

@@ -920,6 +920,7 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
 {
     using namespace gradient_kernel;
     if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
+    if(openCLStatus().activeEpoch) return; // Required-only experimental mode.
     std::thread coordinator([&] {
         for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{7,13}})
         for(int cap:{0,40,700}) {
@@ -978,6 +979,66 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
         }
     });
     coordinator.join();
+}
+TEST_CASE("epoch masks preserve every explicit plan across mixed retirement and buffer reuse")
+{
+    using namespace gradient_kernel;
+    if(!initializeOpenCL() || !openCLStatus().activeEpoch) return;
+    struct Context {
+        field::Grid grid;
+        std::shared_ptr<std::vector<EntrySteps>> costs;
+        std::vector<std::uint16_t> original,actual,expected;
+        int cap;
+    };
+    // A singleton and narrow fields retire before the larger irregular field.
+    // Three fresh seed patterns reuse the same allocated buffers/cost planes.
+    BackendSession session;
+    for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
+        if(!(readyPlans.load()&(1u<<plan))) continue;
+        std::vector<Context> fields;
+        for(auto dimensions:{std::pair{1,1},std::pair{1,83},std::pair{83,1},
+                             std::pair{17,31},std::pair{257,131},std::pair{65,19}}) {
+            const field::Grid grid(dimensions.first,dimensions.second);
+            auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells());
+            for(std::size_t cell=0;cell<grid.cells();++cell)
+                (*costs)[cell]=cell%17 ? EntrySteps{5,7} : EntrySteps{13,18};
+            fields.push_back({grid,costs,{},{},{},grid.cells()<100 ? 40 : COST_LIMIT});
+        }
+        for(unsigned repeat=0;repeat<3;++repeat) {
+            CAPTURE(plan);CAPTURE(repeat);
+            std::vector<BackendRequest> requests;
+            for(auto& field:fields) {
+                field.original.assign(field.grid.cells(),1);
+                for(std::size_t cell=0;cell<field.grid.cells();++cell)
+                    if((cell+repeat)%19==0) field.original[cell]=0;
+                field.original[repeat%field.grid.cells()]=65535;
+                if(field.grid.cells()==1) field.original[0]=65501;
+                else field.original[field.grid.cells()/2]=65000;
+                field.expected=oracle(field.original,field.grid,*field.costs,field.cap);
+                field.actual=field.original;
+                requests.push_back({field.actual.data(),field.cap,field.grid,session,field.costs.get(),
+                    [](void* p,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(p))[cell];},
+                    [](void*,std::uint16_t*){FAIL("epoch mask test must execute the exact device plan");},
+                    {field.costs,918201,1,true,field.costs->capacity()*sizeof(EntrySteps)}});
+            }
+            const auto before=openCLStatus();
+            REQUIRE(executeOpenCLDevice(requests,Plan(plan)));
+            for(const auto& field:fields) CHECK(field.actual==field.expected);
+            const auto after=openCLStatus();
+            CHECK(after.activeEpoch);CHECK(after.retiredFields==before.retiredFields+fields.size());
+            CHECK(after.tileMaskInitializations==before.tileMaskInitializations+2);
+            CHECK(after.tileMaskClears==before.tileMaskClears);
+            CHECK(after.dispatches>before.dispatches);CHECK_FALSE(session.failed.load());
+        }
+    }
+    // The required-only candidate must not supply unqualified live probe data.
+    auto seeds=std::make_shared<std::vector<std::uint16_t>>(2,1);(*seeds)[0]=65535;
+    const auto original=*seeds;
+    const auto bytes=openCLProbeBytes();
+    BackendRequest request{seeds->data(),100,{2,1},session,nullptr,
+        [](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,98232,1,true}};
+    CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,seeds));
+    CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);CHECK_FALSE(session.failed.load());
 }
 }
 
