@@ -1,0 +1,18 @@
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "557ac4db96a9da5c4b0a2404e9850a5285dd13ff", "sourceStatus": ["?? build-software-terrain/"], "sourceTreeSha256": "9b13005829a15bf2d82ead2cbcbe5a382eb0020aa66934d83a06e08fd7599b5f"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+parcel resources=20 cleared=2 removed=18 action=22,22
+===============================================================================
+src/ai/maxima/MaximaImplementationIntegrationTest.cpp:1780:
+TEST SUITE: Maxima.Implementation
+TEST CASE:  placement maintenance regressions
+
+src/ai/maxima/MaximaImplementationIntegrationTest.cpp:1130: FATAL ERROR: REQUIRE( (futureResources==20 && clearedResources==1 && removedResources==19) ) is NOT correct!
+  values: REQUIRE( false )
+
+===============================================================================
+[doctest] test cases: 1 | 0 passed | 1 failed | 1403 skipped
+[doctest] assertions: 5 | 4 passed | 1 failed |
+[doctest] Status: FAILURE!

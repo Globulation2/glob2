@@ -1,0 +1,59 @@
+===== FAIL Maxima.Implementation/placement maintenance regressions =====
+2026-10-10T00:02:19.4095150Z GLOB2_TEST_BUILD compiler=16.2.0 platform=Windows pointer_bits=64
+2026-10-10T00:02:19.4100616Z GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" WIN32 HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wall -O3 -fwhole-program"}, "revision": "350d324da53b050a25cec09a39b76eaaf7b446a3", "sourceStatus": [], "sourceTreeSha256": "6e1178cfa420ceff9cb26bca7075bb5a2e84e9656815695480dd1d8062eb7c31"}
+2026-10-10T00:02:19.4103223Z parcel resources=20 cleared=2 removed=18 action=22,22
+2026-10-10T00:02:19.4103552Z 
+2026-10-10T00:02:19.4103742Z [failure] placement maintenance regressions: false
+2026-10-10T00:02:19.4104281Z src/ai/maxima/MaximaImplementationIntegrationTest.cpp:1130:
+2026-10-10T00:02:19.4105001Z REQUIRE( (futureResources==20 && clearedResources==1 && removedResources==19) ) is NOT correct!
+2026-10-10T00:02:19.4105612Z   values: REQUIRE( false )
+2026-10-10T00:02:19.4105819Z 
+2026-10-10T00:02:19.4119445Z ##[error]fail
+2026-10-10T00:02:19.4120547Z 
+2026-10-10T00:02:19.4120741Z 1119 passed, 1 failed, 180 skipped (1823.0s of test time)
+2026-10-10T00:02:19.4121590Z [run_tests] JUnit report: artifacts/tests/engine-junit.xml (1300 cases)
+2026-10-10T00:02:19.4379273Z ##[error]Process completed with exit code 1.
+2026-10-10T00:02:19.4564375Z ##[group]Run python3 test/windows_crash_diagnostics.py --binary build/mingw/client/release/test/glob2-engine-tests.exe --junit artifacts/tests/engine-junit.xml --output artifacts/tests/crash-diagnostics
+2026-10-10T00:02:19.4565993Z [36;1mpython3 test/windows_crash_diagnostics.py --binary build/mingw/client/release/test/glob2-engine-tests.exe --junit artifacts/tests/engine-junit.xml --output artifacts/tests/crash-diagnostics[0m
+2026-10-10T00:02:19.4569134Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-10T00:02:19.4569472Z env:
+2026-10-10T00:02:19.4569755Z   GLOB2_DEV_MODE: isolated
+2026-10-10T00:02:19.4570364Z   CCACHE: 1
+2026-10-10T00:02:19.4570589Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-10T00:02:19.4570881Z   CCACHE_COMPILERCHECK: content
+2026-10-10T00:02:19.4571149Z   CCACHE_MAXSIZE: 5G
+2026-10-10T00:02:19.4571457Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.4571986Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-10T00:02:19.4572476Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.4572929Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.4573361Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.4573707Z   MSYSTEM: MINGW64
+2026-10-10T00:02:19.4574238Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-10T00:02:19.4574833Z   CCACHE_RUN_START: 1791584945
+2026-10-10T00:02:19.4575084Z ##[endgroup]
+2026-10-10T00:02:19.8481339Z ##[group]Run actions/upload-artifact@v4
+2026-10-10T00:02:19.8481742Z with:
+2026-10-10T00:02:19.8481983Z   name: native-test-results-windows
+2026-10-10T00:02:19.8482527Z   path: artifacts/tests/
+2026-10-10T00:02:19.8482797Z   if-no-files-found: ignore
+2026-10-10T00:02:19.8483060Z   compression-level: 6
+2026-10-10T00:02:19.8483303Z   overwrite: false
+2026-10-10T00:02:19.8483541Z   include-hidden-files: false
+2026-10-10T00:02:19.8483795Z env:
+2026-10-10T00:02:19.8483998Z   GLOB2_DEV_MODE: isolated
+2026-10-10T00:02:19.8484243Z   CCACHE: 1
+2026-10-10T00:02:19.8484461Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-10T00:02:19.8484778Z   CCACHE_COMPILERCHECK: content
+2026-10-10T00:02:19.8485041Z   CCACHE_MAXSIZE: 5G
+2026-10-10T00:02:19.8485358Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.8486006Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-10T00:02:19.8486525Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.8486973Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.8487426Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-10T00:02:19.8487785Z   MSYSTEM: MINGW64
+2026-10-10T00:02:19.8488328Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-10T00:02:19.8488928Z   CCACHE_RUN_START: 1791584945
+2026-10-10T00:02:19.8489192Z ##[endgroup]
+2026-10-10T00:02:20.0498174Z (node:9904) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-10T00:02:20.0500145Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-10T
