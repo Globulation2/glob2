@@ -16,3 +16,5 @@ python3 restore-duplicates.py
 ```
 
 The archive contains exact commands, build/test logs, traces, saves, raw measurements, input hashes and affinity restoration receipts. `files.json` records all retained original paths and hashes; `duplicates.json` lists identical payloads restored by the script. Generated executables and disposable profiles are excluded. Paths in original commands refer to the author's checkout and should be adjusted for reproduction. Only Linux/NVIDIA hardware was exercised. Reused map fixtures are accounting controls, not unseen holdouts. Earlier PR evidence remains linked in the report.
+
+Dependency audit: [dynamic library hashes](dependency-manifest.json), collected after measurement. All 37 resolved library modification/change timestamps predate the final timing interval. This supplemental metadata is alongside, not inside, the original verification archive.
