@@ -9,5 +9,7 @@
       "bytes": 10290770,
       "sha256": "94056a9abbca6ac73e67c95e07053ab83a45e3a4c89ab7868b9a4b3f22cfe8d6"
     }
-  ]
+  ],
+  "final_pr_head": "13843165bd7e778650142fe884c7af37b40b56f1",
+  "full_validation_source": "0520c89a91930362e0cd4407ba42a677365d1226"
 }

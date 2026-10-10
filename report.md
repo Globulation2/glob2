@@ -4,7 +4,9 @@ Source: `0520c89a9` (full SHA in source-manifest.json). Base: `4ca7b086359891010
 
 The branch was rebased on current master, then two independent subagents reviewed runtime contracts/lifecycle and offline kernel qualification. Review fixes consolidate all runtime/benchmark GPU parameters into one shared descriptor table; reject invalid or heterogeneous groups before execution; safely drop malformed optional observations; separate GPU execution from qualification policy; bind completion receipts to protocol, sources, corpus and raw results; restrict final qualification to development survivors; and preserve untouched holdouts when setup fails. Both re-reviews reported no remaining actionable findings. Kernel source and its six execution parameter sets are unchanged.
 
-## Final revision results
+Final PR head: `13843165bd7e778650142fe884c7af37b40b56f1`. The only subsequent change after the fully tested `0520c89a9` revision removes one trailing blank line from `tools/gradient_qualification/backend.py`; `final-source.diff` records it. All 11 qualification contract tests were rerun at the final head and passed. The full release, exactness and GPU evidence below belongs to `0520c89a9`, not a claimed rerun of the full matrix at the whitespace-only child.
+
+## Tested revision results
 
 | Check | Result |
 | --- | --- |
