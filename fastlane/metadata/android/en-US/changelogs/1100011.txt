@@ -1,0 +1,1 @@
+Globulation 2 0.11.0.1: refreshed terrain and animated units, redesigned touch-friendly map editor, shared JavaScript map generators and online creation studios, complete translations, and a 30 Hz simulation with deterministic scheduling. Older saves remain supported; replays and multiplayer require matching versions.

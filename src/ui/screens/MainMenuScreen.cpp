@@ -183,9 +183,9 @@ Element MainMenuScreen::build(const Presentation &p)
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 			content.push_back(button("menu/privacy", "Privacy policy", [] {
 #if defined(GLOB2_AMAZON_RELEASE)
-				GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/amazon-privacy-policy.md");
+				GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/#fire-tablet-edition");
 #else
-				GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/privacy-policy.md");
+				GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/");
 #endif
 			}, rowStyle));
 #endif
@@ -241,9 +241,9 @@ Element MainMenuScreen::build(const Presentation &p)
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 	utilities.push_back(button("menu/privacy", "Privacy policy", [] {
 #if defined(GLOB2_AMAZON_RELEASE)
-		GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/amazon-privacy-policy.md");
+		GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/#fire-tablet-edition");
 #else
-		GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/privacy-policy.md");
+		GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/");
 #endif
 	}, utility));
 #endif

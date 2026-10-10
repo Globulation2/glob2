@@ -406,3 +406,32 @@ class AndroidSymbolTests(unittest.TestCase):
             notes='Build ID: '+('a'*40)+'\n'
             with patch('subprocess.check_output',side_effect=[notes,notes]):
                 self.assertEqual(verify_android_archive_symbols(bundle,library,member,'readelf'),'a'*40)
+
+
+class IOSNumericGuardTests(unittest.TestCase):
+    def test_ios_guard_uses_its_own_compiled_objects_without_android_mapping(self):
+        import ast
+        from unittest.mock import Mock
+        root = Path(__file__).resolve().parents[2]
+        tree = ast.parse((root / 'scons/mobile_build.py').read_text())
+        branch = next(node for node in ast.walk(tree) if isinstance(node, ast.If)
+                      and ast.unparse(node.test) == "identity['target'] == 'android'"
+                      and any(isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'by_source' for t in n.targets) for n in node.body))
+        guard = next(node for node in branch.orelse if isinstance(node, ast.Expr)
+                     and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Name)
+                     and node.value.func.id == 'numeric_guard')
+        predicate = next(node for node in ast.parse((root / 'scons/javascript.py').read_text()).body
+                         if isinstance(node, ast.FunctionDef) and node.name == 'guarded_numeric_source')
+        namespace = {}
+        exec(compile(ast.Module(body=[predicate], type_ignores=[]), '<numeric-selection>', 'exec'), namespace)
+        files = ['src/app/Main.cpp', 'src/scripting/javascript/Runtime.cpp',
+                 'mobile/ios/Documents.mm', 'src/ai/javascript/AIJavaScript.cpp',
+                 'src/map/generator/javascript/ToolkitBinding.cpp']
+        objects = [object() for _ in files]
+        script = object()
+        callback = Mock()
+        strict = object()
+        namespace.update(files=files, objects=objects + [script], strict=strict, numeric_guard=callback)
+        # No Android-only by_source map is available in an iOS graph.
+        exec(compile(ast.Module(body=[guard], type_ignores=[]), '<ios-guard>', 'exec'), namespace)
+        callback.assert_called_once_with(strict, [objects[1], objects[3], objects[4]])

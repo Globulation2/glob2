@@ -116,7 +116,13 @@ export class Pipeline {
     );
     if (!isDeepStrictEqual(original.package, row.input.base))
       throw Error('Base archive does not match the saved request.');
-    const reference = await readFile(join(this.root, 'docs/features/building-catalogs.md'), 'utf8');
+    const reference = (
+      await Promise.all(
+        ['building-catalogs', 'building-semantics', 'building-authoring'].map((name) =>
+          readFile(join(this.root, 'docs/features', name + '.md'), 'utf8'),
+        ),
+      )
+    ).join('\n\n');
     const examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
         readFile(join(this.root, 'data/buildings', name + '.json'), 'utf8'),

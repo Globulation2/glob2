@@ -389,6 +389,13 @@ jobs:
         with:
           name: fdroid-${{ matrix.arch }}-${{ needs.context.outputs.version }}
           path: artifacts/unsigned
+      - name: Verify the exact downloaded unsigned APK bytes
+        env:
+          ARCH: ${{ matrix.arch }}
+        run: |
+          set -euo pipefail
+          cd artifacts/unsigned
+          sha256sum -c "artifacts/fdroid/glob2-$ARCH-unsigned.sha256"
       - name: Install pinned Android tools
         run: |
           python3 mobile/setup_ndk.py
@@ -433,7 +440,7 @@ jobs:
           CERTIFICATE: ${{ vars.GLOB2_SIDELOAD_CERTIFICATE_SHA256 }}
           ARCH: ${{ matrix.arch }}
         run: |
-          python3 mobile/sideload_release.py --original "artifacts/unsigned/glob2-$ARCH-unsigned.apk"             --output "artifacts/release-output/glob2-$VERSION-android-$ARCH.apk" --arch "$ARCH"             --keystore "$RUNNER_TEMP/glob2-sideload.p12" --alias "$ALIAS" --expected-certificate "$CERTIFICATE"
+          python3 mobile/sideload_release.py --original "artifacts/unsigned/artifacts/fdroid/glob2-$ARCH-unsigned.apk"             --output "artifacts/release-output/glob2-$VERSION-android-$ARCH.apk" --arch "$ARCH"             --keystore "$RUNNER_TEMP/glob2-sideload.p12" --alias "$ALIAS" --expected-certificate "$CERTIFICATE"
       - name: Remove private sideload key
         if: always()
         run: rm -f "$RUNNER_TEMP/glob2-sideload.p12"
