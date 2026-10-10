@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OpenCLGradient.h"
 #include "GradientBackend.h"
+#include "ThreadCpuClock.h"
 #include <SDL3/SDL_loadso.h>
 #include <SDL3/SDL_platform_defines.h>
 #include <array>
@@ -14,11 +15,67 @@
 #include <stdexcept>
 #include <string_view>
 #include <vector>
+#include <charconv>
 
 namespace gradient_kernel
 {
 namespace
 {
+struct MemoryBudget {
+    const std::size_t limit;
+    std::atomic<std::size_t> current{0}, peak{0};
+    bool reserve(std::size_t bytes) noexcept {
+        auto old=current.load(std::memory_order_relaxed);
+        do { if(bytes>limit || old>limit-bytes) return false; }
+        while(!current.compare_exchange_weak(old,old+bytes,std::memory_order_relaxed));
+        auto maximum=peak.load(std::memory_order_relaxed);
+        while(maximum<old+bytes && !peak.compare_exchange_weak(maximum,old+bytes,std::memory_order_relaxed)) {}
+        return true;
+    }
+    void release(std::size_t bytes) noexcept {
+        auto old=current.load(std::memory_order_relaxed);
+        do {if(bytes>old) std::terminate();}
+        while(!current.compare_exchange_weak(old,old-bytes,std::memory_order_relaxed));
+    }
+};
+MemoryBudget hostBudget{OpenCLHostBudget};
+struct BudgetExceeded : std::runtime_error { BudgetExceeded():std::runtime_error("OpenCL payload budget exceeded") {} };
+struct BudgetLease {
+    MemoryBudget& budget;
+    std::size_t bytes=0;
+    explicit BudgetLease(MemoryBudget& budget):budget(budget) {}
+    BudgetLease(const BudgetLease&)=delete;
+    BudgetLease& operator=(const BudgetLease&)=delete;
+    ~BudgetLease(){budget.release(bytes);}
+    void resize(std::size_t next) {
+        if(next>bytes && !budget.reserve(next-bytes)) throw BudgetExceeded();
+        if(next<bytes) budget.release(bytes-next);
+        bytes=next;
+    }
+};
+template<class T> void resizeStaging(std::vector<T>& values,std::size_t count,BudgetLease& lease) {
+    if(count>values.capacity()) {
+        // Reserve the transient old+new allocation, not just their difference.
+        const auto previous=lease.bytes;
+        lease.resize(previous+count*sizeof(T));
+        try { std::vector<T> replacement(count); values.swap(replacement); }
+        catch(...) {lease.resize(previous);throw;}
+        lease.resize(values.capacity()*sizeof(T));
+    } else values.resize(count);
+}
+std::uint64_t threadCPUClock() noexcept {
+    return glob2::threadCpuNs();
+}
+unsigned numericOverride(const char* name,unsigned fallback,unsigned maximum) {
+    const auto* value=std::getenv(name);
+    if(!value) return fallback;
+    unsigned parsed=0;
+    const auto* end=value+std::strlen(value);
+    const auto result=std::from_chars(value,end,parsed);
+    if(result.ec!=std::errc{} || result.ptr!=end || parsed>maximum)
+        throw std::runtime_error(std::string("Invalid ")+name);
+    return parsed;
+}
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
 // Private subset of the stable OpenCL 1.2 C ABI. Load the installed driver with
 // SDL, so neither an SDK nor an OpenCL library is a required build/runtime input.
@@ -269,6 +326,7 @@ struct Device
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
     std::atomic<bool> failed{false};
+    MemoryBudget deviceBudget{OpenCLDeviceBudget};
     Handle device = nullptr, context = nullptr;
     OpenCLStatus status;
     std::array<KernelVariant, PLANS.size() - 1> variants = kernelVariants();
@@ -281,20 +339,25 @@ struct Device
         struct Storage {
             API* api;
             Handle buffer=nullptr;
-            explicit Storage(API& api):api(&api) {}
+            BudgetLease deviceLease;
+            Storage(API& api,MemoryBudget& budget):api(&api),deviceLease(budget) {}
             ~Storage(){if(buffer)api->ReleaseMemObject(buffer);}
         };
         std::shared_ptr<Storage> storage;
         CostIdentity identity;
         int width, height;
+        BudgetLease hostLease{hostBudget};
         std::vector<UInt> data;
         bool uniform = true;
         std::vector<std::uint8_t> blocked;
         std::promise<void> completed;
         std::shared_future<void> ready = completed.get_future().share();
         std::atomic<bool> published{false};
-        Plane(API& api, const BackendRequest& r, std::vector<std::uint8_t> mask)
-            : api(&api), identity(r.identity), width(r.grid.width()), height(r.grid.height()), blocked(std::move(mask)) {}
+        Plane(API& api, const BackendRequest& r, std::span<const std::uint8_t> mask)
+            : api(&api), identity(r.identity), width(r.grid.width()), height(r.grid.height()) {
+            hostLease.resize(r.grid.cells()*sizeof(UInt)+mask.size());
+            data.resize(r.grid.cells());blocked.assign(mask.begin(),mask.end());
+        }
 
     };
     std::array<std::shared_ptr<Plane>, 8> planes;
@@ -304,6 +367,10 @@ struct Device
     OpenCLStatus retired;
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
+    void evictUnusedPlanes() {
+        std::lock_guard lock(cacheMutex);
+        for(auto& p:planes) if(p && p.use_count()==1) p.reset();
+    }
     ~Device() {
         for(auto& v:variants) {
             if(v.kernel) api.ReleaseKernel(v.kernel);
@@ -311,7 +378,12 @@ struct Device
         }
         if(context) api.ReleaseContext(context);
     }
-    void initialize() { std::scoped_lock lock(initialization, failureMutex); probe(); }
+    void initialize() {
+        std::scoped_lock lock(initialization, failureMutex);
+        if(probed) return;
+        const auto started=threadCPUClock();probe();
+        if(started) {status.threadCPUAvailable=true;status.initializationThreadCPUNs+=threadCPUClock()-started;}
+    }
     void probe()
     {
         if (probed)
@@ -320,6 +392,11 @@ struct Device
         try
         {
             api.load();
+            status.checkInterval=numericOverride("GLOB2_OPENCL_CHECK_INTERVAL",8,32);
+            if(!status.checkInterval) throw std::runtime_error("Invalid GLOB2_OPENCL_CHECK_INTERVAL");
+            const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
+            const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
+            unsigned ordinal=0;
             UInt count = 0;
             check(api.GetPlatformIDs(0, nullptr, &count));
             std::vector<Handle> platforms(count);
@@ -333,6 +410,8 @@ struct Device
                 check(api.GetDeviceIDs(platform, 4, found, devices.data(), nullptr));
                 for (auto candidate : devices)
                 {
+                    const auto candidateOrdinal=ordinal++;
+                    if(explicitDevice && candidateOrdinal!=requestedDevice) continue;
                     UInt available = 0, compiler = 0;
                     std::size_t group = 0;
                     check(api.GetDeviceInfo(candidate, 0x1027, sizeof available, &available, nullptr));
@@ -454,8 +533,9 @@ struct Runtime
     Handle first = nullptr, second = nullptr, changed = nullptr, descriptors = nullptr;
     std::size_t capacity = 0, tileCapacity = 0;
     Handle tilesFirst = nullptr, tilesSecond = nullptr;
+    BudgetLease valuesLease{hostBudget}, blockedLease{hostBudget};
+    BudgetLease deviceLease{shared->deviceBudget};
     std::vector<std::uint16_t> values;
-    std::vector<UInt> entries;
     std::vector<std::uint8_t> blocked;
     ~Runtime()
     {
@@ -486,6 +566,10 @@ struct Runtime
         out.costUploads+=in.costUploads;out.costCacheHits+=in.costCacheHits;out.dispatches+=in.dispatches;
         out.hostChecks+=in.hostChecks;out.costIdentityHits+=in.costIdentityHits;out.retiredFields+=in.retiredFields;
         out.schedulerBatches+=in.schedulerBatches;out.tunings+=in.tunings;
+        out.budgetDeclines+=in.budgetDeclines;out.threadCPUNs+=in.threadCPUNs;
+        out.threadCPUAvailable=out.threadCPUAvailable||in.threadCPUAvailable;
+        out.preparationNs+=in.preparationNs;out.uploadNs+=in.uploadNs;
+        out.dispatchWaitNs+=in.dispatchWaitNs;out.readbackNs+=in.readbackNs;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -510,6 +594,8 @@ struct Runtime
             if(l->statusSequence>=last) {parameters(out,l->status);last=l->statusSequence;}
         }
         out.available=out.available&&!shared->failed.load();
+        out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
+        out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
         out.executionLanes=live.size();out.maxConcurrentBatches=shared->maximumActive.load();
         return out;
     }
@@ -522,6 +608,7 @@ struct Runtime
                 *buffer = nullptr;
             }
         capacity = tileCapacity = 0;
+        deviceLease.resize(0);
     }
     void probe() {
         if(probed) return;
@@ -566,7 +653,10 @@ struct Runtime
         for(auto& p:candidates) if(sameIdentity(p)) {
             awaitPlane(p);shared->touch(p);++status.costIdentityHits;return p;
         }
-        auto p=std::make_shared<Device::Plane>(api,r,blocked);
+        candidates.fill({});
+        std::shared_ptr<Device::Plane> p;
+        try {p=std::make_shared<Device::Plane>(api,r,blocked);}
+        catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p=std::make_shared<Device::Plane>(api,r,blocked);}
         bool reserved=false;
         if(r.identity.owner) {
             // Mask comparison is outside the lock; pointer equality detects a
@@ -583,7 +673,7 @@ struct Runtime
             }
         }
         try {
-            const auto n=r.grid.cells();p->data.resize(n);
+            const auto n=r.grid.cells();
             for(std::size_t i=0;i<n;++i) {
                 const auto step=!r.identity.allCells&&blocked[i]?LAND_STEPS:r.costAt(r.context,i);
                 if(!step.cardinal||!step.diagonal||step.cardinal>65535||step.diagonal>65535)
@@ -604,7 +694,10 @@ struct Runtime
                 }
                 return p;
             }
-            p->storage=std::make_shared<Device::Plane::Storage>(api);
+            candidates.fill({});
+            p->storage=std::make_shared<Device::Plane::Storage>(api,shared->deviceBudget);
+            try {p->storage->deviceLease.resize(n*sizeof(UInt));}
+            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p->storage->deviceLease.resize(n*sizeof(UInt));}
             Int error=0;p->buffer=p->storage->buffer=api.CreateBuffer(context,1,n*sizeof(UInt),nullptr,&error);check(error);
             write(p->buffer,p->data.data(),n*sizeof(UInt));++status.costUploads;
             p->published.store(true);p->completed.set_value();
@@ -615,60 +708,62 @@ struct Runtime
             return p;
         } catch(...) {
             try {p->completed.set_exception(std::current_exception());} catch(...) {}
+            {std::lock_guard lock(shared->cacheMutex);for(auto& cached:shared->planes) if(cached==p) cached.reset();}
             throw;
         }
     }
-    void computeBatch(std::span<const BackendRequest *const> requests)
+    void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging)
     {
         const auto preparationStart=activeStageTiming ? monotonicNs() : 0;
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
-        std::size_t largest = 0, total = 0;
+        std::size_t total = 0;
         UInt width = 0, height = 0;
         for (auto *r : requests)
         {
-            largest = std::max(largest, r->grid.cells());
             total += r->grid.cells();
             width = std::max(width, UInt(r->grid.width()));
             height = std::max(height, UInt(r->grid.height()));
         }
-        if (largest > std::numeric_limits<UInt>::max() / 8 ||
-            largest > std::numeric_limits<std::size_t>::max() / (8 * sizeof(UInt)))
+        if (total > std::numeric_limits<UInt>::max() ||
+            total > (std::numeric_limits<std::size_t>::max()-288) / (2 * sizeof(std::uint16_t)))
             throw std::runtime_error("Gradient batch exceeds OpenCL index range");
-        if (largest > capacity)
+        if (total > capacity)
         {
             buffers();
+            try {deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
+            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
             Int error = 0;
             for (auto *buffer : {&first, &second})
             {
-                *buffer = api.CreateBuffer(context, 1, largest * 8 * sizeof(std::uint16_t), nullptr, &error);
+                *buffer = api.CreateBuffer(context, 1, total * sizeof(std::uint16_t), nullptr, &error);
                 check(error);
             }
             changed = api.CreateBuffer(context, 1, 8 * sizeof(UInt), nullptr, &error);
             check(error);
             descriptors = api.CreateBuffer(context, 1, 64 * sizeof(UInt), nullptr, &error);
             check(error);
-            capacity = largest;
+            capacity = total;
         }
-        values.resize(total);
-        std::vector<UInt> desc;
+        std::array<UInt,64> desc{};
         std::array<std::shared_ptr<Device::Plane>,8> held;
         std::size_t offset=0, field=0;
         for(auto* r:requests) {
             const auto n=r->grid.cells();
-            std::copy(r->gradient,r->gradient+n,values.begin()+offset);
+            std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
             blocked.clear();
             if(!r->identity.allCells) {
-                blocked.resize(n);
+                resizeStaging(blocked,n,blockedLease);
                 for(std::size_t i=0;i<n;++i) blocked[i]=r->gradient[i]==0;
             }
             held[field]=costPlane(*r);
-            desc.insert(desc.end(),{UInt(r->grid.width()),UInt(r->grid.height()),UInt(offset),UInt(field),
+            const std::array descriptor{UInt(r->grid.width()),UInt(r->grid.height()),UInt(offset),UInt(field),
                 UInt(r->limit),held[field]->uniform ? 3u : 1u,UInt((r->grid.width()+variants[selectedVariant].tileWidth-1)/variants[selectedVariant].tileWidth),
-                UInt((r->grid.height()+variants[selectedVariant].tileHeight-1)/variants[selectedVariant].tileHeight)});
+                UInt((r->grid.height()+variants[selectedVariant].tileHeight-1)/variants[selectedVariant].tileHeight)};
+            std::copy(descriptor.begin(),descriptor.end(),desc.begin()+field*8);
             offset+=n;++field;
         }
-        write(first, values.data(), total * sizeof(std::uint16_t));
-        write(descriptors, desc.data(), desc.size() * sizeof(UInt));
+        write(first, staging.data(), total * sizeof(std::uint16_t));
+        write(descriptors, desc.data(), requests.size()*8*sizeof(UInt));
         Handle a = first, b = second;
         const auto &variant = variants[selectedVariant];
         const UInt pitch = (width + variant.tileWidth - 1) / variant.tileWidth, rows = (height + variant.tileHeight - 1) / variant.tileHeight;
@@ -678,6 +773,10 @@ struct Runtime
             throw std::runtime_error("OpenCL tile mask exceeds index range");
         if (tileCount > tileCapacity)
         {
+            for(auto* mask:{&tilesFirst,&tilesSecond}) {if(*mask) api.ReleaseMemObject(*mask);*mask=nullptr;}
+            deviceLease.resize(capacity*2*sizeof(std::uint16_t)+288);
+            tileCapacity=0;
+            deviceLease.resize(capacity*2*sizeof(std::uint16_t)+288+tileCount*2*sizeof(UInt));
             for (auto *mask : {&tilesFirst, &tilesSecond})
             {
                 if (*mask)
@@ -711,14 +810,16 @@ struct Runtime
         // Every dispatch extends at least one global path edge. Frozen halos
         // exchange only one cell even when they perform many local sweeps, so
         // the ushort convergence bound counts dispatches, not local sweeps.
-        for (UInt round = 0; round < 65536; round += 8)
+        const auto checkInterval=shared->status.checkInterval;
+        for (UInt round = 0; round < 65536;)
         {
             if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
-            for (unsigned dispatch = 0; dispatch < 8; ++dispatch)
+            const auto count=std::min<UInt>(checkInterval,65536-round);
+            for (unsigned dispatch = 0; dispatch < count; ++dispatch)
             {
                 // Only the last dispatch's changes are read by the host. The
                 // in-order queue clears earlier accumulated flags before it.
-                if (dispatch == 7)
+                if (dispatch+1 == count)
                     check(api.EnqueueFillBuffer(queue, changed, zero.data(), sizeof(UInt), 0,
                                                 requests.size() * sizeof(UInt), 0, nullptr, nullptr));
                 check(api.EnqueueFillBuffer(queue, nextActive, zero.data(), sizeof(UInt), 0,
@@ -733,6 +834,7 @@ struct Runtime
                 std::swap(active, nextActive);
                 ++status.dispatches;
             }
+            round+=count;
             check(api.EnqueueReadBuffer(queue, changed, 1, 0, requests.size() * sizeof(UInt), flags.data(), 0,
                                         nullptr, nullptr));
             ++status.hostChecks;
@@ -748,7 +850,7 @@ struct Runtime
             {
                 const auto readStart=activeStageTiming ? monotonicNs() : 0;
                 if(activeStageTiming) activeStageTiming->dispatchNs+=readStart-dispatchStart;
-                check(api.EnqueueReadBuffer(queue, a, 1, 0, total * sizeof(std::uint16_t), values.data(), 0, nullptr,
+                check(api.EnqueueReadBuffer(queue, a, 1, 0, total * sizeof(std::uint16_t), staging.data(), 0, nullptr,
                                             nullptr));
                 if(activeStageTiming) activeStageTiming->readbackNs+=monotonicNs()-readStart;
                 return;
@@ -756,14 +858,9 @@ struct Runtime
             // No later kernel consumes descriptors once every field is done.
             // Mixed batches still retire finished fields before dispatching again.
             if (retired)
-                write(descriptors, desc.data(), desc.size() * sizeof(UInt));
+                write(descriptors, desc.data(), requests.size()*8*sizeof(UInt));
         }
         throw std::runtime_error("OpenCL gradient failed to converge");
-    }
-    void compute(const BackendRequest &r)
-    {
-        const std::array requests{&r};
-        computeBatch(requests);
     }
     void selectVariant(std::size_t index)
     {
@@ -812,31 +909,58 @@ struct Runtime
             ~Active(){--d.active;}
         } activeLane(*shared);
         statusSequence=++shared->sequence;
+        const auto cpuStarted=threadCPUClock();
+        struct CPUTimer {OpenCLStatus& status;std::uint64_t start;~CPUTimer(){if(start) {status.threadCPUAvailable=true;status.threadCPUNs+=threadCPUClock()-start;}}} cpuTimer{status,cpuStarted};
+        StageTiming localStages;
+        auto* stages=activeStageTiming ? activeStageTiming : accountingRequested() ? &localStages : nullptr;
+        const auto before=stages ? *stages : StageTiming{};
+        StageTimingScope timingScope(stages);
+        struct StageAccumulator {
+            OpenCLStatus& status;StageTiming* timing;StageTiming before;
+            ~StageAccumulator() {
+                if(!timing) return;
+                status.preparationNs+=timing->preparationNs-before.preparationNs;
+                status.uploadNs+=timing->uploadNs-before.uploadNs;
+                status.dispatchWaitNs+=timing->dispatchNs-before.dispatchNs;
+                status.readbackNs+=timing->readbackNs-before.readbackNs;
+            }
+        } stageAccumulator{status,stages,before};
         try {
             probe(); // Lane buffers/queue only. Compilation must already be complete.
             if(!variants[unsigned(plan)-1].kernel) return false;
             selectVariant(unsigned(plan)-1);
             // Stage ALL output before commit; even a failure in the last chunk
             // leaves every caller's original seeds intact for exact CPU recovery.
-            std::vector<std::vector<std::uint16_t>> output(input.size());
+            std::size_t total=0;
+            for(const auto& request:input) {
+                if(request.grid.cells()>std::numeric_limits<std::size_t>::max()-total) throw BudgetExceeded();
+                total+=request.grid.cells();
+            }
+            if(total>OpenCLHostBudget/sizeof(std::uint16_t)) throw BudgetExceeded();
+            try {resizeStaging(values,total,valuesLease);}
+            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(values,total,valuesLease);}
+            std::size_t outputOffset=0;
             for(std::size_t begin=0;begin<input.size();begin+=8) {
                 const auto count=std::min<std::size_t>(8,input.size()-begin);
                 std::array<const BackendRequest*,8> pointers{};
                 for(std::size_t i=0;i<count;++i) pointers[i]=&input[begin+i];
-                computeBatch(std::span(pointers.data(),count));
-                std::size_t offset=0;
-                for(std::size_t i=0;i<count;++i) {
-                    const auto size=pointers[i]->grid.cells();
-                    output[begin+i].assign(values.begin()+offset,values.begin()+offset+size);
-                    offset+=size;
-                }
+                std::size_t chunkCells=0;for(std::size_t i=0;i<count;++i) chunkCells+=pointers[i]->grid.cells();
+                computeBatch(std::span(pointers.data(),count),std::span(values.data()+outputOffset,chunkCells));
+                outputOffset+=chunkCells;
                 status.fields+=count;
             }
             if(shared->failed.load() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
                 throw std::runtime_error("OpenCL device or session failed on another lane");
-            for(std::size_t i=0;i<input.size();++i) std::copy(output[i].begin(),output[i].end(),input[i].gradient);
+            outputOffset=0;
+            for(const auto& r:input) {
+                std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
+                outputOffset+=r.grid.cells();
+            }
             ++status.schedulerBatches;
             return true;
+        } catch(const BudgetExceeded&) {
+            ++status.budgetDeclines;
+            return false;
         } catch(...) {
             status.available=false;
             for(const auto& r:input) { r.session.fail(); ++status.cpuSelections; }
@@ -904,12 +1028,26 @@ struct Register
     }
 } registration;
 } // namespace
+bool reserveOpenCLHostBytes(std::size_t bytes) noexcept {return hostBudget.reserve(bytes);}
+void releaseOpenCLHostBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);}
+bool initializeOpenCL() {
+    unsigned empty=0;
+    initializationState.compare_exchange_strong(empty,1);
+    try {prepare();} catch(...) {readyPlans.store(0,std::memory_order_release);}
+    initializationState.store(2,std::memory_order_release);
+    return readyPlans.load(std::memory_order_acquire)!=0;
+}
+bool executeOpenCLDevice(std::span<const BackendRequest> requests,Plan plan) {
+    return executeBatch(requests,plan);
+}
 OpenCLStatus openCLStatus()
 {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     return runtime().snapshot();
 #else
-    return runtime().status;
+    auto status=runtime().status;
+    status.hostBytes=hostBudget.current.load();status.peakHostBytes=hostBudget.peak.load();
+    return status;
 #endif
 }
 } // namespace gradient_kernel

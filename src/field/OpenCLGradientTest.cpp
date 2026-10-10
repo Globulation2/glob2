@@ -752,6 +752,57 @@ TEST_CASE("every compiled explicit kernel matches the independent oracle without
     CHECK(openCLStatus().calibrations==before.calibrations);
     CHECK(openCLStatus().tunings==before.tunings);
 }
+TEST_CASE("device service calls preserve exact fields and release lane buffer budgets")
+{
+    using namespace gradient_kernel;
+    if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
+    const field::Grid grid(257,63);
+    std::vector<std::uint16_t> seeds(grid.cells(),1);
+    auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
+    for(std::size_t i=0;i<grid.cells();++i) if(i%41==0) seeds[i]=0;
+    seeds[3]=65535;seeds[79]=65475;
+    const auto expected=oracle(seeds,grid,*costs,600);
+    BackendSession session;
+    const auto before=openCLStatus();
+    std::thread service([&] {
+        CHECK(ComputeExecutor::workerSlot()==0);
+        BackendRequest request{seeds.data(),600,grid,session,costs.get(),
+            [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},
+            [](void*,std::uint16_t*){FAIL("direct device execution cannot recover on CPU");},
+            {costs,0,1,true}};
+        CHECK(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+        CHECK(seeds==expected);
+        const auto running=openCLStatus();
+        const std::size_t tiles=((grid.width()+15)/16)*((grid.height()+15)/16);
+        // One cost plane, two field buffers and two tile masks; no eight-field
+        // reservation for this singleton. Existing cache eviction may lower it.
+        CHECK(running.deviceBytes<=before.deviceBytes+grid.cells()*8+tiles*8+288);
+        CHECK(running.hostBytes<=OpenCLHostBudget);
+        CHECK(running.deviceBytes<=OpenCLDeviceBudget);
+    });
+    service.join();
+    const auto after=openCLStatus();
+    CHECK(after.fields==before.fields+1);
+    CHECK(after.deviceBytes<=before.deviceBytes+grid.cells()*sizeof(std::uint32_t));
+    CHECK(after.peakHostBytes<=OpenCLHostBudget);
+    CHECK(after.peakDeviceBytes<=OpenCLDeviceBudget);
+}
+TEST_CASE("shared offload host reservations are bounded and recover after release")
+{
+    using namespace gradient_kernel;
+    const auto before=openCLStatus();
+    REQUIRE(before.hostBytes<=OpenCLHostBudget);
+    const auto available=OpenCLHostBudget-before.hostBytes;
+    {
+        REQUIRE(reserveOpenCLHostBytes(available));
+        struct Release {std::size_t bytes;~Release(){releaseOpenCLHostBytes(bytes);}} release{available};
+        CHECK(openCLStatus().hostBytes==OpenCLHostBudget);
+        CHECK_FALSE(reserveOpenCLHostBytes(1));
+        CHECK_FALSE(reserveOpenCLHostBytes(OpenCLHostBudget+1));
+        CHECK(openCLStatus().hostBytes==OpenCLHostBudget);
+    }
+    CHECK(openCLStatus().hostBytes==before.hostBytes);
+}
 }
 
 TEST_CASE("worker initialization failure leaves CPU available without inline retries" * doctest::test_suite("OpenCLGradient"))
