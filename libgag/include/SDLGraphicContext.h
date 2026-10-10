@@ -18,6 +18,7 @@
 #include <valarray>
 #include <memory>
 #include <optional>
+#include <span>
 #include <cstdint>
 
 #include <set>
@@ -775,7 +776,7 @@ namespace GAGCore
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
 		std::unique_ptr<Sprite> highResolutionAtlas;
-		void createHighResolutionAtlas();
+		void createHighResolutionAtlas(std::span<AssetLoader::Handle<AssetImage>> inputs = {});
 		std::vector <DrawableSurface *> experimentImages;
 		std::vector <RotatedImage *> experimentRotated;
 
@@ -860,7 +861,8 @@ namespace GAGCore
 		void applyTeamHueShift(DrawableSurface &surface);
 		DrawableSurface *getColoredSurface(int index, bool experiment);
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
-        void appendHighResolutionFrame(size_t index, Sprite& target);
+        void appendHighResolutionFrame(size_t index, Sprite& target,
+            std::span<AssetLoader::Handle<AssetImage>> inputs = {});
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.

@@ -18,6 +18,12 @@ import sys
 
 # Runtimes before the loader that picks one, and the page last.
 ENTRY_FILES = ('threaded/index.wasm', 'threaded/index.js', 'index.wasm', 'index.js', 'loader.js')
+WORKER_RUNTIMES = (
+    ('music-worker.js', 'music-output.js', 'music-runtime.js', 'music-runtime.wasm'),
+    ('recording-worker.js', 'recording-storage.js', 'recording-video.js',
+     'recording-runtime.js', 'recording-runtime.wasm'),
+    ('hive-worker.js', 'hive-runtime.js', 'hive-runtime.wasm'),
+)
 ENCODINGS = ('', '.br', '.gz')
 RECORD = '.installed-assets.json'
 
@@ -38,6 +44,28 @@ def localization_files(release):
     return names
 
 
+def entry_files(release):
+    """Validate the runtime closure before replacing any served file."""
+    names = list(ENTRY_FILES)
+    runtimes = b''.join((release / name).read_bytes()
+                        for name in ('index.js', 'threaded/index.js'))
+    for group in WORKER_RUNTIMES:
+        if group[0].encode() in runtimes or any((release / name).exists() for name in group):
+            names.extend(group)
+    names.extend(localization_files(release))
+    names.extend(path.relative_to(release).as_posix()
+                 for path in sorted((release / 'licenses').rglob('*'))
+                 if path.is_file() and path.suffix not in ('.br', '.gz'))
+    names.append('studio.html')
+    names.extend(name for name in ('generator-studio.html', 'set-preview.html')
+                 if (release / name).is_file())
+    names.append('index.html')
+    for name in names:
+        if not (release / name).is_file():
+            raise FileNotFoundError(f'install-web-client: {release / name} is missing')
+    return names
+
+
 def copy(source, target):
     temporary = target.with_name('.' + target.name + '.new')
     shutil.copyfile(source, temporary)
@@ -48,7 +76,7 @@ def main():
     if len(sys.argv) != 3:
         sys.exit(__doc__.strip().splitlines()[2].strip())
     release, served = Path(sys.argv[1]), Path(sys.argv[2])
-    localization = localization_files(release)
+    entries = entry_files(release)
     (served / 'assets').mkdir(parents=True, exist_ok=True)
     current = sorted(p.name for p in (release / 'assets').iterdir()
                      if p.is_file() and not p.name.startswith('.'))
@@ -57,9 +85,7 @@ def main():
         if not target.is_file() or target.stat().st_size != (release / 'assets' / name).stat().st_size:
             copy(release / 'assets' / name, target)
     (served / 'threaded').mkdir(exist_ok=True)
-    for name in ENTRY_FILES + localization + ('studio.html',) + (('generator-studio.html',) if (release / 'generator-studio.html').is_file() else ()) + (('set-preview.html',) if (release / 'set-preview.html').is_file() else ()) + ('index.html',):
-        if not (release / name).is_file():
-            sys.exit(f'install-web-client: {release / name} is missing')
+    for name in entries:
         for suffix in ENCODINGS[1:]:
             if not (release / (name + suffix)).is_file():
                 (served / (name + suffix)).unlink(missing_ok=True)

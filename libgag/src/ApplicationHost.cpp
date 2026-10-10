@@ -60,6 +60,7 @@ void wait(std::uint32_t milliseconds)
 		SDL_Delay(milliseconds);
 }
 void initializeOpenGLContext() {}
+bool prepareOpenGLMipmaps(unsigned, const void*, int, int) { return false; }
 bool takeVisibilityChange(bool &)
 {
 	return false;

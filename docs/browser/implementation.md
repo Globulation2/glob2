@@ -46,6 +46,29 @@ application pthread instead of proxying them to the UI, where the transferred
 canvas cannot create a context. This adapter is included only in the threaded
 runtime and must be checked when upgrading the SDK or SDL port.
 
+Generated power-of-two HD surfaces prepare their mip chain in WebGL2, using an
+integer shader that matches the shared alpha-weighted CPU filter. Animated
+terrain therefore avoids preparing the complete chain on the application thread.
+Its BGRA-to-RGBA conversion also runs in the GPU pass. The application host
+invalidates the cached pipeline and GL state mirror during context restoration.
+Tracked GL setters and object deletion preserve renderer state without repeating
+driver state queries on every upload. A deletion-pending current program retains
+the CPU path, since switching away would destroy it before it could be restored.
+Authored sprites retain worker-prepared mips; non-power-of-two surfaces and shader
+initialization failures retain the CPU fallback. The GPU pass restores renderer
+state and recreates its cached resources after context loss.
+Context recovery discards lost texture handles and restores textures when they
+are next drawn. It does not synchronously upload every unused HD animation frame
+before allowing the application to resume.
+
+Automatic browser compute sizing uses at most eight participants, including the
+application owner. The SDK prewarms at most sixteen pthread realms to cover the
+application, compute pool and asset decoders. Each pthread reserves an 8 MiB
+stack in the shared 2 GiB Wasm heap; unlimited hardware sizing can crowd
+out artwork and game state on many-core devices. Explicit `--compute-threads`
+overrides remain available. Pool sizing changes work placement, not match rules
+or simulation deadlines. Native automatic sizing continues to follow hardware.
+
 Both runtimes include `browser/canvas-size.js`. It preserves software canvas
 pixels when SDL repeats an unchanged size request, while retaining SDK viewport,
 context-loss and offscreen ownership handling. Threaded startup and gameplay
@@ -88,6 +111,14 @@ whose file table is compiled into `index.js`. Serve `assets/*.data` as immutable
 and the other files with revalidation. The
 [browser README](../../browser/README.md#game-data-and-loading) describes the core
 and optional packages and how the page loads them.
+
+Deployments also install both runtime variants, the music/recording/Hive worker
+scripts and codec runtimes, translation catalogs and licence notices. The host
+installer validates this runtime closure before replacing the served launcher.
+The read-only diagnostics include `heapBytes` for the current Wasm memory size;
+it is an allocation high-water mark, not the size of currently live objects.
+`artworkReady` confirms that sprite preparation and HD publication have finished;
+an HD package being downloaded and mounted does not establish that readiness.
 
 C++ exceptions use native WebAssembly exception handling (`-fwasm-exceptions`),
 which needs Chrome 95, Firefox 100 or Safari 15.2 or later; it makes the module
