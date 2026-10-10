@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <utility>
 #include <chrono>
+#include <thread>
 #include <cstdlib>
 #include <cstdint>
 #include <iterator>
@@ -78,6 +79,45 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+
+    TEST_CASE("automatic GUI sessions poll asset finalizers on the presentation thread [display]")
+    {
+        for (const char* mode : {"0", "1"})
+        {
+            CAPTURE(mode);
+            glob2test::ScopedEnvironment threading("GLOB2_SIM_THREAD", mode);
+            glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true});
+            REQUIRE(NET_Init());
+            struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
+            globals->runNoX = false;
+            globals->automaticEndingGame = true;
+            globals->automaticGameGlobalEndConditions = true;
+            globals->automaticEndingSteps = 8;
+            globals->settings.gameSpeed = 10;
+            globals->settings.autosaveGames = false;
+            Engine engine;
+            REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
+            auto& loader = GAGCore::Toolkit::assets();
+            auto handle = loader.request<unsigned>("automatic-gui-finalizer", {},
+                [] { return std::make_shared<const unsigned>(9); });
+            REQUIRE(loader.wait(handle));
+            auto lifetime = std::make_shared<int>(0);
+            const auto owner = std::this_thread::get_id();
+            bool published = false;
+            loader.onReady<unsigned>(handle, lifetime, [&](std::shared_ptr<const unsigned> value) {
+                CHECK(std::this_thread::get_id() == owner);
+                REQUIRE(value);
+                CHECK(*value == 9);
+                published = true;
+            });
+            CHECK_FALSE(published);
+            bool restart = false;
+            engine.runOneGameSession(restart);
+            CHECK_FALSE(restart);
+            CHECK(published);
+            CHECK(engine.gui.game.stepCounter == 8);
+        }
+    }
 
     TEST_CASE("eliminated prestige leaders cannot make every survivor lose")
     {
