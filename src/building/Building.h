@@ -529,6 +529,10 @@ private:
 	/// tallies are reset per scan, so they describe one material, never a unit
 	/// counted once per material the building tried.
 	int gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial, const int* airDistances=nullptr);
+	// Keep large scratch arrays off fully staffed/dead/timer-only admission paths.
+	[[gnu::noinline]] bool hireMaterialUnit(const int* targets, const int* served, const int* airDistances);
+	[[gnu::noinline]] bool hireMaterialUnitWithFlyingDistances(const int* targets, const int* served);
+	[[gnu::noinline]] bool hireFlagUnits();
 
 	/// Per-material delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in

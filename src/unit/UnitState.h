@@ -82,14 +82,20 @@ struct UnitState
 	};
 
 	Uint16 typeNum;
+	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
+	Uint8 regenerationRemainder = 0;
+	// Keep frequently queried capabilities beside the identity in existing padding.
+	Uint32 capabilityFlags = 0;
 	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	Uint16 gid;
+	bool serviceResourcesReserved = false;
+	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
 	Sint32 isDead;
 	Sint32 posX, posY, delta, dx, dy, direction;
 	Sint32 terrainHealthRemainder = 0;
 	Sint32 insideTimeout;
-	bool serviceResourcesReserved = false;
+	Sint32 configuredFoodCapacity = HUNGRY_MAX;
 	Sint32 speed;
 	bool needToRecheckMedical;
 	Medical medical;
@@ -118,12 +124,6 @@ struct UnitState
 	// Keep optional aura bookkeeping after existing hot simulation fields.
 	std::array<Uint8,3> areaServiceRemainders{};
 	Uint32 areaLastPulseTick = Uint32(-1);
-	// Derived flags avoid a catalog lookup in the common unit and gradient loops.
-	Uint32 capabilityFlags = 0;
-	Sint32 configuredFoodCapacity = HUNGRY_MAX;
-	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
-	Uint8 regenerationRemainder = 0;
-	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);
 static_assert(std::is_standard_layout_v<UnitState>);
