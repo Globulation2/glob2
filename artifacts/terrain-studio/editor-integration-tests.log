@@ -1,0 +1,11 @@
+PASS TeamLiveLists/live slot lists follow every slot assignment and order the snapshot records (3.7s)
+PASS JavaScriptLifecycle/Scripting editor deletion and reuse never revive a reference (16.5s)
+PASS EditorTerrainPaint/Del reverts only vertices of the selected terrain to grass [display] (32.5s)
+PASS EditorTerrainPaint/terrain strokes remove only what the new terrain disallows [display] (35.4s)
+PASS EditorTerrainPaint/the smallest brush paints one vertex and lays a beach around water [display] (36.4s)
+PASS TeamStatsSave/Editor building deletion clears ability lists before save and slot reuse (38.3s)
+PASS EditorTerrainPaint/every terrain brush paints exactly the vertices its hover preview shows [display] (49.7s)
+PASS EditorTerrainPaint/a resource stroke that places nothing explains where the resource grows [display] (21.7s)
+
+8 passed, 0 failed, 0 skipped (234.3s of test time)
+[run_tests] JUnit report: artifacts/terrain-studio/editor-integration-tests.xml (8 cases)

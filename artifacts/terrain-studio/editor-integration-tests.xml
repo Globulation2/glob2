@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="EditorTerrainPaint"><testcase classname="EditorTerrainPaint" name="Del reverts only vertices of the selected terrain to grass [display]" time="31.1757" status="run" />
+  <testcase classname="EditorTerrainPaint" name="a resource stroke that places nothing explains where the resource grows [display]" time="17.3525" status="run" />
+  <testcase classname="EditorTerrainPaint" name="every terrain brush paints exactly the vertices its hover preview shows [display]" time="48.3097" status="run" />
+  <testcase classname="EditorTerrainPaint" name="terrain strokes remove only what the new terrain disallows [display]" time="34.0916" status="run" />
+  <testcase classname="EditorTerrainPaint" name="the smallest brush paints one vertex and lays a beach around water [display]" time="34.9729" status="run" />
+  </testsuite><testsuite name="JavaScriptLifecycle"><testcase classname="JavaScriptLifecycle" name="Scripting editor deletion and reuse never revive a reference" time="15.3195" status="run" />
+  </testsuite><testsuite name="TeamLiveLists"><testcase classname="TeamLiveLists" name="live slot lists follow every slot assignment and order the snapshot records" time="2.65363" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="Editor building deletion clears ability lists before save and slot reuse" time="37.2778" status="run" />
+  </testsuite></testsuites>

@@ -1,10 +1,10 @@
 {
-  "testedCommit": "4f9d3a4ef5acaa839b208b8935fc71ac816dde2f",
-  "baseCommit": "95ae8a0c181046407e94dbd4642423583639452b",
+  "testedCommit": "4a447509518872bd1d973c9bb2489866d4739e20",
+  "baseCommit": "b602ee96896aa8d8b5fda16ca297851f8166827c",
   "platform": "macOS 26.6.2 arm64, Apple LLVM 21.0.0",
   "nativeBuild": "python3 tools/dev_build.py engine-tests (dev_fast=1, -O0 -g1, no PCH/unity)",
-  "focusedTests": "TeamStatsSave/Editor building deletion*, TeamLiveLists/*, JavaScriptLifecycle/Scripting editor deletion*: 3 passed; EditorTerrainPaint/*: 5 passed on prior commit with identical production code",
-  "simulation": "Canonical 842-checksum trace matches committed fixture and Linux. Arctic map seed 713, cortex/cortex, 20000 ticks: macOS/Linux per-tick traces identical.",
+  "focusedTests": "8 passed at combined revision: editor deletion/save/slot reuse, live slot lists, script identities, and all five EditorTerrainPaint cases.",
+  "simulation": "Canonical 842-checksum trace matches committed fixture and Linux. Arctic map seed 713, cortex/cortex, 20000 ticks: macOS/Linux per-tick traces identical. Current integrated native engine also reproduces canonical fixture exactly.",
   "liveFlow": "UI generation, metadata save/reload, sandboxed validation, history download, real editor pack import, five terrains/five resources, fresh map save, live custom-game start, game save/browser reload/resume succeeded. Winter inn Food 10/10.",
   "limitations": "Browser release compilation/verification and live editor deletion regression deployment remain pending. Windows, Android, iOS not run. No loader/save format or simulation-step change. Stripe purchase unavailable because sales/packs disabled.",
   "artifacts": {
