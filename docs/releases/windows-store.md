@@ -114,7 +114,10 @@ product's `Main` branch before submitting for certification:
 3. **Store listings:** maintain an English (United States) listing using the copy
    below. Upload genuine desktop screenshots from the release candidate. At least
    one PNG is required; Partner Center recommends four, at 1366 × 768 or larger.
-   Capture gameplay, colony management, campaigns and the editor. Do not reuse
+   The current gameplay screenshot at
+   `https://glob2online.com/images/glob2-first-colony.webp` is an approved source;
+   convert it to PNG without changing its content. Add more screenshots of
+   gameplay, colony management, campaigns and the editor when available. Do not reuse
    mobile screenshots or the legacy `data/screenshots/globulation2-gameplay.png`
    showing version 0.9.5 as evidence of the current Windows release. Package logos
    are the default; optional Store poster and box artwork can improve presentation.
