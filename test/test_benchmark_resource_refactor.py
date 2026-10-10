@@ -2,6 +2,8 @@ import math
 import io
 import json
 import tempfile
+import subprocess
+import sys
 from contextlib import ExitStack, redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
@@ -13,6 +15,46 @@ from benchmark_resource_refactor import aggregate_interval
 
 
 class ExecutionCleanupTest(unittest.TestCase):
+    @unittest.skipUnless(sys.platform.startswith('linux'), 'Linux pre-exec RSS inheritance')
+    def test_rss_accepts_engine_peak_and_rejects_inherited_runner_floor(self):
+        driver = r"""
+import json, pathlib, sys
+from benchmark_parallel_compute import execute
+root = pathlib.Path(sys.argv[1])
+parent_bytes, child_bytes = map(int, sys.argv[2:])
+binary = root / 'engine'
+binary.write_text('#!' + sys.executable + '\n' + '''import json, pathlib, sys
+data = bytearray(CHILD_BYTES)
+for offset in range(0, len(data), 4096): data[offset] = 1
+output = pathlib.Path(sys.argv[sys.argv.index('--output-dir') + 1])
+(output / 'result.json').write_text('{}')
+'''.replace('CHILD_BYTES', str(child_bytes)))
+binary.chmod(0o755)
+memory = bytearray(parent_bytes)
+for offset in range(0, len(memory), 4096): memory[offset] = 1
+del memory
+try:
+    row = execute(binary, [], root / 'run', cwd=root)
+    print(json.dumps({'censored': False, 'peak': row['peak_rss_bytes'],
+                      'runner': row['runner_peak_rss_bytes']}))
+except RuntimeError:
+    print((root / 'run/rss-censored.json').read_text())
+"""
+        for parent, child in ((0, 96 * 1024 * 1024), (96 * 1024 * 1024, 1024 * 1024)):
+            with self.subTest(parent=parent), tempfile.TemporaryDirectory() as directory:
+                command = [sys.executable, '-c',
+                           'import sys; sys.path.insert(0, ' + repr(str(Path(__file__).resolve().parent)) + ');' + driver,
+                           directory, str(parent), str(child)]
+                completed = subprocess.run(command, capture_output=True, text=True, check=True)
+                report = json.loads(completed.stdout)
+                if parent:
+                    self.assertEqual(report['status'], 'censored')
+                    self.assertGreaterEqual(report['runner_peak_rss_bytes'], parent)
+                else:
+                    self.assertFalse(report['censored'])
+                    self.assertGreaterEqual(report['peak'], child)
+                    self.assertGreater(report['peak'], report['runner'])
+
     def test_interrupted_wait_kills_and_reaps_child_before_propagating(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / 'run'
