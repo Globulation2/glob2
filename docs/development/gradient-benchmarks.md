@@ -785,10 +785,14 @@ Each advance retains its existing CPU slice and single-kernel limit; this change
 scheduling latency rather than the CPU credit, accounting or promotion bounds.
 
 Cold compiler/driver preparation is separately reported as an enclosing whole-process
-CPU upper bound. Charge it as startup debt on the first accepted observation.
-Concurrent process work may be overcharged, but readiness never means free startup.
-Further optional admission must fit both the rolling256-tick1% credit cap and the
-cumulative1% cap, so startup must be amortized before optional replay is admitted.
+CPU upper bound on the first accepted observation. It remains part of total
+reported tuning/configuration CPU and the cold tuning-on/off process comparison,
+without becoming exploration debt in later rolling windows. Passive accepted
+observations and cadence processing are separately timed and reported; their
+disjoint scheduler brackets never enter an active counterfactual. Optional
+admission/capture/replay/comparison/cleanup and its administration must fit the
+rolling 256-tick one-percent accepted-gradient CPU budget. Historical expired
+exploration debt is still reported, but cannot block a freshly funded window.
 Invalid startup clocks suppress further admission. Cold and warm qualification
 windows remain separate and include this actual initialization behavior.
 
@@ -946,9 +950,11 @@ reads or driver queries and do not qualify incomplete or overspent pairs.
 
 Learning debt and the CPU upper bound for deployed GPU execution are separate
 receipts. Debt always includes capture, golden cloning, exact comparison,
-registry/sampler work, coordinator scheduling, both post-terminal tail intervals,
+registry/sampler work, optional coordinator scheduling, both post-terminal tail intervals,
 cleanup, unknown process CPU and settlement statistics. The optional reservation
-and rolling/cumulative one-percent limits apply to that complete debt. Reaching
+and rolling one-percent limit apply to that complete debt. Cold initialization
+and passive accepted observation/cadence CPU remain separate reported
+configuration costs; they are included in whole-process tuning-on/off evidence. Reaching
 the reservation before comparison invalidates the pair; changing its cost model
 does not forgive overspending.
 
@@ -956,8 +962,8 @@ Exploratory reservations include 8 ms for fixed background capture/accounting
 work plus half the retained CPU reference, capped at 64 ms. A group uses its
 declared capacity only to predict that reservation; only completed selected jobs
 can provide the paired batch reference. These CPU budgets do not predict GPU
-elapsed time. Admission still requires the full reservation to fit both rolling
-and cumulative credits before copying anything. A cheap or unfunded workload
+elapsed time. Admission requires the full reservation to fit current rolling
+credits before copying anything. A cheap or unfunded workload
 stays on its accepted plan rather than starting an experiment that cannot finish.
 
 The explicit required-path receipt can only be created after real native
@@ -1028,3 +1034,12 @@ actual native batch/retired field counts. The hardware-free attachment case prov
 ready membership, independent CPU progress and nonjoining cancellation; native
 compilation, real automatic promotion and required GPU activation remain separate
 evidence gates.
+
+Policy diagnostics expose optional rolling debt, cold initialization, passive
+observation CPU and their saturated bracket sum separately. This sum is not an
+independently complete total-process interval: helper/metrics bookkeeping outside
+those brackets remains part of the whole tuning-on/off process measurement. Service passive counters
+include cadence/stale observation work even before a live policy receives it;
+they overlap the policy passive component and must not be added to that total.
+No category waives whole-process CPU qualification or enables a plan without
+exact native results, valid timing, confidence and deadline checks.

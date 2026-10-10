@@ -386,7 +386,7 @@ TEST_CASE("tuning debt cannot wrap around and restore probe admission" * doctest
     CHECK(policy.lookup(key).plan==Plan::CPU);
 }
 
-TEST_CASE("historical tuning debt at the cumulative cap cannot borrow fresh rolling credit" * doctest::test_suite("OpenCLGradient"))
+TEST_CASE("expired historical exploration debt does not block funded fresh rolling credit" * doctest::test_suite("OpenCLGradient"))
 {
     CpuSavingPolicy policy;const auto key=workload();
     REQUIRE(policy.qualify(key,Plan::Frozen8,true));
@@ -398,8 +398,35 @@ TEST_CASE("historical tuning debt at the cumulative cap cannot borrow fresh roll
     // Settlement also pays its real mutex/statistics CPU; historical debt may
     // exceed the requested work charge, never fall below it.
     CHECK(policy.metrics().probeCpuNs>=20000000);
-    CHECK_FALSE(nextProbe(policy,key,257));
+    auto fresh=nextProbe(policy,key,257);REQUIRE(fresh);
+    policy.cancelProbe(*fresh,100000);
+    CHECK(policy.metrics().admitted==2);CHECK(policy.metrics().probeCpuNs>=20100000);
     CHECK(policy.lookup(key).plan==Plan::CPU);
+}
+
+TEST_CASE("cold and passive CPU remain reported while optional work alone consumes rolling credits" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload();
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,1000000000,1);
+    policy.recordTuningOverhead(1,239000000,true,CpuSavingPolicy::TuningCostKind::ColdInitialization);
+    policy.recordTuningOverhead(1,50000000,true,CpuSavingPolicy::TuningCostKind::PassiveObservation);
+    auto metrics=policy.metrics();CHECK(metrics.probeCpuNs==0);
+    CHECK(metrics.coldInitializationCpuNs==239000000);CHECK(metrics.passiveObservationCpuNs>=50000000);
+    CHECK(metrics.totalTuningCpuNs==metrics.coldInitializationCpuNs+metrics.passiveObservationCpuNs);
+    // Real rolling required CPU can fund a probe despite separately reported
+    // cold/passive configuration overhead. Those costs never train a reference.
+    auto ticket=nextProbe(policy,key);REQUIRE(ticket);policy.cancelProbe(*ticket,2000000);
+    policy.recordTuningOverhead(1,9000000);CHECK_FALSE(nextProbe(policy,key));
+    metrics=policy.metrics();CHECK(metrics.probeCpuNs>=11000000);
+    CHECK(metrics.totalTuningCpuNs==metrics.probeCpuNs+metrics.coldInitializationCpuNs+metrics.passiveObservationCpuNs);
+    CHECK(policy.lookup(key).plan==Plan::CPU);
+    // A fresh rolling window clears old exploration debt; an invalid new
+    // optional measurement conservatively suppresses its future admission.
+    policy.observeAccepted(key,Plan::CPU,1000000000,257);
+    auto fresh=nextProbe(policy,key,257);REQUIRE(fresh);policy.cancelProbe(*fresh,0);
+    policy.recordTuningOverhead(257,0,false);CHECK_FALSE(nextProbe(policy,key,257));
+    CHECK(policy.metrics().admitted==2);CHECK(policy.lookup(key).plan==Plan::CPU);
 }
 
 TEST_CASE("suppressed promotion still processes and pays qualified counterfactuals" * doctest::test_suite("OpenCLGradient"))

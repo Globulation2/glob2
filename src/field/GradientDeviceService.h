@@ -108,6 +108,7 @@ public:
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
         std::uint64_t batches=0, maxBatch=0, initializationNs=0, hostCpuNs=0;
         std::uint64_t tuningStartupUpperCpuNs=0;bool tuningStartupClockValid=false;
+        std::uint64_t tuningPassiveCpuNs=0,tuningPassiveInvalidClocks=0;
         // Fields with at least one confirmed completed GPU dispatch. This is
         // distinct from a fully converged, successfully committed GPU result.
         std::uint64_t deviceCompletedFields=0,fallbackAfterDeviceCompletionFields=0;

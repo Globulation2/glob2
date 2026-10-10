@@ -88,6 +88,7 @@ struct GradientDeviceState
     WorkloadKey probeKey;
     Plan probePlan=Plan::CPU;
     std::uint64_t pendingProbeSchedulerCpuNs=0;
+    std::uint64_t pendingPassiveCpuNs=0;bool pendingPassiveClockValid=true; // Coordinator-only.
     std::atomic<std::uint64_t> optionalReadyNs{0};
     std::size_t observationRead=0,observationWritten=0;
     std::uint64_t nextSerial=0;
@@ -848,6 +849,14 @@ class DeviceBroker
             }
         }
     }
+    void recordPassive(const std::shared_ptr<GradientDeviceState>& state,std::uint64_t cpu,bool valid) noexcept {
+        const auto add=[](std::uint64_t a,std::uint64_t b){return b>UINT64_MAX-a?UINT64_MAX:a+b;};
+        state->pendingPassiveCpuNs=add(state->pendingPassiveCpuNs,cpu);
+        state->pendingPassiveClockValid=state->pendingPassiveClockValid && valid;
+        std::lock_guard lock(state->mutex);
+        state->totals.tuningPassiveCpuNs=add(state->totals.tuningPassiveCpuNs,cpu);
+        if(!valid)++state->totals.tuningPassiveInvalidClocks;
+    }
     void run() noexcept {
         brokerThreadId=glob2::nativeThreadId();brokerThreads=1;const auto cpuStart=glob2::threadCpuNs();
         for(;;) {
@@ -898,7 +907,9 @@ class DeviceBroker
                 for(const auto& state:registrations)if(state->optionalBusy.load()){optionalOwner=state;break;}
             }
             const auto schedulerEnd=glob2::threadCpuNs();
-            if(optionalOwner) {
+            const bool passive=selected && (work==Work::Observation || work==Work::Cadence);
+            if(passive)recordPassive(selected,glob2::threadCpuDeltaNs(schedulerStart,schedulerEnd),validCpuInterval(schedulerStart,schedulerEnd));
+            else if(optionalOwner) {
                 if(optionalOwner->probeAccounting)optionalOwner->probeAccounting->accountStep(schedulerStart,schedulerEnd);
                 else optionalOwner->pendingProbeSchedulerCpuNs+=glob2::threadCpuDeltaNs(schedulerStart,schedulerEnd);
             }
@@ -906,18 +917,25 @@ class DeviceBroker
             if(!selected) continue;
             if(work==Work::Required) execute(selected);
             else if(work==Work::Initialize) initialize(selected);
-            else if(work==Work::Cadence){std::lock_guard lock(selected->mutex);cadenceLocked(*selected);}
+            else if(work==Work::Cadence){
+                const auto start=glob2::threadCpuNs();
+                {std::lock_guard lock(selected->mutex);cadenceLocked(*selected);}
+                const auto end=glob2::threadCpuNs();
+                recordPassive(selected,glob2::threadCpuDeltaNs(start,end),validCpuInterval(start,end));
+            }
             else if(work==Work::Probe) advanceProbe(selected);
             else {
                 const auto optionalStart=glob2::threadCpuNs();
                 GradientDeviceState::Observation observation;
+                std::shared_ptr<CpuSavingPolicy> observedPolicy;
                 {std::lock_guard lock(selected->mutex);observation=std::move(selected->observations[
                     selected->observationRead++%selected->observations.size()]);}
                 if(auto session=observation.session.lock();session && session->currentGeneration()==observation.generation)
                     if(auto policy=session->learningPolicy()) {
+                        observedPolicy=policy;
                         if(!selected->startupCharged) {
                             policy->recordTuningOverhead(observation.tick,selected->totals.tuningStartupUpperCpuNs,
-                                selected->totals.tuningStartupClockValid);
+                                selected->totals.tuningStartupClockValid,CpuSavingPolicy::TuningCostKind::ColdInitialization);
                             selected->startupCharged=true;
                         }
                         if(observation.batchOfferFallback)
@@ -945,11 +963,16 @@ class DeviceBroker
                                     auto batch=observation.key;batch.batch=count;policy->qualify(batch,Plan::Frozen8,true);
                                 }
                         }
-                        const auto end=glob2::threadCpuNs();
-                        policy->recordTuningOverhead(observation.tick,glob2::threadCpuDeltaNs(optionalStart,end),optionalStart && end>=optionalStart);
-                        const auto metrics=policy->metrics();
-                        std::lock_guard lock(selected->mutex);selected->totals.automaticPolicy=metrics;
                     }
+                const auto end=glob2::threadCpuNs();
+                recordPassive(selected,glob2::threadCpuDeltaNs(optionalStart,end),validCpuInterval(optionalStart,end));
+                if(observedPolicy) {
+                    observedPolicy->recordTuningOverhead(observation.tick,selected->pendingPassiveCpuNs,
+                        selected->pendingPassiveClockValid,CpuSavingPolicy::TuningCostKind::PassiveObservation);
+                    selected->pendingPassiveCpuNs=0;selected->pendingPassiveClockValid=true;
+                    const auto metrics=observedPolicy->metrics();
+                    std::lock_guard lock(selected->mutex);selected->totals.automaticPolicy=metrics;
+                }
             }
             brokerCpuNs=glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs());
         }

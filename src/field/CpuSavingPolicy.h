@@ -36,6 +36,7 @@ public:
     static constexpr unsigned ProbePeriod=128, MinimumPairs=8, CooldownRequests=64;
     struct Choice { Plan plan=Plan(0); std::uint64_t version=0,maximumElapsedNs=0; };
     struct ProbeOffer { Plan plan=Plan(0);std::uint64_t reservedCpuNs=0,elapsedNs=0; };
+    enum class TuningCostKind { OptionalAdministration, ColdInitialization, PassiveObservation };
     enum class ProbeKind { PaidCpuReplay, AcceptedCpuCapture, AcceptedCpuBatchCapture };
     enum class CapturePhase { AwaitingAcceptedReference, ReferenceBound, Running, Reaping };
     struct ProbeTicket {
@@ -53,6 +54,9 @@ public:
     struct Metrics {
         std::uint64_t acceptedCpuNs=0, probeCpuNs=0, admitted=0, canceled=0, promoted=0, demoted=0;
         unsigned profiles=0;std::uint64_t confidenceQualified=0;bool promotionEnabled=true;
+        // Sum of reported category brackets, not an enclosing process interval.
+        // Only optional exploration consumes rolling credit.
+        std::uint64_t coldInitializationCpuNs=0,passiveObservationCpuNs=0,totalTuningCpuNs=0;
     };
 private:
     struct Reservation {
@@ -168,8 +172,7 @@ private:
            conservativeElapsedNs>slackNs/2) return {};
         std::lock_guard lock(background);
         latestTick=std::max(latestTick,tick);
-        if(active || totals.probeCpuNs>totals.acceptedCpuNs/100 ||
-           reserveCpuNs>totals.acceptedCpuNs/100-totals.probeCpuNs) return {};
+        if(active) return {};
         const auto index=findOrCreate(key);
         if(index==MaxProfiles || profiles[index].cooldown) return {};
         unsigned alternative=MaxAlternatives;
@@ -242,23 +245,29 @@ public:
                 for(const auto& c:credits)if(c.tick<=tick && tick-c.tick<WindowTicks) {
                     accepted=saturatedAdd(accepted,c.accepted);paid=saturatedAdd(paid,c.probes);
                 }
-                if(totals.probeCpuNs>totals.acceptedCpuNs/100 || reserve>totals.acceptedCpuNs/100-totals.probeCpuNs ||
-                   paid>accepted/100 || reserve>accepted/100-paid)return {};
+                if(paid>accepted/100 || reserve>accepted/100-paid)return {};
                 return {a.plan,reserve,a.maximumElapsed?a.maximumElapsed:std::uint64_t(1000000)};
             }
         }
         return {};
     }
-    // Admission attempts and background profile processing are tuning too.
-    // Charging debt instead of hiding rejected work suppresses further probes.
-    void recordTuningOverhead(std::uint64_t tick,std::uint64_t ns,bool valid=true) {
+    // Cold setup and passive observations are reported configuration overhead.
+    // Optional attempts/administration remain paid rolling exploration debt.
+    void recordTuningOverhead(std::uint64_t tick,std::uint64_t ns,bool valid=true,
+        TuningCostKind kind=TuningCostKind::OptionalAdministration) {
         const auto start=glob2::threadCpuNs();std::lock_guard lock(background);
         latestTick=std::max(latestTick,tick);
         const auto end=glob2::threadCpuNs();
         if(!valid || !start || end<start)ns=std::max(ns,totals.acceptedCpuNs/100+1);
-        else ns=ns>UINT64_MAX-(end-start)?UINT64_MAX:ns+end-start;
-        auto& c=credit(latestTick);c.probes=ns>UINT64_MAX-c.probes?UINT64_MAX:c.probes+ns;
-        totals.probeCpuNs=ns>UINT64_MAX-totals.probeCpuNs?UINT64_MAX:totals.probeCpuNs+ns;
+        // Cold CPU is a historical enclosing measurement. Its recording
+        // bookkeeping is inside the caller's passive scope, not charged twice.
+        else if(kind!=TuningCostKind::ColdInitialization)ns=saturatedAdd(ns,end-start);
+        if(kind==TuningCostKind::ColdInitialization)totals.coldInitializationCpuNs=saturatedAdd(totals.coldInitializationCpuNs,ns);
+        else if(kind==TuningCostKind::PassiveObservation)totals.passiveObservationCpuNs=saturatedAdd(totals.passiveObservationCpuNs,ns);
+        else {
+            auto& c=credit(latestTick);c.probes=saturatedAdd(c.probes,ns);
+            totals.probeCpuNs=saturatedAdd(totals.probeCpuNs,ns);
+        }
     }
     // Offline exact-array qualification is supplied by the experiment harness.
     // At most two qualified GPU alternatives may be retained for one class.
@@ -525,7 +534,9 @@ public:
     }
     Metrics metrics() const {
         std::lock_guard lock(background);
-        auto result=totals; result.profiles=published.load(std::memory_order_acquire); return result;
+        auto result=totals;result.totalTuningCpuNs=saturatedAdd(result.probeCpuNs,
+            saturatedAdd(result.coldInitializationCpuNs,result.passiveObservationCpuNs));
+        result.profiles=published.load(std::memory_order_acquire); return result;
     }
 };
 }
