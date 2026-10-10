@@ -7,6 +7,11 @@ on:
         description: Existing immutable public vVERSION tag
         required: true
         type: string
+      upload:
+        description: Sign and upload to TestFlight after archive qualification
+        required: true
+        default: false
+        type: boolean
       audience:
         description: TestFlight audience
         required: true
@@ -24,6 +29,10 @@ on:
       tag:
         required: true
         type: string
+      upload:
+        required: false
+        default: true
+        type: boolean
       audience:
         required: false
         default: external
@@ -49,11 +58,12 @@ jobs:
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
-    environment: ios-testflight
+    environment: ${{ inputs.upload && 'ios-testflight' || '' }}
     outputs:
       commit: ${{ steps.source.outputs.commit }}
     steps:
       - name: Require channel configuration before building
+        if: ${{ inputs.upload }}
         env:
           IOS_ASC_KEY_ID: ${{ secrets.IOS_ASC_KEY_ID }}
           IOS_ASC_ISSUER_ID: ${{ secrets.IOS_ASC_ISSUER_ID }}
@@ -177,6 +187,7 @@ jobs:
 
 
   upload:
+    if: ${{ inputs.upload }}
     needs: build
     name: Sign and upload the exact tagged archive
     environment: ios-testflight

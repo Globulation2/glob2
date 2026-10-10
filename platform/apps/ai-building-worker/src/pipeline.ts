@@ -28,7 +28,13 @@ import {
 } from '@glob2/protocol/node';
 import type { AgentBlobs } from '@glob2/engine/blobs';
 import type { BuildingCompositionResult } from '@glob2/engine/engineCli';
-import { Attempts, ProviderUncertain, ProviderBudget, type BuildingProvider } from './provider.ts';
+import {
+  Attempts,
+  ProviderUncertain,
+  ProviderBudget,
+  ProviderRejected,
+  type BuildingProvider,
+} from './provider.ts';
 import { imagePrompt, processArtwork } from './artwork.ts';
 import { stockReferences, referenceInstructions, type ArtworkReference } from './references.ts';
 export interface Validator {
@@ -116,7 +122,13 @@ export class Pipeline {
     );
     if (!isDeepStrictEqual(original.package, row.input.base))
       throw Error('Base archive does not match the saved request.');
-    const reference = await readFile(join(this.root, 'docs/features/building-catalogs.md'), 'utf8');
+    const reference = (
+      await Promise.all(
+        ['building-catalogs', 'building-semantics', 'building-authoring'].map((name) =>
+          readFile(join(this.root, 'docs/features', name + '.md'), 'utf8'),
+        ),
+      )
+    ).join('\n\n');
     const examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
         readFile(join(this.root, 'data/buildings', name + '.json'), 'utf8'),
@@ -323,6 +335,7 @@ export class Pipeline {
         if (
           error instanceof ProviderUncertain ||
           error instanceof ProviderBudget ||
+          error instanceof ProviderRejected ||
           error instanceof HiveError ||
           signal.aborted
         )

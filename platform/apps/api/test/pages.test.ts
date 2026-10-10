@@ -1,7 +1,44 @@
 import { registerCatalog } from '@glob2/i18n/server';
+import Fastify from 'fastify';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { describe, expect, it } from 'vitest';
-import { html, pageHtml, pageText, setPageLocale, sendPage } from '../src/web/pages.ts';
+import {
+  html,
+  pageHtml,
+  pageText,
+  setPageLocale,
+  sendPage,
+  pageAssetRoutes,
+} from '../src/web/pages.ts';
+
+it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP', async () => {
+  const app = Fastify();
+  await app.register(pageAssetRoutes);
+  app.get('/form', (_request, reply) => sendPage(reply, 'Sign in', html`<form></form>`));
+  try {
+    const page = await app.inject('/form');
+    expect(page.body).toContain('<script src="/signin/assets/bootstrap.js"></script>');
+    expect(page.body).toContain('class="g2-ui"');
+    expect(page.headers['content-security-policy']).toContain("script-src 'self'");
+    expect(page.headers['content-security-policy']).not.toContain("script-src 'unsafe-inline'");
+    for (const [file, type] of [
+      ['bootstrap.js', 'text/javascript'],
+      ['tokens.css', 'text/css'],
+      ['glob2-sans.woff2', 'font/woff2'],
+      ['LICENSE-Nunito.txt', 'text/plain'],
+    ]) {
+      const response = await app.inject(`/signin/assets/${file}`);
+      expect(response.statusCode, file).toBe(200);
+      expect(response.headers['content-type']).toContain(type);
+    }
+    const fonts = await app.inject('/signin/assets/fonts.css');
+    expect(fonts.body).toContain('/signin/assets/glob2-sans.woff2');
+    expect(fonts.body).not.toContain('../../assets/');
+    expect((await app.inject('/signin/assets/%2e%2e%2fpackage.json')).statusCode).toBe(404);
+  } finally {
+    await app.close();
+  }
+});
 
 describe('browser form security headers', () => {
   it('preserves same-origin form Origin without leaking referrers to external sites', () => {

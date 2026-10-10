@@ -8,7 +8,7 @@ import { ICON_NAMES, Icon } from '../src/icons.tsx';
 
 afterEach(cleanup);
 
-const SOURCE = join(import.meta.dirname, '../../../../datasrc/icons/tabler');
+const SOURCE = join(import.meta.dirname, '../../../node_modules/@glob2/design-system/assets/icons');
 
 it('uses only icons pinned by the shared Tabler manifest', () => {
   const manifest = JSON.parse(readFileSync(join(SOURCE, 'manifest.json'), 'utf8')) as {

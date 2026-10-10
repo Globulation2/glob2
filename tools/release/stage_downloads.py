@@ -11,14 +11,29 @@ import re
 import subprocess
 
 
-def inventory(directory, tag, commit):
+def inventory(directory, tag, commit, selected=None, client_builds=None):
     if not re.fullmatch(r'v[0-9]+(?:\.[0-9]+)+', tag) or not re.fullmatch('[0-9a-f]{40}', commit):
         raise ValueError('Invalid release identity')
+    if selected is None and client_builds is not None:
+        raise ValueError('Client build identities require an explicit staged package selection')
     version=tag[1:]; packages=[]
+    if selected is not None:
+        from downloads_manifest import REQUIRED
+        if not selected or not set(selected) <= REQUIRED:
+            raise ValueError('Select supported package identities for the staged cohort')
+        if client_builds is None:
+            raise ValueError('Staged inventory requires captured client build identities')
     def add(platform, arch, kind, minimum, filename, dependencies=None):
+        if selected is not None and (platform, arch, kind) not in selected: return
         path=directory/filename
         if not path.is_file(): raise ValueError('Missing final package: '+filename)
         item=dict(platform=platform,architecture=arch,format=kind,minimumOs=minimum,filename=filename)
+        if selected is not None:
+            from downloads_manifest import validate_client_build
+            key = ':'.join((platform, arch, kind))
+            build = client_builds.get(key)
+            validate_client_build(build)
+            item['clientBuild'] = build
         if dependencies: item['dependencies']=dependencies
         packages.append(item)
     def normalize(pattern, filename):
@@ -31,9 +46,11 @@ def inventory(directory, tag, commit):
     add('windows','x86_64','zip','Windows 10 (64-bit)',f'glob2-{version}-windows-x86_64.zip')
     for arch in ('arm64','x86_64'): add('macos',arch,'dmg','macOS 15.0',f'Glob2-{version}-macos-{arch}.dmg')
     add('linux','x86_64','flatpak','Flatpak with GNOME 50 runtime','glob2.flatpak')
-    snap=normalize('globulation2_*.snap',f'glob2-{version}-linux-x86_64.snap')
+    snap=(normalize('globulation2_*.snap',f'glob2-{version}-linux-x86_64.snap')
+          if selected is None or ('linux','x86_64','snap') in selected else '')
     add('linux','x86_64','snap','Linux with snapd',snap)
-    rpm=normalize(f'glob2-{version}-*.fc43.x86_64.rpm',f'glob2-{version}-linux-x86_64-fedora43.rpm')
+    rpm=(normalize(f'glob2-{version}-*.fc43.x86_64.rpm',f'glob2-{version}-linux-x86_64-fedora43.rpm')
+         if selected is None or ('linux','x86_64','rpm') in selected else '')
     add('linux','x86_64','rpm','Fedora 43',rpm)
     add('linux','x86_64','tar.gz','Ubuntu 22.04 (64-bit)',f'glob2-{version}-linux-x86_64-ubuntu22.04.tar.gz',
         ['Requires the system libraries listed in the archive INSTALL.txt file.'])
@@ -41,7 +58,7 @@ def inventory(directory, tag, commit):
         add('android',arch,'apk','Android 7.0 (API 24)',f'glob2-{version}-android-{abi}.apk')
     source=f'glob2-{version}.tar.gz'
     if not (directory/source).is_file(): raise ValueError('Missing tagged source archive')
-    result=dict(schemaVersion=1,sourceCommit=commit,packages=packages,sources=[dict(filename=source)])
+    result=dict(schemaVersion=2 if selected is not None else 1,sourceCommit=commit,packages=packages,sources=[dict(filename=source)])
     (directory/'package-inventory.json').write_text(json.dumps(result,indent=2)+'\n')
     return result
 
@@ -51,7 +68,12 @@ def main():
     parser.add_argument('--artifacts',type=Path,required=True)
     parser.add_argument('--tag',required=True); parser.add_argument('--source-commit',required=True)
     parser.add_argument('--list-files',action='store_true'); parser.add_argument('--publish-draft',action='store_true')
-    args=parser.parse_args(); data=inventory(args.artifacts,args.tag,args.source_commit)
+    parser.add_argument('--package', action='append', help='Staged package identity platform:architecture:format')
+    parser.add_argument('--client-builds', type=Path, help='JSON identities keyed by staged package identity')
+    args=parser.parse_args()
+    selected = {tuple(value.split(':')) for value in args.package} if args.package else None
+    builds = json.loads(args.client_builds.read_text()) if args.client_builds else None
+    data=inventory(args.artifacts,args.tag,args.source_commit,selected,builds)
     files=[str(args.artifacts/item['filename']) for item in data['packages']+data['sources']]
     files.append(str(args.artifacts/'package-inventory.json'))
     if args.list_files: print('\n'.join(files))

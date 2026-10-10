@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "HiveClient.h"
 #include "HiveObservation.h"
 #include "GameGUI.h"
@@ -122,6 +123,7 @@ Client::Client(GameGUI &g, Online::PlatformClient &p, std::string m, int seat, C
 	: gui(g), platform(p), observations(g.game, g.localTeamNo), environment(std::move(e)),
 	  match(std::move(m)), clientId(uuid())
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	base = "/api/v1/hive/matches/" + match + "/" + std::to_string(seat);
 	auto live = alive;
 	rest(HttpFetch::Method::Get, "/api/v1/hive/account", nullptr,
@@ -372,6 +374,7 @@ void Client::finish(const Json &r)
 }
 void Client::update(bool caughtUp)
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	ready = caughtUp && !globalContainer->replaying && !globalContainer->liveSpectating &&
 			gui.localTeamNo >= 0 && gui.localTeamNo < gui.game.mapHeader.getNumberOfTeams() &&
 			gui.game.teams[gui.localTeamNo] && gui.game.teams[gui.localTeamNo]->isAlive;
@@ -594,6 +597,7 @@ void Client::deliverResult()
 }
 void Client::command(const std::string &text, bool ongoing)
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	if (text.empty())
 		return;
 	if (commandSending)
@@ -634,6 +638,7 @@ void Client::command(const std::string &text, bool ongoing)
 }
 void Client::stop()
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	if (controlStatus["commander"] == "Stopping…")
 		return;
 	if (current.is_object() && current.contains("id"))
@@ -653,6 +658,7 @@ void Client::stop()
 }
 void Client::change(const std::string &id, const std::string &action)
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	auto it = programs.find(id);
 	if (it == programs.end())
 		return;
@@ -683,6 +689,7 @@ void Client::change(const std::string &id, const std::string &action)
 }
 void Client::buyCredits()
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	GAGCore::ApplicationHost::openUrl(platform.origin() + "/commander");
 }
 Json Client::standingOrders() const
@@ -700,6 +707,7 @@ Json Client::standingOrders() const
 }
 bool Client::save()
 {
+	if constexpr (!ClientFeatures::Commander) return true;
 	try
 	{
 		Json saved = {{"version", 1},
@@ -733,6 +741,7 @@ bool Client::save()
 }
 void Client::restore()
 {
+	if constexpr (!ClientFeatures::Commander) return;
 	try
 	{
 		std::string bytes;

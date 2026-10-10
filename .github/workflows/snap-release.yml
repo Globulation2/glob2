@@ -85,7 +85,7 @@ jobs:
           SNAP: ${{ steps.snap.outputs.snap }}
         run: |
           sudo snap install --dangerous "$SNAP"
-          snap run globulation2 --version
+          snap run globulation2 info version
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: snap-candidate

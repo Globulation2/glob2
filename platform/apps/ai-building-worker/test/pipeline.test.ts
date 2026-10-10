@@ -21,6 +21,7 @@ import {
   Attempts,
   OpenAIBuildings,
   ProviderUncertain,
+  ProviderRejected,
   type BuildingProvider,
 } from '../src/provider.ts';
 let database: TestDatabase, studio: BuildingAiStudio, blobs: AgentBlobs, directory: string;
@@ -135,6 +136,10 @@ it('delivers normalized artwork in a validated immutable archive and charges one
   expect(t.revisions[0]?.report.valid).toBe(true);
   expect(t.revisions[0]?.package.sprites).toHaveLength(2);
   expect(p.image).toHaveBeenCalledTimes(1);
+  const designPrompt = p.text.mock.calls[0]?.[1];
+  expect(designPrompt).toContain('suppliesDirectStockMaterials');
+  expect(designPrompt).toContain('the first twelve positions use that fixed material order');
+  expect(designPrompt).toContain('completed placeable variant needs instant placement');
   expect(await studio.credits.balance(f.account)).toMatchObject({ balance: 2, reserved: 0 });
 });
 it('answers questions without images or a credit charge', async () => {
@@ -147,6 +152,18 @@ it('answers questions without images or a credit charge', async () => {
   await pipeline(p).tick();
   expect(p.image).not.toHaveBeenCalled();
   expect((await studio.credits.balance(f.account)).balance).toBe(3);
+});
+it('returns a provider rejection without spending a design repair call and releases the credit', async () => {
+  const f = await fixture(),
+    p = await provider();
+  p.image.mockRejectedValue(
+    new ProviderRejected('Provider refused this request (HTTP 400): unsupported background'),
+  );
+  await pipeline(p).tick();
+  expect(p.text).toHaveBeenCalledTimes(1);
+  expect(p.image).toHaveBeenCalledTimes(1);
+  expect((await studio.request(f.id))?.error).toContain('unsupported background');
+  expect(await studio.credits.balance(f.account)).toMatchObject({ balance: 3, reserved: 0 });
 });
 it('keeps stock camera references when all four player reference slots are used', async () => {
   const hashes = await Promise.all(
@@ -183,7 +200,7 @@ it('creates the finished structure first and reuses its source for construction 
           next: 'building',
           previous: '',
           propertiesJson: '{"isBuildingSite":1,"width":2,"height":2}',
-          semanticsJson: '{"placeable":true,"constructionCost":{"wood":3}}',
+          semanticsJson: '{"placeable":true,"constructionCost":{"wood":3},"assignmentLimit":6}',
         },
         {
           ...entry,
@@ -230,7 +247,13 @@ it('resumes a completed design stage after a restart', async () => {
   const f = await fixture(),
     row = (await studio.claim())!,
     p = await provider();
-  const reference = await readFile(resolve(root, 'docs/features/building-catalogs.md'), 'utf8'),
+  const reference = (
+      await Promise.all(
+        ['building-catalogs', 'building-semantics', 'building-authoring'].map((name) =>
+          readFile(resolve(root, 'docs/features', name + '.md'), 'utf8'),
+        ),
+      )
+    ).join('\n\n'),
     examples = await Promise.all(
       ['inn', 'hospital', 'defencetower', 'swarm'].map((name) =>
         readFile(resolve(root, 'data/buildings', name + '.json'), 'utf8'),
@@ -306,7 +329,7 @@ it.runIf(!!process.env['BUILDING_NATIVE_BINARY'])(
             next: 'building',
             previous: '',
             propertiesJson: '{"width":2,"height":2,"isBuildingSite":1,"hpInit":1,"hpMax":200}',
-            semanticsJson: '{"placeable":true,"constructionCost":{"wood":3}}',
+            semanticsJson: '{"placeable":true,"constructionCost":{"wood":3},"assignmentLimit":6}',
             presentationJson: '{"displayName":"Mushroom hospital construction"}',
           },
         ],

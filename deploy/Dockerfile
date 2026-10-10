@@ -84,9 +84,14 @@ RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,
 # ---------------------------------------------------------------- Node build
 
 FROM ${NODE_IMAGE} AS node-deps
+ARG GLOB2_DESIGN_SYSTEM_SHA
+ENV GLOB2_DESIGN_SYSTEM_SHA=${GLOB2_DESIGN_SYSTEM_SHA}
+LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app/platform
 # Manifests first, so dependency layers survive source edits.
 COPY platform/package.json platform/package-lock.json ./
+COPY platform/scripts/design-system.mjs scripts/design-system.mjs
 COPY platform/packages/protocol/package.json packages/protocol/
 COPY platform/packages/db/package.json packages/db/
 COPY platform/packages/core/package.json packages/core/
@@ -109,7 +114,7 @@ COPY platform/apps/api/package.json apps/api/
 COPY platform/apps/worker/package.json apps/worker/
 COPY platform/apps/engine-agent/package.json apps/engine-agent/
 COPY platform/apps/web/package.json apps/web/
-RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --no-audit --no-fund
+RUN --mount=type=cache,id=glob2-npm,target=/root/.npm test -n "$GLOB2_DESIGN_SYSTEM_SHA" && npm ci --no-audit --no-fund && node scripts/design-system.mjs
 
 FROM cpp-base AS music-web-build
 RUN apt-get update && apt-get install -y --no-install-recommends autoconf automake libtool xz-utils && rm -rf /var/lib/apt/lists/*
@@ -125,8 +130,6 @@ COPY examples/javascript /app/examples/javascript
 COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
-# The navigation shares the game's Tabler icon sources (src/icons.tsx).
-COPY datasrc/icons/tabler /app/datasrc/icons/tabler
 # Set authoring and Terrain Studio import the shared resource registry.
 COPY data/resources/registry.json /app/data/resources/registry.json
 COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
@@ -135,7 +138,7 @@ RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL
     npm exec --workspace @glob2/web -- vite build
 
 FROM node-deps AS platform-runtime-deps
-RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund
+RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund && node scripts/design-system.mjs
 COPY platform/tsconfig.base.json platform/tsconfig.json ./
 COPY platform/packages packages
 COPY platform/apps/api apps/api
@@ -156,6 +159,8 @@ RUN rm -rf packages/*/test apps/*/test && \
 # platform-api (default command), platform-worker (`node apps/worker/src/main.ts`)
 # and the operator CLI (`platform …`).
 FROM ${NODE_IMAGE} AS platform
+ARG GLOB2_DESIGN_SYSTEM_SHA
+LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent \
       /var/lib/glob2/db/migrator /var/lib/glob2/db/api /var/lib/glob2/db/worker /etc/glob2 && \
@@ -258,7 +263,7 @@ CMD ["node", "apps/ai-terrain-worker/src/main.ts"]
 # Building authoring uses the matching native catalog validator and source examples.
 FROM engine-agent AS ai-building-worker
 USER root
-COPY docs/features/building-catalogs.md /opt/glob2/share/docs/features/building-catalogs.md
+COPY docs/features/building-catalogs.md docs/features/building-semantics.md docs/features/building-authoring.md /opt/glob2/share/docs/features/
 COPY data/gfx/inn0b0.png data/gfx/inn0b0r.png data/gfx/hosp0b0.png data/gfx/hosp0b0r.png data/gfx/defencetower0b0.png data/gfx/defencetower0b0r.png /opt/glob2/share/studio/building-references/
 ENV GLOB2_SOURCE_DIR=/opt/glob2/share
 USER 10001:10001
@@ -266,6 +271,8 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=
 CMD ["node", "apps/ai-building-worker/src/main.ts"]
 
 FROM ${CADDY_IMAGE} AS caddy
+ARG GLOB2_DESIGN_SYSTEM_SHA
+LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
 RUN setcap -r /usr/bin/caddy && chown -R 10001:10001 /data /config
 USER 10001:10001
 COPY deploy/Caddyfile /etc/caddy/Caddyfile
@@ -321,6 +328,8 @@ RUN find /usr/lib -type l -lname '/etc/alternatives/*' -exec sh -ec \
     'for link do target="$(readlink -f "$link")"; case "$target" in /usr/*) ;; *) exit 1;; esac; ln -sf "$target" "$link"; done' sh {} +
 
 FROM ai-music-runtime AS ai-music-worker
+ARG GLOB2_DESIGN_SYSTEM_SHA
+LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
 COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs

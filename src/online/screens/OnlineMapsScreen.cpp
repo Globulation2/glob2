@@ -1,3 +1,4 @@
+#include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineMapsScreen.h"
@@ -807,9 +808,9 @@ Element OnlineMapsScreen::mineBody(const Presentation &p, bool phone)
 Element OnlineMapsScreen::build(const Presentation &p)
 {
 	const bool phone = p.touch && p.compact();
-	std::vector<Element> body{
-		row({button("library/maps", "Maps", [] {}),
-			 button("library/generators", "Generators",
+	std::vector<Element> libraryTabs{button("library/maps", "Maps", [] {})};
+	if constexpr (ClientFeatures::CommunityGenerators)
+		libraryTabs.push_back(button("library/generators", "Generators",
 					[this]
 					{
 						screens.push(std::make_unique<OnlineGeneratorsScreen>(screens),
@@ -819,8 +820,9 @@ Element OnlineMapsScreen::build(const Presentation &p)
 											 endExecute(origin == Origin::Room ? USED_IN_ROOM
 																			   : OPEN_ROOM);
 									 });
-					})},
-			{p.pt(8)}),
+					}));
+	std::vector<Element> body{
+		row(std::move(libraryTabs), {p.pt(8)}),
 		tab == Tab::Browse ? browseBody(p, phone) : mineBody(p, phone)};
 	if (!status.empty())
 		body.push_back(caption(status, false));

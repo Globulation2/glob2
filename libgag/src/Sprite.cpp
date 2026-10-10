@@ -44,6 +44,8 @@ namespace GAGCore
 {
 	static std::set<Sprite*> loadedSprites;
 	static bool highResolutionEnabled = false;
+    static size_t requestedHighResolutionGeneration = 0;
+    static std::string requestedHighResolutionDirectory;
     static std::string packDirectory, packText;
     static bool packRead=false;
     static size_t packGeneration = 0;
@@ -406,10 +408,17 @@ namespace GAGCore
 
     void Sprite::requestHighResolution(bool enabled)
     {
+        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+        if (highResolutionEnabled == enabled &&
+            requestedHighResolutionGeneration == Toolkit::assets().sourceGeneration() &&
+            requestedHighResolutionDirectory == directory) return;
         highResolutionEnabled = enabled;
         packRead = false; packText.clear(); packEntries.clear(); packSource = {};
         pendingHighResolution.clear();
         Toolkit::assets().invalidate();
+        requestedHighResolutionGeneration = Toolkit::assets().sourceGeneration();
+        requestedHighResolutionDirectory = directory;
         for (auto *sprite : loadedSprites) {
             auto prepared = std::make_unique<Sprite>();
             prepared->fileName = sprite->fileName;
@@ -452,6 +461,8 @@ namespace GAGCore
     }
     void Sprite::setHighResolution(bool enabled)
     {
+        // Explicit synchronous reloads refresh assets even when the preference is unchanged.
+        requestedHighResolutionGeneration = 0;
         requestHighResolution(enabled);
         while (!pollHighResolution(4)) {
             Toolkit::assets().poll();

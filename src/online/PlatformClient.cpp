@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "app/ClientFeatures.h"
 #include "PlatformClient.h"
 #include "InstanceConfig.h"
 #include "NetTransport.h"
@@ -330,7 +331,7 @@ void PlatformClient::sendHello()
 	Json params = {{"protocol", REALTIME_PROTOCOL_VERSION},
 				   {"client",
 					{{"platform", options.platform},
-					 {"generatorSharing", true},
+					 {"generatorSharing", ClientFeatures::CommunityGenerators},
 					 {"version", options.clientVersion.substr(0, 64)},
 					 {"simVersion", options.simVersion.toJson()}}}};
 	const bool withToken = !tokens.accessToken.empty();

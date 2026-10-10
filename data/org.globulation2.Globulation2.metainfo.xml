@@ -22,6 +22,10 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.0.3" date="2026-10-10"><description><p>Fixed mobile dependency manifest verification.</p></description></release>
+    <release version="0.11.0.2" date="2026-10-10">
+      <description><p>Improved native packaging and release verification.</p></description>
+    </release>
     <release version="0.11.0.1" date="2026-10-10">
       <description>
         <p>Improved packaging for native desktop and mobile releases.</p>

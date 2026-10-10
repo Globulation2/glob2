@@ -21,6 +21,7 @@ import { GameArt } from '../art.tsx';
 import { ErrorNotice, Loaded, MapImage, PlayerLink, TableWrap } from '../components/common.tsx';
 import { MapPreview } from '../components/MapPreview.tsx';
 import { date } from '../format.ts';
+import { useFeatures } from '../features.tsx';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 
@@ -459,6 +460,7 @@ function ReportForm({ mapId, onDone }: { mapId: string; onDone: () => void }) {
 
 function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => void }) {
   useLocale();
+  const features = useFeatures();
   const { navigate } = useRouter();
   const map = detail.map;
   const [title, setTitle] = useState(map.title);
@@ -539,15 +541,17 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
         </div>
       </form>
       {map.authoring?.kind === 'ai' ? (
-        <div className="card">
-          <h3>{t('AI generated map')}</h3>
-          <p>
-            {t(
-              'This version keeps its original map. Create a revision in AI Map Studio or upload an edited copy as a new map.',
-            )}
-          </p>
-          <Link to="/map-studio">{t('Open AI Map Studio')}</Link>
-        </div>
+        features.includes('map-studio') && (
+          <div className="card">
+            <h3>{t('AI generated map')}</h3>
+            <p>
+              {t(
+                'This version keeps its original map. Create a revision in AI Map Studio or upload an edited copy as a new map.',
+              )}
+            </p>
+            <Link to="/map-studio">{t('Open AI Map Studio')}</Link>
+          </div>
+        )
       ) : (
         <form
           className="card"

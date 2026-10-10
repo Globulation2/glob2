@@ -123,16 +123,40 @@ if [ -n "$web" ] && [ -d "$web" ]; then
 	tar czf "$backup/web-client.tar.gz" -C "$web" .
 	echo "backup: web client -> $backup/web-client.tar.gz"
 fi
-# Keep the newest $keep backups.
-count=$(find "$backups" -mindepth 1 -maxdepth 1 -type d | wc -l)
-if [ "$count" -gt "$keep" ]; then
-	find "$backups" -mindepth 1 -maxdepth 1 -type d | sort | head -n $((count - keep)) | while read -r old; do
-		rm -rf "$old"
-	done
-fi
+# Keep deployment backups only; manual and scheduled backups have separate owners.
+# Always retain this run's backup, including when the host clock moves backwards.
+python3 - "$backups" "$backup" "$keep" <<'PY'
+from pathlib import Path
+import re
+import shutil
+import sys
+
+root, current = map(Path, sys.argv[1:3])
+keep = max(1, int(sys.argv[3]))
+managed = sorted(path for path in root.iterdir()
+                 if path.is_dir() and not path.is_symlink()
+                 and (path / 'revision').is_file()
+                 and re.fullmatch(r'[0-9]{8}T[0-9]{6}Z(?:\.[0-9]{6})?', path.name))
+old = [path for path in managed if path != current]
+for path in old[:max(0, len(managed) - keep)]:
+    shutil.rmtree(path)
+PY
 
 # ------------------------------------------------------------------- 2. build
 phase=build
+# Resolve the shared theme once for every Node image in this deployment.
+GLOB2_DESIGN_SYSTEM_SHA=${GLOB2_DESIGN_SYSTEM_SHA:-$(setting GLOB2_DESIGN_SYSTEM_SHA)}
+if [ -z "$GLOB2_DESIGN_SYSTEM_SHA" ]; then
+ GLOB2_DESIGN_SYSTEM_SHA=$(git ls-remote https://github.com/Globulation2/glob2-design-system.git refs/heads/main | cut -f1)
+fi
+case "$GLOB2_DESIGN_SYSTEM_SHA" in
+ *[!a-f0-9]*|'') echo "Invalid design-system SHA" >&2; exit 1 ;;
+esac
+[ "${#GLOB2_DESIGN_SYSTEM_SHA}" -eq 40 ] || { echo "Design-system SHA must have 40 characters" >&2; exit 1; }
+export GLOB2_DESIGN_SYSTEM_SHA
+echo "design system: $GLOB2_DESIGN_SYSTEM_SHA"
+echo "$GLOB2_DESIGN_SYSTEM_SHA" > "$backup/target-design-system-revision"
+
 # The images running now, kept as :previous for a rollback.
 images=$(compose config --images | sort -u)
 for image in $images; do

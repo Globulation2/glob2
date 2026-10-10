@@ -284,7 +284,7 @@ jobs:
           if ($process.ExitCode -ne 0) { throw 'Final signed installation failed' }
           $env:PATH = "$env:SystemRoot/System32;$env:SystemRoot"
           if ((Get-AuthenticodeSignature "$install/glob2.exe").Status -ne 'Valid') { throw 'Installed game signature invalid' }
-          $client = Start-Process -FilePath "$install/glob2.exe" -ArgumentList '--version' -Wait -PassThru
+          $client = Start-Process -FilePath "$install/glob2.exe" -ArgumentList @('info', 'version') -Wait -PassThru
           if ($client.ExitCode -ne 0) { throw 'Final installed client cannot load its runtime' }
           New-Item -ItemType Directory -Force "$install/games" | Out-Null
           Set-Content "$install/games/user.game" 'user save'

@@ -32,6 +32,13 @@ captures but does not globally clear the cache. These are
 presentation caches owned by the graphics context, released while that context
 is current; they are neither saved nor consulted by simulation code.
 
+High-resolution sprite layers are shared by gameplay, editors and background
+scenes. Changing screens preserves published layers and pending reload work.
+Preference changes, a new asset source generation or a different pack directory
+start a reload; unchanged requests do not. Explicit synchronous reloads used by
+tools still refresh unchanged artwork. Disabling the preference releases the
+optional layers through asset polling, rather than through screen destruction.
+
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
 Fully revealed resources use canonical map rows, with sorted source-tile indices

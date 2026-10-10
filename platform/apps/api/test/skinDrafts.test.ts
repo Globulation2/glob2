@@ -11,7 +11,10 @@ let other: Player;
 beforeAll(async () => {
   harness = await createHarness();
   instance = await harness.start({
-    instance: { auth: { providers: [], local: { enabled: true } } },
+    instance: {
+      skinDesigner: { enabled: true, salesEnabled: true },
+      auth: { providers: [], local: { enabled: true } },
+    },
   });
   owner = await registeredPlayer(instance, 'DraftOwner');
   other = await registeredPlayer(instance, 'OtherPainter');

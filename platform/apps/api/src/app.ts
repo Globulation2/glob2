@@ -1,3 +1,4 @@
+import { publicFeatures, registerPublicFeatureGuards } from './publicFeatures.ts';
 import { generatorLibraryRoutes } from './generators/routes.ts';
 import { buildingLibraryRoutes } from './buildings/library.ts';
 import { buildingDraftRoutes } from './buildings/drafts.ts';
@@ -212,6 +213,7 @@ export async function buildApp(
     }
   });
 
+  registerPublicFeatureGuards(app);
   app.get('/api/v1/instance', async (): Promise<InstanceInfo> => {
     const { config } = services;
     const origin = config.publicOrigin;
@@ -244,7 +246,7 @@ export async function buildApp(
           maps: [...new Set(queue.mapPool.map((entry) => entry.generatorId))].slice(0, 64),
         })),
       guestsAllowed: config.instance.guests.enabled,
-      features: ['queue.multi'],
+      features: publicFeatures(config.instance),
     };
   });
 

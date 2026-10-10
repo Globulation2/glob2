@@ -71,6 +71,8 @@ void MainMenuScreen::loadWordmark(int logoWidth)
 
 Element MainMenuScreen::build(const Presentation &p)
 {
+	if (community.visible)
+		return community.build(p, [this] { invalidate(); });
 	auto choose = [this](int code) { return [this, code] { endExecute(code); }; };
 	auto action = [&](const char *key, int code, ButtonOptions options)
 	{
@@ -180,6 +182,7 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 			content.push_back(action("[editor]", EDITOR, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
+			content.push_back(button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, rowStyle));
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 			content.push_back(button("menu/privacy", "Privacy policy", [] {
 #if defined(GLOB2_AMAZON_RELEASE)
@@ -247,6 +250,7 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 	}, utility));
 #endif
+	utilities.insert(utilities.end() - 1, button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, utility));
 	WrapOptions grid;
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;

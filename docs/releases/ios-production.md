@@ -5,7 +5,7 @@ Submit a qualified iOS build while retaining manual publication.
 ## iOS production submission and manual publication
 
 Dispatch `ios-testflight.yml` from mirror `master` as the owner with the exact
-public tag and `audience: external`. An eligible upload emits the
+public tag, `upload: true` and `audience: external`. An eligible upload emits the
 `ios-upload-provenance` artifact only after upload succeeds, recording the tag,
 source commit, application ID, marketing version, build number and archive binary
 hash. The artifact is retained for 90 days. Save release evidence externally if
