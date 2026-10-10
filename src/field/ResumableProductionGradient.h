@@ -40,6 +40,13 @@ public:
     // broker must use the default native clock for all accounting/qualification.
     struct Clock {void* context=nullptr;std::uint64_t (*read)(void*)=nullptr;};
     struct Metrics {
+        // This is paid optional work, including cold copy, allocation, clocks
+        // and resumable bookkeeping. Shared SIMD proves array equivalence,
+        // not equal CPU cost. Initial promotions MUST use the actual accepted
+        // required CPU job cost frozen before admission, never this cpuNs.
+        // GPU-accepted counterfactuals provide exact arrays/conservative
+        // monitoring only until warm eager calibration proves a valid bound
+        // against the strongest production CPU path.
         std::uint64_t cpuNs=0,lastChunkCpuNs=0,maxChunkCpuNs=0,chunks=0,entries=0,overshoots=0;
         std::size_t reservedHostBytes=0,bucketBytes=0,peakBucketBytes=0;
         bool cpuClockAvailable=false,uniformProfile=false,classic=false;
