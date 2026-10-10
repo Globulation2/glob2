@@ -8,7 +8,7 @@ Import('PackTar')
 
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     files = Split("""changelog  glob2.6             glob2.docs         README.source
-                     compat     glob2-data.dirs     glob2.install      glob2.sgml            rules
+                     compat     glob2-data.dirs     glob2.install                  rules
                      control    glob2-data.install  glob2.menu         SConscript
                      copyright  glob2.dirs          README.Debian""")
     PackTar(env['TARFILE'], files)

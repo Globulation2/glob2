@@ -13,6 +13,7 @@
 #include "FairnessModel.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"
+#include "FileManager.h"
 #include "BuildingArtwork.h"
 #include "IntBuildingType.h"
 #include "MapGenerator.h"
@@ -611,6 +612,7 @@ int runMapStudy(int argc, char **argv)
 	GlobalContainer globals(argv[3], buildingCatalog);
 	globalContainer = &globals;
 	globals.runNoX = true;
+    for(int i=4;i<argc;++i)if(std::string(argv[i]).starts_with("data-dir="))globals.fileManager->addDir(std::string(argv[i]).substr(9));
 	globals.settings.rememberUnit = false;
 
 	IntBuildingType::init();
@@ -664,7 +666,7 @@ int runMapStudy(int argc, char **argv)
 				return 2;
 			std::string id = arg.substr(0, eq);
 			// Consumed before GlobalContainer construction, not a numeric generator control.
-			if (id == "building-catalog" || id == "building-artwork") continue;
+			if (id == "building-catalog" || id == "building-artwork" || id == "data-dir") continue;
 			if (id == "dump" || id == "save" || id == "name" || id == "overlay" || id == "result")
 			{
 				(id == "dump"   ? dump

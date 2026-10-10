@@ -34,7 +34,7 @@ it('isolates every map command and rewrites only private scratch paths', async (
     maxOutputBytes: 65536,
   });
   const signal = new AbortController().signal;
-  for (const flag of ['--preview-map', '--verify-match', '--import-map-image']) {
+  for (const flag of ['map', 'preview', 'match', 'verify', 'map', 'import-image']) {
     await launch(
       {
         binary: '/opt/glob2/bin/glob2',

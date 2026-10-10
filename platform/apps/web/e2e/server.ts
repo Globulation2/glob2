@@ -157,7 +157,7 @@ if (process.env['GENERATOR_E2E_BINARY']) {
   const { handleEngineJobResult, insertBlob } = await import('@glob2/play');
   const { stdout } = await promisify(execFile)(
     resolve(repo, process.env['GENERATOR_E2E_BINARY']),
-    ['--sim-version'],
+    ['info', 'sim-version', '--format', 'json'],
     { cwd: repo },
   );
   const sim = JSON.parse(stdout);
@@ -272,7 +272,7 @@ if (process.env['SKIN_E2E_RENDER_BINARY']) {
   const probe = await runProcess({
     binary,
     cwd: repo,
-    args: ['--skin-render-info'],
+    args: ['assets', 'skin-info', '--format', 'json'],
     limits: { timeoutMs: 10000 },
   });
   if (probe.code !== 0) throw new Error('Skin fixture renderer probe failed');

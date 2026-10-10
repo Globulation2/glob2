@@ -18,11 +18,11 @@ class ResourceCollectionTest(unittest.TestCase):
         profiles = []
 
         def run(command, **options):
-            if '--nox' in command:
+            if 'repeat' in command:
                 replay = Path(options['env']['GLOB2_REPLAY_PATH'])
                 Path(str(replay) + '.checksums').write_bytes(b'x' * 1501)
-            elif '--verify-match' in command:
-                directory = Path(command[command.index('--out') + 1])
+            elif 'verify' in command:
+                directory = Path(command[command.index('--output-dir') + 1])
                 directory.mkdir()
                 (directory / 'checksums.txt').write_bytes(b'x\n' * 601)
                 (directory / 'verdict.json').write_text('{"verdict":"verified"}')

@@ -13,7 +13,7 @@ GLOB2_USER_DATA_DIR=/tmp/glob2-browser-fixture-profile \
 GLOB2_TEST_SEED=42 \
 GLOB2_REPLAY_PATH="$PWD/browser/tests/fixtures/cross-replay.replay" \
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
-./build/darwin/client/release/src/glob2 --nox games/cross-replay.game.gz 1500 1
+./build/darwin/client/release/src/glob2 game repeat games/cross-replay.game.gz 1500 1
 ```
 
 Use the corresponding native build path on other platforms. This fixture is
@@ -34,10 +34,10 @@ an isolated output directory and profile:
 ```sh
 GLOB2_USER_DATA_DIR="$PWD/artifacts/studio-reference/profile" \
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy GLOB2_CHECKSUM_SIDECAR=1 \
-./build/linux/client/release/src/glob2 --run-game \
+./build/linux/client/release/src/glob2 game run \
   --map-file "$PWD/platform/apps/engine-agent/fixtures/ais/two.map.gz" --game-seed 19 \
   --player javascript --ai-script "0:$PWD/examples/javascript/studio-starter.js" \
-  --player numbi --ticks 1024 --replay true --telemetry checksums \
+  --player numbi --ticks 1024 --write-replay --telemetry checksums \
   --save initial --save final --output-dir "$PWD/artifacts/studio-reference/result"
 sha256sum examples/javascript/studio-starter.js \
   platform/apps/engine-agent/fixtures/ais/two.map.gz \

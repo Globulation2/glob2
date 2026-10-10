@@ -41,7 +41,7 @@ std::string uuid()
 #ifndef __EMSCRIPTEN__
 Json runWorker(const Json &input)
 {
-	const char *args[] = {executable.c_str(), "--hive-worker", nullptr};
+	const char *args[] = {executable.c_str(), "dev", "hive-worker", nullptr};
 	SDL_PropertiesID props = SDL_CreateProperties();
 	auto *environment = SDL_CreateEnvironment(false);
 	SDL_SetPointerProperty(props, SDL_PROP_PROCESS_CREATE_ARGS_POINTER, const_cast<char **>(args));

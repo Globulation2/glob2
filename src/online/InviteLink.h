@@ -12,12 +12,13 @@
 //                                                (a former official origin's
 //                                                link means the official one)
 //   ?join=<code> on the web client's page        the page's own instance
-//   --join <link or code> [--instance <origin>]  command line
+//   online join <link or code> [--instance <origin>]  command line
 //
 // Links arrive at launch (command line, browser query) or while running
 // (macOS/iOS URL events, Android intents). Either way they become the pending
 // join; the hub consumes it with takePendingJoin(). A running client is not
 // handed links from a second launch in v1: the second launch joins directly.
+namespace Cli { struct Request; }
 namespace Online
 {
 struct InviteLink
@@ -51,10 +52,8 @@ void clearPendingJoin();
 // Accepts an invite or catalog-play URL from launch arguments or URL events,
 // keeping its destination until the frontend can open it.
 bool acceptInviteText(const std::string &text);
-// Launch arguments: invite links as bare arguments, or --join <link or code>
-// with an optional --instance <origin> (default: the official instance).
-// Returns how many arguments starting at index were consumed (0: not ours).
-int acceptLaunchArguments(int argc, char **argv, int index);
+// Apply a validated online launch command; invalid destinations throw.
+void acceptLaunchRequest(const Cli::Request &request);
 // Catalog play links: glob2://play?... and https://<instance>/play/?...
 bool acceptMapPlayText(const std::string &text);
 } // namespace Online

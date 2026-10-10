@@ -145,6 +145,8 @@ def select(paths, labels=(), known=False):
             add(path, 'map_generators', 'compatibility')
         elif path.endswith(('.h', '.hpp', '.hh')):
             add(path, *FLAGS)
+        elif path.startswith('src/app/cli/') or path in {'src/app/Glob2.cpp', 'src/app/GlobalContainerArgs.cpp', 'tools/cli_reference.py', 'test/test_cli_smoke.py'}:
+            add(path, 'native', 'browser', 'windows', 'android', 'macos', 'compatibility', 'cross_platform', 'platform', 'deployment')
         elif is_test_source(path):
             name = Path(path).name
             if name.startswith('Hive'):

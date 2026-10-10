@@ -1,4 +1,5 @@
 """Immutable supplied builds. No source builds or dependency installation."""
+import json
 import os
 import hashlib
 import importlib.resources
@@ -8,6 +9,17 @@ import shutil
 import subprocess
 import tempfile
 from .common import lock, atomic_json, canonical, digest, file_hash, hash_id, inside, read_json
+
+
+def validate_cli(executable, directory):
+    """A bounded, asset-free probe; CLI identity is independent of the catalog."""
+    try:
+        description = json.loads(subprocess.check_output(
+            [str(executable), 'help', '--format', 'json'], cwd=directory, timeout=10))
+    except (subprocess.SubprocessError, OSError, ValueError) as error:
+        raise ValueError('Unable to probe Glob2 CLI 2: ' + str(error)) from error
+    if description.get('cli_version') != 2 or description.get('schema_version') != 1 or not isinstance(description.get('commands'), list):
+        raise ValueError('Unsupported Glob2 CLI: requires CLI 2 and description schema 1')
 
 
 def platform_identity():
@@ -24,6 +36,8 @@ def package_identity():
 def inspect_bundle(directory, verify=True):
     directory = Path(directory).resolve()
     manifest = read_json(directory / 'bundle.json')
+    if manifest.get('cli_version') != 2:
+        raise ValueError('bundle requires Glob2 CLI 2; register a new bundle')
     identity = manifest['id']
     hash_id(identity)
     if digest({k: v for k, v in manifest.items() if k != 'id'}) != identity:
@@ -49,11 +63,11 @@ def register_bundle(source, destination, executable, revision, options=None, dir
         raise ValueError('bundle destination must be outside supplied source')
     target_platform = target_platform or platform_identity()
     if capabilities is None:
+        validate_cli(exe, source)
         if target_platform != platform_identity():
             raise ValueError('cross-platform registration requires supplied capabilities JSON')
-        import json
-        capabilities = json.loads(subprocess.check_output([str(exe), '--headless-catalog'], cwd=source, timeout=60))
-    manifest = {'schema_version': 1, 'source_revision': revision, 'dirty_identity': dirty_identity,
+        capabilities = json.loads(subprocess.check_output([str(exe), 'info', 'catalog', '--format', 'json'], cwd=source, timeout=60))
+    manifest = {'schema_version': 1, 'cli_version': 2, 'source_revision': revision, 'dirty_identity': dirty_identity,
                 'build_options': options or {}, 'platform': target_platform, 'executable': executable,
                 'capabilities': capabilities, 'files': []}
     for path in sorted(source.rglob('*')):

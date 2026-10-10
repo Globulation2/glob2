@@ -322,15 +322,15 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   even when the workflow API reports it as queued, and protects scheduled runs. Closed-PR caches and old
   master cache generations are reclaimed on closure and in a daily sweep.
 
-For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
-option. `-test-games-nox` runs random AI games indefinitely unless bounded as
+For headless games, use the client binary's `game repeat <game-file> --ticks <steps> --runs <runs>`
+option. `dev random-games` runs random AI games indefinitely unless bounded as
 explained in [headless replay generation](headless-replays.md). Replays default
 to `~/.glob2/replays/last_game.replay`; `GLOB2_REPLAY_PATH` overrides the location.
 See `test/README.md` for the Map-subclass test pattern that avoids linking the
 full simulation for map-predicate tests.
 
-The client also offers `--generate-map`, `--preview-map`, and
-`--list-map-generators` modes (including optional `--json` reports;
+The client also offers `map generate`, `map preview`, and
+`map generators` modes (including optional `--report-file` reports;
 [format and metric meanings](../map-generators/REPORT.md)); see [map CLI](../map-generators/CLI.md) for config files,
 settings, PNG output, and previews of existing maps and saves. PNG export uses
 the shared `MapPreview` widget on an offscreen software surface; all map CLI
@@ -742,8 +742,8 @@ The native client exports production skin artwork without menu, audio or
 simulation startup:
 
 ```sh
-glob2 --skin-render-info
-glob2 --render-skin --manifest skin.json --texture texture.png \
+glob2 assets skin-info --format json
+glob2 assets render-skin --manifest skin.json --texture texture.png \
   --material material.png --output-dir sprites
 ```
 
@@ -1579,7 +1579,7 @@ Its separate `write mature game fixtures` case creates control, sparse-ice and
 patchwork-ice saves. Set `GLOB2_HAZARD_BENCH_SAVE` to a mature save (the default is
 `games/cross-replay.game`) and `GLOB2_TEST_ARTIFACTS` to the output directory. Produce
 fixtures with the older build so both readers accept exactly the same bytes. Use
-`--run-game --benchmark-warmup` to exclude loading and initial cache rebuilding
+`game run --benchmark-warmup` to exclude loading and initial cache rebuilding
 from whole-engine CPU time per tick. Alternate revision order across repeats and
 report distributions; changed routes also change the later simulation workload.
 
@@ -1770,7 +1770,7 @@ run `python3 tools/dev_environment.py sdkmanager -- --licenses` yourself before 
 platform/build packages with `mobile/setup_tools.py --sdk-packages`.
 
 ```sh
-python3 tools/dev_environment.py paths --json
+python3 tools/dev_environment.py paths --report-file
 python3 tools/dev_environment.py paths --field android_sdk
 python3 tools/dev_environment.py status
 python3 tools/dev_environment.py prune --dry-run
@@ -1970,8 +1970,8 @@ also remains the headless default and the equivalence reference.
 - Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
-  LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
-  `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
+  LINKFLAGS="-fsanitize=thread"` and run a windowed `dev random-games --display` session or a headless
+  `game run` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
   with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
   `.github/workflows/thread-sanitizer.yml` runs both games under ThreadSanitizer nightly,
   through the main build workflow and on demand. The risk selector includes it
@@ -2264,7 +2264,7 @@ use the existing structured runner with its saved seed and orders, for example:
 
 ```sh
 GLOB2_USER_DATA_DIR=artifacts/software-renderer/fixture-profile \
-  build/darwin/client/release/src/glob2 --run-game \
+  build/darwin/client/release/src/glob2 game run \
   --load-game "$PWD/artifacts/software-renderer/initial.game.gz" --ticks 12000 \
   --save every:6000 --save final --telemetry checksums \
   --output-dir "$PWD/artifacts/software-renderer/populated"

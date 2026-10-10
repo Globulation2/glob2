@@ -123,7 +123,7 @@ whether generation must refuse. It does not silently accept disconnected colonie
 ## Study the mechanism and the outcome
 
 `tools/map_generation_study.py` is the shared local-study adapter for the native
-`--headless-catalog` and `--generate-map` JSON interfaces. It translates tile dimensions to
+`info catalog --format json` and `map generate` JSON interfaces. It translates tile dimensions to
 exponents, isolates temporary profiles, applies timeouts, checks return codes and distinguishes
 `completed`, `refused` and `execution_error`. Infrastructure errors are not map refusals.
 The native result retains its more specific status and diagnostic.

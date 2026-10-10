@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """One-machine control study for any generator: every control on its own, then random rolls of everything.
 
-Reads the generator's controls from `glob2 --list-map-generators ID`, runs the native binary in parallel
+Reads the generator's controls from `glob2 map generators ID`, runs the native binary in parallel
 and keeps one compact JSON line per map. Run from the repository root:
 
   python3 .agents/skills/glob2-map-design/scripts/control_study.py hidden-oasis ablation --out DIR

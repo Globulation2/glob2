@@ -584,7 +584,7 @@ worker. Migration 0049 adds private account drafts; 0050 adds published families
 immutable archives, social activity and the `validate-buildings` engine job kind.
 Rebuild and deploy the engine-agent image from the matching engine source, then
 deploy the website. The agent enables this job kind only when its binary's
-`--headless-catalog` advertises `compose_buildings`; a recent heartbeat must also
+`info catalog --format json` advertises `compose_buildings`; a recent heartbeat must also
 advertise the same stock catalog hash used for publication.
 
 Publication is unavailable until a compatible agent is present. Existing agents
@@ -1248,7 +1248,7 @@ python3 test/deployment/platform_stack_smoke.py --attach glob2-platform \
 
 `test/deployment/live_match_e2e.py` then plays a real match on the instance: two
 guests create and join a room by invite code, start it with AI seats on a generated
-map, and two headless native clients (`glob2 --turn-client`, built from the same
+map, and two headless native clients (`glob2 online turn-client`, built from the same
 sim version) play it through the relay until a sudden-death rule ends it. It checks
 that both clients' per-tick checksums agree, and, with `--psql`, that the relay
 reported the match, uploaded its record and the verify-match job judged it
@@ -1256,7 +1256,7 @@ reported the match, uploaded its record and the verify-match job judged it
 
 ```sh
 python3 test/deployment/live_match_e2e.py --origin https://play.example.org \
-    --glob2 build/linux/client/release/src/glob2 --out artifacts/live-e2e \
+    --glob2 build/linux/client/release/src/glob2 --output-dir artifacts/live-e2e \
     --psql "docker compose -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
 ```
 
@@ -1285,7 +1285,7 @@ fresh stack:
 1. The instance has local sign-in and a small rated queue (`e2e-ranked`, one
    128×128 generated map).
 2. Two new local accounts join the queue, get the ranked accept prompt and accept.
-3. Two headless clients (`glob2 --turn-client`) play the match through a relay. They
+3. Two headless clients (`glob2 online turn-client`) play the match through a relay. They
    run from the engine-agent image, so client, relay and verifier share one build
    and sim version. Their per-tick checksums must agree.
 4. Player A quits after 40 s, so B wins and the game ends (B would quit 30 s later
@@ -1361,7 +1361,7 @@ everything: delete the VM, the address, the firewall rule and the DNS records.
   includes the optional `list()` the blob collector uses for stored files no row
   names).
 - Relays on other hosts need manual setup (above).
-- Until the engine reports its own data hash (`glob2 --sim-version`), the
+- Until the engine reports its own data hash (`glob2 info sim-version --format json`), the
   engine-agent image passes the hash computed by `deploy/sim_version.py` at build
   time; the agent refuses to start if the two ever disagree.
 - The relay key is one shared secret for all relays; the engine-agent key likewise
@@ -1603,7 +1603,7 @@ period. Financial ledger history follows existing retention policy.
 
 Serve `/api/v1/terrain-studio/threads/<id>/events` as an unbuffered authenticated
 SSE stream, as for Map Studio. Keep the matching browser game runtime deployed:
-the scene preview uses the optional `--validate-set --gallery 1` renderer path.
+the scene preview uses the optional `map validate-set --gallery 1` renderer path.
 Existing packages, save formats, and simulation rules are unchanged by this studio.
 
 ### AI Building Studio deployment
@@ -1755,6 +1755,19 @@ Roll out additive migrations and backend before the dependent web build. Verify
 live dashboard totals against source tables using read-only queries; test destructive
 actions on a disposable database. Schema rollback is unnecessary for a UI rollback;
 collection/display can each be disabled independently.
+
+### CLI 2 coordinated rollout
+
+Ship the [CLI 2 binary and its consumers](../tools/cli.md#migrating-from-cli-1)
+in the same release: engine-agent and skin-render-worker images, native clients,
+browser launchers, deployment probes and tournament worker packages. Drain old
+workers before switching images; keep their binaries with any in-flight jobs until
+those jobs finish. Updated workers probe `glob2 help --format json` with a bounded
+timeout and require `schema_version: 1` and `cli_version: 2`. A rejected version is
+a deployment mismatch; rebuild the matching image rather than rewriting arguments.
+Rollback these components together. The simulation identity, saved games, catalog
+and job result schemas remain independent of the CLI version. This rollout does
+not require deleting production records, blobs, accounts or completed jobs.
 
 ### Generator Studio rollout
 

@@ -248,7 +248,7 @@ the instance description) load on demand.
 The match page links "Watch in browser" to `/play/?replay=<replay URL>`. The
 browser shell (`browser/shell.html`) downloads that replay while the game loads,
 writes it to the in-memory `/tmp` (never to saved storage), and starts the game
-with `-replay <file>`, the existing replay viewer. It accepts http(s) URLs only,
+with `replay <file>`, the existing replay viewer. It accepts http(s) URLs only,
 sends credentials only to its own origin, and caps the file at 64 MiB. When the
 download fails, the game starts at the main menu. `glob2Diagnostics.snapshot()`
 reports `watchReplay` (`none`, `downloading`, `ready` or `failed`).

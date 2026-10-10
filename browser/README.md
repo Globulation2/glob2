@@ -237,7 +237,7 @@ baselines. Online and LAN players fetch the room's map by its hash.
 ## Automated tests
 
 Build the native client and `transport-test` target before running the full
-suite. Editor generation tests read the native client's `--headless-catalog`
+suite. Editor generation tests read the native client's `info catalog --format json`
 to find named landscapes in the picker; this prevents additions to the catalog
 from silently changing which generator a test exercises. UI actions still use
 real pointer and keyboard events.

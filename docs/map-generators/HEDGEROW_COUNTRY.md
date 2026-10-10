@@ -138,11 +138,11 @@ scons release=1 server=0 -j4 map-generator-study engine-tests \
 python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest glob2-hedgerow-golden --require-rows
 python3 test/run_tests.py --filter 'CustomGameSetup/*'
-build/src/glob2 --generate-map hedgerow-country --seed 19 \
+build/src/glob2 map generate hedgerow-country --seed 19 \
   --width 256 --height 256 --teams 4 \
   --output artifacts/hedgerow-country/default.map \
   --preview artifacts/hedgerow-country/default.png \
-  --json artifacts/hedgerow-country/default.json
+  --report-file artifacts/hedgerow-country/default.json
 ```
 
 ## Validation record

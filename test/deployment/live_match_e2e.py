@@ -14,7 +14,7 @@ rating instead. Either way the verified match is rated and both players'
 ratings change.
 
 Each player's match.start assignment then goes to a headless native client
-(`glob2 --turn-client`), which plays its seat in real time through the
+(`glob2 online turn-client`), which plays its seat in real time through the
 instance's relay with a small order bot, while every client computes the AI
 seats. --engine-command runs the binary another way, e.g. inside the
 engine-agent image, so that it matches the verifier's sim version exactly.
@@ -218,7 +218,7 @@ class Match:
     # ------------------------------------------------------------ steps
 
     def sim_version(self):
-        output = subprocess.check_output([*self.glob2, '--sim-version'], cwd=self.workdir, text=True, timeout=300)
+        output = subprocess.check_output([*self.glob2, 'info', 'sim-version', '--format', 'json'], cwd=self.workdir, text=True, timeout=300)
         self.sim = json.loads(output.strip().splitlines()[-1])
         info = self.instance.request('GET', '/api/v1/instance')[1]
         served = [v for v in info['supportedSimVersions'] if v == self.sim]
@@ -356,8 +356,8 @@ class Match:
             directory = self.out / f'client-{name}'
             if directory.exists():
                 raise Failure(f'{directory} exists; use a fresh --out')
-            command = [*self.glob2, '--turn-client', str(self.out / f'assignment-{name}.json'), '--map',
-                       str(map_path), '--out', str(directory), '--orders-per-second',
+            command = [*self.glob2, 'online', 'turn-client', str(self.out / f'assignment-{name}.json'), '--map-file',
+                       str(map_path), '--output-dir', str(directory), '--orders-per-second',
                        str(self.arguments.orders_per_second), '--max-seconds', str(seconds[index]),
                        '--seed', str(index + 1)]
             log_file = open(self.out / f'client-{name}.log', 'w')

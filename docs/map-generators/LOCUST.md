@@ -107,11 +107,11 @@ to hide difficult maps.
 
 ```sh
 scons release=1 server=0 -j6 build/src/glob2
-GLOB2_USER_DIR=/tmp/glob2-locust-profile build/src/glob2 --generate-map locust \
+GLOB2_USER_DIR=/tmp/glob2-locust-profile build/src/glob2 map generate locust \
   --seed 7 --width 256 --height 256 --teams 4 \
   --output artifacts/locust/locust-7.map \
   --preview artifacts/locust/locust-7.png \
-  --json artifacts/locust/locust-7.json
+  --report-file artifacts/locust/locust-7.json
 ```
 
 Keep verification results and examples in the ignored `artifacts/locust/`

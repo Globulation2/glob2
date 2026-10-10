@@ -1,6 +1,6 @@
 #!/bin/sh
 # The image's data hash (computed from its data/ at build time) until the
-# binary reports its own with --sim-version; the agent refuses to start if the
+# binary reports its own with info sim-version --format json; the agent refuses to start if the
 # two ever disagree.
 set -eu
 if [ -z "${ENGINE_DATA_HASH:-}" ] && [ -z "${ENGINE_SIM_VERSION:-}" ]; then

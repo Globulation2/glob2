@@ -225,7 +225,7 @@ put any bytes in its seat's turns. Before the engine executes a human seat's ord
 `TurnLockstepSession::retrieveOrder` checks it with `OrderValidation::validate`
 (`src/game/orders/OrderValidation.h`). The check reads only the game state at that point of that
 tick and the seat from the bundle, never an identity the order claims, so every client
-and `--verify-match` reach the same verdict. An order that fails, or whose bytes do not
+and `match verify` reach the same verdict. An order that fails, or whose bytes do not
 decode, executes as a `NullOrder` everywhere; the game and every checksum stay the same
 on all machines. AI orders, single player, replays and legacy network games are not
 checked.
@@ -252,7 +252,7 @@ ticks). Any player may resume at any time, and a pause another seat started cost
 resuming player nothing.
 
 `TurnLockstepSession` keeps the bookkeeping from the orders it executes, so every
-client and `--verify-match` agree on it:
+client and `match verify` agree on it:
 
 - A seat's `PauseGameOrder(true)` while the game runs starts a pause and counts one of
   that seat's pauses. With none left, or no time left, it executes as a `NullOrder`
@@ -271,7 +271,7 @@ unknown properties), so they can never play a limited match without it and diver
 
 The session counts verdicts per seat (`TurnLockstepSession::orderAudit()`: accepted,
 stale, rejected, per-reason counts and the first rejected tick). The counts restart when
-the engine reloads the initial state. `--verify-match` reports the same counts for the
+the engine reloads the initial state. `match verify` reports the same counts for the
 record, so the platform can flag a seat that sent rejected orders. Voice is not in the
 record, so rejected voice packets are counted separately and only by live clients.
 
@@ -710,7 +710,7 @@ changing the protocol or the record: see [network telemetry](../development/netw
 
 **Seats, players and teams.** A human or AI seat is a player: seat `s` is
 `BasePlayer` `s`, and that number is what tickets (`seat`, `humanSeats`), the relay,
-`TurnSession`'s local seat, the match record, `--verify-match`, the order audit and
+`TurnSession`'s local seat, the match record, `match verify`, the order audit and
 `match_participants.seat` use. A seat's `team` is the map team it controls. Team
 indices are never renumbered: `result.json`, `match_team_stats` and
 `match_participants.team` use the map's own numbering.
@@ -777,7 +777,7 @@ validation coverage.
 A sim version identifies builds that produce identical games. Its JSON form is
 `{versionMinor, netProtocol, dataHash}` (`SimVersion` in the protocol package) and its
 key is `<versionMinor>-<netProtocol>-<dataHash>`, the string relays copy into the match
-record. `glob2 --sim-version` prints the JSON.
+record. `glob2 info sim-version --format json` prints the JSON.
 
 - `versionMinor` is `VERSION_MINOR` and `netProtocol` is `NET_PROTOCOL_VERSION` in
   `src/app/Version.h`.
@@ -835,7 +835,7 @@ CI enforces what it can detect:
   verification trace changed relative to the base revision while the sim version
   did not.
 - The browser/native equivalence job fails when Linux, Windows, macOS and the browsers agree
-  on a `--verify-match` trace that differs from the committed one: the simulation
+  on a `match verify` trace that differs from the committed one: the simulation
   changed.
 
 The golden match covers only what one short Nicowar/Warrush game reaches, so a passing
@@ -843,7 +843,7 @@ check does not prove the simulation is unchanged; bump whenever a change can mat
 
 ## Match record
 
-`MatchRecord` is the relay's persistent output, consumed by `--verify-match`. Its
+`MatchRecord` is the relay's persistent output, consumed by `match verify`. Its
 encoding is self-contained and big-endian:
 
 ```
@@ -877,7 +877,7 @@ Readers reject unknown magic, a newer `formatVersion`, a bad CRC, trailing bytes
 violated ordering or limit. A future version may add fields, but only behind a version
 check, so older records stay readable.
 
-`glob2 --verify-match` replays a record through the same engine path a live client
+`glob2 match verify` replays a record through the same engine path a live client
 runs: `Engine::initTurnMatch` with a `RecordTransport` that serves the record's turns as
 one relay would. Its contract is in
 [headless replays](../development/headless-replays.md#verifying-a-match-record).
@@ -955,7 +955,7 @@ all of them to agree at every tick (and with the relay's agreed checksums):
 - four engines, one stalled for 5 s (incremental resume) and one restarted as a new
   process (full log, fast-forward from tick 0);
 - three engines where one executes a tampered order: the majority tells it to rejoin,
-  it reloads in place and fast-forwards, and `--verify-match` names its seat;
+  it reloads in place and fast-forwards, and `match verify` names its seat;
 - a player who quits through the sequenced `PlayerQuitsGameOrder` while the others
   play on;
 - three engines where one client sends malformed, mutated and cross-team orders of
@@ -965,7 +965,7 @@ all of them to agree at every tick (and with the relay's agreed checksums):
   undecodable bytes, cross-team orders and voice: the verifier refuses them and still
   verifies.
 
-Each case verifies the relay's record with `--verify-match` and requires the verifier's
+Each case verifies the relay's record with `match verify` and requires the verifier's
 per-tick checksums and `result.json` team outcomes to equal the live clients'. Forged
 turns make the record unverifiable, and a seat whose reports disagree is named. A
 `[benchmark]` case measures rejoin fast-forward time against game length and AI count

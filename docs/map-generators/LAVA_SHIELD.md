@@ -422,11 +422,11 @@ profiles as recorded in the evidence commands.
 For an inspectable map:
 
 ```sh
-build/src/glob2 --generate-map lava-shield -d "$PWD" --seed 7 \
+build/src/glob2 map generate lava-shield --data-dir "$PWD" --seed 7 \
   --width 256 --height 256 --teams 4 \
   --output artifacts/lava-shield/final-7.map \
   --preview artifacts/lava-shield/final-7.png \
-  --json artifacts/lava-shield/final-7.json
+  --report-file artifacts/lava-shield/final-7.json
 ```
 
 The training and held-out studies use `tools.tournaments`, supplied immutable

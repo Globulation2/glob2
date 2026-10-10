@@ -583,7 +583,7 @@ review, and `GLOB2_SKIN_RIGS=0` shows the baked clips beside them. Judge
 candidates on these sheets at game scale as well as on the numbers.
 
 For Studio thumbnails, first export a neutral-paint bundle with `glob2
---render-skin` using its normal manifest, texture, material and
+assets render-skin` using its normal manifest, texture, material and
 output-directory arguments, then extract the selectors:
 
 ```sh

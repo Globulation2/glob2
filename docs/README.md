@@ -53,7 +53,7 @@ dated reports and pull-request artifacts do not belong here.
   and the [LAN playtest guide](multiplayer/lan-playtest.md).
 - **Hosting:** [self-hosting an online instance](hosting/README.md) with the
   Compose stack in `deploy/` (file index: [deploy/README.md](../deploy/README.md)).
-- **Tools:** [distributed tournaments](tools/tournaments.md).
+- **Tools:** [main executable CLI](tools/cli.md) and [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
   the [iPhone/iPad App Store page](mobile/app-store.md),

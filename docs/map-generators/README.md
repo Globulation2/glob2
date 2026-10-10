@@ -27,7 +27,7 @@ plain and renewable woodland on a shared, retreating lake shore.
 ## Development tools
 
 Build the study executable with `scons release=1 map-generator-study`.
-`build/src/glob2 --headless-catalog` exports current control definitions and production
+`build/src/glob2 info catalog --format json` exports current control definitions and production
 execution capabilities. Bulk runners use [shared tournament execution](../tools/tournaments.md);
 `MapGeneratorStudy --catalog` remains a regression-compatible entry point.
 Use `python3 tools/map_generator_study.py --help` for seeded generation studies.

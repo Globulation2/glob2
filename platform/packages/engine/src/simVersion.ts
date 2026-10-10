@@ -1,9 +1,9 @@
 // Which sim version this agent serves, learned from its binary so a mislabelled
 // image cannot verify (or generate maps for) games of another version.
 //
-// - VERSION_MINOR and NET_PROTOCOL_VERSION come from `--headless-catalog`
+// - VERSION_MINOR and NET_PROTOCOL_VERSION come from `info catalog --format json`
 //   (`save_version`, `protocol_version`), which every current binary has.
-// - The data hash comes from `--sim-version` when the binary supports it (the
+// - The data hash comes from `info sim-version --format json` when the binary supports it (the
 //   flag is being added with the engine integration work). Until then it must
 //   be supplied: ENGINE_DATA_HASH, or a full ENGINE_SIM_VERSION key.
 // - An ENGINE_SIM_VERSION that disagrees with the binary is a startup error.
@@ -17,7 +17,7 @@ export class SimVersionError extends Error {
 
 export interface SimVersionSources {
   catalog: Pick<EngineCatalog, 'versionMinor' | 'netProtocol'>;
-  /** What `--sim-version` printed, if the binary supports it. */
+  /** What `info sim-version --format json` printed, if the binary supports it. */
   reported?: SimVersion | undefined;
   env: SimVersionEnv;
 }
@@ -25,7 +25,7 @@ export interface SimVersionSources {
 export interface SimVersionEnv {
   ENGINE_DATA_HASH?: string | undefined;
   ENGINE_SIM_VERSION?: string | undefined;
-  /** "1" runs `--sim-version` even when the catalog does not advertise it. */
+  /** "1" runs `info sim-version --format json` even when the catalog does not advertise it. */
   ENGINE_PROBE_SIM_VERSION?: string | undefined;
 }
 
@@ -42,7 +42,7 @@ export function resolveSimVersion(sources: SimVersionSources): ResolvedSimVersio
     (reported.versionMinor !== catalog.versionMinor || reported.netProtocol !== catalog.netProtocol)
   ) {
     throw new SimVersionError(
-      `--sim-version reports ${reported.versionMinor}/${reported.netProtocol} but the catalog says ${catalog.versionMinor}/${catalog.netProtocol}`,
+      `info sim-version --format json reports ${reported.versionMinor}/${reported.netProtocol} but the catalog says ${catalog.versionMinor}/${catalog.netProtocol}`,
     );
   }
   let override: SimVersion | undefined;
@@ -73,7 +73,7 @@ export function resolveSimVersion(sources: SimVersionSources): ResolvedSimVersio
   const first = candidates[0];
   if (!first) {
     throw new SimVersionError(
-      'cannot determine the data hash: the binary has no --sim-version; set ENGINE_DATA_HASH or ENGINE_SIM_VERSION',
+      'cannot determine the data hash: the binary has no info sim-version --format json; set ENGINE_DATA_HASH or ENGINE_SIM_VERSION',
     );
   }
   for (const [source, hash] of candidates) {
@@ -93,7 +93,7 @@ export function describeSimVersion(resolved: ResolvedSimVersion): string {
   return `${simVersionKey(resolved.simVersion)} (data hash from ${resolved.dataHashSource})`;
 }
 
-/** Asks the binary (catalog `data_hash`, then `--sim-version`) and applies the environment fallbacks. */
+/** Asks the binary (catalog `data_hash`, then `info sim-version --format json`) and applies the environment fallbacks. */
 export async function detectSimVersion(
   engine: Pick<GlobEngine, 'reportedSimVersion'>,
   catalog: EngineCatalog,

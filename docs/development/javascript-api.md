@@ -509,8 +509,8 @@ name: "My AI"}`. Optional string fields are `description`, `version`, and `autho
 Named exports, including renamed export bindings produced by a bundler, and
 standalone `function step()` / `function metadata()` declarations are supported.
 Metadata runs in a separate restricted runtime without randomness or game data.
-Use `glob2 --check-ai bundle.js` to check startup, metadata, callback resolution,
-and initial global serialization. `--check-script` remains compile-only.
+Use `glob2 ai check bundle.js` to check startup, metadata, callback resolution,
+and initial global serialization. `script check` remains compile-only.
 
 [Profile 2 declarations](../../examples/javascript/glob2-v2.d.ts) extend the read
 API above. All imported code must be bundled into one ES module; runtime imports

@@ -69,7 +69,7 @@ during native validation.
 Compose authored manifests with the capability-advertised command:
 
 ```sh
-glob2 --compose-buildings --package first-family.json --package second-family.json
+glob2 assets compose-buildings --format json --package first-family.json --package second-family.json
 ```
 
 An optional `--base PATH` selects a base catalog manifest.
@@ -302,9 +302,9 @@ manifest["experiments"].extend(json.loads((example / "manifest.json").read_text(
 manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
 PYTHON
 
-build/linux/client/release/src/glob2 --run-game \
+build/linux/client/release/src/glob2 game run \
   --building-catalog artifacts/field-kitchen-catalog/manifest.json \
-  --generator 15 --map-seed 42 --param teams=2 --param width=7 --param height=7 \
+  --generator 15 --map-seed 42 --set teams=2 --set width=7 --set height=7 \
   --game-seed 19 --player numbi --player castor --experiment field-kitchens \
   --ticks 512 --save initial --save final --telemetry checksums \
   --output-dir artifacts/field-kitchen-game
@@ -525,7 +525,7 @@ avoiding numeric-serialization differences between JavaScript and C++. All
 release resources recheck visibility and moderation on every request.
 
 For command-line new maps, write the composed catalog snapshot to a JSON file
-and pass `--building-catalog` with `--building-artwork` to `--generate-map`.
+and pass `--building-catalog` with `--building-artwork` to `map generate`.
 The latter accepts the verified `G2BA0001` bundle, which is embedded in the output.
 Format 145 and network protocol 62 introduced this artwork header layout.
 Current save format and replay acceptance are 150, with network protocol 68;

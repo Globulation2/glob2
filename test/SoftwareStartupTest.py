@@ -14,7 +14,7 @@ with tempfile.TemporaryDirectory(prefix="glob2-software-smoke-") as profile:
                        SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy")
     try:
         result = subprocess.run(
-            [str(executable), "-g", "-F", "-m", "-s", "640x480"],
+            [str(executable), "play", "--renderer", "gpu", "--no-fullscreen", "--mute", "--window-size", "640x480"],
             cwd=repository, env=environment, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, text=True, timeout=5)
     except subprocess.TimeoutExpired:

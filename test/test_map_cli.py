@@ -69,8 +69,8 @@ def main():
 
         def run(*args, ok=True):
             args = list(map(str,args))
-            if args[0] in ('--generate-map', '--preview-map') and len(args) >= 2 and '--help' not in args:
-                args[2:2] = ['-d', str(ROOT)]
+            if args[:2] in (['map', 'generate'], ['map', 'preview'], ['map', 'render'], ['map', 'generators']) and '--help' not in args:
+                args[2:2] = ['--data-dir', str(ROOT)]
             try:
                 result = subprocess.run([str(BINARY), *args], cwd=profile, env=env,
                                         capture_output=True, text=True, timeout=90)
@@ -85,14 +85,14 @@ def main():
             log.append({'args': list(map(str,args)), 'exit': result.returncode,
                         'stdout': result.stdout, 'stderr': result.stderr})
             (OUT/'commands.json').write_text(json.dumps(log,indent=2)+'\n')
-            assert result.returncode == (0 if ok else 1), log[-1]
+            assert result.returncode == 0 if ok else result.returncode in (2, 3), log[-1]
             return result.stdout
 
-        assert 'coral' in run('--list-map-generators')
-        catalog = run('--list-map-generators', 'maze')
+        assert 'coral' in run('map', 'generators')
+        catalog = run('map', 'generators', 'maze')
         assert 'cell-shape=2' in catalog and 'width=256' in catalog and '  search:' in catalog
-        assert 'Map launch modes' in run('--generate-map', '--help')
-        assert '--preview-map' in run('--help')
+        assert 'Generate a map at one exact seed' in run('map', 'generate', '--help')
+        assert 'map preview' in run('--help')
         config = OUT / 'maze.cfg'
         config.write_text('# Test CLI precedence even before --config\nseed=99\nwidth=256\nheight=128\nteams=4\nworkers=4\ncell-shape=1\n')
         # --output writes maze.map.gz (an explicit ".map" destination gets a ".gz"
@@ -101,91 +101,110 @@ def main():
         first, second, saved, loaded = (OUT / name for name in ('cli.png','config.png','maze.map.gz','loaded.png'))
         if GENERATION_ONLY:
             env['SDL_VIDEODRIVER'] = 'invalid'
-            run('--generate-map','maze','--seed','7','--width','128','--height','128',
+            run('map', 'generate','maze','--seed','7','--width','128','--height','128',
                 '--teams','4','--set','cell-shape=0','--output',saved)
             original = saved.read_bytes()
-            run('--generate-map','maze','--seed','7','--width','128','--set','cell-shape=0',
+            run('map', 'generate','maze','--seed','7','--width','128','--set','cell-shape=0',
                 '--config',config,'--output',saved)
             assert original == saved.read_bytes(), 'Config/CLI changed serialized map'
-            run('--generate-map','maze','--set','unknown=1','--output',saved,ok=False)
+            run('map', 'generate','maze','--set','unknown=1','--output',saved,ok=False)
             assert original == saved.read_bytes(), 'Invalid settings overwrote map'
             assert (preferences.read_bytes(), preferences.stat().st_mtime_ns) == before
             print('PASS headless map generation, serialized config/CLI equivalence, invalid settings, preferences')
             return
-        run('--generate-map','maze','--seed','7','--width','128','--height','128',
-            '--teams','4','--set','cell-shape=0','--preview',first,'--output',saved,'--json',OUT/'maze.json')
+        run('map', 'generate','maze','--seed','7','--width','128','--height','128',
+            '--teams','4','--set','cell-shape=0','--preview',first,'--output',saved,'--report-file',OUT/'maze.json')
         assert json.loads((OUT/'maze.json').read_text())['map']['width'] == 128
-        run('--generate-map','maze','--seed','7','--width','128','--set','cell-shape=0',
+        run('map', 'generate','maze','--seed','7','--width','128','--set','cell-shape=0',
             '--config',config,'--preview',second)
         width, height, pixels = png(first)
         assert sum(any(pixels[i:i+3]) for i in range(0,len(pixels),3)) > width*height*0.9, 'Terrain was not drawn'
         assert png(first) == png(second), 'Config/CLI precedence changed generation'
         saved_before = saved.read_bytes()
-        run('--preview-map',saved,'--output',loaded)
+        run('map', 'preview',saved,'--output',loaded)
         assert png(first) == png(loaded), 'Generated map preview differs after loading'
+        run('map', 'preview',saved,'--preview',loaded)
+        assert png(first) == png(loaded), '--preview differs from --output'
+        run('map', 'preview',saved,'--output',loaded,'--preview',first,ok=False)
+        terrain = OUT / 'import-controls.png'
+        run('map', 'export-image',saved,'--output',terrain)
+        imported = OUT / 'imported.map.gz'
+        run('map', 'import-image',terrain,'--width','128','--height','128','--teams','4',
+            '--data-dir',ROOT,'--output',imported)
+        imported_bytes = imported.read_bytes()
+        run('map', 'import-image',terrain,'--set','width=128','--set','height=128','--set','teams=4',
+            '--data-dir',ROOT,'--output',imported)
+        assert imported.read_bytes() == imported_bytes, '--set changed image import controls'
+        asset_directory = profile / 'assets-only'
+        asset_directory.mkdir()
+        (asset_directory / 'script-input.map.gz').write_bytes(saved.read_bytes())
+        scripted = profile / 'scripted.map.gz'
+        run('script', 'attach','script-input.map.gz',ROOT/'examples/javascript/scenario.js',scripted,
+            '--data-dir',asset_directory,'--data-dir',ROOT)
+        assert scripted.is_file(), 'Script attachment ignored --data-dir input search paths'
         assert png(first)[:2] == (256,256)
         for scale in (2, 4, 8):
             scaled = OUT / f'scale-{scale}.png'
-            run('--preview-map',saved,'--output',scaled,'--preview-scale',scale)
+            run('map', 'preview',saved,'--output',scaled,'--preview-scale',scale)
             assert png(scaled)[:2] == (128*scale,128*scale)
             if scale == 2:
                 assert png(scaled) == png(first), 'Default differs from explicit 2x'
             explicit = OUT / f'size-{128*scale}.png'
-            run('--preview-map',saved,'--output',explicit,'--preview-size',128*scale)
+            run('map', 'preview',saved,'--output',explicit,'--preview-size',128*scale)
             assert png(scaled) == png(explicit), 'Scale differs from equivalent explicit size'
-        run('--preview-map',saved,'--output',loaded,'--preview-size','128')
+        run('map', 'preview',saved,'--output',loaded,'--preview-size','128')
         assert png(loaded)[:2] == (128,128)
-        run('--preview-map',saved,'--output','relative.png')
+        run('map', 'preview',saved,'--output','relative.png')
         assert png(profile/'relative.png')[:2] == (256,256), 'CLI changed working directory'
         assert saved.read_bytes() == saved_before, 'Preview modified input map'
         for fixture in ('team-stats/version88.game.gz','wrapped-building/reproducer.game.gz','entering-explorer/reproducer.game.gz'):
             source = ROOT / 'test/fixtures' / fixture
             old = source.read_bytes()
-            run('--preview-map',source,'--output',OUT / (source.parent.name+'.png'))
+            run('map', 'preview',source,'--output',OUT / (source.parent.name+'.png'))
             assert source.read_bytes() == old, 'Preview modified save'
             png(OUT / (source.parent.name+'.png'))
         rectangular = OUT / 'rectangular.png'
-        run('--generate-map','maze','--seed','7','--width','256','--height','128','--preview',rectangular)
+        run('map', 'generate','maze','--seed','7','--width','256','--height','128','--preview',rectangular)
         assert png(rectangular)[:2] == (512,256), 'Preview lost map aspect ratio'
         for scale in (4, 8):
-            run('--generate-map','maze','--seed','7','--width','256','--height','128',
+            run('map', 'generate','maze','--seed','7','--width','256','--height','128',
                 '--preview',OUT/f'rectangular-{scale}.png','--preview-scale',scale)
             assert png(OUT/f'rectangular-{scale}.png')[:2] == (256*scale,128*scale)
         premade = next(iter(sorted((ROOT / 'maps').glob('*.map.gz'))))
-        run('--preview-map',premade,'--output',OUT / 'premade.png')
+        run('map', 'preview',premade,'--output',OUT / 'premade.png')
         png(OUT / 'premade.png')
         invalid = [
-            ['--preview-map',saved,'--output',first,'--preview-scale','3'],
-            ['--preview-map',saved,'--output',first,'--preview-scale','0'],
-            ['--preview-map',saved,'--output',first,'--preview-scale','16'],
-            ['--preview-map',saved,'--output',first,'--preview-scale','4','--preview-size','512'],
-            ['--generate-map','maze','--json',OUT/'unused.json','--preview-scale','2'],
-            ['--preview-map',saved,'--output',first,'--preview-scale'],
-            ['--generate-map'], ['--generate-map','unknown','--preview',first],
-            ['--generate-map','maze'], ['--generate-map','maze','--seed'],
-            ['--generate-map','maze','--seed','4294967296','--preview',first],
-            ['--generate-map','maze','--seed','-1','--preview',first],
-            ['--generate-map','maze','--width','127','--preview',first],
-            ['--generate-map','maze','--set','unknown=1','--preview',first],
-            ['--generate-map','maze','--set','cell-shape=99','--preview',first],
-            ['--generate-map','maze','--set','cell-shape=1junk','--preview',first],
-            ['--generate-map','maze','--set','broken','--preview',first],
-            ['--generate-map','maze','--output',first,'--preview',first],
-            ['--generate-map','maze','--output',saved,'--preview-size','256'],
-            ['--generate-map','maze','--config',OUT/'missing.cfg','--preview',first],
-            ['--preview-map',OUT/'missing.game','--output',first],
-            ['--preview-map',saved,'--output',saved],
-            ['--preview-map',saved,'--output',first,'--overlay','unknown'],
-            ['--preview-map',saved,'--output',first,'--preview-size','0'],
-            ['--preview-map',saved,'--output',first,'--preview-size','4294967295'],
-            ['--preview-map',saved,'--output',first,'--seed','7'],
-            ['--preview-map',saved,'--output',OUT],
+            ['map', 'preview',saved,'--output',first,'--preview-scale','3'],
+            ['map', 'preview',saved,'--output',first,'--preview-scale','0'],
+            ['map', 'preview',saved,'--output',first,'--preview-scale','16'],
+            ['map', 'preview',saved,'--output',first,'--preview-scale','4','--preview-size','512'],
+            ['map', 'generate','maze','--report-file',OUT/'unused.json','--preview-scale','2'],
+            ['map', 'preview',saved,'--output',first,'--preview-scale'],
+            ['map', 'generate'], ['map', 'generate','unknown','--preview',first],
+            ['map', 'generate','maze'], ['map', 'generate','maze','--seed'],
+            ['map', 'generate','maze','--seed','4294967296','--preview',first],
+            ['map', 'generate','maze','--seed','-1','--preview',first],
+            ['map', 'generate','maze','--width','127','--preview',first],
+            ['map', 'generate','maze','--set','unknown=1','--preview',first],
+            ['map', 'generate','maze','--set','cell-shape=99','--preview',first],
+            ['map', 'generate','maze','--set','cell-shape=1junk','--preview',first],
+            ['map', 'generate','maze','--set','broken','--preview',first],
+            ['map', 'generate','maze','--output',first,'--preview',first],
+            ['map', 'generate','maze','--output',saved,'--preview-size','256'],
+            ['map', 'generate','maze','--config',OUT/'missing.cfg','--preview',first],
+            ['map', 'preview',OUT/'missing.game','--output',first],
+            ['map', 'preview',saved,'--output',saved],
+            ['map', 'preview',saved,'--output',first,'--overlay','unknown'],
+            ['map', 'preview',saved,'--output',first,'--preview-size','0'],
+            ['map', 'preview',saved,'--output',first,'--preview-size','4294967295'],
+            ['map', 'preview',saved,'--output',first,'--seed','7'],
+            ['map', 'preview',saved,'--output',OUT],
         ]
         for args in invalid:
             run(*args,ok=False)
         config = OUT / 'invalid.cfg'
         config.write_text('not key=value\ninvalid line\n')
-        run('--generate-map','maze','--config',config,'--preview',first,ok=False)
+        run('map', 'generate','maze','--config',config,'--preview',first,ok=False)
         assert (preferences.read_bytes(), preferences.stat().st_mtime_ns) == before
         assert not list(profile.rglob('*.replay'))
     (OUT/'commands.json').write_text(json.dumps(log,indent=2)+'\n')

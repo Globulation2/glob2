@@ -136,6 +136,7 @@ CLIENT_SOURCES = (
     'engine/EngineLoaders.cpp',
     'engine/EngineRun.cpp',
     'engine/EngineTurnTelemetry.cpp',
+    'app/cli/CommandLine.cpp',
     'app/cli/Headless.cpp',
     'app/cli/RenderSkin.cpp',
     'app/cli/VerifyMatch.cpp',

@@ -568,13 +568,13 @@ Calls about a job carry its lease token in `X-Glob2-Lease`.
 At startup the agent learns its sim version from the binary rather than from
 configuration, so a mislabelled image cannot serve the wrong version:
 
-- `VERSION_MINOR` and `NET_PROTOCOL_VERSION` come from `glob2 --headless-catalog`
+- `VERSION_MINOR` and `NET_PROTOCOL_VERSION` come from `glob2 info catalog --format json`
   (`save_version`, `protocol_version`).
 - The data hash comes from the binary when it reports one: a `data_hash` field in
-  the catalog, or `glob2 --sim-version`, which prints
+  the catalog, or `glob2 info sim-version --format json`, which prints
   `{"versionMinor","netProtocol","dataHash"}`. Both are being added with the engine
   integration work. A binary without the flag does not reject it but starts the
-  game, so the agent only runs `--sim-version` when the catalog lists
+  game, so the agent only runs `info sim-version --format json` when the catalog lists
   `sim_version` under `commands` (or `ENGINE_PROBE_SIM_VERSION=1`).
 - Until then, `ENGINE_DATA_HASH` (or a full `ENGINE_SIM_VERSION` key) supplies
   the hash. Any value that disagrees with what the binary reports stops the
@@ -593,11 +593,11 @@ blob the agent stores is also registered in `blobs`.
 
 | Kind | Engine command | Result |
 | --- | --- | --- |
-| `generate-map` | `--generate-map --generator <method> --map-seed <seed> --candidates <n> --param k=v… --write-map true --output-dir` (structured; method ids and revisions from the catalog) | map blob hash, size, dimensions, team count, chosen seed, start quality |
-| `validate-map` | `--preview-map <file> --json report.json` (the game's own loader, no simulation) | `valid: true` with the decompressed hash, dimensions, team count and the file's format version, or `valid: false` with a reason |
-| `render-preview` | `--preview-map <file> --output preview.png --preview-size <px>` | PNG blob hash and pixel size |
-| `verify-match` | `--verify-match <record> --map <file> --out <dir>` | `verified`/`diverged` with the outcome, team statistics and timelines, or `unverifiable` |
-| `validate-buildings` | `--compose-buildings --package <manifest> --artwork-bundle <bundle>` | Archive and stock hashes, suite version, resolved catalog hash and snapshot, and optional artwork hash; deterministic rejection returns `valid: false` and a reason |
+| `generate-map` | `map study <method> --seed <seed> --candidates <n> --set k=v… --write-map --output-dir` (structured; method ids and revisions from the catalog) | map blob hash, size, dimensions, team count, chosen seed, start quality |
+| `validate-map` | `map preview <file> --report-file report.json` (the game's own loader, no simulation) | `valid: true` with the decompressed hash, dimensions, team count and the file's format version, or `valid: false` with a reason |
+| `render-preview` | `map preview <file> --output preview.png --preview-size <px>` | PNG blob hash and pixel size |
+| `verify-match` | `match verify <record> --map-file <file> --output-dir <dir>` | `verified`/`diverged` with the outcome, team statistics and timelines, or `unverifiable` |
+| `validate-buildings` | `assets compose-buildings --format json --package <manifest> --artwork-bundle <bundle>` | Archive and stock hashes, suite version, resolved catalog hash and snapshot, and optional artwork hash; deterministic rejection returns `valid: false` and a reason |
 
 
 Before running the generator, the agent checks the descriptor against the
@@ -621,7 +621,7 @@ header, after the engine has loaded the file. This small read in
 `engineCli.ts` is the only binary parsing in the platform. It is needed because
 the map report gives the engine's version, not the file's.
 
-**`--verify-match` output.** The engine writes (see
+**`match verify` output.** The engine writes (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)), and
 the agent reads:
 
@@ -897,7 +897,7 @@ in the browser without adding browser globals to server checks.
 ```sh
 cd platform
 npm ci
-docker run -d --name glob2-pg -p 127.0.0.1:55432:5432 \
+docker run --data-dir --name glob2-pg -p 127.0.0.1:55432:5432 \
   -e POSTGRES_USER=glob2 -e POSTGRES_PASSWORD=glob2 postgres:16
 npm run check        # lint, format check, type check, translation contracts, tests
 npm run fixtures     # regenerate protocol fixtures after schema changes
@@ -923,7 +923,7 @@ Each milestone is one or more reviewable pull requests; YOG kept working until M
 |     | Milestone                | Content                                                                                                                                                         |
 | --- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | M0  | Foundations              | This workspace, protocol contracts and fixtures, data model, CI job, design docs; C++ JSON, HTTP fetch, WebSocket text mode and the `LockstepSession` interface |
-| M1  | Turn netcode core        | Turn sequencer, jitter buffer, client session, match record, multi-client harness, `--verify-match`                                                             |
+| M1  | Turn netcode core        | Turn sequencer, jitter buffer, client session, match record, multi-client harness, `match verify`                                                             |
 | M2  | Relay and LAN            | `role=relay`; LAN on the new netcode; first playtest of the new netcode's feel                                                                                  |
 | M3  | Identity                 | Accounts, guests, providers, handoff sign-in, tokens and JWKS, platform client, admin CLI, hub sign-in                                                          |
 | M4  | Rooms and matches        | Rooms, uploads, generation jobs, tickets, relay registration and allocation, invite links, room screen, compose stack v2                                        |

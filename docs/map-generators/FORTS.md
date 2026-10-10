@@ -106,17 +106,17 @@ From the repository root:
 
 ```sh
 scons release=1 server=0 -j4 engine-tests map-generator-golden-test build/src/glob2
-build/src/glob2 --list-map-generators forts
-GLOB2_USER_DIR=/tmp/glob2-forts-preview build/src/glob2 --generate-map forts \
+build/src/glob2 map generators forts
+GLOB2_USER_DIR=/tmp/glob2-forts-preview build/src/glob2 map generate forts \
   --seed 1 --width 256 --height 256 --teams 4 \
   --output artifacts/forts/forts-1.map --preview artifacts/forts/forts-1.png \
-  --json artifacts/forts/forts-1.json
+  --report-file artifacts/forts/forts-1.json
 python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest glob2-forts-golden --require-rows
 build/src/MapGeneratorGoldenTest glob2-forts-telemetry --telemetry
 python3 tools/map_telemetry.py collect --generators forts --seed-start 20001 \
   --count 8 --set width=256 --set height=128 --set teams=3 \
-  --jobs 2 --out artifacts/forts-new-study
+  --jobs 2 --output-dir artifacts/forts-new-study
 ```
 
 The existing defaults harness includes Forts checks for the smallest fort with

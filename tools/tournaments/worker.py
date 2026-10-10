@@ -14,7 +14,7 @@ import tempfile
 import uuid
 import zipfile
 
-from .bundles import inspect_bundle, package_identity, platform_identity
+from .bundles import inspect_bundle, package_identity, platform_identity, validate_cli
 from .common import (atomic_json, canonical, copy_decoded, database, digest, file_hash,
                      hash_id, identifier, inside, lock, locked, read_json, store_artifact, transaction)
 from .jobs import get_job_type
@@ -51,6 +51,8 @@ def usage(directory):
     return total
 
 
+_probed_bundles = set()
+
 def installed_bundle(path):
     """Read an immutable bundle after install() has verified and published it."""
     path = Path(path)
@@ -59,6 +61,10 @@ def installed_bundle(path):
     manifest = inspect_bundle(path, verify=False)
     if manifest['id'] != path.name:
         raise ValueError('installed bundle identity mismatch')
+    key = str(path.resolve())
+    if key not in _probed_bundles:
+        validate_cli(inside(path, manifest['executable']), path)
+        _probed_bundles.add(key)
     return manifest
 
 
@@ -80,6 +86,9 @@ class Worker:
         self.root.mkdir(parents=True, exist_ok=True)
         for folder in ('attempts', 'objects', 'bundles', 'spool'):
             (self.root / folder).mkdir(exist_ok=True)
+        for bundle in (self.root / 'bundles').iterdir():
+            if bundle.is_dir() and not bundle.name.startswith('.'):
+                installed_bundle(bundle)
         self.db = database(self.root / 'queue.sqlite')
         self.db.executescript('''
             CREATE TABLE IF NOT EXISTS queue (
@@ -212,6 +221,7 @@ class Worker:
             for entry in manifest['files']:
                 os.chmod(inside(temporary, entry['path']), entry['mode'] & 0o777)
             inspect_bundle(temporary)
+            validate_cli(inside(temporary, manifest['executable']), temporary)
             os.rename(temporary, final)
         return {'installed': True}
 

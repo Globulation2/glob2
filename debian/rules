@@ -112,6 +112,9 @@ binary-arch: install
 #	dh_installcron -a
 #	dh_installinfo -a
 	dh_installman -a debian/glob2.6
+	install -D -m644 data/completions/glob2.bash $(CURDIR)/debian/glob2/usr/share/bash-completion/completions/glob2
+	install -D -m644 data/completions/_glob2 $(CURDIR)/debian/glob2/usr/share/zsh/site-functions/_glob2
+	install -D -m644 data/completions/glob2.fish $(CURDIR)/debian/glob2/usr/share/fish/vendor_completions.d/glob2.fish
 	dh_link -a
 #	Keep the symbols.
 #	dh_strip -a

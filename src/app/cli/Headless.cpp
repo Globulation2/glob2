@@ -272,7 +272,7 @@ struct HeadlessRunner
 		if (!fields.empty() && fields != "maxima") throw std::invalid_argument("Expected --diagnostic-fields maxima");
 		if (fields.empty() && (options.count("--diagnostic-interval") || options.count("--diagnostic-png")))
 			throw std::invalid_argument("Diagnostic options require --diagnostic-fields maxima");
-		const auto diagnosticInterval = unsigned(integer(one(options,"--diagnostic-interval","2500"),1,std::numeric_limits<int>::max()));
+		const auto diagnosticInterval = unsigned(integer(one(options,"--diagnostic-interval",std::to_string(Cli::DefaultDiagnosticInterval)),1,std::numeric_limits<int>::max()));
 		const auto diagnosticPng = one(options,"--diagnostic-png","false");
 		if (diagnosticPng != "true" && diagnosticPng != "false") throw std::invalid_argument("Expected --diagnostic-png true|false");
 		if (diagnosticPng == "true")
@@ -280,14 +280,15 @@ struct HeadlessRunner
 			setHeadlessEnvironment("SDL_VIDEODRIVER","dummy");
 			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
 		}
-		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
+		const unsigned gradientDelay = integer(one(options, "--gradient-delay", std::to_string(Cli::DefaultGradientDelay)), 1, 16);
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str(), one(options, "--building-catalog"));
 		globalContainer=&globals;
+        for(const auto &directory:many(options,"--data-dir"))globals.fileManager->addDir(directory);
 		globals.runNoX=true;
 		globals.structuredHeadless=true;
 		globals.automaticEndingGame=true;
 		globals.automaticGameGlobalEndConditions=true;
-		globals.automaticEndingSteps=integer(one(options, "--ticks", "90000"), 1, std::numeric_limits<int>::max());
+		globals.automaticEndingSteps=integer(one(options, "--ticks", std::to_string(Cli::DefaultTicks)), 1, std::numeric_limits<int>::max());
 		const bool recordReplay=one(options, "--replay", "false") == "true";
 		globals.headlessReplay=false; // Write the replay header after configuring the saved schedule.
 		if(options.count("--replay") && one(options,"--replay")!="true" && one(options,"--replay")!="false")
@@ -673,38 +674,36 @@ struct HeadlessRunner
 	}
 };
 
-int runHeadlessCommand(int argc,char **argv)
+int runHeadlessCommand(const Cli::Request &request)
 {
-	if(argc<2) return -1;
-	const std::string command=argv[1];
-	if(command!="--headless-catalog" && command!="--run-game" && command!="--generate-map"
-		&& command!="--verify-match" && command!="--sim-version" && command!="--turn-client" && command!="--compose-buildings") return -1;
+    const auto &command = request.command;
+    if(command!="info catalog" && command!="game run" && command!="map study"
+        && command!="match verify" && command!="info sim-version" && command!="online turn-client" && command!="assets compose-buildings") return -1;
 	fs::path output;
 	try
 	{
 		isolateEnvironment();
-		if(command=="--verify-match") return runVerifyMatch(argc,argv);
-		if(command=="--turn-client") return runTurnClient(argc,argv);
-        if(command=="--compose-buildings")
+		if(command=="match verify") return runVerifyMatch(request);
+		if(command=="online turn-client") return runTurnClient(request);
+        if(command=="assets compose-buildings")
         {
             std::string base, artwork;
             bool hasArtwork=false;
             std::vector<std::string> packages;
             std::size_t packageBytes=0;
-            for(int i=2; i<argc; ++i)
+            for (const auto &[option, argument] : request.occurrences)
             {
-                const std::string option=argv[i];
-                if(++i>=argc) throw std::invalid_argument("missing value for " + option);
+                if(option=="--format") continue;
                 if(option=="--base")
                 {
                     if(!base.empty()) throw std::invalid_argument("duplicate --base");
-                    base=argv[i];
+                    base=argument;
                 }
                 else if(option=="--artwork-bundle")
                 {
                     if(hasArtwork) throw std::invalid_argument("duplicate --artwork-bundle");
                     hasArtwork=true;
-                    std::ifstream input(argv[i],std::ios::binary);
+                    std::ifstream input(argument,std::ios::binary);
                     if(!input) throw std::invalid_argument("cannot read building artwork bundle");
                     char chunk[8192];
                     while(input) {
@@ -715,7 +714,7 @@ int runHeadlessCommand(int argc,char **argv)
                 }
                 else if(option=="--package")
                 {
-                    std::ifstream input(argv[i], std::ios::binary);
+                    std::ifstream input(argument, std::ios::binary);
                     if(!input) throw std::invalid_argument("cannot read building package");
                     std::string text;
                     char chunk[8192];
@@ -760,19 +759,17 @@ int runHeadlessCommand(int argc,char **argv)
             std::cout << result.dump() << std::endl;
             return 0;
         }
-		if(command=="--sim-version")
+		if(command=="info sim-version")
 		{
-			if(argc!=2) throw std::invalid_argument("--sim-version takes no arguments");
 			GlobalContainer globals("glob2-sim-version");
-			globalContainer=&globals;globals.runNoX=true;
+			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << Online::currentSimVersion().toJson().dump() << std::endl;
 			return 0;
 		}
-		if(command=="--headless-catalog")
+		if(command=="info catalog")
 		{
-			if(argc!=2) throw std::invalid_argument("catalog takes no arguments");
 			GlobalContainer globals("glob2-tournament-catalog");
-			globalContainer=&globals;globals.runNoX=true;
+			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
 				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
 
@@ -789,102 +786,166 @@ int runHeadlessCommand(int argc,char **argv)
 			}
 			std::cout << "],\"generators\":" << std::flush;
 			char a[]="study",b[]="--catalog";char *args[]={a,b};runMapStudy(2,args);
-			std::cout << "}" << std::endl;return 0;
+			std::cout << "}" << std::endl;
+			return 0;
 		}
-		const std::set<std::string> common={"--output-dir","--profile","--building-catalog","--building-artwork"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--fork-rule","--ticks","--compute-threads","--gradient-delay","--resource-growth-delay","--ai-order-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
-		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
-		Options options;
-		for(int i=2;i<argc;++i)
+		Options options = request.options;
+		options.erase("--generator-package");
+		if (command == "map study")
 		{
-			std::string key=argv[i];
-			if (isRemovedComputeOption(key)) throw std::invalid_argument(key + " has been removed; use --compute-threads auto|N");
-			if(!common.count(key) && !(command=="--run-game"?gameKeys:mapKeys).count(key)) throw std::invalid_argument("unknown option: " + key);
-			if(++i>=argc)throw std::invalid_argument("missing value for " + key);
-			options[key].push_back(argv[i]);
+			options["--generator"] = {request.positionals.at(0)};
+			options["--map-seed"] = {request.get("--seed")};
+			options.erase("--seed");
 		}
-		if(command=="--run-game" && options.count("--building-artwork") && !options.count("--generator"))
-			throw std::invalid_argument("--building-artwork requires --generator; loaded maps carry their own artwork");
-		if(one(options,"--output-dir").empty())throw std::invalid_argument("--output-dir is required");
-		output=fs::absolute(one(options,"--output-dir"));
+		if (options.count("--set"))
+		{
+			options["--param"] = options.at("--set");
+			options.erase("--set");
+		}
+		if (options.count("--write-replay"))
+		{
+			options["--replay"] = {"true"};
+			options.erase("--write-replay");
+		}
+		if (command == "game run" && options.count("--building-artwork") &&
+			!options.count("--generator"))
+			throw std::invalid_argument(
+				"--building-artwork requires --generator; loaded maps carry their own artwork");
+		if (one(options, "--output-dir").empty())
+			throw std::invalid_argument("--output-dir is required");
+		output = fs::absolute(one(options, "--output-dir"));
 		fs::create_directories(output);
 		fs::create_directories(output / "profile");
 		setHeadlessEnvironment("GLOB2_USER_DIR", (output / "profile").string().c_str());
 		setHeadlessEnvironment("GLOB2_USER_DATA_DIR", (output / "profile").string().c_str());
-		if(fs::exists(output/"result.json")) throw std::invalid_argument("output directory already contains a result");
+		if (fs::exists(output / "result.json"))
+			throw std::invalid_argument("output directory already contains a result");
 		int code;
-		if(command=="--run-game")
+		if (command == "game run")
 		{
-			if(options.count("--generator"))
+			if (options.count("--generator"))
 			{
-				if(options.count("--map-file") || options.count("--load-game")) throw std::invalid_argument("generator conflicts with file input");
-				std::vector<std::string> generation={"glob2","--generate-map","--output-dir",(output/"generated").string(),"--write-map","true"};
-				for(const auto &key : {"--generator","--map-seed","--param","--candidates","--building-catalog","--building-artwork"})
+				if (options.count("--map-file") || options.count("--load-game"))
+					throw std::invalid_argument("generator conflicts with file input");
+				Cli::Request generation;
+				generation.command = "map study";
+				generation.positionals = {one(options, "--generator")};
+				generation.options["--output-dir"] = {(output / "generated").string()};
+				generation.options["--write-map"] = {"true"};
+				generation.options["--seed"] = {one(options, "--map-seed")};
+				for (const auto &key : {"--param", "--candidates", "--building-catalog",
+										"--building-artwork", "--data-dir"})
 				{
-					for(const auto &value : many(options,key)){generation.push_back(key);generation.push_back(value);}
-					if (std::string(key) != "--building-catalog" && std::string(key) != "--building-artwork") options.erase(key);
+					if (options.count(key))
+						generation.options[std::string(key) == "--param" ? "--set" : key] =
+							options.at(key);
+					// Shared asset paths and catalogs are needed by both stages.
+					if (std::string(key) == "--param" || std::string(key) == "--candidates")
+						options.erase(key);
 				}
-				std::vector<char*> raw;for(auto &value:generation)raw.push_back(&value[0]);
-				const int generated=runHeadlessCommand(raw.size(),raw.data());
-				if(generated!=0)
+				options.erase("--generator");
+				options.erase("--map-seed");
+				const int generated = runHeadlessCommand(generation);
+				if (generated != 0)
 				{
-					if(fs::exists(output/"generated/result.json")) fs::copy_file(output/"generated/result.json",output/"result.json");
-					manifest(output);return generated;
+					if (fs::exists(output / "generated/result.json"))
+						fs::copy_file(output / "generated/result.json", output / "result.json");
+					manifest(output);
+					return generated;
 				}
-				options["--map-file"]={glob2GzipWritePath((output/"generated/map-r0.map").string())};
-				setHeadlessEnvironment("GLOB2_USER_DIR",(output/"profile").string().c_str());
-				setHeadlessEnvironment("GLOB2_USER_DATA_DIR",(output/"profile").string().c_str());
+				options["--map-file"] = {
+					glob2GzipWritePath((output / "generated/map-r0.map").string())};
+				setHeadlessEnvironment("GLOB2_USER_DIR", (output / "profile").string().c_str());
+				setHeadlessEnvironment("GLOB2_USER_DATA_DIR",
+									   (output / "profile").string().c_str());
 			}
-			else if(options.count("--map-seed") || options.count("--param") || options.count("--candidates"))
+			else if (options.count("--map-seed") || options.count("--param") ||
+					 options.count("--candidates"))
 				throw std::invalid_argument("generator options require --generator");
-			code=HeadlessRunner::game(options,output);
+			code = HeadlessRunner::game(options, output);
 		}
 		else
 		{
-			const auto generator=one(options,"--generator");
-            int method=generator.find_first_not_of("0123456789")==std::string::npos
-                ? int(integer(generator,0,INT32_MAX)) : GeneratorRegistry::active().idOf(generator);
+			const auto generator = one(options, "--generator");
+			int method = generator.find_first_not_of("0123456789") == std::string::npos
+							 ? int(integer(generator, 0, INT32_MAX))
+							 : GeneratorRegistry::active().idOf(generator);
 			if (!GeneratorRegistry::active().find(method))
 				throw std::invalid_argument("unknown generator");
-			integer(one(options,"--map-seed"),0,UINT32_MAX);
-			std::vector<std::string> args={"study",std::to_string(method),one(options,"--map-seed"),one(options,"--profile","glob2-tournament"),"tuning","quality","result="+(output/"result.json").string()};
-			if (options.count("--building-catalog")) args.push_back("building-catalog="+one(options,"--building-catalog"));
-            if (options.count("--building-artwork")) args.push_back("building-artwork="+one(options,"--building-artwork"));
+			integer(one(options, "--map-seed"), 0, UINT32_MAX);
+			std::vector<std::string> args = {"study",
+											 std::to_string(method),
+											 one(options, "--map-seed"),
+											 one(options, "--profile", "glob2-tournament"),
+											 "tuning",
+											 "quality",
+											 "result=" + (output / "result.json").string()};
+			for (const auto &directory : many(options, "--data-dir"))
+				args.push_back("data-dir=" + directory);
+			if (options.count("--building-catalog"))
+				args.push_back("building-catalog=" + one(options, "--building-catalog"));
+			if (options.count("--building-artwork"))
+				args.push_back("building-artwork=" + one(options, "--building-artwork"));
 			std::set<std::string> seen;
-			for(const auto &param:many(options,"--param"))
+			for (const auto &param : many(options, "--param"))
 			{
-				auto eq=param.find('=');
-				if(eq==std::string::npos || !seen.insert(param.substr(0,eq)).second)throw std::invalid_argument("invalid or duplicate generator parameter");
-				integer(param.substr(eq+1),INT32_MIN,INT32_MAX);
-				const auto key=param.substr(0,eq);
-				bool known=key=="width"||key=="height"||key=="teams"||key=="workers";
-				for(const auto &c:GenerationRequest::controls(method))known=known||c.id==key;
-				if(!known)throw std::invalid_argument("unknown generator parameter: " + key);
+				auto eq = param.find('=');
+				if (eq == std::string::npos || !seen.insert(param.substr(0, eq)).second)
+					throw std::invalid_argument("invalid or duplicate generator parameter");
+				integer(param.substr(eq + 1), INT32_MIN, INT32_MAX);
+				const auto key = param.substr(0, eq);
+				bool known =
+					key == "width" || key == "height" || key == "teams" || key == "workers";
+				for (const auto &c : GenerationRequest::controls(method))
+					known = known || c.id == key;
+				if (!known)
+					throw std::invalid_argument("unknown generator parameter: " + key);
 				args.push_back(param);
 			}
-			args.push_back("candidates="+std::to_string(integer(one(options,"--candidates","0"),0,10000)));
-			args.push_back("rotations="+std::to_string(integer(one(options,"--rotations","1"),1,Team::MAX_COUNT)));
-			const auto write=one(options,"--write-map","false");
-			if(write!="true"&&write!="false")throw std::invalid_argument("--write-map must be true or false");
-			if(write=="true")args.push_back("save="+(output/"map").string());
-			for(const auto &spec:many(options,"--perturb"))args.push_back("perturb="+spec);
-			for(const auto &report:many(options,"--report"))
-				if(report=="headroom"||report=="diagnostics"||report=="timing")args.push_back(report);
-				else if(report=="terrain")args.push_back("dump="+(output/"terrain.txt").string());
-				else throw std::invalid_argument("unknown report: " + report);
-			Headless::writeJson((output/"progress.json").string(),"{\"schema_version\":1,\"stage\":\"generation\"}");
-			std::vector<char*> raw;for(auto &arg:args)raw.push_back(&arg[0]);
-			code=runMapStudy(raw.size(),raw.data());
+			args.push_back("candidates=" +
+						   std::to_string(integer(one(options, "--candidates", "0"), 0, 10000)));
+			args.push_back("rotations=" + std::to_string(integer(one(options, "--rotations", "1"),
+																 1, Team::MAX_COUNT)));
+			const auto write = one(options, "--write-map", "false");
+			if (write != "true" && write != "false")
+				throw std::invalid_argument("--write-map must be true or false");
+			if (write == "true")
+				args.push_back("save=" + (output / "map").string());
+			for (const auto &spec : many(options, "--perturb"))
+				args.push_back("perturb=" + spec);
+			for (const auto &report : many(options, "--report"))
+				if (report == "headroom" || report == "diagnostics" || report == "timing")
+					args.push_back(report);
+				else if (report == "terrain")
+					args.push_back("dump=" + (output / "terrain.txt").string());
+				else
+					throw std::invalid_argument("unknown report: " + report);
+			Headless::writeJson((output / "progress.json").string(),
+								"{\"schema_version\":1,\"stage\":\"generation\"}");
+			std::vector<char *> raw;
+			for (auto &arg : args)
+				raw.push_back(&arg[0]);
+			code = runMapStudy(raw.size(), raw.data());
 		}
-		manifest(output);return code;
+		manifest(output);
+		return code;
 	}
-	catch(const std::exception &error)
+	catch (const std::exception &error)
 	{
 		std::cerr << error.what() << std::endl;
-		const bool invalid=dynamic_cast<const std::invalid_argument*>(&error)!=nullptr;
-		const std::string status=invalid ? "invalid_request" : "artifact_failure";
-		if(!output.empty() && !fs::exists(output/"result.json"))
-			try { Headless::writeJson((output/"result.json").string(),"{\"schema_version\":1,\"status\":"+quote(status)+",\"diagnostic\":"+quote(error.what())+"}");manifest(output); } catch(...) {}
+		const bool invalid = dynamic_cast<const std::invalid_argument *>(&error) != nullptr;
+		const std::string status = invalid ? "invalid_request" : "artifact_failure";
+		if (!output.empty() && !fs::exists(output / "result.json"))
+			try
+			{
+				Headless::writeJson((output / "result.json").string(),
+									"{\"schema_version\":1,\"status\":" + quote(status) +
+										",\"diagnostic\":" + quote(error.what()) + "}");
+				manifest(output);
+			}
+			catch (...)
+			{
+			}
 		return invalid ? 2 : 3;
 	}
 }

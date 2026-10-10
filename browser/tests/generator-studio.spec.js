@@ -175,8 +175,7 @@ for (const variant of ["serial", "threaded"])
     const options = [
       "--ticks",
       String(traceFixture.ticks),
-      "--replay",
-      "true",
+      "--write-replay",
       "--telemetry",
       "checksums",
       "--save",
@@ -192,18 +191,18 @@ for (const variant of ["serial", "threaded"])
       [
         "--generator-package",
         "/tmp/generator.json",
-        "--run-game",
+        "game", "run",
         "--generator",
         "examples:swamp",
         "--map-seed",
         "19",
-        "--param",
+        "--set",
         "width=7",
-        "--param",
+        "--set",
         "height=7",
-        "--param",
+        "--set",
         "teams=4",
-        "--param",
+        "--set",
         "workers=4",
         "--candidates",
         "1",
@@ -225,7 +224,7 @@ for (const variant of ["serial", "threaded"])
     const loaded = await captureGame(
       page,
       variant,
-      ["--run-game", "--load-game", "/tmp/initial.game.gz", ...options],
+      ["game", "run", "--load-game", "/tmp/initial.game.gz", ...options],
       `FS.writeFile('/tmp/initial.game.gz',Uint8Array.from(atob(${JSON.stringify(generated.save)}),c=>c.charCodeAt(0)));`,
     );
     const directory = path.join(

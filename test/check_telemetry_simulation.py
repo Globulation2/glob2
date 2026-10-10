@@ -84,7 +84,7 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
     for save, ticks, fixture in SCENARIOS:
         with run_directory(evidence, save.stem) as directory:
             output = Path(directory)
-            command = [str(Path(binary).resolve()), "--run-game", "--load-game", str(save),
+            command = [str(Path(binary).resolve()), "game", "run", "--load-game", str(save),
                        "--ticks", str(ticks), "--telemetry", "checksums",
                        "--output-dir", str(output), *compute]
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
@@ -122,7 +122,7 @@ def main(binary: str, parallel_ai: bool = False, evidence: Path | None = None, u
         with gzip.open(CHECKPOINT, "rb") as stream:
             checkpoint.write_bytes(stream.read())
         output = Path(directory) / "run"
-        command = [str(Path(binary).resolve()), "--run-game", "--load-game", str(checkpoint),
+        command = [str(Path(binary).resolve()), "game", "run", "--load-game", str(checkpoint),
                    "--ticks", "1280", "--telemetry", "checksums", "--output-dir", str(output),
                    *compute]
         result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)

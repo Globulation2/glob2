@@ -1,3 +1,4 @@
+#include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Loaded-game benchmark. Run with an isolated profile; no desktop input is generated.
 #include "GlobalContainer.h"
@@ -165,7 +166,9 @@ static int run(int argc, char **argv)
 {
     SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
     globalContainer = new GlobalContainer;
-    globalContainer->parseArgs(argc, argv);
+    std::vector<std::string> launchArgs{"play"};
+        launchArgs.insert(launchArgs.end(),argv+1,argv+argc);
+        globalContainer->applyCommand(Cli::parse(launchArgs));
     globalContainer->load();
     // Finish deferred HD publication before comparing renderer workloads.
     GAGCore::Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);

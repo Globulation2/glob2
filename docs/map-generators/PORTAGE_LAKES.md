@@ -92,10 +92,10 @@ translation catalogs include the new name, labels and request diagnostics.
 Reproduce a preview and native game from the repository root:
 
 ```sh
-build/src/glob2 --generate-map portage-lakes --seed 1 \
+build/src/glob2 map generate portage-lakes --seed 1 \
   --width 256 --height 256 --teams 4 --set workers=8 \
-  --output /tmp/portage.map --preview /tmp/portage.png --json /tmp/portage.json
-SDL_VIDEODRIVER=dummy build/src/glob2 --run-game --map-file /tmp/portage.map \
+  --output /tmp/portage.map --preview /tmp/portage.png --report-file /tmp/portage.json
+SDL_VIDEODRIVER=dummy build/src/glob2 game run --map-file /tmp/portage.map \
   --game-seed 2 --player nicowar --player cortex --player cabino --player maxima \
   --ticks 30000 --telemetry team-timeline --save initial --save final \
   --output-dir /tmp/portage-game

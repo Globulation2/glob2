@@ -14,7 +14,7 @@ describe.runIf(binary && scratch)('real isolated generator packages', () => {
   it(
     'probes, canonicalizes, samples, reloads and generates the exact package',
     async () => {
-      const { stdout } = await promisify(execFile)(resolve(workdir, binary!), ['--sim-version'], {
+      const { stdout } = await promisify(execFile)(resolve(workdir, binary!), ['info', 'sim-version', '--format', 'json'], {
         cwd: workdir,
       });
       const sim = JSON.parse(stdout);

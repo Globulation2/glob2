@@ -369,7 +369,7 @@ void Engine::createRandomGame()
 
 	// Validate matchup-vs-map team count now that we know how many teams
 	// the loaded map has. Self-contained matchup validation already
-	// happened in GlobalContainer::parseArgs; this is the deferred check.
+	// happened in GlobalContainer::applyCommand; this is the deferred check.
 	if (!globalContainer->testGamesMatchup.empty()
 		&& (int)globalContainer->testGamesMatchup.size() != map.getNumberOfTeams())
 	{

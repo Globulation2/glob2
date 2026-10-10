@@ -4,7 +4,7 @@ The JSON map report includes `generation.telemetry`: observations supplied by th
 
 ## Collection and cost
 
-`GenerationContext` owns a `GenerationTelemetry`; `GenerationService::generate(game, request, true)` collects it and returns it in `GenerationResult`, including on failures. Collection defaults to **off**. Normal lobby/editor generation, candidate selection and validation reconstruction do not collect records. The CLI opts in when `--generate-map` has `--json`. Loading an existing map cannot reconstruct the original trace, so its telemetry is `null`.
+`GenerationContext` owns a `GenerationTelemetry`; `GenerationService::generate(game, request, true)` collects it and returns it in `GenerationResult`, including on failures. Collection defaults to **off**. Normal lobby/editor generation, candidate selection and validation reconstruction do not collect records. The CLI opts in when `map generate` has `--report-file`. Loading an existing map cannot reconstruct the original trace, so its telemetry is `null`.
 
 Telemetry must not consume random numbers, change search order, branch decisions or world state. Record values already computed by the algorithm and cheap counters in existing loops. Do not add pathfinding, fertility calculations, grid scans, serialization, timing, or file I/O to generator instrumentation. Guard telemetry-only summaries or dynamically constructed strings with `context.telemetry.enabled()`. The literal-key API uses string views and disabled calls do not allocate records or strings. Histograms, when needed, should aggregate once over a small feature list rather than scan the map for each category.
 
@@ -56,7 +56,7 @@ These are deliberately selective observations, not traces of every rejected cand
 ## CLI success and failure reports
 
 ```sh
-build/src/glob2 --generate-map city-states --seed 7 --width 256 --height 256 --teams 4 --json artifacts/city-7.json
+build/src/glob2 map generate city-states --seed 7 --width 256 --height 256 --teams 4 --report-file artifacts/city-7.json
 ```
 
 Report schema version 2 adds `report_type`. A successful generated or loaded snapshot uses `"map"`. A failed service attempt writes `"generation_failure"` with `engine` and `generation` only, and the CLI still exits nonzero. It does not analyze or publish the partial map. Existing map/PNG outputs are not replaced by a failed attempt. Argument parsing errors, missing input/config files and invalid scalar CLI values occur before generation and do not promise a JSON report; keep stderr and the exit code too.
@@ -68,7 +68,7 @@ Report schema version 2 adds `report_type`. A successful generated or loaded sna
 Use the same production CLI on a bounded seed/settings matrix; use a fresh output directory so files from an older run cannot masquerade as success:
 
 ```sh
-python3 tools/map_telemetry.py collect --generators canals,city-states --seed-start 1 --count 8 --set width=128 --set height=128 --set teams=4 --jobs 3 --out artifacts/telemetry-port
+python3 tools/map_telemetry.py collect --generators canals,city-states --seed-start 1 --count 8 --set width=128 --set height=128 --set teams=4 --jobs 3 --output-dir artifacts/telemetry-port
 python3 tools/map_telemetry.py summarize artifacts/telemetry-port
 ```
 
@@ -82,9 +82,9 @@ Tune on one seed range and confirm on another, including parameter extremes and 
 
 For multi-host or interruption-tolerant runs, use the shared
 [distributed study workflow](../../.agents/skills/glob2-map-design/references/distributed-telemetry.md).
-Structured `--generate-map --output-dir DIR` jobs always collect telemetry and embed
+Structured `map study GENERATOR --output-dir DIR` jobs always collect telemetry and embed
 the complete native version-2 report in `result.json` under `map_report`, including
-service failures. No map file is required. Native `--generate-map NAME --json FILE`
+service failures. No map file is required. Native `map generate NAME --report-file FILE`
 remains available unchanged. Offline reanalysis preserves raw records and final-map
 numbers and reports map-weighted summaries, missing/incomplete traces and observed
 fallback/variant rates. Candidate sampling retains only the chosen attempt trace.

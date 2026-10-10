@@ -187,6 +187,24 @@ its map zoom case checks gesture wheel fallback. Synthetic checks establish even
 contracts, not physical trackpad feel: verify that separately in windowed and
 fullscreen modes, at Retina scaling, and with conventional and gesture mice.
 
+## Command-line contracts
+
+`CommandLine/*` tests every registry definition, required inputs, repeatability,
+malformed values, conflicts and completion generation. The suite is included in
+native compatibility coverage. The real executable is tested separately:
+
+```sh
+python3 test/test_cli_smoke.py --binary /path/to/glob2 --artifacts artifacts/cli
+python3 tools/cli_reference.py --binary /path/to/glob2 --check
+```
+
+The smoke suite traverses text and JSON help for every command from an empty
+working directory with invalid SDL drivers and missing assets. It asserts that
+help creates no profile or output, checks Bash completions, and exercises real
+map/game jobs, per-tick checksums, replay verification and saved continuation.
+Reference generation checks the durable [CLI guide](../docs/tools/cli.md), manual
+and installed completion scripts against the same registry.
+
 ## Python tests
 
 `test/test_*.py` are `unittest` files; those that need a build take the binary
@@ -214,9 +232,9 @@ including screens destroyed with requests in flight.
 
 Switches the online and LAN tests use:
 
-- `--instance <origin>`: the instance an invite code given with `--join <code>`
+- `--instance <origin>`: the instance an invite code given with `online join <code>`
   belongs to; a `glob2://` or `https://<instance>/j/<code>` argument works too.
-- `--turn-client`, `--verify-match`, `--sim-version`: headless relay client, match
+- `online turn-client`, `match verify`, `info sim-version --format json`: headless relay client, match
   verifier and sim version report ([headless replays](../docs/development/headless-replays.md)).
 - `GLOB2_LAN_ADDRESS=<ip>`: the address a LAN host advertises and puts in its
   certificate, for machines with several interfaces.
@@ -1369,7 +1387,7 @@ preferences round trip, the string tables and the baked-in rule: every
 registry entry's label and help are listed keys matching the English table, a new
 game takes Settings → Experiments, its save keeps that set after the setting is
 turned off, a fresh game then carries nothing, and a campaign mission never takes
-the set. `test/tournament_cli_integration.py` covers `--run-game --experiment`. The `Settings` display cases toggle the switch on the
+the set. `test/tournament_cli_integration.py` covers `game run --experiment`. The `Settings` display cases toggle the switch on the
 settings page. See [experimental features](../docs/features/experimental-features.md).
 
 `GuardAreaBalance` (`glob2-engine-tests`, `python3 test/run_tests.py --filter

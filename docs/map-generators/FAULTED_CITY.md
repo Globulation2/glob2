@@ -63,9 +63,9 @@ Build the optimized client and map harnesses with the repository's normal SCons 
 For a single explicit seed:
 
 ```sh
-build/src/glob2 --generate-map faulted-city --seed 101 --teams 4 \
+build/src/glob2 map generate faulted-city --seed 101 --teams 4 \
   --width 256 --height 256 --output artifacts/faulted-city/101.map \
-  --preview artifacts/faulted-city/101.png --json artifacts/faulted-city/101.json
+  --preview artifacts/faulted-city/101.png --report-file artifacts/faulted-city/101.json
 ```
 
 Generation telemetry uses `faulted-city.*` for source block roles, district translations,

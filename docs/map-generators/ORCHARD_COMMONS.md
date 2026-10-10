@@ -85,9 +85,9 @@ Build and exercise the real-engine mechanism test:
 scons release=1 server=0 -j8 build/src/glob2 engine-tests
 python3 test/run_tests.py --filter 'OrchardCommons/*'
 python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
-build/src/glob2 --generate-map orchard-commons --seed 2 --teams 4 --width 256 --height 256 \
+build/src/glob2 map generate orchard-commons --seed 2 --teams 4 --width 256 --height 256 \
   --output artifacts/orchard-commons/example.map --preview artifacts/orchard-commons/example.png \
-  --json artifacts/orchard-commons/example.json
+  --report-file artifacts/orchard-commons/example.json
 ```
 
 The conversion harness builds two legal inns on unmodified generated ground,

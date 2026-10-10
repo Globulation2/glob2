@@ -11,8 +11,8 @@ An installed client can use the same flags. Previews use the game's existing
 picker. Exports paint that widget into an offscreen software surface with transitions
 disabled. PNGs, maps, and JSON reports need no display or OpenGL. No Python or study
 executable is needed. The normal game data directory (including fonts and the GUI
-theme for PNGs) must be available. Put the
-launch mode first; these modes do not combine with game, replay, or server launch modes.
+theme for PNGs) must be available. Put the command path first. These commands do not combine with other launch commands.
+See the [main CLI guide](../tools/cli.md) for discovery, shell completion, and migration.
 
 For the fortified countryside generator, see [Forts](FORTS.md) for its controls,
 resource guarantees, supported combinations and validation evidence.
@@ -28,7 +28,7 @@ For a deliberately asymmetric woodland island with biscuit-shaped bites, see
 ## Generate a map and preview
 
 ```sh
-"$GLOB2_BIN" --generate-map coral --seed 7 \
+"$GLOB2_BIN" map generate coral --seed 7 \
   --width 256 --height 256 --teams 4 \
   --output artifacts/coral.map --preview artifacts/coral.png
 ```
@@ -38,13 +38,13 @@ a gzip container. A `.gz` suffix is appended unless already present; the example
 above writes `artifacts/coral.map.gz`. Preview loading accepts both compressed
 files and legacy raw maps/saves, and a bare `.map` or `.game` path prefers an
 existing `.gz` sibling.
-`--preview` writes a PNG. `--json FILE` writes a detailed map report. Supply any
+`--preview` writes a PNG. `--report-file FILE` writes a detailed map report. Supply any
 combination of these three outputs. See the [JSON format and metric definitions](REPORT.md)
 for units, fairness formulas, terrain/resource percentages, and travel distances. Generation uses the production
 `GenerationService`, at registered defaults with seed **1** unless specified.
 It makes one attempt with exactly that seed; a failed layout returns an error
 instead of silently retrying with another seed. The diagnostic includes the
-chosen generator, revision, and seed. If `--json` is supplied, service-level failures also
+chosen generator, revision, and seed. If `--report-file` is supplied, service-level failures also
 write a `generation_failure` report containing partial telemetry and the error, while still
 returning nonzero. Argument/config parsing failures happen before an attempt and do not
 promise a JSON report. Determinism has the same platform limits
@@ -53,11 +53,11 @@ as the existing generators; a seed alone is not a cross-platform guarantee.
 ## Preview an existing map or save
 
 ```sh
-"$GLOB2_BIN" --preview-map maps/SomeMap.map --output artifacts/map.png
-"$GLOB2_BIN" --preview-map /path/to/colony.game --output artifacts/save.png
+"$GLOB2_BIN" map preview maps/SomeMap.map --output artifacts/map.png
+"$GLOB2_BIN" map preview /path/to/colony.game --output artifacts/save.png
 ```
 
-`--json artifacts/report.json` also works here, alone or alongside the PNG.
+`--report-file artifacts/report.json` also works here, alone or alongside the PNG.
 
 The file is read through `Game::load`, including its existing save-version checks.
 No simulation ticks run and the input is never saved back. Pass a filesystem path,
@@ -74,9 +74,9 @@ with those screens also apply to CLI exports; there is no separate CLI renderer.
 
 | Representation | Purpose | Contents and usage |
 | --- | --- | --- |
-| **Categorical map image** (`--map-image`, `--export-map-image`) | Edit geography and recreate a playable map | One pixel per terrain vertex, fixed terrain/resource colors and white colony markers. Use an image editor without antialiasing, then `--import-map-image`. |
-| **Map preview** (`--preview`, `--preview-map`) | Browse, compare and illustrate maps | The lobby's overview renderer, with thumbnail sampling and numbered colony markers. Useful for judging overall geography; its display colors, markers and possible averaging are not the import contract. |
-| **Full map render / game-view screenshot** | Inspect how the map actually appears in play | Terrain transitions, resource sprites and their amounts, buildings and units as rendered by the game. Capture the game view or use a dedicated rendering/debugging tool. This CLI does not add a full game-view renderer. |
+| **Categorical map image** (`--map-image`, `map export-image`) | Edit geography and recreate a playable map | One pixel per terrain vertex, fixed terrain/resource colors and white colony markers. Use an image editor without antialiasing, then `map import-image`. |
+| **Map preview** (`--preview`, `map preview`) | Browse, compare and illustrate maps | The lobby's overview renderer, with thumbnail sampling and numbered colony markers. Useful for judging overall geography; its display colors, markers and possible averaging are not the import contract. |
+| **Full map render / game-view screenshot** | Inspect how the map actually appears in play | Terrain transitions, resource sprites and their amounts, buildings and units as rendered by the game. Capture the game view or use a dedicated rendering/debugging tool. Use `glob2 map render FILE --output view.png` for the full game-view renderer. |
 
 Increasing `--preview-scale` enlarges a preview's retained thumbnail pixels; it
 never turns that preview into a detailed game-view render. Terrain-dump diagnostic
@@ -97,9 +97,9 @@ initialization still apply.
 ## Discover and configure generators
 
 ```sh
-"$GLOB2_BIN" --list-map-generators
-"$GLOB2_BIN" --list-map-generators maze
-"$GLOB2_BIN" --generate-map maze --set cell-shape=1 --teams 6 \
+"$GLOB2_BIN" map generators
+"$GLOB2_BIN" map generators maze
+"$GLOB2_BIN" map generate maze --set cell-shape=1 --teams 6 \
   --seed 7 --preview artifacts/maze.png
 ```
 
@@ -129,7 +129,7 @@ cell-shape=1
 ```
 
 ```sh
-"$GLOB2_BIN" --generate-map maze --config maze.cfg \
+"$GLOB2_BIN" map generate maze --config maze.cfg \
   --seed 42 --set cell-shape=0 --preview artifacts/maze.png
 ```
 
@@ -151,8 +151,8 @@ Markers keep the widget's normal pixel size so larger exports reveal more terrai
 around them. The full map remains visible; export scale is not interactive zoom.
 
 ```sh
-"$GLOB2_BIN" --preview-map maps/SomeMap.map --output artifacts/map-4x.png --preview-scale 4
-"$GLOB2_BIN" --generate-map maze --seed 7 --preview artifacts/map-8x.png --preview-scale 8
+"$GLOB2_BIN" map preview maps/SomeMap.map --output artifacts/map-4x.png --preview-scale 4
+"$GLOB2_BIN" map generate maze --seed 7 --preview artifacts/map-8x.png --preview-scale 8
 ```
 
 Alternatively, `--preview-size N` (128–4096 pixels) sets the exact longest side
@@ -162,17 +162,17 @@ a PNG output. The same shared widget handles terrain, centered/wrapped colony
 markers, and the map frame at every export size.
 
 Parent output directories are created. Existing output files are replaced;
-input/config paths and all output paths must be distinct. Use `-d directory`
-(repeatable) to add an asset search directory. Normal profile selection applies (`GLOB2_USER_DIR` on Unix; the working directory
-on Windows); these modes do not save preferences or create replays.
-`--generate-map --help` and `--preview-map --help` print command usage.
+input/config paths and all output paths must be distinct. Use `--data-dir directory`
+(repeatable) to add an asset search directory. Normal profile selection applies (`GLOB2_USER_DATA_DIR` takes precedence;
+`GLOB2_USER_DIR` on Unix or the platform’s per-user directory otherwise); these modes do not save preferences or create replays.
+`map generate --help` and `map preview --help` print command usage.
 
 To compare generators at several sizes, invoke the executable for each image:
 
 ```sh
 for generator in coral spider-web; do
   for size in 128 256 512; do
-    "$GLOB2_BIN" --generate-map "$generator" --seed 7 \
+    "$GLOB2_BIN" map generate "$generator" --seed 7 \
       --width "$size" --height "$size" \
       --preview "artifacts/comparison/$generator-$size.png"
   done
@@ -187,7 +187,7 @@ text-grid dumps, and fairness studies.
 
 ## Internal generator telemetry
 
-Generation with `--json` includes generator-supplied measurements, variants and fallback events
+Generation with `--report-file` includes generator-supplied measurements, variants and fallback events
 at `generation.telemetry`. Collection is disabled for ordinary generation without JSON and for
 validation reconstruction. Existing map/save files do not contain this history. The report schema
 is version 2; check `report_type` before reading snapshot fields. See [telemetry](TELEMETRY.md)
@@ -201,14 +201,14 @@ geography of a map; they do not preserve saved-game state, existing buildings,
 resource amounts, alliances or scenario scripts. Ordinary previews are unchanged.
 
 ```sh
-"$GLOB2_BIN" --generate-map forts --seed 7 --teams 4 \
+"$GLOB2_BIN" map generate forts --seed 7 --teams 4 \
   --map-image artifacts/forts-image.png --output artifacts/forts.map
-"$GLOB2_BIN" --export-map-image artifacts/forts.map \
+"$GLOB2_BIN" map export-image artifacts/forts.map \
   --output artifacts/forts-image.png
-"$GLOB2_BIN" --import-map-image artifacts/forts-image.png \
+"$GLOB2_BIN" map import-image artifacts/forts-image.png \
   --width 256 --height 256 --teams 4 --workers 4 --seed 1 \
   --output artifacts/imported.map --preview artifacts/imported.png \
-  --json artifacts/imported.json
+  --report-file artifacts/imported.json
 ```
 
 Exports have one pixel per terrain vertex, top-left origin, without frames,
@@ -351,9 +351,9 @@ model or service connection to play.
 ## Render a whole game
 
 ```sh
-"$GLOB2_BIN" --render-game colony.game.gz --output artifacts/colony.png \
+"$GLOB2_BIN" map render colony.game.gz --output artifacts/colony.png \
   --render-max-pixels 2048
-"$GLOB2_BIN" --render-game colony.game.gz --output artifacts/threat.png \
+"$GLOB2_BIN" map render colony.game.gz --output artifacts/threat.png \
   --render-field threat.field --field-color 255,40,40
 ```
 
@@ -382,7 +382,7 @@ retain their own matching Scene for PNG output.
 ## Custom generator packages
 
 Use the repeatable `--generator-package PATH` launch option with a portable JSON
-package or authoring directory. Select its namespaced ID in `--generate-map`,
+package or authoring directory. Select its namespaced ID in `map generate`,
 `--headless` or catalog output. `--export-generator-package FILE` with
-`--generate-map` saves the exact package used for that run. See
+`map generate` saves the exact package used for that run. See
 [JavaScript generators](JAVASCRIPT.md) for the manifest and authoring API.

@@ -29,7 +29,7 @@ processing-order bias with no map effect mixed in.
 Results go to `artifacts/map-fairness/<name>/` (ignored by Git). A run resumes where it stopped:
 finished maps and games are kept, so re-running the same command after an interruption only plays
 what is missing. `--fresh` discards the run's earlier outputs. A changed configuration refuses to
-mix into an old directory unless `--fresh`, `--name` or `--out` is given. `summarize <run
+mix into an old directory unless `--fresh`, `--name` or `--output-dir` is given. `summarize <run
 directory>` recomputes the report from the stored results.
 
 Presets live in `tools/map-fairness/*.json`. Most keys can also be set on the command line
@@ -56,8 +56,8 @@ statistics against synthetic engine output and known values. It needs no build a
 
 ## What a run does
 
-1. **Map production.** `glob2 --generate-map --generator ID --map-seed SEED
-   --candidates 5 --write-map true --rotations N --output-dir DIR` generates the map through `GenerationService`, choosing the roll
+1. **Map production.** `glob2 map study ID --seed SEED
+   --candidates 5 --write-map --rotations N --output-dir DIR` generates the map through `GenerationService`, choosing the roll
    exactly as `CustomGameScreen::generateMap()` does, and saves it as a playable `.map`. Next to the
    map files, `map.json` records the generator id and revision, the request (size, colonies,
    workers, every control value), the map seed and chosen roll, the start of every colony, the
@@ -72,7 +72,7 @@ statistics against synthetic engine output and known values. It needs no build a
    loads. It differs from a direct save of the freshly generated `Game` only in the header's
    20-byte content SHA1, which the fresh `Game` computes before the real map offset is patched in.
 3. **Matches.** Each rotation is played `games_per_rotation` times with
-   `glob2 --run-game --map-file MAP --player nicowar ... --game-seed SEED`,
+   `glob2 game run --map-file MAP --player nicowar ... --game-seed SEED`,
    through the shared durable localhost worker. Every game runs in its own `GLOB2_USER_DIR`, which
    holds the map, so it never touches `~/.glob2`. Winning conditions are the lobby's free-for-all
    defaults, prestige victory included. Structured results preserve outcomes, elimination
@@ -90,7 +90,7 @@ only the old `total` score retain game outcomes and leave current fitness compar
 
 In a headless game the team index is not neutral. Teams step in index order, the AIs issue orders
 in player order. The structured interface assigns players directly in team order. The
-legacy `-test-games-nox` interface adds a passive local player on team 0 and polls its AI
+legacy `dev random-games` interface adds a passive local player on team 0 and polls its AI
 last, so historical legacy-driver games and new structured runs should be separate cohorts. On a single map, start `t` is always team `t`, so a start that wins more often cannot be
 told apart from a team index that does.
 

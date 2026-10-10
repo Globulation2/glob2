@@ -48,16 +48,16 @@ class CliSmoke(unittest.TestCase):
 
     def generated(self):
         path=self.root/'source.map'
-        self.command('--generate-map','river','--width','128','--height','128','--teams','2',
-                     '--seed','713','--output',path,'--json',self.root/'map.json')
+        self.command('map', 'generate','river','--width','128','--height','128','--teams','2',
+                     '--seed','713','--output',path,'--report-file',self.root/'map.json')
         self.assertTrue(Path(str(path)+'.gz').is_file())
         report=json.loads((self.root/'map.json').read_text())
         self.assertIsInstance(report,dict)
         return Path(str(path)+'.gz')
 
     def game(self, output, source, workers=1, saved=False, extra=()):
-        args=['--run-game','--output-dir',output,'--ticks','64','--compute-threads',str(workers),
-              '--telemetry','checksums','--replay','true','--save','final']
+        args=['game', 'run','--output-dir',output,'--ticks','64','--compute-threads',str(workers),
+              '--telemetry','checksums','--write-replay','--save','final']
         args += ['--load-game',source] if saved else ['--map-file',source,'--game-seed','713',
                                                     '--player','castor','--player','cortex']
         self.command(*args,*extra)
@@ -67,6 +67,62 @@ class CliSmoke(unittest.TestCase):
         records=complete_ticks((output/'game.replay.checksums').read_bytes())
         self.assertTrue(records)
         return records
+
+    def test_every_static_help_is_asset_free_and_complete(self):
+        empty = Path(self.temporary.name) / 'empty'
+        empty.mkdir()
+        env = dict(os.environ, HOME=str(empty / 'home'),
+                   GLOB2_USER_DIR=str(empty / 'profile'),
+                   GLOB2_USER_DATA_DIR=str(empty / 'profile'),
+                   GLOB2_ASSET_DIR=str(empty / 'missing-assets'),
+                   SDL_VIDEODRIVER='invalid-no-display', SDL_AUDIODRIVER='invalid-no-audio')
+        def static(*args):
+            result = subprocess.run([str(self.binary), *args], cwd=empty, env=env,
+                                    capture_output=True, text=True, timeout=10)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(list(empty.iterdir()), [], 'static help initialized a profile or artifact')
+            return result.stdout
+        tree = json.loads(static('help', '--format=json'))
+        self.assertEqual((tree['schema_version'], tree['cli_version']), (1, 2))
+        self.assertTrue(tree['commands'])
+        static('-h'); static('--help'); static('map'); static('online')
+        for command in tree['commands']:
+            path = command['path'].split()
+            self.assertIn(command['description'], static(*path, '--help'))
+            subtree = json.loads(static('help', *path, '--format', 'json'))
+            self.assertEqual(subtree['commands'], [command])
+            if command['path'] != 'help':
+                self.assertEqual(json.loads(static(*path, '--help', '--format=json'))['commands'], [command])
+        static('map', 'generate', '--generator-package', 'missing.json', '--help')
+        for shell in ('bash', 'zsh', 'fish'):
+            self.assertIn('Generated from Glob2 CLI 2', static('completion', shell))
+
+    @unittest.skipUnless(shutil.which('bash'), 'Bash completion check')
+    def test_bash_completion_commands_enums_equals_and_paths(self):
+        script = self.command('completion', 'bash').stdout
+        source = self.root / 'completion.bash'
+        source.write_text(script)
+        def complete(words):
+            quoted = ' '.join(__import__('shlex').quote(word) for word in words)
+            code = 'source "$1"; COMP_WORDS=(' + quoted + '); COMP_CWORD=' + str(len(words)-1) + '; _glob2_complete; printf "%s\\n" "${COMPREPLY[@]}"'
+            result = subprocess.run(['bash', '-c', code, 'bash', str(source)], cwd=self.root,
+                                    capture_output=True, text=True, timeout=10, check=True)
+            return result.stdout.splitlines()
+        self.assertIn('map', complete(['glob2', 'm']))
+        self.assertIn('generate', complete(['glob2', 'map', 'g']))
+        self.assertIn('--window-size', complete(['glob2', 'play', '--window']))
+        self.assertEqual(complete(['glob2', 'play', '--renderer', 's']), ['software'])
+        self.assertEqual(complete(['glob2', 'play', '--renderer=s']), ['--renderer=software'])
+        (self.root / 'path with spaces').mkdir()
+        (self.root / 'file with spaces.replay').touch()
+        self.assertIn('path with spaces', complete(['glob2', 'play', '--data-dir', 'path']))
+        self.assertIn('file with spaces.replay', complete(['glob2', 'replay', 'file']))
+
+    def test_generated_reference_matches_binary(self):
+        result = subprocess.run([__import__('sys').executable, str(ROOT / 'tools/cli_reference.py'),
+                                 '--binary', str(self.binary), '--check'], cwd=ROOT,
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_unified_compute_pool_preserves_trace_with_auto_sizing(self):
         source = self.generated()
@@ -86,9 +142,9 @@ class CliSmoke(unittest.TestCase):
     def test_removed_compute_options_point_to_unified_setting(self):
         for flag, value in (('--ai-threads', '2'), ('--gradient-workers', '2'),
                             ('--compute-experiments', 'ai')):
-            for prefix, status in (([], 1), (['--run-game'], 2),
-                                   (['--verify-match', 'missing.record'], 2),
-                                   (['--turn-client', 'missing.json'], 2)):
+            for prefix, status in (([], 2), (['game', 'run'], 2),
+                                   (['match', 'verify', 'missing.record'], 2),
+                                   (['online', 'turn-client', 'missing.json'], 2)):
                 with self.subTest(flag=flag, command=prefix):
                     result = self.command(*prefix, flag, value, status=status)
                     self.assertIn('has been removed', result.stderr)
@@ -100,8 +156,8 @@ class CliSmoke(unittest.TestCase):
         golden = (ROOT / 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_text(encoding='utf-8')
         for count in (1, 2, 4, 8, 'auto'):
             output = self.root / f'verify-{count}'
-            self.command('--verify-match', ROOT / 'test/fixtures/multiplayer/FourSquares1.g2mr',
-                         '--map', ROOT / 'maps/FourSquares1.map.gz', '--out', output,
+            self.command('match', 'verify', ROOT / 'test/fixtures/multiplayer/FourSquares1.g2mr',
+                         '--map-file', ROOT / 'maps/FourSquares1.map.gz', '--output-dir', output,
                          '--compute-threads', count)
             self.assertEqual((output / 'checksums.txt').read_text(encoding='utf-8'), golden)
             result = (output / 'result.json').read_bytes()
@@ -114,16 +170,16 @@ class CliSmoke(unittest.TestCase):
             self.assertEqual(compute['compute_workers'], compute['compute_threads'] - 1)
 
     def test_help_and_catalog_describe_real_commands(self):
-        self.assertIn('-nox',self.command('--help').stdout)
-        catalog=json.loads(self.command('--headless-catalog').stdout)
+        self.assertIn('game repeat',self.command('--help').stdout)
+        catalog=json.loads(self.command('info', 'catalog', '--format', 'json').stdout)
         self.assertIn('game',catalog['commands']); self.assertIn('checksums',catalog['telemetry'])
         self.assertGreater(len(catalog['ais']),5)
-        self.assertIn('river',self.command('--list-map-generators').stdout)
+        self.assertIn('river',self.command('map', 'generators').stdout)
 
     def test_invalid_map_arguments_fail_before_writing_outputs(self):
-        for args in [('--generate-map','missing-generator'),('--generate-map','river','--width'),
-                     ('--generate-map','river','--width','not-a-number')]:
-            with self.subTest(args=args): self.command(*args,status=1)
+        for args in [('map', 'generate','missing-generator'),('map', 'generate','river','--width'),
+                     ('map', 'generate','river','--width','not-a-number')]:
+            with self.subTest(args=args): self.command(*args,status=2)
         self.assertFalse((self.root/'source.map.gz').exists())
 
     def test_headless_numeric_and_missing_input_errors_are_structured(self):
@@ -131,9 +187,12 @@ class CliSmoke(unittest.TestCase):
                                        ['--compute-threads','4294967296'],
                                        ['--map-file',self.root/'missing.map','--game-seed','713','--player','castor']]):
             output=self.root/f'invalid-{index}'
-            self.command('--run-game','--output-dir',output,*extra,status=2)
-            report=json.loads((output/'result.json').read_text())
-            self.assertEqual(report['status'],'invalid_request'); self.assertTrue(report['diagnostic'])
+            self.command('game', 'run','--output-dir',output,*extra,status=2)
+            if index < 3:
+                self.assertFalse(output.exists(), 'syntax errors must not create job artifacts')
+            else:
+                report=json.loads((output/'result.json').read_text())
+                self.assertEqual(report['status'],'invalid_request'); self.assertTrue(report['diagnostic'])
 
     def test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds(self):
         source = self.generated()
@@ -145,22 +204,22 @@ class CliSmoke(unittest.TestCase):
         self.assertEqual(continuation, {tick: record for tick, record in first.items() if tick in continuation})
         self.assertEqual(len(continuation), 32)
         resumed = self.root / 'probability-resumed'
-        self.command('--run-game', '--load-game', output / 'final.game.gz',
+        self.command('game', 'run', '--load-game', output / 'final.game.gz',
                      '--ticks', '96', '--output-dir', resumed, '--telemetry', 'checksums')
         loaded = json.loads((resumed / 'result.json').read_text())
         self.assertIn(7, loaded['resolved']['winning_conditions'])
         self.assertEqual(loaded['ticks'], 96)
         for index, threshold in enumerate(('0', '500', '1001')):
             invalid = self.root / f'probability-invalid-{index}'
-            self.command('--run-game', '--map-file', source, '--player', 'castor',
+            self.command('game', 'run', '--map-file', source, '--player', 'castor',
                          '--player', 'cortex', '--ticks', '64', '--win-probability', threshold,
                          '--output-dir', invalid, status=2)
-            self.assertEqual(json.loads((invalid / 'result.json').read_text())['status'], 'invalid_request')
+            self.assertFalse(invalid.exists(), 'invalid thresholds fail before creating the job')
 
     def test_corrupt_saved_game_fails_with_structured_diagnostic(self):
         source=self.root/'corrupt.game'; source.write_bytes(b'not a saved game')
         output=self.root/'corrupt-run'
-        result=subprocess.run([str(self.binary),'--run-game','--load-game',str(source),'--ticks','64',
+        result=subprocess.run([str(self.binary),'game', 'run','--load-game',str(source),'--ticks','64',
                                '--output-dir',str(output)],cwd=ROOT,env=dict(os.environ,GLOB2_USER_DIR=str(self.root/'profile'),GLOB2_USER_DATA_DIR=str(self.root/'profile')),
                               capture_output=True,text=True,timeout=180)
         self.assertNotEqual(result.returncode,0)
@@ -169,19 +228,19 @@ class CliSmoke(unittest.TestCase):
 
     def test_generated_map_image_export_import_and_preview_are_readable(self):
         source=self.generated(); image=self.root/'map.png'
-        self.command('--export-map-image',source,'--output',image)
+        self.command('map', 'export-image',source,'--output',image)
         self.assertEqual(image.read_bytes()[:8],b'\x89PNG\r\n\x1a\n')
         imported=self.root/'imported.map'
-        self.command('--import-map-image',image,'--output',imported,'--teams','2',
+        self.command('map', 'import-image',image,'--output',imported,'--teams','2',
                      '--width','128','--height','128','--preview',self.root/'preview.png')
         self.assertGreater(len(gzip.decompress(Path(str(imported)+'.gz').read_bytes())),1000)
         self.assertEqual((self.root/'preview.png').read_bytes()[:8],b'\x89PNG\r\n\x1a\n')
 
     def test_structured_map_study_writes_report_map_and_manifest(self):
         output=self.root/'study'
-        self.command('--generate-map','--output-dir',output,'--generator','2','--map-seed','713',
-                     '--param','width=7','--param','height=7','--param','teams=2',
-                     '--write-map','true','--report','terrain')
+        self.command('map', 'study','2','--output-dir',output,'--seed','713',
+                     '--set','width=7','--set','height=7','--set','teams=2',
+                     '--write-map','--report','terrain')
         report=json.loads((output/'result.json').read_text())
         self.assertEqual(report['status'],'completed')
         self.assertFalse((self.root/'profile').exists(), 'headless commands must use their output profile, not inherited user data')
@@ -204,12 +263,12 @@ class CliSmoke(unittest.TestCase):
         manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
 
         output = self.root / 'generated-game'
-        self.command('--run-game', '--building-catalog', manifest_path,
+        self.command('game', 'run', '--building-catalog', manifest_path,
                      '--generator', '15', '--map-seed', '42',
-                     '--param', 'teams=2', '--param', 'width=7', '--param', 'height=7',
+                     '--set', 'teams=2', '--set', 'width=7', '--set', 'height=7',
                      '--game-seed', '713', '--player', 'castor', '--player', 'cortex',
                      '--experiment', 'field-kitchens', '--ticks', '64',
-                     '--compute-threads', '1', '--telemetry', 'checksums', '--replay', 'true',
+                     '--compute-threads', '1', '--telemetry', 'checksums', '--write-replay',
                      '--save', 'every:32', '--save', 'final', '--output-dir', output)
         report = json.loads((output / 'result.json').read_text())
         self.assertEqual(report['status'], 'completed')

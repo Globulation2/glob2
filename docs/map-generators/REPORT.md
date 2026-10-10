@@ -1,18 +1,18 @@
 # Map JSON report: format and metric definitions
 
-`--json FILE` writes a UTF-8 JSON object with `schema_version: 2`. It works with
+`--report-file FILE` writes a UTF-8 JSON object with `schema_version: 2`. It works with
 both map CLI modes and does not require OpenGL. It can be requested alone or
 alongside map/PNG outputs:
 
 ```sh
-build/src/glob2 --generate-map maze --seed 7 --width 128 --height 128 \
-  --output artifacts/maze.map --json artifacts/maze.json
-build/src/glob2 --preview-map artifacts/maze.map --json artifacts/reloaded.json
-build/src/glob2 --preview-map /path/to/colony.game --json artifacts/colony.json
+build/src/glob2 map generate maze --seed 7 --width 128 --height 128 \
+  --output artifacts/maze.map --report-file artifacts/maze.json
+build/src/glob2 map preview artifacts/maze.map --report-file artifacts/reloaded.json
+build/src/glob2 map preview /path/to/colony.game --report-file artifacts/colony.json
 ```
 
 Add `--preview artifacts/maze.png` to the first command to write all three outputs.
-On `--preview-map`, `--output` remains the PNG filename; `--json` is independent.
+On `map preview`, `--output` remains the PNG filename; `--report-file` is independent.
 All input, config, map, PNG, and JSON paths must be distinct. Existing output files
 are replaced. A failed write returns a nonzero exit status.
 
@@ -357,7 +357,7 @@ still exits nonzero on failure, but writes the requested JSON when a service att
 
 `generation.telemetry` is an ordered, bounded, typed trace supplied by generators and shared
 primitives, separate from computed snapshot metrics. Collection is opt-in and is enabled by
-`--generate-map ... --json`; it is `null` for loaded files. `generation.outcome` records success,
+`map generate ... --report-file`; it is `null` for loaded files. `generation.outcome` records success,
 stage, error code and detail. `raw_request` preserves numeric method, raw size exponents, colony
 and worker counts, and all option entries, including invalid ones. Resolved `parameters` may be
 `null` on invalid requests; the generator name may be `null` for unknown numeric methods.

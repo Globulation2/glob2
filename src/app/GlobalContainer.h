@@ -30,6 +30,7 @@ class ReplayReader;
 class ReplayWriter;
 class DatasetWriter;
 
+namespace Cli { struct Request; }
 namespace TerrainVisual { class Compositor; }
 
 class GlobalContainer
@@ -52,7 +53,7 @@ public:
 	explicit GlobalContainer(const char *profileName="glob2", const std::string& buildingCatalog="");
 	virtual ~GlobalContainer(void);
 
-	void parseArgs(int argc, char *argv[]);
+	void applyCommand(const Cli::Request &request);
 	void loadClient(void);
     bool deferAssetLoading = false;
     //! Advance required preparation without painting; the host schedules drawing.

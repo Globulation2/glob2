@@ -71,9 +71,9 @@ be used when checking landing access, because algae can obstruct swimmers.
 
 ```sh
 scons release=1 server=0 -j6 build/src/glob2 comb-generator-test
-build/src/glob2 --generate-map comb --seed 7 --width 256 --height 256 --teams 4 \
+build/src/glob2 map generate comb --seed 7 --width 256 --height 256 --teams 4 \
   --output artifacts/comb/example.map --preview artifacts/comb/example.png \
-  --json artifacts/comb/example.json
+  --report-file artifacts/comb/example.json
 python3 test/run_tests.py --filter 'CombGenerator/*'
 ```
 

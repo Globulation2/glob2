@@ -13,7 +13,7 @@ one-map inspection. Both routes use the same production report serializer.
 
 Build the main client and register an immutable executable/data bundle following the
 framework guide. Build Linux bundles on Linux; a macOS binary cannot run on the SSH
-hosts. Capture `--headless-catalog` from the actual bundle. Require
+hosts. Capture `info catalog --format json` from the actual bundle. Require
 `map_report_version: 2` and `generation_telemetry_version: 1` for this workflow. Preserve
 source revision, dirty source identity and build options; never replace a cached bundle.
 Use numeric generator IDs from that catalog. Distributed `params.width` and
@@ -191,7 +191,7 @@ Things the first run teaches the hard way:
 - `scripts/tournament_starts.py RESULTS` prints that per-start economy for every generator, and with
   `--detail ID --telemetry-key KEY` joins each start to a per-colony draw its generation recorded
   (a facing, a variant), which is how a start-split result is traced to its cause.
-- The played map is an artifact of its generation job (`map-r0.map`); `--preview-map` renders
+- The played map is an artifact of its generation job (`map-r0.map`); `map preview` renders
   it and the final save headlessly with `SDL_VIDEODRIVER=dummy`.
 
 ### Audit the study as well as the generator

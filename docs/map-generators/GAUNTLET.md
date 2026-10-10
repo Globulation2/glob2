@@ -60,8 +60,8 @@ exits, every court connection, and permanent circulation after crop spread.
 ```sh
 scons release=1 server=0 -j8 build/src/glob2 engine-tests map-generator-golden-test
 python3 test/run_tests.py --filter 'MapGeneratorDefaults/Gauntlet*'
-build/src/glob2 --generate-map gauntlet --seed 1 --width 256 --height 256 --teams 4 \
-  --preview gauntlet.png --json gauntlet.json --output gauntlet.map
+build/src/glob2 map generate gauntlet --seed 1 --width 256 --height 256 --teams 4 \
+  --preview gauntlet.png --report-file gauntlet.json --output gauntlet.map
 ```
 
 Keep run-specific review and measurement evidence in the ignored
