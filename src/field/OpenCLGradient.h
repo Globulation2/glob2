@@ -53,6 +53,9 @@ OpenCLStatus openCLStatus();
 // executor worker slot. Execution never selects a plan or performs CPU recovery.
 bool initializeOpenCL();
 bool executeOpenCLDevice(std::span<const BackendRequest> requests, Plan plan);
+// Process-owned coordinators retain this lease until after their thread joins.
+// It pins the backend/API library, without initializing or compiling a driver.
+std::shared_ptr<const void> retainOpenCLLifetime();
 enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // Development-only optional execution. Required requests keep the synchronous
 // API. Each normal advance enqueues at most one kernel and never waits for the
@@ -71,7 +74,8 @@ public:
     OpenCLProbe& operator=(const OpenCLProbe&)=delete;
     OpenCLProbeProgress advance(std::size_t copyCells=4096,std::uint64_t cpuBudgetNs=500000) noexcept;
     void cancel() noexcept;
-    // Probe results never overwrite the original seeds. Valid only at Complete.
+    // Copy phases check CPU time at most every64 entries. Probe results never
+    // overwrite the original seeds. Valid only at Complete.
     std::span<const std::uint16_t> result() const noexcept;
     Metrics metrics() const noexcept;
 private:

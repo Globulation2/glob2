@@ -1136,6 +1136,13 @@ bool reserveOpenCLProbeBytes(std::size_t bytes) noexcept {
 }
 void releaseOpenCLProbeBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);probeBudget.release(bytes);}
 std::size_t openCLProbeBytes() noexcept {return probeBudget.current.load();}
+std::shared_ptr<const void> retainOpenCLLifetime() {
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    return runtime().shared;
+#else
+    return {};
+#endif
+}
 struct OpenCLProbe::Impl
 {
     OpenCLProbeProgress progress=OpenCLProbeProgress::Pending;
@@ -1185,7 +1192,7 @@ struct OpenCLProbe::Impl
         lane->api.ReleaseEvent(event);event=nullptr;borrowedTransfers=false;return true;
     }
     void flush() {check(lane->api.Flush(lane->queue));}
-    OpenCLProbeProgress step(std::size_t copyCells) {
+    OpenCLProbeProgress step(std::size_t copyCells,std::uint64_t started,std::uint64_t cpuBudget) {
         if(progress!=OpenCLProbeProgress::Pending) return progress;
         if(generation!=request.session.currentGeneration()) cancelled=true;
         if(lane->shared->failed.load() || request.session.failed.load()) cancelled=true;
@@ -1228,13 +1235,18 @@ struct OpenCLProbe::Impl
             lane->optionalSubsetLease.resize(objectBytes()+costCharge+lane->valuesLease.bytes);
             phase=Phase::Copy;break;
         case Phase::Copy: {
-            const auto end=copied+std::min(copyCells,n-copied);
-            lane->values.insert(lane->values.end(),request.gradient+copied,request.gradient+end);
-            for(auto i=copied;i<end;++i) {
-                const auto value=request.gradient[i];source=source||value>1;
-                onlyZerosAndMax=onlyZerosAndMax&&(value==0||value==65535);
+            const auto stop=copied+std::min(copyCells,n-copied);
+            while(copied<stop) {
+                const auto end=copied+std::min<std::size_t>(64,stop-copied);
+                lane->values.insert(lane->values.end(),request.gradient+copied,request.gradient+end);
+                for(auto i=copied;i<end;++i) {
+                    const auto value=request.gradient[i];source=source||value>1;
+                    onlyZerosAndMax=onlyZerosAndMax&&(value==0||value==65535);
+                }
+                copied=end;
+                const auto now=threadCPUClock();
+                if(!started || (now>=started && now-started>=cpuBudget)) break;
             }
-            copied=end;
             if(copied==n) {
                 if(!source||onlyZerosAndMax) {++lane->shared->noopFields;progress=OpenCLProbeProgress::Complete;}
                 else phase=Phase::Queue;
@@ -1355,7 +1367,7 @@ OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpu
         }
     } timer{*state,device,started,std::max<std::uint64_t>(1,std::min<std::uint64_t>(cpuBudgetNs,500000))};
     std::lock_guard lock(state->lane->mutex);
-    try {return state->step(std::max<std::size_t>(1,std::min<std::size_t>(copyCells,4096)));}
+    try {return state->step(std::max<std::size_t>(1,std::min<std::size_t>(copyCells,4096)),started,timer.budget);}
     catch(const BudgetExceeded&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(const std::bad_alloc&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(...) {
