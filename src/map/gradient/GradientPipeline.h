@@ -27,6 +27,7 @@
 class GradientPipeline
 {
 public:
+    enum class CPUReason : unsigned {ExplicitCPU,OwnerExcluded,Unavailable,AutomaticPolicy,FailedSession,Count};
 	struct Job {
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
@@ -91,7 +92,8 @@ private:
     BatchWork batchWork;
     AsyncWork asyncWork;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
-	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0};
+	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0}, requestedGpu{0};
+    std::array<std::atomic<std::uint64_t>,unsigned(CPUReason::Count)> cpuReasons{};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
@@ -111,6 +113,7 @@ private:
             seedCpu.fetch_add(glob2::threadCpuNs()-preparationCpu,std::memory_order_relaxed);
             timing.preparation=job.preparationNs;
             const auto choice = gradient_kernel::backend();
+            if(choice==gradient_kernel::Backend::OpenCL) requestedGpu.fetch_add(1,std::memory_order_relaxed);
             const auto family=gradient_preparation::backendFamily(job.request.kind);
             gradient_kernel::WorkloadKey key;
             key.width=job.snapshotLease ? job.snapshotLease->width : unsigned(cells);
@@ -118,6 +121,7 @@ private:
             key.family=family; key.cpuBuckets=job.request.terrainBuckets;
             key.threads=unsigned(executor->threadCount()); key.limit=gradient_kernel::COST_LIMIT;
             key.movement=unsigned(job.request.swim);
+            key.movementModifiers=job.snapshotLease && job.snapshotLease->terrain && job.snapshotLease->terrain->movementModifiers;
             const auto decision = asyncWork && deviceService ? backendSession->chooseWorkload(key,choice)
                 : backendSession->choose(family,1,choice);
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
@@ -136,6 +140,12 @@ private:
                 const std::array jobs{&job};
                 batchWork(jobs, std::span(&scratch.propagation, 1));
             } else {
+                const auto reason=choice==gradient_kernel::Backend::CPU ? CPUReason::ExplicitCPU
+                    : !executor->slot() ? CPUReason::OwnerExcluded
+                    : backendSession->failed.load() ? CPUReason::FailedSession
+                    : choice==gradient_kernel::Backend::Automatic ? CPUReason::AutomaticPolicy
+                    : CPUReason::Unavailable;
+                cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed);
                 const auto cpuStart=glob2::threadCpuNs();
                 work(job,scratch.propagation);
                 const auto consumed=glob2::threadCpuNs()-cpuStart;
@@ -194,7 +204,8 @@ public:
 		delay = 0; tick = 0; lastSubmission = 0;
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
-		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; cells = size; work = std::move(callback);
+		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
+        for(auto& reason:cpuReasons) reason=0; cells = size; work = std::move(callback);
 		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
@@ -207,6 +218,8 @@ public:
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
     std::uint64_t requiredPropagationCpuNs() const { return propagationCpu.load(); }
     std::uint64_t cpuCompleteFields() const { return cpuFields.load(); }
+    std::uint64_t gpuRequestedFields() const { return requestedGpu.load(); }
+    std::uint64_t cpuReason(CPUReason reason) const { return cpuReasons[unsigned(reason)].load(); }
     std::uint64_t gpuSelectedFields() const { return selectedGpu.load(); }
     std::uint64_t gpuCompleteFields() const { return gpuFields.load(); }
 	// Share the game choice with all previous work drained.

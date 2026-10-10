@@ -21,6 +21,7 @@ struct WorkloadKey {
     std::uint8_t seedDensity=255, blockerDensity=255;
     unsigned limit=65534;
     std::uint64_t movement=0;
+    bool movementModifiers=false;
     bool operator==(const WorkloadKey&) const = default;
 };
 

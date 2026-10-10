@@ -260,6 +260,24 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
 
 namespace
 {
+std::size_t retainedTerrainBytes(const SimulationSnapshot::Terrain& terrain)
+{
+    // Supplied with the immutable lease, without scanning any map plane.
+    std::size_t bytes=sizeof(terrain)+terrain.cellRules.capacity()*sizeof(Uint16)
+        +terrain.stamps.chunks.capacity()*sizeof(Uint64);
+    if(terrain.vertices) bytes+=sizeof(*terrain.vertices)+terrain.vertices->capacity()*sizeof(TerrainType);
+    if(terrain.rules) {
+        bytes+=sizeof(*terrain.rules)+terrain.rules->capacityBytes();
+        for(unsigned swim=0;swim<std::size(gradient_kernel::WATER_STEP);++swim) {
+            const auto& movement=terrain.rules->movement(swim);
+            bytes+=movement.entries.capacity()*sizeof(gradient_kernel::EntrySteps)
+                +movement.profiles.capacity()*sizeof(gradient_kernel::EntrySteps)
+                +movement.profileIds.capacity()*sizeof(std::uint8_t)
+                +movement.steps.capacity()*sizeof(unsigned);
+        }
+    }
+    return bytes;
+}
 gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const SimulationSnapshot::Handle& snapshot)
 {
     const auto& terrain = *snapshot.terrain;
@@ -268,7 +286,7 @@ gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const
     const bool allCells = !terrain.movementModifiers || std::all_of(
         terrain.rules->movement(request.swim).profiles.begin(), terrain.rules->movement(request.swim).profiles.end(),
         [](const auto step) { return step.cardinal && step.diagonal && step.cardinal <= 65535 && step.diagonal <= 65535; });
-    return {snapshot.terrain, std::uint64_t(request.swim), terrain.revision, allCells};
+    return {snapshot.terrain, std::uint64_t(request.swim), terrain.revision, allCells,retainedTerrainBytes(terrain)};
 }
 }
 
@@ -410,10 +428,7 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     owned->inputs=inputs;
     // Conservative retained-lease charge. Shared planes may be charged more
     // than once; the limit never assumes their external owners stay alive.
-    owned->retainedInputBytes=sizeof(OwnedPropagation)+sizeof(SimulationSnapshot::Terrain)
-        +snapshot.terrain->cellRules.capacity()*sizeof(Uint16)
-        +snapshot.terrain->stamps.chunks.capacity()*sizeof(Uint64);
-    if(snapshot.terrain->vertices) owned->retainedInputBytes+=snapshot.terrain->vertices->capacity()*sizeof(TerrainType);
+    owned->retainedInputBytes=sizeof(OwnedPropagation)+retainedTerrainBytes(*snapshot.terrain);
     owned->session=std::move(session);
     owned->grid={snapshot.width,snapshot.height}; owned->identity=snapshotCostIdentity(request,snapshot);
     owned->family=backendFamily(request.kind); owned->cpuBuckets=request.terrainBuckets;

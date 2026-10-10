@@ -677,7 +677,7 @@ TEST_CASE("owned GPU service initializes with two slots and leaves the sole work
         [state](std::span<const BackendRequest> requests,Plan){
             {std::unique_lock lock(state->mutex);state->entered=true;state->changed.notify_one();
              state->changed.wait(lock,[&]{return state->release;});}
-            for(const auto& request:requests){request.gradient[0]+=100;++state->gpu;}
+            for(const auto& request:requests){request.gradient[0]+=100;if(request.executedOnDevice)*request.executedOnDevice=true;++state->gpu;}
             return true;
         }});
     service->configure(2,Backend::OpenCL);

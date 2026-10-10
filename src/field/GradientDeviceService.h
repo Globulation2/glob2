@@ -10,6 +10,7 @@
 namespace gradient_kernel
 {
 class GradientDeviceService;
+enum class GradientFallbackReason : unsigned {None,Unavailable,InvalidRequest,StaleGeneration,Duplicate,MemoryBudget,BackendDecline,DriverFailure,Shutdown,Count};
 // The device service borrows neither a Map, a pipeline job nor a worker's
 // scratch. Seeds move into this holder and stay unchanged on GPU decline.
 struct OwnedGradientField
@@ -30,6 +31,7 @@ struct OwnedGradientField
     std::exception_ptr error;
     std::uint64_t serviceNs = 0, hostCpuNs = 0, fallbackCpuNs = 0;
     bool executedGPU = false;
+    GradientFallbackReason fallbackReason=GradientFallbackReason::None;
     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
     std::atomic<bool> admitted{false};
     std::shared_ptr<std::atomic<std::size_t>> serviceRetained;
@@ -52,11 +54,13 @@ public:
         std::function<bool(std::span<const BackendRequest>,Plan)> execute;
     };
     struct Metrics {
-        std::uint64_t submitted=0, completed=0, fallbacks=0, declined=0;
+        std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
         std::uint64_t batches=0, maxBatch=0, initializationNs=0, hostCpuNs=0;
         std::uint64_t stale=0, budgetDeclines=0, observationDrops=0;
         std::size_t queued=0, retainedHostBytes=0;
         bool running=false, ready=false;
+        unsigned configuredMaxBatch=8, deviceConcurrency=1;
+        std::array<std::uint64_t,unsigned(GradientFallbackReason::Count)> fallbackReasons{};
     };
 private:
     struct Queued { std::shared_ptr<OwnedGradientField> field; std::uint64_t serial; };
@@ -67,6 +71,7 @@ private:
     Hooks hooks;
     bool stopping=false, started=false, initialized=false;
     std::uint64_t nextSerial=0;
+    unsigned maximumBatch=8;
     Metrics totals;
     std::shared_ptr<std::atomic<std::size_t>> retained = std::make_shared<std::atomic<std::size_t>>(0);
     struct Observation {
