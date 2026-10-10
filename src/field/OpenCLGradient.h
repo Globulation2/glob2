@@ -89,6 +89,9 @@ struct OpenCLStatus
     OpenCLApiCpuCounters apiCpu;
     std::uint64_t optionalQuarantines=0;
     bool optionalQuarantinePending=false;
+    std::uint64_t requiredQuarantines=0,requiredProofFailures=0;
+    bool requiredQuarantinePending=false;
+    std::uint64_t directSeedUploadSafetyCopies=0;
     // Isolated optional preparation only; never publishes pending/cache planes.
     bool probeColdCosts=false;
 };
@@ -97,6 +100,8 @@ struct OpenCLStatus
 OpenCLStatus openCLStatus();
 // These operations are also valid on an owned device-service thread without an
 // executor worker slot. Execution never selects a plan or performs CPU recovery.
+// Background single coordinator only. No waits, initialization or GPU restart.
+bool reapOpenCLRequiredQuarantine() noexcept;
 bool initializeOpenCL();
 bool executeOpenCLDevice(std::span<const BackendRequest> requests, Plan plan);
 // Process-owned coordinators retain this lease until after their thread joins.

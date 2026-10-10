@@ -1505,7 +1505,7 @@ TEST_CASE("experimental mask and parity bindings preserve every plan across reti
         CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);CHECK_FALSE(session.failed.load());
     }
 }
-TEST_CASE("singleton direct seed uploads preserve exact arrays commands and mixed batch staging")
+TEST_CASE("requested direct seed uploads use retained safety copies and preserve exact arrays")
 {
     using namespace gradient_kernel;
     if(!initializeOpenCL() || !openCLStatus().directSeedUpload)return;
@@ -1543,10 +1543,11 @@ TEST_CASE("singleton direct seed uploads preserve exact arrays commands and mixe
             const auto before=openCLStatus();REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan(plan)));
             CHECK(field.actual==field.expected);CHECK(executed);CHECK(observed);CHECK_FALSE(session.failed.load());
             const auto after=openCLStatus();const auto bytes=field.grid.cells()*sizeof(std::uint16_t);
-            CHECK(after.directSeedUploads==before.directSeedUploads+1);
-            CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes+bytes);
+            CHECK(after.directSeedUploads==before.directSeedUploads);
+            CHECK(after.directSeedUploadSafetyCopies==before.directSeedUploadSafetyCopies+1);
+            CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes);
             CHECK(after.seedUploadedBytes==before.seedUploadedBytes+bytes);
-            CHECK(after.seedCopiedBytes==before.seedCopiedBytes);
+            CHECK(after.seedCopiedBytes==before.seedCopiedBytes+bytes);
             CHECK(after.outputCopiedBytes==before.outputCopiedBytes+bytes);
             CHECK(after.batches==before.batches+1);CHECK(after.fields==before.fields+1);
             const auto dispatches=after.dispatches-before.dispatches;
@@ -1640,12 +1641,49 @@ TEST_CASE("isolated direct seed upload rollback preserves originals after device
     const auto before=openCLStatus();CHECK_FALSE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
     const auto after=openCLStatus();CHECK(context.calls>0);CHECK(session.failed.load());CHECK(seeds==original);CHECK_FALSE(executed);CHECK(observed);
     CHECK(after.deviceObservedFields==before.deviceObservedFields+1);CHECK(after.committedFields==before.committedFields);
-    CHECK(after.directSeedUploads==before.directSeedUploads+1);
-    CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes+grid.cells()*sizeof(std::uint16_t));
+    CHECK(after.directSeedUploads==before.directSeedUploads);
+    CHECK(after.directSeedUploadSafetyCopies==before.directSeedUploadSafetyCopies+1);
+    CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes);
     CHECK(after.seedUploadedBytes==before.seedUploadedBytes+grid.cells()*sizeof(std::uint16_t));
-    CHECK(after.seedCopiedBytes==before.seedCopiedBytes);CHECK(after.outputCopiedBytes==before.outputCopiedBytes);
+    CHECK(after.seedCopiedBytes==before.seedCopiedBytes+grid.cells()*sizeof(std::uint16_t));CHECK(after.outputCopiedBytes==before.outputCopiedBytes);
     CHECK(after.dispatches>before.dispatches);CHECK(after.hostChecks>before.hostChecks);
 }
+}
+
+TEST_CASE("isolated required query failure retains cost graph through exact CPU recovery" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    using namespace gradient_kernel;
+    REQUIRE(initializeOpenCL());REQUIRE(openCLStatus().pollMicros>0);
+    REQUIRE((readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0);
+    onWorker([&]{
+        BackendSession session;const field::Grid grid(31,17);
+        auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
+        std::weak_ptr<std::vector<EntrySteps>> weakCosts=costs;
+        std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[17]=65300;seeds[13]=0;
+        const auto original=seeds;const auto expected=oracle(seeds,grid,*costs,700);
+        struct Context {const std::vector<EntrySteps>* costs;const std::vector<std::uint16_t>* expected;
+            const std::vector<std::uint16_t>* original;std::size_t cells;unsigned cpu=0;} context{costs.get(),&expected,&original,grid.cells()};
+        BackendRequest request{seeds.data(),700,grid,session,&context,
+            [](void* value,std::size_t cell){return (*static_cast<Context*>(value)->costs)[cell];},
+            [](void* value,std::uint16_t* out){auto& c=*static_cast<Context*>(value);++c.cpu;
+                CHECK(std::equal(c.original->begin(),c.original->end(),out));
+                std::copy(c.expected->begin(),c.expected->end(),out);},
+            {costs,71981823,1,true,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps)}};
+        const auto before=openCLStatus();executeGradientGroup(std::span(&request,1),Backend::OpenCL);
+        CHECK(context.cpu==1);CHECK(seeds==expected);CHECK(session.failed.load());
+        const auto retained=openCLStatus();CHECK(retained.requiredQuarantines==before.requiredQuarantines+1);
+        REQUIRE(retained.requiredQuarantinePending);CHECK(retained.requiredProofFailures==before.requiredProofFailures+1);
+        CHECK(readyPlans.load()==0);costs.reset();request.identity={};
+        CHECK_FALSE(weakCosts.expired());
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        bool reaped=false;
+        while(!reaped && std::chrono::steady_clock::now()<deadline){reaped=reapOpenCLRequiredQuarantine();if(!reaped)std::this_thread::yield();}
+        REQUIRE(reaped);CHECK(weakCosts.expired());CHECK_FALSE(openCLStatus().requiredQuarantinePending);
+        CHECK(openCLStatus().hostBytes<retained.hostBytes);CHECK(context.cpu==1);CHECK(seeds==expected);
+    });
 }
 
 TEST_CASE("worker initialization failure leaves CPU available without inline retries" * doctest::test_suite("OpenCLGradient"))

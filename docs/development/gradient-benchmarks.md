@@ -537,3 +537,40 @@ output and metadata sentinels, repeated failed proof, later successful reap,
 foreign-owner rejection and last-external-owner admission release. The actual
 submission helper also has injected first-command and prior-event enqueue-error
 tests, including an error that returns a replacement event.
+
+### Required transfer failure ownership
+
+Required batches pre-reserve a heap transaction before submitting driver work.
+Descriptors, convergence flags, preparing and active cost owners, retained events
+and lane staging survive a failed event query or read/write. Original seeds are
+never borrowed by a transfer; readback targets only private staging. Requested
+direct-seed mode currently uses a safety copy even for blocking calls, since an
+errored call cannot establish rejection or completion. `directSeedUploadSafetyCopies`
+reports this path, and actual direct upload counts stay zero.
+
+On failure the background executor polls an existing covered event once. Only
+positive completion establishes proof. Otherwise one bounded required quarantine retains
+the transaction and Device/API parent and disables new GPU admission. CPU recovery
+uses the unchanged original seeds once on its worker and cannot race late driver
+writes. An existing positive in-order event can reap only if no newer unobserved
+command or ambiguous enqueue invalidated its coverage. Older, error-returned or
+omitted events cannot establish proof; such storage remains retained until proof
+or operating-system process reclamation. Required batches share one process-wide admission slot; a concurrent request
+declines to CPU rather than waiting for the slot. Reaping and required execution
+share one background coordinator and must not overlap. No reaping, Finish, driver
+wait, or fatal exit is added to save/publication/owner code.
+
+Hardware-free tests exercise the shared proof and retention machinery with late
+readback writes, live descriptor/upload sentinels, failed queries, exactly one CPU
+continuation and positive subsequent release. Actual driver failure, normal exact
+arrays, save/replay continuity, storage pressure and release overhead require the
+serialized native evidence campaign before this candidate is admitted.
+
+Run `isolated required query failure*` alone in a fresh native test process with
+`GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE=1` and nonzero `GLOB2_OPENCL_POLL_US`.
+This default-off injection rejects the first polling read and immediate proof
+query while preserving real queued storage. The test requires a usable device,
+original-byte rollback before one CPU callback, retained cost-owner/host credits,
+and later positive-event release. It deliberately disables the backend for that
+process. It supplies failure-lifetime evidence, not performance or driver-hang
+coverage.

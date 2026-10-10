@@ -2,6 +2,7 @@
 #include "OpenCLGradient.h"
 #include "OpenCLCpuAttribution.h"
 #include "OpenCLBorrowedLifetime.h"
+#include "OpenCLTransferProof.h"
 #include "GradientBackend.h"
 #include "ThreadCpuClock.h"
 #include <SDL3/SDL_loadso.h>
@@ -359,7 +360,8 @@ struct Device
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
     std::atomic<bool> failed{false};
-    OpenCLBorrowedLifetime optionalLifetime;
+    OpenCLBorrowedLifetime optionalLifetime,requiredLifetime;
+    bool requiredQueryFailureDiagnostics=false;
     MemoryBudget deviceBudget{OpenCLDeviceBudget};
     Handle device = nullptr, context = nullptr;
     OpenCLStatus status;
@@ -420,7 +422,7 @@ struct Device
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
     std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0};
-    std::atomic<std::uint64_t> optionalQuarantines{0};
+    std::atomic<std::uint64_t> optionalQuarantines{0},requiredQuarantines{0},requiredProofFailures{0};
     std::atomic<bool> threadCPUAvailable{false};
     void evictUnusedPlanes() {
         std::lock_guard lock(cacheMutex);
@@ -449,6 +451,7 @@ struct Device
         try
         {
             status.directSeedUploadRequested=numericOverride("GLOB2_OPENCL_DIRECT_SEED_UPLOAD",0,1)!=0;
+            requiredQueryFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE",0,1)!=0;
             status.apiCpuMode=numericOverride("GLOB2_OPENCL_API_CPU",0,2);
             api.load();
             status.checkInterval=numericOverride("GLOB2_OPENCL_CHECK_INTERVAL",8,32);
@@ -613,7 +616,7 @@ struct Device
         try { std::lock_guard lock(failureMutex); if(status.error.empty()) status.error.assign(message); } catch(...) {}
     }
 };
-struct Runtime
+struct Runtime : std::enable_shared_from_this<Runtime>
 {
     std::shared_ptr<Device> shared;
     API& api;
@@ -641,6 +644,45 @@ struct Runtime
     BudgetLease deviceLease{shared->deviceBudget};
     std::vector<std::uint16_t> values;
     std::vector<std::uint8_t> blocked;
+    struct RequiredTransaction {
+        struct Admission {
+            std::shared_ptr<Device> parent;
+            bool owns=false;
+            ~Admission(){if(owns)parent->requiredLifetime.release();}
+        } admission; // Pins parent and releases admission after all payload.
+        BudgetLease objectLease{hostBudget};
+        std::shared_ptr<Runtime> lane;
+        std::array<UInt,64> descriptors{};
+        std::array<UInt,8> flags{};
+        std::array<std::shared_ptr<Device::Plane>,8> costs{};
+        std::shared_ptr<Device::Plane> preparing;
+        Handle event=nullptr;
+        OpenCLTransferProof proof;
+        unsigned diagnosticQueryFailures=0;
+        RequiredTransaction(std::shared_ptr<Runtime> owner,BudgetLease& reserved):lane(std::move(owner)) {
+            admission.parent=lane->shared;reserved.transferTo(objectLease);
+            diagnosticQueryFailures=lane->shared->requiredQueryFailureDiagnostics ? 2 : 0;
+        }
+        ~RequiredTransaction(){if(event)lane->api.ReleaseEvent(event);}
+        void remember(Handle next) noexcept {
+            if(!next)return;
+            if(event)lane->api.ReleaseEvent(event);
+            event=next;
+        }
+        static bool terminalProof(void* value) noexcept {
+            auto& transaction=*static_cast<RequiredTransaction*>(value);
+            if(!transaction.event || !transaction.proof.canPollEvent())return false;
+            if(transaction.diagnosticQueryFailures){--transaction.diagnosticQueryFailures;return false;}
+            Int state=1;
+            if(transaction.lane->api.GetEventInfo(transaction.event,0x11D3,sizeof state,&state,nullptr) || state!=0)return false;
+            transaction.proof.eventCompleted();return !transaction.proof.needsProof();
+        }
+    };
+    RequiredTransaction* required=nullptr; // Borrowed only inside synchronous batch.
+    void requiredEnqueue(Int result,Handle event=nullptr,bool blocking=false) noexcept {
+        if(!required)return;
+        required->remember(event);required->proof.enqueue(result,event!=nullptr,blocking);
+    }
     ~Runtime()
     {
         buffers();
@@ -686,6 +728,7 @@ struct Runtime
         out.directSeedUploads+=in.directSeedUploads;out.seedCopiedBytes+=in.seedCopiedBytes;
         out.seedUploadedBytes+=in.seedUploadedBytes;out.directSeedUploadedBytes+=in.directSeedUploadedBytes;
         out.outputCopiedBytes+=in.outputCopiedBytes;
+        out.directSeedUploadSafetyCopies+=in.directSeedUploadSafetyCopies;
         for(unsigned i=0;i<unsigned(OpenCLCpuCategory::Count);++i){out.apiCpu.ns[i]+=in.apiCpu.ns[i];out.apiCpu.calls[i]+=in.apiCpu.calls[i];}
         out.apiCpu.invalidScopes+=in.apiCpu.invalidScopes;out.apiCpu.reconciliationErrors+=in.apiCpu.reconciliationErrors;
         out.apiCpu.controlBracketNs+=in.apiCpu.controlBracketNs;out.apiCpu.clockReads+=in.apiCpu.clockReads;
@@ -716,6 +759,9 @@ struct Runtime
         out.available=out.available&&!shared->failed.load();
         out.optionalQuarantines=shared->optionalQuarantines.load();
         out.optionalQuarantinePending=shared->optionalLifetime.quarantined();
+        out.requiredQuarantines=shared->requiredQuarantines.load();
+        out.requiredProofFailures=shared->requiredProofFailures.load();
+        out.requiredQuarantinePending=shared->requiredLifetime.quarantined();
         out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
         out.probeBytes=probeBudget.current.load();out.peakProbeBytes=probeBudget.peak.load();
         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
@@ -757,10 +803,12 @@ struct Runtime
         OpenCLCpuAttribution::Scope scope(cpuAttribution,category);return function();
     }
     template<class... Args> Int fill(Args... args) {
-        return timedCpu(OpenCLCpuCategory::Fill,[&]{return api.EnqueueFillBuffer(args...);});
+        const auto result=timedCpu(OpenCLCpuCategory::Fill,[&]{return api.EnqueueFillBuffer(args...);});
+        if(required)required->proof.enqueueUnobserved(result);return result;
     }
     template<class... Args> Int enqueueKernel(Args... args) {
-        return timedCpu(OpenCLCpuCategory::KernelEnqueue,[&]{return api.EnqueueNDRangeKernel(args...);});
+        const auto result=timedCpu(OpenCLCpuCategory::KernelEnqueue,[&]{return api.EnqueueNDRangeKernel(args...);});
+        if(required)required->proof.enqueueUnobserved(result);return result;
     }
     template <class T> void argumentTo(Handle target,UInt index,T value)
     {
@@ -768,27 +816,24 @@ struct Runtime
     }
     template <class T> void argument(UInt index,T value) {argumentTo(kernel,index,value);}
     struct Event {
-        API& api;Handle value=nullptr;
+        API& api;Handle value=nullptr;bool owns=true;
         explicit Event(API& api):api(api) {}
-        ~Event(){if(value) api.ReleaseEvent(value);}
+        ~Event(){if(value && owns) api.ReleaseEvent(value);}
         Event(const Event&)=delete;
     };
     void await(Event& event) {
-        if(!event.value || !shared->status.pollMicros) return;
-        try {
-            check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.Flush(queue);}));
-            for(;;) {
-                Int state=0;
-                check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventInfo(event.value,0x11D3 /* command execution status */,sizeof state,&state,nullptr);}));
-                if(state<0) check(state);
-                if(!state) return;
-                std::this_thread::sleep_for(std::chrono::microseconds(shared->status.pollMicros));
-            }
-        } catch(...) {
-            // A nonblocking transfer still borrows its source/destination.
-            // Drain before any stack descriptor or staging storage can unwind.
-            timedCpu(OpenCLCpuCategory::Other,[&]{return api.Finish(queue);});throw;
+        if(!event.value || !shared->status.pollMicros)return;
+        check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.Flush(queue);}));
+        for(;;) {
+            Int state=1;
+            if(required && required->diagnosticQueryFailures){--required->diagnosticQueryFailures;throw std::runtime_error("Injected required event query failure");}
+            check(timedCpu(OpenCLCpuCategory::Other,[&]{return api.GetEventInfo(event.value,0x11D3,sizeof state,&state,nullptr);}));
+            if(state<0)check(state);
+            if(!state) {if(required)required->proof.eventCompleted();return;}
+            std::this_thread::sleep_for(std::chrono::microseconds(shared->status.pollMicros));
         }
+        // Failure unwinds only into batch's checked drain/quarantine guard.
+        // All transfer endpoints and retained events already belong to it.
     }
     void profile(Handle event,std::uint64_t& total) {
         if(!event || !shared->status.deviceProfiling) return;
@@ -803,7 +848,11 @@ struct Runtime
         Event event(api);
         const bool asynchronous=shared->status.pollMicros!=0;
         const bool capture=asynchronous || shared->status.deviceProfiling;
-        check(timedCpu(finalOutput ? OpenCLCpuCategory::OutputRead : OpenCLCpuCategory::CheckRead,[&]{return api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr);}));
+        const auto result=timedCpu(finalOutput ? OpenCLCpuCategory::OutputRead : OpenCLCpuCategory::CheckRead,[&]{return api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr);});
+        requiredEnqueue(result,event.value,!asynchronous);
+        if(required && event.value)event.owns=false;
+        check(result);
+        if(asynchronous && !event.value)throw std::runtime_error("OpenCL omitted transfer event");
         await(event);
         profile(event.value,finalOutput ? status.deviceReadbackNs : status.deviceCheckReadNs);
     }
@@ -813,7 +862,11 @@ struct Runtime
         Event event(api);
         const bool asynchronous=shared->status.pollMicros!=0;
         const bool capture=asynchronous || shared->status.deviceProfiling;
-        check(timedCpu(OpenCLCpuCategory::Upload,[&]{return api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr);}));
+        const auto result=timedCpu(OpenCLCpuCategory::Upload,[&]{return api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr);});
+        requiredEnqueue(result,event.value,!asynchronous);
+        if(required && event.value)event.owns=false;
+        check(result);
+        if(asynchronous && !event.value)throw std::runtime_error("OpenCL omitted transfer event");
         await(event);profile(event.value,status.deviceUploadNs);
         if(activeStageTiming) activeStageTiming->uploadNs+=monotonicNs()-start;
     }
@@ -889,7 +942,9 @@ struct Runtime
             try {p->storage->deviceLease.resize(bytes);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p->storage->deviceLease.resize(bytes);}
             Int error=0;p->buffer=p->storage->buffer=api.CreateBuffer(context,1,bytes,nullptr,&error);check(error);
+            if(required)required->preparing=p;
             write(p->buffer,p->data.data(),bytes);++status.costUploads;
+            if(required)required->preparing.reset();
             p->published.store(true);p->completed.set_value();
             if(!reserved) {std::lock_guard lock(shared->cacheMutex);
                 const auto slot=std::min_element(shared->used.begin(),shared->used.end())-shared->used.begin();
@@ -936,8 +991,14 @@ struct Runtime
             check(error);
             capacity = total;
         }
-        std::array<UInt,64> desc{};
-        std::array<std::shared_ptr<Device::Plane>,8> held;
+        // Polling failure may outlive this stack frame. Every borrowed endpoint
+        // belongs to the pre-admitted transaction, never to these locals.
+        auto& desc=required->descriptors;desc.fill(0);
+        auto& held=required->costs;held.fill({});
+        // Even an errored blocking call has ambiguous acceptance. Never borrow
+        // caller seeds: CPU recovery may start before the driver stops reading.
+        if(directSingletonSeed)++status.directSeedUploadSafetyCopies;
+        directSingletonSeed=false;
         std::size_t offset=0, field=0;
         for(auto* r:requests) {
             const auto n=r->grid.cells();
@@ -957,11 +1018,8 @@ struct Runtime
             std::copy(descriptor.begin(),descriptor.end(),desc.begin()+field*8);
             offset+=n;++field;
         }
-        // Required singleton sources remain immutable and caller-owned until
-        // the entire synchronous batch completes. write() waits for a blocking
-        // transfer or its trailing event (and drains on polling failure), so a
-        // nonblocking upload never outlives the original seeds. Output is still
-        // staged separately and committed only after all device/session checks.
+        // Polling uploads always use retained staging. Original seeds stay
+        // untouched and unborrowed until commit, including failed drain paths.
         const auto seedBytes=total*sizeof(std::uint16_t);
         write(first,directSingletonSeed ? requests.front()->gradient : staging.data(),seedBytes);
         status.seedUploadedBytes+=seedBytes;
@@ -1007,7 +1065,8 @@ struct Runtime
         const std::size_t global[]{std::size_t(pitch) * variant.threads, std::size_t(rows),
                                    requests.size()},
             local[]{variant.threads, 1, 1};
-        std::array<UInt, 8> zero{}, flags{};
+        std::array<UInt,8> zero{};
+        auto& flags=required->flags;flags.fill(0);
         ++status.batches;
         status.maxBatchFields = std::max(status.maxBatchFields, std::uint64_t(requests.size()));
         // Each lane owns its kernel instances. Both parity instances share
@@ -1176,7 +1235,15 @@ struct Runtime
                 status.readbackNs+=timing->readbackNs-before.readbackNs;
             }
         } stageAccumulator{status,stages,before};
+        if(!shared->requiredLifetime.tryReserve()){++status.budgetDeclines;return false;}
+        struct SlotGuard {Device& device;bool transferred=false;
+            ~SlotGuard(){if(!transferred)device.requiredLifetime.release();}} slotGuard{*shared};
+        std::shared_ptr<RequiredTransaction> transaction;
+        struct CurrentGuard {Runtime& lane;~CurrentGuard(){lane.required=nullptr;}} currentGuard{*this};
         try {
+            BudgetLease reserved{hostBudget};reserved.resize(sizeof(RequiredTransaction)+256);
+            transaction=std::make_shared<RequiredTransaction>(shared_from_this(),reserved);
+            transaction->admission.owns=true;slotGuard.transferred=true;required=transaction.get();
             probe(); // Lane buffers/queue only. Compilation must already be complete.
             if(!variants[unsigned(plan)-1].kernel) return false;
             selectVariant(unsigned(plan)-1);
@@ -1219,6 +1286,7 @@ struct Runtime
             return true;
         } catch(const BudgetExceeded&) {
             ++status.budgetDeclines;
+            if(transaction && transaction->proof.needsProof())protectFailedTransaction(transaction);
             return false;
         } catch(...) {
             status.available=false;
@@ -1230,9 +1298,17 @@ struct Runtime
             } catch(...) { status.error.clear(); }
             readyPlans.store(0,std::memory_order_release);
             shared->fail(status.error);
-            if(queue) timedCpu(OpenCLCpuCategory::Other,[&]{return api.Finish(queue);});
+            if(transaction && transaction->proof.needsProof())protectFailedTransaction(transaction);
             return false;
         }
+    }
+    void protectFailedTransaction(const std::shared_ptr<RequiredTransaction>& transaction) noexcept {
+        // A covered positive event is proof. Failure/absence is never permission
+        // to block on Finish or release borrowed endpoints during CPU recovery.
+        if(RequiredTransaction::terminalProof(transaction.get()))return;
+        ++shared->requiredProofFailures;++shared->requiredQuarantines;
+        shared->failed.store(true,std::memory_order_release);readyPlans.store(0,std::memory_order_release);
+        if(!shared->requiredLifetime.quarantine(transaction))std::terminate();
     }
     bool run(const BackendRequest& r, Plan plan) { return batch(std::span(&r,1),plan); }
 
@@ -1798,6 +1874,13 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const OpenCLProbeInput& request,Pl
 bool reapOpenCLProbeQuarantine() noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     return runtime().shared->optionalLifetime.tryReap(&OpenCLProbe::Impl::terminalProof);
+#else
+    return false;
+#endif
+}
+bool reapOpenCLRequiredQuarantine() noexcept {
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    return runtime().shared->requiredLifetime.tryReap(&Runtime::RequiredTransaction::terminalProof);
 #else
     return false;
 #endif
