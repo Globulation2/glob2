@@ -34,9 +34,9 @@ class CpuSavingPolicy
 public:
     static constexpr unsigned MaxProfiles=64, MaxAlternatives=2, WindowTicks=256;
     static constexpr unsigned ProbePeriod=128, MinimumPairs=8, CooldownRequests=64;
-    struct Choice { Plan plan=Plan(0); std::uint64_t version=0; };
+    struct Choice { Plan plan=Plan(0); std::uint64_t version=0,maximumElapsedNs=0; };
     struct ProbeOffer { Plan plan=Plan(0);std::uint64_t reservedCpuNs=0,elapsedNs=0; };
-    enum class ProbeKind { PaidCpuReplay, AcceptedCpuCapture };
+    enum class ProbeKind { PaidCpuReplay, AcceptedCpuCapture, AcceptedCpuBatchCapture };
     enum class CapturePhase { AwaitingAcceptedReference, ReferenceBound, Running, Reaping };
     struct ProbeTicket {
         std::uint64_t id=0, generation=0;
@@ -75,7 +75,7 @@ private:
     };
     struct Profile {
         WorkloadKey key;
-        std::atomic<std::uint64_t> decision{0};
+        std::atomic<std::uint64_t> decision{0},boundDecision{0},publishedElapsedNs{0};
         std::array<Alternative,MaxAlternatives> alternatives;
         std::uint64_t cpuReference=0;
         unsigned expensive=0, cooldown=0;
@@ -102,9 +102,16 @@ private:
         published.store(count+1,std::memory_order_release);
         return count;
     }
-    static void publish(Profile& profile, Plan plan) {
+    static void publish(Profile& profile, Plan plan,std::uint64_t elapsedNs=0) {
         const auto previous=profile.decision.load(std::memory_order_relaxed);
-        profile.decision.store(((previous>>8)+1)*256+unsigned(plan),std::memory_order_release);
+        const auto word=((previous>>8)+1)*256+unsigned(plan);
+        // Sequential consistency orders invalidation before the new bound and
+        // both reader tags after its payload read. Acquire/release alone across
+        // these separate atomics would permit old tags with a new payload.
+        profile.boundDecision.store(0,std::memory_order_seq_cst);
+        profile.publishedElapsedNs.store(elapsedNs,std::memory_order_seq_cst);
+        profile.decision.store(word,std::memory_order_seq_cst);
+        profile.boundDecision.store(word,std::memory_order_seq_cst);
     }
     static std::uint64_t saturatedAdd(std::uint64_t a,std::uint64_t b) noexcept {
         return b>UINT64_MAX-a?UINT64_MAX:a+b;
@@ -165,7 +172,7 @@ private:
         auto& reserved=credit(tick);reserved.probes=saturatedAdd(reserved.probes,reserveCpuNs);
         active=Reservation{nextTicket.fetch_add(1,std::memory_order_relaxed),generation.load(std::memory_order_acquire),tick,reserveCpuNs,
             index,alternative,commonPreparationCpuNs,0,kind,
-            kind==ProbeKind::AcceptedCpuCapture ? CapturePhase::AwaitingAcceptedReference : CapturePhase::Running,
+            kind!=ProbeKind::PaidCpuReplay ? CapturePhase::AwaitingAcceptedReference : CapturePhase::Running,
             requiredGeneration,conservativeElapsedNs,false};
         ++totals.admitted;
         return active->ticket();
@@ -180,8 +187,12 @@ public:
     Choice lookup(const WorkloadKey& key) const noexcept {
         const auto count=published.load(std::memory_order_acquire);
         for(unsigned i=0;i<count;++i) if(profiles[i].key==key) {
-            const auto word=profiles[i].decision.load(std::memory_order_acquire);
-            return {Plan(word&255),word>>8};
+            const auto word=profiles[i].decision.load(std::memory_order_seq_cst);
+            const auto boundBefore=profiles[i].boundDecision.load(std::memory_order_seq_cst);
+            const auto elapsed=profiles[i].publishedElapsedNs.load(std::memory_order_seq_cst);
+            const auto boundAfter=profiles[i].boundDecision.load(std::memory_order_seq_cst);
+            if(boundBefore!=word || boundAfter!=word)return {};
+            return {Plan(word&255),word>>8,elapsed};
         }
         return {};
     }
@@ -198,6 +209,30 @@ public:
                 // admission quantum for exploratory optional dispatches. It is
                 // never a completion bound for required work or promotion.
                 return {a.plan,cap,a.maximumElapsed?a.maximumElapsed:std::uint64_t(1000000)};
+            }
+        }
+        return {};
+    }
+    // One group reservation precedes every member clone. Singleton history is
+    // used only for a predictable optional CPU cap, never as batch evidence.
+    ProbeOffer groupOffer(const WorkloadKey& singleton,unsigned capacity,std::uint64_t tick) const {
+        if(singleton.batch!=1 || (capacity!=1 && capacity!=2 && capacity!=4 && capacity!=8))return {};
+        std::lock_guard lock(background);
+        std::uint64_t reference=0;const auto count=published.load(std::memory_order_acquire);
+        for(unsigned i=0;i<count;++i)if(profiles[i].key==singleton)reference=profiles[i].cpuReference;
+        if(!reference)return {};
+        auto key=singleton;key.batch=capacity;
+        for(unsigned i=0;i<count;++i)if(profiles[i].key==key && !profiles[i].cooldown) {
+            for(const auto& a:profiles[i].alternatives)if(a.qualified) {
+                const auto estimated=reference>UINT64_MAX/capacity?UINT64_MAX:reference*capacity;
+                const auto reserve=std::clamp(estimated/4,std::uint64_t(1000000),std::uint64_t(8000000));
+                std::uint64_t accepted=0,paid=0;
+                for(const auto& c:credits)if(c.tick<=tick && tick-c.tick<WindowTicks) {
+                    accepted=saturatedAdd(accepted,c.accepted);paid=saturatedAdd(paid,c.probes);
+                }
+                if(totals.probeCpuNs>totals.acceptedCpuNs/100 || reserve>totals.acceptedCpuNs/100-totals.probeCpuNs ||
+                   paid>accepted/100 || reserve>accepted/100-paid)return {};
+                return {a.plan,reserve,a.maximumElapsed?a.maximumElapsed:std::uint64_t(1000000)};
             }
         }
         return {};
@@ -264,6 +299,44 @@ public:
         if(!alternativeReady || !requiredGeneration)return {};
         return beginReservation(key,plan,tick,reserveCpuNs,slackNs,conservativeElapsedNs,backlog,
             commonPreparationCpuNs,ProbeKind::AcceptedCpuCapture,requiredGeneration);
+    }
+    std::optional<ProbeTicket> beginAcceptedBatchCapture(const WorkloadKey& maximumKey,Plan plan,
+        std::uint64_t tick,std::uint64_t reserveCpuNs,std::uint64_t slackNs,
+        std::uint64_t conservativeElapsedNs,bool backlog,std::uint64_t requiredGeneration,bool alternativeReady) {
+        if(!alternativeReady || !requiredGeneration ||
+           (maximumKey.batch!=1 && maximumKey.batch!=2 && maximumKey.batch!=4 && maximumKey.batch!=8))return {};
+        return beginReservation(maximumKey,plan,tick,reserveCpuNs,slackNs,conservativeElapsedNs,backlog,
+            0,ProbeKind::AcceptedCpuBatchCapture,requiredGeneration);
+    }
+    // Freeze only already-complete members. Reference/preparation are exact sums
+    // of those selected accepted jobs; unused member expense remains paid.
+    bool bindReadyBatch(const ProbeTicket& ticket,const WorkloadKey& readyKey,std::uint64_t requiredGeneration,
+        std::uint64_t propagationCpuNs,std::uint64_t commonPreparationCpuNs,bool successful,bool clockValid) {
+        std::lock_guard lock(background);
+        if(!matches(ticket) || active->kind!=ProbeKind::AcceptedCpuBatchCapture ||
+           active->phase!=CapturePhase::AwaitingAcceptedReference)return false;
+        const auto& maximum=profiles[active->profile].key;
+        auto expected=maximum;expected.batch=readyKey.batch;
+        if(!(expected==readyKey) || readyKey.batch>maximum.batch ||
+           (readyKey.batch!=1 && readyKey.batch!=2 && readyKey.batch!=4 && readyKey.batch!=8))return false;
+        if(!successful || !clockValid || !propagationCpuNs || active->requiredGeneration!=requiredGeneration ||
+           active->generation!=generation.load(std::memory_order_acquire)) {
+            active->requiresFullReservedCharge=true;active->phase=CapturePhase::Reaping;return false;
+        }
+        const auto plan=profiles[active->profile].alternatives[active->alternative].plan;
+        const auto index=findOrCreate(readyKey);if(index==MaxProfiles)return false;
+        unsigned alternative=MaxAlternatives;
+        for(unsigned i=0;i<MaxAlternatives;++i)if(profiles[index].alternatives[i].qualified &&
+            profiles[index].alternatives[i].plan==plan)alternative=i;
+        if(alternative==MaxAlternatives || profiles[index].cooldown)return false;
+        active->profile=index;active->alternative=alternative;
+        active->acceptedReferenceCpuNs=propagationCpuNs;active->commonPreparationCpuNs=commonPreparationCpuNs;
+        active->kind=ProbeKind::AcceptedCpuCapture;active->phase=CapturePhase::ReferenceBound;
+        return true;
+    }
+    void observeBatchFailure(const WorkloadKey& singleton,unsigned batch,std::uint64_t tick) {
+        auto key=singleton;key.batch=batch;observeAccepted(key,Plan(0),0,tick,true);
+        if(batch!=1){key.batch=1;observeAccepted(key,Plan(0),0,tick,true);}
     }
     bool bindAcceptedReference(const ProbeTicket& ticket,std::uint64_t requiredGeneration,
         std::uint64_t propagationCpuNs,bool successful,bool clockValid) {
@@ -371,7 +444,7 @@ private:
         if(!totals.promotionEnabled)return settle(false);
         // Include the statistical work in the reservation before publishing.
         if(!settle(true)) return false;
-        publish(profile,alternative.plan); ++totals.promoted; return true;
+        publish(profile,alternative.plan,alternative.maximumElapsed); ++totals.promoted; return true;
     }
 public:
     bool finishProbe(const ProbeTicket& ticket,std::uint64_t referenceCpuNs,std::uint64_t alternativeCpuNs,

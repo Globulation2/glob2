@@ -115,7 +115,7 @@ public:
         if(!wall(now) || !envelopeReady())return false;
         if(!totals.deviceTerminalNs)totals.deviceTerminalNs=now;return true;
     }
-    bool markCleanup(const GradientCpuCapture::Settlement& token,bool wrapperDestroyed,std::uint64_t now) noexcept {
+    template<class CaptureToken> bool markCleanup(const CaptureToken& token,bool wrapperDestroyed,std::uint64_t now) noexcept {
         if(!wall(now) || !totals.deviceTerminalNs || !wrapperDestroyed || !token.cleanupComplete() ||
            token.requiredGeneration()!=totals.requiredGeneration || token.probeTicket().id!=ticket.id ||
            token.probeTicket().generation!=ticket.generation){invalid();return false;}
@@ -139,7 +139,7 @@ public:
         finishing=true;advanceEnvelope();return tailFinished();
     }
     Receipt receipt() const noexcept {return totals;}
-    FinishResult finishResult(const GradientCpuCapture::Settlement& token,std::uint64_t currentRequiredGeneration,
+    template<class CaptureToken> FinishResult finishResult(const CaptureToken& token,std::uint64_t currentRequiredGeneration,
         bool nativeBackend,bool success,bool exact,std::uint64_t elapsedNs,std::uint64_t slackNs) noexcept {
         FinishResult result;totals.nativeBackend=nativeBackend;
         const glob2::ProcessCpuEnvelopeResult unavailable{};

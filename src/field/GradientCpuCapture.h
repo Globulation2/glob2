@@ -16,6 +16,7 @@ class CaptureProbeAccounting;
 class CaptureSettlementAuthorization {
     friend class CaptureProbeAccounting;
     friend class GradientCpuCapture;
+    friend class GradientCpuCaptureGroup;
     bool qualified=false;
     std::uint64_t ticketId=0,policyGeneration=0,requiredGeneration=0,minimumCpuNs=0;
     explicit CaptureSettlementAuthorization(bool value):qualified(value) {}

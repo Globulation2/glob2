@@ -254,6 +254,7 @@ UNIT_TESTS = [
     '#src/field/OpenCLBorrowedLifetimeTest.cpp',
     '#src/field/OpenCLRequiredLifetimePoolTest.cpp',
     '#src/field/GradientCpuCaptureTest.cpp',
+    '#src/field/GradientCpuCaptureGroupTest.cpp',
     '#src/field/OpenCLTransferProofTest.cpp',
     '#src/field/CaptureProbeReplayTest.cpp',
     '#src/field/OpenCLRequiredControlTest.cpp',

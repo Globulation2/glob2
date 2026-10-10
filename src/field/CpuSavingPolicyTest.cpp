@@ -379,3 +379,73 @@ TEST_CASE("suppressed promotion still processes and pays qualified counterfactua
     CHECK(policy.metrics().promoted==0);
     CHECK(policy.metrics().probeCpuNs>=256ull*1100000);
 }
+
+TEST_CASE("ready batch binding freezes selected accepted CPU sums and cannot infer an unqualified cardinality" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;auto maximum=workload();maximum.batch=4;
+    auto ready=maximum;ready.batch=2;
+    REQUIRE(policy.qualify(maximum,Plan::Frozen8,true));
+    policy.observeAccepted(workload(),Plan::CPU,1000000000000ull,1);
+    auto admit=[&] {
+        for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
+            if(auto value=policy.beginAcceptedBatchCapture(maximum,Plan::Frozen8,1,1000000,
+                100000000,1000000,false,41,true))return value;
+        return std::optional<CpuSavingPolicy::ProbeTicket>{};
+    };
+    auto ticket=admit();REQUIRE(ticket);
+    CHECK_FALSE(policy.bindAcceptedReference(*ticket,41,4000000,true,true));
+    CHECK_FALSE(policy.bindReadyBatch(*ticket,ready,41,4000000,300000,true,true));
+    REQUIRE(policy.qualify(ready,Plan::Frozen8,true));
+    auto wrong=ready;wrong.width+=1;
+    CHECK_FALSE(policy.bindReadyBatch(*ticket,wrong,41,4000000,300000,true,true));
+    REQUIRE(policy.bindReadyBatch(*ticket,ready,41,1000000+3000000,100000+200000,true,true));
+    CHECK_FALSE(policy.bindReadyBatch(*ticket,ready,41,99999999,0,true,true));
+    const auto authorization=policy.authorizeOptionalExecution(*ticket,41,1,100000000,false);
+    REQUIRE(authorization);
+    CHECK(authorization->acceptedReferenceCpuNs==4000000);
+    CHECK(authorization->commonPreparationCpuNs==300000);
+    CHECK(authorization->reservedCpuNs==1000000);
+    policy.cancelProbe(*ticket,12345);
+    CHECK(policy.metrics().acceptedCpuNs==1000000000000ull);
+    CHECK(policy.lookup(ready).plan==Plan::CPU);
+}
+
+TEST_CASE("batch promotion publishes a directly measured bound and failure demotes its singleton too" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;auto singleton=workload();auto batch=singleton;batch.batch=2;
+    for(const auto& key:{singleton,batch}) {
+        REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+        policy.observeAccepted(key,Plan::CPU,1000000000000ull,1);
+        for(unsigned pair=0;pair<256 && policy.lookup(key).plan==Plan::CPU;++pair) {
+            auto ticket=nextAcceptedProbe(policy,key,0,5000000,1000000);REQUIRE(ticket);
+            policy.finishAcceptedCapture(*ticket,{100000,777777,600000,100000000,true,true,true});
+        }
+        REQUIRE(policy.lookup(key).plan==Plan::Frozen8);
+        CHECK(policy.lookup(key).maximumElapsedNs==777777);
+    }
+    policy.observeBatchFailure(singleton,2,1);
+    CHECK(policy.lookup(singleton).plan==Plan::CPU);
+    CHECK(policy.lookup(batch).plan==Plan::CPU);
+    CHECK(policy.lookup(batch).maximumElapsedNs==0);
+}
+
+TEST_CASE("stale ready batch binding holds full credit until explicit settlement" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy first,other;auto key=workload();key.batch=2;
+    for(auto* policy:{&first,&other}) {
+        REQUIRE(policy->qualify(key,Plan::Frozen8,true));
+        policy->observeAccepted(key,Plan::CPU,1000000000000ull,1);
+    }
+    auto admit=[&](CpuSavingPolicy& policy) {
+        for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod;++i)
+            if(auto ticket=policy.beginAcceptedBatchCapture(key,Plan::Frozen8,1,1000000,
+                100000000,1000000,false,41,true))return ticket;
+        return std::optional<CpuSavingPolicy::ProbeTicket>{};
+    };
+    auto ticket=admit(first);REQUIRE(ticket);first.invalidate();
+    CHECK_FALSE(first.bindReadyBatch(*ticket,key,41,4000000,0,true,true));
+    CHECK_FALSE(admit(other));
+    first.cancelProbe(*ticket,12);
+    CHECK(first.metrics().probeCpuNs>=1000000);
+    ticket=admit(other);REQUIRE(ticket);other.cancelProbe(*ticket,0);
+}

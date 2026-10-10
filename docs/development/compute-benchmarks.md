@@ -106,6 +106,21 @@ reference from the same immutable job must be bound before optional execution; t
 independent resumable heap reference verifies arrays and cannot supply a faster
 or slower production CPU timing substitute.
 
+Optional scalar-classic Clear/Guard group capture reserves a declared 1, 2, 4
+or 8-member capacity before any clone. The coordinator freezes only complete
+members already available, selecting one of those cardinalities without waiting
+for required jobs. The paired reference is the sum of the selected jobs' actual
+accepted propagation CPU and common preparation; unused and late member copies
+remain part of the paid optional expense. Weak source identity and immutable
+owned original/golden arrays avoid retaining the full terrain graph. Late worker
+handles, native aliases and escaped weak control allocations remain charged until
+their own terminal lifetimes. Settlement checks producer clock continuity,
+cleanup bounds and all late invalidity flags before it can permit inference.
+A directly promoted batch choice publishes its measured whole-batch elapsed
+bound with its plan/version; singleton timings never supply that bound. These
+interfaces require native replay and production scheduling qualification before
+batch promotion is enabled.
+
 Accepted CPU capture has a separate policy-owned state from a paid CPU replay.
 Admission reserves optional CPU before copying original seeds and golden output;
 only a successful, valid propagation measurement can bind the accepted reference
