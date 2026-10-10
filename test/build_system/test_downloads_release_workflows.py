@@ -184,6 +184,25 @@ class ReleaseWorkflowTests(unittest.TestCase):
             block=re.split(r'\n  (?=\S)',text.split('  '+job+':\n',1)[1],maxsplit=1)[0]
             self.assertNotIn('secrets:',block)
 
+    def test_downloaded_android_layout_checks_bytes_before_signing(self):
+        import hashlib
+        import subprocess
+        import textwrap
+        text=(ROOT/'.github/workflows/github-release.yml').read_text()
+        block=text.split('      - name: Verify the exact downloaded unsigned APK bytes\n',1)[1].split('      - name:',1)[0]
+        script=textwrap.dedent(block.split('        run: |\n',1)[1])
+        self.assertIn('--original "artifacts/unsigned/artifacts/fdroid/glob2-$ARCH-unsigned.apk"',text)
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'artifacts/unsigned/artifacts/fdroid';path.mkdir(parents=True)
+            apk=path/'glob2-x86_64-unsigned.apk';apk.write_bytes(b'verified-package')
+            checksum=path/'glob2-x86_64-unsigned.sha256'
+            checksum.write_text(hashlib.sha256(apk.read_bytes()).hexdigest()+'  artifacts/fdroid/'+apk.name+'\n')
+            command=['bash','-c',script]
+            environment=dict(os.environ,ARCH='x86_64')
+            self.assertEqual(subprocess.run(command,cwd=tmp,env=environment,capture_output=True).returncode,0)
+            apk.write_bytes(b'changed-package')
+            self.assertNotEqual(subprocess.run(command,cwd=tmp,env=environment,capture_output=True).returncode,0)
+
     def test_desktop_queue_is_scoped_to_the_immutable_release_tag(self):
         text=(ROOT/'.github/workflows/release.yml').read_text()
         self.assertIn('group: release-${{ github.ref }}-${{ inputs.tag }}',text)

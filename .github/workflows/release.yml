@@ -316,14 +316,10 @@ jobs:
               zlib fribidi pcre glu libepoxy
           - name: openSUSE Tumbleweed
             image: opensuse/tumbleweed
-            install: >-
-              zypper --non-interactive install git gcc-c++ make python3 scons pkg-config nasm libva-devel cmake freetype2-devel
-              libpng16-devel libjpeg8-devel
-              libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXss-devel libXtst-devel
-              wayland-devel libxkbcommon-devel alsa-devel libpulse-devel
-              opusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel
-              zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel
-              libepoxy-devel
+            install: |
+              set -e
+              zypper --non-interactive dist-upgrade --allow-downgrade
+              zypper --non-interactive install git gcc-c++ make python3 scons pkg-config nasm libva-devel cmake freetype2-devel libpng16-devel libjpeg8-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXss-devel libXtst-devel wayland-devel libxkbcommon-devel alsa-devel libpulse-devel opusfile-devel libopus-devel libogg-devel speex-devel boost-devel libopenssl-devel zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel libepoxy-devel
     steps:
       - name: Install dependencies
         run: ${{ matrix.install }}
