@@ -4,6 +4,7 @@
 #include <string>
 #include <span>
 #include <cstddef>
+#include <memory>
 namespace gradient_kernel
 {
 struct BackendRequest;
@@ -52,4 +53,34 @@ OpenCLStatus openCLStatus();
 // executor worker slot. Execution never selects a plan or performs CPU recovery.
 bool initializeOpenCL();
 bool executeOpenCLDevice(std::span<const BackendRequest> requests, Plan plan);
+enum class OpenCLProbeProgress { Pending, Complete, Declined };
+// Development-only optional execution. Required requests keep the synchronous
+// API. Each normal advance enqueues at most one kernel and never waits for the
+// driver. A driver failure before a trailing event exists requires an emergency
+// drain to protect borrowed transfer storage; such failures cannot be promoted.
+// keepAlive must retain original gradient, cost context and session lifetimes;
+// source/cost storage must remain immutable and be charged to the shared probe
+// budget by its owner. Backend staging is charged
+// separately. Unknown/unready cost planes are declined without preparation.
+class OpenCLProbe
+{
+public:
+    struct Metrics {std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0;};
+    ~OpenCLProbe();
+    OpenCLProbe(const OpenCLProbe&)=delete;
+    OpenCLProbe& operator=(const OpenCLProbe&)=delete;
+    OpenCLProbeProgress advance(std::size_t copyCells=4096,std::uint64_t cpuBudgetNs=500000) noexcept;
+    void cancel() noexcept;
+    // Probe results never overwrite the original seeds. Valid only at Complete.
+    std::span<const std::uint16_t> result() const noexcept;
+    Metrics metrics() const noexcept;
+private:
+    struct Impl;
+    std::unique_ptr<Impl> state;
+    explicit OpenCLProbe(std::unique_ptr<Impl>);
+    friend std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void>);
+};
+// Cancellation parks pending events: call advance until terminal before normal
+// destruction. A premature destructor defensively drains on its calling thread.
+std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest&,Plan,std::shared_ptr<const void> keepAlive);
 } // namespace gradient_kernel

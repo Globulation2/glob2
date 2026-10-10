@@ -913,6 +913,69 @@ TEST_CASE("optional reference reservations share a bounded subset of total host 
     CHECK(openCLStatus().hostBytes==before.hostBytes);
     CHECK(openCLProbeBytes()==before.probeBytes);
 }
+TEST_CASE("optional device advances preserve seeds interleave required work and release storage")
+{
+    using namespace gradient_kernel;
+    if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
+    std::thread coordinator([&] {
+        for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{7,13}})
+        for(int cap:{0,40,700}) {
+            const field::Grid grid(dimensions.first,dimensions.second);
+            auto seeds=std::make_shared<std::vector<std::uint16_t>>(grid.cells(),1);
+            auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),EntrySteps{5,7});
+            (*seeds)[0]=65535;(*seeds)[1]=0;(*seeds)[5]=65501;
+            const auto original=*seeds;
+            const auto expected=oracle(original,grid,*costs,cap);
+            BackendSession session;
+            BackendRequest request{seeds->data(),cap,grid,session,costs.get(),
+                [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},
+                [](void*,std::uint16_t*){FAIL("probe cannot call CPU fallback");},
+                {costs,92187654,1,true,costs->capacity()*sizeof(EntrySteps)}};
+            // Required execution makes the immutable cost plane resident.
+            auto warm=original;request.gradient=warm.data();
+            REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));CHECK(warm==expected);
+            request.gradient=seeds->data();
+            const auto sourceBytes=sizeof(request)+sizeof(session)+sizeof(*seeds)+seeds->capacity()*sizeof(std::uint16_t);
+            REQUIRE(reserveOpenCLProbeBytes(sourceBytes));
+            struct SourceLease {std::size_t bytes;~SourceLease(){releaseOpenCLProbeBytes(bytes);}} sourceLease{sourceBytes};
+            const auto reserved=openCLProbeBytes();
+            auto probe=beginOpenCLProbe(request,Plan::Frozen8,seeds);REQUIRE(probe);
+            auto progress=OpenCLProbeProgress::Pending;
+            bool interleaved=false;
+            for(unsigned attempt=0;attempt<100000 && progress==OpenCLProbeProgress::Pending;++attempt) {
+                const auto before=probe->metrics().dispatches;
+                progress=probe->advance(3);
+                CHECK(probe->metrics().dispatches<=before+1);
+                CHECK(*seeds==original);
+                if(!interleaved && probe->metrics().dispatches) {
+                    auto required=original;auto other=request;other.gradient=required.data();
+                    REQUIRE(executeOpenCLDevice(std::span(&other,1),Plan::Frozen8));CHECK(required==expected);
+                    interleaved=true;
+                }
+                if(progress==OpenCLProbeProgress::Pending) std::this_thread::yield();
+            }
+            REQUIRE(progress==OpenCLProbeProgress::Complete);
+            CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
+            CHECK(interleaved);
+            probe.reset();CHECK(openCLProbeBytes()==reserved);
+            // Cancel while a device dispatch is outstanding. Reap without
+            // touching the source plane or producing a completed result.
+            auto canceled=beginOpenCLProbe(request,Plan::Frozen8,seeds);REQUIRE(canceled);
+            for(unsigned attempt=0;attempt<100000 && !canceled->metrics().dispatches;++attempt) {
+                REQUIRE(canceled->advance(3)==OpenCLProbeProgress::Pending);
+            }
+            REQUIRE(canceled->metrics().dispatches==1);canceled->cancel();
+            progress=OpenCLProbeProgress::Pending;
+            for(unsigned attempt=0;attempt<100000 && progress==OpenCLProbeProgress::Pending;++attempt) {
+                progress=canceled->advance();if(progress==OpenCLProbeProgress::Pending) std::this_thread::yield();
+            }
+            REQUIRE(progress==OpenCLProbeProgress::Declined);CHECK(canceled->result().empty());
+            CHECK(*seeds==original);CHECK_FALSE(session.failed.load());
+            canceled.reset();CHECK(openCLProbeBytes()==reserved);
+        }
+    });
+    coordinator.join();
+}
 }
 
 TEST_CASE("worker initialization failure leaves CPU available without inline retries" * doctest::test_suite("OpenCLGradient"))
