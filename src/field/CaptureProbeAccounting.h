@@ -103,6 +103,7 @@ public:
     }
     bool envelopeReady() const noexcept {return envelope && envelope->progress()==glob2::ProcessCpuEnvelope::Progress::Running;}
     bool tailFinished() const noexcept {return envelope && envelope->progress()==glob2::ProcessCpuEnvelope::Progress::Complete;}
+    std::uint64_t nextTailWakeNs() const noexcept {return !failed() && totals.cleanupComplete && tails<2 && !finishing ? nextTail : 0;}
     bool failed() const noexcept {return !totals.clockValid || !envelope || envelope->progress()==glob2::ProcessCpuEnvelope::Progress::Invalid;}
     glob2::ProcessCpuEnvelope::Progress advanceEnvelope() noexcept {
         if(!sameProducer())return glob2::ProcessCpuEnvelope::Progress::Invalid;

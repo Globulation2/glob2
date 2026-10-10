@@ -55,10 +55,13 @@ void running(CaptureProbeAccounting& accounting) {
 void tails(CaptureProbeAccounting& accounting,GradientCpuCapture::Settlement& token,std::uint64_t start=100) {
     REQUIRE(accounting.markDeviceTerminal(start));token.cleanup();
     if(!accounting.markCleanup(token,true,start)){CHECK(accounting.failed());return;}
+    CHECK(accounting.nextTailWakeNs()==start+CaptureProbeAccounting::TailIntervalNs);
     CHECK_FALSE(accounting.advanceTail(start+CaptureProbeAccounting::TailIntervalNs-1));
     CHECK_FALSE(accounting.advanceTail(start+CaptureProbeAccounting::TailIntervalNs));
+    CHECK(accounting.nextTailWakeNs()==start+2*CaptureProbeAccounting::TailIntervalNs);
     CHECK_FALSE(accounting.advanceTail(start+2*CaptureProbeAccounting::TailIntervalNs-1));
     accounting.advanceTail(start+2*CaptureProbeAccounting::TailIntervalNs);
+    CHECK(accounting.nextTailWakeNs()==0);
     for(unsigned i=0;i<3;++i)accounting.advanceTail(start+2*CaptureProbeAccounting::TailIntervalNs);
 }
 }
