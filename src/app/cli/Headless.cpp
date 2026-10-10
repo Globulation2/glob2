@@ -736,6 +736,7 @@ struct HeadlessRunner
                 {"device_bytes",status.deviceBytes},{"peak_device_bytes",status.peakDeviceBytes},
                 {"budget_declines",status.budgetDeclines},{"thread_cpu_ns",status.threadCPUNs},
                 {"initialization_thread_cpu_ns",status.initializationThreadCPUNs},
+                {"thread_cpu_invalid_measurements",status.threadCPUInvalidMeasurements},
                 {"thread_cpu_clock_available",status.threadCPUAvailable},
                 {"preparation_ns",status.preparationNs},{"upload_ns",status.uploadNs},
                 {"dispatch_wait_ns",status.dispatchWaitNs},{"readback_ns",status.readbackNs},
