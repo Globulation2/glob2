@@ -291,7 +291,7 @@ int GraphicContext::maximumTextureSize() const
 		releaseFrameCache();
 		freeOwnedSurface();
 #ifdef HAVE_OPENGL
-		if (context) { destroySkinRenderer(); destroyUnitShader(); }
+		if (context) { destroySkinRenderer(); destroyUnitShader(); releaseNativeMipmaps(context); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
 		removeMacScrollMonitor();
@@ -818,7 +818,7 @@ int GraphicContext::maximumTextureSize() const
 		watchingEvents = false;
 		releaseFrameCache();
 #ifdef HAVE_OPENGL
-		if (context) { destroySkinRenderer(); destroyUnitShader(); }
+		if (context) { destroySkinRenderer(); destroyUnitShader(); releaseNativeMipmaps(context); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
 		context = nullptr;

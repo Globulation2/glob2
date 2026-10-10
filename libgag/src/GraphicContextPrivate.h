@@ -54,6 +54,9 @@
 
 namespace GAGCore
 {
+	bool prepareNativeMipmaps(unsigned texture, SDL_Surface *surface);
+	void releaseNativeMipmaps(SDL_GLContext context);
+
 	// The active graphic context. Set by GraphicContext::setRes.
 	extern GraphicContext *_gc;
 	// SDL pixel format used for GL uploads. Configured by GraphicContext::setRes.

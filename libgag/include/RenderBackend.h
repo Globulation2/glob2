@@ -24,7 +24,7 @@ class RenderBackend
         blit(key,source,revision,false,src,dst,alpha);
     }
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
-    virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t) {}
+    virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
 	virtual RenderOperations operations() const { return {}; }
 	// Zero means the backend does not impose or report a texture limit.
 	virtual int maximumTextureSize() const { return 0; }

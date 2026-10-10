@@ -359,3 +359,29 @@ texture switches without changing sampling or allocating another texture atlas.
 OpenGL texture uploads flush pending draws, and the scope flushes before leaving
 the resource pass. Software surfaces and dynamic team-color sprites retain their
 existing paths; cache-backed team-color surfaces cannot be deferred safely.
+
+## Texture preparation
+
+Generated or edited power-of-two HD surfaces use an integer GPU reduction pass
+on WebGL2 and desktop OpenGL contexts with integer shader and framebuffer support
+(OpenGL 3+ or `GL_EXT_gpu_shader4`). Each mip texel retains the
+CPU filter's alpha-weighted color and integer rounding; authored, worker-prepared
+mip chains keep their existing upload and compression path. Unsupported contexts
+(including older contexts without integer shaders), non-power-of-two surfaces and failed pipeline
+creation retain CPU preparation. Native scratch textures and shaders are released
+before their owning context is destroyed.
+
+The portable SDL renderer used on mobile samples standalone HD frames without
+mip chains, so those requests decode only base pixels. Its linear textures need
+premultiplied alpha: accelerated SDL renderers prepare them by blending a
+straight-alpha staging texture onto a transparent target. The staging texture is
+shared by the renderer, and compatible cached textures are updated in place when
+pixels change. SDL's per-target viewport, clip, scale and logical presentation
+state is restored before drawing resumes. Software renderers and unsupported
+target/blend combinations keep the CPU conversion. Preparation uses the existing
+SDL renderer APIs across OpenGL ES, Metal and other accelerated SDL backends.
+
+For a native preparation comparison, set
+`GLOB2_DISABLE_GPU_TEXTURE_PREPARATION=1` to retain CPU mip generation and SDL
+premultiplication. An unset or empty value enables supported GPU preparation.
+These paths change presentation work only; simulation and saved state are unchanged.
