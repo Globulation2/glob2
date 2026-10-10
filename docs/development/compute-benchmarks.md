@@ -60,7 +60,10 @@ CPU-only. The coordinator is reported separately and its CPU belongs in process
 measurements; it is not an additional `--compute-threads` participant.
 
 Automatic offload learning is experimental and requires
-`GLOB2_GRADIENT_TUNING=1`. Unknown workload classes use CPU. Published choices are
+`GLOB2_GRADIENT_TUNING=1`. This control collects accepted-job metadata; production
+capture, live counterfactual probes and plan promotion are not enabled. The policy
+and yielding probe interfaces are qualified separately by development harnesses.
+Unknown workload classes use CPU. Published choices are
 read without doing experiments on the simulation owner. Captured optional work
 must remain outside save/publication dependencies; qualifying online promotion
 requires measured CPU savings and deadline slack. Enable default behavior only

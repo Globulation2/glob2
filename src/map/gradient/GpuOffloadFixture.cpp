@@ -19,9 +19,18 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
 {
     if (!std::getenv("GLOB2_GPU_OFFLOAD_FIXTURES")) return;
     glob2test::HeadlessGlobals globals;
+    struct Controllers {std::string suffix;unsigned seed;AI::ImplementationID even,odd;};
+    std::vector<Controllers> controllers{{"",91003,AI::MAXIMA,AI::NICOWAR}};
+    // Retain the mixed-AI fixtures and their known wide-brush failure. These
+    // separately named stress games use controllers which do not generate
+    // full-map area brushes; they do not extend the production order codec.
+    if(const auto* bounded=std::getenv("GLOB2_GPU_OFFLOAD_BOUNDED_AI_FIXTURES");bounded && std::string(bounded)=="1")
+        for(unsigned seed:{91003u,91004u})
+            controllers.push_back({"-bounded-ai-seed"+std::to_string(seed),seed,AI::NUMBI,AI::CASTOR});
+    for(const auto& controller:controllers)
     for (const std::string layout : {"open", "corridors"}) {
         glob2test::HeadlessGame world({.wDec=10,.hDec=10,.teams=4,.discovered=true,
-            .clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=91003});
+            .clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=controller.seed});
         auto& map=world.game.map;
         if (layout=="corridors") {
             auto edit=map.editTerrain();
@@ -59,13 +68,13 @@ TEST_CASE("write 1024 real-game stress fixtures [benchmark][artifacts]")
         }
         GameHeader header;
         header.setNumberOfPlayers(4);
-        header.setRandomSeed(91003);
+        header.setRandomSeed(controller.seed);
         for(int player=0;player<4;++player)
             header.getBasePlayer(player)=BasePlayer(player,"GPU stress",player,
-                BasePlayer::playerTypeFromImplementationID(player%2 ? AI::NICOWAR : AI::MAXIMA));
+                BasePlayer::playerTypeFromImplementationID(player%2 ? controller.odd : controller.even));
         world.game.setGameHeader(header,true);
         world.game.setWaitingOnMask(0);
-        const auto path=glob2test::artifactDir()/("gpu-1024-"+layout+".game");
+        const auto path=glob2test::artifactDir()/("gpu-1024-"+layout+controller.suffix+".game");
         REQUIRE(globalContainer->fileManager->writeAtomically(path.string(),
             [&](GAGCore::OutputStream& output){world.gui.save(&output,"gpu-offload-stress");}));
         GameGUI restored;
