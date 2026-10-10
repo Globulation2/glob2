@@ -372,7 +372,7 @@ void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> reque
 } // namespace
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
 {
-    runtime_terrain::validateQueueSize(request.terrainBuckets);
+    gradient_kernel::runtime_terrain::validateQueueSize(request.terrainBuckets);
     const PropagationField field{request,&snapshot,output,&scratch};
     batchCPU(field,output);
 }
@@ -575,7 +575,7 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> minimalHolder(std::size_t c
     // Cover holder/control and original output ownership before allocation or
     // transfer. The deleter releases only after members and object are gone.
     struct Admission {std::size_t bytes;~Admission(){if(bytes)releaseOpenCLHostBytes(bytes);}} admission{bytes};
-    const auto dispose=[bytes](OwnedGradientField* field){delete field;releaseOpenCLHostBytes(bytes);};
+    auto dispose=[bytes](OwnedGradientField* field){delete field;releaseOpenCLHostBytes(bytes);};
     try {
         std::unique_ptr<OwnedGradientField,decltype(dispose)> allocated(new OwnedGradientField,dispose);
         admission.bytes=0;
