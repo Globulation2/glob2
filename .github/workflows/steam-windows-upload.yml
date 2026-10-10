@@ -2,6 +2,11 @@ name: Upload Steam Windows depot
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Immutable public release tag
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -15,6 +20,8 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.ref == 'refs/heads/master'
     uses: ./.github/workflows/steam-windows-package.yml
+    with:
+      tag: ${{ inputs.tag }}
     permissions:
       contents: read
 
@@ -36,13 +43,15 @@ jobs:
     steps:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: glob2-steam-windows-${{ github.sha }}
+          name: glob2-steam-windows-${{ needs.package.outputs.source_sha }}
           path: ${{ runner.temp }}/glob2-depot
       - name: Verify depot manifest
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $depot = Join-Path $env:RUNNER_TEMP 'glob2-depot'
+          $source = (Get-Content (Join-Path $depot 'source-commit.txt') -Raw).Trim()
+          if ($source -ne '${{ needs.package.outputs.source_sha }}') { throw 'Depot source identity mismatch' }
           $manifest = Join-Path $depot 'SHA256SUMS.txt'
           if (!(Test-Path $manifest)) { throw 'Depot manifest is missing' }
           foreach ($line in Get-Content $manifest) {

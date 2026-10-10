@@ -123,6 +123,29 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
         self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
 
+    def test_steam_tag_identity_survives_package_smoke_and_upload(self):
+        package=(ROOT/'.github/workflows/steam-windows-package.yml').read_text()
+        upload=(ROOT/'.github/workflows/steam-windows-upload.yml').read_text()
+        self.assertEqual(package.count('description: Immutable public release tag'),1)
+        self.assertIn('workflow_call:\n    inputs:\n      tag:\n        required: true',package)
+        self.assertIn('value: ${{ jobs.package.outputs.source_sha }}',package)
+        build=package.split('\n  package:',1)[1].split('\n  smoke-test:',1)[0]
+        smoke=package.split('\n  smoke-test:',1)[1]
+        for block in (build,smoke):
+            self.assertIn('repository: Globulation2/glob2',block)
+            self.assertIn('ref: ${{ needs.preflight.outputs.source_sha }}',block)
+            self.assertIn('glob2-steam-windows-${{ needs.preflight.outputs.source_sha }}',block)
+        self.assertIn('git rev-parse HEAD > artifacts/steam/windows/source-commit.txt',build)
+        self.assertIn('sha256sum source-commit.txt >> SHA256SUMS.txt',build)
+        self.assertIn('test "$(git rev-parse HEAD)" = "${{ needs.preflight.outputs.source_sha }}"',build)
+        self.assertIn('CLI_VERSION: ${{ needs.preflight.outputs.cli_version }}',smoke)
+        self.assertIn("default { throw 'Unsupported source CLI version' }",smoke)
+        self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
+        self.assertIn('tag: ${{ inputs.tag }}',upload)
+        self.assertIn('glob2-steam-windows-${{ needs.package.outputs.source_sha }}',upload)
+        self.assertIn("if ($source -ne '${{ needs.package.outputs.source_sha }}')",upload)
+        self.assertLess(upload.index('Depot source identity mismatch'),upload.index('Upload unpublished build'))
+
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
         for name in ('github-release.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):
             text=(ROOT/'.github/workflows'/name).read_text()
