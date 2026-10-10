@@ -14,6 +14,13 @@ on:
         type: choice
         options: [build, stage]
 
+      platforms:
+        description: Build-only platform selection; staging requires all
+        required: true
+        default: all
+        type: choice
+        options: [all, windows, linux, macos, windows-linux]
+
 permissions:
   contents: read
 
@@ -50,8 +57,15 @@ jobs:
         id: check
         env:
           RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_MODE: ${{ inputs.mode }}
+          BUILD_PLATFORMS: ${{ inputs.platforms }}
         run: |
           set -euo pipefail
+          case "$BUILD_PLATFORMS" in all|windows|linux|macos|windows-linux) ;; *) exit 1 ;; esac
+          if [[ "$RELEASE_MODE" == stage && "$BUILD_PLATFORMS" != all ]]; then
+            echo "GOG staging requires all platform depots" >&2
+            exit 1
+          fi
           [[ "$RELEASE_TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
           git fetch --no-tags https://github.com/Globulation2/glob2.git \
             "refs/tags/$RELEASE_TAG:refs/gog-upstream/$RELEASE_TAG"
@@ -68,6 +82,7 @@ jobs:
             --github-output "$GITHUB_OUTPUT"
 
   windows:
+    if: inputs.platforms == 'all' || inputs.platforms == 'windows' || inputs.platforms == 'windows-linux'
     needs: preflight
     runs-on: windows-2022
     defaults:
@@ -177,6 +192,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   linux:
+    if: inputs.platforms == 'all' || inputs.platforms == 'linux' || inputs.platforms == 'windows-linux'
     needs: preflight
     runs-on: ubuntu-22.04
     steps:
@@ -240,6 +256,7 @@ jobs:
           if-no-files-found: error
 
   macos:
+    if: inputs.platforms == 'all' || inputs.platforms == 'macos'
     needs: preflight
     runs-on: macos-15
     steps:
