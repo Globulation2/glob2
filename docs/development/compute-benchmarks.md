@@ -83,9 +83,11 @@ execution failures, deadline stalls and expensive observations still demote a
 plan. Statistical completion work is included in optional CPU accounting.
 Captured references, comparison and promotion execute in the background.
 
-The current service batches only already-ready homogeneous requests with the
-same due key; extending this across due keys requires a conservative completion
-estimate that fits the earliest deadline. It never waits to fill a batch.
+The default service batches only already-ready homogeneous requests with the
+same due key. Automatic mode also requires a separately accepted batch-size
+profile; a singleton decision does not qualify a larger batch. The development
+cross-deadline candidate below uses measured bounds rather than extrapolating
+singleton latency. No mode waits to fill a batch.
 
 `--ai-threads`, `--gradient-workers` and `--compute-experiments` have been removed;
 use `--compute-threads auto|N`. The optional area, initialization and hiring compute
@@ -459,3 +461,66 @@ include early/middle/late segments and cold/warm/render contention, and measure
 total runtime, tick tails and publication waits. Runtime inputs and publication
 semantics must remain unchanged. A synthetic class absent from ordinary game
 work, or a class whose detection costs erase its advantage, is insufficient.
+
+## Development execution ablations
+
+Screen independent required-work controls before combining finalists:
+
+- `GLOB2_GRADIENT_WORKER_NOOP=1` checks already finished seed arrays on their
+  preparation worker and runs the existing validated CPU shortcut, avoiding an
+  accelerator request and coordinator wakeup. Requested/selected GPU counters can
+  increase while actual GPU execution remains zero for these fields.
+- `GLOB2_OPENCL_ACTIVE_EPOCH=1` replaces each next-active mask clear with an
+  epoch value. Both masks are initialized at every batch, and inactive pingpong
+  copies still preserve coherence. Report mask initialization/clear and dispatch
+  counts; the extra initialization can outweigh savings on short jobs.
+- `GLOB2_OPENCL_PARITY_BOUND=1` uses two lane-private kernels with opposite fixed
+  pingpong bindings, reducing repeated argument updates. Common shape/cost
+  arguments are rebound for every batch. Report argument-update and dispatch
+  counts separately from process CPU.
+
+All three default to zero. Required-only kernel ablations are declined by the
+optional yielding probe until matching probe execution is independently qualified.
+Do not enable automatic promotion from a required-only alternative's measurements.
+Changing check intervals, polling, batching or driver profiling changes the
+candidate configuration and requires a separate recorded comparison.
+
+### Offline-profile cross-deadline batching
+
+`GLOB2_GRADIENT_CROSS_DUE=1` together with
+`GLOB2_GRADIENT_BATCH_PROFILE=PATH` enables a forced-OpenCL development candidate.
+The profile is read, hashed and validated on the background coordinator. It admits
+only already-ready Clear/Guard fields with matching immutable cost owner,
+revision/variant, workload features and a directly measured homogeneous batch-size
+bound. Unknown seed classes, crowding, unmatched profiles and insufficient cadence
+history stay singleton. Seed/blocker density is counted during the existing seed
+stores when this mode is requested, without an additional classification scan.
+
+The JSON profile uses schema 1, an immutable `source` evidence reference,
+`native_binary_sha256`, `measurement="homogeneous-ready-batch"`, a `backend`
+configuration object, and at most 32 `profiles`. Backend identity includes device,
+platform/vendor/version, device vendor/version, driver version and OpenCL-C
+version, plus check interval, polling, epoch, uniform metadata, profiling and
+parity-binding settings. Missing identity or an executable/driver mismatch declines
+the profile. The native executable SHA256 is streamed once in the background;
+the manifest/source hash counters are diagnostic fingerprints, not evidence
+qualification or cryptographic authentication.
+
+Each profile declares dimensions, family, CPU bucket count, CPU participant count,
+batch size, cost limit, movement/modifier and seed/blocker density features, plan,
+cost revision/variant, `max_measured_elapsed_ns`, `completion_margin_ns`, and
+`measured_batches` of at least eight. Generate these values from retained actual
+batch measurements; do not manufacture a bound by multiplying singleton latency.
+The parser caps input at 64 KiB and depth eight; retained and temporary parsing
+storage are charged to the accelerator host budget.
+
+The owner sends only bounded cadence metadata. The coordinator retains a
+128-observation rolling minimum, requiring at least 16 valid observations. It
+admits a batch only if twice the measured maximum plus the completion margin fits
+its estimate of every field's publication deadline. Faster observed cadence
+invalidates queued estimates. Future ticks can accelerate after dispatch: this
+empirical gate is not a guarantee about an in-flight batch. Keep the candidate
+forced and opt-in until integrated publication/tick/frame tail gates pass.
+`cross_due_requested`, `cross_due_ready` and `cross_due_batches` distinguish request,
+profile availability and actual execution; zero actual batches means no batching
+benefit was tested. Automatic cross-deadline execution remains disabled.
