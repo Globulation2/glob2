@@ -1543,7 +1543,8 @@ struct OpenCLProbe::Impl
         // Ambiguous completion retains this state and its Device/API parent.
         if(event) lane->api.ReleaseEvent(event);
     }
-    void quarantine() noexcept {
+    void quarantine(bool executionFailed=false) noexcept {
+        measured.executionFailed=measured.executionFailed || executionFailed;
         if(!measured.quarantined)++lane->shared->optionalQuarantines;
         measured.quarantined=true;
         completionUnknown=true;cancelled=true;progress=OpenCLProbeProgress::Quarantined;
@@ -1554,14 +1555,14 @@ struct OpenCLProbe::Impl
     // Replacing the old event is safe on this in-order queue: positive terminal
     // proof for the new event also covers all preceding borrowed transfers.
     void remember(Handle next) {
-        if(!next){untrackedCommand=true;quarantine();throw std::runtime_error("OpenCL omitted completion event");}
+        if(!next){untrackedCommand=true;quarantine(true);throw std::runtime_error("OpenCL omitted completion event");}
         if(event)lane->api.ReleaseEvent(event);
         event=next;
     }
     template<class Enqueue> void submitEvent(Enqueue enqueue) {
         const auto result=submitOpenCLTrackedCommand<Handle>(enqueue,
             [this](Handle next){remember(next);},
-            [this]{untrackedCommand=true;quarantine();});
+            [this]{untrackedCommand=true;quarantine(true);});
         check(result);
         if(untrackedCommand)throw std::runtime_error("OpenCL omitted completion event");
     }
@@ -1586,7 +1587,7 @@ struct OpenCLProbe::Impl
     bool readyEvent() {
         Int state=0;
         const auto result=lane->api.GetEventInfo(event,0x11D3,sizeof state,&state,nullptr);
-        if(result || state<0){quarantine();return false;}
+        if(result || state<0){quarantine(true);return false;}
         if(state) return false;
         if(phase==Phase::KernelWait) lane->profile(event,lane->status.deviceKernelNs);
         if(phase==Phase::CheckWait) lane->profile(event,lane->status.deviceCheckReadNs);
@@ -1874,7 +1875,8 @@ OpenCLProbeProgress OpenCLProbe::advance(std::size_t copyCells,std::uint64_t cpu
     catch(const BudgetExceeded&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(const std::bad_alloc&) {++state->lane->status.budgetDeclines;state->cancelled=true;}
     catch(...) {
-        if(state->event || state->borrowedTransfers || state->completionUnknown)state->quarantine();
+        state->measured.executionFailed=true;
+        if(state->event || state->borrowedTransfers || state->completionUnknown)state->quarantine(true);
         else {device.fail("OpenCL optional execution failed");readyPlans.store(0,std::memory_order_release);}
         state->cancelled=true;
     }

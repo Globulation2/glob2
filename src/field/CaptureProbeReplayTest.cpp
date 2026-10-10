@@ -20,7 +20,7 @@ struct Driver {
     std::vector<std::uint16_t> original,output;
     std::shared_ptr<const void> borrowed;
     unsigned commands=0,polls=0,cancels=0,costCalls=0;
-    bool ready=true,quarantine=false,terminal=false;
+    bool ready=true,quarantine=false,terminal=false,failed=false;
     struct Work final : CaptureProbeReplay::Probe {
         Driver& driver;std::shared_ptr<const void> owner;bool canceled=false,quarantined=false;
         Work(Driver& value,std::shared_ptr<const void> keep):driver(value),owner(std::move(keep)) {}
@@ -28,10 +28,12 @@ struct Driver {
         OpenCLProbeProgress advance() noexcept override {
             if(canceled)return OpenCLProbeProgress::Declined;
             ++driver.commands;
+            if(driver.failed)return OpenCLProbeProgress::Declined;
             if(driver.quarantine){quarantined=true;return OpenCLProbeProgress::Quarantined;}
             return OpenCLProbeProgress::Complete;
         }
         void cancel() noexcept override {canceled=true;++driver.cancels;}
+        bool executionFailed() const noexcept override {return driver.failed && !canceled;}
         std::span<const std::uint16_t> result() const noexcept override {return driver.output;}
     };
     static bool isReady(const void* value) noexcept {return static_cast<const Driver*>(value)->ready;}
@@ -109,6 +111,7 @@ TEST_CASE("captured replay mismatch and required backlog decline without publica
         auto progress=replay->advance(admission);
         if(!backlog)progress=replay->advance(admission);
         CHECK(progress==CaptureProbeReplay::Progress::Declined);CHECK_FALSE(replay->receipt().exact);
+        CHECK_FALSE(replay->receipt().executionFailed);
         CHECK(fixture.driver->commands==(backlog?0:1));
         if(!backlog){CHECK(replay->receipt().firstMismatch==2);CHECK(replay->receipt().comparedCells==3);}
         replay.reset();CHECK(openCLProbeBytes()==baseline);
@@ -168,4 +171,26 @@ TEST_CASE("migrated captured replay never advances or reaps a pending backend" *
     CHECK(replay->advance(fixture.admission())==CaptureProbeReplay::Progress::Declined);
     auto token=replay->takeSettlement();REQUIRE(bool(token));replay.reset();token.reset();
     CHECK(openCLProbeBytes()==baseline);CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+}
+
+TEST_CASE("captured replay distinguishes backend failure from cancellation and malformed output" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();
+    for(unsigned scenario=0;scenario<3;++scenario) {
+        Fixture fixture;CaptureProbeReplay::Receipt receipt;
+        fixture.driver->failed=scenario!=1;
+        if(scenario==2){fixture.driver->failed=false;fixture.driver->output.pop_back();}
+        auto replay=fixture.begin(receipt);REQUIRE(bool(replay));
+        if(scenario==1)replay->cancel();
+        auto progress=replay->advance(fixture.admission());
+        if(scenario==2)progress=replay->advance(fixture.admission());
+        CHECK(progress==CaptureProbeReplay::Progress::Declined);
+        CHECK(replay->receipt().executionFailed==(scenario!=1));
+        CHECK_FALSE(replay->receipt().exact);
+        CHECK(replay->receipt().firstMismatch==SIZE_MAX);
+        CHECK(fixture.driver->commands==(scenario==1?0:1));
+        auto token=replay->takeSettlement();REQUIRE(bool(token));
+        replay.reset();token.reset();CHECK(openCLProbeBytes()==baseline);
+        CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+    }
 }

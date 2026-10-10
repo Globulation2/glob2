@@ -155,6 +155,8 @@ public:
         unsigned checkInterval=1;
         bool activeEpoch=false;
         Stage stage=Stage::Costs;
+        // Driver/protocol failure, distinct from cancellation or admission decline.
+        bool executionFailed=false;
     };
     ~OpenCLProbe();
     OpenCLProbe(const OpenCLProbe&)=delete;

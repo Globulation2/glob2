@@ -21,7 +21,7 @@ public:
         std::uint64_t invalidClocks=0,overshoots=0,comparedCells=0;
         std::size_t firstMismatch=SIZE_MAX,reservedBytes=0;
         bool clockValid=true,exact=false,nativeBackend=true,inferenceSuppressed=true;
-        bool quarantined=false,setupDeclined=false;
+        bool quarantined=false,setupDeclined=false,executionFailed=false;
     };
     struct Clock {
         std::shared_ptr<const void> owner;
@@ -35,6 +35,8 @@ public:
         virtual ~Probe()=default;
         virtual OpenCLProbeProgress advance() noexcept=0;
         virtual void cancel() noexcept=0;
+        // False for ordinary cancellation, setup pressure and unsupported costs.
+        virtual bool executionFailed() const noexcept {return false;}
         virtual std::span<const std::uint16_t> result() const noexcept=0;
     };
     struct Hooks {
@@ -55,6 +57,7 @@ private:
         explicit NativeProbe(std::unique_ptr<OpenCLProbe> value):probe(std::move(value)) {}
         OpenCLProbeProgress advance() noexcept override {return probe->advance();}
         void cancel() noexcept override {probe->cancel();}
+        bool executionFailed() const noexcept override {return probe->metrics().executionFailed;}
         std::span<const std::uint16_t> result() const noexcept override {return probe->result();}
     };
     struct State {
@@ -264,6 +267,7 @@ public:
             if(state.use_count()==1)progress=Progress::Declined;
         } else if(progress==Progress::Pending && probe && !comparing) {
             const auto next=probe->advance();
+            s.receipt.executionFailed=s.receipt.executionFailed || probe->executionFailed();
             if(next==OpenCLProbeProgress::Quarantined) {
                 s.receipt.quarantined=true;progress=Progress::Quarantined;dropProbe();
             } else if(next==OpenCLProbeProgress::Declined) {progress=Progress::Declined;dropProbe();}
@@ -272,7 +276,7 @@ public:
             if(s.canceled) {progress=Progress::Declined;dropProbe();}
             else {
                 const auto actual=probe->result(),expected=s.record->expected();
-                if(actual.size()!=expected.size()){progress=Progress::Declined;dropProbe();}
+                if(actual.size()!=expected.size()){s.receipt.executionFailed=true;progress=Progress::Declined;dropProbe();}
                 else {
                     const auto end=std::min(actual.size(),std::size_t(s.receipt.comparedCells)+GradientCpuCapture::CopyBlockBytes/sizeof(std::uint16_t));
                     for(auto i=std::size_t(s.receipt.comparedCells);i<end;++i) {
