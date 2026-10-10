@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "qualifying_evidence": false,
+  "stage": "native_and_rendered_diagnostics",
+  "native_source_revision": "786feaa6a3c19b6a54127959fa4aca564380532c",
+  "native_source_equivalent_root": "24c97ea03159fa7f05ef2ec1c5abe71205fdf9a8",
+  "official_unit_cases": 114,
+  "official_engine_cases": 106,
+  "official_receipts": "candidates/786feaa6a/official-native-summary.json",
+  "fresh_activated_cases": 27,
+  "activated_receipts": "native-786feaa6a-activated/summary.json",
+  "persistent_failure_tool": "persistent-786feaa6a-failure-lifetime",
+  "persistent_limit": "Development-only controlled stub with no GPU; does not admit production recovery.",
+  "rendered_launch_failure": "candidate-786feaa6a-render-warm-role-preflight/cpu-x11/receipt.json",
+  "rendered_corrected_preflight": "candidate-786feaa6a-render-warm-role-preflight-v2/summary.json",
+  "rendered_limit": "One diagnostic pair per renderer with fixed warm process CPU and identical full traces. Observer overhead, unequal presentation cadence and ambient interference are unresolved. Whole-session distributions are not warm guards.",
+  "retained_host_limit": "Tracked storage excludes full transitive ownership; no complete 64 MiB retained-host proof.",
+  "later_sources_limit": "Warm distributions, AI resource attribution, policy capture and subsequent clock guards remain outside native786.",
+  "analysis_revision": "edc01fc33",
+  "held_out_confirmation_consumed": false
+}

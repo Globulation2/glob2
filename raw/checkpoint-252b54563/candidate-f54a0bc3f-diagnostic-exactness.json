@@ -1,0 +1,70 @@
+{
+  "control": "candidate-cpu",
+  "variants": [
+    {
+      "id": "candidate-cpu",
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/f54a0bc3f/glob2",
+      "sha256": "7ab993db53962434d1103a333c7a22d2d696b714bcdf599b4bee28808f78dfd4",
+      "source_revision": "f54a0bc3f3b88ed6aae24afbc30127da000cf415",
+      "build_flags": "release=1 server=0",
+      "compute_threads": 8,
+      "env": {
+        "GLOB2_GRADIENT_BACKEND": "cpu",
+        "GLOB2_BENCHMARK_DIAGNOSTICS": "1",
+        "GLOB2_GRADIENT_DIAGNOSTICS": "1",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_GRADIENT_WORKER_NOOP": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_GRADIENT_ACCOUNTING": "1",
+        "GLOB2_GRADIENT_TUNING": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_OPENCL_UNIFORM_METADATA": "0"
+      }
+    },
+    {
+      "id": "candidate-gpu-poll0",
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/f54a0bc3f/glob2",
+      "sha256": "7ab993db53962434d1103a333c7a22d2d696b714bcdf599b4bee28808f78dfd4",
+      "source_revision": "f54a0bc3f3b88ed6aae24afbc30127da000cf415",
+      "build_flags": "release=1 server=0",
+      "compute_threads": 8,
+      "env": {
+        "GLOB2_GRADIENT_BACKEND": "opencl",
+        "GLOB2_GRADIENT_PLAN": "frozen8",
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_BENCHMARK_DIAGNOSTICS": "1",
+        "GLOB2_GRADIENT_DIAGNOSTICS": "1",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_GRADIENT_WORKER_NOOP": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_GRADIENT_ACCOUNTING": "1",
+        "GLOB2_GRADIENT_TUNING": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_OPENCL_UNIFORM_METADATA": "0"
+      },
+      "require_gpu": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "512-open-early",
+      "args": [
+        "--load-game",
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz",
+        "--ticks",
+        "2048"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz": "397bec44126f4611773829fd9093bf8d66bbf1b0c7410c9302baf5945ee522f7"
+      },
+      "phase": "early",
+      "group": "open-512",
+      "map_id": "open-512-91001"
+    }
+  ],
+  "warmup_ticks": 0
+}

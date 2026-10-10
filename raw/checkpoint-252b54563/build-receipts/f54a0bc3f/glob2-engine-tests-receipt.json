@@ -1,0 +1,29 @@
+{
+  "source_revision": "f54a0bc3f3b88ed6aae24afbc30127da000cf415",
+  "source_tree": "a6d8e9056f6bd48d09b9a1bbf24fb63e50d88a95",
+  "integration_revision": "1c44a1098",
+  "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/f54a0bc3f/glob2-engine-tests",
+  "binary_sha256": "5833d88692a6e4165e1427f014ce634419d82e285e76660201409d597efa2197",
+  "build_command": "GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-claude/build/linux/client/release/recording/prefix scons -j8 release=1 server=0 build/linux/client/release/src/glob2 unit-tests engine-tests",
+  "dependency_hashes": {
+    "/home/bradley/glob2-claude/build/sdl3/prefix/sdl3-manifest.json": "2cf93c4fba91bfc777e0ac4bb5b2bf7625fbb8095a0738f067acea8891ae8429",
+    "/home/bradley/glob2-claude/build/linux/client/release/recording/prefix/recording-manifest.json": "21821792ddc3149201812488ea896a00f89a3ea589f3175530dbae3d3f44458b",
+    "build/linux/client/release/identity.json": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0.4.16": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0.4.6": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0.2.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260"
+  },
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "config_sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+  "runtime_asset_audit_sha256": "df72c61c91d670afb5f611c252bf0f04cc9afb9ae7b57df55c7eca0c490f78cb",
+  "note": "Native code equivalent to1c44a1098, only4Python harness/test files differ. Small scope coverage/TID export followup to testedbcfb. Release game/unit/engine build completed with unchanged clean source; no fingerprint/render/envelope changes."
+}

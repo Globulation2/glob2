@@ -1,0 +1,38 @@
+{
+  "candidate-93f76f134-1024-bounded-continuation--gpu-1024-corridors-bounded-ai-seed91003.tar.gz": {
+    "published": "compact metadata archive excluding .checksums trace payloads",
+    "published_bytes": 14422239,
+    "full_local_archive": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/local-trace-archives/candidate-93f76f134-1024-bounded-continuation--gpu-1024-corridors-bounded-ai-seed91003.tar.gz",
+    "full_local_sha256": "8b44f9ddf0b61d7d96747f6019ea2a599794c60f755c4ca2ab02feedea6567a5",
+    "full_local_bytes": 59222517,
+    "published_members": 45,
+    "locally_retained_trace_members": 12
+  },
+  "candidate-93f76f134-1024-bounded-continuation--gpu-1024-corridors-bounded-ai-seed91004.tar.gz": {
+    "published": "compact metadata archive excluding .checksums trace payloads",
+    "published_bytes": 14309296,
+    "full_local_archive": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/local-trace-archives/candidate-93f76f134-1024-bounded-continuation--gpu-1024-corridors-bounded-ai-seed91004.tar.gz",
+    "full_local_sha256": "9f9547e62d4ce21c6383e1d5cd3cf11531526dd5b3b77db589c059c8351d0348",
+    "full_local_bytes": 59097943,
+    "published_members": 45,
+    "locally_retained_trace_members": 12
+  },
+  "candidate-93f76f134-1024-bounded-continuation--gpu-1024-open-bounded-ai-seed91003.tar.gz": {
+    "published": "compact metadata archive excluding .checksums trace payloads",
+    "published_bytes": 3867763,
+    "full_local_archive": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/local-trace-archives/candidate-93f76f134-1024-bounded-continuation--gpu-1024-open-bounded-ai-seed91003.tar.gz",
+    "full_local_sha256": "ee098f670425f3b14646033e8248115e2aacfa550842a1bdbcf639cfa9df6c9c",
+    "full_local_bytes": 49445295,
+    "published_members": 45,
+    "locally_retained_trace_members": 12
+  },
+  "candidate-93f76f134-1024-bounded-continuation--gpu-1024-open-bounded-ai-seed91004.tar.gz": {
+    "published": "compact metadata archive excluding .checksums trace payloads",
+    "published_bytes": 3898007,
+    "full_local_archive": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/local-trace-archives/candidate-93f76f134-1024-bounded-continuation--gpu-1024-open-bounded-ai-seed91004.tar.gz",
+    "full_local_sha256": "6c86a010d3f6ad2abc2404712d27a30dfbc27baa8096b7533b874fd768f63380",
+    "full_local_bytes": 49376455,
+    "published_members": 45,
+    "locally_retained_trace_members": 12
+  }
+}

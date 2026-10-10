@@ -1,6 +1,8 @@
+This is the historical first milestone. The user has since accepted the development CPU saving and the campaign has stopped. See [the accepted closeout](raw/checkpoint-252b54563/closeout.md) for current status; the original qualification gates did not pass.
+
 # GPU offload milestone: execution is asynchronous; performance gates remain unmet
 
-The campaign remains active. The first clean screen saves **24.2% process CPU per tick**, below the required 30%, and worsens tick p99 by **20.4%**. This is development evidence for one early 512² open game; it cannot establish aggregate acceptance.
+At this historical milestone, the campaign remained active. The first clean screen saves **24.2% process CPU per tick**, below the required 30%, and worsens tick p99 by **20.4%**. This is development evidence for one early 512² open game; it cannot establish aggregate acceptance.
 
 ## Measured screen
 

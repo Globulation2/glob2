@@ -1,0 +1,66 @@
+{
+  "/home/bradley/glob2-claude/build/sdl3/prefix/sdl3-manifest.json": {
+    "sha256": "2cf93c4fba91bfc777e0ac4bb5b2bf7625fbb8095a0738f067acea8891ae8429",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/linux/client/release/recording/prefix/recording-manifest.json": {
+    "sha256": "21821792ddc3149201812488ea896a00f89a3ea589f3175530dbae3d3f44458b",
+    "same_as_previous": true
+  },
+  "build/linux/client/release/identity.json": {
+    "sha256": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0.4.16": {
+    "sha256": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0": {
+    "sha256": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so": {
+    "sha256": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0.4.6": {
+    "sha256": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0": {
+    "sha256": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so": {
+    "sha256": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2": {
+    "sha256": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0": {
+    "sha256": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so": {
+    "sha256": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0.2.0": {
+    "sha256": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0": {
+    "sha256": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "same_as_previous": true
+  },
+  "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so": {
+    "sha256": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "same_as_previous": true
+  },
+  "config.h": {
+    "sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+    "same_as_previous": true
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "source_revision": "93f76f134de21a40842f599535396723d5e57d7b",
+  "timing_eligible": false,
+  "hypotheses": [
+    "guarded clocks never rerun committed exact GPU work or fabricate CPU credits",
+    "AI CPU diagnostics preserve byte-identical saved pending commands",
+    "normal render loop emits completed frame/tick histogram windows and exact closed per-tick GCS trace",
+    "bounded-ai 1024 fixtures preserve their own saved continuation with production codec unchanged"
+  ],
+  "unit_suites": [
+    "ComputeExecutor",
+    "OpenCLGradient",
+    "GradientProbe",
+    "GradientPipeline",
+    "ThreadCpuEnvelope",
+    "PerformanceTelemetry"
+  ],
+  "engine_suites": [
+    "AIOrderScheduler",
+    "CommandLine",
+    "GpuOffloadFixture",
+    "BuildingGradientInvalidation",
+    "WorldSnapshot",
+    "GradientPreparation",
+    "ImmobileUnitGradient",
+    "AISavePortability"
+  ],
+  "isolated_env_cases": [
+    {
+      "GLOB2_TEST_OPENCL_EXECUTION_OBSERVATION_ROLLBACK": "1"
+    },
+    {
+      "GLOB2_TEST_OPENCL_DIRECT_UPLOAD_ROLLBACK": "1",
+      "GLOB2_OPENCL_DIRECT_SEED_UPLOAD": "1"
+    }
+  ],
+  "untimed_512": [
+    "CPU",
+    "forced GPU",
+    "epoch GPU",
+    "AI accounting CPU",
+    "AI accounting GPU"
+  ],
+  "render_preflight": {
+    "saved_fixture": "512-open-91001",
+    "runs": 1,
+    "ticks": 256,
+    "window": "1280x720",
+    "renderer": "gpu",
+    "actual_desktop": true,
+    "unique_replay_sidecar": true,
+    "checksum_export_overhead": "exactness only; excluded from performance qualification",
+    "identities": "native PID inventory on both physical GPUs; OpenCL explicit device UUID binding"
+  },
+  "new_1024_profile": "Numbi/Castor, separately named; original Maxima/Nicowar invalid wide-brush continuation failure preserved",
+  "engine_cases": [
+    "EngineSession/render ceilings preserve per tick simulation checksums*"
+  ],
+  "isolated_device_assertion_gates": {
+    "singleton direct seed uploads preserve exact arrays commands and mixed batch staging": 1330,
+    "isolated completed kernels remain observed when transactional output is declined": 12,
+    "isolated direct seed upload rollback preserves originals after device work": 18
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "mode": "release",
+  "native_wss": true,
+  "role": "client",
+  "target": "native",
+  "toolchain": "linux"
+}

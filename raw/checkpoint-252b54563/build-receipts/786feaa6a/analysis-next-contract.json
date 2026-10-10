@@ -1,0 +1,14 @@
+{
+  "primary_estimand": "equal-stratum arithmetic mean of paired total-process CPU/tick ratios",
+  "averaging_order": [
+    "paired repeats within each phase",
+    "equal early/middle/late phases within each independently generated base game",
+    "equal base games within each required size/terrain stratum",
+    "equal required strata"
+  ],
+  "cluster_resampling": "whole independent base games within each stratum; shared resample indices for arithmetic primary and geometric secondary",
+  "primary_cpu_admission": "one-sided95 arithmetic cluster bootstrap upper<=0.70 plus all separately sealed exactness/resource/rendered/compatibility/automatic guards",
+  "legacy_outputs": "retain geometric ratio and CI labelled secondary/legacy; never reinterpret prior diagnostic artifacts",
+  "confirmation_roster": "separately sealed required strata, fixture SHA256, base-game seed/ancestry, phase initial/final tick ranges; no inference from available row labels",
+  "status": "analysis implementation after immutable native build completes; no holdouts consumed"
+}

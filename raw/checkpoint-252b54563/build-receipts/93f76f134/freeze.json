@@ -1,0 +1,9 @@
+{
+  "source_sha": "93f76f134de21a40842f599535396723d5e57d7b",
+  "git_tree": "9be69ced789464fa7a71a898aa0ae6df7f949de8",
+  "native_equivalent_integration_sha": "8c0ddf2348618fbb8528a1379c13e8e9e13e05b3",
+  "flags": "release=1 server=0",
+  "utc": "2026-10-10T18:27:29.612428+00:00",
+  "note": "Evidence-only Python harness changes retained; AI warm hooks and guarded CPU clock backend included; source frozen throughout build.",
+  "native_diff": "none; entire source tree equals root integration 8c0ddf234"
+}

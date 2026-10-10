@@ -1,0 +1,33 @@
+{
+  "candidate": "bcfb570758e0b4ad7b8756ee63639e592ab56691",
+  "runner_revision": "ef4a4f4a4",
+  "feature": "parity",
+  "option": "GLOB2_OPENCL_PARITY_BOUND",
+  "purpose": "Independent required-work host-CPU command/preparation ablation; hardware9physicalcoremanifest differs prior8core; allvariantscompute8 sameCPUaffinity. No isolatedkernelwall winner selection.",
+  "planned_retained_pairs": 5,
+  "discard_initial_round": 1,
+  "controls": {
+    "GLOB2_BENCHMARK_DIAGNOSTICS": "0",
+    "GLOB2_GRADIENT_DIAGNOSTICS": "0",
+    "GLOB2_GRADIENT_ACCOUNTING": "0",
+    "GLOB2_GRADIENT_TUNING": "0",
+    "GLOB2_GRADIENT_BATCH": "1",
+    "GLOB2_OPENCL_UNIFORM_METADATA": "0",
+    "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+    "GLOB2_OPENCL_PARITY_BOUND": "0",
+    "GLOB2_GRADIENT_WORKER_NOOP": "0",
+    "GLOB2_OPENCL_PROFILE": "0",
+    "GLOB2_OPENCL_DEVICE": "0",
+    "GLOB2_OPENCL_POLL_US": "0",
+    "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+    "GLOB2_GRADIENT_PLAN": "frozen8"
+  },
+  "decision": "Keep only clear CPU saving candidate versus same-source forcedGPUcontrol without worsened publication/tick tails; not acceptance, no combination until individual features screened.",
+  "remaining_limits": [
+    "persistent remote desktop compute context on selectedGPU0; boundaryquery cannot establish interval isolation",
+    "one early512open retainedgame only",
+    "no rendered responsiveness",
+    "CPUcore7L3 shared withoutsidecores4to6; sharedDRAM/thermal stillpossible"
+  ],
+  "hypothesis": "Prebindingparity reduces385k argumentupdates withoutchangingdispatch/check counts."
+}

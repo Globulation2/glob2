@@ -1,0 +1,36 @@
+{
+  "candidate": "f54a0bc3f3b88ed6aae24afbc30127da000cf415",
+  "purpose": "Attribute the prior GPU CPU remainder increase and warm tick tails before choosing the next required-work optimization; diagnostic samples never qualify acceptance.",
+  "cohort": "Matched same-source CPU vs forced OpenCL on retained512-open91001 early fixture; compute8, exclusive8physical cores with SMT;1024 warmup and8192 endpoint.",
+  "controls": {
+    "GLOB2_BENCHMARK_DIAGNOSTICS": "1",
+    "GLOB2_GRADIENT_DIAGNOSTICS": "1",
+    "GLOB2_GRADIENT_ACCOUNTING": "1",
+    "GLOB2_GRADIENT_TUNING": "0",
+    "GLOB2_GRADIENT_BATCH": "1",
+    "GLOB2_OPENCL_UNIFORM_METADATA": "0",
+    "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+    "GLOB2_OPENCL_PARITY_BOUND": "0",
+    "GLOB2_GRADIENT_WORKER_NOOP": "0",
+    "GLOB2_OPENCL_PROFILE": "0",
+    "GLOB2_OPENCL_DEVICE": "0",
+    "GLOB2_OPENCL_POLL_US": "0",
+    "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+    "GLOB2_GRADIENT_PLAN": "frozen8"
+  },
+  "hypotheses": [
+    "If unclassified driver threads account for excess CPU, native TID/user-system inventories will identify that contribution without inferring roles from names.",
+    "If periodic GPU deadline waits dominate tick tails, the slowest1percent ticks will show corresponding publication wait and whole-backend-call overlap.",
+    "If owner handoff, preparation, AI or snapshot work dominates, disjoint staged counters and conservative CPU/self scope coverage will identify it. Inclusive nested scopes and owner-join counters cannot be summed."
+  ],
+  "planned_pairs": 5,
+  "discard_initial_round": 1,
+  "decision": "Choose a causal optimization/ablation based on measured stage and tail attribution. Do not repeat unchanged performance waves or infer acceptance from instrumentation-heavy results.",
+  "remaining_limits": [
+    "one early scenario only",
+    "presentation disabled; no rendered guard claim",
+    "large stress fixtures not representative generator inputs",
+    "process/thread scan quantization and boundary overhead residual explicitly reported",
+    "Persistent foreign remote-desktop compute context on selected GPU0; every row contaminated for acceptance and retained as diagnostic-only."
+  ]
+}

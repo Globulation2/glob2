@@ -1,0 +1,8 @@
+{
+  "source_sha": "c5412f50a8f55e11690d02e889731bdc694087ba",
+  "git_tree": "7aa3bc576f57e94f3975e3324851528111056e87",
+  "production_equivalent_sha": "93f76f134de21a40842f599535396723d5e57d7b",
+  "changes": "Test-only readiness boolean fixes plus mutable ticket join and explicit role bit checks; no production source changes",
+  "flags": "release=1 server=0",
+  "utc": "2026-10-10T18:48:53.177007+00:00"
+}

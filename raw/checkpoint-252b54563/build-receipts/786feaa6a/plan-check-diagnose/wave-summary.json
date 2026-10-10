@@ -1,0 +1,92 @@
+[
+  {
+    "plan": "frozen8",
+    "check_interval": 1,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen8-check1-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.7941971880021633,
+    "wall_ratio": 1.0396173101455655,
+    "tick_p99_ratio": 1.1607722643360274
+  },
+  {
+    "plan": "frozen8",
+    "check_interval": 8,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen8-check8-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.7808596433681345,
+    "wall_ratio": 1.023942382475987,
+    "tick_p99_ratio": 1.088158263594067
+  },
+  {
+    "plan": "frozen8",
+    "check_interval": 32,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen8-check32-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.7710997836081767,
+    "wall_ratio": 1.0498315969143004,
+    "tick_p99_ratio": 1.2566794626998796
+  },
+  {
+    "plan": "frozen16",
+    "check_interval": 1,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen16-check1-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.7879445700325577,
+    "wall_ratio": 1.062488527455578,
+    "tick_p99_ratio": 1.1534663004119028
+  },
+  {
+    "plan": "frozen16",
+    "check_interval": 8,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen16-check8-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.7670994313222322,
+    "wall_ratio": 1.03087524868324,
+    "tick_p99_ratio": 1.0592354348381667
+  },
+  {
+    "plan": "frozen16",
+    "check_interval": 32,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen16-check32-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.767383495896877,
+    "wall_ratio": 1.043613958163464,
+    "tick_p99_ratio": 1.3307035591129022
+  },
+  {
+    "plan": "jacobi4",
+    "check_interval": 1,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-jacobi4-check1-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.852982842025428,
+    "wall_ratio": 1.1354549112923993,
+    "tick_p99_ratio": 1.1015415225377345
+  },
+  {
+    "plan": "jacobi4",
+    "check_interval": 8,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-jacobi4-check8-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.8037660426545917,
+    "wall_ratio": 1.0802533338587788,
+    "tick_p99_ratio": 1.1625468037607916
+  },
+  {
+    "plan": "jacobi4",
+    "check_interval": 32,
+    "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-jacobi4-check32-diagnose",
+    "qualifying_evidence": false,
+    "stage": "diagnose",
+    "cpu_ratio": 0.8053492676901479,
+    "wall_ratio": 1.0662486343804118,
+    "tick_p99_ratio": 1.0714241022266389
+  }
+]

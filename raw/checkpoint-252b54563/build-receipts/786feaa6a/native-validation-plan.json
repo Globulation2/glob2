@@ -1,0 +1,41 @@
+{
+  "stage": "diagnose",
+  "qualifying_evidence": false,
+  "source_sha": "786feaa6a3c19b6a54127959fa4aca564380532c",
+  "native_source_equivalent_root": "24c97ea03159fa7f05ef2ec1c5abe71205fdf9a8",
+  "sequence": [
+    "focused official native inventories, clean-default pipeline",
+    "API modes0/1/2 required all-plan exactness; direct upload plus isolated rollback gates",
+    "normal displayed x11/default CPU/GPU role and exact warm processCPU preflight",
+    "mode0 overhead against immutable93 before diagnostic API cost interpretation",
+    "short Frozen8/Frozen16/Jacobi4 x check1/8/32 epoch1 CPU objective diagnostics",
+    "intermediate checks only around useful winners; five-pair integrated finalist on original8192 protocol"
+  ],
+  "short_screen": {
+    "warmup_ticks": 1024,
+    "measured_ticks": 2048,
+    "total_ticks": 3072,
+    "discarded_pairs": 1,
+    "retained_pairs": 2,
+    "variants_per_pair": 2,
+    "compute_threads": 8,
+    "physical_cores": 9,
+    "epoch": 1,
+    "poll_us": 0,
+    "batch": 1,
+    "worker_noop": 0,
+    "parity": 0,
+    "direct_upload": 0,
+    "api_cpu": 0,
+    "device_uuid": "GPU-289a3035-0b2c-d273-67db-ccc36b6ca73b"
+  },
+  "short_screen_hypothesis": "Fewer kernel enqueues and host convergence checks may reduce calling-thread and total process CPU while respecting publication slack. Selection is not based on isolated kernel elapsed time.",
+  "retained_metrics": [
+    "actual warm process CPU",
+    "tick p99 diagnostic",
+    "actual fields/dispatches/checks",
+    "publication waits/deadlines",
+    "API category CPU only after mode1/2 coverage and overhead controls"
+  ],
+  "rendered_note": "Determine actual distinct main/owner/worker/coordinator IDs before timed partition; equal10physical BOTHcontrols if confirmed; no mixing nine-core headless ratios. Warm histograms remain a separate uncompiled draft; whole-session histograms are not warm p99."
+}

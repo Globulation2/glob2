@@ -1,0 +1,45 @@
+{
+  "source_revision": "c5412f50a8f55e11690d02e889731bdc694087ba",
+  "source_tree": "7aa3bc576f57e94f3975e3324851528111056e87",
+  "integration_revision": "8c0ddf2348618fbb8528a1379c13e8e9e13e05b3",
+  "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/93f76f134/glob2",
+  "binary_sha256": "935de76a54c72051ccd7c854482f08d38b690a91c217b561c7a3d5cd036a5e42",
+  "build_command": "GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-claude/build/linux/client/release/recording/prefix scons -j8 release=1 server=0 build/linux/client/release/src/glob2 unit-tests engine-tests",
+  "dependency_hashes": {
+    "/home/bradley/glob2-claude/build/sdl3/prefix/sdl3-manifest.json": "2cf93c4fba91bfc777e0ac4bb5b2bf7625fbb8095a0738f067acea8891ae8429",
+    "/home/bradley/glob2-claude/build/linux/client/release/recording/prefix/recording-manifest.json": "21821792ddc3149201812488ea896a00f89a3ea589f3175530dbae3d3f44458b",
+    "build/linux/client/release/identity.json": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0.4.16": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0.4.6": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0.2.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260"
+  },
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "config_sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+  "runtime_asset_audit_sha256": "df72c61c91d670afb5f611c252bf0f04cc9afb9ae7b57df55c7eca0c490f78cb",
+  "note": "Successful c541 game/unit/engine build. Test-only fixes since93f; existing93f game binary reused without relink. Native validation pending; no timing admission.",
+  "utc": "2026-10-10T18:46:16.400918+00:00",
+  "test_binaries": {
+    "glob2-unit-tests": {
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/c5412f50a/glob2-unit-tests",
+      "sha256": "aec36ee8d3e22d540fe4f21df642cb14973e5e939da9dbd790ce44f3987adf7a",
+      "source_revision": "c5412f50a8f55e11690d02e889731bdc694087ba"
+    },
+    "glob2-engine-tests": {
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/c5412f50a/glob2-engine-tests",
+      "sha256": "a7fa26d21bfc878d12f213ac1769d61c8ecd91c717a6fae7dc4987231840d63d",
+      "source_revision": "c5412f50a8f55e11690d02e889731bdc694087ba"
+    }
+  },
+  "game_source_revision": "93f76f134de21a40842f599535396723d5e57d7b",
+  "game_binary_sha256": "935de76a54c72051ccd7c854482f08d38b690a91c217b561c7a3d5cd036a5e42",
+  "build_log_sha256": "61664fd0b1284acac084015066a610ecf7ed8954daa82f23c4bb2f8a89de97ca"
+}

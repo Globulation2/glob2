@@ -1,0 +1,139 @@
+{
+  "scenarios": [
+    {
+      "id": "512-open-early",
+      "args": [
+        "--load-game",
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz",
+        "--ticks",
+        "8192"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz": "397bec44126f4611773829fd9093bf8d66bbf1b0c7410c9302baf5945ee522f7"
+      },
+      "phase": "early",
+      "group": "open-512",
+      "map_id": "open-512-91001"
+    }
+  ],
+  "warmup_ticks": 1024,
+  "reservation": {
+    "group": "/sys/fs/cgroup/codex-gpu1045-benchmark",
+    "cpus": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "memory_nodes": [
+      0
+    ]
+  },
+  "control": "candidate-cpu",
+  "variants": [
+    {
+      "id": "candidate-cpu",
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/f54a0bc3f/glob2",
+      "sha256": "7ab993db53962434d1103a333c7a22d2d696b714bcdf599b4bee28808f78dfd4",
+      "source_revision": "f54a0bc3f3b88ed6aae24afbc30127da000cf415",
+      "build_flags": "release=1 server=0",
+      "compute_threads": 8,
+      "cpu_affinity": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "env": {
+        "GLOB2_BENCHMARK_DIAGNOSTICS": "1",
+        "GLOB2_GRADIENT_DIAGNOSTICS": "1",
+        "GLOB2_GRADIENT_ACCOUNTING": "1",
+        "GLOB2_GRADIENT_TUNING": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_OPENCL_UNIFORM_METADATA": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_GRADIENT_WORKER_NOOP": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+        "GLOB2_GRADIENT_PLAN": "frozen8",
+        "GLOB2_GRADIENT_BACKEND": "cpu"
+      }
+    },
+    {
+      "id": "candidate-gpu",
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/f54a0bc3f/glob2",
+      "sha256": "7ab993db53962434d1103a333c7a22d2d696b714bcdf599b4bee28808f78dfd4",
+      "source_revision": "f54a0bc3f3b88ed6aae24afbc30127da000cf415",
+      "build_flags": "release=1 server=0",
+      "compute_threads": 8,
+      "cpu_affinity": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "env": {
+        "GLOB2_BENCHMARK_DIAGNOSTICS": "1",
+        "GLOB2_GRADIENT_DIAGNOSTICS": "1",
+        "GLOB2_GRADIENT_ACCOUNTING": "1",
+        "GLOB2_GRADIENT_TUNING": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_OPENCL_UNIFORM_METADATA": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_GRADIENT_WORKER_NOOP": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+        "GLOB2_GRADIENT_PLAN": "frozen8",
+        "GLOB2_GRADIENT_BACKEND": "opencl"
+      },
+      "require_gpu": true
+    }
+  ],
+  "gpu_uuid": "GPU-289a3035-0b2c-d273-67db-ccc36b6ca73b",
+  "reservation_receipts": {
+    "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/reservation/f54-setup.json": "9a7012e00813d8460cc5a9c2d8557f62de6a61cc0cfe416832a22a2433ae9b50",
+    "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/cpu_partition.py": "1d76f472fa14fba71c4adf61c7a91236c66c0a554ded7e448c18b5312516e4c2"
+  }
+}

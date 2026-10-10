@@ -1,0 +1,65 @@
+{
+  "available": true,
+  "selected_uuid": "GPU-289a3035-0b2c-d273-67db-ccc36b6ca73b",
+  "note": "Before/after observations exclude graphics contexts and cannot prove isolation throughout the interval.",
+  "devices": [
+    {
+      "index": "0",
+      "uuid": "GPU-289a3035-0b2c-d273-67db-ccc36b6ca73b",
+      "name": "NVIDIA GeForce RTX 2070 SUPER",
+      "driver_version": "580.178.04",
+      "utilization.gpu": "0",
+      "utilization.memory": "0",
+      "memory.used": "302",
+      "memory.total": "8192",
+      "temperature.gpu": "57",
+      "power.draw": "33.95",
+      "clocks.sm": "1605",
+      "clocks.mem": "6801"
+    },
+    {
+      "index": "1",
+      "uuid": "GPU-78234fbe-b975-9f64-2209-9bd4acec265b",
+      "name": "NVIDIA GeForce RTX 2070 SUPER",
+      "driver_version": "580.178.04",
+      "utilization.gpu": "1",
+      "utilization.memory": "0",
+      "memory.used": "906",
+      "memory.total": "8192",
+      "temperature.gpu": "55",
+      "power.draw": "11.41",
+      "clocks.sm": "300",
+      "clocks.mem": "405"
+    }
+  ],
+  "compute_processes": [
+    {
+      "gpu_uuid": "GPU-289a3035-0b2c-d273-67db-ccc36b6ca73b",
+      "pid": "1489030",
+      "used_gpu_memory": "288"
+    },
+    {
+      "gpu_uuid": "GPU-78234fbe-b975-9f64-2209-9bd4acec265b",
+      "pid": "2877198",
+      "used_gpu_memory": "98"
+    },
+    {
+      "gpu_uuid": "GPU-78234fbe-b975-9f64-2209-9bd4acec265b",
+      "pid": "390386",
+      "used_gpu_memory": "37"
+    },
+    {
+      "gpu_uuid": "GPU-78234fbe-b975-9f64-2209-9bd4acec265b",
+      "pid": "928774",
+      "used_gpu_memory": "21"
+    }
+  ],
+  "selected_device_found": true,
+  "selected_compute_processes": [
+    {
+      "gpu_uuid": "GPU-289a3035-0b2c-d273-67db-ccc36b6ca73b",
+      "pid": "1489030",
+      "used_gpu_memory": "288"
+    }
+  ]
+}

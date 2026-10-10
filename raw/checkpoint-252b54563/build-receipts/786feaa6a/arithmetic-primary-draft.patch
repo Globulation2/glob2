@@ -1,0 +1,42 @@
+--- a/test/gpu_offload_analysis.py
++++ b/test/gpu_offload_analysis.py
+@@ -208,15 +208,37 @@
+             arithmetic_value = statistics.mean(statistics.mean(math.exp(v) for v in phase_logs[mid][p]) for p in required_phases)
+             arithmetic_strata.setdefault(m['stratum'], []).append(arithmetic_value)
+         rng = random.Random(1045)
+-        boot = sorted(math.exp(statistics.mean(statistics.mean(rng.choices(v, k=len(v))) for v in strata.values())) for _ in range(draws))
++        # Resample the same whole base-game indices for both estimands. Phases
++        # and repeat means stay together; equal stratum weights do not depend on
++        # the number of games, repetitions or CPU cost within each stratum.
++        arithmetic_boot, geometric_boot = [], []
++        for _ in range(draws):
++            arithmetic_draw, geometric_draw = [], []
++            for group, values in strata.items():
++                indices = rng.choices(range(len(values)), k=len(values))
++                geometric_draw.append(statistics.mean(values[i] for i in indices))
++                arithmetic_draw.append(statistics.mean(arithmetic_strata[group][i] for i in indices))
++            geometric_boot.append(math.exp(statistics.mean(geometric_draw)))
++            arithmetic_boot.append(statistics.mean(arithmetic_draw))
++        boot = sorted(geometric_boot)
++        arithmetic_boot.sort()
+         upper = boot[int(.95 * (draws - 1))]
++        primary_upper = arithmetic_boot[int(.95 * (draws - 1))]
+         output[candidate] = {'available': True, 'qualifying_evidence': False,
+             'guard_completeness': 'CPU estimate only; independent base-game/stratum protocol, rendered and compatibility gates required',
+             'ratio_type': 'equal-weight geometric mean of paired CPU-per-tick ratios',
+             'ci_estimand': 'geometric mean of paired CPU-per-tick ratios',
+             'arithmetic_mean_paired_ratio': statistics.mean(statistics.mean(v) for v in arithmetic_strata.values()),
+             'ratio': math.exp(statistics.mean(statistics.mean(v) for v in strata.values())),
+-            'upper_one_sided95': upper, 'cpu_target_pass': upper <= .7,
++            'upper_one_sided95': upper,
++            'legacy_geometric_cpu_target_pass': upper <= .7,
++            'primary_ratio': statistics.mean(statistics.mean(v) for v in arithmetic_strata.values()),
++            'primary_ratio_type': 'equal-stratum arithmetic mean of paired total-process CPU-per-tick ratios',
++            'primary_ci_estimand': 'equal-stratum arithmetic mean of paired total-process CPU-per-tick ratios',
++            'primary_lower95': arithmetic_boot[int(.025 * (draws - 1))],
++            'primary_upper95': arithmetic_boot[int(.975 * (draws - 1))],
++            'primary_upper_one_sided95': primary_upper,
++            'cpu_target_pass': primary_upper <= .7,
+             'independent_maps': len(map_roster), 'maps_per_stratum': {g: len(v) for g, v in strata.items()},
+             'rounds_per_phase': len(rounds), 'weighting': 'equal strata, maps, phases; paired rounds within phase',
+             'note': 'complete declared coverage; phases and repetitions clustered by independent map; held-out confirmation and rendered guards required'}

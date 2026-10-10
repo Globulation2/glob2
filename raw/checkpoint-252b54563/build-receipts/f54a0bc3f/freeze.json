@@ -1,0 +1,8 @@
+{
+  "source_sha": "f54a0bc3f3b88ed6aae24afbc30127da000cf415",
+  "git_tree": "a6d8e9056f6bd48d09b9a1bbf24fb63e50d88a95",
+  "native_equivalent_integration_sha": "1c44a109868723d6410ffba0a7a88b7400aeef29",
+  "native_diff": "none; only4Python harness/test files differ",
+  "flags": "release=1 server=0",
+  "utc": "2026-10-10T17:47:37.511006+00:00"
+}

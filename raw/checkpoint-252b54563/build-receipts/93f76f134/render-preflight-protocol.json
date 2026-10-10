@@ -1,0 +1,23 @@
+{
+  "diagnostic_only": true,
+  "no_timing_acceptance": true,
+  "binary_source": "93f76f134de21a40842f599535396723d5e57d7b",
+  "map": "512-open-91001",
+  "ticks": 256,
+  "runs": 1,
+  "compute_threads": 8,
+  "variants": [
+    "normal-loop-cpu-headless",
+    "normal-loop-cpu-displayed",
+    "normal-loop-gpu-displayed"
+  ],
+  "actual_desktop": true,
+  "renderer": "gpu",
+  "window": "1280x720",
+  "trace_requirement": "GCS header closed,count256,complete variable-length body,contiguous ticks0..255,full bytes identical across variants",
+  "sidecar_overhead": "untimed exactness only",
+  "gpu_mapping": "retain actual native gamePID context inventory on both physical GPUs; explicit OpenCLordinal0 proven separately, renderer identity from driver log when available",
+  "CPU_measurement": "whole-session wait4 diagnostic only; exact warmed fixed-tick process CPU requires next rendered hook",
+  "histograms": "whole-session export or collector intervals can include startup/outsidewarm; cannot label warm p99",
+  "resources": "reserve same9physicalcores for allthree variants; cleanup afterward; fullprocess childthreads inherit cpuset; resourceboundary snapshots only therefore no ambient qualification"
+}

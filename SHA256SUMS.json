@@ -1,7 +1,7 @@
 {
   "README.md": {
-    "sha256": "375810ce156ba412fe2a30f73783950d8960072921a4e34db4096843ec9874f1",
-    "bytes": 5672
+    "sha256": "d80585b3b455bb3bfca83e915e87730683c4745c67efb4219f71bf343fc9ca61",
+    "bytes": 7561
   },
   "fixtures/initial.game.gz": {
     "sha256": "397bec44126f4611773829fd9093bf8d66bbf1b0c7410c9302baf5945ee522f7",
@@ -143,6 +143,482 @@
     "sha256": "d23653ccc47a2b2b5a92ce2a4f9636934619b3ecbed4359953286857c1171d8c",
     "bytes": 31535
   },
+  "raw/checkpoint-252b54563/archive-members.json": {
+    "sha256": "b52f2101b928c4fdf3ba22eb7ffb2921d208aeca72eaaa129823cc87c10a7088",
+    "bytes": 497602
+  },
+  "raw/checkpoint-252b54563/archive-verification.json": {
+    "sha256": "6d60bbce222559fd8759bd0ee6e2122d64bccf9af2d7083dda3a37203e4f39c9",
+    "bytes": 191
+  },
+  "raw/checkpoint-252b54563/arithmetic-primary-native-source-analysis.log.gz": {
+    "sha256": "6f377fcf5ea6540bdff0511f8251b89ab6ed26cf9628bf574b4f0f3ff1c9a142",
+    "bytes": 55
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/analysis-next-contract.json": {
+    "sha256": "7d87c39d1db7b263a33255151d6a36b14d45e3b0785f6c6991873a145b4dc645",
+    "bytes": 1062
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/arithmetic-draft-tests.log": {
+    "sha256": "ac542d01aaef7c4297e4ade34e567dba1e3fd63c8774c0279d8bc90b0c70b955",
+    "bytes": 145
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/arithmetic-primary-draft.patch": {
+    "sha256": "74c47fb7ecd486f5d9f96e0672c1291321584516ff8fa9e5e98b114af2805390",
+    "bytes": 3238
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/build-receipt.json": {
+    "sha256": "52e60753c05e4fec25e26796774ece626b58540e0306cd5c89cebf733a27a965",
+    "bytes": 4279
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/config.h": {
+    "sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+    "bytes": 1273
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/configured-inputs.json": {
+    "sha256": "f965a3873c35e79f559dcdd6d84a5b76609cfe57ee6a35f91f0aef1746d6d20f",
+    "bytes": 2975
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/expected-native-inventory.json": {
+    "sha256": "89446a8ab91197cdcd12074ec3da37755403a09f5d0f8196da0daf9466f70f6e",
+    "bytes": 22135
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/freeze.json": {
+    "sha256": "2239ad315a5265ffca3d5adeffd9ce6042e60f85591a59471c269a1facbdf022",
+    "bytes": 681
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/identity.json": {
+    "sha256": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "bytes": 112
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/native-commands.json": {
+    "sha256": "282c69920084aaa5924480e38e8de7a60562c5bfb224733a96fdcf4d56da88dd",
+    "bytes": 1887
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/native-validation-plan.json": {
+    "sha256": "75196358b303794e62a24c968728db014b918314c982405bcb745b005f2e0c3a",
+    "bytes": 1906
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/official-native-summary.json": {
+    "sha256": "51c23d437a7c170759ee65697a43d4ebbf63a6e270b4a3ed63737f50f2de293e",
+    "bytes": 2561
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/frozen16-check1.json": {
+    "sha256": "ab67e6466b9e95d3de452aa98274b4bfbfe77725cbe2b1ae35db75df24d5e781",
+    "bytes": 5082
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/frozen16-check32.json": {
+    "sha256": "c740015dd4738bc17cee0e8e881614f2588ca9f590ba3cd18d298b72b8dccfd1",
+    "bytes": 5084
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/frozen16-check8.json": {
+    "sha256": "2929c86e34b14a293f18409a758aa2350ae75697ea75e8559c149bb6deafc226",
+    "bytes": 5082
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/frozen8-check1.json": {
+    "sha256": "6c72deec50a0557e0a5089e7cdad9ddd4d3aef167944e22fa954579425a334f0",
+    "bytes": 5080
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/frozen8-check32.json": {
+    "sha256": "ccf2eeedbb93356474857c31bd6463631558346a3e9fc23722f5a8414e1df754",
+    "bytes": 5082
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/frozen8-check8.json": {
+    "sha256": "24a255edb6facd407ff2b3980bccb9b294545ff3bc6ffb851e8457895fce84a8",
+    "bytes": 5080
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/jacobi4-check1.json": {
+    "sha256": "64bdf24d7e275a1b586e54657f796aea1c06df27840922085dbb75407b69bccf",
+    "bytes": 5080
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/jacobi4-check32.json": {
+    "sha256": "71e8f2007da3932203fa2499747f41532e0b918f382e112cd6b6be37f04afc09",
+    "bytes": 5082
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/jacobi4-check8.json": {
+    "sha256": "2ea7f0557458d4446e95ca2d481fe396b3121153a9ccfe28bc6f9bd340138e2a",
+    "bytes": 5080
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/overhead-cpu-mode0.json": {
+    "sha256": "ee71de2d596ca41a8d53493f426a02e831aba7310c343ea95a16e57e9d4264d5",
+    "bytes": 5107
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/overhead-opencl-mode0.json": {
+    "sha256": "b7397ece4f653f084448da0db27cd27150eead7b40583b9ecb995c887dace495",
+    "bytes": 5120
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/wave-summary.json": {
+    "sha256": "6c9ef1786de2b8ed405c2c0fffc20f98113f5220479db0e5630447d882cc0a3f",
+    "bytes": 3652
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/plan-check-diagnose/wave-work-counters.json": {
+    "sha256": "aad8a4446c259a011f38411e3c84b80b0665ef3833634d3ac134a2fa931dd600",
+    "bytes": 3578
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/run-activated-native.py": {
+    "sha256": "7be8d9b07c63883ef3e581e44247c61d96d2f0bbdf54f0b2cf8f3f0d5147ae94",
+    "bytes": 3185
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/run-official-native.py": {
+    "sha256": "f96e961b7f59659169943ddc0b4eec8897b714e874fd661868e64be141e43651",
+    "bytes": 1686
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/run-plan-check-diagnose-wave.py": {
+    "sha256": "f9cfe3d6ec8f215742873b1b8c546ab82ce1b009bcff41b3680095480a4f4027",
+    "bytes": 1184
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/run-plan-check-exact.py": {
+    "sha256": "bf5498a76df12af5a80c7a21cfd8e71eeccbac24ad78dbc4ad123cb31a7376c8",
+    "bytes": 2492
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/run-render-warm-role-preflight-v2.py": {
+    "sha256": "60626009cf2e22181c8c95a8f31e52aebe969f4afb0ec59fcd67cfe38cfce582",
+    "bytes": 6899
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/run-render-warm-role-preflight.py": {
+    "sha256": "54af39cff8f6a27f6bb7cb144e8ed2ed0e1e80890efdf93cd7fe1522e4384d6b",
+    "bytes": 6920
+  },
+  "raw/checkpoint-252b54563/build-receipts/786feaa6a/test-arithmetic-draft.py": {
+    "sha256": "c1f0625dce3871dd8582a226c2a7a7406de3351bc23f0426e0d17694453bb243",
+    "bytes": 2834
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/config.h": {
+    "sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+    "bytes": 1273
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/freeze.json": {
+    "sha256": "00e73a9d33495697a25a9807e9201a8f713e3dab06067cf2ddcbc9b6c8afb86d",
+    "bytes": 507
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/glob2-receipt.json": {
+    "sha256": "08d59a2300fdd8f1153c343aca7092639ffa39ea279d7c8aeafb112cd1bdeb2f",
+    "bytes": 3349
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/identity.json": {
+    "sha256": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "bytes": 112
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/native-validation-plan.json": {
+    "sha256": "bf5a32198aa83b9bf154a4489486bd9d67e727b808325cc3981e82b0c12ab3dd",
+    "bytes": 2172
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/render-desktop-env.json": {
+    "sha256": "bbf650b7ac622bc116b41d717a24dc3200de974713acdf5346ff45bc52e4f134",
+    "bytes": 206
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/render-preflight-protocol.json": {
+    "sha256": "11bbb854862adbbfde506b88e2e990b6878d9719c0bff933b0342c4b4de5b523",
+    "bytes": 1205
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/run-render-preflight.py": {
+    "sha256": "bfa89b3b378275ee1cd0d1bb978a3b6238e834aab0d6f9c0d61283aa4c40d07f",
+    "bytes": 4778
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/run-render-x11-preflight.py": {
+    "sha256": "44758d595e894804d74b7b98497ed99a2a45ac201f37b061c97f85467d247aa7",
+    "bytes": 5282
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/verifier-source-snapshot/benchmark_gpu_offload.py": {
+    "sha256": "95870434175df34da122ceb7d774728bdf641f464f47021e1dd12116f574c8e8",
+    "bytes": 16671
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/verifier-source-snapshot/gpu_offload_analysis.py": {
+    "sha256": "e92d46a66e0fdb71c498201f93947726d151016d83bbb43f0f05e5e5a9e5a0dd",
+    "bytes": 9642
+  },
+  "raw/checkpoint-252b54563/build-receipts/93f76f134/verifier-source-snapshot/verify_gpu_offload.py": {
+    "sha256": "e3ad81a565f7efb28b7ca1978a44a95ec2411ce0d255f38e427bf547e6d8a2cd",
+    "bytes": 5292
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/build-receipt.json": {
+    "sha256": "90414348639280b7d6914c7ae59e1570de389ff8418506201fb6fd0ee03eebaa",
+    "bytes": 4274
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/config.h": {
+    "sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+    "bytes": 1273
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/freeze.json": {
+    "sha256": "54a085d2407bf77059cd771fb671286143d3be0711fd5b8f07aba81bcaac8111",
+    "bytes": 408
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/identity.json": {
+    "sha256": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "bytes": 112
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/native-commands.json": {
+    "sha256": "ab668549837210dcb7b3295ad20e463b2b322bef24236f674a07527f86e6ddaa",
+    "bytes": 2719
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/native-validation-plan.json": {
+    "sha256": "14335501983fa69869cca5439c915f8cdef8f2f8e591c4a14da5f2a27c7d1f3f",
+    "bytes": 2381
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/run-activated-native-initial.py": {
+    "sha256": "ce451777279fa4a965ff58b44b6ca8aef2fce7308e2a1f70711bea0bd1579883",
+    "bytes": 2383
+  },
+  "raw/checkpoint-252b54563/build-receipts/c5412f50a/run-activated-native.py": {
+    "sha256": "b63e5f7eafb42b4d9c03daef94f6f42da2887dc7a4d76a9ce53b223e62037906",
+    "bytes": 2377
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/config.h": {
+    "sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+    "bytes": 1273
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/diagnostic-hypothesis.json": {
+    "sha256": "cceeccfbd2a79214cc839d6c692a5796804f2a21a70d6e7cd73be5260a4d923c",
+    "bytes": 2180
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/freeze.json": {
+    "sha256": "48f7d4ad338dc670348d702aadf84aa28e44f95a3d9248e9911a0a8027c8df1e",
+    "bytes": 346
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/glob2-engine-tests-receipt.json": {
+    "sha256": "7f8eb99ca6804bdfc0814109ce3d03e834ce3f6a5ebfad373bcafb170275d048",
+    "bytes": 3324
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/glob2-receipt.json": {
+    "sha256": "5677b7c343d5479fb6171615106a08354bb0bf62586f84fd6f9bf9460703fcc8",
+    "bytes": 3311
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/glob2-unit-tests-receipt.json": {
+    "sha256": "6c05655f02f879b8482fdf1f7a5f9c80c18ee58fd469176b3ec65d87a7b43f0a",
+    "bytes": 3322
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/gpu-inventory.json": {
+    "sha256": "0cd8521911223048c12ac65a80e0b3dd645f94879ca86bc9478f9064a87ed590",
+    "bytes": 1788
+  },
+  "raw/checkpoint-252b54563/build-receipts/f54a0bc3f/identity.json": {
+    "sha256": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "bytes": 112
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-closeout.json": {
+    "sha256": "29e5c03c6b45c86fdbc621f1306f83328d0b9b59971e8e47427adfb0cc54a633",
+    "bytes": 5941
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-mode0-cpu-overhead-diagnose.tar.gz": {
+    "sha256": "eb3c779cef11e5eed4de8052e7e9987b4d10e8c0d8af425791f1ca4d7e0543da",
+    "bytes": 239725
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-mode0-opencl-overhead-diagnose.tar.gz": {
+    "sha256": "bbd6cb4967034c074ba73491e0c89d75a4e410725efe3373a6e674792f3edb77",
+    "bytes": 243786
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-frozen16-check1-diagnose.tar.gz": {
+    "sha256": "44baa5910ab46142ce255e3688a8151b7687b9bedad3f2138cb5849f91e64a31",
+    "bytes": 244336
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-frozen16-check32-diagnose.tar.gz": {
+    "sha256": "e0788a7563b35e8fc4d3cfe165be48b14f3f5d646e810389ae42b6b6fdfb6937",
+    "bytes": 243641
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-frozen16-check8-diagnose.tar.gz": {
+    "sha256": "3d289e1642f2e91ea9622b84fc8719f515af7c0f2ccc16f6a577f1e9a6d8dbc2",
+    "bytes": 243460
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-frozen8-check1-diagnose.tar.gz": {
+    "sha256": "9a6e178fd6c73bdefedab20d19467a42ecc0b98b5be1e4f47d039ebfd208a4c1",
+    "bytes": 243701
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-frozen8-check32-diagnose.tar.gz": {
+    "sha256": "dead8084ab26553c4524504749465994ab19e32b7f96a9051bbbbc57b45f0f3e",
+    "bytes": 244041
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-frozen8-check8-diagnose.tar.gz": {
+    "sha256": "e46074dc5c67022883a02e99639a569f1b0d04a74b6a4d7533bb7584318fecaf",
+    "bytes": 243327
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-jacobi4-check1-diagnose.tar.gz": {
+    "sha256": "b0f313c1e795bb291946190b2683b42c46c14e65622ba4fb7c8c9bff590d5ca9",
+    "bytes": 243453
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-jacobi4-check32-diagnose.tar.gz": {
+    "sha256": "6e2face30e590c891423226b3e8d17bad5dfabf782bf5b5298cc54d7520028a7",
+    "bytes": 243716
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-plan-check-jacobi4-check8-diagnose.tar.gz": {
+    "sha256": "e73ad39f539e52619fccf9c45cc3c3494415066a2ead192403105a2ea59482b7",
+    "bytes": 243551
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-render-warm-role-preflight-v2.tar.gz": {
+    "sha256": "8ecf2bbda981039a5de96144e1327df134b2bdd38cb5f9d09e3bca6ec3387c04",
+    "bytes": 7430037
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-render-warm-role-preflight.tar.gz": {
+    "sha256": "4c3950538bdeb37661dab4cd0bb908e3ae250ae48c1ad796c54f387d055e0fa5",
+    "bytes": 112881
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a-validation.json": {
+    "sha256": "40da6f49a88c32785ba0dc336ee1cd6e0ab7e3e7ea584498f66d5b0fe78be75e",
+    "bytes": 1450
+  },
+  "raw/checkpoint-252b54563/candidate-786feaa6a.log.gz": {
+    "sha256": "8c24272138ad155e78b4194ff96d01df1cc194a931e65c78d0c3c1f923992fd3",
+    "bytes": 205871
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-1024-bounded-continuation--gpu-1024-corridors-bounded-ai-seed91003.tar.gz": {
+    "sha256": "58acd933b46c7bb5ec67be388288d1cd599c867481b832a3751bdcf83363b207",
+    "bytes": 14422239
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-1024-bounded-continuation--gpu-1024-corridors-bounded-ai-seed91004.tar.gz": {
+    "sha256": "d4112ded89ef62f646463876c44f9df43a607dfca94dc7543b665c52bfe5fcc1",
+    "bytes": 14309296
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-1024-bounded-continuation--gpu-1024-open-bounded-ai-seed91003.tar.gz": {
+    "sha256": "cba9f4b82298cfd3c1d88fa454838574b267764f1e845490ad8787ea2a403633",
+    "bytes": 3867763
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-1024-bounded-continuation--gpu-1024-open-bounded-ai-seed91004.tar.gz": {
+    "sha256": "77de5d4c8f5c5811a69ff0a2f723c30e81e3654cec53081cd599bfa977f2d345",
+    "bytes": 3898007
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-1024-bounded-exactness.json": {
+    "sha256": "d4d5e6e823bde844139218c719851089158bb5e8f2ecc941b8bda653d514027f",
+    "bytes": 7525
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-continuation.tar.gz": {
+    "sha256": "b1f9fe301040f2de30ef46657001dcba48d78aaba4a105415a3220d4d9429d53",
+    "bytes": 25373653
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-exactness.json": {
+    "sha256": "ca66251a4b0c7a381dac7920bd0a901ddaa9517b09aa5571c5567c0d00d78aca",
+    "bytes": 7049
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-render-preflight.tar.gz": {
+    "sha256": "949ef5dc4361dac86720473b2cac1512a62b8816b0b4bb7662f431bb10f1652a",
+    "bytes": 2600729
+  },
+  "raw/checkpoint-252b54563/candidate-93f76f134-render-x11-preflight.tar.gz": {
+    "sha256": "81414f77e58c421b7b3230cebba74810101647da947383fc602643885e038842",
+    "bytes": 2061726
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-epoch-hypothesis.json": {
+    "sha256": "e970d9d8fc089d674534ecfb68b60eba6842327344419f1a9ab98e2da0a78373",
+    "bytes": 1562
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-epoch-screen.json": {
+    "sha256": "48ab53103f6886883ce9410242e3c0adc92da5a7fd5a564e7f139e577d57c7a1",
+    "bytes": 5647
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-epoch-screen.tar.gz": {
+    "sha256": "c27b9cd90e18fc20ed116cd87169b49a88cf2c267b56e70f34e490ae30e99010",
+    "bytes": 705944
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-parity-hypothesis.json": {
+    "sha256": "a09b31756e1289b44a76d16027b74cf077891d2485d7c1ac555a3421b418f154",
+    "bytes": 1566
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-parity-screen.json": {
+    "sha256": "ad88b2336e218b3119645e6ed0616f8844461850fb8c352710086b017d30013c",
+    "bytes": 5648
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-parity-screen.tar.gz": {
+    "sha256": "9747ad3048e711ee79ca22b61b852e376b74eab18df2910d8ef326cf96f90c54",
+    "bytes": 705111
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-worker-noop-hypothesis.json": {
+    "sha256": "4bfa3ba397e2100fe80f4ceaae063cd2c227cd0d8958c75977238755302eb8af",
+    "bytes": 1593
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-worker-noop-screen.json": {
+    "sha256": "7f567073a6bb5cc6d9c7cc56a89ea042ea367f8bddc5ec8314f6dc6a1b6c6375",
+    "bytes": 5653
+  },
+  "raw/checkpoint-252b54563/candidate-bcfb57075-nine-core-worker-noop-screen.tar.gz": {
+    "sha256": "9817f2541aa1681eda4c614ef275721042377fb51a7d401b5f612a2ea7f5365b",
+    "bytes": 706757
+  },
+  "raw/checkpoint-252b54563/candidate-c5412f50a-validation.json": {
+    "sha256": "92e63f175a4b6fdcec6d486f6e7d0c1cf8e67ef03b3697480a6157aa8fff9334",
+    "bytes": 7602
+  },
+  "raw/checkpoint-252b54563/candidate-f54a0bc3f-diagnostic-exactness.json": {
+    "sha256": "b7542b1f12ad97afecb5ed27fd100ab692ffe32556d51e443e8cb307ab75b12f",
+    "bytes": 2673
+  },
+  "raw/checkpoint-252b54563/candidate-f54a0bc3f-diagnostic-exactness.tar.gz": {
+    "sha256": "0740705f4a62425daa2285e9f25d92b19f8d35a20e18676b78f2f1becb879e46",
+    "bytes": 2643603
+  },
+  "raw/checkpoint-252b54563/candidate-f54a0bc3f-diagnostic-screen.json": {
+    "sha256": "0f2b2ef69b61cc32269b2c15d2e0cad4f10ce5fdf2d6d5aad58dc22af635706c",
+    "bytes": 4021
+  },
+  "raw/checkpoint-252b54563/candidate-f54a0bc3f-diagnostic-screen.tar.gz": {
+    "sha256": "06c833f0c15c5cacda14e371009e6caff0ea87c1d64de75096d32065cf2be323",
+    "bytes": 1736752
+  },
+  "raw/checkpoint-252b54563/closeout.md": {
+    "sha256": "2572fbe7f178dc96587e062d763bb6b22cdcf0b1dc661111a633d3e13b92e4b3",
+    "bytes": 4397
+  },
+  "raw/checkpoint-252b54563/locally-retained-traces.json": {
+    "sha256": "1edf4a9a71dbfc3b4356e20e794a8eef3f8599903b49001a25434e8d8f805698",
+    "bytes": 2629
+  },
+  "raw/checkpoint-252b54563/native-786feaa6a-activated.tar.gz": {
+    "sha256": "85364ad7b868e1ec0ce91972f8402b1bc53c77f207f1ea3ed54b6af83becd0a0",
+    "bytes": 993425
+  },
+  "raw/checkpoint-252b54563/native-786feaa6a-engine.tar.gz": {
+    "sha256": "0478337cbf37e96affacfb53e6050dd7ab8f4fb740f80f658c113a3620248821",
+    "bytes": 54406
+  },
+  "raw/checkpoint-252b54563/native-786feaa6a-plan-check-exact.tar.gz": {
+    "sha256": "08e3eba4c9e043f2856e9c0f7058e520fec4b7f8ea207c5ad02194ab290cfbc9",
+    "bytes": 111616
+  },
+  "raw/checkpoint-252b54563/native-786feaa6a-unit.tar.gz": {
+    "sha256": "318ef8d097835db5b8bf57795dd731f1d64a37ad40279ac66dd7122c7f6da807",
+    "bytes": 34405
+  },
+  "raw/checkpoint-252b54563/native-c5412f50a-1024-fixtures.tar.gz": {
+    "sha256": "f764d17023f4df644eca87ab729f3467290d8ebaf6a7721699dab3e4e3c3f721",
+    "bytes": 42857
+  },
+  "raw/checkpoint-252b54563/native-c5412f50a-1024-writer.tar.gz": {
+    "sha256": "75bc044cf45dededc65a4b2e659a84f4ef859bdbebdccd8a6d7c77d975c87e13",
+    "bytes": 1304276
+  },
+  "raw/checkpoint-252b54563/native-c5412f50a-activated-retry.tar.gz": {
+    "sha256": "df7eff1b0f530c974aade6d35a534c38fa642418d44c961378248e3891791eec",
+    "bytes": 110405
+  },
+  "raw/checkpoint-252b54563/native-c5412f50a-activated.tar.gz": {
+    "sha256": "6c9e15f55ee1a7d6843720ce1d94ca3bad2429bf67aa49706a1765278151112f",
+    "bytes": 80
+  },
+  "raw/checkpoint-252b54563/native-c5412f50a-engine.tar.gz": {
+    "sha256": "855fb7033736663c7aa925107e9506178d7231fc62d85f4cee8b56b6c3d9cd16",
+    "bytes": 49599
+  },
+  "raw/checkpoint-252b54563/native-c5412f50a-pipeline-batch1.tar.gz": {
+    "sha256": "a2a12954e5531765f76612af26212e026eb664c4c2e1fb0abe5dcb550f6b45a4",
+    "bytes": 29566
+  },
+  "raw/checkpoint-252b54563/native-c5412f50a-unit.tar.gz": {
+    "sha256": "90ecf14f185d98aba68aaa9dc5e3af7ac33cd657c85172feec0594260b44eff4",
+    "bytes": 33081
+  },
+  "raw/checkpoint-252b54563/native-f54a0bc3f-unit.tar.gz": {
+    "sha256": "f4578bde9b98a3a506b2421e821ba94550ec207e313e7251e85ef3c4cfe42199",
+    "bytes": 30497
+  },
+  "raw/checkpoint-252b54563/persistent-786feaa6a-failure-lifetime.tar.gz": {
+    "sha256": "1f4921011858671d8ed767e16be43c45489cc528a2075b627122a9882ed8e729",
+    "bytes": 7068
+  },
+  "raw/checkpoint-252b54563/reservation.tar.gz": {
+    "sha256": "2aa202b2bd85896c5d380c9735e934aa9f857eb09b68c862ea1479e26b074e6b",
+    "bytes": 14069
+  },
+  "raw/checkpoint-252b54563/short-wave.md": {
+    "sha256": "d5de45471993b8f67f35894ef22e687c6b7355c1bcabf365688f901ced123e5a",
+    "bytes": 2521
+  },
   "raw/native-build/config.h": {
     "sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
     "bytes": 1273
@@ -220,8 +696,8 @@
     "bytes": 4526
   },
   "report.md": {
-    "sha256": "bc1f0daa9f83c25804c821222ebf7680ce8e9cc91fb6ea09146e9f01db6271b9",
-    "bytes": 6956
+    "sha256": "648cc47c96ec4b7dc41ea134ab0871fd32448e0489a1877dca376299e9b9f994",
+    "bytes": 7246
   },
   "tools/benchmark_gpu_offload.py": {
     "sha256": "dbd2a2c9db6d0c8f1f12b4d4856b830ec5778277d54c1827dfe283a9688d9827",
@@ -238,6 +714,42 @@
   "tools/checkpoint-1809113de/verify_gpu_offload.py": {
     "sha256": "e3ad81a565f7efb28b7ca1978a44a95ec2411ce0d255f38e427bf547e6d8a2cd",
     "bytes": 5292
+  },
+  "tools/checkpoint-252b54563/786feaa6a-analyze_gpu_offload_diagnostics.py": {
+    "sha256": "73fe81bb9809a4784a1fd0d3e80edec5fb2f466ae7ae8e4892f96801c476209a",
+    "bytes": 6541
+  },
+  "tools/checkpoint-252b54563/786feaa6a-check_persistent_failure.py": {
+    "sha256": "f530961d57bd553521913b086b6e51c571005e76c48c9ee92806ac5cb93c983e",
+    "bytes": 4103
+  },
+  "tools/checkpoint-252b54563/786feaa6a-monitor_gpu_offload.py": {
+    "sha256": "9e284730c8a816a391fb6d7c7e841ef5d34206d9769dc41b179ff72094c1229b",
+    "bytes": 8085
+  },
+  "tools/checkpoint-252b54563/786feaa6a-run_tests.py": {
+    "sha256": "44082067422ce033031ffa9e43da6e95c44d1abf5fb642a5e0589d2d2213cf02",
+    "bytes": 32667
+  },
+  "tools/checkpoint-252b54563/786feaa6a-verify_gpu_offload.py": {
+    "sha256": "e3ad81a565f7efb28b7ca1978a44a95ec2411ce0d255f38e427bf547e6d8a2cd",
+    "bytes": 5292
+  },
+  "tools/checkpoint-252b54563/cpu_partition_nine.py": {
+    "sha256": "15ec0fe64feb8c9ecd4db9c8e3bcccde47261a3b025d79a71332315b35654e9c",
+    "bytes": 3307
+  },
+  "tools/checkpoint-252b54563/edc01fc33-benchmark_gpu_offload.py": {
+    "sha256": "3faa61249845f8f5f24379f735f02a07d7089bd9af0bde8b6028f73ecb058401",
+    "bytes": 18012
+  },
+  "tools/checkpoint-252b54563/edc01fc33-gpu_offload_analysis.py": {
+    "sha256": "9520e7507f7dac673567341a1e365e4348955f5f980690cb9aa72887ff37aa54",
+    "bytes": 16177
+  },
+  "tools/checkpoint-252b54563/edc01fc33-test_gpu_offload_analysis.py": {
+    "sha256": "5d32af198c23a71abb521fd54e5f2f90a4000f73993310b342fd110e99b9c9d2",
+    "bytes": 13768
   },
   "tools/gpu_offload_analysis.py": {
     "sha256": "17ea359e23f1ce2fd53e944e0844ebb297306ecd2e1168fb9231eb3b93c3954a",

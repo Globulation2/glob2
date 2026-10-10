@@ -1,0 +1,18 @@
+{
+  "head": "786feaa6a3c19b6a54127959fa4aca564380532c",
+  "tree": "9fcd6f27d3960cfc52cd80f44dc454d3180acb3f",
+  "status": "",
+  "native_source_equivalent_root": "24c97ea03159fa7f05ef2ec1c5abe71205fdf9a8",
+  "full_source_equivalent_root": "252b54563aacc604cb2f10469f361f8665fbb821",
+  "purpose": "native proof and diagnostic rendered/plan-check work; not qualification",
+  "flags": {
+    "release": 1,
+    "server": 0,
+    "jobs": 8
+  },
+  "dependencies": {
+    "SDL3_PREFIX": "/home/bradley/glob2-claude/build/sdl3/prefix",
+    "RECORDING_PREFIX": "/home/bradley/glob2-claude/build/linux/client/release/recording/prefix"
+  },
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0"
+}

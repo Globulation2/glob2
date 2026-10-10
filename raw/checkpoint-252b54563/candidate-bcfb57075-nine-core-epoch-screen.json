@@ -1,0 +1,192 @@
+{
+  "control": "candidate-cpu",
+  "variants": [
+    {
+      "id": "candidate-cpu",
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/bcfb57075/glob2",
+      "sha256": "d4e79215e0dc4814ffb7822a5aafac0aeb7a96c3f9933865415080458b0b8d21",
+      "source_revision": "bcfb570758e0b4ad7b8756ee63639e592ab56691",
+      "build_flags": "release=1 server=0",
+      "compute_threads": 8,
+      "cpu_affinity": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "env": {
+        "GLOB2_BENCHMARK_DIAGNOSTICS": "0",
+        "GLOB2_GRADIENT_DIAGNOSTICS": "0",
+        "GLOB2_GRADIENT_ACCOUNTING": "0",
+        "GLOB2_GRADIENT_TUNING": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_OPENCL_UNIFORM_METADATA": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_GRADIENT_WORKER_NOOP": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+        "GLOB2_GRADIENT_PLAN": "frozen8",
+        "GLOB2_GRADIENT_BACKEND": "cpu"
+      }
+    },
+    {
+      "id": "candidate-gpu-control",
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/bcfb57075/glob2",
+      "sha256": "d4e79215e0dc4814ffb7822a5aafac0aeb7a96c3f9933865415080458b0b8d21",
+      "source_revision": "bcfb570758e0b4ad7b8756ee63639e592ab56691",
+      "build_flags": "release=1 server=0",
+      "compute_threads": 8,
+      "cpu_affinity": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "env": {
+        "GLOB2_BENCHMARK_DIAGNOSTICS": "0",
+        "GLOB2_GRADIENT_DIAGNOSTICS": "0",
+        "GLOB2_GRADIENT_ACCOUNTING": "0",
+        "GLOB2_GRADIENT_TUNING": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_OPENCL_UNIFORM_METADATA": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_GRADIENT_WORKER_NOOP": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+        "GLOB2_GRADIENT_PLAN": "frozen8",
+        "GLOB2_GRADIENT_BACKEND": "opencl"
+      },
+      "require_gpu": true
+    },
+    {
+      "id": "candidate-gpu-epoch",
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/bcfb57075/glob2",
+      "sha256": "d4e79215e0dc4814ffb7822a5aafac0aeb7a96c3f9933865415080458b0b8d21",
+      "source_revision": "bcfb570758e0b4ad7b8756ee63639e592ab56691",
+      "build_flags": "release=1 server=0",
+      "compute_threads": 8,
+      "cpu_affinity": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "env": {
+        "GLOB2_BENCHMARK_DIAGNOSTICS": "0",
+        "GLOB2_GRADIENT_DIAGNOSTICS": "0",
+        "GLOB2_GRADIENT_ACCOUNTING": "0",
+        "GLOB2_GRADIENT_TUNING": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_OPENCL_UNIFORM_METADATA": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "1",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_GRADIENT_WORKER_NOOP": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_CHECK_INTERVAL": "8",
+        "GLOB2_GRADIENT_PLAN": "frozen8",
+        "GLOB2_GRADIENT_BACKEND": "opencl"
+      },
+      "require_gpu": true
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "512-open-early",
+      "args": [
+        "--load-game",
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz",
+        "--ticks",
+        "8192"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/fixtures/512-open/initial.game.gz": "397bec44126f4611773829fd9093bf8d66bbf1b0c7410c9302baf5945ee522f7"
+      },
+      "phase": "early",
+      "group": "open-512",
+      "map_id": "open-512-91001"
+    }
+  ],
+  "warmup_ticks": 1024,
+  "gpu_uuid": "GPU-289a3035-0b2c-d273-67db-ccc36b6ca73b",
+  "reservation": {
+    "group": "/sys/fs/cgroup/codex-gpu1045-benchmark",
+    "cpus": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "memory_nodes": [
+      0
+    ]
+  },
+  "reservation_receipts": {
+    "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/cpu_partition_nine.py": "15ec0fe64feb8c9ecd4db9c8e3bcccde47261a3b025d79a71332315b35654e9c",
+    "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/reservation/nine-core-setup.json": "e1654dc942211780d47b299f73cc6ea4f7ff127ba5e23aca5f0c70d61e4ac0d2",
+    "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/reservation/nine-core-topology.json": "a70543e540c226bf2fba0fa2453871d154613c00aecb37a0a944acac5d9d651c"
+  }
+}

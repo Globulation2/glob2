@@ -1,0 +1,48 @@
+{
+  "source_revision": "786feaa6a3c19b6a54127959fa4aca564380532c",
+  "source_tree": "9fcd6f27d3960cfc52cd80f44dc454d3180acb3f",
+  "integration_revision": "24c97ea03159fa7f05ef2ec1c5abe71205fdf9a8",
+  "full_source_equivalent_root": "252b54563aacc604cb2f10469f361f8665fbb821",
+  "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/786feaa6a/glob2",
+  "binary_sha256": "a5ac4907c951baa8d73c8c7d700d441f1feb9fc542b425b1ecda4cf78bf788fc",
+  "game_binary_sha256": "a5ac4907c951baa8d73c8c7d700d441f1feb9fc542b425b1ecda4cf78bf788fc",
+  "game_source_revision": "786feaa6a3c19b6a54127959fa4aca564380532c",
+  "test_binaries": {
+    "glob2-unit-tests": {
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/786feaa6a/glob2-unit-tests",
+      "sha256": "d190db05eaaa25175e706981eb0ecf01e00c0543990fd9d7661cff63d19e7f65",
+      "source_revision": "786feaa6a3c19b6a54127959fa4aca564380532c"
+    },
+    "glob2-engine-tests": {
+      "binary": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/786feaa6a/glob2-engine-tests",
+      "sha256": "421101db951faffe62178dcaa670a2490b17b3fb9cd63d9ca8173427309bdda8",
+      "source_revision": "786feaa6a3c19b6a54127959fa4aca564380532c"
+    }
+  },
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "build_command": "GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-claude/build/linux/client/release/recording/prefix scons -j8 release=1 server=0 build/linux/client/release/src/glob2 unit-tests engine-tests",
+  "dependency_hashes": {
+    "/home/bradley/glob2-claude/build/sdl3/prefix/sdl3-manifest.json": "2cf93c4fba91bfc777e0ac4bb5b2bf7625fbb8095a0738f067acea8891ae8429",
+    "/home/bradley/glob2-claude/build/linux/client/release/recording/prefix/recording-manifest.json": "21821792ddc3149201812488ea896a00f89a3ea589f3175530dbae3d3f44458b",
+    "build/linux/client/release/identity.json": "bbccb84f4747da693f792941970a2a0b2128492f39a38974a634a31454d5c152",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0.4.16": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so.0": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3.so": "853f3495eb257384a63f8fa447a6d64481a0daa14dcd3357b259a89ddb3f2b08",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0.4.6": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so.0": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_image.so": "c79016a7881358fdb8fa8b609273615f6f589a961e00b93a22107a4ebf3d846f",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so.0": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_ttf.so": "f9c2472c3f1cec814e64ca1f14e0eec4a62f52883bdc2b6b31bae42df2ee84af",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0.2.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so.0": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260",
+    "/home/bradley/glob2-claude/build/sdl3/prefix/lib/libSDL3_net.so": "1d148844b7d4e6cc84dab41fee3f0d7d58663453fd714497a84028f64dd31260"
+  },
+  "config_sha256": "b994a719af18ae3f5c9211893a4f11c4960d900599185df22579ee2143ad20fc",
+  "build_log_sha256": "0d4ad14bc71fe17ee9e482535ed4010d3d4055a7c2d50546a50f9d8e9be375a0",
+  "build_exit_code": 0,
+  "compile_commands": 723,
+  "compiler_errors": 0,
+  "utc": "2026-10-10T20:11:00.503563+00:00",
+  "note": "All three binaries linked at immutable786 source. Native and actual-device proof pending; no qualification claim."
+}

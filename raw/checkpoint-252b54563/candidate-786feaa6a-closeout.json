@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "accepted_development_closeout": true,
+  "original_qualification_passed": false,
+  "qualifying_evidence": false,
+  "new_experiments_stopped": true,
+  "active_sample": null,
+  "cpu_partition_removed": true,
+  "tested_implementation_revision": "252b54563aacc604cb2f10469f361f8665fbb821",
+  "native_evidence_revision": "786feaa6a3c19b6a54127959fa4aca564380532c",
+  "analysis_revision": "edc01fc333ad2741314519fc2763242b6ac1e308",
+  "game_binary_sha256": "a5ac4907c951baa8d73c8c7d700d441f1feb9fc542b425b1ecda4cf78bf788fc",
+  "retained_gpu_development_configuration": {
+    "backend": "opencl",
+    "plan": "frozen8",
+    "check_interval": 8,
+    "poll_us": 0,
+    "batch": 1,
+    "active_epoch": 1,
+    "parity_bound": 0,
+    "worker_noop": 0,
+    "direct_seed_upload": 0,
+    "api_cpu": 0,
+    "uniform_metadata": 0,
+    "automatic_tuning": 0
+  },
+  "default_automatic_promotion": "No promotion; no qualifying automatic evidence established. Experimental overrides remain explicit.",
+  "historical_cpu_improvement": {
+    "frozen_cpu_reserved_screen": 0.242,
+    "same_source_epoch_screen": 0.255,
+    "scope": "Five-pair development screens on one retained 512 map. Not sealed broad confirmation."
+  },
+  "remaining_tail_limit": "The five-pair epoch screen has approximately16% tick-p99 increase; original guard did not pass. New short configurations do not establish a better retained default.",
+  "short_wave": [
+    {
+      "plan": "frozen8",
+      "check_interval": 1,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen8-check1-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.7941971880021633,
+      "wall_ratio": 1.0396173101455655,
+      "tick_p99_ratio": 1.1607722643360274
+    },
+    {
+      "plan": "frozen8",
+      "check_interval": 8,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen8-check8-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.7808596433681345,
+      "wall_ratio": 1.023942382475987,
+      "tick_p99_ratio": 1.088158263594067
+    },
+    {
+      "plan": "frozen8",
+      "check_interval": 32,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen8-check32-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.7710997836081767,
+      "wall_ratio": 1.0498315969143004,
+      "tick_p99_ratio": 1.2566794626998796
+    },
+    {
+      "plan": "frozen16",
+      "check_interval": 1,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen16-check1-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.7879445700325577,
+      "wall_ratio": 1.062488527455578,
+      "tick_p99_ratio": 1.1534663004119028
+    },
+    {
+      "plan": "frozen16",
+      "check_interval": 8,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen16-check8-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.7670994313222322,
+      "wall_ratio": 1.03087524868324,
+      "tick_p99_ratio": 1.0592354348381667
+    },
+    {
+      "plan": "frozen16",
+      "check_interval": 32,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-frozen16-check32-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.767383495896877,
+      "wall_ratio": 1.043613958163464,
+      "tick_p99_ratio": 1.3307035591129022
+    },
+    {
+      "plan": "jacobi4",
+      "check_interval": 1,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-jacobi4-check1-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.852982842025428,
+      "wall_ratio": 1.1354549112923993,
+      "tick_p99_ratio": 1.1015415225377345
+    },
+    {
+      "plan": "jacobi4",
+      "check_interval": 8,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-jacobi4-check8-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.8037660426545917,
+      "wall_ratio": 1.0802533338587788,
+      "tick_p99_ratio": 1.1625468037607916
+    },
+    {
+      "plan": "jacobi4",
+      "check_interval": 32,
+      "output": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-786feaa6a-plan-check-jacobi4-check32-diagnose",
+      "qualifying_evidence": false,
+      "stage": "diagnose",
+      "cpu_ratio": 0.8053492676901479,
+      "wall_ratio": 1.0662486343804118,
+      "tick_p99_ratio": 1.0714241022266389
+    }
+  ],
+  "short_wave_limit": "Two retained pairs per configuration; early512 only, geometric scenario ratios, no qualification.",
+  "rendered_limit": "Exact warm process windows and real renderer identity were established. Default llvmpipe pair CPU ratio0.996; NVIDIA pair ratio0.673 has unresolved terrain/pacing confound. Neither is accepted CPU-saving proof.",
+  "retained_memory_limit": "Counters remain partial; complete64MiB retained-host bound was not proved.",
+  "raw_failures_preserved": [
+    "candidate-786feaa6a-render-warm-role-preflight/cpu-x11",
+    "native-c5412f50a-unit",
+    "native-c5412f50a-activated"
+  ],
+  "builds_and_followup_confirmation_launched": false
+}

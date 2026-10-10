@@ -1,0 +1,176 @@
+{
+  "source_revision": "c5412f50a8f55e11690d02e889731bdc694087ba",
+  "game_revision": "93f76f134de21a40842f599535396723d5e57d7b",
+  "native_production_equivalent": true,
+  "default_native_qualified": false,
+  "timing_eligible": false,
+  "proofs": [
+    {
+      "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-c5412f50a-unit",
+      "cases": 105,
+      "inventory_assigned": 105,
+      "failures": [
+        "GradientPipeline/required GPU envelopes are opt-in enclosing diagnostics and release probe storage",
+        "GradientPipeline/invalid CPU clocks preserve exact execution without fabricated automatic credits"
+      ],
+      "skipped": 0,
+      "junit_sha256": "bb0bdf4ff62d49aa57c1e3e37fb0ef8273c7455626bdf9a065a0a3584ac72d67"
+    },
+    {
+      "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-c5412f50a-pipeline-batch1",
+      "cases": 24,
+      "inventory_assigned": 24,
+      "failures": [],
+      "skipped": 0,
+      "junit_sha256": "bcc7ccc1e5a3eac654a1cc5aaf92b20ec2cd188033f57d113117c32840a54340"
+    },
+    {
+      "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-c5412f50a-engine",
+      "cases": 100,
+      "inventory_assigned": 100,
+      "failures": [],
+      "skipped": 0,
+      "junit_sha256": "727448aa6107546a3baaba7634b33e2c5b59054ae6a12b36ec7dfe0e9be3da2f"
+    },
+    {
+      "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/native-c5412f50a-1024-fixtures",
+      "cases": 2,
+      "inventory_assigned": 2,
+      "failures": [],
+      "skipped": 0,
+      "junit_sha256": "fe16f99d4581fb5802b258e7dc995b36b5aa759710134427be45568471b9b8ce"
+    }
+  ],
+  "activated_gpu": [
+    {
+      "case": "direct-upload",
+      "expected_assertions": 1330,
+      "actual_successful_assertions": 1330,
+      "failed_assertions": 0,
+      "exit_code": 0,
+      "active_cases": [
+        "singleton direct seed uploads preserve exact arrays commands and mixed batch staging"
+      ],
+      "valid": true,
+      "command": [
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/c5412f50a/glob2-unit-tests",
+        "-r=xml",
+        "--no-breaks=true",
+        "--no-colors=true",
+        "-ts=OpenCLGradient",
+        "-tc=singleton direct seed uploads preserve exact arrays commands and mixed batch staging"
+      ],
+      "environment": {
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_API_CPU": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_OPENCL_DIRECT_SEED_UPLOAD": "1",
+        "GLOB2_GRADIENT_BATCH": "1"
+      },
+      "binary_sha256": "aec36ee8d3e22d540fe4f21df642cb14973e5e939da9dbd790ce44f3987adf7a"
+    },
+    {
+      "case": "observation-rollback",
+      "expected_assertions": 12,
+      "actual_successful_assertions": 12,
+      "failed_assertions": 0,
+      "exit_code": 0,
+      "active_cases": [
+        "isolated completed kernels remain observed when transactional output is declined"
+      ],
+      "valid": true,
+      "command": [
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/c5412f50a/glob2-unit-tests",
+        "-r=xml",
+        "--no-breaks=true",
+        "--no-colors=true",
+        "-ts=OpenCLGradient",
+        "-tc=isolated completed kernels remain observed when transactional output is declined"
+      ],
+      "environment": {
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_API_CPU": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_OPENCL_DIRECT_SEED_UPLOAD": "0",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_TEST_OPENCL_EXECUTION_OBSERVATION_ROLLBACK": "1"
+      },
+      "binary_sha256": "aec36ee8d3e22d540fe4f21df642cb14973e5e939da9dbd790ce44f3987adf7a"
+    },
+    {
+      "case": "direct-upload-rollback",
+      "expected_assertions": 18,
+      "actual_successful_assertions": 18,
+      "failed_assertions": 0,
+      "exit_code": 0,
+      "active_cases": [
+        "isolated direct seed upload rollback preserves originals after device work"
+      ],
+      "valid": true,
+      "command": [
+        "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidates/c5412f50a/glob2-unit-tests",
+        "-r=xml",
+        "--no-breaks=true",
+        "--no-colors=true",
+        "-ts=OpenCLGradient",
+        "-tc=isolated direct seed upload rollback preserves originals after device work"
+      ],
+      "environment": {
+        "GLOB2_OPENCL_DEVICE": "0",
+        "GLOB2_OPENCL_POLL_US": "0",
+        "GLOB2_OPENCL_PROFILE": "0",
+        "GLOB2_OPENCL_API_CPU": "0",
+        "GLOB2_OPENCL_ACTIVE_EPOCH": "0",
+        "GLOB2_OPENCL_PARITY_BOUND": "0",
+        "GLOB2_OPENCL_DIRECT_SEED_UPLOAD": "1",
+        "GLOB2_GRADIENT_BATCH": "1",
+        "GLOB2_TEST_OPENCL_DIRECT_UPLOAD_ROLLBACK": "1"
+      },
+      "binary_sha256": "aec36ee8d3e22d540fe4f21df642cb14973e5e939da9dbd790ce44f3987adf7a"
+    }
+  ],
+  "notes": [
+    "Unit105 initially has2testenvironment exceptions; pipeline22 passes with explicitbatch1. Nextfreeze includes properunsetrestoration. No clean-default105 claim.",
+    "Native1024writer1pass generated originalmixedAI unchanged and4Numbi/Castor boundedAI fixtures with serializationreloadproof.",
+    "512sixvariant12traces and1024fourfixture24CPU/GPU/epoch initial+ownsave512traces allpassed. OriginalmixedAI invalidwidebrush continuation unsupported and preserved.",
+    "No performance qualification. Observedllvmpipe is a realdesktop scenario; separateGLXquery reportsNVIDIA hardware availability."
+  ],
+  "exactness": {
+    "candidate-93f76f134-continuation": {
+      "rows": 12,
+      "all_valid_exact": true,
+      "metadata_sha256": "470eddbb207c50eb5e865edb87ef16a72c3ff28abb45a7d8b6cfddeb85759945",
+      "records_sha256": "6b32c30aaa75d2a0558b15adee2449002279a5e9b389c6c2d3e8fbaa01903c8c",
+      "scope": "initial and own-save continuation; fullworld/GCS exact hashes; untimed"
+    },
+    "candidate-93f76f134-1024-bounded-continuation": {
+      "rows": 24,
+      "all_valid_exact": true,
+      "metadata_sha256": "1b2d5f34f06becef4deba5daffa7479e4f0cf00b2fb675125d24caeb5e91d35e",
+      "records_sha256": "eb360e4f172cafb7a9a2f4a9dff90367ff8d919ebf5410517c70e52c2430edf2",
+      "scope": "initial and own-save continuation; fullworld/GCS exact hashes; untimed"
+    }
+  },
+  "normal_display_preflight": {
+    "directory": "/home/bradley/Documents/Codex/2026-10-10/can-you-look-at-pr-1045/work/evidence/artifacts/gpu-offload/candidate-93f76f134-render-preflight",
+    "trace_complete": true,
+    "variants": 3,
+    "ticks": 256,
+    "sidecar_sha256": "7491e47de87df31742a76b2bd532d5668047d2551e5541f1410cf8e9458485ac",
+    "scope": "actualdesktop OpenGLroute with llvmpipe workers; whole-session CPU only; graphicsidentity/warm measurements absent"
+  },
+  "explicit_x11_preflight": {
+    "path": "artifacts/gpu-offload/candidate-93f76f134-render-x11-preflight/summary.json",
+    "valid": true,
+    "whole_session_only": true,
+    "qualifying_evidence": false,
+    "per_tick_trace_identical": true,
+    "renderer_identity_requires_next_native_freeze": true
+  }
+}
