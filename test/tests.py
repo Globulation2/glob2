@@ -59,6 +59,7 @@ ENGINE_TESTS = [
     ('#src/map/ResourceGrowthTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/resource/ResourceRuntimeBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/BuildingGradientBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/map/gradient/GpuOffloadFixture.cpp',
     '#src/building/BuildingServicesTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     '#libgag/src/ScreenExecutionHarness.cpp',
