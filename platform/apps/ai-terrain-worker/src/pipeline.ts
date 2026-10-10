@@ -20,7 +20,13 @@ import {
   type SetPackage,
 } from '@glob2/protocol';
 import type { AgentBlobs } from '@glob2/engine/blobs';
-import { Attempts, ProviderUncertain, ProviderBudget, type TerrainProvider } from './provider.ts';
+import {
+  Attempts,
+  ProviderUncertain,
+  ProviderBudget,
+  ProviderRejected,
+  type TerrainProvider,
+} from './provider.ts';
 import { imagePrompt, processArtwork } from './artwork.ts';
 export interface Validator {
   validateSet(
@@ -319,7 +325,12 @@ export class Pipeline {
         });
         return;
       } catch (e) {
-        if (e instanceof ProviderUncertain || e instanceof ProviderBudget || signal.aborted)
+        if (
+          e instanceof ProviderUncertain ||
+          e instanceof ProviderBudget ||
+          e instanceof ProviderRejected ||
+          signal.aborted
+        )
           throw e;
         error = e instanceof Error ? e.message : 'Invalid generated pack';
       }
