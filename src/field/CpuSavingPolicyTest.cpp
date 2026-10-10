@@ -359,7 +359,9 @@ TEST_CASE("historical tuning debt at the cumulative cap cannot borrow fresh roll
     policy.cancelProbe(*ticket,20000000);
     policy.observeAccepted(key,Plan::CPU,1000000000,257);
     CHECK(policy.metrics().acceptedCpuNs==2000000000);
-    CHECK(policy.metrics().probeCpuNs==20000000);
+    // Settlement also pays its real mutex/statistics CPU; historical debt may
+    // exceed the requested work charge, never fall below it.
+    CHECK(policy.metrics().probeCpuNs>=20000000);
     CHECK_FALSE(nextProbe(policy,key,257));
     CHECK(policy.lookup(key).plan==Plan::CPU);
 }
