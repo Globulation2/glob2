@@ -1158,6 +1158,9 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
     using namespace gradient_kernel;using Json=nlohmann::json;
     if constexpr(!GAGCore::ThreadSupport::available)return;
     PipelineEnvironment enabled("GLOB2_GRADIENT_CROSS_DUE","1"),batch("GLOB2_GRADIENT_BATCH","8");
+    // Automatic work needs its accepted singleton policy and valid enclosing
+    // CPU accounting. The unaccepted batch2 profile must stay independently CPU.
+    PipelineEnvironment tuning("GLOB2_GRADIENT_TUNING","1");
     if(gradientNativeBuildIdentity().empty())return;
     const auto path=std::filesystem::temp_directory_path()/("glob2-ready-batch-"+std::to_string(monotonicNs())+".json");
     struct File {std::filesystem::path path;~File(){std::error_code error;std::filesystem::remove(path,error);}} file{path};
@@ -1196,12 +1199,33 @@ TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and 
         while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<until)std::this_thread::yield();
         REQUIRE(service->metrics().cadenceFloorNs==1000000000ull);
         ComputeExecutor executor;executor.configure(2);auto session=std::make_shared<BackendSession>();
+        WorkloadKey singleton{1,1,64,2,1,Family::Clear,16,0};
+        if(scenario==3) {
+            session->configureLearning(true);const auto policy=session->learningPolicy();
+            policy->observeAccepted(singleton,Plan::CPU,1000000000000ull,1);
+            REQUIRE(policy->qualify(singleton,plan,true));
+            for(unsigned pair=0;pair<256 && policy->lookup(singleton).plan==Plan::CPU;++pair) {
+                std::optional<CpuSavingPolicy::ProbeTicket> ticket;
+                for(unsigned attempt=0;attempt<CpuSavingPolicy::ProbePeriod && !ticket;++attempt)
+                    ticket=policy->beginAcceptedCapture(singleton,plan,1,1000000,100000000,1000000,false,0,session->currentGeneration(),true);
+                REQUIRE(bool(ticket));
+                REQUIRE(policy->bindAcceptedReference(*ticket,session->currentGeneration(),1000000,true,true));
+                REQUIRE(bool(policy->authorizeOptionalExecution(*ticket,session->currentGeneration(),1,100000000,false)));
+                policy->finishAcceptedCapture(*ticket,{100000,1000000,600000,100000000,true,true,true});
+            }
+            REQUIRE(policy->lookup(singleton).plan==plan);
+            auto unaccepted=singleton;unaccepted.batch=2;CHECK(policy->lookup(unaccepted).plan==Plan::CPU);
+        }
         auto costOwner=std::make_shared<int>(0);
         std::array<std::shared_ptr<OwnedGradientField>,3> fields;
         struct Context {std::shared_ptr<GradientDeviceService> service;std::shared_ptr<OwnedGradientField> field;ComputeExecutor* executor;};
         std::array<Context,3> contexts;std::array<ComputeExecutor::Batch,3> tickets;
+        struct Drain {ComputeExecutor& executor;std::array<ComputeExecutor::Batch,3>& tickets;std::shared_ptr<Gate> gate;
+            ~Drain(){gate->open();for(auto& ticket:tickets)try{executor.join(ticket);}catch(...){}}
+        } drain{executor,tickets,gate}; // Borrowed hook/context storage survives assertion unwind.
         for(unsigned i=0;i<fields.size();++i) {
             auto field=std::make_shared<OwnedGradientField>();field->session=session;field->decision={plan,0,session->currentGeneration()};
+            if(scenario==3)field->decision.version=session->learningPolicy()->lookup(singleton).version;
             field->preparationCpuClockValid=true; // Fixture has a known zero-cost preparer.
             field->data=std::make_unique<std::uint16_t[]>(1);field->data[0]=77;field->grid={1,1};
             field->identity={costOwner,7,42,true};field->limit=65534;field->family=Family::Clear;field->due=10+i;field->publicationTick=20+i;
