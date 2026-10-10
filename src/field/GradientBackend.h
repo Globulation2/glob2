@@ -71,6 +71,10 @@ struct OpenCLProbeInput
     EntrySteps (*costAt)(void*,std::size_t);
     CostIdentity identity;
     Operation operation=Operation::CompleteField;
+    // Owned accepted capture only: CPU/host/device reservations and immutable
+    // cost context already exist. Permits private cost preparation, never
+    // device/compiler initialization or publication into the required cache.
+    bool capturedPrivateCosts=false;
 };
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});

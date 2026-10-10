@@ -39,7 +39,7 @@ struct Driver {
         std::shared_ptr<const void> owner,const void* value) {
         auto& driver=*const_cast<Driver*>(static_cast<const Driver*>(value));
         CHECK(std::equal(driver.original.begin(),driver.original.end(),input.gradient));
-        CHECK(input.identity.allCells);CHECK(input.identity.retainedBytes>0);
+        CHECK(input.identity.allCells);CHECK(input.identity.retainedBytes>0);CHECK(input.capturedPrivateCosts);
         for(std::size_t cell=0;cell<input.grid.cells();++cell) {
             const auto steps=input.costAt(input.context,cell);CHECK(steps.cardinal>0);++driver.costCalls;
         }

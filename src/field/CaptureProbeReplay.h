@@ -231,6 +231,7 @@ public:
             OpenCLProbeInput input{record.original().data(),record.maxCost(),
                 field::Grid(int(record.key().width),int(record.key().height)),payload->session,
                 payload.get(),&State::cost,std::move(identity)};
+            input.capturedPrivateCosts=true;
             if(payload->hooks.begin)result->probe=payload->hooks.begin(input,authorization->plan,payload,payload->hooks.owner.get());
             else if(auto native=beginOpenCLProbe(input,authorization->plan,payload))
                 result->probe=std::make_unique<NativeProbe>(std::move(native));
