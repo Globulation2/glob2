@@ -380,49 +380,68 @@ struct Device
     Handle kernel = nullptr;
     struct Plane
     {
+        // This lease precedes every retained owner, allocation and future state.
+        BudgetLease hostLease{hostBudget};
         API* api;
         Handle buffer = nullptr;
         struct Storage {
+            BudgetLease hostLease{hostBudget};
             API* api;
             Handle buffer=nullptr;
             BudgetLease deviceLease;
-            Storage(API& api,MemoryBudget& budget):api(&api),deviceLease(budget) {}
+            Storage(API& api,MemoryBudget& budget,BudgetLease& admission):api(&api),deviceLease(budget) {
+                admission.transferTo(hostLease);
+            }
+            static constexpr std::size_t fixedBytes(){return sizeof(Storage)+128;}
+            static std::shared_ptr<Storage> create(API& api,MemoryBudget& budget) {
+                BudgetLease reserved{hostBudget};reserved.resize(fixedBytes());
+                return std::make_shared<Storage>(api,budget,reserved);
+            }
             ~Storage(){if(buffer)api->ReleaseMemObject(buffer);}
         };
         std::shared_ptr<Storage> storage;
         CostIdentity identity;
         int width, height;
-        BudgetLease hostLease{hostBudget};
         std::vector<UInt> data;
         bool uniform = true;
         std::vector<std::uint8_t> blocked;
+        // A fixed preallocated failure cannot retain an arbitrary callback's
+        // exception graph in a published promise or quarantined cost plane.
+        std::exception_ptr preparationFailure=std::make_exception_ptr(std::runtime_error("OpenCL cost preparation failed"));
         std::promise<void> completed;
         std::shared_future<void> ready = completed.get_future().share();
         std::atomic<bool> published{false};
+        static constexpr std::size_t fixedBytes(){return sizeof(Plane)+1024;}
+        static std::size_t estimatedBytes(std::size_t count,std::size_t mask,std::size_t retained) {
+            if(mask>OpenCLHostBudget-fixedBytes() || retained>OpenCLHostBudget-fixedBytes()-mask ||
+                count>(OpenCLHostBudget-fixedBytes()-mask-retained)/sizeof(UInt))throw BudgetExceeded();
+            return fixedBytes()+count*sizeof(UInt)+mask+retained;
+        }
         template<class Request>
-        Plane(API& api, const Request& r, std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false)
-            : api(&api), identity(r.identity), width(r.grid.width()), height(r.grid.height()) {
+        static std::shared_ptr<Plane> create(API& api,const Request& request,
+            std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false) {
+            BudgetLease reserved{hostBudget};
+            reserved.resize(estimatedBytes(scalar ? 1 : request.grid.cells(),mask.size(),
+                request.identity.owner ? request.identity.retainedBytes : 0));
+            return std::make_shared<Plane>(api,request,mask,scalar,reserveOnly,reserved);
+        }
+        template<class Request>
+        Plane(API& api,const Request& r,std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly,
+            BudgetLease& admission):api(&api),identity(r.identity),width(r.grid.width()),height(r.grid.height()) {
+            admission.transferTo(hostLease);
             const auto count=scalar ? std::size_t(1) : r.grid.cells();
-            if(count>OpenCLHostBudget/sizeof(UInt)) throw BudgetExceeded();
-            const auto payload=count*sizeof(UInt)+mask.size()+sizeof(*this);
-            const auto retained=r.identity.owner ? r.identity.retainedBytes : 0;
-            if(payload>OpenCLHostBudget || retained>OpenCLHostBudget-payload) throw BudgetExceeded();
-            hostLease.resize(payload+retained);
-            if(reserveOnly) data.reserve(count);else data.resize(count);
+            if(reserveOnly)data.reserve(count);else data.resize(count);
             blocked.assign(mask.begin(),mask.end());
-            if(reserveOnly) hostLease.resize(sizeof(*this)+data.capacity()*sizeof(UInt)+blocked.capacity()+retained);
+            hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),identity.owner ? identity.retainedBytes : 0));
         }
         void compactUniform() {
-            if(data.size()==1) return;
+            if(data.size()==1)return;
             const auto previous=hostLease.bytes;
             hostLease.resize(previous+sizeof(UInt));
-            try {
-                {std::vector<UInt> scalar(1,data[0]);data.swap(scalar);}
-            } catch(...) {hostLease.resize(previous);throw;}
-            hostLease.resize(sizeof(*this)+data.capacity()*sizeof(UInt)+blocked.capacity()
-                +(identity.owner ? identity.retainedBytes : 0));
+            try {{std::vector<UInt> scalar(1,data[0]);data.swap(scalar);}}
+            catch(...){hostLease.resize(previous);throw;}
+            hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),identity.owner ? identity.retainedBytes : 0));
         }
-
     };
     std::array<std::shared_ptr<Plane>, 8> planes;
     std::array<std::uint64_t, 8> used{};
@@ -432,7 +451,7 @@ struct Device
     OpenCLStatus retired;
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
-    std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0};
+    std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0},laneBudgetDeclines{0};
     std::atomic<std::uint64_t> optionalQuarantines{0},requiredQuarantines{0},requiredProofFailures{0};
     std::atomic<bool> threadCPUAvailable{false};
     void reapExpiredLanes() noexcept {std::lock_guard lock(lanesMutex);lanes.clearExpired();}
@@ -487,6 +506,7 @@ struct Device
                 UInt found = 0;
                 if (api.GetDeviceIDs(platform, 4 /* GPU */, 0, nullptr, &found) != 0)
                     continue;
+                if(!found)continue;
                 if(found>64)throw std::runtime_error("OpenCL device count exceeds bounded metadata");
                 std::array<Handle,64> devices{};
                 check(api.GetDeviceIDs(platform, 4, found, devices.data(), nullptr));
@@ -803,6 +823,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(l->statusSequence>=last) {parameters(out,l->status);last=l->statusSequence;}
         }
         out.available=out.available&&!shared->failed.load();
+        out.budgetDeclines+=shared->laneBudgetDeclines.load();
         out.optionalQuarantines=shared->optionalQuarantines.load();
         out.optionalQuarantinePending=shared->optionalLifetime.quarantined();
         out.requiredQuarantines=shared->requiredQuarantines.load();
@@ -949,8 +970,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         }
         candidates.fill({});
         std::shared_ptr<Device::Plane> p;
-        try {p=std::make_shared<Device::Plane>(api,r,blocked,knownUniform);}
-        catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p=std::make_shared<Device::Plane>(api,r,blocked,knownUniform);}
+        try {p=Device::Plane::create(api,r,blocked,knownUniform);}
+        catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p=Device::Plane::create(api,r,blocked,knownUniform);}
         bool reserved=false;
         if(r.identity.owner) {
             // Mask comparison is outside the lock; pointer equality detects a
@@ -993,7 +1014,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 return p;
             }
             candidates.fill({});
-            p->storage=std::make_shared<Device::Plane::Storage>(api,shared->deviceBudget);
+            p->storage=Device::Plane::Storage::create(api,shared->deviceBudget);
             const auto bytes=p->data.size()*sizeof(UInt);
             try {p->storage->deviceLease.resize(bytes);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p->storage->deviceLease.resize(bytes);}
@@ -1008,7 +1029,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             }
             return p;
         } catch(...) {
-            try {p->completed.set_exception(std::current_exception());} catch(...) {}
+            try {p->completed.set_exception(p->preparationFailure);} catch(...) {}
             {std::lock_guard lock(shared->cacheMutex);for(auto& cached:shared->planes) if(cached==p) cached.reset();}
             throw;
         }
@@ -1268,6 +1289,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         if(std::all_of(input.begin(),input.end(),alreadyFixed)) {shared->noopFields+=input.size();return true;}
         if(!execution) {
             try { return lane().batch(input,plan); }
+            catch(const BudgetExceeded&) {++shared->laneBudgetDeclines;return false;}
             catch(...) { shared->fail("Unable to allocate OpenCL execution lane"); readyPlans.store(0);
                 for(const auto& r:input) r.session.fail();
                 return false; }
@@ -1600,16 +1622,16 @@ struct OpenCLProbe::Impl
                 }
                 // A private proven scalar needs no callback scan or wait for a
                 // cache reservation being prepared by a different lane.
-                const auto payload=sizeof(Device::Plane)+sizeof(UInt);
+                const auto payload=Device::Plane::fixedBytes()+sizeof(UInt)+Device::Plane::Storage::fixedBytes();
                 if(request.identity.retainedBytes>OpenCLProbeBudget-objectBytes()-payload) throw BudgetExceeded();
                 const auto bytes=payload+request.identity.retainedBytes;
                 lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
-                costs=std::make_shared<Device::Plane>(api,request,std::span<const std::uint8_t>{},true);
+                costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},true);
                 costs->data[0]=packed;privateScalar=privateCosts=true;
                 measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
                 measured.coldCostPlane=lane->shared->status.probeColdCosts;
             }
-            costCharge=costs->hostLease.bytes;
+            costCharge=costs->hostLease.bytes+Device::Plane::Storage::fixedBytes();
             lane->optionalSubsetLease.resize(objectBytes()-256+costCharge);phase=Phase::Reserve;break;
         }
         case Phase::CostsReserve: {
@@ -1617,12 +1639,13 @@ struct OpenCLProbe::Impl
             // Required work uses its own lane/plane and never waits for this one.
             const auto retained=request.identity.retainedBytes;
             const auto available=OpenCLProbeBudget-objectBytes();
-            if(retained>available || sizeof(Device::Plane)>available-retained ||
-                n>(available-retained-sizeof(Device::Plane))/sizeof(UInt)) throw BudgetExceeded();
-            const auto bytes=sizeof(Device::Plane)+n*sizeof(UInt)+retained;
+            const auto fixed=Device::Plane::fixedBytes()+Device::Plane::Storage::fixedBytes();
+            if(retained>available || fixed>available-retained ||
+                n>(available-retained-fixed)/sizeof(UInt))throw BudgetExceeded();
+            const auto bytes=fixed+n*sizeof(UInt)+retained;
             lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
-            costs=std::make_shared<Device::Plane>(api,request,std::span<const std::uint8_t>{},false,true);
-            costCharge=costs->hostLease.bytes;
+            costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},false,true);
+            costCharge=costs->hostLease.bytes+Device::Plane::Storage::fixedBytes();
             lane->optionalSubsetLease.resize(objectBytes()-256+costCharge);
             measured.coldCostPlane=true;privateCosts=true;
             measured.costPreparedBytes=costs->data.capacity()*sizeof(UInt);
@@ -1710,7 +1733,7 @@ struct OpenCLProbe::Impl
             }
             lane->capacity=n;lane->tileCapacity=tileCount;
             if(privateCosts) {
-                costs->storage=std::make_shared<Device::Plane::Storage>(api,lane->shared->deviceBudget);
+                costs->storage=Device::Plane::Storage::create(api,lane->shared->deviceBudget);
                 const auto bytes=costs->data.size()*sizeof(UInt);
                 costs->storage->deviceLease.resize(bytes);
                 costs->buffer=costs->storage->buffer=api.CreateBuffer(lane->context,1,bytes,nullptr,&error);check(error);

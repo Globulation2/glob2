@@ -1315,6 +1315,7 @@ TEST_CASE("isolated cold optional costs are exact private bounded and cancelable
                     if(scenario==9)CHECK(probe->metrics().invalidCpuClocks>0);
                 } else if(scenario>=5 && scenario<=7){
                     REQUIRE(probe->advance(64)==OpenCLProbeProgress::Pending); // CostsReserve before any cost allocation.
+                    REQUIRE(probe->metrics().stage==OpenCLProbe::Stage::CostsReserve);
                     if(scenario==5){
                         const auto available=OpenCLProbeBudget-openCLProbeBytes();REQUIRE(reserveOpenCLProbeBytes(available));
                         CHECK(probe->advance(64)==OpenCLProbeProgress::Declined);releaseOpenCLProbeBytes(available);
@@ -1707,4 +1708,52 @@ TEST_CASE("worker initialization failure leaves CPU available without inline ret
         CHECK(policy.choose(Family::Generic,1,Backend::OpenCL).plan==Plan::CPU);
         policy.process();CHECK(attempts==1);
     });
+}
+
+TEST_CASE("isolated required host admission pressure preserves seeds and device readiness" * doctest::test_suite("OpenCLGradient"))
+{
+    using namespace gradient_kernel;
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_HOST_ADMISSION");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    REQUIRE(initializeOpenCL());
+    const auto plan=requestedOpenCLPlan();REQUIRE(plan!=Plan::CPU);
+    REQUIRE(bool(readyPlans.load()&(1u<<unsigned(plan))));
+    const field::Grid grid(8,8);
+    std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;
+    const auto expected=oracle(seeds,grid,std::vector<EntrySteps>(grid.cells(),LAND_STEPS),COST_LIMIT);
+    struct Costs {unsigned calls=0;};
+    auto costs=std::make_shared<Costs>();BackendSession session;
+    auto output=seeds;
+    BackendRequest request{output.data(),COST_LIMIT,grid,session,costs.get(),
+        [](void* p,std::size_t){++static_cast<Costs*>(p)->calls;return LAND_STEPS;},nullptr,
+        {costs,1,1,true,sizeof(Costs)+128},Family::Materials};
+    // A new worker lane itself must decline healthily under pressure.
+    const auto before=openCLStatus();REQUIRE(before.hostBytes<=OpenCLHostBudget);
+    {
+        const auto bytes=OpenCLHostBudget-before.hostBytes;
+        REQUIRE(reserveOpenCLHostBytes(bytes));
+        struct Release {std::size_t bytes;~Release(){releaseOpenCLHostBytes(bytes);}} release{bytes};
+        onWorker([&]{CHECK_FALSE(executeOpenCLDevice(std::span(&request,1),plan));});
+        CHECK(output==seeds);CHECK(costs->calls==0);CHECK_FALSE(session.failed.load());
+        CHECK(bool(readyPlans.load()&(1u<<unsigned(plan))));
+    }
+    // On one retained lane, a subsequent required admission must also decline
+    // before callbacks, leave originals intact and recover. The transaction
+    // reservation may reject before the cost-plane factory is reached.
+    onWorker([&]{
+        REQUIRE(executeOpenCLDevice(std::span(&request,1),plan));CHECK(output==expected);
+        auto fresh=std::make_shared<Costs>();request.context=fresh.get();request.identity={fresh,2,2,true,sizeof(Costs)+128};
+        output=seeds;request.gradient=output.data();
+        const auto host=openCLStatus().hostBytes;REQUIRE(host+128<=OpenCLHostBudget);
+        {
+            const auto bytes=OpenCLHostBudget-host-128;REQUIRE(reserveOpenCLHostBytes(bytes));
+            struct Release {std::size_t bytes;~Release(){releaseOpenCLHostBytes(bytes);}} release{bytes};
+            CHECK_FALSE(executeOpenCLDevice(std::span(&request,1),plan));
+            CHECK(output==seeds);CHECK(fresh->calls==0);CHECK_FALSE(session.failed.load());
+        }
+        REQUIRE(executeOpenCLDevice(std::span(&request,1),plan));CHECK(output==expected);
+        CHECK(fresh->calls>0);CHECK_FALSE(session.failed.load());
+    });
+    CHECK(openCLStatus().budgetDeclines>before.budgetDeclines);
+    CHECK(openCLStatus().hostBytes<=OpenCLHostBudget);
 }

@@ -676,3 +676,28 @@ admission; driver allocations are outside these application-owned byte limits.
 These lane and initialization bounds are independent of cost-plane, required
 input, session, and optional capture accounting, which must also satisfy their
 own lifetime reservations.
+
+### Cost-plane metadata storage
+
+Owned cost-plane admission reserves data and mask capacities, the declared
+complete retained input graph, and fixed Plane/control/promise/failure metadata
+before allocation. Buffer storage has its own preallocation credit, released
+only after buffer and shared control destruction. Optional cold/scalar preparation
+reserves these same fixed allowances in the 16 MiB subset before creation,
+including the future buffer-storage allowance. Shared storage is globally charged
+once; additional retained-owner/subset estimates are conservative duplicate
+charges rather than claims of uniquely allocated bytes.
+
+A fixed preallocated failure is published to the preparation future. It cannot
+retain an arbitrary callback's exception graph in cached or quarantined storage.
+Declared `retainedBytes` must cover the actual reachable immutable cost graph;
+the backend cannot determine the size of arbitrary caller-owned objects.
+
+The isolated `GLOB2_TEST_OPENCL_HOST_ADMISSION=1` case requires an initialized
+GPU and proves healthy required admission rejection, unchanged originals and
+subsequent exact recovery, both on a new lane and a retained lane. Its pressure
+may reject the required transaction before cost-plane creation. Existing
+`GLOB2_TEST_OPENCL_COLD_COSTS=1` cases with
+`GLOB2_OPENCL_PROBE_COLD_COSTS=1` separately reach `CostsReserve` before applying
+host/subset pressure and verify cancellation and complete lease release. Neither
+case supplies allocator-size or performance qualification by itself.
