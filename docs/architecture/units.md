@@ -114,10 +114,12 @@ inherit from a parent definition. A true policy cannot enable a missing work
 capability, and a building's `attractionUnits` selector cannot bypass a false
 policy for a new hire. Semantic attraction roles still govern existing jobs,
 building orders, routing and team-list memberships. Changing recruitment policy
-during setup does not revoke an existing valid assignment. `clearIdle` and `guardIdle` instead control autonomous seeking
+during setup does not revoke an existing valid assignment. `clearIdle` and
+`guardIdle` instead control autonomous seeking
 of painted clearing and guard areas; `exploreIdle` controls autonomous fog
 exploration. Recruitment overrides are optional in resolved snapshots, so
-pre-policy catalogs preserve their serialized bytes and identity. `countsForSurvival` determines whether a unit can keep its team alive;
+pre-policy catalogs preserve their serialized bytes and identity.
+`countsForSurvival` determines whether a unit can keep its team alive;
 workers and warriors enable it, while explorers retain their historical exclusion.
 `releaseClearingClaims` releases an idle clearing claim on conversion or direct
 destruction. New definitions enable this policy; the shipped definitions preserve
@@ -129,7 +131,12 @@ capabilities alone do not identify the current job of a hybrid unit.
 Production strategy in existing AIs still chooses the three built-ins. Labor,
 combat, recruitment and feeding calculations use capabilities and effective
 properties. Population aggregates avoid counting a hybrid as simultaneously
-performing multiple assignments. Feeding admission uses bounded deterministic
+performing multiple assignments. Idle defender reserves exclude units that
+refuse automatic defense recruitment; total combat counts and ongoing defense
+assignments retain their separate meanings. Sampling caches recruitment
+permission independently of qualification across every upgrade level, so a
+partially trained type can still contribute its currently eligible units.
+Feeding admission uses bounded deterministic
 capacity allocation rather than enumerating subsets of all types.
 Maxima retains its minimum attack-ability level as the unlearned army estimate,
 using configured speed, strength and reference armor at that level. Imported

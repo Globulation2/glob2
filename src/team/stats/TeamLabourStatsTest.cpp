@@ -12,6 +12,7 @@
 #include <memory>
 #include <numeric>
 #include <random>
+#include <nlohmann/json.hpp>
 
 namespace
 {
@@ -464,4 +465,101 @@ TEST_SUITE("TeamStatsSave")
 		const double scan = time(slotScan);
 		MESSAGE("place lookup: coverage mask " << ring << " ns/call, slot scan " << scan << " ns/call");
 	}
+
+    TEST_CASE("defender recruitment refusal excludes idle reserves while retaining combat and stock smoothing")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        auto& game=world.game;
+        auto* flag=world.addBuilding("warflag",16,16);
+        REQUIRE(flag);
+        world.team->addToStaticAbilitiesLists(flag);
+        flag->unitStayRange=6; flag->dirtyGradients();
+        std::array<Unit*,3> fighters{};
+        for(unsigned i=0;i<fighters.size();++i) {
+            fighters[i]=world.addUnit(WARRIOR,10+2*i,16); REQUIRE(fighters[i]);
+        }
+        flag->maxUnitWorking=flag->desiredMaxUnitWorking=1; flag->subscriptionWorkingTimer=32;
+        REQUIRE(flag->subscribeForFlagingStep());
+        Unit* assigned=nullptr; std::vector<Unit*> idle;
+        for(auto* unit:fighters) {
+            if(unit->attachedBuilding==flag) assigned=unit;
+            else idle.push_back(unit);
+        }
+        REQUIRE(assigned); REQUIRE(idle.size()==2);
+        REQUIRE(assigned->activity==Unit::ACT_FLAG); REQUIRE(assigned->jobPurpose==UnitJobPurpose::Defend);
+        auto sample=[&] { ++game.stepCounter; world.team->stats.step(world.team); };
+        auto sampleWindow=[&] { for(int i=0;i<TeamStats::STATS_SMOOTH_SIZE;++i) sample(); };
+        // Preserve the stock maximum over the sampling window: one idle unit
+        // becomes unavailable after the first sample, but the reserve stays two.
+        sample(); --idle[0]->hp; idle[0]->medical=Unit::MED_DAMAGED;
+        for(int i=1;i<TeamStats::STATS_SMOOTH_SIZE;++i) sample();
+        auto* stats=world.team->stats.getLatestStat();
+        CHECK(stats->meleeUnits==3); CHECK(stats->idleDefenders==2);
+        CHECK(stats->isFree[WARRIOR]==2);
+
+        auto definitions=nlohmann::json::parse(game.unitCatalog().serialize());
+        definitions["units"][WARRIOR]["behaviors"]["recruitDefend"]=false;
+        game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
+        REQUIRE_FALSE(assigned->runtimeTraits().recruits(2));
+        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->jobPurpose==UnitJobPurpose::Defend);
+        CHECK(assigned->activity==Unit::ACT_FLAG); CHECK(flag->unitsWorking.size()==1);
+        flag->maxUnitWorking=flag->desiredMaxUnitWorking=2; flag->subscriptionWorkingTimer=32;
+        CHECK_FALSE(flag->subscribeForFlagingStep());
+        sampleWindow(); stats=world.team->stats.getLatestStat();
+        // Physical fighters and historical free counters retain their meanings.
+        CHECK(stats->meleeUnits==3); CHECK(stats->isFree[WARRIOR]==1);
+        CHECK(stats->idleDefenders==0);
+        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->activity==Unit::ACT_FLAG);
+
+        definitions["units"][WARRIOR]["behaviors"]["recruitDefend"]=true;
+        game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
+        idle[0]->hp=idle[0]->performance[HP]; idle[0]->medical=Unit::MED_FREE;
+        sampleWindow(); stats=world.team->stats.getLatestStat();
+        CHECK(stats->meleeUnits==3); CHECK(stats->idleDefenders==2);
+        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->jobPurpose==UnitJobPurpose::Defend);
+        flag->subscriptionWorkingTimer=32; REQUIRE(flag->subscribeForFlagingStep());
+        CHECK(flag->unitsWorking.size()==2);
+        sampleWindow(); CHECK(world.team->stats.getLatestStat()->idleDefenders==1);
+    }
+
+    TEST_CASE("nonuniform combat levels retain per-unit defender recruitment eligibility")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        auto& game=world.game;
+        auto definitions=nlohmann::json::parse(game.unitCatalog().serialize());
+        for(bool allowed:{true,false}) {
+            auto definition=definitions["units"][WARRIOR];
+            definition["key"]=allowed ? "fixture:uneven-recruit" : "fixture:uneven-refuse";
+            definition["behaviors"]["recruitDefend"]=allowed;
+            definition["levels"][1]["performance"][ATTACK_SPEED]=0;
+            definitions["units"].push_back(definition);
+        }
+        game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
+        auto* recruit=world.addUnit(3,8,8); auto* refuse=world.addUnit(4,12,8);
+        auto* noClock=world.addUnit(3,16,8,0,1);
+        REQUIRE(recruit); REQUIRE(refuse); REQUIRE(noClock);
+        REQUIRE(recruit->performance[ATTACK_SPEED]>0); REQUIRE(refuse->performance[ATTACK_SPEED]>0);
+        REQUIRE(noClock->performance[ATTACK_SPEED]==0);
+        auto sampleWindow=[&] {
+            for(int i=0;i<TeamStats::STATS_SMOOTH_SIZE;++i) {
+                ++game.stepCounter; world.team->stats.step(world.team);
+            }
+        };
+        sampleWindow(); auto* stats=world.team->stats.getLatestStat();
+        CHECK(stats->meleeUnits==2); CHECK(stats->idleDefenders==1);
+        CHECK(stats->isFree[3]==2); CHECK(stats->isFree[4]==1);
+        // Same-size catalog replacement must refresh both policy bits without
+        // treating nonuniform level qualification as a recruitment refusal.
+        definitions["units"][3]["behaviors"]["recruitDefend"]=false;
+        game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
+        sampleWindow(); CHECK(world.team->stats.getLatestStat()->meleeUnits==2);
+        CHECK(world.team->stats.getLatestStat()->idleDefenders==0);
+        definitions["units"][4]["behaviors"]["recruitDefend"]=true;
+        game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
+        sampleWindow(); CHECK(world.team->stats.getLatestStat()->meleeUnits==2);
+        CHECK(world.team->stats.getLatestStat()->idleDefenders==1);
+    }
+
 }
