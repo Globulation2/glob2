@@ -65,6 +65,24 @@ read without doing experiments on the simulation owner. Captured optional work
 must remain outside save/publication dependencies; qualifying online promotion
 requires measured CPU savings and deadline slack. Enable default behavior only
 after the complete tuning-enabled configuration passes integrated qualification.
+Online comparisons use one global probe at most every 128 eligible requests and
+reserve at most one percent of accepted-gradient CPU over 256 ticks. Preparation
+shared by the accepted and counterfactual plans is included in both field costs,
+while only newly performed work spends optional CPU credits. An accepted CPU
+reference from the same immutable job must be frozen before admission; the
+independent resumable heap reference verifies arrays and cannot supply a faster
+or slower production CPU timing substitute.
+
+Promotion is checked only at 8, 16, 32 and subsequent doubling sample counts.
+Separate conditional Hoeffding bounds test ten percent and ten microseconds per
+field, using CPU caps reserved before execution. Alpha is spent across both tests,
+every look, and process-wide epochs that are never reused on demotion. This
+controls repeated online checks rather than applying a fixed-sample confidence
+interval repeatedly. The bound describes sampled conditional costs; subsequent
+execution failures, deadline stalls and expensive observations still demote a
+plan. Statistical completion work is included in optional CPU accounting.
+Captured references, comparison and promotion execute in the background.
+
 The current service batches only already-ready homogeneous requests with the
 same due key; extending this across due keys requires a conservative completion
 estimate that fits the earliest deadline. It never waits to fill a batch.

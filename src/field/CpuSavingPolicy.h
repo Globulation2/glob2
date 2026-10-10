@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <mutex>
 #include <optional>
+#include "common/ThreadCpuClock.h"
 
 namespace gradient_kernel
 {
@@ -37,6 +38,7 @@ public:
     struct ProbeTicket {
         std::uint64_t id=0, generation=0, tick=0, reservedCpuNs=0;
         unsigned profile=0, alternative=0;
+        std::uint64_t commonPreparationCpuNs=0, acceptedReferenceCpuNs=0;
         explicit operator bool() const { return id!=0; }
     };
     struct Metrics {
@@ -48,7 +50,8 @@ private:
         Plan plan=Plan(0);
         bool qualified=false;
         unsigned pairs=0;
-        double meanDelta=0, deltaM2=0, meanReference=0;
+        double sumRelative=0, sumAbsolute=0, relativeWidthsSquared=0, absoluteWidthsSquared=0, meanReference=0;
+        std::uint64_t epoch=0;
         std::uint64_t maximumElapsed=0;
     };
     struct Profile {
@@ -66,6 +69,7 @@ private:
     std::uint64_t generation=1, nextTicket=1, latestTick=0;
     std::optional<ProbeTicket> active;
     inline static std::atomic<bool> globalProbeBusy{false};
+    inline static std::atomic<std::uint64_t> nextConfidenceEpoch{1};
     inline static std::atomic<std::uint64_t> globalProbeOpportunities{0};
     Metrics totals;
 
@@ -101,7 +105,9 @@ private:
         profile.cooldown=CooldownRequests;
         profile.expensive=0;
         for(auto& alternative:profile.alternatives) {
-            alternative.pairs=0; alternative.meanDelta=alternative.deltaM2=alternative.meanReference=0;
+            alternative.pairs=0; alternative.sumRelative=alternative.sumAbsolute=alternative.meanReference=0;
+            alternative.relativeWidthsSquared=alternative.absoluteWidthsSquared=0;
+            alternative.epoch=nextConfidenceEpoch.fetch_add(1,std::memory_order_relaxed);
             alternative.maximumElapsed=0;
         }
     }
@@ -128,7 +134,8 @@ public:
         if(index==MaxProfiles) return false;
         for(auto& alternative:profiles[index].alternatives) {
             if(alternative.qualified && alternative.plan==plan) return true;
-            if(!alternative.qualified) { alternative.plan=plan; alternative.qualified=true; return true; }
+            if(!alternative.qualified) { alternative.plan=plan; alternative.qualified=true;
+                alternative.epoch=nextConfidenceEpoch.fetch_add(1,std::memory_order_relaxed); return true; }
         }
         return false;
     }
@@ -154,7 +161,9 @@ public:
     // work in <=500us resumable chunks and GPU work one dispatch at a time.
     std::optional<ProbeTicket> beginProbe(const WorkloadKey& key, Plan plan, std::uint64_t tick,
                                          std::uint64_t reserveCpuNs, std::uint64_t slackNs,
-                                         std::uint64_t conservativeElapsedNs, bool backlog) {
+                                         std::uint64_t conservativeElapsedNs, bool backlog,
+                                         std::uint64_t commonPreparationCpuNs=0,
+                                         std::uint64_t acceptedReferenceCpuNs=0) {
         std::lock_guard lock(background);
         latestTick=std::max(latestTick,tick);
         if((globalProbeOpportunities.fetch_add(1,std::memory_order_relaxed)+1)%ProbePeriod || active || backlog || !reserveCpuNs ||
@@ -171,44 +180,74 @@ public:
         bool available=false;
         if(!globalProbeBusy.compare_exchange_strong(available,true,std::memory_order_acq_rel)) return {};
         credit(tick).probes+=reserveCpuNs;
-        active=ProbeTicket{nextTicket++,generation,tick,reserveCpuNs,index,alternative};
+        active=ProbeTicket{nextTicket++,generation,tick,reserveCpuNs,index,alternative,commonPreparationCpuNs,acceptedReferenceCpuNs};
         ++totals.admitted;
         return active;
     }
     bool finishProbe(const ProbeTicket& ticket, std::uint64_t referenceCpuNs, std::uint64_t alternativeCpuNs,
                      std::uint64_t elapsedNs, std::uint64_t actualProbeCpuNs, std::uint64_t slackNs,
                      bool exact, bool success) {
+        const auto accountingStart=glob2::threadCpuNs();
         std::lock_guard lock(background);
         if(!active || active->id!=ticket.id || ticket.generation!=generation) return false;
-        // Tickets are opaque identifiers to callers. Accounting and indices use
-        // the trusted internal reservation, never caller-modified fields.
+        // The reservation and captured accepted reference are predictable before
+        // probe execution. Caller-modified ticket fields never affect inference.
         const auto reservation=*active;
-        settleCredit(reservation,actualProbeCpuNs);
-        active.reset();
-        globalProbeBusy.store(false,std::memory_order_release);
         auto& profile=profiles[reservation.profile];
-        if(!success || !exact || !referenceCpuNs || !alternativeCpuNs || actualProbeCpuNs>reservation.reservedCpuNs) {
-            demote(profile); return false;
+        auto settle=[&](bool promoted) {
+            const auto now=glob2::threadCpuNs();
+            const auto accountingCpu=now>=accountingStart ? now-accountingStart : 0;
+            const auto actual=actualProbeCpuNs>UINT64_MAX-accountingCpu ? UINT64_MAX : actualProbeCpuNs+accountingCpu;
+            if(!accountingStart || !now || actual>reservation.reservedCpuNs) {
+                demote(profile); promoted=false;
+            }
+            settleCredit(reservation,actual);
+            active.reset(); globalProbeBusy.store(false,std::memory_order_release);
+            return promoted;
+        };
+        // A reference already measured on this immutable accepted job is free
+        // to optional accounting, but must match the value frozen at admission.
+        // Otherwise both reference and alternative CPU must be paid by credits.
+        const bool acceptedReference=reservation.acceptedReferenceCpuNs!=0;
+        const bool validReference=acceptedReference ? referenceCpuNs==reservation.acceptedReferenceCpuNs :
+            referenceCpuNs<=actualProbeCpuNs && alternativeCpuNs<=actualProbeCpuNs-referenceCpuNs;
+        if(!success || !exact || !referenceCpuNs || !alternativeCpuNs || !validReference ||
+           alternativeCpuNs>actualProbeCpuNs || actualProbeCpuNs>reservation.reservedCpuNs) {
+            demote(profile); return settle(false);
         }
         auto& alternative=profile.alternatives[reservation.alternative];
-        // Paired differences retain covariance. Totals are measured for a
-        // homogeneous batch; there is no invented amortization from singletons.
-        const double delta=double(alternativeCpuNs)-double(referenceCpuNs);
+        const double reference=double(referenceCpuNs)+double(reservation.commonPreparationCpuNs);
+        const double candidate=double(alternativeCpuNs)+double(reservation.commonPreparationCpuNs);
         const auto n=++alternative.pairs;
-        const double difference=delta-alternative.meanDelta;
-        alternative.meanDelta+=difference/n;
-        alternative.deltaM2+=difference*(delta-alternative.meanDelta);
-        alternative.meanReference+=(double(referenceCpuNs)-alternative.meanReference)/n;
+        alternative.sumRelative+=candidate-.9*reference;
+        alternative.sumAbsolute+=candidate-reference+10000.0*profile.key.batch;
+        const double cap=double(reservation.reservedCpuNs);
+        const double relativeWidth=(acceptedReference ? 1.0 : 1.9)*cap;
+        const double absoluteWidth=(acceptedReference ? 1.0 : 2.0)*cap;
+        alternative.relativeWidthsSquared+=relativeWidth*relativeWidth;
+        alternative.absoluteWidthsSquared+=absoluteWidth*absoluteWidth;
+        alternative.meanReference+=(reference-alternative.meanReference)/n;
         alternative.maximumElapsed=std::max(alternative.maximumElapsed,elapsedNs);
         profile.cpuReference=std::uint64_t(alternative.meanReference);
-        if(n<MinimumPairs || profile.cooldown || alternative.maximumElapsed>slackNs/2) return false;
-        // 3 exceeds the two-sided Student t critical value for n>=8. This
-        // deliberately conservative bound avoids premature online promotion.
-        const double upper=alternative.meanDelta+3*std::sqrt(alternative.deltaM2/(n-1)/n);
-        const double required=std::max(alternative.meanReference*.10,10000.0*profile.key.batch);
-        if(upper>=-required) return false;
+        if(n<MinimumPairs || (n&(n-1)) || profile.cooldown || alternative.maximumElapsed>slackNs/2)
+            return settle(false);
+        // Predeclared doubling looks with alpha spending across every epoch and
+        // both criteria. Conditional Hoeffding bounds permit changing predictable
+        // caps and nonstationary noise; repeated checking never resets alpha.
+        // They bound the sampled conditional mean, not future workload drift.
+        unsigned look=1; for(auto count=n;count>MinimumPairs;count/=2) ++look;
+        constexpr double pi=3.14159265358979323846;
+        const double epoch=double(alternative.epoch);
+        const double delta=.05*(6/(pi*pi*epoch*epoch))*(6/(pi*pi*look*look))/2;
+        const double logAlpha=std::log(1/delta);
+        const double relativeUpper=alternative.sumRelative+std::sqrt(.5*alternative.relativeWidthsSquared*logAlpha);
+        const double absoluteUpper=alternative.sumAbsolute+std::sqrt(.5*alternative.absoluteWidthsSquared*logAlpha);
+        if(relativeUpper>=0 || absoluteUpper>=0) return settle(false);
+        // Include the statistical work in the reservation before publishing.
+        if(!settle(true)) return false;
         publish(profile,alternative.plan); ++totals.promoted; return true;
     }
+
     void cancelProbe(const ProbeTicket& ticket, std::uint64_t actualCpuNs) {
         std::lock_guard lock(background);
         if(!active || active->id!=ticket.id) return;
