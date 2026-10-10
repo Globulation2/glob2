@@ -262,6 +262,7 @@ def main():
     check.add_argument("--source-root", type=Path)
     for platform in ("windows", "linux", "macos"):
         part = sub.add_parser(f"stage-{platform}")
+        part.add_argument("--source-root", type=Path)
         part.add_argument("--output", type=Path, required=True)
         part.add_argument("--version", required=True)
         part.add_argument("--source-commit", required=True)
@@ -294,6 +295,14 @@ def main():
     elif args.command == "extract":
         print(json.dumps(extract_archive(args.archive, args.depot, args.platform), sort_keys=True))
     else:
+        if args.source_root:
+            global ROOT
+            ROOT = args.source_root.resolve()
+            selected = command("git", "rev-parse", "HEAD")
+            if selected != args.source_commit:
+                raise ValueError("staging source checkout does not match source commit")
+            if command("git", "status", "--porcelain", "--untracked-files=no"):
+                raise ValueError("staging source checkout contains tracked changes")
         globals()[args.command.replace("-", "_")](args)
 
 
