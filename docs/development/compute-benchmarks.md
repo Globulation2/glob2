@@ -50,6 +50,25 @@ growth and presentation share this pool. `--compute-threads 1` is the serial
 compute control. Thread creation failure and platforms without threads also leave
 no workers; the owner runs deferred batches at their joins.
 
+Forced OpenCL periodic gradients use one additional device coordinator when the
+actual participant count is at least two. It initializes the accelerator and owns
+submission, waits and readback. CPU workers seed immutable owned requests, hand
+off their original completion ticket and become available for unrelated jobs.
+Only completed output or one exact CPU recovery continuation completes that
+ticket; publication order and deadlines remain unchanged. One participant stays
+CPU-only. The coordinator is reported separately and its CPU belongs in process
+measurements; it is not an additional `--compute-threads` participant.
+
+Automatic offload learning is experimental and requires
+`GLOB2_GRADIENT_TUNING=1`. Unknown workload classes use CPU. Published choices are
+read without doing experiments on the simulation owner. Captured optional work
+must remain outside save/publication dependencies; qualifying online promotion
+requires measured CPU savings and deadline slack. Enable default behavior only
+after the complete tuning-enabled configuration passes integrated qualification.
+The current service batches only already-ready homogeneous requests with the
+same due key; extending this across due keys requires a conservative completion
+estimate that fits the earliest deadline. It never waits to fill a batch.
+
 `--ai-threads`, `--gradient-workers` and `--compute-experiments` have been removed;
 use `--compute-threads auto|N`. The optional area, initialization and hiring compute
 paths and their environment selector have also been removed. Structural area

@@ -39,6 +39,12 @@ sample; a requested backend does not prove that a field actually executed there.
 Check execution counters over the measured warm window and distinguish fallback
 from completed accelerator work. Tracked accelerator host/device payload limits
 are 64/128 MiB; driver memory must be measured separately through RSS/device tools.
+`GLOB2_OPENCL_POLL_US=1..1000` tests sleeping between transfer-event completion
+queries; zero (the default) uses blocking transfers. Keep this a separate
+candidate because CPU savings can trade against publication latency.
+`GLOB2_OPENCL_PROFILE=1` collects device upload/kernel/check/readback event time,
+separate from host waiting time; use it for diagnosis rather than comparing
+instrumented times to ordinary release samples.
 
 ## Terrain gradient benchmarks
 
