@@ -847,7 +847,7 @@ TEST_CASE("nullable GPU preparation recovers once on the original worker without
     });
     pipeline.setDeviceService(service);
     pipeline.setAsyncWork([state](auto& job,PlanDecision)->std::shared_ptr<OwnedGradientField>{
-        CHECK(ComputeExecutor::workerSlot()!=0);CHECK(job.data[0]==77||job.data[0]==78);
+        CHECK(ComputeExecutor::workerSlot()!=0);CHECK((job.data[0]==77||job.data[0]==78));
         ++state->attempted;return {};
     });
     std::array<std::uint16_t*,2> fields{new std::uint16_t[1]{},new std::uint16_t[1]{}};
