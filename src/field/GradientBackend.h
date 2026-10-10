@@ -2,6 +2,7 @@
 #pragma once
 #include "GradientCosts.h"
 #include "OpenCLRequiredControl.h"
+#include "OpenCLChargedStorage.h"
 #include "AdaptiveGradientPolicy.h"
 #include "Grid.h"
 #include <algorithm>
@@ -32,7 +33,14 @@ struct CostIdentity
     // Optional immutable proof: every cell has this packed cardinal/diagonal
     // pair. Zero is unknown. Valid only with owner and allCells.
     std::uint32_t packedUniformCost = 0;
+    // Trusted owned capture only. Pointer and shared control identity must both
+    // match owner; unrelated/generic owners retain conservative graph charges.
+    std::shared_ptr<const PrechargedProbeCostOwner> prechargedOwner;
 };
+inline std::size_t retainedCostOwnerBytes(const CostIdentity& identity) noexcept {
+    return identity.owner && !PrechargedProbeCostOwner::matches(identity.owner,identity.prechargedOwner)
+        ? identity.retainedBytes : 0;
+}
 struct BackendRequest
 {
     std::uint16_t *gradient;

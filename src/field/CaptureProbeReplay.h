@@ -64,6 +64,7 @@ private:
         std::span<const std::uint16_t> result() const noexcept override {return probe->result();}
     };
     struct State {
+        std::shared_ptr<PrechargedProbeStorage> storageCredit; // Destroyed last.
         Lease lease; // Pins reservation through all retained payload destruction.
         std::shared_ptr<GradientCpuCapture::Record> record;
         BackendSession session; // Private: no accounting/learning heap or map graph.
@@ -204,7 +205,7 @@ public:
            (!hooks.begin && (hooks.owner || hooks.retainedBytes || hooks.ready || hooks.reap))) {
             attempted.setupDeclined=true;return {};
         }
-        constexpr std::size_t fixed=sizeof(State)+sizeof(NativeProbe)+512;
+        constexpr std::size_t fixed=sizeof(State)+sizeof(NativeProbe)+512+PrechargedProbeStorage::metadataBytes();
         if(clock.retainedBytes>OpenCLProbeBudget-fixed ||
            hooks.retainedBytes>OpenCLProbeBudget-fixed-clock.retainedBytes) {
             attempted.setupDeclined=true;return {};
@@ -227,7 +228,9 @@ public:
             reservedState.bytes=0;
             allocation->initialCaptureCpuNs=capturedCpu;
             allocation->nativeBeginStart=nativeStart;
-            auto payload=std::shared_ptr<State>(std::move(allocation));
+            allocation->storageCredit=PrechargedProbeStorage::adopt(allocation->lease.bytes);
+            auto stateCredit=allocation->storageCredit;
+            auto payload=std::shared_ptr<State>(allocation.release(),[stateCredit](State* value){delete value;});
             auto result=std::unique_ptr<CaptureProbeReplay>(new CaptureProbeReplay(payload,reservedWrapper.bytes));
             reservedWrapper.bytes=0;
             payload->floor=beginCpu;
@@ -237,9 +240,12 @@ public:
             if(!authorization) {payload->receipt.setupDeclined=true;return {};}
             payload->authorization=*authorization;
             const auto& record=*payload->record;
-            const auto retained=payload->lease.bytes+record.receipt().reservedBytes;
-            CostIdentity identity{payload,0,record.requiredGeneration(),true,retained,
+            auto costOwner=PrechargedProbeCostOwner::create(payload,record.storageCredit,payload->storageCredit);
+            const auto retained=payload->receipt.reservedBytes+record.receipt().reservedBytes+
+                PrechargedProbeCostOwner::metadataBytes();
+            CostIdentity identity{costOwner,0,record.requiredGeneration(),true,retained,
                 weightedClass(record.swim())?0u:LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)};
+            identity.prechargedOwner=costOwner;
             OpenCLProbeInput input{record.original().data(),record.maxCost(),
                 field::Grid(int(record.key().width),int(record.key().height)),payload->session,
                 payload.get(),&State::cost,std::move(identity)};

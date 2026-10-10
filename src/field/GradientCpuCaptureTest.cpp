@@ -280,7 +280,8 @@ TEST_CASE("capture settlement cannot escape borrowed aliases or infer unknown dr
     CHECK(openCLProbeBytes()>baseline);CHECK(fixture.policy->metrics().probeCpuNs==0);
     CHECK(token->cleanup().optionalCpuNs==afterCleanup.optionalCpuNs);
     CHECK_FALSE(token->settle({1000,10000,2000,100000000,true,true,true}));
-    CHECK(weak.expired());CHECK(openCLProbeBytes()==baseline);
+    CHECK(weak.expired());CHECK(openCLProbeBytes()>baseline);
+    weak.reset();CHECK(openCLProbeBytes()==baseline); // Escaped weak record control retains its credit.
     CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
     CHECK(fixture.policy->metrics().promoted==0);CHECK(token->receipt().reservedBytes==0);
 }

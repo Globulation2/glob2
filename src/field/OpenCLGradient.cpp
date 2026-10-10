@@ -424,7 +424,7 @@ struct Device
             std::span<const std::uint8_t> mask,bool scalar,bool reserveOnly=false) {
             BudgetLease reserved{hostBudget};
             reserved.resize(estimatedBytes(scalar ? 1 : request.grid.cells(),mask.size(),
-                request.identity.owner ? request.identity.retainedBytes : 0));
+                retainedCostOwnerBytes(request.identity)));
             return std::make_shared<Plane>(api,request,mask,scalar,reserveOnly,reserved);
         }
         template<class Request>
@@ -434,7 +434,7 @@ struct Device
             const auto count=scalar ? std::size_t(1) : r.grid.cells();
             if(reserveOnly)data.reserve(count);else data.resize(count);
             blocked.assign(mask.begin(),mask.end());
-            hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),identity.owner ? identity.retainedBytes : 0));
+            hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),retainedCostOwnerBytes(identity)));
         }
         void compactUniform() {
             if(data.size()==1)return;
@@ -442,7 +442,7 @@ struct Device
             hostLease.resize(previous+sizeof(UInt));
             try {{std::vector<UInt> scalar(1,data[0]);data.swap(scalar);}}
             catch(...){hostLease.resize(previous);throw;}
-            hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),identity.owner ? identity.retainedBytes : 0));
+            hostLease.resize(estimatedBytes(data.capacity(),blocked.capacity(),retainedCostOwnerBytes(identity)));
         }
     };
     std::array<std::shared_ptr<Plane>, 8> planes;
@@ -1642,8 +1642,9 @@ struct OpenCLProbe::Impl
                 // A private proven scalar needs no callback scan or wait for a
                 // cache reservation being prepared by a different lane.
                 const auto payload=Device::Plane::fixedBytes()+sizeof(UInt)+Device::Plane::Storage::fixedBytes();
-                if(request.identity.retainedBytes>OpenCLProbeBudget-objectBytes()-payload) throw BudgetExceeded();
-                const auto bytes=payload+request.identity.retainedBytes;
+                const auto retained=retainedCostOwnerBytes(request.identity);
+                if(retained>OpenCLProbeBudget-objectBytes()-payload) throw BudgetExceeded();
+                const auto bytes=payload+retained;
                 lane->optionalSubsetLease.resize(objectBytes()-256+bytes);
                 costs=Device::Plane::create(api,request,std::span<const std::uint8_t>{},true);
                 costs->data[0]=packed;privateScalar=privateCosts=true;
@@ -1656,7 +1657,7 @@ struct OpenCLProbe::Impl
         case Phase::CostsReserve: {
             // No pending optional plane is ever inserted into the shared cache.
             // Required work uses its own lane/plane and never waits for this one.
-            const auto retained=request.identity.retainedBytes;
+            const auto retained=retainedCostOwnerBytes(request.identity);
             const auto available=OpenCLProbeBudget-objectBytes();
             const auto fixed=Device::Plane::fixedBytes()+Device::Plane::Storage::fixedBytes();
             if(retained>available || fixed>available-retained ||

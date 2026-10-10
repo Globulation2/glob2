@@ -855,3 +855,26 @@ Retirement performs only bounded session/policy generation invalidation after
 required work drains. Captured old generations cancel on the coordinator, keeping
 their policy/global slot until storage and events are actually released; credit
 history and established plans are retained without owner-side profile cleanup.
+
+Owned captures transfer their already reserved host/probe graph allowance into
+trusted storage credits. A private cost-owner wrapper pins the immutable replay
+state plus capture and state credits. Native planes omit a repeated retained
+graph charge only when both the wrapper pointer and shared control identity
+match; arbitrary cost owners remain conservatively charged. Plane, Storage,
+staging, output and device buffers still receive their own allowances. The
+wrapper has a separate precharged control allowance; escaped weak wrappers or
+records retain credit after payload cleanup. Settlement retains its credit until
+policy mutation and the final policy alias release, and no replay-state member
+owns the wrapper back from a plane.
+
+Run `isolated trusted storage admits exact weighted 1024 replay and declines 2048
+capture` alone in a fresh native subprocess with
+`GLOB2_TEST_OPENCL_CAPTURE_STORAGE=1`, uniform metadata, cold-cost diagnostic,
+parity, direct upload and API CPU modes all zero. The same 1024 weighted owned
+capture must decline under the legacy duplicate debit and then complete actual
+private native cost packing/dispatch/readback under trusted credit. Its exact
+array is compared with accepted production eager CPU output and the original
+array is unchanged. A 2048 capture declines before any clone or clock read,
+because its two ushort arrays alone exhaust the 16 MiB subset. An injected
+adapter clock keeps this ownership test separate from timing qualification;
+neither it nor fake backend controls can promote a plan.

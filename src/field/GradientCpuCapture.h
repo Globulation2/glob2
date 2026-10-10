@@ -90,6 +90,8 @@ public:
     };
     class Record {
         friend class GradientCpuCapture;
+        friend class CaptureProbeReplay;
+        std::shared_ptr<PrechargedProbeStorage> storageCredit; // Destroyed last.
         std::shared_ptr<CpuSavingPolicy> policy;
         CpuSavingPolicy::ProbeTicket ticket;
         Clock clock;
@@ -161,11 +163,11 @@ public:
             if(std::this_thread::get_id()!=producer)invalidate();
             originals.reset();golden.reset();waterCells.reset();
             clock.owner.reset();
-            releaseOpenCLProbeBytes(lease);lease=0;
             const auto end=glob2::threadCpuNs();
             if(!start || !end || end<start)invalidate();
             else try {account(start,end);}catch(...) {}
             if(!delegatedSettlement)policy->cancelProbe(ticket,totals.optionalCpuNs,!invalid);
+            if(lease)releaseOpenCLProbeBytes(lease);lease=0;
         }
         std::span<const std::uint16_t> original() const noexcept {return {originals.get(),count};}
         std::span<const std::uint16_t> expected() const noexcept {return {golden.get(),count};}
@@ -205,6 +207,7 @@ public:
     // destruction without complete-cost authorization pays full reserved credit.
     class Settlement {
         friend class GradientCpuCapture;
+        std::shared_ptr<PrechargedProbeStorage> storageCredit;
         std::shared_ptr<Record> record;
         std::shared_ptr<CpuSavingPolicy> policy;
         CpuSavingPolicy::ProbeTicket ticket;
@@ -214,7 +217,7 @@ public:
         std::uint64_t reservedCpu=0;
         std::uint64_t requiredGen=0;
         explicit Settlement(std::shared_ptr<Record> value)
-            :record(std::move(value)),policy(record->policy),ticket(record->ticket),
+            :storageCredit(value->storageCredit),record(std::move(value)),policy(record->policy),ticket(record->ticket),
              totals(record->totals),producer(record->producer),lease(record->lease),reservedCpu(record->reservedCpu),requiredGen(record->sessionGeneration) {
             record->delegatedSettlement=true;record->lease=0;
         }
@@ -222,7 +225,7 @@ public:
         Settlement(const Settlement&)=delete;
         Settlement& operator=(const Settlement&)=delete;
         Settlement(Settlement&& other) noexcept
-            :record(std::move(other.record)),policy(std::move(other.policy)),ticket(other.ticket),
+            :storageCredit(std::move(other.storageCredit)),record(std::move(other.record)),policy(std::move(other.policy)),ticket(other.ticket),
              totals(other.totals),producer(other.producer),lease(std::exchange(other.lease,0)),reservedCpu(other.reservedCpu),requiredGen(other.requiredGen) {}
         Settlement& operator=(Settlement&&)=delete;
         ~Settlement(){settle({},{});}
@@ -261,10 +264,11 @@ public:
             bool promoted=false;
             // All captured storage is now gone. Policy's internal settlement
             // clocks account its own mutation/statistics CPU before publishing.
-            releaseOpenCLProbeBytes(lease);lease=0;totals.reservedBytes=0;
             if(complete)promoted=policy->finishAcceptedCapture(ticket,outcome);
             else {totals.requiresFullReservedCharge=true;policy->cancelProbe(ticket,outcome.actualProbeCpuNs,false);}
-            policy.reset();return promoted;
+            policy.reset();
+            if(lease)releaseOpenCLProbeBytes(lease);lease=0;
+            storageCredit.reset();totals.reservedBytes=0;return promoted;
         }
     };
     static std::optional<Settlement> takeSettlement(std::shared_ptr<Record>& value) noexcept {
@@ -300,7 +304,8 @@ public:
            !(input.water.empty() && input.waterAt && input.waterContext))return {};
         // Fixed arrays avoid vector capacity guesses and full object-graph
         // retention. Charge policy, holder and conservative control overhead.
-        constexpr auto fixed=sizeof(Record)+sizeof(GradientCpuCapture)+sizeof(CpuSavingPolicy)+512;
+        constexpr auto fixed=sizeof(Record)+sizeof(Settlement)+sizeof(GradientCpuCapture)+sizeof(CpuSavingPolicy)+512+
+            PrechargedProbeStorage::metadataBytes();
         const auto perCell=2*sizeof(std::uint16_t)+(weighted?sizeof(std::uint8_t):0);
         if(clock.retainedBytes>OpenCLProbeBudget-fixed ||
            input.original.size()>(OpenCLProbeBudget-fixed-clock.retainedBytes)/perCell)return {};
@@ -324,7 +329,9 @@ public:
             // Originals, golden and cost storage all reserved before allocation.
             std::unique_ptr<Record> allocation(new Record(policy,*ticket,input,clock,end,bytes));
             reserved=false;
-            owned=std::shared_ptr<Record>(std::move(allocation));
+            allocation->storageCredit=PrechargedProbeStorage::adopt(allocation->lease);
+            auto credit=allocation->storageCredit;
+            owned=std::shared_ptr<Record>(allocation.release(),[credit](Record* value){delete value;});
             owned->totals.optionalCpuNs=receipt.optionalCpuNs;
             owned->block([&]{
                 owned->originals.reset(new std::uint16_t[input.original.size()]);
