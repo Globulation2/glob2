@@ -213,7 +213,7 @@ def main():
         task='bundleRelease' if args.command=='bundle' else ('assembleRelease' if args.release else 'assembleDebug')
         bundle=project/'app/build/outputs/bundle/release/app-release.aab'
         if args.command=='bundle': bundle.with_suffix('.json').unlink(missing_ok=True)
-        subprocess.run([gradle,'--no-daemon','--project-dir',str(project),task],env=env,check=True)
+        subprocess.run([gradle,'--no-daemon','--stacktrace','--max-workers=2','--project-dir',str(project),task],env=env,check=True)
         readelf = prebuilt / 'bin' / ('llvm-readelf.exe' if os.name == 'nt' else 'llvm-readelf')
         if args.command=='bundle':
             restore_gzip_assets(bundle, assets, 'base/assets/glob2-bundle/')
