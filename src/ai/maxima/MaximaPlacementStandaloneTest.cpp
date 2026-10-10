@@ -1410,6 +1410,7 @@ TEST_CASE("Dynamic template identities retain mixed catalog roles and signed wir
     }
     archive.flush();const auto actual=memory->takeContents();CHECK(actual==expected);
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(actual.data(),actual.size()));
+    input.seekFromStart(0);
     GAGCore::BinaryInputStream::CheckedReads checked(&input);
     for(int32_t value:values)CHECK(input.readSint32("template_id")==value);
 }
@@ -1455,6 +1456,7 @@ TEST_CASE("Dynamic template campuses and pending selection continue with identic
     const auto saved=stateBytes(original);
     Planner restored;restored.configure(world.profiles,1,2,6,5,7,0);
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));
+    input.seekFromStart(0);
     GAGCore::BinaryInputStream::CheckedReads checked(&input);
     REQUIRE(restored.load(&input,VERSION_MINOR));restored.loadExecutionState(&input,VERSION_MINOR);
     CHECK(stateBytes(restored)==saved);

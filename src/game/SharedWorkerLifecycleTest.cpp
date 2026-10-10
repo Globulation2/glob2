@@ -362,6 +362,7 @@ TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve con
     const auto fourPlayerSave=saveGame(source);
     GameGUI reduced;
     GAGCore::BinaryInputStream fourReader(new GAGCore::MemoryStreamBackend(fourPlayerSave.data(),fourPlayerSave.size()));
+    fourReader.seekFromStart(0);
     REQUIRE(reduced.load(&fourReader));
     REQUIRE(reduced.game.mapHeader.getIsSavedGame());
     REQUIRE(reduced.game.gameHeader.getNumberOfPlayers()==4);
@@ -409,6 +410,7 @@ TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve con
     const auto checkpoint=saveGame(reduced);
     GameGUI restored;
     GAGCore::BinaryInputStream reader(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
+    reader.seekFromStart(0);
     REQUIRE(restored.load(&reader));
     REQUIRE(restored.game.gameHeader.getNumberOfPlayers()==2);
     for(int seat=2;seat<Team::MAX_COUNT;++seat)CHECK(restored.game.players[seat]==nullptr);
