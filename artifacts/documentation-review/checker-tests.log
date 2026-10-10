@@ -1,0 +1,15 @@
+test_duplicate_heading_suffixes_and_unicode (test_check_docs.DocumentationCheckTest.test_duplicate_heading_suffixes_and_unicode) ... ok
+test_exemptions_are_narrow_and_links_still_checked (test_check_docs.DocumentationCheckTest.test_exemptions_are_narrow_and_links_still_checked) ... ok
+test_explicit_html_anchors_and_image_targets (test_check_docs.DocumentationCheckTest.test_explicit_html_anchors_and_image_targets) ... ok
+test_external_links_are_collected_without_network_requests (test_check_docs.DocumentationCheckTest.test_external_links_are_collected_without_network_requests) ... ok
+test_ignored_example_is_explicit (test_check_docs.DocumentationCheckTest.test_ignored_example_is_explicit) ... ok
+test_missing_anchor_and_repository_escape (test_check_docs.DocumentationCheckTest.test_missing_anchor_and_repository_escape) ... ok
+test_missing_or_excluded_main_index_cannot_disable_navigation_checks (test_check_docs.DocumentationCheckTest.test_missing_or_excluded_main_index_cannot_disable_navigation_checks) ... ok
+test_missing_reference_destination_is_reported (test_check_docs.DocumentationCheckTest.test_missing_reference_destination_is_reported) ... ok
+test_navigation_order_and_unreachable_pages (test_check_docs.DocumentationCheckTest.test_navigation_order_and_unreachable_pages) ... ok
+test_reference_links_images_encoded_paths_and_fences (test_check_docs.DocumentationCheckTest.test_reference_links_images_encoded_paths_and_fences) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.008s
+
+OK

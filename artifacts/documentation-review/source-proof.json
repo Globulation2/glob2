@@ -1,0 +1,346 @@
+[
+  {
+    "file": "src/ai/cortex/AICortex.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/AICortex.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/AICortexDebug.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexConstants.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexFoodSources.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexNet.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexNet.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexObservationObserve.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexPlacement.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexPolicy.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexPolicy.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexPolicyEconomy.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ai/cortex/CortexTypes.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/app/cli/MapCommand.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/common/FixedPoint.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/engine/sim/ClientCommandSink.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/game/Game.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/game/diagnostics/DatasetWriter.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/AmphitheatreGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/AnthillGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/BajadaGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/BraidedRiverGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/CanalsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/CarouselGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/CentralQuarryGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/CityStatesGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/ConcreteIslandsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/ContestedCommonsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/ContinentsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/DrumlinFieldGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/EvenGroundGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/FingerprintGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/FjordContinentGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/HiddenOasisGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/HoneycombIsleGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/IslandsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/IslesGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/KarstTowersGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/LavaShieldGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/MarchlandGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/MazeGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/OldGrowthGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/OldTownGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/OrchardCommonsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/PlantationsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/PolderGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/RainShadowGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/RiceTerracesGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/RingWorldGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/RuggedArchipelagoGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/SavannahGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/ShatteredCoastGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/SpiderWebGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/StoneHighlandsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/SwitchbacksGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/SymmetricArenaGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/TidalFlatsGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/generators/WatershedGenerator.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/shared/Biomes.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/shared/FairnessModel.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/shared/Growth.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/shared/Solve.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/shared/StartQuality.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/generator/shared/Terrain.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/map/gradient/BuildingGradientDepthPolicy.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/net/ConnectionOverlay.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/net/turn/TurnSession.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/online/PlatformApi.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/replay/ChecksumSidecar.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/team/stats/WinProbability.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/team/stats/WinProbabilityModel.h",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "src/ui/settings/SettingsScreenCustomAIs.cpp",
+    "only_comments_or_documentation_strings": true
+  },
+  {
+    "file": "tools/cortex-ml-infer/int_ref.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml-infer/quantize.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/dataset.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/decide_dataset.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/decide_mlp.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/decide_reward.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/mlp.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/reward.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/rl_common.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/train_awr.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/train_bc.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/train_cql.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/train_decide_awr.py",
+    "only_comments_or_docstrings": true
+  },
+  {
+    "file": "tools/cortex-ml/train_decide_bc.py",
+    "only_comments_or_docstrings": true
+  }
+]

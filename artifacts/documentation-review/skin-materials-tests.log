@@ -1,0 +1,13 @@
+test_docs_point_at_the_registry (test_skin_materials.SkinMaterialsTest.test_docs_point_at_the_registry) ... ok
+test_protocol_mirror (test_skin_materials.SkinMaterialsTest.test_protocol_mirror)
+The platform ships a copy of the registry; its vitest pins equality, ... ok
+test_registry_and_shader_agree (test_skin_materials.SkinMaterialsTest.test_registry_and_shader_agree) ... ok
+test_shader_edits_rebake_sprites (test_skin_materials.SkinMaterialsTest.test_shader_edits_rebake_sprites) ... ok
+test_shader_stays_portable (test_skin_materials.SkinMaterialsTest.test_shader_stays_portable)
+Both GLSL 1.20 and ES 3.00 must compile the shared block as is. ... ok
+test_web_studio_imports_the_shader (test_skin_materials.SkinMaterialsTest.test_web_studio_imports_the_shader) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.004s
+
+OK

@@ -1,0 +1,2709 @@
+{
+  "baseline": "3f67899b0899780efb4c309d111852b1e9f267ff",
+  "documents": [
+    {
+      "original": ".agents/skills/glob2-map-design/SKILL.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/SKILL.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/asymmetric-sieges.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/asymmetric-sieges.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/constraint-solving.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/constraint-solving.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/distributed-telemetry.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/distributed-telemetry.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/gameplay-and-playability.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/gameplay-and-playability.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/implementation-and-verification.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/implementation-and-verification.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/landscape-generators.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/landscape-generators.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/shaped-generators.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/shaped-generators.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": ".agents/skills/glob2-map-design/references/tuning-playbook.md",
+      "disposition": "rewrite",
+      "destination": ".agents/skills/glob2-map-design/references/tuning-playbook.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "AGENTS.md",
+      "disposition": "rewrite",
+      "destination": "AGENTS.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "AUTHORS",
+      "disposition": "retain/exclude",
+      "destination": "AUTHORS",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "CLAUDE.md",
+      "disposition": "retain/exclude",
+      "destination": "CLAUDE.md",
+      "notes": "Tracked alias; preserve symlink",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "CONTRIBUTING.md",
+      "disposition": "rewrite",
+      "destination": "CONTRIBUTING.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "COPYING",
+      "disposition": "retain/exclude",
+      "destination": "COPYING",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "INSTALL",
+      "disposition": "rewrite",
+      "destination": "INSTALL",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "README.md",
+      "disposition": "rewrite",
+      "destination": "README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "browser/README.md",
+      "disposition": "split/rewrite",
+      "destination": "browser/README.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "browser/README.md#scope": "browser/README.md#supported-capabilities",
+        "browser/README.md#compatibility-note": "browser/README.md#compatibility"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "browser/tests/fixtures/README.md",
+      "disposition": "rewrite",
+      "destination": "browser/tests/fixtures/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "campaigns/Tutorial_Campaign.txt",
+      "disposition": "retain/exclude",
+      "destination": "campaigns/Tutorial_Campaign.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "darwin/README.md",
+      "disposition": "rewrite",
+      "destination": "darwin/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/authors.txt",
+      "disposition": "retain",
+      "destination": "data/authors.txt",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/fonts/LICENSE-DejaVu.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/fonts/LICENSE-DejaVu.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/fonts/LICENSE-Droid.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/fonts/LICENSE-Droid.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/fonts/README.md",
+      "disposition": "retain",
+      "destination": "data/fonts/README.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/highres/v1/README.md",
+      "disposition": "rewrite",
+      "destination": "data/highres/v1/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/highres/v1/frames.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/highres/v1/frames.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/image-codec-licenses.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/image-codec-licenses.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/javascript-licenses.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/javascript-licenses.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/json-license.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/json-license.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/keyboard-gui.default.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/keyboard-gui.default.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/keyboard-mapedit.default.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/keyboard-mapedit.default.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/nicowar.default.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/nicowar.default.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/nicowar.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/nicowar.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/pal.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/pal.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/tabler-icons-license.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/tabler-icons-license.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.ar.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.ar.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.br.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.br.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.ca.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.ca.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.cz.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.cz.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.de.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.de.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.dk.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.dk.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.en.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.en.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.eo.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.eo.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.es.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.es.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.eu.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.eu.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.fa.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.fa.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.fi.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.fi.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.fr.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.fr.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.gr.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.gr.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.hu.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.hu.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.id.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.id.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.incomplete.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.incomplete.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.it.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.it.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.ja.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.ja.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.keys.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.keys.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.ko.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.ko.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.list.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.list.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.nl.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.nl.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.pending.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.pending.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.pl.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.pl.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.pt.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.pt.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.ro.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.ro.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.ru.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.ru.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.si.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.si.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.sk.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.sk.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.sr.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.sr.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.sv.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.sv.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.tr.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.tr.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.uk.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.uk.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.vi.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.vi.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.zh-cn.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.zh-cn.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/texts.zh-tw.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/texts.zh-tw.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/apple-cider/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/apple-cider/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/bramble-jig/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/bramble-jig/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/curious-critters/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/curious-critters/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/fennel-mist/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/fennel-mist/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/glass-garden/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/glass-garden/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/moss-lanterns/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/moss-lanterns/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/orchestral-dawn/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/orchestral-dawn/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/thistle-waltz/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/thistle-waltz/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "data/zik/woodland/LICENSE.txt",
+      "disposition": "retain/exclude",
+      "destination": "data/zik/woodland/LICENSE.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/BUILDING-MAP.md",
+      "disposition": "move/rewrite",
+      "destination": "datasrc/gfx/building-map.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/CATALOG.md",
+      "disposition": "retain",
+      "destination": "datasrc/gfx/CATALOG.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/COVERAGE.md",
+      "disposition": "move/rewrite",
+      "destination": "datasrc/gfx/coverage.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/README.md",
+      "disposition": "rewrite",
+      "destination": "datasrc/gfx/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/RECOVERED-RUNTIME.md",
+      "disposition": "move/rewrite",
+      "destination": "datasrc/gfx/recovered-runtime.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/buildings/swarm-trellis.md",
+      "disposition": "rewrite",
+      "destination": "datasrc/gfx/buildings/swarm-trellis.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/production/README.md",
+      "disposition": "rewrite",
+      "destination": "datasrc/gfx/production/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/production/pack-metadata/README.md",
+      "disposition": "rewrite",
+      "destination": "datasrc/gfx/production/pack-metadata/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/production/pack-metadata/frames.txt",
+      "disposition": "retain/exclude",
+      "destination": "datasrc/gfx/production/pack-metadata/frames.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "datasrc/gfx/trail/README.md",
+      "disposition": "rewrite",
+      "destination": "datasrc/gfx/trail/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "debian/README.Debian",
+      "disposition": "rewrite",
+      "destination": "debian/README.Debian",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "debian/README.source",
+      "disposition": "rewrite",
+      "destination": "debian/README.source",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "deploy/README.md",
+      "disposition": "rewrite",
+      "destination": "deploy/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/README.md",
+      "disposition": "rewrite",
+      "destination": "docs/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/cortex-upgrade-expand-mechanics.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/ai/engine-mechanics.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/gameplay-statistics.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/gameplay-statistics.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/maxima/README.md",
+      "disposition": "retain",
+      "destination": "docs/ai/maxima/README.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/maxima/combat.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/maxima/combat.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/maxima/configuration.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/maxima/configuration.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/maxima/economy.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/maxima/economy.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/maxima/farming.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/maxima/farming.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/maxima/food.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/maxima/food.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/ratings.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/ratings.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/ai/telemetry.md",
+      "disposition": "rewrite",
+      "destination": "docs/ai/telemetry.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/assets/high-resolution/ASSET-PROVENANCE.md",
+      "disposition": "rewrite",
+      "destination": "docs/assets/high-resolution/ASSET-PROVENANCE.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/assets/high-resolution/README.md",
+      "disposition": "rewrite",
+      "destination": "docs/assets/high-resolution/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/assets/music-pipeline.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/assets/music-pipeline.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/assets/music-pipeline.md#community-releases": "docs/assets/music-packages.md#community-releases",
+        "docs/assets/music-pipeline.md#online-ai-music-studio": "docs/assets/music-packages.md#online-ai-music-studio"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/assets/music-style-guide.md",
+      "disposition": "rewrite",
+      "destination": "docs/assets/music-style-guide.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/assets/source-attribution.md",
+      "disposition": "rewrite",
+      "destination": "docs/assets/source-attribution.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/assets/terrain-materials.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/assets/terrain-materials.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/assets/terrain-materials.md#material-production": "docs/assets/terrain-production.md#material-production",
+        "docs/assets/terrain-materials.md#boundaries-and-masks": "docs/assets/terrain-rendering.md#boundaries-and-masks",
+        "docs/assets/terrain-materials.md#caches-and-compatibility": "docs/assets/terrain-rendering.md#caches-and-compatibility",
+        "docs/assets/terrain-materials.md#map-owned-custom-artwork": "docs/assets/custom-map-artwork.md#map-owned-custom-artwork"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/adr-001-build-isolation.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/adr-001-build-isolation.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/adr-002-host-migration.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/adr-002-host-migration.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/adr-003-screen-execution.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/adr-003-screen-execution.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/adr-004-cooperative-loading.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/adr-004-cooperative-loading.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/adr-005-generation-randomness.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/adr-005-generation-randomness.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/adr-006-webgl2-rendering.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/adr-006-webgl2-rendering.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/adr-007-script-lifetimes.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/adr-007-script-lifetimes.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/gateway.md",
+      "disposition": "retain",
+      "destination": "docs/browser/gateway.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/implementation.md",
+      "disposition": "rewrite",
+      "destination": "docs/browser/implementation.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/storage.md",
+      "disposition": "retain",
+      "destination": "docs/browser/storage.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/browser/viewport.md",
+      "disposition": "retain",
+      "destination": "docs/browser/viewport.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/building-gradient-depth-model.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/ai/architecture/building-gradient-depth-model.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/china-release.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/releases/china-release.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/development/china-release.md#release-configuration": "docs/releases/china-release.md#release-configuration",
+        "docs/development/china-release.md#approval-sequence": "docs/releases/china-release.md#approval-sequence",
+        "docs/development/china-release.md#submission-inventory": "docs/releases/china-release.md#submission-inventory",
+        "docs/development/china-release.md#store-and-release-gates": "docs/releases/china-release.md#store-and-release-gates"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/gog-release.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/releases/gog-release.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/development/gog-release.md#before-gog-access": "docs/releases/gog-release.md#before-gog-access",
+        "docs/development/gog-release.md#build-a-candidate": "docs/releases/gog-release.md#build-a-candidate",
+        "docs/development/gog-release.md#upload-to-staging": "docs/releases/gog-release.md#upload-to-staging"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/headless-replays.md",
+      "disposition": "rewrite",
+      "destination": "docs/development/headless-replays.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/javascript-api.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/scripting/javascript-api.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/javascript.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/scripting/javascript.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/legacy-architecture.txt",
+      "disposition": "delete",
+      "destination": null,
+      "notes": "Obsolete historical guide/report removed; durable replacement/extraction at docs/architecture/overview.md",
+      "sections": {},
+      "extracted_to": "docs/architecture/overview.md"
+    },
+    {
+      "original": "docs/development/mac-app-store.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/releases/mac-app-store.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/development/mac-app-store.md#local-build-check": "docs/releases/mac-app-store.md#local-build-check",
+        "docs/development/mac-app-store.md#manual-github-actions-release": "docs/releases/mac-app-store.md#manual-github-actions-release",
+        "docs/development/mac-app-store.md#one-time-app-store-connect-setup": "docs/releases/mac-app-store.md#one-time-app-store-connect-setup",
+        "docs/development/mac-app-store.md#testflight-and-export-compliance": "docs/releases/mac-app-store.md#testflight-and-export-compliance"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/network-telemetry.md",
+      "disposition": "rewrite",
+      "destination": "docs/development/network-telemetry.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/performance-telemetry.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/development/performance-telemetry.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/development/performance-telemetry.md#scheduled-ai-decisions-and-shared-computation": "docs/development/compute-benchmarks.md#scheduled-ai-decisions-and-shared-computation",
+        "docs/development/performance-telemetry.md#delayed-periodic-gradients": "docs/development/compute-benchmarks.md#delayed-periodic-gradients",
+        "docs/development/performance-telemetry.md#synchronous-field-preparation": "docs/development/compute-benchmarks.md#synchronous-field-preparation",
+        "docs/development/performance-telemetry.md#resource-optimization-campaigns": "docs/development/resource-benchmarks.md#resource-optimization-campaigns",
+        "docs/development/performance-telemetry.md#resource-growth-pipeline-measurements": "docs/development/resource-benchmarks.md#resource-growth-pipeline-measurements"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/reference.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/development/README.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/development/reference.md#ai-observations-and-delayed-orders": "docs/architecture/ai-observations.md#ai-observations-and-delayed-orders",
+        "docs/development/reference.md#release-asset-and-bundle-sizes": "docs/development/package-size.md#release-asset-and-bundle-sizes",
+        "docs/development/reference.md#renderer-stress-measurements": "docs/development/rendering-benchmarks.md#renderer-stress-measurements",
+        "docs/development/reference.md#batching-and-geometry-cache-invariants": "docs/architecture/rendering.md#batching-and-geometry-cache-invariants",
+        "docs/development/reference.md#skin-materials": "docs/architecture/rendering.md#skin-materials",
+        "docs/development/reference.md#scene-renderer": "docs/architecture/rendering.md#scene-renderer",
+        "docs/development/reference.md#simulation-tick-rate": "docs/architecture/rendering.md#simulation-tick-rate",
+        "docs/development/reference.md#target-render-fps": "docs/architecture/rendering.md#target-render-fps",
+        "docs/development/reference.md#simulation-thread": "docs/architecture/rendering.md#simulation-thread",
+        "docs/development/reference.md#smooth-unit-motion": "docs/architecture/rendering.md#smooth-unit-motion",
+        "docs/development/reference.md#smooth-fog-of-war": "docs/architecture/rendering.md#smooth-fog-of-war",
+        "docs/development/reference.md#adaptive-zoom-detail": "docs/architecture/zoom-detail.md#adaptive-zoom-detail",
+        "docs/development/reference.md#software-rendering-architecture-and-profiling": "docs/architecture/software-rendering.md#software-rendering-architecture-and-profiling",
+        "docs/development/reference.md#simulation-verification-and-diagnostics": "docs/development/simulation-verification.md",
+        "docs/development/reference.md#delayed-resource-growth": "docs/architecture/resource-growth.md#delayed-resource-growth",
+        "docs/development/reference.md#terrain-gradient-benchmarks": "docs/development/gradient-benchmarks.md#terrain-gradient-benchmarks",
+        "docs/development/reference.md#local-conventions": "docs/development/conventions.md#local-conventions",
+        "docs/development/reference.md#shared-development-storage": "docs/development/development-storage.md#shared-development-storage",
+        "docs/development/reference.md#ci-timing-and-retained-revisions": "docs/development/verification.md#ci-timing-and-retained-revisions",
+        "docs/development/reference.md#linux-execution-dependencies": "docs/development/verification.md#linux-execution-dependencies",
+        "docs/development/reference.md#reviewed-native-shard-timing-profiles": "docs/development/verification.md#reviewed-native-shard-timing-profiles",
+        "docs/development/reference.md#local-and-vm-pr-verification": "docs/development/verification.md#local-and-vm-pr-verification",
+        "docs/development/reference.md#hosted-verification-and-regression-detection": "docs/development/verification.md#hosted-verification-and-regression-detection",
+        "docs/development/reference.md#tiered-pull-request-coverage-rollout": "docs/development/verification.md#tiered-pull-request-coverage-rollout",
+        "docs/development/reference.md#untrusted-maps-saved-games-and-replays": "docs/development/untrusted-inputs.md#untrusted-maps-saved-games-and-replays",
+        "docs/development/reference.md#native-simulation-memory-and-cpu-comparisons": "docs/development/memory-benchmarks.md#native-simulation-memory-and-cpu-comparisons",
+        "docs/development/reference.md#embedded-recording-dependencies": "docs/development/media-dependencies.md#embedded-recording-dependencies",
+        "docs/development/reference.md#music-encoding": "docs/development/media-dependencies.md#music-encoding",
+        "docs/development/reference.md#buffered-music-playback": "docs/development/media-dependencies.md#buffered-music-playback",
+        "docs/development/reference.md#fast-development-builds": "docs/development/build-options.md#fast-development-builds",
+        "docs/development/reference.md#build-and-test-entry-points": "docs/development/building.md",
+        "docs/development/reference.md#windows-store-release": "docs/releases/windows-store.md#windows-store-release"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/releasing.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/releases/releasing.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/development/releasing.md#the-release-mirror": "docs/releases/releasing.md#the-release-mirror",
+        "docs/development/releasing.md#desktop-publication": "docs/releases/desktop.md#desktop-publication",
+        "docs/development/releasing.md#browser-publication": "docs/releases/browser.md#browser-publication",
+        "docs/development/releasing.md#outputs": "docs/releases/desktop.md#outputs",
+        "docs/development/releasing.md#store-setup": "docs/releases/store-setup.md#store-setup",
+        "docs/development/releasing.md#epic-games-store": "docs/releases/store-setup.md#epic-games-store",
+        "docs/development/releasing.md#snap-github-and-flathub": "docs/releases/store-setup.md#snap-github-and-flathub",
+        "docs/development/releasing.md#distribution-maintainers": "docs/releases/fdroid.md#distribution-maintainers",
+        "docs/development/releasing.md#f-droid-android-release": "docs/releases/fdroid.md#f-droid-android-release",
+        "docs/development/releasing.md#release-qualification": "docs/releases/downloads.md#release-qualification",
+        "docs/development/releasing.md#qualified-downloads-manifest": "docs/releases/downloads.md#qualified-downloads-manifest",
+        "docs/development/releasing.md#ios-production-submission-and-manual-publication": "docs/releases/ios-production.md#ios-production-submission-and-manual-publication"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/savegame-continuation.md",
+      "disposition": "rewrite",
+      "destination": "docs/development/savegame-continuation.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/development/ui-framework.md",
+      "disposition": "rewrite",
+      "destination": "docs/development/ui-framework.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/building-catalogs.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/features/building-catalogs.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/features/building-catalogs.md#portable-building-families": "docs/features/building-family-packages.md#portable-building-families",
+        "docs/features/building-catalogs.md#capabilities-and-units": "docs/features/building-semantics.md#capabilities-and-units",
+        "docs/features/building-catalogs.md#building-area-effects": "docs/features/building-semantics.md#building-area-effects",
+        "docs/features/building-catalogs.md#private-authoring-workspace": "docs/features/building-authoring.md#private-authoring-workspace",
+        "docs/features/building-catalogs.md#ai-building-studio": "docs/features/building-authoring.md#ai-building-studio",
+        "docs/features/building-catalogs.md#online-library-and-installed-families": "docs/features/building-authoring.md#online-library-and-installed-families"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/custom-game-setup/README.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/custom-game-setup/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/experimental-features.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/experimental-features.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/farm-areas.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/farm-areas.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/gameplay-recording.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/gameplay-recording.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/guard-area-balancing.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/guard-area-balancing.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/markets-v2.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/markets-v2.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/pre-game-map-preview.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/pre-game-map-preview.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/resource-catalogs.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/features/resource-catalogs.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/features/resource-catalogs.md#simulation-properties": "docs/features/resource-properties.md#simulation-properties",
+        "docs/features/resource-catalogs.md#themed-terrain-and-resource-sets": "docs/features/terrain-resource-sets.md#themed-terrain-and-resource-sets"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/torus-experiment.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/torus-experiment.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/features/window-resizing.md",
+      "disposition": "rewrite",
+      "destination": "docs/features/window-resizing.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/hosting/README.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/hosting/README.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/hosting/README.md#requirements": "docs/hosting/quickstart.md#requirements",
+        "docs/hosting/README.md#setup-from-zero": "docs/hosting/quickstart.md#setup-from-zero",
+        "docs/hosting/README.md#the-stack": "docs/hosting/stack.md#the-stack",
+        "docs/hosting/README.md#database-roles": "docs/hosting/stack.md#database-roles",
+        "docs/hosting/README.md#dns-and-tls": "docs/hosting/networking.md#dns-and-tls",
+        "docs/hosting/README.md#separate-public-website-and-app": "docs/hosting/networking.md#separate-public-website-and-app",
+        "docs/hosting/README.md#the-official-instance": "docs/hosting/networking.md#the-official-instance",
+        "docs/hosting/README.md#moving-an-instance-to-a-new-hostname": "docs/hosting/networking.md#moving-an-instance-to-a-new-hostname",
+        "docs/hosting/README.md#routes": "docs/hosting/networking.md#routes",
+        "docs/hosting/README.md#mobile-app-links": "docs/hosting/networking.md#mobile-app-links",
+        "docs/hosting/README.md#setting-up-the-official-instance": "docs/hosting/networking.md#setting-up-the-official-instance",
+        "docs/hosting/README.md#configuration": "docs/hosting/configuration.md#configuration",
+        "docs/hosting/README.md#sign-in-providers": "docs/hosting/security.md#sign-in-providers",
+        "docs/hosting/README.md#signing-keys-and-rotation": "docs/hosting/security.md#signing-keys-and-rotation",
+        "docs/hosting/README.md#building-family-library-rollout": "docs/hosting/content-validation.md#building-family-library-rollout",
+        "docs/hosting/README.md#javascript-ai-validation-rollout": "docs/hosting/content-validation.md#javascript-ai-validation-rollout",
+        "docs/hosting/README.md#terrain-and-resource-set-validation-rollout": "docs/hosting/content-validation.md#terrain-and-resource-set-validation-rollout",
+        "docs/hosting/README.md#scaling": "docs/hosting/scaling.md#scaling",
+        "docs/hosting/README.md#backups-and-restore": "docs/hosting/backup-restore.md#backups-and-restore",
+        "docs/hosting/README.md#scheduled-backups": "docs/hosting/backup-restore.md#scheduled-backups",
+        "docs/hosting/README.md#upgrades": "docs/hosting/upgrades.md#upgrades",
+        "docs/hosting/README.md#upgrading-to-database-roles": "docs/hosting/upgrades.md#upgrading-to-database-roles",
+        "docs/hosting/README.md#draining-relays": "docs/hosting/upgrades.md#draining-relays",
+        "docs/hosting/README.md#sim-versions-and-engine-agents": "docs/hosting/upgrades.md#sim-versions-and-engine-agents",
+        "docs/hosting/README.md#images": "docs/hosting/upgrades.md#images",
+        "docs/hosting/README.md#automatic-deployment": "docs/hosting/upgrades.md#automatic-deployment",
+        "docs/hosting/README.md#operations": "docs/hosting/operations.md#operations",
+        "docs/hosting/README.md#retention": "docs/hosting/operations.md#retention",
+        "docs/hosting/README.md#testing-a-deployment": "docs/hosting/operations.md#testing-a-deployment",
+        "docs/hosting/README.md#end-to-end-test-of-the-stack": "docs/hosting/operations.md#end-to-end-test-of-the-stack",
+        "docs/hosting/README.md#example-one-virtual-machine-on-google-cloud": "docs/hosting/google-cloud.md#example-one-virtual-machine-on-google-cloud",
+        "docs/hosting/README.md#limits": "docs/hosting/limits.md#limits",
+        "docs/hosting/README.md#ai-map-studio": "docs/hosting/map-studio.md#ai-map-studio",
+        "docs/hosting/README.md#music-worker": "docs/hosting/music.md#music-worker",
+        "docs/hosting/README.md#cpu-ai-music-studio": "docs/hosting/music.md#cpu-ai-music-studio",
+        "docs/hosting/README.md#ai-terrain-studio": "docs/hosting/art-studios.md#ai-terrain-studio",
+        "docs/hosting/README.md#ai-building-studio-deployment": "docs/hosting/art-studios.md#ai-building-studio-deployment",
+        "docs/hosting/README.md#admin-reporting": "docs/hosting/admin-reporting.md#admin-reporting",
+        "docs/hosting/README.md#generator-studio-rollout": "docs/hosting/generator-studio.md#generator-studio-rollout",
+        "docs/hosting/README.md#optional-ai-map-studio": "docs/hosting/map-studio.md#ai-map-studio"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/ADDING_A_GENERATOR.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/adding-a-generator.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/BAJADA.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/bajada.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/BASTION_KEYS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/bastion-keys.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/BRAIDED_DELTA.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/braided-delta.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/BREACHABLE_HIGHLANDS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/breachable-highlands.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/CENTRAL_QUARRY.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/central-quarry.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/CLI.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/cli.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/COMB.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/comb.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/CONSTRAINT_SEARCH.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/constraint-search.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/DROWNED_FOREST.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/drowned-forest.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/ENCIRCLED_KINGDOM.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/encircled-kingdom.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/EVEN_GROUND.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/even-ground.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/FAIRNESS_MODEL.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/fairness-model.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/FAIRNESS_TOURNAMENT.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/fairness-tournament.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/FAULTED_CITY.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/faulted-city.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/FORTS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/forts.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/FRACTAL_MAPS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/fractal-maps.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/FRACTAL_VALIDATION.md",
+      "disposition": "delete",
+      "destination": null,
+      "notes": "Obsolete historical guide/report removed; durable replacement/extraction at docs/map-generators/recursive-verification.md",
+      "sections": {},
+      "extracted_to": "docs/map-generators/recursive-verification.md"
+    },
+    {
+      "original": "docs/map-generators/GAME_RULES_FOR_MAP_DESIGN.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/game-rules-for-map-design.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/GAUNTLET.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/gauntlet.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/HEDGEROW_COUNTRY.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/hedgerow-country.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/HIDDEN_OASIS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/hidden-oasis.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/HILLS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/hills.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/HONEYCOMB_ISLE.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/honeycomb-isle.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/HUNGRY_MARCHES.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/hungry-marches.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/JAVASCRIPT.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/javascript.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/KARST_TOWERS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/karst-towers.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/LAST_TREELINE.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/last-treeline.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/LAVA_SHIELD.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/lava-shield.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/LOCUST.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/locust.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/MAP_GENERATOR_FRAMEWORK.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/map-generator-framework.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/MARCHLAND.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/marchland.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/ORCHARD_COMMONS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/orchard-commons.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/PORTAGE_LAKES.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/portage-lakes.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/README.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/map-generators/README.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/map-generators/README.md#repeating-a-starting-map": "docs/map-generators/repeat-maps.md"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/REPORT.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/report-format.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/RICE_TERRACES.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/rice-terraces.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/SAVANNAH.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/savannah.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/TELEMETRY.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/telemetry.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/WHO_ATE_THE_MAP.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/who-ate-the-map.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/WORLD_ATLAS.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/world-atlas.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/map-generators/emoji/DESIGN.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/map-generators/emoji/design.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/mobile/amazon-privacy-policy.md",
+      "disposition": "retain",
+      "destination": "docs/mobile/amazon-privacy-policy.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/mobile/app-store.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/releases/ios-app-store.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/mobile/app-store.md#product-page-copy": "docs/releases/ios-app-store.md#product-page-copy",
+        "docs/mobile/app-store.md#artwork-and-screenshots": "docs/releases/ios-app-store.md#artwork-and-screenshots",
+        "docs/mobile/app-store.md#submission-checks": "docs/releases/ios-app-store.md#submission-checks"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/mobile/development.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/mobile/development.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/mobile/development.md#safe-areas": "docs/mobile/interface.md#safe-areas",
+        "docs/mobile/development.md#gameplay-responsibilities-and-action-flow": "docs/mobile/gameplay-controls.md#gameplay-responsibilities-and-action-flow",
+        "docs/mobile/development.md#map-and-campaign-editor": "docs/mobile/editor-interface.md#map-and-campaign-editor",
+        "docs/mobile/development.md#frontend-layout-and-interaction-policy": "docs/mobile/interface.md#frontend-layout-and-interaction-policy",
+        "docs/mobile/development.md#toolchains-and-output-isolation": "docs/mobile/toolchains.md#toolchains-and-output-isolation",
+        "docs/mobile/development.md#text-raster-resolution": "docs/mobile/toolchains.md#text-raster-resolution",
+        "docs/mobile/development.md#app-icons": "docs/mobile/toolchains.md#app-icons",
+        "docs/mobile/development.md#packaged-image-assets": "docs/mobile/toolchains.md#packaged-image-assets",
+        "docs/mobile/development.md#recording-libraries-and-exports": "docs/mobile/toolchains.md#recording-libraries-and-exports",
+        "docs/mobile/development.md#fast-native-development-compilation": "docs/mobile/toolchains.md#fast-native-development-compilation",
+        "docs/mobile/development.md#android": "docs/mobile/android.md#android",
+        "docs/mobile/development.md#native-tests-on-a-connected-android-device": "docs/mobile/android.md#native-tests-on-a-connected-android-device",
+        "docs/mobile/development.md#amazon-appstore-fire-tablet-release": "docs/releases/amazon-appstore.md#amazon-appstore-fire-tablet-release",
+        "docs/mobile/development.md#google-play-internal-testing": "docs/releases/google-play.md#google-play-internal-testing",
+        "docs/mobile/development.md#automated-google-play-internal-releases": "docs/releases/google-play.md#automated-google-play-internal-releases",
+        "docs/mobile/development.md#ios": "docs/mobile/ios.md#ios",
+        "docs/mobile/development.md#signing-fingerprints-for-invite-links": "docs/mobile/ios.md#signing-fingerprints-for-invite-links",
+        "docs/mobile/development.md#testflight-upload": "docs/releases/testflight.md#testflight-upload",
+        "docs/mobile/development.md#verification": "docs/mobile/verification.md#verification",
+        "docs/mobile/development.md#mobile-design-review-gallery": "docs/mobile/verification.md#mobile-design-review-gallery",
+        "docs/mobile/development.md#secure-multiplayer-and-lan-discovery": "docs/mobile/verification.md#secure-multiplayer-and-lan-discovery"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/mobile/privacy-policy.md",
+      "disposition": "retain",
+      "destination": "docs/mobile/privacy-policy.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/architecture.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/multiplayer/architecture.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/multiplayer/architecture.md#contracts-the-protocol-package": "docs/multiplayer/contracts.md#contracts-the-protocol-package",
+        "docs/multiplayer/architecture.md#matchsetup-and-the-gameheader": "docs/multiplayer/contracts.md#matchsetup-and-the-gameheader",
+        "docs/multiplayer/architecture.md#realtime-messages": "docs/multiplayer/contracts.md#realtime-messages",
+        "docs/multiplayer/architecture.md#accesspolicy": "docs/multiplayer/contracts.md#accesspolicy",
+        "docs/multiplayer/architecture.md#data-model": "docs/multiplayer/contracts.md#data-model",
+        "docs/multiplayer/architecture.md#stored-json-documents": "docs/multiplayer/contracts.md#stored-json-documents",
+        "docs/multiplayer/architecture.md#coordination": "docs/multiplayer/contracts.md#coordination",
+        "docs/multiplayer/architecture.md#engine-agents": "docs/multiplayer/engine-agents.md#engine-agents",
+        "docs/multiplayer/architecture.md#sim-version-and-partitioning": "docs/multiplayer/engine-agents.md#sim-version-and-partitioning",
+        "docs/multiplayer/architecture.md#job-contracts": "docs/multiplayer/engine-agents.md#job-contracts",
+        "docs/multiplayer/architecture.md#results-on-the-platform": "docs/multiplayer/engine-agents.md#results-on-the-platform",
+        "docs/multiplayer/architecture.md#warm-map-pool": "docs/multiplayer/engine-agents.md#warm-map-pool",
+        "docs/multiplayer/architecture.md#scaling-and-operation": "docs/multiplayer/engine-agents.md#scaling-and-operation",
+        "docs/multiplayer/architecture.md#map-catalog": "docs/multiplayer/engine-agents.md#map-catalog",
+        "docs/multiplayer/architecture.md#building-family-authoring-and-releases": "docs/multiplayer/building-library.md#building-family-authoring-and-releases",
+        "docs/multiplayer/architecture.md#colony-skin-ownership": "docs/multiplayer/colony-skins.md#colony-skin-ownership",
+        "docs/multiplayer/architecture.md#colony-skin-payments": "docs/multiplayer/colony-skins.md#colony-skin-payments",
+        "docs/multiplayer/architecture.md#game-client-appearance-loading": "docs/multiplayer/colony-skins.md#game-client-appearance-loading",
+        "docs/multiplayer/architecture.md#working-on-the-platform": "docs/multiplayer/platform-development.md#working-on-the-platform",
+        "docs/multiplayer/architecture.md#online-interface-languages": "docs/multiplayer/platform-development.md#online-interface-languages",
+        "docs/multiplayer/architecture.md#ai-map-studio": "docs/multiplayer/map-studio.md#ai-map-studio",
+        "docs/multiplayer/architecture.md#javascript-ai-library": "docs/multiplayer/ai-library.md#javascript-ai-library",
+        "docs/multiplayer/architecture.md#ai-coding-studio": "docs/multiplayer/coding-studios.md#ai-coding-studio",
+        "docs/multiplayer/architecture.md#generator-coding-studio": "docs/multiplayer/coding-studios.md#generator-coding-studio",
+        "docs/multiplayer/architecture.md#community-music": "docs/multiplayer/music-library.md#community-music",
+        "docs/multiplayer/architecture.md#ai-music-studio": "docs/multiplayer/music-library.md#ai-music-studio",
+        "docs/multiplayer/architecture.md#terrain-and-resource-set-library": "docs/multiplayer/content-libraries.md#terrain-and-resource-set-library",
+        "docs/multiplayer/architecture.md#javascript-generator-library": "docs/multiplayer/content-libraries.md#javascript-generator-library"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/client.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/multiplayer/client.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/multiplayer/client.md#building-family-installation": "docs/multiplayer/client-content.md#building-family-installation",
+        "docs/multiplayer/client.md#map-cache": "docs/multiplayer/client-content.md#map-cache",
+        "docs/multiplayer/client.md#music-library-and-offline-imports": "docs/multiplayer/client-content.md#music-library-and-offline-imports",
+        "docs/multiplayer/client.md#custom-terrain-and-resource-sets": "docs/multiplayer/client-content.md#custom-terrain-and-resource-sets",
+        "docs/multiplayer/client.md#shared-javascript-generators": "docs/multiplayer/client-content.md#shared-javascript-generators"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/connection-quality.md",
+      "disposition": "rewrite",
+      "destination": "docs/multiplayer/connection-quality.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/history-and-web.md",
+      "disposition": "rewrite",
+      "destination": "docs/multiplayer/history-and-web.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/hive-mind.md",
+      "disposition": "rewrite",
+      "destination": "docs/multiplayer/hive-mind.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/identity.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/multiplayer/identity.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/multiplayer/identity.md#administration": "docs/multiplayer/account-management.md#administration",
+        "docs/multiplayer/identity.md#downloading-your-data": "docs/multiplayer/account-management.md#downloading-your-data",
+        "docs/multiplayer/identity.md#deleting-an-account": "docs/multiplayer/account-management.md#deleting-an-account",
+        "docs/multiplayer/identity.md#data-retention": "docs/multiplayer/account-management.md#data-retention",
+        "docs/multiplayer/identity.md#what-is-verified": "docs/multiplayer/identity.md#verification-coverage"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/lan-playtest.md",
+      "disposition": "rewrite",
+      "destination": "docs/multiplayer/lan-playtest.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/lan.md",
+      "disposition": "rewrite",
+      "destination": "docs/multiplayer/lan.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/ratings-and-matchmaking.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/multiplayer/ratings-and-matchmaking.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/multiplayer/ratings-and-matchmaking.md#contracts-with-other-workstreams": "docs/multiplayer/ratings-and-matchmaking.md#protocol-and-database-integration"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/relay.md",
+      "disposition": "rewrite",
+      "destination": "docs/multiplayer/relay.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/rooms-and-matches.md",
+      "disposition": "rewrite",
+      "destination": "docs/multiplayer/rooms-and-matches.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/multiplayer/turn-protocol.md",
+      "disposition": "split/rewrite",
+      "destination": "docs/multiplayer/turn-protocol.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "docs/multiplayer/turn-protocol.md#framing-and-versioning": "docs/multiplayer/turn-wire.md#framing-and-versioning",
+        "docs/multiplayer/turn-protocol.md#messages": "docs/multiplayer/turn-wire.md#messages",
+        "docs/multiplayer/turn-protocol.md#order-handling": "docs/multiplayer/turn-wire.md#order-handling",
+        "docs/multiplayer/turn-protocol.md#order-validation-in-the-engine": "docs/multiplayer/turn-wire.md#order-validation-in-the-engine",
+        "docs/multiplayer/turn-protocol.md#pause-limit": "docs/multiplayer/turn-wire.md#pause-limit",
+        "docs/multiplayer/turn-protocol.md#order-pacing": "docs/multiplayer/turn-wire.md#order-pacing",
+        "docs/multiplayer/turn-protocol.md#tick-assignment": "docs/multiplayer/turn-wire.md#tick-assignment",
+        "docs/multiplayer/turn-protocol.md#bundles": "docs/multiplayer/turn-wire.md#bundles",
+        "docs/multiplayer/turn-protocol.md#timing-model-and-per-client-delay": "docs/multiplayer/turn-timing.md#timing-model-and-per-client-delay",
+        "docs/multiplayer/turn-protocol.md#input-delay": "docs/multiplayer/turn-timing.md#input-delay",
+        "docs/multiplayer/turn-protocol.md#jitter-estimate": "docs/multiplayer/turn-timing.md#jitter-estimate",
+        "docs/multiplayer/turn-protocol.md#buffer-target": "docs/multiplayer/turn-timing.md#buffer-target",
+        "docs/multiplayer/turn-protocol.md#rate-control": "docs/multiplayer/turn-timing.md#rate-control",
+        "docs/multiplayer/turn-protocol.md#measured-delay": "docs/multiplayer/turn-timing.md#measured-delay",
+        "docs/multiplayer/turn-protocol.md#presence-reconnect-and-grace": "docs/multiplayer/turn-timing.md#presence-reconnect-and-grace",
+        "docs/multiplayer/turn-protocol.md#desync-arbitration": "docs/multiplayer/turn-timing.md#desync-arbitration",
+        "docs/multiplayer/turn-protocol.md#engine-integration": "docs/multiplayer/turn-engine.md#engine-integration",
+        "docs/multiplayer/turn-protocol.md#starting-a-turn-game": "docs/multiplayer/turn-engine.md#starting-a-turn-game",
+        "docs/multiplayer/turn-protocol.md#the-engine-loop": "docs/multiplayer/turn-engine.md#the-engine-loop",
+        "docs/multiplayer/turn-protocol.md#match-setup-and-simulation-version": "docs/multiplayer/turn-engine.md#match-setup-and-simulation-version",
+        "docs/multiplayer/turn-protocol.md#matchsetup-to-gameheader": "docs/multiplayer/turn-engine.md#matchsetup-to-gameheader",
+        "docs/multiplayer/turn-protocol.md#shared-scripted-generator-sources": "docs/multiplayer/turn-engine.md#shared-scripted-generator-sources",
+        "docs/multiplayer/turn-protocol.md#simulation-version": "docs/multiplayer/turn-engine.md#simulation-version",
+        "docs/multiplayer/turn-protocol.md#match-record": "docs/multiplayer/turn-verification.md#match-record",
+        "docs/multiplayer/turn-protocol.md#relay": "docs/multiplayer/turn-verification.md#relay",
+        "docs/multiplayer/turn-protocol.md#testing": "docs/multiplayer/turn-verification.md#testing"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "docs/tools/tournaments.md",
+      "disposition": "rewrite",
+      "destination": "docs/tools/tournaments.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "docs/win-probability-model.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/ai/architecture/win-probability-model.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1000001.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1000001.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1000002.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1000002.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1000003.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1000003.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1000011.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1000011.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1000012.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1000012.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1000013.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1000013.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1100001.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1100001.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1100002.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1100002.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/1100003.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/1100003.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/905041.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/905041.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/905042.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/905042.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/changelogs/905043.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/changelogs/905043.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/full_description.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/full_description.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/short_description.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/short_description.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "fastlane/metadata/android/en-US/title.txt",
+      "disposition": "retain/exclude",
+      "destination": "fastlane/metadata/android/en-US/title.txt",
+      "notes": "Store metadata, outside editorial scope",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "mobile/build-requirements.txt",
+      "disposition": "retain/exclude",
+      "destination": "mobile/build-requirements.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "mobile/play-api-requirements.txt",
+      "disposition": "retain/exclude",
+      "destination": "mobile/play-api-requirements.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "platform/apps/api/src/web/static/LICENSE-Nunito.txt",
+      "disposition": "retain/exclude",
+      "destination": "platform/apps/api/src/web/static/LICENSE-Nunito.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "platform/apps/engine-agent/fixtures/ais/README.md",
+      "disposition": "retain",
+      "destination": "platform/apps/engine-agent/fixtures/ais/README.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "platform/apps/web/art/README.md",
+      "disposition": "retain",
+      "destination": "platform/apps/web/art/README.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "platform/apps/web/public/fonts/LICENSE-DejaVu.txt",
+      "disposition": "retain/exclude",
+      "destination": "platform/apps/web/public/fonts/LICENSE-DejaVu.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "platform/apps/web/public/fonts/LICENSE-Nunito.txt",
+      "disposition": "retain/exclude",
+      "destination": "platform/apps/web/public/fonts/LICENSE-Nunito.txt",
+      "notes": "Legal/attribution text; retain authoritative notices",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "platform/apps/web/public/licenses/react-easy-crop.txt",
+      "disposition": "retain",
+      "destination": "platform/apps/web/public/licenses/react-easy-crop.txt",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "platform/packages/hive/src/commander-api.txt",
+      "disposition": "retain",
+      "destination": "platform/packages/hive/src/commander-api.txt",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "requirements-dev.txt",
+      "disposition": "retain/exclude",
+      "destination": "requirements-dev.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/LOBBY_AUTOMATION.md",
+      "disposition": "move/rewrite",
+      "destination": "docs/development/testing/lobby-automation.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/README.md",
+      "disposition": "split/rewrite",
+      "destination": "test/README.md",
+      "notes": "Section migration destinations recorded below",
+      "sections": {
+        "test/README.md#python-tests": "docs/development/testing/tooling.md#python-tests",
+        "test/README.md#match-relay": "docs/development/testing/network.md#match-relay",
+        "test/README.md#online-screens-and-test-switches": "docs/development/testing/network.md#online-screens-and-test-switches",
+        "test/README.md#team-capacity-and-format-127": "docs/development/testing/persistence.md#team-capacity-and-format-127",
+        "test/README.md#maxima": "docs/development/testing/ai.md#maxima",
+        "test/README.md#selection-lifetime-regression": "docs/development/testing/rendering.md#selection-lifetime-regression",
+        "test/README.md#terrain-resource-regression": "docs/development/testing/maps.md#terrain-resource-regression",
+        "test/README.md#map-generator-golden-maps-and-colony-sweep": "docs/development/testing/maps.md#map-generator-golden-maps-and-colony-sweep",
+        "test/README.md#orchard-commons-fruit-conversion": "docs/development/testing/maps.md#orchard-commons-fruit-conversion",
+        "test/README.md#map-generator-profiling-fixture": "docs/development/testing/maps.md#map-generator-profiling-fixture",
+        "test/README.md#android-device-execution": "docs/development/testing/platforms.md#android-device-execution",
+        "test/README.md#map-subclass-test-pattern": "docs/development/testing/maps.md#map-subclass-test-pattern",
+        "test/README.md#the-fixture-subclass-map-bypass-setsize": "docs/development/testing/maps.md#the-fixture-subclass-map-bypass-setsize",
+        "test/README.md#stubs-for-sector": "docs/development/testing/maps.md#stubs-for-sector",
+        "test/README.md#build-wiring": "docs/development/testing/maps.md#build-wiring",
+        "test/README.md#terrain-encoding-for-tests": "docs/development/testing/maps.md#terrain-encoding-for-tests",
+        "test/README.md#when-to-use-this-pattern": "docs/development/testing/maps.md#when-to-use-this-pattern",
+        "test/README.md#map-repetition-regression": "docs/development/testing/maps.md#map-repetition-regression",
+        "test/README.md#real-lan-session-regression": "docs/development/testing/network.md#real-lan-session-regression",
+        "test/README.md#aspect-ratio-and-screen-capture-regression": "docs/development/testing/rendering.md#aspect-ratio-and-screen-capture-regression",
+        "test/README.md#wrapped-building-footprint-regression": "docs/development/testing/simulation.md#wrapped-building-footprint-regression",
+        "test/README.md#entering-unit-save-regression": "docs/development/testing/persistence.md#entering-unit-save-regression",
+        "test/README.md#entering-unit-draw-regression": "docs/development/testing/rendering.md#entering-unit-draw-regression",
+        "test/README.md#immobile-unit-gradient-regression": "docs/development/testing/simulation.md#immobile-unit-gradient-regression",
+        "test/README.md#building-gradient-invalidation-regression": "docs/development/testing/simulation.md#building-gradient-invalidation-regression",
+        "test/README.md#forbidden-zone-invalidation-and-escape-recovery": "docs/development/testing/simulation.md#forbidden-zone-invalidation-and-escape-recovery",
+        "test/README.md#building-expulsion-regression": "docs/development/testing/simulation.md#building-expulsion-regression",
+        "test/README.md#savegame-safety": "docs/development/testing/simulation.md#savegame-safety",
+        "test/README.md#hunger-and-defeat-detection": "docs/development/testing/simulation.md#hunger-and-defeat-detection",
+        "test/README.md#cortex-placement-regression": "docs/development/testing/ai.md#cortex-placement-regression",
+        "test/README.md#clearing-flag-resource-bounds": "docs/development/testing/simulation.md#clearing-flag-resource-bounds",
+        "test/README.md#trapped-colony-elimination": "docs/development/testing/simulation.md#trapped-colony-elimination",
+        "test/README.md#team-statistics-save-compatibility": "docs/development/testing/persistence.md#team-statistics-save-compatibility",
+        "test/README.md#ai-helper-gradient-regression": "docs/development/testing/ai.md#ai-helper-gradient-regression",
+        "test/README.md#resource-fetch-target-regression": "docs/development/testing/simulation.md#resource-fetch-target-regression",
+        "test/README.md#hiring-bucket-iteration": "docs/development/testing/simulation.md#hiring-bucket-iteration",
+        "test/README.md#ai-save-portability": "docs/development/testing/ai.md#ai-save-portability",
+        "test/README.md#shared-ai-runtimenicowar-save-continuation": "docs/development/testing/ai.md#shared-ai-runtimenicowar-save-continuation",
+        "test/README.md#shared-ai-runtime-building-order-id-save-compatibility": "docs/development/testing/ai.md#shared-ai-runtime-building-order-id-save-compatibility",
+        "test/README.md#native-main-settings-redesign": "docs/development/testing/rendering.md#native-main-settings-redesign",
+        "test/README.md#pre-game-map-preview-regression": "docs/development/testing/rendering.md#pre-game-map-preview-regression",
+        "test/README.md#tournament-execution-and-configuration": "docs/development/testing/ai.md#tournament-execution-and-configuration",
+        "test/README.md#map-cli": "docs/development/testing/maps.md#map-cli",
+        "test/README.md#whole-game-diagnostics": "docs/development/testing/maps.md#whole-game-diagnostics",
+        "test/README.md#flat-map-images": "docs/development/testing/maps.md#flat-map-images",
+        "test/README.md#map-json-reports": "docs/development/testing/maps.md#map-json-reports",
+        "test/README.md#distributed-map-telemetry": "docs/development/testing/maps.md#distributed-map-telemetry",
+        "test/README.md#performance-telemetry": "docs/development/testing/telemetry.md#performance-telemetry",
+        "test/README.md#distributed-gameplay-ai-and-performance-telemetry": "docs/development/testing/telemetry.md#distributed-gameplay-ai-and-performance-telemetry",
+        "test/README.md#nicowar-farming-wood-clearance": "docs/development/testing/ai.md#nicowar-farming-wood-clearance",
+        "test/README.md#engine-save-continuation": "docs/development/testing/persistence.md#engine-save-continuation",
+        "test/README.md#ai-strategy-profile-captures": "docs/development/testing/ai.md#ai-strategy-profile-captures",
+        "test/README.md#landscape-preview-scheduling-and-scrolling": "docs/development/testing/persistence.md#landscape-preview-scheduling-and-scrolling",
+        "test/README.md#phone-interface-verification": "docs/development/testing/platforms.md#phone-interface-verification",
+        "test/README.md#zone-boundary-rendering": "docs/development/testing/rendering.md#zone-boundary-rendering",
+        "test/README.md#parallel-compute-prototype": "docs/development/testing/simulation.md#shared-compute-executor",
+        "test/README.md#simulation-thread-equivalence": "docs/development/testing/simulation.md#simulation-thread-equivalence",
+        "test/README.md#delayed-gradient-pipeline": "docs/development/testing/simulation.md#delayed-gradient-pipeline",
+        "test/README.md#experimental-features-and-guard-area-balancing": "docs/development/testing/simulation.md#experimental-features-and-guard-area-balancing",
+        "test/README.md#javascript": "docs/development/testing/scripting.md#javascript",
+        "test/README.md#software-renderer": "docs/development/testing/rendering.md#software-renderer",
+        "test/README.md#castor-saved-game-continuation": "docs/development/testing/ai.md#castor-saved-game-continuation",
+        "test/README.md#ci-coverage-ownership": "docs/development/testing/ci.md#ci-coverage-ownership",
+        "test/README.md#native-coverage-workflow": "docs/development/testing/ci.md#native-coverage-workflow",
+        "test/README.md#untrusted-file-regression-coverage": "docs/development/testing/persistence.md#untrusted-file-regression-coverage",
+        "test/README.md#memory-representation-compatibility": "docs/development/testing/persistence.md#memory-representation-compatibility",
+        "test/README.md#save-size-measurements": "docs/development/testing/persistence.md#save-size-measurements",
+        "test/README.md#gameplay-recording": "docs/development/testing/assets.md#gameplay-recording",
+        "test/README.md#legacy-ai-state-and-full-game-continuation": "docs/development/testing/ai.md#legacy-ai-state-and-full-game-continuation",
+        "test/README.md#custom-rule-ai-behavior": "docs/development/testing/ai.md#custom-rule-ai-behavior",
+        "test/README.md#soundtrack-selection": "docs/development/testing/assets.md#soundtrack-selection",
+        "test/README.md#audio-buffering-and-cpu-contention": "docs/development/testing/assets.md#audio-buffering-and-cpu-contention",
+        "test/README.md#market-fetching": "docs/development/testing/simulation.md#market-fetching",
+        "test/README.md#runtime-terrain": "docs/development/testing/maps.md#runtime-terrain",
+        "test/README.md#building-catalog-composition-and-performance": "docs/development/testing/maps.md#building-catalog-composition-and-performance",
+        "test/README.md#runtime-resource-stress-components": "docs/development/testing/maps.md#runtime-resource-stress-components",
+        "test/README.md#generator-fingerprint-verification-and-observations": "docs/development/testing/maps.md#generator-fingerprint-verification-and-observations"
+      },
+      "extracted_to": null
+    },
+    {
+      "original": "test/data/win-probability-engine-samples.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/data/win-probability-engine-samples.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/ai-random-streams/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/ai-random-streams/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/audio/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/audio/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/building-catalog/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/building-catalog/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/entering-explorer/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/entering-explorer/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/farm-areas/off-path-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/farm-areas/off-path-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/greedy-fetching/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/greedy-fetching/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/greedy-fetching/round-trip-143-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/greedy-fetching/round-trip-143-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/guard-area/off-path-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/guard-area/off-path-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/image-assets/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/image-assets/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/global-numbers-profile1.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/global-numbers-profile1.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/numeric-profile1.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/numeric-profile1.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-economy-0.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-economy-0.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-economy-1.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-economy-1.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-economy-2.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-economy-2.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-economy-3.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-economy-3.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-survey-0.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-survey-0.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-survey-1.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-survey-1.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-survey-2.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-survey-2.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/javascript/realistic-survey-3.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/javascript/realistic-survey-3.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/legacy-ai-127/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/legacy-ai-127/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/legacy-ai-127/cabino.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/legacy-ai-127/cabino.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/legacy-ai-127/cortex.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/legacy-ai-127/cortex.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/legacy-ai-127/nicowar.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/legacy-ai-127/nicowar.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/map-generators/pre-resource-epoch-golden.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/map-generators/pre-resource-epoch-golden.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/map-previews/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/map-previews/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/map-tiling/checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/map-tiling/checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/markets-v2/disabled-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/markets-v2/disabled-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/markets-v2/enabled-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/markets-v2/enabled-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/markets-v2/legacy-133-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/markets-v2/legacy-133-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/multiplayer/FourSquares1.verify-trace.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/multiplayer/FourSquares1.verify-trace.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/scoped-gradients/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/scoped-gradients/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/shared-runtime-continuation/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/shared-runtime-continuation/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/team-stats/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/team-stats/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/team-stats/telemetry-expansion-validation/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/team-stats/telemetry-expansion-validation/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/team-stats/version84.expected.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/team-stats/version84.expected.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/team-stats/version88.expected.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/team-stats/version88.expected.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/terrain-catalogue/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/terrain-catalogue/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/win-probability/rule-trace.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/win-probability/rule-trace.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/winning-conditions/expected.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/winning-conditions/expected.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/fixtures/wrapped-building/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/fixtures/wrapped-building/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/map-generator-golden.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/map-generator-golden.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/maxima/README.md",
+      "disposition": "rewrite",
+      "destination": "test/maxima/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/maxima/fixtures/army-birth-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/maxima/fixtures/army-birth-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/maxima/fixtures/rally-movement-checksums.txt",
+      "disposition": "retain/exclude",
+      "destination": "test/maxima/fixtures/rally-movement-checksums.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/maxima/fixtures/save-continuation/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/maxima/fixtures/save-continuation/README.md",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "test/third_party/README.md",
+      "disposition": "retain/exclude",
+      "destination": "test/third_party/README.md",
+      "notes": "Dependency/vendor notices; retain upstream/legal content",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "third_party/README.md",
+      "disposition": "rewrite",
+      "destination": "third_party/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "third_party/openlibm/LICENSE.md",
+      "disposition": "retain/exclude",
+      "destination": "third_party/openlibm/LICENSE.md",
+      "notes": "Dependency/vendor notices; retain upstream/legal content",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "third_party/openlibm/README.md",
+      "disposition": "retain/exclude",
+      "destination": "third_party/openlibm/README.md",
+      "notes": "Dependency/vendor notices; retain upstream/legal content",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "third_party/quickjs-ng/README.md",
+      "disposition": "retain/exclude",
+      "destination": "third_party/quickjs-ng/README.md",
+      "notes": "Dependency/vendor notices; retain upstream/legal content",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "third_party/quickjs-ng/SECURITY.md",
+      "disposition": "retain/exclude",
+      "destination": "third_party/quickjs-ng/SECURITY.md",
+      "notes": "Dependency/vendor notices; retain upstream/legal content",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/README",
+      "disposition": "rewrite",
+      "destination": "tools/README",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/artwork/ai/README.md",
+      "disposition": "rewrite",
+      "destination": "tools/artwork/ai/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/asset-requirements.txt",
+      "disposition": "retain/exclude",
+      "destination": "tools/asset-requirements.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/cortex-ml-infer/FORMAT.md",
+      "disposition": "move/rewrite",
+      "destination": "tools/cortex-ml-infer/format.md",
+      "notes": "Canonical destination; see owner source review",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/cortex-ml/README.md",
+      "disposition": "rewrite",
+      "destination": "tools/cortex-ml/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/fractal_maps/configs/README.md",
+      "disposition": "retain",
+      "destination": "tools/fractal_maps/configs/README.md",
+      "notes": "Existing focused contract/reference; see domain source ledger where applicable",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/music/requirements-genai.txt",
+      "disposition": "retain/exclude",
+      "destination": "tools/music/requirements-genai.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/music/requirements-samples.txt",
+      "disposition": "retain/exclude",
+      "destination": "tools/music/requirements-samples.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/music/requirements-separation.txt",
+      "disposition": "retain/exclude",
+      "destination": "tools/music/requirements-separation.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/music/requirements-synth.txt",
+      "disposition": "retain/exclude",
+      "destination": "tools/music/requirements-synth.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/music/requirements.txt",
+      "disposition": "retain/exclude",
+      "destination": "tools/music/requirements.txt",
+      "notes": "Runtime data, dependency declarations or fixture contracts; preserve source ownership",
+      "sections": {},
+      "extracted_to": null
+    },
+    {
+      "original": "tools/unit-animation/README.md",
+      "disposition": "rewrite",
+      "destination": "tools/unit-animation/README.md",
+      "notes": "Navigation, factual or editorial correction",
+      "sections": {},
+      "extracted_to": null
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+test_drawing_does_not_read_live_entities (test_scene_boundary.SceneBoundaryTests.test_drawing_does_not_read_live_entities) ... ok
+test_preparation_cannot_capture_or_read_live_objects (test_scene_boundary.SceneBoundaryTests.test_preparation_cannot_capture_or_read_live_objects) ... ok
+test_scene_types_do_not_include_simulation_headers (test_scene_boundary.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.387s
+
+OK

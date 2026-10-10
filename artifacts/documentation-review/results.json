@@ -1,0 +1,274 @@
+{
+  "revision": "423242fefaabf7b6ad075be8e0096a7295aca671",
+  "base": "978a0ea18a04f9952ae52f63064021cebc2fc926",
+  "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "python": "3.14.7",
+  "node": "v24.19.0",
+  "checks": [
+    {
+      "name": "source-proof",
+      "command": [
+        "python3",
+        "artifacts/documentation-review/source-proof.py"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 1.597,
+      "log": "source-proof.log"
+    },
+    {
+      "name": "checker-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_check_docs.py",
+        "-v"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.09,
+      "log": "checker-tests.log"
+    },
+    {
+      "name": "local-links",
+      "command": [
+        "python3",
+        "tools/check_docs.py"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.875,
+      "log": "local-links.log"
+    },
+    {
+      "name": "source-art-catalog",
+      "command": [
+        "python3",
+        "tools/artwork/catalog_originals.py"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.176,
+      "log": "source-art-catalog.log"
+    },
+    {
+      "name": "source-art-catalog-unchanged",
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "--",
+        "datasrc/gfx/CATALOG.md",
+        "datasrc/gfx/provenance/catalog.json"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.036,
+      "log": "source-art-catalog-unchanged.log"
+    },
+    {
+      "name": "provenance",
+      "command": [
+        "python3",
+        "tools/artwork/runtime_provenance.py",
+        "--check"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.454,
+      "log": "provenance.log"
+    },
+    {
+      "name": "sim-version",
+      "command": [
+        "python3",
+        "test/check_sim_revision.py",
+        "--base",
+        "origin/master"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.152,
+      "log": "sim-version.log"
+    },
+    {
+      "name": "entity-random",
+      "command": [
+        "python3",
+        "test/check_entity_random.py"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.4,
+      "log": "entity-random.log"
+    },
+    {
+      "name": "ci-policy-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_ci_policy.py",
+        "-v"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.179,
+      "log": "ci-policy-tests.log"
+    },
+    {
+      "name": "skin-materials-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_skin_materials.py",
+        "-v"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.047,
+      "log": "skin-materials-tests.log"
+    },
+    {
+      "name": "scene-boundary-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-p",
+        "test_scene_boundary.py",
+        "-v"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.429,
+      "log": "scene-boundary-tests.log"
+    },
+    {
+      "name": "generator-studio-tests",
+      "command": [
+        "/Users/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "apps/api/test/generatorStudioProvider.test.ts"
+      ],
+      "working_directory": "platform",
+      "exit_code": 0,
+      "seconds": 0.858,
+      "log": "generator-studio-tests.log"
+    },
+    {
+      "name": "platform-format",
+      "command": [
+        "/Users/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "node_modules/prettier/bin/prettier.cjs",
+        "--check",
+        "README.md",
+        "apps/web/art/README.md",
+        "apps/api/src/generator-studio/domain.ts",
+        "apps/web/src/pages/Generators.tsx",
+        "packages/core/src/queueConfig.ts",
+        "packages/engine/src/engineCli.ts"
+      ],
+      "working_directory": "platform",
+      "exit_code": 0,
+      "seconds": 0.228,
+      "log": "platform-format.log"
+    },
+    {
+      "name": "whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "origin/master"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.082,
+      "log": "whitespace.log"
+    },
+    {
+      "name": "privacy-policy",
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "origin/master",
+        "--",
+        "docs/mobile/privacy-policy.md",
+        "docs/mobile/amazon-privacy-policy.md"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.017,
+      "log": "privacy-policy.log"
+    },
+    {
+      "name": "build-system-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test/build_system",
+        "-v"
+      ],
+      "working_directory": ".",
+      "exit_code": 1,
+      "seconds": 54.663,
+      "log": "build-system-tests.log"
+    },
+    {
+      "name": "external-links",
+      "command": [
+        "python3",
+        "tools/check_docs.py",
+        "--external"
+      ],
+      "working_directory": ".",
+      "exit_code": 1,
+      "seconds": 8.935,
+      "log": "external-links.log"
+    },
+    {
+      "name": "partner-portal",
+      "command": [
+        "curl",
+        "--silent",
+        "--show-error",
+        "--location",
+        "--output",
+        "/dev/null",
+        "--max-time",
+        "20",
+        "--write-out",
+        "%{http_code}\n",
+        "https://partner.microsoft.com/en-US/dashboard/products/9PH4FCRMX19F/setup"
+      ],
+      "working_directory": ".",
+      "exit_code": 0,
+      "seconds": 0.946,
+      "log": "partner-portal.log"
+    }
+  ]
+}
