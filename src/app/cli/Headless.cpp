@@ -478,7 +478,16 @@ struct HeadlessRunner
 		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
         const auto initialGradientPolicy=engine.gui.game.map.adaptiveGradientMetrics();
 		const auto runStart = std::chrono::steady_clock::now();
-		uint64_t setupCpu=0,runCpu=0,measureStart=0;
+		uint64_t setupCpu=0,runCpu=0,measureStart=0,measuredWallNs=0,publicationWaitStart=0;
+        std::chrono::steady_clock::time_point measureWallStart;
+        auto measuredGradientStart=initialGradientPolicy;
+        auto measuredGradientEnd=initialGradientPolicy;
+        const auto startMeasurement=[&] {
+            measuredGradientStart=engine.gui.game.map.adaptiveGradientMetrics();
+            publicationWaitStart=engine.gui.game.map.gradientPipelineStatus().publicationWaitNs;
+            measureWallStart=std::chrono::steady_clock::now();
+            measureStart=processCpuNs();
+        };
 		unsigned measuredTicks=0;
         std::array<Uint64,64> tickHistogram{};
         std::vector<Uint64> tickDurations;
@@ -489,7 +498,7 @@ struct HeadlessRunner
 			if(start>=uint64_t(globals.automaticEndingSteps)) throw std::invalid_argument("benchmark warmup must leave measured ticks");
 			setupCpu=processCpuNs()-setupCpuStart;
 			engine.prepareRun(); engine.beginSession(SDL_GetTicks());
-			if(benchmarkWarmup==0) measureStart=processCpuNs();
+			if(benchmarkWarmup==0) startMeasurement();
 			while(engine.gui.isRunning)
 			{
                 const auto beforeTick=engine.gui.game.stepCounter;
@@ -500,12 +509,14 @@ struct HeadlessRunner
                     ++tickHistogram[std::min<unsigned>(std::bit_width(duration),63)];
                     tickDurations.push_back(duration);
                 }
-				if(!measureStart && engine.gui.game.stepCounter>=start) measureStart=processCpuNs();
+				if(!measureStart && engine.gui.game.stepCounter>=start) startMeasurement();
 			}
 			engine.finishSession();
 			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
 			runCpu=processCpuNs()-measureStart;
+            measuredWallNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-measureWallStart).count();
+            measuredGradientEnd=engine.gui.game.map.adaptiveGradientMetrics();
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
@@ -540,6 +551,8 @@ struct HeadlessRunner
 			<< ",\"finalChecksum\":" << game.checkSum(nullptr, nullptr, nullptr, true)
 			<< ",\"benchmark_setup_cpu_ns\":" << setupCpu
 			<< ",\"benchmark_run_cpu_ns\":" << runCpu
+            << ",\"benchmark_run_wall_ns\":" << measuredWallNs
+            << ",\"benchmark_publication_wait_ns\":" << (benchmark ? pipelineResult.publicationWaitNs-publicationWaitStart : 0)
 			<< ",\"benchmark_save_cpu_ns\":" << saveCpu
 			<< ",\"benchmark_measured_ticks\":" << measuredTicks
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
@@ -623,6 +636,18 @@ struct HeadlessRunner
         for(const auto& [name,value]:initialGradientPolicy) {
             if(initialPolicyComma) result<<',';
             initialPolicyComma=true; result<<quote(name)<<':'<<value;
+        }
+        result << "},\"benchmark_gradient_at_start\":{";
+        bool measuredStartComma=false;
+        for(const auto& [name,value]:measuredGradientStart) {
+            if(measuredStartComma) result<<',';
+            measuredStartComma=true; result<<quote(name)<<':'<<value;
+        }
+        result << "},\"benchmark_gradient_at_end\":{";
+        bool measuredEndComma=false;
+        for(const auto& [name,value]:measuredGradientEnd) {
+            if(measuredEndComma) result<<',';
+            measuredEndComma=true; result<<quote(name)<<':'<<value;
         }
         result << "},\"adaptive_gradient\":{";
         bool policyComma=false;
