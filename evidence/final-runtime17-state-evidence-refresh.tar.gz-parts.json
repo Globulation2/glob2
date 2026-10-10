@@ -1,0 +1,17 @@
+{
+  "archive_sha256": "d7b63aa178b20c219c3733529b7f3d2fcb07c83bd83d785a637e99d1beb897c3",
+  "archive_bytes": 50804090,
+  "parts": [
+    {
+      "path": "artifacts/unit-foundation/evidence/final-runtime17-state-evidence-refresh.tar.gz.part00",
+      "bytes": 50331648,
+      "sha256": "0f2c2b2c00c53db70eee7b9c5c26e568b32c94de57223d7fa88ed21ff9f3150e"
+    },
+    {
+      "path": "artifacts/unit-foundation/evidence/final-runtime17-state-evidence-refresh.tar.gz.part01",
+      "bytes": 472442,
+      "sha256": "6f8ddda11fe9eec0a8404763ca743990d446815d0cc8a4154614cc5dbf6ee06a"
+    }
+  ],
+  "restore": "Concatenate parts in listed order, verify SHA256 and extract tar.gz. This volume supplements the original principal15, large15 and pairedtournament16 volumes."
+}
