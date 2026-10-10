@@ -979,3 +979,23 @@ also keeps both bounds equal. The explicit split is
 unattached until native accounting, calibration, tuning-on/off total CPU and
 promotion-enabled responsiveness gates pass; it never waives complete-mode
 overhead or deadline checks.
+
+`CaptureBatchProbeReplay` accepts the Group's already frozen two/four/eight
+immutable fields and executes one native batch, preserving per-field exact
+accepted eager references. Its Accounting adapter first claims the group's
+opaque future allowance; Replay cannot start native work from an ownership-only
+Group. The fixed adapter and private session/control/holder allowances fit the
+checked future estimate. Comparison consumes at most 16 KiB per broker turn
+across field boundaries, and required work is reconsidered before another turn.
+Late worker expense remains paid; it cannot be subtracted as coordinator work.
+Failed setup retains a declined wrapper until all late member aliases retire,
+and quarantined transfers retain all storage and the global ticket until proof.
+
+Run `isolated captured batch replay uses prepaid native arrays and exact eager
+references` with `GLOB2_TEST_OPENCL_BATCH_REPLAY=1`, parity, direct upload and API
+CPU modes zero. Its 762 fixed assertions cover all six plans and batch sizes
+two/four/eight, complete Group/native future admission and actual eager CPU
+reference sums, indexed exact comparison, cleanup and full debt. Device setup
+belongs to the background coordinator. Synthetic funding and packing clocks
+keep this API/storage test ineligible for inference; it is separate from real
+production Auto learning and mode-wide performance qualification.

@@ -257,6 +257,7 @@ UNIT_TESTS = [
     '#src/field/GradientCpuCaptureGroupTest.cpp',
     '#src/field/OpenCLTransferProofTest.cpp',
     '#src/field/CaptureProbeReplayTest.cpp',
+    '#src/field/CaptureBatchProbeReplayTest.cpp',
     '#src/field/OpenCLRequiredControlTest.cpp',
     '#src/field/CaptureProbeAccountingTest.cpp',
     '#src/field/OpenCLLaneRegistryTest.cpp',
