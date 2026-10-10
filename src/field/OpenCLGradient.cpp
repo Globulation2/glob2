@@ -1743,7 +1743,8 @@ struct OpenCLProbe::Impl
         case Phase::Copy: {
             const auto stop=copied+std::min(copyCells,total-copied);
             while(copied<stop) {
-                const auto field=unsigned(copied/n),offset=copied%n;
+                const auto field=unsigned(copied/n);
+                const auto offset=copied%n;
                 const auto end=copied+std::min({std::size_t(64),stop-copied,n-offset});
                 const auto* original=originals[field];
                 lane->values.insert(lane->values.end(),original+offset,original+offset+end-copied);
