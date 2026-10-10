@@ -58,6 +58,8 @@ struct OpenCLStatus
     // configuration matching; status queries never call into the driver.
     std::string platform, platformVendor, platformVersion;
     std::string deviceVendor, driverVersion, deviceVersion, openCLCVersion;
+    // Confirmed kernel completion versus successful transactional output commit.
+    std::uint64_t deviceObservedFields = 0, committedFields = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.

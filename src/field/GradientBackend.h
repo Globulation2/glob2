@@ -51,6 +51,10 @@ struct BackendRequest
     // Optional owned completion output. True only after a dispatched GPU result
     // commits. A handled trivial field is not a device execution.
     bool* executedOnDevice = nullptr;
+    // Optional diagnostic observation, separate from successful output commit.
+    // A successful in-order convergence read proves preceding kernel completion.
+    // Retains true when later readback/session failure causes CPU fallback.
+    bool* deviceExecutionObserved = nullptr;
 };
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
@@ -89,7 +93,10 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
     const bool eligible=std::all_of(requests.begin(),requests.end(),[](const auto& request) {
         return request.operation==Operation::CompleteField && request.limit>=0;
     });
-    for(const auto& request:requests) if(request.executedOnDevice) *request.executedOnDevice=false;
+    for(const auto& request:requests) {
+        if(request.executedOnDevice)*request.executedOnDevice=false;
+        if(request.deviceExecutionObserved)*request.deviceExecutionObserved=false;
+    }
     // Share the exact shortcut with CPU execution so trivial work is never
     // credited as an accelerator advantage. Resumable phase state is observable.
     if(eligible && std::all_of(requests.begin(),requests.end(),[](const auto& request) {

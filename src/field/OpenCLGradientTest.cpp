@@ -725,6 +725,27 @@ TEST_CASE("passive buffers are bounded worker only and reject retired decisions 
     CHECK(policy.metrics().serviceNs==23*8);
     CHECK(policy.metrics().queueNs==4*8);
 }
+TEST_CASE("isolated completed kernels remain observed when transactional output is declined")
+{
+    // Intentionally quarantines the backend. Run ONLY this case in a separate
+    // process with GLOB2_TEST_OPENCL_EXECUTION_OBSERVATION_ROLLBACK=1.
+    const auto* isolated=std::getenv("GLOB2_TEST_OPENCL_EXECUTION_OBSERVATION_ROLLBACK");
+    if(!isolated || std::strcmp(isolated,"1"))return;
+    using namespace gradient_kernel;
+    REQUIRE(initializeOpenCL());REQUIRE(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)));
+    BackendSession session;const field::Grid grid(31,17);
+    std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[19]=65400;seeds[13]=0;
+    const auto original=seeds;
+    struct Context {BackendSession* session;unsigned calls=0;} context{&session};
+    bool committed=true,observed=false;
+    BackendRequest request{seeds.data(),700,grid,session,&context,
+        [](void* p,std::size_t){auto& c=*static_cast<Context*>(p);if(!c.calls++)c.session->fail();return LAND_STEPS;},nullptr,{}};
+    request.executedOnDevice=&committed;request.deviceExecutionObserved=&observed;
+    const auto before=openCLStatus();CHECK_FALSE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+    const auto after=openCLStatus();CHECK(context.calls>0);CHECK(session.failed.load());CHECK(seeds==original);
+    CHECK_FALSE(committed);CHECK(observed);CHECK(after.dispatches>before.dispatches);CHECK(after.hostChecks>before.hostChecks);
+    CHECK(after.deviceObservedFields==before.deviceObservedFields+1);CHECK(after.committedFields==before.committedFields);
+}
 TEST_CASE("every compiled explicit kernel matches the independent oracle without tournaments")
 {
     using namespace gradient_kernel;
@@ -742,10 +763,12 @@ TEST_CASE("every compiled explicit kernel matches the independent oracle without
     for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
         if(!(readyPlans.load()&(1u<<plan))) continue;
         auto actual=seeds;
+        bool committed=false,observed=false;
         BackendRequest request{actual.data(),COST_LIMIT,grid,session,&costs,
             [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},
             [](void*,std::uint16_t*){FAIL("explicit kernel must not call a CPU reference");},{}};
-        REQUIRE(accelerator(request,Plan(plan))); CHECK(actual==expected);
+        request.executedOnDevice=&committed;request.deviceExecutionObserved=&observed;
+        REQUIRE(accelerator(request,Plan(plan))); CHECK(actual==expected);CHECK(committed);CHECK(observed);
         const auto executed = openCLStatus();
         CHECK(executed.tileWidth == PLANS[plan].tileWidth);
         CHECK(executed.tileHeight == PLANS[plan].tileHeight);
@@ -829,21 +852,26 @@ TEST_CASE("trivial gradient work is shared by CPU and reports no device dispatch
     using namespace gradient_kernel;
     BackendSession session;
     std::array<std::uint16_t,4> seeds{0,65535,0,65535};
-    bool dispatched=true;
+    bool dispatched=true,observed=true;
     BackendRequest request{seeds.data(),60,{2,2},session,nullptr,
         [](void*,std::size_t){FAIL("trivial field needs no costs");return LAND_STEPS;},
         [](void*,std::uint16_t*){FAIL("trivial CPU field needs no propagation");},{}};
     request.executedOnDevice=&dispatched;
+    request.deviceExecutionObserved=&observed;
     executeGradientGroup(std::span(&request,1),Backend::CPU);
     CHECK_FALSE(dispatched);
+    CHECK_FALSE(observed);
     if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
-    const auto before=openCLStatus();dispatched=true;
+    const auto before=openCLStatus();dispatched=observed=true;
     REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
     CHECK_FALSE(dispatched);
+    CHECK_FALSE(observed);
     const auto after=openCLStatus();
     CHECK(after.noopFields==before.noopFields+1);
     CHECK(after.dispatches==before.dispatches);
     CHECK(after.fields==before.fields);
+    CHECK(after.deviceObservedFields==before.deviceObservedFields);
+    CHECK(after.committedFields==before.committedFields);
 }
 TEST_CASE("uniform metadata uses scalar costs only with a complete immutable proof")
 {

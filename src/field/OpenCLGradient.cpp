@@ -651,6 +651,7 @@ struct Runtime
         out.uniformMetadataHits+=in.uniformMetadataHits;
         out.tileMaskInitializations+=in.tileMaskInitializations;out.tileMaskClears+=in.tileMaskClears;
         out.kernelArgumentUpdates+=in.kernelArgumentUpdates;
+        out.deviceObservedFields+=in.deviceObservedFields;out.committedFields+=in.committedFields;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -971,6 +972,7 @@ struct Runtime
         // exchange only one cell even when they perform many local sweeps, so
         // the ushort convergence bound counts dispatches, not local sweeps.
         const auto checkInterval=shared->status.checkInterval;
+        bool deviceObserved=false;
         for (UInt round = 0; round < 65536;)
         {
             if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
@@ -1009,6 +1011,13 @@ struct Runtime
             }
             round+=count;
             read(changed,flags.data(),requests.size()*sizeof(UInt),false);
+            if(!deviceObserved) {
+                // This successful in-order read proves completion of every
+                // preceding kernel for this chunk. Submission alone cannot.
+                for(const auto* request:requests)
+                    if(request->deviceExecutionObserved)*request->deviceExecutionObserved=true;
+                status.deviceObservedFields+=requests.size();deviceObserved=true;
+            }
             for(auto event:events.values) profile(event,status.deviceKernelNs);
             ++status.hostChecks;
             bool retired = false;
@@ -1057,7 +1066,10 @@ struct Runtime
                 if(start) {device.threadCPUAvailable.store(true);device.threadCPUNs+=threadCPUClock()-start;}
             }
         } cpuTimer{*shared};
-        for(const auto& request:input) if(request.executedOnDevice) *request.executedOnDevice=false;
+        for(const auto& request:input) {
+            if(request.executedOnDevice)*request.executedOnDevice=false;
+            if(request.deviceExecutionObserved)*request.deviceExecutionObserved=false;
+        }
         if(input.empty()) return true;
         if(plan==Plan::CPU || unsigned(plan)>=PLANS.size() ||
            !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(plan)))) return false;
@@ -1126,6 +1138,7 @@ struct Runtime
             for(const auto& r:input) {
                 std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
                 if(r.executedOnDevice) *r.executedOnDevice=true;
+                ++status.committedFields;
                 outputOffset+=r.grid.cells();
             }
             ++status.schedulerBatches;
@@ -1161,12 +1174,15 @@ struct Runtime
         for (const auto &r : requests)
         {
             if(r.executedOnDevice) *r.executedOnDevice=false;
+            if(r.deviceExecutionObserved) *r.deviceExecutionObserved=false;
             r.session.fail();
         }
         return false;
     }
     bool run(const BackendRequest &r, Plan)
     {
+        if(r.executedOnDevice)*r.executedOnDevice=false;
+        if(r.deviceExecutionObserved)*r.deviceExecutionObserved=false;
         r.session.fail();
         return false;
     }
