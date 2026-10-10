@@ -1379,8 +1379,11 @@ struct OpenCLProbe::Impl
         event=next;
     }
     template<class Enqueue> void submitEvent(Enqueue enqueue) {
-        Handle next=nullptr;
-        check(enqueue(&next));remember(next);
+        const auto result=submitOpenCLTrackedCommand<Handle>(enqueue,
+            [this](Handle next){remember(next);},
+            [this]{untrackedCommand=true;quarantine();});
+        check(result);
+        if(untrackedCommand)throw std::runtime_error("OpenCL omitted completion event");
     }
     static bool terminalProof(void* value) noexcept {
         auto& state=*static_cast<Impl*>(value);

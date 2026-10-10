@@ -506,7 +506,9 @@ call blocking `clFinish` on the required coordinator. Ordinary shutdown cannot
 free an unproved graph because the retained state pins the slot's parent; this
 bounded cycle survives until proof or operating-system process reclamation.
 
-An omitted completion event cannot be reaped through an older event. This
+An enqueue error preserves any returned event but latches unknown command
+acceptance. Neither that errored event nor an older event can reap the graph.
+An omitted completion event likewise cannot be reaped through an older event. This
 candidate has no automatic emergency-drain thread and no automatic GPU recovery
 after quarantine. It remains an isolated diagnostic prerequisite; required
 synchronous Runtime failure paths still need a separate ownership repair. Tool
@@ -514,4 +516,6 @@ exit code 86 is not a game fallback. No timing sample or policy settlement may
 be inferred from quarantine, and capture/policy leases must stay in its retained
 graph. Hardware-free tests exercise the actual retention helper with live seed,
 output and metadata sentinels, repeated failed proof, later successful reap,
-foreign-owner rejection and last-external-owner admission release.
+foreign-owner rejection and last-external-owner admission release. The actual
+submission helper also has injected first-command and prior-event enqueue-error
+tests, including an error that returns a replacement event.

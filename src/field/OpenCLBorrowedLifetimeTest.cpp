@@ -87,3 +87,41 @@ TEST_CASE("failed OpenCL proof never runs payload destructors or releases admiss
     state->terminal=true;CHECK(slot.tryReap(&BorrowedState::proof));state.reset();
     CHECK(destroyed==1);CHECK(openCLProbeBytes()==baseline);
 }
+
+TEST_CASE("ambiguous OpenCL enqueue cannot borrow proof from an older event" * doctest::test_suite("OpenCLGradient"))
+{
+    using namespace gradient_kernel;
+    const auto baseline=openCLProbeBytes();
+    OpenCLBorrowedLifetime slot;unsigned destroyed=0;
+    REQUIRE(slot.tryReserve());REQUIRE(reserveOpenCLProbeBytes(sizeof(BorrowedState)+256));
+    auto state=std::make_shared<BorrowedState>(slot,destroyed,sizeof(BorrowedState)+256);
+    state->terminal=true; // The older event already proves its own completion.
+    unsigned trailing=1,releases=0;bool unknown=false;
+    auto retain=[&](unsigned next){++releases;trailing=next;};
+    auto ambiguous=[&]{unknown=true;CHECK(slot.quarantine(state));};
+    CHECK(submitOpenCLTrackedCommand<unsigned>([](unsigned*){return -5;},retain,ambiguous)==-5);
+    CHECK(trailing==1);CHECK(releases==0);CHECK(unknown);
+    // This is the same admission guard used before terminal-event polling in
+    // Impl::terminalProof: the old positive event is never consulted as proof.
+    CHECK_FALSE((!unknown && slot.tryReap(&BorrowedState::proof)));
+    CHECK(state->queries==0);CHECK(destroyed==0);CHECK(slot.quarantined());
+    CHECK(submitOpenCLTrackedCommand<unsigned>([](unsigned* next){*next=2;return -5;},retain,ambiguous)==-5);
+    CHECK(trailing==2);CHECK(releases==1);CHECK(unknown);
+    CHECK_FALSE((!unknown && slot.tryReap(&BorrowedState::proof)));CHECK(state->queries==0);
+    // Test-only successful proof releases the synthetic graph. Production
+    // cannot clear an ambiguous command by a previous or errored event.
+    CHECK(slot.tryReap(&BorrowedState::proof));state.reset();
+    CHECK(destroyed==1);CHECK(openCLProbeBytes()==baseline);
+}
+
+TEST_CASE("first OpenCL enqueue error latches unknown acceptance without an event" * doctest::test_suite("OpenCLGradient"))
+{
+    unsigned trailing=0;bool unknown=false;
+    CHECK(gradient_kernel::submitOpenCLTrackedCommand<unsigned>(
+        [](unsigned*){return -5;},[&](unsigned next){trailing=next;},[&]{unknown=true;})==-5);
+    CHECK(trailing==0);CHECK(unknown);
+    unknown=false;
+    CHECK(gradient_kernel::submitOpenCLTrackedCommand<unsigned>(
+        [](unsigned*){return 0;},[&](unsigned next){trailing=next;},[&]{unknown=true;})==0);
+    CHECK(trailing==0);CHECK(unknown);
+}
