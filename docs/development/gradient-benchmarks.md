@@ -767,3 +767,16 @@ comparison costs, reserved/charged CPU and inference eligibility. They are emitt
 only on the background coordinator. Required GPU observations include the valid
 narrow enclosing process window's unknown CPU upper bound for conservative demotion;
 these windows do not claim causal driver attribution or replace full-game qualification.
+
+Worker capture completion has a separate optional CPU bracket around golden
+cloning, queue submission and capture-wrapper disposal. Only the valid internal
+clone expense, frozen before coordinator ownership transfer, is subtracted from
+that bracket; the remaining work is tuning debt. Zero/reversed/inconsistent
+measurements charge invalid debt rather than supplying free work. Rejected queue
+submission and required-exception cleanup remain on the worker; conservative
+cancellation may overcharge cleanup, but never includes required propagation.
+The accepted propagation reference remains frozen separately and excludes these
+optional expenses. Fused seed counts continue to belong to required preparation;
+there is no new scan or per-cell clock. Their incremental instruction cost must
+pass the complete tuning-on/off process CPU gate (or a classification ablation
+when material), independently of the optional probe credit budget.

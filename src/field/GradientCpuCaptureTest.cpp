@@ -302,3 +302,32 @@ TEST_CASE("unsettled capture token destruction charges invalid timing after stor
     CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
     CHECK(fixture.policy->metrics().canceled==1);
 }
+
+TEST_CASE("capture worker brackets subtract only valid frozen internal expenses" * doctest::test_suite("OpenCLGradient"))
+{
+    using Capture=gradient_kernel::GradientCpuCapture;
+    Capture::Receipt receipt;receipt.optionalCpuNs=70;
+    auto charge=Capture::unrecordedCallingCpu(100,200,20,receipt);
+    CHECK(charge.clockValid);CHECK(charge.ns==50);
+    receipt.optionalCpuNs=120;
+    charge=Capture::unrecordedCallingCpu(100,200,20,receipt);
+    CHECK(charge.clockValid);CHECK(charge.ns==0);
+    receipt.optionalCpuNs=121;
+    charge=Capture::unrecordedCallingCpu(100,200,20,receipt);
+    CHECK_FALSE(charge.clockValid);CHECK(charge.ns==100);
+    receipt.optionalCpuNs=19;
+    charge=Capture::unrecordedCallingCpu(100,200,20,receipt);
+    CHECK_FALSE(charge.clockValid);CHECK(charge.ns==100);
+    receipt.optionalCpuNs=70;receipt.clockValid=false;
+    charge=Capture::unrecordedCallingCpu(100,200,20,receipt);
+    CHECK_FALSE(charge.clockValid);CHECK(charge.ns==100);
+    for(const auto endpoints:{std::pair{0ull,200ull},std::pair{100ull,0ull},std::pair{200ull,100ull}}) {
+        charge=Capture::unrecordedCallingCpu(endpoints.first,endpoints.second,20,receipt);
+        CHECK_FALSE(charge.clockValid);CHECK(charge.ns==0);
+    }
+    gradient_kernel::CpuSavingPolicy policy;
+    gradient_kernel::WorkloadKey key;key.width=key.height=1;
+    policy.observeAccepted(key,gradient_kernel::Plan::CPU,1000000,1);
+    policy.recordTuningOverhead(1,charge.ns,charge.clockValid);
+    CHECK(policy.metrics().probeCpuNs>=10001);
+}

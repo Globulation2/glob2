@@ -70,6 +70,19 @@ public:
         std::size_t reservedBytes=0,copiedBytes=0;
         bool clockValid=true,requiresFullReservedCharge=false,referenceBound=false;
     };
+    struct CallingCpuCharge {std::uint64_t ns=0;bool clockValid=false;};
+    // Same worker/clock namespace only. An outer optional bracket includes
+    // complete(), queue submission and wrapper destruction. Subtract only a
+    // reconcilable internal receipt delta frozen BEFORE handing off the Record.
+    // Missing or inconsistent clocks never turn rejected work into free work.
+    static CallingCpuCharge unrecordedCallingCpu(std::uint64_t start,std::uint64_t end,
+        std::uint64_t recordedBefore,const Receipt& after) noexcept {
+        if(!start || !end || end<start)return {};
+        const auto total=end-start;
+        if(!after.clockValid || after.optionalCpuNs<recordedBefore ||
+           after.optionalCpuNs-recordedBefore>total)return {total,false};
+        return {total-(after.optionalCpuNs-recordedBefore),true};
+    }
     struct RequiredReceipt {
         std::uint64_t requiredGeneration=0,propagationCpuNs=0;
         bool successful=false,clockValid=false;

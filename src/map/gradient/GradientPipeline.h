@@ -236,6 +236,20 @@ private:
                     };
                     capture=deviceService->beginCapture(backendSession,input,captureReceipt);
                 }
+                // If required propagation throws, pay capture disposal on this
+                // worker without including required execution in the bracket.
+                struct CaptureCleanup {
+                    std::unique_ptr<gradient_kernel::GradientCpuCapture>& capture;
+                    gradient_kernel::BackendSession& session;
+                    std::uint64_t tick;
+                    ~CaptureCleanup() {
+                        if(!capture)return;
+                        const auto started=glob2::threadCpuNs();capture.reset();
+                        const auto policy=session.learningPolicy();const auto ended=glob2::threadCpuNs();
+                        if(policy)policy->recordTuningOverhead(tick,glob2::threadCpuDeltaNs(started,ended),
+                            started && ended && ended>=started);
+                    }
+                } captureCleanup{capture,*backendSession,job.snapshotLease ? job.snapshotLease->tick : job.due-delay};
                 const auto cpuStart=cpuNow();
                 if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
                 work(job,scratch.propagation);
@@ -244,9 +258,18 @@ private:
                 const bool measured=preparationClockValid && cpuStart>=preparedCpu && cpuEnded>=cpuStart;
                 propagationCpu.fetch_add(consumed,std::memory_order_relaxed);
                 if(capture) {
+                    const auto optionalStarted=glob2::threadCpuNs();
+                    const auto recordedBefore=captureReceipt.optionalCpuNs;
+                    const auto policy=backendSession->learningPolicy();
                     auto record=capture->complete(std::span(job.data.get(),cells),
                         {backendSession->currentGeneration(),consumed,true,measured},captureReceipt);
+                    // Freeze the clone receipt before the coordinator can adopt
+                    // the Record. No worker reads escaped producer-owned state.
                     if(record)deviceService->submitCapture(std::move(record),backendSession);
+                    capture.reset();
+                    const auto charge=gradient_kernel::GradientCpuCapture::unrecordedCallingCpu(
+                        optionalStarted,glob2::threadCpuNs(),recordedBefore,captureReceipt);
+                    if(policy)policy->recordTuningOverhead(captureCleanup.tick,charge.ns,charge.clockValid);
                 }
                 if(learningEnabled && deviceService && executor->slot()) deviceService->recordAccepted(backendSession,key,
                     gradient_kernel::Plan::CPU,measured ? glob2::threadCpuDeltaNs(preparationCpu,preparedCpu)+consumed : 0,
