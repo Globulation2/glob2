@@ -1,0 +1,14 @@
+{
+  "source_commit": "9f3c92c834c17f4f15f09a3f0c65edb2997cefd7",
+  "base_commit": "69ef3e1b2bf453aa280a69be72f83167b1511d9d",
+  "archive_bytes": 44206245,
+  "archive_sha256": "5af5732048cba78e7ee64b6e968d283fc5f86fb6a9e49c10b96f3620dd20b1a3",
+  "parts": [
+    {
+      "path": "verification.zip.part-00",
+      "bytes": 44206245,
+      "sha256": "5af5732048cba78e7ee64b6e968d283fc5f86fb6a9e49c10b96f3620dd20b1a3"
+    }
+  ],
+  "note": "First controller milestone only. Raw historical and failed attempts are retained under their original filenames; report.md identifies final validation. No executable binaries or disposable profiles included."
+}

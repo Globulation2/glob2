@@ -1,0 +1,42 @@
+{
+  "milestone": 1,
+  "live_experiments": false,
+  "accounting_sample_period": 32,
+  "compute_threads": 8,
+  "owner_slots": 1,
+  "workers": 7,
+  "fixtures": "artifacts/gpu-gradients/campaign/map-holdouts.json",
+  "plans": [
+    "cpu",
+    "frozen8"
+  ],
+  "paired_repetitions": 3,
+  "ticks": 5000,
+  "warmup_ticks": 1000,
+  "order": "alternate accounting off/on and on/off by repetition and fixture; retain every run",
+  "gates": {
+    "large_runtime_geomean_max_percent": 1,
+    "large_case_median_max_percent": 3,
+    "small_case_median_max_percent": 5,
+    "p99_tick_max_percent": 10,
+    "publication_wait_added_ns_per_tick_max": 100000,
+    "controller_retained_bytes_max": 524288,
+    "process_peak_rss_added_bytes_max": 2097152,
+    "processing_elapsed_fraction_max": 0.0025
+  },
+  "exclusions": "Only failed/exactness-mismatched runs, changed binary/input/configuration, wrong worker count, or independently logged reserved-core overlap; retain all excluded records and reasons. No timing-outlier exclusions.",
+  "inconclusive": "Report all paired ratios/ranges. If confidence is insufficient or tails/hardware contention prevent attribution, keep accounting opt-in and do not advance to learned selection or live comparisons. No post-hoc threshold changes.",
+  "scope": "Identical established plans and seeds. GPU readiness must precede timed game execution; otherwise that pair cannot qualify as a fixed-GPU comparison. Initialization is separately reported. Shared desktop GPU contention remains a limitation. These short first-milestone segments do not qualify a full adaptive controller.",
+  "statistical_rule": "Report paired log-runtime ratios. Large-map aggregate point estimate must meet its gate and its one-sided 95% Student-t upper bound across the three paired pass aggregates must also meet the gate (df=2, t=2.920). Otherwise inconclusive unless the lower bound exceeds the budget. Case/tail/RSS gates remain reported as descriptive medians and full ranges with only three pairs; no post-hoc outlier removal.",
+  "startup": "Write identical initial and final saves in every run. Initial save and initial checksum precede timed execution, without an optimizer readiness wait. Record ready mask at timed start; unready GPU observations remain in evidence but cannot qualify the fixed-plan GPU gate.",
+  "warm_supplement": {
+    "declared_before_final_revision_measurements": true,
+    "reason": "Cold startup readiness prevented fixed-GPU attribution in superseded pre-fix observations. Add reporting at the existing 1000-tick warmup boundary; no initialization waits.",
+    "window": "1000 through 5000 ticks, including final required-work drain",
+    "runtime": "benchmark_run_wall_ns",
+    "readiness": "benchmark_gradient_at_start.ready_plan_mask must include Frozen8 for fixed GPU qualification",
+    "processing_cost": "benchmark_gradient_at_end.processing_ns minus benchmark_gradient_at_start.processing_ns",
+    "gates": "Same numerical gates, repetitions and confidence rule as original protocol. Evaluate warm CPU and GPU separately; retain original whole-run CPU gate and every cold-start result. Unready warm GPU pairs remain excluded from fixed-plan qualification. No threshold changes."
+  },
+  "second_accounting_revision": "Same thresholds, sample period, maps, seeds, repetitions and windows. Required before proceeding because the first accounting implementation did not qualify. Remove optional wakeups; retain all prior results separately. Do not infer causation from this comparison alone."
+}

@@ -1,0 +1,1731 @@
+{
+  "runs": 104,
+  "all_exact": true,
+  "excluded": [
+    {
+      "scenario": "open-small",
+      "mode": "opencl",
+      "accounting": 0,
+      "repeat": 0,
+      "ready": false
+    },
+    {
+      "scenario": "wet-small",
+      "mode": "opencl",
+      "accounting": 1,
+      "repeat": 0,
+      "ready": false
+    },
+    {
+      "scenario": "open-small",
+      "mode": "opencl",
+      "accounting": 1,
+      "repeat": 1,
+      "ready": false
+    },
+    {
+      "scenario": "open-small",
+      "mode": "opencl",
+      "accounting": 0,
+      "repeat": 2,
+      "ready": false
+    },
+    {
+      "scenario": "open-small",
+      "mode": "opencl",
+      "accounting": 1,
+      "repeat": 2,
+      "ready": false
+    }
+  ],
+  "pairs": [
+    {
+      "scenario": "open-small",
+      "size": 128,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 0.9859389226638625,
+      "whole_runtime_ratio": 1.0377398324246292,
+      "whole_valid": true,
+      "p99_ratio": 0.8744521133493242,
+      "publication_added_ns_per_tick": -894.8495,
+      "rss_added_bytes": 417792,
+      "cpu_ratio": 1.0971233077343348,
+      "processing_fraction": 0.0001900880890159662,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "open-small",
+      "size": 128,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": false,
+      "runtime_ratio": 0.976097280768201,
+      "whole_runtime_ratio": 0.9996814570867815,
+      "whole_valid": false,
+      "p99_ratio": 0.9415622415420517,
+      "publication_added_ns_per_tick": 8492.1845,
+      "rss_added_bytes": 8192,
+      "cpu_ratio": 0.9992500649008245,
+      "processing_fraction": 0.00020629781339918252,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "ocean-islands",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0078336297158241,
+      "whole_runtime_ratio": 1.0143603611344711,
+      "whole_valid": false,
+      "p99_ratio": 0.9637598456413728,
+      "publication_added_ns_per_tick": 521.559,
+      "rss_added_bytes": -1576960,
+      "cpu_ratio": 1.0187193849174665,
+      "processing_fraction": 9.473079836482746e-05,
+      "retained_bytes": 203824,
+      "recorded": 161,
+      "dropped": 0
+    },
+    {
+      "scenario": "ocean-islands",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0388863473293932,
+      "whole_runtime_ratio": 1.0185881729990813,
+      "whole_valid": true,
+      "p99_ratio": 0.9643630268942605,
+      "publication_added_ns_per_tick": 16.86175,
+      "rss_added_bytes": -892928,
+      "cpu_ratio": 1.0149741944321269,
+      "processing_fraction": 8.412048642722072e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "maze-routes",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0970384989426438,
+      "whole_runtime_ratio": 1.0541574749750013,
+      "whole_valid": true,
+      "p99_ratio": 1.166836721895488,
+      "publication_added_ns_per_tick": 751.736,
+      "rss_added_bytes": -937984,
+      "cpu_ratio": 1.008933411409519,
+      "processing_fraction": 0.00014140667201684745,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "maze-routes",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0135659781300714,
+      "whole_runtime_ratio": 1.025549851057515,
+      "whole_valid": false,
+      "p99_ratio": 0.9766283002941658,
+      "publication_added_ns_per_tick": 3485.64875,
+      "rss_added_bytes": 5607424,
+      "cpu_ratio": 1.019731959159344,
+      "processing_fraction": 6.86734319609814e-05,
+      "retained_bytes": 203824,
+      "recorded": 158,
+      "dropped": 0
+    },
+    {
+      "scenario": "urban-canals",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0361438015861628,
+      "whole_runtime_ratio": 1.0252806086844388,
+      "whole_valid": false,
+      "p99_ratio": 1.2611668705744323,
+      "publication_added_ns_per_tick": -33.43725,
+      "rss_added_bytes": 3325952,
+      "cpu_ratio": 1.0090240892507765,
+      "processing_fraction": 9.075182599814508e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "urban-canals",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.007581370192963,
+      "whole_runtime_ratio": 1.0006351072676165,
+      "whole_valid": true,
+      "p99_ratio": 0.9378629298023371,
+      "publication_added_ns_per_tick": 1363.2655,
+      "rss_added_bytes": -2723840,
+      "cpu_ratio": 1.0078881742509886,
+      "processing_fraction": 0.00010745567787733333,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "river-network",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0877704740289693,
+      "whole_runtime_ratio": 1.0747641364994598,
+      "whole_valid": true,
+      "p99_ratio": 1.0470473448331232,
+      "publication_added_ns_per_tick": 28045.72225,
+      "rss_added_bytes": -1032192,
+      "cpu_ratio": 1.0547567770038273,
+      "processing_fraction": 3.6699301243439775e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "river-network",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0058216826065478,
+      "whole_runtime_ratio": 1.0084114849946673,
+      "whole_valid": false,
+      "p99_ratio": 0.966535665825598,
+      "publication_added_ns_per_tick": 2739.0775,
+      "rss_added_bytes": -7450624,
+      "cpu_ratio": 0.9973668101464008,
+      "processing_fraction": 4.238062069429671e-05,
+      "retained_bytes": 203824,
+      "recorded": 161,
+      "dropped": 0
+    },
+    {
+      "scenario": "mountain-passes",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 0.989820977105714,
+      "whole_runtime_ratio": 0.9898728688495833,
+      "whole_valid": false,
+      "p99_ratio": 1.0162159646629731,
+      "publication_added_ns_per_tick": -3611.25425,
+      "rss_added_bytes": -9416704,
+      "cpu_ratio": 0.9956094201247098,
+      "processing_fraction": 4.708653905194514e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "mountain-passes",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 0.9800958271747294,
+      "whole_runtime_ratio": 0.9946458532870102,
+      "whole_valid": true,
+      "p99_ratio": 0.9176604517058924,
+      "publication_added_ns_per_tick": -4.06175,
+      "rss_added_bytes": 30769152,
+      "cpu_ratio": 1.0065440284966858,
+      "processing_fraction": 3.927433320973732e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "wet-small",
+      "size": 128,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 0.9968834010060689,
+      "whole_runtime_ratio": 0.9829824744062479,
+      "whole_valid": true,
+      "p99_ratio": 1.0267206972949832,
+      "publication_added_ns_per_tick": 87.19525,
+      "rss_added_bytes": 1826816,
+      "cpu_ratio": 0.9867455048292029,
+      "processing_fraction": 0.00016310862426170588,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "wet-small",
+      "size": 128,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": false,
+      "runtime_ratio": 0.9877121629992598,
+      "whole_runtime_ratio": 0.9928840462298885,
+      "whole_valid": false,
+      "p99_ratio": 1.040371956272537,
+      "publication_added_ns_per_tick": -215.3215,
+      "rss_added_bytes": 3194880,
+      "cpu_ratio": 0.9903693518420583,
+      "processing_fraction": 0.00016969168633753308,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "central-chokes",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0063385337201034,
+      "whole_runtime_ratio": 1.0127417034139743,
+      "whole_valid": false,
+      "p99_ratio": 0.9376855701599637,
+      "publication_added_ns_per_tick": 1979.38425,
+      "rss_added_bytes": 7151616,
+      "cpu_ratio": 1.0135304731052373,
+      "processing_fraction": 4.540614868550018e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "central-chokes",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 0,
+      "valid": true,
+      "runtime_ratio": 1.0566341127300538,
+      "whole_runtime_ratio": 1.0668818707552883,
+      "whole_valid": true,
+      "p99_ratio": 0.9540679622070742,
+      "publication_added_ns_per_tick": 2771.95125,
+      "rss_added_bytes": -5840896,
+      "cpu_ratio": 1.046958441529407,
+      "processing_fraction": 4.459689605203963e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "ocean-islands",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 1.0157075941746072,
+      "whole_runtime_ratio": 1.0374257627329582,
+      "whole_valid": true,
+      "p99_ratio": 0.9988138529581903,
+      "publication_added_ns_per_tick": -1037.881,
+      "rss_added_bytes": 3010560,
+      "cpu_ratio": 1.0055898160725008,
+      "processing_fraction": 8.272064138207448e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "ocean-islands",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9928857092507405,
+      "whole_runtime_ratio": 1.0094084435282538,
+      "whole_valid": false,
+      "p99_ratio": 0.966846657486788,
+      "publication_added_ns_per_tick": -766.45125,
+      "rss_added_bytes": -12034048,
+      "cpu_ratio": 1.0124951703919698,
+      "processing_fraction": 9.503713072570709e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "open-small",
+      "size": 128,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": false,
+      "runtime_ratio": 0.9153640663231486,
+      "whole_runtime_ratio": 0.9365273992565156,
+      "whole_valid": false,
+      "p99_ratio": 0.8696745542342728,
+      "publication_added_ns_per_tick": -1880.4305,
+      "rss_added_bytes": 1609728,
+      "cpu_ratio": 0.9607564901182232,
+      "processing_fraction": 0.00022278657671104892,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "open-small",
+      "size": 128,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.859276236474281,
+      "whole_runtime_ratio": 0.8888179775072257,
+      "whole_valid": true,
+      "p99_ratio": 0.6629610294219697,
+      "publication_added_ns_per_tick": -813.86825,
+      "rss_added_bytes": -266240,
+      "cpu_ratio": 0.9344611037061594,
+      "processing_fraction": 0.00025561013120071677,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "central-chokes",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9899370783719444,
+      "whole_runtime_ratio": 0.987781355498424,
+      "whole_valid": true,
+      "p99_ratio": 1.023548932417512,
+      "publication_added_ns_per_tick": 1224.7285,
+      "rss_added_bytes": -4145152,
+      "cpu_ratio": 0.9979350081592362,
+      "processing_fraction": 3.890692565968246e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "central-chokes",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9644254459724887,
+      "whole_runtime_ratio": 0.9639340384631894,
+      "whole_valid": false,
+      "p99_ratio": 0.9816168658941999,
+      "publication_added_ns_per_tick": 717.66425,
+      "rss_added_bytes": -41435136,
+      "cpu_ratio": 0.9808765834740716,
+      "processing_fraction": 4.9338092576004216e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "wet-small",
+      "size": 128,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 1.0157809845859727,
+      "whole_runtime_ratio": 1.0474631175361164,
+      "whole_valid": false,
+      "p99_ratio": 1.044441129990846,
+      "publication_added_ns_per_tick": 607.98075,
+      "rss_added_bytes": 3076096,
+      "cpu_ratio": 1.0293594969321112,
+      "processing_fraction": 0.00015477307146418432,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "wet-small",
+      "size": 128,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 1.0562683749081532,
+      "whole_runtime_ratio": 1.0519413292146493,
+      "whole_valid": true,
+      "p99_ratio": 0.9167318053867948,
+      "publication_added_ns_per_tick": -96.961,
+      "rss_added_bytes": 0,
+      "cpu_ratio": 1.023626925738957,
+      "processing_fraction": 0.0001595241930890577,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "mountain-passes",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9988490425433396,
+      "whole_runtime_ratio": 1.001214542116715,
+      "whole_valid": true,
+      "p99_ratio": 0.9147006149330349,
+      "publication_added_ns_per_tick": -8377.43425,
+      "rss_added_bytes": -5136384,
+      "cpu_ratio": 1.0162844623646463,
+      "processing_fraction": 3.659927711003012e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "mountain-passes",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9689127204703192,
+      "whole_runtime_ratio": 0.9936813689121876,
+      "whole_valid": false,
+      "p99_ratio": 0.8883876338029513,
+      "publication_added_ns_per_tick": -2013.02425,
+      "rss_added_bytes": -11644928,
+      "cpu_ratio": 0.9970018117852333,
+      "processing_fraction": 4.844992834728695e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "river-network",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9939201736073326,
+      "whole_runtime_ratio": 0.9835293730144304,
+      "whole_valid": false,
+      "p99_ratio": 0.9894729115679639,
+      "publication_added_ns_per_tick": 4016.639,
+      "rss_added_bytes": -5365760,
+      "cpu_ratio": 0.9862656597375521,
+      "processing_fraction": 3.684324737621485e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "river-network",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9969333123559503,
+      "whole_runtime_ratio": 0.9996632381765803,
+      "whole_valid": true,
+      "p99_ratio": 0.9795519917334785,
+      "publication_added_ns_per_tick": 8035.9455,
+      "rss_added_bytes": 6643712,
+      "cpu_ratio": 1.005766198925481,
+      "processing_fraction": 3.5616807586716324e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "urban-canals",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9768568042535307,
+      "whole_runtime_ratio": 0.9052372315601924,
+      "whole_valid": true,
+      "p99_ratio": 1.055350639445009,
+      "publication_added_ns_per_tick": -39.4905,
+      "rss_added_bytes": 438272,
+      "cpu_ratio": 0.9309254625035077,
+      "processing_fraction": 0.00010554093506994306,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "urban-canals",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 0.9836922668053849,
+      "whole_runtime_ratio": 1.005448173764577,
+      "whole_valid": false,
+      "p99_ratio": 0.8709956989150547,
+      "publication_added_ns_per_tick": 15208.994,
+      "rss_added_bytes": -6897664,
+      "cpu_ratio": 0.9188224884119167,
+      "processing_fraction": 0.000110715961585439,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "maze-routes",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 1.0792361520907179,
+      "whole_runtime_ratio": 1.061717796854464,
+      "whole_valid": false,
+      "p99_ratio": 1.1250121010247327,
+      "publication_added_ns_per_tick": 42663.189,
+      "rss_added_bytes": 917504,
+      "cpu_ratio": 1.1491847828476605,
+      "processing_fraction": 7.97961429916979e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "maze-routes",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 1,
+      "valid": true,
+      "runtime_ratio": 1.0286624299567533,
+      "whole_runtime_ratio": 1.0318623010710826,
+      "whole_valid": true,
+      "p99_ratio": 0.9882188860325104,
+      "publication_added_ns_per_tick": -1440.37825,
+      "rss_added_bytes": -3334144,
+      "cpu_ratio": 1.00117476750121,
+      "processing_fraction": 0.00011279847063876174,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "river-network",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 0.9736319766618644,
+      "whole_runtime_ratio": 0.9734389813433306,
+      "whole_valid": true,
+      "p99_ratio": 0.969201632885688,
+      "publication_added_ns_per_tick": 1955.3145,
+      "rss_added_bytes": -29212672,
+      "cpu_ratio": 0.984669012177448,
+      "processing_fraction": 3.752644608425877e-05,
+      "retained_bytes": 203824,
+      "recorded": 161,
+      "dropped": 0
+    },
+    {
+      "scenario": "river-network",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 0.9873800669953348,
+      "whole_runtime_ratio": 0.9897316521753798,
+      "whole_valid": false,
+      "p99_ratio": 0.9661643990998643,
+      "publication_added_ns_per_tick": 742.37725,
+      "rss_added_bytes": 14819328,
+      "cpu_ratio": 1.006782589336782,
+      "processing_fraction": 4.255839807468355e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "mountain-passes",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0127734309156948,
+      "whole_runtime_ratio": 1.0256365329540844,
+      "whole_valid": false,
+      "p99_ratio": 1.0734369691036596,
+      "publication_added_ns_per_tick": 10003.49275,
+      "rss_added_bytes": 10833920,
+      "cpu_ratio": 1.015722701855373,
+      "processing_fraction": 4.330508726253656e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "mountain-passes",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 0.9544990762252682,
+      "whole_runtime_ratio": 0.9647676135609644,
+      "whole_valid": true,
+      "p99_ratio": 0.9328312044201377,
+      "publication_added_ns_per_tick": 18364.54525,
+      "rss_added_bytes": 21815296,
+      "cpu_ratio": 1.0025790362731934,
+      "processing_fraction": 3.7034437137424394e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "wet-small",
+      "size": 128,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 0.9744695575245976,
+      "whole_runtime_ratio": 0.9906175424827993,
+      "whole_valid": true,
+      "p99_ratio": 0.9503022405468899,
+      "publication_added_ns_per_tick": -185.849,
+      "rss_added_bytes": 270336,
+      "cpu_ratio": 0.9716388824159892,
+      "processing_fraction": 0.00015823347278606277,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "wet-small",
+      "size": 128,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 0.9741536351649389,
+      "whole_runtime_ratio": 0.9972821416577712,
+      "whole_valid": false,
+      "p99_ratio": 0.9138766857743735,
+      "publication_added_ns_per_tick": 1766.197,
+      "rss_added_bytes": -286720,
+      "cpu_ratio": 0.999210636504527,
+      "processing_fraction": 0.00016110748804564035,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "central-chokes",
+      "size": 512,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0069278123622114,
+      "whole_runtime_ratio": 1.0146312678742324,
+      "whole_valid": false,
+      "p99_ratio": 0.9653386396962331,
+      "publication_added_ns_per_tick": 4110.4755,
+      "rss_added_bytes": -8151040,
+      "cpu_ratio": 1.0154051585917179,
+      "processing_fraction": 4.097527159926071e-05,
+      "retained_bytes": 203824,
+      "recorded": 161,
+      "dropped": 0
+    },
+    {
+      "scenario": "central-chokes",
+      "size": 512,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0154875847042566,
+      "whole_runtime_ratio": 1.013083742474304,
+      "whole_valid": true,
+      "p99_ratio": 0.9676012340522445,
+      "publication_added_ns_per_tick": 1495.292,
+      "rss_added_bytes": -3514368,
+      "cpu_ratio": 1.0255718364338544,
+      "processing_fraction": 4.077212609735975e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "open-small",
+      "size": 128,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 0.9742769671868197,
+      "whole_runtime_ratio": 1.001205138190623,
+      "whole_valid": true,
+      "p99_ratio": 0.8018485276101547,
+      "publication_added_ns_per_tick": 145.073,
+      "rss_added_bytes": 249856,
+      "cpu_ratio": 1.0191756601185413,
+      "processing_fraction": 0.00020702077413476753,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "open-small",
+      "size": 128,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": false,
+      "runtime_ratio": 0.9782126142612887,
+      "whole_runtime_ratio": 0.9742603806593352,
+      "whole_valid": false,
+      "p99_ratio": 1.008744467583566,
+      "publication_added_ns_per_tick": -2746.55025,
+      "rss_added_bytes": -1966080,
+      "cpu_ratio": 0.9828432099681079,
+      "processing_fraction": 0.00019532194715359339,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "ocean-islands",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 0.9211054335187638,
+      "whole_runtime_ratio": 0.924587336932764,
+      "whole_valid": false,
+      "p99_ratio": 0.8901596763219505,
+      "publication_added_ns_per_tick": -1665.852,
+      "rss_added_bytes": 1912832,
+      "cpu_ratio": 0.9364412651132473,
+      "processing_fraction": 7.625100010108831e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "ocean-islands",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0576674688715815,
+      "whole_runtime_ratio": 1.081694886586563,
+      "whole_valid": true,
+      "p99_ratio": 1.0436791408818542,
+      "publication_added_ns_per_tick": 187.45025,
+      "rss_added_bytes": -3551232,
+      "cpu_ratio": 1.0667394742701832,
+      "processing_fraction": 7.482424013812477e-05,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "maze-routes",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0335123592619058,
+      "whole_runtime_ratio": 1.030285875895787,
+      "whole_valid": true,
+      "p99_ratio": 1.1677785716954667,
+      "publication_added_ns_per_tick": 461.13,
+      "rss_added_bytes": -3547136,
+      "cpu_ratio": 1.0269838707168577,
+      "processing_fraction": 0.00012378639605175606,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "maze-routes",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0347807627780397,
+      "whole_runtime_ratio": 1.0168499267441617,
+      "whole_valid": false,
+      "p99_ratio": 0.9809209930135023,
+      "publication_added_ns_per_tick": 8480.44225,
+      "rss_added_bytes": 4153344,
+      "cpu_ratio": 1.0135138769719734,
+      "processing_fraction": 7.775768680402608e-05,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    },
+    {
+      "scenario": "urban-canals",
+      "size": 256,
+      "mode": "opencl",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0174157232890124,
+      "whole_runtime_ratio": 1.0651993996268934,
+      "whole_valid": false,
+      "p99_ratio": 1.038150782334301,
+      "publication_added_ns_per_tick": -689.52025,
+      "rss_added_bytes": 249856,
+      "cpu_ratio": 1.0422076403649516,
+      "processing_fraction": 0.00012118052816232326,
+      "retained_bytes": 203824,
+      "recorded": 159,
+      "dropped": 0
+    },
+    {
+      "scenario": "urban-canals",
+      "size": 256,
+      "mode": "cpu",
+      "repeat": 2,
+      "valid": true,
+      "runtime_ratio": 1.0463843712520793,
+      "whole_runtime_ratio": 1.0377135514953002,
+      "whole_valid": true,
+      "p99_ratio": 0.9894727613340262,
+      "publication_added_ns_per_tick": -1564.544,
+      "rss_added_bytes": 131072,
+      "cpu_ratio": 1.0205998941462502,
+      "processing_fraction": 0.0001024608090880985,
+      "retained_bytes": 203824,
+      "recorded": 160,
+      "dropped": 0
+    }
+  ],
+  "summary": [
+    {
+      "scenario": "central-chokes",
+      "mode": "cpu",
+      "size": 512,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 1.0154875847042566,
+        "min": 0.9899370783719444,
+        "max": 1.0566341127300538
+      },
+      "p99_ratio": {
+        "median": 0.9676012340522445,
+        "min": 0.9540679622070742,
+        "max": 1.023548932417512
+      },
+      "publication_added_ns_per_tick": {
+        "median": 1495.292,
+        "min": 1224.7285,
+        "max": 2771.95125
+      },
+      "rss_added_bytes": {
+        "median": -4145152,
+        "min": -5840896,
+        "max": -3514368
+      },
+      "cpu_ratio": {
+        "median": 1.0255718364338544,
+        "min": 0.9979350081592362,
+        "max": 1.046958441529407
+      },
+      "processing_fraction": {
+        "median": 4.077212609735975e-05,
+        "min": 3.890692565968246e-05,
+        "max": 4.459689605203963e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 159,
+        "min": 159,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "central-chokes",
+      "mode": "opencl",
+      "size": 512,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 1.0063385337201034,
+        "min": 0.9644254459724887,
+        "max": 1.0069278123622114
+      },
+      "p99_ratio": {
+        "median": 0.9653386396962331,
+        "min": 0.9376855701599637,
+        "max": 0.9816168658941999
+      },
+      "publication_added_ns_per_tick": {
+        "median": 1979.38425,
+        "min": 717.66425,
+        "max": 4110.4755
+      },
+      "rss_added_bytes": {
+        "median": -8151040,
+        "min": -41435136,
+        "max": 7151616
+      },
+      "cpu_ratio": {
+        "median": 1.0135304731052373,
+        "min": 0.9808765834740716,
+        "max": 1.0154051585917179
+      },
+      "processing_fraction": {
+        "median": 4.540614868550018e-05,
+        "min": 4.097527159926071e-05,
+        "max": 4.9338092576004216e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 159,
+        "min": 159,
+        "max": 161
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "maze-routes",
+      "mode": "cpu",
+      "size": 256,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 1.0335123592619058,
+        "min": 1.0286624299567533,
+        "max": 1.0970384989426438
+      },
+      "p99_ratio": {
+        "median": 1.166836721895488,
+        "min": 0.9882188860325104,
+        "max": 1.1677785716954667
+      },
+      "publication_added_ns_per_tick": {
+        "median": 461.13,
+        "min": -1440.37825,
+        "max": 751.736
+      },
+      "rss_added_bytes": {
+        "median": -3334144,
+        "min": -3547136,
+        "max": -937984
+      },
+      "cpu_ratio": {
+        "median": 1.008933411409519,
+        "min": 1.00117476750121,
+        "max": 1.0269838707168577
+      },
+      "processing_fraction": {
+        "median": 0.00012378639605175606,
+        "min": 0.00011279847063876174,
+        "max": 0.00014140667201684745
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 160,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "maze-routes",
+      "mode": "opencl",
+      "size": 256,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 1.0347807627780397,
+        "min": 1.0135659781300714,
+        "max": 1.0792361520907179
+      },
+      "p99_ratio": {
+        "median": 0.9809209930135023,
+        "min": 0.9766283002941658,
+        "max": 1.1250121010247327
+      },
+      "publication_added_ns_per_tick": {
+        "median": 8480.44225,
+        "min": 3485.64875,
+        "max": 42663.189
+      },
+      "rss_added_bytes": {
+        "median": 4153344,
+        "min": 917504,
+        "max": 5607424
+      },
+      "cpu_ratio": {
+        "median": 1.019731959159344,
+        "min": 1.0135138769719734,
+        "max": 1.1491847828476605
+      },
+      "processing_fraction": {
+        "median": 7.775768680402608e-05,
+        "min": 6.86734319609814e-05,
+        "max": 7.97961429916979e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 159,
+        "min": 158,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "mountain-passes",
+      "mode": "cpu",
+      "size": 512,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 0.9800958271747294,
+        "min": 0.9544990762252682,
+        "max": 0.9988490425433396
+      },
+      "p99_ratio": {
+        "median": 0.9176604517058924,
+        "min": 0.9147006149330349,
+        "max": 0.9328312044201377
+      },
+      "publication_added_ns_per_tick": {
+        "median": -4.06175,
+        "min": -8377.43425,
+        "max": 18364.54525
+      },
+      "rss_added_bytes": {
+        "median": 21815296,
+        "min": -5136384,
+        "max": 30769152
+      },
+      "cpu_ratio": {
+        "median": 1.0065440284966858,
+        "min": 1.0025790362731934,
+        "max": 1.0162844623646463
+      },
+      "processing_fraction": {
+        "median": 3.7034437137424394e-05,
+        "min": 3.659927711003012e-05,
+        "max": 3.927433320973732e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 160,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "mountain-passes",
+      "mode": "opencl",
+      "size": 512,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 0.989820977105714,
+        "min": 0.9689127204703192,
+        "max": 1.0127734309156948
+      },
+      "p99_ratio": {
+        "median": 1.0162159646629731,
+        "min": 0.8883876338029513,
+        "max": 1.0734369691036596
+      },
+      "publication_added_ns_per_tick": {
+        "median": -2013.02425,
+        "min": -3611.25425,
+        "max": 10003.49275
+      },
+      "rss_added_bytes": {
+        "median": -9416704,
+        "min": -11644928,
+        "max": 10833920
+      },
+      "cpu_ratio": {
+        "median": 0.9970018117852333,
+        "min": 0.9956094201247098,
+        "max": 1.015722701855373
+      },
+      "processing_fraction": {
+        "median": 4.708653905194514e-05,
+        "min": 4.330508726253656e-05,
+        "max": 4.844992834728695e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 159,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "ocean-islands",
+      "mode": "cpu",
+      "size": 256,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 1.0388863473293932,
+        "min": 1.0157075941746072,
+        "max": 1.0576674688715815
+      },
+      "p99_ratio": {
+        "median": 0.9988138529581903,
+        "min": 0.9643630268942605,
+        "max": 1.0436791408818542
+      },
+      "publication_added_ns_per_tick": {
+        "median": 16.86175,
+        "min": -1037.881,
+        "max": 187.45025
+      },
+      "rss_added_bytes": {
+        "median": -892928,
+        "min": -3551232,
+        "max": 3010560
+      },
+      "cpu_ratio": {
+        "median": 1.0149741944321269,
+        "min": 1.0055898160725008,
+        "max": 1.0667394742701832
+      },
+      "processing_fraction": {
+        "median": 8.272064138207448e-05,
+        "min": 7.482424013812477e-05,
+        "max": 8.412048642722072e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 159,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "ocean-islands",
+      "mode": "opencl",
+      "size": 256,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 0.9928857092507405,
+        "min": 0.9211054335187638,
+        "max": 1.0078336297158241
+      },
+      "p99_ratio": {
+        "median": 0.9637598456413728,
+        "min": 0.8901596763219505,
+        "max": 0.966846657486788
+      },
+      "publication_added_ns_per_tick": {
+        "median": -766.45125,
+        "min": -1665.852,
+        "max": 521.559
+      },
+      "rss_added_bytes": {
+        "median": -1576960,
+        "min": -12034048,
+        "max": 1912832
+      },
+      "cpu_ratio": {
+        "median": 1.0124951703919698,
+        "min": 0.9364412651132473,
+        "max": 1.0187193849174665
+      },
+      "processing_fraction": {
+        "median": 9.473079836482746e-05,
+        "min": 7.625100010108831e-05,
+        "max": 9.503713072570709e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 160,
+        "max": 161
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "open-small",
+      "mode": "cpu",
+      "size": 128,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 0.9742769671868197,
+        "min": 0.859276236474281,
+        "max": 0.9859389226638625
+      },
+      "p99_ratio": {
+        "median": 0.8018485276101547,
+        "min": 0.6629610294219697,
+        "max": 0.8744521133493242
+      },
+      "publication_added_ns_per_tick": {
+        "median": -813.86825,
+        "min": -894.8495,
+        "max": 145.073
+      },
+      "rss_added_bytes": {
+        "median": 249856,
+        "min": -266240,
+        "max": 417792
+      },
+      "cpu_ratio": {
+        "median": 1.0191756601185413,
+        "min": 0.9344611037061594,
+        "max": 1.0971233077343348
+      },
+      "processing_fraction": {
+        "median": 0.00020702077413476753,
+        "min": 0.0001900880890159662,
+        "max": 0.00025561013120071677
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 159,
+        "min": 159,
+        "max": 159
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "open-small",
+      "mode": "opencl",
+      "size": 128,
+      "pairs": 3,
+      "qualified": 0,
+      "runtime_ratio": null,
+      "p99_ratio": null,
+      "publication_added_ns_per_tick": null,
+      "rss_added_bytes": null,
+      "cpu_ratio": null,
+      "processing_fraction": null,
+      "retained_bytes": null,
+      "recorded": null,
+      "dropped": null
+    },
+    {
+      "scenario": "river-network",
+      "mode": "cpu",
+      "size": 512,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 0.9969333123559503,
+        "min": 0.9736319766618644,
+        "max": 1.0877704740289693
+      },
+      "p99_ratio": {
+        "median": 0.9795519917334785,
+        "min": 0.969201632885688,
+        "max": 1.0470473448331232
+      },
+      "publication_added_ns_per_tick": {
+        "median": 8035.9455,
+        "min": 1955.3145,
+        "max": 28045.72225
+      },
+      "rss_added_bytes": {
+        "median": -1032192,
+        "min": -29212672,
+        "max": 6643712
+      },
+      "cpu_ratio": {
+        "median": 1.005766198925481,
+        "min": 0.984669012177448,
+        "max": 1.0547567770038273
+      },
+      "processing_fraction": {
+        "median": 3.6699301243439775e-05,
+        "min": 3.5616807586716324e-05,
+        "max": 3.752644608425877e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 159,
+        "max": 161
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "river-network",
+      "mode": "opencl",
+      "size": 512,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 0.9939201736073326,
+        "min": 0.9873800669953348,
+        "max": 1.0058216826065478
+      },
+      "p99_ratio": {
+        "median": 0.966535665825598,
+        "min": 0.9661643990998643,
+        "max": 0.9894729115679639
+      },
+      "publication_added_ns_per_tick": {
+        "median": 2739.0775,
+        "min": 742.37725,
+        "max": 4016.639
+      },
+      "rss_added_bytes": {
+        "median": -5365760,
+        "min": -7450624,
+        "max": 14819328
+      },
+      "cpu_ratio": {
+        "median": 0.9973668101464008,
+        "min": 0.9862656597375521,
+        "max": 1.006782589336782
+      },
+      "processing_fraction": {
+        "median": 4.238062069429671e-05,
+        "min": 3.684324737621485e-05,
+        "max": 4.255839807468355e-05
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 159,
+        "max": 161
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "urban-canals",
+      "mode": "cpu",
+      "size": 256,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 1.007581370192963,
+        "min": 0.9768568042535307,
+        "max": 1.0463843712520793
+      },
+      "p99_ratio": {
+        "median": 0.9894727613340262,
+        "min": 0.9378629298023371,
+        "max": 1.055350639445009
+      },
+      "publication_added_ns_per_tick": {
+        "median": -39.4905,
+        "min": -1564.544,
+        "max": 1363.2655
+      },
+      "rss_added_bytes": {
+        "median": 131072,
+        "min": -2723840,
+        "max": 438272
+      },
+      "cpu_ratio": {
+        "median": 1.0078881742509886,
+        "min": 0.9309254625035077,
+        "max": 1.0205998941462502
+      },
+      "processing_fraction": {
+        "median": 0.00010554093506994306,
+        "min": 0.0001024608090880985,
+        "max": 0.00010745567787733333
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 159,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "urban-canals",
+      "mode": "opencl",
+      "size": 256,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 1.0174157232890124,
+        "min": 0.9836922668053849,
+        "max": 1.0361438015861628
+      },
+      "p99_ratio": {
+        "median": 1.038150782334301,
+        "min": 0.8709956989150547,
+        "max": 1.2611668705744323
+      },
+      "publication_added_ns_per_tick": {
+        "median": -33.43725,
+        "min": -689.52025,
+        "max": 15208.994
+      },
+      "rss_added_bytes": {
+        "median": 249856,
+        "min": -6897664,
+        "max": 3325952
+      },
+      "cpu_ratio": {
+        "median": 1.0090240892507765,
+        "min": 0.9188224884119167,
+        "max": 1.0422076403649516
+      },
+      "processing_fraction": {
+        "median": 0.000110715961585439,
+        "min": 9.075182599814508e-05,
+        "max": 0.00012118052816232326
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 159,
+        "min": 159,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "wet-small",
+      "mode": "cpu",
+      "size": 128,
+      "pairs": 3,
+      "qualified": 3,
+      "runtime_ratio": {
+        "median": 0.9968834010060689,
+        "min": 0.9744695575245976,
+        "max": 1.0562683749081532
+      },
+      "p99_ratio": {
+        "median": 0.9503022405468899,
+        "min": 0.9167318053867948,
+        "max": 1.0267206972949832
+      },
+      "publication_added_ns_per_tick": {
+        "median": -96.961,
+        "min": -185.849,
+        "max": 87.19525
+      },
+      "rss_added_bytes": {
+        "median": 270336,
+        "min": 0,
+        "max": 1826816
+      },
+      "cpu_ratio": {
+        "median": 0.9867455048292029,
+        "min": 0.9716388824159892,
+        "max": 1.023626925738957
+      },
+      "processing_fraction": {
+        "median": 0.0001595241930890577,
+        "min": 0.00015823347278606277,
+        "max": 0.00016310862426170588
+      },
+      "retained_bytes": {
+        "median": 203824,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 160,
+        "min": 160,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "scenario": "wet-small",
+      "mode": "opencl",
+      "size": 128,
+      "pairs": 3,
+      "qualified": 2,
+      "runtime_ratio": {
+        "median": 0.9949673098754558,
+        "min": 0.9741536351649389,
+        "max": 1.0157809845859727
+      },
+      "p99_ratio": {
+        "median": 0.9791589078826097,
+        "min": 0.9138766857743735,
+        "max": 1.044441129990846
+      },
+      "publication_added_ns_per_tick": {
+        "median": 1187.088875,
+        "min": 607.98075,
+        "max": 1766.197
+      },
+      "rss_added_bytes": {
+        "median": 1394688.0,
+        "min": -286720,
+        "max": 3076096
+      },
+      "cpu_ratio": {
+        "median": 1.014285066718319,
+        "min": 0.999210636504527,
+        "max": 1.0293594969321112
+      },
+      "processing_fraction": {
+        "median": 0.00015794027975491235,
+        "min": 0.00015477307146418432,
+        "max": 0.00016110748804564035
+      },
+      "retained_bytes": {
+        "median": 203824.0,
+        "min": 203824,
+        "max": 203824
+      },
+      "recorded": {
+        "median": 159.5,
+        "min": 159,
+        "max": 160
+      },
+      "dropped": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    }
+  ],
+  "large_aggregates": [
+    {
+      "mode": "cpu",
+      "qualified_passes": 3,
+      "geomean": 1.0052197076342595,
+      "lower_95": 0.9544414388087407,
+      "upper_95": 1.0586994859291647,
+      "gate": "inconclusive"
+    },
+    {
+      "mode": "opencl",
+      "qualified_passes": 3,
+      "geomean": 0.9927912747770598,
+      "lower_95": 0.9678516696471553,
+      "upper_95": 1.0183735237371518,
+      "gate": "inconclusive"
+    },
+    {
+      "mode": "whole-cpu",
+      "qualified_passes": 3,
+      "geomean": 1.007837975777183,
+      "lower_95": 0.9551649802322615,
+      "upper_95": 1.0634156469719596,
+      "gate": "inconclusive"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "unit-qualified": {
+    "cases": 950,
+    "passed": 929,
+    "failed": [
+      [
+        "ImageAssets",
+        "16-bit RGBA rounds normalized channels to the exporter reference"
+      ]
+    ],
+    "skipped": [
+      [
+        "OpaqueRectangleBatch",
+        "retains OpenGL pixels [display]"
+      ],
+      [
+        "OpaqueRectangleBatch",
+        "retains portable renderer pixels [display]"
+      ],
+      [
+        "SkinMesh",
+        "rotated swarms render independently with every material [display][artifacts]"
+      ],
+      [
+        "SkinMesh",
+        "material contact sheet [display][artifacts]"
+      ],
+      [
+        "SkinModelRender",
+        "rig shader matches CPU poses for every heading and restores context resources [display]"
+      ],
+      [
+        "SpriteLoad",
+        "variable frame atlas admission accounts for maximum sized padded cells [display]"
+      ],
+      [
+        "SpriteSheets",
+        "portable HD uses standalone frames without requesting GL atlases [display]"
+      ],
+      [
+        "SpriteSheets",
+        "independently encoded lossy HD atlases keep exact frame alpha [display]"
+      ],
+      [
+        "tests",
+        "terrain atlas edges stay isolated at fractional overview zoom [display]"
+      ],
+      [
+        "tests",
+        "map geometry cache validates frames, texture lifetime and row ranges [display]"
+      ],
+      [
+        "tests",
+        "map cache invalidates only referenced sources [display]"
+      ],
+      [
+        "tests",
+        "map cache bounds frame builds while retaining hits and fallback pixels [display]"
+      ],
+      [
+        "tests",
+        "ordered HD resource sprite batch retains pixels [display]"
+      ],
+      [
+        "tests",
+        "ordered native resource sprite batch retains pixels [display]"
+      ],
+      [
+        "tests",
+        "ordered portable resource sprite batch retains pixels [display]"
+      ],
+      [
+        "tests",
+        "unit batches preserve overlays, clipping and texture lifetime [display]"
+      ],
+      [
+        "tests",
+        "unit batch outline bounds preserve all clip edges [display]"
+      ],
+      [
+        "tests",
+        "cold frame batches defer and bound texture preparation without changing pixels [display]"
+      ],
+      [
+        "tests",
+        "cold frame preparation cancels changed and deleted source IDs while disabled [display]"
+      ],
+      [
+        "SkinReadback",
+        "export readback matches live compositing for every pose and rotated swarm [display]"
+      ]
+    ]
+  },
+  "engine-qualified": {
+    "cases": 172,
+    "passed": 171,
+    "failed": [],
+    "skipped": [
+      [
+        "TeamStatsSave",
+        "measurement screenshots [display][artifacts]"
+      ]
+    ]
+  },
+  "cli-qualified": {
+    "cases": 15,
+    "passed": 15,
+    "failed": [],
+    "skipped": []
+  },
+  "commit": "9f3c92c834c17f4f15f09a3f0c65edb2997cefd7",
+  "exact_runs": 84,
+  "tsan": "PASS 480000 concurrent observations, retirement, overflow, worker-only processing and reconfiguration"
+}

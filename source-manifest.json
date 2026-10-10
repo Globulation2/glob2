@@ -1,0 +1,69 @@
+{
+  "commit": "9f3c92c834c17f4f15f09a3f0c65edb2997cefd7",
+  "base": "69ef3e1b2bf453aa280a69be72f83167b1511d9d",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "files": {
+    "docs/architecture/simulation.md": "31ba46a4cc3438fa25f87ad4af54ef7ee4ba52c7aca85111576b4d68803e3681",
+    "docs/development/compute-benchmarks.md": "8d70ae778afbdb002f2c558a2896ea5e3a7ae681813595a58734191bd325fb69",
+    "docs/development/testing/simulation.md": "863f577883545cfb2ac371ee2b9f56563a9cafae63ec73c182ff321367c16d0a",
+    "scons/sources.py": "74197ad4bb2fc1c2878da07a03537da2a5252205dc41b1a041d9148b4416aca0",
+    "src/app/cli/Headless.cpp": "5dc92e7949f0b7fad25964c9ac3254954e803f99bdbaccf0b94a37a9edcade20",
+    "src/common/ComputeExecutor.h": "1d157adfbf8fd9ff46c04b627132395a3c2b2f8e68ff1c79c4050d8f5c8bc129",
+    "src/common/ComputeExecutorHarness.cpp": "9c7fbd515f50d77818197900b8af190cb638f7b9a2ed74be0cd1155a53e7ea55",
+    "src/field/AdaptiveGradientPolicy.h": "1d0c05df3c302245924a6d7813e252376b220cc067c5796b21ffdc86fde696cf",
+    "src/field/GradientBackend.h": "3dd06c269235150ebf30dcfb6643d8bbd6dad95c2d7c693e425a348cbc7c50e8",
+    "src/field/GradientPropagation.h": "f799de3a669ad0bd0385f446ac11b80d0f7bd646896d4dee40dcede79956240a",
+    "src/field/GradientWorkspace.h": "f450ebaf9efc44c70f98fa2205bea835717c2fa978ca7e40f33c0b300741bb63",
+    "src/field/OpenCLGradient.cpp": "97bb4007758dd7ae96c1a612646bc8561fb4b07b9e09f8f241f4c2feadc6457e",
+    "src/field/OpenCLGradient.h": "ce9a96cccf1c4bd2d242b77e4572ff310c25c83fa8c6f3d291679e3ab86eb79b",
+    "src/field/OpenCLGradientTest.cpp": "f4634d13b18cf537a1ef08d7c0aacdc312a8335fc5550835f5e666533edf9fb1",
+    "src/field/RuntimeTerrainGradient.h": "21f9b72930aff531bb195b4546df4413427695b808f77aaf2d0bbc20d784a8bf",
+    "src/field/TerrainGradient.h": "c49d20f7b0ba0c31f1d7ac1f3f81b4f2eb9e591f3f68423ad1c91f860dc9e582",
+    "src/map/Map.cpp": "41b2510bb3f69a270ff1e94b69797adc634751096a9de53f4fac3593fd070390",
+    "src/map/Map.h": "907bc20017d0432d3cbcbcfab4ff0892b21e906e7a87e2151bf721054c874b2d",
+    "src/map/MapStep.cpp": "56c8d36931159c5e0b429ce2ac806965c46b6b4717c6ac0a872b9477dd94193a",
+    "src/map/gradient/GradientPipeline.h": "adbeba3d7ae5bf9eca8a0d78039ee8af035dd38e9b1a357eefe410f08f885890",
+    "src/map/gradient/GradientPipelineHarness.cpp": "4ee2786d51672c3230770b3993906b6c0b7ba4c7a9e918f7806455d0f58fdb53",
+    "src/map/gradient/GradientPreparationTest.cpp": "6e8a8bf25c52a398b5b0475372379604ca2a65cd807f3622ee91d81bcef9fcaf",
+    "src/map/gradient/GradientRuntime.h": "5fd271ce9f085bdd1b5c93669a14a39c08192b137bd6a1556b73ab318ad89a0a",
+    "src/map/gradient/MapGradientArea.cpp": "84a71181f276bb7f5b8cd401b7f78c116dca99e4c3737aa608e36a8f148f150a",
+    "src/map/gradient/MapGradientMaterial.cpp": "9f023d8a465193dcd32e637247845e63e0f810b69c61fb49b51ee5d5b6c79b19",
+    "src/map/gradient/MapGradientPropagation.cpp": "7705576f5fbb28be1d441d1c6542135094d3ab964f7ae1d69ba4fe19598ee83e",
+    "src/map/gradient/SnapshotGradient.cpp": "25eb7df5fd9f4bacf566cba79f7cb49a6325dcaba6b1f64ce2da01a83e28afb9",
+    "src/map/gradient/SnapshotGradient.h": "fdc7c0a59d0a52550556f74a17cedfb3bc20db2373f8d9b1ad29e6dd3f6a843a",
+    "test/tests.py": "bdcd74efbc293ad518d30f298d1f1f566249d3706de098fffc20dc2e1ee52366"
+  },
+  "gpu": "name, driver_version\nNVIDIA GeForce RTX 2070 SUPER, 580.178.04\nNVIDIA GeForce RTX 2070 SUPER, 580.178.04\n",
+  "coverage": "Linux/NVIDIA only. No learned selection or live experiments. Eight slots for performance, one owner plus seven workers.",
+  "validation_commands": [
+    "python3 tools/check_docs.py",
+    "python3 -m unittest discover -s test -p test_check_docs.py",
+    "GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-vertex-terrain/build/linux/client/release/recording/prefix CCACHE=1 taskset -c 24-31 python3 tools/dev_build.py -j8 unit-tests engine-tests",
+    "GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-vertex-terrain/build/linux/client/release/recording/prefix CCACHE=1 taskset -c 8-15 scons release=1 server=0 linker=auto -j8 build/linux/client/release/dev-linker-auto/src/glob2 unit-tests engine-tests",
+    "taskset -c 24-27 g++ -std=c++20 -O1 -g -fsanitize=thread -fno-omit-frame-pointer -pthread -Isrc/field -Isrc/common -Ilibgag/include artifacts/adaptive-gradient-m1/policy-stress.cpp -o artifacts/adaptive-gradient-m1/policy-stress-tsan",
+    "taskset -c 24-27 artifacts/adaptive-gradient-m1/policy-stress-tsan",
+    "taskset -c 0-7 python3 artifacts/adaptive-gradient-m1/measure.py --references-only",
+    "taskset -c 0-7 python3 artifacts/adaptive-gradient-m1/measure.py --resume",
+    "GLOB2_SDL3_PREFIX=/home/bradley/glob2-claude/build/sdl3/prefix GLOB2_RECORDING_PREFIX=/home/bradley/glob2-vertex-terrain/build/linux/client/release/recording/prefix CCACHE=1 taskset -c 0-7 scons release=1 server=0 linker=auto -j8 build/linux/client/release/dev-linker-auto/src/glob2 unit-tests engine-tests",
+    "taskset -c 24-31 python3 artifacts/adaptive-gradient-m1/run-final-suites.py",
+    "taskset -c 0-7 python3 artifacts/adaptive-gradient-m1/verify-exact.py 0",
+    "taskset -c 0-7 python3 artifacts/adaptive-gradient-m1/verify-exact.py 1",
+    "taskset -c 24-31 python3 test/test_cli_smoke.py --binary build/linux/client/release/dev-linker-auto/src/glob2 --artifacts artifacts/adaptive-gradient-m1/cli-qualified-artifacts --junit artifacts/adaptive-gradient-m1/cli-qualified.xml"
+  ],
+  "build_evidence": {
+    "final_release": [
+      "release-final-build.log",
+      "release-final-confirmation-build.log"
+    ],
+    "final_revision": "9f3c92c834c17f4f15f09a3f0c65edb2997cefd7",
+    "development_build": "dev-integrated-build.log (historical 7c680dd4f; includes two unrelated failures; not final revision)",
+    "superseded": "pre-reconfiguration-fix-* artifacts and all integrated-build logs precede the final lifecycle fix and benchmark boundaries."
+  },
+  "simplification": "Passive observations no longer wake the worker pool; tail observations may wait for normal scheduling opportunities or be discarded on lifecycle change.",
+  "binaries": {
+    "build/linux/client/release/dev-linker-auto/src/glob2": "7bd1ec813663a227ae5506b253325e7cce8d23cfd7710740db5eb2d69f9e7c5d",
+    "build/linux/client/release/dev-linker-auto/test/glob2-unit-tests": "773d85c344c2d5aff58d8f4f916222aba650f213e6a498f0ed7d06342cf7463b",
+    "build/linux/client/release/dev-linker-auto/test/glob2-engine-tests": "bb165c1d2da8b9c4910f069ee6e483685209b323592c729f75f7eacd5e83d0d3"
+  }
+}

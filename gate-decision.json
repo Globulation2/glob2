@@ -1,0 +1,12 @@
+{
+  "qualified": false,
+  "status": "Not qualified for default enablement; accounting remains opt-in",
+  "descriptive_exceedances": [
+    "maze-routes / cpu: p99 median exceeds the predeclared limit",
+    "maze-routes / opencl: peak RSS median exceeds the predeclared limit",
+    "mountain-passes / cpu: peak RSS median exceeds the predeclared limit"
+  ],
+  "maximum_processing_fraction": 0.00025561013120071677,
+  "retained_bytes": 203824,
+  "worst_qualified_pair_ratio": 1.0970384989426438
+}
