@@ -296,9 +296,9 @@ static void textRoundTrip()
     GAGCore::TextOutputStream writer(bytes);
     game.teams[0]->save(&writer);
     writer.flush();
-    auto* copy = new GAGCore::MemoryStreamBackend(*bytes);
+    auto copy = std::make_unique<GAGCore::MemoryStreamBackend>(*bytes);
     copy->seekFromStart(0);
-    GAGCore::TextInputStream reader(copy);
+    GAGCore::TextInputStream reader(copy.get());
     GameGUI loaded;
     loaded.game.map.setSize(5, 5, GRASS);
     loaded.game.map.setGame(&loaded.game);
@@ -1765,8 +1765,8 @@ TEST_CASE("Compact telemetry retains every sample across chunk boundaries" * doc
         std::unique_ptr<GAGCore::OutputStream> out(text?static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory)):static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
         save(out.get(),{series});
         auto bytes=memory->takeContents();
-        auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size());source->seekFromStart(0);
-        std::unique_ptr<GAGCore::InputStream> in(text?static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source)):static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+        auto source=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size());source->seekFromStart(0);
+        std::unique_ptr<GAGCore::InputStream> in(text?static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source.get())):static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source.release())));
         std::vector<std::shared_ptr<Series>> restored;
         load(in.get(),restored,VERSION_MINOR);
         REQUIRE(restored.size()==1);
@@ -1911,10 +1911,10 @@ TEST_CASE("Sparse variant reset accepts refreshed diagnostics and restored snaps
         out->flush();
         const auto bytes=memory->takeContents();
         for (int repeat=0;repeat<2;++repeat) {
-            auto* source=new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()); source->seekFromStart(0);
+            auto source=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size()); source->seekFromStart(0);
             std::unique_ptr<GAGCore::InputStream> in(text
-                ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source))
-                : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+                ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source.get()))
+                : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source.release())));
             GameGUI restored; REQUIRE(restored.game.load(in.get()));
             auto& loaded=restored.game.teams[0]->stats;
             REQUIRE(loaded.measurements.variants[type].count==1);
@@ -1947,9 +1947,9 @@ TEST_CASE("Delayed observation telemetry saves remain readable" * doctest::test_
             std::unique_ptr<GAGCore::OutputStream> out(text ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(memory)) : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(memory)));
             save(out.get(), {series});
             auto bytes = memory->takeContents();
-            auto* source = new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size());
+            auto source = std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(), bytes.size());
             source->seekFromStart(0);
-            std::unique_ptr<GAGCore::InputStream> in(text ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source)) : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source)));
+            std::unique_ptr<GAGCore::InputStream> in(text ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(source.get())) : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(source.release())));
             std::vector<std::shared_ptr<Series>> restored;
             load(in.get(), restored, version);
             REQUIRE(restored.size() == 1);
