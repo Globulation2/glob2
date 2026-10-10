@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <PerformanceTelemetry.h>
+#include "common/ThreadCpuClock.h"
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #include <fstream>
@@ -19,7 +20,7 @@ inline nlohmann::json threads()
 #if defined(__linux__)
     const long hz=sysconf(_SC_CLK_TCK);
     if(hz<=0) return out;
-    out["clock_ticks_per_second"]=hz; out["owner_tid"]=getpid();
+    out["clock_ticks_per_second"]=hz; out["owner_tid"]=glob2::nativeThreadId();out["process_id"]=getpid();
     std::error_code error;
     const std::filesystem::directory_iterator entries("/proc/self/task",error);
     if(error) { out["error"]=error.message(); return out; }
@@ -62,7 +63,9 @@ inline nlohmann::json ownerScopes()
         const auto& a=c.window[i]; const auto& b=c.total[i];
         out.push_back({{"scope",PerformanceTelemetry::scopeName(PerformanceTelemetry::Id(i))},
             {"inclusive_cpu_ns",a.cpu+b.cpu},{"self_cpu_ns",a.cpuSelf+b.cpuSelf},
-            {"cpu_samples",a.cpuSamples+b.cpuSamples},{"self_complete",a.cpuSelfComplete&&b.cpuSelfComplete&&a.cpuSamples+b.cpuSamples==a.time.count+b.time.count}});
+            {"calls",a.calls+b.calls},{"wall_samples",a.time.count+b.time.count},
+            {"cpu_samples",a.cpuSamples+b.cpuSamples},
+            {"self_complete",a.selfComplete&&b.selfComplete&&a.cpuSelfComplete&&b.cpuSelfComplete&&a.cpuSamples+b.cpuSamples==a.calls+b.calls}});
     }
     return out;
 }
