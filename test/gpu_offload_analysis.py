@@ -15,7 +15,8 @@ def paired_interval(ratios, *, draws=5000, seed=1045):
             'lower95': means[int(.025 * (draws - 1))],
             'upper95': means[int(.975 * (draws - 1))],
             'upper_one_sided95': means[int(.95 * (draws - 1))],
-            'pairs': len(ratios)}
+            'pairs': len(ratios), 'ratio_type': 'geometric mean of paired ratios',
+            'arithmetic_mean_paired_ratio': statistics.mean(ratios)}
 
 
 def measurement(result):
@@ -106,8 +107,15 @@ def summarize(rows, control, candidates, *, minimum_pairs=5, confirmation=False)
                 'diagnostic_only': diagnostic,
                 'resource_contaminated': contaminated,
                 'cpu_target_pass': cpu.get('upper_one_sided95', math.inf) <= .70,
-                'qualified': not contaminated and not diagnostic and passing and cpu.get('upper_one_sided95', math.inf) <= .70,
+                'scenario_gates_pass': not contaminated and not diagnostic and passing and cpu.get('upper_one_sided95', math.inf) <= .70,
+                'qualified': False,
                 'scope': 'this retained scenario; independent holdouts and rendered guards required separately'}
+        for record in scenario_result.values():
+            record.setdefault('scenario_gates_pass', False)
+            record['qualified'] = False
+            record['qualifying_evidence'] = False
+            record['stage'] = 'diagnose' if any(r.get('diagnostic_stage') for r in selected) else ('confirm' if confirmation else 'screen')
+            record['guard_completeness'] = 'scenario metrics only; independent base-game/stratum protocol, rendered and compatibility gates required'
         output[scenario] = scenario_result
     return output
 
@@ -122,7 +130,7 @@ def aggregate_cpu(rows, control, candidates, *, expected_scenarios=None,
     The roster must be independent of available rows, never inferred from them.
     """
     def unavailable(*errors):
-        return {c: {'available': False, 'errors': sorted(set(errors))} for c in candidates}
+        return {c: {'available': False, 'qualifying_evidence': False, 'errors': sorted(set(errors))} for c in candidates}
     if not expected_scenarios or expected_rounds is None:
         return unavailable('explicit expected scenario roster and paired rounds required')
     rounds = list(expected_rounds)
@@ -189,17 +197,24 @@ def aggregate_cpu(rows, control, candidates, *, expected_scenarios=None,
                 if not scenario.get('control', False):
                     phase_logs[scenario['map_id']][scenario['phase']].append(math.log(ratio))
         if errors:
-            output[candidate] = {'available': False, 'errors': sorted(set(errors))}; continue
+            output[candidate] = {'available': False, 'qualifying_evidence': False, 'errors': sorted(set(errors))}; continue
         strata = {}
+        arithmetic_strata = {}
         for mid, m in map_roster.items():
             # Average repetitions within phase, phases within map, maps within
             # stratum and finally strata. Resample only independent whole maps.
             value = statistics.mean(statistics.mean(phase_logs[mid][p]) for p in required_phases)
             strata.setdefault(m['stratum'], []).append(value)
+            arithmetic_value = statistics.mean(statistics.mean(math.exp(v) for v in phase_logs[mid][p]) for p in required_phases)
+            arithmetic_strata.setdefault(m['stratum'], []).append(arithmetic_value)
         rng = random.Random(1045)
         boot = sorted(math.exp(statistics.mean(statistics.mean(rng.choices(v, k=len(v))) for v in strata.values())) for _ in range(draws))
         upper = boot[int(.95 * (draws - 1))]
-        output[candidate] = {'available': True,
+        output[candidate] = {'available': True, 'qualifying_evidence': False,
+            'guard_completeness': 'CPU estimate only; independent base-game/stratum protocol, rendered and compatibility gates required',
+            'ratio_type': 'equal-weight geometric mean of paired CPU-per-tick ratios',
+            'ci_estimand': 'geometric mean of paired CPU-per-tick ratios',
+            'arithmetic_mean_paired_ratio': statistics.mean(statistics.mean(v) for v in arithmetic_strata.values()),
             'ratio': math.exp(statistics.mean(statistics.mean(v) for v in strata.values())),
             'upper_one_sided95': upper, 'cpu_target_pass': upper <= .7,
             'independent_maps': len(map_roster), 'maps_per_stratum': {g: len(v) for g, v in strata.items()},

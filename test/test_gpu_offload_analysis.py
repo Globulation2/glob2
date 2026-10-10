@@ -12,19 +12,20 @@ class OffloadAnalysisTest(unittest.TestCase):
     def test_cpu_saved_work_is_primary(self):
         rows = [r for n in range(10) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
         result = summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']
-        self.assertTrue(result['qualified'])  # unchanged wall time is acceptable
+        self.assertTrue(result['scenario_gates_pass'])  # unchanged wall time is acceptable
+        self.assertFalse(result['qualified']);self.assertFalse(result['qualifying_evidence'])
 
     def test_missing_or_invalid_samples_cannot_pass(self):
         rows = [r for n in range(5) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
-        self.assertFalse(summarize(rows[:-1], 'cpu', ['gpu'])['map-early']['gpu']['qualified'])
+        self.assertFalse(summarize(rows[:-1], 'cpu', ['gpu'])['map-early']['gpu']['scenario_gates_pass'])
         rows[-1]['valid'] = False
-        self.assertFalse(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['qualified'])
+        self.assertFalse(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['scenario_gates_pass'])
 
     def test_tail_regression_blocks_cpu_win(self):
         rows = [r for n in range(5) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
         for r in rows:
             if r['variant'] == 'gpu': r['result']['tick_p99_ns'] = 30
-        self.assertFalse(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['qualified'])
+        self.assertFalse(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['scenario_gates_pass'])
 
     def test_outlier_is_retained(self):
         self.assertGreater(paired_interval([.6] * 9 + [10])['upper_one_sided95'], .7)
@@ -34,7 +35,7 @@ class OffloadAnalysisTest(unittest.TestCase):
         rows[0]['resource_contaminated'] = True
         result = summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']
         self.assertAlmostEqual(result['metrics']['cpu_per_tick']['ratio'], .6)
-        self.assertFalse(result['qualified'])
+        self.assertFalse(result['scenario_gates_pass'])
         self.assertTrue(result['resource_contaminated'])
 
     def test_diagnostic_samples_preserve_statistics_but_never_qualify(self):
@@ -42,14 +43,14 @@ class OffloadAnalysisTest(unittest.TestCase):
         rows[0]['result']['benchmark_diagnostics_enabled'] = True
         result = summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']
         self.assertAlmostEqual(result['metrics']['cpu_per_tick']['ratio'], .6)
-        self.assertFalse(result['qualified'])
+        self.assertFalse(result['scenario_gates_pass'])
         self.assertTrue(result['diagnostic_only'])
 
     def test_diagnostic_stage_rows_never_qualify_in_standalone_analysis(self):
         rows = [r for n in range(5) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
         for row in rows: row['diagnostic_stage'] = True
         result = summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']
-        self.assertFalse(result['qualified']);self.assertTrue(result['diagnostic_only'])
+        self.assertFalse(result['scenario_gates_pass']);self.assertTrue(result['diagnostic_only'])
         roster, rows = self.aggregate_fixture()
         rows[0]['diagnostic_stage'] = True
         self.assertFalse(self.aggregate(roster, rows)['available'])
@@ -59,9 +60,9 @@ class OffloadAnalysisTest(unittest.TestCase):
 
     def test_zero_wait_improvement_and_new_wait(self):
         rows = [r for n in range(5) for r in (self.row('cpu', n, wait=0), self.row('gpu', n, 60, wait=0))]
-        self.assertTrue(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['qualified'])
+        self.assertTrue(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['scenario_gates_pass'])
         rows[-1]['result']['benchmark_publication_wait_ns'] = 10
-        self.assertFalse(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['qualified'])
+        self.assertFalse(summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']['scenario_gates_pass'])
 
     def test_wall_time_is_not_an_offload_ceiling(self):
         result = self.row('cpu', 0)['result']
@@ -80,7 +81,7 @@ class OffloadAnalysisTest(unittest.TestCase):
         rows = [r for n in range(10) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
         for r in rows:
             if r['variant'] == 'gpu': r['result']['benchmark_run_wall_ns'] = 101
-        self.assertFalse(summarize(rows, 'cpu', ['gpu'], minimum_pairs=10, confirmation=True)['map-early']['gpu']['qualified'])
+        self.assertFalse(summarize(rows, 'cpu', ['gpu'], minimum_pairs=10, confirmation=True)['map-early']['gpu']['scenario_gates_pass'])
 
     def test_aggregate_counts_maps_not_phases_or_repetitions(self):
         rows = []
@@ -96,6 +97,8 @@ class OffloadAnalysisTest(unittest.TestCase):
         summary = aggregate_cpu(rows, 'cpu', ['gpu'], expected_scenarios=roster, expected_rounds=range(5))['gpu']
         self.assertEqual(summary['independent_maps'], 2)
         self.assertAlmostEqual(summary['ratio'], .6)
+        self.assertAlmostEqual(summary['arithmetic_mean_paired_ratio'], .6)
+        self.assertFalse(summary['qualifying_evidence'])
         self.assertTrue(summary['cpu_target_pass'])
 
     def aggregate_fixture(self):
@@ -114,6 +117,21 @@ class OffloadAnalysisTest(unittest.TestCase):
     def aggregate(self, roster, rows, rounds=range(5)):
         return aggregate_cpu(rows, 'cpu', ['gpu'], expected_scenarios=roster,
                              expected_rounds=rounds, draws=100)['gpu']
+
+    def test_geometric_and_arithmetic_summaries_are_distinct_and_labelled(self):
+        import math
+        paired = paired_interval([.5, 1.], draws=100)
+        self.assertAlmostEqual(paired['ratio'], math.sqrt(.5))
+        self.assertAlmostEqual(paired['arithmetic_mean_paired_ratio'], .75)
+        roster, rows = self.aggregate_fixture()
+        for row in rows:
+            if row['variant'] == 'gpu':
+                row['result']['benchmark_run_cpu_ns'] = {'early': 30, 'middle': 60, 'late': 90}[row['phase']]
+        summary = self.aggregate(roster, rows)
+        self.assertAlmostEqual(summary['ratio'], (.3 * .6 * .9) ** (1 / 3))
+        self.assertAlmostEqual(summary['arithmetic_mean_paired_ratio'], .6)
+        self.assertIn('geometric', summary['ci_estimand'])
+        self.assertFalse(summary['qualifying_evidence'])
 
     def test_aggregate_requires_independently_declared_roster(self):
         _, rows = self.aggregate_fixture()

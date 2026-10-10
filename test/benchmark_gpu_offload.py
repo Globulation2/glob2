@@ -222,7 +222,8 @@ def execute(variant, scenario, output, warmup, *, extra_args=(), reservation=Non
 
 
 def campaign_summary(rows, control, candidates, scenarios, *, rounds, stage):
-    summary = dict(stage=stage, diagnostic_only=stage == 'diagnose',
+    summary = dict(stage=stage, diagnostic_only=stage == 'diagnose', qualifying_evidence=False,
+                   guard_completeness='scenario metrics and CPU aggregate only; final protocol and external gates required',
                    scenarios=summarize(rows, control, candidates, minimum_pairs=rounds,
                                        confirmation=stage == 'confirm'),
                    aggregate_cpu=aggregate_cpu(rows, control, candidates,
@@ -231,6 +232,7 @@ def campaign_summary(rows, control, candidates, scenarios, *, rounds, stage):
         for scenario in summary['scenarios'].values():
             for result in scenario.values():
                 result['qualified'] = False
+                result['scenario_gates_pass'] = False
                 result['cpu_target_pass'] = False
                 result['diagnostic_only'] = True
                 result['admission_reason'] = 'short diagnostic stage cannot qualify a candidate'
