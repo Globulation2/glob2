@@ -2964,5 +2964,9 @@
   "Presentation": "Prezentacja",
   "{value0} source": "Źródło {value0}",
   "{value0} decor source": "Źródło dekoracji {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Twój szkic zmienił się podczas wczytywania projektu. Twoje zmiany zostały zachowane; spróbuj ponownie otworzyć projekt."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Twój szkic zmienił się podczas wczytywania projektu. Twoje zmiany zostały zachowane; spróbuj ponownie otworzyć projekt.",
+  "More filters": "Więcej filtrów",
+  "Clear filters": "Wyczyść filtry",
+  "No results match these filters.": "Brak wyników pasujących do tych filtrów.",
+  "Results: {value0}": "Wyniki: {value0}"
 }

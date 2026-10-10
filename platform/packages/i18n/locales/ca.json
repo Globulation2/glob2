@@ -2937,5 +2937,9 @@
   "Presentation": "Presentació",
   "{value0} source": "Font de {value0}",
   "{value0} decor source": "Font de decoració de {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "L’esborrany ha canviat mentre es carregava el disseny. Els canvis s’han conservat; prova d’obrir el disseny de nou."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "L’esborrany ha canviat mentre es carregava el disseny. Els canvis s’han conservat; prova d’obrir el disseny de nou.",
+  "More filters": "Més filtres",
+  "Clear filters": "Neteja els filtres",
+  "No results match these filters.": "Cap resultat coincideix amb aquests filtres.",
+  "Results: {value0}": "Resultats: {value0}"
 }
