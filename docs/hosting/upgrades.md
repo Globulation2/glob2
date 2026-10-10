@@ -35,7 +35,9 @@ one command, in an order that never leaves a half-upgraded instance:
 4. **Web client last:** only once the new stack is healthy is the new client
    installed at `/play/`, so browsers never load a client newer than the platform
    and engine agents behind it. The `index.html`, `studio.html` and `generator-studio.html` entries
-   are installed with their available precompressed copies.
+   are installed with their available precompressed copies. Localized launchers
+   install `i18n.js` and every supported translation catalog before the HTML;
+   incomplete localization inputs are rejected before changing the served client.
 
 If the new stack does not become healthy, the script starts the `:previous`
 images of the previous revision again, recreating containers to restore network
