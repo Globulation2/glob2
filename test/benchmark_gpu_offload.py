@@ -35,6 +35,12 @@ def validate(config):
     counts = {str(v.get('compute_threads', '8')) for v in config['variants']}
     if len(counts) != 1 or any(v != 'auto' and (not v.isdecimal() or int(v) <= 0) for v in counts):
         raise ValueError('paired variants require the same positive executor budget or auto')
+    affinity_sets = {tuple(v.get('cpu_affinity', ())) for v in config['variants']}
+    if len(affinity_sets) != 1:
+        raise ValueError('paired variants require identical CPU affinity')
+    for affinity in affinity_sets:
+        if len(affinity) != len(set(affinity)) or any(type(c) is not int or c < 0 for c in affinity):
+            raise ValueError('CPU affinity must contain distinct nonnegative logical CPU IDs')
     for s in config['scenarios']:
         if not s.get('fixture_sha256') or '--load-game' not in s['args'] or '--ticks' not in s['args']:
             raise ValueError('retained fixed-tick loaded scenario required')
@@ -45,9 +51,11 @@ def validate(config):
     if config['warmup_ticks'] < 0: raise ValueError('nonnegative warmup required')
 
 
-def resource_snapshot():
+def resource_snapshot(benchmark_cpus=None):
     """Read-only inventory outside the timed window; command names exclude args."""
-    snapshot = {'monotonic_ns': time.monotonic_ns()}
+    if benchmark_cpus is None and hasattr(os, 'sched_getaffinity'):
+        benchmark_cpus = sorted(os.sched_getaffinity(0))
+    snapshot = {'monotonic_ns': time.monotonic_ns(), 'benchmark_cpus': benchmark_cpus}
     load = Path('/proc/loadavg')
     if load.exists(): snapshot['loadavg'] = load.read_text().strip()
     listing = subprocess.run(['ps', '-eo', 'pid,comm,stat,pcpu', '--sort=-pcpu'],
@@ -63,8 +71,13 @@ def resource_snapshot():
         except ValueError: continue
     compilers = [p for p in processes if p['command'] in ('cc1', 'cc1plus', 'gcc', 'g++', 'nvcc', 'ptxas') or
                  (p['command'].startswith('clang') and not p['command'].startswith('clangd'))]
+    for compiler in compilers:
+        try:
+            compiler['allowed_cpus'] = sorted(os.sched_getaffinity(compiler['pid']))
+            compiler['overlaps_benchmark_cpus'] = benchmark_cpus is None or bool(set(compiler['allowed_cpus']) & set(benchmark_cpus))
+        except (AttributeError, OSError): compiler['overlaps_benchmark_cpus'] = True
     snapshot.update(inventory_available=True, compilers=compilers,
-                    active_compiler_detected=any(p['state'].startswith(('R', 'D')) for p in compilers),
+                    active_compiler_detected=any(p['state'].startswith(('R', 'D')) and p['overlaps_benchmark_cpus'] for p in compilers),
                     top_cpu_commands=processes[:10])
     return snapshot
 
@@ -74,8 +87,10 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
     threads = str(variant.get('compute_threads', '8'))
     command = [variant['binary'], 'game', 'run', *scenario['args'], *extra_args, '--compute-threads', threads,
                '--benchmark-warmup', str(warmup), '--output-dir', str(output)]
+    affinity = variant.get('cpu_affinity')
+    if affinity: command = ['taskset', '--cpu-list', ','.join(map(str, affinity)), *command]
     env = dict(os.environ, **variant.get('env', {}))
-    resources_before = resource_snapshot()
+    resources_before = resource_snapshot(affinity)
     started = time.monotonic_ns()
     with (output / 'engine.log').open('w') as log:
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -90,7 +105,7 @@ def execute(variant, scenario, output, warmup, *, extra_args=()):
                process_cpu_ns=round((usage.ru_utime + usage.ru_stime) * 1e9),
                peak_rss_bytes=usage.ru_maxrss * (1 if platform.system() == 'Darwin' else 1024),
                valid=process.returncode == 0, errors=[],
-               resources_before=resources_before, resources_after=resource_snapshot())
+               resources_before=resources_before, resources_after=resource_snapshot(affinity))
     row['resource_contaminated'] = any(not s.get('inventory_available', False) or s.get('active_compiler_detected', False) for s in
                                         (row['resources_before'], row['resources_after']))
     if process.returncode:
