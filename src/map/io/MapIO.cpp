@@ -1186,10 +1186,13 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				stream->readLeaveSection();
 			}
 			stream->readEnterSection("access");
+			// Older records store access for the building's automatic route;
+			// resolve that sentinel before indexing the concrete route rows.
+			const int savedAccessBase=int(building->resolveRoute(savedRoute))*SWIM_VARIANT_COUNT;
 			for (int sw=0; sw<savedAccessVariants; ++sw)
 			{
 				stream->readEnterSection(sw);
-				building->locked[int(savedRoute)*SWIM_VARIANT_COUNT+sw]=loadFlag(stream,"locked");
+				building->locked[savedAccessBase+sw]=loadFlag(stream,"locked");
 				building->anyResourceToClear[sw]=stream->readUint8("resourceState");
 				if (building->anyResourceToClear[sw]>2) throw std::runtime_error("Invalid saved resource state");
 				stream->readLeaveSection();

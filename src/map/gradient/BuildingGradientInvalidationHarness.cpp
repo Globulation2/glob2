@@ -15,6 +15,7 @@
 #include "Building.h"
 #include "BuildingGradientSearch.h"
 #include "BuildingGradientDepthPolicy.h"
+#include "BuildingGradientStats.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "Race.h"
@@ -27,6 +28,8 @@
 #include "engine/sim/snapshot/WorldSnapshot.h"
 #include <nlohmann/json.hpp>
 #include <string>
+#include <sstream>
+#include <tuple>
 #include <memory>
 #include <chrono>
 #include <stdexcept>
@@ -539,6 +542,39 @@ struct Scheduler
 		return field(b->globalGradient[b->routeSlot(swim, route)]);
 	}
 	Uint16 at(Building* b, int x, int y, int slot = 0) const { return b->globalGradient[slot][map.coordToIndex(x, y)]; }
+};
+
+// Observe offsets while the real legacy loader consumes the retained binary.
+// Section names are diagnostics only in BinaryInputStream, so this reader does
+// not add, remove, or reinterpret any historical bytes.
+struct LegacyAccessOffsetReader final : GAGCore::BinaryInputStream
+{
+    struct Flag { int team, building, swim; size_t offset; };
+    std::vector<std::string> sections;
+    std::vector<Flag> flags;
+    explicit LegacyAccessOffsetReader(const std::string& bytes)
+        : BinaryInputStream(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()))
+    { seekFromStart(0); }
+    void readEnterSection(const std::string name) override { sections.push_back(name); }
+    void readEnterSection(unsigned id) override { sections.push_back(std::to_string(id)); }
+    void readLeaveSection(size_t count=1) override
+    {
+        if(count>sections.size()) throw std::runtime_error("Unbalanced legacy fixture sections");
+        sections.resize(sections.size()-count);
+    }
+    Uint8 readUint8(const std::string name) override
+    {
+        if(name=="locked")
+            for(size_t i=0;i+6<sections.size();++i)
+                if(sections[i]=="mapRuntime" && sections[i+1]=="teams"
+                    && sections[i+3]=="buildings" && sections[i+5]=="access")
+                {
+                    flags.push_back({std::stoi(sections[i+2]),std::stoi(sections[i+4]),
+                        std::stoi(sections[i+6]),getPosition()});
+                    break;
+                }
+        return BinaryInputStream::readUint8(name);
+    }
 };
 
 std::string saveRuntime(Map& map, bool text = false)
@@ -1175,4 +1211,112 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		scheduledEmptyPipelineFollowsHeaderDelay();
 	}
+    TEST_CASE("retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        const auto original=glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
+        GameGUI observed;
+        LegacyAccessOffsetReader tracker(original);
+        REQUIRE(observed.game.load(&tracker));
+        REQUIRE(observed.game.mapHeader.getVersionMinor()==126);
+        REQUIRE(tracker.flags.size()==8); // Four real swarms, two old access rows each.
+        for(const auto& flag:tracker.flags) {
+            REQUIRE(flag.offset<original.size());
+            REQUIRE(flag.swim>=0); REQUIRE(flag.swim<2);
+            const auto* building=observed.game.teams[flag.team]->myBuildings[flag.building];
+            REQUIRE(building!=nullptr);
+            REQUIRE(std::string(building->type->type)=="swarm");
+            REQUIRE(building->resolveRoute(BuildingRoute::Automatic)==BuildingRoute::Footprint);
+        }
+        const auto load=[](Game& game,const std::string& bytes) {
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+            input.seekFromStart(0); return game.load(&input);
+        };
+        const auto save=[](Game& game) {
+            auto* memory=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(memory);
+            game.save(&output,false,"legacy access continuation"); return memory->takeContents();
+        };
+        const auto state=[](Game& game) {
+            std::vector<Uint32> fields,buildings,units;
+            game.checkSum(&fields,&buildings,&units,true);
+            return std::make_tuple(fields,buildings,units);
+        };
+        for(unsigned pattern=0;pattern<4;++pattern) {
+            auto patched=original;
+            for(const auto& flag:tracker.flags) patched[flag.offset]=char((pattern>>flag.swim)&1u);
+            GameGUI legacy;
+            REQUIRE(load(legacy.game,patched));
+            for(const auto& flag:tracker.flags) {
+                const auto* building=legacy.game.teams[flag.team]->myBuildings[flag.building];
+                // Concrete row zero is independent of the Automatic sentinel's
+                // numeric value. Other routes and the new water-only row remain clear.
+                for(int index=0;index<BUILDING_ACCESS_COUNT;++index)
+                    REQUIRE(building->locked[index]==(index<2 && bool((pattern>>index)&1u)));
+            }
+            GameGUI current,repeated;
+            REQUIRE(load(current.game,save(legacy.game)));
+            REQUIRE(current.game.mapHeader.getVersionMinor()==VERSION_MINOR);
+            REQUIRE(saveRuntime(current.game.map)==saveRuntime(legacy.game.map));
+            for(const auto& flag:tracker.flags) {
+                const auto* a=legacy.game.teams[flag.team]->myBuildings[flag.building];
+                const auto* b=current.game.teams[flag.team]->myBuildings[flag.building];
+                for(int index=0;index<BUILDING_ACCESS_COUNT;++index) REQUIRE(a->locked[index]==b->locked[index]);
+            }
+            REQUIRE(load(repeated.game,save(current.game)));
+            current.game.setWaitingOnMask(0); repeated.game.setWaitingOnMask(0);
+            REQUIRE(state(current.game)==state(repeated.game));
+            for(int tick=0;tick<16;++tick) {
+                current.game.syncStep(0); repeated.game.syncStep(0);
+                REQUIRE(state(current.game)==state(repeated.game));
+                REQUIRE(current.game.syncRandom==repeated.game.syncRandom);
+                REQUIRE(saveRuntime(current.game.map)==saveRuntime(repeated.game.map));
+            }
+        }
+    }
+
+    TEST_CASE("released water-only footprint diagnostics export the locked water-only access row")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world;
+        auto* inn=world.addBuilding("inn",8,8);
+        REQUIRE(inn!=nullptr);
+        auto& map=world.game.map;
+        const auto route=BuildingRoute::Footprint;
+        constexpr int waterOnly=7;
+        const int waterSlot=inn->routeSlot(waterOnly,route);
+        for(int swim:{1,waterOnly}) {
+            const int slot=inn->routeSlot(swim,route);
+            inn->globalGradient[slot]=map.acquireBuildingGradientBuffer();
+            map.updateGlobalGradient(inn,swim,route);
+            map.finishBuildingGradient(inn,swim,route);
+        }
+        REQUIRE_FALSE(inn->locked[inn->routeAccess(1,route)]);
+        REQUIRE(inn->locked[inn->routeAccess(waterOnly,route)]);
+        REQUIRE(inn->globalGradient[waterSlot]!=nullptr);
+        REQUIRE_FALSE(bool(inn->globalGradientSearch[waterSlot]));
+        BuildingGradientStats stats;
+        stats.fieldReleased(*inn,waterSlot,BuildingGradientStats::Event::End,world.game.stepCounter);
+        REQUIRE(stats.rows().size()==1);
+        const auto& row=stats.rows().front();
+        CHECK(row.route==0); CHECK(row.swim==waterOnly);
+        CHECK(row.prevLocked); CHECK_FALSE(row.prevComplete);
+        std::ostringstream exported; stats.writeCsv(exported);
+        std::istringstream csv(exported.str());
+        std::string headerLine,rowLine; REQUIRE(bool(std::getline(csv,headerLine)));
+        REQUIRE(bool(std::getline(csv,rowLine)));
+        std::istringstream headers(headerLine),values(rowLine);
+        std::string header,value;
+        bool lockedSeen=false,completeSeen=false,routeSeen=false,swimSeen=false;
+        while(std::getline(headers,header,',')) {
+            REQUIRE(bool(std::getline(values,value,',')));
+            if(header=="prev_locked") {CHECK(value=="1");lockedSeen=true;}
+            if(header=="prev_complete") {CHECK(value=="0");completeSeen=true;}
+            if(header=="route") {CHECK(value=="footprint");routeSeen=true;}
+            if(header=="swim") {CHECK(value=="7");swimSeen=true;}
+            if(lockedSeen && completeSeen && routeSeen && swimSeen) break;
+        }
+        CHECK(lockedSeen); CHECK(completeSeen); CHECK(routeSeen); CHECK(swimSeen);
+    }
+
 }
