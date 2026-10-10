@@ -4,6 +4,8 @@
 #include "GradientPropagation.h"
 #include "TerrainGradient.h"
 #include <barrier>
+#include <cstdlib>
+#include <cstring>
 #include <future>
 #include <queue>
 #include <random>
@@ -948,7 +950,7 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
 {
     using namespace gradient_kernel;
     if(!initializeOpenCL() || !(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))) return;
-    if(openCLStatus().activeEpoch || openCLStatus().parityBound) return; // Required-only experimental modes.
+    if(openCLStatus().activeEpoch || openCLStatus().parityBound || openCLStatus().directSeedUpload) return; // Required-only experimental modes.
     std::thread coordinator([&] {
         for(auto dimensions:{std::pair{1,17},std::pair{17,1},std::pair{7,13}})
         for(int cap:{0,40,700}) {
@@ -1074,6 +1076,109 @@ TEST_CASE("experimental mask and parity bindings preserve every plan across reti
         [](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,98232,1,true}};
     CHECK_FALSE(beginOpenCLProbe(request,Plan::Frozen8,seeds));
     CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);CHECK_FALSE(session.failed.load());
+}
+TEST_CASE("singleton direct seed uploads preserve exact arrays commands and mixed batch staging")
+{
+    using namespace gradient_kernel;
+    if(!initializeOpenCL() || !openCLStatus().directSeedUpload)return;
+    REQUIRE(openCLStatus().directSeedUploadRequested);
+    BackendSession session;
+    struct Field {
+        field::Grid grid;
+        std::shared_ptr<std::vector<EntrySteps>> costs;
+        std::vector<std::uint16_t> original,actual,expected;
+        int cap;
+    };
+    for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
+        if(!(readyPlans.load()&(1u<<plan)))continue;
+        std::vector<Field> fields;
+        // Growth, narrow toroidal grids and subsequent smaller reuse all read
+        // output into the separate reusable staging buffer, never original seeds.
+        for(auto dimensions:{std::pair{1,1},std::pair{1,37},std::pair{37,1},
+                             std::pair{31,17},std::pair{257,131},std::pair{7,13}}) {
+            const field::Grid grid(dimensions.first,dimensions.second);
+            auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells());
+            for(std::size_t i=0;i<grid.cells();++i)(*costs)[i]=i%11 ? EntrySteps{5,7} : EntrySteps{13,18};
+            fields.push_back({grid,costs,{},{},{},grid.cells()==1 ? 0 : 700});
+        }
+        for(unsigned repeat=0;repeat<2;++repeat)for(auto& field:fields) {
+            field.original.assign(field.grid.cells(),1);
+            for(std::size_t i=0;i<field.original.size();++i)if((i+repeat)%19==0)field.original[i]=0;
+            field.original[repeat%field.original.size()]=field.original.size()==1 ? 65501 : 65535;
+            if(field.original.size()>1)field.original[field.original.size()/2]=65401;
+            field.actual=field.original;field.expected=oracle(field.original,field.grid,*field.costs,field.cap);
+            bool executed=false,observed=false;
+            BackendRequest request{field.actual.data(),field.cap,field.grid,session,field.costs.get(),
+                [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},nullptr,
+                {field.costs,8199271,1,true,field.costs->capacity()*sizeof(EntrySteps)}};
+            request.executedOnDevice=&executed;request.deviceExecutionObserved=&observed;
+            const auto before=openCLStatus();REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan(plan)));
+            CHECK(field.actual==field.expected);CHECK(executed);CHECK(observed);CHECK_FALSE(session.failed.load());
+            const auto after=openCLStatus();const auto bytes=field.grid.cells()*sizeof(std::uint16_t);
+            CHECK(after.directSeedUploads==before.directSeedUploads+1);
+            CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes+bytes);
+            CHECK(after.seedUploadedBytes==before.seedUploadedBytes+bytes);
+            CHECK(after.seedCopiedBytes==before.seedCopiedBytes);
+            CHECK(after.outputCopiedBytes==before.outputCopiedBytes+bytes);
+            CHECK(after.batches==before.batches+1);CHECK(after.fields==before.fields+1);
+            const auto dispatches=after.dispatches-before.dispatches;
+            REQUIRE(dispatches>0);CHECK(after.hostChecks>before.hostChecks);
+            CHECK(after.tileMaskInitializations==before.tileMaskInitializations+(after.activeEpoch ? 2 : 1));
+            CHECK(after.tileMaskClears==before.tileMaskClears+(after.activeEpoch ? 0 : dispatches));
+            const auto arguments=after.parityBound ? 32 : 12+4*dispatches;
+            CHECK(after.kernelArgumentUpdates==before.kernelArgumentUpdates+arguments+(after.activeEpoch ? dispatches : 0));
+        }
+        // Nine fields include a singleton tail chunk. It MUST still use the
+        // mixed-batch staging path, preserving the whole-batch rollback contract.
+        std::vector<BackendRequest> requests;
+        std::size_t cells=0;
+        while(fields.size()<9){auto copy=fields[fields.size()%5];fields.push_back(std::move(copy));}
+        for(auto& field:fields) {
+            field.actual=field.original;cells+=field.grid.cells();
+            requests.push_back({field.actual.data(),field.cap,field.grid,session,field.costs.get(),
+                [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},nullptr,
+                {field.costs,8199271,1,true,field.costs->capacity()*sizeof(EntrySteps)}});
+        }
+        const auto before=openCLStatus();REQUIRE(executeOpenCLDevice(requests,Plan(plan)));
+        for(const auto& field:fields)CHECK(field.actual==field.expected);
+        const auto after=openCLStatus();CHECK(after.directSeedUploads==before.directSeedUploads);
+        CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes);
+        CHECK(after.seedCopiedBytes==before.seedCopiedBytes+cells*sizeof(std::uint16_t));
+        CHECK(after.seedUploadedBytes==before.seedUploadedBytes+cells*sizeof(std::uint16_t));
+        CHECK(after.outputCopiedBytes==before.outputCopiedBytes+cells*sizeof(std::uint16_t));
+        CHECK(after.batches==before.batches+2);CHECK(after.fields==before.fields+9);
+    }
+    auto seeds=std::make_shared<std::vector<std::uint16_t>>(2,1);(*seeds)[0]=65535;
+    const auto original=*seeds;const auto bytes=openCLProbeBytes();
+    BackendRequest probe{seeds->data(),100,{2,1},session,nullptr,[](void*,std::size_t){return LAND_STEPS;},nullptr,{seeds,872392,1,true}};
+    CHECK_FALSE(beginOpenCLProbe(probe,Plan::Frozen8,seeds));CHECK(*seeds==original);CHECK(openCLProbeBytes()==bytes);
+}
+TEST_CASE("isolated direct seed upload rollback preserves originals after device work")
+{
+    // This deliberately fails a session after initial admission and quarantines
+    // the backend. Run ONLY this case in a separate native test process with
+    // GLOB2_TEST_OPENCL_DIRECT_UPLOAD_ROLLBACK=1 and direct-upload mode enabled.
+    const auto* isolated=std::getenv("GLOB2_TEST_OPENCL_DIRECT_UPLOAD_ROLLBACK");
+    if(!isolated || std::strcmp(isolated,"1"))return;
+    using namespace gradient_kernel;
+    REQUIRE(initializeOpenCL());REQUIRE(openCLStatus().directSeedUpload);
+    REQUIRE(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)));
+    BackendSession session;const field::Grid grid(31,17);
+    std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[19]=65400;seeds[13]=0;
+    const auto original=seeds;
+    struct Context {BackendSession* session;unsigned calls=0;} context{&session};
+    bool executed=true,observed=false;
+    BackendRequest request{seeds.data(),700,grid,session,&context,
+        [](void* p,std::size_t){auto& c=*static_cast<Context*>(p);if(!c.calls++)c.session->fail();return LAND_STEPS;},nullptr,{}};
+    request.executedOnDevice=&executed;request.deviceExecutionObserved=&observed;
+    const auto before=openCLStatus();CHECK_FALSE(executeOpenCLDevice(std::span(&request,1),Plan::Frozen8));
+    const auto after=openCLStatus();CHECK(context.calls>0);CHECK(session.failed.load());CHECK(seeds==original);CHECK_FALSE(executed);CHECK(observed);
+    CHECK(after.deviceObservedFields==before.deviceObservedFields+1);CHECK(after.committedFields==before.committedFields);
+    CHECK(after.directSeedUploads==before.directSeedUploads+1);
+    CHECK(after.directSeedUploadedBytes==before.directSeedUploadedBytes+grid.cells()*sizeof(std::uint16_t));
+    CHECK(after.seedUploadedBytes==before.seedUploadedBytes+grid.cells()*sizeof(std::uint16_t));
+    CHECK(after.seedCopiedBytes==before.seedCopiedBytes);CHECK(after.outputCopiedBytes==before.outputCopiedBytes);
+    CHECK(after.dispatches>before.dispatches);CHECK(after.hostChecks>before.hostChecks);
 }
 }
 

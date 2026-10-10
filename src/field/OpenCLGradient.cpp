@@ -435,6 +435,7 @@ struct Device
         probed = true;
         try
         {
+            status.directSeedUploadRequested=numericOverride("GLOB2_OPENCL_DIRECT_SEED_UPLOAD",0,1)!=0;
             api.load();
             status.checkInterval=numericOverride("GLOB2_OPENCL_CHECK_INTERVAL",8,32);
             if(!status.checkInterval) throw std::runtime_error("Invalid GLOB2_OPENCL_CHECK_INTERVAL");
@@ -568,6 +569,7 @@ struct Device
             status.tileHeight = variants[selectedVariant].tileHeight;
             status.localSteps = variants[selectedVariant].steps;
             status.available = true;
+            status.directSeedUpload=status.directSeedUploadRequested;
         }
         catch (const std::exception &e)
         {
@@ -652,6 +654,9 @@ struct Runtime
         out.tileMaskInitializations+=in.tileMaskInitializations;out.tileMaskClears+=in.tileMaskClears;
         out.kernelArgumentUpdates+=in.kernelArgumentUpdates;
         out.deviceObservedFields+=in.deviceObservedFields;out.committedFields+=in.committedFields;
+        out.directSeedUploads+=in.directSeedUploads;out.seedCopiedBytes+=in.seedCopiedBytes;
+        out.seedUploadedBytes+=in.seedUploadedBytes;out.directSeedUploadedBytes+=in.directSeedUploadedBytes;
+        out.outputCopiedBytes+=in.outputCopiedBytes;
     }
     Runtime& lane() {
         thread_local std::shared_ptr<Runtime> current;
@@ -852,7 +857,8 @@ struct Runtime
             throw;
         }
     }
-    void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging)
+    void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging,
+                      bool directSingletonSeed=false)
     {
         const auto preparationStart=activeStageTiming ? monotonicNs() : 0;
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
@@ -889,7 +895,10 @@ struct Runtime
         std::size_t offset=0, field=0;
         for(auto* r:requests) {
             const auto n=r->grid.cells();
-            std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
+            if(!directSingletonSeed) {
+                std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
+                status.seedCopiedBytes+=n*sizeof(std::uint16_t);
+            }
             blocked.clear();
             if(!r->identity.allCells) {
                 resizeStaging(blocked,n,blockedLease);
@@ -902,7 +911,15 @@ struct Runtime
             std::copy(descriptor.begin(),descriptor.end(),desc.begin()+field*8);
             offset+=n;++field;
         }
-        write(first, staging.data(), total * sizeof(std::uint16_t));
+        // Required singleton sources remain immutable and caller-owned until
+        // the entire synchronous batch completes. write() waits for a blocking
+        // transfer or its trailing event (and drains on polling failure), so a
+        // nonblocking upload never outlives the original seeds. Output is still
+        // staged separately and committed only after all device/session checks.
+        const auto seedBytes=total*sizeof(std::uint16_t);
+        write(first,directSingletonSeed ? requests.front()->gradient : staging.data(),seedBytes);
+        status.seedUploadedBytes+=seedBytes;
+        if(directSingletonSeed){++status.directSeedUploads;status.directSeedUploadedBytes+=seedBytes;}
         write(descriptors, desc.data(), requests.size()*8*sizeof(UInt));
         Handle a = first, b = second;
         const auto &variant = variants[selectedVariant];
@@ -1128,7 +1145,8 @@ struct Runtime
                 std::array<const BackendRequest*,8> pointers{};
                 for(std::size_t i=0;i<count;++i) pointers[i]=&input[begin+i];
                 std::size_t chunkCells=0;for(std::size_t i=0;i<count;++i) chunkCells+=pointers[i]->grid.cells();
-                computeBatch(std::span(pointers.data(),count),std::span(values.data()+outputOffset,chunkCells));
+                computeBatch(std::span(pointers.data(),count),std::span(values.data()+outputOffset,chunkCells),
+                    shared->status.directSeedUpload && input.size()==1);
                 outputOffset+=chunkCells;
                 status.fields+=count;
             }
@@ -1137,6 +1155,7 @@ struct Runtime
             outputOffset=0;
             for(const auto& r:input) {
                 std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
+                status.outputCopiedBytes+=r.grid.cells()*sizeof(std::uint16_t);
                 if(r.executedOnDevice) *r.executedOnDevice=true;
                 ++status.committedFields;
                 outputOffset+=r.grid.cells();
@@ -1503,7 +1522,7 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
         request.grid.width()<=0 || request.grid.height()<=0 || request.operation!=Operation::CompleteField ||
         request.limit<0 || request.session.failed.load() ||
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
-        device.status.activeEpoch || device.status.parityBound) return {};
+        device.status.activeEpoch || device.status.parityBound || device.status.directSeedUpload) return {};
     try {
         auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));
         admitted=value->state.get();return value;

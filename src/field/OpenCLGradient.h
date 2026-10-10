@@ -60,6 +60,11 @@ struct OpenCLStatus
     std::string deviceVendor, driverVersion, deviceVersion, openCLCVersion;
     // Confirmed kernel completion versus successful transactional output commit.
     std::uint64_t deviceObservedFields = 0, committedFields = 0;
+    // Independent required-only memcpy removal. Mixed batches retain staging;
+    // yielding probes decline this configuration until separately qualified.
+    bool directSeedUploadRequested = false, directSeedUpload = false;
+    std::uint64_t directSeedUploads = 0, seedCopiedBytes = 0, seedUploadedBytes = 0;
+    std::uint64_t directSeedUploadedBytes = 0, outputCopiedBytes = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.
@@ -84,7 +89,7 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // backend accounts only its staging/state/lane and retained cost plane.
 // Backend staging is charged
 // separately. Unknown/unready cost planes are declined without preparation.
-// Required-only active-epoch/parity-binding ablations are also declined; their
+// Required-only active-epoch/parity-binding/direct-seed ablations are also declined; their
 // results cannot supply automatic-promotion evidence until yielding counterparts
 // have been independently implemented and qualified.
 class OpenCLProbe
