@@ -737,6 +737,11 @@ struct HeadlessRunner
                 {"budget_declines",status.budgetDeclines},{"thread_cpu_ns",status.threadCPUNs},
                 {"initialization_thread_cpu_ns",status.initializationThreadCPUNs},
                 {"thread_cpu_invalid_measurements",status.threadCPUInvalidMeasurements},
+                {"api_cpu_mode",status.apiCpuMode},{"api_cpu_configured",status.apiCpuConfigured},
+                {"api_cpu_invalid_scopes",status.apiCpu.invalidScopes},
+                {"api_cpu_reconciliation_errors",status.apiCpu.reconciliationErrors},
+                {"api_cpu_control_bracket_ns",status.apiCpu.controlBracketNs},
+                {"api_cpu_clock_reads",status.apiCpu.clockReads},{"api_cpu_covered_ns",status.apiCpu.coveredNs},
                 {"thread_cpu_clock_available",status.threadCPUAvailable},
                 {"preparation_ns",status.preparationNs},{"upload_ns",status.uploadNs},
                 {"dispatch_wait_ns",status.dispatchWaitNs},{"readback_ns",status.readbackNs},
@@ -745,6 +750,13 @@ struct HeadlessRunner
                 {"device_kernel_ns",status.deviceKernelNs},{"device_readback_ns",status.deviceReadbackNs},
                 {"device_check_read_ns",status.deviceCheckReadNs},{"profiling_errors",status.profilingErrors}};
             for(const auto& [name,value]:values) result << ',' << quote(name) << ':' << value;
+            constexpr std::array<const char*,unsigned(gradient_kernel::OpenCLCpuCategory::Count)> apiCpuNames{
+                "preparation","upload","arguments","fill","kernel_enqueue","check_read","output_read","output_copy","other"};
+            for(unsigned i=0;i<apiCpuNames.size();++i) {
+                const auto prefix=std::string("api_cpu_")+apiCpuNames[i];
+                result << ',' << quote(prefix+"_ns") << ':' << status.apiCpu.ns[i]
+                    << ',' << quote(prefix+"_calls") << ':' << status.apiCpu.calls[i];
+            }
             result << '}';
         };
         result << "},\"benchmark_opencl_at_start\":"; writeOpenCL(measuredOpenCLStart);
