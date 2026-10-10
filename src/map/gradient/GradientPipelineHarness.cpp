@@ -837,12 +837,13 @@ TEST_CASE("fixed-due GPU stalls demote accepted policy in background without dia
         pipeline.setDeviceService(service);auto session=pipeline.session();session->configureLearning(true);
         const auto policy=session->learningPolicy();WorkloadKey key;
         key.width=key.height=1;key.cpuBuckets=64;key.threads=2;key.family=Family::Materials;key.limit=COST_LIMIT;
-        policy->observeAccepted(key,Plan::CPU,1000000000,1);REQUIRE(policy->qualify(key,plan,true));
-        for(unsigned pair=0;pair<8;++pair) {
+        policy->observeAccepted(key,Plan::CPU,1000000000000ull,1);REQUIRE(policy->qualify(key,plan,true));
+        for(unsigned pair=0;pair<256;++pair) {
             std::optional<CpuSavingPolicy::ProbeTicket> ticket;
             for(unsigned i=0;i<CpuSavingPolicy::ProbePeriod && !ticket;++i)
-                ticket=policy->beginProbe(key,plan,1,1000000,100000000,1000000,false);
-            REQUIRE(ticket);policy->finishProbe(*ticket,1000000,600000,1000000,1000000,100000000,true,true);
+                ticket=policy->beginProbe(key,plan,1,1000000,100000000,1000000,false,0,1000000);
+            REQUIRE(ticket);
+            if(policy->finishProbe(*ticket,1000000,600000,1000000,600000,100000000,true,true))break;
         }
         REQUIRE(policy->lookup(key).plan==plan);
         pipeline.setAsyncWork([](auto& job,PlanDecision decision){
