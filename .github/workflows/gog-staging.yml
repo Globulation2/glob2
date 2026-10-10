@@ -112,6 +112,9 @@ jobs:
             mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
             mingw-w64-x86_64-openssl mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre
+      - name: Use unchanged line endings for source checkout
+        shell: pwsh
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: driver
