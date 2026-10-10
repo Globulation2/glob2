@@ -286,6 +286,12 @@ A sidebar, or phone tabs, selects the panes:
 Maps, Profile & history and Online settings open their own screens. Recent match
 summaries combine the REST history with `match.updated` events.
 
+**Discord community** in the Play pane and main menu (under More on phones)
+opens a shared invitation panel. Join Discord opens the invitation through the
+host's browser/app handoff; Copy link copies it, and the selectable link provides
+a manual fallback. Back returns to the previous menu while any online search
+continues. The invitation is defined in `src/ui/DiscordCommunity.cpp`.
+
 
 ### Room
 

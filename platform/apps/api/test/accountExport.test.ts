@@ -23,6 +23,7 @@ beforeAll(async () => {
   harness = await createHarness();
   api = await harness.start({
     instance: {
+      skinDesigner: { enabled: true, salesEnabled: true },
       auth: { ...DEFAULT_INSTANCE_CONFIG.auth, local: { enabled: true, allowRegistration: true } },
     },
   });

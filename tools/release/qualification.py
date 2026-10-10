@@ -22,6 +22,11 @@ TESTED_TARGETS = (
 )
 
 
+def target_for(package):
+    platform, arch, kind = (package[key] for key in ("platform", "architecture", "format"))
+    return "linux-" + kind if platform == "linux" else platform + "-" + arch
+
+
 def https_url(value):
     if not isinstance(value, str):
         raise ValueError("URL must be a string")
@@ -31,10 +36,27 @@ def https_url(value):
     return parsed
 
 
-def validate(evidence, tag, source_commit, digests):
+def validate(evidence, tag, source_commit, digests, packages=None):
     """Return the small public gate summary after all private evidence gates pass."""
-    if not isinstance(evidence, dict) or evidence.get("schemaVersion") != 1:
-        raise ValueError("qualification schemaVersion must be 1")
+    staged = packages is not None
+    version = 2 if staged else 1
+    if not isinstance(evidence, dict) or evidence.get("schemaVersion") != version:
+        raise ValueError(f"qualification schemaVersion must be {version}")
+    selected_platforms = set(PLATFORMS)
+    selected_targets = set(TESTED_TARGETS)
+    if staged:
+        selected_platforms = {p["platform"] for p in packages}
+        selected_targets = {target_for(p) for p in packages}
+        stores = evidence.get("stores", {})
+        if isinstance(stores, dict):
+            if "appStore" in stores:
+                selected_platforms.add("ios")
+                selected_targets.update(("ios-iphone", "ios-ipad"))
+            if "googlePlay" in stores:
+                selected_platforms.add("android")
+                selected_targets.update(("android-arm64", "android-armv7", "android-x86_64"))
+        if evidence.get("clientBuilds") != {p["filename"]: p["clientBuild"] for p in packages}:
+            raise ValueError("qualification clientBuilds must match the selected package profiles")
     if evidence.get("tag") != tag or evidence.get("sourceCommit") != source_commit:
         raise ValueError("qualification tag/sourceCommit does not match selected source")
     if not isinstance(evidence.get("reviewedBy"), str) or not evidence["reviewedBy"].strip():
@@ -50,7 +72,8 @@ def validate(evidence, tag, source_commit, digests):
     compatibility = evidence.get("compatibility")
     if not isinstance(platforms, dict) or not isinstance(compatibility, dict):
         raise ValueError("qualification platforms and compatibility must be objects")
-    for platform, gates in PLATFORMS.items():
+    for platform in selected_platforms:
+        gates = PLATFORMS[platform]
         assertions = platforms.get(platform, {})
         if not isinstance(assertions, dict):
             raise ValueError("platform qualification must be an object")
@@ -63,7 +86,7 @@ def validate(evidence, tag, source_commit, digests):
     targets = evidence.get("testedTargets")
     if not isinstance(targets, dict):
         raise ValueError("qualification testedTargets must be an object")
-    for target in TESTED_TARGETS:
+    for target in selected_targets:
         if targets.get(target) is not True:
             raise ValueError(f"qualification requires testedTargets.{target}")
     attested = evidence.get("artifacts", {})
@@ -73,7 +96,9 @@ def validate(evidence, tag, source_commit, digests):
     if not isinstance(stores, dict):
         raise ValueError("qualification requires production store availability")
     public_stores = {}
-    for channel in ("googlePlay", "appStore"):
+    for channel in (("googlePlay", "appStore") if not staged else stores):
+        if channel not in ("googlePlay", "appStore"):
+            raise ValueError("unsupported store channel")
         store = stores.get(channel, {})
         if not isinstance(store, dict) or store.get("production") is not True:
             raise ValueError(f"qualification requires {channel} production availability")
@@ -85,4 +110,7 @@ def validate(evidence, tag, source_commit, digests):
         if not valid or parsed.fragment:
             raise ValueError(f"qualification requires a valid {channel} production listing URL")
         public_stores[channel] = {"url": store["url"], "production": True}
-    return {"qualified": True, "sourceCommit": source_commit, "stores": public_stores}
+    summary = {"qualified": True, "sourceCommit": source_commit, "stores": public_stores}
+    if staged:
+        summary.update(scope="staged", testedTargets=sorted(selected_targets))
+    return summary

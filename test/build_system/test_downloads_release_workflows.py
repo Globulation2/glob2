@@ -227,6 +227,17 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('Install, upgrade and uninstall the final signed installer',text)
         self.assertLess(text.index('Timestamp and sign the final installer'),text.index('Install, upgrade and uninstall the final signed installer'))
 
+    def test_ios_archive_qualification_does_not_require_upload_credentials(self):
+        text=(ROOT/'.github/workflows/ios-testflight.yml').read_text()
+        dispatch, call=text.split('  workflow_call:',1)
+        self.assertIn('default: false\n        type: boolean',dispatch)
+        self.assertIn('default: true\n        type: boolean',call)
+        self.assertIn("environment: ${{ inputs.upload && 'ios-testflight' || '' }}",text)
+        self.assertIn('Require channel configuration before building\n        if: ${{ inputs.upload }}',text)
+        self.assertIn('  upload:\n    if: ${{ inputs.upload }}\n    needs: build',text)
+        self.assertIn("github.repository_id == 1397722696",text)
+        self.assertIn('EXPECTED_COMMIT',text)
+
     def test_all_platform_jobs_receive_the_same_source_revision(self):
         text=(ROOT/'.github/workflows/github-release.yml').read_text()
         self.assertEqual(text.count('source_commit: ${{ needs.context.outputs.revision }}'),4)

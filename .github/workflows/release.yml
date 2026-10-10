@@ -205,18 +205,18 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 lean_images=1 \
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0 lean_images=1 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" \
             DATADIR=/usr/share install
           python3 tools/release/release.py verify-install --stage "$stage"
-          scons -j2 release=1 server=0 lean_images=1 engine-tests
+          scons -j2 release=1 client_profile=free server=0 lean_images=1 engine-tests
           LD_LIBRARY_PATH="$stage/usr/lib/glob2" build/linux/client/release/lean-images/test/glob2-engine-tests --test-suite=ImageAssets
           env -u LD_LIBRARY_PATH "$stage/usr/bin/glob2" --version
           ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL3_image"
       - name: Measure original-assets Linux baseline
         run: |
           stage="$PWD/artifacts/size-baseline"
-          scons -j2 release=1 server=0 lean_images=0 optimized_assets=0 \
+          scons -j2 release=1 client_profile=free server=0 lean_images=0 optimized_assets=0 \
             BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
           # Original bytes are an offline measurement tree, not playable artwork.
           python3 tools/package_assets.py --platform linux --original --output artifacts/source-asset-baseline
@@ -251,7 +251,7 @@ jobs:
         run: |
           for profile in gc lto size; do
             stage="$PWD/artifacts/profile-$profile"
-            scons -j2 release=1 server=0 lean_images=1 size_optimization="$profile" \
+            scons -j2 release=1 client_profile=free server=0 lean_images=1 size_optimization="$profile" \
               BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" DATADIR=/usr/share install
             python3 tools/release/archives.py linux --stage "$stage" \
               --output "$PWD/artifacts/profile-$profile.tar.gz" \
@@ -273,6 +273,11 @@ jobs:
         with:
           name: package-sizes-linux
           path: artifacts/package-sizes/*.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: client-build-linux
+          path: build/linux/client/release/lean-images/identity.json
+          if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-linux
@@ -334,7 +339,7 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0
           build/linux/client/release/src/glob2 --version
 
   rpm-package:
@@ -430,9 +435,9 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          scons -j2 release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
-          scons -j2 release=1 mingw=1 server=0 lean_images=1 engine-tests
+          scons -j2 release=1 client_profile=free mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
+          scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 engine-tests
           image_prefix="$(python3 -c 'import json; print(json.load(open("build/mingw/client/release/lean-images/image-runtime.json"))["prefix"])')"
           PATH="$(cygpath -u "$image_prefix")/bin:$PATH" ./build/mingw/client/release/lean-images/test/glob2-engine-tests.exe --test-suite=ImageAssets
           ./build/mingw/client/release/lean-images/src/glob2.exe --version
@@ -469,7 +474,7 @@ jobs:
         run: |
           for profile in gc lto size; do
             binary="build/mingw/client/release/size-$profile/lean-images/src/glob2.exe"
-            scons -j2 release=1 mingw=1 server=0 lean_images=1 size_optimization="$profile" "$binary"
+            scons -j2 release=1 client_profile=free mingw=1 server=0 lean_images=1 size_optimization="$profile" "$binary"
             python3 tools/release/package_windows.py "$binary" "artifacts/profile-$profile.zip"
             python3 -c 'import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])' \
               "artifacts/profile-$profile.zip" "artifacts/profile-$profile"
@@ -544,6 +549,11 @@ jobs:
           path: artifacts/package-sizes/*.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
+          name: client-build-windows
+          path: build/mingw/client/release/lean-images/identity.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
           name: unsigned-windows
           path: artifacts/release-output/*
           if-no-files-found: error
@@ -575,7 +585,12 @@ jobs:
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 server=0 CXXFLAGS="-g -mmacosx-version-min=15.0" LINKFLAGS="-mmacosx-version-min=15.0" package
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j2 release=1 client_profile=free server=0 CXXFLAGS="-g -mmacosx-version-min=15.0" LINKFLAGS="-mmacosx-version-min=15.0" package
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: client-build-macos-${{ matrix.architecture }}
+          path: build/darwin/client/release/identity.json
+          if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: unsigned-macos-${{ matrix.architecture }}

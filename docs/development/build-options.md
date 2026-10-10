@@ -6,7 +6,7 @@ Fast builds accelerate editing; ordinary debug builds provide full symbols and r
 
 `python3 tools/dev_build.py` enables caching and `dev_fast=1` in a separate output
 directory, forwarding SCons targets and options. It defaults to at most eight
-jobs and `linker=auto`. Existing `scons` defaults and release flags are unchanged.
+jobs and `linker=auto`. The wrapper preserves the selected client profile and normal release compiler flags.
 Install ccache before using the development command. Native dependencies still
 come from the existing package-manager or `GLOB2_SDL3_PREFIX` configuration;
 mobile dependencies and SDKs still require their existing setup steps.
@@ -68,3 +68,45 @@ Compile/link work totals sum command durations; they are not parallel wall times
 GNU time reports per-process peak RSS on Linux; unsupported hosts report missing
 memory coverage explicitly. Review evidence stays under `artifacts/dev-build`.
 No speedup is assumed before measuring matching source and toolchain inputs.
+
+## Free launch profiles
+
+Client releases default to `client_profile=free`; development builds default to
+`full`. Free builds omit Commander UI, startup, credit links and paid authoring
+links while retaining ordinary play and community libraries. Use
+`client_profile=full` explicitly to develop unfinished features. These switches
+control access paths, not simulation rules, save formats or the interpreter
+needed to read existing saves and replays.
+
+`distribution` accepts `direct`, `browser`, `steam`, `epic`, `google_play`,
+`app_store`, `microsoft`, `amazon` and `china`. Defaults are `browser` for web,
+`google_play` for Android, `app_store` for iOS, and `direct` for native builds.
+Free App Store builds also hide community JavaScript AI and generator discovery,
+installation and room authoring. Other free distributions retain them. Review
+store requirements separately; a feature profile does not establish acceptance.
+
+Each capability can be overridden with `feature_commander`,
+`feature_authoring_links`, `feature_community_ai` and
+`feature_community_generators` (0 or 1). Restricted China/Amazon editions still
+force Commander and authoring links off. Resolved capabilities are recorded in
+`identity.json` beside the build outputs and in generated `BuildConfig.h`.
+Distinct profiles use isolated output directories; dependencies remain shared.
+An explicit `--build` directory refuses an incompatible existing identity.
+
+```sh
+python3 tools/dev_build.py client_profile=free
+scons release=1 client_profile=free
+scons release=1 client_profile=free distribution=app_store bundle
+scons target=ios release=1 client_profile=free
+```
+
+Use standard release packaging for shipping. Fast/PCH/unity development builds
+are unsuitable for release qualification. Keep the actual producer
+`identity.json` with final-package evidence; do not reconstruct it from an
+intended command after signing.
+
+When changing Commander or authoring behavior, verify both free and full client
+profiles. A free-profile test cannot establish the behavior of a disabled paid
+feature. The native `ClientCapabilities` suite checks exposed categories, and
+`HiveMindIntegration` checks that a free client makes no Commander requests and
+preserves existing checkpoints.

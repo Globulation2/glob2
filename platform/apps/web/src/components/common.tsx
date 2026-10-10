@@ -1,3 +1,4 @@
+import { TableWrap as SharedTableWrap, Loading as SharedLoading } from '@glob2/design-system/react';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 // Small shared pieces: loading/error states, match rows, player links, avatars, map images.
 import { useState, type CSSProperties, type ReactNode } from 'react';
@@ -38,24 +39,15 @@ export function TableWrap({
 }) {
   useLocale();
   return (
-    <div
-      className={`table-wrap${stack ? ' stack' : ''}`}
-      role="region"
-      aria-label={label}
-      tabIndex={0}
-    >
+    <SharedTableWrap label={label} stack={stack}>
       {children}
-    </div>
+    </SharedTableWrap>
   );
 }
 
 export function Loading() {
   useLocale();
-  return (
-    <p className="loading" role="status">
-      <span className="glob-spin" aria-hidden="true" /> {t(' Loading…')}
-    </p>
-  );
+  return <SharedLoading>{t(' Loading…')}</SharedLoading>;
 }
 
 export function ErrorNotice({ error }: { error: Error }) {

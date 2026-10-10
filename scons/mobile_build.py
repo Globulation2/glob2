@@ -1,4 +1,5 @@
 """Mobile C++ artifacts; platform projects own application packaging."""
+from client_features import header as client_feature_header
 import hashlib
 import json
 import os
@@ -74,7 +75,7 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_NATIVE_WSS 1
 #define GLOB2_NO_VOICE 1
 ''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
-        + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
+        + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else '') + client_feature_header(identity))
     skin_materials.generate(Path(__file__).resolve().parents[1], output)
     env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/opus'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)), CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],

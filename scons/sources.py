@@ -257,6 +257,7 @@ CLIENT_SOURCES = (
     'map/preview/LandscapePreviewer.cpp',
     'game/screens/StartQualityScreen.cpp',
     'ui/screens/MainMenuScreen.cpp',
+    'ui/DiscordCommunity.cpp',
     'map/Map.cpp',
     'map/TerrainRegistry.cpp',
     'map/CellRules.cpp',

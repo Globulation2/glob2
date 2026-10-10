@@ -6,3 +6,8 @@ packages/protocol/fixtures
 apps/web/public/music/decoder.js
 # Generated, hash-bound camera metadata; identical to native asset sidecars.
 apps/web/public/skins/models/*.view.json
+
+.cache
+apps/web/public/theme.js
+apps/web/public/design-system.json
+apps/web/public/brand

@@ -765,6 +765,12 @@ void OnlineHubScreen::openSettings()
 
 void OnlineHubScreen::onEscape()
 {
+	if (community.visible)
+	{
+		community.visible = false;
+		invalidate();
+		return;
+	}
 	if (!mapLaunchOrigin.empty())
 	{
 		Online::takePendingMapPlay();
@@ -1135,6 +1141,7 @@ Element OnlineHubScreen::playSection(const Presentation &p, bool phone)
 		if (live || pool || also)
 			parts.push_back(column({heading(tr("[hub quick match]")), live, pool, also}, {p.pt(6)}));
 	}
+	parts.push_back(button("hub/discord", tr("[Discord community]"), [this] { community.open(); invalidate(); }, {.icon = uiIcon(UIIcon::Users)}));
 	if (auto last = lastMatchCard(p, phone))
 		parts.push_back(last);
 	if (phone)
@@ -1286,6 +1293,8 @@ void OnlineHubScreen::showSection(Section next)
 
 Element OnlineHubScreen::build(const Presentation &p)
 {
+	if (community.visible)
+		return community.build(p, [this] { invalidate(); });
 	const bool phone = p.compact() || (p.touch && p.shortLandscape());
 	const std::string instance = data.instanceName.empty() ? hostOf(data.origin) : data.instanceName;
 	std::string status;
