@@ -201,14 +201,16 @@ class CliSmoke(unittest.TestCase):
                 + '; _glob2_complete; printf "%s\\n" "${COMPREPLY[@]}"'
             )
             result = subprocess.run(
-                ["bash", "-c", code, "bash", str(source)],
+                [shutil.which("bash"), "-s", "--", source.name],
+                input=code.encode("utf-8"),
                 cwd=self.root,
                 capture_output=True,
-                text=True,
                 timeout=10,
-                check=True,
             )
-            return result.stdout.splitlines()
+            stdout = result.stdout.decode("utf-8", errors="replace")
+            stderr = result.stderr.decode("utf-8", errors="replace")
+            self.assertEqual(result.returncode, 0, stdout + stderr)
+            return stdout.splitlines()
 
         self.assertIn("map", complete(["glob2", "m"]))
         self.assertIn("generate", complete(["glob2", "map", "g"]))
