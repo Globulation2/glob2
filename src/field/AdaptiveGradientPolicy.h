@@ -80,6 +80,12 @@ inline Plan requestedOpenCLPlan() {
 inline bool accountingRequested() {
     const auto* value=std::getenv("GLOB2_GRADIENT_ACCOUNTING"); return value && std::strcmp(value,"1")==0;
 }
+inline bool learningRequested() {
+    // Experimental opt-in until the complete tuning-enabled configuration passes
+    // process-CPU, presentation and compatibility qualification.
+    const auto* value=std::getenv("GLOB2_GRADIENT_TUNING");
+    return value && std::strcmp(value,"1")==0;
+}
 // Backend registration publishes only compiled, eligible plans. No read invokes
 // initialization. State 1 means another worker is initializing; never wait on it.
 inline std::atomic<unsigned> readyPlans{0}, initializationState{0};
