@@ -10,8 +10,155 @@
 #include "FileFormatVersions.h"
 #include "Team.h"
 using Json = nlohmann::json;
+namespace {
+// The released pre-73 layout places flat Race records inside BaseTeam and
+// has no second Race record in Team. Write that layout directly so these
+// fixtures exercise both actual Team binding points, rather than patching a
+// current header while retaining its newer record representation.
+void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
+                   const std::vector<std::array<UnitType,NB_UNIT_LEVELS>>& tables)
+{
+    out.writeEnterSection("BaseTeam");
+    out.writeUint32(BaseTeam::T_HUMAN,"type");
+    out.writeSint32(0,"teamNumber"); out.writeSint32(1,"numberOfPlayer");
+    const Uint8 color=255;
+    for(const char* key:{"colorR","colorG","colorB","colorPAD"}) out.write(&color,1,key);
+    out.writeUint32(1,"playersMask");
+    for(const auto& table:tables) for(auto level:table) level.save(&out);
+    out.writeSint32(700,"hungryness");
+    out.writeLeaveSection();
+    out.writeEnterSection("Team");
+    out.writeEnterSection("myUnits");
+    for(int slot=0;slot<Unit::MAX_COUNT;++slot) {
+        out.writeEnterSection(slot); out.writeUint32(slot==0,"isUsed");
+        if(slot==0) {
+            out.writeEnterSection("Unit");
+            out.writeSint32(WORKER,"typeNum"); out.writeText("worker","skinName");
+            out.writeUint16(cached.gid,"gid"); out.writeSint32(0,"isDead");
+            for(const auto& [key,value]:std::initializer_list<std::pair<const char*,int>>{
+                {"posX",cached.posX},{"posY",cached.posY},{"delta",cached.delta},
+                {"dx",cached.dx},{"dy",cached.dy},{"direction",cached.direction},
+                {"insideTimeout",cached.insideTimeout},{"speed",cached.speed}}) out.writeSint32(value,key);
+            out.writeUint32(1,"needToRecheckMedical"); out.writeUint32(Unit::MED_FREE,"medical");
+            out.writeUint32(Unit::ACT_RANDOM,"activity"); out.writeUint32(Unit::DIS_RANDOM,"displacement");
+            out.writeUint32(Unit::MOV_RANDOM_GROUND,"movement"); out.writeUint32(WALK,"action");
+            out.writeSint32(0,"targetX"); out.writeSint32(0,"targetY"); out.writeSint32(0,"validTarget");
+            out.writeSint32(0,"magicActionTimeout");
+            if(version>=FILE_FORMAT_VERSION_UNDER_ATTACK_TIMER) out.writeUint8(0,"underAttackTimer");
+            out.writeSint32(177,"hp"); out.writeSint32(37,"trigHP");
+            out.writeSint32(123456,"hungry"); out.writeSint32(611,"hungryness");
+            out.writeSint32(31000,"trigHungry"); out.writeUint32(0,"fruitMask"); out.writeUint32(0,"fruitCount");
+            out.writeEnterSection("abilities");
+            for(int ability=0;ability<NB_ABILITY;++ability) {
+                out.writeEnterSection(ability);
+                out.writeSint32(ability==WALK?17:cached.performance[ability],"performance");
+                out.writeSint32(cached.level[ability],"level"); out.writeUint32(cached.canLearn[ability],"canLearn");
+                out.writeLeaveSection();
+            }
+            out.writeLeaveSection();
+            out.writeSint32(0,"experience"); out.writeSint32(0,"experienceLevel");
+            out.writeSint32(-1,"destinationPurpose"); out.writeSint32(-1,"carriedRessource");
+            out.writeSint32(27,"jobTimer"); out.writeLeaveSection();
+        }
+        out.writeLeaveSection();
+    }
+    out.writeLeaveSection();
+    out.writeEnterSection("myBuildings");
+    for(int slot=0;slot<Building::MAX_COUNT;++slot) {
+        out.writeEnterSection(slot); out.writeUint32(0,"isUsed"); out.writeLeaveSection();
+    }
+    out.writeLeaveSection();
+    out.writeEnterSection("myUnits"); out.writeEnterSection(0); out.writeEnterSection("Unit");
+    for(const char* key:{"attachedBuilding","targetBuilding","ownExchangeBuilding"}) out.writeUint16(NOGBID,key);
+    out.writeLeaveSection(); out.writeLeaveSection(); out.writeLeaveSection();
+    out.writeEnterSection("myBuildings"); out.writeLeaveSection();
+    for(const char* key:{"allies","enemies","sharedVisionExchange","sharedVisionFood","sharedVisionOther","me"})
+        out.writeUint32(std::string_view(key)=="enemies"?0:1,key);
+    for(const char* key:{"startPosX","startPosY","startPosSet","unitConversionLost","unitConversionGained"}) out.writeSint32(0,key);
+    out.writeEnterSection("teamRessources");
+    for(unsigned material=0;material<MaterialSlotCount;++material) {
+        out.writeEnterSection(material); out.writeUint32(0,"teamRessources"); out.writeLeaveSection();
+    }
+    out.writeLeaveSection();
+    out.writeEnterSection("TeamStats"); out.writeUint32(0,"size"); out.writeLeaveSection();
+    out.writeLeaveSection();
+}
+}
 TEST_SUITE("UnitCatalog")
 {
+    TEST_CASE("pre73 team race tables survive cached units training production and current resaves [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(int version:{58,72}) for(bool text:{false,true}) {
+            CAPTURE(version); CAPTURE(text);
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=731});
+            // A pre-existing authoring catalog may have more than three types;
+            // it must not change the historical Race record's width or policies.
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(
+                R"({"schemaVersion":1,"units":[{"key":"fixture:pre73-extra","extends":"worker"}]})"));
+            world.game.configureBuildingCatalog();
+            REQUIRE(world.team->race.unitTypeCount()==4);
+            auto* source=world.addUnit(WORKER,20,20); REQUIRE(source);
+            std::vector<std::array<UnitType,NB_UNIT_LEVELS>> tables;
+            for(unsigned type=0;type<BuiltinUnitCount;++type) tables.push_back(UnitCatalog::legacy()->levels(type));
+            tables[WORKER][0].performance[WALK]=23;
+            tables[WORKER][0].performance[HP]=333;
+            tables[WORKER][1].performance[BUILD]=19;
+            tables[WORKER][1].performance[HARVEST]=13;
+            const auto expected=UnitCatalog::legacyMigration()->withLegacyLevels(tables,700);
+            auto* written=new GAGCore::MemoryStreamBackend;
+            std::string bytes;
+            if(text) {
+                GAGCore::TextOutputStream output(written); writePre73Team(output,version,*source,tables); output.flush(); bytes=written->takeContents();
+            } else {
+                GAGCore::BinaryOutputStream output(written); writePre73Team(output,version,*source,tables); bytes=written->takeContents();
+            }
+            if(text) {
+                GAGCore::MemoryStreamBackend backend(bytes.data(),bytes.size()); backend.seekFromStart(0);
+                GAGCore::TextInputStream input(&backend); REQUIRE(world.team->load(&input,&world.game.buildingsTypes,version));
+            } else {
+                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+                REQUIRE(world.team->load(&input,&world.game.buildingsTypes,version)); REQUIRE(input.getPosition()==bytes.size());
+            }
+            REQUIRE(world.team->race.getCatalog()->serialize()==expected->serialize());
+            auto* loaded=world.team->myUnits[0]; REQUIRE(loaded);
+            REQUIRE(loaded->runtimeTraits().hungerRate==700);
+            CHECK(loaded->performance[WALK]==17); CHECK(loaded->performance[HP]==200);
+            CHECK(loaded->hp==177); CHECK(loaded->hungriness==611); CHECK(loaded->trigHP==37); CHECK(loaded->trigHungry==31000);
+            // Model Game's final-team adoption after the actual old Team load.
+            // This must not re-create effective fields loaded from the old unit.
+            world.game.gameHeader.setUnitCatalog(world.team->race.getCatalog());
+            world.game.configureBuildingCatalog();
+            CHECK(loaded->performance[WALK]==17); CHECK(loaded->hungriness==611);
+            loaded->setWorkerLevel(1);
+            CHECK(loaded->performance[BUILD]==19); CHECK(loaded->performance[HARVEST]==13);
+            auto* producer=world.addBuilding("swarm",8,8); REQUIRE(producer);
+            world.team->addToStaticAbilitiesLists(producer);
+            producer->ratio[WORKER]=1; producer->ratio[EXPLORER]=0; producer->ratio[WARRIOR]=0;
+            producer->productionTimeout=0;
+            for(unsigned material=0;material<MaterialCount;++material)
+                producer->materials[material]=producer->type->semantics.production.recipes[WORKER].cost[material];
+            producer->swarmStep();
+            auto* born=world.team->myUnits[1]; REQUIRE(born);
+            CHECK(born->performance[WALK]==23); CHECK(born->performance[HP]==333); CHECK(born->hungriness==700);
+            const auto vector=[&](Game& game) {
+                std::vector<Uint32> fields,buildings,units; game.checkSum(&fields,&buildings,&units,true);
+                fields.insert(fields.end(),buildings.begin(),buildings.end()); fields.insert(fields.end(),units.begin(),units.end()); return fields;
+            };
+            auto* current=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(current); world.game.save(&output,false,"pre73 current continuation");
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(*current)); input.seekFromStart(0);
+            GameGUI resumed; REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+            REQUIRE(resumed.game.unitCatalog().serialize()==expected->serialize());
+            CHECK(vector(resumed.game)==vector(world.game));
+            for(int tick=0;tick<64;++tick) {
+                world.game.syncStep(0); resumed.game.syncStep(0);
+                REQUIRE(vector(resumed.game)==vector(world.game)); REQUIRE(resumed.game.syncRandom==world.game.syncRandom);
+            }
+            CHECK(UnitCatalog::legacyMigration()->runtime(WORKER).hungerRate==425);
+            CHECK(UnitCatalog::legacyMigration()->levels(WORKER)[0].performance[HP]==200);
+        }
+    }
     TEST_CASE("installed definitions reproduce immutable embedded defaults")
     {
         glob2test::HeadlessGlobals globals;

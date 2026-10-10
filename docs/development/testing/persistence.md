@@ -2,6 +2,15 @@
 
 Retained continuation, decoding and serialization regressions. Build and isolate cases through the [native test guide](../../../test/README.md).
 
+## Historical unit definitions
+
+The `UnitCatalog` suite covers the format-58 and format-72 BaseTeam race-table
+layout in binary and text streams. Those records precede units; their definitions
+must remain bound while cached units load and when subsequent training or
+production uses an upgraded level. Current-format resaving embeds the recovered
+catalog rather than replacing it with installed defaults. Format 73 moved the
+race tables into the later Team record and uses the staged migration path.
+
 ## Team capacity and format 127
 
 `TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed

@@ -43,6 +43,10 @@ void Race::save(GAGCore::OutputStream *stream)
 }
 bool Race::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+    // Legacy records always contain the frozen three-type schema. Installed
+    // authoring catalogs must not supply additional rows or migration policies.
+    if (versionMinor < FILE_FORMAT_VERSION_UNIT_CATALOG)
+        setCatalog(UnitCatalog::legacyMigration());
     const unsigned count = versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG
                                ? stream->readUint32("unitTypeCount")
                                : BuiltinUnitCount;
