@@ -539,6 +539,7 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"required_handoff_cpu_ns",gradientRuntime->pipeline.requiredHandoffCpuNs()},
         {"required_cleanup_cpu_ns",gradientRuntime->pipeline.requiredCleanupCpuNs()},
         {"required_owner_completion_cpu_ns",gradientRuntime->pipeline.metrics.ownerCompletionCpuNs},
+        {"required_owner_join_cpu_ns",gradientRuntime->pipeline.metrics.ownerJoinCpuNs},
         {"gpu_publication_wait_count",gradientRuntime->pipeline.metrics.gpuPublicationWaitCount},
         {"gpu_publication_wait_ns",gradientRuntime->pipeline.metrics.gpuPublicationWaitNs},
         {"gpu_backend_overlap_publication_wait_ns",gradientRuntime->pipeline.metrics.gpuDeviceOverlapWaitNs},

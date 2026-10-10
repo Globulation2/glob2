@@ -79,7 +79,7 @@ public:
 	struct Metrics {
         std::uint64_t jobs=0,published=0,discarded=0,waitNs=0,maxPending=0,preparationNs=0,publicationWaitNs=0;
         std::uint64_t gpuPublicationWaitCount=0,gpuPublicationWaitNs=0,gpuDeviceOverlapWaitNs=0;
-        std::uint64_t ownerCompletionCpuNs=0,lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
+        std::uint64_t ownerCompletionCpuNs=0,ownerJoinCpuNs=0,lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
     } metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
@@ -195,10 +195,12 @@ private:
 	void wait(Job &job, bool publication = false) {
 		const auto start = Clock::now();
         const auto waitStart=diagnostics ? gradient_kernel::monotonicNs() : 0;
+        const auto joinCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
         const bool incomplete=diagnostics && publication && executor && !executor->finished(job.batch);
 		if (executor) executor->join(job.batch);
         const auto joined=diagnostics ? gradient_kernel::monotonicNs() : 0;
         const auto completionCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
+        if(diagnostics)metrics.ownerJoinCpuNs+=completionCpuStart-joinCpuStart;
         if(job.deviceField) {
             if(incomplete && job.deviceField->executedGPU) {
                 const auto waited=joined-waitStart;
