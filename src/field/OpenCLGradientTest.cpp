@@ -900,6 +900,19 @@ TEST_CASE("shared offload host reservations are bounded and recover after releas
     }
     CHECK(openCLStatus().hostBytes==before.hostBytes);
 }
+TEST_CASE("optional reference reservations share a bounded subset of total host storage")
+{
+    using namespace gradient_kernel;
+    const auto before=openCLStatus();
+    const auto available=std::min<std::size_t>(OpenCLProbeBudget-openCLProbeBytes(),OpenCLHostBudget-before.hostBytes);
+    REQUIRE(reserveOpenCLProbeBytes(available));
+    CHECK(openCLStatus().hostBytes==before.hostBytes+available);
+    CHECK(openCLProbeBytes()==before.probeBytes+available);
+    CHECK_FALSE(reserveOpenCLProbeBytes(OpenCLProbeBudget-available+1));
+    releaseOpenCLProbeBytes(available);
+    CHECK(openCLStatus().hostBytes==before.hostBytes);
+    CHECK(openCLProbeBytes()==before.probeBytes);
+}
 }
 
 TEST_CASE("worker initialization failure leaves CPU available without inline retries" * doctest::test_suite("OpenCLGradient"))

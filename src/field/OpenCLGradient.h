@@ -10,10 +10,16 @@ struct BackendRequest;
 enum class Plan : unsigned;
 inline constexpr std::size_t OpenCLHostBudget = 64 * 1024 * 1024;
 inline constexpr std::size_t OpenCLDeviceBudget = 128 * 1024 * 1024;
+inline constexpr std::size_t OpenCLProbeBudget = 16 * 1024 * 1024;
 // Shared payload budget: includes service-owned requests, staging and cost planes.
 // A successful reservation must be released exactly once by its owner.
 bool reserveOpenCLHostBytes(std::size_t bytes) noexcept;
 void releaseOpenCLHostBytes(std::size_t bytes) noexcept;
+// Optional CPU/GPU reference storage shares one process-wide subset of the
+// total host budget. These reservations also charge the total host budget.
+bool reserveOpenCLProbeBytes(std::size_t bytes) noexcept;
+void releaseOpenCLProbeBytes(std::size_t bytes) noexcept;
+std::size_t openCLProbeBytes() noexcept;
 struct OpenCLStatus
 {
     bool available = false;
@@ -37,6 +43,7 @@ struct OpenCLStatus
     std::uint64_t noopFields = 0;
     bool uniformMetadata = false;
     std::uint64_t uniformMetadataHits = 0;
+    std::uint64_t probeBytes = 0, peakProbeBytes = 0;
 };
 // Status only: never initializes or compiles. Worker-only maintenance publishes
 // readiness; required callers keep using CPU until a selected plan is ready.

@@ -40,6 +40,7 @@ struct MemoryBudget {
     }
 };
 MemoryBudget hostBudget{OpenCLHostBudget};
+MemoryBudget probeBudget{OpenCLProbeBudget};
 struct BudgetExceeded : std::runtime_error { BudgetExceeded():std::runtime_error("OpenCL payload budget exceeded") {} };
 struct BudgetLease {
     MemoryBudget& budget;
@@ -629,6 +630,7 @@ struct Runtime
         }
         out.available=out.available&&!shared->failed.load();
         out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
+        out.probeBytes=probeBudget.current.load();out.peakProbeBytes=probeBudget.peak.load();
         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
         out.noopFields=shared->noopFields.load();out.threadCPUNs=shared->threadCPUNs.load();
         out.threadCPUAvailable=out.threadCPUAvailable || shared->threadCPUAvailable.load();
@@ -1124,6 +1126,13 @@ struct Register
 } // namespace
 bool reserveOpenCLHostBytes(std::size_t bytes) noexcept {return hostBudget.reserve(bytes);}
 void releaseOpenCLHostBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);}
+bool reserveOpenCLProbeBytes(std::size_t bytes) noexcept {
+    if(!probeBudget.reserve(bytes)) return false;
+    if(hostBudget.reserve(bytes)) return true;
+    probeBudget.release(bytes);return false;
+}
+void releaseOpenCLProbeBytes(std::size_t bytes) noexcept {hostBudget.release(bytes);probeBudget.release(bytes);}
+std::size_t openCLProbeBytes() noexcept {return probeBudget.current.load();}
 bool initializeOpenCL() {
     unsigned empty=0;
     initializationState.compare_exchange_strong(empty,1);
@@ -1141,6 +1150,7 @@ OpenCLStatus openCLStatus()
 #else
     auto status=runtime().status;
     status.hostBytes=hostBudget.current.load();status.peakHostBytes=hostBudget.peak.load();
+    status.probeBytes=probeBudget.current.load();status.peakProbeBytes=probeBudget.peak.load();
     return status;
 #endif
 }
