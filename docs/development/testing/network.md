@@ -20,9 +20,9 @@ including screens destroyed with requests in flight.
 
 Switches the online and LAN tests use:
 
-- `--instance <origin>`: the instance an invite code given with `--join <code>`
+- `--instance <origin>`: the instance an invite code given with `online join CODE`
   belongs to; a `glob2://` or `https://<instance>/j/<code>` argument works too.
-- `--turn-client`, `--verify-match`, `--sim-version`: headless relay client, match
+- `online turn-client`, `match verify`, `info sim-version --format json`: headless relay client, match
   verifier and sim version report ([headless replays](../headless-replays.md)).
 - `GLOB2_LAN_ADDRESS=<ip>`: the address a LAN host advertises and puts in its
   certificate, for machines with several interfaces.

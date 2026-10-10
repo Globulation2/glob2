@@ -43,9 +43,9 @@ def main():
     env = dict(os.environ, GLOB2_USER_DATA_DIR=str(OUT/'profile'), SDL_VIDEODRIVER='invalid')
     logs=[]
     def run(*args, ok=True, default_seams=False):
-        if not default_seams and args and args[0]=='--import-map-image' and '--image-seam-width' not in args:
+        if not default_seams and len(args) >= 2 and args[:2]==('map', 'import-image') and '--image-seam-width' not in args:
             args=(*args,'--image-seam-width',0)
-        command=[str(BINARY), *map(str,args), '-d', str(ROOT)]
+        command=[str(BINARY), *map(str,args), '--data-dir', str(ROOT)]
         try:
             result=subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True, timeout=90)
         except subprocess.TimeoutExpired as error:
@@ -56,7 +56,7 @@ def main():
             raise
         logs.append(dict(args=command,exit=result.returncode,stdout=result.stdout,stderr=result.stderr))
         (OUT/'commands.json').write_text(json.dumps(logs,indent=2))
-        assert result.returncode==(0 if ok else 1), logs[-1]
+        assert result.returncode == 0 if ok else result.returncode in (2, 3), logs[-1]
         return result
     w=h=64
     cells=[0]*(w*h)
@@ -68,8 +68,8 @@ def main():
     cells[45*w+45]=11  # ignored marker speck
     image=OUT/'palette.png'; write_png(image,w,h,cells)
     dest=OUT/'palette.map.gz'; report=OUT/'palette.json'
-    args=['--import-map-image',image,'--width',64,'--height',64,'--teams',1,'--seed',19]
-    run(*args,'--output',dest,'--json',report)
+    args=['map', 'import-image',image,'--width',64,'--height',64,'--teams',1,'--seed',19]
+    run(*args,'--output',dest,'--report-file',report)
     data=json.loads(report.read_text())
     assert data['image_import']['markers']==1 and data['image_import']['ignored_markers']==1
     assert data['image_import']['dropped_resources']>0
@@ -78,7 +78,7 @@ def main():
         amounts=data['resources']['types'][resource]['amount_per_deposit']
         assert 1 <= amounts['min'] <= amounts['max'] <= 4
         assert amounts['max'] > 1 and amounts['mean'] > 1
-    exported=OUT/'export.png'; run('--export-map-image',dest,'--output',exported)
+    exported=OUT/'export.png'; run('map', 'export-image',dest,'--output',exported)
     ew,eh,pixels=png(exported); assert (ew,eh)==(64,64)
     for color in COLORS[3:11]: assert bytes(color) in [pixels[i:i+3] for i in range(0,len(pixels),3)],color
     # Catalogue vertices survive authoring, save/load, and image round trips.
@@ -91,21 +91,21 @@ def main():
     mark(materials,64,64,48,48)
     material_image=OUT/'new-terrain.png';write_png(material_image,64,64,materials)
     material_map=OUT/'new-terrain.map.gz';material_report=OUT/'new-terrain.json'
-    run('--import-map-image',material_image,'--width',64,'--height',64,'--teams',1,
-        '--output',material_map,'--json',material_report)
+    run('map', 'import-image',material_image,'--width',64,'--height',64,'--teams',1,
+        '--output',material_map,'--report-file',material_report)
     material_data=json.loads(material_report.read_text())
     for name in ('ice','road'):
         assert material_data['terrain'][name]['tiles']==128
     material_export=OUT/'new-terrain-export.png'
-    run('--export-map-image',material_map,'--output',material_export)
+    run('map', 'export-image',material_map,'--output',material_export)
     _,_,material_pixels=png(material_export)
     for x,y,kind in ((11,24,0),(12,24,12),(20,24,13),(27,24,13),(28,24,2)):
         i=(y*64+x)*3
         assert material_pixels[i:i+3]==bytes(COLORS[kind]),(x,y,kind)
-    run('--preview-map',material_map,'--json',OUT/'new-terrain-loaded.json')
+    run('map', 'preview',material_map,'--report-file',OUT/'new-terrain-loaded.json')
     assert json.loads((OUT/'new-terrain-loaded.json').read_text())['terrain']==material_data['terrain']
-    run('--import-map-image',material_export,'--width',64,'--height',64,'--teams',1,
-        '--output',OUT/'new-terrain-restored.map.gz','--json',OUT/'new-terrain-restored.json')
+    run('map', 'import-image',material_export,'--width',64,'--height',64,'--teams',1,
+        '--output',OUT/'new-terrain-restored.map.gz','--report-file',OUT/'new-terrain-restored.json')
     restored_materials=json.loads((OUT/'new-terrain-restored.json').read_text())['terrain']
     for name in ('ice','road'):
         assert restored_materials[name]==material_data['terrain'][name]
@@ -115,20 +115,20 @@ def main():
         for x in range(32,256,64): mark(dense,256,256,x,y)
     dense_image=OUT/'sixteen.png';write_png(dense_image,256,256,dense)
     dense_map=OUT/'sixteen.map.gz';dense_report=OUT/'sixteen.json'
-    run('--import-map-image',dense_image,'--width',256,'--height',256,'--teams',16,
-        '--seed',19,'--output',dense_map,'--json',dense_report)
+    run('map', 'import-image',dense_image,'--width',256,'--height',256,'--teams',16,
+        '--seed',19,'--output',dense_map,'--report-file',dense_report)
     first=json.loads(dense_report.read_text())
     assert first['image_import']['markers']==16 and len(first['map']['colonies'])==16
     dense_export=OUT/'sixteen-export.png'
-    run('--export-map-image',dense_map,'--output',dense_export)
-    run('--import-map-image',dense_export,'--width',256,'--height',256,'--teams',16,
-        '--seed',19,'--output',OUT/'sixteen-restored.map.gz','--json',OUT/'sixteen-restored.json')
+    run('map', 'export-image',dense_map,'--output',dense_export)
+    run('map', 'import-image',dense_export,'--width',256,'--height',256,'--teams',16,
+        '--seed',19,'--output',OUT/'sixteen-restored.map.gz','--report-file',OUT/'sixteen-restored.json')
     restored=json.loads((OUT/'sixteen-restored.json').read_text())
     assert restored['image_import']['markers']==16 and len(restored['map']['colonies'])==16
     assert [c['start'] for c in restored['map']['colonies']]==[c['start'] for c in first['map']['colonies']]
     mark(dense,256,256,0,0)
     excessive=OUT/'seventeen.png';write_png(excessive,256,256,dense)
-    rejected=run('--import-map-image',excessive,'--width',256,'--height',256,
+    rejected=run('map', 'import-image',excessive,'--width',256,'--height',256,
         '--output',OUT/'seventeen.map.gz',ok=False)
     assert '1..16 colony markers (observed 17)' in rejected.stdout+rejected.stderr
     assert not (OUT/'seventeen.map.gz').exists()
@@ -147,9 +147,9 @@ def main():
                 2 if tuple(px[i:i+3])==COLORS[2] else 0 for i in range(0,len(px),3)]
     for width in (0,8):
         path=OUT/f'river-{width}.map.gz';rp=OUT/f'river-{width}.json';ep=OUT/f'river-{width}.png'
-        run('--import-map-image',river_image,'--width',64,'--height',64,'--teams',1,
-            '--image-seam-width',width,'--output',path,'--json',rp)
-        run('--export-map-image',path,'--output',ep)
+        run('map', 'import-image',river_image,'--width',64,'--height',64,'--teams',1,
+            '--image-seam-width',width,'--output',path,'--report-file',rp)
+        run('map', 'export-image',path,'--output',ep)
         grid=terrain_codes(ep)
         mismatch=sum(grid[y*64]!=grid[y*64+63] for y in range(64))
         info=json.loads(rp.read_text())['image_import']
@@ -159,8 +159,8 @@ def main():
             assert all(grid[x]==grid[63*64+x] for x in range(64))
             assert any(grid[y*64]==2 for y in range(64)), 'River crossing was erased'
         else:assert info['seam_terrain_changes']==0
-    run('--import-map-image',river_image,'--width',64,'--height',64,'--teams',1,
-        '--output',OUT/'default-seam.map','--json',OUT/'default-seam.json',default_seams=True)
+    run('map', 'import-image',river_image,'--width',64,'--height',64,'--teams',1,
+        '--output',OUT/'default-seam.map','--report-file',OUT/'default-seam.json',default_seams=True)
     assert json.loads((OUT/'default-seam.json').read_text())['image_import']['seam_width']==2
     # Default repair must be a no-op for already aligned, legally placed groves.
     # The groves sit outside the colony protection square and inside the seam band,
@@ -190,9 +190,9 @@ def main():
             rp=OUT/f'aligned-{defect}-{enabled}.json'
             ep=OUT/f'aligned-{defect}-{enabled}-export.png'
             options=[] if enabled else ['--image-seam-width',0]
-            run('--import-map-image',ip,'--width',64,'--height',64,'--teams',1,
-                '--seed',19,*options,'--output',mp,'--json',rp,default_seams=True)
-            run('--export-map-image',mp,'--output',ep)
+            run('map', 'import-image',ip,'--width',64,'--height',64,'--teams',1,
+                '--seed',19,*options,'--output',mp,'--report-file',rp,default_seams=True)
+            run('map', 'export-image',mp,'--output',ep)
             exports.append(png(ep)[2])
             if enabled and not defect:
                 info=json.loads(rp.read_text())['image_import']
@@ -209,7 +209,7 @@ def main():
                 assert exports[0][i:i+3]==exports[1][i:i+3]==bytes(COLORS[2]), 'Distant defect damaged aligned lake'
 
     # Repaired imports still recover a colony straddling both seams.
-    run(*args,'--image-seam-width',8,'--output',OUT/'protected.map','--json',OUT/'protected.json')
+    run(*args,'--image-seam-width',8,'--output',OUT/'protected.map','--report-file',OUT/'protected.json')
     protected=json.loads((OUT/'protected.json').read_text())['map']['colonies'][0]['start']
     assert (protected['x'],protected['y'])==(62,62)
     # Laying beaches must not undo midpoint agreement, including the four corners.
@@ -219,13 +219,13 @@ def main():
         mark(corner,64,64,32,32)
         cp=OUT/f'corner-{orientation}.png';write_png(cp,64,64,corner)
         mp=OUT/f'corner-{orientation}.map.gz';ep=OUT/f'corner-{orientation}-export.png'
-        run('--import-map-image',cp,'--width',64,'--height',64,'--teams',1,'--image-seam-width',2,'--output',mp)
-        run('--export-map-image',mp,'--output',ep)
+        run('map', 'import-image',cp,'--width',64,'--height',64,'--teams',1,'--image-seam-width',2,'--output',mp)
+        run('map', 'export-image',mp,'--output',ep)
         grid=terrain_codes(ep)
         assert all(grid[y*64]==grid[y*64+63] for y in range(64)),orientation
         assert all(grid[x]==grid[63*64+x] for x in range(64)),orientation
-    run('--import-map-image',image,'--image-seam-width',17,'--output',OUT/'bad-width.map',ok=False)
-    run('--generate-map','coral','--image-seam-width',8,'--output',OUT/'bad-option.map',ok=False)
+    run('map', 'import-image',image,'--image-seam-width',17,'--output',OUT/'bad-width.map',ok=False)
+    run('map', 'generate','coral','--image-seam-width',8,'--output',OUT/'bad-option.map',ok=False)
     # Stitch offset resource footprints without changing legal deposit budgets.
     resource_cells=[0]*4096
     for y in range(64):
@@ -239,9 +239,9 @@ def main():
     reports=[]
     for width in (0,8):
         mp=OUT/f'resource-{width}.map.gz';rp=OUT/f'resource-{width}.json';ep=OUT/f'resource-{width}-export.png'
-        run('--import-map-image',resource_image,'--width',64,'--height',64,'--teams',1,
-            '--image-seam-width',width,'--output',mp,'--json',rp)
-        run('--export-map-image',mp,'--output',ep)
+        run('map', 'import-image',resource_image,'--width',64,'--height',64,'--teams',1,
+            '--image-seam-width',width,'--output',mp,'--report-file',rp)
+        run('map', 'export-image',mp,'--output',ep)
         reports.append(json.loads(rp.read_text()))
         if width:
             assert reports[-1]['image_import']['seam_resource_changes']>0
@@ -264,16 +264,16 @@ def main():
     counts=[]
     for width in (0,8):
         rp=OUT/f'mixed-{width}.json'
-        run('--import-map-image',ip,'--width',64,'--height',64,'--teams',1,
-            '--image-seam-width',width,'--output',OUT/f'mixed-{width}.map','--json',rp)
+        run('map', 'import-image',ip,'--width',64,'--height',64,'--teams',1,
+            '--image-seam-width',width,'--output',OUT/f'mixed-{width}.map','--report-file',rp)
         r=json.loads(rp.read_text());counts.append([r['resources']['types'][name]['coverage']['tiles'] for name in ('wood','algae')])
         if width:assert not r['image_import']['resource_seam_fallback'] and r['image_import']['seam_resource_changes']>0
     assert counts[0]==counts[1],counts
     # Stable image-import state, excluding timestamp metadata, is visible after normal load.
-    second=OUT/'second.map.gz'; run(*args,'--output',second,'--json',OUT/'second-report.json')
-    second_export=OUT/'second.png'; run('--export-map-image',second,'--output',second_export)
+    second=OUT/'second.map.gz'; run(*args,'--output',second,'--report-file',OUT/'second-report.json')
+    second_export=OUT/'second.png'; run('map', 'export-image',second,'--output',second_export)
     assert png(second_export)==png(exported)
-    loaded_report=OUT/'loaded.json'; run('--preview-map',dest,'--json',loaded_report)
+    loaded_report=OUT/'loaded.json'; run('map', 'preview',dest,'--report-file',loaded_report)
     loaded=json.loads(loaded_report.read_text())
     for key in ('terrain','resources'):
         assert data[key]==loaded[key],key
@@ -286,36 +286,40 @@ def main():
     larger=[cells[(y//4)*64+x//4] for y in range(256) for x in range(256)]
     enlarged=OUT/'enlarged.png'; write_png(enlarged,256,256,larger)
     resized=OUT/'resized.map.gz'
-    run('--import-map-image',enlarged,'--width',64,'--height',64,'--teams',1,'--seed',19,'--output',resized)
-    resized_export=OUT/'resized.png'; run('--export-map-image',resized,'--output',resized_export)
+    run('map', 'import-image',enlarged,'--width',64,'--height',64,'--teams',1,'--seed',19,'--output',resized)
+    resized_export=OUT/'resized.png'; run('map', 'export-image',resized,'--output',resized_export)
     assert png(resized_export)==png(exported)
     failure=OUT/'must-not-exist.map.gz'
     failure.unlink(missing_ok=True)
-    run(*args,'--teams',4,'--output',failure,'--json',OUT/'failure.json',ok=False)
+    bad_teams = list(args)
+    if '--teams' in bad_teams:
+        index = bad_teams.index('--teams')
+        del bad_teams[index:index+2]
+    run(*bad_teams,'--teams',4,'--output',failure,'--report-file',OUT/'failure.json',ok=False)
     assert not failure.exists()
     assert json.loads((OUT/'failure.json').read_text())['report_type']=='image_import_failure'
     empty=OUT/'empty.png'; write_png(empty,64,64,[0]*4096)
-    run('--import-map-image',empty,'--width',64,'--height',64,'--output',failure,ok=False)
+    run('map', 'import-image',empty,'--width',64,'--height',64,'--output',failure,ok=False)
     alpha=OUT/'alpha.png'; write_png(alpha,64,64,cells,transparent=True)
-    run('--import-map-image',alpha,'--width',64,'--height',64,'--output',failure,ok=False)
-    run('--import-map-image',image,'--width',128,'--height',64,'--output',failure,ok=False)
-    run('--import-map-image',image,'--width',63,'--output',failure,ok=False)
+    run('map', 'import-image',alpha,'--width',64,'--height',64,'--output',failure,ok=False)
+    run('map', 'import-image',image,'--width',128,'--height',64,'--output',failure,ok=False)
+    run('map', 'import-image',image,'--width',63,'--output',failure,ok=False)
     before=image.read_bytes()
-    run('--import-map-image',image,'--output',image,ok=False)
+    run('map', 'import-image',image,'--output',image,ok=False)
     assert image.read_bytes()==before
     # Centroids recover the same anchors regardless of which seam fragment is scanned first.
     for x,y in ((0,20),(1,20),(63,20),(20,0),(20,1),(20,63),(0,0),(63,63)):
         seam_cells=[0]*4096;mark(seam_cells,64,64,x,y)
         seam_image=OUT/f'seam-{x}-{y}.png';write_png(seam_image,64,64,seam_cells)
         seam_report=OUT/f'seam-{x}-{y}.json'
-        run('--import-map-image',seam_image,'--width',64,'--height',64,'--teams',1,'--output',OUT/f'seam-{x}-{y}.map','--json',seam_report)
+        run('map', 'import-image',seam_image,'--width',64,'--height',64,'--teams',1,'--output',OUT/f'seam-{x}-{y}.map','--report-file',seam_report)
         colony=json.loads(seam_report.read_text())['map']['colonies'][0]
         assert (colony['start']['x'],colony['start']['y'])==(x,y),colony
     # Upsampling and maximum worker count still initialize a complete colony.
     upsampled=OUT/'upsampled.map.gz'
     clean_cells=cells.copy(); clean_cells[45*w+45]=0
     clean_image=OUT/'clean.png'; write_png(clean_image,64,64,clean_cells)
-    run('--import-map-image',clean_image,'--width',128,'--height',128,'--workers',8,'--teams',1,'--output',upsampled,'--json',OUT/'upsampled.json')
+    run('map', 'import-image',clean_image,'--width',128,'--height',128,'--workers',8,'--teams',1,'--output',upsampled,'--report-file',OUT/'upsampled.json')
     assert json.loads((OUT/'upsampled.json').read_text())['map']['colonies'][0]['units']['workers']==8
     # Reject excess colonies and overlapping repairs without writing a map.
     excess=[0]*4096
@@ -326,26 +330,26 @@ def main():
     for y in (0,1):
         for x in (0,1): excess[y*64+x]=11  # seventeenth distinct marker
     too_many=OUT/'too-many.png'; write_png(too_many,64,64,excess)
-    run('--import-map-image',too_many,'--width',64,'--height',64,'--output',failure,ok=False)
+    run('map', 'import-image',too_many,'--width',64,'--height',64,'--output',failure,ok=False)
     overlap=[0]*4096
     for x in (10,15):
         for dy in (0,1):
             for dx in (0,1): overlap[(10+dy)*64+x+dx]=11
     overlapping=OUT/'overlap.png'; write_png(overlapping,64,64,overlap)
-    run('--import-map-image',overlapping,'--width',64,'--height',64,'--output',failure,ok=False)
+    run('map', 'import-image',overlapping,'--width',64,'--height',64,'--output',failure,ok=False)
     # The loader resolves a .gz sibling: prevent an exporter overwriting that input.
     raw_name=OUT/'palette.map'
     before=dest.read_bytes()
-    run('--export-map-image',raw_name,'--output',dest,ok=False)
+    run('map', 'export-image',raw_name,'--output',dest,ok=False)
     assert dest.read_bytes()==before
     # Also prevent colliding with the map writer's automatically appended suffix.
     alias=OUT/'alias.map'; companion=OUT/'alias.map.gz'
-    run(*args,'--output',alias,'--json',companion,ok=False)
+    run(*args,'--output',alias,'--report-file',companion,ok=False)
     assert not companion.exists()
     # Exercise both generated-image output and exporter dispatch.
     generated=OUT/'generated.png'; original=OUT/'generated.map.gz'
-    run('--generate-map','coral','--seed',7,'--width',128,'--height',128,'--teams',4,'--output',original,'--map-image',generated)
-    copy=OUT/'generated-copy.png'; run('--export-map-image',original,'--output',copy)
+    run('map', 'generate','coral','--seed',7,'--width',128,'--height',128,'--teams',4,'--output',original,'--map-image',generated)
+    copy=OUT/'generated-copy.png'; run('map', 'export-image',original,'--output',copy)
     assert png(copy)==png(generated)
     print('Map image CLI checks passed')
 

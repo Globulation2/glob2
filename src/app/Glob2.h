@@ -3,6 +3,8 @@
 
 #pragma once
 
+namespace Cli { struct Request; }
+
 //! This class is used to handle the whole game
 class Glob2
 {
@@ -17,6 +19,6 @@ public:
 	int runTestGames();
 	///Generates random maps non stop until the game crashes
 	int runTestMapGeneration();
-	int run(int argc, char *argv[]);
+	int run(const Cli::Request &request);
 };
 

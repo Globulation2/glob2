@@ -28,7 +28,7 @@ source.
 The game's artwork is part of Globulation 2 and licensed with it under the GPL 3
 (see `docs/assets/source-attribution.md` and `data/authors.txt`). Engine-rendered
 map previews used by the browser smoke test (`e2e/fixtures/maps/`) were made with
-`glob2 --generate-map <generator> --preview <file> --preview-size 384 --teams N --seed 7`.
+`glob2 map generate <generator> --preview <file> --preview-size 384 --teams N --seed 7`.
 
 ## Map Studio imagery
 

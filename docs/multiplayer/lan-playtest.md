@@ -85,8 +85,8 @@ match record to `<host user dir>/replays/lan-last.g2mr`, which can be checked ag
 map:
 
 ```sh
-build/darwin/client/release/src/glob2 --verify-match /tmp/glob2-host/replays/lan-last.g2mr \
-  --map maps/<the map>.map.gz --out /tmp/lan-verify
+build/darwin/client/release/src/glob2 match verify /tmp/glob2-host/replays/lan-last.g2mr \
+  --map maps/<the map>.map.gz --output-dir /tmp/lan-verify
 ```
 
 `/tmp/lan-verify/verdict.json` should say `verified`. Attach the sidecars (or the compare

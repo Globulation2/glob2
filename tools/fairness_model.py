@@ -721,13 +721,13 @@ def remeasure(binary, dataset, directory, jobs=3):
         key, request = item
         output = directory / re.sub(r'[^A-Za-z0-9]+', '-', key)
         shutil.rmtree(output, ignore_errors=True)
-        arguments = [binary, '--generate-map', '--generator', str(request['generator']),
-                     '--map-seed', str(request['map_seed']),
-                     '--candidates', str(request['candidates']), '--write-map', 'false',
+        arguments = [binary, 'map', 'study', str(request['generator']),
+                     '--seed', str(request['map_seed']),
+                     '--candidates', str(request['candidates']),
                      '--report', 'diagnostics', '--output-dir', str(output),
                      '--profile', 'fairness-remeasure']
         for name, value in sorted(request['params'].items()):
-            arguments += ['--param', f'{name}={value}']
+            arguments += ['--set', f'{name}={value}']
         subprocess.run(arguments, capture_output=True)
         try:
             result = read_json(output / 'result.json')
@@ -1630,10 +1630,10 @@ SAMPLING_TARGET = 0.80
 def sampling_run(binary, generator, width, height, colonies, seed, candidates, directory):
     import subprocess
     output = Path(directory) / f'{generator}-{width}-{height}-{colonies}-{seed}'
-    arguments = [binary, '--generate-map', '--generator', str(generator),
-                 '--map-seed', str(seed), '--param', f'teams={colonies}',
-                 '--param', f'width={width}', '--param', f'height={height}',
-                 '--candidates', str(candidates), '--write-map', 'false',
+    arguments = [binary, 'map', 'study', str(generator),
+                 '--seed', str(seed), '--set', f'teams={colonies}',
+                 '--set', f'width={width}', '--set', f'height={height}',
+                 '--candidates', str(candidates),
                  '--output-dir', str(output), '--profile', 'fairness-sampling']
     subprocess.run(arguments, capture_output=True)
     try:

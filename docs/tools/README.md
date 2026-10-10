@@ -3,6 +3,10 @@
 Start with the domain guide for the behavior you want to change. These tools
 support evaluation, content production, and validation across domains.
 
+## Main executable
+
+- [Glob2 CLI](cli.md): command discovery, workflows, completion, and migration.
+
 ## Evaluate games and AI
 
 - [Distributed tournaments](tournaments.md): schedule games and collect results.

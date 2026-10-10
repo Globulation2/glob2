@@ -26,6 +26,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/app/cli/CommandLineTest.cpp',
     '#src/unit/EntityRandomLifecycleTest.cpp',
     '#src/map/generator/javascript/ScriptGeneratorTest.cpp',
     '#src/map/generator/javascript/ToolkitBindingTest.cpp',
@@ -351,6 +352,7 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/app/cli/CommandLine.cpp',
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',
     '#src/map/MapAssetBundle.cpp',

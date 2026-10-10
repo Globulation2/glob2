@@ -96,11 +96,11 @@ must not change any generated tile or random draw.
 Generate a reproducible preview and playable map:
 
 ```sh
-build/src/glob2 --generate-map encircled-kingdom --seed 7 \
+build/src/glob2 map generate encircled-kingdom --seed 7 \
   --teams 4 --width 256 --height 256 --set fortress-plan=3 \
   --output artifacts/encircled-kingdom/example.map \
   --preview artifacts/encircled-kingdom/example.png \
-  --json artifacts/encircled-kingdom/example.json
+  --report-file artifacts/encircled-kingdom/example.json
 ```
 
 Evidence and measured limitations are recorded in the accompanying validation

@@ -118,7 +118,7 @@ for (const variant of ["serial", "threaded"])
       print:text=>engineLog.push(String(text)),printErr:text=>engineLog.push(String(text)),
       preRun:[function(){ENV.GLOB2_CHECKSUM_SIDECAR='1';FS.writeFile('/tmp/studio.map.gz',Uint8Array.from(atob('${map}'),c=>c.charCodeAt(0)));FS.writeFile('/tmp/ai.js',${JSON.stringify(source)});}],
       async onRuntimeInitialized(){try{
-        const code=await Module.start(['--run-game','--map-file','/tmp/studio.map.gz','--game-seed','${fixture.seed}','--player','javascript','--ai-script','0:/tmp/ai.js','--player','${fixture.opponent}','--ticks','${fixture.ticks}','--replay','true','--telemetry','checksums','--save','initial','--save','final','--output-dir','/tmp/result']);
+        const code=await Module.start(['game', 'run','--map-file','/tmp/studio.map.gz','--game-seed','${fixture.seed}','--player','javascript','--ai-script','0:/tmp/ai.js','--player','${fixture.opponent}','--ticks','${fixture.ticks}','--write-replay','--telemetry','checksums','--save','initial','--save','final','--output-dir','/tmp/result']);
         if(code!==0)throw Error('Engine exited '+code);
         const bytes=FS.readFile('/tmp/result/game.replay.checksums');let binary='';for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));window.trace=btoa(binary);
       }catch(e){window.failure=String(e);}}

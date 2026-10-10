@@ -300,7 +300,7 @@ preferences round trip, the string tables and the baked-in rule: every
 registry entry's label and help are listed keys matching the English table, a new
 game takes Settings → Experiments, its save keeps that set after the setting is
 turned off, a fresh game then carries nothing, and a campaign mission never takes
-the set. `test/tournament_cli_integration.py` covers `--run-game --experiment`. The `Settings` display cases toggle the switch on the
+the set. `test/tournament_cli_integration.py` covers `game run --experiment`. The `Settings` display cases toggle the switch on the
 settings page. See [experimental features](../../features/experimental-features.md).
 
 `GuardAreaBalance` (`glob2-engine-tests`, `python3 test/run_tests.py --filter

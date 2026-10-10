@@ -29,15 +29,15 @@ Calls about a job carry its lease token in `X-Glob2-Lease`.
 At startup the agent learns its sim version from the binary rather than from
 configuration, so a mislabelled image cannot serve the wrong version:
 
-- `VERSION_MINOR` and `NET_PROTOCOL_VERSION` come from `glob2 --headless-catalog`
+- `VERSION_MINOR` and `NET_PROTOCOL_VERSION` come from `glob2 info catalog --format json`
   (`save_version`, `protocol_version`).
 - The data hash comes from the binary when it reports one: a `data_hash` field in
-  the catalog, or `glob2 --sim-version`, which prints
+  the catalog, or `glob2 info sim-version --format json`, which prints
   `{"versionMinor","netProtocol","dataHash"}`. Current engines advertise this
-  command in the catalog. Older binaries can start the game instead of rejecting
-  an unknown flag, so the agent only runs `--sim-version` when the catalog lists
-  `sim_version` under `commands` (or `ENGINE_PROBE_SIM_VERSION=1`).
-- For older engines that do not report a hash, `ENGINE_DATA_HASH` (or a full
+  command in the domain catalog. Before reading that catalog, the agent probes
+  `glob2 help --format json` with a timeout and requires description schema 1 and
+  CLI version 2. Older CLI binaries are rejected before workers lease jobs.
+- For a domain catalog that does not report a hash, `ENGINE_DATA_HASH` (or a full
   `ENGINE_SIM_VERSION` key) supplies it. Any value that disagrees with what the binary reports stops the
   agent at startup.
 
@@ -54,11 +54,11 @@ blob the agent stores is also registered in `blobs`.
 
 | Kind | Engine command | Result |
 | --- | --- | --- |
-| `generate-map` | `--generate-map --generator <method> --map-seed <seed> --candidates <n> --param k=v… --write-map true --output-dir` (structured; method ids and revisions from the catalog) | map blob hash, size, dimensions, team count, chosen seed, start quality |
-| `validate-map` | `--preview-map <file> --json report.json` (the game's own loader, no simulation) | `valid: true` with the decompressed hash, dimensions, team count and the file's format version, or `valid: false` with a reason |
-| `render-preview` | `--preview-map <file> --output preview.png --preview-size <px>` | PNG blob hash and pixel size |
-| `verify-match` | `--verify-match <record> --map <file> --out <dir>` | `verified`/`diverged` with the outcome, team statistics and timelines, or `unverifiable` |
-| `validate-buildings` | `--compose-buildings --package <manifest> --artwork-bundle <bundle>` | Archive and stock hashes, suite version, resolved catalog hash and snapshot, and optional artwork hash; deterministic rejection returns `valid: false` and a reason |
+| `generate-map` | `map study <method> --seed <seed> --candidates <n> --set k=v… --write-map --output-dir` (structured; method ids and revisions from the catalog) | map blob hash, size, dimensions, team count, chosen seed, start quality |
+| `validate-map` | `map preview <file> --report-file report.json` (the game's own loader, no simulation) | `valid: true` with the decompressed hash, dimensions, team count and the file's format version, or `valid: false` with a reason |
+| `render-preview` | `map preview <file> --output preview.png --preview-size <px>` | PNG blob hash and pixel size |
+| `verify-match` | `match verify <record> --map-file <file> --output-dir <dir>` | `verified`/`diverged` with the outcome, team statistics and timelines, or `unverifiable` |
+| `validate-buildings` | `assets compose-buildings --format json --package <manifest> --artwork-bundle <bundle>` | Archive and stock hashes, suite version, resolved catalog hash and snapshot, and optional artwork hash; deterministic rejection returns `valid: false` and a reason |
 
 
 Before running the generator, the agent checks the descriptor against the
@@ -82,7 +82,7 @@ header, after the engine has loaded the file. This small read in
 `engineCli.ts` is the only binary parsing in the platform. It is needed because
 the map report gives the engine's version, not the file's.
 
-**`--verify-match` output.** The engine writes (see
+**`match verify` output.** The engine writes (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)), and
 the agent reads:
 

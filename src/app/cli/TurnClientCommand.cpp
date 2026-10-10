@@ -31,6 +31,7 @@
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "Headless.h"
+#include "CommandLine.h"
 #include "MatchSetup.h"
 #include "Order.h"
 #include "RelayTransport.h"
@@ -300,42 +301,20 @@ static int play(const Options& options, const fs::path& output)
 }
 };
 
-int runTurnClient(int argc, char** argv)
+int runTurnClient(const Cli::Request &request)
 {
 	fs::path output;
 	try
 	{
-		if (argc < 3)
-			throw Usage("usage: --turn-client <assignment.json> --map <file> --out <dir> [--orders-per-second R] "
-			            "[--max-seconds S] [--seed N] [--profile <name>] [--compute-threads auto|N]");
-		Options options;
-		options.assignment = argv[2];
-		for (int i = 3; i < argc; i += 2)
-		{
-			const std::string key = argv[i];
-			if (isRemovedComputeOption(key)) throw Usage(key + " has been removed; use --compute-threads auto|N");
-			if (i + 1 >= argc)
-				throw Usage("missing value for " + key);
-			const std::string value = argv[i + 1];
-			if (key == "--map")
-				options.map = value;
-			else if (key == "--out")
-				options.out = value;
-			else if (key == "--compute-threads")
-				options.computeThreads = parseComputeThreadCount(value);
-			else if (key == "--profile")
-				options.profile = value;
-			else if (key == "--orders-per-second")
-				options.ordersPerSecond = std::stod(value);
-			else if (key == "--max-seconds")
-				options.maxSeconds = std::stod(value);
-			else if (key == "--seed")
-				options.seed = static_cast<std::uint32_t>(std::stoul(value));
-			else
-				throw Usage("unknown option: " + key);
-		}
-		if (options.map.empty() || options.out.empty())
-			throw Usage("--map and --out are required");
+        Options options;
+        options.assignment = request.positionals.at(0);
+        options.map = request.get("--map-file");
+        options.out = request.get("--output-dir");
+        options.profile = request.get("--profile");
+        options.computeThreads = parseComputeThreadCount(request.get("--compute-threads"));
+        options.ordersPerSecond = std::stod(request.get("--orders-per-second"));
+        options.maxSeconds = std::stod(request.get("--max-seconds"));
+        options.seed = static_cast<std::uint32_t>(std::stoul(request.get("--seed")));
 		output = fs::absolute(options.out);
 		fs::create_directories(output / "profile");
 		// Both profile variables, as the other headless commands set them (#554).

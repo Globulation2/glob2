@@ -75,8 +75,8 @@ Use contracts, map inspection and populated games for different questions: legal
   table. It is not wired into CI and makes no coverage claim; point a profiler at its PID while it
   runs, or use its own timings for a quick before/after comparison at a fixed seed and round count.
 - The normal client's [map CLI](cli.md) generates maps and PNG previews with
-  `--generate-map`, loads maps/saves with `--preview-map`, and lists settings with
-  `--list-map-generators`. It supports config files and CLI controls, and reuses the lobby/picker preview renderer.
+  `map generate`, loads maps/saves with `map preview`, and lists settings with
+  `map generators`. It supports config files and CLI controls, and reuses the lobby/picker preview renderer.
   Compare a new generator with its nearest neighbours at 128, 256, and 512 tiles
   using the documented batch commands before showing it.
 - `tools/new_map_generator.py <id> "<Display name>"` scaffolds a generator that builds, registers

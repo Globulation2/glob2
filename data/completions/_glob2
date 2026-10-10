@@ -1,0 +1,511 @@
+#compdef glob2
+# Generated from Glob2 CLI 2 command definitions.
+_glob2() {
+  local command_path='' word i
+  for ((i=2;i<CURRENT;i++)); do
+    word=$words[i]
+    if ((i == 2)) && [[ $word == help ]]; then continue; fi
+    case "$command_path|$word" in
+      '|play') command_path='play';;
+      '|replay') command_path='replay';;
+      '|map') command_path='map';;
+      '|game') command_path='game';;
+      '|match') command_path='match';;
+      '|online') command_path='online';;
+      '|ai') command_path='ai';;
+      '|script') command_path='script';;
+      '|assets') command_path='assets';;
+      '|dev') command_path='dev';;
+      '|info') command_path='info';;
+      '|help') command_path='help';;
+      '|completion') command_path='completion';;
+      'ai|check') command_path='ai check';;
+      'assets|compose-buildings') command_path='assets compose-buildings';;
+      'assets|render-skin') command_path='assets render-skin';;
+      'assets|skin-info') command_path='assets skin-info';;
+      'dev|random-games') command_path='dev random-games';;
+      'dev|stress-maps') command_path='dev stress-maps';;
+      'dev|textshots') command_path='dev textshots';;
+      'dev|dump-resources') command_path='dev dump-resources';;
+      'dev|dump-wheat') command_path='dev dump-wheat';;
+      'dev|dump-tiled') command_path='dev dump-tiled';;
+      'dev|hive-worker') command_path='dev hive-worker';;
+      'game|run') command_path='game run';;
+      'game|repeat') command_path='game repeat';;
+      'info|version') command_path='info version';;
+      'info|sim-version') command_path='info sim-version';;
+      'info|catalog') command_path='info catalog';;
+      'info|paths') command_path='info paths';;
+      'map|generate') command_path='map generate';;
+      'map|study') command_path='map study';;
+      'map|generators') command_path='map generators';;
+      'map|preview') command_path='map preview';;
+      'map|render') command_path='map render';;
+      'map|import-image') command_path='map import-image';;
+      'map|export-image') command_path='map export-image';;
+      'map|inspect-package') command_path='map inspect-package';;
+      'map|validate-set') command_path='map validate-set';;
+      'match|verify') command_path='match verify';;
+      'online|join') command_path='online join';;
+      'online|play-map') command_path='online play-map';;
+      'online|host-map') command_path='online host-map';;
+      'online|turn-client') command_path='online turn-client';;
+      'script|check') command_path='script check';;
+      'script|attach') command_path='script attach';;
+    esac
+  done
+  case "$command_path" in
+    '') compadd play replay map game match online ai script assets dev info help completion;;
+    'ai') compadd check;;
+    'assets') compadd compose-buildings render-skin skin-info;;
+    'dev') compadd random-games stress-maps textshots dump-resources dump-wheat dump-tiled hive-worker;;
+    'game') compadd run repeat;;
+    'info') compadd version sim-version catalog paths;;
+    'map') compadd generate study generators preview render import-image export-image inspect-package validate-set;;
+    'match') compadd verify;;
+    'online') compadd join play-map host-map turn-client;;
+    'script') compadd check attach;;
+    'play') _arguments -s \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'replay') _arguments -s \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map generate') _arguments -s \
+      '--seed[seed]:value:' \
+      '*--set[set]:value:' \
+      '--width[width]:value:' \
+      '--height[height]:value:' \
+      '--teams[teams]:value:' \
+      '--workers[workers]:value:' \
+      '--preview[preview]:value:_files' \
+      '--preview-size[preview-size]:value:' \
+      '--preview-scale[preview-scale]:value:(2 4 8)' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--output[output]:value:_files' \
+      '--report-file[report-file]:value:_files' \
+      '--config[config]:value:_files' \
+      '--map-image[map-image]:value:_files' \
+      '--export-generator-package[export-generator-package]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map study') _arguments -s \
+      '--output-dir[output-dir]:value:_files -/' \
+      '--profile[profile]:value:' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--seed[seed]:value:' \
+      '*--set[set]:value:' \
+      '--candidates[candidates]:value:' \
+      '--rotations[rotations]:value:' \
+      '--write-map[write-map]' \
+      '*--report[report]:value:(headroom diagnostics timing terrain)' \
+      '*--perturb[perturb]:value:' \
+      '--building-artwork[building-artwork]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map generators') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map preview') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--output[output]:value:_files' \
+      '--report-file[report-file]:value:_files' \
+      '--preview[preview]:value:_files' \
+      '--preview-size[preview-size]:value:' \
+      '--preview-scale[preview-scale]:value:(2 4 8)' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map render') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--output[output]:value:_files' \
+      '--render-max-pixels[render-max-pixels]:value:' \
+      '--render-field[render-field]:value:_files' \
+      '--field-color[field-color]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map import-image') _arguments -s \
+      '--seed[seed]:value:' \
+      '*--set[set]:value:' \
+      '--width[width]:value:' \
+      '--height[height]:value:' \
+      '--teams[teams]:value:' \
+      '--workers[workers]:value:' \
+      '--preview[preview]:value:_files' \
+      '--preview-size[preview-size]:value:' \
+      '--preview-scale[preview-scale]:value:(2 4 8)' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--output[output]:value:_files' \
+      '--report-file[report-file]:value:_files' \
+      '--image-seam-width[image-seam-width]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map export-image') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--output[output]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map inspect-package') _arguments -s \
+      '--output[output]:value:_files' \
+      '--report-file[report-file]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'map validate-set') _arguments -s \
+      '--report-file[report-file]:value:_files' \
+      '--preview[preview]:value:_files' \
+      '--gallery[gallery]:value:(0 1)' \
+      '--phase[phase]:value:' \
+      '--variation[variation]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'game run') _arguments -s \
+      '--output-dir[output-dir]:value:_files -/' \
+      '--profile[profile]:value:' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--map-file[map-file]:value:_files' \
+      '--load-game[load-game]:value:_files' \
+      '--generator[generator]:value:' \
+      '--game-seed[game-seed]:value:' \
+      '--map-seed[map-seed]:value:' \
+      '*--set[set]:value:' \
+      '--candidates[candidates]:value:' \
+      '*--player[player]:value:' \
+      '*--ai-param[ai-param]:value:' \
+      '*--ai-script[ai-script]:value:' \
+      '--map-script[map-script]:value:_files' \
+      '*--alliance[alliance]:value:' \
+      '*--win-condition[win-condition]:value:(death allies prestige opponents script)' \
+      '--win-probability[win-probability]:value:' \
+      '*--experiment[experiment]:value:' \
+      '*--rule[rule]:value:' \
+      '*--fork-rule[fork-rule]:value:' \
+      '--ticks[ticks]:value:' \
+      '--gradient-delay[gradient-delay]:value:' \
+      '--resource-growth-delay[resource-growth-delay]:value:' \
+      '--ai-order-delay[ai-order-delay]:value:' \
+      '*--save[save]:value:' \
+      '*--telemetry[telemetry]:value:(checksums team-timeline maxima gradient-stats)' \
+      '--write-replay[write-replay]' \
+      '--benchmark-warmup[benchmark-warmup]:value:' \
+      '--diagnostic-fields[diagnostic-fields]:value:(maxima)' \
+      '--diagnostic-interval[diagnostic-interval]:value:' \
+      '--diagnostic-png[diagnostic-png]' \
+      '--building-artwork[building-artwork]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'game repeat') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--ticks[ticks]:value:' \
+      '--runs[runs]:value:' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'match verify') _arguments -s \
+      '--output-dir[output-dir]:value:_files -/' \
+      '--profile[profile]:value:' \
+      '--compute-threads[compute-threads]:value:' \
+      '--map-file[map-file]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'online join') _arguments -s \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--instance[instance]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'online play-map') _arguments -s \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--instance[instance]:value:' \
+      '--hash[hash]:value:' \
+      '--title[title]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'online host-map') _arguments -s \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--instance[instance]:value:' \
+      '--hash[hash]:value:' \
+      '--title[title]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'online turn-client') _arguments -s \
+      '--output-dir[output-dir]:value:_files -/' \
+      '--profile[profile]:value:' \
+      '--compute-threads[compute-threads]:value:' \
+      '--map-file[map-file]:value:_files' \
+      '--orders-per-second[orders-per-second]:value:' \
+      '--max-seconds[max-seconds]:value:' \
+      '--seed[seed]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'ai check') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '--help[help]' \
+      '*:file:_files';;
+    'script check') _arguments -s \
+      '--help[help]' \
+      '*:file:_files';;
+    'script attach') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'assets compose-buildings') _arguments -s \
+      '--base[base]:value:_files' \
+      '*--package[package]:value:_files' \
+      '--artwork-bundle[artwork-bundle]:value:_files' \
+      '--format[format]:value:(text json)' \
+      '--help[help]' \
+      '*:file:_files';;
+    'assets render-skin') _arguments -s \
+      '--manifest[manifest]:value:_files' \
+      '--texture[texture]:value:_files' \
+      '--material[material]:value:_files' \
+      '--output-dir[output-dir]:value:_files -/' \
+      '--help[help]' \
+      '*:file:_files';;
+    'assets skin-info') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '--help[help]' \
+      '*:file:_files';;
+    'dev random-games') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '--compute-threads[compute-threads]:value:' \
+      '--display[display]' \
+      '--runs[runs]:value:' \
+      '--ticks[ticks]:value:' \
+      '--ai-types[ai-types]:value:' \
+      '--map[map]:value:' \
+      '--matchup[matchup]:value:' \
+      '--save-game-as[save-game-as]:value:_files' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'dev stress-maps') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'dev textshots') _arguments -s \
+      '--fullscreen[fullscreen]' \
+      '--no-fullscreen[no-fullscreen]' \
+      '--resizable[resizable]' \
+      '--no-resizable[no-resizable]' \
+      '--custom-cursor[custom-cursor]' \
+      '--no-custom-cursor[no-custom-cursor]' \
+      '--mute[mute]' \
+      '--no-mute[no-mute]' \
+      '--renderer[renderer]:value:(gpu software)' \
+      '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--window-size[window-size]:value:' \
+      '--username[username]:value:' \
+      '--editor-script[editor-script]:value:(sgsl usl)' \
+      '--record[record]:value:_files' \
+      '--videoshot[videoshot]:value:' \
+      '--record-fps[record-fps]:value:' \
+      '--record-encoder[record-encoder]:value:(auto software)' \
+      '--record-crf[record-crf]:value:' \
+      '--record-chapter-ticks[record-chapter-ticks]:value:' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--building-catalog[building-catalog]:value:_files' \
+      '--compute-threads[compute-threads]:value:' \
+      '--output-dir[output-dir]:value:_files -/' \
+      '--help[help]' \
+      '*:file:_files';;
+    'dev dump-resources') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'dev dump-wheat') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--team[team]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'dev dump-tiled') _arguments -s \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--repeat-x[repeat-x]:value:' \
+      '--repeat-y[repeat-y]:value:' \
+      '--colonies[colonies]:value:' \
+      '--swarms[swarms]:value:' \
+      '--help[help]' \
+      '*:file:_files';;
+    'dev hive-worker') _arguments -s \
+      '--help[help]' \
+      '*:file:_files';;
+    'info version') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '--help[help]' \
+      '*:file:_files';;
+    'info sim-version') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '--help[help]' \
+      '*:file:_files';;
+    'info catalog') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '*--generator-package[generator-package]:value:_files' \
+      '--help[help]' \
+      '*:file:_files';;
+    'info paths') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '*--data-dir[data-dir]:value:_files -/' \
+      '--help[help]' \
+      '*:file:_files';;
+    'help') _arguments -s \
+      '--format[format]:value:(text json)' \
+      '--help[help]' \
+      '*:file:_files';;
+    'completion') _arguments -s \
+      '--help[help]' \
+      '*:file:_files';;
+  esac
+}
+compdef _glob2 glob2

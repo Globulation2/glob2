@@ -1,5 +1,11 @@
 # Distributed tournaments
 
+Tournament binaries and worker packages require [CLI 2](cli.md). Register new
+bundles when upgrading; drain active attempts before switching worker packages.
+Retain historical packages with their original binaries when resuming old runs.
+Registration and worker startup probe the static CLI description with a timeout;
+unsupported versions fail explicitly. Simulation and artifact schemas are separate.
+
 `tools/tournaments` is a Python 3.10+ standard-library package for Linux and macOS.
 It executes immutable, explicitly selected binary/data bundles on localhost and
 SSH hosts. Workers need Python and the bundle's runtime libraries already installed.
@@ -27,7 +33,7 @@ snapshot or diff, including untracked source). `--options` reads a JSON object o
 build flags. `--executable` defaults to `glob2`. For a bundle built on another
 platform, supply `--platform platform.json` (for example
 `{"os":"linux","arch":"x86_64"}`) and `--capabilities catalog.json`, captured by
-running that bundle's `glob2 --headless-catalog` on its target. Registration hashes
+running that bundle's `glob2 info catalog --format json` on its target. Registration hashes
 every file and manifest field. It never overwrites an installed bundle.
 
 An AI comparison configuration (`comparison.json`):
@@ -69,7 +75,7 @@ Each generation sample is its own job, so a failed sample does not discard a bat
 
 ## Production engine interface
 
-Put the command first. `--headless-catalog` writes schema-version-1 JSON to stdout;
+Put the command first. `info catalog --format json` writes schema-version-1 JSON to stdout;
 startup diagnostics go to stderr. It enumerates selectable AIs (excluding None),
 Cortex and Maxima parameter schemas, generators, controls, revisions, telemetry,
 and save/network versions, plus map-report and generation-telemetry schema versions.
@@ -83,10 +89,10 @@ Game and generation commands require `--output-dir DIR`; an existing
 Values are separate ordinary arguments, not JSON.
 
 ```sh
-build/src/glob2 --generate-map --generator 15 --map-seed 42 \
-  --param teams=2 --param width=7 --param height=7 \
-  --write-map true --rotations 2 --output-dir /tmp/generated
-build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map.gz \
+build/src/glob2 map study 15 --seed 42 \
+  --set teams=2 --set width=7 --set height=7 \
+  --write-map --rotations 2 --output-dir /tmp/generated
+build/src/glob2 game run --map-file /tmp/generated/map-r0.map.gz \
   --game-seed 19 --player cortex --player cortex \
   --ai-param 0:swarmWorkerCap=4 --ai-param 1:swarmWorkerCap=7 \
   --ticks 4096 --save initial --save every:512 --save final \
@@ -96,10 +102,10 @@ build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map.gz \
 To exercise a custom profile, append repeatable rule arguments to a new game:
 
 ```sh
-build/src/glob2 --run-game --map-file maps/SmallForTwo.map.gz \
+build/src/glob2 game run --map-file maps/SmallForTwo.map.gz \
   --game-seed 19 --player cortex --player maxima \
   --rule noUpgrades=1 --rule noHunger=1 --rule peaceful=1 \
-  --ticks 30000 --save initial --save final --replay true \
+  --ticks 30000 --save initial --save final --write-replay \
   --telemetry checksums --output-dir /tmp/custom-rules
 ```
 
@@ -116,10 +122,10 @@ Generator options:
 
 | Argument | Meaning/default |
 | --- | --- |
-| `--generator ID`, `--map-seed N` | Required method and independent uint32 seed |
-| `--param key=value` | Repeatable generator controls; defaults and valid ranges come from catalog. Width/height are power-of-two exponents, as in the existing study tool |
+| `map study GENERATOR --seed N` | Generator and independent uint32 seed |
+| `--set key=value` | Repeatable generator controls; defaults and valid ranges come from catalog. Width/height are power-of-two exponents, as in the existing study tool |
 | `--candidates N` | 0: explicit single-seed generation; positive: deterministic quality candidate selection, maximum 10000 |
-| `--write-map true/false` | false; emits `map-rN.map.gz` (gzip level 6) when true |
+| `--write-map` | absent by default; emits `map-rN.map.gz` (gzip level 6) when true |
 | `--rotations N` | 1; cyclic team reindexings, verified for unchanged geography and rotated starts |
 | `--report headroom/terrain` | Headroom study measurements on stdout or terrain/resource grid in terrain.txt |
 | `--profile NAME` | Optional isolated profile name; profile files live inside this output directory |
@@ -130,7 +136,7 @@ Game options:
 | --- | --- |
 | `--map-file PATH` | New game on this exact map |
 | `--load-game PATH` | Saved initial state or continuation, mutually exclusive with map/generator input |
-| `--generator`, `--map-seed`, `--param`, `--candidates` | Inline generation alternative; embeds generation results and saves the generated map |
+| `--generator`, `--map-seed`, `--set`, `--candidates` | Inline generation alternative; embeds generation results and saves the generated map |
 | `--game-seed N` | Required uint32 for a new game; forbidden when loading a save |
 | `--ai-script player:source.js` | Embedded source for a `javascript` player (zero-based index); new games only |
 | `--map-script source.js` | Replace the new game's map script with JavaScript |
@@ -142,7 +148,7 @@ Game options:
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs; explicit N is a positive unsigned integer |
-| `--replay true/false` | false |
+| `--write-replay` | Boolean switch; absent by default; writes `game.replay` when present |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, gradient-stats ([building field statistics](../development/performance-telemetry.md#building-field-statistics)); default none |
 | `--profile NAME` | Optional isolated profile name |
@@ -431,7 +437,7 @@ unsupported combinations remain reported failures rather than being filtered out
   independently draws its AI matchup and generator; the standard format and size
   remain 1v1 and 128x128 unless the configuration overrides them. Games are submitted
   as a single inline-generation job (`--generator`/`--map-seed` embedded directly
-  in `--run-game`, no separate `generate_map` dependency). `sample_seed` (default
+  in `game run`, no separate `generate_map` dependency). `sample_seed` (default
   1) makes the draw reproducible; `sizes` is a list of `generator_params`-shaped
   dicts to choose from per sample (defaulting to one 128x128 size, or to an
   explicit `generator_params` value); `generators` still
@@ -577,8 +583,8 @@ resample complete seed blocks across variants in your analysis script.
 
 See the [map-design bulk workflow](../../.agents/skills/glob2-map-design/references/distributed-telemetry.md)
 for complete commands, host configuration, dimensional units and statistical limits.
-Native `--generate-map NAME --json FILE` uses tile dimensions; the structured
-`--generate-map --output-dir DIR` interface uses exponent dimensions as documented
+Native `map generate NAME --report-file FILE` uses tile dimensions; the structured
+`map study GENERATOR --output-dir DIR` interface uses exponent dimensions as documented
 above. Both use the same production report serializer.
 
 ## Ending decided games early
@@ -608,7 +614,7 @@ fit report unavailable uncertainty rather than silently biasing the intervals.
 ## Gameplay, AI and performance telemetry
 
 Add `"outputs":{"telemetry":["team-timeline"]}` to an experiment configuration
-(or pass `--telemetry team-timeline` to `--run-game`). This existing option now
+(or pass `--telemetry team-timeline` to `game run`). This existing option now
 exports the legacy timeline **and** all gameplay measurements, per-player AI
 schemas/current/history/final values, and engine performance samples/final totals.
 Collection remains automatic; export remains opt-in. No extra worker service,
@@ -713,7 +719,7 @@ benchmark procedure and interpretation of CPU and wall time.
 
 New generated maps can carry normalized custom building frames with
 `--building-catalog CATALOG_JSON --building-artwork BUNDLE_G2BA`. Use the canonical
-snapshot produced by `--compose-buildings` as the catalog file. The artwork bundle
+snapshot produced by `assets compose-buildings --format json` as the catalog file. The artwork bundle
 is verified against that catalog and embedded in the generated map (format 145).
 Families selected in the graphical picker do not affect headless generation.
 

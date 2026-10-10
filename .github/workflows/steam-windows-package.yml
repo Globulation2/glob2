@@ -122,5 +122,5 @@ jobs:
           $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'glob2-profile'
           $env:GLOB2_ASSET_DIR = $depot
           Set-Location $depot
-          & .\glob2.exe --nox "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" 10 1
+          & .\glob2.exe game repeat "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" --ticks 10 --runs 1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

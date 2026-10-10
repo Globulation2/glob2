@@ -1,3 +1,4 @@
+#include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Capture a saved game's real Scene renderer, with the preview env enabled or off.
 #include "GlobalContainer.h"
@@ -36,7 +37,9 @@ int main(int argc, char **argv)
     try
     {
         globalContainer = new GlobalContainer;
-        globalContainer->parseArgs(argc,argv);
+        std::vector<std::string> launchArgs{"play"};
+        launchArgs.insert(launchArgs.end(),argv+1,argv+argc);
+        globalContainer->applyCommand(Cli::parse(launchArgs));
             globalContainer->settings.mute = 1;
         globalContainer->settings.autosaveGames = false;
         globalContainer->load();

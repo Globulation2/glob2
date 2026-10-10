@@ -223,11 +223,11 @@ def main():
         env=dict(os.environ,GLOB2_USER_DIR=str(profile),SDL_VIDEODRIVER='invalid',SDL_AUDIODRIVER='invalid')
         def run(args, ok=True, executable=BINARY):
             args=list(map(str,args))
-            if executable == BINARY: args[2:2]=['-d',str(ROOT)]
+            if executable == BINARY: args[2:2]=['--data-dir',str(ROOT)]
             result=subprocess.run([str(executable),*args],cwd=profile,env=env,capture_output=True,text=True,timeout=120)
             logs.append({'binary':str(executable),'args':args,'returncode':result.returncode,'stdout':result.stdout,'stderr':result.stderr})
             (OUT/'commands.json').write_text(json.dumps(logs,indent=2)+'\n')
-            assert result.returncode == (0 if ok else 1),logs[-1]
+            assert result.returncode == 0 if ok else result.returncode in (2, 3),logs[-1]
         run([OUT/'fixtures'],executable=HARNESS)
         fixtures={p.stem:json.loads(p.read_text(encoding='utf-8')) for p in (OUT/'fixtures').glob('*.json')}
         for j in fixtures.values():
@@ -293,10 +293,10 @@ def main():
         # suffix); naming the variable with the suffix already applied means the
         # CLI's actual output path and this variable are exactly the same string.
         saved, report=OUT/'maze.map.gz', OUT/'maze.json'
-        args=['--generate-map','maze','--seed','7','--width','128','--height','128','--set','cell-shape=0']
+        args=['map', 'generate','maze','--seed','7','--width','128','--height','128','--set','cell-shape=0']
         run([*args,'--output',saved])
         original=saved.read_bytes()
-        run([*args,'--output',saved,'--json',report])
+        run([*args,'--output',saved,'--report-file',report])
         assert saved.read_bytes() == original, 'JSON changed generated map bytes'
         generated=json.loads(report.read_text(encoding='utf-8'))
         invariants(generated)
@@ -308,12 +308,12 @@ def main():
         assert any(r['key'].startswith('maze.') for r in telemetry['records'])
         assert generated['generation']['outcome']['success']
         contract_rejections(generated)
-        run([*args,'--json',OUT/'repeat.json'])
+        run([*args,'--report-file',OUT/'repeat.json'])
         assert report.read_bytes() == (OUT/'repeat.json').read_bytes(), 'Report is not repeatable'
         (profile/'map.cfg').write_text('seed=99\nwidth=128\nheight=128\ncell-shape=1\n')
-        run(['--generate-map','maze','--config','map.cfg','--seed','7','--set','cell-shape=0','--json',OUT/'config.json'])
+        run(['map', 'generate','maze','--config','map.cfg','--seed','7','--set','cell-shape=0','--report-file',OUT/'config.json'])
         assert report.read_bytes() == (OUT/'config.json').read_bytes(), 'Config precedence differs in report'
-        run(['--preview-map',saved,'--json',OUT/'loaded.json'])
+        run(['map', 'preview',saved,'--report-file',OUT/'loaded.json'])
         loaded=json.loads((OUT/'loaded.json').read_text(encoding='utf-8'))
         invariants(loaded)
         assert loaded['generation'] == {'available':False,'parameters':None,'telemetry':None,'reason':'Map/save files do not store the complete original generator request'}
@@ -323,21 +323,21 @@ def main():
             source=ROOT/'test/fixtures'/fixture
             snapshot=source.read_bytes()
             output=OUT/(source.parent.name+'.json')
-            run(['--preview-map',source,'--json',output])
+            run(['map', 'preview',source,'--report-file',output])
             invariants(json.loads(output.read_text(encoding='utf-8')))
             assert source.read_bytes() == snapshot
         failed_path = OUT/'failed-request.json'
-        run(['--generate-map','symmetric-arena','--width','128','--height','256','--teams','8',
-             '--json',failed_path,'--output',OUT/'must-not-exist.map'],ok=False)
+        run(['map', 'generate','symmetric-arena','--width','128','--height','256','--teams','8',
+             '--report-file',failed_path,'--output',OUT/'must-not-exist.map'],ok=False)
         failed=json.loads(failed_path.read_text())
         contract(failed)
         assert failed['report_type'] == 'generation_failure' and 'map' not in failed
         assert failed['generation']['outcome']['error'] == 'invalid_request'
         assert failed['generation']['telemetry']['records'][-1]['kind'] == 'error'
         assert not (OUT/'must-not-exist.map').exists() and not (OUT/'must-not-exist.map.gz').exists()
-        for bad in [[*args,'--output',saved,'--json',saved],['--preview-map',saved,'--json',saved],
-                    [*args,'--json',OUT],[*args,'--json'],[*args,'--json',report,'--preview-size','256'],
-                    ['--generate-map','maze','--config',profile/'map.cfg','--json',profile/'map.cfg']]:
+        for bad in [[*args,'--output',saved,'--report-file',saved],['map', 'preview',saved,'--report-file',saved],
+                    [*args,'--report-file',OUT],[*args,'--report-file'],[*args,'--report-file',report,'--preview-size','256'],
+                    ['map', 'generate','maze','--config',profile/'map.cfg','--report-file',profile/'map.cfg']]:
             run(bad,ok=False)
         assert saved.read_bytes() == original
         assert (prefs.read_bytes(),prefs.stat().st_mtime_ns) == before

@@ -175,7 +175,7 @@ avoiding numeric-serialization differences between JavaScript and C++. All
 release resources recheck visibility and moderation on every request.
 
 For command-line new maps, write the composed catalog snapshot to a JSON file
-and pass `--building-catalog` with `--building-artwork` to `--generate-map`.
+and pass `--building-catalog` with `--building-artwork` to `map generate`.
 The latter accepts the verified `G2BA0001` bundle, which is embedded in the output.
 Format 145 and network protocol 62 introduced this artwork header layout.
 Current save format and replay acceptance are 150, with network protocol 68;

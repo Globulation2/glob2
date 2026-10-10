@@ -20,7 +20,7 @@ output = args.output.resolve()
 output.mkdir(parents=True, exist_ok=True)
 fixture = root / 'games/cross-replay.game.gz'
 replay = output / 'native.replay'
-command = [str(binary), '--nox', str(fixture), '1500', '1']
+command = [str(binary), 'game', 'repeat', str(fixture), '--ticks', '1500', '--runs', '1']
 with tempfile.TemporaryDirectory(prefix='glob2-browser-determinism-') as profile:
     with (output / 'run.log').open('w') as log:
         subprocess.run(command, cwd=root, check=True, timeout=120, stdout=log,
@@ -40,7 +40,7 @@ record = root / 'test/fixtures/multiplayer/FourSquares1.g2mr'
 match_map = root / 'maps/FourSquares1.map.gz'
 verify_dir = output / 'verify-match'
 shutil.rmtree(verify_dir, ignore_errors=True)
-verify_command = [str(binary), '--verify-match', str(record), '--map', str(match_map), '--out', str(verify_dir)]
+verify_command = [str(binary), 'match', 'verify', str(record), '--map-file', str(match_map), '--output-dir', str(verify_dir)]
 with (output / 'verify-match.log').open('w') as log:
     subprocess.run(verify_command, cwd=root, check=True, timeout=300, stdout=log, stderr=subprocess.STDOUT,
                    env=dict(os.environ, SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy'))

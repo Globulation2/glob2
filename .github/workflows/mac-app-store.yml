@@ -94,7 +94,7 @@ jobs:
         run: |
           game=build/darwin/client/release/src/glob2
           test -x "$game"
-          "$game" --list-map-generators > "$RUNNER_TEMP/glob2-generators.txt"
+          "$game" map generators > "$RUNNER_TEMP/glob2-generators.txt"
           test -s "$RUNNER_TEMP/glob2-generators.txt"
 
       - name: Verify public bundle and retain simulation trace
@@ -141,10 +141,10 @@ jobs:
           codesign --verify --deep --strict "$app"
           # Installed tools must find bundle assets without the source checkout.
           cd "$(mktemp -d)"
-          "$app/Contents/MacOS/glob2" --list-map-generators > "$generators"
+          "$app/Contents/MacOS/glob2" map generators > "$generators"
           test -s "$generators"
           map="$HOME/Library/Containers/${BUNDLE_ID:-org.globulation2.glob2}/Data/release-smoke.map.gz"
-          "$app/Contents/MacOS/glob2" --generate-map maze --seed 7 \
+          "$app/Contents/MacOS/glob2" map generate maze --seed 7 \
             --width 64 --height 64 --teams 2 --output "$map"
           test -s "$map"
 

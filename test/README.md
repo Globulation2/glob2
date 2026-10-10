@@ -192,3 +192,16 @@ fullscreen modes, at Retina scaling, and with conventional and gesture mice.
 ## Domain verification guides
 
 Use the [ordered verification hub](../docs/development/testing/README.md) for simulation, compatibility, AI, maps, rendering, audio, scripting, platforms and tooling scenarios.
+
+## CLI compatibility
+
+`CommandLine/*` tests registry definitions, strict parsing, repeats, and conflicts.
+The real executable must also pass static help, documented workflows, artifact
+contracts, and generated-reference drift checks:
+
+```sh
+python3 test/test_cli_smoke.py --binary /path/to/glob2 --artifacts artifacts/cli
+python3 tools/cli_reference.py --binary /path/to/glob2 --check
+```
+
+See the [CLI guide](../docs/tools/cli.md) for command and migration contracts.

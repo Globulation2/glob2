@@ -197,7 +197,7 @@ scheduling. Refitting moves only CPU, so it needs no `SIM_REVISION` bump.
 
 ```sh
 # Data: a gradient_depth tournament (see docs/tools/tournaments.md), plus any
-# directories of plain --run-game outputs that hold gradient-stats.csv.
+# directories of plain game run outputs that hold gradient-stats.csv.
 python3 -m tools.tournaments.gradient_depth plan depth.json --bundle BUNDLE --output planned.json
 python3 -m tools.tournaments submit planned.json RESULTS --bundle BUNDLE
 python3 -m tools.tournaments run RESULTS --hosts hosts.json

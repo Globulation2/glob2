@@ -71,7 +71,7 @@ def main():
                             env["PROFILE_TERRAIN_CACHE"] = "0"
                         if variant == "baseline" and args.baseline_preserve_frame:
                             env["PROFILE_PRESERVE_FRAME"] = "1"
-                        command = [str(getattr(args, variant).resolve()), "-G", "-s", args.resolution, "-m", "-F"]
+                        command = [str(getattr(args, variant).resolve()), "--renderer", "software", "--window-size", args.resolution, "--mute", "--no-fullscreen"]
                         run = subprocess.run(command, env=env, stdout=subprocess.PIPE,
                                              stderr=subprocess.STDOUT, text=True, timeout=300,
                                              cwd=Path(__file__).resolve().parents[1])

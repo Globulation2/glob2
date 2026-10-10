@@ -133,7 +133,7 @@ jobs:
           $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'gog-profile'
           $env:GLOB2_ASSET_DIR = $depot
           Set-Location $depot
-          & .\glob2.exe --nox "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" 10 1
+          & .\glob2.exe game repeat "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" --ticks 10 --runs 1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   linux:
@@ -167,7 +167,7 @@ jobs:
             --output artifacts/gog/linux --version "$VERSION" \
             --source-commit "$SOURCE_COMMIT" --workflow-commit "$WORKFLOW_COMMIT"
           GLOB2_USER_DATA_DIR="$PWD/artifacts/gog-profile" \
-            artifacts/gog/linux/start.sh --nox "$PWD/games/cross-replay.game.gz" 10 1
+            artifacts/gog/linux/start.sh game repeat "$PWD/games/cross-replay.game.gz" --ticks 10 --runs 1
           tar -C artifacts/gog/linux -czf artifacts/gog/linux.tar.gz .
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -202,7 +202,7 @@ jobs:
           (
             cd artifacts/gog/macos/Glob2.app
             GLOB2_USER_DATA_DIR="$RUNNER_TEMP/gog-profile" \
-              ./Contents/MacOS/glob2 --nox "$GITHUB_WORKSPACE/games/cross-replay.game.gz" 10 1
+              ./Contents/MacOS/glob2 game repeat "$GITHUB_WORKSPACE/games/cross-replay.game.gz" --ticks 10 --runs 1
           )
           tar -C artifacts/gog/macos -czf artifacts/gog/macos.tar.gz .
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

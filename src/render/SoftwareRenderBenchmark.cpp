@@ -1,3 +1,4 @@
+#include "CommandLine.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Opt-in loaded-game CPU benchmark. PROFILE_* overrides are local diagnostics.
 #include "GlobalContainer.h"
@@ -72,7 +73,9 @@ class SoftwareRenderBenchmark
 		// to native Retina/HiDPI presentation explicitly for lifecycle profiling.
 		const bool nativeDisplay = getenv("PROFILE_NATIVE_DISPLAY") != nullptr;
 		globalContainer = new GlobalContainer;
-		globalContainer->parseArgs(argc, argv);
+		std::vector<std::string> launchArgs{"play"};
+        launchArgs.insert(launchArgs.end(),argv+1,argv+argc);
+        globalContainer->applyCommand(Cli::parse(launchArgs));
 		globalContainer->settings.mute = getenv("PROFILE_AUDIO") ? 0 : 1;
 		globalContainer->settings.autosaveGames = false;
 		globalContainer->load();

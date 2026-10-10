@@ -83,7 +83,7 @@ python3 test/deployment/platform_stack_smoke.py --attach glob2-platform \
 
 `test/deployment/live_match_e2e.py` then plays a real match on the instance: two
 guests create and join a room by invite code, start it with AI seats on a generated
-map, and two headless native clients (`glob2 --turn-client`, built from the same
+map, and two headless native clients (`glob2 online turn-client`, built from the same
 sim version) play it through the relay until a sudden-death rule ends it. It checks
 that both clients' per-tick checksums agree, and, with `--psql`, that the relay
 reported the match, uploaded its record and the verify-match job judged it
@@ -120,7 +120,7 @@ fresh stack:
 1. The instance has local sign-in and a small rated queue (`e2e-ranked`, one
    128×128 generated map).
 2. Two new local accounts join the queue, get the ranked accept prompt and accept.
-3. Two headless clients (`glob2 --turn-client`) play the match through a relay. They
+3. Two headless clients (`glob2 online turn-client`) play the match through a relay. They
    run from the engine-agent image, so client, relay and verifier share one build
    and sim version. Their per-tick checksums must agree.
 4. Player A quits after 40 s, so B wins and the game ends (B would quit 30 s later

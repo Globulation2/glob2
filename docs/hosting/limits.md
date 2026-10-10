@@ -9,7 +9,7 @@ Known deployment constraints to account for before operating an instance.
   includes the optional `list()` the blob collector uses for stored files no row
   names).
 - Relays on other hosts need [manual setup](scaling.md).
-- The engine reports its simulation version through `glob2 --sim-version`.
+- The engine reports its simulation version through `glob2 info sim-version --format json`.
   The engine-agent image also carries the version computed by
   `deploy/sim_version.py` at build time; startup checks that the engine and image
   identities agree.

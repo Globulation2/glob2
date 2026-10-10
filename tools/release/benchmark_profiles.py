@@ -51,7 +51,7 @@ def run(binary, fixture, output, correctness=False):
     (output / "profile").mkdir()
     command = [
         str(binary),
-        "--run-game",
+        "game", "run",
         "--load-game",
         str(fixture),
         "--ticks",
@@ -62,7 +62,7 @@ def run(binary, fixture, output, correctness=False):
         str(output),
     ]
     if correctness:
-        command += ["--telemetry", "checksums", "--replay", "true", "--save", "final"]
+        command += ["--telemetry", "checksums", "--write-replay", "--save", "final"]
     started = time.perf_counter()
     with (output / "engine.log").open("w") as log:
         subprocess.run(

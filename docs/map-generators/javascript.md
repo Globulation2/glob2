@@ -53,8 +53,8 @@ freezes those files into an immutable package; relaunch after editing to reload 
 
 ```sh
 build/linux/client/release/src/glob2 --generator-package data/generators/examples/swamp \
-  --generate-map examples:swamp --seed 91 --width 256 --height 256 --teams 4 \
-  --output artifacts/swamp.map --preview artifacts/swamp.png --json artifacts/swamp.json \
+  map generate examples:swamp --seed 91 --width 256 --height 256 --teams 4 \
+  --output artifacts/swamp.map --preview artifacts/swamp.png --report-file artifacts/swamp.json \
   --export-generator-package artifacts/swamp-generator.json
 python3 tools/map-generators/package.py data/generators/examples/swamp artifacts/swamp-generator.json
 ```

@@ -55,7 +55,7 @@ use `--compute-threads auto|N`. The optional area, initialization and hiring com
 paths and their environment selector have also been removed. Structural area
 refreshes and live field initialization retain their serial production order.
 
-Structured `--run-game` accepts `--ai-order-delay D` for a new match (default 8
+Structured `game run` accepts `--ai-order-delay D` for a new match (default 8
 ticks). Delays are simulation rules, separate from local thread configuration.
 A loaded match's configured AI delay cannot be overridden.
 

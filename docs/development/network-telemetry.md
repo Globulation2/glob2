@@ -38,7 +38,7 @@ leave the outputs it describes as they were, apart from the additions listed her
 | `RelayNetworkSummary` (JSON) | LAN: `<user dir>/replays/lan-last.network.json` next to `lan-last.g2mr` | when the LAN host writes its record |
 | `RelayNetworkSummary` (JSON) | online: `RelayMatchEnded.network`, stored per participant by the platform | when the relay reports the match end |
 | `glob2_relay_net_*` | relay `/metrics` (`RelayNetworkTotals::writePrometheus`) | accumulated as matches end |
-| `network` (JSON) | `--verify-match` `result.json` | always; derived from the match record alone |
+| `network` (JSON) | `match verify` `result.json` | always; derived from the match record alone |
 | `pacing.network_sleep` | `GLOB2_PERF_*` records | see [pacing](#pacing-network-sleep) |
 
 The stdout records use the key/value conventions of the other `GLOB2_*` records.
@@ -132,7 +132,7 @@ the gauge `glob2_relay_net_peak_pending_bytes`, and summaries (`quantile` 0.5/0.
 
 ## Verifier: `RecordNetworkSummary`
 
-`--verify-match` adds `network` to `result.json`: per human seat the facts the match
+`match verify` adds `network` to `result.json`: per human seat the facts the match
 record proves, with no wall-clock values, so the same record verifies to the same bytes
 everywhere: `orders`, `order_bytes` (quit excluded), `checksum_reports`, `connects`,
 `disconnects`, `reconnects`, `disconnected_ticks`, `told_to_rejoin`, `resynced`,
@@ -173,7 +173,7 @@ host schedules frames itself and records neither.
   the relay is chosen.
 - **Client context:** online clients take `networkKind = "online"`, `relayId` and
   `relayRegion` from `MatchAssignment` (`relayId`/`relayRegion` are optional there;
-  `glob2 --turn-client` reads them).
+  `glob2 online turn-client` reads them).
 - **Client upload:** none. Whether and how to collect `ClientNetworkSummary` is
   undecided; the file next to the replay is the only output.
 

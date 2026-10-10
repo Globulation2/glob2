@@ -4,7 +4,7 @@ Match records, relay requirements and focused protocol verification.
 
 ## Match record
 
-`MatchRecord` is the relay's persistent output, consumed by `--verify-match`. Its
+`MatchRecord` is the relay's persistent output, consumed by `match verify`. Its
 encoding is self-contained and big-endian:
 
 ```
@@ -38,7 +38,7 @@ Readers reject unknown magic, a newer `formatVersion`, a bad CRC, trailing bytes
 violated ordering or limit. A future version may add fields, but only behind a version
 check, so older records stay readable.
 
-`glob2 --verify-match` replays a record through the same engine path a live client
+`glob2 match verify` replays a record through the same engine path a live client
 runs: `Engine::initTurnMatch` with a `RecordTransport` that serves the record's turns as
 one relay would. Its contract is in
 [headless replays](../development/headless-replays.md#verifying-a-match-record).
@@ -118,7 +118,7 @@ all of them to agree at every tick (and with the relay's agreed checksums):
 - four engines, one stalled for 5 s (incremental resume) and one restarted as a new
   process (full log, fast-forward from tick 0);
 - three engines where one executes a tampered order: the majority tells it to rejoin,
-  it reloads in place and fast-forwards, and `--verify-match` names its seat;
+  it reloads in place and fast-forwards, and `match verify` names its seat;
 - a player who quits through the sequenced `PlayerQuitsGameOrder` while the others
   play on;
 - three engines where one client sends malformed, mutated and cross-team orders of
@@ -128,7 +128,7 @@ all of them to agree at every tick (and with the relay's agreed checksums):
   undecodable bytes, cross-team orders and voice: the verifier refuses them and still
   verifies.
 
-Each case verifies the relay's record with `--verify-match` and requires the verifier's
+Each case verifies the relay's record with `match verify` and requires the verifier's
 per-tick checksums and `result.json` team outcomes to equal the live clients'. Forged
 turns make the record unverifiable, and a seat whose reports disagree is named. A
 `[benchmark]` case measures rejoin fast-forward time against game length and AI count

@@ -21,7 +21,7 @@ EXPECTED = FIXTURES / "expected-resources-30000-30512.json"
 
 def run(binary, saved, output, stop_tick, workers, checkpoint=False):
     output.mkdir(parents=True, exist_ok=False)
-    command = [str(binary), "--run-game", "--load-game", str(saved),
+    command = [str(binary), "game", "run", "--load-game", str(saved),
                "--ticks", str(stop_tick), "--compute-threads", str(workers),
                "--telemetry", "checksums",
                "--output-dir", str(output)]

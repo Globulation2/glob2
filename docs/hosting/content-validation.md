@@ -9,7 +9,7 @@ worker. Migration 0049 adds private account drafts; 0050 adds published families
 immutable archives, social activity and the `validate-buildings` engine job kind.
 Rebuild and deploy the engine-agent image from the matching engine source, then
 deploy the website. The agent enables this job kind only when its binary's
-`--headless-catalog` advertises `compose_buildings`; a recent heartbeat must also
+`info catalog --format json` advertises `compose_buildings`; a recent heartbeat must also
 advertise the same stock catalog hash used for publication.
 
 Publication is unavailable until a compatible agent is present. Existing agents

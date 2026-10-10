@@ -1,503 +1,125 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
-
-// Command-line argument parsing for GlobalContainer. Split out of
-// GlobalContainer.cpp because parseArgs and its helpers are nearly
-// 400 lines on their own and have no overlap with the asset/init code.
-
+#include "GlobalContainer.h"
+#include "CommandLine.h"
 #include "ComputeThreads.h"
-#include <sstream>
-#include <cerrno>
-#include <cstdlib>
-#include <charconv>
-#include <string_view>
-
-#include <Toolkit.h>
-
 #include "AINames.h"
 #include "FileManager.h"
-#include "GlobalContainer.h"
-
-// version related stuff
-#ifdef HAVE_CONFIG_H
-	#include <glob2/BuildConfig.h>
-#endif
-#ifndef PACKAGE_VERSION
-	#define PACKAGE_VERSION "System Specific - not using autoconf"
-#endif
-#include "Version.h"
-#include "MapCommand.h"
+#include "InviteLink.h"
+#include <Toolkit.h>
 #include <GameplayRecording.h>
-#include "OnlineServices.h"
-#include "OnlineHandoff.h"
+#include <algorithm>
+#include <sstream>
+#include <stdexcept>
 
-namespace
+void GlobalContainer::applyCommand(const Cli::Request &request)
 {
-	// Smallest window the renderer supports; the -s flag clamps a requested
-	// resolution up to these floors before storing it.
-	constexpr int MIN_SCREEN_WIDTH = 640;
-	constexpr int MIN_SCREEN_HEIGHT = 480;
-
-	// ---- argv consumption helpers for parseArgs ----
-	//
-	// parseArgs walks argv once. Historically every flag that takes a value
-	// re-typed the same "if (i+1 < argc) { use argv[i+1]; i++; } else { usage;
-	// exit; }" block, ~22 times, each diverging in small but load-bearing ways.
-	// These helpers centralise the three recurring shapes so each flag branch
-	// reduces to a single helper call whose arguments make the divergence
-	// explicit. Two of those divergences are deliberately preserved here
-	// because they have their own bug entries (BH-096, BH-097) — see the
-	// per-helper notes — and fixing them is a behaviour change, out of scope
-	// for this cleanup. The genuinely one-off flags (-nox, -s) stay inline.
-
-	// New recording flags use a strict failure status without changing the
-	// historical missing-argument behavior of legacy options below.
-	const char *requireRecordingArg(int &i, int argc, char *argv[])
+	const auto &r = request;
+	for (const auto &path : r.all("--data-dir"))
+		fileManager->addDir(path);
+	if (r.has("--compute-threads"))
+		computeThreads = parseComputeThreadCount(r.get("--compute-threads"));
+	auto toggle = [&](const char *name, unsigned bit)
 	{
-		if (i + 1 < argc)
-			return argv[++i];
-		fprintf(stderr, "%s requires an argument\n", argv[i]);
-		exit(1);
-	}
-
-
-	// Consume and return the token after argv[i], advancing i past it. If no
-	// token follows, print `usageMessage` verbatim to stdout and exit(0). The
-	// caller passes the exact historical usage text so stdout stays
-	// byte-identical across the flags that share this shape.
-	const char* requireStringArg(int& i, int argc, char* argv[],
-	                             const char* usageMessage)
+		if (r.has(std::string("--") + name))
+			settings.screenFlags |= bit;
+		if (r.has(std::string("--no-") + name))
+			settings.screenFlags &= ~bit;
+	};
+	toggle("fullscreen", GraphicContext::FULLSCREEN);
+	toggle("resizable", GraphicContext::RESIZABLE);
+	toggle("custom-cursor", GraphicContext::CUSTOMCURSOR);
+	if (r.has("--renderer"))
 	{
-		if (i + 1 < argc)
-			return argv[++i];
-		printf("%s", usageMessage);
-		exit(0);
-	}
-
-	// Consume and return the token after argv[i], advancing i past it. If no
-	// token follows, return `fallback` and leave i unchanged.
-	// NOTE: unlike optionalIntArg, this does NOT reject a following flag token
-	// (e.g. "-textshot -f" stores "-f" as the directory); that quirk is BH-097
-	// and is preserved deliberately.
-	const char* optionalStringArg(int& i, int argc, char* argv[],
-	                              const char* fallback)
-	{
-		if (i + 1 < argc)
-			return argv[++i];
-		return fallback;
-	}
-
-	// Consume the token after argv[i] as a count, advancing i past it, but
-	// only when it does not look like another flag (first char != '-').
-	// Returns `fallback` (leaving i unchanged) when the token is absent or
-	// flag-like.
-	// NOTE: parses via atoi, so a non-numeric token yields 0 silently; that
-	// silent-zero behaviour is BH-096 and is preserved deliberately.
-	int optionalIntArg(int& i, int argc, char* argv[], int fallback)
-	{
-		if (i + 1 < argc && argv[i + 1][0] != '-')
-			return atoi(argv[++i]);
-		return fallback;
-	}
-
-	// Parse a comma-separated AI name list into AI::ImplementationID values.
-	// Used by --ai-types (which warns and skips on unknown) and --matchup
-	// (which warns and exits(1) on unknown). The flag name is included in the
-	// stderr message; valid AI names are kept canonical here so both flags
-	// stay in sync.
-	void parseAIList(const char* flagName, const std::string& list,
-	                 std::vector<int>& out, bool exitOnUnknown)
-	{
-		std::stringstream ss(list);
-		std::string item;
-		while (std::getline(ss, item, ','))
-		{
-			int matched = AINames::parseAIName(item);
-			if (matched == AI::JAVASCRIPT)
-            {
-                std::cerr << flagName << ": JavaScript requires --run-game --player javascript --ai-script player:source.js" << std::endl;
-                if (exitOnUnknown) exit(1);
-            }
-            else if (matched > 0)
-			{
-				out.push_back(matched);
-			}
-			else
-			{
-				std::cerr << flagName << ": unknown AI '" << item
-					<< "' (valid: " << AINames::validAINames() << ")" << std::endl;
-				if (exitOnUnknown)
-					exit(1);
-			}
-		}
-	}
-}
-
-/**
- * parses all command line arguments
- * @param argc number of arguments
- * @param argv the arguments themselves
- * @see Glob2::main()
- */
-void GlobalContainer::parseArgs(int argc, char *argv[])
-{
-	for (int  i=1; i<argc; i++)
-	{
-		if (strcmp(argv[i], "--building-catalog")==0)
-		{
-			// Resolved before constructing GlobalContainer and loading preferences.
-			if (++i >= argc) throw std::invalid_argument("--building-catalog requires a manifest path");
-		}
-		else if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
-		{
-			bool good=true;
-			if (i + 3 < argc)
-			{
-				runNoXGameName = argv[i + 1];
-				runNoX = true;
-				automaticEndingGame = true;
-				good &= (sscanf(argv[i + 2], "%d", &automaticEndingSteps) == 1);
-				good &= (sscanf(argv[i + 3], "%d", &runNoXCountRuns) == 1);
-				i += 3;
-			}
-			else
-			{
-				good=false;
-			}
-			if(!good)
-			{
-				printf("usage:\n");
-				printf("--nox <game file name> <number of steps> <number of runs>\n");
-				printf("zero steps will make the game run until the end.\n");
-				printf("\n");
-				exit(0);
-			}
-		}
-		else if (strcmp(argv[i], "-test-games")==0 || strcmp(argv[i], "-test-games-nox")==0)
-		{
-			runTestGames=true;
-			automaticEndingGame = true;
-			automaticGameGlobalEndConditions=true;
-			if (strcmp(argv[i], "-test-games-nox")==0)
-				runNoX=true;
-			runTestGamesCount = optionalIntArg(i, argc, argv, runTestGamesCount);
-		}
-		else if (strcmp(argv[i], "-test-map-gen")==0)
-		{
-			runTestMapGeneration = true;
-			runNoX=true;
-		}
-		else if (strcmp(argv[i], "--ai-types")==0)
-		{
-			// Constrain the random AI pool used by createRandomGame for
-			// -test-games / -test-games-nox. Comma-separated AI names,
-			// case-insensitive (see AINames::parseAIName). Unknown names
-			// are reported on stderr and skipped. Empty pool (default)
-			// means "use all main AIs uniformly".
-			parseAIList("--ai-types",
-				requireStringArg(i, argc, argv,
-					"--ai-types <comma-separated-list> requires an argument\n"),
-				testGamesAIPool, false);
-		}
-		else if (isRemovedComputeOption(argv[i]))
-		{
-			std::cerr << argv[i] << " has been removed; use --compute-threads auto|N\n";
-			exit(1);
-		}
-		else if (strcmp(argv[i], "--compute-threads")==0)
-		{
-			const char *value = requireStringArg(i, argc, argv,
-				"--compute-threads <auto|N> requires an argument\n");
-			try { computeThreads = parseComputeThreadCount(value); }
-			catch (const std::invalid_argument& error)
-			{
-				std::cerr << error.what() << '\n';
-				exit(1);
-			}
-		}
-		else if (strcmp(argv[i], "--map")==0)
-		{
-			// Pin the random-game map. Bare name, no .map extension —
-			// resolved as maps/<name>.map by Engine::chooseRandomMap.
-			testGamesMap = requireStringArg(i, argc, argv,
-				"--map <name> requires an argument\n");
-		}
-		else if (strcmp(argv[i], "--matchup")==0)
-		{
-			// Per-team AI assignment for the random-game flow. Comma-
-			// separated AI names; matchup[k] is the AI for team k.
-			// Validated against the loaded map's getNumberOfTeams() in
-			// Engine::createRandomGame() before the game starts.
-			parseAIList("--matchup",
-				requireStringArg(i, argc, argv,
-					"--matchup <comma-separated-list> requires an argument\n"),
-				testGamesMatchup, true);
-		}
-		else if (strcmp(argv[i], "--save-game-as")==0)
-		{
-			// Write the fully-initialised tick-0 game state to a .game file
-			// before running. Lets a -test-games-nox scenario be replayed
-			// deterministically via --nox <path>. Pair with GLOB2_TEST_SEED
-			// for a fully reproducible scenario: the same env var seeds
-			// syncRand AND gets mirrored into GameHeader::seed at save time
-			// (see Engine::createRandomGame in engine_init.cpp).
-			testGamesSaveGameAs = requireStringArg(i, argc, argv,
-				"--save-game-as <path> requires an argument\n");
-		}
-		else if (strcmp(argv[i], "-vs")==0)
-		{
-			videoshotName = requireStringArg(i, argc, argv,
-				"usage:\n-vs <videoshot name>");
-		}
-		else if (strcmp(argv[i], "--record") == 0)
-			recordingPath = requireRecordingArg(i, argc, argv);
-		else if (strcmp(argv[i], "--record-ffmpeg") == 0 || strcmp(argv[i], "--record-size") == 0)
-		{
-			fprintf(stderr, "%s is obsolete: recording uses an embedded encoder at full framebuffer resolution. Remove this option.\n", argv[i]);
-			exit(1);
-		}
-		else if (strcmp(argv[i], "--record-encoder") == 0)
-		{
-			std::string value = requireRecordingArg(i, argc, argv);
-			if (value != "auto" && value != "software") { fprintf(stderr, "Recording encoder must be auto or software\n"); exit(1); }
-			GAGCore::Recording::recorder().options.encoder = value == "software" ? GAGCore::Recording::EncoderPreference::Software : GAGCore::Recording::EncoderPreference::Auto;
-		}
-		else if (strcmp(argv[i], "--record-fps") == 0 || strcmp(argv[i], "--record-crf") == 0 ||
-				 strcmp(argv[i], "--record-chapter-ticks") == 0)
-		{
-			std::string flag = argv[i];
-			const char *value = requireRecordingArg(i, argc, argv);
-			char *end;
-			errno = 0;
-			long number = strtol(value, &end, 10);
-			long minimum = flag == "--record-crf" ? 0 : 1;
-			long maximum = flag == "--record-crf" ? 51 : flag == "--record-fps" ? 240 : 1000000000;
-			if (errno || end == value || *end || number < minimum || number > maximum)
-			{
-				fprintf(stderr, "Invalid %s\n", flag.c_str());
-				exit(1);
-			}
-			auto &settings = GAGCore::Recording::recorder().options;
-			if (flag == "--record-fps")
-				settings.fps = int(number);
-			else if (flag == "--record-crf")
-				settings.crf = int(number);
-			else
-				settings.chapterTicks = unsigned(number);
-		}
-		else if (strcmp(argv[i], "-textshot")==0)
-		{
-			GAGCore::DrawableSurface::translationPicturesDirectory =
-				optionalStringArg(i, argc, argv, ".");
-		}
-		else if (strcmp(argv[i], "-f")==0)
-		{
-			settings.screenFlags |= GraphicContext::FULLSCREEN;
-		}
-		else if (strcmp(argv[i], "-F")==0)
-		{
-			settings.screenFlags &= ~GraphicContext::FULLSCREEN;
-		}
-
-		else if (strcmp(argv[i], "-c")==0)
-		{
-			settings.screenFlags |= GraphicContext::CUSTOMCURSOR;
-		}
-		else if (strcmp(argv[i], "-C")==0)
-		{
-			settings.screenFlags &= ~GraphicContext::CUSTOMCURSOR;
-		}
-
-		else if (strcmp(argv[i], "-r")==0)
-		{
-			settings.screenFlags |= GraphicContext::RESIZABLE;
-		}
-		else if (strcmp(argv[i], "-R")==0)
-		{
-			settings.screenFlags &= ~GraphicContext::RESIZABLE;
-		}
-
-		else if  (strcmp(argv[i], "-sgsl")==0)
-		{
-			settings.optionFlags &= ~OPTION_MAP_EDIT_USE_USL;
-		}
-		else if (strcmp(argv[i], "-usl")==0)
-		{
-			settings.optionFlags |= OPTION_MAP_EDIT_USE_USL;
-		}
-
-		else if (strcmp(argv[i], "-g")==0)
-		{
+		if (r.get("--renderer") == "gpu")
 			settings.screenFlags |= GraphicContext::USEGPU;
-		}
-		else if (strcmp(argv[i], "-G")==0)
-		{
-			settings.screenFlags &= ~GraphicContext::USEGPU;
-		}
-
-		else if (strcmp(argv[i], "-l")==0)
-		{
-			settings.setGraphicsDetail(false);
-		}
-		else if (strcmp(argv[i], "-h")==0)
-		{
-			settings.setGraphicsDetail(true);
-		}
-		else if (strcmp(argv[i], "-m")==0)
-		{
-			settings.mute = 1;
-		}
-		else if (strcmp(argv[i], "-M")==0)
-		{
-			settings.mute = 0;
-		}
-		else if (strcmp(argv[i], "-replay")==0)
-		{
-			replaying=true;
-			replayFileName = requireStringArg(i, argc, argv,
-				"usage:\n-replay <replay file name>\n");
-		}
-		else if (strcmp(argv[i],"-s")==0)
-		{
-			if (i+1 < argc)
-			{
-				i++;
-				const char *resStr=&(argv[i][0]);
-				int ix, iy;
-				int nScanned = sscanf(resStr, "%dx%dx", &ix, &iy);
-				if (nScanned == 2)
-				{
-					if (ix!=0 && iy!=0)
-					{
-						if (ix<MIN_SCREEN_WIDTH)
-							ix=MIN_SCREEN_WIDTH;
-						settings.screenWidth = ix;
-						if (iy<MIN_SCREEN_HEIGHT)
-							iy=MIN_SCREEN_HEIGHT;
-						settings.screenHeight = iy;
-					}
-				}
-			}
-		}
-		else if (strcmp(argv[i], "-d")==0)
-		{
-			fileManager->addDir(requireStringArg(i, argc, argv,
-				"usage:\n-d <directory>"));
-		}
-		else if (strcmp(argv[i], "-dl")==0)
-		{
-			std::cout << "Glob2 will fuse the following directories into its virtual filesystem:\n";
-			const unsigned dirCount(fileManager->getDirCount());
-			for (unsigned d = 0; d < dirCount; ++d)
-			{
-				std::cout << d << "\t" << fileManager->getDir(d) << std::endl;
-			}
-			exit(0);
-		}
-		else if (strcmp(argv[i], "-u")==0)
-		{
-			settings.setUsername(requireStringArg(i, argc, argv,
-				"usage:\n-u <username>"));
-		}
-		else if (const int consumed = Online::acceptLaunchArguments(argc, argv, i))
-		{
-			// Invite and catalog-play URLs, and --join/--instance launch arguments.
-			i += consumed - 1;
-		}
-		else if (const int consumed = Online::acceptRoomMapArguments(argc, argv, i))
-		{
-			// Catalog play links open Custom Game or create an online room.
-			i += consumed - 1;
-		}
 		else
-		if (strcmp(argv[i], "-version")==0 || strcmp(argv[i], "--version")==0)
+			settings.screenFlags &= ~GraphicContext::USEGPU;
+	}
+	if (r.has("--graphics-detail"))
+		settings.setGraphicsDetail(r.get("--graphics-detail") == "full");
+	if (r.has("--mute"))
+		settings.mute = 1;
+	if (r.has("--no-mute"))
+		settings.mute = 0;
+	if (r.has("--username"))
+		settings.setUsername(r.get("--username").c_str());
+	if (r.has("--editor-script"))
+	{
+		if (r.get("--editor-script") == "usl")
+			settings.optionFlags |= OPTION_MAP_EDIT_USE_USL;
+		else
+			settings.optionFlags &= ~OPTION_MAP_EDIT_USE_USL;
+	}
+	if (r.has("--window-size"))
+	{
+		const auto text = r.get("--window-size");
+		const auto x = text.find('x');
+		settings.screenWidth = std::max(640, std::stoi(text.substr(0, x)));
+		settings.screenHeight = std::max(480, std::stoi(text.substr(x + 1)));
+	}
+	if (r.has("--record"))
+		recordingPath = r.get("--record");
+	if (r.has("--videoshot"))
+		videoshotName = r.get("--videoshot");
+	if (r.has("--record") || r.has("--videoshot"))
+	{
+		auto &options = GAGCore::Recording::recorder().options;
+		options.fps = std::stoi(r.get("--record-fps"));
+		options.crf = std::stoi(r.get("--record-crf"));
+		options.chapterTicks = unsigned(std::stoul(r.get("--record-chapter-ticks")));
+		options.encoder = r.get("--record-encoder") == "software"
+							  ? GAGCore::Recording::EncoderPreference::Software
+							  : GAGCore::Recording::EncoderPreference::Auto;
+	}
+	if (r.command == "replay")
+	{
+		replaying = true;
+		replayFileName = r.positionals.at(0);
+	}
+	if (r.command == "game repeat")
+	{
+		runNoX = true;
+		automaticEndingGame = true;
+		runNoXGameName = r.positionals.at(0);
+		automaticEndingSteps = std::stoi(r.get("--ticks"));
+		runNoXCountRuns = std::stoi(r.get("--runs"));
+	}
+	if (r.command == "dev random-games")
+	{
+		runTestGames = true;
+		runNoX = !r.has("--display");
+		automaticEndingGame = true;
+		automaticGameGlobalEndConditions = true;
+		if (r.has("--ticks"))
+			automaticEndingSteps = std::stoi(r.get("--ticks"));
+		runTestGamesCount = std::stoi(r.get("--runs"));
+		testGamesMap = r.get("--map");
+		testGamesSaveGameAs = r.get("--save-game-as");
+		auto aiList = [&](const std::string &key, std::vector<int> &out)
 		{
-			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
-			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
-            const int version = SDL_GetVersion();
-            printf("SDL %d.%d.%d\n", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version));
-			printf("Featuring :\n");
-			printf("* Map version %d\n", VERSION_MINOR);
-			printf("* Maps up to version %d can still be loaded\n", MINIMUM_VERSION_MINOR);
-			printf("* Network Protocol version %d\n", NET_PROTOCOL_VERSION);
-			printf("This program and all related materials are GPL, see COPYING for details.\n");
-			printf("(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.\n");
-			printf("See data/authors.txt for a full list.\n\n");
-			printf("Type %s --help for a list of command line options.\n\n", argv[0]);
-			exit(0);
-		}
-		else if (strcmp(argv[i], "/?")==0 || strcmp(argv[i], "--help")==0)
-		{
-			printf("\nGlobulation 2\n");
-			printf("Command line arguments:\n");
-			printf("switches:\n");
-			printf("-c/-C\tenable/disable custom cursor\n");
-			printf("-f/-F\tset/clear full screen\n");
-			printf("-g/-G\tenable/disable OpenGL acceleration (GPU use)\n");
-			printf("-h\tfull graphics: enable all detail effects\n");
-			printf("-l\treduced graphics: simplify all detail effects\n");
-			printf("-m/-M\tmute/unmute the sound (both music and speech)\n");
-			printf("-r/-R\tset/clear resizable window\n");
-			printf("-sgsl\tedit SGSL script in the map editor (default)\n");
-			printf("-usl\tedit USL script in the map editor\n");
-			printf("\n");
-			printf("-d <directory>\tadd a directory to the directory search list\n");
-			printf("-dl\tprint the directory search list\n");
-			printf("-s <width>x<height>\tset initial window size (for instance: -s 800x600\n");
-			printf("-u <username>\tspecify a user name\n");
-			printf("--local-map / --room-map <mapId> <hash> <title> [--instance <origin>]\tplay a catalog map\n");
-			printf("--join <invite link or code>\tjoin an online room (also: a glob2:// or https://<instance>/j/<code> link)\n");
-			printf("--instance <origin>\tthe instance of an invite code given to --join\n");
-			printf("--skin-render-info\tcheck native OpenGL skin exporter capabilities and pinned codec\n");
-			printf("--render-skin --manifest <json> --texture <image> --material <image> --output-dir <directory>\tbake transparent colony sprites\n");
-			printf("-nox <game file name> \t runs the game without using the X server\n");
-			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
-			printf("-test-games\tCreates random games with AI and tests them\n");
-			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
-			printf("--ai-types <list>\tcomma-separated AI names to draw from in -test-games* (default: all)\n");
-			printf("\t\tvalid: %s\n", AINames::validAINames().c_str());
-			printf("--compute-threads <auto|N>\tshared compute pool; auto uses logical CPU count\n");
-			printf("--map <name>\tpin the map for -test-games* (resolved as maps/<name>.map)\n");
-			printf("--matchup <list>\tcomma-separated per-team AI names; matchup[k] plays team k\n");
-			printf("\t\trequires --map; mutually exclusive with --ai-types\n");
-			printf("--save-game-as <path>\twrite the tick-0 .game file before running -test-games*\n");
-			printf("\t\t(pair with GLOB2_TEST_SEED for a reproducible scenario)\n");
-			printMapCommandHelp();
-			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
-			printf("-vs <name>\trecord compressed footage to videoshots/<name>.mp4\n");
-			printf("--record <path.mp4>\trecord menus, gameplay, and results with automatic "
-				   "chapters\n");
-			printf("--record-fps <1..240>\toutput frame rate (default 30)\n");
-			printf("--record-encoder <auto|software>\tencoder selection (default auto)\n");
-			printf("--record-crf <0..51>\tsoftware H.264 quality (default 23)\n");
-			printf("--record-chapter-ticks <N>\tera length (default 10000)\n");
-			printf("-replay <replay file name>\t replay the game stored in the specified file.\n");
-			printf("-version\tprint the version and exit\n");
-			exit(0);
-		}
+			std::istringstream list(r.get(key));
+			std::string item;
+			while (std::getline(list, item, ','))
+			{
+				const auto id = AINames::parseAIName(item);
+				if (id <= 0 || id == AI::JAVASCRIPT)
+					throw std::invalid_argument(key + ": invalid AI '" + item +
+												"'; valid: " + AINames::validAINames());
+				out.push_back(id);
+			}
+		};
+		aiList("--ai-types", testGamesAIPool);
+		aiList("--matchup", testGamesMatchup);
 	}
-
-	// Cross-flag validation for the random-game family. Fail-fast here
-	// before any expensive setup (map listing, etc.) runs.
-	if (!testGamesMatchup.empty() && testGamesMap.empty())
+	if (r.command == "dev stress-maps")
 	{
-		std::cerr << "--matchup requires --map; we need to know the map's "
-			<< "team count to validate the matchup before starting a game"
-			<< std::endl;
-		exit(1);
+		runTestMapGeneration = true;
+		runNoX = true;
 	}
-	if (!testGamesMatchup.empty() && !testGamesAIPool.empty())
-	{
-		std::cerr << "--matchup and --ai-types are mutually exclusive: "
-			<< "--matchup pins each team's AI; --ai-types randomizes within "
-			<< "a pool. Use one or the other." << std::endl;
-		exit(1);
-	}
-	if (!testGamesSaveGameAs.empty() && !runTestGames)
-	{
-		std::cerr << "--save-game-as requires -test-games or -test-games-nox; "
-			<< "the save happens at random-game creation time, which only "
-			<< "runs in those modes" << std::endl;
-		exit(1);
-	}
+	if (r.command == "dev textshots")
+		GAGCore::DrawableSurface::translationPicturesDirectory = r.get("--output-dir");
+	if (r.command.rfind("dev dump-", 0) == 0)
+		runNoX = true;
+	Online::acceptLaunchRequest(r);
 }

@@ -8,8 +8,8 @@ The native client exports production skin artwork without menu, audio or
 simulation startup:
 
 ```sh
-glob2 --skin-render-info
-glob2 --render-skin --manifest skin.json --texture texture.png \
+glob2 assets skin-info --format json
+glob2 assets render-skin --manifest skin.json --texture texture.png \
   --material material.png --output-dir sprites
 ```
 
@@ -56,13 +56,12 @@ one 256x256 quadrant per model: worker, warrior, explorer, swarm) and optionally
 `SKIN_PREVIEW_CAPTURE` to a capture name, and `SKIN_PREVIEW_BENCHMARK` to a
 relative capture prefix. Set `GLOB2_SKIN_PREVIEW_SWARM` to a swarm mesh id (such
 as `crown`) to draw team 0's swarm with that mesh; the directory then needs its
-`swarm-<id>.gsk`, and the swarm quadrant paints it. Run with `-g -m
--s800x600` and an isolated `GLOB2_USER_DATA_DIR`. `SKIN_BENCH_FRAMES` and
+`swarm-<id>.gsk`, and the swarm quadrant paints it. Run with `--renderer gpu --mute --window-size 800x600` and an isolated `GLOB2_USER_DATA_DIR`. `SKIN_BENCH_FRAMES` and
 `SKIN_BENCH_WARMUP` control total and discarded warmup frames (defaults 45 and 5).
 For signed software artwork, replace the preview directory with
 `SKIN_PREVIEW_ASSIGNMENT` (a JSON file containing `origin`, `matchId` and signed
 `colonySkins` tickets) and `SKIN_PREVIEW_CACHE` (an isolated cache directory).
-Use `-G` for software or `-g` for OpenGL with the same assignment and save.
+Use `--renderer software` or `--renderer gpu` for OpenGL with the same assignment and save.
 `SKIN_BENCH_TEAMS` controls the number of colonies in the crowd; their tickets
 can share or select different skins. `SKIN_BENCH_FRAME_PREFIX` captures 32
 animation frames for comparison videos. Software measurements also report

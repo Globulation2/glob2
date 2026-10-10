@@ -27,9 +27,9 @@ def complete_ticks(data):
 
 def run(binary, output, saved, workers, interval=None):
     output.mkdir(parents=True, exist_ok=False)
-    command = [str(binary), '--run-game', '--load-game', str(saved), '--ticks', '256',
+    command = [str(binary), 'game', 'run', '--load-game', str(saved), '--ticks', '256',
                '--compute-threads', str(workers), '--telemetry', 'checksums',
-               '--replay', 'true', '--save', 'final', '--output-dir', str(output)]
+               '--write-replay', '--save', 'final', '--output-dir', str(output)]
     if interval:
         command += ['--save', 'every:' + str(interval)]
     (output / 'command.json').write_text(json.dumps(command, indent=2) + '\n')

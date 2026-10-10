@@ -72,7 +72,7 @@ class EngineJob:
         root = Path(bundle['directory'])
         out = Path(attempt_dir) / 'output'
         args = [str(root / bundle['executable']),
-                '--run-game' if self.kind == 'game' else '--generate-map',
+                *(['game', 'run'] if self.kind == 'game' else ['map', 'study', str(job['config']['generator'])]),
                 '--output-dir', str(out), '--profile', 'glob2-tournament-' + Path(attempt_dir).name]
         config, outputs = job['config'], job['outputs']
         for key,path in sorted(inputs.items()):
@@ -85,7 +85,7 @@ class EngineJob:
                 add('--generator', config['generator'])
                 add('--map-seed', job['seeds']['map'])
                 for key, value in sorted(config.get('params', {}).items()):
-                    add('--param', f'{key}={value}')
+                    add('--set', f'{key}={value}')
                 add('--candidates', config.get('candidates', 0))
             else:
                 add('--map-file' if 'map' in inputs else '--load-game',
@@ -116,15 +116,14 @@ class EngineJob:
                 add('--save', save)
             for telemetry in outputs.get('telemetry', []):
                 add('--telemetry', telemetry)
-            add('--replay', str(outputs.get('replay', False)).lower())
+            if outputs.get('replay', False): args.append('--write-replay')
         else:
-            add('--generator', config['generator'])
-            add('--map-seed', job['seeds']['map'])
+            add('--seed', job['seeds']['map'])
             for key, value in sorted(config.get('params', {}).items()):
-                add('--param', f'{key}={value}')
+                add('--set', f'{key}={value}')
             add('--candidates', config.get('candidates', 0))
             add('--rotations', config.get('rotations', 1))
-            add('--write-map', str(outputs.get('map', False)).lower())
+            if outputs.get('map', False): args.append('--write-map')
             for report in outputs.get('reports', []):
                 add('--report', report)
         return args

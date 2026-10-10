@@ -82,7 +82,7 @@ permanent docs.
   in every change that can alter what the simulation computes from the same setup and
   orders (rules, units, AI, order validation, map loading, random number use), even
   when saves and replays stay compatible, and regenerate the golden match record in the
-  same change. CI fails when the committed `--verify-match` trace moves without a new
+  same change. CI fails when the committed `match verify` trace moves without a new
   sim version; see [Simulation version](docs/multiplayer/turn-engine.md#simulation-version).
 
 ## Development and release builds

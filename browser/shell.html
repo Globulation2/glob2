@@ -229,10 +229,19 @@ function browserMapLaunchArguments(search, origin) {
   const map = query.get('map'), version = query.get('version'), mode = query.get('mode');
   if (!map || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(map) ||
       !version || !/^[0-9a-f]{64}$/i.test(version) || (mode && mode !== 'local' && mode !== 'multiplayer')) return [];
-  return [mode === 'local' ? '--local-map' : '--room-map', map, version.toLowerCase(),
-    (query.get('title') || '').slice(0, 128), '--instance', origin];
+  return ['online', mode === 'local' ? 'play-map' : 'host-map', map, '--hash', version.toLowerCase(),
+    '--title', (query.get('title') || 'Map').slice(0, 128), '--instance', origin];
 }
 // End browser map launch arguments.
+
+function browserSetPreviewResult(code, files) {
+  if (code !== 0 && code !== 2) throw Error('Preview engine exited with code ' + code);
+  const report = JSON.parse(files.readFile('/tmp/report.json', {encoding: 'utf8'}));
+  if (!report || typeof report.valid !== 'boolean') throw Error('Invalid set validation report');
+  return {report, png: report.valid ? files.readFile('/tmp/preview.png') : null};
+}
+// End browser set preview result.
+
 
 function browserInstanceConfig(text, origin) {
   if (text === null) return JSON.stringify({version:1, selected:origin, instances:{}});
@@ -428,10 +437,11 @@ var Module = {
     // Invite links land here as ?join=<code> (see docs/multiplayer/client.md); the
     // instance serving this page is the one to join.
     const join = new URLSearchParams(location.search).get('join');
-    const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
+    const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['online', 'join', join, '--instance', location.origin] : [];
     const roomMap = browserMapLaunchArguments(location.search, location.origin);
-    const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite, ...roomMap];
-    if (watchReplay && watchReplay.status === 'ready') args.push('-replay', watchReplay.path);
+    const graphics = ['--window-size', width + 'x' + height, '--no-fullscreen', '--no-custom-cursor', '--renderer', gpu ? 'gpu' : 'software'];
+    const launch = watchReplay && watchReplay.status === 'ready' ? ['replay', watchReplay.path] : roomMap.length ? roomMap : invite.length ? invite : ['play'];
+    const args = [...launch, ...graphics];
     if (Module.storageRestore === 'ready') {
       const path = '/home/web_user/.glob2/online/instances.json';
       const previous = FS.analyzePath(path).exists ? FS.readFile(path, {encoding:'utf8'}) : null;
@@ -445,11 +455,8 @@ var Module = {
     // Startup packages were in place before main(); only later ones are news.
     Module.glob2Assets?.takeInstalled();
     if(globalThis.glob2SetPreview) {
-      Module.start(['--validate-set','/tmp/set.json','--json','/tmp/report.json','--preview','/tmp/preview.png',...(new URLSearchParams(location.search).get('gallery')==='1'?['--gallery','1','--phase',new URLSearchParams(location.search).get('phase')||'0','--variation',new URLSearchParams(location.search).get('variant')||'0']:[])]).then(code=>{
-        if(code!==0)throw Error('Preview engine exited with code '+code);
-        const report=JSON.parse(FS.readFile('/tmp/report.json',{encoding:'utf8'}));
-        const png=report.valid?FS.readFile('/tmp/preview.png'):null;
-        globalThis.glob2SetPreview.send('complete',{report,png});
+      Module.start(['map','validate-set','/tmp/set.json','--report-file','/tmp/report.json','--preview','/tmp/preview.png',...(new URLSearchParams(location.search).get('gallery')==='1'?['--gallery','1','--phase',new URLSearchParams(location.search).get('phase')||'0','--variation',new URLSearchParams(location.search).get('variant')||'0']:[])]).then(code=>{
+        globalThis.glob2SetPreview.send('complete', browserSetPreviewResult(code, FS));
       }).catch(error=>globalThis.glob2SetPreview.send('error',{text:String(error).slice(0,2000)}));
       return;
     }

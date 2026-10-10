@@ -65,7 +65,7 @@ context properties cannot grant additional capabilities.
 Compile-check syntax and profile restrictions:
 
 ```sh
-glob2 --check-script /absolute/path/to/source.js
+glob2 script check /absolute/path/to/source.js
 ```
 
 This only compiles/resolves the module: it does not evaluate module code, verify
@@ -93,12 +93,12 @@ legacy payload preserves the other and retains their existing execution behavior
 To attach a JavaScript scenario script from the command line, write a new map:
 
 ```sh
-glob2 --attach-map-script input.map /absolute/path/to/source.js output.map
+glob2 script attach input.map /absolute/path/to/source.js output.map
 ```
 
 The tool writes gzip data and refuses to overwrite an existing output. SGSL is a
 separate legacy payload and is preserved. For a new structured headless game,
-use `--run-game` with `--map-script /absolute/path/to/source.js`, or
+use `game run` with `--map-script /absolute/path/to/source.js`, or
 `--player javascript --ai-script 0:/absolute/path/to/ai.js` (and equivalent
 source options for other JavaScript players). See
 [distributed tournaments](../tools/tournaments.md) for complete map, seed,

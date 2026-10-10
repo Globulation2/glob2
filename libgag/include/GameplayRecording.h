@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "RecordingDefaults.h"
 #include <SDL3/SDL.h>
 #include <AudioFormat.h>
 #include <cstdint>
@@ -14,9 +15,9 @@ inline constexpr int AudioChannels = 2;
 enum class EncoderPreference { Auto, Software };
 struct Options
 {
-	int fps = 30, crf = 23;
+	int fps = DefaultFps, crf = DefaultCrf;
 	EncoderPreference encoder = EncoderPreference::Auto;
-	std::uint32_t chapterTicks = 10000;
+	std::uint32_t chapterTicks = DefaultChapterTicks;
 };
 enum class State
 {

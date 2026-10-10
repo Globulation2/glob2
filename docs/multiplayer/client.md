@@ -408,7 +408,7 @@ build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2online.
 | `glob2://join?instance=<origin>&code=<code>` | any instance; custom scheme |
 | `https://<instance>/j/<code>` | the instance's web link (landing page in `apps/web`) |
 | `?join=<code>` | the web client's page; the instance is the page's origin |
-| `--join <link or code> [--instance <origin>]` | command line; a bare code without `--instance` means the official instance |
+| `online join <link or code> [--instance <origin>]` | command line; a bare code without `--instance` means the official instance |
 
 "Play this map" opens a dialog with two illustrated choices. **Play Locally in
 Custom Game** downloads the selected catalog version into the verified map cache
@@ -417,7 +417,7 @@ instance and creates an invite-only room with that catalog map in the initial
 `room.create` request. Neither choice starts a match automatically.
 
 Both use `/play/?map=<mapId>&version=<sha256>&title=<title>&mode=<local|multiplayer>`.
-The browser shell passes `--local-map` or `--room-map <mapId> <sha256> <title>` with
+The browser shell passes `online play-map` or `online host-map <mapId> --hash <sha256> --title <title>` with
 `--instance <origin>`. A missing mode on an older map link means multiplayer.
 The dialog also offers **Open in installed app** for each choice, using
 `glob2://play?instance=<origin>&map=<mapId>&version=<sha256>&title=<title>&mode=<mode>`.
@@ -434,7 +434,7 @@ A link becomes the **pending join** (`Online::pendingJoin()`,
 when needed, connects to the instance and sends `room.join`. Links arrive:
 
 - at launch, as a command-line argument (Windows, Linux, and the browser shell,
-  which passes `--join <code> --instance <origin>` for `?join=`);
+  which passes `online join <code> --instance <origin>` for `?join=`);
 - while running on macOS and iOS (URL events, which SDL delivers as
   `SDL_DROPFILE`; `Application::frame` takes invite links out of the event
   stream);
@@ -473,7 +473,7 @@ maintainer supplies for these files is in
 
 `session.hello` reports `SimVersion::local()`: `VERSION_MINOR`,
 `NET_PROTOCOL_VERSION` and the simulation data hash (`simDataHash()` in
-`src/online/SimVersion.cpp`, the same value `--sim-version` prints). Only a
+`src/online/SimVersion.cpp`, the same value `info sim-version --format json` prints). Only a
 process that never initialized the Toolkit file system (some unit tests) reports
 64 zeros, which the platform answers with `simSupported: false`.
 

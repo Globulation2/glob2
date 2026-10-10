@@ -28,7 +28,7 @@ def digest(path):
 
 def execute(binary, args, output, *, cwd=ROOT):
     output.mkdir(parents=True, exist_ok=False)
-    command = [str(binary), '--run-game', *args, '--output-dir', str(output)]
+    command = [str(binary), 'game', 'run', *args, '--output-dir', str(output)]
     started = time.perf_counter()
     with (output / 'engine.log').open('w') as log:
         process = subprocess.Popen(command, cwd=cwd, stdout=log, stderr=subprocess.STDOUT)
@@ -147,7 +147,7 @@ def main():
                 for variant, binary, extra in order:
                     run_args = list(scenario['args']) + extra
                     if args.verify:
-                        run_args += ['--telemetry', 'checksums', '--replay', 'true', '--save', 'final']
+                        run_args += ['--telemetry', 'checksums', '--write-replay', '--save', 'final']
                     directory = output / scenario['id'] / str(repeat) / variant
                     row = dict(scenario=scenario['id'], variant=variant, repeat=repeat,
                                **execute(binary, run_args, directory))

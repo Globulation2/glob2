@@ -3,15 +3,9 @@
 // module that reads engine output formats, so a change in the engine's CLI or
 // result files is a change here only. Functions are pure; engine.ts spawns.
 //
-// Commands used (see docs/tools/tournaments.md and docs/map-generators/cli.md):
-//   --headless-catalog                       existing; JSON on stdout
-//   --sim-version                            ASSUMED (being added on the engine
-//                                            integration branch): JSON on stdout
-//   --generate-map --output-dir … (structured)  existing; result.json + map-r0.map.gz
-//   --preview-map <file> --json … --output … existing; map report + PNG
-//   --verify-match <record> --map <file> --out <dir>
-//                                            ASSUMED (being built in M1); see
-//                                            parseVerifyOutputs for the contract
+// CLI 2 commands and static schema are documented in docs/tools/cli.md.
+// Domain result schemas are unchanged: map study writes structured job artifacts;
+// map preview writes map analysis/PNG; match verify writes the verdict and trace.
 import type {
   BuildingCatalog,
   ResourceExperimentDefinitions,
@@ -93,9 +87,9 @@ export interface EngineCatalog {
   generators: Map<string, CatalogGenerator>;
 }
 
-export const CATALOG_ARGS = ['--headless-catalog'] as const;
+export const CATALOG_ARGS = ['info', 'catalog', '--format', 'json'] as const;
 
-/** Parses `glob2 --headless-catalog` (schema_version 1). */
+/** Parses `glob2 info catalog --format json` (schema_version 1). */
 export function parseCatalog(stdout: string): EngineCatalog {
   const doc = object(parseJson(stdout, 'headless catalog'), 'headless catalog');
   if (doc['schema_version'] !== 1) {
@@ -144,24 +138,22 @@ export function parseCatalog(stdout: string): EngineCatalog {
 
 // ------------------------------------------------------------ sim version
 
-export const SIM_VERSION_ARGS = ['--sim-version'] as const;
+export const SIM_VERSION_ARGS = ['info', 'sim-version', '--format', 'json'] as const;
 
 /**
- * Whether to run `--sim-version`. A binary without the flag does not reject
- * it: it falls through to the game's start-up and opens the menu, so the agent
- * only probes when the catalog advertises the command (ASSUMED name
- * "sim_version" in `commands`) or the operator forces the probe.
+ * Whether the domain catalog advertises simulation identity reporting.
+ * The worker validates CLI 2 separately before reading this catalog; domain
+ * capability names and payload schemas retain their existing contracts.
  */
 export function supportsSimVersionFlag(catalog: EngineCatalog): boolean {
   return catalog.commands.includes('sim_version');
 }
 
 /**
- * Parses the ASSUMED `glob2 --sim-version` output: one JSON object on stdout,
+ * Parses `glob2 info sim-version --format json`: one JSON object on stdout,
  * `{"versionMinor":125,"netProtocol":49,"dataHash":"<64 hex>"}` (snake_case
  * keys `version_minor`, `net_protocol`, `data_hash` are accepted too). Returns
- * undefined when the output is not such a document (an older binary that
- * lacks the flag starts its GUI path or prints usage instead).
+ * undefined when the output does not satisfy the simulation identity schema.
  */
 export function parseSimVersionOutput(stdout: string): SimVersion | undefined {
   const line = stdout
@@ -221,15 +213,14 @@ export function generateMapArgs(
     );
   }
   const args = [
-    '--generate-map',
-    '--generator',
+    'map',
+    'study',
     String(generator.method),
-    '--map-seed',
+    '--seed',
     String(descriptor.seed),
     '--candidates',
     String(descriptor.candidates),
     '--write-map',
-    'true',
   ];
   const params = Object.entries(descriptor.params).sort(([a], [b]) => (a < b ? -1 : 1));
   for (const [key, value] of params) {
@@ -242,7 +233,7 @@ export function generateMapArgs(
         `generator ${descriptor.generatorId}: ${key}=${value} is not one of ${control.values.join(', ')}`,
       );
     }
-    args.push('--param', `${key}=${value}`);
+    args.push('--set', `${key}=${value}`);
   }
   args.push('--output-dir', outputDir);
   return args;
@@ -312,16 +303,16 @@ export function previewMapArgs(
   inputPath: string,
   options: { reportPath?: string; pngPath?: string; previewSize?: number },
 ): string[] {
-  const args = ['--preview-map', inputPath];
+  const args = ['map', 'preview', inputPath];
   if (options.pngPath) {
     args.push('--output', options.pngPath);
     if (options.previewSize) args.push('--preview-size', String(options.previewSize));
   }
-  if (options.reportPath) args.push('--json', options.reportPath);
+  if (options.reportPath) args.push('--report-file', options.reportPath);
   return args;
 }
 
-/** The engine's --preview-map size range (MapCommand.cpp). */
+/** The engine's map preview size range (MapCommand.cpp). */
 export const PREVIEW_SIZE_RANGE = { min: 128, max: 4096 } as const;
 
 /** One `map.controllers[]` entry: a player slot of the file's game header. */
@@ -457,10 +448,10 @@ export function parseMapReport(text: string): ReportMap {
 // ------------------------------------------------------------ verify-match
 
 export function verifyMatchArgs(recordPath: string, mapPath: string, outputDir: string): string[] {
-  return ['--verify-match', recordPath, '--map', mapPath, '--out', outputDir];
+  return ['match', 'verify', recordPath, '--map-file', mapPath, '--output-dir', outputDir];
 }
 
-/** Files --verify-match writes into its --out directory (assumed contract). */
+/** Files match verify writes into its --output-dir directory. */
 export const VERIFY_FILES = {
   verdict: 'verdict.json',
   result: 'result.json',
@@ -716,4 +707,16 @@ export function parseBuildingComposition(
     catalog: result,
     ...(typeof artworkHash === 'string' ? { artworkHash } : {}),
   };
+}
+
+/** Static CLI metadata is independent of simulation identity and domain payload schemas. */
+export function requireCliVersion(stdout: string): void {
+  const description = object(parseJson(stdout, 'CLI description'), 'CLI description');
+  if (
+    description['schema_version'] !== 1 ||
+    description['cli_version'] !== 2 ||
+    !Array.isArray(description['commands'])
+  ) {
+    throw new EngineOutputError('Unsupported Glob2 CLI; deploy a CLI 2 binary with this worker');
+  }
 }

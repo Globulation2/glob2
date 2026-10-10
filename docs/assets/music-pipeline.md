@@ -105,7 +105,7 @@ uv pip install --python .venv/bin/python -r requirements-samples.txt
 
 `check` also accepts any directory holding `a1.opus`–`a3.opus`, which is useful for
 judging candidate music from elsewhere. It exits 0 on pass (warnings allowed), 1 on
-any failed check and 2 on a usage error. Add `--json` for a machine-readable report
+any failed check and 2 on a usage error. Add `--report-file` for a machine-readable report
 and `--verbose` to see every measure.
 
 ## Recipes

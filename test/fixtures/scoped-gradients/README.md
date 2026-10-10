@@ -28,7 +28,7 @@ Regenerate only the resource traces with
 verify without that flag using both the default and `--parallel-ai` modes.
 `--output artifacts/NAME` retains commands, logs, traces and a hash manifest.
 
-Generate from the legacy saves named by that script with `--run-game --load-game`
+Generate from the legacy saves named by that script with `game run --load-game`
 and `--telemetry checksums`, using the stop ticks encoded in the filenames.
 For `v108-reload-256`, load the retained v108 checkpoint at tick 1024 and stop at
 1280. Compare one and four compute workers (`--compute-threads 1` and

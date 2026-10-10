@@ -168,7 +168,7 @@ Run from the repository root:
 ```sh
 GLOB2_USER_DIR="$PWD/artifacts/torus/profile" SDL_AUDIODRIVER=dummy \
   GLOB2_BENCH_MAP=maps/Oazis.map GLOB2_BENCH_FRAMES=100 \
-  build/<toolchain>/client/release/test/torus-render-benchmark -g -F -m -s 1280x800
+  build/<toolchain>/client/release/test/torus-render-benchmark --renderer gpu --no-fullscreen --mute --window-size 1280x800
 ```
 
 The benchmark compares 2D and the torus with and without clouds on the same
@@ -230,7 +230,7 @@ The OpenGL cases need a display with compatibility OpenGL; the runner opens an X
 screen on Linux. The software case renders a loaded game through software and
 checks that torus inputs stay inactive. The same binary can be built with
 `opengl=0`, including a run with
-`-g` requested to exercise the software fallback. The GPU tests cover native
+`--renderer gpu` requested to exercise the software fallback. The GPU tests cover native
 tiled pixel comparisons (including gutters and fog), progressive allocation
 fallback, cloud transitions, both navigation axes,
 picking, return to 2D, and repeated teardown and recreation. The CPU

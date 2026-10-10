@@ -125,7 +125,7 @@ put any bytes in its seat's turns. Before the engine executes a human seat's ord
 `TurnLockstepSession::retrieveOrder` checks it with `OrderValidation::validate`
 (`src/game/orders/OrderValidation.h`). The check reads only the game state at that point of that
 tick and the seat from the bundle, never an identity the order claims, so every client
-and `--verify-match` reach the same verdict. An order that fails, or whose bytes do not
+and `match verify` reach the same verdict. An order that fails, or whose bytes do not
 decode, executes as a `NullOrder` everywhere; the game and every checksum stay the same
 on all machines. AI orders, single player, replays and legacy network games are not
 checked.
@@ -152,7 +152,7 @@ ticks). Any player may resume at any time, and a pause another seat started cost
 resuming player nothing.
 
 `TurnLockstepSession` keeps the bookkeeping from the orders it executes, so every
-client and `--verify-match` agree on it:
+client and `match verify` agree on it:
 
 - A seat's `PauseGameOrder(true)` while the game runs starts a pause and counts one of
   that seat's pauses. With none left, or no time left, it executes as a `NullOrder`
@@ -171,7 +171,7 @@ unknown properties), so they can never play a limited match without it and diver
 
 The session counts verdicts per seat (`TurnLockstepSession::orderAudit()`: accepted,
 stale, rejected, per-reason counts and the first rejected tick). The counts restart when
-the engine reloads the initial state. `--verify-match` reports the same counts for the
+the engine reloads the initial state. `match verify` reports the same counts for the
 record, so the platform can flag a seat that sent rejected orders. Voice is not in the
 record, so rejected voice packets are counted separately and only by live clients.
 

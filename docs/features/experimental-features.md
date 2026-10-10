@@ -15,7 +15,7 @@
   take precedence when available; untranslated catalog entries use that English
   text. The page says when a build has none.
 - The set applies to **new games only**: a custom game, a map file played from the
-  load screen, a headless `-test-games` match, and a multiplayer game the player
+  load screen, a headless `dev random-games --display` match, and a multiplayer game the player
   hosts online or on LAN. A joiner plays with the host's set, whatever their own
   settings say.
 - **Campaign missions and the tutorial ignore local experiment preferences**:
@@ -85,7 +85,7 @@ Built-in keys retain their existing serialized order; dynamic keys follow them
 in byte-wise order. The existing limit of 64 enabled keys still applies.
 
 Headless runs: `GLOB2_TEST_RULES` accepts every experiment key as a 0/1 rule for
-`-test-games` matches, and `--run-game` takes `--experiment <key>` (repeatable;
+`dev random-games --display` matches, and `game run` takes `--experiment <key>` (repeatable;
 the profile's settings do not apply to structured runs). `result.json` lists the
 game's experiments. See [headless replays](../development/headless-replays.md).
 

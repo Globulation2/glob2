@@ -20,7 +20,7 @@ during native validation.
 Compose authored manifests with the capability-advertised command:
 
 ```sh
-glob2 --compose-buildings --package first-family.json --package second-family.json
+glob2 assets compose-buildings --format json --package first-family.json --package second-family.json
 ```
 
 An optional `--base PATH` selects a base catalog manifest.

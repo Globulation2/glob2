@@ -200,9 +200,9 @@ analysis exports typed JSONL and CSV. See [distributed telemetry](../tools/tourn
 Structured offline runs can capture Maxima's per-tile placement inputs:
 
 ```sh
-"$GLOB2_BIN" --run-game --load-game initial.game.gz --ticks 3000 \
+"$GLOB2_BIN" game run --load-game initial.game.gz --ticks 3000 \
   --output-dir artifacts/placement --diagnostic-fields maxima \
-  --diagnostic-interval 1000 --diagnostic-png true
+  --diagnostic-interval 1000 --diagnostic-png
 ```
 
 `--diagnostic-fields maxima` enables capture; the interval defaults to 2500
@@ -231,7 +231,7 @@ their live capture buffers when a checkpoint is written, but those buffers are
 omitted from the checkpoint. Loading starts a new capture session rather than
 resuming an image that was pending in the old process.
 
-These options apply to `--run-game`, including loaded games, and require a Maxima
+These options apply to `game run`, including loaded games, and require a Maxima
 controller. Interactive captures and environment-variable aliases are not
 provided. See [whole-map rendering](../map-generators/cli.md#render-a-whole-game).
 

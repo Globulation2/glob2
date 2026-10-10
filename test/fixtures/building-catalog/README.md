@@ -39,7 +39,7 @@ plus exact production resource conservation including cancellation. Retained
 traces cover the new custom rules; they are distinct from stock parity evidence.
 
 `terrain136.game.gz` was produced by unchanged master `71d7eee1b` with
-`--run-game --map-file maps/SmallForTwo.map.gz --game-seed 716 --player numbi
+`game run --map-file maps/SmallForTwo.map.gz --game-seed 716 --player numbi
 --player castor --ticks 257 --save final --replay false`. It exercises the format
 136 embedded terrain catalog alongside frozen building definitions and active AI
 state. The regression imports it, resaves to the current format, and compares

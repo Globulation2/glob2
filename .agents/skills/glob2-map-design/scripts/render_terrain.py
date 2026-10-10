@@ -5,8 +5,8 @@ The native preview draws two pixels a tile and no buildings, which hides beaches
 lines, sealed plot edges and wall gaps. The terrain dump shows the tiles the game will see: each
 tile's rules come from its four corner vertices. Make one with the structured command (sizes are exponents, 8 = 256):
 
-  build/src/glob2 --generate-map --generator 39 --map-seed 7 --param teams=4 \
-      --param width=8 --param height=8 --report terrain --output-dir /tmp/dump
+  build/src/glob2 map study 39 --seed 7 --set teams=4 \
+      --set width=8 --set height=8 --report terrain --output-dir /tmp/dump
   python3 render_terrain.py /tmp/dump/terrain.txt fort.png --centre 113 136 --radius 40 --scale 10
 
 Codes (src/app/cli/MapStudy.cpp): 0 pure grass, 1 pure sand, 2 pure water, 3 mixed corners (a

@@ -1,5 +1,8 @@
 # Headless Mode & Replay Generation
 
+See the [main executable CLI guide](../tools/cli.md) for CLI 2 commands, built-in help,
+JSON self-description, completion, and migration.
+
 For structured single-game/generation commands and distributed execution, see
 [Distributed tournaments](../tools/tournaments.md). These preserve raw engine outcomes;
 capped-game adjudication belongs in offline analysis.
@@ -30,7 +33,7 @@ placements adopt the new streams and trajectories.
 Supported saved games still load and adopt the current simulation;
 the save floor remains 58.
 
-Structured `--run-game` accepts `--ai-order-delay N`, where `N` is an integer
+Structured `game run` accepts `--ai-order-delay N`, where `N` is an integer
 from 0 through 8 and defaults to 8 for a new match. It is one match-wide engine
 setting, shared by all native and JavaScript AI players. `--rule aiOrderDelay=N`
 sets the same rule. Saved games retain their original setting; do not override it
@@ -47,7 +50,7 @@ the delay their header implies (8 before format 148).
 To compare delays from one checkpoint, fork it explicitly:
 `--load-game busy.game --fork-rule buildingGradientDelay=N`. A fork changes the
 loaded match's rules before its first tick; it is a different match from the saved
-one, not a continuation. Its replay (`--replay true`) starts at the fork and
+one, not a continuation. Its replay (`--write-replay`) starts at the fork and
 `result.json` lists the changes under `resolved.fork` (empty for a plain
 continuation). Only this rule can be forked, and only from a save with no pending
 scheduled building fields (a save from before format 148, or one taken before any
@@ -74,9 +77,9 @@ disappeared. These fixes can change trajectories. Replay/network acceptance rema
 replay and simulation version gates. See the
 [AI engine contract](../architecture/ai-observations.md#ai-observations-and-delayed-orders).
 
-Headless runs and scripted `-test-games` runs default autosaving off for that
+Headless runs and scripted `dev random-games --display` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or
-the structured `--run-game --save initial/final/every:N` options when snapshots
+the structured `game run --save initial/final/every:N` options when snapshots
 are needed. Test harnesses that exercise autosaving can enable
 `settings.autosaveGames` after `GlobalContainer::load()`.
 
@@ -102,7 +105,7 @@ simulation behavior and is rejected while a loaded queue is pending.
 
 ## CLI Flags
 
-### `--nox <game-file> <steps> <runs>`
+### `game repeat <game-file> --ticks <steps> --runs <runs>`
 
 Runs a saved `.game` file headlessly.
 
@@ -111,20 +114,20 @@ Runs a saved `.game` file headlessly.
 - `<runs>` — how many times to repeat the game
 
 ```bash
-./glob2 --nox games/nicowar_2v2.game 5000 1
+./glob2 game repeat games/nicowar_2v2.game --ticks 5000 --runs 1
 ```
 
-To create a `.game` file with specific AI players: start the game with GUI, set up a custom game with the desired AI types, then save immediately. That save becomes the `.game` file you pass to `--nox`.
+To create a `.game` file with specific AI players: start the game with GUI, set up a custom game with the desired AI types, then save immediately. That save becomes the `.game` file you pass to `game repeat`.
 
-### `-test-games-nox [count]`
+### `dev random-games --runs COUNT --ticks TICKS`
 
-Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~50 minutes of game time at 30 ticks/sec), or after `GLOB2_TEST_MAX_TICKS` ticks when that environment variable is a positive integer; a game stopped at the cap reports `winner_team=-1`. The cap only decides when the driver stops the game, not how ticks are simulated. An optional `count` parameter controls how many games to run (default: infinite).
+Runs random AI-vs-AI games headlessly. Each game auto-ends at 90,000 ticks (~50 minutes of game time at 30 ticks/sec), or after `GLOB2_TEST_MAX_TICKS` ticks when that environment variable is a positive integer; a game stopped at the cap reports `winner_team=-1`. The cap only decides when the driver stops the game, not how ticks are simulated. `--runs COUNT` controls how many games to run (default: 0, infinite). `--ticks TICKS` overrides the environment cap; 0 runs until game end.
 
 ```bash
-./glob2 -test-games-nox 1    # run one game and exit
-./glob2 -test-games-nox 5    # run five games and exit
-./glob2 -test-games-nox      # run forever (kill with Ctrl+C)
-GLOB2_TEST_MAX_TICKS=30000 ./glob2 -test-games-nox 1   # stop at 30,000 ticks
+./glob2 dev random-games --runs 1    # run one game and exit
+./glob2 dev random-games --runs 5    # run five games and exit
+./glob2 dev random-games      # run forever (kill with Ctrl+C)
+GLOB2_TEST_MAX_TICKS=30000 ./glob2 dev random-games --runs 1   # stop at 30,000 ticks
 ```
 
 The random game setup (`Engine::createRandomGame`) creates one local player + N AI players with randomly chosen AI types from the map's team count.
@@ -132,11 +135,11 @@ The random game setup (`Engine::createRandomGame`) creates one local player + N 
 ### `GLOB2_TEST_RULES`
 
 The same names and ranges are accepted by repeatable `--rule name=value`
-arguments to structured `--run-game` commands. A saved game already carries its
+arguments to structured `game run` commands. A saved game already carries its
 rules, so `--rule` overrides are rejected when using `--load-game`. Effective
 values are written to `result.json` under `resolved.rules`.
 
-Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as comma-separated `name=value` pairs. An unknown name or a value outside its range stops the run.
+Turns custom-game rules on for `dev random-games --display` and `dev random-games` matches, as comma-separated `name=value` pairs. An unknown name or a value outside its range stops the run.
 
 | Name | Values | Rule |
 | --- | --- | --- |
@@ -157,22 +160,22 @@ Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as c
 | `<experiment key>` | 0-1 | An [experimental feature](../features/experimental-features.md) by its key, e.g. `guard-area-balancing`. The profile's Settings > Experiments apply first; a rule here overrides that one experiment |
 
 ```bash
-GLOB2_TEST_RULES=scarcity=2,instantConstruction=1 ./glob2 -test-games-nox 1 --map Playground --matchup castor,warrush
+GLOB2_TEST_RULES=scarcity=2,instantConstruction=1 ./glob2 dev random-games --runs 1 --map Playground --matchup castor,warrush,castor,warrush,castor,warrush,castor,warrush
 ```
 
 ### `--ai-types <list>`
 
 Constrains the AI pool that `createRandomGame` draws from when generating
-random matchups for `-test-games` / `-test-games-nox`. Comma-separated,
+random matchups for `dev random-games --display` / `dev random-games`. Comma-separated,
 case-insensitive AI names. Default (no flag) is the legacy uniform pick
 over `numbi, castor, warrush, econo, nicowar`.
 
 ```bash
 # Bias the dataset toward strong AIs only:
-./glob2 -test-games-nox 100 --ai-types nicowar,warrush
+./glob2 dev random-games --runs 100 --ai-types nicowar,warrush
 
 # Single-AI self-play replays (every AI slot is Nicowar):
-./glob2 -test-games-nox 50 --ai-types nicowar
+./glob2 dev random-games --runs 50 --ai-types nicowar
 ```
 
 Valid names: `numbi`, `castor`, `warrush`, `econo`, `nicowar`, `cortex`, `cabino`.
@@ -181,16 +184,16 @@ remaining pool falls back to default behavior).
 
 ### `--map <name>` and `--matchup <list>`
 
-Pin the map and per-team AI assignment for `-test-games-nox`, replacing
+Pin the map and per-team AI assignment for `dev random-games`, replacing
 the random pieces with explicit choices. Used by the AI-trainer
 pipeline to produce curated datasets (exact counts per matchup).
 
 ```bash
 # Nicowar (team 0) vs. Warrush (team 1) on the Playground map:
-./glob2 -test-games-nox 1 --map Playground --matchup nicowar,warrush
+./glob2 dev random-games --runs 1 --map Playground --matchup nicowar,warrush
 
 # Three-team game on a custom map:
-./glob2 -test-games-nox 1 --map "BigArena" --matchup nicowar,warrush,numbi
+./glob2 dev random-games --runs 1 --map "BigArena" --matchup nicowar,warrush,numbi
 ```
 
 - `--map <name>` is the bare map filename without `.map` (resolved as
@@ -206,43 +209,43 @@ pipeline to produce curated datasets (exact counts per matchup).
 
 ### `--save-game-as <path>`
 
-Writes the fully-initialised tick-0 game state to `<path>` as a `.game` file before running. Lets a `-test-games-nox` scenario be replayed deterministically later via `--nox <path>`. Pair with `GLOB2_TEST_SEED` for full reproducibility — the seed is mirrored into the saved `GameHeader` so the reloaded run matches the original.
+Writes the fully-initialised tick-0 game state to `<path>` as a `.game` file before running. Lets a `dev random-games` scenario be replayed deterministically later via `game repeat <path>`. Pair with `GLOB2_TEST_SEED` for full reproducibility — the seed is mirrored into the saved `GameHeader` so the reloaded run matches the original.
 
 ```bash
-GLOB2_TEST_SEED=42 ./glob2 -test-games-nox 1 \
+GLOB2_TEST_SEED=42 ./glob2 dev random-games --runs 1 \
   --map BigArena --matchup econo,nicowar \
   --save-game-as games/cross-replay.game
 ```
 
-`<path>` is resolved by the file manager: relative paths land under `~/.glob2/` (so `--save-game-as games/foo.game` writes to `~/.glob2/games/foo.game.gz`); absolute paths (`/tmp/foo.game`, `C:\foo.game`) are used as-is (also gaining a `.gz` suffix). Requires `-test-games` or `-test-games-nox`; the save fires at random-game creation time. Without `GLOB2_TEST_SEED`, the wall-clock seed at run-start is captured and the .game.gz file is still reproducible — just not predictable across separate invocations. The command prints the actual path written.
+`<path>` is resolved by the file manager: relative paths land under `~/.glob2/` (so `--save-game-as games/foo.game` writes to `~/.glob2/games/foo.game.gz`); absolute paths (`/tmp/foo.game`, `C:\foo.game`) are used as-is (also gaining a `.gz` suffix). Requires `dev random-games --display` or `dev random-games`; the save fires at random-game creation time. Without `GLOB2_TEST_SEED`, the wall-clock seed at run-start is captured and the .game.gz file is still reproducible — just not predictable across separate invocations. The command prints the actual path written.
 
 **Local-player quirk:** the engine still creates a passive `P_LOCAL`
-player on team 0 in `-test-games-nox` mode (the headless engine
+player on team 0 in `dev random-games` mode (the headless engine
 expects one). The `GLOB2_GAME_END players=...` summary will show
 `team0:local` alongside the matchup-assigned AI for team 0; both are
 expected. Only the matchup AIs issue orders.
 
-### `-test-games`
+### `dev random-games --display`
 
-Same as `-test-games-nox` but **with GUI** — useful for visually verifying AI behavior.
+Same as `dev random-games` but **with GUI** — useful for visually verifying AI behavior.
 
 ## Verifying a match record
 
 ```sh
-glob2 --verify-match <record.g2mr> --map <map-file> --out <dir> \
+glob2 match verify <record.g2mr> --map-file <map-file> --output-dir <dir> \
   [--profile <name>] [--compute-threads auto|N]
-glob2 --sim-version
+glob2 info sim-version --format json
 ```
 
-`--verify-match` accepts the same compute sizing as game sessions. Its `compute.json`
+`match verify` accepts the same compute sizing as game sessions. Its `compute.json`
 records requested, resolved and actual sizing separately from deterministic
-verification results. Headless `--turn-client` also accepts this setting and
+verification results. Headless `online turn-client` also accepts this setting and
 reports sizing in its result telemetry.
 
-`--verify-match` replays a relay match record (the format is in the
-[turn protocol](../multiplayer/turn-protocol.md)) headlessly and judges the
-checksums the live clients reported. Pass absolute paths: a macOS build changes its
-working directory at startup. `--output-dir` is accepted for `--out`.
+`match verify` replays a relay match record (the format is in the
+[turn protocol](../multiplayer/turn-verification.md#match-record)) headlessly and judges the
+checksums the live clients reported. Input and output paths are relative to the caller’s working directory on every
+platform, including macOS bundles. `--output-dir` selects the structured job directory.
 
 It reads the record, parses its MatchSetup JSON and checks that the record's map hash
 and human seats agree with the setup. The map file must hash (SHA-256 of its
@@ -259,10 +262,10 @@ Outputs in `<dir>`:
 | File | Contents |
 | --- | --- |
 | `verdict.json` | `{"verdict": "verified" \| "diverged" \| "unverifiable", "seats": [...], "reason": "..."}`; `seats` only when diverged, `reason` only when unverifiable. It also carries the protocol package's `VerifyVerdict` members: `clients` (the same seats) and, unless unverifiable, `outcome` (`finalTick`, per-team `outcome`, `prestige` and `eliminatedTick`, and the SHA-256 of `result.json` and `match.replay`). `orderRejections` lists each human seat that sequenced orders the engine refused: `seat`, `rejected`, `stale`, per-reason counts and `firstRejectedTick` (see order validation in `docs/multiplayer/turn-protocol.md`). |
-| `result.json` | The `--run-game` result format (`players`, `teams` with outcomes, `standard_statistics` and the 512-tick `history`, `winning_teams`) with `"job_type": "verify_match"`, the match id, both sim versions, the record flags, and a `verification` object (verdict, compared reports, first divergent tick per seat, and `order_checks`: per human seat, the orders accepted, stale and rejected, with reasons). It has no wall-clock fields, so a record verifies to the same bytes everywhere. |
+| `result.json` | The `game run` result format (`players`, `teams` with outcomes, `standard_statistics` and the 512-tick `history`, `winning_teams`) with `"job_type": "verify_match"`, the match id, both sim versions, the record flags, and a `verification` object (verdict, compared reports, first divergent tick per seat, and `order_checks`: per human seat, the orders accepted, stale and rejected, with reasons). It has no wall-clock fields, so a record verifies to the same bytes everywhere. |
 | `checksums.txt` | One `tick checksum` line (hexadecimal) for every tick from 0 to `endTick`. |
 | `match.replay` | A standard replay of the verified match, written by `ReplayWriter`. |
-| `artifacts.json` | The file manifest, as for `--run-game`. |
+| `artifacts.json` | The file manifest, as for `game run`. |
 
 The verdict is **verified** when every seat that reported matched at every tick it
 reported; **diverged** when some seats differ and at least one matched, with the
@@ -274,10 +277,10 @@ The exit code is 0 for any verdict. It is 2 for a bad request (unreadable or cor
 record, invalid setup, a map whose hash or team count does not match) and 3 for an
 engine or I/O failure; both write a `result.json` with `status` and `diagnostic`.
 
-`--sim-version` prints this build's simulation version as JSON,
+`info sim-version --format json` prints this build's simulation version as JSON,
 `{"versionMinor": ..., "netProtocol": ..., "dataHash": "<64 hex>"}`. Engine agents
 partition verification jobs by it; the definition of the data hash is in the
-[turn protocol](../multiplayer/turn-protocol.md).
+[turn protocol](../multiplayer/turn-engine.md#simulation-version).
 
 CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows, macOS and in
 three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
@@ -286,7 +289,7 @@ compares seven traces: two Linux builds, Windows, macOS and three browsers. The 
 `FourSquares1.verify-trace.txt` is the expected trace, and CI fails when the platforms
 agree on a different one; the engine test that checks it also regenerates both files
 under `--update-fixtures`. A change that moves the trace changed the simulation and
-must bump `SIM_REVISION` ([simulation version](../multiplayer/turn-protocol.md)).
+must bump `SIM_REVISION` ([simulation version](../multiplayer/turn-engine.md#simulation-version)).
 
 ## AI-Trainer Dataset Output
 
@@ -298,7 +301,7 @@ to re-simulate the replay.
 ```bash
 GLOB2_DATASET_PATH=/tmp/game.dataset \
 GLOB2_REPLAY_PATH=/tmp/game.replay \
-  ./glob2 -test-games-nox 1 --map A_big_pond --matchup nicowar,warrush,numbi
+  ./glob2 dev random-games --runs 1 --map A_big_pond --matchup nicowar,warrush,numbi
 ```
 
 New output uses **GDS2**, a little-endian format with an embedded, immutable
@@ -334,7 +337,7 @@ All modes write replays to `~/.glob2/replays/last_game.replay` by default.
 or override the path per-game with the `GLOB2_REPLAY_PATH` env var:
 
 ```bash
-GLOB2_REPLAY_PATH=replays/game-001.replay ./glob2 -test-games-nox 1
+GLOB2_REPLAY_PATH=replays/game-001.replay ./glob2 dev random-games --runs 1
 ```
 
 This lets concurrent headless instances write to distinct files (used by the
@@ -342,8 +345,8 @@ AI-trainer replay-generation pipeline).
 
 ## Game-End Summary Line
 
-When `automaticEndingGame` fires (set by `--nox`, `-test-games-nox`, and
-`-test-games`), the engine prints a machine-parseable summary line right
+When `automaticEndingGame` fires (set by `game repeat`, `dev random-games`, and
+`dev random-games --display`), the engine prints a machine-parseable summary line right
 after the existing tick/minute log:
 
 ```
@@ -419,7 +422,7 @@ The `ReplayWriter` records live during gameplay:
 | 2 | Castor | `AI::CASTOR` | Default toggle AI, moderate |
 | 3 | Warrush | `AI::WARRUSH` | Aggressive rush strategy |
 | 4 | Econo | `AI::ECONO` | Expansionist (shared AI runtime) |
-| 5 | Nicowar | `AI::NICOWAR` | Economy-focused AI (shared AI runtime) |
+| 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (shared AI runtime) |
 | 6 | Cortex | `AI::CORTEX` | Food-aware growth and supported attack waves (experimental) |
 | 7 | Maxima | `AI::MAXIMA` | Standalone colony developer with relentless attacks; strategy configured through `data/maxima` and `GLOB2_MAXIMA_*` (see [Maxima](../ai/maxima/README.md)) |
 | 8 | Cabino | `AI::CABINO` | Resurrected 2005-2007 Nicowar: independent cooperating modules, outside the shared AI runtime. |
@@ -428,13 +431,14 @@ Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The pl
 
 ## Key Source Files
 
-- `src/engine/Engine.cpp`, `src/engine/EngineInit.cpp` and `src/engine/EngineRun.cpp` — engine lifecycle, game setup and execution
+- `src/engine/Engine.cpp` — `initCustom()` loads `.game` files; `run()` contains the game loop; `createRandomGame()` sets up random AI matches
 - `src/replay/ReplayWriter.cpp` — writes replay data live during gameplay
 - `src/replay/ReplayReader.cpp` — reads replays for playback
-- `src/app/GlobalContainerArgs.cpp` — `parseArgs()` handles CLI flags
+- `src/app/cli/CommandLine.cpp` — the registry validates command syntax;
+  `src/app/GlobalContainerArgs.cpp` applies validated launch settings
 - `src/app/Glob2.cpp` — `runNoX()` and `runTestGames()` entry points
 - `src/game/Game.cpp` — `executeOrder()` pushes orders to `ReplayWriter`
-- `src/ai/AI.cpp` — `AI::save()`/`AI::load()` with implementation dispatch
+- `src/AI.cpp` — `AI::save()`/`AI::load()` with implementation dispatch
 
 The existing `GLOB2_TEAM_TIMELINE` option also exports timestamped
 [gameplay measurements](../ai/gameplay-statistics.md), retained measurement history and
@@ -490,11 +494,11 @@ floor 140 and network protocol 59. Hazard routing raised the floor to 142 and
 network protocol to 60. Engine snapshots and scheduled AI decisions raise the floor to 143 and
 network protocol to 61; supported saves still load back to format 58. LAN and
 online sim-version gates reject clients using the older boundary. See the
-[phase contract](README.md) before adding new parallel work.
+[phase contract](../architecture/simulation.md) before adding new parallel work.
 
 ### Probability-based early victory
 
-Structured `--run-game` runs accept `--win-probability PERMILLE` (501–1000).
+Structured `game run` runs accept `--win-probability PERMILLE` (501–1000).
 This appends the optional rule after existing winning conditions; omit it to play
 the game out. Evaluation begins at tick 5120 and repeats every 512 ticks. Results
 called by the model report `termination: "win_probability"`. See the

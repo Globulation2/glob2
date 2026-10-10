@@ -57,7 +57,7 @@ period. Financial ledger history follows existing retention policy.
 
 Serve `/api/v1/terrain-studio/threads/<id>/events` as an unbuffered authenticated
 SSE stream, as for Map Studio. Keep the matching browser game runtime deployed:
-the scene preview uses the optional `--validate-set --gallery 1` renderer path.
+the scene preview uses the optional `map validate-set --gallery 1` renderer path.
 Existing packages, save formats, and simulation rules are unchanged by this studio.
 
 ### AI Building Studio deployment

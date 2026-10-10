@@ -22,7 +22,7 @@ Its separate `write mature game fixtures` case creates control, sparse-ice and
 patchwork-ice saves. Set `GLOB2_HAZARD_BENCH_SAVE` to a mature save (the default is
 `games/cross-replay.game`) and `GLOB2_TEST_ARTIFACTS` to the output directory. Produce
 fixtures with the older build so both readers accept exactly the same bytes. Use
-`--run-game --benchmark-warmup` to exclude loading and initial cache rebuilding
+`game run --benchmark-warmup` to exclude loading and initial cache rebuilding
 from whole-engine CPU time per tick. Alternate revision order across repeats and
 report distributions; changed routes also change the later simulation workload.
 

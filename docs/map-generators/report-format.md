@@ -342,7 +342,7 @@ still exits nonzero on failure, but writes the requested JSON when a service att
 
 `generation.telemetry` is an ordered, bounded, typed trace supplied by generators and shared
 primitives, separate from computed snapshot metrics. Collection is opt-in and is enabled by
-`--generate-map ... --json`; it is `null` for loaded files. `generation.outcome` records success,
+`map generate ... --report-file`; it is `null` for loaded files. `generation.outcome` records success,
 stage, error code and detail. `raw_request` preserves numeric method, raw size exponents, colony
 and worker counts, and all option entries, including invalid ones. Resolved `parameters` may be
 `null` on invalid requests; the generator name may be `null` for unknown numeric methods.

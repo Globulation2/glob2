@@ -25,12 +25,12 @@ errors also appear in the recording controls and application log.
 For a complete session, start recording from the command line:
 
 ```sh
-glob2 -vs feature-demo
-glob2 --record artifacts/footage/feature-demo.mp4 --record-fps 30 --record-encoder software
+glob2 play --videoshot feature-demo
+glob2 play --record artifacts/footage/feature-demo.mp4 --record-fps 30 --record-encoder software
 ```
 
-`-vs <name>` now produces `videoshots/<name>.mp4` in the profile, replacing its
-historical numbered BMP files. GPU rendering is supported; `-G` is unnecessary.
+`play --videoshot <name>` now produces `videoshots/<name>.mp4` in the profile, replacing its
+historical numbered BMP files. GPU rendering is supported; `--renderer software` is unnecessary.
 `--record` paths are ordinary filesystem paths, relative to the working directory
 unless absolute. Existing output files and reserved recording names are never
 replaced. Recording finishes when stopped or when the application exits normally.
@@ -95,7 +95,7 @@ automation; embedded chapter presentation varies between video players.
 
 ```sh
 python3 tools/recording.py list artifacts/footage/feature-demo.mp4
-python3 tools/recording.py list artifacts/footage/feature-demo.mp4 --json
+python3 tools/recording.py list artifacts/footage/feature-demo.mp4 --report-file
 python3 tools/recording.py extract artifacts/footage/feature-demo.mp4 \
   --phase gameplay --match 1 --era-start 10000 --output-dir artifacts/clips
 python3 tools/recording.py extract artifacts/footage/feature-demo.mp4 \
@@ -198,10 +198,10 @@ node browser/benchmarks/recording.cjs http://127.0.0.1:8770 artifacts/recording-
 GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 software-render-benchmark
 PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=off PROFILE_SECONDS=20 \
   PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
-  build/darwin/client/release/test/SoftwareRenderBenchmark -s 1920x1080
+  build/darwin/client/release/test/SoftwareRenderBenchmark --window-size 1920x1080
 PROFILE_SAVE=games/gd-bigarena-long.game.gz PROFILE_RECORD=artifacts/qualification.mp4 \
   PROFILE_SECONDS=20 PROFILE_PAN=1 PROFILE_AUDIO=1 PROFILE_WARMUP=240 \
-  build/darwin/client/release/test/SoftwareRenderBenchmark -s 1920x1080
+  build/darwin/client/release/test/SoftwareRenderBenchmark --window-size 1920x1080
 ```
 
 The browser fixture runs recorded/unrecorded pairs in both runtimes at 720p,

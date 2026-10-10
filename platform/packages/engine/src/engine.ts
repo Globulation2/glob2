@@ -11,6 +11,7 @@ import type { GeneratorDescriptor, ImportAiMapPayload, SimVersion } from '@glob2
 import { parse, ValidateSetResult } from '@glob2/protocol';
 import {
   CATALOG_ARGS,
+  requireCliVersion,
   parseBuildingComposition,
   type BuildingCompositionResult,
   EngineInputError,
@@ -163,9 +164,10 @@ export class GlobEngine {
       const result = await this.run(
         'inspect',
         [
-          '--validate-set',
+          'map',
+          'validate-set',
           input,
-          '--json',
+          '--report-file',
           reportPath,
           '--preview',
           preview,
@@ -174,7 +176,8 @@ export class GlobEngine {
         dir,
         signal,
       );
-      if (result.code !== 0) this.fail('set validation', result);
+      // Rejected packages still produce their structured validation report.
+      if (result.code !== 0 && result.code !== 2) this.fail('set validation', result);
       const reportBytes = await this.output(reportPath);
       if (!reportBytes) throw new EngineOutputError('set validator omitted its report');
       const report = parse(
@@ -197,8 +200,7 @@ export class GlobEngine {
       );
     }
     if (result.code === 2 || result.code === 1) {
-      // Structured commands exit 2 on invalid requests; map commands exit 1
-      // when the input cannot be used. Both repeat on retry.
+      // CLI 2 distinguishes rejected input from operational failures.
       throw new EngineInputError(`${what} refused the input (exit ${result.code}): ${detail}`);
     }
     throw new EngineCrashError(`${what} failed (exit ${result.code}): ${detail}`, result);
@@ -206,6 +208,9 @@ export class GlobEngine {
 
   async catalog(signal?: AbortSignal): Promise<EngineCatalog> {
     return this.scratch(async (dir) => {
+      const description = await this.run('catalog', ['help', '--format', 'json'], dir, signal);
+      if (description.code !== 0) this.fail('CLI capability probe (requires CLI 2)', description);
+      requireCliVersion(description.stdout);
       const result = await this.run('catalog', [...CATALOG_ARGS], dir, signal);
       if (result.code !== 0) this.fail('headless catalog', result);
       return parseCatalog(result.stdout);
@@ -230,7 +235,7 @@ export class GlobEngine {
     if (!catalog.commands.includes('compose_buildings') || !baseHash)
       throw new EngineInputError('This engine does not support building packages');
     return this.scratch(async (dir) => {
-      const args = ['--compose-buildings'];
+      const args = ['assets', 'compose-buildings', '--format', 'json'];
       for (let index = 0; index < checked.length; index++) {
         const path = join(dir, `package-${index}.json`);
         await writeFile(path, canonicalBuildingJson(checked[index]));
@@ -251,7 +256,7 @@ export class GlobEngine {
     });
   }
 
-  /** The binary's own sim version, if it supports the (assumed) --sim-version flag. */
+  /** Read the binary's simulation identity without changing the domain schema. */
   async reportedSimVersion(signal?: AbortSignal): Promise<SimVersion | undefined> {
     return this.scratch(async (dir) => {
       try {
@@ -341,7 +346,8 @@ export class GlobEngine {
       const result = await this.run(
         'generate',
         [
-          '--import-map-image',
+          'map',
+          'import-image',
           input,
           '--width',
           String(payload.settings.width),
@@ -357,7 +363,7 @@ export class GlobEngine {
           preview,
           '--preview-size',
           '512',
-          '--json',
+          '--report-file',
           report,
         ],
         dir,
@@ -371,7 +377,7 @@ export class GlobEngine {
       const bytes = gunzipSync(gz, { maxOutputLength: this.options.maxOutputBytes });
       const exported = await this.run(
         'inspect',
-        ['--export-map-image', map + '.gz', '--output', categorical],
+        ['map', 'export-image', map + '.gz', '--output', categorical],
         dir,
         signal,
       );

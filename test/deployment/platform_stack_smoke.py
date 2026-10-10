@@ -628,7 +628,7 @@ class Smoke:
         command = [sys.executable, str(ROOT / 'test/deployment/live_match_e2e.py'), '--mode', 'queue',
                    '--queue', E2E_QUEUE, '--origin', self.origin, '--ca-file', str(ca),
                    '--engine-command', shlex.join(engine), '--psql', shlex.join(psql),
-                   '--out', str(out / 'run'), '--verify-timeout', '600']
+                   '--output-dir', str(out / 'run'), '--verify-timeout', '600']
         log_path = out / 'live_match_e2e.log'
         with open(log_path, 'w') as log_file:
             code = subprocess.run(command, env=self.env, stdout=log_file, stderr=subprocess.STDOUT,
@@ -692,7 +692,7 @@ def main():
     parser.add_argument('--log-dir', help='write compose logs and results.json here')
     parser.add_argument('--attach', metavar='PROJECT', help='check this running Compose project instead')
     parser.add_argument('--env-file', help="with --attach: the deployment's env file")
-    parser.add_argument('--sim-version', help='with --attach: expected sim version key (default: this checkout)')
+    parser.add_argument('info', 'sim-version', '--format', 'json', help='with --attach: expected sim version key (default: this checkout)')
     parser.add_argument('--website', metavar='ORIGIN',
                         help='with --attach: separately hosted public website whose old app paths redirect here')
     parser.add_argument('--match-e2e', action='store_true',

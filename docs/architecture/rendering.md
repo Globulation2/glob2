@@ -257,8 +257,8 @@ also remains the headless default and the equivalence reference.
 - Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
-  LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
-  `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
+  LINKFLAGS="-fsanitize=thread"` and run a windowed `dev random-games --display` session or a headless
+  `game run` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
   with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
   `.github/workflows/thread-sanitizer.yml` runs both games under ThreadSanitizer nightly,
   through the main build workflow and on demand. The risk selector includes it

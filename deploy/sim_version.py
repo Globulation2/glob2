@@ -9,7 +9,7 @@ in byte-wise path order; each entry is the path, a 0x00 byte, the content length
 as a 64-bit big-endian integer (0xFFFFFFFFFFFFFFFF for a missing file) and the
 content with CR LF replaced by LF.
 
-Until every deployed binary reports its own hash (`glob2 --sim-version`), the
+Until every deployed binary reports its own hash (`glob2 info sim-version --format json`), the
 engine-agent image passes this value as ENGINE_DATA_HASH; an agent whose binary
 reports a different hash refuses to start, so a drifted file list fails loudly.
 Keep the static SIM_DATA_FILES plus default manifest discovery identical to

@@ -326,3 +326,16 @@ To revoke the pipeline, delete the provider (or disable it with
 `gcloud iam workload-identity-pools providers update-oidc … --disabled`).
 
 [Hosting index](README.md) · [Documentation index](../README.md).
+
+## CLI 2 coordinated rollout
+
+Ship the [CLI 2 binary and its consumers](../tools/cli.md#migrating-from-cli-1)
+in the same release: engine-agent and skin-render-worker images, native clients,
+browser launchers, deployment probes and tournament worker packages. Drain old
+workers before switching images; keep their binaries with any in-flight jobs until
+those jobs finish. Updated workers probe `glob2 help --format json` with a bounded
+timeout and require `schema_version: 1` and `cli_version: 2`. A rejected version is
+a deployment mismatch; rebuild the matching image rather than rewriting arguments.
+Rollback these components together. The simulation identity, saved games, catalog
+and job result schemas remain independent of the CLI version. This rollout does
+not require deleting production records, blobs, accounts or completed jobs.

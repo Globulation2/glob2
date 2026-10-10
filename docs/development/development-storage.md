@@ -35,7 +35,7 @@ run `python3 tools/dev_environment.py sdkmanager -- --licenses` yourself before 
 platform/build packages with `mobile/setup_tools.py --sdk-packages`.
 
 ```sh
-python3 tools/dev_environment.py paths --json
+python3 tools/dev_environment.py paths --report-file
 python3 tools/dev_environment.py paths --field android_sdk
 python3 tools/dev_environment.py status
 python3 tools/dev_environment.py prune --dry-run

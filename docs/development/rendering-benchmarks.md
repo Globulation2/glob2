@@ -15,7 +15,7 @@ mkdir -p artifacts/render-profile
 GLOB2_USER_DATA_DIR="$PWD/artifacts/render-profile/profile" \
 GLOB2_BENCH_FLAT=1 GLOB2_BENCH_SIZE=256x256 GLOB2_BENCH_UNITS=1000 \
 GLOB2_BENCH_FRAMES=300 GLOB2_BENCH_CAPTURE=artifacts/render-profile/frame.ppm \
-build/darwin/client/release/test/torus-render-benchmark -g -F -m -s 1280x800
+build/darwin/client/release/test/torus-render-benchmark --renderer gpu --no-fullscreen --mute --window-size 1280x800
 ```
 
 Use the current host's release directory on Linux/Windows. `GLOB2_BENCH_MODE`

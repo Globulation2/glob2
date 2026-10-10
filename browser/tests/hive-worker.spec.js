@@ -22,7 +22,7 @@ test('Hive worker matches native results and rejects forbidden capabilities',asy
    worker.onerror=e=>{clearTimeout(timer);worker.terminate();reject(new Error(e.message))};
    worker.postMessage(JSON.stringify(input));
   }),input);
-  const native=spawnSync(process.env.GLOB2_HIVE_NATIVE||path.resolve(__dirname,'../../build/linux/client/release/src/glob2'),['--hive-worker'],{input:JSON.stringify(input)+'\n',encoding:'utf8',timeout:10000});
+  const native=spawnSync(process.env.GLOB2_HIVE_NATIVE||path.resolve(__dirname,'../../build/linux/client/release/src/glob2'),['dev', 'hive-worker'],{input:JSON.stringify(input)+'\n',encoding:'utf8',timeout:10000});
   expect(native.status).toBe(0);
   const result=JSON.parse(native.stdout);
   expect(web.ok).toBe(result.ok);

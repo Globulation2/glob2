@@ -6,8 +6,8 @@ compatibility. Neither ID determines display order, and retired IDs are never re
 Uniform is editor-only. Requests still need to satisfy each landscape's size,
 colony-count and control constraints.
 
-Use `glob2 --headless-catalog` for current controls, revisions and execution
-capabilities, or `glob2 --list-map-generators` for the map CLI catalog. This table
+Use `glob2 info catalog --format json` for current controls, revisions and execution
+capabilities, or `glob2 map generators` for the map CLI catalog. This table
 indexes every constructor registered in
 [GeneratorRegistry](../../src/map/generator/core/GeneratorRegistry.cpp); links lead
 to a maintained design guide or directly to its implementation when no separate

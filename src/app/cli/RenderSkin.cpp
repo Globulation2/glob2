@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "CommandLine.h"
+#include <stdexcept>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -73,7 +75,7 @@ void checkImageHeader(const std::string &bytes)
 		width = number(16);
 		height = number(20);
 		if (static_cast<unsigned char>(bytes[24]) != 8)
-			throw std::runtime_error("skin inputs require 8-bit pixels");
+			throw std::invalid_argument("skin inputs require 8-bit pixels");
 	}
 	else
 	{
@@ -81,19 +83,19 @@ void checkImageHeader(const std::string &bytes)
 		if (WebPGetFeatures(reinterpret_cast<const uint8_t *>(bytes.data()), bytes.size(), &info) !=
 				VP8_STATUS_OK ||
 			info.has_animation)
-			throw std::runtime_error("skin inputs must be static PNG or WebP images");
+			throw std::invalid_argument("skin inputs must be static PNG or WebP images");
 		width = info.width;
 		height = info.height;
 	}
 	if (width != 512 || height != 512)
-		throw std::runtime_error("skin inputs must be 512x512");
+		throw std::invalid_argument("skin inputs must be 512x512");
 }
 std::unique_ptr<GAGCore::DrawableSurface> loadInput(const std::string &bytes, bool material)
 {
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> loaded(
 		IMG_Load_IO(SDL_IOFromConstMem(bytes.data(), bytes.size()), true), SDL_DestroySurface);
 	if (!loaded || loaded->w != 512 || loaded->h != 512)
-		throw std::runtime_error("invalid skin image");
+		throw std::invalid_argument("invalid skin image");
 	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
 		SDL_ConvertSurface(loaded.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 	if (!rgba || !SDL_LockSurface(rgba.get()))
@@ -111,7 +113,7 @@ std::unique_ptr<GAGCore::DrawableSurface> loadInput(const std::string &bytes, bo
 		}
 	SDL_UnlockSurface(rgba.get());
 	if (!valid)
-		throw std::runtime_error(material ? "invalid material ids or alpha"
+		throw std::invalid_argument(material ? "invalid material ids or alpha"
 										  : "skin paint must be opaque");
 	// Offline inputs may be immutable PNG sources. The game's asset loader
 	// accepts only WebP, so adopt these already bounded and validated pixels.
@@ -178,20 +180,15 @@ std::string encode(const std::vector<uint8_t> &rgba, unsigned size)
 }
 #endif
 } // namespace
-int runRenderSkin(int argc, char **argv)
+int runRenderSkin(const Cli::Request &request)
 {
-	if (argc < 2)
-		return -1;
-	const std::string command(argv[1]);
-	if (command != "--render-skin" && command != "--skin-render-info")
-		return -1;
+    const auto &command = request.command;
+    if (command != "assets render-skin" && command != "assets skin-info") return -1;
 	std::filesystem::path staging;
 	try
 	{
-		if (command == "--skin-render-info")
+		if (command == "assets skin-info")
 		{
-			if (argc != 2)
-				throw std::runtime_error("usage: glob2 --skin-render-info");
 #if defined(HAVE_OPENGL) && !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
 			// Reject mismatched runtime dependencies before the worker registers
 			// a revision and consumes publication jobs.
@@ -207,19 +204,8 @@ int runRenderSkin(int argc, char **argv)
 			throw std::runtime_error("requires a native OpenGL client build");
 #endif
 		}
-		std::map<std::string, std::string> options;
-		for (int i = 2; i < argc; i += 2)
-		{
-			const std::string key(argv[i]);
-			if (i + 1 >= argc ||
-				(key != "--manifest" && key != "--texture" && key != "--material" &&
-				 key != "--output-dir") ||
-				!options.emplace(key, argv[i + 1]).second)
-				throw std::runtime_error("usage: glob2 --render-skin --manifest JSON --texture "
-										 "IMAGE --material IMAGE --output-dir DIRECTORY");
-		}
-		if (options.size() != 4)
-			throw std::runtime_error("all four input/output options are required");
+        std::map<std::string, std::string> options;
+        for (const auto &[key, values] : request.options) options[key] = values.at(0);
 		const auto source = Json::parse(read(options.at("--manifest"), 65536));
 		const auto texture = read(options.at("--texture"), 1024 * 1024),
 				   material = read(options.at("--material"), 256 * 1024);
@@ -233,7 +219,7 @@ int runRenderSkin(int argc, char **argv)
 			source.at("materialSha256") != materialHash || !color.is_number_integer() ||
 			color < 0 || color > 0xffffff || !angle.is_number_integer() || angle < 0 ||
 			angle > 359 || choice < 0)
-			throw std::runtime_error("invalid skin content");
+			throw std::invalid_argument("invalid skin content");
 		nlohmann::ordered_json identity = {{"skinId", source.at("skinId")},
 										   {"textureSha256", textureHash},
 										   {"materialSha256", materialHash},
@@ -247,10 +233,10 @@ int runRenderSkin(int argc, char **argv)
 		if (id.size() != 36 || id[8] != '-' || id[13] != '-' || id[18] != '-' || id[23] != '-' ||
 			std::count(id.begin(), id.end(), '-') != 4 ||
 			id.find_first_not_of("0123456789abcdef-") != std::string::npos)
-			throw std::runtime_error("invalid skin identity");
+			throw std::invalid_argument("invalid skin identity");
 		const auto sourceHash = Online::Sha256::hex(identity.dump());
 		if (source.at("manifestSha256") != sourceHash)
-			throw std::runtime_error("skin manifest hash mismatch");
+			throw std::invalid_argument("skin manifest hash mismatch");
 #if defined(HAVE_OPENGL) && !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
 		checkEncoderVersion();
 		checkImageHeader(texture);
@@ -349,7 +335,7 @@ int runRenderSkin(int argc, char **argv)
 			std::error_code error;
 			std::filesystem::remove_all(staging, error);
 		}
-		std::cerr << command.substr(2) << ": " << e.what() << '\n';
-		return 1;
+		std::cerr << command << ": " << e.what() << '\n';
+		return dynamic_cast<const std::invalid_argument*>(&e) || dynamic_cast<const nlohmann::json::exception*>(&e) ? 2 : 3;
 	}
 }

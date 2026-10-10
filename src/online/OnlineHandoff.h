@@ -52,8 +52,7 @@ bool validCatalogMap(const RoomMapChoice &map);
 void setPendingMapPlay(const MapPlayRequest &request);
 const std::optional<MapPlayRequest> &pendingMapPlay();
 std::optional<MapPlayRequest> takePendingMapPlay();
-// Browser shell / CLI: --local-map or --room-map <mapId> <hash> <title>.
-int acceptRoomMapArguments(int argc, char **argv, int index);
+// Browser shell / CLI: online play-map or online host-map ID --hash HASH --title TITLE.
 
 // Rematch after a quick match (Q9): an unrated room with the same players.
 // The room screen registers how to create it; the results screen calls it.

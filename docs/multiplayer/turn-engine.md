@@ -133,7 +133,7 @@ changing the protocol or the record: see [network telemetry](../development/netw
 
 **Seats, players and teams.** A human or AI seat is a player: seat `s` is
 `BasePlayer` `s`, and that number is what tickets (`seat`, `humanSeats`), the relay,
-`TurnSession`'s local seat, the match record, `--verify-match`, the order audit and
+`TurnSession`'s local seat, the match record, `match verify`, the order audit and
 `match_participants.seat` use. A seat's `team` is the map team it controls. Team
 indices are never renumbered: `result.json`, `match_team_stats` and
 `match_participants.team` use the map's own numbering.
@@ -200,7 +200,7 @@ validation coverage.
 A sim version identifies builds that produce identical games. Its JSON form is
 `{versionMinor, netProtocol, dataHash}` (`SimVersion` in the protocol package) and its
 key is `<versionMinor>-<netProtocol>-<dataHash>`, the string relays copy into the match
-record. `glob2 --sim-version` prints the JSON.
+record. `glob2 info sim-version --format json` prints the JSON.
 
 - `versionMinor` is `VERSION_MINOR` and `netProtocol` is `NET_PROTOCOL_VERSION` in
   `src/app/Version.h`.
@@ -258,7 +258,7 @@ CI enforces what it can detect:
   verification trace changed relative to the base revision while the sim version
   did not.
 - The browser/native equivalence job fails when Linux, Windows, macOS and the browsers agree
-  on a `--verify-match` trace that differs from the committed one: the simulation
+  on a `match verify` trace that differs from the committed one: the simulation
   changed.
 
 The golden match covers only what one short Nicowar/Warrush game reaches, so a passing

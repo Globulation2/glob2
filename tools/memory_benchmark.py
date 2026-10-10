@@ -142,7 +142,7 @@ def main():
             order = ('baseline', 'candidate') if pair % 2 == 0 else ('candidate', 'baseline')
             for label in order:
                 directory = output / f'fixture-{index}-pair-{pair}-{label}'
-                command = [str(binaries[label]), '--run-game', '--load-game', str(save),
+                command = [str(binaries[label]), 'game', 'run', '--load-game', str(save),
                            '--ticks', str(start + args.warmup + args.ticks),
                            '--benchmark-warmup', str(args.warmup), '--save', 'final',
                            '--output-dir', str(directory)]

@@ -153,7 +153,7 @@ GlobalContainer::~GlobalContainer(void)
 	// runs after this body — no manual cleanup needed.
 }
 
-// parseArgs is defined in GlobalContainerArgs.cpp.
+// applyCommand is defined in GlobalContainerArgs.cpp.
 
 void GlobalContainer::updateLoadProgressScreen(int value)
 {

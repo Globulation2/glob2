@@ -7,11 +7,11 @@ scons release=1 server=0 opengl=0 software-render-benchmark
 PROFILE_SAVE=artifacts/software-renderer/initial.game.gz PROFILE_ZOOM=0.5 \
   PROFILE_FRAMES=240 PROFILE_WARMUP=30 PROFILE_NO_PRESENT=1 PROFILE_CPU_SCOPES=1 \
   GLOB2_USER_DATA_DIR=artifacts/software-renderer/profile \
-  build/darwin/client/release/test/SoftwareRenderBenchmark -G -s 1280x800 -m -F
+  build/darwin/client/release/test/SoftwareRenderBenchmark --renderer software --window-size 1280x800 --mute --no-fullscreen
 ```
 
 Use the appropriate `linux`/`mingw` build directory or an explicit `--build=DIR`.
-Resolution is the existing `-s WxH` argument, measured in framebuffer pixels.
+Resolution is the existing `--window-size WxH` argument, measured in framebuffer pixels.
 The benchmark creates its SDL3 window without high-density backing pixels by default,
 so the workload does not change with monitor density. `PROFILE_NATIVE_DISPLAY=1` retains native Retina/HiDPI presentation. `PROFILE_OFFSET_X/Y` add logical-pixel camera
 offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
@@ -30,7 +30,7 @@ use the existing structured runner with its saved seed and orders, for example:
 
 ```sh
 GLOB2_USER_DATA_DIR=artifacts/software-renderer/fixture-profile \
-  build/darwin/client/release/src/glob2 --run-game \
+  build/darwin/client/release/src/glob2 game run \
   --load-game "$PWD/artifacts/software-renderer/initial.game.gz" --ticks 12000 \
   --save every:6000 --save final --telemetry checksums \
   --output-dir "$PWD/artifacts/software-renderer/populated"

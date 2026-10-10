@@ -13,8 +13,8 @@
 // Build and run (sizes are exponents, 8 = 256; the report gives each colony's swarm corner):
 //
 //   cc -O2 -o /tmp/growth_potential .agents/skills/glob2-map-design/scripts/growth_potential.c
-//   build/src/glob2 --generate-map --generator 54 --map-seed 1 --param teams=4 --param width=8 \
-//       --param height=8 --report terrain --output-dir /tmp/dump
+//   build/src/glob2 map study 54 --seed 1 --set teams=4 --set width=8 \
+//       --set height=8 --report terrain --output-dir /tmp/dump
 //   /tmp/growth_potential /tmp/dump/terrain.txt $(python3 -c "import json; print(' '.join( \
 //       '%d %d' % (c['start']['x'], c['start']['y']) \
 //       for c in json.load(open('/tmp/dump/result.json'))['map_report']['map']['colonies']))")

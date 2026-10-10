@@ -31,14 +31,14 @@ To reproduce the original scenario with the current engine and default parameter
 (the resulting checkpoint differs when AI policy changes):
 
 ```sh
-build/src/glob2 --generate-map --generator 15 --map-seed 42 \
-  --param teams=2 --param width=7 --param height=7 \
-  --write-map true --rotations 1 --output-dir /tmp/maxima-continuation-map
-build/src/glob2 --run-game \
+build/src/glob2 map study 15 --seed 42 \
+  --set teams=2 --set width=7 --set height=7 \
+  --write-map --rotations 1 --output-dir /tmp/maxima-continuation-map
+build/src/glob2 game run \
   --map-file /tmp/maxima-continuation-map/map-r0.map \
   --game-seed 19 --player maxima --player maxima --ticks 30512 \
   --save every:30000 --telemetry checksums --output-dir /tmp/maxima-continuation
-build/src/glob2 --run-game \
+build/src/glob2 game run \
   --load-game /tmp/maxima-continuation/checkpoint-30000.game \
   --ticks 30512 --telemetry checksums --output-dir /tmp/maxima-continuation-resumed
 python3 test/compare_save_continuation.py \

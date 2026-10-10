@@ -13,8 +13,8 @@ const id = '5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c', hash = 'a'.repeat(64);
 const query = `?map=${id}&version=${hash}&title=Two+%26+Three`;
 test('browser launches the selected mode with exact map and serving origin', () => {
   for (const mode of ['local', 'multiplayer'])
-    assert.deepEqual(launch(`${query}&mode=${mode}`), [mode === 'local' ? '--local-map' : '--room-map', id, hash, 'Two & Three', '--instance', 'https://example.org']);
-  assert.equal(launch(query)[0], '--room-map');
+    assert.deepEqual(launch(`${query}&mode=${mode}`), ['online', mode === 'local' ? 'play-map' : 'host-map', id, '--hash', hash, '--title', 'Two & Three', '--instance', 'https://example.org']);
+  assert.equal(launch(query)[1], 'host-map');
 });
 test('invalid launches cannot select a different destination or malformed map', () => {
   for (const bad of ['?map=x&version=' + hash, `?map=${id}&version=x`, query + '&mode=unknown'])

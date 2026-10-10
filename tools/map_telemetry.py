@@ -44,8 +44,8 @@ def attempt(binary, generator, seed, settings, directory, timeout):
     manifest = {'generator': generator, 'seed': seed, 'requested_parameters': settings,
                 'report': 'report.json', 'status': 'running', 'returncode': None}
     with tempfile.TemporaryDirectory(prefix='glob2-map-telemetry-') as profile:
-        command = [str(binary), '--generate-map', generator, '-d', str(ROOT),
-                   '--seed', str(seed), '--json', str(report_path)]
+        command = [str(binary), 'map', 'generate', generator, '--data-dir', str(ROOT),
+                   '--seed', str(seed), '--report-file', str(report_path)]
         for key, value in settings.items():
             command += ['--set', key + '=' + value]
         manifest['command'] = command

@@ -53,7 +53,7 @@ The native CLI can check a downloaded or authored package without an online
 instance:
 
 ```sh
-glob2 --validate-set package.json --json report.json --preview preview.png
+glob2 map validate-set package.json --report-file report.json --preview preview.png
 ```
 
 The report binds the exact package hash to its validation result; the optional
@@ -132,7 +132,7 @@ the artwork: passing import checks does not establish balance for every map.
 The equivalent native preview is:
 
 ```sh
-glob2 --validate-set package.json --json report.json --preview gallery.png \
+glob2 map validate-set package.json --report-file report.json --preview gallery.png \
   --gallery 1 --phase 0 --variation 0
 ```
 

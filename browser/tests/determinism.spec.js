@@ -24,7 +24,7 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
           FS.writeFile('/tmp/initial.game.gz', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
         }],
         async onRuntimeInitialized() {
-          const code = await Module.start(['--nox', '/tmp/initial.game.gz', '1500', '1', '--compute-threads', '${threads}']);
+          const code = await Module.start(['game', 'repeat', '/tmp/initial.game.gz', '--ticks', '1500', '--runs', '1', '--compute-threads', '${threads}']);
           if (code !== 0) throw new Error('Engine exited: ' + code);
           // Avoid millions of individually serialized Playwright values.
           // Chunk the conversion so large traces do not overflow the call stack.
@@ -80,7 +80,7 @@ test(`WebAssembly verifies the committed match record (${variant})`, async ({pag
         }],
         async onRuntimeInitialized() {
           window.verifyThreaded = typeof SharedArrayBuffer !== 'undefined' && HEAP8.buffer instanceof SharedArrayBuffer;
-          window.verifyExit = await Module.start(['--verify-match', '/tmp/match.g2mr', '--map', '/tmp/FourSquares1.map.gz', '--out', '/tmp/verify']);
+          window.verifyExit = await Module.start(['match', 'verify', '/tmp/match.g2mr', '--map-file', '/tmp/FourSquares1.map.gz', '--output-dir', '/tmp/verify']);
           window.verifyTrace = FS.readFile('/tmp/verify/checksums.txt', {encoding: 'utf8'});
           window.verifyVerdict = FS.readFile('/tmp/verify/verdict.json', {encoding: 'utf8'});
         }

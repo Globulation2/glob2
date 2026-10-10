@@ -1283,7 +1283,7 @@ jobs:
         run: |
           python3 test/check_cli_evidence.py artifacts/cli-platforms --require-platform linux --require-platform windows
 
-      - name: Compare every selected native and WebAssembly --verify-match trace
+      - name: Compare every selected native and WebAssembly match verify trace
         id: compare_every_verify_match_trace
         run: |
           python3 - <<'PY'
@@ -1302,7 +1302,7 @@ jobs:
               'Every platform agrees, but not with the committed trace: the simulation changed. '
               'Bump SIM_REVISION in src/game/SimRevision.h and regenerate test/fixtures/multiplayer with '
               "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
-          print(f'All {expected} selected --verify-match traces match')
+          print(f'All {expected} selected match verify traces match')
           PY
 
       - uses: actions/download-artifact@v4
