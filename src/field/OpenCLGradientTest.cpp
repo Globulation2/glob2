@@ -1088,6 +1088,105 @@ TEST_CASE("optional device advances preserve seeds interleave required work and 
     });
     coordinator.join();
 }
+TEST_CASE("isolated epoch probes mirror required windows and preserve exact owned cancellation")
+{
+    using namespace gradient_kernel;
+    const auto* activated=std::getenv("GLOB2_TEST_OPENCL_EPOCH_PROBE");
+    if(!activated || std::strcmp(activated,"1"))return;
+    REQUIRE(initializeOpenCL());const auto configured=openCLStatus();
+    REQUIRE(configured.activeEpoch);REQUIRE_FALSE(configured.parityBound);
+    REQUIRE_FALSE(configured.directSeedUpload);REQUIRE(configured.apiCpuMode==0);
+    struct Capture {
+        std::shared_ptr<std::vector<std::uint16_t>> seeds;
+        std::shared_ptr<std::vector<EntrySteps>> costs;
+        std::shared_ptr<BackendSession> session=std::make_shared<BackendSession>();
+        std::size_t reserved=0;
+        ~Capture(){if(reserved)releaseOpenCLProbeBytes(reserved);}
+    };
+    std::thread coordinator([&] {
+        const auto baseline=openCLProbeBytes();unsigned completed=0,requiredInterleaves=0,canceled=0;
+        for(unsigned plan=1;plan<PLANS.size();++plan){
+            REQUIRE((readyPlans.load()&(1u<<plan))!=0);
+            for(auto dimensions:{std::pair{1,1},std::pair{1,257},std::pair{257,1},std::pair{7,13},std::pair{31,33}})
+            for(int cap:{0,700}){
+                const field::Grid grid(dimensions.first,dimensions.second);
+                auto holder=std::make_shared<Capture>();
+                holder->seeds=std::make_shared<std::vector<std::uint16_t>>(grid.cells(),1);
+                holder->costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
+                for(std::size_t i=0;i<grid.cells();++i)if(i%5==0)(*holder->costs)[i]={19,29};
+                holder->seeds->front()=65535;holder->seeds->back()=65001;
+                if(grid.cells()>2)(*holder->seeds)[grid.cells()/2]=0;
+                const auto original=*holder->seeds;
+                const auto expected=oracle(original,grid,*holder->costs,cap);
+                const auto sourceBytes=sizeof(Capture)+sizeof(BackendSession)+sizeof(*holder->seeds)+
+                    holder->seeds->capacity()*sizeof(std::uint16_t)+sizeof(*holder->costs)+
+                    holder->costs->capacity()*sizeof(EntrySteps)+128;
+                REQUIRE(reserveOpenCLProbeBytes(sourceBytes));holder->reserved=sourceBytes;
+                BackendRequest request{holder->seeds->data(),cap,grid,*holder->session,holder->costs.get(),
+                    [](void* value,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(value))[cell];},
+                    nullptr,{holder->costs,919123,1,true,sizeof(*holder->costs)+holder->costs->capacity()*sizeof(EntrySteps)}};
+                auto required=original;auto warm=request;warm.gradient=required.data();
+                const auto before=openCLStatus();REQUIRE(executeOpenCLDevice(std::span(&warm,1),Plan(plan)));
+                const auto after=openCLStatus();CHECK(required==expected);
+                const auto requiredDispatches=after.dispatches-before.dispatches;
+                const auto reserved=openCLProbeBytes();auto probe=beginOpenCLProbe(request,Plan(plan),holder);REQUIRE(probe);
+                auto progress=OpenCLProbeProgress::Pending;bool interleaved=false;
+                for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
+                    const auto dispatched=probe->metrics().dispatches;progress=probe->advance(17);
+                    CHECK(probe->metrics().dispatches<=dispatched+1);CHECK(*holder->seeds==original);
+                    if(!interleaved && probe->metrics().dispatches){
+                        // Required lane changes both plan and retained buffer
+                        // size while the probe's private dispatch is outstanding.
+                        for(auto shape:{field::Grid{33,31},field::Grid{1,7}}){
+                            auto costs=std::make_shared<std::vector<EntrySteps>>(shape.cells(),EntrySteps{7,11});
+                            std::vector<std::uint16_t> input(shape.cells(),1);input.front()=65535;input.back()=65401;
+                            const auto output=oracle(input,shape,*costs,700);
+                            BackendSession session;BackendRequest other{input.data(),700,shape,session,costs.get(),
+                                [](void* value,std::size_t cell){return (*static_cast<std::vector<EntrySteps>*>(value))[cell];},
+                                nullptr,{costs,719123,1,true,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps)}};
+                            REQUIRE(executeOpenCLDevice(std::span(&other,1),Plan::Frozen8));CHECK(input==output);++requiredInterleaves;
+                        }
+                        interleaved=true;
+                    }
+                    if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+                }
+                REQUIRE(progress==OpenCLProbeProgress::Complete);CHECK(interleaved);
+                CHECK(std::vector<std::uint16_t>(probe->result().begin(),probe->result().end())==expected);
+                const auto metrics=probe->metrics();CHECK(metrics.activeEpoch);
+                CHECK(metrics.checkInterval==configured.checkInterval);CHECK(metrics.dispatches==requiredDispatches);
+                CHECK(metrics.dispatches>0);CHECK(metrics.hostChecks==(metrics.dispatches+configured.checkInterval-1)/configured.checkInterval);
+                CHECK(metrics.tileMaskInitializations==2);CHECK(metrics.tileMaskClears==0);
+                CHECK(metrics.kernelArgumentUpdates==12+5*metrics.dispatches);
+                probe.reset();CHECK(openCLProbeBytes()==reserved);++completed;
+                if(plan==unsigned(Plan::Frozen8) && grid.width()==7 && grid.height()==13 && cap==700){
+                    using Stage=OpenCLProbe::Stage;
+                    for(const auto [stage,generationCancel]:std::array{
+                        std::pair{Stage::InitialWait,false},std::pair{Stage::KernelWait,false},
+                        std::pair{Stage::CheckWait,false},std::pair{Stage::OutputWait,false},std::pair{Stage::KernelWait,true}}){
+                        auto pending=beginOpenCLProbe(request,Plan(plan),holder);REQUIRE(pending);
+                        progress=OpenCLProbeProgress::Pending;bool reached=false;
+                        for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
+                            progress=pending->advance(17);
+                            if(pending->metrics().stage==stage){reached=true;break;}
+                            if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+                        }
+                        REQUIRE(reached);REQUIRE(progress==OpenCLProbeProgress::Pending);
+                        if(generationCancel)holder->session->configure(2,false);else pending->cancel();
+                        for(unsigned attempt=0;attempt<1000000 && progress==OpenCLProbeProgress::Pending;++attempt){
+                            progress=pending->advance();if(progress==OpenCLProbeProgress::Pending)std::this_thread::yield();
+                        }
+                        REQUIRE(progress==OpenCLProbeProgress::Declined);CHECK(pending->result().empty());
+                        CHECK(*holder->seeds==original);CHECK_FALSE(holder->session->failed.load());
+                        pending.reset();CHECK(openCLProbeBytes()==reserved);++canceled;
+                    }
+                }
+            }
+        }
+        CHECK(completed==(PLANS.size()-1)*10);CHECK(requiredInterleaves==completed*2);CHECK(canceled==5);
+        CHECK(openCLProbeBytes()==baseline);
+    });
+    coordinator.join();
+}
 TEST_CASE("experimental mask and parity bindings preserve every plan across retirement and buffer reuse")
 {
     using namespace gradient_kernel;

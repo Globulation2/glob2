@@ -107,13 +107,24 @@ enum class OpenCLProbeProgress { Pending, Complete, Declined };
 // backend accounts only its staging/state/lane and retained cost plane.
 // Backend staging is charged
 // separately. Unknown/unready cost planes are declined without preparation.
-// Required-only active-epoch/parity-binding/direct-seed/API-CPU ablations are also declined; their
+// Epoch probes use the same initialized program and required check window,
+// private kernel/buffers and one-dispatch advances. Their yielded/cold lifecycle
+// CPU is not a faithful required-batch timing reference or full process cost;
+// capture and automatic promotion remain disabled pending independent gates.
+// Required-only parity-binding/direct-seed/API-CPU ablations are also declined; their
 // results cannot supply automatic-promotion evidence until yielding counterparts
 // have been independently implemented and qualified.
 class OpenCLProbe
 {
 public:
-    struct Metrics {std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0,setupCpuNs=0;};
+    enum class Stage {Costs,Reserve,Copy,Queue,Buffers,Upload,InitialWait,Dispatch,KernelWait,CheckWait,OutputWait};
+    struct Metrics {
+        std::uint64_t threadCpuNs=0,maxAdvanceCpuNs=0,overshoots=0,dispatches=0,setupCpuNs=0;
+        std::uint64_t hostChecks=0,tileMaskInitializations=0,tileMaskClears=0,kernelArgumentUpdates=0;
+        unsigned checkInterval=1;
+        bool activeEpoch=false;
+        Stage stage=Stage::Costs;
+    };
     ~OpenCLProbe();
     OpenCLProbe(const OpenCLProbe&)=delete;
     OpenCLProbe& operator=(const OpenCLProbe&)=delete;
@@ -122,6 +133,8 @@ public:
     // Copy phases check CPU time at most every64 entries. Probe results never
     // overwrite the original seeds. Valid only at Complete.
     std::span<const std::uint16_t> result() const noexcept;
+    // Read from the same coordinator that advances the probe. Cancellation is
+    // independently atomic; metrics and result do not supply concurrent reads.
     Metrics metrics() const noexcept;
 private:
     struct Impl;

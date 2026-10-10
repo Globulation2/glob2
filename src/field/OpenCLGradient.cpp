@@ -1300,7 +1300,7 @@ struct OpenCLProbe::Impl
     OpenCLProbe::Metrics measured;
     std::atomic<bool> cancelled{false};
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
-    enum class Phase {Costs,Reserve,Copy,Queue,Buffers,Upload,InitialWait,Dispatch,KernelWait,CheckWait,OutputWait};
+    using Phase=OpenCLProbe::Stage;
     Phase phase=Phase::Costs;
     BackendRequest request;
     Plan plan;
@@ -1310,7 +1310,7 @@ struct OpenCLProbe::Impl
     std::shared_ptr<Device::Plane> costs;
     std::uint64_t generation;
     std::size_t copied=0,tileCount=0,costCharge=0;
-    UInt round=0,pitch=0,rows=0,flags=0;
+    UInt round=0,pitch=0,rows=0,flags=0,windowEnd=0;
     std::array<UInt,8> descriptor{};
     Handle a=nullptr,b=nullptr,active=nullptr,nextActive=nullptr,event=nullptr;
     bool privateScalar=false,source=false,onlyZerosAndMax=true,borrowedTransfers=false;
@@ -1319,6 +1319,8 @@ struct OpenCLProbe::Impl
         :request(r),plan(p),keepAlive(std::move(owner)),generation(r.session.currentGeneration()) {
         objectLease.resize(sizeof(OpenCLProbe)+sizeof(Impl));
         lane=std::make_shared<Runtime>(runtime().shared,true);
+        measured.activeEpoch=lane->shared->status.activeEpoch;
+        measured.checkInterval=measured.activeEpoch ? lane->shared->status.checkInterval : 1;
         lane->optionalObjectLease.resize(sizeof(Runtime));lane->optionalSubsetLease.resize(objectBytes());
         std::lock_guard lock(lane->shared->lanesMutex);
         lane->shared->lanes.erase(std::remove_if(lane->shared->lanes.begin(),lane->shared->lanes.end(),
@@ -1451,22 +1453,52 @@ struct OpenCLProbe::Impl
             borrowedTransfers=true;
             check(api.EnqueueWriteBuffer(lane->queue,lane->descriptors,0,0,sizeof descriptor,descriptor.data(),0,nullptr,nullptr));
             const UInt one=1;
-            check(api.EnqueueFillBuffer(lane->queue,active,&one,sizeof one,0,tileCount*sizeof(UInt),0,nullptr,&event));
+            check(api.EnqueueFillBuffer(lane->queue,active,&one,sizeof one,0,tileCount*sizeof(UInt),0,nullptr,
+                measured.activeEpoch ? nullptr : &event));
+            ++lane->status.tileMaskInitializations;++measured.tileMaskInitializations;
+            if(measured.activeEpoch){
+                const UInt zero=0;
+                // Fresh A=1/B=0 across every probe, including cached costs and
+                // differently shaped required work interleaved on its own lane.
+                // The trailing event follows BOTH mask fills and all uploads.
+                check(api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof(UInt),0,nullptr,&event));
+                ++lane->status.tileMaskInitializations;++measured.tileMaskInitializations;
+            }
             flush();phase=Phase::InitialWait;break;
         }
         case Phase::InitialWait:
             if(privateScalar) {costs->published.store(true);costs->completed.set_value();}
+            if(measured.activeEpoch){
+                // Same immutable batch bindings as required epoch execution;
+                // only pingpong/mask/epoch arguments change per dispatch. This
+                // kernel is a lane-private clone of the same initialized program.
+                const auto before=lane->status.kernelArgumentUpdates;
+                for(unsigned i=0;i<8;++i)lane->argument(2+i,costs->buffer);
+                lane->argument(10,lane->changed);lane->argument(11,lane->descriptors);
+                lane->argument(14,UInt(tileCount));lane->argument(15,pitch);
+                measured.kernelArgumentUpdates+=lane->status.kernelArgumentUpdates-before;
+                windowEnd=std::min<UInt>(65536,measured.checkInterval);
+            }
             phase=Phase::Dispatch;break;
         case Phase::Dispatch: {
             if(round==65536) throw std::runtime_error("OpenCL probe failed to converge");
             const UInt zero=0;
-            check(api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,sizeof zero,0,nullptr,nullptr));
-            check(api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof zero,0,nullptr,nullptr));
+            if(!measured.activeEpoch || round+1==windowEnd)
+                check(api.EnqueueFillBuffer(lane->queue,lane->changed,&zero,sizeof zero,0,sizeof zero,0,nullptr,nullptr));
+            if(!measured.activeEpoch){
+                check(api.EnqueueFillBuffer(lane->queue,nextActive,&zero,sizeof zero,0,tileCount*sizeof zero,0,nullptr,nullptr));
+                ++lane->status.tileMaskClears;++measured.tileMaskClears;
+            }
+            const auto before=lane->status.kernelArgumentUpdates;
             lane->argument(0,a);lane->argument(1,b);
-            for(unsigned i=0;i<8;++i) lane->argument(2+i,costs->buffer);
-            lane->argument(10,lane->changed);lane->argument(11,lane->descriptors);
+            if(!measured.activeEpoch){
+                for(unsigned i=0;i<8;++i) lane->argument(2+i,costs->buffer);
+                lane->argument(10,lane->changed);lane->argument(11,lane->descriptors);
+                lane->argument(14,UInt(tileCount));lane->argument(15,pitch);
+            }
             lane->argument(12,active);lane->argument(13,nextActive);
-            lane->argument(14,UInt(tileCount));lane->argument(15,pitch);
+            if(measured.activeEpoch)lane->argument(16,round+1);
+            measured.kernelArgumentUpdates+=lane->status.kernelArgumentUpdates-before;
             const auto threads=lane->variants[lane->selectedVariant].threads;
             const std::size_t global[]{std::size_t(pitch)*threads,rows,1},local[]{threads,1,1};
             check(api.EnqueueNDRangeKernel(lane->queue,lane->kernel,3,nullptr,global,local,0,nullptr,&event));
@@ -1475,12 +1507,18 @@ struct OpenCLProbe::Impl
             flush();phase=Phase::KernelWait;break;
         }
         case Phase::KernelWait:
+            // Yielded event polls add optional lifecycle cost, but kernel and
+            // convergence-check counts mirror the required epoch check window.
+            if(measured.activeEpoch && round<windowEnd){phase=Phase::Dispatch;break;}
             check(api.EnqueueReadBuffer(lane->queue,lane->changed,0,0,sizeof flags,&flags,0,nullptr,&event));
             borrowedTransfers=true;
             flush();phase=Phase::CheckWait;break;
         case Phase::CheckWait:
-            ++lane->status.hostChecks;
-            if(flags) phase=Phase::Dispatch;
+            ++lane->status.hostChecks;++measured.hostChecks;
+            if(flags){
+                if(measured.activeEpoch)windowEnd=std::min<UInt>(65536,round+measured.checkInterval);
+                phase=Phase::Dispatch;
+            }
             else {
                 check(api.EnqueueReadBuffer(lane->queue,a,0,0,n*sizeof(std::uint16_t),lane->values.data(),0,nullptr,&event));
                 borrowedTransfers=true;
@@ -1500,7 +1538,13 @@ struct OpenCLProbe::Impl
 OpenCLProbe::OpenCLProbe(std::unique_ptr<Impl> value):state(std::move(value)) {}
 OpenCLProbe::~OpenCLProbe()=default;
 void OpenCLProbe::cancel() noexcept {state->cancelled=true;}
-OpenCLProbe::Metrics OpenCLProbe::metrics() const noexcept {return state->measured;}
+OpenCLProbe::Metrics OpenCLProbe::metrics() const noexcept {
+    auto result=state->measured;
+#if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
+    result.stage=state->phase;
+#endif
+    return result;
+}
 std::span<const std::uint16_t> OpenCLProbe::result() const noexcept {
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     if(state->progress==OpenCLProbeProgress::Complete) return state->lane->values;
@@ -1556,13 +1600,13 @@ std::unique_ptr<OpenCLProbe> beginOpenCLProbe(const BackendRequest& request,Plan
             }
         }
     } timer{device,admitted,started};
-    // Required-only experimental mode has no matching yieldable probe yet.
+    // These required-only configurations have no matching yieldable probe yet.
     // It cannot provide live automatic-promotion evidence.
     if(!keepAlive || !request.gradient || !request.identity.owner || !request.identity.allCells ||
         request.grid.width()<=0 || request.grid.height()<=0 || request.operation!=Operation::CompleteField ||
         request.limit<0 || request.session.failed.load() ||
         plan==Plan::CPU || unsigned(plan)>=PLANS.size() || !(readyPlans.load()&(1u<<unsigned(plan))) ||
-        device.status.activeEpoch || device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
+        device.status.parityBound || device.status.directSeedUpload || device.status.apiCpuMode) return {};
     try {
         auto value=std::unique_ptr<OpenCLProbe>(new OpenCLProbe(std::make_unique<OpenCLProbe::Impl>(request,plan,std::move(keepAlive))));
         admitted=value->state.get();return value;

@@ -419,3 +419,33 @@ Compare mode zero against the pre-candidate binary as an overhead control.
 The compiler may already sink empty-loop setup, so source structure does not
 establish a speedup. A paired CPU component result precedes any full-game trial;
 modified-only or shortcut-only corpora cannot establish activation or benefit.
+
+## Yielding epoch probe development gate
+
+The optional epoch counterpart uses the same initialized `ACTIVE_EPOCH=1`
+program, a private cloned kernel, fresh mask stamps A=1/B=0, and unchanged
+inactive-tile pingpong copies. Each advance submits at most one kernel and yields
+to the required-work coordinator. Its convergence reads match the required
+check window, including final padded dispatches; initialization arguments bind
+once and the masks never clear between dispatches. Epochs stay bounded through
+the 65536-dispatch limit. Cancellation retains uploads/readbacks and immutable
+original inputs until their trailing event has completed.
+
+Evidence should run the `isolated epoch probes*` actual-device case in three
+fresh processes, with `GLOB2_TEST_OPENCL_EPOCH_PROBE=1`,
+`GLOB2_OPENCL_ACTIVE_EPOCH=1`, `GLOB2_OPENCL_CHECK_INTERVAL` set to 1, 8 and 32,
+and parity binding, direct seed upload and API CPU diagnostics explicitly zero.
+The case rejects missing activation/configuration, exercises every compiled plan
+on singleton/thin/odd maps, compares exact arrays to an independent oracle and
+required dispatch counts, and interleaves larger/smaller required buffers.
+It verifies mask/argument/check counters and cancellation during initial upload,
+kernel, convergence read and final readback, including stale session generation.
+Caller input/session/cost retention and backend storage share the optional/total
+host budgets; cancellation must return the subset to its previous reservation.
+
+This is an implementation gate, not promotion evidence. Yielded/cold probe CPU
+includes event polls, setup and lifecycle costs and is not faithful required
+batch timing; it also excludes asynchronous driver CPU outside the calling
+thread. Capture and live promotion remain disabled until calibration, full
+process CPU, device contention and tick-tail gates pass. Unknown cost planes
+still decline; this candidate does not warm them synchronously or on the owner.
