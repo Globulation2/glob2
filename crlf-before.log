@@ -1,0 +1,4 @@
+/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/cli2-browser-shell/completion-crlf.bash: line 2: syntax error near unexpected token `$'{\r''
+/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/cli2-browser-shell/completion-crlf.bash: line 2: `_glob2_complete() {'
+bash: line 1: _glob2_complete: command not found
+

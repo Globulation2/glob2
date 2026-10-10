@@ -1,0 +1,2 @@
+artifacts/cli2-browser-shell/windows-completion.bash: line 2: syntax error near unexpected token `$'{\r''
+artifacts/cli2-browser-shell/windows-completion.bash: line 2: `_glob2_complete() {'
