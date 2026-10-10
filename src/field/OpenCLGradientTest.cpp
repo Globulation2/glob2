@@ -1892,7 +1892,7 @@ TEST_CASE("isolated native probe batches share one dispatch and preserve indexed
                     if(!interleaved && probe->metrics().dispatches) {
                         auto required=originals[1];
                         BackendRequest request{required.data(),700,grid,owner->session,nullptr,
-                            [](void*,std::size_t){return LAND_STEPS;},{requiredCostOwner,9911,21,true,sizeof(int)+256,LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}};
+                            [](void*,std::size_t){return LAND_STEPS;},nullptr,{requiredCostOwner,9911,21,true,sizeof(int)+256,LAND_STEPS.cardinal|(LAND_STEPS.diagonal<<16)}};
                         REQUIRE(executeOpenCLDevice(std::span(&request,1),Plan(plan)));
                         CHECK(required==expected[1]);interleaved=true;
                     }
