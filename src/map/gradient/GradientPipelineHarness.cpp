@@ -1108,7 +1108,7 @@ TEST_CASE("CPU envelope bridge initializes on CPU worker and deduplicates actual
     if constexpr(!GAGCore::ThreadSupport::available)return;
     if(!glob2::nativeThreadId())return; // Native role identity is Linux-only today.
     using namespace gradient_kernel;
-    Environment enabled("GLOB2_GRADIENT_CPU_ENVELOPE","1");
+    PipelineEnvironment enabled("GLOB2_GRADIENT_CPU_ENVELOPE","1");
     // Lookup/owner registration cannot create a registry. This also holds when
     // another test has already initialized the process-owned registry.
     const auto initially=glob2::cpuEnvelopeRegistry();
