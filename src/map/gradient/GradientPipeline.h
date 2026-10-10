@@ -219,7 +219,10 @@ private:
         // not an exclusive overhead to add to propagation accounting.
         if(diagnostics)metrics.ownerJoinCpuNs+=glob2::threadCpuDeltaNs(joinCpuStart,completionCpuStart);
         if(job.deviceField) {
-            if(incomplete && job.deviceField->executedGPU && job.deviceField->deviceCompletedWallNs>waitStart) {
+            // The ticket includes owned input release and service completion work.
+            // Any incomplete GPU outcome can block its fixed publication, even
+            // after the backend call has finished. Backend overlap is telemetry.
+            if(incomplete && job.deviceField->executedGPU) {
                 if(learningEnabled && deviceService) {
                     auto key=job.deviceField->workload;key.batch=job.deviceField->executedBatchCount;
                     deviceService->recordAccepted(job.deviceField->session,key,job.deviceField->decision.plan,

@@ -816,17 +816,26 @@ TEST_CASE("fixed-due GPU stalls demote accepted policy in background without dia
     } diagnostics;
     struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
     const auto plan=requestedOpenCLPlan();readyPlans=1u<<unsigned(plan);setBackend(Backend::OpenCL);
-    for(const bool stalled:{false,true}) {
+    for(const unsigned phase:{0u,1u,2u}) {
+        const bool stalled=phase!=0;
         struct Gate {
             std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();
-            std::atomic<bool> opened{false};void open(){if(!opened.exchange(true))release.set_value();}
+            std::atomic<bool> opened{false};std::atomic<std::uint64_t> cleanupDeviceStamp{0};
+            void open(){if(!opened.exchange(true))release.set_value();}
+        };
+        struct CleanupGate {
+            std::shared_ptr<Gate> gate;std::weak_ptr<OwnedGradientField> field;
+            ~CleanupGate(){
+                if(auto owned=field.lock())gate->cleanupDeviceStamp=owned->deviceCompletedWallNs;
+                gate->entered.set_value();gate->released.wait();
+            }
         };
         auto gate=std::make_shared<Gate>();
         struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} cleanup{gate};
         auto entered=gate->entered.get_future();
         auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
-            []{return true;},[gate](std::span<const BackendRequest> requests,Plan){
-                gate->entered.set_value();gate->released.wait();
+            []{return true;},[gate,phase](std::span<const BackendRequest> requests,Plan){
+                if(phase!=2){gate->entered.set_value();gate->released.wait();}
                 for(const auto& r:requests){r.gradient[0]=99;if(r.executedOnDevice)*r.executedOnDevice=true;}return true;
             }});
         service->configure(2,Backend::OpenCL);
@@ -846,8 +855,11 @@ TEST_CASE("fixed-due GPU stalls demote accepted policy in background without dia
             if(policy->finishProbe(*ticket,1000000,600000,1000000,600000,100000000,true,true))break;
         }
         REQUIRE(policy->lookup(key).plan==plan);
-        pipeline.setAsyncWork([](auto& job,PlanDecision decision){
+        pipeline.setAsyncWork([gate,phase](auto& job,PlanDecision decision){
             auto field=std::make_shared<OwnedGradientField>();field->session=job.owner->session();field->decision=decision;
+            if(phase==2){
+                auto cleanup=std::make_shared<CleanupGate>();cleanup->gate=gate;cleanup->field=field;field->inputs=std::move(cleanup);
+            }
             field->data=std::move(job.data);field->due=job.executorDue;
             field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};field->cpu=[](auto&){FAIL("CPU recovery unexpected");};return field;
         });
@@ -855,6 +867,10 @@ TEST_CASE("fixed-due GPU stalls demote accepted policy in background without dia
         const auto entry=entered.wait_for(std::chrono::seconds(5));if(entry!=std::future_status::ready)gate->open();
         REQUIRE(entry==std::future_status::ready);
         if(!stalled) {gate->open();pipeline.finish();}
+        if(phase==2){
+            REQUIRE(gate->cleanupDeviceStamp.load()>0);
+            CHECK(gate->cleanupDeviceStamp.load()<monotonicNs());
+        }
         auto release=std::async(std::launch::async,[gate]{std::this_thread::sleep_for(std::chrono::milliseconds(20));gate->open();});
         pipeline.advance();release.get();CHECK(published[0]==99);
         if(stalled) {
