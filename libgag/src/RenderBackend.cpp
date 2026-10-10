@@ -25,6 +25,11 @@ void check(bool result)
 	if (!result)
 		throw std::runtime_error(SDL_GetError());
 }
+bool gpuPreparationEnabled(SDL_Renderer *renderer)
+{
+    const char *disabled = std::getenv("GLOB2_DISABLE_GPU_TEXTURE_PREPARATION");
+    return std::strcmp(SDL_GetRendererName(renderer), "software") != 0 && (!disabled || !*disabled);
+}
 class SDLRenderBackend final : public RenderBackend
 {
 	SDL_Renderer *renderer;
@@ -73,9 +78,7 @@ class SDLRenderBackend final : public RenderBackend
 
   public:
 	explicit SDLRenderBackend(SDL_Renderer *renderer) : renderer(renderer),
-        gpuPreparation(std::strcmp(SDL_GetRendererName(renderer), "software") != 0 &&
-                       (!std::getenv("GLOB2_DISABLE_GPU_TEXTURE_PREPARATION") ||
-                        !*std::getenv("GLOB2_DISABLE_GPU_TEXTURE_PREPARATION"))) {}
+        gpuPreparation(gpuPreparationEnabled(renderer)) {}
 	~SDLRenderBackend() override
 	{
 		reset();
@@ -257,6 +260,7 @@ class SDLRenderBackend final : public RenderBackend
 			SDL_DestroyTexture(texture.handle);
 		textures.clear();
         SDL_DestroyTexture(uploadTexture); uploadTexture = nullptr;
+        gpuPreparation = gpuPreparationEnabled(renderer);
 	}
 	void clear()
 	{
