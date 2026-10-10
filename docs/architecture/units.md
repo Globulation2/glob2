@@ -55,6 +55,10 @@ cannot contain unresolved inheritance. Definitions and snapshots have an 8 MiB
 limit. Unknown fields, keys, invalid arithmetic bounds and unresolved experiments
 fail validation.
 
+`configureBuildingCatalog` also binds production widths and interaction rows to
+the unit count. `configureUnitCatalog` alone updates unit state and availability;
+it does not prepare buildings for added definitions.
+
 Add an explicit building production recipe keyed by `bulk-worker`, and include
 its weight in the production `initialRatios` object. Recipe duration remains a
 building property. Admission services use a `units` array of stable keys;
@@ -114,6 +118,12 @@ combat, recruitment and feeding calculations use capabilities and effective
 properties. Population aggregates avoid counting a hybrid as simultaneously
 performing multiple assignments. Feeding admission uses bounded deterministic
 capacity allocation rather than enumerating subsets of all types.
+
+Training-provider summaries and AI recipient tables use compiled learnability
+and active capabilities. Construction qualification is independent: any
+learnable course can grant it to a definition with `learnConstruction`, including
+a course whose ordinary ability is inactive. Qualification-only courses do not
+count as ability training.
 
 ## Cargo and production
 
@@ -182,3 +192,8 @@ consumers verify its digest and experiment requirements before starting a game.
 The platform database migration `0059_unit_catalogs.sql` must accompany deployment
 of the new map metadata transport. The LAN setup path verifies the same catalog
 identity. Existing implicit game headers inherit the map's catalog.
+For older maps, the migration placeholder is omitted from emitted setups and
+inherits definitions recovered from saved race tables. An explicit different
+setup snapshot is rejected, including installed defaults that differ from those
+tables. Current files always enforce their embedded catalog identity, even when
+that catalog was recovered from a legacy save.

@@ -176,6 +176,9 @@ public:
 	// Rebuild effective gates and compact runtime rows in place during setup.
 	void configureExperiments(const std::vector<std::string>& keys);
 	void configureUnits(const UnitCatalog& catalog);
+	// Cold planning masks; service rows retain their authored admission policy.
+	Uint32 unitTrainingAbilities(unsigned unit) const { return unitTrainingAbilities_.at(unit); }
+	Uint32 unitConstructionTrainingAbilities(unsigned unit) const { return unitConstructionTrainingAbilities_.at(unit); }
 	MaterialMask stockSupplyMask() const { return stockSupplyMask_; }
 	MaterialMask directSupplyMask() const { return directSupplyMask_; }
 	MaterialMask extraDirectSupplyMask() const { return extraDirectSupplyMask_; }
@@ -198,9 +201,12 @@ private:
 	// Manifest-only diagnostic provenance; source paths never enter the catalog.
 	void loadSnapshotJson(const std::string& json, const std::vector<std::string>& variantSources);
 	void resolveAndValidate();
+	void compileUnitTrainingAbilities(const UnitCatalog& catalog);
 	void compileRuntimeTraits();
 	std::vector<BuildingRuntimeTraits> runtimeTypes_;
     std::vector<Uint32> unitFlags_;
+	std::vector<Uint32> unitTrainingAbilities_;
+	std::vector<Uint32> unitConstructionTrainingAbilities_;
 	std::vector<BuildingUnitInteraction> unitInteractions_;
 	std::size_t unitCount_=NB_UNIT_TYPE;
 	std::vector<Uint8> unitAvailable_;

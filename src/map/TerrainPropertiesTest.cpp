@@ -4,6 +4,7 @@
 #include "TerrainPresentation.h"
 #include "BinaryStream.h"
 #include "TextStream.h"
+#include "PackedArray.h"
 #include "FileManager.h"
 #include "Utilities.h"
 #include "StreamBackend.h"
@@ -1040,8 +1041,78 @@ TEST_CASE("old hazard route caches rebuild while current saves retain routing st
         CHECK(std::equal(expected.begin(),expected.end(),map.materialGradients[0][WHEAT][0]));
     }
     {
-        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(std::string(saved)));
-        map.loadRuntimeState(&input,141); // identical stream layout, pre-penalty field semantics
+        // Write the actual format141 grammar for this restricted world. The
+        // current writer has eight swim classes and newer pipeline sections;
+        // labelling its bytes as141 would test a malformed stream instead.
+        REQUIRE(world.team->liveBuildings.entries().empty());
+        REQUIRE(map.gradientRuntime->pipeline.pendingCount()==0);
+        auto* historicalBytes=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream historical(historicalBytes);
+        const auto gradient=[&](const Uint16* field) {
+            historical.writeUint8(field!=nullptr,"present");
+            if(field) GAGCore::PackedArray::write<Uint16>(&historical,map.size,
+                [&](size_t i){return field[i];});
+        };
+        historical.writeEnterSection("mapRuntime");
+        historical.writeUint8(map.fogOfWar==map.fogOfWarA.data(),"fogIsA");
+        historical.writeUint32(map.topologyGeneration,"topologyGeneration");
+        historical.writeEnterSection("cells");
+        GAGCore::PackedArray::write<Uint8>(&historical,map.size,
+            [&](size_t i){return map.occupancyCells[i].immobileUnit;});
+        GAGCore::PackedArray::write<Uint32>(&historical,map.size,
+            [&](size_t i){return map.fogOfWarA[i];});
+        GAGCore::PackedArray::write<Uint32>(&historical,map.size,
+            [&](size_t i){return map.fogOfWarB[i];});
+        historical.writeLeaveSection();
+        historical.writeEnterSection("teams");
+        for(int team=0;team<world.game.teamsCount();++team) {
+            historical.writeEnterSection(team);
+            historical.writeEnterSection("claims");
+            GAGCore::PackedArray::write<Uint16>(&historical,map.size,
+                [&](size_t i){return map.clearingAreaClaims[team][i];});
+            historical.writeLeaveSection();
+            historical.writeEnterSection("swimClasses");
+            for(int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim) {
+                historical.writeEnterSection(swim);
+                historical.writeEnterSection("resources");
+                for(int material=0;material<MaterialSlotCount;++material) {
+                    historical.writeEnterSection(material);
+                    gradient(map.materialGradients[team][material][swim]);
+                    historical.writeUint8(map.gradientUpdated[team][material][swim],"updated");
+                    historical.writeEnterSection("markets");
+                    gradient(map.marketMaterialGradients[team][material][swim]);
+                    historical.writeUint8(map.marketGradientDirty[team][material][swim],"dirty");
+                    historical.writeUint8(map.marketGradientUpdated[team][material][swim],"updated");
+                    historical.writeLeaveSection(2);
+                }
+                historical.writeLeaveSection();
+                historical.writeEnterSection("forbidden");
+                gradient(map.forbiddenGradient[team][swim]);
+                historical.writeLeaveSection();
+                historical.writeEnterSection("guard");
+                gradient(map.guardAreasGradient[team][swim]);
+                historical.writeUint8(map.guardGradientUpdated[team][swim],"updated");
+                historical.writeLeaveSection();
+                historical.writeEnterSection("clear");
+                gradient(map.clearAreasGradient[team][swim]);
+                historical.writeUint8(map.clearGradientUpdated[team][swim],"updated");
+                historical.writeLeaveSection(2);
+            }
+            historical.writeLeaveSection();
+            historical.writeEnterSection("buildings");
+            historical.writeLeaveSection(2);
+        }
+        historical.writeLeaveSection();
+        historical.writeEnterSection("gradientPipeline");
+        historical.writeUint8(map.gradientRuntime->pipeline.delayTicks(),"delay");
+        historical.writeUint8(0,"count");
+        historical.writeLeaveSection();
+        map.saveMaterialRoutingCache(&historical);
+        historical.writeLeaveSection();
+        historical.flush();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(historicalBytes->takeContents()));
+        map.loadRuntimeState(&input,141);
+        CHECK(input.isEndOfStream());
         CHECK(map.materialGradients[0][WHEAT][0]==nullptr);
         CHECK(map.gradientRuntime->pipeline.delayTicks()==2);
         const auto* rebuilt=map.getMaterialGradientSlot(0,WHEAT,0);

@@ -247,11 +247,21 @@ TEST_SUITE("MatchSetup")
         prototype.teams={{0,0}}; SetupSeat seat; seat.seat=0; seat.team=0; seat.name="Legacy client";
         prototype.seats.push_back(seat);
         auto mismatch=UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"foodCapacity":90000}}]})");
-        for (int mode=0;mode<4;++mode) {
+        GameHeader placeholder=fixture.game.gameHeader;
+        placeholder.setUnitCatalog(UnitCatalog::legacyMigration());
+        const auto inferred=MatchSetup::fromGameHeader(placeholder,fixture.game.mapHeader,prototype.map,prototype.simVersion);
+        CHECK(inferred.unitCatalogSnapshot.empty());
+        CHECK(inferred.unitCatalogHash.empty());
+        // A current resave embeds this exact catalog, so its identity must be
+        // transmitted even when its bytes equal the historical placeholder.
+        const auto current=MatchSetup::fromGameHeader(placeholder,mapWithTeams(1),prototype.map,prototype.simVersion);
+        CHECK(current.unitCatalogSnapshot==UnitCatalog::legacyMigration()->serialize());
+        CHECK(current.unitCatalogHash==UnitCatalog::legacyMigration()->digest());
+        for (int mode=0;mode<5;++mode) {
             CAPTURE(mode);
             auto setup=prototype;
             if (mode) {
-                const auto catalog=mode==1?recovered:mode==2?mismatch:UnitCatalog::availableDefaults();
+                const auto catalog=mode==1?recovered:mode==2?mismatch:mode==3?UnitCatalog::availableDefaults():UnitCatalog::legacyMigration();
                 setup.unitCatalogSnapshot=catalog->serialize(); setup.unitCatalogHash=catalog->digest();
             }
             setup.validateSemantics();
@@ -259,7 +269,7 @@ TEST_SUITE("MatchSetup")
             start.setup=setup; start.mapFile=path; start.localSeat=0;
             start.transport=std::make_shared<turntest::ScriptedTransport>();
             const bool loaded=engine.initTurnMatchTask(std::move(start)).run();
-            if (mode<=1) {
+            if (mode<=1 || mode==4) {
                 REQUIRE_MESSAGE(loaded,engine.getInitializationDiagnostic());
                 auto* team=engine.gameTeam(0); REQUIRE(team);
                 CHECK(team->game->gameHeader.getUnitCatalog()->digest()==recovered->digest());
@@ -271,6 +281,52 @@ TEST_SUITE("MatchSetup")
             } else {
                 CHECK_FALSE(loaded); CHECK_FALSE(engine.turnSession());
                 CHECK(engine.getInitializationDiagnostic().find("unit catalog does not match")!=std::string::npos);
+            }
+        }
+    }
+
+    TEST_CASE("current files bind embedded migration catalogs as explicit authority [save-format]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        globals->structuredHeadless=true;
+        const auto catalog=UnitCatalog::legacyMigration();
+        const auto path=(glob2test::artifactDir()/"current-migration.map").string();
+        {
+            glob2test::HeadlessGame world({.teams=1,.loadDefaultRace=true,.header=true});
+            world.game.gameHeader.setUnitCatalog(catalog);
+            world.game.configureBuildingCatalog();
+            REQUIRE(world.addUnit(WORKER,8,8));
+            FILE* file=std::fopen(path.c_str(),"wb"); REQUIRE(file);
+            GAGCore::BinaryOutputStream output(new GAGCore::FileStreamBackend(file));
+            world.game.save(&output,true,"Current migration authority");
+        }
+        const auto map=Engine::loadMapHeader(path);
+        const auto embedded=Engine::loadGameHeader(path);
+        REQUIRE(map.getVersionMinor()>=FILE_FORMAT_VERSION_UNIT_CATALOG);
+        CHECK(embedded.getUnitCatalogSnapshot()==catalog->serialize());
+        MatchSetup prototype=MatchSetup::fromGameHeader(embedded,map,
+            MapSource{.kind=MapSource::Kind::Upload,.hash=sha256Hex(glob2test::readFile(path)),.format=MapSource::Format::Map},
+            currentSimVersion());
+        REQUIRE(prototype.unitCatalogSnapshot==catalog->serialize());
+        for(int mode=0;mode<3;++mode) {
+            CAPTURE(mode);
+            auto setup=prototype;
+            if(mode==1) { setup.unitCatalogSnapshot.clear(); setup.unitCatalogHash.clear(); }
+            if(mode==2) {
+                setup.unitCatalogSnapshot=UnitCatalog::availableDefaults()->serialize();
+                setup.unitCatalogHash=UnitCatalog::availableDefaults()->digest();
+            }
+            Engine engine; Engine::TurnMatchStart start;
+            start.setup=setup; start.mapFile=path; start.localSeat=0;
+            start.transport=std::make_shared<turntest::ScriptedTransport>();
+            const bool loaded=engine.initTurnMatchTask(std::move(start)).run();
+            if(mode==0) {
+                REQUIRE_MESSAGE(loaded,engine.getInitializationDiagnostic());
+                REQUIRE(engine.turnSession());
+                CHECK(engine.gameTeam(0)->game->unitCatalog().digest()==catalog->digest());
+            } else {
+                CHECK_FALSE(loaded); CHECK_FALSE(engine.turnSession());
+                CHECK(engine.getInitializationDiagnostic().find("unit catalog")!=std::string::npos);
             }
         }
     }

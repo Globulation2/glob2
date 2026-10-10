@@ -208,7 +208,11 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     if (!loaded) co_return false;
     // Older headers contain only a migration placeholder. The authoritative
     // definitions are recovered from saved Race tables during the body load.
-    if(!embeddedUnitDefinitions && !start.setup.unitCatalogSnapshot.empty()
+    // Only the historical migration marker is an implicit header placeholder.
+    // An explicitly supplied installed-default snapshot remains authoritative:
+    // it must match recovered tables just like any other authored catalog.
+    const bool migrationPlaceholder=state.header.getUnitCatalog()->digest()==UnitCatalog::legacyMigration()->digest();
+    if(!embeddedUnitDefinitions && !start.setup.unitCatalogSnapshot.empty() && !migrationPlaceholder
         && state.header.getUnitCatalog()->digest()!=gui.game.gameHeader.getUnitCatalog()->digest())
     {
         initializationDiagnostic="The match setup unit catalog does not match the map's recovered catalog";

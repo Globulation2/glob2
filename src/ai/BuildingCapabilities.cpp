@@ -112,14 +112,15 @@ bool experimentEnabled(const std::string& key, const GameHeader& rules)
 	return key.empty() || rules.getExperiments().has(key);
 }
 
-bool serviceRecipient(const BuildingType& type, Intent intent, unsigned unit)
+bool serviceRecipient(const BuildingsTypes& catalog, const BuildingType& type, Intent intent, unsigned unit)
 {
     const auto& s=type.semantics;
     const bool admitted=type.maxUnitInside>0 && s.admittedUnits.matches(unit,s.admittedUnitMask);
     const int ability=BuildingCapabilityIndex::trainingAbility(intent);
     if(ability>=0) {
         const auto& training=s.training[ability];
-        return admitted && training.enabled && training.targetLevel>0 && training.units.matches(unit,training.unitMask);
+        return admitted && training.enabled && training.targetLevel>0 && training.units.matches(unit,training.unitMask)
+            && (catalog.unitTrainingAbilities(unit)&(1u<<ability));
     }
     switch(intent) {
     case Intent::ProduceWorker:case Intent::ProduceExplorer:case Intent::ProduceWarrior:
@@ -127,7 +128,11 @@ bool serviceRecipient(const BuildingType& type, Intent intent, unsigned unit)
     case Intent::Feed:return admitted && s.feeding.enabled && s.feeding.units.matches(unit,s.feeding.unitMask);
     case Intent::Heal:return admitted && s.healing.enabled && s.healing.units.matches(unit,s.healing.unitMask);
     case Intent::TrainConstruction:
-        for(const auto& t:s.training) if(admitted && t.enabled && t.constructionLevel>0 && t.units.matches(unit,t.unitMask))return true;
+        for(unsigned ability=0;ability<NB_ABILITY;++ability) {
+            const auto& t=s.training[ability];
+            if(admitted && t.enabled && t.constructionLevel>0 && t.units.matches(unit,t.unitMask)
+                && (catalog.unitConstructionTrainingAbilities(unit)&(1u<<ability)))return true;
+        }
         return false;
     case Intent::ProjectileDefense:
         return type.shootingRange>0 && type.shootRhythm>0 && (unit<s.resolvedProjectileDamage.size()?s.resolvedProjectileDamage[unit]>0:unit<3 && s.projectileDamage[unit]>0);
@@ -141,10 +146,10 @@ bool serviceRecipient(const BuildingType& type, Intent intent, unsigned unit)
     }
 }
 
-std::vector<std::uint8_t> serviceMask(const BuildingType& type, Intent intent,unsigned count)
+std::vector<std::uint8_t> serviceMask(const BuildingsTypes& catalog, const BuildingType& type, Intent intent,unsigned count)
 {
     std::vector<std::uint8_t> result(count+1);
-    for(unsigned id=0;id<count;++id)result[id]=serviceRecipient(type,intent,id);
+    for(unsigned id=0;id<count;++id)result[id]=serviceRecipient(catalog,type,intent,id);
     const auto& s=type.semantics;
     result[count]=(intent==Intent::ExchangeResources && (s.market.interTeamFruitExchange || s.market.suppliesStock || s.market.suppliesDirectStock))
         || (intent==Intent::ProjectileDefense && type.shootingRange>0 && type.shootRhythm>0 && s.projectileBuildingDamage>0);
@@ -184,7 +189,7 @@ BuildingCapabilityIndex::BuildingCapabilityIndex(const BuildingsTypes& catalog)
 		if (type.isBuildingSite) continue;
         for(std::size_t demand=0;demand<IntentCount;++demand) {
             auto& mask=data_->masks_[id][demand];
-            mask=serviceMask(type,static_cast<Intent>(demand),catalog.getRuntime(id)->unitCount);
+            mask=serviceMask(catalog,type,static_cast<Intent>(demand),catalog.getRuntime(id)->unitCount);
             if(std::any_of(mask.begin(),mask.end(),[](auto value){return value!=0;})) {
                 data_->intentMasks_[id]|=std::uint64_t(1)<<demand;
                 data_->providers_[demand].push_back(int(id));
