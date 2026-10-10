@@ -247,6 +247,21 @@ __kernel void propagate(__global const ushort *a,__global ushort *b,
  }
 }
 )CL";
+// Programs are shared by the device; each lane owns distinct kernel handles.
+// Both use the complete shared plan descriptor, so advertised parameters,
+// compilation options and dispatch geometry cannot drift apart.
+struct KernelVariant : ExecutionPlan
+{
+    Handle program = nullptr, kernel = nullptr;
+};
+constexpr auto kernelVariants()
+{
+    std::array<KernelVariant, PLANS.size() - 1> variants{};
+    for (std::size_t i = 0; i < variants.size(); ++i)
+        static_cast<ExecutionPlan&>(variants[i]) = PLANS[i + 1];
+    return variants;
+}
+
 struct Runtime;
 struct Device
 {
@@ -256,17 +271,7 @@ struct Device
     std::atomic<bool> failed{false};
     Handle device = nullptr, context = nullptr;
     OpenCLStatus status;
-    struct Variant
-    {
-        UInt x, y, steps, threads;
-        bool colored = false, frozen = false;
-        Handle program = nullptr, kernel = nullptr;
-    };
-    // Keep a Jacobi fallback, three expanding-halo variants, and two local
-    // fixed-point variants. Workgroup size is independent of the output tile.
-    std::array<Variant, 6> variants{{{16, 16, 4, 256}, {16, 16, 2, 128, true},
-                                     {16, 16, 4, 128, true}, {16, 16, 8, 256, true},
-                                     {16, 16, 8, 128, true, true}, {16, 16, 16, 64, true, true}}};
+    std::array<KernelVariant, PLANS.size() - 1> variants = kernelVariants();
     std::size_t selectedVariant = 0;
     Handle kernel = nullptr;
     struct Plane
@@ -366,8 +371,8 @@ struct Device
                 const char *text = source;
                 variant.program = api.CreateProgramWithSource(context, 1, &text, nullptr, &error);
                 check(error);
-                const auto options = "-cl-std=CL1.2 -DCORE_X=" + std::to_string(variant.x) +
-                                     " -DCORE_Y=" + std::to_string(variant.y) +
+                const auto options = "-cl-std=CL1.2 -DCORE_X=" + std::to_string(variant.tileWidth) +
+                                     " -DCORE_Y=" + std::to_string(variant.tileHeight) +
                                      " -DSTEPS=" + std::to_string(variant.steps) +
                                      " -DCOLOR_RELAXATION=" + std::to_string(variant.colored) +
                                      " -DWG=" + std::to_string(variant.threads) +
@@ -410,8 +415,8 @@ struct Device
                 selectedVariant = std::size_t(candidate - variants.begin());
             }
             kernel = variants[selectedVariant].kernel;
-            status.tileWidth = variants[selectedVariant].x;
-            status.tileHeight = variants[selectedVariant].y;
+            status.tileWidth = variants[selectedVariant].tileWidth;
+            status.tileHeight = variants[selectedVariant].tileHeight;
             status.localSteps = variants[selectedVariant].steps;
             status.available = true;
         }
@@ -443,17 +448,7 @@ struct Runtime
     OpenCLStatus status;
     bool probed = false;
     Handle device = nullptr, context = nullptr, queue = nullptr;
-    struct Variant
-    {
-        UInt x, y, steps, threads;
-        bool colored = false, frozen = false;
-        Handle program = nullptr, kernel = nullptr;
-    };
-    // Keep a Jacobi fallback, three expanding-halo variants, and two local
-    // fixed-point variants. Workgroup size is independent of the output tile.
-    std::array<Variant, 6> variants{{{16, 16, 4, 256}, {16, 16, 2, 128, true},
-                                     {16, 16, 4, 128, true}, {16, 16, 8, 256, true},
-                                     {16, 16, 8, 128, true, true}, {16, 16, 16, 64, true, true}}};
+    std::array<KernelVariant, PLANS.size() - 1> variants = kernelVariants();
     std::size_t selectedVariant = 0;
     Handle kernel = nullptr;
     Handle first = nullptr, second = nullptr, changed = nullptr, descriptors = nullptr;
@@ -668,15 +663,15 @@ struct Runtime
             }
             held[field]=costPlane(*r);
             desc.insert(desc.end(),{UInt(r->grid.width()),UInt(r->grid.height()),UInt(offset),UInt(field),
-                UInt(r->limit),held[field]->uniform ? 3u : 1u,UInt((r->grid.width()+variants[selectedVariant].x-1)/variants[selectedVariant].x),
-                UInt((r->grid.height()+variants[selectedVariant].y-1)/variants[selectedVariant].y)});
+                UInt(r->limit),held[field]->uniform ? 3u : 1u,UInt((r->grid.width()+variants[selectedVariant].tileWidth-1)/variants[selectedVariant].tileWidth),
+                UInt((r->grid.height()+variants[selectedVariant].tileHeight-1)/variants[selectedVariant].tileHeight)});
             offset+=n;++field;
         }
         write(first, values.data(), total * sizeof(std::uint16_t));
         write(descriptors, desc.data(), desc.size() * sizeof(UInt));
         Handle a = first, b = second;
         const auto &variant = variants[selectedVariant];
-        const UInt pitch = (width + variant.x - 1) / variant.x, rows = (height + variant.y - 1) / variant.y;
+        const UInt pitch = (width + variant.tileWidth - 1) / variant.tileWidth, rows = (height + variant.tileHeight - 1) / variant.tileHeight;
         const std::size_t stride = std::size_t(pitch) * rows, tileCount = stride * requests.size();
         if (tileCount > std::numeric_limits<UInt>::max() ||
             tileCount > std::numeric_limits<std::size_t>::max() / sizeof(UInt))
@@ -774,8 +769,8 @@ struct Runtime
     {
         selectedVariant = index;
         kernel = variants[index].kernel;
-        status.tileWidth = variants[index].x;
-        status.tileHeight = variants[index].y;
+        status.tileWidth = variants[index].tileWidth;
+        status.tileHeight = variants[index].tileHeight;
         status.localSteps = variants[index].steps;
         status.colored = variants[index].colored;
     }
@@ -895,7 +890,7 @@ void prepare()
     device.initialize();
     unsigned mask=0;
     if(device.status.available && !device.failed.load())
-        for(std::size_t i=0;i<device.variants.size();++i) if(device.variants[i].kernel) mask|=1u<<(i+1);
+        for(std::size_t i=0;i<device.variants.size();++i) if(device.variants[i].kernel) mask|=1u<<unsigned(device.variants[i].id);
     readyPlans.store(mask,std::memory_order_release);
 #endif
 }

@@ -400,6 +400,15 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   determine which candidates are available. Unsupported candidates are skipped
   internally. `AdaptiveGradientPolicy.h` owns complete, versioned execution
   plans, indexed by field family and actual batch size (one through eight).
+  The shared descriptors are the single source of tile geometry, local sweep
+  counts, workgroup sizes and relaxation modes for both device compilation and
+  worker execution lanes; compile-time contracts keep plan ids and readiness
+  bits aligned. Direct execution groups accept at most eight requests sharing
+  a valid family, session and operation; dimensions, costs and caps can differ.
+  Invalid groups throw `std::invalid_argument` before execution or accounting,
+  while empty groups are no-ops. The batch entry point validates every family
+  before splitting heterogeneous inputs into eligible groups. Invalid optional
+  observations are dropped without throwing or indexing profile storage.
   OpenCL executes an explicit variant; it never calibrates, benchmarks a CPU
   reference or conducts a kernel tournament inside required work. Unknown
   automatic categories use CPU. The first controller milestone does not learn

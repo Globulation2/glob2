@@ -56,10 +56,21 @@ inline bool canBatch(const BackendSession &session)
 
 // The shared layer selects once. Backends execute exactly that plan or decline
 // without touching seeds. No selected plan invokes a comparison or tournament.
+// A direct group has at most eight requests with one family, session and
+// operation. Invalid groups throw before execution or telemetry; empty is a no-op.
+// Dimensions, movement costs and propagation caps may differ within a group.
 inline void executeGradientGroup(std::span<const BackendRequest> requests, Backend mode)
 {
     if(requests.empty()) return;
+    if (requests.size() > BATCH_CATEGORIES)
+        throw std::invalid_argument("Gradient group exceeds eight requests");
     const auto& first=requests.front();
+    for (const auto& request : requests) {
+        validateFamily(request.family);
+        if (request.family != first.family || &request.session != &first.session ||
+            request.operation != first.operation)
+            throw std::invalid_argument("Gradient group requires one family, session and operation");
+    }
     const bool eligible=std::all_of(requests.begin(),requests.end(),[](const auto& request) {
         return request.operation==Operation::CompleteField && request.limit>=0;
     });
@@ -106,6 +117,7 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
 }
 inline void executeGradientBatch(std::span<const BackendRequest> input, Backend mode)
 {
+    for (const auto& request : input) validateFamily(request.family);
     // Batches are explicitly ready; no gathering, retained inputs or optional
     // dependency. Group only adjacent requests sharing semantic eligibility.
     for(std::size_t begin=0;begin<input.size();) {

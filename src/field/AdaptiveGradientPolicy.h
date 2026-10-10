@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <stdexcept>
 
 namespace gradient_kernel
 {
@@ -17,18 +18,41 @@ enum class Operation { CompleteField, ResumableSearch };
 enum class Plan : unsigned { CPU, Jacobi4, Colored2, Colored4, Colored8, Frozen8, Frozen16, Count };
 struct ExecutionPlan {
     Plan id; Backend backend; unsigned steps, threads; bool colored, frozen;
+    unsigned tileWidth, tileHeight;
 };
 inline constexpr std::array<ExecutionPlan, unsigned(Plan::Count)> PLANS{{
-    {Plan::CPU,Backend::CPU,0,0,false,false},
-    {Plan::Jacobi4,Backend::OpenCL,4,256,false,false},
-    {Plan::Colored2,Backend::OpenCL,2,128,true,false},
-    {Plan::Colored4,Backend::OpenCL,4,128,true,false},
-    {Plan::Colored8,Backend::OpenCL,8,256,true,false},
-    {Plan::Frozen8,Backend::OpenCL,8,128,true,true},
-    {Plan::Frozen16,Backend::OpenCL,16,64,true,true}}};
+    {Plan::CPU,Backend::CPU,0,0,false,false,0,0},
+    {Plan::Jacobi4,Backend::OpenCL,4,256,false,false,16,16},
+    {Plan::Colored2,Backend::OpenCL,2,128,true,false,16,16},
+    {Plan::Colored4,Backend::OpenCL,4,128,true,false,16,16},
+    {Plan::Colored8,Backend::OpenCL,8,256,true,false,16,16},
+    {Plan::Frozen8,Backend::OpenCL,8,128,true,true,16,16},
+    {Plan::Frozen16,Backend::OpenCL,16,64,true,true,16,16}}};
+// Plan ids are persisted in atomic decisions and readiness masks. The backend
+// derives its compilation and lane descriptors from this same ordered table.
+static_assert(PLANS.size() < 32);
+static_assert([] {
+    for (std::size_t i = 0; i < PLANS.size(); ++i) {
+        const auto& plan = PLANS[i];
+        if (unsigned(plan.id) != i) return false;
+        if (i == 0) {
+            if (plan.backend != Backend::CPU || plan.steps || plan.threads ||
+                plan.tileWidth || plan.tileHeight || plan.colored || plan.frozen) return false;
+        } else if (plan.backend != Backend::OpenCL || !plan.steps || !plan.threads ||
+                   !plan.tileWidth || !plan.tileHeight || (plan.frozen && !plan.colored)) return false;
+    }
+    return true;
+}());
 inline constexpr std::size_t BATCH_CATEGORIES = 8, CATEGORIES = std::size_t(Family::Count)*BATCH_CATEGORIES;
 inline std::size_t batchCategory(std::size_t count) { return std::clamp<std::size_t>(count,1,8)-1; }
-inline std::size_t category(Family family, std::size_t count) { return std::size_t(family)*8+batchCategory(count); }
+inline bool validFamily(Family family) { return unsigned(family) < unsigned(Family::Count); }
+inline void validateFamily(Family family) {
+    if (!validFamily(family)) throw std::invalid_argument("Invalid gradient family");
+}
+inline std::size_t category(Family family, std::size_t count) {
+    validateFamily(family);
+    return std::size_t(family)*BATCH_CATEGORIES+batchCategory(count);
+}
 inline std::atomic<Backend>& backendSetting() {
     static std::atomic<Backend> value{[] {
         const auto* name=std::getenv("GLOB2_GRADIENT_BACKEND");
@@ -141,6 +165,7 @@ public:
         return {Plan(word&255),word>>8,generation.load(std::memory_order_acquire)};
     }
     PlanDecision choose(Family family,std::size_t count,Backend mode,Operation operation=Operation::CompleteField) const {
+        validateFamily(family);
         // Semantic and owner eligibility precede any performance-policy lookup.
         if(operation!=Operation::CompleteField || !ComputeExecutor::workerSlot()) return {};
         auto result=decision(family,count);
@@ -160,6 +185,11 @@ public:
     void record(const GradientObservation& observation) noexcept {
         const auto slot=ComputeExecutor::workerSlot();
         if(!accounting || !slot || slot>=WorkerSlots) return;
+        // Telemetry is nonthrowing and optional. Malformed external observations
+        // are dropped before they can reach profile indexing or readiness shifts.
+        if (!validFamily(observation.family) || unsigned(observation.decision.plan) >= PLANS.size()) {
+            ++accounting->dropped; return;
+        }
         auto& b=accounting->buffers[slot]; const auto written=b.written.load(std::memory_order_relaxed);
         if(written-b.read.load(std::memory_order_acquire)==BufferSize) { ++accounting->dropped; return; }
         b.entries[written%BufferSize]=observation;

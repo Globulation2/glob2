@@ -8,7 +8,7 @@ from pathlib import Path
 import statistics
 
 from corpus import digest, manifest, qualifying_class
-from run import CANDIDATES, CONFIGS
+from contracts import CANDIDATES, CONFIGS, validate_completed
 
 
 def median(values):
@@ -38,14 +38,8 @@ def wins(candidate, baseline, protocol):
 
 
 def analyze(directory):
-    freeze = json.loads((directory/'freeze.json').read_text())
+    freeze, receipt = validate_completed(directory)
     protocol = freeze['protocol']; cases = freeze['corpus']
-    if cases != manifest(freeze['split']):
-        raise ValueError('corpus differs from the declared independent-layout roster')
-    if digest(cases) != freeze['corpus_sha256']:
-        raise ValueError('corpus digest mismatch')
-    if not (directory/'complete.json').exists():
-        raise ValueError('incomplete qualification; no admission or screening claim')
     expected = {(layout['id'],stage,plan,repeat)
                 for layout in cases for stage in range(3)
                 for plan in (*CONFIGS,*CANDIDATES)
@@ -69,14 +63,16 @@ def analyze(directory):
         eligible = row['plan'] != 'bounded' or row['cap'] <= 16*row['minimum_step']
         if row['class_match'] != class_match or row.get('eligible',True) != eligible:
             raise ValueError('incorrect workload classification or semantic exclusion')
-        if eligible and (not isinstance(row.get('total_ns'),int) or row['total_ns'] <= 0):
+        if eligible and (type(row.get('total_ns')) is not int or row['total_ns'] <= 0):
             raise ValueError('invalid execution timing')
-        if row.get('eligible', True) and (not row['exact'] or row.get('error')):
+        if row.get('eligible', True) and (row.get('exact') is not True or row.get('error')):
             raise ValueError('oracle/device failure')
         groups[key[:3]].append(row);count+=1
         executions += int(eligible)
     if expected:
         raise ValueError('missing samples')
+    if receipt.get('records') != count or receipt.get('executions') != executions:
+        raise ValueError('completion counts differ from observed results')
     for layout in cases:
         dimensions[f"{layout['width']}x{layout['height']}"] += 1
     comparisons = {}; summary={}
@@ -99,13 +95,13 @@ def analyze(directory):
              win_fraction=fraction,minimum_maps=required,
              passes_screen=total>=required and fraction>=protocol['minimum_win_fraction'])
         comparisons[candidate]=dict(maps)
-    survivors = [name for name,s in summary.items() if s['passes_screen']]
+    survivors = [name for name in freeze['candidates'] if summary[name]['passes_screen']]
     final_coverage = (freeze['split']=='final' and len(cases)>=protocol['final_layouts'] and
-                      all(dimensions.get(f'{size}x{size}',0)>=200 for size in protocol['sizes']))
+                      all(dimensions.get(f'{size}x{size}',0)>=protocol['layouts_per_square_size'] for size in protocol['sizes']))
     return dict(split=freeze['split'],sources=freeze['sources'],corpus_sha256=freeze['corpus_sha256'],
                 layouts=len(cases),records=count,executions=executions,semantic_skips=count-executions,
                 dimensions=dict(dimensions),exact=True,
-                screen_survivors=survivors,summary=summary,comparisons=comparisons,
+                eligible_candidates=freeze['candidates'],screen_survivors=survivors,summary=summary,comparisons=comparisons,
                 kernel_qualified=survivors if final_coverage else [],admitted=[],
                 reason='Offline timings cannot establish selectability, competitive coverage or integrated benefit; no production admission')
 

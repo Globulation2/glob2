@@ -539,6 +539,87 @@ TEST_SUITE("OpenCLGradient")
 
 TEST_SUITE("OpenCLGradient")
 {
+TEST_CASE("gradient policy rejects invalid families before eligibility or indexing")
+{
+    using namespace gradient_kernel;
+    BackendSession policy;
+    for (const auto family : {Family::Count, Family(-1), Family(1000)}) {
+        CHECK_THROWS_AS(category(family, 1), std::invalid_argument);
+        CHECK_THROWS_AS(policy.establish(family, 1, Plan::CPU), std::invalid_argument);
+        CHECK_THROWS_AS(policy.decision(family, 1), std::invalid_argument);
+        // Owner and resumable short circuits must not hide invalid input.
+        CHECK_THROWS_AS(policy.choose(family, 1, Backend::CPU), std::invalid_argument);
+        CHECK_THROWS_AS(policy.choose(family, 1, Backend::CPU, Operation::ResumableSearch), std::invalid_argument);
+    }
+    CHECK(policy.decision(Family::Generic, 1).version == 0);
+}
+TEST_CASE("direct gradient groups validate bounds and homogeneity before work")
+{
+    using namespace gradient_kernel;
+    unsigned calls = 0;
+    std::uint16_t value = 1;
+    BackendSession policy, otherPolicy;
+    const auto cpu = [](void* context, std::uint16_t* out) {
+        ++*static_cast<unsigned*>(context); *out = 123;
+    };
+    const BackendRequest request{&value, COST_LIMIT, {1, 1}, policy, &calls,
+        [](void*, std::size_t) { return LAND_STEPS; }, cpu, {}};
+    std::vector<BackendRequest> requests{request};
+    SUBCASE("oversized group") { for (unsigned i = 1; i < 9; ++i) requests.push_back(request); }
+    SUBCASE("different families") {
+        requests.push_back(request); requests.back().family = Family::Materials;
+    }
+    SUBCASE("different operations") {
+        requests.push_back(request); requests.back().operation = Operation::ResumableSearch;
+    }
+    SUBCASE("different sessions") {
+        requests.push_back(BackendRequest{&value, COST_LIMIT, {1, 1}, otherPolicy,
+            &calls, request.costAt, cpu, {}});
+    }
+    SUBCASE("invalid family") {
+        requests.front().family = Family::Count;
+    }
+    // Run on the owner: invalid contracts must be checked even when GPU and
+    // observation sampling would otherwise be skipped by owner eligibility.
+    CHECK_THROWS_AS(executeGradientGroup(requests, Backend::CPU), std::invalid_argument);
+    CHECK(calls == 0);
+    CHECK(value == 1);
+    CHECK(policy.metrics().recorded == 0);
+    CHECK_NOTHROW(executeGradientGroup({}, Backend::CPU));
+    CHECK(calls == 0);
+}
+TEST_CASE("gradient batches reject invalid later families before executing any group")
+{
+    using namespace gradient_kernel;
+    unsigned calls = 0;
+    std::uint16_t value = 1;
+    BackendSession policy;
+    const BackendRequest request{&value, COST_LIMIT, {1, 1}, policy, &calls,
+        [](void*, std::size_t) { return LAND_STEPS; },
+        [](void* context, std::uint16_t*) { ++*static_cast<unsigned*>(context); }, {}};
+    std::vector<BackendRequest> requests(9, request);
+    requests.back().family = Family(-1);
+    CHECK_THROWS_AS(executeGradientBatch(requests, Backend::CPU), std::invalid_argument);
+    CHECK(calls == 0);
+    CHECK_NOTHROW(executeGradientBatch({}, Backend::CPU));
+}
+TEST_CASE("malformed optional observations are dropped before profile processing")
+{
+    if constexpr(!GAGCore::ThreadSupport::available) return;
+    using namespace gradient_kernel;
+    BackendSession policy;
+    policy.configure(2, true);
+    onWorker([&] {
+        GradientObservation observation;
+        observation.family = Family::Count;
+        policy.record(observation);
+        observation.family = Family::Generic;
+        observation.decision.plan = Plan::Count;
+        policy.record(observation);
+    });
+    CHECK(policy.metrics().dropped == 2);
+    CHECK(policy.metrics().recorded == 0);
+}
 TEST_CASE("established plans execute once without calibration and unknown work never scans costs")
 {
     if constexpr(!GAGCore::ThreadSupport::available) return;
@@ -662,6 +743,11 @@ TEST_CASE("every compiled explicit kernel matches the independent oracle without
             [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},
             [](void*,std::uint16_t*){FAIL("explicit kernel must not call a CPU reference");},{}};
         REQUIRE(accelerator(request,Plan(plan))); CHECK(actual==expected);
+        const auto executed = openCLStatus();
+        CHECK(executed.tileWidth == PLANS[plan].tileWidth);
+        CHECK(executed.tileHeight == PLANS[plan].tileHeight);
+        CHECK(executed.localSteps == PLANS[plan].steps);
+        CHECK(executed.colored == PLANS[plan].colored);
     }
     CHECK(openCLStatus().calibrations==before.calibrations);
     CHECK(openCLStatus().tunings==before.tunings);

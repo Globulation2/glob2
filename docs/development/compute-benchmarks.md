@@ -374,7 +374,7 @@ rectangular, awkward and larger grids. Timings and related fields from the same
 map never increase the independent-map count.
 
 `protocol.json` declares candidate classes and gates before evaluation. A map
-wins only if every eligible chronological field beats every existing GPU plan
+wins only if every chronological field within its qualifying class beats every existing GPU plan
 in both cold and warm measurements, by more than 5%, 10 µs and three median
 absolute deviations. Five warm repetitions improve precision without creating
 new maps. No timing outliers are removed. Qualification needs at least 100
@@ -393,15 +393,26 @@ python3 tools/gradient_qualification/analyze.py artifacts/gradient-qualification
 ```
 
 The runner also requires matching-source stress and adversarial-edge reports.
-It records consumed holdouts under `artifacts/gradient-qualification/consumed-holdouts`
+Only candidates that survived development can qualify in the final campaign;
+other candidates remain comparison controls. The runner records consumed holdouts
+after successful compilation and device setup, immediately before generating
+inputs, under `artifacts/gradient-qualification/consumed-holdouts`
 and refuses a second campaign on the same final roster.
 
 Freeze sources, protocol, corpus identity and workload classes before final
 inputs are generated. Do not tune against final results; a failed final campaign
 requires a newly designed independent evaluation, not rerunning the same seeds
-until they pass. The artifacts contain every sample, input hashes, compilation
+until they pass. Completion receipts bind the frozen protocol, source inventory, corpus and raw
+results, including exact record and execution counts. Analyze archived evidence
+with its archived source revision; a different analyzer must not silently
+reinterpret its gates. The artifacts contain every sample, input hashes, compilation
 options, source hashes and device metadata. The device lock is cooperative and
 does not establish exclusive GPU use.
+
+`backend.py` owns GPU execution and native compilation; `contracts.py` owns
+plan descriptors, source identity and evidence validation. `run.py` orchestrates
+the campaign, while `analyze.py` applies qualification policy without GPU access.
+Production plan parameters come from the shared runtime descriptor table.
 
 Offline qualification never sets `admitted`. Production admission additionally
 requires cheap, measured classification, useful coverage beyond all retained
