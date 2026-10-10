@@ -189,8 +189,10 @@ void boxSum(Uint16* grid, int w, int h, CrowdingScratch& scratch)
 	}
 }
 
-void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, CrowdingScratch& scratch)
+void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* out, CrowdingScratch& scratch,
+    gradient_kernel::GradientSeedShape* shape)
 {
+    if(shape)*shape={};
     const auto view = snapshot.view();
     const auto size = size_t(view.width) * view.height;
     const Uint32 mask = Uint32(1) << request.team;
@@ -216,11 +218,16 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
                 out, request.kind==Kind::Markets ? suppliers.data() : nullptr, run);
         break;
     case Kind::Clear:
-        clearCells(view, snapshot.areas->farmEnabled, request.team, request.swim, out, run);
+        if(shape)clearCells(view,snapshot.areas->farmEnabled,request.team,request.swim,out,run,[&](Uint16 value){shape->observe(value);});
+        else clearCells(view, snapshot.areas->farmEnabled, request.team, request.swim, out, run);
         break;
     case Kind::Guard:
-        guardCells(view, request.allies, request.team, request.swim, out, run);
+        if(shape && !request.crowding)guardCells(view,request.allies,request.team,request.swim,out,run,[&](Uint16 value){shape->observe(value);});
+        else guardCells(view, request.allies, request.team, request.swim, out, run);
         break;
+    }
+    if(shape && (request.kind==Kind::Clear || (request.kind==Kind::Guard && !request.crowding))) {
+        shape->cells=size;shape->known=true;
     }
     if (request.kind == Kind::Markets)
         for (const auto& b : snapshot.entities->buildings)

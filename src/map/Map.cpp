@@ -568,6 +568,12 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
         {"coordinator_fallbacks",device.fallbacks},{"coordinator_declined",device.declined},
         {"coordinator_stale",device.stale},{"coordinator_budget_declines",device.budgetDeclines},
         {"coordinator_publication_stalls",device.publicationStalls},
+        {"cross_due_requested",device.crossDueRequested},{"cross_due_ready",device.crossDueReady},
+        {"cross_due_batches",device.crossDueBatches},{"batch_profile_count",device.batchProfiles},
+        {"batch_manifest_hash",device.batchManifestHash},{"batch_source_hash",device.batchSourceHash},
+        {"batch_profile_declines",device.batchProfileDeclines},{"batch_cadence_samples",device.cadenceSamples},
+        {"batch_cadence_drops",device.cadenceDrops},{"batch_cadence_floor_ns",device.cadenceFloorNs},
+        {"batch_cadence_revision",device.cadenceRevision},
         {"coordinator_retained_host_bytes",device.retainedHostBytes},{"coordinator_observation_drops",device.observationDrops},
         {"coordinator_batches",device.batches},{"coordinator_max_batch",device.maxBatch},
         {"coordinator_queued",device.queued},{"thread_cpu_clock_available",glob2::threadCpuNs()!=0},
@@ -603,6 +609,7 @@ void Map::configureCompute(unsigned threads)
     gradientRuntime->backendSession->configure(compute.threadCount(),gradient_kernel::accountingRequested());
     compute.setWorkerOnly(gradientRuntime->backendSession);
     gradientRuntime->deviceService->configure(compute.threadCount(),gradient_kernel::backend());
+    gradientRuntime->pipeline.refreshDeviceConfiguration();
 }
 
 void Map::clear()

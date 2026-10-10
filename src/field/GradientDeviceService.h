@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GradientWorkspace.h"
+#include "GradientDeadlineBatch.h"
+#include "GradientSeedShape.h"
+#include "OpenCLGradient.h"
 #include <condition_variable>
 #include <deque>
 #include <functional>
@@ -27,6 +30,8 @@ struct OwnedGradientField
     int limit = COST_LIMIT;
     unsigned cpuBuckets = 64;
     std::uint64_t due = 0;
+    std::uint64_t publicationTick=0,cadenceRevision=0,cadenceFloorNs=0;
+    GradientSeedShape seedShape;
     EntrySteps (*costAt)(const OwnedGradientField&,std::size_t) = nullptr;
     void (*cpu)(OwnedGradientField&) = nullptr;
     ComputeExecutor::CompletionTicket completion;
@@ -61,6 +66,7 @@ public:
         // an initializer exits. Each registration copies these callbacks.
         std::function<bool()> initialize;
         std::function<bool(std::span<const BackendRequest>,Plan)> execute;
+        std::function<OpenCLStatus()> status; // Owned fake configuration, tests only.
     };
     struct Metrics {
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
@@ -74,6 +80,10 @@ public:
         unsigned coordinatorThreads=0;
         std::uint64_t coordinatorThreadId=0;
         bool diagnostics=false;
+        bool crossDueRequested=false,crossDueReady=false;
+        unsigned batchProfiles=0;
+        std::uint64_t batchManifestHash=0,batchSourceHash=0,batchProfileDeclines=0,crossDueBatches=0;
+        std::uint64_t cadenceSamples=0,cadenceDrops=0,cadenceFloorNs=0,cadenceRevision=0;
         std::array<std::uint64_t,unsigned(GradientFallbackReason::Count)> fallbackReasons{};
     };
 private:
@@ -93,6 +103,10 @@ public:
     bool submit(const std::shared_ptr<OwnedGradientField>&) noexcept;
     void recoverOnWorker(const std::shared_ptr<OwnedGradientField>& field) noexcept { fallback(field); }
     Metrics metrics() const;
+    bool crossDueRequested() const noexcept;
+    // Owner sends only O(1) timing metadata. Window statistics and profile I/O
+    // run on the broker; this never waits for a manifest or cadence readiness.
+    void recordCadence(GradientCadenceSample sample) noexcept;
     // Required workers submit bounded metadata only; learning runs when the
     // coordinator has no required device work. Overflow drops optional learning.
     void recordAccepted(std::shared_ptr<BackendSession>,const WorkloadKey&,Plan,

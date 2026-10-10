@@ -51,6 +51,8 @@ public:
 		std::function<void(Job&)> seed;
 		std::uint64_t preparationNs = 0, submittedNs = 0, executorDue = 0;
         std::shared_ptr<gradient_kernel::OwnedGradientField> deviceField;
+        gradient_kernel::GradientSeedShape seedShape;
+        bool captureSeedShape=false;
 	};
 	// Stable save boundary. A view is valid only during visitPendingSnapshots;
 	// the owning queue and worker state remain private to the pipeline.
@@ -101,7 +103,8 @@ private:
 	std::atomic<std::uint64_t> activeNs{0}, seedCpu{0}, propagationCpu{0}, cpuFields{0}, gpuFields{0}, selectedGpu{0}, requestedGpu{0};
     std::atomic<std::uint64_t> ownedInputCpu{0},handoffCpu{0},cleanupCpu{0};
     bool diagnostics=false;
-    bool workerNoopBypass=false;
+    bool workerNoopBypass=false,crossDueTiming=false;
+    std::uint64_t cadenceStartedNs=0,cadenceOwnerCpuNs=0,cadenceWaitNs=0;
     std::array<std::atomic<std::uint64_t>,unsigned(CPUReason::Count)> cpuReasons{};
 	using Clock = std::chrono::steady_clock;
 	static std::uint64_t ns(Clock::time_point start) {
@@ -133,6 +136,7 @@ private:
                 key.family=family; key.cpuBuckets=job.request.terrainBuckets;
                 key.threads=unsigned(executor->threadCount()); key.limit=gradient_kernel::COST_LIMIT;
                 key.movement=unsigned(job.request.swim);
+                key.seedDensity=job.seedShape.seedDensity();key.blockerDensity=job.seedShape.blockerDensity();
                 key.movementModifiers=job.snapshotLease && job.snapshotLease->terrain && job.snapshotLease->terrain->movementModifiers;
             }
             const auto decision = choice==gradient_kernel::Backend::CPU ? gradient_kernel::PlanDecision{}
@@ -154,6 +158,7 @@ private:
                 const auto ownedStart=diagnostics ? glob2::threadCpuNs() : 0;
                 job.deviceField=asyncWork(job,decision);
                 job.deviceField->workload=key;
+                job.deviceField->seedShape=job.seedShape;job.deviceField->publicationTick=job.due;
                 job.deviceField->tick=job.snapshotLease ? job.snapshotLease->tick : job.due-delay;
                 job.deviceField->seedCpuNs=glob2::threadCpuNs()-preparationCpu;
                 const auto ownedEnd=diagnostics ? glob2::threadCpuNs() : 0;
@@ -267,6 +272,7 @@ public:
 		}
 		pending.clear(); spare.clear(); workspaces.clear();
 		delay = 0; tick = 0; lastSubmission = 0;
+        cadenceStartedNs=cadenceOwnerCpuNs=cadenceWaitNs=0;
 	}
 	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, std::size_t size, Work callback) {
 		reset(); batchWork = {}; asyncWork = {}; metrics = {}; activeNs = 0; seedCpu=0; propagationCpu=0; cpuFields=0; gpuFields=0; selectedGpu=0; requestedGpu=0;
@@ -278,13 +284,18 @@ public:
                 throw std::invalid_argument("GLOB2_GRADIENT_WORKER_NOOP must be 0 or 1");
             workerNoopBypass=std::strcmp(value,"1")==0;
         }
-		executor = &target; shared = sharedExecution;
+		executor = &target; shared = sharedExecution;refreshDeviceConfiguration();
 		resizeWorkspaces(); delay = ticks;
 	}
     void setBatchWork(BatchWork callback) { finish(); batchWork=std::move(callback); }
     void setAsyncWork(AsyncWork callback) { finish(); asyncWork=std::move(callback); }
     void setDeviceService(std::shared_ptr<gradient_kernel::GradientDeviceService> service) {
         finish(); deviceService=std::move(service);
+        refreshDeviceConfiguration();
+    }
+    void refreshDeviceConfiguration() noexcept {
+        crossDueTiming=deviceService && deviceService->crossDueRequested();
+        cadenceStartedNs=cadenceOwnerCpuNs=cadenceWaitNs=0;
     }
     std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
@@ -336,6 +347,16 @@ public:
 	void setWorkerCount(unsigned count) { finish(); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
+        if(crossDueTiming && executor) {
+            const auto started=gradient_kernel::monotonicNs(),ownerCpu=glob2::threadCpuNs();
+            const auto totals=executor->metrics();const auto waited=totals.waitNs+totals.joinWaitNs;
+            const auto elapsed=started>=cadenceStartedNs ? started-cadenceStartedNs : 0;
+            const auto blocked=waited>=cadenceWaitNs ? waited-cadenceWaitNs : elapsed;
+            const auto cpu=glob2::threadCpuDeltaNs(cadenceOwnerCpuNs,ownerCpu);
+            const auto nonWait=cadenceStartedNs && elapsed>blocked ? std::min(elapsed-blocked,cpu) : 0;
+            deviceService->recordCadence({tick+1,started,nonWait});
+            cadenceStartedNs=started;cadenceOwnerCpuNs=ownerCpu;cadenceWaitNs=waited;
+        }
 		++tick;
         metrics.lastPublicationWaitNs=metrics.lastGpuPublicationWaitNs=metrics.lastGpuDeviceOverlapWaitNs=0;
 		while (!pending.empty() && pending.front()->due <= tick) {
@@ -361,6 +382,7 @@ public:
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->deviceField.reset();
+        job->seedShape={};job->captureSeedShape=crossDueTiming;
         job->done=false; job->superseded=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;

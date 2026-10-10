@@ -15,6 +15,9 @@
 #include <future>
 #include <Environment.h>
 #include <string>
+#include <filesystem>
+#include <fstream>
+#include "field/GradientBatchManifest.h"
 
 // Standalone harnesses own an executor; production uses Map's shared executor.
 class TestGradientPipeline : public GradientPipeline
@@ -931,4 +934,137 @@ TEST_CASE("two device registrations share exactly one process coordinator" * doc
     }
     first.stop();CHECK_FALSE(first.metrics().running);CHECK(second.metrics().ready);
     second.stop();
+}
+
+TEST_CASE("deadline batch guard needs warm cadence and rejects acceleration unknown bounds and overflow" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    GradientCadenceFloor cadence;GradientBatchBound bound;
+    bound.maxElapsedNs=100;bound.completionMarginNs=50;
+    for(unsigned tick=1;tick<16;++tick)cadence.record({tick,tick*1000,1000});
+    CHECK_FALSE(cadence.valid());CHECK_FALSE(cadence.fits(18,0,1000,bound,16000));
+    cadence.record({16,16000,1000});REQUIRE(cadence.valid());
+    const auto revision=cadence.version();CHECK(cadence.fits(18,revision,1000,bound,16000));
+    CHECK_FALSE(cadence.fits(16,revision,1000,bound,16000));
+    CHECK_FALSE(cadence.fits(17,revision,1000,bound,16800));
+    CHECK_FALSE(cadence.fits(18,revision,0,bound,16000));
+    auto unknown=bound;unknown.maxElapsedNs=0;CHECK_FALSE(cadence.fits(18,revision,1000,unknown,16000));
+    unknown.maxElapsedNs=UINT64_MAX;CHECK_FALSE(cadence.fits(18,revision,1000,unknown,16000));
+    cadence.record({17,17000,200});CHECK(cadence.version()!=revision);
+    CHECK_FALSE(cadence.fits(20,revision,1000,bound,17000));
+    cadence.record({18,18000,0});CHECK_FALSE(cadence.valid());
+    for(unsigned tick=19;tick<35;++tick)cadence.record({tick,UINT64_MAX-1,1000});
+    CHECK_FALSE(cadence.fits(40,cadence.version(),1000,bound,0));
+}
+
+TEST_CASE("offline batch manifest binds exact configuration seed class and measured batch size" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;using Json=nlohmann::json;
+    OpenCLStatus backend;backend.device="fixture device";
+    backend.platform="platform";backend.platformVendor="vendor";backend.platformVersion="version";
+    backend.deviceVendor="vendor";backend.driverVersion="driver";backend.deviceVersion="version";backend.openCLCVersion="version";
+    const auto nativeIdentity=std::string(64,'a');
+    Json entry={{"width",512u},{"height",512u},{"cpu_buckets",64u},{"threads",2u},{"batch",2u},
+        {"limit",65534u},{"movement",0u},{"movement_modifiers",false},{"seed_density",0u},{"blocker_density",4u},
+        {"family","clear"},{"plan",unsigned(Plan::Frozen8)},{"cost_revision",11u},{"cost_variant",0u},
+        {"max_measured_elapsed_ns",1000000u},{"completion_margin_ns",100000u},{"measured_batches",8u}};
+    Json manifest={{"schema",1u},{"native_binary_sha256",nativeIdentity},{"source","immutable offline fixture"},{"measurement","homogeneous-ready-batch"},
+        {"backend",{{"device",backend.device},{"platform",backend.platform},{"platform_vendor",backend.platformVendor},
+            {"platform_version",backend.platformVersion},{"device_vendor",backend.deviceVendor},{"driver_version",backend.driverVersion},
+            {"device_version",backend.deviceVersion},{"opencl_c_version",backend.openCLCVersion},{"check_interval",backend.checkInterval},{"poll_micros",backend.pollMicros},
+            {"active_epoch",false},{"uniform_metadata",false},{"device_profiling",false},{"parity_bound",false}}},
+        {"profiles",Json::array({entry})}};
+    const auto text=manifest.dump();const auto parsed=GradientBatchManifest::parse(text,backend,false,nativeIdentity);
+    REQUIRE(parsed.count==1);CHECK(parsed.bounds[0].workload.batch==2);CHECK(parsed.bounds[0].costRevision==11);
+    CHECK(parsed.hash==gradientManifestHash(text));CHECK(parsed.sourceHash==gradientManifestHash("immutable offline fixture"));
+    CHECK_THROWS_AS(GradientBatchManifest::parse(text,backend,false,std::string(64,'b')),std::invalid_argument);
+    auto changed=manifest;changed["profiles"][0]["batch"]=1u;
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["profiles"][0]["family"]="materials";
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["profiles"][0]["measured_batches"]=7u;
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["backend"]["check_interval"]=backend.checkInterval+1u;
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["backend"]["driver_version"]="different";
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    changed=manifest;changed["profiles"].push_back(entry);
+    CHECK_THROWS_AS(GradientBatchManifest::parse(changed.dump(),backend,false,nativeIdentity),std::invalid_argument);
+    CHECK_THROWS_AS(GradientBatchManifest::parse(std::string(GradientBatchManifest::MaxBytes+1,' '),backend,false,nativeIdentity),std::invalid_argument);
+}
+
+TEST_CASE("ready cross-due batches need exact profile cadence seed metadata and automatic batch acceptance" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;using Json=nlohmann::json;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Environment {
+        const char* key;std::string previous;
+        Environment(const char* key,const char* value):key(key),previous(std::getenv(key)?std::getenv(key):""){GAGCore::setProcessEnvironment(key,value,1);}
+        ~Environment(){GAGCore::setProcessEnvironment(key,previous.c_str(),1);}
+    } enabled("GLOB2_GRADIENT_CROSS_DUE","1"),batch("GLOB2_GRADIENT_BATCH","8");
+    if(gradientNativeBuildIdentity().empty())return;
+    const auto path=std::filesystem::temp_directory_path()/("glob2-ready-batch-"+std::to_string(monotonicNs())+".json");
+    struct File {std::filesystem::path path;~File(){std::error_code error;std::filesystem::remove(path,error);}} file{path};
+    OpenCLStatus backend;const auto plan=requestedOpenCLPlan();backend.device="fixture device";
+    backend.platform="platform";backend.platformVendor="vendor";backend.platformVersion="version";
+    backend.deviceVendor="vendor";backend.driverVersion="driver";backend.deviceVersion="version";backend.openCLCVersion="version";
+    Json entry={{"width",1u},{"height",1u},{"cpu_buckets",64u},{"threads",2u},{"batch",2u},{"limit",65534u},
+        {"movement",0u},{"movement_modifiers",false},{"seed_density",16u},{"blocker_density",0u},{"family","clear"},
+        {"plan",unsigned(plan)},{"cost_revision",42u},{"cost_variant",7u},{"max_measured_elapsed_ns",1000u},
+        {"completion_margin_ns",1000u},{"measured_batches",8u}};
+    Json manifest={{"schema",1u},{"native_binary_sha256",gradientNativeBuildIdentity()},{"source","ready fake-driver fixture"},{"measurement","homogeneous-ready-batch"},
+        {"backend",{{"device",backend.device},{"platform",backend.platform},{"platform_vendor",backend.platformVendor},
+            {"platform_version",backend.platformVersion},{"device_vendor",backend.deviceVendor},{"driver_version",backend.driverVersion},
+            {"device_version",backend.deviceVersion},{"opencl_c_version",backend.openCLCVersion},{"check_interval",backend.checkInterval},{"poll_micros",backend.pollMicros},
+            {"active_epoch",backend.activeEpoch},{"uniform_metadata",backend.uniformMetadata},{"device_profiling",backend.deviceProfiling},
+            {"parity_bound",backend.parityBound}}},{"profiles",Json::array({entry})}};
+    {std::ofstream out(path);out<<manifest.dump();REQUIRE(bool(out));}
+    const auto pathString=path.string();Environment profile("GLOB2_GRADIENT_BATCH_PROFILE",pathString.c_str());
+    for(unsigned scenario=0;scenario<4;++scenario) {
+        struct Gate {std::promise<void> entered,release;std::shared_future<void> released=release.get_future().share();
+            std::atomic<bool> opened{false};void open(){if(!opened.exchange(true))release.set_value();}};
+        auto gate=std::make_shared<Gate>();struct Release {std::shared_ptr<Gate> gate;~Release(){gate->open();}} cleanup{gate};
+        std::atomic<unsigned> calls{0};auto entered=gate->entered.get_future();
+        auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+            [gate,&calls](std::span<const BackendRequest> requests,Plan){
+                if(calls.fetch_add(1)==0){gate->entered.set_value();gate->released.wait();}
+                for(const auto& request:requests){request.gradient[0]=99;if(request.executedOnDevice)*request.executedOnDevice=true;}return true;
+            },[backend]{return backend;}});
+        service->configure(2,scenario==3 ? Backend::Automatic : Backend::OpenCL);
+        const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+        while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().ready);REQUIRE(service->metrics().crossDueReady);
+        for(unsigned tick=1;tick<=17;++tick)service->recordCadence({tick,monotonicNs(),1000000000ull});
+        while(!service->metrics().cadenceFloorNs && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        REQUIRE(service->metrics().cadenceFloorNs==1000000000ull);
+        ComputeExecutor executor;executor.configure(2);auto session=std::make_shared<BackendSession>();
+        auto costOwner=std::make_shared<int>(0);
+        std::array<std::shared_ptr<OwnedGradientField>,3> fields;
+        struct Context {std::shared_ptr<GradientDeviceService> service;std::shared_ptr<OwnedGradientField> field;ComputeExecutor* executor;};
+        std::array<Context,3> contexts;std::array<ComputeExecutor::Batch,3> tickets;
+        for(unsigned i=0;i<fields.size();++i) {
+            auto field=std::make_shared<OwnedGradientField>();field->session=session;field->decision={plan,0,session->currentGeneration()};
+            field->data=std::make_unique<std::uint16_t[]>(1);field->data[0]=77;field->grid={1,1};
+            field->identity={costOwner,7,42,true};field->limit=65534;field->family=Family::Clear;field->due=10+i;field->publicationTick=20+i;
+            field->workload={1,1,64,2,1,Family::Clear,16,0};field->seedShape={1,1,0,scenario!=1};
+            field->costAt=[](const auto&,std::size_t){return LAND_STEPS;};field->cpu=[](auto&){FAIL("unexpected fallback");};
+            fields[i]=field;contexts[i]={service,field,&executor};
+            const ComputeExecutor::Group group{1,{[](void* value,std::size_t){
+                auto& context=*static_cast<Context*>(value);context.field->completion=context.executor->defer();
+                REQUIRE(context.service->submit(context.field));},&contexts[i]},ComputeExecutor::NoLane};
+            tickets[i]=executor.submit(std::span(&group,1),field->due);
+            if(i==0){const auto result=entered.wait_for(std::chrono::seconds(5));if(result!=std::future_status::ready)gate->open();REQUIRE(result==std::future_status::ready);}
+        }
+        while(service->metrics().submitted<3 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
+        if(service->metrics().submitted!=3)gate->open();
+        REQUIRE(service->metrics().submitted==3);
+        if(scenario==2)service->recordCadence({18,monotonicNs(),100});
+        gate->open();for(const auto& ticket:tickets)executor.join(ticket);
+        for(const auto& field:fields)CHECK(field->data[0]==99);
+        // Unknown seed shape, faster cadence, and unaccepted automatic batch2
+        // each remain singleton although batch1 jobs were selected for GPU.
+        CHECK(calls.load()==(scenario==0 ? 2u : 3u));
+        CHECK(service->metrics().crossDueBatches==(scenario==0 ? 1u : 0u));
+        service->stop();
+    }
 }

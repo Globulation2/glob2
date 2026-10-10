@@ -283,7 +283,8 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
     job->request=request;
     job->snapshotLease=std::move(projected);
     gradientRuntime->pipeline.prepare(job, [](GradientPipeline::Job& job) {
-        gradient_preparation::seed(job.request, *job.snapshotLease, job.data.get(), *job.crowding);
+        gradient_preparation::seed(job.request, *job.snapshotLease, job.data.get(), *job.crowding,
+            job.captureSeedShape ? &job.seedShape : nullptr);
     });
 }
 

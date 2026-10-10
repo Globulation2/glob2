@@ -10,6 +10,7 @@
 #include "BuildingGradientSearch.h"
 #include "Building.h"
 #include "SeedCells.h"
+#include "field/GradientSeedShape.h"
 
 class ComputeExecutor;
 namespace gradient_kernel { struct OwnedGradientField; }
@@ -67,7 +68,8 @@ struct CrowdingScratch
     std::vector<size_t> positions, seeds;
 };
 void boxSum(Uint16* grid, int width, int height, CrowdingScratch& scratch);
-void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
+void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch,
+          gradient_kernel::GradientSeedShape* shape=nullptr);
 struct PropagationField {
     Request request;
     const SimulationSnapshot::Handle* snapshot;
