@@ -99,9 +99,11 @@ TEST_CASE("large fixture import bounds and thread scope never widen ordinary rea
         { const ScopedBenchmarkMapImport inner(false);
           CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT)); }
         CHECK(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
-        bool otherThreadAllowed=true;
-        std::thread worker([&]{otherThreadAllowed=ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT);});
-        worker.join(); CHECK_FALSE(otherThreadAllowed);
+        if constexpr(GAGCore::ThreadSupport::available) {
+            bool otherThreadAllowed=true;
+            auto worker=GAGCore::ThreadSupport::launch([&]{otherThreadAllowed=ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT);});
+            worker.join(); CHECK_FALSE(otherThreadAllowed);
+        }
     }
     CHECK_FALSE(ScopedBenchmarkMapImport::allows(10,10,Map::MIN_SUPPORTED_SIZE_EXPONENT));
 }

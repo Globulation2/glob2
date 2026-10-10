@@ -709,6 +709,7 @@ struct HeadlessRunner
                 {"noop_fields",status.noopFields},{"max_batch_fields",status.maxBatchFields},
                 {"uniform_metadata",status.uniformMetadata},{"uniform_metadata_hits",status.uniformMetadataHits},
                 {"active_epoch",status.activeEpoch},{"tile_mask_initializations",status.tileMaskInitializations},
+                {"parity_bound",status.parityBound},{"kernel_argument_updates",status.kernelArgumentUpdates},
                 {"tile_mask_clears",status.tileMaskClears},{"execution_lanes",status.executionLanes},
                 {"max_concurrent_batches",status.maxConcurrentBatches},
                 {"host_bytes",status.hostBytes},{"peak_host_bytes",status.peakHostBytes},

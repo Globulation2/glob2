@@ -50,6 +50,26 @@ preparation worker through the existing validated callback, avoiding an owned
 GPU request and coordinator wakeup. It is off by default. Retain its CPU scan
 cost in process measurements, and distinguish `cpu_reason_trivial` from actual
 device execution; bypassed fields are never counted as GPU completions.
+`GLOB2_OPENCL_ACTIVE_EPOCH=1` replaces per-dispatch tile-mask clears with
+epoch stamps; `GLOB2_OPENCL_PARITY_BOUND=1` retains opposite ping-pong bindings
+on two private kernel handles. Screen each separately before combining. Both
+default to zero, retain inactive buffer copies and original-seed recovery, and
+decline live optional probes because their yielding implementations have not
+been qualified. Check `active_epoch`, `tile_mask_clears`, `parity_bound`, and
+`kernel_argument_updates` in the warm-window OpenCL counters.
+
+`GLOB2_BENCHMARK_DIAGNOSTICS=1` enables optional thread inventories, per-tick
+publication waits, and inclusive/self CPU scope accounting for `game run`
+benchmark windows. Use it with `GLOB2_GRADIENT_DIAGNOSTICS=1` and
+`GLOB2_GRADIENT_ACCOUNTING=1` for attribution. Diagnostic windows include
+instrumentation overhead and are rejected as acceptance evidence; CPU scopes
+overlap and must not be summed. Thread names do not identify driver roles.
+
+Development fixtures can construct 1024² games through the `GpuOffloadFixture`
+engine harness. `GLOB2_BENCHMARK_LARGE_MAPS=1` enables a bounded, synchronous
+headless saved-game import scope for these fixtures. Ordinary loader, generator,
+lobby and network dimension limits remain unchanged. The scope supports at
+most exponent ten in each dimension and does not admit 2048² fixtures yet.
 
 ## Terrain gradient benchmarks
 
