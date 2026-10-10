@@ -926,3 +926,11 @@ out-of-memory proof. Initialization and dispatch in both fixtures belong to the
 background coordinator. These tests establish exactness and ownership only;
 native release CPU, process accounting and live promotion require separate
 evidence.
+
+Terminal replay receipts retain the policy-bound eager propagation reference,
+common required preparation and reserved optional CPU separately. They also
+retain the latest native stage, copied cells, prepared cost cells, dispatches and
+checks after native storage is destroyed. Budget, required-priority/deadline,
+explicit cancellation, clock invalidity, block overshoot and backend failure
+remain distinct diagnostic causes. These scalars introduce no extra CPU clock
+reads or driver queries and do not qualify incomplete or overspent pairs.

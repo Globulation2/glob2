@@ -163,6 +163,7 @@ public:
         // without polling it. At most checkInterval kernels remain queued.
         std::uint64_t queuedWindowDispatches=0;
         unsigned batchFields=1,retiredFields=0;
+        std::uint64_t copiedCells=0;
     };
     ~OpenCLProbe();
     OpenCLProbe(const OpenCLProbe&)=delete;

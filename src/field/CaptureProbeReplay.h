@@ -22,6 +22,11 @@ public:
         std::size_t firstMismatch=SIZE_MAX,reservedBytes=0;
         bool clockValid=true,exact=false,nativeBackend=true,inferenceSuppressed=true;
         bool quarantined=false,setupDeclined=false,executionFailed=false;
+        // Immutable bound reference and latest native stage, retained after
+        // native/state cleanup. Diagnostics never replace paid cost receipts.
+        std::uint64_t acceptedReferenceCpuNs=0,commonPreparationCpuNs=0,reservedCpuNs=0;
+        OpenCLProbe::Metrics nativeMetrics;
+        bool nativeMetricsAvailable=false,budgetCanceled=false,requiredCanceled=false,explicitCanceled=false;
     };
     struct Clock {
         std::shared_ptr<const void> owner;
@@ -39,6 +44,7 @@ public:
         virtual bool executionFailed() const noexcept {return false;}
         // Unknown test adapters conservatively retain the event polling delay.
         virtual bool waitingForEvent() const noexcept {return true;}
+        virtual bool metrics(OpenCLProbe::Metrics&) const noexcept {return false;}
         virtual std::span<const std::uint16_t> result() const noexcept=0;
     };
     struct Hooks {
@@ -61,6 +67,7 @@ private:
         void cancel() noexcept override {probe->cancel();}
         bool executionFailed() const noexcept override {return probe->metrics().executionFailed;}
         bool waitingForEvent() const noexcept override {return probe->waitingForEvent();}
+        bool metrics(OpenCLProbe::Metrics& out) const noexcept override {out=probe->metrics();return true;}
         std::span<const std::uint16_t> result() const noexcept override {return probe->result();}
     };
     struct State {
@@ -137,7 +144,9 @@ private:
             if(delta>GradientCpuCapture::MaxBlockCpuNs){++receipt.overshoots;canceled=true;}
             if(authorization.reservedCpuNs &&
                (record->receipt().optionalCpuNs>=authorization.reservedCpuNs ||
-                receipt.backgroundCallingCpuNs>=authorization.reservedCpuNs-record->receipt().optionalCpuNs))canceled=true;
+                receipt.backgroundCallingCpuNs>=authorization.reservedCpuNs-record->receipt().optionalCpuNs)) {
+                receipt.budgetCanceled=true;canceled=true;
+            }
         }
         static EntrySteps cost(void* value,std::size_t cell) {
             const auto& captured=*static_cast<State*>(value)->record;
@@ -157,7 +166,13 @@ private:
         wrapperLease.bytes=bytes;
         workload=state->record->key();generation=state->record->requiredGeneration();deadline=state->record->due();
     }
-    void dropProbe() noexcept {probe.reset();}
+    void snapshotProbe() noexcept {
+        if(probe && state) {
+            OpenCLProbe::Metrics latest;
+            if(probe->metrics(latest)) {state->receipt.nativeMetrics=latest;state->receipt.nativeMetricsAvailable=true;}
+        }
+    }
+    void dropProbe() noexcept {snapshotProbe();probe.reset();}
     static bool prepared(const Hooks& hooks) {
         if(hooks.begin)return hooks.ready && hooks.ready(hooks.owner.get());
         const auto status=openCLStatus(); // Status only, no driver/compiler setup.
@@ -239,6 +254,9 @@ public:
                 admission.slackNs,admission.requiredBacklog);
             if(!authorization) {payload->receipt.setupDeclined=true;return {};}
             payload->authorization=*authorization;
+            payload->receipt.acceptedReferenceCpuNs=authorization->acceptedReferenceCpuNs;
+            payload->receipt.commonPreparationCpuNs=authorization->commonPreparationCpuNs;
+            payload->receipt.reservedCpuNs=authorization->reservedCpuNs;
             const auto& record=*payload->record;
             auto costOwner=PrechargedProbeCostOwner::create(payload,record.storageCredit,payload->storageCredit);
             const auto retained=payload->receipt.reservedBytes+record.receipt().reservedBytes+
@@ -254,6 +272,7 @@ public:
             else if(auto native=beginOpenCLProbe(input,authorization->plan,payload))
                 result->probe=std::make_unique<NativeProbe>(std::move(native));
             payload->account(beginCpu,payload->now(),true);
+            result->snapshotProbe();
             if(!result->probe){payload->receipt.setupDeclined=true;return {};}
             payload->setupComplete=true;
             attempted=payload->receipt;return result;
@@ -275,13 +294,20 @@ public:
         const auto start=s.now();
         const bool comparisonAdvance=comparing;
         if(admission.requiredGeneration!=s.record->requiredGeneration() || admission.requiredBacklog ||
-           !admission.slackNs || admission.tick>=s.record->due())s.canceled=true;
+           !admission.slackNs || admission.tick>=s.record->due()) {
+            s.receipt.requiredCanceled=true;s.canceled=true;
+        }
+        // Atomic cancellation can originate elsewhere; diagnostic mutation is
+        // confined to this producer and excludes clock/budget/required causes.
+        if(s.canceled && s.receipt.clockValid && !s.receipt.budgetCanceled &&
+           !s.receipt.overshoots && !s.receipt.requiredCanceled)s.receipt.explicitCanceled=true;
         if(s.canceled && probe)probe->cancel();
         if(progress==Progress::Quarantined) {
             if(s.hooks.reap)s.hooks.reap(s.hooks.owner.get());else reapOpenCLProbeQuarantine();
             if(state.use_count()==1)progress=Progress::Declined;
         } else if(progress==Progress::Pending && probe && !comparing) {
             const auto next=probe->advance();
+            snapshotProbe();
             s.receipt.executionFailed=s.receipt.executionFailed || probe->executionFailed();
             if(next==OpenCLProbeProgress::Quarantined) {
                 s.receipt.quarantined=true;progress=Progress::Quarantined;dropProbe();

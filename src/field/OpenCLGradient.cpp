@@ -1921,6 +1921,7 @@ OpenCLProbe::Metrics OpenCLProbe::metrics() const noexcept {
     auto result=state->measured;
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     result.stage=state->phase;
+    result.copiedCells=state->copied;
 #endif
     return result;
 }

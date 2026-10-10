@@ -9,11 +9,11 @@ namespace
 {
 using namespace gradient_kernel;
 struct Timer {
-    std::uint64_t value=100,calls=0,failAt=0;
+    std::uint64_t value=100,calls=0,failAt=0,step=100;
     static std::uint64_t read(const void* context) {
         auto& timer=*const_cast<Timer*>(static_cast<const Timer*>(context));
         ++timer.calls;if(timer.calls==timer.failAt)return 0;
-        return timer.value+=100;
+        return timer.value+=timer.step;
     }
 };
 struct Driver {
@@ -21,7 +21,7 @@ struct Driver {
     std::shared_ptr<const void> borrowed;
     CostIdentity retainedIdentity;
     unsigned commands=0,polls=0,cancels=0,costCalls=0;
-    bool ready=true,quarantine=false,terminal=false,failed=false,pending=false,awaitingEvent=false,retainCosts=false;
+    bool ready=true,quarantine=false,terminal=false,failed=false,pending=false,awaitingEvent=false,retainCosts=false,provideMetrics=false;
     struct Work final : CaptureProbeReplay::Probe {
         Driver& driver;std::shared_ptr<const void> owner;bool canceled=false,quarantined=false;
         Work(Driver& value,std::shared_ptr<const void> keep):driver(value),owner(std::move(keep)) {}
@@ -37,6 +37,10 @@ struct Driver {
         void cancel() noexcept override {canceled=true;++driver.cancels;}
         bool executionFailed() const noexcept override {return driver.failed && !canceled;}
         bool waitingForEvent() const noexcept override {return driver.awaitingEvent;}
+        bool metrics(OpenCLProbe::Metrics& out) const noexcept override {
+            if(!driver.provideMetrics)return false;
+            out.stage=OpenCLProbe::Stage::CheckWait;out.dispatches=driver.commands;out.copiedCells=driver.original.size();return true;
+        }
         std::span<const std::uint16_t> result() const noexcept override {return driver.output;}
     };
     static bool isReady(const void* value) noexcept {return static_cast<const Driver*>(value)->ready;}
@@ -352,6 +356,37 @@ TEST_CASE("captured replay distinguishes backend failure from cancellation and m
         CHECK(replay->receipt().firstMismatch==SIZE_MAX);
         CHECK(fixture.driver->commands==(scenario==1?0:1));
         auto token=replay->takeSettlement();REQUIRE(bool(token));
+        replay.reset();token.reset();CHECK(openCLProbeBytes()==baseline);
+        CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
+    }
+}
+
+TEST_CASE("replay terminal diagnostics freeze reference and distinguish budget required and explicit cancellation" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto baseline=openCLProbeBytes();
+    for(unsigned scenario=0;scenario<3;++scenario) {
+        Fixture fixture;CaptureProbeReplay::Receipt attempted;
+        fixture.driver->pending=true;fixture.driver->provideMetrics=true;
+        auto replay=fixture.begin(attempted);REQUIRE(bool(replay));
+        CHECK(attempted.acceptedReferenceCpuNs==1000000);CHECK(attempted.commonPreparationCpuNs==0);
+        CHECK(attempted.reservedCpuNs==fixture.input.reservedCpuNs);
+        auto admission=fixture.admission();
+        if(scenario==0)fixture.timer->step=250000; // Bounded 250 us calls, no overshoot.
+        if(scenario==1)admission.requiredBacklog=true;
+        if(scenario==2)replay->cancel();
+        auto progress=CaptureProbeReplay::Progress::Pending;
+        for(unsigned turn=0;turn<32 && progress==CaptureProbeReplay::Progress::Pending;++turn)
+            progress=replay->advance(admission);
+        REQUIRE(progress==CaptureProbeReplay::Progress::Declined);
+        const auto receipt=replay->receipt();
+        CHECK(receipt.budgetCanceled==(scenario==0));CHECK(receipt.requiredCanceled==(scenario==1));
+        CHECK(receipt.explicitCanceled==(scenario==2));CHECK(receipt.overshoots==0);
+        CHECK(receipt.nativeMetricsAvailable);CHECK(receipt.nativeMetrics.stage==OpenCLProbe::Stage::CheckWait);
+        CHECK(receipt.nativeMetrics.copiedCells==9);CHECK_FALSE(receipt.nativeBackend);
+        CHECK_FALSE(receipt.exact);CHECK(receipt.comparedCells==0);
+        auto token=replay->takeSettlement();REQUIRE(bool(token));
+        // Metadata survives State/native destruction, independently of storage.
+        CHECK(replay->receipt().acceptedReferenceCpuNs==1000000);CHECK(replay->receipt().reservedCpuNs==fixture.input.reservedCpuNs);
         replay.reset();token.reset();CHECK(openCLProbeBytes()==baseline);
         CHECK(fixture.policy->metrics().probeCpuNs>=fixture.input.reservedCpuNs);
     }
