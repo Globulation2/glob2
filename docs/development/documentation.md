@@ -60,7 +60,7 @@ artifacts/docs-venv/bin/python tools/check_docs.py
 
 The checker parses Markdown and checks local links, images, GitHub-style heading
 anchors, explicit HTML anchors, topic order, and reachability from the main index.
-It ignores fenced examples. Named exceptions in `tools/docs/config.json` explain
+It ignores fenced examples. Named exceptions in `tools/docs/navigation.json` explain
 vendored, fixture, legal, and generated handling; do not add exceptions to hide
 broken maintained links. Duplicate headings use GitHub's numbered anchor suffixes.
 

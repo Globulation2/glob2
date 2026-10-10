@@ -197,7 +197,7 @@ def main():
     parser.add_argument('--root', type=Path, default=ROOT)
     parser.add_argument('--external', action='store_true', help='also audit external links (network-dependent)')
     args = parser.parse_args()
-    config = json.loads((args.root / 'tools/docs/config.json').read_text())
+    config = json.loads((args.root / 'tools/docs/navigation.json').read_text())
     errors, external, count = check(args.root, documents(args.root), config)
     if args.external:
         errors.extend(check_external(external))

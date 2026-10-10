@@ -24,7 +24,7 @@ import ci_run_metrics as metrics
 
 class PolicyTest(unittest.TestCase):
     def test_documentation_checker_is_cheap_contributor_tooling(self):
-        paths = ['tools/check_docs.py', 'tools/docs/config.json',
+        paths = ['tools/check_docs.py', 'tools/docs/navigation.json',
                  'tools/docs/requirements.txt', 'test/test_check_docs.py']
         for path in paths:
             with self.subTest(path=path):
