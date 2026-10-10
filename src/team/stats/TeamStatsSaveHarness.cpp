@@ -1509,6 +1509,7 @@ TEST_CASE("Editor building deletion clears ability lists before save and slot re
  TeamStatsMeasurementFixture w;
  auto* swarm=w.building("swarm");
  auto* team=w.game.teams[0];
+ team->addToStaticAbilitiesLists(swarm);
  REQUIRE(std::find(team->swarms.begin(),team->swarms.end(),swarm)!=team->swarms.end());
  const auto slot=Building::GIDtoID(swarm->gid);
  team->buildingsTryToBuildingSiteRoom.push_back(swarm);
@@ -1528,6 +1529,7 @@ TEST_CASE("Editor building deletion clears ability lists before save and slot re
  CHECK(loaded->game.teams[0]->swarms.empty());
  CHECK(loaded->game.teams[0]->myBuildings[slot]!=nullptr);
  auto* flag=w.building("clearingflag",16,16);
+ team->addToStaticAbilitiesLists(flag);
  REQUIRE(std::find(team->clearingFlags.begin(),team->clearingFlags.end(),flag)!=team->clearingFlags.end());
  REQUIRE(w.game.removeUnitAndBuildingAndFlags(16,16,Game::DEL_FLAG));
  CHECK(team->clearingFlags.empty());
