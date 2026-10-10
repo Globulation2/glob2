@@ -1333,8 +1333,16 @@ TEST_SUITE("TeamStatsSave")
             GAGCore::BinaryOutputStream output(bytes); value.save(&output);
             return bytes->takeContents();
         };
-        const auto migrated=wire(stats);
+        REQUIRE(stats.aiTelemetry.size()==1);
+        REQUIRE(stats.aiTelemetry[0]->active);
         auto restored=roundTrip(world.game);
+        CHECK(stats.aiTelemetry.size()==1);
+        CHECK_FALSE(stats.aiTelemetry[0]->active);
+        for(const auto& row:stats.stats) CHECK(row.rangedUnits==row.numberUnitPerType[EXPLORER]);
+        // Game::save captures AI telemetry and marks the retained source AI
+        // inactive in this smaller continuation world. Compare the complete
+        // state after that real save lifecycle, including its telemetry field.
+        const auto migrated=wire(stats);
         REQUIRE(wire(restored->game.teams[0]->stats)==migrated);
         const auto components=[](Game& game) {
             std::vector<Uint32> state,buildings,units;
