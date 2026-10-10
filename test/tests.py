@@ -252,6 +252,7 @@ UNIT_TESTS = [
     '#src/field/ResumableProductionGradientTest.cpp',
     '#src/field/OpenCLGradientTest.cpp',
     '#src/field/OpenCLBorrowedLifetimeTest.cpp',
+    '#src/field/OpenCLRequiredLifetimePoolTest.cpp',
     '#src/field/GradientCpuCaptureTest.cpp',
     '#src/field/OpenCLTransferProofTest.cpp',
     '#src/field/CaptureProbeReplayTest.cpp',
