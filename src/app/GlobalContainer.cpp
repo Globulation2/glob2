@@ -16,6 +16,7 @@
 #include "render/ResourceSprites.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
+#include "UnitCatalog.h"
 #include "render/terrain/TerrainCatalogIO.h"
 #include "render/terrain/TerrainCompositor.h"
 #include "ui/ThemeCatalog.h"
@@ -68,6 +69,8 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 	for (const auto& definition : buildingsTypes.experiments())
 		buildingExperiments.push_back({definition.key, definition.label, definition.help});
 	for (const auto& definition : ResourceRegistry::availableDefaults()->experiments())
+		buildingExperiments.push_back(definition);
+	for (const auto& definition : UnitCatalog::availableDefaults()->experiments())
 		buildingExperiments.push_back(definition);
 	registerCatalogExperiments(buildingExperiments);
 

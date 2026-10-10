@@ -24,6 +24,9 @@ namespace
 
 void Unit::wrapPosition()
 {
+	if (!performance[FLY] && !performance[WALK] && (dx || dy) && (!performance[SWIM] || !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable)) {
+		dx=dy=0; direction=UNIT_DIRECTION_NONE;
+	}
 	posX=(posX+dx)&(owner->map->getMaskW());
 	posY=(posY+dy)&(owner->map->getMaskH());
 }
@@ -53,6 +56,10 @@ void Unit::claimOccupiedMapSlot()
 void Unit::handleActionRandomGround()
 {
 	assert(!performance[FLY]);
+	if (!performance[WALK] && !performance[SWIM]) {
+		dx=dy=0; direction=UNIT_DIRECTION_NONE; action=STOP_WALK;
+		speed=std::max(1,performance[STOP_WALK]); return;
+	}
 	clearOccupiedMapSlot();
 	owner->map->pathfindRandom(this);
 	wrapPosition();
@@ -102,7 +109,7 @@ void Unit::handleActionGoingTarget()
 	wrapPosition();
 
 	if(dx == 0 && dy == 0)
-		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+		if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredGroundMovement();
 	speed=unitTerrainMovementSpeed(performance[action], action == FLY
@@ -137,7 +144,7 @@ void Unit::handleActionGoingDxDy()
 	wrapPosition();
 
 	if(dx == 0 && dy == 0)
-		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+		if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
 	selectPreferredMovement();
 	speed=unitTerrainMovementSpeed(performance[action], action == FLY
@@ -174,7 +181,7 @@ void Unit::handleActionExitingBuilding()
 
 void Unit::handleActionFilling()
 {
-	owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 	directionFromDxDy();
 	action=BUILD;
 	speed=performance[action];
@@ -182,7 +189,7 @@ void Unit::handleActionFilling()
 
 void Unit::handleActionAttackingTarget()
 {
-	owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 	directionFromDxDy();
 	action=ATTACK_SPEED;
 	speed=performance[action];
@@ -190,7 +197,7 @@ void Unit::handleActionAttackingTarget()
 
 void Unit::handleActionHarvesting()
 {
-	owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 	directionFromDxDy();
 	action=HARVEST;
 	speed=performance[action];

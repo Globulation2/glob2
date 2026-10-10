@@ -275,7 +275,11 @@ TEST_SUITE("TeamStatsSave")
 			CAPTURE(c.y);
 			auto *u = w.world.addUnit(c.type, c.x, c.y, 0);
 			u->attachedBuilding = c.attached;
-			if(c.attached && c.attached->type->zonable[c.type])u->activity=Unit::ACT_FLAG;
+			if(c.attached && c.attached->type->zonable[c.type]) {
+                u->activity=Unit::ACT_FLAG;
+                u->jobPurpose=c.assignment==M::WAR_FLAG ? UnitJobPurpose::Defend
+                    : c.assignment==M::CLEARING_FLAG ? UnitJobPurpose::Clear : UnitJobPurpose::Explore;
+            }
 			const Uint64 place = m.combatDeathPlace[c.type][c.place];
 			const Uint64 assignment = m.combatDeathAssignment[c.type][c.assignment];
 			const Uint32 checksum = w.game().checkSum();
@@ -308,6 +312,7 @@ TEST_SUITE("TeamStatsSave")
 		auto *flagged = warrior(41, 15, 0, 3, 1);
 		flagged->attachedBuilding = war;
 		flagged->activity = Unit::ACT_FLAG;
+        flagged->jobPurpose = UnitJobPurpose::Defend;
 		auto *inside = warrior(30, 50, 0, 0, 1);
 		inside->displacement = Unit::DIS_INSIDE;
 		warrior(13, 15, 1, 2, 2); // enemy warrior at our home

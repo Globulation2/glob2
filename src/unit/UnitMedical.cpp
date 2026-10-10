@@ -12,6 +12,7 @@
 #include "Utilities.h"
 #include "render/GameAnimations.h"
 #include <set>
+#include <climits>
 
 void Unit::selectPreferredMovement(void)
 {
@@ -22,7 +23,7 @@ void Unit::selectPreferredMovement(void)
 	else if ((performance[WALK]) && (owner->map->terrainPropertiesAt(posX, posY).walkable) )
 		action=WALK;
 	else
-		assert(false);
+		action=STOP_WALK;
 }
 
 void Unit::selectPreferredGroundMovement(void)
@@ -33,13 +34,13 @@ void Unit::selectPreferredGroundMovement(void)
 	else if ((performance[WALK]) && (owner->map->terrainPropertiesAt(posX, posY).walkable) )
 		action=WALK;
 	else
-		assert(false);
+		action=STOP_WALK;
 }
 
 bool Unit::isUnitHungry(void)
 {
 	// A saved hungry unit must recover under no hunger rather than keep seeking food.
-	if (owner->game->gameHeader.isHungerDisabled()) return false;
+	if (owner->game->gameHeader.isHungerDisabled() || hungriness<=0) return false;
 	int realTrigHungry;
 	if (carriedMaterial==-1)
 		realTrigHungry=trigHungry;
@@ -55,6 +56,7 @@ void Unit::standardRandomActivity()
 	attachedBuilding=NULL;
 	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;
+	jobPurpose=UnitJobPurpose::None;
 	activity=Unit::ACT_RANDOM;
 	displacement=Unit::DIS_RANDOM;
 	validTarget=false;
@@ -83,6 +85,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 			assert(*it!=this);
 	}
 
+	jobPurpose=UnitJobPurpose::None;
 	activity=ACT_RANDOM;
 	displacement=DIS_RANDOM;
 	validTarget=false;
@@ -99,7 +102,7 @@ void Unit::handleMagic(void)
 	assert(medical==MED_FREE);
 	assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
 
-	magicActionTimeout--;
+	if (magicActionTimeout>INT_MIN) --magicActionTimeout;
 	if (magicActionTimeout > 0)
 		return;
 
@@ -111,7 +114,7 @@ void Unit::handleMagic(void)
 	{
 		std::set<Uint16> damagedBuildings;
 		damagedBuildings.insert(NOGBID);
-		constexpr int ATTACK_RANGE = UNIT_MAGIC_ATTACK_RANGE;
+		const int ATTACK_RANGE = runtimeTraits().magicRange;
 		for (int yi=posY-ATTACK_RANGE; yi<=posY+ATTACK_RANGE; yi++)
 			for (int xi=posX-ATTACK_RANGE; xi<=posX+ATTACK_RANGE; xi++)
 			{
@@ -140,14 +143,16 @@ void Unit::handleMagic(void)
 						if (owner->attackableTeams() & targetTeamMask)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
-							Sint32 damage = applyAreaAttack((attackForce + experienceLevel) * owner->game->gameHeader.getGlassCannonScale()) - enemyUnit->getRealArmor(true);
+							const int strength=applyAreaAttack(int(std::clamp<Sint64>(
+								(Sint64(attackForce)+experienceLevel)*owner->game->gameHeader.getGlassCannonScale(),0,INT_MAX)));
+							const int damage=int(std::clamp<Sint64>(Sint64(strength)-enemyUnit->getRealArmor(true),0,INT_MAX));
 							if (damage > 0)
 							{
 								TeamStats::recordDamage(
 									owner, enemyUnit->owner, GameplayMeasurements::MAGIC,
 									GameplayMeasurements::UNIT, enemyUnit->hp, damage);
 								enemyUnit->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
-								enemyUnit->hp -= damage;
+								enemyUnit->hp = int(std::max<Sint64>(INT_MIN,Sint64(enemyUnit->hp)-damage));
 
 								enemyUnit->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
 
@@ -174,16 +179,16 @@ void Unit::handleMagic(void)
 void Unit::handleMedical(void)
 {
 	/* Make sure explorers try to immediately feed after healing to increase their range. */
-	if ((typeNum == EXPLORER) && (displacement == DIS_EXITING_BUILDING))
+	if (hasCapability(UnitRuntimeTraits::ServiceRebound) && displacement == DIS_EXITING_BUILDING)
 	{
 		medical=MED_FREE;
-		if (!owner->game->gameHeader.isHungerDisabled() && (destinationPurpose == HEAL) && (hungry < ((HUNGRY_MAX * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
+		if (!owner->game->gameHeader.isHungerDisabled() && (destinationPurpose == HEAL) && (hungry < ((Sint64(foodCapacity()) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
 		{
 			needToRecheckMedical = 1;
 			medical = MED_HUNGRY;
 			return;
 		}
-		else if ((destinationPurpose == FEED) && (hp < (((performance[HP]) * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
+		else if ((destinationPurpose == FEED) && (hp < ((Sint64(performance[HP]) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
 		{
 			needToRecheckMedical = 1;
 			medical = MED_DAMAGED;
@@ -197,13 +202,14 @@ void Unit::handleMedical(void)
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
 	// Custom-game "no hunger" rule: units never grow hungry or starve.
-	if (!owner->game->gameHeader.isHungerDisabled())
+	if (!owner->game->gameHeader.isHungerDisabled() && hungriness>0)
 	{
-		hungry -= hungriness;
+		hungry = Sint32(std::max<Sint64>(INT_MIN,Sint64(hungry)-hungriness));
 		if (hungry<=0)
 		{
-			recordLethalDamage(1, GameplayMeasurements::STARVATION);
-			hp--;
+			const int damage=runtimeTraits().starvationDamage;
+			recordLethalDamage(damage, GameplayMeasurements::STARVATION);
+			hp=int(std::max<Sint64>(INT_MIN,Sint64(hp)-damage));
 		}
 	}
 
@@ -255,6 +261,8 @@ void Unit::resolveDeath()
 				owner->map->setClearingAreaUnclaimed(previousClearingArea->x, previousClearingArea->y, owner->teamNumber);
 			}
 			owner->map->clearImmobileUnit(posX, posY);
+
+			clearCargo();
 
 			// generate death animation (no-op in headless mode)
 			owner->game->animations->onUnitDeath(*owner->map, posX, posY, owner);

@@ -4,6 +4,19 @@ Save capture preserves simulation continuation; encoding and durable persistence
 
 ## Serialized representation
 
+Unit format 153 embeds the immutable resolved catalog before live units, building
+interaction compilation and AI state. It stores explicit assignment purposes and
+exact extended cargo packets. Current race tables must match that authoritative
+catalog. Saves from formats 58 through 152 use staged race-table migration and
+retain cached unit performance, hunger, learning and pending service state.
+Additional production counters are counted by actual catalog size; historical
+three-choice recipes retain their saved cost overrides. See [unit definitions](units.md).
+
+Packed statistics records support rows up to 1 MiB. Rows through the historical
+65,544-byte limit keep their original 256-record wire batches. Wider unit tables
+use smaller batches to keep raw transpose storage below the same 16 MiB ceiling;
+immediate and deferred encoders use identical boundaries.
+
 Memory-only representation changes must preserve legacy serialized widths and
 sentinels. Maxima's obstacle-free distance fields use 16-bit storage with an
 internal 65535 infinity, translated to the existing signed 32-bit `INT_MAX` on

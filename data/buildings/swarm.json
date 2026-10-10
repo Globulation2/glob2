@@ -230,23 +230,14 @@
           ],
           "recipes": {
             "explorer": {
-              "cost": {
-                "food": 5
-              },
               "duration": 150,
               "enabled": true
             },
             "warrior": {
-              "cost": {
-                "food": 5
-              },
               "duration": 150,
               "enabled": true
             },
             "worker": {
-              "cost": {
-                "food": 5
-              },
               "duration": 150,
               "enabled": true
             }

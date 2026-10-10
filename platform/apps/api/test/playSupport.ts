@@ -15,6 +15,7 @@ import {
   type MapSetCredits,
   type GeneratorDescriptor,
   type ResourceExperimentDefinitions,
+  type UnitCatalog,
   type SimVersion,
 } from '@glob2/protocol';
 import { verifyJwt } from '@glob2/protocol/node';
@@ -93,6 +94,8 @@ export class FakeEngine {
   setCredits: MapSetCredits = [];
   resourceExperiments: ResourceExperimentDefinitions = [];
   requiredResourceExperiments: string[] = [];
+  unitCatalog: UnitCatalog | undefined;
+  requiredUnitExperiments: string[] = [];
   readonly ran: { kind: EngineJobKind; jobId: string }[] = [];
 
   constructor(db: Kysely<Database>, blobs: BlobStore) {
@@ -157,6 +160,8 @@ export class FakeEngine {
             teamCount: teams,
             resourceExperiments: this.resourceExperiments,
             requiredResourceExperiments: this.requiredResourceExperiments,
+            ...(this.unitCatalog ? { unitCatalog: this.unitCatalog } : {}),
+            requiredUnitExperiments: this.requiredUnitExperiments,
           },
           chosenSeed: generator.seed,
         },

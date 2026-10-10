@@ -317,8 +317,10 @@ for (const variant of ['serial', 'threaded']) {
   for (const selection of [
     {name:'registry', suite:'ResourceRegistry', cases:'*'},
     {name:'composition', suite:'RuntimeResources', cases:'frozen seeded resource compositions*'},
+    {name:'unit-registry', suite:'UnitCatalog', cases:'*'},
+    {name:'unit-composition', suite:'UnitCustomization', cases:'all locked capability ablations*'},
   ]) {
-    test(`WebAssembly preserves runtime resource ${selection.name} contracts (${variant})`, async ({page}, info) => {
+    test(`WebAssembly preserves runtime catalog ${selection.name} contracts (${variant})`, async ({page}, info) => {
       test.setTimeout(300000);
       const root=path.resolve(__dirname,'../..');
       const output=path.join(root,'artifacts/browser-determinism/resources',variant,info.project.name,selection.name);
@@ -370,7 +372,14 @@ for (const variant of ['serial', 'threaded']) {
         const committed=fs.readFileSync(path.join(root,'test/fixtures/resources/seeded-compositions.trace'),'utf8');
         expect(traces[0][1].replace(/\r\n/g,'\n')).toEqual(committed.replace(/\r\n/g,'\n'));
         expect(traces[0][1].trim().split('\n')).toHaveLength(150);
-      } else expect(result.files['tests.xml']).toContain('stock catalog separates map identities');
+      } else if(selection.name==='unit-composition'){
+        const traces=Object.entries(result.files).filter(([name])=>name.endsWith('/unit-ablations.trace'));
+        expect(traces).toHaveLength(1);
+        const committed=fs.readFileSync(path.join(root,'test/fixtures/unit-catalog/ablation-checksums.txt'),'utf8');
+        expect(traces[0][1].replace(/\r\n/g,'\n')).toEqual(committed.replace(/\r\n/g,'\n'));
+        expect(traces[0][1].trim().split('\n')).toHaveLength(97);
+      } else if(selection.name==='registry') expect(result.files['tests.xml']).toContain('stock catalog separates map identities');
+      else expect(result.files['tests.xml']).toContain('UnitCatalog');
     });
   }
 }

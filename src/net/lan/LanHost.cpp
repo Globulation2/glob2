@@ -18,6 +18,7 @@
 
 #include "AINames.h"
 #include "GameHeader.h"
+#include "UnitCatalog.h"
 #include "BuildingType.h"
 #include "MapCache.h"
 #include "NetBroadcaster.h"
@@ -190,6 +191,12 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 		header.setBuildingCatalogSnapshot(legacy.snapshotJson());
 	}
 	setup.buildingCatalogSnapshot = header.getBuildingCatalogSnapshot();
+    if (header.getUnitCatalogSnapshot() != UnitCatalog::availableDefaults()->serialize() ||
+        !header.getUnitCatalog()->experiments().empty())
+    {
+        setup.unitCatalogSnapshot = header.getUnitCatalogSnapshot();
+        setup.unitCatalogHash = header.getUnitCatalog()->digest();
+    }
 	setup.resourceExperiments = options.map.resourceExperimentDefinitions.empty()
 		? header.resourceExperiments() : options.map.resourceExperimentDefinitions;
 	if (!setup.buildingCatalogSnapshot.empty())
@@ -780,6 +787,10 @@ void LanHost::applyOptions(const GameHeader& header)
 			catalogHeader.setBuildingCatalogSnapshot(room.setup.buildingCatalogSnapshot);
 		if (catalogHeader.getBuildingCatalogSnapshot() != room.setup.buildingCatalogSnapshot)
 			throw std::invalid_argument("options cannot change the map building catalog");
+        const auto unitSnapshot = room.setup.unitCatalogSnapshot.empty()
+            ? UnitCatalog::availableDefaults()->serialize() : room.setup.unitCatalogSnapshot;
+        if (catalogHeader.getUnitCatalogSnapshot() != unitSnapshot)
+            throw std::invalid_argument("options cannot change the map unit catalog");
 		const auto edited =
 			Online::MatchSetup::fromGameHeader(catalogHeader, options.map, room.setup.map, room.setup.simVersion);
 		room.setup.rules = edited.rules;

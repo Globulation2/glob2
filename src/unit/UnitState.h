@@ -8,6 +8,8 @@
 #include "UnitConsts.h"
 #include <type_traits>
 
+enum class UnitJobPurpose : Uint8 { None, Transport, Clear, Explore, Defend };
+
 // Authoritative pointer-free unit state. Both live units and captured units use
 // this exact record; capture copies it without translating fields or arrays.
 // Relationships and query caches remain outside the record.
@@ -79,7 +81,7 @@ struct UnitState
 		HUNGRY_MAX=150000
 	};
 
-	Sint32 typeNum;
+	Uint16 typeNum;
 	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	Uint16 gid;
@@ -116,6 +118,12 @@ struct UnitState
 	// Keep optional aura bookkeeping after existing hot simulation fields.
 	std::array<Uint8,3> areaServiceRemainders{};
 	Uint32 areaLastPulseTick = Uint32(-1);
+	// Derived flags avoid a catalog lookup in the common unit and gradient loops.
+	Uint32 capabilityFlags = 0;
+	Sint32 configuredFoodCapacity = HUNGRY_MAX;
+	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
+	Uint8 regenerationRemainder = 0;
+	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);
 static_assert(std::is_standard_layout_v<UnitState>);

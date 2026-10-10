@@ -133,7 +133,7 @@ BuildingSeedResult buildingCells(const MapState::View& view, const BuildingSeed&
     const bool canSwim=b.swim>0;
     const auto closed=[&](size_t i) {
         const auto& p=view.terrainProperties(i);
-        return !p.walkable && !(canSwim && p.swimmable);
+        return !gradient_kernel::terrainAllowsGround(p,b.swim);
     };
     if (b.route==BuildingRoute::Footprint)
     {

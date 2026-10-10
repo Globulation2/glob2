@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Unit.h"
 #include <algorithm>
+#include <climits>
 
 #define AI_FILE_MIN_VERSION 1
 #define AI_FILE_VERSION 2
@@ -18,7 +19,7 @@ using std::shared_ptr;
 bool AICastor::enoughFreeWorkers()
 {
 	telemetry.count(AITrace::AI2::AICastor_enoughFreeWorkers_calls);
-	int totalWorkers=observedTeam->statistics.numberUnitPerType[WORKER];
+	int totalWorkers=observedTeam->statistics.carriers;
 	int workersBalance=observedTeam->workerBalance;
 	int partFree=(totalWorkers/strategy.isFreePart);
 	int minBalance;
@@ -53,7 +54,7 @@ void AICastor::computeCanSwim()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && u->typeNum==WORKER && u->medical==0)
+		if (u && (u->capabilityFlags&UnitRuntimeTraits::Transport) && u->medical==0)
 		{
 			if (u->performance[SWIM]>0)
 				sumCanSwim++;
@@ -197,8 +198,12 @@ void AICastor::computeWarLevel()
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		const AIEngine::UnitView *u=myUnits[i];
-		if (u && u->medical==Unit::MED_FREE && u->typeNum==WARRIOR)
-			warPowerSum+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH]*glassCannonScale;
+		if (u && u->medical==Unit::MED_FREE && (u->capabilityFlags&UnitRuntimeTraits::Melee))
+        {
+            const auto strength=std::clamp<Sint64>(Sint64(u->performance[ATTACK_STRENGTH])*glassCannonScale,0,INT_MAX);
+            const auto power=Sint64(std::max(0,u->performance[ATTACK_SPEED]))*strength;
+            warPowerSum=int(std::min<Sint64>(INT_MAX,Sint64(warPowerSum)+power));
+        }
 	}
 	if (warPowerSum<strategy.strikeWarPowerTriggerDown)
 	{

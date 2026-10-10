@@ -141,6 +141,8 @@ Handle capture(const Game& game,
 	// Map buffers keep their constructed range when reused. Overwrite selected
 	// arrays directly rather than clearing and growing them one cell at a time.
 	entities->buildings.clear(); entities->units.clear(); entities->relationships.clear(); entities->projects.clear();
+    entities->extraProduction.clear();
+    if (needs(requirements, Component::Entities)) entities->unitCargo = game.unitCargo;
 	if (needs(requirements, Component::Entities)) {
 		const auto teams = game.mapHeader.getNumberOfTeams();
 		reserve(entities->buildingSlotIndices, teams * Building::MAX_COUNT);
@@ -167,8 +169,8 @@ Handle capture(const Game& game,
             ? game.buildingsTypes.fingerprint() : std::string();
 		catalogs->buildings = std::move(catalog);
 		catalogs->capabilities = game.buildingCapabilities().frozenTables();
-		for (int type = 0; type < NB_UNIT_TYPE; ++type)
-			std::copy_n(Race::unitTypes[type], NB_UNIT_LEVELS, catalogs->unitTypes[type].begin());
+		catalogs->units = header.getUnitCatalog();
+        catalogs->unitTypes.catalog = catalogs->units;
 		catalogs->typeDefinitions = std::make_shared<const std::vector<BuildingType>>(*game.buildingsTypes.retainTypes());
 		catalogs->resources = game.map.frozenResourceRegistry();
         catalogs->assets = game.map.frozenAssetBundle();
@@ -330,7 +332,7 @@ Handle capture(const Game& game,
 		target.statistics = *std::as_const(team->stats).getLatestStat();
 		// Match the existing smoothed-stat queries, rather than deriving a new
 		// balance from the current sample and changing policy inputs.
-		target.workerBalance = target.statistics.isFree[WORKER] - target.statistics.totalNeeded;
+		target.workerBalance = target.statistics.idleCarriers - target.statistics.totalNeeded;
 		target.starving = target.statistics.needFoodCritical;
 		std::copy_n(target.statistics.workersByConstructionLevel, NB_UNIT_LEVELS, target.workersLevel.begin());
 		for (auto* building : team->swarms) append(target.swarms, Game::refOf(building));
@@ -352,6 +354,13 @@ Handle capture(const Game& game,
 				BuildingView v;
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
 				v.identity = Game::refOf(b); v.team = t;
+                for (unsigned id=0; id<BuiltinUnitCount; ++id) v.constructionOriginRatios[id]=b->originProductionRatio(id);
+                v.extraProductionOffset = Uint32(entities->extraProduction.size());
+                v.extraProductionCount = Uint32(b->extraProductionRatios.size());
+                for (unsigned extra=0; extra<v.extraProductionCount; ++extra) {
+                    const unsigned id=BuiltinUnitCount+extra;
+                    append(entities->extraProduction, ExtraProductionState{b->productionRatio(id),b->productionUsed(id),b->originProductionRatio(id)});
+                }
 				v.maxHp = b->getEffectiveMaxHp();
 				v.usesTeamResources = b->materials == team->teamMaterials;
 				for (unsigned supplied=b->runtime->suppliesStockMask; supplied; supplied &= supplied-1) {
@@ -574,6 +583,27 @@ void verifyCapture(const Game& game, const Handle& handle)
 		compare("discovered", handle.visibility->discovered, std::span<const Uint32>(game.map.mapDiscovered));
 		if (game.map.fogOfWar) compare("visible", handle.visibility->visible, std::span<const Uint32>(game.map.fogOfWar, game.map.cellCount()));
 	}
+    if (handle.catalogs && handle.catalogs->units!=game.gameHeader.getUnitCatalog())
+        throw std::logic_error("snapshot verification: unit catalog differs from the game");
+    if (handle.entities) {
+        if (handle.entities->unitCargo.entries()!=game.unitCargo.entries())
+            throw std::logic_error("snapshot verification: unit cargo differs from the game");
+        for (const auto& building:handle.entities->buildings) {
+            const auto* liveBuilding=game.resolveBuilding(building.identity);
+            if (!liveBuilding || building.extraProductionCount!=liveBuilding->extraProductionRatios.size())
+                throw std::logic_error("snapshot verification: production storage differs from the game");
+            for (unsigned id=0;id<BuiltinUnitCount;++id)
+                if (building.constructionOriginRatios[id]!=liveBuilding->originProductionRatio(id))
+                    throw std::logic_error("snapshot verification: production origin differs from the game");
+            for (unsigned extra=0;extra<building.extraProductionCount;++extra) {
+                const auto& value=handle.entities->extraProduction.at(building.extraProductionOffset+extra);
+                const unsigned id=BuiltinUnitCount+extra;
+                if (value.ratio!=liveBuilding->productionRatio(id) || value.used!=liveBuilding->productionUsed(id)
+                    || value.constructionOriginRatio!=liveBuilding->originProductionRatio(id))
+                    throw std::logic_error("snapshot verification: additional production differs from the game");
+            }
+        }
+    }
 	if (handle.entities)
 		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
 			if (const auto* team = game.teams[t])

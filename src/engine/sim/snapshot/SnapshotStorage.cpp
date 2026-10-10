@@ -8,7 +8,7 @@ MemoryMetrics Storage::memoryMetrics() const
 	MemoryMetrics result;
 	const auto vectorBytes = []<class T>(const std::vector<T>& values) { return Uint64(values.capacity()) * sizeof(T); };
 	struct SharedPayload { const void* identity = nullptr; Uint64 object = 0, capacity = 0; bool leased = false; };
-	std::array<SharedPayload, (4 + 64) * BufferPool<Catalogs>::Limit> shared{};
+	std::array<SharedPayload, (5 + 64) * BufferPool<Catalogs>::Limit> shared{};
 	std::size_t sharedCount = 0;
 	const auto remember = [&](const auto& owner, bool leased) {
 		if (!owner) return;
@@ -30,7 +30,7 @@ MemoryMetrics Storage::memoryMetrics() const
 			if (leased) result.leasedBytes += sizeof(T) + capacity;
 		});
 	};
-	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); remember(value.capabilities, leased); remember(value.typeDefinitions, leased); return Uint64(value.buildingFingerprint.capacity()); });
+	account(catalogs, [&](const Catalogs& value, bool leased) { remember(value.buildings, leased); remember(value.capabilities, leased); remember(value.typeDefinitions, leased); remember(value.units, leased); return Uint64(value.buildingFingerprint.capacity()); });
     account(session, [&](const Session& value, bool) { return vectorBytes(value.players); });
     account(effects, [&](const Effects& value, bool) {
         Uint64 bytes=vectorBytes(value.sectors);
@@ -66,11 +66,11 @@ MemoryMetrics Storage::memoryMetrics() const
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
 	account(resources, cells); account(occupancy, cells); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
 	account(entities, [&](const Entities& value, bool) {
-		return vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
+		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
 	});
 	account(teams, [&](const Teams& value, bool) {
 		Uint64 bytes = vectorBytes(value.values);
-		for (const auto& team : value.values) bytes += vectorBytes(team.statistics.buildingCountByVariant)
+		for (const auto& team : value.values) bytes += team.statistics.capacityBytes()
 			+ vectorBytes(team.virtualBuildings) + vectorBytes(team.swarms);
 		return bytes;
 	});

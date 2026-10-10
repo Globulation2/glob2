@@ -665,7 +665,7 @@ AI order delay in ticks Type: integer. Units: ticks. Range: 0..8.
 Snapshot: initial, final, or every:N Type: string. Repeatable.
 .TP
 .B \-\-telemetry
-Additional telemetry Allowed: checksums, team\-timeline, maxima, gradient\-stats. Type: enum. Repeatable.
+Additional telemetry Allowed: checksums, continuation\-state, team\-timeline, maxima, gradient\-stats. Type: enum. Repeatable.
 .TP
 .B \-\-write\-replay
 Write game.replay Default: false.
@@ -698,11 +698,13 @@ Saved games reject new\-match setup options
 .PP
 Structured jobs isolate engine tuning and diagnostic environment variables
 .PP
+\-\-diagnostic\-interval requires \-\-diagnostic\-fields or \-\-telemetry continuation\-state
+.PP
 \-\-building\-artwork requires \-\-generator
 .PP
 \-\-candidates requires \-\-generator
 .PP
-\-\-diagnostic\-interval requires \-\-diagnostic\-fields
+\-\-diagnostic\-interval requires \-\-diagnostic\-fields or \-\-telemetry
 .PP
 \-\-diagnostic\-png requires \-\-diagnostic\-fields
 .PP

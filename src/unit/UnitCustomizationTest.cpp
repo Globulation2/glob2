@@ -1,0 +1,1165 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "EngineFixtures.h"
+#include "UnitCatalog.h"
+#include "FileFormatVersions.h"
+#include "ai/maxima/AIMaximaWorldHelpers.h"
+#include "UnitTiming.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include <nlohmann/json.hpp>
+#include <limits>
+#include <sstream>
+#include <climits>
+
+namespace {
+Uint32 trace(Game& game)
+{
+    std::vector<Uint32> gameFields,buildings,units;
+    game.checkSum(&gameFields,&buildings,&units,true);
+    if (!gameFields.empty()) gameFields.erase(gameFields.begin()); // format of the saved map header
+    Uint32 result=2166136261u;
+    for (const auto& values:{gameFields,buildings,units}) for (Uint32 value:values) result=(result^value)*16777619u;
+    return result;
+}
+void deposit(Map& map,int x,int y,int type,int amount)
+{
+    map.setResourceByIndex(x,y,type,0);
+    REQUIRE(map.getResource(x,y).type==type);
+    map.setResourceAmount(map.coordToIndex(x,y),amount);
+    REQUIRE(map.getResource(x,y).amount==amount);
+}
+void configure(glob2test::HeadlessGame& world)
+{
+    auto catalog=UnitCatalog::loadFile(glob2test::fixture("unit-catalog/combinations.json"));
+    world.game.gameHeader.setUnitCatalog(catalog);
+    world.game.configureBuildingCatalog();
+    for (int t=0;t<world.game.teamsCount();++t) world.game.teams[t]->race.setCatalog(catalog);
+}
+}
+
+TEST_SUITE("UnitCustomization")
+{
+    TEST_CASE("setup scaling preserves lethal extremes and zero-kind inventories refuse packets")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        definitions["units"][WORKER]["behaviors"]["foodCapacity"]=1;
+        for(auto& level:definitions["units"][WORKER]["levels"]) level["performance"][HP]=1;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+        world.game.configureBuildingCatalog();
+        auto* unit=world.addUnit(WORKER,8,8); REQUIRE(unit);
+        unit->hp=INT_MIN; unit->hungry=INT_MIN;
+        definitions["units"][WORKER]["behaviors"]["foodCapacity"]=1000000;
+        for(auto& level:definitions["units"][WORKER]["levels"]) level["performance"][HP]=1000000;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+        world.game.configureBuildingCatalog();
+        unit->rebindDefinitionForSetup();
+        CHECK(unit->hp==INT_MIN); CHECK(unit->hungry==INT_MIN);
+        auto restricted=definitions["units"][WORKER];
+        restricted["key"]="fixture:zero-kind";
+        restricted["behaviors"]["transport"]=false;
+        restricted["behaviors"]["cargoCapacity"]=1;
+        restricted["behaviors"]["cargoKinds"]=0;
+        definitions["units"].push_back(restricted);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+        world.game.configureBuildingCatalog();
+        auto* storage=world.addUnit(3,12,12); REQUIRE(storage);
+        CHECK_FALSE(storage->canCarryMaterial(WOOD));
+        CHECK_THROWS_AS(storage->receiveCargoPacket(WOOD,{1,1}),std::runtime_error);
+        CHECK(storage->carriedPacketCount()==0);
+        CHECK(world.game.unitCargo.empty());
+    }
+
+    TEST_CASE("current saves reject invalid cached bounds and retain pending lethal state")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto* unit=world.addUnit(WORKER,8,8); REQUIRE(unit);
+        const UnitState original=*unit;
+        const auto serialized=[&] {
+            auto* memory=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(memory); unit->save(&output);
+            return memory->takeContents();
+        };
+        for(int invalid=0;invalid<8;++invalid) {
+            static_cast<UnitState&>(*unit)=original;
+            switch(invalid) {
+                case 0: unit->performance[WALK]=-1; break;
+                case 1: unit->performance[HP]=0; break;
+                case 2: unit->performance[ARMOR]=1000001; break;
+                case 3: unit->fruitCount=4; break;
+                case 4: unit->experience=-1; break;
+                case 5: unit->experienceLevel=-1; break;
+                case 6: unit->speed=-1; break;
+                case 7: unit->delta=-1; break;
+            }
+            const auto bytes=serialized(); static_cast<UnitState&>(*unit)=original;
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+            CHECK_THROWS_AS(Unit(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG),std::runtime_error);
+        }
+        unit->hp=INT_MIN; unit->hungry=INT_MIN; unit->delta=INT_MAX; unit->speed=INT_MAX;
+        unit->experienceLevel=INT_MAX;
+        const auto bytes=serialized(); static_cast<UnitState&>(*unit)=original;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+        Unit restored(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
+        CHECK(restored.hp==INT_MIN); CHECK(restored.hungry==INT_MIN);
+        CHECK(restored.delta==INT_MAX); CHECK(restored.speed==INT_MAX); CHECK(restored.experienceLevel==INT_MAX);
+    }
+
+    TEST_CASE("custom combat extremes preserve observer estimates and clamp lethal overkill")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.header=true,.seed=4921});
+        auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto custom=catalog["units"][WARRIOR]; custom["key"]="fixture:numeric-fighter";
+        custom["behaviors"]["healingSpeedQ8"]=65536;
+        custom["behaviors"]["magicGround"]=true;
+        for(auto& level:custom["levels"]) {
+            level["performance"][HP]=1000000;
+            level["performance"][ATTACK_SPEED]=255;
+            level["performance"][ATTACK_STRENGTH]=1000000;
+            level["performance"][MAGIC_ATTACK_GROUND]=1000000;
+            level["performance"][ARMOR]=0;
+            level["armorReductionPerHappyness"]=1000000;
+        }
+        catalog["units"].push_back(custom);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+        world.game.configureBuildingCatalog(); world.game.gameHeader.setHungerDisabled(true);
+        auto* attacker=world.addUnit(3,8,8); auto* victim=world.addUnit(3,9,8,1);
+        REQUIRE(attacker); REQUIRE(victim);
+        attacker->hp=500000;
+        auto snapshot=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        const auto* observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==127500000);
+        attacker->experienceLevel=INT_MAX;
+        snapshot=AIEngine::AIWorldView::capture(world.game,snapshot->catalog);
+        observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        CHECK(AIEngine::ObservationQueries::realAttackStrength(*snapshot,*observed)==INT_MAX);
+        CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==INT_MAX);
+        CHECK(attacker->getRealAttackStrength()==INT_MAX);
+        victim->fruitCount=3;
+        for(int repeat=0;repeat<2;++repeat) {
+            attacker->action=ATTACK_SPEED; attacker->speed=12; attacker->delta=128;
+            attacker->dx=1; attacker->dy=0;
+            attacker->syncStep();
+        }
+        CHECK(victim->hp==INT_MIN);
+        CHECK(victim->diagnosticDeathCause==GameplayMeasurements::COMBAT);
+        CHECK(world.team->stats.measurements.damageDealt[GameplayMeasurements::MELEE][GameplayMeasurements::UNIT]==1000000);
+        victim->delta=255; victim->syncStep(); CHECK(victim->isDead);
+        auto* magicVictim=world.addUnit(3,10,8,1); REQUIRE(magicVictim);
+        magicVictim->fruitCount=3;
+        for(int repeat=0;repeat<2;++repeat) { attacker->magicActionTimeout=0; attacker->handleMagic(); }
+        CHECK(magicVictim->hp==INT_MIN);
+        CHECK(magicVictim->diagnosticDeathCause==GameplayMeasurements::COMBAT);
+        CHECK(world.team->stats.measurements.damageDealt[GameplayMeasurements::MAGIC][GameplayMeasurements::UNIT]==1000000);
+    }
+
+    TEST_CASE("maximum healing multiplier and health complete a diagonal service visit")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto custom=catalog["units"][WORKER]; custom["key"]="fixture:numeric-patient";
+        custom["behaviors"]["healingSpeedQ8"]=65536;
+        for(auto& level:custom["levels"]) level["performance"][HP]=1000000;
+        catalog["units"].push_back(custom);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+        world.game.configureBuildingCatalog(); world.game.gameHeader.setHungerDisabled(true);
+        auto* hospital=world.addBuilding("hospital",9,9); auto* patient=world.addUnit(3,8,8);
+        REQUIRE(hospital); REQUIRE(patient);
+        patient->hp=999999;
+        patient->subscriptionSuccess(hospital,true,false);
+        hospital->unitsInside.push_back(patient);
+        patient->activity=Unit::ACT_UPGRADING; patient->destinationPurpose=HEAL;
+        patient->displacement=Unit::DIS_ENTERING_BUILDING;
+        patient->posX=9; patient->posY=9; patient->dx=1; patient->dy=1;
+        patient->action=WALK;
+        patient->handleDisplacement();
+        CHECK(patient->speed==INT_MAX);
+        CHECK(unitActionStepSpeed(patient->speed,WALK,1,1,true)==UNIT_DELTA_QUANTUM);
+        const int duration=hospital->type->semantics.healing.duration;
+        for(int tick=0;tick<=duration+2;++tick) patient->syncStep();
+        CHECK(patient->hp==1000000);
+        CHECK(patient->displacement!=Unit::DIS_INSIDE);
+    }
+}
+
+TEST_SUITE("UnitCustomization")
+{
+    TEST_CASE("mixed melee and transport conserve multiple material kinds and rejected packets")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-1"),6,8);
+        REQUIRE(unit);
+        CHECK(unit->hasCapability(UnitRuntimeTraits::Melee));
+        CHECK(unit->hasCapability(UnitRuntimeTraits::Transport));
+        unit->receiveCarriedMaterial(WOOD,{});
+        unit->receiveCarriedMaterial(STONE,{1,2});
+        unit->receiveCarriedMaterial(WOOD,{});
+        CHECK(unit->carriedPacketCount()==3);
+        auto& stats=world.game.teams[0]->stats;
+        stats.beginMeasurementSnapshot(world.game.teams[0]);
+        stats.observeMeasurementUnit(unit);
+        CHECK(stats.measurements.carried[WOOD]==2);
+        CHECK(stats.measurements.carried[STONE]==1);
+        CHECK_FALSE(unit->canCarryMaterial(WOOD));
+        CHECK(unit->hasCarriedMaterial(STONE));
+        auto* inn=world.addBuilding("inn",8,8);
+        REQUIRE(inn);
+        // An inn does not need either carried construction material.
+        CHECK_FALSE(unit->deliverCargo(*inn));
+        CHECK(unit->carriedPacketCount()==3);
+        auto* enemy=world.addUnit(WORKER,7,8,1);
+        REQUIRE(enemy);
+        unit->action=ATTACK_SPEED; unit->speed=12; unit->delta=128;
+        unit->dx=1; unit->dy=0;
+        const int hp=enemy->hp;
+        unit->syncStep();
+        CHECK(enemy->hp<hp);
+        CHECK(unit->carriedPacketCount()==3);
+        unit->clearCargo();
+        CHECK(world.game.unitCargo.empty());
+    }
+
+    TEST_CASE("all locked capability ablations match fixed tick and RNG traces [golden][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals;
+        std::vector<Uint32> expected;
+        std::ostringstream golden; golden << "seed=4921 ticks=96 ablations=8\n";
+        for (int repeat=0;repeat<2;++repeat) {
+            glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.header=true,.seed=4921});
+            configure(world);
+            world.game.gameHeader.setHungerDisabled(true);
+            for (int i=0;i<8;++i) {
+                auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-"+std::to_string(i)),5+3*(i%4),5+3*(i/4));
+                REQUIRE(unit);
+                unit->receiveCarriedMaterial(WOOD,{});
+                unit->receiveCarriedMaterial(STONE,{});
+            }
+            for (int tick=0;tick<96;++tick) {
+                world.game.syncStep(0);
+                const auto checksum=trace(world.game);
+                if (!repeat) { expected.push_back(checksum); golden << tick << " " << checksum << "\n"; }
+                else CHECK(checksum==expected[tick]);
+            }
+        }
+        glob2test::expectGolden("unit-catalog/ablation-checksums.txt",golden.str());
+        glob2test::writeFile(glob2test::artifactDir()/"unit-ablations.trace",golden.str());
+    }
+
+    TEST_CASE("extended cargo delivers one usable packet per completed work action")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        definitions["units"][WORKER]["behaviors"]["cargoCapacity"]=4;
+        definitions["units"][WORKER]["behaviors"]["cargoKinds"]=2;
+        definitions["units"][WORKER]["behaviors"]["spillRejectedCargo"]=false;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); world.game.configureBuildingCatalog();
+        world.game.gameHeader.setHungerDisabled(true);
+        auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(WORKER,9,8);
+        REQUIRE(inn); REQUIRE(unit);
+        unit->receiveCarriedMaterial(WOOD,{});
+        for (int i=0;i<3;++i) unit->receiveCarriedMaterial(WHEAT,{});
+        unit->destinationPurpose=WHEAT;
+        unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+        unit->setTargetBuilding(inn);
+        inn->unitsWorking.push_back(unit); inn->desiredMaxUnitWorking=inn->maxUnitWorking=1;
+        unit->destinationPurpose=WHEAT; unit->displacement=Unit::DIS_FILLING_BUILDING;
+        unit->movement=Unit::MOV_FILLING; unit->action=BUILD; unit->speed=unit->performance[BUILD];
+        unit->dx=1; unit->dy=0; unit->delta=255;
+        unit->syncStep(); CHECK(inn->materials[WHEAT]==1); CHECK(unit->carriedPacketCount()==3);
+        for (int tick=0;tick<31;++tick) unit->syncStep();
+        CHECK(inn->materials[WHEAT]==1);
+        unit->syncStep(); CHECK(inn->materials[WHEAT]==2); CHECK(unit->carriedPacketCount()==2);
+        for (int tick=0;tick<32;++tick) unit->syncStep();
+        CHECK(inn->materials[WHEAT]==3); CHECK(unit->carriedPacketCount()==1);
+        CHECK(unit->hasCarriedMaterial(WOOD));
+        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        unit->clearCargo();
+        unit->receiveCargoPacket(STONE,{1,1000001});
+        unit->receiveCarriedMaterial(WOOD,{});
+        REQUIRE(unit->widePrimaryCargo);
+        world.team->stats.beginMeasurementSnapshot(world.team); world.team->stats.observeMeasurementUnit(unit);
+        CHECK(world.team->stats.measurements.carried[STONE]==1);
+        CHECK(world.team->stats.measurements.carried[WOOD]==1);
+    }
+
+    TEST_CASE("tiling anchors and starting positions recognize producers of additional units")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"fixture:producer-unit","extends":"worker"}]})"));
+        const int variant=world.game.buildingsTypes.getFinishedTypeNum("inn");
+        auto definitions=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        auto& production=definitions["variants"][variant]["semantics"]["production"];
+        production["scheduling"]="weighted_committed_job";
+        production["recipes"]={{"fixture:producer-unit",{{"enabled",true},{"duration",20},{"cost",nlohmann::json::object()}}}};
+        production["initialRatios"]={{"fixture:producer-unit",7}};
+        world.game.buildingsTypes.loadSnapshotJson(definitions.dump()); world.game.configureBuildingCatalog();
+        auto* hospital=world.addBuilding("hospital",4,4); REQUIRE(hospital);
+        auto* producer=world.game.addBuilding(12,12,variant,0,1,1); REQUIRE(producer);
+        REQUIRE(producer->type->semantics.production.enabledUnitMask==0);
+        REQUIRE(world.game.tileForPlay(2,1,2,1));
+        for (int team=0;team<2;++team) {
+            auto* colony=world.game.teams[team]; REQUIRE(colony);
+            CHECK(colony->startPosSet);
+            REQUIRE(colony->swarms.size()==1);
+            const auto* copied=colony->swarms.front();
+            CHECK(colony->startPosX==copied->posX); CHECK(colony->startPosY==copied->posY);
+            CHECK(copied->productionRatio(3)==7);
+        }
+    }
+
+    TEST_CASE("labor and defense statistics require usable clocks and recruitment mobility")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        const auto append=[&](int base,const char* key,auto edit) {
+            auto definition=definitions["units"][base]; definition["key"]=key;
+            edit(definition); definitions["units"].push_back(definition);
+        };
+        append(WORKER,"fixture:no-build-clock",[](auto& d) { for(auto& l:d["levels"]) l["performance"][BUILD]=0; });
+        append(WORKER,"fixture:no-harvest-clock",[](auto& d) { for(auto& l:d["levels"]) l["performance"][HARVEST]=0; });
+        append(WORKER,"fixture:transportless-builder",[](auto& d) {
+            d["behaviors"]["transport"]=false; d["behaviors"]["cargoCapacity"]=0; d["behaviors"]["cargoKinds"]=0;
+        });
+        append(WORKER,"fixture:stationary-carrier",[](auto& d) { d["behaviors"]["walk"]=false; d["behaviors"]["swim"]=false; });
+        append(WARRIOR,"fixture:stationary-fighter",[](auto& d) { d["behaviors"]["walk"]=false; d["behaviors"]["swim"]=false; });
+        append(WARRIOR,"fixture:no-melee-clock",[](auto& d) { for(auto& l:d["levels"]) l["performance"][ATTACK_SPEED]=0; });
+        append(WARRIOR,"fixture:no-melee-damage",[](auto& d) { for(auto& l:d["levels"]) l["performance"][ATTACK_STRENGTH]=0; });
+        append(EXPLORER,"fixture:stationary-scout",[](auto& d) {
+            d["behaviors"]["fly"]=false; d["behaviors"]["walk"]=false; d["behaviors"]["swim"]=false;
+        });
+        append(WORKER,"fixture:service-carrier",[](auto& d) { d["behaviors"]["construct"]=false; });
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); world.game.configureBuildingCatalog();
+        Unit* courier=nullptr;
+        for(unsigned id=0;id<world.game.unitTypeCount();++id) {
+            auto* unit=world.addUnit(id,4+2*(id%6),4+3*(id/6)); REQUIRE(unit);
+            if(id+1==world.game.unitTypeCount()) courier=unit;
+        }
+        for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) world.team->stats.step(world.team);
+        const auto* stats=world.team->stats.getLatestStat();
+        CHECK(stats->carriers==2); CHECK(stats->builders==1); CHECK(stats->workersByConstructionLevel[0]==1);
+        CHECK(stats->meleeUnits==2); CHECK(stats->scouts==1);
+        CHECK(stats->idleCarriers==2); CHECK(stats->idleDefenders==1);
+        REQUIRE(courier); courier->performance[BUILD]=0;
+        for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) world.team->stats.step(world.team);
+        stats=world.team->stats.getLatestStat();
+        CHECK(stats->carriers==1); CHECK(stats->idleCarriers==1); CHECK(stats->idleDefenders==1);
+    }
+
+    TEST_CASE("mobility statistics respect swimming only and stationary definitions")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        world.game.map.paintCell(6,8,WATER);
+        auto* swimmer=world.addUnit(*world.game.unitCatalog().find("swimmer"),6,8);
+        auto* stationary=world.addUnit(*world.game.unitCatalog().find("stationary"),20,20);
+        auto* walker=world.addUnit(WORKER,24,24);
+        REQUIRE(swimmer); REQUIRE(stationary); REQUIRE(walker);
+        world.team->stats.sampleTraps(world.team);
+        for (int kind=0;kind<2;++kind) {
+            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->typeNum]==1);
+            CHECK(world.team->stats.measurements.trappedUnits[kind][stationary->typeNum]==1);
+            CHECK(world.team->stats.measurements.trappedUnits[kind][WORKER]==0);
+        }
+        world.game.map.paintCell(7,8,WATER);
+        world.team->stats.sampleTraps(world.team);
+        for (int kind=0;kind<2;++kind)
+            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->typeNum]==0);
+    }
+
+    TEST_CASE("survival eligibility is independent of movement and work capabilities")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool survives:{false,true}) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+            auto custom=definitions["units"][WORKER]; custom["key"]="fixture:survivor";
+            auto& traits=custom["behaviors"];
+            for (const auto* flag:{"transport","construct","clear","clearIdle","walk","swim","adjacentClearInterrupt"}) traits[flag]=false;
+            traits["countsForSurvival"]=survives; traits["hungerRate"]=0;
+            definitions["units"].push_back(custom);
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+            world.game.configureBuildingCatalog();
+            auto* unit=world.addUnit(3,6,8); REQUIRE(unit);
+            world.team->playersMask=1;
+            world.team->syncStep();
+            CHECK(world.team->isAlive==survives);
+        }
+    }
+
+    TEST_CASE("conversion claim release preserves the stock policy and is configurable")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool releases:{false,true}) {
+            glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            if (releases) {
+                auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
+                definitions["units"][WORKER]["behaviors"]["releaseClearingClaims"]=true;
+                world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
+                world.game.configureBuildingCatalog();
+            }
+            auto* inn=world.addBuilding("inn",8,8,0,1); REQUIRE(inn);
+            inn->materials[WHEAT]=10; inn->materials[CHERRY]=10; inn->updateCallLists();
+            world.addUnit(WORKER,24,20,0); world.addUnit(WORKER,24,22,1);
+            for (int tick=0;tick<160;++tick) world.game.syncStep(0);
+            auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit); REQUIRE(inn->canConvertUnit());
+            world.game.teams[1]->sharedVisionFood|=world.team->me;
+            world.game.teams[1]->allies&=~world.team->me;
+            const auto oldGid=unit->gid;
+            unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
+            world.game.map.setClearingAreaClaimed(7,7,0,oldGid);
+            unit->hungry=unit->trigHungryCarrying; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+            REQUIRE(world.team->findNearestFood(unit)==inn);
+            unit->handleActivity();
+            REQUIRE(unit->owner==world.game.teams[1]);
+            CHECK(bool(unit->previousClearingArea)==!releases);
+            CHECK(world.game.map.isClearingAreaClaimed(7,7,0)==(releases?NOGUID:oldGid));
+        }
+    }
+
+    TEST_CASE("swim only fields avoid land and stationary zero hunger units keep making medical progress")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        for (int y=10;y<=12;++y) for (int x=4;x<=14;++x) world.game.map.paintCell(x,y,WATER);
+        auto* swimmer=world.addUnit(*world.game.unitCatalog().find("swimmer"),5,11);
+        REQUIRE(swimmer);
+        CHECK(swimmer->swimClass()==WATER_ONLY_CLASS);
+        int dx=0,dy=0;
+        CHECK(world.game.map.pathfindPointToPoint(5,11,13,11,&dx,&dy,swimmer->swimClass(),world.team->me,20));
+        CHECK(world.game.map.terrainPropertiesAt(5+dx,11+dy).swimmable);
+        CHECK_FALSE(world.game.map.pathfindPointToPoint(5,11,13,9,&dx,&dy,swimmer->swimClass(),world.team->me,20));
+        auto* stationary=world.addUnit(*world.game.unitCatalog().find("stationary"),20,20);
+        REQUIRE(stationary);
+        const int food=stationary->hungry;
+        for (int tick=0;tick<96;++tick) { stationary->syncStep(); swimmer->syncStep(); }
+        CHECK(stationary->posX==20); CHECK(stationary->posY==20);
+        CHECK(stationary->hungry==food); CHECK_FALSE(stationary->isUnitHungry());
+        CHECK(world.game.map.terrainPropertiesAt(swimmer->posX,swimmer->posY).swimmable);
+    }
+
+    TEST_CASE("ground and airborne couriers collect mixed kinds and deliver through the engine")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (const char* key:{"ablation-1","ablation-5"}) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            configure(world);
+            world.game.gameHeader.setHungerDisabled(true);
+            world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto buildingJson=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            for (auto& variant:buildingJson["variants"])
+                if (variant["semantics"]["feeding"]["enabled"].get<bool>()) {
+                    variant["properties"]["maxMaterial"][WOOD]=6;
+                    variant["properties"]["maxMaterial"][WHEAT]=6;
+                    variant["semantics"]["replenishMaterials"].push_back("wood");
+                }
+            world.game.buildingsTypes.loadSnapshotJson(buildingJson.dump());
+            world.game.configureBuildingCatalog();
+            auto* inn=world.addBuilding("inn",10,8);
+            auto* unit=world.addUnit(*world.game.unitCatalog().find(key),6,8);
+            REQUIRE(inn); REQUIRE(unit);
+            // Trees consume the entire deposit for one transport packet. Three
+            // separate trees therefore provide three packets, unlike wheat.
+            // Wheat is closer than the two remaining trees after the first
+            // pickup, so deterministic capacity allocation forms a mixed load.
+            for (const auto& position:std::array<std::array<int,2>,3>{{{7,7},{6,18},{8,18}}})
+                deposit(world.game.map,position[0],position[1],WOOD,1);
+            deposit(world.game.map,7,9,WHEAT,3);
+            world.game.map.setMapDiscovered();
+            unit->destinationPurpose=WOOD;
+            unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+            inn->unitsWorking.push_back(unit);
+            inn->updateCallLists();
+            bool sawMixed=false;
+            for (int tick=0;tick<4096 && (inn->materials[WOOD]<3 || inn->materials[WHEAT]<3);++tick) {
+                world.game.syncStep(0);
+                sawMixed |= unit->hasCarriedMaterial(WOOD) && unit->hasCarriedMaterial(WHEAT);
+            }
+            CAPTURE(key);
+            CHECK(sawMixed);
+            CHECK(inn->materials[WOOD]>=3); CHECK(inn->materials[WHEAT]>=3);
+            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+            for (int material:{WOOD,WHEAT}) {
+                int held=unit->carriedMaterial==material ? 1 : 0;
+                if (const auto* overflow=world.game.unitCargo.find(unit->gid))
+                    for (const auto& packet:*overflow) if (packet.material==material) ++held;
+                int remaining=world.game.map.getResource(7,9).amount;
+                if (material==WOOD) {
+                    remaining=0;
+                    for (const auto& position:std::array<std::array<int,2>,3>{{{7,7},{6,18},{8,18}}})
+                        remaining+=world.game.map.getResource(position[0],position[1]).amount;
+                }
+                CHECK(remaining+inn->materials[material]+held==3);
+                CHECK(world.team->stats.measurements.harvested[material]==Uint64(inn->materials[material]+held));
+            }
+        }
+    }
+
+    TEST_CASE("game save resumes mixed cargo and per entity RNG at every tick")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        world.game.gameHeader.setHungerDisabled(true);
+        auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-3"),6,8);
+        REQUIRE(unit);
+        unit->receiveCarriedMaterial(WOOD,{1,2}); unit->receiveCarriedMaterial(STONE,{});
+        for (int tick=0;tick<17;++tick) world.game.syncStep(0);
+        auto* storage=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(storage);
+        world.game.save(&output,false,"mixed unit continuation");
+        const std::string bytes(storage->getBuffer(),storage->getPosition());
+        std::vector<Uint32> expected;
+        for (int tick=0;tick<96;++tick) { world.game.syncStep(0); expected.push_back(trace(world.game)); }
+        GameGUI resumed;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        REQUIRE(resumed.game.load(&input));
+        resumed.game.setWaitingOnMask(0);
+        auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+        REQUIRE(copy); CHECK(copy->carriedPacketCount()==2);
+        for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
+    }
+
+    TEST_CASE("passive healing and starvation damage are independent configured rates")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        auto* healer=world.addUnit(*world.game.unitCatalog().find("healer"),6,8);
+        auto* starver=world.addUnit(*world.game.unitCatalog().find("starver"),20,20);
+        REQUIRE(healer); REQUIRE(starver);
+        healer->hp=100;
+        starver->hungry=0; starver->delta=255;
+        world.game.syncStep(0);
+        CHECK(healer->hp==101);
+        CHECK(starver->hp==197);
+        CHECK(starver->hungry==-1000);
+        CHECK_FALSE(healer->isUnitHungry());
+        for (int tick=0;tick<31;++tick) world.game.syncStep(0);
+        CHECK(healer->hp==132);
+        CHECK(starver->hp<197);
+    }
+
+    TEST_CASE("configured service multipliers shorten complete meals and healing visits")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int purpose:{int(FEED),int(HEAL)}) {
+            int durations[2]={0,0};
+            for (int fast=0;fast<2;++fast) {
+                glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+                configure(world);
+                auto* building=world.addBuilding(purpose==FEED?"inn":"hospital",10,8);
+                auto* unit=world.addUnit(fast?*world.game.unitCatalog().find("fast-service"):WORKER,6,8);
+                REQUIRE(building); REQUIRE(unit);
+                building->materials[WHEAT]=building->type->maxMaterial[WHEAT]; building->updateCallLists();
+                unit->hungry=purpose==FEED?10000:unit->foodCapacity();
+                unit->hp=purpose==HEAL?50:unit->performance[HP];
+                unit->medical=purpose==FEED?Unit::MED_HUNGRY:Unit::MED_DAMAGED;
+                unit->needToRecheckMedical=true;
+                bool entered=false,completed=false;
+                for (int tick=0;tick<10000 && !completed;++tick) {
+                    world.game.syncStep(0);
+                    entered |= unit->displacement==Unit::DIS_INSIDE;
+                    if (entered) ++durations[fast];
+                    completed=entered && unit->displacement==Unit::DIS_EXITING_BUILDING;
+                }
+                CHECK(entered); CHECK(completed);
+                if (purpose==FEED) CHECK(unit->hungry>unit->trigHungry);
+                else CHECK(unit->hp==unit->performance[HP]);
+            }
+            CHECK(durations[1]<durations[0]);
+        }
+    }
+
+    TEST_CASE("airborne clearing and magic coexist with held cargo")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        world.game.gameHeader.setHungerDisabled(true);
+        auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-7"),6,8);
+        auto* enemy=world.addUnit(WORKER,9,8,1);
+        REQUIRE(unit); REQUIRE(enemy);
+        unit->receiveCarriedMaterial(STONE,{});
+        const int initialHp=enemy->hp;
+        unit->delta=255;
+        world.game.syncStep(0);
+        CHECK(enemy->hp<initialHp);
+        world.game.gameHeader.setResourceGrowthDisabled(true);
+        auto* clearer=world.addUnit(*world.game.unitCatalog().find("ablation-6"),12,15);
+        REQUIRE(clearer); clearer->receiveCarriedMaterial(STONE,{});
+        deposit(world.game.map,15,15,WOOD,3);
+        world.game.map.addClearArea(15,15,world.team->teamNumber);
+        REQUIRE(world.game.map.isClearingTarget(world.game.map.coordToIndex(15,15),world.team->me,false));
+        REQUIRE_FALSE(world.game.map.isClearingTarget(world.game.map.coordToIndex(15,15),world.game.teams[1]->me,false));
+        world.game.map.setMapDiscovered();
+        for (int tick=0;tick<4096 && world.game.map.getResource(15,15).amount;++tick) world.game.syncStep(0);
+        CHECK(world.game.map.getResource(15,15).amount==0);
+        CHECK(unit->hasCarriedMaterial(STONE));
+        CHECK(clearer->hasCarriedMaterial(STONE));
+        CHECK(world.team->stats.measurements.cleared[WOOD]>0);
+    }
+
+    TEST_CASE("conversion cancels pending transport and transfers the complete cargo identity")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        auto* ownInn=world.addBuilding("inn",18,8,0,0);
+        auto* enemyInn=world.addBuilding("inn",8,8,0,1);
+        world.addUnit(WORKER,24,20,0); world.addUnit(WORKER,24,22,1);
+        REQUIRE(ownInn); REQUIRE(enemyInn);
+        enemyInn->materials[WHEAT]=10; enemyInn->materials[CHERRY]=10;
+        enemyInn->updateCallLists();
+        for (int tick=0;tick<160;++tick) world.game.syncStep(0);
+        auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8);
+        REQUIRE(unit); REQUIRE(enemyInn->canConvertUnit());
+        world.game.teams[1]->sharedVisionFood |= world.team->me;
+        world.game.teams[1]->allies &= ~world.team->me;
+        unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
+        unit->destinationPurpose=WHEAT;
+        deposit(world.game.map,19,7,WHEAT,3);
+        unit->subscriptionSuccess(ownInn,false,false,UnitJobPurpose::Transport);
+        ownInn->unitsWorking.push_back(unit);
+        const Uint16 oldGid=unit->gid;
+        unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
+        world.game.map.setClearingAreaClaimed(7,7,world.team->teamNumber,oldGid);
+        unit->hungry=unit->trigHungryCarrying; unit->medical=Unit::MED_HUNGRY;
+        unit->needToRecheckMedical=true; unit->delta=255;
+        REQUIRE(world.team->findNearestFood(unit)==enemyInn);
+        world.game.syncStep(0);
+        CHECK(unit->owner==world.game.teams[1]);
+        CHECK(unit->gid!=oldGid);
+        CHECK(world.game.map.isClearingAreaClaimed(7,7,world.team->teamNumber)==NOGUID);
+        CHECK_FALSE(unit->previousClearingArea);
+        CHECK(unit->jobPurpose==UnitJobPurpose::None);
+        CHECK(unit->carriedPacketCount()==2);
+        CHECK_FALSE(world.game.unitCargo.find(oldGid));
+        REQUIRE(world.game.unitCargo.find(unit->gid));
+        CHECK(world.game.unitCargo.find(unit->gid)->front().material==STONE);
+        CHECK(std::find(ownInn->unitsWorking.begin(),ownInn->unitsWorking.end(),unit)==ownInn->unitsWorking.end());
+    }
+
+    TEST_CASE("retained single packets and kind limits do not withdraw incompatible resources")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int capacity:{1,3}) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            const std::string json=R"({"schemaVersion":1,"units":[{"key":"limited","extends":"worker","behaviors":{"spillRejectedCargo":false,"cargoKinds":1,"cargoCapacity":)"+std::to_string(capacity)+"}}]}";
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(json)); world.game.configureBuildingCatalog();
+            world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,8,8);
+            REQUIRE(inn); REQUIRE(unit);
+            deposit(world.game.map,8,7,WHEAT,3); world.game.map.setMapDiscovered();
+            unit->receiveCarriedMaterial(STONE,{});
+            unit->destinationPurpose=WHEAT;
+            unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport); inn->unitsWorking.push_back(unit);
+            unit->delta=255;
+            for (int tick=0;tick<256;++tick) world.game.syncStep(0);
+            CHECK(unit->hasCarriedMaterial(STONE)); CHECK_FALSE(unit->hasCarriedMaterial(WHEAT));
+            CHECK(world.game.map.getResource(8,7).amount==3); CHECK(inn->materials[WHEAT]==0);
+            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        }
+    }
+
+    TEST_CASE("extreme hunger and experience saturate without changing valid stock arithmetic")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto extreme=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto definition=extreme["units"][WARRIOR]; definition["key"]="immortal";
+        definition["behaviors"]["foodCapacity"]=1000000; definition["behaviors"]["hungerRate"]=1000000;
+        definition["behaviors"]["starvationDamage"]=0;
+        for (auto& level:definition["levels"]) { level["performance"][ATTACK_STRENGTH]=1000000; level["experiencePerLevel"]=1000000; }
+        extreme["units"].push_back(definition);
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(extreme.dump()));
+        world.game.configureBuildingCatalog();
+        auto* unit=world.addUnit(3,8,8); REQUIRE(unit);
+        unit->hungry=INT_MIN+500000;
+        for (int tick=0;tick<16;++tick) world.game.syncStep(0);
+        CHECK(unit->hungry==INT_MIN); CHECK(unit->hp==unit->performance[HP]);
+        CHECK(unit->foodStepsLeft(INT_MAX)<0); CHECK(unit->numberOfStepsLeftUntilHungry()<0);
+        unit->experienceLevel=46; unit->experience=INT_MAX-1;
+        CHECK(unit->getNextLevelThreshold()==INT_MAX);
+        unit->incrementExperience(1000000); CHECK(unit->experience==INT_MAX); CHECK(unit->experienceLevel==46);
+    }
+
+    TEST_CASE("unit experiment gates control spawning and reject disabled live definitions")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(R"({"schemaVersion":1,"experiments":[{"key":"fixture-unit","label":"Fixture unit","help":"Tests unit gating"}],"units":[{"key":"fixture:gated","extends":"worker","requiredExperiment":"fixture-unit"}]})"));
+        world.game.configureBuildingCatalog(); CHECK_FALSE(world.game.addUnit(8,8,0,3,0,0,0,0));
+        auto& header=world.game.gameHeader;
+        header.getExperiments().set("fixture-unit",true,header.catalogExperimentKeys()); world.game.configureBuildingCatalog();
+        auto* unit=world.addUnit(3,8,8); REQUIRE(unit);
+        header.getExperiments().set("fixture-unit",false,header.catalogExperimentKeys());
+        CHECK_THROWS(world.game.configureBuildingCatalog());
+        header.getExperiments().set("fixture-unit",true,header.catalogExperimentKeys()); world.game.configureBuildingCatalog();
+        auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
+        world.game.save(&output,false,"enabled unit experiment");
+        const std::string bytes(storage->getBuffer(),storage->getPosition());
+        GameGUI resumed; GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+        REQUIRE(resumed.game.load(&input)); CHECK(resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)]->typeNum==3);
+        header.getExperiments().clear();
+        auto* malformed=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream badOutput(malformed);
+        world.game.save(&badOutput,false,"disabled live unit experiment");
+        const std::string badBytes(malformed->getBuffer(),malformed->getPosition());
+        GameGUI rejected; GAGCore::BinaryInputStream badInput(new GAGCore::MemoryStreamBackend(badBytes.data(),badBytes.size())); badInput.seekFromStart(0);
+        CHECK_FALSE(rejected.game.load(&badInput));
+    }
+
+    TEST_CASE("fractional deliveries retain exact residuals across multipliers and reject overflow atomically")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        for (auto& variant:catalog["variants"]) if (variant["semantics"]["feeding"]["enabled"].get<bool>()) {
+            variant["properties"]["maxMaterial"][WOOD]=1;
+            variant["properties"]["materialMultiplier"][WOOD]=3;
+            variant["semantics"]["replenishMaterials"].push_back("wood");
+        }
+        world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+        auto* building=world.addBuilding("inn",10,8);
+        auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-3"),6,8);
+        REQUIRE(building); REQUIRE(unit);
+        unit->receiveCarriedMaterial(WOOD,{1,2}); unit->receiveCarriedMaterial(STONE,{});
+        CHECK(unit->deliverCargo(*building)); CHECK(building->materials[WOOD]==1);
+        CHECK(unit->carriedPacket.numerator==1); CHECK(unit->carriedPacket.denominator==6);
+        CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
+        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        building->materials[WOOD]=0;
+        const auto delivered=world.team->stats.measurements.delivered[WOOD];
+        const int health=building->hp;
+        constexpr Uint64 maximum=std::numeric_limits<Uint64>::max();
+        const WideMaterialPacket incoming{maximum/2,maximum-2};
+        const auto result=building->deliverCargoPacket(WOOD,incoming);
+        CHECK(result.acceptedStock==0); CHECK(result.residual==incoming);
+        CHECK(building->materials[WOOD]==0); CHECK(building->hp==health);
+        CHECK(world.team->stats.measurements.delivered[WOOD]==delivered);
+        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+    }
+
+    TEST_CASE("legacy setup sentinel retains resolved map definitions and cached unit values")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        const auto base=UnitCatalog::builtins();
+        std::vector<std::array<UnitType,NB_UNIT_LEVELS>> levels;
+        for (unsigned type=0;type<base->size();++type) levels.push_back(base->levels(type));
+        const auto resolved=base->withLegacyLevels(levels,700);
+        world.game.gameHeader.setUnitCatalog(resolved); world.game.configureBuildingCatalog();
+        auto* unit=world.addUnit(WORKER,8,8); REQUIRE(unit);
+        unit->hp=147; unit->hungry=48123; unit->performance[WALK]=17; unit->hungriness=701;
+        const auto random=unit->entityRandom.exportState();
+        GameHeader setup=world.game.gameHeader;
+        setup.setUnitCatalog(UnitCatalog::legacyMigration());
+        world.game.setGameHeader(setup,true);
+        CHECK(world.game.unitCatalog().digest()==resolved->digest());
+        CHECK(world.team->race.getCatalog()->digest()==resolved->digest());
+        CHECK(unit->hp==147); CHECK(unit->hungry==48123);
+        CHECK(unit->performance[WALK]==17); CHECK(unit->hungriness==701);
+        CHECK(unit->entityRandom.exportState()==random);
+        setup.setUnitCatalog(UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"hungerRate":900}}]})"));
+        CHECK_THROWS_AS(world.game.setGameHeader(setup,true),std::runtime_error);
+        CHECK(world.game.unitCatalog().digest()==resolved->digest());
+        CHECK(unit->performance[WALK]==17); CHECK(unit->hungriness==701);
+        CHECK(unit->entityRandom.exportState()==random);
+    }
+
+    TEST_CASE("migrated tables retain cached performance idle and contact policies")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.header=true,.seed=4921});
+        auto base=UnitCatalog::builtins();
+        std::vector<std::array<UnitType,NB_UNIT_LEVELS>> levels;
+        for (unsigned type=0;type<base->size();++type) levels.push_back(base->levels(type));
+        levels[WORKER][0].performance[ATTACK_SPEED]=12;
+        levels[WORKER][0].performance[ATTACK_STRENGTH]=13;
+        levels[EXPLORER][0].performance[FLY]=0;
+        levels[EXPLORER][0].performance[WALK]=16;
+        auto migrated=base->withLegacyLevels(levels,425);
+        world.game.gameHeader.setUnitCatalog(migrated); world.game.configureBuildingCatalog();
+        auto* combatWorker=world.addUnit(WORKER,6,8);
+        auto* enemy=world.addUnit(WORKER,7,8,1);
+        auto* groundedExplorer=world.addUnit(EXPLORER,18,18);
+        REQUIRE(combatWorker); REQUIRE(enemy); REQUIRE(groundedExplorer);
+        combatWorker->delta=255; groundedExplorer->delta=255;
+        CHECK(combatWorker->trigHungry==30000);
+        world.game.syncStep(0);
+        CHECK(combatWorker->displacement==Unit::DIS_ATTACKING_AROUND);
+        CHECK(combatWorker->movement==Unit::MOV_ATTACKING_TARGET);
+        CHECK(groundedExplorer->displacement==Unit::DIS_RANDOM);
+        CHECK(groundedExplorer->movement==Unit::MOV_RANDOM_GROUND);
+        CHECK(world.game.map.getAirUnit(groundedExplorer->posX,groundedExplorer->posY)==NOGUID);
+    }
+
+    TEST_CASE("an explicit producer creates stationary units on a legal birth cell")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        const int type=*world.game.unitCatalog().find("stationary");
+        auto definitions=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        for (auto& variant:definitions["variants"]) if (variant["key"]=="swarm.0.finished") {
+            auto& production=variant["semantics"]["production"];
+            production["scheduling"]="weighted_committed_job";
+            production["recipes"]={{"stationary",{{"enabled",true},{"duration",0},{"cost",nlohmann::json::object()}}}};
+            production["initialRatios"]={{"stationary",1}};
+        }
+        world.game.buildingsTypes.loadSnapshotJson(definitions.dump()); world.game.configureBuildingCatalog();
+        auto* producer=world.addBuilding("swarm",10,10); REQUIRE(producer);
+        world.team->addToStaticAbilitiesLists(producer);
+        REQUIRE(world.team->isAlive);
+        REQUIRE(std::find(world.team->swarms.begin(),world.team->swarms.end(),producer)!=world.team->swarms.end());
+        REQUIRE(producer->runtime->produces(type)); REQUIRE(producer->productionRatio(type)==1);
+        REQUIRE(producer->canAffordProduction(type));
+        REQUIRE(producer->selectProductionRecipe()==type);
+        int exitX,exitY,exitDx,exitDy;
+        REQUIRE(producer->findGroundExit(&exitX,&exitY,&exitDx,&exitDy,false,true));
+        Unit* stationary=nullptr;
+        for (int tick=0;tick<32 && !stationary;++tick) {
+            world.game.syncStep(0);
+            for (Unit* unit:world.team->liveUnits.entries()) if (unit->typeNum==type) stationary=unit;
+        }
+        REQUIRE(stationary);
+        producer->productionRatio(type)=0;
+        const int x=stationary->posX,y=stationary->posY;
+        CHECK(world.game.map.terrainPropertiesAt(x,y).walkable);
+        CHECK(stationary->performance[WALK]==0); CHECK(stationary->performance[SWIM]==0);
+        CHECK(world.team->stats.measurements.births[type]==1);
+        for (int tick=0;tick<96;++tick) world.game.syncStep(0);
+        CHECK(stationary->posX==x); CHECK(stationary->posY==y);
+    }
+
+    TEST_CASE("high unit IDs spawn work and resume all indexed state")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        nlohmann::json definitions={{"schemaVersion",1},{"units",nlohmann::json::array()}};
+        for (int id=3;id<1024;++id) definitions["units"].push_back({{"key","fixture-"+std::to_string(id)},
+            {"extends","worker"},{"behaviors",{{"cargoCapacity",3},{"cargoKinds",3}}}});
+        auto catalog=UnitCatalog::fromJson(definitions.dump());
+        world.game.gameHeader.setUnitCatalog(catalog); world.game.configureBuildingCatalog();
+        world.game.gameHeader.setHungerDisabled(true);
+        auto* inn=world.addBuilding("inn",10,10);
+        auto* turret=world.addBuilding("defencetower",20,20);
+        REQUIRE(inn); REQUIRE(turret);
+        std::vector<Uint16> gids;
+        for (int id:{35,275,1023}) {
+            auto* unit=world.addUnit(id,6,8+int(gids.size())*4);
+            REQUIRE(unit);
+            CHECK(unit->typeNum==id); CHECK(unit->hasCapability(UnitRuntimeTraits::Transport));
+            unit->receiveCarriedMaterial(WHEAT,{}); unit->receiveCarriedMaterial(STONE,{1,2});
+            unit->destinationPurpose=WHEAT;
+            unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport); inn->unitsWorking.push_back(unit);
+            gids.push_back(unit->gid);
+            CHECK(world.team->stats.measurements.births[id]==0);
+            CHECK(turret->runtime->damage(id)==turret->runtime->damage(WORKER));
+        }
+        inn->updateCallLists();
+        for (int tick=0;tick<32;++tick) world.game.syncStep(0);
+        for (int id:{35,275,1023}) CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==1);
+        auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
+        world.game.save(&output,false,"high unit identity continuation");
+        const std::string bytes(storage->getBuffer(),storage->getPosition());
+        std::vector<Uint32> expected;
+        for (int tick=0;tick<96;++tick) { world.game.syncStep(0); expected.push_back(trace(world.game)); }
+        GameGUI resumed;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+        REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+        CHECK(resumed.game.unitTypeCount()==1024);
+        for (Uint16 gid:gids) {
+            auto* unit=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(unit);
+            CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
+            CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
+            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==1);
+        }
+        for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
+        CHECK(inn->materials[WHEAT]>0);
+    }
+
+    TEST_CASE("concurrent catalogs keep independent live performance and continuation")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        glob2test::HeadlessGame first({.clearImmobile=true,.header=true,.seed=4921});
+        glob2test::HeadlessGame second({.clearImmobile=true,.header=true,.seed=4921});
+        auto altered=nlohmann::json::parse(second.game.unitCatalog().serialize());
+        altered["units"][0]["behaviors"]["foodCapacity"]=90000;
+        altered["units"][0]["levels"][0]["performance"][WALK]=24;
+        auto catalog=UnitCatalog::deserialize(altered.dump());
+        second.game.gameHeader.setUnitCatalog(catalog); second.game.configureBuildingCatalog();
+        auto* oldUnit=first.addUnit(WORKER,6,8); auto* changedUnit=second.addUnit(WORKER,6,8);
+        REQUIRE(oldUnit); REQUIRE(changedUnit);
+        CHECK(oldUnit->performance[WALK]==16); CHECK(changedUnit->performance[WALK]==24);
+        CHECK(oldUnit->foodCapacity()==150000); CHECK(changedUnit->foodCapacity()==90000);
+        for (int tick=0;tick<32;++tick) { first.game.syncStep(0); second.game.syncStep(0); }
+        auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
+        first.game.save(&output,false,"independent catalog");
+        const std::string bytes(storage->getBuffer(),storage->getPosition());
+        std::vector<Uint32> expected;
+        for (int tick=0;tick<96;++tick) { first.game.syncStep(0); second.game.syncStep(0); expected.push_back(trace(first.game)); }
+        GameGUI resumed;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+        REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+        for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); second.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
+        CHECK(oldUnit->performance[WALK]==16); CHECK(changedUnit->performance[WALK]==24);
+    }
+
+    TEST_CASE("deleted units release wide cargo before a GID is reused")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        const int type=*world.game.unitCatalog().find("ablation-3");
+        auto* unit=world.addUnit(type,6,8);
+        REQUIRE(unit);
+        const Uint16 gid=unit->gid;
+        unit->receiveCargoPacket(WOOD,{1,1000000000039ull});
+        unit->receiveCarriedMaterial(STONE,{});
+        REQUIRE(world.game.unitCargo.find(gid));
+        unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
+        world.game.map.setClearingAreaClaimed(7,7,world.team->teamNumber,gid);
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(6,8,Game::DEL_UNIT));
+        CHECK_FALSE(world.game.unitCargo.find(gid));
+        CHECK(world.game.map.isClearingAreaClaimed(7,7,world.team->teamNumber)==NOGUID);
+        auto* replacement=world.addUnit(type,6,8);
+        REQUIRE(replacement);
+        CHECK(replacement->gid==gid);
+        CHECK(replacement->carriedPacketCount()==0);
+        CHECK_FALSE(replacement->widePrimaryCargo);
+    }
+
+    TEST_CASE("mixed inventory and assigned purpose survive unit serialization")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        configure(world);
+        auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-3"),6,8);
+        REQUIRE(unit);
+        unit->receiveCargoPacket(WOOD,{1,1000000000039ull}); unit->receiveCarriedMaterial(STONE,{});
+        unit->jobPurpose=UnitJobPurpose::Defend;
+        auto* storage=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(storage);
+        unit->save(&output);
+        const std::string bytes(storage->getBuffer(),storage->getPosition());
+        unit->clearCargo();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        unit->load(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
+        CHECK(unit->jobPurpose==UnitJobPurpose::Defend);
+        CHECK(unit->carriedPacketCount()==2);
+        CHECK(unit->hasCarriedMaterial(WOOD)); CHECK(unit->hasCarriedMaterial(STONE));
+        CHECK(unit->widePrimaryCargo);
+        REQUIRE(world.game.unitCargo.find(unit->gid));
+        CHECK(world.game.unitCargo.find(unit->gid)->front().packet.denominator==1000000000039ull);
+    }
+
+    TEST_CASE("setup cancels obsolete live work clocks and claims without losing cargo or RNG")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int disabled:{HARVEST,BUILD}) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto* unit=world.addUnit(WORKER,6,8);
+            auto* inn=world.addBuilding("inn",10,8);
+            REQUIRE(unit); REQUIRE(inn);
+            unit->destinationPurpose=WHEAT;
+            unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+            inn->unitsWorking.push_back(unit);
+            unit->receiveCarriedMaterial(WOOD,{});
+            unit->displacement=disabled==HARVEST?Unit::DIS_HARVESTING:Unit::DIS_FILLING_BUILDING;
+            unit->movement=disabled==HARVEST?Unit::MOV_HARVESTING:Unit::MOV_FILLING;
+            unit->action=Abilities(disabled); unit->speed=unit->performance[disabled];
+            unit->previousClearingArea=Unit::ClearingAreaClaim{7,8};
+            world.game.map.setClearingAreaClaimed(7,8,world.team->teamNumber,unit->gid);
+            const auto random=unit->entityRandom.exportState();
+            auto altered=nlohmann::json::parse(world.game.unitCatalog().serialize());
+            for (auto& level:altered["units"][WORKER]["levels"]) level["performance"][disabled]=0;
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(altered.dump()));
+            world.game.configureBuildingCatalog();
+            CHECK(unit->activity==Unit::ACT_RANDOM); CHECK(unit->jobPurpose==UnitJobPurpose::None);
+            CHECK_FALSE(unit->attachedBuilding); CHECK(inn->unitsWorking.empty());
+            CHECK_FALSE(unit->previousClearingArea);
+            CHECK(world.game.map.isClearingAreaClaimed(7,8,world.team->teamNumber)==NOGUID);
+            CHECK(unit->hasCarriedMaterial(WOOD)); CHECK(unit->carriedPacketCount()==1);
+            CHECK(unit->entityRandom.exportState()==random); CHECK(unit->speed>0);
+            for (int tick=0;tick<96;++tick) world.game.syncStep(0);
+            CHECK(unit->integrity());
+        }
+    }
+
+    TEST_CASE("setup releases original parallel course reservations before disabling learnability")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool entered:{false,true}) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+            auto& semantics=buildings["variants"][3]["semantics"];
+            semantics["trainingInParallel"]=true;
+            semantics["training"]["walk"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",3},{"cost",{{"food",2}}}};
+            semantics["training"]["build"]={{"enabled",true},{"unitMask",1},{"targetLevel",1},{"duration",4},{"cost",{{"food",3}}}};
+            world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
+            auto* unit=world.addUnit(WORKER,6,8); auto* school=world.addBuilding("inn",10,8);
+            REQUIRE(unit); REQUIRE(school);
+            school->materials[WHEAT]=5;
+            unit->destinationPurpose=WALK; school->subscribeUnitForInside(unit);
+            REQUIRE(unit->serviceResourcesReserved); REQUIRE(school->reservedMaterials[WHEAT]==5);
+            if (entered) unit->displacement=Unit::DIS_ENTERING_BUILDING;
+            const auto random=unit->entityRandom.exportState();
+            const auto oldCatalog=world.game.gameHeader.getUnitCatalog();
+            auto units=nlohmann::json::parse(oldCatalog->serialize());
+            units["units"][WORKER]["behaviors"]["learnableMask"]=Uint32(world.game.unitCatalog().runtime(WORKER).learnableMask&~(1u<<BUILD));
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+            if (entered) {
+                CHECK_THROWS(world.game.configureBuildingCatalog());
+                CHECK(unit->serviceResourcesReserved); CHECK(school->reservedMaterials[WHEAT]==5);
+                CHECK(unit->attachedBuilding==school); CHECK(world.team->race.getCatalog()==oldCatalog);
+                world.game.gameHeader.setUnitCatalog(oldCatalog);
+            } else {
+                world.game.configureBuildingCatalog();
+                CHECK_FALSE(unit->serviceResourcesReserved); CHECK(school->reservedMaterials[WHEAT]==0);
+                CHECK(school->unitsInside.empty()); CHECK(unit->activity==Unit::ACT_RANDOM);
+            }
+            CHECK(school->materials[WHEAT]==5); CHECK(unit->entityRandom.exportState()==random);
+        }
+    }
+
+    TEST_CASE("transport capability with a zero delivery clock cannot be hired")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        for (auto& level:units["units"][WORKER]["levels"]) level["performance"][BUILD]=0;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
+        world.game.configureBuildingCatalog();
+        world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+        auto* empty=world.addUnit(WORKER,6,8); auto* loaded=world.addUnit(WORKER,6,9);
+        auto* inn=world.addBuilding("inn",10,8);
+        REQUIRE(empty); REQUIRE(loaded); REQUIRE(inn);
+        loaded->receiveCarriedMaterial(WHEAT,{});
+        deposit(world.game.map,7,8,WHEAT,3); world.game.map.setMapDiscovered();
+        inn->desiredMaxUnitWorking=2; inn->maxUnitWorking=2;
+        CHECK_FALSE(inn->canUnitWorkHere(empty)); CHECK_FALSE(inn->canUnitWorkHere(loaded));
+        CHECK_FALSE(inn->subscribeToBringMaterialsStep());
+        for (int tick=0;tick<96;++tick) {
+            world.game.syncStep(0);
+            CHECK(empty->activity!=Unit::ACT_FILLING); CHECK(loaded->activity!=Unit::ACT_FILLING);
+        }
+        CHECK(empty->speed>0); CHECK(loaded->speed>0);
+        CHECK(loaded->hasCarriedMaterial(WHEAT)); CHECK(inn->unitsWorking.empty());
+    }
+
+    TEST_CASE("initial hiring respects retained packet capacity and material kind limits")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int capacity:{1,3}) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+            auto& traits=units["units"][WORKER]["behaviors"];
+            traits["cargoCapacity"]=capacity; traits["cargoKinds"]=1; traits["spillRejectedCargo"]=false;
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump())); world.game.configureBuildingCatalog();
+            world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto* unit=world.addUnit(WORKER,6,8); auto* inn=world.addBuilding("inn",10,8);
+            REQUIRE(unit); REQUIRE(inn);
+            for (int packet=0;packet<capacity;++packet) unit->receiveCarriedMaterial(WOOD,{1,2});
+            deposit(world.game.map,7,8,WHEAT,3); world.game.map.setMapDiscovered();
+            inn->desiredMaxUnitWorking=1; inn->maxUnitWorking=1;
+            CHECK_FALSE(inn->subscribeToBringMaterialsStep());
+            for (int tick=0;tick<96;++tick) world.game.syncStep(0);
+            CHECK(unit->activity!=Unit::ACT_FILLING); CHECK(inn->unitsWorking.empty());
+            CHECK(unit->carriedPacketCount()==unsigned(capacity)); CHECK_FALSE(unit->hasCarriedMaterial(WHEAT));
+            CHECK(world.game.map.getResource(7,8).amount==3);
+            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        }
+    }
+
+    TEST_CASE("initial hiring finds a wanted material in overflow cargo and completes delivery")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto units=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        auto& traits=units["units"][WORKER]["behaviors"];
+        traits["cargoCapacity"]=3; traits["cargoKinds"]=2; traits["spillRejectedCargo"]=false;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump())); world.game.configureBuildingCatalog();
+        world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+        auto* unit=world.addUnit(WORKER,6,8); auto* inn=world.addBuilding("inn",10,8);
+        REQUIRE(unit); REQUIRE(inn);
+        unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(WHEAT,{});
+        inn->desiredMaxUnitWorking=1; inn->maxUnitWorking=1;
+        REQUIRE(inn->subscribeToBringMaterialsStep()); CHECK(unit->destinationPurpose==WHEAT);
+        CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
+        for (int tick=0;tick<4096 && inn->materials[WHEAT]==0;++tick) world.game.syncStep(0);
+        CHECK(inn->materials[WHEAT]==1); CHECK(unit->hasCarriedMaterial(WOOD));
+        CHECK_FALSE(unit->hasCarriedMaterial(WHEAT)); CHECK(unit->carriedPacketCount()==1);
+        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+    }
+
+    TEST_CASE("unit loading rejects mismatched assigned purposes and over-capacity primary packets")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int malformed=0;malformed<4;++malformed) {
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            if (malformed>=2) {
+                auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+                auto& traits=catalog["units"][WORKER]["behaviors"];
+                traits["transport"]=false; traits["cargoCapacity"]=malformed==2?0:1; traits["cargoKinds"]=0;
+                world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump())); world.game.configureBuildingCatalog();
+            }
+            auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit);
+            if (malformed==0) { unit->activity=Unit::ACT_FLAG; unit->jobPurpose=UnitJobPurpose::None; }
+            else if (malformed==1) { unit->activity=Unit::ACT_FILLING; unit->destinationPurpose=WHEAT; unit->jobPurpose=UnitJobPurpose::Defend; }
+            else { unit->carriedMaterial=WHEAT; unit->carriedPacket={}; }
+            auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
+            unit->save(&output);
+            const std::string bytes(storage->getBuffer(),storage->getPosition());
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+            CHECK_THROWS(unit->load(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG));
+        }
+    }
+
+    TEST_CASE("unusable retained fractional cargo releases its job and continues exactly after saving")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        catalog["units"][WORKER]["behaviors"]["spillRejectedCargo"]=false;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump())); world.game.configureBuildingCatalog();
+        world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
+        auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(WORKER,9,8);
+        REQUIRE(inn); REQUIRE(unit);
+        const Uint16 gid=unit->gid;
+        unit->receiveCarriedMaterial(WHEAT,{1,2});
+        CHECK_FALSE(unit->hasDeliverableCargo(*inn,WHEAT));
+        unit->destinationPurpose=WHEAT; unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+        inn->unitsWorking.push_back(unit); inn->updateCallLists();
+        inn->desiredMaxUnitWorking=inn->maxUnitWorking=inn->maxUnitWorkingPreferred=1;
+        for (int tick=0;tick<3;++tick) world.game.syncStep(0);
+        auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
+        world.game.save(&output,false,"fractional delivery continuation");
+        const std::string bytes(storage->getBuffer(),storage->getPosition());
+        std::vector<Uint32> expected;
+        for (int tick=0;tick<192;++tick) { world.game.syncStep(0); expected.push_back(trace(world.game)); }
+        CHECK(unit->activity==Unit::ACT_RANDOM); CHECK_FALSE(unit->attachedBuilding);
+        CHECK(inn->unitsWorking.empty()); CHECK(inn->materials[WHEAT]==0);
+        CHECK(unit->carriedPacketCount()==1); CHECK(unit->carriedPacket==MaterialPacket{1,2});
+        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        GameGUI resumed;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+        REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
+        for (int tick=0;tick<192;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
+        auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(copy);
+        CHECK(copy->activity==Unit::ACT_RANDOM); CHECK(copy->carriedPacket==MaterialPacket{1,2});
+    }
+}

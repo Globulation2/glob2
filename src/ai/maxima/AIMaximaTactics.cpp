@@ -269,7 +269,7 @@ void Program::refreshRaidThreats()
 				rules.width, rules.height)<=rules.threatRadius*rules.threatRadius)
 			{
 				++candidate.defenders;
-				candidate.defenderPower+=threat->power;
+				candidate.defenderPower=int(std::min<long long>(INT_MAX,static_cast<long long>(candidate.defenderPower)+threat->power));
 			}
 		}
 		candidate.score=candidate.workers*rules.workerWeight

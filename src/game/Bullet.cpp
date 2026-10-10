@@ -70,6 +70,7 @@ bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		if (sourceTeam < -1 || sourceTeam >= Team::MAX_COUNT)
 			throw std::runtime_error("Invalid bullet source team");
 	}
+	unitDamage.resize(BuiltinUnitCount);
 	unitDamage.fill(shootDamage);
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
 	{
@@ -81,6 +82,17 @@ bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 				throw std::runtime_error("Invalid saved bullet damage");
 		}
 	}
+    if (versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG) {
+        const auto extra = stream->readUint32("extraUnitDamageCount");
+        if (extra > UnitCatalog::Capacity-BuiltinUnitCount)
+            throw std::runtime_error("Invalid extra bullet unit count");
+        unitDamage.resize(BuiltinUnitCount+extra);
+        for (unsigned id=BuiltinUnitCount; id<unitDamage.size(); ++id) {
+            const auto value=stream->readSint32("unitDamage"+std::to_string(id));
+            if (value<0 || value>1000000) throw std::runtime_error("Invalid saved bullet damage");
+            unitDamage[id]=value;
+        }
+    }
 	return true;
 }
 
@@ -102,6 +114,9 @@ void Bullet::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(sourceTeam, "sourceTeam");
 	for (int u = 0; u < NB_UNIT_TYPE; ++u)
 		stream->writeSint32(unitDamage[u], "unitDamage" + std::to_string(u));
+    stream->writeUint32(unitDamage.size()-BuiltinUnitCount,"extraUnitDamageCount");
+    for (unsigned id=BuiltinUnitCount; id<unitDamage.size(); ++id)
+        stream->writeSint32(unitDamage[id],"unitDamage"+std::to_string(id));
 }
 
 void Bullet::step(void)
@@ -124,6 +139,6 @@ Uint32 Bullet::checkSum() const
 	};
 	for (const Sint32 value : {px, py, speedX, speedY, ticksInitial, ticksLeft,
 		shootDamage, targetX, targetY, revealX, revealY, revealW, revealH, sourceTeam}) mix(value);
-	for (const Sint32 value : unitDamage) mix(value);
+	for (unsigned id=0; id<unitDamage.size(); ++id) mix(unitDamage[id]);
 	return checksum;
 }

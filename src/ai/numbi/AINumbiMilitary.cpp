@@ -204,7 +204,7 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 	std::array<int, NB_UNIT_LEVELS> workers{}, idle{}, training{};
 	std::array<std::array<int, NB_UNIT_LEVELS>, std::size(priorities)> ready{}, underway{};
 	for (const AIEngine::UnitView* u : observation->unitSlots(teamNumber))
-		if (u && u->typeNum == WORKER)
+		if (u && (u->capabilityFlags&UnitRuntimeTraits::Transport))
 			for (int level = 0; level <= u->constructionLevel && level < NB_UNIT_LEVELS; ++level)
 			{ ++workers[level]; if (u->activity == Unit::ACT_RANDOM) ++idle[level]; }
 	for (const AIEngine::BuildingView* b : observation->buildingSlots(teamNumber))

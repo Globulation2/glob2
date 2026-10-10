@@ -2,6 +2,7 @@
 #pragma once
 
 #include "GradientCosts.h"
+#include "unit/UnitConsts.h"
 #include "TerrainHazardCost.h"
 #include "map/TerrainProperties.h"
 #include <array>
@@ -40,6 +41,10 @@ constexpr bool terrainUsesSwimming(TerrainType type)
 
 // The same destination-entry costs drive eager/lazy fields, A* and direction
 // selection. Movement profiles retain the established seven swimming ratios.
+constexpr bool terrainAllowsGround(const TerrainProperties& terrain, int swim)
+{
+    return swim==WATER_ONLY_CLASS ? terrain.swimmable : terrain.walkable || (swim>0 && terrain.swimmable);
+}
 constexpr unsigned scaledTerrainStep(unsigned base, unsigned speedQ8)
 {
     return std::max(1u, (base * 256u + speedQ8 / 2u) / speedQ8);

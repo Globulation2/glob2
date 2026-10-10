@@ -146,6 +146,21 @@ hiding rules, not protection against statistical inference from gameplay.
 | `allies?` | Bitmask of allied teams; bit `t` corresponds to team `t` |
 | `resources?` | 15-entry team stock array, indexed by resource ID |
 
+### Unit definitions
+
+`ctx.game.unitTypes({offset, limit})` pages through available definitions by ID.
+Each record exposes `id`, `key`, `name`, `capabilities`, `foodCapacity`,
+`hungerRate`, `cargoCapacity`, `cargoKinds`, `productionCost` and four
+`performanceLevels` arrays. This query is read-only developer configuration;
+see [unit architecture](../architecture/units.md).
+
+`ctx.game.unitBehavior({id, generation})` returns the same visible record as
+`unit`, plus `typeKey`, compiled `capabilities` and `foodCapacity`. For owned
+units/map scripts it also returns `assignedPurpose` (none 0, transport 1,
+clearing 2, exploration 3, defense 4) and ordered `cargo` packets with `material`
+and exact `numerator`/`denominator` decimal strings. Ordinary unit queries retain
+their existing shape.
+
 ### Unit record
 
 Basic fields appear for every returned unit. The remaining fields appear only
@@ -154,7 +169,7 @@ for owned units or map scripts.
 | Basic field | Meaning |
 | --- | --- |
 | `id`, `generation`, `team` | Reference and owner team |
-| `type` | Worker `0`, explorer `1`, warrior `2` |
+| `type` | Catalog ID; worker `0`, explorer `1`, warrior `2` remain fixed |
 | `x`, `y` | Current map tile; an owned/map-visible unit inside a building still has coordinates |
 | `hp`, `maxHp` | Current health and `performance[16]` maximum health |
 | `levels`, `performance` | 17-entry arrays indexed by ability (see numeric values below) |
@@ -166,7 +181,7 @@ for owned units or map scripts.
 | `fruitCount`, `fruitMask` | Fruit count and resource-ID bitmask of fruit kinds |
 | `activity`, `movement`, `medical` | Numeric engine states, listed below |
 | `action` | Ability ID for the current action |
-| `carriedResource` | Resource ID, or `-1` when carrying nothing |
+| `carriedResource` | Primary material ID, or `-1` when carrying nothing |
 | `speed` | Engine advancement units per tick; tile advancement wraps at 256 |
 | `direction` | Compass code `0..7`, or `8` for no direction |
 | `insideTimeout` | Negative inside a building; nonnegative outside |

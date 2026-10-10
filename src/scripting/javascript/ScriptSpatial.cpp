@@ -854,7 +854,7 @@ Value Spatial::placement(const Value &spec, const Value &staged, const QueryBudg
 						  .set("y", y)
 						  .set("workers", workers)
 						  .set("futureWorkers", future);
-		if (bt->zonable[WORKER] || bt->zonable[EXPLORER] || bt->zonable[WARRIOR])
+		if (bt->resolvedType.runtimeAttractionRoles != 0)
 			order.set("range", number(spec, "range", std::min(8, int(bt->maximumRange)), 0, bt->maximumRange));
 		if (bt->semantics.occupiesGround)
 			order.set("reservedX", (x + ox) & (width - 1))

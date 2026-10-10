@@ -74,6 +74,8 @@ export type VersionRow = {
   generator_provenance?: MapVersionInfo['generatorProvenance'] | null;
   set_credits: Selectable<Database['map_versions']>['set_credits'];
   building_catalog: Selectable<Database['map_versions']>['building_catalog'];
+  unit_catalog?: Selectable<Database['map_versions']>['unit_catalog'];
+  required_unit_experiments?: string[];
   resource_experiments: Selectable<Database['map_versions']>['resource_experiments'];
   required_resource_experiments: string[];
   id: string;

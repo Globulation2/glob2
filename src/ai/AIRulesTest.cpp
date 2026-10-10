@@ -18,6 +18,7 @@
 #include "Order.h"
 #include "ReplayReader.h"
 #include "Version.h"
+#include "UnitCatalog.h"
 #include <FileManager.h>
 #include <cstdlib>
 #include <nlohmann/json.hpp>
@@ -222,6 +223,77 @@ TEST_CASE("legacy queued staffing imports explicit 135 wire without weakening mo
     CHECK(static_cast<const OrderConstruction&>(*upgrade).unitWorking==7);
     CHECK(static_cast<const OrderConstruction&>(*upgrade).unitWorkingFuture==0);
     CHECK(OrderValidation::validate(game,0,*upgrade).verdict==OrderValidation::Verdict::Accepted);
+}
+TEST_CASE("food population preserves migrated calibration and scales authored recipients")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    const auto defaults=UnitCatalog::builtins();
+    const std::array<int,3> counts{13,7,3};
+    for(int variant=0;variant<5;++variant) {
+        CAPTURE(variant);
+        if(variant==0) {
+            std::vector<std::array<UnitType,NB_UNIT_LEVELS>> levels;
+            for(unsigned id=0;id<defaults->size();++id)levels.push_back(defaults->levels(id));
+            world.game.gameHeader.setUnitCatalog(defaults->withLegacyLevels(levels,700));
+        } else {
+            auto catalog=nlohmann::json::parse(defaults->serialize());
+            for(auto& unit:catalog["units"]) {
+                unit["behaviors"]["hungerRate"]=variant==1?425:variant==2?850:variant==3?0:425;
+                if(variant==4)unit["behaviors"]["feedingSpeedQ8"]=512;
+            }
+            world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+        }
+        world.game.configureUnitCatalog();
+        const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        const int expected=variant<2?23:variant==2?46:variant==3?0:12;
+        CHECK(AIEngine::ObservationQueries::normalizedFoodPopulation(*view,counts)==expected);
+    }
+}
+TEST_CASE("Cabino strategy roles require effective clocks and mobile labor")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+    auto walkingScout=catalog["units"][WORKER];
+    walkingScout["key"]="fixture:walking-empty-scout";
+    walkingScout["behaviors"]["transport"]=false;
+    walkingScout["behaviors"]["cargoCapacity"]=0;
+    walkingScout["behaviors"]["cargoKinds"]=0;
+    walkingScout["behaviors"]["explore"]=true;
+    catalog["units"].push_back(walkingScout);
+    world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+    world.game.configureBuildingCatalog();
+    auto* worker=world.addUnit(WORKER,4,10); REQUIRE(worker);
+    auto* noBuild=world.addUnit(WORKER,5,10); REQUIRE(noBuild); noBuild->performance[BUILD]=0;
+    auto* noHarvest=world.addUnit(WORKER,6,10); REQUIRE(noHarvest); noHarvest->performance[HARVEST]=0;
+    auto* immobileWorker=world.addUnit(WORKER,7,10); REQUIRE(immobileWorker);
+    immobileWorker->performance[WALK]=immobileWorker->performance[SWIM]=immobileWorker->performance[FLY]=0;
+    auto* noCapacity=world.addUnit(3,8,10); REQUIRE(noCapacity);
+    auto* explorer=world.addUnit(EXPLORER,9,10); REQUIRE(explorer);
+    auto* immobileExplorer=world.addUnit(EXPLORER,10,10); REQUIRE(immobileExplorer);
+    immobileExplorer->performance[WALK]=immobileExplorer->performance[SWIM]=immobileExplorer->performance[FLY]=0;
+    auto* stationaryFighter=world.addUnit(WARRIOR,11,10); REQUIRE(stationaryFighter);
+    stationaryFighter->performance[WALK]=stationaryFighter->performance[SWIM]=stationaryFighter->performance[FLY]=0;
+    auto* noAttackClock=world.addUnit(WARRIOR,12,10); REQUIRE(noAttackClock); noAttackClock->performance[ATTACK_SPEED]=0;
+    auto* noAttackDamage=world.addUnit(WARRIOR,13,10); REQUIRE(noAttackDamage); noAttackDamage->performance[ATTACK_STRENGTH]=0;
+    const auto counts=[&] {
+        const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        auto capacityProbe=*view->unitSlots(0)[Unit::GIDtoID(noCapacity->gid)];
+        capacityProbe.capabilityFlags|=UnitRuntimeTraits::Transport;
+        CHECK_FALSE(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,capacityProbe,WORKER));
+        Cabino::TeamStatsGenerator stats(view.get(),&view->teams[0]);
+        CHECK(stats.getUnits(WORKER,BUILD,1,true)==1);
+        CHECK(stats.getUnits(WORKER,Unit::MED_FREE,Unit::ACT_RANDOM,BUILD,1,true)==1);
+        CHECK(stats.getUnits(EXPLORER,FLY,1,true)==2); // Exploration accepts walking scouts too.
+        CHECK(stats.getUnits(WARRIOR,ATTACK_STRENGTH,1,true)==1);
+        CHECK(stats.getUnits(WARRIOR,Unit::MED_FREE,Unit::ACT_RANDOM,ATTACK_STRENGTH,1,true)==0);
+    };
+    counts();
+    noCapacity->performance[WALK]=0;
+    const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+    Cabino::TeamStatsGenerator stats(view.get(),&view->teams[0]);
+    CHECK(stats.getUnits(EXPLORER,FLY,1,true)==1);
 }
 TEST_CASE("Cabino reservations match unit class and qualification instead of building level")
 {

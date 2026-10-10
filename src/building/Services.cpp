@@ -94,28 +94,29 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 {
 	if (buildingState != ALIVE || static_cast<int>(unitsInside.size()) >= maxUnitInside) return false;
 	const auto& spec = type->semantics;
-	unsigned allowed = spec.admittedUnitMask;
+	const auto* interaction=unit ? &runtime->interaction(unit->typeNum) : nullptr;
+    bool allowed=unit ? interaction->has(BuildingUnitInteraction::Admitted) : true;
 	bool holdAdmission = false;
 	if (purpose == FEED)
 	{
 		if (!spec.feeding.enabled) return false;
-		allowed &= spec.feeding.unitMask;
+		allowed = unit ? interaction->has(BuildingUnitInteraction::Feeds) : true;
 		holdAdmission = spec.feeding.holdAdmissionUntilExit;
 	}
 	else if (purpose == HEAL)
 	{
 		if (!spec.healing.enabled) return false;
-		allowed &= spec.healing.unitMask;
+		allowed = unit ? interaction->has(BuildingUnitInteraction::Heals) : true;
 		holdAdmission = spec.healing.holdAdmissionUntilExit;
 	}
 	else
 	{
 		if (purpose < 0 || purpose >= NB_ABILITY || !spec.training[purpose].enabled
 			|| owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
-		allowed &= spec.training[purpose].unitMask;
+		allowed = unit ? (interaction->trainingMask&(1u<<purpose))!=0 : true;
 		if (unit && !unit->needsTraining(spec.training[purpose], purpose)) return false;
 	}
-	if (!allowed || (unit && !(allowed & (1u << unit->typeNum)))) return false;
+	if (!allowed) return false;
 	BuildingMaterialCost bundleCost{};
 	const BuildingMaterialCost* cost;
 	unsigned mask;

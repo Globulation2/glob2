@@ -11,6 +11,7 @@
 #include "Utilities.h"
 #include "Player.h"
 #include "Integrity.h"
+#include "GameDiagnostics.h"
 #include <stdexcept>
 
 // std::min/std::clamp in the teams editor bind this constant by reference.
@@ -27,6 +28,7 @@ Team::Team(Game *game)
 	assert(game);
 	this->game=game;
 	this->map=&game->map;
+	race.setCatalog(game->gameHeader.getUnitCatalog());
 	init();
 }
 
@@ -114,7 +116,7 @@ bool Team::integrity(void)
 	{
 		checkInvariant(*it);
 		checkInvariant((*it)->type);
-		checkInvariant((*it)->type->zonable[WORKER]);
+		checkInvariant((*it)->runtime->attractsRole(0));
 		checkInvariant(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 
@@ -192,6 +194,7 @@ void Team::pushGameEvent(GameEvent event)
 	GameEventType eventType = event.getEventType();
 	if(eventCooldownTimers[eventType] == 0)
 	{
+        GameDiagnostics::recordContinuationEvent(teamNumber,event);
 		events.push(std::move(event));
 		eventCooldownTimers[eventType] = GAME_EVENT_COOLDOWN_TICKS;
 	}

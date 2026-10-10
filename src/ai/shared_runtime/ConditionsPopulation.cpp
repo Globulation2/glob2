@@ -74,12 +74,15 @@ Population::Population(bool workers, bool explorers, bool warriors, int num, Pop
 tribool Population::passes(Runtime& runtime)
 {
 	int amount=0;
-	if(workers)
-		amount+=runtime.observedTeam().statistics.numberUnitPerType[WORKER];
-	if(explorers)
-		amount+=runtime.observedTeam().statistics.numberUnitPerType[EXPLORER];
-	if(warriors)
-		amount+=runtime.observedTeam().statistics.numberUnitPerType[WARRIOR];
+    const auto& statistics=runtime.observedTeam().statistics;
+    const auto& world=runtime.observation();
+    for (unsigned id=0;id<world.unitTypeCount();++id) {
+        const auto flags=world.unitTraits(id).flags;
+        if ((workers && (flags&UnitRuntimeTraits::Transport))
+            || (explorers && (flags&UnitRuntimeTraits::Explore))
+            || (warriors && (flags&UnitRuntimeTraits::Melee)))
+            amount+=statistics.numberUnitPerType[id];
+    }
 	if(method==Greater)
 	{
 		return (amount >= num);

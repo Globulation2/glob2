@@ -180,7 +180,7 @@ void Map::ensureBuildingGradientPipeline()
 		bool newest = true;
 		for (int s = 0; s < SWIM_CLASS_COUNT; ++s)
 		{
-			if (s == swim || (s > 0) != (swim > 0)) continue;
+			if (s == swim || swimAccessVariant(s) != swimAccessVariant(swim)) continue;
 			const int other = b->routeSlot(s, p.route);
 			const auto stamped = b->lastGlobalGradientUpdateStepCounter[other];
 			if (stamped > p.captureTick || (stamped == p.captureTick && !publishedEarlier(other))) newest = false;
@@ -189,7 +189,7 @@ void Map::ensureBuildingGradientPipeline()
 		if (newest)
 		{
 			b->locked[b->routeAccess(swim, p.route)] = p.locked;
-			if (p.route == BuildingRoute::Clearing) b->anyResourceToClear[swim > 0] = p.resourceState;
+			if (p.route == BuildingRoute::Clearing) b->anyResourceToClear[swimAccessVariant(swim)] = p.resourceState;
 		}
 		b->refreshRequested.reset(slot);
 		return true;

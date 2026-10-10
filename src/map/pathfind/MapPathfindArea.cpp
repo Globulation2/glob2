@@ -29,7 +29,7 @@ bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int sw
 		int ry=tabClose[di][1];
 		int xg=(x+rx)&wMask;
 		int yg=(y+ry)&hMask;
-		if (!isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
+		if ((swimClass==WATER_ONLY_CLASS && !terrainPropertiesAt(xg,yg).swimmable) || !isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
 			continue;
 		size_t addr=xg+(yg<<wDec);
 		Uint16 base=gradient[addr];

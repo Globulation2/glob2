@@ -163,6 +163,30 @@ TEST_SUITE("OrderValidation")
 		expect(f.check(OrderModifyBuilding(f.ownInn->gid,40)),Verdict::Accepted);
 	}
 
+    GLOB2_TEST_CASE("built-in ratio orders preserve a producer's explicit custom preferences", "[orders]")
+    {
+        Fixture f;
+        f.game.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(
+            R"({"schemaVersion":1,"units":[{"key":"fixture:carrier","extends":"worker"}]})"));
+        auto catalog=nlohmann::json::parse(f.game.game.buildingsTypes.snapshotJson());
+        auto& producer=catalog["variants"][1]["semantics"]["production"];
+        producer["recipes"]={{"fixture:carrier",{{"enabled",true},{"duration",1},{"cost",nlohmann::json::object()}}}};
+        producer["fallbackUnit"]=3;
+        producer["initialRatios"]={{"fixture:carrier",7}};
+        f.game.game.buildingsTypes.loadSnapshotJson(catalog.dump());f.game.game.configureBuildingCatalog();
+        Building* swarm=f.game.addBuilding("swarm",20,20);
+        REQUIRE(swarm);
+        REQUIRE(swarm->productionRatio(3)==7);
+        Sint32 zero[NB_UNIT_TYPE]={};
+        OrderModifySwarm order(swarm->gid,zero);
+        expect(f.check(OrderModifySwarm(swarm->gid,zero)),Verdict::Accepted);
+        CHECK(f.game.game.executeModifySwarm(order,0));
+        CHECK(swarm->productionRatio(3)==7);
+        Sint32 unavailable[NB_UNIT_TYPE]={1,0,0};
+        expect(f.check(OrderModifySwarm(swarm->gid,unavailable)),Verdict::Rejected,Reason::BadState);
+        CHECK_FALSE(f.game.game.executeModifySwarm(OrderModifySwarm(swarm->gid,unavailable),0));
+    }
+
 	GLOB2_TEST_CASE("orders a client builds for its own team and buildings pass", "[orders]")
 	{
 		Fixture f;

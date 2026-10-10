@@ -98,7 +98,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	// Standard phases wait for trained warriors and sufficient barracks. With
 	// training disabled neither requirement can become true through investment,
 	// so progress uses the standing army and omits the barracks prerequisite.
-	int warrior_count=rules.isUnitUpgradesDisabled() ? stat->numberUnitPerType[WARRIOR] : 0;
+	int warrior_count=rules.isUnitUpgradesDisabled() ? stat->meleeUnits : 0;
 	for(int i=rules.isUnitUpgradesDisabled() ? AI_NICOWAR_MAX_UPGRADE_LEVEL+1 : strategy.minimum_warrior_level_for_trained; i<=AI_NICOWAR_MAX_UPGRADE_LEVEL; ++i)
 	{
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
@@ -159,9 +159,9 @@ void NewNicowar::check_phases(Runtime& runtime)
 	///1) More than strategy.no_workers_phase_free_worker_minimum_percen % workers free
 	///2) No needed jobs
 	///3) At least one worker (because of division by 0)
-	if(stat->numberUnitPerType[WORKER] > 0)
+	if(stat->carriers > 0)
 	{
-		const int workers_free = (stat->isFree[WORKER]  -  stat->totalNeeded) * 100 / stat->numberUnitPerType[WORKER];
+		const int workers_free = (stat->idleCarriers  -  stat->totalNeeded) * 100 / stat->carriers;
 		if(workers_free > strategy.no_workers_phase_free_worker_minimum_percent)
 		{
 			no_workers_phase=true;
@@ -180,7 +180,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	///1) At least one worker that can swim
 	int total_can_swim=0;
 	for(int i=0; i<AI_NICOWAR_LEVEL_COUNT; ++i)
-		total_can_swim += stat->upgradeStatePerType[WORKER][SWIM][i];
+		total_can_swim += runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::Transport,SWIM,i);
 	if(total_can_swim>0)
 	{
 		can_swim=true;
@@ -214,7 +214,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	
 	///Qualifications for the explorer attack phase
 	//1) The minimum number of trained explorers is greater than offense_explorer_minimum
-	if(!rules.isPeacefulModeEnabled() && stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][AI_NICOWAR_EXPLORER_MAX_LEVEL] > strategy.offense_explorer_minimum)
+	if(!rules.isPeacefulModeEnabled() && runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::MagicGround,MAGIC_ATTACK_GROUND,AI_NICOWAR_EXPLORER_MAX_LEVEL) > strategy.offense_explorer_minimum)
 	{
 		explorer_attack_phase = true;
 	}

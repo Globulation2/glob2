@@ -9,18 +9,23 @@ namespace GAGCore::PackedRecords
 // existing field serializers/validators authoritative and bounds transpose
 // scratch space to 256 records, independent of the length of the history.
 constexpr size_t batchSize = 256;
-// Largest supported record: telemetry's tick/availability words plus 4,096 fields,
-// each containing 64-bit data, a 32-bit update tick and a 32-bit validity flag.
-// Bound scratch allocation even for bad input.
-constexpr size_t maxRowBytes = 8 + 16 * 4096;
+// Extended unit statistics can exceed the historical telemetry row width.
+// Allow bounded larger rows while retaining the original scratch-memory ceiling.
+constexpr size_t maxRowBytes = 1024 * 1024;
+constexpr size_t maxBatchBytes = batchSize * (8 + 16 * 4096);
+inline size_t rowsPerBatch(size_t rowBytes)
+{
+    return std::min(batchSize, maxBatchBytes / rowBytes);
+}
 template <class WriteOne>
 void writeImmediate(OutputStream *stream, size_t count, size_t rowBytes, WriteOne writeOne)
 {
 	if (!rowBytes || rowBytes % 4 || rowBytes > maxRowBytes)
 		PackedArray::fail();
-	for (size_t off = 0; off < count; off += batchSize)
+	const size_t batch = rowsPerBatch(rowBytes);
+	for (size_t off = 0; off < count; off += batch)
 	{
-		const size_t n = std::min(batchSize, count - off);
+		const size_t n = std::min(batch, count - off);
 		auto *memory = new MemoryStreamBackend;
 		BinaryOutputStream rows(memory);
 		for (size_t i = 0; i < n; ++i)
@@ -47,9 +52,10 @@ void write(OutputStream *stream, size_t count, size_t rowBytes, WriteOne writeOn
 	if (auto *deferred = dynamic_cast<DeferredStream *>(stream))
 	{
 		// Copy one bounded batch; both transpose and packing run after capture.
-		for (size_t off = 0; off < count; off += batchSize)
+		const size_t batch = rowsPerBatch(rowBytes);
+		for (size_t off = 0; off < count; off += batch)
 		{
-			const size_t n = std::min(batchSize, count - off);
+			const size_t n = std::min(batch, count - off);
 			auto *memory = new MemoryStreamBackend;
 			BinaryOutputStream rows(memory);
 			for (size_t i = 0; i < n; ++i)
@@ -90,9 +96,10 @@ void read(InputStream *stream, size_t count, size_t rowBytes, ReadOne readOne)
 {
 	if (!rowBytes || rowBytes % 4 || rowBytes > maxRowBytes)
 		PackedArray::fail();
-	for (size_t off = 0; off < count; off += batchSize)
+	const size_t batch = rowsPerBatch(rowBytes);
+	for (size_t off = 0; off < count; off += batch)
 	{
-		const size_t n = std::min(batchSize, count - off);
+		const size_t n = std::min(batch, count - off);
 		std::string bytes(n * rowBytes, '\0');
 		for (size_t c = 0; c < rowBytes; c += 4)
 			PackedArray::read<Uint32>(stream, n,

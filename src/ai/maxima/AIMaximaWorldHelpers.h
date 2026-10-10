@@ -26,9 +26,15 @@ namespace WorldHelpers
 
 	inline int warrior_power(const AIEngine::AIWorldView& world,const AIEngine::UnitView* warrior)
 	{
-		return std::max(1,AIEngine::ObservationQueries::realAttackStrength(world,*warrior)
-			*warrior->performance[ATTACK_SPEED]*warrior->hp
-			/std::max(1,warrior->performance[HP]));
+		if (warrior->hp<=0) return 1;
+		const Sint64 rate=Sint64(AIEngine::ObservationQueries::realAttackStrength(world,*warrior))
+			*warrior->performance[ATTACK_SPEED];
+		if (rate<=0) return 1;
+		const Sint64 maximumHealth=std::max(1,warrior->performance[HP]);
+		// Avoid overflowing even the wide numerator when importing old cached
+		// performances. Ordinary units take only the original division below.
+		if (rate>INT_MAX && rate>Sint64(INT_MAX)*maximumHealth/warrior->hp) return INT_MAX;
+		return int(std::clamp<Sint64>(rate*warrior->hp/maximumHealth,1,INT_MAX));
 	}
 
 	inline void add_preemptive_hash(Uint32& signature, Uint32 value)

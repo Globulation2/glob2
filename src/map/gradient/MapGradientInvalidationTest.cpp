@@ -165,8 +165,8 @@ TEST_SUITE("MapGradientInvalidation")
 	  std::cout<<"UNREACHABLE_POCKET lookups="<<lookups<<" propagation_rebuilds="<<propagations()-before<<" PASS\n";
 	 }
 	 {Fixture f(3);player(f);f.game.gameHeader.setResourceGrowthDisabled(true);auto& m=f.game.map;
-	  const int slots=4*SWIM_CLASS_COUNT,cycle=8*slots;std::vector<Uint16*> fields;
-	  for(int team=0;team<4;++team)for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)fields.push_back(m.getForbiddenGradient(team,swim));
+	  const int slots=4*LEGACY_SWIM_CLASS_COUNT,cycle=8*slots;std::vector<Uint16*> fields;
+	  for(int team=0;team<4;++team)for(int swim=0;swim<LEGACY_SWIM_CLASS_COUNT;++swim)fields.push_back(m.getForbiddenGradient(team,swim));
 	  // Deliberately dirty one marker after each visit to make every slot observable.
 	  // The square is genuinely empty/non-forbidden, so the refreshed value must be a goal.
 	  int pos=m.coordToIndex(10,10);for(auto* field:fields)field[pos]=0;

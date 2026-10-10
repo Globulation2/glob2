@@ -242,6 +242,13 @@ export const BuildingCatalog = Strict({
 });
 export type BuildingCatalog = Static<typeof BuildingCatalog>;
 
+/** Resolved unit definitions, including behavior and fixed presentation bindings. */
+export const UnitCatalog = Strict({
+  snapshot: Type.String({ minLength: 1, maxLength: 8 * 1024 * 1024 }),
+  hash: Sha256Hex,
+});
+export type UnitCatalog = Static<typeof UnitCatalog>;
+
 /** Resource catalog metadata. Embedded map definitions remain authoritative. */
 export const ResourceExperimentDefinition = Strict({
   key: Type.String({ pattern: '^[a-z0-9]+(-[a-z0-9]+)*$', minLength: 1, maxLength: 128 }),
@@ -325,6 +332,54 @@ export function buildingCatalogExperimentKeys(catalog: BuildingCatalog): string[
   return keys;
 }
 
+/** The engine validates complete numeric behavior; the platform validates identity and gates. */
+export function unitCatalogExperimentKeys(catalog: UnitCatalog): string[] {
+  if (utf8ByteLength(catalog.snapshot) > 8 * 1024 * 1024)
+    throw new Error('unit catalog snapshot exceeds 8 MiB');
+  const value: unknown = JSON.parse(catalog.snapshot);
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('unit catalog must be an object');
+  const root = value as Record<string, unknown>;
+  if (
+    root['schemaVersion'] !== 1 ||
+    !Array.isArray(root['units']) ||
+    root['units'].length < 3 ||
+    root['units'].length > 1024 ||
+    !Array.isArray(root['experiments'])
+  )
+    throw new Error('unsupported or incomplete unit catalog');
+  const keys = resourceExperimentKeys(root['experiments'] as ResourceExperimentDefinitions);
+  const seen = new Set<string>();
+  const builtin = ['worker', 'explorer', 'warrior'];
+  for (const [index, value] of root['units'].entries()) {
+    if (!value || typeof value !== 'object' || Array.isArray(value))
+      throw new Error('invalid unit definition');
+    const unit = value as Record<string, unknown>;
+    const key = unit['key'];
+    if (
+      typeof key !== 'string' ||
+      !/^[a-z0-9_.:-]+$/.test(key) ||
+      key.length > 128 ||
+      seen.has(key) ||
+      (index < 3 && key !== builtin[index]) ||
+      'extends' in unit ||
+      !Array.isArray(unit['levels']) ||
+      unit['levels'].length !== 4 ||
+      !unit['behaviors'] ||
+      typeof unit['behaviors'] !== 'object' ||
+      Array.isArray(unit['behaviors'])
+    )
+      throw new Error('invalid resolved unit definition');
+    seen.add(key);
+    if (
+      typeof unit['requiredExperiment'] !== 'string' ||
+      (unit['requiredExperiment'] !== '' && !keys.includes(unit['requiredExperiment']))
+    )
+      throw new Error('unresolved unit experiment');
+  }
+  return keys;
+}
+
 export const MatchSetup = Strict(
   {
     schemaVersion: Type.Literal(MATCH_SETUP_SCHEMA_VERSION),
@@ -355,6 +410,7 @@ export const MatchSetup = Strict(
     }),
     pauseLimit: Type.Optional(PauseLimit),
     buildingCatalog: Type.Optional(BuildingCatalog),
+    unitCatalog: Type.Optional(UnitCatalog),
     resourceExperiments: Type.Optional(ResourceExperimentDefinitions),
   },
   { description: 'Complete engine-independent description of a match.' },
@@ -395,6 +451,13 @@ export interface SetupProblem {
 export function matchSetupProblems(setup: MatchSetup): SetupProblem[] {
   const problems: SetupProblem[] = [];
   const known = new Set<string>(BUILTIN_EXPERIMENT_KEYS);
+  if (setup.unitCatalog) {
+    try {
+      for (const key of unitCatalogExperimentKeys(setup.unitCatalog)) known.add(key);
+    } catch (error) {
+      problems.push({ path: '/unitCatalog/snapshot', message: String(error) });
+    }
+  }
   if (setup.buildingCatalog) {
     try {
       if (utf8ByteLength(setup.buildingCatalog.snapshot) > 8 * 1024 * 1024)

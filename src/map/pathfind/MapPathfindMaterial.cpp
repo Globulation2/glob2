@@ -67,7 +67,7 @@ void Map::pathfindRandom(Unit *unit)
 		// Guard-area balancing: a warrior on the paint steps onto a free painted
 		// neighbour first, so a full area does not empty all at once, and takes
 		// the ordinary step when none is free rather than standing still.
-		const bool keepInGuardArea = unit->typeNum == WARRIOR
+		const bool keepInGuardArea = unit->hasCapability(UnitRuntimeTraits::GuardIdle)
 			&& unit->owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing)
 			&& (areaCells[coordToIndex(x, y)].guard & unit->owner->me);
 		bool da[8];
@@ -80,7 +80,7 @@ void Map::pathfindRandom(Unit *unit)
 				int ty=(y+tabClose[di][1])&hMask;
 				if (pass == 0 && !(areaCells[coordToIndex(tx, ty)].guard & unit->owner->me))
 					da[di]=false;
-				else if (terrainPropertiesAt(tx,ty).groundHealthQ8 >= 0
+				else if ((unit->performance[WALK] || terrainPropertiesAt(tx,ty).swimmable) && terrainPropertiesAt(tx,ty).groundHealthQ8 >= 0
 					&& isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
 				{
 					da[di]=true;

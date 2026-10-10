@@ -62,6 +62,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "Team.h"
+#include "UnitCatalog.h"
 #include "TurnLatencyTrace.h"
 #include "TurnLockstep.h"
 #include "Utilities.h"
@@ -592,7 +593,7 @@ TEST_SUITE("LanMatchHarness")
         LanMatch match;match.directory=glob2test::artifactDir()/"catalog-lan";
         fs::create_directories(match.directory);
         const auto source=(match.directory/"custom.map").string();
-        std::string catalogSnapshot,catalogHash;
+        std::string catalogSnapshot,catalogHash,unitSnapshot,unitHash;
         int customID=-1;
         {
             glob2test::HeadlessGame authored({.teams=2,.loadDefaultRace=true,.header=true});
@@ -610,10 +611,15 @@ TEST_SUITE("LanMatchHarness")
             authored.game.buildingsTypes.loadSnapshotJson(snapshot.dump());
             authored.game.gameHeader.getExperiments().set("network-fixture",true,{"network-fixture"});
             authored.game.configureBuildingCatalog();
+            const auto units = UnitCatalog::fromJson(R"({"schemaVersion":1,"experiments":[{"key":"network-fixture","label":"Network fixture","help":"Embedded-only experiment"}],"units":[{"key":"network.carrier","extends":"worker","requiredExperiment":"network-fixture","behaviors":{"cargoCapacity":4,"cargoKinds":2}}]})");
+            authored.game.gameHeader.setUnitCatalog(units);
+            authored.game.configureUnitCatalog();
             auto* building=authored.game.addBuilding(4,4,customID,0,0,0);REQUIRE(building);
             authored.game.map.setBuilding(4,4,1,1,building->gid);
             REQUIRE(authored.addUnit(WORKER,12,12,0));REQUIRE(authored.addUnit(WORKER,20,20,1));
+            REQUIRE(authored.addUnit(3,16,16,0));
             catalogSnapshot=authored.game.buildingsTypes.snapshotJson();catalogHash=authored.game.buildingsTypes.fingerprint();
+            unitSnapshot=units->serialize();unitHash=units->digest();
             FILE* file=std::fopen(source.c_str(),"wb");REQUIRE(file);
             GAGCore::BinaryOutputStream out(new GAGCore::FileStreamBackend(file));
             authored.game.save(&out,true,"Embedded catalog network fixture");
@@ -625,6 +631,7 @@ TEST_SUITE("LanMatchHarness")
         GameHeader requested;
         requested.setRandomSeed(741);
         requested.setBuildingCatalogSnapshot(Engine::loadGameHeader(source).getBuildingCatalogSnapshot());
+        requested.setUnitCatalog(Engine::loadGameHeader(source).getUnitCatalog());
         CHECK(requested.getRandomSeed()==741);
         CHECK(requested.getExperiments().empty());
         CHECK(knownExperimentKey("network-fixture",requested.buildingExperimentKeys()));
@@ -639,12 +646,15 @@ TEST_SUITE("LanMatchHarness")
         joinAndStart(match,{});
         const auto setup=match.hostSide().state().setup;
         CHECK(setup.buildingCatalogSnapshot==catalogSnapshot);CHECK(setup.buildingCatalogHash==catalogHash);
+        CHECK(setup.unitCatalogSnapshot==unitSnapshot);CHECK(setup.unitCatalogHash==unitHash);
         for(const auto& player:match.players)
         {
             const auto& game=player->engine->gui.game;
             CHECK(game.buildingsTypes.fingerprint()==catalogHash);
             CHECK(game.buildingsTypes.get(customID)->hpMax==431);
             CHECK(game.gameHeader.getExperiments().has("network-fixture"));
+            CHECK(game.unitCatalog().digest()==unitHash);
+            CHECK(game.unitCatalog().runtime(3).cargoCapacity==4);
         }
         REQUIRE(match.runUntil(10000,[&] {return match.players[1]->session().executedTick()>=64;}));
         match.host().engine->gui.isRunning=false;
@@ -671,6 +681,24 @@ TEST_SUITE("LanMatchHarness")
             start.transport=std::make_shared<Turn::RecordTransport>(record,0);
             CHECK(rejected.initTurnMatch(start)==Engine::EE_CANT_LOAD_MAP);
             CHECK(rejected.getInitializationDiagnostic().find("catalog")!=std::string::npos);
+            CHECK_THROWS_AS(MatchVerifier::verify(record,wrong,source,match.directory/"verify"),std::invalid_argument);
+        }
+        for(bool omit:{false,true})
+        {
+            auto wrong=recorded;
+            if(omit){wrong.unitCatalogSnapshot.clear();wrong.unitCatalogHash.clear();}
+            else
+            {
+                auto changed=nlohmann::json::parse(unitSnapshot);
+                changed["units"][3]["behaviors"]["cargoCapacity"]=5;
+                const auto other=UnitCatalog::deserialize(changed.dump());
+                wrong.unitCatalogSnapshot=other->serialize();wrong.unitCatalogHash=other->digest();
+            }
+            Engine rejected;Engine::TurnMatchStart start;
+            start.setup=wrong;start.mapFile=source;start.localSeat=0;
+            start.transport=std::make_shared<Turn::RecordTransport>(record,0);
+            CHECK(rejected.initTurnMatch(start)==Engine::EE_CANT_LOAD_MAP);
+            CHECK(rejected.getInitializationDiagnostic().find("unit catalog")!=std::string::npos);
             CHECK_THROWS_AS(MatchVerifier::verify(record,wrong,source,match.directory/"verify"),std::invalid_argument);
         }
     }

@@ -666,7 +666,7 @@ Platform: all.
 | `--resource-growth-delay` | integer; ticks; 1..16 | Resource scheduling delay in ticks. |
 | `--ai-order-delay` | integer; ticks; 0..8 | AI order delay in ticks. |
 | `--save` | string | Snapshot: initial, final, or every:N. Repeatable. |
-| `--telemetry` | checksums, team-timeline, maxima, gradient-stats | Additional telemetry. Repeatable. |
+| `--telemetry` | checksums, continuation-state, team-timeline, maxima, gradient-stats | Additional telemetry. Repeatable. |
 | `--write-replay` | flag; default false | Write game.replay. |
 | `--benchmark-warmup` | integer; ticks; 0..2147483647 | Ticks excluded from benchmark counters. |
 | `--diagnostic-fields` | maxima | Diagnostic field selection. |
@@ -685,11 +685,13 @@ Saved games reject new-match setup options.
 
 Structured jobs isolate engine tuning and diagnostic environment variables.
 
+--diagnostic-interval requires --diagnostic-fields or --telemetry continuation-state.
+
 `--building-artwork` requires `--generator`.
 
 `--candidates` requires `--generator`.
 
-`--diagnostic-interval` requires `--diagnostic-fields`.
+`--diagnostic-interval` requires `--diagnostic-fields` or `--telemetry`.
 
 `--diagnostic-png` requires `--diagnostic-fields`.
 

@@ -99,6 +99,23 @@ TEST_CASE("completed blocked job retains its budget and zero duration remains a 
     CHECK(b->availableMaterial(WHEAT) == 2);
 }
 
+TEST_CASE("idle producer sentinel survives binary and text continuation")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool text : {false, true}) {
+        glob2test::HeadlessGame world({.loadDefaultRace=true, .header=true});
+        Building* producer=world.addBuilding("swarm",8,8);
+        REQUIRE(producer->productionUnit==-1);
+        const auto gid=producer->gid;
+        glob2test::HeadlessGame restored({.loadDefaultRace=true, .header=true});
+        REQUIRE(loadProductionGame(restored.game,saveProductionGame(world.game,text),text));
+        Building* copy=restored.game.teams[0]->myBuildings[Building::GIDtoID(gid)];
+        REQUIRE(copy);
+        CHECK(copy->productionUnit==-1);
+        CHECK(copy->productionTimeout==producer->productionTimeout);
+    }
+}
+
 TEST_CASE("committed recipe survives binary and text continuation with its reservation")
 {
     glob2test::HeadlessGlobals globals;

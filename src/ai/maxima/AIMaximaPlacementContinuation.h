@@ -47,8 +47,11 @@ template<class A> void fields(A& a, BuildingLevelProfile& value)
      }
      for(int r=0;r<MaterialCount;++r)if(value.productionRecipes.packetSize[r]<=0 || value.productionRecipes.packetSize[r]>1000000)throw std::runtime_error("Invalid saved packet size");
 	 materialFields(a,"operatingResources",value.operatingMaterials);
-     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);materialFields(a,"feedingResources",value.feedingMaterials);materialFields(a,"productionResources",value.productionMaterials);materialFields(a,"independentResources",value.independentMaterials);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
+     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);
+     if(a.version()>=FILE_FORMAT_VERSION_UNIT_CATALOG)a("feedingRecipients",value.feedingRecipients);
+     else {value.feedingRecipients.resize(3);for(unsigned i=0;i<3;++i)value.feedingRecipients[i]=bool(value.feedingMask&(1u<<i));}materialFields(a,"feedingResources",value.feedingMaterials);materialFields(a,"productionResources",value.productionMaterials);materialFields(a,"independentResources",value.independentMaterials);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
 	 a("requiredWorkerLevel",value.requiredWorkerLevel);a("repairable",value.repairable);a("available",value.available);
+     if(value.feedingRecipients.size()>1024 || std::any_of(value.feedingRecipients.begin(),value.feedingRecipients.end(),[](Uint8 recipient){return recipient>1;}))throw std::runtime_error("Invalid saved feeding recipients");
      if(value.feedingRate<0 || value.feedingMask>7)throw std::runtime_error("Invalid saved feeding profile");
      for(int r=0;r<MaterialCount;++r)if(value.independentMaterials[r]<0 || value.independentMaterials[r]>value.operatingMaterials[r] || value.feedingMaterials[r]<0 || value.feedingMaterials[r]>value.operatingMaterials[r] || value.productionMaterials[r]<0 || value.productionMaterials[r]>value.operatingMaterials[r])
          throw std::runtime_error("Invalid saved feeding resource component");
@@ -123,8 +126,11 @@ template<class A> void fields(A& a, WorldBuilding& value)
 
 template<class A> void fields(A& a, FeedingColony& value)
 {
-    a("x",value.x);a("y",value.y);a("demand",value.demand);
-    for(int unit=0;unit<3;++unit)if(value.demand[unit]<0)throw std::runtime_error("Invalid saved meal demand");
+    a("x",value.x);a("y",value.y);
+    if(a.version()>=FILE_FORMAT_VERSION_UNIT_CATALOG)a("demand",value.demand);
+    else {int legacy[3]{};a("demand",legacy);value.demand.assign(legacy,legacy+3);}
+    if(value.demand.size()<3 || value.demand.size()>1024)throw std::runtime_error("Invalid saved meal demand count");
+    for(int demand:value.demand)if(demand<0)throw std::runtime_error("Invalid saved meal demand");
 }
 
 template<class A> void fields(A& a, WorldState& value)

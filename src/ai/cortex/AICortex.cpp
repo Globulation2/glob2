@@ -654,9 +654,9 @@ shared_ptr<Order> AICortex::decide()
 					          << " team=" << et->number
 					          << (et->number == observedTeam->number ? " self" : " enemy")
 					          << " u=" << es->totalUnit
-					          << " W=" << es->numberUnitPerType[WORKER]
-					          << " E=" << es->numberUnitPerType[EXPLORER]
-					          << " A=" << es->numberUnitPerType[WARRIOR]
+					          << " W=" << es->carriers
+					          << " E=" << es->scouts
+					          << " A=" << es->meleeUnits
 					          << " bld=" << es->totalBuilding
 					          << " hp=" << es->totalHP
 					          << " atkPow=" << es->totalAttackPower

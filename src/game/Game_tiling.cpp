@@ -31,6 +31,7 @@ namespace
 		std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios;
 		int repairInitialDeficit, repairHealthGranted;
 		BuildingMaterialCost constructionBudget, constructionReserved;
+        std::vector<Sint32> extraRatios, extraOriginRatios;
 	};
 
 	struct UnitTemplate
@@ -39,6 +40,10 @@ namespace
 		Uint32 fruitMask, fruitCount;
 		Unit::Medical medical;
 		Sint32 level[NB_ABILITY];
+        int carriedMaterial=-1;
+        MaterialPacket carriedPacket{};
+        bool widePrimaryCargo=false;
+        UnitCargoStore::Inventory extraCargo;
 	};
 
 	struct ColonyTemplate
@@ -96,7 +101,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 			for (int i = 0; i < Building::MAX_COUNT && colony.anchorX < 0; i++)
 			{
 				const Building* b = teams[t]->myBuildings[i];
-				if (b && b->buildingState == Building::ALIVE && (pass == 1 || b->type->semantics.production.enabledUnitMask))
+				if (b && b->buildingState == Building::ALIVE && (pass == 1 || !b->type->semantics.production.enabledUnits.empty()))
 				{
 					colony.anchorX = b->posX;
 					colony.anchorY = b->posY;
@@ -124,6 +129,8 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 			bt.repairInitialDeficit=b->repairInitialDeficit; bt.repairHealthGranted=b->repairHealthGranted;
 			bt.constructionBudget=b->constructionBudget;
 			bt.constructionReserved=b->constructionReserved;
+            bt.extraRatios=b->extraProductionRatios;
+            bt.extraOriginRatios=b->extraConstructionOriginRatios;
 			for (int r = 0; r < MaterialSlotCount; r++)
 				bt.materials[r] = b->materials[r];
 			for (int u = 0; u < NB_UNIT_TYPE; u++)
@@ -145,7 +152,9 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 				u->fruitMask, u->fruitCount, u->medical, {}};
 			for (int a = 0; a < NB_ABILITY; a++)
 				ut.level[a] = u->level[a];
-			colonies[t].units.push_back(ut);
+			ut.carriedMaterial=u->carriedMaterial; ut.carriedPacket=u->carriedPacket; ut.widePrimaryCargo=u->widePrimaryCargo;
+            if (const auto* cargo=unitCargo.find(u->gid)) ut.extraCargo=*cargo;
+            colonies[t].units.push_back(ut);
 		}
 	}
 
@@ -183,6 +192,12 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 	// Loaded previews may carry local player/AI objects. They point at the
 	// old teams, so dispose of them first and write a neutral starting map.
 	const Uint32 sourceSeed = gameHeader.getRandomSeed();
+    const auto sourceUnitCatalog = gameHeader.getUnitCatalog();
+    std::vector<std::string> enabledUnitGates;
+    for (unsigned id=0;id<sourceUnitCatalog->size();++id) {
+        const auto& gate=sourceUnitCatalog->definition(id).requiredExperiment;
+        if (!gate.empty() && gameHeader.getExperiments().has(gate)) enabledUnitGates.push_back(gate);
+    }
 	for (auto &player : players)
 	{
 		delete player;
@@ -190,6 +205,8 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 	}
 	gameHeader.reset();
 	gameHeader.setRandomSeed(sourceSeed);
+    gameHeader.setUnitCatalog(sourceUnitCatalog);
+    for (const auto& gate:enabledUnitGates) gameHeader.getExperiments().set(gate,true,gameHeader.catalogExperimentKeys());
 
 	// removeTeam deliberately retains the last editor team. Here all teams
 	// are replaced, so delete them explicitly; Map::tile clears their caches.
@@ -250,12 +267,14 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 					b->repairInitialDeficit=bt.repairInitialDeficit; b->repairHealthGranted=bt.repairHealthGranted;
 					b->constructionBudget=bt.constructionBudget;
 					b->constructionReserved=bt.constructionReserved;
+                    b->extraProductionRatios=bt.extraRatios;
+                    b->extraConstructionOriginRatios=bt.extraOriginRatios;
 					b->restoreConstructionReservations();
 					for (int u = 0; u < NB_UNIT_TYPE; u++)
 						b->ratio[u] = bt.ratio[u];
 					for (int r = 0; r < MaterialCount; r++)
 						b->clearingMaterials[r] = bt.clearingMaterials[r];
-					if (!teams[k]->startPosSet && b->type->semantics.production.enabledUnitMask)
+					if (!teams[k]->startPosSet && !b->type->semantics.production.enabledUnits.empty())
 					{
 						teams[k]->startPosX = b->posX;
 						teams[k]->startPosY = b->posY;
@@ -293,6 +312,8 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 					u->fruitMask = ut.fruitMask;
 					u->fruitCount = ut.fruitCount;
 					u->medical = ut.medical;
+                    u->carriedMaterial=ut.carriedMaterial; u->carriedPacket=ut.carriedPacket; u->widePrimaryCargo=ut.widePrimaryCargo;
+                    if (!ut.extraCargo.empty()) unitCargo.overflow(u->gid)=ut.extraCargo;
 				}
 			}
 

@@ -15,10 +15,32 @@
 #include <fstream>
 #include <limits>
 #include <BinaryStream.h>
+#include <TextStream.h>
+#include <bit>
+#include <cmath>
 #include <StreamBackend.h>
 
 TEST_SUITE("GameDiagnostics")
 {
+TEST_CASE("continuation diagnostics retain exact floating values and signed zero")
+{
+    auto* backend=new GAGCore::MemoryStreamBackend();
+    auto output=GameDiagnostics::makeContinuationStream(backend);
+    const float fineFloat=std::nextafter(1.0f,2.0f);
+    const double fineDouble=std::nextafter(1.0,2.0);
+    output->writeFloat(fineFloat,"fineFloat");
+    output->writeFloat(-0.0f,"negativeZero");
+    output->writeDouble(fineDouble,"fineDouble");
+    output->flush();
+    backend->seekFromStart(0);
+    GAGCore::TextInputStream input(backend);
+    CHECK(input.readUint32("fineFloat")==0x3f800001u);
+    CHECK(input.readUint32("negativeZero")==0x80000000u);
+    input.readEnterSection("fineDouble");
+    CHECK(input.readUint32("low")==1u);
+    CHECK(input.readUint32("high")==0x3ff00000u);
+    input.readLeaveSection();
+}
 TEST_CASE("field reader rejects malformed counts and retains unsigned food values [artifacts]")
 {
 	const auto path=(glob2test::artifactDir()/"input.field").string();

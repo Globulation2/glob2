@@ -42,6 +42,13 @@ python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 `ColonySkinPreview` checks shared image preparation with independent appearance
 authorization, refresh, expiry and cancellation across preview owners.
 
+`UnitCatalog` validates developer-authored definitions and migration boundaries.
+`UnitCustomization` exercises combined capabilities, cargo accounting and save
+continuation. Its locked ablation fixture exports `unit-ablations.trace`; native
+and serial/threaded browser evidence must match every row of the committed trace.
+`test/run-browser-determinism.py --engine-binary` retains that evidence alongside
+the stock replay and resource composition traces.
+
 `SkinShapeModel` and `SkinModel` check the GSB1 blend-shape and GSR1 bone-rig
 contracts against the analytic fixtures shared with the Studio decoders
 (`test/fixtures/skins/`). `SkinModelRender` checks native GPU/CPU agreement for

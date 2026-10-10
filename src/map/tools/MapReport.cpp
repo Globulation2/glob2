@@ -4,6 +4,8 @@
 #include "MapReport.h"
 #include "TerrainPresentation.h"
 #include "ResourceRegistry.h"
+#include "UnitCatalog.h"
+#include <nlohmann/json.hpp>
 #include "Game.h"
 #include "GenerationRequest.h"
 #include "GenerationResult.h"
@@ -799,7 +801,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	for (const auto& key : map.requiredResourceExperiments().keys())
 		requiredResourceExperiments.emplace_back(key);
 	J setCredits; setCredits.text = map.frozenAssetBundle()->credits.dump();
-	const std::string text = pretty(
+	std::string text = pretty(
 			   J::object(
 				   {{"schema_version", 2},
 					{"report_type", "map"},
@@ -882,6 +884,23 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 								{"walking_and_clearing", clearing}})}})
 				   .text) +
 		   "\n";
+
+    if(game.gameHeader.getUnitCatalogSnapshot()!=UnitCatalog::availableDefaults()->serialize() ||
+       !game.unitCatalog().experiments().empty())
+    {
+        auto report=nlohmann::json::parse(text);
+        report["map"]["unitCatalog"]={{"snapshot",game.gameHeader.getUnitCatalogSnapshot()},
+            {"hash",game.unitCatalog().digest()}};
+        std::set<std::string> required;
+        for(int team=0;team<game.teamsCount();++team)
+            for(int slot=0;slot<Unit::MAX_COUNT;++slot)if(const auto* unit=game.teams[team]->myUnits[slot])
+            {
+                const auto& gate=game.unitCatalog().definition(unit->typeNum).requiredExperiment;
+                if(!gate.empty())required.insert(gate);
+            }
+        report["map"]["requiredUnitExperiments"]=required;
+        text=report.dump(2)+"\n";
+    }
 	lap(&MapReportTimings::serialise);
 	return text;
 }

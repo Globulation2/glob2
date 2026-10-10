@@ -168,6 +168,8 @@ namespace Online
 		// build used to route verification jobs.
 		std::string buildingCatalogSnapshot;
 		std::string buildingCatalogHash;
+        std::string unitCatalogSnapshot;
+        std::string unitCatalogHash;
 		// Presentation/allowlist metadata only; map bytes remain authoritative.
 		std::vector<CatalogExperimentDefinition> resourceExperiments;
 		/// Absent: pausing is unlimited (and the setup's JSON has no pauseLimit).
