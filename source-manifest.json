@@ -1,0 +1,15 @@
+{
+  "commit": "0520c89a91930362e0cd4407ba42a677365d1226",
+  "base": "4ca7b086359891010281dd994dbbcd8cceadadad",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "flags": "scons release=1 server=0 linker=auto -j8; -O3; CCACHE=1",
+  "dependency_prefixes": {
+    "SDL3": "/home/bradley/glob2-claude/build/sdl3/prefix",
+    "recording": "/home/bradley/glob2-vertex-terrain/build/linux/client/release/recording/prefix"
+  },
+  "reviews": [
+    "Runtime reviewer: shared plan descriptors, request preconditions, telemetry guards and docs; re-review clear",
+    "Qualification reviewer: frozen protocol/source/results receipts, final survivor roster, setup failures and separation; re-review clear"
+  ]
+}

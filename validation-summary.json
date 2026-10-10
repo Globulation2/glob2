@@ -1,0 +1,134 @@
+{
+  "unit-qualified": {
+    "total": 958,
+    "passed": 937,
+    "failed": [
+      {
+        "classname": "ImageAssets",
+        "name": "16-bit RGBA rounds normalized channels to the exporter reference",
+        "time": "0.00027",
+        "status": "run"
+      }
+    ],
+    "skipped": [
+      {
+        "classname": "OpaqueRectangleBatch",
+        "name": "retains OpenGL pixels [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "OpaqueRectangleBatch",
+        "name": "retains portable renderer pixels [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "SkinMesh",
+        "name": "rotated swarms render independently with every material [display][artifacts]",
+        "time": "0.000"
+      },
+      {
+        "classname": "SkinMesh",
+        "name": "material contact sheet [display][artifacts]",
+        "time": "0.000"
+      },
+      {
+        "classname": "SkinModelRender",
+        "name": "rig shader matches CPU poses for every heading and restores context resources [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "SpriteLoad",
+        "name": "variable frame atlas admission accounts for maximum sized padded cells [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "SpriteSheets",
+        "name": "portable HD uses standalone frames without requesting GL atlases [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "SpriteSheets",
+        "name": "independently encoded lossy HD atlases keep exact frame alpha [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "terrain atlas edges stay isolated at fractional overview zoom [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "map geometry cache validates frames, texture lifetime and row ranges [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "map cache invalidates only referenced sources [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "map cache bounds frame builds while retaining hits and fallback pixels [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "ordered HD resource sprite batch retains pixels [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "ordered native resource sprite batch retains pixels [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "ordered portable resource sprite batch retains pixels [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "unit batches preserve overlays, clipping and texture lifetime [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "unit batch outline bounds preserve all clip edges [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "cold frame batches defer and bound texture preparation without changing pixels [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "tests",
+        "name": "cold frame preparation cancels changed and deleted source IDs while disabled [display]",
+        "time": "0.000"
+      },
+      {
+        "classname": "SkinReadback",
+        "name": "export readback matches live compositing for every pose and rotated swarm [display]",
+        "time": "0.000"
+      }
+    ]
+  },
+  "engine-qualified": {
+    "total": 172,
+    "passed": 171,
+    "failed": [],
+    "skipped": [
+      {
+        "classname": "TeamStatsSave",
+        "name": "measurement screenshots [display][artifacts]",
+        "time": "0.000"
+      }
+    ]
+  },
+  "cli": {
+    "total": 15,
+    "passed": 15,
+    "failed": [],
+    "skipped": []
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "source_commit": "0520c89a91930362e0cd4407ba42a677365d1226",
+  "base_commit": "4ca7b086359891010281dd994dbbcd8cceadadad",
+  "archive_bytes": 10290770,
+  "archive_sha256": "94056a9abbca6ac73e67c95e07053ab83a45e3a4c89ab7868b9a4b3f22cfe8d6",
+  "parts": [
+    {
+      "path": "verification.zip.part-00",
+      "bytes": 10290770,
+      "sha256": "94056a9abbca6ac73e67c95e07053ab83a45e3a4c89ab7868b9a4b3f22cfe8d6"
+    }
+  ]
+}
