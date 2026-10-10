@@ -85,7 +85,7 @@ class GOGReleaseTests(unittest.TestCase):
                                           version="0.11.0.0", source_commit="a" * 40,
                                           workflow_commit="b" * 40)
                 with patch("gog_release.ROOT", source), patch(
-                        "gog_release.dependencies", side_effect=lambda path: dependency_paths[path]):
+                        "gog_release.dependencies", side_effect=lambda path, library_path: dependency_paths[path]):
                     if sdl_name.startswith("libSDL2"):
                         with self.assertRaisesRegex(ValueError, "SDL3 runtime"):
                             stage_linux(args)
