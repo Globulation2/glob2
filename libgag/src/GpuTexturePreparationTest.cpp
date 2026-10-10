@@ -198,7 +198,8 @@ TEST_SUITE("GpuTexturePreparation")
 	TEST_CASE("native alpha weighted mips match every CPU level and preserve GL state [display]")
 	{
 		TestWindow window(true);
-		if (std::atoi(reinterpret_cast<const char *>(glGetString(GL_VERSION))) < 3)
+		if (std::atoi(reinterpret_cast<const char *>(glGetString(GL_VERSION))) < 3 &&
+			!SDL_GL_ExtensionSupported("GL_EXT_gpu_shader4"))
 		{
 			auto source = pixels(4, 4, 2);
 			GLuint texture;
@@ -292,7 +293,7 @@ TEST_SUITE("GpuTexturePreparation")
 			glDeleteTextures(1, &texture);
 			return;
 		}
-		const char *text = "#version 130\nvoid main(){gl_Position=gl_Vertex;}";
+		const char *text = "#version 120\nvoid main(){gl_Position=gl_Vertex;}";
 		GLuint shader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(shader, 1, &text, nullptr);
 		glCompileShader(shader);

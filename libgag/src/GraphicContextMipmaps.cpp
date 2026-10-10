@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <map>
+#include <string>
 
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 // Compatibility contexts (including macOS) expose the EXT framebuffer API.
@@ -28,10 +29,11 @@ struct Pipeline
 	bool attempted = false, separateFramebuffers = false;
 };
 std::map<SDL_GLContext, Pipeline> pipelines;
-GLuint shader(GLenum type, const char *source)
+GLuint shader(GLenum type, const std::string &source)
 {
 	GLuint result = glCreateShader(type);
-	glShaderSource(result, 1, &source, nullptr);
+	const char *data = source.c_str();
+	glShaderSource(result, 1, &data, nullptr);
 	glCompileShader(result);
 	GLint ok = 0;
 	glGetShaderiv(result, GL_COMPILE_STATUS, &ok);
@@ -48,16 +50,18 @@ bool initialize(Pipeline &p)
 		return p.program != 0;
 	p.attempted = true;
 	// Integer arithmetic is required for byte-identical alpha-weighted filtering.
-	// Legacy macOS GL 2.1 contexts retain the worker/CPU preparation path.
 	const auto *version = reinterpret_cast<const char *>(glGetString(GL_VERSION));
-	if (!version || std::atoi(version) < 3 ||
+	const bool modern = version && std::atoi(version) >= 3;
+	if ((!modern && !SDL_GL_ExtensionSupported("GL_EXT_gpu_shader4")) ||
 		!SDL_GL_ExtensionSupported("GL_EXT_framebuffer_object"))
 		return false;
 	p.separateFramebuffers = SDL_GL_ExtensionSupported("GL_EXT_framebuffer_blit") ||
 							 SDL_GL_ExtensionSupported("GL_ARB_framebuffer_object");
-	const GLuint vertex =
-		shader(GL_VERTEX_SHADER, "#version 130\nvoid main(){gl_Position=gl_Vertex;}");
-	const GLuint fragment = shader(GL_FRAGMENT_SHADER, R"GLSL(#version 130
+	const std::string prefix = modern ? "#version 130\n"
+									  : "#version 120\n#extension GL_EXT_gpu_shader4 : "
+										"require\n#define texelFetch texelFetch2D\n";
+	const GLuint vertex = shader(GL_VERTEX_SHADER, prefix + "void main(){gl_Position=gl_Vertex;}");
+	const GLuint fragment = shader(GL_FRAGMENT_SHADER, prefix + R"GLSL(
 uniform sampler2D source;
 uniform vec2 extent;
 uvec4 pixel(ivec2 p) {

@@ -363,10 +363,11 @@ existing paths; cache-backed team-color surfaces cannot be deferred safely.
 ## Texture preparation
 
 Generated or edited power-of-two HD surfaces use an integer GPU reduction pass
-on WebGL2 and compatible desktop OpenGL 3+ contexts. Each mip texel retains the
+on WebGL2 and desktop OpenGL contexts with integer shader and framebuffer support
+(OpenGL 3+ or `GL_EXT_gpu_shader4`). Each mip texel retains the
 CPU filter's alpha-weighted color and integer rounding; authored, worker-prepared
 mip chains keep their existing upload and compression path. Unsupported contexts
-(including legacy desktop OpenGL), non-power-of-two surfaces and failed pipeline
+(including older contexts without integer shaders), non-power-of-two surfaces and failed pipeline
 creation retain CPU preparation. Native scratch textures and shaders are released
 before their owning context is destroyed.
 
