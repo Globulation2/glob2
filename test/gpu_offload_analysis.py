@@ -98,10 +98,12 @@ def summarize(rows, control, candidates, *, minimum_pairs=5, confirmation=False)
             if confirmation:
                 passing = passing and all(metrics[k]['noninferiority']['point_nonworsening'] for k in ('wall_per_tick', 'tick_p99'))
             contaminated = any(r.get('resource_contaminated', False) for pair in matched for r in pair)
+            diagnostic = any(r['result'].get('benchmark_diagnostics_enabled', False) for pair in matched for r in pair)
             scenario_result[candidate] = {'metrics': metrics, 'noninferiority_pass': passing,
+                'diagnostic_only': diagnostic,
                 'resource_contaminated': contaminated,
                 'cpu_target_pass': cpu.get('upper_one_sided95', math.inf) <= .70,
-                'qualified': not contaminated and passing and cpu.get('upper_one_sided95', math.inf) <= .70,
+                'qualified': not contaminated and not diagnostic and passing and cpu.get('upper_one_sided95', math.inf) <= .70,
                 'scope': 'this retained scenario; independent holdouts and rendered guards required separately'}
         output[scenario] = scenario_result
     return output
@@ -123,6 +125,8 @@ def aggregate_cpu(rows, control, candidates, *, required_phases=('early', 'middl
                 errors.append('missing or invalid paired sample'); continue
             if b.get('resource_contaminated', False) or c.get('resource_contaminated', False):
                 errors.append('resource contamination prevents acceptance'); continue
+            if b['result'].get('benchmark_diagnostics_enabled') or c['result'].get('benchmark_diagnostics_enabled'):
+                errors.append('diagnostic instrumentation prevents acceptance'); continue
             m = maps.setdefault(b['map_id'], {'stratum': b['group'], 'phases': set(), 'logs': []})
             if m['stratum'] != b['group']: raise ValueError('map appears in multiple strata')
             m['phases'].add(b.get('phase'))

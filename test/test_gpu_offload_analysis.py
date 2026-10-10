@@ -37,6 +37,14 @@ class OffloadAnalysisTest(unittest.TestCase):
         self.assertFalse(result['qualified'])
         self.assertTrue(result['resource_contaminated'])
 
+    def test_diagnostic_samples_preserve_statistics_but_never_qualify(self):
+        rows = [r for n in range(5) for r in (self.row('cpu', n), self.row('gpu', n, 60))]
+        rows[0]['result']['benchmark_diagnostics_enabled'] = True
+        result = summarize(rows, 'cpu', ['gpu'])['map-early']['gpu']
+        self.assertAlmostEqual(result['metrics']['cpu_per_tick']['ratio'], .6)
+        self.assertFalse(result['qualified'])
+        self.assertTrue(result['diagnostic_only'])
+
     def test_duplicate_pair_is_rejected(self):
         with self.assertRaises(ValueError): summarize([self.row('cpu', 0)] * 2, 'cpu', ['gpu'])
 
