@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Offline, single-field, unprofiled dispatch. No dependency on OpenCL headers.
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <initializer_list>
+#include <limits>
 
 using Handle = void *;
 using UInt = std::uint32_t;
@@ -131,6 +133,70 @@ extern "C" int run_compact(Handle queue,Handle kernel,Handle* buffers,
         std::swap(active,next);
     }
     CHECK(clEnqueueReadBuffer(queue,buffers[0],1,0,cells*4,output,0,nullptr,nullptr));
+    stats[0]=std::chrono::duration<double,std::milli>(Clock::now()-started).count();stats[2]=rounds;
+    return 0;
+}
+
+// Independent development ABI. The original compact control above remains
+// unchanged. Exactly eight ordered rounds per read, including empty rounds,
+// reduce host synchronization while retaining global visibility boundaries.
+extern "C" int run_compact_grouped(Handle queue,Handle kernel,Handle* buffers,
+ const UInt* seeds,const UInt* initial,UInt* output,UInt seedCount,
+ UInt width,UInt height,UInt cap,UInt groups,double* stats,std::uint64_t* metrics)
+{
+    const auto started=Clock::now();
+    std::fill_n(metrics,14,0);
+    if(!width || !height || !groups || width>std::numeric_limits<UInt>::max()/height ||
+       cap>65533 || std::size_t(groups)>std::numeric_limits<std::size_t>::max()/128)return -997;
+    const UInt cells=width*height,zero=0;
+    if(std::uint64_t(cells)*20+40>128ull*1024*1024)return -997;
+    if(seedCount>cells)return -998;
+    metrics[8]=std::uint64_t(cells)*20+40; // values,costs,two lists,stamps,metadata
+    if(!seedCount){
+        std::copy_n(seeds,cells,output);stats[2]=0;
+        stats[0]=std::chrono::duration<double,std::milli>(Clock::now()-started).count();
+        return 0;
+    }
+    CHECK(clEnqueueWriteBuffer(queue,buffers[0],1,0,std::size_t(cells)*4,seeds,0,nullptr,nullptr));
+    metrics[4]=std::uint64_t(cells)*4;
+    CHECK(clEnqueueWriteBuffer(queue,buffers[2],1,0,std::size_t(seedCount)*4,initial,0,nullptr,nullptr));
+    metrics[5]=std::uint64_t(seedCount)*4;
+    CHECK(clEnqueueFillBuffer(queue,buffers[4],&zero,4,0,std::size_t(cells)*4,0,nullptr,nullptr));
+    metrics[12]=std::uint64_t(cells)*4;
+    std::array<UInt,10> metadata{seedCount};
+    CHECK(clEnqueueWriteBuffer(queue,buffers[5],1,0,sizeof(metadata),metadata.data(),0,nullptr,nullptr));
+    for(UInt i:{0u,1u,4u,5u}){CHECK(clSetKernelArg(kernel,i,sizeof(Handle),buffers+i));++metrics[9];}
+    CHECK(clSetKernelArg(kernel,8,sizeof(UInt),&width));++metrics[9];
+    CHECK(clSetKernelArg(kernel,9,sizeof(UInt),&height));++metrics[9];
+    CHECK(clSetKernelArg(kernel,10,sizeof(UInt),&cap));++metrics[9];
+    Handle active=buffers[2],next=buffers[3];UInt slot=0,rounds=0,count=seedCount;
+    const std::size_t global=std::size_t(groups)*128,local=128;
+    while(count){
+        if(rounds==65536)return -999;
+        for(unsigned dispatch=0;dispatch<8;++dispatch){
+            const UInt epoch=++rounds;
+            CHECK(clEnqueueFillBuffer(queue,buffers[5],&zero,4,std::size_t(1u-slot)*4,4,0,nullptr,nullptr));
+            ++metrics[10];
+            CHECK(clSetKernelArg(kernel,2,sizeof(Handle),&active));++metrics[9];
+            CHECK(clSetKernelArg(kernel,3,sizeof(Handle),&next));++metrics[9];
+            CHECK(clSetKernelArg(kernel,6,sizeof(UInt),&slot));++metrics[9];
+            CHECK(clSetKernelArg(kernel,7,sizeof(UInt),&epoch));++metrics[9];
+            CHECK(clEnqueueNDRangeKernel(queue,kernel,1,nullptr,&global,&local,0,nullptr,nullptr));
+            metrics[11]+=global;
+            std::swap(active,next);slot=1u-slot;
+        }
+        CHECK(clEnqueueReadBuffer(queue,buffers[5],1,0,sizeof(metadata),metadata.data(),0,nullptr,nullptr));
+        ++metrics[0];metrics[7]+=sizeof(metadata);
+        metrics[1]=metadata[2]|(std::uint64_t(metadata[3])<<32);
+        metrics[2]=metadata[4]|(std::uint64_t(metadata[5])<<32);
+        metrics[3]=metadata[6]|(std::uint64_t(metadata[7])<<32);
+        if(metadata[8] || metadata[9])return -998;
+        count=metadata[slot];if(count>cells)return -998;
+    }
+    // No queued round can restart from an empty frontier. The successful
+    // in-order metadata read proves the final empty fixed point and completion.
+    CHECK(clEnqueueReadBuffer(queue,buffers[0],1,0,std::size_t(cells)*4,output,0,nullptr,nullptr));
+    metrics[6]=std::uint64_t(cells)*4;metrics[13]=count;
     stats[0]=std::chrono::duration<double,std::milli>(Clock::now()-started).count();stats[2]=rounds;
     return 0;
 }
