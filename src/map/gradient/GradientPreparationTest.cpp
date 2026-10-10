@@ -1,4 +1,5 @@
 #include "field/OpenCLGradient.h"
+#include "field/GradientDeviceService.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "sim/snapshot/SnapshotStore.h"
 #include "EngineFixtures.h"
@@ -1319,4 +1320,77 @@ TEST_CASE("GradientPreparation/modified terrain costs stay resident when field o
             hits=status.costIdentityHits;
         }
     }
+}
+
+TEST_CASE("GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields")
+{
+    using namespace gradient_kernel;
+    const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
+    setBackend(Backend::CPU);
+    glob2test::HeadlessGlobals globals;
+    for(bool modified:{false,true})for(int swim:{0,1,3,6})for(unsigned ring:{64u,128u,256u}) {
+        CAPTURE(modified);CAPTURE(swim);CAPTURE(ring);
+        glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+        auto& map=world.game.map;
+        if(modified) {
+            map.game=nullptr;
+            map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:minimal-cost","name":"Slow ground","base":"grass","appearance":"grass","properties":{"groundSpeedQ8":192}}]})");
+            map.setGame(&world.game);map.paintCell(3,*map.terrainRegistry().find("test:minimal-cost"));
+        }
+        map.setVertexTerrain(5,5,WATER);
+        auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),gradient_preparation::buildingRequirements());
+        // Distinct owners let expiry prove that the view did not retain the
+        // Terrain or its table even though the live map has its own catalog.
+        auto terrain=std::make_shared<SimulationSnapshot::Terrain>(*snapshot.terrain);
+        auto rules=std::make_shared<CellRuleTable>(*terrain->rules);terrain->rules=rules;snapshot.terrain=terrain;
+        std::weak_ptr<const SimulationSnapshot::Terrain> source=terrain;
+        std::weak_ptr<const CellRuleTable> table=rules;
+        gradient_preparation::Request request;request.swim=swim;request.terrainBuckets=ring;
+        std::vector<Uint16> original(map.size,1);original[0]=65535;original[13]=0;original[21]=65000;
+        auto expected=original;GradientWorkspace reference;
+        gradient_preparation::propagateCPU(request,snapshot,expected.data(),reference);
+        auto make=[&]{auto data=std::make_unique<Uint16[]>(map.size);std::copy(original.begin(),original.end(),data.get());return data;};
+        auto data=make();auto session=std::make_shared<BackendSession>();
+        auto owned=gradient_preparation::ownPropagation(request,snapshot,data,session,{Plan::Frozen8,0,session->currentGeneration()},17,true);
+        REQUIRE(bool(owned));CHECK_FALSE(data);CHECK(owned->identity.owner==owned->inputs);
+        CHECK(owned->identity.retainedBytes>0);CHECK(owned->retainedInputBytes==0);
+        const auto before=gradient_preparation::minimalCostViewMetrics();
+        auto otherData=make();auto other=gradient_preparation::ownPropagation(request,snapshot,otherData,session,{},17,true);
+        REQUIRE(bool(other));CHECK(other->identity.owner==owned->identity.owner);
+        CHECK(gradient_preparation::minimalCostViewMetrics().reused==before.reused+1);
+        auto replacement=std::make_shared<SimulationSnapshot::Terrain>(*terrain);snapshot.terrain=replacement;
+        auto replacedData=make();auto replaced=gradient_preparation::ownPropagation(request,snapshot,replacedData,session,{},17,true);
+        REQUIRE(bool(replaced));CHECK(replaced->identity.owner!=owned->identity.owner); // Same revision, different control identity.
+        replacement.reset();snapshot={};terrain.reset();rules.reset();
+        CHECK(source.expired());CHECK(table.expired());
+        // Original seeds have remained untouched throughout view construction.
+        CHECK(std::equal(original.begin(),original.end(),owned->data.get()));
+        owned->cpu(*owned);CHECK(std::vector<Uint16>(owned->data.get(),owned->data.get()+map.size)==expected);
+    }
+}
+
+TEST_CASE("GradientPreparation/minimal view pressure declines without moving original seeds")
+{
+    using namespace gradient_kernel;
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),gradient_preparation::buildingRequirements());
+    auto data=std::make_unique<Uint16[]>(world.game.map.size);std::fill_n(data.get(),world.game.map.size,Uint16(77));
+    const auto original=data.get();auto session=std::make_shared<BackendSession>();gradient_preparation::Request request;
+    const auto current=openCLStatus().hostBytes;
+    REQUIRE(current<=OpenCLHostBudget);const auto pressure=OpenCLHostBudget-current;
+    REQUIRE(reserveOpenCLHostBytes(pressure));
+    {
+        struct Release {std::size_t bytes;~Release(){releaseOpenCLHostBytes(bytes);}} release{pressure};
+        const auto before=gradient_preparation::minimalCostViewMetrics();
+        CHECK_FALSE(gradient_preparation::ownPropagation(request,snapshot,data,session,{},17,true));
+        CHECK(gradient_preparation::minimalCostViewMetrics().budgetDeclines==before.budgetDeclines+1);
+    }
+    CHECK(data.get()==original);CHECK(data[0]==77);CHECK(data[world.game.map.size-1]==77);
+    auto malformed=std::make_shared<SimulationSnapshot::Terrain>(*snapshot.terrain);
+    malformed->cellRules.pop_back();snapshot.terrain=malformed;
+    const auto before=gradient_preparation::minimalCostViewMetrics();
+    CHECK_FALSE(gradient_preparation::ownPropagation(request,snapshot,data,session,{},17,true));
+    CHECK(gradient_preparation::minimalCostViewMetrics().representationDeclines==before.representationDeclines+1);
+    CHECK(data.get()==original);CHECK(data[0]==77);
 }

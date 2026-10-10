@@ -45,9 +45,9 @@ void expandProfileBucket(std::uint16_t *gradient, GradientBucket *queue, std::si
 		*movement.prepared);
 }
 
-template <unsigned Buckets, bool DirectProfiles = false, bool Accelerated = true, class TerrainAt>
+template <unsigned Buckets, bool DirectProfiles = false, bool Accelerated = true, class TerrainAt, class Movement>
 void propagate(std::uint16_t *gradient, int maxCost, field::Grid grid, GradientWorkspace &workspace,
-			   TerrainAt terrainAt, const TerrainRegistry::Movement &movement, CostIdentity identity = {})
+			   TerrainAt terrainAt, const Movement &movement, CostIdentity identity = {})
 {
 	const bool allProfilesFit = std::all_of(movement.profiles.begin(), movement.profiles.end(),
 											[](EntrySteps costs)

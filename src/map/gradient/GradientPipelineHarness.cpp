@@ -822,6 +822,63 @@ TEST_CASE("one-slot device configuration creates no driver activity" * doctest::
     CHECK(initialized==0);CHECK_FALSE(service.metrics().running);
 }
 
+TEST_CASE("nullable GPU preparation recovers once on the original worker without device reentry" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
+    PipelineEnvironment noop("GLOB2_GRADIENT_WORKER_NOOP","0");
+    readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
+    struct State {std::atomic<unsigned> attempted{0},cpu{0},gpu{0};std::atomic<bool> worker{true};};
+    auto state=std::make_shared<State>();
+    auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{[]{return true;},
+        [state](std::span<const BackendRequest>,Plan){++state->gpu;return false;}});
+    service->configure(2,Backend::OpenCL);
+    const auto readyUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(!service->metrics().ready&&std::chrono::steady_clock::now()<readyUntil)std::this_thread::yield();
+    REQUIRE(service->metrics().ready);
+    TestGradientPipeline pipeline,restored;
+    pipeline.configure(1,2,1,[state](auto& job,auto&){
+        CHECK(job.cpuOnly==(job.data[0]!=90));
+        if(job.data[0]!=90&&!ComputeExecutor::workerSlot())state->worker=false;
+        ++state->cpu;job.data[0]+=11;
+    });
+    pipeline.setDeviceService(service);
+    pipeline.setAsyncWork([state](auto& job,PlanDecision)->std::shared_ptr<OwnedGradientField>{
+        CHECK(ComputeExecutor::workerSlot()!=0);CHECK(job.data[0]==77||job.data[0]==78);
+        ++state->attempted;return {};
+    });
+    std::array<std::uint16_t*,2> fields{new std::uint16_t[1]{},new std::uint16_t[1]{}};
+    std::array<std::uint16_t*,2> resumed{new std::uint16_t[1]{},new std::uint16_t[1]{}};
+    for(unsigned i=0;i<2;++i){pipeline.advance();pipeline.submit(&fields[i],0,[i](auto& job){job.data[0]=77+i;});}
+    const auto attemptedUntil=std::chrono::steady_clock::now()+std::chrono::seconds(5);
+    while(state->attempted!=2&&std::chrono::steady_clock::now()<attemptedUntil)std::this_thread::yield();
+    REQUIRE(state->attempted==2);pipeline.finish();
+    CHECK(state->worker);CHECK(state->cpu==2);CHECK(state->gpu==0);
+    CHECK(service->metrics().submitted==0);CHECK(pipeline.cpuCompleteFields()==2);
+    CHECK(pipeline.cpuReason(GradientPipeline::CPUReason::OwnedInputDecline)==2);
+    CHECK(pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)==0);
+    CHECK(fields[0][0]==0);CHECK(fields[1][0]==0);
+    restored.configure(0,2,1,[](auto&,auto&){FAIL("saved completed CPU recovery recomputed");});restored.advance();restored.advance();
+    unsigned index=0;
+    pipeline.visitPendingSnapshots([&](const auto& snapshot){
+        REQUIRE(index<2);CHECK(snapshot.remaining==1+index);CHECK(snapshot.data[0]==88+index);
+        auto data=std::make_unique<std::uint16_t[]>(1);data[0]=snapshot.data[0];
+        restored.restoreCompleted({&resumed[index],0,snapshot.remaining,snapshot.superseded,std::move(data)});++index;
+    });
+    CHECK(index==2);pipeline.advance();restored.advance();CHECK(fields[0][0]==88);CHECK(resumed[0][0]==88);CHECK(fields[1][0]==0);
+    pipeline.advance();restored.advance();
+    for(unsigned i=0;i<2;++i){CHECK(fields[i][0]==88+i);CHECK(resumed[i][0]==fields[i][0]);}
+    CHECK(state->cpu==2);CHECK(state->gpu==0);
+    // Published jobs are pooled. A declined job must not poison its next
+    // ordinary generation with a stale recovery-only routing flag.
+    setBackend(Backend::CPU);
+    pipeline.submit(&fields[1],0,[](auto& job){CHECK_FALSE(job.cpuOnly);job.data[0]=90;});
+    pipeline.finish();CHECK(state->cpu==3);CHECK(state->gpu==0);CHECK(fields[1][0]==89);
+    pipeline.advance();pipeline.advance();CHECK(fields[1][0]==101);
+    pipeline.reset();restored.reset();service->stop();for(auto* p:fields)delete[] p;for(auto* p:resumed)delete[] p;
+}
+
 TEST_CASE("fixed-due GPU stalls demote accepted policy in background without diagnostic clocks" * doctest::test_suite("GradientPipeline"))
 {
     using namespace gradient_kernel;

@@ -526,12 +526,19 @@ std::vector<std::pair<std::string,Uint64>> Map::adaptiveGradientMetrics() const
     const auto m=gradientRuntime->backendSession->metrics();
     const auto device=gradientRuntime->deviceService->metrics();
     const auto barriers=compute.metrics();
+    const auto minimal=gradient_preparation::minimalCostViewMetrics();
     auto result=std::vector<std::pair<std::string,Uint64>>{{"cpu_diagnostics_enabled",1},
         {"gradient_stage_diagnostics_enabled",gradientRuntime->pipeline.diagnosticsEnabled()},
         {"gpu_requested_fields",gradientRuntime->pipeline.gpuRequestedFields()},
+        {"minimal_cost_view_attempts",minimal.attempted},{"minimal_cost_view_constructed",minimal.constructed},
+        {"minimal_cost_view_reuses",minimal.reused},{"minimal_cost_view_declines",minimal.declined},
+        {"minimal_cost_view_copied_bytes",minimal.copiedBytes},
+        {"minimal_cost_view_budget_declines",minimal.budgetDeclines},{"minimal_cost_view_allocation_declines",minimal.allocationDeclines},
+        {"minimal_cost_view_representation_declines",minimal.representationDeclines},
         {"cpu_reason_explicit",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::ExplicitCPU)},
         {"cpu_reason_owner_excluded",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::OwnerExcluded)},
         {"cpu_reason_unavailable",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)},
+        {"cpu_reason_owned_input_decline",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::OwnedInputDecline)},
         {"cpu_reason_automatic_policy",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::AutomaticPolicy)},
         {"cpu_reason_failed_session",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::FailedSession)},
         {"cpu_reason_trivial",gradientRuntime->pipeline.cpuReason(GradientPipeline::CPUReason::Trivial)},

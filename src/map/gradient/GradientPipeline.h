@@ -29,7 +29,7 @@
 class GradientPipeline
 {
 public:
-    enum class CPUReason : unsigned {ExplicitCPU,OwnerExcluded,Unavailable,AutomaticPolicy,FailedSession,Trivial,CpuClockUnavailable,Count};
+    enum class CPUReason : unsigned {ExplicitCPU,OwnerExcluded,Unavailable,AutomaticPolicy,FailedSession,Trivial,CpuClockUnavailable,OwnedInputDecline,Count};
 	struct Job {
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
@@ -43,6 +43,7 @@ public:
 		int swim = 0;
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
+        bool cpuOnly=false; // Unsaved, original-worker ownership admission recovery.
 		std::exception_ptr error;
 		gradient_preparation::Request request;
 		gradient_preparation::CrowdingScratch* crowding = nullptr;
@@ -164,6 +165,28 @@ private:
             } else if (selectedGPU && deviceService && asyncWork && executor->slot()) {
                 const auto ownedStart=diagnostics ? cpuNow() : 0;
                 job.deviceField=asyncWork(job,decision);
+                if(!job.deviceField) {
+                    // A bounded owned-view admission can decline before seed
+                    // ownership moves. Recovery stays on this original worker
+                    // and has no deferred ticket or coordinator dependency.
+                    const auto cpuStart=cpuNow();
+                    if(diagnostics) {
+                        ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,cpuStart),std::memory_order_relaxed);
+                        handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart),std::memory_order_relaxed);
+                    }
+                    job.cpuOnly=true;
+                    work(job,scratch.propagation);
+                    const auto cpuEnd=cpuNow();
+                    propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuEnd),std::memory_order_relaxed);
+                    cpuReasons[unsigned(CPUReason::OwnedInputDecline)].fetch_add(1,std::memory_order_relaxed);
+                    cpuFields.fetch_add(1,std::memory_order_relaxed);
+                    if(learningEnabled) {
+                        const bool valid=preparationClockValid&&cpuStart>=preparedCpu&&cpuEnd>=cpuStart;
+                        deviceService->recordAccepted(backendSession,key,decision.plan,
+                            valid?glob2::threadCpuDeltaNs(preparationCpu,cpuEnd):0,
+                            job.snapshotLease?job.snapshotLease->tick:job.due-delay,true);
+                    }
+                }else {
                 job.deviceField->workload=key;
                 job.deviceField->seedShape=job.seedShape;job.deviceField->publicationTick=job.due;
                 job.deviceField->tick=job.snapshotLease ? job.snapshotLease->tick : job.due-delay;
@@ -179,6 +202,7 @@ private:
                 if(diagnostics) {
                     ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,ownedEnd),std::memory_order_relaxed);
                     handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart)+glob2::threadCpuDeltaNs(ownedEnd,cpuNow()),std::memory_order_relaxed);
+                }
                 }
             } else if (selectedGPU && batchWork && gradient_kernel::canBatch(*backendSession)) {
                 if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuNow()),std::memory_order_relaxed);
@@ -356,6 +380,7 @@ public:
 		auto job=std::make_unique<Job>();
 		job->slot=snapshot.slot; job->swim=snapshot.swim; job->due=tick+snapshot.remaining;
 		job->superseded=snapshot.superseded; job->done=true; job->data=std::move(snapshot.data);
+        job->cpuOnly=false;
 		pending.push_back(std::move(job));
 	}
 	// Execution is local configuration, never part of saved simulation state.
@@ -400,7 +425,7 @@ public:
 		job->slot=slot; job->swim=swim; job->due=tick+delay;
 		job->deviceField.reset();
         job->seedShape={};job->captureSeedShape=crossDueTiming;
-        job->done=false; job->superseded=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
+        job->done=false; job->superseded=false; job->cpuOnly=false; job->error=nullptr;  job->owner=this; job->preparationNs=0;
 		auto *ptr=job.get(); pending.push_back(std::move(job));
 		lastSubmission = tick;
 		++metrics.jobs;

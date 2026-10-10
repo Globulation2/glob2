@@ -696,3 +696,30 @@ straddle warm boundaries. The allocation/seed and propagation components are
 **nested inside DecisionAndCommandCapture**, never additional process/decision
 CPU to sum. Diagnostic lookup/merge overhead is paid by process CPU; pre-candidate
 and mode-0 controls are required before attributing or claiming any savings.
+
+### Minimal retained GPU costs
+
+`GLOB2_GRADIENT_MINIMAL_COSTS=1` is an isolated default-off development candidate,
+latched on first asynchronous ownership preparation. It replaces a required
+GPU job's complete terrain/table/catalog lease with exact recovery costs only.
+Uniform classic movement has scalar costs; weighted classic movement retains
+one swimming byte per cell; modified movement retains one existing profile ID
+per cell and copies its selected fixed prepared tables/profile prefix unchanged.
+No terrain, cell-rule or registry graph is kept alive by this view.
+
+Workers reserve the shared host budget before view, byte-plane and holder/output
+ownership allocation. A bounded weak cache reuses views by shared source control
+identity, dimensions, revision and movement class. Its reservation includes weak
+control/object storage, so expired coallocated objects remain accounted until
+eviction. Views remain leased through their actual last owner, including backend
+cache retention. View/holder leases deliberately overlap existing service and
+backend estimates, giving conservative upper accounting. Admission
+failure leaves original seeds on the original worker and executes the existing
+CPU kernel exactly once, without a deferred ticket or synchronous GPU retry.
+Direct-profile modified recovery is exact recovery, not a replacement timing
+reference for accepted production indirect propagation. Compare pre-candidate,
+disabled, cold and reused views before attributing savings; construction and
+copy costs belong to the existing owned-input preparation diagnostics.
+Fixed counters distinguish budget, allocation and representation declines;
+nullable admission has its own `cpu_reason_owned_input_decline` counter. Measure
+premature pressure from duplicate charges alongside fresh/warm copy cost.
