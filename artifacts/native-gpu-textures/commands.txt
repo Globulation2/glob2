@@ -1,0 +1,39 @@
+Tested source: 709f21bdc8e60964e270a747cc9dfc7be7489028 (clean)
+Base: 79cd352c41ec43a76b72f0359ab2092026249215
+Fetched master before final verification: 68ca36e77590047794778c4936192b92d657aee5
+Ubuntu 26.04.1 x86_64, Linux 7.0.0-31, GCC 15.2.0
+SDL3 3.4.16, SDL3_image 3.4.6, SDL3_ttf 3.2.2, SDL3_net 3.2.0
+NVIDIA RTX 2070 SUPER driver 580.178.04, OpenGL 4.6, GLSL 4.60
+Mesa llvmpipe 26.0.8 legacy context forced OpenGL 2.1 / GLSL 1.20
+Android NDK 28.2.13676358, arm64-v8a API24, -O2 -g -fPIC
+Emscripten 4.0.15, browser release -O2 -g2 web_profile=1, Chromium 153 / Playwright 1.63
+
+Native prefix: /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix
+Native release unit binary: build/native-gpu-release/test/glob2-unit-tests
+Native development client/engine/unit: build/browser-fix-merge-native (dev_fast=1 -O0 -g1, correctness only)
+
+Build/test commands (run from repository root except Playwright):
+GLOB2_SDL3_PREFIX=<native-prefix> scons --build=build/native-gpu-release release=1 unit-tests -j6
+GLOB2_SDL3_PREFIX=<native-prefix> python3 tools/dev_build.py --build=build/browser-fix-merge-native unit-tests engine-tests build/browser-fix-merge-native/src/glob2 -j6
+GLOB2_SDL3_PREFIX=<native-prefix> CCACHE=1 scons target=web --build=build/browser-fix-merge-web release=1 web_profile=1 -j4
+<managed-asset-encoder-python> -m unittest discover -s test/build_system
+
+env -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 build/native-gpu-release/test/glob2-unit-tests --test-suite=GpuTexturePreparation --test-case-exclude='*[benchmark]*'
+env -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 SDL_RENDER_DRIVER=opengles2 build/native-gpu-release/test/glob2-unit-tests --test-suite=GpuTexturePreparation --test-case='SDL *' --test-case-exclude='*[benchmark]*'
+env -u WAYLAND_DISPLAY SDL_VIDEO_DRIVER=x11 build/native-gpu-release/test/glob2-unit-tests --test-suite=GpuTexturePreparation --test-case='*[benchmark]*'
+
+For test/run_tests.py below: unset DISPLAY and WAYLAND_DISPLAY; SDL_VIDEO_DRIVER=dummy for headless, x11 for display; --artifacts and --junit under this evidence directory.
+python3 test/run_tests.py --build-dir build/native-gpu-release --binary unit --filter 'ImageAssets/*' --filter 'SpriteSheets/*' --exclude-tag display
+python3 test/run_tests.py --build-dir build/native-gpu-release --binary unit --filter 'GpuTexturePreparation/*' --filter 'SpriteSheets/*' --tag display --exclude-tag benchmark --display-jobs 1
+python3 test/run_tests.py --build-dir build/native-gpu-release --binary unit --filter '*ordered *resource sprite batch*' --filter '*unit batch*' --filter '*cold frame*' --tag display --display-jobs 1
+MESA_GL_VERSION_OVERRIDE=2.1 MESA_GLSL_VERSION_OVERRIDE=120 python3 test/run_tests.py --build-dir build/native-gpu-release --binary unit --filter 'GpuTexturePreparation/native *' --exclude-tag benchmark --display-jobs 1
+python3 test/run_tests.py --build-dir build/browser-fix-merge-native --binary engine --filter 'PortableRenderer/*' --filter 'HighResolutionIntegration/*' --tag display --display-jobs 1
+python3 test/run_tests.py --build-dir build/browser-fix-merge-native --binary engine --filter 'TerrainPresentation/*' --exclude-tag display
+
+Android: exact five-file cross-compilation commands and exit status in android-compile-results.json (all zero). Full client/link/package/device testing not completed.
+Browser server: python3 browser/serve.py 8778 --bind 127.0.0.1 --directory build/browser-fix-merge-web
+From browser/:
+GLOB2_TEST_URL=http://127.0.0.1:8778 GLOB2_TEST_RENDERER=webgl2 ./node_modules/.bin/playwright test --config ../artifacts/native-gpu-textures/playwright-gpu.config.cjs artwork-memory.spec.js rendering.spec.js --project chromium --grep 'high-resolution startup|draws a playable' --reporter list --output ../artifacts/native-gpu-textures/browser-gpu-results
+GLOB2_TEST_URL=http://127.0.0.1:8778 GLOB2_TEST_RENDERER=webgl2 GLOB2_CHROMIUM_ANGLE=swiftshader ./node_modules/.bin/playwright test artwork-memory.spec.js --project chromium --grep 'threaded high-resolution startup' --reporter list --output ../artifacts/native-gpu-textures/browser-threaded-swiftshader-results
+
+Release benchmark: 4 warmups + 32 measured iterations, same release binary, submission and GPU-completed time. Results in native-benchmarks.log; CPU uses production AssetImage mip reference. GPU is default at every supported size. Timings are not whole-game FPS measurements. Host shared with other builds.

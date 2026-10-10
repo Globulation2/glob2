@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="GpuTexturePreparation"><testcase classname="GpuTexturePreparation" name="SDL CPU fallback preserves pixels state and queued revisions [display]" time="2.34307" status="run" />
+  <testcase classname="GpuTexturePreparation" name="SDL premultiplication preserves pixels state and queued revisions [display]" time="2.23883" status="run" />
+  <testcase classname="GpuTexturePreparation" name="native alpha weighted mips match every CPU level and preserve GL state [display]" time="2.59341" status="run" />
+  <testcase classname="GpuTexturePreparation" name="native mip fallback preserves deletion pending programs and separate framebuffers [display]" time="2.20694" status="run" />
+  </testsuite><testsuite name="SpriteSheets"><testcase classname="SpriteSheets" name="independently encoded lossy HD atlases keep exact frame alpha [display]" time="0.841191" status="run" />
+  <testcase classname="SpriteSheets" name="portable HD uses standalone frames without requesting GL atlases [display]" time="0.939556" status="run" />
+  </testsuite></testsuites>

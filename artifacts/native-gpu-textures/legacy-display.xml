@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="GpuTexturePreparation"><testcase classname="GpuTexturePreparation" name="native alpha weighted mips match every CPU level and preserve GL state [display]" time="1.50425" status="run" />
+  <testcase classname="GpuTexturePreparation" name="native mip fallback preserves deletion pending programs and separate framebuffers [display]" time="2.31283" status="run" />
+  </testsuite></testsuites>

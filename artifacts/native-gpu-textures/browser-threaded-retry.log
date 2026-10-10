@@ -1,0 +1,44 @@
+
+Running 1 test using 1 worker
+
+(node:4089975) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device (44.7s)
+
+
+  1) [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "threaded"
+    Received: "serial"
+
+      37 |     fs.writeFileSync(evidence, JSON.stringify(result, null, 2) + '\n');
+      38 |     await info.attach('artwork-memory', {path:evidence, contentType:'application/json'});
+    > 39 |     expect(result.executionMode).toBe(variant);
+         |                                  ^
+      40 |     if (variant === 'serial') expect(result.workerCount).toBe(0);
+      41 |     else {
+      42 |       // Seven compute workers and eight asset decoders; the asynchronous
+        at /home/bradley/.codex/worktrees/a8c9/glob2/browser/tests/artwork-memory.spec.js:39:34
+
+    attachment #1: artwork-memory (application/json) ───────────────────────────────────────────────
+    ../artifacts/native-gpu-textures/browser-threaded-retry-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/attachments/artwork-memory-05333c43d1c9026db866c0ff3eeae52b22e71cd5.json
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/native-gpu-textures/browser-threaded-retry-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/native-gpu-textures/browser-threaded-retry-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/native-gpu-textures/browser-threaded-retry-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/native-gpu-textures/browser-threaded-retry-results/artwork-memory-threaded-hi-08839--heap-on-a-many-core-device-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/artwork-memory.spec.js:7:3 › threaded high-resolution startup fits the browser heap on a many-core device 

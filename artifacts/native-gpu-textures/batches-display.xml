@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="libgag/src/UnitDrawBatchTest.cpp"><testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="cold frame batches defer and bound texture preparation without changing pixels [display]" time="3.11745" status="run" />
+  <testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="cold frame preparation cancels changed and deleted source IDs while disabled [display]" time="2.7996" status="run" />
+  <testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="unit batch outline bounds preserve all clip edges [display]" time="2.18522" status="run" />
+  <testcase classname="libgag/src/UnitDrawBatchTest.cpp" name="unit batches preserve overlays, clipping and texture lifetime [display]" time="25.5725" status="run" />
+  </testsuite><testsuite name="libgag/src/SpriteDrawBatchTest.cpp"><testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered HD resource sprite batch retains pixels [display]" time="6.92737" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered native resource sprite batch retains pixels [display]" time="3.62387" status="run" />
+  <testcase classname="libgag/src/SpriteDrawBatchTest.cpp" name="ordered portable resource sprite batch retains pixels [display]" time="3.71071" status="run" />
+  </testsuite></testsuites>

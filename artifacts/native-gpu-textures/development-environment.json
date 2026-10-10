@@ -1,0 +1,206 @@
+{
+  "paths": {
+    "home": "/home/bradley/.local/share/glob2/development",
+    "mode": "shared",
+    "mobile_tools": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a",
+    "android_sdk": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+    "java_home": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1",
+    "gradle": "/home/bradley/.local/share/glob2/development/toolchains/mobile/Linux-x86_64-8dbf18a4a97410f6b6a92b4a/gradle-8.13/bin/gradle",
+    "browser_sdk": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+    "budget_bytes": 34359738368,
+    "compiler_cache_limit": "4G"
+  },
+  "cache_entries": [
+    {
+      "path": "/home/bradley/.local/share/glob2/development/caches/ccache",
+      "bytes": 3207790592,
+      "last_use": 1791673580.8741243
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/caches/emscripten-Linux-x86_64-dff0d11ef1599aadc69691ca",
+      "bytes": 59342848,
+      "last_use": 1791672014.8245525
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/caches/emscripten-Linux-x86_64-3a5dd83f472c2b1db0c7f2b3",
+      "bytes": 46772224,
+      "last_use": 1791672014.8245525
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.14",
+      "bytes": 34693120,
+      "last_use": 1791671939.2121744
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-d0e7746ca8c24eded65025cb",
+      "bytes": 295550976,
+      "last_use": 1790986552.9091687
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-31d0631689f784d71340c7cb",
+      "bytes": 297267200,
+      "last_use": 1791652596.8571546
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-0db2318ca135e0c408e4c9d3",
+      "bytes": 292843520,
+      "last_use": 1791330276.8729987
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-6883bfc317f7295117be6c6a",
+      "bytes": 11427840,
+      "last_use": 1791578791.012558
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/Linux-x86_64-1d7d46d89bf767d17c2c550c",
+      "bytes": 292593664,
+      "last_use": 1791596451.4852295
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-9281c17f8c6954032b470266",
+      "bytes": 9523200,
+      "last_use": 1791574941.0582912
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-dc27545b931879285ff30f24",
+      "bytes": 9551872,
+      "last_use": 1791575497.7290606
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-0aba4c610363a96c0ced85b9",
+      "bytes": 11427840,
+      "last_use": 1791574828.6282682
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-13e9c1fd69fecfd9081f70cb",
+      "bytes": 1552384,
+      "last_use": 1791575497.7290606
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-0c3546d21d5f6cc7b532f933",
+      "bytes": 1552384,
+      "last_use": 1791575497.7290606
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-9a2944b3bafb973dff5711fb",
+      "bytes": 24403968,
+      "last_use": 1791575497.7290606
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-507d6b8856bab6dfc4c6a44a",
+      "bytes": 11427840,
+      "last_use": 1791575280.2583103
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-f373a94f29339e2e1c6e832e",
+      "bytes": 9523200,
+      "last_use": 1791575754.9566367
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-833f8f2659567cadfeff8671",
+      "bytes": 11427840,
+      "last_use": 1791581626.39443
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-3b2397dbe765a383cdec6c3f",
+      "bytes": 11427840,
+      "last_use": 1791582878.1588583
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-3ccf65b80076c2b2ded751bd",
+      "bytes": 11427840,
+      "last_use": 1791594676.2912521
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-2d2571ceb0d59d5010ccd26a",
+      "bytes": 11427840,
+      "last_use": 1791603751.9952037
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-a43272b33eff308582795377",
+      "bytes": 11427840,
+      "last_use": 1791600280.842788
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-425acc172e0e4a7dd7eb4142",
+      "bytes": 9539584,
+      "last_use": 1791672014.8245525
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-867f5b0290437c951a2c6812",
+      "bytes": 1548288,
+      "last_use": 1791672014.8245525
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-23421406af9aadf490723229",
+      "bytes": 24403968,
+      "last_use": 1791672014.8245525
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-4c629298c41677d80675fa3e",
+      "bytes": 9551872,
+      "last_use": 1791672014.8245525
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-f75822ab6767930917ada2ce",
+      "bytes": 1548288,
+      "last_use": 1791672014.8245525
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-451f807a63a3923cd593b005",
+      "bytes": 11427840,
+      "last_use": 1791602340.1494389
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-aa1dc8a0d9ff562fcd61789f",
+      "bytes": 11243520,
+      "last_use": 1791672911.2576907
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-3bdd314d45af4e8405a5c021",
+      "bytes": 10780672,
+      "last_use": 1791672911.2946894
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-5d411ec6036440f29acddb16",
+      "bytes": 11427840,
+      "last_use": 1791672990.6621346
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-d28a09cd63fd72c0dcc9113d",
+      "bytes": 7962624,
+      "last_use": 1791652596.8571546
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-c2bc4fbc603b08a51717a2e8",
+      "bytes": 11427840,
+      "last_use": 1791673582.060086
+    },
+    {
+      "path": "/home/bradley/.local/share/glob2/development/dependencies/build-edf08b543a01aadb63c0dc2a",
+      "bytes": 11427840,
+      "last_use": 1791672713.8090465
+    }
+  ],
+  "installed_toolchains_bytes": 7991984128,
+  "checkout_build_bytes": 6409445376,
+  "checkout_artifacts_bytes": 3419238400,
+  "simulator_state_bytes": 0,
+  "external_storage": [
+    {
+      "name": "npm",
+      "path": "/home/bradley/.npm",
+      "bytes": 609538048
+    },
+    {
+      "name": "playwright",
+      "path": "/home/bradley/.cache/ms-playwright",
+      "bytes": 1292365824
+    },
+    {
+      "name": "legacy_gradle",
+      "path": "/home/bradley/.gradle",
+      "bytes": 163147776
+    }
+  ]
+}

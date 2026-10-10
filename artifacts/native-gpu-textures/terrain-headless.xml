@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="0" errors="0" skipped="0"><testsuite name="TerrainPresentation"><testcase classname="TerrainPresentation" name="catalog palettes preserve distinct legacy shores and independent preview colors" time="0.510853" status="run" />
+  <testcase classname="TerrainPresentation" name="custom thumbnail palettes retain embedded colors alongside catalog builtins" time="0.776802" status="run" />
+  <testcase classname="TerrainPresentation" name="export uses registered whole-cell material colors [artifacts]" time="0.623847" status="run" />
+  <testcase classname="TerrainPresentation" name="image import reads each pixel as a terrain vertex [artifacts]" time="0.685377" status="run" />
+  <testcase classname="TerrainPresentation" name="terrain seed survives save and load and stays out of the simulation checksum" time="1.93523" status="run" />
+  </testsuite></testsuites>

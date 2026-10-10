@@ -1,0 +1,10 @@
+PASS ordered HD resource sprite batch retains pixels [display] (8.0s)
+PASS ordered native resource sprite batch retains pixels [display] (4.5s)
+PASS ordered portable resource sprite batch retains pixels [display] (4.7s)
+PASS unit batches preserve overlays, clipping and texture lifetime [display] (27.0s)
+PASS unit batch outline bounds preserve all clip edges [display] (3.3s)
+PASS cold frame batches defer and bound texture preparation without changing pixels [display] (4.2s)
+PASS cold frame preparation cancels changed and deleted source IDs while disabled [display] (3.8s)
+
+7 passed, 0 failed, 0 skipped (55.6s of test time)
+[run_tests] JUnit report: artifacts/native-gpu-textures/batches-display.xml (7 cases)

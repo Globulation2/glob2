@@ -1,0 +1,8 @@
+PASS GpuTexturePreparation/SDL premultiplication preserves pixels state and queued revisions [display] (2.5s)
+PASS GpuTexturePreparation/SDL CPU fallback preserves pixels state and queued revisions [display] (2.3s)
+PASS GpuTexturePreparation/native alpha weighted mips match every CPU level and preserve GL state [display] (3.2s)
+PASS SpriteSheets/portable HD uses standalone frames without requesting GL atlases [display] (2.2s)
+PASS SpriteSheets/independently encoded lossy HD atlases keep exact frame alpha [display] (2.2s)
+
+5 passed, 0 failed, 0 skipped (12.4s of test time)
+[run_tests] JUnit report: artifacts/native-gpu-textures/preflight-display.xml (5 cases)

@@ -1,0 +1,12 @@
+driver=opengles2 mode=cpu
+all 65536 alpha/channel combinations match
+cpu,128,1.7820,2.7033
+cpu,256,4.3716,5.8582
+cpu,512,7.3125,8.5459
+cpu,1024,18.7051,19.9421
+driver=opengles2 mode=gpu
+all 65536 alpha/channel combinations match
+gpu,128,0.0863,0.4979
+gpu,256,0.1302,0.4730
+gpu,512,0.3503,0.8283
+gpu,1024,1.1384,1.8177

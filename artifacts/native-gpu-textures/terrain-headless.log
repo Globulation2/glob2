@@ -1,0 +1,8 @@
+PASS TerrainPresentation/catalog palettes preserve distinct legacy shores and independent preview colors (0.6s)
+PASS TerrainPresentation/export uses registered whole-cell material colors [artifacts] (0.7s)
+PASS TerrainPresentation/image import reads each pixel as a terrain vertex [artifacts] (0.8s)
+PASS TerrainPresentation/custom thumbnail palettes retain embedded colors alongside catalog builtins (0.8s)
+PASS TerrainPresentation/terrain seed survives save and load and stays out of the simulation checksum (2.0s)
+
+5 passed, 0 failed, 0 skipped (4.8s of test time)
+[run_tests] JUnit report: artifacts/native-gpu-textures/terrain-headless.xml (5 cases)

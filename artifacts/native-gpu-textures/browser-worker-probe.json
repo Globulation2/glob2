@@ -1,0 +1,16 @@
+{
+  "url": "http://127.0.0.1:8778/loader.js",
+  "chromium_vulkan": {
+    "crossOriginIsolated": true,
+    "SharedArrayBuffer": true,
+    "Atomics_add_result": 0,
+    "workerWebGL2": false
+  },
+  "chromium_swiftshader": {
+    "crossOriginIsolated": true,
+    "SharedArrayBuffer": true,
+    "Atomics_add_result": 0,
+    "workerWebGL2": true
+  },
+  "note": "Vulkan retry falls back before loading threaded runtime; SwiftShader retry uses default Playwright config with GLOB2_CHROMIUM_ANGLE=swiftshader."
+}

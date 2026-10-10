@@ -1,0 +1,9 @@
+PASS PortableRenderer/live scale retains portable viewport ownership [display] (1.0s)
+PASS PortableRenderer/software targets resize and destroy safely during an active transform [display] (1.3s)
+PASS PortableRenderer/each accelerated backend uploads surface revisions independently [display] (1.0s)
+PASS PortableRenderer/zone boundaries; UI transforms and portable rendering paths [display] (2.9s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (6.8s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (171.0s)
+
+6 passed, 0 failed, 0 skipped (184.0s of test time)
+[run_tests] JUnit report: artifacts/native-gpu-textures/engine-display.xml (6 cases)

@@ -1,0 +1,5 @@
+PASS GpuTexturePreparation/native alpha weighted mips match every CPU level and preserve GL state [display] (2.7s)
+PASS GpuTexturePreparation/native mip fallback preserves deletion pending programs and separate framebuffers [display] (3.7s)
+
+2 passed, 0 failed, 0 skipped (6.4s of test time)
+[run_tests] JUnit report: artifacts/native-gpu-textures/legacy-display.xml (2 cases)

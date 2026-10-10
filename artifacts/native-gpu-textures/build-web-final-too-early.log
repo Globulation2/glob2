@@ -1,0 +1,8 @@
+scons: Reading SConscript files ...
+ValueError: Another build is using build/browser-fix-merge-web; wait or choose a different --build directory:
+  File "/home/bradley/.codex/worktrees/a8c9/glob2/SConstruct", line 648:
+    main()
+  File "/home/bradley/.codex/worktrees/a8c9/glob2/SConstruct", line 308:
+    build_lock = BuildLock(bdir)
+  File "/home/bradley/.codex/worktrees/a8c9/glob2/scons/build_layout.py", line 175:
+    raise ValueError(f'Another build is using {directory}; wait or choose a different --build directory') from None

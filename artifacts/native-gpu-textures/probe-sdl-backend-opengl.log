@@ -1,0 +1,12 @@
+driver=opengl mode=cpu
+all 65536 alpha/channel combinations match
+cpu,128,0.7637,1.1766
+cpu,256,0.9000,1.2704
+cpu,512,2.7155,3.5462
+cpu,1024,19.1258,21.1391
+driver=opengl mode=gpu
+all 65536 alpha/channel combinations match
+gpu,128,0.6085,1.9227
+gpu,256,0.8169,1.8306
+gpu,512,1.8047,2.7784
+gpu,1024,4.1226,5.6274
