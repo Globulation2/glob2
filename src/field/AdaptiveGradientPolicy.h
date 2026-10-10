@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "ComputeExecutor.h"
+#include "ThreadCpuClock.h"
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -62,6 +63,19 @@ inline std::atomic<Backend>& backendSetting() {
 }
 inline Backend backend() { return backendSetting().load(std::memory_order_relaxed); }
 inline void setBackend(Backend value) { backendSetting().store(value,std::memory_order_relaxed); }
+// Experimental overrides are explicit and reproducible. An invalid value is
+// rejected before device selection rather than silently selecting another plan.
+inline Plan requestedOpenCLPlan() {
+    static const Plan selected=[] {
+        const auto* name=std::getenv("GLOB2_GRADIENT_PLAN");
+        if(!name || !*name || std::strcmp(name,"frozen8")==0) return Plan::Frozen8;
+        constexpr std::array<const char*,unsigned(Plan::Count)> names{
+            "cpu","jacobi4","colored2","colored4","colored8","frozen8","frozen16"};
+        for(unsigned i=0;i<names.size();++i) if(std::strcmp(name,names[i])==0) return Plan(i);
+        throw std::invalid_argument("Invalid GLOB2_GRADIENT_PLAN");
+    }();
+    return selected;
+}
 inline bool accountingRequested() {
     const auto* value=std::getenv("GLOB2_GRADIENT_ACCOUNTING"); return value && std::strcmp(value,"1")==0;
 }
@@ -99,6 +113,7 @@ struct GradientObservation {
     unsigned batch=1, width=0, height=0, limit=0, threads=1, cpuBuckets=0;
     std::uint64_t movement=0, costRevision=0, queueNs=0, executionNs=0, serviceNs=0, seedPreparationNs=0;
     bool hasQueue=false;
+    std::uint64_t hostCpuNs=0, seedPreparationCpuNs=0;
     StageTiming stages;
 };
 class AdaptiveGradientPolicy : public ComputeExecutor::WorkerOnly
@@ -117,6 +132,7 @@ private:
     std::atomic<std::uint64_t> generation{nextGeneration.fetch_add(1)};
     std::atomic<unsigned> configurationThreads{1};
     std::atomic<bool> wantsGPU{false};
+    std::atomic<bool> externalInitialization{false};
     struct alignas(64) Buffer {
         std::array<GradientObservation,BufferSize> entries;
         std::atomic<unsigned> written{0}, read{0};
@@ -140,6 +156,10 @@ private:
     std::atomic<std::uint64_t> initializationNs{0};
 public:
     std::atomic<bool> failed{false};
+    // A device service owns compilation and initialization on its coordinator.
+    // Legacy synchronous harnesses retain their worker-maintenance path.
+    void setExternalInitialization(bool value) { externalInitialization.store(value); }
+    std::uint64_t currentGeneration() const { return generation.load(std::memory_order_acquire); }
     // Configure only after stopping the executor (including maintenance passes).
     // Replacing the map creates a new policy; reconfiguration invalidates all
     // previous observations while preserving established plans.
@@ -170,7 +190,7 @@ public:
         if(operation!=Operation::CompleteField || !ComputeExecutor::workerSlot()) return {};
         auto result=decision(family,count);
         if(mode==Backend::CPU || failed.load()) result.plan=Plan::CPU;
-        else if(mode==Backend::OpenCL) result.plan=Plan::Frozen8;
+        else if(mode==Backend::OpenCL) result.plan=requestedOpenCLPlan();
         if(result.plan!=Plan::CPU && !(readyPlans.load(std::memory_order_acquire)&(1u<<unsigned(result.plan)))) result.plan=Plan::CPU;
         return result;
     }
@@ -198,12 +218,12 @@ public:
         ++accounting->recorded;
     }
     bool pending() const noexcept override {
-        return (wantsGPU.load() && prepareAccelerator && initializationState.load()==0) ||
+        return (!externalInitialization.load() && wantsGPU.load() && prepareAccelerator && initializationState.load()==0) ||
             (accounting && accounting->pending.load(std::memory_order_relaxed));
     }
     void process() noexcept override {
         if(!ComputeExecutor::workerSlot()) return; // explicit owner exclusion, also for direct callers
-        if(wantsGPU.load() && prepareAccelerator) {
+        if(!externalInitialization.load() && wantsGPU.load() && prepareAccelerator) {
             unsigned empty=0;
             if(initializationState.compare_exchange_strong(empty,1)) {
                 const auto start=monotonicNs();
