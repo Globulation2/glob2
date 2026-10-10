@@ -77,7 +77,8 @@ private:
         WorkloadKey key;
         std::atomic<std::uint64_t> decision{0},boundDecision{0},publishedElapsedNs{0};
         std::array<Alternative,MaxAlternatives> alternatives;
-        std::uint64_t cpuReference=0;
+        std::uint64_t cpuReference=0,offeredCpu=0;
+        unsigned offeredCount=0;
         unsigned expensive=0, cooldown=0;
     };
     struct Credit { std::uint64_t tick=UINT64_MAX, accepted=0, probes=0; };
@@ -103,6 +104,7 @@ private:
         return count;
     }
     static void publish(Profile& profile, Plan plan,std::uint64_t elapsedNs=0) {
+        profile.offeredCpu=0;profile.offeredCount=0;
         const auto previous=profile.decision.load(std::memory_order_relaxed);
         const auto word=((previous>>8)+1)*256+unsigned(plan);
         // Sequential consistency orders invalidation before the new bound and
@@ -268,6 +270,16 @@ public:
         latestTick=std::max(latestTick,tick);
         auto& current=credit(tick);current.accepted=saturatedAdd(current.accepted,hostCpuNs);
         totals.acceptedCpuNs=saturatedAdd(totals.acceptedCpuNs,hostCpuNs);
+        // Batch cooldown ages on real matching required fields, even while
+        // singleton CPU remains selected. This changes no batch reference or
+        // elapsed evidence and grants no synthetic batch CPU credits.
+        if(key.batch==1 && hostCpuNs && !failed && !publicationStall) {
+            const auto count=published.load(std::memory_order_acquire);
+            for(unsigned i=0;i<count;++i)if(profiles[i].key.batch>1 && profiles[i].cooldown) {
+                auto singleton=profiles[i].key;singleton.batch=1;
+                if(singleton==key)--profiles[i].cooldown;
+            }
+        }
         const auto index=findOrCreate(key);
         if(index==MaxProfiles) return;
         auto& profile=profiles[index];
@@ -279,6 +291,30 @@ public:
         if(unsigned(plan)!=0 && profile.cpuReference && hostCpuNs>profile.cpuReference-profile.cpuReference/10) {
             if(++profile.expensive>=4) demote(profile);
         } else if(unsigned(plan)!=0) profile.expensive=0;
+    }
+    // Batch-only offers that cannot form an already-ready set still pay real
+    // CPU preparation/handoff/recovery. Accumulate exactly N such receipts for
+    // demotion only; they never train a batch reference or completion bound.
+    void observeBatchOfferFallback(const WorkloadKey& key,Plan plan,std::uint64_t version,
+        std::uint64_t hostCpuNs,std::uint64_t tick,bool clockValid) {
+        std::lock_guard lock(background);
+        latestTick=std::max(latestTick,tick);
+        auto& current=credit(tick);current.accepted=saturatedAdd(current.accepted,clockValid?hostCpuNs:0);
+        totals.acceptedCpuNs=saturatedAdd(totals.acceptedCpuNs,clockValid?hostCpuNs:0);
+        const auto count=published.load(std::memory_order_acquire);
+        for(unsigned i=0;i<count;++i)if(profiles[i].key==key) {
+            auto& profile=profiles[i];const auto decision=profile.decision.load(std::memory_order_acquire);
+            if(Plan(decision&255)!=plan || (decision>>8)!=version)return;
+            if(!clockValid || !hostCpuNs){demote(profile);return;}
+            if(key.batch!=2 && key.batch!=4 && key.batch!=8)return;
+            profile.offeredCpu=saturatedAdd(profile.offeredCpu,hostCpuNs);
+            if(++profile.offeredCount<key.batch)return;
+            const auto cpu=profile.offeredCpu;profile.offeredCpu=0;profile.offeredCount=0;
+            if(profile.cpuReference && cpu>profile.cpuReference-profile.cpuReference/10) {
+                if(++profile.expensive>=4)demote(profile);
+            }else profile.expensive=0;
+            return;
+        }
     }
     // Admission reserves actual host CPU credits before immutable capture. A
     // canceled experiment still pays CPU already consumed. The caller runs CPU

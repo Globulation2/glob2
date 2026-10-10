@@ -449,3 +449,46 @@ TEST_CASE("stale ready batch binding holds full credit until explicit settlement
     CHECK(first.metrics().probeCpuNs>=1000000);
     ticket=admit(other);REQUIRE(ticket);other.cancelProbe(*ticket,0);
 }
+
+TEST_CASE("unproductive batch-only offers pay actual fallback CPU and demote without batch training" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;auto key=workload();key.batch=2;
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));policy.observeAccepted(key,Plan::CPU,1000000000000ull,1);
+    for(unsigned pair=0;pair<256 && policy.lookup(key).plan==Plan::CPU;++pair) {
+        auto ticket=nextAcceptedProbe(policy,key,0,5000000,1000000);REQUIRE(bool(ticket));
+        policy.finishAcceptedCapture(*ticket,{100000,777777,600000,100000000,true,true,true});
+    }
+    const auto accepted=policy.lookup(key);REQUIRE(accepted.plan==Plan::Frozen8);
+    const auto paid=policy.metrics().acceptedCpuNs;
+    for(unsigned job=0;job<7;++job) {
+        policy.observeBatchOfferFallback(key,accepted.plan,accepted.version,3000000,1,true);
+        CHECK(policy.lookup(key).plan==Plan::Frozen8);
+        CHECK(policy.lookup(key).maximumElapsedNs==777777);
+    }
+    policy.observeBatchOfferFallback(key,accepted.plan,accepted.version,3000000,1,true);
+    CHECK(policy.lookup(key).plan==Plan::CPU);CHECK(policy.lookup(key).maximumElapsedNs==0);
+    CHECK(policy.metrics().acceptedCpuNs==paid+8ull*3000000);
+}
+
+TEST_CASE("matching real singleton jobs age a demoted batch cooldown without batch training" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;auto singleton=workload();auto batch=singleton;batch.batch=2;
+    REQUIRE(policy.qualify(batch,Plan::Frozen8,true));
+    policy.observeAccepted(singleton,Plan::CPU,1000000000000ull,1);
+    policy.observeAccepted(batch,Plan::Frozen8,0,1,true);
+    auto unrelated=singleton;unrelated.family=Family::Guard;
+    if(unrelated.family==singleton.family)unrelated.family=Family::Clear;
+    const auto paid=policy.metrics().acceptedCpuNs;
+    for(unsigned job=0;job<64;++job)policy.observeAccepted(unrelated,Plan::CPU,1000000,1);
+    CHECK(policy.groupOffer(singleton,2,1).reservedCpuNs==0);
+    for(unsigned job=0;job<63;++job)policy.observeAccepted(singleton,Plan::CPU,1000000,1);
+    CHECK(policy.groupOffer(singleton,2,1).reservedCpuNs==0);
+    // Failed/invalid observations cannot masquerade as eligible requests.
+    policy.observeAccepted(singleton,Plan::CPU,0,1,true);
+    CHECK(policy.groupOffer(singleton,2,1).reservedCpuNs==0);
+    policy.observeAccepted(singleton,Plan::CPU,1000000,1);
+    CHECK(policy.groupOffer(singleton,2,1).reservedCpuNs>0);
+    CHECK(policy.lookup(batch).plan==Plan::CPU);
+    CHECK(policy.lookup(batch).maximumElapsedNs==0);
+    CHECK(policy.metrics().acceptedCpuNs==paid+128ull*1000000);
+}
