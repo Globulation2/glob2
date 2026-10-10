@@ -155,7 +155,7 @@ test('AI discovery, version details, social actions and gated publishing', async
   ) {
     const firstCard = page.locator('.ai-card').first();
     await firstCard.hover();
-    await expect(firstCard).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, -3)');
+    await expect(firstCard).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, -2)');
     await page.screenshot({
       path: resolve(output, 'desktop-normal-motion-hover.png'),
       fullPage: true,

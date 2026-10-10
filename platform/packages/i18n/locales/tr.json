@@ -2910,5 +2910,9 @@
   "Presentation": "Sunum",
   "{value0} source": "{value0} kaynak verisi",
   "{value0} decor source": "{value0} dekor kaynak verisi",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Tasarım yüklenirken taslağınız değişti. Değişiklikleriniz korundu; tasarımı yeniden açmayı deneyin."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Tasarım yüklenirken taslağınız değişti. Değişiklikleriniz korundu; tasarımı yeniden açmayı deneyin.",
+  "More filters": "Daha fazla filtre",
+  "Clear filters": "Filtreleri temizle",
+  "No results match these filters.": "Bu filtrelerle eşleşen sonuç yok.",
+  "Results: {value0}": "Sonuçlar: {value0}"
 }

@@ -1,5 +1,16 @@
 import { statusLabel } from '../i18n.tsx';
 import { t, tp, useLocale, RichMessage } from '../i18n.tsx';
+import {
+  LibraryHeader,
+  LibraryNav,
+  LibraryFilters,
+  LibraryField,
+  LibraryGrid,
+  LibraryCard,
+  LibraryResults,
+  LibraryEmpty,
+  useLibrarySearch,
+} from '../components/library.tsx';
 import { MapLibraryTabs } from './Generators.tsx';
 // Map catalog: browse public maps (filters, sorting), my maps, a map's page
 // (preview, versions, like, report, owner edits and new versions) and upload.
@@ -7,14 +18,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { MapDetail as MapDetailDoc, MapInfo, MapVisibility } from '@glob2/protocol';
 import { ApiError, api } from '../api.ts';
 import { GameArt } from '../art.tsx';
-import {
-  Empty,
-  ErrorNotice,
-  Loaded,
-  MapImage,
-  PlayerLink,
-  TableWrap,
-} from '../components/common.tsx';
+import { ErrorNotice, Loaded, MapImage, PlayerLink, TableWrap } from '../components/common.tsx';
 import { MapPreview } from '../components/MapPreview.tsx';
 import { date } from '../format.ts';
 import { Link, useRouter } from '../router.tsx';
@@ -30,7 +34,7 @@ function MapCard({ map }: { map: MapInfo }) {
   useLocale();
   const v = map.latestVersion;
   return (
-    <Link className="map-card" to={`/maps/${map.id}`} data-testid="map-card">
+    <LibraryCard className="map-card" to={`/maps/${map.id}`} testId="map-card">
       <MapImage src={v?.previewUrl} alt="" />
       <span className="name ell">{map.title}</span>
       <span className="caption ell">
@@ -52,7 +56,7 @@ function MapCard({ map }: { map: MapInfo }) {
           )}
         </div>
       )}
-    </Link>
+    </LibraryCard>
   );
 }
 
@@ -213,30 +217,48 @@ export function Maps({ mine }: { mine: boolean }) {
     },
     [mine, account?.id, query, teams, size, madeWith, sort, more],
   );
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    setQuery(q.trim());
+  const applyQuery = (value: string) => {
+    setQuery(value);
+    setMore(0);
+  };
+  const applySearch = useLibrarySearch(q, query, applyQuery);
+  const reset = () => {
+    setQ('');
+    setQuery('');
+    setTeams('');
+    setSize('');
+    setMadeWith('');
+    setSort('recent');
     setMore(0);
   };
   const filtered = Boolean(query || teams || size || madeWith);
   return (
-    <>
-      <div className="page-head">
-        <GameArt name="explorationFlag" size={72} className="head-art" />
-        <div className="grow">
-          <MapLibraryTabs />
-          <h1>{mine ? t('My maps') : t('Maps')}</h1>
-          <p className="sub">
-            {mine
-              ? t('Maps you shared, whatever their visibility.')
-              : t(
-                  'Maps players shared. Rooms play them by version, so everyone loads the same file.',
-                )}
-          </p>
-        </div>
-        <nav className="seg" aria-label={t('Map lists')}>
+    <section className="library-page">
+      <LibraryHeader
+        art="explorationFlag"
+        title={mine ? t('My maps') : t('Maps')}
+        description={
+          mine
+            ? t('Maps you shared, whatever their visibility.')
+            : t('Maps players shared. Rooms play them by version, so everyone loads the same file.')
+        }
+        actions={
+          <>
+            {account && (
+              <Link className="btn primary" to="/maps/new">
+                {t('Upload a map')}
+              </Link>
+            )}
+            <Link className="btn" to="/map-studio">
+              {t('Build in AI Map Studio')}
+            </Link>
+          </>
+        }
+      />
+      <div className="library-navigation">
+        <LibraryNav label={t('Map lists')}>
           <Link to="/maps" className={mine ? '' : 'on'} aria-current={mine ? undefined : 'page'}>
-            {t('Catalog')}
+            {t('Browse')}
           </Link>
           <Link
             to="/maps/mine"
@@ -245,15 +267,8 @@ export function Maps({ mine }: { mine: boolean }) {
           >
             {t('My maps')}
           </Link>
-        </nav>
-        <Link className="btn" to="/map-studio">
-          {t('Build in AI Map Studio')}
-        </Link>
-        {account && (
-          <Link className="btn primary" to="/maps/new">
-            {t('Upload a map')}
-          </Link>
-        )}
+        </LibraryNav>
+        <MapLibraryTabs />
       </div>
       {mine && account === null ? (
         <div className="notice">
@@ -264,77 +279,106 @@ export function Maps({ mine }: { mine: boolean }) {
         </div>
       ) : (
         <>
-          <form className="filters" onSubmit={submit} role="search">
-            <input
-              type="search"
-              aria-label={t('Search maps')}
-              placeholder={t('Search titles')}
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-            />
-            <button type="submit">{t('Search')}</button>
-            <select
-              aria-label={t('Teams')}
-              value={teams}
-              onChange={(e) => setTeams(e.target.value)}
-            >
-              <option value="">{t('Any teams')}</option>
-              {[2, 3, 4, 5, 6, 8, 12].map((n) => (
-                <option key={n} value={n}>
-                  <RichMessage source={'{slot0} teams'} slots={{ slot0: n }} />
-                </option>
-              ))}
-            </select>
-            <select aria-label={t('Size')} value={size} onChange={(e) => setSize(e.target.value)}>
-              <option value="">{t('Any size')}</option>
-              {[64, 128, 256, 512].map((n) => (
-                <option key={n} value={n}>
-                  <RichMessage source={'{slot0}×{slot1}'} slots={{ slot0: n, slot1: n }} />
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label={t('Made with')}
-              value={madeWith}
-              onChange={(e) => setMadeWith(e.target.value)}
-            >
-              <option value="">{t('Hand-made or generated')}</option>
-              <option value="hand">{t('Hand-made')}</option>
-              <option value="generator">{t('Generated')}</option>
-            </select>
-            <select aria-label={t('Sort')} value={sort} onChange={(e) => setSort(e.target.value)}>
-              {SORTS.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-            {(filtered || q || sort !== 'recent') && (
-              <button
-                type="button"
-                onClick={() => {
-                  setQ('');
-                  setQuery('');
-                  setTeams('');
-                  setSize('');
-                  setMadeWith('');
-                  setSort('recent');
+          <LibraryFilters
+            activeExtra={Number(Boolean(size)) + Number(Boolean(madeWith))}
+            extra={
+              <>
+                <LibraryField label={t('Size')}>
+                  <select
+                    aria-label={t('Size')}
+                    value={size}
+                    onChange={(e) => {
+                      setSize(e.target.value);
+                      setMore(0);
+                    }}
+                  >
+                    <option value="">{t('Any size')}</option>
+                    {[64, 128, 256, 512].map((n) => (
+                      <option key={n} value={n}>
+                        <RichMessage source={'{slot0}×{slot1}'} slots={{ slot0: n, slot1: n }} />
+                      </option>
+                    ))}
+                  </select>
+                </LibraryField>
+                <LibraryField label={t('Made with')}>
+                  <select
+                    aria-label={t('Made with')}
+                    value={madeWith}
+                    onChange={(e) => {
+                      setMadeWith(e.target.value);
+                      setMore(0);
+                    }}
+                  >
+                    <option value="">{t('Hand-made or generated')}</option>
+                    <option value="hand">{t('Hand-made')}</option>
+                    <option value="generator">{t('Generated')}</option>
+                  </select>
+                </LibraryField>
+              </>
+            }
+            onSubmit={(event) => {
+              event.preventDefault();
+              applySearch();
+            }}
+          >
+            <LibraryField label={t('Search maps')} search>
+              <input
+                type="search"
+                aria-label={t('Search maps')}
+                placeholder={t('Search titles')}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+              />
+            </LibraryField>
+            <LibraryField label={t('Teams')}>
+              <select
+                aria-label={t('Teams')}
+                value={teams}
+                onChange={(e) => {
+                  setTeams(e.target.value);
                   setMore(0);
                 }}
               >
+                <option value="">{t('Any teams')}</option>
+                {[2, 3, 4, 5, 6, 8, 12].map((n) => (
+                  <option key={n} value={n}>
+                    <RichMessage source={'{slot0} teams'} slots={{ slot0: n }} />
+                  </option>
+                ))}
+              </select>
+            </LibraryField>
+            <LibraryField label={t('Sort')}>
+              <select
+                aria-label={t('Sort')}
+                value={sort}
+                onChange={(e) => {
+                  setSort(e.target.value);
+                  setMore(0);
+                }}
+              >
+                {SORTS.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {t(s.name)}
+                  </option>
+                ))}
+              </select>
+            </LibraryField>
+            {(filtered || q || sort !== 'recent') && (
+              <button type="button" onClick={reset}>
                 {t('Reset filters')}
               </button>
             )}
-          </form>
-          <Loaded load={load}>
+          </LibraryFilters>
+          <LibraryResults count={(data) => data.items.length} load={load} retry={load.reload}>
             {(data) =>
               data.items.length === 0 ? (
-                <Empty art="explorationFlag">
+                <LibraryEmpty art="explorationFlag">
                   {filtered
                     ? t('No maps match these filters.')
                     : mine
                       ? t('You have not shared any maps yet.')
                       : t('No shared maps yet. Be the first to share one.')}
+                  {filtered && <button onClick={reset}>{t('Clear filters')}</button>}
                   {!filtered && (
                     <p>
                       {account ? (
@@ -348,14 +392,14 @@ export function Maps({ mine }: { mine: boolean }) {
                       )}
                     </p>
                   )}
-                </Empty>
+                </LibraryEmpty>
               ) : (
                 <>
-                  <div className="map-grid">
+                  <LibraryGrid>
                     {data.items.map((map) => (
                       <MapCard key={map.id} map={map} />
                     ))}
-                  </div>
+                  </LibraryGrid>
                   {data.cursor && (
                     <button
                       className="small"
@@ -368,10 +412,10 @@ export function Maps({ mine }: { mine: boolean }) {
                 </>
               )
             }
-          </Loaded>
+          </LibraryResults>
         </>
       )}
-    </>
+    </section>
   );
 }
 

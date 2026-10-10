@@ -2964,5 +2964,9 @@
   "Presentation": "Представлення",
   "{value0} source": "Початковий код {value0}",
   "{value0} decor source": "Джерело декору {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ваша чернетка змінилася під час завантаження дизайну. Ваші зміни збережено; спробуйте відкрити дизайн ще раз."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "Ваша чернетка змінилася під час завантаження дизайну. Ваші зміни збережено; спробуйте відкрити дизайн ще раз.",
+  "More filters": "Більше фільтрів",
+  "Clear filters": "Очистити фільтри",
+  "No results match these filters.": "Немає результатів, що відповідають цим фільтрам.",
+  "Results: {value0}": "Результати: {value0}"
 }

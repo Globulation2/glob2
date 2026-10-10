@@ -1,6 +1,18 @@
 import { statusLabel } from '../i18n.tsx';
 import { getLocale } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
+import {
+  LibraryHeader,
+  LibraryNav,
+  LibraryFilters,
+  LibraryField,
+  LibraryGrid,
+  LibraryCard,
+  LibraryResults,
+  LibraryEmpty,
+  useLibrarySearch,
+} from '../components/library.tsx';
+import { GameArt } from '../art.tsx';
 import { useState } from 'react';
 import type { BuildingFamily, BuildingLibrary as Library } from '@glob2/protocol';
 import { request } from '../api.ts';
@@ -66,21 +78,77 @@ export function BuildingLibrary({ id }: { id?: string }) {
       setBusy(false);
     }
   }
+  const applySearch = useLibrarySearch(search, query, (value) => {
+    setQuery(value);
+    setCursor(undefined);
+  });
+  const reset = () => {
+    setSearch('');
+    setQuery('');
+    setSort('updated');
+    setCursor(undefined);
+  };
   return (
-    <div className="building-studio">
-      <h1>{id ? t('Building family') : t('Building library')}</h1>
-      <p>
-        <Link to="/ai-building-studio">{t('Create with AI')}</Link>
-        <Link to="/building-studio">{t('Create a building family')}</Link>
-        {id && (
-          <>
-            {' '}
-            {t(' · ')}
-            <Link to="/buildings">{t('Browse the library')}</Link>
-          </>
-        )}
-      </p>
-      <details className="building-help">
+    <div className={id ? 'building-studio' : 'library-page'}>
+      {!id && (
+        <>
+          <LibraryHeader
+            art="inn"
+            title={t('Building library')}
+            description={t('Create a building or an upgrade family with custom artwork.')}
+            actions={
+              <>
+                <Link className="btn primary" to="/building-studio">
+                  {t('Create a building family')}
+                </Link>
+                <Link className="btn" to="/ai-building-studio">
+                  {t('Create with AI')}
+                </Link>
+              </>
+            }
+          />
+          {account && (
+            <LibraryNav label={t('Building library')}>
+              {(
+                [
+                  ['all', t('Browse')],
+                  ['favourites', t('My favourites')],
+                  ['mine', t('My families')],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  className={filter === value ? 'on' : ''}
+                  aria-pressed={filter === value}
+                  onClick={() => {
+                    setFilter(value);
+                    setCursor(undefined);
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </LibraryNav>
+          )}
+        </>
+      )}
+      {id && (
+        <>
+          <h1>{id ? t('Building family') : t('Building library')}</h1>
+          <p>
+            <Link to="/ai-building-studio">{t('Create with AI')}</Link>
+            <Link to="/building-studio">{t('Create a building family')}</Link>
+            {id && (
+              <>
+                {' '}
+                {t(' · ')}
+                <Link to="/buildings">{t('Browse the library')}</Link>
+              </>
+            )}
+          </p>
+        </>
+      )}
+      <details className={id ? 'building-help' : 'library-help'}>
         <summary>{t('Use buildings in the game')}</summary>
         <p>
           {t(
@@ -359,83 +427,97 @@ export function BuildingLibrary({ id }: { id?: string }) {
         </Loaded>
       ) : (
         <>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setCursor(undefined);
-              setQuery(search);
+          <LibraryFilters
+            onSubmit={(event) => {
+              event.preventDefault();
+              applySearch();
             }}
           >
-            <label>
-              {t('Search buildings')}
-              <input value={search} maxLength={128} onChange={(e) => setSearch(e.target.value)} />
-            </label>
-            <button>{t('Search')}</button>
-          </form>
-          {account && (
-            <label>
-              {t('Show')}
+            <LibraryField label={t('Search buildings')} search>
+              <input
+                type="search"
+                value={search}
+                maxLength={128}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </LibraryField>
+            <LibraryField label={t('Sort')}>
               <select
-                value={filter}
-                onChange={(e) => (setCursor(undefined), setFilter(e.target.value))}
+                value={sort}
+                onChange={(e) => {
+                  setSort(e.target.value);
+                  setCursor(undefined);
+                }}
               >
-                <option value="all">{t('Public library')}</option>
-                <option value="mine">{t('My families')}</option>
-                <option value="favourites">{t('My favourites')}</option>
+                <option value="updated">{t('Recently updated')}</option>
+                <option value="newest">{t('Newest')}</option>
+                <option value="likes">{t('Most liked')}</option>
+                <option value="downloads">{t('Most downloaded')}</option>
               </select>
-            </label>
-          )}
-          <label>
-            {t('Sort')}
-            <select
-              value={sort}
-              onChange={(e) => {
-                setCursor(undefined);
-                setSort(e.target.value);
-              }}
-            >
-              <option value="updated">{t('Recently updated')}</option>
-              <option value="newest">{t('Newest')}</option>
-              <option value="likes">{t('Most liked')}</option>
-              <option value="downloads">{t('Most downloaded')}</option>
-            </select>
-          </label>
-          <Loaded load={list}>
+            </LibraryField>
+            <button type="button" onClick={reset}>
+              {t('Reset filters')}
+            </button>
+          </LibraryFilters>
+          <LibraryResults count={(data) => data.items.length} load={list} retry={list.reload}>
             {(data) => (
               <>
-                <ul className="building-family-list">
-                  {data.items.map((f) => (
-                    <li key={f.id}>
-                      <h2>
-                        <Link to={'/buildings/' + f.id}>{f.name}</Link>
-                      </h2>
-                      {!f.hidden &&
-                        f.releases.find(
+                {data.items.length ? (
+                  <LibraryGrid>
+                    {data.items.map((family) => {
+                      const artwork =
+                        !family.hidden &&
+                        family.releases.find(
                           (release) => release.status === 'valid' && release.artworkHash,
-                        ) && (
-                          <img
-                            className="building-thumbnail"
-                            src={`/api/v1/buildings/${f.id}/releases/${f.releases.find((release) => release.status === 'valid' && release.artworkHash)?.id}/thumbnail`}
-                            alt={t('{value0} artwork', { value0: f.name })}
-                            width={96}
-                            height={96}
-                          />
-                        )}
-                      <p>{f.description}</p>
-                      <p>
-                        <RichMessage
-                          source={'By {slot0} · {slot1} likes · {slot2}'}
-                          slots={{
-                            slot0: f.owner.displayName,
-                            slot1: f.likes,
-                            slot2: availability(f),
-                          }}
-                        />
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-                {data.items.length === 0 && <p>{t('No families found.')}</p>}
+                        );
+                      return (
+                        <LibraryCard key={family.id}>
+                          <Link to={'/buildings/' + family.id}>
+                            {artwork ? (
+                              <img
+                                className="library-preview"
+                                src={`/api/v1/buildings/${family.id}/releases/${artwork.id}/thumbnail`}
+                                alt=""
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="library-preview library-preview-placeholder">
+                                <GameArt name="inn" size={72} />
+                              </div>
+                            )}
+                            <h2>{family.name}</h2>
+                          </Link>
+                          <p className="library-metadata">
+                            <RichMessage
+                              source={'By {slot0} · {slot1} likes · {slot2}'}
+                              slots={{
+                                slot0: family.owner.displayName,
+                                slot1: family.likes,
+                                slot2: availability(family),
+                              }}
+                            />
+                          </p>
+                          <p className="library-description">{family.description}</p>
+                        </LibraryCard>
+                      );
+                    })}
+                  </LibraryGrid>
+                ) : (
+                  <LibraryEmpty
+                    art="inn"
+                    action={
+                      query ? (
+                        <button onClick={reset}>{t('Clear filters')}</button>
+                      ) : (
+                        <Link className="btn primary" to="/building-studio">
+                          {t('Create a building family')}
+                        </Link>
+                      )
+                    }
+                  >
+                    {query ? t('No results match these filters.') : t('No families found.')}
+                  </LibraryEmpty>
+                )}
                 {data.nextCursor && (
                   <button type="button" onClick={() => setCursor(data.nextCursor)}>
                     {t('Next page')}
@@ -448,7 +530,7 @@ export function BuildingLibrary({ id }: { id?: string }) {
                 )}
               </>
             )}
-          </Loaded>
+          </LibraryResults>
         </>
       )}
     </div>

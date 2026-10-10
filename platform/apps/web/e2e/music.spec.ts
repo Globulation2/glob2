@@ -67,8 +67,8 @@ test('catalogue, bounded WASM playback, fades and bulk selection', async ({ page
   }`);
   await page.goto('/music');
   await expect(page.getByRole('heading', { name: 'Music for your colony' })).toBeVisible();
-  await page.getByRole('button', { name: 'Preview', exact: true }).click();
-  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await page.getByRole('button', { name: /^Preview Moss lantern$/ }).click();
+  await page.getByRole('button', { name: 'Play music', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible({
     timeout: 20_000,
   });
@@ -97,7 +97,7 @@ test('catalogue, bounded WASM playback, fades and bulk selection', async ({ page
   const pausedAt = Number(await position.inputValue());
   await page.waitForTimeout(250);
   expect(Number(await position.inputValue())).toBeCloseTo(pausedAt, 2);
-  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await page.getByRole('button', { name: 'Play music', exact: true }).click();
   await expect
     .poll(async () => Number(await position.inputValue()))
     .toBeGreaterThan(pausedAt + 0.1);
@@ -125,7 +125,7 @@ test('catalogue, bounded WASM playback, fades and bulk selection', async ({ page
   expect(await page.evaluate('document.documentElement.scrollWidth <= innerWidth')).toBe(true);
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Preview', exact: true })).toBeFocused();
+  await expect(page.getByRole('button', { name: /^Preview Moss lantern$/ })).toBeFocused();
   await page.getByRole('checkbox', { name: 'Select for download' }).check();
   await expect(page.getByRole('button', { name: 'Download selected' })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('music-catalogue.png'), fullPage: true });
@@ -166,7 +166,7 @@ test('upload → worker conversion → audition → publish → like → bulk ZI
   await expect(page.getByRole('button', { name: 'Publish this release' })).toBeVisible({
     timeout: 45_000,
   });
-  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await page.getByRole('button', { name: 'Play music', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
   await page.getByRole('button', { name: 'Publish this release' }).click();
@@ -215,7 +215,7 @@ test('song detail puts listening first and keeps quality and errors understandab
   });
   await page.goto(`/music/${release.id}`);
   await expect(page.getByRole('heading', { name: release.metadata.title })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
+  await expect(page.getByRole('button', { name: 'Play music', exact: true })).toBeInViewport();
   await expect(page.getByText('Status: published')).toHaveCount(0);
   await expect(page.locator('.music-quality-findings')).toContainText('Mood contrast');
   await expect(page.locator('.music-technical')).not.toHaveAttribute('open', '');
@@ -234,7 +234,7 @@ test('song detail puts listening first and keeps quality and errors understandab
     await page.screenshot({ path: info.outputPath(`song-detail-${theme}.png`), fullPage: true });
   }
   await page.getByRole('button', { name: 'Crossfade to Building' }).click();
-  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await page.getByRole('button', { name: 'Play music', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
   const previewStart = Number(
     await page.getByRole('slider', { name: 'Playback position' }).inputValue(),
@@ -276,7 +276,7 @@ test('song detail puts listening first and keeps quality and errors understandab
   expect(await page.evaluate('document.documentElement.scrollWidth <= innerWidth')).toBe(true);
   failTracks = true;
   await page.reload();
-  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await page.getByRole('button', { name: 'Play music', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Music couldn’t be loaded');
   await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Download set', exact: true })).toBeVisible();

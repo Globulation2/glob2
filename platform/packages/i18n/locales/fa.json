@@ -2910,5 +2910,9 @@
   "Presentation": "نمایش",
   "{value0} source": "منبع {value0}",
   "{value0} decor source": "منبع تزئینات {value0}",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "پیش‌نویس تو هنگام بارگذاری طرح تغییر کرد. تغییرات تو حفظ شدند؛ دوباره طرح را باز کن."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "پیش‌نویس تو هنگام بارگذاری طرح تغییر کرد. تغییرات تو حفظ شدند؛ دوباره طرح را باز کن.",
+  "More filters": "فیلترهای بیشتر",
+  "Clear filters": "پاک کردن فیلترها",
+  "No results match these filters.": "هیچ نتیجه‌ای با این فیلترها مطابقت ندارد.",
+  "Results: {value0}": "نتایج: {value0}"
 }

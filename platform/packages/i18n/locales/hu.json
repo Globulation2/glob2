@@ -2910,5 +2910,9 @@
   "Presentation": "Megjelenítés",
   "{value0} source": "{value0} forrása",
   "{value0} decor source": "{value0} dekorációs forrása",
-  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "A vázlatod megváltozott a terv betöltése közben. A módosításaid megmaradtak; próbáld újra megnyitni a tervet."
+  "Your draft changed while the design was loading. Your changes were kept; try opening the design again.": "A vázlatod megváltozott a terv betöltése közben. A módosításaid megmaradtak; próbáld újra megnyitni a tervet.",
+  "More filters": "További szűrők",
+  "Clear filters": "Szűrők törlése",
+  "No results match these filters.": "Nincs ezeknek a szűrőknek megfelelő találat.",
+  "Results: {value0}": "Találatok: {value0}"
 }
