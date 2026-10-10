@@ -349,3 +349,17 @@ TEST_CASE("tuning debt cannot wrap around and restore probe admission" * doctest
     CHECK_FALSE(nextProbe(policy,key));
     CHECK(policy.lookup(key).plan==Plan::CPU);
 }
+
+TEST_CASE("historical tuning debt at the cumulative cap cannot borrow fresh rolling credit" * doctest::test_suite("OpenCLGradient"))
+{
+    CpuSavingPolicy policy;const auto key=workload();
+    REQUIRE(policy.qualify(key,Plan::Frozen8,true));
+    policy.observeAccepted(key,Plan::CPU,1000000000,1);
+    auto ticket=nextProbe(policy,key);REQUIRE(ticket);
+    policy.cancelProbe(*ticket,20000000);
+    policy.observeAccepted(key,Plan::CPU,1000000000,257);
+    CHECK(policy.metrics().acceptedCpuNs==2000000000);
+    CHECK(policy.metrics().probeCpuNs==20000000);
+    CHECK_FALSE(nextProbe(policy,key,257));
+    CHECK(policy.lookup(key).plan==Plan::CPU);
+}

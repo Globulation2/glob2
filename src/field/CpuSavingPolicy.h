@@ -149,7 +149,8 @@ private:
            conservativeElapsedNs>slackNs/2) return {};
         std::lock_guard lock(background);
         latestTick=std::max(latestTick,tick);
-        if(active || totals.probeCpuNs>totals.acceptedCpuNs/100) return {};
+        if(active || totals.probeCpuNs>totals.acceptedCpuNs/100 ||
+           reserveCpuNs>totals.acceptedCpuNs/100-totals.probeCpuNs) return {};
         const auto index=findOrCreate(key);
         if(index==MaxProfiles || profiles[index].cooldown) return {};
         unsigned alternative=MaxAlternatives;
