@@ -305,8 +305,9 @@ def main():
             selected = command("git", "rev-parse", "HEAD")
             if selected != args.source_commit:
                 raise ValueError("staging source checkout does not match source commit")
-            if command("git", "status", "--porcelain", "--untracked-files=no"):
-                raise ValueError("staging source checkout contains tracked changes")
+            changed = command("git", "status", "--porcelain", "--untracked-files=no")
+            if changed:
+                raise ValueError(f"staging source checkout contains tracked changes:\n{changed}")
         globals()[args.command.replace("-", "_")](args)
 
 
