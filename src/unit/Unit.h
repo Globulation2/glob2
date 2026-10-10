@@ -54,7 +54,7 @@ public:
 		UnitJobPurpose purpose = UnitJobPurpose::None);
 	bool hasCapability(UnitRuntimeTraits::Flag flag) const { return (capabilityFlags & flag)!=0; }
 	const UnitRuntimeTraits& runtimeTraits() const;
-	int foodCapacity() const;
+	int foodCapacity() const { return configuredFoodCapacity; }
 	void refreshEffectiveAbilities();
 	void rebindDefinitionForSetup();
 	int foodStepsLeft(int threshold = 0) const;
@@ -64,7 +64,9 @@ public:
 	unsigned carriedPacketCount() const;
 	void clearCargo();
 	bool deliverCargo(Building& building);
-	bool continueCargoCollection();
+	bool continueCargoCollection() {
+		return hasCapability(UnitRuntimeTraits::ExtendedCargo) && continueExtendedCargoCollection();
+	}
 	void receiveCargoPacket(int resource, WideMaterialPacket packet);
 	bool findAirGuardDestination(Sint32* x, Sint32* y);
 	bool findAirClearingDestination(const Building* zone, Sint32* x, Sint32* y, int* distance);
@@ -74,6 +76,7 @@ public:
 	
 	void directionFromDxDy(void);
 private:
+	bool continueExtendedCargoCollection();
 	void dxDyFromDirection(void);
 public:
 	static int directionFromDxDy(int dx, int dy);

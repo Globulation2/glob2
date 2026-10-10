@@ -74,7 +74,13 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 {
 	int timeLeft;
 	if (hungriness)
-		timeLeft = int(std::clamp<Sint64>((Sint64(hungry)-trigHungry) / hungriness,INT_MIN,INT_MAX));
+	{
+		const Sint64 remaining = Sint64(hungry)-trigHungry;
+		if (hungriness > 0 && remaining >= INT_MIN && remaining <= INT_MAX)
+			timeLeft = int(remaining)/hungriness;
+		else
+			timeLeft = int(std::clamp<Sint64>(remaining/hungriness,INT_MIN,INT_MAX));
+	}
 	else
 		timeLeft = INT_MAX;
 	stepsLeftUntilHungry = timeLeft;

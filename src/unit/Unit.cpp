@@ -44,10 +44,12 @@ Unit::~Unit()
 }
 
 const UnitRuntimeTraits& Unit::runtimeTraits() const { return race->getRuntime(typeNum); }
-int Unit::foodCapacity() const { return configuredFoodCapacity; }
 int Unit::foodStepsLeft(int threshold) const
 {
-	return hungriness > 0 ? int(std::clamp<Sint64>((Sint64(hungry)-threshold)/hungriness,INT_MIN,INT_MAX)) : INT_MAX/4;
+	if (hungriness <= 0) return INT_MAX/4;
+	const Sint64 remaining = Sint64(hungry)-threshold;
+	if (remaining >= INT_MIN && remaining <= INT_MAX) return int(remaining)/hungriness;
+	return int(std::clamp<Sint64>(remaining/hungriness,INT_MIN,INT_MAX));
 }
 
 void Unit::refreshEffectiveAbilities()
@@ -698,7 +700,7 @@ bool Unit::deliverCargo(Building& building)
 
 // Batching is optional and is entirely skipped by the shipped one-packet units.
 // Select once per completed pickup, in material-ID order for deterministic ties.
-bool Unit::continueCargoCollection()
+bool Unit::continueExtendedCargoCollection()
 {
 	if (!performance[HARVEST] || runtimeTraits().cargoCapacity<=1 || !attachedBuilding || carriedPacketCount()>=unsigned(runtimeTraits().cargoCapacity)) return false;
 	// The completed harvest marked a ground carrier immobile. Route planning

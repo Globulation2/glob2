@@ -630,10 +630,17 @@ TEST_SUITE("UnitCustomization")
     TEST_CASE("batch planning releases its own harvest obstacle for cold and warm fields without advancing clocks")
     {
         glob2test::HeadlessGlobals globals;
-        for (bool batched:{false,true}) for (bool warm:{false,true}) {
-            CAPTURE(batched); CAPTURE(warm);
+        for (int mode:{0,1,2}) for (bool warm:{false,true}) {
+            const bool batched=mode==1;
+            CAPTURE(mode); CAPTURE(warm);
             glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
             configure(world);
+            if (mode==2) {
+                auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+                catalog["units"][WORKER]["behaviors"]["spillRejectedCargo"]=false;
+                world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+                world.game.configureUnitCatalog();
+            }
             auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
             for(auto& variant:buildings["variants"]) if(variant["semantics"]["feeding"]["enabled"].get<bool>()) {
                 variant["properties"]["maxMaterial"][WOOD]=1;
@@ -672,6 +679,24 @@ TEST_SUITE("UnitCustomization")
                 CHECK(unit->destinationPurpose==WOOD);
             }
         }
+        // Zero-capacity non-carriers still enter the extended helper's
+        // early return, preserving all authoritative state and map epochs.
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto catalog=nlohmann::json::parse(world.game.unitCatalog().serialize());
+        catalog["units"][WORKER]["behaviors"]["transport"]=false;
+        catalog["units"][WORKER]["behaviors"]["cargoCapacity"]=0;
+        catalog["units"][WORKER]["behaviors"]["cargoKinds"]=0;
+        world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
+        world.game.configureUnitCatalog();
+        auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit);
+        world.game.map.markImmobileUnit(6,8,world.team->teamNumber);
+        const auto before=continuationAudit(world.game);
+        const auto epochs=world.game.map.snapshotGenerations();
+        const auto random=unit->entityRandom;
+        CHECK_FALSE(unit->continueCargoCollection());
+        CHECK(continuationAudit(world.game)==before);
+        CHECK(world.game.map.snapshotGenerations()==epochs);
+        CHECK(unit->entityRandom==random);
     }
 
     TEST_CASE("ground and airborne couriers collect mixed kinds and deliver through the engine")
@@ -919,6 +944,17 @@ TEST_SUITE("UnitCustomization")
         unit->experienceLevel=46; unit->experience=INT_MAX-1;
         CHECK(unit->getNextLevelThreshold()==INT_MAX);
         unit->incrementExperience(1000000); CHECK(unit->experience==INT_MAX); CHECK(unit->experienceLevel==46);
+        for (int food:{INT_MIN,-1,0,150000,INT_MAX})
+        for (int threshold:{INT_MIN,-1,0,37500,INT_MAX})
+        for (int rate:{-1,0,1,425,INT_MAX}) {
+            CAPTURE(food); CAPTURE(threshold); CAPTURE(rate);
+            unit->hungry=food; unit->trigHungry=threshold; unit->hungriness=rate;
+            const Sint64 remaining=Sint64(food)-threshold;
+            const int quotient=rate ? int(std::clamp<Sint64>(remaining/rate,INT_MIN,INT_MAX)) : INT_MAX;
+            CHECK(unit->numberOfStepsLeftUntilHungry()==quotient);
+            CHECK(unit->stepsLeftUntilHungry==quotient);
+            CHECK(unit->foodStepsLeft(threshold)==(rate>0 ? quotient : INT_MAX/4));
+        }
     }
 
     TEST_CASE("unit experiment gates control spawning and reject disabled live definitions")

@@ -345,9 +345,66 @@ bool Building::subscribeToBringMaterialsStep(bool borrowUnused)
 		int served[MaterialSlotCount];
 		fetchApportionment(targets, served);
 
+		hired = type->runtimeFlyingCarriers
+			? hireMaterialUnitWithFlyingDistances(targets, served)
+			: hireMaterialUnit(targets, served, nullptr);
+	}
+
+	updateCallLists();
+
+	if (verbose)
+		printf(" ...done\n");
+	return hired;
+}
+
+
+// Active selection keeps its scratch frame out of the admission wrapper.
+bool Building::hireMaterialUnit(const int* targets, const int* served, const int* airDistances)
+{
+	BringMaterialsSelection sel;
+	sel.maxLevel = -1;
+	sel.minValue = INT_MAX;
+	sel.choosen = NULL;
+
+	// A unit already holding something we want delivers without a fetch trip,
+	// so it is taken ahead of the apportionment, which only directs the units
+	// we still have to send out. It is subscription-aware in its own right, so
+	// it cannot oversubscribe a material either.
+	selectUnitCarryingWantedMaterial(targets, served, sel,airDistances);
+
+	// Otherwise staff the material whose subscriptions sit furthest below its
+	// share of the building's targets, falling to the next one whenever no
+	// unit can actually be hired for it.
+	if (sel.choosen==NULL)
+	{
+		int order[MaterialSlotCount];
+		int wanted = FetchApportionment::rank(targets, served, MaterialSlotCount, order);
+		for(int i=0; i<wanted && sel.choosen==NULL; ++i)
+		{
+			int r = order[i];
+			if(!wantsAnotherDelivery(r, targets, served))
+				continue;
+			BringMaterialsCandidate candidates[Unit::MAX_COUNT];
+			const int count=gatherBringMaterialsCandidates(candidates, r,airDistances);
+			selectFetcher(candidates, count, r, sel);
+		}
+	}
+
+	if (sel.choosen)
+	{
+		unitsWorking.push_back(sel.choosen);
+		sel.choosen->subscriptionSuccess(this, false);
+		owner->swapTask(sel.choosen);
+		return true;
+	}
+	return false;
+}
+
+bool Building::hireMaterialUnitWithFlyingDistances(const int* targets, const int* served)
+{
         std::array<int,Unit::MAX_COUNT> flyerDistances;
         const int* airDistances=nullptr;
-        if(type->runtimeFlyingCarriers) {
+        {
             flyerDistances.fill(-1);airDistances=flyerDistances.data();
             const Map& map=*owner->map;
             field::AirDistanceField routes(map.getW(),map.getH(),posX,posY,
@@ -363,49 +420,7 @@ bool Building::subscribeToBringMaterialsStep(bool borrowUnused)
                 flyerDistances[Unit::GIDtoID(unit->gid)]=distance;
             }
         }
-		BringMaterialsSelection sel;
-		sel.maxLevel = -1;
-		sel.minValue = INT_MAX;
-		sel.choosen = NULL;
-
-		// A unit already holding something we want delivers without a fetch trip,
-		// so it is taken ahead of the apportionment, which only directs the units
-		// we still have to send out. It is subscription-aware in its own right, so
-		// it cannot oversubscribe a material either.
-		selectUnitCarryingWantedMaterial(targets, served, sel,airDistances);
-
-		// Otherwise staff the material whose subscriptions sit furthest below its
-		// share of the building's targets, falling to the next one whenever no
-		// unit can actually be hired for it.
-		if (sel.choosen==NULL)
-		{
-			int order[MaterialSlotCount];
-			int wanted = FetchApportionment::rank(targets, served, MaterialSlotCount, order);
-			for(int i=0; i<wanted && sel.choosen==NULL; ++i)
-			{
-				int r = order[i];
-				if(!wantsAnotherDelivery(r, targets, served))
-					continue;
-				BringMaterialsCandidate candidates[Unit::MAX_COUNT];
-				const int count=gatherBringMaterialsCandidates(candidates, r,airDistances);
-				selectFetcher(candidates, count, r, sel);
-			}
-		}
-
-		if (sel.choosen)
-		{
-			unitsWorking.push_back(sel.choosen);
-			sel.choosen->subscriptionSuccess(this, false);
-			owner->swapTask(sel.choosen);
-			hired=true;
-		}
-	}
-
-	updateCallLists();
-
-	if (verbose)
-		printf(" ...done\n");
-	return hired;
+	return hireMaterialUnit(targets, served, airDistances);
 }
 
 bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDistance)
@@ -555,26 +570,41 @@ bool Building::subscribeForFlagingStep()
 		// doesn't run (building already fully staffed). When the loop does run,
 		// this is overwritten by the per-iteration reset on iteration 1.
 		resetFailureTallies();
-		// One reverse search serves every explorer candidate and all hiring
-		// iterations. Ignore temporary flyer occupancy, as building selection
-		// does; individual steering resolves it. Uniform maps allocate nothing.
-		const Map& map = *owner->map;
-		field::AirDistanceField airRoutes(map.getW(),map.getH(),posX,posY,
-			[&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
-			[&map](int x,int y) { return map.cellRule(map.coordToIndex(x,y)).airCost; },
-			type->runtimeFlyingAttractions && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
-			field::AirDistanceDirection::ToDestination);
-		while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
-		{
-			// Per-iteration reset: the same Unit::MAX_COUNT array is rescanned
-			// each iteration (already-hired units are filtered via
-			// attachedBuilding==this); without this, the same failing units
-			// would be counted N times across N iterations.
-			resetFailureTallies();
+		if (Sint32(unitsWorking.size()) < desiredMaxUnitWorking)
+			hired = hireFlagUnits();
+
+		updateCallLists();
+
+		subscriptionWorkingTimer=0;
+	}
+	return hired;
+}
+
+
+
+// Timer-only and fully staffed flags never allocate qualification arrays.
+bool Building::hireFlagUnits()
+{
+	bool hired = false;
+	// One reverse search serves every explorer candidate and all hiring
+	// iterations. Ignore temporary flyer occupancy, as building selection
+	// does; individual steering resolves it. Uniform maps allocate nothing.
+	const Map& map = *owner->map;
+	field::AirDistanceField airRoutes(map.getW(),map.getH(),posX,posY,
+		[&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
+		[&map](int x,int y) { return map.cellRule(map.coordToIndex(x,y)).airCost; },
+		type->runtimeFlyingAttractions && Sint32(unitsWorking.size())<desiredMaxUnitWorking && map.hasAirTerrainConstraints(),
+		field::AirDistanceDirection::ToDestination);
+	while (((Sint32)unitsWorking.size()<desiredMaxUnitWorking))
+	{
+		// Per-iteration reset: the same Unit::MAX_COUNT array is rescanned
+		// each iteration (already-hired units are filtered via
+		// attachedBuilding==this); without this, the same failing units
+		// would be counted N times across N iterations.
+		resetFailureTallies();
 
             // A hybrid may be eligible for multiple jobs, but receives one
             // assignment and consumes one building seat after selection.
-            Unit* possibleUnits[Unit::MAX_COUNT]{};
             Uint8 possibleJobs[Unit::MAX_COUNT]{};
             // Successful qualification writes its distance; reads require the matching job bit.
             int distances[3][Unit::MAX_COUNT];
@@ -589,60 +619,53 @@ bool Building::subscribeForFlagingStep()
                 }
                 if (interaction.has(BuildingUnitInteraction::Clear) && considerUnitForWorkerFlag(unit,&distances[0][n])) possibleJobs[n]|=1;
                 if (interaction.has(BuildingUnitInteraction::Defend) && considerUnitForWarriorFlag(unit,&distances[2][n],travelDistance)) possibleJobs[n]|=4;
-                if (possibleJobs[n]) possibleUnits[n]=unit;
             }
 
-			int assigned[3]{};
-			for (const Unit* unit : unitsWorking)
-				if (unit->activity == Unit::ACT_FLAG) {
+		int assigned[3]{};
+		for (const Unit* unit : unitsWorking)
+			if (unit->activity == Unit::ACT_FLAG) {
                     const int job=int(unit->jobPurpose)-int(UnitJobPurpose::Clear);
                     if (job>=0 && job<3) ++assigned[job];
                 }
-			Unit* choosen=nullptr;
-			int chosenCount=INT_MAX;
+		Unit* choosen=nullptr;
+		int chosenCount=INT_MAX;
             int chosenJob=-1;
-			// Choose the least staffed eligible attraction role, then use that
-			// role's established ranking among its candidate units.
-			for (int pass=0; pass<2 && !choosen; ++pass)
-			for (int role=0; role<3; ++role)
+		// Choose the least staffed eligible attraction role, then use that
+		// role's established ranking among its candidate units.
+		for (int pass=0; pass<2 && !choosen; ++pass)
+		for (int role=0; role<3; ++role)
+		{
+			if (!runtime->attractsRole(role) || (!pass && assigned[role] >= workRoleTarget(role))) continue;
+			Unit* best=nullptr;
+			Sint64 bestLevel=role == 2 ? INT64_MIN : INT64_MAX;
+			Sint64 bestValue=INT64_MAX;
+			for (int n=0; n<Unit::MAX_COUNT; ++n)
 			{
-				if (!runtime->attractsRole(role) || (!pass && assigned[role] >= workRoleTarget(role))) continue;
-				Unit* best=nullptr;
-				Sint64 bestLevel=role == 2 ? INT64_MIN : INT64_MAX;
-				Sint64 bestValue=INT64_MAX;
-				for (int n=0; n<Unit::MAX_COUNT; ++n)
-				{
-					Unit* unit=possibleUnits[n];
-					if (!unit || !(possibleJobs[n]&(1u<<role))) continue;
-					Sint64 timeLeft=(unit->hungriness>0 ? (Sint64(unit->hungry)-(role == 0 ? unit->trigHungry : 0))/unit->hungriness : INT_MAX);
-					Sint64 hp=(Sint64(unit->hp)*16)/std::max(1,unit->runtimeTraits().flagRankingHealth);
-					if (role == 1) { timeLeft=std::clamp<Sint64>(timeLeft,-1000000000,1000000000); timeLeft*=timeLeft; hp=std::clamp<Sint64>(hp,-1000000000,1000000000); hp*=hp; }
-					const Sint64 value=distances[role][n]-(role == 0 ? 1 : 2)*(timeLeft+hp);
-					const Sint64 level=role == 0 ? unit->workerLevel() : role == 1 ? unit->level[MAGIC_ATTACK_GROUND] : Sint64(unit->performance[ATTACK_SPEED])*unit->getRealAttackStrength();
-					if ((role == 2 ? level>bestLevel : level<bestLevel) || (level==bestLevel && value<bestValue))
-					{ best=unit; bestLevel=level; bestValue=value; }
-				}
-				if (best && assigned[role]<chosenCount)
-				{ choosen=best; chosenCount=assigned[role]; chosenJob=role; }
+				if (!(possibleJobs[n]&(1u<<role))) continue;
+				Unit* unit=owner->myUnits[n];
+				Sint64 timeLeft=(unit->hungriness>0 ? (Sint64(unit->hungry)-(role == 0 ? unit->trigHungry : 0))/unit->hungriness : INT_MAX);
+				Sint64 hp=(Sint64(unit->hp)*16)/std::max(1,unit->runtimeTraits().flagRankingHealth);
+				if (role == 1) { timeLeft=std::clamp<Sint64>(timeLeft,-1000000000,1000000000); timeLeft*=timeLeft; hp=std::clamp<Sint64>(hp,-1000000000,1000000000); hp*=hp; }
+				const Sint64 value=distances[role][n]-(role == 0 ? 1 : 2)*(timeLeft+hp);
+				const Sint64 level=role == 0 ? unit->workerLevel() : role == 1 ? unit->level[MAGIC_ATTACK_GROUND] : Sint64(unit->performance[ATTACK_SPEED])*unit->getRealAttackStrength();
+				if ((role == 2 ? level>bestLevel : level<bestLevel) || (level==bestLevel && value<bestValue))
+				{ best=unit; bestLevel=level; bestValue=value; }
 			}
-
-			if (choosen)
-			{
-				unitsWorking.push_back(choosen);
-				choosen->subscriptionSuccess(this,false,true,static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+chosenJob));
-				hired=true;
-			}
-			else
-				break;
+			if (best && assigned[role]<chosenCount)
+			{ choosen=best; chosenCount=assigned[role]; chosenJob=role; }
 		}
 
-		updateCallLists();
-
-		subscriptionWorkingTimer=0;
+		if (choosen)
+		{
+			unitsWorking.push_back(choosen);
+			choosen->subscriptionSuccess(this,false,true,static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+chosenJob));
+			hired=true;
+		}
+		else
+			break;
 	}
 	return hired;
 }
-
 
 void Building::subscribeUnitForInside(Unit* unit)
 {
