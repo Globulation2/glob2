@@ -36,6 +36,7 @@ public:
         friend class Settlement;
         friend class CaptureBatchProbeReplay;
         // Credit is destroyed last, after every owned payload and policy alias.
+        std::shared_ptr<OpenCLProbeBatchStorage> futureStorage;
         std::shared_ptr<PrechargedProbeStorage> storageCredit;
         std::size_t rawLease=0;
         std::shared_ptr<CpuSavingPolicy> policy;
@@ -245,7 +246,29 @@ public:
         if(overhead>OpenCLProbeBudget || cells>(OpenCLProbeBudget-overhead)/(capacity*4))return 0;
         return overhead+cells*capacity*4;
     }
+    // Production admission includes the complete native replay/accounting/device
+    // promise before any original or golden array is allocated or copied.
+    static unsigned nativeCapacity(const Input& input,std::size_t clockBytes=0) noexcept {
+        if(!input.key.width || !input.key.height || input.key.width>unsigned(INT_MAX) ||
+           input.key.height>unsigned(INT_MAX) || input.key.width>unsigned(INT_MAX)/input.key.height ||
+           input.original.size()!=std::size_t(input.key.width)*input.key.height)return 0;
+        for(const unsigned capacity:{8u,4u,2u,1u})if(capacity<=input.maximumMembers) {
+            const auto capture=retainedBytes(input.original.size(),capacity,input.weakSourceBytes,clockBytes);
+            const auto future=OpenCLProbeBatchStorage::estimate({int(input.key.width),int(input.key.height)},capacity,input.alternative);
+            if(capture && future && future.hostBytes<=OpenCLProbeBudget-capture)return capacity;
+        }
+        return 0;
+    }
+    static std::shared_ptr<Record> beginNative(std::shared_ptr<CpuSavingPolicy> policy,const Input& input,Receipt& receipt,Clock timer={}) noexcept {
+        return beginOwned(std::move(policy),input,receipt,std::move(timer),true);
+    }
+    // Independent group ownership/oracle tests use no driver admission. A real
+    // native batch adapter requires futureStorage and declines this form.
     static std::shared_ptr<Record> begin(std::shared_ptr<CpuSavingPolicy> policy,const Input& input,Receipt& receipt,Clock timer={}) noexcept {
+        return beginOwned(std::move(policy),input,receipt,std::move(timer),false);
+    }
+private:
+    static std::shared_ptr<Record> beginOwned(std::shared_ptr<CpuSavingPolicy> policy,const Input& input,Receipt& receipt,Clock timer,bool native) noexcept {
         receipt={};
         if(!policy || !input.scalarClassic || input.key.batch!=1 || input.key.movementModifiers ||
            (input.key.family!=Family::Clear && input.key.family!=Family::Guard) || input.key.cpuBuckets!=BUCKETS ||
@@ -254,24 +277,31 @@ public:
            input.original.size()!=std::size_t(input.key.width)*input.key.height || input.original.size()>std::size_t(INT_MAX) ||
            input.key.limit!=COST_LIMIT || input.key.movement>=std::size(WATER_STEP) || weightedClass(int(input.key.movement)) ||
            input.sourceIdentity.expired() || !input.weakSourceBytes || !input.requiredGeneration ||
-           input.optionalExpiry<=input.tick || !input.reservedCpuNs || !input.captureCpuLimitNs ||
+           input.due<=input.tick || input.optionalExpiry<=input.tick || !input.reservedCpuNs || !input.captureCpuLimitNs ||
            input.captureCpuLimitNs>=input.reservedCpuNs ||
            (timer.read && (!timer.owner || !timer.retainedBytes)) || (!timer.read && (timer.owner || timer.retainedBytes)) ||
            (input.maximumMembers!=1 && input.maximumMembers!=2 && input.maximumMembers!=4 && input.maximumMembers!=8))return {};
         auto maximum=input.key;maximum.batch=input.maximumMembers;
         const auto bytes=retainedBytes(input.original.size(),input.maximumMembers,input.weakSourceBytes,timer.retainedBytes);if(!bytes)return {};
+        const auto future=native?OpenCLProbeBatchStorage::estimate({int(input.key.width),int(input.key.height)},input.maximumMembers,input.alternative):OpenCLProbeBatchStorage::Estimate{};
+        if(native && (!future || future.hostBytes>OpenCLProbeBudget-bytes))return {};
+        const auto totalBytes=bytes+future.hostBytes;
         auto floor=std::uint64_t(0);
         auto read=[&]() noexcept {std::uint64_t value=0;try {value=timer.read?timer.read(timer.owner.get()):glob2::threadCpuNs();}catch(...) {}
             if(!value || value<floor)return std::uint64_t(0);floor=value;return value;};
         const auto start=read();if(!start){receipt.clockValid=false;receipt.requiresFullReservedCharge=true;return {};}
         std::optional<CpuSavingPolicy::ProbeTicket> ticket;std::shared_ptr<Record> record;
+        struct Return {std::size_t bytes=0;~Return(){if(bytes)releaseOpenCLProbeBytes(bytes);}} futureReservation;
         bool reserved=false;
         try {
             ticket=policy->beginAcceptedBatchCapture(maximum,input.alternative,input.tick,input.reservedCpuNs,
                 input.slackNs,input.conservativeElapsedNs,input.backlog,input.requiredGeneration,input.alternativeReady);
             if(!ticket)return {};
-            if(!reserveOpenCLProbeBytes(bytes))throw 0;reserved=true;
+            if(!reserveOpenCLProbeBytes(totalBytes))throw 0;reserved=true;futureReservation.bytes=future.hostBytes;
+            auto futureOwner=native?OpenCLProbeBatchStorage::adopt(futureReservation.bytes,future):std::shared_ptr<OpenCLProbeBatchStorage>{};
+            if(native && !futureOwner)throw 0;
             auto allocation=std::unique_ptr<Record>(new Record(policy,*ticket,input,bytes,timer));reserved=false;
+            allocation->futureStorage=std::move(futureOwner);allocation->totals.reservedBytes=totalBytes;
             allocation->storageCredit=PrechargedProbeStorage::adopt(allocation->rawLease);
             const auto credit=allocation->storageCredit;
             record=std::shared_ptr<Record>(allocation.release(),[credit](Record* value){delete value;});
@@ -296,6 +326,7 @@ public:
             return {};
         }
     }
+public:
     static std::unique_ptr<Member> enroll(const std::shared_ptr<Record>& record,const Input& input,Receipt& receipt) noexcept {
         if(!record)return {};
         const auto started=record->readClock();unsigned index=record->capacity;
@@ -318,6 +349,7 @@ public:
     }
     class Settlement {
         friend class GradientCpuCaptureGroup;
+        std::shared_ptr<OpenCLProbeBatchStorage> future;
         std::shared_ptr<PrechargedProbeStorage> credit;
         std::shared_ptr<Record> record;
         std::shared_ptr<CpuSavingPolicy> policy;
@@ -325,7 +357,7 @@ public:
         Receipt totals;
         std::uint64_t generation=0,reservedCpu=0;
         std::thread::id producer=std::this_thread::get_id();
-        explicit Settlement(std::shared_ptr<Record> value):credit(value->storageCredit),record(std::move(value)),
+        explicit Settlement(std::shared_ptr<Record> value):future(value->futureStorage),credit(value->storageCredit),record(std::move(value)),
             policy(record->policy),ticket(record->ticket),totals(record->receipt()),generation(record->generation),reservedCpu(record->reservedCpu) {
             record->delegatedSettlement=true;
         }
@@ -383,7 +415,7 @@ public:
             bool promoted=false;
             if(complete)promoted=policy->finishAcceptedCapture(ticket,outcome);
             else policy->cancelProbe(ticket,outcome.actualProbeCpuNs,false);
-            policy.reset();credit.reset();return promoted;
+            policy.reset();credit.reset();future.reset();return promoted;
         }
     };
     static std::optional<Settlement> takeSettlement(std::shared_ptr<Record>& record) noexcept {

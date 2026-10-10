@@ -3,6 +3,8 @@
 #include "GradientPropagation.h"
 #include "Glob2Test.h"
 #include <atomic>
+#include <climits>
+#include <SDL3/SDL_platform_defines.h>
 #include <vector>
 
 namespace
@@ -244,4 +246,34 @@ TEST_CASE("group cleanup preserves separately paid replay CPU exactly once" * do
     CHECK(after.clockValid);CHECK_FALSE(after.requiresFullReservedCharge);
     const auto again=token->cleanup();CHECK(again.optionalCpuNs==after.optionalCpuNs);
     token.reset();CHECK(openCLProbeBytes()==baseline);
+}
+
+TEST_CASE("production group capacity includes the full future graph before any clone" * doctest::test_suite("OpenCLGradient"))
+{
+    GroupFixture fixture(512,512,8);
+    const auto paid=openCLProbeBytes(),reads=fixture.clock->calls;
+#if defined(SDL_PLATFORM_EMSCRIPTEN) || defined(SDL_PLATFORM_ANDROID) || defined(SDL_PLATFORM_IOS)
+    CHECK(GradientCpuCaptureGroup::nativeCapacity(fixture.input,sizeof(GroupClock)+256)==0);
+    CHECK(fixture.clock->calls==reads);CHECK(openCLProbeBytes()==paid);return;
+#else
+    REQUIRE(bool(OpenCLProbeBatchStorage::estimate({512,512},8,Plan::Frozen8)));
+#endif
+    CHECK(GradientCpuCaptureGroup::nativeCapacity(fixture.input,sizeof(GroupClock)+256)==8);
+    // Restricting storage before admission chooses a real declared smaller cap,
+    // rather than cloning eight members and discovering that replay cannot fit.
+    fixture.seeds.resize(1024*1024);fixture.input.original=fixture.seeds;
+    fixture.input.key.width=fixture.input.key.height=1024;
+    CHECK(GradientCpuCaptureGroup::nativeCapacity(fixture.input,sizeof(GroupClock)+256)==2);
+    fixture.input.key.width=UINT_MAX;
+    CHECK(GradientCpuCaptureGroup::nativeCapacity(fixture.input,sizeof(GroupClock)+256)==0);
+    CHECK(fixture.clock->calls==reads);CHECK(openCLProbeBytes()==paid);
+}
+
+TEST_CASE("group rejects expired original publication before capture or global admission" * doctest::test_suite("OpenCLGradient"))
+{
+    GroupFixture fixture;fixture.input.due=fixture.input.tick;
+    const auto original=fixture.seeds;const auto bytes=openCLProbeBytes();
+    CHECK_FALSE(fixture.begin());CHECK(fixture.clock->calls==0);
+    CHECK(fixture.policy->metrics().admitted==0);CHECK(fixture.seeds==original);
+    CHECK(openCLProbeBytes()==bytes);
 }
