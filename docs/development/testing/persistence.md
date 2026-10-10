@@ -10,6 +10,11 @@ must remain bound while cached units load and when subsequent training or
 production uses an upgraded level. Current-format resaving embeds the recovered
 catalog rather than replacing it with installed defaults. Format 73 moved the
 race tables into the later Team record and uses the staged migration path.
+Historical text records reused flat keys for all twelve ability tables; their
+reader retains the last value of each key. Binary fixtures cover distinct type
+and level tables, while text fixtures cover modified tables representable by
+that historical format. The shipped format-64 FourSquares1 map also exercises
+real embedded tables that differ from current built-in values.
 
 ## Team capacity and format 127
 

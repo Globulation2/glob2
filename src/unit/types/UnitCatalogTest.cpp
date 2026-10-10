@@ -9,6 +9,7 @@
 #include "StreamBackend.h"
 #include "FileFormatVersions.h"
 #include "Team.h"
+#include "FileManager.h"
 using Json = nlohmann::json;
 namespace {
 // The released pre-73 layout places flat Race records inside BaseTeam and
@@ -105,6 +106,17 @@ TEST_SUITE("UnitCatalog")
             tables[WORKER][0].performance[HP]=333;
             tables[WORKER][1].performance[BUILD]=19;
             tables[WORKER][1].performance[HARVEST]=13;
+            if(text) {
+                // Historical Race text records reuse flat keys for all twelve
+                // tables. TextInputStream retains the last value of each key,
+                // including the global hunger value. Use a representable
+                // uniform modified table here; binary58/72 above retain the
+                // distinct type and level tables of the original wire format.
+                auto uniform=tables[WORKER][0];
+                uniform.performance[BUILD]=19; uniform.performance[HARVEST]=13;
+                uniform.hungriness=700;
+                for(auto& table:tables) table.fill(uniform);
+            }
             const auto expected=UnitCatalog::legacyMigration()->withLegacyLevels(tables,700);
             auto* written=new GAGCore::MemoryStreamBackend;
             std::string bytes;
@@ -157,6 +169,63 @@ TEST_SUITE("UnitCatalog")
             }
             CHECK(UnitCatalog::legacyMigration()->runtime(WORKER).hungerRate==425);
             CHECK(UnitCatalog::legacyMigration()->levels(WORKER)[0].performance[HP]==200);
+        }
+    }
+    TEST_CASE("retained format64 FourSquares map keeps its historical warrior tables and current continuation [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        GameGUI world;
+        GAGCore::BinaryInputStream historical(globals.globals.fileManager->openInflatingInputStreamBackend(
+            (glob2test::sourceRoot()/"maps/FourSquares1.map.gz").string()));
+        REQUIRE(world.game.load(&historical));
+        REQUIRE(world.game.mapHeader.getVersionMinor()==64);
+        REQUIRE(world.game.mapHeader.getNumberOfTeams()==4);
+        // This shipped map was written before Race moved out of BaseTeam.
+        // Frozen master loads attack8; installed current defaults use attack13.
+        for(int team=0;team<4;++team) {
+            const auto& race=world.game.teams[team]->race;
+            REQUIRE(race.getCatalog()->levels(WARRIOR)[0].performance[ATTACK_STRENGTH]==8);
+            CHECK(race.getCatalog()->serialize()==world.game.unitCatalog().serialize());
+        }
+        CHECK(UnitCatalog::availableDefaults()->levels(WARRIOR)[0].performance[ATTACK_STRENGTH]==13);
+        world.game.setWaitingOnMask(0);
+        const auto components=[](Game& game,bool normalizeHistoricalHeader) {
+            std::vector<Uint32> state,buildings,units;
+            game.checkSum(&state,&buildings,&units,true);
+            // Serialize only the header through its current-version writer,
+            // then checksum that canonical header. Keep team count and all
+            // experiment fields in the comparison across the old->new resave.
+            if(normalizeHistoricalHeader) {
+                auto* bytes=new GAGCore::MemoryStreamBackend;
+                GAGCore::BinaryOutputStream output(bytes); game.mapHeader.save(&output);
+                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(*bytes)); input.seekFromStart(0);
+                MapHeader canonical; REQUIRE(canonical.load(&input));
+                state.front()=canonical.checkSum();
+            }
+            state.insert(state.end(),buildings.begin(),buildings.end());
+            state.insert(state.end(),units.begin(),units.end()); return state;
+        };
+        const auto save=[](Game& game) {
+            auto* bytes=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(bytes); game.save(&output,false,"retained format64 continuation");
+            return bytes->takeContents();
+        };
+        const auto load=[](Game& game,const std::string& bytes) {
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+            input.seekFromStart(0); return game.load(&input);
+        };
+        GameGUI resumed,repeated;
+        const auto bytes=save(world.game); REQUIRE(load(resumed.game,bytes)); resumed.game.setWaitingOnMask(0);
+        REQUIRE(resumed.game.unitCatalog().serialize()==world.game.unitCatalog().serialize());
+        REQUIRE(components(resumed.game,true)==components(world.game,true));
+        REQUIRE(load(repeated.game,save(resumed.game))); repeated.game.setWaitingOnMask(0);
+        REQUIRE(components(repeated.game,false)==components(resumed.game,false));
+        for(int tick=0;tick<64;++tick) {
+            world.game.syncStep(0); resumed.game.syncStep(0); repeated.game.syncStep(0);
+            REQUIRE(components(resumed.game,true)==components(world.game,true));
+            REQUIRE(components(repeated.game,false)==components(resumed.game,false));
+            REQUIRE(world.game.syncRandom==resumed.game.syncRandom);
+            REQUIRE(repeated.game.syncRandom==resumed.game.syncRandom);
         }
     }
     TEST_CASE("installed definitions reproduce immutable embedded defaults")
