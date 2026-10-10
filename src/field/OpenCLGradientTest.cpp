@@ -991,7 +991,8 @@ TEST_CASE("epoch masks preserve every explicit plan across mixed retirement and 
         int cap;
     };
     // A singleton and narrow fields retire before the larger irregular field.
-    // Three fresh seed patterns reuse the same allocated buffers/cost planes.
+    // Fresh seed patterns and a smaller middle batch reuse the same allocated
+    // buffers/cost planes before restoring the larger irregular batch.
     BackendSession session;
     for(unsigned plan=1;plan<unsigned(Plan::Count);++plan) {
         if(!(readyPlans.load()&(1u<<plan))) continue;
@@ -1022,10 +1023,12 @@ TEST_CASE("epoch masks preserve every explicit plan across mixed retirement and 
                     {field.costs,918201,1,true,field.costs->capacity()*sizeof(EntrySteps)}});
             }
             const auto before=openCLStatus();
-            REQUIRE(executeOpenCLDevice(requests,Plan(plan)));
-            for(const auto& field:fields) CHECK(field.actual==field.expected);
+            const auto count=repeat==1 ? std::size_t(3) : fields.size();
+            REQUIRE(executeOpenCLDevice(std::span(requests).first(count),Plan(plan)));
+            for(std::size_t i=0;i<fields.size();++i)
+                CHECK(fields[i].actual==(i<count ? fields[i].expected : fields[i].original));
             const auto after=openCLStatus();
-            CHECK(after.activeEpoch);CHECK(after.retiredFields==before.retiredFields+fields.size());
+            CHECK(after.activeEpoch);CHECK(after.retiredFields==before.retiredFields+count);
             CHECK(after.tileMaskInitializations==before.tileMaskInitializations+2);
             CHECK(after.tileMaskClears==before.tileMaskClears);
             CHECK(after.dispatches>before.dispatches);CHECK_FALSE(session.failed.load());
